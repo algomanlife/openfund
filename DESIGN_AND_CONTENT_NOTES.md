@@ -40,3 +40,14 @@ These are illustrative Openfund terms, not an activated service. No invented com
 - Live market rows populated, price changed between observations, Forex filter/search/no-result state and real historical chart checked.
 - Desktop and 390px mobile screenshots inspected; no document horizontal overflow. Market table uses its own intentional horizontal scroll on narrow screens.
 - Prior layout saved in Git at fdc0207b5cba6b2b76b091a3309a8e76c298d520 and ../Openfund_Landing_FA-before-original-layout.zip.
+
+## Revision 4 — 2026-10-31
+User supplied a 43.75-second Carrot screen recording and asked for motion, exact testimonial-style team geometry and a font fix.
+
+Video reviewed through 14 timestamped frames: ambient hero light, challenge card changes, hover depth and stacked/fanned step cards, scrolling and navigation. Applied those interaction ideas to the independent Openfund structure; no competitor totals/testimonials were added.
+
+Font investigation: supplied TTF name tables and OS/2 weight records disagree (SemiBold stored as 300, Bold stored as 400, Black stored as 600); several PostScript names contain spaces. Created WOFF2 copies with a unique Openfund Persian family, consistent 400/500/600/700/900 metadata and valid PostScript names. Original TTFs unchanged. Glyph outlines and mappings unchanged. Added preload for 400/600, disabled synthetic weights, and versioned CSS/scripts and font paths to avoid old assets being reused. Actual browser check: loaded 400/600; same 32px Persian string measures 506.89px with supplied font versus 468.17px in Tahoma, confirming distinct font rendering. The private hosted gate prevented unauthenticated hosted-asset inspection; this is not claimed as a diagnosed production font failure.
+
+Team layout now uses portrait physically left / quote right, brand under portrait, name and role under quote, profile action below. Five sample profiles retained. Profile actions open accessible native dialogs with role descriptions and sample labels. Desktop and mobile inspected.
+
+Motion: animated ambient light, gradual hero entrance and text sheen, floating concept card, animated line path, cursor light on fine pointers, scroll reveal/stagger, scroll progress, active navigation, desktop account submenu, account-selection transition, pointer tilt on builder card, hover depth/fanning for step cards, subtle progress/flow animation and dialog entrance. Reduced-motion preferences disable motion. Scroll/price rendering remains independent. Reserved market table space to reduce layout shifts before data arrives.
