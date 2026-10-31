@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@luxalgo/vela": "^0.9.3",
     "@rainbow-me/rainbowkit": "^2.2.11",
     "@tanstack/react-query": "^5.105.0",
     "esbuild": "^0.28.2",
