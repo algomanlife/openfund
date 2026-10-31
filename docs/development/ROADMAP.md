@@ -1,51 +1,39 @@
-# Openfund Development Roadmap
+# Openfund delivery roadmap
 
-This roadmap distinguishes existing assets from future deliverables. Checkboxes are evidence-based, not promises of completion.
+## Phase 0 — Repository foundation (current)
 
-## Phase 0 — Repository foundation
+- Preserve baseline frontend and assets.
+- Document architecture, brand inventory, integration contracts, agent workflow and feature status.
+- Establish feature branches, PR reviews and changelog discipline.
 
-- [x] Initial website and terminal frontend files exist.
-- [x] Local Git history and private GitHub repository established.
-- [x] Existing brandbook ZIP included in repository.
-- [x] Initial brand assets and design notes included.
-- [ ] Verify brand asset licenses and review brandbook contents.
-- [ ] Capture and review real UI screenshots for README.
-- [ ] Add automated checks and a reproducible build process.
+## Phase 1 — Technical inventory and UI foundation
 
-## Phase 1 — Product and frontend quality
+- Audit existing HTML/CSS/JS and npm dependencies.
+- Verify Vela package exports, license and embed approach.
+- Verify Gains official SDK/APIs and supported testnets.
+- Establish shared design tokens and reproducible frontend checks.
 
-- [ ] Audit website, accounts UI, terminal, and wallet source.
-- [ ] Establish component/design-token conventions.
-- [ ] Verify responsive layouts and accessibility.
-- [ ] Consolidate localization and frontend routing.
-- [ ] Add automated frontend smoke tests.
+## Phase 2 — Charting
 
-## Phase 2 — Wallet and Gains testnet feasibility
+- Implement Openfund chart adapter and sample-data fixtures.
+- Embed chart in terminal, handle symbols, intervals, resize and errors.
+- Validate supported volume/footprint features separately.
 
-- [ ] Verify official supported networks, contracts, ABIs, and API capabilities.
-- [ ] Validate wallet connect/disconnect and network switching.
-- [ ] Establish test collateral/account lifecycle.
-- [ ] Read positions and order state from authoritative sources.
-- [ ] Execute and reconcile an end-to-end testnet demo order.
-- [ ] Document fees, risk parameters, limitations, and failure cases.
+## Phase 3 — Read-only Gains connectivity
 
-## Phase 3 — Market data and Vela
+- Implement verified symbol, price and account/position reads.
+- Add wallet connection, chain validation and stale-data handling.
+- Document source timestamps, precision and failures.
 
-- [ ] Review Vela license, architecture, and open-source capabilities.
-- [ ] Decide fork vs dependency vs isolated integration.
-- [ ] Map Gains instruments to chart symbols.
-- [ ] Implement candle history and real-time updates where available.
-- [ ] Validate chart price consistency and data latency.
-- [ ] Assess feasibility of footprint and depth independently of candle data.
+## Phase 4 — Demo/testnet workflows
 
-## Phase 4 — Backend and operational maturity
+- Confirm supported testnet and verified contract deployments.
+- Implement transaction preview, simulation, confirmation and reconciliation.
+- Test rejection, revert, RPC failure and network mismatch.
 
-- [ ] Define APIs and data persistence requirements.
-- [ ] Add integration tests and CI/CD.
-- [ ] Set up environment configuration, secrets management, and monitoring.
-- [ ] Prepare staging and production release process.
-- [ ] Perform security, licensing, and product-readiness reviews.
+## Phase 5 — Quality and release
 
-## Acceptance criteria for next milestone
+- CI, tests, accessibility, performance, security review and deployment plan.
+- Update docs and release notes after each accepted milestone.
 
-A new contributor can clone the repository, preview both current frontend pages, find the brand assets, understand the planned integrations, and distinguish implemented behavior from roadmap items.
+**Gate:** Do not advance a phase based solely on directory creation or dependency installation.

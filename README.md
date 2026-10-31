@@ -1,126 +1,72 @@
-<div align="center">
+# Openfund
 
-# OPENFUND
+**Openfund** is an independent, brand-led project exploring a unified web trading interface, interactive charts, wallet connectivity and testnet-oriented trading workflows. This repository is the single source of truth for product planning, frontend prototypes, integration architecture and design assets.
 
-### A Unified Trading Experience
+> **Status:** Early-stage prototype and architecture preparation. Do not interpret a dependency, directory or design document as a working integration. No production trading functionality is claimed.
 
-**A branded trading platform combining a custom web experience, professional trading interfaces, wallet connectivity, and planned on-chain demo trading infrastructure.**
+## What exists today
 
-**Status: Pre-alpha · Frontend foundation implemented · Integrations under development**
+- Existing landing/account frontend in `dist/index.html` and associated assets.
+- Existing terminal prototype in `dist/terminal.html`.
+- Source files in `src/` and an npm project at repository root.
+- Vela package dependency may be installed; its presence alone does not constitute UI integration.
+- Brandbook archive and selected visual assets, when present, organized in `brand/`.
+- Architecture and integration specifications for future agents in `docs/`.
 
-</div>
+## What is planned (not yet implemented)
 
----
+- Embedded LuxAlgo Vela charting with Openfund design integration.
+- Gains Network market-data adapter and testnet-only wallet/trade lifecycle integration after official API/contract verification.
+- Real-time portfolio, orders, positions, account state and transaction reconciliation.
+- Shared UI design system, modular applications, backend services, automated tests and deployment.
 
-## Overview
+## Repository map
 
-Openfund is an independent trading-platform project. Its goal is to combine a distinctive brand and product experience with a custom trading terminal, market visualization, wallet integration, and blockchain-based trading infrastructure.
-
-The initial website, account-related interface, and trading terminal are present in this repository. The longer-term architecture targets Gains Network testnet trading and suitable LuxAlgo Vela charting components. These integrations are **not yet complete**.
-
-## Product Areas
-
-| Area | Objective | Current state |
+| Path | Purpose | Status |
 | --- | --- | --- |
-| Website | Branded entry point and product presentation | Initial frontend available |
-| Accounts dashboard | Account-related UI and navigation | Initial frontend available |
-| Trading terminal | Market and trading interface | Initial frontend available |
-| Wallet | Connect supported wallets and networks | Source/dependencies present; end-to-end validation pending |
-| Gains integration | Testnet trading and position lifecycle | Research and implementation planned |
-| Vela charts | Market charts and data adapters | Evaluation and integration planned |
-| Market data | Price feeds, candles, updates | Integration planned |
-| Backend | API, synchronization, operational services | Planned |
+| `dist/` | Current static frontend and terminal | Existing prototype; preserve |
+| `src/` | Existing frontend source | Existing; inspect before modifying |
+| `apps/web/` | Future account/landing application boundary | Scaffold only |
+| `apps/terminal/` | Future trading terminal application boundary | Scaffold only |
+| `packages/openfund-charts/` | Vela adapter boundary | Specification only |
+| `packages/openfund-gains-adapter/` | Gains adapter boundary | Specification only |
+| `packages/openfund-ui/` | Shared design system boundary | Specification only |
+| `brand/` | Brand assets and source archive | Available files copied if present |
+| `docs/` | Product, architecture, integration and delivery specs | Documentation |
 
-## Interface Preview
+## Local preview
 
-The source pages are `dist/index.html` and `dist/terminal.html`. Real screenshots should be added under `docs/images/` after review for personal or sensitive information.
-
-## Technical Direction
-
-The intended system separates frontend experiences from trading execution, wallet connectivity, market-data adapters, and chart rendering. It is not yet a production-grade trading platform.
-
-- **Frontend:** HTML, CSS, JavaScript, React (wallet-related source)
-- **Wallet stack:** RainbowKit, wagmi, viem, TanStack Query
-- **Tooling:** esbuild dependency; no complete build pipeline currently configured
-- **Trading target:** Gains Network contracts on supported testnets, subject to verification
-- **Charting target:** LuxAlgo Vela, subject to technical and licensing evaluation
-
-See [Architecture](docs/architecture/ARCHITECTURE.md), [Gains Integration](docs/integrations/GAINS.md), and [Vela Integration](docs/integrations/VELA.md).
-
-## Branding
-
-Openfund's existing brandbook, logo variants, and project typography are preserved in `brand/`. Runtime copies remain in `dist/assets/` to avoid breaking the existing frontend.
-
-- [Brand assets and usage notes](brand/README.md)
-- [Brandbook archive](brand/brandbook/Openfund-brandbook.zip)
-- [Design and content notes](DESIGN_AND_CONTENT_NOTES.md)
-
-Brand narratives, mission and vision wording should be checked against the approved brandbook before being treated as final. Third-party fonts, images, and logos require independent rights verification.
-
-## Project Documentation
-
-| Document | Purpose |
-| --- | --- |
-| [Product vision](docs/product/VISION.md) | Product concept, audience, experience principles |
-| [Architecture](docs/architecture/ARCHITECTURE.md) | Current implementation and target components |
-| [Gains integration](docs/integrations/GAINS.md) | Demo-trading integration plan and unknowns |
-| [Vela integration](docs/integrations/VELA.md) | Chart integration and market-data constraints |
-| [Roadmap](docs/development/ROADMAP.md) | Phases, deliverables and acceptance criteria |
-| [Branding](brand/README.md) | Assets, sources and governance |
-
-## Repository Layout
-
-```text
-openfund/
-├── brand/                   # Brandbook, logos, typography, imagery
-├── docs/                    # Product, architecture, integrations, roadmap
-├── dist/                    # Current runnable frontend files
-│   ├── index.html
-│   ├── terminal.html
-│   └── assets/
-├── src/wallet.jsx           # Wallet-related React source
-├── DESIGN_AND_CONTENT_NOTES.md
-├── package.json
-└── README.md
-```
-
-A monorepo structure with `apps/` and `packages/` is a future refactor, **not the current repository layout**.
-
-## Run Locally
+From the repository root, if Python 3 is installed:
 
 ```bash
-# Requires access to this private repository
-git clone https://github.com/algomanlife/openfund.git
-cd openfund
-npm ci
-python3 -m http.server 4173 --bind 127.0.0.1
+python3 -m http.server 4173
 ```
 
-- Website: http://127.0.0.1:4173/dist/
-- Accounts view: http://127.0.0.1:4173/dist/#accounts
-- Trading terminal: http://127.0.0.1:4173/dist/terminal.html
+Then open `http://127.0.0.1:4173/dist/` for the landing page and `http://127.0.0.1:4173/dist/terminal.html` for the terminal prototype. This preview does **not** imply that wallet or trading integrations work.
 
-The current `package.json` does not provide a complete build/start/test workflow. The Python command serves existing frontend files only.
+Install existing npm dependencies using `npm install` as appropriate; inspect `package.json` for actual scripts. No build command is promised until verified.
 
-## Roadmap
+## Product and engineering documentation
 
-1. **Foundation:** preserve the existing frontends, organize branding and documentation, establish source-control conventions.
-2. **Wallet and testnet:** validate wallet connectivity, Arbitrum Sepolia configuration, and supported Gains deployments.
-3. **Demo trading:** implement contract interactions, transaction feedback, position/order synchronization, and error handling.
-4. **Market data:** integrate supported price feeds, candles, and real-time updates with documented limitations.
-5. **Charting:** evaluate Vela licensing and architecture, connect data adapters, and validate chart features.
-6. **Platform maturity:** modularize code, add testing, CI/CD, backend services, observability, and deployment environments.
+- [Vision and scope](docs/product/VISION.md)
+- [Feature status](docs/product/FEATURE_STATUS.md)
+- [System architecture](docs/architecture/ARCHITECTURE.md)
+- [Vela integration contract](docs/integrations/VELA.md)
+- [Gains integration contract](docs/integrations/GAINS.md)
+- [Design system](docs/design/DESIGN_SYSTEM.md)
+- [Roadmap](docs/development/ROADMAP.md)
+- [Security guidelines](docs/security/SECURITY.md)
+- [Agent instructions](AGENTS.md)
+- [Change history](CHANGELOG.md)
 
-Detailed milestones: [Roadmap](docs/development/ROADMAP.md).
+## Contribution workflow
 
-## Security and Limitations
+Use task-specific branches, open Pull Requests to `main`, document verification, and update feature status and changelog for meaningful changes. Read [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md). The GitHub repository is canonical; do not maintain disconnected agent copies.
 
-Never commit private keys, seed phrases, API secrets, or production credentials. Contract addresses and testnet support must be verified against current official documentation. Demo trading must be clearly distinguished from real-money trading. Market depth and footprint features require underlying data that may not be available from Gains.
+## Third-party technology and rights
 
-## Independence and Licensing
+Openfund is independent of LuxAlgo, Gains Network and Arbitrum. Product names are used descriptively and do not indicate affiliation. Third-party components retain their own licenses, copyright notices, trademarks and attribution requirements. Verify upstream terms before bundling, modifying or distributing third-party source. Openfund's own repository-wide license has not yet been finalized; do not assume that all assets or code are freely reusable.
 
-Openfund is independent. References to Gains Network, LuxAlgo Vela, Arbitrum, and wallet providers do not imply endorsement, partnership, or completed integration. The repository's project-wide license has not been finalized. Third-party source and assets remain subject to their own licenses.
+## Safety and limitations
 
----
-
-<div align="center"><strong>OPENFUND — Building a Unified Trading Experience.</strong></div>
+The project is not a production trading service, investment recommendation or security audit. Do not place real funds or secrets in test configurations. Never claim a live integration without a reproducible test and verified network configuration.

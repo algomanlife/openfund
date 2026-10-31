@@ -1,31 +1,40 @@
-# Gains Network — Planned Demo Trading Integration
+# Gains Network integration specification
+
+**Status: Planned / external details unverified.** This file is a technical plan, not a claim of available API endpoints, contracts, testnet support or SDK compatibility.
 
 ## Goal
 
-Allow users to interact with supported Gains testnet trading infrastructure through the Openfund-branded terminal, without requiring the Gains frontend.
+Provide Openfund-branded market information, wallet context and eventually testnet-only demo trading through supported Gains Network interfaces, without replacing the upstream smart-contract execution model.
 
-## Intended flow
+## Research gates
 
-1. User opens Openfund terminal and connects a compatible wallet.
-2. UI checks the selected chain, expected Arbitrum Sepolia configuration, and supported contract deployments.
-3. UI reads supported instruments, pricing, trading parameters, and account/position state.
-4. User submits a demo/testnet order through the appropriate contract integration.
-5. UI tracks wallet signature, transaction submission, confirmation, execution state, and resulting position updates.
-6. UI reconciles its display with authoritative chain and supported indexer/API state.
+1. Confirm official Gains documentation, supported networks and current testnet status (including whether Arbitrum Sepolia is actually supported).
+2. Identify canonical SDK/package and exact version; inspect types, exports and licensing.
+3. Confirm deployed contract addresses and verified ABIs per chain; never guess addresses.
+4. Document supported read APIs, price feed semantics, freshness, rate limits and any websocket capabilities.
+5. Verify wallet/chain requirements, collateral/test-token requirements and transaction lifecycle.
+6. Confirm how open trades, pending orders, PnL, margin, fees, liquidation levels and execution statuses are sourced and calculated.
 
-## Research and implementation gates
+## Adapter boundaries
 
-- Verify that the relevant Gains contracts are deployed and supported on the intended testnet.
-- Identify exact contracts, ABIs, chain IDs, collateral/test-token flows, and supported pairs.
-- Confirm whether demo account setup requires test tokens, faucet access, allowances, or separate registration.
-- Identify APIs/indexers for positions, orders, trade history, leverage, fees, and live price updates.
-- Document the gap between Gains' own frontend presentation and public data/API availability.
-- Validate failure modes, rate limits, latency, and contract upgrade handling.
+- `NetworkConfig`: chain ID, RPC, contract references and environment status.
+- `MarketDataProvider`: symbols, price updates, candle availability and source timestamps.
+- `WalletContext`: connection, address, chain, account and disconnect state.
+- `PositionsProvider`: read-only positions, pending orders and reconciliation.
+- `DemoTradeGateway`: **disabled by default**; later explicit testnet simulation, validation, confirmation and transaction status.
 
-## Deliverables
+These are proposed Openfund interfaces, **not confirmed Gains SDK names**.
 
-Wallet/network validation; typed contract adapter; read-only account and market state; testnet order placement; position and order reconciliation; event/status UI; automated tests.
+## Demo flow (future)
 
-## Current status
+Wallet connection → network verification → supported testnet setup → read-only market data → validated demo order preview → explicit user confirmation → signed testnet transaction → receipt and indexed state reconciliation. Always surface failure, pending, rejected and unsupported states.
 
-**Planned / under technical investigation.** No verified working end-to-end Gains demo-trading integration is claimed here.
+## Market-data caveat
+
+Oracle price streams are not equivalent to a centralized limit order book, executed trade tape or true bid/ask volume. Do not label synthetic reconstructions as authentic Gains order-flow data.
+
+## Acceptance criteria
+
+Verified official references; reproducible read-only integration; supported testnet configuration; wallet state synchronization; gated test transactions; UI evidence and tests. No real-fund execution by default.
+
+Upstream reference: https://gains.trade/

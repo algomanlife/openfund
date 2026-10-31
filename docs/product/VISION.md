@@ -1,25 +1,25 @@
-# Product Vision and Scope
+# Product vision and scope
 
-## Product intent
+## Mission
 
-Openfund aims to provide a coherent, custom-branded experience across its website, accounts dashboard, and trading terminal. The intended trading experience combines wallet-based access, transparent transaction states, market context, and clear position management.
+Develop a coherent, accessible trading research and demo experience that brings account navigation, charting, market context and testnet experimentation into one consistent Openfund interface.
 
-## Experience principles
+## Intended audiences
 
-1. Consistent visual language across web, dashboard, and terminal.
-2. Clear separation between simulated/testnet and live financial activity.
-3. Accurate representation of order, transaction, and position state.
-4. Modular integrations that can be tested and replaced independently.
-5. Accessible and responsive interfaces, with internationalization where supported.
+Frontend developers, chart/data engineers, blockchain integration engineers, designers and product reviewers. User-facing functionality remains experimental until validated.
 
-## Current deliverables
+## Product areas
 
-The initial frontend pages are available. Wallet-related source and dependencies exist. Do not assume end-to-end wallet, contract, or live-data functionality is complete without tests.
+1. **Public website:** brand story, product education, navigation and responsive landing experience.
+2. **Account experience:** wallet connection, account status and clear network state.
+3. **Terminal:** charts, instrument selection, order-entry UX, positions, orders and market information.
+4. **Demo/testnet:** test-network-only workflow using verified Gains integrations, with explicit transaction confirmation and state synchronization.
+5. **Design system:** consistent Openfund typography, colors, components, accessibility and responsive behavior.
 
-## Proposed product workstreams
+## Non-goals for the initial phase
 
-Account experience; wallet onboarding; trading terminal; demo account state; order entry; trade lifecycle; portfolio and positions; charts; market data; trading history and journal; settings and localization; monitoring and reliability.
+No live-money trading, no unsupported claim of true exchange order-book depth, no production custody, no assumed partnerships, and no unverified deployment or security guarantees.
 
-## Out of scope for the current release
+## Success criteria
 
-Production trading execution, guaranteed live order-book depth, complete footprint charts, and verified production backend services.
+A documented and reproducible prototype; stable module interfaces; verified testnet-only data and wallet flows; understandable UX; and traceable contributions by separate agents.

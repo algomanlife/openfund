@@ -1,38 +1,40 @@
-# Architecture — Current and Target
+# System architecture
 
-## Current repository
+## Baseline
 
-The current application is predominantly static HTML/CSS/JavaScript under `dist/`, with a wallet-related React source file in `src/wallet.jsx`. `package.json` includes React, RainbowKit, wagmi, viem, TanStack Query, and esbuild. There is no documented complete build script. The `dist/` directory is currently source-critical and must not be deleted or automatically ignored.
+`dist/` contains the current static website and terminal prototype. `src/` and root npm dependencies exist. **Do not migrate or delete the baseline without a dedicated PR.** `apps/` and `packages/` currently define future ownership boundaries only.
 
-## Target logical components
+## Proposed layers
 
 ```text
-Openfund Website / Accounts / Trading Terminal
-             |
-       Shared UI and wallet
-             |
-   +---------+------------+
-   |                      |
-Trading Adapter       Market Data Adapter
-   |                      |
-Gains testnet         Price/candle sources
-contracts             and streaming layer
-   |                      |
-Position/tx sync       Chart adapter (Vela evaluation)
-   +---------+------------+
-             |
-     Backend services (planned)
+Openfund web / account UI ──┐
+                            ├── Openfund UI components
+Openfund terminal UI ───────┤
+                            ├── Openfund charts adapter ──> Vela (verify API/license)
+                            └── Openfund Gains adapter ───> verified Gains data/contracts
+                                                │
+                                        wallet provider / testnet
 ```
 
-## Architecture rules
+## Module contracts
 
-- Keep contract addresses, chain IDs, and external endpoints configurable by environment.
-- Do not embed secrets in frontend bundles.
-- Distinguish confirmed on-chain state from optimistic UI state.
-- Separate order submission from order/position reconciliation.
-- Treat chart price feeds, trading oracle prices, and execution outcomes as distinct concepts.
-- Maintain tests for network failures, wallet rejection, unsupported assets, and reorg/latency scenarios.
+- `apps/web`: navigation, landing, account context and responsive shell.
+- `apps/terminal`: chart panel, symbol selection, demo order-entry presentation and positions.
+- `packages/openfund-ui`: reusable components and design tokens.
+- `packages/openfund-charts`: normalize candles, symbols, chart lifecycle and optional overlays for Vela.
+- `packages/openfund-gains-adapter`: isolate chain configuration, data APIs, ABI types, read-only state and gated testnet transactions.
 
-## Proposed future monorepo
+## Data and state
 
-`apps/web`, `apps/terminal`, `apps/api`, `packages/ui`, `packages/wallet`, `packages/gains-adapter`, `packages/chart-adapter`, `brand`, `docs`, `infra`. This is a design target, not an implemented structure.
+Use explicit environment/network identifiers, decimal precision, timestamps and source metadata. Handle stale oracle data, disconnected wallets, RPC failures, pending/reverted transactions and chain mismatch. Avoid conflating oracle prices with trade-by-trade volume or order-book depth.
+
+## Delivery milestones
+
+1. Inventory current code and dependencies.
+2. Create typed interfaces and fixtures for adapters.
+3. Embed and verify chart rendering using deterministic sample data.
+4. Add verified read-only market feeds and wallet state.
+5. Add explicitly gated testnet interactions and reconciliation.
+6. Add automated tests, CI, observability and release processes.
+
+See integration specifications and roadmap for acceptance criteria.

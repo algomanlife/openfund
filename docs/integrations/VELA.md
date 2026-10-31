@@ -1,26 +1,27 @@
-# LuxAlgo Vela — Planned Chart Integration
+# LuxAlgo Vela integration specification
 
-## Goal
+**Status: Planned.** Installing a package does not mean the Vela chart is embedded or functional.
 
-Evaluate use of LuxAlgo Vela charting components within Openfund's trading terminal, using market data compatible with the selected instruments and trading infrastructure.
+## Goals
 
-## Work plan
+Embed a responsive chart inside the existing Openfund terminal while retaining Openfund navigation, layout and styling. Respect all upstream licensing, notices and required attribution.
 
-1. Audit the upstream Vela repository, license, dependency tree, and deployment requirements.
-2. Determine which charting and market visualization features are available in the open-source edition.
-3. Evaluate a maintained fork only if changes to upstream code are required.
-4. Define historical candle and live update adapters for supported markets.
-5. Match chart symbols, timestamps, decimals, and trading pairs to Gains-supported markets.
-6. Integrate charts into the terminal and validate responsive rendering and performance.
-7. Evaluate advanced visualizations only where sufficient underlying data exists.
+## Verification checklist before implementation
 
-## Critical market-data limitation
+- Identify the exact upstream repository, package version, license and NOTICE requirements.
+- Inspect actual package exports, supported frameworks, renderer APIs and CSS requirements.
+- Determine supported candle/time-series inputs, timeframes, symbol changes and resize lifecycle.
+- Confirm any replay, footprint, indicator or order-book features in the actual version; do not assume they are included.
+- Verify whether the intended data source has real trade/volume/depth data; oracle ticks alone are insufficient for genuine footprint/order book.
 
-A price oracle or candle feed is not equivalent to a central-limit-order-book depth feed or tick-by-tick aggressor trade data. Footprint, volume-at-price, bid/ask delta, and depth views require appropriate source data. Do not fabricate those metrics from price candles.
+## Proposed adapter interface
 
-## Current status
+`mountChart(container, options)`, `setSymbol(symbol)`, `setTimeframe(interval)`, `setCandles(candles)`, `appendCandle(candle)`, `resize()`, `destroy()` — **design targets only, not claimed Vela API exports**.
 
-**Evaluation / planned integration.** The project does not yet claim a completed Vela fork or working Gains-to-Vela adapter.
+Normalize candles as timestamp, open, high, low, close and optional genuine volume with explicit units. Provide loading, stale-data and error states.
+
+## Acceptance criteria
+
+Rendered chart visible in `dist/terminal.html` or its migrated successor; instrument/timeframe updates; resize cleanup; verified source data; tests and documented attribution. Until these pass, keep feature status `Planned`.
 
 Upstream reference: https://github.com/LuxAlgo/Vela
-Related optional project for evaluation: https://github.com/LuxAlgo/trade-journal
