@@ -24,7 +24,7 @@
 **Openfund** is an independent product and engineering project exploring a cohesive, brand-led trading experience. It brings together an existing web/terminal prototype, a shared design direction, and a structured foundation for future charting and network integrations.
 
 > [!IMPORTANT]
-> **Project stage: early prototype.** The Vela and Gains SDKs are installed and their upstream source trees are included, but **neither is yet wired into the running Openfund terminal**. No production or live-trading capability is claimed.
+> **Project stage: early prototype.** The terminal now renders a real **LuxAlgo Vela** chart with **live, verified Gains Network market data** (488 markets, REST + WebSocket) — see `dist/terminal.html`. Trading itself remains a clearly-labelled local simulation; no production or live-trading capability is claimed.
 
 ## Product preview
 

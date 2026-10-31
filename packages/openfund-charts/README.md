@@ -1,7 +1,11 @@
-# Openfund Charts
+# openfund-charts
 
-**Status: specification only — no functional Vela embedding yet.**
+LuxAlgo Vela chart bridge for the Openfund terminal.
 
-Owns the future chart renderer boundary, normalized candle types, lifecycle management, timeframe/symbol switching and optional overlays. See [`docs/integrations/VELA.md`](../../docs/integrations/VELA.md).
+- Source of truth: `src/vela-bridge.js` — mirrored verbatim into `dist/vela-bridge.js` (requires `assets/vela.global.min.js` + `dist/gains-adapter.js` loaded first).
+- API: `window.OpenfundCharts.mount(container, {symbol, timeframe, theme})` → controller with `setSymbol`, `setTimeframe`, `setMarket`, `setTheme`, `resize`, `on`, `chart`, `destroy`.
+- Registers the Gains provider under the `gains:` symbol prefix; charts resolve symbols like `gains:BTC/USD`.
+- Vela NOTICE attribution mark stays enabled (required by the upstream NOTICE).
+- Resize handled via `ResizeObserver` → `chart.resize()`.
 
-Do not copy upstream Vela source or rename third-party copyright. Review exports, license and attribution before implementing.
+See `docs/integrations/VELA.md` for verified Vela facts.

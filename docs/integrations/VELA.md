@@ -1,10 +1,21 @@
 # LuxAlgo Vela integration specification
 
-**Status: Planned.** Installing a package does not mean the Vela chart is embedded or functional.
+**Status: Implemented (market-data chart) — branch `qwen/frontend-polish-vela-gains`.**
+
+The terminal at `dist/terminal.html` mounts the full **Vela workspace** (topbar with symbol/timeframe/style/indicators, drawing toolbar, status line, bottom bar with clock/ranges, native symbol search and keyboard map) via the workspace global bundle `dist/assets/vela-workspace.global.min.js` (esbuild IIFE of `@luxalgo/vela/workspace@0.9.3`, attached as `window.VelaWorkspace.VelaWorkspace`). The superseded core-only bundle was removed. Verified working: candlestick rendering from Gains candles, crosshair, native drawing toolbar, `setMarket` symbol/timeframe switching, `setTheme` dark/light, `setLocale` (best-effort), `resize`, `destroy`, and the built-in NOTICE attribution mark (left enabled). Native indicators (`chart.availableNativeIndicators()` / `addNativeIndicator`) power the MA/VOL toolbar buttons when supported.
 
 ## Goals
 
 Embed a responsive chart inside the existing Openfund terminal while retaining Openfund navigation, layout and styling. Respect all upstream licensing, notices and required attribution.
+
+## Verified facts (2026-10-31)
+
+- Upstream: https://github.com/LuxAlgo/Vela — `@luxalgo/vela@0.9.3`, vendored under `vendor/vela/` with LICENSE + NOTICE preserved.
+- NOTICE obligation: visible Vela attribution wherever charts render. The built-in logomark satisfies it and stays enabled in `dist/vela-bridge.js`.
+- Bar shape: `{ time (epoch ms, open time), open, high, low, close, volume? }`, sorted, de-duplicated, newest = forming candle.
+- Provider contract: `getBars` (required) + optional `listSymbols`, `getSymbolInfo`, `subscribe(ticker, tf, onBar)`, `info()`. Implemented for Gains in `packages/openfund-gains-adapter/src/gains-adapter.js` (mirrored to `dist/gains-adapter.js`).
+- Bridge: `packages/openfund-charts/src/vela-bridge.js` → `window.OpenfundCharts.mount(container, opts)` returning `setSymbol/setTimeframe/setMarket/setTheme/setLocale/resize/on/chart/workspace/destroy`; mounts with `layout:false` (single chart), `providers:{gains}`, `timeframes` restricted to the Gains-supported set, and brand theme objects (7 Vela theme fields).
+- `market:changed` is observed so symbol switches made in Vela's own search sync the terminal chrome (and vice-versa).
 
 ## Verification checklist before implementation
 

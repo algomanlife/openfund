@@ -1,7 +1,11 @@
-# Openfund Gains Adapter
+# openfund-gains-adapter
 
-**Status: specification only — no operational SDK or contract integration claimed.**
+Verified Gains Network market-data adapter for the Openfund terminal.
 
-Future boundaries: network configuration, verified market data, wallet context, positions/orders reads, and a disabled-by-default testnet demo gateway. See [`docs/integrations/GAINS.md`](../../docs/integrations/GAINS.md).
+- Source of truth: `src/gains-adapter.js` — mirrored verbatim into `dist/gains-adapter.js` (script-tag load; `window.OpenfundGains`).
+- Verified endpoints: `GET /markets` (488 symbols), `GET /prices`, `GET /markets/{sym}/candles` (1m…1d; 1w unsupported), WS prices channel with reconnect + staleness watchdog.
+- Exposes `createVelaProvider()` implementing the Vela `DataProvider` contract (`getBars`, `listSymbols`, `getSymbolInfo`, `subscribe`, `info`).
+- Never fabricates volume, OI, depth or trades — those are absent from the API.
+- On-chain trading via `vendor/gains-sdk` is out of scope for this package.
 
-No hard-coded unverified contract addresses, no real-money transactions and no fabricated order-book depth.
+See `docs/integrations/GAINS.md` for the full verification table.
