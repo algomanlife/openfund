@@ -6,11 +6,11 @@
 
 ## Phase 0 — round-4 UI fixes (on legacy dist/)
 - [x] 0.6 chart branding: O at top-left plot corner (was bottom, over range bar) — fixed
-- [ ] 0.1 terminal header restyled to landing design (height/blur/border, brand lockup + caption, nav underline motion, toggles/wallet styles)
-- [ ] 0.2/0.5 terminal buttons unified with landing button system (white primary + hover motion)
-- [ ] 0.3 footer credit logos keep true brand colors in dark AND light (double-invert SVGs in light)
-- [ ] 0.4 Hybrid-model + No-hidden-rules cards below platform section (FA/EN)
-- [ ] 0.x commit phase 0
+- [x] 0.1 terminal header restyled to landing design (height/blur/border, brand lockup + caption, nav underline motion, toggles/wallet styles)
+- [x] 0.2/0.5 terminal buttons unified with landing button system (white primary + hover motion)
+- [x] 0.3 footer credit logos keep true brand colors in dark AND light (double-invert SVGs in light)
+- [x] 0.4 Hybrid-model + No-hidden-rules cards below platform section (FA/EN)
+- [x] 0.x commit phase 0
 
 ## Phase 1 — audit & plan
 - [ ] inventory of dist/ scripts, styles, state, adapters (written into docs/migration/AUDIT.md)
