@@ -6,8 +6,19 @@ import { RainbowConnect } from '../wallet/RainbowConnect'
 /**
  * Phase 2a: the trading terminal runs inside the React shell with its proven
  * markup, the Vela workspace bundle and the Gains adapters. Phase 2b extracts
- * real React components; Phase 3 adds RainbowKit around this page.
+ * real React components.
+ *
+ * Legacy-script contract:
+ *  - terminal.js is a self-executing IIFE (no DOMContentLoaded wait), so it
+ *    boots as soon as it is injected — the markup must already be on the page
+ *    (it is: React renders before effects run).
+ *  - In dev, StrictMode runs effects twice — inject the chain ONCE per
+ *    browser page (window guard) or every click listener/interval/chart
+ *    mount doubles up and the page misbehaves.
+ *  - Leaving the page reloads the app so the terminal runtime (WS, intervals,
+ *    Vela workspace) is fully torn down, exactly like the classic site.
  */
+
 const SCRIPTS = [
   'legacy/gains-adapter.js',
   'assets/vela-workspace.global.min.js',
@@ -17,6 +28,8 @@ const SCRIPTS = [
 ]
 const STYLES = ['legacy/terminal.css']
 
+const w = () => window as any
+
 export default function Terminal() {
   const [walletHost, setWalletHost] = useState<HTMLElement | null>(null)
 
@@ -25,6 +38,7 @@ export default function Terminal() {
   useEffect(() => {
     const nav = document.querySelector('.nav-right')
     if (!nav) return
+    if (document.getElementById('rainbow-host')) return
     const host = document.createElement('div')
     host.id = 'rainbow-host'
     nav.insertBefore(host, nav.firstChild)
@@ -33,30 +47,37 @@ export default function Terminal() {
     if (legacy) legacy.style.display = 'none'
     return () => {
       host.remove()
-      if (legacy) legacy.style.display = ''
+      const l = document.getElementById('wallet-btn')
+      if (l) l.style.display = ''
     }
   }, [])
 
   useEffect(() => {
-    const links = STYLES.map(href => {
-      const l = document.createElement('link')
-      l.rel = 'stylesheet'
-      l.href = href
-      l.dataset.page = 'terminal'
-      document.head.appendChild(l)
-      return l
-    })
-    const scripts = SCRIPTS.map(src => {
-      const s = document.createElement('script')
-      s.src = src
-      s.async = false
-      s.dataset.page = 'terminal'
-      document.body.appendChild(s)
-      return s
-    })
+    /* cancel OUR OWN pending reload (StrictMode re-mount of this page) */
+    if (w().__ofReloadTerminal) { clearTimeout(w().__ofReloadTerminal); w().__ofReloadTerminal = null }
+
+    if (!w().__ofLegacyTerminalLoaded) {
+      w().__ofLegacyTerminalLoaded = true
+      STYLES.forEach(href => {
+        const l = document.createElement('link')
+        l.rel = 'stylesheet'
+        l.href = href
+        l.dataset.page = 'terminal'
+        document.head.appendChild(l)
+      })
+      SCRIPTS.forEach(src => {
+        const s = document.createElement('script')
+        s.src = src
+        s.async = false
+        s.dataset.page = 'terminal'
+        document.body.appendChild(s)
+      })
+    }
+
     return () => {
-      links.forEach(l => l.remove())
-      scripts.forEach(s => s.remove())
+      /* real navigation away: reload to tear the terminal runtime down.
+         Cancelled only by a re-mount of THIS page (StrictMode / route return). */
+      w().__ofReloadTerminal = setTimeout(() => location.reload(), 120)
     }
   }, [])
 

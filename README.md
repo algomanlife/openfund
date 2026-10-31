@@ -4,163 +4,188 @@
 
 # OPENFUND
 
-### An open foundation for a unified trading experience
+### سرمایه، در امتداد مهارت تو — *Capital, in line with your skill*
 
-**A branded trading interface, modular charting architecture, and testnet-oriented integrations — built in the open.**
+**A bilingual (فارسی / English) prop-trading frontend: landing + live trading terminal, real LuxAlgo Vela charting, real Gains Network market data, and a React 19 + RainbowKit app shell on Arbitrum Sepolia.**
 
 [![Repository](https://img.shields.io/badge/GitHub-Openfund-181717?logo=github&logoColor=white)](https://github.com/algomanlife/openfund)
-![Status](https://img.shields.io/badge/Status-Early%20Prototype-F0B35A)
-![Vela](https://img.shields.io/badge/Vela%20SDK-0.9.3-17BEBB)
-![Gains](https://img.shields.io/badge/Gains%20SDK-1.8.10-17BEBB)
+![Status](https://img.shields.io/badge/Status-Prototype%20%2B%20live%20data-F0B35A)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![Vela](https://img.shields.io/badge/Charting-LuxAlgo%20Vela%200.9.3-17BEBB)
+![Gains](https://img.shields.io/badge/Market%20data-Gains%20Network%20API-17BEBB)
+![Wallet](https://img.shields.io/badge/RainbowKit-2.2-9747FF?logo=rainbow&logoColor=white)
 
-[Overview](#overview) · [Preview](#product-preview) · [Architecture](#architecture) · [Development](#development-workflow) · [Documentation](#documentation)
+[Product](#what-openfund-is) · [Gallery](#gallery) · [Quick start](#quick-start) · [Architecture](#architecture) · [Tech stack](docs/architecture/TECH_STACK.md) · [Roadmap](#roadmap) · [Docs](#documentation)
 
 </div>
 
 ---
 
-## Overview
+## What Openfund is
 
-**Openfund** is an independent product and engineering project exploring a cohesive, brand-led trading experience. It brings together an existing web/terminal prototype, a shared design direction, and a structured foundation for future charting and network integrations.
+Openfund is an independent, open development project building a **prop-trading platform experience for Iranian traders** — inspired by funded-account platforms, rewritten with a Persian-first voice:
+
+- **Landing** — a full bilingual marketing site (RTL Persian / LTR English, dark + light themes, Irancell font for FA, Ubuntu for EN) presenting the funding model: evaluation presets, an interactive account builder, philosophy and rules.
+- **Trading terminal** — a professional workspace with a real **LuxAlgo Vela** chart, live **Gains Network** market data (488 markets, REST + WebSocket), a Gains-style market selector with real open-interest and funding stats, and a clearly-labelled **simulated demo trading engine** that executes against real marks. Trade labels use Iranian trader Finglish (اوردربوک، لانگ، شورت، مارکت، لیمیت، فاندینگ، کولترال، استاپ‌لاس، تیک‌پرافیت).
+- **React app shell** — the whole experience is being migrated into a Vite + React 19 + TypeScript app (`apps/web-react`) with **RainbowKit/wagmi wallet connection** on Arbitrum Sepolia (connection only — no transactions).
 
 > [!IMPORTANT]
-> **Project stage: early prototype.** The terminal now renders a real **LuxAlgo Vela** chart with **live, verified Gains Network market data** (488 markets, REST + WebSocket) — see `dist/terminal.html`. Trading itself remains a clearly-labelled local simulation; no production or live-trading capability is claimed.
+> **Project stage: prototype with live data.** Market data, charts and wallet connection are real and verified; trading itself is a local simulation, clearly labelled on the page. No production or live-trading capability is claimed. See [`docs/product/FEATURE_STATUS.md`](docs/product/FEATURE_STATUS.md).
 
-## Product preview
+### The funding model presented
 
-The following screenshots are maintained in this repository and illustrate the existing Openfund frontend. They are **not** evidence of completed Vela or Gains integration.
+One-time fee → skill evaluation → funded account with a profit split (up to 80/20), transparent one-phase/two-phase evaluation presets, and a "we bet on traders, not against them" rule set (no hidden rules, no counterparty against the user). Content is inspired by public prop-funding models (e.g. carrotfunding.io) and customized for the Iranian audience.
 
-<table>
-<tr><th>Openfund web experience</th><th>Openfund terminal prototype</th></tr>
-<tr>
-<td align="center"><a href="docs/images/openfund-platform.png"><img src="docs/images/openfund-platform.png" alt="Openfund web frontend screenshot" width="480" /></a></td>
-<td align="center"><a href="docs/images/openfund-terminal.png"><img src="docs/images/openfund-terminal.png" alt="Openfund trading terminal screenshot" width="480" /></a></td>
-</tr>
-</table>
+## Gallery
 
-> For brand assets and the source brandbook archive, see [`brand/`](brand/). The screenshot files can be replaced as the UI evolves; keep captions aligned with the actual implementation.
+All screenshots are from the **React app** (branch `qwen/react-migration`), captured with real-browser E2E on 2026-10-31 — live Gains data on every shot.
 
-## Platform foundations
+| Landing — فارسی (dark) | Landing — فارسی (light) |
+| :---: | :---: |
+| <a href="docs/images/react-landing-dark-fa.png"><img src="docs/images/react-landing-dark-fa.png" alt="Landing FA dark" width="480"/></a> | <a href="docs/images/react-landing-light-fa.png"><img src="docs/images/react-landing-light-fa.png" alt="Landing FA light" width="480"/></a> |
 
-| Area | Current state | Location |
+| Terminal — فارسی (dark, live BTC/USD) | Terminal — English (dark) |
+| :---: | :---: |
+| <a href="docs/images/react-terminal-dark-fa.png"><img src="docs/images/react-terminal-dark-fa.png" alt="Terminal FA dark" width="480"/></a> | <a href="docs/images/react-terminal-dark-en.png"><img src="docs/images/react-terminal-dark-en.png" alt="Terminal EN dark" width="480"/></a> |
+
+| Terminal — فارسی (light) | Landing — English (dark) |
+| :---: | :---: |
+| <a href="docs/images/react-terminal-light-fa.png"><img src="docs/images/react-terminal-light-fa.png" alt="Terminal FA light" width="480"/></a> | <a href="docs/images/react-landing-dark-en.png"><img src="docs/images/react-landing-dark-en.png" alt="Landing EN dark" width="480"/></a> |
+
+Legacy (pre-React) screenshots are kept in [`docs/images/`](docs/images/) for history.
+
+## What works today
+
+| Capability | Status | Where |
 | :--- | :--- | :--- |
-| Landing and account UI | Existing frontend prototype | [`dist/index.html`](dist/index.html) |
-| Trading terminal | Existing frontend prototype | [`dist/terminal.html`](dist/terminal.html) |
-| Openfund visual identity | Logos, typography, imagery and brandbook archive | [`brand/`](brand/) |
-| LuxAlgo Vela | npm package installed; upstream source vendored; **not integrated into UI** | [`vendor/vela/`](vendor/vela/) · [`packages/openfund-charts/`](packages/openfund-charts/) |
-| Gains Network SDK | npm package installed; upstream source vendored; **not integrated into UI** | [`vendor/gains-sdk/`](vendor/gains-sdk/) · [`packages/openfund-gains-adapter/`](packages/openfund-gains-adapter/) |
-| Agent collaboration | Shared instructions and GitHub workflow | [`AGENTS.md`](AGENTS.md) · [`.github/`](.github/) |
+| Bilingual landing (fa/en, RTL/LTR, themes, fonts, motion) | Implemented | `dist/index.html` · React `#/` |
+| Full Vela trading workspace (topbar, drawings, indicators, search) | Implemented | `dist/assets/vela-workspace.global.min.js` |
+| Live Gains market data (488 markets, REST + WS ~90 upd/s) | Implemented | `dist/gains-adapter.js` |
+| Gains-style market selector (OI L/S, funding, closed markets) | Implemented | `dist/terminal.js` |
+| Demo trading engine on real marks (labelled simulated) | Implemented | `dist/terminal-data.js` |
+| Wallet connection (RainbowKit, Arbitrum Sepolia) | Implemented | `apps/web-react` — connection only, no txs |
+| React shell with both pages at visual/behavioural parity | Implemented | `apps/web-react` → `react/` |
+| Real order-book / volume / trade tape | Blocked | Gains API does not provide these — shown as `—` or labelled simulated |
+| Real trading (orders on-chain) | Planned | No Gains contracts assumed; requires verified contracts |
 
-## Architecture
+## Quick start
 
-```text
-openfund/
-├── dist/                         # Existing web and terminal prototypes
-├── src/                          # Existing frontend source
-├── apps/
-│   ├── web/                      # Future web application boundary
-│   └── terminal/                 # Future terminal application boundary
-├── packages/
-│   ├── openfund-charts/          # Openfund-owned Vela integration boundary
-│   ├── openfund-gains-adapter/   # Openfund-owned Gains integration boundary
-│   └── openfund-ui/              # Future shared UI components
-├── vendor/
-│   ├── vela/                     # Upstream LuxAlgo Vela source
-│   └── gains-sdk/                # Upstream Gains SDK source
-├── brand/                        # Brandbook, marks, type and imagery
-├── docs/                         # Product, architecture and integration specs
-├── AGENTS.md                     # Shared agent instructions
-└── README.md
-```
-
-**Separation of concerns:** `vendor/` preserves third-party upstream source and its license notices. `packages/` is where Openfund-specific adapters will be implemented. `dist/` contains the current frontend and must not be treated as disposable generated output.
-
-Read [System Architecture](docs/architecture/ARCHITECTURE.md), [Vela Integration](docs/integrations/VELA.md), [Gains Integration](docs/integrations/GAINS.md), and [Upstream Management](docs/integrations/UPSTREAM.md).
-
-## Technology and upstream projects
-
-<table>
-<tr>
-<td align="center" width="50%"><a href="https://github.com/LuxAlgo/Vela"><strong>LuxAlgo Vela</strong></a><br/><sub>Charting source and SDK foundation</sub><br/><code>@luxalgo/vela 0.9.3</code></td>
-<td align="center" width="50%"><a href="https://github.com/GainsNetwork-org/sdk"><strong>Gains Network SDK</strong></a><br/><sub>Integration SDK and upstream reference source</sub><br/><code>@gainsnetwork/sdk 1.8.10</code></td>
-</tr>
-</table>
-
-Both upstream source trees are present in this repository. Their presence is **not** an endorsement, partnership, or completed integration. Keep the original licenses and notices intact, especially [`vendor/vela/NOTICE`](vendor/vela/NOTICE).
-
-## Built with AI-assisted development
-
-Openfund's development workflow is designed to coordinate human direction with multiple coding and research agents. These are **workflow tools**, not official Openfund partners or sponsors.
-
-<div align="center">
-<table>
-<tr>
-<td align="center" width="50%"><a href="https://chatgpt.com/"><img src="https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64" width="42" height="42" alt="ChatGPT icon" /></a><br/><a href="https://chatgpt.com/"><strong>ChatGPT Work</strong></a><br/><sub>Planning, architecture, documentation and review</sub></td>
-<td align="center" width="50%"><a href="https://qwenwork.ai/"><img src="https://www.google.com/s2/favicons?domain=qwenwork.ai&sz=64" width="42" height="42" alt="QwenWork icon" /></a><br/><a href="https://qwenwork.ai/"><strong>QwenWork</strong></a><br/><sub>UI implementation, iteration and development tasks</sub></td>
-</tr>
-</table>
-</div>
-
-**Collaboration model:** Each agent works on a scoped feature branch, records meaningful changes, updates the relevant documentation, and submits a Pull Request for review. See [`AGENTS.md`](AGENTS.md), [`CONTRIBUTING.md`](CONTRIBUTING.md), and [`CHANGELOG.md`](CHANGELOG.md). This section describes the intended workflow; it does not claim that every tool has already performed code changes.
-
-## Getting started
-
-**Requirements:** Git, Node.js/npm for package inspection, and Python 3 for the current static preview.
+**Requirements:** Git, Node.js 20+ / npm, Python 3.
 
 ```bash
 git clone https://github.com/algomanlife/openfund.git
 cd openfund
 npm install
+
+# serve everything (legacy dist/ + built React app) on one port
 python3 -m http.server 4173
 ```
 
-- **Web preview:** http://127.0.0.1:4173/dist/
-- **Terminal preview:** http://127.0.0.1:4173/dist/terminal.html
+- **Legacy (classic) pages:** http://127.0.0.1:4173/dist/ and http://127.0.0.1:4173/dist/terminal.html
+- **React app (built):** http://127.0.0.1:4173/react/#/ and http://127.0.0.1:4173/react/#/terminal
 
-The static preview is for existing UI only. It does not automatically compile or mount the vendored Vela source or initialize Gains trading. Review `package.json` before assuming a build or test script exists.
+**React dev server (hot reload):**
 
-## Development workflow
+```bash
+cd apps/web-react
+npm install
+npm run dev          # http://localhost:5173/react/#/
+```
 
-1. Read [`AGENTS.md`](AGENTS.md) and inspect the current branch and working tree.
-2. Create a task-specific branch (`codex/*`, `qwen/*`, `docs/*`, or `feature/*`).
-3. Keep upstream source modifications isolated and preserve licenses/attribution.
-4. Update relevant specifications and [`docs/product/FEATURE_STATUS.md`](docs/product/FEATURE_STATUS.md).
-5. Include verification results, known limitations, and screenshots where relevant in the Pull Request.
-6. Merge to `main` only after review.
+**Build the React app** (outputs to repo-root `react/`, served by the static server above):
+
+```bash
+cd apps/web-react && npm run build
+```
+
+**Wallet:** works out of the box with injected wallets (MetaMask/Rabby). For WalletConnect, put a project id in `apps/web-react/.env` (`VITE_WALLETCONNECT_PROJECT_ID=…`, see `.env.example`). Chain: Arbitrum Sepolia (421614).
+
+## Architecture
+
+```mermaid
+flowchart LR
+  subgraph Client
+    R[React 19 shell<br/>apps/web-react<br/>hash router: #/ · #/terminal]
+    L[Legacy runtime<br/>locale · market · motion · terminal scripts]
+    W[RainbowKit + wagmi<br/>wallet connect only]
+  end
+  subgraph Data &amp; Charting
+    V[LuxAlgo Vela workspace bundle<br/>window.VelaWorkspace]
+    G[Gains Network public API<br/>api.gains.trade/v1/arbitrum<br/>REST + WebSocket]
+  end
+  R --> L
+  L --> V
+  V -.candles.-> G
+  L -.prices/markets.-> G
+  W -.connection.-> S[(Arbitrum Sepolia testnet)]
+```
+
+The React shell currently embeds the proven legacy markup/logic (phase-2a strategy — see [`docs/migration/MIGRATION_STATUS.md`](docs/migration/MIGRATION_STATUS.md)) and progressively extracts real React components. Adapters live in `packages/openfund-gains-adapter/` and `packages/openfund-charts/`, mirrored verbatim into `dist/` for the classic pages.
+
+```text
+openfund/
+├── dist/                        # Live classic pages (index.html, terminal.html + assets)
+├── react/                       # Built React app (served at /react/)
+├── apps/web-react/              # React 19 + Vite + TS source (the app being migrated)
+├── packages/                    # Openfund-owned adapters (gains, charts)
+├── vendor/                      # Upstream source (vela, gains-sdk) + license notices
+├── brand/                       # Brandbook, marks, type, imagery
+├── docs/                        # Product, architecture, integrations, migration docs
+└── AGENTS.md                    # Shared agent instructions
+```
+
+Full technology registry with versions, roles and licenses: [`docs/architecture/TECH_STACK.md`](docs/architecture/TECH_STACK.md).
+
+## Roadmap
+
+- [x] **Phase 0** — brand, landing, bilingual UI, themes, motion
+- [x] **Phase 1** — repository, docs structure, vendored upstreams
+- [x] **Phase 2** — Vela workspace chart × live Gains data in the terminal
+- [x] **Phase 3** — Gains-style market selector, demo engine on real marks, Finglish trade labels
+- [x] **Phase 4** — React 19 + Vite + TS shell, both pages at parity (E2E-verified)
+- [x] **Phase 5** — RainbowKit/wagmi/viem wallet connection (Arbitrum Sepolia)
+- [ ] **Phase 6** — auth boundary: wallet ↔ Openfund session (SIWE-ready), no fake auth
+- [ ] **Phase 7** — extract real React components from embedded legacy markup
+- [ ] **Phase 8** — regression suite on production builds + CI
+- [ ] **Phase 9** — production deployment, licensing finalization, public launch prep
+
+Detailed plan: [`docs/development/ROADMAP.md`](docs/development/ROADMAP.md).
+
+## Built with AI-assisted development
+
+Openfund's workflow coordinates human direction with multiple coding agents. These are **workflow tools, not partners or sponsors**.
+
+<div align="center">
+<table>
+<tr>
+<td align="center" width="50%"><a href="https://chatgpt.com/"><strong>ChatGPT Work</strong></a><br/><sub>Planning, architecture, documentation, review</sub></td>
+<td align="center" width="50%"><a href="https://qwenwork.ai/"><strong>QwenWork</strong></a><br/><sub>UI implementation, terminal/Vela×Gains engineering, iteration, E2E verification</sub></td>
+</tr>
+</table>
+</div>
+
+Each agent works on a scoped branch (`qwen/*`, `codex/*`), keeps docs in sync (`CHANGELOG`, `FEATURE_STATUS`, migration status), and submits a PR for review — merges to `main` only after human review. See [`AGENTS.md`](AGENTS.md) and [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Documentation
 
 | Guide | Purpose |
 | :--- | :--- |
-| [Product vision](docs/product/VISION.md) | Product direction and scope |
-| [Feature status](docs/product/FEATURE_STATUS.md) | Implemented vs prototype vs planned |
-| [Architecture](docs/architecture/ARCHITECTURE.md) | Component boundaries and technical direction |
-| [Vela integration](docs/integrations/VELA.md) | Charting integration plan |
-| [Gains integration](docs/integrations/GAINS.md) | SDK, data and testnet integration plan |
-| [Upstream sources](docs/integrations/UPSTREAM.md) | Origin, licensing and update process |
-| [Design system](docs/design/DESIGN_SYSTEM.md) | Visual consistency |
+| [Feature status](docs/product/FEATURE_STATUS.md) | Implemented vs prototype vs planned — source of truth |
+| [Tech stack registry](docs/architecture/TECH_STACK.md) | Every dependency: version, role, license |
+| [System architecture](docs/architecture/ARCHITECTURE.md) | Component boundaries and direction |
+| [Migration status](docs/migration/MIGRATION_STATUS.md) | React migration, phase by phase (resume file) |
+| [Vela integration](docs/integrations/VELA.md) · [Gains integration](docs/integrations/GAINS.md) | Charting / market-data contracts |
+| [Design system](docs/design/DESIGN_SYSTEM.md) | Visual identity, tokens, motion |
 | [Roadmap](docs/development/ROADMAP.md) | Delivery phases |
 | [Security](docs/security/SECURITY.md) | Secure development rules |
-| [Agent instructions](AGENTS.md) | Shared instructions for development agents |
-
-## Roadmap
-
-- [x] Establish the Openfund repository and existing UI prototypes
-- [x] Add branding assets and initial engineering documentation
-- [x] Import upstream Vela and Gains SDK source trees
-- [x] Install `@luxalgo/vela` and `@gainsnetwork/sdk` npm dependencies
-- [ ] Validate reproducible builds and component integration contracts
-- [ ] Embed Vela charting in the Openfund terminal
-- [ ] Implement and test Gains market-data adapters
-- [ ] Validate supported testnet configuration and wallet lifecycle
-- [ ] Build test coverage, CI, and deployment workflows
+| [Changelog](CHANGELOG.md) | Notable changes |
 
 ## Licensing, attribution and disclaimer
 
-Openfund is an independent project, unaffiliated with LuxAlgo, Gains Network, OpenAI, Qwen, or Arbitrum. All third-party names and logos remain the property of their respective owners. Vendored projects retain their original license and notice files. The repository-wide license for original Openfund code and brand assets has not yet been finalized; do not assume those assets are freely reusable.
+Openfund is an independent project, unaffiliated with LuxAlgo, Gains Network, Reown/RainbowKit, Arbitrum, OpenAI, or Qwen. All third-party names and logos belong to their owners. Vendored projects keep their original licenses and notices (especially [`vendor/vela/NOTICE`](vendor/vela/NOTICE) — the terminal keeps a visible "Charts by Vela" credit for compliance). The repository-wide license for original Openfund code and brand assets is not yet finalized.
 
-This repository is a development prototype, not a production trading platform or investment recommendation. Do not use real funds, production credentials, private keys, or sensitive user data in test environments.
+This is a development prototype, not a production trading platform or investment advice. Do not use real funds or private keys beyond explicit testnet experimentation.
 
 ---
 
-<div align="center"><sub>OPENFUND · Built as a modular, reviewable foundation for future trading experiences.</sub></div>
+<div align="center"><sub>OPENFUND · مسیری برای تبدیل مهارت معامله‌گری به فرصت تأمین سرمایه.</sub></div>

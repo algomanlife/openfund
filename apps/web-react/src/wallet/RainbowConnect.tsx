@@ -1,6 +1,25 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { useEffect, useState } from 'react'
+import { ConnectButton, RainbowKitProvider, darkTheme, lightTheme } from '@rainbow-me/rainbowkit'
 import { useAccount, useBalance } from 'wagmi'
 import { formatUnits } from 'viem'
+
+/* RainbowKit theme follows the app theme (html[data-theme=light]) with the
+   Openfund mint accent. The provider wraps ONLY this button — its data-rk
+   wrapper must never enclose the app (locale.js skips [data-rk] subtrees). */
+function useAppTheme(): 'dark' | 'light' {
+  const [theme, setTheme] = useState<'dark' | 'light'>(() =>
+    document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
+  )
+  useEffect(() => {
+    const el = document.documentElement
+    const obs = new MutationObserver(() =>
+      setTheme(el.getAttribute('data-theme') === 'light' ? 'light' : 'dark')
+    )
+    obs.observe(el, { attributes: true, attributeFilter: ['data-theme'] })
+    return () => obs.disconnect()
+  }, [])
+  return theme
+}
 
 /**
  * Bilingual (fa/en) custom connect button — landing button system style.
@@ -11,6 +30,7 @@ import { formatUnits } from 'viem'
 export function RainbowConnect() {
   const { address, chain, chainId } = useAccount()
   const { data: balance } = useBalance({ address, chainId })
+  const theme = useAppTheme()
   const isFa = (window as any).ofLang !== 'en'
 
   const fmtAddr = (a?: string) => (a ? `${a.slice(0, 6)}…${a.slice(-4)}` : '')
@@ -22,7 +42,16 @@ export function RainbowConnect() {
   const onSepolia = chain?.id === 421614
 
   return (
-    <ConnectButton.Custom>
+    <RainbowKitProvider
+      theme={
+        theme === 'dark'
+          ? darkTheme({ accentColor: '#82e7bd', accentColorForeground: '#08130d' })
+          : lightTheme({ accentColor: '#12965D', accentColorForeground: '#ffffff' })
+      }
+      appInfo={{ appName: 'Openfund', learnMoreUrl: 'https://gains.trade' }}
+      modalSize='compact'
+    >
+      <ConnectButton.Custom>
       {({ account, chain: rkChain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
         const connected = mounted && account && rkChain
         return (
@@ -54,6 +83,7 @@ export function RainbowConnect() {
           </div>
         )
       }}
-    </ConnectButton.Custom>
+      </ConnectButton.Custom>
+    </RainbowKitProvider>
   )
 }
