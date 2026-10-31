@@ -9,7 +9,8 @@
 <link rel="icon" href="assets/mark-mint.svg">
 <link rel="preload" href="assets/openfund-persian-400-v4.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/openfund-persian-600-v4.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="terminal.css?v=3">
+<link rel="stylesheet" href="terminal.css?v=4">
+<link rel="preload" href="assets/vela.global.min.js" as="script">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -62,9 +63,12 @@
       <div class="dd-search">
         <input id="market-search" type="search" placeholder="Search market…" autocomplete="off" aria-label="Search market" data-i18n-p="dd.searchPh">
       </div>
+      <div class="dd-cats" id="dd-cats" role="group" aria-label="Market categories">
+        <button data-cat="crypto" class="active">crypto</button><button data-cat="forex">forex</button><button data-cat="stocks">stocks</button><button data-cat="indices">indices</button><button data-cat="commodities">commodities</button>
+      </div>
       <div class="dd-head"><span data-i18n="dd.market">Market</span><span data-i18n="dd.price">Price</span><span data-i18n="dd.24h">24h</span></div>
       <ul class="dd-list" id="market-dd-list"></ul>
-      <p class="dd-foot" data-i18n="dd.foot">Simulated markets · 5 instruments</p>
+      <p class="dd-foot" data-i18n="dd.foot">488 live Gains Network markets</p>
     </div>
   </div>
   <div class="market-stats" id="market-stats">
@@ -87,13 +91,9 @@
   <section class="chart-panel" aria-label="Trading chart">
     <div class="chart-toolbar">
       <div class="tf-group" id="tf-group" role="group" aria-label="Timeframe">
-        <button data-tf="1m" class="tf">1m</button><button data-tf="5m" class="tf">5m</button><button data-tf="15m" class="tf">15m</button><button data-tf="30m" class="tf">30m</button><button data-tf="1H" class="tf">1H</button><button data-tf="4H" class="tf">4H</button><button data-tf="1D" class="tf">1D</button><button data-tf="1W" class="tf">1W</button>
+        <button data-tf="1m" class="tf">1m</button><button data-tf="5m" class="tf">5m</button><button data-tf="15m" class="tf">15m</button><button data-tf="30m" class="tf">30m</button><button data-tf="1H" class="tf">1H</button><button data-tf="4H" class="tf">4H</button><button data-tf="1D" class="tf">1D</button>
       </div>
-      <div class="ct-group" role="group" aria-label="Chart type">
-        <button id="ctype-candles" class="ctl active" title="Candlestick">▮▮</button>
-        <button id="ctype-line" class="ctl" title="Line">∿</button>
-      </div>
-      <div class="ct-group" role="group" aria-label="Indicators">
+            <div class="ct-group" role="group" aria-label="Indicators">
         <button id="ind-ma" class="ctl" title="Simple moving average (20)">MA20</button>
         <button id="ind-vol" class="ctl active" title="Volume histogram">VOL</button>
       </div>
@@ -103,8 +103,7 @@
         <button id="chart-full" class="ctl" title="Fullscreen">⛶</button>
       </div>
     </div>
-    <div class="chart-ohlc" id="chart-ohlc" aria-live="off"><span class="pair">—</span><span class="ohlc">Hover the chart for OHLC values</span></div>
-    <div class="chart-host" id="chart-host">
+        <div class="chart-host" id="chart-host">
       <div class="chart-msg" id="chart-msg" hidden></div>
     </div>
   </section>
@@ -134,6 +133,7 @@
     <div class="trades-view" id="trades-view" hidden>
       <div class="book-cols trades-cols"><span data-i18n="book.price">Price</span><span class="r" data-i18n="book.size">Size</span><span class="r" data-i18n="book.time">Time</span></div>
       <div class="trades-list" id="trades-list" aria-live="polite"></div>
+      <p class="book-note trades-note" data-i18n="trades.note">Presentation trades derived from the Gains mark price — Gains provides no trade tape.</p>
     </div>
   </aside>
 
@@ -268,8 +268,8 @@
 <!-- ============ H. STATUS BAR ============ -->
 <footer class="status-bar">
   <span class="badge-demo" title="This build runs a local deterministic simulation — no exchange or chain connection" data-i18n="sb.demo">DEMO MODE</span>
-  <span class="sb-item" id="sb-source" title="Deterministic seeded generator — inspectable mock data" data-i18n="sb.source">Data: simulated · seed openfund-demo-1</span>
-  <span class="sb-item"><i class="dot dot-live"></i> <span id="sb-tick">tick 0</span></span>
+  <span class="sb-item" id="sb-source" title="Verified Gains Network market data (REST + WebSocket)" data-i18n="sb.source">Data: Gains Network · api.gains.trade</span>
+  <span class="sb-item"><span id="sb-tick">…</span></span>
   <span class="sb-item sb-right"><button class="linklike" id="assumptions-btn" data-i18n="sb.assumptions">Demo assumptions</button></span>
   <span class="sb-item"><time id="sb-clock">—</time></span>
 </footer>
@@ -335,8 +335,10 @@
   <div class="dlg-actions"><button class="ghost-btn dlg-close">Close</button></div>
 </dialog>
 
-<script src="terminal-data.js?v=3"></script>
-<script src="https://unpkg.com/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
-<script src="terminal.js?v=3"></script>
+<script src="gains-adapter.js?v=4"></script></script>
+<script src="assets/vela.global.min.js"></script>
+<script src="vela-bridge.js?v=4"></script>
+<script src="terminal-data.js?v=4"></script>
+<script src="terminal.js?v=4"></script>
 </body>
 </html>

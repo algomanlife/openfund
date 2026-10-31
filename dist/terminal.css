@@ -499,3 +499,12 @@ html[data-theme="light"] .cur-ic svg circle[fill="#F7931A"],html[data-theme="lig
   color:var(--body);transition:color .15s,border-color .15s;font-size:14px;
 }
 .theme-toggle:hover{color:var(--mint);border-color:var(--mint)}
+
+/* dropdown category chips + trades note */
+.dd-cats{display:flex;gap:4px;padding:6px 2px 8px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.dd-cats button{border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:10px;color:var(--body);transition:all .12s}
+.dd-cats button:hover{color:var(--white);border-color:var(--mint)}
+.dd-cats button.active{background:var(--mint-bg);border-color:var(--mint);color:var(--mint);font-weight:700}
+.trades-note{border-top:1px solid var(--line);margin-top:6px}
+.market-select-btn:disabled{opacity:.5;cursor:default}
+.submit:disabled{opacity:.5;cursor:default}
