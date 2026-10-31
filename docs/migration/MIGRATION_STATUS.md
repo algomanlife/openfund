@@ -13,8 +13,8 @@
 - [x] 0.x commit phase 0
 
 ## Phase 1 — audit & plan
-- [ ] inventory of dist/ scripts, styles, state, adapters (written into docs/migration/AUDIT.md)
-- [ ] component tree + module plan
+- [x] inventory of dist/ scripts, styles, state, adapters (docs/migration/AUDIT.md)
+- [x] component tree + module plan (AUDIT.md)
 
 ## Phase 2 — React + TS + Vite app
 - [ ] scaffold app (vite react-ts) in `apps/web-react/` (legacy dist/ untouched)
