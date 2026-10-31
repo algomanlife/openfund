@@ -2,7 +2,7 @@
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const fine=matchMedia('(hover: hover) and (pointer: fine)');
  const root=document.documentElement;
- const targets=[...document.querySelectorAll('.section-top,.section-heading,.intro-band,.features,.feature-card,.philosophy-panel,.principle-grid article,.account-presets,.builder,.steps article,.rules-section>div,.team-member,.closing')];
+ const targets=[...document.querySelectorAll('.section-top,.section-heading,.intro-band,.model-section,.model-card,.desktop-section,.desktop-btn,.features,.feature-card,.philosophy-panel,.principle-grid article,.account-presets,.builder,.steps article,.rules-section>div,.team-member,.closing')];
  targets.forEach((el,i)=>{el.dataset.reveal='';if(el.matches('.steps article,.principle-grid article'))el.style.setProperty('--reveal-delay',(i%3)*90+'ms')});
  let revealObserver;
  if(!reduced.matches&&'IntersectionObserver'in window){root.classList.add('motion-ready');revealObserver=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');revealObserver.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -20px 0px'});targets.forEach(t=>revealObserver.observe(t));}
@@ -39,7 +39,7 @@
  /* 1) Extra reveal targets + staggered children */
  const extra=[...document.querySelectorAll('.market-frame,.platform-grid article,.challenge-detail,.challenge-columns article,.rules-list details,.document-links,.footer-credits,.footer-top,.legal,.market-disclaimer')];
  extra.forEach(el=>{el.dataset.reveal=''});
- const stagger=[['.feature-card',2,110],['.platform-grid article',3,90],['.challenge-columns article',3,110],['.rules-list details',1,80],['.team-member',2,120],['.principle-grid article',4,70],['.steps article',3,100]];
+ const stagger=[['.desktop-btn',3,80],['.model-card',2,110],['.feature-card',2,110],['.platform-grid article',3,90],['.challenge-columns article',3,110],['.rules-list details',1,80],['.team-member',2,120],['.principle-grid article',4,70],['.steps article',3,100]];
  stagger.forEach(([sel,cols,step])=>{document.querySelectorAll(sel).forEach((el,i)=>el.style.setProperty('--reveal-delay',(i%cols)*step+'ms'))});
  let v2Observer=null;
  const arm=()=>{if(!live()){if(v2Observer){v2Observer.disconnect();v2Observer=null}return}
