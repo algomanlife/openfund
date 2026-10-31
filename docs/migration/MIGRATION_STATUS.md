@@ -17,20 +17,20 @@
 - [x] component tree + module plan (AUDIT.md)
 
 ## Phase 2 — React + TS + Vite app
-- [ ] scaffold app (vite react-ts) in `apps/web-react/` (legacy dist/ untouched)
+- [x] scaffold app (vite react-ts) in apps/web-react/ — BUILDING to repo-root react/, served at http://127.0.0.1:4173/react/
 - [ ] design tokens + theme (dark/light invert) + i18n skeleton (fa/en, layout rules)
-- [ ] Gains adapter + Vela bridge imported as modules (keep working)
+- [x] Gains adapter + Vela bridge + all legacy logic running (script modules after mount); styles/fonts identical (same css files, paths fixed)
 - [ ] landing page components
 - [ ] terminal page components (workspace LTR fixed, Gains selector, order panel)
-- [ ] routing + language/theme persistence
-- [ ] dev build runs; visual parity screenshots
+- [x] hash routing (#/ and #/terminal) — static-server friendly
+- [x] visual parity verified: landing + terminal screenshots match legacy (dark theme, Finglish, live Gains data)
 
 ## Phase 3 — RainbowKit
-- [ ] RainbowKit + wagmi + viem + TanStack Query wired (versions from package.json)
-- [ ] ConnectButton in terminal header, modal, address, account switch, network status, disconnect, persistence
-- [ ] Arbitrum Sepolia configurable test network (no Gains contracts assumed)
-- [ ] fa/en + dark/light theming of the modal
-- [ ] no transactions/approvals — connection only
+- [x] RainbowKit + wagmi + viem + TanStack Query wired (getDefaultConfig, WalletProvider)
+- [x] Custom bilingual ConnectButton portal in terminal header (replaces legacy demo button): modal, address, balance, account switch, network status, disconnect, persistence
+- [x] Arbitrum Sepolia (chain 421614) via VITE_WALLETCONNECT_PROJECT_ID (.env.example); no Gains contracts assumed
+- [x] fa/en custom button labels; dark/light theme follows app theme (mint accent). NOTE: RainbowKit modal itself has no built-in fa locale — trigger/account surfaces fully translated, modal remains EN
+- [x] connection only — no transactions/approvals
 
 ## Phase 4 — auth boundary
 - [ ] SessionContext stub separating wallet connection from Openfund sessions (SIWE-ready interface, no fake auth)
@@ -51,3 +51,8 @@
 - Vela bundle: dist/assets/vela-workspace.global.min.js (window.VelaWorkspace.VelaWorkspace)
 - Gains WS protocol: op-shape + ping/pong + seq resubscribe (dist/gains-adapter.js)
 - Bash quirk: absolute paths with spaces intermittently fail in python subprocess — use cd + relative paths
+
+## Live URLs
+- Public (QW Pages): https://deq7xbgv.qwenwork.page/  (#/ landing, #/terminal)
+- Local React: http://127.0.0.1:4173/react/  |  Local legacy: http://127.0.0.1:4173/dist/
+- WalletConnect needs a real project id in apps/web-react/.env (VITE_WALLETCONNECT_PROJECT_ID); injected wallets (MetaMask/Rabby) work without it.
