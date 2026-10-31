@@ -9,7 +9,7 @@
 <link rel="icon" href="assets/mark-mint.svg">
 <link rel="preload" href="assets/openfund-persian-400-v4.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/openfund-persian-600-v4.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="terminal.css?v=6">
+<link rel="stylesheet" href="terminal.css?v=9">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -62,10 +62,8 @@
       <div class="dd-search">
         <input id="market-search" type="search" placeholder="Search market…" autocomplete="off" aria-label="Search market" data-i18n-p="dd.searchPh">
       </div>
-      <div class="dd-cats" id="dd-cats" role="group" aria-label="Market categories">
-        <button data-cat="crypto" class="active">crypto</button><button data-cat="forex">forex</button><button data-cat="stocks">stocks</button><button data-cat="indices">indices</button><button data-cat="commodities">commodities</button>
-      </div>
-      <div class="dd-head"><span data-i18n="dd.market">Market</span><span data-i18n="dd.price">Price</span><span data-i18n="dd.24h">24h</span><span data-i18n="dd.funding">Funding</span><span data-i18n="dd.oi">Open Interest</span></div>
+      <div class="dd-cats" id="dd-cats" role="group" aria-label="Market categories"></div>
+      <div class="dd-head"><span data-i18n="dd.market">Market</span><span data-i18n="dd.price">Price</span><span data-i18n="dd.24h">24h</span><span data-i18n="dd.oil">OI (L)</span><span data-i18n="dd.ois">OI (S)</span><span data-i18n="dd.hol">Holding (L)</span><span data-i18n="dd.hos">Holding (S)</span></div>
       <ul class="dd-list" id="market-dd-list"></ul>
       <p class="dd-foot" data-i18n="dd.foot">488 live Gains Network markets</p>
       <div class="dd-kbd" aria-hidden="true"><span>⌘K</span> Open · <span>↑↓</span> Navigate · <span>Enter</span> Select · <span>⌘S</span> Favorite · <span>Esc</span> Close</div>
@@ -91,6 +89,11 @@
   <section class="chart-panel" aria-label="Trading chart">
     <div class="chart-host" id="chart-host">
       <button class="chart-float" id="chart-full" title="Fullscreen" aria-label="Fullscreen">⛶</button>
+      <div class="chart-brand" id="chart-brand" aria-hidden="false">
+        <span class="brand-o">O</span><span class="brand-rest">penfund</span>
+        <small>Chart by Openfund Data</small>
+        <a class="vela-credit" href="https://github.com/LuxAlgo/Vela" target="_blank" rel="noopener">Vela ↗</a>
+      </div>
       <div class="chart-msg" id="chart-msg" hidden></div>
     </div>
   </section>
@@ -142,14 +145,14 @@
     </div>
 
     <div class="side-group" role="group" aria-label="Direction">
-      <button id="side-long" class="side long active" aria-pressed="true">Long</button>
-      <button id="side-short" class="side short" aria-pressed="false">Short</button>
+      <button id="side-long" class="side long active" aria-pressed="true" data-i18n="side.long">Long</button>
+      <button id="side-short" class="side short" aria-pressed="false" data-i18n="side.short">Short</button>
     </div>
 
     <div class="otype-group" role="group" aria-label="Order type">
-      <button data-otype="market" class="ot active" aria-pressed="true">Market</button>
-      <button data-otype="limit" class="ot" aria-pressed="false">Limit</button>
-      <button data-otype="stop" class="ot" aria-pressed="false">Stop</button>
+      <button data-otype="market" class="ot active" aria-pressed="true" data-i18n="ot.market">Market</button>
+      <button data-otype="limit" class="ot" aria-pressed="false" data-i18n="ot.limit">Limit</button>
+      <button data-otype="stop" class="ot" aria-pressed="false" data-i18n="ot.stop">Stop</button>
     </div>
 
     <div class="lev-box">
@@ -225,12 +228,12 @@
       </div>
       <div class="bt-table" id="bt-positions" data-t="positions" hidden>
         <table><thead><tr>
-          <th data-i18n="th.market">Market</th><th data-i18n="th.side">Side</th><th class="r" data-i18n="th.size">Size</th><th class="r">Entry</th><th class="r">Mark</th><th data-i18n="th.lev">Lev</th><th class="r">Collateral</th><th class="r">Unrealized PnL</th><th class="r">ROE</th><th class="r">Liq. price</th><th class="r">SL / TP</th><th data-i18n="th.actions">Actions</th>
+          <th data-i18n="th.market">Market</th><th data-i18n="th.side">Side</th><th class="r" data-i18n="th.size">Size</th><th class="r" data-i18n="th.entry">Entry</th><th class="r" data-i18n="th.mark">Mark</th><th data-i18n="th.lev">Lev</th><th class="r" data-i18n="th.collateral">Collateral</th><th class="r" data-i18n="th.unrealized">Unrealized PnL</th><th class="r">ROE</th><th class="r" data-i18n="th.liq">Liq. price</th><th class="r" data-i18n="th.sltp">SL / TP</th><th data-i18n="th.actions">Actions</th>
         </tr></thead><tbody id="tb-positions"></tbody></table>
       </div>
       <div class="bt-table" id="bt-orders" data-t="orders" hidden>
         <table><thead><tr>
-          <th data-i18n="th.market">Market</th><th data-i18n="th.type">Type</th><th data-i18n="th.side">Side</th><th class="r" data-i18n="th.size">Size</th><th class="r">Trigger / Limit</th><th data-i18n="th.status">Status</th><th data-i18n="th.created">Created</th><th data-i18n="th.actions">Actions</th>
+          <th data-i18n="th.market">Market</th><th data-i18n="th.type">Type</th><th data-i18n="th.side">Side</th><th class="r" data-i18n="th.size">Size</th><th class="r" data-i18n="of.priceTh">Trigger / Limit</th><th data-i18n="th.status">Status</th><th data-i18n="th.created">Created</th><th data-i18n="th.actions">Actions</th>
         </tr></thead><tbody id="tb-orders"></tbody></table>
       </div>
       <div class="bt-table" id="bt-history" data-t="history" hidden>
@@ -322,10 +325,10 @@
   <div class="dlg-actions"><button class="ghost-btn dlg-close">Close</button></div>
 </dialog>
 
-<script src="gains-adapter.js?v=6"></script></script>
+<script src="gains-adapter.js?v=9"></script></script>
 <script src="assets/vela-workspace.global.min.js"></script>
-<script src="vela-bridge.js?v=6"></script>
-<script src="terminal-data.js?v=6"></script>
-<script src="terminal.js?v=6"></script>
+<script src="vela-bridge.js?v=9"></script>
+<script src="terminal-data.js?v=9"></script>
+<script src="terminal.js?v=9"></script>
 </body>
 </html>

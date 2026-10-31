@@ -156,3 +156,10 @@ html[data-theme=light] .team-portraits-png{filter:invert(1) hue-rotate(180deg)}
 .feature-card p{font-size:13.5px;line-height:2.1;color:#a9baae}
 .feature-note{font-size:10px;color:#809989;margin-top:18px;text-align:center}
 @media(max-width:900px){.feature-grid{grid-template-columns:1fr;gap:16px}.feature-ill{height:170px}.feature-card h3{font-size:19px}}
+
+.coin-icon{background:none;border:0;line-height:0;width:23px;height:23px;flex-shrink:0}
+.coin-icon svg{display:block;width:23px;height:23px}
+
+.nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.credits-row{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+@media(max-width:700px){.nav-actions .nav-cta{padding:9px 8px;font-size:10px;gap:4px}}

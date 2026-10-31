@@ -47,7 +47,9 @@ function mount(container, opts){
   const el = typeof container === 'string' ? document.querySelector(container) : container;
   if (!el) throw new Error('Vela mount: container not found');
 
-  const theme = THEMES[opts.theme === 'light' ? 'light' : 'dark'];
+  /* Openfund hosts its own market selector — Vela's symbol chip is omitted.
+     Timeframe / style / indicators / undo-redo stay (left side),
+     alerts / panels / screenshot on the right. */
   const ws = new WLib.VelaWorkspace(el, {
     layout: false,                    /* single-chart mode */
     symbol: 'gains:' + (opts.symbol || 'BTC/USD'),
@@ -55,16 +57,32 @@ function mount(container, opts){
     providers: { gains: () => G.createVelaProvider() },
     timeframes: TIMEFRAMES,
     live: true,
-    theme,
-    persist: false
-    /* Vela NOTICE attribution mark: enabled by default (upstream NOTICE) */
+    theme: THEMES.dark,               /* chart always dark; the host inverts for light mode */
+    persist: false,
+    topbar: {
+      left: ['timeframes', 'style', 'indicators', 'undo-redo'],
+      right: ['actions', 'alerts', 'panels', 'screenshot']
+    }
   });
+  /* The built-in V attribution mark is replaced by Openfund branding; the
+     upstream NOTICE is honoured with a visible "Vela" link on the same screen
+     (see .vela-credit in terminal.html). */
+  const attributionOff = () => {
+    try { ws.chart && ws.chart.renderer.set('attribution', false); return true; } catch(e){ return false; }
+  };
+  if (!attributionOff()){
+    /* the chart may not exist yet — retry until the first cell paints */
+    const iv = setInterval(() => { if (attributionOff()) clearInterval(iv); }, 400);
+    setTimeout(() => clearInterval(iv), 20000);
+  }
 
   const ro = new ResizeObserver(() => { try { ws.chart && ws.chart.resize(); } catch(e){} });
   ro.observe(el);
 
   const controller = {
     workspace: ws,
+    /* debug/testing handle */
+    __set: (k, v) => { try { return ws.chart.renderer.set(k, v); } catch(e){ return 'ERR:' + e.message; } },
     get chart(){ return ws.chart; },
     setSymbol(symbol){ return ws.chart.setMarket({ symbol: 'gains:' + symbol }); },
     setTimeframe(tf){ return ws.chart.setMarket({ timeframe: tf }); },
@@ -73,7 +91,9 @@ function mount(container, opts){
       return ws.chart.setMarket(next);
     },
     setTheme(theme){
-      return ws.setTheme(THEMES[theme === 'light' ? 'light' : 'dark']);
+      /* chart stays dark; light mode is a host-level invert so the whole
+         terminal (incl. chart canvas) matches the landing light theme */
+      return ws;
     },
     setLocale(tag){ try { return ws.setLocale(tag); } catch(e){} },
     resize(){ try { return ws.chart && ws.chart.resize(); } catch(e){} },
@@ -83,6 +103,7 @@ function mount(container, opts){
       try { ws.destroy(); } catch(e){}
     }
   };
+  global.__openfundChart = controller;   /* debug handle */
   return controller;
 }
 

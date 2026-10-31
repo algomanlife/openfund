@@ -59,10 +59,10 @@ const I18N = {
     'st.vol': 'حجم ۲۴ساعته', 'st.oi': 'موقعیت‌های باز', 'st.funding': 'فاندینگ ۱ساعته', 'st.lev': 'حداکثر اهرم',
     'dd.searchPh': 'جست‌وجوی بازار…', 'dd.market': 'بازار', 'dd.price': 'قیمت', 'dd.24h': '۲۴ساعته',
     'dd.noMatch': 'بازاری با این عبارت پیدا نشد.',
-    'dd.funding': 'فاندینگ', 'dd.oi': 'موقعیت باز',
-    'dd.foot': '۴۸۸ بازار زندهٔ Gains Network — دادهٔ واقعی',
+    'dd.funding': 'فاندینگ', 'dd.oil': 'OI لانگ', 'dd.ois': 'OI شورت', 'dd.hol': 'هولدینگ لانگ', 'dd.hos': 'هولدینگ شورت', 'dd.closed': 'بسته',
+    'dd.foot': 'بازارهای Gains Network — دادهٔ واقعی · بازارهای بسته فقط قابل مشاهده‌اند',
     'cat.crypto': 'رمزارز', 'cat.forex': 'فارکس', 'cat.stocks': 'سهام', 'cat.indices': 'شاخص', 'cat.commodity': 'کالا',
-    'book.tab': 'Order Book', 'book.tradesTab': 'Trades',
+    'book.tab': 'اوردربوک', 'book.tradesTab': 'تریدها',
     'book.grouping': 'گروینگ', 'book.compact': 'فشرده', 'book.simulated': 'شبیه‌سازی‌شده',
     'book.price': 'قیمت', 'book.size': 'اندازه', 'book.total': 'جمع', 'book.time': 'زمان',
     'book.note': 'دفتر مجازی برای نمایش ساخته شده — Gains دفتر سفارش ارائه نمی‌دهد؛ این عمق واقعی نیست.',
@@ -72,16 +72,19 @@ const I18N = {
     'ac.unrealized': 'سود/زیان شناور', 'ac.positions': 'موقعیت‌ها', 'ac.orders': 'سفارش‌ها',
     'ac.mode': 'حالت', 'ac.modeVal': 'Cross · شبیه‌سازی‌شده',
     'lev': 'اهرم',
-    'of.price': 'قیمت Trigger / Limit <em>USD</em>', 'of.collateral': 'Collateral <em>USD</em>',
-    'of.size': 'اندازه', 'of.notional': 'Notional',
-    'of.sl': 'Stop Loss <em>USD · اختیاری</em>', 'of.tp': 'Take Profit <em>USD · اختیاری</em>',
-    'rk.entry': 'Entry تخمینی', 'rk.oracle': 'قیمت اندیس', 'rk.liq': 'Liquidation تخمینی',
-    'rk.margin': 'Margin تخمینی', 'rk.fee': 'کارمزد تخمینی (open)', 'rk.impact': 'اثر قیمت',
+    'of.price': 'قیمت تریگر / لیمیت <em>USD</em>', 'of.collateral': 'کولترال <em>USD</em>', 'of.priceTh': 'تریگر / لیمیت',
+    'of.size': 'اندازه', 'of.notional': 'نوشنال',
+    'of.sl': 'استاپ‌لاس <em>USD · اختیاری</em>', 'of.tp': 'تیک‌پرافیت <em>USD · اختیاری</em>',
+    'rk.entry': 'انتری تخمینی', 'rk.oracle': 'قیمت اندیس', 'rk.liq': 'لیکوییدیشن تخمینی',
+    'rk.margin': 'مارجین تخمینی', 'rk.fee': 'کارمزد تخمینی (اوپن)', 'rk.impact': 'اثر قیمت',
     'rk.impactVal': '—', 'rk.maxloss': 'حداکثر ضرر با SL',
-    'submit.long': 'بررسی سفارش — Long', 'submit.short': 'بررسی سفارش — Short',
+    'submit.long': 'بررسی سفارش — لانگ', 'submit.short': 'بررسی سفارش — شورت',
+    'side.long': 'لانگ', 'side.short': 'شورت',
+    'ot.market': 'مارکت', 'ot.limit': 'لیمیت', 'ot.stop': 'استاپ',
     'demoBanner': 'حالت دمو — هیچ سفارش واقعی ثبت نمی‌شود',
     'bt.positions': 'موقعیت‌ها', 'bt.orders': 'سفارش‌های باز', 'bt.history': 'تاریخچهٔ سفارش‌ها',
-    'bt.fills': 'Fills', 'bt.funding': 'فاندینگ',
+    'bt.fills': 'فیلز', 'bt.funding': 'فاندینگ',
+    'th.entry': 'انتری', 'th.mark': 'مارک', 'th.liq': 'لیکوییدیشن', 'th.sltp': 'استاپ‌لاس / تیک‌پرافیت', 'th.collateral': 'کولترال', 'th.unrealized': 'سود/زیان شناور',
     'bt.empty': 'فعالیتی در این حساب شبیه‌سازی‌شده ثبت نشده است.',
     'bt.loadDemo': 'بارگذاری سناریوی دمو',
     'bt.hint': 'دو موقعیت، یک سفارش Limit در انتظار و تاریخچه می‌سازد تا ترمینال را کاوش کنی.',
@@ -92,10 +95,10 @@ const I18N = {
     'dlg.confirmOrder': 'تأیید سفارش شبیه‌سازی‌شده', 'dlg.save': 'ذخیره', 'dlg.close': 'بستن',
     'rv.market': 'بازار', 'rv.dir': 'جهت', 'rv.otype': 'نوع سفارش', 'rv.lev': 'اهرم',
     'rv.size': 'اندازه', 'rv.notional': 'Notional', 'rv.collateral': 'Collateral',
-    'rv.entry': 'Entry تخمینی', 'rv.oracle': 'اندیس', 'rv.liq': 'Liquidation تخمینی',
+    'rv.entry': 'انتری تخمینی', 'rv.oracle': 'اندیس', 'rv.liq': 'لیکوییدیشن تخمینی',
     'rv.fee': 'کارمزد تخمینی (open)', 'rv.sl': 'Stop Loss', 'rv.tp': 'Take Profit',
     'rv.equityAfter': 'ارزش حساب پس از سفارش', 'rv.exec': 'شبیه‌سازی‌شده — موتور محلی',
-    'rv.side.long': 'Long', 'rv.side.short': 'Short',
+    'rv.side.long': 'لانگ', 'rv.side.short': 'شورت',
     'cf.close': 'بستن موقعیت', 'cf.closeTxt': 'این موقعیت شبیه‌سازی‌شده در قیمت Mark فعلی بسته شود؟ سود/زیان شناور و کارمزد بستن اعمال می‌شود.',
     'cf.cancel': 'لغو سفارش', 'cf.cancelTxt': 'این سفارش شبیه‌سازی‌شدهٔ در انتظار حذف شود؟',
     'cf.detail': 'جزئیات موقعیت', 'sltp.title': 'ویرایش ریسک',
@@ -103,7 +106,8 @@ const I18N = {
     'act.close': 'بستن', 'act.sltp': 'SL/TP', 'act.details': 'جزئیات', 'act.cancel': 'لغو',
     'tag.pending': 'در انتظار',
     'res.filled': 'انجام‌شده', 'res.cancelled': 'لغو‌شده', 'res.closed-profit': 'بسته با سود', 'res.closed-loss': 'بسته با زیان',
-    'res.stop-loss': 'Stop Loss', 'res.take-profit': 'Take Profit', 'res.market-close': 'بستن بازار',
+    'res.stop-loss': 'استاپ‌لاس', 'res.take-profit': 'تیک‌پرافیت', 'res.market-close': 'بستن مارکت',
+    'res.filled': 'فیل شد', 'res.cancelled': 'کنسل شد',
     'empty.positions': 'موقعیت بازی وجود ندارد. از پنل سفارش یکی باز کن یا سناریوی دمو را بارگذاری کن.',
     'empty.orders': 'سفارش بازی وجود ندارد.',
     'empty.history': 'هنوز تاریخچهٔ سفارشی وجود ندارد.',
@@ -111,6 +115,8 @@ const I18N = {
     'empty.funding': 'هنوز پرداخت فاندینگی وجود ندارد — فاندینگ شبیه‌سازی‌شده به موقعیت‌های دمو اعمال می‌شود.',
     'sb.demo': 'حالت دمو', 'sb.source': 'داده: Gains Network · api.gains.trade',
     'sb.tick': 'قیمت زنده', 'sb.assumptions': 'مفروضات دمو',
+    'mkt.closed': 'این بازار بسته است — امکان ترید نیست، فقط مشاهدهٔ چارت.',
+    'cat.all': 'همه',
     'sb.live': 'زنده', 'sb.reconnecting': 'اتصال مجدد…', 'sb.connecting': 'در حال اتصال…', 'sb.stale': 'قدیمی',
     'asm.title': 'مفروضات دمو',
     'asm.fees': '<b>کارمزد:</b> کارمزد taker ثابت ۰٫۰۵٪ از Notional در باز و بستن. کارمزد maker صفر.',
@@ -148,8 +154,8 @@ const EN = {
   'st.lev': 'Max Leverage',
   'dd.searchPh': 'Search market…', 'dd.market': 'Market', 'dd.price': 'Price', 'dd.24h': '24h',
   'dd.noMatch': 'No market matches this search.',
-  'dd.funding': 'Funding', 'dd.oi': 'Open Interest',
-  'dd.foot': '488 live Gains Network markets — verified data',
+  'dd.funding': 'Funding', 'dd.oil': 'OI (L)', 'dd.ois': 'OI (S)', 'dd.hol': 'Holding (L)', 'dd.hos': 'Holding (S)', 'dd.closed': 'CLOSED',
+  'dd.foot': 'Gains Network markets — verified data · closed markets are view-only',
   'cat.crypto': 'crypto', 'cat.forex': 'forex', 'cat.stocks': 'stocks', 'cat.indices': 'indices', 'cat.commodity': 'commodities',
   'book.tab': 'Order Book', 'book.tradesTab': 'Trades',
   'book.grouping': 'Grouping', 'book.compact': 'Compact', 'book.simulated': 'simulated',
@@ -168,6 +174,12 @@ const EN = {
   'rk.margin': 'Est. margin', 'rk.fee': 'Est. fee (open)', 'rk.impact': 'Price impact',
   'rk.impactVal': 'N/A', 'rk.maxloss': 'Max loss at SL',
   'submit.long': 'Review order — Long', 'submit.short': 'Review order — Short',
+  'side.long': 'Long', 'side.short': 'Short',
+  'ot.market': 'Market', 'ot.limit': 'Limit', 'ot.stop': 'Stop',
+  'of.priceTh': 'Trigger / Limit',
+  'th.entry': 'Entry', 'th.mark': 'Mark', 'th.liq': 'Liq. price', 'th.sltp': 'SL / TP', 'th.collateral': 'Collateral', 'th.unrealized': 'Unrealized PnL',
+  'mkt.closed': 'This market is closed — viewing only, no trading.',
+  'cat.all': 'All',
   'demoBanner': 'Demo Mode — No Real Orders Are Submitted',
   'bt.positions': 'Positions', 'bt.orders': 'Open Orders', 'bt.history': 'Order History',
   'bt.fills': 'Fills', 'bt.funding': 'Funding',
@@ -234,6 +246,9 @@ function t(key){
 function applyStaticI18n(){
   document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-p]').forEach(el => { el.placeholder = t(el.dataset.i18nP); });
+  /* The HEADER follows the language direction (rtl/fa, ltr/en); the main
+     workspace is pinned LTR in CSS (.workspace{direction:ltr}) so the trade
+     panel is always on the right and the chart stays in its default state. */
   document.documentElement.setAttribute('lang', window.ofLang);
   document.documentElement.setAttribute('dir', window.ofLang === 'fa' ? 'rtl' : 'ltr');
   document.title = window.ofLang === 'fa' ? 'Openfund Terminal — معامله' : 'Openfund Terminal — Trade';
@@ -248,7 +263,6 @@ function setLang(lang){
   renderBook(); renderTrades();
   computeForm(); renderAccount(); renderBottom();
   renderStatus();
-  if (vc) { try { vc.chart.setLocale({ locale: lang === 'fa' ? 'fa' : 'en' }); } catch(e){} }
 }
 $('language-toggle').addEventListener('click', () => setLang(window.ofLang === 'fa' ? 'en' : 'fa'));
 
@@ -261,7 +275,8 @@ function setTheme(theme){
   document.documentElement.setAttribute('data-theme', theme);
   $('theme-toggle').textContent = theme === 'dark' ? '◐' : '◑';
   try{ localStorage.setItem('of-theme', theme) }catch(e){}
-  if (vc) { try { vc.setTheme(theme); } catch(e){} }
+  /* light mode = host-level invert (exactly like the landing); the Vela chart
+     always renders dark and is inverted along with everything else */
 }
 $('theme-toggle').addEventListener('click', () => setTheme(curTheme === 'dark' ? 'light' : 'dark'));
 
@@ -327,7 +342,7 @@ $('chart-full').addEventListener('click', () => {
 function marketSymbols(){
   const out = [];
   for (const m of board.meta.values()){
-    if (m.group === S.ddCategory) out.push(m);
+    if (S.ddCategory === 'all' || m.group === S.ddCategory) out.push(m);
   }
   return out;
 }
@@ -350,17 +365,21 @@ function paintDropdown(rebuild){
   if (rebuild || list.children.length !== items.length){
     list.innerHTML = items.map((m, i) => {
       const p = board.getMark(m.symbol);
-      const fund = m.funding ? Number(m.funding.fundingRateLongHourly) : null;
       const oi = (window.OpenfundGains.openInterestUsd ? window.OpenfundGains.openInterestUsd(m) : null);
+      const hol = m.funding ? Number(m.funding.fundingRateLongHourly) : null;
+      const hos = m.funding ? Number(m.funding.fundingRateShortHourly) : null;
       const st = S.statsCache && S.statsCache.get(m.symbol);
       const d = Number(m.pricePrecision);
-      return `<li role="option" aria-selected="${m.symbol===S.marketId}" data-id="${m.symbol}" data-i="${i}" class="${m.symbol===S.marketId?'selected':''}${i===S.ddFocus?' focused':''}">
-        <span class="mk">${iconHTML(m.symbol)}<b>${m.symbol}</b><small>${t('cat.' + (m.group === 'commodities' ? 'commodity' : m.group))}</small>
+      const closed = m.isOpen === false;
+      return `<li role="option" aria-selected="${m.symbol===S.marketId}" data-id="${m.symbol}" data-i="${i}" class="${m.symbol===S.marketId?'selected':''}${i===S.ddFocus?' focused':''}${closed?' closed':''}">
+        <span class="mk">${iconHTML(m.symbol)}<b>${m.symbol}</b>${closed ? `<i class="closed-tag">${t('dd.closed')}</i>` : `<small>${t('cat.' + (m.group === 'commodities' ? 'commodity' : m.group))}</small>`}
           <span class="st" data-star="${m.symbol}">${S.favorites.has(m.symbol)?'★':'☆'}</span></span>
         <span class="num r" data-cell="price">${p ? fmt.price(p, d) : '—'}</span>
         <span class="num r ${st ? (st.data.changePct >= 0 ? 'up' : 'down') : ''}" data-cell="chg">${st ? fmt.pct(st.data.changePct) : '·'}</span>
-        <span class="num r" data-cell="fund">${fund != null && Number.isFinite(fund) ? (fund*100).toFixed(3)+'%' : '—'}</span>
-        <span class="num r" data-cell="oi">${oi ? '$'+fmt.compact(oi.total) : '—'}</span>
+        <span class="num r" data-cell="oil">${oi ? '$'+fmt.compact(oi.long) : '—'}</span>
+        <span class="num r" data-cell="ois">${oi ? '$'+fmt.compact(oi.short) : '—'}</span>
+        <span class="num r ${hol > 0 ? 'up' : hol < 0 ? 'down' : ''}" data-cell="hol">${Number.isFinite(hol) ? (hol*100).toFixed(3)+'%' : '—'}</span>
+        <span class="num r ${hos > 0 ? 'up' : hos < 0 ? 'down' : ''}" data-cell="hos">${Number.isFinite(hos) ? (hos*100).toFixed(3)+'%' : '—'}</span>
       </li>`;
     }).join('') || `<li class="dd-none" style="padding:12px;color:var(--muted)">${t('dd.noMatch')}</li>`;
     [...list.querySelectorAll('[data-star]')].forEach(el => {
@@ -467,11 +486,18 @@ $('market-select-btn').addEventListener('click', () => ddOpen ? closeDropdown() 
 $('market-search').addEventListener('input', e => renderDropdown(e.target.value));
 document.addEventListener('click', e => { if (ddOpen && !e.target.closest('.market-select')) closeDropdown(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && ddOpen) closeDropdown(); });
+function renderCats(){
+  const counts = { all: board.meta.size };
+  for (const m of board.meta.values()) counts[m.group] = (counts[m.group] || 0) + 1;
+  const cats = [['all','cat.all'],['crypto','cat.crypto'],['forex','cat.forex'],['stocks','cat.stocks'],['indices','cat.indices'],['commodities','cat.commodity']];
+  $('dd-cats').innerHTML = cats.map(([id, key]) =>
+    `<button data-cat="${id}" class="${S.ddCategory === id ? 'active' : ''}">${t(key)}${counts[id] != null ? ' <i>' + counts[id] + '</i>' : ''}</button>`).join('');
+}
 $('dd-cats').addEventListener('click', e => {
   const b = e.target.closest('[data-cat]'); if (!b) return;
   S.ddCategory = b.dataset.cat;
-  [...$('dd-cats').querySelectorAll('[data-cat]')].forEach(x => x.classList.toggle('active', x === b));
-  renderDropdown($('market-search').value);
+  renderCats();
+  renderDropdown('');
 });
 
 function selectMarket(id){
@@ -728,9 +754,19 @@ document.querySelectorAll('.pct-btns button').forEach(b => b.addEventListener('c
   computeForm();
 }));
 
+function marketClosed(){
+  const m = meta();
+  return !m || m.isOpen === false;
+}
 function computeForm(){
   const m = meta();
   const d = dp();
+  const closed = marketClosed();
+  $('submit-order').disabled = closed;
+  if (closed){
+    $('of-err').textContent = t('mkt.closed');
+    $('of-err').hidden = false;
+  }
   const collateral = +$('of-collateral').value || 0;
   const price = S.otype === 'market' ? (mark() || 0) : (+$('of-price').value || 0);
   const size = price > 0 ? collateral * S.leverage / price : 0;
@@ -753,7 +789,7 @@ function computeForm(){
     ? fmt.usdS((price - sl) * size * (S.side === 'long' ? 1 : -1) - notional * FEE_RATE)
     : (collateral > 0 ? fmt.usdS(-collateral) : '—');
   $('rk-maxloss').className = 'num down';
-  if (tp){
+  if (!closed && tp){
     const errs = tp.validate(buildRequest());
     const errEl = $('of-err');
     if (errs.length){ errEl.textContent = errs[0]; errEl.hidden = false; }
@@ -771,6 +807,7 @@ function buildRequest(){
 }
 
 $('submit-order').addEventListener('click', () => {
+  if (marketClosed()){ toast(t('mkt.closed'), 'neg'); return; }
   const req = buildRequest();
   const errs = tp.validate(req);
   if (errs.length){ $('of-err').textContent = errs[0]; $('of-err').hidden = false; return; }
@@ -784,7 +821,7 @@ $('submit-order').addEventListener('click', () => {
   const acc = tp.getAccount();
   const rows = [
     [t('rv.market'), m ? m.symbol : S.marketId], [t('rv.dir'), t(req.side === 'long' ? 'rv.side.long' : 'rv.side.short')],
-    [t('rv.otype'), req.type], [t('rv.lev'), req.leverage + '×'],
+    [t('rv.otype'), t('ot.' + req.type)], [t('rv.lev'), req.leverage + '×'],
     [t('rv.size'), fmt.num(size, m ? Number(m.sizePrecision) || 2 : 2) + ' ' + (m ? m.base : '')],
     [t('rv.notional'), fmt.usd(notional)],
     [t('rv.collateral'), fmt.usd(req.collateral)], [t('rk.entry'), fmt.price(entry, d)],
@@ -843,7 +880,7 @@ function renderBottom(){
     const roe = pnl / p.margin * 100;
     return `<tr>
       <td>${iconHTML(p.market)} <b>${m.symbol}</b></td>
-      <td class="side-${p.side === 'long' ? 'l' : 's'}">${p.side === 'long' ? 'Long' : 'Short'}</td>
+      <td class="side-${p.side === 'long' ? 'l' : 's'}">${t(p.side === 'long' ? 'rv.side.long' : 'rv.side.short')}</td>
       <td class="r num">${fmt.num(p.size, dps)} ${m.base}</td>
       <td class="r num">${fmt.price(p.entry, d)}</td>
       <td class="r num">${fmt.price(mk, d)}</td>
@@ -864,8 +901,8 @@ function renderBottom(){
     const d = Number(m.pricePrecision), dps = Number(m.sizePrecision) || 2;
     return `<tr>
       <td>${iconHTML(o.market)} <b>${m.symbol}</b></td>
-      <td><span class="tag">${o.type}</span></td>
-      <td class="side-${o.side === 'long' ? 'l' : 's'}">${o.side === 'long' ? 'Long' : 'Short'}</td>
+      <td><span class="tag">${t('ot.' + o.type)}</span></td>
+      <td class="side-${o.side === 'long' ? 'l' : 's'}">${t(o.side === 'long' ? 'rv.side.long' : 'rv.side.short')}</td>
       <td class="r num">${fmt.num(o.size, dps)} ${m.base}</td>
       <td class="r num">${fmt.price(o.trigger, d)}</td>
       <td><span class="tag lime">${t('tag.pending')}</span></td>
@@ -879,8 +916,8 @@ function renderBottom(){
     const cls = h.result.includes('profit') ? 'pos' : h.result.includes('loss') ? 'neg' : '';
     return `<tr>
       <td>${iconHTML(h.market)} <b>${m.symbol}</b></td>
-      <td><span class="tag">${h.type}</span></td>
-      <td class="side-${h.side === 'long' ? 'l' : 's'}">${h.side === 'long' ? 'Long' : 'Short'}</td>
+      <td><span class="tag">${h.type.includes('-') ? t('res.' + h.type) : t('ot.' + h.type)}</span></td>
+      <td class="side-${h.side === 'long' ? 'l' : 's'}">${t(h.side === 'long' ? 'rv.side.long' : 'rv.side.short')}</td>
       <td class="r num">${fmt.num(h.size, Number(m.sizePrecision) || 2)}</td>
       <td class="r num">${fmt.price(h.price, d)}</td>
       <td><span class="tag ${cls}">${t('res.' + h.result)}</span></td>
@@ -892,7 +929,7 @@ function renderBottom(){
     const d = Number(m.pricePrecision);
     return `<tr>
       <td>${iconHTML(f.market)} <b>${m.symbol}</b></td>
-      <td class="side-${f.side === 'long' || f.side === 'buy' ? 'l' : 's'}">${f.side === 'buy' ? 'Buy' : f.side === 'sell' ? 'Sell' : f.side === 'long' ? 'Long' : 'Short'}</td>
+      <td class="side-${f.side === 'long' || f.side === 'buy' ? 'l' : 's'}">${f.side === 'buy' ? 'بای' : f.side === 'sell' ? 'سل' : t(f.side === 'long' ? 'rv.side.long' : 'rv.side.short')}</td>
       <td class="r num">${fmt.num(f.size, Number(m.sizePrecision) || 2)}</td>
       <td class="r num">${fmt.price(f.price, d)}</td>
       <td class="r num">${fmt.usd(f.fee)}</td>
@@ -1118,6 +1155,7 @@ function boot(){
     $('market-select-btn').disabled = false;
     $('submit-order').disabled = false;
     selectMarket(board.meta.has('BTC/USD') ? 'BTC/USD' : [...board.meta.keys()][0]);
+    renderCats();
     syncLeverageUI();
     renderLevPresets();
     computeForm();

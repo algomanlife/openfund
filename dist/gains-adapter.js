@@ -55,7 +55,8 @@ async function marketList(force){
   const data = await get('/markets');
   marketsCache = new Map();
   for (const m of data){
-    if (m && typeof m.symbol === 'string' && m.isOpen !== false) marketsCache.set(m.symbol, m);
+    /* closed markets (isOpen:false) are kept — selectable for charts, not tradeable */
+    if (m && typeof m.symbol === 'string' && typeof m.base === 'string') marketsCache.set(m.symbol, m);
   }
   marketsAt = Date.now();
   return marketsCache;
