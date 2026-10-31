@@ -51,6 +51,18 @@ Root causes found and fixed (all surfaced by real-browser Playwright E2E with re
 - [x] fa/en custom button labels; dark/light theme follows app theme (mint accent). NOTE: RainbowKit modal itself has no built-in fa locale — trigger/account surfaces fully translated, modal remains EN
 - [x] connection only — no transactions/approvals
 
+## Directus backstage (branch qwen/directus-cms, 2026-11-01) — first milestone DONE
+- [x] Directus 11.9.1 + PostgreSQL 17 running locally (no Docker: brew + Node 22 runtime in ~/openfund-backstage); compose.yaml for deployment
+- [x] schema + public published-only read permissions (apply_schema.py, idempotent)
+- [x] seeded current fa/en content (484 messages, nav, pages, settings — seed_content.py, idempotent)
+- [x] typed cms-client + locale.js/terminal.js bridges; pages await CMS before legacy boot; static fallback verified
+- [x] live-edit E2E green on dev :5173 AND build :4173 (Data Studio edit → refresh → visible)
+- [ ] media management (logo/favicon protection, hero images)
+- [ ] navigation-driven rendering (currently informational)
+- [ ] page-builder blocks for landing sections (beyond strings)
+- [ ] editorial roles (Translator / Publisher) + field-level permissions
+- [ ] snapshot export into apps/backstage/snapshots
+
 ## Phase 4 — auth boundary
 - [ ] SessionContext stub separating wallet connection from Openfund sessions (SIWE-ready interface, no fake auth)
 

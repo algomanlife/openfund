@@ -237,7 +237,7 @@ const EN = {
   'boot.failed': 'Could not reach Gains Network.',
   'boot.retry': 'Retry'
 };
-Object.assign(I18N.en, EN);
+Object.assign(I18N.en, EN);if(window.ofCmsTerminal){for(var __k in window.ofCmsTerminal){var __v=window.ofCmsTerminal[__k];if(__v&&typeof __v==='object'){if(I18N.fa[__k]!==undefined&&__v.fa)I18N.fa[__k]=__v.fa;if(I18N.en[__k]!==undefined&&__v.en)I18N.en[__k]=__v.en;}}}
 window.ofLang = window.ofLang || 'fa';
 function t(key){
   const v = (I18N[window.ofLang] && I18N[window.ofLang][key]);

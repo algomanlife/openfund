@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import landingBody from './landing-body.html?raw'
 import { RainbowConnect } from '../wallet/RainbowConnect'
+import { fetchCmsTranslations } from '../cms/client'
 
 /**
  * Phase 2a: the landing runs inside the React shell with its proven markup
@@ -96,7 +97,16 @@ export default function Landing() {
 
     if (!w().__ofLegacyLandingLoaded) {
       w().__ofLegacyLandingLoaded = true
-      STYLES.forEach(href => {
+      /* CMS (Directus) translations first — published ui_messages override the
+         static translations.json; silent fallback keeps the page usable when
+         the backstage is down. Legacy scripts boot AFTER the fetch. */
+      void (async () => {
+        const cms = await fetchCmsTranslations()
+        if (cms) {
+          w().ofCmsLanding = cms.landing
+          w().ofCmsTerminal = cms.terminal
+        }
+        STYLES.forEach(href => {
         const l = document.createElement('link')
         l.rel = 'stylesheet'
         l.href = href
@@ -123,6 +133,7 @@ export default function Landing() {
       scripts[scripts.length - 1].addEventListener('load', kick)
       /* safety: if load already fired before we attached */
       setTimeout(kick, 1500)
+      })()
     }
 
     initTheme()

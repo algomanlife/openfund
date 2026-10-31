@@ -1,0 +1,759 @@
+{
+ "nav.trade": {
+  "fa": "معامله",
+  "en": "Trade"
+ },
+ "nav.markets": {
+  "fa": "بازارها",
+  "en": "Markets"
+ },
+ "nav.portfolio": {
+  "fa": "پرتفوی",
+  "en": "Portfolio"
+ },
+ "nav.more": {
+  "fa": "بیشتر",
+  "en": "More"
+ },
+ "nav.notifications": {
+  "fa": "اطلاع‌رسانی‌ها",
+  "en": "Notifications"
+ },
+ "st.last": {
+  "fa": "آخرین",
+  "en": "Last"
+ },
+ "st.oracle": {
+  "fa": "اندیس",
+  "en": "Index"
+ },
+ "st.change": {
+  "fa": "تغییر ۲۴ساعته",
+  "en": "24h Change"
+ },
+ "st.high": {
+  "fa": "سقف ۲۴ساعته",
+  "en": "24h High"
+ },
+ "st.low": {
+  "fa": "کف ۲۴ساعته",
+  "en": "24h Low"
+ },
+ "st.vol": {
+  "fa": "حجم ۲۴ساعته",
+  "en": "24h Volume"
+ },
+ "st.oi": {
+  "fa": "موقعیت‌های باز",
+  "en": "Open Interest"
+ },
+ "st.funding": {
+  "fa": "فاندینگ ۱ساعته",
+  "en": "Funding 1h"
+ },
+ "st.lev": {
+  "fa": "حداکثر اهرم",
+  "en": "Max Leverage"
+ },
+ "dd.searchPh": {
+  "fa": "جست‌وجوی بازار…",
+  "en": "Search market…"
+ },
+ "dd.market": {
+  "fa": "بازار",
+  "en": "Market"
+ },
+ "dd.price": {
+  "fa": "قیمت",
+  "en": "Price"
+ },
+ "dd.24h": {
+  "fa": "۲۴ساعته",
+  "en": "24h"
+ },
+ "dd.noMatch": {
+  "fa": "بازاری با این عبارت پیدا نشد.",
+  "en": "No market matches this search."
+ },
+ "dd.funding": {
+  "fa": "فاندینگ",
+  "en": "Funding"
+ },
+ "dd.oil": {
+  "fa": "OI لانگ",
+  "en": "OI (L)"
+ },
+ "dd.ois": {
+  "fa": "OI شورت",
+  "en": "OI (S)"
+ },
+ "dd.hol": {
+  "fa": "هولدینگ لانگ",
+  "en": "Holding (L)"
+ },
+ "dd.hos": {
+  "fa": "هولدینگ شورت",
+  "en": "Holding (S)"
+ },
+ "dd.closed": {
+  "fa": "بسته",
+  "en": "CLOSED"
+ },
+ "dd.foot": {
+  "fa": "بازارهای Gains Network — دادهٔ واقعی · بازارهای بسته فقط قابل مشاهده‌اند",
+  "en": "Gains Network markets — verified data · closed markets are view-only"
+ },
+ "cat.crypto": {
+  "fa": "رمزارز",
+  "en": "crypto"
+ },
+ "cat.forex": {
+  "fa": "فارکس",
+  "en": "forex"
+ },
+ "cat.stocks": {
+  "fa": "سهام",
+  "en": "stocks"
+ },
+ "cat.indices": {
+  "fa": "شاخص",
+  "en": "indices"
+ },
+ "cat.commodity": {
+  "fa": "کالا",
+  "en": "commodities"
+ },
+ "book.tab": {
+  "fa": "اوردربوک",
+  "en": "Order Book"
+ },
+ "book.tradesTab": {
+  "fa": "تریدها",
+  "en": "Trades"
+ },
+ "book.grouping": {
+  "fa": "گروینگ",
+  "en": "Grouping"
+ },
+ "book.compact": {
+  "fa": "فشرده",
+  "en": "Compact"
+ },
+ "book.simulated": {
+  "fa": "شبیه‌سازی‌شده",
+  "en": "simulated"
+ },
+ "book.price": {
+  "fa": "قیمت",
+  "en": "Price"
+ },
+ "book.size": {
+  "fa": "اندازه",
+  "en": "Size"
+ },
+ "book.total": {
+  "fa": "جمع",
+  "en": "Total"
+ },
+ "book.time": {
+  "fa": "زمان",
+  "en": "Time"
+ },
+ "book.note": {
+  "fa": "دفتر مجازی برای نمایش ساخته شده — Gains دفتر سفارش ارائه نمی‌دهد؛ این عمق واقعی نیست.",
+  "en": "Presentation-only virtual book — Gains does not provide an order book; this is not real depth."
+ },
+ "book.spread": {
+  "fa": "اسپرد",
+  "en": "spread"
+ },
+ "trades.note": {
+  "fa": "معاملات نمایشی مشتق از قیمت Mark — نوار معاملات واقعی توسط Gains ارائه نمی‌شود.",
+  "en": "Presentation trades derived from the Gains mark price — Gains provides no trade tape."
+ },
+ "ac.equity": {
+  "fa": "ارزش حساب",
+  "en": "Equity"
+ },
+ "ac.available": {
+  "fa": "قابل استفاده",
+  "en": "Available"
+ },
+ "ac.margin": {
+  "fa": "مارژین در استفاده",
+  "en": "Margin used"
+ },
+ "ac.unrealized": {
+  "fa": "سود/زیان شناور",
+  "en": "Unrealized"
+ },
+ "ac.positions": {
+  "fa": "موقعیت‌ها",
+  "en": "Positions"
+ },
+ "ac.orders": {
+  "fa": "سفارش‌ها",
+  "en": "Orders"
+ },
+ "ac.mode": {
+  "fa": "حالت",
+  "en": "Mode"
+ },
+ "ac.modeVal": {
+  "fa": "Cross · شبیه‌سازی‌شده",
+  "en": "Cross · Simulated"
+ },
+ "lev": {
+  "fa": "اهرم",
+  "en": "Leverage"
+ },
+ "of.price": {
+  "fa": "قیمت تریگر / لیمیت <em>USD</em>",
+  "en": "Trigger / Limit price <em>USD</em>"
+ },
+ "of.collateral": {
+  "fa": "کولترال <em>USD</em>",
+  "en": "Collateral <em>USD</em>"
+ },
+ "of.priceTh": {
+  "fa": "تریگر / لیمیت",
+  "en": "Trigger / Limit"
+ },
+ "of.size": {
+  "fa": "اندازه",
+  "en": "Size"
+ },
+ "of.notional": {
+  "fa": "نوشنال",
+  "en": "Notional"
+ },
+ "of.sl": {
+  "fa": "استاپ‌لاس <em>USD · اختیاری</em>",
+  "en": "Stop Loss <em>USD · optional</em>"
+ },
+ "of.tp": {
+  "fa": "تیک‌پرافیت <em>USD · اختیاری</em>",
+  "en": "Take Profit <em>USD · optional</em>"
+ },
+ "rk.entry": {
+  "fa": "انتری تخمینی",
+  "en": "Est. entry"
+ },
+ "rk.oracle": {
+  "fa": "قیمت اندیس",
+  "en": "Index price"
+ },
+ "rk.liq": {
+  "fa": "لیکوییدیشن تخمینی",
+  "en": "Est. liquidation"
+ },
+ "rk.margin": {
+  "fa": "مارجین تخمینی",
+  "en": "Est. margin"
+ },
+ "rk.fee": {
+  "fa": "کارمزد تخمینی (اوپن)",
+  "en": "Est. fee (open)"
+ },
+ "rk.impact": {
+  "fa": "اثر قیمت",
+  "en": "Price impact"
+ },
+ "rk.impactVal": {
+  "fa": "—",
+  "en": "N/A"
+ },
+ "rk.maxloss": {
+  "fa": "حداکثر ضرر با SL",
+  "en": "Max loss at SL"
+ },
+ "submit.long": {
+  "fa": "بررسی سفارش — لانگ",
+  "en": "Review order — Long"
+ },
+ "submit.short": {
+  "fa": "بررسی سفارش — شورت",
+  "en": "Review order — Short"
+ },
+ "side.long": {
+  "fa": "لانگ",
+  "en": "Long"
+ },
+ "side.short": {
+  "fa": "شورت",
+  "en": "Short"
+ },
+ "ot.market": {
+  "fa": "مارکت",
+  "en": "Market"
+ },
+ "ot.limit": {
+  "fa": "لیمیت",
+  "en": "Limit"
+ },
+ "ot.stop": {
+  "fa": "استاپ",
+  "en": "Stop"
+ },
+ "demoBanner": {
+  "fa": "حالت دمو — هیچ سفارش واقعی ثبت نمی‌شود",
+  "en": "Demo Mode — No Real Orders Are Submitted"
+ },
+ "bt.positions": {
+  "fa": "موقعیت‌ها",
+  "en": "Positions"
+ },
+ "bt.orders": {
+  "fa": "سفارش‌های باز",
+  "en": "Open Orders"
+ },
+ "bt.history": {
+  "fa": "تاریخچهٔ سفارش‌ها",
+  "en": "Order History"
+ },
+ "bt.fills": {
+  "fa": "فیلز",
+  "en": "Fills"
+ },
+ "bt.funding": {
+  "fa": "فاندینگ",
+  "en": "Funding"
+ },
+ "th.entry": {
+  "fa": "انتری",
+  "en": "Entry"
+ },
+ "th.mark": {
+  "fa": "مارک",
+  "en": "Mark"
+ },
+ "th.liq": {
+  "fa": "لیکوییدیشن",
+  "en": "Liq. price"
+ },
+ "th.sltp": {
+  "fa": "استاپ‌لاس / تیک‌پرافیت",
+  "en": "SL / TP"
+ },
+ "th.collateral": {
+  "fa": "کولترال",
+  "en": "Collateral"
+ },
+ "th.unrealized": {
+  "fa": "سود/زیان شناور",
+  "en": "Unrealized PnL"
+ },
+ "bt.empty": {
+  "fa": "فعالیتی در این حساب شبیه‌سازی‌شده ثبت نشده است.",
+  "en": "No activity in this simulated account."
+ },
+ "bt.loadDemo": {
+  "fa": "بارگذاری سناریوی دمو",
+  "en": "Load demo scenario"
+ },
+ "bt.hint": {
+  "fa": "دو موقعیت، یک سفارش Limit در انتظار و تاریخچه می‌سازد تا ترمینال را کاوش کنی.",
+  "en": "Seeds two positions, one pending limit order and history so you can explore the terminal."
+ },
+ "th.market": {
+  "fa": "بازار",
+  "en": "Market"
+ },
+ "th.side": {
+  "fa": "سمت",
+  "en": "Side"
+ },
+ "th.size": {
+  "fa": "اندازه",
+  "en": "Size"
+ },
+ "th.lev": {
+  "fa": "اهرم",
+  "en": "Lev"
+ },
+ "th.actions": {
+  "fa": "عملیات",
+  "en": "Actions"
+ },
+ "th.type": {
+  "fa": "نوع",
+  "en": "Type"
+ },
+ "th.status": {
+  "fa": "وضعیت",
+  "en": "Status"
+ },
+ "th.created": {
+  "fa": "زمان ایجاد",
+  "en": "Created"
+ },
+ "th.price": {
+  "fa": "قیمت",
+  "en": "Price"
+ },
+ "th.result": {
+  "fa": "نتیجه",
+  "en": "Result"
+ },
+ "th.time": {
+  "fa": "زمان",
+  "en": "Time"
+ },
+ "th.payment": {
+  "fa": "پرداخت",
+  "en": "Payment"
+ },
+ "dlg.review": {
+  "fa": "بررسی سفارش",
+  "en": "Order review"
+ },
+ "dlg.cancel": {
+  "fa": "لغو",
+  "en": "Cancel"
+ },
+ "dlg.confirm": {
+  "fa": "تأیید",
+  "en": "Confirm"
+ },
+ "dlg.confirmOrder": {
+  "fa": "تأیید سفارش شبیه‌سازی‌شده",
+  "en": "Confirm simulated order"
+ },
+ "dlg.save": {
+  "fa": "ذخیره",
+  "en": "Save"
+ },
+ "dlg.close": {
+  "fa": "بستن",
+  "en": "Close"
+ },
+ "rv.market": {
+  "fa": "بازار",
+  "en": "Market"
+ },
+ "rv.dir": {
+  "fa": "جهت",
+  "en": "Direction"
+ },
+ "rv.otype": {
+  "fa": "نوع سفارش",
+  "en": "Order type"
+ },
+ "rv.lev": {
+  "fa": "اهرم",
+  "en": "Leverage"
+ },
+ "rv.size": {
+  "fa": "اندازه",
+  "en": "Size"
+ },
+ "rv.notional": {
+  "fa": "Notional",
+  "en": "Notional"
+ },
+ "rv.collateral": {
+  "fa": "Collateral",
+  "en": "Collateral"
+ },
+ "rv.entry": {
+  "fa": "انتری تخمینی",
+  "en": "Est. entry"
+ },
+ "rv.oracle": {
+  "fa": "اندیس",
+  "en": "Index"
+ },
+ "rv.liq": {
+  "fa": "لیکوییدیشن تخمینی",
+  "en": "Est. liquidation"
+ },
+ "rv.fee": {
+  "fa": "کارمزد تخمینی (open)",
+  "en": "Est. fee (open)"
+ },
+ "rv.sl": {
+  "fa": "Stop Loss",
+  "en": "Stop Loss"
+ },
+ "rv.tp": {
+  "fa": "Take Profit",
+  "en": "Take Profit"
+ },
+ "rv.equityAfter": {
+  "fa": "ارزش حساب پس از سفارش",
+  "en": "Equity after"
+ },
+ "rv.exec": {
+  "fa": "شبیه‌سازی‌شده — موتور محلی",
+  "en": "Simulated — local engine"
+ },
+ "rv.side.long": {
+  "fa": "لانگ",
+  "en": "Long"
+ },
+ "rv.side.short": {
+  "fa": "شورت",
+  "en": "Short"
+ },
+ "cf.close": {
+  "fa": "بستن موقعیت",
+  "en": "Close position"
+ },
+ "cf.closeTxt": {
+  "fa": "این موقعیت شبیه‌سازی‌شده در قیمت Mark فعلی بسته شود؟ سود/زیان شناور و کارمزد بستن اعمال می‌شود.",
+  "en": "Close this simulated position at the current mark price? Unrealized PnL and a closing fee will be applied."
+ },
+ "cf.cancel": {
+  "fa": "لغو سفارش",
+  "en": "Cancel order"
+ },
+ "cf.cancelTxt": {
+  "fa": "این سفارش شبیه‌سازی‌شدهٔ در انتظار حذف شود؟",
+  "en": "Remove this pending simulated order?"
+ },
+ "cf.detail": {
+  "fa": "جزئیات موقعیت",
+  "en": "Position details"
+ },
+ "sltp.title": {
+  "fa": "ویرایش ریسک",
+  "en": "Modify risk"
+ },
+ "pos.details": {
+  "fa": [
+   "موقعیت",
+   "بازار",
+   "جهت",
+   "اندازه",
+   "Entry",
+   "Mark",
+   "اهرم",
+   "Collateral",
+   "Liquidation تخمینی",
+   "PnL شناور",
+   "SL / TP",
+   "زمان باز شدن",
+   "کارمزد باز شدن"
+  ]
+ },
+ "act.close": {
+  "fa": "بستن",
+  "en": "Close"
+ },
+ "act.sltp": {
+  "fa": "SL/TP",
+  "en": "SL/TP"
+ },
+ "act.details": {
+  "fa": "جزئیات",
+  "en": "Details"
+ },
+ "act.cancel": {
+  "fa": "لغو",
+  "en": "Cancel"
+ },
+ "tag.pending": {
+  "fa": "در انتظار",
+  "en": "pending"
+ },
+ "res.filled": {
+  "fa": "فیل شد",
+  "en": "filled"
+ },
+ "res.cancelled": {
+  "fa": "کنسل شد",
+  "en": "cancelled"
+ },
+ "res.closed-profit": {
+  "fa": "بسته با سود",
+  "en": "closed-profit"
+ },
+ "res.closed-loss": {
+  "fa": "بسته با زیان",
+  "en": "closed-loss"
+ },
+ "res.stop-loss": {
+  "fa": "استاپ‌لاس",
+  "en": "Stop Loss"
+ },
+ "res.take-profit": {
+  "fa": "تیک‌پرافیت",
+  "en": "Take Profit"
+ },
+ "res.market-close": {
+  "fa": "بستن مارکت",
+  "en": "market-close"
+ },
+ "empty.positions": {
+  "fa": "موقعیت بازی وجود ندارد. از پنل سفارش یکی باز کن یا سناریوی دمو را بارگذاری کن.",
+  "en": "No open positions. Open one from the order panel or load the demo scenario."
+ },
+ "empty.orders": {
+  "fa": "سفارش بازی وجود ندارد.",
+  "en": "No open orders."
+ },
+ "empty.history": {
+  "fa": "هنوز تاریخچهٔ سفارشی وجود ندارد.",
+  "en": "No order history yet."
+ },
+ "empty.fills": {
+  "fa": "هنوز معامله‌ای انجام نشده است.",
+  "en": "No fills yet."
+ },
+ "empty.funding": {
+  "fa": "هنوز پرداخت فاندینگی وجود ندارد — فاندینگ شبیه‌سازی‌شده به موقعیت‌های دمو اعمال می‌شود.",
+  "en": "No funding payments yet."
+ },
+ "sb.demo": {
+  "fa": "حالت دمو",
+  "en": "DEMO MODE"
+ },
+ "sb.source": {
+  "fa": "داده: Gains Network · api.gains.trade",
+  "en": "Data: Gains Network · api.gains.trade"
+ },
+ "sb.tick": {
+  "fa": "قیمت زنده",
+  "en": "live"
+ },
+ "sb.assumptions": {
+  "fa": "مفروضات دمو",
+  "en": "Demo assumptions"
+ },
+ "mkt.closed": {
+  "fa": "این بازار بسته است — امکان ترید نیست، فقط مشاهدهٔ چارت.",
+  "en": "This market is closed — viewing only, no trading."
+ },
+ "cat.all": {
+  "fa": "همه",
+  "en": "All"
+ },
+ "sb.live": {
+  "fa": "زنده",
+  "en": "Live"
+ },
+ "sb.reconnecting": {
+  "fa": "اتصال مجدد…",
+  "en": "Reconnecting…"
+ },
+ "sb.connecting": {
+  "fa": "در حال اتصال…",
+  "en": "Connecting…"
+ },
+ "sb.stale": {
+  "fa": "قدیمی",
+  "en": "stale"
+ },
+ "asm.title": {
+  "fa": "مفروضات دمو",
+  "en": "Demo assumptions"
+ },
+ "asm.fees": {
+  "fa": "<b>کارمزد:</b> کارمزد taker ثابت ۰٫۰۵٪ از Notional در باز و بستن. کارمزد maker صفر.",
+  "en": "<b>Fees:</b> flat 0.05% taker fee on notional at open and close. Maker fee 0%."
+ },
+ "asm.margin": {
+  "fa": "<b>Margin:</b> مارجین اولیه = Notional ÷ اهرم. حالت Cross، بدون مارجین جزئی.",
+  "en": "<b>Margin:</b> initial margin = notional / leverage. Cross mode, no partial margin."
+ },
+ "asm.liq": {
+  "fa": "<b>Liquidation:</b> ساده‌شده — Entry × (۱ ∓ (۱/اهرم − ۰٫۵٪ نگهداشت)). صرافی‌های واقعی از نگهداشت پلکانی استفاده می‌کنند.",
+  "en": "<b>Liquidation:</b> simplified — entry × (1 ∓ (1/leverage − 0.5% maintenance)). Real venues use tiered maintenance margins."
+ },
+ "asm.exec": {
+  "fa": "<b>اجرا:</b> سفارش Market در قیمت Mark واقعی Gains و بدون Slippage انجام می‌شود. سفارش‌های Limit و Stop با عبور Mark از قیمت تریگر فعال می‌شوند.",
+  "en": "<b>Execution:</b> market orders fill at the real Gains mark price with zero slippage. Limit and stop orders trigger when the mark crosses the trigger price."
+ },
+ "asm.prices": {
+  "fa": "<b>قیمت‌ها:</b> دادهٔ واقعی Gains Network (REST + WebSocket). خودمان قیمت نمی‌سازیم.",
+  "en": "<b>Prices:</b> real Gains Network data (REST + WebSocket). We never fabricate prices."
+ },
+ "asm.book": {
+  "fa": "<b>Order Book:</b> Gains دفتر سفارش ارائه نمی‌دهد؛ کتاب نمایشی ما شبیه‌سازی است و نمایندهٔ نقدینگی واقعی نیست.",
+  "en": "<b>Order book:</b> Gains provides no order book; our presentation book is simulated and does not represent real liquidity."
+ },
+ "asm.funding": {
+  "fa": "<b>فاندینگ:</b> نرخ ساعتی واقعی از متادیتای Gains نمایش داده می‌شود؛ اعمال پرداخت‌ها فقط در سناریوی دمو.",
+  "en": "<b>Funding:</b> real hourly rates shown from Gains metadata; payments only applied in the demo scenario."
+ },
+ "asm.note": {
+  "fa": "این قواعد مدل اجرای dYdX، Gains Network یا هیچ سیستم عملیاتی را بازتولید نمی‌کنند.",
+  "en": "These rules do not reproduce dYdX, Gains Network or any production execution model."
+ },
+ "set.title": {
+  "fa": "تنظیمات",
+  "en": "Settings"
+ },
+ "set.note": {
+  "fa": "ذخیره‌سازی تنظیمات برای فاز بعدی برنامه‌ریزی شده است.",
+  "en": "Settings persistence is planned for a later phase."
+ },
+ "set.tick": {
+  "fa": "نمایش قیمت زنده",
+  "en": "Live price display"
+ },
+ "set.flash": {
+  "fa": "فلاش قیمت ردیف‌ها",
+  "en": "Row price flash"
+ },
+ "set.sound": {
+  "fa": "صدای اجرا (غیرفعال)",
+  "en": "Execution sound (unavailable)"
+ },
+ "notif.title": {
+  "fa": "اطلاع‌رسانی‌ها",
+  "en": "Notifications"
+ },
+ "notif.empty": {
+  "fa": "هنوز اطلاع‌رسانی‌ای نیست. اجراهای شبیه‌سازی‌شده اینجا نمایش داده می‌شوند.",
+  "en": "No notifications yet. Simulated executions will appear here."
+ },
+ "toast.position": {
+  "fa": "موقعیت شبیه‌سازی‌شده باز شد.",
+  "en": "Simulated position opened."
+ },
+ "toast.order": {
+  "fa": "سفارش در انتظارِ شبیه‌سازی‌شده ایجاد شد.",
+  "en": "Simulated pending order created."
+ },
+ "toast.wallet": {
+  "fa": "اتصال کیف پول شبیه‌سازی‌شده — فقط دمو.",
+  "en": "Simulated wallet connection — demo only."
+ },
+ "toast.noPrice": {
+  "fa": "قیمت زنده در دسترس نیست.",
+  "en": "Live price unavailable."
+ },
+ "chart.loading": {
+  "fa": "در حال دریافت کندل‌های Gains…",
+  "en": "Loading Gains candles…"
+ },
+ "chart.error": {
+  "fa": "دریافت کندل ممکن نشد.",
+  "en": "Could not load candles."
+ },
+ "chart.retry": {
+  "fa": "تلاش دوباره",
+  "en": "Retry"
+ },
+ "chart.unavailable": {
+  "fa": "چارت در دسترس نیست",
+  "en": "Chart unavailable"
+ },
+ "chart.msg": {
+  "fa": "کتابخانهٔ Vela بارگذاری نشد.",
+  "en": "The Vela library failed to load."
+ },
+ "boot.loading": {
+  "fa": "در حال اتصال به Gains Network…",
+  "en": "Connecting to Gains Network…"
+ },
+ "boot.failed": {
+  "fa": "اتصال به Gains Network برقرار نشد.",
+  "en": "Could not reach Gains Network."
+ },
+ "boot.retry": {
+  "fa": "تلاش دوباره",
+  "en": "Retry"
+ }
+}

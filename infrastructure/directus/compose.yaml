@@ -1,0 +1,52 @@
+# Openfund Directus deployment (Docker Compose)
+# PostgreSQL-backed, pinned versions, persistent volumes.
+#   cp .env.example .env && docker compose up -d
+# Local dev WITHOUT Docker: see docs/backstage/LOCAL_SETUP.md
+
+services:
+  directus:
+    image: directus/directus:11.9.1
+    ports:
+      - "8055:8055"
+    volumes:
+      - ./data/uploads:/directus/uploads
+      - ./data/extensions:/directus/extensions
+    environment:
+      KEY: ${DIRECTUS_KEY}
+      SECRET: ${DIRECTUS_SECRET}
+      ADMIN_EMAIL: ${DIRECTUS_ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD}
+      DB_CLIENT: pg
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_DATABASE: ${POSTGRES_DB:-openfund_cms}
+      DB_USER: ${POSTGRES_USER:-openfund_cms}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      WEBSOCKETS_ENABLED: "false"
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: "true"
+      CORS_METHODS: GET,HEAD,OPTIONS
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: unless-stopped
+
+  database:
+    image: postgres:17-alpine
+    volumes:
+      - ./data/database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-openfund_cms}
+      POSTGRES_USER: ${POSTGRES_USER:-openfund_cms}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-openfund_cms} -d ${POSTGRES_DB:-openfund_cms}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+# Backup:      pg_dump -U openfund_cms openfund_cms > backup.sql
+# Restore:     psql -U openfund_cms openfund_cms < backup.sql
+# Media:       ./data/uploads (tar it with the database dump)
+# Never commit ./data or .env — both are gitignored.

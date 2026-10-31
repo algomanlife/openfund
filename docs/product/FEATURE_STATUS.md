@@ -18,6 +18,9 @@ Use these statuses: **Implemented** (working and tested), **Prototype** (visible
 | Positions/order lifecycle | Planned | Specify read/write lifecycle and reconciliation |
 | True order-book / footprint | Blocked | Confirm legitimate trade/volume/depth data source |
 | Auth boundary (wallet ↔ Openfund session) | Planned | SIWE-ready SessionContext, no fake auth (migration Phase 4) |
+| Directus backstage (CMS) — schema, seed, public API | Implemented | `infrastructure/directus`, `apps/backstage/scripts`, `packages/cms-client`; live-edit verified end-to-end 2026-11-01 (dev + build) |
+| CMS-driven translations fa/en (landing + terminal) | Implemented | `ui_messages` bridges in locale.js/terminal.js; silent static fallback tested with backstage down |
+| CMS media management / navigation rendering / editorial roles | Planned | See docs/backstage/PERMISSIONS.md roadmap |
 | Backend, CI and production deployment | Planned | Define deployment architecture and test gates |
 
 Agents must update this table when verified work changes the status.

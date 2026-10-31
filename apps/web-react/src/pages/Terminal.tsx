@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import terminalBody from './terminal-body.html?raw'
 import { RainbowConnect } from '../wallet/RainbowConnect'
+import { fetchCmsTranslations } from '../cms/client'
 
 /**
  * Phase 2a: the trading terminal runs inside the React shell with its proven
@@ -58,20 +59,28 @@ export default function Terminal() {
 
     if (!w().__ofLegacyTerminalLoaded) {
       w().__ofLegacyTerminalLoaded = true
-      STYLES.forEach(href => {
-        const l = document.createElement('link')
-        l.rel = 'stylesheet'
-        l.href = href
-        l.dataset.page = 'terminal'
-        document.head.appendChild(l)
-      })
-      SCRIPTS.forEach(src => {
-        const s = document.createElement('script')
-        s.src = src
-        s.async = false
-        s.dataset.page = 'terminal'
-        document.body.appendChild(s)
-      })
+      /* CMS (Directus) i18n first — published terminal ui_messages override
+         terminal.js's built-in labels; silent fallback if backstage is down.
+         terminal.js reads window.ofCmsTerminal at parse time, so the fetch
+         must complete BEFORE the script chain is injected. */
+      void (async () => {
+        const cms = await fetchCmsTranslations()
+        if (cms) w().ofCmsTerminal = cms.terminal
+        STYLES.forEach(href => {
+          const l = document.createElement('link')
+          l.rel = 'stylesheet'
+          l.href = href
+          l.dataset.page = 'terminal'
+          document.head.appendChild(l)
+        })
+        SCRIPTS.forEach(src => {
+          const s = document.createElement('script')
+          s.src = src
+          s.async = false
+          s.dataset.page = 'terminal'
+          document.body.appendChild(s)
+        })
+      })()
     }
 
     return () => {
