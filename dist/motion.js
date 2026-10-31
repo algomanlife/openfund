@@ -2,7 +2,7 @@
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const fine=matchMedia('(hover: hover) and (pointer: fine)');
  const root=document.documentElement;
- const targets=[...document.querySelectorAll('.section-top,.section-heading,.intro-band,.philosophy-panel,.principle-grid article,.account-presets,.builder,.steps article,.rules-section>div,.team-member,.closing')];
+ const targets=[...document.querySelectorAll('.section-top,.section-heading,.intro-band,.features,.feature-card,.philosophy-panel,.principle-grid article,.account-presets,.builder,.steps article,.rules-section>div,.team-member,.closing')];
  targets.forEach((el,i)=>{el.dataset.reveal='';if(el.matches('.steps article,.principle-grid article'))el.style.setProperty('--reveal-delay',(i%3)*90+'ms')});
  let revealObserver;
  if(!reduced.matches&&'IntersectionObserver'in window){root.classList.add('motion-ready');revealObserver=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');revealObserver.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -20px 0px'});targets.forEach(t=>revealObserver.observe(t));}
@@ -24,4 +24,62 @@
  const navLinks=[...document.querySelectorAll('.navlinks a[href^="#"]')];
  if('IntersectionObserver'in window){const navObserver=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))})},{rootMargin:'-15% 0px -65% 0px',threshold:0});navLinks.forEach(a=>{const s=document.querySelector(a.getAttribute('href'));if(s)navObserver.observe(s)})}
  reduced.addEventListener('change',()=>{if(reduced.matches){root.classList.remove('motion-ready');if(revealObserver)revealObserver.disconnect();if(frame)cancelAnimationFrame(frame);aura.classList.remove('visible');card.style.setProperty('--tilt-x','0deg');card.style.setProperty('--tilt-y','0deg')}});
+})();
+
+/* ============================================================
+   MOTION v2 — magnetic buttons, smart header, scroll parallax,
+   staggered reveals for additional sections
+   ============================================================ */
+(()=>{
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ const fine=matchMedia('(hover: hover) and (pointer: fine)');
+ const root=document.documentElement;
+ const live=()=>root.classList.contains('motion-ready')&&!reduced.matches;
+
+ /* 1) Extra reveal targets + staggered children */
+ const extra=[...document.querySelectorAll('.market-frame,.platform-grid article,.challenge-detail,.challenge-columns article,.rules-list details,.document-links,.footer-credits,.footer-top,.legal,.market-disclaimer')];
+ extra.forEach(el=>{el.dataset.reveal=''});
+ const stagger=[['.feature-card',2,110],['.platform-grid article',3,90],['.challenge-columns article',3,110],['.rules-list details',1,80],['.team-member',2,120],['.principle-grid article',4,70],['.steps article',3,100]];
+ stagger.forEach(([sel,cols,step])=>{document.querySelectorAll(sel).forEach((el,i)=>el.style.setProperty('--reveal-delay',(i%cols)*step+'ms'))});
+ let v2Observer=null;
+ const arm=()=>{if(!live()){if(v2Observer){v2Observer.disconnect();v2Observer=null}return}
+  if(v2Observer||!('IntersectionObserver'in window))return;
+  v2Observer=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');v2Observer.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+  extra.forEach(t=>v2Observer.observe(t))};
+ arm();
+ reduced.addEventListener('change',()=>{if(!live())extra.forEach(t=>{t.style.opacity='';t.style.transform='';t.classList.add('revealed')});arm()});
+
+ /* 2) Smart header: hide on scroll-down, reveal on scroll-up */
+ const header=document.querySelector('header');let lastY=scrollY,hq=false;
+ function headerScroll(){const y=scrollY;const dy=y-lastY;
+  if(y<240||dy<-5)header.classList.remove('nav-hidden');
+  else if(dy>5&&y>420)header.classList.add('nav-hidden');
+  lastY=y;hq=false}
+ addEventListener('scroll',()=>{if(reduced.matches)return;if(!hq){hq=true;requestAnimationFrame(headerScroll)}},{passive:true});
+
+ /* 3) Magnetic buttons */
+ document.querySelectorAll('.button,.nav-cta,.wallet-button').forEach(b=>{
+  b.addEventListener('pointermove',e=>{if(!fine.matches||reduced.matches)return;const r=b.getBoundingClientRect();
+   b.style.setProperty('--mag-x',((e.clientX-r.left-r.width/2)/r.width*8).toFixed(2)+'px');
+   b.style.setProperty('--mag-y',((e.clientY-r.top-r.height/2)/r.height*7).toFixed(2)+'px')});
+  b.addEventListener('pointerleave',()=>{b.style.setProperty('--mag-x','0px');b.style.setProperty('--mag-y','0px')})});
+
+ /* 4) Scroll parallax: floating notes + atmosphere drift */
+ const notes=[...document.querySelectorAll('.note-right,.note-left')],atmos=document.querySelector('.hero-atmosphere');
+ let pq=false;
+ function parallax(){const y=scrollY;
+  if(y<innerHeight*1.6){
+   notes.forEach((n,i)=>{const d=i===0?.07:-.1;n.style.transform=`translateY(${(y*d).toFixed(1)}px) rotate(${i===0?3:-4}deg)`});
+   if(atmos)atmos.style.translate=`0 ${(y*.05).toFixed(1)}px`;
+  }
+  pq=false}
+ addEventListener('scroll',()=>{if(reduced.matches)return;if(!pq){pq=true;requestAnimationFrame(parallax)}},{passive:true});
+
+ /* 5) Hero product: subtle pointer tilt (composes with float animation via rotate property) */
+ const product=document.querySelector('.hero-product');
+ if(product&&fine.matches){
+  product.addEventListener('pointermove',e=>{if(reduced.matches)return;const r=product.getBoundingClientRect();
+   const ry=((e.clientX-r.left)/r.width-.5)*4;
+   product.style.rotate=ry.toFixed(2)+'deg'});
+  product.addEventListener('pointerleave',()=>{product.style.rotate='0deg'})}
 })();
