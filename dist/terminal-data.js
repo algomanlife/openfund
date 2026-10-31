@@ -23,7 +23,7 @@ const fmt = {
     if (a >= 1e3) return (v / 1e3).toFixed(2) + 'K';
     return v.toFixed(2);
   },
-  pct(v){ return (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2) + '%'; },
+  pct(v){ if (!Number.isFinite(v)) return '—'; return (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2) + '%'; },
   time(ts){ const d = new Date(ts * 1000); return d.toLocaleTimeString('en-GB', {hour12: false}); },
   dt(ts){ const d = new Date(ts * 1000); return d.toLocaleDateString('en-GB', {day:'2-digit', month:'short'}) + ' ' + d.toLocaleTimeString('en-GB', {hour12:false, hour:'2-digit', minute:'2-digit'}); }
 };

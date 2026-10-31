@@ -358,7 +358,7 @@ function paintDropdown(rebuild){
         <span class="mk">${iconHTML(m.symbol)}<b>${m.symbol}</b><small>${t('cat.' + (m.group === 'commodities' ? 'commodity' : m.group))}</small>
           <span class="st" data-star="${m.symbol}">${S.favorites.has(m.symbol)?'★':'☆'}</span></span>
         <span class="num r" data-cell="price">${p ? fmt.price(p, d) : '—'}</span>
-        <span class="num r ${st ? (st.changePct >= 0 ? 'up' : 'down') : ''}" data-cell="chg">${st ? fmt.pct(st.changePct) : '·'}</span>
+        <span class="num r ${st ? (st.data.changePct >= 0 ? 'up' : 'down') : ''}" data-cell="chg">${st ? fmt.pct(st.data.changePct) : '·'}</span>
         <span class="num r" data-cell="fund">${fund != null && Number.isFinite(fund) ? (fund*100).toFixed(3)+'%' : '—'}</span>
         <span class="num r" data-cell="oi">${oi ? '$'+fmt.compact(oi.total) : '—'}</span>
       </li>`;
