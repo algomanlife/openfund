@@ -576,3 +576,26 @@ html[data-theme="light"] img[src$=".png"],html[data-theme="light"] img[src$=".jp
    NOTICE honoured via the visible .vela-credit link on the same screen. */
 .veLO, .vela-attribution, .vela-attribution-custom, .vela-attr-shadow,
 .vela-attr-symbol, .vela-attr-wordmark{display:none!important}
+
+/* RainbowKit custom connect buttons (landing button system) */
+#rainbow-host{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.rk-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#F1F3EF;color:#09100c;border:1px solid #F1F3EF;border-radius:6px;
+  padding:10px 14px;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;
+  transition:background .18s,transform .18s,box-shadow .3s;
+  font-family:Ubuntu,'Irancell',system-ui,sans-serif;
+}
+.rk-btn:hover{background:#fff;transform:translateY(-2px);box-shadow:0 14px 30px -16px #82e7bd55}
+.rk-btn.rk-net{background:transparent;color:#d4e3d8;border-color:#82e7bd55;padding:6px 10px;font-size:11px;font-weight:500}
+.rk-btn.rk-net:hover{border-color:#82e7bdaa;transform:none;box-shadow:none}
+.rk-btn.rk-acct{background:transparent;color:#d4e3d8;border-color:#ffffff1e;padding:6px 10px;font-size:11px}
+.rk-btn.rk-acct:hover{border-color:#82e7bd66;transform:none}
+.rk-bal{font-variant-numeric:tabular-nums}
+.rk-addr{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;opacity:.85}
+.rk-btn .dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0}
+.rk-btn .dot-live{background:#82e7bd;box-shadow:0 0 6px #82e7bd88}
+.rk-btn .dot-info{background:#86A8FF}
+html[data-theme="light"] .rk-btn{background:#12965D;color:#fff;border-color:#12965D}
+html[data-theme="light"] .rk-btn:hover{background:#0d7a4c}
+html[data-theme="light"] .rk-btn.rk-net,html[data-theme="light"] .rk-btn.rk-acct{background:transparent;color:#3F4C44;border-color:#0A120D22}

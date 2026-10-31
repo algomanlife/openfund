@@ -1,5 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import terminalBody from './terminal-body.html?raw'
+import { RainbowConnect } from '../wallet/RainbowConnect'
 
 /**
  * Phase 2a: the trading terminal runs inside the React shell with its proven
@@ -16,6 +18,25 @@ const SCRIPTS = [
 const STYLES = ['legacy/terminal.css']
 
 export default function Terminal() {
+  const [walletHost, setWalletHost] = useState<HTMLElement | null>(null)
+
+  /* Phase 3: mount the real RainbowKit connect button in the header
+     (replaces the legacy demo wallet button — connection only, no txs) */
+  useEffect(() => {
+    const nav = document.querySelector('.nav-right')
+    if (!nav) return
+    const host = document.createElement('div')
+    host.id = 'rainbow-host'
+    nav.insertBefore(host, nav.firstChild)
+    setWalletHost(host)
+    const legacy = document.getElementById('wallet-btn')
+    if (legacy) legacy.style.display = 'none'
+    return () => {
+      host.remove()
+      if (legacy) legacy.style.display = ''
+    }
+  }, [])
+
   useEffect(() => {
     const links = STYLES.map(href => {
       const l = document.createElement('link')
@@ -43,5 +64,10 @@ export default function Terminal() {
     document.title = 'Openfund Terminal — معامله'
   }, [])
 
-  return <div dangerouslySetInnerHTML={{ __html: terminalBody }} />
+  return (
+    <>
+      {walletHost && createPortal(<RainbowConnect />, walletHost)}
+      <div dangerouslySetInnerHTML={{ __html: terminalBody }} />
+    </>
+  )
 }
