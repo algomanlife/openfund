@@ -1,5 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import landingBody from './landing-body.html?raw'
+import { RainbowConnect } from '../wallet/RainbowConnect'
 
 /**
  * Phase 2a: the landing runs inside the React shell with its proven markup
@@ -75,6 +77,19 @@ function swapArrows() {
 }
 
 export default function Landing() {
+  /* wallet connect button in the landing header (#wallet-root placeholder,
+     right next to nav-actions). Same RainbowKit mount as the terminal. */
+  const [walletHost, setWalletHost] = useState<HTMLElement | null>(null)
+  useEffect(() => {
+    const host = document.getElementById('wallet-root')
+    if (!host || document.getElementById('rainbow-landing-host')) return
+    const mount = document.createElement('div')
+    mount.id = 'rainbow-landing-host'
+    host.appendChild(mount)
+    setWalletHost(mount)
+    return () => { mount.remove() }
+  }, [])
+
   useEffect(() => {
     /* cancel OUR OWN pending reload (StrictMode re-mount of this page) */
     if (w().__ofReloadLanding) { clearTimeout(w().__ofReloadLanding); w().__ofReloadLanding = null }
@@ -132,5 +147,10 @@ export default function Landing() {
     }
   }, [])
 
-  return <div dangerouslySetInnerHTML={{ __html: landingBody }} />
+  return (
+    <>
+      {walletHost && createPortal(<RainbowConnect />, walletHost)}
+      <div dangerouslySetInnerHTML={{ __html: landingBody }} />
+    </>
+  )
 }

@@ -4,6 +4,15 @@ Notable changes are recorded here. Dates should use ISO 8601.
 
 ## Unreleased
 
+### Round 5 — UI polish per user review (2026-11-01, live-verified)
+- **fix(terminal):** Openfund "O" chart brand moved to the **bottom-left of the plot** (was inline with the BT/BTC-USD statusline row); hover still reveals "penfund" + "Chart by Openfund Data".
+- **fix(terminal):** Vela attribution link removed from the chart face and relocated as a discreet "Charts by Vela ↗" credit in the chart bottom bar — visible on the same screen, per the Apache-2.0 NOTICE requirement.
+- **fix(terminal):** header language (EN ◎) / theme (◐) toggle buttons unified at 32px, matching the other icon buttons.
+- **fix(landing):** footer credits logos — the blanket dark-mode invert was scoped to the black Render logo only, so the **Gains logo now shows its true teal gradients** (previously inverted to pink/orange); light-mode double-invert preserved for true brand colors in both themes.
+- **feat(landing):** wallet connect button now lives in the landing header (`#wallet-root` inside nav-actions, right after the "ورود به ترمینال" CTA) with the same RainbowKit modal as the terminal; label follows the app language.
+- **feat(landing):** new open-source row at the very bottom — GitHub mark + "همیشه شفاف و منبع‌باز" + "برای توسعهٔ دست‌جمعی و نظارت مداوم کاربران" (fa/en), plus the FA-only line "اولین کسب‌وکار منبع‌باز ایرانی" (auto-hidden in EN).
+- Verified live on dev :5173 and build :4173 (Playwright: O position, Vela credit relocation, CTA adjacency, FA-only visibility, full regression 18/18 + fonts audited as Irancell).
+
 ### React migration: interactivity parity + wallet (2026-10-31, branch `qwen/react-migration`)
 - **feat(react):** React 19 + Vite + TypeScript shell (`apps/web-react`) with both pages live at `http://127.0.0.1:4173/react/` (hash routing `#/` + `#/terminal`); build output lands in repo-root `react/`.
 - **feat(wallet):** RainbowKit 2.2 + wagmi + viem + TanStack Query — custom bilingual `ConnectButton.Custom` in the terminal header (Arbitrum Sepolia, connection only, no transactions). Falls back to injected connectors when `VITE_WALLETCONNECT_PROJECT_ID` is unset (getDefaultConfig throws on an empty id).

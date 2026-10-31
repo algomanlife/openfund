@@ -32,6 +32,13 @@ export function RainbowConnect() {
   const { address, chain, chainId } = useAccount()
   const { data: balance } = useBalance({ address, chainId })
   const theme = useAppTheme()
+  /* re-render when the app language flips (legacy locale.js dispatches 'of-language') */
+  const [, setLangTick] = useState(0)
+  useEffect(() => {
+    const h = () => setLangTick(t => t + 1)
+    addEventListener('of-language', h)
+    return () => removeEventListener('of-language', h)
+  }, [])
   const isFa = (window as any).ofLang !== 'en'
 
   const fmtAddr = (a?: string) => (a ? `${a.slice(0, 6)}…${a.slice(-4)}` : '')
