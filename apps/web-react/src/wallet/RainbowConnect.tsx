@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ConnectButton, RainbowKitProvider, darkTheme, lightTheme } from '@rainbow-me/rainbowkit'
+import '@rainbow-me/rainbowkit/styles.css'   /* REQUIRED: without it the modal renders unstyled (position:static at the end of <body>, breaking the page layout) */
 import { useAccount, useBalance } from 'wagmi'
 import { formatUnits } from 'viem'
 
@@ -31,6 +32,13 @@ export function RainbowConnect() {
   const { address, chain, chainId } = useAccount()
   const { data: balance } = useBalance({ address, chainId })
   const theme = useAppTheme()
+  /* re-render when the app language flips (legacy locale.js dispatches 'of-language') */
+  const [, setLangTick] = useState(0)
+  useEffect(() => {
+    const h = () => setLangTick(t => t + 1)
+    addEventListener('of-language', h)
+    return () => removeEventListener('of-language', h)
+  }, [])
   const isFa = (window as any).ofLang !== 'en'
 
   const fmtAddr = (a?: string) => (a ? `${a.slice(0, 6)}…${a.slice(-4)}` : '')
@@ -49,7 +57,6 @@ export function RainbowConnect() {
           : lightTheme({ accentColor: '#12965D', accentColorForeground: '#ffffff' })
       }
       appInfo={{ appName: 'Openfund', learnMoreUrl: 'https://gains.trade' }}
-      modalSize='compact'
     >
       <ConnectButton.Custom>
       {({ account, chain: rkChain, openAccountModal, openChainModal, openConnectModal, mounted }) => {

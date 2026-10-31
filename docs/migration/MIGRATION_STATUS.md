@@ -36,6 +36,14 @@ Root causes found and fixed (all surfaced by real-browser Playwright E2E with re
 - [x] E2E (Playwright): 18/18 functional checks green on dev :5173 AND built :4173 — theme toggle fa/en, dir flips, arrow glyphs, translations, anchors, market rows (REST 10 rows), terminal workspace LTR + trade panel right, terminal lang + theme, terminal→landing reload
 - Known artifact: 1–2 transient `textContent of null` errors in the 120ms teardown window between unmount and reload (terminal interval tick) — benign, gone after reload
 
+### Round 5 (2026-11-01) — UI polish, both pages
+- [x] chart "O" brand → bottom-left of plot; Vela credit → bottom bar (NOTICE-compliant)
+- [x] landing header: wallet button after the terminal CTA (RainbowConnect portal in #wallet-root)
+- [x] landing footer: Gains logo true colors (dark invert scoped to Render only)
+- [x] GitHub open-source row (fa/en + FA-only line) at the very bottom
+- [x] terminal header toggles unified at 32px
+- [x] E2E green on dev :5173 + build :4173; landing-body/terminal-body regeneration now strips ALL scripts and rewrites terminal.html links
+
 ## Phase 3 — RainbowKit
 - [x] RainbowKit + wagmi + viem + TanStack Query wired (getDefaultConfig, WalletProvider)
 - [x] Custom bilingual ConnectButton portal in terminal header (replaces legacy demo button): modal, address, balance, account switch, network status, disconnect, persistence
