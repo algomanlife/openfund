@@ -1,6 +1,17 @@
 # Gains Network integration specification
 
-**Status: Planned / external details unverified.** This file is a technical plan, not a claim of available API endpoints, contracts, testnet support or SDK compatibility.
+**Status: Market-data integration Implemented / on-chain SDK Unverified** (branch `qwen/frontend-polish-vela-gains`).
+
+The terminal consumes the **public Gains Network market-data API** (no SDK, no keys). Verified endpoints (2026-10-31, Arbitrum):
+
+| Endpoint | Result |
+| --- | --- |
+| `GET https://api.gains.trade/v1/arbitrum/markets` | 488 markets with group, precision, min/max leverage, spread, funding & fee metadata |
+| `GET /v1/arbitrum/prices` | `{market, mark, index, updatedAt}` — 335 symbols |
+| `GET /v1/arbitrum/markets/{SYMBOL-DASHED}/candles?interval=1m\|5m\|15m\|30m\|1h\|4h\|1d&from={ms}&to={ms}` | OHLC strings, epoch-ms open times; **1w not supported (verified empty)** |
+| `WS wss://api.gains.trade/v1/arbitrum/ws` — `{action:"subscribe",channel:"prices"}` | live mark/index updates |
+
+**Not provided by this API (never fabricated):** volume, open interest, executed trade tape, order-book depth. The terminal shows `—` for volume/OI and labels its order book & trades views as simulated presentation only. `vendor/gains-sdk` (the on-chain SDK) remains vendored but unused; on-chain trading, wallets and testnet flows stay **out of scope** for this phase.
 
 ## Goal
 
