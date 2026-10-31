@@ -63,6 +63,7 @@ button{cursor:pointer;background:none;border:0;padding:0}
 /* ============ app grid ============ */
 body{display:grid;grid-template-rows:auto auto minmax(0,1fr) auto}
 .workspace{
+  direction:ltr;  /* FIXED panel arrangement: chart left, book middle, trade panel right */
   display:grid;min-height:0;
   grid-template-columns:minmax(0,1fr) 300px 336px;
   grid-template-rows:minmax(0,1fr) auto;
@@ -545,3 +546,8 @@ html[data-theme="light"] img[src$=".png"],html[data-theme="light"] img[src$=".jp
 .dd-list li.closed{opacity:.78}
 .dd-list li.closed .mk b{color:var(--body)}
 @media(max-width:760px){.market-dropdown{width:calc(100vw - 16px)}.dd-head,.dd-list li{grid-template-columns:minmax(110px,1.4fr) 78px 54px 1fr 1fr 1fr 1fr;font-size:10px}}
+
+/* Vela attribution mark hidden — replaced by Openfund branding (chart-brand).
+   NOTICE honoured via the visible .vela-credit link on the same screen. */
+.veLO, .vela-attribution, .vela-attribution-custom, .vela-attr-shadow,
+.vela-attr-symbol, .vela-attr-wordmark{display:none!important}

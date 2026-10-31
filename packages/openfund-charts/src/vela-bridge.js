@@ -67,13 +67,22 @@ function mount(container, opts){
   /* The built-in V attribution mark is replaced by Openfund branding; the
      upstream NOTICE is honoured with a visible "Vela" link on the same screen
      (see .vela-credit in terminal.html). */
-  try { ws.chart && ws.chart.renderer.set('attribution', false); } catch(e){}
+  const attributionOff = () => {
+    try { ws.chart && ws.chart.renderer.set('attribution', false); return true; } catch(e){ return false; }
+  };
+  if (!attributionOff()){
+    /* the chart may not exist yet — retry until the first cell paints */
+    const iv = setInterval(() => { if (attributionOff()) clearInterval(iv); }, 400);
+    setTimeout(() => clearInterval(iv), 20000);
+  }
 
   const ro = new ResizeObserver(() => { try { ws.chart && ws.chart.resize(); } catch(e){} });
   ro.observe(el);
 
   const controller = {
     workspace: ws,
+    /* debug/testing handle */
+    __set: (k, v) => { try { return ws.chart.renderer.set(k, v); } catch(e){ return 'ERR:' + e.message; } },
     get chart(){ return ws.chart; },
     setSymbol(symbol){ return ws.chart.setMarket({ symbol: 'gains:' + symbol }); },
     setTimeframe(tf){ return ws.chart.setMarket({ timeframe: tf }); },
@@ -94,6 +103,7 @@ function mount(container, opts){
       try { ws.destroy(); } catch(e){}
     }
   };
+  global.__openfundChart = controller;   /* debug handle */
   return controller;
 }
 

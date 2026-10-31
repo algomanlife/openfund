@@ -246,9 +246,11 @@ function t(key){
 function applyStaticI18n(){
   document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-p]').forEach(el => { el.placeholder = t(el.dataset.i18nP); });
-  /* layout direction is FIXED (rtl) — switching language only translates text;
-     panels never move. The chart is always LTR. */
+  /* The HEADER follows the language direction (rtl/fa, ltr/en); the main
+     workspace is pinned LTR in CSS (.workspace{direction:ltr}) so the trade
+     panel is always on the right and the chart stays in its default state. */
   document.documentElement.setAttribute('lang', window.ofLang);
+  document.documentElement.setAttribute('dir', window.ofLang === 'fa' ? 'rtl' : 'ltr');
   document.title = window.ofLang === 'fa' ? 'Openfund Terminal — معامله' : 'Openfund Terminal — Trade';
   $('lang-label').textContent = window.ofLang === 'fa' ? 'EN' : 'FA';
 }
