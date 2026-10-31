@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080b0a">
+<meta name="description" content="Openfund Trading Terminal — professional perpetual futures workspace. Demo interface with simulated market data.">
+<title>Openfund Terminal — Trade</title>
+<link rel="icon" href="assets/mark-mint.svg">
+<link rel="preload" href="assets/openfund-persian-400-v4.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/openfund-persian-600-v4.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="terminal.css?v=7">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ============ A. GLOBAL NAVIGATION ============ -->
+<header class="topnav">
+  <nav class="nav-left" aria-label="Primary">
+    <a class="brand" href="index.html" title="Openfund home">
+      <img src="assets/mark-mint.svg" width="20" height="22" alt="">
+      <span class="brand-word">openfund</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#" class="active" aria-current="page" data-i18n="nav.trade">Trade</a></li>
+      <li><a href="index.html#markets" data-i18n="nav.markets">Markets</a></li>
+      <li><a href="#" aria-disabled="true" class="soon" title="Coming in a later phase" data-i18n="nav.portfolio">Portfolio</a></li>
+      <li><a href="#" aria-disabled="true" class="soon" title="Coming in a later phase" data-i18n="nav.more">More</a></li>
+    </ul>
+  </nav>
+  <div class="nav-right">
+    <span class="net-chip" id="net-chip" title="Demo network — no chain connection in this phase">
+      <i class="dot dot-info" aria-hidden="true"></i> Arbitrum <small>· demo</small>
+    </span>
+    <span class="conn" id="conn-state" title="Simulated local data engine"><i class="dot dot-live" aria-hidden="true"></i> Simulated</span>
+    <button class="wallet-btn" id="wallet-btn" title="Wallet connection is simulated in this phase">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 4.5A2.5 2.5 0 0 1 4.5 2H12a1 1 0 0 1 1 1v1.5M2 4.5V12a2 2 0 0 0 2 2h9.5a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5H4.5A2.5 2.5 0 0 1 2 4.5Z" stroke="currentColor" stroke-width="1.3"/><circle cx="11.5" cy="10" r="1" fill="currentColor"/></svg>
+      Connect Wallet <em class="demo-flag">DEMO</em>
+    </button>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" title="Light / Dark">◐</button>
+    <button class="language-toggle" id="language-toggle" aria-label="تغییر زبان">◎ <span id="lang-label">EN</span></button>
+    <button class="icon-btn" id="settings-btn" title="Terminal settings" aria-label="Settings">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="2.2" stroke="currentColor" stroke-width="1.3"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.3"/></svg>
+    </button>
+    <button class="icon-btn" id="notifications-btn" title="Notifications" aria-label="Notifications" data-i18n-t="nav.notifications">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2a3.5 3.5 0 0 0-3.5 3.5c0 3-1.2 4-1.2 4h9.4s-1.2-1-1.2-4A3.5 3.5 0 0 0 8 2ZM6.8 12.7a1.3 1.3 0 0 0 2.4 0" stroke="currentColor" stroke-width="1.3"/></svg>
+      <i class="notif-dot" id="notif-dot" aria-hidden="true"></i>
+    </button>
+  </div>
+</header>
+
+<!-- ============ B. MARKET SELECTOR + STATISTICS ============ -->
+<section class="market-bar" id="market-bar" aria-label="Market selector and statistics">
+  <div class="market-select">
+    <button class="market-select-btn" id="market-select-btn" aria-haspopup="listbox" aria-expanded="false">
+      <img id="cur-icon" src="" alt="" width="20" height="20">
+      <b id="cur-pair">—</b>
+      <span class="chev" aria-hidden="true">▾</span>
+    </button>
+    <button class="icon-btn star" id="cur-star" title="Add to watchlist" aria-label="Toggle watchlist">☆</button>
+    <div class="market-dropdown" id="market-dropdown" role="listbox" hidden>
+      <div class="dd-search">
+        <input id="market-search" type="search" placeholder="Search market…" autocomplete="off" aria-label="Search market" data-i18n-p="dd.searchPh">
+      </div>
+      <div class="dd-cats" id="dd-cats" role="group" aria-label="Market categories"></div>
+      <div class="dd-head"><span data-i18n="dd.market">Market</span><span data-i18n="dd.price">Price</span><span data-i18n="dd.24h">24h</span><span data-i18n="dd.oil">OI (L)</span><span data-i18n="dd.ois">OI (S)</span><span data-i18n="dd.hol">Holding (L)</span><span data-i18n="dd.hos">Holding (S)</span></div>
+      <ul class="dd-list" id="market-dd-list"></ul>
+      <p class="dd-foot" data-i18n="dd.foot">488 live Gains Network markets</p>
+      <div class="dd-kbd" aria-hidden="true"><span>⌘K</span> Open · <span>↑↓</span> Navigate · <span>Enter</span> Select · <span>⌘S</span> Favorite · <span>Esc</span> Close</div>
+    </div>
+  </div>
+  <div class="market-stats" id="market-stats">
+    <dl class="stat" data-k="last"><dt title="Most recent execution price" data-i18n="st.last">Last</dt><dd id="st-last">—</dd></dl>
+    <dl class="stat" data-k="oracle"><dt title="Reference / oracle price used for mark computations" data-i18n="st.oracle">Oracle</dt><dd id="st-oracle">—</dd></dl>
+    <dl class="stat" data-k="change"><dt data-i18n="st.change">24h Change</dt><dd id="st-change">—</dd></dl>
+    <dl class="stat" data-k="high"><dt data-i18n="st.high">24h High</dt><dd id="st-high">—</dd></dl>
+    <dl class="stat" data-k="low"><dt data-i18n="st.low">24h Low</dt><dd id="st-low">—</dd></dl>
+    <dl class="stat" data-k="vol"><dt data-i18n="st.vol">24h Volume</dt><dd id="st-vol">—</dd></dl>
+    <dl class="stat" data-k="oi"><dt title="Total open interest in base units — simulated" data-i18n="st.oi">Open Interest</dt><dd id="st-oi">—</dd></dl>
+    <dl class="stat" data-k="funding"><dt title="Simulated holding rate, 1h rate — not applicable to all markets" data-i18n="st.funding">Funding 1h</dt><dd id="st-funding">—</dd></dl>
+    <dl class="stat" data-k="lev"><dt data-i18n="st.lev">Max Leverage</dt><dd id="st-lev">—</dd></dl>
+  </div>
+</section>
+
+<!-- ============ C–F. WORKSPACE ============ -->
+<main id="main" class="workspace">
+
+  <!-- C. ADVANCED CHART -->
+  <section class="chart-panel" aria-label="Trading chart">
+    <div class="chart-host" id="chart-host">
+      <button class="chart-float" id="chart-full" title="Fullscreen" aria-label="Fullscreen">⛶</button>
+      <div class="chart-brand" id="chart-brand" aria-hidden="false">
+        <span class="brand-o">O</span><span class="brand-rest">penfund</span>
+        <small>Chart by Openfund Data</small>
+        <a class="vela-credit" href="https://github.com/LuxAlgo/Vela" target="_blank" rel="noopener">Vela ↗</a>
+      </div>
+      <div class="chart-msg" id="chart-msg" hidden></div>
+    </div>
+  </section>
+
+  <!-- D. ORDER BOOK / MARKET DATA -->
+  <aside class="book-panel" aria-label="Market data">
+    <div class="panel-tabs" role="tablist" aria-label="Market data views">
+      <button role="tab" data-book-tab="book" class="active" aria-selected="true" data-i18n="book.tab">Order Book</button>
+      <button role="tab" data-book-tab="trades" aria-selected="false" data-i18n="book.tradesTab">Trades</button>
+    </div>
+    <div class="book-view" id="book-view" data-view="book">
+      <div class="book-controls">
+        <label class="grp"><span data-i18n="book.grouping">Grouping</span>
+          <select id="book-group" aria-label="Order book price grouping">
+            <option value="1">1×</option><option value="10">10×</option><option value="100">100×</option>
+          </select>
+        </label>
+        <label class="dense"><input type="checkbox" id="book-dense"> <span data-i18n="book.compact">Compact</span></label>
+        <span class="book-src" title="This is a deterministic simulated book — not real market liquidity" data-i18n="book.simulated">simulated</span>
+      </div>
+      <div class="book-cols"><span data-i18n="book.price">Price</span><span class="r" data-i18n="book.size">Size</span><span class="r" data-i18n="book.total">Total</span></div>
+      <div class="book-side asks" id="book-asks" aria-label="Ask levels"></div>
+      <div class="book-mid" id="book-mid"><b id="book-mid-price">—</b><span id="book-spread">—</span></div>
+      <div class="book-side bids" id="book-bids" aria-label="Bid levels"></div>
+      <p class="book-note" data-i18n="book.note">Virtual book derived from the simulation — does not represent real market depth.</p>
+    </div>
+    <div class="trades-view" id="trades-view" hidden>
+      <div class="book-cols trades-cols"><span data-i18n="book.price">Price</span><span class="r" data-i18n="book.size">Size</span><span class="r" data-i18n="book.time">Time</span></div>
+      <div class="trades-list" id="trades-list" aria-live="polite"></div>
+      <p class="book-note trades-note" data-i18n="trades.note">Presentation trades derived from the Gains mark price — Gains provides no trade tape.</p>
+    </div>
+  </aside>
+
+  <!-- E. ORDER ENTRY + G. ACCOUNT -->
+  <aside class="trade-panel" aria-label="Order entry">
+    <div class="acct-strip" id="acct-strip">
+      <div class="acct-row">
+        <span><em data-i18n="ac.equity">Equity</em> <b id="ac-equity" class="pos-acc" title="Balance + unrealized PnL">$25,000.00</b></span>
+        <span><em data-i18n="ac.available">Available</em> <b id="ac-available">$25,000.00</b></span>
+      </div>
+      <div class="acct-row">
+        <span><em data-i18n="ac.margin">Margin used</em> <b id="ac-margin">$0.00</b></span>
+        <span><em data-i18n="ac.unrealized">Unrealized</em> <b id="ac-upnl">$0.00</b></span>
+      </div>
+      <div class="acct-row dim">
+        <span><em data-i18n="ac.positions">Positions</em> <b id="ac-pos">0</b> · <em data-i18n="ac.orders">Orders</em> <b id="ac-ord">0</b></span>
+        <span><em data-i18n="ac.mode">Mode</em> <b data-i18n="ac.modeVal">Cross · Simulated</b></span>
+      </div>
+    </div>
+
+    <div class="side-group" role="group" aria-label="Direction">
+      <button id="side-long" class="side long active" aria-pressed="true" data-i18n="side.long">Long</button>
+      <button id="side-short" class="side short" aria-pressed="false" data-i18n="side.short">Short</button>
+    </div>
+
+    <div class="otype-group" role="group" aria-label="Order type">
+      <button data-otype="market" class="ot active" aria-pressed="true" data-i18n="ot.market">Market</button>
+      <button data-otype="limit" class="ot" aria-pressed="false" data-i18n="ot.limit">Limit</button>
+      <button data-otype="stop" class="ot" aria-pressed="false" data-i18n="ot.stop">Stop</button>
+    </div>
+
+    <div class="lev-box">
+      <div class="lev-head">
+        <span data-i18n="lev">Leverage</span>
+        <b id="lev-val" class="lev-val">5×</b>
+      </div>
+      <input type="range" id="lev-range" min="1" max="100" value="5" step="1" aria-label="Leverage">
+      <div class="lev-presets" id="lev-presets">
+        <button data-lev="1">1×</button><button data-lev="2">2×</button><button data-lev="5" class="active">5×</button><button data-lev="10">10×</button><button data-lev="25">25×</button><button data-lev="50">50×</button><button data-lev="100">100×</button>
+      </div>
+      <p class="field-err" id="lev-err" hidden></p>
+    </div>
+
+    <div class="form-grid">
+      <label class="field" id="price-field">
+        <span data-i18n="of.price">Trigger / Limit price <em>USD</em></span>
+        <input type="number" id="of-price" step="any" min="0" placeholder="—" autocomplete="off" disabled>
+      </label>
+      <label class="field">
+        <span data-i18n="of.collateral">Collateral <em>USD</em></span>
+        <input type="number" id="of-collateral" step="any" min="0" placeholder="0.00" autocomplete="off" value="100">
+      </label>
+      <div class="field">
+        <span class="lbl-row"><span><em data-i18n="of.size">Size</em> <em id="of-units">—</em></span>
+          <span class="pct-btns">
+            <button data-pct="25">25%</button><button data-pct="50">50%</button><button data-pct="75">75%</button><button data-pct="100">MAX</button>
+          </span>
+        </span>
+        <output id="of-size" class="out">0.000000</output>
+      </div>
+      <div class="kv"><span data-i18n="of.notional">Notional</span><b id="of-notional">$0.00</b></div>
+      <label class="field sl">
+        <span data-i18n="of.sl">Stop Loss <em>USD · optional</em></span>
+        <input type="number" id="of-sl" step="any" min="0" placeholder="—" autocomplete="off">
+      </label>
+      <label class="field tp">
+        <span data-i18n="of.tp">Take Profit <em>USD · optional</em></span>
+        <input type="number" id="of-tp" step="any" min="0" placeholder="—" autocomplete="off">
+      </label>
+      <p class="field-err" id="of-err" hidden></p>
+    </div>
+
+    <div class="risk-box" aria-label="Risk and execution summary">
+      <div class="kv"><span data-i18n="rk.entry">Est. entry</span><b id="rk-entry">—</b></div>
+      <div class="kv"><span data-i18n="rk.oracle">Oracle price</span><b id="rk-oracle">—</b></div>
+      <div class="kv"><span data-i18n="rk.liq">Est. liquidation</span><b id="rk-liq" title="Simplified model: entry × (1 ∓ (1/leverage − 0.5% maintenance))">—</b></div>
+      <div class="kv"><span data-i18n="rk.margin">Est. margin</span><b id="rk-margin">—</b></div>
+      <div class="kv"><span data-i18n="rk.fee">Est. fee (open)</span><b id="rk-fee" title="Simplified flat taker fee of 0.05% of notional">—</b></div>
+      <div class="kv"><span data-i18n="rk.impact">Price impact</span><b class="na" title="Requires a real liquidity model — unavailable in demo" data-i18n="rk.impactVal">N/A</b></div>
+      <div class="kv"><span data-i18n="rk.maxloss">Max loss at SL</span><b id="rk-maxloss">—</b></div>
+    </div>
+
+    <button class="submit long" id="submit-order" data-i18n="submit.long">Review order — Long</button>
+    <p class="demo-banner" title="All orders in this build are simulated locally" data-i18n="demoBanner">Demo Mode — No Real Orders Are Submitted</p>
+  </aside>
+
+  <!-- F. POSITIONS / ORDERS WORKSPACE -->
+  <section class="bottom-panel" aria-label="Positions and orders">
+    <div class="resize-handle" id="bottom-resize" role="separator" aria-orientation="horizontal" aria-label="Resize workspace" tabindex="0" title="Drag to resize"></div>
+    <div class="panel-tabs bt" role="tablist" aria-label="Account workspace">
+      <button role="tab" data-bt="positions" class="active" aria-selected="true"><span data-i18n="bt.positions">Positions</span> <i id="cnt-positions" class="cnt">0</i></button>
+      <button role="tab" data-bt="orders" aria-selected="false"><span data-i18n="bt.orders">Open Orders</span> <i id="cnt-orders" class="cnt">0</i></button>
+      <button role="tab" data-bt="history" aria-selected="false" data-i18n="bt.history">Order History</button>
+      <button role="tab" data-bt="fills" aria-selected="false" data-i18n="bt.fills">Fills</button>
+      <button role="tab" data-bt="funding" aria-selected="false" data-i18n="bt.funding">Funding</button>
+    </div>
+    <div class="bt-body">
+      <div class="empty-state" id="bt-empty">
+        <p data-i18n="bt.empty">No activity in this simulated account.</p>
+        <button class="ghost-btn" id="load-demo" data-i18n="bt.loadDemo">Load demo scenario</button>
+        <span class="hint" data-i18n="bt.hint">Seeds two positions, one pending limit order and history so you can explore the terminal.</span>
+      </div>
+      <div class="bt-table" id="bt-positions" data-t="positions" hidden>
+        <table><thead><tr>
+          <th data-i18n="th.market">Market</th><th data-i18n="th.side">Side</th><th class="r" data-i18n="th.size">Size</th><th class="r" data-i18n="th.entry">Entry</th><th class="r" data-i18n="th.mark">Mark</th><th data-i18n="th.lev">Lev</th><th class="r" data-i18n="th.collateral">Collateral</th><th class="r" data-i18n="th.unrealized">Unrealized PnL</th><th class="r">ROE</th><th class="r" data-i18n="th.liq">Liq. price</th><th class="r" data-i18n="th.sltp">SL / TP</th><th data-i18n="th.actions">Actions</th>
+        </tr></thead><tbody id="tb-positions"></tbody></table>
+      </div>
+      <div class="bt-table" id="bt-orders" data-t="orders" hidden>
+        <table><thead><tr>
+          <th data-i18n="th.market">Market</th><th data-i18n="th.type">Type</th><th data-i18n="th.side">Side</th><th class="r" data-i18n="th.size">Size</th><th class="r" data-i18n="of.priceTh">Trigger / Limit</th><th data-i18n="th.status">Status</th><th data-i18n="th.created">Created</th><th data-i18n="th.actions">Actions</th>
+        </tr></thead><tbody id="tb-orders"></tbody></table>
+      </div>
+      <div class="bt-table" id="bt-history" data-t="history" hidden>
+        <table><thead><tr>
+          <th data-i18n="th.market">Market</th><th data-i18n="th.type">Type</th><th data-i18n="th.side">Side</th><th class="r" data-i18n="th.size">Size</th><th class="r" data-i18n="th.price">Price</th><th data-i18n="th.result">Result</th><th data-i18n="th.time">Time</th>
+        </tr></thead><tbody id="tb-history"></tbody></table>
+      </div>
+      <div class="bt-table" id="bt-fills" data-t="fills" hidden>
+        <table><thead><tr>
+          <th>Market</th><th>Side</th><th class="r">Size</th><th class="r">Price</th><th class="r">Fee</th><th>Role</th><th>Time</th>
+        </tr></thead><tbody id="tb-fills"></tbody></table>
+      </div>
+      <div class="bt-table" id="bt-funding" data-t="funding" hidden>
+        <table><thead><tr>
+          <th data-i18n="th.market">Market</th><th class="r">Rate (1h)</th><th class="r" data-i18n="th.payment">Payment</th><th data-i18n="th.time">Time</th>
+        </tr></thead><tbody id="tb-funding"></tbody></table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ H. STATUS BAR ============ -->
+<footer class="status-bar">
+  <span class="badge-demo" title="This build runs a local deterministic simulation — no exchange or chain connection" data-i18n="sb.demo">DEMO MODE</span>
+  <span class="sb-item" id="sb-source" title="Verified Gains Network market data (REST + WebSocket)" data-i18n="sb.source">Data: Gains Network · api.gains.trade</span>
+  <span class="sb-item"><span id="sb-tick">…</span></span>
+  <span class="sb-item sb-right"><button class="linklike" id="assumptions-btn" data-i18n="sb.assumptions">Demo assumptions</button></span>
+  <span class="sb-item"><time id="sb-clock">—</time></span>
+</footer>
+
+<!-- ============ DIALOGS ============ -->
+<dialog id="review-dialog" class="dlg">
+  <h2 data-i18n="dlg.review">Order review</h2>
+  <div id="review-body"></div>
+  <p class="dlg-warn" data-i18n="demoBanner">Demo Mode — No Real Orders Are Submitted</p>
+  <div class="dlg-actions">
+    <button class="ghost-btn" id="review-cancel" data-i18n="dlg.cancel">Cancel</button>
+    <button class="submit long" id="review-confirm" data-i18n="dlg.confirmOrder">Confirm simulated order</button>
+  </div>
+</dialog>
+
+<dialog id="confirm-dialog" class="dlg">
+  <h2 id="confirm-title">Confirm</h2>
+  <p id="confirm-text"></p>
+  <div class="dlg-actions">
+    <button class="ghost-btn" id="confirm-cancel" data-i18n="dlg.cancel">Cancel</button>
+    <button class="submit long" id="confirm-ok" data-i18n="dlg.confirm">Confirm</button>
+  </div>
+</dialog>
+
+<dialog id="sltp-dialog" class="dlg">
+  <h2 id="sltp-title">Modify risk</h2>
+  <label class="field"><span>Stop Loss <em>USD</em></span><input type="number" id="sltp-sl" step="any" min="0" placeholder="—"></label>
+  <label class="field"><span>Take Profit <em>USD</em></span><input type="number" id="sltp-tp" step="any" min="0" placeholder="—"></label>
+  <p class="field-err" id="sltp-err" hidden></p>
+  <div class="dlg-actions">
+    <button class="ghost-btn" id="sltp-cancel" data-i18n="dlg.cancel">Cancel</button>
+    <button class="submit long" id="sltp-save" data-i18n="dlg.save">Save</button>
+  </div>
+</dialog>
+
+<dialog id="assumptions-dialog" class="dlg">
+  <h2 data-i18n="asm.title">Demo assumptions</h2>
+  <ul class="asm">
+    <li data-i18n="asm.fees"><b>Fees:</b> flat 0.05% taker fee on notional at open and close. Maker fee 0%.</li>
+    <li data-i18n="asm.margin"><b>Margin:</b> initial margin = notional / leverage. Cross mode, no partial margin.</li>
+    <li data-i18n="asm.liq"><b>Liquidation:</b> simplified — entry × (1 ∓ (1/leverage − 0.5% maintenance)). Real venues use tiered maintenance margins.</li>
+    <li data-i18n="asm.exec"><b>Execution:</b> market orders fill at the current simulated mark price with zero slippage. Limit and stop orders trigger when the mark crosses the trigger price.</li>
+    <li data-i18n="asm.prices"><b>Prices:</b> deterministic seeded random walk, refreshed every 1.5 s. Not related to real markets.</li>
+    <li data-i18n="asm.book"><b>Order book:</b> a virtual book derived from the same simulation. It does not represent real liquidity or depth.</li>
+    <li data-i18n="asm.funding"><b>Funding:</b> synthetic 1h rate applied to open positions every simulated hour in the demo scenario.</li>
+  </ul>
+  <p class="dlg-note" data-i18n="asm.note">These rules do not reproduce dYdX, Gains Network or any production execution model.</p>
+  <div class="dlg-actions"><button class="ghost-btn dlg-close">Close</button></div>
+</dialog>
+
+<dialog id="settings-dialog" class="dlg">
+  <h2 data-i18n="set.title">Settings</h2>
+  <p class="dlg-note" data-i18n="set.note">Settings persistence is planned for a later phase. Display preferences currently reset on reload.</p>
+  <label class="check-row"><input type="checkbox" id="set-tick" checked> <span data-i18n="set.tick">Live price simulation</span></label>
+  <label class="check-row"><input type="checkbox" id="set-flash" checked> <span data-i18n="set.flash">Row price flash</span></label>
+  <label class="check-row"><input type="checkbox" id="set-sound" disabled> <span data-i18n="set.sound">Execution sound (unavailable)</span></label>
+  <div class="dlg-actions"><button class="ghost-btn dlg-close">Close</button></div>
+</dialog>
+
+<dialog id="notifications-dialog" class="dlg">
+  <h2 data-i18n="notif.title">Notifications</h2>
+  <ul class="notif-list" id="notif-list"><li class="notif-empty">No notifications yet. Simulated executions will appear here.</li></ul>
+  <div class="dlg-actions"><button class="ghost-btn dlg-close">Close</button></div>
+</dialog>
+
+<script src="gains-adapter.js?v=7"></script></script>
+<script src="assets/vela-workspace.global.min.js"></script>
+<script src="vela-bridge.js?v=7"></script>
+<script src="terminal-data.js?v=7"></script>
+<script src="terminal.js?v=7"></script>
+<script>
+window.__tests=[];
+function T(name,fn){try{const r=fn();window.__tests.push((r===false?'FAIL':'PASS')+' - '+name)}catch(e){window.__tests.push('ERROR - '+name+' :: '+e.message)}}
+setTimeout(async ()=>{
+  await new Promise(r=>setTimeout(r,13000));
+  document.getElementById('market-select-btn').click();
+  await new Promise(r=>setTimeout(r,1500));
+  // go to stocks, pick a closed market
+  const stocksBtn=[...document.querySelectorAll('#dd-cats button')].find(b=>b.textContent.includes('سهام'));
+  stocksBtn.click();
+  await new Promise(r=>setTimeout(r,800));
+  const closedLi=document.querySelector('#market-dd-list li.closed');
+  closedLi.click();
+  await new Promise(r=>setTimeout(r,1500));
+  T('closed market selected: submit disabled', ()=>document.getElementById('submit-order').disabled===true);
+  // reopen → click "همه" tab → click BTC
+  document.getElementById('market-select-btn').click();
+  await new Promise(r=>setTimeout(r,600));
+  const allBtn=document.querySelector('#dd-cats button[data-cat="all"]');
+  allBtn.click();
+  await new Promise(r=>setTimeout(r,600));
+  const btc=document.querySelector('#market-dd-list li[data-id="BTC/USD"]');
+  T('BTC row visible in All tab', ()=>!!btc);
+  btc.click();
+  await new Promise(r=>setTimeout(r,1800));
+  T('BTC: submit re-enabled', ()=>document.getElementById('submit-order').disabled===false);
+  T('BTC: error cleared', ()=>document.getElementById('of-err').hidden===true);
+  document.title='R3B-DONE';
+  const d=document.createElement('div'); d.id='test-results'; d.textContent=window.__tests.join(' ||| ');
+  document.body.appendChild(d);
+},1000);
+</script></body>
+</html>
