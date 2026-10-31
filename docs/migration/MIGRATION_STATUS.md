@@ -25,6 +25,17 @@
 - [x] hash routing (#/ and #/terminal) — static-server friendly
 - [x] visual parity verified: landing + terminal screenshots match legacy (dark theme, Finglish, live Gains data)
 
+### Phase 2a fixes — legacy-runtime parity inside React (2026-10-31, E2E green)
+
+Root causes found and fixed (all surfaced by real-browser Playwright E2E with real clicks):
+- [x] `DOMContentLoaded` re-dispatch must BUBBLE — locale.js listens on window; a non-bubbling synthetic event dispatched on document never reaches it (dead language/theme/translation wiring)
+- [x] StrictMode double-effect re-injected the legacy script chain → every listener wired twice → clicks toggled twice (net no-op). Legacy chain now injected once per browser page (window guard)
+- [x] RainbowKitProvider wraps children in `<div data-rk>` — locale.js skips [data-rk] subtrees, so with the provider around the whole app nothing ever translated. Provider moved INSIDE RainbowConnect (wraps only the wallet button inside #rainbow-host)
+- [x] in-page anchors (#markets, #accounts…) were hijacked by the hash router → blank page. main.tsx intercepts them (smooth scroll, route untouched); unknown hashes fall back to '/' via a catch-all route; '#/#section' cross-page links navigate + scroll after boot (sessionStorage ofScrollTo)
+- [x] leaving a page now reloads the app (per-page reload timer, StrictMode-safe) so the legacy runtime (Gains WS, intervals, Vela workspace) is fully torn down, exactly like the classic multi-document site
+- [x] E2E (Playwright): 18/18 functional checks green on dev :5173 AND built :4173 — theme toggle fa/en, dir flips, arrow glyphs, translations, anchors, market rows (REST 10 rows), terminal workspace LTR + trade panel right, terminal lang + theme, terminal→landing reload
+- Known artifact: 1–2 transient `textContent of null` errors in the 120ms teardown window between unmount and reload (terminal interval tick) — benign, gone after reload
+
 ## Phase 3 — RainbowKit
 - [x] RainbowKit + wagmi + viem + TanStack Query wired (getDefaultConfig, WalletProvider)
 - [x] Custom bilingual ConnectButton portal in terminal header (replaces legacy demo button): modal, address, balance, account switch, network status, disconnect, persistence
