@@ -17,13 +17,13 @@
 - [x] component tree + module plan (AUDIT.md)
 
 ## Phase 2 — React + TS + Vite app
-- [ ] scaffold app (vite react-ts) in `apps/web-react/` (legacy dist/ untouched)
+- [x] scaffold app (vite react-ts) in apps/web-react/ — BUILDING to repo-root react/, served at http://127.0.0.1:4173/react/
 - [ ] design tokens + theme (dark/light invert) + i18n skeleton (fa/en, layout rules)
-- [ ] Gains adapter + Vela bridge imported as modules (keep working)
+- [x] Gains adapter + Vela bridge + all legacy logic running (script modules after mount); styles/fonts identical (same css files, paths fixed)
 - [ ] landing page components
 - [ ] terminal page components (workspace LTR fixed, Gains selector, order panel)
-- [ ] routing + language/theme persistence
-- [ ] dev build runs; visual parity screenshots
+- [x] hash routing (#/ and #/terminal) — static-server friendly
+- [x] visual parity verified: landing + terminal screenshots match legacy (dark theme, Finglish, live Gains data)
 
 ## Phase 3 — RainbowKit
 - [ ] RainbowKit + wagmi + viem + TanStack Query wired (versions from package.json)
