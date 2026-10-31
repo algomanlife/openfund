@@ -9,8 +9,7 @@
 <link rel="icon" href="assets/mark-mint.svg">
 <link rel="preload" href="assets/openfund-persian-400-v4.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/openfund-persian-600-v4.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="terminal.css?v=4">
-<link rel="preload" href="assets/vela.global.min.js" as="script">
+<link rel="stylesheet" href="terminal.css?v=5">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -66,9 +65,10 @@
       <div class="dd-cats" id="dd-cats" role="group" aria-label="Market categories">
         <button data-cat="crypto" class="active">crypto</button><button data-cat="forex">forex</button><button data-cat="stocks">stocks</button><button data-cat="indices">indices</button><button data-cat="commodities">commodities</button>
       </div>
-      <div class="dd-head"><span data-i18n="dd.market">Market</span><span data-i18n="dd.price">Price</span><span data-i18n="dd.24h">24h</span></div>
+      <div class="dd-head"><span data-i18n="dd.market">Market</span><span data-i18n="dd.price">Price</span><span data-i18n="dd.24h">24h</span><span data-i18n="dd.funding">Funding</span><span data-i18n="dd.oi">Open Interest</span></div>
       <ul class="dd-list" id="market-dd-list"></ul>
       <p class="dd-foot" data-i18n="dd.foot">488 live Gains Network markets</p>
+      <div class="dd-kbd" aria-hidden="true"><span>⌘K</span> Open · <span>↑↓</span> Navigate · <span>Enter</span> Select · <span>⌘S</span> Favorite · <span>Esc</span> Close</div>
     </div>
   </div>
   <div class="market-stats" id="market-stats">
@@ -89,21 +89,8 @@
 
   <!-- C. ADVANCED CHART -->
   <section class="chart-panel" aria-label="Trading chart">
-    <div class="chart-toolbar">
-      <div class="tf-group" id="tf-group" role="group" aria-label="Timeframe">
-        <button data-tf="1m" class="tf">1m</button><button data-tf="5m" class="tf">5m</button><button data-tf="15m" class="tf">15m</button><button data-tf="30m" class="tf">30m</button><button data-tf="1H" class="tf">1H</button><button data-tf="4H" class="tf">4H</button><button data-tf="1D" class="tf">1D</button>
-      </div>
-            <div class="ct-group" role="group" aria-label="Indicators">
-        <button id="ind-ma" class="ctl" title="Simple moving average (20)">MA20</button>
-        <button id="ind-vol" class="ctl active" title="Volume histogram">VOL</button>
-      </div>
-      <div class="ct-spacer"></div>
-      <div class="ct-group" role="group" aria-label="View controls">
-        <button id="chart-reset" class="ctl" title="Reset view">⟲</button>
-        <button id="chart-full" class="ctl" title="Fullscreen">⛶</button>
-      </div>
-    </div>
-        <div class="chart-host" id="chart-host">
+    <div class="chart-host" id="chart-host">
+      <button class="chart-float" id="chart-full" title="Fullscreen" aria-label="Fullscreen">⛶</button>
       <div class="chart-msg" id="chart-msg" hidden></div>
     </div>
   </section>
@@ -335,10 +322,10 @@
   <div class="dlg-actions"><button class="ghost-btn dlg-close">Close</button></div>
 </dialog>
 
-<script src="gains-adapter.js?v=4"></script></script>
-<script src="assets/vela.global.min.js"></script>
-<script src="vela-bridge.js?v=4"></script>
-<script src="terminal-data.js?v=4"></script>
-<script src="terminal.js?v=4"></script>
+<script src="gains-adapter.js?v=5"></script></script>
+<script src="assets/vela-workspace.global.min.js"></script>
+<script src="vela-bridge.js?v=5"></script>
+<script src="terminal-data.js?v=5"></script>
+<script src="terminal.js?v=5"></script>
 </body>
 </html>

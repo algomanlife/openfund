@@ -9,9 +9,11 @@ The terminal consumes the **public Gains Network market-data API** (no SDK, no k
 | `GET https://api.gains.trade/v1/arbitrum/markets` | 488 markets with group, precision, min/max leverage, spread, funding & fee metadata |
 | `GET /v1/arbitrum/prices` | `{market, mark, index, updatedAt}` — 335 symbols |
 | `GET /v1/arbitrum/markets/{SYMBOL-DASHED}/candles?interval=1m\|5m\|15m\|30m\|1h\|4h\|1d&from={ms}&to={ms}` | OHLC strings, epoch-ms open times; **1w not supported (verified empty)** |
-| `WS wss://api.gains.trade/v1/arbitrum/ws` — `{action:"subscribe",channel:"prices"}` | live mark/index updates |
+| `WS wss://api.gains.trade/v1/arbitrum/ws` — `{op:"subscribe",channel:"prices"}`; server sends `{op:"hello"}`, `{op:"ping"}` (must answer `{op:"pong"}`), `{op:"subscribed"}` and `{channel:"prices", snapshot?, seq, data}` — sequence gaps force a resubscribe | live mark/index updates (~90 msg/s across all markets; verified 1803 updates in 20 s) |
 
-**Not provided by this API (never fabricated):** volume, open interest, executed trade tape, order-book depth. The terminal shows `—` for volume/OI and labels its order book & trades views as simulated presentation only. `vendor/gains-sdk` (the on-chain SDK) remains vendored but unused; on-chain trading, wallets and testnet flows stay **out of scope** for this phase.
+**Open interest** IS provided per market in `/markets` (`funding.openInterestLongUsd/ShortUsd`) and is shown as real data.
+
+**Not provided by this API (never fabricated):** volume, executed trade tape, order-book depth. The terminal shows `—` for volume/OI and labels its order book & trades views as simulated presentation only. `vendor/gains-sdk` (the on-chain SDK) remains vendored but unused; on-chain trading, wallets and testnet flows stay **out of scope** for this phase.
 
 ## Goal
 

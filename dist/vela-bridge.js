@@ -1,75 +1,90 @@
 /* ============================================================
-   Openfund Charts — Vela bridge
-   Mounts a LuxAlgo Vela chart (vendored @luxalgo/vela@0.9.3,
-   dist/assets/vela.global.min.js → window.Vela) inside the
-   Openfund terminal, wired to the Gains provider.
+   Openfund Charts — Vela WORKSPACE bridge
+   Mounts the full LuxAlgo Vela workspace (topbar with symbol /
+   timeframe / style / indicators, drawing toolbar, status line,
+   bottom bar, symbol search, keyboard map) as the terminal chart,
+   powered by the Gains provider.
 
+   Bundle: dist/assets/vela-workspace.global.min.js
+           (esbuild IIFE of @luxalgo/vela/workspace@0.9.3)
    Contract (packages/openfund-charts):
      OpenfundCharts.mount(container, opts) → controller
-     controller.setSymbol(symbol)
+     controller.setSymbol(symbol)      in-place market switch
      controller.setTimeframe(tf)
      controller.setTheme('dark'|'light')
+     controller.setLocale(tag)
      controller.resize()
-     controller.on(event, handler)
-     controller.chart            → underlying Vela instance
+     controller.chart                   → active Vela chart
+     controller.workspace               → VelaWorkspace instance
      controller.destroy()
    ============================================================ */
 (function(global){
 'use strict';
 const G = global.OpenfundGains;
 if (!G) throw new Error('OpenfundGains adapter required before vela-bridge');
-if (!global.Vela) throw new Error('Vela bundle not loaded (assets/vela.global.min.js)');
-const VelaClass = global.Vela.Vela || global.Vela;   /* global build attaches the exports object */
+const WLib = global.VelaWorkspace;
+if (!WLib || !WLib.VelaWorkspace) throw new Error('Vela workspace bundle not loaded (assets/vela-workspace.global.min.js)');
 
-/* Openfund theme overlays on Vela's built-in dark/light bases.
-   Candle colors stay Vela defaults (shared across themes). */
-const CHART_BG = { dark: '#060808', light: '#F2F5F0' };
+/* Gains-supported timeframes only (1w verified unsupported) */
+const TIMEFRAMES = ['1m', '5m', '15m', '30m', '1h', '4h', '1d'];
+
+/* Openfund brand themes (Vela full theme objects — 7 required fields) */
+const THEMES = {
+  dark: {
+    background: '#060808', textColor: '#A9B3A9', gridColor: '#FFFFFF0A',
+    borderColor: '#FFFFFF18', upColor: '#82E7BD', downColor: '#E89483',
+    fontFamily: "Ubuntu, 'Irancell', system-ui, sans-serif"
+  },
+  light: {
+    background: '#F2F5F0', textColor: '#3F4C44', gridColor: '#0A120D12',
+    borderColor: '#0A120D22', upColor: '#12965D', downColor: '#C0453E',
+    fontFamily: "Ubuntu, 'Irancell', system-ui, sans-serif"
+  }
+};
 
 function mount(container, opts){
   opts = opts || {};
   const el = typeof container === 'string' ? document.querySelector(container) : container;
   if (!el) throw new Error('Vela mount: container not found');
 
-  const provider = G.createVelaProvider();
-  const chart = new VelaClass(el, {
-    symbol: opts.symbol || 'gains:BTC/USD',
+  const theme = THEMES[opts.theme === 'light' ? 'light' : 'dark'];
+  const ws = new WLib.VelaWorkspace(el, {
+    layout: false,                    /* single-chart mode */
+    symbol: 'gains:' + (opts.symbol || 'BTC/USD'),
     timeframe: opts.timeframe || '1m',
-    theme: opts.theme === 'light' ? 'light' : 'dark'
-    /* attribution: Vela renders its NOTICE mark by default (kept enabled) */
+    providers: { gains: () => G.createVelaProvider() },
+    timeframes: TIMEFRAMES,
+    live: true,
+    theme,
+    persist: false
+    /* Vela NOTICE attribution mark: enabled by default (upstream NOTICE) */
   });
-  chart.data.registerProvider('gains', provider);
 
-  /* re-frame on resize */
-  const ro = new ResizeObserver(() => { try { chart.resize(); } catch(e){} });
+  const ro = new ResizeObserver(() => { try { ws.chart && ws.chart.resize(); } catch(e){} });
   ro.observe(el);
 
-  const listeners = new Map();
-  function on(event, handler){
-    const off = chart.on(event, handler);
-    if (!listeners.has(event)) listeners.set(event, []);
-    listeners.get(event).push(off);
-    return off;
-  }
-
   const controller = {
-    chart,
-    setSymbol(symbol){ return chart.setMarket({ symbol: 'gains:' + symbol }); },
-    setTimeframe(tf){ return chart.setMarket({ timeframe: tf }); },
-    setMarket(next){ return chart.setMarket(next); },
-    setTheme(theme){
-      return chart.setTheme(theme === 'light' ? 'light' : 'dark');
+    workspace: ws,
+    get chart(){ return ws.chart; },
+    setSymbol(symbol){ return ws.chart.setMarket({ symbol: 'gains:' + symbol }); },
+    setTimeframe(tf){ return ws.chart.setMarket({ timeframe: tf }); },
+    setMarket(next){
+      if (next.symbol) next.symbol = 'gains:' + next.symbol;
+      return ws.chart.setMarket(next);
     },
-    resize(){ return chart.resize(); },
-    on,
+    setTheme(theme){
+      return ws.setTheme(THEMES[theme === 'light' ? 'light' : 'dark']);
+    },
+    setLocale(tag){ try { return ws.setLocale(tag); } catch(e){} },
+    resize(){ try { return ws.chart && ws.chart.resize(); } catch(e){} },
+    on(event, handler){ return ws.chart.on(event, handler); },
     destroy(){
       ro.disconnect();
-      for (const offs of listeners.values()) offs.forEach(off => { try { off(); } catch(e){} });
-      listeners.clear();
-      try { chart.destroy(); } catch(e){}
+      try { ws.destroy(); } catch(e){}
     }
   };
   return controller;
 }
 
-global.OpenfundCharts = { mount, CHART_BG };
+global.OpenfundCharts = { mount, THEMES, TIMEFRAMES };
 })(window);

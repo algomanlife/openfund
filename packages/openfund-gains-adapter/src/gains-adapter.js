@@ -103,54 +103,80 @@ async function stats24h(symbol){
   return { high, low, changePct: (last - first) / first * 100, bars: bars.length };
 }
 
-/* ---------- live price WS (shared singleton, reconnect + staleness) ---------- */
-let ws = null, wsSeq = 0, wsLive = false, lastMsgAt = 0, retry = 0, retryTimer = null;
+/* ---------- live price WS (shared singleton, reconnect + staleness) ----------
+   Protocol (verified 2026-10-31, mirrors the landing integration):
+     send  {op:'subscribe',   channel:'prices'}
+     recv  {op:'hello', heartbeatMs}
+     recv  {op:'ping'}            -> must answer {op:'pong'}
+     recv  {channel:'prices', snapshot?, seq, data:[{market, mark, index, updatedAt}]}
+   A sequence gap forces unsubscribe + resubscribe (snapshot resync).          */
+let ws = null, wsGen = 0, wsLive = false, lastMsgAt = 0, retry = 0, retryTimer = null, priceSeq = null;
 const priceHandlers = new Set();
 const statusHandlers = new Set();
 
 function notifyStatus(){
-  const stale = lastMsgAt && Date.now() - lastMsgAt > 30000;
+  const stale = lastMsgAt && Date.now() - lastMsgAt > 45000;
   const s = wsLive && !stale ? 'live' : (ws ? 'reconnecting' : 'connecting');
   for (const h of statusHandlers) h(s, { lastMsgAt });
 }
+function handlePriceData(items){
+  lastMsgAt = Date.now();
+  for (const it of items){
+    if (!it || typeof it.market !== 'string') continue;
+    const mark = Number(it.mark);
+    if (!Number.isFinite(mark) || mark <= 0) continue;
+    const payload = { market: it.market, mark, index: Number(it.index) || null,
+                      updatedAt: Number(it.updatedAt) || Date.now() };
+    for (const h of priceHandlers) h(payload);
+  }
+  notifyStatus();
+}
 function connectWS(){
   if (ws) { try { ws.close(); } catch(e){} }
-  const mySeq = ++wsSeq;
-  let opened = false;
+  const myGen = ++wsGen;
   try { ws = new WebSocket(WS); } catch(e){ scheduleReconnect(); return; }
   ws.onopen = () => {
-    if (mySeq !== wsSeq) return;
-    opened = true; retry = 0;
-    ws.send(JSON.stringify({ action: 'subscribe', channel: 'prices' }));
+    if (myGen !== wsGen) return;
+    retry = 0; priceSeq = null;
+    ws.send(JSON.stringify({ op: 'subscribe', channel: 'prices' }));
     lastMsgAt = Date.now(); notifyStatus();
   };
   ws.onmessage = ev => {
-    if (mySeq !== wsSeq) return;
-    lastMsgAt = Date.now();
+    if (myGen !== wsGen) return;
     let msg;
     try { msg = JSON.parse(ev.data); } catch(e){ return; }
-    const items = Array.isArray(msg) ? msg : (Array.isArray(msg.data) ? msg.data : (msg.market ? [msg] : []));
-    for (const it of items){
-      if (!it || typeof it.market !== 'string') continue;
-      const mark = Number(it.mark);
-      if (!Number.isFinite(mark) || mark <= 0) continue;
-      const payload = { market: it.market, mark, index: Number(it.index) || null,
-                        updatedAt: Number(it.updatedAt) || Date.now() };
-      for (const h of priceHandlers) h(payload);
+    if (msg && msg.op === 'ping'){
+      try { ws.send(JSON.stringify({ op: 'pong' })); } catch(e){}
+      lastMsgAt = Date.now();
+      return;
     }
-    notifyStatus();
+    if (msg && msg.op === 'hello'){ lastMsgAt = Date.now(); notifyStatus(); return; }
+    if (msg && msg.op === 'subscribed'){ wsLive = true; notifyStatus(); return; }
+    if (msg && msg.channel === 'prices' && Array.isArray(msg.data)){
+      wsLive = true;
+      if (!msg.snapshot && priceSeq !== null && Number.isFinite(msg.seq) && msg.seq !== priceSeq + 1){
+        priceSeq = null;
+        try {
+          ws.send(JSON.stringify({ op: 'unsubscribe', channel: 'prices' }));
+          ws.send(JSON.stringify({ op: 'subscribe', channel: 'prices' }));
+        } catch(e){}
+        return;
+      }
+      if (Number.isFinite(msg.seq)) priceSeq = msg.seq;
+      handlePriceData(msg.data);
+    }
   };
-  ws.onerror = () => { if (mySeq === wsSeq && opened) wsLive = false; };
+  ws.onerror = () => { if (myGen === wsGen) wsLive = false; };
   ws.onclose = () => {
-    if (mySeq !== wsSeq) return;
-    wsLive = false; ws = null; notifyStatus();
+    if (myGen !== wsGen) return;
+    wsLive = false; ws = null; priceSeq = null; notifyStatus();
     scheduleReconnect();
   };
 }
 function scheduleReconnect(){
   if (retryTimer) return;
   retry++;
-  const delay = Math.min(15000, 1000 * Math.pow(1.6, Math.min(retry, 7)));
+  const delay = Math.min(30000, 2000 * Math.pow(2, Math.min(retry, 4)));
   retryTimer = setTimeout(() => { retryTimer = null; connectWS(); }, delay);
 }
 function subscribePrices(handler){
@@ -159,6 +185,14 @@ function subscribePrices(handler){
   return () => priceHandlers.delete(handler);
 }
 function subscribeStatus(handler){ statusHandlers.add(handler); notifyStatus(); return () => statusHandlers.delete(handler); }
+
+/* ---------- real open interest from /markets funding metadata ---------- */
+function openInterestUsd(meta){
+  if (!meta || !meta.funding) return null;
+  const l = Number(meta.funding.openInterestLongUsd), s = Number(meta.funding.openInterestShortUsd);
+  if (!Number.isFinite(l) || !Number.isFinite(s)) return null;
+  return { long: l, short: s, total: l + s };
+}
 
 /* ---------- Vela DataProvider (verified Gains data only) ---------- */
 function createVelaProvider(){
@@ -234,6 +268,6 @@ global.OpenfundGains = {
   rest: get, marketList, priceSnapshot,
   fetchCandles, stats24h,
   subscribePrices, subscribeStatus,
-  createVelaProvider
+  createVelaProvider, openInterestUsd
 };
 })(window);

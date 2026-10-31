@@ -25,7 +25,6 @@ const S = {
   btTab: 'positions',
   ddCategory: 'crypto',
   flashOn: true,
-  addedInd: new Set(),
   stats: null
 };
 const $ = id => document.getElementById(id);
@@ -60,6 +59,7 @@ const I18N = {
     'st.vol': 'حجم ۲۴ساعته', 'st.oi': 'موقعیت‌های باز', 'st.funding': 'فاندینگ ۱ساعته', 'st.lev': 'حداکثر اهرم',
     'dd.searchPh': 'جست‌وجوی بازار…', 'dd.market': 'بازار', 'dd.price': 'قیمت', 'dd.24h': '۲۴ساعته',
     'dd.noMatch': 'بازاری با این عبارت پیدا نشد.',
+    'dd.funding': 'فاندینگ', 'dd.oi': 'موقعیت باز',
     'dd.foot': '۴۸۸ بازار زندهٔ Gains Network — دادهٔ واقعی',
     'cat.crypto': 'رمزارز', 'cat.forex': 'فارکس', 'cat.stocks': 'سهام', 'cat.indices': 'شاخص', 'cat.commodity': 'کالا',
     'book.tab': 'Order Book', 'book.tradesTab': 'Trades',
@@ -148,6 +148,7 @@ const EN = {
   'st.lev': 'Max Leverage',
   'dd.searchPh': 'Search market…', 'dd.market': 'Market', 'dd.price': 'Price', 'dd.24h': '24h',
   'dd.noMatch': 'No market matches this search.',
+  'dd.funding': 'Funding', 'dd.oi': 'Open Interest',
   'dd.foot': '488 live Gains Network markets — verified data',
   'cat.crypto': 'crypto', 'cat.forex': 'forex', 'cat.stocks': 'stocks', 'cat.indices': 'indices', 'cat.commodity': 'commodities',
   'book.tab': 'Order Book', 'book.tradesTab': 'Trades',
@@ -280,6 +281,8 @@ function chartOverlay(html){
 function initChart(){
   if (!window.OpenfundCharts){ chartOverlay(`<b>${t('chart.unavailable')}</b><br>${t('chart.msg')}`); return; }
   try{
+    /* full Vela workspace: native topbar (symbol / timeframe / style /
+       indicators), drawing toolbar, status line, symbol search, keyboard */
     vc = window.OpenfundCharts.mount('#chart-host', {
       symbol: S.marketId, timeframe: S.tf, theme: curTheme
     });
@@ -287,54 +290,32 @@ function initChart(){
     chartOverlay(`<b>${t('chart.unavailable')}</b><br>${String(e.message || e)}`);
     return;
   }
-  const c = vc.chart;
-  c.on('load:start', () => chartOverlay(`<b>${t('chart.loading')}</b>`));
-  c.on('load:end', ev => {
+  const c = () => vc.chart;
+  vc.on('load:start', () => chartOverlay(`<b>${t('chart.loading')}</b>`));
+  vc.on('load:end', ev => {
     if (ev && ev.bars > 0){ chartOverlay(null); chartReady = true; }
     else chartOverlay(`<b>${t('chart.error')}</b>`);
   });
-  c.on('data:unresolved', () => chartOverlay(`<b>${t('chart.error')}</b>`));
-  c.on('market:changed', ev => { chartOverlay(null); });
-  /* indicator availability probe (best-effort) */
-  probeIndicators();
-}
-
-async function probeIndicators(){
-  try{
-    const list = await vc.chart.availableNativeIndicators();
-    const types = new Set((list || []).map(i => i.type || i.id));
-    $('ind-ma').hidden = !(types.has('sma') || types.has('ma'));
-    $('ind-vol').hidden = !types.has('volume');
-  }catch(e){ /* probe failed — leave defaults visible */ }
-}
-$('ind-ma').addEventListener('click', () => addIndicator('sma'));
-$('ind-vol').addEventListener('click', () => addIndicator('volume'));
-function addIndicator(type){
-  if (!vc || S.addedInd.has(type)) return;
-  try{
-    vc.chart.addNativeIndicator(type);
-    S.addedInd.add(type);
-    const btn = type === 'sma' ? $('ind-ma') : $('ind-vol');
-    btn.classList.add('active');
-    btn.title = t('set.note');
-  }catch(e){ /* not supported on this symbol */ }
+  vc.on('data:unresolved', () => chartOverlay(`<b>${t('chart.error')}</b>`));
+  /* the user can switch markets from Vela's own search — keep the
+     terminal chrome in sync with the chart's market */
+  vc.on('market:changed', ev => {
+    chartOverlay(null);
+    if (ev && ev.symbol){
+      const sym = String(ev.symbol).replace(/^gains:/, '');
+      if (sym !== S.marketId && board.meta.has(sym)){
+        selectMarket(sym);
+        /* selectMarket calls setChartMarket → same market, no loop */
+      }
+    }
+  });
 }
 
 function setChartMarket(){
   if (!vc) return;
-  try{
-    vc.setSymbol(S.marketId);
-    vc.setTimeframe(S.tf);
-  }catch(e){ chartOverlay(`<b>${t('chart.error')}</b>`); }
+  try{ vc.setSymbol(S.marketId); }catch(e){ chartOverlay(`<b>${t('chart.error')}</b>`); }
 }
 
-$('tf-group').addEventListener('click', e => {
-  const b = e.target.closest('.tf'); if (!b) return;
-  S.tf = b.dataset.tf;
-  [...$('tf-group').querySelectorAll('.tf')].forEach(x => x.classList.toggle('active', x === b));
-  if (vc){ try { vc.setTimeframe(S.tf); } catch(e){} }
-});
-$('chart-reset').addEventListener('click', () => { if (vc){ try{ vc.chart.setVisibleRangePreset('ALL'); }catch(e){ try{ vc.resize(); }catch(e2){} } } });
 $('chart-full').addEventListener('click', () => {
   document.documentElement.classList.toggle('fscreen');
   if (vc) setTimeout(() => { try{ vc.resize(); }catch(e){} }, 60);
@@ -356,30 +337,93 @@ function renderDropdown(filter){
   let items = marketSymbols();
   if (f) items = [...board.meta.values()].filter(m =>
     m.symbol.toLowerCase().includes(f) || m.base.toLowerCase().includes(f));
-  items = items.slice(0, 60);
-  list.innerHTML = items.map(m => {
-    const p = board.getMark(m.symbol);
-    const st = S.stats && S.marketId === m.symbol ? S.stats : null;
-    const price = p ? fmt.price(p, Number(m.pricePrecision)) : '—';
-    return `<li role="option" aria-selected="${m.symbol===S.marketId}" data-id="${m.symbol}" class="${m.symbol===S.marketId?'selected':''}">
-      <span class="mk">${iconHTML(m.symbol)}<b>${m.symbol}</b><small>${t('cat.' + (m.group === 'commodities' ? 'commodity' : m.group))}</small>
-        <span class="st" data-star="${m.symbol}">${S.favorites.has(m.symbol)?'★':'☆'}</span></span>
-      <span class="num r">${price}</span>
-      <span class="num r">${st ? fmt.pct(st.changePct) : '·'}</span>
-    </li>`;
-  }).join('') || `<li class="dd-none" style="padding:12px;color:var(--muted)">${t('dd.noMatch')}</li>`;
-  [...list.querySelectorAll('[data-star]')].forEach(el => {
-    el.addEventListener('click', e => {
-      e.stopPropagation();
-      const id = el.dataset.star;
-      S.favorites.has(id) ? S.favorites.delete(id) : S.favorites.add(id);
-      renderDropdown($('market-search').value);
-    });
-  });
-  [...list.querySelectorAll('li[data-id]')].forEach(li => {
-    li.addEventListener('click', () => { selectMarket(li.dataset.id); closeDropdown(); });
-  });
+  S.ddItems = items.slice(0, 60);
+  S.ddFocus = Math.max(0, S.ddItems.findIndex(m => m.symbol === S.marketId));
+  paintDropdown(true);
+  queueStats(S.ddItems);
 }
+
+/* DOM painted once per search/category change; live prices update in place */
+function paintDropdown(rebuild){
+  const list = $('market-dd-list');
+  const items = S.ddItems || [];
+  if (rebuild || list.children.length !== items.length){
+    list.innerHTML = items.map((m, i) => {
+      const p = board.getMark(m.symbol);
+      const fund = m.funding ? Number(m.funding.fundingRateLongHourly) : null;
+      const oi = (window.OpenfundGains.openInterestUsd ? window.OpenfundGains.openInterestUsd(m) : null);
+      const st = S.statsCache && S.statsCache.get(m.symbol);
+      const d = Number(m.pricePrecision);
+      return `<li role="option" aria-selected="${m.symbol===S.marketId}" data-id="${m.symbol}" data-i="${i}" class="${m.symbol===S.marketId?'selected':''}${i===S.ddFocus?' focused':''}">
+        <span class="mk">${iconHTML(m.symbol)}<b>${m.symbol}</b><small>${t('cat.' + (m.group === 'commodities' ? 'commodity' : m.group))}</small>
+          <span class="st" data-star="${m.symbol}">${S.favorites.has(m.symbol)?'★':'☆'}</span></span>
+        <span class="num r" data-cell="price">${p ? fmt.price(p, d) : '—'}</span>
+        <span class="num r ${st ? (st.changePct >= 0 ? 'up' : 'down') : ''}" data-cell="chg">${st ? fmt.pct(st.changePct) : '·'}</span>
+        <span class="num r" data-cell="fund">${fund != null && Number.isFinite(fund) ? (fund*100).toFixed(3)+'%' : '—'}</span>
+        <span class="num r" data-cell="oi">${oi ? '$'+fmt.compact(oi.total) : '—'}</span>
+      </li>`;
+    }).join('') || `<li class="dd-none" style="padding:12px;color:var(--muted)">${t('dd.noMatch')}</li>`;
+    [...list.querySelectorAll('[data-star]')].forEach(el => {
+      el.addEventListener('click', e => {
+        e.stopPropagation();
+        const id = el.dataset.star;
+        S.favorites.has(id) ? S.favorites.delete(id) : S.favorites.add(id);
+        paintDropdown(true);
+      });
+    });
+    [...list.querySelectorAll('li[data-id]')].forEach(li => {
+      li.addEventListener('click', () => { selectMarket(li.dataset.id); closeDropdown(); });
+    });
+    return;
+  }
+  /* in-place live update of price cells */
+  for (const li of list.querySelectorAll('li[data-id]')){
+    const p = board.getMark(li.dataset.id);
+    if (!p) continue;
+    const cell = li.querySelector('[data-cell="price"]');
+    const d = Number((board.getMeta(li.dataset.id) || {}).pricePrecision || 2);
+    const txt = fmt.price(p, d);
+    if (cell.textContent !== txt){
+      cell.classList.remove('flash-up', 'flash-down');
+      void cell.offsetWidth;
+      const prev = +cell.dataset.v || p;
+      cell.classList.add(p >= prev ? 'flash-up' : 'flash-down');
+      cell.textContent = txt;
+    }
+    cell.dataset.v = p;
+  }
+}
+
+/* lazy 24h stats for the visible rows (cached, low concurrency) */
+S.statsCache = new Map();
+let statsQueue = [], statsBusy = 0;
+function queueStats(items){
+  const now = Date.now();
+  statsQueue = (items || []).map(m => m.symbol).filter(s => {
+    const c = S.statsCache.get(s);
+    return !c || now - c.at > 180000;
+  });
+  pumpStats();
+}
+async function pumpStats(){
+  while (statsBusy < 2 && statsQueue.length){
+    const sym = statsQueue.shift();
+    statsBusy++;
+    board.stats24(sym).then(s => {
+      if (s) S.statsCache.set(sym, { data: s, at: Date.now() });
+      const li = $('market-dd-list').querySelector(`li[data-id="${sym}"]`);
+      if (li){
+        const st = S.statsCache.get(sym);
+        if (st){
+          const cell = li.querySelector('[data-cell="chg"]');
+          cell.textContent = fmt.pct(st.data.changePct);
+          cell.className = 'num r ' + (st.data.changePct >= 0 ? 'up' : 'down');
+        }
+      }
+    }).catch(() => {}).finally(() => { statsBusy--; pumpStats(); });
+  }
+}
+
 let ddOpen = false;
 function openDropdown(){
   ddOpen = true; renderDropdown('');
@@ -391,6 +435,34 @@ function closeDropdown(){
   ddOpen = false; $('market-dropdown').hidden = true;
   $('market-select-btn').setAttribute('aria-expanded', 'false');
 }
+function moveDdFocus(delta){
+  const n = (S.ddItems || []).length; if (!n) return;
+  S.ddFocus = ((S.ddFocus + delta) % n + n) % n;
+  const list = $('market-dd-list');
+  [...list.querySelectorAll('li')].forEach(li => li.classList.toggle('focused', +li.dataset.i === S.ddFocus));
+  const el = list.querySelector(`li[data-i="${S.ddFocus}"]`);
+  if (el) el.scrollIntoView({ block: 'nearest' });
+}
+function pickDdFocus(){
+  const m = (S.ddItems || [])[S.ddFocus];
+  if (m){ selectMarket(m.symbol); closeDropdown(); }
+}
+$('market-search').addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown'){ moveDdFocus(1); e.preventDefault(); }
+  else if (e.key === 'ArrowUp'){ moveDdFocus(-1); e.preventDefault(); }
+  else if (e.key === 'Enter'){ pickDdFocus(); e.preventDefault(); }
+  else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's'){
+    const m = (S.ddItems || [])[S.ddFocus];
+    if (m){ S.favorites.has(m.symbol) ? S.favorites.delete(m.symbol) : S.favorites.add(m.symbol); paintDropdown(true); }
+    e.preventDefault();
+  }
+});
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){
+    e.preventDefault();
+    ddOpen ? closeDropdown() : openDropdown();
+  }
+});
 $('market-select-btn').addEventListener('click', () => ddOpen ? closeDropdown() : openDropdown());
 $('market-search').addEventListener('input', e => renderDropdown(e.target.value));
 document.addEventListener('click', e => { if (ddOpen && !e.target.closest('.market-select')) closeDropdown(); });
@@ -405,8 +477,6 @@ $('dd-cats').addEventListener('click', e => {
 function selectMarket(id){
   S.marketId = id;
   S.stats = null;
-  S.addedInd.clear();
-  $('ind-ma').classList.remove('active'); $('ind-vol').classList.remove('active');
   $('cur-icon').outerHTML = `<span id="cur-icon" class="cur-ic">${iconHTML(id)}</span>`;
   $('cur-pair').textContent = id;
   updateStarBtn();
@@ -426,7 +496,7 @@ function selectMarket(id){
   setChartMarket();
   renderMarketStats();
   loadStats24();
-  renderBook();
+  renderBook(true);
   renderTrades();
   computeForm();
 }
@@ -475,7 +545,9 @@ function renderMarketStats(){
   set('st-high', S.stats ? fmt.price(S.stats.high, d) : '…');
   set('st-low', S.stats ? fmt.price(S.stats.low, d) : '…');
   set('st-vol', '—');   /* Gains API provides no volume — never fabricated */
-  set('st-oi', '—');    /* not provided by this endpoint */
+  const oi = G.openInterestUsd ? G.openInterestUsd(m) : null;
+  set('st-oi', oi ? '$' + fmt.compact(oi.total) : '—');
+  if (oi) $('st-oi').title = 'Long $' + fmt.compact(oi.long) + ' · Short $' + fmt.compact(oi.short);
   const f = m && m.funding ? Number(m.funding.fundingRateLongHourly) : null;
   set('st-funding', f != null && Number.isFinite(f) ? (f * 100).toFixed(4) + '%' : '—');
   set('st-lev', m ? Number(m.maxLeverage) + '×' : '—');
@@ -494,36 +566,73 @@ document.querySelectorAll('[data-book-tab]').forEach(b => b.addEventListener('cl
   $('trades-view').hidden = tab !== 'trades';
   if (tab === 'book') renderBook(); else renderTrades();
 }));
-$('book-group').addEventListener('change', e => { S.grouping = +e.target.value; renderBook(); });
+$('book-group').addEventListener('change', e => { S.grouping = +e.target.value; renderBook(true); });
 $('book-dense').addEventListener('change', e => { S.dense = e.target.checked; $('book-view').classList.toggle('dense', S.dense); });
 
-function renderBook(){
+function renderBook(force){
   if ($('book-view').hidden) return;
   const m = meta(), mid = mark();
-  if (!m || !mid){ $('book-asks').innerHTML = ''; $('book-bids').innerHTML = ''; $('book-mid-price').textContent = '—'; return; }
+  if (!m || !mid){
+    $('book-asks').innerHTML = ''; $('book-bids').innerHTML = '';
+    $('book-mid-price').textContent = '—';
+    return;
+  }
+  const key = S.marketId + '|' + S.grouping;
+  if (force || bookKey !== key){ bookKey = key; buildBook(); return; }
+  updateBook();
+}
+let bookKey = null, bookRefs = null;
+function buildBook(){
+  const m = meta(); if (!m) return;
+  const d = dp(), dps = Number(m.sizePrecision) || 2;
+  const asks = [], bids = [];
+  for (let i = 0; i < 12; i++){ asks.push({ i }); bids.push({ i }); }
+  const row = (l, cls) => `<div class="bk-row ${cls}" data-lvl="${l.i}">
+    <span class="depth"></span>
+    <span class="num p"></span>
+    <span class="num r s"></span>
+    <span class="num r c"></span></div>`;
+  $('book-asks').innerHTML = asks.map(l => row(l, 'a')).reverse().join('');
+  $('book-bids').innerHTML = bids.map(l => row(l, 'b')).join('');
+  bookRefs = { asks: [...$('book-asks').querySelectorAll('.bk-row')].reverse(),
+               bids: [...$('book-bids').querySelectorAll('.bk-row')] };
+  updateBook(true);
+}
+function updateBook(first){
+  const m = meta(), mid = mark(); if (!m || !mid || !bookRefs) return;
   const d = dp(), dps = Number(m.sizePrecision) || 2;
   const tick = Math.pow(10, -d) * S.grouping;
   const depthBase = mid * Number(m.minPositionUsd || 100) / 1000;
-  const asks = [], bids = [];
-  for (let i = 0; i < 12; i++){
-    asks.push({ price: mid + tick * (i + 1), size: depthBase * (0.15 + pseudo(i * 2 + 1, m.symbol) * 1.2) });
-    bids.push({ price: mid - tick * (i + 1), size: depthBase * (0.15 + pseudo(i * 2 + 2, m.symbol) * 1.2) });
+  const sides = [['asks', 1, false], ['bids', -1, true]];
+  const prevMid = updateBook._mid;
+  updateBook._mid = mid;
+  for (const [side, dir, ] of sides){
+    const rows = bookRefs[side];
+    let cum = 0;
+    const cums = rows.map((r, idx) => { cum += depthBase * (0.15 + pseudo(idx * 2 + (dir > 0 ? 1 : 2), m.symbol) * 1.2); return cum; });
+    const maxT = cums[cums.length - 1];
+    rows.forEach((r, idx) => {
+      const price = mid + tick * (idx + 1) * dir;
+      const size = depthBase * (0.15 + pseudo(idx * 2 + (dir > 0 ? 1 : 2), m.symbol) * 1.2);
+      r.querySelector('.p').textContent = fmt.price(price, d);
+      r.querySelector('.s').textContent = fmt.num(size, dps);
+      r.querySelector('.c').textContent = fmt.compact(cums[idx]);
+      r.querySelector('.depth').style.width = Math.min(100, cums[idx] / maxT * 100).toFixed(1) + '%';
+    });
   }
-  const withCum = side => { let cum = 0; return side.map(l => { cum += l.size; return { ...l, cum }; }); };
-  const A = withCum(asks), B = withCum(bids);
-  const maxT = Math.max(A[A.length - 1].cum, B[B.length - 1].cum);
-  const row = (l, cls) => `<div class="bk-row ${cls}" title="Level — simulated">
-    <span class="depth" style="width:${Math.min(100, l.cum / maxT * 100).toFixed(1)}%"></span>
-    <span class="num">${fmt.price(l.price, d)}</span>
-    <span class="num r">${fmt.num(l.size, dps)}</span>
-    <span class="num r">${fmt.compact(l.cum)}</span></div>`;
-  $('book-asks').innerHTML = A.slice().reverse().map(l => row(l, 'a')).join('');
-  $('book-bids').innerHTML = B.map(l => row(l, 'b')).join('');
-  const spread = asks[0].price - bids[0].price;
-  $('book-mid-price').textContent = fmt.price(mid, d);
-  $('book-mid-price').className = 'num ' + (board.marks.get(S.marketId).index && S.stats ? (S.stats.changePct >= 0 ? 'up' : 'down') : '');
+  const midEl = $('book-mid-price');
+  midEl.textContent = fmt.price(mid, d);
+  if (!first && prevMid != null && mid !== prevMid && S.flashOn){
+    midEl.classList.remove('flash-up', 'flash-down');
+    void midEl.offsetWidth;
+    midEl.classList.add(mid > prevMid ? 'flash-up' : 'flash-down');
+    midEl.classList.add(mid > prevMid ? 'up' : 'down');
+    midEl.classList.remove(mid > prevMid ? 'down' : 'up');
+  }
+  const spread = 2 * tick;
   $('book-spread').textContent = `${t('book.spread')} ${fmt.price(spread, d)}`;
 }
+
 /* tiny deterministic pseudo-random for presentation levels */
 function pseudo(i, sym){
   let h = 2166136261 ^ i;
