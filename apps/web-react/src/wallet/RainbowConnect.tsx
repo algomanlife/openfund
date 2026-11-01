@@ -161,8 +161,8 @@ export function RainbowConnect() {
             style={{ display: 'flex', gap: 8, alignItems: 'center', direction: 'ltr' }}
           >
             {!connected ? (
-              <button onClick={openConnectModal} type='button' className='rk-btn'>
-                <svg viewBox='0 0 16 16' width='12' height='12' fill='none' aria-hidden='true'>
+              <button onClick={openConnectModal} type='button' className='rk-chip rk-chip-connect'>
+                <svg viewBox='0 0 16 16' width='13' height='13' fill='none' aria-hidden='true'>
                   <path d='M2 4.5A2.5 2.5 0 0 1 4.5 2H12a1 1 0 0 1 1 1v1.5M2 4.5V12a2 2 0 0 0 2 2h9.5a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5H4.5A2.5 2.5 0 0 1 2 4.5Z' stroke='currentColor' strokeWidth='1.3' />
                   <circle cx='11.5' cy='10' r='1' fill='currentColor' />
                 </svg>
@@ -170,29 +170,28 @@ export function RainbowConnect() {
               </button>
             ) : (
               <>
-                <button onClick={openChainModal} type='button' className='rk-btn rk-net'>
-                  <i className={onSepolia ? 'dot dot-live' : 'dot dot-info'} />
-                  {chain?.name || (isFa ? 'آربیترام سپولیا' : 'Arbitrum Sepolia')}
+                {/* ONE wallet chip — network dot + address + balance (opens the account modal) */}
+                <button onClick={openAccountModal} type='button' className='rk-chip' title={isFa ? 'کیف پول و شبکه' : 'Wallet & network'}>
+                  <i className={onSepolia ? 'rk-dot rk-dot-live' : 'rk-dot rk-dot-info'} />
+                  <span dir='ltr' className='rk-chip-addr'>{fmtAddr(address)}</span>
+                  {balance ? <span dir='ltr' className='rk-chip-bal'>{fmtBal()}</span> : null}
                 </button>
-                <button onClick={openAccountModal} type='button' className='rk-btn rk-acct'>
-                  <span className='rk-bal'>{fmtBal()}</span>
-                  <span className='rk-addr'>{fmtAddr(address)}</span>
-                </button>
+                {/* ONE action chip — identical template, mint accent */}
                 {session.status === 'authenticated' ? (
-                  <button onClick={() => setProfileOpen(true)} type='button' className='rk-user-chip' title={isFa ? 'حساب اوپن‌فاند' : 'Openfund account'}>
-                    <i className='dot' />
+                  <button onClick={() => setProfileOpen(true)} type='button' className='rk-chip rk-chip-action' title={isFa ? 'حساب اوپن‌فاند' : 'Openfund account'}>
+                    <i className='rk-dot rk-dot-live' />
                     {isFa ? 'حساب من' : 'Account'}
                   </button>
                 ) : session.status === 'signing' ? (
-                  <button type='button' className='rk-signin' disabled>
+                  <button type='button' className='rk-chip rk-chip-action' disabled>
                     {isFa ? 'در حال امضا…' : 'Signing…'}
                   </button>
                 ) : session.status === 'suspended' ? (
-                  <span className='rk-signin' style={{ cursor: 'default', borderColor: '#e8948355', color: '#f0b3a6' }}>
+                  <span className='rk-chip rk-chip-suspended'>
                     {isFa ? 'حساب معلق' : 'Suspended'}
                   </span>
                 ) : (
-                  <button onClick={() => void session.signIn()} type='button' className='rk-signin'>
+                  <button onClick={() => void session.signIn()} type='button' className='rk-chip rk-chip-action'>
                     {isFa ? 'ورود به اوپن‌فاند' : 'Sign in'}
                   </button>
                 )}

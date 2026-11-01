@@ -1,27 +1,41 @@
 /* Openfund session UI — wallet sign-in chip + profile panel.
    Imported by RainbowConnect (bundled by Vite on both pages). */
 
-.rk-signin {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: transparent; color: #d4ddd7; border: 1px solid #82e7bd88;
-  border-radius: 6px; padding: 6px 12px; font-size: 11.5px; font-weight: 600;
-  cursor: pointer; white-space: nowrap;
-  transition: background .18s, border-color .18s, color .18s;
-  font-family: Ubuntu, 'Irancell', system-ui, sans-serif;
+/* ============ ONE wallet-area template — every chip identical ============ */
+.rk-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 38px; padding: 0 14px;
+  background: transparent; color: #d4ddd7;
+  border: 1px solid #ffffff25; border-radius: 6px;
+  font: 500 12.5px/1 Ubuntu, 'Irancell', system-ui, sans-serif;
+  cursor: pointer; white-space: nowrap; box-sizing: border-box;
+  transition: border-color .18s, color .18s, background .18s;
 }
-.rk-signin:hover { background: #82e7bd1c; border-color: #82e7bd; color: #eafaf0 }
-.rk-signin:disabled { opacity: .6; cursor: wait }
-html[data-theme='light'] .rk-signin { color: #3F4C44; border-color: #12965D66 }
-html[data-theme='light'] .rk-signin:hover { background: #12965D14 }
+.rk-chip:hover { border-color: #82e7bd88; color: #eafaf0 }
+.rk-chip:disabled { opacity: .55; cursor: wait }
+.rk-chip-connect {
+  background: #F1F3EF; color: #09100c; border-color: #F1F3EF; font-weight: 600;
+}
+.rk-chip-connect:hover { background: #fff; color: #09100c }
+.rk-chip-action { border-color: #82e7bd66; color: #a9e6c6; font-weight: 600 }
+.rk-chip-action:hover { background: #82e7bd16; border-color: #82e7bd; color: #c8f3dc }
+.rk-chip-suspended { border-color: #e8948355; color: #f0b3a6; cursor: default; font-weight: 600 }
+.rk-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; flex-shrink: 0 }
+.rk-dot-live { background: #82e7bd; box-shadow: 0 0 6px #82e7bd88 }
+.rk-dot-info { background: #86A8FF }
+.rk-chip-addr { font-family: ui-monospace, Consolas, monospace; font-size: 11px }
+.rk-chip-bal { font-family: ui-monospace, Consolas, monospace; font-size: 11px; color: #9fb3a8 }
+.rk-chip .rk-chip-bal::before { content: '·'; margin-right: 8px; color: #56655e }
 
-.rk-user-chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: transparent; color: #d4ddd7; border: 1px solid #82e7bd33;
-  border-radius: 6px; padding: 6px 10px; font-size: 11.5px; font-weight: 600;
-  cursor: pointer; white-space: nowrap;
-}
-.rk-user-chip:hover { border-color: #82e7bd; color: #eafaf0 }
-.rk-user-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: #82e7bd; box-shadow: 0 0 6px #82e7bd88; display: inline-block }
+/* light theme (smart-invert keeps saturated hues) */
+html[data-theme='light'] .rk-chip { color: #3F4C44; border-color: #0A120D22 }
+html[data-theme='light'] .rk-chip:hover { border-color: #12965D88 }
+html[data-theme='light'] .rk-chip-connect { background: #12965D; color: #fff; border-color: #12965D }
+html[data-theme='light'] .rk-chip-connect:hover { background: #0d7a4c }
+html[data-theme='light'] .rk-chip-action { border-color: #12965D77; color: #0d7a4c }
+html[data-theme='light'] .rk-chip-action:hover { background: #12965D14; border-color: #12965D; color: #0d7a4c }
+html[data-theme='light'] .rk-chip-suspended { border-color: #B3543F88; color: #8a4a38 }
+html[data-theme='light'] .rk-chip-bal { color: #6b7a70 }
 
 .of-profile-overlay {
   position: fixed; inset: 0; z-index: 2147483000;
