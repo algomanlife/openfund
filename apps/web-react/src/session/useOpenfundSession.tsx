@@ -12,7 +12,7 @@ import { createSiweMessage } from 'viem/siwe'
  * The backend (apps/backend) owns verification + HttpOnly session cookies;
  * this hook never sees any token.
  */
-const BACKEND = ((import.meta.env.VITE_BACKEND_URL as string | undefined) || 'http://localhost:8080').replace(/\/+$/, '')
+const BACKEND = ((import.meta.env.VITE_BACKEND_URL as string | undefined) || (import.meta.env.PROD ? window.location.origin : 'http://localhost:8080')).replace(/\/+$/, '')
 
 export type SessionStatus =
   | 'anonymous'          /* no wallet connected */
@@ -62,7 +62,10 @@ export function useOpenfundSession() {
   }, [])
 
   const loadMe = useCallback(async () => {
+    const expected = addressRef.current
     const r = await api('/auth/me')
+    if (expected !== addressRef.current) return null
+    if (r.ok && expected && r.data?.user?.walletAddress?.toLowerCase() !== expected.toLowerCase()) { setUser(null); setChallenges([]); setStatus('unauthenticated'); return null }
     if (r.ok && r.data?.user) {
       setUser(r.data.user)
       setChallenges(r.data.challenges || [])
@@ -88,6 +91,9 @@ export function useOpenfundSession() {
     addressRef.current = address
     ;(async () => {
       if (changed) {
+        setStatus('unauthenticated')
+        setUser(null)
+        setChallenges([])
         /* a previously authenticated session must never silently follow a
            different connected wallet — invalidate and re-authenticate */
         await api('/auth/logout', { method: 'POST', body: '{}' }).catch(() => {})

@@ -77,7 +77,7 @@ function HomeBody({ variant, locale, content: c }: { variant: 'a' | 'b'; locale:
             <span className="home-kicker">{locale === 'fa' ? 'محصول الف' : 'Product A'}</span>
             <h2>{t.propTitle}</h2>
             {t.propDescription && <p>{t.propDescription}</p>}
-            <a className="button" href={CTA_HREF[c.propCtaDestination](locale)}>
+            <a className="button" href={c.propCtaDestination === 'terminal' ? `#/${locale}/prop/trade` : CTA_HREF.challenges(locale)}>
               {t.propCta}
               <span aria-hidden="true">←</span>
             </a>
@@ -91,7 +91,7 @@ function HomeBody({ variant, locale, content: c }: { variant: 'a' | 'b'; locale:
             <span className="home-kicker">{locale === 'fa' ? 'محصول ب' : 'Product B'}</span>
             <h2>{t.perpetualTitle}</h2>
             {t.perpetualDescription && <p>{t.perpetualDescription}</p>}
-            <a className="button" href={CTA_HREF[c.perpetualCtaDestination](locale)}>
+            <a className="button" href={c.perpetualCtaDestination === 'terminal' ? `#/${locale}/perpetual/trade` : CTA_HREF.challenges(locale)}>
               {t.perpetualCta}
               <span aria-hidden="true">↙</span>
             </a>

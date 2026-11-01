@@ -12,10 +12,10 @@
 /* ---------- utilities ---------- */
 const L = (fa, en) => (typeof window !== 'undefined' && window.ofLang === 'fa') ? fa : en;
 const fmt = {
-  num(v, d){ return Number(v).toLocaleString('en-US', {minimumFractionDigits: d, maximumFractionDigits: d}); },
+  num(v, d){ if(v==null || !Number.isFinite(Number(v)))return '—';return Number(v).toLocaleString('en-US', {minimumFractionDigits: d, maximumFractionDigits: d}); },
   price(v, d){ return fmt.num(v, d); },
-  usd(v){ return '$' + fmt.num(v, 2); },
-  usdS(v){ const s = v < 0 ? '−$' : '$'; return s + fmt.num(Math.abs(v), 2); },
+  usd(v){ if(v==null)return '—';return '$' + fmt.num(v, 2); },
+  usdS(v){ if(v==null)return '—';const s = v < 0 ? '−$' : '$'; return s + fmt.num(Math.abs(v), 2); },
   compact(v){
     const a = Math.abs(v);
     if (a >= 1e9) return (v / 1e9).toFixed(2) + 'B';
@@ -23,9 +23,9 @@ const fmt = {
     if (a >= 1e3) return (v / 1e3).toFixed(2) + 'K';
     return v.toFixed(2);
   },
-  pct(v){ if (!Number.isFinite(v)) return '—'; return (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2) + '%'; },
+  pct(v){ if (v==null || !Number.isFinite(v)) return '—'; return (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2) + '%'; },
   time(ts){ const d = new Date(ts * 1000); return d.toLocaleTimeString('en-GB', {hour12: false}); },
-  dt(ts){ const d = new Date(ts * 1000); return d.toLocaleDateString('en-GB', {day:'2-digit', month:'short'}) + ' ' + d.toLocaleTimeString('en-GB', {hour12:false, hour:'2-digit', minute:'2-digit'}); }
+  dt(ts){ if(!ts)return '—';const d = new Date(ts * 1000); return d.toLocaleDateString('en-GB', {day:'2-digit', month:'short'}) + ' ' + d.toLocaleTimeString('en-GB', {hour12:false, hour:'2-digit', minute:'2-digit'}); }
 };
 
 /* ============================================================

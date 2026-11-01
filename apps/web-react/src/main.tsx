@@ -6,8 +6,11 @@ import Home from './features/home/Home'
 import Markets from './features/markets/Markets'
 import Rulebook from './features/rulebook/Rulebook'
 import Transparency from './features/transparency/Transparency'
-import Terminal from './pages/Terminal'
-import Portfolio from './pages/Portfolio'
+import TerminalShell from './features/terminal/TerminalShell'
+import { SharedTradingTerminal } from './features/terminal/TradingPages'
+import { ProductDashboard, CapabilityPage } from './features/terminal/Dashboard'
+import ProductPortfolio from './features/terminal/Portfolio'
+import ProductJournal from './features/terminal/Journal'
 import { WalletProvider } from './wallet/WalletProvider'
 import { SessionProvider } from './session/useOpenfundSession'
 
@@ -53,6 +56,9 @@ function LegacyAnchor() {
   return <Navigate to={target} replace />
 }
 
+function TerminalRedirect({ page }: { page: string }) { return <Navigate to={`/${preferredLocale()}/prop/${page}`} replace /> }
+function ProductRedirect({ product }: { product: 'prop' | 'perpetual' }) { return <Navigate to={`/${preferredLocale()}/${product}/${useParams().page || 'dashboard'}`} replace /> }
+
 const router = createHashRouter([
   { path: '/', element: <RootRedirect /> },
   { path: '/:locale/home', element: <Home /> },
@@ -60,8 +66,20 @@ const router = createHashRouter([
   { path: '/:locale/markets', element: <Markets /> },
   { path: '/:locale/rulebook', element: <Rulebook /> },
   { path: '/:locale/transparency', element: <Transparency /> },
-  { path: '/terminal', element: <Terminal /> },
-  { path: '/portfolio', element: <Portfolio /> },
+  ...(['prop', 'perpetual'] as const).map(product => ({
+    path: `/:locale/${product}`, element: <TerminalShell product={product} />, children: [
+      { index: true, element: <Navigate to="dashboard" replace /> },
+      { path: 'dashboard', element: <ProductDashboard /> },
+      { path: 'trade', element: <SharedTradingTerminal /> },
+      { path: 'portfolio', element: <ProductPortfolio /> },
+      { path: 'journal', element: <ProductJournal /> },
+      ...(['leaderboard', ...(product === 'prop' ? ['withdrawals', 'certificates'] : ['rewards'])]).map(path => ({ path, element: <CapabilityPage /> }))
+    ]
+  })),
+  { path: '/terminal', element: <TerminalRedirect page="trade" /> },
+  { path: '/portfolio', element: <TerminalRedirect page="portfolio" /> },
+  { path: '/journal', element: <TerminalRedirect page="journal" /> },
+  ...(['prop', 'perpetual'] as const).map(product => ({ path: `/${product}/:page`, element: <ProductRedirect product={product} /> })),
   /* single-segment legacy hashes ('#markets', '#accounts', '#fa', …) */
   { path: '/:section', element: <LegacyAnchor /> },
   /* unknown hashes still fall back to the gateway instead of a blank screen */
@@ -80,7 +98,7 @@ document.addEventListener('click', (e) => {
   const a = (e.target as HTMLElement | null)?.closest?.('a')
   if (!a) return
   const href = a.getAttribute('href')
-  if (!href || href.startsWith('#')) return
+  if (!href || !href.startsWith('#')) return
   if (href.startsWith('#/')) return          /* real router links */
   e.preventDefault()
   if (href.length <= 1) return               /* bare '#' placeholders */

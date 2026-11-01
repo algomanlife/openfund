@@ -7,3 +7,9 @@ infrastructure/directus/.env
 infrastructure/directus/runtime/
 infrastructure/directus/data/
 apps/web-react/.env
+
+# Local verification artifacts (may contain private test-session exports)
+/output/
+/.playwright-cli/
+/.playwright/
+__pycache__/

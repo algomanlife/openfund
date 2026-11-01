@@ -4,6 +4,12 @@ Use these statuses: **Implemented** (working and tested), **Prototype** (visible
 
 | Capability | Status | Evidence / next step |
 | --- | --- | --- |
+| Shared full-space product trading terminal | Implemented | Same `SharedTradingTerminal` at locale/product routes, independent adapters; no surrounding editorial UI. Product and viewport browser checks in dual-terminals delivery report |
+| Unified product header and Portfolio/Journal navigation | Implemented | Required 6 Prop / 5 Perpetual horizontal tabs; product switch; Journal secondary navigation; fa/en and mobile |
+| Scoped private daily journal | Implemented | PostgreSQL notebook entries, notes/tags/classification, owned Prop links, Gains transaction references, search/date filters, optimistic updates, metadata JSON import/export |
+| Product Portfolio | Implemented for supported data | Prop engine records/order history/notes/analytics/CSV; native Gains wallet positions/orders/history/stats/per-collateral analytics. No fabricated PnL or balances |
+| Product editorial CMS | Implemented | Existing pages/ui_messages plus normalized terminal_sections; bilingual, published-only, live edit/unpublish without rebuild; no editorial mounted on Terminal tab |
+| Optional Render blueprint | Implemented configuration; live deployment unverified | Schema-validated, Node 22 local build + same-origin static/API checks; existing PostgreSQL/Directus reused; not applied |
 | Home product gateway (two-product entry) | Implemented | React `#/{fa,en}/home`; one-screen layout, two original SVGs, product CTAs; E2E 53/53 in `docs/reviews/gateway-markets/DELIVERY.md` (2026-11-01) |
 | Markets directory (Gains-authoritative) | Implemented | React `#/{fa,en}/markets`; 488 instruments from live Gains metadata, shared adapter WS prices, search/filter, deep-links; unit 6/6 + E2E 53/53 |
 | Market deep-links into terminal | Implemented | sessionStorage `of-terminal-symbol` boot hook (applied once, Gains-metadata-validated); E2E-verified BTC → terminal selection |
@@ -24,7 +30,7 @@ Use these statuses: **Implemented** (working and tested), **Prototype** (visible
 | Gains SDK dependency | Unverified | `vendor/gains-sdk` vendored; terminal uses the **public REST/WS API** (`api.gains.trade`) instead — endpoints verified |
 | Gains market data adapter | Implemented | `dist/gains-adapter.js` + `packages/openfund-gains-adapter/`; markets/prices/candles/WS verified live 2026-10-31 |
 | Arbitrum Sepolia demo contract integration | Blocked | Verify supported contracts, addresses, ABI and testnet availability |
-| Positions/order lifecycle | Planned | Specify read/write lifecycle and reconciliation |
+| Positions/order lifecycle | Implemented for Prop simulation; Perpetual read-only | Existing Prop Engine and ledger preserved. Official Gains wallet positions/pending orders/history reads added; on-chain order execution remains blocked on approved integration |
 | True order-book / footprint | Blocked | Confirm legitimate trade/volume/depth data source |
 | SIWE wallet authentication (EIP-4361) | Implemented | apps/backend — nonce/replay/domain/chain/signature verified; 22/22 automated checks 2026-11-01 |
 | Session management (HttpOnly cookies) | Implemented | opaque hashed-id sessions, 7-day expiry, logout, account-switch invalidation |
