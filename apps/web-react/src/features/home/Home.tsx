@@ -7,9 +7,10 @@ import './home.css'
 
 const base = import.meta.env.BASE_URL
 
-/** The Openfund product gateway: ONE screen, no scroll, no footer, no menu —
- *  a clean, quiet stage for the two products. ALL copy comes from Directus
- *  (`home_content`); fields the owner leaves empty simply don't render.
+/** The Openfund product gateway: ONE screen, no scroll, no footer.
+ *  ALL copy comes from Directus (`home_content`) — headline, product titles,
+ *  CTA labels/destinations, illustrations and the heartbeat strip. Editorial
+ *  fields the owner leaves empty simply don't render (the page stays clean).
  *  Direction B (dual product panels) is the default; `?variant=a` previews
  *  the editorial direction on the same route. */
 export default function Home() {
@@ -23,7 +24,7 @@ export default function Home() {
     return () => { active = false }
   }, [])
   const c = content === 'error' ? null : content
-  return <InformationShell page="home" footer={false} nav={false}
+  return <InformationShell page="home" footer={false}
       title={c ? (c.translations[locale].seoTitle || 'Openfund') : 'Openfund'}
       description={c ? (c.translations[locale].seoDescription || '') : 'Openfund'}>
     {c ? <HomeBody variant={variant} locale={locale} content={c} /> : <HomeUnavailable locale={locale} />}
@@ -54,10 +55,11 @@ function HomeUnavailable({ locale }: { locale: Locale }) {
   </div>
 }
 
-/* beating heart mark for the signature line */
+/* beating heart (the heartbeat strip mark) */
 function Heartbeat() {
-  return <svg className="hb-heart" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+  return <svg className="hb-heart" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
     <path d="M12 21C7 16.6 3.2 13.4 3.2 9.3 3.2 6.3 5.5 4.2 8.2 4.2c1.6 0 3 .8 3.8 2 .8-1.2 2.2-2 3.8-2 2.7 0 5 2.1 5 5.1 0 4.1-3.8 7.3-8.8 11.7z" fill="#82e7bd"/>
+    <path d="M4 12h3l2-4 2.6 7L14 12h6" fill="none" stroke="#06110c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/>
   </svg>
 }
 
@@ -66,13 +68,17 @@ function HomeBody({ variant, locale, content: c }: { variant: 'a' | 'b'; locale:
   /* headline split: last word becomes the accent line (two-line composition) */
   const cut = t.headline.lastIndexOf(' ')
   const [main, accent] = cut > 0 ? [t.headline.slice(0, cut), t.headline.slice(cut + 1)] : [t.headline, '']
-  /* signature line under the products (newline-separated in the CMS, joined here) */
-  const signature = (t.note || '').split('\n').map(x => x.trim()).filter(Boolean).join(' ')
+  /* heartbeat strip: newline-separated lines, first line is the kicker */
+  const hb = (t.note || '').split('\n').map(x => x.trim()).filter(Boolean)
 
   return <div id="top" className={`home-gateway home-variant-${variant}`}>
-    <div className="home-ambient" aria-hidden="true"><i /><i /><i /><b /></div>
+    <div className="home-backdrop" aria-hidden="true">
+      <img src={`${base}assets/home/backdrop.svg`} alt="" decoding="async" />
+    </div>
+    <div className="hero-atmosphere" aria-hidden="true"><i /><i /><i /></div>
 
     <div className="container home-stage">
+      <div className="home-enter e1 eyebrow"><span className="tiny-mark" aria-hidden="true">✳</span> OPENFUND</div>
       <h1 className="home-enter e2">{accent ? <>{main}<br /><em>{accent}</em></> : main}</h1>
 
       <div className="home-products">
@@ -101,10 +107,11 @@ function HomeBody({ variant, locale, content: c }: { variant: 'a' | 'b'; locale:
         </article>
       </div>
 
-      {signature && (
+      {hb.length > 0 && (
         <div className="home-heartbeat home-enter e5">
           <Heartbeat />
-          <span className="hb-line">{signature}</span>
+          {hb[0] && <span className="hb-kicker">{hb[0]}</span>}
+          <span className="hb-line">{hb.slice(1).join(' ')}</span>
         </div>
       )}
     </div>
