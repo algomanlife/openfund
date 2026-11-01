@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { useParams, Navigate } from 'react-router-dom'
 import landingBody from './landing-body.html?raw'
 import { RainbowConnect } from '../wallet/RainbowConnect'
-import { fetchCmsTranslations } from '../cms/client'
+import { fetchCmsTranslations, fetchCmsLegacyPlans, fetchCmsFaqs, fetchCmsLegal, fetchCmsFooterLinks, invalidateCmsCache } from '../cms/client'
 
 /**
  * Phase 2a: the landing runs inside the React shell with its proven markup
@@ -107,6 +107,11 @@ export default function Landing() {
     if (routeLocale === 'en' || routeLocale === 'fa') {
       w().ofLang = routeLocale
       try { localStorage.setItem('of-language', routeLocale) } catch { /* ignore */ }
+      /* direct route change into the other locale (URL edit / nav link, not
+         the in-page toggle): the router reuses this component without
+         remounting, so re-run the legacy translation pipeline to keep the
+         DOM and the URL honest */
+      if (w().ofSetLanguage && document.documentElement.lang !== routeLocale) w().ofSetLanguage(routeLocale)
     }
   }, [routeLocale])
   /* wallet connect button in the landing header (#wallet-root placeholder,
@@ -136,16 +141,33 @@ export default function Landing() {
 
     if (!w().__ofLegacyLandingLoaded) {
       w().__ofLegacyLandingLoaded = true
-      /* CMS (Directus) translations first — published ui_messages override the
-         static translations.json; silent fallback keeps the page usable when
-         the backstage is down. Legacy scripts boot AFTER the fetch. */
+      /* ALL content layers come from Directus before the legacy runtime
+         boots (no hardcoded marketing fallbacks):
+           ui_messages  → every landing string (ofT overrides)
+           challenge_plans → the builder's commercial catalog (window.__ofPlans)
+           faqs / legal_documents / footer_links → window.__ofFaqs /
+           __ofLegal / __ofFooterLinks, rendered safely by features.js
+         Legacy scripts boot AFTER these fetches. */
       void (async () => {
-        const cms = await fetchCmsTranslations()
+        /* fresh content on every landing boot — the page is often reached via
+           client-side navigation and must reflect the latest Directus edits */
+        invalidateCmsCache()
+        const [cms, plans, faqs, legal, footer] = await Promise.all([
+          fetchCmsTranslations(),
+          fetchCmsLegacyPlans(),
+          fetchCmsFaqs(),
+          fetchCmsLegal(),
+          fetchCmsFooterLinks(),
+        ])
         if (cms) {
           w().ofCmsLanding = cms.landing
           w().ofCmsLandingFa = cms.landingFa
           w().ofCmsTerminal = cms.terminal
         }
+        if (plans) w().__ofPlans = plans
+        if (faqs) w().__ofFaqs = faqs
+        if (legal) w().__ofLegal = legal
+        if (footer) w().__ofFooterLinks = footer
         STYLES.forEach(href => {
         const l = document.createElement('link')
         l.rel = 'stylesheet'

@@ -4,6 +4,7 @@ import InformationShell, { Hero, useInformationLocale } from '../information/Inf
 import { number, text } from '../information/content'
 import { MarketIcon, FEATURED_BASES } from './MarketIcon'
 import { useGainsMarkets, priceFor } from './useGainsMarkets'
+import { fetchCmsPageMeta, type CmsPageMeta } from '../../cms/client'
 import {
   CATEGORY_ORDER, CATEGORY_LABELS, filterMarkets, formatPrice, groupCounts,
   isStale, type CategoryKey,
@@ -23,6 +24,13 @@ export default function Markets() {
   const [category, setCategory] = useState<CategoryKey | 'all'>('all')
   const [query, setQuery] = useState('')
   const [limit, setLimit] = useState(PAGE_STEP)
+  const [meta, setMeta] = useState<CmsPageMeta | null>(null)
+  /* editorial hero copy from Directus (instruments and prices stay on Gains) */
+  useEffect(() => {
+    let alive = true
+    void fetchCmsPageMeta('markets').then(d => { if (alive) setMeta(d) })
+    return () => { alive = false }
+  }, [])
   const searchId = useId()
 
   /* This page owns a script runtime (the shared Gains adapter). Follow the
@@ -55,14 +63,14 @@ export default function Markets() {
     : text('Waiting for prices', 'در انتظار قیمت‌ها')[locale]
 
   return <InformationShell page="markets"
-      description={text(
+      description={meta?.description[locale] || text(
         'Explore every Openfund market — crypto, forex, stocks, indices and commodities — with live Gains Network prices.',
         'همهٔ بازارهای اوپن‌فاند را با قیمت زندهٔ Gains Network ببینید: رمزارز، فارکس، سهام، شاخص و کالا.'
       )[locale]}>
     <Hero locale={locale} page="markets"
-      title={text('Explore Openfund', 'بازارهای جهانی')[locale]}
-      accent={text('Markets', 'Openfund')[locale]}
-      intro={text(
+      title={meta?.title[locale] || text('Explore Openfund', 'بازارهای جهانی')[locale]}
+      accent={meta?.subtitle[locale] || text('Markets', 'Openfund')[locale]}
+      intro={meta?.description[locale] || text(
         'Every asset class the Openfund trading ecosystem tracks, with live mark prices straight from Gains Network. Pick a market and take it straight into the terminal.',
         'همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت Mark مستقیم از Gains Network. بازار را انتخاب کن و مستقیم به ترمینال ببر.'
       )[locale]}>

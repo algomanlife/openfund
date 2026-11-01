@@ -41,8 +41,8 @@ test('fixtures cover consecutive UTC dates and use finite locale-independent num
   assert.equal(new Set(metricDefinitions.map(m => m.key)).size, 6)
 })
 test('every rule section has matching bilingual content and unique anchors', () => {
-  assert.equal(ruleSections.length, 21)
-  assert.equal(new Set(ruleSections.map(s => s.id)).size, 21)
+  assert.equal(ruleSections.length, 22)
+  assert.equal(new Set(ruleSections.map(s => s.id)).size, 22)
   const check = value => {
     if (Array.isArray(value)) return value.forEach(check)
     if (value && typeof value === 'object') {
@@ -51,8 +51,8 @@ test('every rule section has matching bilingual content and unique anchors', () 
     }
   }
   ruleSections.forEach(check)
-  for (const id of ['targets', 'daily-loss', 'maximum-loss', 'identity', 'fees', 'practices']) assert.equal(ruleSections.find(s => s.id === id).status, 'draft')
-  assert.equal(ruleSections.find(s => s.id === 'payouts').status, 'planned')
+  for (const id of ['configurations', 'stages', 'targets', 'daily-loss', 'maximum-loss', 'violations', 'identity', 'fees', 'free-trial', 'practices']) assert.equal(ruleSections.find(s => s.id === id).status, 'draft')
+  for (const id of ['how-it-works', 'funded', 'payouts']) assert.equal(ruleSections.find(s => s.id === id).status, 'planned')
 })
 test('dashboard renders bilingual sample labels, accessible charts and exact history', () => {
   for (const locale of ['en', 'fa']) {
