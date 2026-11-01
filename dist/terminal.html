@@ -170,11 +170,11 @@
     <div class="form-grid">
       <label class="field" id="price-field">
         <span data-i18n="of.price">Trigger / Limit price <em>USD</em></span>
-        <input type="number" id="of-price" step="any" min="0" placeholder="—" autocomplete="off" disabled>
+        <input type="text" inputmode="decimal" id="of-price" step="any" min="0" placeholder="—" autocomplete="off" disabled>
       </label>
       <label class="field">
         <span data-i18n="of.collateral">Collateral <em>USD</em></span>
-        <input type="number" id="of-collateral" step="any" min="0" placeholder="0.00" autocomplete="off" value="100">
+        <input type="text" inputmode="decimal" id="of-collateral" step="any" min="0" placeholder="0.00" autocomplete="off" value="100">
       </label>
       <div class="field">
         <span class="lbl-row"><span><em data-i18n="of.size">Size</em> <em id="of-units">—</em></span>
@@ -187,11 +187,11 @@
       <div class="kv"><span data-i18n="of.notional">Notional</span><b id="of-notional">$0.00</b></div>
       <label class="field sl">
         <span data-i18n="of.sl">Stop Loss <em>USD · optional</em></span>
-        <input type="number" id="of-sl" step="any" min="0" placeholder="—" autocomplete="off">
+        <input type="text" inputmode="decimal" id="of-sl" step="any" min="0" placeholder="—" autocomplete="off">
       </label>
       <label class="field tp">
         <span data-i18n="of.tp">Take Profit <em>USD · optional</em></span>
-        <input type="number" id="of-tp" step="any" min="0" placeholder="—" autocomplete="off">
+        <input type="text" inputmode="decimal" id="of-tp" step="any" min="0" placeholder="—" autocomplete="off">
       </label>
       <p class="field-err" id="of-err" hidden></p>
     </div>
@@ -289,8 +289,8 @@
 
 <dialog id="sltp-dialog" class="dlg">
   <h2 id="sltp-title">Modify risk</h2>
-  <label class="field"><span>Stop Loss <em>USD</em></span><input type="number" id="sltp-sl" step="any" min="0" placeholder="—"></label>
-  <label class="field"><span>Take Profit <em>USD</em></span><input type="number" id="sltp-tp" step="any" min="0" placeholder="—"></label>
+  <label class="field"><span>Stop Loss <em>USD</em></span><input type="text" inputmode="decimal" id="sltp-sl" step="any" min="0" placeholder="—"></label>
+  <label class="field"><span>Take Profit <em>USD</em></span><input type="text" inputmode="decimal" id="sltp-tp" step="any" min="0" placeholder="—"></label>
   <p class="field-err" id="sltp-err" hidden></p>
   <div class="dlg-actions">
     <button class="ghost-btn" id="sltp-cancel" data-i18n="dlg.cancel">Cancel</button>

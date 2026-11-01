@@ -505,6 +505,7 @@ $('dd-cats').addEventListener('click', e => {
 
 function selectMarket(id){
   S.marketId = id;
+  velaPositionsClear();   /* symbol isolation: only the new market's overlays */
   S.stats = null;
   $('cur-icon').outerHTML = `<span id="cur-icon" class="cur-ic">${iconHTML(id)}</span>`;
   $('cur-pair').textContent = id;
@@ -800,12 +801,31 @@ function computeForm(){
   }
 }
 
+/* normalize localized numeric input to canonical Western decimals:
+   Persian ۰-۹, Arabic-Indic ٠-٩, ٫/٫ decimals and Persian/Arabic/English
+   thousands separators are accepted; anything else is rejected as NaN. */
+function normNum(v){
+  if (typeof v !== 'string') v = String(v ?? '');
+  const FA = '۰۱۲۳۴۵۶۷۸۹', AR = '٠١٢٣٤٥٦٧٨٩';
+  let out = '';
+  for (const ch of v.trim()){
+    const fa = FA.indexOf(ch), ar = AR.indexOf(ch);
+    if (fa > -1) out += fa;
+    else if (ar > -1) out += ar;
+    else if (ch === '٫') out += '.';                                        /* Arabic decimal separator */
+    else if (ch === '،' || ch === '٬' || ch === ',' || ch === ' ') continue; /* thousands/spacing dropped */
+    else out += ch;
+  }
+  const n = Number(out);
+  return Number.isFinite(n) ? n : NaN;
+}
+
 function buildRequest(){
   return {
     market: S.marketId, side: S.side, type: S.otype, leverage: S.leverage,
-    collateral: +$('of-collateral').value || 0,
-    price: +$('of-price').value || 0,
-    sl: +$('of-sl').value || null, tp: +$('of-tp').value || null
+    collateral: normNum($('of-collateral').value) || 0,
+    price: normNum($('of-price').value) || 0,
+    sl: normNum($('of-sl').value) || null, tp: normNum($('of-tp').value) || null
   };
 }
 
@@ -857,6 +877,67 @@ $('review-confirm').addEventListener('click', async () => {
     toast(res && res.errors ? res.errors[0] : 'error', 'neg');
   }
 });
+
+/* ============================================================
+   VELA POSITION OVERLAYS — backend-managed 'position' drawings
+   (entry/SL/TP box per open position, symbol-isolated, host-owned:
+   user drawings are never touched). Mapping: positionId → drawingId.
+   ============================================================ */
+const posDrawings = new Map();   /* backend position id → vela drawing id */
+
+function velaPositionsSync(){
+  if (!vc || !vc.chart || !vc.chart.drawings) return;
+  const dr = vc.chart.drawings;
+  const srv = window.__ofServerTP;
+  if (!srv){ /* logged out → clear managed overlays only */ velaPositionsClear(); return; }
+  const st = srv.state;
+  /* last bar time for the anchor x-position (managed box starts at "now") */
+  const t = Math.floor(Date.now() / 60000) * 60000;
+  const want = new Map();  /* positionId → {entry, stop, target, side} */
+  for (const p of st.positions){
+    if (p.market !== S.marketId) continue;          /* symbol isolation */
+    const entry = p.entry;
+    const dist = entry * 0.9 / p.leverage;
+    const stop = p.sl != null ? p.sl : (p.side === 'long' ? entry - dist : entry + dist);
+    const target = p.tp != null ? p.tp : (p.side === 'long' ? entry + dist * 2 : entry - dist * 2);
+    want.set(p.id, { entry, stop, target, side: p.side });
+  }
+  /* remove stale/closed (and all when the symbol switched) */
+  for (const [pid, did] of [...posDrawings]){
+    if (!want.has(pid)){ try { dr.remove(did) } catch(e){}; posDrawings.delete(pid); }
+  }
+  /* create or update */
+  for (const [pid, lv] of want){
+    const anchors = [
+      { time: t, price: lv.entry },
+      { time: t, price: lv.stop },
+      { time: t, price: lv.target }
+    ];
+    const did = posDrawings.get(pid);
+    if (did != null){
+      try { dr.update(did, { anchors }) } catch(e){ posDrawings.delete(pid); }
+    } else {
+      try {
+        const d = dr.add('position', { paneId: 'price', anchors });
+        if (d && d.id){
+          posDrawings.set(pid, d.id);
+          /* brand the box: real account balance + our labels */
+          try { dr.update(d.id, { accountBalance: 100000, showPrices: true, showText: true }) } catch(e){}
+        }
+      } catch(e){ /* renderer without drawing support — table still works */ }
+    }
+  }
+}
+function velaPositionsClear(){
+  if (!vc || !vc.chart || !vc.chart.drawings) return;
+  for (const [, did] of [...posDrawings]){ try { vc.chart.drawings.remove(did) } catch(e){} }
+  posDrawings.clear();
+}
+
+/* lifecycle hooks: every state change, every market switch, boot, logout */
+window.addEventListener('of-trading-update', velaPositionsSync);
+window.addEventListener('of-trading-ready', velaPositionsSync);
+window.addEventListener('of-trading-off', velaPositionsClear);
 
 /* ============================================================
    POSITIONS / ORDERS WORKSPACE
@@ -968,7 +1049,7 @@ function wireRowActions(){
     });
   }));
   document.querySelectorAll('[data-sltp]').forEach(b => b.addEventListener('click', () => {
-    const p = tp.getPosition(+b.dataset.sltp);
+    const p = tp.getPosition(b.dataset.sltp);
     if (!p) return;
     const m = board.getMeta(p.market);
     $('sltp-title').textContent = `${t('sltp.title')} — ${m.symbol} #${p.id}`;
@@ -979,12 +1060,13 @@ function wireRowActions(){
     sltpTarget = p.id;
   }));
   document.querySelectorAll('[data-detail]').forEach(b => b.addEventListener('click', () => {
-    const p = tp.getPosition(+b.dataset.detail);
+    const p = tp.getPosition(b.dataset.detail);
     if (!p) return;
     const m = board.getMeta(p.market);
     const d = Number(m.pricePrecision);
-    const mk = board.getMark(p.market) || p.entry;
-    const pnl = (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
+    const srv = p.mark_price != null ? p.mark_price : (p.srvMark != null ? p.srvMark : null);
+    const mk = srv != null ? Number(srv) : (board.getMark(p.market) || p.entry);
+    const pnl = p.realized != null ? p.realized : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
     const D = t('pos.details');
     const rows = [
       [D[0], '#' + p.id], [D[1], m.symbol], [D[2], p.side],
@@ -1169,7 +1251,7 @@ function boot(){
         renderStatus();
         if (ddOpen) renderDropdown($('market-search').value);
         if (now - lastBook > 1500){ lastBook = now; renderBook(); noteTrade(board.marks.get(S.marketId)); renderTrades(); }
-        if (now - lastTrig > 1500){ lastTrig = now; tp.checkTriggers(); renderAccount(); if (S.btTab === 'positions' && tp.state.positions.length) renderBottom(); }
+        if (now - lastTrig > 1500){ lastTrig = now; tp.checkTriggers(); renderAccount(); velaPositionsSync(); if (S.btTab === 'positions' && tp.state.positions.length) renderBottom(); }
         computeForm();
       });
     });
