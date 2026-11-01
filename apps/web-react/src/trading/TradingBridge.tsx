@@ -16,6 +16,7 @@ import { useSession, backendUrl } from '../session/useOpenfundSession'
  * clearly-labelled client-side demo engine.
  */
 const BACKEND = backendUrl()
+  ;(window as any).__ofBackendUrl = BACKEND
 
 export function TradingBridge() {
   const session = useSession()
