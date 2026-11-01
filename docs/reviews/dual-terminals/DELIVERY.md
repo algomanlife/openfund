@@ -77,10 +77,12 @@ The following commands were executed with PATH selecting Node 22, DATABASE_URL s
 | `node e2e/test-dual-terminals.js` against production build | 94 passed, 0 failed, including 52 product/locale/viewport route cases, file export/restore, currency/calendar controls and anonymous privacy checks |
 | `node e2e/test-terminal-cms.js` against production build | 10 passed: draft privacy, private tables, denied writes, published render, live edit, unpublish and no browser admin token |
 | Render published JSON schema via Python jsonschema/PyYAML | Passed; configuration only, not a deployment |
-| `node --check` on new backend/runtime scripts; Python compile of seeder; `git diff --check` | Passed |
+| `node --check` on new backend/runtime scripts; Python compile of seeder; authored-file whitespace check | Passed |
 | Local `/react/` and DB-aware `/health` | HTTP 200 |
 
 Browser coverage includes actual SIWE/session recovery, chart rendering, same shared workspace structure, exact menus, product switch, owned Prop activity/notes, filters/charts, persistent notebooks, JSON download/restore, CSV download, real Gains wallet reads, collateral selection/calendar, full-space layout, no staged status labels, themes, every route fa/en at desktop/mobile, legacy redirects, wallet disconnect privacy and anonymous unknown balances/disabled execution. The final production browser run completed with zero uncaught page exceptions.
+
+The authored-file whitespace check was `git diff --check origin/main -- . ":!react/assets"`. The unfiltered generated-assets check reports five blank-line trailing-space warnings inside bundled third-party style template strings; these are generated dependency content, not altered application logic.
 
 ## E. Remaining dependencies and limits
 
@@ -96,7 +98,7 @@ These limits prevent claiming that every original acceptance criterion or the fu
 ## F. Git delivery and merge considerations
 
 - Feature branch: `codex/dual-terminals-portfolio-journal`; base SHA above.
-- Commits and review URL are provided with the Pull Request/final delivery message; no direct push to main, merge, force push or deployment.
+- Implementation commit: `61b90be` (`feat(terminal): share product workspace and scope portfolio journals`). The final documentation commit and review URL are provided in the delivery message; no direct push to main, merge, force push or deployment.
 - Review the additive PostgreSQL migration, optional Render blueprint and Directus setup before an approved rollout. Run the seeder against the existing instance; do not provision a competing CMS/database.
 - Generated `react/` output is refreshed to match source for the repository's prebuilt preview convention. Source-critical `dist/` and vendor/brand assets remain unchanged.
 - Existing external worktrees are preserved. If main changes after this base, integrate conflicts deliberately and rerun affected checks.
