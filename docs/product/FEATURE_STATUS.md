@@ -5,6 +5,9 @@ Use these statuses: **Implemented** (working and tested), **Prototype** (visible
 | Capability | Status | Evidence / next step |
 | --- | --- | --- |
 | Landing/account static frontend | Implemented | `dist/index.html`; bilingual FA/EN, dark/light theme, Irancell/Ubuntu fonts; interactivity browser-verified |
+| Bilingual Rulebook | Implemented | React `#/{fa,en}/rulebook`; 21 sections, responsive TOC/tables, draft-policy labels; scoped tests and browser matrix in `docs/reviews/bilingual-pages/DELIVERY.md` |
+| Bilingual Transparency interface | Implemented | React `#/{fa,en}/transparency`; typed synthetic fixtures, charts, data table, locale/theme/navigation verified; all metrics labelled sample |
+| Production transparency reporting / independent verification | Planned | No production reporting API, reserve/payout proof, cryptographic evaluation proof or on-chain settlement is claimed |
 | Terminal UI | Implemented | `dist/terminal.html`; FA/EN + themes + Vela workspace + live Gains data (browser-verified 2026-10-31) |
 | React app shell (both pages, hash routing) | Implemented | `apps/web-react` → `react/`; Playwright E2E 18/18 green on dev :5173 + build :4173 (theme, lang/dir, arrows, anchors, market rows, workspace LTR, reload teardown) — 2026-10-31 |
 | Wallet connection (RainbowKit) | Implemented | `apps/web-react`; ConnectButton.Custom, Arbitrum Sepolia 421614, connection only (no txs); injected fallback without WalletConnect projectId |

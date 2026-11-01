@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 5173",
+    "test:information": "node --test test/information.test.mjs",
     "build": "vite build",
     "build:check": "tsc --noEmit || true",
     "preview": "vite preview"

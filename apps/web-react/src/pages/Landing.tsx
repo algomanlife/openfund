@@ -60,6 +60,9 @@ const ARROW_MAP: Record<string, string> = {
   '←': '→', '→': '←', '↙': '↘', '↘': '↙', '↖': '↗', '↗': '↖'
 }
 function swapArrows() {
+  document.querySelectorAll<HTMLAnchorElement>('[data-info-page]').forEach(a => {
+    a.href = `#/${w().ofLang === "en" ? "en" : "fa"}/${a.dataset.infoPage}`
+  })
   const en = w().ofLang === 'en'
   document
     .querySelectorAll('.button>span,.text-link>span,.nav-cta>span,.team-profile-link>span')

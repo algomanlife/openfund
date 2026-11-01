@@ -1,0 +1,11 @@
+{
+  "homepageTablet": {
+    "width": 768,
+    "scrollWidth": 768,
+    "menuExpanded": true
+  },
+  "homeToRulebook": true,
+  "rulebookLocalePreserved": true,
+  "footerToTransparency": true,
+  "browserErrors": []
+}
