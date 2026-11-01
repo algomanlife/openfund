@@ -4,6 +4,15 @@ Notable changes are recorded here. Dates should use ISO 8601.
 
 ## Unreleased
 
+### Product Gateway, Markets page & unified website navigation (2026-11-01, branch `qwen/product-gateway-markets`)
+- **feat(home):** new one-screen product gateway at `#/{locale}/home` ("همه بازارها در یک پلتفرم معاملاتی / All Markets, One Trading Platform") with two **original** Openfund vector illustrations (`assets/home/prop-trading.svg`, `assets/home/perpetual-trading.svg` — animated, reduced-motion aware, true brand colors in light mode), two product CTAs, shared header, no footer. Direction B (dual panels) is the default; `?variant=a` previews direction A on the same route.
+- **feat(markets):** standalone Markets directory at `#/{locale}/markets` — **Gains Network as the authoritative source**: 488 instruments and categories derived from live metadata (never hardcoded), localized category tabs with data-derived counts, normalized client-side search (English works in fa), live mark prices via the **existing shared Gains adapter/WebSocket** (no second price engine), animated asset-universe hero, Gains-only fields (no fabricated volume/24h/market-cap), and market deep-links that open the symbol directly in the terminal.
+- **feat(routing):** `/` is now the gateway (language-aware redirect); the legacy landing moved to `#/{locale}/challenges` **fully preserved** (route locale wins on boot; the language toggle syncs the URL via `history.replaceState` without remounting the legacy runtime). Legacy deep links (`#/markets`, `#/accounts`, `#/how`, `#/team`, `#/rules`, …) migrate to the page that owns the content; unknown hashes fall back to Home.
+- **feat(nav):** exactly four menu items in one order on every public page — چلنج‌های معاملاتی / بازارها / قوانین معاملاتی / شفافیت (Trading Challenges / Markets / Trading Rules / Transparency) — from a single authoritative definition (`features/information/content.ts`) over the shared landing header chrome; logo → Home everywhere; terminal's Markets link now opens the Markets page; language switching preserves the page on all five pages.
+- **fix(terminal):** ONE narrowly-scoped change — market deep-link boot hook (sessionStorage `of-terminal-symbol`, applied once, only for symbols in Gains metadata). Trading behavior untouched.
+- **docs:** `docs/integrations/MARKETS_PAGE.md`, ADR `docs/decisions/0001-product-gateway-routing.md`, delivery report + screenshots in `docs/reviews/gateway-markets/`.
+- **tests:** markets unit suite **6/6** · information regression **6/6** · tsc clean · build ok · browser E2E **53/53** (bilingual, responsive 375/1440, deep-links, legacy migration, rulebook/transparency/terminal regressions, zero page errors).
+
 ### Bilingual Rulebook and Transparency (2026-11-01)
 - Add two React pages in English and Persian using the existing landing chrome, fonts, tokens and theme.
 - Separate the documented demo from draft evaluation/payout terms; provide 21 numbered Rulebook sections, section navigation, tables, definitions and explanations.

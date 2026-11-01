@@ -1358,6 +1358,15 @@ function boot(){
   $('submit-order').disabled = true;
   chartOverlay(`<b>${t('boot.loading')}</b>`);
   board.boot().then(() => {
+    /* market deep-link from the Markets page (sessionStorage handshake;
+       applied once at boot, only when the symbol exists in Gains metadata) */
+    try {
+      const want = sessionStorage.getItem('of-terminal-symbol');
+      if (want) { sessionStorage.removeItem('of-terminal-symbol');
+        if (board.meta.has(want)) { S.marketId = want;
+          const g = board.meta.get(want).group;
+          if (g) S.ddCategory = g; } }
+    } catch(e){}
     tp = window.__ofServerTP || new TradingProvider(board);
     /* server trading bridge (authenticated users): swap provider + live updates */
     window.addEventListener('of-trading-ready', () => {

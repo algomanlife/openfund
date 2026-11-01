@@ -32,7 +32,11 @@ Capital should follow skill, not connections. Openfund presents a transparent fu
 
 ## 3. Product overview
 
-- **Landing** — full bilingual marketing site (RTL fa / LTR en, dark + light themes, Irancell/Ubuntu fonts, motion) presenting the funding model, account builder, philosophy, rules and legal content.
+Openfund presents itself as a **two-product trading ecosystem** behind a single public website:
+
+- **Home (product gateway)** — `#/fa/home`, `#/en/home`: a one-screen entry point ("همه بازارها در یک پلتفرم معاملاتی / All Markets, One Trading Platform") with two original vector illustrations routing into the two products. Direction B (dual product panels) ships by default; `?variant=a` previews the editorial direction on the same route.
+- **Trading Challenges** — the full bilingual marketing site (RTL fa / LTR en, dark + light themes, Irancell/Ubuntu fonts, motion) at `#/fa/challenges` / `#/en/challenges`, presenting the funding model, account builder, philosophy, rules and legal content. This was previously the root page; `/` now redirects (language-aware) to Home, and legacy section hashes (`#/markets`, `#/accounts`, …) are migrated to the page that now owns that content.
+- **Markets** — `#/fa/markets` / `#/en/markets`: a standalone market-discovery directory with **Gains Network as the authoritative source** (488 instruments across crypto/forex/stocks/indices/commodities derived from live metadata — never hardcoded), category filtering, normalized client-side search, live mark prices via the existing shared Gains WebSocket, an animated asset-universe hero, and per-instrument deep-links that open the symbol directly in the terminal. See [`docs/integrations/MARKETS_PAGE.md`](docs/integrations/MARKETS_PAGE.md).
 - **Rulebook and Transparency** — native bilingual information pages at `#/fa/rulebook`, `#/en/rulebook`, `#/fa/transparency` and `#/en/transparency`; draft commercial rules and an explicitly synthetic reporting dashboard. See [`docs/reviews/bilingual-pages/DELIVERY.md`](docs/reviews/bilingual-pages/DELIVERY.md).
 - **Trading terminal** — professional workspace: real **LuxAlgo Vela** chart, live **Gains Network** market data (488 markets, REST + WebSocket), Gains-style market selector with real open-interest and funding stats, a clearly-labelled **simulated** demo trading engine on real marks, and Iranian trader Finglish labels (اوردربوک، لانگ، شورت، مارکت، لیمیت، فاندینگ، کولترال).
 - **Wallet identity** — Sign-In with Ethereum (EIP-4361): one wallet = one Openfund user, owning multiple independent challenge accounts.
@@ -48,7 +52,10 @@ Capital should follow skill, not connections. Openfund presents a transparent fu
 
 | Feature | Status |
 | :--- | :--- |
-| Bilingual landing (fa/en, themes, fonts, motion) | Operational |
+| **Home product gateway (one-screen, two products, original SVGs)** | **Operational (verified)** |
+| **Markets directory (Gains metadata, search, categories, live prices)** | **Operational (verified)** |
+| **Market deep-links into the terminal (sessionStorage handshake)** | **Operational (verified)** |
+| Bilingual landing / Trading Challenges (fa/en, themes, fonts, motion) | Operational |
 | Full Vela trading workspace (topbar, drawings, indicators, search) | Operational |
 | Live Gains market data (488 markets, REST + WS ~90 upd/s) | Operational |
 | Gains-style market selector (OI L/S, funding, CLOSED markets view-only) | Operational |
@@ -214,10 +221,13 @@ Full walkthrough (including the no-Docker Directus pitfalls): [`docs/backstage/L
 ## 18. Build & testing
 
 ```bash
-cd apps/web-react && npm run build          # → repo-root react/ (served at :4173/react/)
-cd apps/backend && node test/siwe.test.mjs  # 22 auth/session/ownership checks
-node e2e/test-session.js                    # full-stack wallet→SIWE→profile E2E (11 checks)
-node e2e/test.js                            # landing/terminal regression (18 checks)
+cd apps/web-react && npm run build               # → repo-root react/ (served at :4173/react/)
+cd apps/web-react && npx tsc --noEmit            # typecheck
+cd apps/web-react && npm run test:information    # rulebook/transparency content invariants
+cd apps/web-react && npm run test:markets        # markets filtering/search/price logic
+cd apps/backend && node test/siwe.test.mjs       # 22 auth/session/ownership checks
+node e2e/test-session.js                         # full-stack wallet→SIWE→profile E2E (11 checks)
+node e2e/test.js                                 # landing/terminal regression (18 checks)
 ```
 
 Automated results on 2026-11-01: SIWE suite **22/22**, session E2E **11/11**, regression **18/18** (dev :5173 and build :4173). Honest-testing note: wallet flows are exercised with a real secp256k1 signer (programmatic account behind a mock EIP-1193 provider), not a browser extension.

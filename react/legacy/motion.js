@@ -21,7 +21,7 @@
  const teamDialog=document.querySelector('#team-dialog');
  document.querySelectorAll('[data-team]').forEach(b=>b.addEventListener('click',()=>{document.querySelector('#team-dialog-title').textContent=b.dataset.name;document.querySelector('#team-dialog-role').textContent=b.dataset.role;document.querySelector('#team-dialog-bio').textContent=b.dataset.bio;document.querySelector('.team-dialog-portrait').style.setProperty('--person',b.dataset.team);teamDialog.showModal()}));
  document.querySelector('.team-dialog-close').addEventListener('click',()=>teamDialog.close());teamDialog.addEventListener('click',e=>{if(e.target!==teamDialog)return;const r=teamDialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)teamDialog.close()});
- const navLinks=[...document.querySelectorAll('.navlinks a[href^="#"]')];
+ const navLinks=[...document.querySelectorAll('.navlinks a[href^="#"]:not([href^="#/"])')];
  if('IntersectionObserver'in window){const navObserver=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))})},{rootMargin:'-15% 0px -65% 0px',threshold:0});navLinks.forEach(a=>{const s=document.querySelector(a.getAttribute('href'));if(s)navObserver.observe(s)})}
  reduced.addEventListener('change',()=>{if(reduced.matches){root.classList.remove('motion-ready');if(revealObserver)revealObserver.disconnect();if(frame)cancelAnimationFrame(frame);aura.classList.remove('visible');card.style.setProperty('--tilt-x','0deg');card.style.setProperty('--tilt-y','0deg')}});
 })();

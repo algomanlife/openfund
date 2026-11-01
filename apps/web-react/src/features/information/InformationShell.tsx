@@ -5,7 +5,7 @@ import landingBody from '../../pages/landing-body.html?raw'
 import translationsJson from '../../../public/translations.json?raw'
 import { fetchCmsTranslations } from '../../cms/client'
 import { RainbowConnect } from '../../wallet/RainbowConnect'
-import { labels, type Locale } from './content'
+import { labels, type Locale, type InfoPage } from './content'
 import './information.css'
 
 const header = landingBody.match(/<header\b[^>]*>[\s\S]*?<\/header>/)![0]
@@ -24,8 +24,9 @@ const fallbackTranslations: Record<string, string> = {
 }
 
 /** Reuses the landing's source markup and public translation pipeline, without
- * loading its page-wide legacy scripts into React-owned editorial content. */
-function Chrome({ locale, part }: { locale: Locale; part: 'header' | 'footer' }) {
+ * loading its page-wide legacy scripts into React-owned editorial content.
+ *  Exported so gateway-style pages (Home) can mount the shared header alone. */
+export function Chrome({ locale, part }: { locale: Locale; part: 'header' | 'footer' }) {
   const [dictionary, setDictionary] = useState<Record<string, string>>(fallbackTranslations)
   const [faDictionary, setFaDictionary] = useState<Record<string, string>>({})
   const [walletHost, setWalletHost] = useState<HTMLElement | null>(null)
@@ -56,14 +57,15 @@ function Chrome({ locale, part }: { locale: Locale; part: 'header' | 'footer' })
       for (const attr of ['aria-label', 'title', 'alt']) {
         if (el.hasAttribute(attr)) el.setAttribute(attr, translate(el.getAttribute(attr)!))
       }
-      const page = el.dataset.infoPage
-      if (page) {
+      const page = el.dataset.infoPage as InfoPage | undefined
+      if (page && labels[page]) {
         el.setAttribute('href', `#/${locale}/${page}`)
-        el.textContent = labels[page as 'rulebook' | 'transparency'][locale]
+        el.textContent = labels[page][locale]
         if (location.pathname.endsWith(`/${page}`)) el.setAttribute('aria-current', 'page')
       } else if (el.tagName === 'A') {
         const href = el.getAttribute('href') || ''
-        if (href === '#top') el.setAttribute('href', part === 'header' ? '#/' : '#top')
+        if (href === '#/' || href === '#top' && part === 'header') el.setAttribute('href', `#/${locale}/home`)
+        else if (href === '#top') el.setAttribute('href', '#top')
         else if (href.startsWith('#') && !href.startsWith('#/')) el.setAttribute('href', `#/${href}`)
       }
       for (const attr of ['src', 'href']) {
@@ -96,7 +98,7 @@ function Chrome({ locale, part }: { locale: Locale; part: 'header' | 'footer' })
       host.current?.querySelector('#navigation')?.classList.toggle('open', open)
     } else if (target.dataset.menuPreset) {
       try { sessionStorage.setItem('ofScrollTo', 'accounts') } catch { /* optional */ }
-      navigate('/')
+      navigate(`/${locale}/challenges`)
     } else if (target.tagName === 'A') {
       host.current?.querySelector('#navigation')?.classList.remove('open')
       host.current?.querySelector('.menu')?.setAttribute('aria-expanded', 'false')
@@ -118,8 +120,8 @@ export function useInformationLocale(): Locale {
   return useParams().locale === 'en' ? 'en' : 'fa'
 }
 
-export default function InformationShell({ page, description, children }: {
-  page: 'rulebook' | 'transparency'; description: string; children: ReactNode
+export default function InformationShell({ page, description, footer = true, title, children }: {
+  page: InfoPage; description: string; footer?: boolean; title?: string; children: ReactNode
 }) {
   const { locale: routeLocale } = useParams()
   const locale = useInformationLocale()
@@ -139,7 +141,7 @@ export default function InformationShell({ page, description, children }: {
       localStorage.setItem('of-language', locale)
       document.documentElement.dataset.theme = localStorage.getItem('of-theme') || 'dark'
     } catch { document.documentElement.dataset.theme ||= 'dark' }
-    document.title = `${labels[page][locale]} | Openfund`
+    document.title = title || `${labels[page][locale]} | Openfund`
     const tags: HTMLElement[] = []
     const meta = document.createElement('meta')
     meta.name = 'description'; meta.content = description
@@ -155,21 +157,21 @@ export default function InformationShell({ page, description, children }: {
     }
     tags.forEach(tag => document.head.appendChild(tag))
     return () => { tags.forEach(tag => tag.remove()); document.title = previousTitle }
-  }, [locale, page, description])
+  }, [locale, page, description, title])
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }) }, [page])
   if (routeLocale !== 'en' && routeLocale !== 'fa') return <Navigate to={`/fa/${page}`} replace />
-  return <div className="information-page">
+  return <div className={`information-page${footer ? '' : ' chrome-only'}`}>
     <link rel="stylesheet" href={`${base}legacy/style.css`} precedence="openfund" />
     <link rel="stylesheet" href={`${base}legacy/wallet.css`} precedence="openfund" />
     <a className="skip" href="#main">{labels.skip[locale]}</a>
     <Chrome locale={locale} part="header" />
     <main id="main" className="info-main" tabIndex={-1}>{children}</main>
-    <Chrome locale={locale} part="footer" />
+    {footer && <Chrome locale={locale} part="footer" />}
   </div>
 }
 
 export function Hero({ locale, page, title, accent, intro, children }: {
-  locale: Locale; page: 'rulebook' | 'transparency'; title: string; accent: string; intro: string; children?: ReactNode
+  locale: Locale; page: InfoPage; title: string; accent: string; intro: string; children?: ReactNode
 }) {
   return <section className="container info-hero" id="top">
     <div className="hero-atmosphere" aria-hidden="true"><i /><i /><i /></div>

@@ -4,6 +4,10 @@ Use these statuses: **Implemented** (working and tested), **Prototype** (visible
 
 | Capability | Status | Evidence / next step |
 | --- | --- | --- |
+| Home product gateway (two-product entry) | Implemented | React `#/{fa,en}/home`; one-screen layout, two original SVGs, product CTAs; E2E 53/53 in `docs/reviews/gateway-markets/DELIVERY.md` (2026-11-01) |
+| Markets directory (Gains-authoritative) | Implemented | React `#/{fa,en}/markets`; 488 instruments from live Gains metadata, shared adapter WS prices, search/filter, deep-links; unit 6/6 + E2E 53/53 |
+| Market deep-links into terminal | Implemented | sessionStorage `of-terminal-symbol` boot hook (applied once, Gains-metadata-validated); E2E-verified BTC → terminal selection |
+| Unified website navigation (4 items, logo → Home) | Implemented | single definition in `features/information/content.ts` over shared landing chrome; verified on all five pages fa/en + mobile |
 | Landing/account static frontend | Implemented | `dist/index.html`; bilingual FA/EN, dark/light theme, Irancell/Ubuntu fonts; interactivity browser-verified |
 | Bilingual Rulebook | Implemented | React `#/{fa,en}/rulebook`; 21 sections, responsive TOC/tables, draft-policy labels; scoped tests and browser matrix in `docs/reviews/bilingual-pages/DELIVERY.md` |
 | Bilingual Transparency interface | Implemented | React `#/{fa,en}/transparency`; typed synthetic fixtures, charts, data table, locale/theme/navigation verified; all metrics labelled sample |
