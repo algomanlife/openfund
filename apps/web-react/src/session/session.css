@@ -1,0 +1,70 @@
+/* Openfund session UI — wallet sign-in chip + profile panel.
+   Imported by RainbowConnect (bundled by Vite on both pages). */
+
+.rk-signin {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; color: #d4ddd7; border: 1px solid #82e7bd88;
+  border-radius: 6px; padding: 6px 12px; font-size: 11.5px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  transition: background .18s, border-color .18s, color .18s;
+  font-family: Ubuntu, 'Irancell', system-ui, sans-serif;
+}
+.rk-signin:hover { background: #82e7bd1c; border-color: #82e7bd; color: #eafaf0 }
+.rk-signin:disabled { opacity: .6; cursor: wait }
+html[data-theme='light'] .rk-signin { color: #3F4C44; border-color: #12965D66 }
+html[data-theme='light'] .rk-signin:hover { background: #12965D14 }
+
+.rk-user-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; color: #d4ddd7; border: 1px solid #82e7bd33;
+  border-radius: 6px; padding: 6px 10px; font-size: 11.5px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+}
+.rk-user-chip:hover { border-color: #82e7bd; color: #eafaf0 }
+.rk-user-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: #82e7bd; box-shadow: 0 0 6px #82e7bd88; display: inline-block }
+
+.of-profile-overlay {
+  position: fixed; inset: 0; z-index: 2147483000;
+  background: rgba(0, 0, 0, 0.55);
+  display: grid; place-items: center;
+}
+.of-profile {
+  width: min(430px, calc(100vw - 40px));
+  max-height: 86vh; overflow: auto;
+  background: #0c1710; color: #f1f3ef;
+  border: 1px solid #82e7bd44; border-radius: 14px;
+  padding: 22px 24px;
+  font-family: 'Irancell', Tahoma, sans-serif;
+  margin: 0;
+}
+.of-profile-close { color: #a3b8a9; font-size: 24px; float: inline-end; background: none; border: 0; cursor: pointer }
+.of-profile-close:hover { color: #fff }
+.of-profile h2 { font-size: 19px; font-weight: 600; margin: 4px 0 14px }
+.of-profile h3 { font-size: 14px; font-weight: 600; margin: 18px 0 8px; color: #cbd8d0 }
+.of-profile h3 .of-count { font-style: normal; color: #82e7bd; margin-inline-start: 6px }
+.of-profile-rows div {
+  display: flex; justify-content: space-between; gap: 14px;
+  padding: 7px 0; border-bottom: 1px solid #ffffff10; font-size: 12.5px;
+}
+.of-profile-rows span { color: #84928e }
+.of-profile-rows b { font-weight: 500; color: #d4ddd7 }
+.of-profile-rows .of-ok { color: #82e7bd }
+.of-profile-rows .of-bad { color: #e89483 }
+.of-profile .of-addr { font-family: ui-monospace, Consolas, monospace; font-size: 11px }
+.of-empty { font-size: 12px; color: #84928e; line-height: 2 }
+.of-challenges { list-style: none; margin: 0; padding: 0 }
+.of-challenges li {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 9px 0; border-bottom: 1px solid #ffffff0d; font-size: 12px;
+}
+.of-challenges b { font-weight: 600; color: #d4ddd7 }
+.of-challenges span { color: #82e7bd; font-size: 11px }
+.of-challenges small { color: #7a8e85; font-size: 10px }
+.of-profile-actions { margin-top: 18px; display: flex; justify-content: flex-end }
+.of-profile-actions .button {
+  display: inline-flex; align-items: center; border-radius: 6px;
+  background: #e8948322; color: #f0b3a6; border: 1px solid #e8948355;
+  padding: 9px 16px; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  transition: background .18s;
+}
+.of-profile-actions .button:hover { background: #e8948344 }

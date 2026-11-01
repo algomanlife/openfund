@@ -17,7 +17,14 @@ Use these statuses: **Implemented** (working and tested), **Prototype** (visible
 | Arbitrum Sepolia demo contract integration | Blocked | Verify supported contracts, addresses, ABI and testnet availability |
 | Positions/order lifecycle | Planned | Specify read/write lifecycle and reconciliation |
 | True order-book / footprint | Blocked | Confirm legitimate trade/volume/depth data source |
-| Auth boundary (wallet ↔ Openfund session) | Planned | SIWE-ready SessionContext, no fake auth (migration Phase 4) |
+| SIWE wallet authentication (EIP-4361) | Implemented | apps/backend — nonce/replay/domain/chain/signature verified; 22/22 automated checks 2026-11-01 |
+| Session management (HttpOnly cookies) | Implemented | opaque hashed-id sessions, 7-day expiry, logout, account-switch invalidation |
+| User identity (one wallet = one user) | Implemented | unique normalized wallet_address; find-or-create on verified signature |
+| Multi-challenge accounts | Implemented | openfund_challenges lifecycle per record; ownership enforced; UI list + empty state |
+| Directus user management (admin view) | Implemented | users/challenges/plans/audit visible to admins; public policy: no permission |
+| User suspension enforcement | Implemented | blocks login + live sessions (backend-enforced) |
+| Challenge purchase / activation | Planned | kept separate — no fake flows |
+| Evaluation engine / results | Planned | fields empty until a real engine exists | SIWE-ready SessionContext, no fake auth (migration Phase 4) |
 | Directus backstage (CMS) — schema, seed, public API | Implemented | `infrastructure/directus`, `apps/backstage/scripts`, `packages/cms-client`; live-edit verified end-to-end 2026-11-01 (dev + build) |
 | CMS-driven translations fa/en (landing + terminal) | Implemented | `ui_messages` bridges in locale.js/terminal.js; silent static fallback tested with backstage down |
 | CMS media management / navigation rendering / editorial roles | Planned | See docs/backstage/PERMISSIONS.md roadmap |

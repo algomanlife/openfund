@@ -3,6 +3,9 @@ import { ConnectButton, RainbowKitProvider, darkTheme, lightTheme } from '@rainb
 import '@rainbow-me/rainbowkit/styles.css'   /* REQUIRED: without it the modal renders unstyled (position:static at the end of <body>, breaking the page layout) */
 import { useAccount, useBalance } from 'wagmi'
 import { formatUnits } from 'viem'
+import { useOpenfundSession } from '../session/useOpenfundSession'
+import { ProfilePanel } from '../session/ProfilePanel'
+import '../session/session.css'
 
 /* RainbowKit theme follows the app theme (html[data-theme=light]) with the
    Openfund mint accent. The provider wraps ONLY this button — its data-rk
@@ -131,6 +134,11 @@ export function RainbowConnect() {
   }
   const onSepolia = chain?.id === 421614
 
+  /* Openfund wallet identity (SIWE): connect ≠ login — the user signs once
+     per session; then the profile panel shows their account + challenges */
+  const session = useOpenfundSession()
+  const [profileOpen, setProfileOpen] = useState(false)
+
   return (
     <RainbowKitProvider
       theme={
@@ -170,12 +178,38 @@ export function RainbowConnect() {
                   <span className='rk-bal'>{fmtBal()}</span>
                   <span className='rk-addr'>{fmtAddr(address)}</span>
                 </button>
+                {session.status === 'authenticated' ? (
+                  <button onClick={() => setProfileOpen(true)} type='button' className='rk-user-chip' title={isFa ? 'حساب اوپن‌فاند' : 'Openfund account'}>
+                    <i className='dot' />
+                    {isFa ? 'حساب من' : 'Account'}
+                  </button>
+                ) : session.status === 'signing' ? (
+                  <button type='button' className='rk-signin' disabled>
+                    {isFa ? 'در حال امضا…' : 'Signing…'}
+                  </button>
+                ) : session.status === 'suspended' ? (
+                  <span className='rk-signin' style={{ cursor: 'default', borderColor: '#e8948355', color: '#f0b3a6' }}>
+                    {isFa ? 'حساب معلق' : 'Suspended'}
+                  </span>
+                ) : (
+                  <button onClick={() => void session.signIn()} type='button' className='rk-signin'>
+                    {isFa ? 'ورود به اوپن‌فاند' : 'Sign in'}
+                  </button>
+                )}
               </>
             )}
           </div>
         )
       }}
       </ConnectButton.Custom>
+      {profileOpen && session.user && (
+        <ProfilePanel
+          user={session.user}
+          challenges={session.challenges}
+          onLogout={() => { setProfileOpen(false); void session.logout() }}
+          onClose={() => setProfileOpen(false)}
+        />
+      )}
     </RainbowKitProvider>
   )
 }
