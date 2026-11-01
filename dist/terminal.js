@@ -568,6 +568,7 @@ function renderMarketStats(){
     if (!S.flashOn) return;
     if (prev[id] != null && v !== prev[id]){
       const el = $(id);
+      if (!el) return;   /* teardown race guard */
       el.classList.remove('flash-up', 'flash-down');
       void el.offsetWidth;
       el.classList.add(v > prev[id] ? 'flash-up' : 'flash-down');
@@ -577,7 +578,7 @@ function renderMarketStats(){
   const changePct = S.stats ? S.stats.changePct : null;
   set('st-last', p ? fmt.price(p.mark, d) : '—');
   paint('st-last', p ? p.mark : 0);
-  if (changePct != null) $('st-last').classList.add(changePct >= 0 ? 'up' : 'down');
+  const stLast = $('st-last'); if (changePct != null && stLast) stLast.classList.add(changePct >= 0 ? 'up' : 'down');
   set('st-oracle', p && p.index ? fmt.price(p.index, d) : '—');
   set('st-change', changePct == null ? '…' : fmt.pct(changePct), 'num ' + (changePct >= 0 ? 'up' : 'down'));
   set('st-high', S.stats ? fmt.price(S.stats.high, d) : '…');
@@ -585,7 +586,7 @@ function renderMarketStats(){
   set('st-vol', '—');   /* Gains API provides no volume — never fabricated */
   const oi = G.openInterestUsd ? G.openInterestUsd(m) : null;
   set('st-oi', oi ? '$' + fmt.compact(oi.total) : '—');
-  if (oi) $('st-oi').title = 'Long $' + fmt.compact(oi.long) + ' · Short $' + fmt.compact(oi.short);
+  if (oi) { const stOi = $('st-oi'); if (stOi) stOi.title = 'Long $' + fmt.compact(oi.long) + ' · Short $' + fmt.compact(oi.short); }
   const f = m && m.funding ? Number(m.funding.fundingRateLongHourly) : null;
   set('st-funding', f != null && Number.isFinite(f) ? (f * 100).toFixed(4) + '%' : '—');
   set('st-lev', m ? Number(m.maxLeverage) + '×' : '—');
