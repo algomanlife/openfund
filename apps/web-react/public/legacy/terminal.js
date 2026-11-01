@@ -488,7 +488,7 @@ document.addEventListener('keydown', e => {
 });
 $('market-select-btn').addEventListener('click', () => ddOpen ? closeDropdown() : openDropdown());
 $('market-search').addEventListener('input', e => renderDropdown(e.target.value));
-document.addEventListener('click', e => { if (ddOpen && !e.target.closest('.market-select')) closeDropdown(); });
+document.addEventListener('click', e => { if (ddOpen && !e.target.closest('.market-select, .market-dropdown')) closeDropdown(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && ddOpen) closeDropdown(); });
 function renderCats(){
   const counts = { all: board.meta.size };
@@ -499,14 +499,18 @@ function renderCats(){
 }
 $('dd-cats').addEventListener('click', e => {
   const b = e.target.closest('[data-cat]'); if (!b) return;
+  e.stopPropagation();   /* renderCats re-renders innerHTML — without this the
+                            document outside-click handler sees a detached target
+                            and closes the dropdown */
   S.ddCategory = b.dataset.cat;
   renderCats();
   renderDropdown('');
 });
 
 function selectMarket(id){
-  S.marketId = id;
+  velaSaveDrawings();     /* persist user drawings for the OLD symbol */
   velaPositionsClear();   /* symbol isolation: only the new market's overlays */
+  velaClearDrawings();    /* clear user drawings too */
   S.stats = null;
   $('cur-icon').outerHTML = `<span id="cur-icon" class="cur-ic">${iconHTML(id)}</span>`;
   $('cur-pair').textContent = id;
@@ -531,6 +535,9 @@ function selectMarket(id){
   renderTrades();
   computeForm();
 }
+  /* restore user drawings for the NEW symbol after the chart updates */
+  setTimeout(() => { velaRestoreDrawings(); velaPositionsSync(); }, 300);
+
 
 function updateStarBtn(){
   const b = $('cur-star');
@@ -939,6 +946,129 @@ function velaPositionsClear(){
   posDrawings.clear();
 }
 
+/* ============================================================
+   VELA DRAWINGS PERSISTENCE — user drawings + tool defaults survive
+   page refresh and market switches (per-symbol, localStorage).
+   Vela API: chart.drawings.toJSON() / fromJSON(doc),
+   chart.renderer.getConfig() / applyConfig(config),
+   setToolDefaults(toolDefaults()).
+   Position overlays are NOT saved here (rebuilt from backend state).
+   ============================================================ */
+const VELA_DRAW_KEY = (sym) => 'of-vela-drawings-' + sym;
+let velaRestored = false;   /* saves are skipped until the initial restore completes */
+const VELA_CONF_KEY = 'of-vela-config';
+const VELA_TOOLS_KEY = 'of-vela-tools';
+
+function velaSaveDrawings(){
+  if (!vc || !vc.chart || !vc.chart.drawings) return;
+  if (!velaRestored) return;   /* don't overwrite saved drawings before restore */
+  try {
+    const fullDoc = vc.chart.drawings.toJSON();
+    const posIds = new Set(posDrawings.values());
+    if (fullDoc && Array.isArray(fullDoc.drawings)){
+      fullDoc.drawings = fullDoc.drawings.filter(d => !posIds.has(d.id));
+    }
+    localStorage.setItem(VELA_DRAW_KEY(S.marketId), JSON.stringify(fullDoc));
+    /* renderer config + tool defaults (once, not per symbol) */
+    const conf = vc.chart.renderer.getConfig ? vc.chart.renderer.getConfig() : null;
+    if (conf) localStorage.setItem(VELA_CONF_KEY, JSON.stringify(conf));
+    const tools = vc.chart.drawings.toolDefaults ? vc.chart.drawings.toolDefaults() : null;
+    if (tools) localStorage.setItem(VELA_TOOLS_KEY, JSON.stringify(tools));
+  } catch(e){ /* storage full or private mode — silently skip */ }
+}
+
+function velaRestoreDrawings(){
+  if (!vc || !vc.chart || !vc.chart.drawings) return;
+  try {
+    const raw = localStorage.getItem(VELA_DRAW_KEY(S.marketId));
+    const doc = JSON.parse(raw || 'null');
+    if (doc && doc.drawings) {
+      vc.chart.drawings.fromJSON(doc);
+      }
+    velaRestored = true;   /* allow saves from now on */
+    const conf = JSON.parse(localStorage.getItem(VELA_CONF_KEY) || 'null');
+    if (conf && vc.chart.renderer.applyConfig) vc.chart.renderer.applyConfig(conf);
+    const tools = JSON.parse(localStorage.getItem(VELA_TOOLS_KEY) || 'null');
+    if (tools && vc.chart.drawings.setToolDefaults) vc.chart.drawings.setToolDefaults(tools);
+  } catch(e){ /* corrupted JSON — start fresh */ }
+}
+
+function velaClearDrawings(){
+  if (!vc || !vc.chart || !vc.chart.drawings) return;
+  try { vc.chart.drawings.fromJSON({ drawings: [] }) } catch(e){}
+}
+
+/* ============================================================
+   SL/TP DRAG-EDIT on chart — when the user drags the stop or target
+   handle of a backend position overlay, update the backend protection.
+   Vela events: drawing:edited → check if it's one of our position
+   drawings → extract stop/target prices → PUT /trading/positions/:id/protection
+   Reverts the chart position if the backend rejects.
+   ============================================================ */
+let sltpDragTimer = null;
+function onPositionDrawingEdited(drawingId){
+  clearTimeout(sltpDragTimer);
+  sltpDragTimer = setTimeout(async () => {
+    if (!vc || !vc.chart || !vc.chart.drawings) return;
+    const srv = window.__ofServerTP;
+    if (!srv || !srv.state) return;
+    /* find which backend position this drawing belongs to */
+    let posId = null;
+    for (const [pid, did] of posDrawings){
+      if (did === drawingId){ posId = pid; break; }
+    }
+    if (!posId) return;
+    /* read the drawing's current anchor prices */
+    const dr = vc.chart.drawings;
+    const all = dr.all ? dr.all() : [];
+    const d = all.find(x => x.id === drawingId);
+    if (!d || !d.anchors || d.anchors.length < 3) return;
+    const entry = d.anchors[0]?.price;
+    const stop = d.anchors[1]?.price;
+    const target = d.anchors[2]?.price;
+    if (entry == null || stop == null || target == null) return;
+    /* find the position to determine side */
+    const p = srv.state.positions.find(p => p.id === posId);
+    if (!p) return;
+    /* determine which is SL and which is TP based on side */
+    const isLong = p.side === 'long';
+    const sl = isLong ? Math.min(stop, target) : Math.max(stop, target);
+    const tp = isLong ? Math.max(stop, target) : Math.min(stop, target);
+    /* round to market precision */
+    const m = board.getMeta(p.market);
+    const dpp = m ? Number(m.pricePrecision) : 2;
+    const slR = sl ? sl.toFixed(dpp) : null;
+    const tpR = tp ? tp.toFixed(dpp) : null;
+    /* update backend */
+    try {
+      const res = await fetch(window.__ofBackendUrl + '/trading/positions/' + posId + '/protection', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sl: slR, tp: tpR })
+      });
+      if (res.ok){
+        velaPositionsSync();   /* re-sync chart with authoritative state */
+        toast('SL/TP updated', 'pos');
+      } else {
+        velaPositionsSync();   /* revert chart to authoritative state */
+        const e = await res.json().catch(() => ({ error: 'unknown' }));
+        toast('SL/TP rejected: ' + (e.error || 'invalid'), 'neg');
+      }
+    } catch(e){
+      velaPositionsSync();
+      toast('SL/TP update failed', 'neg');
+    }
+  }, 600);   /* debounce: user may still be dragging */
+}
+
+/* save drawings whenever the user modifies them (debounced) */
+let velaSaveTimer = null;
+function velaScheduleSave(){
+  clearTimeout(velaSaveTimer);
+  velaSaveTimer = setTimeout(velaSaveDrawings, 500);
+}
+
 /* lifecycle hooks: every state change, every market switch, boot, logout */
 window.addEventListener('of-trading-update', velaPositionsSync);
 window.addEventListener('of-trading-ready', velaPositionsSync);
@@ -1264,6 +1394,17 @@ function boot(){
     board.on(p => { if (p && p.market === S.marketId) { /* nothing extra */ } });
     applyStaticI18n();
     initChart();
+    /* restore user drawings + settings after the chart is ready */
+    vc.chart.ready ? vc.chart.ready().then(() => {
+      velaRestoreDrawings();
+      /* save on any drawing change */
+      try { vc.chart.on('drawing:created', velaScheduleSave) } catch(e){}
+      try { vc.chart.on('drawing:edited', velaScheduleSave) } catch(e){}
+      try { vc.chart.on('drawing:removed', velaScheduleSave) } catch(e){}
+      /* SL/TP drag-edit on position overlays */
+      try { vc.chart.on('drawing:edited', (ev) => { if (ev && ev.id) onPositionDrawingEdited(ev.id) }) } catch(e){}
+      velaPositionsSync();
+    }) : setTimeout(() => { velaRestoreDrawings(); velaPositionsSync(); }, 1000);
     $('market-select-btn').disabled = false;
     $('submit-order').disabled = false;
     selectMarket(board.meta.has('BTC/USD') ? 'BTC/USD' : [...board.meta.keys()][0]);
