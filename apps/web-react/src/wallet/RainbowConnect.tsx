@@ -41,6 +41,88 @@ export function RainbowConnect() {
   }, [])
   const isFa = (window as any).ofLang !== 'en'
 
+  /* ---- Persian UI inside the RainbowKit modal (no built-in fa locale) ----
+     RainbowKit 2 only ships fixed locale strings, so we translate the modal
+     DOM with the same tree-walk technique the site uses (locale.js). The
+     observer runs only while the app language is fa; wallet brand names
+     (MetaMask, Rabby…) are never touched. */
+  useEffect(() => {
+    if (!isFa) return
+    const RK_FA: Record<string, string> = {
+      'Connect a Wallet': 'اتصال کیف پول',
+      'Installed': 'نصب‌شده',
+      'Popular': 'محبوب',
+      'More': 'بیشتر',
+      'Detected': 'کشف‌شده',
+      'What is a Wallet?': 'کیف پول چیست؟',
+      'A Home for your Digital Assets': 'خانه‌ای برای دارایی‌های دیجیتالت',
+      'Wallets are used to send, receive, store, and display digital assets like Ethereum and NFTs.':
+        'کیف پول‌ها برای ارسال، دریافت، نگهداری و نمایش دارایی‌های دیجیتال مثل اتریوم و NFT استفاده می‌شوند.',
+      'A New Way to Log In': 'روشی تازه برای ورود',
+      'Instead of creating new accounts and passwords on every website, just connect your wallet.':
+        'به‌جای ساختن حساب و رمز عبور در هر سایت، فقط کیف پولت را وصل کن.',
+      'Get a Wallet': 'یک کیف پول تهیه کن',
+      'Learn More': 'بیشتر بدانید',
+      'Use the WalletConnect app on your phone to scan': 'با اپ WalletConnect روی گوشی‌ات اسکن کن',
+      'Scan with your phone': 'با گوشی‌ات اسکن کن',
+      'Copied': 'کپی شد',
+      'Copy': 'کپی',
+      'Cancel': 'انصراف',
+      'Back': 'بازگشت',
+      'Continue': 'ادامه',
+      'Close': 'بستن',
+      'Try Again': 'تلاش دوباره',
+      'Retry': 'تلاش دوباره',
+      'Disconnect': 'قطع اتصال',
+      'Connected': 'متصل',
+      'Connecting': 'در حال اتصال…',
+      'Reject': 'رد کردن',
+      'Approve': 'تأیید',
+      'Switch Networks': 'تغییر شبکه',
+      'Wrong Network': 'شبکه اشتباه',
+      'Wallet not found': 'کیف پول پیدا نشد',
+      'Download': 'دانلود',
+      'Open': 'باز کردن',
+      'Never disclose this secret phrase. Anyone with this phrase can take your wallet forever.': '',
+    }
+    const originals = new WeakSet<Node>()
+    const apply = (root: ParentNode) => {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
+      let n: Node | null
+      while ((n = walker.nextNode())) {
+        const src = n.nodeValue?.trim() ?? ''
+        if (!src) continue
+        const fa = RK_FA[src]
+        if (fa !== undefined && !originals.has(n)) {
+          originals.add(n)
+          n.nodeValue = fa
+        }
+      }
+      // rtl for the modal
+      root.querySelectorAll('[role="dialog"]').forEach((d: Element) => {
+        if (!(d as HTMLElement).dataset.ofRkDir) {
+          ;(d as HTMLElement).dataset.ofRkDir = '1'
+          d.setAttribute('dir', 'rtl')
+        }
+      })
+    }
+    const mo = new MutationObserver(muts => {
+      for (const m of muts) {
+        for (const node of m.addedNodes) {
+          if (node instanceof HTMLElement && node.hasAttribute('data-rk')) apply(node)
+        }
+        if (m.type === 'characterData' || (m.target instanceof HTMLElement && (m.target as HTMLElement).closest('[data-rk]'))) {
+          const rkRoot = (m.target instanceof HTMLElement ? (m.target as HTMLElement).closest('[data-rk]') : null)
+          if (rkRoot) apply(rkRoot)
+        }
+      }
+    })
+    mo.observe(document.body, { childList: true, subtree: true, characterData: true })
+    // also translate any modal that is already open right now
+    document.querySelectorAll('body > div [data-rk], body > [data-rk]').forEach(apply)
+    return () => mo.disconnect()
+  }, [isFa])
+
   const fmtAddr = (a?: string) => (a ? `${a.slice(0, 6)}…${a.slice(-4)}` : '')
   const fmtBal = () => {
     if (!balance) return ''
@@ -61,6 +143,9 @@ export function RainbowConnect() {
       <ConnectButton.Custom>
       {({ account, chain: rkChain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
         const connected = mounted && account && rkChain
+        /* expose the modal opener so legacy-markup triggers (e.g. the landing
+           "ورود با کیف پول وب۳" card) can open the real RainbowKit modal */
+        ;(window as any).__ofOpenConnect = connected ? openAccountModal : openConnectModal
         return (
           <div
             aria-hidden={!mounted}

@@ -40,7 +40,7 @@ export async function fetchCmsTranslations(timeout = TIMEOUT_MS): Promise<CmsTra
     if (!res.ok) return null
     const json = await res.json() as { data: RawMessage[] }
     if (!Array.isArray(json.data)) return null
-    const out: CmsTranslations = { landing: {}, terminal: {} }
+    const out: CmsTranslations = { landing: {}, landingFa: {}, terminal: {} }
     for (const m of json.data) {
       const tr = { fa: '', en: '' }
       for (const t of m.translations || []) {
@@ -48,8 +48,10 @@ export async function fetchCmsTranslations(timeout = TIMEOUT_MS): Promise<CmsTra
         else if (t.language_code === 'en') tr.en = t.value
       }
       if (m.namespace === 'landing') {
-        // landing dict maps the FA source text → EN replacement (ofT contract)
+        /* ofT contract: en replacement keyed by the (current) fa source text.
+           fa map lets the editor change the PERSIAN text itself too. */
         if (tr.fa && tr.en) out.landing[m.key] = tr.en
+        if (tr.fa && tr.fa !== m.key) out.landingFa[m.key] = tr.fa
       } else if (m.namespace === 'terminal' || m.namespace === 'common') {
         out.terminal[m.key] = { fa: tr.fa || tr.en, en: tr.en || tr.fa }
       }

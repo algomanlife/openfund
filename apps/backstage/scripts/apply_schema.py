@@ -196,6 +196,48 @@ def main():
     ensure_field('site_settings', 'default_language', 'string', meta=dict(LANG_META), schema={'default_value': 'fa'})
     ensure_field('site_settings', 'maintenance_message', 'text', meta={'interface': 'input-multiline'}, schema={})
 
+
+    # --- round-6: content-editing UX ---------------------------------------
+    # section grouping + friendly label so editors browse by page section
+    ensure_field('ui_messages', 'section', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'هدر / ناوبری', 'value': 'navigation'},
+            {'text': 'هیرو (بالای صفحه)', 'value': 'hero'},
+            {'text': 'معرفی', 'value': 'intro'},
+            {'text': 'بازارها', 'value': 'markets'},
+            {'text': 'حساب‌ها و پلن‌ها', 'value': 'accounts'},
+            {'text': 'چطور کار می‌کند', 'value': 'how'},
+            {'text': 'تیم', 'value': 'team'},
+            {'text': 'قوانین', 'value': 'rules'},
+            {'text': 'مبانی فنی', 'value': 'platform'},
+            {'text': 'فوتر', 'value': 'footer'},
+            {'text': 'متن‌های حقوقی', 'value': 'legal'},
+            {'text': 'ترمینال — هدر', 'value': 'term_header'},
+            {'text': 'ترمینال — پنل معامله', 'value': 'term_trade'},
+            {'text': 'ترمینال — مارکت', 'value': 'term_markets'},
+            {'text': 'ترمینال — دیتابوک', 'value': 'term_book'},
+            {'text': 'ترمینال — نوار وضعیت', 'value': 'term_status'},
+            {'text': 'عمومی', 'value': 'general'},
+        ]}, 'required': False})
+    ensure_field('ui_messages', 'label', 'string',
+        meta={'interface': 'input', 'options': {'placeholder': 'نام فهمیدن برای редакتر — مثلاً: تیتر هیرو'}, 'required': False})
+
+    # hide the raw translation tables from the sidebar (edited inline in parents)
+    for hide in ['ui_message_translations', 'navigation_item_translations', 'page_translations']:
+        cur = req('GET', f'{base}/collections/{hide}', token)['data']
+        if not cur['meta'].get('hidden'):
+            req('PATCH', f'{base}/collections/{hide}', token, {'meta': {'hidden': True, 'icon': 'translate'}})
+            print(f'  collection {hide}: hidden from sidebar')
+    # friendly name + icon for the main collections
+    for coll, icon, note in [
+        ('ui_messages', 'article', 'تمام متن‌های لندینگ و ترمینال — fa/en + بخش صفحه'),
+        ('navigation_items', 'menu', 'آیتم‌های منو (هدر/فوتر)'),
+        ('pages', 'public', 'سئو و متادیتای صفحات'),
+    ]:
+        cur = req('GET', f'{base}/collections/{coll}', token)['data']
+        req('PATCH', f'{base}/collections/{coll}', token, {'meta': {'icon': icon, 'note': note, 'sort': 1 if coll == 'ui_messages' else None}})
+        print(f'  collection {coll}: icon/note set')
+
     # ---------------- public (read-only) permissions ----------------------
     roles = req('GET', f'{base}/roles', token)['data']
     public = next((r for r in roles if r['name'] == 'Public'), None)

@@ -105,23 +105,23 @@
  },
  "cat.crypto": {
   "fa": "رمزارز",
-  "en": "crypto"
+  "en": "Crypto"
  },
  "cat.forex": {
   "fa": "فارکس",
-  "en": "forex"
+  "en": "Forex"
  },
  "cat.stocks": {
   "fa": "سهام",
-  "en": "stocks"
+  "en": "Stocks"
  },
  "cat.indices": {
   "fa": "شاخص",
-  "en": "indices"
+  "en": "Indices"
  },
  "cat.commodity": {
   "fa": "کالا",
-  "en": "commodities"
+  "en": "Commodities"
  },
  "book.tab": {
   "fa": "اوردربوک",
@@ -604,13 +604,9 @@
   "fa": "هنوز پرداخت فاندینگی وجود ندارد — فاندینگ شبیه‌سازی‌شده به موقعیت‌های دمو اعمال می‌شود.",
   "en": "No funding payments yet."
  },
- "sb.demo": {
-  "fa": "حالت دمو",
-  "en": "DEMO MODE"
- },
  "sb.source": {
-  "fa": "داده: Gains Network · api.gains.trade",
-  "en": "Data: Gains Network · api.gains.trade"
+  "fa": "داده‌ها: Gains Network",
+  "en": "Data: Gains Network"
  },
  "sb.tick": {
   "fa": "قیمت زنده",
@@ -619,6 +615,14 @@
  "sb.assumptions": {
   "fa": "مفروضات دمو",
   "en": "Demo assumptions"
+ },
+ "sb.version": {
+  "fa": "ترمینال اوپن‌فاند نسخهٔ ۱٫۰",
+  "en": "Openfund Terminal v1.0"
+ },
+ "sb.support": {
+  "fa": "پشتیبانی",
+  "en": "Support"
  },
  "mkt.closed": {
   "fa": "این بازار بسته است — امکان ترید نیست، فقط مشاهدهٔ چارت.",

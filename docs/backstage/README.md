@@ -43,6 +43,14 @@ the trading terminal (Persian + English) is managed in the Directus Data Studio.
 - [Translations](TRANSLATIONS.md) — how fa/en flows from Directus into the pages
 - [Permissions](PERMISSIONS.md) — roles, public policy, security rules
 
+## Editing content (the point of all this)
+
+Open **ui_messages** in the Data Studio:
+- each row = one user-facing string; **label** = friendly name, **section** = the page area
+- edit the **fa** and **en** translation values — both languages render live after a page refresh
+- landing keys ARE the Persian source text (do not rename `key`); terminal keys are stable ids
+- drafts never render — set status back to `published` when done
+
 ## Status (2026-11-01)
 
 - ✅ Directus 11.9.1 + PostgreSQL 17 (local, brew — Docker compose provided)
