@@ -33,6 +33,7 @@ Capital should follow skill, not connections. Openfund presents a transparent fu
 ## 3. Product overview
 
 - **Landing** — full bilingual marketing site (RTL fa / LTR en, dark + light themes, Irancell/Ubuntu fonts, motion) presenting the funding model, account builder, philosophy, rules and legal content.
+- **Rulebook and Transparency** — native bilingual information pages at `#/fa/rulebook`, `#/en/rulebook`, `#/fa/transparency` and `#/en/transparency`; draft commercial rules and an explicitly synthetic reporting dashboard. See [`docs/reviews/bilingual-pages/DELIVERY.md`](docs/reviews/bilingual-pages/DELIVERY.md).
 - **Trading terminal** — professional workspace: real **LuxAlgo Vela** chart, live **Gains Network** market data (488 markets, REST + WebSocket), Gains-style market selector with real open-interest and funding stats, a clearly-labelled **simulated** demo trading engine on real marks, and Iranian trader Finglish labels (اوردربوک، لانگ، شورت، مارکت، لیمیت، فاندینگ، کولترال).
 - **Wallet identity** — Sign-In with Ethereum (EIP-4361): one wallet = one Openfund user, owning multiple independent challenge accounts.
 - **Demo trading** — every authenticated user gets a persistent 100,000 virtual-DAI account: open/close long & short positions on any of the 488 Gains markets with leverage, SL/TP, live PnL, liquidation monitoring, full trade history — simulated server-side, browser-open or not. See [`docs/architecture/DEMO_TRADING.md`](docs/architecture/DEMO_TRADING.md).

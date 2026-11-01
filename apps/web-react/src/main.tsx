@@ -2,6 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createHashRouter, RouterProvider, Navigate } from 'react-router-dom'
 import Landing from './pages/Landing'
+import Rulebook from './features/rulebook/Rulebook'
+import Transparency from './features/transparency/Transparency'
 import Terminal from './pages/Terminal'
 import Portfolio from './pages/Portfolio'
 import { WalletProvider } from './wallet/WalletProvider'
@@ -9,6 +11,8 @@ import { SessionProvider } from './session/useOpenfundSession'
 
 const router = createHashRouter([
   { path: '/', element: <Landing /> },
+  { path: '/:locale/rulebook', element: <Rulebook /> },
+  { path: '/:locale/transparency', element: <Transparency /> },
   { path: '/terminal', element: <Terminal /> },
   { path: '/portfolio', element: <Portfolio /> },
   /* unknown hashes (e.g. a plain '#markets' fragment) fall back home

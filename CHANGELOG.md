@@ -4,6 +4,13 @@ Notable changes are recorded here. Dates should use ISO 8601.
 
 ## Unreleased
 
+### Bilingual Rulebook and Transparency (2026-11-01)
+- Add two React pages in English and Persian using the existing landing chrome, fonts, tokens and theme.
+- Separate the documented demo from draft evaluation/payout terms; provide 21 numbered Rulebook sections, section navigation, tables, definitions and explanations.
+- Add a labelled sample Transparency dashboard with typed fixtures, derived metrics, accessible charts, chart-period controls and data tables; no reporting API or financial integration changes.
+- Preserve page identity when switching locale; add landing navigation/footer links and client-side localized metadata.
+- Validation and screenshots: `docs/reviews/bilingual-pages/DELIVERY.md`.
+
 ### LuxAlgo Trade Journal integration — native Portfolio (2026-11-01, branch `qwen/portfolio-journal`)
 - **feat(portfolio):** native Portfolio page (`#/portfolio`) with **the terminal's own header, fonts and design** (shared topnav, wallet chip, theme/language toggles — fa/en, RTL/LTR, dark/light): overview cards, performance analytics, equity curve (realized-basis, honestly labeled), drawdown, PnL calendar (UTC policy), filterable/paginated trading history, trade details with the ledger, and private trade notes.
 - **feat(vendor):** `@luxalgo/journal-core` vendored under `third_party/` (upstream commit `834e7b6`, MIT, PROVENANCE with reproducible esbuild build) — its verified analytics (metrics, equity/drawdown, daily stats, aggregation) power the Portfolio; the Next.js app and importers are intentionally NOT included (single source of truth = Openfund engine).
