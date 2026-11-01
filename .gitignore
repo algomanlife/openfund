@@ -1,3 +1,9 @@
 .qa/
 node_modules/
 publish-openfund/
+
+# Directus backstage (local secrets + runtime + data volumes)
+infrastructure/directus/.env
+infrastructure/directus/runtime/
+infrastructure/directus/data/
+apps/web-react/.env
