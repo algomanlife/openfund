@@ -238,3 +238,7 @@ html[data-theme=light] .rk-btn.rk-net,html[data-theme=light] .rk-btn.rk-acct{bac
 
 .oss-fa-only{font-style:normal;font-size:10.5px;color:#98b5a6;margin-top:3px;letter-spacing:.2px}
 html[dir="ltr"] .oss-fa-only{display:none}
+
+/* office addresses (legal section) */
+address.offices{font-style:normal;margin:0;padding:0}
+address.offices p{font-size:12px;color:#a3bbab;line-height:2.1;direction:rtl}
