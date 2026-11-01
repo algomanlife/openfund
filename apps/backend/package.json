@@ -1,0 +1,20 @@
+{
+  "name": "openfund-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Openfund backend — SIWE wallet authentication, sessions, users & challenges (PostgreSQL). Directus remains the admin data interface, never the auth boundary.",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "migrate": "node migrate.js",
+    "seed-plans": "node seed-plans.js",
+    "test": "node test/siwe.test.mjs"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.1",
+    "viem": "^2.57.13"
+  }
+}
