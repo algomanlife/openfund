@@ -7,12 +7,12 @@ import './home.css'
 
 const base = import.meta.env.BASE_URL
 
-/** The Openfund product gateway: one screen, two products, no footer.
- *  ALL copy comes from Directus (`home_content`) — the owner edits headline,
- *  descriptions, CTA labels/destinations, illustrations and SEO without code
- *  changes; edits appear on the next load (no rebuild).
- *  Direction B ("Dual Product Experience") is the production default;
- *  `?variant=a` renders the "Editorial Minimalism" preview on the same route. */
+/** The Openfund product gateway: ONE screen, no scroll, no footer.
+ *  ALL copy comes from Directus (`home_content`) — headline, product titles,
+ *  CTA labels/destinations, illustrations and the heartbeat strip. Editorial
+ *  fields the owner leaves empty simply don't render (the page stays clean).
+ *  Direction B (dual product panels) is the default; `?variant=a` previews
+ *  the editorial direction on the same route. */
 export default function Home() {
   const [params] = useSearchParams()
   const variant = params.get('variant') === 'a' ? 'a' : 'b'
@@ -26,7 +26,7 @@ export default function Home() {
   const c = content === 'error' ? null : content
   return <InformationShell page="home" footer={false}
       title={c ? (c.translations[locale].seoTitle || 'Openfund') : 'Openfund'}
-      description={c ? (c.translations[locale].seoDescription || c.translations[locale].sub) : 'Openfund'}>
+      description={c ? (c.translations[locale].seoDescription || '') : 'Openfund'}>
     {c ? <HomeBody variant={variant} locale={locale} content={c} /> : <HomeUnavailable locale={locale} />}
   </InformationShell>
 }
@@ -55,28 +55,38 @@ function HomeUnavailable({ locale }: { locale: Locale }) {
   </div>
 }
 
+/* beating heart (the heartbeat strip mark) */
+function Heartbeat() {
+  return <svg className="hb-heart" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+    <path d="M12 21C7 16.6 3.2 13.4 3.2 9.3 3.2 6.3 5.5 4.2 8.2 4.2c1.6 0 3 .8 3.8 2 .8-1.2 2.2-2 3.8-2 2.7 0 5 2.1 5 5.1 0 4.1-3.8 7.3-8.8 11.7z" fill="#82e7bd"/>
+    <path d="M4 12h3l2-4 2.6 7L14 12h6" fill="none" stroke="#06110c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/>
+  </svg>
+}
+
 function HomeBody({ variant, locale, content: c }: { variant: 'a' | 'b'; locale: Locale; content: CmsHome }) {
   const t = c.translations[locale]
-  /* headline split: last word becomes the accent line (matches the designed
-     two-line composition for both locales) */
+  /* headline split: last word becomes the accent line (two-line composition) */
   const cut = t.headline.lastIndexOf(' ')
   const [main, accent] = cut > 0 ? [t.headline.slice(0, cut), t.headline.slice(cut + 1)] : [t.headline, '']
+  /* heartbeat strip: newline-separated lines, first line is the kicker */
+  const hb = (t.note || '').split('\n').map(x => x.trim()).filter(Boolean)
+
   return <div id="top" className={`home-gateway home-variant-${variant}`}>
+    <div className="home-backdrop" aria-hidden="true">
+      <img src={`${base}assets/home/backdrop.svg`} alt="" decoding="async" />
+    </div>
     <div className="hero-atmosphere" aria-hidden="true"><i /><i /><i /></div>
 
     <div className="container home-stage">
-      <div className="eyebrow"><span className="tiny-mark" aria-hidden="true">✳</span> OPENFUND</div>
-      <h1>{accent ? <>{main}<br /><em>{accent}</em></> : main}</h1>
-      {t.sub && <p className="hero-intro">{t.sub}</p>}
+      <div className="home-enter e1 eyebrow"><span className="tiny-mark" aria-hidden="true">✳</span> OPENFUND</div>
+      <h1 className="home-enter e2">{accent ? <>{main}<br /><em>{accent}</em></> : main}</h1>
 
       <div className="home-products">
-        <article className="home-panel">
-          <img src={illustrationHref(c.propImage, 'prop-trading.svg')} width={440} height={320} decoding="async"
-            alt={locale === 'fa' ? 'تصویری از مسیر ارزیابی و مراحل چلنج پراپ اوپن‌فاند' : 'Openfund prop evaluation path with ascending phase milestones'} />
+        <article className="home-panel home-enter e3">
+          <div className="home-art"><img src={illustrationHref(c.propImage, 'prop-trading.svg')} width={520} height={400} decoding="async"
+            alt={locale === 'fa' ? 'تصویری از معامله‌گر اوپن‌فاند پشت میز ارزیابی' : 'An Openfund trader at the evaluation desk'} /></div>
           <div className="home-panel-copy">
-            <span className="home-kicker">{locale === 'fa' ? 'محصول الف' : 'Product A'}</span>
             <h2>{t.propTitle}</h2>
-            {t.propDescription && <p>{t.propDescription}</p>}
             <a className="button" href={CTA_HREF[c.propCtaDestination](locale)}>
               {t.propCta}
               <span aria-hidden="true">←</span>
@@ -84,13 +94,11 @@ function HomeBody({ variant, locale, content: c }: { variant: 'a' | 'b'; locale:
           </div>
         </article>
 
-        <article className="home-panel">
-          <img src={illustrationHref(c.perpetualImage, 'perpetual-trading.svg')} width={440} height={320} decoding="async"
-            alt={locale === 'fa' ? 'ترکیب کندل‌ها و فشار خرید و فروش در معاملات پرپچوال' : 'Candlestick composition with long and short pressure'} />
+        <article className="home-panel home-enter e4">
+          <div className="home-art"><img src={illustrationHref(c.perpetualImage, 'perpetual-trading.svg')} width={520} height={400} decoding="async"
+            alt={locale === 'fa' ? 'دستگاه دادهٔ بازار اوپن‌فاند با هستهٔ هولوگرافیک' : 'The Openfund market engine with its holographic core'} /></div>
           <div className="home-panel-copy">
-            <span className="home-kicker">{locale === 'fa' ? 'محصول ب' : 'Product B'}</span>
             <h2>{t.perpetualTitle}</h2>
-            {t.perpetualDescription && <p>{t.perpetualDescription}</p>}
             <a className="button" href={CTA_HREF[c.perpetualCtaDestination](locale)}>
               {t.perpetualCta}
               <span aria-hidden="true">↙</span>
@@ -99,7 +107,13 @@ function HomeBody({ variant, locale, content: c }: { variant: 'a' | 'b'; locale:
         </article>
       </div>
 
-      {t.note && <p className="home-note"><span>{t.note}</span></p>}
+      {hb.length > 0 && (
+        <div className="home-heartbeat home-enter e5">
+          <Heartbeat />
+          {hb[0] && <span className="hb-kicker">{hb[0]}</span>}
+          <span className="hb-line">{hb.slice(1).join(' ')}</span>
+        </div>
+      )}
     </div>
   </div>
 }

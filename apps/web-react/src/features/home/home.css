@@ -1,56 +1,77 @@
-/* Openfund Home — product gateway. Landing tokens (style.css) stay
-   authoritative; this file only composes the one-screen gateway layout.
-   Direction B (dual product panels) is the default; variant A is the
-   editorial-minimalism preview (?variant=a on the same route). */
+/* Openfund Home — ONE-SCREEN product gateway. Landing tokens (style.css)
+   stay authoritative; this file composes the gateway: animated backdrop,
+   staggered entrance, product panels with motion, heartbeat strip.
+   Direction B (dual panels) is default; ?variant=a previews direction A. */
 
 .home-gateway{position:relative;isolation:isolate;min-height:calc(100dvh - 84px);display:flex;align-items:center;overflow:hidden}
-.home-stage{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;padding-block:clamp(14px,2.6dvh,40px)}
+
+/* ---- animated backdrop (the gathering scene, bottom-anchored) ---- */
+.home-backdrop{position:absolute;inset:auto 0 0 0;z-index:-2;pointer-events:none;line-height:0}
+.home-backdrop img{width:100%;height:min(52dvh,480px);object-fit:cover;object-position:bottom center;display:block}
+.home-backdrop::after{content:'';position:absolute;inset:0;background:
+  linear-gradient(#060808 0%,#06080800 26%),
+  linear-gradient(90deg,#06080888,#06080800 18%,#06080800 82%,#06080888)}
+
+/* ---- entrance choreography ---- */
+.home-enter{opacity:0;animation:home-enter .7s cubic-bezier(.16,1,.3,1) forwards}
+.home-enter.e2{animation-delay:.08s}
+.home-enter.e3{animation-delay:.18s}
+.home-enter.e4{animation-delay:.3s}
+.home-enter.e5{animation-delay:.42s}
+@keyframes home-enter{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+.home-stage{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;padding-block:clamp(10px,2.2dvh,32px)}
 .home-stage .eyebrow{letter-spacing:2.5px;font-family:system-ui,sans-serif;font-size:11px}
-.home-stage h1{font-weight:600;font-size:clamp(34px,4.6vw,54px);line-height:1.35;letter-spacing:-1.2px;margin:14px 0 10px;animation:hero-enter 1.1s cubic-bezier(.2,.7,.2,1) both}
+.home-stage h1{font-weight:600;font-size:clamp(32px,4.4vw,52px);line-height:1.32;letter-spacing:-1.1px;margin:12px 0 0;animation:hero-enter 1s cubic-bezier(.2,.7,.2,1) both}
 .home-stage h1 em{color:#b3c7be;font-weight:500}
-.home-stage .hero-intro{color:var(--body);font-size:clamp(12px,1.3vw,15px);line-height:1.9;max-width:620px;margin:0}
 
-/* --- Direction B: two visually distinct product panels --- */
-.home-variant-b .home-products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;width:min(1000px,100%);margin-top:clamp(14px,2.6dvh,30px)}
-.home-panel{border:1px solid var(--line);border-radius:16px;background:linear-gradient(150deg,#1426204f,#0a120e 62%);padding:clamp(14px,1.8vw,24px);display:flex;flex-direction:column;align-items:center;gap:12px;transition:border-color .25s,transform .25s cubic-bezier(.16,1,.3,1)}
-.home-panel img{max-height:clamp(130px,19dvh,205px);width:auto;max-width:78%;height:auto;display:block}
-.home-panel:hover{border-color:#82e7bd66;transform:translateY(-4px)}
+/* ---- Direction B: two product panels ---- */
+.home-variant-b .home-products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;width:min(980px,100%);margin-top:clamp(12px,2.4dvh,28px)}
+.home-panel{position:relative;border:1px solid var(--line);border-radius:18px;background:linear-gradient(155deg,#1426204d,#0a120e 62%);padding:clamp(10px,1.6vw,20px) clamp(10px,1.6vw,20px) clamp(12px,1.8vw,22px);display:flex;flex-direction:column;align-items:center;gap:10px;transition:border-color .3s,transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s;overflow:hidden}
+.home-panel::before{content:'';position:absolute;inset:-1px;border-radius:18px;background:radial-gradient(420px 180px at 50% -20%,#82e7bd1f,transparent 70%);opacity:0;transition:opacity .35s;pointer-events:none}
+.home-panel:hover{border-color:#82e7bd66;transform:translateY(-6px);box-shadow:0 22px 44px -22px #000000cc}
+.home-panel:hover::before{opacity:1}
+.home-art{width:100%;display:flex;justify-content:center}
+.home-art img{max-height:clamp(150px,22dvh,235px);width:auto;max-width:88%;height:auto;display:block;transition:transform .45s cubic-bezier(.16,1,.3,1)}
+.home-panel:hover .home-art img{transform:translateY(-6px) scale(1.03)}
 .home-panel-copy{display:flex;flex-direction:column;align-items:center;gap:8px}
-.home-kicker{font:400 9px system-ui;letter-spacing:2.4px;color:#7d9885}
-.home-panel h2{font-size:clamp(17px,1.9vw,22px);font-weight:500;margin:0}
-.home-panel p{font-size:12px;line-height:1.9;color:#9db1a5;max-width:380px;margin:0}
-.home-panel .button{margin-top:4px;font-size:12.5px;padding:11px 18px}
-.home-note{font-size:10.5px;color:#75897d;margin-top:clamp(12px,2dvh,24px);line-height:1.9;margin-bottom:0}
-.home-note a{color:#a5c7b4;font-family:system-ui;font-size:10px}
-.home-note a:hover{color:var(--mint)}
+.home-panel h2{font-size:clamp(16px,1.8vw,21px);font-weight:500;margin:0}
+.home-panel .button{font-size:12.5px;padding:11px 18px}
 
-/* --- Direction A: editorial minimalism (preview) --- */
-.home-variant-a .home-products{display:flex;flex-direction:row;justify-content:center;align-items:flex-end;gap:clamp(24px,6vw,110px);width:100%;margin-top:clamp(16px,3dvh,34px)}
+/* ---- heartbeat strip (bottom of the one-screen layout) ---- */
+.home-heartbeat{display:flex;align-items:center;gap:14px;margin-top:clamp(14px,2.6dvh,30px);color:#8fa89b;flex-wrap:wrap;justify-content:center}
+.hb-heart{flex:none;animation:heartbeat 1.7s cubic-bezier(.2,.7,.2,1) infinite;filter:drop-shadow(0 0 9px #82e7bd66)}
+@keyframes heartbeat{0%,100%{transform:scale(1)}12%{transform:scale(1.14)}24%{transform:scale(1)}36%{transform:scale(1.1)}48%{transform:scale(1)}}
+.hb-kicker{font:400 9.5px system-ui;letter-spacing:3px;color:#6d8778;text-transform:uppercase}
+.hb-line{font-size:13px;color:#a9c3b3;letter-spacing:.2px}
+.hb-kicker::after{content:'·';margin-inline:10px;color:#3f5a4b}
+
+/* ---- Direction A: editorial minimalism (preview) ---- */
+.home-variant-a .home-products{display:flex;flex-direction:row;justify-content:center;align-items:flex-end;gap:clamp(24px,6vw,110px);width:100%;margin-top:clamp(12px,2.2dvh,26px)}
 .home-variant-a .home-panel{border:0;background:none;padding:0;gap:10px}
-.home-variant-a .home-panel img{width:clamp(170px,17vw,260px);opacity:.95}
-.home-variant-a .home-panel:hover{transform:none}
-.home-variant-a .home-panel p{max-width:300px}
-.home-variant-a .home-kicker{display:none}
+.home-variant-a .home-panel::before{display:none}
+.home-variant-a .home-panel:hover{transform:none;box-shadow:none}
+.home-variant-a .home-art img{width:clamp(170px,17vw,255px);max-width:none;opacity:.95}
 
-/* --- responsive: compact composition, vertical scroll allowed --- */
+/* ---- responsive (vertical scroll allowed on small screens) ---- */
 @media(max-width:1000px){
-  .home-variant-b .home-products{grid-template-columns:1fr;width:min(560px,100%)}
   .home-gateway{min-height:0}
-  .home-stage{padding-block:44px 60px}
+  .home-variant-b .home-products{grid-template-columns:1fr;width:min(560px,100%)}
+  .home-stage{padding-block:36px 56px}
 }
 @media(max-width:700px){
   .home-gateway{min-height:0}
   .home-stage h1{letter-spacing:-.7px}
-  .home-variant-a .home-products{flex-direction:column;align-items:center;gap:34px}
-  .home-variant-a .home-panel img{width:min(230px,64%)}
+  .home-variant-a .home-products{flex-direction:column;align-items:center;gap:30px}
+  .home-variant-a .home-art img{width:min(230px,64%)}
   .home-panel .button{width:100%}
-}
-@media(prefers-reduced-motion:reduce){
-  .home-stage h1{animation:none}
-  .home-panel{transition:none}
+  .home-heartbeat{gap:10px}
+  .hb-kicker::after{margin-inline:7px}
 }
 
-/* light mode: the landing inverts the whole page; double-invert the brand
-   illustrations so the mint palette keeps its true colors (same treatment
-   the landing gives photography). */
-html[data-theme='light'] .home-panel img{filter:invert(1) hue-rotate(180deg)}
+@media(prefers-reduced-motion:reduce){
+  .home-enter,.home-stage h1{animation:none;opacity:1}
+  .hb-heart{animation:none}
+  .home-panel,.home-art img{transition:none}
+  .home-backdrop img{display:none}
+}

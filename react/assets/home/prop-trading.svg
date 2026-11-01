@@ -1,78 +1,87 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 320" role="img" aria-label="Openfund prop trading evaluation path">
-  <!-- Openfund original — Illustration A: "Evaluation Path"
-       Phases as ascending plateaus; milestones as lozenge checkpoints;
-       a rising skill curve fills beneath. Palette: mint 82e7bd on 060808. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" role="img" aria-label="Openfund prop trader at the evaluation desk">
+  <!-- Openfund original — "The Evaluation Desk" (product A illustration)
+       Spirit: a focused trader building their track record at a glowing
+       terminal — evaluation path chips floating above. Palette: mint 82e7bd
+       on deep green/dark, flat-vector, transparent background. -->
   <style>
-    .of-grid { stroke: #82e7bd14; stroke-width: 1; }
-    .of-path { fill: none; stroke: #82e7bd; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-               stroke-dasharray: 620; stroke-dashoffset: 620; animation: of-draw 2.4s cubic-bezier(.16,1,.3,1) .3s forwards; }
-    .of-area { fill: url(#ofA); opacity: 0; animation: of-fade 1.2s ease 1.9s forwards; }
-    .of-node { fill: #0b1411; stroke: #82e7bd; stroke-width: 2; }
-    .of-node-done { fill: #82e7bd; }
-    .of-ring { fill: none; stroke: #82e7bd55; animation: of-pulse 3.2s ease-out infinite; transform-origin: var(--cx) var(--cy); }
-    .of-tick { stroke: #82e7bd40; stroke-width: 2; }
-    .of-bar { fill: #82e7bd1f; }
-    .of-bar.on { fill: #82e7bda8; }
-    .of-flag { fill: none; stroke: #d5e6da; stroke-width: 1.6; opacity: .9; }
-    @keyframes of-draw { to { stroke-dashoffset: 0; } }
-    @keyframes of-fade { to { opacity: 1; } }
-    @keyframes of-pulse { 0% { stroke-width: 2; opacity: .8 } 70% { stroke-width: 9; opacity: 0 } 100% { stroke-width: 9; opacity: 0 } }
-    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } .of-path { stroke-dashoffset: 0; } .of-area { opacity: 1; } }
+    .o { stroke: #06110c; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+    .o2 { stroke: #06110c; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+    .glow { animation: pulse 3.2s ease-in-out infinite; }
+    .chip { animation: floaty 5.2s ease-in-out infinite; }
+    .chip2 { animation: floaty 5.2s ease-in-out -1.7s infinite; }
+    .chip3 { animation: floaty 5.2s ease-in-out -3.4s infinite; }
+    .scan { animation: scan 4.6s linear infinite; }
+    @keyframes pulse { 0%,100% { opacity: .55 } 50% { opacity: 1 } }
+    @keyframes floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-9px) } }
+    @keyframes scan { 0% { transform: translateY(0) } 100% { transform: translateY(58px) } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
   </style>
-  <defs>
-    <linearGradient id="ofA" x1="0" x2="0" y1="0" y2="1">
-      <stop stop-color="#82e7bd" stop-opacity=".22"/>
-      <stop offset="1" stop-color="#82e7bd" stop-opacity="0"/>
-    </linearGradient>
-    <radialGradient id="ofGlow" cx=".5" cy=".75" r=".75">
-      <stop stop-color="#82e7bd" stop-opacity=".14"/>
-      <stop offset="1" stop-color="#82e7bd" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
 
-  <rect x="0" y="0" width="440" height="320" fill="url(#ofGlow)"/>
+  <!-- desk -->
+  <rect class="o" x="34" y="286" width="452" height="18" rx="6" fill="#122719"/>
+  <rect class="o2" x="66" y="304" width="14" height="64" fill="#0d1d14"/>
+  <rect class="o2" x="440" y="304" width="14" height="64" fill="#0d1d14"/>
 
-  <!-- quiet measurement grid -->
-  <g class="of-grid">
-    <path d="M30 250H410 M30 195H410 M30 140H410 M30 85H410"/>
-    <path d="M30 262V80 M130 262V80 M230 262V80 M330 262V80"/>
-  </g>
-
-  <!-- progress bars: discipline ticks along the way -->
+  <!-- monitor -->
+  <rect class="o" x="238" y="108" width="240" height="164" rx="12" fill="#0f1c15"/>
+  <rect class="o2" x="252" y="122" width="212" height="118" rx="8" fill="#071009"/>
+  <rect class="o2" x="342" y="272" width="34" height="14" fill="#0f1c15"/>
+  <rect class="o2" x="322" y="286" width="74" height="8" rx="3" fill="#122719"/>
+  <!-- screen: candlesticks -->
   <g>
-    <rect class="of-bar" x="42" y="238" width="10" height="5" rx="1"/>
-    <rect class="of-bar on" x="56" y="238" width="10" height="5" rx="1"/>
-    <rect class="of-bar" x="142" y="182" width="10" height="5" rx="1"/>
-    <rect class="of-bar on" x="156" y="182" width="10" height="5" rx="1"/>
-    <rect class="of-bar on" x="170" y="182" width="10" height="5" rx="1"/>
-    <rect class="of-bar" x="246" y="128" width="10" height="5" rx="1"/>
-    <rect class="of-bar on" x="260" y="128" width="10" height="5" rx="1"/>
+    <path d="M278 204V168 M278 176v20" class="o2" stroke="#82e7bd"/>
+    <rect x="270" y="180" width="16" height="26" rx="3" fill="#82e7bd"/>
+    <path d="M318 188V148 M318 154v24" class="o2" stroke="#5fae8c"/>
+    <rect x="310" y="160" width="16" height="22" rx="3" fill="#3f8e6e"/>
+    <path d="M358 172V128 M358 138v18" class="o2" stroke="#82e7bd"/>
+    <rect x="350" y="144" width="16" height="30" rx="3" fill="#82e7bd"/>
+    <path d="M398 152V112 M398 120v16" class="o2" stroke="#5fae8c"/>
+    <rect x="390" y="126" width="16" height="20" rx="3" fill="#82e7bd"/>
+    <path d="M436 132V98 M436 104v14" class="o2" stroke="#82e7bd"/>
+    <rect x="428" y="108" width="16" height="16" rx="3" fill="#82e7bd"/>
+    <path d="M262 226h192" stroke="#82e7bd44" stroke-width="2" stroke-dasharray="3 8" fill="none"/>
+    <path d="M262 214 L300 204 L338 190 L376 172 L414 150 L452 122" fill="none" stroke="#d9f4e6" stroke-width="3" stroke-linecap="round" class="glow"/>
+  </g>
+  <rect class="scan" x="252" y="122" width="212" height="10" rx="5" fill="#82e7bd1c"/>
+
+  <!-- evaluation chips floating above the monitor -->
+  <g class="chip">
+    <rect class="o2" x="262" y="42" width="84" height="34" rx="10" fill="#0f2117"/>
+    <path d="M276 59l7 7 12-13" fill="none" stroke="#82e7bd" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="326" cy="59" r="6" fill="#82e7bd"/>
+  </g>
+  <g class="chip2">
+    <rect class="o2" x="362" y="26" width="74" height="34" rx="10" fill="#0f2117"/>
+    <text x="399" y="51" text-anchor="middle" font-family="Ubuntu,sans-serif" font-size="16" font-weight="700" fill="#82e7bd">5%</text>
+  </g>
+  <g class="chip3">
+    <rect class="o2" x="448" y="52" width="58" height="34" rx="10" fill="#0f2117"/>
+    <text x="477" y="77" text-anchor="middle" font-family="Ubuntu,sans-serif" font-size="16" font-weight="700" fill="#d9f4e6">80%</text>
   </g>
 
-  <!-- the evaluation path: three phases, ascending plateaus -->
-  <path class="of-path" d="M30 240 H84 L100 226 H150 L172 196 H224 L246 168 H300 L326 128 H372 L392 92"/>
-
-  <!-- area under the path -->
-  <path class="of-area" d="M30 240 H84 L100 226 H150 L172 196 H224 L246 168 H300 L326 128 H372 L392 92 L400 320 H22 Z"/>
-
-  <!-- phase checkpoints: lozenges (openfund diamond motif) -->
+  <!-- trader (side profile, focused) -->
   <g>
-    <rect class="of-node" x="86" y="216" width="17" height="17" transform="rotate(45 94.5 224.5)"/>
-    <rect class="of-node" x="163" y="186" width="17" height="17" transform="rotate(45 171.5 194.5)"/>
-    <rect class="of-node" x="237" y="158" width="17" height="17" transform="rotate(45 245.5 166.5)"/>
-    <!-- final milestone: solid lozenge + pulse ring -->
-    <circle class="of-ring" cx="392" cy="92" r="11" style="--cx:392px;--cy:92px"/>
-    <rect class="of-node of-node-done" x="384" y="84" width="16" height="16" transform="rotate(45 392 92)"/>
+    <rect class="o2" x="86" y="304" width="52" height="10" rx="4" fill="#122719"/>
+    <rect class="o2" x="106" y="314" width="12" height="54" fill="#0d1d14"/>
+    <path class="o" d="M96 250 h36 l-8 56 h-18 z" fill="#1d3a2d"/>
+    <path class="o" d="M128 250 l20 18 -6 40 h-14 l-2 -40 z" fill="#173024"/>
+    <path class="o" d="M88 168 q6 -12 26 -12 h30 q22 0 26 16 l8 84 h-58 q-24 0 -30 -20 z" fill="#1d3a2d"/>
+    <path class="o2" d="M104 158 h28 q10 0 12 10 l2 26 h-30 q-12 0 -14 -12 z" fill="#2f7d66"/>
+    <path class="o" d="M118 190 q26 6 44 26 l24 26 -16 14 -30 -32 -22 -16 z" fill="#25573f"/>
+    <circle class="o2" cx="184" cy="256" r="10" fill="#c9a68a"/>
+    <circle class="o" cx="138" cy="130" r="30" fill="#c9a68a"/>
+    <path class="o2" d="M110 128 q2 -28 30 -30 q26 -2 28 22 q1 8 -4 10 q-6 -12 -22 -12 q-16 0 -24 14 q-6 4 -8 -4 z" fill="#101c14"/>
+    <circle cx="152" cy="128" r="3.4" fill="#06110c"/>
+    <path d="M150 142 q8 4 14 0" fill="none" stroke="#06110c" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M116 116 q22 -20 46 -4" fill="none" stroke="#82e7bd" stroke-width="5" stroke-linecap="round" class="glow"/>
   </g>
 
-  <!-- risk guardrail: dashed boundary the path respects -->
-  <path d="M30 60 H410" stroke="#e8948364" stroke-width="1.4" stroke-dasharray="3 7" fill="none"/>
+  <!-- keyboard + mug on the desk -->
+  <rect class="o2" x="196" y="268" width="96" height="18" rx="6" fill="#14241a"/>
+  <g fill="#82e7bd55"><rect x="206" y="273" width="6" height="5" rx="1"/><rect x="218" y="273" width="6" height="5" rx="1"/><rect x="230" y="273" width="6" height="5" rx="1"/><rect x="242" y="273" width="6" height="5" rx="1"/><rect x="254" y="273" width="6" height="5" rx="1"/><rect x="266" y="273" width="6" height="5" rx="1"/><rect x="222" y="280" width="6" height="5" rx="1"/><rect x="234" y="280" width="6" height="5" rx="1"/><rect x="246" y="280" width="6" height="5" rx="1"/></g>
+  <rect class="o2" x="392" y="256" width="26" height="30" rx="5" fill="#173024"/>
+  <path class="o2" d="M418 262 q12 4 0 16" fill="none"/>
+  <path d="M398 256 q7 -6 14 0" fill="none" stroke="#e89483" stroke-width="3" stroke-linecap="round" class="glow"/>
 
-  <!-- small ascending spark inside final node zone -->
-  <path class="of-flag" d="M370 118 l7-8 7 4 8-12"/>
-
-  <!-- ticks -->
-  <g class="of-tick">
-    <path d="M30 258v8 M130 258v8 M230 258v8 M330 258v8"/>
-  </g>
+  <ellipse cx="260" cy="376" rx="200" ry="12" fill="#06110c" opacity=".25"/>
 </svg>
