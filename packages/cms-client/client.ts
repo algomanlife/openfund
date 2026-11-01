@@ -13,7 +13,8 @@
  * NO admin tokens ever live here — only the public read endpoint.
  */
 export interface CmsTranslations {
-  landing: Record<string, string>
+  landing: Record<string, string>            /* faSource → enValue (ofT contract) */
+  landingFa: Record<string, string>          /* faSource → faValue (editable FA text) */
   terminal: Record<string, { fa: string; en: string }>
 }
 

@@ -4,9 +4,9 @@
 
 # OPENFUND
 
-### سرمایه، در امتداد مهارت تو — *Capital, in line with your skill*
+### A transparent, decentralized prop-trading ecosystem — powered by wallet-based identity
 
-**A bilingual (فارسی / English) prop-trading frontend: landing + live trading terminal, real LuxAlgo Vela charting, real Gains Network market data, and a React 19 + RainbowKit app shell on Arbitrum Sepolia.**
+**Bilingual (فارسی / English) prop-trading platform: landing + live trading terminal, LuxAlgo Vela charting, Gains Network market data, a Directus content backstage, and SIWE wallet authentication with multi-challenge accounts.**
 
 [![Repository](https://img.shields.io/badge/GitHub-Openfund-181717?logo=github&logoColor=white)](https://github.com/algomanlife/openfund)
 ![Status](https://img.shields.io/badge/Status-Prototype%20%2B%20live%20data-F0B35A)
@@ -14,178 +14,271 @@
 ![Vela](https://img.shields.io/badge/Charting-LuxAlgo%20Vela%200.9.3-17BEBB)
 ![Gains](https://img.shields.io/badge/Market%20data-Gains%20Network%20API-17BEBB)
 ![Wallet](https://img.shields.io/badge/RainbowKit-2.2-9747FF?logo=rainbow&logoColor=white)
+![Directus](https://img.shields.io/badge/Directus-11.9%20CMS-9747FF)
 
-[Product](#what-openfund-is) · [Gallery](#gallery) · [Quick start](#quick-start) · [Architecture](#architecture) · [Tech stack](docs/architecture/TECH_STACK.md) · [Roadmap](#roadmap) · [Docs](#documentation)
+[Product](#product-overview) · [Wallet identity](#wallet-connectivity) · [Backstage](#directus-backstage-cms) · [Setup](#development-setup) · [Architecture](#platform-architecture) · [Security](#security-considerations) · [Roadmap](#roadmap)
 
 </div>
 
 ---
 
-## What Openfund is
+## 1. Introduction
 
-Openfund is an independent, open development project building a **prop-trading platform experience for Iranian traders** — inspired by funded-account platforms, rewritten with a Persian-first voice:
+Openfund is an open, independently developed **prop-trading platform experience for Iranian traders**: skill evaluation → funded account with a profit split, presented with a Persian-first voice and a professional trading terminal. It is built in the open, on GitHub, with AI-assisted development workflows.
 
-- **Landing** — a full bilingual marketing site (RTL Persian / LTR English, dark + light themes, Irancell font for FA, Ubuntu for EN) presenting the funding model: evaluation presets, an interactive account builder, philosophy and rules.
-- **Trading terminal** — a professional workspace with a real **LuxAlgo Vela** chart, live **Gains Network** market data (488 markets, REST + WebSocket), a Gains-style market selector with real open-interest and funding stats, and a clearly-labelled **simulated demo trading engine** that executes against real marks. Trade labels use Iranian trader Finglish (اوردربوک، لانگ، شورت، مارکت، لیمیت، فاندینگ، کولترال، استاپ‌لاس، تیک‌پرافیت).
-- **React app shell** — the whole experience is being migrated into a Vite + React 19 + TypeScript app (`apps/web-react`) with **RainbowKit/wagmi wallet connection** on Arbitrum Sepolia (connection only — no transactions).
+## 2. Vision & mission
 
-> [!IMPORTANT]
-> **Project stage: prototype with live data.** Market data, charts and wallet connection are real and verified; trading itself is a local simulation, clearly labelled on the page. No production or live-trading capability is claimed. See [`docs/product/FEATURE_STATUS.md`](docs/product/FEATURE_STATUS.md).
+Capital should follow skill, not connections. Openfund presents a transparent funding model — one-time evaluation fee, clear rules, up to 80/20 profit split, no hidden counterparty — where data ownership stays with the trader from the first wallet connection.
 
-### The funding model presented
+## 3. Product overview
 
-One-time fee → skill evaluation → funded account with a profit split (up to 80/20), transparent one-phase/two-phase evaluation presets, and a "we bet on traders, not against them" rule set (no hidden rules, no counterparty against the user). Content is inspired by public prop-funding models (e.g. carrotfunding.io) and customized for the Iranian audience.
+- **Landing** — full bilingual marketing site (RTL fa / LTR en, dark + light themes, Irancell/Ubuntu fonts, motion) presenting the funding model, account builder, philosophy, rules and legal content.
+- **Trading terminal** — professional workspace: real **LuxAlgo Vela** chart, live **Gains Network** market data (488 markets, REST + WebSocket), Gains-style market selector with real open-interest and funding stats, a clearly-labelled **simulated** demo trading engine on real marks, and Iranian trader Finglish labels (اوردربوک، لانگ، شورت، مارکت، لیمیت، فاندینگ، کولترال).
+- **Wallet identity** — Sign-In with Ethereum (EIP-4361): one wallet = one Openfund user, owning multiple independent challenge accounts.
+- **Backstage** — Directus Data Studio manages all fa/en content and gives administrators user & challenge oversight.
 
-## Gallery
+## 4. Current development status
 
-All screenshots are from the **React app** (branch `qwen/react-migration`), captured with real-browser E2E on 2026-10-31 — live Gains data on every shot.
+**Prototype with live data and real authentication.** Market data, charting, CMS, wallet connection and SIWE login are operational and verified (automated + live-edit tests). Trading itself is a clearly-labelled local simulation — no orders, no chain transactions, no fabricated results. On-chain evaluation and challenge purchasing are planned, not built. See [`docs/product/FEATURE_STATUS.md`](docs/product/FEATURE_STATUS.md) for the per-capability truth table.
 
-| Landing — فارسی (dark) | Landing — فارسی (light) |
-| :---: | :---: |
-| <a href="docs/images/react-landing-dark-fa.png"><img src="docs/images/react-landing-dark-fa.png" alt="Landing FA dark" width="480"/></a> | <a href="docs/images/react-landing-light-fa.png"><img src="docs/images/react-landing-light-fa.png" alt="Landing FA light" width="480"/></a> |
+## 5. Key features
 
-| Terminal — فارسی (dark, live BTC/USD) | Terminal — English (dark) |
-| :---: | :---: |
-| <a href="docs/images/react-terminal-dark-fa.png"><img src="docs/images/react-terminal-dark-fa.png" alt="Terminal FA dark" width="480"/></a> | <a href="docs/images/react-terminal-dark-en.png"><img src="docs/images/react-terminal-dark-en.png" alt="Terminal EN dark" width="480"/></a> |
+| Feature | Status |
+| :--- | :--- |
+| Bilingual landing (fa/en, themes, fonts, motion) | Operational |
+| Full Vela trading workspace (topbar, drawings, indicators, search) | Operational |
+| Live Gains market data (488 markets, REST + WS ~90 upd/s) | Operational |
+| Gains-style market selector (OI L/S, funding, CLOSED markets view-only) | Operational |
+| Simulated demo trading engine on real marks | Operational (labelled) |
+| RainbowKit wallet connection — Arbitrum Sepolia | Operational |
+| **SIWE authentication + sessions + user records** | **Operational (verified)** |
+| **Multiple challenge accounts per user** | **Operational (data layer + UI)** |
+| Directus CMS — every landing/terminal string editable (fa/en, live) | Operational |
+| Real order-book / volume / trade tape | Blocked — Gains API does not provide these (shown as `—` or labelled simulated) |
+| Real trading (on-chain orders) | Planned — no contracts assumed |
 
-| Terminal — فارسی (light) | Landing — English (dark) |
-| :---: | :---: |
-| <a href="docs/images/react-terminal-light-fa.png"><img src="docs/images/react-terminal-light-fa.png" alt="Terminal FA light" width="480"/></a> | <a href="docs/images/react-landing-dark-en.png"><img src="docs/images/react-landing-dark-en.png" alt="Landing EN dark" width="480"/></a> |
-
-Legacy (pre-React) screenshots are kept in [`docs/images/`](docs/images/) for history.
-
-## What works today
-
-| Capability | Status | Where |
-| :--- | :--- | :--- |
-| Bilingual landing (fa/en, RTL/LTR, themes, fonts, motion) | Implemented | `dist/index.html` · React `#/` |
-| Full Vela trading workspace (topbar, drawings, indicators, search) | Implemented | `dist/assets/vela-workspace.global.min.js` |
-| Live Gains market data (488 markets, REST + WS ~90 upd/s) | Implemented | `dist/gains-adapter.js` |
-| Gains-style market selector (OI L/S, funding, closed markets) | Implemented | `dist/terminal.js` |
-| Demo trading engine on real marks (labelled simulated) | Implemented | `dist/terminal-data.js` |
-| Wallet connection (RainbowKit, Arbitrum Sepolia) | Implemented | `apps/web-react` — connection only, no txs |
-| React shell with both pages at visual/behavioural parity | Implemented | `apps/web-react` → `react/` |
-| Real order-book / volume / trade tape | Blocked | Gains API does not provide these — shown as `—` or labelled simulated |
-| Real trading (orders on-chain) | Planned | No Gains contracts assumed; requires verified contracts |
-
-## Quick start
-
-**Requirements:** Git, Node.js 20+ / npm, Python 3.
-
-```bash
-git clone https://github.com/algomanlife/openfund.git
-cd openfund
-npm install
-
-# serve everything (legacy dist/ + built React app) on one port
-python3 -m http.server 4173
-```
-
-- **Legacy (classic) pages:** http://127.0.0.1:4173/dist/ and http://127.0.0.1:4173/dist/terminal.html
-- **React app (built):** http://127.0.0.1:4173/react/#/ and http://127.0.0.1:4173/react/#/terminal
-
-**React dev server (hot reload):**
-
-```bash
-cd apps/web-react
-npm install
-npm run dev          # http://localhost:5173/react/#/
-```
-
-**Build the React app** (outputs to repo-root `react/`, served by the static server above):
-
-```bash
-cd apps/web-react && npm run build
-```
-
-**Wallet:** works out of the box with injected wallets (MetaMask/Rabby). For WalletConnect, put a project id in `apps/web-react/.env` (`VITE_WALLETCONNECT_PROJECT_ID=…`, see `.env.example`). Chain: Arbitrum Sepolia (421614).
-
-## Architecture
+## 6. Platform architecture
 
 ```mermaid
 flowchart LR
   subgraph Client
-    R[React 19 shell<br/>apps/web-react<br/>hash router: #/ · #/terminal]
+    R[React 19 + Vite shell<br/>apps/web-react — hash router]
     L[Legacy runtime<br/>locale · market · motion · terminal scripts]
-    W[RainbowKit + wagmi<br/>wallet connect only]
+    W[RainbowKit + wagmi<br/>connect / sign SIWE]
+    S[Session hook + profile panel]
   end
-  subgraph Data &amp; Charting
-    V[LuxAlgo Vela workspace bundle<br/>window.VelaWorkspace]
-    G[Gains Network public API<br/>api.gains.trade/v1/arbitrum<br/>REST + WebSocket]
+  subgraph Openfund backend
+    B[Node/Express — apps/backend<br/>SIWE verify · sessions · ownership]
   end
-  R --> L
-  L --> V
+  subgraph Data and charting
+    V[LuxAlgo Vela workspace bundle]
+    G[Gains Network public API<br/>REST + WebSocket]
+    D[(PostgreSQL 17)]
+    DS[Directus 11.9 Data Studio<br/>CMS + admin interface]
+  end
+  R --> L --> V
   V -.candles.-> G
   L -.prices/markets.-> G
-  W -.connection.-> S[(Arbitrum Sepolia testnet)]
+  W --> B
+  B --> D
+  S -. /auth/me, challenges .-> B
+  R -. ui_messages fa/en .-> DS
+  DS --> D
 ```
 
-The React shell currently embeds the proven legacy markup/logic (phase-2a strategy — see [`docs/migration/MIGRATION_STATUS.md`](docs/migration/MIGRATION_STATUS.md)) and progressively extracts real React components. Adapters live in `packages/openfund-gains-adapter/` and `packages/openfund-charts/`, mirrored verbatim into `dist/` for the classic pages.
+The React shell embeds the proven legacy runtime (phase-2a migration strategy — see [`docs/migration/MIGRATION_STATUS.md`](docs/migration/MIGRATION_STATUS.md)) and progressively extracts real React components. `apps/backend` is the only authentication and ownership boundary; Directus is the administrative data interface.
+
+## 7. Technology stack
+
+| Technology | Version | Role |
+| :--- | :--- | :--- |
+| React / React DOM | 19.3 | App shell, session UI |
+| TypeScript | 5.7 | Type-safe app sources |
+| Vite | 6.4 | Dev server + bundler |
+| Node.js (backend) | 22 | `apps/backend` runtime |
+| Express | 4.21 | Backend HTTP API |
+| PostgreSQL | 17 | Users, challenges, sessions, nonces, audit, CMS |
+| Directus | 11.9.1 | Headless CMS + admin interface |
+| RainbowKit | 2.2.11 | Wallet connection UI (custom bilingual trigger) |
+| wagmi / viem | 2.19 / 2.57 | Wallet hooks, SIWE verification (`viem/siwe`, EIP-1271) |
+| LuxAlgo Vela | 0.9.3 | Trading workspace bundle (NOTICE attribution kept) |
+| Gains Network | public API | Market data (no volume/order-book — by API design) |
+
+Full registry with licenses and verified API constraints: [`docs/architecture/TECH_STACK.md`](docs/architecture/TECH_STACK.md).
+
+## 8. Landing & Terminal previews
+
+All screenshots are from the React app, captured by real-browser E2E — live Gains data in every shot. Full gallery in [`docs/images/`](docs/images/).
+
+| Landing — فارسی (dark) | Terminal — فارسی (dark) |
+| :---: | :---: |
+| <a href="docs/images/react-landing-dark-fa.png"><img src="docs/images/react-landing-dark-fa.png" alt="Landing FA dark" width="460"/></a> | <a href="docs/images/react-terminal-dark-fa.png"><img src="docs/images/react-terminal-dark-fa.png" alt="Terminal FA dark" width="460"/></a> |
+
+| Wallet sign-in (fa modal) | Profile & challenges |
+| :---: | :---: |
+| <a href="docs/images/wallet-modal-fa.png"><img src="docs/images/wallet-modal-fa.png" alt="Wallet modal FA" width="460"/></a> | <a href="docs/images/user-profile.png"><img src="docs/images/user-profile.png" alt="User profile" width="460"/></a> |
+
+## 9. Wallet connectivity
+
+RainbowKit (with wagmi + viem) provides the connection layer on **Arbitrum Sepolia (421614)**: injected wallets (MetaMask, Rabby, Taho…) work out of the box; the full remote wallet list requires a WalletConnect projectId (`VITE_WALLETCONNECT_PROJECT_ID`). The modal is translated to Persian and follows the app language. Connection alone is **never** treated as login — see the next section.
+
+## 10. User identity architecture
+
+**One Openfund user ↔ one primary wallet. One user → many independent challenges.**
+
+1. User connects a wallet (RainbowKit).
+2. Frontend requests a fresh, single-use nonce (10 min TTL) from the backend.
+3. A EIP-4361 (SIWE) message is built and signed by the wallet.
+4. The backend verifies signature (EOA + EIP-1271 contract wallets), domain, chain and nonce — then finds-or-creates the user by normalized (lowercase) wallet address (unique constraint = exactly one identity per wallet).
+5. An HttpOnly, SameSite=Lax session cookie (opaque id, hashed at rest, 7-day server-side expiry) is issued.
+6. Account switching or disconnecting invalidates the session; suspension blocks login and live sessions.
+
+Details: [`docs/architecture/USER_IDENTITY.md`](docs/architecture/USER_IDENTITY.md) · [`docs/architecture/WALLET_AUTHENTICATION.md`](docs/architecture/WALLET_AUTHENTICATION.md).
+
+## 11. Multi-challenge account architecture
+
+```text
+User (one wallet identity)
+   ├── Challenge #1 — plan: standard, status: started
+   ├── Challenge #2 — plan: starter,  status: created
+   └── Challenge #N — independent lifecycle per record
+```
+
+`openfund_challenges` rows reference the user and a `challenge_plans` catalog entry (editorial metadata in Directus; risk math stays server-side — CMS config is never an authority over financial calculations). Ownership is enforced per request by the backend; a user only ever sees their own challenges. Challenge **purchase/activation is not implemented** — the UI keeps it clearly separate (empty state).
+
+## 12. Directus backstage (CMS)
+
+Directus is the official centralized backstage. All editable content — every landing/terminal string in fa/en, navigation, page SEO, site settings — is managed in the Data Studio with section grouping and friendly labels; editing a value renders live after refresh (verified on dev + build). Static files remain as a silent fallback if the backstage is unavailable.
+
+The admin surface also covers: platform users (wallet, status, last login, challenge count), challenge records, the plan catalog and the audit log — **private to administrators**; the public policy has no permission on these collections.
+
+Docs: [`docs/backstage/README.md`](docs/backstage/README.md) · [`docs/backstage/USER_MANAGEMENT.md`](docs/backstage/USER_MANAGEMENT.md) · [`docs/backstage/PERMISSIONS.md`](docs/backstage/PERMISSIONS.md).
+
+## 13. Multilingual content management
+
+489 `ui_messages` (298 landing + 186 terminal + new additions) with fa/en translations; both the Persian source text and the English translation are editable and render live. Language switching stays instant (dictionary-based, no reload); RTL/LTR layout rules are preserved (terminal workspace pinned LTR, header flips).
+
+## 14. Gains Network integration
+
+Public market-data API (`api.gains.trade/v1/arbitrum`): 488 markets, mark/index prices, candles 1m–1d (**1w not supported**), WebSocket with ping/pong heartbeat and seq-gap resubscribe. Per-market `maxLeverage` clamps the leverage control. **No volume / open-interest history / order-book / trade-tape exists in this API** — those fields show `—` or are labelled simulated. The on-chain SDK is vendored but intentionally unused.
+
+## 15. Vela chart integration
+
+Full LuxAlgo Vela workspace (topbar, timeframe/indicator pickers, drawing toolbar, symbol search, status line) mounted with `layout:false` and the Gains provider. Apache-2.0 NOTICE attribution is honoured with a visible "Charts by Vela" credit on the same screen.
+
+## 16. Development setup
+
+```bash
+git clone https://github.com/algomanlife/openfund.git && cd openfund
+npm install
+
+# 1) PostgreSQL + Directus (content backstage)
+brew install postgresql@17 && brew services start postgresql@17
+psql -U $(whoami) -d postgres -c "CREATE USER openfund_cms PASSWORD 'openfund_local_dev';" -c "CREATE DATABASE openfund_cms OWNER openfund_cms;"
+cd infrastructure/directus   # local .env (see .env.example; CORS on)
+~/openfund-backstage/node_modules/.bin/directus bootstrap   # then: directus start :8055 (Node 22)
+python3 apps/backstage/scripts/apply_schema.py && python3 apps/backstage/scripts/seed_content.py
+python3 apps/backstage/scripts/tag_sections.py
+python3 apps/backstage/scripts/register_user_tables.py
+
+# 2) Backend (auth) — Node 22
+cd apps/backend && npm install
+node migrate.js && node seed-plans.js && node server.js    # :8080
+
+# 3) React app
+cd apps/web-react && npm install && npm run dev             # http://localhost:5173/react/#/
+
+# classic pages (no build): python3 -m http.server 4173 → /dist/
+```
+
+Full walkthrough (including the no-Docker Directus pitfalls): [`docs/backstage/LOCAL_SETUP.md`](docs/backstage/LOCAL_SETUP.md).
+
+## 17. Environment configuration
+
+| Variable | Where | Purpose |
+| :--- | :--- | :--- |
+| `VITE_WALLETCONNECT_PROJECT_ID` | `apps/web-react/.env` | full remote wallet list (cloud.reown.com, free) |
+| `VITE_DIRECTUS_URL` | `apps/web-react/.env` | CMS base URL (default `http://localhost:8055`) |
+| `VITE_BACKEND_URL` | `apps/web-react/.env` | auth backend base URL (default `http://localhost:8080`) |
+| `DATABASE_URL` | `apps/backend` | Postgres connection |
+| `ALLOWED_DOMAINS`, `CORS_ORIGINS` | `apps/backend` | SIWE domain allow-list, CORS |
+| `SESSION_TTL_HOURS`, `PORT` | `apps/backend` | session lifetime, listen port |
+| Directus keys | `infrastructure/directus/.env` | see `.env.example` — never commit filled files |
+
+## 18. Build & testing
+
+```bash
+cd apps/web-react && npm run build          # → repo-root react/ (served at :4173/react/)
+cd apps/backend && node test/siwe.test.mjs  # 22 auth/session/ownership checks
+node e2e/test-session.js                    # full-stack wallet→SIWE→profile E2E (11 checks)
+node e2e/test.js                            # landing/terminal regression (18 checks)
+```
+
+Automated results on 2026-11-01: SIWE suite **22/22**, session E2E **11/11**, regression **18/18** (dev :5173 and build :4173). Honest-testing note: wallet flows are exercised with a real secp256k1 signer (programmatic account behind a mock EIP-1193 provider), not a browser extension.
+
+## 19. Repository structure
 
 ```text
 openfund/
-├── dist/                        # Live classic pages (index.html, terminal.html + assets)
-├── react/                       # Built React app (served at /react/)
-├── apps/web-react/              # React 19 + Vite + TS source (the app being migrated)
-├── packages/                    # Openfund-owned adapters (gains, charts)
-├── vendor/                      # Upstream source (vela, gains-sdk) + license notices
-├── brand/                       # Brandbook, marks, type, imagery
-├── docs/                        # Product, architecture, integrations, migration docs
-└── AGENTS.md                    # Shared agent instructions
+├── apps/
+│   ├── web-react/        # React 19 + Vite + TS app (landing + terminal + session UI)
+│   ├── backend/          # Node/Express — SIWE auth, sessions, users, challenges
+│   └── backstage/        # schema/seed/tag scripts for the Directus admin
+├── dist/                 # classic (pre-React) pages — still live fallback
+├── react/                # built React app (served by the static server)
+├── packages/             # openfund-owned adapters (gains, charts, cms-client)
+├── infrastructure/
+│   └── directus/         # compose.yaml + .env.example (Postgres + Directus)
+├── vendor/               # upstream sources (vela, gains-sdk) + license notices
+├── brand/                # brandbook, marks, typography
+└── docs/                 # product, architecture, backstage, migration, audits
 ```
 
-Full technology registry with versions, roles and licenses: [`docs/architecture/TECH_STACK.md`](docs/architecture/TECH_STACK.md).
+## 20. Deployment architecture
 
-## Roadmap
+Local development runs three processes (Directus+PG, backend, React). For deployment, `infrastructure/directus/compose.yaml` containerizes Directus + PostgreSQL; the backend is a standard Node service (`PORT`, `DATABASE_URL`, `NODE_ENV=production` → Secure cookies) served from the same origin as the app (session cookies are SameSite=Lax). The static React build deploys behind any static server. Production hardening (TLS, reverse proxy, secrets management, backups) is documented in [`docs/backstage/LOCAL_SETUP.md`](docs/backstage/LOCAL_SETUP.md) and tracked on the roadmap.
 
-- [x] **Phase 0** — brand, landing, bilingual UI, themes, motion
-- [x] **Phase 1** — repository, docs structure, vendored upstreams
-- [x] **Phase 2** — Vela workspace chart × live Gains data in the terminal
-- [x] **Phase 3** — Gains-style market selector, demo engine on real marks, Finglish trade labels
-- [x] **Phase 4** — React 19 + Vite + TS shell, both pages at parity (E2E-verified)
-- [x] **Phase 5** — RainbowKit/wagmi/viem wallet connection (Arbitrum Sepolia)
-- [ ] **Phase 6** — auth boundary: wallet ↔ Openfund session (SIWE-ready), no fake auth
-- [ ] **Phase 7** — extract real React components from embedded legacy markup
-- [ ] **Phase 8** — regression suite on production builds + CI
-- [ ] **Phase 9** — production deployment, licensing finalization, public launch prep
+## 21. Security considerations
 
-Detailed plan: [`docs/development/ROADMAP.md`](docs/development/ROADMAP.md).
+- SIWE verification: signature, domain, chain, nonce freshness/replay — all server-side; short-lived single-use nonces.
+- Sessions: HttpOnly opaque cookies, hashed at rest, server-side expiry, invalidated on account switch.
+- No privileged tokens in the frontend, ever; public Directus policy is read-only published content; identity tables are private to administrators.
+- Rate limiting, input validation, audit logging, safe error responses on every auth route.
+- Suspension blocks login and live sessions.
+- Local dev credentials are gitignored; never commit filled `.env` files.
 
-## Built with AI-assisted development
+Details: [`docs/architecture/WALLET_AUTHENTICATION.md`](docs/architecture/WALLET_AUTHENTICATION.md).
 
-Openfund's workflow coordinates human direction with multiple coding agents. These are **workflow tools, not partners or sponsors**.
+## 22. Roadmap
 
-<div align="center">
-<table>
-<tr>
-<td align="center" width="50%"><a href="https://chatgpt.com/"><strong>ChatGPT Work</strong></a><br/><sub>Planning, architecture, documentation, review</sub></td>
-<td align="center" width="50%"><a href="https://qwenwork.ai/"><strong>QwenWork</strong></a><br/><sub>UI implementation, terminal/Vela×Gains engineering, iteration, E2E verification</sub></td>
-</tr>
-</table>
-</div>
+- [x] Brand, bilingual landing, themes, motion
+- [x] Vela workspace × live Gains data terminal
+- [x] React 19 shell at parity + RainbowKit connection
+- [x] Directus backstage — full fa/en content management
+- [x] **SIWE wallet identity, users, sessions, multi-challenge records**
+- [ ] Challenge purchase & activation flows (separate from identity)
+- [ ] Evaluation engine + risk metrics (backend-owned)
+- [ ] Media management, navigation-driven rendering, editorial roles in CMS
+- [ ] Withdrawal requests, support records (backstage)
+- [ ] Production deployment, licensing finalization
 
-Each agent works on a scoped branch (`qwen/*`, `codex/*`), keeps docs in sync (`CHANGELOG`, `FEATURE_STATUS`, migration status), and submits a PR for review — merges to `main` only after human review. See [`AGENTS.md`](AGENTS.md) and [`CONTRIBUTING.md`](CONTRIBUTING.md).
+Detailed: [`docs/development/ROADMAP.md`](docs/development/ROADMAP.md).
 
-## Documentation
+## 23. Contributing
 
-| Guide | Purpose |
-| :--- | :--- |
-| [Feature status](docs/product/FEATURE_STATUS.md) | Implemented vs prototype vs planned — source of truth |
-| [Tech stack registry](docs/architecture/TECH_STACK.md) | Every dependency: version, role, license |
-| [System architecture](docs/architecture/ARCHITECTURE.md) | Component boundaries and direction |
-| [Migration status](docs/migration/MIGRATION_STATUS.md) | React migration, phase by phase (resume file) |
-| [Vela integration](docs/integrations/VELA.md) · [Gains integration](docs/integrations/GAINS.md) | Charting / market-data contracts |
-| [Design system](docs/design/DESIGN_SYSTEM.md) | Visual identity, tokens, motion |
-| [Roadmap](docs/development/ROADMAP.md) | Delivery phases |
-| [Security](docs/security/SECURITY.md) | Secure development rules |
-| [Changelog](CHANGELOG.md) | Notable changes |
+Work on scoped branches (`qwen/*`, `codex/*`, `feature/*`), keep docs in sync (`CHANGELOG`, `FEATURE_STATUS`, migration/audit status), include verification evidence in PRs, and merge to `main` only after human review. See [`AGENTS.md`](AGENTS.md) and [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-## Licensing, attribution and disclaimer
+## 24. License
 
-Openfund is an independent project, unaffiliated with LuxAlgo, Gains Network, Reown/RainbowKit, Arbitrum, OpenAI, or Qwen. All third-party names and logos belong to their owners. Vendored projects keep their original licenses and notices (especially [`vendor/vela/NOTICE`](vendor/vela/NOTICE) — the terminal keeps a visible "Charts by Vela" credit for compliance). The repository-wide license for original Openfund code and brand assets is not yet finalized.
+Independent project, unaffiliated with LuxAlgo, Gains Network, Reown/RainbowKit, Arbitrum, Directus, OpenAI or Qwen. Third-party names and logos belong to their owners; vendored projects keep their licenses and notices (especially [`vendor/vela/NOTICE`](vendor/vela/NOTICE)). The repository-wide license for original Openfund code and brand assets has **not yet been finalized** — do not assume the assets are freely reusable.
 
-This is a development prototype, not a production trading platform or investment advice. Do not use real funds or private keys beyond explicit testnet experimentation.
+## 25. Credits & acknowledgments
+
+- **ChatGPT Work** — planning, architecture, documentation, review
+- **QwenWork** — UI implementation, terminal/Vela×Gains engineering, backend, E2E verification
+- Market data by [Gains Network](https://gains.trade) · Charts by [LuxAlgo Vela](https://github.com/LuxAlgo/Vela) · Wallet UX by [RainbowKit](https://rainbowkit.com) · CMS by [Directus](https://directus.io)
+- Openfund documentation is maintained in **English**; Persian is supported as a product UI language
 
 ---
 
-<div align="center"><sub>OPENFUND · مسیری برای تبدیل مهارت معامله‌گری به فرصت تأمین سرمایه.</sub></div>
+<div align="center"><sub>OPENFUND · سرمایه، در امتداد مهارت تو — capital, in line with your skill.</sub></div>

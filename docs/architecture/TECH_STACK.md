@@ -12,6 +12,17 @@
 | Vite | 6.4.5 | Dev server + bundler (`react/` output, base `/react/`) | Active | MIT |
 | react-router-dom | 7.18.5 | Hash router (`#/`, `#/terminal`, catch-all) | Active | MIT |
 
+## Backend (apps/backend)
+
+| Technology | Version | Role | Status | License |
+| :--- | :--- | :--- | :--- | :--- |
+| Node.js | 22 (required) | backend runtime | Active | Node license |
+| Express | 4.21 | HTTP API (/auth/nonce, /auth/verify, /auth/me, /auth/logout) | Active | MIT |
+| viem (siwe) | 2.57 | EIP-4361 parse + verify (EOA + EIP-1271) | Active | MIT |
+| pg | 8.13 | PostgreSQL access | Active | MIT |
+
+Run with Node 22 (viem/siwe + ESM). Server port 8080; env: DATABASE_URL, ALLOWED_DOMAINS, CORS_ORIGINS, SESSION_TTL_HOURS.
+
 ## Wallet layer
 
 | Technology | Version | Role | Status | License |

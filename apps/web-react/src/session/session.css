@@ -1,0 +1,84 @@
+/* Openfund session UI — wallet sign-in chip + profile panel.
+   Imported by RainbowConnect (bundled by Vite on both pages). */
+
+/* ============ ONE wallet-area template — every chip identical ============ */
+.rk-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 38px; padding: 0 14px;
+  background: transparent; color: #d4ddd7;
+  border: 1px solid #ffffff25; border-radius: 6px;
+  font: 500 12.5px/1 Ubuntu, 'Irancell', system-ui, sans-serif;
+  cursor: pointer; white-space: nowrap; box-sizing: border-box;
+  transition: border-color .18s, color .18s, background .18s;
+}
+.rk-chip:hover { border-color: #82e7bd88; color: #eafaf0 }
+.rk-chip:disabled { opacity: .55; cursor: wait }
+.rk-chip-connect {
+  background: #F1F3EF; color: #09100c; border-color: #F1F3EF; font-weight: 600;
+}
+.rk-chip-connect:hover { background: #fff; color: #09100c }
+.rk-chip-action { border-color: #82e7bd66; color: #a9e6c6; font-weight: 600 }
+.rk-chip-action:hover { background: #82e7bd16; border-color: #82e7bd; color: #c8f3dc }
+.rk-chip-suspended { border-color: #e8948355; color: #f0b3a6; cursor: default; font-weight: 600 }
+.rk-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; flex-shrink: 0 }
+.rk-dot-live { background: #82e7bd; box-shadow: 0 0 6px #82e7bd88 }
+.rk-dot-info { background: #86A8FF }
+.rk-chip-addr { font-family: ui-monospace, Consolas, monospace; font-size: 11px }
+.rk-chip-bal { font-family: ui-monospace, Consolas, monospace; font-size: 11px; color: #9fb3a8 }
+.rk-chip .rk-chip-bal::before { content: '·'; margin-right: 8px; color: #56655e }
+
+/* light theme (smart-invert keeps saturated hues) */
+html[data-theme='light'] .rk-chip { color: #3F4C44; border-color: #0A120D22 }
+html[data-theme='light'] .rk-chip:hover { border-color: #12965D88 }
+html[data-theme='light'] .rk-chip-connect { background: #12965D; color: #fff; border-color: #12965D }
+html[data-theme='light'] .rk-chip-connect:hover { background: #0d7a4c }
+html[data-theme='light'] .rk-chip-action { border-color: #12965D77; color: #0d7a4c }
+html[data-theme='light'] .rk-chip-action:hover { background: #12965D14; border-color: #12965D; color: #0d7a4c }
+html[data-theme='light'] .rk-chip-suspended { border-color: #B3543F88; color: #8a4a38 }
+html[data-theme='light'] .rk-chip-bal { color: #6b7a70 }
+
+.of-profile-overlay {
+  position: fixed; inset: 0; z-index: 2147483000;
+  background: rgba(0, 0, 0, 0.55);
+  display: grid; place-items: center;
+}
+.of-profile {
+  width: min(430px, calc(100vw - 40px));
+  max-height: 86vh; overflow: auto;
+  background: #0c1710; color: #f1f3ef;
+  border: 1px solid #82e7bd44; border-radius: 14px;
+  padding: 22px 24px;
+  font-family: 'Irancell', Tahoma, sans-serif;
+  margin: 0;
+}
+.of-profile-close { color: #a3b8a9; font-size: 24px; float: inline-end; background: none; border: 0; cursor: pointer }
+.of-profile-close:hover { color: #fff }
+.of-profile h2 { font-size: 19px; font-weight: 600; margin: 4px 0 14px }
+.of-profile h3 { font-size: 14px; font-weight: 600; margin: 18px 0 8px; color: #cbd8d0 }
+.of-profile h3 .of-count { font-style: normal; color: #82e7bd; margin-inline-start: 6px }
+.of-profile-rows div {
+  display: flex; justify-content: space-between; gap: 14px;
+  padding: 7px 0; border-bottom: 1px solid #ffffff10; font-size: 12.5px;
+}
+.of-profile-rows span { color: #84928e }
+.of-profile-rows b { font-weight: 500; color: #d4ddd7 }
+.of-profile-rows .of-ok { color: #82e7bd }
+.of-profile-rows .of-bad { color: #e89483 }
+.of-profile .of-addr { font-family: ui-monospace, Consolas, monospace; font-size: 11px }
+.of-empty { font-size: 12px; color: #84928e; line-height: 2 }
+.of-challenges { list-style: none; margin: 0; padding: 0 }
+.of-challenges li {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 9px 0; border-bottom: 1px solid #ffffff0d; font-size: 12px;
+}
+.of-challenges b { font-weight: 600; color: #d4ddd7 }
+.of-challenges span { color: #82e7bd; font-size: 11px }
+.of-challenges small { color: #7a8e85; font-size: 10px }
+.of-profile-actions { margin-top: 18px; display: flex; justify-content: flex-end }
+.of-profile-actions .button {
+  display: inline-flex; align-items: center; border-radius: 6px;
+  background: #e8948322; color: #f0b3a6; border: 1px solid #e8948355;
+  padding: 9px 16px; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  transition: background .18s;
+}
+.of-profile-actions .button:hover { background: #e8948344 }
