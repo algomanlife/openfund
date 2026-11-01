@@ -32,7 +32,7 @@ export const homeSeed: HomeSeed = {
     fa: {
       headline: 'همه بازارها در یک پلتفرم معاملاتی',
       sub: '',
-      note: 'قلب تپنده\nساخته شده توسط معامله‌گران\nبرای معامله‌گران',
+      note: 'ساخته شده توسط معامله‌گران برای معامله‌گران',
       propTitle: 'چلنج‌های پراپ',
       propDescription: '',
       propCta: 'چلنج‌های پراپ',
@@ -47,7 +47,7 @@ export const homeSeed: HomeSeed = {
     en: {
       headline: 'All Markets One Trading Platform',
       sub: '',
-      note: 'Heartbeat\nBuilt by traders\nfor traders',
+      note: 'Built by traders, for traders',
       propTitle: 'Prop Trading Challenges',
       propDescription: '',
       propCta: 'Prop Trading Challenges',

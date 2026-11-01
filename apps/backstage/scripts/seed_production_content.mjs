@@ -300,8 +300,8 @@ async function main() {
       ? { title: 'چلنج‌های معاملاتی', description: 'چلنج‌های پراپ اوپن‌فاند: استاندارد، تک‌مرحله‌ای، آنی و تست رایگان — با اهداف و سقف‌های ضرر شفاف.', seo_title: 'چلنج‌های معاملاتی اوپن‌فاند', seo_description: 'چلنج‌های پراپ اوپن‌فاند — استاندارد، تک‌مرحله‌ای، آنی و تست رایگان ۱۴روزه.' }
       : { title: 'Trading Challenges', description: 'Openfund prop challenges: Standard, One-phase, Instant and a free trial — with clear targets and loss limits.', seo_title: 'Openfund Trading Challenges', seo_description: 'Openfund prop challenges — Standard, One-phase, Instant and a 14-day free trial.' } },
     { slug: 'markets', template: 'markets', tr: locale => locale === 'fa'
-      ? { title: marketsSeed.title.fa, description: marketsSeed.seoDescription.fa, seo_title: marketsSeed.seoTitle.fa, seo_description: marketsSeed.seoDescription.fa }
-      : { title: marketsSeed.title.en, description: marketsSeed.seoDescription.en, seo_title: marketsSeed.seoTitle.en, seo_description: marketsSeed.seoDescription.en } },
+      ? { title: marketsSeed.subtitle.fa, subtitle: marketsSeed.title.fa, description: marketsSeed.description.fa, seo_title: marketsSeed.seoTitle.fa, seo_description: marketsSeed.seoDescription.fa }
+      : { title: marketsSeed.subtitle.en, subtitle: marketsSeed.title.en, description: marketsSeed.description.en, seo_title: marketsSeed.seoTitle.en, seo_description: marketsSeed.seoDescription.en } },
     { slug: 'rulebook', template: 'rulebook', tr: locale => locale === 'fa'
       ? { title: 'قوانین معاملاتی', description: rulebookIntro.fa, seo_title: 'قوانین معاملاتی اوپن‌فاند', seo_description: 'شرایط کامل چلنج‌های اوپن‌فاند — اهداف، سقف‌های ضرر، سهم سود و تست رایگان.' }
       : { title: 'Trading Rules', description: rulebookIntro.en, seo_title: 'Openfund Trading Rules', seo_description: 'The complete terms of the Openfund challenges — targets, loss limits, reward sharing and the free trial.' } },
