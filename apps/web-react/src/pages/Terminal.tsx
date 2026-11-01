@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import terminalBody from './terminal-body.html?raw'
 import { RainbowConnect } from '../wallet/RainbowConnect'
 import { fetchCmsTranslations } from '../cms/client'
+import { TradingBridge } from '../trading/TradingBridge'
 
 /**
  * Phase 2a: the trading terminal runs inside the React shell with its proven
@@ -97,6 +98,7 @@ export default function Terminal() {
   return (
     <>
       {walletHost && createPortal(<RainbowConnect />, walletHost)}
+      <TradingBridge />
       <div dangerouslySetInnerHTML={{ __html: terminalBody }} />
     </>
   )

@@ -16,6 +16,8 @@ import { createClient, isHex, http } from 'viem'
 import { parseSiweMessage, verifySiweMessage } from 'viem/siwe'
 import { arbitrumSepolia } from 'viem/chains'
 import pg from 'pg'
+import { marketData } from './market-data.js'
+import { Engine } from './engine.js'
 
 const cfg = {
   port: Number(process.env.PORT || 8080),
@@ -29,6 +31,7 @@ const cfg = {
 }
 
 const pool = new pg.Pool({ connectionString: cfg.dbUrl })
+const engine = new Engine(pool, marketData)
 const app = express()
 app.use(express.json({ limit: '32kb' }))
 
@@ -39,7 +42,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', origin)
     res.setHeader('Vary', 'Origin')
     res.setHeader('Access-Control-Allow-Credentials', 'true')
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Idempotency-Key')
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
   }
   if (req.method === 'OPTIONS') return res.sendStatus(204)
@@ -186,6 +189,11 @@ app.post('/auth/verify', limit(60), async (req, res) => {
       return res.status(403).json({ error: 'account_suspended' })
     }
 
+    /* every new user gets ONE free demo account with exactly 100,000 DAI —
+       atomic + idempotent (DB constraint prevents duplicate credits) */
+    const demo = await engine.ensureDemoAccount(user.id).catch(e => { console.error(e); null })
+    if (!demo) return res.status(500).json({ error: 'internal' })
+
     const sid = newSessionId()
     await pool.query(
       'INSERT INTO auth_sessions (id_hash, user_id, expires_at, user_agent, ip) VALUES ($1,$2, now() + $3::interval, $4, $5)',
@@ -230,14 +238,120 @@ app.post('/auth/logout', async (req, res) => {
   res.json({ ok: true })
 })
 
+/* =================  TRADING (auth-guarded, server-authoritative)  ================ */
+
+const tradingAuth = async (req, res, next) => {
+  try {
+    const user = await userFromSession(req)
+    if (!user) return res.status(401).json({ error: 'unauthenticated' })
+    if (user.status === 'suspended') return res.status(403).json({ error: 'account_suspended' })
+    req.user = user
+    next()
+  } catch { res.status(500).json({ error: 'internal' }) }
+}
+
+app.get('/trading/state', tradingAuth, async (req, res) => {
+  const state = await engine.state(req.user.user_id)
+  res.json(state)
+})
+
+app.post('/trading/order', tradingAuth, limit(30), async (req, res) => {
+  try {
+    const key = req.headers['idempotency-key'] || null
+    const out = await engine.submitOrder(req.user.user_id, req.body || {}, key)
+    if (!out.ok && !out.duplicate) return res.status(400).json({ error: out.reason, order: out.order })
+    res.json(out)
+  } catch (e) {
+    if (e.status) return res.status(e.status).json({ error: e.message })
+    console.error(e)
+    res.status(500).json({ error: 'internal' })
+  }
+})
+
+app.post('/trading/positions/:id/close', tradingAuth, async (req, res) => {
+  try {
+    const out = await engine.closePosition(req.user.user_id, req.params.id)
+    res.json(out)
+  } catch (e) {
+    if (e.status) return res.status(e.status).json({ error: e.message })
+    res.status(500).json({ error: 'internal' })
+  }
+})
+
+app.post('/trading/positions/:id/protection', tradingAuth, async (req, res) => {
+  try {
+    const { sl, tp } = req.body || {}
+    res.json(await engine.updateProtection(req.user.user_id, req.params.id, { sl, tp }))
+  } catch (e) {
+    if (e.status) return res.status(e.status).json({ error: e.message })
+    res.status(500).json({ error: 'internal' })
+  }
+})
+
+app.post('/trading/orders/:id/cancel', tradingAuth, async (req, res) => {
+  try {
+    res.json(await engine.cancelOrder(req.user.user_id, req.params.id))
+  } catch (e) {
+    if (e.status) return res.status(e.status).json({ error: e.message })
+    res.status(500).json({ error: 'internal' })
+  }
+})
+
+/* SSE live stream: account + positions + orders pushed on change (1 s heartbeat) */
+app.get('/trading/stream', tradingAuth, async (req, res) => {
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache, no-transform',
+    Connection: 'keep-alive',
+    'X-Accel-Buffering': 'no'
+  })
+  res.write('retry: 3000\n\n')
+  let last = ''
+  const push = async () => {
+    try {
+      const state = await engine.state(req.user.user_id)
+      const snapshot = JSON.stringify(state)
+      if (snapshot !== last) {           /* only push actual changes */
+        last = snapshot
+        res.write(`data: ${snapshot}\n\n`)
+      } else {
+        res.write(': hb\n\n')
+      }
+    } catch { /* user deleted mid-stream */ }
+  }
+  const onState = () => push()
+  engine.onState(onState)
+  const hb = setInterval(push, 1000)
+  req.on('close', () => { clearInterval(hb); engine.listeners.delete(onState) })
+  await push()
+})
+
+/* test-only price injection seam — enabled ONLY with SIM_TEST_MODE=1
+   (never active in production): lets engine tests drive deterministic marks */
+if (process.env.SIM_TEST_MODE === '1') {
+  app.post('/internal/inject-price', (req, res) => {
+    const { symbol, price } = req.body || {}
+    if (typeof symbol !== 'string' || price == null) return res.status(400).json({ error: 'invalid' })
+    marketData.injectPrice(symbol, String(price))
+    res.json({ ok: true })
+  })
+}
+
 /* health */
 app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }))
+app.get('/trading/health', tradingAuth, async (req, res) => {
+  const st = await engine.state(req.user.user_id)
+  res.json({ ok: true, account: st.account != null, markets: marketData.markets.size })
+})
 
 /* 404 + error safety (no stack leaks) */
 app.use((req, res) => res.status(404).json({ error: 'not_found' }))
 app.use((err, req, res, next) => { console.error(err); res.status(500).json({ error: 'internal' }) })
 
 const server = app.listen(cfg.port, () => console.log(`openfund-backend :${cfg.port}`))
-const shutdown = () => { server.close(); pool.end() }
+/* market data (authoritative server-side marks) + trading engine loop */
+marketData.bootstrap().catch(e => console.error('[market-data] bootstrap failed', e.message))
+engine.start(1000)
+const shutdown = () => { engine.stop(); marketData.stop(); server.close(); pool.end() }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)

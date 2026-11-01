@@ -23,7 +23,13 @@ Use these statuses: **Implemented** (working and tested), **Prototype** (visible
 | Multi-challenge accounts | Implemented | openfund_challenges lifecycle per record; ownership enforced; UI list + empty state |
 | Directus user management (admin view) | Implemented | users/challenges/plans/audit visible to admins; public policy: no permission |
 | User suspension enforcement | Implemented | blocks login + live sessions (backend-enforced) |
-| Challenge purchase / activation | Planned | kept separate — no fake flows |
+| Demo trading accounts (100,000 DAI) | Implemented | one per user, atomic idempotent funding; engine suite + acceptance E2E 2026-11-01 |
+| Server trading engine (market/limit/stop, SL/TP, liquidation) | Implemented | apps/backend/engine.js — 52/52 automated |
+| Server-side Gains market data (execution prices) | Implemented | market-data.js REST+WS, staleness policy |
+| Live trading updates (SSE) | Implemented | /trading/stream pushes state changes |
+| Persistent positions/orders/history in terminal UI | Implemented | TradingBridge provider swap, verified E2E |
+| Fee/spread/liq model | Partial | documented simulation assumptions (0.05%/side, 10% maintenance) — not Gains parity |
+| Challenge purchase / activation | Planned | kept separate — no fake flows | kept separate — no fake flows |
 | Evaluation engine / results | Planned | fields empty until a real engine exists | SIWE-ready SessionContext, no fake auth (migration Phase 4) |
 | Directus backstage (CMS) — schema, seed, public API | Implemented | `infrastructure/directus`, `apps/backstage/scripts`, `packages/cms-client`; live-edit verified end-to-end 2026-11-01 (dev + build) |
 | CMS-driven translations fa/en (landing + terminal) | Implemented | `ui_messages` bridges in locale.js/terminal.js; silent static fallback tested with backstage down |

@@ -72,3 +72,99 @@ CREATE TABLE IF NOT EXISTS audit_log (
 );
 CREATE INDEX IF NOT EXISTS idx_audit_ts ON audit_log (ts DESC);
 CREATE INDEX IF NOT EXISTS idx_audit_user ON audit_log (user_id);
+
+-- ============================================================
+-- Demo trading platform (100,000 virtual DAI)
+-- All money columns are NUMERIC — authoritative math uses
+-- decimal.js server-side. Frontend never writes these tables.
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS demo_accounts (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id       uuid NOT NULL REFERENCES openfund_users (id) ON DELETE CASCADE,
+  account_type  text NOT NULL DEFAULT 'free_demo',
+  currency      text NOT NULL DEFAULT 'DAI',
+  balance       numeric(24,10) NOT NULL DEFAULT 0,
+  used_margin   numeric(24,10) NOT NULL DEFAULT 0,
+  realized_pnl  numeric(24,10) NOT NULL DEFAULT 0,
+  status        text NOT NULL DEFAULT 'active' CHECK (status IN ('active','suspended','closed')),
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  updated_at    timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (user_id, account_type)          -- ONE free demo account per user
+);
+CREATE INDEX IF NOT EXISTS idx_demo_accounts_user ON demo_accounts (user_id);
+
+CREATE TABLE IF NOT EXISTS trading_orders (
+  id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  idempotency_key text UNIQUE,             -- duplicate submissions return the original result
+  account_id     uuid NOT NULL REFERENCES demo_accounts (id),
+  user_id        uuid NOT NULL REFERENCES openfund_users (id),
+  market         text NOT NULL,
+  side           text NOT NULL CHECK (side IN ('long','short')),
+  order_type     text NOT NULL CHECK (order_type IN ('market','limit','stop')),
+  margin         numeric(24,10) NOT NULL,
+  leverage       integer NOT NULL,
+  target_price   numeric(24,10),
+  sl_price       numeric(24,10),
+  tp_price       numeric(24,10),
+  status         text NOT NULL DEFAULT 'pending'
+                 CHECK (status IN ('pending','filled','cancelled','rejected')),
+  reject_reason  text,
+  filled_price   numeric(24,10),
+  position_id    uuid,
+  request_meta   jsonb NOT NULL DEFAULT '{}'::jsonb,
+  created_at     timestamptz NOT NULL DEFAULT now(),
+  updated_at     timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_orders_account ON trading_orders (account_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_orders_pending ON trading_orders (status) WHERE status = 'pending';
+
+CREATE TABLE IF NOT EXISTS trading_positions (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id      uuid NOT NULL REFERENCES trading_orders (id),
+  account_id    uuid NOT NULL REFERENCES demo_accounts (id),
+  user_id       uuid NOT NULL REFERENCES openfund_users (id),
+  market        text NOT NULL,
+  side          text NOT NULL CHECK (side IN ('long','short')),
+  quantity      numeric(24,10) NOT NULL,
+  entry_price   numeric(24,10) NOT NULL,
+  margin        numeric(24,10) NOT NULL,
+  leverage      integer NOT NULL,
+  sl_price      numeric(24,10),
+  tp_price      numeric(24,10),
+  status        text NOT NULL DEFAULT 'open' CHECK (status IN ('open','closed','liquidated')),
+  exit_price    numeric(24,10),
+  exit_reason   text,                       -- manual | sl | tp | liquidation
+  open_fee      numeric(24,10) NOT NULL DEFAULT 0,
+  close_fee     numeric(24,10) NOT NULL DEFAULT 0,
+  realized_pnl  numeric(24,10) NOT NULL DEFAULT 0,
+  opened_at     timestamptz NOT NULL DEFAULT now(),
+  closed_at     timestamptz
+);
+CREATE INDEX IF NOT EXISTS idx_positions_account ON trading_positions (account_id, status);
+CREATE INDEX IF NOT EXISTS idx_positions_user ON trading_positions (user_id, opened_at DESC);
+CREATE INDEX IF NOT EXISTS idx_positions_open ON trading_positions (status) WHERE status = 'open';
+
+-- append-only ledger: every balance-changing event, with balance_after
+CREATE TABLE IF NOT EXISTS trading_ledger (
+  id             bigserial PRIMARY KEY,
+  account_id     uuid NOT NULL REFERENCES demo_accounts (id),
+  user_id        uuid NOT NULL REFERENCES openfund_users (id),
+  event          text NOT NULL,             -- demo_funding | open_fee | close | liquidation
+  position_id    uuid,
+  amount         numeric(24,10) NOT NULL,   -- signed
+  balance_after  numeric(24,10) NOT NULL,
+  meta           jsonb NOT NULL DEFAULT '{}'::jsonb,
+  ts             timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_ledger_account ON trading_ledger (account_id, id);
+
+-- engine audit trail (triggers, liquidations, price evidence, errors)
+CREATE TABLE IF NOT EXISTS trading_events (
+  id         bigserial PRIMARY KEY,
+  ts         timestamptz NOT NULL DEFAULT now(),
+  account_id uuid,
+  kind       text NOT NULL,
+  detail     jsonb NOT NULL DEFAULT '{}'::jsonb
+);
+CREATE INDEX IF NOT EXISTS idx_trading_events_ts ON trading_events (ts DESC);

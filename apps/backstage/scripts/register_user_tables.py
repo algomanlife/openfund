@@ -68,6 +68,60 @@ COLLECTIONS = [
     }),
     ('auth_sessions', 'lock', 'Server-side sessions (hashed ids) — operational, hidden.', False, {}),
     ('auth_nonces', 'timer', 'Single-use SIWE nonces — operational, hidden.', False, {}),
+    # ---- demo trading (financial fields READ-ONLY: written by the engine only) ----
+    ('demo_accounts', 'account_balance_wallet', 'Demo trading accounts — one free_demo per user, 100,000 DAI. Written by the engine.', True, {
+        'user_id': {'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'readonly': True, 'width': 'half'},
+        'account_type': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'currency': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'balance': {'interface': 'input', 'readonly': True, 'width': 'half', 'special': ['cast-timestamp'] if False else []},
+        'used_margin': {'interface': 'input', 'readonly': True, 'hidden': True},
+        'realized_pnl': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'status': {'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Active', 'value': 'active'}, {'text': 'Suspended', 'value': 'suspended'}, {'text': 'Closed', 'value': 'closed'}]}, 'width': 'half'},
+        'created_at': {'interface': 'datetime', 'readonly': True, 'width': 'half'},
+    }),
+    ('trading_positions', 'candlestick_chart', 'Trading positions — written by the engine (read-only here).', True, {
+        'user_id': {'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'readonly': True, 'width': 'half'},
+        'account_id': {'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'readonly': True, 'width': 'half'},
+        'market': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'side': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'quantity': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'entry_price': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'exit_price': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'margin': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'leverage': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'status': {'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Open', 'value': 'open'}, {'text': 'Closed', 'value': 'closed'}, {'text': 'Liquidated', 'value': 'liquidated'}]}, 'width': 'half'},
+        'exit_reason': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'realized_pnl': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'opened_at': {'interface': 'datetime', 'readonly': True, 'width': 'half'},
+        'closed_at': {'interface': 'datetime', 'readonly': True, 'width': 'half'},
+    }),
+    ('trading_orders', 'receipt_long', 'Trading orders — idempotent submissions, written by the engine.', True, {
+        'user_id': {'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'readonly': True, 'width': 'half'},
+        'account_id': {'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'readonly': True, 'width': 'half'},
+        'market': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'side': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'order_type': {'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Market', 'value': 'market'}, {'text': 'Limit', 'value': 'limit'}, {'text': 'Stop', 'value': 'stop'}]}, 'readonly': True, 'width': 'half'},
+        'status': {'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Pending', 'value': 'pending'}, {'text': 'Filled', 'value': 'filled'},
+            {'text': 'Cancelled', 'value': 'cancelled'}, {'text': 'Rejected', 'value': 'rejected'}]}, 'readonly': True, 'width': 'half'},
+        'margin': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'leverage': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'reject_reason': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'created_at': {'interface': 'datetime', 'readonly': True, 'width': 'half'},
+    }),
+    ('trading_ledger', 'menu_book', 'Append-only balance ledger — NEVER editable.', True, {
+        'account_id': {'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'readonly': True, 'width': 'half'},
+        'user_id': {'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'readonly': True, 'width': 'half'},
+        'event': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'amount': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'balance_after': {'interface': 'input', 'readonly': True, 'width': 'half'},
+        'ts': {'interface': 'datetime', 'readonly': True, 'width': 'half'},
+        'meta': {'interface': 'input-code', 'options': {'language': 'json'}, 'readonly': True},
+    }),
+    ('trading_events', 'monitor_heart', 'Engine audit trail — read-only.', False, {}),
 ]
 
 def main():

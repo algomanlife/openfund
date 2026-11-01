@@ -127,7 +127,7 @@ class TradingProvider{
       marginUsed: margin, upnl, positionCount: st.positions.length, orderCount: st.orders.length
     };
   }
-  getPosition(id){ return this.state.positions.find(p => p.id === id); }
+  getPosition(id){ return this.state.positions.find(p => String(p.id) === String(id)); }
   liqPrice(side, entry, leverage){
     const m = 1 / leverage - MAINTENANCE;
     return side === 'long' ? entry * (1 - m) : entry * (1 + m);

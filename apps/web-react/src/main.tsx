@@ -4,6 +4,7 @@ import { createHashRouter, RouterProvider, Navigate } from 'react-router-dom'
 import Landing from './pages/Landing'
 import Terminal from './pages/Terminal'
 import { WalletProvider } from './wallet/WalletProvider'
+import { SessionProvider } from './session/useOpenfundSession'
 
 const router = createHashRouter([
   { path: '/', element: <Landing /> },
@@ -47,7 +48,9 @@ document.addEventListener('click', (e) => {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <WalletProvider>
-      <RouterProvider router={router} />
+      <SessionProvider>
+        <RouterProvider router={router} />
+      </SessionProvider>
     </WalletProvider>
   </StrictMode>
 )
