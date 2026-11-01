@@ -31,10 +31,10 @@ export const homeSeed: HomeSeed = {
   translations: {
     fa: {
       headline: 'همه بازارها در یک پلتفرم معاملاتی',
-      sub: 'دو مسیر، یک مقصد: مهارتت را در چلنج‌های پراپ ثابت کن یا مستقیم وارد معاملات پرپچوال شو.',
-      note: 'دادهٔ بازار: Gains Network · اجرای معاملات در این فاز شبیه‌سازی‌شده است.',
+      sub: '',
+      note: 'قلب تپنده\nساخته شده توسط معامله‌گران\nبرای معامله‌گران',
       propTitle: 'چلنج‌های پراپ',
-      propDescription: 'سه مدل چلنج — استاندارد، تک‌مرحله‌ای و آنی — به‌علاوهٔ تست رایگان ۱۴روزه؛ اهداف، سقف‌های ضرر و سهم سود از همان ابتدا روشن.',
+      propDescription: '',
       propCta: 'چلنج‌های پراپ',
       propKicker: 'محصول الف',
       perpetualTitle: 'معاملات پرپچوال اهرمی',
@@ -46,10 +46,10 @@ export const homeSeed: HomeSeed = {
     },
     en: {
       headline: 'All Markets One Trading Platform',
-      sub: 'Two paths, one destination: prove your skill in prop trading challenges, or step straight into leveraged perpetual trading.',
-      note: 'Market data by Gains Network · execution is simulated in this phase.',
+      sub: '',
+      note: 'Heartbeat\nBuilt by traders\nfor traders',
       propTitle: 'Prop Trading Challenges',
-      propDescription: 'Three challenge models — Standard, One-phase and Instant — plus a 14-day free trial; targets, loss limits and reward shares clear from the start.',
+      propDescription: '',
       propCta: 'Prop Trading Challenges',
       propKicker: 'Product A',
       perpetualTitle: 'Leveraged Perpetual Trading',
