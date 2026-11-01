@@ -117,7 +117,7 @@ export function useOpenfundSession() {
         nonce: n.data.nonce,
         version: '1'
       })
-      const signature = await signMessageAsync({ message })
+      const signature = await signMessageAsync({ account: address, message })
       const v = await api('/auth/verify', { method: 'POST', body: JSON.stringify({ message, signature }) })
       if (!v.ok) {
         if (v.data?.error === 'account_suspended') { setStatus('suspended'); return }
