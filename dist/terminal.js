@@ -106,7 +106,7 @@ const I18N = {
     'act.close': 'بستن', 'act.sltp': 'SL/TP', 'act.details': 'جزئیات', 'act.cancel': 'لغو',
     'tag.pending': 'در انتظار',
     'res.filled': 'انجام‌شده', 'res.cancelled': 'لغو‌شده', 'res.closed-profit': 'بسته با سود', 'res.closed-loss': 'بسته با زیان',
-    'res.stop-loss': 'استاپ‌لاس', 'res.take-profit': 'تیک‌پرافیت', 'res.market-close': 'بستن مارکت',
+    'res.stop-loss': 'استاپ‌لاس', 'res.take-profit': 'تیک‌پرافیت', 'res.market-close': 'بستن مارکت', 'res.liquidation': 'لیکویید شد',
     'res.filled': 'فیل شد', 'res.cancelled': 'کنسل شد',
     'empty.positions': 'موقعیت بازی وجود ندارد. از پنل سفارش یکی باز کن یا سناریوی دمو را بارگذاری کن.',
     'empty.orders': 'سفارش بازی وجود ندارد.',
@@ -205,7 +205,7 @@ const EN = {
   'tag.pending': 'pending',
   'res.filled': 'filled', 'res.cancelled': 'cancelled', 'res.closed-profit': 'closed-profit',
   'res.closed-loss': 'closed-loss', 'res.stop-loss': 'Stop Loss', 'res.take-profit': 'Take Profit',
-  'res.market-close': 'market-close',
+  'res.market-close': 'market-close', 'res.liquidation': 'liquidation',
   'empty.positions': 'No open positions. Open one from the order panel or load the demo scenario.',
   'empty.orders': 'No open orders.',
   'empty.history': 'No order history yet.',
@@ -844,16 +844,17 @@ $('submit-order').addEventListener('click', () => {
 });
 let pendingOrder = null;
 $('review-cancel').addEventListener('click', () => { pendingOrder = null; $('review-dialog').close(); });
-$('review-confirm').addEventListener('click', () => {
+$('review-confirm').addEventListener('click', async () => {
   if (!pendingOrder) return;
-  const res = tp.submit(pendingOrder);
+  const req = pendingOrder;
   pendingOrder = null;
   $('review-dialog').close();
-  if (res.ok){
+  const res = tp.submitAsync ? await tp.submitAsync(req) : tp.submit(req);
+  if (res && res.ok){
     toast(res.kind === 'position' ? t('toast.position') : t('toast.order'), 'pos');
     renderBottom(); renderAccount();
   } else {
-    toast(res.errors[0], 'neg');
+    toast(res && res.errors ? res.errors[0] : 'error', 'neg');
   }
 });
 
@@ -958,12 +959,12 @@ function emptyRow(cols, text){
 function wireRowActions(){
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => {
     confirmDialog(t('cf.close'), t('cf.closeTxt'), () => {
-      tp.closePosition(+b.dataset.close); renderBottom(); renderAccount();
+      (async () => { try { await tp.closePosition(b.dataset.close); } catch(e){} renderBottom(); renderAccount(); })();
     });
   }));
   document.querySelectorAll('[data-cancel]').forEach(b => b.addEventListener('click', () => {
     confirmDialog(t('cf.cancel'), t('cf.cancelTxt'), () => {
-      tp.cancelOrder(+b.dataset.cancel); renderBottom(); renderAccount();
+      (async () => { try { await tp.cancelOrder(b.dataset.cancel); } catch(e){} renderBottom(); renderAccount(); })();
     });
   }));
   document.querySelectorAll('[data-sltp]').forEach(b => b.addEventListener('click', () => {
@@ -999,9 +1000,11 @@ function wireRowActions(){
 }
 let sltpTarget = null;
 $('sltp-cancel').addEventListener('click', () => $('sltp-dialog').close());
-$('sltp-save').addEventListener('click', () => {
+$('sltp-save').addEventListener('click', async () => {
   if (sltpTarget == null) return;
-  const res = tp.modifyRisk(sltpTarget, +$('sltp-sl').value || null, +$('sltp-tp').value || null);
+  const res = tp.modifyRiskAsync || !tp.submitAsync
+    ? tp.modifyRisk(sltpTarget, +$('sltp-sl').value || null, +$('sltp-tp').value || null)
+    : await tp.modifyRisk(sltpTarget, +$('sltp-sl').value || null, +$('sltp-tp').value || null);
   if (!res.ok){ $('sltp-err').textContent = res.errors[0]; $('sltp-err').hidden = false; return; }
   $('sltp-dialog').close(); renderBottom();
 });
@@ -1025,6 +1028,7 @@ $('confirm-ok').addEventListener('click', () => { $('confirm-dialog').close(); i
 function renderAccount(){
   if (!tp) return;
   const a = tp.getAccount();
+  if (!a) return;   /* server account not loaded yet */
   $('ac-equity').textContent = fmt.usd(a.equity);
   $('ac-available').textContent = fmt.usd(a.available);
   $('ac-margin').textContent = fmt.usd(a.marginUsed);
@@ -1135,7 +1139,21 @@ function boot(){
   $('submit-order').disabled = true;
   chartOverlay(`<b>${t('boot.loading')}</b>`);
   board.boot().then(() => {
-    tp = new TradingProvider(board);
+    tp = window.__ofServerTP || new TradingProvider(board);
+    /* server trading bridge (authenticated users): swap provider + live updates */
+    window.addEventListener('of-trading-ready', () => {
+      tp = window.__ofServerTP;
+      $('load-demo').style.display = 'none';
+      renderAccount(); renderBottom(); computeForm();
+    });
+    window.addEventListener('of-trading-update', () => {
+      renderAccount();
+      if (['positions','orders','history'].includes(S.btTab) || S.btTab == null) renderBottom();
+    });
+    window.addEventListener('of-trading-off', () => {
+      tp = new TradingProvider(board);
+      renderAccount(); renderBottom(); computeForm();
+    });
     tp.subscribe(() => {
       if (document.querySelector('dialog[open]') !== $('notifications-dialog')) $('notif-dot').classList.add('on');
     });

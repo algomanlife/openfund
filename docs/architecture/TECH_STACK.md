@@ -20,6 +20,8 @@
 | Express | 4.21 | HTTP API (/auth/nonce, /auth/verify, /auth/me, /auth/logout) | Active | MIT |
 | viem (siwe) | 2.57 | EIP-4361 parse + verify (EOA + EIP-1271) | Active | MIT |
 | pg | 8.13 | PostgreSQL access | Active | MIT |
+| ws | 8.x | Gains WebSocket client (server-side marks) | Active | MIT |
+| decimal.js | 10.x | authoritative money math (NUMERIC storage) | Active | MIT |
 
 Run with Node 22 (viem/siwe + ESM). Server port 8080; env: DATABASE_URL, ALLOWED_DOMAINS, CORS_ORIGINS, SESSION_TTL_HOURS.
 

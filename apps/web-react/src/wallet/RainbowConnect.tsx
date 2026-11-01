@@ -3,7 +3,7 @@ import { ConnectButton, RainbowKitProvider, darkTheme, lightTheme } from '@rainb
 import '@rainbow-me/rainbowkit/styles.css'   /* REQUIRED: without it the modal renders unstyled (position:static at the end of <body>, breaking the page layout) */
 import { useAccount, useBalance } from 'wagmi'
 import { formatUnits } from 'viem'
-import { useOpenfundSession } from '../session/useOpenfundSession'
+import { useSession } from '../session/useOpenfundSession'
 import { ProfilePanel } from '../session/ProfilePanel'
 import '../session/session.css'
 
@@ -136,7 +136,7 @@ export function RainbowConnect() {
 
   /* Openfund wallet identity (SIWE): connect ≠ login — the user signs once
      per session; then the profile panel shows their account + challenges */
-  const session = useOpenfundSession()
+  const session = useSession()
   const [profileOpen, setProfileOpen] = useState(false)
 
   return (
