@@ -126,3 +126,112 @@ html[data-theme='light'] .pf-pager button,html[data-theme='light'] .act-btn{colo
   .pf-cards,.pf-cards.sm{grid-template-columns:1fr 1fr}
   .pf-table{display:block;overflow-x:auto}
 }
+
+/* ===== Full dashboard layout ===== */
+.pf-timerange{display:flex;gap:6px;margin-bottom:16px}
+.pf-timerange button{background:none;border:1px solid #ffffff20;border-radius:5px;color:#84928e;
+  padding:5px 12px;font-size:11.5px;cursor:pointer;font-family:inherit}
+.pf-timerange button.active{border-color:#82e7bd;color:#82e7bd;background:#82e7bd14}
+.pf-layout{display:grid;grid-template-columns:160px 1fr;gap:16px;min-height:60vh}
+.pf-sidebar{display:flex;flex-direction:column;gap:4px;padding:14px 0;border-inline-end:1px solid #ffffff10}
+.pf-sidebar button{display:flex;align-items:center;gap:10px;background:none;border:none;border-radius:6px;
+  padding:9px 12px;color:#84928e;font-size:13px;cursor:pointer;text-align:start;font-family:inherit;
+  transition:background .15s,color .15s}
+.pf-sidebar button:hover{color:#d4ddd7;background:#ffffff06}
+.pf-sidebar button.active{color:#82e7bd;background:#82e7bd12;font-weight:600}
+.pf-sidebar .ic{font-size:16px;width:20px;text-align:center}
+.pf-main{min-width:0}
+
+/* KPI row */
+.pf-kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.pf-card.big .v{font-size:24px}
+.pf-card.wl-bar .bar{height:4px;border-radius:2px;background:#e8948355;margin-top:8px;overflow:hidden}
+.pf-card.wl-bar .bar .win{height:100%;background:#82e7bd;border-radius:2px;transition:width .3s}
+
+/* gauge */
+.pf-gauge{display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid #ffffff14;
+  border-radius:10px;padding:10px;background:#0b1410}
+.pf-gauge svg{width:100%;max-width:90px}
+.pf-gauge .lbl{font-size:9.5px;color:#84928e;letter-spacing:.5px;text-transform:uppercase}
+
+/* charts */
+.pf-chart-empty{display:grid;place-items:center;color:#56655e;font-size:12px}
+.pf-line-chart,.pf-bar-chart{width:100%;display:block;background:#0a110d;border:1px solid #ffffff12;border-radius:10px}
+
+/* radar */
+.pf-radar-wrap{display:flex;align-items:center;gap:20px;padding:10px}
+.pf-radar{width:200px;height:200px;flex-shrink:0}
+.pf-radar-score{text-align:center}
+.pf-radar-score b{font-size:36px;color:#82e7bd;display:block;line-height:1}
+.pf-radar-score span{font-size:11px;color:#84928e}
+
+/* grid */
+.pf-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.pf-section{border:1px solid #ffffff10;border-radius:10px;padding:16px;background:#0a110d}
+.pf-section h2{font-size:15px;font-weight:600;margin:0 0 12px;color:#c9d8d0}
+.pf-section h2 small{color:#6b7f74;font-weight:400;font-size:10px}
+.pf-section h3{font-size:11.5px;font-weight:500;color:#84928e;margin:14px 0 6px}
+
+/* activity */
+.pf-activity{display:flex;flex-direction:column;gap:2px}
+.act-row{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;font-size:12px}
+.act-row .tag{font-size:8.5px;font-weight:700;letter-spacing:.5px;border-radius:3px;padding:2px 6px;flex-shrink:0}
+.act-row.win .tag{background:#82e7bd18;color:#82e7bd}
+.act-row.loss .tag{background:#e8948318;color:#e89483}
+.act-row b{color:#d4ddd7;flex:1}
+.act-row .pnl{font-variant-numeric:tabular-nums;font-weight:600;flex-shrink:0}
+.act-row.win .pnl{color:#82e7bd}
+.act-row.loss .pnl{color:#e89483}
+
+/* full calendar */
+.pf-cal-full{border:1px solid #ffffff10;border-radius:10px;padding:16px;background:#0a110d}
+.pf-cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pf-cal-nav h3{font-size:14px;color:#c9d8d0;margin:0;font-weight:500}
+.pf-cal-nav button{background:none;border:1px solid #ffffff20;border-radius:5px;color:#84928e;padding:4px 10px;cursor:pointer}
+.pf-cal-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
+.pf-cal-dow span{text-align:center;font-size:10px;color:#6b7f74;padding:4px 0}
+.pf-cal-grid-full{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.pf-cal-cell{aspect-ratio:1.3;border-radius:5px;background:#ffffff06;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:3px;min-height:46px}
+.pf-cal-cell.empty{background:transparent}
+.pf-cal-cell .d{font-size:9px;color:#56655e}
+.pf-cal-cell .p{font-size:10px;font-weight:600;color:#9fb3a8;font-variant-numeric:tabular-nums}
+.pf-cal-cell .t{font-size:7.5px;color:#6b7f74}
+.pf-cal-cell.up{background:#82e7bd1a}
+.pf-cal-cell.up .p{color:#82e7bd}
+.pf-cal-cell.down{background:#e894831a}
+.pf-cal-cell.down .p{color:#e89483}
+.pf-cal-summary{display:flex;gap:18px;margin-top:12px;padding-top:10px;border-top:1px solid #ffffff10;font-size:11.5px;color:#84928e}
+.pf-cal-summary b{font-weight:600}
+.pf-cal-summary b.up{color:#82e7bd}.pf-cal-summary b.down{color:#e89483}
+
+/* journal */
+.pf-journal-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;
+  border-bottom:1px solid #ffffff08}
+.jf-meta{display:flex;align-items:center;gap:12px;font-size:13px}
+.jf-meta b{color:#d4ddd7}
+.jf-meta .up{color:#82e7bd}.jf-meta .down{color:#e89483}
+.jf-meta .pnl{font-variant-numeric:tabular-nums;font-weight:600}
+
+/* light theme */
+html[data-theme='light'] .pf-layout .pf-sidebar{border-color:#0A120D12}
+html[data-theme='light'] .pf-sidebar button{color:#3F4C44}
+html[data-theme='light'] .pf-sidebar button.active{color:#12965D;background:#12965D10}
+html[data-theme='light'] .pf-section,html[data-theme='light'] .pf-gauge,
+html[data-theme='light'] .pf-cal-full{background:#F2F4F0;border-color:#0A120D14}
+html[data-theme='light'] .pf-section h2,html[data-theme='light'] .pf-cal-nav h3{color:#263229}
+html[data-theme='light'] .pf-line-chart,html[data-theme='light'] .pf-bar-chart{background:#F2F4F0;border-color:#0A120D14}
+html[data-theme='light'] .pf-timerange button{color:#3F4C44;border-color:#0A120D22}
+html[data-theme='light'] .pf-timerange button.active{color:#12965D;border-color:#12965D}
+html[data-theme='light'] .act-row{background:transparent}
+html[data-theme='light'] .act-row b{color:#263229}
+html[data-theme='light'] .pf-cal-cell{background:#0A120D06}
+html[data-theme='light'] .pf-cal-cell .d{color:#6b7a70}
+
+@media(max-width:1000px){
+  .pf-layout{grid-template-columns:1fr}
+  .pf-sidebar{flex-direction:row;overflow-x:auto;border-inline-end:none;border-bottom:1px solid #ffffff10;padding:8px 0}
+  .pf-sidebar button{white-space:nowrap;padding:7px 14px}
+  .pf-kpi-row{grid-template-columns:repeat(2,1fr)}
+  .pf-grid-2{grid-template-columns:1fr}
+}
