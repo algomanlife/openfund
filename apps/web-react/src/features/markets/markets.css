@@ -1,0 +1,71 @@
+/* Openfund Markets directory — landing tokens (style.css) stay authoritative;
+   this file composes the directory experience: hero meta, category toolbar,
+   market cards, animated asset universe. */
+
+/* --- hero meta row (stream status / counts) --- */
+.mk-hero-meta{display:flex;justify-content:center;align-items:center;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:26px}
+.mk-stream{display:inline-flex;align-items:center;gap:7px;font-size:10px;color:#91a39c}
+.mk-stream>i{width:5px;height:5px;background:#687974;border-radius:50%;display:inline-block}
+.mk-stream.live>i{background:var(--mint)}
+.mk-stream.error{color:#e6a397}
+
+/* --- animated asset universe (decorative, behind the hero) --- */
+.mk-constellation{position:relative;pointer-events:none;overflow:hidden}
+.mk-orbit{position:relative;height:0}
+.mk-orbit-ring{position:absolute;left:50%;top:0;width:min(880px,92vw);aspect-ratio:2.6/1;transform:translate(-50%,-42%);border:1px dashed #82e7bd26;border-radius:50%;display:block}
+.mk-orbit-item{position:absolute;left:50%;top:0;transform:rotate(var(--angle)) translateX(min(440px,46vw)) rotate(calc(var(--angle) * -1));transform-origin:0 0}
+.mk-orbit-spin{display:grid;place-items:center;filter:drop-shadow(0 6px 18px #0009);opacity:.85;animation:mk-orbit-counter 70s linear infinite}
+.mk-orbit{animation:mk-orbit-rotate 70s linear infinite}
+@keyframes mk-orbit-rotate{to{transform:rotate(1turn)}}
+@keyframes mk-orbit-counter{to{transform:rotate(-1turn)}}
+
+/* --- toolbar --- */
+.mk-body{padding-bottom:110px;position:relative}
+.mk-toolbar{border:1px solid #44534b;border-bottom:0;border-radius:7px 7px 0 0;background:#090e10;padding:17px 20px;gap:20px;flex-wrap:wrap}
+.mk-toolbar .market-tabs{gap:20px;overflow-x:auto;scrollbar-width:thin}
+.mk-toolbar .market-tabs button{display:inline-flex;align-items:center;gap:7px}
+.mk-toolbar .market-tabs small{font:10px system-ui;color:#6d7f78}
+.mk-search{margin-inline-start:auto;gap:9px;border:1px solid #ffffff16;border-radius:6px;padding:5px 12px}
+.mk-search input{width:220px}
+.mk-clear{background:none;border:0;color:#8b9c94;font:15px system-ui;padding:0 2px}
+.mk-clear:hover{color:var(--white)}
+@media(max-width:900px){.mk-search{margin-inline-start:0;width:100%}.mk-search input{width:100%;flex:1}}
+
+/* --- market cards --- */
+.mk-grid{list-style:none;margin:0;padding:20px;border:1px solid #44534b;border-radius:0 0 7px 7px;background:#090e10;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.mk-card{display:flex;flex-direction:column;gap:11px;width:100%;text-align:start;background:#0a100d;border:1px solid #ffffff12;border-radius:8px;padding:15px 16px;transition:border-color .22s,transform .22s,background .22s;animation:mk-enter .5s cubic-bezier(.16,1,.3,1) both;content-visibility:auto;contain-intrinsic-size:auto 108px}
+.mk-card:nth-child(n+13){animation-delay:0s} /* cap stagger cost on long lists */
+.mk-card:hover{border-color:#82e7bd80;background:#0f2117;transform:translateY(-2px)}
+.mk-card:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+@keyframes mk-enter{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.mk-card-head{display:flex;align-items:center;gap:10px}
+.mk-symbol{display:inline-flex;align-items:baseline;gap:1px}
+.mk-symbol b{font:500 15px system-ui;letter-spacing:-.3px;color:#e6efe9}
+.mk-symbol small{font:10px system-ui;color:#97a7a8}
+.mk-status{margin-inline-start:auto;font-size:9px;color:#8daa9e;white-space:nowrap}
+.mk-status.closed{color:#bb9b70}
+.mk-status.old{color:#c99f6e}
+.mk-card-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mk-cat{font-size:10.5px;color:#8b9f96}
+.mk-lev{font:11px system-ui;color:#a9c3b3}
+.mk-price{font-size:13px;color:#d3dfdc}
+.mk-price.none{color:#5f746a}
+.mk-tick{width:5px;height:5px;border-radius:50%}
+.mk-tick.up{background:var(--mint);box-shadow:0 0 8px #82e7bd88}
+.mk-tick.down{background:#e89483;box-shadow:0 0 8px #e8948388}
+.mk-more{margin:22px auto 0;font-size:12px}
+.mk-empty{border:1px solid #44534b;border-radius:7px;background:#090e10;padding:50px 20px;color:#91a6a0;text-align:center;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.mk-empty .refresh{width:30px;height:30px;font:17px system-ui}
+.mk-source{display:flex;align-items:center;gap:9px;color:#809794;font-size:10px;margin-top:14px}
+.mk-source a{font:10px system-ui;color:#b2c9bd}
+.mk-source .dot{width:5px;height:5px;background:var(--mint);border-radius:50%;display:inline-block}
+.mk-loading{color:#91a6a0}
+
+@media(max-width:1000px){.mk-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.mk-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:14px}.mk-card{padding:12px 13px}.mk-toolbar{padding:14px 12px}}
+
+@media(prefers-reduced-motion:reduce){
+  .mk-orbit,.mk-orbit-spin{animation:none}
+  .mk-card{animation:none}
+  .mk-card:hover{transform:none}
+}

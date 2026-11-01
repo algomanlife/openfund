@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { useParams, Navigate } from 'react-router-dom'
 import landingBody from './landing-body.html?raw'
 import { RainbowConnect } from '../wallet/RainbowConnect'
 import { fetchCmsTranslations } from '../cms/client'
@@ -8,6 +9,12 @@ import { fetchCmsTranslations } from '../cms/client'
  * Phase 2a: the landing runs inside the React shell with its proven markup
  * and logic (locale/market/motion scripts) loaded as modules after mount.
  * Phase 2b progressively extracts real React components (see MIGRATION_STATUS).
+ *
+ * Public-website role: this page is the "Trading Challenges" destination at
+ * /:locale/challenges. The route locale is the source of truth on entry (it
+ * wins over the stored preference before the legacy scripts read it), and the
+ * in-page language toggle silently rewrites the hash to stay in sync without
+ * remounting the legacy runtime.
  *
  * Legacy-script contract (classic page assumptions we must satisfy):
  *  - locale.js waits for DOMContentLoaded on WINDOW. React injects scripts
@@ -80,7 +87,28 @@ function swapArrows() {
     })
 }
 
+/* ---- nav state for the shared website header ---------------------------- */
+function markCurrentPage() {
+  /* this page IS the Trading Challenges destination — highlight it the way
+     the information pages do (aria-current + the landing's .active style) */
+  document.querySelectorAll<HTMLElement>('[data-info-page]').forEach(a => {
+    const active = a.dataset.infoPage === 'challenges'
+    a.classList.toggle('active', active)
+    if (active) a.setAttribute('aria-current', 'page')
+    else a.removeAttribute('aria-current')
+  })
+}
+
 export default function Landing() {
+  const routeLocale = useParams().locale
+  useEffect(() => {
+    /* the route locale is authoritative on entry — sync the stored preference
+       BEFORE the legacy scripts boot, so locale.js translates to it */
+    if (routeLocale === 'en' || routeLocale === 'fa') {
+      w().ofLang = routeLocale
+      try { localStorage.setItem('of-language', routeLocale) } catch { /* ignore */ }
+    }
+  }, [routeLocale])
   /* wallet connect button in the landing header (#wallet-root placeholder,
      right next to nav-actions). Same RainbowKit mount as the terminal. */
   const [walletHost, setWalletHost] = useState<HTMLElement | null>(null)
@@ -139,8 +167,8 @@ export default function Landing() {
         if (w().__ofLandingKicked) return
         w().__ofLandingKicked = true
         document.dispatchEvent(new Event('DOMContentLoaded', { bubbles: true }))
-        setTimeout(() => { initTheme(); swapArrows() }, 60)
-        setTimeout(swapArrows, 600)
+        setTimeout(() => { initTheme(); swapArrows(); markCurrentPage() }, 60)
+        setTimeout(() => { swapArrows(); markCurrentPage() }, 600)
       }
       scripts[scripts.length - 1].addEventListener('load', kick)
       /* safety: if load already fired before we attached */
@@ -149,7 +177,17 @@ export default function Landing() {
     }
 
     initTheme()
-    const langHandler = () => setTimeout(swapArrows, 60)
+    markCurrentPage()
+    /* language toggle: re-run the arrow/nav pass AND keep the route hash in
+       sync (silent replaceState — no router remount, no legacy re-boot) */
+    const langHandler = () => setTimeout(() => {
+      swapArrows()
+      markCurrentPage()
+      const lang = w().ofLang === 'en' ? 'en' : 'fa'
+      if (routeLocale && lang !== routeLocale) {
+        try { history.replaceState(history.state, '', `#/${lang}/challenges${location.search}`) } catch { /* ignore */ }
+      }
+    }, 60)
     addEventListener('of-language', langHandler)
 
     /* pending cross-page scroll (e.g. terminal → "Markets" link) */
@@ -170,6 +208,7 @@ export default function Landing() {
     }
   }, [])
 
+  if (routeLocale !== 'en' && routeLocale !== 'fa') return <Navigate to="/fa/challenges" replace />
   return (
     <>
       {walletHost && createPortal(<RainbowConnect />, walletHost)}

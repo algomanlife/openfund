@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 320" role="img" aria-label="Openfund leveraged perpetual markets composition">
+  <!-- Openfund original — Illustration B: "Perpetual Markets"
+       Candlestick composition with long/short pressure arrows, a market
+       constellation orbit and a leverage ladder. Palette: mint 82e7bd,
+       warm short  e89483, whites f1f3ef on 060808. -->
+  <style>
+    .of-c { animation: of-float 5.5s ease-in-out infinite; }
+    .of-c:nth-child(2) { animation-delay: -1.1s; }
+    .of-c:nth-child(3) { animation-delay: -2.2s; }
+    .of-c:nth-child(4) { animation-delay: -3.3s; }
+    .of-c:nth-child(5) { animation-delay: -4.4s; }
+    .of-up { fill: #82e7bdcc; }
+    .of-up-w { stroke: #82e7bd; stroke-width: 1.6; }
+    .of-dn { fill: #e89483b8; }
+    .of-dn-w { stroke: #e89483; stroke-width: 1.6; }
+    .of-orbit { fill: none; stroke: #82e7bd33; stroke-width: 1; stroke-dasharray: 2 9; }
+    .of-dot { fill: #82e7bd; opacity: .85; animation: of-twinkle 3.6s ease-in-out infinite; }
+    .of-dot:nth-of-type(2) { animation-delay: -1.2s; }
+    .of-dot:nth-of-type(3) { animation-delay: -2.4s; }
+    .of-dot:nth-of-type(4) { animation-delay: -3s; fill: #d5e6da; }
+    .of-ladder { stroke: #82e7bd52; stroke-width: 1.4; }
+    .of-arrow-l { stroke: #82e7bd; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round;
+                  animation: of-rise 3.2s cubic-bezier(.16,1,.3,1) infinite; }
+    .of-arrow-s { stroke: #e89483; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round;
+                  animation: of-fall 3.2s cubic-bezier(.16,1,.3,1) infinite; }
+    .of-grid { stroke: #82e7bd10; stroke-width: 1; }
+    @keyframes of-float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-7px) } }
+    @keyframes of-twinkle { 0%,100% { opacity: .25 } 50% { opacity: .9 } }
+    @keyframes of-rise { 0% { opacity: 0; transform: translateY(12px) } 30% { opacity: 1 } 60% { opacity: 1; transform: translateY(0) } 100% { opacity: 0; transform: translateY(-6px) } }
+    @keyframes of-fall { 0% { opacity: 0; transform: translateY(-12px) } 30% { opacity: 1 } 60% { opacity: 1; transform: translateY(0) } 100% { opacity: 0; transform: translateY(6px) } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+  <defs>
+    <radialGradient id="ofGlowB" cx=".5" cy=".7" r=".8">
+      <stop stop-color="#82e7bd" stop-opacity=".12"/>
+      <stop offset="1" stop-color="#82e7bd" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ofBase" x1="0" x2="0" y1="0" y2="1">
+      <stop stop-color="#82e7bd" stop-opacity=".16"/>
+      <stop offset="1" stop-color="#82e7bd" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="440" height="320" fill="url(#ofGlowB)"/>
+
+  <!-- market constellation orbit -->
+  <g class="of-constellation">
+    <ellipse class="of-orbit" cx="220" cy="140" rx="196" ry="82" transform="rotate(-7 220 140)"/>
+    <circle class="of-dot" cx="46" cy="176" r="4.5"/>
+    <circle class="of-dot" cx="118" cy="72" r="3.5"/>
+    <circle class="of-dot" cx="352" cy="60" r="4"/>
+    <circle class="of-dot" cx="398" cy="176" r="5"/>
+  </g>
+
+  <!-- quiet grid -->
+  <g class="of-grid">
+    <path d="M40 60H400 M40 120H400 M40 180H400 M40 240H400"/>
+  </g>
+
+  <!-- long pressure arrow (left) -->
+  <g>
+    <path class="of-arrow-l" d="M64 236 V108 M64 108 l-9 13 M64 108 l9 13"/>
+  </g>
+  <!-- short pressure arrow (right) -->
+  <g>
+    <path class="of-arrow-s" d="M376 108 V236 M376 236 l-9 -13 M376 236 l9 -13"/>
+  </g>
+
+  <!-- candlestick composition -->
+  <g>
+    <!-- wick + body pairs; long candles mint, short candles warm -->
+    <g class="of-c">
+      <path class="of-up-w" d="M120 92 V210"/>
+      <rect class="of-up" x="112" y="118" width="16" height="66" rx="2"/>
+    </g>
+    <g class="of-c">
+      <path class="of-dn-w" d="M158 116 V236"/>
+      <rect class="of-dn" x="150" y="152" width="16" height="56" rx="2"/>
+    </g>
+    <g class="of-c">
+      <path class="of-up-w" d="M196 70 V200"/>
+      <rect class="of-up" x="188" y="96" width="16" height="78" rx="2"/>
+    </g>
+    <g class="of-c">
+      <path class="of-up-w" d="M234 52 V172"/>
+      <rect class="of-up" x="226" y="74" width="16" height="74" rx="2"/>
+    </g>
+    <g class="of-c">
+      <path class="of-dn-w" d="M272 92 V216"/>
+      <rect class="of-dn" x="264" y="126" width="16" height="62" rx="2"/>
+    </g>
+    <g class="of-c">
+      <path class="of-up-w" d="M310 44 V158"/>
+      <rect class="of-up" x="302" y="60" width="16" height="72" rx="2"/>
+    </g>
+  </g>
+
+  <!-- leverage ladder (bottom) -->
+  <g class="of-ladder">
+    <path d="M120 268 H400"/>
+    <path d="M140 268 v-10 M186 268 v-14 M232 268 v-18 M278 268 v-23 M324 268 v-28 M370 268 v-34"/>
+  </g>
+
+  <!-- base glow under the composition -->
+  <rect x="90" y="242" width="260" height="60" fill="url(#ofBase)"/>
+</svg>
