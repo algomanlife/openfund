@@ -63,6 +63,15 @@ Root causes found and fixed (all surfaced by real-browser Playwright E2E with re
 - [ ] editorial roles (Translator / Publisher) + field-level permissions
 - [ ] snapshot export into apps/backstage/snapshots
 
+### Round 6 (2026-11-01) — backstage becomes a real content manager
+- [x] FA-side CMS editing (ofCmsLandingFa bridge) — every landing/terminal string editable in BOTH languages
+- [x] section + label fields on ui_messages (110 tagged); raw translation tables hidden; sidebar = 4 friendly collections
+- [x] landing wallet card opens the RK modal; RK modal translated to fa + RTL
+- [x] terminal: category pills translate on lang switch; status bar rebuilt (clock/version/data/support)
+- [x] toggles unified 32x32; bilingual office addresses
+- [ ] WalletConnect projectId (user) for the full wallet list
+- [ ] navigation/pages rendering from CMS (stored, not yet driving layout)
+
 ## Phase 4 — auth boundary
 - [ ] SessionContext stub separating wallet connection from Openfund sessions (SIWE-ready interface, no fake auth)
 

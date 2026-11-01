@@ -375,10 +375,10 @@ input[type=range]{width:100%;margin:8px 0 6px;accent-color:var(--mint);cursor:po
   display:flex;align-items:center;gap:16px;height:26px;padding:0 14px;
   border-top:1px solid var(--line);background:var(--surface);font-size:11.5px;color:var(--muted);
 }
-.badge-demo{
-  color:var(--mint);border:1px solid #82E7BD55;border-radius:3px;padding:1px 7px;
-  font-weight:700;font-size:10px;letter-spacing:1px;
-}
+.sb-ver{color:var(--body)}
+.sb-src{font-family:ui-monospace,Consolas,monospace;font-size:10px;color:var(--muted);opacity:.8}
+.sb-sep{opacity:.4}
+
 .sb-item{display:inline-flex;align-items:center;gap:6px}
 .sb-right{margin-right:auto}
 .linklike{color:var(--body);text-decoration:underline dotted;font-size:11.5px}
@@ -467,8 +467,9 @@ html[lang="fa"] body{font-family:'Irancell',Tahoma,sans-serif;font-size:14px;lin
 html[lang="fa"] .stat dt,html[lang="fa"] .dd-head,html[lang="fa"] .book-cols,html[lang="fa"] .bt-table th,html[lang="fa"] .lev-head span,html[lang="fa"] .field>span,html[lang="fa"] .field .lbl-row>span:first-child,html[lang="fa"] .kv span,html[lang="fa"] .acct-row span{letter-spacing:0}
 .language-toggle{
   background:none;border:1px solid var(--line-strong);color:var(--body);border-radius:4px;
-  height:32px;padding:0 10px;font-size:12px;white-space:nowrap;transition:color .15s,border-color .15s;
-  display:inline-flex;align-items:center;gap:4px;
+  width:32px;height:32px;padding:0;box-sizing:border-box;font-size:10.5px;font-weight:600;
+  white-space:nowrap;transition:color .15s,border-color .15s;min-width:0;
+  display:inline-flex;align-items:center;justify-content:center;
 }
 .language-toggle:hover{color:var(--mint);border-color:var(--mint)}
 html[lang="fa"] .trades-view .r,html[lang="fa"] .num{text-variant-numeric:tabular-nums}

@@ -88,7 +88,15 @@ export default function Landing() {
     mount.id = 'rainbow-landing-host'
     host.appendChild(mount)
     setWalletHost(mount)
-    return () => { mount.remove() }
+    /* the "ورود با کیف پول وب۳" feature card opens the real RainbowKit modal
+       (window.__ofOpenConnect is exposed by RainbowConnect) */
+    const trigger = document.getElementById('wallet-trigger')
+    const onTrigger = () => { (window as any).__ofOpenConnect?.() }
+    trigger?.addEventListener('click', onTrigger)
+    return () => {
+      trigger?.removeEventListener('click', onTrigger)
+      mount.remove()
+    }
   }, [])
 
   useEffect(() => {
@@ -104,6 +112,7 @@ export default function Landing() {
         const cms = await fetchCmsTranslations()
         if (cms) {
           w().ofCmsLanding = cms.landing
+          w().ofCmsLandingFa = cms.landingFa
           w().ofCmsTerminal = cms.terminal
         }
         STYLES.forEach(href => {

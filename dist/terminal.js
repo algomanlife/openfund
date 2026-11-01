@@ -113,8 +113,9 @@ const I18N = {
     'empty.history': 'هنوز تاریخچهٔ سفارشی وجود ندارد.',
     'empty.fills': 'هنوز معامله‌ای انجام نشده است.',
     'empty.funding': 'هنوز پرداخت فاندینگی وجود ندارد — فاندینگ شبیه‌سازی‌شده به موقعیت‌های دمو اعمال می‌شود.',
-    'sb.demo': 'حالت دمو', 'sb.source': 'داده: Gains Network · api.gains.trade',
+    'sb.source': 'داده‌ها: Gains Network',
     'sb.tick': 'قیمت زنده', 'sb.assumptions': 'مفروضات دمو',
+    'sb.version': 'ترمینال اوپن‌فاند نسخهٔ ۱٫۰', 'sb.support': 'پشتیبانی',
     'mkt.closed': 'این بازار بسته است — امکان ترید نیست، فقط مشاهدهٔ چارت.',
     'cat.all': 'همه',
     'sb.live': 'زنده', 'sb.reconnecting': 'اتصال مجدد…', 'sb.connecting': 'در حال اتصال…', 'sb.stale': 'قدیمی',
@@ -156,7 +157,7 @@ const EN = {
   'dd.noMatch': 'No market matches this search.',
   'dd.funding': 'Funding', 'dd.oil': 'OI (L)', 'dd.ois': 'OI (S)', 'dd.hol': 'Holding (L)', 'dd.hos': 'Holding (S)', 'dd.closed': 'CLOSED',
   'dd.foot': 'Gains Network markets — verified data · closed markets are view-only',
-  'cat.crypto': 'crypto', 'cat.forex': 'forex', 'cat.stocks': 'stocks', 'cat.indices': 'indices', 'cat.commodity': 'commodities',
+  'cat.crypto': 'Crypto', 'cat.forex': 'Forex', 'cat.stocks': 'Stocks', 'cat.indices': 'Indices', 'cat.commodity': 'Commodities',
   'book.tab': 'Order Book', 'book.tradesTab': 'Trades',
   'book.grouping': 'Grouping', 'book.compact': 'Compact', 'book.simulated': 'simulated',
   'book.price': 'Price', 'book.size': 'Size', 'book.total': 'Total', 'book.time': 'Time',
@@ -210,8 +211,9 @@ const EN = {
   'empty.history': 'No order history yet.',
   'empty.fills': 'No fills yet.',
   'empty.funding': 'No funding payments yet.',
-  'sb.demo': 'DEMO MODE', 'sb.source': 'Data: Gains Network · api.gains.trade',
+  'sb.source': 'Data: Gains Network',
   'sb.tick': 'live', 'sb.assumptions': 'Demo assumptions',
+  'sb.version': 'Openfund Terminal v1.0', 'sb.support': 'Support',
   'sb.live': 'Live', 'sb.reconnecting': 'Reconnecting…', 'sb.connecting': 'Connecting…', 'sb.stale': 'stale',
   'asm.title': 'Demo assumptions',
   'asm.fees': '<b>Fees:</b> flat 0.05% taker fee on notional at open and close. Maker fee 0%.',
@@ -258,6 +260,7 @@ function setLang(lang){
   window.ofLang = lang;
   applyStaticI18n();
   setSide(S.side);
+  renderCats();
   renderDropdown(ddOpen ? $('market-search').value : '');
   renderMarketStats();
   renderBook(); renderTrades();
@@ -1116,8 +1119,11 @@ function renderStatus(){
   $('sb-tick').innerHTML = `<i class="dot ${live ? 'dot-live' : 'dot-info'}"></i> ${txt}`;
 }
 function clock(){
-  $('sb-clock').textContent = new Date().toLocaleTimeString('en-GB', {hour12: false}) + ' UTC' +
-    (-(new Date().getTimezoneOffset() / 60) >= 0 ? '+' : '') + (-new Date().getTimezoneOffset() / 60);
+  const off = -new Date().getTimezoneOffset();
+  const sign = off >= 0 ? '+' : '−';
+  const h = Math.floor(Math.abs(off) / 60), m = Math.abs(off) % 60;
+  const tz = 'UTC' + sign + h + (m ? ':' + String(m).padStart(2, '0') : '');
+  $('sb-clock').textContent = new Date().toLocaleTimeString('en-GB', {hour12: false}) + ' · ' + tz;
 }
 setInterval(clock, 1000); clock();
 
