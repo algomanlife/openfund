@@ -168,3 +168,15 @@ CREATE TABLE IF NOT EXISTS trading_events (
   detail     jsonb NOT NULL DEFAULT '{}'::jsonb
 );
 CREATE INDEX IF NOT EXISTS idx_trading_events_ts ON trading_events (ts DESC);
+
+-- Portfolio trade notes (user-private, separate from authoritative trades)
+CREATE TABLE IF NOT EXISTS trade_notes (
+  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    uuid NOT NULL REFERENCES openfund_users (id) ON DELETE CASCADE,
+  trade_key  text NOT NULL,              -- journal round-trip key (stable)
+  notes      text NOT NULL DEFAULT '',
+  tags       jsonb NOT NULL DEFAULT '[]'::jsonb,
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (user_id, trade_key)
+);
+CREATE INDEX IF NOT EXISTS idx_trade_notes_user ON trade_notes (user_id);

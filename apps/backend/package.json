@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "decimal.js": "^10.6.0",
+    "esbuild": "^0.28.2",
     "express": "^4.21.2",
     "pg": "^8.13.1",
     "viem": "^2.57.13",

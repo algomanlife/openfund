@@ -291,6 +291,7 @@ let chartReady = false;
 
 function chartOverlay(html){
   const msg = $('chart-msg');
+  if (!msg) return;   /* teardown race guard */
   if (!html){ msg.hidden = true; return; }
   msg.hidden = false;
   msg.innerHTML = '<span>' + html + '</span>';
@@ -554,7 +555,7 @@ function renderMarketStats(){
   const m = meta();
   const p = board.marks.get(S.marketId);
   const d = dp();
-  const set = (id, text, cls) => { const el = $(id); el.textContent = text; el.className = cls || 'num'; };
+  const set = (id, text, cls) => { const el = $(id); if (!el) return; el.textContent = text; el.className = cls || 'num'; };
   const prev = renderMarketStats._last || {};
   const paint = (id, v) => {
     if (!S.flashOn) return;
@@ -600,6 +601,7 @@ $('book-group').addEventListener('change', e => { S.grouping = +e.target.value; 
 $('book-dense').addEventListener('change', e => { S.dense = e.target.checked; $('book-view').classList.toggle('dense', S.dense); });
 
 function renderBook(force){
+  if (!$('book-asks')) return;   /* teardown race guard */
   if ($('book-view').hidden) return;
   const m = meta(), mid = mark();
   if (!m || !mid){
@@ -682,6 +684,8 @@ function noteTrade(p){
   if (tradeRows.length > 42) tradeRows.pop();
 }
 function renderTrades(){
+  if (!$('trades-rows')) return;   /* teardown race guard */
+  if (!$('trades-rows') && !$('.trades-view tbody')) return;   /* teardown race guard */
   if ($('trades-view').hidden) return;
   const m = meta(); if (!m) return;
   const d = dp(), dps = Number(m.sizePrecision) || 2;
@@ -763,6 +767,7 @@ function marketClosed(){
   return !m || m.isOpen === false;
 }
 function computeForm(){
+  if (!$('submit-order')) return;   /* teardown race guard */
   const m = meta();
   const d = dp();
   const closed = marketClosed();
@@ -950,7 +955,7 @@ document.querySelectorAll('[data-bt]').forEach(b => b.addEventListener('click', 
 $('load-demo').addEventListener('click', () => { tp.loadDemoScenario(); renderBottom(); renderAccount(); });
 
 function renderBottom(){
-  if (!tp) return;
+  if (!tp || !$('bt-empty')) return;   /* teardown race guard */
   const st = tp.state;
   const hasActivity = st.positions.length || st.orders.length || st.history.length || st.fills.length || st.funding.length;
   $('bt-empty').hidden = !!hasActivity;
@@ -1108,7 +1113,7 @@ $('confirm-ok').addEventListener('click', () => { $('confirm-dialog').close(); i
    ACCOUNT + WALLET + DIALOGS
    ============================================================ */
 function renderAccount(){
-  if (!tp) return;
+  if (!tp || !$('ac-equity')) return;   /* teardown race guard */
   const a = tp.getAccount();
   if (!a) return;   /* server account not loaded yet */
   $('ac-equity').textContent = fmt.usd(a.equity);
@@ -1202,9 +1207,10 @@ function renderStatus(){
   else if (s === 'reconnecting') txt = t('sb.reconnecting');
   else txt = t('sb.connecting');
   if (stale && s === 'live') txt = t('sb.stale');
-  $('sb-tick').innerHTML = `<i class="dot ${live ? 'dot-live' : 'dot-info'}"></i> ${txt}`;
+  const tick = $('sb-tick'); if (tick) tick.innerHTML = `<i class="dot ${live ? 'dot-live' : 'dot-info'}"></i> ${txt}`;
 }
 function clock(){
+  const el = $('sb-clock'); if (!el) return;   /* teardown race guard */
   const off = -new Date().getTimezoneOffset();
   const sign = off >= 0 ? '+' : '−';
   const h = Math.floor(Math.abs(off) / 60), m = Math.abs(off) % 60;

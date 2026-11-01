@@ -3,12 +3,14 @@ import { createRoot } from 'react-dom/client'
 import { createHashRouter, RouterProvider, Navigate } from 'react-router-dom'
 import Landing from './pages/Landing'
 import Terminal from './pages/Terminal'
+import Portfolio from './pages/Portfolio'
 import { WalletProvider } from './wallet/WalletProvider'
 import { SessionProvider } from './session/useOpenfundSession'
 
 const router = createHashRouter([
   { path: '/', element: <Landing /> },
   { path: '/terminal', element: <Terminal /> },
+  { path: '/portfolio', element: <Portfolio /> },
   /* unknown hashes (e.g. a plain '#markets' fragment) fall back home
      instead of rendering a blank screen */
   { path: '*', element: <Navigate to="/" replace /> }

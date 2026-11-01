@@ -18,6 +18,7 @@ import { arbitrumSepolia } from 'viem/chains'
 import pg from 'pg'
 import { marketData } from './market-data.js'
 import { Engine } from './engine.js'
+import { Portfolio } from './portfolio.js'
 
 const cfg = {
   port: Number(process.env.PORT || 8080),
@@ -32,6 +33,7 @@ const cfg = {
 
 const pool = new pg.Pool({ connectionString: cfg.dbUrl })
 const engine = new Engine(pool, marketData)
+const portfolio = new Portfolio(pool, marketData)
 const app = express()
 app.use(express.json({ limit: '32kb' }))
 
@@ -43,7 +45,7 @@ app.use((req, res, next) => {
     res.setHeader('Vary', 'Origin')
     res.setHeader('Access-Control-Allow-Credentials', 'true')
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Idempotency-Key')
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,OPTIONS')
   }
   if (req.method === 'OPTIONS') return res.sendStatus(204)
   next()
@@ -336,6 +338,43 @@ if (process.env.SIM_TEST_MODE === '1') {
     res.json({ ok: true })
   })
 }
+
+/* ============== PORTFOLIO (journal-core analytics, ownership-scoped) ============== */
+
+app.get('/portfolio/overview', tradingAuth, async (req, res) => {
+  const ov = await portfolio.overview(req.user.user_id)
+  if (!ov) return res.status(404).json({ error: 'account_not_found' })
+  res.json(ov)
+})
+
+app.get('/portfolio/buckets', tradingAuth, async (req, res) => {
+  res.json(await portfolio.buckets(req.user.user_id))
+})
+
+app.get('/portfolio/trades', tradingAuth, async (req, res) => {
+  const q = req.query
+  res.json(await portfolio.history(req.user.user_id, {
+    limit: Math.min(Number(q.limit) || 25, 100),
+    offset: Math.max(Number(q.offset) || 0, 0),
+    side: ['long', 'short'].includes(q.side) ? q.side : null,
+    market: q.market || null,
+    status: ['open', 'closed', 'liquidated'].includes(q.status) ? q.status : null,
+    from: q.from || null, to: q.to || null,
+    sort: ['closed_desc', 'opened_asc', 'pnl_desc', 'pnl_asc'].includes(q.sort) ? q.sort : 'closed_desc'
+  }))
+})
+
+app.get('/portfolio/trades/:id', tradingAuth, async (req, res) => {
+  const d = await portfolio.details(req.user.user_id, req.params.id)
+  if (!d) return res.status(404).json({ error: 'not_found' })
+  res.json(d)
+})
+
+app.put('/portfolio/notes', tradingAuth, limit(60), async (req, res) => {
+  const { tradeKey, notes, tags } = req.body || {}
+  if (typeof tradeKey !== 'string' || !tradeKey.includes('|')) return res.status(400).json({ error: 'invalid_key' })
+  res.json(await portfolio.upsertNote(req.user.user_id, tradeKey, notes, tags))
+})
 
 /* health */
 app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }))
