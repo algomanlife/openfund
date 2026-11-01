@@ -1,0 +1,128 @@
+/* Openfund Portfolio — landing design tokens, fa/en, dark/light */
+
+.pf-root{min-height:100vh;background:var(--bg,#060808)}
+.pf-page{padding:36px 0 60px}
+.pf-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:26px}
+.pf-head h1{font-size:34px;font-weight:600;letter-spacing:-.5px;margin:0}
+.pf-sub{color:var(--muted,#84928e);font-size:13px;margin-top:6px}
+.pf-account-chip{display:inline-flex;align-items:center;gap:8px;border:1px solid #82e7bd44;border-radius:8px;
+  padding:8px 14px;font-size:12.5px;color:#a9e6c6;white-space:nowrap}
+.pf-account-chip .dot{width:7px;height:7px;border-radius:50%;background:#82e7bd;box-shadow:0 0 6px #82e7bd88}
+
+.pf-empty-state{text-align:center;padding:80px 20px;color:var(--muted)}
+.pf-empty-state h2{color:var(--white,#f1f3ef);margin-bottom:10px}
+.pf-error{color:#e89483;font-size:13px}
+
+/* cards */
+.pf-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:30px}
+.pf-cards.sm{grid-template-columns:repeat(6,1fr);margin-top:16px}
+.pf-card{border:1px solid #ffffff14;border-radius:10px;padding:14px 16px;background:#0b1410}
+.pf-card .k{display:block;font-size:11px;color:#84928e;margin-bottom:8px}
+.pf-card .v{font-size:19px;font-weight:600;color:#eafaf0;font-variant-numeric:tabular-nums;direction:ltr;display:block}
+.pf-card .s{display:block;font-size:10.5px;color:#6b7f74;margin-top:6px}
+.pf-card.up .v{color:#82e7bd}
+.pf-card.down .v{color:#e89483}
+
+.pf-section{margin-bottom:36px}
+.pf-section h2{font-size:21px;font-weight:600;margin:0 0 6px;color:#e6f3ec}
+.pf-section h2 small{display:block;font-size:11px;color:#7a8f83;font-weight:400;margin-top:5px}
+
+/* buckets */
+.pf-buckets{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.pf-bucket{border:1px solid #ffffff12;border-radius:10px;padding:14px;background:#0a110d}
+.pf-bucket h3{font-size:13px;color:#9fb8a9;margin:0 0 10px;font-weight:500}
+.pf-bucket table{width:100%;border-collapse:collapse}
+.pf-bucket td{font-size:12px;padding:5px 0;border-bottom:1px solid #ffffff0a;color:#c9d8d0;font-variant-numeric:tabular-nums}
+.pf-bucket td.num{text-align:end;direction:ltr}
+.pf-bucket small{display:block;color:#6b7f74;font-size:9.5px;margin-top:8px}
+td.up{color:#82e7bd}td.down{color:#e89483}
+
+/* curve */
+.pf-curve{width:100%;height:190px;display:block;background:#0a110d;border:1px solid #ffffff12;border-radius:10px}
+.pf-curve .zero{stroke:#ffffff22;stroke-dasharray:3 5}
+.pf-curve .line{fill:none;stroke:#82e7bd;stroke-width:2}
+.pf-curve .fill{fill:#82e7bd14}
+.pf-empty-line{color:var(--muted);text-align:center;padding:40px}
+
+/* calendar */
+.pf-cal{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.pf-cal-month{border:1px solid #ffffff12;border-radius:10px;padding:12px;background:#0a110d}
+.pf-cal-month h3{font-size:13px;color:#c9d8d0;margin:0 0 10px;font-weight:500}
+.pf-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.pf-cal-day{aspect-ratio:1.45;border-radius:4px;background:#ffffff08;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;font-size:9px;color:#7a8f83;padding:1px;overflow:hidden}
+.pf-cal-day.empty{background:transparent}
+.pf-cal-day .d{font-size:8px;color:#56655e}
+.pf-cal-day .v{font-weight:600;color:#9fb3a8}
+.pf-cal-day.up{background:#82e7bd22}
+.pf-cal-day.up .v{color:#82e7bd}
+.pf-cal-day.down{background:#e8948322}
+.pf-cal-day.down .v{color:#e89483}
+
+/* history table */
+.pf-filters{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.pf-filters select,.pf-filters input{background:#0b1410;color:#d4e3d8;border:1px solid #ffffff1e;border-radius:6px;
+  padding:7px 10px;font-size:12px;font-family:inherit;outline:none}
+.pf-filters input{width:170px}
+.pf-table{width:100%;border-collapse:collapse}
+.pf-table th{text-align:start;font-size:11px;font-weight:400;color:#84928e;padding:8px 10px 6px;
+  border-bottom:1px solid var(--line,#ffffff18);white-space:nowrap}
+.pf-table td{font-size:12.5px;padding:9px 10px;border-bottom:1px solid #ffffff09;white-space:nowrap;
+  color:#d3dfdc;font-variant-numeric:tabular-nums}
+.pf-table td.num{direction:ltr;text-align:start}
+.pf-table .tag{font-size:9.5px;border:1px solid #ffffff20;border-radius:4px;padding:2px 7px;color:#a3b8a9}
+.pf-table .tag.open{border-color:#86A8FF66;color:#a8c1ff}
+.pf-table .tag.liquidated{border-color:#e8948366;color:#f0b3a6}
+.pf-table .empty-tr td{padding:34px;text-align:center;color:var(--muted);white-space:normal}
+.act-btn{background:none;border:1px solid #ffffff20;border-radius:5px;color:#c9d8d0;font-size:11px;
+  padding:4px 10px;cursor:pointer;white-space:nowrap}
+.act-btn:hover{border-color:#82e7bd;color:#82e7bd}
+.pf-pager{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:16px}
+.pf-pager button{background:none;border:1px solid #ffffff20;border-radius:6px;color:#c9d8d0;padding:6px 16px;
+  cursor:pointer;font-size:12px}
+.pf-pager button:disabled{opacity:.35;cursor:default}
+.pf-pager span{font-size:11.5px;color:#84928e}
+
+/* details dialog */
+.pf-overlay{position:fixed;inset:0;background:#000000aa;display:grid;place-items:center;z-index:2147483000}
+.pf-detail{width:min(560px,calc(100vw - 40px));max-height:86vh;overflow:auto;margin:0;
+  background:#0c1710;color:#f1f3ef;border:1px solid #82e7bd44;border-radius:14px;padding:22px 24px;
+  font-family:'Irancell',Tahoma,sans-serif}
+.pf-detail h2{font-size:18px;font-weight:600;margin:4px 0 16px}
+.pf-detail h3{font-size:13px;font-weight:600;color:#cbd8d0;margin:18px 0 8px}
+.pf-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 22px}
+.pf-detail-grid div{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #ffffff10;font-size:12.5px}
+.pf-detail-grid span{color:#84928e}
+.pf-detail-grid b{font-weight:500;color:#d4ddd7;direction:ltr}
+.pf-detail-grid b.up{color:#82e7bd}.pf-detail-grid b.down{color:#e89483}
+.pf-detail textarea{width:100%;min-height:90px;background:#0b1410;color:#d4e3d8;border:1px solid #ffffff1e;
+  border-radius:8px;padding:10px;font:inherit;font-size:12.5px;resize:vertical}
+.pf-tags-input{width:100%;margin-top:8px;background:#0b1410;color:#d4e3d8;border:1px solid #ffffff1e;
+  border-radius:8px;padding:8px 10px;font:inherit;font-size:12px}
+.pf-detail-actions{display:flex;justify-content:flex-end;margin-top:14px}
+.pf-detail-actions .button{background:#F1F3EF;color:#09100c;border:1px solid #F1F3EF;border-radius:6px;
+  padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer}
+.pf-table.sm td{font-size:11.5px;padding:6px 4px}
+
+/* light theme (smart-invert keeps saturated hues) */
+html[data-theme='light'] .pf-card{background:#F2F4F0;border-color:#0A120D12}
+html[data-theme='light'] .pf-card .v{color:#263229}
+html[data-theme='light'] .pf-bucket,html[data-theme='light'] .pf-curve,
+html[data-theme='light'] .pf-cal-month{background:#F2F4F0;border-color:#0A120D14}
+html[data-theme='light'] .pf-bucket td,html[data-theme='light'] .pf-cal-day .v{color:#3F4C44}
+html[data-theme='light'] .pf-cal-day{background:#0A120D08}
+html[data-theme='light'] .pf-filters select,html[data-theme='light'] .pf-filters input,
+html[data-theme='light'] .pf-detail textarea,html[data-theme='light'] .pf-tags-input{background:#fff;color:#3F4C44;border-color:#0A120D22}
+html[data-theme='light'] .pf-table td{color:#3F4C44}
+html[data-theme='light'] .pf-pager button,html[data-theme='light'] .act-btn{color:#3F4C44;border-color:#0A120D22}
+
+@media(max-width:900px){
+  .pf-cards{grid-template-columns:repeat(2,1fr)}
+  .pf-cards.sm{grid-template-columns:repeat(2,1fr)}
+  .pf-buckets{grid-template-columns:1fr}
+  .pf-head{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:620px){
+  .pf-cards,.pf-cards.sm{grid-template-columns:1fr 1fr}
+  .pf-table{display:block;overflow-x:auto}
+}

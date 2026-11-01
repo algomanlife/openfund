@@ -4,6 +4,15 @@ Notable changes are recorded here. Dates should use ISO 8601.
 
 ## Unreleased
 
+### LuxAlgo Trade Journal integration — native Portfolio (2026-11-01, branch `qwen/portfolio-journal`)
+- **feat(portfolio):** native Portfolio page (`#/portfolio`) with **the terminal's own header, fonts and design** (shared topnav, wallet chip, theme/language toggles — fa/en, RTL/LTR, dark/light): overview cards, performance analytics, equity curve (realized-basis, honestly labeled), drawdown, PnL calendar (UTC policy), filterable/paginated trading history, trade details with the ledger, and private trade notes.
+- **feat(vendor):** `@luxalgo/journal-core` vendored under `third_party/` (upstream commit `834e7b6`, MIT, PROVENANCE with reproducible esbuild build) — its verified analytics (metrics, equity/drawdown, daily stats, aggregation) power the Portfolio; the Next.js app and importers are intentionally NOT included (single source of truth = Openfund engine).
+- **feat(api):** `/portfolio/overview|buckets|trades|trades/:id|notes` (auth-guarded, ownership-scoped, paginated); `trade_notes` table (user-private, separate from authoritative trades).
+- **fix(cors):** backend CORS now allows PUT (notes preflight was failing).
+- **fix(terminal):** teardown-race guards on periodic functions (clock, renderBook/Trades/Bottom, computeForm, chartOverlay, market stats) — page transitions are error-free now.
+- **tests:** portfolio backend suite **31/31** · browser E2E **36/36** (20-step acceptance + isolation + no-import probes) · full matrix green (SIWE 22/22, engine 54/54, regressions 19+9+11 dev, trading 23 + portfolio 36 on build).
+
+
 ### Trading math audit — Gains alignment, Vela position overlays, SL/TP & UI repairs (2026-11-01, branch `qwen/trading-math-vela`)
 - **fix(engine, Gains):** closing fee now charged on the **initial** position size (was exit notional — Gains: "fees are always applied on the initial position size"); per-asset-class fee tiers (BTC/ETH 0.035%, crypto 0.05%, forex 0.012%, fallback 0.06%); fixed spread applied to execution (BTC/ETH 0.005%/side, forex 0.005%…); limit/stop fill at the target price without extra spread. All from the official fees-and-spread doc + v10 changelog; assumptions documented and classified (A/B/C).
 - **fix(terminal):** SL/TP and Details dialogs were dead in server mode (`+uuid → NaN` id coercion) — fixed; liquidation column NaN fixed (engine-rule liq mapping); positions table rebuilt with fixed readable columns and all three action buttons in fa AND en (round-7 item 1).

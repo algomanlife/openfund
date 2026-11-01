@@ -36,6 +36,7 @@ Capital should follow skill, not connections. Openfund presents a transparent fu
 - **Trading terminal** — professional workspace: real **LuxAlgo Vela** chart, live **Gains Network** market data (488 markets, REST + WebSocket), Gains-style market selector with real open-interest and funding stats, a clearly-labelled **simulated** demo trading engine on real marks, and Iranian trader Finglish labels (اوردربوک، لانگ، شورت، مارکت، لیمیت، فاندینگ، کولترال).
 - **Wallet identity** — Sign-In with Ethereum (EIP-4361): one wallet = one Openfund user, owning multiple independent challenge accounts.
 - **Demo trading** — every authenticated user gets a persistent 100,000 virtual-DAI account: open/close long & short positions on any of the 488 Gains markets with leverage, SL/TP, live PnL, liquidation monitoring, full trade history — simulated server-side, browser-open or not. See [`docs/architecture/DEMO_TRADING.md`](docs/architecture/DEMO_TRADING.md).
+- **Portfolio** — native analytics page (`#/portfolio`) powered by the vendored **LuxAlgo journal-core** (MIT, `third_party/`): overview, performance metrics, equity/drawdown, PnL calendar, filterable history, trade details with ledger, private trade notes — over the user's own demo-account trades only.
 - **Backstage** — Directus Data Studio manages all fa/en content and gives administrators user & challenge oversight.
 
 ## 4. Current development status
@@ -57,6 +58,7 @@ Capital should follow skill, not connections. Openfund presents a transparent fu
 | **Server trading engine — market/limit/stop, SL/TP, liquidation** | **Operational (verified)** |
 | **Multiple challenge accounts per user** | **Operational (data layer + UI)** |
 | Directus CMS — every landing/terminal string editable (fa/en, live) | Operational |
+| **Portfolio (journal-core analytics, calendar, notes)** | **Operational (verified)** |
 | Real order-book / volume / trade tape | Blocked — Gains API does not provide these (shown as `—` or labelled simulated) |
 | Real trading (on-chain orders) | Planned — no contracts assumed |
 
