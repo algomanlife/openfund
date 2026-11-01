@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import landingBody from '../../pages/landing-body.html?raw'
 import translationsJson from '../../../public/translations.json?raw'
-import { fetchCmsTranslations } from '../../cms/client'
+import { fetchCmsTranslations, fetchCmsNavigation, fetchCmsFooterLinks, type CmsNavItem, type CmsFooterLink } from '../../cms/client'
 import { RainbowConnect } from '../../wallet/RainbowConnect'
 import { labels, type Locale, type InfoPage } from './content'
 import './information.css'
@@ -30,6 +30,8 @@ export function Chrome({ locale, part }: { locale: Locale; part: 'header' | 'foo
   const [dictionary, setDictionary] = useState<Record<string, string>>(fallbackTranslations)
   const [faDictionary, setFaDictionary] = useState<Record<string, string>>({})
   const [walletHost, setWalletHost] = useState<HTMLElement | null>(null)
+  const [navItems, setNavItems] = useState<CmsNavItem[] | null>(null)
+  const [footerLinks, setFooterLinks] = useState<CmsFooterLink[] | null>(null)
   const host = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   const location = useLocation()
@@ -41,8 +43,10 @@ export function Chrome({ locale, part }: { locale: Locale; part: 'header' | 'foo
         setFaDictionary(cms?.landingFa || {})
       }
     })
+    if (part === 'header') void fetchCmsNavigation().then(items => { if (active) setNavItems(items) })
+    if (part === 'footer') void fetchCmsFooterLinks().then(links => { if (active) setFooterLinks(links) })
     return () => { active = false }
-  }, [])
+  }, [part])
   const markup = useMemo(() => {
     const template = document.createElement('template')
     template.innerHTML = part === 'header' ? header : footer
@@ -73,12 +77,49 @@ export function Chrome({ locale, part }: { locale: Locale; part: 'header' | 'foo
         if (value?.startsWith('assets/') || value?.startsWith('downloads/')) el.setAttribute(attr, `${base}${value}`)
       }
     })
+    /* navigation & footer links from Directus (labels/visibility editable,
+       destinations whitelisted). Falls back to the structural defaults. */
+    if (part === 'header' && navItems) {
+      const nav = template.content.querySelector('#navigation')
+      if (nav) {
+        nav.textContent = ''
+        for (const item of navItems) {
+          const a = document.createElement('a')
+          a.setAttribute('data-info-page', item.route)
+          a.setAttribute('href', `#/${locale}/${item.route}`)
+          a.textContent = item.label[locale]
+          if (location.pathname.endsWith(`/${item.route}`)) a.setAttribute('aria-current', 'page')
+          nav.appendChild(a)
+        }
+      }
+    }
+    if (part === 'footer' && footerLinks) {
+      const links = template.content.querySelector('#footer-links')
+      if (links) {
+        links.textContent = ''
+        const DEST: Record<string, string> = {
+          challenges: `#/${locale}/challenges`, markets: `#/${locale}/markets`,
+          rulebook: `#/${locale}/rulebook`, transparency: `#/${locale}/transparency`,
+          'accounts-section': '#accounts', 'team-section': '#team', 'faq-section': '#rules',
+          github: 'https://github.com/algomanlife/openfund',
+        }
+        for (const link of footerLinks) {
+          const href = DEST[link.destination]
+          if (!href) continue /* unknown destination → never rendered */
+          const a = document.createElement('a')
+          a.setAttribute('href', href)
+          a.textContent = link.label[locale]
+          if (link.destination === 'github') { a.setAttribute('target', '_blank'); a.setAttribute('rel', 'noopener') }
+          links.appendChild(a)
+        }
+      }
+    }
     const language = template.content.querySelector('#language-toggle span')
     if (language) language.textContent = locale === 'fa' ? 'EN' : 'فا'
     const theme = template.content.querySelector('#theme-toggle')
     if (theme) theme.textContent = document.documentElement.dataset.theme === 'light' ? '◑' : '◐'
     return template.innerHTML
-  }, [locale, part, dictionary, faDictionary, location.pathname])
+  }, [locale, part, dictionary, faDictionary, location.pathname, navItems, footerLinks])
 
   useEffect(() => { setWalletHost(host.current?.querySelector<HTMLElement>('#wallet-root') || null) }, [markup])
 
