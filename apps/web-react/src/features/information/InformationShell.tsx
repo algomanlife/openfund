@@ -26,7 +26,7 @@ const fallbackTranslations: Record<string, string> = {
 /** Reuses the landing's source markup and public translation pipeline, without
  * loading its page-wide legacy scripts into React-owned editorial content.
  *  Exported so gateway-style pages (Home) can mount the shared header alone. */
-export function Chrome({ locale, part }: { locale: Locale; part: 'header' | 'footer' }) {
+export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'header' | 'footer'; nav?: boolean }) {
   const [dictionary, setDictionary] = useState<Record<string, string>>(fallbackTranslations)
   const [faDictionary, setFaDictionary] = useState<Record<string, string>>({})
   const [walletHost, setWalletHost] = useState<HTMLElement | null>(null)
@@ -114,6 +114,12 @@ export function Chrome({ locale, part }: { locale: Locale; part: 'header' | 'foo
         }
       }
     }
+    /* nav-less mode (product gateway): no menu links, no menu button, no header CTA */
+    if (part === 'header' && !nav) {
+      template.content.querySelector('#navigation')?.remove()
+      template.content.querySelector('.menu')?.remove()
+      template.content.querySelector('.nav-cta')?.remove()
+    }
     const language = template.content.querySelector('#language-toggle span')
     if (language) language.textContent = locale === 'fa' ? 'EN' : 'فا'
     const theme = template.content.querySelector('#theme-toggle')
@@ -161,8 +167,8 @@ export function useInformationLocale(): Locale {
   return useParams().locale === 'en' ? 'en' : 'fa'
 }
 
-export default function InformationShell({ page, description, footer = true, title, children }: {
-  page: InfoPage; description: string; footer?: boolean; title?: string; children: ReactNode
+export default function InformationShell({ page, description, footer = true, nav = true, title, children }: {
+  page: InfoPage; description: string; footer?: boolean; nav?: boolean; title?: string; children: ReactNode
 }) {
   const { locale: routeLocale } = useParams()
   const locale = useInformationLocale()
@@ -205,7 +211,7 @@ export default function InformationShell({ page, description, footer = true, tit
     <link rel="stylesheet" href={`${base}legacy/style.css`} precedence="openfund" />
     <link rel="stylesheet" href={`${base}legacy/wallet.css`} precedence="openfund" />
     <a className="skip" href="#main">{labels.skip[locale]}</a>
-    <Chrome locale={locale} part="header" />
+    <Chrome locale={locale} part="header" nav={nav} />
     <main id="main" className="info-main" tabIndex={-1}>{children}</main>
     {footer && <Chrome locale={locale} part="footer" />}
   </div>
