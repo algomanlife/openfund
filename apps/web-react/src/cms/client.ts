@@ -362,3 +362,16 @@ export async function fetchCmsPageMeta(slug: string): Promise<CmsPageMeta | null
     seoDescription: { fa: fa?.seo_description || fa?.description || '', en: en?.seo_description || en?.description || '' },
   }
 }
+
+/** Product editorial sections: CMS-only, never a financial source. */
+export async function fetchTerminalSections(product: 'prop' | 'perpetual', page: string) {
+  interface Raw extends TranslatedRow { id: string; illustration?: string; support_url?: string }
+  const rows = await getJson<Raw[]>(`/items/terminal_sections?fields=id,illustration,support_url,translations.*&filter[status][_eq]=published&filter[product][_eq]=${product}&filter[page][_eq]=${encodeURIComponent(page)}&sort=sort&limit=-1`)
+  if (!rows) return null
+  return rows.flatMap(row => {
+    const l = localized(row)
+    if (!l.fa.title || !l.en.title) return []
+    const url = row.support_url && /^https:\/\//.test(row.support_url) ? row.support_url : null
+    return [{ id: row.id, title: { fa: l.fa.title, en: l.en.title }, body: { fa: l.fa.body || '', en: l.en.body || '' }, illustration: row.illustration && /^[0-9a-f-]{36}$/i.test(row.illustration) ? row.illustration : null, supportUrl: url }]
+  })
+}

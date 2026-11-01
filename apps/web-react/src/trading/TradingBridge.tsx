@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useSession, backendUrl } from '../session/useOpenfundSession'
 
 /**
@@ -18,7 +18,9 @@ import { useSession, backendUrl } from '../session/useOpenfundSession'
 const BACKEND = backendUrl()
   ;(window as any).__ofBackendUrl = BACKEND
 
-export function TradingBridge() {
+export function TradingBridge({ pricing }: { pricing?: Record<string,number> } = {}) {
+  const pricingRef = useRef(pricing)
+  pricingRef.current = pricing
   const session = useSession()
 
   useEffect(() => {
@@ -40,13 +42,16 @@ export function TradingBridge() {
     /* ---------- adapter for terminal.js ---------- */
     const provider = {
       serverMode: true,
+      canTrade: true,
+      feeRate(market: string) { return pricingRef.current?.[market] ?? null },
+      get status() { return state.account ? 'ready' : 'loading' },
       get state() {
         const md = (window as any).__ofMark
         return {
           positions: state.positions.map(p => ({
             id: p.id, market: p.market, side: p.side,
             size: Number(p.quantity), entry: Number(p.entry_price), leverage: p.leverage,
-            margin: Number(p.margin), sl: p.sl_price != null ? Number(p.sl_price) : null,
+            margin: Number(p.margin), currency: 'DAI', sl: p.sl_price != null ? Number(p.sl_price) : null,
             tp: p.tp_price != null ? Number(p.tp_price) : null,
             /* engine rule: liquidation at ~90% margin loss (maint 10%) */
             liq: p.side === 'long'
@@ -153,8 +158,10 @@ export function TradingBridge() {
     async function refresh() {
       try {
         const res = await fetch(BACKEND + '/trading/state', { credentials: 'include' })
-        if (!res.ok) return
-        state = await res.json()
+        if (stopped || !res.ok) return
+        const nextState = await res.json()
+        if (stopped) return
+        state = nextState
         ;(window as any).__ofServerTP = provider
         window.dispatchEvent(new CustomEvent('of-trading-update'))
       } catch { /* offline — keep last state */ }
@@ -166,6 +173,7 @@ export function TradingBridge() {
       try {
         es = new EventSource(BACKEND + '/trading/stream', { withCredentials: true } as any)
         es.onmessage = (ev) => {
+          if (stopped) return
           try { state = JSON.parse(ev.data) } catch { return }
           ;(window as any).__ofServerTP = provider
           window.dispatchEvent(new CustomEvent('of-trading-update'))
@@ -176,9 +184,12 @@ export function TradingBridge() {
 
     ;(window as any).__ofServerTP = provider
     refresh()                       /* first state load before the swap */
-      .then(() => window.dispatchEvent(new CustomEvent('of-trading-ready')))
+      .then(() => { if (!stopped) window.dispatchEvent(new CustomEvent('of-trading-ready')) })
     connect()
+    const onRefresh = () => void refresh()
+    addEventListener('of-refresh-trading', onRefresh)
     return () => {
+      removeEventListener('of-refresh-trading', onRefresh)
       stopped = true
       es?.close()
       delete (window as any).__ofServerTP

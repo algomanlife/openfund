@@ -180,3 +180,23 @@ CREATE TABLE IF NOT EXISTS trade_notes (
   UNIQUE (user_id, trade_key)
 );
 CREATE INDEX IF NOT EXISTS idx_trade_notes_user ON trade_notes (user_id);
+
+
+-- Private notebook entries, distinct from authoritative trades and existing trade_notes.
+-- Account references are resolved/authorized by the backend; perpetual references are SIWE wallets.
+CREATE TABLE IF NOT EXISTS journal_entries (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES openfund_users(id),
+  product text NOT NULL CHECK (product IN ('prop','perpetual')),
+  account_ref text NOT NULL,
+  title text NOT NULL CHECK (length(title) BETWEEN 1 AND 160),
+  body text NOT NULL DEFAULT '' CHECK (length(body) <= 10000),
+  entry_date date NOT NULL,
+  tags jsonb NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(tags) = 'array'),
+  classification text NOT NULL DEFAULT '',
+  trade_id uuid REFERENCES trading_positions(id),
+  version integer NOT NULL DEFAULT 1,
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  CHECK (product = 'prop' OR trade_id IS NULL)
+);
+CREATE INDEX IF NOT EXISTS idx_journal_scope ON journal_entries(user_id, product, account_ref, entry_date DESC);

@@ -11,7 +11,7 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { createSiweMessage } from 'viem/siwe'
 import pg from 'pg'
 
-const BASE = 'http://localhost:8080'
+const BASE = process.env.TEST_BACKEND_URL || 'http://localhost:8080'
 const DOMAIN = 'localhost:5173'
 let passed = 0, failed = 0
 const ok = (name, cond, extra = '') => {
@@ -39,7 +39,7 @@ async function login(wallet) {
   return r.cookie
 }
 
-const pool = new pg.Pool({ host: '/tmp', user: 'openfund_cms', password: 'openfund_local_dev', database: 'openfund_cms' })
+const pool = new pg.Pool(process.env.DATABASE_URL ? { connectionString: process.env.DATABASE_URL } : { host: '/tmp', user: 'openfund_cms', password: 'openfund_local_dev', database: 'openfund_cms' })
 const D = (v) => Number(v)
 
 const w1 = privateKeyToAccount(generatePrivateKey())

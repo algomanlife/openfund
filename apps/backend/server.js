@@ -11,6 +11,7 @@
  *  - One wallet address (normalized lowercase) = exactly one Openfund user.
  */
 import crypto from 'node:crypto'
+import { fileURLToPath } from 'node:url'
 import express from 'express'
 import { createClient, isHex, http } from 'viem'
 import { parseSiweMessage, verifySiweMessage } from 'viem/siwe'
@@ -19,6 +20,7 @@ import pg from 'pg'
 import { marketData } from './market-data.js'
 import { Engine } from './engine.js'
 import { Portfolio } from './portfolio.js'
+import { productRoutes } from './products.js'
 
 const cfg = {
   port: Number(process.env.PORT || 8080),
@@ -34,7 +36,9 @@ const cfg = {
 const pool = new pg.Pool({ connectionString: cfg.dbUrl })
 const engine = new Engine(pool, marketData)
 const portfolio = new Portfolio(pool, marketData)
+const asyncRoute = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
 const app = express()
+app.use('/products', express.json({ limit: '2mb' }))
 app.use(express.json({ limit: '32kb' }))
 
 /* ---------- CORS (credentials for session cookies) ---------- */
@@ -45,7 +49,7 @@ app.use((req, res, next) => {
     res.setHeader('Vary', 'Origin')
     res.setHeader('Access-Control-Allow-Credentials', 'true')
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Idempotency-Key')
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,OPTIONS')
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
   }
   if (req.method === 'OPTIONS') return res.sendStatus(204)
   next()
@@ -341,17 +345,17 @@ if (process.env.SIM_TEST_MODE === '1') {
 
 /* ============== PORTFOLIO (journal-core analytics, ownership-scoped) ============== */
 
-app.get('/portfolio/overview', tradingAuth, async (req, res) => {
+app.get('/portfolio/overview', tradingAuth, asyncRoute(async (req, res) => {
   const ov = await portfolio.overview(req.user.user_id)
   if (!ov) return res.status(404).json({ error: 'account_not_found' })
   res.json(ov)
-})
+}))
 
-app.get('/portfolio/buckets', tradingAuth, async (req, res) => {
+app.get('/portfolio/buckets', tradingAuth, asyncRoute(async (req, res) => {
   res.json(await portfolio.buckets(req.user.user_id))
-})
+}))
 
-app.get('/portfolio/trades', tradingAuth, async (req, res) => {
+app.get('/portfolio/trades', tradingAuth, asyncRoute(async (req, res) => {
   const q = req.query
   res.json(await portfolio.history(req.user.user_id, {
     limit: Math.min(Number(q.limit) || 25, 100),
@@ -362,30 +366,36 @@ app.get('/portfolio/trades', tradingAuth, async (req, res) => {
     from: q.from || null, to: q.to || null,
     sort: ['closed_desc', 'opened_asc', 'pnl_desc', 'pnl_asc'].includes(q.sort) ? q.sort : 'closed_desc'
   }))
-})
+}))
 
-app.get('/portfolio/trades/:id', tradingAuth, async (req, res) => {
+app.get('/portfolio/trades/:id', tradingAuth, asyncRoute(async (req, res) => {
   const d = await portfolio.details(req.user.user_id, req.params.id)
   if (!d) return res.status(404).json({ error: 'not_found' })
   res.json(d)
-})
+}))
 
-app.put('/portfolio/notes', tradingAuth, limit(60), async (req, res) => {
+app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) => {
   const { tradeKey, notes, tags } = req.body || {}
   if (typeof tradeKey !== 'string' || !tradeKey.includes('|')) return res.status(400).json({ error: 'invalid_key' })
   res.json(await portfolio.upsertNote(req.user.user_id, tradeKey, notes, tags))
-})
+}))
+
+app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
 
 /* health */
-app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }))
+app.get('/health', asyncRoute(async (req, res) => { try { await pool.query('SELECT 1'); res.json({ ok: true, ts: Date.now() }) } catch { res.status(503).json({ ok: false }) } }))
 app.get('/trading/health', tradingAuth, async (req, res) => {
   const st = await engine.state(req.user.user_id)
   res.json({ ok: true, account: st.account != null, markets: marketData.markets.size })
 })
 
+/* Same-origin static hosting for Render; hash routes need no server fallback. */
+app.use('/react', express.static(fileURLToPath(new URL('../../react', import.meta.url))))
+app.get('/', (req, res) => res.redirect('/react/'))
+
 /* 404 + error safety (no stack leaks) */
 app.use((req, res) => res.status(404).json({ error: 'not_found' }))
-app.use((err, req, res, next) => { console.error(err); res.status(500).json({ error: 'internal' }) })
+app.use((err, req, res, next) => { if (!err.status) console.error(err); res.status(err.status || 500).json({ error: err.status ? err.message : 'internal' }) })
 
 const server = app.listen(cfg.port, () => console.log(`openfund-backend :${cfg.port}`))
 /* market data (authoritative server-side marks) + trading engine loop */

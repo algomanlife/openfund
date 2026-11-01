@@ -7,7 +7,7 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { createSiweMessage } from 'viem/siwe'
 import pg from 'pg'
 
-const BASE = 'http://localhost:8080'
+const BASE = process.env.TEST_BACKEND_URL || 'http://localhost:8080'
 let passed = 0, failed = 0
 const ok = (name, cond, extra = '') => {
   if (cond) { passed++; console.log('PASS -', name) }
@@ -32,7 +32,7 @@ const inj = (price) => fetch(BASE + '/internal/inject-price', {
 
 const w1 = privateKeyToAccount(generatePrivateKey())
 const w2 = privateKeyToAccount(generatePrivateKey())
-const pool = new pg.Pool({ host: '/tmp', user: 'openfund_cms', password: 'openfund_local_dev', database: 'openfund_cms' })
+const pool = new pg.Pool(process.env.DATABASE_URL ? { connectionString: process.env.DATABASE_URL } : { host: '/tmp', user: 'openfund_cms', password: 'openfund_local_dev', database: 'openfund_cms' })
 const near = (a, b, tol = 0.02) => Math.abs(Number(a) - b) < tol
 
 /* deterministic trades: BTC/USD, fee 0.035%/side, spread 0.005%/side */

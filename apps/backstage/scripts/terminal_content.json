@@ -1,0 +1,507 @@
+{
+  "pages": [
+    {
+      "slug": "prop-dashboard",
+      "template": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "داشبورد پراپ",
+          "description": "وضعیت حساب و عملکرد معاملاتی خود را مرور کنید.",
+          "seo_title": "داشبورد پراپ | Openfund",
+          "seo_description": "وضعیت حساب و عملکرد معاملاتی خود را مرور کنید."
+        },
+        {
+          "language_code": "en",
+          "title": "Prop dashboard",
+          "description": "Review your account and trading performance.",
+          "seo_title": "Prop dashboard | Openfund",
+          "seo_description": "Review your account and trading performance."
+        }
+      ]
+    },
+    {
+      "slug": "prop-trade",
+      "template": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "ترمینال پراپ",
+          "description": "بازار را تحلیل کنید و حساب معاملاتی خود را مدیریت کنید.",
+          "seo_title": "ترمینال پراپ | Openfund",
+          "seo_description": "بازار را تحلیل کنید و حساب معاملاتی خود را مدیریت کنید."
+        },
+        {
+          "language_code": "en",
+          "title": "Prop terminal",
+          "description": "Analyze markets and manage your trading account.",
+          "seo_title": "Prop terminal | Openfund",
+          "seo_description": "Analyze markets and manage your trading account."
+        }
+      ]
+    },
+    {
+      "slug": "prop-portfolio",
+      "template": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "پورتفولیوی پراپ",
+          "description": "پوزیشن‌ها، سفارش‌ها و تاریخچهٔ حساب خود را بررسی کنید.",
+          "seo_title": "پورتفولیوی پراپ | Openfund",
+          "seo_description": "پوزیشن‌ها، سفارش‌ها و تاریخچهٔ حساب خود را بررسی کنید."
+        },
+        {
+          "language_code": "en",
+          "title": "Prop portfolio",
+          "description": "Review your account’s positions, orders and trading history.",
+          "seo_title": "Prop portfolio | Openfund",
+          "seo_description": "Review your account’s positions, orders and trading history."
+        }
+      ]
+    },
+    {
+      "slug": "prop-journal",
+      "template": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "ژورنال معاملات پراپ",
+          "description": "برای هر روز یادداشت بنویسید، تگ و طبقه‌بندی اضافه کنید و تصمیم‌های معاملاتی خود را مرور کنید.",
+          "seo_title": "ژورنال معاملات پراپ | Openfund",
+          "seo_description": "برای هر روز یادداشت بنویسید، تگ و طبقه‌بندی اضافه کنید و تصمیم‌های معاملاتی خود را مرور کنید."
+        },
+        {
+          "language_code": "en",
+          "title": "Prop trade journal",
+          "description": "Write daily reflections, add tags and classifications, and review your trading decisions.",
+          "seo_title": "Prop trade journal | Openfund",
+          "seo_description": "Write daily reflections, add tags and classifications, and review your trading decisions."
+        }
+      ]
+    },
+    {
+      "slug": "prop-leaderboard",
+      "template": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "لیدربورد پراپ",
+          "description": "رتبه‌ای برای نمایش وجود ندارد.",
+          "seo_title": "لیدربورد پراپ | Openfund",
+          "seo_description": "رتبه‌ای برای نمایش وجود ندارد."
+        },
+        {
+          "language_code": "en",
+          "title": "Prop leaderboard",
+          "description": "There are no rankings to display.",
+          "seo_title": "Prop leaderboard | Openfund",
+          "seo_description": "There are no rankings to display."
+        }
+      ]
+    },
+    {
+      "slug": "prop-withdrawals",
+      "template": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "درخواست برداشت",
+          "description": "برای پیگیری درخواست‌های برداشت با پشتیبانی تماس بگیرید.",
+          "seo_title": "درخواست برداشت | Openfund",
+          "seo_description": "برای پیگیری درخواست‌های برداشت با پشتیبانی تماس بگیرید."
+        },
+        {
+          "language_code": "en",
+          "title": "Withdrawal requests",
+          "description": "Contact support for assistance with withdrawal requests.",
+          "seo_title": "Withdrawal requests | Openfund",
+          "seo_description": "Contact support for assistance with withdrawal requests."
+        }
+      ]
+    },
+    {
+      "slug": "prop-certificates",
+      "template": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "سرتیفیکیت‌ها",
+          "description": "سرتیفیکیتی برای نمایش وجود ندارد.",
+          "seo_title": "سرتیفیکیت‌ها | Openfund",
+          "seo_description": "سرتیفیکیتی برای نمایش وجود ندارد."
+        },
+        {
+          "language_code": "en",
+          "title": "Certificates",
+          "description": "There are no certificates to display.",
+          "seo_title": "Certificates | Openfund",
+          "seo_description": "There are no certificates to display."
+        }
+      ]
+    },
+    {
+      "slug": "perpetual-dashboard",
+      "template": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "داشبورد پرپچوال",
+          "description": "وضعیت حساب و عملکرد معاملاتی خود را مرور کنید.",
+          "seo_title": "داشبورد پرپچوال | Openfund",
+          "seo_description": "وضعیت حساب و عملکرد معاملاتی خود را مرور کنید."
+        },
+        {
+          "language_code": "en",
+          "title": "Perpetual dashboard",
+          "description": "Review your account and trading performance.",
+          "seo_title": "Perpetual dashboard | Openfund",
+          "seo_description": "Review your account and trading performance."
+        }
+      ]
+    },
+    {
+      "slug": "perpetual-trade",
+      "template": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "ترمینال پرپچوال",
+          "description": "بازار را تحلیل کنید و حساب معاملاتی خود را مدیریت کنید.",
+          "seo_title": "ترمینال پرپچوال | Openfund",
+          "seo_description": "بازار را تحلیل کنید و حساب معاملاتی خود را مدیریت کنید."
+        },
+        {
+          "language_code": "en",
+          "title": "Perpetual terminal",
+          "description": "Analyze markets and manage your trading account.",
+          "seo_title": "Perpetual terminal | Openfund",
+          "seo_description": "Analyze markets and manage your trading account."
+        }
+      ]
+    },
+    {
+      "slug": "perpetual-portfolio",
+      "template": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "پورتفولیوی پرپچوال",
+          "description": "پوزیشن‌ها، سفارش‌ها و تاریخچهٔ حساب خود را بررسی کنید.",
+          "seo_title": "پورتفولیوی پرپچوال | Openfund",
+          "seo_description": "پوزیشن‌ها، سفارش‌ها و تاریخچهٔ حساب خود را بررسی کنید."
+        },
+        {
+          "language_code": "en",
+          "title": "Perpetual portfolio",
+          "description": "Review your account’s positions, orders and trading history.",
+          "seo_title": "Perpetual portfolio | Openfund",
+          "seo_description": "Review your account’s positions, orders and trading history."
+        }
+      ]
+    },
+    {
+      "slug": "perpetual-journal",
+      "template": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "ژورنال معاملات پرپچوال",
+          "description": "برای هر روز یادداشت بنویسید، تگ و طبقه‌بندی اضافه کنید و تصمیم‌های معاملاتی خود را مرور کنید.",
+          "seo_title": "ژورنال معاملات پرپچوال | Openfund",
+          "seo_description": "برای هر روز یادداشت بنویسید، تگ و طبقه‌بندی اضافه کنید و تصمیم‌های معاملاتی خود را مرور کنید."
+        },
+        {
+          "language_code": "en",
+          "title": "Perpetual trade journal",
+          "description": "Write daily reflections, add tags and classifications, and review your trading decisions.",
+          "seo_title": "Perpetual trade journal | Openfund",
+          "seo_description": "Write daily reflections, add tags and classifications, and review your trading decisions."
+        }
+      ]
+    },
+    {
+      "slug": "perpetual-leaderboard",
+      "template": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "لیدربورد پرپچوال",
+          "description": "رتبه‌ای برای نمایش وجود ندارد.",
+          "seo_title": "لیدربورد پرپچوال | Openfund",
+          "seo_description": "رتبه‌ای برای نمایش وجود ندارد."
+        },
+        {
+          "language_code": "en",
+          "title": "Perpetual leaderboard",
+          "description": "There are no rankings to display.",
+          "seo_title": "Perpetual leaderboard | Openfund",
+          "seo_description": "There are no rankings to display."
+        }
+      ]
+    },
+    {
+      "slug": "perpetual-rewards",
+      "template": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "ریوارد",
+          "description": "برای بررسی پاداش‌های حساب با پشتیبانی تماس بگیرید.",
+          "seo_title": "ریوارد | Openfund",
+          "seo_description": "برای بررسی پاداش‌های حساب با پشتیبانی تماس بگیرید."
+        },
+        {
+          "language_code": "en",
+          "title": "Rewards",
+          "description": "Contact support for assistance with account rewards.",
+          "seo_title": "Rewards | Openfund",
+          "seo_description": "Contact support for assistance with account rewards."
+        }
+      ]
+    }
+  ],
+  "messages": [
+    {
+      "key": "products.signin",
+      "namespace": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "value": "برای دیدن داده‌های خصوصی، کیف پول خود را متصل کنید و با امضا وارد حساب شوید. اتصال کیف پول به‌تنهایی ورود به حساب نیست."
+        },
+        {
+          "language_code": "en",
+          "value": "Connect your wallet and sign in with a signature to access private records. Wallet connection alone does not sign you in."
+        }
+      ]
+    },
+    {
+      "key": "products.emptyTrades",
+      "namespace": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "value": "معامله‌ای با این فیلترها یافت نشد."
+        },
+        {
+          "language_code": "en",
+          "value": "No trades match these filters."
+        }
+      ]
+    },
+    {
+      "key": "products.emptyJournal",
+      "namespace": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "value": "هنوز یادداشتی برای این حساب ثبت نشده یا با فیلترهای شما تطابق ندارد. با «یادداشت جدید» شروع کنید."
+        },
+        {
+          "language_code": "en",
+          "value": "No entries exist for this account or match your filters. Start with New entry."
+        }
+      ]
+    },
+    {
+      "key": "products.simulation",
+      "namespace": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "value": "حساب تمرینی"
+        },
+        {
+          "language_code": "en",
+          "value": "Practice account"
+        }
+      ]
+    },
+    {
+      "key": "products.guest",
+      "namespace": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "value": "برای مشاهدهٔ حساب معاملاتی وارد شوید."
+        },
+        {
+          "language_code": "en",
+          "value": "Sign in to view your trading account."
+        }
+      ]
+    },
+    {
+      "key": "products.readOnly",
+      "namespace": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "value": "سوابق معاملاتی کیف پول خود را روی شبکهٔ آربیتروم مرور کنید."
+        },
+        {
+          "language_code": "en",
+          "value": "Review your wallet’s trading records on Arbitrum."
+        }
+      ]
+    },
+    {
+      "key": "products.evaluation",
+      "namespace": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "value": "حساب تمرینی بر پایهٔ اعتبار مجازی است و موجودی آن قابل برداشت نیست."
+        },
+        {
+          "language_code": "en",
+          "value": "Practice accounts use virtual credit. Their balances cannot be withdrawn."
+        }
+      ]
+    },
+    {
+      "key": "products.unsupported",
+      "namespace": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "value": "برای راهنمایی دربارهٔ حساب خود با پشتیبانی تماس بگیرید."
+        },
+        {
+          "language_code": "en",
+          "value": "Contact support for assistance with your account."
+        }
+      ]
+    },
+    {
+      "key": "products.realizedCurve",
+      "namespace": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "value": "نمودار بر پایهٔ سود تسویه‌شده در زمان بسته‌شدن معامله است. کارمزد ورود جداگانه از موجودی کسر می‌شود. فیلتر دوره بر زمان بازشدن معاملات اعمال می‌شود."
+        },
+        {
+          "language_code": "en",
+          "value": "The curve follows settled PnL at trade close. Entry fees are deducted separately from the account balance. Period filters apply to trade opening time."
+        }
+      ]
+    },
+    {
+      "key": "products.journalImport",
+      "namespace": "terminal",
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "value": "از ژورنال خود خروجی بگیرید یا فایل ذخیره‌شدهٔ همین حساب را بازگردانی کنید. سوابق معاملاتی با این کار تغییر نمی‌کنند."
+        },
+        {
+          "language_code": "en",
+          "value": "Export your journal or restore a saved file for this account. This does not change your trading records."
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_key": "prop-dashboard-disclosure",
+      "product": "prop",
+      "page": "dashboard",
+      "sort": 10,
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "مدیریت حساب",
+          "body": "فعالیت معاملاتی خود را در پورتفولیو مرور کنید و تصمیم‌هایتان را در ژورنال ثبت کنید."
+        },
+        {
+          "language_code": "en",
+          "title": "Account management",
+          "body": "Review your trading activity in Portfolio and record your decisions in Journal."
+        }
+      ]
+    },
+    {
+      "section_key": "prop-trade-disclosure",
+      "product": "prop",
+      "page": "trade",
+      "sort": 10,
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "مدیریت حساب",
+          "body": "فعالیت معاملاتی خود را در پورتفولیو مرور کنید و تصمیم‌هایتان را در ژورنال ثبت کنید."
+        },
+        {
+          "language_code": "en",
+          "title": "Account management",
+          "body": "Review your trading activity in Portfolio and record your decisions in Journal."
+        }
+      ]
+    },
+    {
+      "section_key": "perpetual-dashboard-disclosure",
+      "product": "perpetual",
+      "page": "dashboard",
+      "sort": 10,
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "مدیریت حساب",
+          "body": "فعالیت معاملاتی خود را در پورتفولیو مرور کنید و تصمیم‌هایتان را در ژورنال ثبت کنید."
+        },
+        {
+          "language_code": "en",
+          "title": "Account management",
+          "body": "Review your trading activity in Portfolio and record your decisions in Journal."
+        }
+      ]
+    },
+    {
+      "section_key": "perpetual-trade-disclosure",
+      "product": "perpetual",
+      "page": "trade",
+      "sort": 10,
+      "status": "published",
+      "translations": [
+        {
+          "language_code": "fa",
+          "title": "مدیریت حساب",
+          "body": "فعالیت معاملاتی خود را در پورتفولیو مرور کنید و تصمیم‌هایتان را در ژورنال ثبت کنید."
+        },
+        {
+          "language_code": "en",
+          "title": "Account management",
+          "body": "Review your trading activity in Portfolio and record your decisions in Journal."
+        }
+      ]
+    }
+  ]
+}

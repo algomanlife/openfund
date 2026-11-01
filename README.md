@@ -46,6 +46,14 @@ Openfund presents itself as a **two-product trading ecosystem** behind a single 
 - **Portfolio** — native analytics page (`#/portfolio`) powered by the vendored **LuxAlgo journal-core** (MIT, `third_party/`): overview, performance metrics, equity/drawdown, PnL calendar, filterable history, trade details with ledger, private trade notes — over the user's own demo-account trades only.
 - **Backstage** — Directus Data Studio manages all fa/en content and gives administrators user & challenge oversight.
 
+## Product terminals update — 2026-11-02
+
+The React application now has product-scoped `#/{fa,en}/{prop,perpetual}/` routes for Dashboard, Trade, Portfolio and Journal, plus the required product destinations. Both trading routes use **one shared, full-space terminal workspace** beneath a shared horizontal tab header; they use independent account/data adapters. Public marketing chrome remains separate, and old `/terminal` and `/portfolio` bookmarks redirect compatibly.
+
+Prop retains the existing server-authoritative practice engine and ledger. Perpetual now reads verified Gains Arbitrum wallet positions, pending orders, event history and statistics; on-chain execution stays disabled. Both products have private persistent journal entries with notes, tags, classification, search, date filters and JSON restore/export. Portfolio adds filtering, order history, CSV export and journal-core analytics. Unsupported financial operations are not manufactured.
+
+Runtime editorial content uses the existing Directus instance. The Terminal tab deliberately renders no editorial introductions, banners or dashboard containers. See [product architecture](docs/architecture/PRODUCT_TERMINALS.md), [CMS administration](docs/backstage/TERMINAL_CONTENT.md), [optional Render setup](docs/architecture/RENDER_DEPLOYMENT.md), and the [audit and delivery report](docs/reviews/dual-terminals/DELIVERY.md). The optional blueprint reuses existing PostgreSQL/Directus and disables automatic deployment. This is source implementation and local verification, not a production deployment.
+
 ## 4. Current development status
 
 **Prototype with live data and real authentication.** Market data, charting, CMS, wallet connection and SIWE login are operational and verified (automated + live-edit tests). Trading itself is a clearly-labelled local simulation — no orders, no chain transactions, no fabricated results. On-chain evaluation and challenge purchasing are planned, not built. See [`docs/product/FEATURE_STATUS.md`](docs/product/FEATURE_STATUS.md) for the per-capability truth table.

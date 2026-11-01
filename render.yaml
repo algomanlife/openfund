@@ -1,0 +1,26 @@
+# Optional reviewed deployment blueprint; never applied automatically.
+# Reuses existing PostgreSQL and Directus, no replacement data services.
+services:
+  - type: web
+    name: openfund
+    runtime: node
+    numInstances: 1
+    autoDeployTrigger: "off"
+    buildCommand: npm ci --prefix apps/backend && npm ci --include=dev --prefix apps/web-react && npm run build --prefix apps/web-react
+    startCommand: npm run migrate --prefix apps/backend && npm start --prefix apps/backend
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: VITE_DIRECTUS_URL
+        sync: false
+      - key: VITE_WALLETCONNECT_PROJECT_ID
+        sync: false
+      - key: ALLOWED_DOMAINS
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false

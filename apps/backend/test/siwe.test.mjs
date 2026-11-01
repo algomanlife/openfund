@@ -10,7 +10,7 @@ import { createSiweMessage, verifySiweMessage } from 'viem/siwe'
 import { recoverMessageAddress } from 'viem'
 import pg from 'pg'
 
-const BASE = 'http://localhost:8080'
+const BASE = process.env.TEST_BACKEND_URL || 'http://localhost:8080'
 const DOMAIN = 'localhost:5173'
 const CHAIN = 421614
 
@@ -94,7 +94,7 @@ async function authenticate(wallet, domain = DOMAIN, chainId = CHAIN) {
 
 /* ---- 4. challenges: multi + ownership ---- */
 {
-  const pool = new pg.Pool({ connectionString: 'postgres://openfund_cms:openfund_local_dev@127.0.0.1:5432/openfund_cms' })
+  const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL || 'postgres://openfund_cms:openfund_local_dev@127.0.0.1:5432/openfund_cms' })
   const u1 = (await authenticate(wallet1))
   const userId = u1.verify.data.user.id
   const { rows: plans } = await pool.query('SELECT id FROM challenge_plans ORDER BY slug')

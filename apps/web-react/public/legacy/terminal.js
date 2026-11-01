@@ -609,6 +609,13 @@ $('book-group').addEventListener('change', e => { S.grouping = +e.target.value; 
 $('book-dense').addEventListener('change', e => { S.dense = e.target.checked; $('book-view').classList.toggle('dense', S.dense); });
 
 function renderBook(force){
+  if (window.__ofTerminalConfig?.syntheticMarketData === false) {
+    const host=$('book-asks'); if(!host)return;
+    const rows=[...board.meta.values()].filter(m=>board.getMark(m.symbol)!=null).slice(0,60);
+    host.replaceChildren(...rows.map(m=>{const b=document.createElement('button');b.className='live-market-row'+(m.symbol===S.marketId?' active':'');const name=document.createElement('span'),price=document.createElement('b');name.textContent=m.symbol;price.textContent=fmt.price(board.getMark(m.symbol),Number(m.pricePrecision)||2);b.append(name,price);b.onclick=()=>selectMarket(m.symbol);return b}));
+    if($('book-mid-price'))$('book-mid-price').textContent=mark()!=null?fmt.price(mark(),dp()):'—';
+    return;
+  }
   if (!$('book-asks')) return;   /* teardown race guard */
   if ($('book-view').hidden) return;
   const m = meta(), mid = mark();
@@ -684,6 +691,7 @@ function pseudo(i, sym){
 /* presentation trades derived from mark ticks */
 const tradeRows = [];
 function noteTrade(p){
+  if(window.__ofTerminalConfig?.syntheticMarketData === false)return;
   if (p.market !== S.marketId) return;
   const m = meta(); if (!m) return;
   tradeRows.unshift({ price: p.mark, size: pseudo(tradeRows.length, 'sz' + S.marketId) * (Number(m.minPositionUsd) || 50) / 10,
@@ -692,6 +700,7 @@ function noteTrade(p){
   if (tradeRows.length > 42) tradeRows.pop();
 }
 function renderTrades(){
+  if(window.__ofTerminalConfig?.syntheticMarketData === false)return;
   if (!$('trades-rows')) return;   /* teardown race guard */
   if (!$('trades-rows') && !$('.trades-view tbody')) return;   /* teardown race guard */
   if ($('trades-view').hidden) return;
@@ -764,7 +773,8 @@ $('of-price').addEventListener('input', computeForm);
 $('of-sl').addEventListener('input', computeForm);
 $('of-tp').addEventListener('input', computeForm);
 document.querySelectorAll('.pct-btns button').forEach(b => b.addEventListener('click', () => {
-  const avail = tp.getAccount().available;
+  const avail = tp.getAccount()?.available;
+  if (avail == null || tp.canTrade === false) return;
   const v = avail * (+b.dataset.pct) / 100;
   $('of-collateral').value = v.toFixed(2);
   computeForm();
@@ -779,7 +789,7 @@ function computeForm(){
   const m = meta();
   const d = dp();
   const closed = marketClosed();
-  $('submit-order').disabled = closed;
+  $('submit-order').disabled = closed || tp?.canTrade === false;
   if (closed){
     $('of-err').textContent = t('mkt.closed');
     $('of-err').hidden = false;
@@ -788,6 +798,7 @@ function computeForm(){
   const price = S.otype === 'market' ? (mark() || 0) : (+$('of-price').value || 0);
   const size = price > 0 ? collateral * S.leverage / price : 0;
   const notional = collateral * S.leverage;
+  const rate = tp?.feeRate ? tp.feeRate(S.marketId) : tp?.readOnly ? null : FEE_RATE;
   $('of-units').textContent = unit() || m ? (m ? m.base : '') : '';
   $('of-size').textContent = size > 0 ? fmt.num(size, m ? Number(m.sizePrecision) || 2 : 2) : '0.000000';
   $('of-notional').textContent = fmt.usd(notional);
@@ -800,10 +811,10 @@ function computeForm(){
   $('rk-liq').textContent = liq ? fmt.price(liq, d) : '—';
   $('rk-liq').className = liq ? 'num down' : '';
   $('rk-margin').textContent = collateral > 0 ? fmt.usd(collateral) : '—';
-  $('rk-fee').textContent = collateral > 0 ? fmt.usd(notional * FEE_RATE) : '—';
+  $('rk-fee').textContent = collateral > 0 && rate != null ? fmt.usd(notional * rate) : '—';
   const sl = +$('of-sl').value || null;
-  $('rk-maxloss').textContent = (sl && price > 0)
-    ? fmt.usdS((price - sl) * size * (S.side === 'long' ? 1 : -1) - notional * FEE_RATE)
+  $('rk-maxloss').textContent = rate == null ? '—' : (sl && price > 0)
+    ? fmt.usdS((price - sl) * size * (S.side === 'long' ? 1 : -1) - notional * rate)
     : (collateral > 0 ? fmt.usdS(-collateral) : '—');
   $('rk-maxloss').className = 'num down';
   if (!closed && tp){
@@ -863,10 +874,10 @@ $('submit-order').addEventListener('click', () => {
     [t('rv.collateral'), fmt.usd(req.collateral)], [t('rk.entry'), fmt.price(entry, d)],
     [t('rv.oracle'), board.getIndex(S.marketId) ? fmt.price(board.getIndex(S.marketId), d) : '—'],
     [t('rk.liq'), fmt.price(liq, d)],
-    [t('rv.fee'), fmt.usd(notional * FEE_RATE)],
+    [t('rv.fee'), fmt.usd(notional * (tp.feeRate?.(S.marketId) ?? FEE_RATE))],
     [t('rv.sl'), req.sl ? fmt.price(req.sl, d) : '—'],
     [t('rv.tp'), req.tp ? fmt.price(req.tp, d) : '—'],
-    [t('rv.equityAfter'), fmt.usd(acc.equity - req.collateral - notional * FEE_RATE)],
+    [t('rv.equityAfter'), fmt.usd(acc.equity - req.collateral - notional * (tp.feeRate?.(S.marketId) ?? FEE_RATE))],
     [t('rv.exec'), t('rv.exec')]
   ];
   $('review-body').innerHTML = `<div class="review-grid">` +
@@ -1088,17 +1099,23 @@ $('load-demo').addEventListener('click', () => { tp.loadDemoScenario(); renderBo
 function renderBottom(){
   if (!tp || !$('bt-empty')) return;   /* teardown race guard */
   const st = tp.state;
+  if(window.__ofTerminalConfig){
+    const ready=tp.status === undefined || tp.status === 'ready';
+    const message=ready?t('bt.empty'):tp.status==='error'?L('دریافت اطلاعات حساب ناموفق بود. دوباره تلاش کنید.','Account activity could not be retrieved. Retry.'):tp.status==='signedout'?L('برای مشاهدهٔ حساب وارد شوید.','Sign in to view your account.'):L('در حال دریافت اطلاعات حساب…','Loading account activity…');
+    $('bt-empty').querySelector('p').textContent=message;
+    $('cnt-positions').textContent=ready?st.positions.length:'—';$('cnt-orders').textContent=ready?st.orders.length:'—';
+  }
   const hasActivity = st.positions.length || st.orders.length || st.history.length || st.fills.length || st.funding.length;
   $('bt-empty').hidden = !!hasActivity;
   document.querySelectorAll('.bt-table').forEach(el => el.hidden = el.dataset.t !== S.btTab || !hasActivity);
-  $('cnt-positions').textContent = st.positions.length;
-  $('cnt-orders').textContent = st.orders.length;
+  if(!window.__ofTerminalConfig || tp.status===undefined || tp.status==='ready') $('cnt-positions').textContent = st.positions.length;
+  if(!window.__ofTerminalConfig || tp.status===undefined || tp.status==='ready') $('cnt-orders').textContent = st.orders.length;
   $('tb-positions').innerHTML = st.positions.map(p => {
     const m = board.getMeta(p.market); if (!m) return '';
     const d = Number(m.pricePrecision), dps = Number(m.sizePrecision) || 2;
     const mk = board.getMark(p.market) || p.entry;
-    const pnl = (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
-    const roe = pnl / p.margin * 100;
+    const pnl = tp.readOnly ? null : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
+    const roe = pnl == null ? null : pnl / p.margin * 100;
     return `<tr>
       <td>${iconHTML(p.market)} <b>${m.symbol}</b></td>
       <td class="side-${p.side === 'long' ? 'l' : 's'}">${t(p.side === 'long' ? 'rv.side.long' : 'rv.side.short')}</td>
@@ -1106,14 +1123,14 @@ function renderBottom(){
       <td class="r num">${fmt.price(p.entry, d)}</td>
       <td class="r num">${fmt.price(mk, d)}</td>
       <td>${p.leverage}×</td>
-      <td class="r num">${fmt.usd(p.margin)}</td>
+      <td class="r num">${p.currency ? fmt.num(p.margin,2)+' '+p.currency : fmt.usd(p.margin)}</td>
       <td class="r num ${pnl >= 0 ? 'up' : 'down'}">${fmt.usdS(pnl)}</td>
       <td class="r num ${roe >= 0 ? 'up' : 'down'}">${fmt.pct(roe)}</td>
       <td class="r num down" title="Simplified estimate">${fmt.price(p.liq, d)}</td>
       <td class="r num">${p.sl ? fmt.price(p.sl, d) : '—'} / ${p.tp ? fmt.price(p.tp, d) : '—'}</td>
       <td>
-        <button class="act-btn" data-close="${p.id}">${t('act.close')}</button>
-        <button class="act-btn" data-sltp="${p.id}">${t('act.sltp')}</button>
+        <button class="act-btn" ${tp.canTrade===false?'disabled':''} data-close="${p.id}">${t('act.close')}</button>
+        <button class="act-btn" ${tp.canTrade===false?'disabled':''} data-sltp="${p.id}">${t('act.sltp')}</button>
         <button class="act-btn" data-detail="${p.id}">${t('act.details')}</button>
       </td></tr>`;
   }).join('') || emptyRow(12, t('empty.positions'));
@@ -1128,7 +1145,7 @@ function renderBottom(){
       <td class="r num">${fmt.price(o.trigger, d)}</td>
       <td><span class="tag lime">${t('tag.pending')}</span></td>
       <td class="num">${fmt.dt(o.createdAt / 1000)}</td>
-      <td><button class="act-btn danger" data-cancel="${o.id}">${t('act.cancel')}</button></td>
+      <td><button class="act-btn danger" ${tp.canTrade===false?'disabled':''} data-cancel="${o.id}">${t('act.cancel')}</button></td>
     </tr>`;
   }).join('') || emptyRow(8, t('empty.orders'));
   $('tb-history').innerHTML = st.history.map(h => {
@@ -1137,11 +1154,11 @@ function renderBottom(){
     const cls = h.result.includes('profit') ? 'pos' : h.result.includes('loss') ? 'neg' : '';
     return `<tr>
       <td>${iconHTML(h.market)} <b>${m.symbol}</b></td>
-      <td><span class="tag">${h.type.includes('-') ? t('res.' + h.type) : t('ot.' + h.type)}</span></td>
+      <td><span class="tag">${tp.readOnly ? h.type : h.type.includes('-') ? t('res.' + h.type) : t('ot.' + h.type)}</span></td>
       <td class="side-${h.side === 'long' ? 'l' : 's'}">${t(h.side === 'long' ? 'rv.side.long' : 'rv.side.short')}</td>
       <td class="r num">${fmt.num(h.size, Number(m.sizePrecision) || 2)}</td>
       <td class="r num">${fmt.price(h.price, d)}</td>
-      <td><span class="tag ${cls}">${t('res.' + h.result)}</span></td>
+      <td><span class="tag ${cls}">${tp.readOnly ? h.result : t('res.' + h.result)}</span></td>
       <td class="num">${fmt.dt(h.time / 1000)}</td>
     </tr>`;
   }).join('') || emptyRow(7, t('empty.history'));
@@ -1202,13 +1219,13 @@ function wireRowActions(){
     const d = Number(m.pricePrecision);
     const srv = p.mark_price != null ? p.mark_price : (p.srvMark != null ? p.srvMark : null);
     const mk = srv != null ? Number(srv) : (board.getMark(p.market) || p.entry);
-    const pnl = p.realized != null ? p.realized : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
+    const pnl = tp.readOnly ? null : p.realized != null ? p.realized : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
     const D = t('pos.details');
     const rows = [
       [D[0], '#' + p.id], [D[1], m.symbol], [D[2], p.side],
       [D[3], fmt.num(p.size, Number(m.sizePrecision) || 2) + ' ' + m.base], [D[4], fmt.price(p.entry, d)],
       [D[5], fmt.price(mk, d)], [D[6], p.leverage + '×'],
-      [D[7], fmt.usd(p.margin)], [D[8], fmt.price(p.liq, d)],
+      [D[7], p.currency ? fmt.num(p.margin,2)+' '+p.currency : fmt.usd(p.margin)], [D[8], fmt.price(p.liq, d)],
       [D[9], fmt.usdS(pnl)], [D[10], (p.sl ? fmt.price(p.sl, d) : '—') + ' / ' + (p.tp ? fmt.price(p.tp, d) : '—')],
       [D[11], fmt.dt(p.openedAt / 1000)], [D[12], fmt.usd(p.feePaid)]
     ];
@@ -1252,8 +1269,8 @@ function renderAccount(){
   $('ac-margin').textContent = fmt.usd(a.marginUsed);
   $('ac-upnl').textContent = fmt.usdS(a.upnl);
   $('ac-upnl').className = 'num ' + (a.upnl > 0 ? 'up' : a.upnl < 0 ? 'down' : '');
-  $('ac-pos').textContent = a.positionCount;
-  $('ac-ord').textContent = a.orderCount;
+  $('ac-pos').textContent = a.positionCount ?? '—';
+  $('ac-ord').textContent = a.orderCount ?? '—';
 }
 $('wallet-btn').addEventListener('click', () => {
   if (!wp.connected){
@@ -1367,10 +1384,10 @@ function boot(){
           const g = board.meta.get(want).group;
           if (g) S.ddCategory = g; } }
     } catch(e){}
-    tp = window.__ofServerTP || new TradingProvider(board);
+    tp = window.__ofProductAdapter || window.__ofServerTP || new TradingProvider(board);
     /* server trading bridge (authenticated users): swap provider + live updates */
     window.addEventListener('of-trading-ready', () => {
-      tp = window.__ofServerTP;
+      tp = window.__ofProductAdapter || window.__ofServerTP;
       $('load-demo').style.display = 'none';
       renderAccount(); renderBottom(); computeForm();
     });
@@ -1379,7 +1396,7 @@ function boot(){
       if (['positions','orders','history'].includes(S.btTab) || S.btTab == null) renderBottom();
     });
     window.addEventListener('of-trading-off', () => {
-      tp = new TradingProvider(board);
+      tp = window.__ofProductAdapter || new TradingProvider(board);
       renderAccount(); renderBottom(); computeForm();
     });
     tp.subscribe(() => {

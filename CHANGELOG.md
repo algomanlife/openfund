@@ -1,5 +1,15 @@
 # Changelog
 
+
+### Shared product terminals, scoped Portfolio and Journal (2026-11-02)
+
+- One reusable viewport-filling trading workspace with product adapters, independent locale/product routes and exact horizontal navigation; public marketing header preserved. Terminal has no surrounding headings, copy, banners or padding.
+- Private account/product-scoped PostgreSQL notebooks, tags/classification, owned trade annotations, optimistic edits, atomic metadata restore, JSON/CSV exports, filtering/pagination and journal-core performance views including Edge Score v2 and time/tag reports.
+- Read-only official Gains Arbitrum positions, pending orders, wallet history/statistics and per-collateral recent-event analytics. No new execution, fake balances, synthetic market depth or manufactured trades.
+- Directus runtime product content and normalized editorial sections with published-only permissions; optional reviewed Render blueprint and same-origin frontend/API hosting.
+- Fix realized-PnL column read, account-scoped portfolio queries, arbitrary annotation writes, millisecond-key collisions (legacy notes preserved), stale scoped UI responses and injected wallet connection when WalletConnect is not configured.
+- Verification and remaining service dependencies: `docs/reviews/dual-terminals/DELIVERY.md`. No merge or production deploy.
+
 Notable changes are recorded here. Dates should use ISO 8601.
 
 ## Unreleased
