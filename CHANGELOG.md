@@ -4,6 +4,14 @@ Notable changes are recorded here. Dates should use ISO 8601.
 
 ## Unreleased
 
+### Trading math audit — Gains alignment, Vela position overlays, SL/TP & UI repairs (2026-11-01, branch `qwen/trading-math-vela`)
+- **fix(engine, Gains):** closing fee now charged on the **initial** position size (was exit notional — Gains: "fees are always applied on the initial position size"); per-asset-class fee tiers (BTC/ETH 0.035%, crypto 0.05%, forex 0.012%, fallback 0.06%); fixed spread applied to execution (BTC/ETH 0.005%/side, forex 0.005%…); limit/stop fill at the target price without extra spread. All from the official fees-and-spread doc + v10 changelog; assumptions documented and classified (A/B/C).
+- **fix(terminal):** SL/TP and Details dialogs were dead in server mode (`+uuid → NaN` id coercion) — fixed; liquidation column NaN fixed (engine-rule liq mapping); positions table rebuilt with fixed readable columns and all three action buttons in fa AND en (round-7 item 1).
+- **feat(vela):** live **position overlays** on the chart — native `position` drawing per open trade (entry/SL/TP box with risk:reward zones), updated on SL/TP edits, removed on close/liquidation, symbol-isolated on market switch, restored after refresh; `positionId → drawingId` mapping keeps user drawings untouched.
+- **feat(i18n):** Persian/Arabic-Indic numeric input accepted everywhere (normNum: ۰-۹, ٠-٩, ٫, separators) — inputs converted to `inputmode="decimal"`; fa and en produce mathematically identical trades.
+- **tests:** engine suite **54/54** with independent Gains-math fixtures (no self-fulfilling expectations) · acceptance E2E extended to **23/23** (Persian digits, Vela overlay + chart/backend SL-TP agreement, Gains-fee accounting) · regressions 18/18 + 9/9 + 11/11 on dev AND build · tsc clean.
+
+
 ### Demo trading platform — 100,000 DAI persistent accounts (2026-11-01, branch `qwen/demo-trading`)
 - **feat(trading):** every authenticated user gets ONE free demo account funded with exactly **100,000 virtual DAI** (single atomic idempotent ledger event; concurrent logins cannot double-credit; returning users restore their account, positions and history).
 - **feat(engine):** server-authoritative trading engine — market/limit/stop orders (long/short), SL/TP updates, manual close, liquidation monitoring (1 s loop, runs with the browser closed), per-account locking, transactional updates, idempotency keys, stale-price rejection, ownership checks. All money math with decimal.js into NUMERIC(24,10).

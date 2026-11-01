@@ -346,7 +346,7 @@ input[type=range]{width:100%;margin:8px 0 6px;accent-color:var(--mint);cursor:po
 .bt-body{flex:1;min-height:0;overflow:auto;position:relative;padding-bottom:4px}
 .bt-table table{width:100%;border-collapse:collapse}
 .bt-table th{
-  text-align:start;position:sticky;top:0;background:var(--obsidian);z-index:2;text-align:left;
+  text-align:start;position:sticky;top:0;background:var(--obsidian);z-index:2;
   font-weight:400;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;
   padding:7px 14px 5px;border-bottom:1px solid var(--line);white-space:nowrap;
 }
@@ -601,3 +601,23 @@ html[data-theme="light"] img[src$=".png"],html[data-theme="light"] img[src$=".jp
 html[data-theme="light"] .rk-btn{background:#12965D;color:#fff;border-color:#12965D}
 html[data-theme="light"] .rk-btn:hover{background:#0d7a4c}
 html[data-theme="light"] .rk-btn.rk-net,html[data-theme="light"] .rk-btn.rk-acct{background:transparent;color:#3F4C44;border-color:#0A120D22}
+
+/* ---- positions table: fixed readable columns (BUG-3, round-7 item 1) ---- */
+.bt-table th{ text-align:start }
+.bt-table #tb-positions th:nth-child(1){width:132px}
+.bt-table #tb-positions th:nth-child(2){width:62px}
+.bt-table #tb-positions th:nth-child(3){width:112px}
+.bt-table #tb-positions th:nth-child(4){width:98px}
+.bt-table #tb-positions th:nth-child(5){width:98px}
+.bt-table #tb-positions th:nth-child(6){width:54px}
+.bt-table #tb-positions th:nth-child(7){width:92px}
+.bt-table #tb-positions th:nth-child(8){width:104px}
+.bt-table #tb-positions th:nth-child(9){width:88px}
+.bt-table #tb-positions th:nth-child(10){width:102px}
+.bt-table #tb-positions th:nth-child(11){width:126px}
+.bt-table #tb-positions th:nth-child(12){width:216px}
+.bt-table #tb-positions td:last-child{display:flex;gap:6px;align-items:center;flex-wrap:nowrap}
+.bt-table #tb-positions td:last-child .act-btn{flex:0 0 auto}
+.bt-table .act-btn{white-space:nowrap;font-size:11px;padding:4px 10px}
+#tb-orders th:nth-child(8){width:110px}
+#tb-history th:nth-child(7){width:120px}

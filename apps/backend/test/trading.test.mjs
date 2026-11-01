@@ -45,6 +45,16 @@ const D = (v) => Number(v)
 const w1 = privateKeyToAccount(generatePrivateKey())
 const w2 = privateKeyToAccount(generatePrivateKey())
 const MKT = 'BTC/USD'
+
+/* independent Gains-math expectations (plain JS — never the engine's code):
+   BTC/USD: fee 0.035%/side on INITIAL notional; fixed spread 0.005%/side
+   (long opens buying above mark, closes selling below mark) */
+const FEE = 0.035, SPR = 0.005
+const fx = (mark, side, dir) => (side === 'long') === (dir === 'open')
+  ? mark * (1 + SPR / 100) : mark * (1 - SPR / 100)
+const near = (a, b, tol = 0.02) => Math.abs(Number(a) - b) < tol
+
+
 const clean = async (userId) => {
   await pool.query('DELETE FROM trading_positions WHERE user_id=$1', [userId])
   await pool.query('DELETE FROM trading_orders WHERE user_id=$1', [userId])
@@ -83,21 +93,21 @@ const clean = async (userId) => {
   const r = await j('POST', '/trading/order', order, C1, { 'Idempotency-Key': 'long-1' })
   ok('market long filled', r.status === 200 && r.data.position?.status === 'open', JSON.stringify(r.data).slice(0, 150))
   const pos = r.data.position
-  ok('entry price = server mark (50000)', pos?.entry_price === '50000.00')
-  ok('quantity = margin*leverage/price = 0.2', D(pos?.quantity) === 0.2, pos?.quantity)
-  const openFee = 10000 * 0.0005   /* 0.05% of notional */
-  ok('open fee = 5.00 (0.05% of 10k notional)', Math.abs(D(pos?.open_fee) - 5) < 1e-6, pos?.open_fee)
+  const expEntry = fx(50000, 'long', 'open'); global.EXPE = expEntry            /* 50002.5 */
+  ok('entry = mark + spread (50002.50)', near(pos?.entry_price, expEntry, 0.01), pos?.entry_price)
+  ok('quantity = notional/entry ≈ 0.19999', near(pos?.quantity, 10000 / expEntry, 0.0001), pos?.quantity)
+  ok('open fee = 0.035% of 10k notional (3.50)', near(pos?.open_fee, 3.5, 0.001), pos?.open_fee)
 
   const st = await j('GET', '/trading/state', null, C1)
-  ok('balance = 100000 - 5 fee', st.data.account.balance === '99995.00', st.data.account.balance)
+  ok('balance = 100000 - 3.5 fee', near(st.data.account.balance, 99996.5, 0.01), st.data.account.balance)
   ok('used margin = 1000', st.data.account.used_margin === '1000.00')
-  ok('free margin = 98995', st.data.account.free_margin === '98995.00')
+  ok('free margin = 98996.50', near(st.data.account.free_margin, 98996.5, 0.01), st.data.account.free_margin)
 
-  /* live PnL: price rises to 51000 → +0.2*1000 = +200 */
+  /* live PnL at 51000: qty × (mark − entry) — presentation uses the raw mark */
   marketDataPrice(MKT, '51000')
   const st2 = await j('GET', '/trading/state', null, C1)
-  ok('unrealized PnL = +200', st2.data.account.unrealized_pnl === '200.00', st2.data.account.unrealized_pnl)
-  ok('equity = 99995 + 200 = 100195', st2.data.account.equity === '100195.00', st2.data.account.equity)
+  ok('unrealized PnL ≈ +199.95', near(st2.data.account.unrealized_pnl, (10000 / expEntry) * (51000 - expEntry), 0.02), st2.data.account.unrealized_pnl)
+  ok('equity = balance + upnl', near(st2.data.account.equity, 99996.5 + (10000 / expEntry) * (51000 - expEntry), 0.03), st2.data.account.equity)
   ok('position in open panel', st2.data.positions.length === 1 && st2.data.positions[0].mark_price === '51000.00')
 
   /* duplicate submission returns the ORIGINAL result */
@@ -106,20 +116,24 @@ const clean = async (userId) => {
   const cnt = await pool.query('SELECT count(*)::int c FROM trading_positions WHERE user_id=$1', [U1])
   ok('still exactly one position', cnt.rows[0].c === 1)
 
-  /* close at 51000 → +200 gross − 5.1 close fee = +194.9 net */
+  /* close at 51000 → exit = mark − spread; fee on INITIAL notional (3.5) */
+  const expExit = fx(51000, 'long', 'close')
+  const expNet = (10000 / expEntry) * (expExit - expEntry) - 10000 * FEE / 100; global.EXPN = expNet
   const close = await j('POST', `/trading/positions/${pos.id}/close`, {}, C1)
-  ok('close succeeded with realized +194.90', Math.abs(D(close.data.position.realized_pnl) - 194.9) < 1e-6, close.data.position.realized_pnl)
+  if (!close.data?.position) console.log('CLOSE-DEBUG:', close.status, JSON.stringify(close.data).slice(0, 200))
+  ok('close: exit = mark − spread (50997.50)', near(close.data.position.exit_price, expExit, 0.01), close.data.position.exit_price)
+  ok('close fee on INITIAL notional (3.50)', near(close.data.position.close_fee, 3.5, 0.001), close.data.position.close_fee)
+  ok('realized ≈ +195.47 (Gains math)', near(close.data.position.realized_pnl, expNet, 0.01), close.data.position.realized_pnl)
   const st3 = await j('GET', '/trading/state', null, C1)
-  ok('balance = 99995 + 194.9 = 100189.90', st3.data.account.balance === '100189.90', st3.data.account.balance)
+  ok('balance = 99996.5 + net', near(st3.data.account.balance, 99996.5 + expNet, 0.02), st3.data.account.balance)
   ok('used margin released', st3.data.account.used_margin === '0.00')
   ok('open positions empty after close', st3.data.positions.length === 0)
   ok('history has the closed trade', st3.data.history.length === 1 && st3.data.history[0].exit_reason === 'manual')
 
   /* ledger reconciliation */
   const led = (await pool.query('SELECT * FROM trading_ledger WHERE user_id=$1 ORDER BY id', [U1])).rows
-  const expected = [100000, -5, 194.9]
-  ok('ledger amounts match (funding, open fee, close)', led.map(l => D(l.amount)).every((v, i) => Math.abs(v - expected[i]) < 1e-6), JSON.stringify(led.map(l => l.amount)))
-  ok('balance_after chain is consistent', D(led[2].balance_after) === 100189.9)
+  ok('ledger: funding −3.5 open fee +net close', near(led[1].amount, -3.5, 0.001) && near(led[2].amount, expNet, 0.01), JSON.stringify(led.map(l => l.amount)))
+  ok('balance_after chain is consistent', near(led[2].balance_after, 99996.5 + expNet, 0.02))
 }
 
 /* ================= 3. SHORT + LOSS ================= */
@@ -129,12 +143,14 @@ const clean = async (userId) => {
   ok('market short filled', r.data.position?.status === 'open')
   marketDataPrice(MKT, '50200')    /* price up → short loses 0.05*200 = 10 */
   const close = await j('POST', `/trading/positions/${r.data.position.id}/close`, {}, C1)
-  /* gross −10 (0.05×200), open fee 1.25, close fee 1.255 (exit notional 2510) */
+  /* short: entry 50000−spread, exit 50200+spread, fees 0.875/side (0.035% of 2500) */
+  const sEntry = fx(50000, 'short', 'open'), sExit = fx(50200, 'short', 'close')
+  const sNet = (2500 / sEntry) * (sEntry - sExit) - 2500 * FEE / 100
   const net = D(close.data.position.realized_pnl)
-  ok('short loss accounting (≈ −11.26)', Math.abs(net + 11.26) < 0.01, String(net))
+  ok('short loss accounting (Gains math)', near(net, sNet, 0.01), String(net))
   const st = await j('GET', '/trading/state', null, C1)
-  /* 100189.90 − 1.25 open fee − 11.255 net = 100177.395 → view 100177.40 */
-  ok('balance reflects short loss + fees', Math.abs(D(st.data.account.balance) - 100177.40) < 0.01, st.data.account.balance)
+  const prevBal = 99996.5 + (global.EXPN || 0) - 0.875  /* short open fee 0.035% of 2500 */
+  ok('balance reflects short loss + fees', near(st.data.account.balance, prevBal + sNet, 0.02), st.data.account.balance)
 }
 
 /* ================= 4. VALIDATION REJECTIONS ================= */
@@ -191,7 +207,7 @@ const clean = async (userId) => {
   await new Promise(r2 => setTimeout(r2, 2000))
   const st = await j('GET', '/trading/state', null, C1)
   ok('SL executed (exit_reason=sl)', st.data.history.some(h => h.exit_reason === 'sl'))
-  ok('position closed by SL at mark', st.data.history.find(h => h.exit_reason === 'sl')?.exit_price === '49400.00')
+  ok('SL exit = mark − spread', near(st.data.history.find(h => h.exit_reason === 'sl')?.exit_price, fx(49400, 'long', 'close'), 0.01))
 
   marketDataPrice(MKT, '50000')
   const r2 = await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'market', margin: 1000, leverage: 5, tp: 50800 }, C1, { 'Idempotency-Key': 'tp-1' })

@@ -28,10 +28,54 @@ Decimal.set({ precision: 40, rounding: Decimal.ROUND_HALF_UP })
 const D = (v) => new Decimal(v)
 export const SIM = {
   INITIAL_BALANCE: '100000.00',
-  FEE_PCT: process.env.SIM_FEE_PCT || '0.05',      /* percent of notional, each side */
   MAINT_PCT: process.env.SIM_MAINT_PCT || '10',    /* liquidation at 10% maintenance */
   MIN_MARGIN: '1',
   STALE_MS: 5000,
+}
+
+/* ---------- Gains-documented fee & spread tiers (per asset class) ----------
+   Sources: docs.gains.trade/gtrade-leveraged-trading/fees-and-spread
+   Class A (published values): BTC/ETH 0.035%, core crypto 0.05%, non-core
+   0.06%, forex major 0.012%. Fixed spread/side: BTC/ETH 0.005%, forex
+   0.005%, most other crypto 0%.
+   Class B (documented fallbacks — stocks/indices/commodities fees are not
+   published per class in the public doc): 0.06% fee, 0.01-0.02% spread. */
+const FEE_TIERS = { btceth: '0.035', crypto: '0.05', forex: '0.012', fallback: '0.06' }
+const SPREAD_TIERS = { btceth: '0.005', crypto: '0', forex: '0.005', commodities: '0.02', fallback: '0.01' }
+
+/** opening/closing fee % for a market (percent of notional) */
+export function feePct(meta, symbol) {
+  const base = String(meta?.base || symbol?.split('/')[0] || '').toUpperCase()
+  if (base === 'BTC' || base === 'ETH') return FEE_TIERS.btceth
+  switch (String(meta?.group || '').toLowerCase()) {
+    case 'crypto': return FEE_TIERS.crypto
+    case 'forex': return FEE_TIERS.forex
+    default: return FEE_TIERS.fallback     /* stocks, indices, commodities, unknown */
+  }
+}
+
+/** fixed spread % per side for a market (applied to the mark price) */
+export function spreadPct(meta, symbol) {
+  const base = String(meta?.base || symbol?.split('/')[0] || '').toUpperCase()
+  if (base === 'BTC' || base === 'ETH') return SPREAD_TIERS.btceth
+  switch (String(meta?.group || '').toLowerCase()) {
+    case 'crypto': return SPREAD_TIERS.crypto
+    case 'forex': return SPREAD_TIERS.forex
+    case 'commodities': return SPREAD_TIERS.commodities
+    default: return SPREAD_TIERS.fallback
+  }
+}
+
+/** execution price with the fixed spread applied (Gains: spread applies to
+    the oracle price — buy above mark for a long entry, sell below for a
+    short entry; mirrored on close) */
+export function withSpread(price, side, dir, meta, symbol) {
+  const sp = D(spreadPct(meta, symbol)).div(100)
+  const p = D(price)
+  /* dir: 'open' | 'close'; long opens buying (+spread) and closes selling
+     (−spread); short is the mirror */
+  const buy = (side === 'long') === (dir === 'open')
+  return buy ? p.times(sp.plus(1)) : p.times(new Decimal(1).minus(sp))
 }
 
 /* ---------- per-account async mutex (safe concurrency) ---------- */
@@ -265,12 +309,21 @@ export class Engine {
     })
   }
 
-  /* fill an order at `price` — inside the caller's transaction */
-  async #fill(c, acc, orow, price, sl, tp) {
+  /* fill an order at `price` — inside the caller's transaction.
+     Gains-aligned: entry gets the fixed spread applied (buy above mark for
+     a long, sell below for a short); the opening fee is the market's
+     per-class tier on the initial notional; the notional itself is NOT
+     shrunk by fees (v10 behaviour). */
+  async #fill(c, acc, orow, price, sl, tp, applySpread = true) {
+    const meta = this.md.marketMeta(orow.market)
+    /* market orders pay the fixed spread on top of the mark; limit/stop
+       orders fill AT the trader's chosen target price (no extra spread) */
+    const execPrice = applySpread ? withSpread(price, orow.side, 'open', meta, orow.market) : D(price)
     const margin = D(orow.margin), lev = Number(orow.leverage)
     const notional = margin.times(lev)
-    const qty = notional.div(D(price))
-    const fee = notional.times(D(SIM.FEE_PCT)).div(100)
+    const qty = notional.div(execPrice)
+    const fee = notional.times(D(feePct(meta, orow.market))).div(100)
+    price = execPrice.toString()
 
     /* balance -= open fee; used_margin += margin */
     const newBal = D(acc.balance).minus(fee)
@@ -442,7 +495,7 @@ export class Engine {
         return
       }
       /* fills at the target price (deterministic; documented assumption) */
-      await this.#fill(c, acc, cur, D(cur.target_price).toString(), cur.sl_price, cur.tp_price)
+      await this.#fill(c, acc, cur, D(cur.target_price).toString(), cur.sl_price, cur.tp_price, false)
       await c.query('COMMIT')
       this.emit(acc.id)
     } catch (e) { await c.query('ROLLBACK').catch(() => {}); throw e } finally { c.release() }
@@ -460,12 +513,20 @@ export class Engine {
     } catch (e) { await c.query('ROLLBACK').catch(() => {}); throw e } finally { c.release() }
   }
 
-  /* close a position at `price` for `reason` — inside the caller's transaction */
+  /* close a position at `price` (mark) for `reason` — inside the caller's
+     transaction. Gains-aligned: the closing fee is charged on the INITIAL
+     position size (margin × leverage, not the exit value), and the exit
+     execution price carries the fixed spread (long closes selling below
+     mark, short closes buying above mark). */
   async #closeTx(c, pos, price, reason) {
+    const meta = this.md.marketMeta(pos.market)
+    const execPrice = withSpread(price, pos.side, 'close', meta, pos.market)
     const qty = D(pos.quantity), entry = D(pos.entry_price), margin = D(pos.margin)
-    const closeFee = qty.times(D(price)).times(D(SIM.FEE_PCT)).div(100)
-    const gross = this.#pnl(qty, entry, D(price), pos.side)
+    const initialNotional = margin.times(pos.leverage)
+    const closeFee = initialNotional.times(D(feePct(meta, pos.market))).div(100)
+    const gross = this.#pnl(qty, entry, execPrice, pos.side)
     const net = gross.minus(closeFee)
+    price = execPrice.toString()
 
     const acc = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [pos.account_id])).rows[0]
     const newBal = D(acc.balance).plus(net)

@@ -47,6 +47,13 @@ export function TradingBridge() {
             size: Number(p.quantity), entry: Number(p.entry_price), leverage: p.leverage,
             margin: Number(p.margin), sl: p.sl_price != null ? Number(p.sl_price) : null,
             tp: p.tp_price != null ? Number(p.tp_price) : null,
+            /* engine rule: liquidation at ~90% margin loss (maint 10%) */
+            liq: p.side === 'long'
+              ? Number(p.entry_price) * (1 - 0.9 / p.leverage)
+              : Number(p.entry_price) * (1 + 0.9 / p.leverage),
+            /* server-authoritative live values for the details dialog */
+            srvMark: p.mark_price != null ? Number(p.mark_price) : null,
+            realized: p.status !== 'open' ? Number(p.realized_pnl) : null,
             openedAt: new Date(p.opened_at).getTime(), feePaid: Number(p.open_fee)
           })),
           orders: state.orders.map(o => ({
@@ -70,6 +77,8 @@ export function TradingBridge() {
       },
       getAccount: () => fmtAcct(state.account),
       subscribe() { return () => {} },
+      /* terminal.js row actions (SL/TP dialog, details) look positions up by id */
+      getPosition(id: string) { return this.state.positions.find(p => p.id === id) },
       checkTriggers() { /* server engine monitors triggers browser-independently */ },
       loadDemoScenario() { /* disabled in server mode — persistent real account */ },
       liqPrice(side: string, entry: number, leverage: number) {

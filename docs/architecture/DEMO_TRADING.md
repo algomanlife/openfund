@@ -44,14 +44,19 @@ browser (React terminal)                 Openfund backend (Node 22)
 Gains' public API provides prices/metadata but not execution parameters —
 these assumptions are explicit, configurable, and NOT claimed as Gains parity:
 
-| Rule | Value |
-|---|---|
-| Execution price | server mark at processing time (no slippage — no tick data) |
-| Fees | `SIM_FEE_PCT` (default 0.05% of notional) on open AND close |
-| Liquidation | margin + unrealized ≤ 10% of margin (`SIM_MAINT_PCT`) |
-| Limit/Stop fill | at the target price when the mark crosses it |
-| Funding | not simulated in v1 (shown as `—`) |
-| Stale-price rejection | marks older than 5 s are refused for execution |
+| Rule | Value | Class |
+|---|---|---|
+| Opening fee | per asset class on notional: BTC/ETH 0.035%, crypto 0.05%, forex 0.012%, fallback 0.06% (stocks/indices/commodities) | A (doc) / B fallback |
+| Closing fee | same tier on the **initial** notional (margin × leverage) — "fees are always applied on the initial position size" | A (doc) |
+| Fixed spread | applied to the mark on execution: BTC/ETH 0.005%/side, most crypto 0%, forex 0.005%, commodities 0.02%, fallback 0.01% (long opens above mark and closes below it; short mirrored) | A (doc) / B fallback |
+| Limit/Stop fill | at the trader's target price, no extra spread | B (documented) |
+| Position size | notional = leverage × collateral; fees do NOT shrink the size (v10 behaviour — charged separately) | A (v10 changelog) |
+| Liquidation | margin + unrealized ≤ 10% of margin (`SIM_MAINT_PCT`) — more conservative than Gains' per-class threshold tables | B (documented) |
+| Liquidity/skew impact | NOT simulated — depth/OI state is not in the public API | C |
+| Funding/borrowing | NOT simulated in v1 (v10 needs on-chain accumulator state) | C |
+| Stale-price rejection | marks older than 5 s are refused for execution | — |
+
+Sources: docs.gains.trade/gtrade-leveraged-trading/fees-and-spread · docs.gains.trade v10 changelog.
 
 ## PnL / margin formulas (decimal.js, NUMERIC(24,10) storage)
 
