@@ -20,6 +20,7 @@ export function ProductDashboard() {
     session.status === "authenticated" && product === "prop"
       ? "/overview"
       : null,
+    0, true,
   );
   if (session.status !== "authenticated") return <AccessGate />;
   const a = overview.data?.account;
@@ -57,6 +58,10 @@ export function ProductDashboard() {
               value={a?.unrealizedPnl}
             />
           </div>
+          {context?.state?.account?.risk && <div className="of-metrics">
+            <Metric label={t('افت روزانهٔ ثبت‌شده · DAI', 'Observed daily drawdown · DAI')} value={context.state.account.risk.daily_drawdown} />
+            <Metric label={t('بیشترین افت ثبت‌شده · DAI', 'Observed maximum drawdown · DAI')} value={context.state.account.risk.maximum_drawdown} />
+          </div>}
           <div className="of-panel">
             <h2>{t("حساب معاملاتی", "Trading account")}</h2>
             <p>

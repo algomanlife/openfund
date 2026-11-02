@@ -43,6 +43,7 @@ export default function TerminalShell({ product }: { product: Product }) {
     product,
     session.status === "authenticated" ? "/context" : null,
     revision,
+    true,
   );
   const t = (fa: string, en: string) => (locale === "fa" ? fa : en);
   useEffect(() => {

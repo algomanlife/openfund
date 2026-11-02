@@ -142,6 +142,8 @@ function useAccountAdapter(product: Product) {
 function workspaceMarkup() {
   const template = document.createElement("template");
   template.innerHTML = body;
+  const feed = document.createElement('p'); feed.id = 'account-feed-state'; feed.setAttribute('role','status');
+  template.content.querySelector('.trade-panel')?.prepend(feed);
   // Preserve legacy IDs used by event wiring, while removing obsolete customer copy.
   template.content.querySelector(".topnav")?.setAttribute("hidden", "");
   template.content

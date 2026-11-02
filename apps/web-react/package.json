@@ -9,7 +9,7 @@
     "test:markets": "node --test test/markets.test.mjs",
     "test:plans": "node --test test/challenge-plans.test.mjs",
     "build": "vite build",
-    "build:check": "tsc --noEmit || true",
+    "build:check": "tsc --noEmit",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
   },

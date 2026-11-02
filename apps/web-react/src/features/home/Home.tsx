@@ -24,7 +24,7 @@ export default function Home() {
     return () => { active = false }
   }, [])
   const c = content === 'error' ? null : content
-  return <InformationShell page="home" footer={false}
+  return <InformationShell page="home" footer={false} nav={false}
       title={c ? (c.translations[locale].seoTitle || 'Openfund') : 'Openfund'}
       description={c ? (c.translations[locale].seoDescription || '') : 'Openfund'}>
     {c ? <HomeBody variant={variant} locale={locale} content={c} /> : <HomeUnavailable locale={locale} />}
@@ -34,7 +34,7 @@ export default function Home() {
 /* CTA destination whitelist — the CMS picks from these; arbitrary URLs are never rendered */
 const CTA_HREF: Record<'challenges' | 'terminal', (locale: Locale) => string> = {
   challenges: locale => `#/${locale}/challenges`,
-  terminal: () => '#/terminal',
+  terminal: locale => `#/${locale}/perpetual/trade`,
 }
 
 /* illustration: Directus file when the owner uploaded one, bundled asset otherwise */
@@ -59,7 +59,7 @@ function HomeUnavailable({ locale }: { locale: Locale }) {
 function Heartbeat() {
   return <svg className="hb-heart" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
     <path d="M12 21C7 16.6 3.2 13.4 3.2 9.3 3.2 6.3 5.5 4.2 8.2 4.2c1.6 0 3 .8 3.8 2 .8-1.2 2.2-2 3.8-2 2.7 0 5 2.1 5 5.1 0 4.1-3.8 7.3-8.8 11.7z" fill="#82e7bd"/>
-    <path d="M4 12h3l2-4 2.6 7L14 12h6" fill="none" stroke="#06110c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/>
+    <path d="M4 12h3l2-4 2.6 7L14 12h6" fill="none" stroke="#06110c" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" opacity=".55"/>
   </svg>
 }
 
@@ -72,9 +72,7 @@ function HomeBody({ variant, locale, content: c }: { variant: 'a' | 'b'; locale:
   const hb = (t.note || '').split('\n').map(x => x.trim()).filter(Boolean)
 
   return <div id="top" className={`home-gateway home-variant-${variant}`}>
-    <div className="home-backdrop" aria-hidden="true">
-      <img src={`${base}assets/home/backdrop.svg`} alt="" decoding="async" />
-    </div>
+    <div className="home-ambient" aria-hidden="true"><i /><i /><i /></div>
     <div className="hero-atmosphere" aria-hidden="true"><i /><i /><i /></div>
 
     <div className="container home-stage">
@@ -87,7 +85,7 @@ function HomeBody({ variant, locale, content: c }: { variant: 'a' | 'b'; locale:
             alt={locale === 'fa' ? 'تصویری از معامله‌گر اوپن‌فاند پشت میز ارزیابی' : 'An Openfund trader at the evaluation desk'} /></div>
           <div className="home-panel-copy">
             <h2>{t.propTitle}</h2>
-            <a className="button" href={CTA_HREF[c.propCtaDestination](locale)}>
+            <a className="button" href={c.propCtaDestination === 'terminal' ? `#/${locale}/prop/trade` : CTA_HREF.challenges(locale)}>
               {t.propCta}
               <span aria-hidden="true">←</span>
             </a>

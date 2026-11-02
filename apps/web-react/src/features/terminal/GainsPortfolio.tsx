@@ -18,6 +18,7 @@ export function GainsSummary() {
     data = useResource(
       "perpetual",
       session.status === "authenticated" ? "/gains" : null,
+      0, true,
     );
   if (data.error)
     return (
@@ -59,7 +60,7 @@ export default function GainsPortfolio() {
   const params = new URLSearchParams(
       Object.entries({ ...query, cursor }).filter(([, v]) => v),
     ),
-    data = useResource("perpetual", `/gains?${params}`, revision);
+    data = useResource("perpetual", `/gains?${params}`, revision, true);
   const s = data.data,
     rows =
       tab === "positions"
