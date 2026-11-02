@@ -42,6 +42,7 @@ Notable changes are recorded here. Dates should use ISO 8601.
 ## Unreleased
 
 ### Openfund Protocol source integration (2026-11-02, branch `feat/openfund-protocol-foundation`)
+
 - **feat(protocol):** imported the complete upstream mux-protocol source (revision `0f70a70b`, GPL-2.0) into `packages/openfund-protocol/` — contracts (margin-trading core, orderbook, liquidity management, governance, tokens, readers), the full test suite, deployment tooling, historical deployment records and the audit report. PROVENANCE.md records the exact revision, scope and a verified finding: the imported HEAD does not compile with its own pinned toolchain (upstream regression in OrderBook.sol — the parent revision compiles cleanly with the identical config).
 - **rebrand:** module presented as **Openfund Protocol** with the positioning statement — liquidity aggregation across Gains Network, Hyperliquid and dYdX with intelligent routing (future release; routing/adapters documented as not implemented).
 - **docs:** `docs/protocol/{OVERVIEW,ARCHITECTURE,ROUTING,DEVELOPMENT}.md` — imported foundation vs future capabilities, isolation rules and the protocol PR workflow.
