@@ -45,7 +45,7 @@ Openfund addresses fragmented workflows across charts, market feeds, account por
 
 ### Prop Trading
 
-The current Prop account is a persistent practice environment with **100,000 virtual DAI**, funded once per authenticated user. A server-authoritative engine handles market/limit/stop orders, SL/TP, cancellation, partial closes and liquidation monitoring on real market marks.
+The current Prop account is a persistent practice environment with **100,000 virtual USD for new Free Trial accounts** (existing virtual-DAI ledgers are preserved), funded once per authenticated user. Trials have no time, trade-count or Challenge drawdown limits. Equity at or below zero permanently disables the trial after authoritative liquidation settlement; an individual position liquidation does not terminate a positive-equity account. A server-authoritative engine handles market/limit/stop orders, SL/TP, cancellation, partial closes and liquidation monitoring on real market marks.
 
 Decimal valuation, fee-aware margin checks, owned idempotency and PostgreSQL transactions protect the simulated ledger. The Portfolio shows positions, history and net performance; the Journal records decisions in the same product context. Challenge catalog and account records exist; paid activation and evaluation enforcement remain planned.
 
@@ -82,6 +82,8 @@ Wallet connection and **Sign-In with Ethereum** are distinct steps. SIWE verifie
 Portfolios provide product-specific records and supported analytics. Private journals add notes, tags, search, classifications, calendar/statistics and version-aware metadata export/restore. Imports cannot create trades or financial balances.
 
 [Identity and security model](docs/wallet/IDENTITY.md) · [Portfolio and Journal](docs/trading/PORTFOLIO_JOURNAL.md)
+
+The shared [account directory](docs/trading/UNIFIED_ACCOUNTS.md) presents Free Trial, Challenge and Perpetual identities. [Journal modules and metrics](docs/trading/JOURNAL_METRICS.md) use persisted records and per-account preferences. The restored [Book/Trades panel](docs/integrations/GAINS_DEPTH.md) reads the verified public Gains VOB and executed-trade API.
 
 ## Product gallery
 

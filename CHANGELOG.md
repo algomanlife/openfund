@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-02 — Unified accounts and trial lifecycle
+
+- Add an owned account-card directory, persistent account navigation and journal module workflows/preferences.
+- Provision new trials once in virtual USD; permanently disable zero-equity trials with transactional settlement, audit history and database reactivation/deletion guards. Preserve individual position liquidation and Challenge isolation.
+- Add backend estimates, explicit instrument contracts/precision and stop-gap execution; align reporting dates to settlement.
+- Restore Book/Trades using verified Gains VOB and real executed-trade resources; retain Vela and proprietary source indicators.
+- Add independent five-category settlement fixtures, lifecycle regressions and browser acceptance coverage. See the [delivery evidence](docs/reviews/unified-trading/DELIVERY.md).
+
+
 Historical entries describe their original changes, including past UI copy. They are not verification of business locations, commercial availability or present capabilities. See [Feature Status](docs/product/FEATURE_STATUS.md).
 
 ## 2026-11-02 — Proprietary chart indicators and interaction repair

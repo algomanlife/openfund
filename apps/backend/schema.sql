@@ -227,3 +227,61 @@ CREATE TABLE IF NOT EXISTS account_equity_risk (
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
+
+-- Free Trial lifecycle: existing DAI rows retain their denomination and ledger.
+ALTER TABLE demo_accounts ADD COLUMN IF NOT EXISTS disabled_at timestamptz;
+ALTER TABLE demo_accounts ADD COLUMN IF NOT EXISTS disable_reason text;
+ALTER TABLE demo_accounts DROP CONSTRAINT IF EXISTS demo_accounts_status_check;
+ALTER TABLE demo_accounts ADD CONSTRAINT demo_accounts_status_check
+  CHECK (status IN ('active','suspended','closed','liquidating','permanently_disabled'));
+CREATE OR REPLACE FUNCTION protect_terminated_trial() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF OLD.account_type='free_demo' AND OLD.status='permanently_disabled' THEN
+    RAISE EXCEPTION 'permanently_disabled_trial_is_immutable' USING ERRCODE='23514';
+  END IF;
+  RETURN CASE WHEN TG_OP='DELETE' THEN OLD ELSE NEW END;
+END $$;
+DROP TRIGGER IF EXISTS protect_terminated_trial ON demo_accounts;
+CREATE TRIGGER protect_terminated_trial BEFORE UPDATE OR DELETE ON demo_accounts
+FOR EACH ROW EXECUTE FUNCTION protect_terminated_trial();
+
+CREATE TABLE IF NOT EXISTS journal_preferences (
+  user_id uuid NOT NULL REFERENCES openfund_users(id),
+  product text NOT NULL CHECK (product IN ('prop','perpetual')),
+  account_ref text NOT NULL,
+  preferences jsonb NOT NULL DEFAULT '{}',
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY(user_id,product,account_ref)
+);
+
+CREATE TABLE IF NOT EXISTS account_equity_samples (
+  account_id uuid NOT NULL REFERENCES demo_accounts(id) ON DELETE CASCADE,
+  sampled_at timestamptz NOT NULL,
+  equity numeric(24,10) NOT NULL,
+  balance numeric(24,10) NOT NULL,
+  PRIMARY KEY(account_id,sampled_at)
+);
+
+-- Serialize private metadata writes with trial termination, including legacy APIs.
+CREATE OR REPLACE FUNCTION guard_trial_metadata() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE owner_id uuid; state text; ref text; prod text;
+BEGIN
+  owner_id := CASE WHEN TG_OP='DELETE' THEN OLD.user_id ELSE NEW.user_id END;
+  IF TG_TABLE_NAME='trade_notes' THEN
+    SELECT status INTO state FROM demo_accounts WHERE user_id=owner_id AND account_type='free_demo' FOR UPDATE;
+  ELSE
+    IF TG_OP='DELETE' THEN ref:=OLD.account_ref; prod:=OLD.product; ELSE ref:=NEW.account_ref; prod:=NEW.product; END IF;
+    IF prod='prop' THEN SELECT status INTO state FROM demo_accounts WHERE id::text=ref AND user_id=owner_id FOR UPDATE; END IF;
+  END IF;
+  IF state='permanently_disabled' THEN RAISE EXCEPTION 'account_permanently_disabled' USING ERRCODE='23514'; END IF;
+  RETURN CASE WHEN TG_OP='DELETE' THEN OLD ELSE NEW END;
+END $$;
+DROP TRIGGER IF EXISTS guard_trial_metadata ON journal_entries;
+CREATE TRIGGER guard_trial_metadata BEFORE INSERT OR UPDATE OR DELETE ON journal_entries FOR EACH ROW EXECUTE FUNCTION guard_trial_metadata();
+DROP TRIGGER IF EXISTS guard_trial_metadata ON journal_preferences;
+CREATE TRIGGER guard_trial_metadata BEFORE INSERT OR UPDATE OR DELETE ON journal_preferences FOR EACH ROW EXECUTE FUNCTION guard_trial_metadata();
+DROP TRIGGER IF EXISTS guard_trial_metadata ON trade_notes;
+CREATE TRIGGER guard_trial_metadata BEFORE INSERT OR UPDATE OR DELETE ON trade_notes FOR EACH ROW EXECUTE FUNCTION guard_trial_metadata();
+
+ALTER TABLE account_equity_samples DROP CONSTRAINT IF EXISTS account_equity_samples_account_id_fkey;
+ALTER TABLE account_equity_samples ADD CONSTRAINT account_equity_samples_account_id_fkey FOREIGN KEY(account_id) REFERENCES demo_accounts(id) ON DELETE CASCADE;

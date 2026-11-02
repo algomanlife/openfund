@@ -66,3 +66,7 @@ flowchart LR
   Pages --> API[Session-scoped product API and private notebook]
   CMS[Existing Directus editorial content] --> Pages
 ```
+
+## Unified account integration
+
+The [account directory and API additions](../trading/UNIFIED_ACCOUNTS.md) carry an owned `account` scope across navigation and journals. Challenge IDs authorize metadata only and never expose trial financial state. [Metric definitions](../trading/JOURNAL_METRICS.md) describe settled-date filtering and stored layout preferences. The [public Gains VOB/Trades integration](../integrations/GAINS_DEPTH.md) restores the existing panel without changing the Vela workspace or product execution boundaries.

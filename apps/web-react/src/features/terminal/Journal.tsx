@@ -1,11 +1,14 @@
 import { useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useSession } from "../../session/useOpenfundSession";
 import { AccessGate } from "./TerminalShell";
 import { useTerminal } from "./TerminalContext";
 import { api, download, money, useResource } from "./model";
 import { GainsAnalytics } from "./GainsPortfolio";
 import { PnlCalendar } from "./Analytics";
+import { AccountCards, AccountPicker } from "./Accounts";
+import { JournalAnalytics } from "./JournalAnalytics";
+import ProductPortfolio from "./Portfolio";
 const empty = () => ({
   id: crypto.randomUUID(),
   title: "",
@@ -16,12 +19,14 @@ const empty = () => ({
   tradeId: "",
   version: undefined as number | undefined,
 });
-export default function ProductJournal() {
+function JournalEntries({ kind = "" }: { kind?: string }) {
   const { product, context, t, message } = useTerminal(),
     session = useSession(),
     [params] = useSearchParams(),
     [draft, setDraft] = useState(() => ({
       ...empty(),
+      date: params.get("date") || empty().date,
+      classification: kind,
       tradeId: params.get("trade") || "",
       body: params.get("transaction")
         ? `https://arbiscan.io/tx/${params.get("transaction")}`
@@ -30,7 +35,7 @@ export default function ProductJournal() {
     [editing, setEditing] = useState(
       !!params.get("trade") || !!params.get("transaction"),
     ),
-    [filter, setFilter] = useState({ search: "", from: "", to: "" }),
+    [filter, setFilter] = useState({ search: "", from: params.get("date") || "", to: params.get("date") || "" }),
     [page, setPage] = useState(0),
     [revision, setRevision] = useState(0),
     [error, setError] = useState(""),
@@ -40,7 +45,7 @@ export default function ProductJournal() {
     file = useRef<HTMLInputElement>(null);
   const signed = session.status === "authenticated",
     query = new URLSearchParams(
-      Object.entries(filter).filter(([, v]) => v),
+      Object.entries({ ...filter, classification: kind }).filter(([, v]) => v),
     ).toString(),
     journal = useResource(
       product,
@@ -49,7 +54,7 @@ export default function ProductJournal() {
     ),
     overview = useResource(
       product,
-      signed && product === "prop" ? "/overview" : null,
+      signed && product === "prop" ? `/overview?${query}` : null,
       revision,
     ),
     trade = useResource(
@@ -63,6 +68,7 @@ export default function ProductJournal() {
     setPage(0);
   };
   if (!signed) return <AccessGate />;
+  const readOnly = context?.state?.account?.status === "permanently_disabled";
   const work = async (fn: () => Promise<void>) => {
     setBusy(true);
     setError("");
@@ -90,7 +96,7 @@ export default function ProductJournal() {
         }),
       });
       setEditing(false);
-      setDraft(empty());
+      setDraft({ ...empty(), classification: kind });
       setStatus(t("یادداشت ذخیره شد.", "Entry saved."));
     });
   const exportAll = () =>
@@ -128,8 +134,9 @@ export default function ProductJournal() {
       <div className="of-account-bar">
         <bdi>{context?.accountRef || "—"}</bdi>
         <button
+          disabled={readOnly}
           onClick={() => {
-            setDraft(empty());
+            setDraft({ ...empty(), classification: kind });
             setEditing(true);
             setError("");
           }}
@@ -140,7 +147,7 @@ export default function ProductJournal() {
           {t("خروجی JSON", "Export JSON")}
         </button>
         <button
-          disabled={busy || !context}
+          disabled={busy || !context || readOnly}
           onClick={() => file.current?.click()}
         >
           {t("ورود JSON", "Import JSON")}
@@ -222,10 +229,7 @@ export default function ProductJournal() {
       </div>
       {(error || journal.error) && (
         <p role="alert" className="of-error">
-          {t(
-            "عملیات ناموفق بود؛ داده ذخیره نشده را نگه دارید.",
-            "Request failed; retain any unsaved changes.",
-          )}
+          {error || journal.error}
         </p>
       )}
       {status && <p role="status">{status}</p>}
@@ -251,6 +255,7 @@ export default function ProductJournal() {
       )}
       {editing && (
         <form
+          aria-disabled={readOnly}
           className="of-panel of-journal-editor"
           onSubmit={(e) => {
             e.preventDefault();
@@ -326,7 +331,10 @@ export default function ProductJournal() {
                 <p>
                   <bdi>{trade.data.trade.symbol}</bdi> ·{" "}
                   {trade.data.trade.direction} ·{" "}
-                  <bdi>{money(trade.data.trade.netPnl)} DAI</bdi>
+                  <bdi>
+                    {money(trade.data.trade.netPnl)}{" "}
+                    {context?.state?.account?.currency || "USD"}
+                  </bdi>
                 </p>
               )}
               {trade.error && (
@@ -340,7 +348,7 @@ export default function ProductJournal() {
             </>
           )}
           <div className="of-actions">
-            <button type="submit" disabled={busy}>
+            <button type="submit" disabled={busy || readOnly}>
               {t("ذخیره", "Save")}
             </button>
             <button type="button" onClick={() => setEditing(false)}>
@@ -374,6 +382,7 @@ export default function ProductJournal() {
             )}
             <div className="of-actions">
               <button
+                disabled={readOnly}
                 onClick={() => {
                   setDraft({
                     ...entry,
@@ -387,7 +396,7 @@ export default function ProductJournal() {
                 {t("ویرایش", "Edit")}
               </button>
               <button
-                disabled={busy}
+                disabled={busy || readOnly}
                 onClick={() =>
                   work(async () => {
                     await api(
@@ -428,5 +437,164 @@ export default function ProductJournal() {
         </button>
       </div>
     </>
+  );
+}
+
+const sections = [
+  ["dashboard", "داشبورد", "Dashboard"],
+  ["calendar", "تقویم", "Calendar"],
+  ["daily", "ژورنال روزانه", "Daily Journal"],
+  ["trades", "معاملات", "Trades"],
+  ["reports", "گزارش‌ها", "Reports"],
+  ["firms", "شرکت‌های پراپ", "Prop Firms"],
+  ["notebook", "دفتر یادداشت", "Notebook"],
+  ["playbooks", "پلن‌های معاملاتی", "Playbooks"],
+  ["progress", "پیشرفت", "Progress"],
+  ["missed", "فرصت‌های ازدست‌رفته", "Missed Trades"],
+  ["import", "ورود اطلاعات", "Import"],
+  ["accounts", "حساب‌ها", "Accounts"],
+  ["settings", "تنظیمات", "Settings"],
+];
+export default function ProductJournal() {
+  const { product, context, t } = useTerminal(),
+    session = useSession(),
+    [params, setParams] = useSearchParams();
+  const section =
+    params.get("section") ||
+    (params.get("trade") || params.get("transaction")
+      ? "notebook"
+      : "dashboard");
+  const kinds: Record<string, string> = {
+    daily: "daily",
+    playbooks: "playbook",
+    progress: "progress",
+    missed: "missed_trade",
+    firms: "prop_firm",
+  };
+  if (session.status !== "authenticated") return <AccessGate />;
+  return (
+    <div className="of-journal-workspace">
+      <aside className="of-journal-nav">
+        <b>{t("ژورنال معاملات", "Trade Journal")}</b>
+        <nav aria-label="Journal sections">
+          {sections.map(([id, fa, en]) => (
+            <button
+              key={id}
+              aria-current={section === id ? "page" : undefined}
+              onClick={() => {
+                const next = new URLSearchParams(params);
+                next.set("section", id);
+                next.delete("trade");
+                next.delete("transaction");
+                setParams(next);
+              }}
+            >
+              {t(fa, en)}
+            </button>
+          ))}
+        </nav>
+      </aside>
+      <div className="of-journal-content">
+        <h2>
+          {t(
+            sections.find((r) => r[0] === section)?.[1] || "",
+            sections.find((r) => r[0] === section)?.[2] || "",
+          )}
+        </h2>
+        {context?.state?.account?.status === "permanently_disabled" && (
+          <p role="status">
+            {t("این ژورنال فقط خواندنی است.", "This journal is read-only.")}
+          </p>
+        )}
+        {params.get("view") === "all" ? (
+          <>
+            <AccountPicker />
+            <p>
+              {t(
+                "نمای تجمیعی با حفظ تفکیک حساب‌ها؛ موجودی‌های ناشناخته با هم جمع نمی‌شوند.",
+                "Aggregated directory with account attribution. Unknown balances and distinct collateral units are not combined.",
+              )}
+            </p>
+            <AccountCards />
+          </>
+        ) : ["dashboard", "calendar", "reports"].includes(section) ? (
+          <JournalAnalytics
+            calendarOnly={section === "calendar"}
+            reports={section === "reports"}
+          />
+        ) : section === "trades" ? (
+          <ProductPortfolio />
+        ) : section === "accounts" ? (
+          <AccountCards />
+        ) : section === "settings" ? (
+          <JournalSettings />
+        ) : (
+          <>
+            <AccountPicker />
+            {section === "progress" && <JournalAnalytics />}
+            {section === "firms" && (
+              <p>
+                {t(
+                  "یادداشت‌های خصوصی دربارهٔ شرکت‌های پراپ؛ وضعیت حساب‌ها در بخش حساب‌ها قابل مشاهده است.",
+                  "Private prop-firm research notes. Owned challenge status is available in Accounts.",
+                )}
+              </p>
+            )}
+            {section === "import" && (
+              <p>
+                {t(
+                  "بازیابی یادداشت‌های همین حساب؛ ورود دادهٔ مالی مجاز نیست.",
+                  "Restore metadata for this account. Imports never create trades, balances or performance.",
+                )}
+              </p>
+            )}
+            <JournalEntries key={section} kind={kinds[section] || ""} />
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+function JournalSettings() {
+  const { product, context, t } = useTerminal(),
+    prefs = useResource(product, "/preferences"),
+    [status, setStatus] = useState("");
+  const readOnly = context?.state?.account?.status === "permanently_disabled";
+  return (
+    <section className="of-panel">
+      <AccountPicker />
+      <p>
+        {t(
+          "مرز روزهای معاملاتی: UTC. ترجیحات چیدمان و کارت‌ها در داشبورد ذخیره می‌شوند.",
+          "Trading day boundary: UTC. Dashboard layouts and card visibility are saved per account.",
+        )}
+      </p>
+      <p>
+        {t("واحد حساب", "Account currency")}:{" "}
+        {context?.state?.account?.currency || "Native protocol collateral"}
+      </p>
+      <pre>{JSON.stringify(prefs.data, null, 2)}</pre>
+      <button
+        disabled={readOnly}
+        onClick={async () => {
+          try {
+            await api(product, "/preferences", {
+              method: "PUT",
+              body: JSON.stringify({
+                range: "All",
+                layout: "comfortable",
+                hidden: [],
+              }),
+            });
+            setStatus("Preferences restored.");
+          } catch (e) {
+            setStatus((e as Error).message);
+          }
+        }}
+      >
+        {t("بازگردانی تنظیمات نمایش", "Restore display preferences")}
+      </button>
+      {status && <p role="status">{status}</p>}
+    </section>
   );
 }

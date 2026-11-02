@@ -47,7 +47,7 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
     /* ---------- adapter for terminal.js ---------- */
     const provider = {
       serverMode: true,
-      get canTrade() { return connection === 'ready' && state.account?.valuation_status === 'fresh' },
+      get canTrade() { return connection === 'ready' && state.account?.status === 'active' && state.account?.valuation_status === 'fresh' },
       feeRate(market: string) { return pricingRef.current?.[market] ?? null },
       get status() { return connection !== 'ready' ? connection : state.account?.valuation_status === 'stale' ? 'stale' : state.account ? 'ready' : 'loading' },
       get state() {
@@ -56,7 +56,7 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
           positions: state.positions.map(p => ({
             id: p.id, market: p.market, side: p.side,
             size: Number(p.quantity), entry: Number(p.entry_price), leverage: p.leverage,
-            margin: Number(p.margin), currency: 'DAI', sl: p.sl_price != null ? Number(p.sl_price) : null,
+            margin: Number(p.margin), currency: state.account?.currency || 'USD', sl: p.sl_price != null ? Number(p.sl_price) : null,
             tp: p.tp_price != null ? Number(p.tp_price) : null,
             liq: n(p.liquidation_price),
             srvPnl: n(p.unrealized_pnl), srvRoi: n(p.roi_pct),
@@ -93,6 +93,7 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
       liqPrice() { return null /* exact liquidation comes from the backend position snapshot */ },
       validate(req: any) {
         const errs: string[] = []
+        if(state.account?.status === "permanently_disabled")return [L("این حساب برای همیشه غیرفعال شده است.","This Free Trial is permanently disabled.")]
         if (!provider.canTrade) return [L('دادهٔ حساب یا قیمت به‌روز نیست. دوباره تلاش کن.', 'Account data or prices are stale. Retry.')]
         const a = fmtAcct(state.account)
         if (!a) return [L('حساب معاملاتی در دسترس نیست — دوباره وارد شو.', 'Trading account unavailable — sign in again.')]
@@ -100,6 +101,10 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
         if (req.collateral > a.available) errs.push(L('کولترال از موجودی قابل استفاده بیشتر است.', 'Collateral exceeds available balance.'))
         if (req.type !== 'market' && !(req.price > 0)) errs.push(L('قیمت تریگر نامعتبر است.', 'Invalid trigger price.'))
         return errs
+      },
+      async previewAsync(req: any) {
+        const res=await postRaw('/trading/preview',{market:req.market,side:req.side,order_type:req.type,margin:req.collateral,leverage:req.leverage,target_price:req.type==='market'?null:req.price,sl:req.sl??null,tp:req.tp??null});
+        const data=await res.json(); if(!res.ok)throw new Error(data.error || 'Preview unavailable');return data
       },
       async submitAsync(req: any) {
         const key = crypto.randomUUID()

@@ -54,3 +54,11 @@ Genuine documentation screenshots use no market/CMS/financial protocol fixtures.
 [CI](../../.github/workflows/ci.yml) runs frontend, documentation, PostgreSQL-backed backend/browser checks, Blueprint validation, gitleaks and advisory reports. Authenticated Render validation only runs when its secret is configured. Dependency reports are not proof of security; triage findings without silently changing runtime versions in a documentation task.
 
 Before delivery, check the authored diff for whitespace and secrets. Preserve licenses/notices and record unexecuted checks explicitly. [Delivery evidence](../reviews/repository-transformation/DELIVERY.md) belongs to this branch; historical reports are not fresh test results.
+
+## Unified account acceptance
+
+`npm run test:unified --prefix apps/backend` adds permanent trial lifecycle, concurrent funding/stop, independently derived five-category settlement constants, precise zero-boundary checks, stop gaps, estimates and date-filter reconciliation. It is included in `npm run test:backend` and uses the isolated PostgreSQL database.
+
+`npm run test:browser:unified` exercises the actual account cards, journal preferences/playbooks, live Gains depth/tape and a controlled local execution/termination scenario. Set the same isolated database and `SIM_TEST_MODE=1` backend; include the frontend hostname in `ALLOWED_DOMAINS`. This live-source suite is opt-in because public feed availability varies. CI runs the existing controlled browser and chart regressions; no external-feed failure is hidden with generated liquidity. Screenshot provenance is in the [delivery report](../reviews/unified-trading/DELIVERY.md).
+
+Controlled backend mode requires both `SIM_TEST_MODE=1` and an isolated database name containing a `test`, `audit` or `ci` segment. Only that mode exposes price injection and bypasses shared rate buckets, avoiding minute-boundary-dependent acceptance results. Production never enables either behavior. Opening order requests require a durable idempotency key.

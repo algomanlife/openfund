@@ -24,6 +24,7 @@ const {
   equityCurve,
   dailyStats,
   drawdown,
+  relativeDrawdownCurve,
   bySymbol,
   byDirection,
   byAssetClass,
@@ -113,19 +114,22 @@ export class Portfolio {
   /** overview + metrics + curves + calendar in one authoritative payload */
   async overview(userId, range = {}) {
     const c = await this.pool.connect();
-    let account, positions;
+    let account, positions, ledger=[], samples=[];
     try {
       await c.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
       account = await this.accountOf(userId,c);
       positions = account ? await this.allPositions(userId,c) : [];
+      if(account){ledger=(await c.query('SELECT ts,balance_after,amount,event FROM trading_ledger WHERE account_id=$1 ORDER BY id',[account.id])).rows;samples=(await c.query('SELECT sampled_at,equity,balance FROM account_equity_samples WHERE account_id=$1 ORDER BY sampled_at',[account.id])).rows;}
       await c.query('COMMIT');
     } catch(e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
     if (!account) return null;
     const trades = positions
       .filter(
         (p) =>
-          (!range.from || p.opened_at >= new Date(range.from)) &&
-          (!range.to || p.opened_at <= new Date(range.to)),
+          (!range.from || (p.closed_at || p.opened_at) >= new Date(range.from)) &&
+          (!range.to || (p.closed_at || p.opened_at) <= new Date(range.to)) &&
+          (!range.market || p.market.toLowerCase().includes(range.market.toLowerCase())) &&
+          (!range.side || p.side === range.side),
       )
       .map((p) => ({
         ...toRoundTrip(p),
@@ -174,6 +178,8 @@ export class Portfolio {
         totalTrades: positions.length,
         usedMargin: used,
       },
+      balanceCurve: ledger.filter(r=>(!range.from || r.ts>=new Date(range.from)) && (!range.to || r.ts<=new Date(range.to))).map(r=>({t:r.ts.toISOString(),cumNetPnl:Number(r.balance_after)})),
+      observedEquityCurve:samples.filter(r=>(!range.from || r.sampled_at>=new Date(range.from)) && (!range.to || r.sampled_at<=new Date(range.to))).map(r=>({t:r.sampled_at.toISOString(),cumNetPnl:Number(r.equity)})),
       metrics: ov.metrics,
       edgeScore: computeEdgeScore(ov.metrics),
       equityCurve: curve /* cumulative realized net PnL per trade close */,
@@ -181,6 +187,7 @@ export class Portfolio {
         "realized" /* honest label: no historical mark-to-market snapshots */,
       daily: days /* PnL calendar (tz documented) */,
       drawdown: dd,
+      relativeDrawdownCurve: relativeDrawdownCurve(curve,INITIAL_BALANCE),
       timeZone: TZ,
     };
   }
@@ -190,8 +197,10 @@ export class Portfolio {
     const trades = positions
       .filter(
         (p) =>
-          (!range.from || p.opened_at >= new Date(range.from)) &&
-          (!range.to || p.opened_at <= new Date(range.to)),
+          (!range.from || (p.closed_at || p.opened_at) >= new Date(range.from)) &&
+          (!range.to || (p.closed_at || p.opened_at) <= new Date(range.to)) &&
+          (!range.market || p.market.toLowerCase().includes(range.market.toLowerCase())) &&
+          (!range.side || p.side === range.side),
       )
       .map((p) => ({
         ...toRoundTrip(p),
@@ -261,11 +270,11 @@ export class Portfolio {
     }
     if (from) {
       params.push(from);
-      where.push(`p.opened_at >= $${params.length}`);
+      where.push(`COALESCE(p.closed_at,p.opened_at) >= $${params.length}`);
     }
     if (to) {
       params.push(to);
-      where.push(`p.opened_at <= $${params.length}`);
+      where.push(`COALESCE(p.closed_at,p.opened_at) <= $${params.length}`);
     }
     const orderBy =
       sort === "pnl_desc"
@@ -341,6 +350,7 @@ export class Portfolio {
   }
 
   async upsertNote(userId, tradeKey, notes, tags) {
+    if((await this.accountOf(userId))?.status === "permanently_disabled") throw Object.assign(new Error("account_permanently_disabled"),{status:403});
     if (
       typeof tradeKey !== "string" ||
       typeof notes !== "string" ||

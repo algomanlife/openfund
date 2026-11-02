@@ -26,3 +26,7 @@ Reviewed against `2f5cf93`, 2026-11-02. No completion dates are promised. **Comp
 | E2 · Ecosystem Expansion | Coordinated scaling and advanced platform capabilities | Planned | Load evidence, engine coordination design, I3 | Single mutation authority under failure, capacity targets, recovery and consistency tests | [Engineering](ENGINEERING.md) |
 
 [Roadmap overview](../../ROADMAP.md) · [Feature Status](../product/FEATURE_STATUS.md)
+
+## Unified account integration milestone
+
+**In Progress:** one owned account directory, permanent zero-equity trial stop, instrument-validated simulation, restored Gains VOB/Trades and all thirteen journal navigation sections. Dependencies: existing PostgreSQL/Engine/SIWE/portfolio and public Gains resources. Acceptance: concurrent account/risk tests, deterministic cross-market settlement, account isolation, executable browser scenarios, screenshots and current CI. Evidence and external limits: [delivery](../reviews/unified-trading/DELIVERY.md). No commercial Challenge or on-chain execution claims.

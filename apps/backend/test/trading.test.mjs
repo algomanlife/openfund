@@ -69,7 +69,7 @@ const clean = async (userId) => {
   await clean(uid)
   const cookie2 = await login(w1)                      /* re-login after clean */
   const st = await j('GET', '/trading/state', null, cookie2)
-  ok('demo account exists with exactly 100000.00 DAI', st.data.account?.balance === '100000.00', JSON.stringify(st.data.account))
+  ok('demo account exists with exactly 100000.00 virtual USD', st.data.account?.balance === '100000.00', JSON.stringify(st.data.account))
   ok('equity = balance initially', st.data.account?.equity === '100000.00')
   ok('free margin = 100000.00', st.data.account?.free_margin === '100000.00')
   const led = await pool.query('SELECT * FROM trading_ledger WHERE user_id=$1 ORDER BY id', [uid])
@@ -195,7 +195,7 @@ const clean = async (userId) => {
   marketDataPrice(MKT, '50500')
   await new Promise(r => setTimeout(r, 2000))
   const st = await j('GET', '/trading/state', null, C1)
-  ok('stop triggered at 50500', st.data.positions.some(p => p.entry_price === '50500.00'))
+  ok('stop triggered at executable mark plus spread', st.data.positions.some(p => p.entry_price === '50502.525'))
   if (st.data.positions[0]) await j('POST', `/trading/positions/${st.data.positions[0].id}/close`, {}, C1)
 }
 

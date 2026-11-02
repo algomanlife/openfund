@@ -13,10 +13,10 @@ const ok = (name, cond, extra = '') => {
   if (cond) { passed++; console.log('PASS -', name) }
   else { failed++; console.log('FAIL -', name, extra) }
 }
-const j = async (method, path, body, cookie) => {
+const j = async (method, path, body, cookie, headers = {}) => {
   const res = await fetch(BASE + path, {
     method,
-    headers: { 'Content-Type': 'application/json', Origin: 'http://localhost:5173', ...(cookie ? { Cookie: cookie } : {}) },
+    headers: { 'Content-Type': 'application/json', Origin: 'http://localhost:5173', ...(cookie ? { Cookie: cookie } : {}), ...headers },
     body: body ? JSON.stringify(body) : undefined
   })
   return { status: res.status, data: await res.json().catch(() => null), cookie: (res.headers.get('set-cookie') || '').split(';')[0] }

@@ -13,7 +13,7 @@ The maintained adapter is [gains-adapter.js](../../packages/openfund-gains-adapt
 | `/v1/arbitrum/markets/{SYMBOL-DASHED}/candles` | OHLC candles for adapter-supported 1m, 5m, 15m, 30m, 1h, 4h and 1d; weekly bars are not assumed |
 | `wss://api.gains.trade/v1/arbitrum/ws` | Prices subscription, ping/pong, reconnect and sequence-gap resubscription |
 
-`createVelaProvider()` exposes the provider's bars, symbols, metadata and subscription contracts. Source timestamps and staleness are preserved. Open-interest/funding metadata can be displayed when available; authentic order-book depth, executed tape and footprint volume are not supplied by this oracle feed. Never invent missing values.
+`createVelaProvider()` exposes the provider's bars, symbols, metadata and subscription contracts. Source timestamps and staleness are preserved. Open-interest/funding metadata can be displayed when available; depth, executed tape and footprint volume are not supplied by this oracle price feed. The separate current Trading API supplies [Gains VOB and executed trades](GAINS_DEPTH.md), now integrated into the shared panel. Never invent missing values.
 
 ## Wallet reads
 

@@ -19,13 +19,18 @@ export const primary = {
     ["rewards", "ریوارد", "Rewards"],
   ],
 } as const;
-export const route = (locale: Locale, product: Product, page: string) =>
-  `/${locale}/${product}/${page}`;
+export const selectedAccount = () => new URLSearchParams(location.hash.split('?')[1] || '').get('account');
+export const route = (locale: Locale, product: Product, page: string) => {
+  const account=location.hash.includes(`/${product}/`) ? selectedAccount() : null;
+  return `/${locale}/${product}/${page}${account ? `?account=${encodeURIComponent(account)}` : ''}`;
+};
 export async function api(
   product: Product,
   path: string,
   init: RequestInit = {},
 ) {
+  const account = location.hash.includes(`/${product}/`) ? selectedAccount() : null;
+  if(account) path += `${path.includes('?')?'&':'?'}account=${encodeURIComponent(account)}`;
   const r = await fetch(`${backendUrl()}/products/${product}${path}`, {
     ...init,
     credentials: "include",
@@ -49,7 +54,7 @@ export function useResource<T = any>(
     error: string | null;
     key?: string;
   }>({ data: null, loading: false, error: null });
-  const key = `${session.user?.id}:${session.status}:${product}:${path}:${revision}`;
+  const key = `${session.user?.id}:${session.status}:${product}:${selectedAccount()}:${path}:${revision}`;
   useEffect(() => {
     if (!path) {
       setState({ key, data: null, loading: false, error: null });
@@ -69,8 +74,10 @@ export function useResource<T = any>(
       } finally { busy = false; }
     };
     void load();
+    const changed=()=>{if(live)void load()};
+    addEventListener('of-trading-update',changed);
     const timer = live ? setInterval(load, product === 'prop' ? 5000 : 15000) : null;
-    return () => { ctrl.abort(); if (timer) clearInterval(timer) };
+    return () => { ctrl.abort(); removeEventListener('of-trading-update',changed); if (timer) clearInterval(timer) };
   }, [key, live]);
   return state.key === key
     ? state
