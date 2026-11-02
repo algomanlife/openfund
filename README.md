@@ -102,6 +102,11 @@ Genuine captures retain the source baselines recorded in the manifest. Terminal 
 | ![Actual private Journal with no seeded notes](docs/assets/screenshots/journal.jpg) | ![Actual fresh-account dashboard without fabricated performance history](docs/assets/screenshots/analytics.jpg) |
 | **Account / Profile — disposable documentation wallet** | **Wallet connection — anonymous** |
 | ![Actual local profile for a generated documentation identity](docs/assets/screenshots/account-profile.jpg) | ![Actual unconnected wallet modal](docs/assets/screenshots/wallet-connection.jpg) |
+| **FAQ — searchable bilingual hub** | **Tools Center — ten browser-side calculators** | **Learning Center — five paths** |
+| --- | --- | --- |
+| ![Persian FAQ hub with categories and search](docs/assets/screenshots/website-faq-fa.jpg) | ![Persian Tools Center index](docs/assets/screenshots/website-tools-fa.jpg) | ![Learning Center landing](docs/assets/screenshots/website-learn-fa.jpg) |
+| **Lesson with contents sidebar** | **Glossary — 40 terms** | **Growth Partner — pre-launch attribution** |
+| ![Lesson page with table of contents](docs/assets/screenshots/website-lesson-fa.jpg) | ![Glossary with search and letter index](docs/assets/screenshots/website-glossary-fa.jpg) | ![Pre-launch Growth Partner page with honest reward status](docs/assets/screenshots/website-referral-fa.jpg) |
 
 [Full gallery, Perpetual Portfolio and capture limitations](docs/assets/screenshots/README.md)
 

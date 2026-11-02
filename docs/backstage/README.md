@@ -35,11 +35,13 @@ the trading terminal (Persian + English) is managed in the Directus Data Studio.
 
 4. `python3 apps/backstage/scripts/apply_schema.py` — collections, relations, public permissions.
 5. `python3 apps/backstage/scripts/seed_content.py` — imports the CURRENT fa/en content (298 landing strings + 186 terminal labels + navigation + pages + settings).
+6. `node apps/backstage/scripts/seed_website_content.mjs` — FAQ hub, Learning Center, tool prose and the Growth Partner singleton (`--refresh` overwrites edits).
 6. React app (`cd apps/web-react && npm run dev`) → http://localhost:5173/react/#/
 7. Open http://localhost:8055, edit any `ui_messages` value, **refresh the React page** — the change appears.
 
 ## Docs
 
+- [Website expansion spec](../website/WEBSITE_EXPANSION.md) — FAQ, Learning Center, tools and referral collections
 - [Content model](CONTENT_MODEL.md) — collections, fields, translation pattern
 - [Local setup](LOCAL_SETUP.md) — prerequisites, exact commands, troubleshooting
 - [Translations](TRANSLATIONS.md) — how fa/en flows from Directus into the pages

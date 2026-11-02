@@ -8,6 +8,21 @@ Public pages use the existing local Directus instance on port 8055 through publi
 
 Account images use a disposable generated in-memory wallet, actual ECDSA/SIWE verification and a separate local PostgreSQL test database. The real backend issues its normal 100,000 virtual-DAI practice account. No trades, notebook entries, deposits, approvals or blockchain transactions were created. The wallet address is a generated documentation identity, not personal wallet information. Its session was revoked and its private key discarded after capture. [Account capture utility](../../../scripts/docs/capture-account.cjs) enforces a localhost target and uses no financial response fixtures.
 
+## Website sections (2026-11-02 expansion)
+
+Captured from the same build and Directus instance as above; anonymous
+sessions, CMS-sourced content, no fixtures. [Expansion spec](../../website/WEBSITE_EXPANSION.md).
+
+| FAQ — Persian hub | FAQ — English hub | Tools — Persian index |
+| --- | --- | --- |
+| ![Searchable Persian FAQ with category sidebar](website-faq-fa.jpg) | ![English FAQ hub](website-faq-en.jpg) | ![Tools Center index](website-tools-fa.jpg) |
+| **Position size calculator** | **Risk of ruin calculator** | **FAQ on mobile** |
+| ![Position size calculator with defaults](website-tool-position-fa.jpg) | ![Risk of ruin calculator](website-tool-risk-en.jpg) | ![Mobile FAQ category navigation](website-faq-fa-mobile.jpg) |
+| **Learning Center — Persian** | **Lesson with contents** | **Glossary** |
+| ![Learning Center landing](website-learn-fa.jpg) | ![Lesson page with contents sidebar](website-lesson-fa.jpg) | ![Glossary with search and letter index](website-glossary-fa.jpg) |
+| **Growth Partner — Persian** | **Growth Partner — English** | **Learning Center — English** |
+| ![Pre-launch Growth Partner page](website-referral-fa.jpg) | ![Pre-launch Growth Partner page in English](website-referral-en.jpg) | ![Learning Center landing in English](website-learn-en.jpg) |
+
 ## Gallery
 
 | Home | Markets |

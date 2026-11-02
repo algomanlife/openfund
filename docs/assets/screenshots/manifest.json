@@ -464,6 +464,138 @@
       "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
       "state": "Explicit Order view selected in the responsive workspace; no hidden overflow or financial fixtures",
       "sha256": "bab5dd94289c674a542623751ea408f26a95e50a9c10c8cedb03de971fa413b7"
+    },
+    {
+      "file": "website-faq-fa.jpg",
+      "route": "/react/#/fa/faq",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T17:54:56.793823+00:00",
+      "state": "Actual anonymous page; CMS-sourced FAQ hub in Persian"
+    },
+    {
+      "file": "website-faq-en.jpg",
+      "route": "/react/#/en/faq",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T17:54:56.793823+00:00",
+      "state": "Actual anonymous FAQ hub in English"
+    },
+    {
+      "file": "website-faq-fa-mobile.jpg",
+      "route": "/react/#/fa/faq",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T17:54:56.793823+00:00",
+      "state": "Actual anonymous mobile FAQ hub, mobile category navigation"
+    },
+    {
+      "file": "website-tools-fa.jpg",
+      "route": "/react/#/fa/tools",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T17:54:56.793823+00:00",
+      "state": "Actual anonymous Tools Center index in Persian"
+    },
+    {
+      "file": "website-tool-position-fa.jpg",
+      "route": "/react/#/fa/tools/position-size",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T17:54:56.793823+00:00",
+      "state": "Actual anonymous position size calculator with default inputs"
+    },
+    {
+      "file": "website-tool-risk-en.jpg",
+      "route": "/react/#/en/tools/risk-of-ruin",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T17:54:56.793823+00:00",
+      "state": "Actual anonymous risk-of-ruin calculator in English"
+    },
+    {
+      "file": "website-learn-fa.jpg",
+      "route": "/react/#/fa/learn",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T17:54:56.793823+00:00",
+      "state": "Actual anonymous Learning Center landing in Persian"
+    },
+    {
+      "file": "website-learn-en.jpg",
+      "route": "/react/#/en/learn",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T17:54:56.793823+00:00",
+      "state": "Actual anonymous Learning Center landing in English"
+    },
+    {
+      "file": "website-lesson-fa.jpg",
+      "route": "/react/#/fa/learn/lessons/perps-how-they-work",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T17:54:56.793823+00:00",
+      "state": "Actual anonymous lesson page with contents sidebar"
+    },
+    {
+      "file": "website-glossary-fa.jpg",
+      "route": "/react/#/fa/learn/glossary",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T17:54:56.793823+00:00",
+      "state": "Actual anonymous glossary with search and letter index"
+    },
+    {
+      "file": "website-referral-fa.jpg",
+      "route": "/react/#/fa/referral",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T17:54:56.793823+00:00",
+      "state": "Actual anonymous pre-launch Growth Partner page in Persian"
+    },
+    {
+      "file": "website-referral-en.jpg",
+      "route": "/react/#/en/referral",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T17:54:56.793823+00:00",
+      "state": "Actual anonymous pre-launch Growth Partner page in English"
     }
   ]
 }

@@ -18,6 +18,14 @@
 
 Historical entries describe their original changes, including past UI copy. They are not verification of business locations, commercial availability or present capabilities. See [Feature Status](docs/product/FEATURE_STATUS.md).
 
+## 2026-11-02 — Website expansion: FAQ, Growth Partner, Tools Center, Learning Center
+
+- Add four bilingual public sections on the existing shell: a searchable 43-question FAQ hub with categories and shareable question links, a Tools Center with ten deterministic browser-side calculators (position size, margin, liquidation, PnL, funding, risk/reward, risk of ruin, prop drawdown, consistency, CSV journal analyzer), a Learning Center with five paths, 25 lessons and a 40-term glossary, and a pre-launch Growth Partner page.
+- Extend Directus additively (faq categories, learning paths/lessons/glossary, tool prose, referral singleton with a prelaunch/live switch) and seed them idempotently from the repository seeds; pages fall back to bundled content with a visible marker when the CMS is unreachable.
+- Implement server-authoritative referral attribution: one invite code per wallet identity, a single attribution record at account creation from the of_ref cookie, self-referral impossible, session-scoped summary — with no commission, reward or payout fields anywhere.
+- Group the new destinations under a Resources dropdown in the shared header (flat on mobile) and add footer/SEO rows; language switching preserves the destination.
+- Add the calculator engine with coded locale-neutral validation, a Unicode-aware Persian search normalizer, 47 frontend tests and 18 backend referral tests, all wired into CI.
+
 ## 2026-11-02 — Proprietary chart indicators and interaction repair
 
 - Add original Open Algo V5, Price Action Concepts and Smart Money Concepts to the shared chart catalog before all built-ins; resolve supplied Pine libraries locally.
