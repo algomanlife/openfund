@@ -1,30 +1,32 @@
 # Contributing to Openfund
 
-## Branches and reviews
+Before coding, read the [documentation index](docs/README.md), [Feature Status](docs/product/FEATURE_STATUS.md), relevant product/architecture contracts and [milestone register](docs/roadmap/MILESTONES.md). Follow [AGENTS.md](AGENTS.md) for repository and Render requirements.
 
-Create a feature branch from the latest `main`, e.g. `qwen/terminal-layout`, `codex/vela-adapter`, or `docs/brand-strategy`. Keep each PR focused. Never force-push to `main`.
+## Workflow
 
-## Pull Request checklist
+Fetch the latest `main` and create a focused branch/worktree (`docs/`, `codex/` or `qwen/`). Inspect status/remotes/scripts first; preserve other work. Never force-push, rewrite history, push directly to main, or merge without review. Use Conventional Commit prefixes and a PR describing the concrete behavior, evidence and limitations.
 
-- [ ] Change is scoped and described clearly
-- [ ] Existing landing page and terminal still render
-- [ ] Relevant tests or manual verification recorded
-- [ ] README and integration docs updated when applicable
-- [ ] `docs/product/FEATURE_STATUS.md` accurately updated
-- [ ] `CHANGELOG.md` updated for material changes
-- [ ] No secrets, unsupported network addresses or unlicensed assets added
-- [ ] Third-party attribution retained
+## Documentation contract
 
-## CI requirements
+- Keep first-party documentation, explanatory comments, test descriptions and templates in English; preserve Persian application localization, RTL and required fixture assertions.
+- Update product docs and Feature Status whenever capabilities change. Update related roadmap dependencies/acceptance criteria and architecture/integration contracts in the same PR.
+- Refresh genuine screenshots and their provenance after significant UI changes. Do not invent account records or reveal personal wallet data.
+- Record material changes in the changelog. Preserve approved logos, third-party licenses and attribution.
+- Distinguish simulated execution, read-only integration, configuration, local verification and deployment. Never infer investors, partnerships, revenue, adoption, approvals or production readiness.
 
-CI (`.github/workflows/ci.yml`) must pass before merge:
-web typecheck + unit tests + production build · backend suite against a real
-Postgres service container · `npm run validate:blueprint` · gitleaks. Keep
-changes green locally: `npm run typecheck`, `npm run test:web`,
-`npm run test:backend`, `npm run validate:blueprint`. Deployment-relevant
-changes must follow the Render rules in `AGENTS.md` and update
-`docs/deployment/*` when they touch services or variables.
+## Architecture contract
 
-## Commit convention
+Preserve the three Render resources (`openfund`, `openfund-db`, `openfund-cms`) and same-origin React at `/react/`. Keep the shared terminal presentation and product financial state isolated. PostgreSQL/Decimal own Prop simulation; Gains owns Perpetual read records; Directus owns published content/catalog administration. `dist/` remains source-critical. Protocol source integration is outside the repository transformation scope.
 
-Use `feat:`, `fix:`, `docs:`, `refactor:`, `test:` or `chore:` prefixes. Do not mark a planned integration as implemented without working code and verification.
+## Validation
+
+Follow [Local Development](docs/development/LOCAL_DEVELOPMENT.md) and [Testing](docs/development/TESTING.md). Required gates include `npm run docs:check`, TypeScript, relevant frontend/backend/browser suites, production build, Blueprint validation and security checks. Backend tests require an isolated database; test-only mark injection must stay disabled in production. Add new validation requirements to CI in the same PR. Report blockers and warnings accurately; do not mark unexecuted tests passed.
+
+## PR checklist
+
+- [ ] Scope and resulting behavior described for a new reviewer
+- [ ] Relevant product/status/roadmap/contracts updated
+- [ ] Screenshots and provenance refreshed where needed
+- [ ] Required checks run, with failures and external limits recorded
+- [ ] Render architecture, app localization and financial isolation preserved
+- [ ] No secrets, unsupported claims, unlicensed assets or unexplained generated bundles

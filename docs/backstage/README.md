@@ -26,11 +26,13 @@ the trading terminal (Persian + English) is managed in the Directus Data Studio.
 1. PostgreSQL 17 running (`brew services start postgresql@17`), DB `openfund_cms` created.
 2. `infrastructure/directus/.env` — local-only credentials + `CORS_ENABLED=true`.
 3. Start Directus (Node 22 required):
+
    ```bash
    cd infrastructure/directus
    PATH=/opt/homebrew/opt/node@22/bin:$PATH \
      ~/openfund-backstage/node_modules/.bin/directus start
    ```
+
 4. `python3 apps/backstage/scripts/apply_schema.py` — collections, relations, public permissions.
 5. `python3 apps/backstage/scripts/seed_content.py` — imports the CURRENT fa/en content (298 landing strings + 186 terminal labels + navigation + pages + settings).
 6. React app (`cd apps/web-react && npm run dev`) → http://localhost:5173/react/#/
@@ -46,6 +48,7 @@ the trading terminal (Persian + English) is managed in the Directus Data Studio.
 ## Editing content (the point of all this)
 
 Open **ui_messages** in the Data Studio:
+
 - each row = one user-facing string; **label** = friendly name, **section** = the page area
 - edit the **fa** and **en** translation values — both languages render live after a page refresh
 - landing keys ARE the Persian source text (do not rename `key`); terminal keys are stable ids

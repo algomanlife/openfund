@@ -1,5 +1,7 @@
 # Audit — legacy frontend → React migration plan (Phase 1)
 
+> Historical snapshot. Current capabilities and limits: [Feature Status](../product/FEATURE_STATUS.md). Quoted business/address claims describe past UI copy, not verified company facts.
+>
 ## Current architecture (dist/, served at :4173/dist/)
 
 | File | Role | React destination |
@@ -22,13 +24,14 @@
 | `wallet.js` + `src/wallet.jsx` | legacy RainbowKit demo bundle | REPLACED by Phase 3 (proper RainbowKit in React) |
 
 ## Rules to preserve
+
 1. Language switch: header flips dir; workspace pinned LTR; texts translate; numbers Latin LTR.
 2. Light theme: host-level `invert(1) hue-180` (landing + terminal), logos double-inverted.
 3. Terminal workspace: chart | book | trade-panel(right) — FIXED.
 4. Vela: full workspace, no symbol chip in topbar, attribution replaced by O branding + Vela credit link (NOTICE).
 5. Gains: op-protocol WS (ping/pong + seq), no fabricated volume/OI/depth (OI from /markets metadata).
 6. Buttons/header = landing design system (single source of truth).
-7. i18n: FA trading labels = Iranian Finglish (اوردربوک/لانگ/شورت/...), ofT-style dictionary.
+7. i18n: FA trading labels = Iranian Finglish (order book / long / short / related trading terms), ofT-style dictionary.
 
 ## React app structure (apps/web-react/)
 
@@ -49,6 +52,7 @@ apps/web-react/
 ```
 
 ## Build & serve
+
 - dev: `npm run dev` (Vite :5173)
 - prod: `npm run build` → repo-root `react/` → **http://127.0.0.1:4173/react/** (same static server)
 - legacy fallback stays at /dist/ until Phase 5 passes.

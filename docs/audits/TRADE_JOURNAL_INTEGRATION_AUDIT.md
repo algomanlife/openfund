@@ -1,5 +1,6 @@
 # Audit — LuxAlgo Trade Journal integration (Portfolio)
 
+> Historical snapshot. Current capabilities and limits: [Feature Status](../product/FEATURE_STATUS.md). Quoted business/address claims describe past UI copy, not verified company facts.
 > Audit date: 2026-11-01 · Branch: `qwen/portfolio-journal`
 > Upstream: https://github.com/LuxAlgo/trade-journal @ `834e7b68f553d1aba0d7777875cdc4622f5a7eb5` (MIT)
 
@@ -28,7 +29,7 @@
 
 - `apps/backend/portfolio.js` (adapter + Portfolio class), `/portfolio/*` routes in `server.js`, `trade_notes` table
 - `apps/web-react/src/pages/Portfolio.tsx` + `portfolio.css` + `portfolio-body.html` (shared terminal header for identical look)
-- route `#/portfolio` in `main.tsx`; terminal nav «پرتفوی» link enabled
+- route `#/portfolio` in `main.tsx`; terminal nav “Portfolio” link enabled
 
 ## Test evidence
 

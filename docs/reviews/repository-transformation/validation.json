@@ -1,0 +1,113 @@
+{
+  "baseline": "2f5cf93afcbd97caa9b80e6de8a703fa707f6e16",
+  "date": "2026-11-02",
+  "node": "22.23.4",
+  "postgres": "17.11",
+  "typecheck": "passed",
+  "frontendUnits": {
+    "passed": 17,
+    "failed": 0
+  },
+  "backend": {
+    "siwe": 22,
+    "trading": 54,
+    "portfolio": 31,
+    "products": 58,
+    "gains": 5,
+    "audit": 11,
+    "total": 181,
+    "failed": 0
+  },
+  "browserProtocolFixtures": {
+    "passed": 31,
+    "failed": 0,
+    "fixtureScope": "CMS/Gains responses and generated EIP-1193 test transport; real API/PostgreSQL; no on-chain execution"
+  },
+  "productionBuild": {
+    "result": "passed",
+    "warning": "existing wallet chunks exceed 500 kB"
+  },
+  "migration": "applied twice on isolated openfund_docs_test_20261102 database",
+  "blueprint": "offline structural/semantic passed: 2 services, 1 database",
+  "docs": {
+    "result": "passed on Node 22 after clean root npm ci",
+    "language": "158 prose/diagram files and 105 first-party source files; localization preserved",
+    "linksImages": "92 first-party Markdown files; 431 local targets including 41 images; approved logos match byte-for-byte",
+    "markdown": "92 files, zero issues",
+    "mermaid": "12 diagrams parsed; five sources rendered and visually inspected",
+    "ciYaml": "parsed successfully; documentation and root dependency audit steps present",
+    "diffWhitespace": "passed"
+  },
+  "negativeFixtures": [
+    "Persian prose rejected",
+    "Broken link and image rejected",
+    "Runtime localization literal retained"
+  ],
+  "productionDeployment": "not performed",
+  "authenticatedRenderValidation": "not performed",
+  "genuineScreenshots": {
+    "count": 13,
+    "manifest": "../../assets/screenshots/manifest.json",
+    "source": "current app production build; public local CMS/live Gains, no market/CMS/financial fixtures; account captures with real local SIWE and disposable generated wallet"
+  },
+  "realWalletDeviceAcceptance": "unverified",
+  "githubMetadata": "description/topics updated; preexisting homepage retained, TLS check failed",
+  "security": {
+    "rootDependencies": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "webDependencies": {
+      "info": 0,
+      "low": 2,
+      "moderate": 12,
+      "high": 16,
+      "critical": 0,
+      "total": 30
+    },
+    "backendDependencies": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "gitleaksWorktree": {
+      "findings": 47,
+      "scope": "clean candidate export, excluding ignored output; identical to 47 baseline matches in unchanged upstream sources/translation strings, contract-address data and runtime bundles; no new findings"
+    },
+    "gitleaksNewCommits": "pending commit scan",
+    "gitleaksComparison": {
+      "baselineFindings": 47,
+      "candidateFindings": 47,
+      "newFindings": 0,
+      "removedFindings": 0,
+      "method": "Fresh baseline and candidate tracked/unignored file exports; excludes local generated output; redacted scans; existing source matches unchanged"
+    },
+    "newDocumentationToolingDependencies": {
+      "vulnerabilities": 0,
+      "overrides": "markdownlint re2js 2.8.7; micromark-extension-math KaTeX 0.18.11"
+    }
+  },
+  "sourcePreservation": {
+    "appCommentOnly": "confirmed by exact comparison",
+    "testDescriptionsOnly": "three labels; normalized executable statements identical",
+    "unchanged": [
+      "render.yaml",
+      "infrastructure/",
+      "apps/backend/ runtime",
+      "app lockfiles",
+      "app localization/public assets",
+      "dist/",
+      "react/ after generated build restoration",
+      "vendor/",
+      "third_party/"
+    ]
+  },
+  "initialBackendRun": "Initial local test host omitted the test suite localhost:5173 SIWE domain; corrected server allow-list and reran all 181 checks successfully. No application change was needed."
+}

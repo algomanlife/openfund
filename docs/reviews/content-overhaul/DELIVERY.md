@@ -1,5 +1,7 @@
 # Round 10 — Production Content Overhaul + Complete CMS Migration
 
+> Historical snapshot. Current capabilities and limits: [Feature Status](../../product/FEATURE_STATUS.md). Quoted business/address claims describe past UI copy, not verified company facts.
+
 - **Branch:** `qwen/content-overhaul` (from `origin/main` @ `9bf351a`, PR #19 merged)
 - **Date:** 2026-11-01
 - **Scope:** (A) production content overhaul — verified commercial catalog, bilingual
@@ -13,10 +15,10 @@ The challenge catalog was replaced with the researched, adopted specification
 
 | Program | Sizes | Fee | Phases · target | Daily / total loss | Split | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| استاندارد / Standard | 5K–100K | $44–$652 | 2 · 8% + 5% | 5% (or 3%) / 10% static | 80% · 100% monthly* | 3 min days/phase; fee refunded on 4th reward |
-| تک‌مرحله‌ای / One-phase | 5K–100K | $74–$666 | 1 · 12% | 3% (or 2%) / 12% static | 80% · 100% monthly* | no min days |
-| آنی / Instant | 5K–200K | $60–$888 | 0 (funded day one) | 3% / 5% trailing (locks at BE after +5%) | 95% / 14 days | 7 profitable days/30d; 15% consistency; first 3% buffer |
-| تست رایگان / Free Trial | 5K–100K | free | 2 · 8% + 5% | 5% / 10% static | none | 14 days/phase; one at a time; no conversion |
+| Standard | 5K–100K | $44–$652 | 2 · 8% + 5% | 5% (or 3%) / 10% static | 80% · 100% monthly* | 3 min days/phase; fee refunded on 4th reward |
+| One-phase | 5K–100K | $74–$666 | 1 · 12% | 3% (or 2%) / 12% static | 80% · 100% monthly* | no min days |
+| Instant | 5K–200K | $60–$888 | 0 (funded day one) | 3% / 5% trailing (locks at BE after +5%) | 95% / 14 days | 7 profitable days/30d; 15% consistency; first 3% buffer |
+| Free Trial | 5K–100K | free | 2 · 8% + 5% | 5% / 10% static | none | 14 days/phase; one at a time; no conversion |
 
 \* monthly cycle: 7 profitable days + 35% consistency. Common: no time limit, higher-of
 day-start balance/equity daily basis with 00:00 UTC+3 reset, first payout 14 days after the
@@ -52,8 +54,8 @@ reused; `ui_messages` extended to 412 strings (every landing string).
 ## Content quality
 
 - Persian rewritten in professional contemporary copy; English held to the same standard.
-- Prototype language removed: «هزینهٔ نمونه»، «اهرم نمونه»، «پرداخت امن · فعال‌سازی آنی»
-  (a false claim), «پلن‌های نمونه», fabricated team personas → role cards, stale FAQ
+- Prototype language removed: “sample fee”, “sample leverage”, “secure payment · instant activation”
+  (a false claim), “sample plans”, fabricated team personas → role cards, stale FAQ
   numbers → catalog-accurate copy. Accurate simulated-trading disclosures preserved.
 - FAQ expanded to 9 catalog-accurate items (Carrot-style coverage); Rulebook rewritten with
   full commercial coverage (22 sections + catalog table); legal section versioned in CMS.

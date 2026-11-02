@@ -10,10 +10,12 @@ Homebrew, 2026-11-01).
 - PostgreSQL 17 (`brew install postgresql@17`)
 - Python 3 (schem/seed scripts)
 - Install the Directus runtime once (space-free path, postinstall builds isolated-vm):
+
   ```bash
   mkdir -p ~/openfund-backstage && cd ~/openfund-backstage
   PATH=/opt/homebrew/opt/node@22/bin:$PATH npm i directus@11.9.1
   ```
+
   (Installing inside the repo dir fails: the path contains a space + esbuild's
   postinstall chokes.)
 

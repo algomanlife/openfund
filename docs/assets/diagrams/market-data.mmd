@@ -1,0 +1,10 @@
+flowchart LR
+  G[Gains REST and WS] --> Browser[Browser Gains adapter]
+  Browser --> Vela[Vela candles and current chart]
+  Browser --> Markets[Markets discovery and freshness UI]
+  G --> Server[Backend market-data.js]
+  Server --> Fresh{Fresh valid mark?}
+  Fresh -->|yes| Engine[Prop validation and monitoring]
+  Fresh -->|no| Unknown[Unknown valuation and execution rejection]
+  Wallet[Gains wallet endpoints] --> Read[gains-portfolio.js session wallet reads]
+  Read --> Perp[Perpetual records and provider stats]

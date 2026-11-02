@@ -1,5 +1,6 @@
 # Bilingual Rulebook and Transparency
 
+> Historical snapshot. Current capabilities and limits: [Feature Status](../../product/FEATURE_STATUS.md). Quoted business/address claims describe past UI copy, not verified company facts.
 Delivered 2026-11-01 on `codex/bilingual-rulebook-transparency`, based on `origin/main` at `81179c1`. Implemented in the existing React application, not a separate website. Review and merge remain separate steps; no production deployment was requested.
 
 ## Routes and scope
@@ -121,7 +122,7 @@ Modified: `apps/web-react/src/main.tsx`, `src/pages/Landing.tsx`, `src/pages/lan
 
 | Page | English desktop | Persian desktop | English mobile, full page | Persian mobile, full page |
 | --- | --- | --- | --- | --- |
-| Rulebook | [EN](screenshots/rulebook-en-1440.jpg) | [FA](screenshots/rulebook-fa-1440.jpg) | [EN](screenshots/rulebook-en-375.jpg) | [FA](screenshots/rulebook-fa-375.jpg) |
-| Transparency | [EN](screenshots/transparency-en-1440.jpg) | [FA](screenshots/transparency-fa-1440.jpg) | [EN](screenshots/transparency-en-375.jpg) | [FA](screenshots/transparency-fa-375.jpg) |
+| Rulebook | [EN — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/bilingual-pages/screenshots/rulebook-en-1440.jpg) | [FA — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/bilingual-pages/screenshots/rulebook-fa-1440.jpg) | [EN — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/bilingual-pages/screenshots/rulebook-en-375.jpg) | [FA — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/bilingual-pages/screenshots/rulebook-fa-375.jpg) |
+| Transparency | [EN — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/bilingual-pages/screenshots/transparency-en-1440.jpg) | [FA — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/bilingual-pages/screenshots/transparency-fa-1440.jpg) | [EN — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/bilingual-pages/screenshots/transparency-en-375.jpg) | [FA — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/bilingual-pages/screenshots/transparency-fa-375.jpg) |
 
-Additional Persian [dashboard](screenshots/transparency-fa-dashboard.jpg) and [charts](screenshots/transparency-fa-charts.jpg) views show the actual reporting layout below the hero. A [Rulebook contents view](screenshots/rulebook-en-contents.jpg) records the active section and formula styling.
+Additional Persian [dashboard — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/bilingual-pages/screenshots/transparency-fa-dashboard.jpg) and [charts — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/bilingual-pages/screenshots/transparency-fa-charts.jpg) views show the actual reporting layout below the hero. A [Rulebook contents view — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/bilingual-pages/screenshots/rulebook-en-contents.jpg) records the active section and formula styling.

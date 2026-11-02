@@ -1,0 +1,19 @@
+{
+  "config": {
+    "default": false,
+    "MD011": true,
+    "MD018": true,
+    "MD019": true,
+    "MD022": true,
+    "MD023": true,
+    "MD027": true,
+    "MD031": true,
+    "MD032": true,
+    "MD038": true,
+    "MD039": true,
+    "MD042": true,
+    "MD045": true
+  },
+  "globs": ["*.md", "docs/**/*.md", "apps/**/README.md", "packages/**/README.md", "brand/**/*.md", ".github/**/*.md"],
+  "ignores": ["**/node_modules/**", "vendor/**", "third_party/**"]
+}

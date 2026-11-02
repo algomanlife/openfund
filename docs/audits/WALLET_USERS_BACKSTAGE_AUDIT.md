@@ -1,5 +1,6 @@
 # Audit — Wallet Users & Backstage (Phase 1)
 
+> Historical snapshot. Current capabilities and limits: [Feature Status](../product/FEATURE_STATUS.md). Quoted business/address claims describe past UI copy, not verified company facts.
 > Audit date: 2026-11-01 · Branch: `qwen/wallet-identity` (from `qwen/footer-addresses`, PR #8 pending)
 > **RESUME FILE for the wallet-identity task.** Continue from the first unchecked item.
 

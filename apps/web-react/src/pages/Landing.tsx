@@ -124,7 +124,7 @@ export default function Landing() {
     mount.id = 'rainbow-landing-host'
     host.appendChild(mount)
     setWalletHost(mount)
-    /* the "ورود با کیف پول وب۳" feature card opens the real RainbowKit modal
+    /* the "Sign in with a Web3 wallet" feature card opens the real RainbowKit modal
        (window.__ofOpenConnect is exposed by RainbowConnect) */
     const trigger = document.getElementById('wallet-trigger')
     const onTrigger = () => { (window as any).__ofOpenConnect?.() }

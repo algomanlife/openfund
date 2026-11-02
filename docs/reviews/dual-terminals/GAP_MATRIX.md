@@ -1,5 +1,6 @@
 # LuxAlgo source comparison
 
+> Historical snapshot. Current capabilities and limits: [Feature Status](../../product/FEATURE_STATUS.md). Quoted business/address claims describe past UI copy, not verified company facts.
 Upstream cloned and inspected at `834e7b68f553d1aba0d7777875cdc4622f5a7eb5` (same as vendored core), MIT. Evidence: README Features plus `packages/core/src/{metrics,analysis,aggregate,equity,edge-score,adherence}.ts`; `apps/web/src/app/{journal,notebook,reports,calendar,import}/`; API journal/export/import routes; journal-features and journal-defaults tests; lib import-review/export-format/calendar-insights. No upstream Next/SQLite server is substituted for Openfund React/PostgreSQL/session boundaries.
 
 | Original verified feature | Existing Openfund | Compatible implementation / dependency | Status before implementation |

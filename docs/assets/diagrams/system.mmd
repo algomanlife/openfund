@@ -1,0 +1,8 @@
+flowchart TB
+  Web[React browser] -->|same origin API| API[openfund Node 22]
+  Web -->|published content| CMS[openfund-cms Directus 11.9.1]
+  Web -->|chart REST and WS| Gains[Gains data]
+  API -->|marks and wallet reads| Gains
+  API --> DB[(openfund-db PostgreSQL 17)]
+  CMS --> DB
+  CMS --> Disk[Uploads disk]

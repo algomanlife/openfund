@@ -1,0 +1,16 @@
+flowchart TD
+  Submit[Prop order intent and idempotency key] --> Auth[Session ownership and request validation]
+  Auth --> Retry{Owned key already used?}
+  Retry -->|same payload| Stored[Return recorded result]
+  Retry -->|new request| Risk[Fresh server mark and fee-aware margin check]
+  Risk --> Kind{Order type}
+  Kind -->|market| Fill[Spread-adjusted simulated fill]
+  Kind -->|limit or stop| Pending[Persist pending order]
+  Pending --> Trigger[Engine crossing and fresh risk recheck]
+  Trigger --> Fill
+  Fill --> Commit[Atomic position and ledger commit]
+  Commit --> Monitor[Engine SL TP liquidation monitoring]
+  Monitor --> Close[Full or proportional partial close]
+  Close --> Ledger[Atomic settlement and provenance]
+  Commit --> SSE[Owned SSE state update]
+  Ledger --> SSE

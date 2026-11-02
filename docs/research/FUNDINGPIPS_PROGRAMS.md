@@ -1,5 +1,7 @@
 # Competitor Program Research — FundingPips
 
+> Historical snapshot. Current capabilities and limits: [Feature Status](../product/FEATURE_STATUS.md). Quoted business/address claims describe past UI copy, not verified company facts.
+
 - **Retrieved:** 2026-11-01 (Asia/Dubai)
 - **Purpose:** internal research reference only. No FundingPips text is reproduced publicly and no
   FundingPips commercial term is presented as an Openfund offer.

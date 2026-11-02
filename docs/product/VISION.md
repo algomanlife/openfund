@@ -1,25 +1,15 @@
-# Product vision and scope
+# Vision
 
-## Mission
+Build a coherent trading technology ecosystem in which traders can move from market insight to account review with clear product boundaries and trustworthy information.
 
-Develop a coherent, accessible trading research and demo experience that brings account navigation, charting, market context and testnet experimentation into one consistent Openfund interface.
+Openfund's long-term direction combines a common trading workspace, transparent Prop workflows, wallet-native perpetual capabilities and, eventually, intelligent execution-path selection. Consistent tools should make different products easier to understand without merging their balances, risk models or settlement rules.
 
-## Intended audiences
+## What success should mean
 
-Frontend developers, chart/data engineers, blockchain integration engineers, designers and product reviewers. User-facing functionality remains experimental until validated.
+- Traders can identify the source, freshness and limits of the information they use.
+- Practice, evaluation, funded capital and on-chain execution have explicit identities.
+- Trading decisions and outcomes can be reviewed in the same account context.
+- Engineers can extend providers and interfaces without duplicating financial authority.
+- Operators can maintain content without controlling users' wallet sessions or inventing trading records.
 
-## Product areas
-
-1. **Public website:** brand story, product education, navigation and responsive landing experience.
-2. **Account experience:** wallet connection, account status and clear network state.
-3. **Terminal:** charts, instrument selection, order-entry UX, positions, orders and market information.
-4. **Demo/testnet:** test-network-only workflow using verified Gains integrations, with explicit transaction confirmation and state synchronization.
-5. **Design system:** consistent Openfund typography, colors, components, accessibility and responsive behavior.
-
-## Non-goals for the initial phase
-
-No live-money trading, no unsupported claim of true exchange order-book depth, no production custody, no assumed partnerships, and no unverified deployment or security guarantees.
-
-## Success criteria
-
-A documented and reproducible prototype; stable module interfaces; verified testnet-only data and wallet flows; understandable UX; and traceable contributions by separate agents.
+These are product objectives, not claims of current scale or operational readiness. See [Capabilities](CAPABILITIES.md), [Feature Status](FEATURE_STATUS.md) and [Strategy](STRATEGY.md).

@@ -1,8 +1,7 @@
 # Render Deployment — Architecture & Operations
 
 Openfund deploys as **Infrastructure as Code** from this repository via a Render
-Blueprint (`render.yaml`, root). The blueprint is reviewed and applied manually —
-Render never provisions changes to the platform automatically.
+Blueprint (`render.yaml`, root). First application is a reviewed manual operation. After provisioning, `openfund` uses the configured `autoDeployTrigger: commit`; CMS automatic deploy is off. CI validates this configuration and does not apply it.
 
 ## Service graph
 
@@ -65,6 +64,7 @@ Render never provisions changes to the platform automatically.
      `server.js`; `/health` must return `{ok:true}`.
    - `openfund-cms` responds on `/server/health`.
 5. **Initialize Directus** (once, from a machine with network access to the CMS):
+
    ```bash
    cd apps/backstage/scripts
    python3 apply_schema.py        --url https://<cms-host> --email … --password …
@@ -72,9 +72,10 @@ Render never provisions changes to the platform automatically.
    node seed_production_content.mjs --url … --email … --password …
    python3 seed_terminal_content.py --url …
    ```
+
    (Seeding is idempotent — re-running never overwrites editorial edits unless
    `--refresh` is passed.)
-6. **Custom domain** (optional): point `app.openfund.io` at the `openfund` service
+6. **Custom domain** (optional): point your verified custom hostname at the `openfund` service
    and set `ALLOWED_DOMAINS` is auto-derived from the service host — after adding
    a custom domain, add it to the service env (`ALLOWED_DOMAINS`) so SIWE domain
    validation accepts it.
@@ -106,12 +107,10 @@ Render never provisions changes to the platform automatically.
 
 ## Limitations of the current plan tier (documented, by design)
 
-- `0.1c-256mb` Postgres: fine for demo scale; upgrade before real evaluation
-  traffic (`1c-2g` recommended).
+- `0.1c-256mb` Postgres: a small configured database plan; measure capacity and confirm current provider limits before evaluation traffic.
 - Persistent disk (5GB) on `openfund-cms`: cannot downsize later; S3-compatible
   storage can replace it via `DIRECTUS_STORAGE_*` env vars without code changes.
-- Free/starter instances spin down on inactivity; production traffic should use
-  paid instance types for the API service.
+- Resource plans and billing are defined by the Blueprint and current Render account. Check current provider limits before applying; the configured services use paid starter plans.
 
 ### Integration audit corrections (2026-11-02)
 

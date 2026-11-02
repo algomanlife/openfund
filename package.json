@@ -2,7 +2,7 @@
   "name": "openfund",
   "version": "1.0.0",
   "private": true,
-  "description": "Openfund monorepo \u2014 root orchestration only. Applications install their own dependencies (apps/web-react, apps/backend) with per-app lockfiles; this package adds no runtime dependencies.",
+  "description": "Openfund monorepo — root orchestration only. Applications install their own dependencies (apps/web-react, apps/backend) with per-app lockfiles; this package adds no runtime dependencies.",
   "scripts": {
     "build:web": "npm --prefix apps/web-react run build",
     "build:web:publish": "npm --prefix apps/web-react run build -- --mode publish",
@@ -14,10 +14,26 @@
     "dev:web": "npm --prefix apps/web-react run dev",
     "dev:backend": "npm --prefix apps/backend run dev",
     "test:browser:audit": "node e2e/test-integration-audit.cjs",
-    "test:browser:live": "node e2e/test-dual-terminals.js"
+    "test:browser:live": "node e2e/test-dual-terminals.js",
+    "docs:language": "node scripts/docs/check-language.mjs",
+    "docs:links": "node scripts/docs/check-links.mjs",
+    "docs:markdown": "markdownlint-cli2",
+    "docs:mermaid": "node scripts/docs/check-mermaid.mjs",
+    "docs:check": "npm run docs:language && npm run docs:links && npm run docs:markdown && npm run docs:mermaid"
   },
   "devDependencies": {
     "js-yaml": "^4.1.0",
+    "jsdom": "27.0.1",
+    "markdownlint-cli2": "0.24.0",
+    "mermaid": "12.2.0",
     "playwright": "^1.64.1"
+  },
+  "overrides": {
+    "markdownlint": {
+      "re2js": "2.8.7"
+    },
+    "micromark-extension-math": {
+      "katex": "0.18.11"
+    }
   }
 }

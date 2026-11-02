@@ -1,359 +1,217 @@
 <div align="center">
 
-<a href="https://github.com/algomanlife/openfund"><img src="dist/assets/mark.svg" alt="Openfund logo" width="112" /></a>
+<img src="docs/assets/graphics/hero.svg" alt="Openfund — A clearer way forward. Trading technology for market insight, disciplined practice and account intelligence." width="100%" />
 
-# OPENFUND
+**A connected trading ecosystem. Built with clear financial boundaries.**
 
-### A transparent, decentralized prop-trading ecosystem — powered by wallet-based identity
+[Product](docs/product/OVERVIEW.md) · [Documentation](docs/README.md) · [Architecture](docs/architecture/ARCHITECTURE.md) · [Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md)
 
-**Bilingual (فارسی / English) prop-trading platform: landing + live trading terminal, LuxAlgo Vela charting, Gains Network market data, a Directus content backstage, and SIWE wallet authentication with multi-challenge accounts.**
-
-[![Repository](https://img.shields.io/badge/GitHub-Openfund-181717?logo=github&logoColor=white)](https://github.com/algomanlife/openfund)
-![Status](https://img.shields.io/badge/Status-Prototype%20%2B%20live%20data-F0B35A)
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
-![Vela](https://img.shields.io/badge/Charting-LuxAlgo%20Vela%200.9.3-17BEBB)
-![Gains](https://img.shields.io/badge/Market%20data-Gains%20Network%20API-17BEBB)
-![Wallet](https://img.shields.io/badge/RainbowKit-2.2-9747FF?logo=rainbow&logoColor=white)
-![Directus](https://img.shields.io/badge/Directus-11.9%20CMS-9747FF)
-
-[Product](#product-overview) · [Wallet identity](#wallet-connectivity) · [Backstage](#directus-backstage-cms) · [Setup](#development-setup) · [Architecture](#platform-architecture) · [Security](#security-considerations) · [Roadmap](#roadmap)
+[![CI](https://github.com/algomanlife/openfund/actions/workflows/ci.yml/badge.svg)](https://github.com/algomanlife/openfund/actions/workflows/ci.yml)
+![Stage: active development](https://img.shields.io/badge/stage-active_development-82e7bd?labelColor=101914)
+![Prop: simulated](https://img.shields.io/badge/Prop-simulated-C6FF52?labelColor=101914)
+![Perpetual: read only](https://img.shields.io/badge/Perpetual-read_only-82e7bd?labelColor=101914)
 
 </div>
 
----
+## Trading technology with a coherent direction
 
-## 1. Introduction
+Openfund is a FinTech and Web3 startup building an integrated environment for market discovery, trading, account intelligence and trader development. Prop Trading and Perpetual Trading share a consistent workspace while retaining distinct accounts, data sources and execution policies.
 
-Openfund is an open, independently developed **prop-trading platform experience for Iranian traders**: skill evaluation → funded account with a profit split, presented with a Persian-first voice and a professional trading terminal. It is built in the open, on GitHub, with AI-assisted development workflows.
+The repository contains an actively developed application: React product views, a Node.js backend, persistent simulated Prop execution, Gains Network market and wallet reads, SIWE sessions, portfolios and private trading journals. The next stages extend product workflows, operational readiness and execution capabilities through explicit acceptance gates.
 
-## 2. Vision & mission
+**Current scope:** Prop execution uses virtual DAI. Perpetual integrates Gains read data on Arbitrum One with on-chain execution disabled. Commercial challenge activation, funded capital, payouts and Protocol routing are future capabilities. See the [capability register](docs/product/FEATURE_STATUS.md) for evidence and limits.
 
-Capital should follow skill, not connections. Openfund presents a transparent funding model — one-time evaluation fee, clear rules, up to 80/20 profit split, no hidden counterparty — where data ownership stays with the trader from the first wallet connection.
+## Vision and mission
 
-## 3. Product overview
+**Vision:** a coherent trading ecosystem in which traders can move from market insight to account review with trustworthy information and clear product boundaries.
 
-Openfund presents itself as a **two-product trading ecosystem** behind a single public website:
+**Mission:** give traders a connected environment to study markets, develop execution discipline and understand account performance.
 
-- **Home (product gateway)** — `#/fa/home`, `#/en/home`: a one-screen entry point ("همه بازارها در یک پلتفرم معاملاتی / All Markets, One Trading Platform") with two original vector illustrations routing into the two products. Direction B (dual product panels) ships by default; `?variant=a` previews the editorial direction on the same route.
-- **Trading Challenges** — the full bilingual marketing site (RTL fa / LTR en, dark + light themes, Irancell/Ubuntu fonts, motion) at `#/fa/challenges` / `#/en/challenges`, presenting the funding model, the challenge catalog, philosophy, rules and legal content. This was previously the root page; `/` now redirects (language-aware) to Home, and legacy section hashes (`#/markets`, `#/accounts`, …) are migrated to the page that now owns that content.
-- **Challenge catalog (terms of record)** — four programs with verified commercial terms: Standard (2-phase, 8%+5%, $44–$652), One-phase (12%, $74–$666), Instant (no evaluation, 5% trailing, 95% share, $60–$888) and a 14-day Free Trial. Provenance and the not-adopted list: `docs/research/FUNDINGPIPS_PROGRAMS.md` + `docs/research/OPENFUND_CHALLENGE_CATALOG.md`. Purchase activation is not enabled (stated plainly).
-- **CMS-managed public content** — the ENTIRE public content layer (home copy, landing strings, challenge catalog, FAQs, rulebook, legal, footer, navigation, SEO) is managed in the existing Directus and renders at runtime: the owner edits fa/en content without code changes and edits appear on the next page load — no rebuild. Market data stays on Gains Network. Guides: `docs/backstage/ADMIN_GUIDE.md`, coverage: `docs/backstage/CONTENT_COVERAGE.md`.
-- **Markets** — `#/fa/markets` / `#/en/markets`: a standalone market-discovery directory with **Gains Network as the authoritative source** (488 instruments across crypto/forex/stocks/indices/commodities derived from live metadata — never hardcoded), category filtering, normalized client-side search, live mark prices via the existing shared Gains WebSocket, an animated asset-universe hero, and per-instrument deep-links that open the symbol directly in the terminal. See [`docs/integrations/MARKETS_PAGE.md`](docs/integrations/MARKETS_PAGE.md).
-- **Rulebook and Transparency** — native bilingual information pages at `#/fa/rulebook`, `#/en/rulebook`, `#/fa/transparency` and `#/en/transparency`; draft commercial rules and an explicitly synthetic reporting dashboard. See [`docs/reviews/bilingual-pages/DELIVERY.md`](docs/reviews/bilingual-pages/DELIVERY.md).
-- **Trading terminal** — professional workspace: real **LuxAlgo Vela** chart, live **Gains Network** market data (488 markets, REST + WebSocket), Gains-style market selector with real open-interest and funding stats, a clearly-labelled **simulated** demo trading engine on real marks, and Iranian trader Finglish labels (اوردربوک، لانگ، شورت، مارکت، لیمیت، فاندینگ، کولترال).
-- **Wallet identity** — Sign-In with Ethereum (EIP-4361): one wallet = one Openfund user, owning multiple independent challenge accounts.
-- **Demo trading** — every authenticated user gets a persistent 100,000 virtual-DAI account: open/close long & short positions on any of the 488 Gains markets with leverage, SL/TP, live PnL, liquidation monitoring, full trade history — simulated server-side, browser-open or not. See [`docs/architecture/DEMO_TRADING.md`](docs/architecture/DEMO_TRADING.md).
-- **Portfolio** — native analytics page (`#/portfolio`) powered by the vendored **LuxAlgo journal-core** (MIT, `third_party/`): overview, performance metrics, equity/drawdown, PnL calendar, filterable history, trade details with ledger, private trade notes — over the user's own demo-account trades only.
-- **Backstage** — Directus Data Studio manages all fa/en content and gives administrators user & challenge oversight.
+Openfund addresses fragmented workflows across charts, market feeds, account portals and personal records. Its strategy centers on consistent tools, explicit financial authority and inspectable progress. [Business overview](docs/product/OVERVIEW.md) · [Vision](docs/product/VISION.md) · [Mission](docs/product/MISSION.md) · [Strategy](docs/product/STRATEGY.md)
 
-## Product terminals update — 2026-11-02
+## The Openfund ecosystem
 
-The React application now has product-scoped `#/{fa,en}/{prop,perpetual}/` routes for Dashboard, Trade, Portfolio and Journal, plus the required product destinations. Both trading routes use **one shared, full-space terminal workspace** beneath a shared horizontal tab header; they use independent account/data adapters. Public marketing chrome remains separate, and old `/terminal` and `/portfolio` bookmarks redirect compatibly.
+![Openfund ecosystem showing public discovery, current Prop simulation and Perpetual reads, shared tools and planned Protocol](docs/assets/graphics/ecosystem.svg)
 
-Prop retains the existing server-authoritative practice engine and ledger. Perpetual now reads verified Gains Arbitrum wallet positions, pending orders, event history and statistics; on-chain execution stays disabled. Both products have private persistent journal entries with notes, tags, classification, search, date filters and JSON restore/export. Portfolio adds filtering, order history, CSV export and journal-core analytics. Unsupported financial operations are not manufactured.
+| Product | Purpose | Current delivery |
+| --- | --- | --- |
+| **Prop Trading** | Practice execution and review account risk/performance | Server-side simulation, persistent orders/positions/ledger and observed risk telemetry |
+| **Perpetual Trading** | Connect market insight to wallet-native account review | Gains market data and wallet-scoped Arbitrum One records; read-only |
+| **Shared Terminal** | One consistent charting and trading interface | Vela workspace with separate product adapters and account contexts |
+| **Wallet, Portfolio and Journal** | Identity, financial review and private decision records | SIWE sessions, product-specific data, analytics, notes and exports |
+| **Openfund Protocol** | Future aggregation and execution-path selection | Planned for the final release; no operational routing |
 
-Runtime editorial content uses the existing Directus instance. The Terminal tab deliberately renders no editorial introductions, banners or dashboard containers. See [product architecture](docs/architecture/PRODUCT_TERMINALS.md), [CMS administration](docs/backstage/TERMINAL_CONTENT.md), [optional Render setup](docs/architecture/RENDER_DEPLOYMENT.md), and the [audit and delivery report](docs/reviews/dual-terminals/DELIVERY.md). The Blueprint retains PostgreSQL/Directus and the reviewed Render deployment policy. This is source implementation and local verification, not a production deployment.
+[Explore the ecosystem](docs/product/ECOSYSTEM.md) · [Capability guide](docs/product/CAPABILITIES.md)
 
-## Trading / wallet integration audit — 2026-11-02
+### Prop Trading
 
-Built on `main` **1aaa806** (including Render PR #23). Prop uses the existing
-server simulation, shared Decimal valuation, owned idempotency, transactional
-partial closes and sampled equity drawdown history. The shared terminal displays
-server PnL/liquidation values; account switching clears old state and disconnect
-revokes SIWE sessions. Prop uses **Ethereum Sepolia 11155111**, Perpetual uses
-**Arbitrum One 42161**. Perpetual remains a wallet-derived Gains read model;
-on-chain execution and unsupported fee-adjusted live PnL are not invented.
+The current Prop account is a persistent practice environment with **100,000 virtual DAI**, funded once per authenticated user. A server-authoritative engine handles market/limit/stop orders, SL/TP, cancellation, partial closes and liquidation monitoring on real market marks.
 
-Home uses its existing nav-less layout option, correct product routes and a light
-CSS ambient background with reduced-motion support. The Render three-resource
-architecture and `/react/` same-origin hosting remain intact; the Blueprint fixes
-CMS database keys, public hostname references, common region and build-time dev
-dependencies. Deployment remains unverified until reviewed and applied.
+Decimal valuation, fee-aware margin checks, owned idempotency and PostgreSQL transactions protect the simulated ledger. The Portfolio shows positions, history and net performance; the Journal records decisions in the same product context. Challenge catalog and account records exist; paid activation and evaluation enforcement remain planned.
 
-Validation and limitations: [delivery report](docs/reviews/integration-audit/DELIVERY.fa.md).
-Run `npm run typecheck`, `npm run test:web`, `npm run test:backend`,
-`npm run validate:blueprint`, `npm run build:web`, and `npm run test:browser:audit`.
-Backend tests require an **isolated** test/CI/audit PostgreSQL database and a running
-`SIM_TEST_MODE=1` non-production backend. The browser smoke test uses protocol
-fixtures and generated test wallets; `test:browser:live` additionally reads the
-existing Directus and live Gains data. Neither is proof of an extension or
-hardware-wallet session on a real network. Browser tools: `npm ci` at root and
-`npx playwright install chromium`; Node 22 matches Render.
+[Prop product and calculations](docs/trading/PROP.md) · [Trading lifecycle](docs/architecture/FLOWS.md#trading-lifecycle)
 
-## 4. Current development status
+### Perpetual Trading
 
-**Prototype with live data and real authentication.** Market data, charting, CMS, wallet connection and SIWE login are operational and verified (automated + live-edit tests). Trading itself is a clearly-labelled local simulation — no orders, no chain transactions, no fabricated results. On-chain evaluation and challenge purchasing are planned, not built. See [`docs/product/FEATURE_STATUS.md`](docs/product/FEATURE_STATUS.md) for the per-capability truth table.
+Perpetual uses Gains Network market data and official wallet-scoped positions, pending orders, history and statistics on **Arbitrum One**. Product views retain native collateral units and source provenance. Missing balances or fee-adjusted PnL remain unknown; upstream failures stay visible.
 
-## 5. Key features
+Wallet authentication supports private product views. Transaction execution, approvals and collateral transfers are disabled pending separate integration and security gates.
 
-| Feature | Status |
-| :--- | :--- |
-| **Home product gateway (one-screen, two products, original SVGs)** | **Operational (verified)** |
-| **Markets directory (Gains metadata, search, categories, live prices)** | **Operational (verified)** |
-| **Market deep-links into the terminal (sessionStorage handshake)** | **Operational (verified)** |
-| **CMS-managed public content (Directus, live editing, no rebuild)** | **Operational (verified — 35-check E2E)** |
-| **Challenge catalog of record (4 programs, single backend table)** | **Operational (verified)** |
-| Bilingual landing / Trading Challenges (fa/en, themes, fonts, motion) | Operational |
-| Full Vela trading workspace (topbar, drawings, indicators, search) | Operational |
-| Live Gains market data (488 markets, REST + WS ~90 upd/s) | Operational |
-| Gains-style market selector (OI L/S, funding, CLOSED markets view-only) | Operational |
-| Simulated demo trading engine on real marks | Operational (labelled) |
-| Wallet connection — Sepolia / Arbitrum One | Implemented; generated-wallet browser coverage, real extension verification outstanding |
-| **SIWE authentication + sessions + user records** | **Operational (verified)** |
-| **100,000 DAI demo trading accounts (persistent)** | **Operational (verified)** |
-| **Server trading engine — market/limit/stop, SL/TP, liquidation** | **Operational (verified)** |
-| **Multiple challenge accounts per user** | **Operational (data layer + UI)** |
-| Directus CMS — every landing/terminal string editable (fa/en, live) | Operational |
-| **Portfolio (journal-core analytics, calendar, notes)** | **Operational (verified)** |
-| Real order-book / volume / trade tape | Blocked — Gains API does not provide these (shown as `—` or labelled simulated) |
-| Real trading (on-chain orders) | Planned — no contracts assumed |
+[Perpetual product](docs/trading/PERPETUAL.md) · [Gains integration](docs/integrations/GAINS.md)
 
-## 6. Platform architecture
+### Openfund Protocol
+
+> Openfund Protocol is designed to aggregate liquidity across Gains Network, Hyperliquid, and dYdX, enabling intelligent trade routing and improved execution-path selection. (Available in the final release.)
+
+**Planned:** this describes the intended final-release product. Aggregation and routing are not operational capabilities. Protocol source integration is reserved for Task 2; this transformation imports no MUX Protocol source.
+
+[Protocol roadmap](docs/roadmap/PROTOCOL.md)
+
+### Shared Trading Terminal
+
+One Vela-based workspace serves both products: charting, market selection, theme/language controls and a consistent trading interface. React owns wallet/session/product context; established chart and market adapters remain integrated through the shared terminal bridge.
+
+Prop receives authoritative state through the backend and SSE. Perpetual uses a separate read adapter. Sharing presentation never merges financial balances or execution rules. Vela attribution and upstream notices remain intact.
+
+[Terminal guide](docs/trading/TERMINAL.md) · [Product architecture](docs/architecture/PRODUCT_TERMINALS.md)
+
+### Wallet, Portfolio and Journal
+
+Wallet connection and **Sign-In with Ethereum** are distinct steps. SIWE verifies identity; first-party HttpOnly sessions authorize private account views. Prop uses Ethereum Sepolia for its sign-in context and Perpetual uses Arbitrum One. Neither sign-in path submits a blockchain transaction.
+
+Portfolios provide product-specific records and supported analytics. Private journals add notes, tags, search, classifications, calendar/statistics and version-aware metadata export/restore. Imports cannot create trades or financial balances.
+
+[Identity and security model](docs/wallet/IDENTITY.md) · [Portfolio and Journal](docs/trading/PORTFOLIO_JOURNAL.md)
+
+## Product gallery
+
+Genuine captures from the current source build at baseline `2f5cf93`. Market information comes from live Gains reads; CMS content comes from the existing local Directus instance. Public pages, anonymous terminals and disposable authenticated account states are labelled in the [capture manifest and limitations](docs/assets/screenshots/README.md). No personal wallet information or invented trading records is shown.
+
+| Home | Market discovery |
+| --- | --- |
+| ![English Openfund Home product gateway](docs/assets/screenshots/home.jpg) | ![English Markets page with live Gains market information](docs/assets/screenshots/markets.jpg) |
+| **Prop Terminal — anonymous, execution unavailable** | **Perpetual Terminal — read-only** |
+| ![Current shared Prop terminal without an authenticated account](docs/assets/screenshots/prop-terminal.jpg) | ![Current shared Perpetual terminal with live chart data](docs/assets/screenshots/perpetual-terminal.jpg) |
+| **Challenges — catalog, purchase not operational** | **Portfolio — new virtual account** |
+| ![English challenge catalog and published product content](docs/assets/screenshots/challenges.jpg) | ![Actual new Prop virtual account with no trading history](docs/assets/screenshots/prop-portfolio.jpg) |
+| **Journal — empty private notebook** | **Dashboard — new-account analytics** |
+| ![Actual private Journal with no seeded notes](docs/assets/screenshots/journal.jpg) | ![Actual fresh-account dashboard without fabricated performance history](docs/assets/screenshots/analytics.jpg) |
+| **Account / Profile — disposable documentation wallet** | **Wallet connection — anonymous** |
+| ![Actual local profile for a generated documentation identity](docs/assets/screenshots/account-profile.jpg) | ![Actual unconnected wallet modal](docs/assets/screenshots/wallet-connection.jpg) |
+
+[Full gallery, Perpetual Portfolio and capture limitations](docs/assets/screenshots/README.md)
+
+## Architecture
 
 ```mermaid
 flowchart LR
-  subgraph Client
-    R[React 19 + Vite shell<br/>apps/web-react — hash router]
-    L[Legacy runtime<br/>locale · market · motion · terminal scripts]
-    W[RainbowKit + wagmi<br/>connect / sign SIWE]
-    S[Session hook + profile panel]
-  end
-  subgraph Openfund backend
-    B[Node/Express — apps/backend<br/>SIWE verify · sessions · ownership]
-  end
-  subgraph Data and charting
-    V[LuxAlgo Vela workspace bundle]
-    G[Gains Network public API<br/>REST + WebSocket]
-    D[(PostgreSQL 17)]
-    DS[Directus 11.9 Data Studio<br/>CMS + admin interface]
-  end
-  R --> L --> V
-  V -.candles.-> G
-  L -.prices/markets.-> G
-  W --> B
-  B --> D
-  S -. /auth/me, challenges .-> B
-  R -. ui_messages fa/en .-> DS
-  DS --> D
+  React[React at /react/] -->|same-origin API| API[Node.js API]
+  React -->|published content| CMS[Directus 11.9.1]
+  React -->|Vela chart and market feeds| Gains[Gains Network data]
+  API --> Auth[SIWE and product ownership]
+  API --> Engine[Prop simulation and SSE]
+  API --> Read[Perpetual wallet reads]
+  Read --> Gains
+  Engine --> DB[(PostgreSQL 17)]
+  Auth --> DB
+  API -->|portfolio and private journal| DB
+  CMS --> DB
 ```
 
-The React shell embeds the proven legacy runtime (phase-2a migration strategy — see [`docs/migration/MIGRATION_STATUS.md`](docs/migration/MIGRATION_STATUS.md)) and progressively extracts real React components. `apps/backend` is the only authentication and ownership boundary; Directus is the administrative data interface.
+Financial state is product-specific. Directus is editorial/catalog administration; the backend enforces account ownership and financial mutations. The API process also hosts the simulation monitor and SSE, so it remains single-instance until coordination is designed.
 
-## 7. Technology stack
+[System architecture](docs/architecture/ARCHITECTURE.md) · [Authentication, trading, market-data and deployment flows](docs/architecture/FLOWS.md) · [Architecture decisions](docs/decisions/README.md)
 
-| Technology | Version | Role |
-| :--- | :--- | :--- |
-| React / React DOM | 19.3 | App shell, session UI |
-| TypeScript | 5.7 | Type-safe app sources |
-| Vite | 6.4 | Dev server + bundler |
-| Node.js (backend) | 22 | `apps/backend` runtime |
-| Express | 4.21 | Backend HTTP API |
-| PostgreSQL | 17 | Users, challenges, sessions, nonces, audit, CMS |
-| Directus | 11.9.1 | Headless CMS + admin interface |
-| RainbowKit | 2.2.11 | Wallet connection UI (custom bilingual trigger) |
-| wagmi / viem | 2.19 / 2.57 | Wallet hooks, SIWE verification (`viem/siwe`, EIP-1271) |
-| LuxAlgo Vela | 0.9.3 | Trading workspace bundle (NOTICE attribution kept) |
-| Gains Network | public API | Market data (no volume/order-book — by API design) |
+## Technology
 
-Full registry with licenses and verified API constraints: [`docs/architecture/TECH_STACK.md`](docs/architecture/TECH_STACK.md).
+| Layer | Foundation |
+| --- | --- |
+| Interface | React 19, TypeScript, Vite, React Router; English/Persian UI with RTL support |
+| Wallet and identity | RainbowKit, wagmi, viem, SIWE and first-party sessions |
+| Charts and market data | Vela workspace, Gains REST/WebSocket adapters |
+| Application | Node.js 22, Express, Decimal arithmetic, SSE |
+| Persistence and content | PostgreSQL 17, Directus 11.9.1 |
+| Delivery | Render Blueprint, GitHub Actions, per-app npm lockfiles, browser/integration checks |
 
-## 8. Landing & Terminal previews
+[Detailed technology registry](docs/architecture/TECH_STACK.md) · [Technology graphic](docs/assets/graphics/technology.svg) · [Upstream provenance](docs/integrations/UPSTREAM.md)
 
-All screenshots are from the React app, captured by real-browser E2E — live Gains data in every shot. Full gallery in [`docs/images/`](docs/images/).
+## Development status
 
-| Landing — فارسی (dark) | Terminal — فارسی (dark) |
-| :---: | :---: |
-| <a href="docs/images/react-landing-dark-fa.png"><img src="docs/images/react-landing-dark-fa.png" alt="Landing FA dark" width="460"/></a> | <a href="docs/images/react-terminal-dark-fa.png"><img src="docs/images/react-terminal-dark-fa.png" alt="Terminal FA dark" width="460"/></a> |
+The current foundation includes working product navigation, market/chart integrations, backend identity, persistent Prop simulation, isolated Portfolio/Journal views, CMS content and CI/Render configuration.
 
-| Wallet sign-in (fa modal) | Profile & challenges |
-| :---: | :---: |
-| <a href="docs/images/wallet-modal-fa.png"><img src="docs/images/wallet-modal-fa.png" alt="Wallet modal FA" width="460"/></a> | <a href="docs/images/user-profile.png"><img src="docs/images/user-profile.png" alt="User profile" width="460"/></a> |
+Remaining gates include real wallet/device acceptance, deployed Render/HTTPS/recovery verification, commercial challenge activation/evaluation, advanced execution and production reporting. Transparency metrics are labelled sample data. A configured service, visible placeholder or vendored SDK is not proof of an operational capability.
 
-## 9. Wallet connectivity
+[Feature Status](docs/product/FEATURE_STATUS.md) is the maintained source of truth. [Delivery evidence](docs/reviews/repository-transformation/DELIVERY.md) records checks actually run for this branch.
 
-RainbowKit (with wagmi + viem) provides the connection layer on **Ethereum Sepolia (11155111) for Prop and Arbitrum One (42161) for Perpetual**: injected wallets (MetaMask, Rabby, Taho…) work out of the box; the full remote wallet list requires a WalletConnect projectId (`VITE_WALLETCONNECT_PROJECT_ID`). The modal is translated to Persian and follows the app language. Connection alone is **never** treated as login — see the next section.
+## Roadmap
 
-## 10. User identity architecture
+![Seven-phase roadmap, with current foundations and remaining acceptance gates](docs/assets/graphics/roadmap.svg)
 
-**One Openfund user ↔ one primary wallet. One user → many independent challenges.**
+1. **Platform Foundation:** repository, frontend/backend, charting and market data.
+2. **Trading Core:** Prop simulation, calculations, risk controls and persistent state.
+3. **Product Experience:** wallet, Portfolio, Journal, challenges, markets and multilingual UI.
+4. **Production Infrastructure:** Render, PostgreSQL, Directus, CI/CD, security and observability.
+5. **Advanced Trading:** extended order workflows, analytics and execution improvements.
+6. **Openfund Protocol:** venue adapters, liquidity aggregation and intelligent routing.
+7. **Ecosystem Expansion:** integrations, developer services and coordinated scalability.
 
-1. User connects a wallet (RainbowKit).
-2. Frontend requests a fresh, single-use nonce (10 min TTL) from the backend.
-3. A EIP-4361 (SIWE) message is built and signed by the wallet.
-4. The backend verifies signature (EOA + EIP-1271 contract wallets), domain, chain and nonce — then finds-or-creates the user by normalized (lowercase) wallet address (unique constraint = exactly one identity per wallet).
-5. An HttpOnly, SameSite=Lax session cookie (opaque id, hashed at rest, 7-day server-side expiry) is issued.
-6. Account switching or disconnecting invalidates the session; suspension blocks login and live sessions.
+[Roadmap](ROADMAP.md) · [Milestones, dependencies and acceptance criteria](docs/roadmap/MILESTONES.md)
 
-Details: [`docs/architecture/USER_IDENTITY.md`](docs/architecture/USER_IDENTITY.md) · [`docs/architecture/WALLET_AUTHENTICATION.md`](docs/architecture/WALLET_AUTHENTICATION.md).
+## Local development
 
-## 11. Multi-challenge account architecture
-
-```text
-User (one wallet identity)
-   ├── Challenge #1 — plan: standard, status: started
-   ├── Challenge #2 — plan: starter,  status: created
-   └── Challenge #N — independent lifecycle per record
-```
-
-`openfund_challenges` rows reference the user and a `challenge_plans` catalog entry (editorial metadata in Directus; risk math stays server-side — CMS config is never an authority over financial calculations). Ownership is enforced per request by the backend; a user only ever sees their own challenges. Challenge **purchase/activation is not implemented** — the UI keeps it clearly separate (empty state).
-
-## 12. Directus backstage (CMS)
-
-Directus is the official centralized backstage. All editable content — every landing/terminal string in fa/en, navigation, page SEO, site settings — is managed in the Data Studio with section grouping and friendly labels; editing a value renders live after refresh (verified on dev + build). Static files remain as a silent fallback if the backstage is unavailable.
-
-The admin surface also covers: platform users (wallet, status, last login, challenge count), challenge records, the plan catalog and the audit log — **private to administrators**; the public policy has no permission on these collections.
-
-Docs: [`docs/backstage/README.md`](docs/backstage/README.md) · [`docs/backstage/USER_MANAGEMENT.md`](docs/backstage/USER_MANAGEMENT.md) · [`docs/backstage/PERMISSIONS.md`](docs/backstage/PERMISSIONS.md).
-
-## 13. Multilingual content management
-
-489 `ui_messages` (298 landing + 186 terminal + new additions) with fa/en translations; both the Persian source text and the English translation are editable and render live. Language switching stays instant (dictionary-based, no reload); RTL/LTR layout rules are preserved (terminal workspace pinned LTR, header flips).
-
-## 14. Gains Network integration
-
-Public market-data API (`api.gains.trade/v1/arbitrum`): 488 markets, mark/index prices, candles 1m–1d (**1w not supported**), WebSocket with ping/pong heartbeat and seq-gap resubscribe. Per-market `maxLeverage` clamps the leverage control. **No volume / open-interest history / order-book / trade-tape exists in this API** — those fields show `—` or are labelled simulated. The on-chain SDK is vendored but intentionally unused.
-
-## 15. Vela chart integration
-
-Full LuxAlgo Vela workspace (topbar, timeframe/indicator pickers, drawing toolbar, symbol search, status line) mounted with `layout:false` and the Gains provider. Apache-2.0 NOTICE attribution is honoured with a visible "Charts by Vela" credit on the same screen.
-
-## 16. Development setup
+Prerequisites: Node.js 22, npm and PostgreSQL 17. Use a dedicated local database and your own connection credentials. Python 3 is used by optional Directus utilities.
 
 ```bash
-git clone https://github.com/algomanlife/openfund.git && cd openfund
-npm install
-
-# 1) PostgreSQL + Directus (content backstage)
-brew install postgresql@17 && brew services start postgresql@17
-psql -U $(whoami) -d postgres -c "CREATE USER openfund_cms PASSWORD 'openfund_local_dev';" -c "CREATE DATABASE openfund_cms OWNER openfund_cms;"
-cd infrastructure/directus   # local .env (see .env.example; CORS on)
-~/openfund-backstage/node_modules/.bin/directus bootstrap   # then: directus start :8055 (Node 22)
-python3 apps/backstage/scripts/apply_schema.py && python3 apps/backstage/scripts/seed_content.py
-python3 apps/backstage/scripts/tag_sections.py
-python3 apps/backstage/scripts/register_user_tables.py
-
-# 2) Backend (auth) — Node 22
-cd apps/backend && npm install
-node migrate.js && node seed-plans.js && node server.js    # :8080
-
-# 3) React app
-cd apps/web-react && npm install && npm run dev             # http://localhost:5173/react/#/
-
-# classic pages (no build): python3 -m http.server 4173 → /dist/
+npm ci
+npm ci --include=dev --prefix apps/web-react
+npm ci --prefix apps/backend
+createdb openfund_dev
+export DATABASE_URL=postgresql://localhost:5432/openfund_dev
+npm run migrate --prefix apps/backend
+npm run seed-plans --prefix apps/backend
+npm run dev:backend
 ```
 
-Full walkthrough (including the no-Docker Directus pitfalls): [`docs/backstage/LOCAL_SETUP.md`](docs/backstage/LOCAL_SETUP.md).
+In a second terminal run `npm run dev:web`, then open [English Home](http://localhost:5173/react/#/en/home). Optional `VITE_BACKEND_URL`, `VITE_DIRECTUS_URL` and WalletConnect configuration are documented in [Local Development](docs/development/LOCAL_DEVELOPMENT.md) and [Environment](docs/deployment/ENVIRONMENT.md).
 
-## 17. Environment configuration
+Build with `npm run build:web`; the backend serves the result at `/react/`. Keep source-critical `dist/` compatibility assets. Review generated `react/` changes before committing.
 
-| Variable | Where | Purpose |
-| :--- | :--- | :--- |
-| `VITE_WALLETCONNECT_PROJECT_ID` | `apps/web-react/.env` | full remote wallet list (cloud.reown.com, free) |
-| `VITE_DIRECTUS_URL` | `apps/web-react/.env` | CMS base URL (default `http://localhost:8055`) |
-| `VITE_BACKEND_URL` | `apps/web-react/.env` | auth backend base URL (default `http://localhost:8080`) |
-| `DATABASE_URL` | `apps/backend` | Postgres connection |
-| `ALLOWED_DOMAINS`, `CORS_ORIGINS` | `apps/backend` | SIWE domain allow-list, CORS |
-| `SESSION_TTL_HOURS`, `PORT` | `apps/backend` | session lifetime, listen port |
-| Directus keys | `infrastructure/directus/.env` | see `.env.example` — never commit filled files |
-
-## 17b. Deployment (Render Blueprint)
-
-The platform deploys from this repository as Infrastructure as Code:
-
-| Resource | Type | Role |
-| :--- | :--- | :--- |
-| `openfund-db` | Managed Postgres 17 | single persistent store (app + CMS tables) |
-| `openfund-cms` | Directus 11.9.1 (official image) | editorial content, plan catalog, media on a persistent disk |
-| `openfund` | Node web service | backend API (SIWE, demo engine, portfolio) + the React app served same-origin at `/react/` |
-
-Validate offline: `npm run validate:blueprint` · Activate and operate per
-[`docs/deployment/RENDER.md`](docs/deployment/RENDER.md) (the blueprint is applied
-manually, never automatically). Environment reference:
-[`docs/deployment/ENVIRONMENT.md`](docs/deployment/ENVIRONMENT.md); database and
-rollback procedures live alongside it. CI (`.github/workflows/ci.yml`) validates
-every PR: typecheck, unit + backend suites (with a real Postgres container),
-production build, blueprint structure, gitleaks.
-
-## 18. Build & testing
+## Testing and CI
 
 ```bash
-cd apps/web-react && npm run build               # → repo-root react/ (served at :4173/react/)
-cd apps/web-react && npx tsc --noEmit            # typecheck
-cd apps/web-react && npm run test:information    # rulebook/transparency content invariants
-cd apps/web-react && npm run test:markets        # markets filtering/search/price logic
-cd apps/web-react && npm run test:plans         # challenge catalog integrity + backend sync
-node e2e/test-cms-migration.js                  # CMS live-edit/unpublish/permissions E2E (35 checks)
-node e2e/test-content-overhaul.js               # bilingual content + catalog + RTL E2E (104 checks)
-cd apps/backend && node test/siwe.test.mjs       # 22 auth/session/ownership checks
-node e2e/test-session.js                         # full-stack wallet→SIWE→profile E2E (11 checks)
-node e2e/test.js                                 # landing/terminal regression (18 checks)
+npm run docs:check
+npm run typecheck
+npm run test:web
+npm run build:web
+npm run validate:blueprint
 ```
 
-Automated results on 2026-11-01: SIWE suite **22/22**, session E2E **11/11**, regression **18/18** (dev :5173 and build :4173). Honest-testing note: wallet flows are exercised with a real secp256k1 signer (programmatic account behind a mock EIP-1193 provider), not a browser extension.
+Backend and browser integration suites require an **isolated test database and running test backend**. Follow [Testing](docs/development/TESTING.md) before `npm run test:backend` or `npm run test:browser:audit`. Price injection is local-test-only and must remain disabled in production.
 
-## 19. Repository structure
+GitHub Actions covers documentation, frontend checks/build, PostgreSQL-backed backend/browser tests, Blueprint structure, secret scanning and dependency reports. Local outcomes and any unexecuted external checks are recorded in the delivery report.
 
-```text
-openfund/
-├── apps/
-│   ├── web-react/        # React 19 + Vite + TS app (landing + terminal + session UI)
-│   ├── backend/          # Node/Express — SIWE auth, sessions, users, challenges
-│   └── backstage/        # schema/seed/tag scripts for the Directus admin
-├── dist/                 # classic (pre-React) pages — still live fallback
-├── react/                # built React app (served by the static server)
-├── packages/             # openfund-owned adapters (gains, charts, cms-client)
-├── infrastructure/
-│   └── directus/         # compose.yaml + .env.example (Postgres + Directus)
-├── vendor/               # upstream sources (vela, gains-sdk) + license notices
-├── brand/                # brandbook, marks, typography
-└── docs/                 # product, architecture, backstage, migration, audits
-```
+## Render deployment
 
-## 20. Deployment architecture
+The root [Blueprint](render.yaml) preserves three resources:
 
-Local development runs three processes (Directus+PG, backend, React). For deployment, `infrastructure/directus/compose.yaml` containerizes Directus + PostgreSQL; the backend is a standard Node service (`PORT`, `DATABASE_URL`, `NODE_ENV=production` → Secure cookies) served from the same origin as the app (session cookies are SameSite=Lax). The static React build deploys behind any static server. Production hardening (TLS, reverse proxy, secrets management, backups) is documented in [`docs/backstage/LOCAL_SETUP.md`](docs/backstage/LOCAL_SETUP.md) and tracked on the roadmap.
+- **`openfund`** — Node API, simulation monitor and SSE, serving React same-origin at `/react/`.
+- **`openfund-db`** — managed PostgreSQL 17 for application and CMS tables.
+- **`openfund-cms`** — Directus 11.9.1 with persistent uploads.
 
-## 21. Security considerations
+There is no separate frontend service or worker. Review/apply and deployed acceptance are separate from a local build or schema check. [Render runbook](docs/deployment/RENDER.md) · [Database](docs/deployment/DATABASE.md) · [Rollback](docs/deployment/ROLLBACK.md)
 
-- SIWE verification: signature, domain, chain, nonce freshness/replay — all server-side; short-lived single-use nonces.
-- Sessions: HttpOnly opaque cookies, hashed at rest, server-side expiry, invalidated on account switch.
-- No privileged tokens in the frontend, ever; public Directus policy is read-only published content; identity tables are private to administrators.
-- Rate limiting, input validation, audit logging, safe error responses on every auth route.
-- Suspension blocks login and live sessions.
-- Local dev credentials are gitignored; never commit filled `.env` files.
+## Security
 
-Details: [`docs/architecture/WALLET_AUTHENTICATION.md`](docs/architecture/WALLET_AUTHENTICATION.md).
+Keep secrets server-side, preserve product/account ownership and require explicit wallet approval for any future transaction. On-chain execution remains disabled. Generated-signature tests do not certify real extensions, hardware wallets or remote sessions. The repository does not claim an independent security audit or regulatory approval.
 
-## 22. Roadmap
+[Security reporting](SECURITY.md) · [Security architecture and release gates](docs/security/SECURITY.md)
 
-- [x] Brand, bilingual landing, themes, motion
-- [x] Vela workspace × live Gains data terminal
-- [x] React 19 shell at parity + RainbowKit connection
-- [x] Directus backstage — full fa/en content management
-- [x] **SIWE wallet identity, users, sessions, multi-challenge records**
-- [ ] Challenge purchase & activation flows (separate from identity)
-- [ ] Evaluation engine + risk metrics (backend-owned)
-- [ ] Media management, navigation-driven rendering, editorial roles in CMS
-- [ ] Withdrawal requests, support records (backstage)
-- [ ] Production deployment, licensing finalization
+## Documentation and contributing
 
-Detailed: [`docs/development/ROADMAP.md`](docs/development/ROADMAP.md).
+[Documentation index](docs/README.md) organizes product/business, architecture, trading, identity, integrations, deployment, development, security, roadmap and decisions. Repository prose is English; application localization and RTL support are preserved.
 
-## 23. Contributing
-
-Work on scoped branches (`qwen/*`, `codex/*`, `feature/*`), keep docs in sync (`CHANGELOG`, `FEATURE_STATUS`, migration/audit status), include verification evidence in PRs, and merge to `main` only after human review. See [`AGENTS.md`](AGENTS.md) and [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
-## 24. License
-
-Independent project, unaffiliated with LuxAlgo, Gains Network, Reown/RainbowKit, Arbitrum, Directus, OpenAI or Qwen. Third-party names and logos belong to their owners; vendored projects keep their licenses and notices (especially [`vendor/vela/NOTICE`](vendor/vela/NOTICE)). The repository-wide license for original Openfund code and brand assets has **not yet been finalized** — do not assume the assets are freely reusable.
-
-## 25. Credits & acknowledgments
-
-- **ChatGPT Work** — planning, architecture, documentation, review
-- **QwenWork** — UI implementation, terminal/Vela×Gains engineering, backend, E2E verification
-- Market data by [Gains Network](https://gains.trade) · Charts by [LuxAlgo Vela](https://github.com/LuxAlgo/Vela) · Wallet UX by [RainbowKit](https://rainbowkit.com) · CMS by [Directus](https://directus.io)
-- Openfund documentation is maintained in **English**; Persian is supported as a product UI language
+Read the latest contracts before coding. Keep feature status, roadmap gates and screenshots aligned with implementation. Open focused pull requests from the latest `main`, preserve working code/Render architecture and retain upstream licensing. [Contributing](CONTRIBUTING.md) · [Agent instructions](AGENTS.md) · [Changelog](CHANGELOG.md)
 
 ---
 
-<div align="center"><sub>OPENFUND · سرمایه، در امتداد مهارت تو — capital, in line with your skill.</sub></div>
+<div align="center"><sub>OPENFUND · A CLEARER WAY FORWARD</sub></div>
