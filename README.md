@@ -71,7 +71,7 @@ Wallet authentication supports private product views. Transaction execution, app
 
 One Vela-based workspace serves both products: charting, market selection, theme/language controls and a consistent trading interface. React owns wallet/session/product context; established chart and market adapters remain integrated through the shared terminal bridge.
 
-Prop receives authoritative state through the backend and SSE. Perpetual uses a separate read adapter. Sharing presentation never merges financial balances or execution rules. Vela attribution and upstream notices remain intact.
+Prop receives authoritative state through the backend and SSE. Perpetual uses a separate read adapter. Sharing presentation never merges financial balances or execution rules. The catalog starts with Open Algo V5, Price Action Concepts and Smart Money Concepts, calculated from original Pine sources with repository-local libraries in a shared worker. Required linked Vela attribution remains in terminal status; upstream notices remain intact. [Indicator usage and limits](docs/trading/INDICATORS.md) · [Pine architecture](docs/trading/PINE_SCRIPT.md).
 
 [Terminal guide](docs/trading/TERMINAL.md) · [Product architecture](docs/architecture/PRODUCT_TERMINALS.md)
 
@@ -182,6 +182,7 @@ Build with `npm run build:web`; the backend serves the result at `/react/`. Keep
 npm run docs:check
 npm run typecheck
 npm run test:web
+npm run test:charts
 npm run build:web
 npm run validate:blueprint
 ```

@@ -147,6 +147,71 @@
       "session": "Disposable generated documentation wallet; real local SIWE session",
       "state": "Official Gains reads for newly generated wallet; no positions created",
       "capturedAt": "2026-11-02T06:07:26.847Z"
+    },
+    {
+      "file": "pine-prop-catalog.png",
+      "route": "/react/#/en/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T09:07:02.553Z",
+      "baseline": "08cb68afab48c596a953bfd93ee1e29c81cd37ab plus feat/vela-pine-custom-indicators working changes",
+      "source": "Production Vite build at localhost:8197/react; real Gains REST/WS; no request interception or market fixtures",
+      "state": "Actual original Pine indicators and chart controls; no wallet connected or financial mutation"
+    },
+    {
+      "file": "pine-prop-active.png",
+      "route": "/react/#/en/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T09:07:02.553Z",
+      "baseline": "08cb68afab48c596a953bfd93ee1e29c81cd37ab plus feat/vela-pine-custom-indicators working changes",
+      "source": "Production Vite build at localhost:8197/react; real Gains REST/WS; no request interception or market fixtures",
+      "state": "Actual original Pine indicators and chart controls; no wallet connected or financial mutation"
+    },
+    {
+      "file": "pine-perpetual-catalog.png",
+      "route": "/react/#/en/perpetual/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T09:07:02.553Z",
+      "baseline": "08cb68afab48c596a953bfd93ee1e29c81cd37ab plus feat/vela-pine-custom-indicators working changes",
+      "source": "Production Vite build at localhost:8197/react; real Gains REST/WS; no request interception or market fixtures",
+      "state": "Actual original Pine indicators and chart controls; no wallet connected or financial mutation"
+    },
+    {
+      "file": "pine-perpetual-active.png",
+      "route": "/react/#/en/perpetual/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T09:07:02.553Z",
+      "baseline": "08cb68afab48c596a953bfd93ee1e29c81cd37ab plus feat/vela-pine-custom-indicators working changes",
+      "source": "Production Vite build at localhost:8197/react; real Gains REST/WS; no request interception or market fixtures",
+      "state": "Actual original Pine indicators and chart controls; no wallet connected or financial mutation"
+    },
+    {
+      "file": "pine-mobile.png",
+      "route": "/react/#/en/perpetual/trade",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T09:07:02.553Z",
+      "baseline": "08cb68afab48c596a953bfd93ee1e29c81cd37ab plus feat/vela-pine-custom-indicators working changes",
+      "source": "Production Vite build at localhost:8197/react; real Gains REST/WS; no request interception or market fixtures",
+      "state": "Actual original Pine indicators and chart controls; no wallet connected or financial mutation"
     }
   ]
 }

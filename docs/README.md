@@ -12,7 +12,7 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Trading
 
-[Prop Trading](trading/PROP.md) · [Perpetual Trading](trading/PERPETUAL.md) · [Shared Terminal](trading/TERMINAL.md) · [Portfolio and Journal](trading/PORTFOLIO_JOURNAL.md)
+[Prop Trading](trading/PROP.md) · [Perpetual Trading](trading/PERPETUAL.md) · [Shared Terminal](trading/TERMINAL.md) · [Indicators](trading/INDICATORS.md) · [Pine runtime](trading/PINE_SCRIPT.md) · [Custom indicators](trading/CUSTOM_INDICATORS.md) · [Portfolio and Journal](trading/PORTFOLIO_JOURNAL.md)
 
 ## Wallet and Identity
 

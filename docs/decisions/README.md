@@ -5,4 +5,6 @@
 - [0003 — Shared valuation and product wallet policy](0003-trading-valuation-and-product-wallets.md)
 - [0004 — Documentation authority and evidence](0004-documentation-authority.md)
 
+- [0005 — Original Pine runtime and shared chart integration](0005-proprietary-pine-runtime.md)
+
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)
