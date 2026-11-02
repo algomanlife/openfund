@@ -1,0 +1,2956 @@
+{
+  "baseline": "c8a8dea6b46e410944899de68c760cc30bcaee4d",
+  "scope": "Public website navigation and routing only; no deployment claim",
+  "checks": {
+    "frontendTestsPassed": 70,
+    "typecheck": "passed",
+    "viteBuild": "passed; output outside tracked bundles; chart-generation prebuild intentionally bypassed",
+    "blueprint": "passed",
+    "docs": "passed",
+    "desktopSourceLocaleCases": 28,
+    "actualWebsiteLinkClicks": 620,
+    "clickMatrixNote": "620 clicks exercised a superset of final destinations before collapsing the redundant accounts/Challenges footer label. Final inventory equality (ignoring text whitespace) and deduplication verified on Home, FAQ and Challenges.",
+    "localizedContentRoutesPassed": 266,
+    "interactionCasesPassed": 10,
+    "touchCasesPassed": 14,
+    "ancillaryCasesPassed": 5,
+    "zipDownload": {
+      "status": 200,
+      "zip": true
+    }
+  },
+  "finalHeaderFooterInventory": [
+    {
+      "locale": "fa",
+      "route": "home",
+      "links": [
+        {
+          "area": "header",
+          "label": "openfundA CLEARER WAY FORWARD",
+          "href": "#/fa/home",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "چلنج‌های معاملاتی",
+          "href": "#/fa/challenges",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "بازارها",
+          "href": "#/fa/markets",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "قوانین معاملاتی",
+          "href": "#/fa/rulebook",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "شفافیت",
+          "href": "#/fa/transparency",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "پرسش‌های متداول",
+          "href": "#/fa/faq",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "آموزش",
+          "href": "#/fa/learn",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "واژه‌نامه",
+          "href": "#/fa/learn/glossary",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "ابزارها",
+          "href": "#/fa/tools",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "همیار رشد",
+          "href": "#/fa/referral",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "تیم",
+          "href": "#/fa/challenges?section=team",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "ورود به ترمینال ↙",
+          "href": "#/fa/prop/trade",
+          "target": "",
+          "rel": ""
+        }
+      ]
+    },
+    {
+      "locale": "fa",
+      "route": "faq",
+      "links": [
+        {
+          "area": "header",
+          "label": "openfundA CLEARER WAY FORWARD",
+          "href": "#/fa/home",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "چلنج‌های معاملاتی",
+          "href": "#/fa/challenges",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "بازارها",
+          "href": "#/fa/markets",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "قوانین معاملاتی",
+          "href": "#/fa/rulebook",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "شفافیت",
+          "href": "#/fa/transparency",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "پرسش‌های متداول",
+          "href": "#/fa/faq",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "آموزش",
+          "href": "#/fa/learn",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "واژه‌نامه",
+          "href": "#/fa/learn/glossary",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "ابزارها",
+          "href": "#/fa/tools",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "همیار رشد",
+          "href": "#/fa/referral",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "تیم",
+          "href": "#/fa/challenges?section=team",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "ورود به ترمینال ↙",
+          "href": "#/fa/prop/trade",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "openfund",
+          "href": "#/fa/home",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "چلنج‌ها",
+          "href": "#/fa/challenges?section=accounts",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "تیم",
+          "href": "#/fa/challenges?section=team",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "پرسش‌ها",
+          "href": "#/fa/faq",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "بازارها",
+          "href": "#/fa/markets",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "قوانین معاملاتی",
+          "href": "#/fa/rulebook",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "شفافیت",
+          "href": "#/fa/transparency",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "ابزارها",
+          "href": "#/fa/tools",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "آموزش",
+          "href": "#/fa/learn",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "همیار رشد",
+          "href": "#/fa/referral",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "واژه‌نامه",
+          "href": "#/fa/learn/glossary",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "دریافت برندبوک ↓",
+          "href": "/react/assets/Openfund-brandbook-DZ78KzJG.zip",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "داده‌های بازار و عمق نقدینگیGains",
+          "href": "https://gains.trade",
+          "target": "_blank",
+          "rel": "noopener"
+        },
+        {
+          "area": "footer",
+          "label": "چارت و نمایش داده‌های بازارVela",
+          "href": "https://github.com/LuxAlgo/Vela",
+          "target": "_blank",
+          "rel": "noopener"
+        },
+        {
+          "area": "footer",
+          "label": "دیتاسنتر و زیرساختRender",
+          "href": "https://render.com",
+          "target": "_blank",
+          "rel": "noopener"
+        },
+        {
+          "area": "footer",
+          "label": "بازگشت به بالا ↑",
+          "href": "#top",
+          "target": "",
+          "rel": ""
+        }
+      ]
+    },
+    {
+      "locale": "fa",
+      "route": "challenges",
+      "links": [
+        {
+          "area": "header",
+          "label": "openfundA CLEARER WAY FORWARD",
+          "href": "#/fa/home",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "چلنج‌های معاملاتی",
+          "href": "#/fa/challenges",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "بازارها",
+          "href": "#/fa/markets",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "قوانین معاملاتی",
+          "href": "#/fa/rulebook",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "شفافیت",
+          "href": "#/fa/transparency",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "پرسش‌های متداول",
+          "href": "#/fa/faq",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "آموزش",
+          "href": "#/fa/learn",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "واژه‌نامه",
+          "href": "#/fa/learn/glossary",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "ابزارها",
+          "href": "#/fa/tools",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "همیار رشد",
+          "href": "#/fa/referral",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "تیم",
+          "href": "#/fa/challenges?section=team",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "ورود به ترمینال ↙",
+          "href": "#/fa/prop/trade",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "openfund",
+          "href": "#/fa/home",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "چلنج‌ها",
+          "href": "#/fa/challenges?section=accounts",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "تیم",
+          "href": "#/fa/challenges?section=team",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "پرسش‌ها",
+          "href": "#/fa/faq",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "بازارها",
+          "href": "#/fa/markets",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "قوانین معاملاتی",
+          "href": "#/fa/rulebook",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "شفافیت",
+          "href": "#/fa/transparency",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "ابزارها",
+          "href": "#/fa/tools",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "آموزش",
+          "href": "#/fa/learn",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "همیار رشد",
+          "href": "#/fa/referral",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "واژه‌نامه",
+          "href": "#/fa/learn/glossary",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "دریافت برندبوک ↓",
+          "href": "/react/assets/Openfund-brandbook-DZ78KzJG.zip",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "داده‌های بازار و عمق نقدینگیGains",
+          "href": "https://gains.trade",
+          "target": "_blank",
+          "rel": "noopener"
+        },
+        {
+          "area": "footer",
+          "label": "چارت و نمایش داده‌های بازارVela",
+          "href": "https://github.com/LuxAlgo/Vela",
+          "target": "_blank",
+          "rel": "noopener"
+        },
+        {
+          "area": "footer",
+          "label": "دیتاسنتر و زیرساختRender",
+          "href": "https://render.com",
+          "target": "_blank",
+          "rel": "noopener"
+        },
+        {
+          "area": "footer",
+          "label": "بازگشت به بالا ↑",
+          "href": "#top",
+          "target": "",
+          "rel": ""
+        }
+      ]
+    },
+    {
+      "locale": "en",
+      "route": "home",
+      "links": [
+        {
+          "area": "header",
+          "label": "openfundA CLEARER WAY FORWARD",
+          "href": "#/en/home",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Trading Challenges",
+          "href": "#/en/challenges",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Markets",
+          "href": "#/en/markets",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Trading Rules",
+          "href": "#/en/rulebook",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Transparency",
+          "href": "#/en/transparency",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "FAQ",
+          "href": "#/en/faq",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Learn",
+          "href": "#/en/learn",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Glossary",
+          "href": "#/en/learn/glossary",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Tools",
+          "href": "#/en/tools",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Growth Partner",
+          "href": "#/en/referral",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Team",
+          "href": "#/en/challenges?section=team",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Enter Terminal ↘",
+          "href": "#/en/prop/trade",
+          "target": "",
+          "rel": ""
+        }
+      ]
+    },
+    {
+      "locale": "en",
+      "route": "faq",
+      "links": [
+        {
+          "area": "header",
+          "label": "openfundA CLEARER WAY FORWARD",
+          "href": "#/en/home",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Trading Challenges",
+          "href": "#/en/challenges",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Markets",
+          "href": "#/en/markets",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Trading Rules",
+          "href": "#/en/rulebook",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Transparency",
+          "href": "#/en/transparency",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "FAQ",
+          "href": "#/en/faq",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Learn",
+          "href": "#/en/learn",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Glossary",
+          "href": "#/en/learn/glossary",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Tools",
+          "href": "#/en/tools",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Growth Partner",
+          "href": "#/en/referral",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Team",
+          "href": "#/en/challenges?section=team",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Enter Terminal ↘",
+          "href": "#/en/prop/trade",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "openfund",
+          "href": "#/en/home",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Challenges",
+          "href": "#/en/challenges?section=accounts",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Team",
+          "href": "#/en/challenges?section=team",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "FAQ",
+          "href": "#/en/faq",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Markets",
+          "href": "#/en/markets",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Trading Rules",
+          "href": "#/en/rulebook",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Transparency",
+          "href": "#/en/transparency",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Tools",
+          "href": "#/en/tools",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Learn",
+          "href": "#/en/learn",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Growth Partner",
+          "href": "#/en/referral",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Glossary",
+          "href": "#/en/learn/glossary",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Download brandbook ↓",
+          "href": "/react/assets/Openfund-brandbook-DZ78KzJG.zip",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Market data & liquidity depthGains",
+          "href": "https://gains.trade",
+          "target": "_blank",
+          "rel": "noopener"
+        },
+        {
+          "area": "footer",
+          "label": "Charting & market-data displayVela",
+          "href": "https://github.com/LuxAlgo/Vela",
+          "target": "_blank",
+          "rel": "noopener"
+        },
+        {
+          "area": "footer",
+          "label": "Data center & infrastructureRender",
+          "href": "https://render.com",
+          "target": "_blank",
+          "rel": "noopener"
+        },
+        {
+          "area": "footer",
+          "label": "Back to top ↑",
+          "href": "#top",
+          "target": "",
+          "rel": ""
+        }
+      ]
+    },
+    {
+      "locale": "en",
+      "route": "challenges",
+      "links": [
+        {
+          "area": "header",
+          "label": "openfundA CLEARER WAY FORWARD",
+          "href": "#/en/home",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Trading Challenges",
+          "href": "#/en/challenges",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Markets",
+          "href": "#/en/markets",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Trading Rules",
+          "href": "#/en/rulebook",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Transparency",
+          "href": "#/en/transparency",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "FAQ",
+          "href": "#/en/faq",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Learn",
+          "href": "#/en/learn",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Glossary",
+          "href": "#/en/learn/glossary",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Tools",
+          "href": "#/en/tools",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Growth Partner",
+          "href": "#/en/referral",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Team",
+          "href": "#/en/challenges?section=team",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "header",
+          "label": "Enter Terminal↘",
+          "href": "#/en/prop/trade",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "openfund",
+          "href": "#/en/home",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Challenges",
+          "href": "#/en/challenges?section=accounts",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Team",
+          "href": "#/en/challenges?section=team",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "FAQ",
+          "href": "#/en/faq",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Markets",
+          "href": "#/en/markets",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Trading Rules",
+          "href": "#/en/rulebook",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Transparency",
+          "href": "#/en/transparency",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Tools",
+          "href": "#/en/tools",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Learn",
+          "href": "#/en/learn",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Growth Partner",
+          "href": "#/en/referral",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Glossary",
+          "href": "#/en/learn/glossary",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Download brandbook ↓",
+          "href": "/react/assets/Openfund-brandbook-DZ78KzJG.zip",
+          "target": "",
+          "rel": ""
+        },
+        {
+          "area": "footer",
+          "label": "Market data & liquidity depthGains",
+          "href": "https://gains.trade",
+          "target": "_blank",
+          "rel": "noopener"
+        },
+        {
+          "area": "footer",
+          "label": "Charting & market-data displayVela",
+          "href": "https://github.com/LuxAlgo/Vela",
+          "target": "_blank",
+          "rel": "noopener"
+        },
+        {
+          "area": "footer",
+          "label": "Data center & infrastructureRender",
+          "href": "https://render.com",
+          "target": "_blank",
+          "rel": "noopener"
+        },
+        {
+          "area": "footer",
+          "label": "Back to top ↑",
+          "href": "#top",
+          "target": "",
+          "rel": ""
+        }
+      ]
+    }
+  ],
+  "clickMatrixSources": [
+    {
+      "locale": "en",
+      "page": "home"
+    },
+    {
+      "locale": "en",
+      "page": "challenges"
+    },
+    {
+      "locale": "en",
+      "page": "markets"
+    },
+    {
+      "locale": "en",
+      "page": "rulebook"
+    },
+    {
+      "locale": "en",
+      "page": "transparency"
+    },
+    {
+      "locale": "en",
+      "page": "faq"
+    },
+    {
+      "locale": "en",
+      "page": "faq/q/what-is-openfund"
+    },
+    {
+      "locale": "en",
+      "page": "learn"
+    },
+    {
+      "locale": "en",
+      "page": "learn/paths/perpetual-futures-mechanics"
+    },
+    {
+      "locale": "en",
+      "page": "learn/lessons/perps-how-they-work"
+    },
+    {
+      "locale": "en",
+      "page": "learn/glossary"
+    },
+    {
+      "locale": "en",
+      "page": "tools"
+    },
+    {
+      "locale": "en",
+      "page": "tools/position-size"
+    },
+    {
+      "locale": "en",
+      "page": "referral"
+    },
+    {
+      "locale": "fa",
+      "page": "home"
+    },
+    {
+      "locale": "fa",
+      "page": "challenges"
+    },
+    {
+      "locale": "fa",
+      "page": "markets"
+    },
+    {
+      "locale": "fa",
+      "page": "rulebook"
+    },
+    {
+      "locale": "fa",
+      "page": "transparency"
+    },
+    {
+      "locale": "fa",
+      "page": "faq"
+    },
+    {
+      "locale": "fa",
+      "page": "faq/q/what-is-openfund"
+    },
+    {
+      "locale": "fa",
+      "page": "learn"
+    },
+    {
+      "locale": "fa",
+      "page": "learn/paths/perpetual-futures-mechanics"
+    },
+    {
+      "locale": "fa",
+      "page": "learn/lessons/perps-how-they-work"
+    },
+    {
+      "locale": "fa",
+      "page": "learn/glossary"
+    },
+    {
+      "locale": "fa",
+      "page": "tools"
+    },
+    {
+      "locale": "fa",
+      "page": "tools/position-size"
+    },
+    {
+      "locale": "fa",
+      "page": "referral"
+    }
+  ],
+  "interactionCases": [
+    {
+      "locale": "en",
+      "route": "faq",
+      "keyboard": true,
+      "hover": true,
+      "language": true,
+      "mobile": [
+        900,
+        390
+      ]
+    },
+    {
+      "locale": "en",
+      "route": "challenges",
+      "keyboard": true,
+      "hover": true,
+      "language": true,
+      "mobile": [
+        900,
+        390
+      ]
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/perps-how-they-work",
+      "keyboard": true,
+      "hover": true,
+      "language": true,
+      "mobile": [
+        900,
+        390
+      ]
+    },
+    {
+      "locale": "en",
+      "route": "tools/position-size",
+      "keyboard": true,
+      "hover": true,
+      "language": true,
+      "mobile": [
+        900,
+        390
+      ]
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary",
+      "keyboard": true,
+      "hover": true,
+      "language": true,
+      "mobile": [
+        900,
+        390
+      ]
+    },
+    {
+      "locale": "fa",
+      "route": "faq",
+      "keyboard": true,
+      "hover": true,
+      "language": true,
+      "mobile": [
+        900,
+        390
+      ]
+    },
+    {
+      "locale": "fa",
+      "route": "challenges",
+      "keyboard": true,
+      "hover": true,
+      "language": true,
+      "mobile": [
+        900,
+        390
+      ]
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/perps-how-they-work",
+      "keyboard": true,
+      "hover": true,
+      "language": true,
+      "mobile": [
+        900,
+        390
+      ]
+    },
+    {
+      "locale": "fa",
+      "route": "tools/position-size",
+      "keyboard": true,
+      "hover": true,
+      "language": true,
+      "mobile": [
+        900,
+        390
+      ]
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary",
+      "keyboard": true,
+      "hover": true,
+      "language": true,
+      "mobile": [
+        900,
+        390
+      ]
+    }
+  ],
+  "touchCases": [
+    {
+      "locale": "fa",
+      "route": "home",
+      "touch": true
+    },
+    {
+      "locale": "fa",
+      "route": "challenges",
+      "touch": true
+    },
+    {
+      "locale": "fa",
+      "route": "faq",
+      "touch": true
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/perps-how-they-work",
+      "touch": true
+    },
+    {
+      "locale": "fa",
+      "route": "tools/position-size",
+      "touch": true
+    },
+    {
+      "locale": "fa",
+      "route": "referral",
+      "touch": true
+    },
+    {
+      "locale": "en",
+      "route": "home",
+      "touch": true
+    },
+    {
+      "locale": "en",
+      "route": "challenges",
+      "touch": true
+    },
+    {
+      "locale": "en",
+      "route": "faq",
+      "touch": true
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/perps-how-they-work",
+      "touch": true
+    },
+    {
+      "locale": "en",
+      "route": "tools/position-size",
+      "touch": true
+    },
+    {
+      "locale": "en",
+      "route": "referral",
+      "touch": true
+    },
+    {
+      "locale": "en",
+      "desktopTouch": true,
+      "enterSpace": true,
+      "localizedSection": true
+    },
+    {
+      "locale": "fa",
+      "desktopTouch": true,
+      "enterSpace": true,
+      "localizedSection": true
+    }
+  ],
+  "ancillaryCases": [
+    {
+      "locale": "fa",
+      "route": "faq",
+      "externalAttributes": true,
+      "backToTop": true,
+      "terminalDestinationOnly": true
+    },
+    {
+      "locale": "fa",
+      "route": "challenges",
+      "externalAttributes": true,
+      "backToTop": true,
+      "terminalDestinationOnly": true
+    },
+    {
+      "locale": "en",
+      "route": "faq",
+      "externalAttributes": true,
+      "backToTop": true,
+      "terminalDestinationOnly": true
+    },
+    {
+      "locale": "en",
+      "route": "challenges",
+      "externalAttributes": true,
+      "backToTop": true,
+      "terminalDestinationOnly": true
+    },
+    {
+      "nestedQueryPreserved": true
+    }
+  ],
+  "routeAudit": [
+    {
+      "locale": "en",
+      "route": "home",
+      "links": 15,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "challenges",
+      "links": 43,
+      "bodyPlaceholders": 3
+    },
+    {
+      "locale": "en",
+      "route": "markets",
+      "links": 30,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "rulebook",
+      "links": 80,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "transparency",
+      "links": 33,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn",
+      "links": 38,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "tools",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "referral",
+      "links": 33,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/what-is-openfund",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/is-openfund-trustworthy",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/do-i-need-to-deposit",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/who-can-join",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/how-to-create-account",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/challenge-models",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/how-to-pay-for-challenge",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/balance-vs-equity",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/profit-split",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/when-payout-request",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/payout-minimum",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/payout-timeline",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/trade-during-payout",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/funded-account-fees",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/wrong-payout-address",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/multiple-payouts",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/daily-loss-limit",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/maximum-total-loss",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/consistency-score-rule",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/minimum-trading-days",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/profit-target",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/forbidden-practices",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/weekend-holding",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/news-event-trading",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/account-breach",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/referral-program",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/referred-trader-benefits",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/referral-reward-schedule",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/advanced-partnership",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/qualified-referral",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/terminal-platform",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/terminal-assets",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/terminal-fees",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/terminal-mobile",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/terminal-leverage",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/terminal-sl-tp",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/terminal-data-freshness",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/how-openfund-transparent",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/capital-handling",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/risk-management-system",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/verify-onchain",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/fair-execution",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "faq/q/audit-status",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/paths/perpetual-futures-mechanics",
+      "links": 37,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/perps-how-they-work",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/funding-rate-explained",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/mark-price-vs-index-price",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/order-types-and-order-books",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/fees-slippage-open-interest",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/paths/leverage-and-risk",
+      "links": 37,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/margin-and-leverage-basics",
+      "links": 40,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/isolated-vs-cross-margin",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/stop-loss-placement",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/drawdown-and-high-water-mark",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/sizing-for-survival",
+      "links": 42,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/paths/prop-trading-explained",
+      "links": 37,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/funded-accounts-how-they-work",
+      "links": 38,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/why-evaluation-challenges-exist",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/reading-a-rulebook",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/consistency-and-payout-conditions",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/risk-management-on-a-funded-account",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/paths/trading-process-and-psychology",
+      "links": 37,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/trading-journal-that-works",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/decision-discipline-and-checklists",
+      "links": 40,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/psychology-of-loss",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/rules-versus-discretion",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/automated-systems-and-limits",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/paths/on-chain-transparency",
+      "links": 37,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/reading-a-block-explorer",
+      "links": 37,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/proof-of-reserves-explained",
+      "links": 36,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/verifying-a-transaction",
+      "links": 38,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/smart-contracts-and-the-terminal",
+      "links": 38,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/lessons/limits-of-onchain-transparency",
+      "links": 38,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/balance",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/basis",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/block-explorer",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/consistency-rule",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/cross-margin",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/daily-drawdown",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/equity",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/expectancy",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/funding-rate",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/high-water-mark",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/index-price",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/isolated-margin",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/kelly-criterion",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/leverage",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/limit-order",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/liquidation",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/liquidation-price",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/maintenance-margin",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/maker-fee",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/margin",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/mark-price",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/market-order",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/max-drawdown",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/notional-value",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/open-interest",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/order-book",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/perpetual-future",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/position-size",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/profit-factor",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/proof-of-reserves",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/risk-of-ruin",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/slippage",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/smart-contract",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/spread",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/stop-loss",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/take-profit",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/taker-fee",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/trailing-drawdown",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/unrealized-pnl",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "learn/glossary/win-rate",
+      "links": 169,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "tools/position-size",
+      "links": 38,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "tools/leverage-margin",
+      "links": 40,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "tools/liquidation-price",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "tools/perp-pnl",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "tools/funding-rate",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "tools/risk-reward",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "tools/risk-of-ruin",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "tools/prop-drawdown",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "tools/consistency-rule",
+      "links": 37,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "en",
+      "route": "tools/journal-analyzer",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "home",
+      "links": 15,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "challenges",
+      "links": 43,
+      "bodyPlaceholders": 3
+    },
+    {
+      "locale": "fa",
+      "route": "markets",
+      "links": 30,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "rulebook",
+      "links": 80,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "transparency",
+      "links": 33,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn",
+      "links": 38,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "tools",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "referral",
+      "links": 33,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/what-is-openfund",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/is-openfund-trustworthy",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/do-i-need-to-deposit",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/who-can-join",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/how-to-create-account",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/challenge-models",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/how-to-pay-for-challenge",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/balance-vs-equity",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/profit-split",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/when-payout-request",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/payout-minimum",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/payout-timeline",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/trade-during-payout",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/funded-account-fees",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/wrong-payout-address",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/multiple-payouts",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/daily-loss-limit",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/maximum-total-loss",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/consistency-score-rule",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/minimum-trading-days",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/profit-target",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/forbidden-practices",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/weekend-holding",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/news-event-trading",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/account-breach",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/referral-program",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/referred-trader-benefits",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/referral-reward-schedule",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/advanced-partnership",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/qualified-referral",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/terminal-platform",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/terminal-assets",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/terminal-fees",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/terminal-mobile",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/terminal-leverage",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/terminal-sl-tp",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/terminal-data-freshness",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/how-openfund-transparent",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/capital-handling",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/risk-management-system",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/verify-onchain",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/fair-execution",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "faq/q/audit-status",
+      "links": 91,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/paths/perpetual-futures-mechanics",
+      "links": 37,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/perps-how-they-work",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/funding-rate-explained",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/mark-price-vs-index-price",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/order-types-and-order-books",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/fees-slippage-open-interest",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/paths/leverage-and-risk",
+      "links": 37,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/margin-and-leverage-basics",
+      "links": 40,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/isolated-vs-cross-margin",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/stop-loss-placement",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/drawdown-and-high-water-mark",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/sizing-for-survival",
+      "links": 42,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/paths/prop-trading-explained",
+      "links": 37,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/funded-accounts-how-they-work",
+      "links": 38,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/why-evaluation-challenges-exist",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/reading-a-rulebook",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/consistency-and-payout-conditions",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/risk-management-on-a-funded-account",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/paths/trading-process-and-psychology",
+      "links": 37,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/trading-journal-that-works",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/decision-discipline-and-checklists",
+      "links": 40,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/psychology-of-loss",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/rules-versus-discretion",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/automated-systems-and-limits",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/paths/on-chain-transparency",
+      "links": 37,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/reading-a-block-explorer",
+      "links": 37,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/proof-of-reserves-explained",
+      "links": 36,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/verifying-a-transaction",
+      "links": 38,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/smart-contracts-and-the-terminal",
+      "links": 38,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/lessons/limits-of-onchain-transparency",
+      "links": 38,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/balance",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/basis",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/block-explorer",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/consistency-rule",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/cross-margin",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/daily-drawdown",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/equity",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/expectancy",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/funding-rate",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/high-water-mark",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/index-price",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/isolated-margin",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/kelly-criterion",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/leverage",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/limit-order",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/liquidation",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/liquidation-price",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/maintenance-margin",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/maker-fee",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/margin",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/mark-price",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/market-order",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/max-drawdown",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/notional-value",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/open-interest",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/order-book",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/perpetual-future",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/position-size",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/profit-factor",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/proof-of-reserves",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/risk-of-ruin",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/slippage",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/smart-contract",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/spread",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/stop-loss",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/take-profit",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/taker-fee",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/trailing-drawdown",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/unrealized-pnl",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "learn/glossary/win-rate",
+      "links": 159,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "tools/position-size",
+      "links": 38,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "tools/leverage-margin",
+      "links": 40,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "tools/liquidation-price",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "tools/perp-pnl",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "tools/funding-rate",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "tools/risk-reward",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "tools/risk-of-ruin",
+      "links": 39,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "tools/prop-drawdown",
+      "links": 41,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "tools/consistency-rule",
+      "links": 37,
+      "bodyPlaceholders": 0
+    },
+    {
+      "locale": "fa",
+      "route": "tools/journal-analyzer",
+      "links": 39,
+      "bodyPlaceholders": 0
+    }
+  ],
+  "unresolved": [
+    {
+      "page": "challenges",
+      "location": "page body",
+      "links": [
+        "Windows installer",
+        "macOS installer",
+        "Linux installer"
+      ],
+      "destination": "#",
+      "reason": "Pre-existing installer placeholders outside navigation scope; no verified existing targets found."
+    }
+  ]
+}

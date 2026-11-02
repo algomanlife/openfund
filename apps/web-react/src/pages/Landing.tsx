@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { useParams, Navigate } from 'react-router-dom'
+import { useParams, useSearchParams, useNavigate, Navigate } from 'react-router-dom'
+import { bindNavigation, renderNavigation, navigationClick, navigationKeyDown } from '../features/information/navigation'
+import '../features/information/information.css'
 import landingBody from './landing-body.html?raw'
 import { RainbowConnect } from '../wallet/RainbowConnect'
-import { fetchCmsTranslations, fetchCmsLegacyPlans, fetchCmsFaqs, fetchCmsLegal, fetchCmsFooterLinks, invalidateCmsCache } from '../cms/client'
+import { fetchCmsNavigation, fetchCmsTranslations, fetchCmsLegacyPlans, fetchCmsFaqs, fetchCmsLegal, fetchCmsFooterLinks, invalidateCmsCache } from '../cms/client'
 
 /**
  * Phase 2a: the landing runs inside the React shell with its proven markup
@@ -100,7 +102,54 @@ function markCurrentPage() {
 }
 
 export default function Landing() {
+  const navigate = useNavigate()
   const routeLocale = useParams().locale
+  const [searchParams] = useSearchParams()
+  useEffect(() => {
+    const section = searchParams.get('section')
+    if (!section || !['accounts', 'team', 'rules', 'how', 'platform', 'model', 'legal'].includes(section)) return
+    const timer = setTimeout(() => document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' }), 450)
+    return () => clearTimeout(timer)
+  }, [searchParams])
+  useEffect(() => {
+    const unbind = bindNavigation(document)
+    let active = true
+    let timer: ReturnType<typeof setTimeout>
+    let nav: Awaited<ReturnType<typeof fetchCmsNavigation>> = null
+    let footer: Awaited<ReturnType<typeof fetchCmsFooterLinks>> = null
+    const render = () => {
+      if (!active) return
+      const locale = w().ofLang === 'en' ? 'en' : 'fa'
+      renderNavigation(document, locale, `/${locale}/challenges`, nav, footer)
+      document.querySelectorAll<HTMLAnchorElement>('header .brand, footer .brand').forEach(a => { a.href = `#/${locale}/home` })
+      document.querySelector<HTMLAnchorElement>('.nav-cta')?.setAttribute('href', `#/${locale}/prop/trade`)
+    }
+    // Run after the classic translation/footer listeners, including late boot.
+    const refresh = () => { clearTimeout(timer); timer = setTimeout(render, 80) }
+    void Promise.all([fetchCmsNavigation(), fetchCmsFooterLinks()]).then(([n, f]) => { nav = n; footer = f; refresh() })
+    addEventListener('of-language', refresh)
+    const click = (event: MouseEvent) => {
+      const menu = (event.target as Element)?.closest('.menu')
+      if (menu) {
+        // Own navigation here so classic boot timing cannot double-toggle it.
+        event.preventDefault()
+        event.stopPropagation()
+        const open = menu.getAttribute('aria-expanded') !== 'true'
+        menu.setAttribute('aria-expanded', String(open))
+        document.querySelector('#navigation')?.classList.toggle('open', open)
+        return
+      }
+      if (navigationClick(event, document)) return
+      if ((event.target as Element)?.closest('#navigation a')) {
+        document.querySelector('#navigation')?.classList.remove('open')
+        document.querySelector('.menu')?.setAttribute('aria-expanded', 'false')
+      }
+    }
+    const keydown = (event: KeyboardEvent) => { navigationKeyDown(event, document) }
+    document.addEventListener('click', click, true)
+    document.addEventListener('keydown', keydown, true)
+    return () => { unbind(); active = false; clearTimeout(timer); removeEventListener('of-language', refresh); document.removeEventListener('click', click, true); document.removeEventListener('keydown', keydown, true) }
+  }, [])
   useEffect(() => {
     /* the route locale is authoritative on entry — sync the stored preference
        BEFORE the legacy scripts boot, so locale.js translates to it */
@@ -207,7 +256,7 @@ export default function Landing() {
       markCurrentPage()
       const lang = w().ofLang === 'en' ? 'en' : 'fa'
       if (routeLocale && lang !== routeLocale) {
-        try { history.replaceState(history.state, '', `#/${lang}/challenges${location.search}`) } catch { /* ignore */ }
+        navigate(`/${lang}/challenges${location.hash.includes('?') ? '?' + location.hash.split('?')[1] : ''}`, { replace: true })
       }
     }, 60)
     addEventListener('of-language', langHandler)
