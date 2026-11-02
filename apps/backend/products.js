@@ -139,7 +139,7 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
         accounts: [
           {
             id: s.accountRef,
-            type: s.product === "prop" ? "free_demo" : "wallet",
+            type: s.product === "prop" ? s.account.account_type : "wallet",
             currency: s.account?.currency ?? null,
           },
         ],

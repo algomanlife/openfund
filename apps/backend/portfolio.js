@@ -24,6 +24,7 @@ const {
   equityCurve,
   dailyStats,
   drawdown,
+  relativeDrawdownCurve,
   bySymbol,
   byDirection,
   byAssetClass,
@@ -186,6 +187,7 @@ export class Portfolio {
         "realized" /* honest label: no historical mark-to-market snapshots */,
       daily: days /* PnL calendar (tz documented) */,
       drawdown: dd,
+      relativeDrawdownCurve: relativeDrawdownCurve(curve,INITIAL_BALANCE),
       timeZone: TZ,
     };
   }
@@ -268,11 +270,11 @@ export class Portfolio {
     }
     if (from) {
       params.push(from);
-      where.push(`p.opened_at >= $${params.length}`);
+      where.push(`COALESCE(p.closed_at,p.opened_at) >= $${params.length}`);
     }
     if (to) {
       params.push(to);
-      where.push(`p.opened_at <= $${params.length}`);
+      where.push(`COALESCE(p.closed_at,p.opened_at) <= $${params.length}`);
     }
     const orderBy =
       sort === "pnl_desc"
@@ -348,6 +350,7 @@ export class Portfolio {
   }
 
   async upsertNote(userId, tradeKey, notes, tags) {
+    if((await this.accountOf(userId))?.status === "permanently_disabled") throw Object.assign(new Error("account_permanently_disabled"),{status:403});
     if (
       typeof tradeKey !== "string" ||
       typeof notes !== "string" ||

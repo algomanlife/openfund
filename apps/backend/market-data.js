@@ -23,7 +23,8 @@ const STALE_MS = 5000          /* marks older than this are rejected for executi
 
 export function quoteRecord(p, now = Date.now()) {
   if (!p || typeof p.market !== 'string' || !Number.isFinite(Number(p.mark)) || Number(p.mark) <= 0) return null
-  let at = p.updatedAt == null ? now : Number(p.updatedAt)
+  if (p.updatedAt == null) return null
+  let at = Number(p.updatedAt)
   if (!Number.isFinite(at)) at = Date.parse(p.updatedAt)
   if (at > 0 && at < 100000000000) at *= 1000
   if (!Number.isFinite(at) || at <= 0 || at > now + 1000) return null

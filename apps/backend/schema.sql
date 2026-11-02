@@ -255,7 +255,7 @@ CREATE TABLE IF NOT EXISTS journal_preferences (
 );
 
 CREATE TABLE IF NOT EXISTS account_equity_samples (
-  account_id uuid NOT NULL REFERENCES demo_accounts(id),
+  account_id uuid NOT NULL REFERENCES demo_accounts(id) ON DELETE CASCADE,
   sampled_at timestamptz NOT NULL,
   equity numeric(24,10) NOT NULL,
   balance numeric(24,10) NOT NULL,
@@ -282,3 +282,6 @@ DROP TRIGGER IF EXISTS guard_trial_metadata ON journal_preferences;
 CREATE TRIGGER guard_trial_metadata BEFORE INSERT OR UPDATE OR DELETE ON journal_preferences FOR EACH ROW EXECUTE FUNCTION guard_trial_metadata();
 DROP TRIGGER IF EXISTS guard_trial_metadata ON trade_notes;
 CREATE TRIGGER guard_trial_metadata BEFORE INSERT OR UPDATE OR DELETE ON trade_notes FOR EACH ROW EXECUTE FUNCTION guard_trial_metadata();
+
+ALTER TABLE account_equity_samples DROP CONSTRAINT IF EXISTS account_equity_samples_account_id_fkey;
+ALTER TABLE account_equity_samples ADD CONSTRAINT account_equity_samples_account_id_fkey FOREIGN KEY(account_id) REFERENCES demo_accounts(id) ON DELETE CASCADE;

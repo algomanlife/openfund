@@ -68,13 +68,15 @@ app.use((req, res, next) => {
 /* ---------- tiny in-memory rate limiter (per ip+route) ---------- */
 const hits = new Map()
 setInterval(() => hits.clear(), 60_000).unref()
-const limit = (max, window = 60_000) => (req, res, next) => {
-  const key = `${req.ip}:${req.path}`
-  const n = (hits.get(key) || 0) + 1
-  hits.set(key, n)
-  if (n > max) return res.status(429).json({ error: 'rate_limited' })
-  next()
-}
+const limit =
+  (max, window = 60_000) =>
+  (req, res, next) => {
+    const key = `${req.ip}:${req.path}`;
+    const n = (hits.get(key) || 0) + 1;
+    hits.set(key, n);
+    if (n > max) return res.status(429).json({ error: "rate_limited" });
+    next();
+  };
 
 const audit = (action, userId = null, req = null, details = {}) =>
   pool.query('INSERT INTO audit_log (action, user_id, ip, details) VALUES ($1,$2,$3,$4)',
@@ -86,13 +88,18 @@ const sha = (v) => crypto.createHash('sha256').update(v).digest('hex')
 const newSessionId = () => crypto.randomBytes(32).toString('base64url')
 
 function setSessionCookie(res, sid) {
-  res.cookie ??= null
+  res.cookie ??= null;
   // express's res.cookie is set by cookie-parser? no — use manual header
-  res.setHeader('Set-Cookie',
-    `${COOKIE}=${sid}; HttpOnly; Path=/; Max-Age=${cfg.sessionTtlH * 3600}; SameSite=Lax${cfg.prod ? '; Secure' : ''}`)
+  res.setHeader(
+    "Set-Cookie",
+    `${COOKIE}=${sid}; HttpOnly; Path=/; Max-Age=${cfg.sessionTtlH * 3600}; SameSite=Lax${cfg.prod ? "; Secure" : ""}`,
+  );
 }
 const clearSessionCookie = (res) =>
-  res.setHeader('Set-Cookie', `${COOKIE}=; HttpOnly; Path=/; Max-Age=0; SameSite=Lax${cfg.prod ? '; Secure' : ''}`)
+  res.setHeader(
+    "Set-Cookie",
+    `${COOKIE}=; HttpOnly; Path=/; Max-Age=0; SameSite=Lax${cfg.prod ? "; Secure" : ""}`,
+  );
 
 function parseCookie(header) {
   const out = {}
@@ -125,11 +132,6 @@ const requireAuth = async (req, res, next) => {
       clearSessionCookie(res)
       return res.status(403).json({ error: 'account_suspended' })
     }
-    if(req.path.startsWith('/trading')) {
-      const accountRef=req.query.account || req.body?.accountId || req.body?.account_id;
-      if(req.body?.product && req.body.product!=='prop')return res.status(403).json({error:'wrong_product_context'});
-      if(accountRef && (await engine.getAccount(user.user_id))?.id!==accountRef)return res.status(404).json({error:'account_not_found'});
-    }
     req.user = user
     next()
   } catch (e) {
@@ -143,96 +145,156 @@ const clients = new Map([sepolia, arbitrum].map(chain => [chain.id, createClient
 /* =================  AUTH  ================= */
 
 /* 1 — nonce */
-app.post('/auth/nonce', limit(60), async (req, res) => {
+app.post("/auth/nonce", limit(60), async (req, res) => {
   try {
-    const address = String(req.body?.address || '').toLowerCase()
-    if (!isHex(address) || address.length !== 42) return res.status(400).json({ error: 'invalid_address' })
-    const nonce = crypto.randomBytes(16).toString('hex')  /* alphanumeric per EIP-4361 */
+    const address = String(req.body?.address || "").toLowerCase();
+    if (!isHex(address) || address.length !== 42)
+      return res.status(400).json({ error: "invalid_address" });
+    const nonce = crypto
+      .randomBytes(16)
+      .toString("hex"); /* alphanumeric per EIP-4361 */
     await pool.query(
-      'INSERT INTO auth_nonces (nonce, address, expires_at) VALUES ($1,$2, now() + $3::interval)',
-      [nonce, address, `${cfg.nonceTtlMs} milliseconds`])
-    res.json({ nonce, expiresInMs: cfg.nonceTtlMs })
+      "INSERT INTO auth_nonces (nonce, address, expires_at) VALUES ($1,$2, now() + $3::interval)",
+      [nonce, address, `${cfg.nonceTtlMs} milliseconds`],
+    );
+    res.json({ nonce, expiresInMs: cfg.nonceTtlMs });
   } catch (e) {
-    console.error(e)
-    res.status(500).json({ error: 'internal' })
+    console.error(e);
+    res.status(500).json({ error: "internal" });
   }
-})
+});
 
 /* 2 — verify SIWE */
-app.post('/auth/verify', limit(60), async (req, res) => {
+app.post("/auth/verify", limit(60), async (req, res) => {
   try {
-    const { message, signature } = req.body || {}
-    if (typeof message !== 'string' || !isHex(signature)) return res.status(400).json({ error: 'invalid_payload' })
+    const { message, signature } = req.body || {};
+    if (typeof message !== "string" || !isHex(signature))
+      return res.status(400).json({ error: "invalid_payload" });
 
-    const parsed = parseSiweMessage(message)
-    if (!parsed.address) return res.status(400).json({ error: 'invalid_message' })
-    if (!parsed.nonce) return res.status(400).json({ error: 'missing_nonce' })
-    if (!cfg.domains.includes(parsed.domain)) return res.status(400).json({ error: 'invalid_domain' })
-    const client = clients.get(Number(parsed.chainId))
-    if (!client) return res.status(400).json({ error: 'invalid_chain' })
-    let uri
-    try { uri = new URL(parsed.uri) } catch { return res.status(400).json({ error:'invalid_uri' }) }
-    if (uri.host !== parsed.domain || !['http:','https:'].includes(uri.protocol) || (cfg.prod && uri.protocol !== 'https:')) return res.status(400).json({ error:'invalid_uri' })
-    const now = Date.now()
-    if (parsed.version !== '1' || !parsed.issuedAt || !Number.isFinite(+parsed.issuedAt) || +parsed.issuedAt > now + 60000 || now - +parsed.issuedAt > cfg.nonceTtlMs || (parsed.expirationTime && +parsed.expirationTime <= now) || (parsed.notBefore && +parsed.notBefore > now)) return res.status(400).json({ error:'invalid_message_time' })
+    const parsed = parseSiweMessage(message);
+    if (!parsed.address)
+      return res.status(400).json({ error: "invalid_message" });
+    if (!parsed.nonce) return res.status(400).json({ error: "missing_nonce" });
+    if (!cfg.domains.includes(parsed.domain))
+      return res.status(400).json({ error: "invalid_domain" });
+    const client = clients.get(Number(parsed.chainId));
+    if (!client) return res.status(400).json({ error: "invalid_chain" });
+    let uri;
+    try {
+      uri = new URL(parsed.uri);
+    } catch {
+      return res.status(400).json({ error: "invalid_uri" });
+    }
+    if (
+      uri.host !== parsed.domain ||
+      !["http:", "https:"].includes(uri.protocol) ||
+      (cfg.prod && uri.protocol !== "https:")
+    )
+      return res.status(400).json({ error: "invalid_uri" });
+    const now = Date.now();
+    if (
+      parsed.version !== "1" ||
+      !parsed.issuedAt ||
+      !Number.isFinite(+parsed.issuedAt) ||
+      +parsed.issuedAt > now + 60000 ||
+      now - +parsed.issuedAt > cfg.nonceTtlMs ||
+      (parsed.expirationTime && +parsed.expirationTime <= now) ||
+      (parsed.notBefore && +parsed.notBefore > now)
+    )
+      return res.status(400).json({ error: "invalid_message_time" });
 
     /* nonce must exist, belong to this address, be fresh and unused */
     const { rows: nonceRows } = await pool.query(
-      'SELECT address, used_at, expires_at FROM auth_nonces WHERE nonce = $1', [parsed.nonce])
-    const nonceRow = nonceRows[0]
-    if (!nonceRow) return res.status(400).json({ error: 'unknown_nonce' })
-    if (nonceRow.used_at) return res.status(400).json({ error: 'nonce_reused' })
-    if (new Date(nonceRow.expires_at) < new Date()) return res.status(400).json({ error: 'nonce_expired' })
-    if (nonceRow.address !== parsed.address.toLowerCase()) return res.status(400).json({ error: 'nonce_address_mismatch' })
+      "SELECT address, used_at, expires_at FROM auth_nonces WHERE nonce = $1",
+      [parsed.nonce],
+    );
+    const nonceRow = nonceRows[0];
+    if (!nonceRow) return res.status(400).json({ error: "unknown_nonce" });
+    if (nonceRow.used_at)
+      return res.status(400).json({ error: "nonce_reused" });
+    if (new Date(nonceRow.expires_at) < new Date())
+      return res.status(400).json({ error: "nonce_expired" });
+    if (nonceRow.address !== parsed.address.toLowerCase())
+      return res.status(400).json({ error: "nonce_address_mismatch" });
 
     /* cryptographic verification (viem handles EIP-1271 for contract wallets via client) */
-    let ok = false
+    let ok = false;
     try {
       /* viem signature: verifySiweMessage(client, params) — covers EOAs (EIP-191)
          and contract wallets (EIP-1271 / ERC-6492) via the public client */
       ok = await verifySiweMessage(client, {
-        address: parsed.address, message, signature,
-        domain: parsed.domain, nonce: parsed.nonce
-      })
-    } catch { ok = false }  /* malformed signature → invalid */
-    if (!ok) { await audit('auth_failed', null, req, { address: parsed.address }); return res.status(401).json({ error: 'invalid_signature' }) }
+        address: parsed.address,
+        message,
+        signature,
+        domain: parsed.domain,
+        nonce: parsed.nonce,
+      });
+    } catch {
+      ok = false;
+    } /* malformed signature → invalid */
+    if (!ok) {
+      await audit("auth_failed", null, req, { address: parsed.address });
+      return res.status(401).json({ error: "invalid_signature" });
+    }
 
     /* burn the nonce */
-    const consumed = await pool.query('UPDATE auth_nonces SET used_at=now() WHERE nonce=$1 AND used_at IS NULL AND expires_at > now() AND address=$2 RETURNING nonce', [parsed.nonce,parsed.address.toLowerCase()])
-    if (!consumed.rowCount) return res.status(400).json({ error:'nonce_reused' })
+    const consumed = await pool.query(
+      "UPDATE auth_nonces SET used_at=now() WHERE nonce=$1 AND used_at IS NULL AND expires_at > now() AND address=$2 RETURNING nonce",
+      [parsed.nonce, parsed.address.toLowerCase()],
+    );
+    if (!consumed.rowCount)
+      return res.status(400).json({ error: "nonce_reused" });
 
     /* one wallet = one user (normalized lowercase, unique constraint is the final guard) */
-    const address = parsed.address.toLowerCase()
+    const address = parsed.address.toLowerCase();
     const { rows } = await pool.query(
       `INSERT INTO openfund_users (wallet_address, wallet_chain, last_login_at)
        VALUES ($1, $2, now())
        ON CONFLICT (wallet_address)
        DO UPDATE SET last_login_at = now(), updated_at = now()
        RETURNING id, wallet_address, status, display_name, created_at, last_login_at`,
-      [address, parsed.chainId])
-    const user = rows[0]
-    if (user.status === 'suspended') {
-      await audit('auth_blocked_suspended', user.id, req, {})
-      return res.status(403).json({ error: 'account_suspended' })
+      [address, parsed.chainId],
+    );
+    const user = rows[0];
+    if (user.status === "suspended") {
+      await audit("auth_blocked_suspended", user.id, req, {});
+      return res.status(403).json({ error: "account_suspended" });
     }
 
     /* every new user gets ONE free demo account with exactly 100,000 DAI —
        atomic + idempotent (DB constraint prevents duplicate credits) */
-    const demo = await engine.ensureDemoAccount(user.id).catch(e => { console.error(e); null })
-    if (!demo) return res.status(500).json({ error: 'internal' })
+    const demo = await engine.ensureDemoAccount(user.id).catch((e) => {
+      console.error(e);
+      null;
+    });
+    if (!demo) return res.status(500).json({ error: "internal" });
 
-    const sid = newSessionId()
+    const sid = newSessionId();
     await pool.query(
-      'INSERT INTO auth_sessions (id_hash, user_id, expires_at, user_agent, ip) VALUES ($1,$2, now() + $3::interval, $4, $5)',
-      [sha(sid), user.id, `${cfg.sessionTtlH} hours`, String(req.headers['user-agent'] || '').slice(0, 200), req.ip || null])
-    setSessionCookie(res, sid)
-    await audit('auth_login', user.id, req, { address })
-    res.json({ user: { id: user.id, walletAddress: user.wallet_address, displayName: user.display_name, createdAt: user.created_at } })
+      "INSERT INTO auth_sessions (id_hash, user_id, expires_at, user_agent, ip) VALUES ($1,$2, now() + $3::interval, $4, $5)",
+      [
+        sha(sid),
+        user.id,
+        `${cfg.sessionTtlH} hours`,
+        String(req.headers["user-agent"] || "").slice(0, 200),
+        req.ip || null,
+      ],
+    );
+    setSessionCookie(res, sid);
+    await audit("auth_login", user.id, req, { address });
+    res.json({
+      user: {
+        id: user.id,
+        walletAddress: user.wallet_address,
+        displayName: user.display_name,
+        createdAt: user.created_at,
+      },
+    });
   } catch (e) {
-    console.error(e)
-    res.status(500).json({ error: 'internal' })
+    console.error(e);
+    res.status(500).json({ error: "internal" });
   }
-})
+});
 
 /* 3 — me (+ challenges, ownership enforced by session join) */
 app.get('/auth/me', requireAuth, asyncRoute(async (req, res) => {
@@ -337,37 +399,49 @@ app.post('/trading/orders/:id/cancel', tradingAuth, async (req, res) => {
 })
 
 /* SSE live stream: account + positions + orders pushed on change (1 s heartbeat) */
-app.get('/trading/stream', tradingAuth, async (req, res) => {
+app.get("/trading/stream", tradingAuth, async (req, res) => {
   res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache, no-transform',
-    Connection: 'keep-alive',
-    'X-Accel-Buffering': 'no'
-  })
-  res.write('retry: 3000\n\n')
-  let last = '', busy = false
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache, no-transform",
+    Connection: "keep-alive",
+    "X-Accel-Buffering": "no",
+  });
+  res.write("retry: 3000\n\n");
+  let last = "",
+    busy = false;
   const push = async () => {
-    if (busy || res.destroyed || res.writableEnded) return
-    busy = true
+    if (busy || res.destroyed || res.writableEnded) return;
+    busy = true;
     try {
-      const current = await userFromSession(req)
-      if (!current || current.status !== 'active') { res.end(); return }
-      const state = await engine.state(req.user.user_id)
-      const snapshot = JSON.stringify(state)
-      if (snapshot !== last) {           /* only push actual changes */
-        last = snapshot
-        res.write(`data: ${snapshot}\n\n`)
-      } else {
-        res.write(': hb\n\n')
+      const current = await userFromSession(req);
+      if (!current || current.status !== "active") {
+        res.end();
+        return;
       }
-    } catch { res.end() } finally { busy = false }
-  }
-  const onState = () => push()
-  engine.onState(onState)
-  const hb = setInterval(push, 1000)
-  req.on('close', () => { clearInterval(hb); engine.listeners.delete(onState) })
-  await push()
-})
+      const state = await engine.state(req.user.user_id);
+      const snapshot = JSON.stringify(state);
+      if (snapshot !== last) {
+        /* only push actual changes */
+        last = snapshot;
+        res.write(`data: ${snapshot}\n\n`);
+      } else {
+        res.write(": hb\n\n");
+      }
+    } catch {
+      res.end();
+    } finally {
+      busy = false;
+    }
+  };
+  const onState = () => push();
+  engine.onState(onState);
+  const hb = setInterval(push, 1000);
+  req.on("close", () => {
+    clearInterval(hb);
+    engine.listeners.delete(onState);
+  });
+  await push();
+});
 
 /* test-only price injection seam — enabled ONLY with SIM_TEST_MODE=1
    (never active in production): lets engine tests drive deterministic marks */
@@ -433,9 +507,18 @@ app.get('/', (req, res) => res.redirect('/react/'))
 
 /* 404 + error safety (no stack leaks) */
 app.use((req, res) => res.status(404).json({ error: 'not_found' }))
-app.use((err, req, res, next) => { if (!err.status) console.error(err); res.status(err.status || 500).json({ error: err.status ? err.message : 'internal' }) })
+app.use((err, req, res, next) => {
+  if (err.code === "23514" && err.message === "account_permanently_disabled")
+    err.status = 403;
+  if (!err.status) console.error(err);
+  res
+    .status(err.status || 500)
+    .json({ error: err.status ? err.message : "internal" });
+});
 
-const server = app.listen(cfg.port, () => console.log(`openfund-backend :${cfg.port}`))
+const server = app.listen(cfg.port, () =>
+  console.log(`openfund-backend :${cfg.port}`),
+);
 /* market data (authoritative server-side marks) + trading engine loop */
 marketData.bootstrap().catch(e => console.error('[market-data] bootstrap failed', e.message))
 engine.start(1000)

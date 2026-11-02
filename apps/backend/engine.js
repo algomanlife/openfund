@@ -74,30 +74,53 @@ export class Engine {
                       : this.#ensureTx(c, userId)
   }
   async #ensureTx(c, userId) {
-    await c.query('BEGIN')
+    await c.query("BEGIN");
     try {
       const { rows } = await c.query(
         `INSERT INTO demo_accounts (user_id, balance, currency)
          VALUES ($1, $2, 'USD')
          ON CONFLICT (user_id, account_type) DO NOTHING
-         RETURNING *`, [userId, SIM.INITIAL_BALANCE])
-      let account
+         RETURNING *`,
+        [userId, SIM.INITIAL_BALANCE],
+      );
+      let account;
       if (rows.length > 0) {
-        account = rows[0]
+        account = rows[0];
         /* exactly ONE auditable funding event — same transaction */
         await c.query(
           `INSERT INTO trading_ledger (account_id, user_id, event, amount, balance_after, meta)
            VALUES ($1,$2,'demo_funding',$3,$3,$4)`,
-          [account.id, userId, SIM.INITIAL_BALANCE, JSON.stringify({ type: 'free_demo', currency: 'USD' })])
-        await c.query(`INSERT INTO trading_events (account_id, kind, detail) VALUES ($1,'demo_account_created',$2)`,
-          [account.id, JSON.stringify({ initial_balance: SIM.INITIAL_BALANCE })])
-        console.log(`[engine] demo account funded: 100000 virtual USD (user ${userId.slice(0, 8)})`)
+          [
+            account.id,
+            userId,
+            SIM.INITIAL_BALANCE,
+            JSON.stringify({ type: "free_demo", currency: "USD" }),
+          ],
+        );
+        await c.query(
+          `INSERT INTO trading_events (account_id, kind, detail) VALUES ($1,'demo_account_created',$2)`,
+          [
+            account.id,
+            JSON.stringify({ initial_balance: SIM.INITIAL_BALANCE }),
+          ],
+        );
+        console.log(
+          `[engine] demo account funded: 100000 virtual USD (user ${userId.slice(0, 8)})`,
+        );
       } else {
-        account = (await c.query('SELECT * FROM demo_accounts WHERE user_id=$1 AND account_type=$2', [userId, 'free_demo'])).rows[0]
+        account = (
+          await c.query(
+            "SELECT * FROM demo_accounts WHERE user_id=$1 AND account_type=$2",
+            [userId, "free_demo"],
+          )
+        ).rows[0];
       }
-      await c.query('COMMIT')
-      return account
-    } catch (e) { await c.query('ROLLBACK'); throw e }
+      await c.query("COMMIT");
+      return account;
+    } catch (e) {
+      await c.query("ROLLBACK");
+      throw e;
+    }
   }
 
   async enforceTrialRisk(userId) {
@@ -121,7 +144,7 @@ export class Engine {
     let equity = D(acc.balance)
     for (const p of positions) {
       const m = freshMark(this.md,p.market)
-      if (!m) return false // Never force settlement using an unavailable quote.
+      if (!m || !this.md.tradeable(p.market).ok) return false // Never force settlement using an unavailable quote.
       equity = equity.plus(pnl(p.quantity,p.entry_price,m.mark,p.side))
     }
     if (equity.gt(0)) return false
@@ -255,120 +278,291 @@ export class Engine {
   }
 
   async submitOrder(userId, req, idempotencyKey) {
-    await this.enforceTrialRisk(userId)
-    if (idempotencyKey && (typeof idempotencyKey !== 'string' || idempotencyKey.length > 160)) throw Object.assign(new Error('invalid_idempotency_key'), { status: 400 })
-    const legacyKey = idempotencyKey
-    idempotencyKey = idempotencyKey ? `${userId}:${idempotencyKey}` : null
+    await this.enforceTrialRisk(userId);
+    if (
+      idempotencyKey &&
+      (typeof idempotencyKey !== "string" || idempotencyKey.length > 160)
+    )
+      throw Object.assign(new Error("invalid_idempotency_key"), {
+        status: 400,
+      });
+    const legacyKey = idempotencyKey;
+    idempotencyKey = idempotencyKey ? `${userId}:${idempotencyKey}` : null;
     if (idempotencyKey) {
-      const { rows } = await this.pool.query('SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key IN ($2,$3)', [userId, idempotencyKey, legacyKey])
+      const { rows } = await this.pool.query(
+        "SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key IN ($2,$3)",
+        [userId, idempotencyKey, legacyKey],
+      );
       if (rows[0]) {
-        return duplicate(rows[0], req, rows[0].position_id ? await this.#positionById(rows[0].position_id) : null)
+        return duplicate(
+          rows[0],
+          req,
+          rows[0].position_id
+            ? await this.#positionById(rows[0].position_id)
+            : null,
+        );
       }
     }
-    const account = await this.getAccount(userId)
-    if (!account) throw Object.assign(new Error('account_not_found'), { status: 404 })
-    if (account.status !== 'active') throw Object.assign(new Error(account.status === 'permanently_disabled' ? 'account_permanently_disabled' : 'account_suspended'), { status: 403 })
+    const account = await this.getAccount(userId);
+    if (!account)
+      throw Object.assign(new Error("account_not_found"), { status: 404 });
+    if (account.status !== "active")
+      throw Object.assign(
+        new Error(
+          account.status === "permanently_disabled"
+            ? "account_permanently_disabled"
+            : "account_suspended",
+        ),
+        { status: 403 },
+      );
 
-    let order
+    if (!idempotencyKey) throw Object.assign(new Error('idempotency_key_required'),{status:400})
+
+    let order;
     try {
-    order = {
-      market: String(req.market || ''), side: req.side,
-      order_type: req.order_type || 'market',
-      margin: D(req.margin || 0), leverage: Number(req.leverage),
-      target_price: req.target_price != null ? D(req.target_price) : null,
-      sl_price: req.sl != null ? D(req.sl) : null, tp_price: req.tp != null ? D(req.tp) : null,
+      order = {
+        market: String(req.market || ""),
+        side: req.side,
+        order_type: req.order_type || "market",
+        margin: D(req.margin || 0),
+        leverage: Number(req.leverage),
+        target_price: req.target_price != null ? D(req.target_price) : null,
+        sl_price: req.sl != null ? D(req.sl) : null,
+        tp_price: req.tp != null ? D(req.tp) : null,
+      };
+    } catch {
+      throw Object.assign(new Error("invalid_numeric_input"), { status: 400 });
     }
-
-    } catch { throw Object.assign(new Error('invalid_numeric_input'), { status: 400 }) }
-    if (!['long','short'].includes(order.side) || !['market','limit','stop'].includes(order.order_type)) throw Object.assign(new Error('invalid_order'), { status: 400 })
-    if (![order.margin, order.target_price, order.sl_price, order.tp_price].every(v => v === null || (v.isFinite() && v.gte('0.0000000001') && v.lte('1000000000000'))) || !Number.isInteger(order.leverage)) throw Object.assign(new Error('invalid_numeric_input'), { status: 400 })
+    if (
+      !["long", "short"].includes(order.side) ||
+      !["market", "limit", "stop"].includes(order.order_type)
+    )
+      throw Object.assign(new Error("invalid_order"), { status: 400 });
+    if (
+      ![order.margin, order.target_price, order.sl_price, order.tp_price].every(
+        (v) =>
+          v === null ||
+          (v.isFinite() && v.gte("0.0000000001") && v.lte("1000000000000")),
+      ) ||
+      !Number.isInteger(order.leverage)
+    )
+      throw Object.assign(new Error("invalid_numeric_input"), { status: 400 });
 
     /* ---------- validation ---------- */
     const reject = async (reason) => {
-      if (!idempotencyKey) return { ok: false, reason }
+      if (!idempotencyKey) return { ok: false, reason };
       const { rows } = await this.pool.query(
         `INSERT INTO trading_orders (idempotency_key, account_id, user_id, market, side, order_type,
            margin, leverage, target_price, sl_price, tp_price, status, reject_reason, request_meta)
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'rejected',$12,$13) ON CONFLICT (idempotency_key) DO NOTHING RETURNING *`,
-        [idempotencyKey, account.id, userId, order.market, order.side, order.order_type,
-         order.margin.toFixed(10), order.leverage, order.target_price?.toFixed(10) || null,
-         order.sl_price?.toFixed(10) || null, order.tp_price?.toFixed(10) || null,
-         reason, JSON.stringify({ requested: req })])
-      if (!rows[0]) { const winner = (await this.pool.query('SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key=$2',[userId,idempotencyKey])).rows[0]; return duplicate(winner,req,winner.position_id ? await this.#positionById(winner.position_id) : null) }
-      return { ok: false, reason, order: rows[0] }
-    }
+        [
+          idempotencyKey,
+          account.id,
+          userId,
+          order.market,
+          order.side,
+          order.order_type,
+          order.margin.toFixed(10),
+          order.leverage,
+          order.target_price?.toFixed(10) || null,
+          order.sl_price?.toFixed(10) || null,
+          order.tp_price?.toFixed(10) || null,
+          reason,
+          JSON.stringify({ requested: req }),
+        ],
+      );
+      if (!rows[0]) {
+        const winner = (
+          await this.pool.query(
+            "SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key=$2",
+            [userId, idempotencyKey],
+          )
+        ).rows[0];
+        return duplicate(
+          winner,
+          req,
+          winner.position_id
+            ? await this.#positionById(winner.position_id)
+            : null,
+        );
+      }
+      return { ok: false, reason, order: rows[0] };
+    };
 
-    const t = this.md.tradeable(order.market)
-    if (!t.ok) return reject(t.reason)
-    if (!(order.margin.gte(SIM.MIN_MARGIN))) return reject('margin_too_small')
-    const spec=instrumentSpec(t.meta,order.market)
-    if(order.margin.lt(spec.minMargin) || order.margin.times(order.leverage).lt(spec.minNotional))return reject('instrument_minimum_size')
-    if (order.leverage < 1 || order.leverage > Number(t.meta.maxLeverage || 100)) return reject('leverage_exceeded')
-    if (order.order_type !== 'market' && !order.target_price) return reject('target_price_required')
-    if (order.margin.gt(D('100000000'))) return reject('margin_too_large')
+    const t = this.md.tradeable(order.market);
+    if (!t.ok) return reject(t.reason);
+    if (!order.margin.gte(SIM.MIN_MARGIN)) return reject("margin_too_small");
+    const spec = instrumentSpec(t.meta, order.market);
+    if (
+      order.margin.lt(spec.minMargin) ||
+      order.margin.times(order.leverage).lt(spec.minNotional)
+    )
+      return reject("instrument_minimum_size");
+    if (
+      order.leverage < 1 ||
+      order.leverage > Number(t.meta.maxLeverage || 100)
+    )
+      return reject("leverage_exceeded");
+    if (order.order_type !== "market" && !order.target_price)
+      return reject("target_price_required");
+    if (order.margin.gt(D("100000000"))) return reject("margin_too_large");
 
     /* SL/TP sanity vs side */
-    const mark = order.order_type === 'market' ? withSpread(t.mark, order.side, 'open', t.meta, order.market) : order.target_price
+    const mark =
+      order.order_type === "market"
+        ? withSpread(t.mark, order.side, "open", t.meta, order.market)
+        : order.target_price;
     if (order.sl_price != null) {
-      if (order.side === 'long' && order.sl_price.gte(mark)) return reject('sl_above_mark')
-      if (order.side === 'short' && order.sl_price.lte(mark)) return reject('sl_below_mark')
+      if (order.side === "long" && order.sl_price.gte(mark))
+        return reject("sl_above_mark");
+      if (order.side === "short" && order.sl_price.lte(mark))
+        return reject("sl_below_mark");
     }
     if (order.tp_price != null) {
-      if (order.side === 'long' && order.tp_price.lte(mark)) return reject('tp_below_mark')
-      if (order.side === 'short' && order.tp_price.gte(mark)) return reject('tp_above_mark')
+      if (order.side === "long" && order.tp_price.lte(mark))
+        return reject("tp_below_mark");
+      if (order.side === "short" && order.tp_price.gte(mark))
+        return reject("tp_above_mark");
     }
 
     return withAccountLock(account.id, async () => {
-      const c = await this.pool.connect()
+      const c = await this.pool.connect();
       try {
-        await c.query('BEGIN')
-        const acc = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [account.id])).rows[0]
+        await c.query("BEGIN");
+        const acc = (
+          await c.query("SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE", [
+            account.id,
+          ])
+        ).rows[0];
         if (idempotencyKey) {
-          const winner = (await c.query('SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key=$2',[userId,idempotencyKey])).rows[0]
-          if (winner) { await c.query('COMMIT'); return duplicate(winner,req,winner.position_id ? await this.#positionById(winner.position_id) : null) }
+          const winner = (
+            await c.query(
+              "SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key=$2",
+              [userId, idempotencyKey],
+            )
+          ).rows[0];
+          if (winner) {
+            await c.query("COMMIT");
+            return duplicate(
+              winner,
+              req,
+              winner.position_id
+                ? await this.#positionById(winner.position_id)
+                : null,
+            );
+          }
         }
-        if (acc.status !== 'active') throw Object.assign(new Error(acc.status === 'permanently_disabled' ? 'account_permanently_disabled' : 'account_suspended'), { status: 403 })
-        if (await this.#trialRiskTx(c,acc)) { await c.query('COMMIT'); this.emit(acc.id); throw Object.assign(new Error('account_permanently_disabled'),{status:403}) }
-        const open = (await c.query("SELECT * FROM trading_positions WHERE account_id=$1 AND status='open'", [acc.id])).rows
-        const view = accountMetrics(acc, open, this.md)
-        const free = Decimal.min(D(acc.balance).minus(acc.used_margin), D(view.free_margin ?? 0))
-        const openingFee = order.margin.times(order.leverage).times(feePct(t.meta, order.market)).div(100)
-        if (order.margin.plus(openingFee).gt(free)) { await c.query('ROLLBACK'); return reject('insufficient_margin') }
+        if (acc.status !== "active")
+          throw Object.assign(
+            new Error(
+              acc.status === "permanently_disabled"
+                ? "account_permanently_disabled"
+                : "account_suspended",
+            ),
+            { status: 403 },
+          );
+        if (await this.#trialRiskTx(c, acc)) {
+          await c.query("COMMIT");
+          this.emit(acc.id);
+          throw Object.assign(new Error("account_permanently_disabled"), {
+            status: 403,
+          });
+        }
+        const open = (
+          await c.query(
+            "SELECT * FROM trading_positions WHERE account_id=$1 AND status='open'",
+            [acc.id],
+          )
+        ).rows;
+        const view = accountMetrics(acc, open, this.md);
+        const free = Decimal.min(
+          D(acc.balance).minus(acc.used_margin),
+          D(view.free_margin ?? 0),
+        );
+        const openingFee = order.margin
+          .times(order.leverage)
+          .times(feePct(t.meta, order.market))
+          .div(100);
+        if (order.margin.plus(openingFee).gt(free)) {
+          await c.query("ROLLBACK");
+          return reject("insufficient_margin");
+        }
 
         /* create the order row first (idempotency captured even on race) */
         const { rows: orows } = await c.query(
           `INSERT INTO trading_orders (idempotency_key, account_id, user_id, market, side, order_type,
              margin, leverage, target_price, sl_price, tp_price, status, request_meta)
            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'pending',$12) RETURNING *`,
-          [idempotencyKey, account.id, userId, order.market, order.side, order.order_type,
-           order.margin.toFixed(10), order.leverage, order.target_price?.toFixed(10) || null,
-           order.sl_price?.toFixed(10) || null, order.tp_price?.toFixed(10) || null,
-           JSON.stringify({ requested: req, mark: t.mark })])
-        const orow = orows[0]
-        await c.query("INSERT INTO trading_events(account_id,kind,detail) VALUES ($1,'order_created',$2)",[acc.id,JSON.stringify({order:orow.id,type:orow.order_type,status:'pending'})])
+          [
+            idempotencyKey,
+            account.id,
+            userId,
+            order.market,
+            order.side,
+            order.order_type,
+            order.margin.toFixed(10),
+            order.leverage,
+            order.target_price?.toFixed(10) || null,
+            order.sl_price?.toFixed(10) || null,
+            order.tp_price?.toFixed(10) || null,
+            JSON.stringify({ requested: req, mark: t.mark }),
+          ],
+        );
+        const orow = orows[0];
+        await c.query(
+          "INSERT INTO trading_events(account_id,kind,detail) VALUES ($1,'order_created',$2)",
+          [
+            acc.id,
+            JSON.stringify({
+              order: orow.id,
+              type: orow.order_type,
+              status: "pending",
+            }),
+          ],
+        );
 
-        let result
-        if (order.order_type === 'market') {
-          const current = this.md.tradeable(order.market)
-          if (!current.ok) throw Object.assign(new Error(current.reason), { status: 409 })
-          result = await this.#fill(c, acc, orow, current.mark, order.sl_price?.toFixed(10) || null, order.tp_price?.toFixed(10) || null)
-          await c.query('COMMIT')
+        let result;
+        if (order.order_type === "market") {
+          const current = this.md.tradeable(order.market);
+          if (!current.ok)
+            throw Object.assign(new Error(current.reason), { status: 409 });
+          result = await this.#fill(
+            c,
+            acc,
+            orow,
+            current.mark,
+            order.sl_price?.toFixed(10) || null,
+            order.tp_price?.toFixed(10) || null,
+          );
+          await c.query("COMMIT");
         } else {
-          await c.query('COMMIT')
-          result = { ok: true, order: orow, position: null, pending: true }
+          await c.query("COMMIT");
+          result = { ok: true, order: orow, position: null, pending: true };
         }
-        this.emit(account.id)
-        return result
+        this.emit(account.id);
+        return result;
       } catch (e) {
-        await c.query('ROLLBACK').catch(() => {})
+        await c.query("ROLLBACK").catch(() => {});
         /* unique idempotency race → return the winner */
-        if (String(e.code) === '23505' && idempotencyKey) {
-          const { rows } = await this.pool.query('SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key IN ($2,$3)', [userId, idempotencyKey, legacyKey])
-          if (rows[0]) return duplicate(rows[0], req, rows[0].position_id ? await this.#positionById(rows[0].position_id) : null)
+        if (String(e.code) === "23505" && idempotencyKey) {
+          const { rows } = await this.pool.query(
+            "SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key IN ($2,$3)",
+            [userId, idempotencyKey, legacyKey],
+          );
+          if (rows[0])
+            return duplicate(
+              rows[0],
+              req,
+              rows[0].position_id
+                ? await this.#positionById(rows[0].position_id)
+                : null,
+            );
         }
-        throw e
-      } finally { c.release() }
-    })
+        throw e;
+      } finally {
+        c.release();
+      }
+    });
   }
 
   /* fill an order at `price` — inside the caller's transaction.
@@ -526,35 +720,50 @@ export class Engine {
    * ======================================================= */
 
   async loop() {
-    if (!this.running || this.loopBusy) return
-    this.loopBusy = true
+    if (!this.running || this.loopBusy) return;
+    this.loopBusy = true;
     try {
-    for (const {user_id} of (await this.pool.query("SELECT user_id FROM demo_accounts WHERE account_type='free_demo' AND status='active'")).rows) await this.enforceTrialRisk(user_id)
-    const pending = await this.pool.query(
-      `SELECT o.*, a.balance, a.used_margin FROM trading_orders o
+      for (const { user_id } of (
+        await this.pool.query(
+          "SELECT a.user_id FROM demo_accounts a WHERE a.account_type='free_demo' AND a.status='active' AND (a.balance<=0 OR EXISTS(SELECT 1 FROM trading_positions p WHERE p.account_id=a.id AND p.status='open'))",
+        )
+      ).rows) {
+        await this.enforceTrialRisk(user_id);
+        await this.state(user_id);
+      }
+      const pending = await this.pool.query(
+        `SELECT o.*, a.balance, a.used_margin FROM trading_orders o
          JOIN demo_accounts a ON a.id = o.account_id
-        WHERE o.status='pending'`)
-    for (const o of pending.rows) {
-      if (this.#shouldTrigger(o)) {
-        await withAccountLock(o.account_id, () => this.#triggerPending(o).catch(console.error))
+        WHERE o.status='pending'`,
+      );
+      for (const o of pending.rows) {
+        if (this.#shouldTrigger(o)) {
+          await withAccountLock(o.account_id, () =>
+            this.#triggerPending(o).catch(console.error),
+          );
+        }
       }
-    }
-    const open = await this.pool.query(
-      `SELECT p.*, a.balance FROM trading_positions p
+      const open = await this.pool.query(
+        `SELECT p.*, a.balance FROM trading_positions p
          JOIN demo_accounts a ON a.id = p.account_id
-        WHERE p.status='open'`)
-    for (const p of open.rows) {
-      const m = freshMark(this.md, p.market)
-      if (!m) continue
-      const mark = D(m.mark)
-      const pnl = positionMetrics(p, this.md).net
-      const margin = D(p.margin)
-      const reason = this.#exitReason(p, mark, pnl, margin)
-      if (reason) {
-        await withAccountLock(p.account_id, () => this.#autoExit(p, mark, reason).catch(console.error))
+        WHERE p.status='open'`,
+      );
+      for (const p of open.rows) {
+        const m = freshMark(this.md, p.market);
+        if (!m) continue;
+        const mark = D(m.mark);
+        const pnl = positionMetrics(p, this.md).net;
+        const margin = D(p.margin);
+        const reason = this.#exitReason(p, mark, pnl, margin);
+        if (reason) {
+          await withAccountLock(p.account_id, () =>
+            this.#autoExit(p, mark, reason).catch(console.error),
+          );
+        }
       }
+    } finally {
+      this.loopBusy = false;
     }
-    } finally { this.loopBusy = false }
   }
 
   #shouldTrigger(o) {
@@ -622,7 +831,7 @@ export class Engine {
       const cur = (await c.query('SELECT * FROM trading_positions WHERE id=$1 FOR UPDATE', [p.id])).rows[0]
       if (!cur || cur.status !== 'open') { await c.query('ROLLBACK'); return }
       const m = freshMark(this.md, cur.market)
-      if (!m) { await c.query('ROLLBACK'); return }
+      if (!m || !this.md.tradeable(cur.market).ok) { await c.query('ROLLBACK'); return }
       const currentReason = this.#exitReason(cur, D(m.mark), positionMetrics(cur, this.md).net, D(cur.margin))
       if (!currentReason) { await c.query('ROLLBACK'); return }
       await this.#closeTx(c, cur, m.mark, currentReason)

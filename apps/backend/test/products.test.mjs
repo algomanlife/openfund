@@ -14,7 +14,7 @@ const ok = (name, condition) => {
 async function call(path, method = "GET", body, cookie = "") {
   const r = await fetch(base + path, {
     method,
-    headers: { "Content-Type": "application/json", Cookie: cookie },
+    headers: { "Content-Type": "application/json", "Idempotency-Key":randomUUID(), Cookie: cookie },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   return {
