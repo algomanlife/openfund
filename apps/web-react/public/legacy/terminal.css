@@ -575,11 +575,6 @@ html[data-theme="light"] img[src$=".png"],html[data-theme="light"] img[src$=".jp
 .dd-list li.closed .mk b{color:var(--body)}
 @media(max-width:760px){.market-dropdown{width:calc(100vw - 16px)}.dd-head,.dd-list li{grid-template-columns:minmax(110px,1.4fr) 78px 54px 1fr 1fr 1fr 1fr;font-size:10px}}
 
-/* Vela attribution mark hidden — replaced by Openfund branding (chart-brand).
-   NOTICE honoured via the visible .vela-credit link on the same screen. */
-.veLO, .vela-attribution, .vela-attribution-custom, .vela-attr-shadow,
-.vela-attr-symbol, .vela-attr-wordmark{display:none!important}
-
 #rainbow-host{display:flex;gap:8px;align-items:center;flex-shrink:0}
 .rk-btn{
   display:inline-flex;align-items:center;gap:8px;
@@ -621,3 +616,10 @@ html[data-theme="light"] .rk-btn.rk-net,html[data-theme="light"] .rk-btn.rk-acct
 .bt-table .act-btn{white-space:nowrap;font-size:11px;padding:4px 10px}
 #tb-orders th:nth-child(8){width:110px}
 #tb-history th:nth-child(7){width:120px}
+
+/* Chart notices stay visible beside product status on every viewport. */
+.chart-notice{color:var(--body);text-decoration:underline;flex-shrink:0}
+.chart-host .chart-msg{pointer-events:none}
+.chart-host .chart-msg[hidden]{display:none!important}
+.chart-notice-full{position:absolute;bottom:34px;right:12px;z-index:82;background:var(--obsidian);padding:3px 6px}
+.chart-host .chart-msg button{pointer-events:auto}

@@ -599,3 +599,10 @@ html[data-theme="light"] img[src$=".png"],html[data-theme="light"] img[src$=".jp
 .bt-table .act-btn{white-space:nowrap;font-size:11px;padding:4px 10px}
 #tb-orders th:nth-child(8){width:110px}
 #tb-history th:nth-child(7){width:120px}
+
+/* Chart notices stay visible beside product status on every viewport. */
+.chart-notice{color:var(--body);text-decoration:underline;flex-shrink:0}
+.chart-host .chart-msg{pointer-events:none}
+.chart-host .chart-msg[hidden]{display:none!important}
+.chart-notice-full{position:absolute;bottom:34px;right:12px;z-index:82;background:var(--obsidian);padding:3px 6px}
+.chart-host .chart-msg button{pointer-events:auto}

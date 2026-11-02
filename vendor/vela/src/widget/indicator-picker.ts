@@ -245,7 +245,7 @@ export class IndicatorPicker {
                 row.appendChild(beta);
             }
             if (opts.instance !== undefined) {
-                const badgeText = r.native ? 'vela' : r.language;
+                const badgeText = r.native ? undefined : r.language;
                 if (badgeText) {
                     const badge = doc.createElement('span');
                     badge.className = 'vela-ip-badge';
