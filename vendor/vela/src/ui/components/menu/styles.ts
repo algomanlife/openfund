@@ -1,6 +1,9 @@
 export const MENU_STYLE_ID = 'vela-ui-menu';
 
 export const MENU_CSS = `
+/* Machine re-projection can remove the floating library's inline z-index.
+   Keep the positioner above the canvas after hover and the entry animation. */
+.vela-ui-layer[data-scope='menu'][data-part='positioner'] { z-index: var(--vela-z-menu); }
 .vela-menu {
     /* The list is a <ul>: without this, block rows (the separator) paint a ::marker dot. */
     list-style: none;
