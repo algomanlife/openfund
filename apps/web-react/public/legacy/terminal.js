@@ -320,6 +320,7 @@ function initChart(){
      terminal chrome in sync with the chart's market */
   vc.on('market:changed', ev => {
     chartOverlay(null);
+    if (ev && ev.timeframe) S.tf = ev.timeframe;
     if (ev && ev.symbol){
       const sym = String(ev.symbol).replace(/^gains:/, '');
       if (sym !== S.marketId && board.meta.has(sym)){
@@ -332,11 +333,16 @@ function initChart(){
 
 function setChartMarket(){
   if (!vc) return;
-  try{ vc.setSymbol(S.marketId); }catch(e){ chartOverlay(`<b>${t('chart.error')}</b>`); }
+  Promise.resolve(vc.setSymbol(S.marketId)).catch(() => chartOverlay(`<b>${t('chart.error')}</b>`));
 }
 
 $('chart-full').addEventListener('click', () => {
-  document.documentElement.classList.toggle('fscreen');
+  const fullscreen = document.documentElement.classList.toggle('fscreen');
+  const notice = document.querySelector('.chart-notice');
+  if (notice) {
+    notice.classList.toggle('chart-notice-full', fullscreen);
+    (fullscreen ? $('chart-host') : document.querySelector('.status-bar')).appendChild(notice);
+  }
   if (vc) setTimeout(() => { try{ vc.resize(); }catch(e){} }, 60);
 });
 
@@ -511,6 +517,7 @@ function selectMarket(id){
   velaSaveDrawings();     /* persist user drawings for the OLD symbol */
   velaPositionsClear();   /* symbol isolation: only the new market's overlays */
   velaClearDrawings();    /* clear user drawings too */
+  S.marketId = id;
   S.stats = null;
   $('cur-icon').outerHTML = `<span id="cur-icon" class="cur-ic">${iconHTML(id)}</span>`;
   $('cur-pair').textContent = id;
@@ -534,9 +541,9 @@ function selectMarket(id){
   renderBook(true);
   renderTrades();
   computeForm();
-}
-  /* restore user drawings for the NEW symbol after the chart updates */
+  /* Restore user drawings for the new symbol after the chart updates. */
   setTimeout(() => { velaRestoreDrawings(); velaPositionsSync(); }, 300);
+}
 
 
 function updateStarBtn(){
@@ -1379,12 +1386,13 @@ function boot(){
   $('submit-order').disabled = true;
   chartOverlay(`<b>${t('boot.loading')}</b>`);
   board.boot().then(() => {
+    let requestedSymbol = null;
     /* market deep-link from the Markets page (sessionStorage handshake;
        applied once at boot, only when the symbol exists in Gains metadata) */
     try {
       const want = sessionStorage.getItem('of-terminal-symbol');
       if (want) { sessionStorage.removeItem('of-terminal-symbol');
-        if (board.meta.has(want)) { S.marketId = want;
+        if (board.meta.has(want)) { S.marketId = want; requestedSymbol = want;
           const g = board.meta.get(want).group;
           if (g) S.ddCategory = g; } }
     } catch(e){}
@@ -1426,7 +1434,7 @@ function boot(){
     applyStaticI18n();
     initChart();
     /* restore user drawings + settings after the chart is ready */
-    vc.chart.ready ? vc.chart.ready().then(() => {
+    vc?.chart?.ready ? vc.chart.ready().then(() => {
       velaRestoreDrawings();
       /* save on any drawing change */
       try { vc.chart.on('drawing:created', velaScheduleSave) } catch(e){}
@@ -1438,7 +1446,9 @@ function boot(){
     }) : setTimeout(() => { velaRestoreDrawings(); velaPositionsSync(); }, 1000);
     $('market-select-btn').disabled = false;
     $('submit-order').disabled = false;
-    selectMarket(board.meta.has('BTC/USD') ? 'BTC/USD' : [...board.meta.keys()][0]);
+    const restoredSymbol = vc?.chart?.market?.symbol?.replace(/^gains:/, '');
+    const initialSymbol = requestedSymbol || restoredSymbol || S.marketId;
+    selectMarket(board.meta.has(initialSymbol) ? initialSymbol : [...board.meta.keys()][0]);
     renderCats();
     syncLeverageUI();
     renderLevPresets();

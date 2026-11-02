@@ -24,3 +24,11 @@ Use `/react/#/en/prop/trade` or `/react/#/en/perpetual/trade`; replace `en` with
 Themes and RTL support are product features. Repository documentation and screenshot captions use English. Keep required Vela attribution and upstream notices. Oracle market data does not authorize fabricated depth, tape or volume.
 
 [Terminal integration](../integrations/VELA.md) · [Architecture](../architecture/ARCHITECTURE.md) · [Screenshots](../assets/screenshots/README.md)
+
+## Charts and proprietary indicators
+
+The shared catalog starts with Open Algo V5, Price Action Concepts and Smart Money Concepts, followed by all 77 existing built-ins. Original Pine sources run in the official worker addon with two repository-local libraries; input defaults and visualization settings are preserved. Add/remove and input edits use the existing dialog/legend. Product-specific chart state persists across reloads; position overlays stay with the account bridge.
+
+Timeframe menus use canonical Pine minute/day IDs mapped to Gains intervals. A menu positioner stacking rule prevents canvas interception after hover. The terminal listens to committed market changes and updates its interval state; symbol selection commits its actual market ID before refreshing dependent chart display. No chart instance remount is required. Loading messages cannot intercept clicks and respect `hidden`.
+
+Native indicator VELA badges and the chart footer link are removed. The visible linked Vela notice remains in terminal status, satisfying the checked-in NOTICE without CSS-hiding the required attribution. [Indicator usage](INDICATORS.md), [runtime and limits](PINE_SCRIPT.md), [extension procedure](CUSTOM_INDICATORS.md) and [verification](../reviews/vela-pine/DELIVERY.md) cover the integration.

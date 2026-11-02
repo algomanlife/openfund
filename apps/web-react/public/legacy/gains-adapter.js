@@ -28,6 +28,7 @@ const WS = 'wss://api.gains.trade/v1/arbitrum/ws';
 
 /* Vela timeframe → Gains candle interval (1w deliberately absent: unsupported) */
 const TF_MAP = {
+  '1': '1m', '5': '5m', '15': '15m', '30': '30m', '1440': '1d',
   '1m': '1m', '5m': '5m', '15m': '15m', '30m': '30m',
   '1h': '1h', '60': '1h', '4h': '4h', '240': '4h', '1d': '1d', 'D': '1d'
 };
@@ -35,6 +36,37 @@ const TF_MS = {
   '1m': 60000, '5m': 300000, '15m': 900000, '30m': 1800000,
   '1h': 3600000, '4h': 14400000, '1d': 86400000
 };
+
+/* Pine resolutions preserve case: M is a calendar month; m is minutes. */
+function resolution(timeframe){
+  const direct = TF_MAP[timeframe];
+  if (direct) return { interval: direct, ms: TF_MS[direct] };
+  if (/^(?:1)?[WM]$/.test(timeframe)) return { interval: '1d', calendar: timeframe.endsWith('W') ? 'week' : 'month' };
+  const match = /^(\d+)(m|h)?$/.exec(timeframe);
+  const minutes = match && Number(match[1]) * (match[2] === 'h' ? 60 : 1);
+  if (!minutes || minutes > 1440 || 1440 % minutes !== 0) throw new Error('Unsupported Gains/Pine timeframe: ' + timeframe);
+  const ms = minutes * 60000;
+  const interval = Object.keys(TF_MS).reverse().find(tf => ms % TF_MS[tf] === 0);
+  return { interval, ms };
+}
+
+function bucket(time, spec){
+  if (!spec.calendar) return Math.floor(time / spec.ms) * spec.ms;
+  const date = new Date(time);
+  if (spec.calendar === 'month') return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1);
+  const day = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+  return day - ((date.getUTCDay() + 6) % 7) * 86400000;
+}
+
+function aggregate(bars, spec){
+  const out = [];
+  for (const bar of bars){
+    const time = bucket(bar.time, spec), last = out[out.length - 1];
+    if (!last || last.time !== time) out.push({ ...bar, time });
+    else { last.high = Math.max(last.high, bar.high); last.low = Math.min(last.low, bar.low); last.close = bar.close; }
+  }
+  return out;
+}
 
 /* ---------- REST ---------- */
 async function get(path, timeoutMs){
@@ -197,15 +229,22 @@ function openInterestUsd(meta){
 
 /* ---------- Vela DataProvider (verified Gains data only) ---------- */
 function createVelaProvider(){
+  const tails = new Map();
   return {
     /* required — bars for a window; newest bar is the forming candle */
     async getBars(ticker, timeframe, range){
-      const interval = TF_MAP[timeframe] || '1h';
-      const tfMs = TF_MS[interval] || 3600000;
+      const spec = resolution(timeframe);
+      const interval = spec.interval;
+      const tfMs = spec.ms || (spec.calendar === 'week' ? 7 : 31) * 86400000;
       const to = range && range.to != null ? range.to : Date.now();
       /* default window: ~500 bars (bounded; Gains serves recent history) */
-      const from = range && range.from != null ? range.from : to - 500 * tfMs;
-      return fetchCandles(ticker, interval, from, to);
+      const from = range && range.from != null ? range.from : to - (range?.limit || 500) * tfMs;
+      const bars = await fetchCandles(ticker, interval, bucket(from, spec), to);
+      const result = aggregate(bars, spec);
+      const tail = result[result.length - 1];
+      const key = ticker + ':' + timeframe;
+      if (tail && (!tails.has(key) || tail.time >= tails.get(key).time)) tails.set(key, tail);
+      return result;
     },
     /* optional — full verified symbol list (488 markets) */
     async listSymbols(){
@@ -223,6 +262,16 @@ function createVelaProvider(){
       if (!m) return { ticker };
       return {
         ticker,
+        tickerid: ticker,
+        main_tickerid: ticker,
+        root: m.base,
+        basecurrency: m.base,
+        currency: m.quote || 'USD',
+        timezone: 'UTC',
+        prefix: 'gains',
+        mintick: 10 ** -m.pricePrecision,
+        minmove: 1,
+        pricescale: 10 ** m.pricePrecision,
         description: m.base + ' / ' + (m.quote || 'USD'),
         pricePrecision: m.pricePrecision,
         sizePrecision: m.sizePrecision,
@@ -235,16 +284,19 @@ function createVelaProvider(){
     },
     /* optional — true live stream from the Gains prices channel */
     subscribe(ticker, timeframe, onBar){
-      const interval = TF_MAP[timeframe] || '1h';
-      const tfMs = TF_MS[interval] || 3600000;
+      const spec = resolution(timeframe);
       let bucketStart = 0, open = null, high = -Infinity, low = Infinity;
       const onPrice = p => {
         if (p.market !== ticker) return;
         const now = Date.now();
         const price = p.mark;
-        const start = Math.floor(now / tfMs) * tfMs;
+        const start = bucket(now, spec);
         if (start !== bucketStart){
-          bucketStart = start; open = price; high = price; low = price;
+          const tail = tails.get(ticker + ':' + timeframe);
+          bucketStart = start;
+          open = tail?.time === start ? tail.open : price;
+          high = Math.max(tail?.time === start ? tail.high : price, price);
+          low = Math.min(tail?.time === start ? tail.low : price, price);
         } else {
           if (open == null) open = price;
           high = Math.max(high, price); low = Math.min(low, price);

@@ -2,6 +2,14 @@
 
 Historical entries describe their original changes, including past UI copy. They are not verification of business locations, commercial availability or present capabilities. See [Feature Status](docs/product/FEATURE_STATUS.md).
 
+## 2026-11-02 — Proprietary chart indicators and interaction repair
+
+- Add original Open Algo V5, Price Action Concepts and Smart Money Concepts to the shared chart catalog before all built-ins; resolve supplied Pine libraries locally.
+- Run original calculations in the official Pine worker, preserve input settings across reloads and correct PAC nested secondary execution without changing source algorithms.
+- Fix menu stacking, canonical timeframe labels, symbol state and missing-interval fallback; retain genuine candle extremes on live updates.
+- Remove native VELA badges and chart footer branding; keep the required linked notice in terminal status and preserve licenses.
+- Add source/runtime/provider/browser regressions and English architecture/limitation documentation. Deployment and independent reference conformance remain unverified.
+
 ## 2026-11-02 — Repository identity and documentation
 
 - Rebuild the flagship README around Openfund's product strategy, current capabilities, genuine English screenshots and approved branding.

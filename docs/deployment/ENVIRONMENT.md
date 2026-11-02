@@ -68,3 +68,7 @@ valid for their existing lifetime; new signatures use these product networks.
 No Gains testnet execution is enabled. `SIM_TEST_MODE=1` is ignored in production.
 `SIM_MAINT_PCT` remains the existing simulation-only maintenance percentage (10 by
 default, finite and below 100), not a Gains liquidation threshold.
+
+## Pine chart runtime
+
+The web application pins `@luxalgo/vela@0.9.3`, `@luxalgo/vela-pinets@0.3.2` and `pinets@0.13.1`; esbuild is an explicit frontend build dependency. `prebuild` generates the workspace, hosted worker and readable licenses before Vite copies public assets. No new environment variable, secret, backend dependency or Render service is required. A restrictive CSP must permit the same-origin worker; no external Pine library service is used. See [Pine architecture](../trading/PINE_SCRIPT.md).
