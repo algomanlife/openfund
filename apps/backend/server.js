@@ -21,6 +21,7 @@ import { marketData } from './market-data.js'
 import { Engine } from './engine.js'
 import { Portfolio } from './portfolio.js'
 import { productRoutes } from './products.js'
+import { accountDirectory } from './accounts.js'
 
 const cfg = {
   port: Number(process.env.PORT || 8080),
@@ -270,6 +271,13 @@ const tradingAuth = async (req, res, next) => {
     next()
   } catch { res.status(500).json({ error: 'internal' }) }
 }
+
+app.get('/accounts', tradingAuth, asyncRoute(async (req,res) => {
+  res.json(await accountDirectory(pool,engine,req.user))
+}))
+app.post('/trading/preview', tradingAuth, asyncRoute(async (req,res) => {
+  res.json(await engine.previewOrder(req.user.user_id,req.body || {}))
+}))
 
 app.get('/trading/state', tradingAuth, asyncRoute(async (req, res) => {
   const state = await engine.state(req.user.user_id)

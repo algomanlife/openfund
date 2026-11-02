@@ -26,7 +26,7 @@ export function quoteRecord(p, now = Date.now()) {
   let at = p.updatedAt == null ? now : Number(p.updatedAt)
   if (!Number.isFinite(at)) at = Date.parse(p.updatedAt)
   if (at > 0 && at < 100000000000) at *= 1000
-  if (!Number.isFinite(at) || at <= 0) return null
+  if (!Number.isFinite(at) || at <= 0 || at > now + 1000) return null
   return {mark:String(p.mark),index:p.index != null ? String(p.index) : null,at:Math.min(now,at),updatedAt:p.updatedAt}
 }
 export class MarketData {
@@ -87,7 +87,7 @@ export class MarketData {
     let n = 0
     for (const p of (j.data || [])) {
       const quote = quoteRecord(p)
-      if (quote) {
+      if (quote && (!this.marks.has(p.market) || quote.at >= this.marks.get(p.market).at)) {
         this.marks.set(p.market, quote)
         n++
       }
@@ -124,7 +124,7 @@ export class MarketData {
         const now = Date.now()
         for (const p of msg.data) {
           const quote = quoteRecord(p,now)
-          if (!quote) continue
+          if (!quote || (this.marks.has(p.market) && quote.at < this.marks.get(p.market).at)) continue
           this.marks.set(p.market, quote)
           const inj = this.injected.get(p.market)
           if (inj) this.#emit(p.market, inj)

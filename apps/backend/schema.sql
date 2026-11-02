@@ -227,3 +227,29 @@ CREATE TABLE IF NOT EXISTS account_equity_risk (
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
+
+-- Free Trial lifecycle: existing DAI rows retain their denomination and ledger.
+ALTER TABLE demo_accounts ADD COLUMN IF NOT EXISTS disabled_at timestamptz;
+ALTER TABLE demo_accounts ADD COLUMN IF NOT EXISTS disable_reason text;
+ALTER TABLE demo_accounts DROP CONSTRAINT IF EXISTS demo_accounts_status_check;
+ALTER TABLE demo_accounts ADD CONSTRAINT demo_accounts_status_check
+  CHECK (status IN ('active','suspended','closed','liquidating','permanently_disabled'));
+CREATE OR REPLACE FUNCTION protect_terminated_trial() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF OLD.account_type='free_demo' AND OLD.status='permanently_disabled' THEN
+    RAISE EXCEPTION 'permanently_disabled_trial_is_immutable' USING ERRCODE='23514';
+  END IF;
+  RETURN CASE WHEN TG_OP='DELETE' THEN OLD ELSE NEW END;
+END $$;
+DROP TRIGGER IF EXISTS protect_terminated_trial ON demo_accounts;
+CREATE TRIGGER protect_terminated_trial BEFORE UPDATE OR DELETE ON demo_accounts
+FOR EACH ROW EXECUTE FUNCTION protect_terminated_trial();
+
+CREATE TABLE IF NOT EXISTS journal_preferences (
+  user_id uuid NOT NULL REFERENCES openfund_users(id),
+  product text NOT NULL CHECK (product IN ('prop','perpetual')),
+  account_ref text NOT NULL,
+  preferences jsonb NOT NULL DEFAULT '{}',
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY(user_id,product,account_ref)
+);

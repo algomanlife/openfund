@@ -101,15 +101,20 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
       if (!["prop", "perpetual"].includes(product))
         throw fail(404, "unknown_product");
       const userId = req.user.user_id;
-      const account =
+      let account =
         product === "prop" ? await engine.getAccount(userId) : null;
-      const accountRef =
+      let accountRef =
         product === "prop"
           ? account?.id
           : `gains:arbitrum:${req.user.wallet_address}`;
       if (!accountRef) throw fail(404, "account_not_found");
-      if (req.query.account && req.query.account !== accountRef)
-        throw fail(404, "account_not_found");
+      if (req.query.account && req.query.account !== accountRef) {
+        if (product !== 'prop' || !uuid.test(req.query.account)) throw fail(404,'account_not_found');
+        const owned = (await pool.query('SELECT * FROM openfund_challenges WHERE id=$1 AND user_id=$2',[req.query.account,userId])).rows[0];
+        if (!owned) throw fail(404,'account_not_found');
+        account = {...owned,account_type:'challenge',currency:null}; accountRef = owned.id;
+      }
+      if (!['GET','HEAD'].includes(req.method) && account?.status === 'permanently_disabled') throw fail(403,'account_permanently_disabled');
       req.scope = { product, userId, accountRef, account };
       next();
     }),
@@ -139,14 +144,14 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
           },
         ],
         capabilities: {
-          simulatedTrading: s.product === "prop",
+          simulatedTrading: s.product === "prop" && s.account?.account_type === "free_demo" && s.account.status === "active",
           execution: s.product === "prop" ? "simulation" : "unavailable",
           marketData: "gains",
           positions: true,
           history: true,
           journal: true,
         },
-        state: s.product === "prop" ? await engine.state(s.userId) : null,
+        state: s.product === "prop" && s.account?.account_type === "free_demo" ? await engine.state(s.userId) : null,
       });
     }),
   );
@@ -168,6 +173,7 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
       const f = filters(req.query);
       if (req.scope.product !== "prop")
         throw fail(409, "use_native_gains_records");
+      if (req.scope.account?.account_type !== "free_demo") throw fail(409,"challenge_execution_unavailable");
       res.json(await portfolio.overview(req.scope.userId, f));
     }),
   );
@@ -177,6 +183,7 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
       const f = filters(req.query);
       if (req.scope.product !== "prop")
         throw fail(409, "use_native_gains_records");
+      if (req.scope.account?.account_type !== "free_demo") throw fail(409,"challenge_execution_unavailable");
       res.json(await portfolio.buckets(req.scope.userId, f));
     }),
   );
@@ -186,6 +193,7 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
       const f = filters(req.query);
       if (req.scope.product !== "prop")
         throw fail(409, "use_native_gains_records");
+      if (req.scope.account?.account_type !== "free_demo") throw fail(409,"challenge_execution_unavailable");
       res.json(await portfolio.history(req.scope.userId, f));
     }),
   );
@@ -195,6 +203,7 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
       const f = filters(req.query);
       if (req.scope.product !== "prop")
         throw fail(409, "use_native_gains_records");
+      if (req.scope.account?.account_type !== "free_demo") throw fail(409,"challenge_execution_unavailable");
       const params = [req.scope.userId, req.scope.accountRef];
       let where = "user_id=$1 AND account_id=$2";
       if (f.market) {
@@ -227,7 +236,7 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
   router.get(
     "/trades/:id",
     wrap(async (req, res) => {
-      if (req.scope.product !== "prop" || !uuid.test(req.params.id))
+      if (req.scope.account?.account_type !== "free_demo" || req.scope.product !== "prop" || !uuid.test(req.params.id))
         throw fail(404, "trade_not_found");
       const detail = await portfolio.details(req.scope.userId, req.params.id);
       if (!detail) throw fail(404, "trade_not_found");
@@ -237,7 +246,7 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
   router.put(
     "/notes",
     wrap(async (req, res) => {
-      if (req.scope.product !== "prop") throw fail(400, "trade_not_available");
+      if (req.scope.product !== "prop" || req.scope.account?.account_type !== "free_demo") throw fail(400, "trade_not_available");
       res.json(
         await portfolio.upsertNote(
           req.scope.userId,
@@ -255,6 +264,9 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
       const f = filters(req.query),
         params = scoped(req.scope);
       let where = "user_id=$1 AND product=$2 AND account_ref=$3";
+      if (req.query.classification) {
+        params.push(String(req.query.classification).slice(0,80)); where += ` AND classification=$${params.length}`;
+      }
       if (req.query.search) {
         params.push(`%${String(req.query.search).slice(0, 120)}%`);
         where += ` AND (title ILIKE $${params.length} OR body ILIKE $${params.length} OR tags::text ILIKE $${params.length} OR classification ILIKE $${params.length})`;
@@ -283,6 +295,10 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
     }),
   );
   async function writeEntry(client, scope, raw, importing = false) {
+    if (scope.product === 'prop' && scope.account?.account_type === 'free_demo') {
+      const a = (await client.query('SELECT status FROM demo_accounts WHERE id=$1 FOR UPDATE',[scope.accountRef])).rows[0];
+      if (a?.status === 'permanently_disabled') throw fail(403,'account_permanently_disabled');
+    }
     const e = entryInput(raw),
       id = raw.id || randomUUID();
     if (!uuid.test(id)) throw fail(400, "invalid_id");
@@ -394,5 +410,16 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
       res.json({ ok: true });
     }),
   );
+  router.get('/preferences',wrap(async(req,res)=>{
+    const row=(await pool.query('SELECT preferences FROM journal_preferences WHERE user_id=$1 AND product=$2 AND account_ref=$3',scoped(req.scope))).rows[0];
+    res.json(row?.preferences || {range:'All',layout:'comfortable',hidden:[]});
+  }));
+  router.put('/preferences',wrap(async(req,res)=>{
+    const {range,layout,hidden=[]}=req.body;
+    if (!['7D','30D','90D','YTD','All'].includes(range) || !['comfortable','compact'].includes(layout) || !Array.isArray(hidden) || hidden.length>20 || hidden.some(x=>typeof x!=='string' || x.length>60)) throw fail(400,'invalid_preferences');
+    await pool.query(`INSERT INTO journal_preferences(user_id,product,account_ref,preferences) VALUES ($1,$2,$3,$4)
+      ON CONFLICT(user_id,product,account_ref) DO UPDATE SET preferences=excluded.preferences,updated_at=now()`,[...scoped(req.scope),JSON.stringify({range,layout,hidden})]);
+    res.json({range,layout,hidden});
+  }));
   return router;
 }

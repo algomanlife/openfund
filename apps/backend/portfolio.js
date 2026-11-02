@@ -124,8 +124,10 @@ export class Portfolio {
     const trades = positions
       .filter(
         (p) =>
-          (!range.from || p.opened_at >= new Date(range.from)) &&
-          (!range.to || p.opened_at <= new Date(range.to)),
+          (!range.from || (p.closed_at || p.opened_at) >= new Date(range.from)) &&
+          (!range.to || (p.closed_at || p.opened_at) <= new Date(range.to)) &&
+          (!range.market || p.market.toLowerCase().includes(range.market.toLowerCase())) &&
+          (!range.side || p.side === range.side),
       )
       .map((p) => ({
         ...toRoundTrip(p),
@@ -190,8 +192,10 @@ export class Portfolio {
     const trades = positions
       .filter(
         (p) =>
-          (!range.from || p.opened_at >= new Date(range.from)) &&
-          (!range.to || p.opened_at <= new Date(range.to)),
+          (!range.from || (p.closed_at || p.opened_at) >= new Date(range.from)) &&
+          (!range.to || (p.closed_at || p.opened_at) <= new Date(range.to)) &&
+          (!range.market || p.market.toLowerCase().includes(range.market.toLowerCase())) &&
+          (!range.side || p.side === range.side),
       )
       .map((p) => ({
         ...toRoundTrip(p),
