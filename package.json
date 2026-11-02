@@ -22,7 +22,8 @@
     "docs:check": "npm run docs:language && npm run docs:links && npm run docs:markdown && npm run docs:mermaid",
     "test:charts": "node --test packages/openfund-charts/test/pine.test.mjs",
     "test:browser:charts": "node e2e/test-chart-indicators.mjs",
-    "test:browser:unified": "node e2e/test-unified-trading.cjs"
+    "test:browser:unified": "node e2e/test-unified-trading.cjs",
+    "test:browser:layout": "node e2e/test-terminal-layout.cjs"
   },
   "devDependencies": {
     "js-yaml": "^4.1.0",
