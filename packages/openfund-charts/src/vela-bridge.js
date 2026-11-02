@@ -26,7 +26,8 @@ const WLib = global.VelaWorkspace;
 if (!WLib || !WLib.VelaWorkspace) throw new Error('Vela workspace bundle not loaded (assets/vela-workspace.global.min.js)');
 
 /* Gains-supported timeframes only (1w verified unsupported) */
-const TIMEFRAMES = ['1m', '5m', '15m', '30m', '1h', '4h', '1d'];
+const TIMEFRAMES = ['1', '5', '15', '30', '60', '240', 'D'];
+const canonicalTimeframe = tf => ({'1m':'1','5m':'5','15m':'15','30m':'30','1h':'60','4h':'240','1d':'D'}[tf] || tf);
 
 /* Openfund brand themes (Vela full theme objects — 7 required fields) */
 const THEMES = {
@@ -46,6 +47,7 @@ function mount(container, opts){
   opts = opts || {};
   const el = typeof container === 'string' ? document.querySelector(container) : container;
   if (!el) throw new Error('Vela mount: container not found');
+  const engines = [];
 
   /* Openfund hosts its own market selector — Vela's symbol chip is omitted.
      Timeframe / style / indicators / undo-redo stay (left side),
@@ -53,12 +55,25 @@ function mount(container, opts){
   const ws = new WLib.VelaWorkspace(el, {
     layout: false,                    /* single-chart mode */
     symbol: 'gains:' + (opts.symbol || 'BTC/USD'),
-    timeframe: opts.timeframe || '1m',
+    timeframe: canonicalTimeframe(opts.timeframe || '1'),
     providers: { gains: () => G.createVelaProvider() },
     timeframes: TIMEFRAMES,
     live: true,
     theme: THEMES.dark,               /* chart always dark; the host inverts for light mode */
-    persist: false,
+    engines: { pine: () => { const engine = WLib.createPineEngine(); engines.push(engine); return engine; } },
+    indicators: WLib.indicators,
+    persist: true,
+    storage: {
+      get(){ try { return localStorage.getItem('of-chart-v2-' + (global.__ofTerminalConfig?.product || 'classic')); } catch(e){ return null; } },
+      set(_key, value){
+        try {
+          const state = JSON.parse(value);
+          // Position overlays belong to the account bridge, never chart persistence.
+          state.charts?.forEach(chart => { delete chart.drawings; });
+          localStorage.setItem('of-chart-v2-' + (global.__ofTerminalConfig?.product || 'classic'), JSON.stringify(state));
+        } catch(e){}
+      }
+    },
     topbar: {
       left: ['timeframes', 'style', 'indicators', 'undo-redo'],
       right: ['actions', 'alerts', 'panels', 'screenshot']
@@ -85,10 +100,12 @@ function mount(container, opts){
     __set: (k, v) => { try { return ws.chart.renderer.set(k, v); } catch(e){ return 'ERR:' + e.message; } },
     get chart(){ return ws.chart; },
     setSymbol(symbol){ return ws.chart.setMarket({ symbol: 'gains:' + symbol }); },
-    setTimeframe(tf){ return ws.chart.setMarket({ timeframe: tf }); },
+    setTimeframe(tf){ return ws.chart.setMarket({ timeframe: canonicalTimeframe(tf) }); },
     setMarket(next){
-      if (next.symbol) next.symbol = 'gains:' + next.symbol;
-      return ws.chart.setMarket(next);
+      return ws.chart.setMarket({ ...next,
+        ...(next.symbol ? { symbol: 'gains:' + next.symbol.replace(/^gains:/, '') } : {}),
+        ...(next.timeframe ? { timeframe: canonicalTimeframe(next.timeframe) } : {})
+      });
     },
     setTheme(theme){
       /* chart stays dark; light mode is a host-level invert so the whole
@@ -101,6 +118,7 @@ function mount(container, opts){
     destroy(){
       ro.disconnect();
       try { ws.destroy(); } catch(e){}
+      engines.forEach(engine => engine.terminate());
     }
   };
   global.__openfundChart = controller;   /* debug handle */
