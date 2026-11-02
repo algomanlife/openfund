@@ -33,7 +33,7 @@ export default function ProductPortfolio() {
   const overview = useResource(
       product,
       signed && product === "prop"
-        ? `/overview?from=${filter.from}&to=${filter.to}`
+        ? `/overview?${query}`
         : null,
       revision,
       true,
@@ -53,7 +53,7 @@ export default function ProductPortfolio() {
     buckets = useResource(
       product,
       signed && product === "prop"
-        ? `/buckets?from=${filter.from}&to=${filter.to}`
+        ? `/buckets?${query}`
         : null,
       revision,
     );

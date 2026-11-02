@@ -20,6 +20,7 @@
  *  - funding not simulated in v1
  */
 import crypto from 'node:crypto'
+import {instrumentSpec} from './instruments.js'
 import Decimal from 'decimal.js'
 
 import { D, SIM, feePct, spreadPct, withSpread, pnl, freshMark, positionMetrics, accountMetrics } from './trading-math.js'
@@ -243,9 +244,12 @@ export class Engine {
     for (const v of [sl,tp]) if (v && (!v.isFinite() || v.lte(0) || v.gt('1000000000000'))) fail('invalid_numeric_input')
     if (sl && (req.side === 'long' ? sl.gte(entry) : sl.lte(entry))) fail('invalid_sl')
     if (tp && (req.side === 'long' ? tp.lte(entry) : tp.gte(entry))) fail('invalid_tp')
+    const spec=instrumentSpec(t.meta,req.market)
+    if(margin.lt(spec.minMargin) || margin.times(leverage).lt(spec.minNotional))fail('instrument_minimum_size')
     const notional=margin.times(leverage), fee=notional.times(feePct(t.meta,req.market)).div(100)
     if (a.free_margin === null || margin.plus(fee).gt(a.free_margin) || margin.plus(fee).gt(D(a.balance).minus(a.used_margin))) fail('insufficient_margin')
-    const quantity=notional.div(entry).toDecimalPlaces(10)
+    const quantity=notional.div(entry).toDecimalPlaces(spec.quantityPrecision,Decimal.ROUND_DOWN)
+    if(quantity.lte(0))fail('instrument_minimum_size')
     const metrics=positionMetrics({market:req.market,side:req.side,margin:margin.toString(),leverage:leverage.toString(),quantity:quantity.toString(),entry_price:entry.toString()},this.md)
     return {estimate:true,as_of:Date.now(),currency:a.currency,entry_price:entry.toString(),quantity:quantity.toString(),notional:notional.toString(),required_margin:margin.toString(),open_fee:fee.toString(),estimated_close_fee:fee.toString(),available_margin:a.free_margin,liquidation_price:metrics.liquidation,sl:sl?.toString() ?? null,tp:tp?.toString() ?? null,model:'Openfund linear USD simulation v1; no funding or market impact'}
   }
@@ -297,6 +301,8 @@ export class Engine {
     const t = this.md.tradeable(order.market)
     if (!t.ok) return reject(t.reason)
     if (!(order.margin.gte(SIM.MIN_MARGIN))) return reject('margin_too_small')
+    const spec=instrumentSpec(t.meta,order.market)
+    if(order.margin.lt(spec.minMargin) || order.margin.times(order.leverage).lt(spec.minNotional))return reject('instrument_minimum_size')
     if (order.leverage < 1 || order.leverage > Number(t.meta.maxLeverage || 100)) return reject('leverage_exceeded')
     if (order.order_type !== 'market' && !order.target_price) return reject('target_price_required')
     if (order.margin.gt(D('100000000'))) return reject('margin_too_large')
@@ -377,7 +383,8 @@ export class Engine {
     const execPrice = applySpread ? withSpread(price, orow.side, 'open', meta, orow.market) : D(price)
     const margin = D(orow.margin), lev = Number(orow.leverage)
     const notional = margin.times(lev)
-    const qty = notional.div(execPrice).toDecimalPlaces(10)
+    const spec=instrumentSpec(meta,orow.market)
+    const qty = notional.div(execPrice).toDecimalPlaces(spec.quantityPrecision,Decimal.ROUND_DOWN)
     if (qty.lte(0) || qty.gte('100000000000000')) throw Object.assign(new Error('position_size_out_of_range'), {status:400})
     const fee = notional.times(D(feePct(meta, orow.market))).div(100)
     price = execPrice.toString()

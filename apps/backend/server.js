@@ -125,6 +125,11 @@ const requireAuth = async (req, res, next) => {
       clearSessionCookie(res)
       return res.status(403).json({ error: 'account_suspended' })
     }
+    if(req.path.startsWith('/trading')) {
+      const accountRef=req.query.account || req.body?.accountId || req.body?.account_id;
+      if(req.body?.product && req.body.product!=='prop')return res.status(403).json({error:'wrong_product_context'});
+      if(accountRef && (await engine.getAccount(user.user_id))?.id!==accountRef)return res.status(404).json({error:'account_not_found'});
+    }
     req.user = user
     next()
   } catch (e) {
@@ -267,6 +272,11 @@ const tradingAuth = async (req, res, next) => {
     const user = await userFromSession(req)
     if (!user) return res.status(401).json({ error: 'unauthenticated' })
     if (user.status === 'suspended') return res.status(403).json({ error: 'account_suspended' })
+    if(req.path.startsWith('/trading')) {
+      const accountRef=req.query.account || req.body?.accountId || req.body?.account_id;
+      if(req.body?.product && req.body.product!=='prop')return res.status(403).json({error:'wrong_product_context'});
+      if(accountRef && (await engine.getAccount(user.user_id))?.id!==accountRef)return res.status(404).json({error:'account_not_found'});
+    }
     req.user = user
     next()
   } catch { res.status(500).json({ error: 'internal' }) }
@@ -429,6 +439,7 @@ const server = app.listen(cfg.port, () => console.log(`openfund-backend :${cfg.p
 /* market data (authoritative server-side marks) + trading engine loop */
 marketData.bootstrap().catch(e => console.error('[market-data] bootstrap failed', e.message))
 engine.start(1000)
-const shutdown = () => { engine.stop(); marketData.stop(); server.close(); pool.end() }
+let shuttingDown=false
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;engine.stop();marketData.stop();server.close(()=>pool.end()) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)

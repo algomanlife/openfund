@@ -261,3 +261,24 @@ CREATE TABLE IF NOT EXISTS account_equity_samples (
   balance numeric(24,10) NOT NULL,
   PRIMARY KEY(account_id,sampled_at)
 );
+
+-- Serialize private metadata writes with trial termination, including legacy APIs.
+CREATE OR REPLACE FUNCTION guard_trial_metadata() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE owner_id uuid; state text; ref text; prod text;
+BEGIN
+  owner_id := CASE WHEN TG_OP='DELETE' THEN OLD.user_id ELSE NEW.user_id END;
+  IF TG_TABLE_NAME='trade_notes' THEN
+    SELECT status INTO state FROM demo_accounts WHERE user_id=owner_id AND account_type='free_demo' FOR UPDATE;
+  ELSE
+    IF TG_OP='DELETE' THEN ref:=OLD.account_ref; prod:=OLD.product; ELSE ref:=NEW.account_ref; prod:=NEW.product; END IF;
+    IF prod='prop' THEN SELECT status INTO state FROM demo_accounts WHERE id::text=ref AND user_id=owner_id FOR UPDATE; END IF;
+  END IF;
+  IF state='permanently_disabled' THEN RAISE EXCEPTION 'account_permanently_disabled' USING ERRCODE='23514'; END IF;
+  RETURN CASE WHEN TG_OP='DELETE' THEN OLD ELSE NEW END;
+END $$;
+DROP TRIGGER IF EXISTS guard_trial_metadata ON journal_entries;
+CREATE TRIGGER guard_trial_metadata BEFORE INSERT OR UPDATE OR DELETE ON journal_entries FOR EACH ROW EXECUTE FUNCTION guard_trial_metadata();
+DROP TRIGGER IF EXISTS guard_trial_metadata ON journal_preferences;
+CREATE TRIGGER guard_trial_metadata BEFORE INSERT OR UPDATE OR DELETE ON journal_preferences FOR EACH ROW EXECUTE FUNCTION guard_trial_metadata();
+DROP TRIGGER IF EXISTS guard_trial_metadata ON trade_notes;
+CREATE TRIGGER guard_trial_metadata BEFORE INSERT OR UPDATE OR DELETE ON trade_notes FOR EACH ROW EXECUTE FUNCTION guard_trial_metadata();
