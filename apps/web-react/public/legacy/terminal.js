@@ -617,10 +617,8 @@ $('book-dense').addEventListener('change', e => { S.dense = e.target.checked; $(
 
 function renderBook(force){
   if (window.__ofTerminalConfig?.syntheticMarketData === false) {
-    const host=$('book-asks'); if(!host)return;
-    const rows=[...board.meta.values()].filter(m=>board.getMark(m.symbol)!=null).slice(0,60);
-    host.replaceChildren(...rows.map(m=>{const b=document.createElement('button');b.className='live-market-row'+(m.symbol===S.marketId?' active':'');const name=document.createElement('span'),price=document.createElement('b');name.textContent=m.symbol;price.textContent=fmt.price(board.getMark(m.symbol),Number(m.pricePrecision)||2);b.append(name,price);b.onclick=()=>selectMarket(m.symbol);return b}));
-    if($('book-mid-price'))$('book-mid-price').textContent=mark()!=null?fmt.price(mark(),dp()):'—';
+    window.OpenfundDepth?.select(S.marketId);
+    window.OpenfundDepth?.renderBook();
     return;
   }
   if (!$('book-asks')) return;   /* teardown race guard */
@@ -707,7 +705,7 @@ function noteTrade(p){
   if (tradeRows.length > 42) tradeRows.pop();
 }
 function renderTrades(){
-  if(window.__ofTerminalConfig?.syntheticMarketData === false)return;
+  if(window.__ofTerminalConfig?.syntheticMarketData === false){window.OpenfundDepth?.renderTrades();return;}
   if (!$('trades-rows')) return;   /* teardown race guard */
   if (!$('trades-rows') && !$('.trades-view tbody')) return;   /* teardown race guard */
   if ($('trades-view').hidden) return;

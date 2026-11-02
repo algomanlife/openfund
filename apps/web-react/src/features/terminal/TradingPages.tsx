@@ -148,7 +148,7 @@ function workspaceMarkup() {
   template.content.querySelector(".topnav")?.setAttribute("hidden", "");
   template.content
     .querySelectorAll(
-      ".demo-banner,.dlg-warn,.book-src,.book-note,.hint,#load-demo,#assumptions-btn,#set-tick",
+      ".demo-banner,.dlg-warn,.hint,#load-demo,#assumptions-btn,#set-tick",
     )
     .forEach((el) => ((el as HTMLElement).style.display = "none"));
   template.content
@@ -241,6 +241,10 @@ export function SharedTradingTerminal() {
       base = `${location.origin}${import.meta.env.BASE_URL}`;
     const translations = {
       ...cms,
+      "book.tab": {fa:"دفتر مجازی",en:"Book"},
+      "book.simulated": {fa:"Gains VOB",en:"Gains VOB"},
+      "book.note": {fa:"نقدینگی مجازی Gains؛ دفتر سفارش متمرکز نیست.",en:"Gains virtual execution liquidity; no resting orders."},
+      "trades.note": {fa:"معاملات اجراشدهٔ Gains · اندازه به USD",en:"Gains executed trades · size in USD"},
       "ac.modeVal": {
         fa: product === "prop" ? "حساب تمرینی" : "پرپچوال",
         en: product === "prop" ? "Practice account" : "Perpetual",
@@ -264,11 +268,11 @@ export function SharedTradingTerminal() {
       "cf.cancelTxt": { fa: "این سفارش لغو شود؟", en: "Cancel this order?" },
     };
     const boot = `window.ofLang=${safe(locale)};window.ofCmsTerminal=${safe(translations)};window.__ofTerminalConfig={product:${safe(product)},syntheticMarketData:false};Object.defineProperty(window,'__ofProductAdapter',{get:()=>${product === "prop" ? "parent.__ofServerTP || " : ""}parent.__ofReadOnlyProductAdapter});Object.defineProperty(window,'__ofServerTP',{get:()=>${product === "prop" ? "parent.__ofServerTP" : "undefined"}});addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='openfund-display')return;document.documentElement.dataset.theme=e.data.theme;if(window.ofLang!==e.data.locale)document.getElementById('language-toggle')?.click()});document.getElementById('account-retry').onclick=()=>parent.dispatchEvent(new parent.Event('of-refresh-trading'));`;
-    return `<!doctype html><html lang="${locale}" dir="${locale === "fa" ? "rtl" : "ltr"}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>.topnav,.demo-banner,.dlg-warn,#load-demo,#assumptions-btn,.book-src,.bt-empty .hint{display:none!important}body{display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:100dvh;overflow:hidden}.workspace{height:auto!important;min-height:0}.book-panel .panel-tabs,.book-tools,.book-controls,.book-cols,.book-note,#trades-view{display:none!important}.book-panel{overflow:auto}#book-view{display:flex;flex:1;min-height:0;flex-direction:column}#book-asks{overflow:auto;flex:1}#book-bids{display:none}.live-market-row{display:flex;width:100%;justify-content:space-between;padding:10px;border:0;border-bottom:1px solid var(--line);background:transparent;text-align:start}.live-market-row.active{color:var(--mint)}.live-market-row:hover{background:var(--surface-2)}@media(max-width:1080px){.workspace{overflow:auto;display:flex;flex-direction:column}.chart-panel{flex:none;height:52dvh;min-height:220px}.book-panel{flex:none;max-height:220px}.trade-panel{flex:none;max-height:none;overflow:visible}.bottom-panel{flex:none;min-height:260px}.market-stats{overflow:auto;max-height:90px}.status-bar{overflow:hidden;min-height:25px}}</style></head><body>${workspaceMarkup()}<script>${boot}</script>${["legacy/gains-adapter.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/terminal.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
+    return `<!doctype html><html lang="${locale}" dir="${locale === "fa" ? "rtl" : "ltr"}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>.topnav,.demo-banner,.dlg-warn,#load-demo,#assumptions-btn,.book-src,.bt-empty .hint{display:none!important}body{display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:100dvh;overflow:hidden}.workspace{height:auto!important;min-height:0}.book-panel{overflow:auto}.book-view[hidden],.trades-view[hidden]{display:none!important}.book-note{font-size:11px;padding:8px;color:var(--muted)}.depth-unavailable,#depth-feed-status{padding:12px;color:var(--muted);font-size:12px}.bk-row{display:grid;grid-template-columns:1fr 1fr 1fr;padding:3px 8px;transition:background-color .2s}.bk-row.a{color:#e78c96}.bk-row.b{color:#82e7bd}@media(prefers-reduced-motion:reduce){.bk-row{transition:none}}@media(max-width:1080px){.workspace{overflow:auto;display:flex;flex-direction:column}.chart-panel{flex:none;height:52dvh;min-height:220px}.book-panel{flex:none;max-height:220px}.trade-panel{flex:none;max-height:none;overflow:visible}.bottom-panel{flex:none;min-height:260px}.market-stats{overflow:auto;max-height:90px}.status-bar{overflow:hidden;min-height:25px}}</style></head><body>${workspaceMarkup()}<script>${boot}</script>${["legacy/gains-adapter.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/market-depth.js", "legacy/terminal.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
   }, [cms, product, locale]);
   return (
     <>
-      {product === "prop" && <TradingBridge pricing={context?.pricing} />}
+      {product === "prop" && context?.capabilities?.simulatedTrading && <TradingBridge pricing={context?.pricing} />}
       <iframe
         key={product}
         ref={frame}
