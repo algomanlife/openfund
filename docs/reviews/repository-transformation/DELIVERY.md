@@ -37,7 +37,7 @@ English application captures retain native localization controls and current pro
 - Additive migration executed twice, followed by catalog seed. Blueprint offline structural/semantic validation executed successfully: two services, one database, same-origin frontend and existing engine ownership.
 - Documentation language/comment checks, local link/image/fragment checks, Markdown structure and Mermaid parse checks executed; negative fixtures confirm untranslated prose and broken links fail. Final results are in the validation record.
 - Dependency audits use the official npm registry because the configured mirror lacks the audit endpoint. New documentation tooling pins patched transitive packages; runtime dependency versions/lockfiles are unchanged. Existing frontend advisories remain and are reported separately.
-- Gitleaks clean exports of baseline and candidate each found the same 47 matches in unchanged upstream sources/translation strings, contract-address data and runtime bundles: **zero new findings**. Ignored local output is excluded from that comparison. The branch commit scan is reported separately; a broad clean-security claim is not made.
+- Gitleaks clean exports of baseline and candidate each found the same 47 matches in unchanged upstream sources/translation strings, contract-address data and runtime bundles: **zero new findings**. Ignored local output is excluded from that comparison. The new-commit patch scan also passed with zero findings; a broad clean-security claim is not made.
 
 ## Limits and follow-up
 

@@ -81,7 +81,11 @@
       "findings": 47,
       "scope": "clean candidate export, excluding ignored output; identical to 47 baseline matches in unchanged upstream sources/translation strings, contract-address data and runtime bundles; no new findings"
     },
-    "gitleaksNewCommits": "pending commit scan",
+    "gitleaksNewCommits": {
+      "result": "passed",
+      "newFindings": 0,
+      "scope": "origin/main..HEAD; redacted commit patch scan"
+    },
     "gitleaksComparison": {
       "baselineFindings": 47,
       "candidateFindings": 47,
