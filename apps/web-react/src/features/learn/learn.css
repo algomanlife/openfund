@@ -1,0 +1,108 @@
+/* Learning Center — extends the landing token set and the information.css layer. */
+
+.information-page .learn-index{margin-bottom:90px}
+.information-page .learn-path-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-top:44px}
+.information-page .learn-path-card{display:flex;flex-direction:column;gap:14px;padding:28px;border:1px solid #82e7bd2b;border-radius:18px;background:linear-gradient(155deg,#15262040,#0a120e 70%);text-decoration:none;min-width:0;transition:transform .5s var(--ease-expo),border-color .3s,box-shadow .4s}
+.information-page .learn-path-card:hover{transform:translateY(-7px);border-color:#82e7bd55;box-shadow:0 16px 50px #0006}
+.information-page .learn-path-card:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+.information-page .learn-path-eyebrow{font-size:10px;letter-spacing:2px;color:var(--muted)}
+.information-page .learn-path-card h3{font-size:22px;font-weight:500;line-height:1.6;margin:0}
+.information-page .learn-path-card p{font-size:12.5px;line-height:2.1;color:var(--body);margin:0;flex:1}
+.information-page .learn-path-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:11px}
+.information-page .learn-glossary-teaser{margin-top:60px;border-top:1px solid var(--line);padding-top:44px}
+.information-page .learn-glossary-teaser h2{font-size:24px;font-weight:500}
+.information-page .learn-glossary-teaser p{color:var(--body);font-size:13px;line-height:2.1;max-width:640px;margin-top:14px}
+
+/* --- path page --- */
+.information-page .path-page{margin-bottom:90px}
+.information-page .path-outcomes{padding-block:10px 30px}
+.information-page .path-outcomes h2,.information-page .path-lessons h2{font-size:24px;font-weight:500;line-height:1.7}
+.information-page .path-lesson-list{list-style:none;margin:22px 0 0;padding:0;display:grid}
+.information-page .path-lesson-list li{border-top:1px solid var(--line)}
+.information-page .path-lesson-list li:last-child{border-bottom:1px solid var(--line)}
+.information-page .path-lesson-list a{display:flex;align-items:center;gap:22px;padding:20px 8px;color:var(--white);text-decoration:none;transition:background .25s,padding .3s}
+.information-page .path-lesson-list a:hover{background:#82e7bd08;padding-inline:16px}
+.information-page .path-lesson-number{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;flex-shrink:0}
+.information-page .path-lesson-title{flex:1;min-width:0;display:grid;gap:5px}
+.information-page .path-lesson-title b{font-size:16px;font-weight:500;line-height:1.7}
+.information-page .path-lesson-title small{font-size:11.5px;color:var(--muted);line-height:1.9}
+.information-page .path-lesson-min{font-size:11px;color:var(--muted);flex-shrink:0}
+.information-page .path-lesson-arrow{color:var(--muted);font-size:15px;flex-shrink:0;transition:transform .3s,color .2s}
+.information-page .path-lesson-list a:hover .path-lesson-arrow{color:var(--mint);transform:translate(3px,3px)}
+
+/* --- lesson page --- */
+.information-page .lesson-progress{position:fixed;top:0;inset-inline:0;height:1px;background:#ffffff10;z-index:110}
+.information-page .lesson-progress i{display:block;height:100%;background:#82e7bd90;box-shadow:0 0 8px #82e7bd60;transition:width .15s linear}
+.information-page .lesson-layout{display:grid;grid-template-columns:245px minmax(0,1fr);gap:64px;align-items:start;margin-bottom:80px}
+.information-page .lesson-toc{position:sticky;top:110px;max-height:calc(100dvh - 135px)}
+.information-page .lesson-content{min-width:0}
+.information-page .lesson-body h2{font-size:26px;font-weight:500;line-height:1.7;margin-top:52px;scroll-margin-top:120px}
+.information-page .lesson-body h3{font-size:18px;font-weight:500;line-height:1.8;margin-top:34px}
+.information-page .lesson-body p{color:var(--body);font-size:14px;line-height:2.2;margin-top:18px}
+.information-page .lesson-body .lesson-note{margin-block:30px}
+.information-page .lesson-list{margin:16px 0 0;padding-inline-start:0;list-style:none;display:grid;gap:11px}
+.information-page .lesson-list li{position:relative;padding-inline-start:24px;font-size:13.5px;color:var(--body);line-height:2.05}
+.information-page .lesson-list li:before{content:'—';position:absolute;inset-inline-start:0;color:var(--muted)}
+.information-page .lesson-list.ordered{counter-reset:lesson-item}
+.information-page .lesson-list.ordered li{counter-increment:lesson-item;padding-inline-start:30px}
+.information-page .lesson-list.ordered li:before{content:counter(lesson-item);font-size:10.5px;color:var(--mint);inset-inline-start:2px;top:2px;position:absolute}
+.information-page .lesson-terms{margin:26px 0 0;display:grid;gap:0}
+.information-page .lesson-terms>div{display:grid;grid-template-columns:170px minmax(0,1fr);gap:18px;padding-block:14px;border-top:1px solid var(--line)}
+.information-page .lesson-terms dt{font-size:13px;color:var(--white);font-weight:500;line-height:1.9}
+.information-page .lesson-terms dd{margin:0;font-size:13px;color:var(--body);line-height:2.05}
+.information-page .lesson-body .formula-block{margin-block:28px}
+.information-page .lesson-takeaways{margin-top:52px;border-top:1px solid var(--line);padding-top:34px}
+.information-page .lesson-takeaways h2{font-size:22px;font-weight:500}
+.information-page .lesson-related{display:flex;flex-wrap:wrap;gap:40px;margin-top:44px}
+.information-page .lesson-related-group{display:grid;gap:12px;align-content:start}
+.information-page .lesson-pager{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:52px}
+.information-page .lesson-pager>*{display:grid;gap:8px;padding:20px;border:1px solid #82e7bd24;border-radius:12px;text-decoration:none;transition:border-color .3s,background .3s}
+.information-page .lesson-pager>*:hover{border-color:#82e7bd50;background:#82e7bd07}
+.information-page .lesson-pager small{font-size:10px;color:var(--muted);letter-spacing:1.5px}
+.information-page .lesson-pager b{font-size:14.5px;font-weight:500;color:var(--white);line-height:1.8}
+.information-page .lesson-pager-next{text-align:end}
+
+/* --- glossary --- */
+.information-page .glossary-page{margin-bottom:90px}
+.information-page .glossary-toolbar{display:grid;gap:16px;margin-bottom:26px}
+.information-page .glossary-search{max-width:460px}
+.information-page .glossary-letters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.information-page .glossary-letters a{display:grid;place-items:center;width:30px;height:30px;border:1px solid #ffffff12;border-radius:7px;color:var(--body);font-size:12px;text-decoration:none;transition:border-color .2s,color .2s}
+.information-page .glossary-letters a:hover{border-color:#82e7bd50;color:var(--mint)}
+.information-page .glossary-entry{border-top:1px solid var(--line);padding-block:8px;scroll-margin-top:120px}
+.information-page .glossary-entry:last-of-type{border-bottom:1px solid var(--line)}
+.information-page .glossary-entry h2{margin:0}
+.information-page .glossary-entry h2 button{display:flex;align-items:center;gap:16px;width:100%;background:none;border:0;padding:16px 6px;color:var(--white);font:inherit;font-size:19px;font-weight:500;text-align:start;cursor:pointer}
+.information-page .glossary-entry h2 button:focus-visible{outline:2px solid var(--mint);outline-offset:-2px}
+.information-page .glossary-letter-badge{display:grid;place-items:center;width:34px;height:34px;border:1px solid #82e7bd33;border-radius:8px;color:var(--mint);font-size:15px;flex-shrink:0}
+.information-page .glossary-entry h2 button i{font-style:normal;color:var(--muted);font-size:17px;margin-inline-start:auto;transition:transform .3s var(--ease-expo),color .2s}
+.information-page .glossary-entry.open h2 button i{transform:rotate(45deg);color:var(--mint)}
+.information-page .glossary-short{font-size:13px;color:var(--body);line-height:2;margin:0 56px 16px}
+.information-page .glossary-body{padding:0 56px 22px}
+.information-page .glossary-body p{font-size:13px;color:var(--body);line-height:2.15}
+
+@media(max-width:1150px){
+  .information-page .lesson-layout{grid-template-columns:210px minmax(0,1fr);gap:36px}
+}
+@media(max-width:1000px){
+  .information-page .learn-path-grid{grid-template-columns:1fr}
+  .information-page .lesson-layout{display:block}
+  .information-page .lesson-toc{display:none}
+  .information-page .lesson-body h2{scroll-margin-top:90px}
+  .information-page .glossary-letters{display:none}
+  .information-page .glossary-short,.information-page .glossary-body{margin-inline:0;padding-inline:6px}
+}
+@media(max-width:700px){
+  .information-page .lesson-body h2{font-size:22px}
+  .information-page .lesson-body p{font-size:13px}
+  .information-page .lesson-terms>div{grid-template-columns:1fr;gap:6px}
+  .information-page .lesson-pager{grid-template-columns:1fr}
+  .information-page .lesson-pager-next{text-align:start}
+  .information-page .lesson-related{gap:26px}
+  .information-page .glossary-entry h2 button{font-size:16px;gap:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  .information-page .learn-path-card,.information-page .path-lesson-list a,.information-page .glossary-entry h2 button i{transition:none}
+  .information-page .learn-path-card:hover{transform:none}
+  .information-page .lesson-progress i{transition:none}
+}

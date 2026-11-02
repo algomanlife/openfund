@@ -187,3 +187,20 @@ html[lang=en] .information-page .info-hero h1{font-size:58px;letter-spacing:-2px
   .information-page .footer-top>div{flex-wrap:wrap;gap:16px}
 }
 @media(prefers-reduced-motion:reduce){.information-page *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Resources dropdown in the shared header (website expansion). Desktop opens
+   on hover/focus like the landing account menu; inside the mobile menu it
+   renders as a flat group. */
+.information-page .nav-account .chevron{font:10px system-ui;color:#7c9185;margin-inline-start:6px}
+.information-page .nav-dropdown a{display:flex;flex-direction:column;gap:3px;text-decoration:none;padding:11px 9px;border-radius:5px;color:var(--white);font-size:13px;font-weight:500;transition:background .2s}
+.information-page .nav-dropdown a:hover{background:#82e7bd0d;color:var(--mint)}
+.information-page .nav-dropdown a[aria-current=page]{color:var(--mint)}
+[dir=ltr] .information-page .nav-dropdown{right:auto;left:-20px;text-align:left}
+[dir=ltr] .information-page .nav-dropdown:before{left:auto;right:0}
+@media(max-width:700px){
+  .information-page .navlinks.open .nav-account{width:100%}
+  .information-page .navlinks.open .nav-account>a{display:flex;justify-content:space-between;width:100%}
+  .information-page .navlinks.open .nav-dropdown{display:block;position:static;opacity:1;visibility:visible;transform:none;background:none;border:0;box-shadow:none;padding:0;width:auto;backdrop-filter:none}
+  .information-page .navlinks.open .nav-dropdown>span{display:none}
+  .information-page .navlinks.open .nav-dropdown a{padding:9px 4px;font-size:13px;font-weight:400}
+}

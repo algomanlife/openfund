@@ -1,0 +1,81 @@
+/* FAQ hub — extends the landing token set (public/legacy/style.css) and the
+   information.css editorial layer. No new visual system. */
+
+.information-page .faq-layout{display:grid;grid-template-columns:290px minmax(0,1fr);gap:64px;align-items:start;margin-bottom:90px}
+.information-page .faq-sidebar{position:sticky;top:110px;display:flex;flex-direction:column;gap:26px;max-height:calc(100dvh - 135px);overflow-y:auto;padding-block:6px 20px;scrollbar-width:thin;scrollbar-color:#34483f transparent}
+.information-page .faq-search{position:relative;display:flex;align-items:center;border:1px solid #82e7bd33;border-radius:8px;background:var(--surface);transition:border-color .3s}
+.information-page .faq-search:focus-within{border-color:#82e7bd80}
+.information-page .faq-search-icon{padding-inline:13px;color:var(--muted);font-size:14px}
+.information-page .faq-search input{flex:1;min-width:0;background:none;border:0;color:var(--white);font:inherit;font-size:13px;padding-block:13px;padding-inline:2px;outline:none}
+.information-page .faq-search input::placeholder{color:var(--muted)}
+.information-page .faq-search input::-webkit-search-cancel-button{display:none}
+.information-page .faq-search-clear{width:28px;height:28px;margin-inline-end:8px;border:0;border-radius:5px;background:#82e7bd14;color:var(--body);font-size:15px;cursor:pointer;transition:background .2s,color .2s}
+.information-page .faq-search-clear:hover{background:#82e7bd26;color:var(--white)}
+.information-page .faq-cats{display:grid;gap:2px}
+.information-page .faq-cats button{display:flex;align-items:center;gap:12px;padding:10px 12px;border:0;border-radius:7px;background:none;color:var(--body);font:inherit;font-size:12.5px;text-align:start;cursor:pointer;transition:background .2s,color .2s}
+.information-page .faq-cats button i{font-style:normal;color:var(--muted);font-size:13px;width:16px;text-align:center;flex-shrink:0}
+.information-page .faq-cats button b{margin-inline-start:auto;font-weight:400;font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+.information-page .faq-cats button:hover{color:var(--white);background:#ffffff06}
+.information-page .faq-cats button.active{color:var(--mint);background:#82e7bd0f}
+.information-page .faq-cats button.active i{color:var(--mint)}
+.information-page .faq-cats button.active b{color:var(--mint)}
+.information-page .faq-help{border:1px solid #82e7bd2b;border-radius:12px;background:linear-gradient(155deg,#15262040,#0a120e 70%);padding:20px}
+.information-page .faq-help p{font-size:12px;line-height:2;color:var(--body);margin-top:14px}
+.information-page .faq-help-links{display:grid;gap:10px;margin-top:16px}
+.information-page .faq-help-links .text-link{font-size:11.5px}
+
+.information-page .faq-content{min-width:0}
+.information-page .faq-toolbar{display:flex;align-items:center;gap:16px;border-block:1px solid var(--line);padding-block:18px;margin-bottom:10px}
+.information-page .faq-count{font-size:11px;color:var(--muted)}
+.information-page .faq-toggle-all{margin-inline-start:auto}
+.information-page .faq-toggle-all .text-link{font-size:11.5px;cursor:pointer}
+.information-page .faq-mobile-cats{display:none}
+.information-page .faq-group{padding-block:26px 30px}
+.information-page .faq-group h2{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:500;line-height:1.7}
+.information-page .faq-group h2 i{font-style:normal;color:var(--mint);font-size:18px}
+.information-page .faq-group h2 b{font-weight:400;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.information-page .faq-cat-desc{font-size:12.5px;color:var(--muted);line-height:2;margin-block:8px 6px}
+.information-page .faq-list{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px}
+.information-page .faq-item{border:1px solid #ffffff10;border-radius:11px;background:#0b100d80;scroll-margin-top:130px;transition:border-color .3s,background .3s}
+.information-page .faq-item:hover{border-color:#82e7bd30}
+.information-page .faq-item.open{border-color:#82e7bd40;background:#0d1512}
+.information-page .faq-item:target{border-color:var(--mint)}
+.information-page .faq-item h3{margin:0}
+.information-page .faq-item h3 button{display:flex;align-items:baseline;justify-content:space-between;gap:16px;width:100%;background:none;border:0;padding:17px 20px;color:var(--white);font:inherit;font-size:14px;font-weight:500;line-height:1.9;text-align:start;cursor:pointer}
+.information-page .faq-item h3 button:focus-visible{outline:2px solid var(--mint);outline-offset:-2px;border-radius:11px}
+.information-page .faq-item h3 button i{font-style:normal;color:var(--muted);font-size:17px;font-weight:400;transition:transform .3s var(--ease-expo),color .2s;flex-shrink:0}
+.information-page .faq-item.open h3 button i{transform:rotate(45deg);color:var(--mint)}
+.information-page .faq-answer{padding:0 20px 20px}
+.information-page .faq-answer p{color:var(--body);font-size:13px;line-height:2.15}
+.information-page .faq-related{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.information-page .faq-related>span{font-size:10px;color:var(--muted)}
+.information-page .faq-related a{color:#9fcbaf;font-size:11.5px;text-decoration:none;transition:color .2s}
+.information-page .faq-related a:hover{color:var(--mint)}
+.information-page .faq-empty{text-align:center;border:1px solid var(--line);border-radius:14px;padding:60px 24px}
+.information-page .faq-empty i{font-style:normal;font-size:26px;color:var(--muted)}
+.information-page .faq-empty h2{font-size:21px;font-weight:500;margin-top:16px}
+.information-page .faq-empty p{color:var(--body);font-size:13px;margin-top:12px}
+.information-page .faq-empty .text-link{display:inline-block;margin-top:18px;cursor:pointer}
+.information-page .visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+@media(max-width:1150px){
+  .information-page .faq-layout{grid-template-columns:250px minmax(0,1fr);gap:40px}
+}
+@media(max-width:1000px){
+  .information-page .faq-layout{display:block}
+  .information-page .faq-sidebar{position:static;max-height:none;overflow:visible}
+  .information-page .faq-cats,.information-page .faq-help{display:none}
+  .information-page .faq-mobile-cats{display:block;position:sticky;top:84px;z-index:20;background:var(--bg);padding-block:14px;border-block:1px solid var(--line);margin-bottom:16px}
+  .information-page .faq-mobile-cats select{width:100%;background:var(--surface);color:var(--white);border:1px solid #82e7bd40;border-radius:7px;padding:11px 13px;font:inherit;font-size:13px}
+  .information-page .faq-item{scroll-margin-top:170px}
+}
+@media(max-width:700px){
+  .information-page .faq-group{padding-block:20px 24px}
+  .information-page .faq-group h2{font-size:20px}
+  .information-page .faq-item h3 button{padding:15px 15px;font-size:13px}
+  .information-page .faq-answer{padding:0 15px 17px}
+  .information-page .faq-toolbar{flex-wrap:wrap;gap:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  .information-page .faq-item,.information-page .faq-item h3 button i{transition:none}
+}

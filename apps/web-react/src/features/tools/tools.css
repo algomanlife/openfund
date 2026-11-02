@@ -1,0 +1,96 @@
+/* Tools Center — extends the landing token set and the information.css layer. */
+
+.information-page .tool-breadcrumb{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--muted);margin-bottom:34px}
+.information-page .tool-breadcrumb a{color:var(--body);text-decoration:none;transition:color .2s}
+.information-page .tool-breadcrumb a:hover{color:var(--mint)}
+.information-page .tool-breadcrumb span[aria-current]{color:var(--white)}
+
+.information-page .tool-index{margin-bottom:90px}
+.information-page .tool-group{margin-top:44px}
+.information-page .tool-group h2{display:flex;align-items:center;gap:12px;font-size:26px;font-weight:500;line-height:1.7}
+.information-page .tool-group h2 i{font-style:normal;color:var(--mint);font-size:19px}
+.information-page .tool-group h2 b{font-weight:400;font-size:11px;color:var(--muted)}
+.information-page .tool-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:22px}
+.information-page .tool-card{display:flex;flex-direction:column;gap:12px;padding:24px;border:1px solid #82e7bd2b;border-radius:16px;background:linear-gradient(155deg,#15262040,#0a120e 70%);text-decoration:none;transition:transform .5s var(--ease-expo),border-color .3s,box-shadow .4s;min-width:0}
+.information-page .tool-card:hover{transform:translateY(-6px);border-color:#82e7bd55;box-shadow:0 16px 50px #0006}
+.information-page .tool-card:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+.information-page .tool-card-glyph{font-size:20px;color:var(--mint)}
+.information-page .tool-card h3{font-size:17px;font-weight:500;line-height:1.7;margin:0}
+.information-page .tool-card p{font-size:12px;line-height:2;color:var(--body);margin:0;flex:1}
+.information-page .tool-card .text-link{font-size:11.5px;cursor:pointer}
+.information-page .tool-education{margin-top:60px;border-top:1px solid var(--line);padding-top:44px}
+.information-page .tool-education h2{font-size:24px;font-weight:500}
+.information-page .tool-education p{color:var(--body);font-size:13px;line-height:2.1;max-width:640px}
+
+/* --- individual tool page --- */
+.information-page .tool-page{margin-bottom:90px}
+.information-page .tool-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:30px;align-items:start}
+.information-page .tool-inputs{display:grid;gap:18px;padding:26px;border:1px solid #82e7bd2b;border-radius:16px;background:linear-gradient(155deg,#15262040,#0a120e 70%)}
+.information-page .tool-field{display:grid;gap:8px;min-width:0}
+.information-page .tool-field label{display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--white)}
+.information-page .tool-field label small{color:var(--muted);font-size:10.5px}
+.information-page .tool-field input,.information-page .tool-field select,.information-page .tool-field textarea{
+  background:var(--surface);border:1px solid #ffffff14;border-radius:7px;color:var(--white);font:inherit;font-size:13.5px;padding:11px 13px;outline:none;transition:border-color .25s}
+.information-page .tool-field input:focus,.information-page .tool-field select:focus,.information-page .tool-field textarea:focus{border-color:#82e7bd80}
+.information-page .tool-field input::placeholder,.information-page .tool-field textarea::placeholder{color:#5f6f68}
+.information-page .tool-field textarea{resize:vertical;line-height:1.9;direction:ltr;text-align:left}
+.information-page .tool-field input[type=file]{padding:9px;font-size:11.5px}
+.information-page .tool-field-help{font-size:10.5px;line-height:1.9;color:var(--muted);margin:0}
+.information-page .tool-field-error{font-size:11px;line-height:1.8;color:#e89483;margin:0}
+.information-page .tool-reset{justify-self:start;cursor:pointer;font-size:11.5px}
+
+.information-page .tool-results{display:grid;gap:14px;padding:26px;border:1px solid #82e7bd33;border-radius:16px;background:#0d1512;min-height:200px;align-content:start}
+.information-page .tool-result-main{display:flex;flex-direction:column;gap:6px;padding:18px 20px;border:1px solid #82e7bd30;border-radius:11px;background:#82e7bd08}
+.information-page .tool-result-main span{font-size:11px;color:var(--body)}
+.information-page .tool-result-main strong{font-size:30px;font-weight:500;letter-spacing:-.5px;color:var(--mint);direction:ltr;text-align:end;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.information-page .tool-result-main small{font-size:10px;color:var(--muted)}
+.information-page .tool-result-list{display:grid;gap:0;margin:8px 0 0}
+.information-page .tool-result-list>div{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:10px 2px;border-bottom:1px solid var(--line)}
+.information-page .tool-result-list dt{font-size:12px;color:var(--body)}
+.information-page .tool-result-list dd{margin:0;font-size:13px;color:var(--white);direction:ltr;font-variant-numeric:tabular-nums;text-align:end;overflow-wrap:anywhere}
+.information-page .tool-note{font-size:11.5px;line-height:1.9;color:#c6bba3;margin:0;padding-top:4px}
+.information-page .tool-empty{display:grid;place-items:center;gap:12px;padding:40px 20px;text-align:center}
+.information-page .tool-empty i{font-style:normal;font-size:24px;color:var(--muted)}
+.information-page .tool-empty p{color:var(--body);font-size:12.5px;margin:0}
+
+.information-page .tool-docs{margin-top:40px;border-top:1px solid var(--line);padding-top:36px}
+.information-page .tool-docs h2{font-size:23px;font-weight:500;line-height:1.8}
+.information-page .tool-docs h3{font-size:16px;font-weight:500;margin-top:26px}
+.information-page .tool-docs .formula-block{margin-top:20px}
+.information-page .tool-docs .formula-block p{font-size:12.5px;color:var(--body);line-height:2.1;margin-top:10px}
+.information-page .tool-assumptions{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:9px}
+.information-page .tool-assumptions li{position:relative;padding-inline-start:22px;font-size:12.5px;color:var(--body);line-height:2}
+.information-page .tool-assumptions li:before{content:'◇';position:absolute;inset-inline-start:0;color:var(--muted);font-size:10px}
+.information-page .tool-docs .info-notice{margin:28px 0 0}
+.information-page .tool-related{margin-top:40px;border-top:1px solid var(--line);padding-top:36px}
+.information-page .tool-related h2{font-size:23px;font-weight:500}
+.information-page .tool-related-group{display:grid;gap:12px;margin-top:18px}
+
+.information-page .journal-grid{grid-template-columns:minmax(0,1fr)}
+.information-page .journal-grid .tool-inputs{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.information-page .journal-days{margin-top:26px}
+.information-page .journal-days h3{font-size:16px;font-weight:500;margin-bottom:14px}
+.information-page .journal-days td.positive{color:var(--mint)}
+.information-page .journal-days td.negative{color:#e89483}
+.information-page .journal-warnings{margin-top:10px;border-top:1px solid var(--line);padding-top:12px}
+.information-page .journal-warnings>span{font-size:10px;color:var(--muted)}
+.information-page .journal-warnings ul{margin:8px 0 0;padding-inline-start:18px;font-size:11px;color:#c6bba3;line-height:1.9}
+.information-page .journal-schema{margin-top:26px;border:0;padding-top:0}
+
+@media(max-width:1150px){
+  .information-page .tool-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:1000px){
+  .information-page .tool-grid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .information-page .tool-card-grid{grid-template-columns:1fr}
+  .information-page .tool-inputs{padding:20px}
+  .information-page .tool-results{padding:20px}
+  .information-page .tool-result-main strong{font-size:24px}
+  .information-page .tool-group h2{font-size:22px}
+}
+@media(prefers-reduced-motion:reduce){
+  .information-page .tool-card{transition:none}
+  .information-page .tool-card:hover{transform:none}
+}
