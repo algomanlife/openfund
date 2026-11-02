@@ -6,7 +6,7 @@ Applies to Codex, QwenWork, ChatGPT Work and any other development agent.
 
 - Canonical repository: `https://github.com/algomanlife/openfund`.
 - Inspect the working tree, branch, remotes, package scripts, existing files and current docs before changing anything.
-- Never create a separate disconnected Openfund repository or overwrite the current prototype.
+- Never create a separate disconnected Openfund repository or overwrite the current application.
 - `dist/` is currently a source-critical deliverable, not disposable generated output.
 
 ## Git collaboration
@@ -20,11 +20,20 @@ Applies to Codex, QwenWork, ChatGPT Work and any other development agent.
 
 ## Documentation contract
 
+- Before coding, read `docs/README.md`, current product/architecture contracts, `docs/product/FEATURE_STATUS.md` and `docs/roadmap/MILESTONES.md`.
+- Keep product docs, feature status and roadmap dependencies/acceptance criteria aligned with every capability change.
+- Refresh genuine screenshots and `docs/assets/screenshots/manifest.json` after significant UI changes; no fabricated financial UI or personal-wallet captures.
+- Keep all repository documentation, explanatory comments/test descriptions and GitHub templates English-only. Preserve application Persian localization, RTL, dictionaries, seeds and required localization assertions.
+- Run `npm run docs:check`; update CI whenever validation requirements change.
+- Preserve approved logo geometry and asset provenance. Never invent partnerships, investors, revenue, user counts, volumes, approvals or production adoption.
+- Do not import or integrate MUX Protocol or Openfund Protocol source during Task 1; protocol integration is reserved for Task 2.
+
+
 - Update the root README when setup, architecture, capabilities or project status changes.
 - Update `docs/product/FEATURE_STATUS.md` for any feature status transition.
 - Update the relevant integration or architecture specification when interfaces change.
 - Add a concise entry to `CHANGELOG.md` for user-visible or architectural changes.
-- Distinguish `Implemented`, `Prototype`, `Planned`, `Blocked` and `Unverified`; never claim an API or network address is verified without evidence.
+- Use `Completed`, `In Progress`, `Planned` and `Blocked` in the capability/milestone registers, qualified by scope and evidence. Distinguish configuration, local verification and deployed acceptance; never claim an API or network address is verified without evidence.
 - Record architectural decisions in `docs/decisions/` as ADRs.
 
 ## Engineering and security

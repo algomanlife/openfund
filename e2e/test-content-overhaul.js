@@ -41,9 +41,9 @@ const widths = [375, 768, 1024, 1440]
     JSON.stringify([builder.target, builder.maxLoss, builder.split, builder.price]))
   R('builder fa: cap without limit', builder.cap === 'بدون سقف', builder.cap)
   R('builder fa: card preset label', builder.cardPreset === 'چلنج استاندارد · دومرحله‌ای', builder.cardPreset)
-  R('builder fa: evaluation-fee label (no «نمونه»)', builder.feeLabel === 'هزینهٔ ارزیابی · یک‌باره', builder.feeLabel)
+  R('builder fa: evaluation-fee label (sample wording removed)', builder.feeLabel === 'هزینهٔ ارزیابی · یک‌باره', builder.feeLabel)
   R('builder fa: daily loss terminology', builder.facts.some(f => f.includes('سقف ضرر روزانه')), JSON.stringify(builder.facts))
-  R('builder fa: honest sample note (no «پرداخت امن»)', /فعال‌سازی خرید در این نسخه فراهم نیست/.test(builder.sampleNote || ''), (builder.sampleNote || '').slice(0, 60))
+  R('builder fa: honest note (unsupported secure-payment claim removed)', /فعال‌سازی خرید در این نسخه فراهم نیست/.test(builder.sampleNote || ''), (builder.sampleNote || '').slice(0, 60))
   R('hero fa: evaluation account size + challenge pill', builder.heroAccountLabel === 'اندازهٔ حساب ارزیابی' && builder.pill === 'چلنج معاملاتی', `${builder.heroAccountLabel} | ${builder.pill}`)
   R('hero fa: CTA wording', builder.cta === 'چلنج مناسبم را پیدا کنم ←', builder.cta)
 
@@ -110,7 +110,7 @@ const widths = [375, 768, 1024, 1440]
     rows: [...document.querySelectorAll('#selection-summary div')].map(d => d.textContent.trim()),
     note: document.querySelector('.dialog-note')?.textContent.trim(),
   }))
-  R('dialog fa: evaluation-fee row (no «هزینهٔ نمونه»)', dialog.rows.some(r => r.includes('هزینهٔ ارزیابی')), JSON.stringify(dialog.rows))
+  R('dialog fa: evaluation-fee row (sample wording removed)', dialog.rows.some(r => r.includes('هزینهٔ ارزیابی')), JSON.stringify(dialog.rows))
   R('dialog fa: loss terminology row', dialog.rows.some(r => r.includes('سقف ضرر کل / روزانه')), '')
   R('dialog fa: honest note', /فعال نیست/.test(dialog.note || ''), dialog.note)
   await page.click('#dialog-done').catch(() => {})

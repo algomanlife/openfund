@@ -1,0 +1,24 @@
+# Openfund roadmap
+
+Openfund develops a shared trading environment in seven phases. The order expresses dependencies, not a delivery-date commitment. No entire phase is claimed complete: foundation and product capabilities coexist with unfinished commercial, operational and execution gates.
+
+![Seven-phase roadmap with verified foundations and future execution gates](docs/assets/graphics/roadmap.svg)
+
+| Phase | Direction | Current assessment | Milestones |
+| --- | --- | --- | --- |
+| 1 — Platform Foundation | Repository, React/Node, charting, market data | Delivered within current app scope | F1, F2 |
+| 2 — Trading Core | Prop engine, calculations, risk, positions and state | Simulation delivered; commercial evaluation planned | T1–T3 |
+| 3 — Product Experience | Wallet, Portfolio, Journal, challenges, markets, multilingual UI | Core views delivered; external wallet and commercial acceptance open | X1–X4 |
+| 4 — Production Infrastructure | Render, PostgreSQL, Directus, CI/CD, security and observability | Configuration/CI delivered; deployment and operational assurance open | I1–I3 |
+| 5 — Advanced Trading | Extended orders, analytics and execution improvements | Planned, with live execution/data gates blocked | A1–A3 |
+| 6 — Openfund Protocol | Venue adapters, aggregation and intelligent routing | Planned for a separate implementation scope | P1, P2 |
+| 7 — Ecosystem Expansion | Integrations, developer services, scalability | Planned | E1, E2 |
+
+Every milestone has a status, dependencies, acceptance criteria and evidence in [Milestones](docs/roadmap/MILESTONES.md). Use that register for completion decisions.
+
+- [Product roadmap](docs/roadmap/PRODUCT.md)
+- [Engineering roadmap](docs/roadmap/ENGINEERING.md)
+- [Protocol roadmap](docs/roadmap/PROTOCOL.md)
+- [Current feature status](docs/product/FEATURE_STATUS.md)
+
+Do not advance a milestone because a folder, UI placeholder or dependency exists. Deployment requires deployed evidence; commercial services require verified product and legal facts; protocol routing requires validated execution paths.

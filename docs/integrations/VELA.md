@@ -1,6 +1,6 @@
 # LuxAlgo Vela integration specification
 
-**Status: Implemented (market-data chart) — branch `qwen/frontend-polish-vela-gains`.**
+**Status: Completed within current chart/market-data scope.** Reviewed against `main` `2f5cf93`; earlier verification notes retain their original date.
 
 The terminal at `dist/terminal.html` mounts the full **Vela workspace** (topbar with symbol/timeframe/style/indicators, drawing toolbar, status line, bottom bar with clock/ranges, native symbol search and keyboard map) via the workspace global bundle `dist/assets/vela-workspace.global.min.js` (esbuild IIFE of `@luxalgo/vela/workspace@0.9.3`, attached as `window.VelaWorkspace.VelaWorkspace`). The superseded core-only bundle was removed. Verified working: candlestick rendering from Gains candles, crosshair, native drawing toolbar, `setMarket` symbol/timeframe switching, `setTheme` dark/light, `setLocale` (best-effort), `resize`, `destroy`, and the built-in NOTICE attribution mark (left enabled). Native indicators (`chart.availableNativeIndicators()` / `addNativeIndicator`) power the MA/VOL toolbar buttons when supported.
 
@@ -33,6 +33,6 @@ Normalize candles as timestamp, open, high, low, close and optional genuine volu
 
 ## Acceptance criteria
 
-Rendered chart visible in `dist/terminal.html` or its migrated successor; instrument/timeframe updates; resize cleanup; verified source data; tests and documented attribution. Until these pass, keep feature status `Planned`.
+Rendered chart visible in `dist/terminal.html` or its migrated successor; instrument/timeframe updates; resize cleanup; verified source data; tests and documented attribution. Maintain these checks when upgrading the workspace; current delivery and remaining data-source limits are recorded in [Feature Status](../product/FEATURE_STATUS.md).
 
 Upstream reference: https://github.com/LuxAlgo/Vela

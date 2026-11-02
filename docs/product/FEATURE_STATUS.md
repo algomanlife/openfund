@@ -1,68 +1,41 @@
-# Feature status — source of truth
+# Feature status
 
-Use these statuses: **Implemented** (working and tested), **Prototype** (visible but not end-to-end validated), **Planned** (not built), **Blocked** (external dependency), **Unverified** (requires inspection).
+Canonical capability register for the repository based on `main` **2f5cf93**, including [PR #23](https://github.com/algomanlife/openfund/pull/23) and [PR #24](https://github.com/algomanlife/openfund/pull/24). Reviewed 2026-11-02. This is an implementation assessment, not a production readiness or deployment certificate.
 
-Current audit evidence: [2026-11-02 delivery](../reviews/integration-audit/DELIVERY.fa.md).
+Statuses: **Completed** = implemented within the stated boundary with repository evidence; **In Progress** = partial delivery remains; **Planned** = future work; **Blocked** = explicit prerequisite prevents completion. Completed rows do not imply real-world wallet, network or deployment validation unless separately evidenced.
 
-| Audited capability | Status | Evidence / limits |
+| Capability | Status | Evidence and practical limits |
 | --- | --- | --- |
-| Owned retries, fees/margin, partial close | Implemented for simulation | PostgreSQL regression suite; atomic ledger settlement, preserved provenance |
-| Shared Decimal PnL and liquidation | Implemented for simulation | Backend authority; stale valuations null; both opening and closing fees in round-trip analytics |
-| Daily / maximum account drawdown | Implemented as sampled telemetry | UTC, persisted since first fresh observation; missing historical prices are not reconstructed; no unassigned challenge limits enforced |
-| Home navigation / background | Implemented | fa/en 390/1440, CSS ambient and reduced motion browser checks |
-| Real extension / hardware / WalletConnect session | Unverified | Requires an actual user-approved wallet; generated test signers are not that evidence |
-| Render compatibility | Implemented configuration; deployment Unverified | Existing 3 resources; corrected public hosts / CMS DB keys / region / build; local validator and production-mode checks |
+| React product shell and hash routes | Completed | [Router](../../apps/web-react/src/main.tsx); `/react/#/{locale}/…`; Persian/English and RTL retained |
+| Home product gateway and market discovery | Completed | `features/home`, `features/markets`; Gains data with source/freshness handling; instrument counts vary |
+| Shared Vela terminal | Completed | [Product architecture](../architecture/PRODUCT_TERMINALS.md); one workspace, independent Prop/Perpetual adapters |
+| Gains market-data adapter | Completed | [Integration](../integrations/GAINS.md); REST candles/metadata and WS marks; no authentic order-book or tape |
+| Prop virtual account and ledger | Completed | [Engine](../../apps/backend/engine.js), [schema](../../apps/backend/schema.sql); one free_demo account, 100,000 virtual DAI, idempotent funding |
+| Prop order lifecycle and risk controls | Completed | Market/limit/stop, SL/TP, cancellation, partial close, liquidation; owner-scoped retries and transactional updates; simulation only |
+| Shared Decimal valuation | Completed | [Math](../../apps/backend/trading-math.js); fees/spread and stale values; no Gains contract parity |
+| Drawdown telemetry | Completed | [Portfolio](../../apps/backend/portfolio.js); observed fresh equity since first measurement, UTC; no reconstructed earlier peaks |
+| SIWE and sessions | Completed | [Backend](../../apps/backend/server.js); nonce/domain/URI/time/chain/signature, hashed session IDs, suspension, logout and SSE revalidation |
+| Product network policy | Completed | [Wallet config](../../apps/web-react/src/wallet/config.ts); Prop Sepolia 11155111, Perpetual Arbitrum One 42161; no transactions |
+| Real extension, hardware and remote WalletConnect acceptance | In Progress | Generated EIP-1193 browser tests exist; actual wallet/device and live contract-wallet acceptance still need external evidence |
+| Prop portfolio and reporting | Completed | Owned positions/order history, trade detail, fee-aware analytics, filters and CSV; partial-close slices preserve parent provenance |
+| Gains wallet portfolio reads | Completed | [Read adapter](../../apps/backend/gains-portfolio.js); official Arbitrum positions/orders/history/stats; upstream failure is explicit; unsupported PnL/balance stays unknown |
+| Product journal | Completed | [Product routes](../../apps/backend/products.js); private account/product notes, optimistic versions, search/tags, metadata JSON import/export |
+| Published CMS content and catalog | Completed | [Coverage](../backstage/CONTENT_COVERAGE.md); Directus editorial content, translations, product sections and challenge_plans; not financial authority |
+| Challenge account records and catalog selection | Completed | Existing backend/schema and catalog UI; records do not establish commercial execution |
+| Paid activation, evaluation and challenge enforcement | Planned | Payment, legal/product facts, assignment and risk-rule engine required; free_demo has no assigned commercial challenge limits |
+| Funded capital, withdrawals, rewards and certificates | Planned | Visible capability pages are unavailable states, not operational services |
+| Perpetual on-chain execution | Blocked | Approved supported contracts, simulation, security review and receipt reconciliation required; execution disabled |
+| Order-book, footprint and authentic tape | Blocked | Requires a legitimate depth/trade data source; oracle prices cannot supply these |
+| Advanced analytics and execution workflows | Planned | [Engineering roadmap](../roadmap/ENGINEERING.md); scope and acceptance gates before implementation |
+| Production transparency and verification | Planned | Current dashboard uses labelled synthetic fixtures; no production reserve/payout evidence |
+| Render three-resource configuration | Completed | [Blueprint](../../render.yaml); openfund + openfund-db PostgreSQL 17 + openfund-cms Directus 11.9.1; same-origin `/react/` |
+| CI and local validation tooling | Completed | [Workflow](../../.github/workflows/ci.yml); web, backend/Postgres, browser, Blueprint, secrets and advisory reports |
+| Deployed Render acceptance and operational monitoring | In Progress | Configuration exists; authenticated validation, apply, deployed HTTPS sessions/CMS and recovery evidence are not established here |
+| Openfund Protocol and venue routing | Planned | [Protocol roadmap](../roadmap/PROTOCOL.md); no routing engine or new protocol source imported |
+| Additional integrations and developer services | Planned | [Product roadmap](../roadmap/PRODUCT.md); depends on validated product/execution contracts |
 
-| Capability | Status | Evidence / next step |
-| --- | --- | --- |
-| Shared full-space product trading terminal | Implemented | Same `SharedTradingTerminal` at locale/product routes, independent adapters; no surrounding editorial UI. Product and viewport browser checks in dual-terminals delivery report |
-| Unified product header and Portfolio/Journal navigation | Implemented | Required 6 Prop / 5 Perpetual horizontal tabs; product switch; Journal secondary navigation; fa/en and mobile |
-| Scoped private daily journal | Implemented | PostgreSQL notebook entries, notes/tags/classification, owned Prop links, Gains transaction references, search/date filters, optimistic updates, metadata JSON import/export |
-| Product Portfolio | Implemented for supported data | Prop engine records/order history/notes/analytics/CSV; native Gains wallet positions/orders/history/stats/per-collateral analytics. No fabricated PnL or balances |
-| Product editorial CMS | Implemented | Existing pages/ui_messages plus normalized terminal_sections; bilingual, published-only, live edit/unpublish without rebuild; no editorial mounted on Terminal tab |
-| Optional Render blueprint | Implemented configuration; live deployment unverified | Schema-validated, Node 22 local build + same-origin static/API checks; existing PostgreSQL/Directus reused; not applied |
-| Home product gateway (two-product entry) | Implemented | React `#/{fa,en}/home`; one-screen layout, two original SVGs, product CTAs; E2E 53/53 in `docs/reviews/gateway-markets/DELIVERY.md` (2026-11-01) |
-| Markets directory (Gains-authoritative) | Implemented | React `#/{fa,en}/markets`; 488 instruments from live Gains metadata, shared adapter WS prices, search/filter, deep-links; unit 6/6 + E2E 53/53 |
-| Market deep-links into terminal | Implemented | sessionStorage `of-terminal-symbol` boot hook (applied once, Gains-metadata-validated); E2E-verified BTC → terminal selection |
-| CMS-managed public content (Directus, live editing, no rebuild) | Implemented | home_content/faqs/trading_rules/legal_documents/footer_links/challenge_plans + ui_messages; 35-check E2E incl. live edits, unpublish, drafts, permissions — `docs/backstage/CONTENT_COVERAGE.md` (2026-11-01) |
-| Challenge catalog of record (4 programs, single backend table) | Implemented | challenge_plans in Directus = the backend table; Standard/One-phase/Instant/Free-Trial with verified terms; provenance in docs/research/ |
-| Public navigation (4 internal-page items; Home nav-less) | Implemented | single definition in `features/information/content.ts` over shared landing chrome; verified on all five pages fa/en + mobile |
-| Landing/account static frontend | Implemented | `dist/index.html`; bilingual FA/EN, dark/light theme, Irancell/Ubuntu fonts; interactivity browser-verified |
-| Bilingual Rulebook | Implemented | React `#/{fa,en}/rulebook`; 21 sections, responsive TOC/tables, draft-policy labels; scoped tests and browser matrix in `docs/reviews/bilingual-pages/DELIVERY.md` |
-| Bilingual Transparency interface | Implemented | React `#/{fa,en}/transparency`; typed synthetic fixtures, charts, data table, locale/theme/navigation verified; all metrics labelled sample |
-| Production transparency reporting / independent verification | Planned | No production reporting API, reserve/payout proof, cryptographic evaluation proof or on-chain settlement is claimed |
-| Terminal UI | Implemented | `dist/terminal.html`; FA/EN + themes + Vela workspace + live Gains data (browser-verified 2026-10-31) |
-| React app shell (both pages, hash routing) | Implemented | `apps/web-react` → `react/`; Playwright E2E 18/18 green on dev :5173 + build :4173 (theme, lang/dir, arrows, anchors, market rows, workspace LTR, reload teardown) — 2026-10-31 |
-| Wallet connection (RainbowKit) | Implemented | `apps/web-react`; Sepolia 11155111 for Prop / Arbitrum One 42161 for Perpetual; injected fallback. Generated EIP-1193 wallet browser coverage; real extension/WalletConnect network verification is Unverified |
-| Wallet state and chain switching | Implemented | Account/balance/network chips + account/chain modals; disconnect + refresh persistence verified |
-| Brand assets and brandbook | Unverified | Audit `brand/` and archive rights/content |
-| Vela npm dependency | Implemented | `vendor/vela@0.9.3` + `dist/assets/vela-workspace.global.min.js` (workspace bundle; loads in classic + React pages) |
-| Embedded functional Vela chart | Implemented | `dist/vela-bridge.js` mounts the full Vela workspace (topbar, drawings, indicators, search); screenshot-verified in both pages |
-| Gains SDK dependency | Unverified | `vendor/gains-sdk` vendored; terminal uses the **public REST/WS API** (`api.gains.trade`) instead — endpoints verified |
-| Gains market data adapter | Implemented | `dist/gains-adapter.js` + `packages/openfund-gains-adapter/`; markets/prices/candles/WS verified live 2026-10-31 |
-| Arbitrum Sepolia demo contract integration | Blocked | Verify supported contracts, addresses, ABI and testnet availability |
-| Positions/order lifecycle | Implemented for Prop simulation; Perpetual read-only | Existing Prop Engine and ledger preserved. Official Gains wallet positions/pending orders/history reads added; on-chain order execution remains blocked on approved integration |
-| True order-book / footprint | Blocked | Confirm legitimate trade/volume/depth data source |
-| SIWE wallet authentication (EIP-4361) | Implemented | apps/backend — nonce/replay/domain/chain/signature verified; 22/22 automated checks 2026-11-01 |
-| Session management (HttpOnly cookies) | Implemented | opaque hashed-id sessions, 7-day expiry, logout, account-switch invalidation |
-| User identity (one wallet = one user) | Implemented | unique normalized wallet_address; find-or-create on verified signature |
-| Multi-challenge accounts | Implemented | openfund_challenges lifecycle per record; ownership enforced; UI list + empty state |
-| Directus user management (admin view) | Implemented | users/challenges/plans/audit visible to admins; public policy: no permission |
-| User suspension enforcement | Implemented | blocks login + live sessions (backend-enforced) |
-| Demo trading accounts (100,000 DAI) | Implemented | one per user, atomic idempotent funding; engine suite + acceptance E2E 2026-11-01 |
-| Server trading engine (market/limit/stop, SL/TP, liquidation) | Implemented | apps/backend/engine.js — 52/52 automated |
-| Server-side Gains market data (execution prices) | Implemented | market-data.js REST+WS, staleness policy |
-| Live trading updates (SSE) | Implemented | /trading/stream pushes state changes |
-| Persistent positions/orders/history in terminal UI | Implemented | TradingBridge provider swap, verified E2E |
-| Fee/spread/liq model | Partial | documented simulation assumptions (0.05%/side, 10% maintenance) — not Gains parity |
-| Challenge purchase / activation | Planned | kept separate — no fake flows | kept separate — no fake flows |
-| Evaluation engine / results | Planned | fields empty until a real engine exists | SIWE-ready SessionContext, no fake auth (migration Phase 4) |
-| Directus backstage (CMS) — schema, seed, public API | Implemented | `infrastructure/directus`, `apps/backstage/scripts`, `packages/cms-client`; live-edit verified end-to-end 2026-11-01 (dev + build) |
-| CMS-driven translations fa/en (landing + terminal) | Implemented | `ui_messages` bridges in locale.js/terminal.js; silent static fallback tested with backstage down |
-| CMS media management / navigation rendering / editorial roles | Planned | See docs/backstage/PERMISSIONS.md roadmap |
-| Backend, CI and production deployment | Planned | Define deployment architecture and test gates |
+## Evidence policy
 
-Agents must update this table when verified work changes the status.
+Historical tests and findings remain in [reviews](../reviews/README.md); their results belong to their original commits and environments. The [repository transformation delivery](../reviews/repository-transformation/DELIVERY.md) records checks actually executed for this documentation branch, screenshot provenance and remaining limitations. No completion dates, adoption figures or commercial approvals are inferred from code presence.
 
-> 2026-10-31 update (branch `qwen/react-migration`): React 19 shell now runs both pages at parity with the classic build — buttons, translations, RTL/LTR, themes and navigation all E2E-verified with real browser clicks; RainbowKit wallet connection is live (testnet, connection only). Classic pages in `dist/` remain the fallback. Demo trading stays simulated; no order-book or trade-tape data is fabricated.
-> 2026-10-31 update (branch `qwen/frontend-polish-vela-gains`): market data, Vela chart and terminal UX are browser-verified against the live Gains API. The `vendor/gains-sdk` (on-chain SDK) remains **Unverified/unused** — the terminal intentionally consumes the public market-data API only.
+[Capabilities](CAPABILITIES.md) · [Roadmap](../../ROADMAP.md) · [Documentation index](../README.md)

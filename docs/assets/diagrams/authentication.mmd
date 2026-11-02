@@ -1,0 +1,19 @@
+sequenceDiagram
+  participant W as Wallet
+  participant B as React browser
+  participant A as Node SIWE API
+  participant D as PostgreSQL
+  B->>W: Connect and request product network
+  B->>A: POST /auth/nonce
+  A->>D: Store address-bound nonce with expiry
+  A-->>B: Nonce
+  B->>W: Sign EIP-4361 message
+  W-->>B: Signature or rejection
+  B->>A: POST /auth/verify
+  A->>A: Validate domain URI time chain and signature
+  A->>D: Consume unused nonce atomically
+  A->>D: Find user and store hashed session
+  A-->>B: HttpOnly session cookie
+  B->>A: Owned product requests with cookie
+  B->>A: Logout on disconnect or account switch
+  A->>D: Revoke session

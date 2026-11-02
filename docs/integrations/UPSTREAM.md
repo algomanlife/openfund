@@ -1,6 +1,6 @@
 # Upstream Source Management
 
-Openfund vendors selected third-party source projects for future integration.
+Openfund preserves selected upstream sources and their attribution. Vela is integrated; the Gains SDK remains vendored without transaction execution.
 
 ## LuxAlgo Vela
 
@@ -9,7 +9,7 @@ Openfund vendors selected third-party source projects for future integration.
 - Upstream HEAD observed during setup: `57d011ab796c541cbb9e1282722ad6cd521c8f55`
 - License files: `vendor/vela/LICENSE`, `vendor/vela/NOTICE`
 - Openfund integration path: `packages/openfund-charts`
-- Status: Source imported; integration not implemented.
+- Status: Vela workspace integrated through the Openfund bridge; preserve built-in attribution.
 
 ## Gains Network SDK
 
@@ -18,7 +18,7 @@ Openfund vendors selected third-party source projects for future integration.
 - Upstream HEAD observed during setup: `aa7a05a4919ba6667513c128e6bf5806af0be181`
 - License file: `vendor/gains-sdk/LICENSE`
 - Openfund integration path: `packages/openfund-gains-adapter`
-- Status: Source imported; integration not implemented.
+- Status: SDK vendored, transaction integration not implemented. Market and wallet reads use public Gains APIs.
 
 ## Development Rules
 

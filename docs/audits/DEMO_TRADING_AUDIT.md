@@ -1,5 +1,6 @@
 # Audit — Demo Trading Platform (100,000 DAI)
 
+> Historical snapshot. Current capabilities and limits: [Feature Status](../product/FEATURE_STATUS.md). Quoted business/address claims describe past UI copy, not verified company facts.
 > Audit date: 2026-11-01 · Branch: `qwen/demo-trading` (stacked on `qwen/wallet-identity`, PRs #8/#10 pending)
 > **RESUME FILE for the demo-trading task.** Continue from the first unchecked item.
 

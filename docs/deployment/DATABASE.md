@@ -49,9 +49,11 @@ private to the backend service account.
   depends on plan; verify in the dashboard).
 - Manual logical backup (from any machine with the external connection string —
   dashboard → Connect → External URL):
+
   ```bash
   pg_dump "$EXTERNAL_DATABASE_URL" -Fc -f openfund-$(date +%F).dump
   ```
+
 - Never commit dumps to Git.
 
 ## Restore
@@ -59,10 +61,12 @@ private to the backend service account.
 - Preferred: Render dashboard → database → Backups → restore snapshot
   (creates a new instance; repoint API `DATABASE_URL` and CMS `DB_CONNECTION_STRING` in the blueprint services).
 - Logical restore into a fresh database:
+
   ```bash
   createdb "$RESTORE_URL"
   pg_restore -d "$RESTORE_URL" --no-owner --role=openfund_app openfund-YYYY-MM-DD.dump
   ```
+
 - After restore, run `npm run migrate --prefix apps/backend` (idempotent) and
   the backstage seeders (safe) to align schema/published content.
 

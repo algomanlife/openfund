@@ -1,5 +1,6 @@
 # Shared product terminals — delivery and validation
 
+> Historical snapshot. Current capabilities and limits: [Feature Status](../../product/FEATURE_STATUS.md). Quoted business/address claims describe past UI copy, not verified company facts.
 Date: 2026-11-02. The user's second specification supersedes the first: **one shared trading terminal interface**, independent product routes/adapters/accounts, and a full-space Terminal tab without surrounding editorial UI.
 
 This report distinguishes the supported implementation from service dependencies and broader upstream gaps. It is not a claim that on-chain trading or all original acceptance criteria are complete. No merge or production deployment was performed.
@@ -110,6 +111,6 @@ Screenshots use generated wallets and records in the isolated test database, not
 
 | Prop: shared full-space terminal | Perpetual: the same workspace |
 | --- | --- |
-| ![Prop terminal](images/prop-trade-en.png) | ![Perpetual terminal](images/perpetual-trade-en.png) |
+| [Prop terminal — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/dual-terminals/images/prop-trade-en.png) | [Perpetual terminal — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/dual-terminals/images/perpetual-trade-en.png) |
 
-[Persian mobile Portfolio](images/perpetual-portfolio-fa-mobile.png) · [English light-theme Portfolio](images/prop-portfolio-light-en.png).
+[Persian mobile Portfolio — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/dual-terminals/images/perpetual-portfolio-fa-mobile.png) · [English light-theme Portfolio — historical capture](https://github.com/algomanlife/openfund/blob/2f5cf93afcbd97caa9b80e6de8a703fa707f6e16/docs/reviews/dual-terminals/images/prop-portfolio-light-en.png).

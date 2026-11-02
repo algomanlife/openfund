@@ -1,5 +1,7 @@
 # Openfund Challenge Catalog — adopted specification
 
+> Historical snapshot. Current capabilities and limits: [Feature Status](../product/FEATURE_STATUS.md). Quoted business/address claims describe past UI copy, not verified company facts.
+
 - **Decided:** 2026-11-01 (production content correction round — the catalog below is now the
   published Openfund specification, replacing the earlier provisional 3-plan draft)
 - **Canonical code source:** `apps/web-react/src/data/challengePlans.ts`. The landing builder,
@@ -13,10 +15,10 @@
 
 | Program | Sizes (USD) | Fee (per size) | Phases | Targets | Daily / total loss | Split | Min days | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| استاندارد / Standard | 5K / 10K / 25K / 50K / 100K | $44 / $80 / $216 / $349 / $652 | 2 | 8% + 5% | 5% (or 3%) / 10% static | 80% bi-weekly · 100% monthly* | 3 / phase | fee refunded on 4th reward |
-| تک‌مرحله‌ای / One-phase | 5K / 10K / 25K / 50K / 100K | $74 / $111 / $255 / $353 / $666 | 1 | 12% | 3% (or 2%) / 12% static | 80% bi-weekly · 100% monthly* | none | — |
-| آنی / Instant | 5K / 10K / 25K / 50K / 100K / 200K | $60 / $88 / $188 / $244 / $444 / $888 | 0 | none | 3% / 5% trailing (locks at BE after +5%) | 95% every 14 days | 7 profitable / 30d | 15% consistency; first 3% not payout-eligible; floating-loss cap |
-| تست رایگان / Free Trial | 5K / 10K / 25K / 50K / 100K | free | 2 | 8% + 5% | 5% / 10% static | none | 3 / phase | 14 days per phase; one at a time; no conversion, no reward |
+| Standard | 5K / 10K / 25K / 50K / 100K | $44 / $80 / $216 / $349 / $652 | 2 | 8% + 5% | 5% (or 3%) / 10% static | 80% bi-weekly · 100% monthly* | 3 / phase | fee refunded on 4th reward |
+| One-phase | 5K / 10K / 25K / 50K / 100K | $74 / $111 / $255 / $353 / $666 | 1 | 12% | 3% (or 2%) / 12% static | 80% bi-weekly · 100% monthly* | none | — |
+| Instant | 5K / 10K / 25K / 50K / 100K / 200K | $60 / $88 / $188 / $244 / $444 / $888 | 0 | none | 3% / 5% trailing (locks at BE after +5%) | 95% every 14 days | 7 profitable / 30d | 15% consistency; first 3% not payout-eligible; floating-loss cap |
+| Free Trial | 5K / 10K / 25K / 50K / 100K | free | 2 | 8% + 5% | 5% / 10% static | none | 3 / phase | 14 days per phase; one at a time; no conversion, no reward |
 
 \* monthly cycle requires 7 profitable days + 35% consistency score.
 Common: no time limit (except the trial); daily loss measured on the higher of day-start

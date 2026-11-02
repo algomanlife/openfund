@@ -1,0 +1,11 @@
+flowchart TB
+  Git[GitHub reviewed main] --> Build[Render openfund build]
+  Build --> Web[React assets at /react/]
+  Build --> API[Node API one process]
+  API --> Migrate[Additive schema migration at startup]
+  Migrate --> DB[(openfund-db PostgreSQL 17)]
+  CMS[openfund-cms Directus 11.9.1] --> DB
+  CMS --> Disk[5 GB uploads disk]
+  API --> Health[DB-aware /health]
+  CMS --> CMSHealth["/server/health"]
+  CI[CI checks] -.->|validation evidence; no apply| Git

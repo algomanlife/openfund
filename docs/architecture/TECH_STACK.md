@@ -10,7 +10,7 @@
 | React DOM | 19.3.1 | DOM renderer | Active | MIT |
 | TypeScript | 5.7.3 | Type-safe app source | Active | Apache-2.0 |
 | Vite | 6.4.5 | Dev server + bundler (`react/` output, base `/react/`) | Active | MIT |
-| react-router-dom | 7.18.5 | Hash router (`#/`, `#/terminal`, catch-all) | Active | MIT |
+| react-router-dom | 7.18.5 | Hash router (locale/product hash routes and compatibility redirects) | Active | MIT |
 
 ## Backend (apps/backend)
 
@@ -33,9 +33,10 @@ Run with Node 22 (viem/siwe + ESM). Server port 8080; env: DATABASE_URL, ALLOWED
 | wagmi | 2.19.5 | React hooks over viem (account, balance, chain) | Active | MIT |
 | viem | 2.57.13 | TypeScript Ethereum interactions | Active | MIT |
 | @tanstack/react-query | 5.105.0 | Async state for wallet hooks | Active | MIT |
-| Arbitrum Sepolia | chain 421614 | Testnet (connection only — no transactions) | Active | — |
+| Ethereum Sepolia / Arbitrum One | chains 11155111 / 42161 | Prop SIWE / Perpetual SIWE and wallet reads; no transactions | Active | — |
 
 Notes:
+
 - `RainbowKitProvider` renders a `<div data-rk>` wrapper — it must wrap **only** the wallet button, never the app root (the legacy translator skips `[data-rk]` subtrees).
 - WalletConnect requires `VITE_WALLETCONNECT_PROJECT_ID` in `apps/web-react/.env`; without it the config falls back to `createConfig` + injected connector (MetaMask/Rabby still work — `getDefaultConfig` throws on an empty project id).
 
@@ -43,14 +44,14 @@ Notes:
 
 | Technology | Version | Role | Status | License |
 | :--- | :--- | :--- | :--- | :--- |
-| @luxalgo/vela | 0.9.3 | Full Vela workspace bundle (`vela-workspace.global.min.js` → `window.VelaWorkspace`): topbar, drawings, indicators, symbol search | Active | See `vendor/vela/NOTICE` — visible "Charts by Vela" credit kept for compliance |
+| @luxalgo/vela | 0.9.3 | Full Vela workspace bundle (`vela-workspace.global.min.js` → `window.VelaWorkspace`): topbar, drawings, indicators, symbol search | Active | See `vendor/vela/NOTICE` — visible built-in Vela attribution kept for compliance |
 | esbuild | (dev-time) | Bundles the Vela workspace into the IIFE global | Build tool | MIT |
 
 ## Market data
 
 | Technology | Version | Role | Status | License |
 | :--- | :--- | :--- | :--- | :--- |
-| Gains Network public API | api.gains.trade/v1/arbitrum | REST: /markets (488), /prices, /markets/{sym}/candles (1m…1d, **no 1w**); WS: prices channel with ping/pong + seq-gap resubscribe (~90 upd/s) | Active | Public API, CORS `*` (verified) |
+| Gains Network public API | api.gains.trade/v1/arbitrum | REST: /markets (dynamic count), /prices, /markets/{sym}/candles (1m…1d, **no 1w**); WS: prices channel with ping/pong + seq-gap resubscribe (source-dependent update rate) | Active | Public API, CORS `*` (verified) |
 | @gainsnetwork/sdk | 1.8.10 | On-chain trading SDK | Vendored — **unused** (intentionally: public market-data API only, no contracts assumed) | See `vendor/gains-sdk` |
 
 ## Legacy runtime (classic pages `dist/` + embedded in React shell)
@@ -65,7 +66,7 @@ Notes:
 
 | Technology | Role | Status |
 | :--- | :--- | :--- |
-| Python `http.server` | Local static serving of `dist/` + `react/` on :4173 | Active |
+| Node same-origin hosting | API + built React at `/react/`; Vite for local development | Active |
 | Playwright (playwright-core 1.64) | Real-browser E2E (clicks, theme/lang/dir, REST rows, reload teardown) — 18/18 green on dev + build | Active (test) |
 | GitHub (branches `qwen/*`, `codex/*`, PR review) | Agent collaboration workflow | Active |
 
@@ -73,5 +74,5 @@ Notes:
 
 - Gains candles: `1m 5m 15m 30m 1h 4h 1d` — **1w is NOT supported** (verified empty).
 - Gains provides **no volume / open interest history / order-book / trade-tape** — those fields show `—` or are labelled simulated.
-- Per-market `maxLeverage` from `/markets` clamps the leverage control (BTC 200×, XAU 4×).
+- Per-market `maxLeverage` from `/markets` clamps the leverage control (bounds come from live metadata).
 - WS protocol: `{op:'subscribe',channel:'prices'}`, answer `{op:'ping'}` with `{op:'pong'}`, resubscribe on sequence gap.

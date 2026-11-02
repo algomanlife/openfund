@@ -1,5 +1,7 @@
 # Product Gateway + Markets — Delivery Report
 
+> Historical snapshot. Current capabilities and limits: [Feature Status](../../product/FEATURE_STATUS.md). Quoted business/address claims describe past UI copy, not verified company facts.
+
 - **Branch:** `qwen/product-gateway-markets` (from `origin/main` @ `d4c6124`, which already
   contained round-8 dashboard PR #17 and the bilingual rulebook/transparency PR #18)
 - **Date:** 2026-11-01
@@ -22,7 +24,7 @@
 
 ## Navigation mapping (identical on all five pages)
 
-fa: چلنج‌های معاملاتی · بازارها · قوانین معاملاتی · شفافیت —
+fa: Trading Challenges · Markets · Trading Rules · Transparency —
 en: Trading Challenges · Markets · Trading Rules · Transparency.
 Logo → Home. Language switching preserves the current page on every page (including the
 legacy landing, whose toggle now rewrites the hash with `history.replaceState`).

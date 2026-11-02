@@ -1,84 +1,28 @@
-# Wallet authentication (SIWE) — technical reference
+# Wallet authentication technical reference
 
-## Flow (EIP-4361)
+[Wallet and Identity](../wallet/IDENTITY.md) is the maintained behavioral contract. The implementation is [server.js](../../apps/backend/server.js), [wallet config](../../apps/web-react/src/wallet/config.ts) and [session provider](../../apps/web-react/src/session/useOpenfundSession.tsx).
 
-```text
-1  connect wallet (RainbowKit)                         — UI state only
-2  POST /auth/nonce  {address}          → {nonce}      — single-use, 10 min TTL
-3  build SIWE message (viem createSiweMessage):
-     domain = window.location.host   (allow-listed server-side)
-     address, uri = origin, chainId = 421614, nonce, version = 1
-4  wallet signs the message (wagmi signMessageAsync)
-5  POST /auth/verify {message, signature}
-6  backend validates:
-     • message parses (address + nonce present)
-     • domain ∈ ALLOWED_DOMAINS
-     • chainId = 421614 (Arbitrum Sepolia)
-     • nonce exists, unused, unexpired, belongs to the address
-     • signature: viem verifySiweMessage(client, …) — EOAs (EIP-191)
-       and contract wallets (EIP-1271 / ERC-6492)
-7  find-or-create user by lowercase wallet address (UNIQUE ⇒ one identity/wallet)
-8  create session: opaque id (256-bit), stored SHA-256-hashed,
-   7-day server-side expiry → Set-Cookie: openfund_session
-   HttpOnly; SameSite=Lax; Secure (production); Path=/
-9  GET /auth/me → user + own challenges (ownership via session join)
-10 POST /auth/logout → session row deleted, cookie cleared
-```
+## API sequence
 
-## Hardening implemented
+| Endpoint | Contract |
+| --- | --- |
+| POST `/auth/nonce` | Address-bound, ten-minute, single-use nonce |
+| POST `/auth/verify` | Validate SIWE message/signature, consume nonce atomically, find/create normalized user, issue session cookie |
+| GET `/auth/me` | Return session user and owned challenge records; reject revoked/expired/suspended sessions |
+| POST `/auth/logout` | Delete session and clear cookie |
 
-| Control | Detail |
-| :--- | :--- |
-| Replay protection | nonces single-use (`used_at`), 10-minute expiry, address-bound |
-| Domain binding | server allow-list (`ALLOWED_DOMAINS`) — `localhost:5173/4173` locally |
-| Chain binding | chainId must equal 421614 |
-| Session theft surface | cookie is opaque; the id is stored hashed; no tokens in JS |
-| CSRF | SameSite=Lax + JSON-only endpoints (no form posts) |
-| Account switch | frontend detects address change → forces logout + re-auth |
-| Suspension | blocked at login AND on live sessions (cookie cleared, 403) |
-| Rate limiting | per-IP per-route caps (60/min auth routes locally, tunable) |
-| Audit | `audit_log` rows for login, failed auth, suspension blocks, logout |
-| Input validation | address/nonce/signature shape checks before DB or crypto |
-| Error safety | generic error codes; no stacks or internals leaked |
+## Validation and session controls
 
-## Verification matrix (automated — `apps/backend/test/siwe.test.mjs`, 22/22)
+Message verification checks domain against `ALLOWED_DOMAINS`, expected URI host/scheme, version, allowed chain (11155111 or 42161), issued/expiry/not-before times, nonce ownership and cryptographic signature. Contract-wallet verification uses the message chain. Signature and nonce validation failures return generic errors; rate limits and mutation-origin checks bound abuse.
 
-valid signature · wrong signer · malformed signature · nonce reuse ·
-wrong domain · wrong chain · cookie session (set/valid/invalid-after-logout) ·
-one-identity-per-wallet · distinct users · multi-challenge listing ·
-ownership isolation · suspension (blocked + reactivation) · signature recovery cross-check.
+Session IDs are opaque random 256-bit values, stored SHA-256-hashed. Cookies use HttpOnly, SameSite=Lax, path `/`, default seven-day expiry and Secure in production. Normalized wallet uniqueness preserves one identity per wallet. Suspension and session revocation are enforced server-side, including periodic SSE revalidation.
 
-## Testing honesty
+## Client ordering
 
-Automated wallet flows use a **real secp256k1 signer** (programmatic viem
-account behind a mock EIP-1193 provider that also announces EIP-6963) — the
-exact cryptographic path of production wallets, but not a browser extension.
-Browser-extension flows were exercised manually in development.
+The React provider keeps verification/logout cookie mutations ordered. Address changes invalidate previous private resources immediately and require matching reauthentication. Disconnect revokes the backend session. Product contexts derive accounts from the session, not a supplied address. Profile dialogs link to existing product dashboards.
 
-## Frontend contract
+## Evidence limits
 
-`useOpenfundSession()` exposes `status`, `user`, `challenges`, `signIn()`,
-`logout()`. The sign-in chip renders only when a wallet is connected but
-unauthenticated; a signature is requested **once per session** (refresh keeps
-the session — no repeated prompts).
+Repository suites cover generated real ECDSA signatures, replay, invalid domains/chains, expiry, ownership, suspension, cookie lifecycle and switching. Generated EIP-1193 providers are test tools, not real extension/hardware/remote WalletConnect evidence. Live EIP-1271 and deployed HTTPS acceptance remain unverified. The historical Arbitrum Sepolia-only policy is superseded by [ADR 0003](../decisions/0003-trading-valuation-and-product-wallets.md).
 
-## Integration audit — 2026-11-02
-
-Product network policy is shared by wallet controls and SIWE: Ethereum Sepolia
-11155111 for Prop, Arbitrum One 42161 for Perpetual. Switching is requested through
-the wallet and can be rejected. Auth identity remains the normalized wallet,
-independent of product; trading/portfolio data retain the existing product scope.
-Old opaque sessions are not deleted by a schema migration. New SIWE signatures
-must use one of these two supported chains; EIP-1271 is checked on that chain.
-
-Backend validates domain, URI host/scheme, version, recent issuedAt, expiry and
-notBefore, nonce address/TTL, cryptographic signature, and atomically consumes the
-nonce once. Cookie changes are serialized in the client across verify/logout;
-late async results cannot expose the old wallet's profile. Account switches clear
-private resources immediately; disconnect logs out, refresh recovers matching
-sessions. SSE periodically checks session revocation/suspension. Profile dialog
-uses native modal focus behavior and links to existing product dashboards.
-
-Tests use generated EIP-1193 signers and real ECDSA/SIWE against local PostgreSQL.
-Actual browser extensions, WalletConnect remote transport, contract-wallet RPC
-verification and production HTTPS cookies still require external verification.
+[Sequence diagram](FLOWS.md#authentication) · [Security](../security/SECURITY.md)

@@ -1,5 +1,7 @@
 # Dual terminals audit — 2026-11-02
 
+> Historical snapshot. Current capabilities and limits: [Feature Status](../../product/FEATURE_STATUS.md). Quoted business/address claims describe past UI copy, not verified company facts.
+>
 ## Repository evidence (completed before application edits)
 
 - Base: `origin/main`, `61c70fe` (PR #20). Remote fetched before worktree creation.

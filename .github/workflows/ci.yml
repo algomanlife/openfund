@@ -2,7 +2,7 @@ name: CI
 
 # Pull-request validation for the Openfund monorepo.
 # Jobs:
-#   web       — typecheck, unit tests, production frontend build
+#   web       — documentation, typecheck, unit tests, production frontend build
 #   backend   — Postgres service container, migrations, full backend suite
 #   blueprint — render.yaml structural validation (network-free)
 #   secrets   — gitleaks scan of commits
@@ -38,6 +38,12 @@ jobs:
           cache-dependency-path: apps/web-react/package-lock.json
       - name: Install (lockfile integrity)
         run: npm ci
+      - name: Install repository documentation tooling
+        working-directory: .
+        run: npm ci
+      - name: Documentation language, links, images, Markdown and Mermaid
+        working-directory: .
+        run: npm run docs:check
       - name: TypeScript
         run: npx tsc --noEmit
       - name: Unit tests (plans / rulebook seed / markets)
@@ -168,6 +174,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: repository tooling audit
+        run: npm audit --registry=https://registry.npmjs.org --audit-level=critical || echo "::warning::critical advisories in repository tooling — see log"
       - name: web-react audit
         run: npm --prefix apps/web-react audit --audit-level=critical || echo "::warning::critical advisories in apps/web-react — see log"
       - name: backend audit

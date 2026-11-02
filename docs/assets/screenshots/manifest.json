@@ -1,0 +1,152 @@
+{
+  "baseline": "2f5cf93afcbd97caa9b80e6de8a703fa707f6e16",
+  "source": "Current apps/web-react production build, current apps/backend at localhost:8186",
+  "cms": "Existing local Directus at localhost:8055; public reads only",
+  "marketData": "Live Gains; no intercepted requests or protocol fixtures",
+  "wallet": "Public pages anonymous; account captures use a disposable generated signer, real local SIWE/API and no fabricated market or financial responses. No personal wallet, approvals or chain transactions.",
+  "screenshots": [
+    {
+      "file": "home.jpg",
+      "route": "/react/#/en/home",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T06:03:57.171824+00:00",
+      "state": "Actual anonymous page"
+    },
+    {
+      "file": "prop-terminal.jpg",
+      "route": "/react/#/en/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T06:04:09.244240+00:00",
+      "state": "Actual anonymous page"
+    },
+    {
+      "file": "perpetual-terminal.jpg",
+      "route": "/react/#/en/perpetual/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T06:04:21.299966+00:00",
+      "state": "Actual anonymous page"
+    },
+    {
+      "file": "markets.jpg",
+      "route": "/react/#/en/markets",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T06:04:26.360123+00:00",
+      "state": "Actual anonymous page"
+    },
+    {
+      "file": "challenges.jpg",
+      "route": "/react/#/en/challenges",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T06:04:31.397314+00:00",
+      "state": "Actual anonymous page"
+    },
+    {
+      "file": "transparency.jpg",
+      "route": "/react/#/en/transparency",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T06:04:51.606809+00:00",
+      "state": "Actual anonymous page"
+    },
+    {
+      "file": "rulebook.jpg",
+      "route": "/react/#/en/rulebook",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T06:04:56.652395+00:00",
+      "state": "Actual anonymous page"
+    },
+    {
+      "file": "wallet-connection.jpg",
+      "route": "/react/#/en/rulebook",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T06:05:28.610286+00:00",
+      "state": "Actual unconnected wallet modal; no personal wallet"
+    },
+    {
+      "file": "account-profile.jpg",
+      "route": "/react/#/en/home",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "Disposable generated documentation wallet; real local SIWE session",
+      "state": "Actual profile dialog; generated address is not a personal wallet",
+      "capturedAt": "2026-11-02T06:06:58.646Z"
+    },
+    {
+      "file": "prop-portfolio.jpg",
+      "route": "/react/#/en/prop/portfolio",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "Disposable generated documentation wallet; real local SIWE session",
+      "state": "New virtual-DAI account, no trades; 100000 virtual DAI issued by the real backend",
+      "capturedAt": "2026-11-02T06:07:05.708Z"
+    },
+    {
+      "file": "journal.jpg",
+      "route": "/react/#/en/prop/journal",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "Disposable generated documentation wallet; real local SIWE session",
+      "state": "Empty real private notebook; no seeded notes",
+      "capturedAt": "2026-11-02T06:07:12.761Z"
+    },
+    {
+      "file": "analytics.jpg",
+      "route": "/react/#/en/prop/dashboard",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "Disposable generated documentation wallet; real local SIWE session",
+      "state": "Actual new-account analytics; no generated performance history",
+      "capturedAt": "2026-11-02T06:07:19.798Z"
+    },
+    {
+      "file": "perpetual-portfolio.jpg",
+      "route": "/react/#/en/perpetual/portfolio",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "Disposable generated documentation wallet; real local SIWE session",
+      "state": "Official Gains reads for newly generated wallet; no positions created",
+      "capturedAt": "2026-11-02T06:07:26.847Z"
+    }
+  ]
+}

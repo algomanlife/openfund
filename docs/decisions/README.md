@@ -1,3 +1,8 @@
-# Architecture Decision Records
+# Architecture decisions
 
-Record decisions as `0001-short-title.md` with context, decision, alternatives, consequences, status and date. Decisions affecting interfaces, security, licensing or repository layout should be recorded before implementation.
+- [0001 — Product gateway routing](0001-product-gateway-routing.md)
+- [0002 — Shared terminal and isolated product state](0002-shared-product-terminal.md)
+- [0003 — Shared valuation and product wallet policy](0003-trading-valuation-and-product-wallets.md)
+- [0004 — Documentation authority and evidence](0004-documentation-authority.md)
+
+Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)
