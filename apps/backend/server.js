@@ -113,6 +113,12 @@ function parseCookie(header) {
   return out
 }
 
+function sanitizeCookieCode(req) {
+  const header = String(req.headers.cookie || '')
+  const match = header.match(/(?:^|;\s*)of_ref=([^;]+)/)
+  return match ? (sanitizeCode(decodeURIComponent(match[1])) || null) : null
+}
+
 async function userFromSession(req) {
   const sid = parseCookie(req.headers.cookie)[COOKIE]
   if (!sid) return null
@@ -144,6 +150,8 @@ const requireAuth = async (req, res, next) => {
 
 /* public client for EIP-1271 contract-wallet signature checks */
 const clients = new Map([sepolia, arbitrum].map(chain => [chain.id, createClient({ chain, transport: http() })]))
+
+import { referralRoutes, attributeReferral, sanitizeCode } from './referrals.js'
 
 /* =================  AUTH  ================= */
 
@@ -250,6 +258,9 @@ app.post("/auth/verify", limit(60), async (req, res) => {
 
     /* one wallet = one user (normalized lowercase, unique constraint is the final guard) */
     const address = parsed.address.toLowerCase();
+    /* referral attribution only applies to a FIRST-TIME account: check existence
+       before the upsert so a later sign-in can never re-attribute */
+    const knownUser = await pool.query('SELECT id FROM openfund_users WHERE wallet_address = $1', [address])
     const { rows } = await pool.query(
       `INSERT INTO openfund_users (wallet_address, wallet_chain, last_login_at)
        VALUES ($1, $2, now())
@@ -271,6 +282,13 @@ app.post("/auth/verify", limit(60), async (req, res) => {
       null;
     });
     if (!demo) return res.status(500).json({ error: "internal" });
+
+    /* Growth Partner attribution: recorded once, server-side, from the of_ref
+       cookie; self-referral and repeat attribution are impossible (see referrals.js) */
+    if (knownUser.rowCount === 0) {
+      const attributed = await attributeReferral(pool, req, { newUserId: user.id, walletAddress: address });
+      if (attributed) await audit('referral_attributed', user.id, req, { code: sanitizeCookieCode(req) });
+    }
 
     const sid = newSessionId();
     await pool.query(
@@ -496,6 +514,7 @@ app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) 
 }))
 
 app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
+app.use(referralRoutes({ pool, requireAuth, audit }))
 
 /* health */
 app.get('/health', asyncRoute(async (req, res) => { try { await pool.query('SELECT 1'); res.json({ ok: true, ts: Date.now() }) } catch { res.status(503).json({ ok: false }) } }))
