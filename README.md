@@ -230,6 +230,24 @@ Full walkthrough (including the no-Docker Directus pitfalls): [`docs/backstage/L
 | `SESSION_TTL_HOURS`, `PORT` | `apps/backend` | session lifetime, listen port |
 | Directus keys | `infrastructure/directus/.env` | see `.env.example` — never commit filled files |
 
+## 17b. Deployment (Render Blueprint)
+
+The platform deploys from this repository as Infrastructure as Code:
+
+| Resource | Type | Role |
+| :--- | :--- | :--- |
+| `openfund-db` | Managed Postgres 17 | single persistent store (app + CMS tables) |
+| `openfund-cms` | Directus 11.9.1 (official image) | editorial content, plan catalog, media on a persistent disk |
+| `openfund` | Node web service | backend API (SIWE, demo engine, portfolio) + the React app served same-origin at `/react/` |
+
+Validate offline: `npm run validate:blueprint` · Activate and operate per
+[`docs/deployment/RENDER.md`](docs/deployment/RENDER.md) (the blueprint is applied
+manually, never automatically). Environment reference:
+[`docs/deployment/ENVIRONMENT.md`](docs/deployment/ENVIRONMENT.md); database and
+rollback procedures live alongside it. CI (`.github/workflows/ci.yml`) validates
+every PR: typecheck, unit + backend suites (with a real Postgres container),
+production build, blueprint structure, gitleaks.
+
 ## 18. Build & testing
 
 ```bash

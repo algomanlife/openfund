@@ -1,26 +1,116 @@
-# Optional reviewed deployment blueprint; never applied automatically.
-# Reuses existing PostgreSQL and Directus, no replacement data services.
+# Openfund — production deployment blueprint (Render, Infrastructure as Code)
+#
+# Full platform graph, deployable from this one repository:
+#
+#   openfund-db    Render Postgres 17  — the single persistent store (app tables
+#                                     + Directus CMS tables; one database on
+#                                     purpose: Directus is the editing surface
+#                                     for catalog tables such as challenge_plans)
+#   openfund-cms   Directus 11.9.1 (official Docker image) — editorial content,
+#                                     plan catalog editing, media (persistent disk)
+#   openfund       Node web service   — backend API (SIWE auth, demo trading
+#                                     engine, portfolio/journal APIs) AND the
+#                                     built React app served same-origin at
+#                                     /react/ (cookie sessions stay first-party;
+#                                     hash routing needs no SPA fallback)
+#
+# Runtime model decisions (see docs/deployment/RENDER.md for rationale):
+#  - one API process hosts the engine loop, SSE stream and Gains market data —
+#    no separate worker/cron services are currently required
+#  - the frontend is served by the API service (same-origin) rather than a
+#    separate static site, to keep HttpOnly session cookies first-party
+#  - media for Directus lives on a persistent disk; S3-compatible storage can
+#    be enabled later via DIRECTUS_STORAGE_* env vars
+#
+# This blueprint is reviewed before applying: Render never provisions it
+# automatically. Activate per docs/deployment/RENDER.md (manual, reviewed).
+
+databases:
+  - name: openfund-db
+    databaseName: openfund
+    user: openfund_app
+    postgresMajorVersion: "17"
+    plan: 0.1c-256mb          # smallest stable plan; upgrade path documented
+    region: frankfurt          # closest to the primary audience
+
 services:
+  # ------------------------------------------------------------------ CMS --
+  - type: web
+    name: openfund-cms
+    runtime: image
+    image:
+      url: docker.io/directus/directus:11.9.1
+    plan: starter
+    autoDeployTrigger: off      # data plane: deploy only after review
+    healthCheckPath: /server/health
+    disk:                       # durable uploaded media (not ephemeral FS)
+      name: directus-uploads
+      mountPath: /directus/uploads
+      sizeGB: 5
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: openfund-db
+          property: connectionString
+      - key: KEY
+        generateValue: true     # random, generated once at first apply
+      - key: SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        sync: false             # prompted at first apply — never in Git
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: PUBLIC_URL
+        sync: false             # e.g. https://openfund-cms.onrender.com
+      - key: WEBSOCKETS_ENABLED
+        value: "false"
+      - key: CORS_ENABLED
+        value: "true"
+      - key: CORS_ORIGIN
+        value: "true"           # public read API; writes stay admin-only
+      - key: CORS_METHODS
+        value: GET,HEAD,OPTIONS
+      - key: MAX_PAYLOAD_SIZE
+        value: 1mb
+
+  # ------------------------------------------------- API + web (one origin) --
   - type: web
     name: openfund
     runtime: node
-    numInstances: 1
-    autoDeployTrigger: "off"
-    buildCommand: npm ci --prefix apps/backend && npm ci --include=dev --prefix apps/web-react && npm run build --prefix apps/web-react
-    startCommand: npm run migrate --prefix apps/backend && npm start --prefix apps/backend
+    plan: starter
+    autoDeployTrigger: commit
     healthCheckPath: /health
+    buildCommand: |
+      npm ci --prefix apps/web-react
+      npm ci --prefix apps/backend
+      VITE_DIRECTUS_URL="https://$VITE_DIRECTUS_HOST" npm run build --prefix apps/web-react
+    startCommand: npm run migrate --prefix apps/backend && npm start --prefix apps/backend
     envVars:
       - key: NODE_VERSION
         value: "22"
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        sync: false
-      - key: VITE_DIRECTUS_URL
-        sync: false
-      - key: VITE_WALLETCONNECT_PROJECT_ID
-        sync: false
+        fromDatabase:
+          name: openfund-db
+          property: connectionString
       - key: ALLOWED_DOMAINS
-        sync: false
+        fromService:
+          name: openfund
+          type: web
+          property: host        # SIWE domain = the served origin
       - key: CORS_ORIGINS
-        sync: false
+        sync: false             # only needed for extra origins / custom domain
+      - key: SESSION_TTL_HOURS
+        value: "168"
+      - key: VITE_DIRECTUS_HOST
+        fromService:
+          name: openfund-cms
+          type: web
+          property: host        # build-time: composed into https://… below
+      - key: VITE_WALLETCONNECT_PROJECT_ID
+        sync: false             # optional (full remote wallet list)
+      - key: SIM_TEST_MODE
+        value: ""               # internal test seam — never enabled in prod
