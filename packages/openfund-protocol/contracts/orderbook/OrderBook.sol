@@ -403,8 +403,6 @@ contract OrderBook is Storage, Admin, ReentrancyGuardUpgradeable {
                 return;
             }
         }
-        OrderType orderType = LibOrder.getOrderType(orderData);
-        require(orderType == OrderType.LiquidityOrder, "TYP"); // order TYPe mismatch
         uint256 outAmount;
         if (order.rawAmount != 0) {
             outAmount = LibOrderBook.fillLiquidityOrder(

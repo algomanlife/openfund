@@ -24,7 +24,7 @@ Openfund product work can build on.
 The Openfund-specific capabilities — **venue adapters for Gains Network,
 Hyperliquid and dYdX, cross-venue liquidity aggregation and intelligent trade
 routing** — are future work, documented as architecture in
-[`ARCHITECTURE.md`](./ARCHITECTURE.md) and [`ROUTING.md`](./ROUTING.md). They are
+[`ARCHITECTURE.md`](./ARCHITECTURE.md). They are
 not implemented in this repository today and are not represented as such
 anywhere in the product.
 
