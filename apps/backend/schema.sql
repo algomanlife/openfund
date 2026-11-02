@@ -285,3 +285,32 @@ CREATE TRIGGER guard_trial_metadata BEFORE INSERT OR UPDATE OR DELETE ON trade_n
 
 ALTER TABLE account_equity_samples DROP CONSTRAINT IF EXISTS account_equity_samples_account_id_fkey;
 ALTER TABLE account_equity_samples ADD CONSTRAINT account_equity_samples_account_id_fkey FOREIGN KEY(account_id) REFERENCES demo_accounts(id) ON DELETE CASCADE;
+
+-- ------------------------------------------------------------------
+-- Growth Partner referral attribution (server-authoritative, pre-launch)
+--
+-- Codes are issued lazily per wallet identity. Attribution is written ONCE,
+-- at account creation, from the of_ref cookie attached to the sign-up visit.
+-- Self-referral is impossible (CHECK + code owner lookup), one account can be
+-- attributed exactly once (UNIQUE), and no commission/reward data exists in
+-- this schema: reward terms are unpublished and must never be implied.
+CREATE TABLE IF NOT EXISTS referral_codes (
+  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  code       text NOT NULL UNIQUE,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT referral_codes_user_unique UNIQUE (user_id)
+);
+CREATE INDEX IF NOT EXISTS idx_referral_codes_code ON referral_codes (code);
+
+CREATE TABLE IF NOT EXISTS referral_attributions (
+  id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  referred_user_id  uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  referrer_user_id  uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  code              text NOT NULL,
+  attributed_at     timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT referral_attributions_referred_unique UNIQUE (referred_user_id),
+  CONSTRAINT referral_attributions_no_self CHECK (referred_user_id <> referrer_user_id)
+);
+CREATE INDEX IF NOT EXISTS idx_referral_attributions_referrer ON referral_attributions (referrer_user_id);
+CREATE INDEX IF NOT EXISTS idx_referral_attributions_at ON referral_attributions (attributed_at DESC);

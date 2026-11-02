@@ -77,19 +77,65 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
         if (value?.startsWith('assets/') || value?.startsWith('downloads/')) el.setAttribute(attr, `${base}${value}`)
       }
     })
-    /* navigation & footer links from Directus (labels/visibility editable,
-       destinations whitelisted). Falls back to the structural defaults. */
-    if (part === 'header' && navItems) {
+    /* Navigation from Directus (labels/visibility editable, destinations
+       whitelisted), falling back to the structural defaults. Four primary
+       destinations stay flat; the website-expansion sections (FAQ, Tools,
+       Learning Center, Growth Partner) group into one Resources dropdown so
+       the header keeps its density. Editors hide a link by removing the row. */
+    if (part === 'header') {
       const nav = template.content.querySelector('#navigation')
+      const PRIMARY = ['challenges', 'markets', 'rulebook', 'transparency'] as const
+      const RESOURCES = ['faq', 'tools', 'learn', 'referral'] as const
+      const byRoute = new Map((navItems || []).map(item => [item.route as string, item.label]))
+      const current = (route: string) => {
+        if (location.pathname.endsWith(`/${route}`)) return true
+        /* lesson/glossary/tool sub-routes keep their section highlighted */
+        if (route === 'learn') return /\/learn(\/|$)/.test(location.pathname)
+        if (route === 'tools') return /\/tools(\/|$)/.test(location.pathname)
+        if (route === 'faq') return /\/faq(\/|$)/.test(location.pathname)
+        if (route === 'referral') return /\/referral(\/|$)/.test(location.pathname)
+        return false
+      }
       if (nav) {
         nav.textContent = ''
-        for (const item of navItems) {
+        const link = (route: string, label: Record<Locale, string>, host: Element) => {
           const a = document.createElement('a')
-          a.setAttribute('data-info-page', item.route)
-          a.setAttribute('href', `#/${locale}/${item.route}`)
-          a.textContent = item.label[locale]
-          if (location.pathname.endsWith(`/${item.route}`)) a.setAttribute('aria-current', 'page')
-          nav.appendChild(a)
+          a.setAttribute('data-info-page', route)
+          a.setAttribute('href', `#/${locale}/${route}`)
+          a.textContent = label[locale]
+          if (current(route)) a.setAttribute('aria-current', 'page')
+          host.appendChild(a)
+          return a
+        }
+        for (const route of PRIMARY) {
+          if (navItems && !byRoute.has(route)) continue
+          link(route, byRoute.get(route) || labels[route], nav)
+        }
+        /* a CMS nav that lists none of the resource routes is treated as
+           partial rather than intentional hiding: show the structural set */
+        const anyResourceRow = RESOURCES.some(route => byRoute.has(route))
+        const visibleResources = (!navItems || !anyResourceRow)
+          ? [...RESOURCES]
+          : RESOURCES.filter(route => byRoute.has(route))
+        if (visibleResources.length) {
+          const group = document.createElement('div')
+          group.className = 'nav-account'
+          const trigger = document.createElement('a')
+          trigger.setAttribute('href', `#/${locale}/${visibleResources[0]}`)
+          trigger.setAttribute('aria-haspopup', 'true')
+          trigger.innerHTML = `${labels.resources[locale]} <span class="chevron" aria-hidden="true">⌄</span>`
+          group.appendChild(trigger)
+          const dropdown = document.createElement('div')
+          dropdown.className = 'nav-dropdown'
+          const heading = document.createElement('span')
+          heading.textContent = labels.resources[locale]
+          dropdown.appendChild(heading)
+          for (const route of visibleResources) {
+            const a = link(route, byRoute.get(route) || labels[route], dropdown)
+            a.setAttribute('data-info-page', route)
+          }
+          group.appendChild(dropdown)
+          nav.appendChild(group)
         }
       }
     }
@@ -100,6 +146,8 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
         const DEST: Record<string, string> = {
           challenges: `#/${locale}/challenges`, markets: `#/${locale}/markets`,
           rulebook: `#/${locale}/rulebook`, transparency: `#/${locale}/transparency`,
+          faq: `#/${locale}/faq`, referral: `#/${locale}/referral`,
+          tools: `#/${locale}/tools`, learn: `#/${locale}/learn`,
           'accounts-section': '#accounts', 'team-section': '#team', 'faq-section': '#rules',
           github: 'https://github.com/algomanlife/openfund',
         }

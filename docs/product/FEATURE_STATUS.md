@@ -22,6 +22,9 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | Gains wallet portfolio reads | Completed | [Read adapter](../../apps/backend/gains-portfolio.js); official Arbitrum positions/orders/history/stats; upstream failure is explicit; unsupported PnL/balance stays unknown |
 | Product journal | Completed | [Product routes](../../apps/backend/products.js); private account/product notes, optimistic versions, search/tags, metadata JSON import/export |
 | Published CMS content and catalog | Completed | [Coverage](../backstage/CONTENT_COVERAGE.md); Directus editorial content, translations, product sections and challenge_plans; not financial authority |
+| Website sections (FAQ, Tools, Learning Center, Growth Partner) | Completed | [Spec](../website/WEBSITE_EXPANSION.md); 43-question searchable FAQ, 10 browser-side calculators, 5 learning paths / 25 lessons / 40 glossary terms, pre-launch Growth Partner page; Directus-managed with bundled fallback |
+| Referral attribution (invite code and link) | Completed | [Backend](../../apps/backend/referrals.js); server-side, one-time at account creation, self-referral impossible; session-scoped summary; no commission or reward data exists |
+| Referral rewards and partner agreement | Planned | Reward model, qualifying event, attribution window, settlement method and caps are undecided; nothing in the code or copy presents them as active |
 | Challenge account records and catalog selection | Completed | Existing backend/schema and catalog UI; records do not establish commercial execution |
 | Paid activation, evaluation and challenge enforcement | Planned | Payment, legal/product facts, assignment and risk-rule engine required; free_demo has no assigned commercial challenge limits |
 | Funded capital, withdrawals, rewards and certificates | Planned | Visible capability pages are unavailable states, not operational services |

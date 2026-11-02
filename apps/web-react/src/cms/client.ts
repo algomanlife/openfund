@@ -17,6 +17,11 @@
  */
 import type { ChallengePlan, LegacyPreset } from '../data/challengePlans'
 import { assertPlansValid, serializeForLegacy } from '../data/challengePlans'
+import type {
+  FaqCategoryContent, FaqItemContent, GlossaryTermContent, LearningPathContent, LessonBlock,
+  LessonContent, ReferralBenefit, ReferralContent, ReferralStage, ReferralSection, ToolCopy,
+} from './contentTypes'
+import type { LinkTarget } from './contentTypes'
 
 export interface CmsTranslations {
   landing: Record<string, string>
@@ -24,7 +29,9 @@ export interface CmsTranslations {
   terminal: Record<string, { fa: string; en: string }>
 }
 
-const DIRECTUS_URL = ((import.meta.env.VITE_DIRECTUS_URL as string | undefined) || 'http://localhost:8055').replace(/\/+$/, '')
+/* import.meta.env exists under Vite; plain Node (tests, seeds) must still load this module */
+const ENV = (import.meta as unknown as { env?: Record<string, string | undefined> }).env
+const DIRECTUS_URL = ((ENV?.VITE_DIRECTUS_URL as string | undefined) || 'http://localhost:8055').replace(/\/+$/, '')
 const TIMEOUT_MS = 4000
 const CACHE_TTL = 20_000
 
@@ -297,10 +304,11 @@ export async function fetchCmsLegal(): Promise<CmsLegalDoc[] | null> {
 /* ---------------- footer links (destination whitelist) ---------------- */
 export type FooterDestination =
   | 'challenges' | 'markets' | 'rulebook' | 'transparency'
+  | 'faq' | 'referral' | 'tools' | 'learn'
   | 'accounts-section' | 'team-section' | 'faq-section' | 'github'
 export interface CmsFooterLink { destination: FooterDestination; label: { fa: string; en: string } }
 
-const FOOTER_DESTINATIONS = new Set(['challenges', 'markets', 'rulebook', 'transparency', 'accounts-section', 'team-section', 'faq-section', 'github'])
+const FOOTER_DESTINATIONS = new Set(['challenges', 'markets', 'rulebook', 'transparency', 'faq', 'referral', 'tools', 'learn', 'accounts-section', 'team-section', 'faq-section', 'github'])
 
 export async function fetchCmsFooterLinks(): Promise<CmsFooterLink[] | null> {
   interface Raw extends TranslatedRow { destination: string }
@@ -317,9 +325,9 @@ export async function fetchCmsFooterLinks(): Promise<CmsFooterLink[] | null> {
 }
 
 /* ---------------- navigation (public_header, whitelist) ---------------- */
-export type NavRoute = 'challenges' | 'markets' | 'rulebook' | 'transparency'
+export type NavRoute = 'challenges' | 'markets' | 'rulebook' | 'transparency' | 'faq' | 'referral' | 'tools' | 'learn'
 export interface CmsNavItem { route: NavRoute; label: { fa: string; en: string } }
-const NAV_ROUTES = new Set(['challenges', 'markets', 'rulebook', 'transparency'])
+const NAV_ROUTES = new Set(['challenges', 'markets', 'rulebook', 'transparency', 'faq', 'referral', 'tools', 'learn'])
 
 export async function fetchCmsNavigation(): Promise<CmsNavItem[] | null> {
   interface Raw extends TranslatedRow { route: string; visible: boolean }
@@ -374,4 +382,320 @@ export async function fetchTerminalSections(product: 'prop' | 'perpetual', page:
     const url = row.support_url && /^https:\/\//.test(row.support_url) ? row.support_url : null
     return [{ id: row.id, title: { fa: l.fa.title, en: l.en.title }, body: { fa: l.fa.body || '', en: l.en.body || '' }, illustration: row.illustration && /^[0-9a-f-]{36}$/i.test(row.illustration) ? row.illustration : null, supportUrl: url }]
   })
+}
+
+/* ===================== website expansion ===============================
+   FAQ hub, Learning Center, Tools Center prose and the Growth Partner page.
+   Same contract as above: published rows only, both locales or nothing.    */
+
+type Bi = Record<Locale, string>
+const bi = (fa: string, en: string): Bi => ({ fa, en })
+const isBi = (a?: string, b?: string): a is string => !!(a && b && a.trim() && b.trim())
+const str = (v: unknown): string => (typeof v === 'string' ? v : '')
+
+/**
+ * Same flattening as `localized()` but JSON columns (lesson blocks, referral
+ * benefits, outcomes…) are kept as-is instead of being dropped.
+ */
+function flat(row: TranslatedRow): Record<Locale, Record<string, unknown>> {
+  const out: Record<Locale, Record<string, unknown>> = { fa: {}, en: {} }
+  for (const t of row.translations || []) {
+    const lang = t.language_code === 'en' ? 'en' : 'fa'
+    for (const [k, v] of Object.entries(t)) if (k !== 'language_code') out[lang][k] = v
+  }
+  return out
+}
+
+const pairOf = (rec: Record<Locale, Record<string, unknown>>, key: string): Bi => ({ fa: str(rec.fa[key]), en: str(rec.en[key]) })
+
+/* ---------------- FAQ hub (categories + questions) ---------------- */
+export interface CmsFaqHub { categories: FaqCategoryContent[]; items: FaqItemContent[] }
+
+export async function fetchCmsFaqHub(): Promise<CmsFaqHub | null> {
+  interface RawCat extends TranslatedRow { id: number | string; slug: string; sort: number; icon?: string }
+  interface RawLink { target?: { kind?: string; slug?: string }; label?: Partial<Bi> }
+  interface RawFaq extends TranslatedRow { slug: string | null; sort: number; category?: number | string | null }
+  const [cats, rows] = await Promise.all([
+    getJson<RawCat[]>('/items/faq_categories?fields=id,slug,sort,icon,translations.language_code,translations.label,translations.description&filter[status][_eq]=published&sort=sort&limit=-1'),
+    getJson<RawFaq[]>('/items/faqs?fields=slug,sort,category,page,translations.language_code,translations.question,translations.answer,translations.links&filter[status][_eq]=published&filter[page][_eq]=faq&sort=sort&limit=-1'),
+  ])
+  if (!cats || !rows) return null
+  /* faqs.category stores the category ROW ID — resolve it back to the slug key */
+  const categoryIdToKey = new Map(cats.map(row => [String(row.id), row.slug]))
+  const categories: FaqCategoryContent[] = []
+  for (const row of cats) {
+    const l = flat(row)
+    const label = pairOf(l, 'label')
+    if (!isBi(label.fa, label.en)) continue
+    categories.push({
+      key: row.slug, sort: Number(row.sort) || 0,
+      icon: (row.icon || 'general') as FaqCategoryContent['icon'],
+      label, description: pairOf(l, 'description'),
+    })
+  }
+  const items: FaqItemContent[] = []
+  for (const row of rows) {
+    const l = flat(row)
+    const question = pairOf(l, 'question'), answer = pairOf(l, 'answer')
+    if (!isBi(question.fa, question.en) || !isBi(answer.fa, answer.en) || !row.slug) continue
+    const links = pairLinks(l.fa.links, l.en.links)
+    const categoryKey = categoryIdToKey.get(String(row.category ?? '')) ?? ''
+    items.push({
+      key: row.slug, sort: Number(row.sort) || 0,
+      category: categoryKey,
+      question, answer,
+      links: links.length ? links : undefined,
+    })
+  }
+  if (!categories.length || !items.length) return null
+  /* drop questions pointing at a retired category */
+  const keys = new Set(categories.map(c => c.key))
+  return { categories, items: items.filter(i => keys.has(i.category)) }
+}
+
+/** `[{ target: { kind, slug }, label: { fa, en } }]`, paired across locales */
+function pairLinks(faRaw: unknown, enRaw: unknown): Array<{ target: LinkTarget; label: Bi }> {
+  const fa = asArray(faRaw), en = asArray(enRaw)
+  if (!fa.length || fa.length !== en.length) return []
+  const out: Array<{ target: LinkTarget; label: Bi }> = []
+  for (let i = 0; i < fa.length; i++) {
+    const a = fa[i] as { target?: { kind?: string; slug?: string }; label?: Partial<Bi> }
+    const b = en[i] as { target?: { kind?: string; slug?: string }; label?: Partial<Bi> }
+    const kind = a?.target?.kind, slug = a?.target?.slug
+    if (!kind || !slug || kind !== b?.target?.kind || slug !== b?.target?.slug) continue
+    if (!a.label?.fa || !b.label?.en) continue
+    out.push({ target: { kind, slug } as LinkTarget, label: bi(a.label.fa, b.label.en) })
+  }
+  return out
+}
+
+/* ---------------- Learning Center library ---------------- */
+export interface CmsLearningLibrary { paths: LearningPathContent[]; glossary: GlossaryTermContent[] }
+
+export async function fetchCmsLearningLibrary(): Promise<CmsLearningLibrary | null> {
+  interface RawPath extends TranslatedRow { slug: string; path_key: string; sort: number; level?: string; lessons?: RawLesson[] | null }
+  interface RawLesson extends TranslatedRow { slug: string; sort: number; minutes?: number; status?: string; glossary?: unknown; tools?: unknown }
+  interface RawTerm extends TranslatedRow { slug: string; sort: number; lessons?: unknown; tool?: string }
+  const pathsFields = 'slug,path_key,sort,level,'
+    + 'translations.language_code,translations.eyebrow,translations.title,translations.summary,translations.outcomes,'
+    + 'lessons.id,lessons.slug,lessons.sort,lessons.minutes,lessons.glossary,lessons.tools,'
+    + 'lessons.translations.language_code,lessons.translations.title,lessons.translations.summary,'
+    + 'lessons.translations.takeaways,lessons.translations.blocks'
+  const [rawPaths, rawTerms] = await Promise.all([
+    getJson<RawPath[]>(`/items/learning_paths?fields=${pathsFields}&filter[status][_eq]=published&filter[lessons][status][_eq]=published&sort=sort&limit=-1`),
+    getJson<RawTerm[]>('/items/glossary_terms?fields=slug,sort,tool,lessons,translations.language_code,translations.term,translations.short,translations.definition&filter[status][_eq]=published&sort=sort&limit=-1'),
+  ])
+  if (!rawPaths || !rawTerms) return null
+
+  const paths: LearningPathContent[] = []
+  for (const row of rawPaths) {
+    const l = flat(row)
+    const title = pairOf(l, 'title')
+    if (!isBi(title.fa, title.en)) continue
+    const lessons: LessonContent[] = []
+    for (const item of row.lessons || []) {
+      const tl = flat(item)
+      const lessonTitle = pairOf(tl, 'title')
+      if (!isBi(lessonTitle.fa, lessonTitle.en)) continue
+      const blocks = pairBlocks(tl.fa.blocks, tl.en.blocks)
+      const takeaways = pairStrings(tl.fa.takeaways, tl.en.takeaways)
+      if (!blocks.length) continue
+      lessons.push({
+        slug: item.slug, path: row.slug, sort: Number(item.sort) || 0, minutes: Number(item.minutes) || 8,
+        status: 'published', title: lessonTitle, summary: pairOf(tl, 'summary'),
+        takeaways, glossary: stringList(item.glossary), tools: stringList(item.tools), blocks,
+      })
+    }
+    lessons.sort((a, b) => a.sort - b.sort)
+    paths.push({
+      key: row.path_key || row.slug, slug: row.slug, sort: Number(row.sort) || 0,
+      level: (row.level === 'practitioner' || row.level === 'advanced') ? row.level : 'foundation',
+      eyebrow: pairOf(l, 'eyebrow'), title, summary: pairOf(l, 'summary'),
+      outcomes: pairStrings(l.fa.outcomes, l.en.outcomes),
+      lessons,
+    })
+  }
+
+  const glossary: GlossaryTermContent[] = []
+  for (const row of rawTerms) {
+    const l = flat(row)
+    const term = pairOf(l, 'term'), definition = pairOf(l, 'definition')
+    if (!isBi(term.fa, term.en) || !isBi(definition.fa, definition.en)) continue
+    glossary.push({
+      slug: row.slug, sort: Number(row.sort) || 0,
+      term, short: pairOf(l, 'short'), definition,
+      lessons: stringList(row.lessons), tool: row.tool || undefined,
+    })
+  }
+  glossary.sort((a, b) => a.sort - b.sort)
+  if (!paths.length || !glossary.length) return null
+  return { paths, glossary }
+}
+
+/** lesson blocks are stored per locale and paired by index (trading_rules precedent) */
+function pairBlocks(faRaw: unknown, enRaw: unknown): LessonBlock[] {
+  const fa = asArray(faRaw), en = asArray(enRaw)
+  if (!fa.length || fa.length !== en.length) return []
+  const out: LessonBlock[] = []
+  for (let i = 0; i < fa.length; i++) {
+    const a = fa[i] as Record<string, unknown>, b = en[i] as Record<string, unknown>
+    if (a?.type !== b?.type) return []
+    const block = mergeBlock(a, b)
+    if (block) out.push(block)
+  }
+  return out
+}
+
+function mergeBlock(a: Record<string, unknown>, b: Record<string, unknown>): LessonBlock | null {
+  const str = (v: unknown) => (typeof v === 'string' ? v : '')
+  const pair = (x: unknown, y: unknown): Bi => bi(str(x), str(y))
+  const list = (v: unknown) => (Array.isArray(v) ? v as unknown[] : [])
+  switch (a.type) {
+    case 'p': case 'h2': case 'h3': case 'note':
+      return { type: a.type as 'p', text: pair(a.text, b.text) }
+    case 'ul': case 'ol': {
+      const fa = list(a.items), en = list(b.items)
+      if (!fa.length || fa.length !== en.length) return null
+      return { type: a.type as 'ul', items: fa.map((x, i) => pair(x, en[i])) }
+    }
+    case 'formula': {
+      if (str(a.expr) !== str(b.expr)) return null /* ASCII math must not diverge */
+      return { type: 'formula', expr: str(a.expr), text: a.text || b.text ? pair(a.text, b.text) : undefined }
+    }
+    case 'terms': {
+      const fa = list(a.items) as Array<Record<string, unknown>>, en = list(b.items) as Array<Record<string, unknown>>
+      if (!fa.length || fa.length !== en.length) return null
+      return { type: 'terms', items: fa.map((x, i) => ({ term: pair(x.term, en[i]?.term), text: pair(x.text, en[i]?.text) })) }
+    }
+    case 'table': {
+      const faHead = list(a.head), enHead = list(b.head)
+      const faRows = list(a.rows) as unknown[][], enRows = list(b.rows) as unknown[][]
+      if (!faHead.length || faHead.length !== enHead.length || faRows.length !== enRows.length) return null
+      return {
+        type: 'table', caption: pair(a.caption, b.caption),
+        head: faHead.map((x, i) => pair(x, enHead[i])),
+        rows: faRows.map((r, i) => (r || []).map((cell, j) => pair(cell, enRows[i]?.[j]))),
+      }
+    }
+    default:
+      return null
+  }
+}
+
+function asArray(v: unknown): unknown[] {
+  if (Array.isArray(v)) return v
+  if (typeof v === 'string') { try { const p = JSON.parse(v); return Array.isArray(p) ? p : [] } catch { return [] } }
+  return []
+}
+
+/** two per-locale string arrays of equal length → one bilingual array */
+function pairStrings(faRaw: unknown, enRaw: unknown): Array<Record<Locale, string>> {
+  const fa = asArray(faRaw), en = asArray(enRaw)
+  if (!fa.length || fa.length !== en.length) return []
+  return fa.map((x, i) => bi(typeof x === 'string' ? x : '', typeof en[i] === 'string' ? en[i] : ''))
+}
+
+function stringList(v: unknown): string[] {
+  return asArray(v).filter((x): x is string => typeof x === 'string' && !!x)
+}
+
+/* ---------------- Tools Center prose ---------------- */
+export async function fetchCmsToolCopy(): Promise<Record<string, ToolCopy> | null> {
+  interface Raw extends TranslatedRow { slug: string }
+  const rows = await getJson<Raw[]>('/items/tools?fields=slug,category,translations.language_code,translations.name,translations.tagline,translations.about,translations.method,translations.assumptions,translations.limitations&filter[status][_eq]=published&sort=sort&limit=-1')
+  if (!rows) return null
+  const out: Record<string, ToolCopy> = {}
+  for (const row of rows) {
+    const l = flat(row)
+    const name = pairOf(l, 'name')
+    if (!isBi(name.fa, name.en)) continue
+    const assumptions = pairStrings(l.fa.assumptions, l.en.assumptions)
+    if (!assumptions.length) continue
+    out[row.slug] = {
+      name, tagline: pairOf(l, 'tagline'), about: pairOf(l, 'about'),
+      method: pairOf(l, 'method'), assumptions, limitations: pairOf(l, 'limitations'),
+    }
+  }
+  return Object.keys(out).length ? out : null
+}
+
+/* ---------------- Growth Partner (singleton) ---------------- */
+export async function fetchCmsReferral(): Promise<{ programState: 'prelaunch' | 'live'; content: ReferralContent } | null> {
+  interface Raw extends TranslatedRow { program_state?: string }
+  const data = await getJson<Raw>('/items/referral_content?fields=program_state,translations.*')
+  if (!data) return null
+  const l = flat(data)
+  const heroTitle = pairOf(l, 'hero_title'), heroIntro = pairOf(l, 'hero_intro')
+  if (!isBi(heroTitle.fa, heroTitle.en) || !isBi(heroIntro.fa, heroIntro.en)) return null
+  const benefits = pairObjects<ReferralBenefit>(l.fa.benefits, l.en.benefits)
+  const stages = pairObjects<ReferralStage>(l.fa.stages, l.en.stages)
+  const sections = pairObjects<ReferralSection>(l.fa.sections, l.en.sections)
+  const columns = pairObjects<ReferralContent['dashboard']['columns'][number]>(l.fa.dashboard_columns, l.en.dashboard_columns)
+  const pending = pairObjects<ReferralContent['pendingDecisions'][number]>(l.fa.pending_decisions, l.en.pending_decisions)
+  const faq = pairObjects<FaqItemContent>(l.fa.faq, l.en.faq)
+  if (!benefits.length || !stages.length || !sections.length || !columns.length || !pending.length || !faq.length) return null
+  const content: ReferralContent = {
+    hero: { eyebrow: pairOf(l, 'hero_eyebrow'), title: heroTitle, accent: pairOf(l, 'hero_accent'), intro: heroIntro },
+    statusNotice: pairOf(l, 'status_notice'),
+    benefits, stages, sections,
+    dashboard: { title: pairOf(l, 'dashboard_title'), intro: pairOf(l, 'dashboard_intro'), columns },
+    faq, pendingDecisions: pending,
+    cta: {
+      title: pairOf(l, 'cta_title'), text: pairOf(l, 'cta_text'),
+      primary: pairOf(l, 'cta_primary'), secondary: pairOf(l, 'cta_secondary'),
+    },
+  }
+  return { programState: data.program_state === 'live' ? 'live' : 'prelaunch', content }
+}
+
+/**
+ * Structured JSON stored per locale: the `fa` row holds the Persian strings and
+ * the `en` row the English ones, item by item, so arrays must match in length.
+ */
+function pairObjects<T>(faRaw: unknown, enRaw: unknown): T[] {
+  const fa = asArray(faRaw), en = asArray(enRaw)
+  if (!fa.length || fa.length !== en.length) return []
+  const out: T[] = []
+  for (let i = 0; i < fa.length; i++) {
+    const a = fa[i] as Record<string, unknown>, b = en[i] as Record<string, unknown>
+    const merged = mergeLocaleObject(a, b)
+    if (!merged) return []
+    out.push(merged as T)
+  }
+  return out
+}
+
+function mergeLocaleObject(a: Record<string, unknown>, b: Record<string, unknown>): Record<string, unknown> | null {
+  const out: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(a)) {
+    const other = b[key]
+    if (typeof value === 'string') {
+      if (typeof other !== 'string') return null
+      out[key] = { fa: value, en: other }
+    } else if (Array.isArray(value)) {
+      if (!Array.isArray(other) || other.length !== value.length) return null
+      const items: unknown[] = []
+      for (let i = 0; i < value.length; i++) {
+        const x = value[i], y = other[i]
+        if (x && typeof x === 'object' && !Array.isArray(x) && y && typeof y === 'object') {
+          const nested = mergeLocaleObject(x as Record<string, unknown>, y as Record<string, unknown>)
+          if (!nested) return null
+          items.push(nested)
+        } else if (typeof x === 'string' && typeof y === 'string') {
+          items.push({ fa: x, en: y })
+        } else if (typeof x === typeof y) {
+          items.push(x)
+        } else return null
+      }
+      out[key] = items
+    } else if (value && typeof value === 'object') {
+      if (!other || typeof other !== 'object') return null
+      const nested = mergeLocaleObject(value as Record<string, unknown>, other as Record<string, unknown>)
+      if (!nested) return null
+      out[key] = nested
+    } else {
+      out[key] = value
+    }
+  }
+  return out
 }

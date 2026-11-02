@@ -15,9 +15,10 @@
     "test": "node test/siwe.test.mjs",
     "test:products": "node test/products.test.mjs",
     "test:gains": "node --test test/gains-portfolio.test.mjs",
-    "test:all": "node test/siwe.test.mjs && node test/trading.test.mjs && node test/portfolio.test.mjs && node test/products.test.mjs && node --test test/gains-portfolio.test.mjs && npm run test:audit && npm run test:unified",
+    "test:all": "node test/siwe.test.mjs && node test/trading.test.mjs && node test/portfolio.test.mjs && node test/products.test.mjs && node --test test/gains-portfolio.test.mjs && npm run test:audit && npm run test:unified && npm run test:referral",
     "test:audit": "node --test test/audit.test.mjs",
-    "test:unified": "node --test test/unified.test.mjs test/instruments.test.mjs test/unified-api.test.mjs"
+    "test:unified": "node --test test/unified.test.mjs test/instruments.test.mjs test/unified-api.test.mjs",
+    "test:referral": "node test/referral.test.mjs"
   },
   "dependencies": {
     "decimal.js": "^10.6.0",

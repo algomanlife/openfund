@@ -15,7 +15,8 @@
     "build:charts": "node ../../scripts/build-charts.mjs",
     "prebuild": "npm run build:charts",
     "predev": "npm run build:charts",
-    "test:depth": "node --test test/market-depth.test.mjs"
+    "test:depth": "node --test test/market-depth.test.mjs",
+    "test:website": "node --test test/website-expansion.test.mjs"
   },
   "dependencies": {
     "@luxalgo/vela": "0.9.3",

@@ -320,6 +320,7 @@ function initChart(){
      terminal chrome in sync with the chart's market */
   vc.on('market:changed', ev => {
     chartOverlay(null);
+    if (ev && ev.timeframe) S.tf = ev.timeframe;
     if (ev && ev.symbol){
       const sym = String(ev.symbol).replace(/^gains:/, '');
       if (sym !== S.marketId && board.meta.has(sym)){
@@ -332,11 +333,16 @@ function initChart(){
 
 function setChartMarket(){
   if (!vc) return;
-  try{ vc.setSymbol(S.marketId); }catch(e){ chartOverlay(`<b>${t('chart.error')}</b>`); }
+  Promise.resolve(vc.setSymbol(S.marketId)).catch(() => chartOverlay(`<b>${t('chart.error')}</b>`));
 }
 
 $('chart-full').addEventListener('click', () => {
-  document.documentElement.classList.toggle('fscreen');
+  const fullscreen = document.documentElement.classList.toggle('fscreen');
+  const notice = document.querySelector('.chart-notice');
+  if (notice) {
+    notice.classList.toggle('chart-notice-full', fullscreen);
+    (fullscreen ? $('chart-host') : document.querySelector('.status-bar')).appendChild(notice);
+  }
   if (vc) setTimeout(() => { try{ vc.resize(); }catch(e){} }, 60);
 });
 
@@ -511,6 +517,7 @@ function selectMarket(id){
   velaSaveDrawings();     /* persist user drawings for the OLD symbol */
   velaPositionsClear();   /* symbol isolation: only the new market's overlays */
   velaClearDrawings();    /* clear user drawings too */
+  S.marketId = id;
   S.stats = null;
   $('cur-icon').outerHTML = `<span id="cur-icon" class="cur-ic">${iconHTML(id)}</span>`;
   $('cur-pair').textContent = id;
@@ -534,9 +541,9 @@ function selectMarket(id){
   renderBook(true);
   renderTrades();
   computeForm();
-}
-  /* restore user drawings for the NEW symbol after the chart updates */
+  /* Restore user drawings for the new symbol after the chart updates. */
   setTimeout(() => { velaRestoreDrawings(); velaPositionsSync(); }, 300);
+}
 
 
 function updateStarBtn(){
@@ -610,10 +617,8 @@ $('book-dense').addEventListener('change', e => { S.dense = e.target.checked; $(
 
 function renderBook(force){
   if (window.__ofTerminalConfig?.syntheticMarketData === false) {
-    const host=$('book-asks'); if(!host)return;
-    const rows=[...board.meta.values()].filter(m=>board.getMark(m.symbol)!=null).slice(0,60);
-    host.replaceChildren(...rows.map(m=>{const b=document.createElement('button');b.className='live-market-row'+(m.symbol===S.marketId?' active':'');const name=document.createElement('span'),price=document.createElement('b');name.textContent=m.symbol;price.textContent=fmt.price(board.getMark(m.symbol),Number(m.pricePrecision)||2);b.append(name,price);b.onclick=()=>selectMarket(m.symbol);return b}));
-    if($('book-mid-price'))$('book-mid-price').textContent=mark()!=null?fmt.price(mark(),dp()):'—';
+    window.OpenfundDepth?.select(S.marketId);
+    window.OpenfundDepth?.renderBook();
     return;
   }
   if (!$('book-asks')) return;   /* teardown race guard */
@@ -700,7 +705,7 @@ function noteTrade(p){
   if (tradeRows.length > 42) tradeRows.pop();
 }
 function renderTrades(){
-  if(window.__ofTerminalConfig?.syntheticMarketData === false)return;
+  if(window.__ofTerminalConfig?.syntheticMarketData === false){window.OpenfundDepth?.renderTrades();return;}
   if (!$('trades-rows')) return;   /* teardown race guard */
   if (!$('trades-rows') && !$('.trades-view tbody')) return;   /* teardown race guard */
   if ($('trades-view').hidden) return;
@@ -853,7 +858,7 @@ function buildRequest(){
   };
 }
 
-$('submit-order').addEventListener('click', () => {
+$('submit-order').addEventListener('click', async () => {
   if (marketClosed()){ toast(t('mkt.closed'), 'neg'); return; }
   const req = buildRequest();
   const errs = tp.validate(req);
@@ -861,10 +866,12 @@ $('submit-order').addEventListener('click', () => {
   const m = meta();
   const d = dp();
   const mk = mark();
-  const entry = req.type === 'market' ? mk : req.price;
-  const size = req.collateral * req.leverage / entry;
-  const notional = req.collateral * req.leverage;
-  const liq = tp.liqPrice(req.side, entry, req.leverage);
+  let preview=null;
+  if(tp.previewAsync){try{preview=await tp.previewAsync(req)}catch(e){$('of-err').textContent=e.message;$('of-err').hidden=false;return}}
+  const entry = preview ? Number(preview.entry_price) : req.type === 'market' ? mk : req.price;
+  const size = preview ? Number(preview.quantity) : req.collateral * req.leverage / entry;
+  const notional = preview ? Number(preview.notional) : req.collateral * req.leverage;
+  const liq = preview ? Number(preview.liquidation_price) : tp.liqPrice(req.side, entry, req.leverage);
   const acc = tp.getAccount();
   const rows = [
     [t('rv.market'), m ? m.symbol : S.marketId], [t('rv.dir'), t(req.side === 'long' ? 'rv.side.long' : 'rv.side.short')],
@@ -874,11 +881,11 @@ $('submit-order').addEventListener('click', () => {
     [t('rv.collateral'), fmt.usd(req.collateral)], [t('rk.entry'), fmt.price(entry, d)],
     [t('rv.oracle'), board.getIndex(S.marketId) ? fmt.price(board.getIndex(S.marketId), d) : '—'],
     [t('rk.liq'), fmt.price(liq, d)],
-    [t('rv.fee'), fmt.usd(notional * (tp.feeRate?.(S.marketId) ?? FEE_RATE))],
+    [t('rv.fee'), fmt.usd(preview ? Number(preview.open_fee) : notional * (tp.feeRate?.(S.marketId) ?? FEE_RATE))],
     [t('rv.sl'), req.sl ? fmt.price(req.sl, d) : '—'],
     [t('rv.tp'), req.tp ? fmt.price(req.tp, d) : '—'],
-    [t('rv.equityAfter'), fmt.usd(acc.equity - req.collateral - notional * (tp.feeRate?.(S.marketId) ?? FEE_RATE))],
-    [t('rv.exec'), t('rv.exec')]
+    [L('مارجین آزاد تخمینی','Estimated free margin'), fmt.usd(preview ? Number(preview.available_margin)-Number(preview.required_margin)-Number(preview.open_fee) : acc.available-req.collateral)],
+    [t('rv.exec'), L('برآورد شبیه‌سازی؛ نتیجهٔ اجرا قطعی نیست','Simulation estimate; execution may differ')]
   ];
   $('review-body').innerHTML = `<div class="review-grid">` +
     rows.map(([k, v]) => `<div><span>${k}</span><b class="num">${v}</b></div>`).join('') + `</div>`;
@@ -893,7 +900,7 @@ $('review-confirm').addEventListener('click', async () => {
   const req = pendingOrder;
   pendingOrder = null;
   $('review-dialog').close();
-  const res = tp.submitAsync ? await tp.submitAsync(req) : tp.submit(req);
+  let res;try{res = tp.submitAsync ? await tp.submitAsync(req) : tp.submit(req)}catch(e){toast(e.message || 'Request failed','neg');return}
   if (res && res.ok){
     toast(res.kind === 'position' ? t('toast.position') : t('toast.order'), 'pos');
     renderBottom(); renderAccount();
@@ -946,7 +953,7 @@ function velaPositionsSync(){
         if (d && d.id){
           posDrawings.set(pid, d.id);
           /* brand the box: real account balance + our labels */
-          try { dr.update(d.id, { accountBalance: 100000, showPrices: true, showText: true }) } catch(e){}
+          try { dr.update(d.id, { accountBalance: tp.getAccount()?.balance ?? tp.getAccount()?.equity ?? 0, showPrices: true, showText: true }) } catch(e){}
         }
       } catch(e){ /* renderer without drawing support — table still works */ }
     }
@@ -1099,6 +1106,8 @@ $('load-demo').addEventListener('click', () => { tp.loadDemoScenario(); renderBo
 function renderBottom(){
   if (!tp || !$('bt-empty')) return;   /* teardown race guard */
   const st = tp.state;
+  const feedState = $('account-feed-state');
+  if (feedState) { feedState.hidden = tp.status === 'ready'; feedState.textContent = tp.status === 'disconnected' ? L('اتصال حساب قطع است؛ اطلاعات ممکن است قدیمی باشد.', 'Account disconnected; displayed data may be stale.') : tp.status === 'stale' ? L('قیمت حساب به‌روز نیست.', 'Account prices are stale.') : tp.status === 'error' ? L('دریافت حساب ناموفق بود.', 'Account could not be loaded.') : tp.status === 'signedout' ? L('برای مشاهده حساب وارد شوید.', 'Sign in to view your account.') : L('در حال دریافت حساب…', 'Loading account…'); }
   if(window.__ofTerminalConfig){
     const ready=tp.status === undefined || tp.status === 'ready';
     const message=ready?t('bt.empty'):tp.status==='error'?L('دریافت اطلاعات حساب ناموفق بود. دوباره تلاش کنید.','Account activity could not be retrieved. Retry.'):tp.status==='signedout'?L('برای مشاهدهٔ حساب وارد شوید.','Sign in to view your account.'):L('در حال دریافت اطلاعات حساب…','Loading account activity…');
@@ -1113,9 +1122,9 @@ function renderBottom(){
   $('tb-positions').innerHTML = st.positions.map(p => {
     const m = board.getMeta(p.market); if (!m) return '';
     const d = Number(m.pricePrecision), dps = Number(m.sizePrecision) || 2;
-    const mk = board.getMark(p.market) || p.entry;
-    const pnl = tp.readOnly ? null : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
-    const roe = pnl == null ? null : pnl / p.margin * 100;
+    const mk = tp.serverMode ? p.srvMark ?? null : board.getMark(p.market) || p.entry;
+    const pnl = tp.readOnly ? null : tp.serverMode ? p.srvPnl ?? null : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
+    const roe = tp.serverMode ? p.srvRoi ?? null : pnl == null ? null : pnl / p.margin * 100;
     return `<tr>
       <td>${iconHTML(p.market)} <b>${m.symbol}</b></td>
       <td class="side-${p.side === 'long' ? 'l' : 's'}">${t(p.side === 'long' ? 'rv.side.long' : 'rv.side.short')}</td>
@@ -1192,13 +1201,15 @@ function emptyRow(cols, text){
 
 function wireRowActions(){
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => {
+    const partial = tp.serverMode && !tp.readOnly;
     confirmDialog(t('cf.close'), t('cf.closeTxt'), () => {
-      (async () => { try { await tp.closePosition(b.dataset.close); } catch(e){} renderBottom(); renderAccount(); })();
-    });
+      const fraction = partial ? Number($('close-fraction').value) : 1;
+      (async () => { try { await tp.closePosition(b.dataset.close, fraction); } catch(e){ toast(String(e.message || e), 'error'); } renderBottom(); renderAccount(); })();
+    }, null, partial ? `<label>${L('مقدار بستن پوزیشن', 'Position to close')} <select id="close-fraction"><option value="1">100%</option><option value="0.5">50%</option><option value="0.25">25%</option></select></label>` : null);
   }));
   document.querySelectorAll('[data-cancel]').forEach(b => b.addEventListener('click', () => {
     confirmDialog(t('cf.cancel'), t('cf.cancelTxt'), () => {
-      (async () => { try { await tp.cancelOrder(b.dataset.cancel); } catch(e){} renderBottom(); renderAccount(); })();
+      (async () => { try { await tp.cancelOrder(b.dataset.cancel); } catch(e){ toast(String(e.message || e), 'error'); } renderBottom(); renderAccount(); })();
     });
   }));
   document.querySelectorAll('[data-sltp]').forEach(b => b.addEventListener('click', () => {
@@ -1219,7 +1230,7 @@ function wireRowActions(){
     const d = Number(m.pricePrecision);
     const srv = p.mark_price != null ? p.mark_price : (p.srvMark != null ? p.srvMark : null);
     const mk = srv != null ? Number(srv) : (board.getMark(p.market) || p.entry);
-    const pnl = tp.readOnly ? null : p.realized != null ? p.realized : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
+    const pnl = tp.readOnly ? null : tp.serverMode ? p.srvPnl ?? p.realized ?? null : p.realized != null ? p.realized : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
     const D = t('pos.details');
     const rows = [
       [D[0], '#' + p.id], [D[1], m.symbol], [D[2], p.side],
@@ -1263,7 +1274,7 @@ $('confirm-ok').addEventListener('click', () => { $('confirm-dialog').close(); i
 function renderAccount(){
   if (!tp || !$('ac-equity')) return;   /* teardown race guard */
   const a = tp.getAccount();
-  if (!a) return;   /* server account not loaded yet */
+  if (!a) { for (const id of ['ac-equity','ac-available','ac-margin','ac-upnl','ac-pos','ac-ord']) $(id).textContent='—'; return; }
   $('ac-equity').textContent = fmt.usd(a.equity);
   $('ac-available').textContent = fmt.usd(a.available);
   $('ac-margin').textContent = fmt.usd(a.marginUsed);
@@ -1375,12 +1386,13 @@ function boot(){
   $('submit-order').disabled = true;
   chartOverlay(`<b>${t('boot.loading')}</b>`);
   board.boot().then(() => {
+    let requestedSymbol = null;
     /* market deep-link from the Markets page (sessionStorage handshake;
        applied once at boot, only when the symbol exists in Gains metadata) */
     try {
       const want = sessionStorage.getItem('of-terminal-symbol');
       if (want) { sessionStorage.removeItem('of-terminal-symbol');
-        if (board.meta.has(want)) { S.marketId = want;
+        if (board.meta.has(want)) { S.marketId = want; requestedSymbol = want;
           const g = board.meta.get(want).group;
           if (g) S.ddCategory = g; } }
     } catch(e){}
@@ -1422,7 +1434,7 @@ function boot(){
     applyStaticI18n();
     initChart();
     /* restore user drawings + settings after the chart is ready */
-    vc.chart.ready ? vc.chart.ready().then(() => {
+    vc?.chart?.ready ? vc.chart.ready().then(() => {
       velaRestoreDrawings();
       /* save on any drawing change */
       try { vc.chart.on('drawing:created', velaScheduleSave) } catch(e){}
@@ -1434,7 +1446,9 @@ function boot(){
     }) : setTimeout(() => { velaRestoreDrawings(); velaPositionsSync(); }, 1000);
     $('market-select-btn').disabled = false;
     $('submit-order').disabled = false;
-    selectMarket(board.meta.has('BTC/USD') ? 'BTC/USD' : [...board.meta.keys()][0]);
+    const restoredSymbol = vc?.chart?.market?.symbol?.replace(/^gains:/, '');
+    const initialSymbol = requestedSymbol || restoredSymbol || S.marketId;
+    selectMarket(board.meta.has(initialSymbol) ? initialSymbol : [...board.meta.keys()][0]);
     renderCats();
     syncLeverageUI();
     renderLevPresets();

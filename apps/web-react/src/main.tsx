@@ -6,6 +6,15 @@ import Home from './features/home/Home'
 import Markets from './features/markets/Markets'
 import Rulebook from './features/rulebook/Rulebook'
 import Transparency from './features/transparency/Transparency'
+import Faq from './features/faq/Faq'
+import Tools from './features/tools/Tools'
+import ToolPage from './features/tools/ToolPage'
+import Learn from './features/learn/Learn'
+import PathPage from './features/learn/PathPage'
+import LessonPage from './features/learn/LessonPage'
+import Glossary from './features/learn/Glossary'
+import Referral from './features/referral/Referral'
+import ReferralEntry from './features/referral/ReferralEntry'
 import TerminalShell from './features/terminal/TerminalShell'
 import { SharedTradingTerminal } from './features/terminal/TradingPages'
 import { ProductDashboard, CapabilityPage } from './features/terminal/Dashboard'
@@ -66,6 +75,17 @@ const router = createHashRouter([
   { path: '/:locale/markets', element: <Markets /> },
   { path: '/:locale/rulebook', element: <Rulebook /> },
   { path: '/:locale/transparency', element: <Transparency /> },
+  { path: '/:locale/faq', element: <Faq /> },
+  { path: '/:locale/faq/q/:key', element: <Faq /> },
+  { path: '/:locale/tools', element: <Tools /> },
+  { path: '/:locale/tools/:slug', element: <ToolPage /> },
+  { path: '/:locale/learn', element: <Learn /> },
+  { path: '/:locale/learn/paths/:slug', element: <PathPage /> },
+  { path: '/:locale/learn/lessons/:slug', element: <LessonPage /> },
+  { path: '/:locale/learn/glossary', element: <Glossary /> },
+  { path: '/:locale/learn/glossary/:slug', element: <Glossary /> },
+  { path: '/:locale/referral', element: <Referral /> },
+  { path: '/:locale/ref/:code', element: <ReferralEntry /> },
   ...(['prop', 'perpetual'] as const).map(product => ({
     path: `/:locale/${product}`, element: <TerminalShell product={product} />, children: [
       { index: true, element: <Navigate to="dashboard" replace /> },

@@ -68,16 +68,29 @@ def main():
         print(f'  field {collection}.{field}: created')
 
 
-    def ensure_alias(collection, field, related_field):
+    def ensure_alias(collection, field, related_field, meta=None):
         fields = [f['field'] for f in req('GET', f'{base}/fields/{collection}', token)['data']]
         if field in fields:
             return
         req('POST', f'{base}/fields/{collection}', token, {
             'field': field, 'type': 'alias',
-            'meta': {'special': ['o2m'], 'interface': 'list-o2m', 'options': {'template': '{{language_code}}: {{value}}'}},
+            'meta': meta or {'special': ['o2m'], 'interface': 'list-o2m', 'options': {'template': '{{language_code}}: {{value}}'}},
             'schema': None,
         })
         print(f'  alias field {collection}.{field}: created')
+
+    def update_field_meta(collection, field, meta_patch):
+        """PATCH a field's presentation metadata (e.g. new dropdown choices).
+        Non-destructive: only the keys in meta_patch are changed."""
+        fields = req('GET', f'{base}/fields/{collection}', token)['data']
+        cur = next((f for f in fields if f['field'] == field), None)
+        if not cur:
+            return
+        merged = {**(cur.get('meta') or {}), **meta_patch}
+        if merged == (cur.get('meta') or {}):
+            return
+        req('PATCH', f'{base}/fields/{collection}/{field}', token, {'meta': merged})
+        print(f'  field meta {collection}.{field}: updated')
 
     def ensure_relation(collection, field, related, one_field=None):
         rels = req('GET', f'{base}/relations', token)['data']
@@ -225,7 +238,14 @@ def main():
         meta={'interface': 'input', 'options': {'placeholder': 'نام فهمیدن برای редакتر — مثلاً: تیتر هیرو'}, 'required': False})
 
     # hide the raw translation tables from the sidebar (edited inline in parents)
-    for hide in ['ui_message_translations', 'navigation_item_translations', 'page_translations']:
+    live_collections = {c['collection'] for c in req('GET', f'{base}/collections', token)['data']}
+    for hide in ['ui_message_translations', 'navigation_item_translations', 'page_translations',
+                 'faq_translations', 'faq_category_translations', 'legal_document_translations',
+                 'footer_link_translations', 'terminal_section_translations',
+                 'learning_path_translations', 'lesson_translations', 'glossary_term_translations',
+                 'tool_translations', 'referral_content_translations', 'trading_rule_translations']:
+        if hide not in live_collections:
+            continue
         cur = req('GET', f'{base}/collections/{hide}', token)['data']
         if not cur['meta'].get('hidden'):
             req('PATCH', f'{base}/collections/{hide}', token, {'meta': {'hidden': True, 'icon': 'translate'}})
@@ -308,6 +328,9 @@ def main():
     ensure_field('faq_translations', 'language_code', 'string', meta=dict(LANG_META), schema={'is_nullable': False})
     ensure_field('faq_translations', 'question', 'text', meta={'interface': 'input-multiline', 'required': True}, schema={'is_nullable': False})
     ensure_field('faq_translations', 'answer', 'text', meta={'interface': 'input-multiline', 'required': True}, schema={'is_nullable': False})
+    ensure_field('faq_translations', 'links', 'json',
+        meta={'interface': 'input-code', 'options': {'language': 'json'},
+              'note': 'پیوندهای مرتبط: [{target:{kind,slug},label:{fa,en}}]'}, schema={})
     ensure_relation('faq_translations', 'faq_id', 'faqs', one_field='translations')
     ensure_alias('faqs', 'translations', None)
 
@@ -394,6 +417,218 @@ def main():
     ensure_relation('footer_link_translations', 'footer_link_id', 'footer_links', one_field='translations')
     ensure_alias('footer_links', 'translations', None)
 
+    # ---------------- website expansion: FAQ categories ---------------------
+    # The site-wide FAQ is grouped by topic. Categories are their own collection
+    # so editors can rename, reorder or retire a topic without touching code.
+    ensure_collection('faq_categories', {'sort_field': 'sort', 'icon': 'category', 'note': 'دسته‌بندی پرسش‌های متداول سایت'})
+    ensure_field('faq_categories', 'slug', 'string',
+        meta={'interface': 'input', 'unique': True, 'note': 'ASCII key, never changes', 'readonly': True},
+        schema={'is_unique': True, 'is_nullable': False, 'max_length': 48})
+    ensure_field('faq_categories', 'sort', 'integer', meta={'interface': 'input', 'hidden': True}, schema={'default_value': 0})
+    ensure_field('faq_categories', 'icon', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Start', 'value': 'start'}, {'text': 'Payout', 'value': 'payout'},
+            {'text': 'Rules', 'value': 'rules'}, {'text': 'Partner', 'value': 'partner'},
+            {'text': 'Terminal', 'value': 'terminal'}, {'text': 'Verify', 'value': 'verify'},
+            {'text': 'General', 'value': 'general'},
+        ]}}, schema={'default_value': 'general'})
+    ensure_field('faq_categories', 'status', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Published', 'value': 'published'}, {'text': 'Draft', 'value': 'draft'}, {'text': 'Archived', 'value': 'archived'},
+        ]}, 'special': ['status']}, schema=STATUS_SCHEMA)
+    ensure_collection('faq_category_translations')
+    ensure_field('faq_category_translations', 'faq_category_id', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True}, schema={'is_nullable': False})
+    ensure_field('faq_category_translations', 'language_code', 'string', meta=dict(LANG_META), schema={'is_nullable': False})
+    ensure_field('faq_category_translations', 'label', 'text', meta={'interface': 'input', 'required': True}, schema={'is_nullable': False})
+    ensure_field('faq_category_translations', 'description', 'text', meta={'interface': 'input-multiline'}, schema={})
+    ensure_relation('faq_category_translations', 'faq_category_id', 'faq_categories', one_field='translations')
+    ensure_alias('faq_categories', 'translations', None)
+
+    # faqs gains a stable URL/anchor key and a category (both additive; existing
+    # challenge-page rows keep working because the fields are nullable)
+    ensure_field('faqs', 'slug', 'string',
+        meta={'interface': 'input', 'unique': True, 'note': 'ASCII key used in shareable question links', 'readonly': True},
+        schema={'is_unique': True, 'max_length': 96})
+    ensure_field('faqs', 'category', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'note': 'FAQ topic group (empty = challenges page)'},
+        schema={'is_nullable': True})
+    ensure_relation('faqs', 'category', 'faq_categories')
+    update_field_meta('faqs', 'page', {'options': {'choices': [
+        {'text': 'Trading Challenges', 'value': 'challenges'},
+        {'text': 'Website FAQ hub', 'value': 'faq'},
+        {'text': 'Growth Partner', 'value': 'referral'},
+    ], 'allow_multiple': False}, 'required': True})
+    update_field_meta('faqs', 'slug', {'note': 'ASCII key used in shareable question links'})
+    update_field_meta('faqs', 'sort', {'hidden': True})
+
+    # ---------------- website expansion: Learning Center --------------------
+    ensure_collection('learning_paths', {'sort_field': 'sort', 'icon': 'route', 'note': 'مسیرهای یادگیری — مركز آموزش'})
+    ensure_field('learning_paths', 'slug', 'string',
+        meta={'interface': 'input', 'unique': True, 'readonly': True}, schema={'is_unique': True, 'is_nullable': False, 'max_length': 64})
+    ensure_field('learning_paths', 'path_key', 'string',
+        meta={'interface': 'input', 'note': 'A/B/C… identifier', 'readonly': True}, schema={'is_unique': True, 'max_length': 16})
+    ensure_field('learning_paths', 'sort', 'integer', meta={'interface': 'input', 'hidden': True}, schema={'default_value': 0})
+    ensure_field('learning_paths', 'level', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Foundation', 'value': 'foundation'}, {'text': 'Practitioner', 'value': 'practitioner'},
+            {'text': 'Advanced', 'value': 'advanced'},
+        ]}, 'required': True}, schema={'default_value': 'foundation'})
+    ensure_field('learning_paths', 'status', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Published', 'value': 'published'}, {'text': 'Draft', 'value': 'draft'}, {'text': 'Archived', 'value': 'archived'},
+        ]}, 'special': ['status']}, schema=STATUS_SCHEMA)
+    ensure_collection('learning_path_translations')
+    ensure_field('learning_path_translations', 'learning_path_id', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True}, schema={'is_nullable': False})
+    ensure_field('learning_path_translations', 'language_code', 'string', meta=dict(LANG_META), schema={'is_nullable': False})
+    ensure_field('learning_path_translations', 'eyebrow', 'text', meta={'interface': 'input'}, schema={})
+    ensure_field('learning_path_translations', 'title', 'text', meta={'interface': 'input', 'required': True}, schema={'is_nullable': False})
+    ensure_field('learning_path_translations', 'summary', 'text', meta={'interface': 'input-multiline'}, schema={})
+    ensure_field('learning_path_translations', 'outcomes', 'json',
+        meta={'interface': 'list', 'options': {'template': '{{item}}'}, 'note': 'انتظارات یادگیری — هر آیتم یک مورد'}, schema={})
+    ensure_relation('learning_path_translations', 'learning_path_id', 'learning_paths', one_field='translations')
+    ensure_alias('learning_paths', 'translations', None)
+    ensure_alias('learning_paths', 'lessons', None, meta={
+        'special': ['o2m'], 'interface': 'list-o2m',
+        'options': {'template': '{{sort}}. {{slug}}'},
+    })
+
+    ensure_collection('lessons', {'sort_field': 'sort', 'icon': 'menu_book', 'note': 'درسهای مركز آموزش — محتوا بلوك‌بلوك است'})
+    ensure_field('lessons', 'slug', 'string',
+        meta={'interface': 'input', 'unique': True, 'readonly': True}, schema={'is_unique': True, 'is_nullable': False, 'max_length': 96})
+    ensure_field('lessons', 'path_id', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True}, schema={'is_nullable': False})
+    ensure_field('lessons', 'sort', 'integer', meta={'interface': 'input', 'hidden': True}, schema={'default_value': 0})
+    ensure_field('lessons', 'minutes', 'integer', meta={'interface': 'input'}, schema={'default_value': 8})
+    ensure_field('lessons', 'glossary', 'json', meta={'interface': 'input-code', 'options': {'language': 'json'}, 'note': 'اسلاگ واژه‌نامه'}, schema={})
+    ensure_field('lessons', 'tools', 'json', meta={'interface': 'input-code', 'options': {'language': 'json'}, 'note': 'اسلاگ ابزارها'}, schema={})
+    ensure_field('lessons', 'status', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Published', 'value': 'published'}, {'text': 'Draft', 'value': 'draft'}, {'text': 'Archived', 'value': 'archived'},
+        ]}, 'special': ['status']}, schema=STATUS_SCHEMA)
+    ensure_relation('lessons', 'path_id', 'learning_paths', one_field='lessons')
+    ensure_collection('lesson_translations')
+    ensure_field('lesson_translations', 'lesson_id', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True}, schema={'is_nullable': False})
+    ensure_field('lesson_translations', 'language_code', 'string', meta=dict(LANG_META), schema={'is_nullable': False})
+    ensure_field('lesson_translations', 'title', 'text', meta={'interface': 'input', 'required': True}, schema={'is_nullable': False})
+    ensure_field('lesson_translations', 'summary', 'text', meta={'interface': 'input-multiline'}, schema={})
+    ensure_field('lesson_translations', 'takeaways', 'json',
+        meta={'interface': 'list', 'options': {'template': '{{item}}'}}, schema={})
+    ensure_field('lesson_translations', 'blocks', 'json',
+        meta={'interface': 'input-code', 'options': {'language': 'json'}, 'width': 'full',
+              'note': 'بلوک‌های درس: p/h2/h3/ul/ol/note/formula/terms/table'}, schema={})
+    ensure_relation('lesson_translations', 'lesson_id', 'lessons', one_field='translations')
+    ensure_alias('lessons', 'translations', None)
+
+    ensure_collection('glossary_terms', {'sort_field': 'sort', 'icon': 'translate', 'note': 'واژه‌نامهٔ مركز آموزش'})
+    ensure_field('glossary_terms', 'slug', 'string',
+        meta={'interface': 'input', 'unique': True, 'readonly': True}, schema={'is_unique': True, 'is_nullable': False, 'max_length': 64})
+    ensure_field('glossary_terms', 'sort', 'integer', meta={'interface': 'input', 'hidden': True}, schema={'default_value': 0})
+    ensure_field('glossary_terms', 'lessons', 'json', meta={'interface': 'input-code', 'options': {'language': 'json'}}, schema={})
+    ensure_field('glossary_terms', 'tool', 'string', meta={'interface': 'input'}, schema={})
+    ensure_field('glossary_terms', 'status', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Published', 'value': 'published'}, {'text': 'Draft', 'value': 'draft'}, {'text': 'Archived', 'value': 'archived'},
+        ]}, 'special': ['status']}, schema=STATUS_SCHEMA)
+    ensure_collection('glossary_term_translations')
+    ensure_field('glossary_term_translations', 'glossary_term_id', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True}, schema={'is_nullable': False})
+    ensure_field('glossary_term_translations', 'language_code', 'string', meta=dict(LANG_META), schema={'is_nullable': False})
+    ensure_field('glossary_term_translations', 'term', 'text', meta={'interface': 'input', 'required': True}, schema={'is_nullable': False})
+    ensure_field('glossary_term_translations', 'short', 'text', meta={'interface': 'input'}, schema={})
+    ensure_field('glossary_term_translations', 'definition', 'text', meta={'interface': 'input-multiline'}, schema={})
+    ensure_relation('glossary_term_translations', 'glossary_term_id', 'glossary_terms', one_field='translations')
+    ensure_alias('glossary_terms', 'translations', None)
+
+    # ---------------- website expansion: Tools Center -----------------------
+    # Only the bilingual PROSE of a calculator lives here. The input fields,
+    # the arithmetic and the result keys stay in code (features/tools), because
+    # they are covered by automated tests and must never drift from the maths.
+    ensure_collection('tools', {'sort_field': 'sort', 'icon': 'calculate', 'note': 'متن ابزارهای محاسباتی (فرمول و ورودی‌ها در کد)'})
+    ensure_field('tools', 'slug', 'string',
+        meta={'interface': 'input', 'unique': True, 'readonly': True}, schema={'is_unique': True, 'is_nullable': False, 'max_length': 64})
+    ensure_field('tools', 'category', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Sizing', 'value': 'sizing'}, {'text': 'Risk', 'value': 'risk'}, {'text': 'Analysis', 'value': 'analysis'},
+        ]}, 'required': True}, schema={'default_value': 'risk'})
+    ensure_field('tools', 'sort', 'integer', meta={'interface': 'input', 'hidden': True}, schema={'default_value': 0})
+    ensure_field('tools', 'status', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Published', 'value': 'published'}, {'text': 'Draft', 'value': 'draft'}, {'text': 'Archived', 'value': 'archived'},
+        ]}, 'special': ['status']}, schema=STATUS_SCHEMA)
+    ensure_collection('tool_translations')
+    ensure_field('tool_translations', 'tool_id', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True}, schema={'is_nullable': False})
+    ensure_field('tool_translations', 'language_code', 'string', meta=dict(LANG_META), schema={'is_nullable': False})
+    for f, it in [('name', 'input'), ('tagline', 'input'), ('about', 'input-multiline'),
+                  ('method', 'input-multiline'), ('limitations', 'input-multiline')]:
+        ensure_field('tool_translations', f, 'text', meta={'interface': it}, schema={})
+    ensure_field('tool_translations', 'assumptions', 'json',
+        meta={'interface': 'list', 'options': {'template': '{{item}}'}}, schema={})
+    ensure_relation('tool_translations', 'tool_id', 'tools', one_field='translations')
+    ensure_alias('tools', 'translations', None)
+
+    # ---------------- website expansion: Growth Partner ---------------------
+    # A singleton so the program can be flipped from pre-launch to live by an
+    # editor; the copy is translated per locale like home_content.
+    if 'referral_content' in existing:
+        print('collection referral_content: exists')
+    else:
+        req('POST', f'{base}/collections', token, {
+            'collection': 'referral_content',
+            'meta': {'icon': 'volunteer_activism', 'note': 'صفحهٔ همیاری و معرفی — وضعیت برنامه + محتوا', 'singleton': True},
+            'schema': {},
+        })
+        print('collection referral_content: created')
+    ensure_field('referral_content', 'status', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Published', 'value': 'published'}, {'text': 'Draft', 'value': 'draft'}, {'text': 'Archived', 'value': 'archived'},
+        ]}, 'special': ['status']}, schema=STATUS_SCHEMA)
+    ensure_field('referral_content', 'program_state', 'string',
+        meta={'interface': 'select-dropdown', 'required': True, 'note': 'prelaunch = no reward terms published; live = program approved',
+              'options': {'choices': [
+            {'text': 'Pre-launch', 'value': 'prelaunch'}, {'text': 'Live', 'value': 'live'},
+        ]}}, schema={'default_value': 'prelaunch'})
+    ensure_collection('referral_content_translations')
+    ensure_field('referral_content_translations', 'referral_content_id', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True}, schema={'is_nullable': False})
+    ensure_field('referral_content_translations', 'language_code', 'string', meta=dict(LANG_META), schema={'is_nullable': False})
+    for f, it in [('hero_eyebrow', 'input'), ('hero_title', 'input'), ('hero_accent', 'input'),
+                  ('hero_intro', 'input-multiline'), ('status_notice', 'input-multiline'),
+                  ('dashboard_title', 'input'), ('dashboard_intro', 'input-multiline'),
+                  ('cta_title', 'input'), ('cta_text', 'input-multiline'),
+                  ('cta_primary', 'input'), ('cta_secondary', 'input'),
+                  ('seo_title', 'input'), ('seo_description', 'input-multiline')]:
+        ensure_field('referral_content_translations', f, 'text', meta={'interface': it}, schema={})
+    for jf in ['benefits', 'stages', 'sections', 'faq', 'pending_decisions', 'dashboard_columns']:
+        ensure_field('referral_content_translations', jf, 'json',
+            meta={'interface': 'input-code', 'options': {'language': 'json'}, 'width': 'full'}, schema={})
+    ensure_relation('referral_content_translations', 'referral_content_id', 'referral_content', one_field='translations')
+    ensure_alias('referral_content', 'translations', None)
+
+    # footer destinations whitelist: the four new public sections
+    update_field_meta('footer_links', 'destination', {'options': {'choices': [
+        {'text': 'Challenges page', 'value': 'challenges'},
+        {'text': 'Markets page', 'value': 'markets'},
+        {'text': 'Rulebook page', 'value': 'rulebook'},
+        {'text': 'Transparency page', 'value': 'transparency'},
+        {'text': 'FAQ page', 'value': 'faq'},
+        {'text': 'Growth Partner page', 'value': 'referral'},
+        {'text': 'Tools Center', 'value': 'tools'},
+        {'text': 'Learning Center', 'value': 'learn'},
+        {'text': 'Challenges → accounts section', 'value': 'accounts-section'},
+        {'text': 'Challenges → team section', 'value': 'team-section'},
+        {'text': 'Challenges → FAQ section', 'value': 'faq-section'},
+        {'text': 'GitHub repository', 'value': 'github'},
+    ], 'allow_multiple': False}})
+    # pages template list gains the website pages
+    update_field_meta('pages', 'template', {'options': {'choices': [
+        {'text': 'Landing', 'value': 'landing'}, {'text': 'Terminal', 'value': 'terminal'},
+        {'text': 'Website page', 'value': 'website'},
+    ], 'allow_multiple': False}})
+
     # ---------------- public (read-only) permissions ----------------------
     roles = req('GET', f'{base}/roles', token)['data']
     public = next((r for r in roles if r['name'] == 'Public'), None)
@@ -425,6 +660,18 @@ def main():
         ('footer_links', {'status': {'_eq': 'published'}}),
         ('footer_link_translations', None),
         ('challenge_plans', {'status': {'_eq': 'active'}}),
+        ('faq_categories', {'status': {'_eq': 'published'}}),
+        ('faq_category_translations', None),
+        ('learning_paths', {'status': {'_eq': 'published'}}),
+        ('learning_path_translations', None),
+        ('lessons', {'status': {'_eq': 'published'}}),
+        ('lesson_translations', None),
+        ('glossary_terms', {'status': {'_eq': 'published'}}),
+        ('glossary_term_translations', None),
+        ('tools', {'status': {'_eq': 'published'}}),
+        ('tool_translations', None),
+        ('referral_content', {'status': {'_eq': 'published'}}),
+        ('referral_content_translations', None),
     ]
     for coll, cond in wanted:
         if (coll, 'read') in have:
