@@ -158,6 +158,12 @@ async function metrics(page) {
           if(view==='trade') {
             const state=await metrics(page);
             check(`${product}/${locale}: ${width}x${height} alternative form fits`,state.inner.panelScrollHeight<=state.inner.panelHeight+1 && state.inner.visibleControls.every(c=>!c.visible||c.contained));
+            const key=`compact:${product}:${width}`;
+            const geometry=state.inner.visibleControls.filter(c=>['#acct-strip','.side-group','.otype-group','.lev-box','#of-collateral','#of-sl','#submit-order'].includes(c.selector)).map(c=>[c.rect.x,c.rect.width]);
+            if(locale==='en')geometries[key]=geometry;
+            else check(`${product}/${locale}: ${width}x${height} alternative geometry matches English`,JSON.stringify(geometry)===JSON.stringify(geometries[key]));
+            if(width===1280||width===390) await page.screenshot({path:path.join(OUT,`compact-${product}-${locale}-${width}x${height}.png`)});
+
           }
         }
       }

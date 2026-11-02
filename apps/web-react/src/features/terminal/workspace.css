@@ -249,3 +249,16 @@ html[lang="fa"] .panel-tabs, html[lang="fa"] .book-controls { direction: rtl; }
 @media (max-width: 800px) {
   .market-stats .stat[data-k="oracle"], .market-stats .stat[data-k="high"], .market-stats .stat[data-k="low"] { display: none; }
 }
+@media (max-height: 635px) and (min-width: 760px) {
+  body[data-workspace-view="trade"] .trade-panel { direction: ltr; }
+  html[lang="fa"] #acct-strip, html[lang="fa"] #account-feed-state,
+  html[lang="fa"] .lev-head { direction: rtl; }
+  .trade-panel > .submit { align-self: end; }
+}
+@media (max-width: 540px) {
+  .market-stats .stat dt { display: none; }
+  .market-select { padding-inline: 6px; gap: 2px; }
+  .market-details summary { padding-inline: 6px; font-size: 10.5px; }
+  .status-bar .sb-ver, .status-bar .sb-src { display: none; }
+}
+.status-bar .sb-item { white-space: nowrap; flex-shrink: 0; }
