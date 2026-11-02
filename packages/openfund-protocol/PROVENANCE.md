@@ -38,3 +38,22 @@ verified with the pristine upstream `hardhat.config.ts`:
 The source is imported **unmodified** at HEAD. Fixing the upstream compile
 regression is deliberately left to a protocol-engineering change (documented in
 `docs/protocol/DEVELOPMENT.md`) rather than silently patched here.
+
+## Openfund compilation compatibility fix
+
+The imported upstream revision `0f70a70` contains a Solidity 0.8.10
+`Stack too deep` compilation regression in
+`contracts/orderbook/OrderBook.sol`.
+
+Openfund removes a redundant second order-type validation inside
+`_fillLiquidityOrder`. The same validation remains at the beginning
+of the function, before the external liquidity callback.
+
+Both checks previously evaluated the same local `orderData` value.
+The change preserves the public contract interface and order-type
+validation while reducing compiler stack pressure.
+
+Validation:
+- Hardhat compilation: 133 Solidity files compiled successfully.
+- Hardhat tests: 89 passing.
+- No application runtime integration or deployment changes.
