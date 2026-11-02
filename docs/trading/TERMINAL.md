@@ -32,3 +32,9 @@ The shared catalog starts with Open Algo V5, Price Action Concepts and Smart Mon
 Timeframe menus use canonical Pine minute/day IDs mapped to Gains intervals. A menu positioner stacking rule prevents canvas interception after hover. The terminal listens to committed market changes and updates its interval state; symbol selection commits its actual market ID before refreshing dependent chart display. No chart instance remount is required. Loading messages cannot intercept clicks and respect `hidden`.
 
 Native indicator VELA badges and the chart footer link are removed. The visible linked Vela notice remains in terminal status, satisfying the checked-in NOTICE without CSS-hiding the required attribution. [Indicator usage](INDICATORS.md), [runtime and limits](PINE_SCRIPT.md), [extension procedure](CUSTOM_INDICATORS.md) and [verification](../reviews/vela-pine/DELIVERY.md) cover the integration.
+
+## Compact workspace contract
+
+The trading route owns a 40px application header; the framed workspace starts with a 34px market row. Chart, Book/Trades and Order remain in fixed LTR physical columns for both locales. Local text uses RTL where required and numeric inputs, symbols and columns use LTR isolation. Shared brand tokens are retained. No website shell or generated chart bundle is changed.
+
+The order form fits without scrolling at the four supported desktop sizes. Paired fields, conditional trigger input and a compact account summary retain original IDs and handlers. Liquidation, margin, fees and maximum loss stay visible; Order Details exposes entry, index and impact without displacing the action. Variable data lists and activity tables retain internal scrolling. Short/narrow windows expose explicit workspace views. [Exact sizes, screenshots, verification and limits](../reviews/terminal-ui/DELIVERY.md).

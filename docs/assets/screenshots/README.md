@@ -1,6 +1,6 @@
 # Genuine application screenshots
 
-Captured 2026-11-02 from the current source at baseline `2f5cf93`, built with `npm run build:web` and served by the matching Node backend at local port 8186. [manifest.json](manifest.json) records routes, viewports, account state and timestamps. All images are unaltered 1440 × 1000 browser captures, consistently framed by the native application header and GitHub gallery tables.
+Captured 2026-11-02 from the current source at baseline `2f5cf93`, built with `npm run build:web` and served by the matching Node backend at local port 8186. [manifest.json](manifest.json) records routes, viewports, account state and timestamps. Original captures are 1440 × 1000. The [terminal redesign](../../reviews/terminal-ui/DELIVERY.md) adds unedited baseline and production-build captures at 1440 × 900, 1280 × 720 and explicit responsive sizes; each entry records its own source commit, viewport and SHA-256 hash.
 
 ## Provenance
 
@@ -35,4 +35,4 @@ Account images use a disposable generated in-memory wallet, actual ECDSA/SIWE ve
 - The new-wallet Gains view shows actual upstream read results; it does not establish an active position, fee-adjusted PnL or transaction settlement. Transparency remains explicitly synthetic.
 - The initial market render may vary with upstream availability. Old captures are preserved through [historical Git links](../../reviews/repository-transformation/REMOVED_FILES.md), outside the active image tree.
 
-[README gallery](../../../README.md#product-gallery) · [Feature Status](../../product/FEATURE_STATUS.md)
+[Terminal before/after gallery](../../reviews/terminal-ui/DELIVERY.md#before-and-after) · [README gallery](../../../README.md#product-gallery) · [Feature Status](../../product/FEATURE_STATUS.md)

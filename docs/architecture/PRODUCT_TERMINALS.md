@@ -70,3 +70,7 @@ flowchart LR
 ## Unified account integration
 
 The [account directory and API additions](../trading/UNIFIED_ACCOUNTS.md) carry an owned `account` scope across navigation and journals. Challenge IDs authorize metadata only and never expose trial financial state. [Metric definitions](../trading/JOURNAL_METRICS.md) describe settled-date filtering and stored layout preferences. The [public Gains VOB/Trades integration](../integrations/GAINS_DEPTH.md) restores the existing panel without changing the Vela workspace or product execution boundaries.
+
+## Presentation boundary
+
+The [compact terminal ADR](../decisions/0007-compact-terminal-layout.md) retains this product/account contract. `workspace.css` is loaded only inside the shared trading iframe; `workspaceLayout.ts` handles presentation view controls and localized disclosure text. The trading route receives compact outer navigation; dashboards, portfolios, journals and concurrent website sections keep their existing layout. Desktop and responsive geometry is compared between languages in browser acceptance.

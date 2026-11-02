@@ -9,4 +9,6 @@
 
 - [0006 — Unified accounts and irreversible trial stop](0006-unified-accounts-and-trial-stop.md)
 
+- [0007 — Compact terminal presentation](0007-compact-terminal-layout.md)
+
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)

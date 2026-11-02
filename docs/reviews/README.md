@@ -4,6 +4,7 @@ These documents record specific branches, dates and environments. Their test cou
 
 | Review | Scope |
 | --- | --- |
+| [Compact trading terminal](terminal-ui/DELIVERY.md) | Frontend-only density, fixed bilingual geometry, before/after captures and measured viewport acceptance |
 | [Repository transformation](repository-transformation/DELIVERY.md) | Current English documentation, assets, checks and cleanup |
 | [Integration audit](integration-audit/DELIVERY.md) | PR #24 valuation, wallet, Home and Render integration fixes; translated from the original Persian report |
 | [Dual terminals delivery](dual-terminals/DELIVERY.md), [audit](dual-terminals/AUDIT.md), [gaps](dual-terminals/GAP_MATRIX.md) | Shared UI with separate accounts, Portfolio and Journal |
