@@ -15,7 +15,8 @@
     "test": "node test/siwe.test.mjs",
     "test:products": "node test/products.test.mjs",
     "test:gains": "node --test test/gains-portfolio.test.mjs",
-    "test:all": "node test/siwe.test.mjs && node test/trading.test.mjs && node test/portfolio.test.mjs && node test/products.test.mjs && node --test test/gains-portfolio.test.mjs"
+    "test:all": "node test/siwe.test.mjs && node test/trading.test.mjs && node test/portfolio.test.mjs && node test/products.test.mjs && node --test test/gains-portfolio.test.mjs && npm run test:audit",
+    "test:audit": "node --test test/audit.test.mjs"
   },
   "dependencies": {
     "decimal.js": "^10.6.0",

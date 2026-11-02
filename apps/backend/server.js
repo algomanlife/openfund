@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url'
 import express from 'express'
 import { createClient, isHex, http } from 'viem'
 import { parseSiweMessage, verifySiweMessage } from 'viem/siwe'
-import { arbitrumSepolia } from 'viem/chains'
+import { sepolia, arbitrum } from 'viem/chains'
 import pg from 'pg'
 import { marketData } from './market-data.js'
 import { Engine } from './engine.js'
@@ -26,7 +26,7 @@ const cfg = {
   port: Number(process.env.PORT || 8080),
   dbUrl: process.env.DATABASE_URL || 'postgres://openfund_cms:openfund_local_dev@127.0.0.1:5432/openfund_cms',
   /* allowed SIWE domains (frontend builds the message with window.location.host) */
-  domains: (process.env.ALLOWED_DOMAINS || 'localhost:5173,localhost:4173,127.0.0.1:5173,127.0.0.1:4173').split(','),
+  domains: (process.env.ALLOWED_DOMAINS || 'localhost:5173,localhost:4173,127.0.0.1:5173,127.0.0.1:4173').split(',').map(v => v.trim()).filter(Boolean),
   sessionTtlH: Number(process.env.SESSION_TTL_HOURS || 24 * 7),
   nonceTtlMs: 10 * 60 * 1000,
   prod: process.env.NODE_ENV === 'production',
@@ -38,6 +38,15 @@ const engine = new Engine(pool, marketData)
 const portfolio = new Portfolio(pool, marketData)
 const asyncRoute = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
 const app = express()
+app.set('trust proxy', 1)
+app.use((req,res,next) => {
+  const origin = req.headers.origin
+  if (origin && !['GET','HEAD','OPTIONS'].includes(req.method)) {
+    const sameOrigin = origin === `${req.protocol}://${req.get('host')}`
+    if (!sameOrigin && !cfg.corsOrigins.includes(origin)) return res.status(403).json({ error:'invalid_origin' })
+  }
+  next()
+})
 app.use('/products', express.json({ limit: '2mb' }))
 app.use(express.json({ limit: '32kb' }))
 
@@ -123,7 +132,7 @@ const requireAuth = async (req, res, next) => {
 }
 
 /* public client for EIP-1271 contract-wallet signature checks */
-const client = createClient({ chain: arbitrumSepolia, transport: http() })
+const clients = new Map([sepolia, arbitrum].map(chain => [chain.id, createClient({ chain, transport: http() })]))
 
 /* =================  AUTH  ================= */
 
@@ -153,8 +162,13 @@ app.post('/auth/verify', limit(60), async (req, res) => {
     if (!parsed.address) return res.status(400).json({ error: 'invalid_message' })
     if (!parsed.nonce) return res.status(400).json({ error: 'missing_nonce' })
     if (!cfg.domains.includes(parsed.domain)) return res.status(400).json({ error: 'invalid_domain' })
-    const wantChain = BigInt(parsed.chainId ?? 0)
-    if (wantChain !== BigInt(arbitrumSepolia.id)) return res.status(400).json({ error: 'invalid_chain' })
+    const client = clients.get(Number(parsed.chainId))
+    if (!client) return res.status(400).json({ error: 'invalid_chain' })
+    let uri
+    try { uri = new URL(parsed.uri) } catch { return res.status(400).json({ error:'invalid_uri' }) }
+    if (uri.host !== parsed.domain || !['http:','https:'].includes(uri.protocol) || (cfg.prod && uri.protocol !== 'https:')) return res.status(400).json({ error:'invalid_uri' })
+    const now = Date.now()
+    if (parsed.version !== '1' || !parsed.issuedAt || !Number.isFinite(+parsed.issuedAt) || +parsed.issuedAt > now + 60000 || now - +parsed.issuedAt > cfg.nonceTtlMs || (parsed.expirationTime && +parsed.expirationTime <= now) || (parsed.notBefore && +parsed.notBefore > now)) return res.status(400).json({ error:'invalid_message_time' })
 
     /* nonce must exist, belong to this address, be fresh and unused */
     const { rows: nonceRows } = await pool.query(
@@ -178,7 +192,8 @@ app.post('/auth/verify', limit(60), async (req, res) => {
     if (!ok) { await audit('auth_failed', null, req, { address: parsed.address }); return res.status(401).json({ error: 'invalid_signature' }) }
 
     /* burn the nonce */
-    await pool.query('UPDATE auth_nonces SET used_at = now() WHERE nonce = $1', [parsed.nonce])
+    const consumed = await pool.query('UPDATE auth_nonces SET used_at=now() WHERE nonce=$1 AND used_at IS NULL AND expires_at > now() AND address=$2 RETURNING nonce', [parsed.nonce,parsed.address.toLowerCase()])
+    if (!consumed.rowCount) return res.status(400).json({ error:'nonce_reused' })
 
     /* one wallet = one user (normalized lowercase, unique constraint is the final guard) */
     const address = parsed.address.toLowerCase()
@@ -188,7 +203,7 @@ app.post('/auth/verify', limit(60), async (req, res) => {
        ON CONFLICT (wallet_address)
        DO UPDATE SET last_login_at = now(), updated_at = now()
        RETURNING id, wallet_address, status, display_name, created_at, last_login_at`,
-      [address, arbitrumSepolia.id])
+      [address, parsed.chainId])
     const user = rows[0]
     if (user.status === 'suspended') {
       await audit('auth_blocked_suspended', user.id, req, {})
@@ -214,7 +229,7 @@ app.post('/auth/verify', limit(60), async (req, res) => {
 })
 
 /* 3 — me (+ challenges, ownership enforced by session join) */
-app.get('/auth/me', requireAuth, async (req, res) => {
+app.get('/auth/me', requireAuth, asyncRoute(async (req, res) => {
   const { rows } = await pool.query(
     `SELECT c.id, c.status, c.created_at, c.started_at, c.completed_at,
             p.slug AS plan_slug, p.name AS plan_name, p.configuration AS plan_configuration
@@ -231,10 +246,10 @@ app.get('/auth/me', requireAuth, async (req, res) => {
     },
     challenges: rows
   })
-})
+}))
 
 /* 4 — logout */
-app.post('/auth/logout', async (req, res) => {
+app.post('/auth/logout', asyncRoute(async (req, res) => {
   const sid = parseCookie(req.headers.cookie)[COOKIE]
   if (sid) {
     const { rows } = await pool.query('DELETE FROM auth_sessions WHERE id_hash = $1 RETURNING user_id', [sha(sid)])
@@ -242,7 +257,7 @@ app.post('/auth/logout', async (req, res) => {
   }
   clearSessionCookie(res)
   res.json({ ok: true })
-})
+}))
 
 /* =================  TRADING (auth-guarded, server-authoritative)  ================ */
 
@@ -256,16 +271,16 @@ const tradingAuth = async (req, res, next) => {
   } catch { res.status(500).json({ error: 'internal' }) }
 }
 
-app.get('/trading/state', tradingAuth, async (req, res) => {
+app.get('/trading/state', tradingAuth, asyncRoute(async (req, res) => {
   const state = await engine.state(req.user.user_id)
   res.json(state)
-})
+}))
 
 app.post('/trading/order', tradingAuth, limit(30), async (req, res) => {
   try {
     const key = req.headers['idempotency-key'] || null
     const out = await engine.submitOrder(req.user.user_id, req.body || {}, key)
-    if (!out.ok && !out.duplicate) return res.status(400).json({ error: out.reason, order: out.order })
+    if (!out.ok) return res.status(400).json({ error: out.reason, order: out.order })
     res.json(out)
   } catch (e) {
     if (e.status) return res.status(e.status).json({ error: e.message })
@@ -276,7 +291,7 @@ app.post('/trading/order', tradingAuth, limit(30), async (req, res) => {
 
 app.post('/trading/positions/:id/close', tradingAuth, async (req, res) => {
   try {
-    const out = await engine.closePosition(req.user.user_id, req.params.id)
+    const out = await engine.closePosition(req.user.user_id, req.params.id, { fraction:req.body?.fraction ?? 1, idempotencyKey:req.headers['idempotency-key'] || null })
     res.json(out)
   } catch (e) {
     if (e.status) return res.status(e.status).json({ error: e.message })
@@ -312,9 +327,13 @@ app.get('/trading/stream', tradingAuth, async (req, res) => {
     'X-Accel-Buffering': 'no'
   })
   res.write('retry: 3000\n\n')
-  let last = ''
+  let last = '', busy = false
   const push = async () => {
+    if (busy || res.destroyed || res.writableEnded) return
+    busy = true
     try {
+      const current = await userFromSession(req)
+      if (!current || current.status !== 'active') { res.end(); return }
       const state = await engine.state(req.user.user_id)
       const snapshot = JSON.stringify(state)
       if (snapshot !== last) {           /* only push actual changes */
@@ -323,7 +342,7 @@ app.get('/trading/stream', tradingAuth, async (req, res) => {
       } else {
         res.write(': hb\n\n')
       }
-    } catch { /* user deleted mid-stream */ }
+    } catch { res.end() } finally { busy = false }
   }
   const onState = () => push()
   engine.onState(onState)
@@ -334,10 +353,11 @@ app.get('/trading/stream', tradingAuth, async (req, res) => {
 
 /* test-only price injection seam — enabled ONLY with SIM_TEST_MODE=1
    (never active in production): lets engine tests drive deterministic marks */
-if (process.env.SIM_TEST_MODE === '1') {
+if (!cfg.prod && process.env.SIM_TEST_MODE === '1') {
   app.post('/internal/inject-price', (req, res) => {
-    const { symbol, price } = req.body || {}
+    const { symbol, price, metadata } = req.body || {}
     if (typeof symbol !== 'string' || price == null) return res.status(400).json({ error: 'invalid' })
+    if (metadata) marketData.markets.set(symbol, { symbol, base: metadata.base, group: metadata.group, maxLeverage: metadata.maxLeverage, isOpen: true })
     marketData.injectPrice(symbol, String(price))
     res.json({ ok: true })
   })

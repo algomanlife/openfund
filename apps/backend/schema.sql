@@ -6,7 +6,7 @@
 CREATE TABLE IF NOT EXISTS openfund_users (
   id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   wallet_address text NOT NULL UNIQUE,          -- normalized (lowercase)
-  wallet_chain   integer NOT NULL DEFAULT 421614,
+  wallet_chain   integer NOT NULL DEFAULT 11155111,
   status         text NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'suspended')),
   display_name   text,
   created_at     timestamptz NOT NULL DEFAULT now(),
@@ -200,3 +200,30 @@ CREATE TABLE IF NOT EXISTS journal_entries (
   CHECK (product = 'prop' OR trade_id IS NULL)
 );
 CREATE INDEX IF NOT EXISTS idx_journal_scope ON journal_entries(user_id, product, account_ref, entry_date DESC);
+
+-- Additive audit repair: closed slices retain original trade provenance.
+ALTER TABLE trading_positions ADD COLUMN IF NOT EXISTS parent_position_id uuid;
+CREATE TABLE IF NOT EXISTS position_close_requests (
+  account_id uuid NOT NULL REFERENCES demo_accounts(id),
+  request_key text NOT NULL,
+  position_id uuid NOT NULL REFERENCES trading_positions(id),
+  fraction numeric NOT NULL,
+  result jsonb NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (account_id, request_key)
+);
+
+ALTER TABLE openfund_users ALTER COLUMN wallet_chain SET DEFAULT 11155111;
+
+-- First fresh observation starts risk history; historical marks are never invented.
+CREATE TABLE IF NOT EXISTS account_equity_risk (
+  account_id uuid PRIMARY KEY REFERENCES demo_accounts(id) ON DELETE CASCADE,
+  day date NOT NULL,
+  day_start_equity numeric(24,10) NOT NULL,
+  peak_equity numeric(24,10) NOT NULL,
+  last_equity numeric(24,10) NOT NULL,
+  maximum_drawdown numeric(24,10) NOT NULL DEFAULT 0,
+  daily_drawdown numeric(24,10) NOT NULL DEFAULT 0,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);

@@ -23,7 +23,7 @@ const j = async (method, path, body, cookie) => {
 }
 async function login(w) {
   const n = (await j('POST', '/auth/nonce', { address: w.address })).data
-  const message = createSiweMessage({ domain: 'localhost:5173', address: w.address, uri: 'http://localhost:5173/', chainId: 421614, nonce: n.nonce, version: '1' })
+  const message = createSiweMessage({ domain: 'localhost:5173', address: w.address, uri: 'http://localhost:5173/', chainId: 11155111, nonce: n.nonce, version: '1' })
   return (await j('POST', '/auth/verify', { message, signature: await w.signMessage({ message }) })).cookie
 }
 const inj = (price) => fetch(BASE + '/internal/inject-price', {
@@ -80,13 +80,13 @@ const fx = (mark, side, dir) => (side === 'long') === (dir === 'open') ? mark * 
     const qty = notional / entry
     const gross = qty * (tr.side === 'long' ? exit - entry : entry - exit)
     const feeSide = notional * FEE / 100
-    expected.push({ net: gross - feeSide /* engine close-fee net */, gross, fee: feeSide, qty })
+    expected.push({ net: gross - 2*feeSide /* full round-trip net, both fees */, gross, fee: feeSide, qty })
   }
 
   /* ---- overview ---- */
   const ov = (await j('GET', '/portfolio/overview', null, c1)).data
   ok('account: balance ≈ 100k − ΣopenFee + Σnet', near(ov.account.balance,
-    100000 - expected.reduce((s, e) => s + e.fee, 0) + expected.reduce((s, e) => s + e.net, 0), 0.03), ov.account.balance)
+    100000 + expected.reduce((s, e) => s + e.net, 0), 0.03), ov.account.balance)
   ok('totalTrades = 3, closed = 3', ov.account.totalTrades === 3 && ov.account.closedTrades === 3)
   ok('totalFees ≈ Σ(open+close fees)', near(ov.account.totalFees, 2 * expected.reduce((s, e) => s + e.fee, 0), 0.02), ov.account.totalFees)
   ok('equityBasis honestly labeled realized', ov.equityBasis === 'realized')
@@ -96,7 +96,7 @@ const fx = (mark, side, dir) => (side === 'long') === (dir === 'open') ? mark * 
   const wins = nets.filter(n => n > 0), losses = nets.filter(n => n < 0)
   ok('metrics: wins=2, losses=1', ov.metrics.wins === 2 && ov.metrics.losses === 1, JSON.stringify({ w: ov.metrics.wins, l: ov.metrics.losses }))
   ok('metrics: winRate ≈ 2/3', near(ov.metrics.winRate, 2 / 3, 0.001))
-  ok('metrics: netPnl ≈ Σ realized (gross − closeFee)', near(ov.metrics.netPnl,
+  ok('metrics: netPnl ≈ Σ realized (gross − both fees)', near(ov.metrics.netPnl,
     expected.reduce((s, e) => s + e.net, 0), 0.03), String(ov.metrics.netPnl))
   const netsBoth = expected.map(e => e.net)            /* engine realized = journal netPnl */
   ok('metrics: largestWin matches', near(ov.metrics.largestWin, Math.max(...netsBoth), 0.03))
