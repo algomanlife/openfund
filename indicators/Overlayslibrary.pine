@@ -1,0 +1,668 @@
+
+//@version=5
+library('Overlayslibrary', true)
+
+type supertrend
+    float upper = hl2
+    float lower = hl2
+    float output
+    float perf = 0
+    float factor
+    int trend = 0
+
+type vector
+    array<float> out
+
+
+Wild_ma(_src, _malength) =>
+    _wild = 0.0
+    _wild := nz(_wild[1]) + (_src - nz(_wild[1])) / _malength
+    _wild
+
+ma(float x, simple int len, string maType)=>
+    switch maType
+        'EMA' => ta.ema(x, len)
+        'SMA' => ta.sma(x, len) 
+        'RMA' => ta.rma(x, len) 
+        'TMA' => ta.sma(ta.sma(x, len), len)
+
+pred_ranges(int length, float mult)=>
+    src = close
+    var avg = src
+    var hold_atr = 0.
+
+    atr = nz(ta.atr(length)) * mult
+    
+    avg := src - avg > atr ? avg + atr : avg - src > atr ? avg - atr : avg
+            
+    hold_atr := avg != avg[1] ? atr / 2 : hold_atr
+    
+    [avg + hold_atr * 2, avg + hold_atr, avg, avg - hold_atr, avg - hold_atr * 2]
+
+
+
+
+export getVolatilityMetric()=>        
+    atrr = 3 * ta.atr(10)
+    stdAtr = 2 * ta.stdev(atrr, 20)
+    smaAtr = ta.sma(atrr, 20)
+    topAtrDev = smaAtr + stdAtr
+    bottomAtrDev = smaAtr - stdAtr
+    calcDev = (atrr - bottomAtrDev) / (topAtrDev - bottomAtrDev)
+    percentVol = 40 * calcDev + 30
+
+    AvrLength = 21
+    PercentFilter = 144
+    xAavrVolume = ta.rma(volume, AvrLength)
+    nResLess = volume * 100 / xAavrVolume < PercentFilter ? 0 : volume
+    nRes = nResLess 
+    clr = close < open ? color.red : color.teal
+    percentVol
+
+
+export getTrendCatcher() =>        
+    amplitude = 2
+    channelDeviation = 2
+    showArrows = false
+    showChannels = false
+
+    var int trend = 0
+    var int nextTrend = 0
+    var float maxLowPrice = nz(low[1], low)
+    var float minHighPrice = nz(high[1], high)
+
+    var float up = 0.0
+    var float down = 0.0
+    float atrHigh = 0.0
+    float atrLow = 0.0
+    float arrowUp = na
+    float arrowDown = na
+
+    atr2 = ta.atr(100) / 2
+    dev = channelDeviation * atr2
+
+    highPrice = high[math.abs(ta.highestbars(amplitude))]
+    lowPrice = low[math.abs(ta.lowestbars(amplitude))]
+    highma = ta.sma(high, amplitude)
+    lowma = ta.sma(low, amplitude)
+
+    if nextTrend == 1
+        maxLowPrice := math.max(lowPrice, maxLowPrice)
+
+        if highma < maxLowPrice and close < nz(low[1], low)
+            trend := 1
+            nextTrend := 0
+            minHighPrice := highPrice
+            minHighPrice
+    else
+        minHighPrice := math.min(highPrice, minHighPrice)
+
+        if lowma > minHighPrice and close > nz(high[1], high)
+            trend := 0
+            nextTrend := 1
+            maxLowPrice := lowPrice
+            maxLowPrice
+
+    if trend == 0
+        if not na(trend[1]) and trend[1] != 0
+            up := na(down[1]) ? down : down[1]
+            arrowUp := up - atr2
+            arrowUp
+        else
+            up := na(up[1]) ? maxLowPrice : math.max(maxLowPrice, up[1])
+            up
+        atrHigh := up + dev
+        atrLow := up - dev
+        atrLow
+    else
+        if not na(trend[1]) and trend[1] != 1
+            down := na(up[1]) ? up : up[1]
+            arrowDown := down + atr2
+            arrowDown
+        else
+            down := na(down[1]) ? minHighPrice : math.min(minHighPrice, down[1])
+            down
+        atrHigh := down + dev
+        atrLow := down - dev
+        atrLow
+
+    ht = trend == 0 ? up : down
+
+    var color buyColor = color.blue
+    var color sellColor = color.red
+
+    htColor = trend == 0 ? buyColor : sellColor
+    
+    //htPlot = plot(ht, title='HalfTrend', linewidth=2, color=htColor)
+    [ht, htColor]
+    //atrHighPlot = plot(showChannels ? atrHigh : na, title='ATR High', style=plot.style_circles, color=color.new(sellColor, 0))
+    //atrLowPlot = plot(showChannels ? atrLow : na, title='ATR Low', style=plot.style_circles, color=color.new(buyColor, 0))
+
+    //fill(htPlot, atrHighPlot, title='ATR High Ribbon', color=color.new(sellColor, 90))
+    //fill(htPlot, atrLowPlot, title='ATR Low Ribbon', color=color.new(buyColor, 90))
+
+    //buySignal = not na(arrowUp) and trend == 0 and trend[1] == 1
+    //sellSignal = not na(arrowDown) and trend == 1 and trend[1] == 0
+
+    //plotshape(showArrows and buySignal ? atrLow : na, title='Arrow Up', style=shape.triangleup, location=location.absolute, size=size.tiny, color=color.new(buyColor, 0))
+    //plotshape(showArrows and sellSignal ? atrHigh : na, title='Arrow Down', style=shape.triangledown, location=location.absolute, size=size.tiny, color=color.new(sellColor, 0))
+
+    //alertcondition(buySignal, title='Alert: HalfTrend Buy', message='HalfTrend Buy')
+    //alertcondition(sellSignal, title='Alert: HalfTrend Sell', message='HalfTrend Sell')
+
+
+
+export getTrendTracer() =>
+    // Inputs
+    //p = input(14, "Period")
+    //atr_factor = input.float(2.0, "Factor", step = 0.1)
+    // Calculations
+    p = 14
+    atr_factor = 3.1
+    atr = ta.atr(21)
+    e = atr * atr_factor
+
+    afr = close 
+    afr := nz(afr[1], afr)
+
+    atr_factoryHigh = close + e
+    atr_factoryLow = close - e 
+
+    if atr_factoryLow > afr 
+        afr := atr_factoryLow
+    if atr_factoryHigh < afr 
+        afr := atr_factoryHigh
+
+    col = afr > afr[1] ?  #02ff65 : #ff1100
+    col := afr == afr[1] ? col[1] : col
+
+    buy  = afr > afr[1] and not (afr[1] > afr[2])
+    sell = afr < afr[1] and not (afr[1] < afr[2])
+    ls = 0
+    ls := buy ? 1 : sell ? -1 : ls[1]
+
+    // Plottings
+    //plot(afr, "AFR", col, 2)
+    int val = afr > afr[1]? 1 : -1
+    [afr, col]
+
+//returns box distance from price and box size
+export getTPSLBoxes(float mult) =>
+    int length = 200
+    //length = input.int(200, 'Length', minval = 2)
+    //mult   = input.float(6., 'Factor', minval = 0, step = .5)
+    //src    = close
+
+    [prR2, prR1, avg, prS1, prS2] =  pred_ranges(length, mult)
+
+    //-----------------------------------------------------------------------------}
+    //Plots
+    //-----------------------------------------------------------------------------{
+    //plot_pru2  = plot(prR2, 'PR Upper 2', avg != avg[1] ? na : #f23645)
+    //plot_pru1  = plot(prR1, 'PR Upper 1', avg != avg[1] ? na : #f23645)
+    //plot_pravg = plot(avg , 'PR Average', avg != avg[1] ? na : #5b9cf6)
+    //plot_prl1  = plot(prS1, 'PR Lower 1', avg != avg[1] ? na : #089981)
+    //plot_prl2  = plot(prS2, 'PR Lower 2', avg != avg[1] ? na : #089981)
+
+    //Fills
+    //fill(plot_pru2, plot_pru1, avg != avg[1] ? na : color.new(#f23645, 95))
+    //fill(plot_prl1, plot_prl2, avg != avg[1] ? na : color.new(#089981, 95))
+    //returns difference between price and lower tp line, difference bewteen price and mid line, difference between price and higher line
+    //so to get the plots of the higher boxes just plot price + the first value, price + second value, price + third value, for the lower boxes just do price - the value
+    [prR1-avg, ((prR2+prR1)/2)-avg, prR2-avg]
+    //-----------------------------------------------------------------------------}
+
+
+export getTrendStrengthMetric(int length, string smoType1, int smooth, string smoType2) =>
+    //length = input.int(14, minval = 2)
+    //smoType1 = input.string('RMA', 'Method', options = ['EMA', 'SMA', 'RMA', 'TMA'])
+    src = close
+
+    arsiCss = color.silver
+    autoCss = true
+
+    //Signal Line
+    //smooth = input.int(14, minval = 1, group = 'Signal Line')
+    //smoType2 = input.string('EMA', 'Method', options = ['EMA', 'SMA', 'RMA', 'TMA'], group = 'Signal Line')
+
+    signalCss = #ff5d00
+
+    //OB/OS Style
+    obValue = 80
+    obCss = #089981
+    obAreaCss = color.new(#089981, 80)
+
+    osValue = 20
+    osCss = #f23645
+    osAreaCss = #f23645
+
+    //-----------------------------------------------------------------------------}
+    //Functions
+    //-----------------------------------------------------------------------------{
+  
+    
+    //-----------------------------------------------------------------------------}
+    //Augmented RSI
+    //-----------------------------------------------------------------------------{
+    upper = ta.highest(src, length)
+    lower = ta.lowest(src, length)
+    r = upper - lower
+
+    d = src - src[1]
+    diff = upper > upper[1] ? r : lower < lower[1] ? -r : d
+
+    num = ma(diff, length, smoType1)
+    den = ma(math.abs(diff), length, smoType1)
+    arsi = num / den * 50 + 50
+
+    signal = ma(arsi, smooth, smoType2)
+    arsi-signal
+    //-----------------------------------------------------------------------------}
+    //Plots
+    //-----------------------------------------------------------------------------{
+    //plot_rsi = plot(arsi, 'Ultimate RSI', arsi > obValue ? obCss: arsi < osValue ? osCss : autoCss ? chart.fg_color : arsiCss)
+
+    //plot(signal, 'Signal Line', signalCss)
+
+    //Levels
+    //plot_up = plot(obValue, color = na, editable = false)
+    //plot_avg = plot(50, color = na, editable = false)
+    //plot_dn = plot(osValue, color = na, editable = false)
+
+    //OB-OS
+    //fill(plot_rsi, plot_up, arsi > obValue ? obAreaCss : na)
+    //fill(plot_dn, plot_rsi, arsi < osValue ? osAreaCss : na)
+
+    //Gradient
+    //fill(plot_rsi, plot_avg, obValue, 50, obAreaCss, color.new(chart.bg_color, 100))
+    //fill(plot_avg, plot_rsi, 50, osValue, color.new(chart.bg_color, 100), osAreaCss)
+
+    //hline(obValue, 'Overbought')
+    //hline(50, 'Midline')
+    //hline(osValue, 'Oversold')
+
+    //-----------------------------------------------------------------------------}
+
+
+
+export getSmartTrail(int ATRPeriod, int ATRFactor, int smoothing) =>
+
+    trailType = 'modified'
+    //ATRPeriod = input(10, 'ATR Period')
+    //ATRFactor = input(4, 'ATR Factor')
+    //smoothing = input(8, 'Smoothing')
+
+    norm_o = open
+    norm_h = high
+    norm_l = low
+    norm_c = close
+    //}
+
+    //////// FUNCTIONS //////////////
+    //{
+    // Wilders ma //
+    
+    /////////// TRUE RANGE CALCULATIONS ///////////////// 
+    HiLo = math.min(norm_h - norm_l, 1.5 * nz(ta.sma(norm_h - norm_l, ATRPeriod)))
+
+    HRef = norm_l <= norm_h[1] ? norm_h - norm_c[1] : norm_h - norm_c[1] - 0.5 * (norm_l - norm_h[1])
+
+    LRef = norm_h >= norm_l[1] ? norm_c[1] - norm_l : norm_c[1] - norm_l - 0.5 * (norm_l[1] - norm_h)
+
+    trueRange = trailType == 'modified' ? math.max(HiLo, HRef, LRef) : math.max(norm_h - norm_l, math.abs(norm_h - norm_c[1]), math.abs(norm_l - norm_c[1]))
+    //}
+
+
+    /////////// TRADE LOGIC ////////////////////////
+    //{
+    loss = ATRFactor * Wild_ma(trueRange, ATRPeriod)
+
+    Up = norm_c - loss
+    Dn = norm_c + loss
+
+    TrendUp = Up
+    TrendDown = Dn
+    Trend = 1
+
+    TrendUp := norm_c[1] > TrendUp[1] ? math.max(Up, TrendUp[1]) : Up
+    TrendDown := norm_c[1] < TrendDown[1] ? math.min(Dn, TrendDown[1]) : Dn
+
+    Trend := norm_c > TrendDown[1] ? 1 : norm_c < TrendUp[1] ? -1 : nz(Trend[1], 1)
+    trail = Trend == 1 ? TrendUp : TrendDown
+
+    ex = 0.0
+    ex := ta.crossover(Trend, 0) ? norm_h : ta.crossunder(Trend, 0) ? norm_l : Trend == 1 ? math.max(ex[1], norm_h) : Trend == -1 ? math.min(ex[1], norm_l) : ex[1]
+    //}
+
+    // //////// PLOT TP and SL /////////////
+    //{
+    //line1 = plot(ta.sma(trail, smoothing), 'Trailingstop', style=plot.style_line, color=Trend == 1 ? color.new(#2157f9, 0) : Trend == -1 ? color.new(#ff1100, 0) : na)
+    //}
+    line1 = ta.sma(trail, smoothing)
+
+    ////// FIBONACCI LEVELS ///////////
+    //{
+    state = Trend == 1 ? 'long' : 'short'
+
+    fib1Level = 61.8
+    fib2Level = 78.6
+    fib3Level = 88.6
+
+    f1 = ex + (trail - ex) * fib1Level / 100
+    f2 = ex + (trail - ex) * fib2Level / 100
+    f3 = ex + (trail - ex) * fib3Level / 100
+    l100 = trail + 0
+
+    //Fib2 = plot(ta.sma(f2, smoothing), 'Fib 2', style=plot.style_line, transp=100)
+    Fib2 = ta.sma(f2, smoothing)
+
+    //fill(line1, Fib2, color=state == 'long' ? color.new(#2157f9, 80) : state == 'short' ? color.new(#ff1100, 80) : na, transp=90)
+    //can create an alert if price is between line 1 and fib2
+    //a plot would look like this 
+    //plot(ta.sma(trail, smoothing), 'Trailingstop', style=plot.style_line, color=Trend == 1 ? color.new(#2157f9, 0) : Trend == -1 ? color.new(#ff1100, 0) : na)
+    //fill(line1, Fib2, color=state == 'long' ? color.new(#2157f9, 80) : state == 'short' ? color.new(#ff1100, 80) : na, transp=90)
+    [line1, Fib2, state]
+
+export getSqueezeMetric(int conv, int length) =>
+    src = close
+    //conv   = input(50, 'Convergence Factor')
+    //length = input(20)
+    //src = input(close)
+
+    //Style
+    //col_0 = input(#ffeb3b, 'Gradient', inline = 'inline0', group = 'Style')
+    //col_1 = input(#ff5d00, '', inline = 'inline0', group = 'Style')
+    //col_2 = input(#ff1100, '', inline = 'inline0', group = 'Style')
+    //-----------------------------------------------------------------------------}
+    //Squeeze index
+    //-----------------------------------------------------------------------------{
+    var max = 0.
+    var min = 0.
+
+    max := nz(math.max(src, max - (max - src) / conv), src)
+    min := nz(math.min(src, min + (src - min) / conv), src)
+    diff = math.log(max - min)
+
+    psi = -50 * ta.correlation(diff, bar_index, length) + 50
+
+    //-----------------------------------------------------------------------------}
+    //Plots
+    //-----------------------------------------------------------------------------{
+    //css1 = color.from_gradient(psi, 0, 80, col_0, col_1)
+    //css2 = color.from_gradient(psi, 80, 100, css1, col_2)
+
+    //plot_0 = plot(psi, 'PSI', psi > 80 ? na : css2)
+    //plot(psi, 'Dots', psi > 80 ? css2 : na, style = plot.style_cross)
+
+    //plot_1 = plot(80, display = display.none, editable = false)
+
+    //fill(plot_0, plot_1, psi < 80 ? na : color.new(#ff1100, 80))
+
+    //hline(80)
+
+    psi
+
+    //-----------------------------------------------------------------------------}
+
+
+export getSignalClassification(simple int length, int minMult, int maxMult, float step, int perfAlpha, int maxIter, int maxData) =>
+    //------------------------------------------------------------------------------
+    //Settings
+    //-----------------------------------------------------------------------------{
+    //length = input(10, 'ATR Length')
+
+    //minMult = input.int(1, 'Factor Range', minval = 0, inline = 'factor')
+    //maxMult = input.int(5, '', minval = 0, inline = 'factor')
+    //step    = input.float(.5, 'Step', minval = 0, step = 0.1)
+
+    //Trigger error
+    //if minMult > maxMult
+    //    runtime.error('Minimum factor is greater than maximum factor in the range')
+
+    //perfAlpha = input.float(10, 'Performance Memory', minval = 2)
+    //fromCluster = input.string('Best', 'From Cluster', options = ['Best', 'Average', 'Worst'])
+
+    //Optimization
+    //maxIter = input.int(1000, 'Maximum Iteration Steps', minval = 0, group = 'Optimization')
+    //maxData = input.int(10000, 'Historical Bars Calculation', minval = 0, group = 'Optimization')
+
+    //Style
+    bearCss = color.red
+    bullCss = color.teal
+
+    amaBearCss = color.new(color.red, 50)
+    amaBullCss = color.new(color.teal, 50)
+
+    showGradient = true
+    showSignals = true
+
+    //Dashboard
+    showDash  = false
+    dashLoc  = 'Top Right', 'Location'
+    textSize ='Small'
+
+    //-----------------------------------------------------------------------------}
+    //UDT's
+    //-----------------------------------------------------------------------------{
+ 
+    //-----------------------------------------------------------------------------}
+    //Supertrend
+    //-----------------------------------------------------------------------------{
+    var holder = array.new<supertrend>(0)
+    var factors = array.new<float>(0)
+
+    //Populate supertrend type array
+    if barstate.isfirst
+        for i = 0 to int((maxMult - minMult) / step)
+            factors.push(minMult + i * step)
+            holder.push(supertrend.new())
+
+    atr = ta.atr(length)
+
+    //Compute Supertrend for multiple factors
+    k = 0
+    for factor in factors
+        get_spt = holder.get(k)
+
+        up = hl2 + atr * factor
+        dn = hl2 - atr * factor
+        
+        get_spt.trend := close > get_spt.upper ? 1 : (close < get_spt.lower ? 0 : get_spt.trend)
+        get_spt.upper := close[1] < get_spt.upper ? math.min(up, get_spt.upper) : up
+        get_spt.lower := close[1] > get_spt.lower ? math.max(dn, get_spt.lower) : dn
+        
+        diff = nz(math.sign(close[1] - get_spt.output))
+        get_spt.perf += 2/(perfAlpha+1) * (nz(close - close[1]) * diff - get_spt.perf)
+        get_spt.output := get_spt.trend == 1 ? get_spt.lower : get_spt.upper
+        get_spt.factor := factor
+        k += 1
+
+    //-----------------------------------------------------------------------------}
+    //K-means clustering
+    //-----------------------------------------------------------------------------{
+    factor_array = array.new<float>(0)
+    data = array.new<float>(0)
+
+    //Populate data arrays
+    if last_bar_index - bar_index <= maxData
+        for element in holder
+            data.push(element.perf)
+            factor_array.push(element.factor)
+
+    //Intitalize centroids using quartiles
+    centroids = array.new<float>(0)
+    centroids.push(data.percentile_linear_interpolation(25))
+    centroids.push(data.percentile_linear_interpolation(50))
+    centroids.push(data.percentile_linear_interpolation(75))
+
+    //Intialize clusters
+    var array<vector> factors_clusters = na
+    var array<vector> perfclusters = na
+
+    if last_bar_index - bar_index <= maxData
+        for _ = 0 to maxIter
+            factors_clusters := array.from(vector.new(array.new<float>(0)), vector.new(array.new<float>(0)), vector.new(array.new<float>(0)))
+            perfclusters := array.from(vector.new(array.new<float>(0)), vector.new(array.new<float>(0)), vector.new(array.new<float>(0)))
+            
+            //Assign value to cluster
+            i = 0
+            for value in data
+                dist = array.new<float>(0)
+                for centroid in centroids
+                    dist.push(math.abs(value - centroid))
+
+                idx = dist.indexof(dist.min())
+                perfclusters.get(idx).out.push(value)
+                factors_clusters.get(idx).out.push(factor_array.get(i))
+                i += 1
+
+            //Update centroids
+            new_centroids = array.new<float>(0)
+            for cluster_ in perfclusters
+                new_centroids.push(cluster_.out.avg())
+
+            //Test if centroid changed
+            if new_centroids.get(0) == centroids.get(0) and new_centroids.get(1) == centroids.get(1) and new_centroids.get(2) == centroids.get(2)
+                break
+
+            centroids := new_centroids
+
+    //-----------------------------------------------------------------------------}
+    //Signals and trailing stop
+    //-----------------------------------------------------------------------------{
+    //Get associated supertrend
+    var float target_factor = na
+    var float perf_idx = na
+    var float perf_ama = na
+
+    var from =  2
+
+    //Performance index denominator
+    den = ta.ema(math.abs(close - close[1]), 10)
+
+    if not na(perfclusters)
+        //Get average factors within target cluster 
+        target_factor := nz(factors_clusters.get(from).out.avg(), target_factor)
+        
+        //Get performance index of target cluster 
+        perf_idx := math.max(nz(perfclusters.get(from).out.avg()), 0) / den
+
+    //Get new supertrend
+    var upper = hl2
+    var lower = hl2
+    var os = 0
+
+    up = hl2 + atr * target_factor
+    dn = hl2 - atr * target_factor
+    upper := close[1] < upper ? math.min(up, upper) : up
+    lower := close[1] > lower ? math.max(dn, lower) : dn
+    os := close > upper ? 1 : close < lower ? 0 : os
+    ts = os ? lower : upper
+
+    //Get trailing stop adaptive MA
+    if na(ts[1]) and not na(ts)
+        perf_ama := ts
+    else 
+        perf_ama += perf_idx * (ts - perf_ama)
+
+    //-----------------------------------------------------------------------------}
+    //Dashboard
+    //-----------------------------------------------------------------------------{
+    var table_position = dashLoc == 'Bottom Left' ? position.bottom_left : dashLoc == 'Top Right' ? position.top_right : position.bottom_right
+
+    var table_size = textSize == 'Tiny' ? size.tiny : textSize == 'Small' ? size.small : size.normal
+
+    var tb = table.new(table_position, 4, 4, bgcolor = #1e222d, border_color = #373a46, border_width = 1, frame_color = #373a46, frame_width = 1)
+
+    if showDash
+        if barstate.isfirst
+            tb.cell(0, 0, 'Cluster', text_color = color.white, text_size = table_size)
+            tb.cell(0, 1, 'Best', text_color = color.white, text_size = table_size)
+            tb.cell(0, 2, 'Average', text_color = color.white, text_size = table_size)
+            tb.cell(0, 3, 'Worst', text_color = color.white, text_size = table_size)
+        
+            tb.cell(1, 0, 'Size', text_color = color.white, text_size = table_size)
+            tb.cell(2, 0, 'Centroid Dispersion', text_color = color.white, text_size = table_size)
+            tb.cell(3, 0, 'Factors', text_color = color.white, text_size = table_size)
+        
+        if barstate.islast
+            topN = perfclusters.get(2).out.size()
+            midN = perfclusters.get(1).out.size()
+            btmN = perfclusters.get(0).out.size()
+
+            //Size
+            tb.cell(1, 1, str.tostring(topN), text_color = color.white, text_size = table_size)
+            tb.cell(1, 2, str.tostring(midN), text_color = color.white, text_size = table_size)
+            tb.cell(1, 3, str.tostring(btmN), text_color = color.white, text_size = table_size)
+            
+            //Content
+            tb.cell(3, 1, str.tostring(factors_clusters.get(2).out), text_color = color.white, text_size = table_size, text_halign = text.align_left)
+            tb.cell(3, 2, str.tostring(factors_clusters.get(1).out), text_color = color.white, text_size = table_size, text_halign = text.align_left)
+            tb.cell(3, 3, str.tostring(factors_clusters.get(0).out), text_color = color.white, text_size = table_size, text_halign = text.align_left)
+
+            //Calculate dispersion around centroid
+            i = 0
+            for cluster_ in perfclusters
+                disp = 0.
+                if cluster_.out.size() > 1
+                    for value in cluster_.out
+                        disp += math.abs(value - centroids.get(i))
+                
+                disp /= switch i
+                    0 => btmN
+                    1 => midN
+                    2 => topN
+
+                i += 1
+                tb.cell(2, 4 - i, str.tostring(disp, '#.####'), text_color = color.white, text_size = table_size)
+
+    //-----------------------------------------------------------------------------}
+    //Plots
+    //-----------------------------------------------------------------------------{
+    css = os ? bullCss : bearCss
+
+    //plot(ts, 'Trailing Stop', os != os[1] ? na : css)
+
+    //plot(perf_ama, 'Trailing Stop AMA',
+    //ta.cross(close, perf_ama) ? na
+    //: close > perf_ama ? amaBullCss : amaBearCss)
+
+    //Candle coloring
+    //barcolor(showGradient ? color.from_gradient(perf_idx, 0, 1, color.new(css, 80), css) : na)
+
+    //Signals
+    n = bar_index
+
+    //if        , color = bearCss
+    //         , style = label.style_label_down
+    //        , textcolor = color.white
+    //        , size = size.tiny)
+    //perf_idx := math.max(nz(perfclusters.get(from).out.avg()), 0) / den
+    //float tmp = array.last(perfclusters)
+    float tmp = math.max(nz(perfclusters.get(2).out.avg()), 0) / den
+    tmp*10
+    
+    //tmp*10
+    //(perf_idx*10)*((os>os[1])? 1 : -1)
+    //-----------------------------------------------------------------------------}
+
+//export knnSensitivity(int sensitivity, int k) =>
+    //data = close
+    //input_data = ta.sma(data, 20)
+    //distance = math.abs(close - input_data)
+//
+    //// Konwersja serii na tablicę
+    //distance_array = array.new_float(size = bar_index)
+    //array.set(distance_array, bar_index, distance)
+//
+    //array.sort(distance_array)
+    //lowest_distance = array.min(distance_array, k)
+    //avg_distance = ta.sma(lowest_distance, k)
+//    knn_sensitivity = avg_distance / ta.atr(14)
+    //knn_sensitivity
+
+// Określanie optymalnej czułości przy użyciu k-NN
+//optimal_sensitivity = knnSensitivity(close, sensitivity, 5)
+
+// Ustawienie ostatecznej czułości
+//final_sensitivity = ta.crossover(close, sma9) ? sensitivity : optimal_sensitivity
