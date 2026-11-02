@@ -110,3 +110,50 @@ unauthenticated visitors keep the clearly-labelled client-side demo.
   Gains market works — 488 loaded dynamically).
 - Deterministic prices via the `SIM_TEST_MODE=1` injection seam (never on in
   production).
+
+## Audit corrections — 2026-11-02 (supersedes earlier formula/status notes)
+
+- `trading-math.js` is the shared Decimal valuation policy. Gross unrealized
+  PnL uses the fresh mark; `net_pnl` estimates close execution with spread and
+  deducts both fees. `balance` already includes charged opening fees.
+- `free_margin = max(0, equity - used_margin)`. Opening/trigger validation also
+  caps this by cash balance minus used margin and includes the opening fee.
+  Unrealized profit is not rehypothecated. Pending orders do not reserve margin;
+  each trigger revalidates against current account state.
+- Liquidation solves `margin + executable gross - closing fee <= maintenance`;
+  the displayed mark threshold reverses closing spread. Manual/automatic closes
+  settle at the fresh executable mark. Gaps can exceed collateral loss; no tick
+  replay or guaranteed stop execution is claimed.
+- Both account and Portfolio snapshot reads use repeatable-read transactions.
+  API account `realized_pnl` includes all charged fees (`balance - 100000`);
+  legacy DB `realized_pnl` remains close settlements, exposed separately as
+  `close_settlement_pnl`. Position legacy `realized_pnl` retains close-settlement
+  semantics; `net_pnl` is full round-trip net. Journal-core net now deducts both
+  fees, so closed-only equity curves reconcile after all positions are closed.
+- Partial close: POST `/trading/positions/:id/close` with fraction `(0,1]`; a
+  partial request requires `Idempotency-Key`. Closed slices use the existing
+  position table with `parent_position_id`; original order/protection/open time
+  persist, quantity/margin/open fee split proportionally, and only the closed
+  slice releases margin. `position_close_requests` replays the committed result.
+  Ledger rows remain immutable; close metadata records provenance/allocated fee.
+- Cancellation, protection, fills and closes lock account before order/position
+  rows. Owned submission keys retain owner-filtered compatibility with old keys.
+  Rejected retries remain rejected; changed payloads conflict. Input and storage
+  limits are validated, prices retain sub-cent precision.
+- `account_equity_risk` records sampled fresh equity (one-second engine loop for
+  open accounts, and authenticated state reads). UTC day-start is the first fresh
+  observation of the day. Peaks, daily/max drawdown persist; history begins at
+  `since`. Downtime/older peaks are not fabricated. Free-demo accounts have no
+  assigned challenge loss limits, so limit fields are null; no commercial
+  challenge enforcement is claimed.
+- Product terminals never fall back to a local fake account. Prop adapter takes
+  server PnL/ROI/liquidation, marks stale/disconnected state, cancels requests and
+  retry timers on teardown. Portfolio/Dashboard refresh at 5s (Prop), 15s (Gains;
+  upstream read cache can be 20s). SSE rechecks expired/revoked/suspended sessions.
+- Test-only injection is unavailable whenever `NODE_ENV=production`, even if
+  `SIM_TEST_MODE=1` is accidentally set. Isolated tests may supply fixture metadata.
+
+Feed recovery also retries failed startup, refreshes metadata/prices with one
+owned interval, retains upstream quote timestamps, rejects invalid marks and
+clears reconnect/refresh timers on stop. A sequence gap invalidates cached marks
+until a fresh snapshot is received. The audit suite checks these conditions.

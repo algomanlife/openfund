@@ -49,7 +49,7 @@ html[data-theme='light'] .rk-chip-bal { color: #6b7a70 }
   border: 1px solid #82e7bd44; border-radius: 14px;
   padding: 22px 24px;
   font-family: 'Irancell', Tahoma, sans-serif;
-  margin: 0;
+  margin: auto;
 }
 .of-profile-close { color: #a3b8a9; font-size: 24px; float: inline-end; background: none; border: 0; cursor: pointer }
 .of-profile-close:hover { color: #fff }
@@ -74,7 +74,9 @@ html[data-theme='light'] .rk-chip-bal { color: #6b7a70 }
 .of-challenges b { font-weight: 600; color: #d4ddd7 }
 .of-challenges span { color: #82e7bd; font-size: 11px }
 .of-challenges small { color: #7a8e85; font-size: 10px }
-.of-profile-actions { margin-top: 18px; display: flex; justify-content: flex-end }
+.of-profile-actions { margin-top: 18px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end }
+.of-profile::backdrop { background: rgba(0,0,0,.55) }
+.of-session-error { display: block; max-width: min(32rem,90vw); overflow-wrap: anywhere; font-size: 12px }
 .of-profile-actions .button {
   display: inline-flex; align-items: center; border-radius: 6px;
   background: #e8948322; color: #f0b3a6; border: 1px solid #e8948355;

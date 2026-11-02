@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-02 — Integrated trading, account and Render repair
+
+- Prop settlement now scopes retry keys by owner, includes fees and open loss in margin checks, rejects invalid/stale input, serializes protection/cancellation, and supports idempotent partial closes on the existing ledger.
+- Engine and Portfolio share Decimal valuation; sub-cent prices retain precision, analytics deduct both fees, liquidation includes close costs, and sampled UTC equity drawdown persists without inventing challenge limits.
+- SIWE validates URI/time, atomically consumes nonces and checks signatures on Sepolia or Arbitrum One; cookie-changing requests are ordered, wallet changes clear private state, disconnect revokes sessions, and SSE rechecks session validity.
+- Account dialogs link to both products. Shared terminal uses server PnL/liquidation, reports stale/disconnected states, supports partial-close controls and preserves one Prop/Perpetual workspace.
+- Home uses the existing nav-less layout and correct Perpetual route, removes a missing asset request and adds lightweight reduced-motion-aware ambient light. Wallet chips wrap on mobile.
+- Preserve Render PR #23's graph; correct Directus database keys, public hostname references, service regions, single engine instance and build dependency installation. Extend CI, Blueprint semantic checks and integration/browser regression coverage. No production deployment.
+
 
 ### Shared product terminals, scoped Portfolio and Journal (2026-11-02)
 

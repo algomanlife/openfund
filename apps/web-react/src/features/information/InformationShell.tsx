@@ -125,7 +125,7 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
     const theme = template.content.querySelector('#theme-toggle')
     if (theme) theme.textContent = document.documentElement.dataset.theme === 'light' ? '◑' : '◐'
     return template.innerHTML
-  }, [locale, part, dictionary, faDictionary, location.pathname, navItems, footerLinks])
+  }, [locale, part, nav, dictionary, faDictionary, location.pathname, navItems, footerLinks])
 
   useEffect(() => { setWalletHost(host.current?.querySelector<HTMLElement>('#wallet-root') || null) }, [markup])
 

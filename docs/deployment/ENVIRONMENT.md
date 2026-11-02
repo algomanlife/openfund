@@ -9,12 +9,12 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | Variable | Owner | Scope | Class | Value / source |
 | :--- | :--- | :--- | :--- | :--- |
 | `DATABASE_URL` | openfund (API) | R | SEC | `fromDatabase: openfund-db / connectionString` (internal) |
-| `DATABASE_URL` | openfund-cms | R | SEC | same managed Postgres, internal connection string |
+| `DB_CLIENT` / `DB_CONNECTION_STRING` | openfund-cms | R | PUB / SEC | `pg` + `fromDatabase: openfund-db / connectionString`; Directus does not consume the API's `DATABASE_URL` variable |
 | `PORT` | both web services | R | PUB | set by Render (Directus and Express both honor it) |
 | `NODE_VERSION` | openfund | B | PUB | `22` (matches `apps/backend` engines) |
 | `NODE_ENV` | openfund | R | PUB | `production` (enables Secure cookies) |
-| `ALLOWED_DOMAINS` | openfund | R | PUB | `fromService: openfund / host` — the SIWE domain list tracks the served origin |
-| `VITE_DIRECTUS_HOST` | openfund | B | PUB | `fromService: openfund-cms / host`; the build command composes `VITE_DIRECTUS_URL=https://$VITE_DIRECTUS_HOST` |
+| `ALLOWED_DOMAINS` | openfund | R | PUB | `fromService: openfund / envVarKey: RENDER_EXTERNAL_HOSTNAME` — the SIWE domain list tracks the served origin |
+| `VITE_DIRECTUS_HOST` | openfund | B | PUB | `fromService: openfund-cms / envVarKey: RENDER_EXTERNAL_HOSTNAME`; the build command composes `VITE_DIRECTUS_URL=https://$VITE_DIRECTUS_HOST` |
 | `KEY`, `SECRET` | openfund-cms | R | SEC | `generateValue: true` (created once at first apply) |
 | `WEBSOCKETS_ENABLED`, `CORS_ENABLED`, `CORS_ORIGIN`, `CORS_METHODS`, `MAX_PAYLOAD_SIZE` | openfund-cms | R | PUB | Directus hardening (public read-only API) |
 | `SESSION_TTL_HOURS` | openfund | R | PUB | default `168` (7 days) |
@@ -52,3 +52,19 @@ See root `.env.example` for a copy-paste template. Anything Vite-exposed
 2. Document it in this table (owner, scope, class, format).
 3. Add it to `.env.example` when it has a local-dev value.
 4. Update CI when it affects build or tests.
+
+## Integration audit (2026-11-02)
+
+No extra runtime service or secret is required. The API and CMS explicitly use
+Frankfurt with the existing PostgreSQL 17 resource. Public browser/SIWE hostnames
+use `RENDER_EXTERNAL_HOSTNAME`; `fromService.property: host` is private-network DNS.
+API PostgreSQL still uses `DATABASE_URL`; CMS uses `DB_CLIENT=pg` and
+`DB_CONNECTION_STRING`. The build installs web devDependencies explicitly because
+Vite/TypeScript are needed even when `NODE_ENV=production`.
+
+Prop SIWE: Ethereum Sepolia (11155111); Perpetual SIWE: Arbitrum One (42161).
+EIP-1271 checks use the message's supported chain. Existing opaque sessions remain
+valid for their existing lifetime; new signatures use these product networks.
+No Gains testnet execution is enabled. `SIM_TEST_MODE=1` is ignored in production.
+`SIM_MAINT_PCT` remains the existing simulation-only maintenance percentage (10 by
+default, finite and below 100), not a Gains liquidation threshold.

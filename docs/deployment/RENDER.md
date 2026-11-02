@@ -112,3 +112,19 @@ Render never provisions changes to the platform automatically.
   storage can replace it via `DIRECTUS_STORAGE_*` env vars without code changes.
 - Free/starter instances spin down on inactivity; production traffic should use
   paid instance types for the API service.
+
+### Integration audit corrections (2026-11-02)
+
+The three-resource graph is unchanged. All resources explicitly use Frankfurt;
+internal DB connection strings require a shared region. Directus 11.9.1 needs
+`DB_CLIENT=pg` plus `DB_CONNECTION_STRING`. Browser-facing CMS and SIWE values
+reference `RENDER_EXTERNAL_HOSTNAME`, not Render's private `host` property. Web
+builds explicitly include devDependencies. The API is pinned to one instance for
+the existing engine/SSE loop. The validator now checks these relationships.
+These are configuration repairs; this PR does not apply the Blueprint or modify
+production resources. Existing service region changes must follow Render's
+migration procedure if an already-provisioned service is in another region.
+
+Sources: [Render Blueprint](https://render.com/docs/blueprint-spec),
+[Directus database configuration](https://directus.com/docs/configuration/database),
+[Directus 11.9.1 database source](https://github.com/directus/directus/blob/v11.9.1/api/src/database/index.ts).

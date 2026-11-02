@@ -21,7 +21,15 @@ const WSS = 'wss://api.gains.trade/v1/arbitrum/ws'
 
 const STALE_MS = 5000          /* marks older than this are rejected for execution */
 
-class MarketData {
+export function quoteRecord(p, now = Date.now()) {
+  if (!p || typeof p.market !== 'string' || !Number.isFinite(Number(p.mark)) || Number(p.mark) <= 0) return null
+  let at = p.updatedAt == null ? now : Number(p.updatedAt)
+  if (!Number.isFinite(at)) at = Date.parse(p.updatedAt)
+  if (at > 0 && at < 100000000000) at *= 1000
+  if (!Number.isFinite(at) || at <= 0) return null
+  return {mark:String(p.mark),index:p.index != null ? String(p.index) : null,at:Math.min(now,at),updatedAt:p.updatedAt}
+}
+export class MarketData {
   constructor() {
     this.markets = new Map()   /* symbol → metadata (maxLeverage, isOpen, …) */
     this.marks = new Map()     /* symbol → {mark, index, at, updatedAt} */
@@ -30,19 +38,40 @@ class MarketData {
     this.ws = null
     this.subscribers = new Set()   /* (symbol, mark) => void — engine ticks */
     this.stopped = false
+    this.retryTimer = null
+    this.refreshTimer = null
   }
 
   async bootstrap() {
-    await this.#loadMarkets()
-    await this.#loadPrices()
-    this.#connect()
+    if (this.stopped) return
+    try {
+      await this.#loadMarkets()
+      await this.#loadPrices()
+      if (this.stopped) return
+      this.#connect()
+      if (!this.refreshTimer) this.refreshTimer = setInterval(() => {
+        if (!this.stopped) Promise.all([this.#loadMarkets(),this.#loadPrices()]).catch(e=>console.warn('[market-data] refresh failed',e.message))
+      },60000)
+      this.refreshTimer.unref?.()
+    } catch(e) {
+      if (!this.stopped) { this.retryTimer = setTimeout(()=>this.bootstrap().catch(()=>{}),3000); this.retryTimer.unref?.() }
+      throw e
+    }
   }
 
-  stop() { this.stopped = true; try { this.ws?.close() } catch {} }
+  stop() {
+    this.stopped = true
+    clearTimeout(this.retryTimer); clearInterval(this.refreshTimer)
+    this.retryTimer = null; this.refreshTimer = null
+    try { this.ws?.close() } catch {}
+  }
 
   async #loadMarkets() {
     const r = await fetch(API + '/markets', { signal: AbortSignal.timeout(15000) })
+    if (!r.ok) throw new Error('markets_unavailable')
     const j = await r.json()
+    if (!Array.isArray(j.data) || !j.data.length) throw new Error('invalid_market_schema')
+    if (this.stopped) return
     for (const m of (j.data || [])) {
       if (m && typeof m.symbol === 'string') this.markets.set(m.symbol, m)
     }
@@ -51,11 +80,15 @@ class MarketData {
 
   async #loadPrices() {
     const r = await fetch(API + '/prices', { signal: AbortSignal.timeout(10000) })
+    if (!r.ok) throw new Error('prices_unavailable')
     const j = await r.json()
+    if (!Array.isArray(j.data)) throw new Error('invalid_price_schema')
+    if (this.stopped) return
     let n = 0
     for (const p of (j.data || [])) {
-      if (p && typeof p.market === 'string' && p.mark != null) {
-        this.marks.set(p.market, { mark: String(p.mark), index: p.index != null ? String(p.index) : null, at: Date.now(), updatedAt: p.updatedAt })
+      const quote = quoteRecord(p)
+      if (quote) {
+        this.marks.set(p.market, quote)
         n++
       }
     }
@@ -65,9 +98,7 @@ class MarketData {
   #connect() {
     if (this.stopped) return
     this.ws = new WebSocket(WSS)
-    let alive = false
     this.ws.on('open', () => {
-      alive = true
       this.priceSeq = null
       this.ws.send(JSON.stringify({ op: 'subscribe', channel: 'prices' }))
       console.log('[market-data] ws subscribed')
@@ -86,22 +117,23 @@ class MarketData {
           try { this.ws.send(JSON.stringify({ op: 'unsubscribe', channel: 'prices' })) } catch {}
           this.priceSeq = null
           try { this.ws.send(JSON.stringify({ op: 'subscribe', channel: 'prices' })) } catch {}
+          this.marks.clear()
+          return
         }
         if (Number.isFinite(msg.seq)) this.priceSeq = msg.seq
         const now = Date.now()
         for (const p of msg.data) {
-          if (!p || typeof p.market !== 'string' || p.mark == null) continue
-          this.marks.set(p.market, { mark: String(p.mark), index: p.index != null ? String(p.index) : null, at: now, updatedAt: p.updatedAt })
+          const quote = quoteRecord(p,now)
+          if (!quote) continue
+          this.marks.set(p.market, quote)
           const inj = this.injected.get(p.market)
           if (inj) this.#emit(p.market, inj)
           else this.#emit(p.market, String(p.mark))
         }
       }
     })
-    this.ws.on('close', () => { if (!this.stopped) setTimeout(() => this.#connect(), 2000) })
+    this.ws.on('close', () => { if (!this.stopped) { this.retryTimer = setTimeout(() => this.#connect(), 2000); this.retryTimer.unref?.() } })
     this.ws.on('error', () => { try { this.ws.close() } catch {} })
-    /* watchdog: full REST resync every 60s regardless of ws health */
-    setInterval(() => { this.#loadPrices().catch(() => {}) }, 60_000).unref()
   }
 
   #emit(symbol, mark) { for (const fn of this.subscribers) { try { fn(symbol, mark) } catch {} } }
@@ -122,7 +154,7 @@ class MarketData {
 
   freshMark(symbol) {
     const m = this.mark(symbol)
-    if (!m || m.at < Date.now() - STALE_MS) return null
+    if (!m || m.at < Date.now() - STALE_MS || !Number.isFinite(Number(m.mark)) || Number(m.mark) <= 0) return null
     return m
   }
 

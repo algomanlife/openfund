@@ -1,3 +1,4 @@
+import { accountMetrics } from './trading-math.js'
 /**
  * Openfund Portfolio — native analytics over the authoritative trading engine.
  *
@@ -38,7 +39,7 @@ const INITIAL_BALANCE = 100000;
 /** Openfund position row → journal-core RoundTrip (stable, id-preserving) */
 export function toRoundTrip(p) {
   const fees = Number(p.open_fee) + Number(p.close_fee || 0);
-  const net = Number(p.realized_pnl);
+  const net = Number(p.realized_pnl) - Number(p.open_fee);
   const closed = p.status !== "open";
   return {
     key: `${p.account_id}|position|${p.id}`,
@@ -53,7 +54,7 @@ export function toRoundTrip(p) {
     openQuantity: closed ? 0 : Number(p.quantity),
     avgEntry: Number(p.entry_price),
     avgExit: closed && p.exit_price != null ? Number(p.exit_price) : undefined,
-    grossPnl: net + fees /* realized P&L before fees */,
+    grossPnl: net + fees /* gross price PnL before both fees */,
     fees,
     netPnl: net /* engine's settled net — authoritative */,
     executionCount: 2,
@@ -62,6 +63,7 @@ export function toRoundTrip(p) {
     durationMs: closed ? p.closed_at - p.opened_at : undefined,
     /* Openfund extensions carried alongside (traceability) */
     ofPositionId: String(p.id),
+    ofParentPositionId: p.parent_position_id || null,
     ofMarket: p.market,
     ofLeverage: p.leverage,
     ofMargin: Number(p.margin),
@@ -90,16 +92,16 @@ export class Portfolio {
     this.md = marketData;
   }
 
-  async accountOf(userId) {
-    const { rows } = await this.pool.query(
+  async accountOf(userId, c = this.pool) {
+    const { rows } = await c.query(
       "SELECT * FROM demo_accounts WHERE user_id=$1 AND account_type=$2",
       [userId, "free_demo"],
     );
     return rows[0] || null;
   }
 
-  async allPositions(userId) {
-    const { rows } = await this.pool.query(
+  async allPositions(userId, c = this.pool) {
+    const { rows } = await c.query(
       `SELECT p.*, a.balance, a.realized_pnl AS acc_realized, a.used_margin
          FROM trading_positions p JOIN demo_accounts a ON a.id = p.account_id
         WHERE p.user_id=$1 AND a.user_id=$1 AND a.account_type='free_demo' ORDER BY p.opened_at`,
@@ -110,9 +112,15 @@ export class Portfolio {
 
   /** overview + metrics + curves + calendar in one authoritative payload */
   async overview(userId, range = {}) {
-    const account = await this.accountOf(userId);
+    const c = await this.pool.connect();
+    let account, positions;
+    try {
+      await c.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+      account = await this.accountOf(userId,c);
+      positions = account ? await this.allPositions(userId,c) : [];
+      await c.query('COMMIT');
+    } catch(e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
     if (!account) return null;
-    const positions = await this.allPositions(userId);
     const trades = positions
       .filter(
         (p) =>
@@ -137,23 +145,11 @@ export class Portfolio {
     /* authoritative account numbers (NUMERIC from the engine) */
     const bal = Number(account.balance);
     const used = Number(account.used_margin);
-    const realized = Number(account.realized_pnl);
+    const realized = bal - INITIAL_BALANCE;
     const openTrades = positions.filter((p) => p.status === "open");
-    let unreal = 0;
-    let marksAvailable = true;
-    for (const p of positions)
-      if (p.status === "open") {
-        const m = this.md.mark(p.market);
-        if (!m || Date.now() - m.at > 30000) {
-          marksAvailable = false;
-          continue;
-        }
-        if (m)
-          unreal +=
-            Number(p.quantity) *
-            (Number(m.mark) - Number(p.entry_price)) *
-            (p.side === "long" ? 1 : -1);
-      }
+    const valuation = accountMetrics(account, openTrades, this.md);
+    const unreal = valuation.unrealized_pnl === null ? null : Number(valuation.unrealized_pnl);
+    const marksAvailable = unreal !== null;
 
     return {
       account: {
@@ -163,7 +159,9 @@ export class Portfolio {
         status: account.status,
         initialBalance: INITIAL_BALANCE,
         balance: bal,
-        equity: marksAvailable ? bal + unreal : null,
+        equity: valuation.equity === null ? null : Number(valuation.equity),
+        freeMargin: valuation.free_margin === null ? null : Number(valuation.free_margin),
+        marginRatio: valuation.margin_ratio, valuationStatus: valuation.valuation_status,
         realizedPnl: realized,
         unrealizedPnl: marksAvailable ? unreal : null,
         netPnl: marksAvailable ? realized + unreal : null,

@@ -14,77 +14,31 @@
  * SIMULATION ASSUMPTIONS (Gains public API does not provide these —
  * documented in docs/audits/DEMO_TRADING_AUDIT.md, NOT claimed Gains parity):
  *  - execution at server mark, no slippage (no tick data exists)
- *  - fee: SIM_FEE_PCT of notional, charged on open AND close (default 0.05%)
+ *  - fees/spread: explicit simulation asset tiers in trading-math.js
  *  - liquidation when margin + unrealized ≤ maintenance level (10% of margin)
  *  - limit/stop fill at the target price when the mark crosses it
  *  - funding not simulated in v1
  */
 import crypto from 'node:crypto'
 import Decimal from 'decimal.js'
-import pg from 'pg'
 
-Decimal.set({ precision: 40, rounding: Decimal.ROUND_HALF_UP })
-
-const D = (v) => new Decimal(v)
-export const SIM = {
-  INITIAL_BALANCE: '100000.00',
-  MAINT_PCT: process.env.SIM_MAINT_PCT || '10',    /* liquidation at 10% maintenance */
-  MIN_MARGIN: '1',
-  STALE_MS: 5000,
-}
-
-/* ---------- Gains-documented fee & spread tiers (per asset class) ----------
-   Sources: docs.gains.trade/gtrade-leveraged-trading/fees-and-spread
-   Class A (published values): BTC/ETH 0.035%, core crypto 0.05%, non-core
-   0.06%, forex major 0.012%. Fixed spread/side: BTC/ETH 0.005%, forex
-   0.005%, most other crypto 0%.
-   Class B (documented fallbacks — stocks/indices/commodities fees are not
-   published per class in the public doc): 0.06% fee, 0.01-0.02% spread. */
-const FEE_TIERS = { btceth: '0.035', crypto: '0.05', forex: '0.012', fallback: '0.06' }
-const SPREAD_TIERS = { btceth: '0.005', crypto: '0', forex: '0.005', commodities: '0.02', fallback: '0.01' }
-
-/** opening/closing fee % for a market (percent of notional) */
-export function feePct(meta, symbol) {
-  const base = String(meta?.base || symbol?.split('/')[0] || '').toUpperCase()
-  if (base === 'BTC' || base === 'ETH') return FEE_TIERS.btceth
-  switch (String(meta?.group || '').toLowerCase()) {
-    case 'crypto': return FEE_TIERS.crypto
-    case 'forex': return FEE_TIERS.forex
-    default: return FEE_TIERS.fallback     /* stocks, indices, commodities, unknown */
-  }
-}
-
-/** fixed spread % per side for a market (applied to the mark price) */
-export function spreadPct(meta, symbol) {
-  const base = String(meta?.base || symbol?.split('/')[0] || '').toUpperCase()
-  if (base === 'BTC' || base === 'ETH') return SPREAD_TIERS.btceth
-  switch (String(meta?.group || '').toLowerCase()) {
-    case 'crypto': return SPREAD_TIERS.crypto
-    case 'forex': return SPREAD_TIERS.forex
-    case 'commodities': return SPREAD_TIERS.commodities
-    default: return SPREAD_TIERS.fallback
-  }
-}
-
-/** execution price with the fixed spread applied (Gains: spread applies to
-    the oracle price — buy above mark for a long entry, sell below for a
-    short entry; mirrored on close) */
-export function withSpread(price, side, dir, meta, symbol) {
-  const sp = D(spreadPct(meta, symbol)).div(100)
-  const p = D(price)
-  /* dir: 'open' | 'close'; long opens buying (+spread) and closes selling
-     (−spread); short is the mirror */
-  const buy = (side === 'long') === (dir === 'open')
-  return buy ? p.times(sp.plus(1)) : p.times(new Decimal(1).minus(sp))
-}
+import { D, SIM, feePct, spreadPct, withSpread, pnl, freshMark, positionMetrics, accountMetrics } from './trading-math.js'
+export { SIM, feePct, spreadPct, withSpread } from './trading-math.js'
 
 /* ---------- per-account async mutex (safe concurrency) ---------- */
+const priceString = v => D(v).toFixed(Math.max(2,D(v).decimalPlaces()))
+const intent = r => JSON.stringify([r.market,r.side,r.order_type || 'market',String(r.margin),Number(r.leverage),r.target_price == null ? null : String(r.target_price),r.sl == null ? null : String(r.sl),r.tp == null ? null : String(r.tp)])
+const duplicate = (row, req, position) => {
+  if (intent(row.request_meta.requested) !== intent(req)) throw Object.assign(new Error('idempotency_conflict'), {status:409})
+  return {ok: row.status !== 'rejected',reason:row.reject_reason,duplicate:true,pending:row.status === 'pending',order:row,position}
+}
 const locks = new Map()
 async function withAccountLock(accountId, fn) {
   const prev = locks.get(accountId) || Promise.resolve()
   const run = prev.then(fn, fn)
-  locks.set(accountId, run.catch(() => {}))
-  try { return await run } finally { if (locks.get(accountId) === run) locks.delete(accountId) }
+  const tail = run.catch(() => {})
+  locks.set(accountId, tail)
+  try { return await run } finally { if (locks.get(accountId) === tail) locks.delete(accountId) }
 }
 
 export class Engine {
@@ -156,60 +110,78 @@ export class Engine {
    * ======================================================= */
 
   async state(userId) {
-    const account = await this.getAccount(userId)
-    if (!account) return { account: null, positions: [], orders: [], history: [] }
-    const [positions, orders, history] = await Promise.all([
-      this.pool.query(
-        `SELECT * FROM trading_positions WHERE account_id=$1 AND status='open' ORDER BY opened_at DESC`, [account.id]),
-      this.pool.query(
-        `SELECT * FROM trading_orders WHERE account_id=$1 AND status='pending' ORDER BY created_at DESC`, [account.id]),
-      this.pool.query(
-        `SELECT * FROM trading_positions WHERE account_id=$1 AND status IN ('closed','liquidated') ORDER BY closed_at DESC LIMIT 100`, [account.id]),
-    ])
-    const view = this.#accountView(account, positions.rows)
-    return { account: view, positions: positions.rows.map(p => this.#positionView(p)), orders: orders.rows, history: history.rows.map(p => this.#positionView(p)) }
+    const c = await this.pool.connect()
+    const as_of = Date.now()
+    try {
+      await c.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY')
+      const account = (await c.query("SELECT * FROM demo_accounts WHERE user_id=$1 AND account_type='free_demo'", [userId])).rows[0]
+      if (!account) { await c.query('COMMIT'); return { account: null, positions: [], orders: [], history: [] } }
+      const positions = (await c.query("SELECT * FROM trading_positions WHERE account_id=$1 AND status='open' ORDER BY opened_at DESC", [account.id])).rows
+      const orders = (await c.query("SELECT * FROM trading_orders WHERE account_id=$1 AND status='pending' ORDER BY created_at DESC", [account.id])).rows
+      const history = (await c.query("SELECT * FROM trading_positions WHERE account_id=$1 AND status IN ('closed','liquidated') ORDER BY closed_at DESC LIMIT 100", [account.id])).rows
+      await c.query('COMMIT')
+      const view = this.#accountView(account, positions)
+      view.risk = await this.#sampleRisk(account.id, view.equity, c)
+      return { as_of, account: view, positions: positions.map(p => this.#positionView(p)), orders, history: history.map(p => this.#positionView(p)) }
+    } catch (e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
+  }
+
+  async #sampleRisk(accountId, equity, c = this.pool) {
+    if (equity === null) return null
+    const {rows} = await c.query(`INSERT INTO account_equity_risk
+      (account_id,day,day_start_equity,peak_equity,last_equity)
+      VALUES ($1,(now() AT TIME ZONE 'UTC')::date,$2,$2,$2)
+      ON CONFLICT (account_id) DO UPDATE SET
+        day = excluded.day,
+        day_start_equity = CASE WHEN account_equity_risk.day=excluded.day THEN account_equity_risk.day_start_equity ELSE excluded.last_equity END,
+        peak_equity = GREATEST(account_equity_risk.peak_equity,excluded.last_equity),
+        maximum_drawdown = GREATEST(account_equity_risk.maximum_drawdown,account_equity_risk.peak_equity-excluded.last_equity,0),
+        daily_drawdown = CASE WHEN account_equity_risk.day=excluded.day THEN GREATEST(account_equity_risk.daily_drawdown,account_equity_risk.day_start_equity-excluded.last_equity,0) ELSE 0 END,
+        last_equity=excluded.last_equity,updated_at=now()
+      RETURNING *`,[accountId,equity])
+    const r = rows[0]
+    return { basis:'sampled_equity', timezone:'UTC', since:r.created_at, day:r.day,
+      day_start_equity:r.day_start_equity, peak_equity:r.peak_equity,
+      drawdown:Decimal.max(0,D(r.peak_equity).minus(equity)).toFixed(2),
+      daily_drawdown:r.daily_drawdown, maximum_drawdown:r.maximum_drawdown,
+      daily_limit:null, maximum_limit:null }
   }
 
   /** equity = balance + unrealized (all open positions) */
   #accountView(account, openPositions) {
-    const bal = D(account.balance)
-    let unreal = new Decimal(0)
-    for (const p of openPositions) {
-      const m = this.md.mark(p.market)
-      if (m) unreal = unreal.plus(this.#pnl(D(p.quantity), D(p.entry_price), D(m.mark), p.side))
-    }
-    const used = D(account.used_margin)
     return {
       id: account.id, type: account.account_type, currency: account.currency, status: account.status,
-      balance: bal.toFixed(2),
-      equity: bal.plus(unreal).toFixed(2),
-      used_margin: used.toFixed(2),
-      free_margin: bal.minus(used).toFixed(2),
-      realized_pnl: D(account.realized_pnl).toFixed(2),
-      unrealized_pnl: unreal.toFixed(2),
+      ...accountMetrics(account, openPositions, this.md),
+      realized_pnl: D(account.balance).minus(SIM.INITIAL_BALANCE).toFixed(2),
+      close_settlement_pnl: D(account.realized_pnl).toFixed(2),
     }
   }
 
   #positionView(p) {
-    const m = this.md.mark(p.market)
-    const mark = m ? m.mark : null
+    const metrics = positionMetrics(p, this.md)
+    const mark = metrics.mark
     let pnl = null
-    if (p.status === 'open' && mark) pnl = this.#pnl(D(p.quantity), D(p.entry_price), D(mark), p.side).toFixed(2)
+    if (p.status === 'open' && mark) pnl = metrics.gross.toFixed(2)
     if (p.status !== 'open') pnl = D(p.realized_pnl).toFixed(2)
     return {
-      id: p.id, market: p.market, side: p.side, quantity: D(p.quantity).toFixed(8),
-      entry_price: D(p.entry_price).toFixed(2), mark_price: mark ? D(mark).toFixed(2) : null,
+      id: p.id, market: p.market, side: p.side, quantity: D(p.quantity).toString(),
+      entry_price: priceString(p.entry_price), mark_price: mark ? priceString(mark) : null,
+      liquidation_price: metrics.liquidation, unrealized_pnl: p.status === 'open' ? pnl : null,
+      gross_pnl: p.status === 'open' ? pnl : D(p.realized_pnl).plus(p.close_fee).toFixed(10),
+      net_pnl: p.status === 'open' ? metrics.net?.minus(p.open_fee).toFixed(10) ?? null : D(p.realized_pnl).minus(p.open_fee).toFixed(10),
+      roi_pct: p.status === 'open' ? metrics.gross?.div(p.margin).times(100).toFixed(4) ?? null : D(p.realized_pnl).minus(p.open_fee).div(p.margin).times(100).toFixed(4),
+      valuation_status: p.status !== 'open' || mark ? 'fresh' : 'stale', parent_position_id: p.parent_position_id || null,
       margin: D(p.margin).toFixed(2), leverage: p.leverage,
-      sl_price: p.sl_price ? D(p.sl_price).toFixed(2) : null,
-      tp_price: p.tp_price ? D(p.tp_price).toFixed(2) : null,
-      status: p.status, exit_price: p.exit_price ? D(p.exit_price).toFixed(2) : null,
+      sl_price: p.sl_price ? priceString(p.sl_price) : null,
+      tp_price: p.tp_price ? priceString(p.tp_price) : null,
+      status: p.status, exit_price: p.exit_price ? priceString(p.exit_price) : null,
       exit_reason: p.exit_reason, open_fee: D(p.open_fee).toFixed(4), close_fee: D(p.close_fee).toFixed(4),
       realized_pnl: pnl, opened_at: p.opened_at, closed_at: p.closed_at
     }
   }
 
   #pnl(qty, entry, mark, side) {
-    return side === 'long' ? qty.times(mark.minus(entry)) : qty.times(entry.minus(mark))
+    return pnl(qty, entry, mark, side)
   }
 
   /* =========================================================
@@ -217,24 +189,32 @@ export class Engine {
    * ======================================================= */
 
   async submitOrder(userId, req, idempotencyKey) {
+    if (idempotencyKey && (typeof idempotencyKey !== 'string' || idempotencyKey.length > 160)) throw Object.assign(new Error('invalid_idempotency_key'), { status: 400 })
+    const legacyKey = idempotencyKey
+    idempotencyKey = idempotencyKey ? `${userId}:${idempotencyKey}` : null
     if (idempotencyKey) {
-      const { rows } = await this.pool.query('SELECT * FROM trading_orders WHERE idempotency_key=$1', [idempotencyKey])
+      const { rows } = await this.pool.query('SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key IN ($2,$3)', [userId, idempotencyKey, legacyKey])
       if (rows[0]) {
-        return { ok: true, duplicate: true, order: rows[0],
-          position: rows[0].position_id ? await this.#positionById(rows[0].position_id) : null }
+        return duplicate(rows[0], req, rows[0].position_id ? await this.#positionById(rows[0].position_id) : null)
       }
     }
     const account = await this.getAccount(userId)
     if (!account) throw Object.assign(new Error('account_not_found'), { status: 404 })
     if (account.status !== 'active') throw Object.assign(new Error('account_suspended'), { status: 403 })
 
-    const order = {
-      market: String(req.market || ''), side: req.side === 'short' ? 'short' : 'long',
-      order_type: ['market', 'limit', 'stop'].includes(req.order_type) ? req.order_type : 'market',
-      margin: D(req.margin || 0), leverage: Math.floor(Number(req.leverage) || 0),
+    let order
+    try {
+    order = {
+      market: String(req.market || ''), side: req.side,
+      order_type: req.order_type || 'market',
+      margin: D(req.margin || 0), leverage: Number(req.leverage),
       target_price: req.target_price != null ? D(req.target_price) : null,
       sl_price: req.sl != null ? D(req.sl) : null, tp_price: req.tp != null ? D(req.tp) : null,
     }
+
+    } catch { throw Object.assign(new Error('invalid_numeric_input'), { status: 400 }) }
+    if (!['long','short'].includes(order.side) || !['market','limit','stop'].includes(order.order_type)) throw Object.assign(new Error('invalid_order'), { status: 400 })
+    if (![order.margin, order.target_price, order.sl_price, order.tp_price].every(v => v === null || (v.isFinite() && v.gte('0.0000000001') && v.lte('1000000000000'))) || !Number.isInteger(order.leverage)) throw Object.assign(new Error('invalid_numeric_input'), { status: 400 })
 
     /* ---------- validation ---------- */
     const reject = async (reason) => {
@@ -242,11 +222,12 @@ export class Engine {
       const { rows } = await this.pool.query(
         `INSERT INTO trading_orders (idempotency_key, account_id, user_id, market, side, order_type,
            margin, leverage, target_price, sl_price, tp_price, status, reject_reason, request_meta)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'rejected',$12,$13) RETURNING *`,
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'rejected',$12,$13) ON CONFLICT (idempotency_key) DO NOTHING RETURNING *`,
         [idempotencyKey, account.id, userId, order.market, order.side, order.order_type,
          order.margin.toFixed(10), order.leverage, order.target_price?.toFixed(10) || null,
          order.sl_price?.toFixed(10) || null, order.tp_price?.toFixed(10) || null,
          reason, JSON.stringify({ requested: req })])
+      if (!rows[0]) { const winner = (await this.pool.query('SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key=$2',[userId,idempotencyKey])).rows[0]; return duplicate(winner,req,winner.position_id ? await this.#positionById(winner.position_id) : null) }
       return { ok: false, reason, order: rows[0] }
     }
 
@@ -258,7 +239,7 @@ export class Engine {
     if (order.margin.gt(D('100000000'))) return reject('margin_too_large')
 
     /* SL/TP sanity vs side */
-    const mark = D(t.mark)
+    const mark = order.order_type === 'market' ? withSpread(t.mark, order.side, 'open', t.meta, order.market) : order.target_price
     if (order.sl_price != null) {
       if (order.side === 'long' && order.sl_price.gte(mark)) return reject('sl_above_mark')
       if (order.side === 'short' && order.sl_price.lte(mark)) return reject('sl_below_mark')
@@ -273,8 +254,16 @@ export class Engine {
       try {
         await c.query('BEGIN')
         const acc = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [account.id])).rows[0]
-        const free = D(acc.balance).minus(D(acc.used_margin))
-        if (order.margin.gt(free)) { await c.query('ROLLBACK'); return reject('insufficient_margin') }
+        if (idempotencyKey) {
+          const winner = (await c.query('SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key=$2',[userId,idempotencyKey])).rows[0]
+          if (winner) { await c.query('COMMIT'); return duplicate(winner,req,winner.position_id ? await this.#positionById(winner.position_id) : null) }
+        }
+        if (acc.status !== 'active') throw Object.assign(new Error('account_suspended'), { status: 403 })
+        const open = (await c.query("SELECT * FROM trading_positions WHERE account_id=$1 AND status='open'", [acc.id])).rows
+        const view = accountMetrics(acc, open, this.md)
+        const free = Decimal.min(D(acc.balance).minus(acc.used_margin), D(view.free_margin ?? 0))
+        const openingFee = order.margin.times(order.leverage).times(feePct(t.meta, order.market)).div(100)
+        if (order.margin.plus(openingFee).gt(free)) { await c.query('ROLLBACK'); return reject('insufficient_margin') }
 
         /* create the order row first (idempotency captured even on race) */
         const { rows: orows } = await c.query(
@@ -289,7 +278,9 @@ export class Engine {
 
         let result
         if (order.order_type === 'market') {
-          result = await this.#fill(c, acc, orow, t.mark, order.sl_price?.toFixed(10) || null, order.tp_price?.toFixed(10) || null)
+          const current = this.md.tradeable(order.market)
+          if (!current.ok) throw Object.assign(new Error(current.reason), { status: 409 })
+          result = await this.#fill(c, acc, orow, current.mark, order.sl_price?.toFixed(10) || null, order.tp_price?.toFixed(10) || null)
           await c.query('COMMIT')
         } else {
           await c.query('COMMIT')
@@ -301,8 +292,8 @@ export class Engine {
         await c.query('ROLLBACK').catch(() => {})
         /* unique idempotency race → return the winner */
         if (String(e.code) === '23505' && idempotencyKey) {
-          const { rows } = await this.pool.query('SELECT * FROM trading_orders WHERE idempotency_key=$1', [idempotencyKey])
-          if (rows[0]) return { ok: true, duplicate: true, order: rows[0], position: rows[0].position_id ? await this.#positionById(rows[0].position_id) : null }
+          const { rows } = await this.pool.query('SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key IN ($2,$3)', [userId, idempotencyKey, legacyKey])
+          if (rows[0]) return duplicate(rows[0], req, rows[0].position_id ? await this.#positionById(rows[0].position_id) : null)
         }
         throw e
       } finally { c.release() }
@@ -321,7 +312,8 @@ export class Engine {
     const execPrice = applySpread ? withSpread(price, orow.side, 'open', meta, orow.market) : D(price)
     const margin = D(orow.margin), lev = Number(orow.leverage)
     const notional = margin.times(lev)
-    const qty = notional.div(execPrice)
+    const qty = notional.div(execPrice).toDecimalPlaces(10)
+    if (qty.lte(0) || qty.gte('100000000000000')) throw Object.assign(new Error('position_size_out_of_range'), {status:400})
     const fee = notional.times(D(feePct(meta, orow.market))).div(100)
     price = execPrice.toString()
 
@@ -362,19 +354,45 @@ export class Engine {
    * POSITION MANAGEMENT
    * ======================================================= */
 
-  async closePosition(userId, positionId) {
+  async closePosition(userId, positionId, { fraction = 1, idempotencyKey = null } = {}) {
+    let f
+    try { f = D(fraction) } catch {}
+    if (!f?.isFinite() || f.lte(0) || f.gt(1)) throw Object.assign(new Error('invalid_fraction'), { status: 400 })
+    if (f.lt(1) && !idempotencyKey) throw Object.assign(new Error('idempotency_key_required'), { status: 400 })
+    if (idempotencyKey && (typeof idempotencyKey !== 'string' || idempotencyKey.length > 160)) throw Object.assign(new Error('invalid_idempotency_key'), { status: 400 })
     const account = await this.getAccount(userId)
     if (!account) throw Object.assign(new Error('account_not_found'), { status: 404 })
     return withAccountLock(account.id, async () => {
       const c = await this.pool.connect()
       try {
         await c.query('BEGIN')
-        const pos = (await c.query('SELECT * FROM trading_positions WHERE id=$1 FOR UPDATE', [positionId])).rows[0]
+        await c.query('SELECT id FROM demo_accounts WHERE id=$1 FOR UPDATE', [account.id])
+        if (idempotencyKey) {
+          const previous = (await c.query('SELECT * FROM position_close_requests WHERE account_id=$1 AND request_key=$2', [account.id, idempotencyKey])).rows[0]
+          if (previous) {
+            if (previous.position_id !== positionId || !D(previous.fraction).eq(f)) throw Object.assign(new Error('idempotency_conflict'), { status: 409 })
+            await c.query('COMMIT'); return { ...previous.result, duplicate: true }
+          }
+        }
+        let pos = (await c.query('SELECT * FROM trading_positions WHERE id=$1 FOR UPDATE', [positionId])).rows[0]
         if (!pos || pos.user_id !== userId) { await c.query('ROLLBACK'); throw Object.assign(new Error('not_found'), { status: 404 }) }
         if (pos.status !== 'open') { await c.query('ROLLBACK'); return { duplicate: true, position: this.#positionView(pos) } }
         const t = this.md.tradeable(pos.market)
         if (!t.ok) { await c.query('ROLLBACK'); throw Object.assign(new Error(t.reason), { status: 409 }) }
-        const out = await this.#closeTx(c, pos, t.mark, 'manual')
+        if (f.lt(1)) {
+          const qty = D(pos.quantity).times(f).toDecimalPlaces(10)
+          const margin = D(pos.margin).times(f).toDecimalPlaces(10)
+          const fee = D(pos.open_fee).times(f).toDecimalPlaces(10)
+          if (qty.lte(0) || margin.lt(SIM.MIN_MARGIN) || D(pos.margin).minus(margin).lt(SIM.MIN_MARGIN)) throw Object.assign(new Error('partial_close_too_small'), { status: 400 })
+          const { rows } = await c.query(`INSERT INTO trading_positions
+            (order_id,account_id,user_id,market,side,quantity,entry_price,margin,leverage,sl_price,tp_price,open_fee,opened_at,parent_position_id)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING *`,
+            [pos.order_id,pos.account_id,pos.user_id,pos.market,pos.side,qty.toFixed(10),pos.entry_price,margin.toFixed(10),pos.leverage,pos.sl_price,pos.tp_price,fee.toFixed(10),pos.opened_at,pos.id])
+          await c.query('UPDATE trading_positions SET quantity=quantity-$1, margin=margin-$2, open_fee=open_fee-$3 WHERE id=$4', [qty.toFixed(10),margin.toFixed(10),fee.toFixed(10),pos.id])
+          pos = rows[0]
+        }
+        const out = await this.#closeTx(c, pos, t.mark, f.lt(1) ? 'partial' : 'manual')
+        if (idempotencyKey) await c.query('INSERT INTO position_close_requests (account_id,request_key,position_id,fraction,result) VALUES ($1,$2,$3,$4,$5)', [account.id,idempotencyKey,positionId,f.toString(),JSON.stringify(out)])
         await c.query('COMMIT')
         this.emit(account.id)
         return out
@@ -383,42 +401,48 @@ export class Engine {
   }
 
   async updateProtection(userId, positionId, { sl, tp }) {
-    const account = await this.getAccount(userId)
-    if (!account) throw Object.assign(new Error('account_not_found'), { status: 404 })
-    const pos = (await this.pool.query('SELECT * FROM trading_positions WHERE id=$1', [positionId])).rows[0]
-    if (!pos || pos.user_id !== userId) throw Object.assign(new Error('not_found'), { status: 404 })
-    if (pos.status !== 'open') throw Object.assign(new Error('position_not_open'), { status: 409 })
-    const m = this.md.freshMark(pos.market)
-    if (!m) throw Object.assign(new Error('stale_price'), { status: 409 })
-    const mark = D(m.mark)
-    const slD = sl != null ? D(sl) : null, tpD = tp != null ? D(tp) : null
-    if (slD != null) {
-      if (pos.side === 'long' && slD.gte(mark)) throw Object.assign(new Error('sl_above_mark'), { status: 400 })
-      if (pos.side === 'short' && slD.lte(mark)) throw Object.assign(new Error('sl_below_mark'), { status: 400 })
-    }
-    if (tpD != null) {
-      if (pos.side === 'long' && tpD.lte(mark)) throw Object.assign(new Error('tp_below_mark'), { status: 400 })
-      if (pos.side === 'short' && tpD.gte(mark)) throw Object.assign(new Error('tp_above_mark'), { status: 400 })
-    }
-    await this.pool.query('UPDATE trading_positions SET sl_price=$1, tp_price=$2 WHERE id=$3',
-      [slD?.toFixed(10) || null, tpD?.toFixed(10) || null, positionId])
-    await this.pool.query(`INSERT INTO trading_events (account_id, kind, detail) VALUES ($1,'protection_updated',$2)`,
-      [account.id, JSON.stringify({ position: positionId, sl: slD?.toString() || null, tp: tpD?.toString() || null })])
-    this.emit(account.id)
-    return { ok: true }
+    return this.#mutateOwned(userId, async (c, account) => {
+      const pos = (await c.query('SELECT * FROM trading_positions WHERE id=$1 AND user_id=$2 FOR UPDATE', [positionId, userId])).rows[0]
+      if (!pos) throw Object.assign(new Error('not_found'), { status: 404 })
+      if (pos.status !== 'open') throw Object.assign(new Error('position_not_open'), { status: 409 })
+      const m = freshMark(this.md, pos.market)
+      if (!m) throw Object.assign(new Error('stale_price'), { status: 409 })
+      let slD, tpD
+      try { slD = sl != null ? D(sl) : null; tpD = tp != null ? D(tp) : null } catch { throw Object.assign(new Error('invalid_numeric_input'), { status: 400 }) }
+      for (const v of [slD,tpD]) if (v && (!v.isFinite() || v.lte(0) || v.gt('1000000000000'))) throw Object.assign(new Error('invalid_numeric_input'), { status: 400 })
+      const mark = D(m.mark)
+      if (slD && (pos.side === 'long' ? slD.gte(mark) : slD.lte(mark))) throw Object.assign(new Error(pos.side === 'long' ? 'sl_above_mark' : 'sl_below_mark'), { status: 400 })
+      if (tpD && (pos.side === 'long' ? tpD.lte(mark) : tpD.gte(mark))) throw Object.assign(new Error(pos.side === 'long' ? 'tp_below_mark' : 'tp_above_mark'), { status: 400 })
+      await c.query("UPDATE trading_positions SET sl_price=$1,tp_price=$2 WHERE id=$3", [slD?.toFixed(10) ?? null,tpD?.toFixed(10) ?? null,positionId])
+      await c.query("INSERT INTO trading_events (account_id,kind,detail) VALUES ($1,'protection_updated',$2)", [account.id,JSON.stringify({position:positionId,sl,tp})])
+      return { ok: true }
+    })
   }
 
   async cancelOrder(userId, orderId) {
+    return this.#mutateOwned(userId, async (c, account) => {
+      const order = (await c.query('SELECT * FROM trading_orders WHERE id=$1 AND user_id=$2 FOR UPDATE', [orderId,userId])).rows[0]
+      if (!order) throw Object.assign(new Error('not_found'), { status: 404 })
+      if (order.status === 'cancelled') return { ok: true, duplicate: true, order }
+      if (order.status !== 'pending') throw Object.assign(new Error('order_not_pending'), { status: 409 })
+      const {rows} = await c.query("UPDATE trading_orders SET status='cancelled', updated_at=now() WHERE id=$1 RETURNING *", [orderId])
+      await c.query("INSERT INTO trading_events (account_id,kind,detail) VALUES ($1,'order_cancelled',$2)", [account.id,JSON.stringify({order:orderId})])
+      return { ok: true, order:rows[0] }
+    })
+  }
+
+  async #mutateOwned(userId, fn) {
     const account = await this.getAccount(userId)
     if (!account) throw Object.assign(new Error('account_not_found'), { status: 404 })
-    const { rows } = await this.pool.query(
-      `UPDATE trading_orders SET status='cancelled', updated_at=now()
-        WHERE id=$1 AND user_id=$2 AND status='pending' RETURNING *`, [orderId, userId])
-    if (!rows[0]) throw Object.assign(new Error('not_found'), { status: 404 })
-    await this.pool.query(`INSERT INTO trading_events (account_id, kind, detail) VALUES ($1,'order_cancelled',$2)`,
-      [account.id, JSON.stringify({ order: orderId })])
-    this.emit(account.id)
-    return { ok: true, order: rows[0] }
+    return withAccountLock(account.id, async () => {
+      const c = await this.pool.connect()
+      try {
+        await c.query('BEGIN')
+        await c.query('SELECT id FROM demo_accounts WHERE id=$1 FOR UPDATE',[account.id])
+        const out = await fn(c,account)
+        await c.query('COMMIT'); this.emit(account.id); return out
+      } catch(e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
+    })
   }
 
   /* =========================================================
@@ -427,7 +451,10 @@ export class Engine {
    * ======================================================= */
 
   async loop() {
-    if (!this.running) return
+    if (!this.running || this.loopBusy) return
+    this.loopBusy = true
+    try {
+    for (const {user_id} of (await this.pool.query("SELECT DISTINCT user_id FROM trading_positions WHERE status='open'")).rows) await this.state(user_id)
     const pending = await this.pool.query(
       `SELECT o.*, a.balance, a.used_margin FROM trading_orders o
          JOIN demo_accounts a ON a.id = o.account_id
@@ -442,20 +469,22 @@ export class Engine {
          JOIN demo_accounts a ON a.id = p.account_id
         WHERE p.status='open'`)
     for (const p of open.rows) {
-      const m = this.md.mark(p.market)
+      const m = freshMark(this.md, p.market)
       if (!m) continue
       const mark = D(m.mark)
-      const pnl = this.#pnl(D(p.quantity), D(p.entry_price), mark, p.side)
+      const pnl = positionMetrics(p, this.md).net
       const margin = D(p.margin)
       const reason = this.#exitReason(p, mark, pnl, margin)
       if (reason) {
         await withAccountLock(p.account_id, () => this.#autoExit(p, mark, reason).catch(console.error))
       }
     }
+    } finally { this.loopBusy = false }
   }
 
   #shouldTrigger(o) {
-    const m = this.md.mark(o.market)
+    const t = this.md.tradeable(o.market)
+    const m = t.ok ? { mark: t.mark } : null
     if (!m) return false
     const mark = D(m.mark), target = D(o.target_price)
     if (o.order_type === 'limit') {
@@ -483,12 +512,18 @@ export class Engine {
     const c = await this.pool.connect()
     try {
       await c.query('BEGIN')
+      await c.query('SELECT id FROM demo_accounts WHERE id=$1 FOR UPDATE', [o.account_id])
       const cur = (await c.query('SELECT * FROM trading_orders WHERE id=$1 FOR UPDATE', [o.id])).rows[0]
       if (!cur || cur.status !== 'pending' || !this.#shouldTrigger(cur)) { await c.query('ROLLBACK'); return }
       const acc = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [cur.account_id])).rows[0]
-      const free = D(acc.balance).minus(D(acc.used_margin))
+      const owner = (await c.query('SELECT status FROM openfund_users WHERE id=$1', [cur.user_id])).rows[0]
+      if (acc.status !== 'active' || owner?.status !== 'active') { await c.query('ROLLBACK'); return }
+      const open = (await c.query("SELECT * FROM trading_positions WHERE account_id=$1 AND status='open'", [acc.id])).rows
+      const view = accountMetrics(acc, open, this.md)
+      const free = Decimal.min(D(acc.balance).minus(acc.used_margin), D(view.free_margin ?? 0))
       const margin = D(cur.margin)
-      if (margin.gt(free)) {
+      const fee = margin.times(cur.leverage).times(feePct(this.md.marketMeta(cur.market), cur.market)).div(100)
+      if (margin.plus(fee).gt(free)) {
         await c.query(`UPDATE trading_orders SET status='rejected', reject_reason='insufficient_margin', updated_at=now() WHERE id=$1`, [cur.id])
         await c.query('COMMIT')
         this.emit(acc.id)
@@ -505,9 +540,14 @@ export class Engine {
     const c = await this.pool.connect()
     try {
       await c.query('BEGIN')
+      await c.query('SELECT id FROM demo_accounts WHERE id=$1 FOR UPDATE', [p.account_id])
       const cur = (await c.query('SELECT * FROM trading_positions WHERE id=$1 FOR UPDATE', [p.id])).rows[0]
       if (!cur || cur.status !== 'open') { await c.query('ROLLBACK'); return }
-      await this.#closeTx(c, cur, mark.toString(), reason)
+      const m = freshMark(this.md, cur.market)
+      if (!m) { await c.query('ROLLBACK'); return }
+      const currentReason = this.#exitReason(cur, D(m.mark), positionMetrics(cur, this.md).net, D(cur.margin))
+      if (!currentReason) { await c.query('ROLLBACK'); return }
+      await this.#closeTx(c, cur, m.mark, currentReason)
       await c.query('COMMIT')
       this.emit(p.account_id)
     } catch (e) { await c.query('ROLLBACK').catch(() => {}); throw e } finally { c.release() }
@@ -545,7 +585,7 @@ export class Engine {
        VALUES ($1,$2,$3,$4,$5,$6,$7)`,
       [acc.id, pos.user_id, reason === 'liquidation' ? 'liquidation' : 'close', pos.id,
        net.toFixed(10), newBal.toFixed(10),
-       JSON.stringify({ market: pos.market, side: pos.side, entry: entry.toString(), exit: price, reason })])
+       JSON.stringify({ market: pos.market, side: pos.side, entry: entry.toString(), exit: price, reason, parent_position_id:pos.parent_position_id || null, allocated_open_fee:pos.open_fee })])
     await c.query(`INSERT INTO trading_events (account_id, kind, detail) VALUES ($1,'position_closed',$2)`,
       [acc.id, JSON.stringify({ position: pos.id, market: pos.market, reason, entry: entry.toString(), exit: price, net: net.toFixed(10) })])
 

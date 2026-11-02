@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { backendUrl } from "../../session/useOpenfundSession";
+import { useSession, backendUrl } from "../../session/useOpenfundSession";
 export type Product = "prop" | "perpetual";
 export type Locale = "fa" | "en";
 export const primary = {
@@ -29,6 +29,7 @@ export async function api(
   const r = await fetch(`${backendUrl()}/products/${product}${path}`, {
     ...init,
     credentials: "include",
+    signal: init.signal ? AbortSignal.any([init.signal, AbortSignal.timeout(15000)]) : AbortSignal.timeout(15000),
     headers: { "Content-Type": "application/json", ...init.headers },
   });
   const data = await r.json().catch(() => null);
@@ -39,14 +40,16 @@ export function useResource<T = any>(
   product: Product,
   path: string | null,
   revision = 0,
+  live = false,
 ) {
+  const session = useSession();
   const [state, setState] = useState<{
     data: T | null;
     loading: boolean;
     error: string | null;
     key?: string;
   }>({ data: null, loading: false, error: null });
-  const key = `${product}:${path}:${revision}`;
+  const key = `${session.user?.id}:${session.status}:${product}:${path}:${revision}`;
   useEffect(() => {
     if (!path) {
       setState({ key, data: null, loading: false, error: null });
@@ -54,17 +57,21 @@ export function useResource<T = any>(
     }
     const ctrl = new AbortController();
     setState({ key, data: null, loading: true, error: null });
-    api(product, path, { signal: ctrl.signal })
-      .then((data) => {
-        if (!ctrl.signal.aborted)
-          setState({ key, data, loading: false, error: null });
-      })
-      .catch((e) => {
-        if (!ctrl.signal.aborted)
-          setState({ key, data: null, loading: false, error: e.message });
-      });
-    return () => ctrl.abort();
-  }, [product, path, revision]);
+    let busy = false;
+    const load = async () => {
+      if (busy || ctrl.signal.aborted) return;
+      busy = true;
+      try {
+        const data = await api(product, path, { signal: ctrl.signal });
+        if (!ctrl.signal.aborted) setState({ key, data, loading:false, error:null });
+      } catch (e) {
+        if (!ctrl.signal.aborted) setState({ key, data:null, loading:false, error:(e as Error).message });
+      } finally { busy = false; }
+    };
+    void load();
+    const timer = live ? setInterval(load, product === 'prop' ? 5000 : 15000) : null;
+    return () => { ctrl.abort(); if (timer) clearInterval(timer) };
+  }, [key, live]);
   return state.key === key
     ? state
     : { data: null, loading: !!path, error: null };

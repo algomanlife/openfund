@@ -2,19 +2,22 @@
   "name": "openfund",
   "version": "1.0.0",
   "private": true,
-  "description": "Openfund monorepo — root orchestration only. Applications install their own dependencies (apps/web-react, apps/backend) with per-app lockfiles; this package adds no runtime dependencies.",
+  "description": "Openfund monorepo \u2014 root orchestration only. Applications install their own dependencies (apps/web-react, apps/backend) with per-app lockfiles; this package adds no runtime dependencies.",
   "scripts": {
     "build:web": "npm --prefix apps/web-react run build",
     "build:web:publish": "npm --prefix apps/web-react run build -- --mode publish",
     "build:backend": "npm --prefix apps/backend run migrate",
     "test:web": "npm --prefix apps/web-react run test:plans && npm --prefix apps/web-react run test:information && npm --prefix apps/web-react run test:markets",
     "test:backend": "npm --prefix apps/backend run test:all",
-    "typecheck": "npm --prefix apps/web-react exec -- tsc --noEmit",
+    "typecheck": "npm --prefix apps/web-react run typecheck",
     "validate:blueprint": "node infra/render/validate-blueprint.mjs",
     "dev:web": "npm --prefix apps/web-react run dev",
-    "dev:backend": "npm --prefix apps/backend run dev"
+    "dev:backend": "npm --prefix apps/backend run dev",
+    "test:browser:audit": "node e2e/test-integration-audit.cjs",
+    "test:browser:live": "node e2e/test-dual-terminals.js"
   },
   "devDependencies": {
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "playwright": "^1.64.1"
   }
 }

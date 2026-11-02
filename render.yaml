@@ -37,6 +37,7 @@ services:
   # ------------------------------------------------------------------ CMS --
   - type: web
     name: openfund-cms
+    region: frankfurt        # private PostgreSQL connection stays in-region
     runtime: image
     image:
       url: docker.io/directus/directus:11.9.1
@@ -50,7 +51,9 @@ services:
     envVars:
       - key: PORT
         value: 10000
-      - key: DATABASE_URL
+      - key: DB_CLIENT
+        value: pg
+      - key: DB_CONNECTION_STRING
         fromDatabase:
           name: openfund-db
           property: connectionString
@@ -78,12 +81,14 @@ services:
   # ------------------------------------------------- API + web (one origin) --
   - type: web
     name: openfund
+    region: frankfurt
     runtime: node
     plan: starter
+    numInstances: 1           # one existing engine/SSE process
     autoDeployTrigger: commit
     healthCheckPath: /health
     buildCommand: |
-      npm ci --prefix apps/web-react
+      npm ci --include=dev --prefix apps/web-react
       npm ci --prefix apps/backend
       VITE_DIRECTUS_URL="https://$VITE_DIRECTUS_HOST" npm run build --prefix apps/web-react
     startCommand: npm run migrate --prefix apps/backend && npm start --prefix apps/backend
@@ -100,7 +105,7 @@ services:
         fromService:
           name: openfund
           type: web
-          property: host        # SIWE domain = the served origin
+          envVarKey: RENDER_EXTERNAL_HOSTNAME # SIWE uses the public browser origin
       - key: CORS_ORIGINS
         sync: false             # only needed for extra origins / custom domain
       - key: SESSION_TTL_HOURS
@@ -109,7 +114,7 @@ services:
         fromService:
           name: openfund-cms
           type: web
-          property: host        # build-time: composed into https://… below
+          envVarKey: RENDER_EXTERNAL_HOSTNAME # browser needs the public CMS origin
       - key: VITE_WALLETCONNECT_PROJECT_ID
         sync: false             # optional (full remote wallet list)
       - key: SIM_TEST_MODE

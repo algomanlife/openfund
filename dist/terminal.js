@@ -935,7 +935,7 @@ function velaPositionsSync(){
         if (d && d.id){
           posDrawings.set(pid, d.id);
           /* brand the box: real account balance + our labels */
-          try { dr.update(d.id, { accountBalance: 100000, showPrices: true, showText: true }) } catch(e){}
+          try { dr.update(d.id, { accountBalance: tp.getAccount()?.balance ?? tp.getAccount()?.equity ?? 0, showPrices: true, showText: true }) } catch(e){}
         }
       } catch(e){ /* renderer without drawing support — table still works */ }
     }
@@ -1175,13 +1175,15 @@ function emptyRow(cols, text){
 
 function wireRowActions(){
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => {
+    const partial = tp.serverMode && !tp.readOnly;
     confirmDialog(t('cf.close'), t('cf.closeTxt'), () => {
-      (async () => { try { await tp.closePosition(b.dataset.close); } catch(e){} renderBottom(); renderAccount(); })();
-    });
+      const fraction = partial ? Number($('close-fraction').value) : 1;
+      (async () => { try { await tp.closePosition(b.dataset.close, fraction); } catch(e){ toast(String(e.message || e), 'error'); } renderBottom(); renderAccount(); })();
+    }, null, partial ? `<label>${L('مقدار بستن پوزیشن', 'Position to close')} <select id="close-fraction"><option value="1">100%</option><option value="0.5">50%</option><option value="0.25">25%</option></select></label>` : null);
   }));
   document.querySelectorAll('[data-cancel]').forEach(b => b.addEventListener('click', () => {
     confirmDialog(t('cf.cancel'), t('cf.cancelTxt'), () => {
-      (async () => { try { await tp.cancelOrder(b.dataset.cancel); } catch(e){} renderBottom(); renderAccount(); })();
+      (async () => { try { await tp.cancelOrder(b.dataset.cancel); } catch(e){ toast(String(e.message || e), 'error'); } renderBottom(); renderAccount(); })();
     });
   }));
   document.querySelectorAll('[data-sltp]').forEach(b => b.addEventListener('click', () => {
@@ -1246,7 +1248,7 @@ $('confirm-ok').addEventListener('click', () => { $('confirm-dialog').close(); i
 function renderAccount(){
   if (!tp || !$('ac-equity')) return;   /* teardown race guard */
   const a = tp.getAccount();
-  if (!a) return;   /* server account not loaded yet */
+  if (!a) { for (const id of ['ac-equity','ac-available','ac-margin','ac-upnl','ac-pos','ac-ord']) $(id).textContent='—'; return; }
   $('ac-equity').textContent = fmt.usd(a.equity);
   $('ac-available').textContent = fmt.usd(a.available);
   $('ac-margin').textContent = fmt.usd(a.marginUsed);

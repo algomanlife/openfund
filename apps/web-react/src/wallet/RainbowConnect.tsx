@@ -6,6 +6,7 @@ import { walletConnectEnabled } from './config'
 import { formatUnits } from 'viem'
 import { useSession } from '../session/useOpenfundSession'
 import { ProfilePanel } from '../session/ProfilePanel'
+import { useProductNetwork } from './productNetwork'
 import '../session/session.css'
 
 /* RainbowKit theme follows the app theme (html[data-theme=light]) with the
@@ -34,6 +35,7 @@ function useAppTheme(): 'dark' | 'light' {
  */
 export function RainbowConnect() {
   const { address, chain, chainId } = useAccount()
+  const targetChain = useProductNetwork()
   const { connectAsync, connectors } = useConnect()
   const [connectError, setConnectError] = useState('')
   const { data: balance } = useBalance({ address, chainId })
@@ -115,10 +117,14 @@ export function RainbowConnect() {
     const mo = new MutationObserver(muts => {
       for (const m of muts) {
         for (const node of m.addedNodes) {
-          if (node instanceof HTMLElement && node.hasAttribute('data-rk')) apply(node)
+          if (node instanceof HTMLElement) {
+            if (node.hasAttribute('data-rk')) apply(node)
+            node.querySelectorAll('[data-rk]').forEach(apply)
+          }
         }
         if (m.type === 'characterData' || (m.target instanceof HTMLElement && (m.target as HTMLElement).closest('[data-rk]'))) {
-          const rkRoot = (m.target instanceof HTMLElement ? (m.target as HTMLElement).closest('[data-rk]') : null)
+          const element = m.target instanceof HTMLElement ? m.target : m.target.parentElement
+          const rkRoot = element?.closest('[data-rk]')
           if (rkRoot) apply(rkRoot)
         }
       }
@@ -135,7 +141,7 @@ export function RainbowConnect() {
     const v = Number(formatUnits(balance.value, balance.decimals))
     return `${v.toFixed(3)} ${balance.symbol}`
   }
-  const onSepolia = chain?.id === 421614
+  const correctNetwork = chain?.id === targetChain.id
 
   /* Openfund wallet identity (SIWE): connect ≠ login — the user signs once
      per session; then the profile panel shows their account + challenges */
@@ -162,12 +168,12 @@ export function RainbowConnect() {
             void connectAsync({ connector: connectors[0] }).catch(() => setConnectError(isFa ? 'اتصال کیف پول ناموفق بود.' : 'Wallet connection failed.'))
           } else openConnectModal()
         }
-        ;(window as any).__ofOpenConnect = connected ? openAccountModal : connectWallet
+        ;(window as any).__ofOpenConnect = !connected ? connectWallet : session.status === 'authenticated' ? () => setProfileOpen(true) : () => void session.signIn()
         return (
           <div
             aria-hidden={!mounted}
             className='rk-wrap'
-            style={{ display: 'flex', gap: 8, alignItems: 'center', direction: 'ltr' }}
+            style={{ display: 'flex', flexWrap: 'wrap', maxWidth: '100%', gap: 8, alignItems: 'center', direction: 'ltr' }}
           >
             {!connected ? (
               <button onClick={connectWallet} type='button' className='rk-chip rk-chip-connect'>
@@ -181,10 +187,13 @@ export function RainbowConnect() {
               <>
                 {/* ONE wallet chip — network dot + address + balance (opens the account modal) */}
                 <button onClick={openAccountModal} type='button' className='rk-chip' title={isFa ? 'کیف پول و شبکه' : 'Wallet & network'}>
-                  <i className={onSepolia ? 'rk-dot rk-dot-live' : 'rk-dot rk-dot-info'} />
+                  <i className={correctNetwork ? 'rk-dot rk-dot-live' : 'rk-dot rk-dot-info'} />
                   <span dir='ltr' className='rk-chip-addr'>{fmtAddr(address)}</span>
                   {balance ? <span dir='ltr' className='rk-chip-bal'>{fmtBal()}</span> : null}
                 </button>
+                {!correctNetwork && <button type="button" className="rk-chip" onClick={openChainModal}>
+                  {isFa ? 'شبکه: ' : 'Network: '}{targetChain.name}
+                </button>}
                 {/* ONE action chip — identical template, mint accent */}
                 {session.status === 'authenticated' ? (
                   <button onClick={() => setProfileOpen(true)} type='button' className='rk-chip rk-chip-action' title={isFa ? 'حساب اوپن‌فاند' : 'Openfund account'}>
@@ -211,6 +220,7 @@ export function RainbowConnect() {
       }}
       </ConnectButton.Custom>
       {connectError && <span role='alert'>{connectError}</span>}
+      {session.error && <span role="alert" className="of-session-error">{isFa ? 'ورود انجام نشد. دوباره تلاش کنید. ' : 'Sign-in failed. Please retry. '}{session.error}</span>}
       {profileOpen && session.user && (
         <ProfilePanel
           user={session.user}

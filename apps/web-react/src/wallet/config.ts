@@ -1,13 +1,13 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 import { createConfig, http } from 'wagmi'
 import { injected } from 'wagmi/connectors'
-import { arbitrumSepolia } from 'wagmi/chains'
+import { sepolia, arbitrum } from 'wagmi/chains'
 
 /**
  * Wallet configuration — Phase 3.
  *
- * - Arbitrum Sepolia is the configurable TEST network. No Gains contracts
- *   are assumed to exist or be operational there.
+ * - Prop uses Ethereum Sepolia; Perpetual reads Gains on Arbitrum One.
+ *   No on-chain execution or testnet Gains contracts are assumed.
  * - WalletConnect projectId comes from VITE_WALLETCONNECT_PROJECT_ID
  *   (.env / .env.local). WITH a project id, the full RainbowKit config
  *   (WalletConnect v2 + injected wallets) is used.
@@ -25,11 +25,11 @@ export const wagmiConfig = walletConnectEnabled
   ? getDefaultConfig({
       appName: 'Openfund',
       projectId: WALLETCONNECT_PROJECT_ID,
-      chains: [arbitrumSepolia],
+      chains: [sepolia, arbitrum],
       ssr: false
     })
   : createConfig({
-      chains: [arbitrumSepolia],
-      transports: { [arbitrumSepolia.id]: http() },
+      chains: [sepolia, arbitrum],
+      transports: { [sepolia.id]: http(), [arbitrum.id]: http() },
       connectors: [injected({ shimDisconnect: true })]
     })

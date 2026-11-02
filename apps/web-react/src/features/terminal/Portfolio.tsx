@@ -36,6 +36,7 @@ export default function ProductPortfolio() {
         ? `/overview?from=${filter.from}&to=${filter.to}`
         : null,
       revision,
+      true,
     ),
     history = useResource(
       product,

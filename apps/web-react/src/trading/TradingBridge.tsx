@@ -28,13 +28,18 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
 
     let es = null
     let stopped = false
+    let connection = 'loading'
+    let reconnect: ReturnType<typeof setTimeout> | undefined
+    const requests = new Set<AbortController>()
+    const changed = () => window.dispatchEvent(new CustomEvent('of-trading-update'))
+    const n = (v: unknown) => v == null ? null : Number(v)
     let state = { account: null, positions: [], orders: [], history: [] }
     const isFa = () => (window as any).ofLang !== 'en'
     const L = (fa: string, en: string) => (isFa() ? fa : en)
 
     const fmtAcct = (a: any) => a && {
-      balance: Number(a.balance), equity: Number(a.equity), available: Number(a.free_margin),
-      marginUsed: Number(a.used_margin), upnl: Number(a.unrealized_pnl),
+      balance: n(a.balance), equity: n(a.equity), available: n(a.free_margin),
+      marginUsed: Number(a.used_margin), upnl: n(a.unrealized_pnl),
       realized: Number(a.realized_pnl),
       positionCount: state.positions.length, orderCount: state.orders.length
     }
@@ -42,9 +47,9 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
     /* ---------- adapter for terminal.js ---------- */
     const provider = {
       serverMode: true,
-      canTrade: true,
+      get canTrade() { return connection === 'ready' && state.account?.valuation_status === 'fresh' },
       feeRate(market: string) { return pricingRef.current?.[market] ?? null },
-      get status() { return state.account ? 'ready' : 'loading' },
+      get status() { return connection !== 'ready' ? connection : state.account?.valuation_status === 'stale' ? 'stale' : state.account ? 'ready' : 'loading' },
       get state() {
         const md = (window as any).__ofMark
         return {
@@ -53,10 +58,8 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
             size: Number(p.quantity), entry: Number(p.entry_price), leverage: p.leverage,
             margin: Number(p.margin), currency: 'DAI', sl: p.sl_price != null ? Number(p.sl_price) : null,
             tp: p.tp_price != null ? Number(p.tp_price) : null,
-            /* engine rule: liquidation at ~90% margin loss (maint 10%) */
-            liq: p.side === 'long'
-              ? Number(p.entry_price) * (1 - 0.9 / p.leverage)
-              : Number(p.entry_price) * (1 + 0.9 / p.leverage),
+            liq: n(p.liquidation_price),
+            srvPnl: n(p.unrealized_pnl), srvRoi: n(p.roi_pct),
             /* server-authoritative live values for the details dialog */
             srvMark: p.mark_price != null ? Number(p.mark_price) : null,
             realized: p.status !== 'open' ? Number(p.realized_pnl) : null,
@@ -87,13 +90,10 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
       getPosition(id: string) { return this.state.positions.find(p => p.id === id) },
       checkTriggers() { /* server engine monitors triggers browser-independently */ },
       loadDemoScenario() { /* disabled in server mode — persistent real account */ },
-      liqPrice(side: string, entry: number, leverage: number) {
-        /* maintenance 10% of margin ⇒ liquidation at ~0.9×margin loss */
-        const move = entry * 0.9 / leverage
-        return side === 'long' ? entry - move : entry + move
-      },
+      liqPrice() { return null /* exact liquidation comes from the backend position snapshot */ },
       validate(req: any) {
         const errs: string[] = []
+        if (!provider.canTrade) return [L('دادهٔ حساب یا قیمت به‌روز نیست. دوباره تلاش کن.', 'Account data or prices are stale. Retry.')]
         const a = fmtAcct(state.account)
         if (!a) return [L('حساب معاملاتی در دسترس نیست — دوباره وارد شو.', 'Trading account unavailable — sign in again.')]
         if (!(req.collateral > 0)) errs.push(L('کولترال باید بزرگ‌تر از صفر باشد.', 'Collateral must be positive.'))
@@ -134,8 +134,8 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
         }
         return { ok: false, errors: [reasons[data?.error] || data?.error || L('خطای سرور.', 'Server error.')] }
       },
-      async closePosition(id: string) { await post(`/trading/positions/${id}/close`, {}); refresh() },
-      async cancelOrder(id: string) { await post(`/trading/orders/${id}/cancel`, {}); refresh() },
+      async closePosition(id: string, fraction = 1) { await post(`/trading/positions/${id}/close`, { fraction }, crypto.randomUUID()); await refresh() },
+      async cancelOrder(id: string) { await post(`/trading/orders/${id}/cancel`, {}); await refresh() },
       async modifyRisk(id: string, sl: number | null, tp: number | null) {
         const res = await postRaw(`/trading/positions/${id}/protection`, { sl, tp })
         const data = await res.json().catch(() => null)
@@ -150,21 +150,26 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
       }
     }
 
-    const post = async (path: string, body: any) => { await postRaw(path, body) }
-    const postRaw = (path: string, body: any) => fetch(BACKEND + path, {
-      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    const post = async (path: string, body: any, key?: string) => { const res = await postRaw(path, body, key); if (!res.ok) { const data = await res.json().catch(() => null); throw new Error(data?.error || `HTTP ${res.status}`) } }
+    const postRaw = (path: string, body: any, key?: string) => fetch(BACKEND + path, {
+      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json', ...(key ? {'Idempotency-Key':key} : {}) }, body: JSON.stringify(body)
     })
 
     async function refresh() {
+      const controller = new AbortController()
+      requests.add(controller)
       try {
-        const res = await fetch(BACKEND + '/trading/state', { credentials: 'include' })
-        if (stopped || !res.ok) return
+        const res = await fetch(BACKEND + '/trading/state', { credentials: 'include', signal:controller.signal })
+        if (stopped) return
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const nextState = await res.json()
         if (stopped) return
+        if (nextState.as_of < (state as any).as_of) return
         state = nextState
+        connection = 'ready'
         ;(window as any).__ofServerTP = provider
         window.dispatchEvent(new CustomEvent('of-trading-update'))
-      } catch { /* offline — keep last state */ }
+      } catch { if (!stopped) { connection = 'disconnected'; changed() } } finally { requests.delete(controller) }
     }
 
     /* SSE stream: server pushes account/positions changes */
@@ -174,12 +179,12 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
         es = new EventSource(BACKEND + '/trading/stream', { withCredentials: true } as any)
         es.onmessage = (ev) => {
           if (stopped) return
-          try { state = JSON.parse(ev.data) } catch { return }
+          try { const next = JSON.parse(ev.data); if (next.as_of < (state as any).as_of) return; state = next; connection = 'ready' } catch { return }
           ;(window as any).__ofServerTP = provider
           window.dispatchEvent(new CustomEvent('of-trading-update'))
         }
-        es.onerror = () => { es?.close(); es = null; setTimeout(connect, 3000) }
-      } catch { setTimeout(connect, 5000) }
+        es.onerror = () => { es?.close(); es = null; connection = 'disconnected'; changed(); reconnect = setTimeout(connect, 3000) }
+      } catch { connection = 'disconnected'; changed(); reconnect = setTimeout(connect, 5000) }
     }
 
     ;(window as any).__ofServerTP = provider
@@ -191,6 +196,8 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
     return () => {
       removeEventListener('of-refresh-trading', onRefresh)
       stopped = true
+      clearTimeout(reconnect)
+      requests.forEach(c => c.abort())
       es?.close()
       delete (window as any).__ofServerTP
       window.dispatchEvent(new CustomEvent('of-trading-off'))

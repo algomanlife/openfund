@@ -37,7 +37,7 @@
 ## Database rollback
 
 1. Dashboard → `openfund-db` → **Backups** → restore (creates a new instance).
-2. Repoint `DATABASE_URL` (both services) to the restored instance.
+2. Repoint `DATABASE_URL` (API) and `DB_CONNECTION_STRING` (CMS) to the restored instance.
 3. Run `npm run migrate --prefix apps/backend` once against it (idempotent).
 4. For point-in-time content recovery, prefer Directus item-level Revisions
    over a database restore — it is surgical and always available.

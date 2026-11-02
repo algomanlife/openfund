@@ -30,7 +30,7 @@ async function login() {
     domain: "localhost:5173",
     uri: "http://localhost:5173",
     address: wallet.address,
-    chainId: 421614,
+    chainId: 11155111,
     nonce: n.data.nonce,
     version: "1",
   });

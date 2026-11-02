@@ -33,7 +33,7 @@ const j = async (method, path, body, cookie, headers = {}) => {
 
 async function login(wallet) {
   const n = (await j('POST', '/auth/nonce', { address: wallet.address })).data
-  const message = createSiweMessage({ domain: DOMAIN, address: wallet.address, uri: 'http://localhost:5173/', chainId: 421614, nonce: n.nonce, version: '1' })
+  const message = createSiweMessage({ domain: DOMAIN, address: wallet.address, uri: 'http://localhost:5173/', chainId: 11155111, nonce: n.nonce, version: '1' })
   const signature = await wallet.signMessage({ message })
   const r = await j('POST', '/auth/verify', { message, signature })
   return r.cookie
@@ -101,7 +101,7 @@ const clean = async (userId) => {
   const st = await j('GET', '/trading/state', null, C1)
   ok('balance = 100000 - 3.5 fee', near(st.data.account.balance, 99996.5, 0.01), st.data.account.balance)
   ok('used margin = 1000', st.data.account.used_margin === '1000.00')
-  ok('free margin = 98996.50', near(st.data.account.free_margin, 98996.5, 0.01), st.data.account.free_margin)
+  ok('free margin includes open spread loss', near(st.data.account.free_margin, 98996.5 + (50000-expEntry)*(10000/expEntry), 0.01), st.data.account.free_margin)
 
   /* live PnL at 51000: qty × (mark − entry) — presentation uses the raw mark */
   marketDataPrice(MKT, '51000')
