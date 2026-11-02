@@ -272,6 +272,7 @@ export function SharedTradingTerminal() {
       base = `${location.origin}${import.meta.env.BASE_URL}`;
     const translations = {
       ...cms,
+      "book.grouping": {fa:"گروه",en:"Group"},
       "book.tab": {fa:"دفتر مجازی",en:"Book"},
       "book.simulated": {fa:"Gains VOB",en:"Gains VOB"},
       "book.note": {fa:"نقدینگی مجازی Gains؛ دفتر سفارش متمرکز نیست.",en:"Gains virtual execution liquidity; no resting orders."},

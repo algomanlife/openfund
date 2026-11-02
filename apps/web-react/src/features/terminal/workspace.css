@@ -262,3 +262,8 @@ html[lang="fa"] .panel-tabs, html[lang="fa"] .book-controls { direction: rtl; }
   .status-bar .sb-ver, .status-bar .sb-src { display: none; }
 }
 .status-bar .sb-item { white-space: nowrap; flex-shrink: 0; }
+/* Reserve native select-arrow width consistently across Chromium platforms. */
+.book-controls { gap: 6px; }
+.book-controls #book-group { width: 54px; }
+.book-controls #book-denomination { width: 54px; }
+.book-controls label { flex-shrink: 0; }

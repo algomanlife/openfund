@@ -97,7 +97,7 @@ async function metrics(page) {
           check(`${label}: header is 40 + 34px`,state.outer.headerHeight===40 && state.inner.tickerHeight===34 && !state.outer.headerOverflow);
           check(`${label}: order entry has no overflow`,state.inner.panelScrollHeight<=state.inner.panelHeight+1 && state.inner.panelScrollWidth<=state.inner.panelWidth+1);
           check(`${label}: required controls and warnings fit`,state.inner.visibleControls.every(c=>!c.visible||c.contained));
-          check(`${label}: input labels fit`,state.inner.controlOverflow.length===0);
+          check(`${label}: input labels fit (${state.inner.controlOverflow.join(", ") || "no overflow"})`,state.inner.controlOverflow.length===0);
           check(`${label}: numbers stay LTR`,state.inner.numericDirections.every(d=>d==='ltr'));
           check(`${label}: chart dominates`,state.inner.chart.width>width*.5 && state.inner.chart.height>300);
           const key=`${product}:${width}:${type}`;
