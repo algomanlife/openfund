@@ -178,6 +178,12 @@ jobs:
   secrets:
     name: Secret scan
     runs-on: ubuntu-latest
+    # pull-requests: write lets gitleaks-action post its findings as a PR
+    # comment; without it the job logs a "Resource not accessible by
+    # integration" HttpError even when the scan itself succeeds.
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:

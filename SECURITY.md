@@ -17,8 +17,14 @@ suspected vulnerabilities.
   admin/editorial interface — its public role is read-only on published content
   collections.
 - **Secrets**: no secrets in Git. Render prompts for secrets at blueprint apply
-  (`sync: false`) or generates them (`generateValue`). gitleaks runs on every PR.
-  `VITE_*` variables are public by definition and must never carry secrets.
+  (`sync: false`) or generates them (`generateValue`). gitleaks runs on every PR
+  with the default rule set; the repository `gitleaks.toml` only extends it with
+  a path allowlist for generated browser bundles (`react/`, `publish-openfund/`,
+  `dist/`), whose minified third-party SDK code embeds public constants (the
+  documented RainbowKit provider fallback key and wallet-SDK telemetry keys that
+  ship inside the published npm packages). Source directories stay fully
+  scanned. `VITE_*` variables are public by definition and must never carry
+  secrets.
 - **Frontend safety**: CMS-rendered text is DOM-built (no HTML injection), link
   destinations pass fixed whitelists, and anonymous CMS writes are rejected
   (verified by automated probes).
