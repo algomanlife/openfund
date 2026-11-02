@@ -304,10 +304,10 @@
         "height": 900
       },
       "session": "anonymous",
-      "capturedAt": "2026-11-02T15:28:17.940Z",
-      "sourceCommit": "0aae9da5028e02fd447fec69da99d014fd872ea3",
+      "capturedAt": "2026-11-02T15:40:54.493Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
       "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
-      "sha256": "eb915d87e40c62635be981a03e63d1f28be1d4289d47bcbc4d06f3967f73a4ab"
+      "sha256": "5072531307bb689ec3e7cc93789ffaa09d863b9e995095c3c4ed908fd894bd4b"
     },
     {
       "file": "terminal-prop-en-1280.png",
@@ -317,10 +317,10 @@
         "height": 720
       },
       "session": "anonymous",
-      "capturedAt": "2026-11-02T15:28:18.484Z",
-      "sourceCommit": "0aae9da5028e02fd447fec69da99d014fd872ea3",
+      "capturedAt": "2026-11-02T15:40:55.089Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
       "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
-      "sha256": "1a6a64c22fb6e2859b9e9b25173fea199a09f54c01dbf29b0dc826b7c90d8d06"
+      "sha256": "e541a700d98387451554847123144e56fe559a6f2873fd22c5d983bb0fc8f86d"
     },
     {
       "file": "terminal-before-prop-fa.png",
@@ -343,10 +343,10 @@
         "height": 900
       },
       "session": "anonymous",
-      "capturedAt": "2026-11-02T15:28:21.989Z",
-      "sourceCommit": "0aae9da5028e02fd447fec69da99d014fd872ea3",
+      "capturedAt": "2026-11-02T15:40:58.446Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
       "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
-      "sha256": "f2aa4e62424bf9c99b026e64f03d10bdfaf7746d7cc1593f8388a8942a69d5b0"
+      "sha256": "e9d7225b2bcdf893bdf6480bbec95f212b3ef60397ab449fdab4e5e14ca847b7"
     },
     {
       "file": "terminal-prop-fa-1280.png",
@@ -356,10 +356,10 @@
         "height": 720
       },
       "session": "anonymous",
-      "capturedAt": "2026-11-02T15:28:22.499Z",
-      "sourceCommit": "0aae9da5028e02fd447fec69da99d014fd872ea3",
+      "capturedAt": "2026-11-02T15:40:59.003Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
       "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
-      "sha256": "75317814e7c4808604a803b4ef31d84e1e9ff036c6c2caa05b84566191eda038"
+      "sha256": "a74fd34f5a7619c54dda0f53d26ff7fe2381841f4ac37f141a771b2f6cc4e15c"
     },
     {
       "file": "terminal-before-perpetual-en.png",
@@ -382,10 +382,10 @@
         "height": 900
       },
       "session": "anonymous",
-      "capturedAt": "2026-11-02T15:28:26.304Z",
-      "sourceCommit": "0aae9da5028e02fd447fec69da99d014fd872ea3",
+      "capturedAt": "2026-11-02T15:41:02.458Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
       "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
-      "sha256": "987385fc208203ddef6c21f4dbdf2b4edba7819d6abddfb99c7eb016639628e3"
+      "sha256": "afade53437c0425b0b9fd8c3999ca5f0186347fb3f9b6c6daddf37265422abe2"
     },
     {
       "file": "terminal-perpetual-en-1280.png",
@@ -395,10 +395,10 @@
         "height": 720
       },
       "session": "anonymous",
-      "capturedAt": "2026-11-02T15:28:26.798Z",
-      "sourceCommit": "0aae9da5028e02fd447fec69da99d014fd872ea3",
+      "capturedAt": "2026-11-02T15:41:02.951Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
       "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
-      "sha256": "5c110c9b280398cd6997ecd4607729d8e47e861ca7f837f9ad5b06c38c2503a5"
+      "sha256": "c170ac82b020ce011a1a84160389f59bc15d7337b63012fc9cbf33cc98942c8f"
     },
     {
       "file": "terminal-before-perpetual-fa.png",
@@ -421,10 +421,10 @@
         "height": 900
       },
       "session": "anonymous",
-      "capturedAt": "2026-11-02T15:28:30.089Z",
-      "sourceCommit": "0aae9da5028e02fd447fec69da99d014fd872ea3",
+      "capturedAt": "2026-11-02T15:41:06.230Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
       "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
-      "sha256": "b6f5a8268bce1f16a4306d1db0c8601778835af3604b24ca585360674e701818"
+      "sha256": "7e9f3e876cf2d4e35d9f979bdbd499c2bdb9ffe2df69487408021871b72a1392"
     },
     {
       "file": "terminal-perpetual-fa-1280.png",
@@ -434,10 +434,10 @@
         "height": 720
       },
       "session": "anonymous",
-      "capturedAt": "2026-11-02T15:28:30.621Z",
-      "sourceCommit": "0aae9da5028e02fd447fec69da99d014fd872ea3",
+      "capturedAt": "2026-11-02T15:41:06.807Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
       "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
-      "sha256": "5d82ac39cc3bf968a2927c8104810b0a04c3b42c2eb1ec1746cc1f9fce315d8c"
+      "sha256": "2b454072d07b59aeaddead41ef9a6e231853edcc1ee8c13ca97ce583c8f6fa45"
     },
     {
       "file": "terminal-compact-fa-1280.png",
@@ -447,10 +447,10 @@
         "height": 600
       },
       "session": "anonymous",
-      "capturedAt": "2026-11-02T15:28:23.255235+00:00",
-      "sourceCommit": "0aae9da5028e02fd447fec69da99d014fd872ea3",
+      "capturedAt": "2026-11-02T15:40:59.776732+00:00",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
       "state": "Explicit Order view selected in the responsive workspace; no hidden overflow or financial fixtures",
-      "sha256": "0eb30b070420a0fee04f3b75c8b97df0db627b9b59b9d089b0b202c27540e3b7"
+      "sha256": "243613b25999ff7b0397057901ff7264974c5dedb47c43617ac03f4883e66a56"
     },
     {
       "file": "terminal-compact-fa-390.png",
@@ -460,10 +460,10 @@
         "height": 844
       },
       "session": "anonymous",
-      "capturedAt": "2026-11-02T15:28:23.686460+00:00",
-      "sourceCommit": "0aae9da5028e02fd447fec69da99d014fd872ea3",
+      "capturedAt": "2026-11-02T15:41:00.238374+00:00",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
       "state": "Explicit Order view selected in the responsive workspace; no hidden overflow or financial fixtures",
-      "sha256": "6902f8b139cdd0539fcebafcb54f87aa6f5ffbf02cc083e101e0f430eb612b9c"
+      "sha256": "bab5dd94289c674a542623751ea408f26a95e50a9c10c8cedb03de971fa413b7"
     }
   ]
 }

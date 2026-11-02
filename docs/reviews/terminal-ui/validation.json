@@ -1,6 +1,6 @@
 {
   "baseline": "c4cf6025108e137cf157a33ce0956d604760c4e3",
-  "sourceCommit": "0aae9da5028e02fd447fec69da99d014fd872ea3",
+  "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
   "branch": "codex/terminal-ui-density",
   "date": "2026-11-02",
   "environment": "Local Chromium, production Vite build using unchanged checked-in Vela assets, isolated openfund_terminal_ui_test PostgreSQL database, actual backend and live public Gains data.",

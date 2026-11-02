@@ -6,7 +6,7 @@ Implemented and locally verified on 2026-11-02. This is a frontend presentation 
 
 - Latest main at start: `c4cf6025108e137cf157a33ce0956d604760c4e3`.
 - Branch: `codex/terminal-ui-density`; isolated worktree `terminal-ui-redesign`.
-- Implementation commits: `726ebd2` and `0aae9da`; screenshot and acceptance source: `0aae9da5028e02fd447fec69da99d014fd872ea3`.
+- Implementation commits: `726ebd2`, `0aae9da` and `64b23c9`; screenshot and acceptance source: `64b23c9ac3ef2e38854600854a71df29a789609d`.
 - Inspected Git status, remotes, worktrees, open PRs, current contracts, feature status, roadmap, route registration, shared shell, account adapters, legacy markup/styles, brand tokens and Vela container before editing. QwenWork's separate website branch and unfinished FAQ/Learning seeds were inspected read-only and preserved.
 - Both actual products were rendered in English and Persian before implementation. Before captures show the tall two-row outer navigation, wrapped market ticker and order controls continuing below the visible panel at 1440 × 900.
 - Both products use `TerminalShell` and one disposable `SharedTradingTerminal` iframe. The original 300/336px side columns, vertical form, scrollable order panel, wrapping statistics and outer header consumed chart space. The classic terminal already fixed the primary grid to LTR, but local text and short-window alternatives needed explicit direction boundaries.
@@ -16,6 +16,8 @@ Implemented and locally verified on 2026-11-02. This is a frontend presentation 
 The trading route has a 40px application row and 34px market row. Logo, product switch, Dashboard, Terminal, Portfolio, Journal, More, wallet/account controls, theme and language remain available. More holds low-frequency routes and provides the collapsed destinations on small screens. Existing account-scoped route construction is reused.
 
 The workspace retains chart, Gains VOB/Trades and order entry in fixed physical columns. It uses the existing Obsidian, dark-green surfaces, mint, negative color and typography assets. Thin structural dividers separate panels, tabs, summary, field groups and status. The chart occupies more than half the supported desktop width. The existing resizable activity area defaults to a compact height, with scrolling reserved for variable account tables and market levels.
+
+Book grouping and denomination selectors reserve native arrow width, with a localized compact Group caption. This preserves the full 100× grouping value and corrects the order-book controls overflow caught by the first Linux CI run; the same browser acceptance remains enforced.
 
 The order panel uses a compact account summary, Long/Short segment, order-type tabs, existing leverage slider/presets, paired collateral/size and SL/TP fields, and accessible percentage controls. Market orders reserve no space for a disabled trigger input. Liquidation, margin, opening fee and maximum loss remain visible. Entry, index and price-impact estimates are in an adjacent Order Details disclosure, which opens without moving the form or action. Existing validation and submission handlers are unchanged.
 
