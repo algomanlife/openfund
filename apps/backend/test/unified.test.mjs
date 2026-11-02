@@ -298,3 +298,11 @@ test('missing and future quote timestamps are never authoritative fresh marks',(
 })
 
 test('opening an order without a durable request identity cannot execute twice',async()=>{const a=await setup();await assert.rejects(()=>a.engine.submitOrder(a.id,req),/idempotency_key_required/);assert.equal((await a.engine.state(a.id)).positions.length,0)})
+
+test('partial close respects base quantity precision and allocates only the closed exposure',async()=>{
+ const a=await setup();a.md.markets.get('BTC/USD').sizePrecision=5;const open=await a.engine.submitOrder(a.id,req,'precision-open');
+ const out=await a.engine.closePosition(a.id,open.position.id,{fraction:'0.5',idempotencyKey:'precision-half'});
+ assert.equal(out.position.quantity,'0.09999');const st=await a.engine.state(a.id);assert.equal(st.positions[0].quantity,'0.1');
+ near(Number(out.position.margin)+Number(st.positions[0].margin),1000,.011);near(Number(out.position.open_fee)+Number(st.positions[0].open_fee),3.5,.00011);
+ assert.ok(Number(out.position.margin)<=500);
+})

@@ -34,6 +34,9 @@ const cfg = {
   corsOrigins: (process.env.CORS_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173').split(',')
 }
 
+const testDatabase = /(?:^|[_-])(test|audit|ci)(?:$|[_-])/.test(new URL(cfg.dbUrl).pathname.slice(1))
+const testMode = !cfg.prod && process.env.SIM_TEST_MODE === '1' && testDatabase
+
 const pool = new pg.Pool({ connectionString: cfg.dbUrl })
 const engine = new Engine(pool, marketData)
 const portfolio = new Portfolio(pool, marketData)
@@ -445,7 +448,7 @@ app.get("/trading/stream", tradingAuth, async (req, res) => {
 
 /* test-only price injection seam — enabled ONLY with SIM_TEST_MODE=1
    (never active in production): lets engine tests drive deterministic marks */
-if (!cfg.prod && process.env.SIM_TEST_MODE === '1') {
+if (testMode) {
   app.post('/internal/inject-price', (req, res) => {
     const { symbol, price, metadata } = req.body || {}
     if (typeof symbol !== 'string' || price == null) return res.status(400).json({ error: 'invalid' })

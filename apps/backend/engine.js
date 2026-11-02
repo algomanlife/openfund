@@ -647,9 +647,11 @@ export class Engine {
         const t = this.md.tradeable(pos.market)
         if (!t.ok) { await c.query('ROLLBACK'); throw Object.assign(new Error(t.reason), { status: 409 }) }
         if (f.lt(1)) {
-          const qty = D(pos.quantity).times(f).toDecimalPlaces(10)
-          const margin = D(pos.margin).times(f).toDecimalPlaces(10)
-          const fee = D(pos.open_fee).times(f).toDecimalPlaces(10)
+          const precision = this.md.marketMeta(pos.market)?.sizePrecision ?? 10
+          const qty = D(pos.quantity).times(f).toDecimalPlaces(precision,Decimal.ROUND_DOWN)
+          const allocated = qty.div(pos.quantity)
+          const margin = D(pos.margin).times(allocated).toDecimalPlaces(10)
+          const fee = D(pos.open_fee).times(allocated).toDecimalPlaces(10)
           if (qty.lte(0) || margin.lt(SIM.MIN_MARGIN) || D(pos.margin).minus(margin).lt(SIM.MIN_MARGIN)) throw Object.assign(new Error('partial_close_too_small'), { status: 400 })
           const { rows } = await c.query(`INSERT INTO trading_positions
             (order_id,account_id,user_id,market,side,quantity,entry_price,margin,leverage,sl_price,tp_price,open_fee,opened_at,parent_position_id)

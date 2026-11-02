@@ -247,6 +247,7 @@ function check(name, value) {
       path: path.join(OUT, "book-live.png"),
       fullPage: true,
     });
+    await frame.locator('.book-panel').screenshot({path:path.join(OUT,'book-panel.png')});
     await frame.getByRole("tab", { name: "Trades", exact: true }).click();
     await frame
       .locator("#trades-list .tr-row")
@@ -260,6 +261,7 @@ function check(name, value) {
       path: path.join(OUT, "trades-live.png"),
       fullPage: true,
     });
+    await frame.locator('.book-panel').screenshot({path:path.join(OUT,'trades-panel.png')});
     await page.emulateMedia({ reducedMotion: "reduce" });
     check(
       "Reduced motion removes depth transition",
