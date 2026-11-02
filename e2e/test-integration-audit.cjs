@@ -91,7 +91,7 @@ function check(name,value) { assert.ok(value,name); results.push(name); console.
     const frame=page.frameLocator('iframe')
     await frame.locator('#ac-equity').waitFor()
     const state=await page.evaluate(async API=>{
-      const post=async(p,b)=>{const r=await fetch(API+p,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok)throw Error(await r.text());return r.json()}
+      const post=async(p,b)=>{const r=await fetch(API+p,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID()},body:JSON.stringify(b)});if(!r.ok)throw Error(await r.text());return r.json()}
       await post('/internal/inject-price',{symbol:'BTC/USD',price:'50000',metadata:{base:'BTC',group:'crypto',maxLeverage:100}})
       const o=await post('/trading/order',{market:'BTC/USD',side:'long',order_type:'market',margin:1000,leverage:10})
       await post('/internal/inject-price',{symbol:'BTC/USD',price:'51000'})

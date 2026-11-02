@@ -128,7 +128,10 @@
   align-items: center;
   gap: 8px;
 }
-.of-terminal-actions > [data-rk] { min-width: 0; max-width: 100%; }
+.of-terminal-actions > [data-rk] {
+  min-width: 0;
+  max-width: 100%;
+}
 .of-terminal .of-account-context {
   font-size: 12px;
   color: var(--of-muted);
@@ -590,5 +593,183 @@ body:has(.of-terminal) {
     max-width: 160px;
   }
 }
-.of-account-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:18px;margin-block:20px}.of-account-card{display:block;text-decoration:none;color:inherit;transition:border-color .18s,transform .18s;min-width:0}.of-account-card:hover,.of-account-card.selected{border-color:var(--of-mint)}.of-account-card:hover{transform:translateY(-2px)}.of-account-card-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}.of-account-card-heading h3{margin:0}.of-account-id{display:block;color:var(--of-muted);font-size:11px;overflow-wrap:anywhere}.of-account-card dl{display:grid;grid-template-columns:1fr 1fr;gap:16px}.of-account-card dt{font-size:12px;color:var(--of-muted)}.of-account-card dd{margin:0;font-variant-numeric:tabular-nums;font-size:20px}.of-card-action{display:block;color:var(--of-mint);margin-top:18px}.of-muted{color:var(--of-muted)}@media(prefers-reduced-motion:reduce){.of-account-card{transition:none}.of-account-card:hover{transform:none}}
-.of-journal-workspace{display:grid;grid-template-columns:185px minmax(0,1fr);gap:24px}.of-journal-nav{border-inline-end:1px solid var(--of-line);padding-inline-end:15px}.of-journal-nav nav{display:grid;gap:5px;margin-top:18px}.of-journal-nav button{text-align:start;border-color:transparent;background:transparent;font-size:13px}.of-journal-nav button[aria-current=page]{background:var(--of-panel);border-color:var(--of-line);color:var(--of-mint)}.of-journal-content{min-width:0}.of-analytics-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.of-analytics-grid svg{width:100%;max-height:300px}.of-journal-lower{display:grid;grid-template-columns:2fr 1fr;gap:16px}.of-trade-activity{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--of-line);text-decoration:none;color:inherit}.of-journal-analytics.compact .of-panel{padding:12px}.of-journal-analytics.compact .of-metric{padding:10px}.of-journal-analytics .of-metrics{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}.of-journal-analytics .of-panel{margin-block:12px}@media(max-width:1000px){.of-analytics-grid{grid-template-columns:1fr 1fr}.of-journal-lower{grid-template-columns:1fr}}@media(max-width:700px){.of-journal-workspace{grid-template-columns:1fr}.of-journal-nav{border:0}.of-journal-nav nav{display:flex;overflow:auto}.of-journal-nav button{white-space:nowrap}.of-analytics-grid{grid-template-columns:1fr}.of-journal-content .of-account-bar{align-items:start;flex-direction:column}.of-journal-analytics .of-metrics{grid-template-columns:1fr 1fr}}
+.of-account-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 18px;
+  margin-block: 20px;
+}
+.of-account-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.18s,
+    transform 0.18s;
+  min-width: 0;
+}
+.of-account-card:hover,
+.of-account-card.selected {
+  border-color: var(--of-mint);
+}
+.of-account-card:hover {
+  transform: translateY(-2px);
+}
+.of-account-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.of-account-card-heading h3 {
+  margin: 0;
+}
+.of-account-id {
+  display: block;
+  color: var(--of-muted);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.of-account-card dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.of-account-card dt {
+  font-size: 12px;
+  color: var(--of-muted);
+}
+.of-account-card dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-size: 20px;
+}
+.of-card-action {
+  display: block;
+  color: var(--of-mint);
+  margin-top: 18px;
+}
+.of-muted {
+  color: var(--of-muted);
+}
+@media (prefers-reduced-motion: reduce) {
+  .of-account-card {
+    transition: none;
+  }
+  .of-account-card:hover {
+    transform: none;
+  }
+}
+.of-journal-workspace {
+  display: grid;
+  grid-template-columns: 185px minmax(0, 1fr);
+  gap: 24px;
+}
+.of-journal-nav {
+  border-inline-end: 1px solid var(--of-line);
+  padding-inline-end: 15px;
+}
+.of-journal-nav nav {
+  display: grid;
+  gap: 5px;
+  margin-top: 18px;
+}
+.of-journal-nav button {
+  text-align: start;
+  border-color: transparent;
+  background: transparent;
+  font-size: 13px;
+}
+.of-journal-nav button[aria-current="page"] {
+  background: var(--of-panel);
+  border-color: var(--of-line);
+  color: var(--of-mint);
+}
+.of-journal-content {
+  min-width: 0;
+}
+.of-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.of-analytics-grid svg {
+  width: 100%;
+  max-height: 300px;
+}
+.of-journal-lower {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+}
+.of-trade-activity {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--of-line);
+  text-decoration: none;
+  color: inherit;
+}
+.of-journal-analytics.compact .of-panel {
+  padding: 12px;
+}
+.of-journal-analytics.compact .of-metric {
+  padding: 10px;
+}
+.of-journal-analytics .of-metrics {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+.of-journal-analytics .of-panel {
+  margin-block: 12px;
+}
+@media (max-width: 1000px) {
+  .of-analytics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .of-journal-lower {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 700px) {
+  .of-journal-workspace {
+    grid-template-columns: 1fr;
+  }
+  .of-journal-nav {
+    border: 0;
+  }
+  .of-journal-nav nav {
+    display: flex;
+    overflow: auto;
+  }
+  .of-journal-nav button {
+    white-space: nowrap;
+  }
+  .of-analytics-grid {
+    grid-template-columns: 1fr;
+  }
+  .of-journal-content .of-account-bar {
+    align-items: start;
+    flex-direction: column;
+  }
+  .of-journal-analytics .of-metrics {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.of-journal-workspace,
+.of-journal-nav {
+  min-width: 0;
+  max-width: 100%;
+}
+.of-journal-nav nav {
+  max-width: 100%;
+}
+@media (max-width: 700px) {
+  .of-journal-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .of-journal-nav nav button {
+    flex: 0 0 auto;
+  }
+}

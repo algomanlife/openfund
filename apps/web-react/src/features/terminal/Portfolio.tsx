@@ -25,6 +25,7 @@ export default function ProductPortfolio() {
     [draft, setDraft] = useState({ notes: "", tags: "" }),
     [actionError, setActionError] = useState(""),
     [busy, setBusy] = useState(false);
+  const unit=context?.state?.account?.currency || 'USD';
   const signed = session.status === "authenticated",
     query = new URLSearchParams(
       Object.entries(filter).filter(([, v]) => v),
@@ -165,19 +166,19 @@ export default function ProductPortfolio() {
       )}
       <div className="of-metrics">
         <Metric
-          label={t("موجودی حساب · DAI", "Account balance · DAI")}
+          label={t(`موجودی حساب · ${unit}`, `Account balance · ${unit}`)}
           value={a?.balance}
         />
         <Metric
-          label={t("سود تحقق‌یافتهٔ حساب · DAI", "Account realized PnL · DAI")}
+          label={t(`سود تحقق‌یافتهٔ حساب · ${unit}`, `Account realized PnL · ${unit}`)}
           value={a?.realizedPnl}
         />
         <Metric
-          label={t("سود باز · DAI", "Unrealized PnL · DAI")}
+          label={t(`سود باز · ${unit}`, `Unrealized PnL · ${unit}`)}
           value={a?.unrealizedPnl}
         />
         <Metric
-          label={t("مارجین مصرفی · DAI", "Used margin · DAI")}
+          label={t(`مارجین مصرفی · ${unit}`, `Used margin · ${unit}`)}
           value={a?.usedMargin}
         />
       </div>
@@ -284,8 +285,8 @@ export default function ProductPortfolio() {
                   "قیمت ورود|Entry",
                   "قیمت خروج|Exit",
                   "اهرم|Leverage",
-                  "سود تحقق‌یافته · DAI|Realized PnL · DAI",
-                  "کارمزد · DAI|Fees · DAI",
+                  `سود تحقق‌یافته · ${unit}|Realized PnL · ${unit}`,
+                  `کارمزد · ${unit}|Fees · ${unit}`,
                   "وضعیت|Status",
                   "جزئیات|Details",
                 ].map((s) => (
@@ -354,7 +355,7 @@ export default function ProductPortfolio() {
                   "نوع|Type",
                   "جهت|Side",
                   "وضعیت|Status",
-                  "مارجین · DAI|Margin · DAI",
+                  `مارجین · ${unit}|Margin · ${unit}`,
                   "اهرم|Leverage",
                   "زمان|Time",
                   "دلیل رد|Rejection reason",
@@ -410,7 +411,7 @@ export default function ProductPortfolio() {
         <>
           <div className="of-metrics">
             <Metric
-              label={t("سود دوره · DAI", "Period PnL · DAI")}
+              label={t(`سود دوره · ${unit}`, `Period PnL · ${unit}`)}
               value={m?.netPnl}
             />
             <Metric
@@ -422,7 +423,7 @@ export default function ProductPortfolio() {
               value={m?.profitFactor}
             />
             <Metric
-              label={t("افت سرمایه · DAI", "Drawdown · DAI")}
+              label={t(`افت سرمایه · ${unit}`, `Drawdown · ${unit}`)}
               value={data?.drawdown?.maxDrawdown}
             />
           </div>
@@ -448,7 +449,7 @@ export default function ProductPortfolio() {
           </section>
           <section className="of-panel">
             <h2>
-              {t("منحنی سود تحقق‌یافته · DAI", "Realized PnL curve · DAI")}
+              {t(`منحنی سود تحقق‌یافته · ${unit}`, `Realized PnL curve · ${unit}`)}
             </h2>
             <p>{message("realizedCurve")}</p>
             <Curve points={data?.equityCurve || []} />
@@ -482,7 +483,7 @@ export default function ProductPortfolio() {
                 {buckets.data?.[k].map((b: any) => (
                   <p key={b.key}>
                     <bdi>{b.key}</bdi> · {b.trades} ·{" "}
-                    <bdi>{money(b.netPnl)} DAI</bdi>
+                    <bdi>{money(b.netPnl)} {unit}</bdi>
                   </p>
                 ))}
               </section>
@@ -539,7 +540,7 @@ export default function ProductPortfolio() {
             <h2>{detail.trade.symbol}</h2>
             <p dir="ltr">{detail.trade.ofPositionId}</p>
             <p>
-              {t("سود تحقق‌یافته · DAI", "Realized PnL · DAI")}:{" "}
+              {t(`سود تحقق‌یافته · ${unit}`, `Realized PnL · ${unit}`)}:{" "}
               <bdi>
                 {detail.trade.status === "open"
                   ? "—"
@@ -555,7 +556,7 @@ export default function ProductPortfolio() {
                 <thead>
                   <tr>
                     <th>{t("رویداد", "Event")}</th>
-                    <th>DAI</th>
+                    <th>{unit}</th>
                     <th>{t("موجودی پس از رویداد", "Balance after")}</th>
                   </tr>
                 </thead>

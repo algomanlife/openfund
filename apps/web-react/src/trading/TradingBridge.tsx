@@ -93,6 +93,7 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
       liqPrice() { return null /* exact liquidation comes from the backend position snapshot */ },
       validate(req: any) {
         const errs: string[] = []
+        if(state.account?.status === "permanently_disabled")return [L("این حساب برای همیشه غیرفعال شده است.","This Free Trial is permanently disabled.")]
         if (!provider.canTrade) return [L('دادهٔ حساب یا قیمت به‌روز نیست. دوباره تلاش کن.', 'Account data or prices are stale. Retry.')]
         const a = fmtAcct(state.account)
         if (!a) return [L('حساب معاملاتی در دسترس نیست — دوباره وارد شو.', 'Trading account unavailable — sign in again.')]

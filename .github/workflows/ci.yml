@@ -51,6 +51,7 @@ jobs:
           npm run test:plans
           npm run test:information
           npm run test:markets
+          npm run test:depth
       - name: Original Pine sources and provider regression tests
         working-directory: .
         run: npm run test:charts
@@ -108,7 +109,7 @@ jobs:
             if curl -fsS http://localhost:8080/health > /dev/null; then echo "health OK"; break; fi
           done
           curl -fsS http://localhost:8080/health > /dev/null || { echo "health check failed"; exit 1; }
-      - name: Test suite
+      - name: Test suite (including permanent trial risk and five-category fixtures)
         run: npm run test:all
       - name: Install browser test tools
         working-directory: .
