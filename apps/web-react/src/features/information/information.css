@@ -191,16 +191,27 @@ html[lang=en] .information-page .info-hero h1{font-size:58px;letter-spacing:-2px
 /* Resources dropdown in the shared header (website expansion). Desktop opens
    on hover/focus like the landing account menu; inside the mobile menu it
    renders as a flat group. */
-.information-page .nav-account .chevron{font:10px system-ui;color:#7c9185;margin-inline-start:6px}
-.information-page .nav-dropdown a{display:flex;flex-direction:column;gap:3px;text-decoration:none;padding:11px 9px;border-radius:5px;color:var(--white);font-size:13px;font-weight:500;transition:background .2s}
-.information-page .nav-dropdown a:hover{background:#82e7bd0d;color:var(--mint)}
-.information-page .nav-dropdown a[aria-current=page]{color:var(--mint)}
-[dir=ltr] .information-page .nav-dropdown{right:auto;left:-20px;text-align:left}
-[dir=ltr] .information-page .nav-dropdown:before{left:auto;right:0}
-@media(max-width:700px){
-  .information-page .navlinks.open .nav-account{width:100%}
-  .information-page .navlinks.open .nav-account>a{display:flex;justify-content:space-between;width:100%}
-  .information-page .navlinks.open .nav-dropdown{display:block;position:static;opacity:1;visibility:visible;transform:none;background:none;border:0;box-shadow:none;padding:0;width:auto;backdrop-filter:none}
-  .information-page .navlinks.open .nav-dropdown>span{display:none}
-  .information-page .navlinks.open .nav-dropdown a{padding:9px 4px;font-size:13px;font-weight:400}
+.openfund-header .nav-account .chevron{font:10px system-ui;color:#7c9185;margin-inline-start:6px}
+.openfund-header .nav-dropdown a{display:flex;flex-direction:column;gap:3px;text-decoration:none;padding:11px 9px;border-radius:5px;color:var(--white);font-size:13px;font-weight:500;transition:background .2s}
+.openfund-header .nav-dropdown a:hover{background:#82e7bd0d;color:var(--mint)}
+.openfund-header .nav-dropdown a[aria-current=page]{color:var(--mint)}
+[dir=ltr] .openfund-header .nav-dropdown{right:auto;left:-20px;text-align:left}
+[dir=ltr] .openfund-header .nav-dropdown:before{left:auto;right:0}
+@media(max-width:1000px){
+  .openfund-header .navlinks.open .nav-account{width:100%}
+  .openfund-header .navlinks.open .nav-account>a{display:flex;justify-content:space-between;width:100%}
+  .openfund-header .navlinks.open .nav-dropdown{display:block;position:static;opacity:1;visibility:visible;transform:none;background:none;border:0;box-shadow:none;padding:0;width:auto;backdrop-filter:none}
+  .openfund-header .navlinks.open .nav-dropdown>span{display:none}
+  .openfund-header .navlinks.open .nav-dropdown a{padding:9px 4px;font-size:13px;font-weight:400}
+}
+
+/* Match the existing navigation link while using a native disclosure button. */
+.openfund-header .resources-toggle{background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer}
+.openfund-header .resources-toggle .chevron{font:10px system-ui;color:#7c9185;margin-inline-start:6px}
+.openfund-header .nav-account.resources-open .nav-dropdown{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto;transition:none}
+.openfund-header .nav-account.resources-dismissed .nav-dropdown{opacity:0;visibility:hidden;pointer-events:none}
+.openfund-header .navlinks [data-active-section],.openfund-header .navlinks [aria-current=page]{color:var(--mint)}
+@media(max-width:1000px){
+  .openfund-header .navlinks.open{max-height:calc(100dvh - 84px);overflow-y:auto}
+  .openfund-header .navlinks.open .resources-toggle{display:flex;justify-content:space-between;width:100%}
 }

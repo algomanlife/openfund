@@ -469,3 +469,62 @@ test('selectors and link targets', () => {
   const counts = faqCountByCategory(bundledLibrary)
   assert.equal([...counts.values()].reduce((a, b) => a + b, 0), 43)
 })
+
+/* Public navigation must stay aligned with the actual router and both chrome
+ * consumers, including partial CMS menus left over from before the expansion. */
+const { JSDOM } = require('jsdom')
+const navBundle = buildSync({ entryPoints: [fileURLToPath(new URL('../src/features/information/navigation.ts', import.meta.url))], bundle: true, platform: 'node', format: 'cjs', packages: 'external', loader: { '.zip': 'dataurl' }, write: false })
+const navModule = { exports: {} }
+new Function('require', 'module', 'exports', navBundle.outputFiles[0].text)(require, navModule, navModule.exports)
+const { renderNavigation, navigationClick, navigationKeyDown } = navModule.exports
+function navigationFixture(locale, pathname, nav = null, footer = null) {
+  const dom = new JSDOM('<header><div id="navigation"></div></header><footer><div id="footer-links"></div></footer>')
+  globalThis.document = dom.window.document
+  renderNavigation(document, locale, pathname, nav, footer)
+  return dom
+}
+
+test('both locales expose the full website navigation with partial CMS data and no duplicate footer destinations', () => {
+  for (const locale of ['fa', 'en']) {
+    const dom = navigationFixture(locale, `/${locale}/faq`, [{ route: 'challenges', label: { en: 'Challenges', fa: 'چالش‌ها' } }], [
+      { destination: 'accounts-section', label: { en: 'Challenges', fa: 'چالش‌ها' } },
+      { destination: 'faq-section', label: { en: 'FAQ', fa: 'پرسش‌ها' } },
+      { destination: 'faq', label: { en: 'FAQ', fa: 'پرسش‌ها' } },
+      { destination: 'team-section', label: { en: 'Team', fa: 'تیم' } },
+    ])
+    const hrefs = [...document.querySelectorAll('header a')].map(a => a.getAttribute('href'))
+    for (const route of ['challenges','markets','rulebook','transparency','faq','learn','learn/glossary','tools','referral']) assert.ok(hrefs.includes(`#/${locale}/${route}`), route)
+    assert.ok(hrefs.includes(`#/${locale}/challenges?section=team`))
+    const footer = [...document.querySelectorAll('footer a')].map(a => a.getAttribute('href'))
+    assert.equal(new Set(footer).size, footer.length)
+    assert.equal(footer.filter(href => href.includes('/challenges') && !href.includes('section=team')).length, 1)
+    assert.equal(footer.filter(href => href === `#/${locale}/faq`).length, 1)
+    assert.ok(footer.every(href => href.startsWith(`#/${locale}/`)))
+    dom.window.close()
+  }
+})
+
+test('nested pages highlight their section without claiming the section landing page is current', () => {
+  const dom = navigationFixture('en', '/en/learn/lessons/perps-how-they-work')
+  const learn = document.querySelector('a[href="#/en/learn"]')
+  assert.equal(learn.getAttribute('data-active-section'), 'true')
+  assert.equal(learn.hasAttribute('aria-current'), false)
+  dom.window.close()
+})
+
+test('Resources is a disclosure rather than a route, with arrow navigation and Escape focus return', () => {
+  const dom = navigationFixture('en', '/en/faq')
+  const trigger = document.querySelector('.resources-toggle')
+  assert.equal(trigger.tagName, 'BUTTON')
+  navigationClick({ target: trigger }, document)
+  assert.equal(trigger.getAttribute('aria-expanded'), 'true')
+  let prevented = false
+  navigationKeyDown({ target: trigger, key: 'ArrowDown', preventDefault() { prevented = true } }, document)
+  assert.equal(prevented, true)
+  assert.equal(document.activeElement.getAttribute('href'), '#/en/faq')
+  navigationKeyDown({ target: document.activeElement, key: 'Escape', preventDefault() {}, stopPropagation() {} }, document)
+  assert.equal(document.activeElement, trigger)
+  assert.equal(trigger.getAttribute('aria-expanded'), 'false')
+  assert.ok(trigger.parentElement.classList.contains('resources-dismissed'))
+  dom.window.close()
+})

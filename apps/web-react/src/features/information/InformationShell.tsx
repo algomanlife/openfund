@@ -7,6 +7,7 @@ import { fetchCmsTranslations, fetchCmsNavigation, fetchCmsFooterLinks, type Cms
 import { RainbowConnect } from '../../wallet/RainbowConnect'
 import { labels, type Locale, type InfoPage } from './content'
 import './information.css'
+import { bindNavigation, renderNavigation, navigationClick, navigationKeyDown } from './navigation'
 
 const header = landingBody.match(/<header\b[^>]*>[\s\S]*?<\/header>/)![0]
 const footer = landingBody.match(/<footer[\s\S]*?<\/footer>/)![0]
@@ -38,7 +39,7 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
   useEffect(() => {
     let active = true
     void fetchCmsTranslations().then(cms => {
-      if (active) {
+      if (active && cms) {
         setDictionary({ ...fallbackTranslations, ...cms?.landing })
         setFaDictionary(cms?.landingFa || {})
       }
@@ -77,91 +78,7 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
         if (value?.startsWith('assets/') || value?.startsWith('downloads/')) el.setAttribute(attr, `${base}${value}`)
       }
     })
-    /* Navigation from Directus (labels/visibility editable, destinations
-       whitelisted), falling back to the structural defaults. Four primary
-       destinations stay flat; the website-expansion sections (FAQ, Tools,
-       Learning Center, Growth Partner) group into one Resources dropdown so
-       the header keeps its density. Editors hide a link by removing the row. */
-    if (part === 'header') {
-      const nav = template.content.querySelector('#navigation')
-      const PRIMARY = ['challenges', 'markets', 'rulebook', 'transparency'] as const
-      const RESOURCES = ['faq', 'tools', 'learn', 'referral'] as const
-      const byRoute = new Map((navItems || []).map(item => [item.route as string, item.label]))
-      const current = (route: string) => {
-        if (location.pathname.endsWith(`/${route}`)) return true
-        /* lesson/glossary/tool sub-routes keep their section highlighted */
-        if (route === 'learn') return /\/learn(\/|$)/.test(location.pathname)
-        if (route === 'tools') return /\/tools(\/|$)/.test(location.pathname)
-        if (route === 'faq') return /\/faq(\/|$)/.test(location.pathname)
-        if (route === 'referral') return /\/referral(\/|$)/.test(location.pathname)
-        return false
-      }
-      if (nav) {
-        nav.textContent = ''
-        const link = (route: string, label: Record<Locale, string>, host: Element) => {
-          const a = document.createElement('a')
-          a.setAttribute('data-info-page', route)
-          a.setAttribute('href', `#/${locale}/${route}`)
-          a.textContent = label[locale]
-          if (current(route)) a.setAttribute('aria-current', 'page')
-          host.appendChild(a)
-          return a
-        }
-        for (const route of PRIMARY) {
-          if (navItems && !byRoute.has(route)) continue
-          link(route, byRoute.get(route) || labels[route], nav)
-        }
-        /* a CMS nav that lists none of the resource routes is treated as
-           partial rather than intentional hiding: show the structural set */
-        const anyResourceRow = RESOURCES.some(route => byRoute.has(route))
-        const visibleResources = (!navItems || !anyResourceRow)
-          ? [...RESOURCES]
-          : RESOURCES.filter(route => byRoute.has(route))
-        if (visibleResources.length) {
-          const group = document.createElement('div')
-          group.className = 'nav-account'
-          const trigger = document.createElement('a')
-          trigger.setAttribute('href', `#/${locale}/${visibleResources[0]}`)
-          trigger.setAttribute('aria-haspopup', 'true')
-          trigger.innerHTML = `${labels.resources[locale]} <span class="chevron" aria-hidden="true">⌄</span>`
-          group.appendChild(trigger)
-          const dropdown = document.createElement('div')
-          dropdown.className = 'nav-dropdown'
-          const heading = document.createElement('span')
-          heading.textContent = labels.resources[locale]
-          dropdown.appendChild(heading)
-          for (const route of visibleResources) {
-            const a = link(route, byRoute.get(route) || labels[route], dropdown)
-            a.setAttribute('data-info-page', route)
-          }
-          group.appendChild(dropdown)
-          nav.appendChild(group)
-        }
-      }
-    }
-    if (part === 'footer' && footerLinks) {
-      const links = template.content.querySelector('#footer-links')
-      if (links) {
-        links.textContent = ''
-        const DEST: Record<string, string> = {
-          challenges: `#/${locale}/challenges`, markets: `#/${locale}/markets`,
-          rulebook: `#/${locale}/rulebook`, transparency: `#/${locale}/transparency`,
-          faq: `#/${locale}/faq`, referral: `#/${locale}/referral`,
-          tools: `#/${locale}/tools`, learn: `#/${locale}/learn`,
-          'accounts-section': '#accounts', 'team-section': '#team', 'faq-section': '#rules',
-          github: 'https://github.com/algomanlife/openfund',
-        }
-        for (const link of footerLinks) {
-          const href = DEST[link.destination]
-          if (!href) continue /* unknown destination → never rendered */
-          const a = document.createElement('a')
-          a.setAttribute('href', href)
-          a.textContent = link.label[locale]
-          if (link.destination === 'github') { a.setAttribute('target', '_blank'); a.setAttribute('rel', 'noopener') }
-          links.appendChild(a)
-        }
-      }
-    }
+    renderNavigation(template.content, locale, location.pathname, navItems, footerLinks)
     /* nav-less mode (product gateway): no menu links, no menu button, no header CTA */
     if (part === 'header' && !nav) {
       template.content.querySelector('#navigation')?.remove()
@@ -175,13 +92,15 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
     return template.innerHTML
   }, [locale, part, nav, dictionary, faDictionary, location.pathname, navItems, footerLinks])
 
+  useEffect(() => { if (part === 'header' && host.current) return bindNavigation(host.current) }, [markup, part])
   useEffect(() => { setWalletHost(host.current?.querySelector<HTMLElement>('#wallet-root') || null) }, [markup])
 
   return <div ref={host} className="info-chrome" onClick={e => {
     const target = (e.target as HTMLElement).closest<HTMLElement>('button, a')
     if (!target) return
+    if (navigationClick(e.nativeEvent, host.current!)) return
     if (target.id === 'language-toggle') {
-      navigate(location.pathname.replace(`/${locale}/`, `/${locale === 'fa' ? 'en' : 'fa'}/`))
+      navigate(location.pathname.replace(`/${locale}/`, `/${locale === 'fa' ? 'en' : 'fa'}/`) + location.search)
     } else if (target.id === 'theme-toggle') {
       const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'
       document.documentElement.dataset.theme = next
@@ -199,6 +118,7 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
       host.current?.querySelector('.menu')?.setAttribute('aria-expanded', 'false')
     }
   }} onKeyDown={e => {
+    if (navigationKeyDown(e.nativeEvent, host.current!)) return
     if (e.key === 'Escape') {
       host.current?.querySelector('#navigation')?.classList.remove('open')
       const menu = host.current?.querySelector<HTMLButtonElement>('.menu')

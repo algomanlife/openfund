@@ -1,5 +1,10 @@
 # Changelog
 
+## Website navigation repair — 2026-11-02
+
+- Share localized public header/footer destinations across Challenges and editorial pages; expose Resources on Home, repair Team/FAQ aliases and the brandbook download URL, deduplicate footer links, and preserve nested-page language switching.
+- Repair Resources disclosure keyboard/touch behavior and tablet/mobile access without changing trading behavior or page content. See [navigation evidence](docs/reviews/website-navigation/DELIVERY.md).
+
 ## 2026-11-02 — Compact trading workspace
 
 - Compact both terminals to a 40px application tier and 34px market tier; retain all routes through primary links and More.
