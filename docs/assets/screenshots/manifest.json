@@ -282,6 +282,188 @@
       "source": "Current production Vite build served by localhost:8186/react; live public Gains REST/WS. Native-wallet balance is a test-signer fixture, not real-wallet acceptance. No on-chain transactions.",
       "state": "Actual permanently disabled local trial after controlled zero-equity test; preserved account directory",
       "sha256": "06b87960a0fd91f4a1ed6f6175226548777d03b73949d3a1cd5a76fc376988ec"
+    },
+    {
+      "file": "terminal-before-prop-en.png",
+      "route": "/react/#/en/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T15:10:56.086344+00:00",
+      "sourceCommit": "c4cf6025108e137cf157a33ce0956d604760c4e3",
+      "source": "Unedited Chromium capture from baseline source in Vite at localhost:5187; live Gains and existing public CMS. Unknown account values and disabled execution.",
+      "sha256": "d6167e40d40be5884143f565e7cbf2635e2766e9c03396d8e5d6a1083828fdc3"
+    },
+    {
+      "file": "terminal-prop-en.png",
+      "route": "/react/#/en/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T15:40:54.493Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
+      "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
+      "sha256": "5072531307bb689ec3e7cc93789ffaa09d863b9e995095c3c4ed908fd894bd4b"
+    },
+    {
+      "file": "terminal-prop-en-1280.png",
+      "route": "/react/#/en/prop/trade",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T15:40:55.089Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
+      "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
+      "sha256": "e541a700d98387451554847123144e56fe559a6f2873fd22c5d983bb0fc8f86d"
+    },
+    {
+      "file": "terminal-before-prop-fa.png",
+      "route": "/react/#/fa/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T15:10:57.823306+00:00",
+      "sourceCommit": "c4cf6025108e137cf157a33ce0956d604760c4e3",
+      "source": "Unedited Chromium capture from baseline source in Vite at localhost:5187; live Gains and existing public CMS. Unknown account values and disabled execution.",
+      "sha256": "71c5605247aabf7d55702fa449fe6c57f1d508d548ee9a3e859c12fefdc16a2d"
+    },
+    {
+      "file": "terminal-prop-fa.png",
+      "route": "/react/#/fa/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T15:40:58.446Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
+      "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
+      "sha256": "e9d7225b2bcdf893bdf6480bbec95f212b3ef60397ab449fdab4e5e14ca847b7"
+    },
+    {
+      "file": "terminal-prop-fa-1280.png",
+      "route": "/react/#/fa/prop/trade",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T15:40:59.003Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
+      "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
+      "sha256": "a74fd34f5a7619c54dda0f53d26ff7fe2381841f4ac37f141a771b2f6cc4e15c"
+    },
+    {
+      "file": "terminal-before-perpetual-en.png",
+      "route": "/react/#/en/perpetual/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T15:10:59.549714+00:00",
+      "sourceCommit": "c4cf6025108e137cf157a33ce0956d604760c4e3",
+      "source": "Unedited Chromium capture from baseline source in Vite at localhost:5187; live Gains and existing public CMS. Unknown account values and disabled execution.",
+      "sha256": "4f4db7836b0c0c4625251cba7411ec43da75f4ef2133d4fda33a57ace9c39b29"
+    },
+    {
+      "file": "terminal-perpetual-en.png",
+      "route": "/react/#/en/perpetual/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T15:41:02.458Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
+      "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
+      "sha256": "afade53437c0425b0b9fd8c3999ca5f0186347fb3f9b6c6daddf37265422abe2"
+    },
+    {
+      "file": "terminal-perpetual-en-1280.png",
+      "route": "/react/#/en/perpetual/trade",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T15:41:02.951Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
+      "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
+      "sha256": "c170ac82b020ce011a1a84160389f59bc15d7337b63012fc9cbf33cc98942c8f"
+    },
+    {
+      "file": "terminal-before-perpetual-fa.png",
+      "route": "/react/#/fa/perpetual/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T15:11:01.150324+00:00",
+      "sourceCommit": "c4cf6025108e137cf157a33ce0956d604760c4e3",
+      "source": "Unedited Chromium capture from baseline source in Vite at localhost:5187; live Gains and existing public CMS. Unknown account values and disabled execution.",
+      "sha256": "6032ec767e8d5e76b6e778aa080000874ccc94b61ea0a52ed4a4409de5a1fc43"
+    },
+    {
+      "file": "terminal-perpetual-fa.png",
+      "route": "/react/#/fa/perpetual/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T15:41:06.230Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
+      "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
+      "sha256": "7e9f3e876cf2d4e35d9f979bdbd499c2bdb9ffe2df69487408021871b72a1392"
+    },
+    {
+      "file": "terminal-perpetual-fa-1280.png",
+      "route": "/react/#/fa/perpetual/trade",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T15:41:06.807Z",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
+      "source": "Unedited Chromium capture of the production Vite build at localhost:8191/react. Live public Gains; no financial, market, depth or wallet fixtures.",
+      "sha256": "2b454072d07b59aeaddead41ef9a6e231853edcc1ee8c13ca97ce583c8f6fa45"
+    },
+    {
+      "file": "terminal-compact-fa-1280.png",
+      "route": "/react/#/fa/prop/trade",
+      "viewport": {
+        "width": 1280,
+        "height": 600
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T15:40:59.776732+00:00",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
+      "state": "Explicit Order view selected in the responsive workspace; no hidden overflow or financial fixtures",
+      "sha256": "243613b25999ff7b0397057901ff7264974c5dedb47c43617ac03f4883e66a56"
+    },
+    {
+      "file": "terminal-compact-fa-390.png",
+      "route": "/react/#/fa/prop/trade",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-02T15:41:00.238374+00:00",
+      "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
+      "state": "Explicit Order view selected in the responsive workspace; no hidden overflow or financial fixtures",
+      "sha256": "bab5dd94289c674a542623751ea408f26a95e50a9c10c8cedb03de971fa413b7"
     }
   ]
 }

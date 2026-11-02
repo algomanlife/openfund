@@ -30,5 +30,5 @@ test('sequence gaps clear stale ladders and resubscribe; symbol switches cannot 
  }finally{a.close()}
 })
 test('shared workspace retains real feed integration and does not hide Book/Trades controls',()=>{
- const workspace=readFileSync(new URL('../src/features/terminal/TradingPages.tsx',import.meta.url),'utf8');assert.ok(workspace.includes('legacy/market-depth.js'));assert.ok(!workspace.includes('.book-panel .panel-tabs,.book-tools'));assert.ok(workspace.includes('syntheticMarketData:false'));assert.ok(workspace.includes('prefers-reduced-motion'));
+ const workspace=readFileSync(new URL('../src/features/terminal/TradingPages.tsx',import.meta.url),'utf8');assert.ok(workspace.includes('legacy/market-depth.js'));assert.ok(!workspace.includes('.book-panel .panel-tabs,.book-tools'));assert.ok(workspace.includes('syntheticMarketData:false'));assert.ok(workspace.includes('workspace.css?raw'));const styles=readFileSync(new URL('../src/features/terminal/workspace.css',import.meta.url),'utf8');assert.ok(styles.includes('prefers-reduced-motion'));
 })

@@ -30,3 +30,7 @@ Reviewed against `2f5cf93`, 2026-11-02. No completion dates are promised. **Comp
 ## Unified account integration milestone
 
 **In Progress:** one owned account directory, permanent zero-equity trial stop, instrument-validated simulation, restored Gains VOB/Trades and all thirteen journal navigation sections. Dependencies: existing PostgreSQL/Engine/SIWE/portfolio and public Gains resources. Acceptance: concurrent account/risk tests, deterministic cross-market settlement, account isolation, executable browser scenarios, screenshots and current CI. Evidence and external limits: [delivery](../reviews/unified-trading/DELIVERY.md). No commercial Challenge or on-chain execution claims.
+
+## Terminal presentation acceptance
+
+**Completed within local frontend scope:** compact shared header, flat dark-green surfaces, fixed Persian/English column geometry and visible order controls without document/form scrolling at 1920 × 1080, 1440 × 900, 1366 × 768 and 1280 × 720. Depends on the existing shared terminal; changes no execution or deployment capability. [Evidence and responsive limits](../reviews/terminal-ui/DELIVERY.md).

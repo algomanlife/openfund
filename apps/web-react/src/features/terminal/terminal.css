@@ -773,3 +773,69 @@ body:has(.of-terminal) {
     flex: 0 0 auto;
   }
 }
+
+/* The trading route owns one 40px application tier. Market information is the
+   34px first row of the shared iframe, independent of document direction. */
+.of-terminal-trading .of-terminal-header { height: 40px; position: relative; z-index: 60; }
+.of-terminal-trading .of-terminal-top {
+  direction: ltr; height: 39px; padding: 0 12px; gap: 14px; flex-wrap: nowrap;
+}
+.of-terminal-trading .of-brand { gap: 6px; flex-shrink: 0; }
+.of-terminal-trading .of-brand img { width: 20px; height: 24px; }
+.of-terminal-trading .of-brand b { font-size: 18px; letter-spacing: -.5px; }
+.of-terminal-trading .of-product-switch { flex: 0 0 auto; }
+.of-terminal-trading .of-product-switch select { width: 156px; height: 28px; padding: 2px 8px; font-size: 12px; border-radius: 3px; }
+.of-terminal-trading .of-account-context { display: none; }
+.of-terminal-trading #terminal-navigation {
+  display: flex; flex-direction: row; align-items: stretch; align-self: stretch;
+  padding: 0; gap: 2px; overflow: visible; min-width: 0;
+}
+.of-terminal-trading #terminal-navigation > a,
+.of-terminal-trading .of-terminal-more > summary {
+  display: flex; align-items: center; height: 100%; padding: 0 10px; font-size: 12px;
+  line-height: 1.4; white-space: nowrap; border-bottom: 2px solid transparent;
+}
+.of-terminal-trading #terminal-navigation > a.active { border-color: var(--of-mint); }
+.of-terminal-more { position: relative; }
+.of-terminal-more > summary { list-style: none; cursor: pointer; gap: 6px; }
+.of-terminal-more > summary::-webkit-details-marker { display: none; }
+.of-terminal-more > summary:focus-visible { outline: 2px solid var(--of-mint); outline-offset: -3px; }
+.of-terminal-more[open] > summary { color: var(--of-mint); background: var(--of-panel); }
+.of-terminal-trading .of-terminal-more-links {
+  position: absolute; top: calc(100% + 1px); inset-inline-end: 0; width: max-content;
+  min-width: 180px; padding: 4px; background: var(--of-panel); border: 1px solid var(--of-line); z-index: 80;
+}
+.of-terminal-trading .of-terminal-more-links a { display: block; padding: 8px 10px; font-size: 12px; border: 0; }
+.of-terminal-trading .of-terminal-more-links a:hover { background: var(--of-bg); }
+.of-terminal-trading .of-terminal-actions { flex-shrink: 0; gap: 5px; flex-wrap: nowrap; width: auto; }
+.of-terminal-trading .of-terminal-actions button {
+  min-height: 28px; height: auto; padding: 3px 8px; font-size: 12px;
+  border-radius: 3px; line-height: 20px; box-shadow: none; transform: none;
+}
+.of-terminal-trading .rk-wrap { flex-wrap: nowrap !important; gap: 5px !important; }
+.of-terminal-trading .rk-chip-bal { display: none; }
+.of-terminal-trading[dir="rtl"] #terminal-navigation a,
+.of-terminal-trading[dir="rtl"] .of-terminal-more { direction: rtl; font-family: Irancell, sans-serif; }
+.of-terminal-trading[dir="rtl"] #terminal-navigation > a { font-size: 12px; }
+@media (max-width: 1100px) {
+  .of-terminal-trading .of-terminal-top { gap: 8px; }
+  .of-terminal-trading #terminal-navigation > a { padding-inline: 7px; }
+  .of-terminal-trading .of-brand b { display: none; }
+  .of-terminal-trading .of-product-switch select { width: 142px; }
+}
+@media (max-width: 800px) {
+  .of-terminal-trading #terminal-navigation > a:not(.active) { display: none; }
+  .of-terminal-trading .of-terminal-more-links { inset-inline-start: 0; inset-inline-end: auto; }
+}
+@media (max-width: 540px) {
+  .of-terminal-trading .of-terminal-top { padding-inline: 6px; gap: 6px; }
+  .of-terminal-trading .of-brand { display: none; }
+  .of-terminal-trading .of-product-switch select { width: 126px; font-size: 11px; }
+  .of-terminal-trading #terminal-navigation > a { display: none; }
+  .of-terminal-trading .of-terminal-more > summary { padding-inline: 4px; font-size: 11px; }
+  .of-terminal-trading .of-terminal-actions button { padding-inline: 5px; font-size: 11px; }
+}
+.of-terminal-trading .of-terminal-more-links a.of-compact-destination { display: none; }
+@media (max-width: 800px) {
+  .of-terminal-trading .of-terminal-more-links a.of-compact-destination { display: block; }
+}

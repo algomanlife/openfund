@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSession } from "../../session/useOpenfundSession";
 import body from "../../pages/terminal-body.html?raw";
+import workspaceStyles from "./workspace.css?raw";
+import { setupWorkspaceLayout } from "./workspaceLayout";
 import { fetchCmsTranslations } from "../../cms/client";
 import { useTerminal } from "./TerminalContext";
 import { api, type Product } from "./model";
@@ -141,6 +143,36 @@ function useAccountAdapter(product: Product) {
 function workspaceMarkup() {
   const template = document.createElement("template");
   template.innerHTML = body;
+  const compact = document.createElement("nav");
+  compact.className = "workspace-views";
+  compact.setAttribute("aria-label", "Workspace views");
+  compact.innerHTML = [
+    ["chart", "نمودار", "Chart"], ["book", "دفتر مجازی", "Book"],
+    ["trade", "سفارش", "Order"], ["activity", "فعالیت حساب", "Activity"],
+  ].map(([id, fa, en]) => `<button type="button" data-workspace-view="${id}" aria-pressed="${id === "chart"}" data-fa="${fa}" data-en="${en}">${en}</button>`).join("");
+  template.content.querySelector(".workspace")?.before(compact);
+  const marketDetails = document.createElement("details");
+  marketDetails.className = "market-details";
+  marketDetails.innerHTML = '<summary aria-label="More market statistics" data-fa="آمار بیشتر" data-en="More stats">More stats</summary><div class="market-details-content"></div>';
+  template.content.querySelectorAll('.stat[data-k="vol"],.stat[data-k="oi"],.stat[data-k="funding"],.stat[data-k="lev"]').forEach(stat => {
+    marketDetails.querySelector(".market-details-content")!.append(stat);
+  });
+  template.content.querySelector(".market-bar")?.append(marketDetails);
+  const form = template.content.querySelector(".form-grid")!;
+  const sizingTools = document.createElement("div");
+  sizingTools.className = "sizing-tools";
+  sizingTools.append(form.querySelector(".kv")!, form.querySelector(".pct-btns")!);
+  form.querySelector(".sl")?.before(sizingTools);
+  const risk = template.content.querySelector(".risk-box")!;
+  const details = document.createElement("details");
+  details.className = "order-details";
+  details.innerHTML = '<summary><span data-fa="جزئیات سفارش" data-en="Order details">Order details</span><span aria-hidden="true">＋</span></summary><div class="order-details-content"></div>';
+  const secondary = details.querySelector(".order-details-content")!;
+  ["#rk-entry", "#rk-oracle", ".na"].forEach(selector => {
+    const row = risk.querySelector(selector)?.closest(".kv");
+    if (row) secondary.append(row);
+  });
+  risk.append(details);
   const feed = document.createElement('p'); feed.id = 'account-feed-state'; feed.setAttribute('role','status');
   template.content.querySelector('.trade-panel')?.prepend(feed);
   // Preserve legacy IDs used by event wiring, while removing obsolete customer copy.
@@ -240,6 +272,7 @@ export function SharedTradingTerminal() {
       base = `${location.origin}${import.meta.env.BASE_URL}`;
     const translations = {
       ...cms,
+      "book.grouping": {fa:"گروه",en:"Group"},
       "book.tab": {fa:"دفتر مجازی",en:"Book"},
       "book.simulated": {fa:"Gains VOB",en:"Gains VOB"},
       "book.note": {fa:"نقدینگی مجازی Gains؛ دفتر سفارش متمرکز نیست.",en:"Gains virtual execution liquidity; no resting orders."},
@@ -267,7 +300,7 @@ export function SharedTradingTerminal() {
       "cf.cancelTxt": { fa: "این سفارش لغو شود؟", en: "Cancel this order?" },
     };
     const boot = `window.ofLang=${safe(locale)};window.ofCmsTerminal=${safe(translations)};window.__ofTerminalConfig={product:${safe(product)},syntheticMarketData:false};Object.defineProperty(window,'__ofProductAdapter',{get:()=>${product === "prop" ? "parent.__ofServerTP || " : ""}parent.__ofReadOnlyProductAdapter});Object.defineProperty(window,'__ofServerTP',{get:()=>${product === "prop" ? "parent.__ofServerTP" : "undefined"}});addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='openfund-display')return;document.documentElement.dataset.theme=e.data.theme;if(window.ofLang!==e.data.locale)document.getElementById('language-toggle')?.click()});document.getElementById('account-retry').onclick=()=>parent.dispatchEvent(new parent.Event('of-refresh-trading'));`;
-    return `<!doctype html><html lang="${locale}" dir="${locale === "fa" ? "rtl" : "ltr"}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>.topnav,.demo-banner,.dlg-warn,#load-demo,#assumptions-btn,.book-src,.bt-empty .hint{display:none!important}body{display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:100dvh;overflow:hidden}.workspace{height:auto!important;min-height:0}.book-panel{overflow:auto}.book-view[hidden],.trades-view[hidden]{display:none!important}.book-note{font-size:11px;padding:8px;color:var(--muted)}.depth-unavailable,#depth-feed-status{padding:12px;color:var(--muted);font-size:12px}.book-side{overflow-y:auto;justify-content:flex-start}.book-side .bk-row{flex:0 0 auto;line-height:18px;font-size:11px;padding-block:0}.bk-row{display:grid;grid-template-columns:1fr 1fr 1fr;padding:3px 8px;transition:background-color .2s}.bk-row.a{color:#e78c96}.bk-row.b{color:#82e7bd}@media(prefers-reduced-motion:reduce){.bk-row,.bk-row .depth{transition:none}}@media(max-width:1080px){.workspace{overflow:auto;display:flex;flex-direction:column}.chart-panel{flex:none;height:52dvh;min-height:220px}.book-panel{flex:none;max-height:220px}.trade-panel{flex:none;max-height:none;overflow:visible}.bottom-panel{flex:none;min-height:260px}.market-stats{overflow:auto;max-height:90px}.status-bar{overflow:hidden;min-height:25px}}</style></head><body>${workspaceMarkup()}<script>${boot}</script>${["legacy/gains-adapter.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/market-depth.js", "legacy/terminal.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
+    return `<!doctype html><html lang="${locale}" dir="${locale === "fa" ? "rtl" : "ltr"}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>${workspaceStyles}</style></head><body>${workspaceMarkup()}<script>${boot}</script>${["legacy/gains-adapter.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/market-depth.js", "legacy/terminal.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
   }, [cms, product, locale]);
   return (
     <>
@@ -279,6 +312,7 @@ export function SharedTradingTerminal() {
         srcDoc={source}
         onLoad={() => {
           const w = frame.current?.contentWindow;
+          if (frame.current?.contentDocument) setupWorkspaceLayout(frame.current.contentDocument);
           if (w) w.dispatchEvent(new (w as any).Event("of-trading-ready"));
         }}
       />

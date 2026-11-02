@@ -69,6 +69,8 @@ Wallet authentication supports private product views. Transaction execution, app
 
 ### Shared Trading Terminal
 
+The trading workspace uses a compact 74px navigation/market header, fixed chart/book/order columns in both languages, and a form that fits the supported desktop viewport without scrolling. [Layout acceptance and limits](docs/reviews/terminal-ui/DELIVERY.md).
+
 One Vela-based workspace serves both products: charting, market selection, theme/language controls and a consistent trading interface. React owns wallet/session/product context; established chart and market adapters remain integrated through the shared terminal bridge.
 
 Prop receives authoritative state through the backend and SSE. Perpetual uses a separate read adapter. Sharing presentation never merges financial balances or execution rules. The catalog starts with Open Algo V5, Price Action Concepts and Smart Money Concepts, calculated from original Pine sources with repository-local libraries in a shared worker. Required linked Vela attribution remains in terminal status; upstream notices remain intact. [Indicator usage and limits](docs/trading/INDICATORS.md) · [Pine architecture](docs/trading/PINE_SCRIPT.md).
@@ -87,13 +89,13 @@ The shared [account directory](docs/trading/UNIFIED_ACCOUNTS.md) presents Free T
 
 ## Product gallery
 
-Genuine captures from the current source build at baseline `2f5cf93`. Market information comes from live Gains reads; CMS content comes from the existing local Directus instance. Public pages, anonymous terminals and disposable authenticated account states are labelled in the [capture manifest and limitations](docs/assets/screenshots/README.md). No personal wallet information or invented trading records is shown.
+Genuine captures retain the source baselines recorded in the manifest. Terminal images were refreshed for the [compact workspace redesign](docs/reviews/terminal-ui/DELIVERY.md) on 2026-11-02. Market information comes from live Gains reads; CMS content comes from the existing local Directus instance. Public pages, anonymous terminals and disposable authenticated account states are labelled in the [capture manifest and limitations](docs/assets/screenshots/README.md). No personal wallet information or invented trading records is shown.
 
 | Home | Market discovery |
 | --- | --- |
 | ![English Openfund Home product gateway](docs/assets/screenshots/home.jpg) | ![English Markets page with live Gains market information](docs/assets/screenshots/markets.jpg) |
 | **Prop Terminal — anonymous, execution unavailable** | **Perpetual Terminal — read-only** |
-| ![Current shared Prop terminal without an authenticated account](docs/assets/screenshots/prop-terminal.jpg) | ![Current shared Perpetual terminal with live chart data](docs/assets/screenshots/perpetual-terminal.jpg) |
+| ![Current shared Prop terminal without an authenticated account](docs/assets/screenshots/terminal-prop-en.png) | ![Current shared Perpetual terminal with live chart data](docs/assets/screenshots/terminal-perpetual-en.png) |
 | **Challenges — catalog, purchase not operational** | **Portfolio — new virtual account** |
 | ![English challenge catalog and published product content](docs/assets/screenshots/challenges.jpg) | ![Actual new Prop virtual account with no trading history](docs/assets/screenshots/prop-portfolio.jpg) |
 | **Journal — empty private notebook** | **Dashboard — new-account analytics** |

@@ -1,0 +1,3208 @@
+{
+  "baseline": "c4cf6025108e137cf157a33ce0956d604760c4e3",
+  "sourceCommit": "64b23c9ac3ef2e38854600854a71df29a789609d",
+  "branch": "codex/terminal-ui-density",
+  "date": "2026-11-02",
+  "environment": "Local Chromium, production Vite build using unchanged checked-in Vela assets, isolated openfund_terminal_ui_test PostgreSQL database, actual backend and live public Gains data.",
+  "checks": {
+    "typecheck": "passed",
+    "viteBuild": "passed; existing large chunk warning",
+    "webUnitTests": 20,
+    "backendTests": 206,
+    "pineUnitTests": 9,
+    "anonymousLayoutAssertions": 535,
+    "authenticatedLayoutAssertions": 535,
+    "existingControlledBrowserChecks": 31,
+    "existingUnifiedBrowserChecks": 26,
+    "existingChartBrowserChecks": 17,
+    "renderBlueprint": "passed; unchanged three-resource topology",
+    "docsCheck": "passed"
+  },
+  "browserExceptions": {
+    "anonymous": [],
+    "authenticated": []
+  },
+  "consoleErrors": {
+    "anonymous": [],
+    "authenticated": [
+      "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    ],
+    "interpretation": "One expected pre-sign-in auth/me 401 in the authenticated run; no uncaught JavaScript errors."
+  },
+  "layoutMatrix": [
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "anonymous",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "en",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "prop",
+      "locale": "fa",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "en",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1920,
+        1080
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 982,
+      "orderPanelScrollHeight": 982,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          1294
+        ],
+        [
+          1295,
+          264
+        ],
+        [
+          1560,
+          360
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1440,
+        900
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1440,
+        900
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 802,
+      "orderPanelScrollHeight": 802,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          854
+        ],
+        [
+          855,
+          240
+        ],
+        [
+          1096,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1366,
+        768
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1366,
+        768
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 670,
+      "orderPanelScrollHeight": 670,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          780
+        ],
+        [
+          781,
+          240
+        ],
+        [
+          1022,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "market",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "limit",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    },
+    {
+      "mode": "authenticated",
+      "product": "perpetual",
+      "locale": "fa",
+      "viewport": [
+        1280,
+        720
+      ],
+      "orderType": "stop",
+      "outerSize": [
+        1280,
+        720
+      ],
+      "headerHeight": 40,
+      "tickerHeight": 34,
+      "orderPanelHeight": 622,
+      "orderPanelScrollHeight": 622,
+      "controlsContained": true,
+      "columnGeometry": [
+        [
+          0,
+          694
+        ],
+        [
+          695,
+          240
+        ],
+        [
+          936,
+          344
+        ]
+      ]
+    }
+  ],
+  "limitations": [
+    "Local verification only; no deployment or external wallet/device acceptance.",
+    "Extremely short portrait layouts below the tested 390x844 alternative are outside the verified range.",
+    "Optional desktop panel-width customization is not added; existing bottom-panel resizing remains.",
+    "Backend execution, adapters, chart logic, wallet/session code and generated Vela bundles are unchanged."
+  ]
+}

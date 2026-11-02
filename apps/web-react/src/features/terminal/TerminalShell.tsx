@@ -77,6 +77,42 @@ export default function TerminalShell({ product }: { product: Product }) {
     messages[`products.${key}`]?.[locale] ||
     "";
   const activePage = page === "journal" ? "portfolio" : page;
+  const navigation = (
+    <nav
+      id="terminal-navigation"
+      aria-label={t("ناوبری ترمینال", "Terminal navigation")}
+      className={open ? "open" : ""}
+    >
+      {primary[product].filter(([id]) => page !== "trade" || ["dashboard", "trade", "portfolio"].includes(id)).map(([id, fa, en]) => (
+        <NavLink
+          key={id}
+          to={route(locale, product, id)}
+          aria-current={activePage === id ? "page" : undefined}
+          className={activePage === id ? "active" : ""}
+          onClick={() => setOpen(false)}
+        >
+          {t(fa, en)}
+        </NavLink>
+      ))}
+      {page === "trade" && <>
+        <NavLink to={route(locale, product, "journal")}>{t("ژورنال", "Journal")}</NavLink>
+        <details className="of-terminal-more" key={pathname} onKeyDown={(event) => {
+          if (event.key === "Escape") {
+            event.currentTarget.open = false;
+            event.currentTarget.querySelector("summary")?.focus();
+          }
+        }}>
+          <summary>{t("بیشتر", "More")} <span aria-hidden="true">▾</span></summary>
+          <div className="of-terminal-more-links">
+            {primary[product].map(([id, fa, en]) =>
+              <NavLink key={id} className={["dashboard", "trade", "portfolio"].includes(id) ? "of-compact-destination" : undefined} to={route(locale, product, id)}>{t(fa, en)}</NavLink>
+            )}
+            <NavLink className="of-compact-destination" to={route(locale, product, "journal")}>{t("ژورنال", "Journal")}</NavLink>
+          </div>
+        </details>
+      </>}
+    </nav>
+  );
   return (
     <TerminalContext.Provider
       value={{
@@ -138,6 +174,7 @@ export default function TerminalShell({ product }: { product: Product }) {
                 <option value="perpetual">Openfund Perpetual</option>
               </select>
             </label>
+            {page === "trade" && navigation}
             <span className="of-account-context">
               {context.data ? (
                 <bdi>
@@ -176,23 +213,7 @@ export default function TerminalShell({ product }: { product: Product }) {
               </button>
             </div>
           </div>
-          <nav
-            id="terminal-navigation"
-            aria-label={t("ناوبری ترمینال", "Terminal navigation")}
-            className={open ? "open" : ""}
-          >
-            {primary[product].map(([id, fa, en]) => (
-              <NavLink
-                key={id}
-                to={route(locale, product, id)}
-                aria-current={activePage === id ? "page" : undefined}
-                className={activePage === id ? "active" : ""}
-                onClick={() => setOpen(false)}
-              >
-                {t(fa, en)}
-              </NavLink>
-            ))}
-          </nav>
+          {page !== "trade" && navigation}
         </header>
         {(page === "portfolio" || page === "journal") && (
           <nav

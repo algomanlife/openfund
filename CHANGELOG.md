@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-02 — Compact trading workspace
+
+- Compact both terminals to a 40px application tier and 34px market tier; retain all routes through primary links and More.
+- Reuse the dark-green design system with thin dividers, fixed bilingual column geometry, paired fields and always-visible critical risk and order action.
+- Add explicit narrow/short-window views and anonymous/authenticated viewport acceptance; preserve trading, market, wallet and chart behavior.
+- Record genuine before/after screenshots and [local verification](docs/reviews/terminal-ui/DELIVERY.md); deployment remains separate.
+
 ## 2026-11-02 — Unified accounts and trial lifecycle
 
 - Add an owned account-card directory, persistent account navigation and journal module workflows/preferences.
