@@ -9,8 +9,8 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | React product shell and hash routes | Completed | [Router](../../apps/web-react/src/main.tsx); `/react/#/{locale}/…`; Persian/English and RTL retained |
 | Home product gateway and market discovery | Completed | `features/home`, `features/markets`; Gains data with source/freshness handling; instrument counts vary |
 | Shared Vela terminal | Completed | [Product architecture](../architecture/PRODUCT_TERMINALS.md); one workspace, independent Prop/Perpetual adapters |
-| Gains market-data adapter | Completed | [Integration](../integrations/GAINS.md); REST candles/metadata and WS marks; no authentic order-book or tape |
-| Prop virtual account and ledger | Completed | [Engine](../../apps/backend/engine.js), [schema](../../apps/backend/schema.sql); one free_demo account, 100,000 virtual DAI, idempotent funding |
+| Gains market-data adapter | Completed | [Integration](../integrations/GAINS.md); REST candles/metadata and WS marks; separate [VOB/Trades resources](../integrations/GAINS_DEPTH.md) are now connected |
+| Prop virtual account and ledger | Completed | [Engine](../../apps/backend/engine.js), [schema](../../apps/backend/schema.sql); one free_demo account, new funding in 100,000 virtual USD, preserved legacy DAI history, idempotent funding |
 | Prop order lifecycle and risk controls | Completed | Market/limit/stop, SL/TP, cancellation, partial close, liquidation; owner-scoped retries and transactional updates; simulation only |
 | Shared Decimal valuation | Completed | [Math](../../apps/backend/trading-math.js); fees/spread and stale values; no Gains contract parity |
 | Drawdown telemetry | Completed | [Portfolio](../../apps/backend/portfolio.js); observed fresh equity since first measurement, UTC; no reconstructed earlier peaks |
@@ -25,7 +25,8 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | Paid activation, evaluation and challenge enforcement | Planned | Payment, legal/product facts, assignment and risk-rule engine required; free_demo has no assigned commercial challenge limits |
 | Funded capital, withdrawals, rewards and certificates | Planned | Visible capability pages are unavailable states, not operational services |
 | Perpetual on-chain execution | Blocked | Approved supported contracts, simulation, security review and receipt reconciliation required; execution disabled |
-| Order-book, footprint and authentic tape | Blocked | Requires a legitimate depth/trade data source; oracle prices cannot supply these |
+| Gains VOB and executed trades | In Progress | [Verified sources and restored panel](../integrations/GAINS_DEPTH.md); public reads, source validation, reconnect and reduced-motion handling; deployed acceptance pending |
+| Footprint / centralized order matching | Blocked | Not supplied by the Gains VOB; no inferred oracle volume |
 | Advanced analytics and execution workflows | Planned | [Engineering roadmap](../roadmap/ENGINEERING.md); scope and acceptance gates before implementation |
 | Production transparency and verification | Planned | Current dashboard uses labelled synthetic fixtures; no production reserve/payout evidence |
 | Render three-resource configuration | Completed | [Blueprint](../../render.yaml); openfund + openfund-db PostgreSQL 17 + openfund-cms Directus 11.9.1; same-origin `/react/` |
@@ -43,3 +44,7 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 Historical tests and findings remain in [reviews](../reviews/README.md); their results belong to their original commits and environments. The [repository transformation delivery](../reviews/repository-transformation/DELIVERY.md) records checks actually executed for this documentation branch, screenshot provenance and remaining limitations. No completion dates, adoption figures or commercial approvals are inferred from code presence.
 
 [Capabilities](CAPABILITIES.md) · [Roadmap](../../ROADMAP.md) · [Documentation index](../README.md)
+
+## Unified account and journal delivery
+
+**In Progress:** [Unified account directory and permanent Free Trial lifecycle](../trading/UNIFIED_ACCOUNTS.md), [journal modules and definitions](../trading/JOURNAL_METRICS.md), backend preview, instrument precision validation and observed equity samples. Local verification and outstanding acceptance are recorded in [the delivery report](../reviews/unified-trading/DELIVERY.md). Challenge execution, real wallet/device acceptance and Render deployment remain separate gates. Existing virtual-DAI histories are preserved.

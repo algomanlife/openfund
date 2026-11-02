@@ -12,7 +12,7 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Trading
 
-[Prop Trading](trading/PROP.md) · [Perpetual Trading](trading/PERPETUAL.md) · [Shared Terminal](trading/TERMINAL.md) · [Indicators](trading/INDICATORS.md) · [Pine runtime](trading/PINE_SCRIPT.md) · [Custom indicators](trading/CUSTOM_INDICATORS.md) · [Portfolio and Journal](trading/PORTFOLIO_JOURNAL.md)
+[Unified accounts and Free Trial](trading/UNIFIED_ACCOUNTS.md) · [Journal metrics](trading/JOURNAL_METRICS.md) · [Prop Trading](trading/PROP.md) · [Perpetual Trading](trading/PERPETUAL.md) · [Shared Terminal](trading/TERMINAL.md) · [Indicators](trading/INDICATORS.md) · [Pine runtime](trading/PINE_SCRIPT.md) · [Custom indicators](trading/CUSTOM_INDICATORS.md) · [Portfolio and Journal](trading/PORTFOLIO_JOURNAL.md)
 
 ## Wallet and Identity
 
@@ -20,7 +20,7 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Integrations
 
-[Gains Network](integrations/GAINS.md) · [Vela](integrations/VELA.md) · [Markets](integrations/MARKETS_PAGE.md) · [Upstream provenance](integrations/UPSTREAM.md) · [Directus backstage](backstage/README.md) · [Content coverage](backstage/CONTENT_COVERAGE.md) · [Terminal editorial content](backstage/TERMINAL_CONTENT.md) · [CMS permissions](backstage/PERMISSIONS.md) · [Admin guide](backstage/ADMIN_GUIDE.md) · [Content model](backstage/CONTENT_MODEL.md) · [Translations](backstage/TRANSLATIONS.md) · [User management](backstage/USER_MANAGEMENT.md)
+[Gains VOB and Trades](integrations/GAINS_DEPTH.md) · [Gains Network](integrations/GAINS.md) · [Vela](integrations/VELA.md) · [Markets](integrations/MARKETS_PAGE.md) · [Upstream provenance](integrations/UPSTREAM.md) · [Directus backstage](backstage/README.md) · [Content coverage](backstage/CONTENT_COVERAGE.md) · [Terminal editorial content](backstage/TERMINAL_CONTENT.md) · [CMS permissions](backstage/PERMISSIONS.md) · [Admin guide](backstage/ADMIN_GUIDE.md) · [Content model](backstage/CONTENT_MODEL.md) · [Translations](backstage/TRANSLATIONS.md) · [User management](backstage/USER_MANAGEMENT.md)
 
 ## Deployment
 

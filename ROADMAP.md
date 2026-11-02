@@ -26,3 +26,7 @@ Do not advance a milestone because a folder, UI placeholder or dependency exists
 ## Proprietary chart indicators
 
 **In Progress:** original Pine execution, local-library resolution, ordered catalog, persistent settings and chart interaction repairs are implemented. Local validation is recorded in [delivery evidence](docs/reviews/vela-pine/DELIVERY.md). Independent reference-platform conformance, genuine volume-dependent outputs, full optional-setting coverage and deployed acceptance remain open. No financial execution milestone changes.
+
+## Unified account integration
+
+The [unified dashboard and trial lifecycle](docs/trading/UNIFIED_ACCOUNTS.md), [journal definitions](docs/trading/JOURNAL_METRICS.md) and [Gains depth integration](docs/integrations/GAINS_DEPTH.md) extend phases 2, 3 and 5. Local acceptance and remaining release gates are tracked in the [delivery report](docs/reviews/unified-trading/DELIVERY.md); commercial activation and real execution are unchanged.

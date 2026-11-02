@@ -7,4 +7,6 @@
 
 - [0005 — Original Pine runtime and shared chart integration](0005-proprietary-pine-runtime.md)
 
+- [0006 — Unified accounts and irreversible trial stop](0006-unified-accounts-and-trial-stop.md)
+
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)
