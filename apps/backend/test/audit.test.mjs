@@ -57,7 +57,7 @@ test('partial close is proportional, survives Engine restart and replay, and con
   const args={fraction:'0.25',idempotencyKey:'quarter'}
   const [first,retry]=await Promise.all([a.engine.closePosition(a.id,r.position.id,args),a.engine.closePosition(a.id,r.position.id,args)])
   assert.equal(first.position.id,retry.position.id)
-  assert.equal(retry.duplicate,true)
+  assert.equal([first,retry].filter(result=>result.duplicate === true).length,1)
   const restarted=new Engine(pool,a.market), state=await restarted.state(a.id)
   assert.equal(state.positions.length,1)
   near(state.account.used_margin,750)
