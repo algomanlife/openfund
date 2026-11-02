@@ -1,0 +1,36 @@
+{
+  "sourceCommit": "06abc6a589a4e712eee2f920e5d6a61103fa5563",
+  "node": "22.23.4",
+  "postgres": "17",
+  "backend": {
+    "identity": 22,
+    "trading": 54,
+    "portfolio": 31,
+    "products": 58,
+    "gains": 5,
+    "audit": 11,
+    "unified": 25,
+    "total": 206,
+    "failed": 0
+  },
+  "webUnit": 20,
+  "pineUnit": 9,
+  "browserAudit": 31,
+  "browserUnified": 26,
+  "browserPine": 17,
+  "checks": [
+    "typecheck",
+    "production build",
+    "migrations twice",
+    "documentation language/links/Markdown/Mermaid",
+    "Render Blueprint structure",
+    "git diff whitespace"
+  ],
+  "externalUnverified": [
+    "physical wallet and WalletConnect acceptance",
+    "deployed Render HTTPS and recovery",
+    "authenticated Render validation"
+  ],
+  "preservedVelaSha256": "6f2494c0e4eca440acc0e049b02ed5d2e8fa87a2faffb16ce1a7574d9f75b125",
+  "liveGainsSource": "https://docs.gains.trade/developer/trading-api/market-data.md"
+}

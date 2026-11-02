@@ -212,6 +212,76 @@
       "baseline": "08cb68afab48c596a953bfd93ee1e29c81cd37ab plus feat/vela-pine-custom-indicators working changes",
       "source": "Production Vite build at localhost:8197/react; real Gains REST/WS; no request interception or market fixtures",
       "state": "Actual original Pine indicators and chart controls; no wallet connected or financial mutation"
+    },
+    {
+      "file": "unified-dashboard.png",
+      "route": "/react/#/en/prop/dashboard",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "disposable generated EIP-1193 signer with real local SIWE and PostgreSQL records",
+      "capturedAt": "2026-11-02T14:06:01.440007+00:00",
+      "baseline": "06abc6a589a4e712eee2f920e5d6a61103fa5563",
+      "source": "Current production Vite build served by localhost:8186/react; live public Gains REST/WS. Native-wallet balance is a test-signer fixture, not real-wallet acceptance. No on-chain transactions.",
+      "state": "Actual empty virtual-USD trial, owned unactivated Challenge record and Perpetual unavailable balances",
+      "sha256": "6cbf3514946e2c97964ccac200e53f90fbb08f0356692933199a9fb54f3ddbea"
+    },
+    {
+      "file": "unified-journal.png",
+      "route": "/react/#/en/prop/journal?account=<disposable-trial-id>",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "disposable generated EIP-1193 signer with real local SIWE and PostgreSQL records",
+      "capturedAt": "2026-11-02T14:06:01.776027+00:00",
+      "baseline": "06abc6a589a4e712eee2f920e5d6a61103fa5563",
+      "source": "Current production Vite build served by localhost:8186/react; live public Gains REST/WS. Native-wallet balance is a test-signer fixture, not real-wallet acceptance. No on-chain transactions.",
+      "state": "Actual empty-account analytics and thirteen-module navigation; no seeded performance",
+      "sha256": "f650818bb0e90c9acafc517a647e2786271aa0cec30b417d90c3bd7ca433f22e"
+    },
+    {
+      "file": "unified-book-panel.png",
+      "route": "/react/#/en/prop/trade?account=<disposable-trial-id>",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "disposable generated EIP-1193 signer with real local SIWE and PostgreSQL records",
+      "capturedAt": "2026-11-02T14:06:03.690346+00:00",
+      "baseline": "06abc6a589a4e712eee2f920e5d6a61103fa5563",
+      "source": "Current production Vite build served by localhost:8186/react; live public Gains REST/WS. Native-wallet balance is a test-signer fixture, not real-wallet acceptance. No on-chain transactions.",
+      "state": "Native element capture of live public Gains VOB; no market interception or synthetic liquidity",
+      "sha256": "74339dcaec86035af24f4872f5577a50be7325a6844091c50f79aa04e2df30d8"
+    },
+    {
+      "file": "unified-trades-panel.png",
+      "route": "/react/#/en/prop/trade?account=<disposable-trial-id>",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "disposable generated EIP-1193 signer with real local SIWE and PostgreSQL records",
+      "capturedAt": "2026-11-02T14:06:03.875032+00:00",
+      "baseline": "06abc6a589a4e712eee2f920e5d6a61103fa5563",
+      "source": "Current production Vite build served by localhost:8186/react; live public Gains REST/WS. Native-wallet balance is a test-signer fixture, not real-wallet acceptance. No on-chain transactions.",
+      "state": "Native element capture of live public Gains executed trades; provider timestamps and directions",
+      "sha256": "26b4245767e6d9b6eb011935d9a0d9ad7ffe1c9f9f66cf799a9ed4bf63d724b4"
+    },
+    {
+      "file": "unified-disabled-trial.png",
+      "route": "/react/#/en/prop/dashboard",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "disposable generated EIP-1193 signer with real local SIWE and PostgreSQL records",
+      "capturedAt": "2026-11-02T14:06:06.181103+00:00",
+      "baseline": "06abc6a589a4e712eee2f920e5d6a61103fa5563",
+      "source": "Current production Vite build served by localhost:8186/react; live public Gains REST/WS. Native-wallet balance is a test-signer fixture, not real-wallet acceptance. No on-chain transactions.",
+      "state": "Actual permanently disabled local trial after controlled zero-equity test; preserved account directory",
+      "sha256": "06b87960a0fd91f4a1ed6f6175226548777d03b73949d3a1cd5a76fc376988ec"
     }
   ]
 }

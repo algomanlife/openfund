@@ -19,3 +19,7 @@ A local recovery archive, binary diff and SHA-256 manifest preserve 137 modified
 ## Safe continuation
 
 Finish account/trading correctness, preference persistence, mobile journal regression checks, documentation and reviewable delivery in this worktree. Preserve the terminal visual design; no new terminal redesign is authorized. Review status and explicit file lists before commits. Do not stage generated bundles, React build churn or another agent's files. Report any discovered overlap before modifying it.
+
+## Integration after the audit
+
+Approved main through `3a1d8ca` was incorporated at `572647a` after the audit and scoped commits, resolving the already-fixed Protocol documentation link failure. It merged without conflict and did not incorporate QwenWork's unfinished website branch. The two Vela hashes remain unchanged. Final scope checks still show no edits to website navigation, FAQ/Referral/Tools/Learning content, CMS seeds or proprietary chart sources.
