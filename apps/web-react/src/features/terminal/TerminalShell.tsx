@@ -7,6 +7,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
+import { TradingBridge } from "../../trading/TradingBridge";
 import { RainbowConnect } from "../../wallet/RainbowConnect";
 import { useSession } from "../../session/useOpenfundSession";
 import {
@@ -27,7 +28,7 @@ import { TerminalContext, useTerminal } from "./TerminalContext";
 export default function TerminalShell({ product }: { product: Product }) {
   const params = useParams(),
     locale: Locale = params.locale === "en" ? "en" : "fa";
-  const { pathname } = useLocation(),
+  const { pathname, search } = useLocation(),
     navigate = useNavigate(),
     session = useSession();
   const [open, setOpen] = useState(false),
@@ -87,6 +88,7 @@ export default function TerminalShell({ product }: { product: Product }) {
         message,
       }}
     >
+      {product === "prop" && context.data?.state?.account && <TradingBridge pricing={context.data?.pricing}/> }
       <div
         className={`of-terminal ${page === "trade" ? "of-terminal-trading" : ""}`}
         dir={locale === "fa" ? "rtl" : "ltr"}
@@ -215,7 +217,7 @@ export default function TerminalShell({ product }: { product: Product }) {
               </button>
             </div>
           )}
-          <Outlet key={`${product}:${session.user?.id || "guest"}`} />
+          <Outlet key={`${product}:${session.user?.id || "guest"}:${new URLSearchParams(search).get("account") || "default"}`} />
         </main>
       </div>
     </TerminalContext.Provider>

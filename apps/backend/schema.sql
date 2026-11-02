@@ -253,3 +253,11 @@ CREATE TABLE IF NOT EXISTS journal_preferences (
   updated_at timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY(user_id,product,account_ref)
 );
+
+CREATE TABLE IF NOT EXISTS account_equity_samples (
+  account_id uuid NOT NULL REFERENCES demo_accounts(id),
+  sampled_at timestamptz NOT NULL,
+  equity numeric(24,10) NOT NULL,
+  balance numeric(24,10) NOT NULL,
+  PRIMARY KEY(account_id,sampled_at)
+);

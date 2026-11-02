@@ -174,6 +174,7 @@ export class Engine {
         last_equity=excluded.last_equity,updated_at=now()
       RETURNING *`,[accountId,equity])
     const r = rows[0]
+    await c.query(`INSERT INTO account_equity_samples(account_id,sampled_at,equity,balance) SELECT id,date_trunc('minute',now()),$2,balance FROM demo_accounts WHERE id=$1 ON CONFLICT DO NOTHING`,[accountId,equity])
     return { basis:'sampled_equity', timezone:'UTC', since:r.created_at, day:r.day,
       day_start_equity:r.day_start_equity, peak_equity:r.peak_equity,
       drawdown:Decimal.max(0,D(r.peak_equity).minus(equity)).toFixed(2),

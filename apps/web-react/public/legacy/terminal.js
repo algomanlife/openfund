@@ -858,7 +858,7 @@ function buildRequest(){
   };
 }
 
-$('submit-order').addEventListener('click', () => {
+$('submit-order').addEventListener('click', async () => {
   if (marketClosed()){ toast(t('mkt.closed'), 'neg'); return; }
   const req = buildRequest();
   const errs = tp.validate(req);
@@ -866,10 +866,12 @@ $('submit-order').addEventListener('click', () => {
   const m = meta();
   const d = dp();
   const mk = mark();
-  const entry = req.type === 'market' ? mk : req.price;
-  const size = req.collateral * req.leverage / entry;
-  const notional = req.collateral * req.leverage;
-  const liq = tp.liqPrice(req.side, entry, req.leverage);
+  let preview=null;
+  if(tp.previewAsync){try{preview=await tp.previewAsync(req)}catch(e){$('of-err').textContent=e.message;$('of-err').hidden=false;return}}
+  const entry = preview ? Number(preview.entry_price) : req.type === 'market' ? mk : req.price;
+  const size = preview ? Number(preview.quantity) : req.collateral * req.leverage / entry;
+  const notional = preview ? Number(preview.notional) : req.collateral * req.leverage;
+  const liq = preview ? Number(preview.liquidation_price) : tp.liqPrice(req.side, entry, req.leverage);
   const acc = tp.getAccount();
   const rows = [
     [t('rv.market'), m ? m.symbol : S.marketId], [t('rv.dir'), t(req.side === 'long' ? 'rv.side.long' : 'rv.side.short')],
@@ -879,11 +881,11 @@ $('submit-order').addEventListener('click', () => {
     [t('rv.collateral'), fmt.usd(req.collateral)], [t('rk.entry'), fmt.price(entry, d)],
     [t('rv.oracle'), board.getIndex(S.marketId) ? fmt.price(board.getIndex(S.marketId), d) : '—'],
     [t('rk.liq'), fmt.price(liq, d)],
-    [t('rv.fee'), fmt.usd(notional * (tp.feeRate?.(S.marketId) ?? FEE_RATE))],
+    [t('rv.fee'), fmt.usd(preview ? Number(preview.open_fee) : notional * (tp.feeRate?.(S.marketId) ?? FEE_RATE))],
     [t('rv.sl'), req.sl ? fmt.price(req.sl, d) : '—'],
     [t('rv.tp'), req.tp ? fmt.price(req.tp, d) : '—'],
-    [t('rv.equityAfter'), fmt.usd(acc.equity - req.collateral - notional * (tp.feeRate?.(S.marketId) ?? FEE_RATE))],
-    [t('rv.exec'), t('rv.exec')]
+    [L('مارجین آزاد تخمینی','Estimated free margin'), fmt.usd(preview ? Number(preview.available_margin)-Number(preview.required_margin)-Number(preview.open_fee) : acc.available-req.collateral)],
+    [t('rv.exec'), L('برآورد شبیه‌سازی؛ نتیجهٔ اجرا قطعی نیست','Simulation estimate; execution may differ')]
   ];
   $('review-body').innerHTML = `<div class="review-grid">` +
     rows.map(([k, v]) => `<div><span>${k}</span><b class="num">${v}</b></div>`).join('') + `</div>`;
@@ -898,7 +900,7 @@ $('review-confirm').addEventListener('click', async () => {
   const req = pendingOrder;
   pendingOrder = null;
   $('review-dialog').close();
-  const res = tp.submitAsync ? await tp.submitAsync(req) : tp.submit(req);
+  let res;try{res = tp.submitAsync ? await tp.submitAsync(req) : tp.submit(req)}catch(e){toast(e.message || 'Request failed','neg');return}
   if (res && res.ok){
     toast(res.kind === 'position' ? t('toast.position') : t('toast.order'), 'pos');
     renderBottom(); renderAccount();

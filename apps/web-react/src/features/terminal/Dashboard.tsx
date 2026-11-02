@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { AccountCards, AccountLinks, useAccounts } from "./Accounts";
 import { useSession } from "../../session/useOpenfundSession";
 import { AccessGate } from "./TerminalShell";
 import { useTerminal } from "./TerminalContext";
@@ -15,6 +16,7 @@ export function Metric({ label, value }: { label: string; value: unknown }) {
 export function ProductDashboard() {
   const { product, locale, context, t, message } = useTerminal(),
     session = useSession();
+  const [params]=useSearchParams(),directory=useAccounts(),selected=directory.accounts.find(a=>a.id===params.get("account"));
   const overview = useResource(
     product,
     session.status === "authenticated" && product === "prop"
@@ -24,8 +26,11 @@ export function ProductDashboard() {
   );
   if (session.status !== "authenticated") return <AccessGate />;
   const a = overview.data?.account;
+  if(!params.get('account')) return <AccountCards/>;
+  if(selected?.type==='challenge') return <><AccountCards/><AccountLinks/><section className="of-panel"><h2>{selected.name}</h2><p>{selected.status}</p><p>{selected.unavailableReason}</p><p>{t('آمار مالی این چالش در دسترس نیست.','Financial statistics are unavailable for this challenge record.')}</p></section></>;
   return (
     <>
+      <AccountCards/><AccountLinks/>
       <div className="of-account-bar">
         <span>{t("حساب فعال", "Active account")}</span>
         <bdi>{context?.accountRef || "—"}</bdi>
@@ -33,6 +38,7 @@ export function ProductDashboard() {
           {t("ورود به ترمینال", "Open terminal")} ↗
         </Link>
       </div>
+      {context?.state?.account?.status === "permanently_disabled" && <p role="status" className="of-error">{t("این حساب برای همیشه غیرفعال شده است. تاریخچه قابل مشاهده است.","Permanently disabled. Historical records remain available in read-only mode.")}</p>}
       {overview.error && (
         <p role="alert" className="of-error">
           {t("دریافت خلاصه ناموفق بود.", "Summary unavailable.")}
@@ -42,7 +48,7 @@ export function ProductDashboard() {
         <>
           <div className="of-metrics">
             <Metric
-              label={t("موجودی حساب تمرینی · DAI", "Practice balance · DAI")}
+              label={t("موجودی حساب آزمایشی · USD", "Free Trial balance · USD")}
               value={a?.balance}
             />
             <Metric

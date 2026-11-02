@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSession } from "../../session/useOpenfundSession";
-import { TradingBridge } from "../../trading/TradingBridge";
 import body from "../../pages/terminal-body.html?raw";
 import { fetchCmsTranslations } from "../../cms/client";
 import { useTerminal } from "./TerminalContext";
@@ -272,7 +271,6 @@ export function SharedTradingTerminal() {
   }, [cms, product, locale]);
   return (
     <>
-      {product === "prop" && context?.capabilities?.simulatedTrading && <TradingBridge pricing={context?.pricing} />}
       <iframe
         key={product}
         ref={frame}
