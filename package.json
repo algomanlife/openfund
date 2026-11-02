@@ -1,23 +1,20 @@
 {
-  "name": "openfund_landing_fa",
+  "name": "openfund",
   "version": "1.0.0",
-  "main": "index.js",
+  "private": true,
+  "description": "Openfund monorepo — root orchestration only. Applications install their own dependencies (apps/web-react, apps/backend) with per-app lockfiles; this package adds no runtime dependencies.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:web": "npm --prefix apps/web-react run build",
+    "build:web:publish": "npm --prefix apps/web-react run build -- --mode publish",
+    "build:backend": "npm --prefix apps/backend run migrate",
+    "test:web": "npm --prefix apps/web-react run test:plans && npm --prefix apps/web-react run test:information && npm --prefix apps/web-react run test:markets",
+    "test:backend": "npm --prefix apps/backend run test:all",
+    "typecheck": "npm --prefix apps/web-react exec -- tsc --noEmit",
+    "validate:blueprint": "node infra/render/validate-blueprint.mjs",
+    "dev:web": "npm --prefix apps/web-react run dev",
+    "dev:backend": "npm --prefix apps/backend run dev"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@gainsnetwork/sdk": "^1.8.10",
-    "@luxalgo/vela": "^0.9.3",
-    "@rainbow-me/rainbowkit": "^2.2.11",
-    "@tanstack/react-query": "^5.105.0",
-    "esbuild": "^0.28.2",
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1",
-    "viem": "^2.57.13",
-    "wagmi": "^2.19.5"
+  "devDependencies": {
+    "js-yaml": "^4.1.0"
   }
 }

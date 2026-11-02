@@ -15,6 +15,16 @@ Create a feature branch from the latest `main`, e.g. `qwen/terminal-layout`, `co
 - [ ] No secrets, unsupported network addresses or unlicensed assets added
 - [ ] Third-party attribution retained
 
+## CI requirements
+
+CI (`.github/workflows/ci.yml`) must pass before merge:
+web typecheck + unit tests + production build · backend suite against a real
+Postgres service container · `npm run validate:blueprint` · gitleaks. Keep
+changes green locally: `npm run typecheck`, `npm run test:web`,
+`npm run test:backend`, `npm run validate:blueprint`. Deployment-relevant
+changes must follow the Render rules in `AGENTS.md` and update
+`docs/deployment/*` when they touch services or variables.
+
 ## Commit convention
 
 Use `feat:`, `fix:`, `docs:`, `refactor:`, `test:` or `chore:` prefixes. Do not mark a planned integration as implemented without working code and verification.

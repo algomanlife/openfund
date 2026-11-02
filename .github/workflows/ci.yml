@@ -1,0 +1,155 @@
+name: CI
+
+# Pull-request validation for the Openfund monorepo.
+# Jobs:
+#   web       — typecheck, unit tests, production frontend build
+#   backend   — Postgres service container, migrations, full backend suite
+#   blueprint — render.yaml structural validation (network-free)
+#   secrets   — gitleaks scan of commits
+#   audit     — dependency vulnerability report (non-blocking, critical level)
+#
+# Deployment is NOT triggered from CI: the Render Blueprint in render.yaml is
+# applied manually after review (see docs/deployment/RENDER.md). Setting the
+# openfund service's autoDeployTrigger to "checksPass" would make Render
+# deploy when these checks pass on main — that switch is an owner decision.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: Web (React + Vite)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web-react
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/web-react/package-lock.json
+      - name: Install (lockfile integrity)
+        run: npm ci
+      - name: TypeScript
+        run: npx tsc --noEmit
+      - name: Unit tests (plans / rulebook seed / markets)
+        run: |
+          npm run test:plans
+          npm run test:information
+          npm run test:markets
+      - name: Production build
+        run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: react/
+          retention-days: 3
+
+  backend:
+    name: Backend (API + engine)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/backend
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: openfund_ci
+          POSTGRES_USER: openfund_ci
+          POSTGRES_PASSWORD: openfund_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U openfund_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://openfund_ci:openfund_ci@localhost:5432/openfund_ci
+      ALLOWED_DOMAINS: localhost:5173
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/backend/package-lock.json
+      - name: Install (lockfile integrity)
+        run: npm ci
+      - name: Migrations (idempotency check — run twice)
+        run: |
+          npm run migrate
+          npm run migrate
+      - name: Seed plan catalog
+        run: npm run seed-plans
+      - name: Boot server (integration suites hit it on :8080)
+        run: |
+          SIM_TEST_MODE=1 npm start &
+          for i in $(seq 1 30); do
+            sleep 1
+            if curl -fsS http://localhost:8080/health > /dev/null; then echo "health OK"; break; fi
+          done
+          curl -fsS http://localhost:8080/health > /dev/null || { echo "health check failed"; exit 1; }
+      - name: Test suite
+        run: npm run test:all
+
+  blueprint:
+    name: Render Blueprint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install root tooling
+        run: npm ci
+      - name: Structural validation (offline)
+        run: npm run validate:blueprint
+      - name: Render CLI validation (optional — requires RENDER_API_TOKEN)
+        env:
+          RENDER_API_TOKEN: ${{ secrets.RENDER_API_TOKEN }}
+        run: |
+          if [ -z "$RENDER_API_TOKEN" ]; then
+            echo "RENDER_API_TOKEN not set — skipping authenticated blueprint validation."
+            echo "Add the secret to enable full validation (see docs/deployment/RENDER.md)."
+          else
+            curl -fsSL https://github.com/render-oss/cli/releases/latest/download/render-linux-amd64 -o /usr/local/bin/render
+            chmod +x /usr/local/bin/render
+            render blueprint validate ./render.yaml
+          fi
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  audit:
+    name: Dependency audit (report)
+    runs-on: ubuntu-latest
+    continue-on-error: true # report-only gate; triage in the job log
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: web-react audit
+        run: npm --prefix apps/web-react audit --audit-level=critical || echo "::warning::critical advisories in apps/web-react — see log"
+      - name: backend audit
+        run: npm --prefix apps/backend audit --audit-level=critical || echo "::warning::critical advisories in apps/backend — see log"

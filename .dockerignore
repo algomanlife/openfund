@@ -1,0 +1,28 @@
+# .dockerignore — keeps future Docker build contexts small and reproducible.
+# (Current services use Render's native runtimes or the official Directus image;
+#  this file governs any custom build contexts added later.)
+
+node_modules
+**/node_modules
+react
+publish-openfund
+dist
+**/dist
+.git
+.github
+.qa
+.playwright
+.playwright-cli
+output
+__pycache__
+**/__pycache__
+*.log
+*.dump
+.env
+.env.*
+!.env.example
+infrastructure/directus/data
+infrastructure/directus/runtime
+docs
+brand
+shots
