@@ -1,0 +1,32 @@
+# Openfund gitleaks configuration — EXTENDS the default ruleset.
+#
+# Nothing is disabled: every default rule still runs. The only addition is a
+# path allowlist for COMMITTED BUILD OUTPUT whose minified vendor code embeds
+# public, third-party constants. Evidence per finding (traced to the published
+# npm packages, not to anything Openfund generated):
+#
+#   - @rainbow-me/rainbowkit ships a documented public provider fallback key
+#     (RAINBOW_PROVIDER_API_KEY) inside its dist bundle; it lands in our
+#     bundles whenever RainbowKit is compiled without a project-specific key.
+#     The same constant has been committed in dist/wallet.js on main for a
+#     long time.
+#   - @coinbase/wallet-sdk / @base-org/account ship their own public Amplitude
+#     telemetry key (initCCA telemetry); any app bundling those SDKs includes
+#     it (identifier in the bundle: amplitudeApiKey).
+#   - Remaining matches in these files are minified enum/constant fragments
+#     of the same wallet SDKs (for example HDKey exports), not credentials.
+#
+# Source directories (src/, apps/, packages/, scripts/, vendor/, docs/) keep
+# the full default rule set. Local, gitignored files such as
+# infrastructure/directus/.env are never scanned by CI because they are not
+# committed.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Generated browser bundles embed public third-party SDK constants; sources remain fully scanned"
+paths = [
+  '''^react/assets/''',
+  '''^publish-openfund/assets/''',
+  '''^dist/.*\.(js|css)$''',
+]
