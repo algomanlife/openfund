@@ -57,7 +57,7 @@ private to the backend service account.
 ## Restore
 
 - Preferred: Render dashboard → database → Backups → restore snapshot
-  (creates a new instance; repoint `DATABASE_URL` in the blueprint services).
+  (creates a new instance; repoint API `DATABASE_URL` and CMS `DB_CONNECTION_STRING` in the blueprint services).
 - Logical restore into a fresh database:
   ```bash
   createdb "$RESTORE_URL"

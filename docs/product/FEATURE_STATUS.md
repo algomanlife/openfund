@@ -2,6 +2,17 @@
 
 Use these statuses: **Implemented** (working and tested), **Prototype** (visible but not end-to-end validated), **Planned** (not built), **Blocked** (external dependency), **Unverified** (requires inspection).
 
+Current audit evidence: [2026-11-02 delivery](../reviews/integration-audit/DELIVERY.fa.md).
+
+| Audited capability | Status | Evidence / limits |
+| --- | --- | --- |
+| Owned retries, fees/margin, partial close | Implemented for simulation | PostgreSQL regression suite; atomic ledger settlement, preserved provenance |
+| Shared Decimal PnL and liquidation | Implemented for simulation | Backend authority; stale valuations null; both opening and closing fees in round-trip analytics |
+| Daily / maximum account drawdown | Implemented as sampled telemetry | UTC, persisted since first fresh observation; missing historical prices are not reconstructed; no unassigned challenge limits enforced |
+| Home navigation / background | Implemented | fa/en 390/1440, CSS ambient and reduced motion browser checks |
+| Real extension / hardware / WalletConnect session | Unverified | Requires an actual user-approved wallet; generated test signers are not that evidence |
+| Render compatibility | Implemented configuration; deployment Unverified | Existing 3 resources; corrected public hosts / CMS DB keys / region / build; local validator and production-mode checks |
+
 | Capability | Status | Evidence / next step |
 | --- | --- | --- |
 | Shared full-space product trading terminal | Implemented | Same `SharedTradingTerminal` at locale/product routes, independent adapters; no surrounding editorial UI. Product and viewport browser checks in dual-terminals delivery report |
@@ -15,14 +26,14 @@ Use these statuses: **Implemented** (working and tested), **Prototype** (visible
 | Market deep-links into terminal | Implemented | sessionStorage `of-terminal-symbol` boot hook (applied once, Gains-metadata-validated); E2E-verified BTC → terminal selection |
 | CMS-managed public content (Directus, live editing, no rebuild) | Implemented | home_content/faqs/trading_rules/legal_documents/footer_links/challenge_plans + ui_messages; 35-check E2E incl. live edits, unpublish, drafts, permissions — `docs/backstage/CONTENT_COVERAGE.md` (2026-11-01) |
 | Challenge catalog of record (4 programs, single backend table) | Implemented | challenge_plans in Directus = the backend table; Standard/One-phase/Instant/Free-Trial with verified terms; provenance in docs/research/ |
-| Unified website navigation (4 items, logo → Home) | Implemented | single definition in `features/information/content.ts` over shared landing chrome; verified on all five pages fa/en + mobile |
+| Public navigation (4 internal-page items; Home nav-less) | Implemented | single definition in `features/information/content.ts` over shared landing chrome; verified on all five pages fa/en + mobile |
 | Landing/account static frontend | Implemented | `dist/index.html`; bilingual FA/EN, dark/light theme, Irancell/Ubuntu fonts; interactivity browser-verified |
 | Bilingual Rulebook | Implemented | React `#/{fa,en}/rulebook`; 21 sections, responsive TOC/tables, draft-policy labels; scoped tests and browser matrix in `docs/reviews/bilingual-pages/DELIVERY.md` |
 | Bilingual Transparency interface | Implemented | React `#/{fa,en}/transparency`; typed synthetic fixtures, charts, data table, locale/theme/navigation verified; all metrics labelled sample |
 | Production transparency reporting / independent verification | Planned | No production reporting API, reserve/payout proof, cryptographic evaluation proof or on-chain settlement is claimed |
 | Terminal UI | Implemented | `dist/terminal.html`; FA/EN + themes + Vela workspace + live Gains data (browser-verified 2026-10-31) |
 | React app shell (both pages, hash routing) | Implemented | `apps/web-react` → `react/`; Playwright E2E 18/18 green on dev :5173 + build :4173 (theme, lang/dir, arrows, anchors, market rows, workspace LTR, reload teardown) — 2026-10-31 |
-| Wallet connection (RainbowKit) | Implemented | `apps/web-react`; ConnectButton.Custom, Arbitrum Sepolia 421614, connection only (no txs); injected fallback without WalletConnect projectId |
+| Wallet connection (RainbowKit) | Implemented | `apps/web-react`; Sepolia 11155111 for Prop / Arbitrum One 42161 for Perpetual; injected fallback. Generated EIP-1193 wallet browser coverage; real extension/WalletConnect network verification is Unverified |
 | Wallet state and chain switching | Implemented | Account/balance/network chips + account/chain modals; disconnect + refresh persistence verified |
 | Brand assets and brandbook | Unverified | Audit `brand/` and archive rights/content |
 | Vela npm dependency | Implemented | `vendor/vela@0.9.3` + `dist/assets/vela-workspace.global.min.js` (workspace bundle; loads in classic + React pages) |

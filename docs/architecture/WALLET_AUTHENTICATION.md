@@ -61,3 +61,24 @@ Browser-extension flows were exercised manually in development.
 `logout()`. The sign-in chip renders only when a wallet is connected but
 unauthenticated; a signature is requested **once per session** (refresh keeps
 the session — no repeated prompts).
+
+## Integration audit — 2026-11-02
+
+Product network policy is shared by wallet controls and SIWE: Ethereum Sepolia
+11155111 for Prop, Arbitrum One 42161 for Perpetual. Switching is requested through
+the wallet and can be rejected. Auth identity remains the normalized wallet,
+independent of product; trading/portfolio data retain the existing product scope.
+Old opaque sessions are not deleted by a schema migration. New SIWE signatures
+must use one of these two supported chains; EIP-1271 is checked on that chain.
+
+Backend validates domain, URI host/scheme, version, recent issuedAt, expiry and
+notBefore, nonce address/TTL, cryptographic signature, and atomically consumes the
+nonce once. Cookie changes are serialized in the client across verify/logout;
+late async results cannot expose the old wallet's profile. Account switches clear
+private resources immediately; disconnect logs out, refresh recovers matching
+sessions. SSE periodically checks session revocation/suspension. Profile dialog
+uses native modal focus behavior and links to existing product dashboards.
+
+Tests use generated EIP-1193 signers and real ECDSA/SIWE against local PostgreSQL.
+Actual browser extensions, WalletConnect remote transport, contract-wallet RPC
+verification and production HTTPS cookies still require external verification.

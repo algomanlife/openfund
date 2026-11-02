@@ -99,12 +99,12 @@ for (const s of services) {
       if (!props.has(property)) fail(`${id}: ${key} uses unsupported postgres property "${property}"`)
     }
     if (v.fromService) {
-      const { name, type, property } = v.fromService
+      const { name, type, property, envVarKey } = v.fromService
       if (!svcNames.has(name)) fail(`${id}: ${key} references unknown service "${name}"`)
       if (type && !TYPES.has(type)) fail(`${id}: ${key} fromService type "${type}" invalid`)
       const svc = services.find(x => x.name === name)
       if (svc && svc.type !== type) fail(`${id}: ${key} fromService type mismatch (declared ${type}, actual ${svc.type})`)
-      if (!['host', 'port'].includes(property || '')) fail(`${id}: ${key} unsupported fromService property "${property}"`)
+      if (envVarKey ? property || !/^[A-Z_][A-Z_0-9]*$/.test(envVarKey) : !['host', 'port'].includes(property || '')) fail(`${id}: ${key} invalid service reference`)
     }
     if (v.value !== undefined && SECRETISH.test(key)) {
       fail(`${id}: ${key} carries a literal value — secrets must be sync:false / generateValue`)
@@ -118,10 +118,23 @@ const has = (predicate, label) => {
   if (services.some(predicate) || databases.some(predicate)) ok(`graph: ${label}`)
   else fail(`graph: expected ${label}`)
 }
-has(s => s.type === 'postgres' || true, 'postgres present') /* databases[] checked above */
+if (databases.some(d => d.name === 'openfund-db' && String(d.postgresMajorVersion) === '17')) ok('graph: PostgreSQL 17 openfund-db')
+else fail('graph: expected PostgreSQL 17 openfund-db')
 has(s => s.runtime === 'image' && /directus/.test(s.image?.url || ''), 'Directus service (official image)')
 has(s => s.runtime === 'node', 'Node API/web service')
 has(s => (s.envVars || []).some(v => v.key === 'DATABASE_URL' && v.fromDatabase), 'API consumes managed DATABASE_URL')
+const cms = services.find(s => s.name === 'openfund-cms')
+if (cms?.envVars?.some(v => v.key === 'DB_CLIENT' && v.value === 'pg') &&
+    cms?.envVars?.some(v => v.key === 'DB_CONNECTION_STRING' && v.fromDatabase?.name === 'openfund-db')) ok('graph: Directus uses PostgreSQL configuration')
+else fail('graph: Directus requires DB_CLIENT=pg and managed DB_CONNECTION_STRING')
+const api = services.find(s => s.name === 'openfund')
+if (api?.numInstances !== 1) fail('graph: engine/SSE service requires numInstances: 1')
+if (!api?.buildCommand?.includes('npm ci --include=dev --prefix apps/web-react')) fail('graph: Vite build requires devDependencies even with NODE_ENV=production')
+for (const key of ['ALLOWED_DOMAINS','VITE_DIRECTUS_HOST']) {
+  if (!api?.envVars?.some(v => v.key === key && v.fromService?.envVarKey === 'RENDER_EXTERNAL_HOSTNAME')) fail(`graph: ${key} must reference a public hostname, not the private-network host property`)
+}
+const databaseRegion = databases.find(d => d.name === 'openfund-db')?.region
+for (const service of [api,cms]) if (!databaseRegion || service?.region !== databaseRegion) fail(`graph: ${service?.name} must share the database region for private connections`)
 
 console.log('')
 if (problems.length) {

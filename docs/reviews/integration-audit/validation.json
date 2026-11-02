@@ -1,0 +1,54 @@
+{
+  "baseline": "1aaa806",
+  "date": "2026-11-02",
+  "node": "22.23.4",
+  "postgres": "17.11",
+  "typecheck": "passed",
+  "frontendUnits": {
+    "passed": 17,
+    "failed": 0
+  },
+  "backend": {
+    "siwe": 22,
+    "trading": 54,
+    "portfolio": 31,
+    "products": 58,
+    "gains": 5,
+    "audit": 11,
+    "total": 181,
+    "failed": 0
+  },
+  "browserLiveReads": {
+    "checks": 94,
+    "wallet": "generated EIP-1193 ECDSA test signer",
+    "externalReads": [
+      "local Directus",
+      "live Gains"
+    ],
+    "chainExecution": false
+  },
+  "browserProtocolFixtures": {
+    "checks": 31,
+    "fixtures": [
+      "CMS",
+      "Gains REST/WebSocket",
+      "EIP-1193 test wallets"
+    ],
+    "backend": "real PostgreSQL + HTTP API",
+    "chainExecution": false
+  },
+  "productionModeSmoke": {
+    "passed": 7,
+    "httpsTransport": "not tested; local HTTP verifies Secure cookie flags only"
+  },
+  "productionBuild": {
+    "result": "passed",
+    "warning": "existing wallet bundle chunks exceed 500 kB"
+  },
+  "migration": "applied twice, additive, isolated audit database",
+  "blueprint": "local structure and semantic checks passed; authenticated Render validation not run",
+  "productionDeployment": "not performed",
+  "realExtensionWallet": "unverified",
+  "githubCi": "see PR checks",
+  "logs": "output/ (local, ignored)"
+}

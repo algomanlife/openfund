@@ -52,7 +52,33 @@ The React application now has product-scoped `#/{fa,en}/{prop,perpetual}/` route
 
 Prop retains the existing server-authoritative practice engine and ledger. Perpetual now reads verified Gains Arbitrum wallet positions, pending orders, event history and statistics; on-chain execution stays disabled. Both products have private persistent journal entries with notes, tags, classification, search, date filters and JSON restore/export. Portfolio adds filtering, order history, CSV export and journal-core analytics. Unsupported financial operations are not manufactured.
 
-Runtime editorial content uses the existing Directus instance. The Terminal tab deliberately renders no editorial introductions, banners or dashboard containers. See [product architecture](docs/architecture/PRODUCT_TERMINALS.md), [CMS administration](docs/backstage/TERMINAL_CONTENT.md), [optional Render setup](docs/architecture/RENDER_DEPLOYMENT.md), and the [audit and delivery report](docs/reviews/dual-terminals/DELIVERY.md). The optional blueprint reuses existing PostgreSQL/Directus and disables automatic deployment. This is source implementation and local verification, not a production deployment.
+Runtime editorial content uses the existing Directus instance. The Terminal tab deliberately renders no editorial introductions, banners or dashboard containers. See [product architecture](docs/architecture/PRODUCT_TERMINALS.md), [CMS administration](docs/backstage/TERMINAL_CONTENT.md), [optional Render setup](docs/architecture/RENDER_DEPLOYMENT.md), and the [audit and delivery report](docs/reviews/dual-terminals/DELIVERY.md). The Blueprint retains PostgreSQL/Directus and the reviewed Render deployment policy. This is source implementation and local verification, not a production deployment.
+
+## Trading / wallet integration audit — 2026-11-02
+
+Built on `main` **1aaa806** (including Render PR #23). Prop uses the existing
+server simulation, shared Decimal valuation, owned idempotency, transactional
+partial closes and sampled equity drawdown history. The shared terminal displays
+server PnL/liquidation values; account switching clears old state and disconnect
+revokes SIWE sessions. Prop uses **Ethereum Sepolia 11155111**, Perpetual uses
+**Arbitrum One 42161**. Perpetual remains a wallet-derived Gains read model;
+on-chain execution and unsupported fee-adjusted live PnL are not invented.
+
+Home uses its existing nav-less layout option, correct product routes and a light
+CSS ambient background with reduced-motion support. The Render three-resource
+architecture and `/react/` same-origin hosting remain intact; the Blueprint fixes
+CMS database keys, public hostname references, common region and build-time dev
+dependencies. Deployment remains unverified until reviewed and applied.
+
+Validation and limitations: [delivery report](docs/reviews/integration-audit/DELIVERY.fa.md).
+Run `npm run typecheck`, `npm run test:web`, `npm run test:backend`,
+`npm run validate:blueprint`, `npm run build:web`, and `npm run test:browser:audit`.
+Backend tests require an **isolated** test/CI/audit PostgreSQL database and a running
+`SIM_TEST_MODE=1` non-production backend. The browser smoke test uses protocol
+fixtures and generated test wallets; `test:browser:live` additionally reads the
+existing Directus and live Gains data. Neither is proof of an extension or
+hardware-wallet session on a real network. Browser tools: `npm ci` at root and
+`npx playwright install chromium`; Node 22 matches Render.
 
 ## 4. Current development status
 
@@ -72,7 +98,7 @@ Runtime editorial content uses the existing Directus instance. The Terminal tab 
 | Live Gains market data (488 markets, REST + WS ~90 upd/s) | Operational |
 | Gains-style market selector (OI L/S, funding, CLOSED markets view-only) | Operational |
 | Simulated demo trading engine on real marks | Operational (labelled) |
-| RainbowKit wallet connection — Arbitrum Sepolia | Operational |
+| Wallet connection — Sepolia / Arbitrum One | Implemented; generated-wallet browser coverage, real extension verification outstanding |
 | **SIWE authentication + sessions + user records** | **Operational (verified)** |
 | **100,000 DAI demo trading accounts (persistent)** | **Operational (verified)** |
 | **Server trading engine — market/limit/stop, SL/TP, liquidation** | **Operational (verified)** |
@@ -145,7 +171,7 @@ All screenshots are from the React app, captured by real-browser E2E — live Ga
 
 ## 9. Wallet connectivity
 
-RainbowKit (with wagmi + viem) provides the connection layer on **Arbitrum Sepolia (421614)**: injected wallets (MetaMask, Rabby, Taho…) work out of the box; the full remote wallet list requires a WalletConnect projectId (`VITE_WALLETCONNECT_PROJECT_ID`). The modal is translated to Persian and follows the app language. Connection alone is **never** treated as login — see the next section.
+RainbowKit (with wagmi + viem) provides the connection layer on **Ethereum Sepolia (11155111) for Prop and Arbitrum One (42161) for Perpetual**: injected wallets (MetaMask, Rabby, Taho…) work out of the box; the full remote wallet list requires a WalletConnect projectId (`VITE_WALLETCONNECT_PROJECT_ID`). The modal is translated to Persian and follows the app language. Connection alone is **never** treated as login — see the next section.
 
 ## 10. User identity architecture
 
