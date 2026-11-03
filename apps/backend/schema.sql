@@ -314,3 +314,95 @@ CREATE TABLE IF NOT EXISTS referral_attributions (
 );
 CREATE INDEX IF NOT EXISTS idx_referral_attributions_referrer ON referral_attributions (referrer_user_id);
 CREATE INDEX IF NOT EXISTS idx_referral_attributions_at ON referral_attributions (attributed_at DESC);
+
+-- ------------------------------------------------------------------
+-- Phase 1 (2026-11): profile, challenge purchases, payments,
+-- invoices and withdrawal requests.
+--
+-- Purchases are server-priced from challenge_plans.configuration
+-- (priceUsd). Confirmed payments provision exactly ONE openfund_challenges
+-- row per purchase order (UNIQUE order link). The demo trading engine and
+-- demo_accounts are untouched: challenge accounts are already consumed by
+-- accountDirectory() and the products router as type 'challenge'.
+-- The payment destination address NEVER lives in the database — it is a
+-- runtime env var (PURCHASE_PAYMENT_RECEIVER); purchases stay disabled
+-- while it is unset (no production payment activation without approval).
+-- ------------------------------------------------------------------
+
+ALTER TABLE openfund_users ADD COLUMN IF NOT EXISTS avatar_url text;
+
+CREATE TABLE IF NOT EXISTS purchase_orders (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id            uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  challenge_plan_id  uuid NOT NULL REFERENCES challenge_plans(id),
+  account_size_usd   numeric(12,2) NOT NULL CHECK (account_size_usd > 0),
+  price_usd          numeric(12,2) NOT NULL CHECK (price_usd >= 0),
+  currency           text NOT NULL DEFAULT 'USD',
+  status             text NOT NULL DEFAULT 'pending'
+                     CHECK (status IN ('pending','paid','cancelled','expired')),
+  idempotency_key    text,
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  expires_at         timestamptz NOT NULL DEFAULT now() + interval '1 hour',
+  paid_at            timestamptz,
+  CONSTRAINT purchase_orders_user_key_unique UNIQUE (user_id, idempotency_key)
+);
+/* early-adopted test databases may carry the pre-release global constraint */
+ALTER TABLE purchase_orders DROP CONSTRAINT IF EXISTS purchase_orders_idempotency_key_key;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'purchase_orders_user_key_unique') THEN
+    ALTER TABLE purchase_orders ADD CONSTRAINT purchase_orders_user_key_unique UNIQUE (user_id, idempotency_key);
+  END IF;
+END $$;
+CREATE INDEX IF NOT EXISTS idx_purchase_orders_user ON purchase_orders (user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_purchase_orders_status ON purchase_orders (status) WHERE status = 'pending';
+
+CREATE TABLE IF NOT EXISTS payments (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  purchase_order_id  uuid NOT NULL REFERENCES purchase_orders(id),
+  user_id            uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  tx_hash            text NOT NULL,
+  chain_id           integer NOT NULL,
+  block_number       bigint,
+  from_address       text NOT NULL,
+  to_address         text,
+  amount             numeric(38,18),
+  token_address      text,
+  status             text NOT NULL DEFAULT 'confirmed'
+                     CHECK (status IN ('confirmed','failed')),
+  verification       jsonb NOT NULL DEFAULT '{}'::jsonb,
+  verified_at        timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (chain_id, tx_hash)
+);
+CREATE INDEX IF NOT EXISTS idx_payments_order ON payments (purchase_order_id);
+CREATE INDEX IF NOT EXISTS idx_payments_user ON payments (user_id, verified_at DESC);
+
+CREATE TABLE IF NOT EXISTS invoices (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  purchase_order_id  uuid NOT NULL UNIQUE REFERENCES purchase_orders(id),
+  user_id            uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  number             text NOT NULL UNIQUE,
+  total_usd          numeric(12,2) NOT NULL,
+  issued_at          timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_invoices_user ON invoices (user_id, issued_at DESC);
+
+CREATE TABLE IF NOT EXISTS withdrawal_requests (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id            uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  challenge_id       uuid REFERENCES openfund_challenges(id),
+  amount_usd         numeric(12,2) NOT NULL CHECK (amount_usd > 0),
+  status             text NOT NULL DEFAULT 'requested'
+                     CHECK (status IN ('requested','approved','paid','rejected','cancelled')),
+  note               text,
+  payout_ref         text,
+  requested_at       timestamptz NOT NULL DEFAULT now(),
+  reviewed_at        timestamptz
+);
+CREATE INDEX IF NOT EXISTS idx_withdrawals_user ON withdrawal_requests (user_id, requested_at DESC);
+
+-- Challenge records gain their purchased size + order provenance.
+ALTER TABLE openfund_challenges ADD COLUMN IF NOT EXISTS account_size_usd numeric(12,2);
+ALTER TABLE openfund_challenges ADD COLUMN IF NOT EXISTS purchase_order_id uuid REFERENCES purchase_orders(id);
+
+-- Invoice numbering: one gap-free sequence per calendar year.
+CREATE SEQUENCE IF NOT EXISTS invoice_number_seq;

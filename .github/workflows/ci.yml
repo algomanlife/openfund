@@ -108,7 +108,9 @@ jobs:
         run: npm run seed-plans
       - name: Boot server (integration suites hit it on :8080)
         run: |
-          SIM_TEST_MODE=1 npm start &
+          # PURCHASE_PAYMENT_RECEIVER is a CI-only placeholder so the purchase
+          # lifecycle is testable end-to-end; never a production address.
+          SIM_TEST_MODE=1 PURCHASE_PAYMENT_RECEIVER=0x000000000000000000000000000000000000c1a1 npm start &
           for i in $(seq 1 30); do
             sleep 1
             if curl -fsS http://localhost:8080/health > /dev/null; then echo "health OK"; break; fi
