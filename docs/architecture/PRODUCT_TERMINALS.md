@@ -74,3 +74,13 @@ The [account directory and API additions](../trading/UNIFIED_ACCOUNTS.md) carry 
 ## Presentation boundary
 
 The [compact terminal ADR](../decisions/0007-compact-terminal-layout.md) retains this product/account contract. `workspace.css` is loaded only inside the shared trading iframe; `workspaceLayout.ts` handles presentation view controls and localized disclosure text. The trading route receives compact outer navigation; dashboards, portfolios, journals and concurrent website sections keep their existing layout. Desktop and responsive geometry is compared between languages in browser acceptance.
+
+## Locale availability
+
+The English browser experience exposes Prop only. EN Perpetual routes redirect to
+EN Prop Dashboard before mounting any product page and discard product-specific
+queries. Persian retains both products and the existing switcher. FA Home alone
+omits central website navigation, preserving wallet, terminal, language and theme
+actions. EN Home reuses the existing Prop landing. Locale is not residency evidence;
+backend ownership and product isolation remain unchanged. [Eligibility audit and
+UI batch](../reviews/ui-polish/DELIVERY.md).

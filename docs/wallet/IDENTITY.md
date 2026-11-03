@@ -28,3 +28,12 @@ Mutation origins, allowed SIWE domains and CORS must match the intended deployme
 ## Verification limits
 
 Generated EIP-1193 test signers exercise actual ECDSA/SIWE and account switching. They are not evidence that real extensions, hardware wallets, remote WalletConnect or live EIP-1271 contracts have passed acceptance. Deployed HTTPS session behavior requires external runtime verification. See [Security](../security/SECURITY.md), [authentication internals](../architecture/WALLET_AUTHENTICATION.md) and [flow diagrams](../architecture/FLOWS.md#authentication).
+
+## Verification availability
+
+Contract-wallet verification uses the existing chain RPC with a five-second
+transport timeout and no automatic transport retries. EOA signatures still use
+viem's existing local recovery path. Invalid or unavailable verification remains
+fail-closed; this does not enable transactions or bypass SIWE checks. This bounds
+negative-signature requests that previously stalled release CI on an unavailable
+public RPC. Actual contract-wallet/device acceptance remains a separate gate.

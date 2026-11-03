@@ -59,7 +59,7 @@ function mount(container, opts){
     providers: { gains: () => G.createVelaProvider() },
     timeframes: TIMEFRAMES,
     live: true,
-    theme: THEMES.dark,               /* chart always dark; the host inverts for light mode */
+    theme: THEMES[document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'],
     engines: { pine: () => { const engine = WLib.createPineEngine(); engines.push(engine); return engine; } },
     indicators: WLib.indicators,
     persist: true,
@@ -108,8 +108,16 @@ function mount(container, opts){
       });
     },
     setTheme(theme){
-      /* chart stays dark; light mode is a host-level invert so the whole
-         terminal (incl. chart canvas) matches the landing light theme */
+      const palette = THEMES[theme === 'light' ? 'light' : 'dark'];
+      ws.setTheme(palette);
+      // Persisted chart cosmetics can pin the previous plot palette even when
+      // workspace chrome follows setTheme. The application owns these colors.
+      ws.chart?.renderer.applyConfig({
+        layout: { background: palette.background, textColor: palette.textColor, fontFamily: palette.fontFamily },
+        grid: { vertLines: { color: palette.gridColor }, horzLines: { color: palette.gridColor } },
+        crosshair: { color: palette.textColor, labelBackground: palette.textColor },
+        panes: { separatorColor: palette.borderColor },
+      });
       return ws;
     },
     setLocale(tag){ try { return ws.setLocale(tag); } catch(e){} },
@@ -121,6 +129,7 @@ function mount(container, opts){
       engines.forEach(engine => engine.terminate());
     }
   };
+  Promise.resolve(ws.chart?.ready()).then(() => controller.setTheme(document.documentElement.dataset.theme)).catch(() => {});
   global.__openfundChart = controller;   /* debug handle */
   return controller;
 }

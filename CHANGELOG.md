@@ -240,3 +240,10 @@ Notable changes are recorded here. Dates should use ISO 8601.
 - Gains SDK and testnet integration have not been verified as operational.
 
 > This document describes the known baseline and scaffold; it is not a claim of implemented trading capabilities.
+
+## Unreleased — UI polish batch
+
+- Keep connected wallet actions in a compact accessible header disclosure.
+- Restore FA-only two-product Home and Perpetual terminal availability; EN Home uses the existing Prop landing and unsupported product routes redirect.
+- Add TradingView as a labelled external market/news footer resource, without claiming a data integration or partnership.
+- Synchronize native light/dark terminal and Vela themes through the established preference and iframe lifecycle.

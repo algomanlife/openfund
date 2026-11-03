@@ -272,14 +272,13 @@ $('language-toggle').addEventListener('click', () => setLang(window.ofLang === '
 /* ============================================================
    THEME — dark (default) / light, synced with Vela
    ============================================================ */
-let curTheme = 'dark';
+let curTheme = document.documentElement.dataset.theme || 'dark';
 function setTheme(theme){
   curTheme = theme;
   document.documentElement.setAttribute('data-theme', theme);
   $('theme-toggle').textContent = theme === 'dark' ? '◐' : '◑';
   try{ localStorage.setItem('of-theme', theme) }catch(e){}
-  /* light mode = host-level invert (exactly like the landing); the Vela chart
-     always renders dark and is inverted along with everything else */
+  window.__openfundChart?.setTheme(theme);
 }
 $('theme-toggle').addEventListener('click', () => setTheme(curTheme === 'dark' ? 'light' : 'dark'));
 

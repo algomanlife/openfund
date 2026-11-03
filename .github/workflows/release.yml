@@ -30,7 +30,7 @@ jobs:
           POSTGRES_PASSWORD: openfund_ci
         ports: ['5432:5432']
         options: >-
-          --health-cmd "pg_isready -U openfund_ci"
+          --health-cmd "pg_isready -U openfund_ci -d openfund_release_ci"
           --health-interval 5s --health-timeout 5s --health-retries 10
     env:
       DATABASE_URL: postgres://openfund_ci:openfund_ci@localhost:5432/openfund_release_ci
@@ -47,6 +47,7 @@ jobs:
         run: node scripts/release/plan.mjs
       - name: Install browser runtime
         run: npx --yes --package=playwright@1.64.1 playwright install --with-deps chromium
+      # Includes the bilingual responsive wallet/theme/product-availability matrix.
       - name: All integrated release gates and packaging
         env:
           RELEASE_CANDIDATE: ${{ github.event_name != 'workflow_dispatch' || !inputs.publish }}

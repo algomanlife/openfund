@@ -229,3 +229,8 @@ Read the latest contracts before coding. Keep feature status, roadmap gates and 
 ## Unified release management
 
 The integrated app is packaged from `main` using `npm run release:build`; local work uses `-- --candidate` with Node 22 and an isolated PostgreSQL test database. Reviewed batch publication, official SemVer tags, checksummed payloads, manifests and future approved exact-SHA Render deployment are defined in [the release runbook](docs/deployment/RELEASES.md). Candidate builds and merged source are not production acceptance.
+
+The [UI polish batch](docs/reviews/ui-polish/DELIVERY.md) records locale-specific
+product availability, compact wallet controls and terminal theme acceptance.
+Persian exposes both products; English exposes Prop. Language does not establish
+residency eligibility.

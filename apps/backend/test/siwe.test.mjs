@@ -22,6 +22,7 @@ const ok = (name, cond, extra = '') => {
 const j = async (method, path, body, cookie) => {
   const res = await fetch(BASE + path, {
     method,
+    signal: AbortSignal.timeout(45000),
     headers: { 'Content-Type': 'application/json', Origin: 'http://localhost:5173', ...(cookie ? { Cookie: cookie } : {}) },
     body: body ? JSON.stringify(body) : undefined
   })

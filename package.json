@@ -30,7 +30,8 @@
     "release:version": "node scripts/release/version.mjs",
     "test:release": "node --test scripts/release/test/*.test.mjs",
     "test:browser:release": "node e2e/test-release.cjs",
-    "test:browser:routes": "node scripts/release/public-routes.mjs"
+    "test:browser:routes": "node scripts/release/public-routes.mjs",
+    "test:browser:polish": "node e2e/test-ui-polish.cjs"
   },
   "devDependencies": {
     "js-yaml": "^4.1.0",

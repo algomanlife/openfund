@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { useParams, useSearchParams, useNavigate, Navigate } from 'react-router-dom'
+import { useParams, useSearchParams, useNavigate, Navigate, useLocation } from 'react-router-dom'
 import { bindNavigation, renderNavigation, navigationClick, navigationKeyDown } from '../features/information/navigation'
 import '../features/information/information.css'
 import landingBody from './landing-body.html?raw'
@@ -104,6 +104,7 @@ function markCurrentPage() {
 export default function Landing() {
   const navigate = useNavigate()
   const routeLocale = useParams().locale
+  const isHome = useLocation().pathname.endsWith("/home")
   const [searchParams] = useSearchParams()
   useEffect(() => {
     const section = searchParams.get('section')
@@ -185,8 +186,9 @@ export default function Landing() {
   }, [])
 
   useEffect(() => {
-    /* cancel OUR OWN pending reload (StrictMode re-mount of this page) */
-    if (w().__ofReloadLanding) { clearTimeout(w().__ofReloadLanding); w().__ofReloadLanding = null }
+    const pageRoot = document.getElementById('builder')
+    /* Only the same mounted DOM may cancel its StrictMode cleanup. */
+    if (w().__ofReloadLanding && w().__ofReloadLandingRoot === pageRoot) { clearTimeout(w().__ofReloadLanding); w().__ofReloadLanding = null }
 
     if (!w().__ofLegacyLandingLoaded) {
       w().__ofLegacyLandingLoaded = true
@@ -208,6 +210,7 @@ export default function Landing() {
           fetchCmsLegal(),
           fetchCmsFooterLinks(),
         ])
+        if (!pageRoot?.isConnected) return
         if (cms) {
           w().ofCmsLanding = cms.landing
           w().ofCmsLandingFa = cms.landingFa
@@ -224,26 +227,30 @@ export default function Landing() {
         l.dataset.page = 'landing'
         document.head.appendChild(l)
       })
-      const scripts = SCRIPTS.map(src => {
-        const s = document.createElement('script')
-        s.src = src
-        s.async = false
-        s.dataset.page = 'landing'
-        document.body.appendChild(s)
-        return s
-      })
+      // Fetch trusted bundled scripts first. A synchronous ordered insertion
+      // prevents queued external scripts from booting after React removes Home.
+      const sources = await Promise.all(SCRIPTS.map(async src => {
+        const response = await fetch(src)
+        if (!response.ok) throw new Error(`Landing asset unavailable: ${src}`)
+        return { src, code: await response.text() }
+      })).catch(error => { if (pageRoot?.isConnected) console.error(error); return null })
+      if (!sources || !pageRoot?.isConnected) return
+      for (const { src, code } of sources) {
+        const script = document.createElement('script')
+        script.dataset.page = 'landing'
+        script.textContent = code + '\n//# sourceURL=' + new URL(src, document.baseURI).href
+        document.body.appendChild(script)
+      }
       /* re-fire DOMContentLoaded for the late-loaded legacy scripts.
          MUST bubble: locale.js listens on window, we dispatch on document. */
       const kick = () => {
-        if (w().__ofLandingKicked) return
+        if (!pageRoot?.isConnected || w().__ofLandingKicked) return
         w().__ofLandingKicked = true
         document.dispatchEvent(new Event('DOMContentLoaded', { bubbles: true }))
-        setTimeout(() => { initTheme(); swapArrows(); markCurrentPage() }, 60)
-        setTimeout(() => { swapArrows(); markCurrentPage() }, 600)
+        setTimeout(() => { if (pageRoot?.isConnected) { initTheme(); swapArrows(); markCurrentPage() } }, 60)
+        setTimeout(() => { if (pageRoot?.isConnected) { swapArrows(); markCurrentPage() } }, 600)
       }
-      scripts[scripts.length - 1].addEventListener('load', kick)
-      /* safety: if load already fired before we attached */
-      setTimeout(kick, 1500)
+      kick()
       })()
     }
 
@@ -252,11 +259,12 @@ export default function Landing() {
     /* language toggle: re-run the arrow/nav pass AND keep the route hash in
        sync (silent replaceState — no router remount, no legacy re-boot) */
     const langHandler = () => setTimeout(() => {
+      if (!pageRoot?.isConnected) return
       swapArrows()
       markCurrentPage()
       const lang = w().ofLang === 'en' ? 'en' : 'fa'
       if (routeLocale && lang !== routeLocale) {
-        navigate(`/${lang}/challenges${location.hash.includes('?') ? '?' + location.hash.split('?')[1] : ''}`, { replace: true })
+        navigate(`/${lang}/${isHome ? "home" : "challenges"}${location.hash.includes('?') ? '?' + location.hash.split('?')[1] : ''}`, { replace: true })
       }
     }, 60)
     addEventListener('of-language', langHandler)
@@ -275,6 +283,7 @@ export default function Landing() {
       removeEventListener('of-language', langHandler)
       /* real navigation away: reload to tear the legacy runtime down.
          Cancelled only by a re-mount of THIS page (StrictMode / route return). */
+      w().__ofReloadLandingRoot = pageRoot
       w().__ofReloadLanding = setTimeout(() => location.reload(), 120)
     }
   }, [])

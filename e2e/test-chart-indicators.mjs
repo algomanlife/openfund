@@ -49,7 +49,7 @@ try {
     const requests = [];
     const captureRequest = request => { if (request.url().includes('/candles')) requests.push(request.url()); };
     page.on('request', captureRequest);
-    await page.goto(`${base}/#/en/${product}/trade`);
+    await page.goto(`${base}/#/${product === "perpetual" ? "fa" : "en"}/${product}/trade`);
     let frame = page.frameLocator('iframe.of-trading-workspace');
     await frame.locator('.vela-widget-indicators').waitFor();
     await frame.locator('.vela-widget-indicators').click();

@@ -25,7 +25,7 @@ import { SessionProvider } from './session/useOpenfundSession'
 
 /* ---- public website architecture ----------------------------------------
    /              → language-aware redirect into the Home product gateway
-   /:locale/home  → Home (two-product gateway, one screen, no footer)
+   /:locale/home  → FA two-product gateway; EN existing Prop landing
    /:locale/challenges → legacy landing experience (preserved, moved off "/")
    /:locale/markets → Markets directory (Gains Network authoritative data)
    /:locale/rulebook, /:locale/transparency → existing editorial pages
@@ -68,9 +68,21 @@ function LegacyAnchor() {
 function TerminalRedirect({ page }: { page: string }) { return <Navigate to={`/${preferredLocale()}/prop/${page}`} replace /> }
 function ProductRedirect({ product }: { product: 'prop' | 'perpetual' }) { return <Navigate to={`/${preferredLocale()}/${product}/${useParams().page || 'dashboard'}`} replace /> }
 
+function LocalizedHome() {
+  return useParams().locale === 'en' ? <Landing /> : <Home />
+}
+
+function ProductGate({ product }: { product: 'prop' | 'perpetual' }) {
+  const { locale } = useParams()
+  // Presentation availability does not verify nationality or residency.
+  return locale === 'en' && product === 'perpetual'
+    ? <Navigate to="/en/prop/dashboard" replace />
+    : <TerminalShell product={product} />
+}
+
 const router = createHashRouter([
   { path: '/', element: <RootRedirect /> },
-  { path: '/:locale/home', element: <Home /> },
+  { path: '/:locale/home', element: <LocalizedHome /> },
   { path: '/:locale/challenges', element: <Landing /> },
   { path: '/:locale/markets', element: <Markets /> },
   { path: '/:locale/rulebook', element: <Rulebook /> },
@@ -87,8 +99,9 @@ const router = createHashRouter([
   { path: '/:locale/referral', element: <Referral /> },
   { path: '/:locale/ref/:code', element: <ReferralEntry /> },
   ...(['prop', 'perpetual'] as const).map(product => ({
-    path: `/:locale/${product}`, element: <TerminalShell product={product} />, children: [
+    path: `/:locale/${product}`, element: <ProductGate product={product} />, children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
+      { path: '*', element: <Navigate to="../dashboard" replace /> },
       { path: 'dashboard', element: <ProductDashboard /> },
       { path: 'trade', element: <SharedTradingTerminal /> },
       { path: 'portfolio', element: <ProductPortfolio /> },

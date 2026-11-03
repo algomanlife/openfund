@@ -84,3 +84,34 @@ html[data-theme='light'] .rk-chip-bal { color: #6b7a70 }
   transition: background .18s;
 }
 .of-profile-actions .button:hover { background: #e8948344 }
+
+/* A single header control keeps every connected-wallet action available. */
+.rk-account-menu { position:relative; flex:0 0 auto; }
+.rk-account-menu > summary { list-style:none; max-width:160px; }
+.rk-account-menu > summary::-webkit-details-marker { display:none; }
+.rk-chip-addr { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+.rk-account-controls {
+  position:absolute; top:calc(100% + 8px); right:0; z-index:200;
+  display:flex; flex-direction:column; align-items:stretch; gap:8px;
+  width:max-content; max-width:calc(100vw - 24px); min-width:190px; padding:12px;
+  background:#0d1511; color:#e6eee9; border:1px solid #ffffff25; border-radius:6px;
+  box-shadow:0 12px 32px #0004;
+}
+.rk-account-controls .rk-chip-bal { display:inline !important; }
+.rk-network-status { font-size:11px; text-align:center; }
+html[data-theme='light'] .rk-account-controls { background:#fff; color:#16281e; border-color:#0a120d28; }
+.rk-wrap > [role='alert'] { white-space:normal; }
+html[data-theme='light'] .of-profile { background:#fff; color:#16281e; border-color:#0a120d28; }
+html[data-theme='light'] .of-profile :is(h3,.of-profile-rows b,.of-challenges b) { color:#304e3d; }
+html[data-theme='light'] .of-profile :is(.of-profile-rows span,.of-profile-close,.of-challenges small) { color:#52665b; }
+html[data-theme='light'] .of-profile :is(.of-ok,.of-count,.of-challenges span) { color:#087b4a; }
+html[data-theme='light'] .of-profile :is(.of-profile-actions .button,.of-bad) { color:#94392f; border-color:#94392f55; }
+html[data-theme='light']:has(.of-terminal) dialog { filter:none; }
+/* Classic public pages invert their palette; React wallet surfaces already use
+   RainbowKit's native light colors and need one compensating filter. */
+html[data-theme='light']:not(:has(.of-terminal)) :is(.rk-wrap,[data-rk][role='dialog']) { filter:invert(1) hue-rotate(180deg); }
+.openfund-header .of-session-error {
+  position:absolute; top:100%; inset-inline-end:12px; z-index:210;
+  width:max-content; max-width:min(32rem,calc(100vw - 24px)); padding:8px 12px;
+  background:#0d1511; color:#e6eee9; border:1px solid #ffffff25; border-radius:4px;
+}

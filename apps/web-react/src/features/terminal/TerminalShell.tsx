@@ -160,7 +160,7 @@ export default function TerminalShell({ product }: { product: Product }) {
               />
               <b dir="ltr">openfund</b>
             </Link>
-            <label className="of-product-switch">
+            {locale === "fa" && <label className="of-product-switch">
               <span className="sr-only">{t("محصول", "Product")}</span>
               <select
                 aria-label={t("محصول", "Product")}
@@ -182,7 +182,7 @@ export default function TerminalShell({ product }: { product: Product }) {
                 <option value="prop">Openfund Prop</option>
                 <option value="perpetual">Openfund Perpetual</option>
               </select>
-            </label>
+            </label>}
             {navigation}
             <label className="of-header-account">
               <span className="sr-only">{t("حساب فعال", "Active account")}</span>
@@ -211,7 +211,7 @@ export default function TerminalShell({ product }: { product: Product }) {
               </button>
               <button
                 onClick={() =>
-                  navigate(pathname.replace(/^\/(?:fa|en)\//, `/${locale === "fa" ? "en" : "fa"}/`) + search)
+                  navigate(product === "perpetual" ? "/en/prop/dashboard" : pathname.replace(/^\/(?:fa|en)\//, `/${locale === "fa" ? "en" : "fa"}/`) + search)
                 }
               >
                 {locale === "fa" ? "EN" : "FA"}

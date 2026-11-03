@@ -1,6 +1,7 @@
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
+import fs from "node:fs";
 import pg from "pg";
 import { Engine } from "../engine.js";
 import { Portfolio } from "../portfolio.js";
@@ -8,8 +9,26 @@ import { MarketData, quoteRecord } from "../market-data.js";
 import { accountDirectory } from "../accounts.js";
 if (!/test|audit|_ci/.test(process.env.DATABASE_URL || ""))
   throw Error("Use isolated test database");
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
-after(() => pool.end());
+// The HTTP server monitors public accounts concurrently. Direct Engine tests
+// need their own schema so that server marks cannot execute a unit-test order.
+const schema = `unified_test_${process.pid}_${randomUUID().replaceAll("-", "")}`;
+const admin = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL, options: `-c search_path=${schema},public` });
+try {
+  await admin.query(`CREATE SCHEMA "${schema}"`);
+  await pool.query(fs.readFileSync(new URL("../schema.sql", import.meta.url), "utf8"));
+  await pool.query("INSERT INTO challenge_plans SELECT * FROM public.challenge_plans");
+} catch (error) {
+  await pool.end();
+  await admin.query(`DROP SCHEMA IF EXISTS "${schema}" CASCADE`);
+  await admin.end();
+  throw error;
+}
+after(async () => {
+  await pool.end();
+  try { await admin.query(`DROP SCHEMA "${schema}" CASCADE`); }
+  finally { await admin.end(); }
+});
 const req = {
   market: "BTC/USD",
   side: "long",

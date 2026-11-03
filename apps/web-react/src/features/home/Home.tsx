@@ -24,7 +24,7 @@ export default function Home() {
     return () => { active = false }
   }, [])
   const c = content === 'error' ? null : content
-  return <InformationShell page="home" footer={false}
+  return <InformationShell page="home" footer={false} nav={false}
       title={c ? (c.translations[locale].seoTitle || 'Openfund') : 'Openfund'}
       description={c ? (c.translations[locale].seoDescription || '') : 'Openfund'}>
     {c ? <HomeBody variant={variant} locale={locale} content={c} /> : <HomeUnavailable locale={locale} />}
