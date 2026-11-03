@@ -18,6 +18,8 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `KEY`, `SECRET` | openfund-cms | R | SEC | `generateValue: true` (created once at first apply) |
 | `WEBSOCKETS_ENABLED`, `CORS_ENABLED`, `CORS_ORIGIN`, `CORS_METHODS`, `MAX_PAYLOAD_SIZE` | openfund-cms | R | PUB | Directus hardening (public read-only API) |
 | `SESSION_TTL_HOURS` | openfund | R | PUB | default `168` (7 days) |
+| `PURCHASE_PAYMENT_CHAIN` | openfund | R | PUB | default `11155111` (Ethereum Sepolia) — chain accepted for challenge payments |
+| `PURCHASE_PAYMENT_DECIMALS` | openfund | R | PUB | default `18` — token decimals used in server-side amount checks |
 
 ## Prompted at first blueprint apply (`sync: false` — never in Git)
 
@@ -27,6 +29,10 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `PUBLIC_URL` | openfund-cms | e.g. `https://openfund-cms.onrender.com` |
 | `VITE_WALLETCONNECT_PROJECT_ID` | openfund (build) | optional; full remote wallet list (cloud.reown.com, free) |
 | `CORS_ORIGINS` | openfund | optional; only needed for extra origins / custom domains |
+| `PURCHASE_PAYMENT_RECEIVER` | openfund | **deliberately unset by default — purchasing stays disabled (`purchases_disabled`) until an approved payment address is entered.** No hardcoded production destination exists in the repository. |
+| `PURCHASE_PAYMENT_TOKEN` | openfund | optional ERC-20 token contract for challenge payments (unset = native ETH) |
+| `VITE_DEPAY_WIDGET` | openfund (build) | optional; `1` enables the DePay checkout widget |
+| `VITE_DEPAY_WIDGET_URL` | openfund (build) | approved DePay widget bundle URL; the widget stays hidden without both variables |
 
 ## Local development defaults (code fallbacks — no .env required)
 
