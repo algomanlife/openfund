@@ -137,11 +137,12 @@ async function walletDisclosureFits(page){
   }
   await page.goto(BASE+'/#/en/home');await page.locator('#language-toggle').waitFor();await page.waitForTimeout(1800);
   await page.locator('#language-toggle').click();await page.waitForURL('**/#/fa/home');
-  await page.locator('.home-products').waitFor();check('EN Home language switch returns to FA two-product Home',true);
+  await page.locator('.home-products').waitFor();await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.home-products').waitFor();
+  check('EN Home language switch returns to FA two-product Home',true);
   await page.locator('#language-toggle').click();await page.waitForURL('**/#/en/home');
   await page.locator('.hero').waitFor();
-  // A rapid return can still be completing the classic page's 120ms teardown reload.
-  await page.waitForTimeout(300);await page.locator('.hero').waitFor();
+  // Wait for the classic page's actual document replacement, not an intermediate route.
+  await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.hero').waitFor();
   check('FA Home language switch returns to EN Prop landing',true);
   await page.goto(BASE+'/#/fa/perpetual/journal?account=product-specific');await page.getByRole('button',{name:'EN',exact:true}).click();
   await page.waitForURL('**/#/en/prop/dashboard');check('Perpetual language switch clears product account context',true);
