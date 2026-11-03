@@ -111,3 +111,11 @@ five minutes per public-RPC fallback. The existing RPC transport now has a
 five-second timeout and no transport retries, retaining fail-closed verification.
 The SIWE integration test also bounds each HTTP request to 45 seconds. This is the
 only backend change; the engine and account/journal/portfolio logic are unchanged.
+
+The final package run also exposed a pre-existing test isolation race: the HTTP
+server's monitoring loop could fill a direct Engine unit test's pending stop at
+its own 51,000 fixture before the test applied its 53,000 gap. The unified unit
+suite now creates its own random schema inside the guarded isolated test database,
+uses the unchanged production schema and catalog, and removes only that owned
+schema afterward. All numerical assertions remain unchanged; no engine behavior
+was altered to make the test pass.
