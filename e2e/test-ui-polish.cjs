@@ -93,6 +93,17 @@ async function headerGeometry(page,terminal){
     }
    }
   }
+  if(!connected) for(const locale of ['en','fa'])for(const theme of ['dark','light'])for(const surface of ['public','terminal']){
+    await page.evaluate(theme=>{localStorage.setItem('of-theme',theme);document.documentElement.dataset.theme=theme},theme);
+    await page.goto(BASE+`/#/${locale}/${surface==='public'?'faq':'prop/dashboard'}`);await page.reload();await page.waitForTimeout(350);
+    await page.locator('header .rk-chip-connect').click();const dialog=page.getByRole('dialog');await dialog.waitFor();
+    await page.waitForTimeout(300);
+    check(`${surface}/${locale}/${theme}: wallet failure keeps header bounded`,Object.values(await headerGeometry(page,surface==='terminal')).every(v=>Array.isArray(v)?v.length===0:!v));
+    const expected=surface==='public'&&theme==='light'?'invert(1) hue-rotate(180deg)':'none';
+    check(`${surface}/${locale}/${theme}: native wallet modal palette`,await dialog.evaluate(el=>getComputedStyle(el).filter)===expected);
+    const file=`wallet-modal-${surface}-${locale}-${theme}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file)});screenshots.push({file,fixture:'No installed wallet; real connection error and modal'});
+    await page.keyboard.press('Escape');check(`${surface}/${locale}/${theme}: wallet modal closes`,await page.getByRole('dialog').count()===0);
+  }
   await page.goto(BASE+'/#/en/perpetual/trade?account=gains-private');await page.waitForURL('**/#/en/prop/dashboard');
   check('Direct EN Perpetual redirects without account query',page.url().endsWith('#/en/prop/dashboard'));
   for(const suffix of ['','/dashboard','/portfolio','/journal','/rewards','/not-a-page']){

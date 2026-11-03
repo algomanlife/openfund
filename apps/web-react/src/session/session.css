@@ -107,3 +107,11 @@ html[data-theme='light'] .of-profile :is(.of-profile-rows span,.of-profile-close
 html[data-theme='light'] .of-profile :is(.of-ok,.of-count,.of-challenges span) { color:#087b4a; }
 html[data-theme='light'] .of-profile :is(.of-profile-actions .button,.of-bad) { color:#94392f; border-color:#94392f55; }
 html[data-theme='light']:has(.of-terminal) dialog { filter:none; }
+/* Classic public pages invert their palette; React wallet surfaces already use
+   RainbowKit's native light colors and need one compensating filter. */
+html[data-theme='light']:not(:has(.of-terminal)) :is(.rk-wrap,[data-rk][role='dialog']) { filter:invert(1) hue-rotate(180deg); }
+.openfund-header .of-session-error {
+  position:absolute; top:100%; inset-inline-end:12px; z-index:210;
+  width:max-content; max-width:min(32rem,calc(100vw - 24px)); padding:8px 12px;
+  background:#0d1511; color:#e6eee9; border:1px solid #ffffff25; border-radius:4px;
+}

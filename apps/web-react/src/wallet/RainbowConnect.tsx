@@ -254,7 +254,7 @@ export function RainbowConnect() {
         )
       }}
       </ConnectButton.Custom>
-      {connectError && <span role='alert'>{connectError}</span>}
+      {connectError && <span role='alert' className='of-session-error'>{connectError}</span>}
       {session.error && <span role="alert" className="of-session-error">{isFa ? 'ورود انجام نشد. دوباره تلاش کنید. ' : 'Sign-in failed. Please retry. '}{session.error}</span>}
       {profileOpen && session.user && (
         <ProfilePanel
