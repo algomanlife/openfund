@@ -51,11 +51,21 @@ async function signIn(page) {
   }
   await (await walletButton(page, 'Account')).waitFor({ state: 'attached', timeout: 30000 });
 }
+/* API calls via the page context (cookie-bearing). Reload-based route
+ * changes can destroy the evaluation context mid-call — retry until the
+ * new document settles. */
 async function call(page, url, body, method) {
-  return page.evaluate(async ({ url, body, method }) => {
-    const response = await fetch(url, { method: method || (body ? 'POST' : 'GET'), credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
-    return { status: response.status, data: await response.json() };
-  }, { url: API + url, body, method });
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await page.evaluate(async ({ url, body, method }) => {
+        const response = await fetch(url, { method: method || (body ? 'POST' : 'GET'), credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+        return { status: response.status, data: await response.json() };
+      }, { url: API + url, body, method })
+    } catch (e) {
+      if (attempt >= 4 || !/destroyed|navigation/i.test(String(e))) throw e
+      await page.waitForTimeout(1500)
+    }
+  }
 }
 /* SPA hash navigation — product pages intentionally reload on route change,
  * so tolerate the destroyed context and wait for the target URL to settle */
@@ -175,11 +185,13 @@ async function run() {
     const hist2 = await call(page, '/purchases/history');
     const paid = (hist2.data?.orders || []).find(o => o.id === pending.id);
     check('history carries payment + invoice for the paid order', paid?.payment?.txHash === txHash && !!paid?.invoice?.id);
-    const pdf = await page.evaluate(async id => {
-      const r = await fetch(id, { credentials: 'include' });
-      const buf = new Uint8Array(await r.arrayBuffer());
-      return { status: r.status, head: String.fromCharCode(...buf.slice(0, 5)), type: r.headers.get('content-type') };
-    }, `${API}/invoices/${paid.invoice.id}`);
+    /* fetch the PDF through playwright's cookie-sharing request API — the
+     * page context may be destroyed by a reload-based route change mid-call */
+    const pdf = await (async () => {
+      const r = await page.request.get(`${API}/invoices/${paid.invoice.id}`);
+      const buf = await r.body();
+      return { status: r.status(), head: buf.subarray(0, 5).toString('latin1'), type: r.headers()['content-type'] };
+    })();
     check('invoice downloads as PDF', pdf.status === 200 && pdf.head === '%PDF-' && pdf.type === 'application/pdf');
     await shot(page, 'purchase-history');
 
