@@ -215,3 +215,30 @@ html[lang=en] .information-page .info-hero h1{font-size:58px;letter-spacing:-2px
   .openfund-header .navlinks.open{max-height:calc(100dvh - 84px);overflow-y:auto}
   .openfund-header .navlinks.open .resources-toggle{display:flex;justify-content:space-between;width:100%}
 }
+
+/* Public chrome reserves one stable wallet slot, including connected state. */
+.openfund-header .nav { gap:16px; }
+.openfund-header .navlinks { min-width:0; }
+.openfund-header .navlinks > a, .openfund-header .resources-toggle { white-space:nowrap; }
+.openfund-header .nav-actions { min-width:0; gap:8px; }
+.openfund-header #wallet-root { flex:0 0 auto; }
+.tradingview-credit small { font-size:10px; opacity:.75; }
+@media(max-width:1400px) {
+  .openfund-header .menu { display:flex; }
+  .openfund-header .navlinks { display:none; }
+  .openfund-header .navlinks.open { display:flex; position:absolute; top:100%; inset-inline:12px; padding:16px; flex-direction:column; background:var(--obsidian); border:1px solid var(--line); z-index:100; }
+}
+@media(max-width:600px) {
+  .openfund-header .nav { gap:8px; min-height:76px; padding-block:10px; flex-wrap:wrap; }
+  .openfund-header .brand { margin-inline-end:auto; }
+  .openfund-header .brand-caption { display:none; }
+  .openfund-header .nav-actions { width:100%; justify-content:flex-end; gap:6px; }
+  .openfund-header .nav-cta { margin-inline-end:auto; white-space:nowrap; }
+  .openfund-header .rk-chip { height:32px; padding-inline:8px; font-size:11px; }
+  .openfund-header .rk-account-menu > summary { max-width:136px; }
+}
+/* The terminal entry remains an essential action on narrow public headers. */
+.openfund-header .nav-actions .nav-cta { display:inline-flex; }
+/* Animated landing artwork stays within the existing content viewport. */
+body:has(.openfund-header) main { overflow-x:clip; }
+.openfund-header ~ footer #footer-links, footer #footer-links { display:flex; flex-wrap:wrap; min-width:0; gap:12px 18px; }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { useParams, useSearchParams, useNavigate, Navigate } from 'react-router-dom'
+import { useParams, useSearchParams, useNavigate, Navigate, useLocation } from 'react-router-dom'
 import { bindNavigation, renderNavigation, navigationClick, navigationKeyDown } from '../features/information/navigation'
 import '../features/information/information.css'
 import landingBody from './landing-body.html?raw'
@@ -104,6 +104,7 @@ function markCurrentPage() {
 export default function Landing() {
   const navigate = useNavigate()
   const routeLocale = useParams().locale
+  const isHome = useLocation().pathname.endsWith("/home")
   const [searchParams] = useSearchParams()
   useEffect(() => {
     const section = searchParams.get('section')
@@ -256,7 +257,7 @@ export default function Landing() {
       markCurrentPage()
       const lang = w().ofLang === 'en' ? 'en' : 'fa'
       if (routeLocale && lang !== routeLocale) {
-        navigate(`/${lang}/challenges${location.hash.includes('?') ? '?' + location.hash.split('?')[1] : ''}`, { replace: true })
+        navigate(`/${lang}/${isHome ? "home" : "challenges"}${location.hash.includes('?') ? '?' + location.hash.split('?')[1] : ''}`, { replace: true })
       }
     }, 60)
     addEventListener('of-language', langHandler)

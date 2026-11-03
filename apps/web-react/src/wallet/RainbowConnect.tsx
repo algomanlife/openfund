@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { ConnectButton, RainbowKitProvider, darkTheme, lightTheme } from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'   /* REQUIRED: without it the modal renders unstyled (position:static at the end of <body>, breaking the page layout) */
 import { useAccount, useBalance, useConnect } from 'wagmi'
@@ -147,6 +147,17 @@ export function RainbowConnect() {
      per session; then the profile panel shows their account + challenges */
   const session = useSession()
   const [profileOpen, setProfileOpen] = useState(false)
+  const accountMenu = useRef<HTMLDetailsElement>(null)
+  useEffect(() => {
+    const close = () => { if (accountMenu.current) accountMenu.current.open = false }
+    close()
+    const outside = (event: PointerEvent) => {
+      if (event.target instanceof Node && !accountMenu.current?.contains(event.target)) close()
+    }
+    addEventListener('hashchange', close)
+    document.addEventListener('pointerdown', outside)
+    return () => { removeEventListener('hashchange', close); document.removeEventListener('pointerdown', outside) }
+  }, [session.status])
 
   return (
     <RainbowKitProvider
@@ -183,7 +194,7 @@ export function RainbowConnect() {
           <div
             aria-hidden={!mounted}
             className='rk-wrap'
-            style={{ display: 'flex', flexWrap: 'wrap', maxWidth: '100%', gap: 8, alignItems: 'center', direction: 'ltr' }}
+            style={{ display: 'flex', flexWrap: 'nowrap', maxWidth: '100%', gap: 8, alignItems: 'center', direction: 'ltr' }}
           >
             {!connected ? (
               <button onClick={() => void connectWallet()} disabled={isConnecting} type='button' className='rk-chip rk-chip-connect'>
@@ -194,11 +205,23 @@ export function RainbowConnect() {
                 {isConnecting ? (isFa ? 'در حال اتصال…' : 'Connecting…') : isFa ? 'اتصال کیف پول' : 'Connect Wallet'}
               </button>
             ) : (
-              <>
+              <details ref={accountMenu} className="rk-account-menu" onClick={event => {
+                if ((event.target as Element).closest('button')) event.currentTarget.open = false
+              }} onKeyDown={event => {
+                if (event.key === 'Escape') {
+                  event.currentTarget.open = false
+                  event.currentTarget.querySelector('summary')?.focus()
+                }
+              }}>
+                <summary className="rk-chip" title={address}>
+                  <i className={correctNetwork ? 'rk-dot rk-dot-live' : 'rk-dot rk-dot-info'} />
+                  <span dir="ltr" className="rk-chip-addr">{fmtAddr(address)}</span><span aria-hidden="true">▾</span>
+                </summary>
+                <div className="rk-account-controls">
                 {/* ONE wallet chip — network dot + address + balance (opens the account modal) */}
                 <button onClick={openAccountModal} type='button' className='rk-chip' title={isFa ? 'کیف پول و شبکه' : 'Wallet & network'}>
                   <i className={correctNetwork ? 'rk-dot rk-dot-live' : 'rk-dot rk-dot-info'} />
-                  <span dir='ltr' className='rk-chip-addr'>{fmtAddr(address)}</span>
+                  <span dir='ltr'>{fmtAddr(address)}</span>
                   {balance ? <span dir='ltr' className='rk-chip-bal'>{fmtBal()}</span> : null}
                 </button>
                 {!correctNetwork && <button type="button" className="rk-chip" onClick={openChainModal}>
@@ -223,7 +246,9 @@ export function RainbowConnect() {
                     {isFa ? 'ورود به اوپن‌فاند' : 'Sign in'}
                   </button>
                 )}
-              </>
+                <span className="rk-network-status">{chain?.name || (isFa ? 'شبکه ناشناخته' : 'Unknown network')}</span>
+                </div>
+              </details>
             )}
           </div>
         )

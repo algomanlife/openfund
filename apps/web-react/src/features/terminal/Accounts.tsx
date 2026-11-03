@@ -45,7 +45,9 @@ export function useAccounts() {
       removeEventListener("of-trading-update", load);
     };
   }, [key]);
-  return state.key === key ? state : { accounts: [], error: "" };
+  const visible = state.key === key ? state : { accounts: [], error: "" };
+  const english = /^#\/en(?:\/|$)/.test(location.hash);
+  return { ...visible, accounts: visible.accounts.filter(account => !english || account.product === "prop") };
 }
 export function AccountPicker() {
   const { locale, product, context, t } = useTerminal(),

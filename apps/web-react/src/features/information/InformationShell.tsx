@@ -79,11 +79,10 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
       }
     })
     renderNavigation(template.content, locale, location.pathname, navItems, footerLinks)
-    /* nav-less mode (product gateway): no menu links, no menu button, no header CTA */
+    /* nav-less mode (product gateway): no menu links or menu button; retain the terminal CTA */
     if (part === 'header' && !nav) {
       template.content.querySelector('#navigation')?.remove()
       template.content.querySelector('.menu')?.remove()
-      template.content.querySelector('.nav-cta')?.remove()
     }
     const language = template.content.querySelector('#language-toggle span')
     if (language) language.textContent = locale === 'fa' ? 'EN' : 'فا'
