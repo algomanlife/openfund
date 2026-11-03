@@ -6,6 +6,19 @@ const BASE=(process.env.TEST_FRONTEND_URL||'http://localhost:8080/react').replac
 const OUT=path.resolve(process.env.POLISH_OUTPUT||'output/playwright/ui-polish');
 fs.mkdirSync(OUT,{recursive:true});
 const checks=[],screenshots=[];
+// CI has no Directus service. Reuse the actual published editorial seed only;
+// financial/account/market endpoints remain untouched by this fixture.
+const CMS_FIXTURE=process.env.GITHUB_ACTIONS==='true'||process.env.POLISH_CMS_FIXTURE==='1';
+let homeFixture;
+if(CMS_FIXTURE){
+ const built=require('../apps/web-react/node_modules/esbuild').buildSync({entryPoints:[path.resolve('apps/web-react/src/cms/seed/homeContent.ts')],bundle:true,write:false,platform:'node',format:'cjs'});
+ const mod={exports:{}};new Function('module','exports',built.outputFiles[0].text)(mod,mod.exports);
+ const seed=mod.exports.homeSeed;
+ homeFixture={prop_cta_destination:seed.propCtaDestination,perpetual_cta_destination:seed.perpetualCtaDestination,prop_image:null,perpetual_image:null,
+  translations:['fa','en'].map(language_code=>({language_code,...Object.fromEntries(Object.entries(seed.translations[language_code]).map(([key,value])=>[key.replace(/[A-Z]/g,c=>'_'+c.toLowerCase()),value]))}))};
+}
+console.log('Home content: '+(CMS_FIXTURE?'repository published editorial seed fixture':'existing local Directus'));
+
 function check(name,value){assert.ok(value,name);checks.push(name)}
 async function headerGeometry(page,terminal){
  return page.locator(terminal?'.of-terminal-top':'header .nav').evaluate(root=>{
@@ -26,6 +39,7 @@ async function headerGeometry(page,terminal){
  try{
  for(const connected of [false,true]){
   const context=await browser.newContext();
+  if(CMS_FIXTURE)await context.route('**/items/home_content**',route=>route.fulfill({json:{data:homeFixture}}));
   if(connected)await context.addInitScript(()=>{
    let chain='0xaa36a7';const events={};
    window.ethereum={isMetaMask:true,on:(n,f)=>(events[n]||=[]).push(f),removeListener:(n,f)=>events[n]=(events[n]||[]).filter(x=>x!==f),request:async({method,params})=>{
@@ -122,6 +136,6 @@ async function headerGeometry(page,terminal){
   check('No browser exceptions',errors.length===0);
   await context.close();
  }
- }finally{await browser.close();fs.writeFileSync(path.join(OUT,'results.json'),JSON.stringify({base:BASE,checks,screenshots,capturedAt:new Date().toISOString(),status:'completed checks only; process exit determines acceptance'},null,2));}
+ }finally{await browser.close();fs.writeFileSync(path.join(OUT,'results.json'),JSON.stringify({base:BASE,cms:CMS_FIXTURE?'repository published editorial seed fixture':'existing local Directus',checks,screenshots,capturedAt:new Date().toISOString(),status:'completed checks only; process exit determines acceptance'},null,2));}
  console.log(`PASS ${checks.length} UI polish checks`);
 })().catch(e=>{console.error(e);process.exitCode=1});

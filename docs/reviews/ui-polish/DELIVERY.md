@@ -88,3 +88,10 @@ The test now reopens the disclosure through its real summary; the final local
 terminal suite passed all 427 checks. Screenshots finish CSS entrance animations
 and wait for classic-page teardown before capturing; all 862 matrix checks were
 repeated successfully. No release was published by the failed attempts.
+
+The UI matrix reads the existing local Directus for local acceptance. GitHub
+Actions has no Directus service, so its matrix intercepts only `home_content` with
+the repository's actual published Home editorial seed, loaded from its source.
+It does not intercept financial/account/market APIs. CMS readiness is awaited
+before product assertions. This test fixture is not a new runtime fallback or a
+claim that a CMS is deployed; the result JSON explicitly records its content mode.
