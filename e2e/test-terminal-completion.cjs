@@ -42,6 +42,7 @@ async function walletContext(browser,{fixtures=false}={}){
    addEventListener('eip6963:requestProvider',announce);announce();
  },wallets.map(w=>w.address));
  if(fixtures){
+  await context.route('http://localhost:8055/**',route=>route.abort());
   await context.route('https://api.gains.trade/v1/arbitrum/**',async route=>{
    const url=route.request().url();const data=url.includes('/candles')?[]:url.endsWith('/markets')?[{symbol:'BTC/USD',base:'BTC',quote:'USD',group:'crypto',pairIndex:0,isOpen:true,minLeverage:'1',maxLeverage:'100',pricePrecision:1,sizePrecision:5}]:[{market:'BTC/USD',mark:'50000',index:'50000',updatedAt:Date.now()}];
    await route.fulfill({json:{data}});
@@ -197,7 +198,9 @@ async function functional(browser){
   await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().waitFor();
   await page.waitForFunction(async api=>(await fetch(api+'/auth/me',{credentials:'include'})).status===401,API);
   check('Wallet-modal disconnect revokes SIWE and clears private state',await page.evaluate(()=>!window.__ofServerTP));
-  await page.goto(BASE+'/#/en/challenges');await page.waitForTimeout(2000);
+  await page.goto(BASE+'/#/en/challenges');
+  await page.locator('#challenge-order').getByText('The challenge catalog is unavailable. Please try again later.',{exact:true}).waitFor();
+  check('Unavailable CMS catalog shows an accurate state and disables challenge activation',await page.locator('#detail-review').isDisabled());
   await page.locator('.nav-cta').click();await page.waitForURL(/prop\/trade$/);await page.waitForTimeout(700);
   check('Challenges-to-terminal navigation does not dispatch into removed legacy content',await page.locator('.of-terminal-compact').count()===1);
   check('Functional scenarios never request a blockchain transaction',await page.evaluate(()=>window.completionWallet.transactions===0));
