@@ -371,7 +371,7 @@
   height: max(650px, calc(100dvh - 260px));
   border: 1px solid var(--of-line);
   border-radius: 12px;
-  background: #060808;
+  background: var(--of-bg, #060808);
   display: block;
 }
 .of-terminal .of-perpetual-chart {
@@ -531,7 +531,7 @@
 
 body:has(.of-terminal) {
   margin: 0;
-  background: #060808;
+  background: var(--of-bg, #060808);
 }
 
 /* Terminal tab is the workspace itself, directly under the horizontal application tabs. */
@@ -920,3 +920,24 @@ body:has(.of-terminal) {
 
 .of-ratio-gauge{width:100%;max-width:100px;height:76px;display:block;margin:4px auto 0}
 .of-journal-analytics .of-metric small{display:block;color:var(--of-muted);font-size:10px;margin-top:5px}
+
+/* Header controls retain a bounded footprint at every wallet state. */
+.of-terminal-compact .rk-account-menu > summary { height:28px; padding:3px 8px; font-size:11px; }
+.of-terminal-compact .rk-account-controls { z-index:200; }
+@media(max-width:1100px) {
+  .of-terminal-compact #terminal-navigation > a:not(.active) { display:none; }
+  .of-terminal-compact .of-terminal-more-links a.of-compact-destination { display:block; }
+}
+@media(max-width:650px) {
+  .of-terminal-compact .of-terminal-header { height:76px; }
+  .of-terminal-compact .of-terminal-top { height:75px; display:grid; grid-template-columns:auto minmax(0,1fr); grid-template-rows:32px 32px; gap:4px 6px; }
+  .of-terminal-compact .of-brand { display:none; }
+  .of-terminal-compact .of-product-switch { grid-area:1/1; }
+  .of-terminal-compact .of-header-account { grid-area:2/1; }
+  .of-terminal-compact #terminal-navigation { grid-area:2/2; justify-self:end; overflow:visible; }
+  .of-terminal-compact #terminal-navigation > a { display:none; }
+  .of-terminal-compact .of-terminal-actions { grid-area:1/2; justify-self:end; gap:4px; }
+  .of-terminal-compact .of-release-version { position:absolute; bottom:8px; left:130px; font-size:9px; }
+}
+html[data-theme="light"]:has(.of-terminal) { filter:none; color-scheme:light; background:#f2f5f0; }
+html[data-theme="light"] .of-terminal :is(.of-negative,.negative) { color:#b33f35; }
