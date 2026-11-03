@@ -5,7 +5,7 @@ const assert=require('node:assert/strict'), fs=require('node:fs'), path=require(
 const BASE=(process.env.TEST_FRONTEND_URL||'http://localhost:8080/react').replace(/\/$/,'');
 const OUT=path.resolve(process.env.POLISH_OUTPUT||'output/playwright/ui-polish');
 fs.mkdirSync(OUT,{recursive:true});
-const checks=[],screenshots=[];
+const checks=[],screenshots=[],browserErrors=[];
 // CI has no Directus service. Reuse the actual published editorial seed only;
 // financial/account/market endpoints remain untouched by this fixture.
 const CMS_FIXTURE=process.env.GITHUB_ACTIONS==='true'||process.env.POLISH_CMS_FIXTURE==='1';
@@ -46,6 +46,7 @@ async function walletDisclosureFits(page){
  for(const connected of [false,true]){
   const context=await browser.newContext();
   if(CMS_FIXTURE)await context.route('**/items/home_content**',route=>route.fulfill({json:{data:homeFixture}}));
+  if(process.env.POLISH_CMS_OFFLINE==='1')await context.route('**/items/**',route=>route.request().url().includes('/home_content')?route.fulfill({json:{data:homeFixture}}):route.abort('connectionrefused'));
   if(connected)await context.addInitScript(()=>{
    let chain='0xaa36a7';const events={};
    window.ethereum={isMetaMask:true,on:(n,f)=>(events[n]||=[]).push(f),removeListener:(n,f)=>events[n]=(events[n]||[]).filter(x=>x!==f),request:async({method,params})=>{
@@ -60,7 +61,7 @@ async function walletDisclosureFits(page){
    }};
   });
   const page=await context.newPage(),errors=[];
-  page.on('pageerror',e=>errors.push(e.message));
+  page.on('pageerror',e=>{errors.push(e.message);browserErrors.push({url:page.url(),error:e.stack||e.message});console.error('BROWSER EXCEPTION',page.url(),e.stack||e.message)});
   for(const locale of ['fa','en'])for(const theme of ['dark','light'])for(const width of [1440,900,390]){
    await page.setViewportSize({width,height:900});
    await page.goto(BASE+`/#/${locale}/home`);
@@ -100,7 +101,7 @@ async function walletDisclosureFits(page){
       const frame=page.frameLocator('iframe');await frame.locator('canvas').first().waitFor();
       const child=page.frames().find(f=>f.parentFrame());
       await child.waitForFunction(()=>!!window.__openfundChart?.chart);
-      await child.evaluate(()=>window.__openfundChart.chart.ready());
+      await child.evaluate(()=>Promise.race([window.__openfundChart.chart.ready(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Chart readiness timed out')),20000))]));
       await page.waitForTimeout(150);
       const state=await frame.locator('html').evaluate(el=>({theme:el.dataset.theme,filter:getComputedStyle(el).filter,bg:getComputedStyle(el.ownerDocument.body).backgroundColor,chart:window.__openfundChart?.chart?.renderer.getConfig().layout.background}));
       check(prefix+` ${product} iframe native theme`,state.chart?.toLowerCase()===(theme==='light'?'#f2f5f0':'#060808')&&state.theme===theme&&state.filter==='none'&&state.bg===(theme==='light'?'rgb(242, 245, 240)':'rgb(6, 8, 8)'));
@@ -144,6 +145,16 @@ async function walletDisclosureFits(page){
   check('No browser exceptions',errors.length===0);
   await context.close();
  }
- }finally{await browser.close();fs.writeFileSync(path.join(OUT,'results.json'),JSON.stringify({base:BASE,cms:CMS_FIXTURE?'repository published editorial seed fixture':'existing local Directus',checks,screenshots,capturedAt:new Date().toISOString(),status:'completed checks only; process exit determines acceptance'},null,2));}
+ // Delayed CMS replies must never start a classic runtime on a removed page.
+ for(const delay of [0,50,100,250]){
+  const context=await browser.newContext(),page=await context.newPage(),errors=[];
+  await context.route('**/items/**',async route=>{await new Promise(resolve=>setTimeout(resolve,delay));await route.abort('connectionrefused').catch(()=>{})});
+  page.on('pageerror',e=>{errors.push(e.message);browserErrors.push({url:page.url(),error:e.stack||e.message});console.error('BROWSER EXCEPTION',e.stack||e.message)});
+  await page.goto(BASE+'/#/en/home');await page.locator('.hero').waitFor();
+  await page.goto(BASE+'/#/fa/prop/journal');await page.locator('.of-terminal-top').waitFor();await page.waitForTimeout(500);
+  check(`Delayed CMS ${delay}ms: leaving Home does not boot stale scripts`,errors.length===0);
+  await context.close();
+ }
+ }finally{await browser.close();fs.writeFileSync(path.join(OUT,'results.json'),JSON.stringify({browserErrors,base:BASE,cms:CMS_FIXTURE?'repository published editorial seed fixture':'existing local Directus',checks,screenshots,capturedAt:new Date().toISOString(),status:'completed checks only; process exit determines acceptance'},null,2));}
  console.log(`PASS ${checks.length} UI polish checks`);
 })().catch(e=>{console.error(e);process.exitCode=1});
