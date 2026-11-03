@@ -246,6 +246,4 @@ body:has(.openfund-header) main { overflow-x:clip; }
   .openfund-header .rk-chip-connect .rk-connect-label { display:none; }
   .openfund-header .rk-chip-connect { width:32px; min-width:32px; padding:0; justify-content:center; flex-shrink:0; }
 }
-@media(max-width:600px) {
-  html[dir="rtl"] .openfund-header .rk-account-controls { right:auto; left:0; }
-}
+html[dir="rtl"] .openfund-header .rk-account-controls { right:auto; left:0; }
