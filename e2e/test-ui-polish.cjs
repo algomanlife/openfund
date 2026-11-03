@@ -34,6 +34,12 @@ async function headerGeometry(page,terminal){
   return {clippedWalletLabel:controls.some(e=>e.matches('button.rk-chip-connect')&&e.scrollWidth>e.clientWidth+1),overflow:document.documentElement.scrollWidth>innerWidth+1,offscreen:controls.some(e=>rect(e).left< -1||rect(e).right>innerWidth+1),overlaps};
  });
 }
+async function walletDisclosureFits(page){
+ const menu=page.locator('header .rk-account-menu');
+ await menu.locator('summary').click();const controls=menu.locator('.rk-account-controls');await controls.waitFor();
+ const fits=await controls.evaluate(el=>{const r=el.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&el.scrollWidth<=el.clientWidth+1});
+ await page.keyboard.press('Escape');return fits&&!await menu.evaluate(el=>el.open);
+}
 (async()=>{
  const browser=await chromium.launch();
  try{
@@ -72,6 +78,7 @@ async function headerGeometry(page,terminal){
    check(prefix+' Home geometry',Object.values(await headerGeometry(page,false)).every(v=>Array.isArray(v)?v.length===0:!v));
    check(prefix+' Home products',await page.locator('.home-panel').count()===(locale==='fa'?2:0));
    check(prefix+' Home navigation',await page.locator('header #navigation').count()===(locale==='fa'?0:1));
+   if(connected)check(prefix+' wallet dropdown actions fit and Escape closes',await walletDisclosureFits(page));
    check(prefix+' terminal entry',await page.locator('header .nav-cta').isVisible());
    if(width===1440 && !connected || width===390 && connected){const file=`home-${locale}-${theme}-${width}-${connected?'test-wallet':'disconnected'}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file),fullPage:true});screenshots.push({file,fixture:connected?'connection-only test wallet':'none'})}
    await page.goto(BASE+`/#/${locale}/faq`);await page.waitForTimeout(300);await page.locator('#navigation').waitFor({state:'attached'});
@@ -85,6 +92,7 @@ async function headerGeometry(page,terminal){
     for(const section of ['dashboard','trade','portfolio','journal','journal?section=accounts']){
      await page.goto(BASE+`/#/${locale}/${product}/${section}`);await page.locator('.of-terminal-top').waitFor();await page.waitForTimeout(250);await page.locator('.of-terminal-top').waitFor();
      check(prefix+` ${product}/${section} geometry`,Object.values(await headerGeometry(page,true)).every(v=>Array.isArray(v)?v.length===0:!v));
+     if(connected)check(prefix+` ${product}/${section} wallet dropdown fits`,await walletDisclosureFits(page));
      check(prefix+` ${product}/${section} theme`,await page.locator('html').getAttribute('data-theme')===theme);
      check(prefix+` ${product}/${section} product selector`,await page.locator('.of-product-switch').count()===(locale==='fa'?1:0));
      if(width===1440&&!connected&&['dashboard','journal'].includes(section)){const file=`${section}-${product}-${locale}-${theme}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file),fullPage:true});screenshots.push({file,fixture:'none'})}
