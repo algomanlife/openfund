@@ -142,6 +142,7 @@ function check(name,value) { assert.ok(value,name); results.push(name); console.
     check('Gains failure is explicit; Prop balance never leaks',!(await page.locator('body').innerText()).includes('100,000.00'))
     await page.evaluate(()=>window.auditWallet.changeAccount(-1))
     await page.getByRole('button',{name:'اتصال کیف پول',exact:true}).first().waitFor()
+    await page.waitForFunction(async API=>(await fetch(API+'/auth/me',{credentials:'include'})).status===401,API)
     const auth=await page.evaluate(async API=>(await fetch(API+'/auth/me',{credentials:'include'})).status,API)
     check('Disconnect revokes backend session',auth===401)
     const anonymous=await browser.newContext()
