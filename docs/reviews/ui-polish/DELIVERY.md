@@ -95,3 +95,19 @@ the repository's actual published Home editorial seed, loaded from its source.
 It does not intercept financial/account/market APIs. CMS readiness is awaited
 before product assertions. This test fixture is not a new runtime fallback or a
 claim that a CMS is deployed; the result JSON explicitly records its content mode.
+
+## CI-discovered lifecycle and availability regressions
+
+Rapidly leaving the English legacy Home while CMS replies were pending could
+execute its queued scripts against a removed DOM. The loader now fetches the
+trusted bundled scripts first, verifies the owning page, then inserts them in
+order synchronously. Translation boot also checks its captured toggle remains
+connected after awaiting translations. Real navigation cannot cancel another
+page instance's teardown; StrictMode can still cancel its own cleanup. A bounded
+regression covers delayed CMS exits. No legacy trading calculations are changed.
+
+A separate package timeout was traced to negative SIWE signature checks spending
+five minutes per public-RPC fallback. The existing RPC transport now has a
+five-second timeout and no transport retries, retaining fail-closed verification.
+The SIWE integration test also bounds each HTTP request to 45 seconds. This is the
+only backend change; the engine and account/journal/portfolio logic are unchanged.

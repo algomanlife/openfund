@@ -150,7 +150,7 @@ const requireAuth = async (req, res, next) => {
 }
 
 /* public client for EIP-1271 contract-wallet signature checks */
-const clients = new Map([sepolia, arbitrum].map(chain => [chain.id, createClient({ chain, transport: http() })]))
+const clients = new Map([sepolia, arbitrum].map(chain => [chain.id, createClient({ chain, transport: http(undefined, { timeout: 5000, retryCount: 0 }) })]))
 
 import { referralRoutes, attributeReferral, sanitizeCode } from './referrals.js'
 
