@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — Persian landing motion
+
+- Replace the Persian Home cartoon and previous Perpetual machine with original decorative SVG trading interfaces, add pointer-reactive networks, a compact proposed Perpetual feature strip and a Made by Humans badge.
+- Retain existing CMS, header/wallet interfaces and English Prop challenge entry; add responsive, keyboard, touch and motion acceptance checks. See [landing evidence](docs/reviews/landing-motion/DELIVERY.md).
+
 ## Unreleased — integration recovery and unified releases
 
 - Bind manual batch publication to the required successful secret check on the exact main commit, with explicit repository scan configuration.

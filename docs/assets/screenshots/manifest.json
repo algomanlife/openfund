@@ -1021,5 +1021,49 @@
       }
     ],
     "animations": "CSS entrance animations finished by Playwright for sharp, stable captures; application source/markup unchanged."
+  },
+  "landingMotion": {
+    "baseline": "official v0.1.1, ce9ddd0e4ead5da899fba512870e369820489187",
+    "source": "Unmerged Persian gateway source in isolated worktree; local Vite at 5186. Before images are official localhost:8080 with matched /version identity. Production build acceptance recorded separately.",
+    "cms": "Existing local Directus public editorial reads; no content fixtures in these captures",
+    "wallet": "Anonymous, unconnected; no personal wallets or financial records",
+    "capturedAt": "2026-11-03T15:17:49.417515+00:00",
+    "route": "/react/#/fa/home",
+    "animations": "Finished by Playwright for stable screenshots; no source/markup replacement",
+    "screenshots": [
+      {
+        "file": "landing-motion/before-1440x900.png",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "official before"
+      },
+      {
+        "file": "landing-motion/before-375x667.png",
+        "viewport": {
+          "width": 375,
+          "height": 667
+        },
+        "state": "official before"
+      },
+      {
+        "file": "landing-motion/after-1440x900.png",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "unmerged local after"
+      },
+      {
+        "file": "landing-motion/after-375x667.png",
+        "viewport": {
+          "width": 375,
+          "height": 667
+        },
+        "state": "unmerged local after"
+      }
+    ],
+    "illustrations": "Final original Prop terminal and revised leveraged-market Perpetual SVG; four source feature SVGs preserved"
   }
 }

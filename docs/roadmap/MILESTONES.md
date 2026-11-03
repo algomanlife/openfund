@@ -45,3 +45,11 @@ Reviewed against `2f5cf93`, 2026-11-02. No completion dates are promised. **Comp
 requires responsive bilingual/theme/wallet checks, existing integrated release
 gates, review, one immutable official version and downloaded-archive verification
 through port 8080. [Evidence](../reviews/ui-polish/DELIVERY.md).
+
+## Persian gateway acceptance
+
+**In Progress:** isolated frontend landing redesign based on official v0.1.1.
+Acceptance requires all eight requested viewport sizes, keyboard/touch disclosures,
+reduced motion, locale/product navigation, existing wallet controls, CI and review.
+Proposed Perpetual concepts do not establish routing or zero-spread execution.
+[Scope and evidence](../reviews/landing-motion/DELIVERY.md).

@@ -76,11 +76,11 @@ function check(name,value) { assert.ok(value,name); results.push(name); console.
       check(`Home ${locale} ${width}: navigation stays localized`,navLinks.length===0)
       check(`Home ${locale} ${width}: product links scoped`,await page.locator('.home-panel').last().locator('a').getAttribute('href')===`#/${locale}/perpetual/trade`)
       check(`Home ${locale} ${width}: no overflow`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1))
-      check(`Home ${locale} ${width}: ambient behind content`,await page.locator('.home-ambient i').count()===3)
+      check(`Home ${locale} ${width}: ambient behind content`,await page.locator('.landing-motion .landing-network').count()===2 && await page.locator('.landing-motion').evaluate(el=>getComputedStyle(el).zIndex==='-1'&&getComputedStyle(el).pointerEvents==='none'))
       await page.screenshot({path:path.join(OUT,`home-${locale}-${width}.png`),fullPage:true})
     }
     await page.emulateMedia({reducedMotion:'reduce'})
-    check('Reduced motion stops ambient animation',await page.locator('.home-ambient i').first().evaluate(el=>getComputedStyle(el).animationName)==='none')
+    check('Reduced motion stops ambient animation',await page.locator('.landing-network circle').first().evaluate(el=>getComputedStyle(el).animationName)==='none')
     await page.emulateMedia({reducedMotion:'no-preference'})
     await page.goto(`${BASE}/#/en/prop/dashboard`)
     await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().click()
