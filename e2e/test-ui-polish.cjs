@@ -48,6 +48,8 @@ async function headerGeometry(page,terminal){
    await page.reload();
    await page.locator('header .nav-cta').waitFor();
    await page.waitForTimeout(locale==='en'?1800:350);
+   if(locale==='fa')await page.locator('.home-products').waitFor();
+   else await page.locator('.hero').waitFor();
    if(connected && !await page.locator('.rk-account-menu').count()){
     await page.locator('header .rk-chip-connect').click();await page.locator('.rk-account-menu').waitFor();
    }
