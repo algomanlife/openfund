@@ -895,7 +895,7 @@
     "sourceCommit": "d5d43a4",
     "baseline": "v0.1.0 / b2c54071b9bb4bccb217e3a177ddb4c67b38acd7",
     "source": "Existing unified React/API production candidate at localhost:8288/react; unofficial isolated release-test runtime; not canonical port 8080",
-    "capturedAt": "2026-11-03T08:57:54.508Z",
+    "capturedAt": "2026-11-03T09:05:31.842Z",
     "wallet": "Disconnected or explicit connection-only 0x0000000000000000000000000000000000000001 fixture. No signing, personal wallet data, invented positions or executions.",
     "checks": 862,
     "screenshots": [
@@ -1019,6 +1019,7 @@
         "file": "ui-polish/home-en-light-390-test-wallet.png",
         "fixture": "connection-only test wallet"
       }
-    ]
+    ],
+    "animations": "CSS entrance animations finished by Playwright for sharp, stable captures; application source/markup unchanged."
   }
 }

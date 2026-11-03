@@ -205,6 +205,7 @@ async function functional(browser){
   await (await walletButton(page,'Network: Sepolia')).click();
   await page.getByRole('dialog').getByRole('button',{name:/Sepolia/}).first().click();
   await page.waitForFunction(()=>window.completionWallet.network()==='0xaa36a7');
+  if(!await page.locator('.rk-account-menu').evaluate(el=>el.open))await page.locator('.rk-account-menu > summary').click();
   await page.getByTitle('Wallet & network',{exact:true}).click();await page.getByRole('dialog').getByRole('button',{name:/Disconnect|قطع اتصال/}).click();
   await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().waitFor();
   await page.waitForFunction(async api=>(await fetch(api+'/auth/me',{credentials:'include'})).status===401,API);

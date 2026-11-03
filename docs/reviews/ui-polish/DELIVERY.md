@@ -81,3 +81,10 @@ DATABASE_URL=postgresql://localhost/openfund_release_local PORT=8080 npm run rel
 [Matrix evidence](browser-matrix.json) and [screenshot provenance](../../assets/screenshots/manifest.json)
 identify these as candidate captures. They do not establish delivery on port 8080.
 The immutable official package and its local runtime remain pending review/merge.
+
+The first local/CI package attempt correctly stopped at a stale browser action
+that tried to select an account-modal control after the wallet disclosure closed.
+The test now reopens the disclosure through its real summary; the final local
+terminal suite passed all 427 checks. Screenshots finish CSS entrance animations
+and wait for classic-page teardown before capturing; all 862 matrix checks were
+repeated successfully. No release was published by the failed attempts.

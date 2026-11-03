@@ -57,21 +57,21 @@ async function headerGeometry(page,terminal){
    check(prefix+' Home products',await page.locator('.home-panel').count()===(locale==='fa'?2:0));
    check(prefix+' Home navigation',await page.locator('header #navigation').count()===(locale==='fa'?0:1));
    check(prefix+' terminal entry',await page.locator('header .nav-cta').isVisible());
-   if(width===1440 && !connected || width===390 && connected){const file=`home-${locale}-${theme}-${width}-${connected?'test-wallet':'disconnected'}.png`;await page.screenshot({path:path.join(OUT,file),fullPage:true});screenshots.push({file,fixture:connected?'connection-only test wallet':'none'})}
-   await page.goto(BASE+`/#/${locale}/faq`);await page.locator('#navigation').waitFor({state:'attached'});
+   if(width===1440 && !connected || width===390 && connected){const file=`home-${locale}-${theme}-${width}-${connected?'test-wallet':'disconnected'}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file),fullPage:true});screenshots.push({file,fixture:connected?'connection-only test wallet':'none'})}
+   await page.goto(BASE+`/#/${locale}/faq`);await page.waitForTimeout(300);await page.locator('#navigation').waitFor({state:'attached'});
    check(prefix+' other-page navigation',await page.locator('#navigation a').count()===10);
    const tv=page.locator('.tradingview-credit');await tv.waitFor();
    check(prefix+' TradingView description',(await tv.innerText()).includes(locale==='fa'?'اطلاعات و اخبار بازارها':'Market Data & News'));
    check(prefix+' external-resource wording',(await tv.innerText()).includes(locale==='fa'?'منبع خارجی':'External resource'));
    check(prefix+' existing footer references',await page.locator('.credits-row .render-credit').count()===4);
-   if(width===1440&&!connected){const file=`footer-${locale}-${theme}.png`;await page.locator('.credits-row').evaluate(el=>el.scrollIntoView({behavior:'instant',block:'center'}));await page.screenshot({path:path.join(OUT,file)});screenshots.push({file,fixture:'none'})}
+   if(width===1440&&!connected){const file=`footer-${locale}-${theme}.png`;await page.locator('.credits-row').evaluate(el=>el.scrollIntoView({behavior:'instant',block:'center'}));await page.screenshot({animations:'disabled',path:path.join(OUT,file)});screenshots.push({file,fixture:'none'})}
    for(const product of locale==='fa'?['prop','perpetual']:['prop']){
     for(const section of ['dashboard','trade','portfolio','journal','journal?section=accounts']){
      await page.goto(BASE+`/#/${locale}/${product}/${section}`);await page.locator('.of-terminal-top').waitFor();await page.waitForTimeout(250);await page.locator('.of-terminal-top').waitFor();
      check(prefix+` ${product}/${section} geometry`,Object.values(await headerGeometry(page,true)).every(v=>Array.isArray(v)?v.length===0:!v));
      check(prefix+` ${product}/${section} theme`,await page.locator('html').getAttribute('data-theme')===theme);
      check(prefix+` ${product}/${section} product selector`,await page.locator('.of-product-switch').count()===(locale==='fa'?1:0));
-     if(width===1440&&!connected&&['dashboard','journal'].includes(section)){const file=`${section}-${product}-${locale}-${theme}.png`;await page.screenshot({path:path.join(OUT,file),fullPage:true});screenshots.push({file,fixture:'none'})}
+     if(width===1440&&!connected&&['dashboard','journal'].includes(section)){const file=`${section}-${product}-${locale}-${theme}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file),fullPage:true});screenshots.push({file,fixture:'none'})}
      if(section==='trade'){
       const frame=page.frameLocator('iframe');await frame.locator('canvas').first().waitFor();
       const child=page.frames().find(f=>f.parentFrame());
@@ -80,7 +80,7 @@ async function headerGeometry(page,terminal){
       await page.waitForTimeout(150);
       const state=await frame.locator('html').evaluate(el=>({theme:el.dataset.theme,filter:getComputedStyle(el).filter,bg:getComputedStyle(el.ownerDocument.body).backgroundColor,chart:window.__openfundChart?.chart?.renderer.getConfig().layout.background}));
       check(prefix+` ${product} iframe native theme`,state.chart?.toLowerCase()===(theme==='light'?'#f2f5f0':'#060808')&&state.theme===theme&&state.filter==='none'&&state.bg===(theme==='light'?'rgb(242, 245, 240)':'rgb(6, 8, 8)'));
-      if(width===1440&&!connected){const file=`${product}-${locale}-${theme}.png`;await page.screenshot({path:path.join(OUT,file)});screenshots.push({file,fixture:'none'})}
+      if(width===1440&&!connected){const file=`${product}-${locale}-${theme}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file)});screenshots.push({file,fixture:'none'})}
       // Switch via the real control, then refresh to verify persistence.
       await page.getByRole('button',{name:locale==='fa'?'تغییر پوسته':'Toggle theme',exact:true}).click();
       await page.waitForFunction(expected=>document.documentElement.dataset.theme===expected,theme==='light'?'dark':'light');
