@@ -241,12 +241,29 @@ async function layout(browser){
     const dataSource=product==='prop'?'PostgreSQL/Engine + owned product API':'Gains native read adapter + owned journal API';
     check(`${product}/${locale}/${tab} ${width}: product context connected`,requests.some(url=>url===`/products/${product}/context`));
     measurements.push({product,locale,tab,viewport:[width,height],component,dataSource,requests:[...new Set(requests)],...record});
-    if(width===1440){const file=`${product}-${locale}-${tab.replaceAll(/[?=]/g,'-')}.png`;await page.screenshot({path:path.join(OUT,file),fullPage:true});screenshots.push(file)}
+    if(width===1440){
+      const file=`${product}-${locale}-${tab.replaceAll(/[?=]/g,'-')}.png`;await page.screenshot({path:path.join(OUT,file),fullPage:true});screenshots.push(file);
+      const themeButton=page.getByRole('button',{name:locale==='fa'?'تغییر پوسته':'Toggle theme',exact:true});
+      await themeButton.click();
+      await page.waitForFunction(()=>document.documentElement.dataset.theme==='light');
+      const palette=await page.locator('.of-terminal').evaluate(el=>({bg:getComputedStyle(el).backgroundColor,text:getComputedStyle(el).color}));
+      check(`${product}/${locale}/${tab}: authenticated light surface and text`,palette.bg==='rgb(242, 245, 240)'&&palette.text==='rgb(22, 40, 30)');
+      check(`${product}/${locale}/${tab}: authenticated light panels`,await page.locator('.of-panel,.of-metric').evaluateAll(els=>els.every(el=>getComputedStyle(el).backgroundColor==='rgb(255, 255, 255)')));
+      if(tab==='trade'){
+        const child=page.frames().find(f=>f.parentFrame());
+        await child.waitForFunction(()=>window.__openfundChart?.chart?.renderer.getConfig().layout.background.toLowerCase()==='#f2f5f0');
+        check(`${product}/${locale}: authenticated light Vela plot`,true);
+      }
+      const lightFile=file.replace('.png','-light.png');await page.screenshot({animations:'disabled',path:path.join(OUT,lightFile),fullPage:true});screenshots.push(lightFile);
+      await themeButton.click();await page.waitForFunction(()=>document.documentElement.dataset.theme==='dark');
+    }
   }
   for(const product of ['prop','perpetual'])for(const locale of (product==='perpetual'?['fa']:['en','fa']))for(const section of ['dashboard','calendar','daily','trades','reports','firms','notebook','playbooks','progress','missed','import','accounts','settings']){
     await page.setViewportSize({width:1440,height:900});await page.goto(`${BASE}/#/${locale}/${product}/journal?section=${section}`);await page.waitForTimeout(200);
     check(`${product}/${locale}/Journal ${section}: no horizontal overflow`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
-    const file=`${product}-${locale}-journal-${section}.png`;await page.screenshot({path:path.join(OUT,file),fullPage:true});screenshots.push(file);
+    if(await page.locator('html').getAttribute('data-theme')!=='light')await page.getByRole('button',{name:locale==='fa'?'تغییر پوسته':'Toggle theme',exact:true}).click();
+    check(`${product}/${locale}/Journal ${section}: authenticated light theme`,await page.locator('.of-terminal').evaluate(el=>getComputedStyle(el).backgroundColor==='rgb(242, 245, 240)'));
+    const file=`${product}-${locale}-journal-${section}-light.png`;await page.screenshot({path:path.join(OUT,file),fullPage:true});screenshots.push(file);
   }
   const owned=(await call(page,'/accounts')).data.accounts.find(account=>account.type==='free_trial');
   await page.goto(BASE+'/#/en/prop/journal?section=playbooks&account='+owned.id);
