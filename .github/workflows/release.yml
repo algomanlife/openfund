@@ -70,6 +70,7 @@ jobs:
   secrets:
     name: Release secret scan
     permissions:
+      checks: read
       contents: read
       pull-requests: write
     runs-on: ubuntu-latest
@@ -78,8 +79,15 @@ jobs:
         with:
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v2
+        if: github.event_name != 'workflow_dispatch'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: gitleaks.toml
+      - name: Verify the exact main commit already passed required secret scanning
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/release/check-secrets.mjs
   publish:
     needs: [package, secrets]
     if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.publish
