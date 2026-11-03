@@ -154,6 +154,12 @@ jobs:
         env:
           TEST_FRONTEND_URL: http://localhost:8080/react
         run: node e2e/test-landing-motion.cjs
+      - name: Challenge purchase, invoice and withdrawal browser lifecycle
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080/react
+          TEST_BACKEND_URL: http://localhost:8080
+        run: npm run test:browser:purchase
       - name: Chart interaction and indicator browser regression
         working-directory: .
         env:
@@ -167,6 +173,7 @@ jobs:
             output/playwright/audit/
             output/playwright/ui-polish/
             output/playwright/landing-motion/
+            output/playwright/purchase-flow/
             output/playwright/chart-indicators/
             output/playwright/terminal-layout/
             output/playwright/terminal-layout-authenticated/
