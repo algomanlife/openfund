@@ -548,7 +548,7 @@ export default function ProductJournal() {
                 )}
               </p>
             )}
-            <JournalEntries key={section} kind={kinds[section] || ""} />
+            <JournalEntries key={`${section}:${params.get("date") || ""}:${params.get("trade") || ""}:${params.get("transaction") || ""}`} kind={kinds[section] || ""} />
           </>
         )}
       </div>

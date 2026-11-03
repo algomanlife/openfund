@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSession } from "../../session/useOpenfundSession";
 import { useTerminal } from "./TerminalContext";
-import { useResource, download, csvCell, route } from "./model";
+import { useResource, download, csvCell, route, routeQuery } from "./model";
 import { Metric } from "./Dashboard";
 // Native collateral can be fractional crypto; never round it to a false 0.00.
 const nativeAmount = (value: unknown) =>
@@ -41,11 +41,11 @@ export function GainsSummary() {
       />
       <Metric
         label={t("تعداد معاملات", "Total trades")}
-        value={data.data?.stats.totalTrades}
+        value={data.data?.stats?.totalTrades}
       />
       <Metric
         label={t("نرخ برد · ٪", "Win rate · %")}
-        value={data.data?.stats.winRate}
+        value={data.data?.stats?.winRate}
       />
     </div>
   );
@@ -258,7 +258,7 @@ export default function GainsPortfolio() {
                           {r.tx.slice(0, 10)}… ↗
                         </a>
                         <Link
-                          to={`${route(locale, "perpetual", "journal")}?transaction=${encodeURIComponent(r.tx)}`}
+                          to={routeQuery(route(locale, "perpetual", "journal"), { transaction: r.tx })}
                         >
                           {t("یادداشت", "Journal")}
                         </Link>
@@ -325,7 +325,7 @@ export function GainsAnalytics() {
     [revision, setRevision] = useState(0),
     data = useResource("perpetual", "/gains", revision),
     s = data.data;
-  const selected = currency || s?.collaterals[0]?.symbol,
+  const selected = currency || s?.collaterals?.[0]?.symbol,
     closed = (s?.history || []).filter(
       (e: any) =>
         e.currency === selected &&
@@ -355,7 +355,7 @@ export function GainsAnalytics() {
             value={selected || ""}
             onChange={(e) => setCurrency(e.target.value)}
           >
-            {s?.collaterals.map((c: any) => (
+            {s?.collaterals?.map((c: any) => (
               <option key={c.index}>{c.symbol}</option>
             ))}
           </select>
@@ -366,7 +366,7 @@ export function GainsAnalytics() {
       </div>
       <p>
         {t("آخرین رویدادهای بازیابی‌شده", "Most recently retrieved events")}:{" "}
-        {s?.history.length ?? "—"} · {selected}
+        {s?.history?.length ?? "—"} · {selected}
       </p>
       <Curve points={points} unit={selected} format={nativeAmount} />
       <PnlCalendar

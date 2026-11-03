@@ -13,3 +13,7 @@ apps/web-react/.env
 /.playwright-cli/
 /.playwright/
 __pycache__/
+
+# Generated identity is packaged by the release pipeline.
+/release-manifest.json
+/react/release-manifest.json

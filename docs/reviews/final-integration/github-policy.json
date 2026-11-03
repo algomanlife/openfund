@@ -1,0 +1,175 @@
+{
+  "environment": {
+    "success": true,
+    "response": {
+      "id": 26095224951,
+      "node_id": "EN_kwDOVeDG6M8AAAAGE2WIdw",
+      "name": "production",
+      "url": "https://api.github.com/repos/algomanlife/openfund/environments/production",
+      "html_url": "https://github.com/algomanlife/openfund/deployments/activity_log?environments_filter=production",
+      "created_at": "2026-11-03T04:44:14Z",
+      "updated_at": "2026-11-03T04:44:14Z",
+      "can_admins_bypass": true,
+      "protection_rules": [
+        {
+          "id": 71054403,
+          "node_id": "GA_kwDOVeDG6M4EPDRD",
+          "type": "required_reviewers",
+          "prevent_self_review": false,
+          "reviewers": [
+            {
+              "type": "User",
+              "reviewer": {
+                "login": "algomanlife",
+                "id": 233466424,
+                "node_id": "U_kgDODepqOA",
+                "avatar_url": "https://avatars.githubusercontent.com/u/233466424?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/algomanlife",
+                "html_url": "https://github.com/algomanlife",
+                "followers_url": "https://api.github.com/users/algomanlife/followers",
+                "following_url": "https://api.github.com/users/algomanlife/following{/other_user}",
+                "gists_url": "https://api.github.com/users/algomanlife/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/algomanlife/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/algomanlife/subscriptions",
+                "organizations_url": "https://api.github.com/users/algomanlife/orgs",
+                "repos_url": "https://api.github.com/users/algomanlife/repos",
+                "events_url": "https://api.github.com/users/algomanlife/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/algomanlife/received_events",
+                "type": "User",
+                "user_view_type": "public",
+                "site_admin": false
+              }
+            }
+          ]
+        },
+        {
+          "id": 71054404,
+          "node_id": "GA_kwDOVeDG6M4EPDRE",
+          "type": "branch_policy"
+        }
+      ],
+      "deployment_branch_policy": {
+        "protected_branches": true,
+        "custom_branch_policies": false
+      }
+    },
+    "error": ""
+  },
+  "branch": {
+    "success": true,
+    "response": {
+      "url": "https://api.github.com/repos/algomanlife/openfund/branches/main/protection",
+      "required_status_checks": {
+        "url": "https://api.github.com/repos/algomanlife/openfund/branches/main/protection/required_status_checks",
+        "strict": true,
+        "contexts": [
+          "Web (React + Vite)",
+          "Backend (API + engine)",
+          "Render Blueprint",
+          "Secret scan",
+          "Release package gates",
+          "Release secret scan"
+        ],
+        "contexts_url": "https://api.github.com/repos/algomanlife/openfund/branches/main/protection/required_status_checks/contexts",
+        "checks": [
+          {
+            "context": "Web (React + Vite)",
+            "app_id": 15368
+          },
+          {
+            "context": "Backend (API + engine)",
+            "app_id": 15368
+          },
+          {
+            "context": "Render Blueprint",
+            "app_id": 15368
+          },
+          {
+            "context": "Secret scan",
+            "app_id": 15368
+          },
+          {
+            "context": "Release package gates",
+            "app_id": null
+          },
+          {
+            "context": "Release secret scan",
+            "app_id": null
+          }
+        ]
+      },
+      "required_signatures": {
+        "url": "https://api.github.com/repos/algomanlife/openfund/branches/main/protection/required_signatures",
+        "enabled": false
+      },
+      "enforce_admins": {
+        "url": "https://api.github.com/repos/algomanlife/openfund/branches/main/protection/enforce_admins",
+        "enabled": true
+      },
+      "required_linear_history": {
+        "enabled": false
+      },
+      "allow_force_pushes": {
+        "enabled": false
+      },
+      "allow_deletions": {
+        "enabled": false
+      },
+      "block_creations": {
+        "enabled": false
+      },
+      "required_conversation_resolution": {
+        "enabled": false
+      },
+      "lock_branch": {
+        "enabled": false
+      },
+      "allow_fork_syncing": {
+        "enabled": false
+      }
+    },
+    "error": ""
+  },
+  "tags": {
+    "success": true,
+    "response": {
+      "id": 26424128,
+      "name": "Immutable Openfund release tags",
+      "target": "tag",
+      "source_type": "Repository",
+      "source": "algomanlife/openfund",
+      "enforcement": "active",
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "refs/tags/v*"
+          ]
+        }
+      },
+      "rules": [
+        {
+          "type": "update"
+        },
+        {
+          "type": "deletion"
+        }
+      ],
+      "node_id": "RRS_lACqUmVwb3NpdG9yec5V4MbozgGTM0A",
+      "created_at": "2026-11-03T08:44:15.881+04:00",
+      "updated_at": "2026-11-03T08:44:15.908+04:00",
+      "bypass_actors": [],
+      "current_user_can_bypass": "never",
+      "_links": {
+        "self": {
+          "href": "https://api.github.com/repos/algomanlife/openfund/rulesets/26424128"
+        },
+        "html": {
+          "href": "https://github.com/algomanlife/openfund/rules/26424128"
+        }
+      }
+    },
+    "error": ""
+  }
+}

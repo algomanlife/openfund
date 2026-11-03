@@ -225,3 +225,7 @@ Read the latest contracts before coding. Keep feature status, roadmap gates and 
 ---
 
 <div align="center"><sub>OPENFUND · A CLEARER WAY FORWARD</sub></div>
+
+## Unified release management
+
+The integrated app is packaged from `main` using `npm run release:build`; local work uses `-- --candidate` with Node 22 and an isolated PostgreSQL test database. Reviewed batch publication, official SemVer tags, checksummed payloads, manifests and future approved exact-SHA Render deployment are defined in [the release runbook](docs/deployment/RELEASES.md). Candidate builds and merged source are not production acceptance.

@@ -9,7 +9,7 @@ import { api, type Product } from "./model";
 
 /** Product adapters share one rendering/interaction surface. Never construct
  * a local TradingProvider or invent a balance while account data is absent. */
-function useAccountAdapter(product: Product) {
+function useAccountAdapter(product: Product, context: any) {
   const session = useSession(),
     snapshot = useRef<any>(null),
     [revision, setRevision] = useState(0);
@@ -56,7 +56,7 @@ function useAccountAdapter(product: Product) {
       canTrade: false,
       serverMode: true,
       get status() {
-        return product === "prop" && signed ? "loading" : status.current;
+        return product === "prop" && signed ? context?.accounts?.[0]?.type === "challenge" ? "unavailable" : "loading" : status.current;
       },
       get state() {
         const s = snapshot.current;
@@ -137,7 +137,7 @@ function useAccountAdapter(product: Product) {
         setRevision((x) => x + 1);
       },
     }),
-    [product, signed],
+    [product, signed, context?.accounts?.[0]?.type],
   );
 }
 function workspaceMarkup() {
@@ -206,6 +206,7 @@ function workspaceMarkup() {
   template.content
     .querySelectorAll(".bt-empty .hint")
     .forEach((el) => el.remove());
+  template.content.querySelector("#submit-order")?.setAttribute("disabled", "");
   const retry = document.createElement("button");
   retry.type = "button";
   retry.id = "account-retry";
@@ -222,7 +223,7 @@ function workspaceMarkup() {
 export function SharedTradingTerminal() {
   const { product, locale, context } = useTerminal(),
     frame = useRef<HTMLIFrameElement>(null),
-    adapter = useAccountAdapter(product),
+    adapter = useAccountAdapter(product, context),
     [cms, setCms] = useState<any>(undefined);
   useEffect(() => {
     let active = true;
@@ -235,6 +236,7 @@ export function SharedTradingTerminal() {
   }, []);
   useEffect(() => {
     (window as any).__ofReadOnlyProductAdapter = adapter;
+    window.dispatchEvent(new Event("of-trading-update"));
     return () => {
       delete (window as any).__ofReadOnlyProductAdapter;
     };
@@ -281,6 +283,7 @@ export function SharedTradingTerminal() {
         fa: product === "prop" ? "حساب تمرینی" : "پرپچوال",
         en: product === "prop" ? "Practice account" : "Perpetual",
       },
+      "rk.maxloss": { fa: "برآورد سود و زیان در SL", en: "Est. PnL at SL" },
       demoBanner: { fa: "", en: "" },
       "bt.empty": {
         fa: "فعالیت معاملاتی برای نمایش وجود ندارد.",
@@ -299,7 +302,7 @@ export function SharedTradingTerminal() {
       "cf.closeTxt": { fa: "این پوزیشن بسته شود؟", en: "Close this position?" },
       "cf.cancelTxt": { fa: "این سفارش لغو شود؟", en: "Cancel this order?" },
     };
-    const boot = `window.ofLang=${safe(locale)};window.ofCmsTerminal=${safe(translations)};window.__ofTerminalConfig={product:${safe(product)},syntheticMarketData:false};Object.defineProperty(window,'__ofProductAdapter',{get:()=>${product === "prop" ? "parent.__ofServerTP || " : ""}parent.__ofReadOnlyProductAdapter});Object.defineProperty(window,'__ofServerTP',{get:()=>${product === "prop" ? "parent.__ofServerTP" : "undefined"}});addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='openfund-display')return;document.documentElement.dataset.theme=e.data.theme;if(window.ofLang!==e.data.locale)document.getElementById('language-toggle')?.click()});document.getElementById('account-retry').onclick=()=>parent.dispatchEvent(new parent.Event('of-refresh-trading'));`;
+    const boot = `window.ofLang=${safe(locale)};window.ofCmsTerminal=${safe(translations)};window.__ofTerminalConfig={product:${safe(product)},syntheticMarketData:false};const unavailableAccountAdapter={readOnly:true,canTrade:false,serverMode:true,status:'loading',state:{positions:[],orders:[],history:[],fills:[],funding:[],notifications:[]},getAccount:()=>null,validate:()=>[window.ofLang==='fa'?'حساب در دسترس نیست.':'Account unavailable.'],liqPrice:()=>null,subscribe:()=>()=>{},checkTriggers(){},loadDemoScenario(){}};Object.defineProperty(window,'__ofProductAdapter',{get:()=>${product === "prop" ? "parent.__ofServerTP || " : ""}parent.__ofReadOnlyProductAdapter || unavailableAccountAdapter});Object.defineProperty(window,'__ofServerTP',{get:()=>${product === "prop" ? "parent.__ofServerTP" : "undefined"}});addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='openfund-display')return;document.documentElement.dataset.theme=e.data.theme;if(window.ofLang!==e.data.locale)document.getElementById('language-toggle')?.click()});document.getElementById('account-retry').onclick=()=>parent.dispatchEvent(new parent.Event('of-refresh-trading'));`;
     return `<!doctype html><html lang="${locale}" dir="${locale === "fa" ? "rtl" : "ltr"}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>${workspaceStyles}</style></head><body>${workspaceMarkup()}<script>${boot}</script>${["legacy/gains-adapter.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/market-depth.js", "legacy/terminal.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
   }, [cms, product, locale]);
   return (

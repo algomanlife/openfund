@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { useAccount, useSignMessage, useSwitchChain } from 'wagmi'
-import { useProductNetwork } from '../wallet/productNetwork'
+import { networkForHash, useProductNetwork } from '../wallet/productNetwork'
 import { createSiweMessage } from 'viem/siwe'
 
 /**
@@ -98,6 +98,7 @@ export function useOpenfundSession() {
   useEffect(() => {
     generation.current++
     signing.current = false
+    setError(null)
     if (!isConnected || !address) {
       if (addressRef.current) void mutateAuth('/auth/logout', { method:'POST', body:'{}' }).catch(() => {})
       addressRef.current = undefined
@@ -131,14 +132,15 @@ export function useOpenfundSession() {
   const signIn = useCallback(async () => {
     if (!address || signing.current) return
     signing.current = true
+    const signingChain = networkForHash(window.location.hash)
     const run = generation.current, expected = address
-    const active = () => generation.current === run && currentAddress.current === expected
+    const active = () => generation.current === run && currentAddress.current === expected && networkForHash(window.location.hash).id === signingChain.id
     setError(null)
     setStatus('signing')
     try {
       await authQueue.current.catch(() => {})
       if (!active()) return
-      if (chainId !== targetChain.id) await switchChainAsync({ chainId: targetChain.id })
+      if (chainId !== signingChain.id) await switchChainAsync({ chainId: signingChain.id })
       if (!active()) return
       const n = await api('/auth/nonce', { method: 'POST', body: JSON.stringify({ address }) })
       if (!active()) return
@@ -147,7 +149,7 @@ export function useOpenfundSession() {
         domain: window.location.host,
         address,
         uri: window.location.origin + '/',
-        chainId: targetChain.id,
+        chainId: signingChain.id,
         issuedAt: new Date(),
         expirationTime: new Date(Date.now() + 10 * 60 * 1000),
         nonce: n.data.nonce,
@@ -165,12 +167,18 @@ export function useOpenfundSession() {
     } catch (e: any) {
       /* user rejected the signature request → back to unauthenticated */
       if (active()) { setStatus('unauthenticated'); setError(String(e?.shortMessage || e?.message || e)) }
-    } finally { if (active()) signing.current = false }
+    } finally {
+      if (generation.current === run) {
+        signing.current = false
+        if (!active()) setStatus(value => value === 'signing' ? 'unauthenticated' : value)
+      }
+    }
   }, [address, api, loadMe, signMessageAsync, chainId, targetChain.id, switchChainAsync, mutateAuth])
 
   const logout = useCallback(async () => {
     generation.current++
     signing.current = false
+    setError(null)
     setUser(null); setChallenges([]); setStatus('unauthenticated')
     await mutateAuth('/auth/logout', { method: 'POST', body: '{}' }).catch(() => {})
     setUser(null)

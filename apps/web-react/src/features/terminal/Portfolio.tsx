@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useSession } from "../../session/useOpenfundSession";
 import { AccessGate } from "./TerminalShell";
 import { useTerminal } from "./TerminalContext";
-import { api, csvCell, download, money, route, useResource } from "./model";
+import { api, csvCell, download, money, route, routeQuery, useResource } from "./model";
 import { Metric } from "./Dashboard";
 import GainsPortfolio from "./GainsPortfolio";
 export default function ProductPortfolio() {
@@ -328,7 +328,7 @@ export default function ProductPortfolio() {
                       {t("جزئیات و یادداشت", "Details & notes")}
                     </button>
                     <Link
-                      to={`${route(locale, product, "journal")}?trade=${r.ofPositionId}`}
+                      to={routeQuery(route(locale, product, "journal"), { trade: r.ofPositionId })}
                     >
                       {t("ژورنال", "Journal")}
                     </Link>

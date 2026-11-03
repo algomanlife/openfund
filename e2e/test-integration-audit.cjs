@@ -82,7 +82,9 @@ function check(name,value) { assert.ok(value,name); results.push(name); console.
     check('Account button opens Openfund profile',await dialog.getByText(wallets[0].address.slice(0,8),{exact:false}).count()>0)
     await dialog.getByRole('link',{name:/Openfund Prop/}).click()
     await page.waitForURL(/prop\/dashboard$/)
-    check('Profile opens the owned Prop account',await page.locator('.of-account-bar').count()===1)
+    await page.locator('.of-account-card.selected').waitFor()
+    const directory=await page.evaluate(async API=>fetch(API+'/accounts',{credentials:'include'}).then(r=>r.json()),API)
+    check('Profile opens the owned Prop account',await page.locator('.of-account-card.selected').getAttribute('data-account-id')===directory.accounts.find(account=>account.type==='free_trial').id)
     // Confirm the same named action also works in Persian.
     await page.goto(`${BASE}/#/fa/prop/dashboard`)
     await page.getByRole('button',{name:'حساب من',exact:true}).click()

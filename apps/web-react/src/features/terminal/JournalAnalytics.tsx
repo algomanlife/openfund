@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTerminal } from "./TerminalContext";
 import { api, csvCell, download, money, route, useResource } from "./model";
-import { Curve, PnlCalendar } from "./Analytics";
+import { Curve, PnlCalendar, RatioGauge } from "./Analytics";
 import { AccountPicker } from "./Accounts";
 import { GainsAnalytics } from "./GainsPortfolio";
 const labels = [
@@ -69,12 +69,13 @@ export function JournalAnalytics({
       true,
     );
   const savePreferences = (next: any) => {
+    const accountScope = context?.accountRef;
     const snapshot={...preferenceRef.current,...next};preferenceRef.current=snapshot;
     const revision=++preferenceRevision.current;
     setPrefError("");setPreferenceStatus(t("در حال ذخیرهٔ تنظیمات…","Saving preferences…"));
     const write=preferenceQueue.current.catch(()=>{}).then(async()=>{
       try {
-        await api(product,"/preferences",{method:"PUT",keepalive:true,body:JSON.stringify(snapshot)});
+        await api(product,"/preferences",{method:"PUT",keepalive:true,body:JSON.stringify(snapshot)},accountScope);
         if(revision===preferenceRevision.current)setPreferenceStatus(t("تنظیمات ذخیره شد.","Preferences saved."));
       } catch(e){if(revision===preferenceRevision.current){setPrefError((e as Error).message);setPreferenceStatus("")}}
     });
@@ -233,9 +234,9 @@ export function JournalAnalytics({
                         {t(fa, en)}
                         {en === "Net P&L" ? ` · ${unit}` : ""}
                       </span>
-                      <b dir="ltr">
-                        {vals[labels.findIndex((r) => r[0] === en)]}
-                      </b>
+                      {en === "Trade Win %" || en === "Day Win %" ? <RatioGauge label={t(fa,en)} value={en === "Trade Win %" ? m?.winRate : m?.dayWinRate}/> : <b dir="ltr">{vals[labels.findIndex((r) => r[0] === en)]}</b>}
+                      {en === "Net P&L" && <small>{m?.closedTrades ?? "—"} {t("معاملهٔ بسته", "closed trades")}</small>}
+                      {en === "Avg Win / Loss" && <small dir="ltr">{money(m?.avgWin)} / {money(m?.avgLoss)} {unit}</small>}
                     </section>
                   ))}
               </div>

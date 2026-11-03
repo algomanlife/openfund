@@ -85,12 +85,9 @@ services:
     runtime: node
     plan: starter
     numInstances: 1           # one existing engine/SSE process
-    autoDeployTrigger: commit
+    autoDeployTrigger: off
     healthCheckPath: /health
-    buildCommand: |
-      npm ci --include=dev --prefix apps/web-react
-      npm ci --prefix apps/backend
-      VITE_DIRECTUS_URL="https://$VITE_DIRECTUS_HOST" npm run build --prefix apps/web-react
+    buildCommand: node scripts/release/render-build.mjs
     startCommand: npm run migrate --prefix apps/backend && npm start --prefix apps/backend
     envVars:
       - key: NODE_VERSION
