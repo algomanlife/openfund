@@ -48,6 +48,7 @@ export function RainbowConnect() {
     return () => removeEventListener('of-language', h)
   }, [])
   const isFa = (window as any).ofLang !== 'en'
+  const connectLabel = isConnecting ? (isFa ? 'در حال اتصال…' : 'Connecting…') : isFa ? 'اتصال کیف پول' : 'Connect Wallet'
 
   /* ---- Persian UI inside the RainbowKit modal (no built-in fa locale) ----
      RainbowKit 2 only ships fixed locale strings, so we translate the modal
@@ -197,12 +198,12 @@ export function RainbowConnect() {
             style={{ display: 'flex', flexWrap: 'nowrap', maxWidth: '100%', gap: 8, alignItems: 'center', direction: 'ltr' }}
           >
             {!connected ? (
-              <button onClick={() => void connectWallet()} disabled={isConnecting} type='button' className='rk-chip rk-chip-connect'>
+              <button aria-label={connectLabel} onClick={() => void connectWallet()} disabled={isConnecting} type='button' className='rk-chip rk-chip-connect'>
                 <svg viewBox='0 0 16 16' width='13' height='13' fill='none' aria-hidden='true'>
                   <path d='M2 4.5A2.5 2.5 0 0 1 4.5 2H12a1 1 0 0 1 1 1v1.5M2 4.5V12a2 2 0 0 0 2 2h9.5a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5H4.5A2.5 2.5 0 0 1 2 4.5Z' stroke='currentColor' strokeWidth='1.3' />
                   <circle cx='11.5' cy='10' r='1' fill='currentColor' />
                 </svg>
-                {isConnecting ? (isFa ? 'در حال اتصال…' : 'Connecting…') : isFa ? 'اتصال کیف پول' : 'Connect Wallet'}
+                <span className='rk-connect-label'>{connectLabel}</span>
               </button>
             ) : (
               <details ref={accountMenu} className="rk-account-menu" onClick={event => {

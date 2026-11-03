@@ -242,3 +242,7 @@ html[lang=en] .information-page .info-hero h1{font-size:58px;letter-spacing:-2px
 /* Animated landing artwork stays within the existing content viewport. */
 body:has(.openfund-header) main { overflow-x:clip; }
 .openfund-header ~ footer #footer-links, footer #footer-links { display:flex; flex-wrap:wrap; min-width:0; gap:12px 18px; }
+@media(max-width:600px) {
+  .openfund-header .rk-chip-connect .rk-connect-label { display:none; }
+  .openfund-header .rk-chip-connect { width:32px; min-width:32px; padding:0; justify-content:center; flex-shrink:0; }
+}

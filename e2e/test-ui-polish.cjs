@@ -18,7 +18,7 @@ async function headerGeometry(page,terminal){
    const a=controls[i],b=controls[j];if(a.contains(b)||b.contains(a))continue;
    const x=rect(a),y=rect(b);if(Math.min(x.right,y.right)-Math.max(x.left,y.left)>1&&Math.min(x.bottom,y.bottom)-Math.max(x.top,y.top)>1)overlaps.push([a.textContent,b.textContent]);
   }
-  return {overflow:document.documentElement.scrollWidth>innerWidth+1,offscreen:controls.some(e=>rect(e).left< -1||rect(e).right>innerWidth+1),overlaps};
+  return {clippedWalletLabel:controls.some(e=>e.matches('button.rk-chip-connect')&&e.scrollWidth>e.clientWidth+1),overflow:document.documentElement.scrollWidth>innerWidth+1,offscreen:controls.some(e=>rect(e).left< -1||rect(e).right>innerWidth+1),overlaps};
  });
 }
 (async()=>{
