@@ -263,6 +263,8 @@ export function RainbowConnect() {
           challenges={session.challenges}
           onLogout={() => { setProfileOpen(false); void session.logout() }}
           onClose={() => setProfileOpen(false)}
+          updateProfile={session.updateProfile}
+          reload={session.reload}
         />
       )}
     </RainbowKitProvider>

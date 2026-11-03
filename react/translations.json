@@ -410,5 +410,8 @@
   "اولین کسب‌وکار منبع‌باز ایرانی": "Iran’s first open-source business",
   "سقف ضرر روزانه بر مبنای بزرگ‌ترِ موجودی یا ارزش خالصِ ابتدای روز است و هر روز ساعت ۰۰:۰۰ (UTC+3) بازنشانی می‌شود. سقف ضرر کل در استاندارد ۱۰٪ و در تک‌مرحله‌ای ۱۲٪ ثابت است؛ در چلنج آنی ۵٪ شناور است و پس از رسیدن حساب به ۵٪ سود، در نقطهٔ سربه‌سر قفل می‌شود. لمس هر سقف، نقض قواعد حساب است.": "The daily loss limit is measured against the higher of the day’s opening balance or equity and resets at 00:00 (UTC+3) each day. The total limit is 10% static on Standard and 12% static on One-phase; on the Instant challenge it is 5% trailing and locks at breakeven once the account is 5% in profit. Touching any limit is a breach.",
   "دریافت برندبوک ↓": "Download brandbook ↓",
-  "بازگشت به بالا ↑": "Back to top ↑"
+  "بازگشت به بالا ↑": "Back to top ↑",
+  "اطلاعات و اخبار بازارها": "Market Data & News",
+  "منبع خارجی": "External resource",
+  "منبع خارجی؛ بدون ادعای همکاری یا تأمین داده": "External resource; no partnership or data-feed claim"
 }

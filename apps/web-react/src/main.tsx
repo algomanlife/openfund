@@ -20,6 +20,8 @@ import { SharedTradingTerminal } from './features/terminal/TradingPages'
 import { ProductDashboard, CapabilityPage } from './features/terminal/Dashboard'
 import ProductPortfolio from './features/terminal/Portfolio'
 import ProductJournal from './features/terminal/Journal'
+import PurchaseHistory from './features/purchase/PurchaseHistory'
+import WithdrawalsPage from './features/purchase/WithdrawalsPage'
 import { WalletProvider } from './wallet/WalletProvider'
 import { SessionProvider } from './session/useOpenfundSession'
 
@@ -106,7 +108,11 @@ const router = createHashRouter([
       { path: 'trade', element: <SharedTradingTerminal /> },
       { path: 'portfolio', element: <ProductPortfolio /> },
       { path: 'journal', element: <ProductJournal /> },
-      ...(['leaderboard', ...(product === 'prop' ? ['withdrawals', 'certificates'] : ['rewards'])]).map(path => ({ path, element: <CapabilityPage /> }))
+      ...(product === 'prop' ? [
+        { path: 'purchases', element: <PurchaseHistory /> },
+        { path: 'withdrawals', element: <WithdrawalsPage /> },
+      ] : []),
+      ...(['leaderboard', ...(product === 'prop' ? ['certificates'] : ['rewards'])]).map(path => ({ path, element: <CapabilityPage /> }))
     ]
   })),
   { path: '/terminal', element: <TerminalRedirect page="trade" /> },

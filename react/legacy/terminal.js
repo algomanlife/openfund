@@ -77,7 +77,7 @@ const I18N = {
     'of.sl': 'استاپ‌لاس <em>USD · اختیاری</em>', 'of.tp': 'تیک‌پرافیت <em>USD · اختیاری</em>',
     'rk.entry': 'انتری تخمینی', 'rk.oracle': 'قیمت اندیس', 'rk.liq': 'لیکوییدیشن تخمینی',
     'rk.margin': 'مارجین تخمینی', 'rk.fee': 'کارمزد تخمینی (اوپن)', 'rk.impact': 'اثر قیمت',
-    'rk.impactVal': '—', 'rk.maxloss': 'حداکثر ضرر با SL',
+    'rk.impactVal': '—', 'rk.maxloss': 'برآورد سود و زیان در SL',
     'submit.long': 'بررسی سفارش — لانگ', 'submit.short': 'بررسی سفارش — شورت',
     'side.long': 'لانگ', 'side.short': 'شورت',
     'ot.market': 'مارکت', 'ot.limit': 'لیمیت', 'ot.stop': 'استاپ',
@@ -173,7 +173,7 @@ const EN = {
   'of.sl': 'Stop Loss <em>USD · optional</em>', 'of.tp': 'Take Profit <em>USD · optional</em>',
   'rk.entry': 'Est. entry', 'rk.oracle': 'Index price', 'rk.liq': 'Est. liquidation',
   'rk.margin': 'Est. margin', 'rk.fee': 'Est. fee (open)', 'rk.impact': 'Price impact',
-  'rk.impactVal': 'N/A', 'rk.maxloss': 'Max loss at SL',
+  'rk.impactVal': 'N/A', 'rk.maxloss': 'Est. PnL at SL',
   'submit.long': 'Review order — Long', 'submit.short': 'Review order — Short',
   'side.long': 'Long', 'side.short': 'Short',
   'ot.market': 'Market', 'ot.limit': 'Limit', 'ot.stop': 'Stop',
@@ -272,14 +272,13 @@ $('language-toggle').addEventListener('click', () => setLang(window.ofLang === '
 /* ============================================================
    THEME — dark (default) / light, synced with Vela
    ============================================================ */
-let curTheme = 'dark';
+let curTheme = document.documentElement.dataset.theme || 'dark';
 function setTheme(theme){
   curTheme = theme;
   document.documentElement.setAttribute('data-theme', theme);
   $('theme-toggle').textContent = theme === 'dark' ? '◐' : '◑';
   try{ localStorage.setItem('of-theme', theme) }catch(e){}
-  /* light mode = host-level invert (exactly like the landing); the Vela chart
-     always renders dark and is inverted along with everything else */
+  window.__openfundChart?.setTheme(theme);
 }
 $('theme-toggle').addEventListener('click', () => setTheme(curTheme === 'dark' ? 'light' : 'dark'));
 
@@ -780,7 +779,9 @@ $('of-tp').addEventListener('input', computeForm);
 document.querySelectorAll('.pct-btns button').forEach(b => b.addEventListener('click', () => {
   const avail = tp.getAccount()?.available;
   if (avail == null || tp.canTrade === false) return;
-  const v = avail * (+b.dataset.pct) / 100;
+  const rate = tp.feeRate?.(S.marketId);
+  const budget = tp.serverMode && rate != null ? avail / (1 + S.leverage * rate) : avail;
+  const v = Math.floor(budget * (+b.dataset.pct) / 100 * 100) / 100;
   $('of-collateral').value = v.toFixed(2);
   computeForm();
 }));
@@ -799,8 +800,8 @@ function computeForm(){
     $('of-err').textContent = t('mkt.closed');
     $('of-err').hidden = false;
   }
-  const collateral = +$('of-collateral').value || 0;
-  const price = S.otype === 'market' ? (mark() || 0) : (+$('of-price').value || 0);
+  const collateral = normNum($('of-collateral').value) || 0;
+  const price = S.otype === 'market' ? (mark() || 0) : (normNum($('of-price').value) || 0);
   const size = price > 0 ? collateral * S.leverage / price : 0;
   const notional = collateral * S.leverage;
   const rate = tp?.feeRate ? tp.feeRate(S.marketId) : tp?.readOnly ? null : FEE_RATE;
@@ -817,10 +818,10 @@ function computeForm(){
   $('rk-liq').className = liq ? 'num down' : '';
   $('rk-margin').textContent = collateral > 0 ? fmt.usd(collateral) : '—';
   $('rk-fee').textContent = collateral > 0 && rate != null ? fmt.usd(notional * rate) : '—';
-  const sl = +$('of-sl').value || null;
+  const sl = normNum($('of-sl').value) || null;
   $('rk-maxloss').textContent = rate == null ? '—' : (sl && price > 0)
-    ? fmt.usdS((price - sl) * size * (S.side === 'long' ? 1 : -1) - notional * rate)
-    : (collateral > 0 ? fmt.usdS(-collateral) : '—');
+    ? fmt.usdS((sl - price) * size * (S.side === 'long' ? 1 : -1) - notional * rate * 2)
+    : '—';
   $('rk-maxloss').className = 'num down';
   if (!closed && tp){
     const errs = tp.validate(buildRequest());
@@ -861,7 +862,9 @@ function buildRequest(){
 $('submit-order').addEventListener('click', async () => {
   if (marketClosed()){ toast(t('mkt.closed'), 'neg'); return; }
   const req = buildRequest();
-  const errs = tp.validate(req);
+  const invalid = ['of-collateral', 'of-price', 'of-sl', 'of-tp'].some(id => !$(id).disabled && $(id).value.trim() && !Number.isFinite(normNum($(id).value)));
+  const invalidProtection = ['of-sl', 'of-tp'].some(id => $(id).value.trim() && normNum($(id).value) <= 0);
+  const errs = invalid || invalidProtection ? [L('مقدار عددی نامعتبر است.', 'Enter a valid number.')] : tp.validate(req);
   if (errs.length){ $('of-err').textContent = errs[0]; $('of-err').hidden = false; return; }
   const m = meta();
   const d = dp();
@@ -891,22 +894,34 @@ $('submit-order').addEventListener('click', async () => {
     rows.map(([k, v]) => `<div><span>${k}</span><b class="num">${v}</b></div>`).join('') + `</div>`;
   $('review-confirm').className = 'submit ' + req.side;
   $('review-dialog').showModal();
-  pendingOrder = req;
+  pendingOrder = { req, provider: tp };
 });
 let pendingOrder = null;
 $('review-cancel').addEventListener('click', () => { pendingOrder = null; $('review-dialog').close(); });
+$('review-dialog').addEventListener('cancel', event => { if ($('review-confirm').disabled) { event.preventDefault(); return; } pendingOrder = null; });
 $('review-confirm').addEventListener('click', async () => {
-  if (!pendingOrder) return;
-  const req = pendingOrder;
-  pendingOrder = null;
-  $('review-dialog').close();
-  let res;try{res = tp.submitAsync ? await tp.submitAsync(req) : tp.submit(req)}catch(e){toast(e.message || 'Request failed','neg');return}
-  if (res && res.ok){
-    toast(res.kind === 'position' ? t('toast.position') : t('toast.order'), 'pos');
-    renderBottom(); renderAccount();
-  } else {
-    toast(res && res.errors ? res.errors[0] : 'error', 'neg');
+  if (!pendingOrder || $('review-confirm').disabled) return;
+  const review = pendingOrder;
+  if (review.provider !== tp || tp.canTrade === false) {
+    pendingOrder = null; $('review-dialog').close();
+    toast(L('وضعیت حساب تغییر کرده است؛ سفارش را دوباره بررسی کنید.', 'Account state changed. Review the order again.'), 'neg');
+    return;
   }
+  $('review-confirm').disabled = true;
+  $('review-cancel').disabled = true;
+  try {
+    const res = tp.submitAsync ? await tp.submitAsync(review.req) : tp.submit(review.req);
+    if (res && res.ok) {
+      pendingOrder = null; $('review-dialog').close();
+      toast(res.kind === 'position' ? t('toast.position') : t('toast.order'), 'pos');
+      renderBottom(); renderAccount();
+    } else {
+      toast(res && res.errors ? res.errors[0] : 'error', 'neg');
+    }
+  } catch (error) {
+    // Keep the same reviewed request/idempotency identity for an explicit retry.
+    toast(L('وضعیت درخواست تأیید نشد؛ پوزیشن‌ها را بررسی کنید یا همین سفارش را دوباره بفرستید.', 'Request status could not be confirmed. Check positions or retry this same review.'), 'neg');
+  } finally { $('review-confirm').disabled = false; $('review-cancel').disabled = false; }
 });
 
 /* ============================================================
@@ -915,6 +930,8 @@ $('review-confirm').addEventListener('click', async () => {
    user drawings are never touched). Mapping: positionId → drawingId.
    ============================================================ */
 const posDrawings = new Map();   /* backend position id → vela drawing id */
+const positionEdits = new Map(), positionRiskQueues = new Map();
+let syncingPositionDrawings = false;
 
 function velaPositionsSync(){
   if (!vc || !vc.chart || !vc.chart.drawings) return;
@@ -922,23 +939,27 @@ function velaPositionsSync(){
   const srv = window.__ofServerTP;
   if (!srv){ /* logged out → clear managed overlays only */ velaPositionsClear(); return; }
   const st = srv.state;
+  syncingPositionDrawings = true;
+  try {
   /* last bar time for the anchor x-position (managed box starts at "now") */
   const t = Math.floor(Date.now() / 60000) * 60000;
   const want = new Map();  /* positionId → {entry, stop, target, side} */
   for (const p of st.positions){
     if (p.market !== S.marketId) continue;          /* symbol isolation */
+    // A risk box requires both actual protection prices; never invent levels.
+    if (p.sl == null || p.tp == null) continue;
     const entry = p.entry;
-    const dist = entry * 0.9 / p.leverage;
-    const stop = p.sl != null ? p.sl : (p.side === 'long' ? entry - dist : entry + dist);
-    const target = p.tp != null ? p.tp : (p.side === 'long' ? entry + dist * 2 : entry - dist * 2);
+    const stop = p.sl;
+    const target = p.tp;
     want.set(p.id, { entry, stop, target, side: p.side });
   }
   /* remove stale/closed (and all when the symbol switched) */
   for (const [pid, did] of [...posDrawings]){
-    if (!want.has(pid)){ try { dr.remove(did) } catch(e){}; posDrawings.delete(pid); }
+    if (!want.has(pid)){ clearTimeout(positionEdits.get(pid)?.timer); positionEdits.delete(pid); try { dr.remove(did) } catch(e){}; posDrawings.delete(pid); }
   }
   /* create or update */
   for (const [pid, lv] of want){
+    if (positionEdits.has(pid)) continue;
     const anchors = [
       { time: t, price: lv.entry },
       { time: t, price: lv.stop },
@@ -958,8 +979,11 @@ function velaPositionsSync(){
       } catch(e){ /* renderer without drawing support — table still works */ }
     }
   }
+  } finally { syncingPositionDrawings = false; }
 }
 function velaPositionsClear(){
+  for (const edit of positionEdits.values()) clearTimeout(edit.timer);
+  positionEdits.clear();
   if (!vc || !vc.chart || !vc.chart.drawings) return;
   for (const [, did] of [...posDrawings]){ try { vc.chart.drawings.remove(did) } catch(e){} }
   posDrawings.clear();
@@ -1024,61 +1048,43 @@ function velaClearDrawings(){
    drawings → extract stop/target prices → PUT /trading/positions/:id/protection
    Reverts the chart position if the backend rejects.
    ============================================================ */
-let sltpDragTimer = null;
 function onPositionDrawingEdited(drawingId){
-  clearTimeout(sltpDragTimer);
-  sltpDragTimer = setTimeout(async () => {
-    if (!vc || !vc.chart || !vc.chart.drawings) return;
-    const srv = window.__ofServerTP;
-    if (!srv || !srv.state) return;
-    /* find which backend position this drawing belongs to */
-    let posId = null;
-    for (const [pid, did] of posDrawings){
-      if (did === drawingId){ posId = pid; break; }
-    }
-    if (!posId) return;
-    /* read the drawing's current anchor prices */
-    const dr = vc.chart.drawings;
-    const all = dr.all ? dr.all() : [];
-    const d = all.find(x => x.id === drawingId);
-    if (!d || !d.anchors || d.anchors.length < 3) return;
-    const entry = d.anchors[0]?.price;
-    const stop = d.anchors[1]?.price;
-    const target = d.anchors[2]?.price;
-    if (entry == null || stop == null || target == null) return;
-    /* find the position to determine side */
-    const p = srv.state.positions.find(p => p.id === posId);
-    if (!p) return;
-    /* determine which is SL and which is TP based on side */
-    const isLong = p.side === 'long';
-    const sl = isLong ? Math.min(stop, target) : Math.max(stop, target);
-    const tp = isLong ? Math.max(stop, target) : Math.min(stop, target);
-    /* round to market precision */
-    const m = board.getMeta(p.market);
-    const dpp = m ? Number(m.pricePrecision) : 2;
-    const slR = sl ? sl.toFixed(dpp) : null;
-    const tpR = tp ? tp.toFixed(dpp) : null;
-    /* update backend */
-    try {
-      const res = await fetch(window.__ofBackendUrl + '/trading/positions/' + posId + '/protection', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sl: slR, tp: tpR })
-      });
-      if (res.ok){
-        velaPositionsSync();   /* re-sync chart with authoritative state */
-        toast('SL/TP updated', 'pos');
-      } else {
-        velaPositionsSync();   /* revert chart to authoritative state */
-        const e = await res.json().catch(() => ({ error: 'unknown' }));
-        toast('SL/TP rejected: ' + (e.error || 'invalid'), 'neg');
+  if (syncingPositionDrawings || !vc?.chart?.drawings) return;
+  const srv = window.__ofServerTP;
+  if (!srv?.canTrade) return;
+  const pair = [...posDrawings].find(([, id]) => id === drawingId);
+  if (!pair) return;
+  const posId = pair[0], p = srv.state.positions.find(p => p.id === posId);
+  const d = vc.chart.drawings.all().find(d => d.id === drawingId);
+  if (!p || !d?.anchors || d.anchors.length < 3) return;
+  const stop = d.anchors[1]?.price, target = d.anchors[2]?.price;
+  if (!Number.isFinite(stop) || !Number.isFinite(target)) return;
+  const precision = Number(board.getMeta(p.market)?.pricePrecision ?? 2);
+  const sl = Number((p.side === 'long' ? Math.min(stop, target) : Math.max(stop, target)).toFixed(precision));
+  const targetPrice = Number((p.side === 'long' ? Math.max(stop, target) : Math.min(stop, target)).toFixed(precision));
+  clearTimeout(positionEdits.get(posId)?.timer);
+  if (sl === Number(p.sl) && targetPrice === Number(p.tp)) { positionEdits.delete(posId); return; }
+  // Capture the user intent now. SSE redraws must not overwrite a pending drag.
+  const intent = { srv, market:p.market, sl, tp:targetPrice, timer:null };
+  positionEdits.set(posId, intent);
+  intent.timer = setTimeout(() => {
+    const previous = positionRiskQueues.get(posId) || Promise.resolve();
+    const write = previous.catch(() => {}).then(async () => {
+      if (positionEdits.get(posId) !== intent) return;
+      if (window.__ofServerTP !== srv || !srv.canTrade || S.marketId !== intent.market) { positionEdits.delete(posId); velaPositionsSync(); return; }
+      try {
+        const result = await srv.modifyRisk(posId, intent.sl, intent.tp);
+        toast(result.ok ? L('حد ضرر و سود به‌روز شد.', 'SL/TP updated.') : result.errors?.[0] || L('تغییر حد ضرر و سود رد شد.', 'SL/TP update rejected.'), result.ok ? 'pos' : 'neg');
+      } catch(error) { toast(L('به‌روزرسانی حد ضرر و سود ناموفق بود.', 'SL/TP update failed.'), 'neg'); }
+      finally {
+        if (positionEdits.get(posId) === intent) positionEdits.delete(posId);
+        velaPositionsSync();
       }
-    } catch(e){
-      velaPositionsSync();
-      toast('SL/TP update failed', 'neg');
-    }
-  }, 600);   /* debounce: user may still be dragging */
+    });
+    positionRiskQueues.set(posId, write);
+    const cleanup = () => { if (positionRiskQueues.get(posId) === write) positionRiskQueues.delete(posId); };
+    void write.then(cleanup, cleanup);
+  }, 600);
 }
 
 /* save drawings whenever the user modifies them (debounced) */
@@ -1107,7 +1113,7 @@ function renderBottom(){
   if (!tp || !$('bt-empty')) return;   /* teardown race guard */
   const st = tp.state;
   const feedState = $('account-feed-state');
-  if (feedState) { feedState.hidden = tp.status === 'ready'; feedState.textContent = tp.status === 'disconnected' ? L('اتصال حساب قطع است؛ اطلاعات ممکن است قدیمی باشد.', 'Account disconnected; displayed data may be stale.') : tp.status === 'stale' ? L('قیمت حساب به‌روز نیست.', 'Account prices are stale.') : tp.status === 'error' ? L('دریافت حساب ناموفق بود.', 'Account could not be loaded.') : tp.status === 'signedout' ? L('برای مشاهده حساب وارد شوید.', 'Sign in to view your account.') : L('در حال دریافت حساب…', 'Loading account…'); }
+  if (feedState) { feedState.hidden = tp.status === 'ready' && !tp.readOnly; feedState.textContent = tp.readOnly && tp.status === 'ready' ? L('حساب Gains فقط خواندنی است؛ اجرای سفارش فعال نیست.', 'Gains account is read-only; order execution is not enabled.') : tp.status === 'disconnected' ? L('اتصال حساب قطع است؛ اطلاعات ممکن است قدیمی باشد.', 'Account disconnected; displayed data may be stale.') : tp.status === 'stale' ? L('قیمت حساب به‌روز نیست.', 'Account prices are stale.') : tp.status === 'error' ? L('دریافت حساب ناموفق بود.', 'Account could not be loaded.') : tp.status === 'unavailable' ? L('معاملات این چالش فعال نشده است؛ فقط حساب تمرینی فعال امکان معامله دارد.', 'Challenge execution is not activated; select an active Free Trial to trade.') : tp.status === 'signedout' ? L('برای مشاهده حساب وارد شوید.', 'Sign in to view your account.') : L('در حال دریافت حساب…', 'Loading account…'); }
   if(window.__ofTerminalConfig){
     const ready=tp.status === undefined || tp.status === 'ready';
     const message=ready?t('bt.empty'):tp.status==='error'?L('دریافت اطلاعات حساب ناموفق بود. دوباره تلاش کنید.','Account activity could not be retrieved. Retry.'):tp.status==='signedout'?L('برای مشاهدهٔ حساب وارد شوید.','Sign in to view your account.'):L('در حال دریافت اطلاعات حساب…','Loading account activity…');
@@ -1404,7 +1410,8 @@ function boot(){
       renderAccount(); renderBottom(); computeForm();
     });
     window.addEventListener('of-trading-update', () => {
-      renderAccount();
+      tp = window.__ofProductAdapter || window.__ofServerTP || tp;
+      renderAccount(); computeForm();
       if (['positions','orders','history'].includes(S.btTab) || S.btTab == null) renderBottom();
     });
     window.addEventListener('of-trading-off', () => {
