@@ -931,6 +931,8 @@ $('review-confirm').addEventListener('click', async () => {
    user drawings are never touched). Mapping: positionId → drawingId.
    ============================================================ */
 const posDrawings = new Map();   /* backend position id → vela drawing id */
+const positionEdits = new Map(), positionRiskQueues = new Map();
+let syncingPositionDrawings = false;
 
 function velaPositionsSync(){
   if (!vc || !vc.chart || !vc.chart.drawings) return;
@@ -938,6 +940,8 @@ function velaPositionsSync(){
   const srv = window.__ofServerTP;
   if (!srv){ /* logged out → clear managed overlays only */ velaPositionsClear(); return; }
   const st = srv.state;
+  syncingPositionDrawings = true;
+  try {
   /* last bar time for the anchor x-position (managed box starts at "now") */
   const t = Math.floor(Date.now() / 60000) * 60000;
   const want = new Map();  /* positionId → {entry, stop, target, side} */
@@ -952,10 +956,11 @@ function velaPositionsSync(){
   }
   /* remove stale/closed (and all when the symbol switched) */
   for (const [pid, did] of [...posDrawings]){
-    if (!want.has(pid)){ try { dr.remove(did) } catch(e){}; posDrawings.delete(pid); }
+    if (!want.has(pid)){ clearTimeout(positionEdits.get(pid)?.timer); positionEdits.delete(pid); try { dr.remove(did) } catch(e){}; posDrawings.delete(pid); }
   }
   /* create or update */
   for (const [pid, lv] of want){
+    if (positionEdits.has(pid)) continue;
     const anchors = [
       { time: t, price: lv.entry },
       { time: t, price: lv.stop },
@@ -975,8 +980,11 @@ function velaPositionsSync(){
       } catch(e){ /* renderer without drawing support — table still works */ }
     }
   }
+  } finally { syncingPositionDrawings = false; }
 }
 function velaPositionsClear(){
+  for (const edit of positionEdits.values()) clearTimeout(edit.timer);
+  positionEdits.clear();
   if (!vc || !vc.chart || !vc.chart.drawings) return;
   for (const [, did] of [...posDrawings]){ try { vc.chart.drawings.remove(did) } catch(e){} }
   posDrawings.clear();
@@ -1041,52 +1049,43 @@ function velaClearDrawings(){
    drawings → extract stop/target prices → PUT /trading/positions/:id/protection
    Reverts the chart position if the backend rejects.
    ============================================================ */
-let sltpDragTimer = null;
 function onPositionDrawingEdited(drawingId){
-  clearTimeout(sltpDragTimer);
-  sltpDragTimer = setTimeout(async () => {
-    if (!vc || !vc.chart || !vc.chart.drawings) return;
-    const srv = window.__ofServerTP;
-    if (!srv || !srv.state || !srv.canTrade) return;
-    /* find which backend position this drawing belongs to */
-    let posId = null;
-    for (const [pid, did] of posDrawings){
-      if (did === drawingId){ posId = pid; break; }
-    }
-    if (!posId) return;
-    /* read the drawing's current anchor prices */
-    const dr = vc.chart.drawings;
-    const all = dr.all ? dr.all() : [];
-    const d = all.find(x => x.id === drawingId);
-    if (!d || !d.anchors || d.anchors.length < 3) return;
-    const entry = d.anchors[0]?.price;
-    const stop = d.anchors[1]?.price;
-    const target = d.anchors[2]?.price;
-    if (entry == null || stop == null || target == null) return;
-    /* find the position to determine side */
-    const p = srv.state.positions.find(p => p.id === posId);
-    if (!p) return;
-    /* determine which is SL and which is TP based on side */
-    const isLong = p.side === 'long';
-    const sl = isLong ? Math.min(stop, target) : Math.max(stop, target);
-    const tp = isLong ? Math.max(stop, target) : Math.min(stop, target);
-    /* round to market precision */
-    const m = board.getMeta(p.market);
-    const dpp = m ? Number(m.pricePrecision) : 2;
-    const slR = sl ? sl.toFixed(dpp) : null;
-    const tpR = tp ? tp.toFixed(dpp) : null;
-    // Renderer updates also emit edited events. Only changed user protection
-    // values may produce a mutation, through the same scoped account adapter.
-    if (Number(slR) === Number(p.sl) && Number(tpR) === Number(p.tp)) return;
-    try {
-      const result = await srv.modifyRisk(posId, slR == null ? null : Number(slR), tpR == null ? null : Number(tpR));
-      velaPositionsSync();
-      toast(result.ok ? L('حد ضرر و سود به‌روز شد.', 'SL/TP updated.') : result.errors?.[0] || L('تغییر حد ضرر و سود رد شد.', 'SL/TP update rejected.'), result.ok ? 'pos' : 'neg');
-    } catch(error) {
-      velaPositionsSync();
-      toast(L('به‌روزرسانی حد ضرر و سود ناموفق بود.', 'SL/TP update failed.'), 'neg');
-    }
-  }, 600);   /* debounce: user may still be dragging */
+  if (syncingPositionDrawings || !vc?.chart?.drawings) return;
+  const srv = window.__ofServerTP;
+  if (!srv?.canTrade) return;
+  const pair = [...posDrawings].find(([, id]) => id === drawingId);
+  if (!pair) return;
+  const posId = pair[0], p = srv.state.positions.find(p => p.id === posId);
+  const d = vc.chart.drawings.all().find(d => d.id === drawingId);
+  if (!p || !d?.anchors || d.anchors.length < 3) return;
+  const stop = d.anchors[1]?.price, target = d.anchors[2]?.price;
+  if (!Number.isFinite(stop) || !Number.isFinite(target)) return;
+  const precision = Number(board.getMeta(p.market)?.pricePrecision ?? 2);
+  const sl = Number((p.side === 'long' ? Math.min(stop, target) : Math.max(stop, target)).toFixed(precision));
+  const targetPrice = Number((p.side === 'long' ? Math.max(stop, target) : Math.min(stop, target)).toFixed(precision));
+  clearTimeout(positionEdits.get(posId)?.timer);
+  if (sl === Number(p.sl) && targetPrice === Number(p.tp)) { positionEdits.delete(posId); return; }
+  // Capture the user intent now. SSE redraws must not overwrite a pending drag.
+  const intent = { srv, market:p.market, sl, tp:targetPrice, timer:null };
+  positionEdits.set(posId, intent);
+  intent.timer = setTimeout(() => {
+    const previous = positionRiskQueues.get(posId) || Promise.resolve();
+    const write = previous.catch(() => {}).then(async () => {
+      if (positionEdits.get(posId) !== intent) return;
+      if (window.__ofServerTP !== srv || !srv.canTrade || S.marketId !== intent.market) { positionEdits.delete(posId); velaPositionsSync(); return; }
+      try {
+        const result = await srv.modifyRisk(posId, intent.sl, intent.tp);
+        toast(result.ok ? L('حد ضرر و سود به‌روز شد.', 'SL/TP updated.') : result.errors?.[0] || L('تغییر حد ضرر و سود رد شد.', 'SL/TP update rejected.'), result.ok ? 'pos' : 'neg');
+      } catch(error) { toast(L('به‌روزرسانی حد ضرر و سود ناموفق بود.', 'SL/TP update failed.'), 'neg'); }
+      finally {
+        if (positionEdits.get(posId) === intent) positionEdits.delete(posId);
+        velaPositionsSync();
+      }
+    });
+    positionRiskQueues.set(posId, write);
+    const cleanup = () => { if (positionRiskQueues.get(posId) === write) positionRiskQueues.delete(posId); };
+    void write.then(cleanup, cleanup);
+  }, 600);
 }
 
 /* save drawings whenever the user modifies them (debounced) */

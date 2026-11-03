@@ -43,4 +43,27 @@ The first official release must be created by the passing main pipeline after re
 
 ## Verification record
 
-Verification is in progress. Final check results, exact commits, route matrix and screenshot manifest will be recorded here before review handoff. Earlier exploratory harness failures are retained in local logs and are not counted as passing acceptance.
+The exact-source local candidate at `6c436e4` passed the complete release command, including all three lockfile installs, docs/Blueprint/TypeScript, 74 frontend tests, 9 original chart tests, 4 release integrity tests, 224 backend checks, 35 controlled browser checks, 547 terminal/account/Journal checks, 535 anonymous plus 535 authenticated geometry checks, 17 chart checks, 7 release diagnostics checks and all 266 public source/locale route cases plus the brandbook ZIP download. Two production builds produced identical content hashes. The archive passed manifest/file integrity verification.
+
+GitHub Linux CI then exposed a real chart race: an authoritative redraw could replace a user's dragged protection before the delayed save read it. The correction captures the user intent immediately, suppresses programmatic edit events and serializes position risk writes; its regression explicitly forces a redraw during debounce. The forced-redraw functional scenario passed all 34 local checks after this correction. Full GitHub Linux revalidation is required before merge. No failing candidate has been released.
+
+[Route-by-route measurements](route-matrix.json) cover all 120 terminal route/locale/viewport cases, mounted components, connected product context, header/active state and overflow. The Journal's 52 product/locale/section cases and asset/runtime checks are included in the browser results. [Central screenshot manifest](../../assets/screenshots/manifest.json) records genuine captures and hashes; its `finalIntegration` group retains exact source and test-provider provenance. Existing captures are preserved.
+
+Earlier exploratory failures were: the release badge test used a hidden narrow viewport; a test initially required a new context request on every navigation despite legitimate reuse; a separate public-route process outlived its temporary server after finishing its 266 route cases. Corrected complete scenarios passed locally. The Linux protection race remains a required correction, not a waived check.
+
+
+## Screenshots
+
+| English account overview | Persian account overview |
+| --- | --- |
+| ![English Dashboard](../../assets/screenshots/final-integration/prop-en-dashboard.png) | ![Persian Dashboard](../../assets/screenshots/final-integration/prop-fa-dashboard.png) |
+
+| Trading | Journal |
+| --- | --- |
+| ![Shared Trading navigation](../../assets/screenshots/final-integration/prop-en-trade.png) | ![Journal](../../assets/screenshots/final-integration/prop-en-journal.png) |
+
+| Portfolio | Accounts |
+| --- | --- |
+| ![Portfolio](../../assets/screenshots/final-integration/prop-en-portfolio.png) | ![Accounts](../../assets/screenshots/final-integration/prop-en-journal-section-accounts.png) |
+
+Wallet modal and both Perpetual language captures are listed in the central manifest. They are local disposable-provider evidence, not a personal wallet or deployment certificate.

@@ -133,10 +133,12 @@ async function functional(browser){
     if(!drawing)throw new Error('Managed protected-position drawing missing');
     const anchors=drawing.anchors.map(anchor=>({...anchor}));anchors[1].price=48500;
     drawings.update(drawing.id,{anchors});
+    // Reproduce an authoritative SSE redraw arriving during the drag debounce.
+    window.dispatchEvent(new Event('of-trading-update'));
   });
   await page.waitForFunction(()=>window.__ofServerTP?.state.positions[0]?.sl===48500);
   await page.waitForTimeout(750);
-  check('Chart protection edit uses the scoped adapter once and survives server synchronization',protectionWrites.length===2&&protectionWrites.every(url=>url.includes('account='+trial.id)));
+  check('Chart protection edit survives an immediate SSE redraw and uses the scoped adapter once',protectionWrites.length===2&&protectionWrites.every(url=>url.includes('account='+trial.id)));
 
   await f.locator(`[data-close="${position.id}"]`).click();await f.locator('#close-fraction').selectOption('0.5');await f.locator('#confirm-ok').click();
   await page.waitForFunction(original=>window.__ofServerTP?.state.positions.some(p=>p.id===original.id&&p.margin>0&&p.margin<Number(original.margin)),position);

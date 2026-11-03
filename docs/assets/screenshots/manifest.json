@@ -597,5 +597,298 @@
       "capturedAt": "2026-11-02T17:54:56.793823+00:00",
       "state": "Actual anonymous pre-launch Growth Partner page in English"
     }
-  ]
+  ],
+  "finalIntegration": {
+    "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+    "build": "Node 22 production candidate",
+    "screenshots": [
+      {
+        "file": "final-integration/prop-en-dashboard.png",
+        "route": "/react/#/en/prop/dashboard",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:27.231341+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "75dccfe0a4fdcd6b169c5cee6be2e7f49211e09e96e60a15e320b4a03690a863",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/prop-en-trade.png",
+        "route": "/react/#/en/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:28.721741+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "4b64aebb423b569cb4bad05709f5ab686651a966bfa89c86ea7d6acb8d89db78",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/prop-en-portfolio.png",
+        "route": "/react/#/en/prop/portfolio",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:29.026667+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "62d778451f7bad5ded3be89caeb4d325bb2ed25a60769779478bda2a19660d24",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/prop-en-journal.png",
+        "route": "/react/#/en/prop/journal",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:29.343812+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "01d97585ec7c942238f2cafab9f01176e9e431861e10233161366623d7189f58",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/prop-en-journal-section-accounts.png",
+        "route": "/react/#/en/prop/journal?section=accounts",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:29.635431+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "5d23dd0a58d55f31da2851aea4860caf70a1b6bbf42d9df0138375cb333bd9e7",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/prop-fa-dashboard.png",
+        "route": "/react/#/fa/prop/dashboard",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:40.810717+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "ff9ad075af483dd7bbf832d0454bead5305c5b53635ba9474e1ff257d6930caf",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/prop-fa-trade.png",
+        "route": "/react/#/fa/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:42.290601+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "89136471573a0441087f543f107648e84418903808f85374122d23625b740fc0",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/prop-fa-portfolio.png",
+        "route": "/react/#/fa/prop/portfolio",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:42.594847+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "a7bb4d17dd869357530c38c22528c49db59ce2e5ed2b43cbada4bded36a4a872",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/prop-fa-journal.png",
+        "route": "/react/#/fa/prop/journal",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:42.908464+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "eae4b547d77c3271757737882f5841897326e07bc5f48a195c0ccbfab04cc406",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/prop-fa-journal-section-accounts.png",
+        "route": "/react/#/fa/prop/journal?section=accounts",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:43.204365+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "17e9930f7f1e02a19eb516a79bdb3c93929e1857d85c5b25a03ca421b775b36d",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/perpetual-en-dashboard.png",
+        "route": "/react/#/en/perpetual/dashboard",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:54.138496+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "eee9745d50c78c8dc121c1fc0b376d6e33fab56b1c93c63ebe64d26e6d45ca5b",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/perpetual-en-trade.png",
+        "route": "/react/#/en/perpetual/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:55.619386+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "acf2c0479c005d63ad0697767b1e8c901fe7691ef5def5842bffc18c6df151b5",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/perpetual-en-portfolio.png",
+        "route": "/react/#/en/perpetual/portfolio",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:55.931296+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "7ccb507b4b8ec2ff36df85ff4745003d9a8dbdefc834940f5a052417570a0eb6",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/perpetual-en-journal.png",
+        "route": "/react/#/en/perpetual/journal",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:56.261986+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "b67feeba15d1293cee836790f8c4714e0946828615b6a11dd29d2a3c1e60ea95",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/perpetual-en-journal-section-accounts.png",
+        "route": "/react/#/en/perpetual/journal?section=accounts",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:58:56.566864+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "d6ae2460f5ef86d5a34e078571f784a6892613819ea9b16486a12dfde3f32347",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/perpetual-fa-dashboard.png",
+        "route": "/react/#/fa/perpetual/dashboard",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:59:06.706843+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "2fe621831bc343b8794eb6c509f67a70fd48ebb9c14676ac1f6b220304e6d83d",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/perpetual-fa-trade.png",
+        "route": "/react/#/fa/perpetual/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:59:08.186268+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "2735d0464ddc35ef4f573486be4c9b975de30a9f9823c2d4a64620e8d32587fa",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/perpetual-fa-portfolio.png",
+        "route": "/react/#/fa/perpetual/portfolio",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:59:08.492281+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "31913115326628c0b04f6127ab9881a3cbe1fba78723304df3441d991685c924",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/perpetual-fa-journal.png",
+        "route": "/react/#/fa/perpetual/journal",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:59:08.807757+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "2b2a85ba594f0e2d3955c00fdc0b37758793e109c39fcefa07028195518456df",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/perpetual-fa-journal-section-accounts.png",
+        "route": "/react/#/fa/perpetual/journal?section=accounts",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "capturedAt": "2026-11-03T04:59:09.108595+00:00",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "d80f6d269e11d3d515236f37ecaf9fcd84aca524a9ce1c3c496299ac33089431",
+        "session": "Disposable EIP-6963 signer, actual local SIWE; native wallet balance is a provider test value, not a personal balance",
+        "data": "Real persisted empty virtual trial and live public Gains reads or explicit unavailability; no financial response fixtures in layout captures",
+        "status": "unofficial candidate; locally verified; not deployed"
+      },
+      {
+        "file": "final-integration/wallet-connection.png",
+        "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
+        "sha256": "1d48cafcfd20e2a7c9e8d652530ed0f7a9fb0e8f2b53042359e7e1fe4047cb5d",
+        "state": "Actual RainbowKit account modal connected to a disposable EIP-6963 signer; native balance is fixture data, not a real wallet balance",
+        "status": "local test provider; no transactions"
+      }
+    ]
+  }
 }
