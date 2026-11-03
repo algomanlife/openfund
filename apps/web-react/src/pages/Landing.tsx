@@ -5,6 +5,7 @@ import { bindNavigation, renderNavigation, navigationClick, navigationKeyDown } 
 import '../features/information/information.css'
 import landingBody from './landing-body.html?raw'
 import { RainbowConnect } from '../wallet/RainbowConnect'
+import { CheckoutHost } from '../features/purchase/CheckoutHost'
 import { fetchCmsNavigation, fetchCmsTranslations, fetchCmsLegacyPlans, fetchCmsFaqs, fetchCmsLegal, fetchCmsFooterLinks, invalidateCmsCache } from '../cms/client'
 
 /**
@@ -292,6 +293,7 @@ export default function Landing() {
   return (
     <>
       {walletHost && createPortal(<RainbowConnect />, walletHost)}
+      <CheckoutHost />
       <div dangerouslySetInnerHTML={{ __html: landingBody }} />
     </>
   )

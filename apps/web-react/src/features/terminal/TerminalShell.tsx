@@ -171,7 +171,7 @@ export default function TerminalShell({ product }: { product: Product }) {
                       locale,
                       e.target.value as Product,
                       (e.target.value === "prop" ||
-                        !["withdrawals", "certificates"].includes(page)) &&
+                        !["withdrawals", "certificates", "purchases"].includes(page)) &&
                         (e.target.value === "perpetual" || page !== "rewards")
                         ? page
                         : "dashboard",

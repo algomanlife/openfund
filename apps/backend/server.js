@@ -23,6 +23,7 @@ import { Engine } from './engine.js'
 import { Portfolio } from './portfolio.js'
 import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
+import { purchaseRoutes, confirmPurchase } from './purchases.js'
 
 const cfg = {
   port: Number(process.env.PORT || 8080),
@@ -53,6 +54,7 @@ app.use((req,res,next) => {
   next()
 })
 app.use('/products', express.json({ limit: '2mb' }))
+app.use('/auth/profile', express.json({ limit: '512kb' })) /* avatar data URLs */
 app.use(express.json({ limit: '32kb' }))
 
 /* ---------- CORS (credentials for session cookies) ---------- */
@@ -63,7 +65,7 @@ app.use((req, res, next) => {
     res.setHeader('Vary', 'Origin')
     res.setHeader('Access-Control-Allow-Credentials', 'true')
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Idempotency-Key')
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS')
   }
   if (req.method === 'OPTIONS') return res.sendStatus(204)
   next()
@@ -124,7 +126,7 @@ async function userFromSession(req) {
   const sid = parseCookie(req.headers.cookie)[COOKIE]
   if (!sid) return null
   const { rows } = await pool.query(
-    `SELECT s.user_id, u.wallet_address, u.display_name, u.status, u.created_at, u.last_login_at,
+    `SELECT s.user_id, u.wallet_address, u.display_name, u.avatar_url, u.status, u.created_at, u.last_login_at,
             (s.expires_at > now()) AS valid
        FROM auth_sessions s JOIN openfund_users u ON u.id = s.user_id
       WHERE s.id_hash = $1`, [sha(sid)])
@@ -330,12 +332,41 @@ app.get('/auth/me', requireAuth, asyncRoute(async (req, res) => {
       id: req.user.user_id,
       walletAddress: req.user.wallet_address,
       displayName: req.user.display_name,
+      avatarUrl: req.user.avatar_url,
       status: req.user.status,
       createdAt: req.user.created_at,
       lastLoginAt: req.user.last_login_at
     },
     challenges: rows
   })
+}))
+
+/* 3b — profile editing (display name + avatar; wallet identity is immutable) */
+const AVATAR_MAX_BYTES = 256 * 1024
+const isValidAvatar = (v) =>
+  typeof v === 'string' &&
+  (v.startsWith('https://') && v.length <= 500 ||
+   /^data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(v) && Buffer.byteLength(v, 'utf8') <= AVATAR_MAX_BYTES + 64)
+app.patch('/auth/profile', requireAuth, limit(30), asyncRoute(async (req, res) => {
+  const { displayName, avatarUrl } = req.body || {}
+  const sets = []
+  const params = [req.user.user_id]
+  if (displayName !== undefined) {
+    if (displayName !== null && (typeof displayName !== 'string' || displayName.trim().length === 0 || displayName.trim().length > 60))
+      return res.status(400).json({ error: 'invalid_display_name' })
+    params.push(displayName === null ? null : displayName.trim())
+    sets.push(`display_name=$${params.length}`)
+  }
+  if (avatarUrl !== undefined) {
+    if (avatarUrl !== null && !isValidAvatar(avatarUrl)) return res.status(400).json({ error: 'invalid_avatar' })
+    params.push(avatarUrl)
+    sets.push(`avatar_url=$${params.length}`)
+  }
+  if (!sets.length) return res.status(400).json({ error: 'nothing_to_update' })
+  await pool.query(`UPDATE openfund_users SET ${sets.join(', ')}, updated_at=now() WHERE id=$1`, params)
+  await audit('profile_updated', req.user.user_id, req, { fields: { displayName: displayName !== undefined, avatarUrl: avatarUrl !== undefined } })
+  const { rows: [u] } = await pool.query('SELECT display_name, avatar_url FROM openfund_users WHERE id=$1', [req.user.user_id])
+  res.json({ displayName: u.display_name, avatarUrl: u.avatar_url })
 }))
 
 /* 4 — logout */
@@ -475,6 +506,25 @@ if (testMode) {
     marketData.injectPrice(symbol, String(price))
     res.json({ ok: true })
   })
+  /* test-only purchase confirmation seam — SIM_TEST_MODE=1 + test database,
+     never active in production: lets browser/E2E tests drive the full
+     purchase lifecycle without a real chain (same gate as inject-price) */
+  app.post('/internal/confirm-order', asyncRoute(async (req, res) => {
+    const { orderId, txHash } = req.body || {}
+    if (!orderId || !txHash) return res.status(400).json({ error: 'invalid' })
+    const user = await userFromSession(req)
+    if (!user) return res.status(401).json({ error: 'unauthenticated' })
+    const result = await confirmPurchase(pool, {
+      orderId, userId: user.user_id,
+      evidence: {
+        txHash, chainId: Number(process.env.PURCHASE_PAYMENT_CHAIN || 11155111),
+        blockNumber: 1, fromAddress: user.wallet_address, toAddress: null,
+        amount: null, tokenAddress: null, blockTimestamp: new Date().toISOString(),
+      },
+      source: 'test_seam',
+    })
+    res.json(result)
+  }))
 }
 
 /* ============== PORTFOLIO (journal-core analytics, ownership-scoped) ============== */
@@ -516,6 +566,7 @@ app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) 
 
 app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
 app.use(referralRoutes({ pool, requireAuth, audit }))
+app.use(purchaseRoutes({ pool, requireAuth, audit }))
 
 /* Public release identity contains build metadata only, never runtime secrets. */
 app.get('/version', (req, res) => {

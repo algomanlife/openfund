@@ -27,9 +27,21 @@ export interface OpenfundUser {
   id: string
   walletAddress: string
   displayName: string | null
+  avatarUrl: string | null
   status: string
   createdAt: string
   lastLoginAt: string | null
+}
+
+/** credentialed JSON fetch against the Openfund backend (purchase/profile APIs) */
+export async function apiFetch(path: string, init: RequestInit = {}) {
+  const res = await fetch(BACKEND + path, {
+    ...init,
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json', ...(init.headers || {}) }
+  })
+  const data = await res.json().catch(() => null)
+  return { ok: res.ok, status: res.status, data }
 }
 export interface OpenfundChallenge {
   id: string
@@ -186,8 +198,16 @@ export function useOpenfundSession() {
     setStatus('unauthenticated')
   }, [mutateAuth])
 
+  /* profile editing (display name + avatar) — wallet identity stays immutable */
+  const updateProfile = useCallback(async (patch: { displayName?: string | null, avatarUrl?: string | null }) => {
+    const r = await apiFetch('/auth/profile', { method: 'PATCH', body: JSON.stringify(patch) })
+    if (!r.ok) throw new Error(r.data?.error || 'profile_update_failed')
+    if (currentAddress.current) await loadMe()
+    return r.data
+  }, [loadMe])
+
   const belongs = isConnected && address && user?.walletAddress.toLowerCase() === address.toLowerCase()
-  return { status: user && !belongs ? (isConnected ? 'unauthenticated' : 'anonymous') as SessionStatus : status, user: belongs ? user : null, challenges: belongs ? challenges : [], signIn, logout, error, reload: loadMe }
+  return { status: user && !belongs ? (isConnected ? 'unauthenticated' : 'anonymous') as SessionStatus : status, user: belongs ? user : null, challenges: belongs ? challenges : [], signIn, logout, updateProfile, error, reload: loadMe }
 }
 
 

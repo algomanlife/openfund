@@ -114,5 +114,18 @@ services:
           envVarKey: RENDER_EXTERNAL_HOSTNAME # browser needs the public CMS origin
       - key: VITE_WALLETCONNECT_PROJECT_ID
         sync: false             # optional (full remote wallet list)
+      - key: PURCHASE_PAYMENT_RECEIVER
+        sync: false             # challenge payment destination address — deliberately unset:
+                                # purchases stay disabled until an approved address is entered
+      - key: PURCHASE_PAYMENT_CHAIN
+        value: "11155111"       # payment chain (Ethereum Sepolia by default)
+      - key: PURCHASE_PAYMENT_TOKEN
+        sync: false             # optional ERC-20 payment token contract
+      - key: PURCHASE_PAYMENT_DECIMALS
+        value: "18"             # used only when PURCHASE_PAYMENT_TOKEN is set
+      - key: VITE_DEPAY_WIDGET
+        sync: false             # optional DePay widget toggle (1 = enabled)
+      - key: VITE_DEPAY_WIDGET_URL
+        sync: false             # approved DePay widget bundle URL; widget stays off without it
       - key: SIM_TEST_MODE
         value: ""               # internal test seam — never enabled in prod

@@ -8,6 +8,7 @@ export const primary = {
     ["trade", "ترمینال پراپ", "Prop Terminal"],
     ["portfolio", "پورتفولیو", "Portfolio"],
     ["leaderboard", "لیدربورد", "Leaderboard"],
+    ["purchases", "خریدها و فاکتورها", "Purchases & Invoices"],
     ["withdrawals", "درخواست برداشت", "Withdrawal Requests"],
     ["certificates", "سرتیفیکیت‌ها", "Certificates"],
   ],

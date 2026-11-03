@@ -108,7 +108,9 @@ jobs:
         run: npm run seed-plans
       - name: Boot server (integration suites hit it on :8080)
         run: |
-          SIM_TEST_MODE=1 npm start &
+          # PURCHASE_PAYMENT_RECEIVER is a CI-only placeholder so the purchase
+          # lifecycle is testable end-to-end; never a production address.
+          SIM_TEST_MODE=1 PURCHASE_PAYMENT_RECEIVER=0x000000000000000000000000000000000000c1a1 npm start &
           for i in $(seq 1 30); do
             sleep 1
             if curl -fsS http://localhost:8080/health > /dev/null; then echo "health OK"; break; fi
@@ -152,6 +154,12 @@ jobs:
         env:
           TEST_FRONTEND_URL: http://localhost:8080/react
         run: node e2e/test-landing-motion.cjs
+      - name: Challenge purchase, invoice and withdrawal browser lifecycle
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080/react
+          TEST_BACKEND_URL: http://localhost:8080
+        run: npm run test:browser:purchase
       - name: Chart interaction and indicator browser regression
         working-directory: .
         env:
@@ -165,6 +173,7 @@ jobs:
             output/playwright/audit/
             output/playwright/ui-polish/
             output/playwright/landing-motion/
+            output/playwright/purchase-flow/
             output/playwright/chart-indicators/
             output/playwright/terminal-layout/
             output/playwright/terminal-layout-authenticated/
@@ -215,6 +224,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG: gitleaks.toml
+          # 8.24.x does not apply path allowlists to --log-opts scans, which
+          # re-flags the documented public SDK constants in react/assets/
+          # whenever a rebuild renames those chunks. 8.30.1 honors the config.
+          GITLEAKS_VERSION: 8.30.1
 
   audit:
     name: Dependency audit (report)

@@ -1,6 +1,14 @@
 # Changelog
 
-## Unreleased — Persian landing motion
+## 2026-11-03 — Wallet profiles, challenge purchases, invoices and withdrawal requests
+
+- Add wallet-profile editing (`PATCH /auth/profile`): display name (1–60 chars) and avatar (https URL or ≤256 KB image data URL) with server-side validation; the wallet identity itself stays immutable.
+- Add server-priced challenge purchases (`apps/backend/purchases.js`): idempotent orders snapshot the catalog price from `challenge_plans`; payment instructions (receiver, chain, optional token) come from the `PURCHASE_PAYMENT_*` environment — purchasing stays disabled (`purchases_disabled`) while no approved destination is configured, and no production address is ever committed.
+- Add server-side on-chain payment verification with viem (no new dependencies): receipt success, sender, receiver, ERC-20 Transfer or native amount (exact decimal-string unit math), and block-time ordering; `UNIQUE (chain_id, tx_hash)` plus an atomic provisioning transaction guarantees a confirmed payment provisions exactly one `openfund_challenges` record with an auditable payment row, gap-free invoice and event trail. See [ADR 0009](docs/decisions/0009-challenge-purchases-and-payment-verification.md).
+- Add the React checkout flow on the challenges page (no legacy runtime edits — a `CheckoutHost` bridges the existing summary dialog), an optional DePay widget gated behind `VITE_DEPAY_WIDGET`/`VITE_DEPAY_WIDGET_URL`, and Prop product pages for purchase/payment history with downloadable dependency-free PDF invoices and withdrawal requests (`#/{locale}/prop/purchases`, `#/{locale}/prop/withdrawals`).
+- Add tests: 54 backend purchase/profile/invoice/withdrawal assertions (unit + HTTP, wired into `test:all`) and a 17-check browser E2E (`e2e/test-purchase-flow.cjs`, disposable EIP-6963 signer, full lifecycle through the SIM_TEST_MODE seam). Live-chain verification and production payment activation remain pending an approved destination; challenge rule enforcement stays future work.
+
+## 2026-11-03 — Persian landing motion (merged from main, PR #40)
 
 - Replace the Persian Home cartoon and previous Perpetual machine with original decorative SVG trading interfaces, add pointer-reactive networks, a compact proposed Perpetual feature strip and a Made by Humans badge.
 - Retain existing CMS, header/wallet interfaces and English Prop challenge entry; add responsive, keyboard, touch and motion acceptance checks. See [landing evidence](docs/reviews/landing-motion/DELIVERY.md).

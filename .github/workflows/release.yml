@@ -20,7 +20,11 @@ jobs:
     name: Release package gates
     if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    # The full candidate build (three lockfiles, unit suites, dual frontend
+    # builds, double migration, boot + the whole browser matrix) has outgrown
+    # 45 minutes: the observed run was terminated mid-layout-acceptance at
+    # 45m23s with no failing assertion. 75 minutes keeps a hard ceiling.
+    timeout-minutes: 75
     services:
       postgres:
         image: postgres:17-alpine
@@ -84,6 +88,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG: gitleaks.toml
+          # 8.24.x does not apply path allowlists to --log-opts scans (see
+          # ci.yml); pin 8.30.1 so PR gates match the CI secret scan.
+          GITLEAKS_VERSION: 8.30.1
       - name: Verify the exact main commit already passed required secret scanning
         if: github.event_name == 'workflow_dispatch'
         env:

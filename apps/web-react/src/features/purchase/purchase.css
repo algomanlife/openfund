@@ -1,0 +1,171 @@
+/* Openfund purchase UI — checkout panel, purchase history, withdrawals.
+   Shares the session/profile visual language (mint #82e7bd on #0c1710,
+   Irancell/Ubuntu, 6–14px radii) so new pages read as native Openfund pages.
+   Light theme uses the same smart-invert-compatible hues as session.css. */
+
+.of-checkout-overlay {
+  position: fixed; inset: 0; z-index: 2147483000;
+  background: rgba(0, 0, 0, 0.55);
+  display: grid; place-items: center;
+}
+.of-checkout {
+  width: min(480px, calc(100vw - 40px));
+  max-height: 86vh; overflow: auto;
+  background: #0c1710; color: #f1f3ef;
+  border: 1px solid #82e7bd44; border-radius: 14px;
+  padding: 22px 24px;
+  font-family: 'Irancell', Tahoma, sans-serif;
+  margin: auto;
+}
+.of-checkout-close { color: #a3b8a9; font-size: 24px; float: inline-end; background: none; border: 0; cursor: pointer }
+.of-checkout-close:hover { color: #fff }
+.of-checkout h2 { font-size: 19px; font-weight: 600; margin: 4px 0 14px }
+
+.of-checkout-summary div {
+  display: flex; justify-content: space-between; gap: 14px;
+  padding: 7px 0; border-bottom: 1px solid #ffffff12;
+  font-size: 13px;
+}
+.of-checkout-summary span { color: #9fb3a8 }
+.of-checkout-summary b { font-weight: 600 }
+
+.of-checkout-note { margin: 14px 0; }
+.of-checkout-note p { color: #c3cfc7; font-size: 13px; line-height: 1.8; margin-bottom: 10px }
+
+.of-checkout-step { font-size: 13px; color: #cbd8d0; margin: 14px 0 6px; font-weight: 600 }
+.of-checkout-addr {
+  display: flex; align-items: center; gap: 10px;
+  background: #0a120d; border: 1px solid #82e7bd33; border-radius: 8px;
+  padding: 10px 12px;
+}
+.of-checkout-addr code {
+  font-family: ui-monospace, Consolas, monospace; font-size: 11.5px;
+  color: #a9e6c6; word-break: break-all; flex: 1;
+}
+.of-checkout-meta { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 10px 0; font-size: 12.5px; color: #9fb3a8 }
+.of-checkout-meta b { color: #e6efe9; font-weight: 600 }
+.of-checkout-tx {
+  width: 100%; box-sizing: border-box;
+  background: #0a120d; color: #e6efe9;
+  border: 1px solid #ffffff22; border-radius: 8px;
+  padding: 10px 12px; font-size: 12px;
+  font-family: ui-monospace, Consolas, monospace;
+}
+.of-checkout-tx:focus { outline: none; border-color: #82e7bd88 }
+.of-checkout-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap }
+.of-checkout-status { font-size: 13px; color: #cbd8d0 }
+.of-checkout-done p { color: #a9e6c6; font-weight: 600; margin: 10px 0 }
+
+/* profile head (avatar + name) — shared with session.css additions */
+.of-profile-head { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 14px }
+.of-avatar {
+  border-radius: 50%; object-fit: cover; flex-shrink: 0;
+  border: 1px solid #82e7bd44; background: #0a120d;
+}
+.of-avatar-fallback {
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #a9e6c6; font-weight: 700; font-family: Ubuntu, 'Irancell', sans-serif;
+}
+.of-profile-headinfo { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0 }
+.of-profile-headinfo b { font-size: 15px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.of-profile-headinfo .of-addr { color: #9fb3a8; font-size: 11px; font-family: ui-monospace, Consolas, monospace }
+.of-profile-editbtn {
+  align-self: flex-start; margin-top: 2px;
+  background: none; border: 0; cursor: pointer; padding: 0;
+  color: #82e7bd; font-size: 12px; font-family: inherit; font-weight: 600;
+}
+.of-profile-editbtn:hover { text-decoration: underline }
+.of-profile-editform { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px }
+.of-profile-field { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #9fb3a8 }
+.of-profile-field input {
+  background: #0a120d; color: #e6efe9; border: 1px solid #ffffff22;
+  border-radius: 8px; padding: 9px 12px; font-size: 13px; font-family: inherit;
+}
+.of-profile-field input:focus { outline: none; border-color: #82e7bd88 }
+.of-profile-avatarrow { display: flex; align-items: center; gap: 10px }
+.of-profile-filebtn { position: relative; overflow: hidden; cursor: pointer }
+.of-profile-plainbtn {
+  background: none; border: 0; cursor: pointer; padding: 0;
+  color: #9fb3a8; font-size: 12px; font-family: inherit;
+}
+.of-profile-plainbtn:hover { color: #e6efe9 }
+.of-profile-plainbtn:disabled { opacity: .5; cursor: default }
+.of-profile-formactions { display: flex; gap: 10px; align-items: center }
+.of-profile-error { color: #f0b3a6; font-size: 12px; margin: 6px 0 }
+
+/* product pages: purchases & withdrawals */
+.of-purchase-page { padding: 6px 2px 30px; max-width: 900px; margin: 0 auto }
+.of-purchase-page h2 { font-size: 18px; font-weight: 600; margin: 6px 0 14px }
+.of-page-note { color: #9fb3a8; font-size: 12.5px; line-height: 1.9; margin: 0 0 18px }
+.of-purchase-table { width: 100%; border-collapse: collapse; font-size: 12.5px }
+.of-purchase-table th {
+  text-align: start; padding: 8px 10px; color: #9fb3a8; font-weight: 600;
+  border-bottom: 1px solid #ffffff22; font-size: 11.5px; white-space: nowrap;
+}
+.of-purchase-table td { padding: 10px; border-bottom: 1px solid #ffffff10; vertical-align: middle }
+.of-purchase-table td b { font-weight: 600 }
+.of-payment-cell a, .of-purchase-table a { color: #a9e6c6; text-decoration: none; font-family: ui-monospace, Consolas, monospace; font-size: 11.5px }
+.of-purchase-table a:hover { text-decoration: underline }
+.of-note-cell { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.of-status-pill {
+  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; white-space: nowrap;
+}
+.of-status-paid, .of-status-approved { background: #82e7bd1f; color: #a9e6c6; border: 1px solid #82e7bd55 }
+.of-status-pending, .of-status-requested { background: #86a8ff14; color: #9db4f5; border: 1px solid #86a8ff44 }
+.of-status-cancelled, .of-status-rejected, .of-status-expired { background: #e8948314; color: #f0b3a6; border: 1px solid #e8948355 }
+.of-withdraw-form {
+  display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;
+  background: #0a120d99; border: 1px solid #ffffff14; border-radius: 10px;
+  padding: 14px; margin-bottom: 18px;
+}
+.of-withdraw-form label { display: flex; flex-direction: column; gap: 5px; font-size: 11.5px; color: #9fb3a8 }
+.of-withdraw-form input {
+  background: #0a120d; color: #e6efe9; border: 1px solid #ffffff22;
+  border-radius: 8px; padding: 9px 12px; font-size: 13px; min-width: 140px; font-family: inherit;
+}
+.of-withdraw-form input:focus { outline: none; border-color: #82e7bd88 }
+.of-empty p { color: #9fb3a8; font-size: 13px; line-height: 1.9; margin: 8px 0 12px }
+.of-empty .button { margin-top: 4px }
+
+/* light theme (smart-invert keeps saturated hues) */
+html[data-theme='light'] .of-checkout, html[data-theme='light'] .of-purchase-table a,
+html[data-theme='light'] .of-payment-cell a { color-scheme: light }
+html[data-theme='light'] .of-checkout { background: #f2f5f1; color: #1c2420; border-color: #12965d44 }
+html[data-theme='light'] .of-checkout-close { color: #5c6b62 }
+html[data-theme='light'] .of-checkout-summary div { border-bottom-color: #0A120D14 }
+html[data-theme='light'] .of-checkout-summary span, html[data-theme='light'] .of-checkout-meta,
+html[data-theme='light'] .of-page-note, html[data-theme='light'] .of-purchase-table th { color: #5c6b62 }
+html[data-theme='light'] .of-checkout-meta b, html[data-theme='light'] .of-checkout-note p,
+html[data-theme='light'] .of-checkout-step, html[data-theme='light'] .of-empty p { color: #3f4c44 }
+html[data-theme='light'] .of-checkout-addr, html[data-theme='light'] .of-checkout-tx,
+html[data-theme='light'] .of-withdraw-form, html[data-theme='light'] .of-withdraw-form input,
+html[data-theme='light'] .of-profile-field input { background: #e8ece6; color: #1c2420; border-color: #0A120D22 }
+html[data-theme='light'] .of-checkout-addr code { color: #0d7a4c }
+html[data-theme='light'] .of-checkout-addr { border-color: #12965d33 }
+html[data-theme='light'] .of-checkout-tx:focus, html[data-theme='light'] .of-withdraw-form input:focus,
+html[data-theme='light'] .of-profile-field input:focus { border-color: #12965d }
+html[data-theme='light'] .of-avatar { background: #e8ece6; border-color: #12965d44 }
+html[data-theme='light'] .of-avatar-fallback { color: #0d7a4c }
+html[data-theme='light'] .of-profile-headinfo .of-addr { color: #6b7a70 }
+html[data-theme='light'] .of-profile-editbtn, html[data-theme='light'] .of-checkout-done p { color: #0d7a4c }
+html[data-theme='light'] .of-profile-editbtn:hover { text-decoration: underline }
+html[data-theme='light'] .of-profile-plainbtn { color: #6b7a70 }
+html[data-theme='light'] .of-profile-plainbtn:hover { color: #3f4c44 }
+html[data-theme='light'] .of-profile-error { color: #8a4a38 }
+html[data-theme='light'] .of-purchase-table th { border-bottom-color: #0A120D22 }
+html[data-theme='light'] .of-purchase-table td { border-bottom-color: #0A120D10 }
+html[data-theme='light'] .of-withdraw-form { background: #e8ece688; border-color: #0A120D14 }
+html[data-theme='light'] .of-status-paid, html[data-theme='light'] .of-status-approved { background: #12965d1f; color: #0d7a4c; border-color: #12965d55 }
+html[data-theme='light'] .of-status-pending { background: #4a6db514; color: #34519b; border-color: #4a6db544 }
+html[data-theme='light'] .of-status-cancelled, html[data-theme='light'] .of-status-rejected, html[data-theme='light'] .of-status-expired { background: #B3543F14; color: #8a4a38; border-color: #B3543F55 }
+
+/* small screens */
+@media (max-width: 640px) {
+  .of-purchase-table { display: block; overflow-x: auto }
+  .of-profile-head { flex-direction: column; align-items: center; text-align: center }
+  .of-profile-headinfo { align-items: center }
+  .of-profile-editbtn { align-self: center }
+  .of-withdraw-form { flex-direction: column; align-items: stretch }
+  .of-withdraw-form input { min-width: 0 }
+}
