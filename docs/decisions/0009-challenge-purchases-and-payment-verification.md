@@ -42,7 +42,7 @@ idempotent migrations, no changes to unrelated Perpetual/trading functionality.
    submits a transaction hash; the backend checks receipt success, sender = session
    wallet, receiver = configured address (native value or ERC-20 `Transfer` log from
    payer to receiver), amount ≥ order price (exact decimal-string unit conversion —
-   float math would lose precision above 2^53), and block timestamp ≥ order creation.
+   float math would lose precision above 2^53), and block timestamp within the implemented order-time tolerance (five minutes before order creation is accepted).
    `UNIQUE (chain_id, tx_hash)` makes each on-chain payment usable exactly once
    system-wide; the provisioning transaction (payment row + order paid + challenge +
    invoice) is atomic and replay-safe.
@@ -53,7 +53,7 @@ idempotent migrations, no changes to unrelated Perpetual/trading functionality.
    unverified external bundle ships by default.
 6. **Invoices are dependency-free PDFs.** `apps/backend/invoice-pdf.js` renders a
    single-page A4 invoice (Helvetica, English/latin numerals — a financial document of
-   record; app localization is unaffected) with a gap-free yearly numbering sequence.
+   record; app localization is unaffected). Number labels include the year, but allocation uses a single PostgreSQL sequence: gaps are possible and numbering does not reset yearly.
 7. **Withdrawals are requests, not payouts.** `withdrawal_requests` records
    user-submitted requests (optionally linked to an owned challenge); review/approval
    stays with the operator. The UI replaces the placeholder capability page.
@@ -81,3 +81,11 @@ idempotent migrations, no changes to unrelated Perpetual/trading functionality.
   only CMS-rendered plan details and is recorded as a finding, not silently changed.
 - Invoice PDFs are minimal; a design pass (branding, Persian) can follow without schema
   changes.
+- Existing verifier limits remain production gates, not claims of payment parity: native
+  units are compared with a USD-denominated catalog price without a conversion rate;
+  the ERC-20 path selects the first Transfer log; explicit finality/reorg acceptance
+  is not established. The optional widget maps non-Arbitrum networks to `ethereum`,
+  including default Sepolia; live network compatibility is unverified. Preserve
+  receiver/widget gates until these conditions receive approved acceptance.
+- `accounts.js` marks purchased challenge records read-only and `products.js` rejects
+  challenge execution. No funded capital, evaluation or payout is implied by provisioning.

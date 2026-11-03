@@ -1,6 +1,6 @@
 # System architecture
 
-Verified repository baseline: `2f5cf93` (2026-11-02). The application is a React frontend and Node.js API with persistent Prop simulation, Gains read integrations, SIWE and editorial Directus. [Feature Status](../product/FEATURE_STATUS.md) records delivery boundaries.
+Source baseline: main `561e7f3101f3a43376068d9bba1a87c30e2b7d71` (2026-11-03), including PR #40/#41 and official v0.2.0 published at 19:50 UTC. The website presentation changes remain dirty, unmerged candidates and are not in that release. The application is a React frontend and Node.js API with persistent Prop simulation, Gains read integrations, SIWE and editorial Directus. [Feature Status](../product/FEATURE_STATUS.md) records delivery boundaries.
 
 ![Openfund system architecture](../assets/diagrams/system.svg)
 
@@ -15,6 +15,8 @@ flowchart TB
   Node --> Auth[SIWE sessions and ownership]
   Node --> Engine[Prop simulation and SSE]
   Node --> Product[Product portfolio and journal API]
+  Node --> Commerce[Gated purchases invoices and withdrawal requests]
+  Commerce --> DB
   Auth --> DB[(openfund-db PostgreSQL 17)]
   Engine --> DB
   Product --> DB
@@ -37,7 +39,7 @@ flowchart TB
 | `dist/` | Source-critical classic compatibility deliverable; not disposable build output |
 | `react/` | Tracked historical build plus output of the current Vite build; Render rebuilds from `apps/web-react/` |
 
-The root package orchestrates commands and repository tooling. Applications install from their own lockfiles. Do not import protocol sources in this documentation task.
+The root package orchestrates commands and repository tooling. Applications install from their own lockfiles. `packages/openfund-protocol/` already contains dormant Solidity source, tests and provenance; it is not connected to operational venue routing.
 
 ## Financial authority
 
@@ -58,3 +60,22 @@ Directus shares the managed PostgreSQL service and edits catalog/editorial colle
 The [Render Blueprint](../../render.yaml) preserves exactly `openfund`, `openfund-db` and `openfund-cms`. The Node service builds and serves React under `/react/`, redirects `/` there, and hosts the API, SSE and one engine loop. Directus uses its official image and persistent uploads disk. There is no separate frontend service, queue, worker or Redis. Horizontal engine scaling requires coordinated ownership before deployment.
 
 See [Render operations](../deployment/RENDER.md), [Database](../deployment/DATABASE.md), [technology registry](TECH_STACK.md), and [ADRs](../decisions/README.md). Configuration and local checks do not establish a live deployment.
+
+## Public presentation and commerce boundaries
+
+Public footer markup remains in `apps/web-react/src/pages/landing-body.html`;
+`InformationShell.tsx` extracts it for editorial routes, and `Landing.tsx` hosts
+the existing challenge runtime. The reusable `features/community/TelegramCommunity.tsx`
+is mounted only by public layouts; TerminalShell and authenticated workspaces
+retain their own navigation. The community destination is unavailable until an
+owner-verified URL is configured; Telegram’s homepage is not an Openfund group. Public platform cards communicate
+availability only; unified release archives are web/API payloads, not installers.
+
+Merged PR #41 adds `apps/backend/purchases.js`, `invoice-pdf.js`, additive order,
+payment, invoice and withdrawal tables, `/auth/profile`, and frontend
+`features/purchase`. Server-side pricing, session ownership, receipt verification
+and atomic provisioning remain authoritative. `PURCHASE_PAYMENT_RECEIVER` gates
+ordering; the DePay widget is opt-in. Displaying its footer logo does not enable
+payments. Withdrawals record requests intended for later operator review; no
+operator review interface or payout settlement is established. Purchased challenge
+records remain read-only, not evaluated or funded accounts. [Design decision](../decisions/0009-challenge-purchases-and-payment-verification.md).

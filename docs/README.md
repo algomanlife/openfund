@@ -44,8 +44,12 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Architecture Decisions
 
-[ADR index](decisions/README.md) · [Gateway routing](decisions/0001-product-gateway-routing.md) · [Shared terminal / isolated state](decisions/0002-shared-product-terminal.md) · [Valuation and product wallets](decisions/0003-trading-valuation-and-product-wallets.md) · [Documentation authority](decisions/0004-documentation-authority.md)
+[ADR index](decisions/README.md) · [Purchases, invoices and withdrawal requests](decisions/0009-challenge-purchases-and-payment-verification.md) · [Gateway routing](decisions/0001-product-gateway-routing.md) · [Shared terminal / isolated state](decisions/0002-shared-product-terminal.md) · [Valuation and product wallets](decisions/0003-trading-valuation-and-product-wallets.md) · [Documentation authority](decisions/0004-documentation-authority.md)
 
 ## Brand, evidence and historical material
 
 [Brand assets](assets/brand/README.md) · [Screenshot gallery and provenance](assets/screenshots/README.md) · [Asset inventory](assets/README.md) · [Design system](design/DESIGN_SYSTEM.md) · [Repository metadata](development/GITHUB_METADATA.md) · [Reviews and audit index](reviews/README.md) · [Change log](../CHANGELOG.md)
+
+## Current website and release audit
+
+[2026-11-03 source/release audit](reviews/website-refresh/AUDIT.md) · [Website delivery and validation](reviews/website-refresh/DELIVERY.md) · [Distribution/community gates](roadmap/PRODUCT.md). At 19:52 UTC official v0.2.0 identifies main `561e7f3`; the dirty website candidate is excluded and current port 8080 startup is not verified here. Preserve dated historical reviews; use the feature register and current release manifest for current claims.

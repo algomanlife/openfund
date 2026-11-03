@@ -27,3 +27,14 @@ Component inventory, token mapping, visual QA screenshots, responsive acceptance
 The compact terminal reuses the existing Obsidian `#060808`, dark-green surfaces `#0A100D` / `#0E1712`, mint `#82E7BD`, negative `#E89483`, Ubuntu and Irancell assets from the established terminal stylesheet. Its scoped layout adds `--terminal-control` (32px, 30px at compact height), `--terminal-space` (10px), `--terminal-label` (11.5px), `--terminal-text` (12px) and a divider alias to the existing line token. Numeric typography is tabular. These are terminal presentation settings, not a new brand system.
 
 Use 1px structural boundaries and small 3px control corners; avoid card wrappers and decorative shadows in the trading workspace. Layout geometry stays LTR while Persian text is scoped locally. [Rendered acceptance](../reviews/terminal-ui/DELIVERY.md) records both products, languages, desktop sizes and responsive limits.
+
+## Public website implementation
+
+The source public system uses mint #82E7BD, obsidian #060808, green surfaces,
+Ubuntu/Irancell, rounded platform cards and subtle dividers in
+`apps/web-react/public/legacy/style.css`. The shared footer comes from
+`pages/landing-body.html`; public information pages reuse it. Document language
+and direction plus `data-theme` control localization and theme. Public responsive
+rules use 700px and 1050px breakpoints. Telegram adds scoped blue translucency,
+keyboard focus and reduced-motion transitions without a new component library.
+Official external artwork and sources are recorded in the website refresh report.

@@ -8,11 +8,13 @@ F1/F2 deliver the application shell, charting and market feeds. T1/T2 deliver pe
 
 ## Product experience — phase 3
 
-X1/X2 connect isolated product accounts, Portfolio, Journal, published content, challenges, markets and multilingual UI. X3 completes real-wallet/device acceptance and accessibility coverage. X4 depends on T3, payment/legal/operational decisions and reconciliation before paid activation, rewards or production transparency can be claimed.
+X1/X2 connect isolated product accounts, Portfolio, Journal, published content, challenges, markets and multilingual UI. X3 completes real-wallet/device acceptance and accessibility coverage. X4a is implemented in PR #41 and official v0.2.0: profile editing, server-priced orders, gated receipt verification, challenge-record provisioning, history/invoices and withdrawal requests. X4b is blocked on approved payment destination and real-chain/widget acceptance. X4c depends on T3 and approved funded-capital/payout/reward policy. Provisioning is not an executable evaluation; a withdrawal request is not a payout.
+
+The dirty website-refresh candidate adds five service marks, trader attribution, five Coming Soon platform cards and public community presentation. The Telegram action remains unavailable until an owner URL is configured. Desktop packaging and mobile applications are planned, not established by a web/API archive. See [Milestones](MILESTONES.md) for their separate gates.
 
 ## Production and advanced trading — phases 4–5
 
-I2/I3 require deployed acceptance, recovery evidence and operating controls before a release-readiness claim. A1 expands order workflows and decision reporting around explicit sources and metric definitions. A2 remains blocked until approved Gains contracts, transaction simulation, confirmation and settlement reconciliation are established. A3 requires authentic depth/trade data.
+I2/I3 require deployed acceptance, recovery evidence and operating controls before a release-readiness claim. A1 expands order workflows and decision reporting around explicit sources and metric definitions. A2 remains blocked until approved Gains contracts, transaction simulation, confirmation and settlement reconciliation are established. A3 already reads authentic Gains VOB/trades through its dedicated adapter; production acceptance is separate and footprint remains unsupported.
 
 ## Protocol and expansion — phases 6–7
 

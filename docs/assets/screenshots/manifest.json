@@ -1,6 +1,6 @@
 {
   "baseline": "2f5cf93afcbd97caa9b80e6de8a703fa707f6e16",
-  "source": "Current apps/web-react production build, current apps/backend at localhost:8186",
+  "source": "Historical default for initial 2026-11-02 captures only: apps/web-react production build and matching apps/backend at localhost:8186; per-entry metadata overrides this context",
   "cms": "Existing local Directus at localhost:8055; public reads only",
   "marketData": "Live Gains; no intercepted requests or protocol fixtures",
   "wallet": "Public pages anonymous; account captures use a disposable generated signer, real local SIWE/API and no fabricated market or financial responses. No personal wallet, approvals or chain transactions.",
@@ -92,61 +92,6 @@
       "session": "anonymous",
       "capturedAt": "2026-11-02T06:05:28.610286+00:00",
       "state": "Actual unconnected wallet modal; no personal wallet"
-    },
-    {
-      "file": "account-profile.jpg",
-      "route": "/react/#/en/home",
-      "viewport": {
-        "width": 1440,
-        "height": 1000
-      },
-      "session": "Disposable generated documentation wallet; real local SIWE session",
-      "state": "Actual profile dialog; generated address is not a personal wallet",
-      "capturedAt": "2026-11-02T06:06:58.646Z"
-    },
-    {
-      "file": "prop-portfolio.jpg",
-      "route": "/react/#/en/prop/portfolio",
-      "viewport": {
-        "width": 1440,
-        "height": 1000
-      },
-      "session": "Disposable generated documentation wallet; real local SIWE session",
-      "state": "New virtual-DAI account, no trades; 100000 virtual DAI issued by the real backend",
-      "capturedAt": "2026-11-02T06:07:05.708Z"
-    },
-    {
-      "file": "journal.jpg",
-      "route": "/react/#/en/prop/journal",
-      "viewport": {
-        "width": 1440,
-        "height": 1000
-      },
-      "session": "Disposable generated documentation wallet; real local SIWE session",
-      "state": "Empty real private notebook; no seeded notes",
-      "capturedAt": "2026-11-02T06:07:12.761Z"
-    },
-    {
-      "file": "analytics.jpg",
-      "route": "/react/#/en/prop/dashboard",
-      "viewport": {
-        "width": 1440,
-        "height": 1000
-      },
-      "session": "Disposable generated documentation wallet; real local SIWE session",
-      "state": "Actual new-account analytics; no generated performance history",
-      "capturedAt": "2026-11-02T06:07:19.798Z"
-    },
-    {
-      "file": "perpetual-portfolio.jpg",
-      "route": "/react/#/en/perpetual/portfolio",
-      "viewport": {
-        "width": 1440,
-        "height": 1000
-      },
-      "session": "Disposable generated documentation wallet; real local SIWE session",
-      "state": "Official Gains reads for newly generated wallet; no positions created",
-      "capturedAt": "2026-11-02T06:07:26.847Z"
     },
     {
       "file": "pine-prop-catalog.png",
@@ -596,6 +541,366 @@
       "session": "anonymous",
       "capturedAt": "2026-11-02T17:54:56.793823+00:00",
       "state": "Actual anonymous pre-launch Growth Partner page in English"
+    },
+    {
+      "file": "refresh-challenges-fa.png",
+      "route": "/react/#/fa/challenges",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "state": "Actual candidate application; live public CMS and Gains responses when available, explicit unavailable states otherwise; no request fixtures",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "capturedAt": "2026-11-03T20:20:24.225Z",
+      "sha256": "de3fb4f49295295a0c4de0640f0f4ac28c2482dcc4d2855f72fb3ca61484a101",
+      "official": false,
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
+    },
+    {
+      "file": "refresh-downloads-fa.png",
+      "route": "/react/#/fa/challenges#desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "state": "Actual candidate application; live public CMS and Gains responses when available, explicit unavailable states otherwise; no request fixtures",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "capturedAt": "2026-11-03T20:20:24.318Z",
+      "sha256": "8a4f5d09f7f18ac9743eef054eed17905a1c0cfa7589af000fd98d952948d02f",
+      "official": false,
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
+    },
+    {
+      "file": "refresh-footer-fa.png",
+      "route": "/react/#/fa/challenges",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "state": "Actual candidate application; live public CMS and Gains responses when available, explicit unavailable states otherwise; no request fixtures",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "capturedAt": "2026-11-03T20:20:24.400Z",
+      "sha256": "9f1f7c434f37068a264cb3378f5f96cf2572cdca45a7968ec85bf6ee0507ed1c",
+      "official": false,
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
+    },
+    {
+      "file": "refresh-challenges-en.png",
+      "route": "/react/#/en/challenges",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "state": "Actual candidate application; live public CMS and Gains responses when available, explicit unavailable states otherwise; no request fixtures",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "capturedAt": "2026-11-03T20:20:26.533Z",
+      "sha256": "b036e4765a0b5c10eafcb81414578ff9e666c699a892278206336a8b3b8e7bd1",
+      "official": false,
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
+    },
+    {
+      "file": "refresh-downloads-en.png",
+      "route": "/react/#/en/challenges#desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "state": "Actual candidate application; live public CMS and Gains responses when available, explicit unavailable states otherwise; no request fixtures",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "capturedAt": "2026-11-03T20:20:26.617Z",
+      "sha256": "307640efb22709700e9aa5b632c722ad0823df5152baca846ee86fb604908d92",
+      "official": false,
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
+    },
+    {
+      "file": "refresh-footer-en.png",
+      "route": "/react/#/en/challenges",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "state": "Actual candidate application; live public CMS and Gains responses when available, explicit unavailable states otherwise; no request fixtures",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "capturedAt": "2026-11-03T20:20:26.700Z",
+      "sha256": "6428b3335ad7a7d79c0ce2238756c71266ae8a6ec95b527a151f712edfd68a33",
+      "official": false,
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
+    },
+    {
+      "file": "refresh-home-fa.png",
+      "route": "/react/#/fa/home",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "state": "Actual published local Directus Home; two product cards visible, unavailable heading absent; community correctly unavailable",
+      "capturedAt": "2026-11-03T20:20:36.579Z",
+      "sha256": "3be9bae1bdbdae5aac58fa96b0bc9f3b8104f68f03485e81a1012c005d41236d",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "official": false,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
+    },
+    {
+      "file": "refresh-en-prop-trade.png",
+      "route": "/react/#/en/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "state": "Actual anonymous candidate workspace after settling; live Gains reads or explicit provider unavailability; no invented financial data",
+      "capturedAt": "2026-11-03T20:20:43.645Z",
+      "sha256": "f5c35db11e3541e97ff165aef078aea764d070e97092205f8fc03689f0f0f28c",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "official": false,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
+    },
+    {
+      "file": "refresh-fa-perpetual-trade.png",
+      "route": "/react/#/fa/perpetual/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "state": "Actual anonymous candidate workspace after settling; live Gains reads or explicit provider unavailability; no invented financial data",
+      "capturedAt": "2026-11-03T20:20:50.713Z",
+      "sha256": "45e30261a250b7389e3a0e86a68d7c82c61ac27508d82cad9874a8b146f68a8d",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "official": false,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
+    },
+    {
+      "file": "refresh-en-prop-dashboard.png",
+      "route": "/react/#/en/prop/dashboard",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "state": "Actual anonymous candidate workspace after settling; live Gains reads or explicit provider unavailability; no invented financial data",
+      "capturedAt": "2026-11-03T20:20:57.748Z",
+      "sha256": "7d859bbe1a04d3613eb92c6dd0093b20b0a3a8642bb2e20d814d9c4a97177765",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "official": false,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
+    },
+    {
+      "file": "account-profile.jpg",
+      "route": "/react/#/en/home",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "Disposable generated documentation wallet; real local SIWE session",
+      "state": "Actual profile dialog; generated address is not a personal wallet",
+      "capturedAt": "2026-11-03T20:20:59.996Z",
+      "sha256": "3ea073706f506e361f8fdcbc5cf6bcb0f7a46472d54fff2994b615753fd2a28f",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "official": false,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
+    },
+    {
+      "file": "prop-portfolio.jpg",
+      "route": "/react/#/en/prop/portfolio",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "Disposable generated documentation wallet; real local SIWE session",
+      "state": "Actual new 100000 virtual-USD Free Trial from real backend; no trades or fabricated history",
+      "capturedAt": "2026-11-03T20:21:07.071Z",
+      "sha256": "4f4af9c0772c20d5219e336a4bf20a07aef7cfcc8f20be93e7ef7be7d73d4d0a",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "official": false,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
+    },
+    {
+      "file": "journal.jpg",
+      "route": "/react/#/en/prop/journal",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "Disposable generated documentation wallet; real local SIWE session",
+      "state": "Actual Journal dashboard and thirteen-module navigation for the empty real Free Trial; no seeded notes or performance",
+      "capturedAt": "2026-11-03T20:21:14.106Z",
+      "sha256": "feb5f8d2de0273038c07056c6637b3b1c5582acb4491790810ce264bd415a6ee",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "official": false,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
+    },
+    {
+      "file": "analytics.jpg",
+      "route": "/react/#/en/prop/dashboard",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "Disposable generated documentation wallet; real local SIWE session",
+      "state": "Actual new-account analytics; no generated performance history",
+      "capturedAt": "2026-11-03T20:21:21.156Z",
+      "sha256": "19903ea1e9f150aa59fd2267c54decf5efffba837482549b4d4b86086f952fa8",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "official": false,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
+    },
+    {
+      "file": "perpetual-portfolio.jpg",
+      "route": "/react/#/fa/perpetual/portfolio",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "Disposable generated documentation wallet; real local SIWE session",
+      "state": "Official Gains reads for newly generated wallet; no positions created",
+      "capturedAt": "2026-11-03T20:21:28.192Z",
+      "sha256": "14b487e77343af707176a8324478d64a6d8e4cdc5727092074d2e7af54cc2ed4",
+      "baseline": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "candidate": true,
+      "official": false,
+      "source": "Final dirty candidate production build on private localhost:8395; isolated openfund_website_capture_test_20261103_2014; live local Directus localhost:8055 fallback and live Gains reads; no request interception or fabricated financial responses",
+      "sourceFingerprintSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+      "sourcePatchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+      "buildFingerprint": {
+        "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+        "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+        "migrationVersion": "schema-sha256:6a02dbb0aeb1d733e60308796c4795746473f57eab7079e19db8db0a30870568"
+      },
+      "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0"
     }
   ],
   "finalIntegration": {
@@ -1065,5 +1370,28 @@
       }
     ],
     "illustrations": "Final original Prop terminal and revised leveraged-market Perpetual SVG; four source feature SVGs preserved"
+  },
+  "websiteFinalVerification": {
+    "capturedAt": "2026-11-03T20:30:08.454Z",
+    "status": "Unofficial dirty candidate; locally verified, not deployed",
+    "candidateVersion": "0.2.1",
+    "baseCommit": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+    "sourceSha256": "04e0f3e4e824723a784e6077cb57db6891463fedd7af20b413d22dc401922c20",
+    "sourceDefinition": "Sorted tracked non-Markdown source/config/test files excluding docs, react build output and release-manifest; staged and unstaged content read from disk",
+    "patchSha256": "a305016253d1388014f0a95bc9c89d1e4e07aeffedb882db58fcf238ddf8601e",
+    "frontendSha256": "112cdc938e5310c6f7b610316dd516acca5207d21559b016c6685ef868ddf04b",
+    "backendSha256": "36b182758a5f14b738b3d2e0572d93974dbbd94f258a7b47f052a24d2a99bb90",
+    "captureSetSha256": "7c20e16f371ecfa1d783502c1c337cdff026e79cf2786df9b213e7b8494f08d0",
+    "images": 15,
+    "releaseGateStatus": "passed",
+    "releaseGateStages": 24,
+    "historicalQualification": "Older unrelated entries retain their capture context. The fifteen final overwritten images supersede the 19:10/19:14 candidate pixels; older pixels remain in Git history, not falsely labelled under new hashes.",
+    "officialHome": {
+      "url": "http://localhost:8080/react/#/fa/home",
+      "version": "0.2.0",
+      "commit": "561e7f3101f3a43376068d9bba1a87c30e2b7d71",
+      "status": "Matched /version; restored live CMS Home product cards visible",
+      "screenshot": "/Users/algoman/.qwenwork/workspace/mw138fu3x0fb4ecd/outputs/openfund-v0.2.0-cms-restored.png"
+    }
   }
 }

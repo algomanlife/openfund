@@ -9,6 +9,7 @@ import TechnicalFeatureStrip from './TechnicalFeatureStrip'
 import MadeByHumansBadge from './MadeByHumansBadge'
 import LeveragedMarketIllustration from './LeveragedMarketIllustration'
 import './home.css'
+import TelegramCommunity from '../community/TelegramCommunity'
 
 
 /** Persian-only product gateway. Editorial fields remain owned by Directus;
@@ -22,7 +23,7 @@ export default function Home() {
     return () => { active = false }
   }, [])
   const c = content === 'error' ? null : content
-  return <InformationShell page="home" footer={false} nav={false}
+  return <InformationShell page="home" footer={true} nav={false}
       title={c ? (c.translations[locale].seoTitle || 'Openfund') : 'Openfund'}
       description={c ? (c.translations[locale].seoDescription || '') : 'Openfund'}>
     {c ? <HomeBody locale={locale} content={c} /> : <HomeUnavailable locale={locale} />}
@@ -44,6 +45,7 @@ function HomeUnavailable({ locale }: { locale: Locale }) {
           ? 'اتصال به سامانهٔ مدیریت محتوا برقرار نشد. چند لحظه بعد صفحه را تازه‌سازی کن.'
           : 'The content management service could not be reached. Please refresh in a moment.'}
       </p>
+      <div className="home-community"><TelegramCommunity locale={locale} /></div>
     </div>
   </div>
 }
@@ -89,6 +91,7 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
         </article>
       </div>
 
+      <div className="home-community"><TelegramCommunity locale={locale} /></div>
       <TechnicalFeatureStrip />
       <MadeByHumansBadge />
     </div>

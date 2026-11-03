@@ -59,3 +59,12 @@ With the backend running and database configured, open [built Home](http://local
 ## Source care
 
 `dist/` and `apps/web-react/public/legacy/` contain required compatibility sources. `react/` contains a tracked historical bundle; builds replace it. Inspect generated differences and exclude unintended bundle churn from a source/documentation PR. Do not blindly delete either directory. See [Testing](TESTING.md), [Repository maintenance](DOCUMENTATION.md) and [Contributing](../../CONTRIBUTING.md).
+
+## Safe shared-machine acceptance
+
+Use the single [AGENTS shared-machine contract](../../AGENTS.md#safe-shared-machine-acceptance)
+for checkout/index preservation, port ownership and isolated databases. Development
+startup above is not official delivery; use the [release runbook](../deployment/RELEASES.md)
+for downloaded-archive verification, exact-version startup and rollback. Check
+occupied ports before using backend defaults; never displace the intended official
+8080 runtime with a test server.

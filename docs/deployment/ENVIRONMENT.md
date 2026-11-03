@@ -28,6 +28,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | openfund-cms | Directus administrator |
 | `PUBLIC_URL` | openfund-cms | e.g. `https://openfund-cms.onrender.com` |
 | `VITE_WALLETCONNECT_PROJECT_ID` | openfund (build) | optional; full remote wallet list (cloud.reown.com, free) |
+| `VITE_TELEGRAM_COMMUNITY_URL` | openfund (build, PUB) | optional owner-verified HTTPS `t.me` community or invitation URL; blank/invalid means a non-navigating Coming Soon action. Never use telegram.org as an Openfund community. Rebuild after configuration; URL validation does not establish ownership. |
 | `CORS_ORIGINS` | openfund | optional; only needed for extra origins / custom domains |
 | `PURCHASE_PAYMENT_RECEIVER` | openfund | **deliberately unset by default — purchasing stays disabled (`purchases_disabled`) until an approved payment address is entered.** No hardcoded production destination exists in the repository. |
 | `PURCHASE_PAYMENT_TOKEN` | openfund | optional ERC-20 token contract for challenge payments (unset = native ETH) |
