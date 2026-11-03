@@ -1,21 +1,19 @@
 import { useEffect, useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import InformationShell from '../information/InformationShell'
 import type { Locale } from '../information/content'
-import { fetchCmsHome, directusUrl, type CmsHome } from '../../cms/client'
+import { fetchCmsHome, type CmsHome } from '../../cms/client'
+import LandingMotionBackground from './LandingMotionBackground'
+import AnimatedTradingTerminalIllustration from './AnimatedTradingTerminalIllustration'
+import TechnicalFeatureStrip from './TechnicalFeatureStrip'
+import MadeByHumansBadge from './MadeByHumansBadge'
+import LeveragedMarketIllustration from './LeveragedMarketIllustration'
 import './home.css'
 
-const base = import.meta.env.BASE_URL
 
-/** The Openfund product gateway: ONE screen, no scroll, no footer.
- *  ALL copy comes from Directus (`home_content`) — headline, product titles,
- *  CTA labels/destinations, illustrations and the heartbeat strip. Editorial
- *  fields the owner leaves empty simply don't render (the page stays clean).
- *  Direction B (dual product panels) is the default; `?variant=a` previews
- *  the editorial direction on the same route. */
+/** Persian-only product gateway. Editorial fields remain owned by Directus;
+ * decorative components do not connect to market, wallet or execution APIs. */
 export default function Home() {
-  const [params] = useSearchParams()
-  const variant = params.get('variant') === 'a' ? 'a' : 'b'
   const locale: Locale = useParams().locale === 'en' ? 'en' : 'fa'
   const [content, setContent] = useState<CmsHome | null | 'error'>(null)
   useEffect(() => {
@@ -27,7 +25,7 @@ export default function Home() {
   return <InformationShell page="home" footer={false} nav={false}
       title={c ? (c.translations[locale].seoTitle || 'Openfund') : 'Openfund'}
       description={c ? (c.translations[locale].seoDescription || '') : 'Openfund'}>
-    {c ? <HomeBody variant={variant} locale={locale} content={c} /> : <HomeUnavailable locale={locale} />}
+    {c ? <HomeBody locale={locale} content={c} /> : <HomeUnavailable locale={locale} />}
   </InformationShell>
 }
 
@@ -35,11 +33,6 @@ export default function Home() {
 const CTA_HREF: Record<'challenges' | 'terminal', (locale: Locale) => string> = {
   challenges: locale => `#/${locale}/challenges`,
   terminal: locale => `#/${locale}/perpetual/trade`,
-}
-
-/* illustration: Directus file when the owner uploaded one, bundled asset otherwise */
-function illustrationHref(fileId: string | null, fallback: string): string {
-  return fileId ? `${directusUrl()}/assets/${fileId}` : `${base}assets/home/${fallback}`
 }
 
 function HomeUnavailable({ locale }: { locale: Locale }) {
@@ -55,25 +48,14 @@ function HomeUnavailable({ locale }: { locale: Locale }) {
   </div>
 }
 
-/* beating heart (the heartbeat strip mark) */
-function Heartbeat() {
-  return <svg className="hb-heart" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
-    <path d="M12 21C7 16.6 3.2 13.4 3.2 9.3 3.2 6.3 5.5 4.2 8.2 4.2c1.6 0 3 .8 3.8 2 .8-1.2 2.2-2 3.8-2 2.7 0 5 2.1 5 5.1 0 4.1-3.8 7.3-8.8 11.7z" fill="#82e7bd"/>
-    <path d="M4 12h3l2-4 2.6 7L14 12h6" fill="none" stroke="#06110c" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" opacity=".55"/>
-  </svg>
-}
-
-function HomeBody({ variant, locale, content: c }: { variant: 'a' | 'b'; locale: Locale; content: CmsHome }) {
+function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) {
   const t = c.translations[locale]
   /* headline split: last word becomes the accent line (two-line composition) */
   const cut = t.headline.lastIndexOf(' ')
   const [main, accent] = cut > 0 ? [t.headline.slice(0, cut), t.headline.slice(cut + 1)] : [t.headline, '']
-  /* heartbeat strip: newline-separated lines, first line is the kicker */
-  const hb = (t.note || '').split('\n').map(x => x.trim()).filter(Boolean)
 
-  return <div id="top" className={`home-gateway home-variant-${variant}`}>
-    <div className="home-ambient" aria-hidden="true"><i /><i /><i /></div>
-    <div className="hero-atmosphere" aria-hidden="true"><i /><i /><i /></div>
+  return <div id="top" className="home-gateway">
+    <LandingMotionBackground />
 
     <div className="container home-stage">
       <div className="home-enter e1 eyebrow"><span className="tiny-mark" aria-hidden="true">✳</span> OPENFUND</div>
@@ -81,10 +63,10 @@ function HomeBody({ variant, locale, content: c }: { variant: 'a' | 'b'; locale:
 
       <div className="home-products">
         <article className="home-panel home-enter e3">
-          <div className="home-art"><img src={illustrationHref(c.propImage, 'prop-trading.svg')} width={520} height={400} decoding="async"
-            alt={locale === 'fa' ? 'تصویری از معامله‌گر اوپن‌فاند پشت میز ارزیابی' : 'An Openfund trader at the evaluation desk'} /></div>
+          <div className="home-art"><AnimatedTradingTerminalIllustration /></div>
           <div className="home-panel-copy">
             <h2>{t.propTitle}</h2>
+            <p className="home-product-note">تمرین و ارزیابی · تصویر نمایشی</p>
             <a className="button" href={c.propCtaDestination === 'terminal' ? `#/${locale}/prop/trade` : CTA_HREF.challenges(locale)}>
               {t.propCta}
               <span aria-hidden="true">←</span>
@@ -93,10 +75,12 @@ function HomeBody({ variant, locale, content: c }: { variant: 'a' | 'b'; locale:
         </article>
 
         <article className="home-panel home-enter e4">
-          <div className="home-art"><img src={illustrationHref(c.perpetualImage, 'perpetual-trading.svg')} width={520} height={400} decoding="async"
-            alt={locale === 'fa' ? 'دستگاه دادهٔ بازار اوپن‌فاند با هستهٔ هولوگرافیک' : 'The Openfund market engine with its holographic core'} /></div>
+          <div className="home-art home-perpetual-art" aria-hidden="true">
+            <LeveragedMarketIllustration />
+          </div>
           <div className="home-panel-copy">
             <h2>{t.perpetualTitle}</h2>
+            <p className="home-product-note">داده‌های بازار · دسترسی خواندنی</p>
             <a className="button" href={CTA_HREF[c.perpetualCtaDestination](locale)}>
               {t.perpetualCta}
               <span aria-hidden="true">↙</span>
@@ -105,13 +89,8 @@ function HomeBody({ variant, locale, content: c }: { variant: 'a' | 'b'; locale:
         </article>
       </div>
 
-      {hb.length > 0 && (
-        <div className="home-heartbeat home-enter e5">
-          <Heartbeat />
-          {hb[0] && <span className="hb-kicker">{hb[0]}</span>}
-          <span className="hb-line">{hb.slice(1).join(' ')}</span>
-        </div>
-      )}
+      <TechnicalFeatureStrip />
+      <MadeByHumansBadge />
     </div>
   </div>
 }
