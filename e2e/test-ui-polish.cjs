@@ -139,7 +139,10 @@ async function walletDisclosureFits(page){
   await page.locator('#language-toggle').click();await page.waitForURL('**/#/fa/home');
   await page.locator('.home-products').waitFor();check('EN Home language switch returns to FA two-product Home',true);
   await page.locator('#language-toggle').click();await page.waitForURL('**/#/en/home');
-  await page.locator('.hero').waitFor();check('FA Home language switch returns to EN Prop landing',true);
+  await page.locator('.hero').waitFor();
+  // A rapid return can still be completing the classic page's 120ms teardown reload.
+  await page.waitForTimeout(300);await page.locator('.hero').waitFor();
+  check('FA Home language switch returns to EN Prop landing',true);
   await page.goto(BASE+'/#/fa/perpetual/journal?account=product-specific');await page.getByRole('button',{name:'EN',exact:true}).click();
   await page.waitForURL('**/#/en/prop/dashboard');check('Perpetual language switch clears product account context',true);
   check('No browser exceptions',errors.length===0);
