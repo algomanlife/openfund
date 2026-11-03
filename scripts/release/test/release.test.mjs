@@ -6,6 +6,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import {nextVersion,validateEnv,sha256,writeJson,treeHash,filesIn,root} from '../lib.mjs';
 import {verify} from '../verify.mjs';
+import {exactSecretScan} from '../check-secrets.mjs';
 test('version allocation preserves tags, increments all change categories and handles numeric ordering',()=>{
  assert.equal(nextVersion([]),'0.1.0');
  assert.equal(nextVersion(['v0.1.0'],'fix(wallet): connect'),'0.1.1');
@@ -33,4 +34,11 @@ test('payload verification rejects financial/runtime source tampering and versio
 });
 test('publication refuses feature branches and unverified artifacts before creating tags',()=>{
  assert.throws(()=>execFileSync(process.execPath,['scripts/release/publish.mjs'],{cwd:root,env:{...process.env,GITHUB_REF:'refs/heads/feature'},stdio:'pipe'}));
+});
+
+test('manual publication requires the successful trusted CI secret check on the exact source commit',()=>{
+ const sha='a'.repeat(40),scan={id:42,name:'Secret scan',head_sha:sha,app:{slug:'github-actions'},status:'completed',conclusion:'success'};
+ assert.equal(exactSecretScan([scan],sha).id,42);
+ for(const altered of [{...scan,head_sha:'b'.repeat(40)},{...scan,conclusion:'failure'},{...scan,status:'in_progress'},{...scan,app:{slug:'untrusted'}},{...scan,name:'Other scan'}])assert.equal(exactSecretScan([altered],sha),undefined);
+ assert.equal(exactSecretScan([],sha),undefined);
 });

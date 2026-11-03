@@ -2,6 +2,8 @@
 
 ## Unreleased — integration recovery and unified releases
 
+- Bind manual batch publication to the required successful secret check on the exact main commit, with explicit repository scan configuration.
+
 - Recover the compact shared terminal navigation, account Dashboard layout, EIP-6963 connection and product-network synchronization from preserved unfinished work.
 - Preserve account scope in trading reads, mutations and Journal links; keep reviewed-order retry identity and remove invented chart protection levels.
 - Add main-only SemVer release packaging, artifact integrity checks, API/frontend diagnostics, approved exact-commit Render deployment and an exact-version local runner.

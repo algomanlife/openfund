@@ -69,3 +69,15 @@ The repository deploys through the Render Blueprint at the repo root. Every chan
 ## Definition of done
 
 Code/config changes (if any), documentation, test results, change log, accurate feature status, and a reviewable Pull Request. A placeholder folder or npm dependency is **not** a completed integration.
+
+## Unified release acceptance (mandatory)
+
+- `main` is the integration authority; publish official SemVer releases after reviewed batches, not after every individual commit.
+- An implemented feature, merged PR, passing unit test or worktree screenshot is not official delivery. Verify its actual active React route, data source and interactions in the unified application.
+- Use `npm run release:build -- --candidate` with Node 22 and an isolated local PostgreSQL test database for complete candidate validation. Candidates must remain explicitly unofficial.
+- After accepted integration, dispatch the main batch release workflow with `publish=true`. Failed package or exact-commit security checks must prevent publication; never bypass required checks.
+- An official delivery needs its immutable tag, GitHub Release, verified archive, exact source SHA and matching frontend/backend manifests. Verify local startup from the downloaded release before reporting completion.
+- Run official local versions through `npm run release:local -- --version current --migrate` (or an explicit historical tag), with the intended local `DATABASE_URL`. Check `/version` and the displayed version/SHA. Never silently serve tracked historical `react/` output or an unrelated worktree as the official app.
+- Inspect existing Openfund server ports and working directories before startup. Preserve the user database and other work; distinguish development servers, test servers and the single intended official runtime.
+- Record implemented/unmerged, candidate, official/local and future deployed status separately. Preserve older official releases for rollback. Render credentials/deployment are optional until production is explicitly configured.
+- Follow [the release runbook](docs/deployment/RELEASES.md). The user's accepted scope and authorization take precedence over this workflow.
