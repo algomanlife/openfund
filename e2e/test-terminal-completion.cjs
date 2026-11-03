@@ -59,7 +59,7 @@ async function signIn(page){await page.getByRole('button',{name:'Sign in',exact:
 async function functional(browser){
  const {context,page}=await walletContext(browser,{fixtures:true}),errors=[],protectionWrites=[];
  page.on('request',request=>{if(request.method()==='POST'&&request.url().includes('/protection'))protectionWrites.push(request.url())});
- page.on('pageerror',e=>errors.push(e.message));
+ page.on('pageerror',e=>{errors.push(e.stack||e.message);console.error('BROWSER ERROR',e.stack||e.message)});
  try{
   await page.goto(BASE+'/#/en/prop/dashboard');
   check('EIP-6963 fixture does not expose window.ethereum',await page.evaluate(()=>!window.ethereum));
@@ -202,10 +202,10 @@ async function functional(browser){
   check('Challenges-to-terminal navigation does not dispatch into removed legacy content',await page.locator('.of-terminal-compact').count()===1);
   check('Functional scenarios never request a blockchain transaction',await page.evaluate(()=>window.completionWallet.transactions===0));
   check('Functional scenarios have no uncaught JavaScript errors',errors.length===0);
- }catch(error){console.log('Diagnostic alerts',await page.getByRole('alert').allTextContents());await page.screenshot({path:path.join(OUT,'functional-failure.png'),fullPage:true});throw error;}finally{await context.close()}
+ }catch(error){fs.writeFileSync(path.join(OUT,'functional-errors.json'),JSON.stringify(errors,null,2));console.error('Collected browser errors',errors);console.log('Diagnostic alerts',await page.getByRole('alert').allTextContents());await page.screenshot({path:path.join(OUT,'functional-failure.png'),fullPage:true});throw error;}finally{await context.close()}
 }
 async function layout(browser){
- const {context,page}=await walletContext(browser),errors=[],assetErrors=[],requests=[];page.on('pageerror',e=>errors.push(e.message));
+ const {context,page}=await walletContext(browser),errors=[],assetErrors=[],requests=[];page.on('pageerror',e=>{errors.push(e.stack||e.message);console.error('BROWSER ERROR',e.stack||e.message)});
  page.on('request',r=>{if(r.url().startsWith(API+'/products/'))requests.push(new URL(r.url()).pathname)});
  page.on('response',r=>{if(r.url().startsWith(BASE)&&r.status()>=400&&['script','stylesheet','image','font'].includes(r.request().resourceType()))assetErrors.push(r.url())});
  try{
