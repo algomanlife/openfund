@@ -1,13 +1,13 @@
 {
   "name": "openfund",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "Openfund monorepo \u2014 root orchestration only. Applications install their own dependencies (apps/web-react, apps/backend) with per-app lockfiles; this package adds no runtime dependencies.",
   "scripts": {
     "build:web": "npm --prefix apps/web-react run build",
     "build:web:publish": "npm --prefix apps/web-react run build -- --mode publish",
     "build:backend": "npm --prefix apps/backend run migrate",
-    "test:web": "npm --prefix apps/web-react run test:plans && npm --prefix apps/web-react run test:information && npm --prefix apps/web-react run test:markets && npm --prefix apps/web-react run test:depth && npm --prefix apps/web-react run test:website",
+    "test:web": "npm --prefix apps/web-react run test:plans && npm --prefix apps/web-react run test:information && npm --prefix apps/web-react run test:markets && npm --prefix apps/web-react run test:depth && npm --prefix apps/web-react run test:website && npm --prefix apps/web-react run test:terminal",
     "test:backend": "npm --prefix apps/backend run test:all",
     "typecheck": "npm --prefix apps/web-react run typecheck",
     "validate:blueprint": "node infra/render/validate-blueprint.mjs",
@@ -23,7 +23,14 @@
     "test:charts": "node --test packages/openfund-charts/test/pine.test.mjs",
     "test:browser:charts": "node e2e/test-chart-indicators.mjs",
     "test:browser:unified": "node e2e/test-unified-trading.cjs",
-    "test:browser:layout": "node e2e/test-terminal-layout.cjs"
+    "test:browser:layout": "node e2e/test-terminal-layout.cjs",
+    "test:browser:completion": "node e2e/test-terminal-completion.cjs",
+    "release:build": "node scripts/release/build.mjs",
+    "release:local": "node scripts/release/local.mjs",
+    "release:version": "node scripts/release/version.mjs",
+    "test:release": "node --test scripts/release/test/*.test.mjs",
+    "test:browser:release": "node e2e/test-release.cjs",
+    "test:browser:routes": "node scripts/release/public-routes.mjs"
   },
   "devDependencies": {
     "js-yaml": "^4.1.0",

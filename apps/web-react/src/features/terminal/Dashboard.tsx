@@ -15,156 +15,69 @@ export function Metric({ label, value }: { label: string; value: unknown }) {
   );
 }
 export function ProductDashboard() {
-  const { product, locale, context, t, message } = useTerminal(),
-    session = useSession();
-  const [params] = useSearchParams(),
-    directory = useAccounts(),
-    selected = directory.accounts.find((a) => a.id === params.get("account"));
-  const overview = useResource(
-    product,
-    session.status === "authenticated" && product === "prop"
-      ? "/overview"
-      : null,
-    0,
-    true,
-  );
+  const { product, locale, context, t, message } = useTerminal(), session = useSession();
+  const [params] = useSearchParams(), directory = useAccounts();
+  const selected = directory.accounts.find(account => account.id === (params.get("account") || context?.accountRef));
+  const overview = useResource(product, session.status === "authenticated" && product === "prop" && selected?.type !== "challenge" ? "/overview" : null, 0, true);
   if (session.status !== "authenticated") return <AccessGate />;
-  const unit = context?.state?.account?.currency || "USD";
+  const unit = context?.state?.account?.currency || selected?.currency || "USD";
   const a = overview.data?.account;
-  if (!params.get("account")) return <AccountCards />;
-  if (selected?.type === "challenge")
-    return (
-      <>
-        <AccountCards />
-        <AccountLinks />
-        <section className="of-panel">
-          <h2>{selected.name}</h2>
-          <p>{selected.status}</p>
-          <p>{selected.unavailableReason}</p>
-          <p>
-            {t(
-              "آمار مالی این چالش در دسترس نیست.",
-              "Financial statistics are unavailable for this challenge record.",
-            )}
-          </p>
-        </section>
-      </>
-    );
-  return (
-    <>
-      <AccountCards />
+  const positions = context?.state?.positions || [];
+  return <div className="of-dashboard-workspace">
+    <aside className="of-dashboard-accounts"><AccountCards compact selectedId={selected?.id} /></aside>
+    <div className="of-dashboard-content">
+      <section className="of-dashboard-heading of-panel">
+        <div><span className="of-eyebrow">{t("حساب فعال", "Active account")}</span>
+          <h2>{selected?.name || (product === "prop" ? t("حساب تمرینی", "Practice account") : "Gains Network")}</h2>
+          <bdi>{context?.accountRef || "—"}</bdi></div>
+        <Link to={route(locale, product, "trade")}>{t("ورود به ترمینال", "Open terminal")} ↗</Link>
+      </section>
       <AccountLinks />
-      <div className="of-account-bar">
-        <span>{t("حساب فعال", "Active account")}</span>
-        <bdi>{context?.accountRef || "—"}</bdi>
-        <Link to={route(locale, product, "trade")}>
-          {t("ورود به ترمینال", "Open terminal")} ↗
-        </Link>
-      </div>
-      {context?.state?.account?.status === "permanently_disabled" && (
-        <p role="status" className="of-error">
-          {t(
-            "این حساب برای همیشه غیرفعال شده است. تاریخچه قابل مشاهده است.",
-            "Permanently disabled. Historical records remain available in read-only mode.",
-          )}
-        </p>
-      )}
-      {overview.error && (
-        <p role="alert" className="of-error">
-          {t("دریافت خلاصه ناموفق بود.", "Summary unavailable.")}
-        </p>
-      )}
-      {product === "prop" ? (
-        <>
-          <div className="of-metrics">
-            <Metric
-              label={t("موجودی حساب آزمایشی · USD", "Free Trial balance · USD")}
-              value={a?.balance}
-            />
-            <Metric
-              label={t(`ارزش حساب · ${unit}`, `Equity · ${unit}`)}
-              value={a?.equity}
-            />
-            <Metric
-              label={t(`سود تحقق‌یافته · ${unit}`, `Realized PnL · ${unit}`)}
-              value={a?.realizedPnl}
-            />
-            <Metric
-              label={t(`سود باز · ${unit}`, `Unrealized PnL · ${unit}`)}
-              value={a?.unrealizedPnl}
-            />
-          </div>
-          {context?.state?.account?.risk && (
-            <div className="of-metrics">
-              <Metric
-                label={t(
-                  `افت روزانهٔ ثبت‌شده · ${unit}`,
-                  `Observed daily drawdown · ${unit}`,
-                )}
-                value={context.state.account.risk.daily_drawdown}
-              />
-              <Metric
-                label={t(
-                  `بیشترین افت ثبت‌شده · ${unit}`,
-                  `Observed maximum drawdown · ${unit}`,
-                )}
-                value={context.state.account.risk.maximum_drawdown}
-              />
-            </div>
-          )}
-          <div className="of-panel">
-            <h2>{t("حساب معاملاتی", "Trading account")}</h2>
-            <p>
-              {t("وضعیت", "Status")}: {a?.status || "—"} ·{" "}
-              {t("پوزیشن باز", "Open positions")}: {a?.openPositions ?? "—"}
-            </p>
-            <p>{message("evaluation")}</p>
-            <p>
-              {t("چالش‌های ثبت‌شده", "Registered challenges")}:{" "}
-              {session.challenges.length}
-            </p>
-          </div>
-        </>
-      ) : (
-        <div>
-          <GainsSummary />
-          <div className="of-panel">
-            <h2>{t("کیف پول", "Wallet")}</h2>
-            <p dir="ltr">{context?.wallet || session.user?.walletAddress}</p>
-            <p>Gains Network · Arbitrum</p>
-          </div>
+      {selected?.type === "challenge" ? <section className="of-panel" role="status">
+        <h2>{selected.name}</h2><p>{selected.status}</p><p>{selected.unavailableReason}</p>
+        <p>{t("آمار مالی این چالش در دسترس نیست.", "Financial statistics are unavailable for this challenge record.")}</p>
+      </section> : product === "prop" ? <>
+        {context?.state?.account?.status === "permanently_disabled" && <p role="status" className="of-error">{t("این حساب برای همیشه غیرفعال شده است. تاریخچه قابل مشاهده است.", "Permanently disabled. Historical records remain available in read-only mode.")}</p>}
+        {overview.error && <p role="alert" className="of-error">{t("دریافت خلاصه ناموفق بود.", "Summary unavailable.")}</p>}
+        <div className="of-metrics of-dashboard-summary">
+          <Metric label={t(`موجودی · ${unit}`, `Balance · ${unit}`)} value={a?.balance} />
+          <Metric label={t(`ارزش حساب · ${unit}`, `Equity · ${unit}`)} value={a?.equity} />
+          <Metric label={t(`سود تحقق‌یافته · ${unit}`, `Realized PnL · ${unit}`)} value={a?.realizedPnl} />
+          <Metric label={t(`سود باز · ${unit}`, `Unrealized PnL · ${unit}`)} value={a?.unrealizedPnl} />
         </div>
-      )}
-      {product === "prop" && context?.state?.account && (
-        <>
-          <div className="of-metrics">
-            <Metric
-              label={t("مارجین مصرف‌شده", "Used margin")}
-              value={a?.usedMargin}
-            />
-            <Metric
-              label={t("مارجین آزاد", "Free margin")}
-              value={a?.freeMargin}
-            />
-            <Metric
-              label={t("معاملات بسته", "Closed trades")}
-              value={a?.closedTrades}
-            />
-            <Metric label={t("سود خالص", "Net PnL")} value={a?.netPnl} />
-          </div>
-          <JournalAnalytics reports />
-        </>
-      )}
-      <div className="of-quick-links">
-        <Link to={route(locale, product, "portfolio")}>
-          {t("مشاهدهٔ پورتفولیو", "View portfolio")} ↗
-        </Link>
-        <Link to={route(locale, product, "journal")}>
-          {t("نوشتن در ژورنال", "Write in journal")} ↗
-        </Link>
-      </div>
-    </>
-  );
+        <div className="of-dashboard-grid">
+          <section className="of-panel">
+            <h2>{t("وضعیت حساب و ریسک", "Account status & risk")}</h2>
+            <dl className="of-dashboard-values">
+              <div><dt>{t("وضعیت", "Status")}</dt><dd>{a?.status || selected?.status || "—"}</dd></div>
+              <div><dt>{t("مارجین مصرف‌شده", "Used margin")}</dt><dd dir="ltr">{money(a?.usedMargin)} {unit}</dd></div>
+              <div><dt>{t("مارجین آزاد", "Free margin")}</dt><dd dir="ltr">{money(a?.freeMargin)} {unit}</dd></div>
+              <div><dt>{t("افت روزانهٔ ثبت‌شده", "Observed daily drawdown")}</dt><dd dir="ltr">{money(context?.state?.account?.risk?.daily_drawdown)} {unit}</dd></div>
+              <div><dt>{t("بیشترین افت ثبت‌شده", "Observed maximum drawdown")}</dt><dd dir="ltr">{money(context?.state?.account?.risk?.maximum_drawdown)} {unit}</dd></div>
+              <div><dt>{t("معاملات بسته", "Closed trades")}</dt><dd>{a?.closedTrades ?? "—"}</dd></div>
+              <div><dt>{t("چالش‌های ثبت‌شده", "Registered challenges")}</dt><dd>{session.challenges.length}</dd></div>
+            </dl><p>{message("evaluation")}</p>
+          </section>
+          <section className="of-panel">
+            <div className="of-dashboard-section-title"><h2>{t("پوزیشن‌های باز", "Open positions")}</h2><span>{a?.openPositions ?? "—"}</span></div>
+            {positions.length ? <div className="of-table-wrap"><table><thead><tr><th>{t("بازار", "Market")}</th><th>{t("جهت", "Side")}</th><th>{t("سود باز", "Unrealized PnL")}</th></tr></thead>
+              <tbody>{positions.slice(0, 5).map((position: any) => <tr key={position.id}><td>{position.market}</td><td>{position.side === "long" ? t("خرید", "Long") : t("فروش", "Short")}</td><td dir="ltr">{money(position.unrealized_pnl)} {unit}</td></tr>)}</tbody></table></div>
+              : <p>{context?.state ? t("پوزیشن بازی وجود ندارد.", "No open positions.") : t("در حال دریافت حساب…", "Loading account…")}</p>}
+            <Link to={route(locale, product, "portfolio")}>{t("مشاهدهٔ پورتفولیو", "View portfolio")} ↗</Link>
+          </section>
+        </div>
+        <JournalAnalytics reports />
+      </> : <>
+        <GainsSummary />
+        <div className="of-dashboard-grid">
+          <section className="of-panel"><h2>{t("کیف پول", "Wallet")}</h2><p dir="ltr">{context?.wallet || session.user?.walletAddress}</p><p>Gains Network · Arbitrum One</p></section>
+          <section className="of-panel" role="status"><h2>{t("وضعیت معاملات", "Trading status")}</h2><p>{t("اطلاعات حساب از Gains دریافت می‌شود؛ اجرای سفارش در اوپن‌فاند فعال نیست.", "Account records come from Gains; order execution in Openfund is not enabled.")}</p><p>{t("موجودی و سود خالص تأییدنشده نمایش داده نمی‌شوند.", "Unsupported balances and net PnL remain unavailable.")}</p></section>
+        </div>
+        <JournalAnalytics />
+      </>}
+      <div className="of-quick-links"><Link to={route(locale, product, "portfolio")}>{t("مشاهدهٔ پورتفولیو", "View portfolio")} ↗</Link><Link to={route(locale, product, "journal")}>{t("نوشتن در ژورنال", "Write in journal")} ↗</Link></div>
+    </div>
+  </div>;
 }
 export function CapabilityPage() {
   const { t, message } = useTerminal();

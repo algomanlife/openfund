@@ -52,3 +52,7 @@ Historical tests and findings remain in [reviews](../reviews/README.md); their r
 ## Unified account and journal delivery
 
 **In Progress:** [Unified account directory and permanent Free Trial lifecycle](../trading/UNIFIED_ACCOUNTS.md), [journal modules and definitions](../trading/JOURNAL_METRICS.md), backend preview, instrument precision validation and observed equity samples. Local verification and outstanding acceptance are recorded in [the delivery report](../reviews/unified-trading/DELIVERY.md). Challenge execution, real wallet/device acceptance and Render deployment remain separate gates. Existing virtual-DAI histories are preserved.
+
+## Final integration and release recovery
+
+**In Progress:** recovered shared terminal navigation, default account/detail Dashboard, EIP-6963 connection, route-network synchronization, scoped account adapter and Journal interactions. Main-only SemVer packaging, release diagnostics, immutable artifacts and approved exact-SHA deployment are implemented for verification. No first official release or deployed acceptance is claimed. [Recovery and release evidence](../reviews/final-integration/DELIVERY.md).

@@ -11,6 +11,7 @@
  *  - One wallet address (normalized lowercase) = exactly one Openfund user.
  */
 import crypto from 'node:crypto'
+import { releaseDiagnostics } from './release.js'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
 import { createClient, isHex, http } from 'viem'
@@ -516,6 +517,12 @@ app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) 
 app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
 app.use(referralRoutes({ pool, requireAuth, audit }))
 
+/* Public release identity contains build metadata only, never runtime secrets. */
+app.get('/version', (req, res) => {
+  const release = releaseDiagnostics();
+  res.set('Cache-Control','no-store').status(release.status === 'mismatch' ? 503 : 200).json(release);
+});
+
 /* health */
 app.get('/health', asyncRoute(async (req, res) => { try { await pool.query('SELECT 1'); res.json({ ok: true, ts: Date.now() }) } catch { res.status(503).json({ ok: false }) } }))
 app.get('/trading/health', tradingAuth, async (req, res) => {
@@ -524,7 +531,9 @@ app.get('/trading/health', tradingAuth, async (req, res) => {
 })
 
 /* Same-origin static hosting for Render; hash routes need no server fallback. */
-app.use('/react', express.static(fileURLToPath(new URL('../../react', import.meta.url))))
+app.use('/react', express.static(fileURLToPath(new URL('../../react', import.meta.url)), {
+  setHeaders(res, file) { if (file.endsWith('.html') || file.endsWith('release-manifest.json')) res.set('Cache-Control','no-cache, must-revalidate'); }
+}))
 app.get('/', (req, res) => res.redirect('/react/'))
 
 /* 404 + error safety (no stack leaks) */

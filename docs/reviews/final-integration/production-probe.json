@@ -1,0 +1,22 @@
+[
+  {
+    "path": "/",
+    "error": "<urlopen error [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1129)>"
+  },
+  {
+    "path": "/health",
+    "error": "<urlopen error [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1129)>"
+  },
+  {
+    "path": "/version",
+    "error": "<urlopen error [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1129)>"
+  },
+  {
+    "path": "/react/",
+    "error": "<urlopen error [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1129)>"
+  },
+  {
+    "path": "/react/release-manifest.json",
+    "error": "<urlopen error [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1129)>"
+  }
+]

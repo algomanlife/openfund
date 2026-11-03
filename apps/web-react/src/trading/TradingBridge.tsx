@@ -18,7 +18,7 @@ import { useSession, backendUrl } from '../session/useOpenfundSession'
 const BACKEND = backendUrl()
   ;(window as any).__ofBackendUrl = BACKEND
 
-export function TradingBridge({ pricing }: { pricing?: Record<string,number> } = {}) {
+export function TradingBridge({ pricing, accountId }: { pricing?: Record<string,number>; accountId?: string } = {}) {
   const pricingRef = useRef(pricing)
   pricingRef.current = pricing
   const session = useSession()
@@ -36,6 +36,7 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
     let state = { account: null, positions: [], orders: [], history: [] }
     const isFa = () => (window as any).ofLang !== 'en'
     const L = (fa: string, en: string) => (isFa() ? fa : en)
+    const scopedPath = (path: string) => path + (accountId ? `${path.includes('?') ? '&' : '?'}account=${encodeURIComponent(accountId)}` : '')
 
     const fmtAcct = (a: any) => a && {
       balance: n(a.balance), equity: n(a.equity), available: n(a.free_margin),
@@ -47,7 +48,9 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
     /* ---------- adapter for terminal.js ---------- */
     const provider = {
       serverMode: true,
-      get canTrade() { return connection === 'ready' && state.account?.status === 'active' && state.account?.valuation_status === 'fresh' },
+      product: 'prop',
+      accountId,
+      get canTrade() { return !stopped && connection === 'ready' && state.account?.status === 'active' && state.account?.valuation_status === 'fresh' },
       feeRate(market: string) { return pricingRef.current?.[market] ?? null },
       get status() { return connection !== 'ready' ? connection : state.account?.valuation_status === 'stale' ? 'stale' : state.account ? 'ready' : 'loading' },
       get state() {
@@ -107,21 +110,17 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
         const data=await res.json(); if(!res.ok)throw new Error(data.error || 'Preview unavailable');return data
       },
       async submitAsync(req: any) {
-        const key = crypto.randomUUID()
-        const res = await fetch(BACKEND + '/trading/order', {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json', 'Idempotency-Key': key },
-          body: JSON.stringify({
+        if (stopped || !provider.canTrade) return { ok:false, errors:provider.validate(req) }
+        const key = req.clientId ||= crypto.randomUUID()
+        const res = await postRaw('/trading/order', {
             market: req.market, side: req.side, order_type: req.type,
             margin: req.collateral, leverage: req.leverage,
             target_price: req.type === 'market' ? null : req.price,
             sl: req.sl ?? null, tp: req.tp ?? null
-          })
-        })
+          }, key)
         const data = await res.json().catch(() => null)
         if (res.ok && (data.ok || data.duplicate)) {
-          refresh()
+          await refresh()
           return { ok: true, kind: data.pending ? 'order' : 'position' }
         }
         const reasons: Record<string, string> = {
@@ -144,7 +143,7 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
       async modifyRisk(id: string, sl: number | null, tp: number | null) {
         const res = await postRaw(`/trading/positions/${id}/protection`, { sl, tp })
         const data = await res.json().catch(() => null)
-        if (res.ok) { refresh(); return { ok: true } }
+        if (res.ok) { await refresh(); return { ok: true } }
         const map: Record<string, string> = {
           sl_above_mark: L('استاپ‌لاس باید زیر قیمت مارک باشد.', 'SL must be below the mark.'),
           sl_below_mark: L('استاپ‌لاس باید بالای قیمت مارک باشد.', 'SL must be above the mark.'),
@@ -156,15 +155,18 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
     }
 
     const post = async (path: string, body: any, key?: string) => { const res = await postRaw(path, body, key); if (!res.ok) { const data = await res.json().catch(() => null); throw new Error(data?.error || `HTTP ${res.status}`) } }
-    const postRaw = (path: string, body: any, key?: string) => fetch(BACKEND + path, {
-      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json', ...(key ? {'Idempotency-Key':key} : {}) }, body: JSON.stringify(body)
-    })
+    const postRaw = (path: string, body: any, key?: string) => {
+      if (stopped) throw new Error('Account context changed. Review the order again.')
+      return fetch(BACKEND + scopedPath(path), {
+        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json', ...(key ? {'Idempotency-Key':key} : {}) }, body: JSON.stringify({ ...body, product:'prop', ...(accountId ? {accountId} : {}) })
+      })
+    }
 
     async function refresh() {
       const controller = new AbortController()
       requests.add(controller)
       try {
-        const res = await fetch(BACKEND + '/trading/state', { credentials: 'include', signal:controller.signal })
+        const res = await fetch(BACKEND + scopedPath('/trading/state'), { credentials: 'include', signal:controller.signal })
         if (stopped) return
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const nextState = await res.json()
@@ -181,7 +183,7 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
     function connect() {
       if (stopped) return
       try {
-        es = new EventSource(BACKEND + '/trading/stream', { withCredentials: true } as any)
+        es = new EventSource(BACKEND + scopedPath('/trading/stream'), { withCredentials: true } as any)
         es.onmessage = (ev) => {
           if (stopped) return
           try { const next = JSON.parse(ev.data); if (next.as_of < (state as any).as_of) return; state = next; connection = 'ready' } catch { return }
@@ -207,7 +209,7 @@ export function TradingBridge({ pricing }: { pricing?: Record<string,number> } =
       delete (window as any).__ofServerTP
       window.dispatchEvent(new CustomEvent('of-trading-off'))
     }
-  }, [session.status, session.user?.id])
+  }, [session.status, session.user?.id, accountId])
 
   return null
 }

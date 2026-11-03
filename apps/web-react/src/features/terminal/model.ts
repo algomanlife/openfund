@@ -24,12 +24,19 @@ export const route = (locale: Locale, product: Product, page: string) => {
   const account=location.hash.includes(`/${product}/`) ? selectedAccount() : null;
   return `/${locale}/${product}/${page}${account ? `?account=${encodeURIComponent(account)}` : ''}`;
 };
+export function routeQuery(path: string, values: Record<string, string>) {
+  const [pathname, search = ""] = path.split("?");
+  const params = new URLSearchParams(search);
+  for (const [key, value] of Object.entries(values)) params.set(key, value);
+  return pathname + "?" + params;
+}
 export async function api(
   product: Product,
   path: string,
   init: RequestInit = {},
+  accountScope?: string | null,
 ) {
-  const account = location.hash.includes(`/${product}/`) ? selectedAccount() : null;
+  const account = accountScope !== undefined ? accountScope : location.hash.includes(`/${product}/`) ? selectedAccount() : null;
   if(account) path += `${path.includes('?')?'&':'?'}account=${encodeURIComponent(account)}`;
   const r = await fetch(`${backendUrl()}/products/${product}${path}`, {
     ...init,

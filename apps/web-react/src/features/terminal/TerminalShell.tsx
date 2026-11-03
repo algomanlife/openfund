@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Link,
-  NavLink,
   Outlet,
   useLocation,
   useNavigate,
   useParams,
 } from "react-router-dom";
+import ReleaseStatus from "./ReleaseStatus";
+import { useAccounts } from "./Accounts";
 import { TradingBridge } from "../../trading/TradingBridge";
 import { RainbowConnect } from "../../wallet/RainbowConnect";
 import { useSession } from "../../session/useOpenfundSession";
@@ -30,9 +31,21 @@ export default function TerminalShell({ product }: { product: Product }) {
     locale: Locale = params.locale === "en" ? "en" : "fa";
   const { pathname, search } = useLocation(),
     navigate = useNavigate(),
-    session = useSession();
+    session = useSession(),
+    directory = useAccounts();
   const [open, setOpen] = useState(false),
     [revision, setRevision] = useState(0);
+  const previousOwner = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    const owner = session.user?.id;
+    if (!owner) return;
+    if (previousOwner.current && previousOwner.current !== owner) {
+      const query = new URLSearchParams(search);
+      for (const key of ["account", "trade", "transaction"]) query.delete(key);
+      navigate(pathname + (query.size ? "?" + query : ""), { replace: true });
+    }
+    previousOwner.current = owner;
+  }, [session.user?.id, pathname, search, navigate]);
   const [messages, setMessages] = useState<
     Record<string, { fa: string; en: string }>
   >({});
@@ -52,9 +65,13 @@ export default function TerminalShell({ product }: { product: Product }) {
     document.documentElement.dir = locale === "fa" ? "rtl" : "ltr";
     (window as any).ofLang = locale;
     localStorage.setItem("of-language", locale);
-    window.dispatchEvent(new Event("of-language"));
+    window.dispatchEvent(new Event("of-terminal-route"));
+    const runtime = window as any;
+    if (!runtime.__ofLegacyLandingLoaded && !runtime.__ofLegacyTerminalLoaded) {
+      window.dispatchEvent(new Event("of-language"));
+    }
     setOpen(false);
-  }, [locale, pathname]);
+  }, [locale, pathname, search]);
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem("of-theme", theme);
@@ -76,41 +93,33 @@ export default function TerminalShell({ product }: { product: Product }) {
     messages[`products.${product}.${key}`]?.[locale] ||
     messages[`products.${key}`]?.[locale] ||
     "";
-  const activePage = page === "journal" ? "portfolio" : page;
+  const accountsSection = page === "journal" && new URLSearchParams(search).get("section") === "accounts";
+  const accountsPath = route(locale, product, "journal");
+  const accountsHref = accountsPath + (accountsPath.includes("?") ? "&" : "?") + "section=accounts";
   const navigation = (
-    <nav
-      id="terminal-navigation"
-      aria-label={t("ناوبری ترمینال", "Terminal navigation")}
-      className={open ? "open" : ""}
-    >
-      {primary[product].filter(([id]) => page !== "trade" || ["dashboard", "trade", "portfolio"].includes(id)).map(([id, fa, en]) => (
-        <NavLink
-          key={id}
-          to={route(locale, product, id)}
-          aria-current={activePage === id ? "page" : undefined}
-          className={activePage === id ? "active" : ""}
-          onClick={() => setOpen(false)}
-        >
-          {t(fa, en)}
-        </NavLink>
+    <nav id="terminal-navigation" aria-label={t("ناوبری ترمینال", "Terminal navigation")} className={open ? "open" : ""}>
+      {primary[product].filter(([id]) => ["dashboard", "trade", "portfolio"].includes(id)).map(([id, fa, en]) => (
+        <Link key={id} to={route(locale, product, id)} aria-current={page === id ? "page" : undefined}
+          className={page === id ? "active" : ""} onClick={() => setOpen(false)}>
+          {id === "trade" ? t("معاملات", "Trading") : t(fa, en)}
+        </Link>
       ))}
-      {page === "trade" && <>
-        <NavLink to={route(locale, product, "journal")}>{t("ژورنال", "Journal")}</NavLink>
-        <details className="of-terminal-more" key={pathname} onKeyDown={(event) => {
-          if (event.key === "Escape") {
-            event.currentTarget.open = false;
-            event.currentTarget.querySelector("summary")?.focus();
-          }
-        }}>
-          <summary>{t("بیشتر", "More")} <span aria-hidden="true">▾</span></summary>
-          <div className="of-terminal-more-links">
-            {primary[product].map(([id, fa, en]) =>
-              <NavLink key={id} className={["dashboard", "trade", "portfolio"].includes(id) ? "of-compact-destination" : undefined} to={route(locale, product, id)}>{t(fa, en)}</NavLink>
-            )}
-            <NavLink className="of-compact-destination" to={route(locale, product, "journal")}>{t("ژورنال", "Journal")}</NavLink>
-          </div>
-        </details>
-      </>}
+      <Link to={route(locale, product, "journal")} className={page === "journal" && !accountsSection ? "active" : ""}
+        aria-current={page === "journal" && !accountsSection ? "page" : undefined}>{t("ژورنال", "Journal")}</Link>
+      <Link to={accountsHref} className={accountsSection ? "active" : ""}
+        aria-current={accountsSection ? "page" : undefined}>{t("حساب‌ها", "Accounts")}</Link>
+      <details className="of-terminal-more" key={pathname + search} onKeyDown={event => {
+        if (event.key === "Escape") { event.currentTarget.open = false; event.currentTarget.querySelector("summary")?.focus(); }
+      }}>
+        <summary>{t("بیشتر", "More")} <span aria-hidden="true">▾</span></summary>
+        <div className="of-terminal-more-links">
+          {primary[product].map(([id, fa, en]) => <Link key={id}
+            className={["dashboard", "trade", "portfolio"].includes(id) ? "of-compact-destination" : page === id ? "active" : undefined}
+            aria-current={page === id ? "page" : undefined} to={route(locale, product, id)}>{t(fa, en)}</Link>)}
+          <Link className="of-compact-destination" to={route(locale, product, "journal")}>{t("ژورنال", "Journal")}</Link>
+          <Link className="of-compact-destination" to={accountsHref}>{t("حساب‌ها", "Accounts")}</Link>
+        </div>
+      </details>
     </nav>
   );
   return (
@@ -124,9 +133,9 @@ export default function TerminalShell({ product }: { product: Product }) {
         message,
       }}
     >
-      {product === "prop" && context.data?.state?.account && <TradingBridge pricing={context.data?.pricing}/> }
+      {product === "prop" && context.data?.state?.account && <TradingBridge pricing={context.data?.pricing} accountId={context.data.accountRef}/> }
       <div
-        className={`of-terminal ${page === "trade" ? "of-terminal-trading" : ""}`}
+        className={`of-terminal of-terminal-compact ${page === "trade" ? "of-terminal-trading" : ""} ${page === "dashboard" ? "of-dashboard-page" : ""}`}
         dir={locale === "fa" ? "rtl" : "ltr"}
         data-product={product}
       >
@@ -174,19 +183,23 @@ export default function TerminalShell({ product }: { product: Product }) {
                 <option value="perpetual">Openfund Perpetual</option>
               </select>
             </label>
-            {page === "trade" && navigation}
-            <span className="of-account-context">
-              {context.data ? (
-                <bdi>
-                  {product === "prop"
-                    ? `${t("حساب تمرینی", "Practice account")} · ${context.data.accountRef.slice(0, 8)}`
-                    : `${context.data.wallet.slice(0, 6)}…${context.data.wallet.slice(-4)}`}
-                </bdi>
-              ) : (
-                t("بدون حساب فعال", "No active account")
-              )}
-            </span>
+            {navigation}
+            <label className="of-header-account">
+              <span className="sr-only">{t("حساب فعال", "Active account")}</span>
+              <select aria-label={t("حساب فعال", "Active account")} value={context.data?.accountRef || ""}
+                disabled={session.status !== "authenticated" || !directory.accounts.length}
+                onChange={event => {
+                  const query = new URLSearchParams(search); query.set("account", event.target.value);
+                  query.delete("trade"); query.delete("transaction");
+                  navigate(pathname + "?" + query);
+                }}>
+                {!context.data && <option value="">{t("بدون حساب", "No account")}</option>}
+                {directory.accounts.filter(account => account.product === product).map(account =>
+                  <option key={account.id} value={account.id}>{account.name} · {account.id.slice(0, 8)}</option>)}
+              </select>
+            </label>
             <div className="of-terminal-actions">
+              <ReleaseStatus locale={locale} />
               <RainbowConnect />
               <button
                 aria-label={t("تغییر پوسته", "Toggle theme")}
@@ -198,7 +211,7 @@ export default function TerminalShell({ product }: { product: Product }) {
               </button>
               <button
                 onClick={() =>
-                  navigate(route(locale === "fa" ? "en" : "fa", product, page))
+                  navigate(pathname.replace(/^\/(?:fa|en)\//, `/${locale === "fa" ? "en" : "fa"}/`) + search)
                 }
               >
                 {locale === "fa" ? "EN" : "FA"}
@@ -213,21 +226,7 @@ export default function TerminalShell({ product }: { product: Product }) {
               </button>
             </div>
           </div>
-          {page !== "trade" && navigation}
         </header>
-        {(page === "portfolio" || page === "journal") && (
-          <nav
-            className="of-secondary"
-            aria-label={t("پورتفولیو و ژورنال", "Portfolio and journal")}
-          >
-            <NavLink to={route(locale, product, "portfolio")}>
-              {t("پورتفولیو", "Portfolio")}
-            </NavLink>
-            <NavLink to={route(locale, product, "journal")}>
-              {t("ژورنال معاملات", "Trade Journal")}
-            </NavLink>
-          </nav>
-        )}
         <main id="terminal-main" tabIndex={-1} className="of-terminal-main">
           {page !== "trade" && <Editorial page={page} />}
           {page !== "trade" && context.error && (

@@ -28,7 +28,7 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Deployment
 
-[Render runbook](deployment/RENDER.md) · [Environment](deployment/ENVIRONMENT.md) · [Database](deployment/DATABASE.md) · [Rollback and recovery](deployment/ROLLBACK.md) · [Blueprint](../render.yaml)
+[Unified releases](deployment/RELEASES.md) · [Render runbook](deployment/RENDER.md) · [Environment](deployment/ENVIRONMENT.md) · [Database](deployment/DATABASE.md) · [Rollback and recovery](deployment/ROLLBACK.md) · [Blueprint](../render.yaml)
 
 ## Development
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — integration recovery and unified releases
+
+- Recover the compact shared terminal navigation, account Dashboard layout, EIP-6963 connection and product-network synchronization from preserved unfinished work.
+- Preserve account scope in trading reads, mutations and Journal links; keep reviewed-order retry identity and remove invented chart protection levels.
+- Add main-only SemVer release packaging, artifact integrity checks, API/frontend diagnostics, approved exact-commit Render deployment and an exact-version local runner.
+- Keep production, external wallets and first official release acceptance pending their actual evidence.
+
+
 ## Website navigation repair — 2026-11-02
 
 - Share localized public header/footer destinations across Challenges and editorial pages; expose Resources on Home, repair Team/FAQ aliases and the brandbook download URL, deduplicate footer links, and preserve nested-page language switching.

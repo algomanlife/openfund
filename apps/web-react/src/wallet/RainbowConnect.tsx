@@ -34,7 +34,7 @@ function useAppTheme(): 'dark' | 'light' {
  * RainbowKit locale) — trigger and account surfaces are fully translated.
  */
 export function RainbowConnect() {
-  const { address, chain, chainId } = useAccount()
+  const { address, chain, chainId, isConnecting } = useAccount()
   const targetChain = useProductNetwork()
   const { connectAsync, connectors } = useConnect()
   const [connectError, setConnectError] = useState('')
@@ -162,11 +162,21 @@ export function RainbowConnect() {
         const connected = mounted && account && rkChain
         /* expose the modal opener so legacy-markup triggers (e.g. the landing
            "ورود با کیف پول وب۳" card) can open the real RainbowKit modal */
-        const connectWallet = () => {
+        const connectWallet = async () => {
           setConnectError('')
-          if (!walletConnectEnabled && connectors[0] && (window as any).ethereum) {
-            void connectAsync({ connector: connectors[0] }).catch(() => setConnectError(isFa ? 'اتصال کیف پول ناموفق بود.' : 'Wallet connection failed.'))
-          } else openConnectModal()
+          if (walletConnectEnabled) { openConnectModal(); return }
+          try {
+            // EIP-6963 providers need not publish the legacy ethereum global.
+            for (const connector of connectors) {
+              if (!await connector.getProvider()) continue
+              await connectAsync({ connector })
+              return
+            }
+            setConnectError(isFa ? 'کیف پول سازگار پیدا نشد. افزونهٔ کیف پول را فعال کنید.' : 'No compatible wallet detected. Enable your wallet extension.')
+            openConnectModal()
+          } catch (error: any) {
+            setConnectError((isFa ? 'اتصال کیف پول ناموفق بود. ' : 'Wallet connection failed. ') + (error?.shortMessage || error?.message || ''))
+          }
         }
         ;(window as any).__ofOpenConnect = !connected ? connectWallet : session.status === 'authenticated' ? () => setProfileOpen(true) : () => void session.signIn()
         return (
@@ -176,12 +186,12 @@ export function RainbowConnect() {
             style={{ display: 'flex', flexWrap: 'wrap', maxWidth: '100%', gap: 8, alignItems: 'center', direction: 'ltr' }}
           >
             {!connected ? (
-              <button onClick={connectWallet} type='button' className='rk-chip rk-chip-connect'>
+              <button onClick={() => void connectWallet()} disabled={isConnecting} type='button' className='rk-chip rk-chip-connect'>
                 <svg viewBox='0 0 16 16' width='13' height='13' fill='none' aria-hidden='true'>
                   <path d='M2 4.5A2.5 2.5 0 0 1 4.5 2H12a1 1 0 0 1 1 1v1.5M2 4.5V12a2 2 0 0 0 2 2h9.5a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5H4.5A2.5 2.5 0 0 1 2 4.5Z' stroke='currentColor' strokeWidth='1.3' />
                   <circle cx='11.5' cy='10' r='1' fill='currentColor' />
                 </svg>
-                {isFa ? 'اتصال کیف پول' : 'Connect Wallet'}
+                {isConnecting ? (isFa ? 'در حال اتصال…' : 'Connecting…') : isFa ? 'اتصال کیف پول' : 'Connect Wallet'}
               </button>
             ) : (
               <>

@@ -72,3 +72,7 @@ default, finite and below 100), not a Gains liquidation threshold.
 ## Pine chart runtime
 
 The web application pins `@luxalgo/vela@0.9.3`, `@luxalgo/vela-pinets@0.3.2` and `pinets@0.13.1`; esbuild is an explicit frontend build dependency. `prebuild` generates the workspace, hosted worker and readable licenses before Vite copies public assets. No new environment variable, secret, backend dependency or Render service is required. A restrictive CSP must permit the same-origin worker; no external Pine library service is used. See [Pine architecture](../trading/PINE_SCRIPT.md).
+
+## Release tooling
+
+The [release runbook](RELEASES.md) defines Actions production settings and public build parity. `RELEASE_VERSION` is allocated from immutable tags; `RELEASE_TEST_PORT` defaults to 8288 for isolated local gates. `RENDER_GIT_COMMIT` is supplied by Render. These are build/orchestration metadata, not new application services. `DATABASE_URL` has no fallback in release tooling. Do not enable `SIM_TEST_MODE` in deployed releases.

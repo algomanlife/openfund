@@ -1,0 +1,41 @@
+name: Deploy or roll back official release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact published release tag (also used for rollback)
+        required: true
+        type: string
+permissions:
+  contents: read
+  deployments: write
+concurrency:
+  group: openfund-production
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      GITHUB_ENVIRONMENT: production
+      GH_TOKEN: ${{ github.token }}
+      RENDER_API_TOKEN: ${{ secrets.RENDER_API_TOKEN }}
+      RENDER_SERVICE_ID: ${{ vars.RENDER_SERVICE_ID }}
+      RELEASE_PUBLIC_URL: ${{ vars.RELEASE_PUBLIC_URL }}
+      RELEASE_CMS_URL: ${{ vars.RELEASE_CMS_URL }}
+      RELEASE_TAG: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Deploy exact approved SHA and verify runtime identity
+        run: node scripts/release/deploy.mjs "$RELEASE_TAG"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deployment-status-${{ github.run_id }}
+          path: output/deployment-status.json
+          retention-days: 90

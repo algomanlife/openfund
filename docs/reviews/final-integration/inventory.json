@@ -1,0 +1,378 @@
+{
+  "canonical": {
+    "status": "## main...origin/main\n?? .DS_Store\n?? brand/.DS_Store\n?? dist/.DS_Store\n?? docs/.DS_Store\n?? packages/.DS_Store\n",
+    "worktrees": "worktree /Users/algoman/openfund\nHEAD 9508990226aa95df239f15b8b07b8c82ddb55024\nbranch refs/heads/main\n\nworktree /Users/algoman/openfund-docs-fix\nHEAD 6f590660e1157d6e4731af8e13170a15e45a46e2\nbranch refs/heads/fix/docs-protocol-routing-link\n\nworktree /Users/algoman/openfund-integration-release\nHEAD 9508990226aa95df239f15b8b07b8c82ddb55024\nbranch refs/heads/codex/unified-integration-release\n\nworktree /Users/algoman/openfund-protocol-fix\nHEAD b4c5191a696bcd8b80237b0ae4967680096f68f1\nbranch refs/heads/fix/openfund-protocol-compile\n\n",
+    "branches": "  backup/main-before-home-restore                        6b111f0 Merge latest Openfund home page into main\n+ codex/unified-integration-release                      9508990 (/Users/algoman/openfund-integration-release) [origin/main] Merge pull request #36 from algomanlife/codex/audit-home-navigation\n  feat/openfund-indicator-sources                        890781f [origin/feat/openfund-indicator-sources] feat(indicators): add three proprietary indicators and two Pine libraries\n+ fix/docs-protocol-routing-link                         6f59066 (/Users/algoman/openfund-docs-fix) [origin/fix/docs-protocol-routing-link] fix(docs): resolve documentation CI failures\n+ fix/openfund-protocol-compile                          b4c5191 (/Users/algoman/openfund-protocol-fix) [origin/fix/openfund-protocol-compile] fix(protocol): resolve Solidity stack-too-deep regression\n* main                                                   9508990 [origin/main] Merge pull request #36 from algomanlife/codex/audit-home-navigation\n  remotes/origin/HEAD                                    -> origin/main\n  remotes/origin/chore/render-production-foundation      0694e4f chore(render): production deployment foundation \u2014 Blueprint, CI, monorepo standardization\n  remotes/origin/codex/audit-home-navigation             1ae24c1 test(engine): allow either concurrent close request to win\n  remotes/origin/codex/bilingual-rulebook-transparency   8395213 feat(web): add bilingual rulebook and sample transparency pages\n  remotes/origin/codex/dual-terminals-portfolio-journal  bae3e3a Merge branch 'main' into codex/dual-terminals-portfolio-journal\n  remotes/origin/codex/terminal-ui-density               9f48b33 docs(terminal): refresh evidence after native select width correction\n  remotes/origin/codex/trading-wallet-integration-audit  6be52c8 fix(render): preserve integrated deployment and verify account flows\n  remotes/origin/codex/website-navigation                3e61d62 fix(web): unify public navigation and localized routing\n  remotes/origin/docs/openfund-repository-transformation b5b2c6a docs: record final repository transformation validation\n  remotes/origin/feat/openfund-indicator-sources         890781f feat(indicators): add three proprietary indicators and two Pine libraries\n  remotes/origin/feat/openfund-protocol-foundation       a389396 chore(protocol): validation record and changelog\n  remotes/origin/feat/unified-trading-dashboard-engine   9304242 docs(trading): record passing acceptance and genuine account depth screenshots\n  remotes/origin/feat/vela-pine-custom-indicators        fb68131 test(charts): cover original calculations interactions and generated runtime\n  remotes/origin/fix/docs-protocol-routing-link          6f59066 fix(docs): resolve documentation CI failures\n  remotes/origin/fix/openfund-protocol-compile           b4c5191 fix(protocol): resolve Solidity stack-too-deep regression\n  remotes/origin/main                                    9508990 Merge pull request #36 from algomanlife/codex/audit-home-navigation\n  remotes/origin/qwen/content-overhaul                   55060bc feat(content+cms): production content overhaul + complete Directus CMS migration\n  remotes/origin/qwen/demo-trading                       0ece38b feat(trading): 100,000 DAI demo trading platform \u2014 persistent, server-authoritative\n  remotes/origin/qwen/directus-cms                       dd1b665 feat(cms): Directus backstage \u2014 fa/en content management for landing + terminal\n  remotes/origin/qwen/footer-addresses                   7777646 Merge pull request #10 from algomanlife/qwen/wallet-identity\n  remotes/origin/qwen/home-visual-refresh                5fa6c0d docs(home): delivery report for the visual refresh round\n  remotes/origin/qwen/portfolio-journal                  ed620b0 feat(portfolio): native LuxAlgo Trade Journal analytics \u2014 vendored journal-core\n  remotes/origin/qwen/product-gateway-markets            e7c0e13 feat(site): product gateway home, Gains markets page, unified website navigation\n  remotes/origin/qwen/react-migration                    79b63ff feat(round-5): UI polish \u2014 chart brand bottom-left, landing wallet CTA, GitHub row\n  remotes/origin/qwen/round-3-fixes                      30279b8 feat(landing): round-3 \u2014 real Iranianized copy, header CTA, EN fixes, SVG icons, credits\n  remotes/origin/qwen/round8-dashboard                   e75685b feat(round8): full portfolio dashboard \u2014 sidebar, gauges, radar, charts, calendar, activity\n  remotes/origin/qwen/trading-math-vela                  83fc04f fix(trading): Gains-formula alignment + Vela position overlays + SL/TP/UI repairs\n  remotes/origin/qwen/wallet-identity                    c269db4 fix(ui): unified wallet-area chip template (header clutter fix)\n  remotes/origin/qwen/website-expansion                  ee4dcf6 fix(ci): gitleaks false positives in generated bundles and PR comment permissions\n",
+    "stashes": "stash@{0}: On main: vela-local-backup\n",
+    "head": "9508990226aa95df239f15b8b07b8c82ddb55024\n"
+  },
+  "historical": {
+    "status": "## codex/terminal-completion...origin/main [ahead 2]\n M .github/workflows/ci.yml\n M apps/web-react/package.json\n M apps/web-react/public/legacy/terminal.js\n M apps/web-react/src/features/terminal/Accounts.tsx\n M apps/web-react/src/features/terminal/Dashboard.tsx\n M apps/web-react/src/features/terminal/GainsPortfolio.tsx\n M apps/web-react/src/features/terminal/Portfolio.tsx\n M apps/web-react/src/features/terminal/TerminalShell.tsx\n M apps/web-react/src/features/terminal/TradingPages.tsx\n M apps/web-react/src/features/terminal/model.ts\n M apps/web-react/src/features/terminal/terminal.css\n M apps/web-react/src/session/useOpenfundSession.tsx\n M apps/web-react/src/trading/TradingBridge.tsx\n M apps/web-react/src/wallet/RainbowConnect.tsx\n M apps/web-react/src/wallet/productNetwork.ts\n M e2e/test-integration-audit.cjs\n M package.json\n?? apps/web-react/test/terminal-completion.test.mjs\n?? docs/reviews/terminal-completion/\n?? e2e/test-terminal-completion.cjs\n",
+    "worktrees": "worktree /Users/algoman/Documents/ChatGPT/Openfund brand/Openfund_Landing_FA\nHEAD ee4dcf6d71018cb8de02fe53f0beb28075e80f19\nbranch refs/heads/qwen/website-expansion\n\nworktree /Users/algoman/Documents/ChatGPT/openfund/audit-home-navigation\nHEAD 1ae24c1b4c4c8d006aeefc4a85b443b5e5ff9120\nbranch refs/heads/codex/audit-home-navigation\n\nworktree /Users/algoman/Documents/ChatGPT/openfund/dual-terminals\nHEAD 6b8bfe7ec14b31dd0cb334fb49dddc70856e8c2b\nbranch refs/heads/codex/dual-terminals-portfolio-journal\n\nworktree /Users/algoman/Documents/ChatGPT/openfund/integration-audit\nHEAD 6be52c89ee27b0fe01d8e3c4f30284b7c13bd1c1\nbranch refs/heads/codex/trading-wallet-integration-audit\n\nworktree /Users/algoman/Documents/ChatGPT/openfund/landing-pages\nHEAD 8395213fc47e91a54e6fdd7177fed879d52382c1\nbranch refs/heads/codex/bilingual-rulebook-transparency\n\nworktree /Users/algoman/Documents/ChatGPT/openfund/repository-transformation\nHEAD b5b2c6aaf225215ae6e8f923ba73992ed2ca8cb5\nbranch refs/heads/docs/openfund-repository-transformation\n\nworktree /Users/algoman/Documents/ChatGPT/openfund/terminal-completion\nHEAD 1ae24c1b4c4c8d006aeefc4a85b443b5e5ff9120\nbranch refs/heads/codex/terminal-completion\n\nworktree /Users/algoman/Documents/ChatGPT/openfund/terminal-ui-redesign\nHEAD 9f48b336be6ae7325e0d2e747c719b3fefaae1af\nbranch refs/heads/codex/terminal-ui-density\n\nworktree /Users/algoman/Documents/ChatGPT/openfund/unified-trading-dashboard-engine\nHEAD 9304242f3e2558caee25c5b490bc64e918729885\nbranch refs/heads/feat/unified-trading-dashboard-engine\n\nworktree /Users/algoman/Documents/ChatGPT/openfund/vela-pine-custom-indicators\nHEAD fb68131c31d5d988fbbec790e50d8dc15bccfbe1\nbranch refs/heads/feat/vela-pine-custom-indicators\n\nworktree /Users/algoman/Documents/ChatGPT/openfund/website-navigation\nHEAD 3e61d62aa110ef317e7e4e587a2b57cc0a8d7285\nbranch refs/heads/codex/website-navigation\n\n",
+    "branches": "  backup/before-bilingual-pages-20261101                 e75685b feat(round8): full portfolio dashboard \u2014 sidebar, gauges, radar, charts, calendar, activity\n  chore/render-production-foundation                     0694e4f [origin/chore/render-production-foundation] chore(render): production deployment foundation \u2014 Blueprint, CI, monorepo standardization\n+ codex/audit-home-navigation                            1ae24c1 (/Users/algoman/Documents/ChatGPT/openfund/audit-home-navigation) [origin/codex/audit-home-navigation] test(engine): allow either concurrent close request to win\n+ codex/bilingual-rulebook-transparency                  8395213 (/Users/algoman/Documents/ChatGPT/openfund/landing-pages) [origin/codex/bilingual-rulebook-transparency] feat(web): add bilingual rulebook and sample transparency pages\n+ codex/dual-terminals-portfolio-journal                 6b8bfe7 (/Users/algoman/Documents/ChatGPT/openfund/dual-terminals) [origin/codex/dual-terminals-portfolio-journal: behind 3] docs(terminal): finalize verification and delivery references\n* codex/terminal-completion                              1ae24c1 [origin/main: ahead 2] test(engine): allow either concurrent close request to win\n+ codex/terminal-ui-density                              9f48b33 (/Users/algoman/Documents/ChatGPT/openfund/terminal-ui-redesign) [origin/codex/terminal-ui-density] docs(terminal): refresh evidence after native select width correction\n+ codex/trading-wallet-integration-audit                 6be52c8 (/Users/algoman/Documents/ChatGPT/openfund/integration-audit) [origin/codex/trading-wallet-integration-audit] fix(render): preserve integrated deployment and verify account flows\n+ codex/website-navigation                               3e61d62 (/Users/algoman/Documents/ChatGPT/openfund/website-navigation) [origin/codex/website-navigation] fix(web): unify public navigation and localized routing\n+ docs/openfund-repository-transformation                b5b2c6a (/Users/algoman/Documents/ChatGPT/openfund/repository-transformation) [origin/docs/openfund-repository-transformation] docs: record final repository transformation validation\n  feat/openfund-protocol-foundation                      a389396 [origin/feat/openfund-protocol-foundation] chore(protocol): validation record and changelog\n+ feat/unified-trading-dashboard-engine                  9304242 (/Users/algoman/Documents/ChatGPT/openfund/unified-trading-dashboard-engine) [origin/feat/unified-trading-dashboard-engine] docs(trading): record passing acceptance and genuine account depth screenshots\n+ feat/vela-pine-custom-indicators                       fb68131 (/Users/algoman/Documents/ChatGPT/openfund/vela-pine-custom-indicators) [origin/feat/vela-pine-custom-indicators] test(charts): cover original calculations interactions and generated runtime\n  integration/rulebook-transparency                      3a95278 merge: integrate bilingual rulebook + transparency into round8 dashboard lineage\n  main                                                   1aaa806 [origin/main: behind 58] Merge pull request #23 from algomanlife/chore/render-production-foundation\n  qwen/content-overhaul                                  55060bc [origin/qwen/content-overhaul] feat(content+cms): production content overhaul + complete Directus CMS migration\n  qwen/demo-trading                                      0ece38b [origin/qwen/demo-trading] feat(trading): 100,000 DAI demo trading platform \u2014 persistent, server-authoritative\n  qwen/directus-cms                                      dd1b665 [origin/qwen/directus-cms] feat(cms): Directus backstage \u2014 fa/en content management for landing + terminal\n  qwen/footer-addresses                                  d27c363 [origin/qwen/footer-addresses: behind 3] feat(round-6): content-editing backstage + wallet completion + terminal polish\n  qwen/home-visual-refresh                               5fa6c0d [origin/qwen/home-visual-refresh] docs(home): delivery report for the visual refresh round\n  qwen/portfolio-journal                                 ed620b0 [origin/qwen/portfolio-journal] feat(portfolio): native LuxAlgo Trade Journal analytics \u2014 vendored journal-core\n  qwen/product-gateway-markets                           e7c0e13 [origin/qwen/product-gateway-markets] feat(site): product gateway home, Gains markets page, unified website navigation\n  qwen/react-migration                                   79b63ff [origin/qwen/react-migration] feat(round-5): UI polish \u2014 chart brand bottom-left, landing wallet CTA, GitHub row\n  qwen/round-3-fixes                                     30279b8 [origin/qwen/round-3-fixes] feat(landing): round-3 \u2014 real Iranianized copy, header CTA, EN fixes, SVG icons, credits\n  qwen/round8-dashboard                                  e75685b [origin/qwen/round8-dashboard] feat(round8): full portfolio dashboard \u2014 sidebar, gauges, radar, charts, calendar, activity\n  qwen/trading-math-vela                                 83fc04f [origin/qwen/trading-math-vela] fix(trading): Gains-formula alignment + Vela position overlays + SL/TP/UI repairs\n  qwen/wallet-identity                                   c269db4 [origin/qwen/wallet-identity] fix(ui): unified wallet-area chip template (header clutter fix)\n+ qwen/website-expansion                                 ee4dcf6 (/Users/algoman/Documents/ChatGPT/Openfund brand/Openfund_Landing_FA) [origin/qwen/website-expansion] fix(ci): gitleaks false positives in generated bundles and PR comment permissions\n  remotes/origin/HEAD                                    -> origin/main\n  remotes/origin/chore/render-production-foundation      0694e4f chore(render): production deployment foundation \u2014 Blueprint, CI, monorepo standardization\n  remotes/origin/codex/audit-home-navigation             1ae24c1 test(engine): allow either concurrent close request to win\n  remotes/origin/codex/bilingual-rulebook-transparency   8395213 feat(web): add bilingual rulebook and sample transparency pages\n  remotes/origin/codex/dual-terminals-portfolio-journal  bae3e3a Merge branch 'main' into codex/dual-terminals-portfolio-journal\n  remotes/origin/codex/terminal-ui-density               9f48b33 docs(terminal): refresh evidence after native select width correction\n  remotes/origin/codex/trading-wallet-integration-audit  6be52c8 fix(render): preserve integrated deployment and verify account flows\n  remotes/origin/codex/website-navigation                3e61d62 fix(web): unify public navigation and localized routing\n  remotes/origin/docs/openfund-repository-transformation b5b2c6a docs: record final repository transformation validation\n  remotes/origin/feat/openfund-indicator-sources         890781f feat(indicators): add three proprietary indicators and two Pine libraries\n  remotes/origin/feat/openfund-protocol-foundation       a389396 chore(protocol): validation record and changelog\n  remotes/origin/feat/unified-trading-dashboard-engine   9304242 docs(trading): record passing acceptance and genuine account depth screenshots\n  remotes/origin/feat/vela-pine-custom-indicators        fb68131 test(charts): cover original calculations interactions and generated runtime\n  remotes/origin/fix/docs-protocol-routing-link          6f59066 fix(docs): resolve documentation CI failures\n  remotes/origin/fix/openfund-protocol-compile           b4c5191 fix(protocol): resolve Solidity stack-too-deep regression\n  remotes/origin/main                                    1ab45af Merge pull request #35 from algomanlife/codex/website-navigation\n  remotes/origin/qwen/content-overhaul                   55060bc feat(content+cms): production content overhaul + complete Directus CMS migration\n  remotes/origin/qwen/demo-trading                       0ece38b feat(trading): 100,000 DAI demo trading platform \u2014 persistent, server-authoritative\n  remotes/origin/qwen/directus-cms                       dd1b665 feat(cms): Directus backstage \u2014 fa/en content management for landing + terminal\n  remotes/origin/qwen/footer-addresses                   7777646 Merge pull request #10 from algomanlife/qwen/wallet-identity\n  remotes/origin/qwen/home-visual-refresh                5fa6c0d docs(home): delivery report for the visual refresh round\n  remotes/origin/qwen/portfolio-journal                  ed620b0 feat(portfolio): native LuxAlgo Trade Journal analytics \u2014 vendored journal-core\n  remotes/origin/qwen/product-gateway-markets            e7c0e13 feat(site): product gateway home, Gains markets page, unified website navigation\n  remotes/origin/qwen/react-migration                    79b63ff feat(round-5): UI polish \u2014 chart brand bottom-left, landing wallet CTA, GitHub row\n  remotes/origin/qwen/round-3-fixes                      30279b8 feat(landing): round-3 \u2014 real Iranianized copy, header CTA, EN fixes, SVG icons, credits\n  remotes/origin/qwen/round8-dashboard                   e75685b feat(round8): full portfolio dashboard \u2014 sidebar, gauges, radar, charts, calendar, activity\n  remotes/origin/qwen/trading-math-vela                  83fc04f fix(trading): Gains-formula alignment + Vela position overlays + SL/TP/UI repairs\n  remotes/origin/qwen/wallet-identity                    c269db4 fix(ui): unified wallet-area chip template (header clutter fix)\n  remotes/origin/qwen/website-expansion                  ee4dcf6 fix(ci): gitleaks false positives in generated bundles and PR comment permissions\n",
+    "stashes": "",
+    "head": "1ae24c1b4c4c8d006aeefc4a85b443b5e5ff9120\n"
+  },
+  "prs": [
+    {
+      "headRefName": "codex/audit-home-navigation",
+      "mergeCommit": {
+        "oid": "9508990226aa95df239f15b8b07b8c82ddb55024"
+      },
+      "number": 36,
+      "state": "MERGED",
+      "title": "test(web): align Home audit with shared navigation",
+      "url": "https://github.com/algomanlife/openfund/pull/36"
+    },
+    {
+      "headRefName": "codex/website-navigation",
+      "mergeCommit": {
+        "oid": "1ab45af8a3048634771759d9443dc48122fb8e12"
+      },
+      "number": 35,
+      "state": "MERGED",
+      "title": "fix(web): unify public navigation and localized routing",
+      "url": "https://github.com/algomanlife/openfund/pull/35"
+    },
+    {
+      "headRefName": "qwen/website-expansion",
+      "mergeCommit": {
+        "oid": "c8a8dea6b46e410944899de68c760cc30bcaee4d"
+      },
+      "number": 34,
+      "state": "MERGED",
+      "title": "fix(ci): gitleaks bundle false positives and PR comment permissions",
+      "url": "https://github.com/algomanlife/openfund/pull/34"
+    },
+    {
+      "headRefName": "qwen/website-expansion",
+      "mergeCommit": {
+        "oid": "0a4cfcb304988893d81a36d6820ff269bd0ea9c5"
+      },
+      "number": 33,
+      "state": "MERGED",
+      "title": "Website expansion: FAQ, Growth Partner, Tools Center, Learning Center",
+      "url": "https://github.com/algomanlife/openfund/pull/33"
+    },
+    {
+      "headRefName": "codex/terminal-ui-density",
+      "mergeCommit": {
+        "oid": "837c1c8636b9e4508af10fe300e99536fc50574d"
+      },
+      "number": 32,
+      "state": "MERGED",
+      "title": "Refine shared trading terminals into a compact viewport workspace",
+      "url": "https://github.com/algomanlife/openfund/pull/32"
+    },
+    {
+      "headRefName": "feat/unified-trading-dashboard-engine",
+      "mergeCommit": {
+        "oid": "c4cf6025108e137cf157a33ce0956d604760c4e3"
+      },
+      "number": 31,
+      "state": "MERGED",
+      "title": "feat: unify Free Trial accounts and journals with verified Gains depth",
+      "url": "https://github.com/algomanlife/openfund/pull/31"
+    },
+    {
+      "headRefName": "fix/docs-protocol-routing-link",
+      "mergeCommit": {
+        "oid": "3a1d8ca548429ad7d9c9a0b6bfa8456f7edc1c58"
+      },
+      "number": 30,
+      "state": "MERGED",
+      "title": "fix(docs): resolve documentation CI failures",
+      "url": "https://github.com/algomanlife/openfund/pull/30"
+    },
+    {
+      "headRefName": "fix/openfund-protocol-compile",
+      "mergeCommit": {
+        "oid": "0cc393a80d6ea348da2200d7badef4796b3392e2"
+      },
+      "number": 29,
+      "state": "MERGED",
+      "title": "fix(protocol): resolve Solidity compilation regression",
+      "url": "https://github.com/algomanlife/openfund/pull/29"
+    },
+    {
+      "headRefName": "feat/openfund-protocol-foundation",
+      "mergeCommit": {
+        "oid": "da4bfed223de3ffadd13d86be38680a15421a8db"
+      },
+      "number": 28,
+      "state": "MERGED",
+      "title": "feat(protocol): Openfund Protocol source integration (dormant module)",
+      "url": "https://github.com/algomanlife/openfund/pull/28"
+    },
+    {
+      "headRefName": "feat/vela-pine-custom-indicators",
+      "mergeCommit": {
+        "oid": "7b7da6c8c781ca97893525c72ca1b0fbbba7e7f5"
+      },
+      "number": 27,
+      "state": "MERGED",
+      "title": "feat(charts): integrate original Pine indicators and repair Vela controls",
+      "url": "https://github.com/algomanlife/openfund/pull/27"
+    },
+    {
+      "headRefName": "feat/openfund-indicator-sources",
+      "mergeCommit": {
+        "oid": "08cb68afab48c596a953bfd93ee1e29c81cd37ab"
+      },
+      "number": 26,
+      "state": "MERGED",
+      "title": "feat(indicators): add three proprietary indicators and two Pine libra\u2026",
+      "url": "https://github.com/algomanlife/openfund/pull/26"
+    },
+    {
+      "headRefName": "docs/openfund-repository-transformation",
+      "mergeCommit": {
+        "oid": "6fc4fa8d0595104a56a47e8dbda4d828d9d1a023"
+      },
+      "number": 25,
+      "state": "MERGED",
+      "title": "docs: present Openfund ecosystem, architecture and roadmap",
+      "url": "https://github.com/algomanlife/openfund/pull/25"
+    },
+    {
+      "headRefName": "codex/trading-wallet-integration-audit",
+      "mergeCommit": {
+        "oid": "2f5cf93afcbd97caa9b80e6de8a703fa707f6e16"
+      },
+      "number": 24,
+      "state": "MERGED",
+      "title": "fix: integrate trading, wallet accounts, Home and Render",
+      "url": "https://github.com/algomanlife/openfund/pull/24"
+    },
+    {
+      "headRefName": "chore/render-production-foundation",
+      "mergeCommit": {
+        "oid": "1aaa806162d0341d8759932861b2ab2417dffc3f"
+      },
+      "number": 23,
+      "state": "MERGED",
+      "title": "chore(render): production deployment foundation \u2014 Blueprint, CI, mono\u2026",
+      "url": "https://github.com/algomanlife/openfund/pull/23"
+    },
+    {
+      "headRefName": "codex/dual-terminals-portfolio-journal",
+      "mergeCommit": {
+        "oid": "0366f4cc86a44dfeede16ed16f02d502e5251b1e"
+      },
+      "number": 22,
+      "state": "MERGED",
+      "title": "feat: shared product terminals and scoped portfolio journals",
+      "url": "https://github.com/algomanlife/openfund/pull/22"
+    },
+    {
+      "headRefName": "qwen/home-visual-refresh",
+      "mergeCommit": {
+        "oid": "d622a1450808420de2647976c709ba85bae96a0c"
+      },
+      "number": 21,
+      "state": "MERGED",
+      "title": "feat(home): visual refresh \u2014 clean gateway, motion, original illustrations",
+      "url": "https://github.com/algomanlife/openfund/pull/21"
+    },
+    {
+      "headRefName": "qwen/content-overhaul",
+      "mergeCommit": {
+        "oid": "61c70fee6936670ed82f7c3698ba08ea63f8e776"
+      },
+      "number": 20,
+      "state": "MERGED",
+      "title": "feat(content+cms): production content overhaul + complete Directus CM\u2026",
+      "url": "https://github.com/algomanlife/openfund/pull/20"
+    },
+    {
+      "headRefName": "qwen/product-gateway-markets",
+      "mergeCommit": {
+        "oid": "9bf351ac83af657be77e9187ed68b1f1c99ca5ba"
+      },
+      "number": 19,
+      "state": "MERGED",
+      "title": "feat(site): product gateway Home, Gains Markets page, unified website navigation",
+      "url": "https://github.com/algomanlife/openfund/pull/19"
+    },
+    {
+      "headRefName": "codex/bilingual-rulebook-transparency",
+      "mergeCommit": {
+        "oid": "d4c612405c9ef7b0bb15cc07da4fc2cbf0acc960"
+      },
+      "number": 18,
+      "state": "MERGED",
+      "title": "feat(web): add bilingual Rulebook and sample Transparency pages",
+      "url": "https://github.com/algomanlife/openfund/pull/18"
+    },
+    {
+      "headRefName": "qwen/round8-dashboard",
+      "mergeCommit": {
+        "oid": "81179c18d8ca87ffbd7e2dcf02cc6d62a33f719f"
+      },
+      "number": 17,
+      "state": "MERGED",
+      "title": "feat(round8): full portfolio dashboard + Vela persistence + SL/TP drag + header/dropdown fixes",
+      "url": "https://github.com/algomanlife/openfund/pull/17"
+    },
+    {
+      "headRefName": "qwen/round8-dashboard",
+      "mergeCommit": {
+        "oid": "99a4a3daabe3078f12d5522d5bc7f5235001f30c"
+      },
+      "number": 16,
+      "state": "MERGED",
+      "title": "fix(round8): quick fixes + Vela drawing persistence + SL/TP drag-edit",
+      "url": "https://github.com/algomanlife/openfund/pull/16"
+    },
+    {
+      "headRefName": "qwen/portfolio-journal",
+      "mergeCommit": {
+        "oid": "e5e56b56ed5282da443a998b9387d765586dcc65"
+      },
+      "number": 15,
+      "state": "MERGED",
+      "title": "feat(portfolio): native LuxAlgo Trade Journal analytics \u2014 vendored journal-core",
+      "url": "https://github.com/algomanlife/openfund/pull/15"
+    },
+    {
+      "headRefName": "qwen/trading-math-vela",
+      "mergeCommit": {
+        "oid": "e91146d48a8881be889dd3e176e5d75c375af50b"
+      },
+      "number": 14,
+      "state": "MERGED",
+      "title": "fix(trading): Gains-formula alignment + Vela position overlays + SL/TP & UI repairs",
+      "url": "https://github.com/algomanlife/openfund/pull/14"
+    },
+    {
+      "headRefName": "qwen/demo-trading",
+      "mergeCommit": {
+        "oid": "efcc79d39f82d5be949c8f91106616d98ed7c401"
+      },
+      "number": 13,
+      "state": "MERGED",
+      "title": "feat(trading): 100,000 DAI demo trading platform \u2014 persistent, server-authoritative",
+      "url": "https://github.com/algomanlife/openfund/pull/13"
+    },
+    {
+      "headRefName": "qwen/footer-addresses",
+      "mergeCommit": {
+        "oid": "e81a3d28c0bbe48e668554c6438f92e1f5004e1a"
+      },
+      "number": 12,
+      "state": "MERGED",
+      "title": "Qwen/footer addresses",
+      "url": "https://github.com/algomanlife/openfund/pull/12"
+    },
+    {
+      "headRefName": "qwen/wallet-identity",
+      "mergeCommit": {
+        "oid": "224ba76ac028471f0c4c2cd45828e8c0772e6722"
+      },
+      "number": 11,
+      "state": "MERGED",
+      "title": "feat(identity): wallet-based user management \u2014 SIWE auth, sessions, c\u2026",
+      "url": "https://github.com/algomanlife/openfund/pull/11"
+    },
+    {
+      "headRefName": "qwen/wallet-identity",
+      "mergeCommit": {
+        "oid": "7777646ccb9f28466a6f80dfe53333d09e0d7fb4"
+      },
+      "number": 10,
+      "state": "MERGED",
+      "title": "feat(identity): wallet-based user management \u2014 SIWE auth, sessions, challenges, backstage",
+      "url": "https://github.com/algomanlife/openfund/pull/10"
+    },
+    {
+      "headRefName": "qwen/footer-addresses",
+      "mergeCommit": {
+        "oid": "b6a78a59a0dbe0aaeb302e1e3ab300f05cf06ac2"
+      },
+      "number": 9,
+      "state": "MERGED",
+      "title": "feat(round-6): content-editing backstage + wallet completion + termin\u2026",
+      "url": "https://github.com/algomanlife/openfund/pull/9"
+    },
+    {
+      "headRefName": "qwen/footer-addresses",
+      "mergeCommit": {
+        "oid": "e3b53edaddf700e9772227dd95188526d0114218"
+      },
+      "number": 8,
+      "state": "MERGED",
+      "title": "feat(round-6): content-editing backstage + wallet completion + terminal polish",
+      "url": "https://github.com/algomanlife/openfund/pull/8"
+    },
+    {
+      "headRefName": "qwen/directus-cms",
+      "mergeCommit": {
+        "oid": "bb5f34ec1087e4d7c201978ae1ccc6a088221166"
+      },
+      "number": 7,
+      "state": "MERGED",
+      "title": "feat(cms): Directus backstage \u2014 fa/en content management",
+      "url": "https://github.com/algomanlife/openfund/pull/7"
+    },
+    {
+      "headRefName": "qwen/react-migration",
+      "mergeCommit": {
+        "oid": "1da71039a9e7149b66e91eb7aec65b44dfac2956"
+      },
+      "number": 6,
+      "state": "MERGED",
+      "title": "Qwen/react migration",
+      "url": "https://github.com/algomanlife/openfund/pull/6"
+    },
+    {
+      "headRefName": "qwen/react-migration",
+      "mergeCommit": {
+        "oid": "4ae34012ea342e10bdb427bef2b68aadb0118ec0"
+      },
+      "number": 5,
+      "state": "MERGED",
+      "title": "Qwen/react migration",
+      "url": "https://github.com/algomanlife/openfund/pull/5"
+    },
+    {
+      "headRefName": "qwen/react-migration",
+      "mergeCommit": {
+        "oid": "c9bcfe3b89cf3e42b21218d46c7e18fac806d448"
+      },
+      "number": 4,
+      "state": "MERGED",
+      "title": "Qwen/react migration",
+      "url": "https://github.com/algomanlife/openfund/pull/4"
+    },
+    {
+      "headRefName": "qwen/react-migration",
+      "mergeCommit": {
+        "oid": "e914be5b47fb1e43f1c4fe5953ff38972553306a"
+      },
+      "number": 3,
+      "state": "MERGED",
+      "title": "Qwen/react migration",
+      "url": "https://github.com/algomanlife/openfund/pull/3"
+    },
+    {
+      "headRefName": "qwen/round-3-fixes",
+      "mergeCommit": {
+        "oid": "6310300de82549bb029ce19f5a245eb376f01e17"
+      },
+      "number": 2,
+      "state": "MERGED",
+      "title": "feat: round-3 \u2014 layout fixes, Gains-style selector, Finglish, real content",
+      "url": "https://github.com/algomanlife/openfund/pull/2"
+    },
+    {
+      "headRefName": "qwen/frontend-polish-vela-gains",
+      "mergeCommit": {
+        "oid": "4d6419ca032d4b56b2ddeb14218b1a7c89221ded"
+      },
+      "number": 1,
+      "state": "MERGED",
+      "title": "feat: Vela chart + verified Gains Network market data in the terminal",
+      "url": "https://github.com/algomanlife/openfund/pull/1"
+    }
+  ]
+}

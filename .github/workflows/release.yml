@@ -1,0 +1,105 @@
+name: Unified release
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the next official batch release from main
+        required: true
+        default: false
+        type: boolean
+permissions:
+  contents: read
+concurrency:
+  group: openfund-official-release
+  cancel-in-progress: false
+jobs:
+  package:
+    name: Release package gates
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: openfund_release_ci
+          POSTGRES_USER: openfund_ci
+          POSTGRES_PASSWORD: openfund_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U openfund_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://openfund_ci:openfund_ci@localhost:5432/openfund_release_ci
+      VITE_DIRECTUS_URL: ${{ vars.RELEASE_DIRECTUS_URL }}
+      VITE_WALLETCONNECT_PROJECT_ID: ${{ vars.RELEASE_WALLETCONNECT_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Allocate or resume immutable version
+        run: node scripts/release/plan.mjs
+      - name: Install browser runtime
+        run: npx --yes --package=playwright@1.64.1 playwright install --with-deps chromium
+      - name: All integrated release gates and packaging
+        env:
+          RELEASE_CANDIDATE: ${{ github.event_name != 'workflow_dispatch' || !inputs.publish }}
+        run: |
+          if [ "$RELEASE_CANDIDATE" = true ]; then npm run release:build -- --candidate; else npm run release:build; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: official-release-candidate
+          path: |
+            output/releases/v*/*.tar.gz
+            output/releases/v*/SHA256SUMS
+            output/releases/v*/release-manifest.json
+            output/releases/v*/verification.json
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: release-verification-evidence
+          path: output/playwright/
+          retention-days: 7
+  secrets:
+    name: Release secret scan
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  publish:
+    needs: [package, secrets]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: official-release-candidate
+          path: output/releases
+      - name: Resolve previously allocated version
+        run: node scripts/release/plan.mjs
+      - name: Publish immutable tag, notes and verified artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/release/publish.mjs

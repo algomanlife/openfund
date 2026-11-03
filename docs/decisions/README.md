@@ -11,4 +11,6 @@
 
 - [0007 — Compact terminal presentation](0007-compact-terminal-layout.md)
 
+- [0008 — Unified release authority](0008-unified-release-authority.md)
+
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)

@@ -1,3 +1,5 @@
+> Release policy update: use the [unified release runbook](RELEASES.md). The API service now disables commit auto-deploy and verifies a published release tag before building. Earlier setup examples below describe the original foundation and must not bypass the approved release workflow.
+
 # Render Deployment — Architecture & Operations
 
 Openfund deploys as **Infrastructure as Code** from this repository via a Render

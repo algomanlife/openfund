@@ -83,12 +83,12 @@ export function AccountPicker() {
     </label>
   );
 }
-export function AccountCards() {
+export function AccountCards({ compact = false, selectedId }: { compact?: boolean; selectedId?: string } = {}) {
   const { locale, t } = useTerminal(),
     { accounts, error } = useAccounts(),
     [params] = useSearchParams();
   return (
-    <section aria-label="Unified accounts">
+    <section aria-label="Unified accounts" className={compact ? "of-account-directory compact" : "of-account-directory"}>
       <div className="of-account-bar">
         <h2>{t("همهٔ حساب‌ها", "All trading accounts")}</h2>
         <span>
@@ -100,7 +100,7 @@ export function AccountCards() {
         {accounts.map((a) => (
           <Link
             data-account-id={a.id}
-            className={`of-panel of-account-card ${params.get("account") === a.id ? "selected" : ""}`}
+            className={`of-panel of-account-card ${(selectedId || params.get("account")) === a.id ? "selected" : ""}`}
             key={a.id}
             to={`/${locale}/${a.product}/dashboard?account=${encodeURIComponent(a.id)}`}
           >

@@ -129,7 +129,8 @@ if (cms?.envVars?.some(v => v.key === 'DB_CLIENT' && v.value === 'pg') &&
 else fail('graph: Directus requires DB_CLIENT=pg and managed DB_CONNECTION_STRING')
 const api = services.find(s => s.name === 'openfund')
 if (api?.numInstances !== 1) fail('graph: engine/SSE service requires numInstances: 1')
-if (!api?.buildCommand?.includes('npm ci --include=dev --prefix apps/web-react')) fail('graph: Vite build requires devDependencies even with NODE_ENV=production')
+if (api?.buildCommand?.trim() !== 'node scripts/release/render-build.mjs') fail('graph: API must use the verified official release build')
+if (api?.autoDeployTrigger !== 'off') fail('graph: production requires approved exact-release deployment')
 for (const key of ['ALLOWED_DOMAINS','VITE_DIRECTUS_HOST']) {
   if (!api?.envVars?.some(v => v.key === key && v.fromService?.envVarKey === 'RENDER_EXTERNAL_HOSTNAME')) fail(`graph: ${key} must reference a public hostname, not the private-network host property`)
 }

@@ -34,3 +34,7 @@ Reviewed against `2f5cf93`, 2026-11-02. No completion dates are promised. **Comp
 ## Terminal presentation acceptance
 
 **Completed within local frontend scope:** compact shared header, flat dark-green surfaces, fixed Persian/English column geometry and visible order controls without document/form scrolling at 1920 × 1080, 1440 × 900, 1366 × 768 and 1280 × 720. Depends on the existing shared terminal; changes no execution or deployment capability. [Evidence and responsive limits](../reviews/terminal-ui/DELIVERY.md).
+
+## Unified release acceptance
+
+**In Progress:** one version and manifest for the existing React/API application, mandatory wallet/route/account tests, checksummed artifacts, main-only publication, exact-version local runner and approved Render deployment. Acceptance requires passing main pipeline publication, configured production environment, identified deployed revision and demonstrated rollback. [Recovery report](../reviews/final-integration/DELIVERY.md) · [Release runbook](../deployment/RELEASES.md).
