@@ -16,7 +16,7 @@ Fetch the latest `main` and create a focused branch/worktree (`docs/`, `codex/` 
 
 ## Architecture contract
 
-Preserve the three Render resources (`openfund`, `openfund-db`, `openfund-cms`) and same-origin React at `/react/`. Keep the shared terminal presentation and product financial state isolated. PostgreSQL/Decimal own Prop simulation; Gains owns Perpetual read records; Directus owns published content/catalog administration. `dist/` remains source-critical. Protocol source integration is outside the repository transformation scope.
+Preserve the three Render resources (`openfund`, `openfund-db`, `openfund-cms`) and same-origin React at `/react/`. Keep the shared terminal presentation and product financial state isolated. PostgreSQL/Decimal own Prop simulation; Gains owns Perpetual read records; Directus owns published content/catalog administration. `dist/` remains source-critical. The integrated Protocol source is dormant; operational venue routing remains planned.
 
 ## Validation
 
@@ -30,3 +30,11 @@ Follow [Local Development](docs/development/LOCAL_DEVELOPMENT.md) and [Testing](
 - [ ] Required checks run, with failures and external limits recorded
 - [ ] Render architecture, app localization and financial isolation preserved
 - [ ] No secrets, unsupported claims, unlicensed assets or unexplained generated bundles
+
+## Safe shared-machine acceptance
+
+Follow the single [shared-machine acceptance contract](AGENTS.md#safe-shared-machine-acceptance)
+and [release runbook](docs/deployment/RELEASES.md) for port ownership, isolated
+test databases, artifact identity and rollback. Preserve the existing index and
+worktree when continuing an explicitly assigned staged branch; do not rebranch
+or restage unrelated work.

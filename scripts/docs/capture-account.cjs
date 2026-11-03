@@ -34,14 +34,21 @@ if(!['localhost','127.0.0.1'].includes(new URL(BASE).hostname))throw Error('Loca
   },wallet.address)
   await page.goto(BASE+'/#/en/home')
   await page.getByRole('button',{name:'Connect Wallet',exact:true}).click()
-  await page.getByRole('button',{name:'Sign in',exact:true}).click()
-  await page.getByRole('button',{name:'Account',exact:true}).waitFor()
+  const walletAction = async name => {
+   const button = page.getByRole('button',{name,exact:true,includeHidden:true}).first()
+   await button.waitFor({state:'attached'})
+   const menu = button.locator('xpath=ancestor::details[contains(@class,"rk-account-menu")]')
+   if(await menu.count() && !await menu.evaluate(el=>el.open)) await menu.locator('summary').click()
+   return button
+  }
+  await (await walletAction('Sign in')).click()
+  await page.getByRole('button',{name:'Account',exact:true,includeHidden:true}).waitFor({state:'attached'})
   const entries=[]
   const capture=async(name,route,state)=>{
    await page.screenshot({path:`docs/assets/screenshots/${name}.jpg`,type:'jpeg',quality:84,animations:'disabled'})
    entries.push({file:`${name}.jpg`,route,viewport:{width:1440,height:1000},session:'Disposable generated documentation wallet; real local SIWE session',state,capturedAt:new Date().toISOString()})
   }
-  await page.getByRole('button',{name:'Account',exact:true}).click()
+  await (await walletAction('Account')).click()
   await page.getByRole('heading',{name:'Openfund Account',exact:true}).waitFor()
   await capture('account-profile','/react/#/en/home','Actual profile dialog; generated address is not a personal wallet')
   await page.keyboard.press('Escape')
@@ -51,8 +58,12 @@ if(!['localhost','127.0.0.1'].includes(new URL(BASE).hostname))throw Error('Loca
    ['analytics','prop/dashboard','Actual new-account analytics; no generated performance history'],
    ['perpetual-portfolio','perpetual/portfolio','Official Gains reads for newly generated wallet; no positions created'],
   ]) {
-   await page.goto(BASE+'/#/en/'+route);await page.waitForTimeout(7000)
-   await capture(name,'/react/#/en/'+route,state)
+   const targetLocale=route.startsWith('perpetual/')?'fa':'en'
+   await page.goto(BASE+'/#/'+targetLocale+'/'+route)
+   await page.locator('.of-terminal-top').waitFor()
+   await page.waitForTimeout(7000)
+   if(await page.locator('.of-terminal-top').count()!==1)throw Error('Capture requires the actual terminal workspace')
+   await capture(name,'/react/#/'+targetLocale+'/'+route,state)
   }
   const filename='docs/assets/screenshots/manifest.json'
   const manifest=JSON.parse(fs.readFileSync(filename,'utf8'))

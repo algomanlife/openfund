@@ -86,8 +86,9 @@ async function walletDisclosureFits(page){
    check(prefix+' other-page navigation',await page.locator('#navigation a').count()===10);
    const tv=page.locator('.tradingview-credit');await tv.waitFor();
    check(prefix+' TradingView description',(await tv.innerText()).includes(locale==='fa'?'اطلاعات و اخبار بازارها':'Market Data & News'));
-   check(prefix+' external-resource wording',(await tv.innerText()).includes(locale==='fa'?'منبع خارجی':'External resource'));
-   check(prefix+' existing footer references',await page.locator('.credits-row .render-credit').count()===4);
+   check(prefix+' redundant external label removed',!(/منبع خارجی|External resource/.test(await tv.innerText())));
+   check(prefix+' five service references',await page.locator('.credits-row .render-credit').count()===5);
+   check(prefix+' DePay identification',await page.locator('.credits-row a[href="https://depay.com/"]').count()===1);
    if(width===1440&&!connected){const file=`footer-${locale}-${theme}.png`;await page.locator('.credits-row').evaluate(el=>el.scrollIntoView({behavior:'instant',block:'center'}));await page.screenshot({animations:'disabled',path:path.join(OUT,file)});screenshots.push({file,fixture:'none'})}
    for(const product of locale==='fa'?['prop','perpetual']:['prop']){
     for(const section of ['dashboard','trade','portfolio','journal','journal?section=accounts']){

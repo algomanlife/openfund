@@ -1,0 +1,12 @@
+.public-community-slot { margin-block: 24px; }
+.telegram-community { --community-border: #58ace54d; --community-background: #153c5c66; --community-text: #e2f3ff; --community-accent: #58ace5; display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px; min-height: 44px; border: 1px solid var(--community-border); border-radius: 12px; background: var(--community-background); color: var(--community-text); font: inherit; font-size: 13px; line-height: 1.5; text-decoration: none; transition: transform .2s, border-color .2s; cursor: pointer; }
+.telegram-community[aria-disabled="true"] { cursor: default; }
+.telegram-community small { font-size: 10px; }
+.telegram-community img { object-fit: contain; flex-shrink: 0; transition: transform .2s; }
+.telegram-community:hover { transform: translateY(-2px); border-color: var(--community-accent); }
+.telegram-community:hover img { transform: translate(2px,-2px) rotate(-8deg); }
+.telegram-community:focus-visible { outline: 2px solid var(--mint); outline-offset: 4px; }
+.home-gateway .home-community { margin: 0; text-align: center; }
+/* Counter the public site's root inversion so the official icon remains blue. */
+html[data-theme="light"] .telegram-community { filter: invert(1) hue-rotate(180deg); --community-background: #e7f3fc; --community-text: #184f72; --community-border: #397ea7; }
+@media (prefers-reduced-motion: reduce) { .telegram-community, .telegram-community img { transition: none; transform: none !important; } }

@@ -5,6 +5,7 @@ import { bindNavigation, renderNavigation, navigationClick, navigationKeyDown } 
 import '../features/information/information.css'
 import landingBody from './landing-body.html?raw'
 import { RainbowConnect } from '../wallet/RainbowConnect'
+import TelegramCommunity from '../features/community/TelegramCommunity'
 import { CheckoutHost } from '../features/purchase/CheckoutHost'
 import { fetchCmsNavigation, fetchCmsTranslations, fetchCmsLegacyPlans, fetchCmsFaqs, fetchCmsLegal, fetchCmsFooterLinks, invalidateCmsCache } from '../cms/client'
 
@@ -103,6 +104,15 @@ function markCurrentPage() {
 }
 
 export default function Landing() {
+  const [communityHosts, setCommunityHosts] = useState<HTMLElement[]>([])
+  const [communityLocale, setCommunityLocale] = useState<'fa' | 'en'>('fa')
+  useEffect(() => {
+    const sync = () => setCommunityLocale(document.documentElement.lang === 'en' ? 'en' : 'fa')
+    setCommunityHosts(Array.from(document.querySelectorAll<HTMLElement>('[data-community-slot]')))
+    sync()
+    addEventListener('of-language', sync)
+    return () => removeEventListener('of-language', sync)
+  }, [])
   const navigate = useNavigate()
   const routeLocale = useParams().locale
   const isHome = useLocation().pathname.endsWith("/home")
@@ -293,6 +303,7 @@ export default function Landing() {
   return (
     <>
       {walletHost && createPortal(<RainbowConnect />, walletHost)}
+      {communityHosts.map((host, i) => createPortal(<TelegramCommunity locale={communityLocale} />, host, String(i)))}
       <CheckoutHost />
       <div dangerouslySetInnerHTML={{ __html: landingBody }} />
     </>

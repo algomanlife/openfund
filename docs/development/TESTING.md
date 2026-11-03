@@ -24,16 +24,19 @@ export DATABASE_URL=postgresql://localhost:5432/openfund_test
 npm run migrate --prefix apps/backend
 npm run migrate --prefix apps/backend
 npm run seed-plans --prefix apps/backend
-SIM_TEST_MODE=1 npm start --prefix apps/backend
+# CI-only placeholder; never use it as an approved payment destination.
+PORT=8294 SIM_TEST_MODE=1 \
+  PURCHASE_PAYMENT_RECEIVER=0x000000000000000000000000000000000000c1a1 \
+  npm start --prefix apps/backend
 ```
 
 In a second terminal with the same `DATABASE_URL`:
 
 ```bash
-npm run test:backend
+TEST_BACKEND_URL=http://localhost:8294 npm run test:backend
 ```
 
-Default tests use backend port 8080 and SIWE origin/domain `localhost:5173`. If running another port, set `PORT` for the server and `TEST_BACKEND_URL` for tests; keep `localhost:5173` in server `ALLOWED_DOMAINS` and `http://localhost:5173` in `CORS_ORIGINS`. The test seam is disabled in production; never enable it in a public environment.
+The example deliberately uses a private test port, not the intended official runtime at 8080. Default tests use backend port 8080 and SIWE origin/domain `localhost:5173`. If running another port, set `PORT` for the server and `TEST_BACKEND_URL` for tests; keep `localhost:5173` in server `ALLOWED_DOMAINS` and `http://localhost:5173` in `CORS_ORIGINS`. The test seam is disabled in production; never enable it in a public environment. Purchase HTTP/browser lifecycle tests need the CI-only placeholder receiver above. Without a receiver, purchase-disabled paths may pass while enabled lifecycle cases skip; report skip counts. `/internal/confirm-order` exercises local atomic provisioning, not live receipt finality, token economics or DePay network compatibility.
 
 ## Browser suites
 
@@ -42,12 +45,18 @@ After backend suites finish (their test marks share a process), run:
 ```bash
 npx playwright install chromium
 npm run build:web
-npm run test:browser:audit
+TEST_FRONTEND_URL=http://localhost:8294/react TEST_BACKEND_URL=http://localhost:8294 npm run test:browser:audit
+TEST_FRONTEND_URL=http://localhost:8294/react TEST_BACKEND_URL=http://localhost:8294 npm run test:browser:purchase
+TEST_FRONTEND_URL=http://localhost:8294/react TEST_BACKEND_URL=http://localhost:8294 npm run test:browser:website
 ```
 
 The audit suite uses generated EIP-1193 signers and controlled CMS/Gains protocol fixtures with the real local API/database. `TEST_FRONTEND_URL` and `TEST_BACKEND_URL` support an isolated host/port. It tests real SIWE signatures, not actual extensions, remote WalletConnect, hardware wallets or chain execution. `npm run test:browser:live` requires the separately configured local CMS and live Gains availability; inspect its setup before running.
 
 Genuine documentation screenshots use no market/CMS/financial protocol fixtures. Public pages are anonymous; authenticated captures use a disclosed disposable signer and real local account/session records, without seeded trades or performance history. [Screenshot provenance](../assets/screenshots/README.md) records route, viewport, build, services and limitations. Browser snapshots and raw logs live under ignored `output/playwright/` and `output/validation/`.
+
+## Release gate coverage
+
+`release:build` invokes `test:backend` and its recorded browser gate list. At v0.2.0/main `561e7f3`, that list did not include explicit purchase-browser acceptance and did not configure a receiver. CI separately sets the test receiver and invokes `test:browser:purchase`. The website worktree adds the focused website suite; it does not establish live-chain payment or wallet-device acceptance. Inspect `scripts/release/build.mjs`, `.github/workflows/ci.yml` and the actual `verification.json` stage/skip results for the tested revision. Never equate a successful package with production payments, deployed CMS or current local startup.
 
 ## CI and security
 

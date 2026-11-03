@@ -299,7 +299,6 @@
   "برای توسعهٔ دست‌جمعی و نظارت مداوم کاربران": "For community-driven development and continuous public oversight",
   "ایران — فارس — شیراز، بلوار ارم، خیابان نارون، بین نارون و خاکشانسی": "Iran — Fars, Shiraz, Arm Boulevard, Naron Street, between Naron and Khakshanasi",
   "ایالات متحده — سان‌فرانسیسکو، خیابان برنان ۵۲۵، سوئیت ۳۰۰، کد پستی ۹۴۱۰۷": "United States — 525 Brannan St., Suite 300, San Francisco, CA 94107",
-  "توسعه‌داده‌شده در سان‌فرانسیسکو": "Developed in San Francisco",
   "معامله": "Trade",
   "پرتفوی": "Portfolio",
   "بیشتر": "More",
@@ -412,6 +411,10 @@
   "دریافت برندبوک ↓": "Download brandbook ↓",
   "بازگشت به بالا ↑": "Back to top ↑",
   "اطلاعات و اخبار بازارها": "Market Data & News",
-  "منبع خارجی": "External resource",
-  "منبع خارجی؛ بدون ادعای همکاری یا تأمین داده": "External resource; no partnership or data-feed claim"
+  "توسعه داده شده توسط معامله‌گران": "Developed by Traders",
+  "سیستم دریافت و پرداخت": "Payment & Collection System",
+  "دسکتاپ و موبایل": "Desktop & Mobile",
+  "به‌زودی": "Coming Soon",
+  "اوپن‌فاند برای دسکتاپ و موبایل؛ نسخه‌های قابل نصب پس از انتشار رسمی در دسترس قرار می‌گیرند.": "Openfund for desktop and mobile. Installable apps will be available after their official release.",
+  "نسخه‌های ویندوز، مک، لینوکس، iOS و اندروید — به‌زودی.": "Windows, macOS, Linux, iOS and Android apps — coming soon."
 }

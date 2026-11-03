@@ -48,7 +48,7 @@ try {
   server=spawn(process.execPath,['apps/backend/server.js'],{cwd:root,env,stdio:['ignore',fs.openSync(path.join(output,'backend-test.log'),'w'),'inherit']});
   server.on('error',error=>console.error(error.message));
   await healthy(base+'/health',server);
-  for(const task of ['test:backend','test:browser:audit','test:browser:completion','test:browser:layout','test:browser:charts','test:browser:polish','test:browser:release','test:browser:routes']) await gate(task,'npm',['run',task]);
+  for(const task of ['test:backend','test:browser:audit','test:browser:completion','test:browser:layout','test:browser:charts','test:browser:polish','test:browser:website','test:browser:release','test:browser:routes']) await gate(task,'npm',['run',task]);
   // A second run explicitly covers the authenticated geometry matrix.
   await run('npm',['run','test:browser:layout'],{env:{...env,TEST_LAYOUT_AUTH:'1'}});
   stages.push({name:'authenticated-layout',status:'passed'});

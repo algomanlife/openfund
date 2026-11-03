@@ -1,6 +1,6 @@
 # Feature status
 
-Canonical capability register for the repository based on `main` **2f5cf93**, including [PR #23](https://github.com/algomanlife/openfund/pull/23) and [PR #24](https://github.com/algomanlife/openfund/pull/24). Reviewed 2026-11-02. This is an implementation assessment, not a production readiness or deployment certificate.
+Canonical capability register reconciled on 2026-11-03 at main `561e7f3101f3a43376068d9bba1a87c30e2b7d71`. At 19:52 UTC, publication run 41705345213 succeeded: official v0.2.0 includes PR #40 and #41. Historical v0.1.1 (`ce9ddd0`) predates them. Dirty website-refresh additions remain unmerged and absent from v0.2.0; current official local startup at port 8080 is not verified here. This is an implementation assessment, not a production readiness certificate. [Audit and release boundaries](../reviews/website-refresh/AUDIT.md).
 
 Statuses: **Completed** = implemented within the stated boundary with repository evidence; **In Progress** = partial delivery remains; **Planned** = future work; **Blocked** = explicit prerequisite prevents completion. Completed rows do not imply real-world wallet, network or deployment validation unless separately evidenced.
 
@@ -30,7 +30,7 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | Challenge purchase, server-priced orders and on-chain payment verification | Completed (local) | [ADR 0009](../decisions/0009-challenge-purchases-and-payment-verification.md); [purchases module](../../apps/backend/purchases.js) — viem receipt/token/amount/timing checks server-side, exactly-once provisioning, idempotent orders; purchases stay disabled while `PURCHASE_PAYMENT_RECEIVER` is unset; live-chain verification and production payment activation pending an approved destination |
 | DePay checkout widget | Completed (local, gated) | `CheckoutPanel.tsx` loads the widget only with `VITE_DEPAY_WIDGET=1` plus `VITE_DEPAY_WIDGET_URL`, built from backend order data; manual payment instructions + transaction-hash verification remain the default; no widget bundle ships enabled |
 | Purchase history, payment history and invoices | Completed (local) | `GET /purchases/history`, `GET /invoices/:id` (dependency-free PDF, [invoice-pdf.js](../../apps/backend/invoice-pdf.js)), Prop route `#/{locale}/prop/purchases`; browser E2E [purchase flow](../../e2e/test-purchase-flow.cjs) |
-| Withdrawal requests | Completed (local) | `withdrawal_requests` + `GET/POST /withdrawals`; Prop route `#/{locale}/prop/withdrawals` replaces the placeholder page; requests are operator-reviewed — no automatic payout processing exists |
+| Withdrawal requests | Completed (local) | `withdrawal_requests` + `GET/POST /withdrawals`; Prop route `#/{locale}/prop/withdrawals` replaces the placeholder page; requests are recorded for future operator review — no review interface or payout settlement is established |
 | Paid challenge evaluation and rule enforcement | Planned | Purchases provision `openfund_challenges` records; phase targets, drawdown enforcement and pass/fail evaluation are not yet engine-enforced |
 | Funded capital, payout processing, rewards and certificates | Planned | Withdrawal requests exist; payout settlement, rewards and certificates remain unavailable states |
 | Perpetual on-chain execution | Blocked | Approved supported contracts, simulation, security review and receipt reconciliation required; execution disabled |
@@ -41,7 +41,8 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | Render three-resource configuration | Completed | [Blueprint](../../render.yaml); openfund + openfund-db PostgreSQL 17 + openfund-cms Directus 11.9.1; same-origin `/react/` |
 | CI and local validation tooling | Completed | [Workflow](../../.github/workflows/ci.yml); web, backend/Postgres, browser, Blueprint, secrets and advisory reports |
 | Deployed Render acceptance and operational monitoring | In Progress | Configuration exists; authenticated validation, apply, deployed HTTPS sessions/CMS and recovery evidence are not established here |
-| Openfund Protocol and venue routing | Planned | [Protocol roadmap](../roadmap/PROTOCOL.md); no routing engine or new protocol source imported |
+| Dormant Openfund Protocol source foundation | Completed within source scope | `packages/openfund-protocol/` Solidity source, provenance and compile/test foundation integrated; not an active venue |
+| Operational Protocol venue routing | Planned | [Protocol roadmap](../roadmap/PROTOCOL.md); no active quote aggregation, routing or execution |
 | Additional integrations and developer services | Planned | [Product roadmap](../roadmap/PRODUCT.md); depends on validated product/execution contracts |
 
 ## Proprietary chart indicators
@@ -60,7 +61,7 @@ Historical tests and findings remain in [reviews](../reviews/README.md); their r
 
 ## Final integration and release recovery
 
-**In Progress:** recovered shared terminal navigation, default account/detail Dashboard, EIP-6963 connection, route-network synchronization, scoped account adapter and Journal interactions. Main-only SemVer packaging, release diagnostics, immutable artifacts and approved exact-SHA deployment are implemented for verification. The verified local baseline is official v0.1.0 at `b2c5407`; deployed acceptance remains unconfigured. [Recovery and release evidence](../reviews/final-integration/DELIVERY.md).
+**In Progress:** recovered shared terminal navigation, default account/detail Dashboard, EIP-6963 connection, route-network synchronization, scoped account adapter and Journal interactions. Main-only SemVer packaging, release diagnostics, immutable artifacts and approved exact-SHA deployment are implemented for verification. Official v0.2.0 publication and manifest source `561e7f3` are verified through GitHub; this does not verify current downloaded-archive startup at port 8080. Deployed acceptance remains unconfigured. [Recovery and release evidence](../reviews/final-integration/DELIVERY.md).
 
 ## UI polish batch
 
@@ -76,3 +77,14 @@ compact proposed Perpetual concepts and Made by Humans badge. Existing CMS and
 English Prop entry remain authoritative. Review,
 product claims and unified-release acceptance remain open. [Implementation and
 local checks](../reviews/landing-motion/DELIVERY.md).
+
+## Website and distribution refresh
+
+| Capability | Status | Evidence and limits |
+| --- | --- | --- |
+| Bilingual public footer and community presentation | In Progress (candidate) | Shared landing footer and reusable TelegramCommunity component; terminal excluded; destination unavailable until an owner-verified URL is configured; refreshed unavailable-state acceptance pending |
+| Five platform availability presentation | Completed (candidate) | Windows, macOS, Linux, App Store/iOS, Google Play/Android; all Coming Soon because no installer/store listing is verified |
+| Desktop packaging | Planned | Unified release tar.gz packages web/API source and assets; it is not an OS installer |
+| Mobile applications | Planned | No published listing or mobile application delivery verified |
+| Official unified packaging | Completed within GitHub publication scope | v0.2.0 official manifest/tag at `561e7f3`, run 41705345213 success; current port 8080 runtime not verified here; candidate branch excluded |
+| Production deployment / payment acceptance | Blocked | No configured live Render; approved receiver, real-chain acceptance and optional widget acceptance remain required |

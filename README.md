@@ -19,7 +19,7 @@ Openfund is a FinTech and Web3 startup building an integrated environment for ma
 
 The repository contains an actively developed application: React product views, a Node.js backend, persistent simulated Prop execution, Gains Network market and wallet reads, SIWE sessions, portfolios and private trading journals. The next stages extend product workflows, operational readiness and execution capabilities through explicit acceptance gates.
 
-**Current scope:** Prop execution uses virtual DAI. Perpetual integrates Gains read data on Arbitrum One with on-chain execution disabled. Commercial challenge activation, funded capital, payouts and Protocol routing are future capabilities. See the [capability register](docs/product/FEATURE_STATUS.md) for evidence and limits.
+**Current scope:** New Prop Free Trial accounts use 100,000 virtual USD; existing virtual-DAI ledgers are preserved. Perpetual integrates Gains read data on Arbitrum One with on-chain execution disabled. Challenge ordering, payment verification, invoices and withdrawal requests are merged with configuration gates; production payment acceptance, evaluation, funded capital, payouts and Protocol routing remain open. See the [capability register](docs/product/FEATURE_STATUS.md) for evidence and limits.
 
 ## Vision and mission
 
@@ -47,7 +47,7 @@ Openfund addresses fragmented workflows across charts, market feeds, account por
 
 The current Prop account is a persistent practice environment with **100,000 virtual USD for new Free Trial accounts** (existing virtual-DAI ledgers are preserved), funded once per authenticated user. Trials have no time, trade-count or Challenge drawdown limits. Equity at or below zero permanently disables the trial after authoritative liquidation settlement; an individual position liquidation does not terminate a positive-equity account. A server-authoritative engine handles market/limit/stop orders, SL/TP, cancellation, partial closes and liquidation monitoring on real market marks.
 
-Decimal valuation, fee-aware margin checks, owned idempotency and PostgreSQL transactions protect the simulated ledger. The Portfolio shows positions, history and net performance; the Journal records decisions in the same product context. Challenge catalog and account records exist; paid activation and evaluation enforcement remain planned.
+Decimal valuation, fee-aware margin checks, owned idempotency and PostgreSQL transactions protect the simulated ledger. The Portfolio shows positions, history and net performance; the Journal records decisions in the same product context. Challenge catalog and account records exist; server-priced purchases and invoices are implemented behind the approved payment receiver gate; evaluation enforcement remains planned.
 
 [Prop product and calculations](docs/trading/PROP.md) · [Trading lifecycle](docs/architecture/FLOWS.md#trading-lifecycle)
 
@@ -63,7 +63,7 @@ Wallet authentication supports private product views. Transaction execution, app
 
 > Openfund Protocol is designed to aggregate liquidity across Gains Network, Hyperliquid, and dYdX, enabling intelligent trade routing and improved execution-path selection. (Available in the final release.)
 
-**Planned:** this describes the intended final-release product. Aggregation and routing are not operational capabilities. Protocol source integration is reserved for Task 2; this transformation imports no MUX Protocol source.
+**Planned routing:** this describes product intent, not delivered aggregation. The dormant Solidity source foundation and provenance are already integrated in `packages/openfund-protocol/`; no active venue routing or execution is established.
 
 [Protocol roadmap](docs/roadmap/PROTOCOL.md)
 
@@ -89,26 +89,18 @@ The shared [account directory](docs/trading/UNIFIED_ACCOUNTS.md) presents Free T
 
 ## Product gallery
 
-Genuine captures retain the source baselines recorded in the manifest. Terminal images were refreshed for the [compact workspace redesign](docs/reviews/terminal-ui/DELIVERY.md) on 2026-11-02. Market information comes from live Gains reads; CMS content comes from the existing local Directus instance. Public pages, anonymous terminals and disposable authenticated account states are labelled in the [capture manifest and limitations](docs/assets/screenshots/README.md). No personal wallet information or invented trading records is shown.
+The [current website candidate gallery](docs/reviews/website-refresh/DELIVERY.md)
+records the candidate source, runtime, capture states and historical checks; final review and recapture remain separate. These are actual
+application captures; historical images keep their original provenance in the
+[screenshot manifest](docs/assets/screenshots/manifest.json).
 
-| Home | Market discovery |
+| Persian Home | English Prop |
 | --- | --- |
-| ![English Openfund Home product gateway](docs/assets/screenshots/home.jpg) | ![English Markets page with live Gains market information](docs/assets/screenshots/markets.jpg) |
-| **Prop Terminal — anonymous, execution unavailable** | **Perpetual Terminal — read-only** |
-| ![Current shared Prop terminal without an authenticated account](docs/assets/screenshots/terminal-prop-en.png) | ![Current shared Perpetual terminal with live chart data](docs/assets/screenshots/terminal-perpetual-en.png) |
-| **Challenges — catalog, purchase not operational** | **Portfolio — new virtual account** |
-| ![English challenge catalog and published product content](docs/assets/screenshots/challenges.jpg) | ![Actual new Prop virtual account with no trading history](docs/assets/screenshots/prop-portfolio.jpg) |
-| **Journal — empty private notebook** | **Dashboard — new-account analytics** |
-| ![Actual private Journal with no seeded notes](docs/assets/screenshots/journal.jpg) | ![Actual fresh-account dashboard without fabricated performance history](docs/assets/screenshots/analytics.jpg) |
-| **Account / Profile — disposable documentation wallet** | **Wallet connection — anonymous** |
-| ![Actual local profile for a generated documentation identity](docs/assets/screenshots/account-profile.jpg) | ![Actual unconnected wallet modal](docs/assets/screenshots/wallet-connection.jpg) |
-| **FAQ — searchable bilingual hub** | **Tools Center — ten browser-side calculators** | **Learning Center — five paths** |
-| --- | --- | --- |
-| ![Persian FAQ hub with categories and search](docs/assets/screenshots/website-faq-fa.jpg) | ![Persian Tools Center index](docs/assets/screenshots/website-tools-fa.jpg) | ![Learning Center landing](docs/assets/screenshots/website-learn-fa.jpg) |
-| **Lesson with contents sidebar** | **Glossary — 40 terms** | **Growth Partner — pre-launch attribution** |
-| ![Lesson page with table of contents](docs/assets/screenshots/website-lesson-fa.jpg) | ![Glossary with search and letter index](docs/assets/screenshots/website-glossary-fa.jpg) | ![Pre-launch Growth Partner page with honest reward status](docs/assets/screenshots/website-referral-fa.jpg) |
+| ![Persian website candidate](docs/assets/screenshots/refresh-home-fa.png) | ![English Prop website candidate](docs/assets/screenshots/refresh-challenges-en.png) |
+| **Desktop & Mobile — all apps coming soon** | **Public service footer** |
+| ![Five platform availability cards](docs/assets/screenshots/refresh-downloads-en.png) | ![Public service footer and Telegram action](docs/assets/screenshots/refresh-footer-fa.png) |
 
-[Full gallery, Perpetual Portfolio and capture limitations](docs/assets/screenshots/README.md)
+[Terminal, dashboard, accounts, portfolio and journal captures](docs/assets/screenshots/README.md).
 
 ## Architecture
 
@@ -237,5 +229,25 @@ residency eligibility.
 
 The [Persian landing redesign](docs/reviews/landing-motion/DELIVERY.md) adds scoped
 vector motion and compact proposed Perpetual concepts to the existing gateway.
-English retains the existing Prop challenge experience. This branch is unmerged;
-technical concept claims require product review before publication.
+English retains the existing Prop challenge experience. This work merged through PR #40 after v0.1.1;
+technical concept claims require product review before production publication.
+
+## Source and release snapshot — 2026-11-03
+
+At 19:52 UTC, GitHub publication run [41705345213](https://github.com/algomanlife/openfund/actions/runs/41705345213)
+succeeded. Official [v0.2.0](https://github.com/algomanlife/openfund/releases/tag/v0.2.0)
+and its manifest identify `561e7f3101f3a43376068d9bba1a87c30e2b7d71`, including PR #40
+and #41. Historical v0.1.1 (`ce9ddd0`) predates both. This dirty website-refresh
+branch is **not included in v0.2.0**; its captures are unofficial candidates.
+Publication does not verify a live port 8080 runtime or Render deployment;
+local downloaded-release startup and identity verification remain separate acceptance.
+See the [audit](docs/reviews/website-refresh/AUDIT.md) and
+[delivery evidence](docs/reviews/website-refresh/DELIVERY.md). Payment receiver and
+optional DePay widget remain gated. Challenge provisioning is not evaluation;
+withdrawal requests are not payouts. All five platform cards say Coming Soon
+because no installer/store listing is verified. The Telegram community destination
+is unavailable until an owner-verified URL is configured; telegram.org is not an
+Openfund group.
+
+Repository licensing is component-specific: preserve [upstream notices](docs/integrations/UPSTREAM.md)
+and package notices. No blanket license grant for all repository material is implied.

@@ -1,8 +1,8 @@
 # Technology stack registry
 
-> Single source of truth for every technology used in Openfund. Update this file when a dependency is added, upgraded, or its status changes. Statuses: **Active** (in the running app), **Vendored** (source kept, used indirectly or unused), **Planned**.
+> Single source of truth for every technology used in Openfund. Update this file when a dependency is added, upgraded, or its status changes. Statuses: **Active** (used by application source; not a claim of current runtime verification), **Vendored** (source kept, used indirectly or unused), **Planned**.
 
-## App layer — `apps/web-react` (React migration, branch `qwen/react-migration`)
+## App layer — `apps/web-react` (integrated React application)
 
 | Technology | Version | Role | Status | License |
 | :--- | :--- | :--- | :--- | :--- |
@@ -17,7 +17,7 @@
 | Technology | Version | Role | Status | License |
 | :--- | :--- | :--- | :--- | :--- |
 | Node.js | 22 (required) | backend runtime | Active | Node license |
-| Express | 4.21 | HTTP API (/auth/nonce, /auth/verify, /auth/me, /auth/logout) | Active | MIT |
+| Express | 4.21 | Auth/profile, account/trading, portfolio/journal, purchases/invoices/withdrawal requests and diagnostics APIs | Active | MIT |
 | viem (siwe) | 2.57 | EIP-4361 parse + verify (EOA + EIP-1271) | Active | MIT |
 | pg | 8.13 | PostgreSQL access | Active | MIT |
 | ws | 8.x | Gains WebSocket client (server-side marks) | Active | MIT |
@@ -59,7 +59,7 @@ Notes:
 | Technology | Role | Status |
 | :--- | :--- | :--- |
 | Vanilla JS modules (`locale.js`, `app.js`, `features.js`, `market.js`, `motion.js`, `terminal.js`, `terminal-data.js`) | Landing + terminal behaviour | Active (both classic and React pages) |
-| Custom CSS (`style.css`, `terminal.css`, `wallet.css`) | Design system (mint `#82e7bd`, bg `#060808`, light theme = `invert(1) hue-rotate(180deg)`) | Active |
+| Custom CSS (`style.css`, `terminal.css`, `wallet.css`) | Mint `#82e7bd`, bg `#060808`; public light theme uses root inversion with asset counter-filters; terminal/Vela use native palettes | Active |
 | Fonts | Irancell (fa, weights 400–900), Ubuntu (en), Openfund Persian (woff2 wordmark) | Active |
 
 ## Tooling & operations
@@ -67,12 +67,13 @@ Notes:
 | Technology | Role | Status |
 | :--- | :--- | :--- |
 | Node same-origin hosting | API + built React at `/react/`; Vite for local development | Active |
-| Playwright (playwright-core 1.64) | Real-browser E2E (clicks, theme/lang/dir, REST rows, reload teardown) — 18/18 green on dev + build | Active (test) |
+| Playwright (playwright-core 1.64) | Browser acceptance for routes, wallets, accounts, purchases, charts and public presentation; results belong to their recorded source/runtime checkpoints | Active (test) |
 | GitHub (branches `qwen/*`, `codex/*`, PR review) | Agent collaboration workflow | Active |
 
 ## Verified API constraints (do not regress)
 
 - Gains candles: `1m 5m 15m 30m 1h 4h 1d` — **1w is NOT supported** (verified empty).
-- Gains provides **no volume / open interest history / order-book / trade-tape** — those fields show `—` or are labelled simulated.
+- The OHLC/mark adapter (`packages/openfund-gains-adapter/src/gains-adapter.js`) supplies no candle volume or open-interest history. Its marks are not liquidity or executed trades.
+- The separate `apps/web-react/public/legacy/market-depth.js` reads authentic Gains VOB and executed-trade resources; see [provider-specific depth limits](../integrations/GAINS_DEPTH.md). This is not centralized matching or footprint data. Unsupported values remain unavailable; never fabricate volume or derive depth from oracle marks.
 - Per-market `maxLeverage` from `/markets` clamps the leverage control (bounds come from live metadata).
 - WS protocol: `{op:'subscribe',channel:'prices'}`, answer `{op:'ping'}` with `{op:'pong'}`, resubscribe on sequence gap.

@@ -11,7 +11,7 @@ Applies to Codex, QwenWork, ChatGPT Work and any other development agent.
 
 ## Git collaboration
 
-1. Fetch and branch from latest `main`: `codex/<topic>`, `qwen/<topic>` or `docs/<topic>`.
+1. Fetch and branch from latest `main`: `codex/<topic>`, `qwen/<topic>` or `docs/<topic>`. When explicitly assigned an existing staged branch, continue it without replacing its index or other contributors' work; agree file ownership before parallel edits.
 2. Do not force-push, rewrite history or push directly to `main`.
 3. Keep commits scoped and descriptive (Conventional Commits preferred).
 4. Open a Pull Request with summary, files changed, tests, risks and screenshots when UI changes.
@@ -26,7 +26,7 @@ Applies to Codex, QwenWork, ChatGPT Work and any other development agent.
 - Keep all repository documentation, explanatory comments/test descriptions and GitHub templates English-only. Preserve application Persian localization, RTL, dictionaries, seeds and required localization assertions.
 - Run `npm run docs:check`; update CI whenever validation requirements change.
 - Preserve approved logo geometry and asset provenance. Never invent partnerships, investors, revenue, user counts, volumes, approvals or production adoption.
-- Do not import or integrate MUX Protocol or Openfund Protocol source during Task 1; protocol integration is reserved for Task 2.
+- Preserve the already-integrated dormant `packages/openfund-protocol/` source, provenance and notices. Do not add protocol integrations or enable venue routing in a website/documentation task.
 
 
 - Update the root README when setup, architecture, capabilities or project status changes.
@@ -81,3 +81,15 @@ Code/config changes (if any), documentation, test results, change log, accurate 
 - Inspect existing Openfund server ports and working directories before startup. Preserve the user database and other work; distinguish development servers, test servers and the single intended official runtime.
 - Record implemented/unmerged, candidate, official/local and future deployed status separately. Preserve older official releases for rollback. Render credentials/deployment are optional until production is explicitly configured.
 - Follow [the release runbook](docs/deployment/RELEASES.md). The user's accepted scope and authorization take precedence over this workflow.
+
+## Safe shared-machine acceptance
+
+Before editing, fetch references and record local status, main SHA, latest official
+tag/release/manifest, open PRs and occupied server ports. Use an isolated worktree
+with its own build output; preserve tracked `dist/` and existing agent work.
+Reuse public footer/locale components and keep marketing actions outside trading
+workspaces. Check the current release manifest before calling a candidate official.
+Keep one intended official application at port 8080; use a separate test port and
+new disposable database for development checks. Never run test suites against the
+user database. Follow the existing unified release runbook for reviewed batches
+and retain the previous immutable release and compatible database backup for rollback.

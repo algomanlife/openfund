@@ -114,6 +114,8 @@ services:
           envVarKey: RENDER_EXTERNAL_HOSTNAME # browser needs the public CMS origin
       - key: VITE_WALLETCONNECT_PROJECT_ID
         sync: false             # optional (full remote wallet list)
+      - key: VITE_TELEGRAM_COMMUNITY_URL
+        sync: false             # optional owner-verified t.me destination; unset = Coming Soon
       - key: PURCHASE_PAYMENT_RECEIVER
         sync: false             # challenge payment destination address — deliberately unset:
                                 # purchases stay disabled until an approved address is entered

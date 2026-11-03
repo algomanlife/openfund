@@ -7,6 +7,7 @@ import { fetchCmsTranslations, fetchCmsNavigation, fetchCmsFooterLinks, type Cms
 import { RainbowConnect } from '../../wallet/RainbowConnect'
 import { labels, type Locale, type InfoPage } from './content'
 import './information.css'
+import TelegramCommunity from '../community/TelegramCommunity'
 import { bindNavigation, renderNavigation, navigationClick, navigationKeyDown } from './navigation'
 
 const header = landingBody.match(/<header\b[^>]*>[\s\S]*?<\/header>/)![0]
@@ -30,6 +31,7 @@ const fallbackTranslations: Record<string, string> = {
 export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'header' | 'footer'; nav?: boolean }) {
   const [dictionary, setDictionary] = useState<Record<string, string>>(fallbackTranslations)
   const [faDictionary, setFaDictionary] = useState<Record<string, string>>({})
+  const [communityHost, setCommunityHost] = useState<HTMLElement | null>(null)
   const [walletHost, setWalletHost] = useState<HTMLElement | null>(null)
   const [navItems, setNavItems] = useState<CmsNavItem[] | null>(null)
   const [footerLinks, setFooterLinks] = useState<CmsFooterLink[] | null>(null)
@@ -92,7 +94,7 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
   }, [locale, part, nav, dictionary, faDictionary, location.pathname, navItems, footerLinks])
 
   useEffect(() => { if (part === 'header' && host.current) return bindNavigation(host.current) }, [markup, part])
-  useEffect(() => { setWalletHost(host.current?.querySelector<HTMLElement>('#wallet-root') || null) }, [markup])
+  useEffect(() => { setWalletHost(host.current?.querySelector<HTMLElement>('#wallet-root') || null); setCommunityHost(host.current?.querySelector<HTMLElement>('[data-community-slot]') || null) }, [markup])
 
   return <div ref={host} className="info-chrome" onClick={e => {
     const target = (e.target as HTMLElement).closest<HTMLElement>('button, a')
@@ -127,6 +129,7 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
   }}>
     <div dangerouslySetInnerHTML={{ __html: markup }} />
     {part === 'header' && walletHost && createPortal(<RainbowConnect />, walletHost)}
+    {part === 'footer' && communityHost && createPortal(<TelegramCommunity locale={locale} />, communityHost)}
   </div>
 }
 
