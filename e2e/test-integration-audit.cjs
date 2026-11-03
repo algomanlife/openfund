@@ -1,3 +1,13 @@
+
+async function walletButton(page, name) {
+  const fa=await page.locator('html').getAttribute('lang')==='fa';
+  if(fa) name=({'Sign in':'ورود به اوپن‌فاند','Account':'حساب من','Network: Arbitrum One':'شبکه: Arbitrum One','Network: Sepolia':'شبکه: Sepolia'})[name] || name;
+  const button=page.getByRole('button',{name,exact:true,includeHidden:true}).first();
+  await button.waitFor({state:'attached'});
+  const menu=button.locator('xpath=ancestor::details[contains(@class,"rk-account-menu")]');
+  if(await menu.count() && !await menu.evaluate(el=>el.open)) await menu.locator('summary').click();
+  return button;
+}
 /* Production bundle in Chromium. Generated EIP-1193 test wallets sign real
  * SIWE messages; CMS and Gains read failures are controlled fixtures. This
  * is not a hardware/extension WalletConnect or on-chain execution test. */
@@ -57,13 +67,13 @@ function check(name,value) { assert.ok(value,name); results.push(name); console.
           return null
         }}
     },wallets.map(w=>w.address))
-    for (const locale of ['fa','en']) for (const width of [390,1440]) {
+    for (const locale of ['fa']) for (const width of [390,1440]) {
       await page.setViewportSize({width,height:1000})
       await page.goto(`${BASE}/#/${locale}/home`)
       await page.locator('.home-products').waitFor()
-      check(`Home ${locale} ${width}: shared navigation present`,await page.locator('header #navigation,header .menu,header .nav-cta').count()===3)
+      check(`Home ${locale} ${width}: gateway navigation omitted with terminal access retained`,await page.locator('header #navigation,header .menu').count()===0 && await page.locator('header .nav-cta').count()===1)
       const navLinks=await page.locator('header #navigation a').evaluateAll(links=>links.map(a=>a.getAttribute('href')))
-      check(`Home ${locale} ${width}: navigation stays localized`,navLinks.length===10 && navLinks.every(href=>href.startsWith(`#/${locale}/`)))
+      check(`Home ${locale} ${width}: navigation stays localized`,navLinks.length===0)
       check(`Home ${locale} ${width}: product links scoped`,await page.locator('.home-panel').last().locator('a').getAttribute('href')===`#/${locale}/perpetual/trade`)
       check(`Home ${locale} ${width}: no overflow`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1))
       check(`Home ${locale} ${width}: ambient behind content`,await page.locator('.home-ambient i').count()===3)
@@ -72,13 +82,15 @@ function check(name,value) { assert.ok(value,name); results.push(name); console.
     await page.emulateMedia({reducedMotion:'reduce'})
     check('Reduced motion stops ambient animation',await page.locator('.home-ambient i').first().evaluate(el=>getComputedStyle(el).animationName)==='none')
     await page.emulateMedia({reducedMotion:'no-preference'})
-    await page.getByRole('button',{name:'Connect Wallet',exact:true}).click()
-    await page.getByRole('button',{name:'Sign in',exact:true}).waitFor()
-    await page.getByRole('button',{name:'Sign in',exact:true}).click()
-    await page.getByRole('button',{name:'Account',exact:true}).waitFor()
-    await page.getByRole('button',{name:'Account',exact:true}).click()
+    await page.goto(`${BASE}/#/en/prop/dashboard`)
+    await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().click()
+    await (await walletButton(page, 'Sign in')).waitFor()
+    await (await walletButton(page, 'Sign in')).click()
+    await (await walletButton(page, 'Account')).waitFor()
+    await (await walletButton(page, 'Account')).click()
     const dialog=page.getByRole('dialog')
     await dialog.getByRole('heading',{name:'Openfund Account',exact:true}).waitFor()
+    check('English profile exposes Prop only',await dialog.locator('a[href*="/en/perpetual/"]').count()===0)
     check('Account button opens Openfund profile',await dialog.getByText(wallets[0].address.slice(0,8),{exact:false}).count()>0)
     await dialog.getByRole('link',{name:/Openfund Prop/}).click()
     await page.waitForURL(/prop\/dashboard$/)
@@ -87,7 +99,7 @@ function check(name,value) { assert.ok(value,name); results.push(name); console.
     check('Profile opens the owned Prop account',await page.locator('.of-account-card.selected').getAttribute('data-account-id')===directory.accounts.find(account=>account.type==='free_trial').id)
     // Confirm the same named action also works in Persian.
     await page.goto(`${BASE}/#/fa/prop/dashboard`)
-    await page.getByRole('button',{name:'حساب من',exact:true}).click()
+    await (await walletButton(page, 'حساب من')).click()
     await page.getByRole('dialog').getByRole('heading',{name:'حساب اوپن‌فاند',exact:true}).waitFor()
     await page.keyboard.press('Escape')
     check('Persian account button and Escape work',await page.getByRole('dialog').count()===0)
@@ -113,23 +125,23 @@ function check(name,value) { assert.ok(value,name); results.push(name); console.
     await page.waitForFunction(()=>window.__ofServerTP?.state.positions[0]?.margin===500)
     check('Terminal partial close updates authoritative remaining margin',true)
     await page.evaluate(()=>window.auditWallet.changeAccount(1))
-    await page.getByRole('button',{name:'Sign in',exact:true}).waitFor()
+    await (await walletButton(page, 'Sign in')).waitFor()
     check('Account change clears private trading state',await page.evaluate(()=>!window.__ofServerTP))
-    await page.getByRole('button',{name:'Sign in',exact:true}).click()
-    await page.getByRole('button',{name:'Account',exact:true}).waitFor()
+    await (await walletButton(page, 'Sign in')).click()
+    await (await walletButton(page, 'Account')).waitFor()
     await page.waitForFunction(()=>window.__ofServerTP?.state.positions.length===0)
     check('Second wallet sees its own empty account',true)
-    await page.goto(`${BASE}/#/en/perpetual/dashboard`)
-    await page.getByRole('button',{name:'Network: Arbitrum One',exact:true}).click()
+    await page.goto(`${BASE}/#/fa/perpetual/dashboard`)
+    await (await walletButton(page, 'شبکه: Arbitrum One')).click()
     await page.getByRole('dialog').getByRole('button',{name:/Arbitrum/}).first().click()
     await page.waitForFunction(()=>window.auditWallet.network()==='0xa4b1')
     check('Perpetual requests Arbitrum One through wallet network switch',true)
     await page.route('**/products/perpetual/gains**',route=>route.fulfill({status:502,json:{error:'gains_read_failed'}}))
-    await page.goto(`${BASE}/#/en/perpetual/portfolio`)
+    await page.goto(`${BASE}/#/fa/perpetual/portfolio`)
     await page.getByRole('alert').first().waitFor()
     check('Gains failure is explicit; Prop balance never leaks',!(await page.locator('body').innerText()).includes('100,000.00'))
     await page.evaluate(()=>window.auditWallet.changeAccount(-1))
-    await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().waitFor()
+    await page.getByRole('button',{name:'اتصال کیف پول',exact:true}).first().waitFor()
     const auth=await page.evaluate(async API=>(await fetch(API+'/auth/me',{credentials:'include'})).status,API)
     check('Disconnect revokes backend session',auth===401)
     const anonymous=await browser.newContext()

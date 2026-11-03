@@ -1,3 +1,13 @@
+
+async function walletButton(page, name) {
+  const fa=await page.locator('html').getAttribute('lang')==='fa';
+  if(fa) name=({'Sign in':'ورود به اوپن‌فاند','Account':'حساب من','Network: Arbitrum One':'شبکه: Arbitrum One','Network: Sepolia':'شبکه: Sepolia'})[name] || name;
+  const button=page.getByRole('button',{name,exact:true,includeHidden:true}).first();
+  await button.waitFor({state:'attached'});
+  const menu=button.locator('xpath=ancestor::details[contains(@class,"rk-account-menu")]');
+  if(await menu.count() && !await menu.evaluate(el=>el.open)) await menu.locator('summary').click();
+  return button;
+}
 /* Real browser layout acceptance. Public market feeds remain live; no financial
  * responses, wallet records, prices or liquidity are invented by this test. */
 const { chromium } = require('playwright');
@@ -74,14 +84,15 @@ async function metrics(page) {
     },wallet.address);
     await page.goto(`${BASE}/#/en/prop/trade`);
     await page.getByRole('button',{name:'Connect Wallet',exact:true}).click();
-    await page.getByRole('button',{name:'Sign in',exact:true}).click();
-    await page.getByRole('button',{name:'Account',exact:true}).waitFor();
+    await (await walletButton(page, 'Sign in')).click();
+    await (await walletButton(page, 'Account')).waitFor();
+    await page.keyboard.press('Escape');
     await page.waitForFunction(()=>!!window.__ofServerTP?.serverMode);
 
   }
   const captures=[], geometries={};
   try {
-    for(const product of ['prop','perpetual']) for(const locale of ['en','fa']) {
+    for(const product of ['prop','perpetual']) for(const locale of (product==='perpetual'?['fa']:['en','fa'])) {
       await page.goto(`${BASE}/#/${locale}/${product}/trade`);
       const frame=page.frameLocator('iframe');
       await frame.locator('#submit-order').waitFor();
@@ -103,7 +114,7 @@ async function metrics(page) {
           const key=`${product}:${width}:${type}`;
           const geometry=[state.inner.chart,state.inner.book,state.inner.panel].map(r=>[r.x,r.width]);
           if(locale==='en')geometries[key]=geometry;
-          else check(`${label}: Persian preserves English columns`,JSON.stringify(geometry)===JSON.stringify(geometries[key]));
+          else if(product==='prop') check(`${label}: Persian preserves English columns`,JSON.stringify(geometry)===JSON.stringify(geometries[key]));
           captures.push({product,locale,width,height,type,...state});
         }
         await frame.locator('[data-otype="market"]').click();
@@ -161,7 +172,7 @@ async function metrics(page) {
             const key=`compact:${product}:${width}`;
             const geometry=state.inner.visibleControls.filter(c=>['#acct-strip','.side-group','.otype-group','.lev-box','#of-collateral','#of-sl','#submit-order'].includes(c.selector)).map(c=>[c.rect.x,c.rect.width]);
             if(locale==='en')geometries[key]=geometry;
-            else check(`${product}/${locale}: ${width}x${height} alternative geometry matches English`,JSON.stringify(geometry)===JSON.stringify(geometries[key]));
+            else if(product==='prop') check(`${product}/${locale}: ${width}x${height} alternative geometry matches English`,JSON.stringify(geometry)===JSON.stringify(geometries[key]));
             if(width===1280||width===390) await page.screenshot({path:path.join(OUT,`compact-${product}-${locale}-${width}x${height}.png`)});
 
           }

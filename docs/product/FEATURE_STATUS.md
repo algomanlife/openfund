@@ -55,4 +55,11 @@ Historical tests and findings remain in [reviews](../reviews/README.md); their r
 
 ## Final integration and release recovery
 
-**In Progress:** recovered shared terminal navigation, default account/detail Dashboard, EIP-6963 connection, route-network synchronization, scoped account adapter and Journal interactions. Main-only SemVer packaging, release diagnostics, immutable artifacts and approved exact-SHA deployment are implemented for verification. No first official release or deployed acceptance is claimed. [Recovery and release evidence](../reviews/final-integration/DELIVERY.md).
+**In Progress:** recovered shared terminal navigation, default account/detail Dashboard, EIP-6963 connection, route-network synchronization, scoped account adapter and Journal interactions. Main-only SemVer packaging, release diagnostics, immutable artifacts and approved exact-SHA deployment are implemented for verification. The verified local baseline is official v0.1.0 at `b2c5407`; deployed acceptance remains unconfigured. [Recovery and release evidence](../reviews/final-integration/DELIVERY.md).
+
+## UI polish batch
+
+**In Progress:** responsive connected-wallet disclosure, FA/EN product presentation
+and route restrictions, external TradingView resource attribution, native terminal
+and Vela light/dark synchronization. [Scope and acceptance](../reviews/ui-polish/DELIVERY.md).
+Country eligibility and actual wallet-device acceptance remain separate.

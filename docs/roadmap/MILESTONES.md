@@ -38,3 +38,10 @@ Reviewed against `2f5cf93`, 2026-11-02. No completion dates are promised. **Comp
 ## Unified release acceptance
 
 **In Progress:** one version and manifest for the existing React/API application, mandatory wallet/route/account tests, checksummed artifacts, main-only publication, exact-version local runner and approved Render deployment. Acceptance requires passing main pipeline publication, configured production environment, identified deployed revision and demonstrated rollback. [Recovery report](../reviews/final-integration/DELIVERY.md) · [Release runbook](../deployment/RELEASES.md).
+
+## UI polish acceptance
+
+**In Progress:** UI-01 through UI-04 form one compatible release batch. Acceptance
+requires responsive bilingual/theme/wallet checks, existing integrated release
+gates, review, one immutable official version and downloaded-archive verification
+through port 8080. [Evidence](../reviews/ui-polish/DELIVERY.md).

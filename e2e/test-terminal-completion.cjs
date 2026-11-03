@@ -1,3 +1,13 @@
+
+async function walletButton(page, name) {
+  const fa=await page.locator('html').getAttribute('lang')==='fa';
+  if(fa) name=({'Sign in':'ورود به اوپن‌فاند','Account':'حساب من','Network: Arbitrum One':'شبکه: Arbitrum One','Network: Sepolia':'شبکه: Sepolia'})[name] || name;
+  const button=page.getByRole('button',{name,exact:true,includeHidden:true}).first();
+  await button.waitFor({state:'attached'});
+  const menu=button.locator('xpath=ancestor::details[contains(@class,"rk-account-menu")]');
+  if(await menu.count() && !await menu.evaluate(el=>el.open)) await menu.locator('summary').click();
+  return button;
+}
 /* Real local SIWE/PostgreSQL and server-authoritative simulation, with a
  * disposable EIP-6963 signer. Controlled market/Perpetual fixtures are used
  * only for failure and lifecycle assertions. No blockchain writes are allowed. */
@@ -55,8 +65,8 @@ async function walletContext(browser,{fixtures=false}={}){
 async function call(page,url,body,method){return page.evaluate(async({url,body,method})=>{
  const response=await fetch(url,{method:method||(body?'POST':'GET'),credentials:'include',headers:{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID()},body:body?JSON.stringify(body):undefined});return {status:response.status,data:await response.json()};
 },{url:API+url,body,method})}
-async function connect(page){await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().click();await page.getByRole('button',{name:'Sign in',exact:true}).first().waitFor()}
-async function signIn(page){await page.getByRole('button',{name:'Sign in',exact:true}).first().click();await page.getByRole('button',{name:'Account',exact:true}).first().waitFor()}
+async function connect(page){await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().click();await (await walletButton(page, 'Sign in')).waitFor()}
+async function signIn(page){await (await walletButton(page, 'Sign in')).click();await (await walletButton(page, 'Account')).waitFor()}
 async function functional(browser){
  const {context,page}=await walletContext(browser,{fixtures:true}),errors=[],protectionWrites=[];
  page.on('request',request=>{if(request.method()==='POST'&&request.url().includes('/protection'))protectionWrites.push(request.url())});
@@ -69,30 +79,31 @@ async function functional(browser){
   await page.getByRole('alert').filter({hasText:'Wallet connection failed'}).first().waitFor();
   check('Rejected connection is visible and does not authenticate',(await call(page,'/auth/me')).status===401);
   await connect(page);
-  await page.getByLabel('Product',{exact:true}).selectOption('perpetual');
+  await page.goto(BASE+'/#/fa/prop/dashboard');
+  await page.getByLabel('محصول',{exact:true}).selectOption('perpetual');
   await page.waitForURL(/perpetual\/dashboard/);
   await page.evaluate(()=>window.completionWallet.rejectSign());
-  await page.getByRole('button',{name:'Sign in',exact:true}).first().click();
-  await page.getByRole('alert').filter({hasText:'Sign-in failed'}).first().waitFor();
+  await (await walletButton(page, 'Sign in')).click();
+  await page.getByRole('alert').filter({hasText:/Sign-in failed|ورود انجام نشد/}).first().waitFor();
   check('Rejected SIWE signature remains unauthenticated',(await call(page,'/auth/me')).status===401);
   await signIn(page);
   check('Router-driven product switch signs on Arbitrum rather than stale Sepolia',await page.evaluate(()=>window.completionWallet.network()==='0xa4b1'));
-  await page.getByTitle('Wallet & network',{exact:true}).click();
-  await page.getByRole('dialog').getByRole('button',{name:/Disconnect/}).waitFor();
+  await page.getByTitle('کیف پول و شبکه',{exact:true}).click();
+  await page.getByRole('dialog').getByRole('button',{name:/Disconnect|قطع اتصال/}).waitFor();
   check('Detected wallet account modal opens without provider errors',true);
   await page.screenshot({path:path.join(OUT,'wallet-connection.png'),fullPage:true});
   await page.keyboard.press('Escape');
-  await page.goto(BASE+'/#/en/perpetual/trade');
+  await page.goto(BASE+'/#/fa/perpetual/trade');
   const frame=page.frameLocator('iframe');
   await frame.locator('[data-close="controlled-gains-read"]').waitFor();
   check('Perpetual adopts its signed-in adapter and displays native collateral',(await frame.locator('body').innerText()).includes('100.00 USDC'));
   check('Perpetual execution and position mutations remain disabled',await frame.locator('#submit-order').isDisabled() && await frame.locator('[data-close="controlled-gains-read"]').isDisabled());
-  check('Read-only execution limitation is visible',(await frame.locator('#account-feed-state').innerText()).includes('execution is not enabled'));
-  await page.reload();await page.getByRole('button',{name:'Account',exact:true}).waitFor();
+  check('Read-only execution limitation is visible',(await frame.locator('#account-feed-state').innerText()).match(/execution is not enabled|فعال نیست/));
+  await page.reload();await (await walletButton(page, 'Account')).waitFor();
   check('EIP-6963 connection and SIWE session reconnect after reload',true);
-  await page.getByLabel('Product',{exact:true}).selectOption('prop');
+  await page.getByLabel('محصول',{exact:true}).selectOption('prop');
   await page.waitForURL(/prop\/trade/);
-  await page.getByRole('button',{name:'Network: Sepolia',exact:true}).click();
+  await (await walletButton(page,'Network: Sepolia')).click();
   await page.getByRole('dialog').getByRole('button',{name:/Sepolia/}).first().click();
   await page.waitForFunction(()=>window.completionWallet.network()==='0xaa36a7');
   const accounts=(await call(page,'/accounts')).data.accounts,trial=accounts.find(a=>a.type==='free_trial');
@@ -184,17 +195,17 @@ async function functional(browser){
   check('Challenge journal does not show the trial private note',await page.getByRole('heading',{name:'Integration recovery playbook',exact:true}).count()===0);
   await page.goto(BASE+'/#/en/prop/trade?account='+trial.id);await page.waitForFunction(()=>window.__ofServerTP?.canTrade);
   await page.evaluate(()=>window.completionWallet.changeAccount(1));
-  await page.getByRole('button',{name:'Sign in',exact:true}).waitFor();
+  await (await walletButton(page, 'Sign in')).waitFor();
   check('Wallet change clears the previous execution adapter',await page.evaluate(()=>!window.__ofServerTP));await signIn(page);
   await page.waitForFunction(()=>window.__ofServerTP?.canTrade);
   check('Second wallet has an independent account and empty positions',(await call(page,'/trading/state')).data.positions.length===0);
   await page.evaluate(()=>window.completionWallet.changeChain('0x1'));
   await page.getByRole('button',{name:'Network: Sepolia',exact:true}).waitFor();
   check('Unsupported chain change preserves wallet identity and exposes a network correction',await page.locator('.rk-chip-addr').count()===1);
-  await page.getByRole('button',{name:'Network: Sepolia',exact:true}).click();
+  await (await walletButton(page,'Network: Sepolia')).click();
   await page.getByRole('dialog').getByRole('button',{name:/Sepolia/}).first().click();
   await page.waitForFunction(()=>window.completionWallet.network()==='0xaa36a7');
-  await page.getByTitle('Wallet & network',{exact:true}).click();await page.getByRole('dialog').getByRole('button',{name:/Disconnect/}).click();
+  await page.getByTitle('Wallet & network',{exact:true}).click();await page.getByRole('dialog').getByRole('button',{name:/Disconnect|قطع اتصال/}).click();
   await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().waitFor();
   await page.waitForFunction(async api=>(await fetch(api+'/auth/me',{credentials:'include'})).status===401,API);
   check('Wallet-modal disconnect revokes SIWE and clears private state',await page.evaluate(()=>!window.__ofServerTP));
@@ -214,7 +225,7 @@ async function layout(browser){
  try{
   await page.goto(BASE+'/#/en/prop/dashboard');await connect(page);await signIn(page);
   const tabs={prop:['dashboard','trade','portfolio','journal','journal?section=accounts','leaderboard','withdrawals','certificates'],perpetual:['dashboard','trade','portfolio','journal','journal?section=accounts','leaderboard','rewards']};
-  for(const product of ['prop','perpetual'])for(const locale of ['en','fa'])for(const [width,height]of [[1920,1080],[1440,900],[1366,768],[1280,720]])for(const tab of tabs[product]){
+  for(const product of ['prop','perpetual'])for(const locale of (product==='perpetual'?['fa']:['en','fa']))for(const [width,height]of [[1920,1080],[1440,900],[1366,768],[1280,720]])for(const tab of tabs[product]){
     await page.setViewportSize({width,height});await page.goto(`${BASE}/#/${locale}/${product}/${tab}`);
     await page.locator('.of-terminal-compact').waitFor();await page.waitForTimeout(tab==='trade'?1400:250);
     const record=await page.evaluate(()=>({header:document.querySelector('.of-terminal-header').getBoundingClientRect().height,width:innerWidth,overflow:document.documentElement.scrollWidth>innerWidth+1,headerOverflow:document.querySelector('.of-terminal-top').scrollWidth>innerWidth+1,active:[...document.querySelectorAll('#terminal-navigation>a[aria-current="page"]')].map(a=>a.textContent)}));
@@ -231,7 +242,7 @@ async function layout(browser){
     measurements.push({product,locale,tab,viewport:[width,height],component,dataSource,requests:[...new Set(requests)],...record});
     if(width===1440){const file=`${product}-${locale}-${tab.replaceAll(/[?=]/g,'-')}.png`;await page.screenshot({path:path.join(OUT,file),fullPage:true});screenshots.push(file)}
   }
-  for(const product of ['prop','perpetual'])for(const locale of ['en','fa'])for(const section of ['dashboard','calendar','daily','trades','reports','firms','notebook','playbooks','progress','missed','import','accounts','settings']){
+  for(const product of ['prop','perpetual'])for(const locale of (product==='perpetual'?['fa']:['en','fa']))for(const section of ['dashboard','calendar','daily','trades','reports','firms','notebook','playbooks','progress','missed','import','accounts','settings']){
     await page.setViewportSize({width:1440,height:900});await page.goto(`${BASE}/#/${locale}/${product}/journal?section=${section}`);await page.waitForTimeout(200);
     check(`${product}/${locale}/Journal ${section}: no horizontal overflow`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
     const file=`${product}-${locale}-journal-${section}.png`;await page.screenshot({path:path.join(OUT,file),fullPage:true});screenshots.push(file);
