@@ -234,3 +234,8 @@ The [UI polish batch](docs/reviews/ui-polish/DELIVERY.md) records locale-specifi
 product availability, compact wallet controls and terminal theme acceptance.
 Persian exposes both products; English exposes Prop. Language does not establish
 residency eligibility.
+
+The [Persian landing redesign](docs/reviews/landing-motion/DELIVERY.md) adds scoped
+vector motion and compact proposed Perpetual concepts to the existing gateway.
+English retains the existing Prop challenge experience. This branch is unmerged;
+technical concept claims require product review before publication.

@@ -8,6 +8,11 @@
 - Add the React checkout flow on the challenges page (no legacy runtime edits — a `CheckoutHost` bridges the existing summary dialog), an optional DePay widget gated behind `VITE_DEPAY_WIDGET`/`VITE_DEPAY_WIDGET_URL`, and Prop product pages for purchase/payment history with downloadable dependency-free PDF invoices and withdrawal requests (`#/{locale}/prop/purchases`, `#/{locale}/prop/withdrawals`).
 - Add tests: 54 backend purchase/profile/invoice/withdrawal assertions (unit + HTTP, wired into `test:all`) and a 17-check browser E2E (`e2e/test-purchase-flow.cjs`, disposable EIP-6963 signer, full lifecycle through the SIM_TEST_MODE seam). Live-chain verification and production payment activation remain pending an approved destination; challenge rule enforcement stays future work.
 
+## 2026-11-03 — Persian landing motion (merged from main, PR #40)
+
+- Replace the Persian Home cartoon and previous Perpetual machine with original decorative SVG trading interfaces, add pointer-reactive networks, a compact proposed Perpetual feature strip and a Made by Humans badge.
+- Retain existing CMS, header/wallet interfaces and English Prop challenge entry; add responsive, keyboard, touch and motion acceptance checks. See [landing evidence](docs/reviews/landing-motion/DELIVERY.md).
+
 ## Unreleased — integration recovery and unified releases
 
 - Bind manual batch publication to the required successful secret check on the exact main commit, with explicit repository scan configuration.

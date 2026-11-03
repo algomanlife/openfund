@@ -68,3 +68,11 @@ Historical tests and findings remain in [reviews](../reviews/README.md); their r
 and route restrictions, external TradingView resource attribution, native terminal
 and Vela light/dark synchronization. [Scope and acceptance](../reviews/ui-polish/DELIVERY.md).
 Country eligibility and actual wallet-device acceptance remain separate.
+
+## Persian gateway motion
+
+**In Progress:** landing-only SVG terminal illustration, pointer-reactive background,
+compact proposed Perpetual concepts and Made by Humans badge. Existing CMS and
+English Prop entry remain authoritative. Review,
+product claims and unified-release acceptance remain open. [Implementation and
+local checks](../reviews/landing-motion/DELIVERY.md).

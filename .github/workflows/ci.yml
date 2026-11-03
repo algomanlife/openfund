@@ -149,6 +149,11 @@ jobs:
         env:
           TEST_FRONTEND_URL: http://localhost:8080/react
         run: npm run test:browser:polish
+      - name: Persian landing viewport, motion and navigation acceptance
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080/react
+        run: node e2e/test-landing-motion.cjs
       - name: Chart interaction and indicator browser regression
         working-directory: .
         env:
@@ -161,6 +166,7 @@ jobs:
           path: |
             output/playwright/audit/
             output/playwright/ui-polish/
+            output/playwright/landing-motion/
             output/playwright/chart-indicators/
             output/playwright/terminal-layout/
             output/playwright/terminal-layout-authenticated/
