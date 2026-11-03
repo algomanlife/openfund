@@ -21,7 +21,7 @@ async function desktop(page) {
  for (const locale of ['en','fa']) {
   for (const source of pages) {
    await page.goto(base + '#/' + locale + '/' + source);
-   if(locale==='fa'&&source==='home'){await page.locator('.home-products').waitFor();assert(await page.locator('header #navigation').count()===0,'FA gateway nav hidden');results.push({locale,source,gateway:true});continue;}
+   if(locale==='fa'&&source==='home'){await page.locator('.home-gateway').waitFor();assert(await page.locator('header #navigation').count()===0,'FA gateway nav hidden');results.push({locale,source,gateway:true});continue;}
    await page.locator('.resources-toggle').waitFor({state:'attached'});
    await page.waitForTimeout(source === 'challenges' ? 1800 : 200);
    assert(new URL(page.url()).hash === '#/' + locale + '/' + source, 'redirect ' + source);
@@ -188,7 +188,7 @@ async function auditRoutes(page) {
   const records=[];
   for(const locale of ['en','fa']) for(const route of routes) {
     await page.goto(BASE+'#/'+locale+'/'+route);
-    if(locale==='fa' && route==='home') await page.locator('.home-products').waitFor();
+    if(locale==='fa' && route==='home') await page.locator('.home-gateway').waitFor();
     else await page.locator('.resources-toggle').waitFor({state:'attached'});
     await page.waitForTimeout(route==='challenges'?1800:300);
     const hash = new URL(page.url()).hash;
