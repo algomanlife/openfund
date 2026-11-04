@@ -27,6 +27,14 @@ async function metrics(page) {
     scrollWidth: document.documentElement.scrollWidth,
     scrollHeight: document.documentElement.scrollHeight,
     headerHeight: document.querySelector('.of-terminal-header').getBoundingClientRect().height,
+    controlsHeight: document.querySelector('.of-terminal-top').getBoundingClientRect().height,
+    warningFits: (() => {
+      const warning=document.querySelector('.of-release-mismatch')?.getBoundingClientRect();
+      const header=document.querySelector('.of-terminal-header').getBoundingClientRect();
+      const controls=document.querySelector('.of-terminal-top').getBoundingClientRect();
+      return !warning || (warning.top>=controls.bottom-1 && warning.bottom<=header.bottom+1 && warning.left>=-1 && warning.right<=innerWidth+1);
+    })(),
+    mainFollowsHeader: document.querySelector('#terminal-main').getBoundingClientRect().top>=document.querySelector('.of-terminal-header').getBoundingClientRect().bottom-1,
     headerOverflow: document.querySelector('.of-terminal-top').scrollWidth > innerWidth,
   }));
   const inner = await page.frameLocator('iframe').locator('body').evaluate(body => {
@@ -105,7 +113,7 @@ async function metrics(page) {
           const state=await metrics(page), label=`${product}/${locale} ${width}x${height} ${type}`;
           check(`${label}: document fits`,state.outer.scrollWidth<=width+1 && state.outer.scrollHeight<=height+1);
           check(`${label}: iframe fits`,state.inner.scrollWidth<=width+1 && state.inner.scrollHeight<=state.inner.height+1);
-          check(`${label}: header is 40 + 34px`,state.outer.headerHeight===40 && state.inner.tickerHeight===34 && !state.outer.headerOverflow);
+          check(`${label}: shared controls are 39px, header contains diagnostics and ticker is 34px ${JSON.stringify(state.outer)}`,state.outer.controlsHeight===39 && state.outer.headerHeight>=40 && state.outer.warningFits && state.outer.mainFollowsHeader && state.inner.tickerHeight===34 && !state.outer.headerOverflow);
           check(`${label}: order entry has no overflow`,state.inner.panelScrollHeight<=state.inner.panelHeight+1 && state.inner.panelScrollWidth<=state.inner.panelWidth+1);
           check(`${label}: required controls and warnings fit`,state.inner.visibleControls.every(c=>!c.visible||c.contained));
           check(`${label}: input labels fit (${state.inner.controlOverflow.join(", ") || "no overflow"})`,state.inner.controlOverflow.length===0);
