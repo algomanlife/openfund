@@ -929,8 +929,9 @@ html[data-theme="light"] body:has(.of-terminal) {
   .of-terminal-compact .of-editorial .of-banner{max-width:100%}
 }
 
+.of-terminal-compact .of-terminal-header { height:auto; min-height:40px; }
 .of-release-version{font-size:10px;color:var(--of-muted)}
-.of-release-mismatch{position:fixed;bottom:12px;inset-inline-end:12px;z-index:1000;padding:12px;background:var(--of-panel);border:1px solid #d85b5b;max-width:90vw}
+.of-release-mismatch{margin:0;padding:8px 12px;background:var(--of-panel);border-top:1px solid #d85b5b;width:100%;box-sizing:border-box;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
 @media(max-width:1280px){.of-release-version{display:none}}
 
 .of-ratio-gauge{width:100%;max-width:100px;height:76px;display:block;margin:4px auto 0}
@@ -944,7 +945,7 @@ html[data-theme="light"] body:has(.of-terminal) {
   .of-terminal-compact .of-terminal-more-links a.of-compact-destination { display:block; }
 }
 @media(max-width:650px) {
-  .of-terminal-compact .of-terminal-header { height:76px; }
+  .of-terminal-compact .of-terminal-header { height:auto; min-height:76px; }
   .of-terminal-compact .of-terminal-top { height:75px; display:grid; grid-template-columns:auto minmax(0,1fr); grid-template-rows:32px 32px; gap:4px 6px; }
   .of-terminal-compact .of-brand { display:none; }
   .of-terminal-compact .of-product-switch { grid-area:1/1; }
@@ -952,7 +953,6 @@ html[data-theme="light"] body:has(.of-terminal) {
   .of-terminal-compact #terminal-navigation { grid-area:2/2; justify-self:end; overflow:visible; }
   .of-terminal-compact #terminal-navigation > a { display:none; }
   .of-terminal-compact .of-terminal-actions { grid-area:1/2; justify-self:end; gap:4px; }
-  .of-terminal-compact .of-release-version { position:absolute; bottom:8px; left:130px; font-size:9px; }
 }
 /* Direct terminal entries need the same root palette as public pages, including
    portalled profile/checkout UI that is outside the .of-terminal subtree. */

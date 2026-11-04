@@ -1,5 +1,54 @@
 # Community, native theme and README addendum
 
+## PR #43 CI correction
+
+Release diagnostics now occupy a full-width normal-flow row below terminal
+controls, including the two-row mobile header. Missing manifests and unavailable
+verification explicitly mean compatibility is unverified; only an observed
+identity disagreement says versions differ. Alerts remain visible and interactive
+wallet controls are not bypassed with forced clicks or pointer-event changes.
+
+The auto-dark regression retains the CI viewport (3360 × 1216), exact white
+paint, native dark body/renderer checks and actual screenshot pixels. Three
+DOM-proven empty points on the existing app-owned status panel replace plot
+coordinates that could legitimately hit live green candles. No financial data,
+renderer, authentication, configuration or source-critical `dist/` mirrors change.
+
+Validation uses Node 22.23.4, isolated worktrees under `outputs/`, private ports
+8303/8304/8305 and newly created disposable test databases. Final CI-like
+unversioned build: **27 integration audit checks**, **37 auto-dark scenarios**;
+CI-like polish separately passed **2565 checks plus 37 auto-dark scenarios**.
+Matched candidate: **33 release diagnostics/wallet geometry checks**, **27 audit
+checks**, **37 auto-dark scenarios**, **266 route cases**, **395 authenticated
+layout checks**. Logs are `outputs/ci43-dev-final-*.log`,
+`outputs/ci43-candidate-*.log` and `outputs/ci43-final-typecheck.log`.
+
+The full pipeline passed installs, Blueprint/docs/typecheck, frontend/chart/release
+unit suites, two reproducible builds, repeated migrations/seeds, backend tests,
+27 audit, 515 completion, 394 anonymous layout, chart interactions, 2565 polish
+plus 37 auto-dark and 721 website checks. Its release gate initially stopped
+because the new regression left its own wallet modal open before the next viewport.
+The harness now closes that genuine modal with Escape; release, routes and
+authenticated-layout gates passed separately. All 24 gate commands therefore have
+passing evidence across runs, **not a single completed packaged candidate**.
+The final missing-identity classification build was rechecked with typecheck,
+release and audit; final gutter sampling was rechecked on both build modes.
+
+Earlier local attempts are retained: an initial test database name did not match
+the existing test-seam safety gate; moving the matched version badge into its own
+row failed the unchanged 40px header acceptance, so the badge remains in controls
+while only warnings add a flow row; narrow inter-label screenshot gaps could catch
+changing glyph edges, so samples use the largest empty gutter with wide clearance.
+No production logic or assertions were weakened to suppress these failures.
+Upstream peer/deprecation, large-bundle/import-meta and inherited TLS-verification
+disabled warnings remain; this is not final-commit CI/security approval.
+
+Port 8080, Directus, README, tracked `react/`, release manifests, source-critical
+`dist/`, previous output evidence and official release identity remain untouched.
+Private test servers are stopped after validation; disposable worktrees/databases
+and logs remain for review. No commit, push, PR update, merge or publication is
+performed by this correction.
+
 ## P0 identity recovery — 2026-11-04
 
 The current audit supersedes earlier runtime identity claims. PID 2527 served a

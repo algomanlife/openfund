@@ -161,7 +161,7 @@ export default function TerminalShell({ product }: { product: Product }) {
           {t("رفتن به محتوا", "Skip to content")}
         </a>
         <header className="of-terminal-header">
-          <div className="of-terminal-top">
+          <ReleaseStatus locale={locale}>{version => <div className="of-terminal-top">
             <Link className="of-brand" to={`/${locale}/home`}>
               <img
                 src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`}
@@ -210,7 +210,7 @@ export default function TerminalShell({ product }: { product: Product }) {
               </select>
             </label>
             <div className="of-terminal-actions">
-              <ReleaseStatus locale={locale} />
+              {version}
               <RainbowConnect />
               <button
                 aria-label={t("تغییر پوسته", "Toggle theme")}
@@ -236,7 +236,7 @@ export default function TerminalShell({ product }: { product: Product }) {
                 {t("منو", "Menu")} ☰
               </button>
             </div>
-          </div>
+          </div>}</ReleaseStatus>
         </header>
         <main id="terminal-main" tabIndex={-1} className="of-terminal-main">
           {page !== "trade" && <Editorial page={page} />}

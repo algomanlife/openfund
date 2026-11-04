@@ -33,15 +33,36 @@ async function runAutoDark() {
       await frame.waitForFunction(theme => window.__openfundChart.chart.renderer.getConfig().layout.background.toLowerCase() === (theme === 'light' ? '#ffffff' : '#060808'), theme);
       chart = await frame.evaluate(() => ({ scheme: getComputedStyle(document.documentElement).colorScheme, layout: window.__openfundChart.chart.renderer.getConfig().layout, saved: JSON.parse(localStorage.getItem('of-vela-config') || 'null') }));
       if (theme === 'light') assert.match(chart.scheme, /only/);
-      // Real screenshot pixels from the plot, not getImageData on the source canvas.
+      // Sample the existing app-owned status-panel background, never financial
+      // plot pixels: live candles/marks may legitimately occupy any chart point.
       const frameRect = await page.locator('iframe').boundingBox();
-      const rect = await frame.locator('canvas').first().boundingBox();
-      assert.ok(frameRect && rect);
-      points = [{ x: Math.round(rect.x + 100), y: Math.round(rect.y + 170) }, { x: Math.round(rect.x + rect.width / 2), y: Math.round(rect.y + 170) }];
+      assert.ok(frameRect);
+      const panel = await frame.locator('.status-bar').evaluate(el => {
+        const rect = el.getBoundingClientRect(), y = Math.floor(rect.y + rect.height / 2);
+        const occupied = [...el.children].flatMap(child => [...child.getClientRects()]);
+        // Select the largest contiguous gutter, well away from glyph edges or
+        // changing status labels, rather than the first narrow inter-label gap.
+        const runs = []; let start = null;
+        for (let x = Math.ceil(rect.x + 16); x < rect.right - 16; x++) {
+          const empty = document.elementFromPoint(x, y) === el && !occupied.some(r => x >= r.left - 16 && x <= r.right + 16);
+          if (empty && start === null) start = x;
+          if (!empty && start !== null) { runs.push({ start, end: x }); start = null; }
+        }
+        if (start !== null) runs.push({ start, end: Math.floor(rect.right - 16) });
+        const gutter = runs.sort((a,b) => (b.end-b.start)-(a.end-a.start))[0];
+        const points = gutter && gutter.end-gutter.start >= 256 ? [0.25,0.5,0.75].map(fraction=>({ x:Math.floor(gutter.start+(gutter.end-gutter.start)*fraction), y })) : [];
+        return { background: getComputedStyle(el).backgroundColor, body: getComputedStyle(document.body).backgroundColor, gutter, points };
+      });
+      assert.equal(panel.body, theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(6, 8, 8)');
+      assert.equal(panel.points.length, 3, label + ' proven empty panel samples');
+      if (theme === 'light') assert.equal(panel.background, 'rgb(255, 255, 255)');
+      else assert.ok(panel.background.match(/\d+/g).map(Number).every(value => value < 30), label + ' native dark panel');
+      chart.panel = panel;
+      points = panel.points.map(point => ({ x: Math.round(frameRect.x + point.x), y: Math.round(frameRect.y + point.y) }));
     }
     const pixels = await paint(page, points);
     for (const pixel of pixels) {
-      if (theme === 'light' || trade) assert.deepEqual(pixel.rgba, [...(theme === 'light' ? [255, 255, 255] : [6, 8, 8]), 255], label + ' screenshot paint');
+      if (theme === 'light' || trade) assert.deepEqual(pixel.rgba, [...(theme === 'light' ? [255, 255, 255] : chart.panel.background.match(/\d+/g).map(Number)), 255], label + ' screenshot paint');
       else assert.ok(pixel.rgba.slice(0, 3).every(value => value < 30) && pixel.rgba[3] === 255, label + ' preserved dark atmosphere');
     }
     const file = path.join(OUT, label + '.png');
