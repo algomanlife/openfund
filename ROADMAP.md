@@ -45,9 +45,11 @@ The [unified dashboard and trial lifecycle](docs/trading/UNIFIED_ACCOUNTS.md), [
 | Unified GitHub release packaging | Completed within publication scope | v0.2.0 manifest/tag `561e7f3`, run 41705345213 success; current port 8080 startup remains unverified |
 | Production deployment | Blocked | No live Render service/configuration verified |
 
-The website-refresh branch remains dirty and excluded from official v0.2.0.
-Community destination acceptance is blocked until an owner-verified URL is configured;
-Telegram's homepage is not an Openfund group.
+PR #42 is now merged at `d05b4b8`: its website refresh is **Implemented but unreleased**, excluded from official v0.2.0 (`561e7f3`). The historical candidate checks above do not verify the new addendum.
+
+**Completed within local refinement scope; UNRELEASED:** `qwen/community-theme-readme` coordinates Telegram/Discord/Instagram, native white terminal/Vela/account canvases, preserved dark-green identity and service-logo geometry. Persian Home has no footer; English Home and other public footers remain. Fresh full candidate, authenticated contrast/white-canvas checks and 102 genuine bilingual/theme public/profile/inner-route captures are recorded. [Evidence](docs/reviews/community-theme/DELIVERY.md). Community destination acceptance remains **Blocked** until owner-verified URLs exist; provider homepages are not Openfund groups. Community actions stay outside the terminal.
+
+The requested **v0.2.1 is unallocated**. Existing Conventional `feat:` commits produce a minor bump (currently v0.3.0), so the exact target needs maintainer coordination with the [release policy](docs/deployment/RELEASES.md). Review, CI and explicit merge/publication approval remain required; no tag is moved or gate bypassed.
 
 This snapshot supersedes older compound milestone wording where it conflates
 implementation with production acceptance. Prior acceptance evidence remains

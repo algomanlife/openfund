@@ -1,0 +1,35 @@
+Public brand asset provenance — source-only refinement
+
+Instagram: official Meta Instagram brand resources
+https://www.meta.com/brand/resources/instagram/instagram-brand/
+Pack: IG_brand_asset_pack_2023.zip, linked by the official page.
+instagram-logo.svg: 01 Static Glyph/03 Black Glyph/Instagram_Glyph_Black.svg
+instagram-logo-white.svg: 01 Static Glyph/02 White Glyph/Instagram_Glyph_White.svg
+Both are original vector files. The official gradient SVG embeds raster artwork
+and was deliberately not used. Black glyph is displayed on the same neutral
+icon canvas as Telegram and Discord. Meta trademark/brand guidelines apply.
+
+DePay: https://depay.com/brand
+Original: https://depay.com/brand/DePay%20Wordmark.svg
+All 23 paths, gradients and brand geometry preserved. The transparent artboard
+was reduced to viewBox 222.91 124.93 804.51 247.68, including the full white
+circle and complete wordmark; no artwork traced, cropped or recolored.
+This replaces the former SVG that contained an embedded raster image.
+DePay trademark/brand guidelines apply.
+
+Vela by LuxAlgo (not the unrelated Vela Exchange):
+https://raw.githubusercontent.com/LuxAlgo/Vela/57d011ab796c541cbb9e1282722ad6cd521c8f55/src/renderers/native/chrome/vela-logos.ts
+The VELA_MARK_SVG Morning Star mark is taken from upstream's identity-kit
+paths with its original viewBox; currentColor is resolved to native black
+on the common neutral logo canvas. See Vela-Apache-2.0.txt and Vela-NOTICE.txt.
+
+TradingView: tradingview-mark.svg uses the unchanged official mark path from
+the existing tradingview-logo.svg (last path), with a tight mark-only viewBox.
+https://www.tradingview.com/branding/
+See TradingView-logo-LICENSE.txt. The existing wordmark asset is preserved.
+Gains and Render: existing official vector files and colors remain unchanged.
+https://gains.trade/  https://render.com/brand
+
+All five service logos use one neutral wrapper; no CSS color filters.
+Community destinations remain owner-configured. No Telegram, Discord or
+Instagram destination ownership is verified by these assets or URL validators.

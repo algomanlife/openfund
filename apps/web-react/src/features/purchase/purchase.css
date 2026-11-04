@@ -1,7 +1,7 @@
 /* Openfund purchase UI — checkout panel, purchase history, withdrawals.
    Shares the session/profile visual language (mint #82e7bd on #0c1710,
    Irancell/Ubuntu, 6–14px radii) so new pages read as native Openfund pages.
-   Light theme uses the same smart-invert-compatible hues as session.css. */
+   Light theme inherits the same native document palette as session.css. */
 
 .of-checkout-overlay {
   position: fixed; inset: 0; z-index: 2147483000;
@@ -128,10 +128,10 @@
 .of-empty p { color: #9fb3a8; font-size: 13px; line-height: 1.9; margin: 8px 0 12px }
 .of-empty .button { margin-top: 4px }
 
-/* light theme (smart-invert keeps saturated hues) */
+/* Native light theme uses the document palette; no inversion or dark panels. */
 html[data-theme='light'] .of-checkout, html[data-theme='light'] .of-purchase-table a,
 html[data-theme='light'] .of-payment-cell a { color-scheme: light }
-html[data-theme='light'] .of-checkout { background: #f2f5f1; color: #1c2420; border-color: #12965d44 }
+html[data-theme='light'] .of-checkout { background: var(--surface,#fff); color: var(--white,#16281e); border-color: var(--line,#0a120d24) }
 html[data-theme='light'] .of-checkout-close { color: #5c6b62 }
 html[data-theme='light'] .of-checkout-summary div { border-bottom-color: #0A120D14 }
 html[data-theme='light'] .of-checkout-summary span, html[data-theme='light'] .of-checkout-meta,
@@ -140,12 +140,12 @@ html[data-theme='light'] .of-checkout-meta b, html[data-theme='light'] .of-check
 html[data-theme='light'] .of-checkout-step, html[data-theme='light'] .of-empty p { color: #3f4c44 }
 html[data-theme='light'] .of-checkout-addr, html[data-theme='light'] .of-checkout-tx,
 html[data-theme='light'] .of-withdraw-form, html[data-theme='light'] .of-withdraw-form input,
-html[data-theme='light'] .of-profile-field input { background: #e8ece6; color: #1c2420; border-color: #0A120D22 }
+html[data-theme='light'] .of-profile-field input { background: var(--surface-2,#f5f6f5); color: var(--white,#16281e); border-color: var(--line,#0a120d24) }
 html[data-theme='light'] .of-checkout-addr code { color: #0d7a4c }
 html[data-theme='light'] .of-checkout-addr { border-color: #12965d33 }
 html[data-theme='light'] .of-checkout-tx:focus, html[data-theme='light'] .of-withdraw-form input:focus,
 html[data-theme='light'] .of-profile-field input:focus { border-color: #12965d }
-html[data-theme='light'] .of-avatar { background: #e8ece6; border-color: #12965d44 }
+html[data-theme='light'] .of-avatar { background: var(--surface-2,#f5f6f5); border-color: var(--line,#0a120d24) }
 html[data-theme='light'] .of-avatar-fallback { color: #0d7a4c }
 html[data-theme='light'] .of-profile-headinfo .of-addr { color: #6b7a70 }
 html[data-theme='light'] .of-profile-editbtn, html[data-theme='light'] .of-checkout-done p { color: #0d7a4c }
@@ -155,7 +155,10 @@ html[data-theme='light'] .of-profile-plainbtn:hover { color: #3f4c44 }
 html[data-theme='light'] .of-profile-error { color: #8a4a38 }
 html[data-theme='light'] .of-purchase-table th { border-bottom-color: #0A120D22 }
 html[data-theme='light'] .of-purchase-table td { border-bottom-color: #0A120D10 }
-html[data-theme='light'] .of-withdraw-form { background: #e8ece688; border-color: #0A120D14 }
+html[data-theme='light'] .of-withdraw-form { background: var(--surface-2,#f5f6f5); border-color: var(--line,#0a120d24) }
+html[data-theme='light'] :is(.of-profile-field,.of-withdraw-form label,.of-checkout-status) { color: var(--body,#46584e) }
+html[data-theme='light'] :is(.of-purchase-table a,.of-payment-cell a) { color: var(--mint,#087b4a) }
+html[data-theme='light'] .of-status-requested { background:#4a6db514; color:#34519b; border-color:#4a6db544 }
 html[data-theme='light'] .of-status-paid, html[data-theme='light'] .of-status-approved { background: #12965d1f; color: #0d7a4c; border-color: #12965d55 }
 html[data-theme='light'] .of-status-pending { background: #4a6db514; color: #34519b; border-color: #4a6db544 }
 html[data-theme='light'] .of-status-cancelled, html[data-theme='light'] .of-status-rejected, html[data-theme='light'] .of-status-expired { background: #B3543F14; color: #8a4a38; border-color: #B3543F55 }

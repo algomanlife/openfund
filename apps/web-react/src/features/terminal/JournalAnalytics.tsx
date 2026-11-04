@@ -382,7 +382,7 @@ function DailyBars({ days }: { days: any[] }) {
             y={d.netPnl >= 0 ? 90 - h : 90}
             width={Math.max(1, 600 / days.length - 3)}
             height={h}
-            fill={d.netPnl >= 0 ? "var(--of-mint)" : "#e16f7a"}
+            fill={d.netPnl >= 0 ? "var(--of-mint)" : "var(--of-chart-negative)"}
           >
             <title>
               {d.date}: {money(d.netPnl)}
@@ -414,7 +414,7 @@ function EdgeRadar({ components }: { components: Record<string, number> }) {
         points={entries
           .map(([, v], i) => point(i, (95 * v) / 100).join(","))
           .join(" ")}
-        fill="#82e7bd33"
+        fill="var(--of-chart-fill)"
         stroke="var(--of-mint)"
       />
       {entries.map(([k, v], i) => {

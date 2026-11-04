@@ -1,12 +1,19 @@
-.public-community-slot { margin-block: 24px; }
-.telegram-community { --community-border: #58ace54d; --community-background: #153c5c66; --community-text: #e2f3ff; --community-accent: #58ace5; display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px; min-height: 44px; border: 1px solid var(--community-border); border-radius: 12px; background: var(--community-background); color: var(--community-text); font: inherit; font-size: 13px; line-height: 1.5; text-decoration: none; transition: transform .2s, border-color .2s; cursor: pointer; }
-.telegram-community[aria-disabled="true"] { cursor: default; }
-.telegram-community small { font-size: 10px; }
-.telegram-community img { object-fit: contain; flex-shrink: 0; transition: transform .2s; }
-.telegram-community:hover { transform: translateY(-2px); border-color: var(--community-accent); }
-.telegram-community:hover img { transform: translate(2px,-2px) rotate(-8deg); }
-.telegram-community:focus-visible { outline: 2px solid var(--mint); outline-offset: 4px; }
+.public-community-slot { margin-block: 24px; text-align: center; }
+.community-group { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; width: fit-content; max-width: 100%; }
+.community-button { --community-border: #58ace530; --community-background: #153c5c33; --community-text: #e2f3ff; --community-accent: #58ace5; --community-glow: #58ace526; display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; height: 44px; min-height: 44px; max-width: 100%; box-sizing: border-box; border: 1px solid var(--community-border); border-radius: 8px; background: var(--community-background); color: var(--community-text); font: inherit; font-size: 12px; font-weight: 500; line-height: 16px; text-decoration: none; transition: transform .2s, border-color .2s, box-shadow .2s, background-color .2s; cursor: pointer; }
+.discord-community { --community-accent: #5865F2; --community-border: #5865f240; --community-background: #5865f20d; --community-text: #eef0ff; --community-glow: #5865f226; }
+.instagram-community { --community-accent: #e4405f; --community-border: #e4405f40; --community-background: #e4405f0d; --community-text: #ffeef2; --community-glow: #e4405f26; }
+.community-button[aria-disabled="true"] { cursor: default; }
+.community-copy { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.community-copy > span { white-space: nowrap; }
+.community-button small { font-size: 10px; line-height: 10px; font-weight: 500; white-space: nowrap; }
+.community-button img { width: 20px; height: 20px; object-fit: contain; flex: 0 0 20px; transition: transform .2s; background: none; border: 0; border-radius: 0; padding: 0; box-sizing: border-box; }
+.community-button:hover { transform: translateY(-2px); border-color: var(--community-accent); box-shadow: 0 0 18px var(--community-glow); color: var(--community-text); }
+.community-button:hover img { transform: translate(2px, -2px) rotate(-5deg); }
+.community-button:focus-visible { outline: 2px solid var(--community-accent); outline-offset: 4px; }
 .home-gateway .home-community { margin: 0; text-align: center; }
-/* Counter the public site's root inversion so the official icon remains blue. */
-html[data-theme="light"] .telegram-community { filter: invert(1) hue-rotate(180deg); --community-background: #e7f3fc; --community-text: #184f72; --community-border: #397ea7; }
-@media (prefers-reduced-motion: reduce) { .telegram-community, .telegram-community img { transition: none; transform: none !important; } }
+@media (min-width: 1200px) { .community-group { flex-wrap: nowrap; } }
+html[data-theme="light"] .telegram-community { --community-background: #f6faff; --community-text: #184f72; --community-border: #397ea730; }
+html[data-theme="light"] .discord-community { --community-background: #f8f8ff; --community-text: #3541a5; --community-border: #5865f230; }
+html[data-theme="light"] .instagram-community { --community-background: #fff8fa; --community-text: #8c2644; --community-border: #b62f5130; }
+@media (prefers-reduced-motion: reduce) { .community-button, .community-button img { transition: none; transform: none !important; } }

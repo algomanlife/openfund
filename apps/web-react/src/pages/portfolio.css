@@ -104,11 +104,11 @@ td.up{color:#82e7bd}td.down{color:#e89483}
   padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer}
 .pf-table.sm td{font-size:11.5px;padding:6px 4px}
 
-/* light theme (smart-invert keeps saturated hues) */
-html[data-theme='light'] .pf-card{background:#F2F4F0;border-color:#0A120D12}
+/* Native neutral light surfaces; no color filters. */
+html[data-theme='light'] .pf-card{background:#fafafa;border-color:#0A120D12}
 html[data-theme='light'] .pf-card .v{color:#263229}
 html[data-theme='light'] .pf-bucket,html[data-theme='light'] .pf-curve,
-html[data-theme='light'] .pf-cal-month{background:#F2F4F0;border-color:#0A120D14}
+html[data-theme='light'] .pf-cal-month{background:#fafafa;border-color:#0A120D14}
 html[data-theme='light'] .pf-bucket td,html[data-theme='light'] .pf-cal-day .v{color:#3F4C44}
 html[data-theme='light'] .pf-cal-day{background:#0A120D08}
 html[data-theme='light'] .pf-filters select,html[data-theme='light'] .pf-filters input,
@@ -218,9 +218,9 @@ html[data-theme='light'] .pf-layout .pf-sidebar{border-color:#0A120D12}
 html[data-theme='light'] .pf-sidebar button{color:#3F4C44}
 html[data-theme='light'] .pf-sidebar button.active{color:#12965D;background:#12965D10}
 html[data-theme='light'] .pf-section,html[data-theme='light'] .pf-gauge,
-html[data-theme='light'] .pf-cal-full{background:#F2F4F0;border-color:#0A120D14}
+html[data-theme='light'] .pf-cal-full{background:#fafafa;border-color:#0A120D14}
 html[data-theme='light'] .pf-section h2,html[data-theme='light'] .pf-cal-nav h3{color:#263229}
-html[data-theme='light'] .pf-line-chart,html[data-theme='light'] .pf-bar-chart{background:#F2F4F0;border-color:#0A120D14}
+html[data-theme='light'] .pf-line-chart,html[data-theme='light'] .pf-bar-chart{background:#fafafa;border-color:#0A120D14}
 html[data-theme='light'] .pf-timerange button{color:#3F4C44;border-color:#0A120D22}
 html[data-theme='light'] .pf-timerange button.active{color:#12965D;border-color:#12965D}
 html[data-theme='light'] .act-row{background:transparent}

@@ -9,6 +9,12 @@
   --radius: 3px;
 }
 html, body { height: 100%; min-width: 0; min-height: 0; }
+html[data-theme="light"] :is(body,.workspace,.chart-panel,.book-panel,.trade-panel,.bottom-panel,.market-bar,.status-bar) {
+  background: var(--bg);
+  color: var(--white);
+}
+html[data-theme="light"] .side-group { background: var(--surface); }
+html[data-theme="light"] .sb-src { opacity: 1; }
 body, html[lang="fa"] body {
   display: grid;
   grid-template-rows: 34px minmax(0, 1fr) 24px;
@@ -172,6 +178,7 @@ input[type="range"] { display: block; height: 18px; margin: 2px 0; }
 .submit, .submit:hover, .ghost-btn:hover { transform: none; box-shadow: none; }
 .submit.long { background: var(--mint); border-color: var(--mint); }
 .submit.short { background: var(--neg); border-color: var(--neg); }
+html[data-theme="light"] .submit:is(.long,.short) { color: #fff; }
 .submit:disabled { opacity: .4; }
 .status-bar { direction: ltr; height: 24px; min-width: 0; padding: 0 10px; gap: 14px; font-size: 10.5px; overflow: hidden; }
 .sb-right { margin: 0 0 0 auto; }

@@ -4,6 +4,7 @@ These documents record specific branches, dates and environments. Their test cou
 
 | Review | Scope |
 | --- | --- |
+| [Community/theme addendum](community-theme/DELIVERY.md) | Unreleased integrated candidate, isolated validation, authentic light/dark captures and owned local preview |
 | [Compact trading terminal](terminal-ui/DELIVERY.md) | Frontend-only density, fixed bilingual geometry, before/after captures and measured viewport acceptance |
 | [Repository transformation](repository-transformation/DELIVERY.md) | Current English documentation, assets, checks and cleanup |
 | [Integration audit](integration-audit/DELIVERY.md) | PR #24 valuation, wallet, Home and Render integration fixes; translated from the original Persian report |

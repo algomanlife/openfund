@@ -13,8 +13,14 @@ const API=process.env.TEST_BACKEND_URL || 'http://localhost:8288';
  await page.goto(BASE+'/#/en/prop/dashboard');await page.locator('.of-release-version').waitFor();assert.equal(await page.locator('.of-release-version').innerText(),'v'+frontend.version);
  await page.route('**/version',async route=>{await route.fulfill({status:503,json:{...backend,status:'mismatch',commit:'0'.repeat(40)}})});
  await page.reload();await page.getByRole('alert').filter({hasText:'Application and server versions differ'}).waitFor();
+ await page.unroute('**/version');
+ await page.route('**/release-manifest.json',route=>route.fulfill({status:404,json:{error:'not_found'}}));
+ await page.reload();await page.getByRole('alert').filter({hasText:'Application and server versions differ'}).waitFor();
+ await page.unroute('**/release-manifest.json');
+ await page.route('**/version',route=>route.abort('connectionrefused'));
+ await page.reload();await page.getByRole('alert').filter({hasText:'Application and server versions differ'}).waitFor();
  assert.equal(errors.length,0);
- fs.mkdirSync('output/playwright/release',{recursive:true});fs.writeFileSync('output/playwright/release/results.json',JSON.stringify({checks:7,status:'passed',commit:frontend.commit,tests:['same-origin manifest','backend/frontend identity','build hashes','cache headers','visible release','mismatch warning','runtime errors']},null,2));
- console.log('7 release diagnostics checks passed');
+ fs.mkdirSync('output/playwright/release',{recursive:true});fs.writeFileSync('output/playwright/release/results.json',JSON.stringify({checks:9,status:'passed',commit:frontend.commit,tests:['same-origin manifest','backend/frontend identity','build hashes','cache headers','visible release','mismatch warning','missing frontend warning','unavailable backend warning','runtime errors']},null,2));
+ console.log('9 release diagnostics checks passed');
  }finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exitCode=1});

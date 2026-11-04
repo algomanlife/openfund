@@ -9,8 +9,8 @@ export default function ReleaseStatus({locale}: {locale:'fa'|'en'}) {
       .then(([front,back])=>{
         if(abort.signal.aborted)return;
         setVersion(front?.version || '');
-        setMismatch(!!front && (back.status==='mismatch' || !back.frontend || front.commit!==build.commit || (build.version!=='development'&&front.version!==build.version) || front.commit!==back.commit || front.frontend.id!==back.frontend.id || front.backend.id!==back.backend.id));
-      }).catch(()=>{});
+        setMismatch(!front || back.status!=='matched' || !back.frontend || !back.backend || front.commit!==build.commit || (build.version!=='development'&&front.version!==build.version) || front.commit!==back.commit || front.frontend.id!==back.frontend.id || front.backend.id!==back.backend.id);
+      }).catch(()=>{ if(!abort.signal.aborted) setMismatch(true); });
     return ()=>abort.abort();
   },[]);
   return <>{version && <small className="of-release-version" title="Openfund release">v{version}</small>}{mismatch && <p role="alert" className="of-release-mismatch">{locale==='fa'?'نسخهٔ برنامه با سرور هماهنگ نیست. صفحه را دوباره بارگذاری کنید.':'Application and server versions differ. Reload this page.'}</p>}</>;

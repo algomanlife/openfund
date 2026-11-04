@@ -49,9 +49,10 @@ export default function TerminalShell({ product }: { product: Product }) {
   const [messages, setMessages] = useState<
     Record<string, { fa: string; en: string }>
   >({});
-  const [theme, setTheme] = useState(() =>
-    localStorage.getItem("of-theme") === "light" ? "light" : "dark",
-  );
+  const [theme, setTheme] = useState(() => {
+    try { return localStorage.getItem("of-theme") === "light" ? "light" : "dark"; }
+    catch { return document.documentElement.dataset.theme === "light" ? "light" : "dark"; }
+  });
   const page = pathname.split("/").at(-1) || "dashboard";
   const context = useResource(
     product,
@@ -64,7 +65,7 @@ export default function TerminalShell({ product }: { product: Product }) {
     document.documentElement.lang = locale;
     document.documentElement.dir = locale === "fa" ? "rtl" : "ltr";
     (window as any).ofLang = locale;
-    localStorage.setItem("of-language", locale);
+    try { localStorage.setItem("of-language", locale); } catch { /* The current route still determines the locale. */ }
     window.dispatchEvent(new Event("of-terminal-route"));
     const runtime = window as any;
     if (!runtime.__ofLegacyLandingLoaded && !runtime.__ofLegacyTerminalLoaded) {
@@ -74,8 +75,18 @@ export default function TerminalShell({ product }: { product: Product }) {
   }, [locale, pathname, search]);
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem("of-theme", theme);
+    try { localStorage.setItem("of-theme", theme); } catch { /* Keep the in-memory theme when storage is unavailable. */ }
   }, [theme]);
+  useEffect(() => {
+    const sync = () => setTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
+    const observer = new MutationObserver(sync);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    const stored = (event: StorageEvent) => {
+      if (event.key === "of-theme") setTheme(event.newValue === "light" ? "light" : "dark");
+    };
+    window.addEventListener("storage", stored);
+    return () => { observer.disconnect(); window.removeEventListener("storage", stored); };
+  }, []);
   useEffect(() => {
     let active = true;
     const load = () =>

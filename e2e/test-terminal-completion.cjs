@@ -247,11 +247,11 @@ async function layout(browser){
       await themeButton.click();
       await page.waitForFunction(()=>document.documentElement.dataset.theme==='light');
       const palette=await page.locator('.of-terminal').evaluate(el=>({bg:getComputedStyle(el).backgroundColor,text:getComputedStyle(el).color}));
-      check(`${product}/${locale}/${tab}: authenticated light surface and text`,palette.bg==='rgb(242, 245, 240)'&&palette.text==='rgb(22, 40, 30)');
+      check(`${product}/${locale}/${tab}: authenticated light surface and text`,palette.bg==='rgb(255, 255, 255)'&&palette.text==='rgb(22, 40, 30)');
       check(`${product}/${locale}/${tab}: authenticated light panels`,await page.locator('.of-panel,.of-metric').evaluateAll(els=>els.every(el=>getComputedStyle(el).backgroundColor==='rgb(255, 255, 255)')));
       if(tab==='trade'){
         const child=page.frames().find(f=>f.parentFrame());
-        await child.waitForFunction(()=>window.__openfundChart?.chart?.renderer.getConfig().layout.background.toLowerCase()==='#f2f5f0');
+        await child.waitForFunction(()=>window.__openfundChart?.chart?.renderer.getConfig().layout.background.toLowerCase()==='#ffffff');
         check(`${product}/${locale}: authenticated light Vela plot`,true);
       }
       const lightFile=file.replace('.png','-light.png');await page.screenshot({animations:'disabled',path:path.join(OUT,lightFile),fullPage:true});screenshots.push(lightFile);
@@ -262,7 +262,7 @@ async function layout(browser){
     await page.setViewportSize({width:1440,height:900});await page.goto(`${BASE}/#/${locale}/${product}/journal?section=${section}`);await page.waitForTimeout(200);
     check(`${product}/${locale}/Journal ${section}: no horizontal overflow`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
     if(await page.locator('html').getAttribute('data-theme')!=='light')await page.getByRole('button',{name:locale==='fa'?'تغییر پوسته':'Toggle theme',exact:true}).click();
-    check(`${product}/${locale}/Journal ${section}: authenticated light theme`,await page.locator('.of-terminal').evaluate(el=>getComputedStyle(el).backgroundColor==='rgb(242, 245, 240)'));
+    check(`${product}/${locale}/Journal ${section}: authenticated light theme`,await page.locator('.of-terminal').evaluate(el=>getComputedStyle(el).backgroundColor==='rgb(255, 255, 255)'));
     const file=`${product}-${locale}-journal-${section}-light.png`;await page.screenshot({path:path.join(OUT,file),fullPage:true});screenshots.push(file);
   }
   const owned=(await call(page,'/accounts')).data.accounts.find(account=>account.type==='free_trial');

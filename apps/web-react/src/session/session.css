@@ -27,10 +27,10 @@
 .rk-chip-bal { font-family: ui-monospace, Consolas, monospace; font-size: 11px; color: #9fb3a8 }
 .rk-chip .rk-chip-bal::before { content: '·'; margin-right: 8px; color: #56655e }
 
-/* light theme (smart-invert keeps saturated hues) */
+/* Native light theme, shared by public and terminal wallet controls. */
 html[data-theme='light'] .rk-chip { color: #3F4C44; border-color: #0A120D22 }
 html[data-theme='light'] .rk-chip:hover { border-color: #12965D88 }
-html[data-theme='light'] .rk-chip-connect { background: #12965D; color: #fff; border-color: #12965D }
+html[data-theme='light'] .rk-chip-connect { background: var(--mint,#087b4a); color: #fff; border-color: var(--mint,#087b4a) }
 html[data-theme='light'] .rk-chip-connect:hover { background: #0d7a4c }
 html[data-theme='light'] .rk-chip-action { border-color: #12965D77; color: #0d7a4c }
 html[data-theme='light'] .rk-chip-action:hover { background: #12965D14; border-color: #12965D; color: #0d7a4c }
@@ -101,17 +101,20 @@ html[data-theme='light'] .rk-chip-bal { color: #6b7a70 }
 .rk-network-status { font-size:11px; text-align:center; }
 html[data-theme='light'] .rk-account-controls { background:#fff; color:#16281e; border-color:#0a120d28; }
 .rk-wrap > [role='alert'] { white-space:normal; }
-html[data-theme='light'] .of-profile { background:#fff; color:#16281e; border-color:#0a120d28; }
+html[data-theme='light'] .of-profile { background:var(--surface,#fff); color:var(--white,#16281e); border-color:var(--line,#0a120d28); }
 html[data-theme='light'] .of-profile :is(h3,.of-profile-rows b,.of-challenges b) { color:#304e3d; }
 html[data-theme='light'] .of-profile :is(.of-profile-rows span,.of-profile-close,.of-challenges small) { color:#52665b; }
 html[data-theme='light'] .of-profile :is(.of-ok,.of-count,.of-challenges span) { color:#087b4a; }
-html[data-theme='light'] .of-profile :is(.of-profile-actions .button,.of-bad) { color:#94392f; border-color:#94392f55; }
+html[data-theme='light'] .of-profile .of-profile-actions .button { background:#fff; color:#087b4a; border-color:#087b4a55; }
+html[data-theme='light'] .of-profile :is(.of-profile-actions .button.danger,.of-bad) { background:#fff; color:#94392f; border-color:#94392f55; }
 html[data-theme='light']:has(.of-terminal) dialog { filter:none; }
-/* Classic public pages invert their palette; React wallet surfaces already use
-   RainbowKit's native light colors and need one compensating filter. */
-html[data-theme='light']:not(:has(.of-terminal)) :is(.rk-wrap,[data-rk][role='dialog']) { filter:invert(1) hue-rotate(180deg); }
+/* Public and terminal wallet UI both use their native theme palette. */
+html[data-theme='light'] .of-profile :is(.of-profile-rows div,.of-challenges li) { border-color:#0a120d24; }
+html[data-theme='light'] .of-profile .of-empty { color:#52665b; }
+html[data-theme='light'] .rk-chip-bal::before { color:#52665b; }
 .openfund-header .of-session-error {
   position:absolute; top:100%; inset-inline-end:12px; z-index:210;
   width:max-content; max-width:min(32rem,calc(100vw - 24px)); padding:8px 12px;
   background:#0d1511; color:#e6eee9; border:1px solid #ffffff25; border-radius:4px;
 }
+html[data-theme='light'] .openfund-header .of-session-error { background:#fff; color:#16281e; border-color:#0a120d28; }

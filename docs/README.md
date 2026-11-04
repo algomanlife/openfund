@@ -1,5 +1,7 @@
 # Openfund documentation
 
+P0 audit correction: the earlier mutable 8080 preview lost its frontend manifest and was unversioned. Clean-context real clicks verify white light canvases, not the owner Opera profile (permission unavailable). Final candidate hashes, pipeline outcomes and canonical extracted-archive captures are tracked in [P0 evidence](../docs/assets/screenshots/manifest.json). Historical captures and prior matched-runtime claims do not identify the final build. Official v0.2.0 and integrated base `d05b4b8` remain unchanged; owner acceptance is open.
+
 Openfund is a trading technology startup building a connected Prop and Perpetual ecosystem. This index separates product intent, current implementation and future delivery. Start with the [Product Overview](product/OVERVIEW.md), [Feature Status](product/FEATURE_STATUS.md), [System Architecture](architecture/ARCHITECTURE.md) and [Roadmap](../ROADMAP.md).
 
 ## Product and Business
@@ -52,4 +54,4 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Current website and release audit
 
-[2026-11-03 source/release audit](reviews/website-refresh/AUDIT.md) · [Website delivery and validation](reviews/website-refresh/DELIVERY.md) · [Distribution/community gates](roadmap/PRODUCT.md). At 19:52 UTC official v0.2.0 identifies main `561e7f3`; the dirty website candidate is excluded and current port 8080 startup is not verified here. Preserve dated historical reviews; use the feature register and current release manifest for current claims.
+[2026-11-03 source/release audit](reviews/website-refresh/AUDIT.md) · [Website delivery and validation](reviews/website-refresh/DELIVERY.md) · [Distribution/community gates](roadmap/PRODUCT.md). Official v0.2.0 identifies `561e7f3`. PR #42 is now merged at integrated source `d05b4b8`, but unreleased. The [community/theme addendum delivery](reviews/community-theme/DELIVERY.md) records new genuine bilingual/theme captures and isolated checks. Final refinements are locally verified and UNRELEASED: three community providers, white light canvases, preserved dark-green identity, aligned service vectors and Persian Home without a footer; English Home and other public footers remain intact. Generated-session checks retain WCAG text contrast >=4.5 and exact white-canvas assertions. Historical PR #42 captures predate the addendum. The requested v0.2.1 is unallocated and conflicts with the current minor bump for `feat:` commits; coordinate the exact target under the [release policy](deployment/RELEASES.md), without bypassing checks. Preserve dated historical reviews; publication does not establish current port 8080 or deployed acceptance.

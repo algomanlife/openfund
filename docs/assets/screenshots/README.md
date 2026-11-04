@@ -2,7 +2,51 @@
 
 Historical captures were made 2026-11-02 from source at baseline `2f5cf93`, built with `npm run build:web` and served by the matching Node backend at local port 8186. [manifest.json](manifest.json) records routes, viewports, account state and timestamps. Original captures are 1440 × 1000. The [terminal redesign](../../reviews/terminal-ui/DELIVERY.md) adds unedited baseline and production-build captures at 1440 × 900, 1280 × 720 and explicit responsive sizes; each entry records its own source commit, viewport and SHA-256 hash.
 
-## Current website candidate — 2026-11-03
+## P0 canonical-runtime captures — unreleased
+
+`p0-*` images are new anonymous real-button-click captures from canonical 8080,
+covering public Home, Dashboard and terminal in both modes/locales. No CSS or
+theme-state injection, wallet fixtures or request interception is used. See
+`p0Verification` and per-image records in [manifest.json](manifest.json) for
+whether each image is pre-packaging worktree evidence or final verified extracted
+candidate evidence. Missing manifest identity was observed before packaging.
+Owner Opera profile access was not granted; no owner acceptance is claimed.
+Final pipeline results and runtime hashes are distinct from historical checks.
+
+## Historical final refinement captures — unreleased
+
+The current `refinement-*.png` captures show the actual white light theme and
+preserved dark-green theme, Persian Home without a footer, other public footers,
+three community providers and native service SVGs. Public captures are anonymous;
+`refinement-auth-*` captures use genuine SIWE with a generated disposable signer
+on an isolated local test database, never a personal wallet or fabricated records.
+Both locales, desktop/mobile and all inner surfaces retain their empty/unavailable
+states. Profile edit captures perform no writes. The final
+[delivery](../../reviews/community-theme/DELIVERY.md) and `refinementVerification`
+in the [manifest](manifest.json) record exact evidence and remaining release limits.
+
+## Historical community/theme addendum — unreleased
+
+The 34 `addendum-*.png` images were captured from integrated `d05b4b8` plus the
+recorded dirty source fingerprint, private backend 8293 and real Directus 8055.
+They cover FA/EN Home, public footer and downloads in dark/light at 1440 × 900
+and 390 × 844, supported anonymous terminals and the real no-wallet modal.
+No requests were intercepted, no wallet injected and no financial data invented.
+The [manifest](manifest.json) records hashes and source/build fingerprints in
+`addendumVerification`; [delivery](../../reviews/community-theme/DELIVERY.md)
+records validation and defects. The terminal light palette and native service
+marks are visibly present, but light-mode platform names and footer text retain
+low contrast. These images are evidence, not a claim of complete visual acceptance.
+
+| Persian Home dark | Persian Home light |
+| --- | --- |
+| ![Anonymous Persian Home dark](addendum-home-fa-dark-1440.png) | ![Anonymous Persian Home light](addendum-home-fa-light-1440.png) |
+| **Prop terminal dark** | **Prop terminal light** |
+| ![Anonymous Prop terminal dark](addendum-terminal-prop-en-dark.png) | ![Anonymous Prop terminal light](addendum-terminal-prop-en-light.png) |
+| **Mobile footer dark** | **Mobile downloads light — contrast defect preserved** |
+| ![English mobile footer dark](addendum-footer-en-dark-390.png) | ![Persian mobile downloads with actual contrast defect](addendum-downloads-fa-light-390.png) |
+
+## Historical PR #42 website candidate — 2026-11-03
 
 Website images prefixed `refresh-` were finally recaptured at 20:20–20:21 UTC
 from the dirty website-refresh production candidate (base main `561e7f3`),
