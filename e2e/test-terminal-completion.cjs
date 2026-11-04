@@ -229,8 +229,14 @@ async function layout(browser){
   for(const product of ['prop','perpetual'])for(const locale of (product==='perpetual'?['fa']:['en','fa']))for(const [width,height]of [[1920,1080],[1440,900],[1366,768],[1280,720]])for(const tab of tabs[product]){
     await page.setViewportSize({width,height});await page.goto(`${BASE}/#/${locale}/${product}/${tab}`);
     await page.locator('.of-terminal-compact').waitFor();await page.waitForTimeout(tab==='trade'?1400:250);
-    const record=await page.evaluate(()=>({header:document.querySelector('.of-terminal-header').getBoundingClientRect().height,width:innerWidth,overflow:document.documentElement.scrollWidth>innerWidth+1,headerOverflow:document.querySelector('.of-terminal-top').scrollWidth>innerWidth+1,active:[...document.querySelectorAll('#terminal-navigation>a[aria-current="page"]')].map(a=>a.textContent)}));
-    check(`${product}/${locale}/${tab} ${width}: shared header and no horizontal overflow`,record.header===40&&!record.overflow&&!record.headerOverflow);
+    const record=await page.evaluate(()=>{
+      const header=document.querySelector('.of-terminal-header').getBoundingClientRect();
+      const controls=document.querySelector('.of-terminal-top').getBoundingClientRect();
+      const warning=document.querySelector('.of-release-mismatch')?.getBoundingClientRect();
+      const main=document.querySelector('#terminal-main').getBoundingClientRect();
+      return {header:header.height,controls:controls.height,warningFits:!warning||(warning.top>=controls.bottom-1&&warning.bottom<=header.bottom+1&&warning.left>=-1&&warning.right<=innerWidth+1),mainFollowsHeader:main.top>=header.bottom-1,width:innerWidth,overflow:document.documentElement.scrollWidth>innerWidth+1,headerOverflow:document.querySelector('.of-terminal-top').scrollWidth>innerWidth+1,active:[...document.querySelectorAll('#terminal-navigation>a[aria-current="page"]')].map(a=>a.textContent)};
+    });
+    check(`${product}/${locale}/${tab} ${width}: shared header and no horizontal overflow ${JSON.stringify(record)}`,record.controls===39&&record.header>=40&&record.warningFits&&record.mainFollowsHeader&&!record.overflow&&!record.headerOverflow);
     if(['dashboard','trade','portfolio','journal','journal?section=accounts'].includes(tab))check(`${product}/${locale}/${tab} ${width}: exact active tab`,record.active.length===1);
     if(tab==='dashboard'){
       const grid=await page.locator('.of-dashboard-workspace').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length);
