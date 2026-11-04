@@ -15,5 +15,5 @@
     "MD045": true
   },
   "globs": ["*.md", "docs/**/*.md", "apps/**/README.md", "packages/**/README.md", "brand/**/*.md", ".github/**/*.md"],
-  "ignores": ["**/node_modules/**", "vendor/**", "third_party/**"]
+  "ignores": ["**/node_modules/**", "vendor/**", "third_party/**", "docs/business/Openfund-Prop-Investor-Pack/README.md"]
 }

@@ -17,3 +17,6 @@ __pycache__/
 # Generated identity is packaged by the release pipeline.
 /release-manifest.json
 /react/release-manifest.json
+
+# Ignore future Finder metadata in the preserved investor package.
+/docs/business/Openfund-Prop-Investor-Pack/**/.DS_Store
