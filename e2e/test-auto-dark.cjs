@@ -6,7 +6,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path');
 const BASE = (process.env.TEST_FRONTEND_URL || 'http://localhost:8080/react').replace(/\/$/, '');
 const OUT = path.resolve(process.env.AUTO_DARK_OUTPUT || 'output/playwright/auto-dark');
-async function runAutoDark() {
+async function runAutoDark({ configureContext = async () => {} } = {}) {
   fs.mkdirSync(OUT, { recursive: true });
   const results = [], errors = [];
   const browser = await chromium.launch({ args: ['--enable-features=WebContentsForceDark'] });
@@ -88,6 +88,7 @@ async function runAutoDark() {
     // standalone white document; that contradictory override is not UA support.
     for (const [autoDark, os] of [[false, 'light'], [false, 'dark'], [true, 'dark']]) {
       const context = await browser.newContext({ viewport: { width: 3360, height: 1216 }, colorScheme: os });
+      await configureContext(context);
       const page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
       const cdp = await context.newCDPSession(page);
       await cdp.send('Emulation.setAutoDarkModeOverride', { enabled: autoDark });

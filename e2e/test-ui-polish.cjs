@@ -5,7 +5,7 @@ const assert=require('node:assert/strict'), fs=require('node:fs'), path=require(
 const BASE=(process.env.TEST_FRONTEND_URL||'http://localhost:8080/react').replace(/\/$/,'');
 const OUT=path.resolve(process.env.POLISH_OUTPUT||'output/playwright/ui-polish');
 fs.mkdirSync(OUT,{recursive:true});
-const checks=[],screenshots=[],browserErrors=[];
+const checks=[],screenshots=[],browserErrors=[],networkErrors=[];
 // CI has no Directus service. Reuse the actual published editorial seed only;
 // financial/account/market endpoints remain untouched by this fixture.
 const CMS_FIXTURE=process.env.GITHUB_ACTIONS==='true'||process.env.POLISH_CMS_FIXTURE==='1';
@@ -22,6 +22,27 @@ if(CMS_FIXTURE){
   translations:['fa','en'].map(language_code=>({language_code,...Object.fromEntries(Object.entries(seed.translations[language_code]).map(([key,value])=>[key.replace(/[A-Z]/g,c=>'_'+c.toLowerCase()),value]))}))};
 }
 console.log('Home content: '+(CMS_FIXTURE?'repository published editorial seed fixture':'existing local Directus'));
+// Presentation acceptance must not exhaust the public Gains service across
+// hundreds of route mounts. Use the existing recorded chart fixture in CI;
+// backend/account/auth endpoints are never intercepted. Local live mode remains.
+const CHART_FIXTURE=process.env.GITHUB_ACTIONS==='true'||process.env.POLISH_CHART_FIXTURE==='1';
+const chartFixture=JSON.parse(fs.readFileSync(path.resolve('packages/openfund-charts/test/fixtures/gains-btc-usd.json'),'utf8'));
+async function chartRoutes(context){
+ if(!CHART_FIXTURE)return;
+ await context.route('https://api.gains.trade/v1/arbitrum/**',async route=>{
+  const url=new URL(route.request().url()),pathname=url.pathname;
+  const price=chartFixture.bars.at(-1).close;
+  if(!pathname.endsWith('/candles')&&!pathname.endsWith('/markets')&&!pathname.endsWith('/prices')){
+   await route.fulfill({status:503,json:{error:'Presentation fixture does not provide depth or executed trades'}});return;
+  }
+  const data=pathname.endsWith('/candles')?chartFixture.bars:pathname.endsWith('/markets')
+   ?[{...chartFixture.info,symbol:'BTC/USD',base:'BTC',quote:'USD',group:'crypto',isOpen:true}]
+   :[{market:'BTC/USD',mark:price,index:price,updatedAt:Date.now()}];
+  await route.fulfill({json:{data}});
+ });
+ await context.routeWebSocket('wss://api.gains.trade/**',socket=>socket.close());
+}
+console.log('Chart data: '+(CHART_FIXTURE?'recorded Gains chart fixture; no account/financial acceptance':'live public Gains'));
 
 function check(name,value){assert.ok(value,name);checks.push(name)}
 async function headerGeometry(page,terminal){
@@ -133,6 +154,7 @@ async function walletDisclosureFits(page){
  try{
  for(const connected of [false,true]){
   const context=await browser.newContext(connected&&AUTH_STORAGE?{storageState:AUTH_STORAGE}:{});
+  await chartRoutes(context);
   if(CMS_FIXTURE)await context.route('**/items/home_content**',route=>route.fulfill({json:{data:homeFixture}}));
   if(process.env.POLISH_CMS_OFFLINE==='1')await context.route('**/items/**',route=>route.request().url().includes('/home_content')?route.fulfill({json:{data:homeFixture}}):route.abort('connectionrefused'));
   if(connected)await context.addInitScript(address=>{
@@ -150,6 +172,8 @@ async function walletDisclosureFits(page){
   },process.env.POLISH_AUTH_ADDRESS||'0x0000000000000000000000000000000000000001');
   const page=await context.newPage(),errors=[];
   page.on('pageerror',e=>{errors.push(e.message);browserErrors.push({url:page.url(),error:e.stack||e.message});console.error('BROWSER EXCEPTION',page.url(),e.stack||e.message)});
+  page.on('requestfailed',request=>networkErrors.push({page:page.url(),url:request.url(),error:request.failure()?.errorText}));
+  page.on('response',response=>{if(response.status()>=400)networkErrors.push({page:page.url(),url:response.url(),status:response.status()})});
   for(const locale of ['fa','en'])for(const theme of ['dark','light'])for(const width of [1440,900,390]){
    await page.setViewportSize({width,height:900});
    await page.goto(BASE+`/#/${locale}/home`);
@@ -228,7 +252,13 @@ async function walletDisclosureFits(page){
      check(prefix+` ${product}/${section} product selector`,await page.locator('.of-product-switch').count()===(locale==='fa'?1:0));
      if(width===1440&&(!connected&&['dashboard','journal'].includes(section)||connected&&AUTH_STORAGE&&['portfolio','journal','journal?section=accounts','purchases','withdrawals'].includes(section))){const file=`${section.replace(/[?=]/g,'-')}-${product}-${locale}-${theme}-${connected?'disposable-session':'anonymous'}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file),fullPage:true});screenshots.push({file,fixture:connected?'parent-provided disposable authenticated session; no financial writes':'anonymous presentation only'})}
      if(section==='trade'){
-      const frame=page.frameLocator('iframe');await frame.locator('canvas').first().waitFor();
+      const frame=page.frameLocator('iframe');
+      try{await frame.locator('canvas').first().waitFor()}catch(error){
+       const stem=`chart-failure-${prefix.replaceAll('/','-')}-${product}`;
+       await page.screenshot({path:path.join(OUT,stem+'.png')});
+       fs.writeFileSync(path.join(OUT,stem+'.json'),JSON.stringify({url:page.url(),networkErrors,browserErrors,srcDoc:await page.locator('iframe').getAttribute('srcdoc'),frames:await Promise.all(page.frames().map(async child=>({url:child.url(),html:await child.content()})))},null,2));
+       throw error;
+      }
       const child=page.frames().find(f=>f.parentFrame());
       await child.waitForFunction(()=>!!window.__openfundChart?.chart);
       await child.evaluate(()=>Promise.race([window.__openfundChart.chart.ready(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Chart readiness timed out')),20000))]));
@@ -301,7 +331,7 @@ async function walletDisclosureFits(page){
   check(`Delayed CMS ${delay}ms: leaving Home does not boot stale scripts`,errors.length===0);
   await context.close();
  }
- }finally{await browser.close();fs.writeFileSync(path.join(OUT,'results.json'),JSON.stringify({browserErrors,base:BASE,cms:CMS_FIXTURE?'repository published editorial seed fixture':'existing local Directus',checks,screenshots,capturedAt:new Date().toISOString(),status:'completed checks only; process exit determines acceptance'},null,2));}
+ }finally{await browser.close();fs.writeFileSync(path.join(OUT,'results.json'),JSON.stringify({browserErrors,networkErrors,chartData:CHART_FIXTURE?'recorded Gains chart fixture; presentation only':'live public Gains',base:BASE,cms:CMS_FIXTURE?'repository published editorial seed fixture':'existing local Directus',checks,screenshots,capturedAt:new Date().toISOString(),status:'completed checks only; process exit determines acceptance'},null,2));}
  console.log(`PASS ${checks.length} UI polish checks`);
- await require('./test-auto-dark.cjs').runAutoDark();
+ await require('./test-auto-dark.cjs').runAutoDark({configureContext:chartRoutes});
 })().catch(e=>{console.error(e);process.exitCode=1});
