@@ -10,6 +10,10 @@
   --of-text: #e6eee9;
   --of-muted: #93a29a;
   --of-mint: #82e7bd;
+  --of-negative: #dd8979;
+  --of-chart-negative: #e16f7a;
+  --of-chart-fill: #82e7bd33;
+  color-scheme: dark;
   min-height: 100dvh;
   background: var(--of-bg);
   color: var(--of-text);
@@ -17,12 +21,16 @@
   line-height: 1.65;
 }
 [data-theme="light"] .of-terminal {
-  --of-bg: #f2f5f0;
+  --of-bg: var(--bg, #fff);
   --of-panel: #fff;
   --of-line: #0a120d28;
   --of-text: #16281e;
   --of-muted: #52665b;
   --of-mint: #087b4a;
+  --of-negative: #b33f35;
+  --of-chart-negative: #b33f35;
+  --of-chart-fill: #087b4a33;
+  color-scheme: only light;
 }
 .of-terminal * {
   box-sizing: border-box;
@@ -262,10 +270,11 @@
   border: 1px dashed var(--of-line);
   border-radius: 12px;
   margin: 20px 0;
+  color: var(--of-muted);
 }
 .of-terminal .of-error {
-  color: #dd8979 !important;
-  border: 1px solid #dd897944;
+  color: var(--of-negative) !important;
+  border: 1px solid color-mix(in srgb, var(--of-negative) 27%, transparent);
   padding: 14px;
   overflow-wrap: anywhere;
 }
@@ -363,8 +372,10 @@
   color: var(--of-mint);
 }
 .of-terminal .of-calendar-grid .negative {
-  color: #dd8979;
+  color: var(--of-negative);
 }
+.of-terminal :is(.of-negative,.negative) { color: var(--of-negative); }
+.of-terminal :is(.of-positive,.positive) { color: var(--of-mint); }
 .of-terminal .of-prop-workspace {
   width: 100%;
   height: 790px;
@@ -531,7 +542,11 @@
 
 body:has(.of-terminal) {
   margin: 0;
-  background: var(--of-bg, #060808);
+  background: #060808;
+}
+html[data-theme="light"] body:has(.of-terminal) {
+  background: var(--bg);
+  color: var(--white);
 }
 
 /* Terminal tab is the workspace itself, directly under the horizontal application tabs. */
@@ -914,8 +929,9 @@ body:has(.of-terminal) {
   .of-terminal-compact .of-editorial .of-banner{max-width:100%}
 }
 
+.of-terminal-compact .of-terminal-header { height:auto; min-height:40px; }
 .of-release-version{font-size:10px;color:var(--of-muted)}
-.of-release-mismatch{position:fixed;bottom:12px;inset-inline-end:12px;z-index:1000;padding:12px;background:var(--of-panel);border:1px solid #d85b5b;max-width:90vw}
+.of-release-mismatch{margin:0;padding:8px 12px;background:var(--of-panel);border-top:1px solid #d85b5b;width:100%;box-sizing:border-box;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
 @media(max-width:1280px){.of-release-version{display:none}}
 
 .of-ratio-gauge{width:100%;max-width:100px;height:76px;display:block;margin:4px auto 0}
@@ -929,7 +945,7 @@ body:has(.of-terminal) {
   .of-terminal-compact .of-terminal-more-links a.of-compact-destination { display:block; }
 }
 @media(max-width:650px) {
-  .of-terminal-compact .of-terminal-header { height:76px; }
+  .of-terminal-compact .of-terminal-header { height:auto; min-height:76px; }
   .of-terminal-compact .of-terminal-top { height:75px; display:grid; grid-template-columns:auto minmax(0,1fr); grid-template-rows:32px 32px; gap:4px 6px; }
   .of-terminal-compact .of-brand { display:none; }
   .of-terminal-compact .of-product-switch { grid-area:1/1; }
@@ -937,7 +953,14 @@ body:has(.of-terminal) {
   .of-terminal-compact #terminal-navigation { grid-area:2/2; justify-self:end; overflow:visible; }
   .of-terminal-compact #terminal-navigation > a { display:none; }
   .of-terminal-compact .of-terminal-actions { grid-area:1/2; justify-self:end; gap:4px; }
-  .of-terminal-compact .of-release-version { position:absolute; bottom:8px; left:130px; font-size:9px; }
 }
-html[data-theme="light"]:has(.of-terminal) { filter:none; color-scheme:light; background:#f2f5f0; }
+/* Direct terminal entries need the same root palette as public pages, including
+   portalled profile/checkout UI that is outside the .of-terminal subtree. */
+html[data-theme="light"]:has(.of-terminal) {
+  --bg:#fff; --surface:#fff; --surface-2:#fafafa; --surface-3:#fafafa;
+  --obsidian:var(--bg); --white:#16281e; --body:#46584e; --muted:#52665b;
+  --mint:#087b4a; --line:#0a120d24;
+  filter:none; color-scheme:only light; background:var(--bg); color:var(--white);
+}
+html[data-theme="light"]:has(.of-terminal) :is(#root,.of-terminal-main) { background:var(--bg); }
 html[data-theme="light"] .of-terminal :is(.of-negative,.negative) { color:#b33f35; }

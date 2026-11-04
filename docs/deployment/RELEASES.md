@@ -2,11 +2,15 @@
 
 ## Authority and versioning
 
-`main` is the integration authority. Feature branches, candidate archives and local screenshots are not official releases. At 2026-11-03 19:52 UTC, [publication run 41705345213](https://github.com/algomanlife/openfund/actions/runs/41705345213) completed successfully and published **v0.2.0**. Its annotated tag and official manifest identify `561e7f3101f3a43376068d9bba1a87c30e2b7d71`, including merged PR #40 and #41. v0.1.1 (`ce9ddd0`) predates those merges and remains historical rollback material. The dirty website-refresh worktree is not included in v0.2.0. No current port 8080 startup is verified by this documentation update. Resolve the latest official version from GitHub at execution time. Internal npm component versions remain provenance, not independent application releases.
+`main` is the integration authority. Feature branches, candidate archives and local screenshots are not official releases. At 2026-11-03 19:52 UTC, [publication run 41705345213](https://github.com/algomanlife/openfund/actions/runs/41705345213) completed successfully and published **v0.2.0**. Its annotated tag and official manifest identify `561e7f3101f3a43376068d9bba1a87c30e2b7d71`, including merged PR #40 and #41. v0.1.1 (`ce9ddd0`) predates those merges and remains historical rollback material. PR #42 is now merged at integrated source `d05b4b8`, but its website refresh is unreleased and not included in v0.2.0. The `qwen/community-theme-readme` addendum remains In Progress. No current port 8080 startup is verified by this documentation update. Resolve the latest official version from GitHub at execution time. Internal npm component versions remain provenance, not independent application releases.
 
 Every main commit validates the integrated candidate through [Unified release](../../.github/workflows/release.yml). After a reviewed batch has reached main, manually dispatch that workflow with `publish=true`. The workflow serializes publication, installs all three lockfiles, tests and builds the actual app, then publishes one annotated tag and GitHub Release. Individual main commits do not allocate official releases. Conventional `feat:` messages bump minor, `fix:` and other changes bump patch, and `!` / `BREAKING CHANGE:` bump major. The highest reachable numeric SemVer tag is the baseline. All commits since the last tag enter generated notes, including changes combined while runs are pending. Existing tags are never moved. A rerun resumes a tag for the same SHA and never overwrites a published release's assets.
 
 Pull requests run the same package gates as unofficial candidates. Publication runs only on an explicit main-branch batch dispatch after package and secret gates pass. Manual batches verify the successful required `Secret scan` check from the trusted GitHub Actions app on the exact source SHA; a missing, pending, failed or different-commit check blocks publication. This preserves the existing main CI scan contract instead of letting the action silently change to an unrelated full-history scan on manual events. Both scan workflows explicitly load the repository's existing `gitleaks.toml` policy. Do not merge until the required checks and review pass. Do not use an unmerged candidate as production evidence.
+
+## Requested next target
+
+The addendum requests **v0.2.1**, currently unallocated. PR #42 includes `feat(website)`, so the existing allocator selects a minor bump from v0.2.0 (currently **v0.3.0**). Maintainers must coordinate the exact target and any approved policy decision before publication. Do not force an override, bypass checks, rewrite commit history, move an immutable tag or overwrite release assets. Recheck latest main, official releases and target-tag availability at execution time; report any collision. Complete integrated tests, bilingual/theme/logo/community visual acceptance, manifests/checksums and rollback readiness, then obtain explicit merge/publication approval. No publication or merge is authorized by this documentation update.
 
 ## Architecture and gates
 
@@ -77,6 +81,26 @@ DATABASE_URL=postgresql://localhost/openfund_release_local PORT=8080 \
 ```
 
 `current` resolves the latest official GitHub Release once, prints its exact tag and then pins that identity for the entire run. An explicit `--version v0.1.0` selects a historical release. Missing releases fail without falling back to a development checkout. The runner downloads only that version's official archive, verifies its tag SHA, external archive checksum, every payload file and both manifests, then installs backend lockfile dependencies in a new temporary directory. It never edits the current checkout, never selects a fallback version and never enables test execution endpoints. `--migrate` explicitly authorizes additive migrations on the supplied local DB; omitting it verifies artifacts without starting services. Startup displays the exact version/commit and verifies `/version`. Stop with Ctrl-C; the extracted payload remains for inspection. The runner does not provision CMS or production secrets.
+
+## Local unofficial candidate identity recovery
+
+Do not use `release:local` to pretend an unmerged candidate is official. Build
+with the existing `release:build -- --candidate` on a fresh isolated local test
+DB, after documentation edits. Preserve the verified archive and external
+SHA256SUMS; extract it into a separate workspace directory and run the existing
+`scripts/release/verify.mjs` on that exact payload before installing backend
+lockfile dependencies. Use Node 22 and the existing server entrypoint, never
+mutable worktree frontend output. Do not rebuild frontend after packaging.
+
+For authorized canonical 8080 preview, inspect and stop only the explicitly
+owned PID after verifying its command/cwd. Preserve Directus 8055 and the existing
+`openfund_release_local` database; schema is unchanged, so no migration is needed.
+Back up before any later authorized migration. Disable test mode and payment
+receiver injection. Check both manifests, `/version` matched identity,
+`official:false`, frontend bytes and genuine real-click light/dark screenshots.
+Payload verification establishes hashes; `/version` alone compares metadata and
+is not a content-integrity or owner-browser acceptance certificate. Owner Opera
+profile permission and official review/publication remain separate gates.
 
 ## Rollback
 

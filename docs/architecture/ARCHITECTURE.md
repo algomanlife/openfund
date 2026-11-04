@@ -1,6 +1,8 @@
 # System architecture
 
-Source baseline: main `561e7f3101f3a43376068d9bba1a87c30e2b7d71` (2026-11-03), including PR #40/#41 and official v0.2.0 published at 19:50 UTC. The website presentation changes remain dirty, unmerged candidates and are not in that release. The application is a React frontend and Node.js API with persistent Prop simulation, Gains read integrations, SIWE and editorial Directus. [Feature Status](../product/FEATURE_STATUS.md) records delivery boundaries.
+P0 audit correction: the earlier mutable 8080 preview lost its frontend manifest and was unversioned. Clean-context real clicks verify white light canvases, not the owner Opera profile (permission unavailable). Final candidate hashes, pipeline outcomes and canonical extracted-archive captures are tracked in [P0 evidence](../../docs/assets/screenshots/manifest.json). Historical captures and prior matched-runtime claims do not identify the final build. Official v0.2.0 and integrated base `d05b4b8` remain unchanged; owner acceptance is open.
+
+Integrated source baseline: `d05b4b88fc2776e09bf1a701254ac229e8145a7f`, including merged PR #42. Official v0.2.0 remains `561e7f3101f3a43376068d9bba1a87c30e2b7d71` (PR #40/#41); PR #42 is implemented but unreleased. The community/native-light-theme addendum is locally captured and UNRELEASED; local white-theme refinement acceptance is verified; official review and deployment remain open. [Current evidence](../reviews/community-theme/DELIVERY.md). The application is a React frontend and Node.js API with persistent Prop simulation, Gains read integrations, SIWE and editorial Directus. [Feature Status](../product/FEATURE_STATUS.md) records delivery boundaries.
 
 ![Openfund system architecture](../assets/diagrams/system.svg)
 
@@ -65,10 +67,16 @@ See [Render operations](../deployment/RENDER.md), [Database](../deployment/DATAB
 
 Public footer markup remains in `apps/web-react/src/pages/landing-body.html`;
 `InformationShell.tsx` extracts it for editorial routes, and `Landing.tsx` hosts
-the existing challenge runtime. The reusable `features/community/TelegramCommunity.tsx`
+the existing challenge runtime. Persian gateway `Home.tsx` explicitly disables its
+footer; English Home uses the shared landing and retains its footer. PR #42's reusable Telegram presentation
 is mounted only by public layouts; TerminalShell and authenticated workspaces
-retain their own navigation. The community destination is unavailable until an
-owner-verified URL is configured; Telegram’s homepage is not an Openfund group. Public platform cards communicate
+retain their own navigation. The addendum's shared provider-configured Telegram/Discord
+controls are locally captured and UNRELEASED: public Heroes/Footers only, with provider-specific
+validated owner URLs and unavailable non-navigating states. Native light-theme
+corrections must reuse the existing `data-theme` / persisted `of-theme` state and
+supported Vela APIs; current white canvases and readable text are verified through
+local anonymous and generated-session acceptance, with genuine bilingual captures.
+No provider homepage is an Openfund community destination. Public platform cards communicate
 availability only; unified release archives are web/API payloads, not installers.
 
 Merged PR #41 adds `apps/backend/purchases.js`, `invoice-pdf.js`, additive order,

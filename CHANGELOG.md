@@ -1,5 +1,24 @@
 # Changelog
 
+## P0 delivery identity and acceptance — unreleased
+
+- Reproduce Chromium auto-dark repainting computed white backgrounds to RGB(18,18,18); explicit `color-scheme: only light` protects public and nested terminal paint without filters or browser-profile changes. The owner Opera setting itself is not verified.
+- Restore saved Vela cosmetics before reapplying the application palette, preserving drawings and tool preferences; include real auto-dark/OS-theme screenshot-pixel regression in the existing polish release gate.
+- Recover missing frontend-manifest diagnostics without changing backend release identity or financial behavior; missing/unavailable identities now display a warning.
+- Add real theme-button regression across public routes, Dashboard and Vela, navigation/reload/restored contexts and both OS preferences; preserve white light and dark-green canvases.
+- Correct purchase harness route/session-restoration races without weakening assertions. Preserve historical failure logs and require fresh full-candidate validation.
+- Move README tagline once into top branding, organize the requested section sequence and replace stale current screenshots with provenance-labelled P0 evidence. Owner Opera acceptance remains unavailable.
+- Use the existing 24-gate pipeline and verified extracted candidate for canonical 8080; no official release, migration of user data or publication is implied.
+
+## Community, native themes and README — unreleased addendum
+
+- Coordinate provider-configured Telegram, Discord and Instagram controls in public Heroes/Footers with authentic icons, native colors, shared dimensions and reduced-motion behavior; absent owner destinations remain unavailable.
+- Remove the footer only from Persian gateway Home; preserve its three Hero community controls, English Home and other public footers. Restore viewport fit without clipping or reduced touch targets.
+- Correct actual light-mode empty-state, chart-workspace source/semantic-control and authenticated profile-action contrast using shared/native palettes; preserve dark-green identity and all trading/auth/payment logic.
+- Replace root light-mode inversion with native public/terminal surfaces and supported Vela theme configuration; preserve official service artwork and five monochrome platform icons.
+- Rebuild README around actual architecture, licensing and implementation boundaries; add isolated candidate verification and genuine bilingual light/dark screenshot evidence in [delivery](docs/reviews/community-theme/DELIVERY.md).
+- Preserve trading/authentication/payment logic, the user database and real CMS; the requested v0.2.1 conflicts with the current 0.3.0 allocator and remains unallocated.
+
 ## Website and repository refresh — candidate
 
 - Reconcile live v0.2.0 publication at main `561e7f3` with the excluded dirty website candidate; local port 8080 startup remains separately unverified.

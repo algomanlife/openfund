@@ -480,15 +480,16 @@ html[lang="fa"] .market-stats{gap:0 22px}
 .acct-row em,.field>em,.kv em{font-style:normal;color:var(--muted);font-size:10.5px;margin-inline-start:4px}
 label.grp{display:inline-flex;align-items:center;gap:5px}
 
-/* ============ light theme — host-level invert, exactly like the landing ============ */
+/* Native light theme shared with the application preference. */
 html[data-theme="light"]{
-  color-scheme:light; --obsidian:#f2f5f0; --surface:#fff; --surface-2:#e9efe9;
-  --surface-3:#dde8df; --mint:#087b4a; --mint-dim:#096b44; --white:#16281e;
+  color-scheme:only light; --bg:#fff; --obsidian:var(--bg); --surface:#fff; --surface-2:#fafafa;
+  --surface-3:#fafafa; --mint:#087b4a; --mint-dim:#096b44; --white:#16281e;
   --body:#304e3d; --muted:#52665b; --line:#0a120d24; --line-strong:#0a120d38;
   --pos:#087b4a; --neg:#b33f35; --info:#315eba; --pos-bg:#087b4a12;
   --neg-bg:#b33f3512; --mint-bg:#087b4a16;
+  background:var(--bg); color:var(--white);
 }
-html[data-theme="light"] :is(input,select,textarea){color-scheme:light}
+html[data-theme="light"] :is(input,select,textarea){color-scheme:only light}
 html[data-theme="light"] :is(.topnav,.dlg,.notif-panel,.market-dropdown){background:var(--surface);color:var(--white)}
 /* theme toggle */
 .theme-toggle{
@@ -600,7 +601,7 @@ html[data-theme="light"] :is(.topnav,.dlg,.notif-panel,.market-dropdown){backgro
 .rk-btn .dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0}
 .rk-btn .dot-live{background:#82e7bd;box-shadow:0 0 6px #82e7bd88}
 .rk-btn .dot-info{background:#86A8FF}
-html[data-theme="light"] .rk-btn{background:#12965D;color:#fff;border-color:#12965D}
+html[data-theme="light"] .rk-btn{background:var(--mint);color:#fff;border-color:var(--mint)}
 html[data-theme="light"] .rk-btn:hover{background:#0d7a4c}
 html[data-theme="light"] .rk-btn.rk-net,html[data-theme="light"] .rk-btn.rk-acct{background:transparent;color:#3F4C44;border-color:#0A120D22}
 

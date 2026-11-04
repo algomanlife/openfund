@@ -137,15 +137,62 @@ footer a:hover,.document-links a:not(:disabled):hover{color:#c4ecd6;translate:0 
 /* --- Reduced motion: kill the new layer --- */
 @media(prefers-reduced-motion:reduce){header{transition:none}header.nav-hidden{transform:none}.navlinks>a,.nav-account>a{transition:none;background-image:none}.button,.button:hover,.wallet-button,.wallet-button:hover,.nav-cta{transform:none!important;box-shadow:none;transition:background .2s}.button:before,.wallet-button:before,.platform-flow i:after{display:none}.platform-grid article,.challenge-columns article,.account-presets button,.builder-sizes button,.team-member,.team-member .portrait,.principle-grid article,.steps article,.refresh,.summary>span,.details p{transition:none}.team-member:hover .portrait{scale:1;filter:none}.intro-band p strong{-webkit-text-fill-color:initial;color:#d4ddd6;background:none;animation:none}.card-chart path{stroke-dashoffset:0}.revealed .card-chart path{animation:none}details::details-content{transition:none;opacity:1}.switching .split-ring{animation:none}.stage-fact b.changing{animation:none}}
 
-/* ============ THEME — light mode (smart invert) ============ */
-html[data-theme=light]{filter:invert(1) hue-rotate(180deg);background:#F4F5F0}
-html[data-theme=light] img[src$=".png"],html[data-theme=light] img[src$=".jpg"],html[data-theme=light] img[src$=".jpeg"]{filter:invert(1) hue-rotate(180deg)}
-html[data-theme=light] .cursor-aura,html[data-theme=light] .hero-atmosphere,html[data-theme=light] .scroll-progress{display:none}
-
-html[data-theme=light] dialog{filter:invert(1) hue-rotate(180deg)}
+/* Native public theme: --white is the legacy primary-text token, not a literal
+   white paint. Set it on the document root so every inherited label is readable. */
+html[data-theme=light]{color-scheme:only light;--bg:#fff;--surface:#fff;--surface-2:#fafafa;--surface-3:#fafafa;--mint:#087b4a;--white:#16281e;--body:#46584e;--muted:#52665b;--line:#0a120d24;--obsidian:var(--bg);background:var(--bg);color:var(--white)}
+html[data-theme=light] body{background:var(--bg);color:var(--white)}
+html[data-theme=light] :is(#root,main,.information-page,.home-gateway){background:var(--bg)}
+html[data-theme=light] :is(.cursor-aura,.hero-atmosphere,.hero-grid,.scroll-progress){display:none}
 html[data-theme=light] dialog::backdrop{background:#00000030}
-html[data-theme=light] .market-frame{background:#F2F4F0}
-html[data-theme=light] .team-portraits-png{filter:invert(1) hue-rotate(180deg)}
+/* Preserve geometry and hierarchy; light surfaces are white or neutral. */
+html[data-theme=light] header:not(.of-terminal-header){background:#ffffffdf;border-color:var(--line)}
+html[data-theme=light] header.scrolled:not(.of-terminal-header){background:#fffffff2;border-color:var(--line)}
+html[data-theme=light] :is(.navlinks.open,.nav-dropdown,dialog,.market-frame,.chart-top select,.account-presets button,.builder-sizes button,.split-ring>span){background:var(--surface);color:var(--white);border-color:var(--line)}
+html[data-theme=light] :is(.openfund-header,.information-page) .navlinks.open{background:var(--surface);border-color:var(--line)}
+html[data-theme=light] :is(.hero-account,.account-card){background:var(--surface);border-color:#087b4a38}
+html[data-theme=light] :is(.philosophy-panel,.trial-banner,.builder,.platform-grid article,.steps article,.feature-card,.model-card){background:var(--surface);border-color:var(--line)}
+html[data-theme=light] :is(.builder-controls,.step-demo,.feature-ill,.challenge-detail,.platform-grid li,.float-note){background:var(--surface-2);color:var(--body);border-color:var(--line)}
+html[data-theme=light] :is(.account-presets .active,.builder-sizes button.active,.challenge-mode .active){background:#087b4a14;border-color:#087b4a77;color:var(--white)}
+html[data-theme=light] .team-section{background:var(--bg)}
+html[data-theme=light] :is(.button,.rk-btn){background:var(--mint);color:#fff;border-color:var(--mint)}
+html[data-theme=light] .button:hover{background:#304e3d}
+html[data-theme=light] :is(.theme-toggle,.language-toggle,.menu,.wallet-button){color:var(--body);border-color:var(--line)}
+html[data-theme=light] .menu span{background:var(--body)}
+html[data-theme=light] :is(.hero h1 em,.intro-band p strong){background-image:linear-gradient(100deg,#304e3d,#617c69,#304e3d)}
+html[data-theme=light] :is(.hero h1 em,.intro-band p strong){-webkit-text-fill-color:transparent}
+html[data-theme=light] :is(.hero-account-meta>strong,.account-card>strong,.stage-fact b,.price-summary>strong,.team-statement,.team-lockup>span,.float-note strong,.navlinks a.active,.market-tabs .active,.market-views button.active,.search input,.chart-values,.step-account b,.step-share b){color:var(--white)}
+html[data-theme=light] :is(.text-link,.pill,.intro-band p,.section-top h2>span,.section-heading h2 em,.section-heading p,.philosophy-copy h2>span,.philosophy-copy p,.principle-grid p,.steps p,.rules-section h2>span,.rules-section>div:first-child>p,.closing em,.closing p,.platform-grid p,.platform-flow,.model-card p,.model-pill,.feature-card p,.trial-banner p,.challenge-mode button,.challenge-columns dt,#challenge-order p,.team-role,.team-profile-link,.team-dialog-note,#team-dialog-role,#team-dialog-bio,.dialog-note,#selection-summary>div>span){color:var(--body)}
+html[data-theme=light] :is(.hero-account-meta>span,.card-account-label,.hero-account-meta strong>span,.account-bottom,.account-bottom>span:last-child,.note-icon,.product-caption,.intro-band>span,.flow-node,.flow-candles,.flow-brand>span,.flow-caption,.flow-caption>span,.principle-grid article>span,.stage-fact,.phase-track,.card-foot,.control-heading,.control-heading h3,.builder-facts,.builder-facts b,.price-summary>span,.sample-note,.step,.step-demo-caption,.step-demo-icon,.team-sample,.activity-counter span,.activity-counter small,.platform-grid small,.feature-note,.account-presets button>span,.account-presets small){color:var(--muted)}
+html[data-theme=light] :is(.market-toolbar,.market-tools,th,td,.account-bottom,.builder-controls,.card-foot,.steps article,.rules-list,details,#selection-summary,#selection-summary>div,.challenge-columns dl>div){border-color:var(--line)}
+html[data-theme=light] :is(td,.market-tabs button,.market-views button,.market-views,.search,.data-status,.refresh,.market-symbol small,.market-empty,.market-footer,.market-footer a,.market-disclaimer,.chart-top,.chart-content,.dialog-close,.team-dialog-close){color:var(--body)}
+html[data-theme=light] :is(.positive,.pair-status,.chart-values){color:var(--mint)}
+html[data-theme=light] :is(.negative,.data-status.error){color:#b33f35}
+html[data-theme=light] .model-pill.fill{background:var(--mint);color:#fff}
+html[data-theme=light] .portrait{mix-blend-mode:normal}
+html[data-theme=light] .team-lockup img{filter:none}
+/* Editorial, discovery and calculator pages inherit the same public palette. */
+html[data-theme=light] .information-page :is(.report-panel,.outcome-donut>div,.tool-card,.tool-inputs,.tool-results,.learn-path-card,.faq-help,.faq-item,.faq-item.open,.referral-benefit-grid article,.referral-stage-list li,.referral-dashboard,.referral-faq .faq-item details){background:var(--surface);border-color:var(--line)}
+html[data-theme=light] .information-page :is(.info-hero h1 em,.info-notice,.status-current,.sample-badge,.formula-block pre,caption,.faq-related a,.referral-link){color:var(--mint)}
+html[data-theme=light] .information-page :is(.status-draft,.status-planned,.tool-note,.journal-warnings ul,.referral-pending p){color:#756341}
+html[data-theme=light] .information-page :is(.tool-field-error,.journal-days td.negative,.referral-error){color:#b33f35}
+html[data-theme=light] :is(.mk-toolbar,.mk-grid,.mk-card,.mk-empty){background:var(--surface);border-color:var(--line)}
+html[data-theme=light] .mk-card:hover{background:#fafafa;border-color:var(--mint)}
+html[data-theme=light] :is(.feature-card,.model-card)::before{display:none}
+html[data-theme=light] :is(.mk-symbol b,.mk-price){color:var(--white)}
+html[data-theme=light] :is(.mk-stream,.mk-toolbar .market-tabs small,.mk-clear,.mk-symbol small,.mk-status,.mk-cat,.mk-lev,.mk-price.none,.mk-empty,.mk-source,.mk-source a,.mk-loading){color:var(--muted)}
+html[data-theme=light] :is(.mk-status.closed,.mk-status.old){color:#756341}
+html[data-theme=light] .mk-stream.error{color:#b33f35}
+/* Legacy fixed-white labels must follow semantic text tokens, including hover. */
+html[data-theme=light] :is(.desktop-btn,.desktop-btn .dl b,.activity-counter strong,.oss-copy b,.legal h3){color:var(--white);border-color:var(--line)}
+html[data-theme=light] :is(.desktop-sub,.desktop-note,.footer-top>p,.footer-top>div,.footer-bottom,.footer-credits p,.render-credit,.document-links a,.document-links button,.legal p,address.offices p){color:var(--body)}
+html[data-theme=light] :is(.oss-copy span,.oss-fa-only,.legal .legal-draft,.nav-dropdown>span,.nav-dropdown small,.nav-dropdown i,.chevron,details p,summary>span){color:var(--muted)}
+html[data-theme=light] :is(footer a,.document-links a,summary,.team-profile-link,.dialog-close,.team-dialog-close):hover{color:var(--mint)}
+html[data-theme=light] :is(footer,.footer-bottom,.footer-credits,.document-links,.legal,.oss-row){border-color:var(--line)}
+html[data-theme=light] .desktop-title{background-image:none;-webkit-text-fill-color:var(--mint);color:var(--mint)}
+html[data-theme=light] .document-links button:disabled{color:var(--muted)}
+html[data-theme=light] .tradingview-credit small{color:var(--body);opacity:1}
+html[data-theme=light] .mk-card:hover{background:var(--surface-2)}
+html[data-theme=light] footer .heart{color:#b52b47}
 .theme-toggle{background:none;border:1px solid #ffffff25;color:#ddd;border-radius:6px;height:32px;padding:0 10px;cursor:pointer;font:600 12px system-ui,sans-serif;white-space:nowrap;transition:color .2s,border-color .2s;display:inline-flex;align-items:center}
 .theme-toggle:hover{color:var(--mint);border-color:var(--mint)}
 
@@ -169,11 +216,7 @@ html[data-theme=light] .team-portraits-png{filter:invert(1) hue-rotate(180deg)}
 .credits-row{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
 @media(max-width:700px){.nav-actions .nav-cta{padding:9px 8px;font-size:10px;gap:4px}}
 
-/* logos keep their TRUE brand colors in light mode (double-invert, like photos) */
-html[data-theme=light] .render-credit img,
-html[data-theme=light] .render-credit svg,
-html[data-theme=light] .platform-flow img,
-html[data-theme=light] .document-links img{filter:invert(1) hue-rotate(180deg)}
+/* Brand assets use native colors; footer-specific contrast is defined below. */
 
 /* ============ hybrid model / no hidden rules cards ============ */
 .model-section{padding-bottom:70px}
@@ -226,7 +269,7 @@ html[data-theme=light] .document-links img{filter:invert(1) hue-rotate(180deg)}
 .rk-btn .dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0}
 .rk-btn .dot-live{background:#82e7bd;box-shadow:0 0 6px #82e7bd88}
 .rk-btn .dot-info{background:#86A8FF}
-html[data-theme=light] .rk-btn{background:#12965D;color:#fff;border-color:#12965D}
+html[data-theme=light] .rk-btn{background:var(--mint);color:#fff;border-color:var(--mint)}
 html[data-theme=light] .rk-btn:hover{background:#0d7a4c}
 html[data-theme=light] .rk-btn.rk-net,html[data-theme=light] .rk-btn.rk-acct{background:transparent;color:#3F4C44;border-color:#0A120D22}
 
@@ -251,23 +294,27 @@ address.offices p{font-size:12px;color:#a3bbab;line-height:2.1;direction:rtl}
 /* Public platform and service presentation; terminal styling stays separate. */
 .desktop-btns { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
 .desktop-btns .desktop-btn { min-width: 0; justify-content: center; cursor: default; padding: 18px 12px; }
+.desktop-btns .platform-icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; flex: 0 0 24px; }
+.desktop-btns .platform-icon svg { width: 20px; height: 20px; object-fit: contain; color: var(--mint, #82e7bd); }
+.desktop-btns .dl { min-width: 0; gap: 4px; }
 .desktop-btns .dl b { white-space: normal; font-size: 13px; }
-.desktop-btns .dl small { font-size: 11px; color: #82e7bd; }
-.mobile-platform img { object-fit: contain; flex-shrink: 0; }
-.mobile-platform img[src$="google-play.png"] { width: 92px; height: 24px; }
-.mobile-platform { flex-wrap: wrap; }
-.credits-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
-.credits-row .render-credit { flex-wrap: wrap; justify-content: flex-start; }
-.credits-row img { object-fit: contain; flex-shrink: 0; }
-.credits-row .service-wordmark { width: 118px; height: 20px; filter: invert(1); }
-html[data-theme="light"] .credits-row .service-wordmark { filter: none; }
-html[data-theme="light"] .desktop-btns .dl small { color: #236248; }
-@media(max-width:1050px) { .desktop-btns { grid-template-columns: repeat(3, minmax(0,1fr)); } }
-@media(max-width:700px) { .desktop-btns { grid-template-columns: repeat(2,minmax(0,1fr)); } .desktop-btns .desktop-btn:last-child { grid-column: 1/-1; } .footer-credits .credits-row { width: 100%; } }
+.desktop-btns .dl small { font-size: 11px; color: var(--mint, #82e7bd); }
 .footer-credits { display: grid; grid-template-columns: minmax(0,1fr); gap: 24px; }
 .footer-credits > div:first-child { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; }
-.footer-credits .credits-row { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 24px 16px; }
-.footer-credits .render-credit { display: flex; align-items: center; justify-content: center; gap: 8px; text-align: center; }
-.footer-credits .render-credit > span { flex-basis: 100%; order: 2; }
-.mobile-platform img[src$="google-play.png"] { background: #fff; padding: 5px; border-radius: 4px; box-sizing: content-box; }
-@media(max-width:700px) { .footer-credits .credits-row { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+.footer-credits .credits-row { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 24px 16px; align-items: start; }
+.footer-credits .render-credit { display: grid; grid-template-rows: 64px auto; gap: 12px; text-align: center; min-width: 0; color: var(--body); }
+.footer-credits .service-heading { display: flex; align-items: baseline; justify-content: center; gap: 8px; min-width: 0; }
+/* Every official mark uses the same neutral canvas; no recoloring or per-logo offsets. */
+.footer-credits .service-logo-slot { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 80px; width: 80px; height: 40px; padding: 8px 0; box-sizing: border-box; background: #fff; border-radius: 6px; }
+.footer-credits .service-logo-slot img { display: block; height: 24px; width: auto; max-width: 100%; object-fit: contain; flex-shrink: 0; filter: none; }
+.footer-credits .service-heading b { font-size: 12px; font-weight: 600; line-height: 20px; white-space: nowrap; color: var(--white); }
+.footer-credits .service-description { font-size: 11px; line-height: 1.8; color: var(--muted); }
+footer .footer-top p, footer .footer-bottom p, footer .footer-bottom > span { color: var(--muted); }
+footer .footer-credits > div:first-child p, footer .footer-bottom a { color: var(--body); }
+footer .document-links h3 { color: var(--white); }
+.desktop-section .desktop-sub, .desktop-section .desktop-note { color: var(--muted); }
+.desktop-btns .desktop-btn { color: var(--white); min-height: 64px; }
+.desktop-btns .dl small { color: var(--mint); letter-spacing: normal; }
+@media(max-width:1050px) { .desktop-btns { grid-template-columns: repeat(3, minmax(0,1fr)); } .footer-credits .credits-row { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media(max-width:700px) { .desktop-btns { grid-template-columns: repeat(2,minmax(0,1fr)); } .desktop-btns .desktop-btn:last-child { grid-column: 1/-1; } .footer-credits .credits-row { width: 100%; grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media(max-width:450px) { .footer-credits .credits-row { grid-template-columns: minmax(0,1fr); } }

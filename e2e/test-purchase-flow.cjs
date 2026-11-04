@@ -33,16 +33,20 @@ async function walletButton(page, name) {
 async function connect(page) {
   for (let attempt = 0; attempt < 5; attempt++) {
     try {
-      await page.getByRole('button', { name: 'Sign in', exact: true, includeHidden: true }).first().waitFor({ state: 'attached', timeout: 6000 });
+      await page.getByRole('button', { name: /^(Sign in|Account|ورود به اوپن‌فاند|حساب من)$/, includeHidden: true }).first().waitFor({ state: 'attached', timeout: 6000 });
       return;
     } catch { /* not connected yet */ }
     const btn = page.locator('.rk-chip-connect');
-    if (await btn.count()) await btn.click({ timeout: 3000 }).catch(() => {});
+    if (await btn.count()) await btn.click({ timeout: 3000 });
   }
-  await page.getByRole('button', { name: 'Sign in', exact: true, includeHidden: true }).first().waitFor({ state: 'attached', timeout: 20000 });
+  await page.getByRole('button', { name: /^(Sign in|Account|ورود به اوپن‌فاند|حساب من)$/, includeHidden: true }).first().waitFor({ state: 'attached', timeout: 20000 });
 }
 async function signIn(page) {
   for (let attempt = 0; attempt < 3; attempt++) {
+    // Cookie restoration may finish after connect: an already authenticated
+    // account has no Sign in button, so do not wait for an impossible control.
+    const account = page.getByRole('button', { name: /^(Account|حساب من)$/, includeHidden: true }).first();
+    if (await account.count()) return;
     await (await walletButton(page, 'Sign in')).click();
     try {
       await (await walletButton(page, 'Account')).waitFor({ state: 'attached', timeout: 15000 });
@@ -70,9 +74,12 @@ async function call(page, url, body, method) {
 /* SPA hash navigation — product pages intentionally reload on route change,
  * so tolerate the destroyed context and wait for the target URL to settle */
 async function navigateHash(page, hash) {
-  await page.evaluate(h => { location.hash = h }, hash).catch(() => {})
-  await page.waitForURL(`**#${hash}`, { timeout: 15000 }).catch(() => {})
-  await page.waitForLoadState('domcontentloaded').catch(() => {})
+  await page.evaluate(h => { location.hash = h }, hash)
+  await page.waitForURL(`**#${hash}`, { timeout: 15000 })
+  // Existing legacy teardown reloads at 120 ms; URL changes precede it.
+  await page.waitForTimeout(250)
+  await page.waitForLoadState('domcontentloaded')
+  await page.locator('.of-terminal-top').waitFor()
 }
 /* screenshots are evidence, not assertions — never let a mid-reload capture fail the run */
 async function shot(page, name) {

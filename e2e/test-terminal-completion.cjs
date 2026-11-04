@@ -229,8 +229,14 @@ async function layout(browser){
   for(const product of ['prop','perpetual'])for(const locale of (product==='perpetual'?['fa']:['en','fa']))for(const [width,height]of [[1920,1080],[1440,900],[1366,768],[1280,720]])for(const tab of tabs[product]){
     await page.setViewportSize({width,height});await page.goto(`${BASE}/#/${locale}/${product}/${tab}`);
     await page.locator('.of-terminal-compact').waitFor();await page.waitForTimeout(tab==='trade'?1400:250);
-    const record=await page.evaluate(()=>({header:document.querySelector('.of-terminal-header').getBoundingClientRect().height,width:innerWidth,overflow:document.documentElement.scrollWidth>innerWidth+1,headerOverflow:document.querySelector('.of-terminal-top').scrollWidth>innerWidth+1,active:[...document.querySelectorAll('#terminal-navigation>a[aria-current="page"]')].map(a=>a.textContent)}));
-    check(`${product}/${locale}/${tab} ${width}: shared header and no horizontal overflow`,record.header===40&&!record.overflow&&!record.headerOverflow);
+    const record=await page.evaluate(()=>{
+      const header=document.querySelector('.of-terminal-header').getBoundingClientRect();
+      const controls=document.querySelector('.of-terminal-top').getBoundingClientRect();
+      const warning=document.querySelector('.of-release-mismatch')?.getBoundingClientRect();
+      const main=document.querySelector('#terminal-main').getBoundingClientRect();
+      return {header:header.height,controls:controls.height,warningFits:!warning||(warning.top>=controls.bottom-1&&warning.bottom<=header.bottom+1&&warning.left>=-1&&warning.right<=innerWidth+1),mainFollowsHeader:main.top>=header.bottom-1,width:innerWidth,overflow:document.documentElement.scrollWidth>innerWidth+1,headerOverflow:document.querySelector('.of-terminal-top').scrollWidth>innerWidth+1,active:[...document.querySelectorAll('#terminal-navigation>a[aria-current="page"]')].map(a=>a.textContent)};
+    });
+    check(`${product}/${locale}/${tab} ${width}: shared header and no horizontal overflow ${JSON.stringify(record)}`,record.controls===39&&record.header>=40&&record.warningFits&&record.mainFollowsHeader&&!record.overflow&&!record.headerOverflow);
     if(['dashboard','trade','portfolio','journal','journal?section=accounts'].includes(tab))check(`${product}/${locale}/${tab} ${width}: exact active tab`,record.active.length===1);
     if(tab==='dashboard'){
       const grid=await page.locator('.of-dashboard-workspace').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length);
@@ -247,11 +253,11 @@ async function layout(browser){
       await themeButton.click();
       await page.waitForFunction(()=>document.documentElement.dataset.theme==='light');
       const palette=await page.locator('.of-terminal').evaluate(el=>({bg:getComputedStyle(el).backgroundColor,text:getComputedStyle(el).color}));
-      check(`${product}/${locale}/${tab}: authenticated light surface and text`,palette.bg==='rgb(242, 245, 240)'&&palette.text==='rgb(22, 40, 30)');
+      check(`${product}/${locale}/${tab}: authenticated light surface and text`,palette.bg==='rgb(255, 255, 255)'&&palette.text==='rgb(22, 40, 30)');
       check(`${product}/${locale}/${tab}: authenticated light panels`,await page.locator('.of-panel,.of-metric').evaluateAll(els=>els.every(el=>getComputedStyle(el).backgroundColor==='rgb(255, 255, 255)')));
       if(tab==='trade'){
         const child=page.frames().find(f=>f.parentFrame());
-        await child.waitForFunction(()=>window.__openfundChart?.chart?.renderer.getConfig().layout.background.toLowerCase()==='#f2f5f0');
+        await child.waitForFunction(()=>window.__openfundChart?.chart?.renderer.getConfig().layout.background.toLowerCase()==='#ffffff');
         check(`${product}/${locale}: authenticated light Vela plot`,true);
       }
       const lightFile=file.replace('.png','-light.png');await page.screenshot({animations:'disabled',path:path.join(OUT,lightFile),fullPage:true});screenshots.push(lightFile);
@@ -262,7 +268,7 @@ async function layout(browser){
     await page.setViewportSize({width:1440,height:900});await page.goto(`${BASE}/#/${locale}/${product}/journal?section=${section}`);await page.waitForTimeout(200);
     check(`${product}/${locale}/Journal ${section}: no horizontal overflow`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
     if(await page.locator('html').getAttribute('data-theme')!=='light')await page.getByRole('button',{name:locale==='fa'?'تغییر پوسته':'Toggle theme',exact:true}).click();
-    check(`${product}/${locale}/Journal ${section}: authenticated light theme`,await page.locator('.of-terminal').evaluate(el=>getComputedStyle(el).backgroundColor==='rgb(242, 245, 240)'));
+    check(`${product}/${locale}/Journal ${section}: authenticated light theme`,await page.locator('.of-terminal').evaluate(el=>getComputedStyle(el).backgroundColor==='rgb(255, 255, 255)'));
     const file=`${product}-${locale}-journal-${section}-light.png`;await page.screenshot({path:path.join(OUT,file),fullPage:true});screenshots.push(file);
   }
   const owned=(await call(page,'/accounts')).data.accounts.find(account=>account.type==='free_trial');

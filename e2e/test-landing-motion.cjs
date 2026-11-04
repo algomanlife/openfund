@@ -33,11 +33,12 @@ async function fixture(context) {
     for (const [width,height] of [[1920,1080],[1440,900],[1366,768],[1280,720],[1024,768],[768,1024],[390,844],[375,667]]) {
       await page.setViewportSize({width,height}); await page.goto(BASE+'/#/fa/home');
       await page.locator('.technical-feature').last().waitFor(); await page.evaluate(()=>document.fonts.ready);
+      await page.waitForFunction(() => Math.abs(parseFloat(getComputedStyle(document.querySelector('.home-gateway')).minHeight) - (innerHeight - document.querySelector('header').getBoundingClientRect().height)) <= 1 && getComputedStyle(document.querySelector('.home-stage')).display === 'flex');
       const geometry = await page.evaluate(() => {
         const visible = [...document.querySelectorAll('.home-gateway h1,.home-panel h2,.home-product-note,.home-panel .button,.home-community .telegram-community,.technical-heading,.technical-feature,.made-by-humans,header a,header button')].filter(e=>e.getBoundingClientRect().width);
         const gateway = document.querySelector('.home-gateway').getBoundingClientRect();
-        const footer = document.querySelector('footer').getBoundingClientRect();
-        return {width:innerWidth,height:innerHeight,scrollWidth:document.documentElement.scrollWidth,scrollHeight:document.documentElement.scrollHeight,gatewayBottom:gateway.bottom,footerTop:footer.top,
+        const footerCount = document.querySelectorAll('footer').length;
+        return {width:innerWidth,height:innerHeight,scrollWidth:document.documentElement.scrollWidth,scrollHeight:document.documentElement.scrollHeight,gatewayBottom:gateway.bottom,footerCount,
           outside:visible.filter(e=>{const r=e.getBoundingClientRect();return r.left<-.5||r.top<-.5||r.right>innerWidth+.5||r.bottom>innerHeight+.5}).map(e=>e.textContent),
           // Decorative button shine intentionally extends scrollWidth. Inspect
           // button text horizontally; unconstrained font ascenders are not clipping.
@@ -50,9 +51,9 @@ async function fixture(context) {
           rtl:document.documentElement.dir};
       });
       matrix.push(geometry); console.log(JSON.stringify(geometry));
-      // The public footer is intentionally below the gateway, not part of its fit contract.
-      check(`${width}x${height} gateway fits usable viewport`,geometry.scrollWidth<=width+1&&geometry.gatewayBottom<=height+1&&geometry.outside.length===0&&geometry.clipped.length===0);
-      check(`${width}x${height} public footer follows gateway`,geometry.footerTop>=geometry.gatewayBottom-1&&geometry.scrollHeight>height);
+      // The Persian gateway has no footer and must fit without document scrolling.
+      check(`${width}x${height} gateway fits usable viewport`,geometry.scrollWidth<=width+1&&geometry.scrollHeight<=height+1&&geometry.gatewayBottom<=height+1&&geometry.outside.length===0&&geometry.clipped.length===0);
+      check(`${width}x${height} Persian gateway has no footer`,geometry.footerCount===0);
       check(`${width}x${height} 44px product/feature targets`,geometry.targets.every(r=>r.w>=44&&r.h>=44));
       check(`${width}x${height} RTL`,geometry.rtl==='rtl');
       check('four proposed features with original SVGs',await page.locator('.technical-feature').count()===4&&await page.locator('.technical-art svg').count()===4);

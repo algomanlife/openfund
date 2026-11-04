@@ -37,7 +37,7 @@ const THEMES = {
     fontFamily: "Ubuntu, 'Irancell', system-ui, sans-serif"
   },
   light: {
-    background: '#F2F5F0', textColor: '#3F4C44', gridColor: '#0A120D12',
+    background: '#FFFFFF', textColor: '#3F4C44', gridColor: '#0A120D12',
     borderColor: '#0A120D22', upColor: '#12965D', downColor: '#C0453E',
     fontFamily: "Ubuntu, 'Irancell', system-ui, sans-serif"
   }

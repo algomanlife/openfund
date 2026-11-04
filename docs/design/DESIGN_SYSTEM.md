@@ -35,6 +35,27 @@ Ubuntu/Irancell, rounded platform cards and subtle dividers in
 `apps/web-react/public/legacy/style.css`. The shared footer comes from
 `pages/landing-body.html`; public information pages reuse it. Document language
 and direction plus `data-theme` control localization and theme. Public responsive
-rules use 700px and 1050px breakpoints. Telegram adds scoped blue translucency,
-keyboard focus and reduced-motion transitions without a new component library.
-Official external artwork and sources are recorded in the website refresh report.
+rules use 700px and 1050px breakpoints. PR #42's Telegram presentation is merged
+but unreleased. The three-provider controls and white light-theme refinements are
+**Completed within local scope; UNRELEASED**, with exact white canvases and actual
+text contrast >=4.5 checked on public and authenticated inner routes.
+[Refinement evidence](../reviews/community-theme/DELIVERY.md) records genuine
+bilingual dark/light desktop/mobile captures. Persian Home has no footer;
+English Home and other public footers remain. Use one provider-configured
+component for public Telegram/Discord/Instagram actions,
+matching dimensions and responsive alignment; retain Telegram blue and Discord
+blurple (#5865F2), authentic icons, keyboard focus and reduced-motion behavior.
+No community actions belong in the terminal, and missing destinations remain
+non-navigating.
+
+Native terminal light surfaces must reuse `html[data-theme]` and persisted
+`of-theme`, not a separate theme system or an inversion/overlay workaround.
+Use supported Vela theme APIs; precisely document any unsupported chart surface.
+Verify navigation, refresh and wallet-state persistence plus legibility of forms,
+tables, dialogs, empty/error/loading states in both languages and themes.
+TradingView, Render, Gains, Vela and DePay marks require official variants or safe
+contrast treatments, preserved aspect ratios and no brand-color-changing global
+filters. Final refinement captures record native terminal/service marks and
+readable public labels/footer text; official review and deployed acceptance
+remain separate from passing local theme checks.
+Official artwork provenance remains in the website refresh report.

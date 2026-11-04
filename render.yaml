@@ -116,6 +116,10 @@ services:
         sync: false             # optional (full remote wallet list)
       - key: VITE_TELEGRAM_COMMUNITY_URL
         sync: false             # optional owner-verified t.me destination; unset = Coming Soon
+      - key: VITE_DISCORD_COMMUNITY_URL
+        sync: false             # optional owner-verified Discord invitation; unset = Coming Soon
+      - key: VITE_INSTAGRAM_COMMUNITY_URL
+        sync: false             # optional owner-verified Instagram profile; unset = Coming Soon
       - key: PURCHASE_PAYMENT_RECEIVER
         sync: false             # challenge payment destination address — deliberately unset:
                                 # purchases stay disabled until an approved address is entered

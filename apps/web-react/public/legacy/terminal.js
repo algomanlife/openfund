@@ -1031,6 +1031,8 @@ function velaRestoreDrawings(){
     velaRestored = true;   /* allow saves from now on */
     const conf = JSON.parse(localStorage.getItem(VELA_CONF_KEY) || 'null');
     if (conf && vc.chart.renderer.applyConfig) vc.chart.renderer.applyConfig(conf);
+    // Restore user cosmetics first, then enforce the app-owned canvas palette.
+    vc.setTheme(document.documentElement.dataset.theme);
     const tools = JSON.parse(localStorage.getItem(VELA_TOOLS_KEY) || 'null');
     if (tools && vc.chart.drawings.setToolDefaults) vc.chart.drawings.setToolDefaults(tools);
   } catch(e){ /* corrupted JSON — start fresh */ }

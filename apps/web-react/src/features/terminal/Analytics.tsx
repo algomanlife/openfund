@@ -166,7 +166,7 @@ export function RatioGauge({value,label}:{value:number|null|undefined;label:stri
   const start=Math.PI*.75,end=Math.PI*2.25,angle=start+(end-start)*ratio;
   return <svg className="of-ratio-gauge" viewBox="0 0 100 86" role="img" aria-label={`${label}: ${(value*100).toFixed(1)}%`}>
     <path d={`M ${point(start)} A 40 40 0 1 1 ${point(end)}`} fill="none" stroke="var(--of-line)" strokeWidth="7" strokeLinecap="round"/>
-    {ratio>0&&<path d={`M ${point(start)} A 40 40 0 ${angle-start>Math.PI?1:0} 1 ${point(angle)}`} fill="none" stroke="var(--of-accent,#82e7bd)" strokeWidth="7" strokeLinecap="round"/>}
+    {ratio>0&&<path d={`M ${point(start)} A 40 40 0 ${angle-start>Math.PI?1:0} 1 ${point(angle)}`} fill="none" stroke="var(--of-mint)" strokeWidth="7" strokeLinecap="round"/>}
     <text x="50" y="53" textAnchor="middle" fill="currentColor" fontSize="16">{(value*100).toFixed(1)}%</text>
   </svg>;
 }

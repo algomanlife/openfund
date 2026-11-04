@@ -5,6 +5,7 @@
  */
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import './community.test.mjs'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import { buildSync } from 'esbuild'
