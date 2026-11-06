@@ -241,13 +241,9 @@ export default function Landing() {
       // Same-origin external scripts with ordered execution (async=false).
       // CSP-safe: the strict `script-src 'self'` policy forbids inline
       // textContent injection, so the legacy chain loads as real <script src>
-      // elements exactly like Terminal/Portfolio do. Pre-checking
-      // availability keeps the "asset missing" error path.
-      const available = await Promise.all(SCRIPTS.map(async src => {
-        const response = await fetch(src, { method: 'HEAD' })
-        return response.ok
-      })).catch(() => SCRIPTS.map(() => false))
-      if (available.some(ok => !ok)) { if (pageRoot?.isConnected) console.error('Landing asset unavailable'); return }
+      // elements exactly like Terminal/Portfolio do. No network pre-check:
+      // fetch interception in tests and browsers treat HEAD inconsistently;
+      // load errors surface through the last element's error listener.
       if (!pageRoot?.isConnected) return
       const elements = SCRIPTS.map(src => {
         const script = document.createElement('script')

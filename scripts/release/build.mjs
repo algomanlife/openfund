@@ -20,9 +20,12 @@ const base = `http://localhost:${port}`;
 try { await fetch(base+'/health',{signal:AbortSignal.timeout(500)}); throw Error('Release test port is already occupied.'); } catch(e) { if(e.message==='Release test port is already occupied.') throw e; }
 const env = {...process.env,RELEASE_VERSION:version,RELEASE_SOURCE_COMMIT:commit,NODE_ENV:'test',SIM_TEST_MODE:'1',PORT:String(port),ALLOWED_DOMAINS:`localhost:5173,localhost:${port}`,CORS_ORIGINS:`http://localhost:5173,http://localhost:${port}`,TEST_BACKEND_URL:base,TEST_FRONTEND_URL:base+'/react',
   /* candidate-gate-only values (SIM_TEST_MODE test server, never production):
-     the admin suite needs a token; the purchase suite needs a test receiver */
+     the admin suite needs a token; the purchase suite needs a test receiver;
+     the strict CSP must allow the local Directus origin the test frontend
+     fetches (intercepted by the browser gates) */
   ADMIN_API_TOKEN: process.env.ADMIN_API_TOKEN || 'release-candidate-admin-token',
-  PURCHASE_PAYMENT_RECEIVER: process.env.PURCHASE_PAYMENT_RECEIVER || '0x000000000000000000000000000000000000c1a1'};
+  PURCHASE_PAYMENT_RECEIVER: process.env.PURCHASE_PAYMENT_RECEIVER || '0x000000000000000000000000000000000000c1a1',
+  CSP_EXTRA_CONNECT: process.env.CSP_EXTRA_CONNECT || 'http://localhost:8055'};
 // Official frontend/API stay same-origin; inherited private development env files are forbidden.
 for (const f of ['.env','.env.local','.env.production','.env.production.local']) if(fs.existsSync(path.join(root,'apps/web-react',f))) throw Error(`Remove local build overrides from the release checkout: apps/web-react/${f}`);
 if (process.env.VITE_BACKEND_URL) throw Error('Official/candidate packages must use the same-origin backend, not VITE_BACKEND_URL.');
