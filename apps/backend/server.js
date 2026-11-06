@@ -64,18 +64,25 @@ app.use((req,res,next) => {
    styles (Vite + component styles), CMS-hosted images (Directus) and
    wss for the live market stream. CSP_EXTRA_CONNECT (comma-separated
    origins) widens connect-src for non-HTTPS local CMS deployments.
-   Nothing cross-origin may script or frame us. */
+   Nothing cross-origin may script or frame us.
+
+   APPLICATION DOCUMENTS ONLY (the /react/ HTML shell, which the srcDoc
+   terminal inherits) additionally allow 'unsafe-eval' in script-src:
+   the vendored Vela/Pine engine (same-origin trusted bundle) compiles
+   indicator scripts with `new Function` — a computation path, not an
+   injection surface. API responses keep the fully strict policy. */
 const CSP_THEME_BOOT_HASH = "'sha256-ipa/NWICPqnGA4ZvVmWe4T4YpGCx2Bdjaquw+QILedc='" /* apps/web-react/index.html pre-paint script */
 const cspExtraConnect = (process.env.CSP_EXTRA_CONNECT || '').split(',').map(v => v.trim()).filter(Boolean).join(' ')
+const buildCsp = (allowEval) =>
+  "default-src 'self'; script-src 'self' " + CSP_THEME_BOOT_HASH + (allowEval ? " 'unsafe-eval'" : '') + "; style-src 'self' 'unsafe-inline'; " +
+  "img-src 'self' data: blob: https:; connect-src 'self' https: wss:" + (cspExtraConnect ? ' ' + cspExtraConnect : '') + "; " +
+  "worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'self'; " +
+  "object-src 'none'; base-uri 'self'; form-action 'self'"
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff')
   res.setHeader('X-Frame-Options', 'SAMEORIGIN')
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
-  res.setHeader('Content-Security-Policy',
-    "default-src 'self'; script-src 'self' " + CSP_THEME_BOOT_HASH + "; style-src 'self' 'unsafe-inline'; " +
-    "img-src 'self' data: blob: https:; connect-src 'self' https: wss:" + (cspExtraConnect ? ' ' + cspExtraConnect : '') + "; " +
-    "worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'self'; " +
-    "object-src 'none'; base-uri 'self'; form-action 'self'")
+  res.setHeader('Content-Security-Policy', buildCsp(false))
   if (cfg.prod) res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
   next()
 })
@@ -665,9 +672,15 @@ app.get('/trading/health', tradingAuth, async (req, res) => {
   res.json({ ok: true, account: st.account != null, markets: marketData.markets.size })
 })
 
-/* Same-origin static hosting for Render; hash routes need no server fallback. */
+/* Same-origin static hosting for Render; hash routes need no server fallback.
+   HTML documents and the Pine computation worker get the application CSP
+   (the engine compiles indicator scripts with `new Function`); every other
+   asset and all API responses keep the fully strict policy. */
 app.use('/react', express.static(fileURLToPath(new URL('../../react', import.meta.url)), {
-  setHeaders(res, file) { if (file.endsWith('.html') || file.endsWith('release-manifest.json')) res.set('Cache-Control','no-cache, must-revalidate'); }
+  setHeaders(res, file) {
+    if (file.endsWith('.html') || file.endsWith('release-manifest.json')) res.set('Cache-Control','no-cache, must-revalidate')
+    if (file.endsWith('.html') || file.endsWith('openfund-pine-worker.min.js')) res.setHeader('Content-Security-Policy', buildCsp(true))
+  }
 }))
 app.get('/', (req, res) => res.redirect('/react/'))
 
