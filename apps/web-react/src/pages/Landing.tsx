@@ -238,21 +238,27 @@ export default function Landing() {
         l.dataset.page = 'landing'
         document.head.appendChild(l)
       })
-      // Fetch trusted bundled scripts first. A synchronous ordered insertion
-      // prevents queued external scripts from booting after React removes Home.
-      const sources = await Promise.all(SCRIPTS.map(async src => {
-        const response = await fetch(src)
-        if (!response.ok) throw new Error(`Landing asset unavailable: ${src}`)
-        return { src, code: await response.text() }
-      })).catch(error => { if (pageRoot?.isConnected) console.error(error); return null })
-      if (!sources || !pageRoot?.isConnected) return
-      for (const { src, code } of sources) {
+      // Same-origin external scripts with ordered execution (async=false).
+      // CSP-safe: the strict `script-src 'self'` policy forbids inline
+      // textContent injection, so the legacy chain loads as real <script src>
+      // elements exactly like Terminal/Portfolio do. Pre-checking
+      // availability keeps the "asset missing" error path.
+      const available = await Promise.all(SCRIPTS.map(async src => {
+        const response = await fetch(src, { method: 'HEAD' })
+        return response.ok
+      })).catch(() => SCRIPTS.map(() => false))
+      if (available.some(ok => !ok)) { if (pageRoot?.isConnected) console.error('Landing asset unavailable'); return }
+      if (!pageRoot?.isConnected) return
+      const elements = SCRIPTS.map(src => {
         const script = document.createElement('script')
+        script.src = src
+        script.async = false /* preserve insertion order */
         script.dataset.page = 'landing'
-        script.textContent = code + '\n//# sourceURL=' + new URL(src, document.baseURI).href
         document.body.appendChild(script)
-      }
-      /* re-fire DOMContentLoaded for the late-loaded legacy scripts.
+        return script
+      })
+      /* re-fire DOMContentLoaded AFTER the ordered legacy scripts execute
+         (the last element's load event fires once the chain has run).
          MUST bubble: locale.js listens on window, we dispatch on document. */
       const kick = () => {
         if (!pageRoot?.isConnected || w().__ofLandingKicked) return
@@ -261,7 +267,11 @@ export default function Landing() {
         setTimeout(() => { if (pageRoot?.isConnected) { initTheme(); swapArrows(); markCurrentPage() } }, 60)
         setTimeout(() => { if (pageRoot?.isConnected) { swapArrows(); markCurrentPage() } }, 600)
       }
-      kick()
+      const last = elements[elements.length - 1]
+      if (last) {
+        last.addEventListener('load', kick, { once: true })
+        last.addEventListener('error', () => { if (pageRoot?.isConnected) console.error('Landing script failed to load') }, { once: true })
+      }
       })()
     }
 

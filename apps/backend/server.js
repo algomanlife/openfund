@@ -421,12 +421,20 @@ const tradingAuth = async (req, res, next) => {
       const accountRef=req.query.account || req.body?.accountId || req.body?.account_id;
       if(req.body?.product && req.body.product!=='prop')return res.status(403).json({error:'wrong_product_context'});
       if(accountRef && (await engine.getAccount(user.user_id))?.id!==accountRef){
-        /* challenge trading account: must be owned by the session user */
-        const owned = await pool.query(
+        /* account references resolve in two shapes: the demo trading
+           account id, or the openfund_challenges id the UI carries in
+           its URL (journal/evaluation scope) — both must be owned */
+        const ownedAccount = await pool.query(
           `SELECT 1 FROM demo_accounts a JOIN openfund_challenges c ON c.demo_account_id=a.id
             WHERE a.id=$1 AND c.user_id=$2 AND a.account_type='challenge'`, [accountRef, user.user_id])
-        if(!owned.rowCount) return res.status(404).json({error:'account_not_found'})
-        req.accountId = accountRef
+        if (ownedAccount.rowCount) { req.accountId = accountRef }
+        else {
+          const challenge = (await pool.query(
+            `SELECT demo_account_id FROM openfund_challenges WHERE id=$1 AND user_id=$2`,
+            [accountRef, user.user_id])).rows[0]
+          if (challenge?.demo_account_id) req.accountId = challenge.demo_account_id
+          else return res.status(404).json({error:'account_not_found'})
+        }
       }
     }
     req.user = user
