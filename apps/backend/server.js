@@ -58,16 +58,22 @@ app.use((req,res,next) => {
 
 /* ---------- security headers ----------
    CSP allows same-origin scripts/workers/frames (the shared terminal
-   runs in a same-origin iframe with Vela workers), inline styles (Vite
-   + component styles), CMS-hosted images (Directus) and wss for the
-   live market stream. Nothing cross-origin may script or frame us. */
+   runs in a same-origin iframe; its boot logic is the external
+   legacy/react-boot.js and its dynamic data a non-executable JSON
+   island), the hashed theme pre-paint script in index.html, inline
+   styles (Vite + component styles), CMS-hosted images (Directus) and
+   wss for the live market stream. CSP_EXTRA_CONNECT (comma-separated
+   origins) widens connect-src for non-HTTPS local CMS deployments.
+   Nothing cross-origin may script or frame us. */
+const CSP_THEME_BOOT_HASH = "'sha256-ipa/NWICPqnGA4ZvVmWe4T4YpGCx2Bdjaquw+QILedc='" /* apps/web-react/index.html pre-paint script */
+const cspExtraConnect = (process.env.CSP_EXTRA_CONNECT || '').split(',').map(v => v.trim()).filter(Boolean).join(' ')
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff')
   res.setHeader('X-Frame-Options', 'SAMEORIGIN')
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
   res.setHeader('Content-Security-Policy',
-    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; " +
-    "img-src 'self' data: blob: https:; connect-src 'self' https: wss:; " +
+    "default-src 'self'; script-src 'self' " + CSP_THEME_BOOT_HASH + "; style-src 'self' 'unsafe-inline'; " +
+    "img-src 'self' data: blob: https:; connect-src 'self' https: wss:" + (cspExtraConnect ? ' ' + cspExtraConnect : '') + "; " +
     "worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'self'; " +
     "object-src 'none'; base-uri 'self'; form-action 'self'")
   if (cfg.prod) res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
