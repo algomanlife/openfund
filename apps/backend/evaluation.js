@@ -44,6 +44,9 @@ export const RULES_VERSION = 1
 export const DAY_UTC3_OFFSET_MS = 3 * 60 * 60 * 1000
 
 const num = (v) => {
+  /* null/undefined/'' mean "not configured" — Number(null)===0 must NOT
+     turn an unlimited time limit into a same-second expiry */
+  if (v === null || v === undefined || v === '') return null
   const n = Number(v)
   return Number.isFinite(n) ? n : null
 }
