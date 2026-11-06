@@ -404,5 +404,95 @@ CREATE INDEX IF NOT EXISTS idx_withdrawals_user ON withdrawal_requests (user_id,
 ALTER TABLE openfund_challenges ADD COLUMN IF NOT EXISTS account_size_usd numeric(12,2);
 ALTER TABLE openfund_challenges ADD COLUMN IF NOT EXISTS purchase_order_id uuid REFERENCES purchase_orders(id);
 
+-- ------------------------------------------------------------------
+-- Phase 2 (v0.3.1 soft launch): challenge evaluation engine.
+--
+-- Challenge accounts are traded through the SAME demo trading engine
+-- (demo_accounts.account_type='challenge'); the UNIQUE(user_id,
+-- account_type) constraint is replaced by a partial unique index that
+-- still guarantees exactly ONE free_demo account per user while
+-- allowing multiple challenge accounts.
+--
+-- Lifecycle (immutable event history in challenge_events):
+--   created -> started -> passed | failed | expired | cancelled
+-- Two-phase plans progress by provisioning a stage-2 challenge row
+-- (stage=2) when stage 1 passes; the stage-1 row terminates 'passed'.
+-- Instant plans (phases=0) start directly at the funded simulation
+-- stage: loss limits enforced, no profit target, no pass transition.
+--
+-- rules_snapshot freezes the effective plan configuration at
+-- provisioning time so later catalog edits can never retroactively
+-- change a purchased challenge's contractual evaluation criteria.
+-- ------------------------------------------------------------------
+ALTER TABLE demo_accounts DROP CONSTRAINT IF EXISTS demo_accounts_user_id_account_type_key;
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'demo_accounts_user_id_account_type_key') THEN
+    ALTER TABLE demo_accounts DROP CONSTRAINT demo_accounts_user_id_account_type_key;
+  END IF;
+END $$;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_demo_accounts_free_unique ON demo_accounts(user_id) WHERE account_type='free_demo';
+CREATE INDEX IF NOT EXISTS idx_demo_accounts_type ON demo_accounts(account_type);
+
+ALTER TABLE openfund_challenges ADD COLUMN IF NOT EXISTS stage integer NOT NULL DEFAULT 1;
+ALTER TABLE openfund_challenges ADD COLUMN IF NOT EXISTS rules_snapshot jsonb;
+ALTER TABLE openfund_challenges ADD COLUMN IF NOT EXISTS demo_account_id uuid REFERENCES demo_accounts(id);
+ALTER TABLE openfund_challenges ADD COLUMN IF NOT EXISTS expires_at timestamptz;
+
+-- Immutable, append-only challenge lifecycle history (state transitions,
+-- rule evaluations, violations). Auditable; never updated in place.
+CREATE TABLE IF NOT EXISTS challenge_events (
+  id            bigserial PRIMARY KEY,
+  challenge_id  uuid NOT NULL REFERENCES openfund_challenges(id) ON DELETE CASCADE,
+  kind          text NOT NULL,              -- created|started|passed|failed|expired|cancelled|stage_passed|violation|eval_deferred
+  detail        jsonb NOT NULL DEFAULT '{}'::jsonb,
+  ts            timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_challenge_events_challenge ON challenge_events (challenge_id, id);
+
+-- Per-day risk basis for challenge accounts. Day boundary is 00:00 UTC+3
+-- (published Rulebook rule of record). basis = max(opening balance,
+-- opening equity) — the daily loss limit is measured against it.
+CREATE TABLE IF NOT EXISTS challenge_equity_days (
+  challenge_id      uuid NOT NULL REFERENCES openfund_challenges(id) ON DELETE CASCADE,
+  day               date NOT NULL,
+  day_start_balance numeric(24,10) NOT NULL,
+  day_start_equity  numeric(24,10) NOT NULL,
+  basis             numeric(24,10) NOT NULL,
+  peak_equity       numeric(24,10) NOT NULL,
+  last_equity       numeric(24,10) NOT NULL,
+  updated_at        timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (challenge_id, day)
+);
+
+-- Challenge-wide trailing drawdown state (Instant model; peak follows
+-- highest recorded equity, floor locks at breakeven after the published
+-- profit lock point).
+CREATE TABLE IF NOT EXISTS challenge_trailing (
+  challenge_id  uuid PRIMARY KEY REFERENCES openfund_challenges(id) ON DELETE CASCADE,
+  peak_equity   numeric(24,10) NOT NULL,
+  trailing_floor numeric(24,10) NOT NULL,
+  locked_breakeven boolean NOT NULL DEFAULT false,
+  updated_at    timestamptz NOT NULL DEFAULT now()
+);
+
 -- Invoice numbering: one gap-free sequence per calendar year.
 CREATE SEQUENCE IF NOT EXISTS invoice_number_seq;
+
+-- ------------------------------------------------------------------
+-- Controlled plan-key normalization (backward compatible): legacy
+-- backend-seeded rows wrote `maxDailyLossPct`; the canonical key is
+-- `dailyLossPct` (frontend catalog + CMS seed path). This copy is
+-- idempotent (only rows still missing the canonical key), never
+-- overwrites admin-edited values, and preserves the legacy key for
+-- traceability. evaluation.js also accepts the legacy key at read time.
+-- ------------------------------------------------------------------
+UPDATE challenge_plans
+   SET configuration = jsonb_set(configuration, '{dailyLossPct}',
+        to_jsonb(((configuration->>'maxDailyLossPct')::numeric)))
+ WHERE configuration ? 'maxDailyLossPct'
+   AND NOT (configuration ? 'dailyLossPct');
+UPDATE challenge_plans
+   SET configuration = jsonb_set(configuration, '{dailyLossPctAlt}',
+        to_jsonb(((configuration->>'maxDailyLossPctAlt')::numeric)))
+ WHERE configuration ? 'maxDailyLossPctAlt'
+   AND NOT (configuration ? 'dailyLossPctAlt');

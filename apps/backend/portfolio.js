@@ -93,7 +93,18 @@ export class Portfolio {
     this.md = marketData;
   }
 
-  async accountOf(userId, c = this.pool) {
+  /** resolve the session user's account: free_demo (default) or an owned
+      challenge account by id (challenge rows carry account_size_usd) */
+  async accountOf(userId, c = this.pool, accountId = null) {
+    if (accountId) {
+      const { rows } = await c.query(
+        `SELECT a.*, ch.account_size_usd, ch.id AS challenge_id, ch.status AS challenge_status
+           FROM demo_accounts a JOIN openfund_challenges ch ON ch.demo_account_id = a.id
+          WHERE a.id = $1 AND ch.user_id = $2`,
+        [accountId, userId],
+      );
+      return rows[0] || null;
+    }
     const { rows } = await c.query(
       "SELECT * FROM demo_accounts WHERE user_id=$1 AND account_type=$2",
       [userId, "free_demo"],
@@ -101,28 +112,40 @@ export class Portfolio {
     return rows[0] || null;
   }
 
-  async allPositions(userId, c = this.pool) {
+  async allPositions(userId, c = this.pool, accountId = null) {
+    const where = accountId
+      ? "p.user_id=$1 AND p.account_id=$2"
+      : "p.user_id=$1 AND a.user_id=$1 AND a.account_type='free_demo'";
     const { rows } = await c.query(
       `SELECT p.*, a.balance, a.realized_pnl AS acc_realized, a.used_margin
          FROM trading_positions p JOIN demo_accounts a ON a.id = p.account_id
-        WHERE p.user_id=$1 AND a.user_id=$1 AND a.account_type='free_demo' ORDER BY p.opened_at`,
-      [userId],
+        WHERE ${where} ORDER BY p.opened_at`,
+      accountId ? [userId, accountId] : [userId],
     );
     return rows;
   }
 
+  /** initial balance of record: 100,000 virtual USD for the free demo,
+      the purchased account size for a challenge account */
+  #initialBalance(account) {
+    return account.account_type === "challenge"
+      ? Number(account.account_size_usd)
+      : INITIAL_BALANCE;
+  }
+
   /** overview + metrics + curves + calendar in one authoritative payload */
-  async overview(userId, range = {}) {
+  async overview(userId, range = {}, accountId = null) {
     const c = await this.pool.connect();
     let account, positions, ledger=[], samples=[];
     try {
       await c.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
-      account = await this.accountOf(userId,c);
-      positions = account ? await this.allPositions(userId,c) : [];
+      account = await this.accountOf(userId, c, accountId);
+      positions = account ? await this.allPositions(userId, c, accountId) : [];
       if(account){ledger=(await c.query('SELECT ts,balance_after,amount,event FROM trading_ledger WHERE account_id=$1 ORDER BY id',[account.id])).rows;samples=(await c.query('SELECT sampled_at,equity,balance FROM account_equity_samples WHERE account_id=$1 ORDER BY sampled_at',[account.id])).rows;}
       await c.query('COMMIT');
     } catch(e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
     if (!account) return null;
+    const initialBalance = this.#initialBalance(account);
     const trades = positions
       .filter(
         (p) =>
@@ -140,16 +163,16 @@ export class Portfolio {
 
     const ov = computeOverview(trades, {
       timeZone: TZ,
-      initialBalance: INITIAL_BALANCE,
+      initialBalance,
     });
     const curve = equityCurve(trades);
     const days = dailyStats(trades, TZ);
-    const dd = drawdown(curve, INITIAL_BALANCE);
+    const dd = drawdown(curve, initialBalance);
 
     /* authoritative account numbers (NUMERIC from the engine) */
     const bal = Number(account.balance);
     const used = Number(account.used_margin);
-    const realized = bal - INITIAL_BALANCE;
+    const realized = bal - initialBalance;
     const openTrades = positions.filter((p) => p.status === "open");
     const valuation = accountMetrics(account, openTrades, this.md);
     const unreal = valuation.unrealized_pnl === null ? null : Number(valuation.unrealized_pnl);
@@ -161,7 +184,7 @@ export class Portfolio {
         type: account.account_type,
         currency: account.currency,
         status: account.status,
-        initialBalance: INITIAL_BALANCE,
+        initialBalance,
         balance: bal,
         equity: valuation.equity === null ? null : Number(valuation.equity),
         freeMargin: valuation.free_margin === null ? null : Number(valuation.free_margin),
@@ -187,13 +210,13 @@ export class Portfolio {
         "realized" /* honest label: no historical mark-to-market snapshots */,
       daily: days /* PnL calendar (tz documented) */,
       drawdown: dd,
-      relativeDrawdownCurve: relativeDrawdownCurve(curve,INITIAL_BALANCE),
+      relativeDrawdownCurve: relativeDrawdownCurve(curve,initialBalance),
       timeZone: TZ,
     };
   }
 
-  async buckets(userId, range = {}) {
-    const positions = await this.allPositions(userId);
+  async buckets(userId, range = {}, accountId = null) {
+    const positions = await this.allPositions(userId, this.pool, accountId);
     const trades = positions
       .filter(
         (p) =>
@@ -250,12 +273,18 @@ export class Portfolio {
       to,
       sort = "closed_desc",
     },
+    accountId = null,
   ) {
-    const where = [
-      "p.user_id = $1",
-      "p.account_id IN (SELECT id FROM demo_accounts WHERE user_id=$1 AND account_type='free_demo')",
-    ];
     const params = [userId];
+    if (accountId) {
+      params.push(accountId);
+      var where = ["p.user_id = $1", "p.account_id = $2"];
+    } else {
+      var where = [
+        "p.user_id = $1",
+        "p.account_id IN (SELECT id FROM demo_accounts WHERE user_id=$1 AND account_type='free_demo')",
+      ];
+    }
     if (side) {
       params.push(side);
       where.push(`p.side = $${params.length}`);
@@ -297,10 +326,13 @@ export class Portfolio {
     return { total: count.rows[0].c, trades: rows.map(toRoundTrip) };
   }
 
-  async details(userId, positionId) {
+  async details(userId, positionId, accountId = null) {
+    const scope = accountId
+      ? "p.account_id = $3"
+      : "p.account_id IN (SELECT id FROM demo_accounts WHERE user_id=$2 AND account_type='free_demo')";
     const { rows } = await this.pool.query(
-      "SELECT * FROM trading_positions WHERE id=$1 AND user_id=$2 AND account_id IN (SELECT id FROM demo_accounts WHERE user_id=$2 AND account_type='free_demo')",
-      [positionId, userId],
+      `SELECT * FROM trading_positions p WHERE p.id=$1 AND p.user_id=$2 AND ${scope}`,
+      accountId ? [positionId, userId, accountId] : [positionId, userId],
     );
     if (!rows[0]) return null;
     const p = rows[0];

@@ -22,7 +22,10 @@ test('owned account API isolates Challenge journals and enforces disabled read-o
  assert.equal((await api(scope+'/journal?account='+trial.id,entry,cookie,'PUT')).status,200);
  assert.equal((await api(scope+'/journal?account='+challenge.id,null,cookie)).data.total,0);
  const context=await api(scope+'/context?account='+challenge.id,null,cookie);assert.equal(context.data.state,null);assert.equal(context.data.capabilities.simulatedTrading,false);
- assert.equal((await api(scope+'/overview?account='+challenge.id,null,cookie)).status,409);
+ /* v0.3.1: challenge execution is implemented — an unprovisioned challenge
+    (bare record, no trading account yet) is a 404, not the old
+    409 challenge_execution_unavailable gate */
+ assert.equal((await api(scope+'/overview?account='+challenge.id,null,cookie)).status,404);
  assert.equal((await api(scope+'/context?account='+randomUUID(),null,cookie)).status,404);
  assert.equal((await api('/trading/preview?account='+challenge.id,{market:'BTC/USD',margin:1,leverage:1,side:'long'},cookie)).status,404);
  const prefs={range:'30D',layout:'compact',hidden:['Edge Score']};assert.equal((await api(scope+'/preferences?account='+trial.id,prefs,cookie,'PUT')).status,200);assert.deepEqual((await api(scope+'/preferences?account='+trial.id,null,cookie)).data,prefs);

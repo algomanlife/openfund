@@ -71,16 +71,19 @@ app.use((req, res, next) => {
   next()
 })
 
-/* ---------- tiny in-memory rate limiter (per ip+route) ---------- */
+/* ---------- tiny in-memory rate limiter (per ip+route) ----------
+   Test mode (SIM_TEST_MODE + test database, never production) widens
+   the windows so sequential suite runs don't trip real-user limits. */
 const hits = new Map()
 setInterval(() => hits.clear(), 60_000).unref()
+const limitScale = testMode ? 50 : 1
 const limit =
   (max, window = 60_000) =>
   (req, res, next) => {
     const key = `${req.ip}:${req.path}`;
     const n = (hits.get(key) || 0) + 1;
     hits.set(key, n);
-    if (n > max) return res.status(429).json({ error: "rate_limited" });
+    if (n > max * limitScale) return res.status(429).json({ error: "rate_limited" });
     next();
   };
 
@@ -323,7 +326,8 @@ app.post("/auth/verify", limit(60), async (req, res) => {
 /* 3 — me (+ challenges, ownership enforced by session join) */
 app.get('/auth/me', requireAuth, asyncRoute(async (req, res) => {
   const { rows } = await pool.query(
-    `SELECT c.id, c.status, c.created_at, c.started_at, c.completed_at,
+    `SELECT c.id, c.status, c.stage, c.account_size_usd, c.demo_account_id, c.purchase_order_id,
+            c.created_at, c.started_at, c.completed_at, c.expires_at, c.rules_snapshot,
             p.slug AS plan_slug, p.name AS plan_name, p.configuration AS plan_configuration
        FROM openfund_challenges c JOIN challenge_plans p ON p.id = c.challenge_plan_id
       WHERE c.user_id = $1 ORDER BY c.created_at DESC`, [req.user.user_id])
@@ -390,7 +394,14 @@ const tradingAuth = async (req, res, next) => {
     if(req.path.startsWith('/trading')) {
       const accountRef=req.query.account || req.body?.accountId || req.body?.account_id;
       if(req.body?.product && req.body.product!=='prop')return res.status(403).json({error:'wrong_product_context'});
-      if(accountRef && (await engine.getAccount(user.user_id))?.id!==accountRef)return res.status(404).json({error:'account_not_found'});
+      if(accountRef && (await engine.getAccount(user.user_id))?.id!==accountRef){
+        /* challenge trading account: must be owned by the session user */
+        const owned = await pool.query(
+          `SELECT 1 FROM demo_accounts a JOIN openfund_challenges c ON c.demo_account_id=a.id
+            WHERE a.id=$1 AND c.user_id=$2 AND a.account_type='challenge'`, [accountRef, user.user_id])
+        if(!owned.rowCount) return res.status(404).json({error:'account_not_found'})
+        req.accountId = accountRef
+      }
     }
     req.user = user
     next()
@@ -400,19 +411,49 @@ const tradingAuth = async (req, res, next) => {
 app.get('/accounts', tradingAuth, asyncRoute(async (req,res) => {
   res.json(await accountDirectory(pool,engine,req.user))
 }))
+
+/* ============== CHALLENGES (evaluation lifecycle, session-scoped) ============== */
+
+app.get('/challenges', tradingAuth, asyncRoute(async (req, res) => {
+  const list = await engine.challenges.listForUser(req.user.user_id)
+  const views = []
+  for (const c of list) {
+    const state = c.demo_account_id ? await engine.state(req.user.user_id, c.demo_account_id) : null
+    views.push(await engine.challenges.view(c, state))
+  }
+  res.json({ challenges: views })
+}))
+
+app.get('/challenges/:id', tradingAuth, asyncRoute(async (req, res) => {
+  const c = await engine.challenges.byId(req.params.id, req.user.user_id)
+  if (!c) return res.status(404).json({ error: 'challenge_not_found' })
+  const state = c.demo_account_id ? await engine.state(req.user.user_id, c.demo_account_id) : null
+  res.json(await engine.challenges.view(c, state))
+}))
+
+/* created → started: provisions the trading account on first start,
+   freezes the rules snapshot, sets the time limit (if any). Idempotent. */
+app.post('/challenges/:id/start', tradingAuth, limit(30), asyncRoute(async (req, res) => {
+  const started = await engine.challenges.start(req.user.user_id, req.params.id)
+  await audit('challenge_started', req.user.user_id, req, { challengeId: req.params.id, stage: started.stage })
+  res.json({ ok: true, challenge: {
+    id: started.id, status: started.status, stage: started.stage,
+    accountId: started.demo_account_id, startedAt: started.started_at, expiresAt: started.expires_at } })
+}))
+
 app.post('/trading/preview', tradingAuth, asyncRoute(async (req,res) => {
-  res.json(await engine.previewOrder(req.user.user_id,req.body || {}))
+  res.json(await engine.previewOrder(req.user.user_id, req.body || {}, req.accountId || null))
 }))
 
 app.get('/trading/state', tradingAuth, asyncRoute(async (req, res) => {
-  const state = await engine.state(req.user.user_id)
+  const state = await engine.state(req.user.user_id, req.accountId || null)
   res.json(state)
 }))
 
 app.post('/trading/order', tradingAuth, limit(30), async (req, res) => {
   try {
     const key = req.headers['idempotency-key'] || null
-    const out = await engine.submitOrder(req.user.user_id, req.body || {}, key)
+    const out = await engine.submitOrder(req.user.user_id, req.body || {}, key, req.accountId || null)
     if (!out.ok) return res.status(400).json({ error: out.reason, order: out.order })
     res.json(out)
   } catch (e) {
@@ -471,7 +512,7 @@ app.get("/trading/stream", tradingAuth, async (req, res) => {
         res.end();
         return;
       }
-      const state = await engine.state(req.user.user_id);
+      const state = await engine.state(req.user.user_id, req.accountId || null);
       const snapshot = JSON.stringify(state);
       if (snapshot !== last) {
         /* only push actual changes */

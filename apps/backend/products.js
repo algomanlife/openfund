@@ -112,10 +112,14 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
         if (product !== 'prop' || !uuid.test(req.query.account)) throw fail(404,'account_not_found');
         const owned = (await pool.query('SELECT * FROM openfund_challenges WHERE id=$1 AND user_id=$2',[req.query.account,userId])).rows[0];
         if (!owned) throw fail(404,'account_not_found');
-        account = {...owned,account_type:'challenge',currency:null}; accountRef = owned.id;
+        /* the challenge row is the journal/evaluation reference; its demo
+           trading account (demo_account_id) is the financial scope */
+        account = {...owned, account_type:'challenge', currency:'USD'};
+        accountRef = owned.id;
       }
       if (!['GET','HEAD'].includes(req.method) && account?.status === 'permanently_disabled') throw fail(403,'account_permanently_disabled');
-      req.scope = { product, userId, accountRef, account };
+      req.scope = { product, userId, accountRef, account,
+        tradingAccountId: account?.account_type === 'challenge' ? account.demo_account_id : accountRef };
       next();
     }),
   );
@@ -144,14 +148,18 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
           },
         ],
         capabilities: {
-          simulatedTrading: s.product === "prop" && s.account?.account_type === "free_demo" && s.account.status === "active",
+          simulatedTrading: s.product === "prop" && (s.account?.account_type === "free_demo"
+            ? s.account?.status === "active"
+            : s.account?.status === "started"),
           execution: s.product === "prop" ? "simulation" : "unavailable",
           marketData: "gains",
           positions: true,
           history: true,
           journal: true,
         },
-        state: s.product === "prop" && s.account?.account_type === "free_demo" ? await engine.state(s.userId) : null,
+        state: s.product === "prop" && (s.account?.account_type !== "challenge" || s.tradingAccountId)
+          ? await engine.state(s.userId, s.account?.account_type === 'challenge' ? s.tradingAccountId : null)
+          : null,
       });
     }),
   );
@@ -173,8 +181,12 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
       const f = filters(req.query);
       if (req.scope.product !== "prop")
         throw fail(409, "use_native_gains_records");
-      if (req.scope.account?.account_type !== "free_demo") throw fail(409,"challenge_execution_unavailable");
-      res.json(await portfolio.overview(req.scope.userId, f));
+      const s = req.scope;
+      if (s.account?.account_type === 'challenge' && !s.tradingAccountId) throw fail(404, "account_not_found");
+      const ov = await portfolio.overview(s.userId, f,
+        s.account?.account_type === 'challenge' ? s.tradingAccountId : null);
+      if (!ov) throw fail(404, "account_not_found");
+      res.json(ov);
     }),
   );
   router.get(
@@ -183,8 +195,10 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
       const f = filters(req.query);
       if (req.scope.product !== "prop")
         throw fail(409, "use_native_gains_records");
-      if (req.scope.account?.account_type !== "free_demo") throw fail(409,"challenge_execution_unavailable");
-      res.json(await portfolio.buckets(req.scope.userId, f));
+      const s = req.scope;
+      if (s.account?.account_type === 'challenge' && !s.tradingAccountId) throw fail(404, "account_not_found");
+      res.json(await portfolio.buckets(s.userId, f,
+        req.scope.account?.account_type === 'challenge' ? req.scope.tradingAccountId : null));
     }),
   );
   router.get(
@@ -193,8 +207,10 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
       const f = filters(req.query);
       if (req.scope.product !== "prop")
         throw fail(409, "use_native_gains_records");
-      if (req.scope.account?.account_type !== "free_demo") throw fail(409,"challenge_execution_unavailable");
-      res.json(await portfolio.history(req.scope.userId, f));
+      const s = req.scope;
+      if (s.account?.account_type === 'challenge' && !s.tradingAccountId) throw fail(404, "account_not_found");
+      res.json(await portfolio.history(s.userId, f,
+        s.account?.account_type === 'challenge' ? s.tradingAccountId : null));
     }),
   );
   router.get(
@@ -203,8 +219,7 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
       const f = filters(req.query);
       if (req.scope.product !== "prop")
         throw fail(409, "use_native_gains_records");
-      if (req.scope.account?.account_type !== "free_demo") throw fail(409,"challenge_execution_unavailable");
-      const params = [req.scope.userId, req.scope.accountRef];
+      const params = [req.scope.userId, req.scope.tradingAccountId];
       let where = "user_id=$1 AND account_id=$2";
       if (f.market) {
         params.push(`%${f.market}%`);
@@ -236,9 +251,10 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
   router.get(
     "/trades/:id",
     wrap(async (req, res) => {
-      if (req.scope.account?.account_type !== "free_demo" || req.scope.product !== "prop" || !uuid.test(req.params.id))
+      if (req.scope.product !== "prop" || !uuid.test(req.params.id))
         throw fail(404, "trade_not_found");
-      const detail = await portfolio.details(req.scope.userId, req.params.id);
+      const detail = await portfolio.details(req.scope.userId, req.params.id,
+        req.scope.account?.account_type === 'challenge' ? req.scope.tradingAccountId : null);
       if (!detail) throw fail(404, "trade_not_found");
       res.json(detail);
     }),
@@ -246,7 +262,7 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
   router.put(
     "/notes",
     wrap(async (req, res) => {
-      if (req.scope.product !== "prop" || req.scope.account?.account_type !== "free_demo") throw fail(400, "trade_not_available");
+      if (req.scope.product !== "prop") throw fail(400, "trade_not_available");
       res.json(
         await portfolio.upsertNote(
           req.scope.userId,
@@ -306,7 +322,7 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
       if (scope.product !== "prop") throw fail(400, "trade_not_available");
       const owned = await client.query(
         "SELECT id FROM trading_positions WHERE id=$1 AND user_id=$2 AND account_id=$3",
-        [e.tradeId, scope.userId, scope.accountRef],
+        [e.tradeId, scope.userId, scope.tradingAccountId],
       );
       if (!owned.rows.length) throw fail(404, "trade_not_found");
     }

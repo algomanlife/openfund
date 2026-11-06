@@ -27,6 +27,7 @@ import { Router } from 'express'
 import { createClient, http } from 'viem'
 import { sepolia, arbitrum } from 'viem/chains'
 import { invoicePdf } from './invoice-pdf.js'
+import { ChallengeService, normalizeRules } from './evaluation.js'
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const txHashRe = /^0x[0-9a-f]{64}$/i
@@ -121,10 +122,25 @@ export async function confirmPurchase(pool, { orderId, userId, evidence, source 
       [orderId])
     if (!paid) throw fail(409, 'order_not_pending')
 
+    /* the plan configuration of record is read in the SAME transaction as
+       the status flip, then frozen into the challenge's rules_snapshot */
+    const planConfiguration = (await client.query(
+      'SELECT configuration FROM challenge_plans WHERE id=$1', [order.challenge_plan_id])).rows[0]?.configuration ?? {}
+
     const challenge = (await client.query(
-      `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd, purchase_order_id)
-       VALUES ($1,$2,'created',$3,$4) RETURNING id`,
-      [userId, order.challenge_plan_id, order.account_size_usd, orderId])).rows[0]
+      `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd, purchase_order_id, rules_snapshot)
+       VALUES ($1,$2,'created',$3,$4,$5) RETURNING *`,
+      [userId, order.challenge_plan_id, order.account_size_usd, orderId,
+        JSON.stringify(normalizeRules(planConfiguration))])).rows[0]
+
+    /* provision the challenge trading account (challenge_funding ledger
+       event, immutable provisioning event, frozen rules snapshot) —
+       the user starts the evaluation via POST /challenges/:id/start */
+    const challenges = new ChallengeService(client)
+    await challenges.provisionTx(client, {
+      ...challenge,
+      plan_configuration: planConfiguration,
+    })
 
     const invoice = (await client.query(
       `INSERT INTO invoices (purchase_order_id, user_id, number, total_usd)

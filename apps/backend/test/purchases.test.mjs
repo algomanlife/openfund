@@ -114,6 +114,11 @@ async function authenticate(wallet) {
   } catch (e) { foreignError = e }
   ok('foreign user cannot confirm someone else\'s order', foreignError && foreignError.status === 404)
 
+  /* v0.3.1: provisioning creates a challenge demo account + funding
+     ledger rows — remove them before the user cascade delete */
+  await pool.query(`DELETE FROM trading_ledger WHERE user_id=$1 AND account_id IN (SELECT id FROM demo_accounts WHERE user_id=$1 AND account_type='challenge')`, [user.id])
+  await pool.query('DELETE FROM openfund_challenges WHERE user_id=$1', [user.id])
+  await pool.query(`DELETE FROM demo_accounts WHERE user_id=$1 AND account_type='challenge'`, [user.id])
   await pool.query('DELETE FROM openfund_users WHERE id=$1', [user.id]) /* cascades */
   await pool.query('DELETE FROM challenge_plans WHERE slug=$1', ['purchase-test-plan'])
 }
