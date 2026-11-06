@@ -34,8 +34,9 @@ The current [router](apps/web-react/src/main.tsx) exposes both products in Persi
 - **Market discovery and charting:** Gains REST/WebSocket feeds, shared Vela workspace and a Pine indicator catalog. Source freshness and upstream failures remain visible; reference-platform indicator conformance is still open.
 - **Identity and accounts:** wallet connection, Sign-In with Ethereum (SIWE), first-party sessions and an owned account directory. Signing in is not a blockchain transaction.
 - **Portfolio and Journal:** product-scoped records, supported analytics, private notes, tags, filters and exports. Journal imports cannot create trades or balances.
+- **Prop evaluation engine (v0.3.1):** purchased challenge accounts trade through the same server-authoritative simulation engine while the published Rulebook rules of record are enforced live — profit targets on closed net profit, daily and maximum loss limits (static + trailing with breakeven lock) at the 00:00 UTC+3 day boundary, minimum trading days and time limits; breaches settle atomically into an immutable event history; two-phase challenges progress automatically with a frozen rules snapshot. A passing evaluation establishes eligibility, never a payout.
 - **Public website:** English/Persian content, RTL support, FAQ, browser-side calculators, learning resources and pre-launch referral information; Directus content with supported bundled fallbacks.
-- **Gated commerce:** server-priced challenge orders, receipt verification, invoices and withdrawal requests. A provisioned challenge is not an evaluated account; a withdrawal request is not a payout.
+- **Gated commerce and operations:** server-priced challenge orders, receipt verification with a finality policy and late-payment grace, invoices, withdrawal requests and the token-gated `/admin` operational API (user directory, withdrawal review). A confirmed payment provisions exactly one challenge; a withdrawal approval records a decision, never a fund transfer.
 
 [Capability guide](docs/product/CAPABILITIES.md) · [Terminal](docs/trading/TERMINAL.md) · [Identity](docs/wallet/IDENTITY.md) · [Portfolio and Journal](docs/trading/PORTFOLIO_JOURNAL.md)
 
@@ -43,11 +44,10 @@ The current [router](apps/web-react/src/main.tsx) exposes both products in Persi
 
 | Delivery boundary | Status | What it means |
 | --- | --- | --- |
-| Official **v0.2.0** at `561e7f3101f3a43376068d9bba1a87c30e2b7d71` | Released | Includes PR #40 and #41; publication is not proof of a current local runtime or Render deployment. |
-| Integrated source at **`d05b4b88fc2776e09bf1a701254ac229e8145a7f`** | Implemented but unreleased | [PR #42](https://github.com/algomanlife/openfund/pull/42) is merged: public footer/service presentation, platform availability and Telegram presentation. Not included in v0.2.0. |
-| `qwen/community-theme-readme` refinements | Locally verified; UNRELEASED | White light canvases, preserved dark-green themes, three public community providers and aligned service vectors; Persian gateway Home has no footer, while English Home and other public pages retain theirs. Authenticated generated-session acceptance and genuine screenshots are recorded in [Evidence](docs/reviews/community-theme/DELIVERY.md). |
-| Desktop installers, mobile applications, Challenge evaluation and payouts, operational Protocol routing | Planned | Platform cards remain Coming Soon; dormant Protocol source is not an active venue. |
-| Live payment activation and Perpetual execution | Blocked | Approved destinations/contracts, real-chain acceptance and security gates remain required. |
+| Official **v0.3.0** at `c87903c7` | Released | Website, terminal, purchases (gated) and practice trading. |
+| **v0.3.1 soft-launch candidate** (`release/v0.3.1-soft-launch`) | Implemented, pending review | Challenge evaluation engine, challenge-account trading, admin API, payment lifecycle hardening, strict security headers and the terminal theme fix. Tagged release awaits explicit owner approval. |
+| Desktop installers, mobile applications, funded-stage payouts, rewards, operational Protocol routing | Planned | Platform cards remain Coming Soon; dormant Protocol source is not an active venue. |
+| Live payment activation and Perpetual execution | Blocked | Approved destinations/contracts, real-chain acceptance and security gates remain required. `PURCHASE_PAYMENT_RECEIVER` unset keeps purchases disabled. |
 
 Real wallet/device acceptance, official release review, external chart conformance and operational recovery remain open. Transparency figures are labelled samples, not production evidence. The [feature register](docs/product/FEATURE_STATUS.md) qualifies every capability; dated [reviews](docs/reviews/README.md) retain their original provenance.
 
@@ -172,15 +172,15 @@ npm run build:web
 npm run validate:blueprint
 ```
 
-Backend and browser suites require a **new isolated test database and running test backend**. Follow [Testing and CI](docs/development/TESTING.md) before `npm run test:backend`, `npm run test:browser:audit`, `npm run test:browser:polish`, `npm run test:browser:website` or the explicit purchase suite. Test payment receivers and mark injection must never reach the official runtime. Playwright Chromium is required for browser gates.
+Backend and browser suites require a **new isolated test database and running test backend**. Follow [Testing and CI](docs/development/TESTING.md) before `npm run test:backend`, `npm run test:browser:audit`, `npm run test:browser:polish`, `npm run test:browser:website` or the explicit suites. Test payment receivers and mark injection must never reach the official runtime. Playwright Chromium is required for browser gates.
+
+The v0.3.1 additions extend the same model: `test:backend` now includes the evaluation (48 checks) and admin (25 checks) suites, and the browser gates add `npm run test:browser:challenge` (full purchase → start → trade → evaluate journey through the SIM seam) and `npm run test:browser:auto-dark` (theme paint regression). Set `ADMIN_API_TOKEN` on the test backend for the admin suite.
 
 The existing unified candidate command is `npm run release:build -- --candidate`; it installs all three lockfiles and runs integrated package gates. It is not an official release, and does not replace real-wallet, live-payment, deployed or manual visual acceptance. [Release runbook](docs/deployment/RELEASES.md) defines database/port restrictions and verification stages.
 
 ## Deployment and releases
 
-The latest verified official release is [v0.2.0](https://github.com/algomanlife/openfund/releases/tag/v0.2.0) at `561e7f3`. PR #42 is merged into integrated source `d05b4b8` but remains unreleased. Internal npm package versions are component provenance, not the application release number.
-
-**Requested next target: v0.2.1, not allocated.** The current policy takes the highest reachable immutable SemVer tag and bumps from Conventional Commit messages: `feat:` means minor, `fix:`/other changes patch, breaking changes major. PR #42 includes a `feat:` commit, so the present allocator points to **v0.3.0**, not the requested patch. Maintainers must coordinate the exact target and approved policy before publication; do not force a version, bypass gates, move a tag or overwrite a release.
+The latest verified official release is [v0.3.0](https://github.com/algomanlife/openfund/releases/tag/v0.3.0) at `c87903c`. The v0.3.1 soft-launch candidate lives on `release/v0.3.1-soft-launch` and awaits explicit owner review: merge approval, then the official release workflow, then Render deployment. Internal npm package versions are component provenance, not the application release number.
 
 Complete the feature branch, obtain passing CI and review, then obtain approval before merge/publication. The existing main-branch workflow packages the approved exact commit, with manifests, verification records and checksums. No publication or merge is authorized by this documentation update. Recheck official releases and tag availability at publication time.
 
