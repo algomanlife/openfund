@@ -24,6 +24,7 @@ import { Portfolio } from './portfolio.js'
 import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
 import { purchaseRoutes, confirmPurchase } from './purchases.js'
+import { adminRoutes } from './admin.js'
 
 const cfg = {
   port: Number(process.env.PORT || 8080),
@@ -44,6 +45,7 @@ const engine = new Engine(pool, marketData)
 const portfolio = new Portfolio(pool, marketData)
 const asyncRoute = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
 const app = express()
+app.disable('x-powered-by')
 app.set('trust proxy', 1)
 app.use((req,res,next) => {
   const origin = req.headers.origin
@@ -51,6 +53,24 @@ app.use((req,res,next) => {
     const sameOrigin = origin === `${req.protocol}://${req.get('host')}`
     if (!sameOrigin && !cfg.corsOrigins.includes(origin)) return res.status(403).json({ error:'invalid_origin' })
   }
+  next()
+})
+
+/* ---------- security headers ----------
+   CSP allows same-origin scripts/workers/frames (the shared terminal
+   runs in a same-origin iframe with Vela workers), inline styles (Vite
+   + component styles), CMS-hosted images (Directus) and wss for the
+   live market stream. Nothing cross-origin may script or frame us. */
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN')
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+  res.setHeader('Content-Security-Policy',
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; " +
+    "img-src 'self' data: blob: https:; connect-src 'self' https: wss:; " +
+    "worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'self'; " +
+    "object-src 'none'; base-uri 'self'; form-action 'self'")
+  if (cfg.prod) res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
   next()
 })
 app.use('/products', express.json({ limit: '2mb' }))
@@ -538,9 +558,17 @@ app.get("/trading/stream", tradingAuth, async (req, res) => {
 });
 
 /* test-only price injection seam — enabled ONLY with SIM_TEST_MODE=1
-   (never active in production): lets engine tests drive deterministic marks */
+   (never active in production): lets engine tests drive deterministic marks.
+   INTERNAL_API_TOKEN (optional) adds defense-in-depth auth to the seam
+   even in test deployments (constant-time compare). */
+const internalAuth = (req, res, next) => {
+  const token = process.env.INTERNAL_API_TOKEN
+  if (token && !crypto.timingSafeEqual(Buffer.from(String(req.headers['x-internal-token'] || '')), Buffer.from(token)))
+    return res.status(401).json({ error: 'internal_unauthorized' })
+  next()
+}
 if (testMode) {
-  app.post('/internal/inject-price', (req, res) => {
+  app.post('/internal/inject-price', internalAuth, (req, res) => {
     const { symbol, price, metadata } = req.body || {}
     if (typeof symbol !== 'string' || price == null) return res.status(400).json({ error: 'invalid' })
     if (metadata) marketData.markets.set(symbol, { symbol, base: metadata.base, group: metadata.group, maxLeverage: metadata.maxLeverage, isOpen: true })
@@ -550,7 +578,7 @@ if (testMode) {
   /* test-only purchase confirmation seam — SIM_TEST_MODE=1 + test database,
      never active in production: lets browser/E2E tests drive the full
      purchase lifecycle without a real chain (same gate as inject-price) */
-  app.post('/internal/confirm-order', asyncRoute(async (req, res) => {
+  app.post('/internal/confirm-order', internalAuth, asyncRoute(async (req, res) => {
     const { orderId, txHash } = req.body || {}
     if (!orderId || !txHash) return res.status(400).json({ error: 'invalid' })
     const user = await userFromSession(req)
@@ -608,6 +636,7 @@ app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) 
 app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
 app.use(referralRoutes({ pool, requireAuth, audit }))
 app.use(purchaseRoutes({ pool, requireAuth, audit }))
+app.use('/admin', adminRoutes({ pool, audit }))
 
 /* Public release identity contains build metadata only, never runtime secrets. */
 app.get('/version', (req, res) => {
@@ -645,6 +674,14 @@ const server = app.listen(cfg.port, () =>
 /* market data (authoritative server-side marks) + trading engine loop */
 marketData.bootstrap().catch(e => console.error('[market-data] bootstrap failed', e.message))
 engine.start(1000)
+/* pending purchase orders past their expiry are swept to 'expired'
+   (verified late payments are still accepted inside the grace window —
+   see purchases.js confirmPurchase) */
+setInterval(() => {
+  pool.query(`UPDATE purchase_orders SET status='expired' WHERE status='pending' AND expires_at < now()`)
+    .then(r => { if (r.rowCount) console.log(`[purchases] ${r.rowCount} pending order(s) expired`) })
+    .catch(() => {})
+}, 60_000).unref()
 let shuttingDown=false
 const shutdown = () => { if(shuttingDown)return;shuttingDown=true;engine.stop();marketData.stop();server.close(()=>pool.end()) }
 process.on('SIGTERM', shutdown)
