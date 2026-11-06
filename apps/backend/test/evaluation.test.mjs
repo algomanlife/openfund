@@ -28,7 +28,7 @@ import { MarketData } from '../market-data.js'
 if (!/test|audit|_ci/.test(process.env.DATABASE_URL || '')) throw new Error('Use an isolated test DATABASE_URL')
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL })
 
-const BASE = process.env.TEST_BACKEND_URL || 'http://localhost:8090'
+const BASE = process.env.TEST_BACKEND_URL || 'http://localhost:8080'
 const DOMAIN = 'localhost:5173'
 const MKT = 'BTC/USD'
 let passed = 0, failed = 0
