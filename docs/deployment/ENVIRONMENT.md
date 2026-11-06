@@ -20,6 +20,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `SESSION_TTL_HOURS` | openfund | R | PUB | default `168` (7 days) |
 | `PURCHASE_PAYMENT_CHAIN` | openfund | R | PUB | default `11155111` (Ethereum Sepolia) — chain accepted for challenge payments |
 | `PURCHASE_PAYMENT_DECIMALS` | openfund | R | PUB | default `18` — token decimals used in server-side amount checks |
+| `PURCHASE_LATE_GRACE_MINUTES` | openfund | R | PUB | default `60` — a payment verified within this many minutes after order expiry still pays the order; outside the window → explicit `order_expired` for manual reconciliation |
 
 ## Prompted at first blueprint apply (`sync: false` — never in Git)
 
@@ -34,6 +35,10 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `CORS_ORIGINS` | openfund | optional; only needed for extra origins / custom domains |
 | `PURCHASE_PAYMENT_RECEIVER` | openfund | **deliberately unset by default — purchasing stays disabled (`purchases_disabled`) until an approved payment address is entered.** No hardcoded production destination exists in the repository. |
 | `PURCHASE_PAYMENT_TOKEN` | openfund | optional ERC-20 token contract for challenge payments (unset = native ETH) |
+| `PURCHASE_PAYMENT_MIN_CONFIRMATIONS` | openfund | optional finality depth: the payment verifier waits until the transaction has this many confirmations before provisioning (unset = single receipt; e.g. `12` on mainnet; retryable `tx_not_final` until then) |
+| `ADMIN_API_TOKEN` | openfund | **secret service token for the `/admin/*` operational API (user directory, challenge directory, withdrawal review). Unset = the whole admin API stays disabled (404).** Bearer-auth, constant-time compare. Never expose to the browser. |
+| `CSP_EXTRA_CONNECT` | openfund | optional comma-separated extra origins for the CSP `connect-src` (production CMS is HTTPS so normally unneeded; used for non-HTTPS local CMS deployments) |
+| `INTERNAL_API_TOKEN` | openfund | optional constant-time token guarding the test-only `/internal` seams (defense in depth; production never mounts them) |
 | `VITE_DEPAY_WIDGET` | openfund (build) | optional; `1` enables the DePay checkout widget |
 | `VITE_DEPAY_WIDGET_URL` | openfund (build) | approved DePay widget bundle URL; the widget stays hidden without both variables |
 
