@@ -960,13 +960,13 @@ html[data-theme="light"] body:has(.of-terminal) {
     height:75px; display:grid; grid-template-columns:auto auto minmax(0,1fr) auto;
     grid-template-rows:32px 32px; gap:4px 6px; align-items:center;
   }
-  .of-terminal-compact .of-brand { display:flex; grid-area:1/1/2/3; justify-self:start; }
+  .of-terminal-compact .of-brand { display:flex; grid-area:1/1; justify-self:start; }
   .of-terminal-compact .of-brand b { display:none; }
   .of-terminal-compact .of-product-switch { grid-area:2/1; }
   .of-terminal-compact .of-header-account { grid-area:2/2; }
   .of-terminal-compact #terminal-navigation { grid-area:2/4; justify-self:end; align-self:stretch; overflow:visible; }
   .of-terminal-compact #terminal-navigation > a { display:none; }
-  .of-terminal-compact .of-terminal-actions { grid-area:1/3/2/5; justify-self:end; gap:4px; min-width:0; }
+  .of-terminal-compact .of-terminal-actions { grid-area:1/2/2/5; justify-self:end; gap:4px; }
   /* The menu anchors to the header edge it opens from, never off-screen. */
   .of-terminal-compact .of-terminal-more { position:static; }
   .of-terminal-compact .of-terminal-more-links {
