@@ -33,6 +33,10 @@ async function runAutoDark({ configureContext = async () => {} } = {}) {
         document.getElementById('theme-toggle')?.textContent === (expected === 'light' ? '◑' : '◐'), theme);
       await frame.evaluate(() => window.__openfundChart.chart.ready());
       await frame.waitForFunction(theme => window.__openfundChart.chart.renderer.getConfig().layout.background.toLowerCase() === (theme === 'light' ? '#ffffff' : '#060808'), theme);
+      // The iframe can report its new theme before its body style has settled
+      // in a busy CI browser. Keep the exact body-color requirement below.
+      await frame.waitForFunction(theme => getComputedStyle(document.body).backgroundColor ===
+        (theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(6, 8, 8)'), theme);
       chart = await frame.evaluate(() => ({ scheme: getComputedStyle(document.documentElement).colorScheme, layout: window.__openfundChart.chart.renderer.getConfig().layout, saved: JSON.parse(localStorage.getItem('of-vela-config') || 'null') }));
       if (theme === 'light') assert.match(chart.scheme, /only/);
       // Sample the existing app-owned status-panel background, never financial
