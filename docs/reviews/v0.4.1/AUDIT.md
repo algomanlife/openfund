@@ -42,6 +42,12 @@ validated. The presence of the workflow does **not** certify a valid backup
 or successful restore; production mutation remains blocked. Directus admin
 API authentication has not been established, although its collection and
 permission metadata is inspectable through read-only database access.
+Separately, a read-only `pg_dump` of the live 16 MB database was restored into
+an isolated local PostgreSQL 17 database on 2026-11-07. The restored database
+had 84 public tables, 31 Directus collection registrations and 32 permission
+rows. This validates a current logical dump and local restore path, but does
+not validate Render's existing point-in-time snapshots or provide a retained
+backup. The temporary dump and local database were removed after verification.
 The underlying operational tables exist in Production, but their Directus
 Data Studio field registrations present in the clean local bootstrap are
 absent. This is an additional metadata delta for the eventual reviewed
@@ -140,7 +146,7 @@ visible. This is local evidence only and did not touch production.
 
 ## Required gates still open
 
-- Validated production backup/restore, reviewed non-destructive permission
+- Validated retained production backup/restore, reviewed non-destructive permission
   migration and published-only public checks. A read-only schema delta is
   recorded above.
 - Complete CMS field/UI trace for both languages and exact numerator/denominator.
@@ -171,7 +177,7 @@ The test now explicitly blocks the catalog request for its unavailable-state
 scenario; a standalone rerun passed 515 checks. A new CI CMS job uses pinned
 Directus 11.9.1 and PostgreSQL 17
 for clean bootstrap, bilingual reads, rerun preservation and draft isolation;
-its GitHub result is still pending.
+its initial GitHub result was pending at that checkpoint.
 
 The integrated GitHub candidate now starts its own disposable Directus
 instance. Official publication has a separate gate for the existing production
@@ -202,7 +208,7 @@ candidate did not exercise: Directus added an editorial metadata column to
 `INSERT ... SELECT *` into its backend-only schema. PostgreSQL rejected the
 different column counts. The test now copies the six backend contract columns
 explicitly; all 13 tests in that file passed against the locally bootstrapped
-shared Directus database. A new integrated CI run is required for the fix.
+shared Directus database. This led to a new integrated CI run.
 
 The next PR run passed the integrated release package gate (including its
 auto-dark suite) on `4e62c71`, but the separate Backend job saw a delayed
@@ -214,3 +220,10 @@ fails if the pixel never converges. A local rerun passed all 37 paint scenarios;
 the GitHub run for `21d5feb` passed the integrated release package, Backend,
 Directus bootstrap, web, Blueprint and secret checks. Official publication
 and its production CMS gate were not run for the draft PR.
+
+The latest draft PR run on `322b3d4` completed successfully on 2026-11-07:
+Web, Backend, release package, disposable Directus bootstrap/public
+permissions, Blueprint, dependency audit and secret scans all passed. The
+production CMS publication and publish jobs were skipped by design for the
+draft PR. PR #47 remains open and unmerged; this CI result is source and
+candidate evidence, not production acceptance.
