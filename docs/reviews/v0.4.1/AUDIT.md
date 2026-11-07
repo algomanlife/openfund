@@ -23,6 +23,26 @@ cannot be counted as live CMS-connected. The source migration now ensures the
 alias and expands an existing public permission only for that alias when
 necessary; this change has **not** been applied to production.
 
+On 2026-11-07, the authenticated Render connection permitted a read-only
+PostgreSQL 17.11 metadata inspection of the shared `openfund-db`. Directus has
+a relation from `ui_message_translations.ui_message_id` to `ui_messages`, but
+`directus_fields` lacks the `ui_messages.translations` alias. A public API
+request for child translation IDs returned 200 while the parent query asking
+for `translations` returned 403. The public policy allows read of published
+`ui_messages` but its direct child translation read has an empty filter. The
+same empty filter appears on 13 other public translation collections; only
+`terminal_section_translations` was already restricted by published parent.
+These are production schema/permission findings, not a migration or proof of
+draft-content exposure by a sampled production row.
+
+Render's Recovery page shows a point-in-time recovery workflow and a recent
+available recovery timestamp within its displayed seven-day window. It lists
+zero logical exports. No restore was started, and no restored database was
+validated. The presence of the workflow does **not** certify a valid backup
+or successful restore; production mutation remains blocked. Directus admin
+API authentication has not been established, although its collection and
+permission metadata is inspectable through read-only database access.
+
 ## Source fixes and verification
 
 | Area | Proven cause | Source change | Current evidence | Remaining gate |
@@ -179,3 +199,12 @@ candidate did not exercise: Directus added an editorial metadata column to
 different column counts. The test now copies the six backend contract columns
 explicitly; all 13 tests in that file passed against the locally bootstrapped
 shared Directus database. A new integrated CI run is required for the fix.
+
+The next PR run passed the integrated release package gate (including its
+auto-dark suite) on `4e62c71`, but the separate Backend job saw a delayed
+native auto-dark screenshot paint in one light terminal scenario after 2,565
+polish checks. The computed theme and chart renderer had already reached
+light, while one captured status-bar pixel was still dark. The paint assertion
+now waits up to five seconds for the **same exact screenshot color** and still
+fails if the pixel never converges. A local rerun passed all 37 paint scenarios;
+the final GitHub result for this timing correction is pending.
