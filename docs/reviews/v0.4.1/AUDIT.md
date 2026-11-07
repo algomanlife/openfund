@@ -128,3 +128,12 @@ scenario; a standalone rerun passed 515 checks. The complete candidate has
 not yet passed. A new CI CMS job uses pinned Directus 11.9.1 and PostgreSQL 17
 for clean bootstrap, bilingual reads, rerun preservation and draft isolation;
 its GitHub result is still pending.
+
+The third attempt passed clean installs, source checks, both reproducible
+frontend builds, migrations, backend tests and the browser audit, completion,
+layout and chart suites. The polish matrix then encountered a live Gains
+signal timeout in the English, light, 900px scenario. The visible result was
+the explicit market-unavailable state. The release runner now uses the polish
+suite's recorded market chart fixture for its visual matrix; this fixture
+does not provide trading, account or live-feed acceptance. A separate public
+Gains REST check returned HTTP 200, without a prolonged reconnect test.

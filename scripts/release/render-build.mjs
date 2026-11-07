@@ -23,7 +23,8 @@ if(release.draft||release.prerelease||release.tag_name!==tag||!asset)throw Error
 const assetResponse=await fetch(asset.browser_download_url,{headers,signal:AbortSignal.timeout(15000)});
 if(!assetResponse.ok)throw Error(`Cannot read published manifest: ${assetResponse.status}`);
 const bytes=Buffer.from(await assetResponse.arrayBuffer());
-if(asset.digest?.startsWith('sha256:')&&`sha256:${sha256(bytes)}`!==asset.digest)throw Error('Published manifest digest mismatch.');
+if(!/^sha256:[a-f0-9]{64}$/.test(asset.digest || ''))throw Error('Published manifest has no SHA-256 digest.');
+if(`sha256:${sha256(bytes)}`!==asset.digest)throw Error('Published manifest digest mismatch.');
 const source=JSON.parse(bytes.toString('utf8'));
 if(source.commit!==sha || source.tag!==tag || !source.official || source.verification.status!=='passed')throw Error('Published release identity/verification mismatch.');
 await run('npm',['ci','--include=dev','--prefix','apps/web-react']);

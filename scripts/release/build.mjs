@@ -42,7 +42,9 @@ const env = {...process.env,RELEASE_VERSION:version,RELEASE_SOURCE_COMMIT:commit
      fetches (intercepted by the browser gates) */
   ADMIN_API_TOKEN: process.env.ADMIN_API_TOKEN || 'release-candidate-admin-token',
   PURCHASE_PAYMENT_RECEIVER: process.env.PURCHASE_PAYMENT_RECEIVER || '0x000000000000000000000000000000000000c1a1',
-  CSP_EXTRA_CONNECT: process.env.CSP_EXTRA_CONNECT || 'http://localhost:8055'};
+  CSP_EXTRA_CONNECT: process.env.CSP_EXTRA_CONNECT || 'http://localhost:8055',
+  // Keep the visual matrix deterministic while live market access is checked separately.
+  POLISH_CHART_FIXTURE: '1'};
 // Public deployment choices are supplied by /react/runtime-config.js. The
 // signed frontend must never vary with the build machine's VITE_* variables.
 for (const key of Object.keys(env)) if (key.startsWith('VITE_')) delete env[key];
