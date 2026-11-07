@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.4.1 — stabilization in progress, unpublished
+
+- Move public CMS and other browser configuration to a no-store runtime script,
+  outside the immutable frontend payload. The production CMS origin must be
+  configured and validated; release builds strip public build variables.
+- Resolve Render's official tag through GitHub rather than a checkout-specific
+  Git remote, then compare the rebuilt frontend/backend/schema to the published
+  verified manifest.
+- Include website expansion content in the repeatable Directus bootstrap and
+  resolve esbuild from the frontend lockfile without a manual symlink. Keep
+  administrator credentials in environment variables.
+- Synchronize the embedded terminal's theme state, icon and chart when the
+  outer application changes theme.
+
+These changes are source-level work only until candidate, browser, CMS,
+review and production gates pass. v0.4.0 and its tag remain untouched.
+
 ## v0.3.1 — Prop soft launch: evaluation engine, challenge trading, admin operations (candidate, unreleased)
 
 **New features**

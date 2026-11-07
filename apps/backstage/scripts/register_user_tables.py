@@ -125,7 +125,7 @@ COLLECTIONS = [
 ]
 
 def main():
-    token = req('POST', '/auth/login', body={'email': 'admin@openfund.dev', 'password': 'openfund-admin-2026'})['data']['access_token']
+    token = req('POST', '/auth/login', body={'email': os.environ['DIRECTUS_ADMIN_EMAIL'], 'password': os.environ['DIRECTUS_ADMIN_PASSWORD']})['data']['access_token']
     existing = {c['collection'] for c in req('GET', '/collections', token)['data']}
 
     for name, icon, note, visible, fields in COLLECTIONS:

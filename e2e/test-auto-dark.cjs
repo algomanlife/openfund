@@ -29,6 +29,8 @@ async function runAutoDark({ configureContext = async () => {} } = {}) {
     if (trade) {
       const frame = page.frames().find(frame => frame.parentFrame());
       await frame.waitForFunction(() => !!window.__openfundChart?.chart);
+      await frame.waitForFunction(expected => document.documentElement.dataset.theme === expected &&
+        document.getElementById('theme-toggle')?.textContent === (expected === 'light' ? '◑' : '◐'), theme);
       await frame.evaluate(() => window.__openfundChart.chart.ready());
       await frame.waitForFunction(theme => window.__openfundChart.chart.renderer.getConfig().layout.background.toLowerCase() === (theme === 'light' ? '#ffffff' : '#060808'), theme);
       chart = await frame.evaluate(() => ({ scheme: getComputedStyle(document.documentElement).colorScheme, layout: window.__openfundChart.chart.renderer.getConfig().layout, saved: JSON.parse(localStorage.getItem('of-vela-config') || 'null') }));

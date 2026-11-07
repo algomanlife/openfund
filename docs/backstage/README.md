@@ -1,5 +1,28 @@
 # Openfund Backstage — Directus CMS
 
+## v0.4.1 bootstrap procedure
+
+Install the frontend lockfile with Node 22 (`npm ci --include=dev --prefix
+apps/web-react`). On a **new** Directus database, first verify a backup and
+schema state, then provide `DIRECTUS_URL`, `DIRECTUS_ADMIN_EMAIL` and
+`DIRECTUS_ADMIN_PASSWORD` through the process environment/secret manager and
+run `apps/backstage/scripts/bootstrap-cms.sh`. Do not put passwords in command
+arguments or commit them. The command applies schema/public permissions, then
+editorial, catalog, website expansion and terminal seeds, and finally
+registers backend-owned tables. Re-running without `--refresh` preserves
+existing editorial rows; `--refresh` is an explicit overwrite and must not be
+used as a routine production deploy step. The CMS image alone does not run
+these repository scripts automatically. Routine API deployments do not seed
+Directus. Validate public published reads and both languages after bootstrap.
+
+The procedure was exercised against a disposable fresh Directus 11.9.1 and
+PostgreSQL 17 database on 2026-11-07. This exposed an empty Home singleton
+that returned default status without a saved record; the seed now checks its
+ID. After that correction, Home fa/en rows were publicly readable and the
+final rerun created or updated no content. A draft translation probe was
+hidden after the permission correction. Production migration and full content
+coverage remain unverified; do not infer them from this local test.
+
 **Directus is the official centralized backstage, headless CMS and administrative
 interface of Openfund.** All editable user-facing text of the landing page and
 the trading terminal (Persian + English) is managed in the Directus Data Studio.

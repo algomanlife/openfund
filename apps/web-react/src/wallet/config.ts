@@ -2,6 +2,7 @@ import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 import { createConfig, http } from 'wagmi'
 import { injected } from 'wagmi/connectors'
 import { sepolia, arbitrum } from 'wagmi/chains'
+import { publicRuntimeConfig } from '../config/runtime'
 
 /**
  * Wallet configuration — Phase 3.
@@ -17,7 +18,7 @@ import { sepolia, arbitrum } from 'wagmi/chains'
  * - Connection only: no transactions, no token approvals.
  */
 export const WALLETCONNECT_PROJECT_ID =
-  (import.meta.env.VITE_WALLETCONNECT_PROJECT_ID as string | undefined)?.trim() || ''
+  (import.meta.env?.PROD ? publicRuntimeConfig().walletConnectProjectId : import.meta.env?.VITE_WALLETCONNECT_PROJECT_ID as string | undefined)?.trim() || ''
 
 export const walletConnectEnabled = WALLETCONNECT_PROJECT_ID.length > 0
 

@@ -9,7 +9,7 @@ export function manifest({version, verification = {status: 'unverified'}, offici
   const result = {schemaVersion:1, version, tag:`v${version}`, commit, builtAt:new Date().toISOString(), official,
     frontend:{id:treeHash(path.join(output,'react')),base:'/react/'}, backend:{id:backend}, database:{migrationVersion:`schema-sha256:${schema}`,strategy:'additive-idempotent; backups required before deploy'},
     components:Object.fromEntries(['package.json','apps/web-react/package.json','apps/backend/package.json','vendor/vela/package.json'].map(f=>[f,json(path.join(root,f)).version])),
-    configuration:{sameOriginBackend:true,cms:process.env.VITE_DIRECTUS_URL || null,walletConnectEnabled:!!process.env.VITE_WALLETCONNECT_PROJECT_ID},
+    configuration:{sameOriginBackend:true,cms:'runtime:/react/runtime-config.js',walletConnect:'runtime:/react/runtime-config.js'},
     verification, deployment:{status:'not_deployed'}, toolchain:{node:process.version},
     runtime:{nodeMajor:22,postgresMajor:17,directusImage:'directus/directus:11.9.1'}};
   writeJson(path.join(output,'release-manifest.json'),result);

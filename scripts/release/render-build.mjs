@@ -1,21 +1,34 @@
-import { run,git,validateEnv } from './lib.mjs';
+import { run,git,validateEnv,sha256 } from './lib.mjs';
 import { manifest } from './manifest.mjs';
 // Render builds must resolve a published, verified official tag at this exact SHA.
 const sha=process.env.RENDER_GIT_COMMIT;
 if(!/^[a-f0-9]{40}$/.test(sha || '')||git('rev-parse','HEAD')!==sha)throw Error('Render source SHA is missing or mismatched.');
-await run('git',['fetch','origin','--tags']);
-const tag=git('tag','--points-at',sha).split('\n').find(t=>/^v\d+\.\d+\.\d+$/.test(t));
-if(!tag)throw Error('Render refuses unversioned source commits.');
+const api='https://api.github.com/repos/algomanlife/openfund';
+const headers={Accept:'application/vnd.github+json','User-Agent':'openfund-render-release-verifier'};
+const get=async url=>{
+ const response=await fetch(url,{headers,signal:AbortSignal.timeout(15000)});
+ if(!response.ok)throw Error(`Official release lookup failed: ${response.status}`);
+ return response.json();
+};
+let tag;
+for(let page=1;page<=10&&!tag;page++){
+ const tags=await get(`${api}/tags?per_page=100&page=${page}`);
+ tag=tags.find(t=>t.commit?.sha===sha&&/^v\d+\.\d+\.\d+$/.test(t.name))?.name;
+ if(tags.length<100)break;
+}
+if(!tag)throw Error('Render refuses source without a published SemVer tag at this SHA.');
 validateEnv({...process.env,RELEASE_VERSION:tag.slice(1)},'production');
-const response=await fetch(`https://api.github.com/repos/algomanlife/openfund/releases/tags/${tag}`,{headers:{Accept:'application/vnd.github+json'},signal:AbortSignal.timeout(15000)});
-if(!response.ok)throw Error(`Official release lookup failed: ${response.status}`);
-const release=await response.json(),asset=release.assets.find(a=>a.name==='release-manifest.json');
-if(release.draft||!asset)throw Error('Published official manifest is missing.');
-const source=await fetch(asset.browser_download_url,{signal:AbortSignal.timeout(15000)}).then(r=>{if(!r.ok)throw Error('Cannot read published manifest');return r.json()});
+const release=await get(`${api}/releases/tags/${tag}`),asset=release.assets.find(a=>a.name==='release-manifest.json');
+if(release.draft||release.prerelease||release.tag_name!==tag||!asset)throw Error('Published official manifest is missing.');
+const assetResponse=await fetch(asset.browser_download_url,{headers,signal:AbortSignal.timeout(15000)});
+if(!assetResponse.ok)throw Error(`Cannot read published manifest: ${assetResponse.status}`);
+const bytes=Buffer.from(await assetResponse.arrayBuffer());
+if(asset.digest?.startsWith('sha256:')&&`sha256:${sha256(bytes)}`!==asset.digest)throw Error('Published manifest digest mismatch.');
+const source=JSON.parse(bytes.toString('utf8'));
 if(source.commit!==sha || source.tag!==tag || !source.official || source.verification.status!=='passed')throw Error('Published release identity/verification mismatch.');
 await run('npm',['ci','--include=dev','--prefix','apps/web-react']);
 await run('npm',['ci','--prefix','apps/backend']);
-if(process.env.VITE_DIRECTUS_HOST)process.env.VITE_DIRECTUS_URL=`https://${process.env.VITE_DIRECTUS_HOST}`;
+for(const key of Object.keys(process.env))if(key.startsWith('VITE_'))delete process.env[key];
 process.env.RELEASE_VERSION=source.version;
 process.env.RELEASE_SOURCE_COMMIT=sha;
 await run('npm',['run','build:web']);

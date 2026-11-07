@@ -1,5 +1,20 @@
 # Permissions
 
+## v0.4.1 public-read correction
+
+The public v0.4.0 CMS returned 403 for the frontend's `ui_messages`
+translation query on 2026-11-07. A disposable Directus 11.9.1 database showed
+that direct reads of draft translation rows were also possible when translation
+table permissions were unfiltered. The v0.4.1 schema script now ensures the
+parent alias, grants it to the existing public read policy where needed, and
+narrows public read on all translation tables to published parents. In the
+disposable test, the published parent and its two translations remained
+readable, while a draft translation probe became invisible. Production policy
+has not yet been migrated or rechecked. Apply only after backup/schema review.
+
+The historical section below describes the older intended permission model;
+the public production policy is not yet verified against this correction.
+
 ## Current state (operational now)
 
 | Role / policy | Access |

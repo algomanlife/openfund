@@ -14,6 +14,12 @@ Applies to Codex, QwenWork, ChatGPT Work and any other development agent.
 1. Fetch and branch from latest `main`: `codex/<topic>`, `qwen/<topic>` or `docs/<topic>`. When explicitly assigned an existing staged branch, continue it without replacing its index or other contributors' work; agree file ownership before parallel edits.
 2. Do not force-push, rewrite history or push directly to `main`.
 3. Keep commits scoped and descriptive (Conventional Commits preferred).
+   For commits actually created with Codex participation, retain the project's
+   original Git author and append exactly one final trailer after a blank line:
+   `Co-authored-by: Codex <codex@openai.com>`. Add
+   `Co-authored-by: Claude <noreply@anthropic.com>` immediately before it only
+   when Claude also contributed to that commit. Do not duplicate trailers or
+   rewrite published history or official tags, including v0.4.0.
 4. Open a Pull Request with summary, files changed, tests, risks and screenshots when UI changes.
 5. Resolve conflicts rather than replacing others' changes; obtain review before merge.
 6. Never delete or rename files outside the approved task scope.
