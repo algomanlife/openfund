@@ -42,6 +42,10 @@ validated. The presence of the workflow does **not** certify a valid backup
 or successful restore; production mutation remains blocked. Directus admin
 API authentication has not been established, although its collection and
 permission metadata is inspectable through read-only database access.
+The underlying operational tables exist in Production, but their Directus
+Data Studio field registrations present in the clean local bootstrap are
+absent. This is an additional metadata delta for the eventual reviewed
+bootstrap; it does not imply missing or reset application tables.
 
 ## Source fixes and verification
 
@@ -136,15 +140,15 @@ visible. This is local evidence only and did not touch production.
 
 ## Required gates still open
 
-- Production backup, schema snapshot/delta, approved non-destructive
-  permission migration and published-only public checks.
+- Validated production backup/restore, reviewed non-destructive permission
+  migration and published-only public checks. A read-only schema delta is
+  recorded above.
 - Complete CMS field/UI trace for both languages and exact numerator/denominator.
 - Authenticated browser theme matrix and production verification of
   desktop/mobile, RTL/LTR and market/trading flows.
-- Full integrated GitHub candidate gate on the final branch, CI review and
-  branch protection. A local candidate passed on the earlier `4d999e2` source;
-  subsequent Home/CI changes require fresh final-branch checks.
-- GitHub PR, allowed merge, official **v0.4.1** publication, Render deployment
+- Independent review and branch protection before any allowed merge. The
+  integrated candidate gate passed on the source commit `21d5feb`.
+- Allowed merge, official **v0.4.1** publication, Render deployment
   and post-deployment smoke tests. No official tag, published artifact checksum
   or deployment ID exists for v0.4.1 yet.
 - Payment and real-wallet production acceptance require independent operational
@@ -207,4 +211,6 @@ polish checks. The computed theme and chart renderer had already reached
 light, while one captured status-bar pixel was still dark. The paint assertion
 now waits up to five seconds for the **same exact screenshot color** and still
 fails if the pixel never converges. A local rerun passed all 37 paint scenarios;
-the final GitHub result for this timing correction is pending.
+the GitHub run for `21d5feb` passed the integrated release package, Backend,
+Directus bootstrap, web, Blueprint and secret checks. Official publication
+and its production CMS gate were not run for the draft PR.
