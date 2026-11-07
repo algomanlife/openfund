@@ -425,11 +425,6 @@ ALTER TABLE openfund_challenges ADD COLUMN IF NOT EXISTS purchase_order_id uuid 
 -- change a purchased challenge's contractual evaluation criteria.
 -- ------------------------------------------------------------------
 ALTER TABLE demo_accounts DROP CONSTRAINT IF EXISTS demo_accounts_user_id_account_type_key;
-DO $$ BEGIN
-  IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'demo_accounts_user_id_account_type_key') THEN
-    ALTER TABLE demo_accounts DROP CONSTRAINT demo_accounts_user_id_account_type_key;
-  END IF;
-END $$;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_demo_accounts_free_unique ON demo_accounts(user_id) WHERE account_type='free_demo';
 CREATE INDEX IF NOT EXISTS idx_demo_accounts_type ON demo_accounts(account_type);
 

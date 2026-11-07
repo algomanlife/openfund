@@ -238,35 +238,26 @@ export default function Landing() {
         l.dataset.page = 'landing'
         document.head.appendChild(l)
       })
-      // Same-origin external scripts with ordered execution (async=false).
-      // CSP-safe: the strict `script-src 'self'` policy forbids inline
-      // textContent injection, so the legacy chain loads as real <script src>
-      // elements exactly like Terminal/Portfolio do. No network pre-check:
-      // fetch interception in tests and browsers treat HEAD inconsistently;
-      // load errors surface through the last element's error listener.
-      if (!pageRoot?.isConnected) return
-      const elements = SCRIPTS.map(src => {
+      // Fetch trusted bundled scripts first, then a SYNCHRONOUS ordered
+      // insertion prevents queued external scripts from booting after React
+      // removes the landing (a <script src> element always has a
+      // fetch→execute gap; inline textContent executes at append time).
+      // CSP-safe: the backend hashes the exact react/legacy/*.js files and
+      // allows precisely these script contents in the application-document
+      // policy — nothing else may run inline.
+      const sources = await Promise.all(SCRIPTS.map(async src => {
+        const response = await fetch(src)
+        if (!response.ok) throw new Error(`Landing asset unavailable: ${src}`)
+        return { src, code: await response.text() }
+      })).catch(error => { if (pageRoot?.isConnected) console.error(error); return null })
+      if (!sources || !pageRoot?.isConnected) return
+      for (const { src, code } of sources) {
         const script = document.createElement('script')
-        script.src = src
-        script.async = false /* preserve insertion order */
         script.dataset.page = 'landing'
+        script.textContent = code + '\n//# sourceURL=' + src
         document.body.appendChild(script)
-        return script
-      })
-      /* route change before the legacy chain executes: track the elements
-         that have NOT yet executed so the effect cleanup can remove them
-         (a removed script element never runs, even when its file has been
-         fetched — and these scripts must never boot against a removed
-         landing DOM). The pending set only empties when the LAST script
-         of the ordered chain has executed. */
-      const pending = new Set<HTMLScriptElement>(elements)
-      ;(window as any).__ofLandingPendingScripts = pending
-      elements.forEach(el => el.addEventListener('load', () => {
-        pending.delete(el)
-        if (!pending.size) (window as any).__ofLandingPendingScripts = null
-      }, { once: true }))
-      /* re-fire DOMContentLoaded AFTER the ordered legacy scripts execute
-         (the last element's load event fires once the chain has run).
+      }
+      /* re-fire DOMContentLoaded for the late-loaded legacy scripts.
          MUST bubble: locale.js listens on window, we dispatch on document. */
       const kick = () => {
         if (!pageRoot?.isConnected || w().__ofLandingKicked) return
@@ -275,11 +266,7 @@ export default function Landing() {
         setTimeout(() => { if (pageRoot?.isConnected) { initTheme(); swapArrows(); markCurrentPage() } }, 60)
         setTimeout(() => { if (pageRoot?.isConnected) { swapArrows(); markCurrentPage() } }, 600)
       }
-      const last = elements[elements.length - 1]
-      if (last) {
-        last.addEventListener('load', kick, { once: true })
-        last.addEventListener('error', () => { if (pageRoot?.isConnected) console.error('Landing script failed to load') }, { once: true })
-      }
+      kick()
       })()
     }
 
@@ -310,13 +297,6 @@ export default function Landing() {
 
     return () => {
       removeEventListener('of-language', langHandler)
-      /* the legacy chain has not fully executed yet (fast route change):
-         remove every still-pending script element so the rest of the
-         ordered chain never boots against a removed landing DOM — the
-         inline injection this replaces was synchronous and could not
-         race the unmount */
-      const pending = (window as any).__ofLandingPendingScripts
-      if (pending instanceof Set) [...pending].forEach((el: HTMLScriptElement) => el.remove())
       /* real navigation away: reload to tear the legacy runtime down.
          Cancelled only by a re-mount of THIS page (StrictMode / route return). */
       w().__ofReloadLandingRoot = pageRoot

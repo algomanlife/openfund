@@ -11,6 +11,8 @@
  *  - One wallet address (normalized lowercase) = exactly one Openfund user.
  */
 import crypto from 'node:crypto'
+import fs from 'node:fs'
+import path from 'node:path'
 import { releaseDiagnostics } from './release.js'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
@@ -67,14 +69,39 @@ app.use((req,res,next) => {
    Nothing cross-origin may script or frame us.
 
    APPLICATION DOCUMENTS ONLY (the /react/ HTML shell, which the srcDoc
-   terminal inherits) additionally allow 'unsafe-eval' in script-src:
-   the vendored Vela/Pine engine (same-origin trusted bundle) compiles
-   indicator scripts with `new Function` — a computation path, not an
-   injection surface. API responses keep the fully strict policy. */
+   terminal inherits) additionally allow:
+    - 'unsafe-eval' in script-src: the vendored Vela/Pine engine
+      (same-origin trusted bundle) compiles indicator scripts with
+      `new Function` — a computation path, not an injection surface;
+    - sha256 hashes of the LANDING legacy scripts: the landing injects
+      them inline (fetch → textContent) so their execution is
+      synchronous with the mount check — a route change can never let
+      them boot against a removed DOM (a <script src> element has an
+      unavoidable fetch→execute gap). The hashes are computed at server
+      startup from the exact files that ship in react/legacy/, so the
+      policy allows precisely those scripts and nothing else.
+   API responses keep the fully strict policy. */
 const CSP_THEME_BOOT_HASH = "'sha256-ipa/NWICPqnGA4ZvVmWe4T4YpGCx2Bdjaquw+QILedc='" /* apps/web-react/index.html pre-paint script */
+const legacyScriptHashes = () => {
+  const dir = fileURLToPath(new URL('../../react/legacy', import.meta.url))
+  const names = ['locale.js', 'app.js', 'features.js', 'market.js', 'motion.js']
+  const hashes = []
+  for (const name of names) {
+    try {
+      /* hash the EXACT text the landing injects: file code + the
+         deterministic relative sourceURL suffix (Landing.tsx must keep
+         this suffix byte-identical) */
+      const code = fs.readFileSync(path.join(dir, name))
+      const injected = Buffer.concat([code, Buffer.from('\n//# sourceURL=legacy/' + name)])
+      hashes.push("'sha256-" + crypto.createHash('sha256').update(injected).digest('base64') + "'")
+    } catch { /* file absent from this build — the landing degrades to its error path */ }
+  }
+  return hashes.join(' ')
+}
+const CSP_LEGACY_HASHES = legacyScriptHashes()
 const cspExtraConnect = (process.env.CSP_EXTRA_CONNECT || '').split(',').map(v => v.trim()).filter(Boolean).join(' ')
 const buildCsp = (allowEval) =>
-  "default-src 'self'; script-src 'self' " + CSP_THEME_BOOT_HASH + (allowEval ? " 'unsafe-eval'" : '') + "; style-src 'self' 'unsafe-inline'; " +
+  "default-src 'self'; script-src 'self' " + CSP_THEME_BOOT_HASH + (allowEval ? " 'unsafe-eval' " + CSP_LEGACY_HASHES : '') + "; style-src 'self' 'unsafe-inline'; " +
   "img-src 'self' data: blob: https:; connect-src 'self' https: wss:" + (cspExtraConnect ? ' ' + cspExtraConnect : '') + "; " +
   "worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'self'; " +
   "object-src 'none'; base-uri 'self'; form-action 'self'"
