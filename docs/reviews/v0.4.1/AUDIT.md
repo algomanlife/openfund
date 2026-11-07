@@ -171,3 +171,11 @@ is `4d999e222be0c85c7386c8ea2f9c33dea263f5be`, and its **unofficial**
 archive SHA-256 is
 `3d20657cbda26335f61ad3a346b4ec4fce855e0d2caea6024bbcc24fa8f5199f`.
 This is local candidate evidence, not a GitHub Release or deployed version.
+
+The first PR CI run exposed a shared-database assumption that the local
+candidate did not exercise: Directus added an editorial metadata column to
+`public.challenge_plans`, while the isolated backend engine test used
+`INSERT ... SELECT *` into its backend-only schema. PostgreSQL rejected the
+different column counts. The test now copies the six backend contract columns
+explicitly; all 13 tests in that file passed against the locally bootstrapped
+shared Directus database. A new integrated CI run is required for the fix.

@@ -17,7 +17,9 @@ const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL, options: 
 try {
   await admin.query(`CREATE SCHEMA "${schema}"`);
   await pool.query(fs.readFileSync(new URL("../schema.sql", import.meta.url), "utf8"));
-  await pool.query("INSERT INTO challenge_plans SELECT * FROM public.challenge_plans");
+  // Directus may add editorial metadata columns to the shared public catalog.
+  // Copy only the backend contract into this isolated engine-test schema.
+  await pool.query("INSERT INTO challenge_plans(id,slug,name,status,configuration,created_at) SELECT id,slug,name,status,configuration,created_at FROM public.challenge_plans");
 } catch (error) {
   await pool.end();
   await admin.query(`DROP SCHEMA IF EXISTS "${schema}" CASCADE`);
