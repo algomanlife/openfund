@@ -15,7 +15,8 @@
   direct child endpoint exposed draft translations in a disposable test.
   Correct empty Home singleton detection and test that a rerun preserves edits.
 - Synchronize the embedded terminal's theme state, icon and chart when the
-  outer application changes theme.
+  outer application changes theme. Follow-up work preserves the shell's theme
+  when a product switch boots a replacement trading iframe.
 
 These changes are source-level work only until candidate, browser, CMS,
 review and production gates pass. v0.4.0 and its tag remain untouched.

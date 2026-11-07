@@ -316,7 +316,12 @@ async function walletDisclosureFits(page){
   // Wait for the classic page's actual document replacement, not an intermediate route.
   await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.hero').waitFor();
   check('FA Home language switch returns to EN Prop landing',true);
-  await page.goto(BASE+'/#/fa/perpetual/journal?account=product-specific');await page.getByRole('button',{name:'EN',exact:true}).click();
+  await page.goto(BASE+'/#/fa/perpetual/journal?account=product-specific');
+  await page.locator('.of-terminal-top').waitFor();
+  // Leaving the classic EN Home can schedule a document reload after the
+  // terminal first appears. Click only after that handoff has completed.
+  await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.of-terminal-top').waitFor();
+  await page.getByRole('button',{name:'EN',exact:true}).click();
   await page.waitForURL('**/#/en/prop/dashboard');check('Perpetual language switch clears product account context',true);
   check('No browser exceptions',errors.length===0);
   await context.close();

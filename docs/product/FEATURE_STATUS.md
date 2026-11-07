@@ -1,13 +1,14 @@
 # Feature status
 
 v0.4.1 stabilization checkpoint (2026-11-07): v0.4.0 is the published and
-deployed version. Runtime CMS configuration, a complete local bootstrap, public
-translation permission narrowing and iframe theme-state repair are **In
-Progress** on a review branch. A fresh Directus 11.9.1 database completed the
-bootstrap twice without duplicate rows, and the 37-scenario local theme suite
-passed. Production CMS still returns 403 for the `ui_messages` translation
-query; production migration, full CMS coverage, release CI and deployed browser
-acceptance remain **Blocked**. See [v0.4.1 audit](../reviews/v0.4.1/AUDIT.md).
+deployed version. Runtime CMS configuration, a complete local bootstrap and
+public translation permission narrowing are merged source work. The iframe
+theme-state repair remains **In Progress** after post-merge CI exposed a
+product-switch timing race. A fresh Directus 11.9.1 database completed the
+bootstrap twice without duplicate rows. Production CMS still returns 403 for
+the `ui_messages` translation query; production migration, full CMS coverage,
+passing post-merge CI and deployed browser acceptance remain **Blocked**. See
+[v0.4.1 audit](../reviews/v0.4.1/AUDIT.md).
 
 P0 audit correction: the earlier mutable 8080 preview lost its frontend manifest and was unversioned. Clean-context real clicks verify white light canvases, not the owner Opera profile (permission unavailable). Final candidate hashes, pipeline outcomes and canonical extracted-archive captures are tracked in [P0 evidence](../../docs/assets/screenshots/manifest.json). Historical captures and prior matched-runtime claims do not identify the final build. Official v0.2.0 and integrated base `d05b4b8` remain unchanged; owner acceptance is open.
 

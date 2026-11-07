@@ -1,12 +1,13 @@
 # v0.4.1 stabilization audit (work in progress)
 
 This is a source and public endpoint checkpoint on 2026-11-07, not a release
-certificate. PR #47 was reviewed and merged as `4b208b5`, but v0.4.1 has
-not been published or deployed. The v0.4.0 tag and release remain unchanged.
+certificate. PR #47 and PR #48 were merged as `4b208b5` and `d451d8e`.
+Post-merge CI on `d451d8e` failed in the theme matrix; v0.4.1 has not been
+published or deployed. The v0.4.0 tag and release remain unchanged.
 
 ## Identity and production baseline
 
-GitHub `main` resolves to `4b208b57e54d3431da64264884f7e0561b833dc6`;
+GitHub `main` resolves to `d451d8e51592ec4b961635fd66c6543f922911d0`;
 the annotated `v0.4.0` tag remains at
 `f90fac4aeeeeb86edc275320b2806d8b98b71233`. The published release
 manifest and `https://openfi.cloud/version` both report frontend hash
@@ -231,3 +232,15 @@ commit. The release build guard refused it because that SHA lacks a published
 SemVer tag; deploy `dep-dbnjuvjrjlhs7391ugv0` failed at build and never went
 live. Render now reports auto-deploy off. The live `/version` endpoint still
 reports official v0.4.0 at `f90fac4`.
+
+The next push run on merge commit `d451d8e` failed both Backend and integrated
+release package gates after all 2,565 UI polish checks passed. Backend read a
+dark outer theme during a light capture; the package gate read a dark
+replacement iframe body during the same light product-switch
+scenario. The failed package's `auto-dark/results.json` completed through
+`normal-os-light-en-prop-trade-dark`; the next route was
+`fa/perpetual/trade`. This points to a boot/route transition race rather than
+a consistently wrong static CSS palette. Follow-up source work makes the
+iframe honor the theme stamped by the React shell on `srcdoc` and waits for
+the current product's iframe before testing a toggle. Its production behavior
+and post-merge CI remain unverified.

@@ -22,7 +22,7 @@ async function runAutoDark({ configureContext = async () => {} } = {}) {
   async function capture(page, label, theme, trade = false) {
     await page.waitForTimeout(750);
     const state = await page.evaluate(() => ({ theme: document.documentElement.dataset.theme, stored: localStorage.getItem('of-theme'), scheme: getComputedStyle(document.documentElement).colorScheme, body: getComputedStyle(document.body).backgroundColor, height: document.documentElement.scrollHeight }));
-    assert.equal(state.theme, theme); assert.equal(state.stored, theme);
+    assert.equal(state.theme, theme, label + ' outer theme'); assert.equal(state.stored, theme, label + ' stored theme');
     assert.equal(state.body, theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(6, 8, 8)');
     if (theme === 'light') assert.match(state.scheme, /only/);
     let points = [{ x: 4, y: 200 }, { x: 3355, y: 500 }], chart;
@@ -59,7 +59,7 @@ async function runAutoDark({ configureContext = async () => {} } = {}) {
         const points = gutter && gutter.end-gutter.start >= 256 ? [0.25,0.5,0.75].map(fraction=>({ x:Math.floor(gutter.start+(gutter.end-gutter.start)*fraction), y })) : [];
         return { background: getComputedStyle(el).backgroundColor, body: getComputedStyle(document.body).backgroundColor, gutter, points };
       });
-      assert.equal(panel.body, theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(6, 8, 8)');
+      assert.equal(panel.body, theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(6, 8, 8)', label + ' iframe body');
       assert.equal(panel.points.length, 3, label + ' proven empty panel samples');
       if (theme === 'light') assert.equal(panel.background, 'rgb(255, 255, 255)');
       else assert.ok(panel.background.match(/\d+/g).map(Number).every(value => value < 30), label + ' native dark panel');
@@ -120,12 +120,24 @@ async function runAutoDark({ configureContext = async () => {} } = {}) {
       for (const route of ['en/home', 'fa/home', 'en/prop/trade', 'fa/perpetual/trade']) {
         const tag = route.replaceAll('/', '-'), trade = route.includes('trade');
         await page.goto(BASE + '/#/' + route); await toggle().waitFor();
+        if (trade) {
+          const [locale, product] = route.split('/');
+          // Wait for the current product's iframe boot, not a still-attached
+          // frame from the previous product during a route transition.
+          await page.waitForFunction(({ locale, product }) => {
+            const w = document.querySelector('iframe.of-trading-workspace')?.contentWindow;
+            return w?.__ofTerminalConfig?.product === product && w.ofLang === locale && !!w.__openfundChart?.chart;
+          }, { locale, product });
+        }
         if (await page.locator('html').getAttribute('data-theme') !== 'light') await toggle().click();
+        await page.waitForFunction(() => document.documentElement.dataset.theme === 'light' && localStorage.getItem('of-theme') === 'light');
         await capture(page, `${prefix}-${tag}-light`, 'light', trade);
         if (route === 'fa/home') assert.equal(await page.locator('footer').count(), 0);
         await page.reload(); await toggle().waitFor();
+        await page.waitForFunction(() => document.documentElement.dataset.theme === 'light' && localStorage.getItem('of-theme') === 'light');
         await capture(page, `${prefix}-${tag}-reload-light`, 'light', trade);
         await toggle().click();
+        await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark' && localStorage.getItem('of-theme') === 'dark');
         await capture(page, `${prefix}-${tag}-dark`, 'dark', trade);
       }
       await context.close();
