@@ -1475,9 +1475,12 @@ function boot(){
   });
 }
 
-/* restore theme before first paint */
-let __initTheme = 'dark';
-try{ __initTheme = localStorage.getItem('of-theme') || 'dark' }catch(e){}
+/* The React shell stamps the current theme on srcdoc. Do not replace it with
+   an older stored value while a newly mounted workspace is booting. */
+let __initTheme = document.documentElement.dataset.theme;
+if(__initTheme !== 'light' && __initTheme !== 'dark'){
+  try{ __initTheme = localStorage.getItem('of-theme') || 'dark' }catch(e){ __initTheme = 'dark' }
+}
 document.documentElement.setAttribute('data-theme', __initTheme);
 curTheme = __initTheme;
 $('theme-toggle').textContent = __initTheme === 'dark' ? '◐' : '◑';

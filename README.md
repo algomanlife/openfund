@@ -21,9 +21,10 @@ Openfund is an early-stage trading technology project maintained in a public rep
 This repository supports open-source collaboration, but has **no root license granting blanket reuse rights**. Component licenses and upstream notices apply separately; see [Licensing and upstream attribution](#licensing-and-upstream-attribution). Source availability is not a claim of production readiness, audited security or an active funded-trading service.
 
 **Release status (2026-11-07):** v0.4.0 is the latest published version. The
-v0.4.1 stabilization work is in progress on a review branch. The public site
-currently reports v0.4.0 at `/version`; a successful health response does not
-establish wallet, payment, CMS coverage or theme acceptance. See the
+v0.4.1 source fixes from PR #47 and PR #48 are merged, but post-merge CI found
+a terminal theme transition race and follow-up work remains under review. The
+public site currently reports v0.4.0 at `/version`; a successful health response
+does not establish wallet, payment, CMS coverage or theme acceptance. See the
 [v0.4.1 audit](docs/reviews/v0.4.1/AUDIT.md) and [release runbook](docs/deployment/RELEASES.md).
 
 ### Product areas
