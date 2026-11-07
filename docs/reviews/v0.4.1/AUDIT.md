@@ -112,3 +112,11 @@ visible. This is local evidence only and did not touch production.
 
 **Status:** blocked from publication and production readiness until these gates
 pass. Do not run routine production CMS seeds or reset the shared database.
+
+The first full local candidate attempt passed clean installs, documentation,
+typecheck, web/backend suites, reproducible frontend builds, migrations,
+authenticated layout and chart checks, then failed at `test:browser:polish`
+because the test runtime used `localhost:8055` with no CMS there. The gate now
+requires an explicit healthy `CMS_PUBLIC_URL` with public fa/en Home and UI
+translations before running those expensive stages. This failed attempt did
+not produce an official or candidate archive.

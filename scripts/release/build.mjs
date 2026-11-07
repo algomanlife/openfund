@@ -4,11 +4,28 @@ import { spawn } from 'node:child_process';
 import { root, git, run, validateEnv, healthy, json, writeJson, sha256, filesIn, semver, treeHash } from './lib.mjs';
 import { manifest } from './manifest.mjs';
 import { verify } from './verify.mjs';
+import { runtimeCmsUrl } from '../../apps/backend/runtime-config.js';
 const candidate = process.argv.includes('--candidate');
 if (Number(process.versions.node.split('.')[0]) !== 22) throw Error('Release builds require Node.js 22.');
 const version = process.env.RELEASE_VERSION || '0.1.0';
 if (!semver.test(version)) throw Error('Set RELEASE_VERSION to MAJOR.MINOR.PATCH.');
 validateEnv(process.env);
+if (!process.env.CMS_PUBLIC_URL) throw Error('Release candidate requires CMS_PUBLIC_URL for real public CMS acceptance.');
+const cmsOrigin = runtimeCmsUrl(process.env);
+for (const route of [
+  '/server/health',
+  '/items/ui_messages?fields=key,namespace,translations.language_code,translations.value&filter[status][_eq]=published&limit=1',
+  '/items/home_content?fields=status,translations.language_code,translations.headline',
+]) {
+  const response = await fetch(new URL(route, cmsOrigin), {signal: AbortSignal.timeout(15000)});
+  if (!response.ok) throw Error(`CMS release preflight failed: ${route.split('?')[0]} returned ${response.status}.`);
+  if (route.startsWith('/items/')) {
+    const data = (await response.json()).data;
+    const row = Array.isArray(data) ? data[0] : data;
+    if (!row?.translations?.some(t => t.language_code === 'fa') || !row.translations.some(t => t.language_code === 'en'))
+      throw Error(`CMS release preflight failed: ${route.split('?')[0]} lacks visible fa/en rows.`);
+  }
+}
 const commit = git('rev-parse','HEAD');
 if (!candidate) {
   if (git('status','--porcelain','--untracked-files=normal')) throw Error('Official builds require a clean checkout. Use --candidate for an explicitly unofficial preview.');

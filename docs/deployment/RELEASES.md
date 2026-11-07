@@ -27,6 +27,15 @@ All production-only `VITE_*` inputs are removed from the signed build; their
 public values are supplied at runtime. A mismatch in frontend, backend or
 schema hash still stops deployment.
 
+The candidate gate requires `CMS_PUBLIC_URL` and probes health plus public
+fa/en `ui_messages` and Home translations before the long build. For local
+testing, point it at a disposable Directus instance with CORS enabled for the
+test browser origin and set `CSP_EXTRA_CONNECT` to that HTTP origin. The GitHub
+release workflow maps `RELEASE_DIRECTUS_URL` to `CMS_PUBLIC_URL` for its
+runtime acceptance server; it no longer injects the URL into the package.
+The current production CMS 403 response blocks a release candidate until the
+permission migration is applied after backup review.
+
 ## Authority and versioning
 
 `main` is the integration authority. Feature branches, candidate archives and local screenshots are not official releases. At 2026-11-03 19:52 UTC, [publication run 41705345213](https://github.com/algomanlife/openfund/actions/runs/41705345213) completed successfully and published **v0.2.0**. Its annotated tag and official manifest identify `561e7f3101f3a43376068d9bba1a87c30e2b7d71`, including merged PR #40 and #41. v0.1.1 (`ce9ddd0`) predates those merges and remains historical rollback material. PR #42 is now merged at integrated source `d05b4b8`, but its website refresh is unreleased and not included in v0.2.0. The `qwen/community-theme-readme` addendum remains In Progress. No current port 8080 startup is verified by this documentation update. Resolve the latest official version from GitHub at execution time. Internal npm component versions remain provenance, not independent application releases.
@@ -85,7 +94,7 @@ Configure the production environment with a required reviewer. The deployment sc
 
 | Setting | Location | Purpose |
 | --- | --- | --- |
-| `RELEASE_DIRECTUS_URL` | Repository Actions variable | Public CMS URL used for official frontend builds; must equal Render's `https://$VITE_DIRECTUS_HOST` |
+| `RELEASE_DIRECTUS_URL` | Repository Actions variable | Public CMS URL used by the release gate's runtime test server; not embedded in the frontend build |
 | `RENDER_API_TOKEN` | Production environment secret | Render deployment API authorization |
 | `RENDER_SERVICE_ID` | Production environment variable | Existing `openfund` service ID |
 | `RELEASE_PUBLIC_URL` | Production environment variable | Actual HTTPS frontend/API origin |

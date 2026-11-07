@@ -48,7 +48,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | Variable | App | Default |
 | :--- | :--- | :--- |
 | `VITE_BACKEND_URL` | apps/web-react | dev: `http://localhost:8080` · prod build: same origin (`window.location.origin`) |
-| `VITE_DIRECTUS_URL` | apps/web-react | `http://localhost:8055` |
+| `VITE_DIRECTUS_URL` | apps/web-react dev server only | `http://localhost:8055`; production uses `CMS_PUBLIC_URL` through the runtime script |
 | `DATABASE_URL` | apps/backend | `postgres://openfund_cms:openfund_local_dev@127.0.0.1:5432/openfund_cms` |
 | `ALLOWED_DOMAINS` | apps/backend | localhost dev origins |
 | `CORS_ORIGINS` | apps/backend | localhost dev origins |

@@ -39,6 +39,7 @@ jobs:
           --health-interval 5s --health-timeout 5s --health-retries 10
     env:
       DATABASE_URL: postgres://openfund_ci:openfund_ci@localhost:5432/openfund_release_ci
+      CMS_PUBLIC_URL: ${{ vars.RELEASE_DIRECTUS_URL }}
     steps:
       - uses: actions/checkout@v4
         with:
