@@ -5657,6 +5657,30 @@
         "width": 1440,
         "height": 1000
       }
+    },
+    {
+      "file": "v0.4.1/prop-fa-dark.png",
+      "route": "/react/#/fa/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-07T12:38:55.271017+00:00",
+      "state": "v0.4.1 source branch, Vite development server, dark theme; live Gains market feed. Public production CMS ui_messages returned 403 and local backend was unavailable; screenshot verifies visual theme only.",
+      "source": "codex/release-v0.4.1-stabilization local source; not official or deployed"
+    },
+    {
+      "file": "v0.4.1/prop-fa-light.png",
+      "route": "/react/#/fa/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-07T12:38:55.271279+00:00",
+      "state": "v0.4.1 source branch, Vite development server, light theme; live Gains market feed. Public production CMS ui_messages returned 403 and local backend was unavailable; screenshot verifies visual theme only.",
+      "source": "codex/release-v0.4.1-stabilization local source; not official or deployed"
     }
   ],
   "finalIntegration": {

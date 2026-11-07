@@ -1,5 +1,14 @@
 # Feature status
 
+v0.4.1 stabilization checkpoint (2026-11-07): v0.4.0 is the published and
+deployed version. Runtime CMS configuration, a complete local bootstrap, public
+translation permission narrowing and iframe theme-state repair are **In
+Progress** on a review branch. A fresh Directus 11.9.1 database completed the
+bootstrap twice without duplicate rows, and the 37-scenario local theme suite
+passed. Production CMS still returns 403 for the `ui_messages` translation
+query; production migration, full CMS coverage, release CI and deployed browser
+acceptance remain **Blocked**. See [v0.4.1 audit](../reviews/v0.4.1/AUDIT.md).
+
 P0 audit correction: the earlier mutable 8080 preview lost its frontend manifest and was unversioned. Clean-context real clicks verify white light canvases, not the owner Opera profile (permission unavailable). Final candidate hashes, pipeline outcomes and canonical extracted-archive captures are tracked in [P0 evidence](../../docs/assets/screenshots/manifest.json). Historical captures and prior matched-runtime claims do not identify the final build. Official v0.2.0 and integrated base `d05b4b8` remain unchanged; owner acceptance is open.
 
 Canonical capability register reconciled with integrated source `d05b4b88fc2776e09bf1a701254ac229e8145a7f`: PR #42 is merged but unreleased. Official v0.2.0 remains `561e7f3101f3a43376068d9bba1a87c30e2b7d71`, including PR #40/#41. The `qwen/community-theme-readme` addendum is locally captured and UNRELEASED; white-theme and bilingual local refinement acceptance is verified with exact white canvases and text contrast >=4.5; official/deployed acceptance remains open. [Current evidence](../reviews/community-theme/DELIVERY.md). Official local startup at port 8080 and deployed acceptance remain separate gates. The requested v0.2.1 is unallocated and needs coordination with the Conventional Commit minor-bump policy. This is not a production readiness certificate. [Historical audit](../reviews/website-refresh/AUDIT.md) · [Release boundaries](../deployment/RELEASES.md).

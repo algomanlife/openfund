@@ -48,8 +48,10 @@
      origin, which a cross-origin document could not match. */
   global.addEventListener('message', function (e) {
     if (!e.data || e.data.type !== 'openfund-display' || e.source !== global.parent) return;
-    document.documentElement.dataset.theme = e.data.theme;
-    global.__openfundChart && global.__openfundChart.setTheme(e.data.theme);
+    if (e.data.theme === 'light' || e.data.theme === 'dark') {
+      if (global.__openfundApplyTheme) global.__openfundApplyTheme(e.data.theme);
+      else document.documentElement.dataset.theme = e.data.theme;
+    }
     if (global.ofLang !== e.data.locale) {
       var langToggle = document.getElementById('language-toggle');
       langToggle && langToggle.click();

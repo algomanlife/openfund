@@ -26,11 +26,10 @@
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import path from 'node:path'
-import { buildSync } from 'esbuild'
 
 const require6 = createRequire(pathToFileURL(import.meta.url))
 const requireWeb = createRequire(pathToFileURL(path.resolve(import.meta.dirname, '../../web-react/package.json')))
-const esbuild = requireWeb('esbuild')
+const { buildSync } = requireWeb('esbuild')
 
 const HERE = import.meta.dirname
 const WEB = path.resolve(HERE, '../../web-react')
@@ -186,7 +185,8 @@ async function main() {
   /* ---------- home_content (singleton — direct object endpoint) ---------- */
   let homeRow = null
   {
-    /* singleton: object response (no list). id may be null — detect via content */
+    /* An empty Directus singleton can return schema defaults (including
+       status='published') with id=null. Only a real id proves a saved row. */
     const res = await req('GET', `${BASE}/items/home_content`, TOKEN)
     homeRow = Array.isArray(res.data) ? res.data[0] : res.data
   }
@@ -209,7 +209,7 @@ async function main() {
       seo_description: homeSeed.translations[locale].seoDescription,
     })),
   }
-  const homeExists = !!(homeRow && homeRow.status)
+  const homeExists = homeRow?.id != null
   if (homeExists) {
     if (REFRESH) {
       /* singleton: PATCH the collection route directly (no row id).
@@ -223,7 +223,7 @@ async function main() {
       stats['home_content'] = { created: 0, updated: 1, kept: 0 }
     } else stats['home_content'] = { created: 0, updated: 0, kept: 1 }
   } else {
-    await req('POST', `${BASE}/items/home_content`, TOKEN, homePayload)
+    await req('PATCH', `${BASE}/items/home_content`, TOKEN, homePayload)
     stats['home_content'] = { created: 1, updated: 0, kept: 0 }
   }
 

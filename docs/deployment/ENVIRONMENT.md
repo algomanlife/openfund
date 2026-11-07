@@ -14,7 +14,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `NODE_VERSION` | openfund | B | PUB | `22` (matches `apps/backend` engines) |
 | `NODE_ENV` | openfund | R | PUB | `production` (enables Secure cookies) |
 | `ALLOWED_DOMAINS` | openfund | R | PUB | `fromService: openfund / envVarKey: RENDER_EXTERNAL_HOSTNAME` — the SIWE domain list tracks the served origin |
-| `VITE_DIRECTUS_HOST` | openfund | B | PUB | `fromService: openfund-cms / envVarKey: RENDER_EXTERNAL_HOSTNAME`; the build command composes `VITE_DIRECTUS_URL=https://$VITE_DIRECTUS_HOST` |
+| `VITE_DIRECTUS_HOST` | openfund | R | PUB | `fromService: openfund-cms / envVarKey: RENDER_EXTERNAL_HOSTNAME`; runtime fallback when `CMS_PUBLIC_URL` is unset |
 | `KEY`, `SECRET` | openfund-cms | R | SEC | `generateValue: true` (created once at first apply) |
 | `WEBSOCKETS_ENABLED`, `CORS_ENABLED`, `CORS_ORIGIN`, `CORS_METHODS`, `MAX_PAYLOAD_SIZE` | openfund-cms | R | PUB | Directus hardening (public read-only API) |
 | `SESSION_TTL_HOURS` | openfund | R | PUB | default `168` (7 days) |
@@ -28,10 +28,11 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | :--- | :--- | :--- |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | openfund-cms | Directus administrator |
 | `PUBLIC_URL` | openfund-cms | e.g. `https://openfund-cms.onrender.com` |
-| `VITE_WALLETCONNECT_PROJECT_ID` | openfund (build) | optional; full remote wallet list (cloud.reown.com, free) |
-| `VITE_TELEGRAM_COMMUNITY_URL` | openfund (build, PUB) | optional owner-verified HTTPS `t.me` community or invitation URL; blank/invalid means a non-navigating Coming Soon action. Never use telegram.org as an Openfund community. Rebuild after configuration; URL validation does not establish ownership. |
-| `VITE_DISCORD_COMMUNITY_URL` | openfund (build, PUB) | optional owner-verified HTTPS `discord.gg/<invite>` or `discord.com/invite/<invite>` URL; blank/invalid means a non-navigating Coming Soon action beside Telegram. Credentials, ports, queries, fragments and non-invitation destinations are rejected. Rebuild after configuration; URL validation does not establish ownership. |
-| `VITE_INSTAGRAM_COMMUNITY_URL` | openfund (build, PUB) | optional owner-verified HTTPS `instagram.com/<username>/` profile beside Telegram and Discord in public hero/footer only. Blank/invalid remains a non-navigating Coming Soon button. Only the exact host is accepted; credentials, ports, query, fragment, reserved endpoints and invalid usernames are rejected. Trailing slash is normalized. Rebuild after configuration; syntax validation does not establish ownership. No verified Openfund profile has been supplied. |
+| `CMS_PUBLIC_URL` | openfund | Preferred public browser CMS origin, e.g. `https://cms.openfi.cloud`. Credential-free HTTPS origin; served by `/react/runtime-config.js`. |
+| `VITE_WALLETCONNECT_PROJECT_ID` | openfund (runtime, public) | optional; full remote wallet list (cloud.reown.com, free) |
+| `VITE_TELEGRAM_COMMUNITY_URL` | openfund (runtime, public) | optional owner-verified HTTPS `t.me` community or invitation URL; blank/invalid means a non-navigating Coming Soon action. URL validation does not establish ownership. |
+| `VITE_DISCORD_COMMUNITY_URL` | openfund (runtime, public) | optional owner-verified HTTPS Discord invitation; blank/invalid means Coming Soon. URL validation does not establish ownership. |
+| `VITE_INSTAGRAM_COMMUNITY_URL` | openfund (runtime, public) | optional owner-verified HTTPS Instagram profile; blank/invalid means Coming Soon. URL validation does not establish ownership. |
 | `CORS_ORIGINS` | openfund | optional; only needed for extra origins / custom domains |
 | `PURCHASE_PAYMENT_RECEIVER` | openfund | **deliberately unset by default — purchasing stays disabled (`purchases_disabled`) until an approved payment address is entered.** No hardcoded production destination exists in the repository. |
 | `PURCHASE_PAYMENT_TOKEN` | openfund | optional ERC-20 token contract for challenge payments (unset = native ETH) |
@@ -39,15 +40,15 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `ADMIN_API_TOKEN` | openfund | **secret service token for the `/admin/*` operational API (user directory, challenge directory, withdrawal review). Unset = the whole admin API stays disabled (404).** Bearer-auth, constant-time compare. Never expose to the browser. |
 | `CSP_EXTRA_CONNECT` | openfund | optional comma-separated extra origins for the CSP `connect-src` (production CMS is HTTPS so normally unneeded; used for non-HTTPS local CMS deployments) |
 | `INTERNAL_API_TOKEN` | openfund | optional constant-time token guarding the test-only `/internal` seams (defense in depth; production never mounts them) |
-| `VITE_DEPAY_WIDGET` | openfund (build) | optional; `1` enables the DePay checkout widget |
-| `VITE_DEPAY_WIDGET_URL` | openfund (build) | approved DePay widget bundle URL; the widget stays hidden without both variables |
+| `VITE_DEPAY_WIDGET` | openfund (runtime, public) | optional; `1` enables the DePay checkout widget |
+| `VITE_DEPAY_WIDGET_URL` | openfund (runtime, public) | approved DePay widget bundle URL; the widget stays hidden without both variables |
 
 ## Local development defaults (code fallbacks — no .env required)
 
 | Variable | App | Default |
 | :--- | :--- | :--- |
 | `VITE_BACKEND_URL` | apps/web-react | dev: `http://localhost:8080` · prod build: same origin (`window.location.origin`) |
-| `VITE_DIRECTUS_URL` | apps/web-react | `http://localhost:8055` |
+| `VITE_DIRECTUS_URL` | apps/web-react dev server only | `http://localhost:8055`; production uses `CMS_PUBLIC_URL` through the runtime script |
 | `DATABASE_URL` | apps/backend | `postgres://openfund_cms:openfund_local_dev@127.0.0.1:5432/openfund_cms` |
 | `ALLOWED_DOMAINS` | apps/backend | localhost dev origins |
 | `CORS_ORIGINS` | apps/backend | localhost dev origins |

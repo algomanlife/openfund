@@ -9,7 +9,19 @@ const repoReact = fileURLToPath(new URL('../../react', import.meta.url))
 const publishDir = fileURLToPath(new URL('../../publish-openfund', import.meta.url))
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react()],
+  plugins: [react(), {
+    name: 'local-runtime-config',
+    configureServer(server) {
+      const serve = (_req: unknown, res: {setHeader: (key: string, value: string) => void; end: (value: string) => void}) => {
+        const cmsUrl = process.env.VITE_DIRECTUS_URL || 'http://localhost:8055'
+        res.setHeader('Content-Type', 'application/javascript')
+        res.setHeader('Cache-Control', 'no-store')
+        res.end(`window.__OPENFUND_RUNTIME_CONFIG__=${JSON.stringify({cmsUrl})};\n`)
+      }
+      server.middlewares.use('/react/runtime-config.js', serve)
+      server.middlewares.use('/react/react/runtime-config.js', serve)
+    }
+  }],
   define: { __OPENFUND_BUILD__: JSON.stringify({
     version: process.env.RELEASE_VERSION || 'development',
     commit: process.env.RELEASE_SOURCE_COMMIT || process.env.RENDER_GIT_COMMIT || execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim()

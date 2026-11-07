@@ -7,6 +7,17 @@ import { execFileSync } from 'node:child_process';
 import {nextVersion,validateEnv,sha256,writeJson,treeHash,filesIn,root} from '../lib.mjs';
 import {verify} from '../verify.mjs';
 import {exactSecretScan} from '../check-secrets.mjs';
+import {runtimeCmsUrl,runtimeConfigScript} from '../../../apps/backend/runtime-config.js';
+test('runtime CMS origin stays outside the immutable frontend and rejects unsafe production URLs',()=>{
+ assert.equal(runtimeCmsUrl({CMS_PUBLIC_URL:'https://cms.openfi.cloud'},true),'https://cms.openfi.cloud');
+ assert.equal(runtimeCmsUrl({VITE_DIRECTUS_HOST:'openfund-cms.onrender.com'},true),'https://openfund-cms.onrender.com');
+ for(const raw of ['', 'http://localhost:8055', 'https://user:pass@cms.openfi.cloud', 'https://cms.openfi.cloud/path'])
+  assert.throws(()=>runtimeCmsUrl({CMS_PUBLIC_URL:raw},true));
+ const script=runtimeConfigScript({CMS_PUBLIC_URL:'https://cms.openfi.cloud',VITE_WALLETCONNECT_PROJECT_ID:'public-id'},true);
+ assert.match(script,/cms\.openfi\.cloud/);
+ assert.match(script,/public-id/);
+ assert.doesNotMatch(script,/localhost/);
+});
 test('version allocation preserves tags, increments all change categories and handles numeric ordering',()=>{
  assert.equal(nextVersion([]),'0.1.0');
  assert.equal(nextVersion(['v0.1.0'],'fix(wallet): connect'),'0.1.1');

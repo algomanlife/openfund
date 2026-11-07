@@ -14,6 +14,7 @@ import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import { releaseDiagnostics } from './release.js'
+import { runtimeConfigScript } from './runtime-config.js'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
 import { createClient, isHex, http } from 'viem'
@@ -691,6 +692,13 @@ app.get('/version', (req, res) => {
   const release = releaseDiagnostics();
   res.set('Cache-Control','no-store').status(release.status === 'mismatch' ? 503 : 200).json(release);
 });
+
+/* Public non-secret configuration is supplied at runtime, outside the
+   immutable release payload. The HTML loads it before the React module. */
+const publicRuntimeConfig = runtimeConfigScript(process.env, cfg.prod)
+app.get('/react/runtime-config.js', (req, res) => {
+  res.set('Cache-Control', 'no-store').type('application/javascript').send(publicRuntimeConfig)
+})
 
 /* health */
 app.get('/health', asyncRoute(async (req, res) => { try { await pool.query('SELECT 1'); res.json({ ok: true, ts: Date.now() }) } catch { res.status(503).json({ ok: false }) } }))

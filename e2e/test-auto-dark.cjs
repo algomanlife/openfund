@@ -29,6 +29,8 @@ async function runAutoDark({ configureContext = async () => {} } = {}) {
     if (trade) {
       const frame = page.frames().find(frame => frame.parentFrame());
       await frame.waitForFunction(() => !!window.__openfundChart?.chart);
+      await frame.waitForFunction(expected => document.documentElement.dataset.theme === expected &&
+        document.getElementById('theme-toggle')?.textContent === (expected === 'light' ? '◑' : '◐'), theme);
       await frame.evaluate(() => window.__openfundChart.chart.ready());
       await frame.waitForFunction(theme => window.__openfundChart.chart.renderer.getConfig().layout.background.toLowerCase() === (theme === 'light' ? '#ffffff' : '#060808'), theme);
       chart = await frame.evaluate(() => ({ scheme: getComputedStyle(document.documentElement).colorScheme, layout: window.__openfundChart.chart.renderer.getConfig().layout, saved: JSON.parse(localStorage.getItem('of-vela-config') || 'null') }));
@@ -60,9 +62,21 @@ async function runAutoDark({ configureContext = async () => {} } = {}) {
       chart.panel = panel;
       points = panel.points.map(point => ({ x: Math.round(frameRect.x + point.x), y: Math.round(frameRect.y + point.y) }));
     }
-    const pixels = await paint(page, points);
+    const expected = theme === 'light' ? [255, 255, 255, 255] : trade
+      ? [...chart.panel.background.match(/\d+/g).map(Number), 255] : null;
+    const matches = pixel => expected
+      ? pixel.rgba.every((channel, index) => channel === expected[index])
+      : pixel.rgba.slice(0, 3).every(value => value < 30) && pixel.rgba[3] === 255;
+    let pixels = await paint(page, points);
+    // Native auto-dark paint can settle after CSS and the chart renderer have
+    // reported their final state. Wait for the same exact screenshot pixels;
+    // never accept an incorrect or merely computed style as a pass.
+    for (let attempt = 0; attempt < 20 && !pixels.every(matches); attempt++) {
+      await page.waitForTimeout(250);
+      pixels = await paint(page, points);
+    }
     for (const pixel of pixels) {
-      if (theme === 'light' || trade) assert.deepEqual(pixel.rgba, [...(theme === 'light' ? [255, 255, 255] : chart.panel.background.match(/\d+/g).map(Number)), 255], label + ' screenshot paint');
+      if (theme === 'light' || trade) assert.deepEqual(pixel.rgba, expected, label + ' screenshot paint');
       else assert.ok(pixel.rgba.slice(0, 3).every(value => value < 30) && pixel.rgba[3] === 255, label + ' preserved dark atmosphere');
     }
     const file = path.join(OUT, label + '.png');
