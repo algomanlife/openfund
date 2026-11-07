@@ -253,6 +253,12 @@ export default function Landing() {
         document.body.appendChild(script)
         return script
       })
+      /* route change before the legacy chain executes: track pending
+         script elements so the effect cleanup can remove them (they must
+         never boot against a removed landing DOM) */
+      ;(window as any).__ofLandingPendingScripts = elements
+      const settled = () => { (window as any).__ofLandingPendingScripts = null }
+      elements.forEach(el => el.addEventListener('load', settled, { once: true }))
       /* re-fire DOMContentLoaded AFTER the ordered legacy scripts execute
          (the last element's load event fires once the chain has run).
          MUST bubble: locale.js listens on window, we dispatch on document. */
@@ -298,6 +304,12 @@ export default function Landing() {
 
     return () => {
       removeEventListener('of-language', langHandler)
+      /* the legacy chain has not executed yet (fast route change): remove
+         the pending script elements so they never boot against a removed
+         landing DOM — the inline injection this replaces was synchronous
+         and could not race the unmount */
+      const pending = (window as any).__ofLandingPendingScripts
+      if (Array.isArray(pending)) pending.forEach((el: HTMLScriptElement) => el.remove())
       /* real navigation away: reload to tear the legacy runtime down.
          Cancelled only by a re-mount of THIS page (StrictMode / route return). */
       w().__ofReloadLandingRoot = pageRoot
