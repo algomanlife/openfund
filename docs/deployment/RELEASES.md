@@ -31,12 +31,14 @@ The candidate gate requires `CMS_PUBLIC_URL` and probes health plus public
 fa/en `ui_messages` and Home translations before the long build. For local
 testing, point it at a disposable Directus instance with CORS enabled for the
 test browser origin and set `CSP_EXTRA_CONNECT` to that HTTP origin. The GitHub
-release workflow maps `RELEASE_DIRECTUS_URL` to `CMS_PUBLIC_URL` for its
-runtime acceptance server; it no longer injects the URL into the package.
-The current production CMS 403 response blocks a release candidate until the
-permission migration is applied after backup review.
+release workflow starts a disposable Directus instance for the integrated
+candidate, so packaging does not depend on production CMS availability.
+`RELEASE_DIRECTUS_URL` is checked as a separate live publication gate and is
+never injected into the package. The current production CMS 403 response
+blocks official publication until the permission migration is applied after
+backup review.
 
-The Unified release workflow also boots a pinned Directus 11.9.1 container
+The Unified release workflow also boots a separate pinned Directus 11.9.1 container
 against a disposable PostgreSQL 17 database, runs the single CMS bootstrap
 twice, verifies bilingual public Home/UI/website content, preserves a test
 editorial edit on rerun and checks that a draft translation is not publicly
@@ -100,7 +102,7 @@ Configure the production environment with a required reviewer. The deployment sc
 
 | Setting | Location | Purpose |
 | --- | --- | --- |
-| `RELEASE_DIRECTUS_URL` | Repository Actions variable | Public CMS URL used by the release gate's runtime test server; not embedded in the frontend build |
+| `RELEASE_DIRECTUS_URL` | Repository Actions variable | Production CMS HTTPS URL checked before official publication; not embedded in the frontend build |
 | `RENDER_API_TOKEN` | Production environment secret | Render deployment API authorization |
 | `RENDER_SERVICE_ID` | Production environment variable | Existing `openfund` service ID |
 | `RELEASE_PUBLIC_URL` | Production environment variable | Actual HTTPS frontend/API origin |

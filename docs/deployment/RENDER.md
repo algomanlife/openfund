@@ -16,7 +16,7 @@
 # Render Deployment — Architecture & Operations
 
 Openfund deploys as **Infrastructure as Code** from this repository via a Render
-Blueprint (`render.yaml`, root). First application is a reviewed manual operation. After provisioning, `openfund` uses the configured `autoDeployTrigger: commit`; CMS automatic deploy is off. CI validates this configuration and does not apply it.
+Blueprint (`render.yaml`, root). Applying the Blueprint is a reviewed manual operation. Both `openfund` and `openfund-cms` have automatic deploys disabled. CI validates this configuration but does not apply it.
 
 ## Service graph
 
@@ -105,9 +105,10 @@ Blueprint (`render.yaml`, root). First application is a reviewed manual operatio
 
 ## Day-2 operations
 
-- **Deploys**: `openfund` has `autoDeployTrigger: commit` (deploys on merge to
-  `main`). `openfund-cms` is `off` — deploy the CMS only deliberately
-  (`Manual Deploy → Deploy latest commit`), since it is the data plane.
+- **Deploys**: Both services have `autoDeployTrigger: off`. Publish the verified
+  GitHub release first, then deploy `openfund` through the documented release
+  procedure. Deploy `openfund-cms` only after the backup and schema review for
+  its own image or migration.
 - **Authenticated blueprint validation** (CI does this when
   `RENDER_API_TOKEN` is set as a repo secret):
   `render blueprint validate ./render.yaml`

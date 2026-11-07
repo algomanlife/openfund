@@ -79,6 +79,25 @@ The requested page/field-level denominator, before/after CMS coverage
 percentages, translation completeness, live edit-to-UI proof and hardcoded
 field inventory remain open. No production record was changed for testing.
 
+A source trace found that `Home.tsx` read the CMS `prop_description` and
+`perpetual_description` fields but displayed two fixed Persian notes instead.
+The branch now renders those fields when populated and uses language-specific
+fallback notes when empty. The local Home seed's `prop_description` is empty
+in both languages, so this remains a fallback in an unchanged seed. The
+technical feature strip on Home still uses hardcoded editorial copy. Its
+component now has English labels and caveated descriptions, but the current
+English Home route uses a separate landing. This remains a CMS-coverage gap
+and is not counted as a CMS connection.
+
+A disposable CMS edit of the Persian `home_content_translations.prop_description`
+appeared in the rendered Persian Home card without rebuilding the frontend;
+the test restored the original empty value. This proves one concrete
+record/API/client/component/UI path. `#/en/home` presents the separate English
+challenge landing, so the Home singleton's English fields cannot be counted
+as visible English Home integration merely because its translation row exists.
+The browser edit test is `e2e/test-home-cms-edit.cjs` and refuses non-local
+services or a non-CI database.
+
 ## Disposable CMS verification
 
 Node 22.23.4, PostgreSQL 17.11 and Directus 11.9.1 were used with a newly
@@ -102,11 +121,12 @@ visible. This is local evidence only and did not touch production.
 - Complete CMS field/UI trace for both languages and exact numerator/denominator.
 - Authenticated browser theme matrix and production verification of
   desktop/mobile, RTL/LTR and market/trading flows.
-- Full isolated PostgreSQL release candidate gate, backend/browser suites,
-  exact artifact verification, CI review and branch protection.
+- Full integrated GitHub candidate gate on the final branch, CI review and
+  branch protection. A local candidate passed on the earlier `4d999e2` source;
+  subsequent Home/CI changes require fresh final-branch checks.
 - GitHub PR, allowed merge, official **v0.4.1** publication, Render deployment
-  and post-deployment smoke tests. No tag, artifact checksum or deployment ID
-  exists for v0.4.1 yet.
+  and post-deployment smoke tests. No official tag, published artifact checksum
+  or deployment ID exists for v0.4.1 yet.
 - Payment and real-wallet production acceptance require independent operational
   evidence; HTTP health alone is insufficient.
 
@@ -124,10 +144,15 @@ not produce an official or candidate archive.
 The second attempt used the disposable CMS and passed its preflight, but the
 existing terminal-completion test assumed the catalog would be unavailable.
 The test now explicitly blocks the catalog request for its unavailable-state
-scenario; a standalone rerun passed 515 checks. The complete candidate has
-not yet passed. A new CI CMS job uses pinned Directus 11.9.1 and PostgreSQL 17
+scenario; a standalone rerun passed 515 checks. A new CI CMS job uses pinned
+Directus 11.9.1 and PostgreSQL 17
 for clean bootstrap, bilingual reads, rerun preservation and draft isolation;
 its GitHub result is still pending.
+
+The integrated GitHub candidate now starts its own disposable Directus
+instance. Official publication has a separate gate for the existing production
+CMS URL. The currently observed production 403 will fail that gate until a
+backed-up, reviewed permission migration repairs the public read.
 
 The third attempt passed clean installs, source checks, both reproducible
 frontend builds, migrations, backend tests and the browser audit, completion,
@@ -137,3 +162,12 @@ the explicit market-unavailable state. The release runner now uses the polish
 suite's recorded market chart fixture for its visual matrix; this fixture
 does not provide trading, account or live-feed acceptance. A separate public
 Gains REST check returned HTTP 200, without a prolonged reconnect test.
+
+The fourth local candidate passed all 25 recorded release stages, including
+clean installs, two identical frontend builds, backend/browser suites, 2,565
+polish checks, 37 auto-dark paint scenarios and the authenticated layout
+matrix. `scripts/release/verify.mjs` verified its payload. Its source commit
+is `4d999e222be0c85c7386c8ea2f9c33dea263f5be`, and its **unofficial**
+archive SHA-256 is
+`3d20657cbda26335f61ad3a346b4ec4fce855e0d2caea6024bbcc24fa8f5199f`.
+This is local candidate evidence, not a GitHub Release or deployed version.
