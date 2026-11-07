@@ -97,11 +97,9 @@ def main():
         cur = next((r for r in rels if r['collection'] == collection and r['field'] == field), None)
         if cur:
             if one_field and cur.get('meta', {}).get('one_field') != one_field:
-                import subprocess
-                subprocess.run(['/opt/homebrew/opt/postgresql@17/bin/psql', '-U', 'openfund_cms', '-d', 'openfund_cms', '-c',
-                    f"UPDATE directus_relations SET one_field='{one_field}' WHERE many_collection='{collection}' AND many_field='{field}';"],
-                    check=False, capture_output=True)
-                print(f'  relation {collection}.{field}: one_field={one_field} set (via psql)')
+                req('PATCH', f'{base}/relations/{collection}/{field}', token,
+                    {'meta': {**(cur.get('meta') or {}), 'one_field': one_field}})
+                print(f'  relation {collection}.{field}: one_field={one_field} updated via Directus API')
             return
         req('POST', f'{base}/relations', token, {
             'collection': collection, 'field': field, 'related_collection': related,
@@ -147,6 +145,7 @@ def main():
     ensure_field('ui_message_translations', 'value', 'text',
         meta={'interface': 'input-multiline', 'required': True}, schema={'is_nullable': False})
     ensure_relation('ui_message_translations', 'ui_message_id', 'ui_messages', one_field='translations')
+    ensure_alias('ui_messages', 'translations', None)
 
     # ---------------- navigation -----------------------------------------
     ensure_collection('navigation_items', {'sort_field': 'sort'})
@@ -673,8 +672,42 @@ def main():
         ('referral_content', {'status': {'_eq': 'published'}}),
         ('referral_content_translations', None),
     ]
+    translation_parents = {
+        'ui_message_translations': ('ui_message_id', 'published'),
+        'navigation_item_translations': ('navigation_item_id', 'published'),
+        'page_translations': ('page_id', 'published'),
+        'home_content_translations': ('home_content_id', 'published'),
+        'faq_translations': ('faq_id', 'published'),
+        'trading_rule_translations': ('trading_rule_id', 'published'),
+        'legal_document_translations': ('legal_document_id', 'published'),
+        'footer_link_translations': ('footer_link_id', 'published'),
+        'faq_category_translations': ('faq_category_id', 'published'),
+        'learning_path_translations': ('learning_path_id', 'published'),
+        'lesson_translations': ('lesson_id', 'published'),
+        'glossary_term_translations': ('glossary_term_id', 'published'),
+        'tool_translations': ('tool_id', 'published'),
+        'referral_content_translations': ('referral_content_id', 'published'),
+    }
     for coll, cond in wanted:
+        if coll in translation_parents:
+            parent_field, status = translation_parents[coll]
+            cond = {parent_field: {'status': {'_eq': status}}}
         if (coll, 'read') in have:
+            current = next(x for x in perms if x['collection'] == coll and x['action'] == 'read')
+            if coll == 'ui_messages':
+                fields = current.get('fields') or []
+                if '*' not in fields and 'translations' not in fields:
+                    req('PATCH', f"{base}/permissions/{current['id']}", token,
+                        {'fields': [*fields, 'translations']})
+                    print('public read: ui_messages translations alias added')
+            if coll in translation_parents:
+                old = current.get('permissions') or {}
+                already = old == cond or (isinstance(old.get('_and'), list) and cond in old['_and'])
+                if not already:
+                    narrowed = cond if not old else {'_and': [old, cond]}
+                    req('PATCH', f"{base}/permissions/{current['id']}", token,
+                        {'permissions': narrowed})
+                    print(f'public read: {coll} restricted to published parent')
             continue
         req('POST', f'{base}/permissions', token, {
             'policy': pubpol['id'], 'collection': coll, 'action': 'read',

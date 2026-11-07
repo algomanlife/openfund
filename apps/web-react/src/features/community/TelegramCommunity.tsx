@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { Locale } from '../information/content'
 import './community.css'
+import { publicRuntimeConfig } from '../../config/runtime'
 
 /** Only an owner-verified Telegram destination may be configured at build time. */
 export function communityUrl(value?: string): string | null {
@@ -40,11 +41,12 @@ export function instagramCommunityUrl(value?: string): string | null {
 }
 
 // Preserve the Telegram URL export for existing consumers.
-export const community = { url: communityUrl(import.meta.env.VITE_TELEGRAM_COMMUNITY_URL) }
+const runtime = publicRuntimeConfig()
+export const community = { url: communityUrl(import.meta.env?.PROD ? runtime.telegramCommunityUrl : import.meta.env?.VITE_TELEGRAM_COMMUNITY_URL) }
 export const communityProviders = [
   { id: 'telegram', name: 'Telegram', icon: 'telegram-logo.svg', url: community.url, labels: { fa: 'جامعه معامله‌گران', en: 'Traders talk on' } },
-  { id: 'discord', name: 'Discord', icon: 'discord-logo.svg', url: discordCommunityUrl(import.meta.env.VITE_DISCORD_COMMUNITY_URL), labels: { fa: 'جامعه معامله‌گران', en: 'Traders talk on' } },
-  { id: 'instagram', name: 'Instagram', icon: 'instagram-logo.svg', url: instagramCommunityUrl(import.meta.env.VITE_INSTAGRAM_COMMUNITY_URL), labels: { fa: 'اخبار، آموزش و سرگرمی', en: 'News, Education & Entertainment' } },
+  { id: 'discord', name: 'Discord', icon: 'discord-logo.svg', url: discordCommunityUrl(import.meta.env?.PROD ? runtime.discordCommunityUrl : import.meta.env?.VITE_DISCORD_COMMUNITY_URL), labels: { fa: 'جامعه معامله‌گران', en: 'Traders talk on' } },
+  { id: 'instagram', name: 'Instagram', icon: 'instagram-logo.svg', url: instagramCommunityUrl(import.meta.env?.PROD ? runtime.instagramCommunityUrl : import.meta.env?.VITE_INSTAGRAM_COMMUNITY_URL), labels: { fa: 'اخبار، آموزش و سرگرمی', en: 'News, Education & Entertainment' } },
 ] as const
 const copy = {
   fa: { label: 'جامعه معامله‌گران', unavailable: 'به‌زودی', destination: 'لینک جامعهٔ اوپن‌فاند هنوز اعلام نشده است', group: 'جامعهٔ معامله‌گران اوپن‌فاند' },

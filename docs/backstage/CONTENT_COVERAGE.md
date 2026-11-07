@@ -1,5 +1,13 @@
 # Content Coverage Report — CMS Migration (2026-11-01)
 
+> Historical local migration record, not current production coverage. On
+> 2026-11-07 the production `ui_messages` translation query returned 403, and
+> a disposable Directus instance exposed a direct draft-translation read
+> until the v0.4.1 permission correction. The rows and checks below do not
+> establish current page/field coverage or translation completeness. The
+> [v0.4.1 audit](../reviews/v0.4.1/AUDIT.md) records the current evidence and
+> open measurement work. No current coverage percentage is asserted.
+
 Every in-scope public content element, its React component, its Directus collection/field,
 both language statuses and the verified rendering path. Transparency is **excluded** by
 mandate (shared chrome only); the terminal trading UI keeps its own i18n pipeline

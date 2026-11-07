@@ -111,7 +111,9 @@ services:
         fromService:
           name: openfund-cms
           type: web
-          envVarKey: RENDER_EXTERNAL_HOSTNAME # browser needs the public CMS origin
+          envVarKey: RENDER_EXTERNAL_HOSTNAME # runtime fallback; never baked into JS
+      - key: CMS_PUBLIC_URL
+        sync: false             # preferred browser origin, e.g. https://cms.openfi.cloud
       - key: VITE_WALLETCONNECT_PROJECT_ID
         sync: false             # optional (full remote wallet list)
       - key: VITE_TELEGRAM_COMMUNITY_URL

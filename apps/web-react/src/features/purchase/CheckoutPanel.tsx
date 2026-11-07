@@ -1,6 +1,7 @@
 import { createPortal } from 'react-dom'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSession, apiFetch } from '../../session/useOpenfundSession'
+import { publicRuntimeConfig } from '../../config/runtime'
 import './purchase.css'
 
 /**
@@ -154,8 +155,8 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
      + VITE_DEPAY_WIDGET_URL pointing at the approved widget bundle) AND the
      backend provides payment configuration; amounts/receivers always come
      from the backend order, never from this file */
-  const depayUrl = (import.meta.env.VITE_DEPAY_WIDGET as string | undefined) === '1'
-    ? (import.meta.env.VITE_DEPAY_WIDGET_URL as string | undefined)
+  const depayUrl = (import.meta.env?.PROD ? publicRuntimeConfig().depayWidget : (import.meta.env?.VITE_DEPAY_WIDGET as string | undefined) === '1')
+    ? (import.meta.env?.PROD ? publicRuntimeConfig().depayWidgetUrl : import.meta.env?.VITE_DEPAY_WIDGET_URL as string | undefined)
     : undefined
   const openDepay = async () => {
     if (!payment || !paymentCfg || !depayUrl) return

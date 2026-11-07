@@ -39,8 +39,8 @@ jobs:
           --health-interval 5s --health-timeout 5s --health-retries 10
     env:
       DATABASE_URL: postgres://openfund_ci:openfund_ci@localhost:5432/openfund_release_ci
-      VITE_DIRECTUS_URL: ${{ vars.RELEASE_DIRECTUS_URL }}
-      VITE_WALLETCONNECT_PROJECT_ID: ${{ vars.RELEASE_WALLETCONNECT_PROJECT_ID }}
+      CMS_PUBLIC_URL: http://127.0.0.1:8055
+      CSP_EXTRA_CONNECT: http://127.0.0.1:8055
     steps:
       - uses: actions/checkout@v4
         with:
@@ -52,6 +52,27 @@ jobs:
         run: node scripts/release/plan.mjs
       - name: Install browser runtime
         run: npx --yes --package=playwright@1.64.1 playwright install --with-deps chromium
+      - name: Start isolated Directus and seed bilingual content
+        run: |
+          npm ci --include=dev --prefix apps/web-react
+          npm ci --prefix apps/backend
+          npm --prefix apps/backend run migrate
+          export DIRECTUS_URL=http://127.0.0.1:8055
+          export DIRECTUS_ADMIN_EMAIL=release-ci@example.com
+          export DIRECTUS_ADMIN_PASSWORD="$(openssl rand -hex 20)"
+          docker run --rm -d --name openfund-package-cms --network host \
+            -e DB_CLIENT=pg -e DB_HOST=127.0.0.1 -e DB_PORT=5432 \
+            -e DB_DATABASE=openfund_release_ci -e DB_USER=openfund_ci -e DB_PASSWORD=openfund_ci \
+            -e KEY="$(openssl rand -hex 16)" -e SECRET="$(openssl rand -hex 32)" \
+            -e ADMIN_EMAIL="$DIRECTUS_ADMIN_EMAIL" -e ADMIN_PASSWORD="$DIRECTUS_ADMIN_PASSWORD" \
+            -e CORS_ENABLED=true -e CORS_ORIGIN=true directus/directus:11.9.1
+          ready=false
+          for i in $(seq 1 90); do
+            if curl -fsS "$DIRECTUS_URL/server/health" >/dev/null; then ready=true; break; fi
+            sleep 1
+          done
+          if [ "$ready" != true ]; then docker logs openfund-package-cms --tail 50; exit 1; fi
+          bash apps/backstage/scripts/bootstrap-cms.sh
       # Includes the bilingual responsive wallet/theme/product-availability matrix.
       - name: All integrated release gates and packaging
         env:
@@ -73,6 +94,9 @@ jobs:
           name: release-verification-evidence
           path: output/playwright/
           retention-days: 7
+      - name: Stop isolated Directus
+        if: always()
+        run: docker stop openfund-package-cms >/dev/null 2>&1 || true
   secrets:
     name: Release secret scan
     permissions:
@@ -97,8 +121,70 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: node scripts/release/check-secrets.mjs
+  cms:
+    name: Directus bootstrap and public permissions
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: openfund_cms_ci
+          POSTGRES_USER: openfund_ci
+          POSTGRES_PASSWORD: openfund_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U openfund_ci -d openfund_cms_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://openfund_ci:openfund_ci@localhost:5432/openfund_cms_ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Clean installs and additive application schema
+        run: |
+          npm ci --include=dev --prefix apps/web-react
+          npm ci --prefix apps/backend
+          npm --prefix apps/backend run migrate
+      - name: Fresh Directus 11.9.1 bootstrap, rerun and draft isolation
+        run: |
+          export DIRECTUS_URL=http://127.0.0.1:8055
+          export DIRECTUS_ADMIN_EMAIL=release-ci@example.com
+          export DIRECTUS_ADMIN_PASSWORD="$(openssl rand -hex 20)"
+          docker run --rm -d --name openfund-cms-ci --network host \
+            -e DB_CLIENT=pg -e DB_HOST=127.0.0.1 -e DB_PORT=5432 \
+            -e DB_DATABASE=openfund_cms_ci -e DB_USER=openfund_ci -e DB_PASSWORD=openfund_ci \
+            -e KEY="$(openssl rand -hex 16)" -e SECRET="$(openssl rand -hex 32)" \
+            -e ADMIN_EMAIL="$DIRECTUS_ADMIN_EMAIL" -e ADMIN_PASSWORD="$DIRECTUS_ADMIN_PASSWORD" \
+            -e CORS_ENABLED=true -e CORS_ORIGIN=true directus/directus:11.9.1
+          trap 'docker stop openfund-cms-ci >/dev/null' EXIT
+          ready=false
+          for i in $(seq 1 90); do
+            if curl -fsS "$DIRECTUS_URL/server/health" >/dev/null; then ready=true; break; fi
+            sleep 1
+          done
+          if [ "$ready" != true ]; then docker logs openfund-cms-ci --tail 50; exit 1; fi
+          bash apps/backstage/scripts/bootstrap-cms.sh
+          node scripts/release/test-cms-bootstrap.mjs before
+          bash apps/backstage/scripts/bootstrap-cms.sh
+          node scripts/release/test-cms-bootstrap.mjs after
+  production_cms:
+    name: Production CMS publication gate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.publish
+    runs-on: ubuntu-latest
+    env:
+      CMS_PUBLIC_URL: ${{ vars.RELEASE_DIRECTUS_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify live public bilingual CMS reads
+        run: node scripts/release/check-public-cms.mjs
   publish:
-    needs: [package, secrets]
+    needs: [package, secrets, cms, production_cms]
     if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.publish
     runs-on: ubuntu-latest
     permissions:

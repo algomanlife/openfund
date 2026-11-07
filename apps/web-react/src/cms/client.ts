@@ -22,6 +22,7 @@ import type {
   LessonContent, ReferralBenefit, ReferralContent, ReferralStage, ReferralSection, ToolCopy,
 } from './contentTypes'
 import type { LinkTarget } from './contentTypes'
+import { publicRuntimeConfig } from '../config/runtime'
 
 export interface CmsTranslations {
   landing: Record<string, string>
@@ -31,12 +32,24 @@ export interface CmsTranslations {
 
 /* import.meta.env exists under Vite; plain Node (tests, seeds) must still load this module */
 const ENV = (import.meta as unknown as { env?: Record<string, string | undefined> }).env
-const DIRECTUS_URL = ((ENV?.VITE_DIRECTUS_URL as string | undefined) || 'http://localhost:8055').replace(/\/+$/, '')
+function configuredCmsUrl(): string {
+  const runtime = publicRuntimeConfig().cmsUrl
+  const raw = runtime || (ENV?.PROD ? '' : ENV?.VITE_DIRECTUS_URL || 'http://localhost:8055')
+  try {
+    const url = new URL(raw)
+    const localTest = typeof location !== 'undefined' && ['localhost', '127.0.0.1'].includes(location.hostname) && ['localhost', '127.0.0.1'].includes(url.hostname)
+    if (!['http:', 'https:'].includes(url.protocol) || (ENV?.PROD && url.protocol !== 'https:' && !localTest) || url.username || url.password || url.pathname !== '/' || url.search || url.hash) throw Error('invalid origin')
+    return url.origin
+  } catch {
+    if (ENV?.PROD) console.error('Openfund CMS configuration is missing or invalid: /react/runtime-config.js')
+    return ''
+  }
+}
 const TIMEOUT_MS = 4000
 const CACHE_TTL = 20_000
 
 export function directusUrl(): string {
-  return DIRECTUS_URL
+  return configuredCmsUrl()
 }
 
 /* ---------------- tiny fetch + cache core ---------------- */
@@ -48,7 +61,9 @@ async function getJson<T>(path: string, timeout = TIMEOUT_MS): Promise<T | null>
   const ctrl = new AbortController()
   const timer = setTimeout(() => ctrl.abort(), timeout)
   try {
-    const res = await fetch(`${DIRECTUS_URL}${path}`, { signal: ctrl.signal })
+    const origin = configuredCmsUrl()
+    if (!origin) return null
+    const res = await fetch(`${origin}${path}`, { signal: ctrl.signal })
     if (!res.ok) return null
     const json = await res.json() as { data: T }
     if (json?.data == null) return null

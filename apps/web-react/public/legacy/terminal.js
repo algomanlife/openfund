@@ -280,6 +280,7 @@ function setTheme(theme){
   try{ localStorage.setItem('of-theme', theme) }catch(e){}
   window.__openfundChart?.setTheme(theme);
 }
+window.__openfundApplyTheme = setTheme;
 $('theme-toggle').addEventListener('click', () => setTheme(curTheme === 'dark' ? 'light' : 'dark'));
 
 /* ============================================================
