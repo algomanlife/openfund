@@ -120,3 +120,11 @@ because the test runtime used `localhost:8055` with no CMS there. The gate now
 requires an explicit healthy `CMS_PUBLIC_URL` with public fa/en Home and UI
 translations before running those expensive stages. This failed attempt did
 not produce an official or candidate archive.
+
+The second attempt used the disposable CMS and passed its preflight, but the
+existing terminal-completion test assumed the catalog would be unavailable.
+The test now explicitly blocks the catalog request for its unavailable-state
+scenario; a standalone rerun passed 515 checks. The complete candidate has
+not yet passed. A new CI CMS job uses pinned Directus 11.9.1 and PostgreSQL 17
+for clean bootstrap, bilingual reads, rerun preservation and draft isolation;
+its GitHub result is still pending.

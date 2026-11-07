@@ -11,6 +11,9 @@
 - Include website expansion content in the repeatable Directus bootstrap and
   resolve esbuild from the frontend lockfile without a manual symlink. Keep
   administrator credentials in environment variables.
+- Narrow public translation-table reads to published parents; the earlier
+  direct child endpoint exposed draft translations in a disposable test.
+  Correct empty Home singleton detection and test that a rerun preserves edits.
 - Synchronize the embedded terminal's theme state, icon and chart when the
   outer application changes theme.
 

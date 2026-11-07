@@ -210,6 +210,9 @@ async function functional(browser){
   await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().waitFor();
   await page.waitForFunction(async api=>(await fetch(api+'/auth/me',{credentials:'include'})).status===401,API);
   check('Wallet-modal disconnect revokes SIWE and clears private state',await page.evaluate(()=>!window.__ofServerTP));
+  // Exercise the unavailable-catalog branch explicitly even when the
+  // candidate gate has a healthy Directus instance for other routes.
+  await context.route('**/items/challenge_plans**',route=>route.abort('failed'));
   await page.goto(BASE+'/#/en/challenges');
   await page.locator('#challenge-order').getByText('The challenge catalog is unavailable. Please try again later.',{exact:true}).waitFor();
   check('Unavailable CMS catalog shows an accurate state and disables challenge activation',await page.locator('#detail-review').isDisabled());
