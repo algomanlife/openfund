@@ -1,12 +1,13 @@
 # v0.4.1 stabilization audit (work in progress)
 
 This is a source and public endpoint checkpoint on 2026-11-07, not a release
-certificate. The branch has not been merged, published or deployed. The
-v0.4.0 tag and release remain unchanged.
+certificate. PR #47 was reviewed and merged as `4b208b5`, but v0.4.1 has
+not been published or deployed. The v0.4.0 tag and release remain unchanged.
 
 ## Identity and production baseline
 
-GitHub `main` and the annotated `v0.4.0` tag resolve to
+GitHub `main` resolves to `4b208b57e54d3431da64264884f7e0561b833dc6`;
+the annotated `v0.4.0` tag remains at
 `f90fac4aeeeeb86edc275320b2806d8b98b71233`. The published release
 manifest and `https://openfi.cloud/version` both report frontend hash
 `1b446a97ea87625f7d539a3e258ef72400c1274d403be0699b25fc7791dc851a`
@@ -152,9 +153,7 @@ visible. This is local evidence only and did not touch production.
 - Complete CMS field/UI trace for both languages and exact numerator/denominator.
 - Authenticated browser theme matrix and production verification of
   desktop/mobile, RTL/LTR and market/trading flows.
-- Independent review and branch protection before any allowed merge. The
-  integrated candidate gate passed on the source commit `21d5feb`.
-- Allowed merge, official **v0.4.1** publication, Render deployment
+- Official **v0.4.1** publication, Render deployment
   and post-deployment smoke tests. No official tag, published artifact checksum
   or deployment ID exists for v0.4.1 yet.
 - Payment and real-wallet production acceptance require independent operational
@@ -221,9 +220,14 @@ the GitHub run for `21d5feb` passed the integrated release package, Backend,
 Directus bootstrap, web, Blueprint and secret checks. Official publication
 and its production CMS gate were not run for the draft PR.
 
-The latest draft PR run on `322b3d4` completed successfully on 2026-11-07:
+The last PR run on `322b3d4` completed successfully on 2026-11-07:
 Web, Backend, release package, disposable Directus bootstrap/public
 permissions, Blueprint, dependency audit and secret scans all passed. The
 production CMS publication and publish jobs were skipped by design for the
-draft PR. PR #47 remains open and unmerged; this CI result is source and
-candidate evidence, not production acceptance.
+draft PR. Reviewer `muminmoon` approved PR #47, which was merged as `4b208b5`
+at 15:10 UTC. This CI result is source and candidate evidence, not production
+acceptance. Render then attempted a Blueprint-triggered build of the merge
+commit. The release build guard refused it because that SHA lacks a published
+SemVer tag; deploy `dep-dbnjuvjrjlhs7391ugv0` failed at build and never went
+live. Render now reports auto-deploy off. The live `/version` endpoint still
+reports official v0.4.0 at `f90fac4`.
