@@ -238,8 +238,13 @@ export default function Landing() {
         l.dataset.page = 'landing'
         document.head.appendChild(l)
       })
-      // Fetch trusted bundled scripts first. A synchronous ordered insertion
-      // prevents queued external scripts from booting after React removes Home.
+      // Fetch trusted bundled scripts first, then a SYNCHRONOUS ordered
+      // insertion prevents queued external scripts from booting after React
+      // removes the landing (a <script src> element always has a
+      // fetch→execute gap; inline textContent executes at append time).
+      // CSP-safe: the backend hashes the exact react/legacy/*.js files and
+      // allows precisely these script contents in the application-document
+      // policy — nothing else may run inline.
       const sources = await Promise.all(SCRIPTS.map(async src => {
         const response = await fetch(src)
         if (!response.ok) throw new Error(`Landing asset unavailable: ${src}`)
@@ -249,7 +254,7 @@ export default function Landing() {
       for (const { src, code } of sources) {
         const script = document.createElement('script')
         script.dataset.page = 'landing'
-        script.textContent = code + '\n//# sourceURL=' + new URL(src, document.baseURI).href
+        script.textContent = code + '\n//# sourceURL=' + src
         document.body.appendChild(script)
       }
       /* re-fire DOMContentLoaded for the late-loaded legacy scripts.

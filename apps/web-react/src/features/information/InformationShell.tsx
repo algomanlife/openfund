@@ -167,6 +167,15 @@ export default function InformationShell({ page, description, footer = true, nav
     const canonical = document.createElement('link')
     canonical.rel = 'canonical'; canonical.href = url(locale)
     tags.push(canonical)
+    /* social sharing metadata mirrors the CMS-edited title/description */
+    const og = (property: string, content: string) => {
+      const tag = document.createElement('meta')
+      tag.setAttribute('property', property); tag.content = content
+      tags.push(tag)
+    }
+    og('og:title', document.title)
+    og('og:description', description)
+    og('og:url', url(locale))
     for (const lang of ['en', 'fa', 'x-default']) {
       const link = document.createElement('link')
       link.rel = 'alternate'; link.hreflang = lang; link.href = url(lang === 'en' ? 'en' : 'fa')

@@ -129,6 +129,19 @@ services:
         sync: false             # optional ERC-20 payment token contract
       - key: PURCHASE_PAYMENT_DECIMALS
         value: "18"             # used only when PURCHASE_PAYMENT_TOKEN is set
+      - key: PURCHASE_PAYMENT_MIN_CONFIRMATIONS
+        sync: false             # optional finality depth before a payment provisions
+                                # (unset = single receipt; e.g. 12 on mainnet)
+      - key: PURCHASE_LATE_GRACE_MINUTES
+        value: "60"             # minutes after order expiry a verified payment still pays
+      - key: ADMIN_API_TOKEN
+        sync: false             # service token for the /admin operational API
+                                # (user directory, withdrawal review) — unset = disabled
+      - key: CSP_EXTRA_CONNECT
+        sync: false             # optional extra connect-src origins for the CSP
+                                # (production CMS is https, same as VITE_DIRECTUS_HOST)
+      - key: INTERNAL_API_TOKEN
+        sync: false             # optional constant-time token on the test-only /internal seam
       - key: VITE_DEPAY_WIDGET
         sync: false             # optional DePay widget toggle (1 = enabled)
       - key: VITE_DEPAY_WIDGET_URL

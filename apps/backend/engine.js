@@ -24,6 +24,7 @@ import {instrumentSpec} from './instruments.js'
 import Decimal from 'decimal.js'
 
 import { D, SIM, feePct, spreadPct, withSpread, pnl, freshMark, positionMetrics, accountMetrics } from './trading-math.js'
+import { ChallengeService, evaluateRules, normalizeRules, countTradingDays } from './evaluation.js'
 export { SIM, feePct, spreadPct, withSpread } from './trading-math.js'
 
 /* ---------- per-account async mutex (safe concurrency) ---------- */
@@ -46,6 +47,7 @@ export class Engine {
   constructor(pool, marketData) {
     this.pool = pool
     this.md = marketData
+    this.challenges = new ChallengeService(pool)
     this.listeners = new Set()          /* state-change → SSE push */
     this.timer = null
     this.running = false
@@ -79,7 +81,7 @@ export class Engine {
       const { rows } = await c.query(
         `INSERT INTO demo_accounts (user_id, balance, currency)
          VALUES ($1, $2, 'USD')
-         ON CONFLICT (user_id, account_type) DO NOTHING
+         ON CONFLICT (user_id) WHERE account_type = 'free_demo' DO NOTHING
          RETURNING *`,
         [userId, SIM.INITIAL_BALANCE],
       );
@@ -157,9 +159,141 @@ export class Engine {
     return true
   }
 
-  async getAccount(userId) {
+  /* =========================================================
+   * CHALLENGE EVALUATION (v0.3.1) — rules of record enforced
+   * inside the caller's transaction, account row already FOR UPDATE.
+   *
+   * Samples equity (fresh marks only — stale marks defer evaluation),
+   * observes the UTC+3 day basis + trailing peak, evaluates the
+   * published rules, and on breach/pass/expiry:
+   *   - closes open positions at the server mark (settlement),
+   *   - cancels pending orders,
+   *   - transitions the challenge status + appends challenge_events,
+   *   - two-phase stage-1 pass provisions the stage-2 challenge.
+   * @returns null | 'failed' | 'passed' | 'expired' | 'stage_passed'
+   * ======================================================= */
+  async #challengeRiskTx(c, acc) {
+    if (acc.account_type !== 'challenge' || acc.status !== 'active') return null
+    const challenge = (await c.query(
+      `SELECT c.*, p.configuration AS plan_configuration
+         FROM openfund_challenges c JOIN challenge_plans p ON p.id = c.challenge_plan_id
+        WHERE c.demo_account_id = $1 FOR UPDATE OF c`, [acc.id])).rows[0]
+    if (!challenge || challenge.status !== 'started') return null
+    const rules = challenge.rules_snapshot ?? normalizeRules(challenge.plan_configuration ?? {})
+    if (!rules.evaluationCapable) return null
+
+    const positions = (await c.query(
+      "SELECT * FROM trading_positions WHERE account_id=$1 AND status='open'", [acc.id])).rows
+    const view = accountMetrics(acc, positions, this.md)
+    const equity = view.equity === null ? null : D(view.equity)
+    const day = await this.challenges.observeEquityTx(c, challenge, acc.balance, equity?.toString() ?? null)
+    const trailing = rules.drawdownMode === 'trailing'
+      ? (await c.query('SELECT * FROM challenge_trailing WHERE challenge_id=$1 FOR UPDATE', [challenge.id])).rows[0]
+      : null
+    const tradingDays = await countTradingDays(c, acc.id)
+    const evaluation = evaluateRules({
+      rules, stage: challenge.stage, startingBalance: challenge.account_size_usd,
+      balance: acc.balance, equity: equity?.toString() ?? null,
+      dayBasis: day ? day.basis : null,
+      trailing: trailing ? { peakEquity: trailing.peak_equity } : null,
+      tradingDays, expiresAt: challenge.expires_at,
+    })
+    if (evaluation.status === 'deferred') return null  /* never settle with stale marks */
+
+    if (evaluation.status === 'fail') {
+      const breach = evaluation.violations.find(v => v.rule !== 'time_limit')
+      if (breach) return await this.#failChallengeTx(c, acc, challenge, evaluation, 'failed')
+      return await this.#failChallengeTx(c, acc, challenge, evaluation, 'expired')
+    }
+    if (evaluation.status === 'pass') {
+      const phases = rules.phases ?? 0
+      if (phases >= 2 && challenge.stage === 1) {
+        /* stage-1 row terminates 'passed' (schema state of record);
+           the stage transition itself is recorded in challenge_events */
+        await this.#settleChallengeTx(c, acc, challenge, 'passed', evaluation)
+        await ChallengeService.event(c, challenge.id, 'stage_passed',
+          { stage: 1, metrics: evaluation.metrics })
+        /* stage 2 inherits the frozen rules snapshot; no new purchase */
+        const stage2 = (await c.query(
+          `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd, stage, rules_snapshot)
+           VALUES ($1,$2,'created',$3,2,$4) RETURNING *`,
+          [challenge.user_id, challenge.challenge_plan_id, challenge.account_size_usd,
+            JSON.stringify(rules)])).rows[0]
+        await this.challenges.startTx(c, stage2)
+        return 'stage_passed'
+      }
+      await this.#settleChallengeTx(c, acc, challenge, 'passed', evaluation)
+      await ChallengeService.event(c, challenge.id, 'passed', { stage: challenge.stage, metrics: evaluation.metrics })
+      return 'passed'
+    }
+    return null
+  }
+
+  /** close positions + cancel pending + terminal status (fail / expire / pass) */
+  async #settleChallengeTx(c, acc, challenge, status, evaluation) {
+    for (const p of (await c.query(
+      "SELECT * FROM trading_positions WHERE account_id=$1 AND status='open' FOR UPDATE", [acc.id])).rows) {
+      const m = freshMark(this.md, p.market)
+      if (!m || !this.md.tradeable(p.market).ok) continue  /* never force settlement without a mark */
+      await this.#closeTx(c, p, m.mark, 'challenge_settlement')
+    }
+    const cancelled = (await c.query(
+      "UPDATE trading_orders SET status='cancelled', reject_reason=$2, updated_at=now() WHERE account_id=$1 AND status='pending' RETURNING id",
+      [acc.id, `challenge_${status === 'passed' ? 'passed' : status}`])).rows
+    await c.query(
+      `UPDATE openfund_challenges SET status=$2, completed_at=now() WHERE id=$1`,
+      [challenge.id, status])
+    await c.query("UPDATE demo_accounts SET status='closed', updated_at=now() WHERE id=$1", [acc.id])
+    await c.query(`INSERT INTO trading_events(account_id,kind,detail) VALUES ($1,'challenge_settled',$2)`,
+      [acc.id, JSON.stringify({ status, cancelled: cancelled.map(o => o.id), evaluation: { metrics: evaluation.metrics, violations: evaluation.violations } })])
+  }
+
+  async #failChallengeTx(c, acc, challenge, evaluation, status) {
+    await this.#settleChallengeTx(c, acc, challenge, status, evaluation)
+    await ChallengeService.event(c, challenge.id, status === 'failed' ? 'violation' : 'expired', {
+      stage: challenge.stage,
+      violations: evaluation.violations,
+      metrics: evaluation.metrics,
+    })
+    return status
+  }
+
+  /** standalone challenge enforcement entry (engine loop / pre-submit) */
+  async enforceChallengeRisk(accountId) {
+    return withAccountLock(accountId, async () => {
+      const c = await this.pool.connect()
+      try {
+        await c.query('BEGIN')
+        const acc = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [accountId])).rows[0]
+        const transition = await this.#challengeRiskTx(c, acc)
+        await c.query('COMMIT')
+        if (transition) this.emit(accountId)
+        return transition
+      } catch (e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
+    })
+  }
+
+  /** free_demo account (default) or an owned challenge account by id */
+  async getAccount(userId, accountId = null) {
+    if (accountId) {
+      const { rows } = await this.pool.query(
+        `SELECT a.* FROM demo_accounts a
+           JOIN openfund_challenges c ON c.demo_account_id = a.id
+          WHERE a.id = $1 AND c.user_id = $2 AND a.account_type = 'challenge'`,
+        [accountId, userId])
+      return rows[0] || null
+    }
     const { rows } = await this.pool.query(
       'SELECT * FROM demo_accounts WHERE user_id=$1 AND account_type=$2', [userId, 'free_demo'])
+    return rows[0] || null
+  }
+
+  /** the openfund_challenges row bound to a challenge account (with plan) */
+  async #challengeOfAccount(client, accountId) {
+    const { rows } = await client.query(
+      `SELECT c.*, p.configuration AS plan_configuration
+         FROM openfund_challenges c JOIN challenge_plans p ON p.id = c.challenge_plan_id
+        WHERE c.demo_account_id = $1`, [accountId])
     return rows[0] || null
   }
 
@@ -167,19 +301,60 @@ export class Engine {
    * STATE (account + positions + orders) — server authoritative
    * ======================================================= */
 
-  async state(userId) {
+  async state(userId, accountId = null) {
     const c = await this.pool.connect()
     const as_of = Date.now()
     try {
       await c.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY')
-      const account = (await c.query("SELECT * FROM demo_accounts WHERE user_id=$1 AND account_type='free_demo'", [userId])).rows[0]
+      const account = accountId
+        ? (await c.query(
+            `SELECT a.* FROM demo_accounts a
+               JOIN openfund_challenges ch ON ch.demo_account_id = a.id
+              WHERE a.id = $1 AND ch.user_id = $2`, [accountId, userId])).rows[0]
+        : (await c.query("SELECT * FROM demo_accounts WHERE user_id=$1 AND account_type='free_demo'", [userId])).rows[0]
       if (!account) { await c.query('COMMIT'); return { account: null, positions: [], orders: [], history: [] } }
+      const challenge = account.account_type === 'challenge' ? await this.#challengeOfAccount(c, account.id) : null
       const positions = (await c.query("SELECT * FROM trading_positions WHERE account_id=$1 AND status='open' ORDER BY opened_at DESC", [account.id])).rows
       const orders = (await c.query("SELECT * FROM trading_orders WHERE account_id=$1 AND status='pending' ORDER BY created_at DESC", [account.id])).rows
       const history = (await c.query("SELECT * FROM trading_positions WHERE account_id=$1 AND status IN ('closed','liquidated') ORDER BY closed_at DESC LIMIT 100", [account.id])).rows
       await c.query('COMMIT')
-      const view = this.#accountView(account, positions)
-      view.risk = await this.#sampleRisk(account.id, view.equity, c)
+      const view = this.#accountView(account, positions, challenge)
+      if (challenge) {
+        /* read-only risk view from the challenge evaluation tables
+           (sampling happens on the engine's write path / loop) */
+        const day = (await this.pool.query(
+          'SELECT * FROM challenge_equity_days WHERE challenge_id=$1 ORDER BY day DESC LIMIT 1', [challenge.id])).rows[0]
+        const trailing = (await this.pool.query(
+          'SELECT * FROM challenge_trailing WHERE challenge_id=$1', [challenge.id])).rows[0]
+        const rules = challenge.rules_snapshot ?? normalizeRules(challenge.plan_configuration ?? {})
+        const tradingDays = await countTradingDays(this.pool, account.id)
+        const evaluation = evaluateRules({
+          rules, stage: challenge.stage, startingBalance: challenge.account_size_usd,
+          balance: account.balance, equity: view.equity,
+          dayBasis: day ? day.basis : null,
+          trailing: trailing ? { peakEquity: trailing.peak_equity } : null,
+          tradingDays, expiresAt: challenge.expires_at,
+        })
+        view.risk = {
+          basis: 'challenge_equity', timezone: 'UTC+3 (fixed)',
+          challenge_id: challenge.id, challenge_status: challenge.status, stage: challenge.stage,
+          day: day?.day ?? null, day_basis: day ? D(day.basis).toFixed(2) : null,
+          day_start_equity: day ? D(day.day_start_equity).toFixed(2) : null,
+          drawdown: Decimal.max(0, D(day ? day.peak_equity : view.equity ?? 0).minus(view.equity ?? 0)).toFixed(2),
+          daily_drawdown: day ? Decimal.max(0, D(day.basis).minus(view.equity ?? day.last_equity)).toFixed(2) : null,
+          maximum_drawdown: Decimal.max(0, D(challenge.account_size_usd).minus(view.equity ?? challenge.account_size_usd)).toFixed(2),
+          daily_limit: rules.dailyLossPct != null ? D(challenge.account_size_usd).times(rules.dailyLossPct).div(100).toFixed(2) : null,
+          maximum_limit: rules.maxTotalLossPct != null ? D(challenge.account_size_usd).times(rules.maxTotalLossPct).div(100).toFixed(2) : null,
+          drawdown_mode: rules.drawdownMode, trailing_peak: trailing ? D(trailing.peak_equity).toFixed(2) : null,
+          trading_days: tradingDays, min_trading_days: rules.minTradingDays ?? 0,
+          realized_profit: view.realized_pnl,
+          target: evaluation.metrics?.target ?? null,
+          evaluation: { status: evaluation.status, violations: evaluation.violations },
+          rules_version: rules.rulesVersion,
+        }
+      } else {
+        view.risk = await this.#sampleRisk(account.id, view.equity, c)
+      }
       return { as_of, account: view, positions: positions.map(p => this.#positionView(p)), orders, history: history.map(p => this.#positionView(p)) }
     } catch (e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
   }
@@ -207,13 +382,19 @@ export class Engine {
   }
 
   /** equity = balance + unrealized (all open positions) */
-  #accountView(account, openPositions) {
+  #accountView(account, openPositions, challenge = null) {
+    const starting = challenge ? D(challenge.account_size_usd || 0) : D(SIM.INITIAL_BALANCE)
     return {
       id: account.id, type: account.account_type, currency: account.currency, status: account.status,
-      starting_balance: SIM.INITIAL_BALANCE, disabled_at: account.disabled_at, disable_reason: account.disable_reason,
-      risk_policy: { version: 1, position_maintenance_pct: SIM.MAINT_PCT, trial_stop_equity_usd: '0', challenge_rules: false },
+      starting_balance: starting.toFixed(2), disabled_at: account.disabled_at, disable_reason: account.disable_reason,
+      risk_policy: challenge
+        ? { version: 2, position_maintenance_pct: SIM.MAINT_PCT, challenge_rules: true,
+            challenge_id: challenge.id, challenge_status: challenge.status, stage: challenge.stage,
+            plan_leverage: (challenge.rules_snapshot ?? {}).referenceLeverageX ?? 100,
+            day_boundary: 'UTC+3' }
+        : { version: 1, position_maintenance_pct: SIM.MAINT_PCT, trial_stop_equity_usd: '0', challenge_rules: false },
       ...accountMetrics(account, openPositions, this.md),
-      realized_pnl: D(account.balance).minus(SIM.INITIAL_BALANCE).toFixed(2),
+      realized_pnl: D(account.balance).minus(starting).toFixed(2),
       close_settlement_pnl: D(account.realized_pnl).toFixed(2),
     }
   }
@@ -249,10 +430,11 @@ export class Engine {
    * ORDER SUBMISSION (idempotent, validated, transactional)
    * ======================================================= */
 
-  async previewOrder(userId, req) {
-    const st = await this.state(userId), a = st.account
+  async previewOrder(userId, req, accountId = null) {
+    const st = await this.state(userId, accountId), a = st.account
     const fail = reason => { throw Object.assign(new Error(reason),{status:400}) }
     if (!a) fail('account_not_found')
+    if (a.type === 'challenge' && a.risk_policy?.challenge_status !== 'started') fail('challenge_not_active')
     if (a.status !== 'active') fail('account_permanently_disabled')
     const t = this.md.tradeable(req.market)
     if (!t.ok) fail(t.reason)
@@ -260,7 +442,10 @@ export class Engine {
     try { margin=D(req.margin); leverage=D(req.leverage); target=req.target_price == null ? null : D(req.target_price); sl=req.sl == null ? null : D(req.sl); tp=req.tp == null ? null : D(req.tp) } catch { fail('invalid_numeric_input') }
     if (!['long','short'].includes(req.side) || !['market','limit','stop'].includes(req.order_type || 'market')) fail('invalid_order')
     if (!margin.isFinite() || margin.lt(SIM.MIN_MARGIN) || margin.gt('100000000')) fail('invalid_order_size')
-    if (!leverage.isInteger() || leverage.lt(1) || leverage.gt(t.meta.maxLeverage || 100)) fail('leverage_exceeded')
+    const maxLev = a.type === 'challenge'
+      ? Math.min(Number(t.meta.maxLeverage || 100), Number(a.risk_policy?.plan_leverage ?? 100))
+      : Number(t.meta.maxLeverage || 100)
+    if (!leverage.isInteger() || leverage.lt(1) || leverage.gt(maxLev)) fail('leverage_exceeded')
     const pending = req.order_type && req.order_type !== 'market'
     if (pending && (!target?.isFinite() || target.lte(0))) fail('target_price_required')
     const entry = pending ? target : withSpread(t.mark,req.side,'open',t.meta,req.market)
@@ -277,8 +462,9 @@ export class Engine {
     return {estimate:true,as_of:Date.now(),currency:a.currency,entry_price:entry.toString(),quantity:quantity.toString(),notional:notional.toString(),required_margin:margin.toString(),open_fee:fee.toString(),estimated_close_fee:fee.toString(),available_margin:a.free_margin,liquidation_price:metrics.liquidation,sl:sl?.toString() ?? null,tp:tp?.toString() ?? null,model:'Openfund linear USD simulation v1; no funding or market impact'}
   }
 
-  async submitOrder(userId, req, idempotencyKey) {
+  async submitOrder(userId, req, idempotencyKey, accountId = null) {
     await this.enforceTrialRisk(userId);
+    if (accountId) await this.enforceChallengeRisk(accountId).catch(e => { if (e.status) throw e })
     if (
       idempotencyKey &&
       (typeof idempotencyKey !== "string" || idempotencyKey.length > 160)
@@ -303,9 +489,18 @@ export class Engine {
         );
       }
     }
-    const account = await this.getAccount(userId);
+    const account = await this.getAccount(userId, accountId);
     if (!account)
       throw Object.assign(new Error("account_not_found"), { status: 404 });
+    /* challenge status is reported first — a finished evaluation reads
+       clearer than the generic account-status error */
+    const challenge = account.account_type === 'challenge'
+      ? await this.#challengeOfAccount(this.pool, account.id)
+      : null
+    if (challenge && challenge.status !== 'started')
+      throw Object.assign(new Error(
+        challenge.status === 'created' ? 'challenge_not_started'
+        : `challenge_${challenge.status}`), { status: 409 })
     if (account.status !== "active")
       throw Object.assign(
         new Error(
@@ -315,6 +510,7 @@ export class Engine {
         ),
         { status: 403 },
       );
+    const rules = challenge ? (challenge.rules_snapshot ?? normalizeRules(challenge.plan_configuration ?? {})) : null
 
     if (!idempotencyKey) throw Object.assign(new Error('idempotency_key_required'),{status:400})
 
@@ -400,7 +596,8 @@ export class Engine {
       return reject("instrument_minimum_size");
     if (
       order.leverage < 1 ||
-      order.leverage > Number(t.meta.maxLeverage || 100)
+      order.leverage > Number(t.meta.maxLeverage || 100) ||
+      (rules && rules.referenceLeverageX && order.leverage > Number(rules.referenceLeverageX))
     )
       return reject("leverage_exceeded");
     if (order.order_type !== "market" && !order.target_price)
@@ -468,6 +665,16 @@ export class Engine {
             status: 403,
           });
         }
+        /* challenge evaluation runs BEFORE the order is accepted: a
+           breached/passed/expired challenge stops trading immediately */
+        if (acc.account_type === 'challenge') {
+          const transition = await this.#challengeRiskTx(c, acc)
+          if (transition) {
+            await c.query("COMMIT")
+            this.emit(acc.id)
+            throw Object.assign(new Error(`challenge_${transition}`), { status: 409 })
+          }
+        }
         const open = (
           await c.query(
             "SELECT * FROM trading_positions WHERE account_id=$1 AND status='open'",
@@ -534,6 +741,9 @@ export class Engine {
             order.sl_price?.toFixed(10) || null,
             order.tp_price?.toFixed(10) || null,
           );
+          /* post-fill evaluation: the opening fee and immediate PnL can
+             breach daily/total limits or complete the profit target */
+          if (acc.account_type === 'challenge') await this.#challengeRiskTx(c, acc)
           await c.query("COMMIT");
         } else {
           await c.query("COMMIT");
@@ -626,16 +836,19 @@ export class Engine {
     if (!f?.isFinite() || f.lte(0) || f.gt(1)) throw Object.assign(new Error('invalid_fraction'), { status: 400 })
     if (f.lt(1) && !idempotencyKey) throw Object.assign(new Error('idempotency_key_required'), { status: 400 })
     if (idempotencyKey && (typeof idempotencyKey !== 'string' || idempotencyKey.length > 160)) throw Object.assign(new Error('invalid_idempotency_key'), { status: 400 })
-    const account = await this.getAccount(userId)
-    if (!account) throw Object.assign(new Error('account_not_found'), { status: 404 })
-    return withAccountLock(account.id, async () => {
+    /* the account is derived from the owned position itself, so closing
+       works identically on free_demo and challenge accounts */
+    const owned = (await this.pool.query(
+      'SELECT account_id FROM trading_positions WHERE id=$1 AND user_id=$2', [positionId, userId])).rows[0]
+    if (!owned) throw Object.assign(new Error('not_found'), { status: 404 })
+    return withAccountLock(owned.account_id, async () => {
       const c = await this.pool.connect()
       try {
         await c.query('BEGIN')
-        const locked = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [account.id])).rows[0]
+        const locked = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [owned.account_id])).rows[0]
         if (locked.status === 'permanently_disabled') throw Object.assign(new Error('account_permanently_disabled'),{status:403})
         if (idempotencyKey) {
-          const previous = (await c.query('SELECT * FROM position_close_requests WHERE account_id=$1 AND request_key=$2', [account.id, idempotencyKey])).rows[0]
+          const previous = (await c.query('SELECT * FROM position_close_requests WHERE account_id=$1 AND request_key=$2', [locked.id, idempotencyKey])).rows[0]
           if (previous) {
             if (previous.position_id !== positionId || !D(previous.fraction).eq(f)) throw Object.assign(new Error('idempotency_conflict'), { status: 409 })
             await c.query('COMMIT'); return { ...previous.result, duplicate: true }
@@ -661,17 +874,23 @@ export class Engine {
           pos = rows[0]
         }
         const out = await this.#closeTx(c, pos, t.mark, f.lt(1) ? 'partial' : 'manual')
-        await this.#trialRiskTx(c,(await c.query('SELECT * FROM demo_accounts WHERE id=$1',[account.id])).rows[0])
-        if (idempotencyKey) await c.query('INSERT INTO position_close_requests (account_id,request_key,position_id,fraction,result) VALUES ($1,$2,$3,$4,$5)', [account.id,idempotencyKey,positionId,f.toString(),JSON.stringify(out)])
+        await this.#trialRiskTx(c,(await c.query('SELECT * FROM demo_accounts WHERE id=$1',[locked.id])).rows[0])
+        /* post-close evaluation: realized profit can complete a target,
+           and the realized loss can breach a limit */
+        if (locked.account_type === 'challenge') await this.#challengeRiskTx(c, (await c.query('SELECT * FROM demo_accounts WHERE id=$1',[locked.id])).rows[0])
+        if (idempotencyKey) await c.query('INSERT INTO position_close_requests (account_id,request_key,position_id,fraction,result) VALUES ($1,$2,$3,$4,$5)', [locked.id,idempotencyKey,positionId,f.toString(),JSON.stringify(out)])
         await c.query('COMMIT')
-        this.emit(account.id)
+        this.emit(locked.id)
         return out
       } catch (e) { await c.query('ROLLBACK').catch(() => {}); throw e } finally { c.release() }
     })
   }
 
   async updateProtection(userId, positionId, { sl, tp }) {
-    return this.#mutateOwned(userId, async (c, account) => {
+    const owned = (await this.pool.query(
+      'SELECT account_id FROM trading_positions WHERE id=$1 AND user_id=$2', [positionId, userId])).rows[0]
+    if (!owned) throw Object.assign(new Error('not_found'), { status: 404 })
+    return this.#mutateOwned(userId, owned.account_id, async (c, account) => {
       const pos = (await c.query('SELECT * FROM trading_positions WHERE id=$1 AND user_id=$2 FOR UPDATE', [positionId, userId])).rows[0]
       if (!pos) throw Object.assign(new Error('not_found'), { status: 404 })
       if (pos.status !== 'open') throw Object.assign(new Error('position_not_open'), { status: 409 })
@@ -690,7 +909,10 @@ export class Engine {
   }
 
   async cancelOrder(userId, orderId) {
-    return this.#mutateOwned(userId, async (c, account) => {
+    const owned = (await this.pool.query(
+      'SELECT account_id FROM trading_orders WHERE id=$1 AND user_id=$2', [orderId, userId])).rows[0]
+    if (!owned) throw Object.assign(new Error('not_found'), { status: 404 })
+    return this.#mutateOwned(userId, owned.account_id, async (c, account) => {
       const order = (await c.query('SELECT * FROM trading_orders WHERE id=$1 AND user_id=$2 FOR UPDATE', [orderId,userId])).rows[0]
       if (!order) throw Object.assign(new Error('not_found'), { status: 404 })
       if (order.status === 'cancelled') return { ok: true, duplicate: true, order }
@@ -701,17 +923,15 @@ export class Engine {
     })
   }
 
-  async #mutateOwned(userId, fn) {
-    const account = await this.getAccount(userId)
-    if (!account) throw Object.assign(new Error('account_not_found'), { status: 404 })
-    return withAccountLock(account.id, async () => {
+  async #mutateOwned(userId, accountId, fn) {
+    return withAccountLock(accountId, async () => {
       const c = await this.pool.connect()
       try {
         await c.query('BEGIN')
-        const locked = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE',[account.id])).rows[0]
+        const locked = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE',[accountId])).rows[0]
         if (locked.status === 'permanently_disabled') throw Object.assign(new Error('account_permanently_disabled'),{status:403})
-        const out = await fn(c,account)
-        await c.query('COMMIT'); this.emit(account.id); return out
+        const out = await fn(c,locked)
+        await c.query('COMMIT'); this.emit(accountId); return out
       } catch(e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
     })
   }
@@ -732,6 +952,19 @@ export class Engine {
       ).rows) {
         await this.enforceTrialRisk(user_id);
         await this.state(user_id);
+      }
+      /* challenge evaluation: accounts with live positions (equity moves
+         with the marks) and challenges that have reached their time limit */
+      for (const { id } of (
+        await this.pool.query(
+          `SELECT a.id FROM demo_accounts a
+             JOIN openfund_challenges c ON c.demo_account_id = a.id
+            WHERE a.account_type='challenge' AND a.status='active' AND c.status='started'
+              AND (EXISTS(SELECT 1 FROM trading_positions p WHERE p.account_id=a.id AND p.status='open')
+                   OR c.expires_at <= now())`,
+        )
+      ).rows) {
+        await this.enforceChallengeRisk(id).catch(console.error);
       }
       const pending = await this.pool.query(
         `SELECT o.*, a.balance, a.used_margin FROM trading_orders o
@@ -820,6 +1053,7 @@ export class Engine {
       if (!live.ok) { await c.query('ROLLBACK'); return }
       await c.query("INSERT INTO trading_events(account_id,kind,detail) VALUES ($1,'order_triggered',$2)",[acc.id,JSON.stringify({order:cur.id,mark:live.mark})])
       await this.#fill(c, acc, cur, cur.order_type === 'stop' ? live.mark : D(cur.target_price).toString(), cur.sl_price, cur.tp_price, cur.order_type === 'stop')
+      if (acc.account_type === 'challenge') await this.#challengeRiskTx(c, (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [acc.id])).rows[0])
       await c.query('COMMIT')
       this.emit(acc.id)
     } catch (e) { await c.query('ROLLBACK').catch(() => {}); throw e } finally { c.release() }
@@ -838,6 +1072,8 @@ export class Engine {
       if (!currentReason) { await c.query('ROLLBACK'); return }
       await this.#closeTx(c, cur, m.mark, currentReason)
       await this.#trialRiskTx(c,(await c.query('SELECT * FROM demo_accounts WHERE id=$1',[p.account_id])).rows[0])
+      if ((await c.query('SELECT account_type FROM demo_accounts WHERE id=$1',[p.account_id])).rows[0].account_type === 'challenge')
+        await this.#challengeRiskTx(c,(await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE',[p.account_id])).rows[0])
       await c.query('COMMIT')
       this.emit(p.account_id)
     } catch (e) { await c.query('ROLLBACK').catch(() => {}); throw e } finally { c.release() }

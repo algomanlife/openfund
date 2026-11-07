@@ -21,10 +21,11 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     # The full candidate build (three lockfiles, unit suites, dual frontend
-    # builds, double migration, boot + the whole browser matrix) has outgrown
-    # 45 minutes: the observed run was terminated mid-layout-acceptance at
-    # 45m23s with no failing assertion. 75 minutes keeps a hard ceiling.
-    timeout-minutes: 75
+    # builds, double migration, boot + the whole browser matrix — now also
+    # the challenge-lifecycle journey) completed its gates and packaging at
+    # ~75m on observed runs and was canceled during the final packaging
+    # steps. 110 minutes keeps a hard ceiling with headroom.
+    timeout-minutes: 110
     services:
       postgres:
         image: postgres:17-alpine

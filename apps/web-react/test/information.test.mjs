@@ -52,7 +52,9 @@ test('every rule section has matching bilingual content and unique anchors', () 
   }
   ruleSections.forEach(check)
   for (const id of ['configurations', 'stages', 'targets', 'daily-loss', 'maximum-loss', 'violations', 'identity', 'fees', 'free-trial', 'practices']) assert.equal(ruleSections.find(s => s.id === id).status, 'draft')
-  for (const id of ['how-it-works', 'funded', 'payouts']) assert.equal(ruleSections.find(s => s.id === id).status, 'planned')
+  /* v0.3.1: the evaluation path (purchase → start → live rules) is operational */
+  assert.equal(ruleSections.find(s => s.id === 'how-it-works').status, 'current')
+  for (const id of ['funded', 'payouts']) assert.equal(ruleSections.find(s => s.id === id).status, 'planned')
 })
 test('dashboard renders bilingual sample labels, accessible charts and exact history', () => {
   for (const locale of ['en', 'fa']) {

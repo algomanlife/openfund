@@ -11,6 +11,8 @@
  *  - One wallet address (normalized lowercase) = exactly one Openfund user.
  */
 import crypto from 'node:crypto'
+import fs from 'node:fs'
+import path from 'node:path'
 import { releaseDiagnostics } from './release.js'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
@@ -24,6 +26,7 @@ import { Portfolio } from './portfolio.js'
 import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
 import { purchaseRoutes, confirmPurchase } from './purchases.js'
+import { adminRoutes } from './admin.js'
 
 const cfg = {
   port: Number(process.env.PORT || 8080),
@@ -44,6 +47,7 @@ const engine = new Engine(pool, marketData)
 const portfolio = new Portfolio(pool, marketData)
 const asyncRoute = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
 const app = express()
+app.disable('x-powered-by')
 app.set('trust proxy', 1)
 app.use((req,res,next) => {
   const origin = req.headers.origin
@@ -51,6 +55,62 @@ app.use((req,res,next) => {
     const sameOrigin = origin === `${req.protocol}://${req.get('host')}`
     if (!sameOrigin && !cfg.corsOrigins.includes(origin)) return res.status(403).json({ error:'invalid_origin' })
   }
+  next()
+})
+
+/* ---------- security headers ----------
+   CSP allows same-origin scripts/workers/frames (the shared terminal
+   runs in a same-origin iframe; its boot logic is the external
+   legacy/react-boot.js and its dynamic data a non-executable JSON
+   island), the hashed theme pre-paint script in index.html, inline
+   styles (Vite + component styles), CMS-hosted images (Directus) and
+   wss for the live market stream. CSP_EXTRA_CONNECT (comma-separated
+   origins) widens connect-src for non-HTTPS local CMS deployments.
+   Nothing cross-origin may script or frame us.
+
+   APPLICATION DOCUMENTS ONLY (the /react/ HTML shell, which the srcDoc
+   terminal inherits) additionally allow:
+    - 'unsafe-eval' in script-src: the vendored Vela/Pine engine
+      (same-origin trusted bundle) compiles indicator scripts with
+      `new Function` — a computation path, not an injection surface;
+    - sha256 hashes of the LANDING legacy scripts: the landing injects
+      them inline (fetch → textContent) so their execution is
+      synchronous with the mount check — a route change can never let
+      them boot against a removed DOM (a <script src> element has an
+      unavoidable fetch→execute gap). The hashes are computed at server
+      startup from the exact files that ship in react/legacy/, so the
+      policy allows precisely those scripts and nothing else.
+   API responses keep the fully strict policy. */
+const CSP_THEME_BOOT_HASH = "'sha256-ipa/NWICPqnGA4ZvVmWe4T4YpGCx2Bdjaquw+QILedc='" /* apps/web-react/index.html pre-paint script */
+const legacyScriptHashes = () => {
+  const dir = fileURLToPath(new URL('../../react/legacy', import.meta.url))
+  const names = ['locale.js', 'app.js', 'features.js', 'market.js', 'motion.js']
+  const hashes = []
+  for (const name of names) {
+    try {
+      /* hash the EXACT text the landing injects: file code + the
+         deterministic relative sourceURL suffix (Landing.tsx must keep
+         this suffix byte-identical) */
+      const code = fs.readFileSync(path.join(dir, name))
+      const injected = Buffer.concat([code, Buffer.from('\n//# sourceURL=legacy/' + name)])
+      hashes.push("'sha256-" + crypto.createHash('sha256').update(injected).digest('base64') + "'")
+    } catch { /* file absent from this build — the landing degrades to its error path */ }
+  }
+  return hashes.join(' ')
+}
+const CSP_LEGACY_HASHES = legacyScriptHashes()
+const cspExtraConnect = (process.env.CSP_EXTRA_CONNECT || '').split(',').map(v => v.trim()).filter(Boolean).join(' ')
+const buildCsp = (allowEval) =>
+  "default-src 'self'; script-src 'self' " + CSP_THEME_BOOT_HASH + (allowEval ? " 'unsafe-eval' " + CSP_LEGACY_HASHES : '') + "; style-src 'self' 'unsafe-inline'; " +
+  "img-src 'self' data: blob: https:; connect-src 'self' https: wss:" + (cspExtraConnect ? ' ' + cspExtraConnect : '') + "; " +
+  "worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'self'; " +
+  "object-src 'none'; base-uri 'self'; form-action 'self'"
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN')
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+  res.setHeader('Content-Security-Policy', buildCsp(false))
+  if (cfg.prod) res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
   next()
 })
 app.use('/products', express.json({ limit: '2mb' }))
@@ -71,16 +131,19 @@ app.use((req, res, next) => {
   next()
 })
 
-/* ---------- tiny in-memory rate limiter (per ip+route) ---------- */
+/* ---------- tiny in-memory rate limiter (per ip+route) ----------
+   Test mode (SIM_TEST_MODE + test database, never production) widens
+   the windows so sequential suite runs don't trip real-user limits. */
 const hits = new Map()
 setInterval(() => hits.clear(), 60_000).unref()
+const limitScale = testMode ? 50 : 1
 const limit =
   (max, window = 60_000) =>
   (req, res, next) => {
     const key = `${req.ip}:${req.path}`;
     const n = (hits.get(key) || 0) + 1;
     hits.set(key, n);
-    if (n > max) return res.status(429).json({ error: "rate_limited" });
+    if (n > max * limitScale) return res.status(429).json({ error: "rate_limited" });
     next();
   };
 
@@ -323,7 +386,8 @@ app.post("/auth/verify", limit(60), async (req, res) => {
 /* 3 — me (+ challenges, ownership enforced by session join) */
 app.get('/auth/me', requireAuth, asyncRoute(async (req, res) => {
   const { rows } = await pool.query(
-    `SELECT c.id, c.status, c.created_at, c.started_at, c.completed_at,
+    `SELECT c.id, c.status, c.stage, c.account_size_usd, c.demo_account_id, c.purchase_order_id,
+            c.created_at, c.started_at, c.completed_at, c.expires_at, c.rules_snapshot,
             p.slug AS plan_slug, p.name AS plan_name, p.configuration AS plan_configuration
        FROM openfund_challenges c JOIN challenge_plans p ON p.id = c.challenge_plan_id
       WHERE c.user_id = $1 ORDER BY c.created_at DESC`, [req.user.user_id])
@@ -390,7 +454,22 @@ const tradingAuth = async (req, res, next) => {
     if(req.path.startsWith('/trading')) {
       const accountRef=req.query.account || req.body?.accountId || req.body?.account_id;
       if(req.body?.product && req.body.product!=='prop')return res.status(403).json({error:'wrong_product_context'});
-      if(accountRef && (await engine.getAccount(user.user_id))?.id!==accountRef)return res.status(404).json({error:'account_not_found'});
+      if(accountRef && (await engine.getAccount(user.user_id))?.id!==accountRef){
+        /* account references resolve in two shapes: the demo trading
+           account id, or the openfund_challenges id the UI carries in
+           its URL (journal/evaluation scope) — both must be owned */
+        const ownedAccount = await pool.query(
+          `SELECT 1 FROM demo_accounts a JOIN openfund_challenges c ON c.demo_account_id=a.id
+            WHERE a.id=$1 AND c.user_id=$2 AND a.account_type='challenge'`, [accountRef, user.user_id])
+        if (ownedAccount.rowCount) { req.accountId = accountRef }
+        else {
+          const challenge = (await pool.query(
+            `SELECT demo_account_id FROM openfund_challenges WHERE id=$1 AND user_id=$2`,
+            [accountRef, user.user_id])).rows[0]
+          if (challenge?.demo_account_id) req.accountId = challenge.demo_account_id
+          else return res.status(404).json({error:'account_not_found'})
+        }
+      }
     }
     req.user = user
     next()
@@ -400,19 +479,49 @@ const tradingAuth = async (req, res, next) => {
 app.get('/accounts', tradingAuth, asyncRoute(async (req,res) => {
   res.json(await accountDirectory(pool,engine,req.user))
 }))
+
+/* ============== CHALLENGES (evaluation lifecycle, session-scoped) ============== */
+
+app.get('/challenges', tradingAuth, asyncRoute(async (req, res) => {
+  const list = await engine.challenges.listForUser(req.user.user_id)
+  const views = []
+  for (const c of list) {
+    const state = c.demo_account_id ? await engine.state(req.user.user_id, c.demo_account_id) : null
+    views.push(await engine.challenges.view(c, state))
+  }
+  res.json({ challenges: views })
+}))
+
+app.get('/challenges/:id', tradingAuth, asyncRoute(async (req, res) => {
+  const c = await engine.challenges.byId(req.params.id, req.user.user_id)
+  if (!c) return res.status(404).json({ error: 'challenge_not_found' })
+  const state = c.demo_account_id ? await engine.state(req.user.user_id, c.demo_account_id) : null
+  res.json(await engine.challenges.view(c, state))
+}))
+
+/* created → started: provisions the trading account on first start,
+   freezes the rules snapshot, sets the time limit (if any). Idempotent. */
+app.post('/challenges/:id/start', tradingAuth, limit(30), asyncRoute(async (req, res) => {
+  const started = await engine.challenges.start(req.user.user_id, req.params.id)
+  await audit('challenge_started', req.user.user_id, req, { challengeId: req.params.id, stage: started.stage })
+  res.json({ ok: true, challenge: {
+    id: started.id, status: started.status, stage: started.stage,
+    accountId: started.demo_account_id, startedAt: started.started_at, expiresAt: started.expires_at } })
+}))
+
 app.post('/trading/preview', tradingAuth, asyncRoute(async (req,res) => {
-  res.json(await engine.previewOrder(req.user.user_id,req.body || {}))
+  res.json(await engine.previewOrder(req.user.user_id, req.body || {}, req.accountId || null))
 }))
 
 app.get('/trading/state', tradingAuth, asyncRoute(async (req, res) => {
-  const state = await engine.state(req.user.user_id)
+  const state = await engine.state(req.user.user_id, req.accountId || null)
   res.json(state)
 }))
 
 app.post('/trading/order', tradingAuth, limit(30), async (req, res) => {
   try {
     const key = req.headers['idempotency-key'] || null
-    const out = await engine.submitOrder(req.user.user_id, req.body || {}, key)
+    const out = await engine.submitOrder(req.user.user_id, req.body || {}, key, req.accountId || null)
     if (!out.ok) return res.status(400).json({ error: out.reason, order: out.order })
     res.json(out)
   } catch (e) {
@@ -471,7 +580,7 @@ app.get("/trading/stream", tradingAuth, async (req, res) => {
         res.end();
         return;
       }
-      const state = await engine.state(req.user.user_id);
+      const state = await engine.state(req.user.user_id, req.accountId || null);
       const snapshot = JSON.stringify(state);
       if (snapshot !== last) {
         /* only push actual changes */
@@ -497,9 +606,17 @@ app.get("/trading/stream", tradingAuth, async (req, res) => {
 });
 
 /* test-only price injection seam — enabled ONLY with SIM_TEST_MODE=1
-   (never active in production): lets engine tests drive deterministic marks */
+   (never active in production): lets engine tests drive deterministic marks.
+   INTERNAL_API_TOKEN (optional) adds defense-in-depth auth to the seam
+   even in test deployments (constant-time compare). */
+const internalAuth = (req, res, next) => {
+  const token = process.env.INTERNAL_API_TOKEN
+  if (token && !crypto.timingSafeEqual(Buffer.from(String(req.headers['x-internal-token'] || '')), Buffer.from(token)))
+    return res.status(401).json({ error: 'internal_unauthorized' })
+  next()
+}
 if (testMode) {
-  app.post('/internal/inject-price', (req, res) => {
+  app.post('/internal/inject-price', internalAuth, (req, res) => {
     const { symbol, price, metadata } = req.body || {}
     if (typeof symbol !== 'string' || price == null) return res.status(400).json({ error: 'invalid' })
     if (metadata) marketData.markets.set(symbol, { symbol, base: metadata.base, group: metadata.group, maxLeverage: metadata.maxLeverage, isOpen: true })
@@ -509,7 +626,7 @@ if (testMode) {
   /* test-only purchase confirmation seam — SIM_TEST_MODE=1 + test database,
      never active in production: lets browser/E2E tests drive the full
      purchase lifecycle without a real chain (same gate as inject-price) */
-  app.post('/internal/confirm-order', asyncRoute(async (req, res) => {
+  app.post('/internal/confirm-order', internalAuth, asyncRoute(async (req, res) => {
     const { orderId, txHash } = req.body || {}
     if (!orderId || !txHash) return res.status(400).json({ error: 'invalid' })
     const user = await userFromSession(req)
@@ -567,6 +684,7 @@ app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) 
 app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
 app.use(referralRoutes({ pool, requireAuth, audit }))
 app.use(purchaseRoutes({ pool, requireAuth, audit }))
+app.use('/admin', adminRoutes({ pool, audit }))
 
 /* Public release identity contains build metadata only, never runtime secrets. */
 app.get('/version', (req, res) => {
@@ -581,9 +699,15 @@ app.get('/trading/health', tradingAuth, async (req, res) => {
   res.json({ ok: true, account: st.account != null, markets: marketData.markets.size })
 })
 
-/* Same-origin static hosting for Render; hash routes need no server fallback. */
+/* Same-origin static hosting for Render; hash routes need no server fallback.
+   HTML documents and the Pine computation worker get the application CSP
+   (the engine compiles indicator scripts with `new Function`); every other
+   asset and all API responses keep the fully strict policy. */
 app.use('/react', express.static(fileURLToPath(new URL('../../react', import.meta.url)), {
-  setHeaders(res, file) { if (file.endsWith('.html') || file.endsWith('release-manifest.json')) res.set('Cache-Control','no-cache, must-revalidate'); }
+  setHeaders(res, file) {
+    if (file.endsWith('.html') || file.endsWith('release-manifest.json')) res.set('Cache-Control','no-cache, must-revalidate')
+    if (file.endsWith('.html') || file.endsWith('openfund-pine-worker.min.js')) res.setHeader('Content-Security-Policy', buildCsp(true))
+  }
 }))
 app.get('/', (req, res) => res.redirect('/react/'))
 
@@ -604,6 +728,14 @@ const server = app.listen(cfg.port, () =>
 /* market data (authoritative server-side marks) + trading engine loop */
 marketData.bootstrap().catch(e => console.error('[market-data] bootstrap failed', e.message))
 engine.start(1000)
+/* pending purchase orders past their expiry are swept to 'expired'
+   (verified late payments are still accepted inside the grace window —
+   see purchases.js confirmPurchase) */
+setInterval(() => {
+  pool.query(`UPDATE purchase_orders SET status='expired' WHERE status='pending' AND expires_at < now()`)
+    .then(r => { if (r.rowCount) console.log(`[purchases] ${r.rowCount} pending order(s) expired`) })
+    .catch(() => {})
+}, 60_000).unref()
 let shuttingDown=false
 const shutdown = () => { if(shuttingDown)return;shuttingDown=true;engine.stop();marketData.stop();server.close(()=>pool.end()) }
 process.on('SIGTERM', shutdown)

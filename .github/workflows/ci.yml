@@ -110,13 +110,19 @@ jobs:
         run: |
           # PURCHASE_PAYMENT_RECEIVER is a CI-only placeholder so the purchase
           # lifecycle is testable end-to-end; never a production address.
-          SIM_TEST_MODE=1 PURCHASE_PAYMENT_RECEIVER=0x000000000000000000000000000000000000c1a1 npm start &
+          # ADMIN_API_TOKEN (CI-only value) enables the admin suite.
+          # CSP_EXTRA_CONNECT: the test frontend fetches the local Directus
+          # origin (http), which the strict CSP connect-src must allow.
+          SIM_TEST_MODE=1 ADMIN_API_TOKEN=ci-admin-token-4f2a CSP_EXTRA_CONNECT=http://localhost:8055 PURCHASE_PAYMENT_RECEIVER=0x000000000000000000000000000000000000c1a1 npm start &
           for i in $(seq 1 30); do
             sleep 1
             if curl -fsS http://localhost:8080/health > /dev/null; then echo "health OK"; break; fi
           done
           curl -fsS http://localhost:8080/health > /dev/null || { echo "health check failed"; exit 1; }
       - name: Test suite (including permanent trial risk and five-category fixtures)
+        env:
+          TEST_BACKEND_URL: http://localhost:8080
+          ADMIN_API_TOKEN: ci-admin-token-4f2a
         run: npm run test:all
       - name: Install browser test tools
         working-directory: .

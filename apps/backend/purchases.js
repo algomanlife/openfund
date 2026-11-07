@@ -27,6 +27,7 @@ import { Router } from 'express'
 import { createClient, http } from 'viem'
 import { sepolia, arbitrum } from 'viem/chains'
 import { invoicePdf } from './invoice-pdf.js'
+import { ChallengeService, normalizeRules } from './evaluation.js'
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const txHashRe = /^0x[0-9a-f]{64}$/i
@@ -37,6 +38,13 @@ const cfg = () => ({
   chainId: Number(process.env.PURCHASE_PAYMENT_CHAIN || 11155111),
   token: (process.env.PURCHASE_PAYMENT_TOKEN || '').toLowerCase() || null,
   tokenDecimals: Number(process.env.PURCHASE_PAYMENT_DECIMALS ?? 18),
+  /* finality policy: minimum confirmations before a payment is accepted
+     (default 0 = single receipt, documented; reorg-depth configurable) */
+  minConfirmations: Number(process.env.PURCHASE_PAYMENT_MIN_CONFIRMATIONS ?? 0) || 0,
+  /* late-payment grace: a transaction mined within this many minutes
+     after order expiry still pays the order (money received is never
+     silently dropped; outside the window → manual reconciliation) */
+  lateGraceMinutes: Number(process.env.PURCHASE_LATE_GRACE_MINUTES ?? 60) || 0,
 })
 
 const fail = (status, error) => {
@@ -81,10 +89,18 @@ async function defaultVerifier(txHash, expect) {
   }
   const block = await client.getBlock({ blockNumber: receipt.blockNumber })
   if (Number(block.timestamp) * 1000 < expect.notBefore) throw fail(400, 'tx_too_old')
+  /* finality policy: wait for the configured confirmation depth so a
+     reorged transaction can never provision a challenge (retryable) */
+  if (expect.minConfirmations > 0) {
+    const head = await client.getBlockNumber()
+    if (head - receipt.blockNumber < BigInt(expect.minConfirmations))
+      throw Object.assign(new Error('tx_not_final'), { status: 409, retryable: true })
+  }
   return {
     txHash, chainId: expect.chainId, blockNumber: Number(receipt.blockNumber),
     fromAddress: tx.from.toLowerCase(), toAddress, amount, tokenAddress: expect.token,
     blockTimestamp: new Date(Number(block.timestamp) * 1000).toISOString(),
+    confirmations: expect.minConfirmations,
   }
 }
 
@@ -104,7 +120,16 @@ export async function confirmPurchase(pool, { orderId, userId, evidence, source 
       return { replayed: true, orderId, paymentId: payment?.id, invoiceId: invoice?.id, invoiceNumber: invoice?.number, challengeId: challenge?.id }
     }
     if (order.status !== 'pending') throw fail(409, 'order_not_pending')
-    if (order.expires_at && order.expires_at < new Date()) throw fail(409, 'order_expired')
+    /* late-payment policy: an expired order still accepts an on-chain
+       payment whose block was mined within the grace window AFTER
+       expiry — money received is never silently dropped. Outside the
+       window → explicit 409 for manual reconciliation (refund path). */
+    if (order.expires_at && order.expires_at < new Date()) {
+      const graceMs = cfg().lateGraceMinutes * 60_000
+      const minedAt = evidence.blockTimestamp ? new Date(evidence.blockTimestamp).getTime() : NaN
+      if (!Number.isFinite(minedAt) || minedAt > new Date(order.expires_at).getTime() + graceMs)
+        throw fail(409, 'order_expired')
+    }
 
     const dup = (await client.query('SELECT purchase_order_id FROM payments WHERE chain_id=$1 AND tx_hash=$2', [evidence.chainId, evidence.txHash])).rows[0]
     if (dup && dup.purchase_order_id !== orderId) throw fail(409, 'tx_already_used')
@@ -121,10 +146,25 @@ export async function confirmPurchase(pool, { orderId, userId, evidence, source 
       [orderId])
     if (!paid) throw fail(409, 'order_not_pending')
 
+    /* the plan configuration of record is read in the SAME transaction as
+       the status flip, then frozen into the challenge's rules_snapshot */
+    const planConfiguration = (await client.query(
+      'SELECT configuration FROM challenge_plans WHERE id=$1', [order.challenge_plan_id])).rows[0]?.configuration ?? {}
+
     const challenge = (await client.query(
-      `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd, purchase_order_id)
-       VALUES ($1,$2,'created',$3,$4) RETURNING id`,
-      [userId, order.challenge_plan_id, order.account_size_usd, orderId])).rows[0]
+      `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd, purchase_order_id, rules_snapshot)
+       VALUES ($1,$2,'created',$3,$4,$5) RETURNING *`,
+      [userId, order.challenge_plan_id, order.account_size_usd, orderId,
+        JSON.stringify(normalizeRules(planConfiguration))])).rows[0]
+
+    /* provision the challenge trading account (challenge_funding ledger
+       event, immutable provisioning event, frozen rules snapshot) —
+       the user starts the evaluation via POST /challenges/:id/start */
+    const challenges = new ChallengeService(client)
+    await challenges.provisionTx(client, {
+      ...challenge,
+      plan_configuration: planConfiguration,
+    })
 
     const invoice = (await client.query(
       `INSERT INTO invoices (purchase_order_id, user_id, number, total_usd)
@@ -247,7 +287,9 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = defaultVer
     if (!order) throw fail(404, 'order_not_found')
     if (order.status === 'paid') return res.json(await confirmPurchase(pool, { orderId, userId: req.user.user_id, evidence: { txHash, chainId: cfg().chainId }, source: 'replay' }))
     if (order.status !== 'pending') throw fail(409, 'order_not_pending')
-    if (order.expires_at < new Date()) throw fail(409, 'order_expired')
+    /* NOTE: expiry is NOT rejected here — the on-chain evidence is
+       verified first, then confirmPurchase applies the late-payment
+       grace policy (money received inside the window is never dropped) */
 
     const c = cfg()
     /* exact decimal-string → smallest-unit conversion (float math would lose
@@ -261,6 +303,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = defaultVer
     const evidence = await verifier(txHash, {
       chainId: c.chainId, receiver: c.receiver, token: c.token, minAmountUnits: minUnits,
       from: req.user.wallet_address, notBefore: new Date(order.created_at).getTime() - 5 * 60_000,
+      minConfirmations: c.minConfirmations,
     })
     const result = await confirmPurchase(pool, { orderId, userId: req.user.user_id, evidence, source: 'onchain' })
     await audit('purchase_verified', req.user.user_id, req, { orderId, txHash, challengeId: result.challengeId })

@@ -69,15 +69,23 @@ Blueprint (`render.yaml`, root). First application is a reviewed manual operatio
 
    ```bash
    cd apps/backstage/scripts
-   python3 apply_schema.py        --url https://<cms-host> --email … --password …
-   python3 seed_content.py        --url …
-   node seed_production_content.mjs --url … --email … --password …
-   python3 seed_terminal_content.py --url …
+   ./bootstrap-cms.sh https://<cms-host> <admin-email> '<admin-password>'
    ```
 
-   (Seeding is idempotent — re-running never overwrites editorial edits unless
-   `--refresh` is passed.)
-6. **Custom domain** (optional): point your verified custom hostname at the `openfund` service
+   One repeatable, idempotent command. It runs the full sequence in
+   dependency order: `apply_schema.py` → `seed_content.py` →
+   `seed_production_content.mjs` → `seed_terminal_content.py` →
+   `register_user_tables.py` (Data Studio views with financial fields
+   read-only). Re-running never overwrites editorial edits unless
+   `--refresh` is passed as the fourth argument. Recovery from a
+   half-completed bootstrap: re-run the same command (each step is
+   independently idempotent).
+6. **Set the operational admin token** (recommended before opening
+   withdrawals): set `ADMIN_API_TOKEN` on the `openfund` service to a long
+   random secret — this enables the `/admin/*` operational API (user
+   directory, challenge directory, withdrawal review; constant-time bearer
+   auth, fully disabled while unset).
+7. **Custom domain** (optional): point your verified custom hostname at the `openfund` service
    and set `ALLOWED_DOMAINS` is auto-derived from the service host — after adding
    a custom domain, add it to the service env (`ALLOWED_DOMAINS`) so SIWE domain
    validation accepts it.

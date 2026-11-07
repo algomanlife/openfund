@@ -1,4 +1,8 @@
 (() => {
+ /* Landing-page script: bail out cleanly when booted on a page without the
+    landing DOM (late script execution after a route change) instead of
+    dereferencing missing elements. */
+ if(!document.querySelector('.scroll-progress,#builder'))return;
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const fine=matchMedia('(hover: hover) and (pointer: fine)');
  const root=document.documentElement;

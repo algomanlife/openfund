@@ -18,7 +18,14 @@ const port = Number(process.env.RELEASE_TEST_PORT || 8288);
 if (!Number.isInteger(port) || port < 1024 || port > 65535) throw Error('Invalid RELEASE_TEST_PORT.');
 const base = `http://localhost:${port}`;
 try { await fetch(base+'/health',{signal:AbortSignal.timeout(500)}); throw Error('Release test port is already occupied.'); } catch(e) { if(e.message==='Release test port is already occupied.') throw e; }
-const env = {...process.env,RELEASE_VERSION:version,RELEASE_SOURCE_COMMIT:commit,NODE_ENV:'test',SIM_TEST_MODE:'1',PORT:String(port),ALLOWED_DOMAINS:`localhost:5173,localhost:${port}`,CORS_ORIGINS:`http://localhost:5173,http://localhost:${port}`,TEST_BACKEND_URL:base,TEST_FRONTEND_URL:base+'/react'};
+const env = {...process.env,RELEASE_VERSION:version,RELEASE_SOURCE_COMMIT:commit,NODE_ENV:'test',SIM_TEST_MODE:'1',PORT:String(port),ALLOWED_DOMAINS:`localhost:5173,localhost:${port}`,CORS_ORIGINS:`http://localhost:5173,http://localhost:${port}`,TEST_BACKEND_URL:base,TEST_FRONTEND_URL:base+'/react',
+  /* candidate-gate-only values (SIM_TEST_MODE test server, never production):
+     the admin suite needs a token; the purchase suite needs a test receiver;
+     the strict CSP must allow the local Directus origin the test frontend
+     fetches (intercepted by the browser gates) */
+  ADMIN_API_TOKEN: process.env.ADMIN_API_TOKEN || 'release-candidate-admin-token',
+  PURCHASE_PAYMENT_RECEIVER: process.env.PURCHASE_PAYMENT_RECEIVER || '0x000000000000000000000000000000000000c1a1',
+  CSP_EXTRA_CONNECT: process.env.CSP_EXTRA_CONNECT || 'http://localhost:8055'};
 // Official frontend/API stay same-origin; inherited private development env files are forbidden.
 for (const f of ['.env','.env.local','.env.production','.env.production.local']) if(fs.existsSync(path.join(root,'apps/web-react',f))) throw Error(`Remove local build overrides from the release checkout: apps/web-react/${f}`);
 if (process.env.VITE_BACKEND_URL) throw Error('Official/candidate packages must use the same-origin backend, not VITE_BACKEND_URL.');
@@ -48,7 +55,7 @@ try {
   server=spawn(process.execPath,['apps/backend/server.js'],{cwd:root,env,stdio:['ignore',fs.openSync(path.join(output,'backend-test.log'),'w'),'inherit']});
   server.on('error',error=>console.error(error.message));
   await healthy(base+'/health',server);
-  for(const task of ['test:backend','test:browser:audit','test:browser:completion','test:browser:layout','test:browser:charts','test:browser:polish','test:browser:website','test:browser:release','test:browser:routes']) await gate(task,'npm',['run',task]);
+  for(const task of ['test:backend','test:browser:audit','test:browser:completion','test:browser:layout','test:browser:charts','test:browser:polish','test:browser:website','test:browser:release','test:browser:routes','test:browser:challenge']) await gate(task,'npm',['run',task]);
   // A second run explicitly covers the authenticated geometry matrix.
   await run('npm',['run','test:browser:layout'],{env:{...env,TEST_LAYOUT_AUTH:'1'}});
   stages.push({name:'authenticated-layout',status:'passed'});

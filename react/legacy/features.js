@@ -1,4 +1,4 @@
-(()=>{const en=()=>window.ofLang==='en',t=(fa,eng)=>en()?eng:fa,num=n=>new Intl.NumberFormat(en()?'en-US':'fa-IR').format(n),money=n=>'$'+new Intl.NumberFormat('en-US').format(n);let mode='plans';
+(()=>{if(!document.querySelector('#builder'))return;const en=()=>window.ofLang==='en',t=(fa,eng)=>en()?eng:fa,num=n=>new Intl.NumberFormat(en()?'en-US':'fa-IR').format(n),money=n=>'$'+new Intl.NumberFormat('en-US').format(n);let mode='plans';
 /* ---- CMS-rendered sections (faq / legal / footer links) ----------------
    Data arrives from Directus via window.__ofFaqs / __ofLegal /
    __ofFooterLinks (set by the React shell before this script boots).
