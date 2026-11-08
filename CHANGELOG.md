@@ -5,6 +5,8 @@
 - Release planning accepts an explicitly requested next patch on a manual
   main-branch batch, while rejecting skipped or reused versions.
 - Stale market depth keeps readable text contrast in the light theme.
+- The document security policy now hashes the served pre-paint script so
+  clean-route recovery and locale direction remain allowed after builds.
 - Terminal Share P&L: a Share action beside Details (open positions) and in
   Order History (closed positions with a recorded result) opens an
   Openfund-branded card rendered on a canvas that is also the exported PNG

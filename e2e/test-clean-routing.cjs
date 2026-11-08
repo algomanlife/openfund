@@ -93,6 +93,10 @@ const OUT = 'output/playwright/clean-routing';
   await page.waitForTimeout(800);
   check('Arabic route keeps RTL direction', await page.evaluate(() => document.documentElement.dir) === 'rtl');
   check('Arabic editorial canonical points to English', await page.evaluate(() => document.querySelector('link[rel="canonical"]')?.href) === `${BASE}/en/faq`);
+  await page.goto(`${BASE}/ar/home`);
+  await page.locator('.hero').waitFor();
+  await page.waitForTimeout(900);
+  check('Arabic landing keeps its interface direction after classic script boot', await page.evaluate(() => document.documentElement.lang === 'ar' && document.documentElement.dir === 'rtl'));
 
   /* private product routes are not indexable */
   await page.goto(`${BASE}/fa/prop/dashboard`);
