@@ -209,6 +209,8 @@ jobs:
           name: official-release-candidate
           path: output/releases
       - name: Resolve previously allocated version
+        env:
+          RELEASE_REQUESTED_VERSION: ${{ inputs.release_version }}
         run: node scripts/release/plan.mjs
       - name: Publish immutable tag, notes and verified artifacts
         id: published
