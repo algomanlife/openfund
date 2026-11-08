@@ -276,8 +276,13 @@ async function realThemeClicks(browser) {
       for (const locale of ['en', 'fa', 'en', 'fa']) {
         await localePage.evaluate(locale => window.ofSetLanguage(locale), locale);
         await localePage.waitForFunction(locale => document.querySelector('.hero .telegram-community').getAttribute('aria-label').startsWith(locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'), locale);
-        await localePage.evaluate(() => window.ofTranslate());
-        check(`${locale} React-owned attributes survive translator`, (await localePage.locator('.hero .telegram-community').getAttribute('aria-label')).startsWith(locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'));
+        const unchanged = await localePage.evaluate(() => {
+          const button = document.querySelector('.hero .telegram-community');
+          const before = button.getAttribute('aria-label');
+          window.ofTranslate();
+          return button.getAttribute('aria-label') === before;
+        });
+        check(`${locale} React-owned attributes survive translator`, unchanged);
         check(`${locale} portal remains singular`, await localePage.locator('.hero .telegram-community').count() === 1 && await localePage.locator('footer .telegram-community').count() === 1);
       }
     } finally { await localePage.close(); }
