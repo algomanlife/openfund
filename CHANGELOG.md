@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — system-default theme preference
+## Unreleased — system-default theme preference and Prop engine audit fixes
 
 - Initialize both public pages and the shared terminal from the OS light/dark
   preference only when the user has not selected a theme. Keep explicit
@@ -8,6 +8,13 @@
 - Keep the trading iframe and Vela chart synchronized with the root theme.
   Opera Force Dark Page remains a browser-level override; the user profile
   needs a per-site exception when that setting recolors the final paint.
+- Prop engine audit fixes: a challenge passes only when the closed profit after
+  settling open positions still meets the target; post-fill risk checks include
+  the opening fee; minimum trading days count fill days; breach settlement
+  finishes positions in closed markets once tradeable; the risk view reports
+  the enforced day-basis daily limit. New `test:engine` suites (31 checks).
+  See the [engine audit](docs/audits/PROP_ENGINE_AUDIT.md) and
+  [ADR 0012](docs/decisions/0012-challenge-pass-settlement-and-trading-days.md).
 
 ## v0.4.1 — released 2026-11-07
 
@@ -27,8 +34,7 @@
   outer application changes theme. Follow-up work preserves the shell's theme
   when a product switch boots a replacement trading iframe.
 
-The v0.4.1 tag is published and deployed. The theme preference changes in the
-Unreleased section are not part of that immutable release.
+The v0.4.1 tag is published and deployed. The Unreleased changes are not part of that immutable release.
 
 ## v0.3.1 — Prop soft launch: evaluation engine, challenge trading, admin operations (candidate, unreleased)
 
