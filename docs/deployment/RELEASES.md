@@ -1,13 +1,57 @@
 # Unified Openfund releases
 
-## Current stabilization target (2026-11-07)
+## Current release state (2026-11-08)
 
-The latest published release is **v0.4.0** at commit
-`f90fac4aeeeeb86edc275320b2806d8b98b71233`. The only permitted next
-target for the current stabilization batch is **v0.4.1**. This branch is not an
-official release; do not run publication or deployment until its complete
-package, CMS, browser, security and production gates pass. The historical
-v0.2.x/v0.3.x notes below describe earlier checkpoints, not current status.
+The latest published and deployed release is **v0.4.1** at
+`b8389cace71457f769b1042e87f4a53211b62ca0` (Render deploy
+`dep-dbnn7mjl550s73fm4v7g`). The next allocated version from `main` is
+**v0.4.2**: commits since v0.4.1 are `fix:`/`test:`/`docs:` only, so the
+allocator bumps the patch. Resolve the latest state from GitHub at execution
+time; this paragraph is a dated record, not live status.
+
+## Release-to-production pipeline
+
+```mermaid
+flowchart LR
+  Merge[Reviewed merge to main] --> Dispatch[Unified release publish=true]
+  Dispatch --> Gates[Package, secret, CMS and live CMS gates]
+  Gates --> Publish[Immutable tag + GitHub Release + verified archive]
+  Publish --> Approve[production environment approval]
+  Approve --> Deploy[Render deploy of the exact commitId]
+  Deploy --> Verify[Live version, frontend manifest and CMS health]
+```
+
+- **Trigger:** only a `workflow_dispatch` of **Unified release** on `main`
+  with `publish=true`. Branch pushes and pull requests build unofficial
+  candidates and never publish or deploy. Releases are never drafts or
+  prereleases when deployed.
+- **Package:** the GitHub Release carries `openfund-vX.Y.Z.tar.gz`,
+  `SHA256SUMS`, `release-manifest.json`, `verification.json` and
+  `release-status.md`. This archive is the versioned package; Render rebuilds
+  the same commit and refuses to start unless its frontend, backend and schema
+  hashes equal the manifest. No container image is published
+  ([ADR 0013](../decisions/0013-release-driven-production-deployment.md)).
+- **Deploy:** the chained `deploy` job calls **Deploy or roll back official
+  release** with the published tag. It waits for the `production`
+  environment's required reviewer, then posts the manifest's exact SHA as
+  Render's `commitId` and polls until `live`.
+- **Verification:** `RELEASE_PUBLIC_URL` `/version` must be `matched` with the
+  release commit and backend ID; `/react/release-manifest.json` must match
+  version, commit and frontend ID; `RELEASE_CMS_URL` must be healthy. The
+  result is uploaded as `deployment-status-<run>-<attempt>`.
+- **Ordering and retries:** the `openfund-production` concurrency group
+  serializes deploys. A tag that is not the latest release is refused unless
+  `rollback=true`. A retry against a service already serving the release
+  skips the Render deploy and re-runs the checks.
+- **Failure:** any failed check ends the job red with `blocked` or
+  `failed_or_partial` in the status file; nothing is reported as deployed.
+  Render keeps the previous deploy live when a build or health check fails.
+- **Rollback:** dispatch the deploy workflow with an older tag and
+  `rollback=true` ([Rollback](ROLLBACK.md)).
+- **Version authority:** the Git tag allocated by `scripts/release/plan.mjs`
+  is the application version, recorded in the manifest and served by
+  `/version`. The `package.json` `version` fields stay `0.1.0`; they are
+  internal component provenance, not the application version.
 
 The frontend package now loads `/react/runtime-config.js` before its React
 module. The backend serves this no-store script from `CMS_PUBLIC_URL` (preferred
@@ -112,7 +156,7 @@ Configure the production environment with a required reviewer. The deployment sc
 
 The Blueprint now disables direct commit auto-deploy and invokes `scripts/release/render-build.mjs`. Existing deployed service settings do not change merely because the YAML changed: apply/reconcile the Blueprint and explicitly verify live auto-deploy is off. The deployment script refuses services whose auto-deploy remains enabled. It deploys an exact published manifest SHA using Render's `commitId`, clears cache, polls status and validates runtime identity plus CMS health. Application or CMS failure is `failed_or_partial`, never fully deployed. CMS health is not a complete content/schema/session acceptance certificate.
 
-The build fails if Render's public build variables differ from official CI hashes. Configure public values identically before the first official release. No deployment is started automatically after publishing. An authorized reviewer must approve the manually dispatched **Deploy or roll back official release** workflow on `main`. The owner confirmed on 2026-11-03 that Openfund runs locally only; there is no active Render service or deployed CMS/application. Future deployment remains unconfigured. This does not block official GitHub publication or local release acceptance.
+The build fails if Render's public build variables differ from official CI hashes. Since ADR 0013 the publication run chains the deployment; an authorized reviewer approves it in the `production` environment. Manual dispatch of **Deploy or roll back official release** remains for redeploys and rollback. The production environment is configured (v0.4.1 was deployed on 2026-11-07); the earlier 2026-11-03 "local only" statement is historical.
 
 ## Run an exact official version locally
 
