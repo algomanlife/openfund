@@ -144,9 +144,9 @@ export function useOpenfundSession() {
   const signIn = useCallback(async () => {
     if (!address || signing.current) return
     signing.current = true
-    const signingChain = networkForHash(window.location.hash)
+    const signingChain = networkForHash(window.location.pathname)
     const run = generation.current, expected = address
-    const active = () => generation.current === run && currentAddress.current === expected && networkForHash(window.location.hash).id === signingChain.id
+    const active = () => generation.current === run && currentAddress.current === expected && networkForHash(window.location.pathname).id === signingChain.id
     setError(null)
     setStatus('signing')
     try {

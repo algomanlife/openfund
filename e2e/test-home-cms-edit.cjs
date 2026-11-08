@@ -36,7 +36,7 @@ async function request(path, token, method = 'GET', body) {
     await request(`/items/home_content_translations/${persian.id}`, token, 'PATCH', { prop_description: marker })
     browser = await chromium.launch()
     const page = await browser.newPage()
-    await page.goto(`${app}/#/fa/home`)
+    await page.goto(`${app}/fa/home`)
     await page.locator('.home-products .home-product-note').first().filter({ hasText: marker }).waitFor({ timeout: 15000 })
     assert.equal(await page.locator('.home-products .home-product-note').first().textContent(), marker)
     console.log('PASS: Directus edit appeared in Persian Home without a frontend rebuild.')

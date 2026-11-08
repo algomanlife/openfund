@@ -148,8 +148,8 @@ export default function Faq() {
             <span className="eyebrow">{text('Still stuck?', 'هنوز جواب نگرفتی؟')[locale]}</span>
             <p>{text('The rulebook is the full reference for every term; the tools page puts the maths in your hands.', 'رول‌بوک مرجع کامل همهٔ شرایط است و صفحهٔ ابزارها هم حساب‌ها را دست تو می‌دهد.')[locale]}</p>
             <div className="faq-help-links">
-              <a className="text-link" href={`#/${locale}/rulebook`}>{labels.rulebook[locale]} <span aria-hidden="true">↗</span></a>
-              <a className="text-link" href={`#/${locale}/tools`}>{text('Tools', 'ابزارها')[locale]} <span aria-hidden="true">↗</span></a>
+              <a className="text-link" href={`/${locale}/rulebook`}>{labels.rulebook[locale]} <span aria-hidden="true">↗</span></a>
+              <a className="text-link" href={`/${locale}/tools`}>{text('Tools', 'ابزارها')[locale]} <span aria-hidden="true">↗</span></a>
             </div>
           </div>
         </aside>
@@ -193,8 +193,8 @@ export default function Faq() {
           <div className="info-end">
             <p>{text('Pick a challenge, read its terms, and try the terminal yourself.', 'یک چلنج را انتخاب کن، شرایطش را بخوان و خودت ترمینال را امتحان کن.')[locale]}</p>
             <div className="hero-actions">
-              <a className="button" href={`#/${locale}/challenges`}>{labels.challenges[locale]} <span aria-hidden="true">↙</span></a>
-              <a className="text-link" href={`#/${locale}/tools`}>{text('Open the tools', 'ابزارها را باز کن')[locale]} <span aria-hidden="true">↗</span></a>
+              <a className="button" href={`/${locale}/challenges`}>{labels.challenges[locale]} <span aria-hidden="true">↙</span></a>
+              <a className="text-link" href={`/${locale}/tools`}>{text('Open the tools', 'ابزارها را باز کن')[locale]} <span aria-hidden="true">↗</span></a>
             </div>
           </div>
         </div>

@@ -63,7 +63,7 @@ export default function PurchaseHistory() {
         <div className="of-empty">
           <p>{t('هنوز خریدی نداری. پلن‌ها را در صفحهٔ چلنج‌ها ببین.',
             'No purchases yet. See the plans on the Challenges page.')}</p>
-          <a className="button" href={`#/${isFa ? 'fa' : 'en'}/challenges`}>{t('دیدن پلن‌ها', 'View plans')}</a>
+          <a className="button" href={`/${isFa ? 'fa' : 'en'}/challenges`}>{t('دیدن پلن‌ها', 'View plans')}</a>
         </div>
       )}
       {rows && rows.length > 0 && (

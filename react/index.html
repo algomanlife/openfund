@@ -6,8 +6,37 @@
   <meta name="color-scheme" content="dark light">
   <meta name="theme-color" content="#060808">
   <style>html{color-scheme:only dark}html[data-theme="light"]{color-scheme:only light}</style>
-  <script>try{document.documentElement.dataset.theme=localStorage.getItem('of-theme')==='light'?'light':'dark'}catch{}</script>
-  <link rel="icon" type="image/svg+xml" href="/react/assets/mark-mint.svg">
+  <script>var t;try{t=localStorage.getItem('of-theme-choice')}catch{}document.documentElement.dataset.theme=t==='light'||t==='dark'?t:window.matchMedia?.('(prefers-color-scheme: dark)').matches?'dark':'light'
+/* Pre-paint locale + direction (route wins over the stored preference) and
+   legacy URL normalization: the '#/...' route hash and the '/react' prefix
+   are converted to clean history URLs BEFORE anything renders — a hash
+   fragment never reaches the server, so old bookmarks can only be recovered
+   here, on the client. In-page anchors (#accounts) are preserved. */
+;(function(){try{
+var hash=location.hash||'',route=hash.length>1&&hash[0]==='#'&&hash[1]==='/'?hash.slice(1):''
+if(route[0]==='#'){hash=route;route=''}
+var path=location.pathname
+var legacy=path==='/react'||path.indexOf('/react/')===0
+if(legacy)path=path==='/react'?'/':path.slice(6)||'/'
+var search=location.search
+if(route){var i=route.indexOf('?')
+if(i>=0){var rq=route.slice(i+1);route=route.slice(0,i)
+search=search?search.slice(1)+'&'+rq:'?'+rq}
+path=route;hash=''}
+else if((legacy||path==='/')&&hash.length>1){path='/'+hash.slice(1);hash=''}
+var url=path+search+hash
+if(url!==location.pathname+location.search+location.hash)history.replaceState(null,'',url)
+var seg=path.split('/')[1]
+var lang=seg==='en'||seg==='fa'?seg:''
+if(!lang){try{lang=localStorage.getItem('of-language')==='en'?'en':'fa'}catch(e){lang='fa'}}
+document.documentElement.lang=lang
+document.documentElement.dir=lang==='fa'?'rtl':'ltr'
+}catch(e){}})()
+/* boot-loader backstop: hide it even if the app never boots, so the
+   branded loader can never stay stuck (React removes it on readiness) */
+setTimeout(function(){var el=document.getElementById('of-boot-loader');if(el)el.remove()},20000)</script>
+  <script src="/runtime-config.js"></script>
+  <link rel="icon" type="image/svg+xml" href="/assets/mark-mint.svg">
   <title>Openfund</title>
   <!-- Static fallback branding metadata; the app replaces title/description/OG
        from the CMS (home_content SEO fields) once it mounts. -->
@@ -17,10 +46,21 @@
   <meta property="og:title" content="Openfund">
   <meta property="og:description" content="Openfund — trade the evaluation. A clear path to a funded account.">
   <meta name="twitter:card" content="summary">
-  <script type="module" crossorigin src="/react/assets/index-B8OzNCdW.js"></script>
-  <link rel="stylesheet" crossorigin href="/react/assets/index-CB8KBwFD.css">
+  <style>
+#of-boot-loader{position:fixed;inset:0;z-index:2147483646;display:grid;place-items:center;background:#060808}
+html[data-theme="light"] #of-boot-loader{background:#ffffff}
+#of-boot-loader img{width:40px;height:45px;animation:of-boot-pulse 1.6s ease-in-out infinite}
+@keyframes of-boot-pulse{0%,100%{opacity:1}50%{opacity:.45}}
+@media (prefers-reduced-motion: reduce){#of-boot-loader img{animation:none}}
+  </style>
+  <script type="module" crossorigin src="/assets/index-DlR_YOV0.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BXce7tRF.css">
 </head>
 <body>
+  <!-- Branded boot loader: visible from first paint until the React app
+       signals readiness (AppFrame removes the node). A 20s backstop hides
+       it even if boot fails so it can never stay stuck. -->
+  <div id="of-boot-loader" aria-hidden="true"><img src="/assets/mark-mint.svg" alt=""></div>
   <div id="root"></div>
 </body>
 </html>

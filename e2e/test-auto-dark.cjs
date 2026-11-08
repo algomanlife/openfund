@@ -4,7 +4,7 @@
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path');
-const BASE = (process.env.TEST_FRONTEND_URL || 'http://localhost:8080/react').replace(/\/$/, '');
+const BASE = (process.env.TEST_FRONTEND_URL || 'http://localhost:8080').replace(/\/$/, '');
 const OUT = path.resolve(process.env.AUTO_DARK_OUTPUT || 'output/playwright/auto-dark');
 async function runAutoDark({ configureContext = async () => {} } = {}) {
   fs.mkdirSync(OUT, { recursive: true });
@@ -108,7 +108,7 @@ async function runAutoDark({ configureContext = async () => {} } = {}) {
       const context = await browser.newContext({ viewport: { width: 3360, height: 1216 }, colorScheme: os });
       await configureContext(context);
       const page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
-      await page.goto(BASE + '/#/fa/prop/trade');
+      await page.goto(BASE + '/fa/prop/trade');
       await page.waitForFunction(() => !!document.querySelector('iframe.of-trading-workspace')?.contentWindow?.__openfundChart?.chart);
       assert.equal(await page.evaluate(() => localStorage.getItem('of-theme-choice')), null);
       await capture(page, `system-${os}-default`, os, true);
@@ -140,7 +140,7 @@ async function runAutoDark({ configureContext = async () => {} } = {}) {
       const toggle = () => page.locator('#theme-toggle,button[aria-label="Toggle theme"],button[aria-label="تغییر پوسته"]').first();
       for (const route of ['en/home', 'fa/home', 'en/prop/trade', 'fa/perpetual/trade']) {
         const tag = route.replaceAll('/', '-'), trade = route.includes('trade');
-        await page.goto(BASE + '/#/' + route); await toggle().waitFor();
+        await page.goto(BASE + '/' + route); await toggle().waitFor();
         if (trade) {
           const [locale, product] = route.split('/');
           // Wait for the current product's iframe boot, not a still-attached

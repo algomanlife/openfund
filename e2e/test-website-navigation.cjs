@@ -6,7 +6,7 @@ const path = require('node:path');
 const { createRequire } = require('node:module');
 const appRequire = createRequire(path.resolve(__dirname, '../apps/web-react/package.json'));
 const { buildSync } = appRequire('esbuild');
-const BASE = (process.env.TEST_FRONTEND_URL || 'http://127.0.0.1:5187/react/').replace(/\/?$/, '/');
+const BASE = (process.env.TEST_FRONTEND_URL || 'http://127.0.0.1:5187/').replace(/\/?$/, '/');
 function loadLibrary() {
   const bundle = buildSync({entryPoints:[path.resolve(__dirname,'../apps/web-react/src/cms/siteContent.ts')],bundle:true,platform:'node',format:'cjs',packages:'external',write:false});
   const mod = {exports:{}};
@@ -20,11 +20,11 @@ async function desktop(page) {
  const pages = ['home','challenges','markets','rulebook','transparency','faq','faq/q/what-is-openfund','learn','learn/paths/perpetual-futures-mechanics','learn/lessons/perps-how-they-work','learn/glossary','tools','tools/position-size','referral'];
  for (const locale of ['en','fa']) {
   for (const source of pages) {
-   await page.goto(base + '#/' + locale + '/' + source);
+   await page.goto(base + locale + '/' + source);
    if(locale==='fa'&&source==='home'){await page.locator('.home-gateway').waitFor();assert(await page.locator('header #navigation').count()===0,'FA gateway nav hidden');results.push({locale,source,gateway:true});continue;}
    await page.locator('.resources-toggle').waitFor({state:'attached'});
    await page.waitForTimeout(source === 'challenges' ? 1800 : 200);
-   assert(new URL(page.url()).hash === '#/' + locale + '/' + source, 'redirect ' + source);
+   assert(new URL(page.url()).pathname === '/' + locale + '/' + source, 'redirect ' + source);
    await page.locator('.resources-toggle').click();
    const header = await page.locator('header a').evaluateAll(as => as.map(a => ({href:a.getAttribute('href'),text:a.textContent})));
    assert(header.length === 12, 'header count ' + source + ': ' + header.length);
@@ -35,17 +35,17 @@ async function desktop(page) {
    results.push({locale,source,header,footer});
    // Exercise every website destination in both chrome areas from each page.
    for (const area of ['header','footer']) {
-    const links = (area === 'header' ? header : footer).filter(a=>a.href.startsWith('#/') && !a.href.includes('/prop/'));
+    const links = (area === 'header' ? header : footer).filter(a=>a.href.startsWith(base) && !a.href.includes('/prop/'));
     for (const {href} of links) {
-     await page.goto(base + '#/' + locale + '/' + source);
+     await page.goto(base + locale + '/' + source);
      await page.locator('.resources-toggle').waitFor({state:'attached'});
      await page.waitForTimeout(source === 'challenges' ? 500 : 220);
      const link = page.locator(area + ' a[href="'+href+'"]');
      if (area === 'header' && await link.locator('xpath=ancestor::*[contains(@class,"nav-dropdown")]').count()) await page.locator('.resources-toggle').click();
      await link.click();
-     await page.waitForURL(base + href);
+     await page.waitForURL(new URL(href, base).href);
      await page.waitForTimeout(href.includes('/challenges') || source === 'challenges' ? 500 : 60);
-     assert(new URL(page.url()).hash === href, 'wrong click ' + source + ' ' + href);
+     assert(new URL(page.url()).pathname + new URL(page.url()).search === href, 'wrong click ' + source + ' ' + href);
      if (href.includes('section=team')) {
       await page.waitForTimeout(1800);
       const top = await page.locator('#team').evaluate(el=>el.getBoundingClientRect().top);
@@ -65,7 +65,7 @@ async function interactions(page) {
  for (const locale of ['en','fa']) {
   for (const route of ['faq','challenges','learn/lessons/perps-how-they-work','tools/position-size','learn/glossary']) {
    await page.setViewportSize({width:1440,height:900});
-   await page.goto(base+'#/'+locale+'/'+route);
+   await page.goto(base+locale+'/'+route);
    await page.locator('.resources-toggle').waitFor({state:'attached'});
    await page.waitForTimeout(700);
    if(route==='challenges') await page.waitForTimeout(1800);
@@ -82,7 +82,7 @@ async function interactions(page) {
    check(await page.locator('.nav-dropdown a[href$="/learn"]').isVisible(), 'hover bridge');
    await page.locator('#language-toggle').click();
    const other=locale==='en'?'fa':'en';
-   await page.waitForURL(base+'#/'+other+'/'+route);
+   await page.waitForURL(base+other+'/'+route);
    await page.waitForFunction(dir=>document.documentElement.dir===dir,other==='fa'?'rtl':'ltr');
    for(const width of [900,390]) {
     await page.setViewportSize({width,height:844});
@@ -91,10 +91,10 @@ async function interactions(page) {
     const target=page.locator('.nav-dropdown a[href$="/tools"]');
     check(await target.isVisible(),'mobile resources visible '+width+' '+route);
     await target.click();
-    await page.waitForURL(base+'#/'+other+'/tools');
+    await page.waitForURL(base+other+'/tools');
     check(await page.locator('.menu').getAttribute('aria-expanded')==='false','mobile closed');
     await page.waitForTimeout(300);
-    await page.goto(base+'#/'+other+'/'+route);
+    await page.goto(base+other+'/'+route);
     await page.locator('.resources-toggle').waitFor({state:'attached'});
    await page.waitForTimeout(700);
     if(route==='challenges') await page.waitForTimeout(1800);
@@ -103,13 +103,13 @@ async function interactions(page) {
   }
  }
  await page.setViewportSize({width:1440,height:900});
- await page.goto(base+'#/en/faq');
+ await page.goto(base+'en/faq');
  await page.locator('.resources-toggle').waitFor({state:'attached'});
    await page.waitForTimeout(700);
  await page.locator('.resources-toggle').click();
  await page.screenshot({path:'output/playwright/navigation-en-desktop.png'});
  await page.setViewportSize({width:390,height:844});
- await page.goto(base+'#/fa/learn');
+ await page.goto(base+'fa/learn');
  await page.locator('.menu').click();
  await page.screenshot({path:'output/playwright/navigation-fa-mobile.png'});
  return results;
@@ -123,18 +123,18 @@ async function touch(page) {
   try {
     for(const locale of ['fa','en']) for(const route of ['home','challenges','faq','learn/lessons/perps-how-they-work','tools/position-size','referral']) {
       if(locale==='fa'&&route==='home')continue; // The gateway deliberately has no resources menu.
-      await touchPage.goto(BASE+'#/'+locale+'/'+route);
+      await touchPage.goto(BASE+locale+'/'+route);
       await touchPage.locator('.resources-toggle').waitFor({state:'attached'});
       await touchPage.waitForTimeout(route==='challenges'?1800:700);
       await touchPage.locator('.menu').tap();
       await touchPage.locator('.nav-dropdown a[href$="/learn/glossary"]').tap();
-      await touchPage.waitForURL(BASE+'#/'+locale+'/learn/glossary');
+      await touchPage.waitForURL(BASE+locale+'/learn/glossary');
       await touchPage.waitForTimeout(300);
       records.push({locale,route,touch:true});
     }
     for(const locale of ['en','fa']) {
       await touchPage.setViewportSize({width:1440,height:900});
-      await touchPage.goto(BASE+'#/'+locale+'/faq');
+      await touchPage.goto(BASE+locale+'/faq');
       await touchPage.waitForTimeout(700);
       const trigger=touchPage.locator('.resources-toggle');
       await trigger.focus();
@@ -144,12 +144,12 @@ async function touch(page) {
       if(await trigger.getAttribute('aria-expanded')!=='false') throw new Error('Space disclosure');
       await trigger.tap();
       await touchPage.locator('.nav-dropdown a[href$="/learn"]').tap();
-      await touchPage.waitForURL(BASE+'#/'+locale+'/learn');
-      await touchPage.goto(BASE+'#/'+locale+'/challenges?section=team');
+      await touchPage.waitForURL(BASE+locale+'/learn');
+      await touchPage.goto(BASE+locale+'/challenges?section=team');
       await touchPage.waitForTimeout(2200);
       await touchPage.locator('#language-toggle').tap();
       const other=locale==='en'?'fa':'en';
-      await touchPage.waitForURL(BASE+'#/'+other+'/challenges?section=team');
+      await touchPage.waitForURL(BASE+other+'/challenges?section=team');
       records.push({locale,desktopTouch:true,enterSpace:true,localizedSection:true});
     }
   } finally { await context.close(); }
@@ -160,20 +160,20 @@ async function ancillary(page) {
   const records=[];
   for(const locale of ['fa','en']) for(const route of ['faq','challenges']) {
     await page.setViewportSize({width:1440,height:900});
-    await page.goto(BASE+'#/'+locale+'/'+route);
+    await page.goto(BASE+locale+'/'+route);
     await page.waitForTimeout(route==='challenges'?2200:700);
     const externals=await page.locator('footer a[href^="https:"]').evaluateAll(as=>as.map(a=>({href:a.href,target:a.target,rel:a.rel})));
     for(const link of externals) if(link.target!=='_blank'||!link.rel.includes('noopener')) throw new Error('External behavior changed '+link.href);
     await page.locator('footer a[href="#top"]').click();
     await page.waitForFunction(()=>scrollY<50);
     await page.locator('.nav-cta').click();
-    await page.waitForURL(BASE+'#/'+locale+'/prop/trade');
+    await page.waitForURL(BASE+locale+'/prop/trade');
     records.push({locale,route,externalAttributes:true,backToTop:true,terminalDestinationOnly:true});
   }
-  await page.goto(BASE+'#/en/tools/position-size?nav-check=1');
+  await page.goto(BASE+'en/tools/position-size?nav-check=1');
   await page.waitForTimeout(700);
   await page.locator('#language-toggle').click();
-  await page.waitForURL(BASE+'#/fa/tools/position-size?nav-check=1');
+  await page.waitForURL(BASE+'fa/tools/position-size?nav-check=1');
   records.push({nestedQueryPreserved:true});
   return records;
 }
@@ -187,19 +187,19 @@ async function auditRoutes(page) {
   const allowed = new Set(['/',...['en','fa'].flatMap(locale=>routes.map(route=>'/'+locale+'/'+route))]);
   const records=[];
   for(const locale of ['en','fa']) for(const route of routes) {
-    await page.goto(BASE+'#/'+locale+'/'+route);
+    await page.goto(BASE+locale+'/'+route);
     if(locale==='fa' && route==='home') await page.locator('.home-gateway').waitFor();
     else await page.locator('.resources-toggle').waitFor({state:'attached'});
     await page.waitForTimeout(route==='challenges'?1800:300);
-    const hash = new URL(page.url()).hash;
-    if(hash!=='#/'+locale+'/'+route) throw new Error('Unexpected redirect '+route+' '+hash);
+    const path = new URL(page.url()).pathname;
+    if(path!=='/'+locale+'/'+route) throw new Error('Unexpected redirect '+route+' '+path);
     const links = await page.locator('a[href]').evaluateAll(links=>links.map(a=>a.getAttribute('href')));
     for(const href of links) {
       if(href==='#') { if(await page.locator('header a[href="#"],footer a[href="#"]').count()) throw new Error('Chrome placeholder on '+route); continue; }
-      if(href.startsWith('#/')) {
-        const target=href.slice(1).split('?')[0];
+      if(href.startsWith('/') && !/^\/(assets|downloads)\//.test(href)) {
+        const target=href.split('?')[0];
         if(!allowed.has(target) && !/^\/(en|fa)\/(prop|perpetual)\/(trade|dashboard)$/.test(target) && target!=='/terminal') throw new Error('Unknown route '+href+' on '+route);
-      } else if(href.startsWith('#') && !await page.evaluate(id=>!!document.getElementById(id),decodeURIComponent(href.slice(1)))) throw new Error('Missing anchor '+href+' on '+route);
+      } else if(href.startsWith('#') && href!=='#' && !href.startsWith('#/') && !await page.evaluate(id=>!!document.getElementById(id),decodeURIComponent(href.slice(1)))) throw new Error('Missing anchor '+href+' on '+route);
     }
     if(/not found|پیدا نشد/.test(await page.locator('h1').innerText())) throw new Error('Missing content '+route);
     records.push({locale,route,links:links.length,bodyPlaceholders:links.filter(href=>href==='#').length});
@@ -222,7 +222,7 @@ async function auditRoutes(page) {
     }
     const book=page.locator('footer a[href$=".zip"]');
     await page.setViewportSize({width:1440,height:900});
-    await page.goto(BASE+'#/en/faq');
+    await page.goto(BASE+'en/faq');
     await book.waitFor();
     const response=await page.request.get(new URL(await book.getAttribute('href'),BASE).href);
     if(response.status()!==200 || (await response.body()).subarray(0,2).toString()!=='PK') throw new Error('Brandbook download failed');

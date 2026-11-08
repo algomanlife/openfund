@@ -4,7 +4,7 @@ const { chromium } = require('playwright-core')
 const results = []
 const R = (n, ok, extra = '') => results.push(`${ok ? 'PASS' : 'FAIL'} - ${n}${extra ? '  [' + extra + ']' : ''}`)
 const SHOTS = '/Users/algoman/.qwenwork/workspace/mvw61rrm1ic7idr4/shots4'
-const BASE = 'http://127.0.0.1:4173/react'
+const BASE = 'http://127.0.0.1:4173'
 const fs = require('fs')
 fs.mkdirSync(SHOTS, { recursive: true })
 
@@ -20,7 +20,7 @@ const widths = [375, 768, 1024, 1440]
   page.on('pageerror', e => errs.push(e.message.slice(0, 160)))
 
   /* ============ LANDING (fa) — catalog-driven builder ============ */
-  await page.goto(`${BASE}/#/fa/challenges`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/fa/challenges`, { waitUntil: 'load' })
   await page.waitForTimeout(2600)
   const builder = await page.evaluate(() => ({
     target: document.querySelector('#target')?.textContent,
@@ -143,7 +143,7 @@ const widths = [375, 768, 1024, 1440]
   await page.click('#language-toggle')
   await page.waitForTimeout(1600)
   const en = await page.evaluate(() => ({
-    url: location.hash,
+    url: location.pathname + location.search,
     cta: document.querySelector('.hero-actions .button')?.textContent.trim(),
     feeLabel: document.querySelector('.price-summary span')?.textContent,
     sampleNote: document.querySelector('.sample-note')?.textContent,
@@ -155,7 +155,7 @@ const widths = [375, 768, 1024, 1440]
     compareHeaders: [...document.querySelectorAll('#challenge-comparison thead th')].map(t => t.textContent.trim()),
     legal: document.querySelector('#legal')?.textContent.trim(),
   }))
-  R('landing en: URL synced', en.url.includes('#/en/challenges'), en.url)
+  R('landing en: URL synced', en.url.includes('/en/challenges'), en.url)
   R('landing en: CTA translated', en.cta === 'Find my challenge→', en.cta)
   R('landing en: fee label translated', en.feeLabel === 'Evaluation fee · one-time', en.feeLabel)
   R('landing en: honest sample note translated', /not available in this release/.test(en.sampleNote || ''), (en.sampleNote || '').slice(0, 70))
@@ -169,7 +169,7 @@ const widths = [375, 768, 1024, 1440]
   await page.screenshot({ path: `${SHOTS}/challenges-en-1440.png` })
 
   /* ============ RULEBOOK — catalog-derived configuration table ============ */
-  await page.goto(`${BASE}/#/fa/rulebook`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/fa/rulebook`, { waitUntil: 'load' })
   await page.waitForTimeout(1600)
   const rb = await page.evaluate(() => {
     const table = [...document.querySelectorAll('.rule-section table')].find(t => t.querySelector('caption')?.textContent.includes('چلنج'))
@@ -194,15 +194,15 @@ const widths = [375, 768, 1024, 1440]
     const table = [...document.querySelectorAll('.rule-section table')].find(t => t.querySelector('caption')?.textContent.toLowerCase().includes('challenge catalog'))
     return {
       rows: table ? [...table.querySelectorAll('tbody tr')].map(r => r.textContent.replace(/\s+/g, ' ').trim()) : [],
-      url: location.hash,
+      url: location.pathname + location.search,
     }
   })
-  R('rulebook en: URL synced', rbEn.url.includes('#/en/rulebook'), rbEn.url)
+  R('rulebook en: URL synced', rbEn.url.includes('/en/rulebook'), rbEn.url)
   R('rulebook en: catalog table translated (4 plans)', rbEn.rows.length === 4 && /3% \/ 12%/.test(rbEn.rows[1] || ''), rbEn.rows[1])
   await page.screenshot({ path: `${SHOTS}/rulebook-en-1440.png` })
 
   /* ============ HOME — preserved + polished ============ */
-  await page.goto(`${BASE}/#/fa/home`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/fa/home`, { waitUntil: 'load' })
   await page.waitForTimeout(1200)
   const home = await page.evaluate(() => ({
     h1: document.querySelector('.home-stage h1')?.textContent,
@@ -216,11 +216,11 @@ const widths = [375, 768, 1024, 1440]
 
   /* ============ RTL/LTR + viewport audit ============ */
   const pages = [
-    { hash: '#/fa/challenges', name: 'challenges-fa' },
-    { hash: '#/en/challenges', name: 'challenges-en' },
-    { hash: '#/fa/markets', name: 'markets-fa' },
-    { hash: '#/fa/home', name: 'home-fa' },
-    { hash: '#/fa/rulebook', name: 'rulebook-fa' },
+    { hash: '/fa/challenges', name: 'challenges-fa' },
+    { hash: '/en/challenges', name: 'challenges-en' },
+    { hash: '/fa/markets', name: 'markets-fa' },
+    { hash: '/fa/home', name: 'home-fa' },
+    { hash: '/fa/rulebook', name: 'rulebook-fa' },
   ]
   for (const p of pages) {
     for (const w of widths) {
@@ -249,13 +249,13 @@ const widths = [375, 768, 1024, 1440]
   await page.setViewportSize({ width: 1440, height: 900 })
 
   /* terminal regression: untouched */
-  await page.goto(`${BASE}/#/terminal`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/terminal`, { waitUntil: 'load' })
   await page.waitForTimeout(7000)
   const term = await page.evaluate(() => ({ pair: document.querySelector('#cur-pair')?.textContent.trim(), btn: document.querySelector('#market-select-btn[disabled]') ? 'disabled' : 'ready' }))
   R('terminal: boots normally (untouched)', term.pair === 'BTC/USD' && term.btn === 'ready', JSON.stringify(term))
 
   /* transparency untouched */
-  await page.goto(`${BASE}/#/fa/transparency`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/fa/transparency`, { waitUntil: 'load' })
   await page.waitForTimeout(1800)
   const tr = await page.evaluate(() => ({ metrics: document.querySelectorAll('.metric-card').length, sample: document.body.innerText.includes('دادهٔ نمونه') }))
   R('transparency: sample dashboard untouched', tr.metrics === 6 && tr.sample, JSON.stringify(tr))

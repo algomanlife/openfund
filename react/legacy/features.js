@@ -22,7 +22,7 @@ function renderCms(){
   const footerBox=document.querySelector('#footer-links');
   if(footerBox){
     footerBox.textContent='';
-    const DEST={challenges:()=>`#/${window.ofLang==='en'?'en':'fa'}/challenges`,markets:()=>`#/${window.ofLang==='en'?'en':'fa'}/markets`,rulebook:()=>`#/${window.ofLang==='en'?'en':'fa'}/rulebook`,transparency:()=>`#/${window.ofLang==='en'?'en':'fa'}/transparency`,'accounts-section':()=>location.hash.startsWith('#/')?`#/${window.ofLang==='en'?'en':'fa'}/challenges`:'#accounts','team-section':()=>location.hash.startsWith('#/')?`#/${window.ofLang==='en'?'en':'fa'}/challenges`:'#team','faq-section':()=>location.hash.startsWith('#/')?`#/${window.ofLang==='en'?'en':'fa'}/challenges`:'#rules',github:()=>'https://github.com/algomanlife/openfund'};
+    const DEST={challenges:()=>`/${window.ofLang==='en'?'en':'fa'}/challenges`,markets:()=>`/${window.ofLang==='en'?'en':'fa'}/markets`,rulebook:()=>`/${window.ofLang==='en'?'en':'fa'}/rulebook`,transparency:()=>`/${window.ofLang==='en'?'en':'fa'}/transparency`,'accounts-section':()=>location.pathname!=='/'?`/${window.ofLang==='en'?'en':'fa'}/challenges`:'#accounts','team-section':()=>location.pathname!=='/'?`/${window.ofLang==='en'?'en':'fa'}/challenges`:'#team','faq-section':()=>location.pathname!=='/'?`/${window.ofLang==='en'?'en':'fa'}/challenges`:'#rules',github:()=>'https://github.com/algomanlife/openfund'};
     (footer||[]).forEach(link=>{const href=(DEST[link.destination]||DEST.challenges)();const a=document.createElement('a');a.href=href;a.textContent=esc(en()?link.label.en:link.label.fa);if(link.destination==='github'){a.target='_blank';a.rel='noopener';}footerBox.appendChild(a);});
   }
 }

@@ -134,44 +134,44 @@ jobs:
       - name: Browser integration (controlled CMS/Gains and generated test wallets)
         working-directory: .
         env:
-          TEST_FRONTEND_URL: http://localhost:8080/react
+          TEST_FRONTEND_URL: http://localhost:8080
           TEST_BACKEND_URL: http://localhost:8080
         run: npm run test:browser:audit
       - name: Terminal wallet, order lifecycle and all-tab acceptance
         working-directory: .
         env:
-          TEST_FRONTEND_URL: http://localhost:8080/react
+          TEST_FRONTEND_URL: http://localhost:8080
           TEST_BACKEND_URL: http://localhost:8080
         run: npm run test:browser:completion
       - name: Terminal layout, bilingual geometry and overflow acceptance
         working-directory: .
         env:
-          TEST_FRONTEND_URL: http://localhost:8080/react
+          TEST_FRONTEND_URL: http://localhost:8080
         run: |
           npm run test:browser:layout
           TEST_LAYOUT_AUTH=1 npm run test:browser:layout
       - name: Locale availability, wallet header and native theme matrix
         working-directory: .
         env:
-          TEST_FRONTEND_URL: http://localhost:8080/react
+          TEST_FRONTEND_URL: http://localhost:8080
         run: |
           npm run test:browser:polish
           npm run test:browser:website
       - name: Persian landing viewport, motion and navigation acceptance
         working-directory: .
         env:
-          TEST_FRONTEND_URL: http://localhost:8080/react
+          TEST_FRONTEND_URL: http://localhost:8080
         run: node e2e/test-landing-motion.cjs
       - name: Challenge purchase, invoice and withdrawal browser lifecycle
         working-directory: .
         env:
-          TEST_FRONTEND_URL: http://localhost:8080/react
+          TEST_FRONTEND_URL: http://localhost:8080
           TEST_BACKEND_URL: http://localhost:8080
         run: npm run test:browser:purchase
       - name: Chart interaction and indicator browser regression
         working-directory: .
         env:
-          TEST_FRONTEND_URL: http://localhost:8080/react
+          TEST_FRONTEND_URL: http://localhost:8080
         run: npm run test:browser:charts
       - uses: actions/upload-artifact@v4
         if: always()

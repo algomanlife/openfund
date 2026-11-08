@@ -32,8 +32,8 @@ export default function Home() {
 
 /* CTA destination whitelist — the CMS picks from these; arbitrary URLs are never rendered */
 const CTA_HREF: Record<'challenges' | 'terminal', (locale: Locale) => string> = {
-  challenges: locale => `#/${locale}/challenges`,
-  terminal: locale => `#/${locale}/perpetual/trade`,
+  challenges: locale => `/${locale}/challenges`,
+  terminal: locale => `/${locale}/perpetual/trade`,
 }
 
 function HomeUnavailable({ locale }: { locale: Locale }) {
@@ -69,7 +69,7 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
           <div className="home-panel-copy">
             <h2>{t.propTitle}</h2>
           <p className="home-product-note" title={t.propDescription || undefined}>{t.propDescription || (locale === 'fa' ? 'تمرین و ارزیابی · تصویر نمایشی' : 'Practice and evaluation · illustration')}</p>
-            <a className="button" href={c.propCtaDestination === 'terminal' ? `#/${locale}/prop/trade` : CTA_HREF.challenges(locale)}>
+            <a className="button" href={c.propCtaDestination === 'terminal' ? `/${locale}/prop/trade` : CTA_HREF.challenges(locale)}>
               {t.propCta}
               <span aria-hidden="true">←</span>
             </a>

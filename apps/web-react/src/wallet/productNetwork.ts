@@ -14,10 +14,10 @@ const subscribe = (fn: () => void) => {
     removeEventListener('of-terminal-route', fn)
   }
 }
-export const networkForHash = (hash: string) => /^#?\/(?:fa|en)\/perpetual(?:\/|$)/.test(hash.split("?")[0]) ? arbitrum : sepolia
-/** SessionProvider lives outside the hash router. Both wallet and SIWE use
+export const networkForHash = (url: string) => /^#?\/(?:fa|en)\/perpetual(?:\/|$)/.test(url.split("?")[0]) ? arbitrum : sepolia
+/** SessionProvider lives outside the router. Both wallet and SIWE use
  * this same product policy; changing network always asks the user's wallet. */
 export function useProductNetwork() {
-  const chainId = useSyncExternalStore(subscribe, () => networkForHash(location.hash).id)
+  const chainId = useSyncExternalStore(subscribe, () => networkForHash(location.pathname).id)
   return chainId === arbitrum.id ? arbitrum : sepolia
 }

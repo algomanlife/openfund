@@ -195,7 +195,7 @@ export default function ToolPage() {
       <div className="info-end">
         <p>{text('Plan the trade on paper first — the terminal is for when you are ready.', 'اول معامله را روی کاغذ بچین — ترمینال برای وقتی است که آماده‌ای.')[locale]}</p>
         <div className="hero-actions">
-          <a className="button" href={`#/${locale}/prop/trade`}>{text('Open the terminal', 'ترمینال را باز کن')[locale]} <span aria-hidden="true">↙</span></a>
+          <a className="button" href={`/${locale}/prop/trade`}>{text('Open the terminal', 'ترمینال را باز کن')[locale]} <span aria-hidden="true">↙</span></a>
           <Link className="text-link" to={`/${locale}/learn`}>{labels.learn[locale]} <span aria-hidden="true">↗</span></Link>
         </div>
       </div>
