@@ -45,6 +45,22 @@ Daily/max drawdown uses persisted observations of fresh equity, UTC day boundari
 
 The [Portfolio and Journal](PORTFOLIO_JOURNAL.md) provide position/order history, performance analysis, exports and private decision records. Financial balances remain authoritative in the ledger, not in a reconstructed historical equity series.
 
+## Challenge evaluation
+
+Challenge accounts trade through the same engine. `evaluation.js` applies the frozen rules snapshot inside the account transaction before order acceptance, after each fill and close, and on each engine-loop pass:
+
+```text
+daily floor   = day basis × (1 − daily %),  day basis = max(opening balance, opening equity), day starts 00:00 UTC+3
+static floor  = starting balance × (1 − maximum %)
+breach        = equity ≤ floor (touching is a breach)
+pass          = closed profit ≥ target AND settlement balance − starting balance ≥ target
+                AND trading days ≥ minimum AND no violation AND all positions settleable now
+settlement balance = balance + Σ (exit PnL at mark with spread − closing fee)
+trading day   = distinct UTC+3 day with at least one order fill
+```
+
+A breach closes positions at the server mark, cancels pending orders and closes the account; a position whose market is closed is settled by the loop once tradeable. Evaluation defers while any mark is stale. Enforcement is sampled (events and about once per second), not tick-continuous. Findings and limitations: [engine audit](../audits/PROP_ENGINE_AUDIT.md) · [ADR 0012](../decisions/0012-challenge-pass-settlement-and-trading-days.md).
+
 [Capability register](../product/FEATURE_STATUS.md) · [Architecture](../architecture/ARCHITECTURE.md)
 
 ## Free Trial and instrument scope update

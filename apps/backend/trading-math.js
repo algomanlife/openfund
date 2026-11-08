@@ -41,15 +41,19 @@ export function positionMetrics(p, md) {
     liquidation: Decimal.max(0, executionLiq.div(multiplier)).toFixed(10) }
 }
 export function accountMetrics(account, positions, md) {
-  let gross = D(0), known = true
+  let gross = D(0), net = D(0), known = true
   for (const p of positions) {
     const v = positionMetrics(p, md)
     if (v.gross === null) known = false
-    else gross = gross.plus(v.gross)
+    else { gross = gross.plus(v.gross); net = net.plus(v.net) }
   }
   const balance = D(account.balance), used = D(account.used_margin)
   const equity = known ? balance.plus(gross) : null
+  /* settlement_balance = the balance after closing every open position at
+     the current mark (exit spread and closing fee included) — the exact
+     value #closeTx would book. Used for closed-profit pass decisions. */
   return { balance: balance.toFixed(2), equity: equity?.toFixed(2) ?? null,
+    settlement_balance: known ? balance.plus(net).toFixed(10) : null,
     used_margin: used.toFixed(2), free_margin: equity ? Decimal.max(0, equity.minus(used)).toFixed(2) : null,
     unrealized_pnl: known ? gross.toFixed(2) : null, valuation_status: known ? 'fresh' : 'stale',
     margin_ratio: equity && used.gt(0) ? equity.div(used).times(100).toFixed(4) : null }

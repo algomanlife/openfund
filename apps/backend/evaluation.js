@@ -19,8 +19,11 @@
  *  - Loss limits count EQUITY — unrealized losses move toward the
  *    boundary in real time. Evaluation is deferred (never forced)
  *    while marks are stale: no settlement with an unavailable quote.
- *  - minTradingDays: distinct UTC+3 days with at least one filled
- *    order on the challenge account (pass condition, phases ≥ 1).
+ *  - A pass also requires the balance after settling open positions at
+ *    the mark (exit spread + closing fee) to meet the target, and every
+ *    open position to be settleable now (fresh mark, market open).
+ *  - minTradingDays: distinct UTC+3 days with at least one order fill
+ *    on the challenge account (pass condition, phases ≥ 1).
  *  - Consistency score and profitableDaysPer30 are PAYOUT conditions
  *    (Rulebook "practices"/"payouts"), not trading restrictions —
  *    they are surfaced as metrics only, never breach/pass triggers.
@@ -92,10 +95,14 @@ export function challengeDay(ts = Date.now()) {
 
 /** Distinct UTC+3 trading days with ≥1 filled order on the account. */
 export async function countTradingDays(client, accountId) {
+  /* A trading day is the UTC+3 day an order FILLED. Each fill creates exactly
+     one root position (opened_at = fill time); partial-close slices carry a
+     parent_position_id and the parent's opened_at, so they are excluded.
+     (Order created_at would credit a pending order's placement day.) */
   const { rows } = await client.query(
-    `SELECT count(DISTINCT (to_char(created_at AT TIME ZONE 'UTC' + interval '3 hours', 'YYYY-MM-DD')))::int AS days
-       FROM trading_orders
-      WHERE account_id = $1 AND status = 'filled'`,
+    `SELECT count(DISTINCT (to_char(opened_at AT TIME ZONE 'UTC' + interval '3 hours', 'YYYY-MM-DD')))::int AS days
+       FROM trading_positions
+      WHERE account_id = $1 AND parent_position_id IS NULL`,
     [accountId])
   return rows[0]?.days ?? 0
 }
@@ -106,7 +113,7 @@ export async function countTradingDays(client, accountId) {
  *
  * @returns {{status:'pass'|'fail'|'none'|'deferred', violations:Array, metrics:object}}
  */
-export function evaluateRules({ rules, stage = 1, startingBalance, balance, equity, dayBasis, dailyLossSoFar, trailing, tradingDays = 0, now = Date.now(), expiresAt = null }) {
+export function evaluateRules({ rules, stage = 1, startingBalance, balance, equity, settlementBalance, dayBasis, dailyLossSoFar, trailing, tradingDays = 0, now = Date.now(), expiresAt = null }) {
   const starting = D(startingBalance)
   const violations = []
   const metrics = {}
@@ -154,9 +161,18 @@ export function evaluateRules({ rules, stage = 1, startingBalance, balance, equi
   if ((rules.phases ?? 0) >= 1) {
     const target = D(stage === 2 ? (rules.phase2TargetPct ?? rules.phase1TargetPct) : (rules.phase1TargetPct ?? 0))
     const targetAmount = starting.times(target).div(100)
-    metrics.target = { pct: target.toString(), amount: targetAmount.toFixed(2), reached: D(metrics.realizedProfit).gte(targetAmount) }
+    /* A pass settles every open position at the mark. The target is measured
+       on CLOSED net profit, so the profit that will remain closed after that
+       settlement must also meet the target — otherwise an open losing
+       position would be realized below the target after the pass.
+       settlementBalance: undefined → no open positions (equals balance);
+       null → open positions cannot be settled now → no pass yet. */
+    const settled = settlementBalance === undefined ? D(balance) : settlementBalance === null ? null : D(settlementBalance)
+    metrics.target = { pct: target.toString(), amount: targetAmount.toFixed(2), reached: D(metrics.realizedProfit).gte(targetAmount),
+      settlementProfit: settled ? settled.minus(starting).toFixed(2) : null }
     const pass = target.gt(0)
       && D(metrics.realizedProfit).gte(targetAmount)
+      && settled !== null && settled.minus(starting).gte(targetAmount)
       && tradingDays >= (rules.minTradingDays ?? 0)
       && violations.length === 0
     if (pass) return { status: 'pass', violations, metrics }
@@ -360,7 +376,7 @@ export class ChallengeService {
       const tradingDays = await countTradingDays(this.pool, challenge.demo_account_id)
       const evaluation = evaluateRules({
         rules, stage: challenge.stage, startingBalance: starting,
-        balance: a.balance, equity: a.equity,
+        balance: a.balance, equity: a.equity, settlementBalance: a.settlement_balance,
         dayBasis: day ? day.basis : null,
         trailing: trailing ? { peakEquity: trailing.peak_equity } : null,
         tradingDays, expiresAt: challenge.expires_at,
