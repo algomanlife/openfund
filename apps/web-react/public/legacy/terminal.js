@@ -104,6 +104,16 @@ const I18N = {
     'cf.detail': 'جزئیات موقعیت', 'sltp.title': 'ویرایش ریسک',
     'pos.details': ['موقعیت', 'بازار', 'جهت', 'اندازه', 'قیمت ورود', 'قیمت مارک', 'اهرم', 'کولترال', 'لیکوییدیشن تخمینی', 'سود/زیان شناور', 'استاپ‌لاس / تیک‌پرافیت', 'زمان باز شدن', 'کارمزد باز شدن'],
     'act.close': 'بستن', 'act.sltp': 'SL/TP', 'act.details': 'جزئیات', 'act.cancel': 'لغو',
+    'act.share': 'اشتراک‌گذاری',
+    'share.title': 'اشتراک‌گذاری سود و زیان', 'share.download': 'دانلود PNG', 'share.native': 'اشتراک‌گذاری', 'share.close': 'بستن',
+    'share.unrealized': 'سود/زیان شناور', 'share.realized': 'سود/زیان تحقق‌یافته',
+    'share.entry': 'قیمت ورود', 'share.mark': 'قیمت فعلی', 'share.exit': 'قیمت بسته شدن', 'share.size': 'اندازه',
+    'share.opened': 'زمان باز شدن', 'share.closedAt': 'زمان بسته شدن',
+    'share.open': 'باز', 'share.closed': 'بسته‌شده', 'share.buy': 'خرید', 'share.sell': 'فروش',
+    'share.live': 'قیمت زنده', 'share.stale': 'قیمت با تأخیر', 'share.gone': 'پوزیشن دیگر باز نیست',
+    'share.liveNote': 'سود و زیان این پوزیشن باز با دادهٔ زندهٔ حساب به‌روز می‌شود.', 'share.finalNote': 'نتیجهٔ نهایی ثبت‌شده برای این پوزیشن بسته‌شده.',
+    'share.profit': 'سود', 'share.loss': 'زیان', 'share.openAt': 'ورود', 'share.closeAt': 'خروج', 'share.markAt': 'فعلی',
+    'share.saved': 'تصویر ذخیره شد.', 'share.failed': 'ساخت تصویر ممکن نشد. دوباره تلاش کنید.', 'share.na': 'نامشخص',
     'tag.pending': 'در انتظار',
     'res.filled': 'انجام‌شده', 'res.cancelled': 'لغو‌شده', 'res.closed-profit': 'بسته با سود', 'res.closed-loss': 'بسته با زیان',
     'res.stop-loss': 'استاپ‌لاس', 'res.take-profit': 'تیک‌پرافیت', 'res.market-close': 'بستن مارکت', 'res.liquidation': 'لیکویید شد',
@@ -203,6 +213,16 @@ const EN = {
   'cf.cancel': 'Cancel order', 'cf.cancelTxt': 'Remove this pending simulated order?',
   'cf.detail': 'Position details', 'sltp.title': 'Modify risk',
   'act.close': 'Close', 'act.sltp': 'SL/TP', 'act.details': 'Details', 'act.cancel': 'Cancel',
+  'act.share': 'Share',
+  'share.title': 'Share P&L', 'share.download': 'Download PNG', 'share.native': 'Share', 'share.close': 'Close',
+  'share.unrealized': 'Unrealized P&L', 'share.realized': 'Realized P&L',
+  'share.entry': 'Entry price', 'share.mark': 'Current price', 'share.exit': 'Closing price', 'share.size': 'Size',
+  'share.opened': 'Opened', 'share.closedAt': 'Closed',
+  'share.open': 'OPEN', 'share.closed': 'CLOSED', 'share.buy': 'BUY', 'share.sell': 'SELL',
+  'share.live': 'Live price', 'share.stale': 'Price delayed', 'share.gone': 'Position no longer open',
+  'share.liveNote': 'P&L for this open position updates from your live account data.', 'share.finalNote': 'Recorded final result for this closed position.',
+  'share.profit': 'PROFIT', 'share.loss': 'LOSS', 'share.openAt': 'OPEN', 'share.closeAt': 'CLOSE', 'share.markAt': 'NOW',
+  'share.saved': 'Image saved.', 'share.failed': 'Could not create the image. Try again.', 'share.na': 'N/A',
   'tag.pending': 'pending',
   'res.filled': 'filled', 'res.cancelled': 'cancelled', 'res.closed-profit': 'closed-profit',
   'res.closed-loss': 'closed-loss', 'res.stop-loss': 'Stop Loss', 'res.take-profit': 'Take Profit',
@@ -1164,6 +1184,7 @@ function renderBottom(){
         <button class="act-btn" ${tp.canTrade===false?'disabled':''} data-close="${p.id}">${t('act.close')}</button>
         <button class="act-btn" ${tp.canTrade===false?'disabled':''} data-sltp="${p.id}">${t('act.sltp')}</button>
         <button class="act-btn" data-detail="${p.id}">${t('act.details')}</button>
+        <button class="act-btn act-share" data-share="${p.id}">${t('act.share')}</button>
       </td></tr>`;
   }).join('') || emptyRow(12, t('empty.positions'));
   $('tb-orders').innerHTML = st.orders.map(o => {
@@ -1192,8 +1213,9 @@ function renderBottom(){
       <td class="r num">${fmt.price(h.price, d)}</td>
       <td><span class="tag ${cls}">${tp.readOnly ? h.result : t('res.' + h.result)}</span></td>
       <td class="num">${fmt.dt(h.time / 1000)}</td>
+      <td>${h.realized != null && Number.isFinite(h.realized) ? `<button class="act-btn act-share" data-share-history="${h.id}">${t('act.share')}</button>` : ''}</td>
     </tr>`;
-  }).join('') || emptyRow(7, t('empty.history'));
+  }).join('') || emptyRow(8, t('empty.history'));
   $('tb-fills').innerHTML = st.fills.map(f => {
     const m = board.getMeta(f.market); if (!m) return '';
     const d = Number(m.pricePrecision);
@@ -1217,6 +1239,7 @@ function renderBottom(){
     </tr>`;
   }).join('') || emptyRow(4, t('empty.funding'));
   wireRowActions();
+  window.OpenfundShareCard?.refresh();
 }
 function emptyRow(cols, text){
   return `<tr class="empty-tr"><td colspan="${cols}" style="color:var(--muted);padding:22px 18px;white-space:normal">${text}</td></tr>`;
@@ -1234,7 +1257,95 @@ function detailLabels(){
 function esc(v){
   return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
+/* ============================================================
+   SHARE P&L — builds the share-card model from the same authoritative
+   values the positions/history tables show (server snapshot in server
+   mode, the live board otherwise). No P&L is computed here beyond what
+   the table already displays; unavailable fields render as N/A.
+   ============================================================ */
+function shareCategory(m){
+  const g = m && m.group;
+  if (!g) return '';
+  for (const k of ['cat.' + g, 'cat.' + g.replace(/s$/, '')]) { const v = t(k); if (v !== k) return v; }
+  return '';
+}
+function shareCommon(market){
+  const m = board.getMeta(market);
+  const product = window.__ofTerminalConfig && window.__ofTerminalConfig.product === 'perpetual' ? 'PERPETUAL' : 'PROP';
+  return { m, rtl: document.documentElement.dir === 'rtl', productLabel: 'OPENFUND ' + product };
+}
+function shareResult(v){ return v == null || !Number.isFinite(v) ? t('share.unrealized') : t(v >= 0 ? 'share.profit' : 'share.loss'); }
+function shareTime(ms){
+  const d = new Date(ms), z = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '/' + z(d.getMonth() + 1) + '/' + z(d.getDate()) + ' ' + z(d.getHours()) + ':' + z(d.getMinutes()) + ':' + z(d.getSeconds());
+}
+function shareGenerated(){
+  return new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+}
+function shareOpenModel(id){
+  const p = tp && tp.getPosition(id);
+  if (!p) return null;
+  const { m, rtl, productLabel } = shareCommon(p.market);
+  if (!m) return null;
+  const d = Number(m.pricePrecision), dps = Number(m.sizePrecision) || 2, na = t('share.na');
+  /* identical expressions to the positions table */
+  const mk = tp.serverMode ? p.srvMark ?? null : board.getMark(p.market) || p.entry;
+  const pnl = tp.readOnly ? null : tp.serverMode ? p.srvPnl ?? null : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
+  const roe = tp.serverMode ? p.srvRoi ?? null : pnl == null ? null : pnl / p.margin * 100;
+  const stale = tp.serverMode ? (tp.status === 'stale' || tp.status === 'disconnected' || mk == null) : (board.status !== 'live' || board.stale(p.market));
+  return {
+    rtl, productLabel, status: 'open', statusLabel: t('share.open'),
+    symbol: m.symbol, instrument: shareCategory(m), long: p.side === 'long',
+    sideLabel: t(p.side === 'long' ? 'share.buy' : 'share.sell'),
+    leverageLabel: Number.isFinite(Number(p.leverage)) && p.leverage ? p.leverage + '×' : '',
+    pnl: pnl == null || !Number.isFinite(pnl) ? null : pnl,
+    pnlLabel: t('share.unrealized'),
+    pnlText: pnl == null || !Number.isFinite(pnl) ? na : fmt.usdS(pnl),
+    roiText: roe == null || !Number.isFinite(roe) ? '' : fmt.pct(roe),
+    resultLabel: shareResult(pnl),
+    sizeText: p.size != null && Number.isFinite(p.size) ? fmt.num(p.size, dps) + ' ' + m.base : '',
+    openLabel: t('share.openAt'), openPrice: Number.isFinite(p.entry) ? fmt.price(p.entry, d) : na,
+    openTime: p.openedAt ? shareTime(p.openedAt) : na,
+    endLabel: t('share.markAt'), endPrice: mk != null && Number.isFinite(mk) ? fmt.price(mk, d) : na,
+    endTime: shareTime(Date.now()),
+    stale, feedLabel: t(stale ? 'share.stale' : 'share.live'),
+    generatedText: shareGenerated()
+  };
+}
+function shareClosedModel(id){
+  const h = tp && tp.state.history.find(x => String(x.id) === String(id));
+  if (!h || h.realized == null || !Number.isFinite(h.realized)) return null;
+  const { m, rtl, productLabel } = shareCommon(h.market);
+  if (!m) return null;
+  const d = Number(m.pricePrecision), dps = Number(m.sizePrecision) || 2, na = t('share.na');
+  return {
+    rtl, productLabel, status: 'closed', statusLabel: t('share.closed'),
+    symbol: m.symbol, instrument: shareCategory(m), long: h.side === 'long',
+    sideLabel: t(h.side === 'long' ? 'share.buy' : 'share.sell'),
+    leverageLabel: Number.isFinite(Number(h.leverage)) && h.leverage ? h.leverage + '×' : '',
+    pnl: h.realized, pnlLabel: t('share.realized'), pnlText: fmt.usdS(h.realized),
+    roiText: h.roi != null && Number.isFinite(h.roi) ? fmt.pct(h.roi) : '',
+    resultLabel: shareResult(h.realized),
+    sizeText: Number.isFinite(h.size) ? fmt.num(h.size, dps) + ' ' + m.base : '',
+    openLabel: t('share.openAt'), openPrice: h.entry != null && Number.isFinite(h.entry) ? fmt.price(h.entry, d) : na,
+    openTime: h.openedAt ? shareTime(h.openedAt) : na,
+    endLabel: t('share.closeAt'), endPrice: Number.isFinite(h.price) ? fmt.price(h.price, d) : na,
+    endTime: h.time ? shareTime(h.time) : na,
+    stale: false, feedLabel: '', generatedText: shareGenerated()
+  };
+}
+function shareLabels(){
+  return { title: t('share.title'), download: t('share.download'), share: t('share.native'), close: t('share.close'),
+    liveNote: t('share.liveNote'), finalNote: t('share.finalNote'), saved: t('share.saved'), failed: t('share.failed'), gone: t('share.gone') };
+}
+function openShare(kind, id){
+  if (!window.OpenfundShareCard) return;
+  const getter = kind === 'history' ? () => shareClosedModel(id) : () => shareOpenModel(id);
+  if (!window.OpenfundShareCard.open(getter, shareLabels())) toast(t('share.failed'), 'error');
+}
 function wireRowActions(){
+  document.querySelectorAll('[data-share]').forEach(b => b.addEventListener('click', () => openShare('position', b.dataset.share)));
+  document.querySelectorAll('[data-share-history]').forEach(b => b.addEventListener('click', () => openShare('history', b.dataset.shareHistory)));
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => {
     const partial = tp.serverMode && !tp.readOnly;
     confirmDialog(t('cf.close'), t('cf.closeTxt'), () => {
@@ -1465,7 +1576,7 @@ function boot(){
         renderStatus();
         if (ddOpen) renderDropdown($('market-search').value);
         if (now - lastBook > 1500){ lastBook = now; renderBook(); noteTrade(board.marks.get(S.marketId)); renderTrades(); }
-        if (now - lastTrig > 1500){ lastTrig = now; tp.checkTriggers(); renderAccount(); velaPositionsSync(); if (S.btTab === 'positions' && tp.state.positions.length) renderBottom(); }
+        if (now - lastTrig > 1500){ lastTrig = now; tp.checkTriggers(); renderAccount(); velaPositionsSync(); if (S.btTab === 'positions' && tp.state.positions.length) renderBottom(); else window.OpenfundShareCard?.refresh(); }
         computeForm();
       });
     });

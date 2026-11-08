@@ -82,7 +82,12 @@ export function TradingBridge({ pricing, accountId }: { pricing?: Record<string,
             type: h.exit_reason === 'sl' ? 'stop-loss'
               : h.exit_reason === 'tp' ? 'take-profit'
               : h.exit_reason === 'liquidation' ? 'liquidation' : 'market-close',
-            result: Number(h.realized_pnl) >= 0 ? 'closed-profit' : 'closed-loss'
+            result: Number(h.realized_pnl) >= 0 ? 'closed-profit' : 'closed-loss',
+            /* recorded server values for the share card (display only) */
+            entry: n(h.entry_price), leverage: h.leverage ?? null, margin: n(h.margin),
+            realized: n(h.realized_pnl), roi: n(h.roi_pct),
+            openedAt: h.opened_at ? new Date(h.opened_at).getTime() : null,
+            currency: state.account?.currency || 'USD'
           })),
           fills: [], funding: [], notifications: []
         }

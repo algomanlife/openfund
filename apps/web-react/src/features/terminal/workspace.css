@@ -364,3 +364,23 @@ html[dir="rtl"] .pos-detail-grid dd { font-family: Ubuntu, Irancell, system-ui, 
   .lev-presets button, .pct-btns button { min-height: 30px; }
   input[type="range"] { height: 28px; touch-action: pan-y; }
 }
+
+/* Share P&L: the canvas is the exported image, scaled to the dialog. */
+.dlg.share-dlg { width: min(460px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); }
+.share-preview { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--obsidian); line-height: 0; }
+.share-preview canvas { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; max-height: calc(100dvh - 190px); object-fit: contain; }
+.share-status { margin: 10px 0 0; min-height: 1.5em; font-size: 12px; color: var(--muted); }
+.share-actions { flex-wrap: wrap; }
+.act-btn.act-share { color: var(--mint); }
+/* row actions stay pinned to the table's end edge, so Share/Details remain
+   in view while wide position rows scroll horizontally */
+#bt-positions th:last-child, .bt-table #tb-positions td:last-child { position: sticky; inset-inline-end: 0; z-index: 1;
+  background: var(--obsidian); box-shadow: -8px 0 8px -8px #0008; }
+#bt-positions th:last-child { z-index: 3; }
+html[dir="rtl"] #bt-positions th:last-child, html[dir="rtl"] .bt-table #tb-positions td:last-child { box-shadow: 8px 0 8px -8px #0008; }
+.bt-table #tb-positions td:last-child { white-space: nowrap; }
+.bt-table #tb-positions td:last-child .act-btn { padding: 4px 7px; margin-inline-start: 4px; }
+@media (max-width: 540px) {
+  .dlg.share-dlg { padding: 14px 12px; }
+  .share-actions > button { flex: 1 1 auto; min-height: 40px; }
+}
