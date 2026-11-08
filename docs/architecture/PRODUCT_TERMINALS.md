@@ -75,6 +75,12 @@ The [account directory and API additions](../trading/UNIFIED_ACCOUNTS.md) carry 
 
 The [compact terminal ADR](../decisions/0007-compact-terminal-layout.md) retains this product/account contract. `workspace.css` is loaded only inside the shared trading iframe; `workspaceLayout.ts` handles presentation view controls and localized disclosure text. The trading route receives compact outer navigation; dashboards, portfolios, journals and concurrent website sections keep their existing layout. Desktop and responsive geometry is compared between languages in browser acceptance.
 
+Theme initialization reads the system color preference only when no explicit
+user choice exists. A manual toggle stores `of-theme-choice`; the legacy
+`of-theme` key records the resolved paint, not user intent. The root document
+then broadcasts theme changes to the shared trading iframe and Vela chart.
+This does not override browser features that recolor the final page paint.
+
 ## Locale availability
 
 The English browser experience exposes Prop only. EN Perpetual routes redirect to

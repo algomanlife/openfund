@@ -1,6 +1,15 @@
 # Feature status
 
-v0.4.1 stabilization checkpoint (2026-11-07): v0.4.0 is the published and
+2026-11-08 theme preference update (unreleased branch): when no explicit
+choice exists, the application initializes from the OS light/dark preference
+and follows later OS changes. A manual toggle saves an explicit choice and
+takes priority across routes and reloads. `of-theme` remains the resolved
+legacy value; `of-theme-choice` records user intent. Browser-level Force Dark
+Page overrides cannot be disabled by website code; the owner Opera profile
+required a per-site exception for `openfi.cloud`. PR #50 is merged into
+`main`, while the live immutable v0.4.1 is still `b8389ca`.
+
+Historical v0.4.1 stabilization checkpoint (2026-11-07, before release): v0.4.0 is the published and
 deployed version. Runtime CMS configuration, a complete local bootstrap and
 public translation permission narrowing are merged source work. The iframe
 theme-state repair remains **In Progress** after post-merge CI exposed a

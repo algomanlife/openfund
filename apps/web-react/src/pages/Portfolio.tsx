@@ -4,6 +4,7 @@ import portfolioBody from './portfolio-body.html?raw'
 import { useSession, backendUrl } from '../session/useOpenfundSession'
 import { RainbowConnect } from '../wallet/RainbowConnect'
 import { fetchCmsTranslations } from '../cms/client'
+import { chooseTheme, currentTheme } from '../theme'
 import './portfolio.css'
 
 /**
@@ -273,17 +274,10 @@ export default function Portfolio() {
           document.dispatchEvent(new Event('DOMContentLoaded', { bubbles: true }))
           const b = document.getElementById('theme-toggle')
           if (b) {
-            const set = (th: string) => {
-              document.documentElement.setAttribute('data-theme', th)
-              b.textContent = th === 'dark' ? '◐' : '◑'
-              try { localStorage.setItem('of-theme', th) } catch { }
-            }
-            let th = 'dark'
-            try { th = localStorage.getItem('of-theme') || 'dark' } catch { }
-            set(th)
+            b.textContent = currentTheme() === 'dark' ? '◐' : '◑'
             if (!(b as any).__ofThemeWired) {
               ;(b as any).__ofThemeWired = true
-              b.addEventListener('click', () => set(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'))
+              b.addEventListener('click', () => chooseTheme(currentTheme() === 'dark' ? 'light' : 'dark'))
             }
           }
         }

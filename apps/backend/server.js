@@ -82,7 +82,7 @@ app.use((req,res,next) => {
       startup from the exact files that ship in react/legacy/, so the
       policy allows precisely those scripts and nothing else.
    API responses keep the fully strict policy. */
-const CSP_THEME_BOOT_HASH = "'sha256-ipa/NWICPqnGA4ZvVmWe4T4YpGCx2Bdjaquw+QILedc='" /* apps/web-react/index.html pre-paint script */
+const CSP_THEME_BOOT_HASH = "'sha256-y10GGU3Zmo4XbGZHN4KUESdx+37VdZfpoU2a34rC+Pc='" /* apps/web-react/index.html pre-paint script */
 const legacyScriptHashes = () => {
   const dir = fileURLToPath(new URL('../../react/legacy', import.meta.url))
   const names = ['locale.js', 'app.js', 'features.js', 'market.js', 'motion.js']

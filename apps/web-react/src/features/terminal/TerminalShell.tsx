@@ -26,6 +26,7 @@ import {
 } from "./model";
 import "./terminal.css";
 import { TerminalContext, useTerminal } from "./TerminalContext";
+import { chooseTheme, currentTheme } from "../../theme";
 export default function TerminalShell({ product }: { product: Product }) {
   const params = useParams(),
     locale: Locale = params.locale === "en" ? "en" : "fa";
@@ -49,10 +50,7 @@ export default function TerminalShell({ product }: { product: Product }) {
   const [messages, setMessages] = useState<
     Record<string, { fa: string; en: string }>
   >({});
-  const [theme, setTheme] = useState(() => {
-    try { return localStorage.getItem("of-theme") === "light" ? "light" : "dark"; }
-    catch { return document.documentElement.dataset.theme === "light" ? "light" : "dark"; }
-  });
+  const [theme, setTheme] = useState(currentTheme);
   const page = pathname.split("/").at(-1) || "dashboard";
   const context = useResource(
     product,
@@ -74,18 +72,10 @@ export default function TerminalShell({ product }: { product: Product }) {
     setOpen(false);
   }, [locale, pathname, search]);
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    try { localStorage.setItem("of-theme", theme); } catch { /* Keep the in-memory theme when storage is unavailable. */ }
-  }, [theme]);
-  useEffect(() => {
-    const sync = () => setTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
+    const sync = () => setTheme(currentTheme());
     const observer = new MutationObserver(sync);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-    const stored = (event: StorageEvent) => {
-      if (event.key === "of-theme") setTheme(event.newValue === "light" ? "light" : "dark");
-    };
-    window.addEventListener("storage", stored);
-    return () => { observer.disconnect(); window.removeEventListener("storage", stored); };
+    return () => observer.disconnect();
   }, []);
   useEffect(() => {
     let active = true;
@@ -214,11 +204,13 @@ export default function TerminalShell({ product }: { product: Product }) {
               <RainbowConnect />
               <button
                 aria-label={t("تغییر پوسته", "Toggle theme")}
-                onClick={() =>
-                  setTheme((x) => (x === "dark" ? "light" : "dark"))
-                }
+                onClick={() => {
+                  const next = currentTheme() === "dark" ? "light" : "dark";
+                  chooseTheme(next);
+                  setTheme(next);
+                }}
               >
-                ◐
+                {theme === "dark" ? "◐" : "◑"}
               </button>
               <button
                 onClick={() =>

@@ -9,6 +9,7 @@ import { labels, type Locale, type InfoPage } from './content'
 import './information.css'
 import TelegramCommunity from '../community/TelegramCommunity'
 import { bindNavigation, renderNavigation, navigationClick, navigationKeyDown } from './navigation'
+import { chooseTheme, currentTheme } from '../../theme'
 
 const header = landingBody.match(/<header\b[^>]*>[\s\S]*?<\/header>/)![0]
 const footer = landingBody.match(/<footer[\s\S]*?<\/footer>/)![0]
@@ -103,10 +104,9 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
     if (target.id === 'language-toggle') {
       navigate(location.pathname.replace(`/${locale}/`, `/${locale === 'fa' ? 'en' : 'fa'}/`) + location.search)
     } else if (target.id === 'theme-toggle') {
-      const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'
-      document.documentElement.dataset.theme = next
+      const next = currentTheme() === 'light' ? 'dark' : 'light'
+      chooseTheme(next)
       target.textContent = next === 'dark' ? '◐' : '◑'
-      try { localStorage.setItem('of-theme', next) } catch { /* private browsing */ }
     } else if (target.classList.contains('menu')) {
       const open = target.getAttribute('aria-expanded') !== 'true'
       target.setAttribute('aria-expanded', String(open))
@@ -154,10 +154,7 @@ export default function InformationShell({ page, description, footer = true, nav
     if (!runtime.__ofLegacyLandingLoaded && !runtime.__ofLegacyTerminalLoaded) {
       dispatchEvent(new CustomEvent('of-language'))
     }
-    try {
-      localStorage.setItem('of-language', locale)
-      document.documentElement.dataset.theme = localStorage.getItem('of-theme') || 'dark'
-    } catch { document.documentElement.dataset.theme ||= 'dark' }
+    try { localStorage.setItem('of-language', locale) } catch { /* Storage is optional. */ }
     document.title = title || `${labels[page][locale]} | Openfund`
     const tags: HTMLElement[] = []
     const meta = document.createElement('meta')

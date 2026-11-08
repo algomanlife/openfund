@@ -1,6 +1,15 @@
 # Changelog
 
-## v0.4.1 — stabilization in progress, unpublished
+## Unreleased — system-default theme preference
+
+- Initialize both public pages and the shared terminal from the OS light/dark
+  preference only when the user has not selected a theme. Keep explicit
+  user choices across routes, reloads and later OS changes.
+- Keep the trading iframe and Vela chart synchronized with the root theme.
+  Opera Force Dark Page remains a browser-level override; the user profile
+  needs a per-site exception when that setting recolors the final paint.
+
+## v0.4.1 — released 2026-11-07
 
 - Move public CMS and other browser configuration to a no-store runtime script,
   outside the immutable frontend payload. The production CMS origin must be
@@ -18,8 +27,8 @@
   outer application changes theme. Follow-up work preserves the shell's theme
   when a product switch boots a replacement trading iframe.
 
-These changes are source-level work only until candidate, browser, CMS,
-review and production gates pass. v0.4.0 and its tag remain untouched.
+The v0.4.1 tag is published and deployed. The theme preference changes in the
+Unreleased section are not part of that immutable release.
 
 ## v0.3.1 — Prop soft launch: evaluation engine, challenge trading, admin operations (candidate, unreleased)
 

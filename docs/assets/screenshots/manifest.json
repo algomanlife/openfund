@@ -6,6 +6,22 @@
   "wallet": "Public pages anonymous; account captures use a disposable generated signer, real local SIWE/API and no fabricated market or financial responses. No personal wallet, approvals or chain transactions.",
   "screenshots": [
     {
+      "file": "theme-preference/light-default.png",
+      "route": "/react/#/fa/prop/trade",
+      "viewport": { "width": 1440, "height": 900 },
+      "session": "anonymous",
+      "capturedAt": "2026-11-08T05:21:25Z",
+      "state": "Unreleased local Vite preview; fresh OS light preference, no explicit theme choice; live Gains connection unavailable at capture; no financial fixture"
+    },
+    {
+      "file": "theme-preference/dark-default.png",
+      "route": "/react/#/fa/prop/trade",
+      "viewport": { "width": 1440, "height": 900 },
+      "session": "anonymous",
+      "capturedAt": "2026-11-08T05:21:25Z",
+      "state": "Unreleased local Vite preview; fresh OS dark preference, no explicit theme choice; live Gains connection unavailable at capture; no financial fixture"
+    },
+    {
       "file": "home.jpg",
       "route": "/react/#/en/home",
       "viewport": {

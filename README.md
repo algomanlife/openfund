@@ -20,12 +20,12 @@ Openfund is an early-stage trading technology project maintained in a public rep
 
 This repository supports open-source collaboration, but has **no root license granting blanket reuse rights**. Component licenses and upstream notices apply separately; see [Licensing and upstream attribution](#licensing-and-upstream-attribution). Source availability is not a claim of production readiness, audited security or an active funded-trading service.
 
-**Release status (2026-11-07):** v0.4.0 is the latest published version. The
-v0.4.1 source fixes from PR #47 and PR #48 are merged, but post-merge CI found
-a terminal theme transition race and follow-up work remains under review. The
-public site currently reports v0.4.0 at `/version`; a successful health response
-does not establish wallet, payment, CMS coverage or theme acceptance. See the
-[v0.4.1 audit](docs/reviews/v0.4.1/AUDIT.md) and [release runbook](docs/deployment/RELEASES.md).
+**Release status (2026-11-08):** v0.4.1 is published and deployed at
+`b8389ca`. PR #50 is merged on `main` but not in that immutable release.
+The system-default theme change on this branch is unreleased. A browser's
+Force Dark Page override can still alter the final paint even when the app's
+light palette is correct; deployed appearance needs acceptance in the actual
+browser. See the [release runbook](docs/deployment/RELEASES.md).
 
 ### Product areas
 

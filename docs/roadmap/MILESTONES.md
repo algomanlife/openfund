@@ -1,5 +1,11 @@
 # Milestones and acceptance gates
 
+2026-11-08 theme preference follow-up: **In Progress / unreleased**. Acceptance
+requires fresh-session OS-light and OS-dark defaults, OS-change propagation
+until a user toggles, manual choice precedence across routes/reload, and native
+terminal/chart paint checks. Opera Force Dark Page is a separate browser
+override and requires a per-site exception when it ignores the site's palette.
+
 P0 audit correction: the earlier mutable 8080 preview lost its frontend manifest and was unversioned. Clean-context real clicks verify white light canvases, not the owner Opera profile (permission unavailable). Final candidate hashes, pipeline outcomes and canonical extracted-archive captures are tracked in [P0 evidence](../../docs/assets/screenshots/manifest.json). Historical captures and prior matched-runtime claims do not identify the final build. Official v0.2.0 and integrated base `d05b4b8` remain unchanged; owner acceptance is open.
 
 Reviewed against integrated source `d05b4b8`: PR #42 is merged but unreleased. Official v0.2.0 remains `561e7f3` and includes PR #40/#41. The current community controls are locally captured and UNRELEASED; local white-theme refinement acceptance is verified with exact white canvases, text contrast >=4.5 and authenticated generated-session evidence; official review and deployment remain open. [Current evidence](../reviews/community-theme/DELIVERY.md) records genuine captures and checks; local port 8080 and deployed acceptance are separate. The requested v0.2.1 is unallocated and must be coordinated with the existing `feat:` minor-bump policy. No completion dates are promised. **Completed**, **In Progress**, **Planned** and **Blocked** describe only each row's scope, not official delivery.
