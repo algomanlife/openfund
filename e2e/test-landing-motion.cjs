@@ -21,7 +21,7 @@ async function fixture(context) {
 (async () => {
   const browser = await chromium.launch();
   try {
-    const context = await browser.newContext(); await fixture(context);
+    const context = await browser.newContext({colorScheme:'dark'}); await fixture(context);
     const page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
     if (process.env.LANDING_BEFORE_URL) {
       for (const [width,height] of [[1440,900],[375,667]]) {
@@ -95,7 +95,10 @@ async function fixture(context) {
       await page.goto(BASE+'/#/fa/home'); await page.locator('.home-panel .button').nth(i).click(); await page.waitForURL(target);
       check('product '+i+' follows existing destination',target.test(page.url()));
     }
-    await page.goto(BASE+'/#/fa/home'); await page.locator('#language-toggle').click(); await page.locator('#builder').waitFor(); await page.waitForFunction(()=>window.__ofLandingKicked&&window.ofTranslations&&document.documentElement.lang==='en');
+    await page.goto(BASE+'/#/fa/home');
+    await page.reload();
+    await page.locator('#language-toggle').waitFor();
+    await page.locator('#language-toggle').click(); await page.locator('#builder').waitFor(); await page.waitForFunction(()=>window.__ofLandingKicked&&window.ofTranslations&&document.documentElement.lang==='en');
     check('English uses existing challenge builder',await page.locator('.home-products').count()===0&&await page.locator('#builder').count()===1);
     await page.locator('#language-toggle').click(); await page.waitForFunction(()=>!window.__ofLegacyLandingLoaded&&document.querySelector('.technical-features'));
     check('language round trip returns Persian gateway',page.url().includes('/fa/home'));
