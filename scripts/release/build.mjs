@@ -35,7 +35,7 @@ const port = Number(process.env.RELEASE_TEST_PORT || 8288);
 if (!Number.isInteger(port) || port < 1024 || port > 65535) throw Error('Invalid RELEASE_TEST_PORT.');
 const base = `http://localhost:${port}`;
 try { await fetch(base+'/health',{signal:AbortSignal.timeout(500)}); throw Error('Release test port is already occupied.'); } catch(e) { if(e.message==='Release test port is already occupied.') throw e; }
-const env = {...process.env,RELEASE_VERSION:version,RELEASE_SOURCE_COMMIT:commit,NODE_ENV:'test',SIM_TEST_MODE:'1',PORT:String(port),ALLOWED_DOMAINS:`localhost:5173,localhost:${port}`,CORS_ORIGINS:`http://localhost:5173,http://localhost:${port}`,TEST_BACKEND_URL:base,TEST_FRONTEND_URL:base+'/react',
+const env = {...process.env,RELEASE_VERSION:version,RELEASE_SOURCE_COMMIT:commit,NODE_ENV:'test',SIM_TEST_MODE:'1',PORT:String(port),ALLOWED_DOMAINS:`localhost:5173,localhost:${port}`,CORS_ORIGINS:`http://localhost:5173,http://localhost:${port}`,TEST_BACKEND_URL:base,TEST_FRONTEND_URL:base,
   /* candidate-gate-only values (SIM_TEST_MODE test server, never production):
      the admin suite needs a token; the purchase suite needs a test receiver;
      the strict CSP must allow the local Directus origin the test frontend

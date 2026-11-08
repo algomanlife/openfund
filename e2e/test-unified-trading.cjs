@@ -10,7 +10,7 @@ const req = createRequire(
   path.resolve(__dirname, "../apps/backend/package.json"),
 );
 const { generatePrivateKey, privateKeyToAccount } = req("viem/accounts");
-const BASE = process.env.TEST_FRONTEND_URL || "http://localhost:8080/react";
+const BASE = process.env.TEST_FRONTEND_URL || "http://localhost:8080";
 const API = process.env.TEST_BACKEND_URL || "http://localhost:8080";
 const OUT = path.resolve(__dirname, "../output/playwright/unified");
 fs.mkdirSync(OUT, { recursive: true });
@@ -79,7 +79,7 @@ function check(name, value) {
       },
       wallets.map((w) => w.address),
     );
-    await page.goto(`${BASE}/#/en/prop/dashboard`);
+    await page.goto(`${BASE}/en/prop/dashboard`);
     await page
       .getByRole("button", { name: "Connect Wallet", exact: true })
       .first()
@@ -159,7 +159,7 @@ function check(name, value) {
       "/products/prop/context?account=00000000-0000-4000-8000-000000000000",
     );
     check("Unknown account is rejected", unknown.status === 404);
-    await page.goto(`${BASE}/#/en/prop/journal?account=${trial.id}`);
+    await page.goto(`${BASE}/en/prop/journal?account=${trial.id}`);
     await page.getByRole("navigation", { name: "Journal sections" }).waitFor();
     check(
       "All thirteen journal modules exist",
@@ -223,7 +223,7 @@ function check(name, value) {
         .getByRole("heading", { name: "Breakout review", exact: true })
         .count()) === 0,
     );
-    await page.goto(`${BASE}/#/en/prop/trade?account=${trial.id}`);
+    await page.goto(`${BASE}/en/prop/trade?account=${trial.id}`);
     const frame = page.frameLocator("iframe");
     await frame.locator("#submit-order").waitFor();
     await frame
@@ -359,7 +359,7 @@ function check(name, value) {
       blocked.status === 403 &&
         blocked.data.error === "account_permanently_disabled",
     );
-    await page.goto(`${BASE}/#/en/prop/dashboard`);
+    await page.goto(`${BASE}/en/prop/dashboard`);
     await page.locator(`[data-account-id="${trial.id}"]`).waitFor();
     check(
       "Disabled card and historical data remain accessible",
@@ -374,7 +374,7 @@ function check(name, value) {
     });
     for (const locale of ["en", "fa"]) {
       await page.setViewportSize({ width: 390, height: 1000 });
-      await page.goto(`${BASE}/#/${locale}/prop/dashboard`);
+      await page.goto(`${BASE}/${locale}/prop/dashboard`);
       await page.locator(".of-account-card").first().waitFor();
       check(
         `Unified accounts ${locale} mobile has no overflow`,
@@ -382,7 +382,7 @@ function check(name, value) {
           () => document.documentElement.scrollWidth <= innerWidth + 1,
         ),
       );
-      await page.goto(`${BASE}/#/${locale}/prop/journal?account=${trial.id}`);
+      await page.goto(`${BASE}/${locale}/prop/journal?account=${trial.id}`);
       await page
         .getByRole("navigation", { name: "Journal sections" })
         .waitFor();

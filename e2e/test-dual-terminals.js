@@ -12,7 +12,7 @@ const { chromium } = require(
 );
 const fs = require("node:fs"),
   path = require("node:path");
-const BASE = process.env.TEST_FRONTEND_URL || "http://localhost:5186/react",
+const BASE = process.env.TEST_FRONTEND_URL || "http://localhost:5186",
   API = process.env.TEST_BACKEND_URL || "http://localhost:8091";
 const OUT = path.resolve(__dirname, "../output/playwright");
 fs.mkdirSync(OUT, { recursive: true });
@@ -69,7 +69,7 @@ const results = [],
       },
     };
   }, wallet.address);
-  await page.goto(BASE + "/#/en/prop/dashboard");
+  await page.goto(BASE + "/en/prop/dashboard");
   await page
     .getByRole("button", { name: "Connect Wallet", exact: true })
     .first()
@@ -419,7 +419,7 @@ const results = [],
         ],
       })) {
         for (const destination of pages) {
-          await page.goto(`${BASE}/#/${locale}/${product}/${destination}`);
+          await page.goto(`${BASE}/${locale}/${product}/${destination}`);
           await page.locator(".of-terminal").waitFor();
           await page.waitForFunction(
             ([product, locale]) =>
@@ -445,7 +445,7 @@ const results = [],
       }
   }
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto(`${BASE}/#/en/prop/portfolio`);
+  await page.goto(`${BASE}/en/prop/portfolio`);
   await page.getByRole("button", { name: "Toggle theme", exact: true }).click();
   check(
     "light theme applies",
@@ -457,7 +457,7 @@ const results = [],
     path: path.join(OUT, "prop-portfolio-light-en.png"),
   });
   await page.getByRole("button", { name: "Toggle theme", exact: true }).click();
-  await page.goto(BASE + "/#/en/home");
+  await page.goto(BASE + "/en/home");
   await page.locator(".home-stage").waitFor();
   check(
     "public header remains separate",
@@ -470,12 +470,12 @@ const results = [],
     .getAttribute("href");
   check(
     "Home perpetual CTA uses dedicated route",
-    href === "#/en/perpetual/trade",
+    href === "/en/perpetual/trade",
   );
-  await page.goto(BASE + "/#/portfolio");
+  await page.goto(BASE + "/portfolio");
   await page.waitForURL(/\/prop\/portfolio$/);
   check("legacy portfolio bookmark redirects", true);
-  await page.goto(`${BASE}/#/en/prop/portfolio`);
+  await page.goto(`${BASE}/en/prop/portfolio`);
   await page.getByRole("button", { name: "Details & notes" }).first().waitFor();
   await page.evaluate(() => window.ethereum.emit("accountsChanged", []));
   await page.getByRole("heading", { name: "Sign in", exact: true }).waitFor();
@@ -488,7 +488,7 @@ const results = [],
   });
   const anon = await anonymous.newPage();
   for (const product of ["prop", "perpetual"]) {
-    await anon.goto(`${BASE}/#/en/${product}/trade`);
+    await anon.goto(`${BASE}/en/${product}/trade`);
     const af = anon.frameLocator("iframe");
     await af.locator("#cur-pair").waitFor();
     await af.locator("#ac-equity").waitFor();

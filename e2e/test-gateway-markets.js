@@ -3,7 +3,7 @@ const { chromium } = require('playwright-core')
 const results = []
 const R = (n, ok, extra = '') => results.push(`${ok ? 'PASS' : 'FAIL'} - ${n}${extra ? '  [' + extra + ']' : ''}`)
 const SHOTS = '/Users/algoman/.qwenwork/workspace/mvw61rrm1ic7idr4/shots3'
-const BASE = 'http://127.0.0.1:4173/react'
+const BASE = 'http://127.0.0.1:4173'
 const fs = require('fs')
 fs.mkdirSync(SHOTS, { recursive: true })
 
@@ -26,9 +26,9 @@ async function toggleLanguage(page) {
   page.on('pageerror', e => errs.push(e.message.slice(0, 160)))
 
   /* ============ HOME (fa) ============ */
-  await page.goto(`${BASE}/#/`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/`, { waitUntil: 'load' })
   await page.waitForTimeout(1800)
-  R('home: root redirects to fa gateway', page.url().includes('#/fa/home'), page.url())
+  R('home: root redirects to fa gateway', page.url().includes('/fa/home'), page.url())
   const homeFa = await page.evaluate(() => ({
     h1: document.querySelector('.home-stage h1')?.textContent.trim(),
     panels: document.querySelectorAll('.home-panel').length,
@@ -42,8 +42,8 @@ async function toggleLanguage(page) {
   R('home fa: headline', homeFa.h1?.includes('همه بازارها') && homeFa.h1.includes('پلتفرم معاملاتی'), homeFa.h1)
   R('home fa: two product panels', homeFa.panels === 2)
   R('home fa: two illustrations', homeFa.imgs.length === 2 && homeFa.imgs.every(s => /assets\/home\/(prop-trading|perpetual-trading)\.svg/.test(s || '')), JSON.stringify(homeFa.imgs))
-  R('home fa: CTA1 → challenges', homeFa.ctas[0] === '#/fa/challenges', homeFa.ctas.join(','))
-  R('home fa: CTA2 → terminal', homeFa.ctas[1] === '#/terminal')
+  R('home fa: CTA1 → challenges', homeFa.ctas[0] === '/fa/challenges', homeFa.ctas.join(','))
+  R('home fa: CTA2 → terminal', homeFa.ctas[1] === '/terminal')
   R('home fa: 4 nav items in order', JSON.stringify(homeFa.nav) === JSON.stringify(['چلنج‌های معاملاتی', 'بازارها', 'قوانین معاملاتی', 'شفافیت']), JSON.stringify(homeFa.nav))
   R('home fa: no footer (one-screen gateway)', homeFa.footer === false)
   R('home fa: fits one screen', homeFa.slack <= 40, `scrollHeight-innerHeight=${homeFa.slack}`)
@@ -53,12 +53,12 @@ async function toggleLanguage(page) {
   /* logo → home */
   await page.evaluate(() => document.querySelector('.openfund-header .brand')?.click())
   await page.waitForTimeout(700)
-  R('home: logo click stays on gateway', page.url().includes('#/fa/home'), page.url())
+  R('home: logo click stays on gateway', page.url().includes('/fa/home'), page.url())
 
   /* language switch preserves page */
   await toggleLanguage(page)
   await page.waitForTimeout(900)
-  R('home: fa→en preserves page', page.url().includes('#/en/home'), page.url())
+  R('home: fa→en preserves page', page.url().includes('/en/home'), page.url())
   const homeEn = await page.evaluate(() => document.querySelector('.home-stage h1')?.textContent.trim())
   R('home en: headline', homeEn === 'All MarketsOne Trading Platform', homeEn)
   const navEn = await page.evaluate(() => [...document.querySelectorAll('.navlinks a')].map(a => a.textContent.trim()))
@@ -66,14 +66,14 @@ async function toggleLanguage(page) {
   await page.screenshot({ path: `${SHOTS}/home-en-1440.png` })
 
   /* variant A preview */
-  await page.goto(`${BASE}/#/en/home?variant=a`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/en/home?variant=a`, { waitUntil: 'load' })
   await page.waitForTimeout(900)
   R('home: variant=a editorial preview renders', !!(await page.$('.home-variant-a')))
   await page.screenshot({ path: `${SHOTS}/home-en-variant-a.png` })
 
   /* mobile home */
   await page.setViewportSize({ width: 375, height: 760 })
-  await page.goto(`${BASE}/#/fa/home`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/fa/home`, { waitUntil: 'load' })
   await page.waitForTimeout(900)
   const mob = await page.evaluate(() => ({ overflow: document.documentElement.scrollWidth - window.innerWidth, panels: document.querySelectorAll('.home-panel').length }))
   R('home fa mobile: no horizontal overflow', mob.overflow <= 0, String(mob.overflow))
@@ -92,7 +92,7 @@ async function toggleLanguage(page) {
   await page.setViewportSize({ width: 1440, height: 900 })
 
   /* ============ CHALLENGES (existing landing preserved) ============ */
-  await page.goto(`${BASE}/#/fa/challenges`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/fa/challenges`, { waitUntil: 'load' })
   await page.waitForTimeout(2600)
   const landing = await page.evaluate(() => ({
     h1: document.querySelector('.hero h1')?.textContent.trim(),
@@ -113,12 +113,12 @@ async function toggleLanguage(page) {
   /* language toggle on landing keeps page + syncs URL */
   await toggleLanguage(page)
   await page.waitForTimeout(1400)
-  const enLanding = await page.evaluate(() => ({ url: location.hash, h1: document.querySelector('.hero h1')?.textContent.trim() }))
-  R('challenges: fa→en preserves page + URL', enLanding.url.includes('#/en/challenges'), enLanding.url)
+  const enLanding = await page.evaluate(() => ({ url: location.pathname, h1: document.querySelector('.hero h1')?.textContent.trim() }))
+  R('challenges: fa→en preserves page + URL', enLanding.url.includes('/en/challenges'), enLanding.url)
   R('challenges: en headline translated', enLanding.h1?.includes('skill'), enLanding.h1)
 
   /* ============ MARKETS ============ */
-  await page.goto(`${BASE}/#/fa/markets`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/fa/markets`, { waitUntil: 'load' })
   await page.waitForTimeout(5000) /* Gains REST + WS */
   const mk = await page.evaluate(() => ({
     h1: document.querySelector('.info-hero h1')?.textContent.trim(),
@@ -157,7 +157,7 @@ async function toggleLanguage(page) {
   /* language switch on markets */
   await toggleLanguage(page)
   await page.waitForTimeout(1200)
-  R('markets: fa→en preserves page', page.url().includes('#/en/markets'), page.url())
+  R('markets: fa→en preserves page', page.url().includes('/en/markets'), page.url())
   const mkEn = await page.evaluate(() => ({ h1: document.querySelector('.info-hero h1')?.textContent.trim(), tabs: [...document.querySelectorAll('.mk-toolbar .market-tabs button')].map(b => b.textContent.trim()) }))
   R('markets en: hero localized', mkEn.h1 === 'Explore OpenfundMarkets', mkEn.h1)
   R('markets en: tabs localized', mkEn.tabs.some(t => t.includes('Crypto')), JSON.stringify(mkEn.tabs.slice(0, 3)))
@@ -165,7 +165,7 @@ async function toggleLanguage(page) {
 
   /* markets mobile */
   await page.setViewportSize({ width: 375, height: 760 })
-  await page.goto(`${BASE}/#/fa/markets`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/fa/markets`, { waitUntil: 'load' })
   await page.waitForTimeout(4000)
   const mobMk = await page.evaluate(() => ({ overflow: document.documentElement.scrollWidth - window.innerWidth, cards: document.querySelectorAll('.mk-card').length }))
   R('markets fa mobile: no horizontal overflow', mobMk.overflow <= 0, String(mobMk.overflow))
@@ -174,22 +174,22 @@ async function toggleLanguage(page) {
   await page.setViewportSize({ width: 1440, height: 900 })
 
   /* deep-link a market into the terminal */
-  await page.goto(`${BASE}/#/fa/markets`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/fa/markets`, { waitUntil: 'load' })
   await page.waitForTimeout(4000)
   const target = await page.evaluate(() => document.querySelector('.mk-card .mk-symbol b')?.textContent.trim())
   await page.evaluate(() => document.querySelector('.mk-card')?.click())
   await page.waitForTimeout(9000) /* reload + terminal boot */
   const term = await page.evaluate(() => ({
-    url: location.hash, pair: document.querySelector('#cur-pair')?.textContent.trim(),
+    url: location.pathname, pair: document.querySelector('#cur-pair')?.textContent.trim(),
     btn: document.querySelector('#market-select-btn[disabled]') ? 'disabled' : 'ready'
   }))
-  R('markets → terminal: route', term.url.includes('#/terminal'), term.url)
+  R('markets → terminal: route', term.url.includes('/terminal'), term.url)
   R('markets → terminal: deep-linked symbol selected', term.pair && term.pair.startsWith(target + '/'), `${target} → ${term.pair}`)
   R('markets → terminal: boot completed', term.btn === 'ready', term.btn)
   await page.screenshot({ path: `${SHOTS}/terminal-deeplink.png` })
 
   /* ============ RULEBOOK + TRANSPARENCY regression ============ */
-  await page.goto(`${BASE}/#/fa/rulebook`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/fa/rulebook`, { waitUntil: 'load' })
   await page.waitForTimeout(1600)
   const rb = await page.evaluate(() => ({
     h1: document.querySelector('.info-hero h1')?.textContent.trim(),
@@ -202,9 +202,9 @@ async function toggleLanguage(page) {
   R('rulebook fa: rulebook nav active', JSON.stringify(rb.active) === JSON.stringify(['قوانین معاملاتی']), JSON.stringify(rb.active))
   await toggleLanguage(page)
   await page.waitForTimeout(900)
-  R('rulebook: fa→en preserves page', page.url().includes('#/en/rulebook'), page.url())
+  R('rulebook: fa→en preserves page', page.url().includes('/en/rulebook'), page.url())
 
-  await page.goto(`${BASE}/#/fa/transparency`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/fa/transparency`, { waitUntil: 'load' })
   await page.waitForTimeout(1800)
   const tr = await page.evaluate(() => ({
     h1: document.querySelector('.info-hero h1')?.textContent.trim(),
@@ -216,15 +216,15 @@ async function toggleLanguage(page) {
   await page.screenshot({ path: `${SHOTS}/transparency-fa-1440.png` })
 
   /* ============ legacy deep-link migration ============ */
-  await page.goto(`${BASE}/#/markets`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/markets`, { waitUntil: 'load' })
   await page.waitForTimeout(1500)
-  R('legacy hash #/markets migrates to markets page', page.url().includes('#/fa/markets') || page.url().includes('#/en/markets'), page.url())
-  await page.goto(`${BASE}/#/accounts`, { waitUntil: 'load' })
+  R('legacy hash #/markets migrates to markets page', page.url().includes('/fa/markets') || page.url().includes('/en/markets'), page.url())
+  await page.goto(`${BASE}/accounts`, { waitUntil: 'load' })
   await page.waitForTimeout(3200)
   R('legacy hash #/accounts migrates to challenges', page.url().includes('challenges'), page.url())
 
   /* terminal nav Markets link goes to the markets page */
-  await page.goto(`${BASE}/#/terminal`, { waitUntil: 'load' })
+  await page.goto(`${BASE}/terminal`, { waitUntil: 'load' })
   await page.waitForTimeout(7000)
   const termNav = await page.evaluate(() => [...document.querySelectorAll('.nav-links a')].map(a => ({ text: a.textContent.trim(), href: a.getAttribute('href') })))
   R('terminal: nav intact (Trade/Markets/Portfolio/More)', termNav.length === 4 && termNav.some(n => (n.text === 'Markets' || n.text === 'بازارها') && (n.href || '').includes('#/#markets')), JSON.stringify(termNav))

@@ -82,7 +82,7 @@ app.use((req,res,next) => {
       startup from the exact files that ship in react/legacy/, so the
       policy allows precisely those scripts and nothing else.
    API responses keep the fully strict policy. */
-const CSP_THEME_BOOT_HASH = "'sha256-y10GGU3Zmo4XbGZHN4KUESdx+37VdZfpoU2a34rC+Pc='" /* apps/web-react/index.html pre-paint script */
+const CSP_THEME_BOOT_HASH = "'sha256-CPqkdsJeTR4jyAHxiAWBQwdFfSWbVDYsPoPwCCgXeK4='" /* apps/web-react/index.html pre-paint script (theme + locale/direction + legacy URL normalization + loader backstop) */
 const legacyScriptHashes = () => {
   const dir = fileURLToPath(new URL('../../react/legacy', import.meta.url))
   const names = ['locale.js', 'app.js', 'features.js', 'market.js', 'motion.js']
@@ -694,9 +694,14 @@ app.get('/version', (req, res) => {
 });
 
 /* Public non-secret configuration is supplied at runtime, outside the
-   immutable release payload. The HTML loads it before the React module. */
+   immutable release payload. The HTML loads it before the React module.
+   Both the clean root path and the legacy /react/ path serve it (cached
+   legacy shells still request the old URL). */
 const publicRuntimeConfig = runtimeConfigScript(process.env, cfg.prod)
 app.get('/react/runtime-config.js', (req, res) => {
+  res.set('Cache-Control', 'no-store').type('application/javascript').send(publicRuntimeConfig)
+})
+app.get('/runtime-config.js', (req, res) => {
   res.set('Cache-Control', 'no-store').type('application/javascript').send(publicRuntimeConfig)
 })
 
@@ -707,17 +712,38 @@ app.get('/trading/health', tradingAuth, async (req, res) => {
   res.json({ ok: true, account: st.account != null, markets: marketData.markets.size })
 })
 
-/* Same-origin static hosting for Render; hash routes need no server fallback.
+/* Same-origin static hosting for Render.
+   Clean public URLs: the app shell and its assets are served from the site
+   root ('/assets/…', '/legacy/…', '/' → index.html) with a browser-history
+   SPA fallback for deep routes. The legacy '/react' document prefix is
+   permanently redirected to the clean root — the '#/…' route hash never
+   reaches the server, so old bookmarks are recovered client-side by the
+   pre-paint normalizer in the app shell. The '/react' static mount stays so
+   assets referenced by already-cached legacy shells keep loading.
    HTML documents and the Pine computation worker get the application CSP
    (the engine compiles indicator scripts with `new Function`); every other
    asset and all API responses keep the fully strict policy. */
-app.use('/react', express.static(fileURLToPath(new URL('../../react', import.meta.url)), {
-  setHeaders(res, file) {
-    if (file.endsWith('.html') || file.endsWith('release-manifest.json')) res.set('Cache-Control','no-cache, must-revalidate')
-    if (file.endsWith('.html') || file.endsWith('openfund-pine-worker.min.js')) res.setHeader('Content-Security-Policy', buildCsp(true))
-  }
-}))
-app.get('/', (req, res) => res.redirect('/react/'))
+const reactDir = fileURLToPath(new URL('../../react', import.meta.url))
+const reactStaticHeaders = (res, file) => {
+  if (file.endsWith('.html') || file.endsWith('release-manifest.json')) res.set('Cache-Control','no-cache, must-revalidate')
+  if (file.endsWith('.html') || file.endsWith('openfund-pine-worker.min.js')) res.setHeader('Content-Security-Policy', buildCsp(true))
+}
+app.get(['/react', '/react/', '/react/index.html'], (req, res) => {
+  const queryAt = req.url.indexOf('?')
+  res.redirect(308, '/' + (queryAt >= 0 ? req.url.slice(queryAt) : ''))
+})
+app.use('/react', express.static(reactDir, { setHeaders: reactStaticHeaders }))
+app.use(express.static(reactDir, { setHeaders: reactStaticHeaders }))
+/* SPA fallback for browser-history deep routes: only document navigations
+   (GET/HEAD that accept HTML). APIs, websockets and asset requests are all
+   matched earlier and never fall through here; non-HTML clients keep the
+   strict JSON 404. */
+app.use((req, res, next) => {
+  if ((req.method !== 'GET' && req.method !== 'HEAD') || !/text\/html/.test(req.headers.accept || '')) return next()
+  res.set('Cache-Control', 'no-cache, must-revalidate')
+  res.setHeader('Content-Security-Policy', buildCsp(true))
+  res.sendFile(path.join(reactDir, 'index.html'))
+})
 
 /* 404 + error safety (no stack leaks) */
 app.use((req, res) => res.status(404).json({ error: 'not_found' }))

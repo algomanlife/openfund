@@ -10,6 +10,10 @@ on:
         required: true
         default: false
         type: boolean
+      release_version:
+        description: Optional explicit next patch version (for an approved patch batch)
+        required: false
+        type: string
 permissions:
   contents: read
 concurrency:
@@ -49,6 +53,8 @@ jobs:
         with:
           node-version: 22
       - name: Allocate or resume immutable version
+        env:
+          RELEASE_REQUESTED_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.release_version || '' }}
         run: node scripts/release/plan.mjs
       - name: Install browser runtime
         run: npx --yes --package=playwright@1.64.1 playwright install --with-deps chromium

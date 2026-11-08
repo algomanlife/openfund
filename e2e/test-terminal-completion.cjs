@@ -17,7 +17,7 @@ const fs = require('node:fs'), path = require('node:path'), assert = require('no
 const req = createRequire(path.resolve(__dirname,'../apps/backend/package.json'));
 const { generatePrivateKey, privateKeyToAccount } = req('viem/accounts');
 const { Pool } = req('pg');
-const BASE=(process.env.TEST_FRONTEND_URL || 'http://localhost:8080/react').replace(/\/$/,'');
+const BASE=(process.env.TEST_FRONTEND_URL || 'http://localhost:8080').replace(/\/$/,'');
 const API=process.env.TEST_BACKEND_URL || 'http://localhost:8080';
 const OUT=path.resolve(__dirname,'../output/playwright/terminal-completion');
 fs.mkdirSync(OUT,{recursive:true});
@@ -72,14 +72,14 @@ async function functional(browser){
  page.on('request',request=>{if(request.method()==='POST'&&request.url().includes('/protection'))protectionWrites.push(request.url())});
  page.on('pageerror',e=>{errors.push(e.stack||e.message);console.error('BROWSER ERROR',e.stack||e.message)});
  try{
-  await page.goto(BASE+'/#/en/prop/dashboard');
+  await page.goto(BASE+'/en/prop/dashboard');
   check('EIP-6963 fixture does not expose window.ethereum',await page.evaluate(()=>!window.ethereum));
   await page.evaluate(()=>window.completionWallet.rejectConnect());
   await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().click();
   await page.getByRole('alert').filter({hasText:'Wallet connection failed'}).first().waitFor();
   check('Rejected connection is visible and does not authenticate',(await call(page,'/auth/me')).status===401);
   await connect(page);
-  await page.goto(BASE+'/#/fa/prop/dashboard');
+  await page.goto(BASE+'/fa/prop/dashboard');
   await page.getByLabel('محصول',{exact:true}).selectOption('perpetual');
   await page.waitForURL(/perpetual\/dashboard/);
   await page.evaluate(()=>window.completionWallet.rejectSign());
@@ -93,7 +93,7 @@ async function functional(browser){
   check('Detected wallet account modal opens without provider errors',true);
   await page.screenshot({path:path.join(OUT,'wallet-connection.png'),fullPage:true});
   await page.keyboard.press('Escape');
-  await page.goto(BASE+'/#/fa/perpetual/trade');
+  await page.goto(BASE+'/fa/perpetual/trade');
   const frame=page.frameLocator('iframe');
   await frame.locator('[data-close="controlled-gains-read"]').waitFor();
   check('Perpetual adopts its signed-in adapter and displays native collateral',(await frame.locator('body').innerText()).includes('100.00 USDC'));
@@ -108,7 +108,7 @@ async function functional(browser){
   await page.waitForFunction(()=>window.completionWallet.network()==='0xaa36a7');
   const accounts=(await call(page,'/accounts')).data.accounts,trial=accounts.find(a=>a.type==='free_trial');
   await call(page,'/internal/inject-price',{symbol:'BTC/USD',price:'50000',metadata:{base:'BTC',group:'crypto',maxLeverage:100}});
-  await page.goto(BASE+'/#/en/prop/trade?account='+trial.id);
+  await page.goto(BASE+'/en/prop/trade?account='+trial.id);
   await page.waitForFunction(()=>window.__ofServerTP?.canTrade);
   const f=page.frameLocator('iframe');await f.locator('#submit-order').waitFor();
   await f.locator('#of-sl').fill('bad-number');await f.locator('#submit-order').click();
@@ -178,7 +178,7 @@ async function functional(browser){
   check('Unactivated Challenge cannot borrow the Free Trial execution adapter',await page.frameLocator('iframe').locator('#submit-order').isDisabled());
   await page.getByLabel('Active account',{exact:true}).selectOption(trial.id);await page.waitForFunction(()=>window.__ofServerTP?.canTrade);
   check('Returning to the owned Free Trial restores execution without resetting history',(await call(page,'/trading/state?account='+trial.id)).data.history.length>=2);
-  await page.goto(BASE+'/#/en/prop/journal?account='+trial.id);
+  await page.goto(BASE+'/en/prop/journal?account='+trial.id);
   await page.getByRole('combobox',{name:'Journal layout'}).selectOption('compact');
   await page.getByText('Preferences saved.',{exact:true}).waitFor();
   await page.reload();await page.waitForFunction(()=>document.querySelector('[aria-label="Journal layout"]')?.value==='compact');
@@ -193,7 +193,7 @@ async function functional(browser){
   await page.getByLabel('Active account',{exact:true}).selectOption(challenge.id);
   await page.getByRole('button',{name:'Playbooks',exact:true}).click();
   check('Challenge journal does not show the trial private note',await page.getByRole('heading',{name:'Integration recovery playbook',exact:true}).count()===0);
-  await page.goto(BASE+'/#/en/prop/trade?account='+trial.id);await page.waitForFunction(()=>window.__ofServerTP?.canTrade);
+  await page.goto(BASE+'/en/prop/trade?account='+trial.id);await page.waitForFunction(()=>window.__ofServerTP?.canTrade);
   await page.evaluate(()=>window.completionWallet.changeAccount(1));
   await (await walletButton(page, 'Sign in')).waitFor();
   check('Wallet change clears the previous execution adapter',await page.evaluate(()=>!window.__ofServerTP));await signIn(page);
@@ -213,7 +213,7 @@ async function functional(browser){
   // Exercise the unavailable-catalog branch explicitly even when the
   // candidate gate has a healthy Directus instance for other routes.
   await context.route('**/items/challenge_plans**',route=>route.abort('failed'));
-  await page.goto(BASE+'/#/en/challenges');
+  await page.goto(BASE+'/en/challenges');
   await page.locator('#challenge-order').getByText('The challenge catalog is unavailable. Please try again later.',{exact:true}).waitFor();
   check('Unavailable CMS catalog shows an accurate state and disables challenge activation',await page.locator('#detail-review').isDisabled());
   await page.locator('.nav-cta').click();await page.waitForURL(/prop\/trade$/);await page.waitForTimeout(700);
@@ -227,7 +227,7 @@ async function layout(browser){
  page.on('request',r=>{if(r.url().startsWith(API+'/products/'))requests.push(new URL(r.url()).pathname)});
  page.on('response',r=>{if(r.url().startsWith(BASE)&&r.status()>=400&&['script','stylesheet','image','font'].includes(r.request().resourceType()))assetErrors.push(r.url())});
  try{
-  await page.goto(BASE+'/#/en/prop/dashboard');await connect(page);await signIn(page);
+  await page.goto(BASE+'/en/prop/dashboard');await connect(page);await signIn(page);
   // Layout snapshots deliberately start dark. A fresh CI browser may now
   // default to light, so make the test's preference explicit before toggling.
   if(await page.locator('html').getAttribute('data-theme')==='light'){
@@ -236,7 +236,7 @@ async function layout(browser){
   }
   const tabs={prop:['dashboard','trade','portfolio','journal','journal?section=accounts','leaderboard','withdrawals','certificates'],perpetual:['dashboard','trade','portfolio','journal','journal?section=accounts','leaderboard','rewards']};
   for(const product of ['prop','perpetual'])for(const locale of (product==='perpetual'?['fa']:['en','fa']))for(const [width,height]of [[1920,1080],[1440,900],[1366,768],[1280,720]])for(const tab of tabs[product]){
-    await page.setViewportSize({width,height});await page.goto(`${BASE}/#/${locale}/${product}/${tab}`);
+    await page.setViewportSize({width,height});await page.goto(`${BASE}/${locale}/${product}/${tab}`);
     await page.locator('.of-terminal-compact').waitFor();await page.waitForTimeout(tab==='trade'?1400:250);
     const record=await page.evaluate(()=>{
       const header=document.querySelector('.of-terminal-header').getBoundingClientRect();
@@ -274,16 +274,16 @@ async function layout(browser){
     }
   }
   for(const product of ['prop','perpetual'])for(const locale of (product==='perpetual'?['fa']:['en','fa']))for(const section of ['dashboard','calendar','daily','trades','reports','firms','notebook','playbooks','progress','missed','import','accounts','settings']){
-    await page.setViewportSize({width:1440,height:900});await page.goto(`${BASE}/#/${locale}/${product}/journal?section=${section}`);await page.waitForTimeout(200);
+    await page.setViewportSize({width:1440,height:900});await page.goto(`${BASE}/${locale}/${product}/journal?section=${section}`);await page.waitForTimeout(200);
     check(`${product}/${locale}/Journal ${section}: no horizontal overflow`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
     if(await page.locator('html').getAttribute('data-theme')!=='light')await page.getByRole('button',{name:locale==='fa'?'تغییر پوسته':'Toggle theme',exact:true}).click();
     check(`${product}/${locale}/Journal ${section}: authenticated light theme`,await page.locator('.of-terminal').evaluate(el=>getComputedStyle(el).backgroundColor==='rgb(255, 255, 255)'));
     const file=`${product}-${locale}-journal-${section}-light.png`;await page.screenshot({path:path.join(OUT,file),fullPage:true});screenshots.push(file);
   }
   const owned=(await call(page,'/accounts')).data.accounts.find(account=>account.type==='free_trial');
-  await page.goto(BASE+'/#/en/prop/journal?section=playbooks&account='+owned.id);
+  await page.goto(BASE+'/en/prop/journal?section=playbooks&account='+owned.id);
   await page.locator('.of-language-select select').first().selectOption('fa');
-  await page.waitForURL(BASE+'/#/fa/prop/journal?section=playbooks&account='+owned.id);
+  await page.waitForURL(BASE+'/fa/prop/journal?section=playbooks&account='+owned.id);
   check('Terminal language switching preserves the selected account and journal section',true);
   check('All terminal tabs share one connected wallet state',await page.locator('.rk-chip-addr').count()===1);
   check('Layout verification never requests a blockchain transaction',await page.evaluate(()=>window.completionWallet.transactions===0));

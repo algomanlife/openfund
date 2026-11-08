@@ -46,7 +46,7 @@ export function useAccounts() {
     };
   }, [key]);
   const visible = state.key === key ? state : { accounts: [], error: "" };
-  const english = /^#\/en(?:\/|$)/.test(location.hash);
+  const english = /^\/en(?:\/|$)/.test(location.pathname);
   return { ...visible, accounts: visible.accounts.filter(account => !english || account.product === "prop") };
 }
 export function AccountPicker() {
@@ -59,7 +59,7 @@ export function AccountPicker() {
       <select
         aria-label="Journal account"
         value={
-          new URLSearchParams(location.hash.split("?")[1]).get("view") === "all"
+          new URLSearchParams(location.search).get("view") === "all"
             ? "__all__"
             : context?.accountRef || ""
         }

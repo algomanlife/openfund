@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTerminal } from "./TerminalContext";
 import { api, csvCell, download, money, route, useResource } from "./model";
 import { Curve, PnlCalendar, RatioGauge } from "./Analytics";
@@ -21,6 +21,7 @@ export function JournalAnalytics({
   reports?: boolean;
 }) {
   const { product, context, t, locale } = useTerminal(),
+    navigate = useNavigate(),
     [range, setRange] = useState("All"),
     [market, setMarket] = useState(""),
     [side, setSide] = useState(""),
@@ -286,7 +287,7 @@ export function JournalAnalytics({
               <PnlCalendar
                 days={d?.daily || []}
                 onDate={(date) =>
-                  (location.hash = `/${locale}/${product}/journal?account=${encodeURIComponent(context.accountRef)}&section=daily&date=${date}`)
+                  navigate(`/${locale}/${product}/journal?account=${encodeURIComponent(context.accountRef)}&section=daily&date=${date}`)
                 }
               />
             </section>

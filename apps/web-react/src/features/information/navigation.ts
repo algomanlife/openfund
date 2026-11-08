@@ -9,12 +9,12 @@ const resources = ['faq', 'learn', 'tools', 'referral', 'team'] as const
 const navigationLabels = { ...labels, team: text('Team', 'تیم'), glossary: text('Glossary', 'واژه‌نامه') }
 
 export function navigationHref(route: string, locale: Locale): string {
-  if (route === 'team' || route === 'team-section') return `#/${locale}/challenges?section=team`
-  if (route === 'accounts-section') return `#/${locale}/challenges?section=accounts`
-  if (route === 'faq-section') return `#/${locale}/faq`
-  if (route === 'glossary') return `#/${locale}/learn/glossary`
+  if (route === 'team' || route === 'team-section') return `/${locale}/challenges?section=team`
+  if (route === 'accounts-section') return `/${locale}/challenges?section=accounts`
+  if (route === 'faq-section') return `/${locale}/faq`
+  if (route === 'glossary') return `/${locale}/learn/glossary`
   if (route === 'github') return 'https://github.com/algomanlife/openfund'
-  return `#/${locale}/${route}`
+  return `/${locale}/${route}`
 }
 
 /** Shared navigation only; the legacy page keeps its body and runtime. */
@@ -66,7 +66,7 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
     }
   }
   root.querySelector('a[href$="downloads/Openfund-brandbook.zip"]')?.setAttribute('href', brandbookUrl)
-  root.querySelector('.nav-cta')?.setAttribute('href', `#/${locale}/prop/trade`)
+  root.querySelector('.nav-cta')?.setAttribute('href', `/${locale}/prop/trade`)
 }
 
 export function navigationClick(event: MouseEvent, root: ParentNode): boolean {

@@ -4,7 +4,7 @@ const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const BASE = (process.env.TEST_FRONTEND_URL || 'http://localhost:5186/react').replace(/\/$/, '');
+const BASE = (process.env.TEST_FRONTEND_URL || 'http://localhost:5186').replace(/\/$/, '');
 const OUT = path.resolve(process.env.LANDING_OUTPUT || 'output/playwright/landing-motion');
 fs.mkdirSync(OUT, { recursive: true });
 const checks = [], matrix = [], errors = [];
@@ -34,13 +34,13 @@ async function fixture(context) {
     const page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
     if (process.env.LANDING_BEFORE_URL) {
       for (const [width,height] of [[1440,900],[375,667]]) {
-        await page.setViewportSize({width,height}); await page.goto(process.env.LANDING_BEFORE_URL+'/#/fa/home');
+        await page.setViewportSize({width,height}); await page.goto(process.env.LANDING_BEFORE_URL+'/fa/home');
         await page.locator('.home-products').waitFor(); await page.evaluate(()=>document.fonts.ready);
         await page.screenshot({path:path.join(OUT,`before-${width}x${height}.png`),fullPage:true,animations:'disabled'});
       }
     }
     for (const [width,height] of [[1920,1080],[1440,900],[1366,768],[1280,720],[1024,768],[768,1024],[390,844],[375,667]]) {
-      await page.setViewportSize({width,height}); await page.goto(BASE+'/#/fa/home');
+      await page.setViewportSize({width,height}); await page.goto(BASE+'/fa/home');
       await page.locator('.technical-feature').last().waitFor(); await page.evaluate(()=>document.fonts.ready);
       await page.waitForFunction(() => Math.abs(parseFloat(getComputedStyle(document.querySelector('.home-gateway')).minHeight) - (innerHeight - document.querySelector('header').getBoundingClientRect().height)) <= 1 && getComputedStyle(document.querySelector('.home-stage')).display === 'flex');
       const geometry = await page.evaluate(() => {
@@ -105,10 +105,10 @@ async function fixture(context) {
     await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'))});
     check('visible document resumes',await page.locator('.home-gateway').getAttribute('data-paused')==='false');
     for (const [i,target] of [[0,/\/fa\/(challenges|prop\/trade)$/],[1,/\/fa\/(perpetual\/trade|challenges)$/]]) {
-      await page.goto(BASE+'/#/fa/home'); await page.locator('.home-panel .button').nth(i).click(); await page.waitForURL(target);
+      await page.goto(BASE+'/fa/home'); await page.locator('.home-panel .button').nth(i).click(); await page.waitForURL(target);
       check('product '+i+' follows existing destination',target.test(page.url()));
     }
-    await page.goto(BASE+'/#/fa/home');
+    await page.goto(BASE+'/fa/home');
     await page.reload();
     await page.locator('.of-language-select select').first().waitFor({ state: 'attached' });
     await toggleLanguage(page); await page.locator('#builder').waitFor(); await page.waitForFunction(()=>window.__ofLandingKicked&&window.ofTranslations&&document.documentElement.lang==='en');
@@ -116,7 +116,7 @@ async function fixture(context) {
     await toggleLanguage(page); await page.waitForFunction(()=>!window.__ofLegacyLandingLoaded&&document.querySelector('.technical-features'));
     check('language round trip returns Persian gateway',page.url().includes('/fa/home'));
     const touch = await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await fixture(touch);
-    const mobile = await touch.newPage();await mobile.goto(BASE+'/#/fa/home');await mobile.locator('.technical-feature').first().tap();await mobile.locator('dialog[open]').waitFor();await mobile.locator('dialog button').tap();
+    const mobile = await touch.newPage();await mobile.goto(BASE+'/fa/home');await mobile.locator('.technical-feature').first().tap();await mobile.locator('dialog[open]').waitFor();await mobile.locator('dialog button').tap();
     check('touch can open/close details',await mobile.locator('dialog[open]').count()===0);
     await mobile.mouse.move(80,200);
     check('touch disables parallax',await mobile.locator('.landing-motion').evaluate(e=>['','0px'].includes(e.style.getPropertyValue('--pointer-x'))));

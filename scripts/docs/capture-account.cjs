@@ -8,7 +8,7 @@ const req=createRequire(path.resolve('apps/backend/package.json'))
 const {generatePrivateKey,privateKeyToAccount}=req('viem/accounts')
 const {createPublicClient,http}=req('viem')
 const {sepolia,arbitrum}=req('viem/chains')
-const BASE=process.env.DOCS_CAPTURE_URL||'http://localhost:8186/react'
+const BASE=process.env.DOCS_CAPTURE_URL||'http://localhost:8186'
 if(!['localhost','127.0.0.1'].includes(new URL(BASE).hostname))throw Error('Local capture host required')
 ;(async()=>{
  const wallet=privateKeyToAccount(generatePrivateKey())
@@ -32,7 +32,7 @@ if(!['localhost','127.0.0.1'].includes(new URL(BASE).hostname))throw Error('Loca
     throw Error('Unsupported documentation wallet method')
    }}
   },wallet.address)
-  await page.goto(BASE+'/#/en/home')
+  await page.goto(BASE+'/en/home')
   await page.getByRole('button',{name:'Connect Wallet',exact:true}).click()
   const walletAction = async name => {
    const button = page.getByRole('button',{name,exact:true,includeHidden:true}).first()
@@ -50,7 +50,7 @@ if(!['localhost','127.0.0.1'].includes(new URL(BASE).hostname))throw Error('Loca
   }
   await (await walletAction('Account')).click()
   await page.getByRole('heading',{name:'Openfund Account',exact:true}).waitFor()
-  await capture('account-profile','/react/#/en/home','Actual profile dialog; generated address is not a personal wallet')
+  await capture('account-profile','/en/home','Actual profile dialog; generated address is not a personal wallet')
   await page.keyboard.press('Escape')
   for(const[name,route,state]of[
    ['prop-portfolio','prop/portfolio','New virtual-DAI account, no trades; 100000 virtual DAI issued by the real backend'],
@@ -59,11 +59,11 @@ if(!['localhost','127.0.0.1'].includes(new URL(BASE).hostname))throw Error('Loca
    ['perpetual-portfolio','perpetual/portfolio','Official Gains reads for newly generated wallet; no positions created'],
   ]) {
    const targetLocale=route.startsWith('perpetual/')?'fa':'en'
-   await page.goto(BASE+'/#/'+targetLocale+'/'+route)
+   await page.goto(BASE+'/'+targetLocale+'/'+route)
    await page.locator('.of-terminal-top').waitFor()
    await page.waitForTimeout(7000)
    if(await page.locator('.of-terminal-top').count()!==1)throw Error('Capture requires the actual terminal workspace')
-   await capture(name,'/react/#/'+targetLocale+'/'+route,state)
+   await capture(name,'/'+targetLocale+'/'+route,state)
   }
   const filename='docs/assets/screenshots/manifest.json'
   const manifest=JSON.parse(fs.readFileSync(filename,'utf8'))

@@ -102,8 +102,18 @@ const I18N = {
     'cf.close': 'بستن موقعیت', 'cf.closeTxt': 'این موقعیت شبیه‌سازی‌شده در قیمت Mark فعلی بسته شود؟ سود/زیان شناور و کارمزد بستن اعمال می‌شود.',
     'cf.cancel': 'لغو سفارش', 'cf.cancelTxt': 'این سفارش شبیه‌سازی‌شدهٔ در انتظار حذف شود؟',
     'cf.detail': 'جزئیات موقعیت', 'sltp.title': 'ویرایش ریسک',
-    'pos.details': ['موقعیت', 'بازار', 'جهت', 'اندازه', 'Entry', 'Mark', 'اهرم', 'Collateral', 'Liquidation تخمینی', 'PnL شناور', 'SL / TP', 'زمان باز شدن', 'کارمزد باز شدن'],
+    'pos.details': ['موقعیت', 'بازار', 'جهت', 'اندازه', 'قیمت ورود', 'قیمت مارک', 'اهرم', 'کولترال', 'لیکوییدیشن تخمینی', 'سود/زیان شناور', 'استاپ‌لاس / تیک‌پرافیت', 'زمان باز شدن', 'کارمزد باز شدن'],
     'act.close': 'بستن', 'act.sltp': 'SL/TP', 'act.details': 'جزئیات', 'act.cancel': 'لغو',
+    'act.share': 'اشتراک‌گذاری',
+    'share.title': 'اشتراک‌گذاری سود و زیان', 'share.download': 'دانلود PNG', 'share.native': 'اشتراک‌گذاری', 'share.close': 'بستن',
+    'share.unrealized': 'سود/زیان شناور', 'share.realized': 'سود/زیان تحقق‌یافته',
+    'share.entry': 'قیمت ورود', 'share.mark': 'قیمت فعلی', 'share.exit': 'قیمت بسته شدن', 'share.size': 'اندازه',
+    'share.opened': 'زمان باز شدن', 'share.closedAt': 'زمان بسته شدن',
+    'share.open': 'باز', 'share.closed': 'بسته‌شده', 'share.buy': 'خرید', 'share.sell': 'فروش',
+    'share.live': 'قیمت زنده', 'share.stale': 'قیمت با تأخیر', 'share.gone': 'پوزیشن دیگر باز نیست',
+    'share.liveNote': 'سود و زیان این پوزیشن باز با دادهٔ زندهٔ حساب به‌روز می‌شود.', 'share.finalNote': 'نتیجهٔ نهایی ثبت‌شده برای این پوزیشن بسته‌شده.',
+    'share.profit': 'سود', 'share.loss': 'زیان', 'share.openAt': 'ورود', 'share.closeAt': 'خروج', 'share.markAt': 'فعلی',
+    'share.saved': 'تصویر ذخیره شد.', 'share.failed': 'ساخت تصویر ممکن نشد. دوباره تلاش کنید.', 'share.na': 'نامشخص',
     'tag.pending': 'در انتظار',
     'res.filled': 'انجام‌شده', 'res.cancelled': 'لغو‌شده', 'res.closed-profit': 'بسته با سود', 'res.closed-loss': 'بسته با زیان',
     'res.stop-loss': 'استاپ‌لاس', 'res.take-profit': 'تیک‌پرافیت', 'res.market-close': 'بستن مارکت', 'res.liquidation': 'لیکویید شد',
@@ -198,10 +208,21 @@ const EN = {
   'rv.fee': 'Est. fee (open)', 'rv.sl': 'Stop Loss', 'rv.tp': 'Take Profit',
   'rv.equityAfter': 'Equity after', 'rv.exec': 'Simulated — local engine',
   'rv.side.long': 'Long', 'rv.side.short': 'Short',
+  'pos.details': ['Position', 'Market', 'Side', 'Size', 'Entry', 'Mark', 'Leverage', 'Collateral', 'Est. liquidation', 'Unrealized PnL', 'SL / TP', 'Opened', 'Opening fee'],
   'cf.close': 'Close position', 'cf.closeTxt': 'Close this simulated position at the current mark price? Unrealized PnL and a closing fee will be applied.',
   'cf.cancel': 'Cancel order', 'cf.cancelTxt': 'Remove this pending simulated order?',
   'cf.detail': 'Position details', 'sltp.title': 'Modify risk',
   'act.close': 'Close', 'act.sltp': 'SL/TP', 'act.details': 'Details', 'act.cancel': 'Cancel',
+  'act.share': 'Share',
+  'share.title': 'Share P&L', 'share.download': 'Download PNG', 'share.native': 'Share', 'share.close': 'Close',
+  'share.unrealized': 'Unrealized P&L', 'share.realized': 'Realized P&L',
+  'share.entry': 'Entry price', 'share.mark': 'Current price', 'share.exit': 'Closing price', 'share.size': 'Size',
+  'share.opened': 'Opened', 'share.closedAt': 'Closed',
+  'share.open': 'OPEN', 'share.closed': 'CLOSED', 'share.buy': 'BUY', 'share.sell': 'SELL',
+  'share.live': 'Live price', 'share.stale': 'Price delayed', 'share.gone': 'Position no longer open',
+  'share.liveNote': 'P&L for this open position updates from your live account data.', 'share.finalNote': 'Recorded final result for this closed position.',
+  'share.profit': 'PROFIT', 'share.loss': 'LOSS', 'share.openAt': 'OPEN', 'share.closeAt': 'CLOSE', 'share.markAt': 'NOW',
+  'share.saved': 'Image saved.', 'share.failed': 'Could not create the image. Try again.', 'share.na': 'N/A',
   'tag.pending': 'pending',
   'res.filled': 'filled', 'res.cancelled': 'cancelled', 'res.closed-profit': 'closed-profit',
   'res.closed-loss': 'closed-loss', 'res.stop-loss': 'Stop Loss', 'res.take-profit': 'Take Profit',
@@ -239,8 +260,26 @@ const EN = {
   'boot.failed': 'Could not reach Gains Network.',
   'boot.retry': 'Retry'
 };
-Object.assign(I18N.en, EN);if(window.ofCmsTerminal){for(var __k in window.ofCmsTerminal){var __v=window.ofCmsTerminal[__k];if(__v&&typeof __v==='object'){if(I18N.fa[__k]!==undefined&&__v.fa)I18N.fa[__k]=__v.fa;if(I18N.en[__k]!==undefined&&__v.en)I18N.en[__k]=__v.en;}}}
-window.ofLang = window.ofLang || 'fa';
+Object.assign(I18N.en, EN);
+/* added interface locales (legacy/terminal-locales.js): every key falls
+   back to English, never to Persian */
+const ADDED_LOCALES = window.OpenfundTerminalLocales || {};
+for (const __l of ['ar', 'ru', 'zh-CN']) I18N[__l] = Object.assign({}, EN, ADDED_LOCALES[__l] || {});
+const RTL_LOCALES = ['fa', 'ar'];
+/* CMS overrides keep the shape of the built-in entry. Directus stores every
+   translation as text, so list entries (e.g. the position-details labels)
+   arrive as a JSON string; indexing that string produced one-character
+   labels. Lists are accepted only when they parse to a list of the same
+   length, otherwise the built-in labels stay in place. */
+function cmsValue(builtIn, value){
+  if (value == null || value === '') return undefined;
+  if (!Array.isArray(builtIn)) return typeof value === 'string' ? value : undefined;
+  let list = value;
+  if (typeof list === 'string') { try { list = JSON.parse(list); } catch(e){ return undefined; } }
+  return Array.isArray(list) && list.length === builtIn.length && list.every(x => typeof x === 'string' && x) ? list : undefined;
+}
+if(window.ofCmsTerminal){for(var __k in window.ofCmsTerminal){var __v=window.ofCmsTerminal[__k];if(__v&&typeof __v==='object'){for(var __l in I18N){if(I18N[__l][__k]!==undefined){var __c=cmsValue(I18N[__l][__k],__v[__l]);if(__c!==undefined)I18N[__l][__k]=__c;}}}}}
+window.ofLang = I18N[window.ofLang] ? window.ofLang : 'fa';
 function t(key){
   const v = (I18N[window.ofLang] && I18N[window.ofLang][key]);
   return v === undefined ? key : v;
@@ -252,8 +291,8 @@ function applyStaticI18n(){
      workspace is pinned LTR in CSS (.workspace{direction:ltr}) so the trade
      panel is always on the right and the chart stays in its default state. */
   document.documentElement.setAttribute('lang', window.ofLang);
-  document.documentElement.setAttribute('dir', window.ofLang === 'fa' ? 'rtl' : 'ltr');
-  document.title = window.ofLang === 'fa' ? 'Openfund Terminal — معامله' : 'Openfund Terminal — Trade';
+  document.documentElement.setAttribute('dir', RTL_LOCALES.includes(window.ofLang) ? 'rtl' : 'ltr');
+  document.title = 'Openfund Terminal — ' + t('nav.trade');
   $('lang-label').textContent = window.ofLang === 'fa' ? 'EN' : 'FA';
 }
 function setLang(lang){
@@ -268,6 +307,8 @@ function setLang(lang){
   renderStatus();
 }
 $('language-toggle').addEventListener('click', () => setLang(window.ofLang === 'fa' ? 'en' : 'fa'));
+/* the React shell applies its route locale through this hook */
+window.__ofSetLang = lang => { if (I18N[lang] && lang !== window.ofLang) setLang(lang); };
 
 /* ============================================================
    THEME — dark (default) / light, synced with Vela
@@ -280,6 +321,7 @@ function setTheme(theme){
   try{ localStorage.setItem('of-theme', theme) }catch(e){}
   window.__openfundChart?.setTheme(theme);
 }
+window.__openfundApplyTheme = setTheme;
 $('theme-toggle').addEventListener('click', () => setTheme(curTheme === 'dark' ? 'light' : 'dark'));
 
 /* ============================================================
@@ -518,6 +560,7 @@ function selectMarket(id){
   velaClearDrawings();    /* clear user drawings too */
   S.marketId = id;
   S.stats = null;
+  renderMarketStats._last = {};   /* no up/down flash across different markets */
   $('cur-icon').outerHTML = `<span id="cur-icon" class="cur-ic">${iconHTML(id)}</span>`;
   $('cur-pair').textContent = id;
   updateStarBtn();
@@ -568,7 +611,15 @@ function renderMarketStats(){
   const m = meta();
   const p = board.marks.get(S.marketId);
   const d = dp();
-  const set = (id, text, cls) => { const el = $(id); if (!el) return; el.textContent = text; el.className = cls || 'num'; };
+  /* write only what changed and keep transient flash classes intact;
+     resetting className on every tick cut the flash animation short and
+     made the values flicker */
+  const set = (id, text, cls) => {
+    const el = $(id); if (!el) return;
+    if (el.textContent !== text) el.textContent = text;
+    const want = (cls || 'num').split(' ').filter(Boolean);
+    for (const c of ['num', 'up', 'down']) el.classList.toggle(c, want.includes(c));
+  };
   const prev = renderMarketStats._last || {};
   const paint = (id, v) => {
     if (!S.flashOn) return;
@@ -582,9 +633,17 @@ function renderMarketStats(){
     prev[id] = v;
   };
   const changePct = S.stats ? S.stats.changePct : null;
-  set('st-last', p ? fmt.price(p.mark, d) : '—');
+  set('st-last', p ? fmt.price(p.mark, d) : '—', 'num' + (changePct != null ? (changePct >= 0 ? ' up' : ' down') : ''));
   paint('st-last', p ? p.mark : 0);
-  const stLast = $('st-last'); if (changePct != null && stLast) stLast.classList.add(changePct >= 0 ? 'up' : 'down');
+  /* the last valid mark stays on screen through brief interruptions, but is
+     visibly marked as not live (dimmed + tooltip) instead of passing as live */
+  const stLast = $('st-last');
+  if (stLast) {
+    const notLive = !!p && (board.status !== 'live' || board.stale(S.marketId));
+    stLast.classList.toggle('is-stale', notLive);
+    const tip = notLive ? t('sb.stale') : '';
+    if (stLast.title !== tip) stLast.title = tip;
+  }
   set('st-oracle', p && p.index ? fmt.price(p.index, d) : '—');
   set('st-change', changePct == null ? '…' : fmt.pct(changePct), 'num ' + (changePct >= 0 ? 'up' : 'down'));
   set('st-high', S.stats ? fmt.price(S.stats.high, d) : '…');
@@ -1111,6 +1170,28 @@ document.querySelectorAll('[data-bt]').forEach(b => b.addEventListener('click', 
 }));
 $('load-demo').addEventListener('click', () => { tp.loadDemoScenario(); renderBottom(); renderAccount(); });
 
+/* Patch a table body in place: unchanged renders are skipped entirely and,
+   when the rows are the same records, only changed cells are rewritten.
+   Rebuilding whole tables every tick made rows flicker, reset hover state
+   and swallowed clicks on buttons replaced mid-click. */
+const __rowTpl = document.createElement('template');
+function patchBody(tb, html){
+  if (!tb || tb.__ofHtml === html) return;
+  tb.__ofHtml = html;
+  __rowTpl.innerHTML = '<table><tbody>' + html + '</tbody></table>';
+  const next = __rowTpl.content.querySelector('tbody').rows, cur = tb.rows;
+  const same = cur.length === next.length && Array.prototype.every.call(next, (r, i) =>
+    r.dataset.key && cur[i].dataset.key === r.dataset.key && cur[i].cells.length === r.cells.length);
+  if (!same) { tb.innerHTML = html; return; }
+  for (let i = 0; i < next.length; i++){
+    const a = cur[i].cells, b = next[i].cells;
+    for (let j = 0; j < b.length; j++){
+      if (a[j].innerHTML !== b[j].innerHTML) a[j].innerHTML = b[j].innerHTML;
+      if (a[j].className !== b[j].className) a[j].className = b[j].className;
+      if (a[j].title !== b[j].title) a[j].title = b[j].title;
+    }
+  }
+}
 function renderBottom(){
   if (!tp || !$('bt-empty')) return;   /* teardown race guard */
   const st = tp.state;
@@ -1127,13 +1208,13 @@ function renderBottom(){
   document.querySelectorAll('.bt-table').forEach(el => el.hidden = el.dataset.t !== S.btTab || !hasActivity);
   if(!window.__ofTerminalConfig || tp.status===undefined || tp.status==='ready') $('cnt-positions').textContent = st.positions.length;
   if(!window.__ofTerminalConfig || tp.status===undefined || tp.status==='ready') $('cnt-orders').textContent = st.orders.length;
-  $('tb-positions').innerHTML = st.positions.map(p => {
+  patchBody($('tb-positions'), st.positions.map(p => {
     const m = board.getMeta(p.market); if (!m) return '';
     const d = Number(m.pricePrecision), dps = Number(m.sizePrecision) || 2;
     const mk = tp.serverMode ? p.srvMark ?? null : board.getMark(p.market) || p.entry;
     const pnl = tp.readOnly ? null : tp.serverMode ? p.srvPnl ?? null : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
     const roe = tp.serverMode ? p.srvRoi ?? null : pnl == null ? null : pnl / p.margin * 100;
-    return `<tr>
+    return `<tr data-key="p:${esc(p.id)}">
       <td>${iconHTML(p.market)} <b>${m.symbol}</b></td>
       <td class="side-${p.side === 'long' ? 'l' : 's'}">${t(p.side === 'long' ? 'rv.side.long' : 'rv.side.short')}</td>
       <td class="r num">${fmt.num(p.size, dps)} ${m.base}</td>
@@ -1149,12 +1230,13 @@ function renderBottom(){
         <button class="act-btn" ${tp.canTrade===false?'disabled':''} data-close="${p.id}">${t('act.close')}</button>
         <button class="act-btn" ${tp.canTrade===false?'disabled':''} data-sltp="${p.id}">${t('act.sltp')}</button>
         <button class="act-btn" data-detail="${p.id}">${t('act.details')}</button>
+        <button class="act-btn act-share" data-share="${p.id}">${t('act.share')}</button>
       </td></tr>`;
-  }).join('') || emptyRow(12, t('empty.positions'));
-  $('tb-orders').innerHTML = st.orders.map(o => {
+  }).join('') || emptyRow(12, t('empty.positions')));
+  patchBody($('tb-orders'), st.orders.map(o => {
     const m = board.getMeta(o.market); if (!m) return '';
     const d = Number(m.pricePrecision), dps = Number(m.sizePrecision) || 2;
-    return `<tr>
+    return `<tr data-key="o:${esc(o.id)}">
       <td>${iconHTML(o.market)} <b>${m.symbol}</b></td>
       <td><span class="tag">${t('ot.' + o.type)}</span></td>
       <td class="side-${o.side === 'long' ? 'l' : 's'}">${t(o.side === 'long' ? 'rv.side.long' : 'rv.side.short')}</td>
@@ -1164,12 +1246,12 @@ function renderBottom(){
       <td class="num">${fmt.dt(o.createdAt / 1000)}</td>
       <td><button class="act-btn danger" ${tp.canTrade===false?'disabled':''} data-cancel="${o.id}">${t('act.cancel')}</button></td>
     </tr>`;
-  }).join('') || emptyRow(8, t('empty.orders'));
-  $('tb-history').innerHTML = st.history.map(h => {
+  }).join('') || emptyRow(8, t('empty.orders')));
+  patchBody($('tb-history'), st.history.map(h => {
     const m = board.getMeta(h.market); if (!m) return '';
     const d = Number(m.pricePrecision);
     const cls = h.result.includes('profit') ? 'pos' : h.result.includes('loss') ? 'neg' : '';
-    return `<tr>
+    return `<tr data-key="h:${esc(h.id)}">
       <td>${iconHTML(h.market)} <b>${m.symbol}</b></td>
       <td><span class="tag">${tp.readOnly ? h.type : h.type.includes('-') ? t('res.' + h.type) : t('ot.' + h.type)}</span></td>
       <td class="side-${h.side === 'long' ? 'l' : 's'}">${t(h.side === 'long' ? 'rv.side.long' : 'rv.side.short')}</td>
@@ -1177,9 +1259,10 @@ function renderBottom(){
       <td class="r num">${fmt.price(h.price, d)}</td>
       <td><span class="tag ${cls}">${tp.readOnly ? h.result : t('res.' + h.result)}</span></td>
       <td class="num">${fmt.dt(h.time / 1000)}</td>
+      <td>${h.realized != null && Number.isFinite(h.realized) ? `<button class="act-btn act-share" data-share-history="${h.id}">${t('act.share')}</button>` : ''}</td>
     </tr>`;
-  }).join('') || emptyRow(7, t('empty.history'));
-  $('tb-fills').innerHTML = st.fills.map(f => {
+  }).join('') || emptyRow(8, t('empty.history')));
+  patchBody($('tb-fills'), st.fills.map(f => {
     const m = board.getMeta(f.market); if (!m) return '';
     const d = Number(m.pricePrecision);
     return `<tr>
@@ -1191,8 +1274,8 @@ function renderBottom(){
       <td><span class="tag">${f.role}</span></td>
       <td class="num">${fmt.dt(f.time / 1000)}</td>
     </tr>`;
-  }).join('') || emptyRow(7, t('empty.fills'));
-  $('tb-funding').innerHTML = st.funding.map(f => {
+  }).join('') || emptyRow(7, t('empty.fills')));
+  patchBody($('tb-funding'), st.funding.map(f => {
     const m = board.getMeta(f.market); if (!m) return '';
     return `<tr>
       <td>${iconHTML(f.market)} <b>${m.symbol}</b></td>
@@ -1200,27 +1283,145 @@ function renderBottom(){
       <td class="r num ${f.pay >= 0 ? 'up' : 'down'}">${fmt.usdS(f.pay)}</td>
       <td class="num">${fmt.dt(f.time / 1000)}</td>
     </tr>`;
-  }).join('') || emptyRow(4, t('empty.funding'));
+  }).join('') || emptyRow(4, t('empty.funding')));
   wireRowActions();
+  window.OpenfundShareCard?.refresh();
 }
 function emptyRow(cols, text){
   return `<tr class="empty-tr"><td colspan="${cols}" style="color:var(--muted);padding:22px 18px;white-space:normal">${text}</td></tr>`;
 }
 
+/* Built-in position-detail labels per language, used whenever a CMS value
+   is missing or malformed so a label can never collapse to one character. */
+const DETAIL_LABELS = {};
+for (const __l in I18N) DETAIL_LABELS[__l] = Array.isArray(I18N[__l]['pos.details']) ? I18N[__l]['pos.details'] : null;
+function detailLabels(){
+  const v = t('pos.details');
+  if (Array.isArray(v) && v.length === 13) return v;
+  return DETAIL_LABELS[window.ofLang] || DETAIL_LABELS.en || EN['pos.details'];
+}
+function esc(v){
+  return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+/* ============================================================
+   SHARE P&L — builds the share-card model from the same authoritative
+   values the positions/history tables show (server snapshot in server
+   mode, the live board otherwise). No P&L is computed here beyond what
+   the table already displays; unavailable fields render as N/A.
+   ============================================================ */
+function shareCategory(m){
+  const g = m && m.group;
+  if (!g) return '';
+  for (const k of ['cat.' + g, 'cat.' + g.replace(/s$/, '')]) { const v = t(k); if (v !== k) return v; }
+  return '';
+}
+function shareCommon(market){
+  const m = board.getMeta(market);
+  const product = window.__ofTerminalConfig && window.__ofTerminalConfig.product === 'perpetual' ? 'PERPETUAL' : 'PROP';
+  return { m, rtl: document.documentElement.dir === 'rtl', productLabel: 'OPENFUND ' + product };
+}
+function shareResult(v){ return v == null || !Number.isFinite(v) ? t('share.unrealized') : t(v >= 0 ? 'share.profit' : 'share.loss'); }
+function shareTime(ms){
+  const d = new Date(ms), z = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '/' + z(d.getMonth() + 1) + '/' + z(d.getDate()) + ' ' + z(d.getHours()) + ':' + z(d.getMinutes()) + ':' + z(d.getSeconds());
+}
+function shareGenerated(){
+  return new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+}
+function shareOpenModel(id){
+  const p = tp && tp.getPosition(id);
+  if (!p) return null;
+  const { m, rtl, productLabel } = shareCommon(p.market);
+  if (!m) return null;
+  const d = Number(m.pricePrecision), dps = Number(m.sizePrecision) || 2, na = t('share.na');
+  /* identical expressions to the positions table */
+  const mk = tp.serverMode ? p.srvMark ?? null : board.getMark(p.market) || p.entry;
+  const pnl = tp.readOnly ? null : tp.serverMode ? p.srvPnl ?? null : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
+  const roe = tp.serverMode ? p.srvRoi ?? null : pnl == null ? null : pnl / p.margin * 100;
+  const stale = tp.serverMode ? (tp.status === 'stale' || tp.status === 'disconnected' || mk == null) : (board.status !== 'live' || board.stale(p.market));
+  return {
+    rtl, productLabel, status: 'open', statusLabel: t('share.open'),
+    symbol: m.symbol, instrument: shareCategory(m), long: p.side === 'long',
+    sideLabel: t(p.side === 'long' ? 'share.buy' : 'share.sell'),
+    leverageLabel: Number.isFinite(Number(p.leverage)) && p.leverage ? p.leverage + '×' : '',
+    pnl: pnl == null || !Number.isFinite(pnl) ? null : pnl,
+    pnlLabel: t('share.unrealized'),
+    pnlText: pnl == null || !Number.isFinite(pnl) ? na : fmt.usdS(pnl),
+    roiText: roe == null || !Number.isFinite(roe) ? '' : fmt.pct(roe),
+    resultLabel: shareResult(pnl),
+    sizeText: p.size != null && Number.isFinite(p.size) ? fmt.num(p.size, dps) + ' ' + m.base : '',
+    openLabel: t('share.openAt'), openPrice: Number.isFinite(p.entry) ? fmt.price(p.entry, d) : na,
+    openTime: p.openedAt ? shareTime(p.openedAt) : na,
+    endLabel: t('share.markAt'), endPrice: mk != null && Number.isFinite(mk) ? fmt.price(mk, d) : na,
+    endTime: shareTime(Date.now()),
+    stale, feedLabel: t(stale ? 'share.stale' : 'share.live'),
+    generatedText: shareGenerated()
+  };
+}
+function shareClosedModel(id){
+  const h = tp && tp.state.history.find(x => String(x.id) === String(id));
+  if (!h || h.realized == null || !Number.isFinite(h.realized)) return null;
+  const { m, rtl, productLabel } = shareCommon(h.market);
+  if (!m) return null;
+  const d = Number(m.pricePrecision), dps = Number(m.sizePrecision) || 2, na = t('share.na');
+  return {
+    rtl, productLabel, status: 'closed', statusLabel: t('share.closed'),
+    symbol: m.symbol, instrument: shareCategory(m), long: h.side === 'long',
+    sideLabel: t(h.side === 'long' ? 'share.buy' : 'share.sell'),
+    leverageLabel: Number.isFinite(Number(h.leverage)) && h.leverage ? h.leverage + '×' : '',
+    pnl: h.realized, pnlLabel: t('share.realized'), pnlText: fmt.usdS(h.realized),
+    roiText: h.roi != null && Number.isFinite(h.roi) ? fmt.pct(h.roi) : '',
+    resultLabel: shareResult(h.realized),
+    sizeText: Number.isFinite(h.size) ? fmt.num(h.size, dps) + ' ' + m.base : '',
+    openLabel: t('share.openAt'), openPrice: h.entry != null && Number.isFinite(h.entry) ? fmt.price(h.entry, d) : na,
+    openTime: h.openedAt ? shareTime(h.openedAt) : na,
+    endLabel: t('share.closeAt'), endPrice: Number.isFinite(h.price) ? fmt.price(h.price, d) : na,
+    endTime: h.time ? shareTime(h.time) : na,
+    stale: false, feedLabel: '', generatedText: shareGenerated()
+  };
+}
+function shareLabels(){
+  return { title: t('share.title'), download: t('share.download'), share: t('share.native'), close: t('share.close'),
+    liveNote: t('share.liveNote'), finalNote: t('share.finalNote'), saved: t('share.saved'), failed: t('share.failed'), gone: t('share.gone') };
+}
+function openShare(kind, id){
+  if (!window.OpenfundShareCard) return;
+  const getter = kind === 'history' ? () => shareClosedModel(id) : () => shareOpenModel(id);
+  if (!window.OpenfundShareCard.open(getter, shareLabels())) toast(t('share.failed'), 'error');
+}
+/* Row actions are delegated once: rows are patched in place on every
+   data update, so per-render listeners would either duplicate or be lost
+   (a click landing while a row was being replaced used to do nothing). */
+let rowActionsWired = false;
 function wireRowActions(){
-  document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => {
+  if (rowActionsWired) return;
+  rowActionsWired = true;
+  document.addEventListener('click', e => {
+    const b = e.target && e.target.closest && e.target.closest('[data-close],[data-cancel],[data-sltp],[data-detail],[data-share],[data-share-history]');
+    if (!b || b.disabled || !b.closest('.bt-table')) return;
+    if (b.matches('[data-share]')) {
+    openShare('position', b.dataset.share);
+      return;
+    }
+    if (b.matches('[data-share-history]')) {
+    openShare('history', b.dataset.shareHistory);
+      return;
+    }
+    if (b.matches('[data-close]')) {
     const partial = tp.serverMode && !tp.readOnly;
     confirmDialog(t('cf.close'), t('cf.closeTxt'), () => {
       const fraction = partial ? Number($('close-fraction').value) : 1;
       (async () => { try { await tp.closePosition(b.dataset.close, fraction); } catch(e){ toast(String(e.message || e), 'error'); } renderBottom(); renderAccount(); })();
     }, null, partial ? `<label>${L('مقدار بستن پوزیشن', 'Position to close')} <select id="close-fraction"><option value="1">100%</option><option value="0.5">50%</option><option value="0.25">25%</option></select></label>` : null);
-  }));
-  document.querySelectorAll('[data-cancel]').forEach(b => b.addEventListener('click', () => {
+      return;
+    }
+    if (b.matches('[data-cancel]')) {
     confirmDialog(t('cf.cancel'), t('cf.cancelTxt'), () => {
       (async () => { try { await tp.cancelOrder(b.dataset.cancel); } catch(e){ toast(String(e.message || e), 'error'); } renderBottom(); renderAccount(); })();
     });
-  }));
-  document.querySelectorAll('[data-sltp]').forEach(b => b.addEventListener('click', () => {
+      return;
+    }
+    if (b.matches('[data-sltp]')) {
     const p = tp.getPosition(b.dataset.sltp);
     if (!p) return;
     const m = board.getMeta(p.market);
@@ -1230,8 +1431,9 @@ function wireRowActions(){
     $('sltp-err').hidden = true;
     $('sltp-dialog').showModal();
     sltpTarget = p.id;
-  }));
-  document.querySelectorAll('[data-detail]').forEach(b => b.addEventListener('click', () => {
+      return;
+    }
+    if (b.matches('[data-detail]')) {
     const p = tp.getPosition(b.dataset.detail);
     if (!p) return;
     const m = board.getMeta(p.market);
@@ -1239,18 +1441,23 @@ function wireRowActions(){
     const srv = p.mark_price != null ? p.mark_price : (p.srvMark != null ? p.srvMark : null);
     const mk = srv != null ? Number(srv) : (board.getMark(p.market) || p.entry);
     const pnl = tp.readOnly ? null : tp.serverMode ? p.srvPnl ?? p.realized ?? null : p.realized != null ? p.realized : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
-    const D = t('pos.details');
+    const D = detailLabels();
+    /* [label, value, isTechnical] — technical values (ids, symbols, numbers,
+       dates) are isolated LTR so they keep their reading order in RTL. */
     const rows = [
-      [D[0], '#' + p.id], [D[1], m.symbol], [D[2], p.side],
-      [D[3], fmt.num(p.size, Number(m.sizePrecision) || 2) + ' ' + m.base], [D[4], fmt.price(p.entry, d)],
-      [D[5], fmt.price(mk, d)], [D[6], p.leverage + '×'],
-      [D[7], p.currency ? fmt.num(p.margin,2)+' '+p.currency : fmt.usd(p.margin)], [D[8], fmt.price(p.liq, d)],
-      [D[9], fmt.usdS(pnl)], [D[10], (p.sl ? fmt.price(p.sl, d) : '—') + ' / ' + (p.tp ? fmt.price(p.tp, d) : '—')],
-      [D[11], fmt.dt(p.openedAt / 1000)], [D[12], fmt.usd(p.feePaid)]
+      [D[0], '#' + p.id, true], [D[1], m.symbol, true], [D[2], t(p.side === 'long' ? 'rv.side.long' : 'rv.side.short'), false],
+      [D[3], fmt.num(p.size, Number(m.sizePrecision) || 2) + ' ' + m.base, true], [D[4], fmt.price(p.entry, d), true],
+      [D[5], fmt.price(mk, d), true], [D[6], p.leverage + '×', true],
+      [D[7], p.currency ? fmt.num(p.margin,2)+' '+p.currency : fmt.usd(p.margin), true], [D[8], fmt.price(p.liq, d), true],
+      [D[9], fmt.usdS(pnl), true], [D[10], (p.sl ? fmt.price(p.sl, d) : '—') + ' / ' + (p.tp ? fmt.price(p.tp, d) : '—'), true],
+      [D[11], fmt.dt(p.openedAt / 1000), true], [D[12], fmt.usd(p.feePaid), true]
     ];
+    const pnlCls = pnl == null ? '' : pnl > 0 ? ' up' : pnl < 0 ? ' down' : '';
     confirmDialog(t('cf.detail'), null, null, () => {},
-      `<div class="review-grid">${rows.map(([k, v]) => `<div><span>${k}</span><b class="num">${v}</b></div>`).join('')}</div>`);
-  }));
+      `<dl class="pos-detail-grid">${rows.map(([k, v, tech], i) => `<div><dt>${esc(k)}</dt><dd class="${tech ? 'num' : ''}${i === 9 ? pnlCls : ''}">${tech ? `<bdi dir="ltr">${esc(v)}</bdi>` : esc(v)}</dd></div>`).join('')}</dl>`);
+      return;
+    }
+  });
 }
 let sltpTarget = null;
 $('sltp-cancel').addEventListener('click', () => $('sltp-dialog').close());
@@ -1425,18 +1632,20 @@ function boot(){
     });
     /* live board → UI + demo triggers (throttled) */
     let lastTrig = 0, lastBook = 0, renderQ = false;
-    board.on(() => {
+    let selectedDirty = true;
+    board.on((_, changed) => {
+      if (!changed || changed.market === S.marketId) selectedDirty = true;
       if (renderQ) return;
       renderQ = true;
       requestAnimationFrame(() => {
         renderQ = false;
         const now = Date.now();
-        renderMarketStats();
-        renderStatus();
+        /* other markets' ticks only matter to the open dropdown, positions
+           and the throttled blocks below */
+        if (selectedDirty) { selectedDirty = false; renderMarketStats(); renderStatus(); computeForm(); }
         if (ddOpen) renderDropdown($('market-search').value);
         if (now - lastBook > 1500){ lastBook = now; renderBook(); noteTrade(board.marks.get(S.marketId)); renderTrades(); }
-        if (now - lastTrig > 1500){ lastTrig = now; tp.checkTriggers(); renderAccount(); velaPositionsSync(); if (S.btTab === 'positions' && tp.state.positions.length) renderBottom(); }
-        computeForm();
+        if (now - lastTrig > 1500){ lastTrig = now; tp.checkTriggers(); renderAccount(); velaPositionsSync(); if (S.btTab === 'positions' && tp.state.positions.length) renderBottom(); else window.OpenfundShareCard?.refresh(); }
       });
     });
     board.on(p => { if (p && p.market === S.marketId) { /* nothing extra */ } });
@@ -1474,9 +1683,12 @@ function boot(){
   });
 }
 
-/* restore theme before first paint */
-let __initTheme = 'dark';
-try{ __initTheme = localStorage.getItem('of-theme') || 'dark' }catch(e){}
+/* The React shell stamps the current theme on srcdoc. Do not replace it with
+   an older stored value while a newly mounted workspace is booting. */
+let __initTheme = document.documentElement.dataset.theme;
+if(__initTheme !== 'light' && __initTheme !== 'dark'){
+  try{ __initTheme = localStorage.getItem('of-theme') || 'dark' }catch(e){ __initTheme = 'dark' }
+}
 document.documentElement.setAttribute('data-theme', __initTheme);
 curTheme = __initTheme;
 $('theme-toggle').textContent = __initTheme === 'dark' ? '◐' : '◑';

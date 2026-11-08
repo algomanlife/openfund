@@ -64,8 +64,7 @@ export default function PurchaseHistory() {
         <div className="of-empty">
           <p>{t('هنوز خریدی نداری. پلن‌ها را در صفحهٔ چلنج‌ها ببین.',
             'No purchases yet. See the plans on the Challenges page.')}</p>
-          <a className="button" href={`#/${locale}/challenges`}>{t('دیدن پلن‌ها', 'View plans')}</a>
-        </div>
+          <a className="button" href={`/${locale}/challenges`}>{t('دیدن پلن‌ها', 'View plans')}</a>        </div>
       )}
       {rows && rows.length > 0 && (
         <table className="of-purchase-table" dir={dirOf(locale)}>

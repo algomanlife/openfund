@@ -44,5 +44,5 @@ for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>child.kill(signal
 await healthy(origin+'/health',child);
 const actual=await fetch(origin+'/version').then(r=>r.json());
 if(actual.status!=='matched'||actual.commit!==release.commit){child.kill();throw Error('Running release identity failed verification.');}
-console.log(`Openfund ${version} · ${release.commit}\n${origin}/react/#/en/prop/dashboard\nPayload: ${payload}`);
+console.log(`Openfund ${version} · ${release.commit}\n${origin}/en/prop/dashboard\nPayload: ${payload}`);
 await new Promise(resolve=>child.on('exit',code=>{process.exitCode=code || 0;resolve();}));

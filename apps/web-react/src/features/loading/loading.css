@@ -1,0 +1,75 @@
+/* One shared branded loading look: the official Openfund mark, centered,
+   theme-aware, minimal. Mirrors the static pre-React instance in
+   index.html (#of-boot-loader) so boot and in-app transitions look
+   identical. */
+
+.of-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483645;
+  display: grid;
+  place-items: center;
+  background: #060808;
+  animation: of-loading-fade 120ms ease-out;
+}
+
+html[data-theme='light'] .of-loading {
+  background: #ffffff;
+}
+
+.of-loading img {
+  width: 40px;
+  height: 45px;
+  animation: of-loading-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes of-loading-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+@keyframes of-loading-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .of-loading img { animation: none; }
+  .of-loading { animation: none; }
+}
+
+/* Recoverable route error state (AppFrame error boundary) */
+
+.of-route-error {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483644;
+  display: grid;
+  place-content: center;
+  gap: 16px;
+  justify-items: center;
+  text-align: center;
+  background: #060808;
+  color: #e8ece9;
+  font: 400 15px/1.6 system-ui, sans-serif;
+  padding: 24px;
+}
+
+html[data-theme='light'] .of-route-error {
+  background: #ffffff;
+  color: #121412;
+}
+
+.of-route-error button {
+  font: inherit;
+  padding: 8px 20px;
+  border-radius: 999px;
+  border: 1px solid #82e7bd;
+  background: transparent;
+  color: #82e7bd;
+  cursor: pointer;
+}
+
+.of-route-error button:hover {
+  background: rgba(130, 231, 189, 0.12);
+}

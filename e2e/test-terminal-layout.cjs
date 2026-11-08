@@ -14,7 +14,7 @@ const { chromium } = require('playwright');
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const BASE = process.env.TEST_FRONTEND_URL || 'http://localhost:8080/react';
+const BASE = process.env.TEST_FRONTEND_URL || 'http://localhost:8080';
 const AUTH = process.env.TEST_LAYOUT_AUTH === '1';
 const OUT = path.resolve(__dirname, '../output/playwright/terminal-layout' + (AUTH ? '-authenticated' : ''));
 fs.mkdirSync(OUT, {recursive: true});
@@ -90,7 +90,7 @@ async function metrics(page) {
           return null;
         }};
     },wallet.address);
-    await page.goto(`${BASE}/#/en/prop/trade`);
+    await page.goto(`${BASE}/en/prop/trade`);
     await page.getByRole('button',{name:'Connect Wallet',exact:true}).click();
     await (await walletButton(page, 'Sign in')).click();
     await (await walletButton(page, 'Account')).waitFor();
@@ -101,7 +101,7 @@ async function metrics(page) {
   const captures=[], geometries={};
   try {
     for(const product of ['prop','perpetual']) for(const locale of (product==='perpetual'?['fa']:['en','fa'])) {
-      await page.goto(`${BASE}/#/${locale}/${product}/trade`);
+      await page.goto(`${BASE}/${locale}/${product}/trade`);
       const frame=page.frameLocator('iframe');
       await frame.locator('#submit-order').waitFor();
       await frame.locator('canvas').first().waitFor({timeout:20000});

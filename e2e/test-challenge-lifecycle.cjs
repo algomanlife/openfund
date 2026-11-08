@@ -19,7 +19,7 @@ const { createRequire } = require('node:module');
 const path = require('node:path'), assert = require('node:assert/strict');
 const req = createRequire(path.resolve(__dirname, '../apps/backend/package.json'));
 const { generatePrivateKey, privateKeyToAccount } = req('viem/accounts');
-const BASE = (process.env.TEST_FRONTEND_URL || 'http://localhost:8080/react').replace(/\/$/, '');
+const BASE = (process.env.TEST_FRONTEND_URL || 'http://localhost:8080').replace(/\/$/, '');
 const API = process.env.TEST_BACKEND_URL || 'http://localhost:8080';
 const results = [];
 function check(name, value) { assert.ok(value, name); results.push(name); console.log('PASS - ' + name) }
@@ -96,7 +96,7 @@ async function signIn(page) {
 
   try {
     /* ---------- 1. sign in on the prop dashboard ---------- */
-    await page.goto(BASE + '/#/en/prop/dashboard');
+    await page.goto(BASE + '/en/prop/dashboard');
     await page.waitForTimeout(3000);
     await connect(page);
     await signIn(page);
@@ -110,7 +110,7 @@ async function signIn(page) {
     const challengeId = confirm.data.challengeId;
 
     /* ---------- 3. dashboard shows the challenge + start button ---------- */
-    await page.goto(BASE + '/#/en/prop/dashboard?account=' + challengeId);
+    await page.goto(BASE + '/en/prop/dashboard?account=' + challengeId);
     await page.waitForTimeout(2500);
     const panel = page.locator('.of-challenge-panel');
     await panel.waitFor({ state: 'visible', timeout: 15000 });
@@ -142,7 +142,7 @@ async function signIn(page) {
     check('profitable position closed through the server engine', close.status === 200, JSON.stringify(close.data).slice(0, 160));
 
     /* ---------- 6. evaluation: profit target → PASSED (12% of 5000 = 600) ---------- */
-    await page.goto(BASE + '/#/en/prop/dashboard?account=' + challengeId);
+    await page.goto(BASE + '/en/prop/dashboard?account=' + challengeId);
     await page.waitForTimeout(2000);
     await page.waitForFunction(() => document.querySelector('.of-challenge-panel')?.getAttribute('data-status') === 'passed', null, { timeout: 30000 });
     const finalStatus = await panel.getAttribute('data-status');

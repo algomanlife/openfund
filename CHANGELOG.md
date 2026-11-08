@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Release planning accepts an explicitly requested next patch on a manual
+  main-branch batch, while rejecting skipped or reused versions.
+- Stale market depth keeps readable text contrast in the light theme.
 - Terminal Share P&L: a Share action beside Details (open positions) and in
   Order History (closed positions with a recorded result) opens an
   Openfund-branded card rendered on a canvas that is also the exported PNG
@@ -21,7 +24,22 @@
 - Position Details: full labels (a CMS list value no longer collapses to
   one character per label) and a bidi-safe label/value layout.
 
-- Fix production deploys: GitHub's release download URL returned `504` to
+- Clean SEO-friendly URLs: the public site now uses browser-history routes at
+  the domain root (`/fa/challenges`, `/en/faq`) instead of
+  `/react/#/fa/challenges`. The `/react` document prefix is permanently
+  redirected (308) and old `#/…` bookmarks are recovered client-side by a
+  pre-paint normalizer (the hash never reaches the server), preserving locale
+  and query parameters. APIs, websockets and static assets are unaffected;
+  cached legacy shells keep loading their `/react/assets/…` files.
+- Branded loading experience: one shared Openfund-mark loader covers the
+  genuine boot window and locale transitions. A pre-paint script sets
+  `lang`/`dir` (and theme) before first paint so a language switch can never
+  show Persian text in an LTR layout (or the reverse); the legacy landing
+  loads its stylesheet before first paint instead of after the CMS fetch.
+  Fast transitions stay loader-free (short display threshold), and backstops
+  guarantee the loader never sticks. Route-driven SEO head: clean canonicals,
+  `fa`/`en`/`x-default` hreflang on public pages, `noindex` on the
+  authenticated product app.- Fix production deploys: GitHub's release download URL returned `504` to
   automated clients on 2026-11-08, so Render builds of v0.4.2 could not read
   the published manifest (three attempts failed; production stayed on
   v0.4.1). `render-build.mjs` and `deploy.mjs` now download release assets

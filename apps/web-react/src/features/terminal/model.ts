@@ -21,9 +21,9 @@ export const primary = {
     ["rewards", "ریوارد", "Rewards"],
   ],
 } as const;
-export const selectedAccount = () => new URLSearchParams(location.hash.split('?')[1] || '').get('account');
+export const selectedAccount = () => new URLSearchParams(location.search).get('account');
 export const route = (locale: Locale, product: Product, page: string) => {
-  const account=location.hash.includes(`/${product}/`) ? selectedAccount() : null;
+  const account=location.pathname.includes(`/${product}/`) ? selectedAccount() : null;
   return `/${locale}/${product}/${page}${account ? `?account=${encodeURIComponent(account)}` : ''}`;
 };
 export function routeQuery(path: string, values: Record<string, string>) {
@@ -38,7 +38,7 @@ export async function api(
   init: RequestInit = {},
   accountScope?: string | null,
 ) {
-  const account = accountScope !== undefined ? accountScope : location.hash.includes(`/${product}/`) ? selectedAccount() : null;
+  const account = accountScope !== undefined ? accountScope : location.pathname.includes(`/${product}/`) ? selectedAccount() : null;
   if(account) path += `${path.includes('?')?'&':'?'}account=${encodeURIComponent(account)}`;
   const r = await fetch(`${backendUrl()}/products/${product}${path}`, {
     ...init,

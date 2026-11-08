@@ -10,7 +10,13 @@
 'use strict';
 
 /* ---------- utilities ---------- */
-const L = (fa, en) => (typeof window !== 'undefined' && window.ofLang === 'fa') ? fa : en;
+/* fa/en pair; the added locales translate the English text (legacy/terminal-locales.js) */
+const L = (fa, en) => {
+  const lang = typeof window !== 'undefined' ? window.ofLang : 'en';
+  if (lang === 'fa') return fa;
+  const extra = typeof window !== 'undefined' && window.OpenfundTerminalLocales && window.OpenfundTerminalLocales.L[lang];
+  return (extra && extra[en]) || en;
+};
 const fmt = {
   num(v, d){ if(v==null || !Number.isFinite(Number(v)))return '—';return Number(v).toLocaleString('en-US', {minimumFractionDigits: d, maximumFractionDigits: d}); },
   price(v, d){ return fmt.num(v, d); },
@@ -42,20 +48,26 @@ class PriceBoard{
     this._boot = null;
   }
   on(fn){ this.listeners.add(fn); return () => this.listeners.delete(fn); }
-  _emit(){ for (const fn of this.listeners) fn(this); }
+  _emit(changed){ for (const fn of this.listeners) fn(this, changed || null); }
 
   async boot(){
     if (this._boot) return this._boot;
     this._boot = (async () => {
       const [, prices] = await Promise.all([ this.refreshMeta(), this.refreshSnapshot() ]);
       G.subscribePrices(p => {
+        /* out-of-order guard: never replace a newer mark with an older one
+           (snapshot resyncs and reconnects can replay earlier values) */
+        const prev = this.marks.get(p.market);
+        if (prev && p.updatedAt < prev.updatedAt) return;
         this.marks.set(p.market, { ...p, at: Date.now() });
-        this._emit();
+        this._emit(p);
       });
       G.subscribeStatus(s => { this.status = s; this._emit(); });
       setInterval(() => this._emit(), 20000); /* staleness watchdog */
       return prices;
     })();
+    /* a failed boot must be retryable: keep no rejected promise cached */
+    this._boot.catch(() => { this._boot = null; });
     return this._boot;
   }
   async refreshMeta(){
@@ -68,6 +80,8 @@ class PriceBoard{
     for (const p of prices){
       const mark = Number(p.mark);
       if (!Number.isFinite(mark) || mark <= 0) continue;
+      const prev = this.marks.get(p.market), updatedAt = Number(p.updatedAt) || Date.now();
+      if (prev && updatedAt < prev.updatedAt) continue;
       this.marks.set(p.market, { market: p.market, mark, index: Number(p.index) || null,
                                  updatedAt: Number(p.updatedAt) || Date.now(), at: Date.now() });
     }

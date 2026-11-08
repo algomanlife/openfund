@@ -16,10 +16,10 @@ function load(file, session) {
 }
 const { networkForHash } = load('../src/wallet/productNetwork.ts')
 test('network selection follows the product path, including query-bearing root routes, rather than account query values',()=>{
-  assert.equal(networkForHash('#/en/perpetual/trade?account=owned').id,42161)
-  assert.equal(networkForHash('#/fa/perpetual?account=owned').id,42161)
-  assert.equal(networkForHash('#/en/prop/trade?account=perpetual').id,11155111)
-  assert.equal(networkForHash('#/en/prop/dashboard?redirect=/perpetual/trade').id,11155111)
+  assert.equal(networkForHash('/en/perpetual/trade?account=owned').id,42161)
+  assert.equal(networkForHash('/fa/perpetual?account=owned').id,42161)
+  assert.equal(networkForHash('/en/prop/trade?account=perpetual').id,11155111)
+  assert.equal(networkForHash('/en/prop/dashboard?redirect=/perpetual/trade').id,11155111)
 })
 
 test('trade and transaction detail links preserve the selected account query',()=>{
@@ -34,7 +34,7 @@ test('trade and transaction detail links preserve the selected account query',()
 })
 
 test('Prop bridge scopes reads and retries one reviewed intent with one idempotency key',async()=>{
-  const dom=new JSDOM('<div id="root"></div>',{url:'http://localhost/react/#/en/prop/trade?account=owned-account'})
+  const dom=new JSDOM('<div id="root"></div>',{url:'http://localhost/en/prop/trade?account=owned-account'})
   const saved={};for(const key of ['window','document','addEventListener','removeEventListener','EventSource','Event','CustomEvent','fetch','IS_REACT_ACT_ENVIRONMENT'])saved[key]=globalThis[key]
   globalThis.window=dom.window;globalThis.document=dom.window.document
   globalThis.addEventListener=dom.window.addEventListener.bind(dom.window);globalThis.removeEventListener=dom.window.removeEventListener.bind(dom.window)
@@ -77,7 +77,7 @@ test('queued account writes preserve the captured account after route selection 
  const {api}=load('../src/features/terminal/model.ts',{useSession:()=>null,backendUrl:()=> 'http://backend.test'});
  const previousLocation=globalThis.location,previousFetch=globalThis.fetch;let target;
  try{
-  globalThis.location={hash:'#/en/prop/journal?account=second-account'};
+  globalThis.location={pathname:'/en/prop/journal',search:'?account=second-account'};
   globalThis.fetch=async url=>{target=url;return {ok:true,json:async()=>({ok:true})}};
   await api('prop','/preferences',{method:'PUT',body:'{}'},'first-account');
   assert.equal(new URL(target).searchParams.get('account'),'first-account');

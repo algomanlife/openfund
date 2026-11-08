@@ -59,6 +59,11 @@ flowchart LR
   is the application version, recorded in the manifest and served by
   `/version`. The `package.json` `version` fields stay `0.1.0`; they are
   internal component provenance, not the application version.
+- **Explicit patch batch:** a main-branch manual dispatch may set
+  `release_version` to exactly the next patch after the latest reachable
+  published tag. The planner rejects skipped, reused and different-line
+  versions; this permits an owner-approved patch batch despite feature
+  commit wording without moving any existing tag.
 
 The frontend package now loads `/react/runtime-config.js` before its React
 module. The backend serves this no-store script from `CMS_PUBLIC_URL` (preferred

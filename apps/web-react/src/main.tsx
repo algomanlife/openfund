@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createHashRouter, RouterProvider, Navigate, useParams } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Navigate, useParams } from 'react-router-dom'
 import Landing from './pages/Landing'
 import Home from './features/home/Home'
 import Markets from './features/markets/Markets'
@@ -24,6 +24,7 @@ import PurchaseHistory from './features/purchase/PurchaseHistory'
 import WithdrawalsPage from './features/purchase/WithdrawalsPage'
 import { WalletProvider } from './wallet/WalletProvider'
 import { SessionProvider } from './session/useOpenfundSession'
+import AppFrame from './features/loading/AppFrame'
 import { startThemeSync } from './theme'
 import { isLocale, storedLocale, type AppLocale } from './i18n/locales'
 
@@ -35,7 +36,14 @@ startThemeSync()
    /:locale/challenges → legacy landing experience (preserved, moved off "/")
    /:locale/markets → Markets directory (Gains Network authoritative data)
    /:locale/rulebook, /:locale/transparency → existing editorial pages
-   /terminal, /portfolio → the separate terminal application experience       */
+   /terminal, /portfolio → the separate terminal application experience
+
+   Clean SEO URLs: browser-history routing at the site root (no '/react'
+   prefix, no '#'). Legacy '/react/#/…' links are normalized to clean paths
+   by the pre-paint script in index.html BEFORE this module runs — a hash
+   fragment never reaches the server, so client-side recovery is the only
+   complete migration mechanism (the backend additionally redirects the
+   '/react' document prefix). */
 
 function preferredLocale(): AppLocale {
   return storedLocale()
@@ -89,7 +97,7 @@ function ProductGate({ product }: { product: 'prop' | 'perpetual' }) {
     : <TerminalShell product={product} />
 }
 
-const router = createHashRouter([
+const routes = [
   { path: '/', element: <RootRedirect /> },
   { path: '/:locale/home', element: <LocalizedHome /> },
   { path: '/:locale/challenges', element: <Landing /> },
@@ -126,47 +134,21 @@ const router = createHashRouter([
   { path: '/portfolio', element: <TerminalRedirect page="portfolio" /> },
   { path: '/journal', element: <TerminalRedirect page="journal" /> },
   ...(['prop', 'perpetual'] as const).map(product => ({ path: `/${product}/:page`, element: <ProductRedirect product={product} /> })),
-  /* single-segment legacy hashes ('#markets', '#accounts', '#fa', …) */
+  /* single-segment legacy hashes ('#markets', '#accounts', '#fa', …) —
+     recovered as clean '/markets'-style paths by the pre-paint normalizer */
   { path: '/:section', element: <LegacyAnchor /> },
-  /* unknown hashes still fall back to the gateway instead of a blank screen */
+  /* unknown paths still fall back to the gateway instead of a blank screen */
   { path: '*', element: <RootRedirect /> }
+]
+
+const router = createBrowserRouter([
+  /* AppFrame wraps every route: pre-paint locale/direction sync, the shared
+     branded loading gate, route-driven SEO head, the legacy DOM link
+     bridge (in-page '#section' scrolls and '#/#section' cross-page
+     anchors, previously wired here at module scope) and Back/Forward
+     scroll restoration. */
+  { element: <AppFrame />, children: routes }
 ])
-
-/*
- * In-page anchors in the legacy markup (href="#markets", "#accounts", …)
- * would be hijacked by the hash router and blank the page. Handle them
- * ourselves: smooth-scroll, never touch the route. '#/#xxx' links are
- * cross-page anchors (terminal/portfolio → website content): route to the
- * page that now owns that section and remember the target for a post-boot
- * scroll. '#/#markets' goes to the standalone Markets page.
- */
-document.addEventListener('click', (e) => {
-  const a = (e.target as HTMLElement | null)?.closest?.('a')
-  if (!a) return
-  const href = a.getAttribute('href')
-  if (!href || !href.startsWith('#')) return
-  if (href.startsWith('#/')) return          /* real router links */
-  e.preventDefault()
-  if (href.length <= 1) return               /* bare '#' placeholders */
-  const id = href.slice(1)
-  const el = id === 'top' ? document.body : document.getElementById(id)
-  if (id === 'top') window.scrollTo({ top: 0, behavior: 'smooth' })
-  else el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-})
-document.addEventListener('click', (e) => {
-  const a = (e.target as HTMLElement | null)?.closest?.('a')
-  if (!a) return
-  const href = a.getAttribute('href') || ''
-  if (!href.startsWith('#/#')) return
-  e.preventDefault()
-  const id = href.slice(3)
-  const w = window as Window & { ofLang?: string; ofUiLang?: string }
-  const lang = isLocale(w.ofUiLang) ? w.ofUiLang : isLocale(w.ofLang) ? w.ofLang : preferredLocale()
-  if (id === 'markets') { location.hash = `/${lang}/markets`; return }
-  try { sessionStorage.setItem('ofScrollTo', id) } catch { /* optional */ }
-  location.hash = `/${lang}/challenges`
-})
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <WalletProvider>

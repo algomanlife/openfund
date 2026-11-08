@@ -73,14 +73,14 @@ export function Chrome({ locale, part, nav = true }: { locale: AppLocale; part: 
       }
       const page = el.dataset.infoPage as InfoPage | undefined
       if (page && labels[page]) {
-        el.setAttribute('href', `#/${locale}/${page}`)
+        el.setAttribute('href', `/${locale}/${page}`)
         el.textContent = pickRecord(locale, labels[page])
         if (location.pathname.endsWith(`/${page}`)) el.setAttribute('aria-current', 'page')
       } else if (el.tagName === 'A') {
         const href = el.getAttribute('href') || ''
-        if (href === '#/' || href === '#top' && part === 'header') el.setAttribute('href', `#/${locale}/home`)
+        if (href === '/' || href === '#/' || href === '#top' && part === 'header') el.setAttribute('href', `/${locale}/home`)
         else if (href === '#top') el.setAttribute('href', '#top')
-        else if (href.startsWith('#') && !href.startsWith('#/')) el.setAttribute('href', `#/${href}`)
+        else if (href.startsWith('#') && !href.startsWith('#/')) el.setAttribute('href', href)
       }
       for (const attr of ['src', 'href']) {
         const value = el.getAttribute(attr)
@@ -173,11 +173,7 @@ export default function InformationShell({ page, description, footer = true, nav
     const meta = document.createElement('meta')
     meta.name = 'description'; meta.content = description
     tags.push(meta)
-    const url = (lang: Locale) => new URL(`${base}#/${lang}/${page}`, window.location.origin).href
-    const canonical = document.createElement('link')
-    /* added locales display the English editorial page: it stays canonical */
-    canonical.rel = 'canonical'; canonical.href = url(editorial)
-    tags.push(canonical)
+    const url = (lang: Locale) => new URL(`/${lang}/${page}`, window.location.origin).href
     /* social sharing metadata mirrors the CMS-edited title/description */
     const og = (property: string, content: string) => {
       const tag = document.createElement('meta')
@@ -187,11 +183,6 @@ export default function InformationShell({ page, description, footer = true, nav
     og('og:title', document.title)
     og('og:description', description)
     og('og:url', url(editorial))
-    for (const lang of ['en', 'fa', 'x-default']) {
-      const link = document.createElement('link')
-      link.rel = 'alternate'; link.hreflang = lang; link.href = url(lang === 'en' ? 'en' : 'fa')
-      tags.push(link)
-    }
     tags.forEach(tag => document.head.appendChild(tag))
     return () => { tags.forEach(tag => tag.remove()); document.title = previousTitle }
   }, [locale, editorial, page, description, title])
