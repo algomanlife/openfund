@@ -177,7 +177,7 @@ async function walletDisclosureFits(page){
   for(const locale of ['fa','en'])for(const theme of ['dark','light'])for(const width of [1440,900,390]){
    await page.setViewportSize({width,height:900});
    await page.goto(BASE+`/#/${locale}/home`);
-   await page.evaluate(theme=>{localStorage.setItem('of-theme',theme);document.documentElement.dataset.theme=theme},theme);
+   await page.evaluate(theme=>localStorage.setItem('of-theme-choice',theme),theme);
    await page.reload();
    await page.locator('header .nav-cta').waitFor();
    await page.waitForTimeout(locale==='en'?1800:350);
@@ -291,7 +291,7 @@ async function walletDisclosureFits(page){
    }
   }
   if(!connected) for(const locale of ['en','fa'])for(const theme of ['dark','light'])for(const surface of ['public','terminal']){
-    await page.evaluate(theme=>{localStorage.setItem('of-theme',theme);document.documentElement.dataset.theme=theme},theme);
+    await page.evaluate(theme=>localStorage.setItem('of-theme-choice',theme),theme);
     await page.goto(BASE+`/#/${locale}/${surface==='public'?'faq':'prop/dashboard'}`);await page.reload();await page.waitForTimeout(350);
     await page.locator('header .rk-chip-connect').click();const dialog=page.getByRole('dialog');await dialog.waitFor();
     await page.waitForTimeout(300);

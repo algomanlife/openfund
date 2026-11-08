@@ -65,7 +65,8 @@ async function realThemeClicks(browser) {
     const page = await context.newPage();
     try {
       await page.goto(`${BASE}/#/${locale}/home`, { waitUntil: 'domcontentloaded' });
-      await page.locator('#theme-toggle').click();
+      check(`${colorScheme}-${locale} system default`, await page.locator('html').getAttribute('data-theme') === colorScheme);
+      if (colorScheme === 'dark') await page.locator('#theme-toggle').click();
       const prefix = `${colorScheme}-${locale}`;
       await sample(page, `${prefix}-public-light`, 'light', true);
       await page.reload({ waitUntil: 'domcontentloaded' });
@@ -123,7 +124,7 @@ async function realThemeClicks(browser) {
     if (process.env.P0_THEME_ONLY === '1') { console.log(`${checks.length} real-click theme checks passed`); return; }
     for (const locale of ['fa', 'en']) for (const theme of ['dark', 'light']) for (const width of [390, 768, 1440]) {
       const context = await browser.newContext({ viewport: { width, height: 1000 }, reducedMotion: 'reduce' });
-      await context.addInitScript(theme => localStorage.setItem('of-theme', theme), theme);
+      await context.addInitScript(theme => localStorage.setItem('of-theme-choice', theme), theme);
       const page = await context.newPage();
       await page.goto(`${BASE}/#/${locale}/challenges`);
       await page.locator('footer .telegram-community').waitFor();
