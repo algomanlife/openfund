@@ -51,7 +51,14 @@ try {
  }
  if(!live)throw Error('Render deploy polling timed out.');
  }
- if(!matches(await liveIdentity()))throw Error('Live frontend/backend do not match the selected release.');
+ // Render may report the new instance live before the public CDN serves its
+ // updated frontend assets. Allow the exact release identity to converge.
+ let verified=false;
+ for(let i=0;i<30;i++){
+  try{if(matches(await liveIdentity())){verified=true;break;}}catch{/* retry transient public reads */}
+  if(i<29)await new Promise(resolve=>setTimeout(resolve,5000));
+ }
+ if(!verified)throw Error('Live frontend/backend do not match the selected release.');
  // CMS is an independent service. An app deploy cannot certify the whole platform without its health evidence.
  if(!process.env.RELEASE_CMS_URL)throw Error('Application identity verified; RELEASE_CMS_URL is required for full platform deployment acceptance.');
  if(!(await fetch(new URL('/server/health',process.env.RELEASE_CMS_URL),{signal:AbortSignal.timeout(15000)})).ok)throw Error('CMS health check failed.');
