@@ -98,16 +98,61 @@ Blueprint (`render.yaml`, root). Applying the Blueprint is a reviewed manual ope
    random secret — this enables the `/admin/*` operational API (user
    directory, challenge directory, withdrawal review; constant-time bearer
    auth, fully disabled while unset).
-7. **Custom domain** (optional): point your verified custom hostname at the `openfund` service
-   and set `ALLOWED_DOMAINS` is auto-derived from the service host — after adding
-   a custom domain, add it to the service env (`ALLOWED_DOMAINS`) so SIWE domain
-   validation accepts it.
+7. **Custom domain** (optional): add the verified hostname to the `openfund`
+   service, then add it to the service's `ALLOWED_DOMAINS` (comma-separated)
+   so SIWE domain validation accepts it. The Blueprint seeds that variable
+   with the onrender hostname only. See [Production domains](#production-domains).
+
+## Production domains
+
+One `openfund` service serves every public hostname. No second application
+or environment exists for a domain.
+
+| Hostname | Role | Observed 2026-11-08 |
+| --- | --- | --- |
+| `openfi.cloud` | Existing production domain | Cloudflare-proxied, Google Trust Services certificate, `/version` matched v0.4.1 |
+| `openfund.cloud` | Second production domain; `RELEASE_PUBLIC_URL` for deploy verification | Same service and `/version` identity |
+| `www.openfi.cloud`, `www.openfund.cloud` | Redirect-only | `301` to the matching root domain, path preserved |
+| `openfund-our6.onrender.com` | Render default host | Same service |
+| `cms.openfi.cloud` | Directus (`openfund-cms`) | Separate CMS service |
+
+Neither root domain redirects to the other; both stay canonical for their own
+visitors. HTTP redirects to HTTPS and responses carry HSTS.
+
+**Sessions and origins.** The session cookie is host-only (`HttpOnly`,
+`Secure`, `SameSite=Lax`, no `Domain` attribute). Each domain therefore keeps
+its own browser session against the same accounts database; cookies are never
+shared across the two root domains. The frontend calls the API on the same
+origin, so no `CORS_ORIGINS` entry is needed for either domain, and the
+mutation-origin check accepts same-origin requests. Live trading updates use
+Server-Sent Events (`/trading/stream`), not WebSockets.
+
+**Required setting.** Wallet sign-in (SIWE) compares the message domain with
+`ALLOWED_DOMAINS`. On 2026-11-08 the live service accepted only the onrender
+host: a domain probe returned `invalid_domain` for both `openfi.cloud` and
+`openfund.cloud`. Set, on the `openfund` service:
+
+```
+ALLOWED_DOMAINS=openfund-our6.onrender.com,openfi.cloud,openfund.cloud
+```
+
+A Blueprint sync re-applies `fromService` values, so re-check this variable
+after any sync.
+
+**Verification checklist** (both root domains): DNS resolves through
+Cloudflare; the certificate covers the root and `www`; `http://` → `https://`;
+`www` → root with the path kept; `/health` returns `{"ok":true}`; `/version`
+reports `matched` with the released commit; `/react/` loads; a SIWE probe no
+longer returns `invalid_domain`; a real wallet sign-in succeeds on each domain.
+Cloudflare SSL mode must stay Full (strict) so Cloudflare-to-Render traffic is
+encrypted and no redirect loop occurs.
 
 ## Day-2 operations
 
-- **Deploys**: Both services have `autoDeployTrigger: off`. Publish the verified
-  GitHub release first, then deploy `openfund` through the documented release
-  procedure. Deploy `openfund-cms` only after the backup and schema review for
+- **Deploys**: Both services have `autoDeployTrigger: off`. Publishing a
+  stable release through **Unified release** chains the `openfund` deploy:
+  after production approval it deploys the release's exact commit and verifies
+  the live manifest ([ADR 0013](../decisions/0013-release-driven-production-deployment.md)). Deploy `openfund-cms` only after the backup and schema review for
   its own image or migration.
 - **Authenticated blueprint validation** (CI does this when
   `RENDER_API_TOKEN` is set as a repo secret):

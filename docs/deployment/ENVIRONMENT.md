@@ -13,7 +13,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `PORT` | both web services | R | PUB | set by Render (Directus and Express both honor it) |
 | `NODE_VERSION` | openfund | B | PUB | `22` (matches `apps/backend` engines) |
 | `NODE_ENV` | openfund | R | PUB | `production` (enables Secure cookies) |
-| `ALLOWED_DOMAINS` | openfund | R | PUB | `fromService: openfund / envVarKey: RENDER_EXTERNAL_HOSTNAME` — the SIWE domain list tracks the served origin |
+| `ALLOWED_DOMAINS` | openfund | R | PUB | `fromService: openfund / envVarKey: RENDER_EXTERNAL_HOSTNAME` creates the onrender host. Comma-separated SIWE hosts; every public hostname that serves the app must be listed (production: `openfund-our6.onrender.com,openfi.cloud,openfund.cloud`, set on the service — see [Render › Production domains](RENDER.md#production-domains)). Redirect-only hosts such as `www.*` need no entry |
 | `VITE_DIRECTUS_HOST` | openfund | R | PUB | `fromService: openfund-cms / envVarKey: RENDER_EXTERNAL_HOSTNAME`; runtime fallback when `CMS_PUBLIC_URL` is unset |
 | `KEY`, `SECRET` | openfund-cms | R | SEC | `generateValue: true` (created once at first apply) |
 | `WEBSOCKETS_ENABLED`, `CORS_ENABLED`, `CORS_ORIGIN`, `CORS_METHODS`, `MAX_PAYLOAD_SIZE` | openfund-cms | R | PUB | Directus hardening (public read-only API) |

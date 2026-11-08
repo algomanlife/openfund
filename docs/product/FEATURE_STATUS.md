@@ -1,6 +1,16 @@
 # Feature status
 
-2026-11-08 theme preference update (unreleased branch): when no explicit
+2026-11-08 v0.4.2 release batch: `main` contains PR #50 (Persian terminal
+RTL/mobile), PR #51 (system-default theme) and PR #52 (Prop engine audit),
+plus release-driven deployment ([ADR 0013](../decisions/0013-release-driven-production-deployment.md)).
+Release automation is **Completed** in source scope; its first live run is
+the v0.4.2 publication. Dual-domain serving (`openfi.cloud`,
+`openfund.cloud`) is **Completed** for HTTPS and routing; wallet sign-in on
+both custom domains is **Blocked** until `ALLOWED_DOMAINS` on the Render
+service lists them (live probe returned `invalid_domain` on 2026-11-08).
+Check the GitHub Release and `/version` for publication and deployment.
+
+2026-11-08 theme preference update (PR #51, in the v0.4.2 batch): when no explicit
 choice exists, the application initializes from the OS light/dark preference
 and follows later OS changes. A manual toggle saves an explicit choice and
 takes priority across routes and reloads. `of-theme` remains the resolved

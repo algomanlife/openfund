@@ -4,17 +4,21 @@
 
 | Service | Trigger | Rollback unit |
 | :--- | :--- | :--- |
-| `openfund` (API + web) | auto on merge to `main` (`autoDeployTrigger: commit`) | any previous commit — Render keeps deploy history |
+| `openfund` (API + web) | after a stable release is published, the chained deploy job (production approval) deploys its exact commit; commit auto-deploy is `off` ([ADR 0013](../decisions/0013-release-driven-production-deployment.md)) | any earlier published release tag |
 | `openfund-cms` (Directus) | manual only (`off`) | image tag pinned in `render.yaml` (11.9.1) + snapshot/backup |
 | `openfund-db` (Postgres) | migrations run in the API startCommand | idempotent, additive-first migrations |
 
 ## Rolling back the application
 
-1. Render dashboard → `openfund` service → **Deploys** → pick the last known-good
-   deploy → **Rollback** (Render redeploys that exact commit).
-2. Or from Git: revert the offending commit on `main` — the revert itself
-   triggers a fresh deploy. Prefer the dashboard rollback when time matters.
-3. The frontend is rebuilt as part of the same service rollback — no separate
+1. Dispatch **Deploy or roll back official release** on `main` with the
+   last known-good tag and `rollback=true`. It deploys that release's exact
+   commit and verifies the live manifest. Without `rollback=true` the workflow
+   refuses any tag older than the latest release.
+2. In an emergency, Render dashboard → `openfund` → **Deploys** → a previous
+   live deploy → **Rollback** redeploys that commit. Run the workflow
+   afterwards so the deployment record and identity checks match.
+3. A forward fix ships as a new reviewed release; never move a published tag.
+4. The frontend is rebuilt as part of the same service rollback — no separate
    rollback exists or is needed.
 
 ## Rollback safety properties (by design)
@@ -48,7 +52,7 @@
 | :--- | :--- |
 | `openfund` unhealthy (`/health` 503) | logs → `SELECT 1` failing means Postgres outage: dashboard → database status; the service recovers automatically when the DB returns |
 | Deploys succeed but app blank | `VITE_DIRECTUS_HOST` present in the deploy env? CMS service up? (`/server/health`) |
-| SIWE login fails in prod | `ALLOWED_DOMAINS` follows the service host — after adding a custom domain, add it to the env var |
+| SIWE login fails in prod (`invalid_domain`) | every serving hostname must be in `ALLOWED_DOMAINS` — see [Production domains](RENDER.md#production-domains) |
 | Trading engine errors in logs | usually Gains feed gaps (logged, non-fatal); persistent failures → check market-data status line in logs |
 | Directus 502 on first apply | database not ready yet — Render restarts automatically; verify `openfund-db` state |
 

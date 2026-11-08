@@ -20,18 +20,19 @@ Openfund is an early-stage trading technology project maintained in a public rep
 
 This repository supports open-source collaboration, but has **no root license granting blanket reuse rights**. Component licenses and upstream notices apply separately; see [Licensing and upstream attribution](#licensing-and-upstream-attribution). Source availability is not a claim of production readiness, audited security or an active funded-trading service.
 
-**Release status (2026-11-08):** v0.4.1 is published and deployed at
-`b8389ca`. PR #50 is merged on `main` but not in that immutable release.
-The system-default theme change on this branch is unreleased. A browser's
-Force Dark Page override can still alter the final paint even when the app's
-light palette is correct; deployed appearance needs acceptance in the actual
-browser. See the [release runbook](docs/deployment/RELEASES.md).
+**Current version: v0.4.2.** The release authority is the
+[GitHub Release](https://github.com/algomanlife/openfund/releases) and the
+running service's `/version` endpoint. This README is not live status. v0.4.2
+adds the Prop engine audit corrections, the system-default theme and the
+Persian RTL/mobile terminal fixes to v0.4.1, plus release-driven deployment.
+Production serves one application on `openfi.cloud` and `openfund.cloud`. See
+[Current version and changelog](#current-version-and-changelog).
 
 ### Product areas
 
 | Area | Implemented scope | Boundaries |
 | --- | --- | --- |
-| **Prop** | Persistent server-side simulation; market, limit and stop orders; SL/TP, partial close, cancellation and liquidation; account performance and journals | New Free Trial accounts receive 100,000 virtual USD; legacy virtual-DAI histories remain intact. Challenge purchases are gated; evaluation, funded capital and payouts are not active. |
+| **Prop** | Persistent server-side simulation; market, limit and stop orders; SL/TP, partial close, cancellation and liquidation; challenge evaluation; account performance and journals | New Free Trial accounts receive 100,000 virtual USD; legacy virtual-DAI histories remain intact. Challenge purchases are disabled in production (`paymentsEnabled: false`); funded capital and payouts are not active. |
 | **Perpetual** | Gains Network market data and wallet-scoped Arbitrum One positions, orders, history and statistics | Read-only. Transactions, approvals and collateral transfers remain disabled. Missing balances or unsupported PnL stay unknown. |
 
 The current [router](apps/web-react/src/main.tsx) exposes both products in Persian and Prop in English; English Perpetual routes redirect to Prop. Language availability does not determine residency eligibility. [Prop guide](docs/trading/PROP.md) · [Perpetual guide](docs/trading/PERPETUAL.md)
@@ -41,7 +42,7 @@ The current [router](apps/web-react/src/main.tsx) exposes both products in Persi
 - **Market discovery and charting:** Gains REST/WebSocket feeds, shared Vela workspace and a Pine indicator catalog. Source freshness and upstream failures remain visible; reference-platform indicator conformance is still open.
 - **Identity and accounts:** wallet connection, Sign-In with Ethereum (SIWE), first-party sessions and an owned account directory. Signing in is not a blockchain transaction.
 - **Portfolio and Journal:** product-scoped records, supported analytics, private notes, tags, filters and exports. Journal imports cannot create trades or balances.
-- **Prop evaluation engine (v0.3.1):** purchased challenge accounts trade through the same server-authoritative simulation engine while the published Rulebook rules of record are enforced live — profit targets on closed net profit, daily and maximum loss limits (static + trailing with breakeven lock) at the 00:00 UTC+3 day boundary, minimum trading days and time limits; breaches settle atomically into an immutable event history; two-phase challenges progress automatically with a frozen rules snapshot. A passing evaluation establishes eligibility, never a payout.
+- **Prop evaluation engine:** challenge accounts trade through the same server-authoritative simulation engine while the Rulebook rules are enforced: profit targets on closed net profit (also after settling open positions), daily and maximum loss limits (static or trailing) at the 00:00 UTC+3 day boundary, minimum trading days counted by fill day, and time limits. Breaches settle into an immutable event history; two-phase challenges progress with a frozen rules snapshot. A pass establishes eligibility, never a payout. See [Prop Trading Engine](#prop-trading-engine).
 - **Public website:** English/Persian content, RTL support, FAQ, browser-side calculators, learning resources and pre-launch referral information; Directus content with supported bundled fallbacks.
 - **Gated commerce and operations:** server-priced challenge orders, receipt verification with a finality policy and late-payment grace, invoices, withdrawal requests and the token-gated `/admin` operational API (user directory, withdrawal review). A confirmed payment provisions exactly one challenge; a withdrawal approval records a decision, never a fund transfer.
 
@@ -51,8 +52,8 @@ The current [router](apps/web-react/src/main.tsx) exposes both products in Persi
 
 | Delivery boundary | Status | What it means |
 | --- | --- | --- |
-| Official **v0.3.0** at `c87903c7` | Released | Website, terminal, purchases (gated) and practice trading. |
-| **v0.3.1 soft-launch candidate** (`release/v0.3.1-soft-launch`) | Implemented, pending review | Challenge evaluation engine, challenge-account trading, admin API, payment lifecycle hardening, strict security headers and the terminal theme fix. Tagged release awaits explicit owner approval. |
+| **v0.4.2** | Current release (see the [GitHub Release](https://github.com/algomanlife/openfund/releases) for publication and `/version` for deployment) | Prop engine corrections, theme and terminal fixes, release-driven deployment |
+| **v0.4.1** at `b8389ca` | Released and deployed 2026-11-07 | Runtime public configuration, CMS bootstrap hardening; rollback target |
 | Desktop installers, mobile applications, funded-stage payouts, rewards, operational Protocol routing | Planned | Platform cards remain Coming Soon; dormant Protocol source is not an active venue. |
 | Live payment activation and Perpetual execution | Blocked | Approved destinations/contracts, real-chain acceptance and security gates remain required. `PURCHASE_PAYMENT_RECEIVER` unset keeps purchases disabled. |
 
@@ -89,7 +90,19 @@ Charts retain live or explicit unavailable states. Anonymous Dashboard captures 
 
 ## Architecture
 
-The Node API owns financial mutations and serves React at `/react/`. PostgreSQL stores product-scoped state. Directus administers published content, not wallet authorization. The API also hosts the simulation monitor and SSE; scaling requires coordinated mutation ownership. [System architecture](docs/architecture/ARCHITECTURE.md) · [Flows](docs/architecture/FLOWS.md) · [Product contracts](docs/architecture/PRODUCT_TERMINALS.md)
+| Component | Implementation |
+| --- | --- |
+| Frontend | React 19 + Vite SPA under `apps/web-react/`, built into `react/` and served by the API at `/react/` (hash routing, same origin). Public settings come from the no-store `/react/runtime-config.js`, not the bundle ([ADR 0010](docs/decisions/0010-runtime-public-configuration.md)). |
+| Backend | Express API in `apps/backend/server.js`: SIWE sign-in and host-only HttpOnly sessions, product-scoped accounts, purchases, portfolio/journal and the token-gated `/admin` API. |
+| Trading engine | `apps/backend/engine.js` with `trading-math.js` (decimal.js valuation) and `instruments.js`. Server-authoritative fills at server marks; an in-process loop (about 1 s) runs pending orders, SL/TP, liquidation and challenge enforcement; SSE at `/trading/stream`. |
+| Challenge evaluation | `apps/backend/evaluation.js`: a pure `evaluateRules()` over a frozen rules snapshot plus persisted day and trailing state. |
+| Market data | `apps/backend/market-data.js` consumes Gains Network price feeds. Stale or future marks are rejected; no order-book depth is inferred from oracle prices. |
+| Database | PostgreSQL 17. `apps/backend/schema.sql` + `migrate.js` (additive, idempotent) run on every start. |
+| CMS | Directus 11.9.1 (`openfund-cms`) for editorial content and the plan catalog; market data never flows through it. |
+| Infrastructure | Render Blueprint (`render.yaml`): `openfund`, `openfund-cms`, `openfund-db` in Frankfurt. |
+| CI/CD | GitHub Actions: `ci.yml` (required checks), `release.yml` (candidate on every PR/main push, publication on dispatch), `deploy-release.yml` (deploy and rollback). |
+
+The API also hosts the simulation monitor and SSE; scaling requires coordinated mutation ownership. [System architecture](docs/architecture/ARCHITECTURE.md) · [Flows](docs/architecture/FLOWS.md) · [Product contracts](docs/architecture/PRODUCT_TERMINALS.md)
 
 ## Repository structure
 
@@ -181,27 +194,158 @@ npm run validate:blueprint
 
 Backend and browser suites require a **new isolated test database and running test backend**. Follow [Testing and CI](docs/development/TESTING.md) before `npm run test:backend`, `npm run test:browser:audit`, `npm run test:browser:polish`, `npm run test:browser:website` or the explicit suites. Test payment receivers and mark injection must never reach the official runtime. Playwright Chromium is required for browser gates.
 
-The v0.3.1 additions extend the same model: `test:backend` now includes the evaluation (48 checks) and admin (25 checks) suites, and the browser gates add `npm run test:browser:challenge` (full purchase → start → trade → evaluate journey through the SIM seam) and `npm run test:browser:auto-dark` (theme paint regression). Set `ADMIN_API_TOKEN` on the test backend for the admin suite.
+`test:backend` includes the challenge evaluation (48 checks), Prop engine (`test:engine`, 31 checks) and admin (25 checks) suites, and the browser gates add `npm run test:browser:challenge` (full purchase → start → trade → evaluate journey through the SIM seam) and `npm run test:browser:auto-dark` (theme paint regression). Set `ADMIN_API_TOKEN` on the test backend for the admin suite.
 
 The existing unified candidate command is `npm run release:build -- --candidate`; it installs all three lockfiles and runs integrated package gates. It is not an official release, and does not replace real-wallet, live-payment, deployed or manual visual acceptance. [Release runbook](docs/deployment/RELEASES.md) defines database/port restrictions and verification stages.
 
-## Deployment and releases
+## Production infrastructure
 
-The latest verified official release is [v0.3.0](https://github.com/algomanlife/openfund/releases/tag/v0.3.0) at `c87903c`. The v0.3.1 soft-launch candidate lives on `release/v0.3.1-soft-launch` and awaits explicit owner review: merge approval, then the official release workflow, then Render deployment. Internal npm package versions are component provenance, not the application release number.
+The [Render Blueprint](render.yaml) defines three resources, all in Frankfurt:
 
-Complete the feature branch, obtain passing CI and review, then obtain approval before merge/publication. The existing main-branch workflow packages the approved exact commit, with manifests, verification records and checksums. No publication or merge is authorized by this documentation update. Recheck official releases and tag availability at publication time.
+| Resource | Type | Build / start | Health check |
+| --- | --- | --- | --- |
+| `openfund` | Node 22 web service, one instance | `node scripts/release/render-build.mjs` / `npm run migrate --prefix apps/backend && npm start --prefix apps/backend` | `/health` |
+| `openfund-cms` | Directus 11.9.1 image with a 5 GB uploads disk | official image | `/server/health` |
+| `openfund-db` | PostgreSQL 17 | managed | managed |
 
-Official local startup uses `npm run release:local -- --version current --migrate` with the intended local `DATABASE_URL` after checking port ownership and database compatibility. The launcher downloads/verifies the official archive and pins its identity; inspect `/version` and the UI version/SHA. Preserve the previous immutable release and compatible database backup for rollback. [Release operations](docs/deployment/RELEASES.md) · [Rollback](docs/deployment/ROLLBACK.md)
+Both services have commit auto-deploy turned off. `render-build.mjs` builds
+only a commit that has a published, non-prerelease GitHub Release and stops if
+the rebuilt frontend, backend or schema hash differs from the release
+manifest. Migrations are additive and run at start. Secrets are Render
+environment values (`sync: false` or `generateValue`), never Git; see the
+[environment reference](docs/deployment/ENVIRONMENT.md). There is no separate
+frontend service or worker. [Render runbook](docs/deployment/RENDER.md) ·
+[Database operations](docs/deployment/DATABASE.md)
 
-### Render deployment
+## GitHub Releases and packages
 
-The existing [Render Blueprint](render.yaml) defines exactly three resources:
+- **Version tags:** `vMAJOR.MINOR.PATCH`, annotated, immutable, allocated by
+  `scripts/release/plan.mjs` from Conventional Commits since the previous tag
+  (`feat` → minor, `fix` and others → patch, `!` → major).
+- **GitHub Release:** `Openfund vX.Y.Z`, stable (never a prerelease), with
+  generated notes and these assets:
+  `openfund-vX.Y.Z.tar.gz` (the versioned deployable package),
+  `SHA256SUMS`, `release-manifest.json`, `verification.json` and
+  `release-status.md`.
+- **Provenance:** the manifest records the exact source SHA, frontend and
+  backend content hashes, schema hash, toolchain and every CI verification
+  stage. The same manifest is served at `/react/release-manifest.json`, and
+  `/version` reports `matched` only when frontend and backend agree.
+- **No container image.** Production is a source-built Render service, so a
+  GHCR image would not be what runs; the verified archive is the package
+  ([ADR 0013](docs/decisions/0013-release-driven-production-deployment.md)).
+- `package.json` `version` fields stay `0.1.0`: they are component
+  provenance, not the application version.
 
-- **`openfund`**: Node API, simulation monitor and SSE, serving the built React app same-origin at `/react/`.
-- **`openfund-db`**: PostgreSQL 17, with separate application and CMS table authority.
-- **`openfund-cms`**: Directus 11.9.1 with persistent uploads.
+## Automated deployment
 
-There is no separate frontend service or worker. Production deployment remains unconfigured; a passing Blueprint check or GitHub release is not deployed acceptance. Exact-SHA deployment, HTTPS/session/CMS checks and recovery require separate authorization and evidence. [Render runbook](docs/deployment/RENDER.md) · [Database operations](docs/deployment/DATABASE.md)
+```
+Reviewed merge to main → Unified release (publish=true) → gates → tag + GitHub Release
+  → production approval → Render deploy of the exact commit → live identity check
+```
+
+- **Trigger:** a maintainer dispatches **Unified release** on `main` with
+  `publish=true`. Pushes and pull requests only build unofficial candidates.
+- **CI requirements:** package gates (lockfile installs, Blueprint, docs,
+  typecheck, unit suites, two reproducible frontend builds, double migration,
+  backend and browser suites), exact-commit secret scan, disposable Directus
+  bootstrap and a live public CMS check.
+- **Deployment:** the chained `deploy` job waits for the `production`
+  environment reviewer, then calls Render with the manifest's `commitId`.
+- **Validation:** `/version` and `/react/release-manifest.json` on
+  `RELEASE_PUBLIC_URL` must match the release; the CMS must be healthy.
+- **Failure:** the job fails as `blocked` or `failed_or_partial` and uploads
+  `output/deployment-status.json`; Render keeps the previous deploy live when
+  a build or health check fails.
+- **Safety:** prereleases and drafts are refused; a tag older than the latest
+  release needs `rollback=true`; a retry on an already-live release does not
+  redeploy.
+
+[Release runbook](docs/deployment/RELEASES.md) · [Rollback](docs/deployment/ROLLBACK.md)
+
+## Production domains
+
+| Hostname | Behavior |
+| --- | --- |
+| `https://openfi.cloud` | Existing production domain; serves the application |
+| `https://openfund.cloud` | Second production domain; the same `openfund` service |
+| `https://www.openfi.cloud`, `https://www.openfund.cloud` | `301` to the matching root domain, path preserved |
+
+DNS is on Cloudflare (proxied) with Render custom domains on the one
+`openfund` service; HTTPS uses edge certificates with HSTS, and HTTP redirects
+to HTTPS. Neither root domain redirects to the other. Sessions are host-only
+cookies, so each domain signs in separately against the same accounts. Wallet
+sign-in requires every serving hostname in `ALLOWED_DOMAINS`.
+[Production domains](docs/deployment/RENDER.md#production-domains)
+
+## Prop Trading Engine
+
+- **Orders:** market, limit and stop orders with idempotency keys,
+  pre-trade validation (market, size, leverage and plan caps, SL/TP side) and
+  a free-margin check that includes the opening fee.
+- **Positions:** linear virtual-USD contracts; partial closes are slices of a
+  root position. Spread and fee tiers come from `trading-math.js`.
+- **PnL:** unrealized `qty × (mark − entry) × direction`; realized PnL books
+  exit spread and the closing fee. Every balance change has a ledger row.
+- **Daily drawdown:** floor `basis × (1 − daily %)`, with basis the higher of
+  the day-opening balance and equity at 00:00 UTC+3. Touching the floor is a
+  breach.
+- **Overall drawdown:** static `start × (1 − max %)` or trailing (Instant
+  plans) from peak equity.
+- **Evaluation:** target on closed net profit, which must also hold after
+  settling every open position at the current mark; minimum trading days by
+  fill day; time limits; two-phase progression.
+- **Risk enforcement:** on every fill and close and on each loop pass. A
+  breach closes positions at the mark; positions in closed markets settle
+  once tradeable.
+- **v0.4.2 corrections:** five defects fixed (P0 pass while settlement
+  realized the target away; post-fill fee blind spot; trading days by order
+  date; orphan positions after breach; misreported daily limit) with 31 new
+  checks in `npm run test:engine --prefix apps/backend`.
+- **Open policy decision:** the Rulebook's Instant trailing limit "locks at
+  breakeven", but with the published 5%/5% values the floor keeps trailing
+  above breakeven. The behavior is unchanged from v0.4.1, deterministic and
+  pinned by tests; a product decision is still required before it can be
+  treated as matching the Rulebook.
+
+[Engine audit](docs/audits/PROP_ENGINE_AUDIT.md) ·
+[ADR 0012](docs/decisions/0012-challenge-pass-settlement-and-trading-days.md) ·
+[Prop guide](docs/trading/PROP.md)
+
+## Current version and changelog
+
+**v0.4.2** is the current release. Since v0.4.1 it contains:
+
+- Prop engine audit corrections (PR #52) and the audit report.
+- System-default light/dark theme until the user chooses (PR #51).
+- Persian terminal RTL, phone header and wallet-menu fixes (PR #50).
+- Release-driven deployment and the dual-domain runbook (this release's
+  operations change).
+
+[GitHub Release v0.4.2](https://github.com/algomanlife/openfund/releases/tag/v0.4.2) ·
+[Changelog](CHANGELOG.md) · [Engine audit](docs/audits/PROP_ENGINE_AUDIT.md) ·
+[ADR 0012](docs/decisions/0012-challenge-pass-settlement-and-trading-days.md) ·
+[ADR 0013](docs/decisions/0013-release-driven-production-deployment.md)
+
+## Operational maintenance
+
+- **Release:** merge reviewed PRs into `main`, wait for green required
+  checks, dispatch **Unified release** with `publish=true`, then approve the
+  `production` deployment when it is requested.
+- **Verify health and version:**
+  `curl https://openfund.cloud/health` and
+  `curl https://openfund.cloud/version`. Expect `"status":"matched"` and the
+  release commit; repeat on `openfi.cloud`.
+- **Failed deployment:** download the `deployment-status-*` artifact, check
+  the Render deploy log for the `commitId`, fix forward through a new release
+  or roll back. Do not move tags or re-upload assets.
+- **Rollback:** dispatch **Deploy or roll back official release** with the
+  previous tag and `rollback=true`.
+- **Local run of an official version:**
+  `npm run release:local -- --version current --migrate` with a dedicated
+  local `DATABASE_URL`; check `/version`.
+- **Database:** take a Render backup before deploying a release that changes
+  `schema.sql`; migrations are additive only.
 
 ## Roadmap
 

@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased — system-default theme preference and Prop engine audit fixes
+## v0.4.2 — 2026-11-08
+
+Changes since v0.4.1 (`b8389ca`). Publication and deployment status: the
+[GitHub Release](https://github.com/algomanlife/openfund/releases/tag/v0.4.2)
+and the live `/version` endpoint.
+
 
 - Initialize both public pages and the shared terminal from the OS light/dark
   preference only when the user has not selected a theme. Keep explicit
@@ -8,6 +13,7 @@
 - Keep the trading iframe and Vela chart synchronized with the root theme.
   Opera Force Dark Page remains a browser-level override; the user profile
   needs a per-site exception when that setting recolors the final paint.
+  (PR #51)
 - Prop engine audit fixes: a challenge passes only when the closed profit after
   settling open positions still meets the target; post-fill risk checks include
   the opening fee; minimum trading days count fill days; breach settlement
@@ -15,6 +21,22 @@
   the enforced day-basis daily limit. New `test:engine` suites (31 checks).
   See the [engine audit](docs/audits/PROP_ENGINE_AUDIT.md) and
   [ADR 0012](docs/decisions/0012-challenge-pass-settlement-and-trading-days.md).
+  (PR #52)
+- Persian terminal: mirror the header, align text direction and tables, fit
+  the phone header and wallet label, open the wallet menu inside the viewport,
+  and fix the mobile order form (PR #50).
+- Release operations: a published stable release now chains its production
+  deployment (approval required) with prerelease, stale-tag and idempotent
+  retry guards, and rollback uses `rollback=true`
+  ([ADR 0013](docs/decisions/0013-release-driven-production-deployment.md)).
+- Documentation: README rewritten for the current architecture, release
+  pipeline and both production domains (`openfi.cloud`, `openfund.cloud`).
+  Wallet sign-in on a custom domain requires that hostname in
+  `ALLOWED_DOMAINS` on the Render service.
+- No schema change. On the first engine loop after deployment, closed
+  challenge accounts that still hold open positions have them settled at the
+  current mark. The Instant trailing "lock at breakeven" interpretation
+  remains an open product decision (audit F6); behavior is unchanged.
 
 ## v0.4.1 — released 2026-11-07
 
@@ -34,7 +56,7 @@
   outer application changes theme. Follow-up work preserves the shell's theme
   when a product switch boots a replacement trading iframe.
 
-The v0.4.1 tag is published and deployed. The Unreleased changes are not part of that immutable release.
+The v0.4.1 tag is published and deployed.
 
 ## v0.3.1 — Prop soft launch: evaluation engine, challenge trading, admin operations (candidate, unreleased)
 

@@ -1,11 +1,30 @@
 name: Deploy or roll back official release
 on:
+  # Called automatically by the Unified release workflow right after it
+  # publishes a stable release (see ADR 0013).
+  workflow_call:
+    inputs:
+      version:
+        description: Exact published release tag
+        required: true
+        type: string
+      rollback:
+        description: Allow a release older than the latest published one
+        required: false
+        default: false
+        type: boolean
+  # Manual path: redeploy the latest release or roll back to an older one.
   workflow_dispatch:
     inputs:
       version:
         description: Exact published release tag (also used for rollback)
         required: true
         type: string
+      rollback:
+        description: Roll back to a release older than the latest published one
+        required: false
+        default: false
+        type: boolean
 permissions:
   contents: read
   deployments: write
@@ -26,6 +45,7 @@ jobs:
       RELEASE_PUBLIC_URL: ${{ vars.RELEASE_PUBLIC_URL }}
       RELEASE_CMS_URL: ${{ vars.RELEASE_CMS_URL }}
       RELEASE_TAG: ${{ inputs.version }}
+      RELEASE_ROLLBACK: ${{ inputs.rollback && 'true' || 'false' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -36,6 +56,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: deployment-status-${{ github.run_id }}
+          name: deployment-status-${{ github.run_id }}-${{ github.run_attempt }}
           path: output/deployment-status.json
           retention-days: 90
