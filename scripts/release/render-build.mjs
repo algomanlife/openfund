@@ -1,4 +1,4 @@
-import { run,git,validateEnv,sha256 } from './lib.mjs';
+import { run,git,validateEnv,sha256,releaseAssetBytes } from './lib.mjs';
 import { manifest } from './manifest.mjs';
 // Render builds must resolve a published, verified official tag at this exact SHA.
 const sha=process.env.RENDER_GIT_COMMIT;
@@ -20,9 +20,7 @@ if(!tag)throw Error('Render refuses source without a published SemVer tag at thi
 validateEnv({...process.env,RELEASE_VERSION:tag.slice(1)},'production');
 const release=await get(`${api}/releases/tags/${tag}`),asset=release.assets.find(a=>a.name==='release-manifest.json');
 if(release.draft||release.prerelease||release.tag_name!==tag||!asset)throw Error('Published official manifest is missing.');
-const assetResponse=await fetch(asset.browser_download_url,{headers,signal:AbortSignal.timeout(15000)});
-if(!assetResponse.ok)throw Error(`Cannot read published manifest: ${assetResponse.status}`);
-const bytes=Buffer.from(await assetResponse.arrayBuffer());
+const bytes=await releaseAssetBytes('algomanlife/openfund',asset.id);
 if(!/^sha256:[a-f0-9]{64}$/.test(asset.digest || ''))throw Error('Published manifest has no SHA-256 digest.');
 if(`sha256:${sha256(bytes)}`!==asset.digest)throw Error('Published manifest digest mismatch.');
 const source=JSON.parse(bytes.toString('utf8'));

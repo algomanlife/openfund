@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { writeJson } from './lib.mjs';
+import { writeJson,releaseAssetBytes } from './lib.mjs';
 const tag=process.argv[2],repo=process.env.GITHUB_REPOSITORY || 'algomanlife/openfund';
 const report='output/deployment-status.json';
 let state={tag,status:'not_deployed',startedAt:new Date().toISOString()};
@@ -18,9 +18,10 @@ try {
  // to an older release is an explicit rollback decision.
  const latest=JSON.parse(execFileSync('gh',['release','view','--repo',repo,'--json','tagName'],{encoding:'utf8'})).tagName;
  if(tag!==latest&&process.env.RELEASE_ROLLBACK!=='true')throw Error(`${tag} is not the latest release (${latest}); dispatch with rollback=true to roll back.`);
- const asset=metadata.assets.find(a=>a.name==='release-manifest.json');
+ const apiRelease=JSON.parse(execFileSync('gh',['api',`repos/${repo}/releases/tags/${tag}`],{encoding:'utf8'}));
+ const asset=apiRelease.assets.find(a=>a.name==='release-manifest.json');
  if(!asset)throw Error('Release manifest missing.');
- const source=await fetch(asset.url,{signal:AbortSignal.timeout(15000)}).then(r=>{if(!r.ok)throw Error('Release manifest unavailable');return r.json()});
+ const source=JSON.parse((await releaseAssetBytes(repo,asset.id)).toString('utf8'));
  if(source.tag!==tag||!source.official||source.verification.status!=='passed')throw Error('Release identity or gates invalid.');
  const headers={Authorization:`Bearer ${process.env.RENDER_API_TOKEN}`,'Content-Type':'application/json'};
  const endpoint=`https://api.render.com/v1/services/${encodeURIComponent(process.env.RENDER_SERVICE_ID)}`;

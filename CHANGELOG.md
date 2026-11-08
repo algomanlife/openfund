@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+- Fix production deploys: GitHub's release download URL returned `504` to
+  automated clients on 2026-11-08, so Render builds of v0.4.2 could not read
+  the published manifest (three attempts failed; production stayed on
+  v0.4.1). `render-build.mjs` and `deploy.mjs` now download release assets
+  through the REST asset endpoint with bounded retries and still verify the
+  manifest's SHA-256 digest. v0.4.2 remains published and immutable; its
+  source cannot be deployed, so the next release supersedes it.
+- Release container image: each stable release also publishes
+  `ghcr.io/algomanlife/openfund:X.Y.Z`, built only from the verified release
+  archive, smoke-tested and attested, with its digest on the GitHub Release
+  ([ADR 0014](docs/decisions/0014-ghcr-release-image.md)). Render deployment
+  is unchanged.
+
 ## v0.4.2 — 2026-11-08
 
 Changes since v0.4.1 (`b8389ca`). Publication and deployment status: the

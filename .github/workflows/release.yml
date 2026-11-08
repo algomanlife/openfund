@@ -225,3 +225,16 @@ jobs:
     with:
       version: ${{ needs.publish.outputs.tag }}
     secrets: inherit
+  # Versioned GHCR image built from the verified release archive (ADR 0014).
+  # Runs beside the deployment; production stays a source-built Render service.
+  image:
+    needs: publish
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.publish
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+      attestations: write
+    uses: ./.github/workflows/package-image.yml
+    with:
+      version: ${{ needs.publish.outputs.tag }}

@@ -53,3 +53,21 @@ test('manual publication requires the successful trusted CI secret check on the 
  for(const altered of [{...scan,head_sha:'b'.repeat(40)},{...scan,conclusion:'failure'},{...scan,status:'in_progress'},{...scan,app:{slug:'untrusted'}},{...scan,name:'Other scan'}])assert.equal(exactSecretScan([altered],sha),undefined);
  assert.equal(exactSecretScan([],sha),undefined);
 });
+
+test('release assets download through the API endpoint with bounded retries', async () => {
+  const { releaseAssetBytes } = await import('../lib.mjs');
+  const calls = [];
+  const flaky = async (url, init) => {
+    calls.push({ url, accept: init.headers.Accept });
+    return calls.length < 3 ? new Response('gateway', { status: 504 }) : new Response('{"ok":true}', { status: 200 });
+  };
+  const bytes = await releaseAssetBytes('o/r', 42, { fetchImpl: flaky, delayMs: 1 });
+  assert.equal(bytes.toString(), '{"ok":true}');
+  assert.equal(calls.length, 3, 'two 504 responses are retried');
+  assert.equal(calls[0].url, 'https://api.github.com/repos/o/r/releases/assets/42');
+  assert.equal(calls[0].accept, 'application/octet-stream');
+  let notFound = 0;
+  await assert.rejects(releaseAssetBytes('o/r', 1, { fetchImpl: async () => { notFound++; return new Response('', { status: 404 }); }, delayMs: 1 }), /404/);
+  assert.equal(notFound, 1, 'a 404 is not retried');
+  await assert.rejects(releaseAssetBytes('o/r', 1, { attempts: 2, fetchImpl: async () => new Response('', { status: 504 }), delayMs: 1 }), /Cannot read release asset 1/);
+});
