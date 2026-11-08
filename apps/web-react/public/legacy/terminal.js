@@ -198,6 +198,7 @@ const EN = {
   'rv.fee': 'Est. fee (open)', 'rv.sl': 'Stop Loss', 'rv.tp': 'Take Profit',
   'rv.equityAfter': 'Equity after', 'rv.exec': 'Simulated — local engine',
   'rv.side.long': 'Long', 'rv.side.short': 'Short',
+  'pos.details': ['Position', 'Market', 'Side', 'Size', 'Entry', 'Mark', 'Leverage', 'Collateral', 'Est. liquidation', 'Unrealized PnL', 'SL / TP', 'Opened', 'Opening fee'],
   'cf.close': 'Close position', 'cf.closeTxt': 'Close this simulated position at the current mark price? Unrealized PnL and a closing fee will be applied.',
   'cf.cancel': 'Cancel order', 'cf.cancelTxt': 'Remove this pending simulated order?',
   'cf.detail': 'Position details', 'sltp.title': 'Modify risk',
@@ -1242,7 +1243,7 @@ function wireRowActions(){
     const pnl = tp.readOnly ? null : tp.serverMode ? p.srvPnl ?? p.realized ?? null : p.realized != null ? p.realized : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
     const D = t('pos.details');
     const rows = [
-      [D[0], '#' + p.id], [D[1], m.symbol], [D[2], p.side],
+      [D[0], '#' + p.id], [D[1], m.symbol], [D[2], t(p.side === 'long' ? 'rv.side.long' : 'rv.side.short')],
       [D[3], fmt.num(p.size, Number(m.sizePrecision) || 2) + ' ' + m.base], [D[4], fmt.price(p.entry, d)],
       [D[5], fmt.price(mk, d)], [D[6], p.leverage + '×'],
       [D[7], p.currency ? fmt.num(p.margin,2)+' '+p.currency : fmt.usd(p.margin)], [D[8], fmt.price(p.liq, d)],
