@@ -943,6 +943,8 @@ html[data-theme="light"] body:has(.of-terminal) {
 /* Header controls retain a bounded footprint at every wallet state. */
 .of-terminal-compact .rk-account-menu > summary { height:28px; padding:3px 8px; font-size:11px; }
 .of-terminal-compact .rk-account-controls { z-index:200; }
+/* The RTL header places the wallet on the left, so its menu opens rightward. */
+.of-terminal-compact[dir="rtl"] .rk-account-controls { right:auto; left:0; }
 @media(max-width:1100px) {
   .of-terminal-compact #terminal-navigation > a:not(.active) { display:none; }
   .of-terminal-compact .of-terminal-more-links a.of-compact-destination { display:block; }
