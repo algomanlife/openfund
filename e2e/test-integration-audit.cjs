@@ -141,9 +141,18 @@ function check(name,value) { assert.ok(value,name); results.push(name); console.
     await page.waitForFunction(()=>window.auditWallet.network()==='0xa4b1')
     check('Perpetual requests Arbitrum One through wallet network switch',true)
     await page.route('**/products/perpetual/gains**',route=>route.fulfill({status:502,json:{error:'gains_read_failed'}}))
+    const gainsFailed=page.waitForResponse(response=>response.url().includes('/products/perpetual/gains') && response.status()===502)
     await page.goto(`${BASE}/fa/perpetual/portfolio`)
-    await page.getByRole('alert').first().waitFor()
+    // A full navigation can reconnect the injected wallet after the page has
+    // loaded. Re-establish SIWE before checking the authenticated error view.
+    if (await page.evaluate(async API=>fetch(API+'/auth/me',{credentials:'include'}).then(r=>r.status),API)!==200) {
+      await (await walletButton(page, 'Sign in')).click()
+      await (await walletButton(page, 'Account')).waitFor()
+    }
+    await gainsFailed
+    await page.getByRole('alert').filter({hasText:'دریافت اطلاعات ناموفق بود.'}).waitFor()
     check('Gains failure is explicit; Prop balance never leaks',!(await page.locator('body').innerText()).includes('100,000.00'))
+    await page.unroute('**/products/perpetual/gains**')
     await page.evaluate(()=>window.auditWallet.changeAccount(-1))
     await page.getByRole('button',{name:'اتصال کیف پول',exact:true}).first().waitFor()
     await page.waitForFunction(async API=>(await fetch(API+'/auth/me',{credentials:'include'})).status===401,API)
