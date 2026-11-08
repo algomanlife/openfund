@@ -321,6 +321,33 @@ html[lang="fa"] .review-grid > div > b { direction: ltr; unicode-bidi: isolate; 
   .review-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
+/* Position details: each row is a label/value pair laid out on the logical
+   axis, so RTL locales mirror the structure while ids, symbols, prices and
+   dates stay isolated LTR. Labels wrap instead of being clipped. */
+.dlg:has(.pos-detail-grid) { width: min(560px, calc(100vw - 24px)); }
+.pos-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; margin: 0;
+  background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.pos-detail-grid > div { display: grid; grid-template-columns: minmax(0, max-content) minmax(0, 1fr); align-items: baseline;
+  gap: 4px 12px; padding: 8px 12px; background: var(--surface); font-size: 12.5px; line-height: 1.55; min-width: 0; }
+.pos-detail-grid dt { margin: 0; color: var(--muted); min-width: 0; max-width: 14em; white-space: normal; overflow-wrap: normal; text-align: start; }
+.pos-detail-grid dd { margin: 0; min-width: 0; color: var(--white); text-align: end; overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums; }
+.pos-detail-grid dd.up { color: var(--pos); }
+.pos-detail-grid dd.down { color: var(--neg); }
+.pos-detail-grid bdi { unicode-bidi: isolate; direction: ltr; }
+html[dir="rtl"] .pos-detail-grid { direction: rtl; }
+.pos-detail-grid > div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+/* values sit at the row's end edge in both directions; long ids wrap
+   (the shared .num class is nowrap and LTR, so be explicit here) */
+.pos-detail-grid dd, .pos-detail-grid dd.num { white-space: normal; direction: inherit; unicode-bidi: normal; }
+html[dir="ltr"] .pos-detail-grid dd { text-align: right; }
+html[dir="rtl"] .pos-detail-grid dd { text-align: left; }
+html[dir="rtl"] .pos-detail-grid dd { font-family: Ubuntu, Irancell, system-ui, sans-serif; }
+@media (max-width: 540px) {
+  .pos-detail-grid { grid-template-columns: minmax(0, 1fr); }
+  .dlg:has(.pos-detail-grid) { padding: 16px 14px; }
+}
+
 /* Compact workspaces: when a short or narrow screen cannot hold the whole
    order form, the panel scrolls itself so the review action stays reachable. */
 @media (max-width: 1100px), (max-height: 635px) {

@@ -102,7 +102,7 @@ const I18N = {
     'cf.close': 'بستن موقعیت', 'cf.closeTxt': 'این موقعیت شبیه‌سازی‌شده در قیمت Mark فعلی بسته شود؟ سود/زیان شناور و کارمزد بستن اعمال می‌شود.',
     'cf.cancel': 'لغو سفارش', 'cf.cancelTxt': 'این سفارش شبیه‌سازی‌شدهٔ در انتظار حذف شود؟',
     'cf.detail': 'جزئیات موقعیت', 'sltp.title': 'ویرایش ریسک',
-    'pos.details': ['موقعیت', 'بازار', 'جهت', 'اندازه', 'Entry', 'Mark', 'اهرم', 'Collateral', 'Liquidation تخمینی', 'PnL شناور', 'SL / TP', 'زمان باز شدن', 'کارمزد باز شدن'],
+    'pos.details': ['موقعیت', 'بازار', 'جهت', 'اندازه', 'قیمت ورود', 'قیمت مارک', 'اهرم', 'کولترال', 'لیکوییدیشن تخمینی', 'سود/زیان شناور', 'استاپ‌لاس / تیک‌پرافیت', 'زمان باز شدن', 'کارمزد باز شدن'],
     'act.close': 'بستن', 'act.sltp': 'SL/TP', 'act.details': 'جزئیات', 'act.cancel': 'لغو',
     'tag.pending': 'در انتظار',
     'res.filled': 'انجام‌شده', 'res.cancelled': 'لغو‌شده', 'res.closed-profit': 'بسته با سود', 'res.closed-loss': 'بسته با زیان',
@@ -240,7 +240,20 @@ const EN = {
   'boot.failed': 'Could not reach Gains Network.',
   'boot.retry': 'Retry'
 };
-Object.assign(I18N.en, EN);if(window.ofCmsTerminal){for(var __k in window.ofCmsTerminal){var __v=window.ofCmsTerminal[__k];if(__v&&typeof __v==='object'){if(I18N.fa[__k]!==undefined&&__v.fa)I18N.fa[__k]=__v.fa;if(I18N.en[__k]!==undefined&&__v.en)I18N.en[__k]=__v.en;}}}
+Object.assign(I18N.en, EN);
+/* CMS overrides keep the shape of the built-in entry. Directus stores every
+   translation as text, so list entries (e.g. the position-details labels)
+   arrive as a JSON string; indexing that string produced one-character
+   labels. Lists are accepted only when they parse to a list of the same
+   length, otherwise the built-in labels stay in place. */
+function cmsValue(builtIn, value){
+  if (value == null || value === '') return undefined;
+  if (!Array.isArray(builtIn)) return typeof value === 'string' ? value : undefined;
+  let list = value;
+  if (typeof list === 'string') { try { list = JSON.parse(list); } catch(e){ return undefined; } }
+  return Array.isArray(list) && list.length === builtIn.length && list.every(x => typeof x === 'string' && x) ? list : undefined;
+}
+if(window.ofCmsTerminal){for(var __k in window.ofCmsTerminal){var __v=window.ofCmsTerminal[__k];if(__v&&typeof __v==='object'){for(var __l in I18N){if(I18N[__l][__k]!==undefined){var __c=cmsValue(I18N[__l][__k],__v[__l]);if(__c!==undefined)I18N[__l][__k]=__c;}}}}}
 window.ofLang = window.ofLang || 'fa';
 function t(key){
   const v = (I18N[window.ofLang] && I18N[window.ofLang][key]);
@@ -1209,6 +1222,18 @@ function emptyRow(cols, text){
   return `<tr class="empty-tr"><td colspan="${cols}" style="color:var(--muted);padding:22px 18px;white-space:normal">${text}</td></tr>`;
 }
 
+/* Built-in position-detail labels per language, used whenever a CMS value
+   is missing or malformed so a label can never collapse to one character. */
+const DETAIL_LABELS = {};
+for (const __l in I18N) DETAIL_LABELS[__l] = Array.isArray(I18N[__l]['pos.details']) ? I18N[__l]['pos.details'] : null;
+function detailLabels(){
+  const v = t('pos.details');
+  if (Array.isArray(v) && v.length === 13) return v;
+  return DETAIL_LABELS[window.ofLang] || DETAIL_LABELS.en || EN['pos.details'];
+}
+function esc(v){
+  return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 function wireRowActions(){
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => {
     const partial = tp.serverMode && !tp.readOnly;
@@ -1241,17 +1266,20 @@ function wireRowActions(){
     const srv = p.mark_price != null ? p.mark_price : (p.srvMark != null ? p.srvMark : null);
     const mk = srv != null ? Number(srv) : (board.getMark(p.market) || p.entry);
     const pnl = tp.readOnly ? null : tp.serverMode ? p.srvPnl ?? p.realized ?? null : p.realized != null ? p.realized : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
-    const D = t('pos.details');
+    const D = detailLabels();
+    /* [label, value, isTechnical] — technical values (ids, symbols, numbers,
+       dates) are isolated LTR so they keep their reading order in RTL. */
     const rows = [
-      [D[0], '#' + p.id], [D[1], m.symbol], [D[2], t(p.side === 'long' ? 'rv.side.long' : 'rv.side.short')],
-      [D[3], fmt.num(p.size, Number(m.sizePrecision) || 2) + ' ' + m.base], [D[4], fmt.price(p.entry, d)],
-      [D[5], fmt.price(mk, d)], [D[6], p.leverage + '×'],
-      [D[7], p.currency ? fmt.num(p.margin,2)+' '+p.currency : fmt.usd(p.margin)], [D[8], fmt.price(p.liq, d)],
-      [D[9], fmt.usdS(pnl)], [D[10], (p.sl ? fmt.price(p.sl, d) : '—') + ' / ' + (p.tp ? fmt.price(p.tp, d) : '—')],
-      [D[11], fmt.dt(p.openedAt / 1000)], [D[12], fmt.usd(p.feePaid)]
+      [D[0], '#' + p.id, true], [D[1], m.symbol, true], [D[2], t(p.side === 'long' ? 'rv.side.long' : 'rv.side.short'), false],
+      [D[3], fmt.num(p.size, Number(m.sizePrecision) || 2) + ' ' + m.base, true], [D[4], fmt.price(p.entry, d), true],
+      [D[5], fmt.price(mk, d), true], [D[6], p.leverage + '×', true],
+      [D[7], p.currency ? fmt.num(p.margin,2)+' '+p.currency : fmt.usd(p.margin), true], [D[8], fmt.price(p.liq, d), true],
+      [D[9], fmt.usdS(pnl), true], [D[10], (p.sl ? fmt.price(p.sl, d) : '—') + ' / ' + (p.tp ? fmt.price(p.tp, d) : '—'), true],
+      [D[11], fmt.dt(p.openedAt / 1000), true], [D[12], fmt.usd(p.feePaid), true]
     ];
+    const pnlCls = pnl == null ? '' : pnl > 0 ? ' up' : pnl < 0 ? ' down' : '';
     confirmDialog(t('cf.detail'), null, null, () => {},
-      `<div class="review-grid">${rows.map(([k, v]) => `<div><span>${k}</span><b class="num">${v}</b></div>`).join('')}</div>`);
+      `<dl class="pos-detail-grid">${rows.map(([k, v, tech], i) => `<div><dt>${esc(k)}</dt><dd class="${tech ? 'num' : ''}${i === 9 ? pnlCls : ''}">${tech ? `<bdi dir="ltr">${esc(v)}</bdi>` : esc(v)}</dd></div>`).join('')}</dl>`);
   }));
 }
 let sltpTarget = null;
