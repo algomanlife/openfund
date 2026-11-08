@@ -189,6 +189,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      tag: ${{ steps.published.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -203,6 +205,23 @@ jobs:
       - name: Resolve previously allocated version
         run: node scripts/release/plan.mjs
       - name: Publish immutable tag, notes and verified artifacts
+        id: published
         env:
           GH_TOKEN: ${{ github.token }}
-        run: node scripts/release/publish.mjs
+        run: |
+          node scripts/release/publish.mjs
+          echo "tag=v$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
+  # A release published with GITHUB_TOKEN does not emit a `release` event to
+  # other workflows, so the deployment is chained here (ADR 0013). It still
+  # runs in the protected `production` environment and verifies the live
+  # frontend/backend identity against the published manifest.
+  deploy:
+    needs: publish
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.publish
+    permissions:
+      contents: read
+      deployments: write
+    uses: ./.github/workflows/deploy-release.yml
+    with:
+      version: ${{ needs.publish.outputs.tag }}
+    secrets: inherit

@@ -21,7 +21,7 @@ try{release=JSON.parse(execFileSync('gh',['release','view',tag,'--repo',repo,'--
 if(release && !release.isDraft){console.log(`Release already published; immutable assets preserved: ${release.url}`);process.exit(0);}
 if(!release)await run('gh',['release','create',tag,'--repo',repo,'--verify-tag','--draft','--title',`Openfund ${tag}`,'--generate-notes']);
 const notesFile=path.join(dir,'release-status.md');
-fs.writeFileSync(notesFile,`Source: ${sha}\nVersion: ${tag}\nVerification: passed (see verification.json).\nDeployment: NOT DEPLOYED. Production approval and manifest verification are separate gates.\nPerpetual execution remains disabled.\n`);
+fs.writeFileSync(notesFile,`Source: ${sha}\nVersion: ${tag}\nVerification: passed (see verification.json).\nDeployment: NOT DEPLOYED at publication. The chained deploy job waits for production approval, then verifies the live manifest.\nPerpetual execution remains disabled.\n`);
 for(const file of [archive,'SHA256SUMS','release-manifest.json','verification.json','release-status.md'])await run('gh',['release','upload',tag,path.join(dir,file),'--repo',repo,'--clobber']);
 await run('gh',['release','edit',tag,'--repo',repo,'--draft=false']);
 console.log(`Published ${tag} from ${sha}; deployment not_deployed.`);

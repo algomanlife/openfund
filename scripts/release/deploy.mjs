@@ -11,8 +11,13 @@ try {
  for(const key of ['RENDER_API_TOKEN','RENDER_SERVICE_ID','RELEASE_PUBLIC_URL'])if(!process.env[key])throw Error(`Configure ${key} in the production environment.`);
  const publicUrl=new URL(process.env.RELEASE_PUBLIC_URL);
  if(publicUrl.protocol!=='https:')throw Error('Production diagnostics require HTTPS.');
- const metadata=JSON.parse(execFileSync('gh',['release','view',tag,'--repo',repo,'--json','isDraft,assets'],{encoding:'utf8'}));
+ const metadata=JSON.parse(execFileSync('gh',['release','view',tag,'--repo',repo,'--json','isDraft,isPrerelease,assets'],{encoding:'utf8'}));
  if(metadata.isDraft)throw Error('Cannot deploy a draft release.');
+ if(metadata.isPrerelease)throw Error('Cannot deploy a prerelease.');
+ // A delayed run must never replace a newer production release; going back
+ // to an older release is an explicit rollback decision.
+ const latest=JSON.parse(execFileSync('gh',['release','view','--repo',repo,'--json','tagName'],{encoding:'utf8'})).tagName;
+ if(tag!==latest&&process.env.RELEASE_ROLLBACK!=='true')throw Error(`${tag} is not the latest release (${latest}); dispatch with rollback=true to roll back.`);
  const asset=metadata.assets.find(a=>a.name==='release-manifest.json');
  if(!asset)throw Error('Release manifest missing.');
  const source=await fetch(asset.url,{signal:AbortSignal.timeout(15000)}).then(r=>{if(!r.ok)throw Error('Release manifest unavailable');return r.json()});
@@ -22,7 +27,14 @@ try {
  const serviceResponse=await fetch(endpoint,{headers,signal:AbortSignal.timeout(15000)});
  if(!serviceResponse.ok)throw Error(`Render service lookup failed (${serviceResponse.status}).`);
  const service=await serviceResponse.json();
+ const liveIdentity=()=>Promise.all([fetch(new URL('/version',publicUrl),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Backend identity unavailable');return r.json()}),fetch(new URL('/react/release-manifest.json',publicUrl),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Frontend identity unavailable');return r.json()})]);
+ const matches=([backend,frontend])=>backend.status==='matched'&&backend.commit===source.commit&&frontend.commit===source.commit&&frontend.version===source.version&&frontend.frontend.id===source.frontend.id&&backend.backend?.id===source.backend.id;
+ // Idempotent retry: production already serves exactly this release.
+ const current=await liveIdentity().catch(()=>null);
+ const alreadyLive=!!current&&matches(current);
  if(service.autoDeploy!=='no' && service.autoDeployTrigger!=='off')throw Error('Disable live Render auto-deploy before using approved releases.');
+ if(alreadyLive){state={...state,commit:source.commit,status:'verifying',deployId:'none (already live)'};}
+ else {
  state={...state,commit:source.commit,status:'deploying'};writeJson(report,state);
  const response=await fetch(endpoint+'/deploys',{method:'POST',headers,body:JSON.stringify({commitId:source.commit,clearCache:'clear'}),signal:AbortSignal.timeout(15000)});
  if(!response.ok)throw Error(`Render deploy request failed (${response.status}).`);
@@ -37,8 +49,8 @@ try {
   await new Promise(resolve=>setTimeout(resolve,10000));
  }
  if(!live)throw Error('Render deploy polling timed out.');
- const [backend,frontend]=await Promise.all([fetch(new URL('/version',publicUrl),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Backend identity unavailable');return r.json()}),fetch(new URL('/react/release-manifest.json',publicUrl),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Frontend identity unavailable');return r.json()})]);
- if(backend.status!=='matched'||backend.commit!==source.commit||frontend.commit!==source.commit||frontend.version!==source.version||frontend.frontend.id!==source.frontend.id||backend.backend?.id!==source.backend.id)throw Error('Live frontend/backend do not match the selected release.');
+ }
+ if(!matches(await liveIdentity()))throw Error('Live frontend/backend do not match the selected release.');
  // CMS is an independent service. An app deploy cannot certify the whole platform without its health evidence.
  if(!process.env.RELEASE_CMS_URL)throw Error('Application identity verified; RELEASE_CMS_URL is required for full platform deployment acceptance.');
  if(!(await fetch(new URL('/server/health',process.env.RELEASE_CMS_URL),{signal:AbortSignal.timeout(15000)})).ok)throw Error('CMS health check failed.');
