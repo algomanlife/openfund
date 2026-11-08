@@ -20,11 +20,13 @@ Openfund is an early-stage trading technology project maintained in a public rep
 
 This repository supports open-source collaboration, but has **no root license granting blanket reuse rights**. Component licenses and upstream notices apply separately; see [Licensing and upstream attribution](#licensing-and-upstream-attribution). Source availability is not a claim of production readiness, audited security or an active funded-trading service.
 
-**Current version: v0.4.2.** The release authority is the
+**Current version: v0.4.3.** The release authority is the
 [GitHub Release](https://github.com/algomanlife/openfund/releases) and the
-running service's `/version` endpoint. This README is not live status. v0.4.2
-adds the Prop engine audit corrections, the system-default theme and the
-Persian RTL/mobile terminal fixes to v0.4.1, plus release-driven deployment.
+running service's `/version` endpoint. This README is not live status. Since
+v0.4.1 the line adds the Prop engine audit corrections, the system-default
+theme, the Persian RTL/mobile terminal fixes, release-driven deployment and a
+GHCR image per release. v0.4.2 is published but could not be deployed (see
+below); v0.4.3 carries the same application with the deploy fix.
 Production serves one application on `openfi.cloud` and `openfund.cloud`. See
 [Current version and changelog](#current-version-and-changelog).
 
@@ -52,7 +54,8 @@ The current [router](apps/web-react/src/main.tsx) exposes both products in Persi
 
 | Delivery boundary | Status | What it means |
 | --- | --- | --- |
-| **v0.4.2** | Current release (see the [GitHub Release](https://github.com/algomanlife/openfund/releases) for publication and `/version` for deployment) | Prop engine corrections, theme and terminal fixes, release-driven deployment |
+| **v0.4.3** | Current release (see the [GitHub Release](https://github.com/algomanlife/openfund/releases) for publication and `/version` for deployment) | v0.4.2 plus the release-asset download fix and the GHCR image |
+| **v0.4.2** at `fc4df52` | Published 2026-11-08; not deployed | Prop engine corrections, theme and terminal fixes, release-driven deployment. Its Render build cannot download the manifest (see the changelog) |
 | **v0.4.1** at `b8389ca` | Released and deployed 2026-11-07 | Runtime public configuration, CMS bootstrap hardening; rollback target |
 | Desktop installers, mobile applications, funded-stage payouts, rewards, operational Protocol routing | Planned | Platform cards remain Coming Soon; dormant Protocol source is not an active venue. |
 | Live payment activation and Perpetual execution | Blocked | Approved destinations/contracts, real-chain acceptance and security gates remain required. `PURCHASE_PAYMENT_RECEIVER` unset keeps purchases disabled. |
@@ -240,7 +243,7 @@ frontend service or worker. [Render runbook](docs/deployment/RENDER.md) ·
 
   ```bash
   docker run -p 8080:8080 -e DATABASE_URL=... -e CMS_PUBLIC_URL=https://... \
-    -e ALLOWED_DOMAINS=your.host ghcr.io/algomanlife/openfund:0.4.2
+    -e ALLOWED_DOMAINS=your.host ghcr.io/algomanlife/openfund:0.4.3
   ```
 
 - `package.json` `version` fields stay `0.1.0`: they are component
@@ -323,15 +326,16 @@ sign-in requires every serving hostname in `ALLOWED_DOMAINS`.
 
 ## Current version and changelog
 
-**v0.4.2** is the current release. Since v0.4.1 it contains:
+**v0.4.3** is the current release. Since v0.4.1 the line contains:
 
 - Prop engine audit corrections (PR #52) and the audit report.
 - System-default light/dark theme until the user chooses (PR #51).
 - Persian terminal RTL, phone header and wallet-menu fixes (PR #50).
-- Release-driven deployment and the dual-domain runbook (this release's
-  operations change).
+- Release-driven deployment and the dual-domain runbook (PR #53, v0.4.2).
+- GHCR image per release and the release-asset download fix (PR #54, v0.4.3).
 
-[GitHub Release v0.4.2](https://github.com/algomanlife/openfund/releases/tag/v0.4.2) ·
+[GitHub Release v0.4.3](https://github.com/algomanlife/openfund/releases/tag/v0.4.3) ·
+[v0.4.2](https://github.com/algomanlife/openfund/releases/tag/v0.4.2) ·
 [Changelog](CHANGELOG.md) · [Engine audit](docs/audits/PROP_ENGINE_AUDIT.md) ·
 [ADR 0012](docs/decisions/0012-challenge-pass-settlement-and-trading-days.md) ·
 [ADR 0013](docs/decisions/0013-release-driven-production-deployment.md)

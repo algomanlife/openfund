@@ -57,3 +57,27 @@ export async function healthy(url, child) {
   }
   throw Error(`Health timeout: ${url}`);
 }
+// Download a GitHub Release asset through the REST asset endpoint
+// (Accept: application/octet-stream). The browser download URL started
+// answering 504 for automated clients on 2026-11-08, so it is not used.
+// Retries transient 5xx and network failures with backoff.
+export async function releaseAssetBytes(repo, assetId, { attempts = 5, fetchImpl = fetch, delayMs = 2000 } = {}) {
+  const url = `https://api.github.com/repos/${repo}/releases/assets/${assetId}`;
+  const headers = { Accept: 'application/octet-stream', 'User-Agent': 'openfund-release-verifier' };
+  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+  if (token) headers.Authorization = `Bearer ${token}`;
+  let last;
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      const response = await fetchImpl(url, { headers, redirect: 'follow', signal: AbortSignal.timeout(30000) });
+      if (response.ok) return Buffer.from(await response.arrayBuffer());
+      last = Error(`Release asset ${assetId} returned ${response.status}`);
+      if (response.status < 500 && response.status !== 429) throw last;
+    } catch (error) {
+      last = error;
+      if (/returned 4\d\d/.test(error.message) && !/returned 429/.test(error.message)) throw error;
+    }
+    if (i < attempts) await new Promise(resolve => setTimeout(resolve, delayMs * i));
+  }
+  throw Error(`Cannot read release asset ${assetId}: ${last?.message}`);
+}
