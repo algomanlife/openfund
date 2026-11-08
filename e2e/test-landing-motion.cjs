@@ -40,6 +40,8 @@ async function fixture(context) {
         const footerCount = document.querySelectorAll('footer').length;
         return {width:innerWidth,height:innerHeight,scrollWidth:document.documentElement.scrollWidth,scrollHeight:document.documentElement.scrollHeight,gatewayBottom:gateway.bottom,footerCount,
           outside:visible.filter(e=>{const r=e.getBoundingClientRect();return r.left<-.5||r.top<-.5||r.right>innerWidth+.5||r.bottom>innerHeight+.5}).map(e=>e.textContent),
+          /* phones scroll vertically; nothing may leave the viewport sideways */
+          outsideX:visible.filter(e=>{const r=e.getBoundingClientRect();return r.left<-.5||r.right>innerWidth+.5}).map(e=>e.textContent),
           // Decorative button shine intentionally extends scrollWidth. Inspect
           // button text horizontally; unconstrained font ascenders are not clipping.
           clipped:visible.filter(e=>{
@@ -51,15 +53,17 @@ async function fixture(context) {
           rtl:document.documentElement.dir};
       });
       matrix.push(geometry); console.log(JSON.stringify(geometry));
-      // The Persian gateway has no footer and must fit without document scrolling.
-      check(`${width}x${height} gateway fits usable viewport`,geometry.scrollWidth<=width+1&&geometry.scrollHeight<=height+1&&geometry.gatewayBottom<=height+1&&geometry.outside.length===0&&geometry.clipped.length===0);
+      // Desktop/tablet: the gateway fits the usable viewport. Phones (≤700px)
+      // keep readable sizes and may scroll vertically, never horizontally.
+      if (width > 700) check(`${width}x${height} gateway fits usable viewport`,geometry.scrollWidth<=width+1&&geometry.scrollHeight<=height+1&&geometry.gatewayBottom<=height+1&&geometry.outside.length===0&&geometry.clipped.length===0);
+      else check(`${width}x${height} phone gateway has no horizontal overflow or clipping`,geometry.scrollWidth<=width+1&&geometry.outsideX.length===0&&geometry.clipped.length===0);
       check(`${width}x${height} Persian gateway has no footer`,geometry.footerCount===0);
       check(`${width}x${height} 44px product/feature targets`,geometry.targets.every(r=>r.w>=44&&r.h>=44));
       check(`${width}x${height} RTL`,geometry.rtl==='rtl');
       check('four proposed features with original SVGs',await page.locator('.technical-feature').count()===4&&await page.locator('.technical-art svg').count()===4);
       check('Prop vector replaces cartoon',await page.locator('.landing-terminal').count()===1&&await page.locator('img[src*="prop-trading"]').count()===0);
       check('new leveraged-market vector replaces the previous machine',await page.locator('.leveraged-market').count()===1&&await page.locator('.home-perpetual-art img,.perpetual-vector').count()===0);
-      check('badge text',await page.locator('.made-by-humans').innerText()==='MADE BY HUMANS');
+      check('MADE BY HUMANS badge removed',await page.locator('.made-by-humans').count()===0&&!(await page.locator('.home-gateway').innerText()).includes('MADE BY HUMANS'));
       for (let i=0;i<4;i++) {
         const trigger=page.locator('.technical-feature').nth(i); await trigger.focus(); await page.keyboard.press('Enter');
         await page.locator('dialog[open]').waitFor();

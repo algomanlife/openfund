@@ -6,7 +6,6 @@ import { fetchCmsHome, type CmsHome } from '../../cms/client'
 import LandingMotionBackground from './LandingMotionBackground'
 import AnimatedTradingTerminalIllustration from './AnimatedTradingTerminalIllustration'
 import TechnicalFeatureStrip from './TechnicalFeatureStrip'
-import MadeByHumansBadge from './MadeByHumansBadge'
 import LeveragedMarketIllustration from './LeveragedMarketIllustration'
 import './home.css'
 import TelegramCommunity from '../community/TelegramCommunity'
@@ -93,7 +92,6 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
 
       <div className="home-community"><TelegramCommunity locale={locale} /></div>
       <TechnicalFeatureStrip locale={locale} />
-      <MadeByHumansBadge />
     </div>
   </div>
 }
