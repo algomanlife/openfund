@@ -8,6 +8,7 @@ import { RainbowConnect } from '../wallet/RainbowConnect'
 import TelegramCommunity from '../features/community/TelegramCommunity'
 import { CheckoutHost } from '../features/purchase/CheckoutHost'
 import { fetchCmsNavigation, fetchCmsTranslations, fetchCmsLegacyPlans, fetchCmsFaqs, fetchCmsLegal, fetchCmsFooterLinks, invalidateCmsCache } from '../cms/client'
+import { chooseTheme, currentTheme } from '../theme'
 
 /**
  * Phase 2a: the landing runs inside the React shell with its proven markup
@@ -51,18 +52,11 @@ const w = () => window as any
 function initTheme() {
   const b = document.getElementById('theme-toggle')
   if (!b) return
-  const set = (t: string) => {
-    document.documentElement.setAttribute('data-theme', t)
-    b.textContent = t === 'dark' ? '◐' : '◑'
-    try { localStorage.setItem('of-theme', t) } catch { /* ignore */ }
-  }
-  let t = 'dark'
-  try { t = localStorage.getItem('of-theme') || 'dark' } catch { /* ignore */ }
-  set(t)
+  b.textContent = currentTheme() === 'dark' ? '◐' : '◑'
   if (!(b as any).__ofThemeWired) {
     ;(b as any).__ofThemeWired = true
     b.addEventListener('click', () =>
-      set(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'))
+      chooseTheme(currentTheme() === 'dark' ? 'light' : 'dark'))
   }
 }
 

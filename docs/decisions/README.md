@@ -13,5 +13,7 @@
 
 - [0008 — Unified release authority](0008-unified-release-authority.md)
 - [0009 — Challenge purchases and payment verification](0009-challenge-purchases-and-payment-verification.md)
+- [0010 — Runtime public browser configuration](0010-runtime-public-configuration.md)
+- [0011 — Theme preference authority](0011-theme-preference-authority.md)
 
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)

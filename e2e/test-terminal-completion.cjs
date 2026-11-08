@@ -228,6 +228,12 @@ async function layout(browser){
  page.on('response',r=>{if(r.url().startsWith(BASE)&&r.status()>=400&&['script','stylesheet','image','font'].includes(r.request().resourceType()))assetErrors.push(r.url())});
  try{
   await page.goto(BASE+'/#/en/prop/dashboard');await connect(page);await signIn(page);
+  // Layout snapshots deliberately start dark. A fresh CI browser may now
+  // default to light, so make the test's preference explicit before toggling.
+  if(await page.locator('html').getAttribute('data-theme')==='light'){
+    await page.getByRole('button',{name:'Toggle theme',exact:true}).click();
+    await page.waitForFunction(()=>document.documentElement.dataset.theme==='dark');
+  }
   const tabs={prop:['dashboard','trade','portfolio','journal','journal?section=accounts','leaderboard','withdrawals','certificates'],perpetual:['dashboard','trade','portfolio','journal','journal?section=accounts','leaderboard','rewards']};
   for(const product of ['prop','perpetual'])for(const locale of (product==='perpetual'?['fa']:['en','fa']))for(const [width,height]of [[1920,1080],[1440,900],[1366,768],[1280,720]])for(const tab of tabs[product]){
     await page.setViewportSize({width,height});await page.goto(`${BASE}/#/${locale}/${product}/${tab}`);

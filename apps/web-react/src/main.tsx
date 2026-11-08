@@ -24,6 +24,9 @@ import PurchaseHistory from './features/purchase/PurchaseHistory'
 import WithdrawalsPage from './features/purchase/WithdrawalsPage'
 import { WalletProvider } from './wallet/WalletProvider'
 import { SessionProvider } from './session/useOpenfundSession'
+import { startThemeSync } from './theme'
+
+startThemeSync()
 
 /* ---- public website architecture ----------------------------------------
    /              → language-aware redirect into the Home product gateway

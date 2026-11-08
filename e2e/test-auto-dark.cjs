@@ -24,6 +24,7 @@ async function runAutoDark({ configureContext = async () => {} } = {}) {
     const state = await page.evaluate(() => ({ theme: document.documentElement.dataset.theme, stored: localStorage.getItem('of-theme'), scheme: getComputedStyle(document.documentElement).colorScheme, body: getComputedStyle(document.body).backgroundColor, height: document.documentElement.scrollHeight }));
     assert.equal(state.theme, theme, label + ' outer theme'); assert.equal(state.stored, theme, label + ' stored theme');
     assert.equal(state.body, theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(6, 8, 8)');
+    assert.equal((await page.locator('#theme-toggle,button[aria-label="Toggle theme"],button[aria-label="تغییر پوسته"]').first().textContent()).trim(), theme === 'light' ? '◑' : '◐', label + ' theme control');
     if (theme === 'light') assert.match(state.scheme, /only/);
     let points = [{ x: 4, y: 200 }, { x: 3355, y: 500 }], chart;
     if (trade) {
@@ -101,6 +102,26 @@ async function runAutoDark({ configureContext = async () => {} } = {}) {
     assert.deepEqual((await paint(probe, [{ x: 4, y: 100 }]))[0].rgba, [255, 255, 255, 255]);
     results.push({ label: 'emulation-proven', computedWhitePaintDark: recolored });
     await probe.close();
+    // A fresh visitor follows the OS. A click creates an explicit preference
+    // that survives OS changes, route reloads and the nested chart workspace.
+    for (const os of ['light', 'dark']) {
+      const context = await browser.newContext({ viewport: { width: 3360, height: 1216 }, colorScheme: os });
+      await configureContext(context);
+      const page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
+      await page.goto(BASE + '/#/fa/prop/trade');
+      await page.waitForFunction(() => !!document.querySelector('iframe.of-trading-workspace')?.contentWindow?.__openfundChart?.chart);
+      assert.equal(await page.evaluate(() => localStorage.getItem('of-theme-choice')), null);
+      await capture(page, `system-${os}-default`, os, true);
+      const changed = os === 'light' ? 'dark' : 'light';
+      await page.emulateMedia({ colorScheme: changed });
+      await capture(page, `system-${os}-changed`, changed, true);
+      await page.getByRole('button', { name: 'تغییر پوسته' }).click();
+      assert.equal(await page.evaluate(() => localStorage.getItem('of-theme-choice')), os);
+      await capture(page, `system-${os}-manual`, os, true);
+      await page.reload();
+      await capture(page, `system-${os}-manual-reload`, os, true);
+      await context.close();
+    }
     // Auto-dark models a dark browser preference. Forcing CDP auto-dark while
     // independently emulating light OS preference ignores even only-light in a
     // standalone white document; that contradictory override is not UA support.
