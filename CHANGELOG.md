@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+- Terminal Share P&L: a Share action beside Details (open positions) and in
+  Order History (closed positions with a recorded result) opens an
+  Openfund-branded card rendered on a canvas that is also the exported PNG
+  and the native-share file. Open-position values refresh from the live
+  account data; closed positions show the recorded realized P&L.
+- Terminal real-time stability: heartbeat watchdog and immediate reconnect
+  for the Gains price socket, out-of-order mark guard, retryable boot,
+  in-place table row patching with delegated actions, stale marking instead
+  of blanking for marks and the Gains VOB ladder, and no workspace reload on
+  locale changes. Depth remains the Gains virtual order book only.
+- Persian gateway (`/fa/home`): the MADE BY HUMANS badge is removed and
+  phones get readable, stable layout with natural scrolling.
+- Arabic (`ar`, RTL), Russian (`ru`) and Simplified Chinese (`zh-CN`)
+  interface locales with a five-language selector. Editorial and CMS
+  content has no translations in these locales yet and is shown in English
+  with a visible notice.
+- Position Details: full labels (a CMS list value no longer collapses to
+  one character per label) and a bidi-safe label/value layout.
+
 - Fix production deploys: GitHub's release download URL returned `504` to
   automated clients on 2026-11-08, so Render builds of v0.4.2 could not read
   the published manifest (three attempts failed; production stayed on

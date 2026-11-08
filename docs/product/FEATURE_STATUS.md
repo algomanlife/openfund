@@ -123,3 +123,17 @@ local checks](../reviews/landing-motion/DELIVERY.md).
 | Mobile applications | Planned | No published listing or mobile application delivery verified |
 | Official unified packaging | Completed within GitHub publication scope | v0.2.0 manifest/tag at `561e7f3`; PR #42 and current addendum excluded; requested v0.2.1 unallocated and requires coordination with the existing `feat:` minor-bump policy; local/deployed acceptance separate |
 | Production deployment / payment acceptance | Blocked | No configured live Render; approved receiver, real-chain acceptance and optional widget acceptance remain required |
+
+## Terminal sharing, real-time stability and added locales
+
+Branch `claude/terminal-share-i18n-fixes`, unmerged and unreleased. Evidence
+is local verification against an isolated backend and disposable database.
+
+| Capability | Status | Scope and evidence |
+| --- | --- | --- |
+| Share P&L card | Completed (local) | Open and closed positions; PNG export and Web Share where the browser supports files; live refresh observed while open |
+| Real-time feed stability | Completed (local) | Socket watchdog, reconnect, stale marking, row patching; unit tests in `test:depth`; Gains VOB only, no synthesized depth |
+| Persian gateway mobile layout | Completed (local) | `/fa/home` at 320–414px without horizontal overflow; landing e2e updated for phones |
+| Arabic, Russian, Simplified Chinese interface | In Progress | Interface strings, routing, RTL/LTR and selector are complete locally; editorial/CMS content shows English with a notice until Directus has `ar`/`ru`/`zh-CN` translations |
+| Position Details layout | Completed (local) | Full labels in all five locales, LTR-isolated identifiers and numbers |
+
