@@ -17,5 +17,6 @@
 - [0011 — Theme preference authority](0011-theme-preference-authority.md)
 - [0012 — Challenge pass settlement and trading days](0012-challenge-pass-settlement-and-trading-days.md)
 - [0013 — Release-driven production deployment](0013-release-driven-production-deployment.md)
+- [0014 — GHCR release image](0014-ghcr-release-image.md)
 
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)

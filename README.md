@@ -231,9 +231,18 @@ frontend service or worker. [Render runbook](docs/deployment/RENDER.md) ·
   backend content hashes, schema hash, toolchain and every CI verification
   stage. The same manifest is served at `/react/release-manifest.json`, and
   `/version` reports `matched` only when frontend and backend agree.
-- **No container image.** Production is a source-built Render service, so a
-  GHCR image would not be what runs; the verified archive is the package
-  ([ADR 0013](docs/decisions/0013-release-driven-production-deployment.md)).
+- **GitHub Package (GHCR):** `ghcr.io/algomanlife/openfund:X.Y.Z` (also
+  `vX.Y.Z`, no `latest`), built only from the verified release archive,
+  smoke-tested, then pushed once. The digest is attached to the release as
+  `image-digest.txt` with a build-provenance attestation
+  ([ADR 0014](docs/decisions/0014-ghcr-release-image.md)). Render does not
+  run the image; it rebuilds the same commit from source.
+
+  ```bash
+  docker run -p 8080:8080 -e DATABASE_URL=... -e CMS_PUBLIC_URL=https://... \
+    -e ALLOWED_DOMAINS=your.host ghcr.io/algomanlife/openfund:0.4.2
+  ```
+
 - `package.json` `version` fields stay `0.1.0`: they are component
   provenance, not the application version.
 

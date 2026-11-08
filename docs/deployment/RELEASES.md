@@ -29,8 +29,15 @@ flowchart LR
   `SHA256SUMS`, `release-manifest.json`, `verification.json` and
   `release-status.md`. This archive is the versioned package; Render rebuilds
   the same commit and refuses to start unless its frontend, backend and schema
-  hashes equal the manifest. No container image is published
+  hashes equal the manifest
   ([ADR 0013](../decisions/0013-release-driven-production-deployment.md)).
+- **Container image:** the chained `image` job builds
+  `ghcr.io/algomanlife/openfund:X.Y.Z` (and `vX.Y.Z`) from the verified
+  archive, smoke-tests migrate, `/health`, `/react/` and `/version` against a
+  disposable database, pushes once, attests provenance and attaches
+  `image-digest.txt` to the release. For an existing release, dispatch
+  **Release container image** with its tag
+  ([ADR 0014](../decisions/0014-ghcr-release-image.md)).
 - **Deploy:** the chained `deploy` job calls **Deploy or roll back official
   release** with the published tag. It waits for the `production`
   environment's required reviewer, then posts the manifest's exact SHA as

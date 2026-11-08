@@ -1,0 +1,132 @@
+name: Release container image
+on:
+  # Called by Unified release right after a stable publication (ADR 0014).
+  workflow_call:
+    inputs:
+      version:
+        description: Exact published release tag
+        required: true
+        type: string
+  # Manual path: build the image for an existing stable release.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact published release tag (vX.Y.Z)
+        required: true
+        type: string
+  # Pull requests touching the image build it from the latest release without pushing.
+  pull_request:
+    paths:
+      - infra/image/**
+      - scripts/release/image-payload.mjs
+      - .github/workflows/package-image.yml
+permissions:
+  contents: read
+concurrency:
+  group: openfund-image-${{ inputs.version || github.ref }}
+  cancel-in-progress: false
+jobs:
+  image:
+    name: Build, smoke-test and publish GHCR image
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write        # attach image-digest.txt to the GitHub Release
+      packages: write
+      id-token: write
+      attestations: write
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: openfund_image_ci
+          POSTGRES_USER: openfund_ci
+          POSTGRES_PASSWORD: openfund_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U openfund_ci -d openfund_image_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      IMAGE: ghcr.io/${{ github.repository }}
+      PUSH: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Resolve release tag
+        id: tag
+        run: |
+          tag="${{ inputs.version }}"
+          if [ -z "$tag" ]; then tag=$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName); fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+      - name: Download and verify the official release payload
+        id: payload
+        run: node scripts/release/image-payload.mjs "${{ steps.tag.outputs.tag }}" output/image
+      - name: Build image from the verified payload
+        run: |
+          cp infra/image/Dockerfile output/image/Dockerfile
+          docker build output/image \
+            --build-arg OPENFUND_VERSION=${{ steps.payload.outputs.version }} \
+            --build-arg OPENFUND_COMMIT=${{ steps.payload.outputs.commit }} \
+            --build-arg OPENFUND_ARCHIVE_SHA256=${{ steps.payload.outputs.archiveSha256 }} \
+            --build-arg OPENFUND_CREATED=$(date -u +%Y-%m-%dT%H:%M:%SZ) \
+            -t openfund:candidate
+      - name: Smoke-test the container (migrate, health, release identity)
+        run: |
+          docker run -d --name openfund-smoke --network host \
+            -e DATABASE_URL=postgres://openfund_ci:openfund_ci@127.0.0.1:5432/openfund_image_ci \
+            -e PORT=8080 -e CMS_PUBLIC_URL=https://cms.example.com -e ALLOWED_DOMAINS=127.0.0.1:8080 \
+            openfund:candidate
+          for i in $(seq 1 60); do curl -fsS http://127.0.0.1:8080/health >/dev/null && break; sleep 1; done
+          curl -fsS http://127.0.0.1:8080/health
+          identity=$(curl -fsS http://127.0.0.1:8080/version)
+          echo "$identity" | node -e '
+            let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const v=JSON.parse(s);
+            if(v.status!=="matched"||v.commit!==process.argv[1]||v.version!==process.argv[2]){console.error(s);process.exit(1)}
+            console.log("identity matched",v.version,v.commit)})' \
+            "${{ steps.payload.outputs.commit }}" "${{ steps.payload.outputs.version }}"
+          curl -fsS -o /dev/null http://127.0.0.1:8080/react/
+          [ "$(docker exec openfund-smoke id -un)" = node ]
+      - name: Container logs
+        if: always()
+        run: docker logs openfund-smoke --tail 80 2>&1 || true
+      - name: Publish immutable tags
+        id: push
+        if: env.PUSH == 'true'
+        run: |
+          version=${{ steps.payload.outputs.version }}
+          echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          # Version tags are immutable: never replace an existing image.
+          if docker manifest inspect "$IMAGE:$version" >/dev/null 2>&1; then
+            echo "::error::$IMAGE:$version already exists; published images are never overwritten."
+            exit 1
+          fi
+          docker tag openfund:candidate "$IMAGE:$version"
+          docker tag openfund:candidate "$IMAGE:v$version"
+          docker push "$IMAGE:$version"
+          docker push "$IMAGE:v$version"
+          digest=$(docker inspect --format '{{index .RepoDigests 0}}' "$IMAGE:$version" | cut -d@ -f2)
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
+          echo "### $IMAGE:$version" >> "$GITHUB_STEP_SUMMARY"
+          echo "Digest: \`$digest\` · commit \`${{ steps.payload.outputs.commit }}\`" >> "$GITHUB_STEP_SUMMARY"
+      - name: Attest build provenance
+        if: env.PUSH == 'true'
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.IMAGE }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+      - name: Record the digest on the GitHub Release
+        if: env.PUSH == 'true'
+        run: |
+          tag=${{ steps.tag.outputs.tag }}
+          printf '%s@%s\nversion=%s\ncommit=%s\narchive-sha256=%s\n' "$IMAGE" "${{ steps.push.outputs.digest }}" \
+            "${{ steps.payload.outputs.version }}" "${{ steps.payload.outputs.commit }}" \
+            "${{ steps.payload.outputs.archiveSha256 }}" > image-digest.txt
+          if gh release view "$tag" --json assets --jq '.assets[].name' | grep -qx image-digest.txt; then
+            echo "::error::image-digest.txt already exists on $tag; release assets are never overwritten."
+            exit 1
+          fi
+          gh release upload "$tag" image-digest.txt

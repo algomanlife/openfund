@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Release container image: each stable release also publishes
+  `ghcr.io/algomanlife/openfund:X.Y.Z`, built only from the verified release
+  archive, smoke-tested and attested, with its digest on the GitHub Release
+  ([ADR 0014](docs/decisions/0014-ghcr-release-image.md)). Render deployment
+  is unchanged.
+
 ## v0.4.2 — 2026-11-08
 
 Changes since v0.4.1 (`b8389ca`). Publication and deployment status: the
