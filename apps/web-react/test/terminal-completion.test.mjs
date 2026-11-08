@@ -83,3 +83,44 @@ test('queued account writes preserve the captured account after route selection 
   assert.equal(new URL(target).searchParams.get('account'),'first-account');
  }finally{if(previousLocation===undefined)delete globalThis.location;else globalThis.location=previousLocation;globalThis.fetch=previousFetch;}
 });
+
+/* ---- added interface locales (ar, ru, zh-CN) ---- */
+const i18n = load('../src/i18n/locales.ts')
+test('locale helpers: five locales, RTL only for fa/ar, English fallback, never Persian for added locales',()=>{
+  assert.deepEqual([...i18n.LOCALES],['fa','en','ar','ru','zh-CN'])
+  assert.deepEqual(i18n.LOCALES.map(l=>i18n.dirOf(l)),['rtl','ltr','rtl','ltr','ltr'])
+  assert.equal(i18n.pick('fa','پرتفوی','Portfolio'),'پرتفوی')
+  assert.equal(i18n.pick('ar','پرتفوی','Portfolio'),'المحفظة')
+  assert.equal(i18n.pick('ru','پرتفوی','Portfolio'),'Портфель')
+  assert.equal(i18n.pick('zh-CN','پرتفوی','Portfolio'),'投资组合')
+  assert.equal(i18n.pick('ar','فقط فارسی','Untranslated source'),'Untranslated source')
+  assert.equal(i18n.pick('ru','x','Balance · USD'),'Баланс · USD','template keys re-insert interpolated values')
+  assert.equal(i18n.normalizeLocale('de'),'fa')
+  assert.equal(i18n.switchLocalePath('/fa/prop/trade','zh-CN'),'/zh-CN/prop/trade')
+  assert.equal(i18n.contentLocale('ar'),'en')
+  assert.equal(i18n.fallbackNotice('fa'),null)
+  assert.ok(i18n.fallbackNotice('zh-CN').includes('英文'))
+})
+test('added-locale dictionaries share one key set and keep symbols and placeholders intact',async()=>{
+  const dicts = ['ar','ru','zh-CN'].map(l=>load(`../src/i18n/messages/${l}.ts`)).map(m=>Object.values(m)[0])
+  /* each locale carries only its own 'not yet available in <language>' notice */
+  const keys = dicts.map(d=>Object.keys(d).filter(k=>!k.startsWith('This page is not yet available in ')).sort().join('\n'))
+  assert.equal(keys[1],keys[0]); assert.equal(keys[2],keys[0])
+  for (const d of dicts) for (const [k,v] of Object.entries(d)) {
+    assert.ok(v.trim(),'empty translation for '+k)
+    for (const token of k.match(/\$\{[^}]+\}|\b(?:USD|DAI|UTC|JSON|CSV|PDF|PNG|DePay|Gains|Openfund|SL|TP)\b/g)||[]) assert.ok(v.includes(token),`${k}: ${token} missing`)
+  }
+})
+test('terminal locale dictionaries only use existing terminal keys and keep list shapes',()=>{
+  const {readFileSync}=require('node:fs')
+  const w={}; new Function('window',readFileSync(new URL('../public/legacy/terminal-locales.js',import.meta.url),'utf8'))(w)
+  const src=readFileSync(new URL('../public/legacy/terminal.js',import.meta.url),'utf8')
+  const EN=new Function('return '+src.slice(src.indexOf('const EN = {')+11,src.indexOf('};',src.indexOf('const EN = {'))+1))()
+  for (const l of ['ar','ru','zh-CN']) {
+    const d=w.OpenfundTerminalLocales[l]
+    for (const k of Object.keys(d)) assert.ok(k in EN,`${l}: unknown key ${k}`)
+    assert.equal(d['pos.details'].length,EN['pos.details'].length)
+    assert.ok(Object.keys(w.OpenfundTerminalLocales.L[l]).length>20)
+  }
+  assert.ok(src.includes("window.__ofSetLang"),'terminal accepts the shell locale without reloading')
+})

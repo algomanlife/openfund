@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { backendUrl } from '../../session/useOpenfundSession';
-export default function ReleaseStatus({locale,children}: {locale:'fa'|'en';children:(version:ReactNode)=>ReactNode}) {
+import { pick, type AppLocale } from '../../i18n/locales';
+export default function ReleaseStatus({locale,children}: {locale:AppLocale;children:(version:ReactNode)=>ReactNode}) {
   const build=__OPENFUND_BUILD__;
   const [version,setVersion]=useState(build.version === 'development' ? '' : build.version);
   const [diagnostic,setDiagnostic]=useState<'missing'|'unavailable'|'mismatch'|null>(null);
@@ -17,9 +18,9 @@ export default function ReleaseStatus({locale,children}: {locale:'fa'|'en';child
     return ()=>abort.abort();
   },[]);
   const messages={
-    missing: locale==='fa' ? 'اطلاعات نسخه در دسترس نیست؛ هماهنگی نسخهٔ برنامه و سرور تأیید نشده است.' : 'Release manifest is missing; application and server version compatibility is unverified.',
-    unavailable: locale==='fa' ? 'بررسی نسخه در دسترس نیست؛ هماهنگی نسخهٔ برنامه و سرور تأیید نشده است.' : 'Release verification is unavailable; application and server version compatibility is unverified.',
-    mismatch: locale==='fa' ? 'نسخهٔ برنامه با سرور هماهنگ نیست. صفحه را دوباره بارگذاری کنید.' : 'Application and server versions differ. Reload this page.',
+    missing: pick(locale, 'اطلاعات نسخه در دسترس نیست؛ هماهنگی نسخهٔ برنامه و سرور تأیید نشده است.', 'Release manifest is missing; application and server version compatibility is unverified.'),
+    unavailable: pick(locale, 'بررسی نسخه در دسترس نیست؛ هماهنگی نسخهٔ برنامه و سرور تأیید نشده است.', 'Release verification is unavailable; application and server version compatibility is unverified.'),
+    mismatch: pick(locale, 'نسخهٔ برنامه با سرور هماهنگ نیست. صفحه را دوباره بارگذاری کنید.', 'Application and server versions differ. Reload this page.'),
   };
   return <>{children(version && <small className="of-release-version" title="Openfund release">v{version}</small>)}{diagnostic && <p role="alert" className="of-release-mismatch" data-release-diagnostic={diagnostic}>{messages[diagnostic]}</p>}</>;
 }

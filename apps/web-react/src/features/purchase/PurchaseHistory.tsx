@@ -1,3 +1,4 @@
+import { dirOf, normalizeLocale, pick } from '../../i18n/locales'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { apiFetch, useSession } from '../../session/useOpenfundSession'
@@ -24,8 +25,8 @@ const txUrl = (chainId: number, txHash: string) => `${EXPLORER[chainId] || ''}/t
 
 export default function PurchaseHistory() {
   const { locale: routeLocale } = useParams()
-  const isFa = routeLocale !== 'en'
-  const t = (fa: string, en: string) => (isFa ? fa : en)
+  const locale = normalizeLocale(routeLocale, 'fa'), isFa = locale === 'fa'
+  const t = (fa: string, en: string) => pick(locale, fa, en)
   const session = useSession()
   const [rows, setRows] = useState<HistoryRow[] | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -39,7 +40,7 @@ export default function PurchaseHistory() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session.status])
 
-  const fmtDate = (d?: string | null) => (d ? new Date(d).toLocaleDateString(isFa ? 'fa-IR' : 'en-US') : '—')
+  const fmtDate = (d?: string | null) => (d ? new Date(d).toLocaleDateString(t('fa-IR', 'en-US')) : '—')
   const fmtMoney = (v: string | number) => '$' + Number(v).toLocaleString('en-US', { maximumFractionDigits: 2 })
 
   if (session.status !== 'authenticated') {
@@ -63,11 +64,10 @@ export default function PurchaseHistory() {
         <div className="of-empty">
           <p>{t('هنوز خریدی نداری. پلن‌ها را در صفحهٔ چلنج‌ها ببین.',
             'No purchases yet. See the plans on the Challenges page.')}</p>
-          <a className="button" href={`/${isFa ? 'fa' : 'en'}/challenges`}>{t('دیدن پلن‌ها', 'View plans')}</a>
-        </div>
+          <a className="button" href={`/${locale}/challenges`}>{t('دیدن پلن‌ها', 'View plans')}</a>        </div>
       )}
       {rows && rows.length > 0 && (
-        <table className="of-purchase-table" dir={isFa ? 'rtl' : 'ltr'}>
+        <table className="of-purchase-table" dir={dirOf(locale)}>
           <thead>
             <tr>
               <th>{t('پلن', 'Plan')}</th>

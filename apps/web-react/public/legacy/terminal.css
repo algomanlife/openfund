@@ -463,8 +463,8 @@ input[type=range]{width:100%;margin:8px 0 6px;accent-color:var(--mint);cursor:po
 }
 
 /* ============ language + Persian typography ============ */
-html[lang="fa"] body{font-family:'Irancell',Tahoma,sans-serif;font-size:14px;line-height:1.8}
-html[lang="fa"] .stat dt,html[lang="fa"] .dd-head,html[lang="fa"] .book-cols,html[lang="fa"] .bt-table th,html[lang="fa"] .lev-head span,html[lang="fa"] .field>span,html[lang="fa"] .field .lbl-row>span:first-child,html[lang="fa"] .kv span,html[lang="fa"] .acct-row span{letter-spacing:0}
+html[dir="rtl"] body{font-family:'Irancell',Tahoma,sans-serif;font-size:14px;line-height:1.8}
+html[dir="rtl"] .stat dt,html[dir="rtl"] .dd-head,html[dir="rtl"] .book-cols,html[dir="rtl"] .bt-table th,html[dir="rtl"] .lev-head span,html[dir="rtl"] .field>span,html[dir="rtl"] .field .lbl-row>span:first-child,html[dir="rtl"] .kv span,html[dir="rtl"] .acct-row span{letter-spacing:0}
 .language-toggle{
   background:none;border:1px solid var(--line-strong);color:var(--body);border-radius:4px;
   width:32px;height:32px;padding:0;box-sizing:border-box;font-size:10.5px;font-weight:600;
@@ -472,9 +472,9 @@ html[lang="fa"] .stat dt,html[lang="fa"] .dd-head,html[lang="fa"] .book-cols,htm
   display:inline-flex;align-items:center;justify-content:center;
 }
 .language-toggle:hover{color:var(--mint);border-color:var(--mint)}
-html[lang="fa"] .trades-view .r,html[lang="fa"] .num{text-variant-numeric:tabular-nums}
-html[lang="fa"] .num,html[lang="fa"] .stat dd,html[lang="fa"] .kv b,html[lang="fa"] .bt-table td,html[lang="fa"] .tr-row,html[lang="fa"] .bk-row span{font:12.5px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;direction:ltr;unicode-bidi:isolate}
-html[lang="fa"] .market-stats{gap:0 22px}
+html[dir="rtl"] .trades-view .r,html[dir="rtl"] .num{text-variant-numeric:tabular-nums}
+html[dir="rtl"] .num,html[dir="rtl"] .stat dd,html[dir="rtl"] .kv b,html[dir="rtl"] .bt-table td,html[dir="rtl"] .tr-row,html[dir="rtl"] .bk-row span{font:12.5px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;direction:ltr;unicode-bidi:isolate}
+html[dir="rtl"] .market-stats{gap:0 22px}
 
 /* i18n fixes: unit ems & label ems */
 .acct-row em,.field>em,.kv em{font-style:normal;color:var(--muted);font-size:10.5px;margin-inline-start:4px}

@@ -1,11 +1,12 @@
+import { normalizeLocale, pick } from "../../i18n/locales";
 /** Presentation-only controls for the disposable iframe. No account, market,
  * chart-engine or order state is read or changed here. */
 export function setupWorkspaceLayout(doc: Document) {
   doc.body.dataset.workspaceView = "chart";
   const language = () => {
-    const locale = doc.documentElement.lang === "fa" ? "fa" : "en";
+    const locale = normalizeLocale(doc.documentElement.lang, "en");
     doc.querySelectorAll<HTMLElement>("[data-fa][data-en]").forEach((el) => {
-      el.textContent = el.dataset[locale] || "";
+      el.textContent = pick(locale, el.dataset.fa || "", el.dataset.en || "");
     });
   };
   language();

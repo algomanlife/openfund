@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+- Release planning accepts an explicitly requested next patch on a manual
+  main-branch batch, while rejecting skipped or reused versions.
+- Stale market depth keeps readable text contrast in the light theme.
+- The document security policy now hashes the served pre-paint script so
+  clean-route recovery and locale direction remain allowed after builds.
+- Terminal Share P&L: a Share action beside Details (open positions) and in
+  Order History (closed positions with a recorded result) opens an
+  Openfund-branded card rendered on a canvas that is also the exported PNG
+  and the native-share file. Open-position values refresh from the live
+  account data; closed positions show the recorded realized P&L.
+- Terminal real-time stability: heartbeat watchdog and immediate reconnect
+  for the Gains price socket, out-of-order mark guard, retryable boot,
+  in-place table row patching with delegated actions, stale marking instead
+  of blanking for marks and the Gains VOB ladder, and no workspace reload on
+  locale changes. Depth remains the Gains virtual order book only.
+- Persian gateway (`/fa/home`): the MADE BY HUMANS badge is removed and
+  phones get readable, stable layout with natural scrolling.
+- Arabic (`ar`, RTL), Russian (`ru`) and Simplified Chinese (`zh-CN`)
+  interface locales with a five-language selector. Editorial and CMS
+  content has no translations in these locales yet and is shown in English
+  with a visible notice.
+- Position Details: full labels (a CMS list value no longer collapses to
+  one character per label) and a bidi-safe label/value layout.
+
 - Clean SEO-friendly URLs: the public site now uses browser-history routes at
   the domain root (`/fa/challenges`, `/en/faq`) instead of
   `/react/#/fa/challenges`. The `/react` document prefix is permanently
@@ -17,8 +41,7 @@
   Fast transitions stay loader-free (short display threshold), and backstops
   guarantee the loader never sticks. Route-driven SEO head: clean canonicals,
   `fa`/`en`/`x-default` hreflang on public pages, `noindex` on the
-  authenticated product app.
-- Fix production deploys: GitHub's release download URL returned `504` to
+  authenticated product app.- Fix production deploys: GitHub's release download URL returned `504` to
   automated clients on 2026-11-08, so Render builds of v0.4.2 could not read
   the published manifest (three attempts failed; production stayed on
   v0.4.1). `render-build.mjs` and `deploy.mjs` now download release assets

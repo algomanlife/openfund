@@ -21,6 +21,15 @@ export function nextVersion(tags, messages = '') {
   else patch++;
   return `${major}.${minor}.${patch}`;
 }
+/** An explicit patch release may override conventional-commit allocation,
+ * but cannot skip or reuse a published version. */
+export function requestedPatchVersion(latest, requested) {
+  if (!/^v\d+\.\d+\.\d+$/.test(latest || '')) throw Error('An existing SemVer tag is required for an explicit patch release.');
+  const [major, minor, patch] = latest.slice(1).split('.').map(Number);
+  const expected = `${major}.${minor}.${patch + 1}`;
+  if (requested !== expected) throw Error(`Explicit release version must be the next patch ${expected}.`);
+  return requested;
+}
 export function validateEnv(env, purpose = 'test') {
   if (!env.DATABASE_URL) throw Error('DATABASE_URL is required; no default database is allowed for release tooling.');
   const url = new URL(env.DATABASE_URL);

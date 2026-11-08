@@ -199,7 +199,7 @@ function connectWS(){
       handlePriceData(msg.data);
     }
   };
-  ws.onerror = () => { if (myGen === wsGen) wsLive = false; };
+  ws.onerror = () => { if (myGen === wsGen) { wsLive = false; notifyStatus(); } };
   ws.onclose = () => {
     if (myGen !== wsGen) return;
     wsLive = false; ws = null; priceSeq = null; notifyStatus();
@@ -212,8 +212,38 @@ function scheduleReconnect(){
   const delay = Math.min(30000, 2000 * Math.pow(2, Math.min(retry, 4)));
   retryTimer = setTimeout(() => { retryTimer = null; connectWS(); }, delay);
 }
+/* Heartbeat watchdog: the server pings, so a silent socket that never
+   fires onclose (sleep, network switch, proxy idle drop) is detected and
+   replaced instead of leaving frozen prices labelled as live. The status
+   is re-evaluated on the same timer so staleness surfaces without waiting
+   for the next message. */
+const WS_SILENCE_MS = 30000;
+let watchdog = null;
+function startWatchdog(){
+  if (watchdog || typeof setInterval !== 'function') return;   /* sandboxed hosts have no timers */
+  watchdog = setInterval(() => {
+    if (ws && lastMsgAt && Date.now() - lastMsgAt > WS_SILENCE_MS){
+      const dead = ws; ws = null; wsLive = false; priceSeq = null; wsGen++;
+      try { dead.close(); } catch(e){}
+      notifyStatus();
+      retry = 0; scheduleReconnect();
+    } else notifyStatus();
+  }, 5000);
+}
+/* Reconnect immediately (not after the backoff) when the network returns
+   or the tab becomes visible again with no open socket. */
+function reconnectNow(){
+  if (!priceHandlers.size || (ws && ws.readyState <= 1)) return;
+  if (retryTimer){ clearTimeout(retryTimer); retryTimer = null; }
+  retry = 0; connectWS();
+}
+if (typeof addEventListener === 'function'){
+  addEventListener('online', reconnectNow);
+  if (typeof document !== 'undefined') document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reconnectNow(); });
+}
 function subscribePrices(handler){
   priceHandlers.add(handler);
+  startWatchdog();
   if (!ws && !retryTimer) connectWS();
   return () => priceHandlers.delete(handler);
 }

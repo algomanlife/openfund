@@ -10,6 +10,8 @@ import { CheckoutHost } from '../features/purchase/CheckoutHost'
 import { fetchCmsNavigation, fetchCmsTranslations, fetchCmsLegacyPlans, fetchCmsFaqs, fetchCmsLegal, fetchCmsFooterLinks, invalidateCmsCache } from '../cms/client'
 import { loadingGate } from '../features/loading/BrandedLoading'
 import { chooseTheme, currentTheme } from '../theme'
+import LanguageSelect from '../i18n/LanguageSelect'
+import { contentLocale, dirOf, fallbackNotice, isLocale, switchLocalePath, type AppLocale } from '../i18n/locales'
 
 /**
  * Phase 2a: the landing runs inside the React shell with its proven markup
@@ -55,6 +57,14 @@ const landingMarkup = landingBody
   .replaceAll('src="assets/', `src="${import.meta.env.BASE_URL}assets/`)
 
 const w = () => window as any
+/* Interface locale of this page: the route's locale. The legacy content
+   runtime only knows fa/en, so ar/ru/zh-CN run it in English (ofLang) while
+   ofUiLang keeps the chosen locale for links, the selector and the notice. */
+const uiLocale = (): AppLocale => {
+  const legacy = w().ofLang === 'en' ? 'en' : 'fa', ui = w().ofUiLang
+  /* an in-place legacy switch (ofSetLanguage) wins over a stale route locale */
+  return isLocale(ui) && contentLocale(ui) === legacy ? ui : legacy
+}
 
 /* ---- theme (owned by React; was an inline script in the classic page) ---- */
 function initTheme() {
@@ -68,13 +78,32 @@ function initTheme() {
   }
 }
 
+/* ar/ru/zh-CN: the landing shows its English editorial version, labelled */
+function syncFallbackNotice(locale: AppLocale) {
+  const main = document.getElementById('main')
+  let note = document.getElementById('of-landing-locale-note')
+  const text = fallbackNotice(locale)
+  if (!text || !main) { note?.remove(); return }
+  if (!note) {
+    note = document.createElement('p')
+    note.id = 'of-landing-locale-note'
+    note.className = 'container of-locale-fallback'
+    note.setAttribute('role', 'note')
+    note.dataset.localeOwned = 'react'
+    main.prepend(note)
+  }
+  note.lang = locale
+  note.dir = dirOf(locale)
+  note.textContent = text
+}
+
 /* ---- arrow glyph direction (owned by React; was inline) ---- */
 const ARROW_MAP: Record<string, string> = {
   '←': '→', '→': '←', '↙': '↘', '↘': '↙', '↖': '↗', '↗': '↖'
 }
 function swapArrows() {
   document.querySelectorAll<HTMLAnchorElement>('[data-info-page]').forEach(a => {
-    a.href = `/${w().ofLang === "en" ? "en" : "fa"}/${a.dataset.infoPage}`
+    a.href = `/${uiLocale()}/${a.dataset.infoPage}`
   })
   const en = w().ofLang === 'en'
   document
@@ -107,9 +136,9 @@ function markCurrentPage() {
 
 export default function Landing() {
   const [communityHosts, setCommunityHosts] = useState<HTMLElement[]>([])
-  const [communityLocale, setCommunityLocale] = useState<'fa' | 'en'>('fa')
+  const [communityLocale, setCommunityLocale] = useState<AppLocale>('fa')
   useEffect(() => {
-    const sync = () => setCommunityLocale(document.documentElement.lang === 'en' ? 'en' : 'fa')
+    const sync = () => setCommunityLocale(uiLocale())
     setCommunityHosts(Array.from(document.querySelectorAll<HTMLElement>('[data-community-slot]')))
     sync()
     addEventListener('of-language', sync)
@@ -117,7 +146,8 @@ export default function Landing() {
   }, [])
   const navigate = useNavigate()
   const routeLocale = useParams().locale
-  const isHome = useLocation().pathname.endsWith("/home")
+  const routerLocation = useLocation()
+  const isHome = routerLocation.pathname.endsWith("/home")
   const [searchParams] = useSearchParams()
   useEffect(() => {
     const section = searchParams.get('section')
@@ -133,7 +163,7 @@ export default function Landing() {
     let footer: Awaited<ReturnType<typeof fetchCmsFooterLinks>> = null
     const render = () => {
       if (!active) return
-      const locale = w().ofLang === 'en' ? 'en' : 'fa'
+      const locale = uiLocale()
       renderNavigation(document, locale, `/${locale}/challenges`, nav, footer)
       document.querySelectorAll<HTMLAnchorElement>('header .brand, footer .brand').forEach(a => { a.href = `/${locale}/home` })
       document.querySelector<HTMLAnchorElement>('.nav-cta')?.setAttribute('href', `/${locale}/prop/trade`)
@@ -167,19 +197,36 @@ export default function Landing() {
   useEffect(() => {
     /* the route locale is authoritative on entry — sync the stored preference
        BEFORE the legacy scripts boot, so locale.js translates to it */
-    if (routeLocale === 'en' || routeLocale === 'fa') {
-      w().ofLang = routeLocale
+    if (isLocale(routeLocale)) {
+      const legacy = contentLocale(routeLocale)
+      w().ofUiLang = routeLocale
+      w().ofLang = legacy
       try { localStorage.setItem('of-language', routeLocale) } catch { /* ignore */ }
+      syncFallbackNotice(routeLocale)
       /* direct route change into the other locale (URL edit / nav link, not
          the in-page toggle): the router reuses this component without
          remounting, so re-run the legacy translation pipeline to keep the
          DOM and the URL honest */
-      if (w().ofSetLanguage && document.documentElement.lang !== routeLocale) w().ofSetLanguage(routeLocale)
+      if (w().ofSetLanguage && document.documentElement.lang !== legacy) w().ofSetLanguage(legacy)
+      else dispatchEvent(new CustomEvent('of-language'))
     }
   }, [routeLocale])
   /* wallet connect button in the landing header (#wallet-root placeholder,
      right next to nav-actions). Same RainbowKit mount as the terminal. */
   const [walletHost, setWalletHost] = useState<HTMLElement | null>(null)
+  /* the five-language selector replaces the legacy two-way toggle, which
+     stays in the DOM (hidden) for the legacy script's event wiring */
+  const [languageHost, setLanguageHost] = useState<HTMLElement | null>(null)
+  useEffect(() => {
+    const toggle = document.getElementById('language-toggle')
+    if (!toggle || document.getElementById('language-slot')) return
+    const slot = document.createElement('span')
+    slot.id = 'language-slot'; slot.className = 'language-slot'; slot.dataset.localeOwned = 'react'
+    toggle.hidden = true
+    toggle.before(slot)
+    setLanguageHost(slot)
+    return () => { slot.remove(); toggle.hidden = false }
+  }, [])
   useEffect(() => {
     const host = document.getElementById('wallet-root')
     if (!host || document.getElementById('rainbow-landing-host')) return
@@ -295,7 +342,7 @@ export default function Landing() {
       if (!pageRoot?.isConnected) return
       swapArrows()
       markCurrentPage()
-      const lang = w().ofLang === 'en' ? 'en' : 'fa'
+      const lang = uiLocale()
       if (routeLocale && lang !== routeLocale) {
         navigate(`/${lang}/${isHome ? "home" : "challenges"}${location.search}`, { replace: true })
       }
@@ -322,10 +369,11 @@ export default function Landing() {
     }
   }, [])
 
-  if (routeLocale !== 'en' && routeLocale !== 'fa') return <Navigate to="/fa/challenges" replace />
+  if (!isLocale(routeLocale)) return <Navigate to="/fa/challenges" replace />
   return (
     <>
       {walletHost && createPortal(<RainbowConnect />, walletHost)}
+      {languageHost && createPortal(<LanguageSelect locale={routeLocale} onChange={next => navigate(switchLocalePath(routerLocation.pathname, next) + routerLocation.search)} />, languageHost)}
       {communityHosts.map((host, i) => createPortal(<TelegramCommunity locale={communityLocale} />, host, String(i)))}
       <CheckoutHost />
       <div dangerouslySetInnerHTML={{ __html: landingMarkup }} />

@@ -27,6 +27,15 @@ console.log('Home content: '+(CMS_FIXTURE?'repository published editorial seed f
 // backend/account/auth endpoints are never intercepted. Local live mode remains.
 const CHART_FIXTURE=process.env.GITHUB_ACTIONS==='true'||process.env.POLISH_CHART_FIXTURE==='1';
 const chartFixture=JSON.parse(fs.readFileSync(path.resolve('packages/openfund-charts/test/fixtures/gains-btc-usd.json'),'utf8'));
+
+/* Language switching uses the five-language selector (fa, en, ar, ru, zh-CN);
+   toggleLanguage keeps the previous fa <-> en intent of these steps. */
+async function toggleLanguage(page) {
+  const select = page.locator('.of-language-select select').first();
+  await select.waitFor({ state: 'attached' });
+  await select.selectOption((await select.inputValue()) === 'fa' ? 'en' : 'fa');
+}
+
 async function chartRoutes(context){
  if(!CHART_FIXTURE)return;
  await context.route('https://api.gains.trade/v1/arbitrum/**',async route=>{
@@ -307,12 +316,11 @@ async function walletDisclosureFits(page){
    await page.goto(BASE+'/en/perpetual'+suffix);await page.waitForURL('**/en/prop/dashboard');
    check('EN Perpetual route unavailable: '+suffix,true);
   }
-  await page.goto(BASE+'/en/home');await page.locator('#language-toggle').waitFor();await page.waitForTimeout(1800);
-  await page.locator('#language-toggle').click();await page.waitForURL('**/fa/home');
+  await page.goto(BASE+'/en/home');await page.locator('.of-language-select select').first().waitFor({ state: 'attached' });await page.waitForTimeout(1800);
+  await toggleLanguage(page);await page.waitForURL('**/fa/home');
   await page.locator('.home-products').waitFor();await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.home-products').waitFor();
   check('EN Home language switch returns to FA two-product Home',true);
-  await page.locator('#language-toggle').click();await page.waitForURL('**/en/home');
-  await page.locator('.hero').waitFor();
+  await toggleLanguage(page);await page.waitForURL('**/en/home');  await page.locator('.hero').waitFor();
   // Wait for the classic page's actual document replacement, not an intermediate route.
   await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.hero').waitFor();
   check('FA Home language switch returns to EN Prop landing',true);
@@ -321,9 +329,8 @@ async function walletDisclosureFits(page){
   // Leaving the classic EN Home can schedule a document reload after the
   // terminal first appears. Click only after that handoff has completed.
   await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.of-terminal-top').waitFor();
-  await page.getByRole('button',{name:'EN',exact:true}).click();
-  await page.waitForURL('**/en/prop/dashboard');check('Perpetual language switch clears product account context',true);
-  check('No browser exceptions',errors.length===0);
+  await page.locator('.of-language-select select').first().selectOption('en');
+  await page.waitForURL('**/en/prop/dashboard');check('Perpetual language switch clears product account context',true);  check('No browser exceptions',errors.length===0);
   await context.close();
  }
  // Delayed CMS replies must never start a classic runtime on a removed page.

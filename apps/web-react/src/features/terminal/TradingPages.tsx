@@ -6,6 +6,7 @@ import { setupWorkspaceLayout } from "./workspaceLayout";
 import { fetchCmsTranslations } from "../../cms/client";
 import { useTerminal } from "./TerminalContext";
 import { api, type Product } from "./model";
+import { currentLocale, dirOf, pick } from "../../i18n/locales";
 
 /** Product adapters share one rendering/interaction surface. Never construct
  * a local TradingProvider or invent a balance while account data is absent. */
@@ -15,9 +16,16 @@ function useAccountAdapter(product: Product, context: any) {
     [revision, setRevision] = useState(0);
   const status = useRef("signedout"),
     signed = session.status === "authenticated";
+  const owner = useRef<string | null>(null);
   useEffect(() => {
-    snapshot.current = null;
-    status.current = signed ? "loading" : "signedout";
+    /* a manual refresh (revision) must not blank the last snapshot; only a
+       different product or user starts from an empty state */
+    const identity = `${product}:${signed ? session.user?.id : "guest"}`;
+    if (owner.current !== identity) {
+      owner.current = identity;
+      snapshot.current = null;
+      status.current = signed ? "loading" : "signedout";
+    }
     if (!signed || product === "prop") return;
     let active = true,
       loading = false;
@@ -33,7 +41,9 @@ function useAccountAdapter(product: Product, context: any) {
         }
       } catch {
         if (active) {
-          status.current = "error";
+          /* keep the last valid snapshot on screen, flagged as possibly
+             outdated; report an error only when there is nothing to show */
+          status.current = snapshot.current ? "disconnected" : "error";
           window.dispatchEvent(new Event("of-trading-update"));
         }
       } finally {
@@ -113,13 +123,9 @@ function useAccountAdapter(product: Product, context: any) {
       },
       validate() {
         return [
-          (window as any).ofLang === "fa"
-            ? signed
-              ? "این حساب امکان ثبت سفارش ندارد."
-              : "برای ثبت سفارش وارد حساب شوید."
-            : signed
-              ? "This account cannot place orders."
-              : "Sign in to place an order.",
+          signed
+            ? pick(currentLocale(), "این حساب امکان ثبت سفارش ندارد.", "This account cannot place orders.")
+            : pick(currentLocale(), "برای ثبت سفارش وارد حساب شوید.", "Sign in to place an order."),
         ];
       },
       liqPrice() {
@@ -268,8 +274,14 @@ export function SharedTradingTerminal() {
     });
     return () => observer.disconnect();
   }, [locale, cms]);
+  /* The workspace document is built once per product; language changes are
+     applied live through the openfund-display message. Rebuilding srcDoc on
+     a locale change reloaded the whole iframe, dropping the chart, price
+     socket and positions until everything reconnected. */
+  const bootLocale = useRef(locale);
   const source = useMemo(() => {
     if (cms === undefined) return undefined;
+    const locale = bootLocale.current;
     const safe = (x: any) => JSON.stringify(x).replaceAll("<", "\\u003c"),
       base = `${location.origin}${import.meta.env.BASE_URL}`;
     const translations = {
@@ -306,15 +318,15 @@ export function SharedTradingTerminal() {
        logic itself is the external legacy/react-boot.js so the strict
        script-src 'self' CSP holds for the whole terminal */
     const bootData = safe({ locale, product, translations });
-    return `<!doctype html><html lang="${locale}" dir="${locale === "fa" ? "rtl" : "ltr"}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><style>html{color-scheme:only dark}html[data-theme="light"]{color-scheme:only light}</style><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>${workspaceStyles}</style></head><body><script type="application/json" id="of-boot-data">${bootData}</script>${workspaceMarkup()}<script src="legacy/react-boot.js"></script>${["legacy/gains-adapter.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/market-depth.js", "legacy/terminal.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
-  }, [cms, product, locale]);
+    return `<!doctype html><html lang="${locale}" dir="${dirOf(locale)}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><style>html{color-scheme:only dark}html[data-theme="light"]{color-scheme:only light}</style><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>${workspaceStyles}</style></head><body><script type="application/json" id="of-boot-data">${bootData}</script>${workspaceMarkup()}<script src="legacy/react-boot.js"></script>${["legacy/gains-adapter.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/market-depth.js", "legacy/share-card.js", "legacy/terminal-locales.js", "legacy/terminal.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
+  }, [cms, product]);
   return (
     <>
       <iframe
         key={product}
         ref={frame}
         className="of-trading-workspace"
-        title={locale === "fa" ? "فضای معاملات" : "Trading workspace"}
+        title={pick(locale, "فضای معاملات", "Trading workspace")}
         srcDoc={source}
         onLoad={() => {
           const w = frame.current?.contentWindow;

@@ -27,9 +27,11 @@ import {
 import "./terminal.css";
 import { TerminalContext, useTerminal } from "./TerminalContext";
 import { chooseTheme, currentTheme } from "../../theme";
+import LanguageSelect from "../../i18n/LanguageSelect";
+import { dirOf, normalizeLocale, pick, pickRecord, switchLocalePath } from "../../i18n/locales";
 export default function TerminalShell({ product }: { product: Product }) {
   const params = useParams(),
-    locale: Locale = params.locale === "en" ? "en" : "fa";
+    locale: Locale = normalizeLocale(params.locale, "fa");
   const { pathname, search } = useLocation(),
     navigate = useNavigate(),
     session = useSession(),
@@ -58,10 +60,10 @@ export default function TerminalShell({ product }: { product: Product }) {
     revision,
     true,
   );
-  const t = (fa: string, en: string) => (locale === "fa" ? fa : en);
+  const t = (fa: string, en: string) => pick(locale, fa, en);
   useEffect(() => {
     document.documentElement.lang = locale;
-    document.documentElement.dir = locale === "fa" ? "rtl" : "ltr";
+    document.documentElement.dir = dirOf(locale);
     (window as any).ofLang = locale;
     try { localStorage.setItem("of-language", locale); } catch { /* The current route still determines the locale. */ }
     window.dispatchEvent(new Event("of-terminal-route"));
@@ -91,8 +93,8 @@ export default function TerminalShell({ product }: { product: Product }) {
     };
   }, []);
   const message = (key: string) =>
-    messages[`products.${product}.${key}`]?.[locale] ||
-    messages[`products.${key}`]?.[locale] ||
+    pickRecord(locale, messages[`products.${product}.${key}`]) ||
+    pickRecord(locale, messages[`products.${key}`]) ||
     "";
   const accountsSection = page === "journal" && new URLSearchParams(search).get("section") === "accounts";
   const accountsPath = route(locale, product, "journal");
@@ -137,7 +139,7 @@ export default function TerminalShell({ product }: { product: Product }) {
       {product === "prop" && context.data?.state?.account && <TradingBridge pricing={context.data?.pricing} accountId={context.data.accountRef}/> }
       <div
         className={`of-terminal of-terminal-compact ${page === "trade" ? "of-terminal-trading" : ""} ${page === "dashboard" ? "of-dashboard-page" : ""}`}
-        dir={locale === "fa" ? "rtl" : "ltr"}
+        dir={dirOf(locale)}
         data-product={product}
       >
         <a
@@ -212,13 +214,9 @@ export default function TerminalShell({ product }: { product: Product }) {
               >
                 {theme === "dark" ? "◐" : "◑"}
               </button>
-              <button
-                onClick={() =>
-                  navigate(product === "perpetual" ? "/en/prop/dashboard" : pathname.replace(/^\/(?:fa|en)\//, `/${locale === "fa" ? "en" : "fa"}/`) + search)
-                }
-              >
-                {locale === "fa" ? "EN" : "FA"}
-              </button>
+              {/* Perpetual is offered in Persian only; other locales go to Prop */}
+              <LanguageSelect locale={locale} onChange={next =>
+                navigate(product === "perpetual" && next !== "fa" ? `/${next}/prop/dashboard` : switchLocalePath(pathname, next) + search)} />
               <button
                 className="of-mobile-menu"
                 aria-expanded={open}
@@ -263,7 +261,7 @@ function Editorial({ page }: { page: string }) {
         setData(meta);
         setSections(rows || []);
         document.title =
-          meta?.seoTitle[locale] || `Openfund ${product} · ${page}`;
+          pickRecord(locale, meta?.seoTitle) || `Openfund ${product} · ${page}`;
       }
     };
     void load();
@@ -280,21 +278,19 @@ function Editorial({ page }: { page: string }) {
           OPENFUND {product.toUpperCase()}
         </span>
         <h1>
-          {data?.title[locale] ||
-            primary[product].find((x) => x[0] === page)?.[
-              locale === "fa" ? 1 : 2
-            ] ||
+          {pickRecord(locale, data?.title) ||
+            (() => { const item = primary[product].find((x) => x[0] === page); return item ? t(item[1], item[2]) : ""; })() ||
             t("ژورنال معاملات", "Trade Journal")}
         </h1>
-        {data?.description[locale] && <p>{data.description[locale]}</p>}
+        {pickRecord(locale, data?.description) && <p>{pickRecord(locale, data?.description)}</p>}
       </div>
       {sections.map((s) => (
         <aside className="of-banner" key={s.id}>
           {s.illustration && (
             <img src={`${directusUrl()}/assets/${s.illustration}`} alt="" />
           )}
-          <h2>{s.title[locale]}</h2>
-          <p>{s.body[locale]}</p>
+          <h2>{pickRecord(locale, s.title)}</h2>
+          <p>{pickRecord(locale, s.body)}</p>
           {s.supportUrl && (
             <a href={s.supportUrl} target="_blank" rel="noreferrer">
               {t("اطلاعات بیشتر", "Learn more")}

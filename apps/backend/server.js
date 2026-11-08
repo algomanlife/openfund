@@ -82,7 +82,12 @@ app.use((req,res,next) => {
       startup from the exact files that ship in react/legacy/, so the
       policy allows precisely those scripts and nothing else.
    API responses keep the fully strict policy. */
-const CSP_THEME_BOOT_HASH = "'sha256-CPqkdsJeTR4jyAHxiAWBQwdFfSWbVDYsPoPwCCgXeK4='" /* apps/web-react/index.html pre-paint script (theme + locale/direction + legacy URL normalization + loader backstop) */
+/* Hash the exact inline pre-paint script in the served build. Locale and
+   routing changes alter those bytes; a stale literal hash would silently
+   block legacy bookmark recovery and the no-flash direction setup. */
+const bootScript = fs.readFileSync(new URL('../../react/index.html', import.meta.url), 'utf8').match(/<script>([\s\S]*?)<\/script>/)?.[1]
+if (!bootScript) throw Error('Frontend pre-paint script missing from react/index.html')
+const CSP_THEME_BOOT_HASH = "'sha256-" + crypto.createHash('sha256').update(bootScript).digest('base64') + "'"
 const legacyScriptHashes = () => {
   const dir = fileURLToPath(new URL('../../react/legacy', import.meta.url))
   const names = ['locale.js', 'app.js', 'features.js', 'market.js', 'motion.js']

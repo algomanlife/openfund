@@ -44,7 +44,8 @@ export function CheckoutHost() {
     const relabel = () => {
       const root = document.getElementById('builder')
       if (!root?.isConnected) return
-      const isFa = (window as any).ofLang !== 'en'
+      /* the landing runs its legacy content in fa or en only */
+      const isFa = (window as any).ofLang === 'fa'
       const note = document.querySelector('#selection-dialog .dialog-note') as HTMLElement | null
       const done = document.getElementById('dialog-done')
       const sample = document.querySelector('.sample-note') as HTMLElement | null

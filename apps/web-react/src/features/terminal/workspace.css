@@ -15,7 +15,7 @@ html[data-theme="light"] :is(body,.workspace,.chart-panel,.book-panel,.trade-pan
 }
 html[data-theme="light"] .side-group { background: var(--surface); }
 html[data-theme="light"] .sb-src { opacity: 1; }
-body, html[lang="fa"] body {
+body, html[dir="rtl"] body {
   display: grid;
   grid-template-rows: 34px minmax(0, 1fr) 24px;
   height: 100dvh;
@@ -38,13 +38,13 @@ body, html[lang="fa"] body {
 .market-select-btn { height: 28px; padding: 0 4px; border: 0; border-radius: 0; background: transparent; }
 .market-select-btn b { font-size: 13px; }
 .market-select .star { width: 26px; height: 26px; border: 0; }
-.market-stats, html[lang="fa"] .market-stats {
+.market-stats, html[dir="rtl"] .market-stats {
   flex: 1; min-width: 0; height: 100%; flex-wrap: nowrap;
   gap: 0; padding: 0; margin: 0; overflow: hidden;
 }
 .stat { flex: 0 0 auto; gap: 6px; margin: 0; padding: 0 12px; height: 22px; align-items: center; border-right: 1px solid var(--line); }
 .stat dt { font-size: 10px; letter-spacing: 0; text-transform: none; }
-.stat dd, html[lang="fa"] .stat dd { font-size: 12px; line-height: 1.4; }
+.stat dd, html[dir="rtl"] .stat dd { font-size: 12px; line-height: 1.4; }
 .stat[data-k="last"] dd { font-size: 14px; color: var(--mint); }
 .stat[data-k="vol"] { display: none; }
 .stat[data-k="oi"], .stat[data-k="funding"], .stat[data-k="lev"] { order: 1; }
@@ -103,11 +103,11 @@ body, html[lang="fa"] body {
 .book-view[hidden], .trades-view[hidden] { display: none !important; }
 .book-view, .trades-view { min-height: 0; overflow: hidden; }
 .book-side { overflow-y: auto; justify-content: flex-start; scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
-.book-side .bk-row, html[lang="fa"] .book-side .bk-row span {
+.book-side .bk-row, html[dir="rtl"] .book-side .bk-row span {
   flex: 0 0 auto; line-height: 20px; font-size: 11.5px; padding-block: 0;
   font-family: Ubuntu, system-ui, sans-serif; font-variant-numeric: tabular-nums;
 }
-.book-view.dense .book-side .bk-row, html[lang="fa"] .book-view.dense .bk-row span { line-height: 18px; }
+.book-view.dense .book-side .bk-row, html[dir="rtl"] .book-view.dense .bk-row span { line-height: 18px; }
 .bk-row { display: grid; position: relative; transition: background-color .2s; }
 .bk-row.a { color: var(--neg); }
 .bk-row.b { color: var(--pos); }
@@ -188,18 +188,18 @@ html[data-theme="light"] .submit:is(.long,.short) { color: #fff; }
 .book-mid, .book-cols, .bk-row, .tr-row, .bt-table td {
   direction: ltr; unicode-bidi: isolate; font-variant-numeric: tabular-nums;
 }
-html[lang="fa"] .trade-panel, html[lang="fa"] .book-note,
-html[lang="fa"] #depth-feed-status, html[lang="fa"] .empty-state { direction: rtl; }
-html[lang="fa"] .trade-panel .side-group, html[lang="fa"] .otype-group,
-html[lang="fa"] .lev-presets, html[lang="fa"] .form-grid,
-html[lang="fa"] .risk-box { direction: ltr; }
-html[lang="fa"] .field, html[lang="fa"] .risk-box > .kv,
-html[lang="fa"] .order-details, html[lang="fa"] .sizing-tools .kv { direction: rtl; text-align: right; }
-html[lang="fa"] .risk-box > .kv { align-items: stretch; }
-html[lang="fa"] .kv b { font-family: Ubuntu, system-ui, sans-serif; font-size: 12px; line-height: 16px; }
-html[lang="fa"] .field em { font-family: Irancell, sans-serif; }
-html[lang="fa"] .field-err { direction: rtl; text-align: right; }
-html[lang="fa"] .panel-tabs, html[lang="fa"] .book-controls { direction: rtl; }
+html[dir="rtl"] .trade-panel, html[dir="rtl"] .book-note,
+html[dir="rtl"] #depth-feed-status, html[dir="rtl"] .empty-state { direction: rtl; }
+html[dir="rtl"] .trade-panel .side-group, html[dir="rtl"] .otype-group,
+html[dir="rtl"] .lev-presets, html[dir="rtl"] .form-grid,
+html[dir="rtl"] .risk-box { direction: ltr; }
+html[dir="rtl"] .field, html[dir="rtl"] .risk-box > .kv,
+html[dir="rtl"] .order-details, html[dir="rtl"] .sizing-tools .kv { direction: rtl; text-align: right; }
+html[dir="rtl"] .risk-box > .kv { align-items: stretch; }
+html[dir="rtl"] .kv b { font-family: Ubuntu, system-ui, sans-serif; font-size: 12px; line-height: 16px; }
+html[dir="rtl"] .field em { font-family: Irancell, sans-serif; }
+html[dir="rtl"] .field-err { direction: rtl; text-align: right; }
+html[dir="rtl"] .panel-tabs, html[dir="rtl"] .book-controls { direction: rtl; }
 @media (min-width: 1600px) {
   .workspace { grid-template-columns: minmax(0, 1fr) 264px 360px; }
 }
@@ -214,7 +214,7 @@ html[lang="fa"] .panel-tabs, html[lang="fa"] .book-controls { direction: rtl; }
 /* Small screens use explicit view controls; the order form never becomes a
    scrolling page. At short desktop heights it uses a horizontal form layout. */
 @media (max-width: 1100px), (max-height: 635px) {
-  body, html[lang="fa"] body { grid-template-rows: 34px 32px minmax(0, 1fr) 24px; }
+  body, html[dir="rtl"] body { grid-template-rows: 34px 32px minmax(0, 1fr) 24px; }
   .workspace-views { display: flex; gap: 0; background: var(--surface); border-bottom: 1px solid var(--line); direction: ltr; }
   .workspace-views button { flex: 1; font-size: 12px; color: var(--muted); border-bottom: 2px solid transparent; }
   .workspace-views button[aria-pressed="true"] { color: var(--mint); border-color: var(--mint); }
@@ -258,8 +258,8 @@ html[lang="fa"] .panel-tabs, html[lang="fa"] .book-controls { direction: rtl; }
 }
 @media (max-height: 635px) and (min-width: 760px) {
   body[data-workspace-view="trade"] .trade-panel { direction: ltr; }
-  html[lang="fa"] #acct-strip, html[lang="fa"] #account-feed-state,
-  html[lang="fa"] .lev-head { direction: rtl; }
+  html[dir="rtl"] #acct-strip, html[dir="rtl"] #account-feed-state,
+  html[dir="rtl"] .lev-head { direction: rtl; }
   .trade-panel > .submit { align-self: end; }
 }
 @media (max-width: 540px) {
@@ -282,43 +282,70 @@ html[lang="fa"] .panel-tabs, html[lang="fa"] .book-controls { direction: rtl; }
 
 /* Order book / trades: first column (price) aligns left like its header. */
 .book-cols > span:first-child, .bk-row > span:first-of-type, .tr-row > span:first-child { text-align: left; }
-html[lang="fa"] .book-cols > span { direction: rtl; unicode-bidi: isolate; }
-html[lang="fa"] .book-cols > span:first-child { text-align: left; }
-html[lang="fa"] .book-cols > span:not(:first-child) { text-align: right; }
+html[dir="rtl"] .book-cols > span { direction: rtl; unicode-bidi: isolate; }
+html[dir="rtl"] .book-cols > span:first-child { text-align: left; }
+html[dir="rtl"] .book-cols > span:not(:first-child) { text-align: right; }
 
 /* Account activity tables: one table direction per locale, applied to the
    header and body together; numeric columns align to the end edge. */
 .bt-table th, .bt-table td { text-align: left; }
 .bt-table th.r, .bt-table td.r { text-align: right; }
-html[lang="fa"] .bt-body, html[lang="fa"] .bt-table, html[lang="fa"] .bt-table table { direction: rtl; }
-html[lang="fa"] .bt-table th, html[lang="fa"] .bt-table td { text-align: right; }
-html[lang="fa"] .bt-table th.r, html[lang="fa"] .bt-table td.r { text-align: left; }
-html[lang="fa"] .bt-table td:has(> .act-btn), html[lang="fa"] .bt-table .empty-tr td { direction: rtl; unicode-bidi: normal; }
+html[dir="rtl"] .bt-body, html[dir="rtl"] .bt-table, html[dir="rtl"] .bt-table table { direction: rtl; }
+html[dir="rtl"] .bt-table th, html[dir="rtl"] .bt-table td { text-align: right; }
+html[dir="rtl"] .bt-table th.r, html[dir="rtl"] .bt-table td.r { text-align: left; }
+html[dir="rtl"] .bt-table td:has(> .act-btn), html[dir="rtl"] .bt-table .empty-tr td { direction: rtl; unicode-bidi: normal; }
 .bt-body { overscroll-behavior: contain; }
 
 /* Persian numbers use the same Latin-digit face as English everywhere. */
-html[lang="fa"] :is(.num, .stat dd, .bt-table td, .tr-row, .bk-row span, .book-mid, .acct-row b,
+html[dir="rtl"] :is(.num, .stat dd, .bt-table td, .tr-row, .bk-row span, .book-mid, .acct-row b,
   .field input, .out, .lev-val, .lev-presets button, .pct-btns button, .cnt, .review-grid b) {
   font-family: Ubuntu, Irancell, system-ui, sans-serif;
 }
-html[lang="fa"] .bt-table td { font-size: 12.5px; line-height: 1.5; }
-html[lang="fa"] .acct-row > span { align-items: center; line-height: 16px; }
-html[lang="fa"] .acct-row b { line-height: 16px; }
+html[dir="rtl"] .bt-table td { font-size: 12.5px; line-height: 1.5; }
+html[dir="rtl"] .acct-row > span { align-items: center; line-height: 16px; }
+html[dir="rtl"] .acct-row b { line-height: 16px; }
 
 /* Order entry: values align with their (right-aligned) Persian labels, the
    leverage slider runs the same way as its 1×–100× presets, and the order
    type tabs flow like the other Persian tab bars. */
-html[lang="fa"] .field input, html[lang="fa"] .out { text-align: right; }
+html[dir="rtl"] .field input, html[dir="rtl"] .out { text-align: right; }
 input[type="range"] { direction: ltr; }
-html[lang="fa"] .otype-group { direction: rtl; }
+html[dir="rtl"] .otype-group { direction: rtl; }
 
 /* Dialog rows keep labels intact and let long values wrap instead. */
 .review-grid > div > span { flex: 0 0 auto; white-space: nowrap; }
 .review-grid > div > b { min-width: 0; text-align: end; overflow-wrap: anywhere; }
-html[lang="fa"] .review-grid > div > b { direction: ltr; unicode-bidi: isolate; text-align: left; }
+html[dir="rtl"] .review-grid > div > b { direction: ltr; unicode-bidi: isolate; text-align: left; }
 .dlg { max-width: calc(100vw - 24px); max-height: calc(100dvh - 24px); overflow-y: auto; box-sizing: border-box; }
 @media (max-width: 540px) {
   .review-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Position details: each row is a label/value pair laid out on the logical
+   axis, so RTL locales mirror the structure while ids, symbols, prices and
+   dates stay isolated LTR. Labels wrap instead of being clipped. */
+.dlg:has(.pos-detail-grid) { width: min(560px, calc(100vw - 24px)); }
+.pos-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; margin: 0;
+  background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.pos-detail-grid > div { display: grid; grid-template-columns: minmax(0, max-content) minmax(0, 1fr); align-items: baseline;
+  gap: 4px 12px; padding: 8px 12px; background: var(--surface); font-size: 12.5px; line-height: 1.55; min-width: 0; }
+.pos-detail-grid dt { margin: 0; color: var(--muted); min-width: 0; max-width: 14em; white-space: normal; overflow-wrap: normal; text-align: start; }
+.pos-detail-grid dd { margin: 0; min-width: 0; color: var(--white); text-align: end; overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums; }
+.pos-detail-grid dd.up { color: var(--pos); }
+.pos-detail-grid dd.down { color: var(--neg); }
+.pos-detail-grid bdi { unicode-bidi: isolate; direction: ltr; }
+html[dir="rtl"] .pos-detail-grid { direction: rtl; }
+.pos-detail-grid > div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+/* values sit at the row's end edge in both directions; long ids wrap
+   (the shared .num class is nowrap and LTR, so be explicit here) */
+.pos-detail-grid dd, .pos-detail-grid dd.num { white-space: normal; direction: inherit; unicode-bidi: normal; }
+html[dir="ltr"] .pos-detail-grid dd { text-align: right; }
+html[dir="rtl"] .pos-detail-grid dd { text-align: left; }
+html[dir="rtl"] .pos-detail-grid dd { font-family: Ubuntu, Irancell, system-ui, sans-serif; }
+@media (max-width: 540px) {
+  .pos-detail-grid { grid-template-columns: minmax(0, 1fr); }
+  .dlg:has(.pos-detail-grid) { padding: 16px 14px; }
 }
 
 /* Compact workspaces: when a short or narrow screen cannot hold the whole
@@ -337,3 +364,34 @@ html[lang="fa"] .review-grid > div > b { direction: ltr; unicode-bidi: isolate; 
   .lev-presets button, .pct-btns button { min-height: 30px; }
   input[type="range"] { height: 28px; touch-action: pan-y; }
 }
+
+/* Share P&L: the canvas is the exported image, scaled to the dialog. */
+.dlg.share-dlg { width: min(460px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); }
+.share-preview { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--obsidian); line-height: 0; }
+.share-preview canvas { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; max-height: calc(100dvh - 190px); object-fit: contain; }
+.share-status { margin: 10px 0 0; min-height: 1.5em; font-size: 12px; color: var(--muted); }
+.share-actions { flex-wrap: wrap; }
+.act-btn.act-share { color: var(--mint); }
+/* row actions stay pinned to the table's end edge, so Share/Details remain
+   in view while wide position rows scroll horizontally */
+#bt-positions th:last-child, .bt-table #tb-positions td:last-child { position: sticky; inset-inline-end: 0; z-index: 1;
+  background: var(--obsidian); box-shadow: -8px 0 8px -8px #0008; }
+#bt-positions th:last-child { z-index: 3; }
+html[dir="rtl"] #bt-positions th:last-child, html[dir="rtl"] .bt-table #tb-positions td:last-child { box-shadow: 8px 0 8px -8px #0008; }
+.bt-table #tb-positions td:last-child { white-space: nowrap; }
+.bt-table #tb-positions td:last-child .act-btn { padding: 4px 7px; margin-inline-start: 4px; }
+@media (max-width: 540px) {
+  .dlg.share-dlg { padding: 14px 12px; }
+  .share-actions > button { flex: 1 1 auto; min-height: 40px; }
+}
+
+/* Real-time feed: last valid values stay visible during brief interruptions
+   but are visibly marked as not live. */
+#st-last.is-stale { text-decoration: underline dotted; text-underline-offset: 3px; }
+.book-panel.is-stale { border-style: dashed; }
+
+/* Arabic terminal: Latin digits from Ubuntu, Arabic letters from the bundled
+   Vazirmatn (Persian keeps its existing Irancell face). */
+@font-face { font-family: 'Vazirmatn'; src: url('assets/Vazirmatn.ttf') format('truetype'); font-weight: 100 900; font-display: swap; }
+html[lang="ar"] body, html[lang="ar"] :is(button, input, select, summary, .field em) { font-family: Ubuntu, Vazirmatn, Tahoma, sans-serif; }
+html:is([lang="ru"], [lang="zh-CN"]) body { font-family: Ubuntu, system-ui, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif; }

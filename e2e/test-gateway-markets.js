@@ -7,6 +7,15 @@ const BASE = 'http://127.0.0.1:4173'
 const fs = require('fs')
 fs.mkdirSync(SHOTS, { recursive: true })
 
+
+/* Language switching uses the five-language selector (fa, en, ar, ru, zh-CN);
+   toggleLanguage keeps the previous fa <-> en intent of these steps. */
+async function toggleLanguage(page) {
+  const select = page.locator('.of-language-select select').first();
+  await select.waitFor({ state: 'attached' });
+  await select.selectOption((await select.inputValue()) === 'fa' ? 'en' : 'fa');
+}
+
 ;(async () => {
   const browser = await chromium.launch({
     executablePath: `${process.env.HOME}/Library/Caches/ms-playwright/chromium-1248/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing`,
@@ -47,7 +56,7 @@ fs.mkdirSync(SHOTS, { recursive: true })
   R('home: logo click stays on gateway', page.url().includes('/fa/home'), page.url())
 
   /* language switch preserves page */
-  await page.click('#language-toggle')
+  await toggleLanguage(page)
   await page.waitForTimeout(900)
   R('home: fa→en preserves page', page.url().includes('/en/home'), page.url())
   const homeEn = await page.evaluate(() => document.querySelector('.home-stage h1')?.textContent.trim())
@@ -102,7 +111,7 @@ fs.mkdirSync(SHOTS, { recursive: true })
   await page.screenshot({ path: `${SHOTS}/challenges-fa-1440.png` })
 
   /* language toggle on landing keeps page + syncs URL */
-  await page.click('#language-toggle')
+  await toggleLanguage(page)
   await page.waitForTimeout(1400)
   const enLanding = await page.evaluate(() => ({ url: location.pathname, h1: document.querySelector('.hero h1')?.textContent.trim() }))
   R('challenges: fa→en preserves page + URL', enLanding.url.includes('/en/challenges'), enLanding.url)
@@ -146,7 +155,7 @@ fs.mkdirSync(SHOTS, { recursive: true })
   await page.screenshot({ path: `${SHOTS}/markets-fa-crypto.png` })
 
   /* language switch on markets */
-  await page.click('#language-toggle')
+  await toggleLanguage(page)
   await page.waitForTimeout(1200)
   R('markets: fa→en preserves page', page.url().includes('/en/markets'), page.url())
   const mkEn = await page.evaluate(() => ({ h1: document.querySelector('.info-hero h1')?.textContent.trim(), tabs: [...document.querySelectorAll('.mk-toolbar .market-tabs button')].map(b => b.textContent.trim()) }))
@@ -191,7 +200,7 @@ fs.mkdirSync(SHOTS, { recursive: true })
   R('rulebook fa: content preserved', rb.sections >= 15 && !!rb.h1, `sections=${rb.sections}`)
   R('rulebook fa: nav links route to pages', rb.nav.every(n => /^#\/fa\/(challenges|markets|rulebook|transparency)$/.test(n.href || '')), JSON.stringify(rb.nav))
   R('rulebook fa: rulebook nav active', JSON.stringify(rb.active) === JSON.stringify(['قوانین معاملاتی']), JSON.stringify(rb.active))
-  await page.click('#language-toggle')
+  await toggleLanguage(page)
   await page.waitForTimeout(900)
   R('rulebook: fa→en preserves page', page.url().includes('/en/rulebook'), page.url())
 

@@ -1,3 +1,4 @@
+import { currentLocale, pick } from '../i18n/locales'
 import { useEffect, useRef } from 'react'
 import { useSession, backendUrl } from '../session/useOpenfundSession'
 
@@ -34,8 +35,7 @@ export function TradingBridge({ pricing, accountId }: { pricing?: Record<string,
     const changed = () => window.dispatchEvent(new CustomEvent('of-trading-update'))
     const n = (v: unknown) => v == null ? null : Number(v)
     let state = { account: null, positions: [], orders: [], history: [] }
-    const isFa = () => (window as any).ofLang !== 'en'
-    const L = (fa: string, en: string) => (isFa() ? fa : en)
+    const L = (fa: string, en: string) => pick(currentLocale(), fa, en)
     const scopedPath = (path: string) => path + (accountId ? `${path.includes('?') ? '&' : '?'}account=${encodeURIComponent(accountId)}` : '')
 
     const fmtAcct = (a: any) => a && {
@@ -82,7 +82,12 @@ export function TradingBridge({ pricing, accountId }: { pricing?: Record<string,
             type: h.exit_reason === 'sl' ? 'stop-loss'
               : h.exit_reason === 'tp' ? 'take-profit'
               : h.exit_reason === 'liquidation' ? 'liquidation' : 'market-close',
-            result: Number(h.realized_pnl) >= 0 ? 'closed-profit' : 'closed-loss'
+            result: Number(h.realized_pnl) >= 0 ? 'closed-profit' : 'closed-loss',
+            /* recorded server values for the share card (display only) */
+            entry: n(h.entry_price), leverage: h.leverage ?? null, margin: n(h.margin),
+            realized: n(h.realized_pnl), roi: n(h.roi_pct),
+            openedAt: h.opened_at ? new Date(h.opened_at).getTime() : null,
+            currency: state.account?.currency || 'USD'
           })),
           fills: [], funding: [], notifications: []
         }

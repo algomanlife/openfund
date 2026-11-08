@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSession, backendUrl } from "../../session/useOpenfundSession";
 export type Product = "prop" | "perpetual";
-export type Locale = "fa" | "en";
+import type { AppLocale } from "../../i18n/locales";
+export type Locale = AppLocale;
 export const primary = {
   prop: [
     ["dashboard", "داشبورد", "Dashboard"],
@@ -78,11 +79,17 @@ export function useResource<T = any>(
         const data = await api(product, path, { signal: ctrl.signal });
         if (!ctrl.signal.aborted) setState({ key, data, loading:false, error:null });
       } catch (e) {
-        if (!ctrl.signal.aborted) setState({ key, data:null, loading:false, error:(e as Error).message });
+        /* live resources keep their last valid data through a transient
+           refetch failure: blanking it unmounted the trading bridge and made
+           positions disappear until the next successful poll */
+        if (!ctrl.signal.aborted) setState(prev => ({ key, data: live && prev.key === key ? prev.data : null, loading:false, error:(e as Error).message }));
       } finally { busy = false; }
     };
     void load();
-    const changed=()=>{if(live)void load()};
+    /* trading pushes can arrive many times a second; one refetch per 2 s
+       is enough for the account context and avoids a request per tick */
+    let lastPush = 0;
+    const changed=()=>{if(!live)return;const now=Date.now();if(now-lastPush<2000)return;lastPush=now;void load()};
     addEventListener('of-trading-update',changed);
     const timer = live ? setInterval(load, product === 'prop' ? 5000 : 15000) : null;
     return () => { ctrl.abort(); removeEventListener('of-trading-update',changed); if (timer) clearInterval(timer) };

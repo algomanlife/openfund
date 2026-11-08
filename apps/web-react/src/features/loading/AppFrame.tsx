@@ -2,6 +2,7 @@ import { Component, useEffect, useLayoutEffect, useRef, type ReactNode } from 'r
 import { Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-router-dom'
 import { BrandedLoading, loadingGate } from './BrandedLoading'
 import { updateSeoHead } from './seoHead'
+import { dirOf, normalizeLocale, type AppLocale } from '../../i18n/locales'
 import './loading.css'
 
 /* ---- app frame ---------------------------------------------------------------
@@ -14,7 +15,7 @@ import './loading.css'
    - browser Back/Forward scroll restoration,
    - a recoverable error state (the loader never masks a broken route). */
 
-const routeLocale = (pathname: string): 'fa' | 'en' => (/^\/en(\/|$)/.test(pathname) ? 'en' : 'fa')
+const routeLocale = (pathname: string): AppLocale => normalizeLocale(pathname.split('/')[1], 'fa')
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { error: unknown }> {
   state = { error: null as unknown }
@@ -27,7 +28,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: unknown 
     if (this.state.error) {
       const fa = routeLocale(window.location.pathname) === 'fa'
       return (
-        <div className="of-route-error" role="alert" dir={fa ? 'rtl' : 'ltr'}>
+        <div className="of-route-error" role="alert" dir={dirOf(routeLocale(window.location.pathname))}>
           <p>{fa ? 'صفحه بارگذاری نشد.' : 'This page could not be loaded.'}</p>
           <button type="button" onClick={() => window.location.reload()}>
             {fa ? 'تلاش دوباره' : 'Try again'}
@@ -51,7 +52,7 @@ export default function AppFrame() {
      the branded loader; instant ones stay instant (threshold in the gate). */
   useLayoutEffect(() => {
     document.documentElement.lang = locale
-    document.documentElement.dir = locale === 'fa' ? 'rtl' : 'ltr'
+    document.documentElement.dir = dirOf(locale)
     const changed = previousLocale.current !== locale
     previousLocale.current = locale
     if (!changed) return

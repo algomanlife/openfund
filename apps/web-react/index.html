@@ -27,10 +27,11 @@ else if((legacy||path==='/')&&hash.length>1){path='/'+hash.slice(1);hash=''}
 var url=path+search+hash
 if(url!==location.pathname+location.search+location.hash)history.replaceState(null,'',url)
 var seg=path.split('/')[1]
-var lang=seg==='en'||seg==='fa'?seg:''
-if(!lang){try{lang=localStorage.getItem('of-language')==='en'?'en':'fa'}catch(e){lang='fa'}}
+var supported=['fa','en','ar','ru','zh-CN']
+var lang=supported.indexOf(seg)>=0?seg:''
+if(!lang){try{var stored=localStorage.getItem('of-language');lang=supported.indexOf(stored)>=0?stored:'fa'}catch(e){lang='fa'}}
 document.documentElement.lang=lang
-document.documentElement.dir=lang==='fa'?'rtl':'ltr'
+document.documentElement.dir=lang==='fa'||lang==='ar'?'rtl':'ltr'
 }catch(e){}})()
 /* boot-loader backstop: hide it even if the app never boots, so the
    branded loader can never stay stuck (React removes it on readiness) */

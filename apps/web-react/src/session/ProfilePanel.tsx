@@ -1,3 +1,4 @@
+import { currentLocale, dirOf, pick } from '../i18n/locales'
 import { createPortal } from 'react-dom'
 import { useEffect, useRef, useState } from 'react'
 import type { OpenfundChallenge, OpenfundUser } from './useOpenfundSession'
@@ -33,7 +34,7 @@ export function ProfilePanel(props: {
   reload?: () => Promise<unknown>
 }) {
   const { user, challenges, onLogout, onClose, updateProfile, reload } = props
-  const isFa = (window as any).ofLang !== 'en'
+  const locale = currentLocale(), isFa = locale === 'fa'
   const dialog = useRef<HTMLDialogElement>(null)
   useEffect(() => { dialog.current?.showModal() }, [])
 
@@ -43,8 +44,8 @@ export function ProfilePanel(props: {
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
 
-  const t = (fa: string, en: string) => (isFa ? fa : en)
-  const fmtDate = (d?: string | null) => (d ? new Date(d).toLocaleDateString(isFa ? 'fa-IR' : 'en-US') : '—')
+  const t = (fa: string, en: string) => pick(locale, fa, en)
+  const fmtDate = (d?: string | null) => (d ? new Date(d).toLocaleDateString(t('fa-IR', 'en-US')) : '—')
 
   const pickAvatar = (file: File | null | undefined) => {
     setErr(null)
@@ -79,7 +80,7 @@ export function ProfilePanel(props: {
       <dialog ref={dialog} onCancel={onClose} onClick={e => {
         const rect = e.currentTarget.getBoundingClientRect()
         if (e.target === e.currentTarget && (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom)) onClose()
-      }} className="of-profile" dir={isFa ? 'rtl' : 'ltr'}>
+      }} className="of-profile" dir={dirOf(locale)}>
         <button className="dialog-close of-profile-close" onClick={onClose} aria-label={t('بستن', 'Close')}>×</button>
 
         <h2>{t('حساب اوپن‌فاند', 'Openfund Account')}</h2>
@@ -150,8 +151,7 @@ export function ProfilePanel(props: {
 
         <div className="of-profile-actions">
           {(['prop', 'perpetual'] as const).filter(product => isFa || product === 'prop').map(product => <a key={product} className="button"
-            href={`/${isFa ? 'fa' : 'en'}/${product}/dashboard`} onClick={onClose}>
-            Openfund {product === 'prop' ? 'Prop' : 'Perpetual'} ↗
+            href={`/${locale}/${product}/dashboard`} onClick={onClose}>            Openfund {product === 'prop' ? 'Prop' : 'Perpetual'} ↗
           </a>)}
           <button className="button danger" onClick={onLogout}>{t('خروج از حساب', 'Sign out')}</button>
         </div>

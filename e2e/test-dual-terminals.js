@@ -371,7 +371,7 @@ const results = [],
     ) === "Dashboard|Perpetual Terminal|Portfolio|Leaderboard|Rewards",
   );
   await page.screenshot({ path: path.join(OUT, "perpetual-trade-en.png") });
-  await page.getByRole("button", { name: "FA", exact: true }).click();
+  await page.locator('.of-language-select select').first().selectOption('fa');
   await page.waitForFunction(() => document.documentElement.dir === "rtl");
   check("Persian route and RTL", page.url().includes("/fa/perpetual/trade"));
   await page.setViewportSize({ width: 390, height: 844 });

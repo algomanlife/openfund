@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import {nextVersion,validateEnv,sha256,writeJson,treeHash,filesIn,root} from '../lib.mjs';
+import {nextVersion,requestedPatchVersion,validateEnv,sha256,writeJson,treeHash,filesIn,root} from '../lib.mjs';
 import {verify} from '../verify.mjs';
 import {exactSecretScan} from '../check-secrets.mjs';
 import {runtimeCmsUrl,runtimeConfigScript} from '../../../apps/backend/runtime-config.js';
@@ -24,6 +24,10 @@ test('version allocation preserves tags, increments all change categories and ha
  assert.equal(nextVersion(['v0.1.0'],'feat(journal): reports'),'0.2.0');
  assert.equal(nextVersion(['v0.1.0'],'feat!: changed contract'),'1.0.0');
  assert.equal(nextVersion(['v1.9.0','v1.10.0','invalid'],'docs: update'),'1.10.1');
+});
+test('explicit patch release cannot skip, reuse or change the release line',()=>{
+ assert.equal(requestedPatchVersion('v0.4.3','0.4.4'),'0.4.4');
+ for(const value of ['0.4.3','0.4.5','0.5.0','1.0.0'])assert.throws(()=>requestedPatchVersion('v0.4.3',value));
 });
 test('release tests reject missing, shared and remote databases',()=>{
  for(const url of [undefined,'postgres://localhost/openfund_dev','postgres://db.example/openfund_ci'])assert.throws(()=>validateEnv({DATABASE_URL:url}));

@@ -1,0 +1,14 @@
+/* Compact language selector: a small visible face (◎ code ▾) with the
+   native select laid over it, so width matches the former EN/FA toggle. */
+.of-language-select{position:relative;display:inline-flex;flex-direction:row;align-items:center;justify-content:center;gap:0;min-width:44px;min-height:32px;padding:0 18px 0 8px;border:1px solid var(--line,#ffffff1e);border-radius:6px;color:inherit;font:inherit;font-size:12px;line-height:1;cursor:pointer;background:transparent;box-sizing:border-box}
+.of-language-select:dir(rtl){padding:0 8px 0 18px}
+.of-language-select:focus-within{outline:2px solid var(--mint,#82e7bd);outline-offset:2px}
+.of-language-face{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-family:'Ubuntu',system-ui,sans-serif;letter-spacing:.3px}
+.of-language-select::after{content:'▾';position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:10px;opacity:.7}
+.of-language-select select{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;opacity:0;cursor:pointer;font-size:16px;appearance:none;-webkit-appearance:none}
+.of-language-select select option{color:#0b1711;background:#f7f8f4}
+.of-language-icon{font-size:12px;opacity:.85}
+/* the terminal shell styles every label/select generically; keep this one compact */
+.of-terminal .of-language-select{flex-direction:row;gap:0;font-size:12px;color:inherit;min-height:28px;border-color:var(--of-line)}
+.of-terminal .of-language-select select{padding:0;border:0;background:transparent;border-radius:0}
+@media(max-width:700px),(pointer:coarse){.of-language-select,.of-terminal .of-language-select{min-height:44px;min-width:52px}}

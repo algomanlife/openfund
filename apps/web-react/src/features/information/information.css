@@ -247,3 +247,21 @@ body:has(.openfund-header) main { overflow-x:clip; }
   .openfund-header .rk-chip-connect { width:32px; min-width:32px; padding:0; justify-content:center; flex-shrink:0; }
 }
 html[dir="rtl"] .openfund-header .rk-account-controls { right:auto; left:0; }
+
+/* Language selector slot and the English-content notice shown for locales
+   without editorial translations (ar, ru, zh-CN). */
+.language-slot{display:inline-flex;align-items:center}
+.of-locale-fallback{margin:16px auto 0;padding:10px 14px;border:1px solid #82e7bd44;border-radius:8px;background:#82e7bd0f;color:var(--body,#cbd4ce);font-size:13px;line-height:1.8;text-align:start}
+html[data-theme=light] .of-locale-fallback{background:#087b4a0d;border-color:#087b4a44}
+
+/* Added locales. ru/zh-CN interfaces use the Latin font stack (Chinese falls
+   back to the system CJK font); Arabic keeps Latin digits from Ubuntu with
+   the bundled Vazirmatn for Arabic letters. English editorial content shown
+   on these locales keeps the English font and alignment. */
+@font-face{font-family:'Vazirmatn';src:url('../../../public/assets/Vazirmatn.ttf') format('truetype');font-weight:100 900;font-display:swap}
+html:is([lang=ru],[lang=zh-CN]) :is(body,button,input,select,summary,.numeric){font-family:'Ubuntu',system-ui,'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif}
+html[lang=ar] :is(body,button,input,select,summary,.numeric){font-family:'Ubuntu','Vazirmatn',Tahoma,sans-serif}
+.info-main[lang=en],.info-main[lang=en] :is(button,input,select,summary,.numeric){font-family:'Ubuntu',system-ui,sans-serif}
+html:is([lang=ru],[lang=zh-CN]) :is(td,th),.info-main[dir=ltr] :is(td,th){text-align:left}
+html:is([lang=ru],[lang=zh-CN]) .information-page .info-hero h1,.info-main[lang=en] .info-hero h1{font-size:58px;letter-spacing:-2px}
+@media(max-width:700px){html:is([lang=ru],[lang=zh-CN]) .information-page .info-hero h1,.info-main[lang=en] .info-hero h1{font-size:39px;letter-spacing:-1px;line-height:1.5}}

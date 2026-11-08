@@ -41,7 +41,7 @@ const OUT = 'output/playwright/clean-routing';
   check('markets page rendered', (await page.locator('.resources-toggle').count()) === 1);
 
   /* language switch: URL + direction swap together */
-  await page.locator('#language-toggle').click();
+  await page.locator('.of-language-select select').first().selectOption('en');
   await page.waitForTimeout(900);
   check('language switch URL', page.url() === `${BASE}/en/markets`, page.url());
   check('language switch direction ltr', await page.evaluate(() => document.documentElement.dir) === 'ltr');
@@ -87,6 +87,17 @@ const OUT = 'output/playwright/clean-routing';
   check('public page indexable', seo.robots === 'index,follow', String(seo.robots));
   check('hreflang fa/en/x-default present', ['fa', 'en', 'x-default'].every(l => seo.alternates.includes(l)), seo.alternates.join(','));
 
+  /* Added interface locales keep their direction while English editorial
+     content remains the canonical source until translations exist. */
+  await page.goto(`${BASE}/ar/faq`);
+  await page.waitForTimeout(800);
+  check('Arabic route keeps RTL direction', await page.evaluate(() => document.documentElement.dir) === 'rtl');
+  check('Arabic editorial canonical points to English', await page.evaluate(() => document.querySelector('link[rel="canonical"]')?.href) === `${BASE}/en/faq`);
+  await page.goto(`${BASE}/ar/home`);
+  await page.locator('.hero').waitFor();
+  await page.waitForTimeout(900);
+  check('Arabic landing keeps its interface direction after classic script boot', await page.evaluate(() => document.documentElement.lang === 'ar' && document.documentElement.dir === 'rtl'));
+
   /* private product routes are not indexable */
   await page.goto(`${BASE}/fa/prop/dashboard`);
   await page.waitForTimeout(800);
@@ -95,7 +106,7 @@ const OUT = 'output/playwright/clean-routing';
   /* root redirect into the locale gateway */
   await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(800);
-  check('root redirects to locale home', /\/(fa|en)\/home$/.test(page.url()), page.url());
+  check('root redirects to locale home', /\/(fa|en|ar|ru|zh-CN)\/home$/.test(page.url()), page.url());
 
   /* boot loader theme awareness (light) */
   await page.evaluate(() => { localStorage.setItem('of-theme-choice', 'light') });

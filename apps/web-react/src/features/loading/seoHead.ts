@@ -1,20 +1,21 @@
 import type { Location } from 'react-router-dom'
+import { contentLocale, normalizeLocale } from '../../i18n/locales'
 
 /* ---- route-driven SEO head ---------------------------------------------------
    Clean canonical URLs, locale alternates (hreflang) and indexability follow
    the browser-history route. Public translated pages are indexable with
    fa/en alternates; the authenticated product application (terminal,
    portfolio, purchases…) and legacy helper routes are noindex so search
-   engines never index private surfaces. The canonical domain policy is
-   self-canonical on the serving origin — both production domains keep
-   their own canonical, none is demoted. */
+   engines never index private surfaces. Added interface locales display
+   English editorial content until translated, so they canonicalize to the
+   English path. Each serving origin keeps its own canonical domain. */
 
-const PUBLIC_ROUTES = /^\/(?:fa|en)\/(?:home|challenges|markets|rulebook|transparency|faq|tools|learn|glossary|referral)(?:\/|$)/
+const PUBLIC_ROUTES = /^\/(?:fa|en|ar|ru|zh-CN)\/(?:home|challenges|markets|rulebook|transparency|faq|tools|learn|glossary|referral)(?:\/|$)/
 
 const isPublic = (pathname: string) => PUBLIC_ROUTES.test(pathname)
-const routeLocale = (pathname: string) => (/^\/en(\/|$)/.test(pathname) ? 'en' : 'fa')
+const routeLocale = (pathname: string) => normalizeLocale(pathname.split('/')[1], 'fa')
 const swapLocale = (pathname: string, locale: 'fa' | 'en') =>
-  pathname.replace(/^\/(?:fa|en)(\/|$)/, `/${locale}$1`)
+  pathname.replace(/^\/(?:fa|en|ar|ru|zh-CN)(\/|$)/, `/${locale}$1`)
 
 const upsertLink = (rel: string, href: string, hreflang?: string) => {
   const selector = hreflang ? `link[rel="${rel}"][hreflang="${hreflang}"]` : `link[rel="${rel}"]:not([hreflang])`
@@ -42,7 +43,8 @@ export function updateSeoHead(location: Location) {
   const { pathname } = location
   const origin = window.location.origin
   /* canonical: clean path, no query, no hash */
-  const canonical = origin + (pathname === '/' ? '/' : pathname)
+  const current = routeLocale(pathname)
+  const canonical = origin + (pathname === '/' ? '/' : swapLocale(pathname, contentLocale(current)))
   const public_ = isPublic(pathname)
   upsertMeta('robots', public_ ? 'index,follow' : 'noindex')
   if (!public_) {
@@ -51,7 +53,6 @@ export function updateSeoHead(location: Location) {
     return
   }
   upsertLink('canonical', canonical)
-  const current = routeLocale(pathname)
   const fa = swapLocale(pathname, 'fa')
   const en = swapLocale(pathname, 'en')
   upsertLink('alternate', origin + fa, 'fa')

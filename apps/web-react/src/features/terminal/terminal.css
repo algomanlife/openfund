@@ -1004,3 +1004,8 @@ html[data-theme="light"] .of-terminal :is(.of-negative,.negative) { color:#b33f3
 .of-challenge-events ul{list-style:none;margin:8px 0 0;padding:0;max-height:260px;overflow:auto}
 .of-challenge-events li{padding:3px 0;border-top:1px solid var(--line,#FFFFFF1E);font-size:.9em}
 .of-challenge-panel .of-dashboard-values div{display:flex;justify-content:space-between;gap:12px;padding:4px 0;border-bottom:1px solid var(--line,#FFFFFF1E)}
+
+/* Arabic shell: Latin digits from Ubuntu, Arabic letters from Vazirmatn. */
+@font-face { font-family: Vazirmatn; src: url("../../../public/assets/Vazirmatn.ttf") format("truetype"); font-weight: 100 900; font-display: swap; }
+.of-terminal:lang(ar) { font-family: Ubuntu, Vazirmatn, Tahoma, sans-serif; }
+.of-terminal-compact[dir="rtl"]:lang(ar) .of-terminal-more { font-family: Ubuntu, Vazirmatn, sans-serif; }

@@ -1,3 +1,4 @@
+import { currentLocale, dirOf, pick } from '../../i18n/locales'
 import { createPortal } from 'react-dom'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSession, apiFetch } from '../../session/useOpenfundSession'
@@ -70,8 +71,8 @@ const CHAIN_LABEL: Record<number, string> = { 11155111: 'Ethereum Sepolia', 4216
 export function CheckoutPanel(props: { planSlug: string, accountSize: number, onClose: () => void }) {
   const { planSlug, accountSize, onClose } = props
   const session = useSession()
-  const isFa = (window as any).ofLang !== 'en'
-  const t = (fa: string, en: string) => (isFa ? fa : en)
+  const locale = currentLocale(), isFa = locale === 'fa'
+  const t = (fa: string, en: string) => pick(locale, fa, en)
   const errText = (e: string) => isFa ? (ERR_FA[e] || e) : (ERR_EN[e] || e)
   const fmtMoney = (v: string | number) => '$' + Number(v).toLocaleString('en-US', { maximumFractionDigits: 2 })
 
@@ -192,7 +193,7 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
 
   return createPortal(
     <div className="of-checkout-overlay" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <dialog className="of-checkout" dir={isFa ? 'rtl' : 'ltr'} open onClose={onClose}>
+      <dialog className="of-checkout" dir={dirOf(locale)} open onClose={onClose}>
         <button className="dialog-close of-checkout-close" onClick={onClose} aria-label={t('بستن', 'Close')}>×</button>
         <h2>{t('خرید چالش', 'Challenge Checkout')}</h2>
 
@@ -280,11 +281,10 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
               <span>{t('شناسهٔ چالش', 'Challenge')}: <b dir="ltr">{String(result.challengeId).slice(0, 8)}…</b></span>
             </div>
             <div className="of-checkout-actions">
-              <a className="button" href={`/${isFa ? 'fa' : 'en'}/prop/purchases`} onClick={onClose}>
+              <a className="button" href={`/${locale}/prop/purchases`} onClick={onClose}>
                 {t('تاریخچهٔ خرید و فاکتورها', 'Purchases & invoices')}
               </a>
-              <a className="button" href={`/${isFa ? 'fa' : 'en'}/prop/dashboard`} onClick={onClose}>
-                {t('رفتن به داشبورد', 'Go to Dashboard')}
+              <a className="button" href={`/${locale}/prop/dashboard`} onClick={onClose}>                {t('رفتن به داشبورد', 'Go to Dashboard')}
               </a>
             </div>
           </div>

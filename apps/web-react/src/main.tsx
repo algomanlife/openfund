@@ -26,12 +26,13 @@ import { WalletProvider } from './wallet/WalletProvider'
 import { SessionProvider } from './session/useOpenfundSession'
 import AppFrame from './features/loading/AppFrame'
 import { startThemeSync } from './theme'
+import { isLocale, storedLocale, type AppLocale } from './i18n/locales'
 
 startThemeSync()
 
 /* ---- public website architecture ----------------------------------------
    /              → language-aware redirect into the Home product gateway
-   /:locale/home  → FA two-product gateway; EN existing Prop landing
+   /:locale/home  → FA two-product gateway; en/ar/ru/zh-CN the Prop landing
    /:locale/challenges → legacy landing experience (preserved, moved off "/")
    /:locale/markets → Markets directory (Gains Network authoritative data)
    /:locale/rulebook, /:locale/transparency → existing editorial pages
@@ -44,8 +45,8 @@ startThemeSync()
    complete migration mechanism (the backend additionally redirects the
    '/react' document prefix). */
 
-function preferredLocale(): 'fa' | 'en' {
-  try { return localStorage.getItem('of-language') === 'en' ? 'en' : 'fa' } catch { return 'fa' }
+function preferredLocale(): AppLocale {
+  return storedLocale()
 }
 
 /* '/' — the landing no longer lives at the root; the product gateway does.
@@ -81,15 +82,18 @@ function LegacyAnchor() {
 function TerminalRedirect({ page }: { page: string }) { return <Navigate to={`/${preferredLocale()}/prop/${page}`} replace /> }
 function ProductRedirect({ product }: { product: 'prop' | 'perpetual' }) { return <Navigate to={`/${preferredLocale()}/${product}/${useParams().page || 'dashboard'}`} replace /> }
 
+/* fa → the Persian two-product gateway; every other supported locale
+   follows the established English behaviour (the Prop landing). */
 function LocalizedHome() {
-  return useParams().locale === 'en' ? <Landing /> : <Home />
+  const { locale } = useParams()
+  return locale === 'fa' || !isLocale(locale) ? <Home /> : <Landing />
 }
 
 function ProductGate({ product }: { product: 'prop' | 'perpetual' }) {
   const { locale } = useParams()
   // Presentation availability does not verify nationality or residency.
-  return locale === 'en' && product === 'perpetual'
-    ? <Navigate to="/en/prop/dashboard" replace />
+  return isLocale(locale) && locale !== 'fa' && product === 'perpetual'
+    ? <Navigate to={`/${locale}/prop/dashboard`} replace />
     : <TerminalShell product={product} />
 }
 
@@ -145,7 +149,6 @@ const router = createBrowserRouter([
      scroll restoration. */
   { element: <AppFrame />, children: routes }
 ])
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <WalletProvider>
