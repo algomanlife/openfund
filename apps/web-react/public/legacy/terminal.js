@@ -261,6 +261,11 @@ const EN = {
   'boot.retry': 'Retry'
 };
 Object.assign(I18N.en, EN);
+/* added interface locales (legacy/terminal-locales.js): every key falls
+   back to English, never to Persian */
+const ADDED_LOCALES = window.OpenfundTerminalLocales || {};
+for (const __l of ['ar', 'ru', 'zh-CN']) I18N[__l] = Object.assign({}, EN, ADDED_LOCALES[__l] || {});
+const RTL_LOCALES = ['fa', 'ar'];
 /* CMS overrides keep the shape of the built-in entry. Directus stores every
    translation as text, so list entries (e.g. the position-details labels)
    arrive as a JSON string; indexing that string produced one-character
@@ -274,7 +279,7 @@ function cmsValue(builtIn, value){
   return Array.isArray(list) && list.length === builtIn.length && list.every(x => typeof x === 'string' && x) ? list : undefined;
 }
 if(window.ofCmsTerminal){for(var __k in window.ofCmsTerminal){var __v=window.ofCmsTerminal[__k];if(__v&&typeof __v==='object'){for(var __l in I18N){if(I18N[__l][__k]!==undefined){var __c=cmsValue(I18N[__l][__k],__v[__l]);if(__c!==undefined)I18N[__l][__k]=__c;}}}}}
-window.ofLang = window.ofLang || 'fa';
+window.ofLang = I18N[window.ofLang] ? window.ofLang : 'fa';
 function t(key){
   const v = (I18N[window.ofLang] && I18N[window.ofLang][key]);
   return v === undefined ? key : v;
@@ -286,8 +291,8 @@ function applyStaticI18n(){
      workspace is pinned LTR in CSS (.workspace{direction:ltr}) so the trade
      panel is always on the right and the chart stays in its default state. */
   document.documentElement.setAttribute('lang', window.ofLang);
-  document.documentElement.setAttribute('dir', window.ofLang === 'fa' ? 'rtl' : 'ltr');
-  document.title = window.ofLang === 'fa' ? 'Openfund Terminal — معامله' : 'Openfund Terminal — Trade';
+  document.documentElement.setAttribute('dir', RTL_LOCALES.includes(window.ofLang) ? 'rtl' : 'ltr');
+  document.title = 'Openfund Terminal — ' + t('nav.trade');
   $('lang-label').textContent = window.ofLang === 'fa' ? 'EN' : 'FA';
 }
 function setLang(lang){
@@ -302,6 +307,8 @@ function setLang(lang){
   renderStatus();
 }
 $('language-toggle').addEventListener('click', () => setLang(window.ofLang === 'fa' ? 'en' : 'fa'));
+/* the React shell applies its route locale through this hook */
+window.__ofSetLang = lang => { if (I18N[lang] && lang !== window.ofLang) setLang(lang); };
 
 /* ============================================================
    THEME — dark (default) / light, synced with Vela

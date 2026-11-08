@@ -1,3 +1,4 @@
+import { currentLocale, pick } from '../i18n/locales'
 import { useEffect, useState, useRef } from 'react'
 import { ConnectButton, RainbowKitProvider, darkTheme, lightTheme } from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'   /* REQUIRED: without it the modal renders unstyled (position:static at the end of <body>, breaking the page layout) */
@@ -47,8 +48,9 @@ export function RainbowConnect() {
     addEventListener('of-language', h)
     return () => removeEventListener('of-language', h)
   }, [])
-  const isFa = (window as any).ofLang !== 'en'
-  const connectLabel = isConnecting ? (isFa ? 'در حال اتصال…' : 'Connecting…') : isFa ? 'اتصال کیف پول' : 'Connect Wallet'
+  const locale = currentLocale(), isFa = locale === 'fa'
+  const t = (fa: string, en: string) => pick(locale, fa, en)
+  const connectLabel = isConnecting ? (t('در حال اتصال…', 'Connecting…')) : t('اتصال کیف پول', 'Connect Wallet')
 
   /* ---- Persian UI inside the RainbowKit modal (no built-in fa locale) ----
      RainbowKit 2 only ships fixed locale strings, so we translate the modal
@@ -184,10 +186,10 @@ export function RainbowConnect() {
               await connectAsync({ connector })
               return
             }
-            setConnectError(isFa ? 'کیف پول سازگار پیدا نشد. افزونهٔ کیف پول را فعال کنید.' : 'No compatible wallet detected. Enable your wallet extension.')
+            setConnectError(t('کیف پول سازگار پیدا نشد. افزونهٔ کیف پول را فعال کنید.', 'No compatible wallet detected. Enable your wallet extension.'))
             openConnectModal()
           } catch (error: any) {
-            setConnectError((isFa ? 'اتصال کیف پول ناموفق بود. ' : 'Wallet connection failed. ') + (error?.shortMessage || error?.message || ''))
+            setConnectError((t('اتصال کیف پول ناموفق بود. ', 'Wallet connection failed. ')) + (error?.shortMessage || error?.message || ''))
           }
         }
         ;(window as any).__ofOpenConnect = !connected ? connectWallet : session.status === 'authenticated' ? () => setProfileOpen(true) : () => void session.signIn()
@@ -220,34 +222,34 @@ export function RainbowConnect() {
                 </summary>
                 <div className="rk-account-controls">
                 {/* ONE wallet chip — network dot + address + balance (opens the account modal) */}
-                <button onClick={openAccountModal} type='button' className='rk-chip' title={isFa ? 'کیف پول و شبکه' : 'Wallet & network'}>
+                <button onClick={openAccountModal} type='button' className='rk-chip' title={t('کیف پول و شبکه', 'Wallet & network')}>
                   <i className={correctNetwork ? 'rk-dot rk-dot-live' : 'rk-dot rk-dot-info'} />
                   <span dir='ltr'>{fmtAddr(address)}</span>
                   {balance ? <span dir='ltr' className='rk-chip-bal'>{fmtBal()}</span> : null}
                 </button>
                 {!correctNetwork && <button type="button" className="rk-chip" onClick={openChainModal}>
-                  {isFa ? 'شبکه: ' : 'Network: '}{targetChain.name}
+                  {t('شبکه: ', 'Network: ')}{targetChain.name}
                 </button>}
                 {/* ONE action chip — identical template, mint accent */}
                 {session.status === 'authenticated' ? (
-                  <button onClick={() => setProfileOpen(true)} type='button' className='rk-chip rk-chip-action' title={isFa ? 'حساب اوپن‌فاند' : 'Openfund account'}>
+                  <button onClick={() => setProfileOpen(true)} type='button' className='rk-chip rk-chip-action' title={t('حساب اوپن‌فاند', 'Openfund account')}>
                     <i className='rk-dot rk-dot-live' />
-                    {isFa ? 'حساب من' : 'Account'}
+                    {t('حساب من', 'Account')}
                   </button>
                 ) : session.status === 'signing' ? (
                   <button type='button' className='rk-chip rk-chip-action' disabled>
-                    {isFa ? 'در حال امضا…' : 'Signing…'}
+                    {t('در حال امضا…', 'Signing…')}
                   </button>
                 ) : session.status === 'suspended' ? (
                   <span className='rk-chip rk-chip-suspended'>
-                    {isFa ? 'حساب معلق' : 'Suspended'}
+                    {t('حساب معلق', 'Suspended')}
                   </span>
                 ) : (
                   <button onClick={() => void session.signIn()} type='button' className='rk-chip rk-chip-action'>
-                    {isFa ? 'ورود به اوپن‌فاند' : 'Sign in'}
+                    {t('ورود به اوپن‌فاند', 'Sign in')}
                   </button>
                 )}
-                <span className="rk-network-status">{chain?.name || (isFa ? 'شبکه ناشناخته' : 'Unknown network')}</span>
+                <span className="rk-network-status">{chain?.name || (t('شبکه ناشناخته', 'Unknown network'))}</span>
                 </div>
               </details>
             )}
@@ -256,7 +258,7 @@ export function RainbowConnect() {
       }}
       </ConnectButton.Custom>
       {connectError && <span role='alert' className='of-session-error'>{connectError}</span>}
-      {session.error && <span role="alert" className="of-session-error">{isFa ? 'ورود انجام نشد. دوباره تلاش کنید. ' : 'Sign-in failed. Please retry. '}{session.error}</span>}
+      {session.error && <span role="alert" className="of-session-error">{t('ورود انجام نشد. دوباره تلاش کنید. ', 'Sign-in failed. Please retry. ')}{session.error}</span>}
       {profileOpen && session.user && (
         <ProfilePanel
           user={session.user}

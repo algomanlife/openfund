@@ -10,6 +10,8 @@ import './information.css'
 import TelegramCommunity from '../community/TelegramCommunity'
 import { bindNavigation, renderNavigation, navigationClick, navigationKeyDown } from './navigation'
 import { chooseTheme, currentTheme } from '../../theme'
+import LanguageSelect from '../../i18n/LanguageSelect'
+import { contentLocale, dirOf, fallbackNotice, isLocale, normalizeLocale, pick, pickRecord, switchLocalePath, type AppLocale } from '../../i18n/locales'
 
 const header = landingBody.match(/<header\b[^>]*>[\s\S]*?<\/header>/)![0]
 const footer = landingBody.match(/<footer[\s\S]*?<\/footer>/)![0]
@@ -29,11 +31,12 @@ const fallbackTranslations: Record<string, string> = {
 /** Reuses the landing's source markup and public translation pipeline, without
  * loading its page-wide legacy scripts into React-owned editorial content.
  *  Exported so gateway-style pages (Home) can mount the shared header alone. */
-export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'header' | 'footer'; nav?: boolean }) {
+export function Chrome({ locale, part, nav = true }: { locale: AppLocale; part: 'header' | 'footer'; nav?: boolean }) {
   const [dictionary, setDictionary] = useState<Record<string, string>>(fallbackTranslations)
   const [faDictionary, setFaDictionary] = useState<Record<string, string>>({})
   const [communityHost, setCommunityHost] = useState<HTMLElement | null>(null)
   const [walletHost, setWalletHost] = useState<HTMLElement | null>(null)
+  const [languageHost, setLanguageHost] = useState<HTMLElement | null>(null)
   const [navItems, setNavItems] = useState<CmsNavItem[] | null>(null)
   const [footerLinks, setFooterLinks] = useState<CmsFooterLink[] | null>(null)
   const host = useRef<HTMLDivElement>(null)
@@ -54,9 +57,12 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
   const markup = useMemo(() => {
     const template = document.createElement('template')
     template.innerHTML = part === 'header' ? header : footer
+    /* fa: CMS Persian overrides; en: the fa→en dictionary; added locales
+       translate the English text, falling back to English */
     const translate = (source: string) => {
-      const value = (locale === 'en' ? dictionary : faDictionary)[source.trim()]
-      return value ? source.replace(source.trim(), value) : source
+      const key = source.trim(), en = dictionary[key]
+      const value = locale === 'fa' ? faDictionary[key] : en && (locale === 'en' ? en : pick(locale, key, en))
+      return value ? source.replace(key, value) : source
     }
     const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_TEXT)
     let node: Node | null
@@ -68,7 +74,7 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
       const page = el.dataset.infoPage as InfoPage | undefined
       if (page && labels[page]) {
         el.setAttribute('href', `#/${locale}/${page}`)
-        el.textContent = labels[page][locale]
+        el.textContent = pickRecord(locale, labels[page])
         if (location.pathname.endsWith(`/${page}`)) el.setAttribute('aria-current', 'page')
       } else if (el.tagName === 'A') {
         const href = el.getAttribute('href') || ''
@@ -87,23 +93,22 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
       template.content.querySelector('#navigation')?.remove()
       template.content.querySelector('.menu')?.remove()
     }
-    const language = template.content.querySelector('#language-toggle span')
-    if (language) language.textContent = locale === 'fa' ? 'EN' : 'فا'
+    /* the five-language selector replaces the legacy two-way toggle */
+    const toggle = template.content.querySelector('#language-toggle')
+    if (toggle) { const slot = document.createElement('span'); slot.id = 'language-slot'; slot.className = 'language-slot'; toggle.replaceWith(slot) }
     const theme = template.content.querySelector('#theme-toggle')
     if (theme) theme.textContent = document.documentElement.dataset.theme === 'light' ? '◑' : '◐'
     return template.innerHTML
   }, [locale, part, nav, dictionary, faDictionary, location.pathname, navItems, footerLinks])
 
   useEffect(() => { if (part === 'header' && host.current) return bindNavigation(host.current) }, [markup, part])
-  useEffect(() => { setWalletHost(host.current?.querySelector<HTMLElement>('#wallet-root') || null); setCommunityHost(host.current?.querySelector<HTMLElement>('[data-community-slot]') || null) }, [markup])
+  useEffect(() => { setWalletHost(host.current?.querySelector<HTMLElement>('#wallet-root') || null); setLanguageHost(host.current?.querySelector<HTMLElement>('#language-slot') || null); setCommunityHost(host.current?.querySelector<HTMLElement>('[data-community-slot]') || null) }, [markup])
 
   return <div ref={host} className="info-chrome" onClick={e => {
     const target = (e.target as HTMLElement).closest<HTMLElement>('button, a')
     if (!target) return
     if (navigationClick(e.nativeEvent, host.current!)) return
-    if (target.id === 'language-toggle') {
-      navigate(location.pathname.replace(`/${locale}/`, `/${locale === 'fa' ? 'en' : 'fa'}/`) + location.search)
-    } else if (target.id === 'theme-toggle') {
+    if (target.id === 'theme-toggle') {
       const next = currentTheme() === 'light' ? 'dark' : 'light'
       chooseTheme(next)
       target.textContent = next === 'dark' ? '◐' : '◑'
@@ -129,25 +134,33 @@ export function Chrome({ locale, part, nav = true }: { locale: Locale; part: 'he
   }}>
     <div dangerouslySetInnerHTML={{ __html: markup }} />
     {part === 'header' && walletHost && createPortal(<RainbowConnect />, walletHost)}
+    {part === 'header' && languageHost && createPortal(<LanguageSelect locale={locale} onChange={next => navigate(switchLocalePath(location.pathname, next) + location.search)} />, languageHost)}
     {part === 'footer' && communityHost && createPortal(<TelegramCommunity locale={locale} />, communityHost)}
   </div>
 }
 
+/** Editorial content locale (fa/en). The added interface locales read the
+ *  English editorial version; see useUiLocale for the interface language. */
 export function useInformationLocale(): Locale {
-  return useParams().locale === 'en' ? 'en' : 'fa'
+  return contentLocale(normalizeLocale(useParams().locale, 'fa'))
+}
+export function useUiLocale(): AppLocale {
+  return normalizeLocale(useParams().locale, 'fa')
 }
 
 export default function InformationShell({ page, description, footer = true, nav = true, title, children }: {
   page: InfoPage; description: string; footer?: boolean; nav?: boolean; title?: string; children: ReactNode
 }) {
   const { locale: routeLocale } = useParams()
-  const locale = useInformationLocale()
+  const locale = useUiLocale()
+  const editorial = contentLocale(locale)
+  const notice = fallbackNotice(locale)
   useEffect(() => {
     const previousTitle = document.title
     document.documentElement.lang = locale
-    document.documentElement.dir = locale === 'fa' ? 'rtl' : 'ltr'
+    document.documentElement.dir = dirOf(locale)
     // Existing wallet/session controls subscribe to this landing locale contract.
-    const runtime = window as Window & { ofLang?: Locale; __ofLegacyLandingLoaded?: boolean; __ofLegacyTerminalLoaded?: boolean }
+    const runtime = window as Window & { ofLang?: AppLocale; __ofLegacyLandingLoaded?: boolean; __ofLegacyTerminalLoaded?: boolean }
     runtime.ofLang = locale
     // Classic pages reload on exit. During that short teardown window their
     // locale listeners still reference removed DOM; the wallet mounts fresh.
@@ -155,14 +168,15 @@ export default function InformationShell({ page, description, footer = true, nav
       dispatchEvent(new CustomEvent('of-language'))
     }
     try { localStorage.setItem('of-language', locale) } catch { /* Storage is optional. */ }
-    document.title = title || `${labels[page][locale]} | Openfund`
+    document.title = title || `${pickRecord(locale, labels[page])} | Openfund`
     const tags: HTMLElement[] = []
     const meta = document.createElement('meta')
     meta.name = 'description'; meta.content = description
     tags.push(meta)
     const url = (lang: Locale) => new URL(`${base}#/${lang}/${page}`, window.location.origin).href
     const canonical = document.createElement('link')
-    canonical.rel = 'canonical'; canonical.href = url(locale)
+    /* added locales display the English editorial page: it stays canonical */
+    canonical.rel = 'canonical'; canonical.href = url(editorial)
     tags.push(canonical)
     /* social sharing metadata mirrors the CMS-edited title/description */
     const og = (property: string, content: string) => {
@@ -172,7 +186,7 @@ export default function InformationShell({ page, description, footer = true, nav
     }
     og('og:title', document.title)
     og('og:description', description)
-    og('og:url', url(locale))
+    og('og:url', url(editorial))
     for (const lang of ['en', 'fa', 'x-default']) {
       const link = document.createElement('link')
       link.rel = 'alternate'; link.hreflang = lang; link.href = url(lang === 'en' ? 'en' : 'fa')
@@ -180,15 +194,19 @@ export default function InformationShell({ page, description, footer = true, nav
     }
     tags.forEach(tag => document.head.appendChild(tag))
     return () => { tags.forEach(tag => tag.remove()); document.title = previousTitle }
-  }, [locale, page, description, title])
+  }, [locale, editorial, page, description, title])
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }) }, [page])
-  if (routeLocale !== 'en' && routeLocale !== 'fa') return <Navigate to={`/fa/${page}`} replace />
+  if (!isLocale(routeLocale)) return <Navigate to={`/fa/${page}`} replace />
   return <div className={`information-page${footer ? '' : ' chrome-only'}`}>
     <link rel="stylesheet" href={`${base}legacy/style.css`} precedence="openfund" />
     <link rel="stylesheet" href={`${base}legacy/wallet.css`} precedence="openfund" />
-    <a className="skip" href="#main">{labels.skip[locale]}</a>
+    <a className="skip" href="#main">{pickRecord(locale, labels.skip)}</a>
     <Chrome locale={locale} part="header" nav={nav} />
-    <main id="main" className="info-main" tabIndex={-1}>{children}</main>
+    {/* the added locales show the English editorial version, clearly labelled */}
+    <main id="main" className="info-main" tabIndex={-1} lang={notice ? editorial : undefined} dir={notice ? 'ltr' : undefined}>
+      {notice && <p className="container of-locale-fallback" role="note" lang={locale} dir={dirOf(locale)}>{notice}</p>}
+      {children}
+    </main>
     {footer && <Chrome locale={locale} part="footer" />}
   </div>
 }

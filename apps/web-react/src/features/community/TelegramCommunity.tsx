@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import type { Locale } from '../information/content'
+import { pick, type AppLocale } from '../../i18n/locales'
+type Locale = AppLocale
 import './community.css'
 import { publicRuntimeConfig } from '../../config/runtime'
 
@@ -53,6 +54,13 @@ const copy = {
   en: { label: 'Traders talk on', unavailable: 'Coming Soon', destination: 'Openfund community link has not been announced', group: 'Openfund trader communities' },
 }
 
+/* fa/en copy above; the added locales translate the English source */
+function communityCopy(locale: Locale) {
+  const fa = copy.fa, en = copy.en
+  return { label: pick(locale, fa.label, en.label), unavailable: pick(locale, fa.unavailable, en.unavailable),
+    destination: pick(locale, fa.destination, en.destination), group: pick(locale, fa.group, en.group) }
+}
+
 export function CommunityButton({ locale, provider }: { locale: Locale; provider: typeof communityProviders[number] }) {
   const [light, setLight] = useState(() => typeof document !== 'undefined' && document.documentElement.dataset.theme === 'light')
   useEffect(() => {
@@ -63,8 +71,8 @@ export function CommunityButton({ locale, provider }: { locale: Locale; provider
     observer.observe(root, { attributes: true, attributeFilter: ['data-theme'] })
     return () => observer.disconnect()
   }, [])
-  const t = copy[locale]
-  const text = provider.labels[locale]
+  const t = communityCopy(locale)
+  const text = pick(locale, provider.labels.fa, provider.labels.en)
   const label = `${text} — ${provider.name}${provider.url ? '' : ` — ${t.destination}`}`
   const icon = provider.id === 'instagram' && !light ? 'instagram-logo-white.svg' : provider.icon
   const contents = <>
@@ -80,7 +88,7 @@ export function CommunityButton({ locale, provider }: { locale: Locale; provider
 
 // Existing public layouts import this default; every slot uses the shared provider registry.
 export default function TelegramCommunity({ locale }: { locale: Locale }) {
-  return <div className="community-group" data-locale-owned="react" role="group" aria-label={copy[locale].group}>
+  return <div className="community-group" data-locale-owned="react" role="group" aria-label={communityCopy(locale).group}>
     {communityProviders.map(provider => <CommunityButton key={provider.id} locale={locale} provider={provider} />)}
   </div>
 }

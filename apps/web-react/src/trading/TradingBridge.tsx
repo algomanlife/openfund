@@ -1,3 +1,4 @@
+import { currentLocale, pick } from '../i18n/locales'
 import { useEffect, useRef } from 'react'
 import { useSession, backendUrl } from '../session/useOpenfundSession'
 
@@ -34,8 +35,7 @@ export function TradingBridge({ pricing, accountId }: { pricing?: Record<string,
     const changed = () => window.dispatchEvent(new CustomEvent('of-trading-update'))
     const n = (v: unknown) => v == null ? null : Number(v)
     let state = { account: null, positions: [], orders: [], history: [] }
-    const isFa = () => (window as any).ofLang !== 'en'
-    const L = (fa: string, en: string) => (isFa() ? fa : en)
+    const L = (fa: string, en: string) => pick(currentLocale(), fa, en)
     const scopedPath = (path: string) => path + (accountId ? `${path.includes('?') ? '&' : '?'}account=${encodeURIComponent(accountId)}` : '')
 
     const fmtAcct = (a: any) => a && {

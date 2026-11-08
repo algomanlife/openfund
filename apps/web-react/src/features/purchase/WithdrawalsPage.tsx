@@ -1,3 +1,4 @@
+import { dirOf, normalizeLocale, pick } from '../../i18n/locales'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { apiFetch, useSession } from '../../session/useOpenfundSession'
@@ -25,8 +26,8 @@ const STATUS_CLASS: Record<string, string> = {
 
 export default function WithdrawalsPage() {
   const { locale: routeLocale } = useParams()
-  const isFa = routeLocale !== 'en'
-  const t = (fa: string, en: string) => (isFa ? fa : en)
+  const locale = normalizeLocale(routeLocale, 'fa'), isFa = locale === 'fa'
+  const t = (fa: string, en: string) => pick(locale, fa, en)
   const session = useSession()
   const [rows, setRows] = useState<WithdrawalRow[] | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -69,7 +70,7 @@ export default function WithdrawalsPage() {
     } finally { setBusy(false) }
   }
 
-  const fmtDate = (d?: string | null) => (d ? new Date(d).toLocaleDateString(isFa ? 'fa-IR' : 'en-US') : '—')
+  const fmtDate = (d?: string | null) => (d ? new Date(d).toLocaleDateString(t('fa-IR', 'en-US')) : '—')
   const fmtMoney = (v: string | number) => '$' + Number(v).toLocaleString('en-US', { maximumFractionDigits: 2 })
 
   if (session.status !== 'authenticated') {
@@ -94,7 +95,7 @@ export default function WithdrawalsPage() {
         'Withdrawal requests are processed after review; automatic payout is not active in this release.')}
       </p>
 
-      <div className="of-withdraw-form" dir={isFa ? 'rtl' : 'ltr'}>
+      <div className="of-withdraw-form" dir={dirOf(locale)}>
         <label>
           <span>{t('مبلغ (دلار)', 'Amount (USD)')}</span>
           <input dir="ltr" inputMode="decimal" placeholder="0.00" value={amount} onChange={e => setAmount(e.target.value)} />
@@ -109,7 +110,7 @@ export default function WithdrawalsPage() {
 
       {rows && rows.length === 0 && <p className="of-empty">{t('هنوز درخواستی نداری.', 'No withdrawal requests yet.')}</p>}
       {rows && rows.length > 0 && (
-        <table className="of-purchase-table" dir={isFa ? 'rtl' : 'ltr'}>
+        <table className="of-purchase-table" dir={dirOf(locale)}>
           <thead>
             <tr>
               <th>{t('مبلغ', 'Amount')}</th>

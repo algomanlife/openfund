@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSession, backendUrl } from "../../session/useOpenfundSession";
 export type Product = "prop" | "perpetual";
-export type Locale = "fa" | "en";
+import type { AppLocale } from "../../i18n/locales";
+export type Locale = AppLocale;
 export const primary = {
   prop: [
     ["dashboard", "داشبورد", "Dashboard"],

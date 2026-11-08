@@ -10,7 +10,13 @@
 'use strict';
 
 /* ---------- utilities ---------- */
-const L = (fa, en) => (typeof window !== 'undefined' && window.ofLang === 'fa') ? fa : en;
+/* fa/en pair; the added locales translate the English text (legacy/terminal-locales.js) */
+const L = (fa, en) => {
+  const lang = typeof window !== 'undefined' ? window.ofLang : 'en';
+  if (lang === 'fa') return fa;
+  const extra = typeof window !== 'undefined' && window.OpenfundTerminalLocales && window.OpenfundTerminalLocales.L[lang];
+  return (extra && extra[en]) || en;
+};
 const fmt = {
   num(v, d){ if(v==null || !Number.isFinite(Number(v)))return '—';return Number(v).toLocaleString('en-US', {minimumFractionDigits: d, maximumFractionDigits: d}); },
   price(v, d){ return fmt.num(v, d); },

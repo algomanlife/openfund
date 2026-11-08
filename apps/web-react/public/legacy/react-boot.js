@@ -13,7 +13,7 @@
     var island = document.getElementById('of-boot-data');
     if (island) data = JSON.parse(island.textContent || '{}');
   } catch (e) { /* data stays empty; the terminal renders with defaults */ }
-  global.ofLang = data.locale === 'fa' ? 'fa' : 'en';
+  global.ofLang = ['fa', 'en', 'ar', 'ru', 'zh-CN'].indexOf(data.locale) >= 0 ? data.locale : 'en';
   global.ofCmsTerminal = data.translations || {};
   global.__ofTerminalConfig = { product: data.product === 'perpetual' ? 'perpetual' : 'prop', syntheticMarketData: false };
 
@@ -22,7 +22,7 @@
     readOnly: true, canTrade: false, serverMode: true, status: 'loading',
     state: { positions: [], orders: [], history: [], fills: [], funding: [], notifications: [] },
     getAccount: function () { return null; },
-    validate: function () { return [global.ofLang === 'fa' ? 'حساب در دسترس نیست.' : 'Account unavailable.']; },
+    validate: function () { var x = global.OpenfundTerminalLocales; return [global.ofLang === 'fa' ? 'حساب در دسترس نیست.' : (x && x.L[global.ofLang] && x.L[global.ofLang]['Account unavailable.']) || 'Account unavailable.']; },
     liqPrice: function () { return null; },
     subscribe: function () { return function () {}; },
     checkTriggers: function () {},
@@ -52,10 +52,7 @@
       if (global.__openfundApplyTheme) global.__openfundApplyTheme(e.data.theme);
       else document.documentElement.dataset.theme = e.data.theme;
     }
-    if (global.ofLang !== e.data.locale) {
-      var langToggle = document.getElementById('language-toggle');
-      langToggle && langToggle.click();
-    }
+    if (global.ofLang !== e.data.locale && global.__ofSetLang) global.__ofSetLang(e.data.locale);
   });
   var retry = document.getElementById('account-retry');
   if (retry) retry.onclick = function () { global.parent.dispatchEvent(new global.parent.Event('of-refresh-trading')); };

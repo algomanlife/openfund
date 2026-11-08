@@ -1,6 +1,8 @@
 import brandbookUrl from '../../../../../brand/brandbook/Openfund-brandbook.zip?url'
 import type { CmsNavItem, CmsFooterLink } from '../../cms/client'
-import { labels, text, type Locale } from './content'
+import { labels, text } from './content'
+import { pickRecord, type AppLocale } from '../../i18n/locales'
+type Locale = AppLocale
 
 const primary = ['challenges', 'markets', 'rulebook', 'transparency'] as const
 const resources = ['faq', 'learn', 'tools', 'referral', 'team'] as const
@@ -21,7 +23,7 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
   const link = (route: string, label = cmsLabels.get(route) || navigationLabels[route as keyof typeof navigationLabels]) => {
     const a = document.createElement('a')
     a.href = navigationHref(route, locale)
-    a.textContent = label[locale]
+    a.textContent = pickRecord(locale, label)
     const section = route === 'glossary' ? 'learn/glossary' : route
     if (pathname === `/${locale}/${section}`) a.setAttribute('aria-current', 'page')
     else if (pathname.startsWith(`/${locale}/${section}/`)) a.setAttribute('data-active-section', 'true')
@@ -37,14 +39,14 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
     trigger.className = 'resources-toggle'
     trigger.setAttribute('aria-expanded', 'false')
     trigger.setAttribute('aria-controls', 'website-resources')
-    trigger.append(navigationLabels.resources[locale] + ' ')
+    trigger.append(pickRecord(locale, navigationLabels.resources) + ' ')
     const chevron = document.createElement('span')
     chevron.className = 'chevron'; chevron.setAttribute('aria-hidden', 'true'); chevron.textContent = '⌄'
     trigger.append(chevron)
     const dropdown = document.createElement('div')
     dropdown.className = 'nav-dropdown'; dropdown.id = 'website-resources'
     const heading = document.createElement('span')
-    heading.textContent = labels.resources[locale]
+    heading.textContent = pickRecord(locale, labels.resources)
     dropdown.append(heading, ...resources.flatMap(route => route === 'learn' ? [link(route), link('glossary')] : [link(route)]))
     group.append(trigger, dropdown); nav.append(group)
   }

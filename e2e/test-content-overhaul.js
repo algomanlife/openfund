@@ -10,6 +10,15 @@ fs.mkdirSync(SHOTS, { recursive: true })
 
 const widths = [375, 768, 1024, 1440]
 
+
+/* Language switching uses the five-language selector (fa, en, ar, ru, zh-CN);
+   toggleLanguage keeps the previous fa <-> en intent of these steps. */
+async function toggleLanguage(page) {
+  const select = page.locator('.of-language-select select').first();
+  await select.waitFor({ state: 'attached' });
+  await select.selectOption((await select.inputValue()) === 'fa' ? 'en' : 'fa');
+}
+
 ;(async () => {
   const browser = await chromium.launch({
     executablePath: `${process.env.HOME}/Library/Caches/ms-playwright/chromium-1248/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing`,
@@ -140,7 +149,7 @@ const widths = [375, 768, 1024, 1440]
   /* ============ LANDING (en) ============ */
   await page.click('[data-preset="standard"]')
   await page.waitForTimeout(300)
-  await page.click('#language-toggle')
+  await toggleLanguage(page)
   await page.waitForTimeout(1600)
   const en = await page.evaluate(() => ({
     url: location.hash,
@@ -188,7 +197,7 @@ const widths = [375, 768, 1024, 1440]
   R('rulebook fa: 22 CMS sections + catalog table', rb.sections === 23, String(rb.sections))
   await page.screenshot({ path: `${SHOTS}/rulebook-fa-1440.png` })
 
-  await page.click('#language-toggle')
+  await toggleLanguage(page)
   await page.waitForTimeout(1000)
   const rbEn = await page.evaluate(() => {
     const table = [...document.querySelectorAll('.rule-section table')].find(t => t.querySelector('caption')?.textContent.toLowerCase().includes('challenge catalog'))

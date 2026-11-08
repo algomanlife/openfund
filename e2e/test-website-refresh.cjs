@@ -9,6 +9,15 @@ const capture = process.env.REFRESH_CAPTURE === '1';
 const out = path.resolve('output/playwright/website-refresh');
 fs.mkdirSync(out, { recursive: true });
 const checks = [], captures = [];
+
+/* Language switching uses the five-language selector (fa, en, ar, ru, zh-CN);
+   toggleLanguage keeps the previous fa <-> en intent of these steps. */
+async function toggleLanguage(page) {
+  const select = page.locator('.of-language-select select').first();
+  await select.waitFor({ state: 'attached' });
+  await select.selectOption((await select.inputValue()) === 'fa' ? 'en' : 'fa');
+}
+
 function check(name, value) { assert.ok(value, name); checks.push(name); }
 // These synthetic destinations test validation only; none is asserted to belong to Openfund.
 function configuredCommunityChecks() {
@@ -255,12 +264,12 @@ async function realThemeClicks(browser) {
       await localePage.waitForFunction(() => window.__websiteLocaleReady && typeof window.ofSetLanguage === 'function'
         && document.documentElement.lang === 'fa' && window.ofLang === 'fa'
         && document.querySelector('.hero .telegram-community')?.textContent.includes('جامعه معامله‌گران'));
-      await localePage.locator('#language-toggle').click();
+      await toggleLanguage(localePage);
       await localePage.waitForFunction(() => document.documentElement.lang === 'en' && window.ofLang === 'en' && document.querySelector('.hero .telegram-community').textContent.includes('Traders talk on'));
       check('language toggle updates Instagram portal', await localePage.locator('.hero .instagram-community .community-copy > span').innerText() === 'News, Education & Entertainment');
       check('language toggle updates Discord portal', (await localePage.locator('.hero .discord-community').innerText()).includes('Traders talk on'));
       check('language toggle updates React portal', (await localePage.locator('.hero .telegram-community').innerText()).includes('Traders talk on'));
-      await localePage.locator('#language-toggle').click();
+      await toggleLanguage(localePage);
       await localePage.waitForFunction(() => document.documentElement.lang === 'fa' && window.ofLang === 'fa' && document.querySelector('.hero .telegram-community').textContent.includes('جامعه معامله‌گران'));
       check('language roundtrip restores Instagram', await localePage.locator('.hero .instagram-community .community-copy > span').innerText() === 'اخبار، آموزش و سرگرمی');
       check('language roundtrip restores portal', (await localePage.locator('.hero .telegram-community').innerText()).includes('جامعه معامله‌گران'));

@@ -13,6 +13,15 @@ function loadLibrary() {
   new Function('require','module','exports',bundle.outputFiles[0].text)(appRequire,mod,mod.exports);
   return mod.exports.bundledLibrary;
 }
+
+/* Language switching uses the five-language selector (fa, en, ar, ru, zh-CN);
+   toggleLanguage keeps the previous fa <-> en intent of these steps. */
+async function toggleLanguage(page) {
+  const select = page.locator('.of-language-select select').first();
+  await select.waitFor({ state: 'attached' });
+  await select.selectOption((await select.inputValue()) === 'fa' ? 'en' : 'fa');
+}
+
 async function desktop(page) {
  const results = [];
  const assert = (condition, message) => { if (!condition) throw new Error(message); };
@@ -80,7 +89,7 @@ async function interactions(page) {
    await page.locator('.resources-toggle').hover();
    await page.locator('.nav-dropdown a[href$="/learn"]').hover();
    check(await page.locator('.nav-dropdown a[href$="/learn"]').isVisible(), 'hover bridge');
-   await page.locator('#language-toggle').click();
+   await toggleLanguage(page);
    const other=locale==='en'?'fa':'en';
    await page.waitForURL(base+'#/'+other+'/'+route);
    await page.waitForFunction(dir=>document.documentElement.dir===dir,other==='fa'?'rtl':'ltr');
@@ -147,7 +156,7 @@ async function touch(page) {
       await touchPage.waitForURL(BASE+'#/'+locale+'/learn');
       await touchPage.goto(BASE+'#/'+locale+'/challenges?section=team');
       await touchPage.waitForTimeout(2200);
-      await touchPage.locator('#language-toggle').tap();
+      await toggleLanguage(touchPage);
       const other=locale==='en'?'fa':'en';
       await touchPage.waitForURL(BASE+'#/'+other+'/challenges?section=team');
       records.push({locale,desktopTouch:true,enterSpace:true,localizedSection:true});
@@ -172,7 +181,7 @@ async function ancillary(page) {
   }
   await page.goto(BASE+'#/en/tools/position-size?nav-check=1');
   await page.waitForTimeout(700);
-  await page.locator('#language-toggle').click();
+  await toggleLanguage(page);
   await page.waitForURL(BASE+'#/fa/tools/position-size?nav-check=1');
   records.push({nestedQueryPreserved:true});
   return records;

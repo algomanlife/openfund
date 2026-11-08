@@ -25,19 +25,20 @@ import WithdrawalsPage from './features/purchase/WithdrawalsPage'
 import { WalletProvider } from './wallet/WalletProvider'
 import { SessionProvider } from './session/useOpenfundSession'
 import { startThemeSync } from './theme'
+import { isLocale, storedLocale, type AppLocale } from './i18n/locales'
 
 startThemeSync()
 
 /* ---- public website architecture ----------------------------------------
    /              → language-aware redirect into the Home product gateway
-   /:locale/home  → FA two-product gateway; EN existing Prop landing
+   /:locale/home  → FA two-product gateway; en/ar/ru/zh-CN the Prop landing
    /:locale/challenges → legacy landing experience (preserved, moved off "/")
    /:locale/markets → Markets directory (Gains Network authoritative data)
    /:locale/rulebook, /:locale/transparency → existing editorial pages
    /terminal, /portfolio → the separate terminal application experience       */
 
-function preferredLocale(): 'fa' | 'en' {
-  try { return localStorage.getItem('of-language') === 'en' ? 'en' : 'fa' } catch { return 'fa' }
+function preferredLocale(): AppLocale {
+  return storedLocale()
 }
 
 /* '/' — the landing no longer lives at the root; the product gateway does.
@@ -73,15 +74,18 @@ function LegacyAnchor() {
 function TerminalRedirect({ page }: { page: string }) { return <Navigate to={`/${preferredLocale()}/prop/${page}`} replace /> }
 function ProductRedirect({ product }: { product: 'prop' | 'perpetual' }) { return <Navigate to={`/${preferredLocale()}/${product}/${useParams().page || 'dashboard'}`} replace /> }
 
+/* fa → the Persian two-product gateway; every other supported locale
+   follows the established English behaviour (the Prop landing). */
 function LocalizedHome() {
-  return useParams().locale === 'en' ? <Landing /> : <Home />
+  const { locale } = useParams()
+  return locale === 'fa' || !isLocale(locale) ? <Home /> : <Landing />
 }
 
 function ProductGate({ product }: { product: 'prop' | 'perpetual' }) {
   const { locale } = useParams()
   // Presentation availability does not verify nationality or residency.
-  return locale === 'en' && product === 'perpetual'
-    ? <Navigate to="/en/prop/dashboard" replace />
+  return isLocale(locale) && locale !== 'fa' && product === 'perpetual'
+    ? <Navigate to={`/${locale}/prop/dashboard`} replace />
     : <TerminalShell product={product} />
 }
 
@@ -156,8 +160,8 @@ document.addEventListener('click', (e) => {
   if (!href.startsWith('#/#')) return
   e.preventDefault()
   const id = href.slice(3)
-  const w = window as Window & { ofLang?: string }
-  const lang = w.ofLang === 'en' || w.ofLang === 'fa' ? w.ofLang : preferredLocale()
+  const w = window as Window & { ofLang?: string; ofUiLang?: string }
+  const lang = isLocale(w.ofUiLang) ? w.ofUiLang : isLocale(w.ofLang) ? w.ofLang : preferredLocale()
   if (id === 'markets') { location.hash = `/${lang}/markets`; return }
   try { sessionStorage.setItem('ofScrollTo', id) } catch { /* optional */ }
   location.hash = `/${lang}/challenges`

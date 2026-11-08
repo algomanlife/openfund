@@ -282,7 +282,7 @@ async function layout(browser){
   }
   const owned=(await call(page,'/accounts')).data.accounts.find(account=>account.type==='free_trial');
   await page.goto(BASE+'/#/en/prop/journal?section=playbooks&account='+owned.id);
-  await page.getByRole('button',{name:'FA',exact:true}).click();
+  await page.locator('.of-language-select select').first().selectOption('fa');
   await page.waitForURL(BASE+'/#/fa/prop/journal?section=playbooks&account='+owned.id);
   check('Terminal language switching preserves the selected account and journal section',true);
   check('All terminal tabs share one connected wallet state',await page.locator('.rk-chip-addr').count()===1);

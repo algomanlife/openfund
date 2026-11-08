@@ -10,6 +10,15 @@ fs.mkdirSync(OUT, { recursive: true });
 const checks = [], matrix = [], errors = [];
 const originalCards = [...fs.readFileSync('apps/web-react/src/pages/landing-body.html','utf8').matchAll(/<article class="feature-card">([\s\S]*?)<\/article>/g)].slice(0,4);
 const originalCopies = originalCards.map(m=>m[1].match(/<p>([\s\S]*?)<\/p>/)[1]);
+
+/* Language switching uses the five-language selector (fa, en, ar, ru, zh-CN);
+   toggleLanguage keeps the previous fa <-> en intent of these steps. */
+async function toggleLanguage(page) {
+  const select = page.locator('.of-language-select select').first();
+  await select.waitFor({ state: 'attached' });
+  await select.selectOption((await select.inputValue()) === 'fa' ? 'en' : 'fa');
+}
+
 function check(name, value) { assert.ok(value, name); checks.push(name); }
 async function fixture(context) {
   if (process.env.GITHUB_ACTIONS !== 'true' && process.env.LANDING_CMS_FIXTURE !== '1') return;
@@ -101,10 +110,10 @@ async function fixture(context) {
     }
     await page.goto(BASE+'/#/fa/home');
     await page.reload();
-    await page.locator('#language-toggle').waitFor();
-    await page.locator('#language-toggle').click(); await page.locator('#builder').waitFor(); await page.waitForFunction(()=>window.__ofLandingKicked&&window.ofTranslations&&document.documentElement.lang==='en');
+    await page.locator('.of-language-select select').first().waitFor({ state: 'attached' });
+    await toggleLanguage(page); await page.locator('#builder').waitFor(); await page.waitForFunction(()=>window.__ofLandingKicked&&window.ofTranslations&&document.documentElement.lang==='en');
     check('English uses existing challenge builder',await page.locator('.home-products').count()===0&&await page.locator('#builder').count()===1);
-    await page.locator('#language-toggle').click(); await page.waitForFunction(()=>!window.__ofLegacyLandingLoaded&&document.querySelector('.technical-features'));
+    await toggleLanguage(page); await page.waitForFunction(()=>!window.__ofLegacyLandingLoaded&&document.querySelector('.technical-features'));
     check('language round trip returns Persian gateway',page.url().includes('/fa/home'));
     const touch = await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await fixture(touch);
     const mobile = await touch.newPage();await mobile.goto(BASE+'/#/fa/home');await mobile.locator('.technical-feature').first().tap();await mobile.locator('dialog[open]').waitFor();await mobile.locator('dialog button').tap();

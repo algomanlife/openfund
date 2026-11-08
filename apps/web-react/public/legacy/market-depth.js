@@ -1,8 +1,8 @@
 /** Public Gains VOB and executed trades. Never derive liquidity or prints from marks. */
 (() => {
   const $ = (id) => document.getElementById(id),
-    fa = () => window.ofLang === "fa",
-    L = (a, b) => (fa() ? a : b);
+    L = (a, b) =>
+      window.ofLang === "fa" ? a : window.OpenfundTerminalLocales?.L?.[window.ofLang]?.[b] || b;
   const api = "https://api.gains.trade/v1/arbitrum",
     wsUrl = "wss://api.gains.trade/v1/arbitrum/ws";
   const valid = (v) =>
