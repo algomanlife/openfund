@@ -384,3 +384,8 @@ html[dir="rtl"] #bt-positions th:last-child, html[dir="rtl"] .bt-table #tb-posit
   .dlg.share-dlg { padding: 14px 12px; }
   .share-actions > button { flex: 1 1 auto; min-height: 40px; }
 }
+
+/* Real-time feed: last valid values stay visible during brief interruptions
+   but are visibly marked as not live. */
+#st-last.is-stale { opacity: .55; text-decoration: underline dotted; text-underline-offset: 3px; }
+.book-panel.is-stale :is(#book-asks, #book-bids, .book-mid) { opacity: .45; transition: opacity .2s; }

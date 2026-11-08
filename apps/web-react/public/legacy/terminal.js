@@ -553,6 +553,7 @@ function selectMarket(id){
   velaClearDrawings();    /* clear user drawings too */
   S.marketId = id;
   S.stats = null;
+  renderMarketStats._last = {};   /* no up/down flash across different markets */
   $('cur-icon').outerHTML = `<span id="cur-icon" class="cur-ic">${iconHTML(id)}</span>`;
   $('cur-pair').textContent = id;
   updateStarBtn();
@@ -603,7 +604,15 @@ function renderMarketStats(){
   const m = meta();
   const p = board.marks.get(S.marketId);
   const d = dp();
-  const set = (id, text, cls) => { const el = $(id); if (!el) return; el.textContent = text; el.className = cls || 'num'; };
+  /* write only what changed and keep transient flash classes intact;
+     resetting className on every tick cut the flash animation short and
+     made the values flicker */
+  const set = (id, text, cls) => {
+    const el = $(id); if (!el) return;
+    if (el.textContent !== text) el.textContent = text;
+    const want = (cls || 'num').split(' ').filter(Boolean);
+    for (const c of ['num', 'up', 'down']) el.classList.toggle(c, want.includes(c));
+  };
   const prev = renderMarketStats._last || {};
   const paint = (id, v) => {
     if (!S.flashOn) return;
@@ -617,9 +626,17 @@ function renderMarketStats(){
     prev[id] = v;
   };
   const changePct = S.stats ? S.stats.changePct : null;
-  set('st-last', p ? fmt.price(p.mark, d) : '—');
+  set('st-last', p ? fmt.price(p.mark, d) : '—', 'num' + (changePct != null ? (changePct >= 0 ? ' up' : ' down') : ''));
   paint('st-last', p ? p.mark : 0);
-  const stLast = $('st-last'); if (changePct != null && stLast) stLast.classList.add(changePct >= 0 ? 'up' : 'down');
+  /* the last valid mark stays on screen through brief interruptions, but is
+     visibly marked as not live (dimmed + tooltip) instead of passing as live */
+  const stLast = $('st-last');
+  if (stLast) {
+    const notLive = !!p && (board.status !== 'live' || board.stale(S.marketId));
+    stLast.classList.toggle('is-stale', notLive);
+    const tip = notLive ? t('sb.stale') : '';
+    if (stLast.title !== tip) stLast.title = tip;
+  }
   set('st-oracle', p && p.index ? fmt.price(p.index, d) : '—');
   set('st-change', changePct == null ? '…' : fmt.pct(changePct), 'num ' + (changePct >= 0 ? 'up' : 'down'));
   set('st-high', S.stats ? fmt.price(S.stats.high, d) : '…');
@@ -1146,6 +1163,28 @@ document.querySelectorAll('[data-bt]').forEach(b => b.addEventListener('click', 
 }));
 $('load-demo').addEventListener('click', () => { tp.loadDemoScenario(); renderBottom(); renderAccount(); });
 
+/* Patch a table body in place: unchanged renders are skipped entirely and,
+   when the rows are the same records, only changed cells are rewritten.
+   Rebuilding whole tables every tick made rows flicker, reset hover state
+   and swallowed clicks on buttons replaced mid-click. */
+const __rowTpl = document.createElement('template');
+function patchBody(tb, html){
+  if (!tb || tb.__ofHtml === html) return;
+  tb.__ofHtml = html;
+  __rowTpl.innerHTML = '<table><tbody>' + html + '</tbody></table>';
+  const next = __rowTpl.content.querySelector('tbody').rows, cur = tb.rows;
+  const same = cur.length === next.length && Array.prototype.every.call(next, (r, i) =>
+    r.dataset.key && cur[i].dataset.key === r.dataset.key && cur[i].cells.length === r.cells.length);
+  if (!same) { tb.innerHTML = html; return; }
+  for (let i = 0; i < next.length; i++){
+    const a = cur[i].cells, b = next[i].cells;
+    for (let j = 0; j < b.length; j++){
+      if (a[j].innerHTML !== b[j].innerHTML) a[j].innerHTML = b[j].innerHTML;
+      if (a[j].className !== b[j].className) a[j].className = b[j].className;
+      if (a[j].title !== b[j].title) a[j].title = b[j].title;
+    }
+  }
+}
 function renderBottom(){
   if (!tp || !$('bt-empty')) return;   /* teardown race guard */
   const st = tp.state;
@@ -1162,13 +1201,13 @@ function renderBottom(){
   document.querySelectorAll('.bt-table').forEach(el => el.hidden = el.dataset.t !== S.btTab || !hasActivity);
   if(!window.__ofTerminalConfig || tp.status===undefined || tp.status==='ready') $('cnt-positions').textContent = st.positions.length;
   if(!window.__ofTerminalConfig || tp.status===undefined || tp.status==='ready') $('cnt-orders').textContent = st.orders.length;
-  $('tb-positions').innerHTML = st.positions.map(p => {
+  patchBody($('tb-positions'), st.positions.map(p => {
     const m = board.getMeta(p.market); if (!m) return '';
     const d = Number(m.pricePrecision), dps = Number(m.sizePrecision) || 2;
     const mk = tp.serverMode ? p.srvMark ?? null : board.getMark(p.market) || p.entry;
     const pnl = tp.readOnly ? null : tp.serverMode ? p.srvPnl ?? null : (mk - p.entry) * p.size * (p.side === 'long' ? 1 : -1);
     const roe = tp.serverMode ? p.srvRoi ?? null : pnl == null ? null : pnl / p.margin * 100;
-    return `<tr>
+    return `<tr data-key="p:${esc(p.id)}">
       <td>${iconHTML(p.market)} <b>${m.symbol}</b></td>
       <td class="side-${p.side === 'long' ? 'l' : 's'}">${t(p.side === 'long' ? 'rv.side.long' : 'rv.side.short')}</td>
       <td class="r num">${fmt.num(p.size, dps)} ${m.base}</td>
@@ -1186,11 +1225,11 @@ function renderBottom(){
         <button class="act-btn" data-detail="${p.id}">${t('act.details')}</button>
         <button class="act-btn act-share" data-share="${p.id}">${t('act.share')}</button>
       </td></tr>`;
-  }).join('') || emptyRow(12, t('empty.positions'));
-  $('tb-orders').innerHTML = st.orders.map(o => {
+  }).join('') || emptyRow(12, t('empty.positions')));
+  patchBody($('tb-orders'), st.orders.map(o => {
     const m = board.getMeta(o.market); if (!m) return '';
     const d = Number(m.pricePrecision), dps = Number(m.sizePrecision) || 2;
-    return `<tr>
+    return `<tr data-key="o:${esc(o.id)}">
       <td>${iconHTML(o.market)} <b>${m.symbol}</b></td>
       <td><span class="tag">${t('ot.' + o.type)}</span></td>
       <td class="side-${o.side === 'long' ? 'l' : 's'}">${t(o.side === 'long' ? 'rv.side.long' : 'rv.side.short')}</td>
@@ -1200,12 +1239,12 @@ function renderBottom(){
       <td class="num">${fmt.dt(o.createdAt / 1000)}</td>
       <td><button class="act-btn danger" ${tp.canTrade===false?'disabled':''} data-cancel="${o.id}">${t('act.cancel')}</button></td>
     </tr>`;
-  }).join('') || emptyRow(8, t('empty.orders'));
-  $('tb-history').innerHTML = st.history.map(h => {
+  }).join('') || emptyRow(8, t('empty.orders')));
+  patchBody($('tb-history'), st.history.map(h => {
     const m = board.getMeta(h.market); if (!m) return '';
     const d = Number(m.pricePrecision);
     const cls = h.result.includes('profit') ? 'pos' : h.result.includes('loss') ? 'neg' : '';
-    return `<tr>
+    return `<tr data-key="h:${esc(h.id)}">
       <td>${iconHTML(h.market)} <b>${m.symbol}</b></td>
       <td><span class="tag">${tp.readOnly ? h.type : h.type.includes('-') ? t('res.' + h.type) : t('ot.' + h.type)}</span></td>
       <td class="side-${h.side === 'long' ? 'l' : 's'}">${t(h.side === 'long' ? 'rv.side.long' : 'rv.side.short')}</td>
@@ -1215,8 +1254,8 @@ function renderBottom(){
       <td class="num">${fmt.dt(h.time / 1000)}</td>
       <td>${h.realized != null && Number.isFinite(h.realized) ? `<button class="act-btn act-share" data-share-history="${h.id}">${t('act.share')}</button>` : ''}</td>
     </tr>`;
-  }).join('') || emptyRow(8, t('empty.history'));
-  $('tb-fills').innerHTML = st.fills.map(f => {
+  }).join('') || emptyRow(8, t('empty.history')));
+  patchBody($('tb-fills'), st.fills.map(f => {
     const m = board.getMeta(f.market); if (!m) return '';
     const d = Number(m.pricePrecision);
     return `<tr>
@@ -1228,8 +1267,8 @@ function renderBottom(){
       <td><span class="tag">${f.role}</span></td>
       <td class="num">${fmt.dt(f.time / 1000)}</td>
     </tr>`;
-  }).join('') || emptyRow(7, t('empty.fills'));
-  $('tb-funding').innerHTML = st.funding.map(f => {
+  }).join('') || emptyRow(7, t('empty.fills')));
+  patchBody($('tb-funding'), st.funding.map(f => {
     const m = board.getMeta(f.market); if (!m) return '';
     return `<tr>
       <td>${iconHTML(f.market)} <b>${m.symbol}</b></td>
@@ -1237,7 +1276,7 @@ function renderBottom(){
       <td class="r num ${f.pay >= 0 ? 'up' : 'down'}">${fmt.usdS(f.pay)}</td>
       <td class="num">${fmt.dt(f.time / 1000)}</td>
     </tr>`;
-  }).join('') || emptyRow(4, t('empty.funding'));
+  }).join('') || emptyRow(4, t('empty.funding')));
   wireRowActions();
   window.OpenfundShareCard?.refresh();
 }
@@ -1343,22 +1382,39 @@ function openShare(kind, id){
   const getter = kind === 'history' ? () => shareClosedModel(id) : () => shareOpenModel(id);
   if (!window.OpenfundShareCard.open(getter, shareLabels())) toast(t('share.failed'), 'error');
 }
+/* Row actions are delegated once: rows are patched in place on every
+   data update, so per-render listeners would either duplicate or be lost
+   (a click landing while a row was being replaced used to do nothing). */
+let rowActionsWired = false;
 function wireRowActions(){
-  document.querySelectorAll('[data-share]').forEach(b => b.addEventListener('click', () => openShare('position', b.dataset.share)));
-  document.querySelectorAll('[data-share-history]').forEach(b => b.addEventListener('click', () => openShare('history', b.dataset.shareHistory)));
-  document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => {
+  if (rowActionsWired) return;
+  rowActionsWired = true;
+  document.addEventListener('click', e => {
+    const b = e.target && e.target.closest && e.target.closest('[data-close],[data-cancel],[data-sltp],[data-detail],[data-share],[data-share-history]');
+    if (!b || b.disabled || !b.closest('.bt-table')) return;
+    if (b.matches('[data-share]')) {
+    openShare('position', b.dataset.share);
+      return;
+    }
+    if (b.matches('[data-share-history]')) {
+    openShare('history', b.dataset.shareHistory);
+      return;
+    }
+    if (b.matches('[data-close]')) {
     const partial = tp.serverMode && !tp.readOnly;
     confirmDialog(t('cf.close'), t('cf.closeTxt'), () => {
       const fraction = partial ? Number($('close-fraction').value) : 1;
       (async () => { try { await tp.closePosition(b.dataset.close, fraction); } catch(e){ toast(String(e.message || e), 'error'); } renderBottom(); renderAccount(); })();
     }, null, partial ? `<label>${L('مقدار بستن پوزیشن', 'Position to close')} <select id="close-fraction"><option value="1">100%</option><option value="0.5">50%</option><option value="0.25">25%</option></select></label>` : null);
-  }));
-  document.querySelectorAll('[data-cancel]').forEach(b => b.addEventListener('click', () => {
+      return;
+    }
+    if (b.matches('[data-cancel]')) {
     confirmDialog(t('cf.cancel'), t('cf.cancelTxt'), () => {
       (async () => { try { await tp.cancelOrder(b.dataset.cancel); } catch(e){ toast(String(e.message || e), 'error'); } renderBottom(); renderAccount(); })();
     });
-  }));
-  document.querySelectorAll('[data-sltp]').forEach(b => b.addEventListener('click', () => {
+      return;
+    }
+    if (b.matches('[data-sltp]')) {
     const p = tp.getPosition(b.dataset.sltp);
     if (!p) return;
     const m = board.getMeta(p.market);
@@ -1368,8 +1424,9 @@ function wireRowActions(){
     $('sltp-err').hidden = true;
     $('sltp-dialog').showModal();
     sltpTarget = p.id;
-  }));
-  document.querySelectorAll('[data-detail]').forEach(b => b.addEventListener('click', () => {
+      return;
+    }
+    if (b.matches('[data-detail]')) {
     const p = tp.getPosition(b.dataset.detail);
     if (!p) return;
     const m = board.getMeta(p.market);
@@ -1391,7 +1448,9 @@ function wireRowActions(){
     const pnlCls = pnl == null ? '' : pnl > 0 ? ' up' : pnl < 0 ? ' down' : '';
     confirmDialog(t('cf.detail'), null, null, () => {},
       `<dl class="pos-detail-grid">${rows.map(([k, v, tech], i) => `<div><dt>${esc(k)}</dt><dd class="${tech ? 'num' : ''}${i === 9 ? pnlCls : ''}">${tech ? `<bdi dir="ltr">${esc(v)}</bdi>` : esc(v)}</dd></div>`).join('')}</dl>`);
-  }));
+      return;
+    }
+  });
 }
 let sltpTarget = null;
 $('sltp-cancel').addEventListener('click', () => $('sltp-dialog').close());
@@ -1566,18 +1625,20 @@ function boot(){
     });
     /* live board → UI + demo triggers (throttled) */
     let lastTrig = 0, lastBook = 0, renderQ = false;
-    board.on(() => {
+    let selectedDirty = true;
+    board.on((_, changed) => {
+      if (!changed || changed.market === S.marketId) selectedDirty = true;
       if (renderQ) return;
       renderQ = true;
       requestAnimationFrame(() => {
         renderQ = false;
         const now = Date.now();
-        renderMarketStats();
-        renderStatus();
+        /* other markets' ticks only matter to the open dropdown, positions
+           and the throttled blocks below */
+        if (selectedDirty) { selectedDirty = false; renderMarketStats(); renderStatus(); computeForm(); }
         if (ddOpen) renderDropdown($('market-search').value);
         if (now - lastBook > 1500){ lastBook = now; renderBook(); noteTrade(board.marks.get(S.marketId)); renderTrades(); }
         if (now - lastTrig > 1500){ lastTrig = now; tp.checkTriggers(); renderAccount(); velaPositionsSync(); if (S.btTab === 'positions' && tp.state.positions.length) renderBottom(); else window.OpenfundShareCard?.refresh(); }
-        computeForm();
       });
     });
     board.on(p => { if (p && p.market === S.marketId) { /* nothing extra */ } });

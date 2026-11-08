@@ -17,7 +17,16 @@
     retry,
     controller,
     received = 0,
+    attempts = 0,
     lastBookTimestamp = 0;
+  /* A book that stops updating stays visible (dimmed, labelled stale) for a
+     short grace period so brief reconnects do not blank the ladder; after
+     that it is removed rather than shown as if current. */
+  const STALE_MS = 15000,
+    DROP_MS = 60000;
+  function markStale(on) {
+    document.querySelector(".book-panel")?.classList.toggle("is-stale", !!on);
+  }
   const denomination = document.createElement("select");
   denomination.id = "book-denomination";
   denomination.setAttribute("aria-label", "Depth denomination");
@@ -124,9 +133,15 @@
     $("book-spread").textContent =
       spread === null ? "—" : `${L("اسپرد", "Spread")} ${fmt(spread)}`;
   }
+  let renderedTrades = null,
+    renderedLang = null;
   function renderTrades() {
     const host = $("trades-list");
     if (!host) return;
+    /* the terminal calls this on a timer; rebuild only when the tape changed */
+    if (renderedTrades === trades && renderedLang === window.ofLang && host.childElementCount) return;
+    renderedTrades = trades;
+    renderedLang = window.ofLang;
     if (!trades.length) {
       unavailable(
         host,
@@ -183,6 +198,8 @@
     book = b;
     lastBookTimestamp = b.timestamp;
     received = Date.now();
+    attempts = 0;
+    markStale(false);
     note.textContent = L(
       "Gains VOB · نقدینگی مجازی مبتنی بر مخزن",
       "Gains VOB · vault-based virtual liquidity",
@@ -250,6 +267,7 @@
           m.seq !== seq + 1
         ) {
           book = null;
+          markStale(false);
           renderBook();
           seq = null;
           ws.send(
@@ -275,13 +293,14 @@
     };
     ws.onclose = () => {
       if (g === generation && !stopped) {
-        book = null;
-        renderBook();
+        /* keep the last verified ladder, marked stale, while reconnecting */
+        if (book) markStale(true);
         note.textContent = L(
           "ارتباط قطع شد؛ اتصال دوباره…",
           "Disconnected; reconnecting…",
         );
-        retry = setTimeout(() => connect(g), 2500);
+        const delay = Math.min(15000, 1500 * 2 ** Math.min(attempts++, 4));
+        retry = setTimeout(() => connect(g), delay);
       }
     };
     ws.onerror = () => ws.close();
@@ -295,6 +314,8 @@
     socket?.close();
     controller = new AbortController();
     book = null;
+    markStale(false);
+    attempts = 0;
     trades = [];
     seq = null;
     lastBookTimestamp = 0;
@@ -330,9 +351,15 @@
   denomination.addEventListener("change", renderBook);
   $("book-group")?.addEventListener("change", renderBook);
   const stale = setInterval(() => {
-    if (book && Date.now() - received > 15000) {
+    if (!book) return;
+    const age = Date.now() - received;
+    if (age > DROP_MS) {
       book = null;
+      markStale(false);
       renderBook();
+      note.textContent = L("دادهٔ عمق قدیمی است.", "Depth data is stale.");
+    } else if (age > STALE_MS) {
+      markStale(true);
       note.textContent = L("دادهٔ عمق قدیمی است.", "Depth data is stale.");
     }
   }, 3000);
