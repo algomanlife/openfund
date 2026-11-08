@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const BASE = (process.env.TEST_FRONTEND_URL || 'http://localhost:8293/react').replace(/\/$/, '');
+const BASE = (process.env.TEST_FRONTEND_URL || 'http://localhost:8293').replace(/\/$/, '');
 const capture = process.env.REFRESH_CAPTURE === '1';
 const out = path.resolve('output/playwright/website-refresh');
 fs.mkdirSync(out, { recursive: true });
@@ -16,7 +16,7 @@ function configuredCommunityChecks() {
   const { createRequire } = require('node:module');
   const appRequire = createRequire(path.resolve('apps/web-react/package.json'));
   for (const value of ['', 'https://telegram.org/', 'https://t.me/ExampleCommunity', 'https://t.me/+ExampleInvite', 'javascript:alert(1)', 'https://t.me.evil.test/ExampleCommunity']) {
-    const result = buildSync({ entryPoints: ['apps/web-react/src/features/community/TelegramCommunity.tsx'], bundle: true, write: false, platform: 'node', format: 'cjs', packages: 'external', loader: { '.css': 'empty' }, define: { 'import.meta.env.BASE_URL': '"/react/"', 'import.meta.env.VITE_TELEGRAM_COMMUNITY_URL': JSON.stringify(value), 'import.meta.env.VITE_DISCORD_COMMUNITY_URL': '""', 'import.meta.env.VITE_INSTAGRAM_COMMUNITY_URL': '""' }, jsx: 'automatic' });
+    const result = buildSync({ entryPoints: ['apps/web-react/src/features/community/TelegramCommunity.tsx'], bundle: true, write: false, platform: 'node', format: 'cjs', packages: 'external', loader: { '.css': 'empty' }, define: { 'import.meta.env.BASE_URL': '"/"', 'import.meta.env.VITE_TELEGRAM_COMMUNITY_URL': JSON.stringify(value), 'import.meta.env.VITE_DISCORD_COMMUNITY_URL': '""', 'import.meta.env.VITE_INSTAGRAM_COMMUNITY_URL': '""' }, jsx: 'automatic' });
     const mod = { exports: {} }; new Function('require', 'module', 'exports', result.outputFiles[0].text)(appRequire, mod, mod.exports);
     const valid = value === 'https://t.me/ExampleCommunity' || value === 'https://t.me/+ExampleInvite';
     check(`community URL validation: ${value || 'unset'}`, Boolean(mod.exports.community.url) === valid);
@@ -64,7 +64,7 @@ async function realThemeClicks(browser) {
     const context = await browser.newContext({ colorScheme, viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
     const page = await context.newPage();
     try {
-      await page.goto(`${BASE}/#/${locale}/home`, { waitUntil: 'domcontentloaded' });
+      await page.goto(`${BASE}/${locale}/home`, { waitUntil: 'domcontentloaded' });
       check(`${colorScheme}-${locale} system default`, await page.locator('html').getAttribute('data-theme') === colorScheme);
       if (colorScheme === 'dark') await page.locator('#theme-toggle').click();
       const prefix = `${colorScheme}-${locale}`;
@@ -72,12 +72,12 @@ async function realThemeClicks(browser) {
       await page.reload({ waitUntil: 'domcontentloaded' });
       await sample(page, `${prefix}-refresh-light`, 'light');
       for (const route of ['challenges', 'markets', 'faq', 'tools', 'learn', 'referral', 'rulebook', 'transparency']) {
-        await page.goto(`${BASE}/#/${locale}/${route}`, { waitUntil: 'domcontentloaded' });
+        await page.goto(`${BASE}/${locale}/${route}`, { waitUntil: 'domcontentloaded' });
         await page.locator('.openfund-header').waitFor();
         await sample(page, `${prefix}-${route}-light`, 'light');
       }
-      await page.goto(`${BASE}/#/${locale}/home`, { waitUntil: 'domcontentloaded' });
-      await page.locator(`a[href="#/${locale}/prop/trade"]`).first().click();
+      await page.goto(`${BASE}/${locale}/home`, { waitUntil: 'domcontentloaded' });
+      await page.locator(`a[href="/${locale}/prop/trade"]`).first().click();
       await page.locator('.of-terminal-top').waitFor();
       const iframe = page.frameLocator('iframe');
       await iframe.locator('#vela-tool-vela-widget-panel-dataWindow').click();
@@ -87,7 +87,7 @@ async function realThemeClicks(browser) {
       await page.reload({ waitUntil: 'domcontentloaded' });
       await iframe.locator('#vela-tool-vela-widget-panel-dataWindow').waitFor();
       await sample(page, `${prefix}-terminal-refresh-dark`, 'dark');
-      await page.locator(`#terminal-navigation a[href="#/${locale}/prop/dashboard"]:not(.of-compact-destination)`).click();
+      await page.locator(`#terminal-navigation a[href="/${locale}/prop/dashboard"]:not(.of-compact-destination)`).click();
       await page.locator('details.of-terminal-more summary').click();
       await sample(page, `${prefix}-dashboard-dark`, 'dark', true);
       await page.locator('button[aria-label="' + (locale === 'fa' ? 'تغییر پوسته' : 'Toggle theme') + '"]').click();
@@ -95,19 +95,19 @@ async function realThemeClicks(browser) {
       await page.reload({ waitUntil: 'domcontentloaded' });
       await sample(page, `${prefix}-dashboard-refresh-light`, 'light');
       if (locale === 'fa') {
-        await page.goto(`${BASE}/#/fa/perpetual/trade`, { waitUntil: 'domcontentloaded' });
+        await page.goto(`${BASE}/fa/perpetual/trade`, { waitUntil: 'domcontentloaded' });
         await iframe.locator('#vela-tool-vela-widget-panel-dataWindow').click();
         await sample(page, `${prefix}-perpetual-light`, 'light', true);
       }
       const restored = await browser.newContext({ storageState: await context.storageState(), viewport: { width: 1440, height: 1000 } });
       try {
         const fresh = await restored.newPage();
-        await fresh.goto(`${BASE}/#/${locale}/home`, { waitUntil: 'domcontentloaded' });
+        await fresh.goto(`${BASE}/${locale}/home`, { waitUntil: 'domcontentloaded' });
         await sample(fresh, `${prefix}-restored-light`, 'light');
         await fresh.locator('#theme-toggle').click();
         await sample(fresh, `${prefix}-public-dark`, 'dark', true);
         for (const route of ['challenges', 'markets', 'faq', 'tools', 'learn', 'referral', 'rulebook', 'transparency']) {
-          await fresh.goto(`${BASE}/#/${locale}/${route}`, { waitUntil: 'domcontentloaded' });
+          await fresh.goto(`${BASE}/${locale}/${route}`, { waitUntil: 'domcontentloaded' });
           await fresh.locator('.openfund-header').waitFor();
           await sample(fresh, `${prefix}-${route}-dark`, 'dark');
         }
@@ -126,7 +126,7 @@ async function realThemeClicks(browser) {
       const context = await browser.newContext({ viewport: { width, height: 1000 }, reducedMotion: 'reduce' });
       await context.addInitScript(theme => localStorage.setItem('of-theme-choice', theme), theme);
       const page = await context.newPage();
-      await page.goto(`${BASE}/#/${locale}/challenges`);
+      await page.goto(`${BASE}/${locale}/challenges`);
       await page.locator('footer .telegram-community').waitFor();
       await page.waitForFunction(locale => document.documentElement.lang === locale, locale);
       const tag = `${locale}/${theme}/${width}`;
@@ -193,14 +193,14 @@ async function realThemeClicks(browser) {
       check(`${tag} no horizontal overflow`, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
       if (width === 1440 && ['dark', 'light'].includes(theme)) {
         await page.evaluate(() => scrollTo(0, 0));
-        await shot(page, `challenges-${locale}-${theme}`, `/react/#/${locale}/challenges`);
-        await shot(page, `downloads-${locale}-${theme}`, `/react/#/${locale}/challenges#desktop`, page.locator('#desktop'));
-        await shot(page, `footer-${locale}-${theme}`, `/react/#/${locale}/challenges`, page.locator('footer'));
+        await shot(page, `challenges-${locale}-${theme}`, `/${locale}/challenges`);
+        await shot(page, `downloads-${locale}-${theme}`, `/${locale}/challenges#desktop`, page.locator('#desktop'));
+        await shot(page, `footer-${locale}-${theme}`, `/${locale}/challenges`, page.locator('footer'));
       }
       await context.close();
     }
     const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
-    await page.goto(`${BASE}/#/fa/home`);
+    await page.goto(`${BASE}/fa/home`);
     await page.locator('.home-community .telegram-community').waitFor();
     await page.waitForFunction(() => getComputedStyle(document.querySelector('.home-stage')).display === 'flex' && getComputedStyle(document.querySelector('.home-community .community-group')).flexWrap === 'nowrap');
     await page.evaluate(() => document.fonts.ready);
@@ -212,11 +212,11 @@ async function realThemeClicks(browser) {
     }));
     check('Persian Home hero Discord only', await page.locator('.discord-community').count() === 1 && await page.locator('.home-community .discord-community').count() === 1);
     check('Persian Home hero community including unavailable CMS', await page.locator('.telegram-community').count() === 1 && await page.locator('.home-community .telegram-community').count() === 1);
-    await shot(page, 'home-fa', '/react/#/fa/home');
+    await shot(page, 'home-fa', '/fa/home');
     await page.close();
     const englishHome = await browser.newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
     try {
-      await englishHome.goto(`${BASE}/#/en/home`);
+      await englishHome.goto(`${BASE}/en/home`);
       await englishHome.locator('footer .telegram-community').waitFor();
       await englishHome.waitForFunction(() => document.documentElement.lang === 'en');
       check('English Home retains shared public footer', await englishHome.locator('footer').count() === 1 && await englishHome.locator('.credits-row > a').count() === 5);
@@ -226,7 +226,7 @@ async function realThemeClicks(browser) {
     for (const route of ['en/faq', 'fa/tools', 'en/rulebook']) {
       const entry = await browser.newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
       try {
-        await entry.goto(`${BASE}/#/${route}`);
+        await entry.goto(`${BASE}/${route}`);
         await entry.locator('footer .telegram-community').waitFor();
         check(`${route} shared public footer`, await entry.locator('.credits-row > a').count() === 5);
       } finally { await entry.close(); }
@@ -234,10 +234,10 @@ async function realThemeClicks(browser) {
     for (const route of ['en/prop/trade', 'fa/perpetual/trade', 'en/prop/dashboard']) {
       const entry = await browser.newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
       try {
-        await entry.goto(`${BASE}/#/${route}`);
+        await entry.goto(`${BASE}/${route}`);
         await entry.locator('.of-terminal-top').waitFor();
         check(`${route} no public marketing`, await entry.locator('.community-button,footer .credits-row').count() === 0);
-        await shot(entry, route.replaceAll('/', '-'), `/react/#/${route}`);
+        await shot(entry, route.replaceAll('/', '-'), `/${route}`);
       } finally { await entry.close(); }
     }
     // Exercise in-place legacy translation in a fresh direct-entry context.
@@ -250,7 +250,7 @@ async function realThemeClicks(browser) {
         window.__websiteLocaleReady = false;
         addEventListener('of-language', () => { window.__websiteLocaleReady = true; }, { once: true });
       });
-      await localePage.goto(`${BASE}/#/fa/challenges`);
+      await localePage.goto(`${BASE}/fa/challenges`);
       await localePage.locator('footer .telegram-community').waitFor();
       await localePage.waitForFunction(() => window.__websiteLocaleReady && typeof window.ofSetLanguage === 'function'
         && document.documentElement.lang === 'fa' && window.ofLang === 'fa'

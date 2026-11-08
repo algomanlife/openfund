@@ -150,7 +150,7 @@ export function ProfilePanel(props: {
 
         <div className="of-profile-actions">
           {(['prop', 'perpetual'] as const).filter(product => isFa || product === 'prop').map(product => <a key={product} className="button"
-            href={`#/${isFa ? 'fa' : 'en'}/${product}/dashboard`} onClick={onClose}>
+            href={`/${isFa ? 'fa' : 'en'}/${product}/dashboard`} onClick={onClose}>
             Openfund {product === 'prop' ? 'Prop' : 'Perpetual'} ↗
           </a>)}
           <button className="button danger" onClick={onLogout}>{t('خروج از حساب', 'Sign out')}</button>

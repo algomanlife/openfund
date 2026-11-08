@@ -60,7 +60,7 @@ function ReferralDashboard({ locale }: { locale: Locale }) {
     <p className="referral-dashboard-note">{text('Signing in does not purchase anything and does not join any program.', 'ورود به حساب هیچ خریدی انجام نمی‌دهد و عضویت هیچ برنامه‌ای هم نیست.')[locale]}</p>
   </div>
 
-  const link = data ? `${window.location.origin}${import.meta.env.BASE_URL}#/${locale}/ref/${data.code}` : ''
+  const link = data ? `${window.location.origin}${import.meta.env.BASE_URL}${locale}/ref/${data.code}` : ''
 
   return <div className="referral-dashboard">
     <div className="referral-dashboard-head">

@@ -5,7 +5,7 @@ const { chromium } = require(
 const fs = require("node:fs"),
   path = require("node:path");
 const CMS = process.env.DIRECTUS_URL || "http://localhost:8055",
-  BASE = process.env.TEST_FRONTEND_URL || "http://localhost:5186/react";
+  BASE = process.env.TEST_FRONTEND_URL || "http://localhost:5186";
 let token, section, browser;
 const results = [],
   check = (name, ok) => {
@@ -115,7 +115,7 @@ async function cms(method, route, body, admin = true) {
     if (r.url().startsWith(CMS) && r.headers().authorization)
       authHeaders.push(r.url());
   });
-  await page.goto(BASE + "/#/en/prop/portfolio");
+  await page.goto(BASE + "/en/prop/portfolio");
   await page
     .getByRole("heading", { name: "Publication check " + suffix, exact: true })
     .waitFor({ timeout: 15000 });

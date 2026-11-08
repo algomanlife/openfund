@@ -146,12 +146,12 @@ export function faqCountByCategory(library: SiteLibrary): Map<string, number> {
 /** resolve a LinkTarget to a hash route for the current locale */
 export function targetHref(target: LinkTarget, locale: 'fa' | 'en'): string | null {
   switch (target.kind) {
-    case 'tool': return `#/${locale}/tools/${target.slug}`
-    case 'lesson': return `#/${locale}/learn/lessons/${target.slug}`
-    case 'path': return `#/${locale}/learn/paths/${target.slug}`
-    case 'glossary': return `#/${locale}/learn/glossary/${target.slug}`
-    case 'page': return `#/${locale}/${target.slug}`
-    case 'terminal': return `#/${locale}/${target.product}/trade`
+    case 'tool': return `/${locale}/tools/${target.slug}`
+    case 'lesson': return `/${locale}/learn/lessons/${target.slug}`
+    case 'path': return `/${locale}/learn/paths/${target.slug}`
+    case 'glossary': return `/${locale}/learn/glossary/${target.slug}`
+    case 'page': return `/${locale}/${target.slug}`
+    case 'terminal': return `/${locale}/${target.product}/trade`
     default: return null
   }
 }

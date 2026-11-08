@@ -280,10 +280,10 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
               <span>{t('شناسهٔ چالش', 'Challenge')}: <b dir="ltr">{String(result.challengeId).slice(0, 8)}…</b></span>
             </div>
             <div className="of-checkout-actions">
-              <a className="button" href={`#/${isFa ? 'fa' : 'en'}/prop/purchases`} onClick={onClose}>
+              <a className="button" href={`/${isFa ? 'fa' : 'en'}/prop/purchases`} onClick={onClose}>
                 {t('تاریخچهٔ خرید و فاکتورها', 'Purchases & invoices')}
               </a>
-              <a className="button" href={`#/${isFa ? 'fa' : 'en'}/prop/dashboard`} onClick={onClose}>
+              <a className="button" href={`/${isFa ? 'fa' : 'en'}/prop/dashboard`} onClick={onClose}>
                 {t('رفتن به داشبورد', 'Go to Dashboard')}
               </a>
             </div>

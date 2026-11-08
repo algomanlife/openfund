@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => ({
         res.setHeader('Cache-Control', 'no-store')
         res.end(`window.__OPENFUND_RUNTIME_CONFIG__=${JSON.stringify({cmsUrl})};\n`)
       }
+      server.middlewares.use('/runtime-config.js', serve)
       server.middlewares.use('/react/runtime-config.js', serve)
       server.middlewares.use('/react/react/runtime-config.js', serve)
     }
@@ -26,10 +27,11 @@ export default defineConfig(({ mode }) => ({
     version: process.env.RELEASE_VERSION || 'development',
     commit: process.env.RELEASE_SOURCE_COMMIT || process.env.RENDER_GIT_COMMIT || execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim()
   }) },
-  base: '/react/',
+  base: '/',
   build: {
-    /* default target: repo-root 'react/' — served at http://127.0.0.1:4173/react/
-       `vite build --mode publish` targets publish-openfund/ with base '/' */
+    /* default target: repo-root 'react/' — the backend serves it at the site
+       root (/) for clean history-routed URLs; `vite build --mode publish`
+       targets publish-openfund/ */
     outDir: mode === 'publish' ? publishDir : repoReact,
     emptyOutDir: true
   },

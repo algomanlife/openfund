@@ -12,7 +12,7 @@ const { createRequire } = require('node:module');
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const req = createRequire(path.resolve(__dirname, '../apps/backend/package.json'));
 const { generatePrivateKey, privateKeyToAccount } = req('viem/accounts');
-const BASE = (process.env.TEST_FRONTEND_URL || 'http://localhost:8080/react').replace(/\/$/, '');
+const BASE = (process.env.TEST_FRONTEND_URL || 'http://localhost:8080').replace(/\/$/, '');
 const API = process.env.TEST_BACKEND_URL || 'http://localhost:8080';
 const OUT = path.resolve(__dirname, '../output/playwright/purchase-flow');
 fs.mkdirSync(OUT, { recursive: true });
@@ -71,11 +71,11 @@ async function call(page, url, body, method) {
     }
   }
 }
-/* SPA hash navigation — product pages intentionally reload on route change,
+/* SPA path navigation — product pages intentionally reload on route change,
  * so tolerate the destroyed context and wait for the target URL to settle */
-async function navigateHash(page, hash) {
-  await page.evaluate(h => { location.hash = h }, hash)
-  await page.waitForURL(`**#${hash}`, { timeout: 15000 })
+async function navigateHash(page, path) {
+  await page.evaluate(p => { history.pushState(null, '', p); dispatchEvent(new PopStateEvent('popstate')) }, path)
+  await page.waitForURL(`**${path}`, { timeout: 15000 })
   // Existing legacy teardown reloads at 120 ms; URL changes precede it.
   await page.waitForTimeout(250)
   await page.waitForLoadState('domcontentloaded')
@@ -139,7 +139,7 @@ async function run() {
 
   try {
     /* ---------- 1. challenges page: connect + sign in ---------- */
-    await page.goto(BASE + '/#/en/challenges');
+    await page.goto(BASE + '/en/challenges');
     await page.waitForTimeout(3000);
     await connect(page);
     await signIn(page);
@@ -224,7 +224,7 @@ async function run() {
     await shot(page, 'withdrawals');
 
     /* ---------- 8. profile editing (name + avatar) ---------- */
-    await page.goto(BASE + '/#/en/challenges');
+    await page.goto(BASE + '/en/challenges');
     await page.waitForTimeout(2500);
     if (!await page.getByRole('button', { name: 'Account', exact: true, includeHidden: true }).count()) {
       await connect(page);

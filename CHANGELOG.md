@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- Clean SEO-friendly URLs: the public site now uses browser-history routes at
+  the domain root (`/fa/challenges`, `/en/faq`) instead of
+  `/react/#/fa/challenges`. The `/react` document prefix is permanently
+  redirected (308) and old `#/…` bookmarks are recovered client-side by a
+  pre-paint normalizer (the hash never reaches the server), preserving locale
+  and query parameters. APIs, websockets and static assets are unaffected;
+  cached legacy shells keep loading their `/react/assets/…` files.
+- Branded loading experience: one shared Openfund-mark loader covers the
+  genuine boot window and locale transitions. A pre-paint script sets
+  `lang`/`dir` (and theme) before first paint so a language switch can never
+  show Persian text in an LTR layout (or the reverse); the legacy landing
+  loads its stylesheet before first paint instead of after the CMS fetch.
+  Fast transitions stay loader-free (short display threshold), and backstops
+  guarantee the loader never sticks. Route-driven SEO head: clean canonicals,
+  `fa`/`en`/`x-default` hreflang on public pages, `noindex` on the
+  authenticated product app.
 - Fix production deploys: GitHub's release download URL returned `504` to
   automated clients on 2026-11-08, so Render builds of v0.4.2 could not read
   the published manifest (three attempts failed; production stayed on

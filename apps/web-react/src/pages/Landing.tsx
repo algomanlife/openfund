@@ -8,6 +8,7 @@ import { RainbowConnect } from '../wallet/RainbowConnect'
 import TelegramCommunity from '../features/community/TelegramCommunity'
 import { CheckoutHost } from '../features/purchase/CheckoutHost'
 import { fetchCmsNavigation, fetchCmsTranslations, fetchCmsLegacyPlans, fetchCmsFaqs, fetchCmsLegal, fetchCmsFooterLinks, invalidateCmsCache } from '../cms/client'
+import { loadingGate } from '../features/loading/BrandedLoading'
 import { chooseTheme, currentTheme } from '../theme'
 
 /**
@@ -34,6 +35,7 @@ import { chooseTheme, currentTheme } from '../theme'
  *    unmount and only cancelled by a re-mount of the SAME page.
  */
 
+const base = import.meta.env.BASE_URL
 const SCRIPTS = [
   'legacy/locale.js',
   'legacy/app.js',
@@ -45,6 +47,12 @@ const STYLES = [
   'legacy/style.css',
   'legacy/wallet.css'
 ]
+
+/* history routing resolves relative URLs against the current route path
+   ('/fa/challenges' + 'assets/…' breaks) — prefix the legacy markup's
+   relative asset URLs with the build base. */
+const landingMarkup = landingBody
+  .replaceAll('src="assets/', `src="${import.meta.env.BASE_URL}assets/`)
 
 const w = () => window as any
 
@@ -66,7 +74,7 @@ const ARROW_MAP: Record<string, string> = {
 }
 function swapArrows() {
   document.querySelectorAll<HTMLAnchorElement>('[data-info-page]').forEach(a => {
-    a.href = `#/${w().ofLang === "en" ? "en" : "fa"}/${a.dataset.infoPage}`
+    a.href = `/${w().ofLang === "en" ? "en" : "fa"}/${a.dataset.infoPage}`
   })
   const en = w().ofLang === 'en'
   document
@@ -127,8 +135,8 @@ export default function Landing() {
       if (!active) return
       const locale = w().ofLang === 'en' ? 'en' : 'fa'
       renderNavigation(document, locale, `/${locale}/challenges`, nav, footer)
-      document.querySelectorAll<HTMLAnchorElement>('header .brand, footer .brand').forEach(a => { a.href = `#/${locale}/home` })
-      document.querySelector<HTMLAnchorElement>('.nav-cta')?.setAttribute('href', `#/${locale}/prop/trade`)
+      document.querySelectorAll<HTMLAnchorElement>('header .brand, footer .brand').forEach(a => { a.href = `/${locale}/home` })
+      document.querySelector<HTMLAnchorElement>('.nav-cta')?.setAttribute('href', `/${locale}/prop/trade`)
     }
     // Run after the classic translation/footer listeners, including late boot.
     const refresh = () => { clearTimeout(timer); timer = setTimeout(render, 80) }
@@ -195,8 +203,23 @@ export default function Landing() {
     /* Only the same mounted DOM may cancel its StrictMode cleanup. */
     if (w().__ofReloadLanding && w().__ofReloadLandingRoot === pageRoot) { clearTimeout(w().__ofReloadLanding); w().__ofReloadLanding = null }
 
+    /* the branded loading gate covers the genuine legacy boot window
+       (CMS content + stylesheet + script chain); released on every exit
+       path so it can never stay stuck */
+    loadingGate.hold('landing-legacy')
+
     if (!w().__ofLegacyLandingLoaded) {
       w().__ofLegacyLandingLoaded = true
+      /* stylesheets start loading at mount — in parallel with the CMS
+         fetch — so the landing never paints visibly unstyled (relative
+         hrefs are resolved against the route path, hence the base) */
+      STYLES.forEach(href => {
+        const l = document.createElement('link')
+        l.rel = 'stylesheet'
+        l.href = base + href
+        l.dataset.page = 'landing'
+        document.head.appendChild(l)
+      })
       /* ALL content layers come from Directus before the legacy runtime
          boots (no hardcoded marketing fallbacks):
            ui_messages  → every landing string (ofT overrides)
@@ -205,6 +228,7 @@ export default function Landing() {
            __ofLegal / __ofFooterLinks, rendered safely by features.js
          Legacy scripts boot AFTER these fetches. */
       void (async () => {
+        try {
         /* fresh content on every landing boot — the page is often reached via
            client-side navigation and must reflect the latest Directus edits */
         invalidateCmsCache()
@@ -225,13 +249,6 @@ export default function Landing() {
         if (faqs) w().__ofFaqs = faqs
         if (legal) w().__ofLegal = legal
         if (footer) w().__ofFooterLinks = footer
-        STYLES.forEach(href => {
-        const l = document.createElement('link')
-        l.rel = 'stylesheet'
-        l.href = href
-        l.dataset.page = 'landing'
-        document.head.appendChild(l)
-      })
       // Fetch trusted bundled scripts first, then a SYNCHRONOUS ordered
       // insertion prevents queued external scripts from booting after React
       // removes the landing (a <script src> element always has a
@@ -240,7 +257,7 @@ export default function Landing() {
       // allows precisely these script contents in the application-document
       // policy — nothing else may run inline.
       const sources = await Promise.all(SCRIPTS.map(async src => {
-        const response = await fetch(src)
+        const response = await fetch(base + src)
         if (!response.ok) throw new Error(`Landing asset unavailable: ${src}`)
         return { src, code: await response.text() }
       })).catch(error => { if (pageRoot?.isConnected) console.error(error); return null })
@@ -261,7 +278,13 @@ export default function Landing() {
         setTimeout(() => { if (pageRoot?.isConnected) { swapArrows(); markCurrentPage() } }, 600)
       }
       kick()
+        } finally {
+          loadingGate.release('landing-legacy')
+        }
       })()
+    } else {
+      /* legacy runtime already booted (StrictMode re-mount) — nothing pending */
+      loadingGate.release('landing-legacy')
     }
 
     initTheme()
@@ -274,7 +297,7 @@ export default function Landing() {
       markCurrentPage()
       const lang = w().ofLang === 'en' ? 'en' : 'fa'
       if (routeLocale && lang !== routeLocale) {
-        navigate(`/${lang}/${isHome ? "home" : "challenges"}${location.hash.includes('?') ? '?' + location.hash.split('?')[1] : ''}`, { replace: true })
+        navigate(`/${lang}/${isHome ? "home" : "challenges"}${location.search}`, { replace: true })
       }
     }, 60)
     addEventListener('of-language', langHandler)
@@ -291,6 +314,7 @@ export default function Landing() {
 
     return () => {
       removeEventListener('of-language', langHandler)
+      loadingGate.release('landing-legacy')
       /* real navigation away: reload to tear the legacy runtime down.
          Cancelled only by a re-mount of THIS page (StrictMode / route return). */
       w().__ofReloadLandingRoot = pageRoot
@@ -304,7 +328,7 @@ export default function Landing() {
       {walletHost && createPortal(<RainbowConnect />, walletHost)}
       {communityHosts.map((host, i) => createPortal(<TelegramCommunity locale={communityLocale} />, host, String(i)))}
       <CheckoutHost />
-      <div dangerouslySetInnerHTML={{ __html: landingBody }} />
+      <div dangerouslySetInnerHTML={{ __html: landingMarkup }} />
     </>
   )
 }

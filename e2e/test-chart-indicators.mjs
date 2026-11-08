@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const base = process.env.TEST_FRONTEND_URL || 'http://127.0.0.1:5197/react';
+const base = process.env.TEST_FRONTEND_URL || 'http://127.0.0.1:5197';
 const live = process.env.CHART_TEST_LIVE === '1';
 const output = 'output/playwright/chart-indicators';
 fs.mkdirSync(output, { recursive: true });
@@ -49,7 +49,7 @@ try {
     const requests = [];
     const captureRequest = request => { if (request.url().includes('/candles')) requests.push(request.url()); };
     page.on('request', captureRequest);
-    await page.goto(`${base}/#/${product === "perpetual" ? "fa" : "en"}/${product}/trade`);
+    await page.goto(`${base}/${product === "perpetual" ? "fa" : "en"}/${product}/trade`);
     let frame = page.frameLocator('iframe.of-trading-workspace');
     await frame.locator('.vela-widget-indicators').waitFor();
     await frame.locator('.vela-widget-indicators').click();
