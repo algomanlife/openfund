@@ -191,9 +191,13 @@ export class Engine {
       ? (await c.query('SELECT * FROM challenge_trailing WHERE challenge_id=$1 FOR UPDATE', [challenge.id])).rows[0]
       : null
     const tradingDays = await countTradingDays(c, acc.id)
+    /* a pass settles every open position now: only possible when each one
+       has a fresh mark AND an open market (else the pass waits) */
+    const settleable = positions.every(p => this.md.tradeable(p.market).ok)
     const evaluation = evaluateRules({
       rules, stage: challenge.stage, startingBalance: challenge.account_size_usd,
       balance: acc.balance, equity: equity?.toString() ?? null,
+      settlementBalance: settleable ? view.settlement_balance : null,
       dayBasis: day ? day.basis : null,
       trailing: trailing ? { peakEquity: trailing.peak_equity } : null,
       tradingDays, expiresAt: challenge.expires_at,
@@ -331,6 +335,7 @@ export class Engine {
         const evaluation = evaluateRules({
           rules, stage: challenge.stage, startingBalance: challenge.account_size_usd,
           balance: account.balance, equity: view.equity,
+          settlementBalance: positions.every(p => this.md.tradeable(p.market).ok) ? view.settlement_balance : null,
           dayBasis: day ? day.basis : null,
           trailing: trailing ? { peakEquity: trailing.peak_equity } : null,
           tradingDays, expiresAt: challenge.expires_at,
@@ -343,8 +348,12 @@ export class Engine {
           drawdown: Decimal.max(0, D(day ? day.peak_equity : view.equity ?? 0).minus(view.equity ?? 0)).toFixed(2),
           daily_drawdown: day ? Decimal.max(0, D(day.basis).minus(view.equity ?? day.last_equity)).toFixed(2) : null,
           maximum_drawdown: Decimal.max(0, D(challenge.account_size_usd).minus(view.equity ?? challenge.account_size_usd)).toFixed(2),
-          daily_limit: rules.dailyLossPct != null ? D(challenge.account_size_usd).times(rules.dailyLossPct).div(100).toFixed(2) : null,
+          /* the enforced daily limit is a share of the day basis (higher of
+             opening balance / opening equity), not of the starting size */
+          daily_limit: rules.dailyLossPct != null ? D(day ? day.basis : challenge.account_size_usd).times(rules.dailyLossPct).div(100).toFixed(2) : null,
+          daily_threshold: rules.dailyLossPct != null ? D(day ? day.basis : challenge.account_size_usd).times(D(1).minus(D(rules.dailyLossPct).div(100))).toFixed(2) : null,
           maximum_limit: rules.maxTotalLossPct != null ? D(challenge.account_size_usd).times(rules.maxTotalLossPct).div(100).toFixed(2) : null,
+          maximum_threshold: evaluation.metrics?.trailing?.floor ?? evaluation.metrics?.maximum?.threshold ?? null,
           drawdown_mode: rules.drawdownMode, trailing_peak: trailing ? D(trailing.peak_equity).toFixed(2) : null,
           trading_days: tradingDays, min_trading_days: rules.minTradingDays ?? 0,
           realized_profit: view.realized_pnl,
@@ -742,8 +751,16 @@ export class Engine {
             order.tp_price?.toFixed(10) || null,
           );
           /* post-fill evaluation: the opening fee and immediate PnL can
-             breach daily/total limits or complete the profit target */
-          if (acc.account_type === 'challenge') await this.#challengeRiskTx(c, acc)
+             breach daily/total limits or complete the profit target.
+             #fill updated the row — evaluate the CURRENT balance/margin. */
+          if (acc.account_type === 'challenge') {
+            const current = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [acc.id])).rows[0]
+            const transition = await this.#challengeRiskTx(c, current)
+            if (transition) {
+              result.challenge_transition = transition
+              result.position = (await this.#positionByIdTx(c, result.position.id)) ?? result.position
+            }
+          }
           await c.query("COMMIT");
         } else {
           await c.query("COMMIT");
@@ -822,7 +839,10 @@ export class Engine {
   }
 
   async #positionById(id) {
-    const { rows } = await this.pool.query('SELECT * FROM trading_positions WHERE id=$1', [id])
+    return this.#positionByIdTx(this.pool, id)
+  }
+  async #positionByIdTx(c, id) {
+    const { rows } = await c.query('SELECT * FROM trading_positions WHERE id=$1', [id])
     return rows[0] ? this.#positionView(rows[0]) : null
   }
 
@@ -966,6 +986,18 @@ export class Engine {
       ).rows) {
         await this.enforceChallengeRisk(id).catch(console.error);
       }
+      /* terminal challenge accounts whose breach settlement could not close
+         a position (market closed / no tradeable quote at that moment):
+         finish the settlement as soon as the market is tradeable again */
+      for (const { id } of (
+        await this.pool.query(
+          `SELECT DISTINCT a.id FROM demo_accounts a
+             JOIN trading_positions p ON p.account_id = a.id AND p.status = 'open'
+            WHERE a.account_type = 'challenge' AND a.status = 'closed'`,
+        )
+      ).rows) {
+        await withAccountLock(id, () => this.#settleOrphans(id)).catch(console.error);
+      }
       const pending = await this.pool.query(
         `SELECT o.*, a.balance, a.used_margin FROM trading_orders o
          JOIN demo_accounts a ON a.id = o.account_id
@@ -1056,6 +1088,25 @@ export class Engine {
       if (acc.account_type === 'challenge') await this.#challengeRiskTx(c, (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [acc.id])).rows[0])
       await c.query('COMMIT')
       this.emit(acc.id)
+    } catch (e) { await c.query('ROLLBACK').catch(() => {}); throw e } finally { c.release() }
+  }
+
+  async #settleOrphans(accountId) {
+    const c = await this.pool.connect()
+    try {
+      await c.query('BEGIN')
+      const acc = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [accountId])).rows[0]
+      if (!acc || acc.account_type !== 'challenge' || acc.status !== 'closed') { await c.query('ROLLBACK'); return }
+      let settled = 0
+      for (const p of (await c.query("SELECT * FROM trading_positions WHERE account_id=$1 AND status='open' ORDER BY id FOR UPDATE", [accountId])).rows) {
+        const m = freshMark(this.md, p.market)
+        if (!m || !this.md.tradeable(p.market).ok) continue
+        await this.#closeTx(c, p, m.mark, 'challenge_settlement')
+        settled++
+      }
+      if (settled) await c.query("INSERT INTO trading_events(account_id,kind,detail) VALUES ($1,'challenge_settlement_completed',$2)", [accountId, JSON.stringify({ settled })])
+      await c.query('COMMIT')
+      if (settled) this.emit(accountId)
     } catch (e) { await c.query('ROLLBACK').catch(() => {}); throw e } finally { c.release() }
   }
 
