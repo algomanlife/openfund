@@ -60,7 +60,15 @@ fs.mkdirSync(output,{recursive:true});
 let server;
 const gate = async (name,command,args=[], overrides={}) => {
   const startedAt=new Date().toISOString();
-  try { await run(command,args,{env:{...env,...overrides}}); stages.push({name,status:'passed',startedAt,finishedAt:new Date().toISOString()}); }
+  try {
+    // Browser journeys race legacy reloads on shared CI runners. Retry those once (logged)
+    // instead of discarding a ~40 minute run; deterministic failures still fail twice.
+    try { await run(command,args,{env:{...env,...overrides}}); }
+    catch (error) {
+      if (!/^test:browser:/.test(String(args[1] || '')) || process.env.RELEASE_NO_BROWSER_RETRY) throw error;
+      console.warn(`::warning::${name} failed once; retrying a single time (${error.message})`);
+      await run(command,args,{env:{...env,...overrides}});
+    } stages.push({name,status:'passed',startedAt,finishedAt:new Date().toISOString()}); }
   catch(error){stages.push({name,status:'failed',startedAt});throw error;}
 };
 try {
