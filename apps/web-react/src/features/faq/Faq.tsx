@@ -7,7 +7,7 @@ import type { FaqCategoryContent, FaqItemContent, LinkRef } from '../../cms/cont
 import { matchesQuery } from './search'
 import './faq.css'
 
-type Locale = 'fa' | 'en'
+type Locale = import('../../i18n/locales').AppLocale
 
 const CATEGORY_GLYPHS: Record<FaqCategoryContent['icon'], string> = {
   start: '⌖', payout: '⇩', rules: '§', partner: '↗', terminal: '▤', verify: '◉', general: '◇',

@@ -87,16 +87,15 @@ const OUT = 'output/playwright/clean-routing';
   check('public page indexable', seo.robots === 'index,follow', String(seo.robots));
   check('hreflang fa/en/x-default present', ['fa', 'en', 'x-default'].every(l => seo.alternates.includes(l)), seo.alternates.join(','));
 
-  /* Added interface locales keep their direction while English editorial
-     content remains the canonical source until translations exist. */
+  /* Added interface locales keep their direction and clean canonicals. */
   await page.goto(`${BASE}/ar/faq`);
   await page.waitForTimeout(800);
   check('Arabic route keeps RTL direction', await page.evaluate(() => document.documentElement.dir) === 'rtl');
-  check('Arabic editorial canonical points to English', await page.evaluate(() => document.querySelector('link[rel="canonical"]')?.href) === `${BASE}/en/faq`);
+  check('Arabic editorial canonical is the clean Arabic URL', await page.evaluate(() => document.querySelector('link[rel="canonical"]')?.href) === `${BASE}/ar/faq`);
   await page.goto(`${BASE}/ar/home`);
-  await page.locator('.hero').waitFor();
+  await page.locator('.home-gateway').waitFor();
   await page.waitForTimeout(900);
-  check('Arabic landing keeps its interface direction after classic script boot', await page.evaluate(() => document.documentElement.lang === 'ar' && document.documentElement.dir === 'rtl'));
+  check('Arabic Home keeps its interface direction', await page.evaluate(() => document.documentElement.lang === 'ar' && document.documentElement.dir === 'rtl'));
 
   /* private product routes are not indexable */
   await page.goto(`${BASE}/fa/prop/dashboard`);

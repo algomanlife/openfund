@@ -1,3 +1,4 @@
+import { intlLocale } from '../../i18n/locales'
 import { useState } from "react";
 import { useTerminal } from "./TerminalContext";
 import { money } from "./model";
@@ -91,7 +92,7 @@ export function PnlCalendar({
         </button>
         <b>
           {new Date(`${month}-01T00:00:00Z`).toLocaleDateString(
-            `${locale === "fa" ? "fa-IR" : "en-US"}-u-ca-gregory`,
+            `${intlLocale(locale)}-u-ca-gregory`,
             { month: "long", year: "numeric", timeZone: "UTC" },
           )}{" "}
           · UTC
@@ -120,7 +121,10 @@ export function PnlCalendar({
               "جمعه",
               "شنبه",
             ]
-          : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+          : locale === "en"
+            ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+            /* ar / ru / zh-CN: the platform's own weekday names (Sunday first) */
+            : Array.from({ length: 7 }, (_, i) => new Intl.DateTimeFormat(intlLocale(locale), { weekday: "short", timeZone: "UTC" }).format(new Date(Date.UTC(2026, 10, 1 + i))))
         ).map((d) => (
           <small key={d}>{d}</small>
         ))}

@@ -6,7 +6,7 @@ import { setupWorkspaceLayout } from "./workspaceLayout";
 import { fetchCmsTranslations } from "../../cms/client";
 import { useTerminal } from "./TerminalContext";
 import { api, type Product } from "./model";
-import { currentLocale, dirOf, pick } from "../../i18n/locales";
+import { currentLocale, dirOf, pick, type AppLocale } from "../../i18n/locales";
 
 /** Product adapters share one rendering/interaction surface. Never construct
  * a local TradingProvider or invent a balance while account data is absent. */
@@ -146,12 +146,12 @@ function useAccountAdapter(product: Product, context: any) {
     [product, signed, context?.accounts?.[0]?.type],
   );
 }
-function workspaceMarkup() {
+function workspaceMarkup(locale: AppLocale) {
   const template = document.createElement("template");
   template.innerHTML = body;
   const compact = document.createElement("nav");
   compact.className = "workspace-views";
-  compact.setAttribute("aria-label", "Workspace views");
+  compact.setAttribute("aria-label", pick(locale, 'نمایش‌های محیط کار', 'Workspace views'));
   compact.innerHTML = [
     ["chart", "نمودار", "Chart"], ["book", "دفتر مجازی", "Book"],
     ["trade", "سفارش", "Order"], ["activity", "فعالیت حساب", "Activity"],
@@ -218,7 +218,7 @@ function workspaceMarkup() {
   retry.id = "account-retry";
   retry.className = "ghost-btn";
   retry.textContent = "↻";
-  retry.setAttribute("aria-label", "Refresh account");
+  retry.setAttribute("aria-label", pick(locale, 'تازه‌سازی حساب', 'Refresh account'));
   retry.onclick = null;
   template.content.querySelector("#bt-empty")?.appendChild(retry);
   return template.innerHTML;
@@ -318,7 +318,7 @@ export function SharedTradingTerminal() {
        logic itself is the external legacy/react-boot.js so the strict
        script-src 'self' CSP holds for the whole terminal */
     const bootData = safe({ locale, product, translations });
-    return `<!doctype html><html lang="${locale}" dir="${dirOf(locale)}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><style>html{color-scheme:only dark}html[data-theme="light"]{color-scheme:only light}</style><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>${workspaceStyles}</style></head><body><script type="application/json" id="of-boot-data">${bootData}</script>${workspaceMarkup()}<script src="legacy/react-boot.js"></script>${["legacy/gains-adapter.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/market-depth.js", "legacy/share-card.js", "legacy/terminal-locales.js", "legacy/terminal.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
+    return `<!doctype html><html lang="${locale}" dir="${dirOf(locale)}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><style>html{color-scheme:only dark}html[data-theme="light"]{color-scheme:only light}</style><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>${workspaceStyles}</style></head><body><script type="application/json" id="of-boot-data">${bootData}</script>${workspaceMarkup(locale)}<script src="legacy/react-boot.js"></script>${["legacy/gains-adapter.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/market-depth.js", "legacy/share-card.js", "legacy/terminal-locales.js", "legacy/terminal.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
   }, [cms, product]);
   return (
     <>

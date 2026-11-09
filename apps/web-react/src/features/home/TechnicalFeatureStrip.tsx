@@ -1,3 +1,5 @@
+import { pick } from '../../i18n/locales'
+import { translateTree } from '../../i18n/localize'
 import { useRef, useState } from 'react'
 import landingBody from '../../pages/landing-body.html?raw'
 
@@ -25,14 +27,14 @@ export function TechnicalFeatureIllustration({ index }: { index: number }) {
   return <div className={`technical-art technical-art-${index}`} aria-hidden="true" dangerouslySetInnerHTML={{ __html: originals[index]?.svg || '' }} />
 }
 
-export default function TechnicalFeatureStrip({ locale }: { locale: 'fa' | 'en' }) {
-  const features = locale === 'fa' ? featuresFa : featuresEn
+export default function TechnicalFeatureStrip({ locale }: { locale: import('../../i18n/locales').AppLocale }) {
+  const features = locale === 'fa' ? featuresFa : locale === 'en' ? featuresEn : translateTree(locale, featuresEn) as typeof featuresEn
   const dialog = useRef<HTMLDialogElement>(null)
   const trigger = useRef<HTMLButtonElement | null>(null)
   const [selected, setSelected] = useState(0)
   const closeDetail = () => { dialog.current?.close(); trigger.current?.focus() }
   return <section className="technical-features" aria-labelledby="technical-title">
-    <div className="technical-heading"><h2 id="technical-title">{locale === 'fa' ? 'افق فنی معاملات پرپچوال' : 'Perpetual trading technical horizon'}</h2><span>{locale === 'fa' ? 'طرح پیشنهادی · نیازمند تأیید محصول' : 'Proposed design · product approval required'}</span></div>
+    <div className="technical-heading"><h2 id="technical-title">{pick(locale, 'افق فنی معاملات پرپچوال', 'Perpetual trading technical horizon')}</h2><span>{pick(locale, 'طرح پیشنهادی · نیازمند تأیید محصول', 'Proposed design · product approval required')}</span></div>
     <div className="technical-grid">
       {features.map((feature,index) => <button type="button" key={feature.title} className="technical-feature" aria-haspopup="dialog" onClick={event => {
         trigger.current = event.currentTarget
@@ -48,11 +50,11 @@ export default function TechnicalFeatureStrip({ locale }: { locale: 'fa' | 'en' 
       // the modal is open; Escape retains the native dialog close behavior.
       if (event.key === 'Tab') { event.preventDefault(); dialog.current?.querySelector('button')?.focus() }
     }} onClick={event => { if (event.target === dialog.current) closeDetail() }}>
-      <span className="technical-status">{locale === 'fa' ? 'معاملات پرپچوال · طرح پیشنهادی' : 'Perpetual trading · proposed design'}</span>
+      <span className="technical-status">{pick(locale, 'معاملات پرپچوال · طرح پیشنهادی', 'Perpetual trading · proposed design')}</span>
       <h2 id="feature-dialog-title">{features[selected].title}</h2>
       <p id="feature-dialog-detail">{features[selected].detail}</p>
       {locale === 'fa' && <><p className="technical-source-label">متن مرجع · نیازمند تأیید محصول پیش از انتشار</p><blockquote>{originals[selected]?.copy}</blockquote></>}
-      <button type="button" autoFocus onClick={closeDetail}>{locale === 'fa' ? 'بستن' : 'Close'}</button>
+      <button type="button" autoFocus onClick={closeDetail}>{pick(locale, 'بستن', 'Close')}</button>
     </dialog>
   </section>
 }

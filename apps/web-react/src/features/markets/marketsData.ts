@@ -1,3 +1,4 @@
+import { localizeRecords } from '../../i18n/localize'
 /* Markets directory — pure, locale-independent data logic.
  * The Gains Network public API is the authoritative market source (verified
  * 2026-10-31: GET /markets 488 symbols, /prices, WS prices channel). Fields
@@ -27,13 +28,13 @@ export type CategoryKey = 'crypto' | 'forex' | 'stocks' | 'indices' | 'commoditi
 
 export const CATEGORY_ORDER: CategoryKey[] = ['crypto', 'forex', 'stocks', 'indices', 'commodities']
 
-export const CATEGORY_LABELS: Record<CategoryKey, { en: string; fa: string }> = {
+export const CATEGORY_LABELS: Record<CategoryKey, { en: string; fa: string }> = localizeRecords({
   crypto: { en: 'Crypto', fa: 'رمزارز' },
   forex: { en: 'Forex', fa: 'فارکس' },
   stocks: { en: 'Stocks', fa: 'سهام' },
   indices: { en: 'Indices', fa: 'شاخص‌ها' },
   commodities: { en: 'Commodities', fa: 'کالا' },
-}
+})
 
 /* Persian/Arabic digits and stray spacing are normalised so English symbols
    can be typed even in the Persian interface. */

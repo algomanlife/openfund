@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Navigate, useParams, useLocation } from 'react-router-dom'
+import { backendUrl } from '../../session/useOpenfundSession'
 import { useInformationLocale } from '../information/InformationShell'
 import { text } from '../information/content'
 
@@ -28,8 +29,15 @@ export default function ReferralEntry() {
     applied.current = true
     if (isValidCode(code)) {
       try { document.cookie = `of_ref=${encodeURIComponent(code)};max-age=${MAX_AGE};path=/;samesite=lax` } catch { /* private browsing */ }
+      /* optional Brand Ambassador campaign tag (?c=…) and an anonymous traffic
+         beacon; the backend stores only a hashed daily visitor fingerprint */
+      const campaign = new URLSearchParams(location.search).get('c')
+      if (campaign && /^[\w-]{1,40}$/.test(campaign)) {
+        try { document.cookie = `of_cmp=${encodeURIComponent(campaign.toLowerCase())};max-age=${MAX_AGE};path=/;samesite=lax` } catch { /* private browsing */ }
+      }
+      void fetch(`${backendUrl()}/ambassador/visit`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code, campaign }) }).catch(() => {})
     }
-  }, [code])
+  }, [code, location.search])
 
   return <Navigate to={`/${locale}/home`} replace state={{ from: location.pathname }} />
 }

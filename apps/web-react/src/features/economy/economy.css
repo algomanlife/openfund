@@ -1,0 +1,80 @@
+/* Economy, Brand Ambassador and Coach pages. Colors come only from the
+   shared theme variables, so dark and light themes both apply. */
+.information-page .econ-section{padding-top:84px;scroll-margin-top:95px}
+.information-page .econ-section .section-top h2{font-size:34px}
+.information-page .econ-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.information-page .econ-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.information-page .econ-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.information-page .econ-kpi{border:1px solid var(--line);border-radius:14px;padding:20px;min-width:0;background:var(--surface)}
+.information-page .econ-kpi-label{font-size:11px;color:var(--muted);line-height:1.6;display:block}
+.information-page .econ-kpi strong{display:block;font-size:26px;font-weight:500;margin-block:12px 6px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.information-page .econ-kpi p{font-size:11px;color:var(--muted);line-height:1.7}
+.information-page .econ-kpi.good strong{color:var(--mint)}
+.information-page .econ-kpi.warn strong{color:#e8b583}
+.information-page .econ-panel{border:1px solid var(--line);border-radius:16px;padding:24px;background:var(--surface);min-width:0}
+.information-page .econ-panel h3{font-size:17px;margin-bottom:10px}
+.information-page .econ-panel+.econ-panel,.information-page .econ-grid+.econ-panel,.information-page .econ-panel+.econ-grid{margin-top:16px}
+.information-page .econ-status{display:inline-flex;align-items:center;gap:6px;font-size:11px;border:1px solid var(--line);border-radius:99px;padding:3px 10px;white-space:nowrap}
+.information-page .econ-status::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.information-page .econ-status.ok{color:var(--mint)}
+.information-page .econ-status.warn{color:#e8b583}
+.information-page .econ-status.off{color:var(--muted)}
+.information-page .econ-status.info{color:var(--body)}
+.information-page .econ-source{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.8;overflow-wrap:anywhere}
+.information-page .econ-source>span{color:var(--body)}
+.information-page .econ-state{border:1px dashed var(--line);border-radius:12px;padding:22px;color:var(--muted);font-size:13px;line-height:1.9}
+.information-page .econ-state.error{border-color:#e8948366;color:#e89483}
+.information-page .econ-empty{color:var(--muted);font-size:12px;padding-block:14px}
+.information-page .econ-bars{margin:0}
+.information-page .econ-bars-plot{display:flex;align-items:flex-end;gap:6px;height:150px;border-bottom:1px solid var(--line);padding-top:10px}
+.information-page .econ-bar{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px}
+.information-page .econ-bar i{display:block;width:100%;max-width:34px;background:var(--mint);border-radius:4px 4px 0 0;opacity:.85}
+.information-page .econ-bar span{font-size:9px;color:var(--muted)}
+.information-page .econ-bars figcaption{font-size:11px;color:var(--muted);margin-top:8px}
+.information-page .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.information-page .econ-list{display:grid;gap:0}
+.information-page .econ-list>div{display:flex;justify-content:space-between;gap:16px;padding-block:10px;border-bottom:1px solid var(--line);font-size:13px;color:var(--body)}
+.information-page .econ-list>div>span:last-child{font-variant-numeric:tabular-nums;text-align:end}
+.information-page .econ-list>div.total{color:var(--white);font-weight:600}
+.information-page .econ-address{font-family:ui-monospace,monospace;font-size:12px;overflow-wrap:anywhere;color:var(--white)}
+.information-page .econ-flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;counter-reset:flow}
+.information-page .econ-flow>div{border:1px solid var(--line);border-radius:12px;padding:16px;font-size:12px;line-height:1.8;color:var(--body);position:relative;background:var(--surface)}
+.information-page .econ-flow>div::before{counter-increment:flow;content:counter(flow,decimal-leading-zero);display:block;color:var(--mint);font-size:11px;margin-bottom:6px}
+.information-page .econ-flow>div strong{display:block;color:var(--white);font-size:13px;margin-bottom:4px}
+.information-page .econ-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}
+.information-page .econ-form .wide{grid-column:1/-1}
+.information-page .econ-field{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--body);min-width:0}
+.information-page .econ-field small{color:var(--muted);font-size:11px;line-height:1.6}
+.information-page .econ-field :is(input,textarea,select){background:var(--bg,transparent);color:var(--white);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font:inherit;font-size:13px;min-width:0;width:100%}
+.information-page .econ-field textarea{min-height:92px;resize:vertical}
+.information-page .econ-field :is(input,textarea,select):focus-visible{outline:2px solid var(--mint);outline-offset:1px}
+.information-page .econ-check{display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:1.8;color:var(--body)}
+.information-page .econ-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.information-page .econ-actions button[disabled]{opacity:.5;cursor:not-allowed}
+.information-page .econ-msg{font-size:12px;line-height:1.8}
+.information-page .econ-msg.error{color:#e89483}
+.information-page .econ-msg.ok{color:var(--mint)}
+.information-page .econ-check-list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.information-page .econ-check-list li{display:flex;gap:10px;align-items:baseline;font-size:13px;color:var(--body);line-height:1.7}
+.information-page .econ-check-list li::before{content:'○';color:var(--muted)}
+.information-page .econ-check-list li.ok::before{content:'●';color:var(--mint)}
+.information-page .econ-calc{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px}
+.information-page .econ-calc .econ-form{grid-template-columns:repeat(2,minmax(0,1fr))}
+.information-page .econ-banner{border:1px solid #e8b58355;background:#e8b5830d;border-radius:10px;padding:14px 18px;font-size:12px;line-height:1.9;color:var(--body);margin-bottom:16px}
+.information-page .econ-sources li{font-size:12px;line-height:1.9;color:var(--body);margin-bottom:12px}
+.information-page .econ-sources li a{color:var(--mint)}
+.information-page .econ-subnav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:22px}
+.information-page .econ-subnav a{font-size:12px;border:1px solid var(--line);border-radius:99px;padding:6px 14px;color:var(--body)}
+.information-page .econ-subnav a[aria-current=page]{color:var(--mint);border-color:var(--mint)}
+@media (max-width:1000px){
+  .information-page .econ-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .information-page .econ-flow{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .information-page .econ-calc{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .information-page .econ-grid,.information-page .econ-grid.three,.information-page .econ-grid.two,.information-page .econ-flow,.information-page .econ-form,.information-page .econ-calc .econ-form{grid-template-columns:1fr}
+  .information-page .econ-section{padding-top:56px}
+  .information-page .econ-section .section-top h2{font-size:26px}
+  .information-page .econ-kpi strong{font-size:22px}
+  .information-page .econ-panel{padding:18px}
+}

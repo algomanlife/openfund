@@ -29,7 +29,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | openfund-cms | Directus administrator |
 | `PUBLIC_URL` | openfund-cms | e.g. `https://openfund-cms.onrender.com` |
 | `CMS_PUBLIC_URL` | openfund | Preferred public browser CMS origin, e.g. `https://cms.openfi.cloud`. Credential-free HTTPS origin; served by `/react/runtime-config.js`. |
-| `VITE_WALLETCONNECT_PROJECT_ID` | openfund (runtime, public) | optional; full remote wallet list (cloud.reown.com, free) |
+| `VITE_WALLETCONNECT_PROJECT_ID` | openfund (runtime, public) | optional; enables mobile wallets (WalletConnect QR / deep link) in the wallet picker. Create a project at cloud.reown.com and list every serving origin in its allowed domains. Unset: browser (EIP-6963) wallets only, and the picker says mobile connection is not configured. Setting it also allows the WalletConnect Verify frame in the CSP. Public value, but never committed |
 | `VITE_TELEGRAM_COMMUNITY_URL` | openfund (runtime, public) | optional owner-verified HTTPS `t.me` community or invitation URL; blank/invalid means a non-navigating Coming Soon action. URL validation does not establish ownership. |
 | `VITE_DISCORD_COMMUNITY_URL` | openfund (runtime, public) | optional owner-verified HTTPS Discord invitation; blank/invalid means Coming Soon. URL validation does not establish ownership. |
 | `VITE_INSTAGRAM_COMMUNITY_URL` | openfund (runtime, public) | optional owner-verified HTTPS Instagram profile; blank/invalid means Coming Soon. URL validation does not establish ownership. |
@@ -42,6 +42,14 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `INTERNAL_API_TOKEN` | openfund | optional constant-time token guarding the test-only `/internal` seams (defense in depth; production never mounts them) |
 | `VITE_DEPAY_WIDGET` | openfund (runtime, public) | optional; `1` enables the DePay checkout widget |
 | `VITE_DEPAY_WIDGET_URL` | openfund (runtime, public) | approved DePay widget bundle URL; the widget stays hidden without both variables |
+| `TREASURY_WALLET_ADDRESS` | openfund | public Openfund Treasury address read by the backend scheduler. Unset = `Not configured`; allocatable capital stays `Unknown`. Never a private key or seed phrase. See [Treasury](../economy/TREASURY.md). |
+| `TREASURY_CHAIN_ID` | openfund | treasury chain id (supported: 1, 42161, 8453, 11155111, 421614); defaults to `PURCHASE_PAYMENT_CHAIN` |
+| `TREASURY_ASSETS` | openfund | JSON list of `{symbol, address \| "native", decimals, priceFeed?}`; an asset without a valid Chainlink `priceFeed` is shown unpriced and excluded from the USD total |
+| `TREASURY_RPC_URL` | openfund | optional RPC endpoint for treasury reads (unset = chain default public RPC) |
+| `TREASURY_REFRESH_MINUTES` | openfund | snapshot interval, clamped to 60–120 (default 90) |
+| `TREASURY_PRICE_MAX_AGE_MINUTES` | openfund | maximum Chainlink answer age before an asset is treated as unpriced (default 1500) |
+| `LIVE_EXECUTION_ADAPTER` | openfund | `none` (default, every live order refused), `sandbox` (non-monetary, refused when `NODE_ENV=production`), `gains` (reserved; reports `adapter_unavailable`). See [Live Market Access](../economy/LIVE_MARKET_ACCESS.md). |
+| `LIVE_SETTLEMENT_ADAPTER` | openfund | `none` (default, settlements stay `pending`) or `sandbox` (non-monetary, refused in production) |
 
 ## Local development defaults (code fallbacks — no .env required)
 

@@ -29,7 +29,7 @@
   }
   const denomination = document.createElement("select");
   denomination.id = "book-denomination";
-  denomination.setAttribute("aria-label", "Depth denomination");
+  denomination.setAttribute("aria-label", ({fa:'واحد عمق بازار',ar:'وحدة عمق السوق',ru:'Единица глубины рынка','zh-CN':'市场深度单位'})[document.documentElement.lang] || 'Depth denomination');
   for (const value of ["USD", "Base"]) {
     const o = document.createElement("option");
     o.value = value;

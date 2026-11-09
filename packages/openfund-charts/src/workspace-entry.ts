@@ -3,6 +3,10 @@ import { PineWorkerEngine } from '@luxalgo/vela-pinets';
 import { createCatalog, createLibraryResolver } from './pine-sources.mjs';
 import { preserveUnknownVolume } from './pine-data.mjs';
 import { registerRendererDefaults } from '../../../vendor/vela/src/plugin';
+import { registerLocale } from '../../../vendor/vela/src/core/i18n/registry';
+import ar from '../../../vendor/vela/src/locales/ar';
+import ru from '../../../vendor/vela/src/locales/ru';
+import zhHans from '../../../vendor/vela/src/locales/zh-Hans';
 import openAlgo from '../../../indicators/Open algo v5.pine';
 import pac from '../../../indicators/pac v1.pine';
 import smc from '../../../indicators/smc-v1.pine';
@@ -16,6 +20,21 @@ const importResolver = createLibraryResolver({
 
 // The host displays the equivalent linked NOTICE attribution in terminal status.
 registerRendererDefaults({ attribution: false });
+registerLocale(ar);
+registerLocale(ru);
+registerLocale(zhHans);
+registerLocale({locale:'fa',direction:'rtl',messages:{
+  'chart.legend.showLegend':'نمایش راهنمای اندیکاتورها',
+  'chart.legend.hideLegend':'پنهان کردن راهنمای اندیکاتورها',
+  'chart.legend.indicators':'اندیکاتورها',
+  'chart.legend.settings':'تنظیمات',
+  'chart.legend.remove':'حذف اندیکاتور',
+  'chart.pane.mainChart':'نمودار اصلی',
+  'chart.paneControls.collapse':'جمع کردن پنل',
+  'chart.paneControls.expand':'باز کردن پنل',
+  'chart.paneControls.maximize':'بزرگ‌نمایی پنل',
+  'chart.paneControls.restore':'بازگردانی پنل',
+}});
 
 export const indicators = createCatalog(openAlgo, pac, smc);
 export const createPineEngine = () => preserveUnknownVolume(new PineWorkerEngine({

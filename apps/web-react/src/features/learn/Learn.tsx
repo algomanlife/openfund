@@ -5,7 +5,7 @@ import { useSiteLibrary } from '../../cms/siteContent'
 import type { LearningPathContent } from '../../cms/contentTypes'
 import './learn.css'
 
-type Locale = 'fa' | 'en'
+type Locale = import('../../i18n/locales').AppLocale
 
 const LEVEL_LABELS: Record<LearningPathContent['level'], ReturnType<typeof text>> = {
   foundation: text('Foundation', 'پایه'),
