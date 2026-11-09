@@ -30,6 +30,8 @@ export const ru: Record<string, string> = {
   'Open menu': 'Открыть меню',
   'Openfund documents': 'Документы Openfund',
   'White paper · coming soon': 'White paper · скоро',
+  'Read the whitepaper': 'Читать White paper',
+  'Whitepaper': 'White paper',
   'Download brandbook ↓': 'Скачать брендбук ↓',
   'Protocol proposal · coming soon': 'Предложение протокола · скоро',
   'Market data & liquidity depth': 'Рыночные данные и глубина ликвидности',
