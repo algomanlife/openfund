@@ -28,6 +28,10 @@ import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
 import { purchaseRoutes, confirmPurchase } from './purchases.js'
 import { adminRoutes } from './admin.js'
+import { partnerRoutes, partnerAdminRoutes, attributeAmbassador } from './partners.js'
+import { economyRoutes, economyAdminRoutes } from './economy.js'
+import { liveRoutes, liveAdminRoutes, liveConfig, processSettlements, settlementAdapter } from './live-funding.js'
+import { Treasury } from './treasury.js'
 
 const cfg = {
   port: Number(process.env.PORT || 8080),
@@ -360,6 +364,9 @@ app.post("/auth/verify", limit(60), async (req, res) => {
     if (knownUser.rowCount === 0) {
       const attributed = await attributeReferral(pool, req, { newUserId: user.id, walletAddress: address });
       if (attributed) await audit('referral_attributed', user.id, req, { code: sanitizeCookieCode(req) });
+      /* Brand Ambassador attribution (approved ambassador codes only) */
+      if (await attributeAmbassador(pool, req, { newUserId: user.id }))
+        await audit('ambassador_attributed', user.id, req, { code: sanitizeCookieCode(req) });
     }
 
     const sid = newSessionId();
@@ -690,6 +697,16 @@ app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) 
 app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
 app.use(referralRoutes({ pool, requireAuth, audit }))
 app.use(purchaseRoutes({ pool, requireAuth, audit }))
+/* Economy, Brand Ambassador, Verified Coach and Live Market Access */
+const treasury = new Treasury(pool)
+const live = liveConfig()
+const economy = economyRoutes({ pool, treasury })
+app.use(economy)
+app.use(partnerRoutes({ pool, requireAuth, audit, limit }))
+app.use(liveRoutes({ pool, requireAuth, treasury, marketData, limit, config: live }))
+app.use('/admin/economy', economyAdminRoutes({ pool, treasury, onChange: () => economy.invalidate() }))
+app.use('/admin/partners', partnerAdminRoutes({ pool }))
+app.use('/admin/live', liveAdminRoutes({ pool, treasury, config: live }))
 app.use('/admin', adminRoutes({ pool, audit }))
 
 /* Public release identity contains build metadata only, never runtime secrets. */
@@ -775,7 +792,14 @@ setInterval(() => {
     .then(r => { if (r.rowCount) console.log(`[purchases] ${r.rowCount} pending order(s) expired`) })
     .catch(() => {})
 }, 60_000).unref()
+/* treasury snapshots (60–120 min schedule) and live settlement retries */
+treasury.start()
+const settlementTimer = setInterval(() => {
+  const adapter = settlementAdapter(live.settlement)
+  if (adapter) processSettlements(pool, adapter).catch(e => console.error('[settlements]', e.message))
+}, 60_000)
+settlementTimer.unref()
 let shuttingDown=false
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;engine.stop();marketData.stop();server.close(()=>pool.end()) }
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;engine.stop();marketData.stop();treasury.stop();clearInterval(settlementTimer);server.close(()=>pool.end()) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)
