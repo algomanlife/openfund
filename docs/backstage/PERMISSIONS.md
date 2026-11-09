@@ -15,6 +15,14 @@ has not yet been migrated or rechecked. Apply only after backup/schema review.
 The historical section below describes the older intended permission model;
 the public production policy is not yet verified against this correction.
 
+## Whitepaper collections
+
+`apply_schema.py` grants the public policy read access to published
+`whitepaper_documents`, `whitepaper_chapters`, `whitepaper_datasets` and
+`whitepaper_references`, and to their translation rows only when the parent is
+published. Writing remains administrator-only. Production has not yet been
+migrated with these collections.
+
 ## Current state (operational now)
 
 | Role / policy | Access |

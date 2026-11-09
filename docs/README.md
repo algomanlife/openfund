@@ -14,7 +14,7 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Website
 
-[Website expansion spec](website/WEBSITE_EXPANSION.md) — FAQ hub, Tools Center, Learning Center, Growth Partner · [Expansion audit](research/WEBSITE_EXPANSION_AUDIT.md)
+[Website expansion spec](website/WEBSITE_EXPANSION.md) — FAQ hub, Tools Center, Learning Center, Growth Partner · [Official Whitepaper v1.0](website/WHITEPAPER.md) · [Expansion audit](research/WEBSITE_EXPANSION_AUDIT.md)
 
 ## Trading
 
