@@ -10,7 +10,7 @@ import { contentLocale, normalizeLocale } from '../../i18n/locales'
    English editorial content until translated, so they canonicalize to the
    English path. Each serving origin keeps its own canonical domain. */
 
-const PUBLIC_ROUTES = /^\/(?:fa|en|ar|ru|zh-CN)\/(?:home|challenges|markets|rulebook|transparency|faq|tools|learn|glossary|referral)(?:\/|$)/
+const PUBLIC_ROUTES = /^\/(?:fa|en|ar|ru|zh-CN)\/(?:home|challenges|markets|rulebook|transparency|faq|tools|learn|glossary|referral|whitepaper)(?:\/|$)/
 
 const isPublic = (pathname: string) => PUBLIC_ROUTES.test(pathname)
 const routeLocale = (pathname: string) => normalizeLocale(pathname.split('/')[1], 'fa')
