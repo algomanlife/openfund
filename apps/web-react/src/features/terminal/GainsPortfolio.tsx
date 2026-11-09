@@ -1,3 +1,4 @@
+import { intlLocale } from '../../i18n/locales'
 import { Curve, PnlCalendar } from "./Analytics";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -236,7 +237,7 @@ export default function GainsPortfolio() {
                     <>
                       <td>
                         {new Date(r.date).toLocaleString(
-                          locale === "fa" ? "fa-IR" : "en-US",
+                          intlLocale(locale),
                         )}
                       </td>
                       <td>{r.market}</td>
@@ -402,7 +403,7 @@ export function GainsAnalytics() {
           <p key={date}>
             <time>
               {new Date(date + "T00:00:00Z").toLocaleDateString(
-                locale === "fa" ? "fa-IR" : "en-US",
+                intlLocale(locale),
                 { timeZone: "UTC" },
               )}
             </time>{" "}

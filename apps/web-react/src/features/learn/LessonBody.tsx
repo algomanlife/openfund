@@ -1,7 +1,7 @@
 import { text } from '../information/content'
 import type { LessonBlock } from '../../cms/contentTypes'
 
-type Locale = 'fa' | 'en'
+type Locale = import('../../i18n/locales').AppLocale
 
 /** renders the content blocks exactly as authored, in the reader's language */
 export default function LessonBody({ blocks, locale }: { blocks: LessonBlock[]; locale: Locale }) {
@@ -42,7 +42,7 @@ export function blockAnchor(block: Extract<LessonBlock, { type: 'h2' }>): string
 }
 
 /** table of contents entries derived from the h2 blocks, in the reader's language */
-export function lessonToc(blocks: LessonBlock[], locale: 'fa' | 'en'): Array<{ id: string; label: string }> {
+export function lessonToc(blocks: LessonBlock[], locale: Locale): Array<{ id: string; label: string }> {
   const entries: Array<{ id: string; label: string }> = []
   for (const block of blocks) {
     if (block.type === 'h2') entries.push({ id: blockAnchor(block), label: block.text[locale] })

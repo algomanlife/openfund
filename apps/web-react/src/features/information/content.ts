@@ -1,8 +1,17 @@
-export type Locale = 'en' | 'fa'
-export type Localized<T = string> = Record<Locale, T>
-export const text = (en: string, fa: string): Localized => ({ en, fa })
+import { intlLocale, pickRecord, type AppLocale } from '../../i18n/locales'
+import { localizeRecords } from '../../i18n/localize'
+
+/** Page locale — any supported locale (fa, en, ar, ru, zh-CN). */
+export type Locale = AppLocale
+/** Source languages of bilingual records; added locales are resolved by `tx`. */
+export type SourceLocale = 'en' | 'fa'
+export type Localized<T = string> = Record<SourceLocale, T>
+/** bilingual source record; `record[locale]` also resolves ar / ru / zh-CN (see i18n/localize) */
+export const text = (en: string, fa: string): Localized => localizeRecords({ en, fa })
+/** `{fa, en}` record → text for `locale` (added locales: reviewed translation of the English source). */
+export const tx = (locale: AppLocale, value: Localized | { fa?: string; en?: string } | null | undefined) => pickRecord(locale, value)
 export const number = (value: number, locale: Locale, options?: Intl.NumberFormatOptions) =>
-  new Intl.NumberFormat(locale === 'fa' ? 'fa-IR' : 'en-US', options).format(value)
+  new Intl.NumberFormat(intlLocale(locale), options).format(value)
 /** Public website pages — one authoritative navigation definition (menu order included). */
 export type InfoPage = 'rulebook' | 'transparency' | 'revenue-model' | 'live-market-access' | 'ambassador' | 'coach' | 'markets' | 'challenges' | 'home' | 'faq' | 'referral' | 'tools' | 'learn'
 export const labels = {

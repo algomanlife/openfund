@@ -53,6 +53,7 @@ function mount(container, opts){
      Timeframe / style / indicators / undo-redo stay (left side),
      alerts / panels / screenshot on the right. */
   const ws = new WLib.VelaWorkspace(el, {
+    locale: opts.locale === 'zh-CN' ? 'zh-Hans' : (opts.locale || 'en'),
     layout: false,                    /* single-chart mode */
     symbol: 'gains:' + (opts.symbol || 'BTC/USD'),
     timeframe: canonicalTimeframe(opts.timeframe || '1'),

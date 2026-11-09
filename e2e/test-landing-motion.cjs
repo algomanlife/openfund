@@ -111,10 +111,10 @@ async function fixture(context) {
     await page.goto(BASE+'/fa/home');
     await page.reload();
     await page.locator('.of-language-select select').first().waitFor({ state: 'attached' });
-    await toggleLanguage(page); await page.locator('#builder').waitFor(); await page.waitForFunction(()=>window.__ofLandingKicked&&window.ofTranslations&&document.documentElement.lang==='en');
-    check('English uses existing challenge builder',await page.locator('.home-products').count()===0&&await page.locator('#builder').count()===1);
-    await toggleLanguage(page); await page.waitForFunction(()=>!window.__ofLegacyLandingLoaded&&document.querySelector('.technical-features'));
-    check('language round trip returns Persian gateway',page.url().includes('/fa/home'));
+    await toggleLanguage(page); await page.locator('.home-products').waitFor(); await page.waitForFunction(()=>document.documentElement.lang==='en');
+    check('English Home shows the two-product gateway',page.url().includes('/en/home')&&await page.locator('.home-panel').count()===2);
+    await toggleLanguage(page); await page.locator('.technical-features').waitFor();
+    check('language round trip returns Persian gateway',page.url().includes('/fa/home')&&await page.locator('.home-panel').count()===2);
     const touch = await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await fixture(touch);
     const mobile = await touch.newPage();await mobile.goto(BASE+'/fa/home');await mobile.locator('.technical-feature').first().tap();await mobile.locator('dialog[open]').waitFor();await mobile.locator('dialog button').tap();
     check('touch can open/close details',await mobile.locator('dialog[open]').count()===0);

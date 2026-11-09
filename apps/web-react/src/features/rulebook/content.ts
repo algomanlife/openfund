@@ -1,3 +1,4 @@
+import { pick } from '../../i18n/locales'
 import { text as t, number as n, type Localized } from '../information/content'
 import { publishedPlans } from '../../data/challengePlans'
 
@@ -19,9 +20,9 @@ const one = byslug('one-phase')
 const instant = byslug('instant')
 const trial = byslug('free-trial')
 
-const pct = (locale: 'en' | 'fa', v: number) => `${n(v, locale)}${locale === 'fa' ? '٪' : '%'}`
-const money = (locale: 'en' | 'fa', v: number) => locale === 'fa' ? n(v, locale) : `$${n(v, locale)}`
-const sizesList = (locale: 'en' | 'fa', sizes: number[]) => sizes.map(s => n(s, locale)).join(' / ')
+const pct = (locale: import('../../i18n/locales').AppLocale, v: number) => `${n(v, locale)}${pick(locale, '٪', '%')}`
+const money = (locale: import('../../i18n/locales').AppLocale, v: number) => locale === 'fa' ? n(v, locale) : `$${n(v, locale)}`
+const sizesList = (locale: import('../../i18n/locales').AppLocale, sizes: number[]) => sizes.map(s => n(s, locale)).join(' / ')
 
 export const rulebookIntro = t(
   'The complete terms of the Openfund challenges — targets, loss limits, reward sharing and the free trial — plus a clear account of what already works today.',

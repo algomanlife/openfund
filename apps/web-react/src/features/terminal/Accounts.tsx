@@ -1,3 +1,4 @@
+import { intlLocale } from '../../i18n/locales'
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { backendUrl, useSession } from "../../session/useOpenfundSession";
@@ -165,7 +166,7 @@ export function AccountCards({ compact = false, selectedId }: { compact?: boolea
               <small>
                 {t("آخرین فعالیت", "Last activity")}:{" "}
                 {new Date(a.lastActivity).toLocaleString(
-                  locale === "fa" ? "fa-IR" : "en-US",
+                  intlLocale(locale),
                 )}
               </small>
             )}

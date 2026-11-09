@@ -4,6 +4,7 @@ import { pick, type AppLocale } from '../../i18n/locales';
 export default function ReleaseStatus({locale,children}: {locale:AppLocale;children:(version:ReactNode)=>ReactNode}) {
   const build=__OPENFUND_BUILD__;
   const [version,setVersion]=useState(build.version === 'development' ? '' : build.version);
+  const [official,setOfficial]=useState<boolean | null>(null);
   const [diagnostic,setDiagnostic]=useState<'missing'|'unavailable'|'mismatch'|null>(null);
   useEffect(()=>{
     const abort=new AbortController();
@@ -11,6 +12,7 @@ export default function ReleaseStatus({locale,children}: {locale:AppLocale;child
       .then(([front,back])=>{
         if(abort.signal.aborted)return;
         setVersion(front?.version || '');
+        setOfficial(front?.official === true);
         if(!front || !front.frontend || !front.backend) { setDiagnostic('missing'); return; }
         if(back.status==='unversioned' || !back.frontend || !back.backend) { setDiagnostic('unavailable'); return; }
         setDiagnostic(back.status!=='matched' || front.commit!==build.commit || (build.version!=='development'&&front.version!==build.version) || front.commit!==back.commit || front.frontend.id!==back.frontend.id || front.backend.id!==back.backend.id ? 'mismatch' : null);
@@ -22,5 +24,5 @@ export default function ReleaseStatus({locale,children}: {locale:AppLocale;child
     unavailable: pick(locale, 'بررسی نسخه در دسترس نیست؛ هماهنگی نسخهٔ برنامه و سرور تأیید نشده است.', 'Release verification is unavailable; application and server version compatibility is unverified.'),
     mismatch: pick(locale, 'نسخهٔ برنامه با سرور هماهنگ نیست. صفحه را دوباره بارگذاری کنید.', 'Application and server versions differ. Reload this page.'),
   };
-  return <>{children(version && <small className="of-release-version" title="Openfund release">v{version}</small>)}{diagnostic && <p role="alert" className="of-release-mismatch" data-release-diagnostic={diagnostic}>{messages[diagnostic]}</p>}</>;
+  return <>{children(version && <small className="of-release-version" title={official ? 'Openfund release' : 'Openfund candidate'}>v{version}{official === false ? ` ${pick(locale,'آزمایشی','candidate')}` : ''}</small>)}{diagnostic && <p role="alert" className="of-release-mismatch" data-release-diagnostic={diagnostic}>{messages[diagnostic]}</p>}</>;
 }

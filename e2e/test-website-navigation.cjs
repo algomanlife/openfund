@@ -30,7 +30,7 @@ async function desktop(page) {
  for (const locale of ['en','fa']) {
   for (const source of pages) {
    await page.goto(base + locale + '/' + source);
-   if(locale==='fa'&&source==='home'){await page.locator('.home-gateway').waitFor();assert(await page.locator('header #navigation').count()===0,'FA gateway nav hidden');results.push({locale,source,gateway:true});continue;}
+   if(source==='home'){await page.locator('.home-gateway').waitFor();assert(await page.locator('header #navigation').count()===0,'Home gateway nav hidden');results.push({locale,source,gateway:true});continue;}
    await page.locator('.resources-toggle').waitFor({state:'attached'});
    await page.waitForTimeout(source === 'challenges' ? 1800 : 200);
    assert(new URL(page.url()).pathname === '/' + locale + '/' + source, 'redirect ' + source);
@@ -131,7 +131,7 @@ async function touch(page) {
   const records=[];
   try {
     for(const locale of ['fa','en']) for(const route of ['home','challenges','faq','learn/lessons/perps-how-they-work','tools/position-size','referral']) {
-      if(locale==='fa'&&route==='home')continue; // The gateway deliberately has no resources menu.
+      if(route==='home')continue; // The gateway deliberately has no resources menu.
       await touchPage.goto(BASE+locale+'/'+route);
       await touchPage.locator('.resources-toggle').waitFor({state:'attached'});
       await touchPage.waitForTimeout(route==='challenges'?1800:700);
@@ -197,7 +197,7 @@ async function auditRoutes(page) {
   const records=[];
   for(const locale of ['en','fa']) for(const route of routes) {
     await page.goto(BASE+locale+'/'+route);
-    if(locale==='fa' && route==='home') await page.locator('.home-gateway').waitFor();
+    if(route==='home') await page.locator('.home-gateway').waitFor();
     else await page.locator('.resources-toggle').waitFor({state:'attached'});
     await page.waitForTimeout(route==='challenges'?1800:300);
     const path = new URL(page.url()).pathname;

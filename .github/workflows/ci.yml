@@ -54,6 +54,7 @@ jobs:
           npm run test:depth
           npm run test:website
           npm run test:terminal
+          npm run test:i18n
       - name: Original Pine sources and provider regression tests
         working-directory: .
         run: npm run test:charts
