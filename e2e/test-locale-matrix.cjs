@@ -26,7 +26,7 @@ const VIEWPORTS = { desktop: { width: 1366, height: 860 }, mobile: { width: 390,
 const VIEWPORT_NAMES = (process.env.LOCALE_MATRIX_VIEWPORTS || 'desktop,mobile').split(',')
 const RTL = new Set(['fa', 'ar'])
 const ROUTES = [
-  'home', 'challenges', 'markets', 'rulebook', 'transparency', 'faq', 'tools', 'tools/position-size',
+  'home', 'challenges', 'markets', 'rulebook', 'transparency', 'revenue-model', 'live-market-access', 'ambassador', 'coach', 'faq', 'tools', 'tools/position-size',
   'learn', 'learn/paths/perpetual-futures-mechanics', 'learn/lessons/trading-journal-that-works', 'learn/glossary', 'referral',
   'prop/dashboard', 'prop/trade', 'prop/portfolio', 'prop/journal', 'prop/purchases', 'prop/withdrawals', 'prop/leaderboard', 'prop/certificates',
   'perpetual/dashboard', 'perpetual/trade', 'perpetual/portfolio', 'perpetual/journal', 'perpetual/leaderboard', 'perpetual/rewards',

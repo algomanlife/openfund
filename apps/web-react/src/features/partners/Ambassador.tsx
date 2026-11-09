@@ -52,7 +52,7 @@ export default function Ambassador() {
   const app = data?.applications.ambassador || null
   const canApply = !app || app.status === 'rejected'
   return <InformationShell page="ambassador" description={intro[locale]}>
-    <Hero locale={locale} page="ambassador" title="Openfund" accent="Brand Ambassador" intro={intro[locale]}>
+    <Hero locale={locale} page="ambassador" title="Openfund" accent={labels.ambassador[locale]} intro={intro[locale]}>
       <div className="hero-actions"><a className="button" href="#apply">{t('Apply', 'ارسال درخواست')[locale]} <span aria-hidden="true">↓</span></a><a className="text-link" href="#policy">{t('Commission policy', 'سیاست کمیسیون')[locale]} ↓</a></div>
     </Hero>
     <div className="container">

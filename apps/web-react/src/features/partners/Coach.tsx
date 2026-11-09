@@ -85,7 +85,7 @@ export default function Coach() {
   const data = me?.status === 'ready' ? me.data : null
   const app = data?.applications.coach || null
   return <InformationShell page="coach" description={intro[locale]}>
-    <Hero locale={locale} page="coach" title="Verified" accent="Trading Coach" intro={intro[locale]}>
+    <Hero locale={locale} page="coach" title="Openfund" accent={labels.coach[locale]} intro={intro[locale]}>
       <div className="hero-actions"><a className="button" href="#apply">{t('Apply as a coach', 'درخواست کوچ شدن')[locale]} <span aria-hidden="true">↓</span></a><a className="text-link" href="#trader">{t('I am a trader', 'معامله‌گر هستم')[locale]} ↓</a></div>
     </Hero>
     <div className="container">
