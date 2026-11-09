@@ -277,8 +277,9 @@ async function realThemeClicks(browser) {
       check('language roundtrip restores Instagram', await localePage.locator('.hero .instagram-community .community-copy > span').innerText() === 'اخبار، آموزش و سرگرمی');
       check('language roundtrip restores portal', (await localePage.locator('.hero .telegram-community').innerText()).includes('جامعه معامله‌گران'));
       for (const locale of ['en', 'fa', 'en', 'fa']) {
-        await localePage.evaluate(locale => window.ofSetLanguage(locale), locale);
-        await localePage.waitForFunction(locale => document.querySelector('.hero .telegram-community')?.getAttribute('aria-label')?.startsWith(locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'), locale);
+        await localePage.locator('.of-language-select select').first().selectOption(locale);
+        await localePage.waitForFunction(locale => location.pathname.startsWith(`/${locale}/`)
+          && document.querySelector('.hero .telegram-community')?.getAttribute('aria-label')?.startsWith(locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'), locale);
         const unchanged = await localePage.evaluate(() => {
           const button = document.querySelector('.hero .telegram-community');
           const before = button.getAttribute('aria-label');
