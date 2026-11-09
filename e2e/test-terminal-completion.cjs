@@ -109,7 +109,6 @@ async function functional(browser){
   await page.getByLabel('محصول',{exact:true}).selectOption('prop');
   await page.waitForURL(/prop\/trade/);
   await (await walletButton(page,'Network: Sepolia')).click();
-  await page.getByRole('dialog').getByRole('button',{name:/Sepolia/}).first().click();
   await page.waitForFunction(()=>window.completionWallet.network()==='0xaa36a7');
   const accounts=(await call(page,'/accounts')).data.accounts,trial=accounts.find(a=>a.type==='free_trial');
   await call(page,'/internal/inject-price',{symbol:'BTC/USD',price:'50000',metadata:{base:'BTC',group:'crypto',maxLeverage:100}});
@@ -208,7 +207,6 @@ async function functional(browser){
   await page.getByRole('button',{name:'Network: Sepolia',exact:true}).waitFor();
   check('Unsupported chain change preserves wallet identity and exposes a network correction',await page.locator('.rk-chip-addr').count()===1);
   await (await walletButton(page,'Network: Sepolia')).click();
-  await page.getByRole('dialog').getByRole('button',{name:/Sepolia/}).first().click();
   await page.waitForFunction(()=>window.completionWallet.network()==='0xaa36a7');
   if(!await page.locator('.rk-account-menu').evaluate(el=>el.open))await page.locator('.rk-account-menu > summary').click();
   await page.getByTitle('Wallet & network',{exact:true}).click();await page.getByRole('dialog').getByRole('button',{name:/Disconnect|قطع اتصال/}).click();
