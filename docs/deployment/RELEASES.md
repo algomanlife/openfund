@@ -1,13 +1,12 @@
 # Unified Openfund releases
 
-## Current release state (2026-11-08)
+## Current release state (2026-11-09)
 
-The latest published and deployed release is **v0.4.1** at
-`b8389cace71457f769b1042e87f4a53211b62ca0` (Render deploy
-`dep-dbnn7mjl550s73fm4v7g`). The next allocated version from `main` is
-**v0.4.2**: commits since v0.4.1 are `fix:`/`test:`/`docs:` only, so the
-allocator bumps the patch. Resolve the latest state from GitHub at execution
-time; this paragraph is a dated record, not live status.
+The latest published and deployed release is **v0.4.4** at
+`c1cb7073e4f1eb16c2b204ec9b0b1158b1dde4b1` (Render deploy
+`dep-dbodvonf3r2c73at0ncg`). Later `main` commits are candidate source only.
+Resolve the latest official release and candidate version from GitHub at
+execution time; this paragraph is a dated record, not live status.
 
 ## Release-to-production pipeline
 
@@ -76,12 +75,16 @@ unchanged. `/version` verifies source/frontend/backend identity, while the
 runtime script documents the separate environment choice. Verify both after
 deployment.
 
-The Render build queries GitHub's tag list at `RENDER_GIT_COMMIT`, requires its
-published non-prerelease GitHub Release and checks the manifest digest and
-identity before a clean rebuild. It does not require a named local Git remote.
+For an official source SHA, the Render build queries GitHub's tag list,
+requires its published non-prerelease GitHub Release and checks the manifest
+digest and identity before a clean rebuild. For an untagged candidate, it
+requires the current `main` SHA and successful exact-commit checks; the
+approved deployment job compares its rebuild with the verified candidate
+archive. Neither path requires a named local Git remote.
 All production-only `VITE_*` inputs are removed from the signed build; their
 public values are supplied at runtime. A mismatch in frontend, backend or
-schema hash still stops deployment.
+schema hash still stops official deployment; candidate deployment compares
+the rebuilt frontend and backend hashes with its verified package after startup.
 
 The candidate gate requires `CMS_PUBLIC_URL` and probes health plus public
 fa/en `ui_messages` and Home translations before the long build. For local
