@@ -44,7 +44,6 @@ export const ru: Record<string, string> = {
   'Coming Soon': 'Скоро',
   'Openfund community link has not been announced': 'Ссылка на сообщество Openfund ещё не объявлена',
   'Openfund trader communities': 'Сообщества трейдеров Openfund',
-  'This page is not yet available in Russian. The English version is shown.': 'Эта страница пока недоступна на русском языке. Показана английская версия.',
   'Release manifest is missing; application and server version compatibility is unverified.': 'Манифест релиза отсутствует; совместимость версий приложения и сервера не проверена.',
   'Release verification is unavailable; application and server version compatibility is unverified.': 'Проверка релиза недоступна; совместимость версий приложения и сервера не проверена.',
   'Application and server versions differ. Reload this page.': 'Версии приложения и сервера различаются. Перезагрузите страницу.',

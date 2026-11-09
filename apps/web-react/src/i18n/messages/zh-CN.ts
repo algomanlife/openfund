@@ -44,7 +44,6 @@ export const zhCN: Record<string, string> = {
   'Coming Soon': '即将推出',
   'Openfund community link has not been announced': 'Openfund 社区链接尚未公布',
   'Openfund trader communities': 'Openfund 交易者社区',
-  'This page is not yet available in Simplified Chinese. The English version is shown.': '本页面暂无简体中文版本，当前显示英文内容。',
   'Release manifest is missing; application and server version compatibility is unverified.': '缺少发布清单；尚未验证应用与服务器版本的兼容性。',
   'Release verification is unavailable; application and server version compatibility is unverified.': '发布验证不可用；尚未验证应用与服务器版本的兼容性。',
   'Application and server versions differ. Reload this page.': '应用与服务器版本不一致，请重新加载页面。',

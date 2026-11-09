@@ -1,3 +1,4 @@
+import { intlLocale } from '../../i18n/locales'
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSession } from "../../session/useOpenfundSession";
@@ -82,7 +83,7 @@ export function ChallengePanel({ challengeId }: { challengeId: string }) {
         {m.trailing?.peak && <div><dt>{t("بالاترین ارزش ثبت‌شده", "Recorded equity peak")}</dt><dd dir="ltr">{money(m.trailing.peak)} {unit}</dd></div>}
         <div><dt>{t("روزهای معاملاتی", "Trading days")}</dt><dd>{m.tradingDays ?? "—"}{rules.minTradingDays ? ` / ${rules.minTradingDays}` : ""}</dd></div>
         <div><dt>{t("قوانین ارزیابی", "Rules of record")}</dt><dd dir="ltr">{rules.rulesVersion ? `v${rules.rulesVersion} · UTC+3` : "—"}</dd></div>
-        {view.expiresAt && <div><dt>{t("مهلت", "Time limit")}</dt><dd dir="ltr">{new Date(view.expiresAt).toLocaleDateString(locale === "fa" ? "fa-IR" : "en-US")}</dd></div>}
+        {view.expiresAt && <div><dt>{t("مهلت", "Time limit")}</dt><dd dir="ltr">{new Date(view.expiresAt).toLocaleDateString(intlLocale(locale))}</dd></div>}
       </dl>
       {m.target?.amount != null && <p role="status" className="of-challenge-progress">
         {m.target.reached
@@ -98,7 +99,7 @@ export function ChallengePanel({ challengeId }: { challengeId: string }) {
 
     {view.events?.length ? <details className="of-challenge-events">
       <summary>{t("تاریخچهٔ رویدادها", "Event history")}</summary>
-      <ul>{view.events.map((e: any, i: number) => <li key={i}><bdo dir="ltr">{new Date(e.ts).toLocaleString(locale === "fa" ? "fa-IR" : "en-US")}</bdo> · {e.kind}</li>)}</ul>
+      <ul>{view.events.map((e: any, i: number) => <li key={i}><bdo dir="ltr">{new Date(e.ts).toLocaleString(intlLocale(locale))}</bdo> · {e.kind}</li>)}</ul>
     </details> : null}
 
     {view.status !== "started" && view.accountId && <p>{t("تاریخچهٔ معاملات این چالش در پورتفولیو و ژورنال قابل مشاهده است.", "This challenge's trading history remains available in the portfolio and journal.")}</p>}

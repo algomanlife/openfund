@@ -1,3 +1,4 @@
+import { intlLocale } from '../../i18n/locales'
 import { useEffect, useMemo, useState, useId } from 'react'
 import { useNavigate } from 'react-router-dom'
 import InformationShell, { Hero, useInformationLocale } from '../information/InformationShell'
@@ -79,7 +80,7 @@ export default function Markets() {
           <i aria-hidden="true" /> {statusLabel}
         </span>
         {total > 0 && <span>{number(total, locale)} {text('markets', 'بازار')[locale]}</span>}
-        {lastUpdate > 0 && <span dir="ltr">{new Intl.DateTimeFormat(locale === 'fa' ? 'fa-IR' : 'en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Dubai' }).format(lastUpdate)}</span>}
+        {lastUpdate > 0 && <span dir="ltr">{new Intl.DateTimeFormat(intlLocale(locale), { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Dubai' }).format(lastUpdate)}</span>}
       </div>
     </Hero>
 

@@ -1,10 +1,11 @@
+import { intlLocale } from '../../i18n/locales'
 import { useId, useState } from 'react'
 import { labels, number, text as t, type Locale } from '../information/content'
 import { metricCopy } from './content'
 import { metricDefinitions, summarize, type ActivityPoint, type TransparencyDataState } from './data/mockTransparency'
 
 function date(value: string, locale: Locale) {
-  return new Intl.DateTimeFormat(locale === 'fa' ? 'fa-IR' : 'en-GB', { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`))
+  return new Intl.DateTimeFormat(intlLocale(locale), { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`))
 }
 export function SampleBadge({ locale }: { locale: Locale }) { return <span className="pill sample-badge">{labels.sample[locale]}</span> }
 

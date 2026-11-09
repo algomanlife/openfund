@@ -11,7 +11,8 @@ import TelegramCommunity from '../community/TelegramCommunity'
 import { bindNavigation, renderNavigation, navigationClick, navigationKeyDown } from './navigation'
 import { chooseTheme, currentTheme } from '../../theme'
 import LanguageSelect from '../../i18n/LanguageSelect'
-import { contentLocale, dirOf, fallbackNotice, isLocale, normalizeLocale, pick, pickRecord, switchLocalePath, type AppLocale } from '../../i18n/locales'
+import UntranslatedNotice from '../../i18n/UntranslatedNotice'
+import { dirOf, isLocale, normalizeLocale, pick, pickRecord, switchLocalePath, type AppLocale } from '../../i18n/locales'
 
 const header = landingBody.match(/<header\b[^>]*>[\s\S]*?<\/header>/)![0]
 const footer = landingBody.match(/<footer[\s\S]*?<\/footer>/)![0]
@@ -139,10 +140,10 @@ export function Chrome({ locale, part, nav = true }: { locale: AppLocale; part: 
   </div>
 }
 
-/** Editorial content locale (fa/en). The added interface locales read the
- *  English editorial version; see useUiLocale for the interface language. */
-export function useInformationLocale(): Locale {
-  return contentLocale(normalizeLocale(useParams().locale, 'fa'))
+/** Page locale. Every supported locale renders its own editorial text:
+ *  bilingual `{fa, en}` records are resolved with `tx` / `pickRecord`. */
+export function useInformationLocale(): AppLocale {
+  return normalizeLocale(useParams().locale, 'fa')
 }
 export function useUiLocale(): AppLocale {
   return normalizeLocale(useParams().locale, 'fa')
@@ -153,8 +154,6 @@ export default function InformationShell({ page, description, footer = true, nav
 }) {
   const { locale: routeLocale } = useParams()
   const locale = useUiLocale()
-  const editorial = contentLocale(locale)
-  const notice = fallbackNotice(locale)
   useEffect(() => {
     const previousTitle = document.title
     document.documentElement.lang = locale
@@ -182,10 +181,10 @@ export default function InformationShell({ page, description, footer = true, nav
     }
     og('og:title', document.title)
     og('og:description', description)
-    og('og:url', url(editorial))
+    og('og:url', url(locale))
     tags.forEach(tag => document.head.appendChild(tag))
     return () => { tags.forEach(tag => tag.remove()); document.title = previousTitle }
-  }, [locale, editorial, page, description, title])
+  }, [locale, page, description, title])
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }) }, [page])
   if (!isLocale(routeLocale)) return <Navigate to={`/fa/${page}`} replace />
   return <div className={`information-page${footer ? '' : ' chrome-only'}`}>
@@ -193,9 +192,8 @@ export default function InformationShell({ page, description, footer = true, nav
     <link rel="stylesheet" href={`${base}legacy/wallet.css`} precedence="openfund" />
     <a className="skip" href="#main">{pickRecord(locale, labels.skip)}</a>
     <Chrome locale={locale} part="header" nav={nav} />
-    {/* the added locales show the English editorial version, clearly labelled */}
-    <main id="main" className="info-main" tabIndex={-1} lang={notice ? editorial : undefined} dir={notice ? 'ltr' : undefined}>
-      {notice && <p className="container of-locale-fallback" role="note" lang={locale} dir={dirOf(locale)}>{notice}</p>}
+    <main id="main" className="info-main" tabIndex={-1}>
+      <UntranslatedNotice locale={locale} />
       {children}
     </main>
     {footer && <Chrome locale={locale} part="footer" />}

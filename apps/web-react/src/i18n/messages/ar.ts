@@ -44,7 +44,6 @@ export const ar: Record<string, string> = {
   'Coming Soon': 'قريبًا',
   'Openfund community link has not been announced': 'لم يُعلَن رابط مجتمع Openfund بعد',
   'Openfund trader communities': 'مجتمعات متداولي Openfund',
-  'This page is not yet available in Arabic. The English version is shown.': 'هذه الصفحة غير متوفرة بالعربية بعد، ويُعرض المحتوى باللغة الإنجليزية.',
   'Release manifest is missing; application and server version compatibility is unverified.': 'بيان الإصدار غير متوفر؛ لم يتم التحقق من توافق إصدار التطبيق والخادم.',
   'Release verification is unavailable; application and server version compatibility is unverified.': 'التحقق من الإصدار غير متاح؛ لم يتم التحقق من توافق إصدار التطبيق والخادم.',
   'Application and server versions differ. Reload this page.': 'إصدار التطبيق يختلف عن إصدار الخادم. أعد تحميل الصفحة.',

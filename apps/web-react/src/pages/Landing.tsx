@@ -11,7 +11,8 @@ import { fetchCmsNavigation, fetchCmsTranslations, fetchCmsLegacyPlans, fetchCms
 import { loadingGate } from '../features/loading/BrandedLoading'
 import { chooseTheme, currentTheme } from '../theme'
 import LanguageSelect from '../i18n/LanguageSelect'
-import { contentLocale, dirOf, fallbackNotice, isLocale, switchLocalePath, type AppLocale } from '../i18n/locales'
+import { dirOf, isLocale, switchLocalePath, untranslatedNotice, type AppLocale } from '../i18n/locales'
+import { missesFor, translateSource } from '../i18n/messages'
 
 /**
  * Phase 2a: the landing runs inside the React shell with its proven markup
@@ -57,13 +58,21 @@ const landingMarkup = landingBody
   .replaceAll('src="assets/', `src="${import.meta.env.BASE_URL}assets/`)
 
 const w = () => window as any
-/* Interface locale of this page: the route's locale. The legacy content
-   runtime only knows fa/en, so ar/ru/zh-CN run it in English (ofLang) while
-   ofUiLang keeps the chosen locale for links, the selector and the notice. */
+/* Interface locale of this page: the route's locale. The legacy runtime
+   translates its Persian source markup to English (ofLang='en'); for ar/ru/
+   zh-CN `window.ofTx` then maps that English to the reviewed translation
+   (i18n/content), so ofUiLang is the language actually displayed. */
+const engineLanguage = (locale: AppLocale): 'fa' | 'en' => (locale === 'fa' ? 'fa' : 'en')
 const uiLocale = (): AppLocale => {
   const legacy = w().ofLang === 'en' ? 'en' : 'fa', ui = w().ofUiLang
   /* an in-place legacy switch (ofSetLanguage) wins over a stale route locale */
-  return isLocale(ui) && contentLocale(ui) === legacy ? ui : legacy
+  return isLocale(ui) && engineLanguage(ui) === legacy ? ui : legacy
+}
+const installTranslator = () => {
+  w().ofTx = (english: string) => {
+    const ui = uiLocale()
+    return ui === 'ar' || ui === 'ru' || ui === 'zh-CN' ? translateSource(ui, english) : english
+  }
 }
 
 /* ---- theme (owned by React; was an inline script in the classic page) ---- */
@@ -78,11 +87,11 @@ function initTheme() {
   }
 }
 
-/* ar/ru/zh-CN: the landing shows its English editorial version, labelled */
+/* visible notice only while some landing text has no translation */
 function syncFallbackNotice(locale: AppLocale) {
   const main = document.getElementById('main')
   let note = document.getElementById('of-landing-locale-note')
-  const text = fallbackNotice(locale)
+  const text = locale !== 'fa' && locale !== 'en' && missesFor(locale).length ? untranslatedNotice(locale) : null
   if (!text || !main) { note?.remove(); return }
   if (!note) {
     note = document.createElement('p')
@@ -198,17 +207,21 @@ export default function Landing() {
     /* the route locale is authoritative on entry — sync the stored preference
        BEFORE the legacy scripts boot, so locale.js translates to it */
     if (isLocale(routeLocale)) {
-      const legacy = contentLocale(routeLocale)
+      const legacy = engineLanguage(routeLocale)
+      installTranslator()
       w().ofUiLang = routeLocale
       w().ofLang = legacy
       try { localStorage.setItem('of-language', routeLocale) } catch { /* ignore */ }
       syncFallbackNotice(routeLocale)
+      const onMiss = () => syncFallbackNotice(uiLocale())
+      addEventListener('of-i18n-miss', onMiss)
       /* direct route change into the other locale (URL edit / nav link, not
          the in-page toggle): the router reuses this component without
          remounting, so re-run the legacy translation pipeline to keep the
          DOM and the URL honest */
       if (w().ofSetLanguage && document.documentElement.lang !== legacy) w().ofSetLanguage(legacy)
       else dispatchEvent(new CustomEvent('of-language'))
+      return () => removeEventListener('of-i18n-miss', onMiss)
     }
   }, [routeLocale])
   /* wallet connect button in the landing header (#wallet-root placeholder,
