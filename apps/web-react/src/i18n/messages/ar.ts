@@ -1,6 +1,7 @@
 /* Arabic interface strings, keyed by the English source text. Trading
    symbols, tickers, currency codes and numbers are never translated. */
 export const ar: Record<string, string> = {
+  'candidate': 'تجريبي',
   /* ---- shared chrome, navigation and language ---- */
   'Language': 'اللغة',
   'Home': 'الرئيسية',

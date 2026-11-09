@@ -129,7 +129,6 @@ function installWallets(addresses) {
   await chip.click()
   await page.getByRole('button', { name: 'Sign in', exact: true }).first().click()
   await notice().waitFor({ timeout: 10000 })
-  console.log('DEBUG notice', await notice().getAttribute('data-wallet-notice'), await notice().getAttribute('role'), await notice().textContent())
   check('declined signature classified as rejected', await notice().getAttribute('data-wallet-notice') === 'rejected')
   check('declined signature is neutral status', await notice().getAttribute('role') === 'status')
   check('declined signature keeps the wallet connected', await page.locator('.rk-account-menu summary:visible').count() === 1)
@@ -147,7 +146,7 @@ function installWallets(addresses) {
   /* 6 — accepted signature creates a session */
   if (!(await page.getByRole('button', { name: 'Sign in', exact: true }).first().isVisible())) await chip.click()
   await page.getByRole('button', { name: 'Sign in', exact: true }).first().click()
-  await page.getByRole('button', { name: 'Account', exact: true }).first().waitFor({ state: 'attached', timeout: 20000 }).catch(async () => console.log('DEBUG after sign', await page.locator('[data-wallet-notice]').allTextContents(), JSON.stringify((await calls()).slice(-6))))
+  await page.getByRole('button', { name: 'Account', exact: true }).first().waitFor({ state: 'attached', timeout: 20000 })
   const session = await me()
   check('signed session belongs to the chosen wallet', session.status === 200 && session.body?.user?.walletAddress?.toLowerCase() === keys.beta.address.toLowerCase(), JSON.stringify(session).slice(0, 200))
   check('signature requested once per sign-in, by the chosen wallet only', !(await calls()).some(c => c.wallet === 'alpha' && c.method === 'personal_sign'))

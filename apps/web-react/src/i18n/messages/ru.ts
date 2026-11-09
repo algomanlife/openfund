@@ -1,6 +1,7 @@
 /* Russian interface strings, keyed by the English source text. Trading
    symbols, tickers, currency codes and numbers are never translated. */
 export const ru: Record<string, string> = {
+  'candidate': 'тестовая версия',
   /* ---- shared chrome, navigation and language ---- */
   'Language': 'Язык',
   'Home': 'Главная',

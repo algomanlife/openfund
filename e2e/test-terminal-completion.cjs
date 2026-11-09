@@ -65,7 +65,11 @@ async function walletContext(browser,{fixtures=false}={}){
 async function call(page,url,body,method){return page.evaluate(async({url,body,method})=>{
  const response=await fetch(url,{method:method||(body?'POST':'GET'),credentials:'include',headers:{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID()},body:body?JSON.stringify(body):undefined});return {status:response.status,data:await response.json()};
 },{url:API+url,body,method})}
-async function connect(page){await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().click();await (await walletButton(page, 'Sign in')).waitFor()}
+async function connect(page){
+ if(!await page.locator('[data-wallet-picker]').count()) await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().click();
+ await page.locator('[data-wallet-picker] [data-wallet-id]').first().click();
+ await (await walletButton(page, 'Sign in')).waitFor();
+}
 async function signIn(page){await (await walletButton(page, 'Sign in')).click();await (await walletButton(page, 'Account')).waitFor()}
 async function functional(browser){
  const {context,page}=await walletContext(browser,{fixtures:true}),errors=[],protectionWrites=[];
@@ -76,7 +80,8 @@ async function functional(browser){
   check('EIP-6963 fixture does not expose window.ethereum',await page.evaluate(()=>!window.ethereum));
   await page.evaluate(()=>window.completionWallet.rejectConnect());
   await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().click();
-  await page.getByRole('alert').filter({hasText:'Wallet connection failed'}).first().waitFor();
+  await page.locator('[data-wallet-picker] [data-wallet-id]').first().click();
+  await page.locator('[data-wallet-result="rejected"]').waitFor();
   check('Rejected connection is visible and does not authenticate',(await call(page,'/auth/me')).status===401);
   await connect(page);
   await page.goto(BASE+'/fa/prop/dashboard');

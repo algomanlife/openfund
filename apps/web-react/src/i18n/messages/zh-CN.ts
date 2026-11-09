@@ -1,6 +1,7 @@
 /* Simplified Chinese interface strings, keyed by the English source text.
    Trading symbols, tickers, currency codes and numbers are never translated. */
 export const zhCN: Record<string, string> = {
+  'candidate': '测试版',
   /* ---- shared chrome, navigation and language ---- */
   'Language': '语言',
   'Home': '首页',

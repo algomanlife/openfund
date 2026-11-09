@@ -154,6 +154,25 @@ Release artifacts also include `verification.json`, `SHA256SUMS` and release sta
 
 ## GitHub and Render configuration
 
+### Verified candidate deployment without publication
+
+For a testing deployment after a PR merge, wait for the exact `main` commit's
+CI, secret, CMS and **Release package gates** checks to pass. The package gate
+uploads an unofficial `official-release-candidate` artifact with a manifest,
+checksums and archive; `official` remains `false`. Dispatch **Deploy verified
+candidate** on `main`. The protected production environment still requires
+reviewer approval. The deployment job verifies the successful package run,
+archive digest and payload, asks Render to build that exact commit, then
+compares the live API and frontend hashes to the candidate manifest and checks
+CMS health. The app labels its displayed version as a candidate. This path
+creates no Git tag or GitHub Release; the latest official release stays in
+place for rollback. Render auto-deploy must remain off.
+
+The Render build accepts an untagged commit only when it is the current `main`
+head and its exact GitHub Actions checks pass. Published tags retain their
+existing official manifest and hash verification path. A newer `main` commit
+invalidates the older candidate path, so dispatch again for the new head.
+
 Configure the production environment with a required reviewer. The deployment script independently verifies that this policy exists and fails closed if absent. Preserve required main checks, disallow force pushes/deletion and protect `v*` tag updates/deletion. Repository settings need owner permissions; report whether these settings were actually applied.
 
 | Setting | Location | Purpose |
