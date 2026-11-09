@@ -6,6 +6,10 @@ import Home from './features/home/Home'
 import Markets from './features/markets/Markets'
 import Rulebook from './features/rulebook/Rulebook'
 import Transparency from './features/transparency/Transparency'
+import RevenueModel from './features/economy/RevenueModel'
+import LiveMarketAccess from './features/economy/LiveMarketAccess'
+import Ambassador from './features/partners/Ambassador'
+import Coach from './features/partners/Coach'
 import Faq from './features/faq/Faq'
 import Tools from './features/tools/Tools'
 import ToolPage from './features/tools/ToolPage'
@@ -104,6 +108,12 @@ const routes = [
   { path: '/:locale/markets', element: <Markets /> },
   { path: '/:locale/rulebook', element: <Rulebook /> },
   { path: '/:locale/transparency', element: <Transparency /> },
+  /* Economy menu: Transparency, Revenue Model, Live Market Access */
+  { path: '/:locale/economy', element: <Navigate to="../transparency" replace /> },
+  { path: '/:locale/revenue-model', element: <RevenueModel /> },
+  { path: '/:locale/live-market-access', element: <LiveMarketAccess /> },
+  { path: '/:locale/ambassador', element: <Ambassador /> },
+  { path: '/:locale/coach', element: <Coach /> },
   { path: '/:locale/faq', element: <Faq /> },
   { path: '/:locale/faq/q/:key', element: <Faq /> },
   { path: '/:locale/tools', element: <Tools /> },
