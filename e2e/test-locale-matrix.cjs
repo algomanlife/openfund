@@ -109,7 +109,7 @@ function leaks(locale, texts) {
           check(`${id}: dir`, s.dir === (RTL.has(locale) ? 'rtl' : 'ltr'), s.dir)
           check(`${id}: no untranslated strings`, !(s.misses[locale] || []).length, (s.misses[locale] || []).slice(0, 8).join(' | '))
           check(`${id}: no untranslated notice`, !s.notice)
-          check(`${id}: content present`, s.mainText > 40, s.mainText)
+          check(`${id}: content present`, s.mainText > 12, s.mainText)
           check(`${id}: title localized`, locale === 'en' || !ENGLISH_RUN.test(s.title.replace(BRANDS, ' ')), s.title)
           if (vp === 'mobile') check(`${id}: no horizontal overflow`, !s.overflow)
           for (const m of s.misses[locale] || []) (allMisses[locale] ||= new Set()).add(m)

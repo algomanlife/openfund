@@ -90,7 +90,7 @@ const I18N = {
     'bt.hint': 'دو موقعیت، یک سفارش Limit در انتظار و تاریخچه می‌سازد تا ترمینال را کاوش کنی.',
     'th.market': 'بازار', 'th.side': 'سمت', 'th.size': 'اندازه', 'th.lev': 'اهرم',
     'th.actions': 'عملیات', 'th.type': 'نوع', 'th.status': 'وضعیت', 'th.created': 'زمان ایجاد',
-    'th.price': 'قیمت', 'th.result': 'نتیجه', 'th.time': 'زمان', 'th.payment': 'پرداخت',
+    'th.price': 'قیمت', 'th.result': 'نتیجه', 'th.time': 'زمان', 'th.payment': 'پرداخت', 'th.fee':'کارمزد', 'th.role':'نقش', 'th.rate':'نرخ (۱ ساعت)',
     'dlg.review': 'بررسی سفارش', 'dlg.cancel': 'لغو', 'dlg.confirm': 'تأیید',
     'dlg.confirmOrder': 'تأیید سفارش شبیه‌سازی‌شده', 'dlg.save': 'ذخیره', 'dlg.close': 'بستن',
     'rv.market': 'بازار', 'rv.dir': 'جهت', 'rv.otype': 'نوع سفارش', 'rv.lev': 'اهرم',
@@ -199,7 +199,7 @@ const EN = {
   'bt.hint': 'Seeds two positions, one pending limit order and history so you can explore the terminal.',
   'th.market': 'Market', 'th.side': 'Side', 'th.size': 'Size', 'th.lev': 'Lev',
   'th.actions': 'Actions', 'th.type': 'Type', 'th.status': 'Status', 'th.created': 'Created',
-  'th.price': 'Price', 'th.result': 'Result', 'th.time': 'Time', 'th.payment': 'Payment',
+  'th.price': 'Price', 'th.result': 'Result', 'th.time': 'Time', 'th.payment': 'Payment', 'th.fee':'Fee', 'th.role':'Role', 'th.rate':'Rate (1h)',
   'dlg.review': 'Order review', 'dlg.cancel': 'Cancel', 'dlg.confirm': 'Confirm',
   'dlg.confirmOrder': 'Confirm simulated order', 'dlg.save': 'Save', 'dlg.close': 'Close',
   'rv.market': 'Market', 'rv.dir': 'Direction', 'rv.otype': 'Order type', 'rv.lev': 'Leverage',
@@ -417,7 +417,7 @@ function initChart(){
     /* full Vela workspace: native topbar (symbol / timeframe / style /
        indicators), drawing toolbar, status line, symbol search, keyboard */
     vc = window.OpenfundCharts.mount('#chart-host', {
-      symbol: S.marketId, timeframe: S.tf, theme: curTheme
+      symbol: S.marketId, timeframe: S.tf, theme: curTheme, locale: document.documentElement.lang
     });
   } catch(e){
     chartOverlay(`<b>${t('chart.unavailable')}</b><br>${String(e.message || e)}`);

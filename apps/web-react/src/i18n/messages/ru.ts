@@ -2,6 +2,13 @@
    symbols, tickers, currency codes and numbers are never translated. */
 export const ru: Record<string, string> = {
   'candidate': 'тестовая версия',
+  'Base': 'Базовый актив',
+  'Role': 'Роль',
+  'Rate (1h)': 'Ставка (1 ч)',
+  'Workspace views': 'Представления рабочего пространства',
+  'Depth denomination': 'Единица глубины рынка',
+  'Refresh account': 'Обновить счёт',
+  'Last update ${time}': 'Последнее обновление ${time}',
   /* ---- shared chrome, navigation and language ---- */
   'Language': 'Язык',
   'Home': 'Главная',

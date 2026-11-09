@@ -2,6 +2,13 @@
    symbols, tickers, currency codes and numbers are never translated. */
 export const ar: Record<string, string> = {
   'candidate': 'تجريبي',
+  'Base': 'الأساس',
+  'Role': 'الدور',
+  'Rate (1h)': 'المعدل (ساعة)',
+  'Workspace views': 'عروض مساحة العمل',
+  'Depth denomination': 'وحدة عمق السوق',
+  'Refresh account': 'تحديث الحساب',
+  'Last update ${time}': 'آخر تحديث ${time}',
   /* ---- shared chrome, navigation and language ---- */
   'Language': 'اللغة',
   'Home': 'الرئيسية',

@@ -2,6 +2,13 @@
    Trading symbols, tickers, currency codes and numbers are never translated. */
 export const zhCN: Record<string, string> = {
   'candidate': '测试版',
+  'Base': '基础资产',
+  'Role': '角色',
+  'Rate (1h)': '费率（1小时）',
+  'Workspace views': '工作区视图',
+  'Depth denomination': '市场深度单位',
+  'Refresh account': '刷新账户',
+  'Last update ${time}': '上次更新 ${time}',
   /* ---- shared chrome, navigation and language ---- */
   'Language': '语言',
   'Home': '首页',

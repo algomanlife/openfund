@@ -298,7 +298,9 @@ async function layout(browser){
   await page.locator('.of-language-select select').first().selectOption('fa');
   await page.waitForURL(BASE+'/fa/prop/journal?section=playbooks&account='+owned.id);
   check('Terminal language switching preserves the selected account and journal section',true);
-  check('All terminal tabs share one connected wallet state',await page.locator('.rk-chip-addr').count()===1);
+  await page.locator('.rk-chip-addr').first().waitFor();
+  const walletLabels=await page.locator('.rk-chip-addr').allTextContents();
+  check('All terminal tabs share one connected wallet state',walletLabels.length>0&&new Set(walletLabels).size===1);
   check('Layout verification never requests a blockchain transaction',await page.evaluate(()=>window.completionWallet.transactions===0));
   check('All terminal tabs have no uncaught JavaScript errors',errors.length===0);
   check('All terminal tabs load their scripts styles images and fonts',assetErrors.length===0);

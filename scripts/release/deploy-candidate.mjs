@@ -22,7 +22,7 @@ try {
   if(!run)throw Error('The exact main commit has no successful unified candidate package run.');
   const dir=path.resolve('output/candidate-deploy');fs.rmSync(dir,{recursive:true,force:true});fs.mkdirSync(dir,{recursive:true});
   gh('run','download',String(run.databaseId),'--repo',repo,'--name','official-release-candidate','--dir',dir);
-  const releaseDir=path.join(dir,'output/releases',`v${candidate.version}`);
+  const releaseDir=path.join(dir,`v${candidate.version}`);
   const archive=`openfund-v${candidate.version}.tar.gz`;
   const source=JSON.parse(fs.readFileSync(path.join(releaseDir,'release-manifest.json'),'utf8'));
   if(source.commit!==sha||source.version!==candidate.version||source.official!==false||source.verification?.status!=='passed')throw Error('Candidate package identity or verification is invalid.');
