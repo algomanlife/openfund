@@ -265,7 +265,7 @@ async function layout(browser){
       check(`${product}/${locale} ${width}: account/detail dashboard grid`,grid===2);
     }
     const component=tab==='dashboard'?'.of-dashboard-workspace':tab==='trade'?'iframe.of-trading-workspace':tab.startsWith('journal')?'.of-journal-workspace':tab==='portfolio'?'.of-tabs':tab==='withdrawals'?'.of-purchase-page':'.of-empty';
-    check(`${product}/${locale}/${tab} ${width}: expected component mounted`,await page.locator(component).count()>0);
+    check(`${product}/${locale}/${tab} ${width}: expected component mounted`,await page.locator(component).first().waitFor({timeout:8000}).then(()=>true,()=>false));
     const dataSource=product==='prop'?'PostgreSQL/Engine + owned product API':'Gains native read adapter + owned journal API';
     check(`${product}/${locale}/${tab} ${width}: product context connected`,requests.some(url=>url===`/products/${product}/context`));
     measurements.push({product,locale,tab,viewport:[width,height],component,dataSource,requests:[...new Set(requests)],...record});
