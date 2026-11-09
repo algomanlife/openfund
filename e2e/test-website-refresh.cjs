@@ -228,6 +228,9 @@ async function realThemeClicks(browser) {
       await englishHome.goto(`${BASE}/en/home`);
       await englishHome.locator('.home-community .telegram-community').waitFor();
       await englishHome.waitForFunction(() => document.documentElement.lang === 'en');
+      // The portal renders in the loading state too; wait for the CMS outcome.
+      await englishHome.waitForFunction(() => document.querySelectorAll('.home-panel').length === 2
+        || /content is unavailable/i.test(document.querySelector('.home-gateway h1')?.textContent || ''), null, { timeout: 30000 });
       const panels = await englishHome.locator('.home-panel').count();
       check('English Home shows the gateway or explicit CMS-unavailable state without a footer',
         await englishHome.locator('footer').count() === 0 &&

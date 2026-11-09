@@ -2,6 +2,29 @@
 
 ## Unreleased
 
+- Economy pages (Transparency, Revenue Model, Live Market Access) now show
+  definitions, provenance lines, term names, expense categories and
+  eligibility checks in Arabic, Russian and Simplified Chinese instead of
+  English, which the five-locale acceptance matrix rejects.
+- Economy menu (Transparency, Revenue Model, Live Market Access) replaces
+  the single Transparency link. Transparency now reports confirmed sales,
+  refunds, challenge outcomes, payouts, treasury, financial position and
+  verified expenses from operational records; the synthetic sample is gone.
+- Openfund Treasury snapshots: scheduled on-chain balances (60–120 min,
+  default 90) priced only by configured Chainlink feeds, with stale
+  fallback; the address is configuration (`TREASURY_WALLET_ADDRESS`).
+- Brand Ambassador program: reviewed applications, codes only after
+  approval, 10% commission on the referred customer's first confirmed
+  purchase (idempotent, refund/chargeback reversals, recorded payouts) and
+  an ambassador dashboard.
+- Verified Trading Coach program: independent approval, trader linking and
+  qualification, 10% of distributable realized live profit only.
+- Live Market Access control plane: record-based eligibility, explicit-tier
+  management approval, verified-capital gate (≥ $500,000), risk-checked
+  orders and idempotent profit-share settlement. Real execution and
+  transfers remain disabled; only non-monetary sandbox adapters exist.
+- Revenue Model page with cited single-firm research and a scenario
+  calculator kept separate from company data.
 - Release planning accepts an explicitly requested next patch on a manual
   main-branch batch, while rejecting skipped or reused versions.
 - Stale market depth keeps readable text contrast in the light theme.

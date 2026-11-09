@@ -4,8 +4,10 @@ import { labels, text } from './content'
 import { pickRecord, type AppLocale } from '../../i18n/locales'
 type Locale = AppLocale
 
-const primary = ['challenges', 'markets', 'rulebook', 'transparency'] as const
-const resources = ['faq', 'learn', 'tools', 'referral', 'team'] as const
+const primary = ['challenges', 'markets', 'rulebook'] as const
+/** Economy dropdown (replaces the former single Transparency link). */
+const economy = ['transparency', 'revenue-model', 'live-market-access'] as const
+const resources = ['faq', 'learn', 'tools', 'referral', 'ambassador', 'coach', 'team'] as const
 const navigationLabels = { ...labels, team: text('Team', 'تیم'), glossary: text('Glossary', 'واژه‌نامه') }
 
 export function navigationHref(route: string, locale: Locale): string {
@@ -29,30 +31,38 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
     else if (pathname.startsWith(`/${locale}/${section}/`)) a.setAttribute('data-active-section', 'true')
     return a
   }
-  const nav = root.querySelector('#navigation')
-  if (nav) {
-    nav.replaceChildren(...primary.map(route => link(route)))
+  /* one dropdown group (same markup/behaviour as the Resources menu) */
+  const dropdownGroup = (id: string, label: { fa: string; en: string }, links: HTMLAnchorElement[], current = false) => {
     const group = document.createElement('div')
     group.className = 'nav-account'
     const trigger = document.createElement('button')
     trigger.type = 'button'
     trigger.className = 'resources-toggle'
     trigger.setAttribute('aria-expanded', 'false')
-    trigger.setAttribute('aria-controls', 'website-resources')
-    trigger.append(pickRecord(locale, navigationLabels.resources) + ' ')
+    trigger.setAttribute('aria-controls', id)
+    if (current) trigger.setAttribute('data-active-section', 'true')
+    trigger.append(pickRecord(locale, label) + ' ')
     const chevron = document.createElement('span')
     chevron.className = 'chevron'; chevron.setAttribute('aria-hidden', 'true'); chevron.textContent = '⌄'
     trigger.append(chevron)
     const dropdown = document.createElement('div')
-    dropdown.className = 'nav-dropdown'; dropdown.id = 'website-resources'
+    dropdown.className = 'nav-dropdown'; dropdown.id = id
     const heading = document.createElement('span')
-    heading.textContent = pickRecord(locale, labels.resources)
-    dropdown.append(heading, ...resources.flatMap(route => route === 'learn' ? [link(route), link('glossary')] : [link(route)]))
-    group.append(trigger, dropdown); nav.append(group)
+    heading.textContent = pickRecord(locale, label)
+    dropdown.append(heading, ...links)
+    group.append(trigger, dropdown)
+    return group
+  }
+  const nav = root.querySelector('#navigation')
+  if (nav) {
+    const economyLinks = economy.map(route => link(route))
+    nav.replaceChildren(...primary.map(route => link(route)),
+      dropdownGroup('website-economy', labels.economy, economyLinks, economyLinks.some(a => a.hasAttribute('aria-current'))),
+      dropdownGroup('website-resources', labels.resources, resources.flatMap(route => route === 'learn' ? [link(route), link('glossary')] : [link(route)])))
   }
   const footer = root.querySelector('#footer-links')
   if (footer) {
-    const defaults = [...primary, ...resources, 'glossary' as const].map(route => ({ destination: route === 'team' ? 'team-section' : route, label: navigationLabels[route] }))
+    const defaults = [...primary, ...economy, ...resources, 'glossary' as const].map(route => ({ destination: route === 'team' ? 'team-section' : route, label: navigationLabels[route] }))
     const seen = new Set<string>()
     footer.replaceChildren()
     for (const item of [...(footerLinks || []), ...defaults]) {

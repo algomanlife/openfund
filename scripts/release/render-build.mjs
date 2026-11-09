@@ -28,7 +28,9 @@ if(tag){
  if(source.commit!==sha || source.tag!==tag || !source.official || source.verification.status!=='passed')throw Error('Published release identity/verification mismatch.');
 } else {
  const candidate=await candidateSource(sha);
- source={version:candidate.version,commit:sha,official:false,verification:{status:'passed',source:'github-actions',checks:candidate.checks}};
+ // A candidate deploy updates the running commit without announcing the next
+ // public version. The planned candidate version remains inside CI artifacts.
+ source={version:candidate.latestOfficial.slice(1),commit:sha,official:false,verification:{status:'passed',source:'github-actions',checks:candidate.checks}};
 }
 validateEnv({...process.env,RELEASE_VERSION:source.version},'production');
 await run('npm',['ci','--include=dev','--prefix','apps/web-react']);
