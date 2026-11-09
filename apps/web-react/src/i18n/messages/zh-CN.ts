@@ -351,4 +351,5 @@ export const zhCN: Record<string, string> = {
   'This account cannot place orders.': '此账户无法下单。',
   'Sign in to place an order.': '请登录后下单。',
   'News, Education & Entertainment': '新闻、教育与娱乐',
+  'Some text on this page is not yet translated and is shown in English.': '本页部分文字尚未翻译，以英文显示。',
 }

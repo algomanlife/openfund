@@ -351,4 +351,5 @@ export const ar: Record<string, string> = {
   'This account cannot place orders.': 'لا يمكن لهذا الحساب تقديم أوامر.',
   'Sign in to place an order.': 'سجّل الدخول لتقديم أمر.',
   'News, Education & Entertainment': 'أخبار وتعليم وترفيه',
+  'Some text on this page is not yet translated and is shown in English.': 'بعض النص في هذه الصفحة لم يُترجم بعد ويُعرض باللغة الإنجليزية.',
 }

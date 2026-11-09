@@ -351,4 +351,5 @@ export const ru: Record<string, string> = {
   'This account cannot place orders.': 'С этого счёта нельзя размещать ордера.',
   'Sign in to place an order.': 'Войдите, чтобы разместить ордер.',
   'News, Education & Entertainment': 'Новости, обучение и развлечения',
+  'Some text on this page is not yet translated and is shown in English.': 'Часть текста на этой странице ещё не переведена и показана на английском.',
 }
