@@ -1,13 +1,18 @@
 import { currentLocale, pick } from '../i18n/locales'
 import { useEffect, useState, useRef } from 'react'
-import { ConnectButton, RainbowKitProvider, darkTheme, lightTheme } from '@rainbow-me/rainbowkit'
+import { ConnectButton, RainbowKitProvider, darkTheme, lightTheme, type Locale as RainbowLocale } from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'   /* REQUIRED: without it the modal renders unstyled (position:static at the end of <body>, breaking the page layout) */
-import { useAccount, useBalance, useConnect } from 'wagmi'
+import { useAccount, useBalance, useDisconnect, useSwitchChain } from 'wagmi'
 import { walletConnectEnabled } from './config'
 import { formatUnits } from 'viem'
 import { useSession } from '../session/useOpenfundSession'
 import { ProfilePanel } from '../session/ProfilePanel'
 import { useProductNetwork } from './productNetwork'
+import { WalletPicker } from './WalletPicker'
+import { classifyWalletError, isNeutral, walletErrorMessage, type ClassifiedWalletError, type WalletStage } from './errors'
+
+/* RainbowKit ships ar/ru/zh-CN; Persian is translated by the DOM pass below. */
+const RAINBOW_LOCALE: Record<string, RainbowLocale> = { fa: 'en-US', en: 'en-US', ar: 'ar-AR', ru: 'ru-RU', 'zh-CN': 'zh-CN' }
 import '../session/session.css'
 
 /* RainbowKit theme follows the app theme (html[data-theme=light]) with the
@@ -37,8 +42,10 @@ function useAppTheme(): 'dark' | 'light' {
 export function RainbowConnect() {
   const { address, chain, chainId, isConnecting } = useAccount()
   const targetChain = useProductNetwork()
-  const { connectAsync, connectors } = useConnect()
-  const [connectError, setConnectError] = useState('')
+  const { switchChainAsync, isPending: switching } = useSwitchChain()
+  const { disconnect } = useDisconnect()
+  const [pickerOpen, setPickerOpen] = useState(false)
+  const [walletNotice, setWalletNotice] = useState<(ClassifiedWalletError & { stage: WalletStage }) | null>(null)
   const { data: balance } = useBalance({ address, chainId })
   const theme = useAppTheme()
   /* re-render when the app language flips (legacy locale.js dispatches 'of-language') */
@@ -145,6 +152,12 @@ export function RainbowConnect() {
     return `${v.toFixed(3)} ${balance.symbol}`
   }
   const correctNetwork = chain?.id === targetChain.id
+  const openWalletConnect = useRef<(() => void) | undefined>(undefined)
+  const switchNetwork = async () => {
+    setWalletNotice(null)
+    try { await switchChainAsync({ chainId: targetChain.id }) }
+    catch (error) { setWalletNotice({ stage: 'network', ...classifyWalletError(error) }) }
+  }
 
   /* Openfund wallet identity (SIWE): connect ≠ login — the user signs once
      per session; then the profile panel shows their account + challenges */
@@ -170,28 +183,16 @@ export function RainbowConnect() {
           : lightTheme({ accentColor: '#12965D', accentColorForeground: '#ffffff' })
       }
       appInfo={{ appName: 'Openfund', learnMoreUrl: 'https://gains.trade' }}
+      locale={RAINBOW_LOCALE[locale]}
     >
       <ConnectButton.Custom>
-      {({ account, chain: rkChain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
+      {({ account, chain: rkChain, openAccountModal, openConnectModal, mounted }) => {
         const connected = mounted && account && rkChain
         /* expose the modal opener so legacy-markup triggers (e.g. the landing
            "ورود با کیف پول وب۳" card) can open the real RainbowKit modal */
-        const connectWallet = async () => {
-          setConnectError('')
-          if (walletConnectEnabled) { openConnectModal(); return }
-          try {
-            // EIP-6963 providers need not publish the legacy ethereum global.
-            for (const connector of connectors) {
-              if (!await connector.getProvider()) continue
-              await connectAsync({ connector })
-              return
-            }
-            setConnectError(t('کیف پول سازگار پیدا نشد. افزونهٔ کیف پول را فعال کنید.', 'No compatible wallet detected. Enable your wallet extension.'))
-            openConnectModal()
-          } catch (error: any) {
-            setConnectError((t('اتصال کیف پول ناموفق بود. ', 'Wallet connection failed. ')) + (error?.shortMessage || error?.message || ''))
-          }
-        }
+        /* never auto-select a wallet: the person chooses one explicitly */
+        const connectWallet = () => { setWalletNotice(null); session.clearError(); setPickerOpen(true) }
+        openWalletConnect.current = openConnectModal
         ;(window as any).__ofOpenConnect = !connected ? connectWallet : session.status === 'authenticated' ? () => setProfileOpen(true) : () => void session.signIn()
         return (
           <div
@@ -227,8 +228,8 @@ export function RainbowConnect() {
                   <span dir='ltr'>{fmtAddr(address)}</span>
                   {balance ? <span dir='ltr' className='rk-chip-bal'>{fmtBal()}</span> : null}
                 </button>
-                {!correctNetwork && <button type="button" className="rk-chip" onClick={openChainModal}>
-                  {t('شبکه: ', 'Network: ')}{targetChain.name}
+                {!correctNetwork && <button type="button" className="rk-chip" data-switch-network disabled={switching} onClick={() => void switchNetwork()}>
+                  {switching ? t('در انتظار تأیید شبکه…', 'Confirm the network in your wallet…') : <>{t('تغییر شبکه به ', 'Switch network to ')}<bdi dir="ltr">{targetChain.name}</bdi></>}
                 </button>}
                 {/* ONE action chip — identical template, mint accent */}
                 {session.status === 'authenticated' ? (
@@ -250,6 +251,7 @@ export function RainbowConnect() {
                   </button>
                 )}
                 <span className="rk-network-status">{chain?.name || (t('شبکه ناشناخته', 'Unknown network'))}</span>
+                <button type="button" className="rk-chip" data-wallet-disconnect onClick={() => { setWalletNotice(null); session.clearError(); disconnect() }}>{t('قطع اتصال کیف پول', 'Disconnect wallet')}</button>
                 </div>
               </details>
             )}
@@ -257,8 +259,19 @@ export function RainbowConnect() {
         )
       }}
       </ConnectButton.Custom>
-      {connectError && <span role='alert' className='of-session-error'>{connectError}</span>}
-      {session.error && <span role="alert" className="of-session-error">{t('ورود انجام نشد. دوباره تلاش کنید. ', 'Sign-in failed. Please retry. ')}{session.error}</span>}
+      {[walletNotice, session.error].filter(Boolean).slice(0, 1).map(notice => (
+        <span key="notice" role={isNeutral(notice!.kind) ? 'status' : 'alert'} data-wallet-notice={notice!.kind} className={isNeutral(notice!.kind) ? 'of-session-error of-session-neutral' : 'of-session-error'}>
+          {walletErrorMessage(locale, notice!.stage, notice!)}
+          <button type="button" className="of-session-dismiss" aria-label={t('بستن', 'Close')} onClick={() => { setWalletNotice(null); session.clearError() }}>×</button>
+        </span>
+      ))}
+      {pickerOpen && <WalletPicker
+        locale={locale}
+        walletConnect={walletConnectEnabled}
+        onClose={() => setPickerOpen(false)}
+        onConnected={() => setPickerOpen(false)}
+        onWalletConnect={() => { setPickerOpen(false); openWalletConnect.current?.() }}
+      />}
       {profileOpen && session.user && (
         <ProfilePanel
           user={session.user}
