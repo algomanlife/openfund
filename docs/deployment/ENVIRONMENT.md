@@ -42,6 +42,14 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `INTERNAL_API_TOKEN` | openfund | optional constant-time token guarding the test-only `/internal` seams (defense in depth; production never mounts them) |
 | `VITE_DEPAY_WIDGET` | openfund (runtime, public) | optional; `1` enables the DePay checkout widget |
 | `VITE_DEPAY_WIDGET_URL` | openfund (runtime, public) | approved DePay widget bundle URL; the widget stays hidden without both variables |
+| `TREASURY_WALLET_ADDRESS` | openfund | public Openfund Treasury address read by the backend scheduler. Unset = `Not configured`; allocatable capital stays `Unknown`. Never a private key or seed phrase. See [Treasury](../economy/TREASURY.md). |
+| `TREASURY_CHAIN_ID` | openfund | treasury chain id (supported: 1, 42161, 8453, 11155111, 421614); defaults to `PURCHASE_PAYMENT_CHAIN` |
+| `TREASURY_ASSETS` | openfund | JSON list of `{symbol, address \| "native", decimals, priceFeed?}`; an asset without a valid Chainlink `priceFeed` is shown unpriced and excluded from the USD total |
+| `TREASURY_RPC_URL` | openfund | optional RPC endpoint for treasury reads (unset = chain default public RPC) |
+| `TREASURY_REFRESH_MINUTES` | openfund | snapshot interval, clamped to 60–120 (default 90) |
+| `TREASURY_PRICE_MAX_AGE_MINUTES` | openfund | maximum Chainlink answer age before an asset is treated as unpriced (default 1500) |
+| `LIVE_EXECUTION_ADAPTER` | openfund | `none` (default, every live order refused), `sandbox` (non-monetary, refused when `NODE_ENV=production`), `gains` (reserved; reports `adapter_unavailable`). See [Live Market Access](../economy/LIVE_MARKET_ACCESS.md). |
+| `LIVE_SETTLEMENT_ADAPTER` | openfund | `none` (default, settlements stay `pending`) or `sandbox` (non-monetary, refused in production) |
 
 ## Local development defaults (code fallbacks — no .env required)
 

@@ -38,6 +38,10 @@ TEST_BACKEND_URL=http://localhost:8294 npm run test:backend
 
 The example deliberately uses a private test port, not the intended official runtime at 8080. Default tests use backend port 8080 and SIWE origin/domain `localhost:5173`. If running another port, set `PORT` for the server and `TEST_BACKEND_URL` for tests; keep `localhost:5173` in server `ALLOWED_DOMAINS` and `http://localhost:5173` in `CORS_ORIGINS`. The test seam is disabled in production; never enable it in a public environment. Purchase HTTP/browser lifecycle tests need the CI-only placeholder receiver above. Without a receiver, purchase-disabled paths may pass while enabled lifecycle cases skip; report skip counts. `/internal/confirm-order` exercises local atomic provisioning, not live receipt finality, token economics or DePay network compatibility.
 
+## Economy suites
+
+`npm run test:economy --prefix apps/backend` (part of `test:all`) runs pure policy arithmetic, treasury snapshots with an injected chain reader, the Live Market Access flow mounted in-process with sandbox adapters, and the ambassador/coach HTTP suite. The last needs the test backend started with `ADMIN_API_TOKEN` and the placeholder receiver, and `ADMIN_API_TOKEN` (or `TEST_ADMIN_TOKEN`) in the test environment. No chain, RPC or payment network is contacted. See [Economy](../economy/README.md).
+
 ## Browser suites
 
 After backend suites finish (their test marks share a process), run:

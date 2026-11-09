@@ -197,7 +197,10 @@ test('coach: approval, trader link, qualification and data isolation', { skip: !
   assert.equal(me.data.eligibility.eligible, false)
   assert.equal(me.data.eligibility.checks.find(c => c.key === 'coach_verified_trader').ok, true)
   assert.equal((await j('POST', '/live/apply', {}, trader.cookie)).data.error, 'not_eligible')
-  assert.equal((await j('POST', '/live/orders', { market: 'BTC/USD', side: 'long', collateralUsd: 10, leverage: 2, idempotencyKey: 'abcdefgh1' }, trader.cookie)).data.error, 'no_active_allocation')
+  /* default deployments keep live execution disabled; with an adapter the trader still has no allocation */
+  const mode = (await j('GET', '/live/status')).data.executionAdapter
+  assert.equal((await j('POST', '/live/orders', { market: 'BTC/USD', side: 'long', collateralUsd: 10, leverage: 2, idempotencyKey: 'abcdefgh1' }, trader.cookie)).data.error,
+    mode === 'none' ? 'live_execution_disabled' : 'no_active_allocation')
 })
 
 test('transparency aggregates confirmed sales and refunds without identities', { skip: !ADMIN }, async () => {
