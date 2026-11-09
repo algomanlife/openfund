@@ -88,7 +88,10 @@ async function transparencyReport(pool, treasury) {
       count(*) FILTER (WHERE stage=2 AND status IN ('passed','failed','expired'))::int AS s2_done,
       count(*) FILTER (WHERE stage=0)::int AS instant
       FROM openfund_challenges`)
-  const [ev] = await q(`SELECT count(DISTINCT challenge_id)::int AS final_passed FROM challenge_events WHERE kind='passed'`)
+  /* final stage of record: stage = number of phases (1-phase → 1, 2-phase → 2);
+     the same definition live-funding.js uses for eligibility */
+  const FINAL_PASSED = `c.status='passed' AND c.stage >= 1 AND c.stage = coalesce((c.rules_snapshot->>'phases')::int, 0)`
+  const [ev] = await q(`SELECT count(*)::int AS final_passed FROM openfund_challenges c WHERE ${FINAL_PASSED}`)
   const [wd] = await q(`SELECT
       count(*) FILTER (WHERE status='paid')::int AS paid_count, coalesce(sum(amount_usd) FILTER (WHERE status='paid'),0) AS paid_sum,
       count(*) FILTER (WHERE status='approved')::int AS approved_count, coalesce(sum(amount_usd) FILTER (WHERE status='approved'),0) AS approved_sum,
@@ -99,7 +102,7 @@ async function transparencyReport(pool, treasury) {
   const [funded] = await q(`SELECT count(DISTINCT c.id)::int AS n,
         count(DISTINCT c.id) FILTER (WHERE EXISTS (SELECT 1 FROM withdrawal_requests w WHERE w.challenge_id=c.id AND w.status='paid'))::int AS with_payout
       FROM openfund_challenges c
-     WHERE c.stage=0 OR EXISTS (SELECT 1 FROM challenge_events e WHERE e.challenge_id=c.id AND e.kind='passed')`)
+     WHERE c.stage=0 OR (${FINAL_PASSED})`)
   const payoutMonthly = await q(`SELECT to_char(date_trunc('month', reviewed_at),'YYYY-MM') AS month, count(*)::int AS payouts, sum(amount_usd) AS total
                                    FROM withdrawal_requests WHERE status='paid' AND reviewed_at > now() - interval '12 months' GROUP BY 1 ORDER BY 1`)
   const payoutTx = await q(`SELECT reviewed_at, amount_usd, payout_ref FROM withdrawal_requests WHERE status='paid' AND payout_ref ~* '^0x[0-9a-f]{64}$' ORDER BY reviewed_at DESC LIMIT 25`)
