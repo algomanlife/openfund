@@ -18,7 +18,8 @@
     "test:depth": "node --test test/market-depth.test.mjs",
     "test:website": "node --test test/website-expansion.test.mjs",
     "test:terminal": "node --test test/terminal-completion.test.mjs",
-    "test:governance": "node --test test/governance.test.mjs"
+    "test:governance": "node --test test/governance.test.mjs",
+    "test:chart": "node --test test/chart-quick-trade.test.mjs"
   },
   "dependencies": {
     "@luxalgo/vela": "0.9.3",

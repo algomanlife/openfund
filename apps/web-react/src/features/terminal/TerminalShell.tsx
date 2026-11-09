@@ -101,7 +101,7 @@ export default function TerminalShell({ product }: { product: Product }) {
   const accountsHref = accountsPath + (accountsPath.includes("?") ? "&" : "?") + "section=accounts";
   const navigation = (
     <nav id="terminal-navigation" aria-label={t("ناوبری ترمینال", "Terminal navigation")} className={open ? "open" : ""}>
-      {primary[product].filter(([id]) => ["dashboard", "trade", "portfolio"].includes(id)).map(([id, fa, en]) => (
+      {primary[product].filter(([id]) => ["dashboard", "trade", "chart", "portfolio"].includes(id)).map(([id, fa, en]) => (
         <Link key={id} to={route(locale, product, id)} aria-current={page === id ? "page" : undefined}
           className={page === id ? "active" : ""} onClick={() => setOpen(false)}>
           {id === "trade" ? t("معاملات", "Trading") : t(fa, en)}
@@ -117,7 +117,7 @@ export default function TerminalShell({ product }: { product: Product }) {
         <summary>{t("بیشتر", "More")} <span aria-hidden="true">▾</span></summary>
         <div className="of-terminal-more-links">
           {primary[product].map(([id, fa, en]) => <Link key={id}
-            className={["dashboard", "trade", "portfolio"].includes(id) ? "of-compact-destination" : page === id ? "active" : undefined}
+            className={["dashboard", "trade", "chart", "portfolio"].includes(id) ? "of-compact-destination" : page === id ? "active" : undefined}
             aria-current={page === id ? "page" : undefined} to={route(locale, product, id)}>{t(fa, en)}</Link>)}
           <Link className="of-compact-destination" to={route(locale, product, "journal")}>{t("ژورنال", "Journal")}</Link>
           <Link className="of-compact-destination" to={accountsHref}>{t("حساب‌ها", "Accounts")}</Link>
@@ -138,7 +138,7 @@ export default function TerminalShell({ product }: { product: Product }) {
     >
       {product === "prop" && context.data?.state?.account && <TradingBridge pricing={context.data?.pricing} accountId={context.data.accountRef}/> }
       <div
-        className={`of-terminal of-terminal-compact ${page === "trade" ? "of-terminal-trading" : ""} ${page === "dashboard" ? "of-dashboard-page" : ""}`}
+        className={`of-terminal of-terminal-compact ${page === "trade" || page === "chart" ? "of-terminal-trading" : ""} ${page === "dashboard" ? "of-dashboard-page" : ""}`}
         dir={dirOf(locale)}
         data-product={product}
       >
@@ -229,8 +229,8 @@ export default function TerminalShell({ product }: { product: Product }) {
           </div>}</ReleaseStatus>
         </header>
         <main id="terminal-main" tabIndex={-1} className="of-terminal-main">
-          {page !== "trade" && <Editorial page={page} />}
-          {page !== "trade" && context.error && (
+          {page !== "trade" && page !== "chart" && <Editorial page={page} />}
+          {page !== "trade" && page !== "chart" && context.error && (
             <div role="alert" className="of-error">
               {t("دریافت حساب ناموفق بود.", "Account could not be loaded.")}{" "}
               <button onClick={() => setRevision((x) => x + 1)}>

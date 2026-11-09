@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Terminal Chart tab and Quick Trade (branch `feat/terminal-chart-quick-trade`,
+  unmerged, local verification only): a `Chart / چارت` tab beside Trading shows
+  the same Vela workspace full-viewport (order form, book and positions hidden)
+  without reloading the chart, market stream, indicators or drawings. Quick
+  Trade is a compact Buy/Sell control and order panel on that chart; it builds
+  the order form's request and submits through the existing account adapter
+  (validate, preview, submit with an idempotency key), so balance, leverage,
+  margin and permission checks are unchanged. No bid/ask is shown because the
+  market-data provider supplies a mark price only. No backend, engine or
+  routing-convention change.
 - Hybrid Governance v1.0 (branch `feat/hybrid-governance-v1`, unmerged, not in
   production use): off-chain, auditable governance with a ten-seat Community
   Council, OFP proposals, a validated lifecycle, quorum 7 and approval 6 of 10

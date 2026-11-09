@@ -395,3 +395,83 @@ html[dir="rtl"] #bt-positions th:last-child, html[dir="rtl"] .bt-table #tb-posit
 @font-face { font-family: 'Vazirmatn'; src: url('assets/Vazirmatn.ttf') format('truetype'); font-weight: 100 900; font-display: swap; }
 html[lang="ar"] body, html[lang="ar"] :is(button, input, select, summary, .field em) { font-family: Ubuntu, Vazirmatn, Tahoma, sans-serif; }
 html:is([lang="ru"], [lang="zh-CN"]) body { font-family: Ubuntu, system-ui, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif; }
+
+/* ============================================================
+   Chart tab: the same workspace document with only the chart shown.
+   body[data-layout="chart"] is set by the React shell (openfund-layout);
+   the Trading layout is the default and is not touched by these rules.
+   ============================================================ */
+.qt { display: none; }
+body[data-layout="chart"] .book-panel,
+body[data-layout="chart"] .trade-panel,
+body[data-layout="chart"] .bottom-panel,
+body[data-layout="chart"] .workspace-views,
+body[data-layout="chart"] .resize-handle { display: none !important; }
+body[data-layout="chart"] .workspace { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+body[data-layout="chart"] .chart-panel { grid-area: 1 / 1; display: flex; }
+@media (max-width: 1100px), (max-height: 635px) {
+  body[data-layout="chart"], html[dir="rtl"] body[data-layout="chart"] { grid-template-rows: 34px minmax(0, 1fr) 24px; }
+}
+body[data-layout="chart"] .qt {
+  display: block; position: absolute; z-index: 7; top: 44px; right: 84px;
+  width: max-content; max-width: calc(100% - 100px); direction: ltr;
+  font-size: 12px; color: var(--white);
+}
+.qt-bar {
+  display: flex; align-items: center; gap: 6px; padding: 4px;
+  background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: 6px;
+}
+.qt-meta { display: flex; flex-direction: column; gap: 1px; padding-inline: 6px; min-width: 0; line-height: 1.2; }
+.qt-mode { font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
+.qt-px { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.qt-px small { font-weight: 400; font-size: 10px; color: var(--muted); margin-inline-start: 4px; }
+.qt-px.stale { color: var(--muted); }
+.qt-btn {
+  min-width: 56px; height: 32px; padding: 0 12px; border-radius: 4px; font-weight: 700;
+  border: 1px solid transparent;
+}
+.qt-btn.long { color: var(--pos); background: var(--pos-bg); border-color: var(--pos); }
+.qt-btn.short { color: var(--neg); background: var(--neg-bg); border-color: var(--neg); }
+.qt-btn[aria-expanded="true"].long { background: var(--pos); color: #09100c; }
+.qt-btn[aria-expanded="true"].short { background: var(--neg); color: #09100c; }
+.qt-btn:disabled, #qt-submit:disabled { opacity: .45; cursor: not-allowed; }
+.qt-panel {
+  position: absolute; top: calc(100% + 6px); right: 0; width: 260px; padding: 10px;
+  display: grid; gap: 8px; background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: 6px;
+  max-height: calc(100dvh - 140px); overflow-y: auto;
+}
+html[dir="rtl"] .qt-panel { direction: rtl; text-align: right; }
+.qt-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.qt-title { font-size: 12px; }
+.qt-title.long { color: var(--pos); } .qt-title.short { color: var(--neg); }
+.qt-close { width: 28px; height: 28px; border-radius: 4px; color: var(--muted); font-size: 18px; line-height: 1; }
+.qt-close:hover { color: var(--mint); }
+.qt-field { display: grid; gap: 4px; font-size: 11px; color: var(--muted); }
+.qt-field input[type="text"] {
+  height: 32px; padding: 0 8px; border-radius: 4px; background: var(--bg); color: var(--white);
+  border: 1px solid var(--line-strong); font-size: 13px; font-variant-numeric: tabular-nums;
+}
+.qt-field input[type="range"] { width: 100%; accent-color: var(--mint); min-height: 24px; }
+.qt-field b { color: var(--white); }
+.qt-chips { display: flex; gap: 4px; }
+.qt-chips button { flex: 1; height: 26px; border: 1px solid var(--line-strong); border-radius: 4px; font-size: 11px; color: var(--muted); }
+.qt-chips button:hover:not(:disabled) { color: var(--mint); border-color: var(--mint); }
+.qt-chips button:disabled { opacity: .45; cursor: not-allowed; }
+.qt-stats { display: grid; gap: 3px; margin: 0; }
+.qt-stats > div { display: flex; justify-content: space-between; gap: 8px; }
+.qt-stats dt { color: var(--muted); font-size: 11px; }
+.qt-stats dd { margin: 0; font-size: 11px; }
+.qt-note { margin: 0; font-size: 10px; color: var(--muted); }
+.qt-err { margin: 0; font-size: 11px; color: var(--neg); }
+.qt-err.ok { color: var(--pos); }
+#qt-submit { width: 100%; margin: 0; box-sizing: border-box; height: 34px; border-radius: 4px; font-weight: 700; }
+.qt-panel, .qt-panel * { box-sizing: border-box; }
+#qt-submit[aria-busy="true"] { opacity: .7; cursor: progress; }
+@media (max-width: 760px) {
+  body[data-layout="chart"] .qt { top: auto; bottom: 8px; right: 8px; left: 8px; max-width: none; width: auto; }
+  body[data-layout="chart"] .qt-bar { justify-content: space-between; }
+  .qt-btn { min-height: 44px; flex: 1; }
+  .qt-panel { position: absolute; top: auto; bottom: calc(100% + 6px); right: 0; width: min(100%, 340px); margin: 0; max-height: 70dvh; }
+  .qt-field input[type="text"], .qt-chips button, .qt-close, #qt-submit { min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) { .qt * { transition: none !important; } }

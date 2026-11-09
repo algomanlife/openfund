@@ -129,6 +129,8 @@ const routes = [
       { path: '*', element: <Navigate to="../dashboard" replace /> },
       { path: 'dashboard', element: <ProductDashboard /> },
       { path: 'trade', element: <SharedTradingTerminal /> },
+      /* same element type + position as 'trade': React keeps one workspace instance across the two tabs */
+      { path: 'chart', element: <SharedTradingTerminal /> },
       { path: 'portfolio', element: <ProductPortfolio /> },
       { path: 'journal', element: <ProductJournal /> },
       ...(product === 'prop' ? [
