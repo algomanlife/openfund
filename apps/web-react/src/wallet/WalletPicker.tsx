@@ -38,9 +38,19 @@ export function WalletPicker({ locale, walletConnect, onWalletConnect, onClose, 
   const t = (fa: string, en: string) => pick(locale, fa, en)
   const { connectors, connectAsync } = useConnect()
   const choices = useMemo(() => walletChoices(connectors), [connectors])
+  const [availableChoices, setAvailableChoices] = useState<WalletChoice[] | null>(null)
   const [pending, setPending] = useState<string | null>(null)
   const [result, setResult] = useState<ClassifiedWalletError | null>(null)
   const dialog = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    let active = true
+    setAvailableChoices(null)
+    Promise.all(choices.map(async choice => {
+      try { return await choice.connector.getProvider() ? choice : null } catch { return null }
+    })).then(found => { if (active) setAvailableChoices(found.filter((choice): choice is WalletChoice => choice !== null)) })
+    return () => { active = false }
+  }, [choices])
 
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null
@@ -73,9 +83,9 @@ export function WalletPicker({ locale, walletConnect, onWalletConnect, onClose, 
           <button type="button" className="of-wallet-picker-close" onClick={onClose} aria-label={t('بستن', 'Close')}>×</button>
         </header>
         <p className="of-wallet-picker-note">{t('فقط اتصال و امضای ورود؛ هیچ تراکنش یا مجوز توکنی درخواست نمی‌شود.', 'Connection and sign-in signature only; no transaction or token approval is requested.')}</p>
-        {choices.length > 0 ? (
+        {availableChoices === null ? null : availableChoices.length > 0 ? (
           <ul className="of-wallet-list">
-            {choices.map(choice => (
+            {availableChoices.map(choice => (
               <li key={choice.id}>
                 <button type="button" data-wallet-id={choice.id} disabled={pending !== null} aria-busy={pending === choice.id} onClick={() => void choose(choice)}>
                   {choice.icon ? <img src={choice.icon} alt="" width={28} height={28} /> : <span className="of-wallet-icon" aria-hidden="true">◎</span>}
