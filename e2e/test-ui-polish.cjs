@@ -192,7 +192,9 @@ async function walletDisclosureFits(page){
    await page.waitForTimeout(locale==='en'?1800:350);
    await page.locator('.home-products').waitFor();
    if(connected && !await page.locator('.rk-account-menu').count()){
-    await page.locator('header .rk-chip-connect').click();await page.locator('.rk-account-menu').waitFor();
+    await page.locator('header .rk-chip-connect').click();
+    await page.locator('[data-wallet-picker] [data-wallet-id]').first().click();
+    await page.locator('.rk-account-menu').waitFor();
    }
    const prefix=`${locale}/${theme}/${width}/${connected?'test-wallet':'disconnected'}`;
    console.log('Checking '+prefix);
