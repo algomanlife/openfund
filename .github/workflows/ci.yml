@@ -55,6 +55,7 @@ jobs:
           npm run test:website
           npm run test:whitepaper
           npm run test:terminal
+          npm run test:i18n
       - name: Whitepaper CMS schema and seed validation (offline)
         working-directory: .
         run: |

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import InformationShell, { useInformationLocale } from '../information/InformationShell'
 import { text as t, type Locale } from '../information/content'
+import { untranslatedNotice } from '../../i18n/locales'
 import { useWhitepaper } from '../../cms/whitepaper/client'
 import type { WpChapter, WpStatus } from '../../cms/whitepaper/types'
 import Block, { STATUS_LABEL } from './blocks'
@@ -52,7 +53,10 @@ function Toc({ chapters, active, locale, onJump }: { chapters: WpChapter[]; acti
 }
 
 export default function Whitepaper() {
-  const locale = useInformationLocale()
+  const appLocale = useInformationLocale()
+  // This edition has verified Persian and English copy only. Keep the
+  // publication readable in other UI locales and disclose the fallback.
+  const locale: Locale = appLocale === 'fa' ? 'fa' : 'en'
   const paper = useWhitepaper()
   const { document: doc, chapters } = paper
   const navigate = useNavigate()
@@ -116,6 +120,7 @@ export default function Whitepaper() {
 
   return <InformationShell page="whitepaper" title={doc.seoTitle[locale]} description={doc.seoDescription[locale]}>
     <article className="wp" lang={locale} aria-labelledby="wp-title">
+      {appLocale !== 'fa' && appLocale !== 'en' && <p className="container" role="status">{untranslatedNotice(appLocale)}</p>}
       <header className="container wp-hero" id="top">
         <div className="hero-atmosphere" aria-hidden="true"><i /><i /><i /></div>
         <div className="wp-hero-copy">

@@ -2,6 +2,8 @@
 
 The official Openfund Whitepaper is a single, anchor-navigated page at `/{locale}/whitepaper`. It is a living publication managed in Directus. It explains the ecosystem, architecture, prop evaluation, business model, economics, treasury transparency, partner programs, Live Market Access, governance, roadmap and disclosures. Every capability carries a status label verified against this repository. [ADR 0016](../decisions/0016-cms-managed-whitepaper.md) records the design decision.
 
+Edition v1.0 has Persian and English text. On Arabic, Russian and Chinese UI routes, the publication displays the English edition with a visible translation notice; those URLs canonicalize to the English edition and are not advertised as translated alternates. The rest of the site keeps its five-language coverage. Additional whitepaper translations require reviewed content and CMS schema support.
+
 ## Route and navigation
 
 | Item | Behavior |

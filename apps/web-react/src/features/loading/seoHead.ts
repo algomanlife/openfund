@@ -1,20 +1,20 @@
 import type { Location } from 'react-router-dom'
-import { contentLocale, normalizeLocale } from '../../i18n/locales'
+import { LOCALES, normalizeLocale, type AppLocale } from '../../i18n/locales'
 
 /* ---- route-driven SEO head ---------------------------------------------------
    Clean canonical URLs, locale alternates (hreflang) and indexability follow
    the browser-history route. Public translated pages are indexable with
    fa/en alternates; the authenticated product application (terminal,
    portfolio, purchases…) and legacy helper routes are noindex so search
-   engines never index private surfaces. Added interface locales display
-   English editorial content until translated, so they canonicalize to the
-   English path. Each serving origin keeps its own canonical domain. */
+   engines never index private surfaces. Every supported locale renders its
+   own translated page, so each one is self-canonical and listed as an
+   hreflang alternate. Each serving origin keeps its own canonical domain. */
 
 const PUBLIC_ROUTES = /^\/(?:fa|en|ar|ru|zh-CN)\/(?:home|challenges|markets|rulebook|transparency|faq|tools|learn|glossary|referral|whitepaper)(?:\/|$)/
 
 const isPublic = (pathname: string) => PUBLIC_ROUTES.test(pathname)
 const routeLocale = (pathname: string) => normalizeLocale(pathname.split('/')[1], 'fa')
-const swapLocale = (pathname: string, locale: 'fa' | 'en') =>
+const swapLocale = (pathname: string, locale: AppLocale) =>
   pathname.replace(/^\/(?:fa|en|ar|ru|zh-CN)(\/|$)/, `/${locale}$1`)
 
 const upsertLink = (rel: string, href: string, hreflang?: string) => {
@@ -44,7 +44,8 @@ export function updateSeoHead(location: Location) {
   const origin = window.location.origin
   /* canonical: clean path, no query, no hash */
   const current = routeLocale(pathname)
-  const canonical = origin + (pathname === '/' ? '/' : swapLocale(pathname, contentLocale(current)))
+  const whitepaper = /^\/(?:fa|en|ar|ru|zh-CN)\/whitepaper(?:\/|$)/.test(pathname)
+  const canonical = origin + (pathname === '/' ? '/' : swapLocale(pathname, whitepaper && current !== 'fa' ? 'en' : current))
   const public_ = isPublic(pathname)
   upsertMeta('robots', public_ ? 'index,follow' : 'noindex')
   if (!public_) {
@@ -53,9 +54,7 @@ export function updateSeoHead(location: Location) {
     return
   }
   upsertLink('canonical', canonical)
-  const fa = swapLocale(pathname, 'fa')
-  const en = swapLocale(pathname, 'en')
-  upsertLink('alternate', origin + fa, 'fa')
-  upsertLink('alternate', origin + en, 'en')
-  upsertLink('alternate', origin + (current === 'en' ? en : fa), 'x-default')
+  document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach(l => l.remove())
+  for (const locale of whitepaper ? (['fa', 'en'] as const) : LOCALES) upsertLink('alternate', origin + swapLocale(pathname, locale), locale)
+  upsertLink('alternate', origin + swapLocale(pathname, 'fa'), 'x-default')
 }

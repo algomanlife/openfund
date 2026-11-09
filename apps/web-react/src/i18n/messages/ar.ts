@@ -1,6 +1,20 @@
 /* Arabic interface strings, keyed by the English source text. Trading
    symbols, tickers, currency codes and numbers are never translated. */
 export const ar: Record<string, string> = {
+  '1 phase': 'مرحلة واحدة',
+  '2 phases': 'مرحلتان',
+  '100% monthly': '100% شهريًا',
+  ' · ${percent}% monthly': ' · ${percent}% شهريًا',
+  'trailing': 'متحرك',
+  'candidate': 'تجريبي',
+  'Base': 'الأساس',
+  'Role': 'الدور',
+  'Rate (1h)': 'المعدل (ساعة)',
+  'Workspace views': 'عروض مساحة العمل',
+  'Depth denomination': 'وحدة عمق السوق',
+  'Refresh account': 'تحديث الحساب',
+  'Last update ${time}': 'آخر تحديث ${time}',
+  'The challenge catalog could not be loaded from the content service. Please refresh in a moment.': 'تعذّر تحميل كتالوج التحديات من خدمة المحتوى. يرجى تحديث الصفحة بعد قليل.',
   /* ---- shared chrome, navigation and language ---- */
   'Language': 'اللغة',
   'Home': 'الرئيسية',
@@ -46,7 +60,6 @@ export const ar: Record<string, string> = {
   'Coming Soon': 'قريبًا',
   'Openfund community link has not been announced': 'لم يُعلَن رابط مجتمع Openfund بعد',
   'Openfund trader communities': 'مجتمعات متداولي Openfund',
-  'This page is not yet available in Arabic. The English version is shown.': 'هذه الصفحة غير متوفرة بالعربية بعد، ويُعرض المحتوى باللغة الإنجليزية.',
   'Release manifest is missing; application and server version compatibility is unverified.': 'بيان الإصدار غير متوفر؛ لم يتم التحقق من توافق إصدار التطبيق والخادم.',
   'Release verification is unavailable; application and server version compatibility is unverified.': 'التحقق من الإصدار غير متاح؛ لم يتم التحقق من توافق إصدار التطبيق والخادم.',
   'Application and server versions differ. Reload this page.': 'إصدار التطبيق يختلف عن إصدار الخادم. أعد تحميل الصفحة.',
@@ -354,4 +367,5 @@ export const ar: Record<string, string> = {
   'This account cannot place orders.': 'لا يمكن لهذا الحساب تقديم أوامر.',
   'Sign in to place an order.': 'سجّل الدخول لتقديم أمر.',
   'News, Education & Entertainment': 'أخبار وتعليم وترفيه',
+  'Some text on this page is not yet translated and is shown in English.': 'بعض النص في هذه الصفحة لم يُترجم بعد ويُعرض باللغة الإنجليزية.',
 }

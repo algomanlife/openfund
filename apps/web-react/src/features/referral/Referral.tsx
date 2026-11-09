@@ -7,7 +7,7 @@ import { targetHref, useSiteLibrary } from '../../cms/siteContent'
 import type { ReferralBenefit } from '../../cms/contentTypes'
 import './referral.css'
 
-type Locale = 'fa' | 'en'
+type Locale = import('../../i18n/locales').AppLocale
 
 const BENEFIT_GLYPHS: Record<ReferralBenefit['icon'], string> = {
   link: '⇗', chart: '▤', wallet: '▣', shield: '⌘', school: '◇', handshake: '⋈',

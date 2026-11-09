@@ -110,10 +110,13 @@ const legacyScriptHashes = () => {
 }
 const CSP_LEGACY_HASHES = legacyScriptHashes()
 const cspExtraConnect = (process.env.CSP_EXTRA_CONNECT || '').split(',').map(v => v.trim()).filter(Boolean).join(' ')
+/* WalletConnect v2 loads its Verify API in an iframe; allowed only when a
+   WalletConnect Cloud project id is configured (remote wallets enabled). */
+const cspWalletFrames = process.env.VITE_WALLETCONNECT_PROJECT_ID ? ' https://verify.walletconnect.org https://verify.walletconnect.com' : ''
 const buildCsp = (allowEval) =>
   "default-src 'self'; script-src 'self' " + CSP_THEME_BOOT_HASH + (allowEval ? " 'unsafe-eval' " + CSP_LEGACY_HASHES : '') + "; style-src 'self' 'unsafe-inline'; " +
   "img-src 'self' data: blob: https:; connect-src 'self' https: wss:" + (cspExtraConnect ? ' ' + cspExtraConnect : '') + "; " +
-  "worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'self'; " +
+  "worker-src 'self' blob:; frame-src 'self'" + cspWalletFrames + "; frame-ancestors 'self'; " +
   "object-src 'none'; base-uri 'self'; form-action 'self'"
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff')

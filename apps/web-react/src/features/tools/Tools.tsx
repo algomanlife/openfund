@@ -5,7 +5,7 @@ import { useSiteLibrary } from '../../cms/siteContent'
 import type { ToolSpec } from '../../cms/contentTypes'
 import './tools.css'
 
-type Locale = 'fa' | 'en'
+type Locale = import('../../i18n/locales').AppLocale
 
 const CATEGORY_LABELS: Record<ToolSpec['category'], ReturnType<typeof text>> = {
   sizing: text('Position sizing', 'حجم‌گذاری موقعیت'),

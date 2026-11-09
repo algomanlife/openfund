@@ -1,3 +1,4 @@
+import { normalizeLocale, pick } from '../../i18n/locales'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import InformationShell from '../information/InformationShell'
@@ -14,7 +15,7 @@ import TelegramCommunity from '../community/TelegramCommunity'
 /** Persian-only product gateway. Editorial fields remain owned by Directus;
  * decorative components do not connect to market, wallet or execution APIs. */
 export default function Home() {
-  const locale: Locale = useParams().locale === 'en' ? 'en' : 'fa'
+  const locale: Locale = normalizeLocale(useParams().locale, 'fa')
   const [content, setContent] = useState<CmsHome | null | 'error'>(null)
   useEffect(() => {
     let active = true
@@ -38,11 +39,9 @@ const CTA_HREF: Record<'challenges' | 'terminal', (locale: Locale) => string> = 
 function HomeUnavailable({ locale }: { locale: Locale }) {
   return <div id="top" className="home-gateway">
     <div className="container home-stage">
-      <h1>{locale === 'fa' ? 'محتوای این بخش در دسترس نیست' : 'This section’s content is unavailable'}</h1>
+      <h1>{pick(locale, 'محتوای این بخش در دسترس نیست', 'This section’s content is unavailable')}</h1>
       <p className="hero-intro">
-        {locale === 'fa'
-          ? 'اتصال به سامانهٔ مدیریت محتوا برقرار نشد. چند لحظه بعد صفحه را تازه‌سازی کن.'
-          : 'The content management service could not be reached. Please refresh in a moment.'}
+        {pick(locale, 'اتصال به سامانهٔ مدیریت محتوا برقرار نشد. چند لحظه بعد صفحه را تازه‌سازی کن.', 'The content management service could not be reached. Please refresh in a moment.')}
       </p>
       <div className="home-community"><TelegramCommunity locale={locale} /></div>
     </div>
@@ -67,7 +66,7 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
           <div className="home-art"><AnimatedTradingTerminalIllustration /></div>
           <div className="home-panel-copy">
             <h2>{t.propTitle}</h2>
-          <p className="home-product-note" title={t.propDescription || undefined}>{t.propDescription || (locale === 'fa' ? 'تمرین و ارزیابی · تصویر نمایشی' : 'Practice and evaluation · illustration')}</p>
+          <p className="home-product-note" title={t.propDescription || undefined}>{t.propDescription || pick(locale, 'تمرین و ارزیابی · تصویر نمایشی', 'Practice and evaluation · illustration')}</p>
             <a className="button" href={c.propCtaDestination === 'terminal' ? `/${locale}/prop/trade` : CTA_HREF.challenges(locale)}>
               {t.propCta}
               <span aria-hidden="true">←</span>
@@ -81,7 +80,7 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
           </div>
           <div className="home-panel-copy">
             <h2>{t.perpetualTitle}</h2>
-          <p className="home-product-note" title={t.perpetualDescription || undefined}>{t.perpetualDescription || (locale === 'fa' ? 'داده‌های بازار · دسترسی خواندنی' : 'Market data · read-only access')}</p>
+          <p className="home-product-note" title={t.perpetualDescription || undefined}>{t.perpetualDescription || pick(locale, 'داده‌های بازار · دسترسی خواندنی', 'Market data · read-only access')}</p>
             <a className="button" href={CTA_HREF[c.perpetualCtaDestination](locale)}>
               {t.perpetualCta}
               <span aria-hidden="true">↙</span>

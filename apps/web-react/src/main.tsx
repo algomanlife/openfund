@@ -32,13 +32,20 @@ import { WalletProvider } from './wallet/WalletProvider'
 import { SessionProvider } from './session/useOpenfundSession'
 import AppFrame from './features/loading/AppFrame'
 import { startThemeSync } from './theme'
-import { isLocale, storedLocale, type AppLocale } from './i18n/locales'
+import { storedLocale, type AppLocale } from './i18n/locales'
+import { translateSource } from './i18n/messages'
 
 startThemeSync()
 
+/* Same-origin legacy documents (terminal iframe) translate their static
+   English markup for ar / ru / zh-CN through the app dictionaries; misses
+   are reported exactly like React text. */
+;(window as Window & { __ofTranslateText?: (locale: string, english: string) => string }).__ofTranslateText = (locale, english) =>
+  locale === 'ar' || locale === 'ru' || locale === 'zh-CN' ? translateSource(locale, english) : english
+
 /* ---- public website architecture ----------------------------------------
    /              → language-aware redirect into the Home product gateway
-   /:locale/home  → FA two-product gateway; en/ar/ru/zh-CN the Prop landing
+   /:locale/home  → two-product gateway (every supported locale)
    /:locale/challenges → legacy landing experience (preserved, moved off "/")
    /:locale/markets → Markets directory (Gains Network authoritative data)
    /:locale/rulebook, /:locale/transparency → existing editorial pages
@@ -88,19 +95,17 @@ function LegacyAnchor() {
 function TerminalRedirect({ page }: { page: string }) { return <Navigate to={`/${preferredLocale()}/prop/${page}`} replace /> }
 function ProductRedirect({ product }: { product: 'prop' | 'perpetual' }) { return <Navigate to={`/${preferredLocale()}/${product}/${useParams().page || 'dashboard'}`} replace /> }
 
-/* fa → the Persian two-product gateway; every other supported locale
-   follows the established English behaviour (the Prop landing). */
+/* Every supported locale gets the two-product gateway; language alone never
+   hides a product. Unknown locale segments fall back to the gateway too. */
 function LocalizedHome() {
-  const { locale } = useParams()
-  return locale === 'fa' || !isLocale(locale) ? <Home /> : <Landing />
+  return <Home />
 }
 
+/* Language does not gate products. Presentation availability does not verify
+   nationality or residency, and Prop/Perpetual data stay isolated by
+   product (apps/backend/products.js), not by locale. */
 function ProductGate({ product }: { product: 'prop' | 'perpetual' }) {
-  const { locale } = useParams()
-  // Presentation availability does not verify nationality or residency.
-  return isLocale(locale) && locale !== 'fa' && product === 'perpetual'
-    ? <Navigate to={`/${locale}/prop/dashboard`} replace />
-    : <TerminalShell product={product} />
+  return <TerminalShell product={product} />
 }
 
 const routes = [

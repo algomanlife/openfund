@@ -30,11 +30,11 @@ async function desktop(page) {
  for (const locale of ['en','fa']) {
   for (const source of pages) {
    await page.goto(base + locale + '/' + source);
-   if(locale==='fa'&&source==='home'){await page.locator('.home-gateway').waitFor();assert(await page.locator('header #navigation').count()===0,'FA gateway nav hidden');results.push({locale,source,gateway:true});continue;}
-   await page.locator('.resources-toggle').waitFor({state:'attached'});
+   if(source==='home'){await page.locator('.home-gateway').waitFor();assert(await page.locator('header #navigation').count()===0,'Home gateway nav hidden');results.push({locale,source,gateway:true});continue;}
+   await page.locator('.resources-toggle[aria-controls="website-resources"]').waitFor({state:'attached'});
    await page.waitForTimeout(source === 'challenges' ? 1800 : 200);
    assert(new URL(page.url()).pathname === '/' + locale + '/' + source, 'redirect ' + source);
-   await page.locator('.resources-toggle').click();
+   await page.locator('.resources-toggle[aria-controls="website-resources"]').click();
    const header = await page.locator('header a').evaluateAll(as => as.map(a => ({href:a.getAttribute('href'),text:a.textContent})));
    assert(header.length === 12, 'header count ' + source + ': ' + header.length);
    const footer = await page.locator('footer a').evaluateAll(as => as.map(a => ({href:a.getAttribute('href'),text:a.textContent})));
@@ -47,10 +47,10 @@ async function desktop(page) {
     const links = (area === 'header' ? header : footer).filter(a=>a.href.startsWith(base) && !a.href.includes('/prop/'));
     for (const {href} of links) {
      await page.goto(base + locale + '/' + source);
-     await page.locator('.resources-toggle').waitFor({state:'attached'});
+     await page.locator('.resources-toggle[aria-controls="website-resources"]').waitFor({state:'attached'});
      await page.waitForTimeout(source === 'challenges' ? 500 : 220);
      const link = page.locator(area + ' a[href="'+href+'"]');
-     if (area === 'header' && await link.locator('xpath=ancestor::*[contains(@class,"nav-dropdown")]').count()) await page.locator('.resources-toggle').click();
+     if (area === 'header' && await link.locator('xpath=ancestor::*[contains(@class,"nav-dropdown")]').count()) await page.locator('.resources-toggle[aria-controls="website-resources"]').click();
      await link.click();
      await page.waitForURL(new URL(href, base).href);
      await page.waitForTimeout(href.includes('/challenges') || source === 'challenges' ? 500 : 60);
@@ -75,18 +75,18 @@ async function interactions(page) {
   for (const route of ['faq','challenges','learn/lessons/perps-how-they-work','tools/position-size','learn/glossary']) {
    await page.setViewportSize({width:1440,height:900});
    await page.goto(base+locale+'/'+route);
-   await page.locator('.resources-toggle').waitFor({state:'attached'});
+   await page.locator('.resources-toggle[aria-controls="website-resources"]').waitFor({state:'attached'});
    await page.waitForTimeout(700);
    if(route==='challenges') await page.waitForTimeout(1800);
-   await page.locator('.resources-toggle').focus();
+   await page.locator('.resources-toggle[aria-controls="website-resources"]').focus();
    await page.keyboard.press('ArrowDown');
    await page.waitForFunction(()=>document.querySelector('.nav-dropdown a')===document.activeElement,null,{timeout:3000}).catch(async error=>{ console.log(await page.evaluate(()=>({focus:document.activeElement.outerHTML,group:document.querySelector('.nav-account').outerHTML,dropdownStyle:{visibility:getComputedStyle(document.querySelector('.nav-dropdown')).visibility,display:getComputedStyle(document.querySelector('.nav-dropdown')).display}})));throw error; });
    await page.keyboard.press('End');
    check(await page.locator('.nav-dropdown a').last().evaluate(el=>el===document.activeElement), 'End '+route);
    await page.keyboard.press('Escape');
-   check(await page.locator('.resources-toggle').evaluate(el=>el===document.activeElement), 'Escape focus '+route);
-   check(await page.locator('.resources-toggle').getAttribute('aria-expanded')==='false','Escape aria');
-   await page.locator('.resources-toggle').hover();
+   check(await page.locator('.resources-toggle[aria-controls="website-resources"]').evaluate(el=>el===document.activeElement), 'Escape focus '+route);
+   check(await page.locator('.resources-toggle[aria-controls="website-resources"]').getAttribute('aria-expanded')==='false','Escape aria');
+   await page.locator('.resources-toggle[aria-controls="website-resources"]').hover();
    await page.locator('.nav-dropdown a[href$="/learn"]').hover();
    check(await page.locator('.nav-dropdown a[href$="/learn"]').isVisible(), 'hover bridge');
    await toggleLanguage(page);
@@ -104,7 +104,7 @@ async function interactions(page) {
     check(await page.locator('.menu').getAttribute('aria-expanded')==='false','mobile closed');
     await page.waitForTimeout(300);
     await page.goto(base+other+'/'+route);
-    await page.locator('.resources-toggle').waitFor({state:'attached'});
+    await page.locator('.resources-toggle[aria-controls="website-resources"]').waitFor({state:'attached'});
    await page.waitForTimeout(700);
     if(route==='challenges') await page.waitForTimeout(1800);
    }
@@ -113,9 +113,9 @@ async function interactions(page) {
  }
  await page.setViewportSize({width:1440,height:900});
  await page.goto(base+'en/faq');
- await page.locator('.resources-toggle').waitFor({state:'attached'});
+ await page.locator('.resources-toggle[aria-controls="website-resources"]').waitFor({state:'attached'});
    await page.waitForTimeout(700);
- await page.locator('.resources-toggle').click();
+ await page.locator('.resources-toggle[aria-controls="website-resources"]').click();
  await page.screenshot({path:'output/playwright/navigation-en-desktop.png'});
  await page.setViewportSize({width:390,height:844});
  await page.goto(base+'fa/learn');
@@ -131,9 +131,9 @@ async function touch(page) {
   const records=[];
   try {
     for(const locale of ['fa','en']) for(const route of ['home','challenges','faq','learn/lessons/perps-how-they-work','tools/position-size','referral']) {
-      if(locale==='fa'&&route==='home')continue; // The gateway deliberately has no resources menu.
+      if(route==='home')continue; // The gateway deliberately has no resources menu.
       await touchPage.goto(BASE+locale+'/'+route);
-      await touchPage.locator('.resources-toggle').waitFor({state:'attached'});
+      await touchPage.locator('.resources-toggle[aria-controls="website-resources"]').waitFor({state:'attached'});
       await touchPage.waitForTimeout(route==='challenges'?1800:700);
       await touchPage.locator('.menu').tap();
       await touchPage.locator('.nav-dropdown a[href$="/learn/glossary"]').tap();
@@ -145,7 +145,7 @@ async function touch(page) {
       await touchPage.setViewportSize({width:1440,height:900});
       await touchPage.goto(BASE+locale+'/faq');
       await touchPage.waitForTimeout(700);
-      const trigger=touchPage.locator('.resources-toggle');
+      const trigger=touchPage.locator('.resources-toggle[aria-controls="website-resources"]');
       await trigger.focus();
       await touchPage.keyboard.press('Enter');
       if(await trigger.getAttribute('aria-expanded')!=='true') throw new Error('Enter disclosure');
@@ -189,7 +189,7 @@ async function ancillary(page) {
 
 async function auditRoutes(page) {
   const library = loadLibrary();
-  const routes = ['home','challenges','markets','rulebook','transparency','faq','learn','learn/glossary','tools','referral',
+  const routes = ['home','challenges','markets','rulebook','transparency','revenue-model','live-market-access','ambassador','coach','faq','learn','learn/glossary','tools','referral',
     ...library.faqItems.map(item=>'faq/q/'+item.key),
     ...library.paths.flatMap(p=>['learn/paths/'+p.slug,...p.lessons.map(l=>'learn/lessons/'+l.slug)]),
     ...library.glossary.map(t=>'learn/glossary/'+t.slug),...library.tools.map(t=>'tools/'+t.slug)];
@@ -197,8 +197,8 @@ async function auditRoutes(page) {
   const records=[];
   for(const locale of ['en','fa']) for(const route of routes) {
     await page.goto(BASE+locale+'/'+route);
-    if(locale==='fa' && route==='home') await page.locator('.home-gateway').waitFor();
-    else await page.locator('.resources-toggle').waitFor({state:'attached'});
+    if(route==='home') await page.locator('.home-gateway').waitFor();
+    else await page.locator('.resources-toggle[aria-controls="website-resources"]').waitFor({state:'attached'});
     await page.waitForTimeout(route==='challenges'?1800:300);
     const path = new URL(page.url()).pathname;
     if(path!=='/'+locale+'/'+route) throw new Error('Unexpected redirect '+route+' '+path);

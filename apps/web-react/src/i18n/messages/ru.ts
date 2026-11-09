@@ -1,6 +1,20 @@
 /* Russian interface strings, keyed by the English source text. Trading
    symbols, tickers, currency codes and numbers are never translated. */
 export const ru: Record<string, string> = {
+  '1 phase': '1 этап',
+  '2 phases': '2 этапа',
+  '100% monthly': '100% ежемесячно',
+  ' · ${percent}% monthly': ' · ${percent}% ежемесячно',
+  'trailing': 'плавающий',
+  'candidate': 'тестовая версия',
+  'Base': 'Базовый актив',
+  'Role': 'Роль',
+  'Rate (1h)': 'Ставка (1 ч)',
+  'Workspace views': 'Представления рабочего пространства',
+  'Depth denomination': 'Единица глубины рынка',
+  'Refresh account': 'Обновить счёт',
+  'Last update ${time}': 'Последнее обновление ${time}',
+  'The challenge catalog could not be loaded from the content service. Please refresh in a moment.': 'Не удалось загрузить каталог челленджей из службы контента. Обновите страницу через некоторое время.',
   /* ---- shared chrome, navigation and language ---- */
   'Language': 'Язык',
   'Home': 'Главная',
@@ -46,7 +60,6 @@ export const ru: Record<string, string> = {
   'Coming Soon': 'Скоро',
   'Openfund community link has not been announced': 'Ссылка на сообщество Openfund ещё не объявлена',
   'Openfund trader communities': 'Сообщества трейдеров Openfund',
-  'This page is not yet available in Russian. The English version is shown.': 'Эта страница пока недоступна на русском языке. Показана английская версия.',
   'Release manifest is missing; application and server version compatibility is unverified.': 'Манифест релиза отсутствует; совместимость версий приложения и сервера не проверена.',
   'Release verification is unavailable; application and server version compatibility is unverified.': 'Проверка релиза недоступна; совместимость версий приложения и сервера не проверена.',
   'Application and server versions differ. Reload this page.': 'Версии приложения и сервера различаются. Перезагрузите страницу.',
@@ -354,4 +367,5 @@ export const ru: Record<string, string> = {
   'This account cannot place orders.': 'С этого счёта нельзя размещать ордера.',
   'Sign in to place an order.': 'Войдите, чтобы разместить ордер.',
   'News, Education & Entertainment': 'Новости, обучение и развлечения',
+  'Some text on this page is not yet translated and is shown in English.': 'Часть текста на этой странице ещё не переведена и показана на английском.',
 }

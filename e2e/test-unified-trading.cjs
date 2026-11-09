@@ -84,6 +84,7 @@ function check(name, value) {
       .getByRole("button", { name: "Connect Wallet", exact: true })
       .first()
       .click();
+    await page.locator('[data-wallet-picker] [data-wallet-id]').first().click();
     await page
       .getByRole("button", { name: "Sign in", exact: true })
       .first()

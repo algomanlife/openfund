@@ -13,6 +13,7 @@ import { glossaryTerms } from './seed/learning/glossary'
 import { referralContent } from './seed/referralContent'
 import { toolsCopy } from './seed/toolsCopy'
 import { buildToolSpecs } from '../data/toolCatalog'
+import { localizeRecords } from '../i18n/localize'
 import type {
   FaqCategoryContent, FaqItemContent, GlossaryTermContent, LearningPathContent,
   LessonContent, LinkTarget, ReferralContent, ToolCopy, ToolSpec,
@@ -38,7 +39,7 @@ export interface SiteLibrary {
   source: { faq: 'cms' | 'bundled'; learn: 'cms' | 'bundled'; tools: 'cms' | 'bundled'; referral: 'cms' | 'bundled' }
 }
 
-export const bundledLibrary: SiteLibrary = {
+export const bundledLibrary: SiteLibrary = localizeRecords({
   faqCategories,
   faqItems,
   paths: [pathA, pathB, pathC, pathD, pathE].sort((a, b) => a.sort - b.sort),
@@ -47,7 +48,7 @@ export const bundledLibrary: SiteLibrary = {
   referral: referralContent,
   referralProgramState: 'prelaunch',
   source: { faq: 'bundled', learn: 'bundled', tools: 'bundled', referral: 'bundled' },
-}
+} as SiteLibrary)
 
 /** the union of a CMS response and the bundled seeds, with source flags */
 function mergeLibrary(faq: CmsFaqHub | null, learn: CmsLearningLibrary | null, tools: Record<string, ToolCopy> | null, referral: { programState: 'prelaunch' | 'live'; content: ReferralContent } | null): SiteLibrary {
@@ -80,7 +81,7 @@ export function loadSiteLibrary(refresh = false): Promise<SiteLibrary> {
       fetchCmsLearningLibrary().catch(() => null),
       fetchCmsToolCopy().catch(() => null),
       fetchCmsReferral().catch(() => null),
-    ]).then(([faq, learn, tools, referral]) => mergeLibrary(faq, learn, tools, referral))
+    ]).then(([faq, learn, tools, referral]) => localizeRecords(mergeLibrary(faq, learn, tools, referral)))
   }
   return cached
 }
@@ -144,7 +145,7 @@ export function faqCountByCategory(library: SiteLibrary): Map<string, number> {
 }
 
 /** resolve a LinkTarget to a hash route for the current locale */
-export function targetHref(target: LinkTarget, locale: 'fa' | 'en'): string | null {
+export function targetHref(target: LinkTarget, locale: string): string | null {
   switch (target.kind) {
     case 'tool': return `/${locale}/tools/${target.slug}`
     case 'lesson': return `/${locale}/learn/lessons/${target.slug}`

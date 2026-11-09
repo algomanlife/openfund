@@ -1,6 +1,20 @@
 /* Simplified Chinese interface strings, keyed by the English source text.
    Trading symbols, tickers, currency codes and numbers are never translated. */
 export const zhCN: Record<string, string> = {
+  '1 phase': '1 个阶段',
+  '2 phases': '2 个阶段',
+  '100% monthly': '100% 每月',
+  ' · ${percent}% monthly': ' · ${percent}% 每月',
+  'trailing': '追踪式',
+  'candidate': '测试版',
+  'Base': '基础资产',
+  'Role': '角色',
+  'Rate (1h)': '费率（1小时）',
+  'Workspace views': '工作区视图',
+  'Depth denomination': '市场深度单位',
+  'Refresh account': '刷新账户',
+  'Last update ${time}': '上次更新 ${time}',
+  'The challenge catalog could not be loaded from the content service. Please refresh in a moment.': '无法从内容服务加载挑战目录。请稍后刷新页面。',
   /* ---- shared chrome, navigation and language ---- */
   'Language': '语言',
   'Home': '首页',
@@ -46,7 +60,6 @@ export const zhCN: Record<string, string> = {
   'Coming Soon': '即将推出',
   'Openfund community link has not been announced': 'Openfund 社区链接尚未公布',
   'Openfund trader communities': 'Openfund 交易者社区',
-  'This page is not yet available in Simplified Chinese. The English version is shown.': '本页面暂无简体中文版本，当前显示英文内容。',
   'Release manifest is missing; application and server version compatibility is unverified.': '缺少发布清单；尚未验证应用与服务器版本的兼容性。',
   'Release verification is unavailable; application and server version compatibility is unverified.': '发布验证不可用；尚未验证应用与服务器版本的兼容性。',
   'Application and server versions differ. Reload this page.': '应用与服务器版本不一致，请重新加载页面。',
@@ -354,4 +367,5 @@ export const zhCN: Record<string, string> = {
   'This account cannot place orders.': '此账户无法下单。',
   'Sign in to place an order.': '请登录后下单。',
   'News, Education & Entertainment': '新闻、教育与娱乐',
+  'Some text on this page is not yet translated and is shown in English.': '本页部分文字尚未翻译，以英文显示。',
 }

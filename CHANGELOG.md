@@ -48,9 +48,23 @@
 - Persian gateway (`/fa/home`): the MADE BY HUMANS badge is removed and
   phones get readable, stable layout with natural scrolling.
 - Arabic (`ar`, RTL), Russian (`ru`) and Simplified Chinese (`zh-CN`)
-  interface locales with a five-language selector. Editorial and CMS
-  content has no translations in these locales yet and is shown in English
-  with a visible notice.
+  interface locales with a five-language selector.
+- Wallet connection: the connect button opens an explicit wallet picker
+  (EIP-6963 wallets; generic browser wallet only when none announces
+  itself) instead of connecting the first detected provider. Declined
+  connection, network switch and signature requests show a neutral status;
+  real failures (locked wallet, pending request, unknown network, server
+  unreachable, SIWE domain/nonce/signature errors) name an actionable
+  cause. Perpetual signs in on Arbitrum One in every locale (it used Sepolia
+  for ar/ru/zh-CN). Explicit network-switch and disconnect controls;
+  WalletConnect is offered only with a configured project id.
+- Full content in all five languages: Perpetual and the two-product Home
+  are available in every locale (no language redirects); seeds, public
+  Directus content, the legacy landing and the terminal render in Arabic,
+  Russian and Chinese from reviewed dictionaries loaded per locale, with
+  Directus rows for those languages taking precedence. Untranslated text is
+  reported and fails `npm run test:i18n` and the locale matrix instead of
+  silently showing English. hreflang lists all five locales.
 - Position Details: full labels (a CMS list value no longer collapses to
   one character per label) and a bidi-safe label/value layout.
 
