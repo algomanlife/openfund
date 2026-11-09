@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Economy pages (Transparency, Revenue Model, Live Market Access) now show
+  definitions, provenance lines, term names, expense categories and
+  eligibility checks in Arabic, Russian and Simplified Chinese instead of
+  English, which the five-locale acceptance matrix rejects.
 - Economy menu (Transparency, Revenue Model, Live Market Access) replaces
   the single Transparency link. Transparency now reports confirmed sales,
   refunds, challenge outcomes, payouts, treasury, financial position and

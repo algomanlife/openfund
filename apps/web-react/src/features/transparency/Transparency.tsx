@@ -1,20 +1,20 @@
 import { Link } from 'react-router-dom'
 import InformationShell, { Hero, useInformationLocale } from '../information/InformationShell'
-import { labels, text as t, type Locale } from '../information/content'
+import { labels, text as t, type Localized, type Locale } from '../information/content'
 import EconomyNav from '../economy/EconomyNav'
-import { Bars, Kpi, Source, StateBlock, Status, day, int, pct, usd, when, useRemote } from '../economy/ui'
+import { Bars, Kpi, Source, StateBlock, Status, backendText, day, int, pct, usd, when, useRemote } from '../economy/ui'
 import type { TransparencyReport, TreasuryView } from '../economy/types'
 import { infrastructure, transparencyIntro } from './content'
 
-const CATEGORY: Record<string, [string, string]> = {
-  render_infrastructure: ['Render infrastructure', 'زیرساخت Render'], database: ['Database', 'پایگاه داده'], cms: ['CMS', 'سیستم مدیریت محتوا'],
-  market_data: ['Market data services', 'سرویس‌های دادهٔ بازار'], operational_services: ['Operational services', 'سرویس‌های عملیاتی'], marketing: ['Marketing', 'بازاریابی'],
-  ambassador_commissions: ['Ambassador commissions', 'کمیسیون سفیران'], salaries_administration: ['Salaries & administration', 'حقوق و امور اداری'], other: ['Other verified expenses', 'سایر هزینه‌های تأییدشده'],
+const CATEGORY: Record<string, Localized> = {
+  render_infrastructure: t('Render infrastructure', 'زیرساخت Render'), database: t('Database', 'پایگاه داده'), cms: t('CMS', 'سیستم مدیریت محتوا'),
+  market_data: t('Market data services', 'سرویس‌های دادهٔ بازار'), operational_services: t('Operational services', 'سرویس‌های عملیاتی'), marketing: t('Marketing', 'بازاریابی'),
+  ambassador_commissions: t('Ambassador commissions', 'کمیسیون سفیران'), salaries_administration: t('Salaries & administration', 'حقوق و امور اداری'), other: t('Other verified expenses', 'سایر هزینه‌های تأییدشده'),
 }
-const MISSING: Record<string, [string, string]> = {
-  treasury_snapshot: ['No treasury snapshot', 'تصویر موجودی خزانه وجود ندارد'], treasury_snapshot_fresh: ['Treasury snapshot is stale', 'تصویر موجودی خزانه منقضی است'],
-  treasury_asset_prices: ['Some treasury assets have no valid price', 'برخی دارایی‌های خزانه قیمت معتبر ندارند'],
-  operational_reserve: ['Operational reserve not set by management', 'ذخیرهٔ عملیاتی توسط مدیریت تعیین نشده'], risk_reserve: ['Risk reserve not set by management', 'ذخیرهٔ ریسک توسط مدیریت تعیین نشده'],
+const MISSING: Record<string, Localized> = {
+  treasury_snapshot: t('No treasury snapshot', 'تصویر موجودی خزانه وجود ندارد'), treasury_snapshot_fresh: t('Treasury snapshot is stale', 'تصویر موجودی خزانه منقضی است'),
+  treasury_asset_prices: t('Some treasury assets have no valid price', 'برخی دارایی‌های خزانه قیمت معتبر ندارند'),
+  operational_reserve: t('Operational reserve not set by management', 'ذخیرهٔ عملیاتی توسط مدیریت تعیین نشده'), risk_reserve: t('Risk reserve not set by management', 'ذخیرهٔ ریسک توسط مدیریت تعیین نشده'),
 }
 
 function Treasury({ tv, locale }: { tv: TreasuryView; locale: Locale }) {
@@ -52,7 +52,7 @@ function Report({ r, locale }: { r: TransparencyReport; locale: Locale }) {
         <Kpi label={t('Challenges sold', 'چلنج‌های فروخته‌شده')[locale]} value={int(s.challengesSold, locale)} note={`${int(s.uniqueCustomers, locale)} ${t('unique customers', 'مشتری یکتا')[locale]}`} />
         <Kpi label={t('Gross revenue', 'درآمد ناخالص')[locale]} value={usd(s.grossRevenueUsd, locale)} note={`${t('Average order', 'میانگین خرید')[locale]} ${usd(s.averageOrderUsd, locale)}`} />
         <Kpi label={t('Net revenue', 'درآمد خالص')[locale]} value={usd(s.netRevenueUsd, locale)} tone="good" note={`${t('Refunds', 'بازپرداخت')[locale]} ${usd(s.refundsUsd, locale)} · ${t('Chargebacks', 'برگشتی')[locale]} ${usd(s.chargebacksUsd, locale)}`} />
-        <Kpi label={t('Payment success rate', 'نرخ موفقیت پرداخت')[locale]} value={pct(s.paymentSuccessRate, locale)} note={s.paymentSuccessDefinition} />
+        <Kpi label={t('Payment success rate', 'نرخ موفقیت پرداخت')[locale]} value={pct(s.paymentSuccessRate, locale)} note={backendText(locale, s.paymentSuccessDefinition)} />
       </div>
       <div className="econ-grid three" style={{ marginTop: 14 }}>
         {(['d7', 'd30', 'd90'] as const).map(k => <Kpi key={k} label={{ d7: t('Last 7 days', '۷ روز اخیر'), d30: t('Last 30 days', '۳۰ روز اخیر'), d90: t('Last 90 days', '۹۰ روز اخیر') }[k][locale]} value={usd(s.periods[k].grossUsd, locale)} note={`${int(s.periods[k].orders, locale)} ${t('orders', 'سفارش')[locale]}`} />)}
@@ -70,7 +70,7 @@ function Report({ r, locale }: { r: TransparencyReport; locale: Locale }) {
       <div className="econ-grid">
         <Kpi label={t('Accounts created', 'حساب‌های ایجادشده')[locale]} value={int(c.accountsCreated, locale)} note={`${int(c.active, locale)} ${t('active', 'فعال')[locale]}`} />
         <Kpi label={t('Final evaluations passed', 'ارزیابی‌های نهایی قبول‌شده')[locale]} value={int(c.finalEvaluationsPassed, locale)} note={`${t('Failed', 'مردود')[locale]} ${int(c.failed, locale)} · ${t('Expired', 'منقضی')[locale]} ${int(c.expired, locale)}`} />
-        <Kpi label={t('Funded simulated accounts', 'حساب‌های فاندد شبیه‌سازی‌شده')[locale]} value={int(c.fundedSimulated, locale)} note={c.fundedDefinition} />
+        <Kpi label={t('Funded simulated accounts', 'حساب‌های فاندد شبیه‌سازی‌شده')[locale]} value={int(c.fundedSimulated, locale)} note={backendText(locale, c.fundedDefinition)} />
         <Kpi label={t('Accounts with a paid withdrawal', 'حساب‌های دارای برداشت پرداخت‌شده')[locale]} value={int(c.accountsWithPayout, locale)} note={`${int(c.paidWithdrawals.count, locale)} · ${usd(c.paidWithdrawals.totalUsd, locale)}`} />
       </div>
       <div className="econ-grid three" style={{ marginTop: 14 }}>
@@ -78,7 +78,7 @@ function Report({ r, locale }: { r: TransparencyReport; locale: Locale }) {
         <Kpi label={t('Phase 2 pass rate', 'نرخ قبولی مرحلهٔ ۲')[locale]} value={pct(c.phase2PassRate, locale)} note={`n = ${int(c.phase2Completed, locale)}`} />
         <Kpi label={t('First payout rate', 'نرخ اولین برداشت')[locale]} value={pct(c.firstPayoutRate, locale)} note={`n = ${int(c.fundedSimulated, locale)}`} />
       </div>
-      <p className="econ-source">{c.rateDefinitions}</p><Source locale={locale}>{c.source}</Source>
+      <p className="econ-source">{backendText(locale, c.rateDefinitions)}</p><Source locale={locale}>{c.source}</Source>
     </section>
 
     <section className="econ-section" id="payouts"><div className="section-top"><div><span className="eyebrow">03 / {t('TRADER PAYOUTS', 'پرداخت به معامله‌گران')[locale]}</span><h2>{t('Approved is not paid.', 'تأییدشده یعنی هنوز پرداخت نشده.')[locale]}</h2></div></div>
@@ -104,30 +104,30 @@ function Report({ r, locale }: { r: TransparencyReport; locale: Locale }) {
         <Kpi label={t('Trader rewards paid', 'پاداش پرداخت‌شده')[locale]} value={usd(r.flows.outflows.traderRewardsUsd, locale)} />
         <Kpi label={t('Commissions & live settlements', 'کمیسیون و تسویهٔ معاملات واقعی')[locale]} value={usd(Number(r.flows.outflows.ambassadorCommissionsUsd) + Number(r.flows.outflows.liveSettlementsUsd), locale)} />
         <Kpi label={t('Expenses & refunds paid', 'هزینه و بازپرداخت')[locale]} value={usd(Number(r.flows.outflows.expensesUsd) + Number(r.flows.outflows.refundsUsd), locale)} />
-      </div><p className="econ-source">{r.flows.outflows.definition}</p></div>
+      </div><p className="econ-source">{backendText(locale, r.flows.outflows.definition)}</p></div>
     </section>
 
     <section className="econ-section" id="position"><div className="section-top"><div><span className="eyebrow">05 / {t('FINANCIAL POSITION', 'وضعیت مالی')[locale]}</span><h2>{t('Three numbers, never merged.', 'سه عدد، هرگز ادغام‌نشده.')[locale]}</h2></div>{pos.status === 'verified' ? <Status kind="ok">{t('Verified inputs', 'ورودی‌های تأییدشده')[locale]}</Status> : <Status kind="warn">{t('Unknown / Not verified', 'نامعلوم / تأییدنشده')[locale]}</Status>}</div>
       <div className="econ-grid three">
-        <Kpi label="Gross Treasury Balance" value={usd(pos.grossTreasuryUsd, locale)} />
-        <Kpi label="Outstanding Financial Obligations" value={usd(pos.outstandingObligationsUsd, locale)} tone="warn" note={`${t('Reserves', 'ذخایر')[locale]} ${usd(pos.reservesUsd, locale)} · ${t('Allocated', 'تخصیص‌یافته')[locale]} ${usd(pos.allocatedCapitalUsd, locale)}`} />
-        <Kpi label="Available Allocatable Capital" value={pos.status === 'verified' ? usd(pos.availableAllocatableUsd, locale) : t('Unknown', 'نامعلوم')[locale]} tone={pos.status === 'verified' ? 'good' : undefined} />
+        <Kpi label={t('Gross Treasury Balance', 'موجودی ناخالص خزانه')[locale]} value={usd(pos.grossTreasuryUsd, locale)} />
+        <Kpi label={t('Outstanding Financial Obligations', 'تعهدات مالی معوق')[locale]} value={usd(pos.outstandingObligationsUsd, locale)} tone="warn" note={`${t('Reserves', 'ذخایر')[locale]} ${usd(pos.reservesUsd, locale)} · ${t('Allocated', 'تخصیص‌یافته')[locale]} ${usd(pos.allocatedCapitalUsd, locale)}`} />
+        <Kpi label={t('Available Allocatable Capital', 'سرمایهٔ قابل تخصیص موجود')[locale]} value={pos.status === 'verified' ? usd(pos.availableAllocatableUsd, locale) : t('Unknown', 'نامعلوم')[locale]} tone={pos.status === 'verified' ? 'good' : undefined} />
       </div>
       <div className="econ-grid two" style={{ marginTop: 16 }}>
         <div className="econ-panel"><h3>{t('Obligations', 'تعهدات')[locale]}</h3><div className="econ-list">
-          {([['traderRewardsApprovedUnpaid', 'Trader rewards approved, unpaid', 'پاداش تأییدشدهٔ پرداخت‌نشده'], ['ambassadorCommissionsUnpaid', 'Ambassador commissions unpaid', 'کمیسیون پرداخت‌نشدهٔ سفیران'], ['liveProfitSharesUnsettled', 'Live profit shares unsettled', 'سهم سود تسویه‌نشده'], ['expensesPayable', 'Verified expenses payable', 'هزینه‌های تأییدشدهٔ پرداخت‌نشده'], ['otherLiabilities', 'Other liabilities', 'سایر بدهی‌ها']] as const).map(([k, en, fa]) => <div key={k}><span>{locale === 'fa' ? fa : en}</span><span>{usd(pos.obligations[k], locale)}</span></div>)}
+          {([['traderRewardsApprovedUnpaid', t('Trader rewards approved, unpaid', 'پاداش تأییدشدهٔ پرداخت‌نشده')], ['ambassadorCommissionsUnpaid', t('Ambassador commissions unpaid', 'کمیسیون پرداخت‌نشدهٔ سفیران')], ['liveProfitSharesUnsettled', t('Live profit shares unsettled', 'سهم سود تسویه‌نشده')], ['expensesPayable', t('Verified expenses payable', 'هزینه‌های تأییدشدهٔ پرداخت‌نشده')], ['otherLiabilities', t('Other liabilities', 'سایر بدهی‌ها')]] as const).map(([k, label]) => <div key={k}><span>{label[locale]}</span><span>{usd(pos.obligations[k], locale)}</span></div>)}
           <div><span>{t('Operational / risk / other reserves', 'ذخایر عملیاتی / ریسک / سایر')[locale]}</span><span>{usd(pos.reserves.operational, locale)} / {usd(pos.reserves.risk, locale)} / {usd(pos.reserves.other, locale)}</span></div>
         </div></div>
         <div className="econ-panel"><h3>{t('Formula and status', 'فرمول و وضعیت')[locale]}</h3><p className="econ-source" dir="ltr">{pos.formula}</p>
-          {pos.missing.length > 0 && <ul className="econ-check-list" style={{ marginTop: 12 }}>{pos.missing.map(m => <li key={m}>{(MISSING[m] || [m, m])[locale === 'fa' ? 1 : 0]}</li>)}</ul>}
+          {pos.missing.length > 0 && <ul className="econ-check-list" style={{ marginTop: 12 }}>{pos.missing.map(m => <li key={m}>{(MISSING[m]?.[locale] ?? m)}</li>)}</ul>}
           <p className="econ-source">{t('Calculated', 'محاسبه')[locale]} {when(pos.calculatedAt, locale)}</p></div>
       </div>
     </section>
 
     <section className="econ-section" id="expenses"><div className="section-top"><div><span className="eyebrow">06 / {t('COMPANY EXPENSES', 'هزینه‌های شرکت')[locale]}</span><h2>{t('Invoices, not estimates.', 'فاکتور، نه برآورد.')[locale]}</h2></div><p>{int(r.expenses.awaitingVerification, locale)} {t('records awaiting verification', 'رکورد در انتظار تأیید')[locale]}</p></div>
-      <div className="econ-grid">{r.expenses.categories.map(cat => <Kpi key={cat.category} label={(CATEGORY[cat.category] || [cat.category, cat.category])[locale === 'fa' ? 1 : 0]} value={usd(cat.totalUsd, locale)} note={`${int(cat.records, locale)} ${t('verified records', 'رکورد تأییدشده')[locale]}`} />)}</div>
+      <div className="econ-grid">{r.expenses.categories.map(cat => <Kpi key={cat.category} label={(CATEGORY[cat.category]?.[locale] ?? cat.category)} value={usd(cat.totalUsd, locale)} note={`${int(cat.records, locale)} ${t('verified records', 'رکورد تأییدشده')[locale]}`} />)}</div>
       {r.expenses.records.length > 0 && <div className="info-table-wrap"><table><caption>{t('Verified expense records', 'رکوردهای تأییدشدهٔ هزینه')[locale]}</caption><thead><tr>{[t('Date', 'تاریخ'), t('Category', 'دسته'), t('Description', 'شرح'), t('Amount', 'مبلغ'), t('Source / reference', 'منبع / مرجع'), t('Status', 'وضعیت')].map((h, i) => <th key={i} scope="col">{h[locale]}</th>)}</tr></thead>
-        <tbody>{r.expenses.records.map((e, i) => <tr key={i}><td>{day(e.incurredOn, locale)}</td><td>{(CATEGORY[e.category] || [e.category, e.category])[locale === 'fa' ? 1 : 0]}</td><td>{e.description}</td><td dir="ltr">{e.amount} {e.currency}{e.currency !== 'USD' ? ` (${usd(e.amountUsd, locale)})` : ''}</td><td dir="ltr">{e.source} · {e.reference}</td><td>{e.paymentStatus}</td></tr>)}</tbody></table></div>}
+        <tbody>{r.expenses.records.map((e, i) => <tr key={i}><td>{day(e.incurredOn, locale)}</td><td>{(CATEGORY[e.category]?.[locale] ?? e.category)}</td><td>{e.description}</td><td dir="ltr">{e.amount} {e.currency}{e.currency !== 'USD' ? ` (${usd(e.amountUsd, locale)})` : ''}</td><td dir="ltr">{e.source} · {e.reference}</td><td>{e.paymentStatus}</td></tr>)}</tbody></table></div>}
       <Source locale={locale}>{r.expenses.source}</Source>
     </section>
   </>
