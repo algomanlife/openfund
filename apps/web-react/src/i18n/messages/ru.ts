@@ -4,6 +4,8 @@ export const ru: Record<string, string> = {
   '1 phase': '1 этап',
   '2 phases': '2 этапа',
   '100% monthly': '100% ежемесячно',
+  ' · ${percent}% monthly': ' · ${percent}% ежемесячно',
+  'trailing': 'плавающий',
   'candidate': 'тестовая версия',
   'Base': 'Базовый актив',
   'Role': 'Роль',

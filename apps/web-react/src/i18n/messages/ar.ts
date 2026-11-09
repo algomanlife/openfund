@@ -4,6 +4,8 @@ export const ar: Record<string, string> = {
   '1 phase': 'مرحلة واحدة',
   '2 phases': 'مرحلتان',
   '100% monthly': '100% شهريًا',
+  ' · ${percent}% monthly': ' · ${percent}% شهريًا',
+  'trailing': 'متحرك',
   'candidate': 'تجريبي',
   'Base': 'الأساس',
   'Role': 'الدور',
