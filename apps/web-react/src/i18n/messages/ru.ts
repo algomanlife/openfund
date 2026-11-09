@@ -1,6 +1,9 @@
 /* Russian interface strings, keyed by the English source text. Trading
    symbols, tickers, currency codes and numbers are never translated. */
 export const ru: Record<string, string> = {
+  '1 phase': '1 этап',
+  '2 phases': '2 этапа',
+  '100% monthly': '100% ежемесячно',
   'candidate': 'тестовая версия',
   'Base': 'Базовый актив',
   'Role': 'Роль',

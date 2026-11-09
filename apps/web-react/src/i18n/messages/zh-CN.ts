@@ -1,6 +1,9 @@
 /* Simplified Chinese interface strings, keyed by the English source text.
    Trading symbols, tickers, currency codes and numbers are never translated. */
 export const zhCN: Record<string, string> = {
+  '1 phase': '1 个阶段',
+  '2 phases': '2 个阶段',
+  '100% monthly': '100% 每月',
   'candidate': '测试版',
   'Base': '基础资产',
   'Role': '角色',

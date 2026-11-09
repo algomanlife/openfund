@@ -1,6 +1,9 @@
 /* Arabic interface strings, keyed by the English source text. Trading
    symbols, tickers, currency codes and numbers are never translated. */
 export const ar: Record<string, string> = {
+  '1 phase': 'مرحلة واحدة',
+  '2 phases': 'مرحلتان',
+  '100% monthly': '100% شهريًا',
   'candidate': 'تجريبي',
   'Base': 'الأساس',
   'Role': 'الدور',

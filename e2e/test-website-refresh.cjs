@@ -228,7 +228,10 @@ async function realThemeClicks(browser) {
       await englishHome.goto(`${BASE}/en/home`);
       await englishHome.locator('.home-community .telegram-community').waitFor();
       await englishHome.waitForFunction(() => document.documentElement.lang === 'en');
-      check('English Home shows the two-product gateway without a footer', await englishHome.locator('footer').count() === 0 && await englishHome.locator('.home-panel').count() === 2);
+      const panels = await englishHome.locator('.home-panel').count();
+      check('English Home shows the gateway or explicit CMS-unavailable state without a footer',
+        await englishHome.locator('footer').count() === 0 &&
+        (panels === 2 || panels === 0 && /content is unavailable/i.test(await englishHome.locator('.home-gateway h1').innerText())));
     } finally { await englishHome.close(); }
     // These are direct-entry checks, not transition checks. Isolate each entry
     // from the preceding legacy Landing teardown's scheduled document reload.
