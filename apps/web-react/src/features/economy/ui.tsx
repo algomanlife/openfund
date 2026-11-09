@@ -1,5 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { number, text as t, type Locale } from '../information/content'
+import { number, text as t, type Localized, type Locale } from '../information/content'
+import { translateSource } from '../../i18n/messages'
+import { BACKEND_COPY } from './backendCopy'
 import { apiFetch } from '../../session/useOpenfundSession'
 import './economy.css'
 
@@ -40,8 +42,11 @@ export function Status({ kind, children }: { kind: 'ok' | 'warn' | 'off' | 'info
   return <span className={`econ-status ${kind}`}>{children}</span>
 }
 
-export function Source({ locale, children }: { locale: Locale; children: ReactNode }) {
-  return <p className="econ-source"><span>{t('Source', 'منبع')[locale]}:</span> <bdi dir="ltr">{children}</bdi></p>
+/** Backend-authored definition / provenance text, shown in the reader's language. */
+export const backendText = (locale: Locale, english: string) => (BACKEND_COPY[english] || t(english, english))[locale]
+
+export function Source({ locale, children }: { locale: Locale; children: string }) {
+  return <p className="econ-source"><span>{t('Source', 'منبع')[locale]}:</span> <bdi dir="ltr">{backendText(locale, children)}</bdi></p>
 }
 
 export function StateBlock({ state, locale, empty }: { state: Remote<unknown>; locale: Locale; empty?: string }) {
@@ -66,22 +71,22 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
 }
 
 export const errorCopy = (code: string | undefined, locale: Locale) => {
-  const map: Record<string, [string, string]> = {
-    unauthenticated: ['Sign in with your wallet first.', 'ابتدا با کیف پول وارد شو.'],
-    terms_not_accepted: ['Accept the program terms to continue.', 'برای ادامه، شرایط برنامه را بپذیر.'],
-    application_already_open: ['You already have an open application for this role.', 'برای این نقش درخواست باز داری.'],
-    platform_required: ['Add an Instagram or YouTube profile.', 'پروفایل اینستاگرام یا یوتیوب را وارد کن.'],
-    invalid_platform_url: ['Use an https:// Instagram or YouTube address.', 'نشانی https:// اینستاگرام یا یوتیوب وارد کن.'],
-    invalid_url: ['One of the links is not a valid https:// address.', 'یکی از لینک‌ها نشانی https:// معتبری نیست.'],
-    invalid_email: ['Enter a valid email address.', 'ایمیل معتبر وارد کن.'],
-    missing_field: ['Complete all required fields.', 'همهٔ فیلدهای الزامی را کامل کن.'],
-    coach_not_found: ['No active coach uses that code.', 'کوچ فعالی با این کد وجود ندارد.'],
-    coach_link_already_open: ['You already have an open coach relationship.', 'ارتباط باز با یک کوچ داری.'],
-    self_coaching_not_allowed: ['You cannot link to your own coach code.', 'نمی‌توانی به کد کوچ خودت متصل شوی.'],
-    not_eligible: ['Not all eligibility conditions are met yet.', 'هنوز همهٔ شرایط احراز نشده‌اند.'],
-    request_already_open: ['A request is already under review.', 'درخواستی در حال بررسی است.'],
-    live_execution_disabled: ['Live execution is not enabled on this deployment.', 'اجرای واقعی در این استقرار فعال نیست.'],
+  const map: Record<string, Localized> = {
+    unauthenticated: t('Sign in with your wallet first.', 'ابتدا با کیف پول وارد شو.'),
+    terms_not_accepted: t('Accept the program terms to continue.', 'برای ادامه، شرایط برنامه را بپذیر.'),
+    application_already_open: t('You already have an open application for this role.', 'برای این نقش درخواست باز داری.'),
+    platform_required: t('Add an Instagram or YouTube profile.', 'پروفایل اینستاگرام یا یوتیوب را وارد کن.'),
+    invalid_platform_url: t('Use an https:// Instagram or YouTube address.', 'نشانی https:// اینستاگرام یا یوتیوب وارد کن.'),
+    invalid_url: t('One of the links is not a valid https:// address.', 'یکی از لینک‌ها نشانی https:// معتبری نیست.'),
+    invalid_email: t('Enter a valid email address.', 'ایمیل معتبر وارد کن.'),
+    missing_field: t('Complete all required fields.', 'همهٔ فیلدهای الزامی را کامل کن.'),
+    coach_not_found: t('No active coach uses that code.', 'کوچ فعالی با این کد وجود ندارد.'),
+    coach_link_already_open: t('You already have an open coach relationship.', 'ارتباط باز با یک کوچ داری.'),
+    self_coaching_not_allowed: t('You cannot link to your own coach code.', 'نمی‌توانی به کد کوچ خودت متصل شوی.'),
+    not_eligible: t('Not all eligibility conditions are met yet.', 'هنوز همهٔ شرایط احراز نشده‌اند.'),
+    request_already_open: t('A request is already under review.', 'درخواستی در حال بررسی است.'),
+    live_execution_disabled: t('Live execution is not enabled on this deployment.', 'اجرای واقعی در این استقرار فعال نیست.'),
   }
   const m = code ? map[code] : null
-  return m ? m[locale === 'fa' ? 1 : 0] : t('The request could not be completed.', 'درخواست انجام نشد.')[locale] + (code ? ` (${code})` : '')
+  return m ? m[locale] : t('The request could not be completed.', 'درخواست انجام نشد.')[locale] + (code ? ` (${code})` : '')
 }

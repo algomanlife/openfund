@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Economy pages (Transparency, Revenue Model, Live Market Access) now show
+  definitions, provenance lines, term names, expense categories and
+  eligibility checks in Arabic, Russian and Simplified Chinese instead of
+  English, which the five-locale acceptance matrix rejects.
 - Official Openfund Whitepaper v1.0 at `/{locale}/whitepaper`: one
   anchor-navigated page with twenty Persian and English chapters, a sticky
   and mobile chapter navigator, copyable chapter links, data-driven

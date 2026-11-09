@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import InformationShell, { Hero, useInformationLocale } from '../information/InformationShell'
-import { labels, text as t, type Locale } from '../information/content'
+import { labels, text as t, type Localized, type Locale } from '../information/content'
 import { apiFetch, useOpenfundSession } from '../../session/useOpenfundSession'
 import EconomyNav from './EconomyNav'
 import { Field, Kpi, StateBlock, Status, errorCopy, usd, when, useRemote } from './ui'
@@ -9,19 +9,19 @@ import type { Capacity, EligibilityCheck } from './types'
 
 const intro = t('A separate program that connects selected traders to real markets through Gains Network, using capital owned by Openfund — only when verified free capital exists and management approves.', 'برنامه‌ای مستقل که معامله‌گران منتخب را با سرمایهٔ متعلق به اوپن‌فاند و از طریق Gains Network به بازار واقعی متصل می‌کند؛ فقط در صورت وجود سرمایهٔ آزاد تأییدشده و تأیید مدیریت.')
 
-export const CHECK_COPY: Record<string, [string, string]> = {
-  first_account_purchased: ['First challenge purchased', 'خرید اولین چلنج'],
-  first_account_evaluation_passed: ['First account passed every evaluation stage', 'قبولی حساب اول در همهٔ مراحل ارزیابی'],
-  first_account_funded: ['First account reached the funded simulation', 'ورود حساب اول به حساب فاندد شبیه‌سازی‌شده'],
-  first_account_paid_withdrawals: ['10 paid withdrawals from the first account', '۱۰ برداشت پرداخت‌شده از حساب اول'],
-  second_account_double_size: ['Second account exactly 2× the first size', 'حساب دوم دقیقاً دو برابر حساب اول'],
-  second_account_evaluation_passed: ['Second account passed evaluation', 'قبولی حساب دوم در ارزیابی'],
-  second_account_paid_withdrawals: ['5 paid withdrawals from the second account', '۵ برداشت پرداخت‌شده از حساب دوم'],
-  coach_link_active: ['Linked to an approved, active coach', 'ارتباط فعال با کوچ تأییدشده'],
-  coach_verified_trader: ['Coach verified your qualification', 'تأیید صلاحیت توسط کوچ'],
+export const CHECK_COPY: Record<string, Localized> = {
+  first_account_purchased: t('First challenge purchased', 'خرید اولین چلنج'),
+  first_account_evaluation_passed: t('First account passed every evaluation stage', 'قبولی حساب اول در همهٔ مراحل ارزیابی'),
+  first_account_funded: t('First account reached the funded simulation', 'ورود حساب اول به حساب فاندد شبیه‌سازی‌شده'),
+  first_account_paid_withdrawals: t('10 paid withdrawals from the first account', '۱۰ برداشت پرداخت‌شده از حساب اول'),
+  second_account_double_size: t('Second account exactly 2× the first size', 'حساب دوم دقیقاً دو برابر حساب اول'),
+  second_account_evaluation_passed: t('Second account passed evaluation', 'قبولی حساب دوم در ارزیابی'),
+  second_account_paid_withdrawals: t('5 paid withdrawals from the second account', '۵ برداشت پرداخت‌شده از حساب دوم'),
+  coach_link_active: t('Linked to an approved, active coach', 'ارتباط فعال با کوچ تأییدشده'),
+  coach_verified_trader: t('Coach verified your qualification', 'تأیید صلاحیت توسط کوچ'),
 }
 export function Checks({ checks, locale }: { checks: EligibilityCheck[]; locale: Locale }) {
-  return <ul className="econ-check-list">{checks.map(c => <li key={c.key} className={c.ok ? 'ok' : ''}>{(CHECK_COPY[c.key] || [c.key, c.key])[locale === 'fa' ? 1 : 0]}{c.required != null && c.value != null ? <bdi> ({String(c.value)} / {String(c.required)})</bdi> : null}</li>)}</ul>
+  return <ul className="econ-check-list">{checks.map(c => <li key={c.key} className={c.ok ? 'ok' : ''}>{(CHECK_COPY[c.key]?.[locale] ?? c.key)}{c.required != null && c.value != null ? <bdi> ({String(c.value)} / {String(c.required)})</bdi> : null}</li>)}</ul>
 }
 
 const capacityCopy = (c: Capacity, locale: Locale) => ({
