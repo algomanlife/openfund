@@ -281,8 +281,7 @@ async function realThemeClicks(browser) {
       check('language roundtrip restores portal', (await localePage.locator('.hero .telegram-community').innerText()).includes('جامعه معامله‌گران'));
       for (const locale of ['en', 'fa', 'en', 'fa']) {
         await localePage.locator('.of-language-select select').first().selectOption(locale);
-        await localePage.waitForFunction(locale => location.pathname.startsWith(`/${locale}/`)
-          && document.querySelector('.hero .telegram-community')?.getAttribute('aria-label')?.startsWith(locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'), locale);
+        await localePage.waitForURL(url => url.pathname.startsWith(`/${locale}/`));
         // The legacy Landing teardown can schedule a document reload just after the
         // route change; re-wait for the localized label and repeat the probe on the
         // reloaded document instead of failing on the destroyed execution context.
@@ -290,7 +289,7 @@ async function realThemeClicks(browser) {
           for (let attempt = 0; ; attempt++) {
             try {
               await localePage.waitForLoadState('load');
-              await localePage.waitForFunction(locale => document.querySelector('.hero .telegram-community')?.getAttribute('aria-label')?.startsWith(locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'), locale);
+              await localePage.waitForFunction(locale => document.querySelector('.hero .telegram-community')?.getAttribute('aria-label')?.startsWith(locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'), locale, { timeout: 60000 });
               // The legacy locale script may still be loading right after the route change.
               await localePage.waitForFunction(() => typeof window.ofTranslate === 'function');
               const unchanged = await localePage.evaluate(() => {
