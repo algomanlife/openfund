@@ -280,14 +280,34 @@ async function realThemeClicks(browser) {
         await localePage.locator('.of-language-select select').first().selectOption(locale);
         await localePage.waitForFunction(locale => location.pathname.startsWith(`/${locale}/`)
           && document.querySelector('.hero .telegram-community')?.getAttribute('aria-label')?.startsWith(locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'), locale);
-        const unchanged = await localePage.evaluate(() => {
-          const button = document.querySelector('.hero .telegram-community');
-          const before = button.getAttribute('aria-label');
-          window.ofTranslate();
-          return button.getAttribute('aria-label') === before;
-        });
+        // The legacy Landing teardown can schedule a document reload just after the
+        // route change; re-wait for the localized label and repeat the probe on the
+        // reloaded document instead of failing on the destroyed execution context.
+        const probe = async () => {
+          for (let attempt = 0; ; attempt++) {
+            try {
+              await localePage.waitForLoadState('load');
+              await localePage.waitForFunction(locale => document.querySelector('.hero .telegram-community')?.getAttribute('aria-label')?.startsWith(locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'), locale);
+              // The legacy locale script may still be loading right after the route change.
+              await localePage.waitForFunction(() => typeof window.ofTranslate === 'function');
+              const unchanged = await localePage.evaluate(() => {
+                const button = document.querySelector('.hero .telegram-community');
+                const before = button.getAttribute('aria-label');
+                window.ofTranslate();
+                return button.getAttribute('aria-label') === before;
+              });
+              // Poll: the legacy teardown can briefly leave 0 or 2 portals while the route settles.
+              const singular = await localePage.waitForFunction(() => document.querySelectorAll('.hero .telegram-community').length === 1
+                && document.querySelectorAll('footer .telegram-community').length === 1, null, { timeout: 5000 }).then(() => true, () => false);
+              return { unchanged, singular };
+            } catch (error) {
+              if (attempt >= 3 || !/Execution context was destroyed|navigation/i.test(String(error && error.message))) throw error;
+            }
+          }
+        };
+        const { unchanged, singular } = await probe();
         check(`${locale} React-owned attributes survive translator`, unchanged);
-        check(`${locale} portal remains singular`, await localePage.locator('.hero .telegram-community').count() === 1 && await localePage.locator('footer .telegram-community').count() === 1);
+        check(`${locale} portal remains singular`, singular);
       }
     } finally { await localePage.close(); }
     if (capture) {
