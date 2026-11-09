@@ -268,17 +268,17 @@ async function realThemeClicks(browser) {
         && document.documentElement.lang === 'fa' && window.ofLang === 'fa'
         && document.querySelector('.hero .telegram-community')?.textContent.includes('جامعه معامله‌گران'));
       await toggleLanguage(localePage);
-      await localePage.waitForFunction(() => document.documentElement.lang === 'en' && window.ofLang === 'en' && document.querySelector('.hero .telegram-community').textContent.includes('Traders talk on'));
+      await localePage.waitForFunction(() => document.documentElement.lang === 'en' && window.ofLang === 'en' && document.querySelector('.hero .telegram-community')?.textContent?.includes('Traders talk on'));
       check('language toggle updates Instagram portal', await localePage.locator('.hero .instagram-community .community-copy > span').innerText() === 'News, Education & Entertainment');
       check('language toggle updates Discord portal', (await localePage.locator('.hero .discord-community').innerText()).includes('Traders talk on'));
       check('language toggle updates React portal', (await localePage.locator('.hero .telegram-community').innerText()).includes('Traders talk on'));
       await toggleLanguage(localePage);
-      await localePage.waitForFunction(() => document.documentElement.lang === 'fa' && window.ofLang === 'fa' && document.querySelector('.hero .telegram-community').textContent.includes('جامعه معامله‌گران'));
+      await localePage.waitForFunction(() => document.documentElement.lang === 'fa' && window.ofLang === 'fa' && document.querySelector('.hero .telegram-community')?.textContent?.includes('جامعه معامله‌گران'));
       check('language roundtrip restores Instagram', await localePage.locator('.hero .instagram-community .community-copy > span').innerText() === 'اخبار، آموزش و سرگرمی');
       check('language roundtrip restores portal', (await localePage.locator('.hero .telegram-community').innerText()).includes('جامعه معامله‌گران'));
       for (const locale of ['en', 'fa', 'en', 'fa']) {
         await localePage.evaluate(locale => window.ofSetLanguage(locale), locale);
-        await localePage.waitForFunction(locale => document.querySelector('.hero .telegram-community').getAttribute('aria-label').startsWith(locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'), locale);
+        await localePage.waitForFunction(locale => document.querySelector('.hero .telegram-community')?.getAttribute('aria-label')?.startsWith(locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'), locale);
         const unchanged = await localePage.evaluate(() => {
           const button = document.querySelector('.hero .telegram-community');
           const before = button.getAttribute('aria-label');
