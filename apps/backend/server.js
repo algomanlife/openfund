@@ -28,6 +28,7 @@ import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
 import { purchaseRoutes, confirmPurchase } from './purchases.js'
 import { adminRoutes } from './admin.js'
+import { governanceRoutes } from './governance-routes.js'
 
 const cfg = {
   port: Number(process.env.PORT || 8080),
@@ -690,6 +691,7 @@ app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) 
 app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
 app.use(referralRoutes({ pool, requireAuth, audit }))
 app.use(purchaseRoutes({ pool, requireAuth, audit }))
+app.use('/governance', governanceRoutes({ pool, requireAuth, limit }))
 app.use('/admin', adminRoutes({ pool, audit }))
 
 /* Public release identity contains build metadata only, never runtime secrets. */
