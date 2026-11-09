@@ -17,10 +17,10 @@ on:
 permissions:
   contents: read
 concurrency:
-  # Candidate checks for separate PRs can run independently. Keep official
-  # main/dispatch releases serialized so version publication cannot race.
+  # Each PR gets its own group and a new push cancels the superseded ~40 minute
+  # run. Official main/dispatch releases stay serialized and are never cancelled.
   group: ${{ github.event_name == 'pull_request' && format('openfund-pr-{0}', github.event.pull_request.number) || 'openfund-official-release' }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   package:
     name: Release package gates
@@ -54,6 +54,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            apps/web-react/package-lock.json
+            apps/backend/package-lock.json
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-1.64.1-${{ runner.os }}
       - name: Allocate or resume immutable version
         env:
           RELEASE_REQUESTED_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.release_version || '' }}
