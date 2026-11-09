@@ -9,6 +9,7 @@ export const zhCN: Record<string, string> = {
   'Depth denomination': '市场深度单位',
   'Refresh account': '刷新账户',
   'Last update ${time}': '上次更新 ${time}',
+  'The challenge catalog could not be loaded from the content service. Please refresh in a moment.': '无法从内容服务加载挑战目录。请稍后刷新页面。',
   /* ---- shared chrome, navigation and language ---- */
   'Language': '语言',
   'Home': '首页',

@@ -9,6 +9,7 @@ export const ar: Record<string, string> = {
   'Depth denomination': 'وحدة عمق السوق',
   'Refresh account': 'تحديث الحساب',
   'Last update ${time}': 'آخر تحديث ${time}',
+  'The challenge catalog could not be loaded from the content service. Please refresh in a moment.': 'تعذّر تحميل كتالوج التحديات من خدمة المحتوى. يرجى تحديث الصفحة بعد قليل.',
   /* ---- shared chrome, navigation and language ---- */
   'Language': 'اللغة',
   'Home': 'الرئيسية',

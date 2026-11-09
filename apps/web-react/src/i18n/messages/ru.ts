@@ -9,6 +9,7 @@ export const ru: Record<string, string> = {
   'Depth denomination': 'Единица глубины рынка',
   'Refresh account': 'Обновить счёт',
   'Last update ${time}': 'Последнее обновление ${time}',
+  'The challenge catalog could not be loaded from the content service. Please refresh in a moment.': 'Не удалось загрузить каталог челленджей из службы контента. Обновите страницу через некоторое время.',
   /* ---- shared chrome, navigation and language ---- */
   'Language': 'Язык',
   'Home': 'Главная',
