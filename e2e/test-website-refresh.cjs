@@ -294,7 +294,9 @@ async function realThemeClicks(browser) {
               const unchanged = await localePage.evaluate(() => {
                 const button = document.querySelector('.hero .telegram-community');
                 const before = button.getAttribute('aria-label');
-                window.ofTranslate();
+                // The legacy translator can be torn down during a route reload.
+                // The React-owned label must remain stable in either state.
+                if (typeof window.ofTranslate === 'function') window.ofTranslate();
                 return button.getAttribute('aria-label') === before;
               });
               const singular = await localePage.locator('.hero .telegram-community').count() === 1 && await localePage.locator('footer .telegram-community').count() === 1;

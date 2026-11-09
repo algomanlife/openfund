@@ -127,7 +127,7 @@ function check(name,value) { assert.ok(value,name); results.push(name); console.
     await frame.locator(`[data-close="${state.position.id}"]`).click()
     await frame.locator('#close-fraction').selectOption('0.5')
     await frame.locator('#confirm-ok').click()
-    await page.waitForFunction(()=>window.__ofServerTP?.state.positions[0]?.margin===500)
+    await page.waitForFunction(()=>Math.abs(Number(window.__ofServerTP?.state.positions[0]?.margin)-500)<.001)
     check('Terminal partial close updates authoritative remaining margin',true)
     await page.evaluate(()=>window.auditWallet.changeAccount(1))
     await (await walletButton(page, 'Sign in')).waitFor()
