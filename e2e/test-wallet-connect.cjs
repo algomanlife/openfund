@@ -93,6 +93,11 @@ function installWallets(addresses) {
     await page.locator('[data-wallet-picker]').waitFor({ timeout: 10000 })
   }
   const notice = () => page.locator('[data-wallet-notice]:visible').first()
+  const signIn = async () => {
+    const menu = page.locator('.rk-account-menu:visible').first()
+    if (!await menu.evaluate(el => el.open)) await menu.locator('summary').click()
+    await menu.getByRole('button', { name: 'Sign in', exact: true }).click()
+  }
 
   /* 1 — explicit choice: two wallets listed, nothing requested before a choice */
   await page.goto(`${BASE}/en/markets`, { waitUntil: 'domcontentloaded' })
@@ -126,8 +131,7 @@ function installWallets(addresses) {
 
   /* 4 — declined sign-in signature: neutral, wallet stays connected */
   await setControl('beta', { rejectSign: true })
-  await chip.click()
-  await page.getByRole('button', { name: 'Sign in', exact: true }).first().click()
+  await signIn()
   await notice().waitFor({ timeout: 10000 })
   check('declined signature classified as rejected', await notice().getAttribute('data-wallet-notice') === 'rejected')
   check('declined signature is neutral status', await notice().getAttribute('role') === 'status')
@@ -137,16 +141,14 @@ function installWallets(addresses) {
   /* 5 — real failure: backend unreachable for the nonce request is reported with its cause */
   await setControl('beta', { rejectSign: false })
   await page.route('**/auth/nonce', route => route.fulfill({ status: 503, json: { error: 'internal' } }), { times: 1 })
-  if (!(await page.getByRole('button', { name: 'Sign in', exact: true }).first().isVisible())) await chip.click()
-  await page.getByRole('button', { name: 'Sign in', exact: true }).first().click()
+  await signIn()
   await page.locator('[data-wallet-notice="server_unreachable"]').waitFor({ timeout: 10000 }).catch(() => {})
   check('backend failure reported as server unreachable', await page.locator('[data-wallet-notice="server_unreachable"]').count() === 1, await notice().getAttribute('data-wallet-notice').catch(() => ''))
   check('backend failure is an alert', await page.locator('[data-wallet-notice="server_unreachable"]').getAttribute('role').catch(() => '') === 'alert')
 
   /* 6 — accepted signature creates a session */
-  if (!(await page.getByRole('button', { name: 'Sign in', exact: true }).first().isVisible())) await chip.click()
-  await page.getByRole('button', { name: 'Sign in', exact: true }).first().click()
-  await page.getByRole('button', { name: 'Account', exact: true }).first().waitFor({ state: 'attached', timeout: 20000 })
+  await signIn()
+  await page.getByRole('button', { name: 'Account', exact: true, includeHidden: true }).first().waitFor({ state: 'attached', timeout: 20000 })
   const session = await me()
   check('signed session belongs to the chosen wallet', session.status === 200 && session.body?.user?.walletAddress?.toLowerCase() === keys.beta.address.toLowerCase(), JSON.stringify(session).slice(0, 200))
   check('signature requested once per sign-in, by the chosen wallet only', !(await calls()).some(c => c.wallet === 'alpha' && c.method === 'personal_sign'))
@@ -154,8 +156,8 @@ function installWallets(addresses) {
   /* 7 — session restore after reload, without a new signature */
   const signsBefore = (await calls()).filter(c => c.method === 'personal_sign').length
   await page.reload({ waitUntil: 'domcontentloaded' })
-  await page.getByRole('button', { name: 'Account', exact: true }).first().waitFor({ state: 'attached', timeout: 20000 }).catch(() => {})
-  check('session restored after reload', await page.getByRole('button', { name: 'Account', exact: true }).count() > 0)
+  await page.getByRole('button', { name: 'Account', exact: true, includeHidden: true }).first().waitFor({ state: 'attached', timeout: 20000 }).catch(() => {})
+  check('session restored after reload', await page.getByRole('button', { name: 'Account', exact: true, includeHidden: true }).count() > 0)
   check('restore did not ask for another signature', (await calls()).filter(c => c.method === 'personal_sign').length === 0, signsBefore)
 
   /* 8 — disconnect ends the session */
@@ -178,7 +180,7 @@ function installWallets(addresses) {
   const signRu = page.getByRole('button', { name: 'Войти', exact: true }).first()
   await signRu.click()
   await page.locator('[data-wallet-notice="rejected"]').waitFor({ timeout: 10000 }).catch(() => {})
-  check('declined network switch is neutral', await page.locator('[data-wallet-notice="rejected"]').getAttribute('role').catch(() => '') === 'status')
+  check('declined network switch is neutral', await page.locator('[data-wallet-notice="rejected"]').first().getAttribute('role').catch(() => '') === 'status')
   check('declined network switch message is about the network', /сет/i.test(await page.locator('[data-wallet-notice]').first().textContent().catch(() => '')), await page.locator('[data-wallet-notice]').first().textContent().catch(() => ''))
   check('Perpetual requested Arbitrum One (0xa4b1)', (await calls()).some(c => c.wallet === 'alpha' && c.method === 'wallet_switchEthereumChain'))
   await setControl('alpha', { rejectSwitch: false })

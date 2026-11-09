@@ -70,7 +70,17 @@ async function connect(page){
  await page.locator('[data-wallet-picker] [data-wallet-id]').first().click();
  await (await walletButton(page, 'Sign in')).waitFor();
 }
-async function signIn(page){await (await walletButton(page, 'Sign in')).click();await (await walletButton(page, 'Account')).waitFor()}
+async function signIn(page){
+ const dismiss=page.locator('.of-session-dismiss:visible');
+ if(await dismiss.count()) await dismiss.first().click();
+ await (await walletButton(page, 'Sign in')).click();
+ await (await walletButton(page, 'Account')).waitFor();
+}
+async function switchToTarget(page){
+ const menu=page.locator('.rk-account-menu:visible').first();
+ if(!await menu.evaluate(el=>el.open)) await menu.locator('summary').click();
+ await menu.locator('[data-switch-network]').click();
+}
 async function functional(browser){
  const {context,page}=await walletContext(browser,{fixtures:true}),errors=[],protectionWrites=[];
  page.on('request',request=>{if(request.method()==='POST'&&request.url().includes('/protection'))protectionWrites.push(request.url())});
@@ -89,7 +99,7 @@ async function functional(browser){
   await page.waitForURL(/perpetual\/dashboard/);
   await page.evaluate(()=>window.completionWallet.rejectSign());
   await (await walletButton(page, 'Sign in')).click();
-  await page.getByRole('alert').filter({hasText:/Sign-in failed|ورود انجام نشد/}).first().waitFor();
+  await page.locator('[data-wallet-notice="rejected"]').first().waitFor();
   check('Rejected SIWE signature remains unauthenticated',(await call(page,'/auth/me')).status===401);
   await signIn(page);
   check('Router-driven product switch signs on Arbitrum rather than stale Sepolia',await page.evaluate(()=>window.completionWallet.network()==='0xa4b1'));
@@ -108,7 +118,7 @@ async function functional(browser){
   check('EIP-6963 connection and SIWE session reconnect after reload',true);
   await page.getByLabel('محصول',{exact:true}).selectOption('prop');
   await page.waitForURL(/prop\/trade/);
-  await (await walletButton(page,'Network: Sepolia')).click();
+  await switchToTarget(page);
   await page.waitForFunction(()=>window.completionWallet.network()==='0xaa36a7');
   const accounts=(await call(page,'/accounts')).data.accounts,trial=accounts.find(a=>a.type==='free_trial');
   await call(page,'/internal/inject-price',{symbol:'BTC/USD',price:'50000',metadata:{base:'BTC',group:'crypto',maxLeverage:100}});
@@ -204,9 +214,9 @@ async function functional(browser){
   await page.waitForFunction(()=>window.__ofServerTP?.canTrade);
   check('Second wallet has an independent account and empty positions',(await call(page,'/trading/state')).data.positions.length===0);
   await page.evaluate(()=>window.completionWallet.changeChain('0x1'));
-  await page.getByRole('button',{name:'Network: Sepolia',exact:true}).waitFor();
+  await page.locator('[data-switch-network]').first().waitFor({state:'attached'});
   check('Unsupported chain change preserves wallet identity and exposes a network correction',await page.locator('.rk-chip-addr').count()===1);
-  await (await walletButton(page,'Network: Sepolia')).click();
+  await switchToTarget(page);
   await page.waitForFunction(()=>window.completionWallet.network()==='0xaa36a7');
   if(!await page.locator('.rk-account-menu').evaluate(el=>el.open))await page.locator('.rk-account-menu > summary').click();
   await page.getByTitle('Wallet & network',{exact:true}).click();await page.getByRole('dialog').getByRole('button',{name:/Disconnect|قطع اتصال/}).click();
