@@ -42,6 +42,11 @@ Security rules enforced today:
 | Risk Manager | evaluation/risk records | Openfund backend |
 | Finance | withdrawal records | Openfund backend |
 
+Governance: editors may change the wording of `governance_milestones` and
+`governance_content_blocks` only. Directus has no permission on `gov_*` tables, so
+editorial access can never create, change or forge a vote, membership, decision or
+financial record ([roles and permissions](../governance/ROLES_AND_PERMISSIONS.md)).
+
 Business records (challenge accounts, evaluation progress, payouts) will be
 **administered** through Directus but **authored** by the future Openfund
 backend — Directus never independently calculates prop-evaluation results, and

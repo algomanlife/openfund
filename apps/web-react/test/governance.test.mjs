@@ -35,7 +35,7 @@ test('governance routes are registered and use clean locale paths', () => {
 })
 test('governance is a public, SEO-routable page in navigation, CMS whitelists and the Directus schema', () => {
   assert.match(read('../src/features/loading/seoHead.ts'), /transparency\|governance\|faq/)
-  assert.match(read('../src/features/information/navigation.ts'), /resources = \['governance'/)
+  assert.match(read('../src/features/information/navigation.ts'), /resources = \['faq', 'learn', 'tools', 'referral', 'governance'/)
   assert.match(read('../src/features/information/content.ts'), /governance: text\('Governance', 'حاکمیت'\)/)
   const client = read('../src/cms/client.ts')
   assert.match(client, /NAV_ROUTES = new Set\([^)]*'governance'/); assert.match(client, /FOOTER_DESTINATIONS = new Set\([^)]*'governance'/)
@@ -228,4 +228,18 @@ test('page code never presents a wallet address or browser-supplied identity as 
     assert.doesNotMatch(src, /walletAddress|x-test-user|localStorage|sessionStorage/, f)
   }
   assert.match(read('../src/features/governance/api.ts'), /apiFetch/)           /* credentialed session cookie, no tokens in JS */
+})
+
+/* ---------------- whitepaper chapter ---------------- */
+test('the whitepaper governance chapter is bilingual, WpChapter-shaped and consistent with approved policy', () => {
+  const { governanceChapter: ch } = load('../src/features/governance/whitepaperChapter.ts')
+  assert.equal(ch.slug, 'governance'); assert.equal(ch.sort, 16)
+  for (const k of ['kicker', 'title', 'summary']) assert.ok(ch[k].en && ch[k].fa, k)
+  const allowed = new Set(['lead', 'p', 'h3', 'list', 'callout', 'definitions', 'table', 'refs'])
+  const walk = (v, f) => { if (v && typeof v === 'object') { if ('en' in v && 'fa' in v) f(v); else for (const x of Object.values(v)) walk(x, f) } }
+  for (const b of ch.blocks) assert.ok(allowed.has(b.type), b.type)
+  let n = 0; walk(ch.blocks, (bi) => { n++; assert.ok(bi.en.length && bi.fa.length) }); assert.ok(n > 25)
+  const en = JSON.stringify(ch)
+  for (const must of ['ten-seat', 'Not a DAO'.toLowerCase() === '' ? '' : 'not a DAO', 'no governance token', 'six affirmative votes', 'seven', 'Advisory — Non-Binding', 'appointed', 'not yet in production use', 'not “implemented”']) assert.ok(en.includes(must), must)
+  assert.doesNotMatch(en, /live on-chain|token holders|stak/i)
 })

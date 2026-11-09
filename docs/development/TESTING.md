@@ -40,6 +40,16 @@ The example deliberately uses a private test port, not the intended official run
 
 ## Browser suites
 
+Governance (Hybrid Governance v1.0) has its own suites. The backend suite needs only an
+isolated PostgreSQL database with `schema.sql` applied and starts no server; the website
+suite renders components on the server and needs no browser. See
+[governance documentation](../governance/README.md).
+
+```bash
+DATABASE_URL=postgres:///openfund_governance_test npm --prefix apps/backend run test:governance
+npm --prefix apps/web-react run test:governance
+```
+
 After backend suites finish (their test marks share a process), run:
 
 ```bash

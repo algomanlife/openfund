@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Hybrid Governance v1.0 (branch `feat/hybrid-governance-v1`, unmerged, not in
+  production use): off-chain, auditable governance with a ten-seat Community
+  Council, OFP proposals, a validated lifecycle, quorum 7 and approval 6 of 10
+  (7 for governance amendments), conflict-of-interest recusal, optional signed
+  vote evidence, an election architecture gated on management approval and a
+  hash-chained audit trail. Reserved company powers are advisory-only and the
+  governance code has no access to treasury, trading, pricing or payout data.
+  Adds `gov_*` tables (additive), `/governance` and `/admin/governance`, the
+  `/:locale/governance` pages, Directus editorial collections, `GOVERNANCE.md`,
+  `ECONOMY.md` and `docs/governance/`. No council is seated and no election is
+  scheduled.
 - Release planning accepts an explicitly requested next patch on a manual
   main-branch batch, while rejecting skipped or reused versions.
 - Stale market depth keeps readable text contrast in the light theme.
