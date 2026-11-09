@@ -60,7 +60,25 @@ export function lookup(locale: Added, english: string): string | undefined {
     const inner = DICTIONARIES[locale][trimmed] ?? CONTENT[locale]?.[trimmed]
     if (inner !== undefined) return english.replace(trimmed, inner)
   }
-  return applyTemplates(TEMPLATES[locale], english) ?? applyTemplates(CONTENT_TEMPLATES[locale], english)
+  const templated = applyTemplates(TEMPLATES[locale], english) ?? applyTemplates(CONTENT_TEMPLATES[locale], english)
+  if (templated !== undefined) return templated
+  /* display copy set in capitals in the markup (eyebrows, taglines) */
+  if (trimmed === trimmed.toUpperCase() && /[A-Z]{3}/.test(trimmed)) {
+    const hit = caseless(locale).get(trimmed.toLowerCase())
+    if (hit !== undefined) return english.replace(trimmed, locale === 'ru' ? hit.toUpperCase() : hit)
+  }
+  return undefined
+}
+const caselessIndex: Partial<Record<Added, { size: number; map: Map<string, string> }>> = {}
+function caseless(locale: Added) {
+  const size = Object.keys(CONTENT[locale] || {}).length
+  let entry = caselessIndex[locale]
+  if (!entry || entry.size !== size) {
+    const map = new Map<string, string>()
+    for (const dict of [DICTIONARIES[locale], CONTENT[locale] || {}]) for (const [k, v] of Object.entries(dict)) map.set(k.toLowerCase(), v)
+    caselessIndex[locale] = entry = { size, map }
+  }
+  return entry.map
 }
 
 /* ---- untranslated text is reported, never hidden ---- */
@@ -80,7 +98,12 @@ export function reportMiss(locale: string, english: string) {
   }
 }
 export const missesFor = (locale: string) => [...(misses.get(locale) || [])]
-export const isLanguageNeutral = (text: string) => LANGUAGE_NEUTRAL.test(text.trim())
+/* numbers with unit letters (100x, 00y 02m, 5K), key names, the lowercase wordmark */
+const NEUTRAL_EXTRA = /^(?:openfund|[\d.,]+[a-zA-Z]{0,2}(?:\s+[\d.,]+[a-zA-Z]{0,2})*|Enter|Esc|Tab|Shift|Alt|Ctrl|Cmd|⌘[A-Z])$/
+export const isLanguageNeutral = (text: string) => {
+  const core = text.replace(/[↗↘↙↖→←↑↓·•|]+/g, ' ').replace(/\s+/g, ' ').trim()
+  return LANGUAGE_NEUTRAL.test(core) || NEUTRAL_EXTRA.test(core) || core.split(' / ').every(part => LANGUAGE_NEUTRAL.test(part) || NEUTRAL_EXTRA.test(part))
+}
 
 /** English source → text for an added locale; misses are reported and shown in English. */
 export function translateSource(locale: Added, english: string, _hint = ''): string {

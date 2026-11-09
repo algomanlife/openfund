@@ -27,8 +27,15 @@ import { SessionProvider } from './session/useOpenfundSession'
 import AppFrame from './features/loading/AppFrame'
 import { startThemeSync } from './theme'
 import { storedLocale, type AppLocale } from './i18n/locales'
+import { translateSource } from './i18n/messages'
 
 startThemeSync()
+
+/* Same-origin legacy documents (terminal iframe) translate their static
+   English markup for ar / ru / zh-CN through the app dictionaries; misses
+   are reported exactly like React text. */
+;(window as Window & { __ofTranslateText?: (locale: string, english: string) => string }).__ofTranslateText = (locale, english) =>
+  locale === 'ar' || locale === 'ru' || locale === 'zh-CN' ? translateSource(locale, english) : english
 
 /* ---- public website architecture ----------------------------------------
    /              → language-aware redirect into the Home product gateway

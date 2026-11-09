@@ -83,7 +83,9 @@ function files(dir) {
     return /\.(tsx?|js)$/.test(name) ? [p] : []
   })
 }
-for (const file of files(join(root, 'src'))) {
+/* legacy landing/terminal runtime (t(fa, en) pairs rendered in English for added locales) */
+const LEGACY = ['public/legacy/features.js', 'public/legacy/app.js', 'public/legacy/market.js', 'public/legacy/motion.js'].map(f => join(root, f))
+for (const file of [...files(join(root, 'src')), ...LEGACY]) {
   const text = readFileSync(file, 'utf8')
   for (const m of text.matchAll(PAIR)) {
     const a = m[1] ?? m[2] ?? (m[3] !== undefined ? normaliseTemplate(m[3]) : undefined)
