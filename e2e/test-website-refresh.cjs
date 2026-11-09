@@ -226,9 +226,9 @@ async function realThemeClicks(browser) {
     const englishHome = await browser.newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
     try {
       await englishHome.goto(`${BASE}/en/home`);
-      await englishHome.locator('footer .telegram-community').waitFor();
+      await englishHome.locator('.home-community .telegram-community').waitFor();
       await englishHome.waitForFunction(() => document.documentElement.lang === 'en');
-      check('English Home retains shared public footer', await englishHome.locator('footer').count() === 1 && await englishHome.locator('.credits-row > a').count() === 5);
+      check('English Home shows the two-product gateway without a footer', await englishHome.locator('footer').count() === 0 && await englishHome.locator('.home-panel').count() === 2);
     } finally { await englishHome.close(); }
     // These are direct-entry checks, not transition checks. Isolate each entry
     // from the preceding legacy Landing teardown's scheduled document reload.
