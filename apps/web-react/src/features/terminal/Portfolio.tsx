@@ -1,3 +1,4 @@
+import { intlLocale } from '../../i18n/locales'
 import { Curve, PnlCalendar } from "./Analytics";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -304,14 +305,14 @@ export default function ProductPortfolio() {
                   <td>
                     <time>
                       {new Date(r.openedAt).toLocaleString(
-                        locale === "fa" ? "fa-IR" : "en-US",
+                        intlLocale(locale),
                       )}
                     </time>
                   </td>
                   <td>
                     {r.closedAt
                       ? new Date(r.closedAt).toLocaleString(
-                          locale === "fa" ? "fa-IR" : "en-US",
+                          intlLocale(locale),
                         )
                       : "—"}
                   </td>
@@ -375,7 +376,7 @@ export default function ProductPortfolio() {
                   <td>{o.leverage}×</td>
                   <td>
                     {new Date(o.created_at).toLocaleString(
-                      locale === "fa" ? "fa-IR" : "en-US",
+                      intlLocale(locale),
                     )}
                   </td>
                   <td>{o.reject_reason || "—"}</td>

@@ -17,7 +17,9 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: openfund-official-release
+  # Candidate checks for separate PRs can run independently. Keep official
+  # main/dispatch releases serialized so version publication cannot race.
+  group: ${{ github.event_name == 'pull_request' && format('openfund-pr-{0}', github.event.pull_request.number) || 'openfund-official-release' }}
   cancel-in-progress: false
 jobs:
   package:

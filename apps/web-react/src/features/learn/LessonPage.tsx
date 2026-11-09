@@ -6,7 +6,7 @@ import { lessonBySlug, useSiteLibrary } from '../../cms/siteContent'
 import LessonBody, { lessonToc } from './LessonBody'
 import './learn.css'
 
-type Locale = 'fa' | 'en'
+type Locale = import('../../i18n/locales').AppLocale
 
 /** a top scroll tracker, shown only on lesson pages */
 function ReadingProgress() {

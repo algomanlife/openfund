@@ -1,3 +1,4 @@
+import { pick } from '../../i18n/locales'
 import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import InformationShell, { Hero, useInformationLocale } from '../information/InformationShell'
@@ -9,7 +10,7 @@ import { toolErrorMessage, toolNote, verdictLabel } from './messages'
 import JournalAnalyzer from './JournalAnalyzer'
 import './tools.css'
 
-type Locale = 'fa' | 'en'
+type Locale = import('../../i18n/locales').AppLocale
 type FormState = Record<string, string>
 
 function formatResult(value: number | string | null, format: ToolSpec['results'][number]['format'], precision: number, locale: Locale): string {
@@ -19,7 +20,7 @@ function formatResult(value: number | string | null, format: ToolSpec['results']
   switch (format) {
     case 'currency': return `$${number(value, locale, { ...opts, minimumFractionDigits: 2 })}`
     case 'signed': return `${value >= 0 ? '+' : '−'}$${number(Math.abs(value), locale, { ...opts, minimumFractionDigits: 2 })}`
-    case 'percent': return `${number(value, locale, opts)}${locale === 'fa' ? '٪' : '%'}`
+    case 'percent': return `${number(value, locale, opts)}${pick(locale, '٪', '%')}`
     case 'ratio': return `${number(value, locale, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}`
     default: return number(value, locale, opts)
   }
@@ -39,7 +40,7 @@ function Field({ field, state, error, locale, onChange }: {
         {field.options?.map(option => <option key={option.value} value={option.value}>{option.label[locale]}</option>)}
       </select>
       : field.kind === 'list'
-        ? <textarea id={id} rows={3} value={state[field.key] ?? ''} placeholder={locale === 'fa' ? 'مثلاً: 120, -40, 260, 90' : 'e.g. 120, -40, 260, 90'} onChange={e => onChange(field.key, e.target.value)} />
+        ? <textarea id={id} rows={3} value={state[field.key] ?? ''} placeholder={pick(locale, 'مثلاً: 120, -40, 260, 90', 'e.g. 120, -40, 260, 90')} onChange={e => onChange(field.key, e.target.value)} />
         : <input id={id} type="text" inputMode={field.kind === 'file' ? 'text' : 'decimal'} autoComplete="off"
             value={state[field.key] ?? ''} onChange={e => onChange(field.key, e.target.value)} />}
     {field.help && <p className="tool-field-help">{field.help[locale]}</p>}

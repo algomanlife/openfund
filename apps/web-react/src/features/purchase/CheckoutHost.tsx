@@ -1,3 +1,5 @@
+import { normalizeLocale, pick } from '../../i18n/locales'
+const currentUiLocale = () => normalizeLocale((window as any).ofUiLang ?? (window as any).ofLang, 'fa')
 import { useEffect, useState } from 'react'
 import { CheckoutPanel } from './CheckoutPanel'
 import { apiFetch } from '../../session/useOpenfundSession'
@@ -44,22 +46,16 @@ export function CheckoutHost() {
     const relabel = () => {
       const root = document.getElementById('builder')
       if (!root?.isConnected) return
-      /* the landing runs its legacy content in fa or en only */
-      const isFa = (window as any).ofLang === 'fa'
+      /* displayed locale (ofUiLang: fa/en/ar/ru/zh-CN) */
+      const locale = currentUiLocale()
       const note = document.querySelector('#selection-dialog .dialog-note') as HTMLElement | null
       const done = document.getElementById('dialog-done')
       const sample = document.querySelector('.sample-note') as HTMLElement | null
       const orderNote = document.querySelector('#challenge-order p:last-child') as HTMLElement | null
-      if (note) note.textContent = isFa
-        ? 'با ادامه، سفارش پرداخت روی زنجیره ایجاد و پس از تأیید سرور، حساب چالش فعال می‌شود.'
-        : 'Continuing creates a server-priced order; the challenge account is provisioned after on-chain payment is verified.'
-      if (done) done.textContent = isFa ? 'ادامه و پرداخت ←' : 'Continue to payment →'
-      if (sample) sample.textContent = isFa
-        ? 'هزینهٔ ارزیابی یک‌باره است. پرداخت روی زنجیره انجام و پس از تأیید سرور، چالش فعال می‌شود؛ حساب فاندشده با سهم سود تا ۸۰٪ — و در چلنج آنی تا ۹۵٪.'
-        : 'The evaluation fee is one-time. Payment settles on-chain; the challenge activates after server verification. Funded accounts carry up to an 80% profit split — 95% on the Instant challenge.'
-      if (orderNote) orderNote.textContent = isFa
-        ? 'پس از پرداخت و تأیید، چالش فعال می‌شود.'
-        : 'The challenge activates after payment is verified.'
+      if (note) note.textContent = pick(locale, 'با ادامه، سفارش پرداخت روی زنجیره ایجاد و پس از تأیید سرور، حساب چالش فعال می‌شود.', 'Continuing creates a server-priced order; the challenge account is provisioned after on-chain payment is verified.')
+      if (done) done.textContent = pick(locale, 'ادامه و پرداخت ←', 'Continue to payment →')
+      if (sample) sample.textContent = pick(locale, 'هزینهٔ ارزیابی یک‌باره است. پرداخت روی زنجیره انجام و پس از تأیید سرور، چالش فعال می‌شود؛ حساب فاندشده با سهم سود تا ۸۰٪ — و در چلنج آنی تا ۹۵٪.', 'The evaluation fee is one-time. Payment settles on-chain; the challenge activates after server verification. Funded accounts carry up to an 80% profit split — 95% on the Instant challenge.')
+      if (orderNote) orderNote.textContent = pick(locale, 'پس از پرداخت و تأیید، چالش فعال می‌شود.', 'The challenge activates after payment is verified.')
     }
     relabel()
     const timer = setInterval(relabel, 2000) /* legacy re-renders (locale switch, CMS) may restore old labels */

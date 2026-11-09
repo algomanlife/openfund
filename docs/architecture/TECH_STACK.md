@@ -38,7 +38,7 @@ Run with Node 22 (viem/siwe + ESM). Server port 8080; env: DATABASE_URL, ALLOWED
 Notes:
 
 - `RainbowKitProvider` renders a `<div data-rk>` wrapper — it must wrap **only** the wallet button, never the app root (the legacy translator skips `[data-rk]` subtrees).
-- WalletConnect requires `VITE_WALLETCONNECT_PROJECT_ID` in `apps/web-react/.env`; without it the config falls back to `createConfig` + injected connector (MetaMask/Rabby still work — `getDefaultConfig` throws on an empty project id).
+- WalletConnect requires `VITE_WALLETCONNECT_PROJECT_ID` in `apps/web-react/.env` (production: the runtime variable); without it the config uses `createConfig` with EIP-6963 discovery plus a generic injected connector (`getDefaultConfig` throws on an empty project id). Either way the Openfund wallet picker asks the person to choose the wallet — no connector is auto-selected.
 
 ## Charting
 

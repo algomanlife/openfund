@@ -38,6 +38,7 @@ async function connect(page) {
     } catch { /* not connected yet */ }
     const btn = page.locator('.rk-chip-connect');
     if (await btn.count()) await btn.click({ timeout: 3000 });
+    if (await page.locator('[data-wallet-picker]').count()) await page.locator('[data-wallet-picker] [data-wallet-id]').first().click();
   }
   await page.getByRole('button', { name: /^(Sign in|Account|ورود به اوپن‌فاند|حساب من)$/, includeHidden: true }).first().waitFor({ state: 'attached', timeout: 20000 });
 }

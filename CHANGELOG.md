@@ -2,6 +2,29 @@
 
 ## Unreleased
 
+- Economy pages (Transparency, Revenue Model, Live Market Access) now show
+  definitions, provenance lines, term names, expense categories and
+  eligibility checks in Arabic, Russian and Simplified Chinese instead of
+  English, which the five-locale acceptance matrix rejects.
+- Economy menu (Transparency, Revenue Model, Live Market Access) replaces
+  the single Transparency link. Transparency now reports confirmed sales,
+  refunds, challenge outcomes, payouts, treasury, financial position and
+  verified expenses from operational records; the synthetic sample is gone.
+- Openfund Treasury snapshots: scheduled on-chain balances (60–120 min,
+  default 90) priced only by configured Chainlink feeds, with stale
+  fallback; the address is configuration (`TREASURY_WALLET_ADDRESS`).
+- Brand Ambassador program: reviewed applications, codes only after
+  approval, 10% commission on the referred customer's first confirmed
+  purchase (idempotent, refund/chargeback reversals, recorded payouts) and
+  an ambassador dashboard.
+- Verified Trading Coach program: independent approval, trader linking and
+  qualification, 10% of distributable realized live profit only.
+- Live Market Access control plane: record-based eligibility, explicit-tier
+  management approval, verified-capital gate (≥ $500,000), risk-checked
+  orders and idempotent profit-share settlement. Real execution and
+  transfers remain disabled; only non-monetary sandbox adapters exist.
+- Revenue Model page with cited single-firm research and a scenario
+  calculator kept separate from company data.
 - Release planning accepts an explicitly requested next patch on a manual
   main-branch batch, while rejecting skipped or reused versions.
 - Stale market depth keeps readable text contrast in the light theme.
@@ -20,9 +43,23 @@
 - Persian gateway (`/fa/home`): the MADE BY HUMANS badge is removed and
   phones get readable, stable layout with natural scrolling.
 - Arabic (`ar`, RTL), Russian (`ru`) and Simplified Chinese (`zh-CN`)
-  interface locales with a five-language selector. Editorial and CMS
-  content has no translations in these locales yet and is shown in English
-  with a visible notice.
+  interface locales with a five-language selector.
+- Wallet connection: the connect button opens an explicit wallet picker
+  (EIP-6963 wallets; generic browser wallet only when none announces
+  itself) instead of connecting the first detected provider. Declined
+  connection, network switch and signature requests show a neutral status;
+  real failures (locked wallet, pending request, unknown network, server
+  unreachable, SIWE domain/nonce/signature errors) name an actionable
+  cause. Perpetual signs in on Arbitrum One in every locale (it used Sepolia
+  for ar/ru/zh-CN). Explicit network-switch and disconnect controls;
+  WalletConnect is offered only with a configured project id.
+- Full content in all five languages: Perpetual and the two-product Home
+  are available in every locale (no language redirects); seeds, public
+  Directus content, the legacy landing and the terminal render in Arabic,
+  Russian and Chinese from reviewed dictionaries loaded per locale, with
+  Directus rows for those languages taking precedence. Untranslated text is
+  reported and fails `npm run test:i18n` and the locale matrix instead of
+  silently showing English. hreflang lists all five locales.
 - Position Details: full labels (a CMS list value no longer collapses to
   one character per label) and a bidi-safe label/value layout.
 
