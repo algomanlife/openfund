@@ -291,13 +291,17 @@ async function realThemeClicks(browser) {
             try {
               await localePage.waitForLoadState('load');
               await localePage.waitForFunction(locale => document.querySelector('.hero .telegram-community')?.getAttribute('aria-label')?.startsWith(locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'), locale);
+              // The legacy locale script may still be loading right after the route change.
+              await localePage.waitForFunction(() => typeof window.ofTranslate === 'function');
               const unchanged = await localePage.evaluate(() => {
                 const button = document.querySelector('.hero .telegram-community');
                 const before = button.getAttribute('aria-label');
                 window.ofTranslate();
                 return button.getAttribute('aria-label') === before;
               });
-              const singular = await localePage.locator('.hero .telegram-community').count() === 1 && await localePage.locator('footer .telegram-community').count() === 1;
+              // Poll: the legacy teardown can briefly leave 0 or 2 portals while the route settles.
+              const singular = await localePage.waitForFunction(() => document.querySelectorAll('.hero .telegram-community').length === 1
+                && document.querySelectorAll('footer .telegram-community').length === 1, null, { timeout: 5000 }).then(() => true, () => false);
               return { unchanged, singular };
             } catch (error) {
               if (attempt >= 3 || !/Execution context was destroyed|navigation/i.test(String(error && error.message))) throw error;
