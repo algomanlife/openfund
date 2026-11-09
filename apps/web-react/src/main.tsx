@@ -7,6 +7,10 @@ import Markets from './features/markets/Markets'
 import Rulebook from './features/rulebook/Rulebook'
 import Transparency from './features/transparency/Transparency'
 import Faq from './features/faq/Faq'
+import Governance from './features/governance/Governance'
+import ProposalPage from './features/governance/ProposalPage'
+import NewProposal from './features/governance/NewProposal'
+import CouncilWorkspace from './features/governance/CouncilWorkspace'
 import Tools from './features/tools/Tools'
 import ToolPage from './features/tools/ToolPage'
 import Learn from './features/learn/Learn'
@@ -104,6 +108,10 @@ const routes = [
   { path: '/:locale/markets', element: <Markets /> },
   { path: '/:locale/rulebook', element: <Rulebook /> },
   { path: '/:locale/transparency', element: <Transparency /> },
+  { path: '/:locale/governance', element: <Governance /> },
+  { path: '/:locale/governance/new', element: <NewProposal /> },
+  { path: '/:locale/governance/workspace', element: <CouncilWorkspace /> },
+  { path: '/:locale/governance/proposals/:ofp', element: <ProposalPage /> },
   { path: '/:locale/faq', element: <Faq /> },
   { path: '/:locale/faq/q/:key', element: <Faq /> },
   { path: '/:locale/tools', element: <Tools /> },

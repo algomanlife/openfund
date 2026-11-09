@@ -628,6 +628,64 @@ def main():
         {'text': 'Website page', 'value': 'website'},
     ], 'allow_multiple': False}})
 
+    # ---------------- governance editorial content (Hybrid Governance v1.0) ----
+    # EDITORIAL ONLY. Directus holds milestone wording and short content blocks;
+    # it never holds councils, proposals, votes, eligibility or any governance
+    # authority (those live in apps/backend, gov_* tables, no Directus access).
+    update_field_meta('footer_links', 'destination', {'options': {'choices': [
+        {'text': 'Challenges page', 'value': 'challenges'},
+        {'text': 'Markets page', 'value': 'markets'},
+        {'text': 'Rulebook page', 'value': 'rulebook'},
+        {'text': 'Transparency page', 'value': 'transparency'},
+        {'text': 'Governance page', 'value': 'governance'},
+        {'text': 'FAQ page', 'value': 'faq'},
+        {'text': 'Growth Partner page', 'value': 'referral'},
+        {'text': 'Tools Center', 'value': 'tools'},
+        {'text': 'Learning Center', 'value': 'learn'},
+        {'text': 'Challenges → accounts section', 'value': 'accounts-section'},
+        {'text': 'Challenges → team section', 'value': 'team-section'},
+        {'text': 'Challenges → FAQ section', 'value': 'faq-section'},
+        {'text': 'GitHub repository', 'value': 'github'},
+    ], 'allow_multiple': False}})
+    ensure_collection('governance_milestones', {'sort_field': 'sort', 'icon': 'flag', 'note': 'Governance roadmap wording. Editorial only — no governance authority.'})
+    ensure_field('governance_milestones', 'sort', 'integer', meta={'interface': 'input', 'hidden': True}, schema={'default_value': 0})
+    ensure_field('governance_milestones', 'key', 'string', meta={'interface': 'input', 'required': True, 'unique': True}, schema={'is_unique': True, 'is_nullable': False})
+    ensure_field('governance_milestones', 'milestone_status', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Planned', 'value': 'planned'}, {'text': 'In progress', 'value': 'in_progress'},
+            {'text': 'Built (not yet in production use)', 'value': 'implemented'}, {'text': 'Not planned', 'value': 'not_planned'},
+        ]}, 'required': True}, schema={'default_value': 'planned'})
+    ensure_field('governance_milestones', 'status', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Published', 'value': 'published'}, {'text': 'Draft', 'value': 'draft'}, {'text': 'Archived', 'value': 'archived'},
+        ]}, 'special': ['status']}, schema={'default_value': 'draft', 'has_auto_increment': False})
+    ensure_collection('governance_milestone_translations')
+    ensure_field('governance_milestone_translations', 'governance_milestone_id', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True}, schema={'is_nullable': False})
+    ensure_field('governance_milestone_translations', 'language_code', 'string', meta=dict(LANG_META), schema={'is_nullable': False})
+    ensure_field('governance_milestone_translations', 'title', 'text', meta={'interface': 'input', 'required': True}, schema={'is_nullable': False})
+    ensure_field('governance_milestone_translations', 'body', 'text', meta={'interface': 'input-multiline', 'required': True}, schema={'is_nullable': False})
+    ensure_relation('governance_milestone_translations', 'governance_milestone_id', 'governance_milestones', one_field='translations')
+    ensure_alias('governance_milestones', 'translations', None)
+
+    ensure_collection('governance_content_blocks', {'icon': 'article', 'note': 'Short governance text blocks (overview_intro, whitepaper_summary). Editorial only.'})
+    ensure_field('governance_content_blocks', 'key', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Governance page introduction', 'value': 'overview_intro'},
+            {'text': 'Whitepaper governance summary', 'value': 'whitepaper_summary'},
+        ]}, 'required': True, 'unique': True}, schema={'is_unique': True, 'is_nullable': False})
+    ensure_field('governance_content_blocks', 'status', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Published', 'value': 'published'}, {'text': 'Draft', 'value': 'draft'}, {'text': 'Archived', 'value': 'archived'},
+        ]}, 'special': ['status']}, schema={'default_value': 'draft', 'has_auto_increment': False})
+    ensure_collection('governance_content_block_translations')
+    ensure_field('governance_content_block_translations', 'governance_content_block_id', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True}, schema={'is_nullable': False})
+    ensure_field('governance_content_block_translations', 'language_code', 'string', meta=dict(LANG_META), schema={'is_nullable': False})
+    ensure_field('governance_content_block_translations', 'body', 'text', meta={'interface': 'input-multiline', 'required': True}, schema={'is_nullable': False})
+    ensure_relation('governance_content_block_translations', 'governance_content_block_id', 'governance_content_blocks', one_field='translations')
+    ensure_alias('governance_content_blocks', 'translations', None)
+
     # ---------------- public (read-only) permissions ----------------------
     roles = req('GET', f'{base}/roles', token)['data']
     public = next((r for r in roles if r['name'] == 'Public'), None)
@@ -671,6 +729,10 @@ def main():
         ('tool_translations', None),
         ('referral_content', {'status': {'_eq': 'published'}}),
         ('referral_content_translations', None),
+        ('governance_milestones', {'status': {'_eq': 'published'}}),
+        ('governance_milestone_translations', None),
+        ('governance_content_blocks', {'status': {'_eq': 'published'}}),
+        ('governance_content_block_translations', None),
     ]
     translation_parents = {
         'ui_message_translations': ('ui_message_id', 'published'),
@@ -687,6 +749,8 @@ def main():
         'glossary_term_translations': ('glossary_term_id', 'published'),
         'tool_translations': ('tool_id', 'published'),
         'referral_content_translations': ('referral_content_id', 'published'),
+        'governance_milestone_translations': ('governance_milestone_id', 'published'),
+        'governance_content_block_translations': ('governance_content_block_id', 'published'),
     }
     for coll, cond in wanted:
         if coll in translation_parents:

@@ -4,7 +4,7 @@ export const text = (en: string, fa: string): Localized => ({ en, fa })
 export const number = (value: number, locale: Locale, options?: Intl.NumberFormatOptions) =>
   new Intl.NumberFormat(locale === 'fa' ? 'fa-IR' : 'en-US', options).format(value)
 /** Public website pages — one authoritative navigation definition (menu order included). */
-export type InfoPage = 'rulebook' | 'transparency' | 'markets' | 'challenges' | 'home' | 'faq' | 'referral' | 'tools' | 'learn'
+export type InfoPage = 'rulebook' | 'transparency' | 'markets' | 'challenges' | 'home' | 'faq' | 'referral' | 'tools' | 'learn' | 'governance'
 export const labels = {
   home: text('Home', 'خانه'),
   challenges: text('Trading Challenges', 'چلنج‌های معاملاتی'),
@@ -15,6 +15,7 @@ export const labels = {
   referral: text('Growth Partner', 'همیار رشد'),
   tools: text('Tools', 'ابزارها'),
   learn: text('Learn', 'آموزش'),
+  governance: text('Governance', 'حاکمیت'),
   resources: text('Resources', 'منابع'),
   contents: text('On this page', 'در این صفحه'),
   top: text('Back to top ↑', 'بازگشت به بالا ↑'),

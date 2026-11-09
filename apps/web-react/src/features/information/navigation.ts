@@ -5,7 +5,7 @@ import { pickRecord, type AppLocale } from '../../i18n/locales'
 type Locale = AppLocale
 
 const primary = ['challenges', 'markets', 'rulebook', 'transparency'] as const
-const resources = ['faq', 'learn', 'tools', 'referral', 'team'] as const
+const resources = ['governance', 'faq', 'learn', 'tools', 'referral', 'team'] as const
 const navigationLabels = { ...labels, team: text('Team', 'تیم'), glossary: text('Glossary', 'واژه‌نامه') }
 
 export function navigationHref(route: string, locale: Locale): string {
