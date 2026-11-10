@@ -546,6 +546,8 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
       return {
         slug: p.slug,
         name: p.name,
+        /* per-locale display names (the catalog `name` is the bilingual "fa — en" label) */
+        names: c.name && typeof c.name === 'object' ? { en: c.name.en || null, fa: c.name.fa || null } : null,
         accountSizesUsd: c.accountSizesUsd || [],
         priceUsd: c.priceUsd || {},
         free: !!c.free,

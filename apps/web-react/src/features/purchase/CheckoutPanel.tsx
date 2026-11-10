@@ -26,7 +26,7 @@ import './purchase.css'
  * states plainly that purchasing is not active — mirroring the legacy dialog.
  */
 
-interface PlanInfo { slug: string, name: string, accountSizesUsd: number[], priceUsd: Record<string, number>, free: boolean }
+interface PlanInfo { slug: string, name: string, names?: { en: string | null, fa: string | null } | null, accountSizesUsd: number[], priceUsd: Record<string, number>, free: boolean }
 interface Quote { listPriceUsd: string, discountUsd: string, priceUsd: string, couponCode: string | null, paymentRequired: boolean }
 interface OrderView {
   id: string, status: string, lifecycle_state?: string, account_size_usd: string, price_usd: string, currency: string,
@@ -374,7 +374,7 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
         {/* ---- summary ---- */}
         {plan && (
           <div className="of-checkout-summary">
-            <div><span>{t('پلن', 'Plan')}</span><b>{plan.name}</b></div>
+            <div><span>{t('پلن', 'Plan')}</span><b>{(isFa ? plan.names?.fa : plan.names?.en) || plan.name}</b></div>
             <div><span>{t('اندازهٔ حساب', 'Account size')}</span><b dir="ltr">{fmtMoney(accountSize)}</b></div>
             <div><span>{t('هزینهٔ ارزیابی', 'Evaluation fee')}</span><b dir="ltr">{fmtMoney(quote?.listPriceUsd ?? plan.priceUsd[String(accountSize)] ?? '—')}</b></div>
             {quote && Number(quote.discountUsd) > 0 && <div><span>{t('تخفیف', 'Discount')} <span dir="ltr">({quote.couponCode})</span></span><b dir="ltr">−{fmtMoney(quote.discountUsd)}</b></div>}

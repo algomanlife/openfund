@@ -48,9 +48,13 @@ html[data-theme='light'] .rk-chip-bal { color: #6b7a70 }
   background: #0c1710; color: #f1f3ef;
   border: 1px solid #82e7bd44; border-radius: 14px;
   padding: 22px 24px;
-  font-family: 'Irancell', Tahoma, sans-serif;
+  font-family: Ubuntu, 'Irancell', Tahoma, sans-serif;
   margin: auto;
 }
+/* Irancell draws ASCII digits as Persian numerals: use it first only for Persian,
+   so amounts and coupon codes keep Latin digits in every other locale. */
+:lang(fa) .of-profile { font-family: 'Irancell', Tahoma, sans-serif }
+:lang(ar) .of-profile { font-family: Ubuntu, Vazirmatn, Tahoma, sans-serif }
 .of-profile-close { color: #a3b8a9; font-size: 24px; float: inline-end; background: none; border: 0; cursor: pointer }
 .of-profile-close:hover { color: #fff }
 .of-profile h2 { font-size: 19px; font-weight: 600; margin: 4px 0 14px }
