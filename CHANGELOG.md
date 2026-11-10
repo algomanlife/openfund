@@ -25,6 +25,12 @@
   `apply_schema.py`, the Render health check on `/server/ping` and explicit `IP_TRUST_PROXY=true` (both
   safe on 11.x), backup/restore guide, production migration and rollback runbook and ADR 0020.
 
+- CI: the locale matrix and the UI polish matrix (≈ 17 and ≈ 15.5 minutes
+  sequentially in the release gates) now run as concurrent, never-retried
+  shards, cutting the `Release package gates` job; documentation-only pull
+  requests skip the heavy gates through a change classifier; pull request runs
+  are cancelled when superseded while `main` and release runs never are; the
+  Playwright browser cache is shared. See `docs/development/CI.md`.
 - Terminal Chart tab and Quick Trade (branch `feat/terminal-chart-quick-trade`,
   implementation candidate): a Chart tab beside Trading shows
   the same Vela workspace full-viewport (order form, book and positions hidden)
