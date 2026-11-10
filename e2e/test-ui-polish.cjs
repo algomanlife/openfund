@@ -229,7 +229,8 @@ async function walletDisclosureFits(page){
    check(prefix+' terminal entry',await page.locator('header .nav-cta').isVisible());
    if(width===1440 && !connected || width===390 && connected){const file=`home-${locale}-${theme}-${width}-${connected?'test-wallet':'disconnected'}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file),fullPage:true});screenshots.push({file,fixture:connected?'connection-only test wallet':'none'})}
    await page.goto(BASE+`/${locale}/faq`);await page.waitForTimeout(300);await page.locator('#navigation').waitFor({state:'attached'});
-   check(prefix+' other-page navigation',await page.locator('#navigation a').count()===15 && await page.locator(`#navigation a[href="/${locale}/governance"]`).count()===1);
+   /* 3 primary + Economy (Governance, Ambassador (IB), Transparency, Revenue Model, Live Market Access) + Resources (FAQ, Learn, Glossary, Tools, Growth Partner, Team); the coach is a section of Ambassador (IB) */
+   check(prefix+' other-page navigation',await page.locator('#navigation a').count()===14 && await page.locator(`#website-economy a[href="/${locale}/governance"]`).count()===1 && await page.locator(`#website-economy a[href="/${locale}/ambassador"]`).count()===1 && await page.locator(`#navigation a[href="/${locale}/coach"]`).count()===0);
    const tv=page.locator('.credits-row a[href="https://www.tradingview.com/news/"]');await tv.waitFor();
    check(prefix+' TradingView description',(await tv.innerText()).includes(locale==='fa'?'اطلاعات و اخبار بازارها':'Market Data & News'));
    check(prefix+' redundant external label removed',!(/منبع خارجی|External resource/.test(await tv.innerText())));
