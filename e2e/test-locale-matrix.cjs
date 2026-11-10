@@ -111,7 +111,15 @@ function leaks(locale, texts) {
           await page.goto(BASE + path, { waitUntil: 'domcontentloaded', timeout: 45000 })
           await page.waitForFunction(() => !document.getElementById('of-boot-loader'), null, { timeout: 20000 }).catch(() => {})
           await page.waitForTimeout(route.includes('/') && /^(prop|perpetual)\//.test(route) ? 4000 : 2500)
-          const s = await page.evaluate(collect)
+          /* Settle deterministically instead of trusting a fixed sleep: the classic
+             pages translate after first paint, which under CPU contention (sharded
+             runs) can exceed 2.5 s. Poll until the page has no wrong-language text
+             or the deadline passes; a genuine leak persists and still fails below. */
+          let s = await page.evaluate(collect)
+          for (const deadline = Date.now() + 20000; Date.now() < deadline && leaks(locale, s.texts).length; ) {
+            await page.waitForTimeout(500)
+            s = await page.evaluate(collect)
+          }
           const id = `${vp} ${locale} ${route}`
           check(`${id}: no redirect`, s.path === path, s.path)
           check(`${id}: lang`, s.lang === locale, s.lang)
