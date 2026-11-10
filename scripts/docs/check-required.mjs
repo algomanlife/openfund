@@ -24,19 +24,26 @@ export const REQUIRED_FILES = [
   'docs/deployment/ROLLBACK.md', 'docs/deployment/DATABASE.md', 'docs/deployment/CHECKLISTS.md',
   'docs/payments/DEPAY.md', 'docs/payments/COUPONS.md', 'docs/payments/ORDER_LIFECYCLE.md', 'docs/payments/VERIFICATION.md',
   'docs/economy/BUSINESS_MODEL.md', 'docs/governance/OPERATING_GOVERNANCE.md', 'docs/operations/README.md',
-  'docs/legal/LICENSING.md', 'docs/security/SECURITY.md',
+  'docs/legal/LICENSING.md', 'docs/security/SECURITY.md', 'docs/development/ENGINEERING_REFERENCE.md',
 ]
 
-/* README sections required by the production-readiness documentation contract */
+/* README sections: the business-and-technical project homepage */
 export const README_SECTIONS = [
-  'Project overview', 'Product architecture', 'Core features', 'Technology stack', 'Repository structure',
-  'System components', 'Development environment', 'Installation', 'Environment variables', 'Database setup',
-  'Database migrations', 'Backend services', 'Frontend applications', 'Directus CMS', 'Wallet integration',
-  'Arbitrum configuration', 'Payment architecture', 'DePay integration', 'Challenge purchase lifecycle',
-  'Coupon management', 'Economy', 'Ambassador (IB)', 'Governance', 'Business model summary',
-  'Testing and validation', 'GitHub workflow', 'Branch and pull request conventions', 'CI/CD pipeline',
-  'Versioning', 'Release process', 'Render infrastructure', 'Production deployment', 'Rollback procedures',
-  'Backup and recovery', 'Security', 'Operational monitoring', 'License', 'Contribution guidelines',
+  'Project overview', 'Product ecosystem', 'Product gallery', 'Business model', 'Economy and governance',
+  'Technical architecture', 'Technology stack', 'Infrastructure', 'Development workflow',
+  'Versioning and releases', 'License', 'Contributing and security',
+]
+
+/* engineering sections moved from the README into the engineering reference */
+export const ENGINEERING_REFERENCE = 'docs/development/ENGINEERING_REFERENCE.md'
+export const ENGINEERING_SECTIONS = [
+  'Repository structure', 'System components', 'Development environment', 'Installation', 'Environment variables',
+  'Database setup', 'Database migrations', 'Backend services', 'Frontend applications', 'Directus CMS',
+  'Wallet integration', 'Arbitrum configuration', 'Payment architecture', 'DePay integration',
+  'Challenge purchase lifecycle', 'Coupon management', 'Testing and validation', 'GitHub workflow',
+  'Branch and pull request conventions', 'CI/CD pipeline', 'Versioning', 'Release process', 'Render infrastructure',
+  'Production deployment', 'Rollback procedures', 'Backup and recovery', 'Security', 'Operational monitoring',
+  'Contribution guidelines',
 ]
 
 for (const f of REQUIRED_FILES) if (!fs.existsSync(f)) problems.push(`missing required document: ${f}`)
@@ -44,6 +51,11 @@ for (const f of REQUIRED_FILES) if (!fs.existsSync(f)) problems.push(`missing re
 if (fs.existsSync('README.md')) {
   const headings = new Set([...read('README.md').matchAll(/^##\s+(?:\d+\.\s+)?(.+?)\s*$/gm)].map(m => m[1].trim().toLowerCase()))
   for (const s of README_SECTIONS) if (!headings.has(s.toLowerCase())) problems.push(`README.md: missing section "## ${s}"`)
+}
+const sectionsOf = f => new Set([...read(f).matchAll(/^##\s+(?:\d+\.\s+)?(.+?)\s*$/gm)].map(m => m[1].trim().toLowerCase()))
+if (fs.existsSync(ENGINEERING_REFERENCE)) {
+  const headings = sectionsOf(ENGINEERING_REFERENCE)
+  for (const s of ENGINEERING_SECTIONS) if (!headings.has(s.toLowerCase())) problems.push(`${ENGINEERING_REFERENCE}: missing section "## ${s}"`)
 }
 
 if (fs.existsSync('render.yaml') && fs.existsSync('docs/deployment/ENVIRONMENT.md')) {
@@ -65,4 +77,4 @@ if (problems.length) {
   console.error(`\n${problems.length} documentation synchronization problem(s)`)
   process.exit(1)
 }
-console.log(`docs:required OK — ${REQUIRED_FILES.length} documents, ${README_SECTIONS.length} README sections, render.yaml variables documented`)
+console.log(`docs:required OK — ${REQUIRED_FILES.length} documents, ${README_SECTIONS.length} README sections, ${ENGINEERING_SECTIONS.length} engineering sections, render.yaml variables documented`)

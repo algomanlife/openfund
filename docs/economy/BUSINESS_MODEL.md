@@ -25,7 +25,7 @@ challenge evaluation, and read-only Perpetual account review on Gains Network
 
 | Stream | Category | Notes |
 | --- | --- | --- |
-| Prop challenge sales (evaluation fees) | Implemented, **disabled in production** | Server-priced orders, coupons, on-chain verification on Arbitrum One, DePay checkout ([lifecycle](../payments/ORDER_LIFECYCLE.md)). `paymentsEnabled: false` until the owner configures the receiver, token, RPC and DePay keys |
+| Prop challenge sales (evaluation fees) | Implemented, **disabled in production** | Server-priced orders, coupons, multi-chain DePay checkout with on-chain verification ([lifecycle](../payments/ORDER_LIFECYCLE.md)). `paymentsEnabled: false` until the owner configures the receiver, token, RPC and DePay keys |
 | Openfund share of distributable live-trading profit | Implemented control plane, **not active** | Requires Live Market Access, verified capital and a real execution adapter (none enabled) |
 | Anything else (subscriptions, data, protocol fees) | Proposed or not planned | Not implemented |
 
@@ -43,9 +43,12 @@ challenge evaluation, and read-only Perpetual account review on Gains Network
 
 ## Payment processing
 
-Arbitrum One only, one approved USD stablecoin, server-calculated amounts,
-DePay dynamic configuration signed by Openfund, DePay deliveries verified by
-signature, and on-chain verification as the only payment authority. See
+Wallet sign-in is Arbitrum One only; payment is not. DePay offers every
+settlement chain the owner configures (EVM networks and Solana), each with an
+approved USD stablecoin and receiver, and converts the payer's token where
+DePay supports it. Amounts are server-calculated, the dynamic configuration is
+signed by Openfund, DePay deliveries are verified by signature, and on-chain
+verification on the payment's own chain is the only payment authority. See
 [DePay](../payments/DEPAY.md) and [Verification](../payments/VERIFICATION.md).
 
 ## Security practices and risk management
@@ -79,8 +82,7 @@ off-chain ([GOVERNANCE.md](../../GOVERNANCE.md)).
 | Decision | Owner |
 | --- | --- |
 | Real-capital trader/firm profit-sharing tiers | Company management |
-| Whether a 100%-coupon order counts as a "first eligible purchase" for ambassador commission | Company management |
 | 20% customer referral discount (proposed, not active) | Company management |
-| Payment token, receiving address, DePay integration and keys | Company management (operator) |
+| Payment chains, tokens, receiving addresses, DePay integration and keys | Company management (operator) |
 | Repository license for first-party code ([Licensing](../legal/LICENSING.md)) | Owner |
 | Treasury wallet, operational and risk reserves | Company management |
