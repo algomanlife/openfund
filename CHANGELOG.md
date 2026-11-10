@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Pull request governance: a required-sections pull request template with a
+  structural `PR description` check (and Conventional Commit title check),
+  documented stacked-PR policy, branch-update practice, Conventional Commit
+  scopes and merge-readiness checklist (`docs/development/PULL_REQUESTS.md`);
+  release-traceability authority hierarchy in `docs/deployment/RELEASES.md` and a
+  read-only release summary generator (`node scripts/release/summary.mjs`).
 - Upstream governance automation: `scripts/upstream/check-releases.mjs` reads upstream releases and
   release notes, classifies risk by each provider's versioning policy (0.x, Directus breaking minors,
   semver majors, source heads) and feeds the weekly read-only `Upstream watch` workflow, which opens one
