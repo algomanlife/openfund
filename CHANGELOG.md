@@ -8,6 +8,14 @@
   scopes and merge-readiness checklist (`docs/development/PULL_REQUESTS.md`);
   release-traceability authority hierarchy in `docs/deployment/RELEASES.md` and a
   read-only release summary generator (`node scripts/release/summary.mjs`).
+- Dependency governance: a machine-checked upstream registry (Vela, Vela Pine
+  addon, PineTS, Gains SDK and APIs, journal-core, Directus, wallet libraries,
+  protocol source) with versions, licenses, local modifications and update
+  procedures; a conservative `dependabot.yml` (weekly grouped minor/patch, no
+  automatic majors, upstream families excluded); and `npm run deps:check`, which
+  fails when a pin drifts from the registry. Records that only the journal-core
+  library of the LuxAlgo Trade Journal is integrated and that `vendor/gains-sdk`
+  is unused.
 - DePay checkout completed as the intended customer flow: **Buy Challenge**
   creates the server-priced order and opens the official widget with the
   integration id and only the order id; DePay asks the new signed dynamic
