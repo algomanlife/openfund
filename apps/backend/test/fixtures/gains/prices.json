@@ -1,0 +1,49 @@
+{
+ "recorded": "2026-11-10",
+ "source": "https://api.gains.trade/v1/arbitrum/prices",
+ "note": "subset for the markets in markets.json",
+ "data": [
+  {
+   "market": "BTC/USD",
+   "mark": "74583.9",
+   "index": "75817.8",
+   "updatedAt": 1794294829449
+  },
+  {
+   "market": "ETH/USD",
+   "mark": "2114.04",
+   "index": "2240.68",
+   "updatedAt": 1794294823909
+  },
+  {
+   "market": "EUR/USD",
+   "mark": "1.12296",
+   "index": "1.11398",
+   "updatedAt": 1794294829449
+  },
+  {
+   "market": "USD/JPY",
+   "mark": "157.98",
+   "index": "158.52",
+   "updatedAt": 1794294829449
+  },
+  {
+   "market": "SOL/USD",
+   "mark": "85.98",
+   "index": "89.8884",
+   "updatedAt": 1794294824421
+  },
+  {
+   "market": "XAU/USD",
+   "mark": "4118.85",
+   "index": "4070.33",
+   "updatedAt": 1794294829449
+  },
+  {
+   "market": "XAG/USD",
+   "mark": "52.91",
+   "index": "51.9471",
+   "updatedAt": 1794294829449
+  }
+ ]
+}

@@ -31,7 +31,11 @@ export function quoteRecord(p, now = Date.now()) {
   return {mark:String(p.mark),index:p.index != null ? String(p.index) : null,at:Math.min(now,at),updatedAt:p.updatedAt}
 }
 export class MarketData {
-  constructor() {
+  /* Injection seam for contract tests (recorded fixtures, fake socket, fake clock).
+     Production uses the defaults; behaviour is identical. */
+  constructor({ fetchImpl = (...a) => fetch(...a), WebSocketImpl = WebSocket, now = () => Date.now(), api = API, wss = WSS, reconnectMs = 2000 } = {}) {
+    this.fetchImpl = fetchImpl; this.WebSocketImpl = WebSocketImpl; this.now = now
+    this.api = api; this.wss = wss; this.reconnectMs = reconnectMs
     this.markets = new Map()   /* symbol → metadata (maxLeverage, isOpen, …) */
     this.marks = new Map()     /* symbol → {mark, index, at, updatedAt} */
     this.injected = new Map()  /* test overrides */
@@ -68,7 +72,7 @@ export class MarketData {
   }
 
   async #loadMarkets() {
-    const r = await fetch(API + '/markets', { signal: AbortSignal.timeout(15000) })
+    const r = await this.fetchImpl(this.api + '/markets', { signal: AbortSignal.timeout(15000) })
     if (!r.ok) throw new Error('markets_unavailable')
     const j = await r.json()
     if (!Array.isArray(j.data) || !j.data.length) throw new Error('invalid_market_schema')
@@ -80,14 +84,14 @@ export class MarketData {
   }
 
   async #loadPrices() {
-    const r = await fetch(API + '/prices', { signal: AbortSignal.timeout(10000) })
+    const r = await this.fetchImpl(this.api + '/prices', { signal: AbortSignal.timeout(10000) })
     if (!r.ok) throw new Error('prices_unavailable')
     const j = await r.json()
     if (!Array.isArray(j.data)) throw new Error('invalid_price_schema')
     if (this.stopped) return
     let n = 0
     for (const p of (j.data || [])) {
-      const quote = quoteRecord(p)
+      const quote = quoteRecord(p, this.now())
       if (quote && (!this.marks.has(p.market) || quote.at >= this.marks.get(p.market).at)) {
         this.marks.set(p.market, quote)
         n++
@@ -98,7 +102,7 @@ export class MarketData {
 
   #connect() {
     if (this.stopped) return
-    this.ws = new WebSocket(WSS)
+    this.ws = new this.WebSocketImpl(this.wss)
     this.ws.on('open', () => {
       this.priceSeq = null
       this.ws.send(JSON.stringify({ op: 'subscribe', channel: 'prices' }))
@@ -122,7 +126,7 @@ export class MarketData {
           return
         }
         if (Number.isFinite(msg.seq)) this.priceSeq = msg.seq
-        const now = Date.now()
+        const now = this.now()
         for (const p of msg.data) {
           const quote = quoteRecord(p,now)
           if (!quote || (this.marks.has(p.market) && quote.at < this.marks.get(p.market).at)) continue
@@ -133,7 +137,7 @@ export class MarketData {
         }
       }
     })
-    this.ws.on('close', () => { if (!this.stopped) { this.retryTimer = setTimeout(() => this.#connect(), 2000); this.retryTimer.unref?.() } })
+    this.ws.on('close', () => { if (!this.stopped) { this.retryTimer = setTimeout(() => this.#connect(), this.reconnectMs); this.retryTimer.unref?.() } })
     this.ws.on('error', () => { try { this.ws.close() } catch {} })
   }
 
@@ -148,14 +152,14 @@ export class MarketData {
 
   mark(symbol) {
     const inj = this.injected.get(symbol)
-    if (inj != null) return { mark: String(inj), at: Date.now(), injected: true }
+    if (inj != null) return { mark: String(inj), at: this.now(), injected: true }
     const m = this.marks.get(symbol)
     return m ? { mark: m.mark, at: m.at, injected: false } : null
   }
 
   freshMark(symbol) {
     const m = this.mark(symbol)
-    if (!m || m.at < Date.now() - STALE_MS || !Number.isFinite(Number(m.mark)) || Number(m.mark) <= 0) return null
+    if (!m || m.at < this.now() - STALE_MS || !Number.isFinite(Number(m.mark)) || Number(m.mark) <= 0) return null
     return m
   }
 

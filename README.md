@@ -393,6 +393,10 @@ Report suspected vulnerabilities privately through the repository's GitHub secur
 
 The repository does not claim an independent security audit, regulatory approval or production readiness. Generated-signature tests do not certify real wallet devices. [Security architecture and release gates](docs/security/SECURITY.md)
 
+## Upstream dependencies
+
+External code is kept apart from Openfund's own work in three layers: upstream (vendored or pinned), integration (adapters, normalisation, error handling) and Openfund custom (branding, UI, indicators, trading logic). Vela, its Pine addon, the Gains API and SDK, the LuxAlgo journal core, Directus and the significant libraries are recorded with installed version, source, customisations, tests and rollback limits in the [upstream dependency registry](docs/integrations/UPSTREAM_DEPENDENCIES.md). Direct edits to upstream source are limited to a registered patch list. `npm run check:upstream` and `npm run test:upstream` verify the isolation, and upgrades follow the [Vela](docs/integrations/VELA_UPGRADE.md) and [Gains](docs/integrations/GAINS_UPGRADE.md) procedures; no upstream is upgraded automatically.
+
 ## Licensing and upstream attribution
 
 **No root `LICENSE` is present.** Do not interpret this public repository or its contribution workflow as a blanket open-source license grant. Before redistribution or commercial reuse, resolve first-party licensing with the maintainers and comply with each component's terms.
