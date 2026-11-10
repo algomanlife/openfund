@@ -239,7 +239,7 @@
       "category": "wallet",
       "upstream": "https://github.com/wevm/wagmi, https://github.com/wevm/viem, https://github.com/rainbow-me/rainbowkit",
       "license": "MIT (npm metadata)",
-      "version": "wagmi 2.19.5, viem 2.57.13, RainbowKit 2.2.11 (installed; manifests use caret ranges)",
+      "version": "wagmi 2.19.5, viem 2.57.16, RainbowKit 2.2.11 (installed; manifests use caret ranges)",
       "commit": null,
       "pins": [],
       "locations": [
