@@ -35,13 +35,21 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `VITE_INSTAGRAM_COMMUNITY_URL` | openfund (runtime, public) | optional owner-verified HTTPS Instagram profile; blank/invalid means Coming Soon. URL validation does not establish ownership. |
 | `CORS_ORIGINS` | openfund | optional; only needed for extra origins / custom domains |
 | `PURCHASE_PAYMENT_RECEIVER` | openfund | **deliberately unset by default — purchasing stays disabled (`purchases_disabled`) until an approved payment address is entered.** No hardcoded production destination exists in the repository. |
-| `PURCHASE_PAYMENT_TOKEN` | openfund | optional ERC-20 token contract for challenge payments (unset = native ETH) |
-| `PURCHASE_PAYMENT_MIN_CONFIRMATIONS` | openfund | optional finality depth: the payment verifier waits until the transaction has this many confirmations before provisioning (unset = single receipt; e.g. `12` on mainnet; retryable `tx_not_final` until then) |
+| `PURCHASE_PAYMENT_CHAIN` | openfund | payment chain id: `1`, `42161`, `8453` or `11155111`. DePay serves mainnets only. |
+| `PURCHASE_PAYMENT_TOKEN` | openfund | approved ERC-20 USD stablecoin contract (priced 1:1 to USD). **Required in production**; unset permits native test-chain payments outside production only. |
+| `PURCHASE_PAYMENT_DECIMALS` | openfund | optional; must equal the token's on-chain `decimals()` (mismatch fails closed). Unset = read from the contract. |
+| `PURCHASE_RPC_URL` | openfund | **secret.** Dedicated RPC endpoint for the payment chain; required in production, no public fallback. Its chain id is checked. |
+| `PURCHASE_ROUTER_ADDRESSES` | openfund | optional comma-separated approved payment routers (for example the DePay Payment Router on the configured chain). Empty = direct token transfers only. See [Verification](../payments/VERIFICATION.md). |
+| `DEPAY_CALLBACK_PUBLIC_KEY` | openfund | optional PEM public key that verifies DePay server callbacks (`x-signature`). Callbacks only register a retryable hint; the on-chain verifier decides. Unset = route returns 404. |
+| `PURCHASE_PAYMENT_MIN_CONFIRMATIONS` | openfund | finality depth: the verifier waits for this many confirmations before provisioning (retryable `tx_not_final`). Unset = `12` in production, `0` elsewhere. |
 | `ADMIN_API_TOKEN` | openfund | **secret service token for the `/admin/*` operational API (user directory, challenge directory, withdrawal review). Unset = the whole admin API stays disabled (404).** Bearer-auth, constant-time compare. Never expose to the browser. |
 | `CSP_EXTRA_CONNECT` | openfund | optional comma-separated extra origins for the CSP `connect-src` (production CMS is HTTPS so normally unneeded; used for non-HTTPS local CMS deployments) |
 | `INTERNAL_API_TOKEN` | openfund | optional constant-time token guarding the test-only `/internal` seams (defense in depth; production never mounts them) |
 | `VITE_DEPAY_WIDGET` | openfund (runtime, public) | optional; `1` enables the DePay checkout widget |
-| `VITE_DEPAY_WIDGET_URL` | openfund (runtime, public) | approved DePay widget bundle URL; the widget stays hidden without both variables |
+| `VITE_DEPAY_WIDGET_URL` | openfund (runtime, public) | approved DePay widget bundle URL (https) |
+| `VITE_DEPAY_WIDGET_INTEGRITY` | openfund (runtime, public) | Subresource Integrity hash (`sha384-…`) of that exact bundle. The widget stays hidden unless the toggle, an https URL and this hash are all set. |
+| `CSP_EXTRA_SCRIPT_SRC` | openfund | optional comma-separated https origins (no paths, no wildcards) added to `script-src`, for the approved DePay widget origin |
+| `CSP_EXTRA_FRAME_SRC` | openfund | optional comma-separated https origins added to `frame-src` for the approved DePay widget |
 | `TREASURY_WALLET_ADDRESS` | openfund | public Openfund Treasury address read by the backend scheduler. Unset = `Not configured`; allocatable capital stays `Unknown`. Never a private key or seed phrase. See [Treasury](../economy/TREASURY.md). |
 | `TREASURY_CHAIN_ID` | openfund | treasury chain id (supported: 1, 42161, 8453, 11155111, 421614); defaults to `PURCHASE_PAYMENT_CHAIN` |
 | `TREASURY_ASSETS` | openfund | JSON list of `{symbol, address \| "native", decimals, priceFeed?}`; an asset without a valid Chainlink `priceFeed` is shown unpriced and excluded from the USD total |

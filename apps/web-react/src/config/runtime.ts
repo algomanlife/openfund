@@ -6,6 +6,7 @@ export interface PublicRuntimeConfig {
   instagramCommunityUrl?: string
   depayWidget?: boolean
   depayWidgetUrl?: string
+  depayWidgetIntegrity?: string
 }
 
 export function publicRuntimeConfig(): PublicRuntimeConfig {

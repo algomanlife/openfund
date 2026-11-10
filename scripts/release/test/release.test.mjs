@@ -7,7 +7,7 @@ import { execFileSync } from 'node:child_process';
 import {nextVersion,requestedPatchVersion,validateEnv,sha256,writeJson,treeHash,filesIn,root} from '../lib.mjs';
 import {verify} from '../verify.mjs';
 import {exactSecretScan} from '../check-secrets.mjs';
-import {runtimeCmsUrl,runtimeConfigScript} from '../../../apps/backend/runtime-config.js';
+import {runtimeCmsUrl,runtimeConfigScript,depayWidgetApproved} from '../../../apps/backend/runtime-config.js';
 test('runtime CMS origin stays outside the immutable frontend and rejects unsafe production URLs',()=>{
  assert.equal(runtimeCmsUrl({CMS_PUBLIC_URL:'https://cms.openfi.cloud'},true),'https://cms.openfi.cloud');
  assert.equal(runtimeCmsUrl({VITE_DIRECTUS_HOST:'openfund-cms.onrender.com'},true),'https://openfund-cms.onrender.com');
@@ -17,6 +17,17 @@ test('runtime CMS origin stays outside the immutable frontend and rejects unsafe
  assert.match(script,/cms\.openfi\.cloud/);
  assert.match(script,/public-id/);
  assert.doesNotMatch(script,/localhost/);
+});
+test('the external payment widget is enabled only with an https URL and a Subresource Integrity hash',()=>{
+ const hash='sha384-'+'A'.repeat(64);
+ const base={VITE_DEPAY_WIDGET:'1',VITE_DEPAY_WIDGET_URL:'https://integrate.depay.com/widgets/v13.js',VITE_DEPAY_WIDGET_INTEGRITY:hash};
+ assert.equal(depayWidgetApproved(base),true);
+ for(const over of [{VITE_DEPAY_WIDGET:'0'},{VITE_DEPAY_WIDGET_URL:'http://integrate.depay.com/w.js'},{VITE_DEPAY_WIDGET_URL:''},{VITE_DEPAY_WIDGET_INTEGRITY:''},{VITE_DEPAY_WIDGET_INTEGRITY:'md5-abc'},{VITE_DEPAY_WIDGET_URL:'https://u:p@integrate.depay.com/w.js'}])
+  assert.equal(depayWidgetApproved({...base,...over}),false);
+ const script=runtimeConfigScript({CMS_PUBLIC_URL:'https://cms.openfi.cloud',...base},true);
+ assert.match(script,/depayWidgetIntegrity/);
+ const off=runtimeConfigScript({CMS_PUBLIC_URL:'https://cms.openfi.cloud',VITE_DEPAY_WIDGET:'1',VITE_DEPAY_WIDGET_URL:base.VITE_DEPAY_WIDGET_URL},true);
+ assert.doesNotMatch(off,/integrate\.depay\.com/);
 });
 test('version allocation preserves tags, increments all change categories and handles numeric ordering',()=>{
  assert.equal(nextVersion([]),'0.1.0');

@@ -10,6 +10,15 @@ export function runtimeCmsUrl(env, production = false) {
   return url.origin
 }
 
+export function depayWidgetApproved(env) {
+  if (env.VITE_DEPAY_WIDGET !== '1') return false
+  try {
+    const url = new URL(env.VITE_DEPAY_WIDGET_URL || '')
+    if (url.protocol !== 'https:' || url.username || url.password) return false
+  } catch { return false }
+  return /^sha(256|384|512)-[A-Za-z0-9+/=]{20,}$/.test(env.VITE_DEPAY_WIDGET_INTEGRITY || '')
+}
+
 export function runtimeConfigScript(env, production = false) {
   const cmsUrl = runtimeCmsUrl(env, production)
   const config = {
@@ -18,8 +27,11 @@ export function runtimeConfigScript(env, production = false) {
     telegramCommunityUrl: env.VITE_TELEGRAM_COMMUNITY_URL || '',
     discordCommunityUrl: env.VITE_DISCORD_COMMUNITY_URL || '',
     instagramCommunityUrl: env.VITE_INSTAGRAM_COMMUNITY_URL || '',
-    depayWidget: env.VITE_DEPAY_WIDGET === '1',
-    depayWidgetUrl: env.VITE_DEPAY_WIDGET_URL || '',
+    /* the external widget is enabled only with an https URL AND a
+       Subresource Integrity hash pinning the exact approved bundle */
+    depayWidget: depayWidgetApproved(env),
+    depayWidgetUrl: depayWidgetApproved(env) ? env.VITE_DEPAY_WIDGET_URL : '',
+    depayWidgetIntegrity: depayWidgetApproved(env) ? env.VITE_DEPAY_WIDGET_INTEGRITY : '',
   }
   return `window.__OPENFUND_RUNTIME_CONFIG__=${JSON.stringify(config).replaceAll('<', '\\u003c')};\n`
 }

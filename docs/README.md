@@ -28,6 +28,10 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 [Economy overview](economy/README.md) · [Treasury and data sources](economy/TREASURY.md) · [Ambassador and Coach](economy/PARTNER_PROGRAMS.md) · [Live Market Access](economy/LIVE_MARKET_ACCESS.md)
 
+## Payments
+
+[Payment verification and recovery](payments/VERIFICATION.md) · [Payment activation checklist](payments/ACTIVATION.md)
+
 ## Integrations
 
 [Gains VOB and Trades](integrations/GAINS_DEPTH.md) · [Gains Network](integrations/GAINS.md) · [Vela](integrations/VELA.md) · [Markets](integrations/MARKETS_PAGE.md) · [Upstream provenance](integrations/UPSTREAM.md) · [Directus backstage](backstage/README.md) · [Content coverage](backstage/CONTENT_COVERAGE.md) · [Terminal editorial content](backstage/TERMINAL_CONTENT.md) · [CMS permissions](backstage/PERMISSIONS.md) · [Admin guide](backstage/ADMIN_GUIDE.md) · [Content model](backstage/CONTENT_MODEL.md) · [Translations](backstage/TRANSLATIONS.md) · [User management](backstage/USER_MANAGEMENT.md)
