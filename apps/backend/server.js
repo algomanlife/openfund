@@ -15,6 +15,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { releaseDiagnostics } from './release.js'
 import { runtimeConfigScript } from './runtime-config.js'
+import { staticCacheControl, NO_STORE } from './static-cache.js'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
 import { createClient, isHex, http } from 'viem'
@@ -761,7 +762,7 @@ app.get('/trading/health', tradingAuth, async (req, res) => {
    asset and all API responses keep the fully strict policy. */
 const reactDir = fileURLToPath(new URL('../../react', import.meta.url))
 const reactStaticHeaders = (res, file) => {
-  if (file.endsWith('.html') || file.endsWith('release-manifest.json')) res.set('Cache-Control','no-cache, must-revalidate')
+  res.set('Cache-Control', staticCacheControl(file))
   if (file.endsWith('.html') || file.endsWith('openfund-pine-worker.min.js')) res.setHeader('Content-Security-Policy', buildCsp(true))
 }
 app.get(['/react', '/react/', '/react/index.html'], (req, res) => {
@@ -782,7 +783,9 @@ app.use((req, res, next) => {
 })
 
 /* 404 + error safety (no stack leaks) */
-app.use((req, res) => res.status(404).json({ error: 'not_found' }))
+/* no-store: a miss (e.g. a new asset hash requested from the old instance
+   during deploy cutover) must never be cached by Cloudflare or the browser */
+app.use((req, res) => res.set('Cache-Control', NO_STORE).status(404).json({ error: 'not_found' }))
 app.use((err, req, res, next) => {
   if (err.code === "23514" && err.message === "account_permanently_disabled")
     err.status = 403;
