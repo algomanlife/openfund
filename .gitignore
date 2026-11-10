@@ -14,9 +14,19 @@ apps/web-react/.env
 /.playwright/
 __pycache__/
 
+# Generated frontend build output (Vite -> repo-root react/). Never tracked: every
+# build rewrites content-hashed files, which made every frontend pull request
+# conflict. Render, the release gates and CI all build it (npm run build:web).
+/react/
 # Generated identity is packaged by the release pipeline.
 /release-manifest.json
-/react/release-manifest.json
 
 # Ignore future Finder metadata in the preserved investor package.
 /docs/business/Openfund-Prop-Investor-Pack/**/.DS_Store
+
+# Build/test scratch
+*.log
+.DS_Store
+**/.DS_Store
+coverage/
+*.tsbuildinfo
