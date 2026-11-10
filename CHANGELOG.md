@@ -12,6 +12,8 @@
   margin and permission checks are unchanged. No bid/ask is shown because the
   market-data provider supplies a mark price only. No backend, engine or
   routing-convention change.
+- Unofficial Render candidates now retain the latest published version number while identifying new code by its exact commit SHA and `official: false`; only an explicit publish action allocates a new version.
+
 - Hybrid Governance v1.0 (implementation candidate; council and voting remain inactive): off-chain, auditable governance with a ten-seat Community
   Council, OFP proposals, a validated lifecycle, quorum 7 and approval 6 of 10
   (7 for governance amendments), conflict-of-interest recusal, optional signed

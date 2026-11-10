@@ -1,4 +1,3 @@
-import { nextVersion } from './lib.mjs';
 
 const repo = 'algomanlife/openfund';
 const api = `https://api.github.com/repos/${repo}`;
@@ -25,5 +24,5 @@ export async function candidateSource(sha) {
     if (!runs.check_runs?.some(run => run.name === name && run.conclusion === 'success' && run.app?.slug === 'github-actions'))
       throw Error(`Candidate check is not successful on ${sha}: ${name}.`);
   }
-  return {version:nextVersion([release.tag_name],compare.commits.map(commit=>commit.commit.message).join('\n')),sha,official:false,checks:required,latestOfficial:release.tag_name};
+  return {version:release.tag_name.slice(1),sha,official:false,checks:required,latestOfficial:release.tag_name};
 }
