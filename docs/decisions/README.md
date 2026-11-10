@@ -21,6 +21,7 @@
 - [0015 — Economy ledgers, partner programs and Live Market Access](0015-economy-ledgers-and-live-funding.md)
 - [0016 — CMS-managed structured Whitepaper](0016-cms-managed-whitepaper.md)
 - [0017 — Hybrid governance](0017-hybrid-governance.md)
+- [0018 — Payment verification policy, recovery and DePay integration](0018-payment-verification-and-recovery.md)
 - [0019 — Upstream isolation](0019-upstream-isolation.md)
 - [0020 — Directus upgrade policy](0020-directus-upgrade-policy.md)
 - [0021 — Upstream governance automation](0021-upstream-governance-automation.md)
