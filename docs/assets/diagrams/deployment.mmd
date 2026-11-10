@@ -7,5 +7,5 @@ flowchart TB
   CMS[openfund-cms Directus 11.9.1] --> DB
   CMS --> Disk[5 GB uploads disk]
   API --> Health[DB-aware /health]
-  CMS --> CMSHealth["/server/health"]
+  CMS --> CMSHealth["/server/ping"]
   CI[CI checks] -.->|validation evidence; no apply| Git

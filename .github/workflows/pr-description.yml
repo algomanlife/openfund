@@ -1,0 +1,29 @@
+name: PR description
+# Structural check that the pull request description follows the template and
+# the title is a Conventional Commit. Non-required, read-only, no secrets.
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+permissions:
+  contents: read
+concurrency:
+  group: pr-description-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+jobs:
+  description:
+    name: PR description and title
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/pr
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check description sections and Conventional Commit title
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: node scripts/pr/check-pr-description.mjs

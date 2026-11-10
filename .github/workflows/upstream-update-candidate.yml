@@ -1,0 +1,104 @@
+name: Upstream update candidate
+
+# Controlled, manually dispatched update of a VENDORED upstream (Vela, Gains SDK, Trade Journal core).
+# It runs the same tool a maintainer would run locally (scripts/upstream/update-vendor.mjs), refuses to
+# touch anything when a registered Openfund patch conflicts, runs the offline regression set and opens a
+# DRAFT pull request with the report and results. It never merges, deploys or marks the update reviewed.
+# Browser regressions (charts, layout, locale) are not run here: the PR body lists them as required
+# before approval. Majors and 0.x minors are expected to arrive as "NOT READY" candidates.
+
+on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: Vendored provider id
+        type: choice
+        options: [vela, gains-sdk, luxalgo-trade-journal]
+        required: true
+      to:
+        description: Target tag or commit (empty = latest tag)
+        type: string
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  candidate:
+    name: Prepare candidate
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PROVIDER: ${{ inputs.provider }}
+      TO: ${{ inputs.to }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install tooling
+        run: |
+          npm ci
+          npm ci --prefix apps/backend
+          npm ci --include=dev --prefix apps/web-react
+      - name: Update report and apply (stops on patch conflict)
+        id: apply
+        run: |
+          set +e
+          to_arg=""; [ -n "$TO" ] && to_arg="--to $TO"
+          node scripts/upstream/update-vendor.mjs --provider "$PROVIDER" $to_arg --apply --report report.txt
+          code=$?
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          cat report.txt >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+      - name: Stop when there is nothing to apply or a conflict exists
+        if: steps.apply.outputs.code != '0'
+        run: |
+          echo "update-vendor exit code ${{ steps.apply.outputs.code }} (2 = patch conflict or undocumented edit, 3 = already current). Nothing was changed; see the job summary."
+          exit 1
+      - name: Refresh derived files and run offline regression set
+        id: tests
+        run: |
+          set +e
+          {
+            node scripts/upstream/verify.mjs --write-manifest
+            if [ "$PROVIDER" = "vela" ]; then node scripts/build-charts.mjs; fi
+            if [ "$PROVIDER" = "luxalgo-trade-journal" ]; then node third_party/luxalgo-trade-journal/build.mjs; fi
+            echo "== check:upstream"; npm run check:upstream 2>&1 | tail -20
+            echo "== test:upstream"; npm run test:upstream 2>&1 | grep -E '^# (tests|pass|fail)'
+            if [ "$PROVIDER" = "vela" ]; then echo "== test:charts"; npm run test:charts 2>&1 | grep -E '^# (tests|pass|fail)'; fi
+          } 2>&1 | tee tests.txt
+          if grep -qE '^FAIL|^# fail [1-9]|problem\(s\)' tests.txt; then echo "ready=no" >> "$GITHUB_OUTPUT"; else echo "ready=checks-passed" >> "$GITHUB_OUTPUT"; fi
+          exit 0
+      - name: Open draft pull request
+        run: |
+          set -euo pipefail
+          tag="$TO"; [ -n "$tag" ] || tag="latest"
+          branch="upstream-candidate/${PROVIDER}-${tag}"
+          git config user.name "openfund-upstream-update"
+          git config user.email "upstream-update@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add -A
+          git commit -m "chore(upstream): update ${PROVIDER} to ${tag} (candidate, unreviewed)"
+          git push origin "$branch"
+          status="${{ steps.tests.outputs.ready }}"
+          {
+            echo "Candidate update of **${PROVIDER}** to \`${tag}\`. Offline checks: **${status}**. This PR is a **candidate and is NOT reviewed**."
+            echo
+            echo "## Update report"; echo '```text'; head -c 14000 report.txt; echo '```'
+            echo "## Offline test output"; echo '```text'; head -c 6000 tests.txt; echo '```'
+            echo "## Required before approval (not run by this workflow)"
+            echo "- [ ] Browser regression against a built app: \`test:browser:charts\`, \`test:browser:layout\`, \`test:browser:locale\`, \`test:browser:completion\`"
+            echo "- [ ] Refresh the tracked \`react/\` build output the way the repository already does, then re-run \`npm run check:upstream\`"
+            echo "- [ ] Legal review if LICENSE or NOTICE changed; attribution notice still visible in the terminal"
+            echo "- [ ] Screenshots, light and dark, English and Persian, desktop and 390 px"
+            echo "- [ ] Rollback note and owner approval; registry \`compatibility\` and \`reviewed\` updated only after the above"
+            echo
+            echo "No auto-merge. No deployment."
+          } > pr-body.md
+          gh label create upstream --color 1d76db 2>/dev/null || true
+          gh label create needs-human-approval --color d93f0b 2>/dev/null || true
+          gh pr create --draft --base main --head "$branch" --title "chore(upstream): update ${PROVIDER} to ${tag} (candidate)" --body-file pr-body.md --label upstream --label needs-human-approval

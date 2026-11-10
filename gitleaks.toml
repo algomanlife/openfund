@@ -30,3 +30,9 @@ paths = [
   '''^publish-openfund/assets/''',
   '''^dist/.*\.(js|css)$''',
 ]
+
+[[allowlists]]
+description = "Vendor checksum manifest: maps vendored file paths to their sha256 digests and contains no credentials"
+paths = [
+  '''^infra/upstream/vendor-manifest\.json$''',
+]
