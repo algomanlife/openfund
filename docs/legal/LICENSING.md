@@ -1,7 +1,9 @@
 # Licensing audit and compatibility report
 
-Engineering inventory, not legal advice. Audited 2026-11-10 against `main`
-`123ecfb` plus branch `codex/production-readiness`. Component facts are kept in
+Engineering inventory, not legal advice. Audited 2026-11-10; re-verified
+2026-11-11 against `main` `67cc812` (deployed as v0.4.4): `npm run
+legal:licenses` passes, the built application contains all eight notice files,
+and production serves them under `/assets/notices/`. Component facts are kept in
 the [upstream dependency registry](../integrations/UPSTREAM_REGISTRY.md), the
 generated [production dependency licenses](DEPENDENCY_LICENSES.md) (checked in
 CI) and the [PineTS report](PINETS.md).
