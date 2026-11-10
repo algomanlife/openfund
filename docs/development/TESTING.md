@@ -64,7 +64,7 @@ Genuine documentation screenshots use no market/CMS/financial protocol fixtures.
 
 ## CI and security
 
-[CI](../../.github/workflows/ci.yml) runs frontend, documentation, PostgreSQL-backed backend/browser checks, Blueprint validation, gitleaks and advisory reports. Authenticated Render validation only runs when its secret is configured. Dependency reports are not proof of security; triage findings without silently changing runtime versions in a documentation task.
+Workflow inventory, timings, change tiers and the sharded browser matrices are documented in [CI](CI.md). [CI](../../.github/workflows/ci.yml) runs frontend, documentation, PostgreSQL-backed backend/browser checks, Blueprint validation, gitleaks and advisory reports. Authenticated Render validation only runs when its secret is configured. Dependency reports are not proof of security; triage findings without silently changing runtime versions in a documentation task.
 
 Before delivery, check the authored diff for whitespace and secrets. Preserve licenses/notices and record unexecuted checks explicitly. [Delivery evidence](../reviews/repository-transformation/DELIVERY.md) belongs to this branch; historical reports are not fresh test results.
 

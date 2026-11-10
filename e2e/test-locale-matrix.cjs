@@ -20,10 +20,16 @@
 const { chromium } = require('playwright')
 const fs = require('node:fs')
 const BASE = (process.env.TEST_FRONTEND_URL || 'http://127.0.0.1:8080').replace(/\/$/, '')
-const OUT = 'output/playwright/locale-matrix'
+const OUT = process.env.LOCALE_MATRIX_OUT || 'output/playwright/locale-matrix'
 const LOCALES = (process.env.LOCALE_MATRIX_ONLY || 'fa,en,ar,ru,zh-CN').split(',')
 const VIEWPORTS = { desktop: { width: 1366, height: 860 }, mobile: { width: 390, height: 844 } }
 const VIEWPORT_NAMES = (process.env.LOCALE_MATRIX_VIEWPORTS || 'desktop,mobile').split(',')
+/* Sharding (CI): LOCALE_MATRIX_SHARD=i/n runs every n-th viewport×locale
+ * combination (1-based i) and the persistence checks only on shard 1, so the
+ * union of all shards equals the unsharded run. Shards are independent: each
+ * uses its own browser, context and output directory. */
+const [SHARD_INDEX, SHARD_COUNT] = (process.env.LOCALE_MATRIX_SHARD || '1/1').split('/').map(Number)
+if (!(SHARD_COUNT >= 1 && SHARD_INDEX >= 1 && SHARD_INDEX <= SHARD_COUNT)) throw Error('LOCALE_MATRIX_SHARD must look like i/n with 1 <= i <= n.')
 const RTL = new Set(['fa', 'ar'])
 const ROUTES = [
   'home', 'challenges', 'markets', 'rulebook', 'transparency', 'revenue-model', 'live-market-access', 'ambassador', 'coach', 'faq', 'tools', 'tools/position-size',
@@ -90,8 +96,11 @@ function leaks(locale, texts) {
   const allMisses = {}, allLeaks = {}
   const check = (name, cond, detail = '') => { results.push({ name, pass: !!cond, detail }); if (!cond) console.error('FAIL', name, String(detail).slice(0, 400)) }
 
+  let combination = -1
   for (const vp of VIEWPORT_NAMES) {
     for (const locale of LOCALES) {
+      combination++
+      if (combination % SHARD_COUNT !== SHARD_INDEX - 1) continue
       const context = await browser.newContext({ viewport: VIEWPORTS[vp], isMobile: vp === 'mobile', hasTouch: vp === 'mobile' })
       const page = await context.newPage()
       const errors = []
@@ -129,6 +138,7 @@ function leaks(locale, texts) {
   }
 
   /* persistence: selector → navigation → reload → Back → direct entry */
+  if (SHARD_INDEX === 1) {
   const context = await browser.newContext({ viewport: VIEWPORTS.desktop })
   const page = await context.newPage()
   await page.goto(`${BASE}/fa/markets`, { waitUntil: 'domcontentloaded' })
@@ -156,12 +166,13 @@ function leaks(locale, texts) {
   await page.goto(`${BASE}/ru/home`, { waitUntil: 'domcontentloaded' }); await page.waitForTimeout(2500)
   check('ru Home shows the two-product gateway', await page.locator('a[href="/ru/perpetual/trade"]').count() > 0)
   await context.close()
+  }
 
   await browser.close()
   const failed = results.filter(r => !r.pass)
   fs.writeFileSync(`${OUT}/misses.json`, JSON.stringify(Object.fromEntries(Object.entries(allMisses).map(([k, v]) => [k, [...v].sort()])), null, 1))
   fs.writeFileSync(`${OUT}/leaks.json`, JSON.stringify(Object.fromEntries(Object.entries(allLeaks).map(([k, v]) => [k, [...v].sort()])), null, 1))
   fs.writeFileSync(`${OUT}/results.json`, JSON.stringify({ base: BASE, total: results.length, failed: failed.length, results }, null, 1))
-  console.log(`locale matrix: ${results.length - failed.length}/${results.length} checks passed`)
+  console.log(`locale matrix${SHARD_COUNT > 1 ? ` shard ${SHARD_INDEX}/${SHARD_COUNT}` : ''}: ${results.length - failed.length}/${results.length} checks passed`)
   process.exit(failed.length ? 1 : 0)
 })()

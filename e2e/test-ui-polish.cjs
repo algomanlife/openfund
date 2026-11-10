@@ -5,6 +5,19 @@ const assert=require('node:assert/strict'), fs=require('node:fs'), path=require(
 const BASE=(process.env.TEST_FRONTEND_URL||'http://localhost:8080').replace(/\/$/,'');
 const OUT=path.resolve(process.env.POLISH_OUTPUT||'output/playwright/ui-polish');
 fs.mkdirSync(OUT,{recursive:true});
+/* Sharding (CI). POLISH_SHARD=i/n runs every n-th locale×theme×width
+ * combination of each connection state (1-based i). POLISH_PART selects
+ * "matrix" (only the combinations), "tail" (only the one-off checks that are not
+ * part of the matrix: wallet-failure modals, route resolution, language
+ * switching, delayed CMS replies and the auto-dark journey) or "all"
+ * (default: unsharded behaviour). Together the matrix shards plus one tail run
+ * execute exactly the checks of an unsharded run. */
+const [SHARD_INDEX,SHARD_COUNT]=(process.env.POLISH_SHARD||'1/1').split('/').map(Number);
+const PART=process.env.POLISH_PART||'all';
+assert.ok(SHARD_COUNT>=1&&SHARD_INDEX>=1&&SHARD_INDEX<=SHARD_COUNT,'POLISH_SHARD must look like i/n with 1 <= i <= n');
+assert.ok(['all','matrix','tail'].includes(PART),'POLISH_PART must be all, matrix or tail');
+const RUN_MATRIX=PART!=='tail',RUN_TAIL=PART!=='matrix';
+let combination=-1;
 const checks=[],screenshots=[],browserErrors=[],networkErrors=[];
 // CI has no Directus service. Reuse the actual published editorial seed only;
 // financial/account/market endpoints remain untouched by this fixture.
@@ -183,7 +196,9 @@ async function walletDisclosureFits(page){
   page.on('pageerror',e=>{errors.push(e.message);browserErrors.push({url:page.url(),error:e.stack||e.message});console.error('BROWSER EXCEPTION',page.url(),e.stack||e.message)});
   page.on('requestfailed',request=>networkErrors.push({page:page.url(),url:request.url(),error:request.failure()?.errorText}));
   page.on('response',response=>{if(response.status()>=400)networkErrors.push({page:page.url(),url:response.url(),status:response.status()})});
-  for(const locale of ['fa','en'])for(const theme of ['dark','light'])for(const width of [1440,900,390]){
+  if(RUN_MATRIX)for(const locale of ['fa','en'])for(const theme of ['dark','light'])for(const width of [1440,900,390]){
+   combination++;
+   if(combination%SHARD_COUNT!==SHARD_INDEX-1)continue;
    await page.setViewportSize({width,height:900});
    await page.goto(BASE+`/${locale}/home`);
    await page.evaluate(theme=>localStorage.setItem('of-theme-choice',theme),theme);
@@ -300,6 +315,10 @@ async function walletDisclosureFits(page){
     }
    }
   }
+  if(RUN_TAIL){
+  // A tail-only shard starts on a blank page: reproduce the state the matrix leaves
+  // behind (narrow viewport on the app origin) so these checks keep their coverage.
+  if(!RUN_MATRIX){await page.setViewportSize({width:390,height:900});await page.goto(BASE+'/en/home');}
   if(!connected) for(const locale of ['en','fa'])for(const theme of ['dark','light'])for(const surface of ['public','terminal']){
     await page.evaluate(theme=>localStorage.setItem('of-theme-choice',theme),theme);
     await page.goto(BASE+`/${locale}/${surface==='public'?'faq':'prop/dashboard'}`);await page.reload();await page.waitForTimeout(350);
@@ -330,11 +349,13 @@ async function walletDisclosureFits(page){
   // terminal first appears. Click only after that handoff has completed.
   await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.of-terminal-top').waitFor();
   await page.locator('.of-language-select select').first().selectOption('en');
-  await page.waitForURL('**/en/perpetual/journal?account=product-specific');check('Perpetual language switch preserves product and account context',true);  check('No browser exceptions',errors.length===0);
+  await page.waitForURL('**/en/perpetual/journal?account=product-specific');check('Perpetual language switch preserves product and account context',true);
+  }
+  check('No browser exceptions',errors.length===0);
   await context.close();
  }
  // Delayed CMS replies must never start a classic runtime on a removed page.
- for(const delay of [0,50,100,250]){
+ if(RUN_TAIL)for(const delay of [0,50,100,250]){
   const context=await browser.newContext(),page=await context.newPage(),errors=[];
   await context.route('**/items/**',async route=>{await new Promise(resolve=>setTimeout(resolve,delay));await route.abort('connectionrefused').catch(()=>{})});
   page.on('pageerror',e=>{errors.push(e.message);browserErrors.push({url:page.url(),error:e.stack||e.message});console.error('BROWSER EXCEPTION',e.stack||e.message)});
@@ -344,6 +365,6 @@ async function walletDisclosureFits(page){
   await context.close();
  }
  }finally{await browser.close();fs.writeFileSync(path.join(OUT,'results.json'),JSON.stringify({browserErrors,networkErrors,chartData:CHART_FIXTURE?'recorded Gains chart fixture; presentation only':'live public Gains',base:BASE,cms:CMS_FIXTURE?'repository published editorial seed fixture':'existing local Directus',checks,screenshots,capturedAt:new Date().toISOString(),status:'completed checks only; process exit determines acceptance'},null,2));}
- console.log(`PASS ${checks.length} UI polish checks`);
- await require('./test-auto-dark.cjs').runAutoDark({configureContext:chartRoutes});
+ console.log(`PASS ${checks.length} UI polish checks${SHARD_COUNT>1||PART!=='all'?` (shard ${SHARD_INDEX}/${SHARD_COUNT}, part ${PART})`:''}`);
+ if(RUN_TAIL)await require('./test-auto-dark.cjs').runAutoDark({configureContext:chartRoutes});
 })().catch(e=>{console.error(e);process.exitCode=1});

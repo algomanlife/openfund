@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- CI: the locale matrix and the UI polish matrix (≈ 17 and ≈ 15.5 minutes
+  sequentially in the release gates) now run as concurrent, never-retried
+  shards, cutting the `Release package gates` job; documentation-only pull
+  requests skip the heavy gates through a change classifier; pull request runs
+  are cancelled when superseded while `main` and release runs never are; the
+  Playwright browser cache is shared. See `docs/development/CI.md`.
 - Economy pages (Transparency, Revenue Model, Live Market Access) now show
   definitions, provenance lines, term names, expense categories and
   eligibility checks in Arabic, Russian and Simplified Chinese instead of
