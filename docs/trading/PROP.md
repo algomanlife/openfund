@@ -6,7 +6,7 @@ Openfund Prop Trading combines market discovery, a shared terminal and account r
 
 The catalog contains Standard, One-phase, Instant and Free Trial program configurations. Directus edits `challenge_plans`, the same table read by the backend. User challenge records have ownership and lifecycle fields. Catalog terms are not purchase contracts or proof that payment, challenge activation, evaluation enforcement or payouts work. Those workflows remain [planned](../product/FEATURE_STATUS.md).
 
-The Prop wallet sign-in policy uses Ethereum Sepolia (`11155111`). No chain transaction funds the practice account. Product/account context comes from the backend session; clients cannot select another user's account.
+The Prop wallet sign-in policy uses Arbitrum One (`42161`), like every other route ([ADR 0022](../decisions/0022-arbitrum-checkout-coupons-order-lifecycle.md); production still served the earlier Sepolia policy on 2026-11-10). No chain transaction funds the practice account. Product/account context comes from the backend session; clients cannot select another user's account.
 
 ## Execution lifecycle
 

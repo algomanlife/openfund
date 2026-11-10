@@ -1,5 +1,12 @@
 # Brand Ambassador and Verified Trading Coach
 
+Both programs are presented on one consolidated page, **Economy › Ambassador
+(IB)** (`/{locale}/ambassador`). The coach section is `#verified-coach`, and
+`/{locale}/coach` redirects there. The page covers applications, approval
+status, referral tracking, commission history, earnings and settlements,
+statistics and program rules for each role. Consolidation is presentation
+only: data, permissions, approvals and calculations stay separate.
+
 The two roles are independent. One wallet may hold both, but each needs its own application and approval. Approving one role grants nothing in the other.
 
 ## Application workflow

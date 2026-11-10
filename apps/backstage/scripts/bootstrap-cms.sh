@@ -5,7 +5,8 @@
 #   schema → editorial content → production catalog (challenge_plans,
 #   fa/en translations) → terminal sections → application-table
 #   registration (Data Studio views with financial fields read-only), then
-#   website expansion content and the Whitepaper v1.0 edition.
+#   website expansion content, coupon administration (Commerce Admin role)
+#   and the Whitepaper v1.0 edition.
 #
 # Never overwrites editorial edits (idempotent seeds; pass --refresh to
 # the content seeds to force-reset them). Safe to re-run after deploys.
@@ -32,25 +33,28 @@ node -e "require('../../web-react/node_modules/esbuild')" || {
 }
 
 echo "== Openfund CMS bootstrap: $URL =="
-echo "== 1/7 schema (collections, fields, translations, permissions) =="
+echo "== 1/8 schema (collections, fields, translations, permissions) =="
 python3 apply_schema.py --url "$URL" --email "$EMAIL" --password "$PASSWORD"
 
-echo "== 2/7 editorial content =="
+echo "== 2/8 editorial content =="
 python3 seed_content.py --url "$URL" $REFRESH
 
-echo "== 3/7 production catalog + bilingual translations =="
+echo "== 3/8 production catalog + bilingual translations =="
 node seed_production_content.mjs --url "$URL" --email "$EMAIL" --password "$PASSWORD"
 
-echo "== 4/7 website expansion content =="
+echo "== 4/8 website expansion content =="
 node seed_website_content.mjs --url "$URL" --email "$EMAIL" --password "$PASSWORD" $REFRESH
 
-echo "== 5/7 terminal sections =="
+echo "== 5/8 terminal sections =="
 python3 seed_terminal_content.py --url "$URL" $REFRESH
 
-echo "== 6/7 application tables in Data Studio (read-only financial views) =="
+echo "== 6/8 application tables in Data Studio (read-only financial views) =="
 python3 register_user_tables.py --url "$URL" --email "$EMAIL" --password "$PASSWORD"
 
-echo "== 7/7 Whitepaper v1.0 (document, chapters, datasets, references) =="
+echo "== 7/8 commerce: coupons, redemptions, coupon orders + Commerce Admin role (no public access) =="
+python3 register_commerce_tables.py --url "$URL" --email "$EMAIL" --password "$PASSWORD"
+
+echo "== 8/8 Whitepaper v1.0 (document, chapters, datasets, references) =="
 DIRECTUS_URL="$URL" DIRECTUS_ADMIN_EMAIL="$EMAIL" DIRECTUS_ADMIN_PASSWORD="$PASSWORD" node seed_whitepaper_content.mjs $REFRESH
 
 echo "== CMS bootstrap complete (idempotent; editorial edits preserved) =="

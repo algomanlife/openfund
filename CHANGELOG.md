@@ -2,6 +2,35 @@
 
 ## Unreleased
 
+- Production readiness (branch `codex/production-readiness`, ADR 0022):
+  - Wallet, SIWE and checkout are **Arbitrum One (42161) only**; other SIWE
+    chains are rejected (`invalid_chain`), wallets are asked to switch, and
+    `PURCHASE_PAYMENT_CHAIN` defaults to `42161` (any other chain disables
+    purchases). New optional `AUTH_RPC_URL`.
+  - DePay: the dynamic-configuration request is now verified (`x-signature`,
+    new `DEPAY_VERIFY_PUBLIC_KEY`, legacy `DEPAY_CALLBACK_PUBLIC_KEY` still
+    read); new signed `/purchases/depay/events`; callbacks compare chain,
+    receiver and token, record deliveries append-only (`depay_events`) and
+    return 500 on database failure so DePay retries; the configuration amount
+    is the net server price as a JSON number; the checkout renders the
+    official button with `blockchains='["arbitrum"]'`.
+  - Coupon engine (percent, fixed, 100%, plan/size/user/time/usage limits,
+    internal test coupons) with race-safe redemption, `/purchases/quote`,
+    `/admin/coupons` and an append-only audit; 100% coupons provision through
+    a dedicated zero-payment flow.
+  - Explicit, database-enforced order lifecycle (`lifecycle_state`,
+    `purchase_order_events`, immutable pricing, refund states). Additive
+    migration; existing `status` derived.
+  - Economy menu now holds Governance and a consolidated Ambassador (IB) page
+    (Brand Ambassador and Verified Coach remain independent); `/coach`
+    redirects to its section.
+  - `test:payments` and the new `test:commerce` suites run in `test:all` (CI).
+  - Documentation: README rebuilt around 38 required sections; DePay,
+    coupons, order lifecycle, business model, operating governance,
+    operations, licensing report, third-party notices, release/deployment
+    checklists, issue templates; `docs:required` gate (required documents,
+    README sections, every `render.yaml` variable documented).
+
 - Website launch content: removed hosting-provider and release notes, the
   unverified office-location document, sample/illustrative product notes,
   placeholder documents, unreleased app badges, the public Team section and the

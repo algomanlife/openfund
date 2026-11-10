@@ -34,7 +34,7 @@ export const explorerTxUrl = (chainId, hash) => explorerBase(chainId) && /^0x[0-
 
 export function treasuryConfig(env = process.env) {
   const address = String(env.TREASURY_WALLET_ADDRESS || '').trim()
-  const chainId = Number(env.TREASURY_CHAIN_ID || env.PURCHASE_PAYMENT_CHAIN || 11155111)
+  const chainId = Number(env.TREASURY_CHAIN_ID || env.PURCHASE_PAYMENT_CHAIN || 42161)
   const minutes = Math.min(120, Math.max(60, Number(env.TREASURY_REFRESH_MINUTES) || 90))
   let assets = [{ symbol: CHAINS.get(chainId)?.nativeCurrency?.symbol || 'ETH', address: 'native', decimals: 18 }]
   let assetError = null

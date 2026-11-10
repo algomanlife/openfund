@@ -128,7 +128,12 @@ services:
         sync: false             # challenge payment destination address — deliberately unset:
                                 # purchases stay disabled until an approved address is entered
       - key: PURCHASE_PAYMENT_CHAIN
-        value: "11155111"       # payment chain (Ethereum Sepolia by default)
+        value: "42161"          # legacy single settlement chain (used only while PURCHASE_PAYMENT_CHAINS is unset)
+      - key: PURCHASE_PAYMENT_CHAINS
+        sync: false             # JSON list of DePay settlement chains: [{blockchain, token, receiver, routers?,
+                                # tokenDecimals?, minConfirmations?}] — public values; unset = legacy single chain
+      - key: PURCHASE_RPC_URLS
+        sync: false             # secret: JSON map chain id / DePay blockchain name → dedicated RPC endpoint
       - key: PURCHASE_PAYMENT_TOKEN
         sync: false             # optional ERC-20 payment token contract
       - key: PURCHASE_PAYMENT_DECIMALS
@@ -143,8 +148,13 @@ services:
       - key: PURCHASE_PAYMENT_MIN_CONFIRMATIONS
         sync: false             # finality depth before a payment provisions
                                 # (unset = 12 in production, 0 elsewhere)
+      - key: DEPAY_VERIFY_PUBLIC_KEY
+        sync: false             # DePay "Verify" public key (PEM) from app.depay.com — verifies x-signature on
+                                # the configuration request, callbacks and events; unset = all DePay routes off
       - key: DEPAY_CALLBACK_PUBLIC_KEY
-        sync: false             # optional DePay callback public key (PEM); unset = callback route off
+        sync: false             # legacy name of DEPAY_VERIFY_PUBLIC_KEY (read only when that is unset)
+      - key: AUTH_RPC_URL
+        sync: false             # optional dedicated Arbitrum One RPC for SIWE contract-wallet (EIP-1271) checks
       - key: PURCHASE_LATE_GRACE_MINUTES
         value: "60"             # minutes after order expiry a verified payment still pays
       - key: ADMIN_API_TOKEN

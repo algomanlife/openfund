@@ -387,11 +387,13 @@ test('D2 a callback only registers a retryable HINT; it never confirms or provis
   assert.equal((await pool.query('SELECT status FROM purchase_orders WHERE id=$1', [o.id])).rows[0].status, 'paid')
 })
 
-test('D3 callback hints for unknown senders, other chains and bad payloads are ignored', async () => {
-  const f = await fixture(); await f.order()
-  assert.equal((await recordPaymentHint(pool, { transaction: hash(), sender: rnd(), blockchain: 'arbitrum' })).reason, 'unknown_sender')
-  assert.equal((await recordPaymentHint(pool, { transaction: hash(), sender: f.wallet, blockchain: 'polygon' })).reason, 'other_chain')
-  assert.equal((await recordPaymentHint(pool, { transaction: 'nope', sender: f.wallet, blockchain: 'arbitrum' })).reason, 'invalid_payload')
+test('D3 callback hints without an order id, on unconfigured chains or with bad payloads are ignored', async () => {
+  const f = await fixture(); const o = await f.order()
+  /* correlation is by the signed order id only — a known wallet is not enough */
+  assert.equal((await recordPaymentHint(pool, { transaction: hash(), sender: f.wallet, blockchain: 'arbitrum' })).reason, 'missing_order_id')
+  assert.equal((await recordPaymentHint(pool, { transaction: hash(), sender: f.wallet, blockchain: 'polygon', payload: { orderId: o.id } })).reason, 'unsupported_chain')
+  assert.equal((await recordPaymentHint(pool, { transaction: 'nope', sender: f.wallet, blockchain: 'arbitrum', payload: { orderId: o.id } })).reason, 'invalid_payload')
+  assert.equal((await recordPaymentHint(pool, { transaction: hash(), sender: f.wallet, blockchain: 'arbitrum', payload: { orderId: crypto.randomUUID() } })).reason, 'no_open_order')
 })
 
 /* ---------------------------------------------------------------- E --- */
@@ -400,7 +402,7 @@ import { buildDepayConfiguration, signDepayConfiguration } from '../purchases.js
 test('E1 dynamic configuration is built only from the server order and configuration', async () => {
   const f = await fixture(); const o = await f.order()
   const c = await buildDepayConfiguration(pool, o.id)
-  assert.deepEqual(c, { accept: [{ blockchain: 'arbitrum', amount: '100', token: TOKEN, receiver: RECEIVER }] })
+  assert.deepEqual(c, { accept: [{ blockchain: 'arbitrum', amount: 100, token: TOKEN, receiver: RECEIVER }] })
 })
 test('E2 dynamic configuration is refused for unknown, malformed, paid, cancelled and expired orders', async () => {
   const f = await fixture()

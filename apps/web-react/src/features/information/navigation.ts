@@ -5,9 +5,9 @@ import { pickRecord, type AppLocale } from '../../i18n/locales'
 type Locale = AppLocale
 
 const primary = ['challenges', 'markets', 'rulebook'] as const
-/** Economy dropdown (replaces the former single Transparency link). */
-const economy = ['transparency', 'revenue-model', 'live-market-access'] as const
-const resources = ['faq', 'learn', 'tools', 'referral', 'ambassador', 'coach', 'governance'] as const
+/** Economy dropdown: governance and the consolidated Ambassador (IB) page. */
+const economy = ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access'] as const
+const resources = ['faq', 'learn', 'tools', 'referral'] as const
 /** footer "Openfund documents" entries */
 const documentLabels = { whitepaper: text('Read the whitepaper', 'مطالعهٔ وایت‌پیپر') }
 /** Retired public destinations (the Team section was removed); a stale CMS
@@ -59,6 +59,8 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
   }
   const nav = root.querySelector('#navigation')
   if (nav) {
+    // The legacy landing translator must not translate React-localized links again.
+    (nav as HTMLElement).dataset.localeOwned = 'react'
     const economyLinks = economy.map(route => link(route))
     nav.replaceChildren(...primary.map(route => link(route)),
       dropdownGroup('website-economy', labels.economy, economyLinks, economyLinks.some(a => a.hasAttribute('aria-current'))),
@@ -66,6 +68,7 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
   }
   const footer = root.querySelector('#footer-links')
   if (footer) {
+    (footer as HTMLElement).dataset.localeOwned = 'react'
     const defaults = [...primary, ...economy, ...resources, 'glossary' as const].map(route => ({ destination: route, label: navigationLabels[route] }))
     const seen = new Set<string>()
     footer.replaceChildren()

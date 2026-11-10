@@ -84,7 +84,7 @@ needs a real, low-value mainnet payment.
    within DePay's two-second limit. Only payable orders are answered.
 4. The customer pays in the widget.
 5. DePay calls `POST /purchases/depay/callback`. The signature is verified
-   against `DEPAY_CALLBACK_PUBLIC_KEY`, the call is acknowledged with 200
+   against `DEPAY_VERIFY_PUBLIC_KEY` (formerly `DEPAY_CALLBACK_PUBLIC_KEY`), the call is acknowledged with 200
    immediately and the transaction hash is registered as an attempt for the
    sender's open order (the order id from the payload is used when present).
 6. The on-chain verifier decides (all rules above). If the chain is not
@@ -109,7 +109,7 @@ is stored in `payment_attempts` (`pending`, `rejected` or `confirmed`).
 | RPC unavailable | `rpc_unavailable`, retryable; never treated as a payment verdict |
 | Reorg detected | `tx_reorged`, retryable |
 | Customer closed the page after paying | The checkout stores the submitted hash and resumes after a refresh; the sweep verifies it without the browser |
-| Wallet paid but the hash was never submitted | An optional signed DePay server callback registers the reported hash as a retryable **hint**; the sweep proves it on-chain. Configure `DEPAY_CALLBACK_PUBLIC_KEY` |
+| Wallet paid but the hash was never submitted | An optional signed DePay server callback registers the reported hash as a retryable **hint**; the sweep proves it on-chain. Configure `DEPAY_VERIFY_PUBLIC_KEY`. Signed DePay events are handled the same way ([DePay](DEPAY.md)) |
 | Order expired before the payment was mined | Accepted if mined within `PURCHASE_LATE_GRACE_MINUTES` after expiry; otherwise rejected as `late` for manual reconciliation |
 | Application restart mid-verification | Provisioning is one database transaction; attempts are durable and the sweep resumes them |
 | Same hash submitted twice or concurrently | One payment, one invoice, one challenge; repeats return the same result |

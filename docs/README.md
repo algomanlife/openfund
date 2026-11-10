@@ -22,7 +22,7 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Governance and Economy
 
-[GOVERNANCE.md](../GOVERNANCE.md) · [ECONOMY.md](../ECONOMY.md) · [Governance documentation](governance/README.md) · [Roles and permissions](governance/ROLES_AND_PERMISSIONS.md) · [Whitepaper governance chapter](governance/WHITEPAPER_GOVERNANCE.md) · [ADR 0017](decisions/0017-hybrid-governance.md)
+[GOVERNANCE.md](../GOVERNANCE.md) · [ECONOMY.md](../ECONOMY.md) · [Operating governance: decisions, approvals and access](governance/OPERATING_GOVERNANCE.md) · [Governance documentation](governance/README.md) · [Roles and permissions](governance/ROLES_AND_PERMISSIONS.md) · [Whitepaper governance chapter](governance/WHITEPAPER_GOVERNANCE.md) · [ADR 0017](decisions/0017-hybrid-governance.md)
 
 ## Wallet and Identity
 
@@ -30,11 +30,11 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Economy and partner programs
 
-[Economy overview](economy/README.md) · [Treasury and data sources](economy/TREASURY.md) · [Ambassador and Coach](economy/PARTNER_PROGRAMS.md) · [Live Market Access](economy/LIVE_MARKET_ACCESS.md)
+[Economy overview](economy/README.md) · [Business model and operations overview](economy/BUSINESS_MODEL.md) · [Treasury and data sources](economy/TREASURY.md) · [Ambassador (IB): Ambassador and Coach](economy/PARTNER_PROGRAMS.md) · [Live Market Access](economy/LIVE_MARKET_ACCESS.md)
 
 ## Payments
 
-[Payment verification and recovery](payments/VERIFICATION.md) · [Payment activation checklist](payments/ACTIVATION.md)
+[Payment verification and recovery](payments/VERIFICATION.md) · [Payment activation checklist](payments/ACTIVATION.md) · [DePay (Arbitrum) and dashboard report](payments/DEPAY.md) · [Coupons and zero-payment purchases](payments/COUPONS.md) · [Order lifecycle](payments/ORDER_LIFECYCLE.md)
 
 ## Integrations
 
@@ -42,7 +42,7 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Deployment
 
-[Unified releases](deployment/RELEASES.md) · [Render runbook](deployment/RENDER.md) · [Environment](deployment/ENVIRONMENT.md) · [Database](deployment/DATABASE.md) · [Rollback and recovery](deployment/ROLLBACK.md) · [Directus migration runbook](deployment/DIRECTUS_MIGRATION_RUNBOOK.md) · [Blueprint](../render.yaml)
+[Unified releases](deployment/RELEASES.md) · [Release and deployment checklists](deployment/CHECKLISTS.md) · [Operations and monitoring](operations/README.md) · [Render runbook](deployment/RENDER.md) · [Environment](deployment/ENVIRONMENT.md) · [Database](deployment/DATABASE.md) · [Rollback and recovery](deployment/ROLLBACK.md) · [Directus migration runbook](deployment/DIRECTUS_MIGRATION_RUNBOOK.md) · [Blueprint](../render.yaml)
 
 ## Development
 
@@ -51,6 +51,10 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 ## Security
 
 [Reporting policy](../SECURITY.md) · [Architecture and release gates](security/SECURITY.md)
+
+## Legal
+
+[Licensing audit and compatibility report](legal/LICENSING.md) · [Third-party notices](../THIRD_PARTY_NOTICES.md)
 
 ## Roadmap
 

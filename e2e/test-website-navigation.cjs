@@ -197,7 +197,8 @@ async function auditRoutes(page) {
     else await page.locator('.resources-toggle[aria-controls="website-resources"]').waitFor({state:'attached'});
     await page.waitForTimeout(route==='challenges'?1800:300);
     const path = new URL(page.url()).pathname;
-    if(path!=='/'+locale+'/'+route) throw new Error('Unexpected redirect '+route+' '+path);
+    const expectedPath = '/'+locale+'/'+(route==='coach'?'ambassador':route);
+    if(path!==expectedPath) throw new Error('Unexpected redirect '+route+' '+path);
     const links = await page.locator('a[href]').evaluateAll(links=>links.map(a=>a.getAttribute('href')));
     for(const href of links) {
       if(href==='#') { if(await page.locator('header a[href="#"],footer a[href="#"]').count()) throw new Error('Chrome placeholder on '+route); continue; }

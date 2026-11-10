@@ -69,7 +69,7 @@ async function main() {
     PURCHASE_RPC_URL: rpcUrl, PURCHASE_ROUTER_ADDRESSES: ROUTER, PURCHASE_PAYMENT_MIN_CONFIRMATIONS: '2',
     VITE_DEPAY_WIDGET: '1', VITE_DEPAY_WIDGET_URL: WIDGET_URL, VITE_DEPAY_WIDGET_INTEGRITY: sri, VITE_DEPAY_INTEGRATION_ID: INTEGRATION,
     CSP_EXTRA_SCRIPT_SRC: 'https://integrate.depay.com',
-    DEPAY_CALLBACK_PUBLIC_KEY: oneLine(pemOf(depay.publicKey, 'spki')), DEPAY_CONFIG_PRIVATE_KEY: oneLine(pemOf(ours.privateKey, 'pkcs8')),
+    DEPAY_VERIFY_PUBLIC_KEY: oneLine(pemOf(depay.publicKey, 'spki')), DEPAY_CONFIG_PRIVATE_KEY: oneLine(pemOf(ours.privateKey, 'pkcs8')),
     PAYMENT_RECOVERY_INTERVAL_MS: '1000', PAYMENT_RECOVERY_MIN_AGE_S: '1',
   }
   for (const k of Object.keys(env)) if (k.startsWith('VITE_') && !['VITE_DEPAY_WIDGET', 'VITE_DEPAY_WIDGET_URL', 'VITE_DEPAY_WIDGET_INTEGRITY', 'VITE_DEPAY_INTEGRATION_ID'].includes(k)) delete env[k]
@@ -88,9 +88,12 @@ async function main() {
 }
 
 /* DePay's side of the protocol, played by this script */
-const dePayAskConfiguration = async (BASE, orderId) => {
+const dePayAskConfiguration = async (BASE, orderId, { unsigned = false } = {}) => {
   const t0 = Date.now()
-  const r = await fetch(BASE + '/purchases/depay/configuration', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ orderId }) })
+  /* DePay signs every request it sends (x-signature over the raw body) */
+  const raw = JSON.stringify({ orderId })
+  const headers = { 'Content-Type': 'application/json', Accept: 'application/json', ...(unsigned ? {} : { 'x-signature': sign(raw, depay.privateKey) }) }
+  const r = await fetch(BASE + '/purchases/depay/configuration', { method: 'POST', headers, body: raw })
   const text = await r.text()
   return { status: r.status, text, ms: Date.now() - t0, signature: r.headers.get('x-signature') }
 }
@@ -100,7 +103,10 @@ const dePayDeliverCallback = async (BASE, body, { badSignature = false } = {}) =
   const r = await fetch(BASE + '/purchases/depay/callback', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-signature': sig }, body: raw })
   return { status: r.status, data: await r.json().catch(() => null) }
 }
-const callbackBody = (hash, sender) => ({ blockchain: 'arbitrum', transaction: hash, sender, receiver: RECEIVER, token: TOKEN, amount: '80', payload: null, after_block: 1, commitment: 'confirmed', confirmations: 1, created_at: new Date().toISOString(), confirmed_at: new Date().toISOString() })
+/* DePay forwards the button payload ({ orderId }); the server correlates the
+   payment to the order by that id only, never by the paying wallet */
+let currentOrderId = null
+const callbackBody = (hash, sender) => ({ blockchain: 'arbitrum', transaction: hash, sender, receiver: RECEIVER, token: TOKEN, amount: '80', payload: { orderId: currentOrderId }, after_block: 1, commitment: 'confirmed', confirmations: 1, created_at: new Date().toISOString(), confirmed_at: new Date().toISOString() })
 
 async function run({ BASE, chain }) {
   const API = BASE
@@ -156,7 +162,9 @@ async function run({ BASE, chain }) {
     check('the DePay widget opens through the SRI-pinned official bundle', !!opts)
     await page.locator('#mock-depay-widget').waitFor({ timeout: 5000 })
     check('widget is called with the integration id and ONLY the order id as payload', opts.integration === INTEGRATION && Object.keys(opts.payload).join() === 'orderId' && !('accept' in opts))
+    check('widget offers exactly the server-configured settlement chains', JSON.stringify(opts.blockchains) === '["arbitrum"]', JSON.stringify(opts.blockchains))
     const order = await pendingOrder()
+    currentOrderId = order?.id ?? null
     check('the order exists server-side with the catalog price', !!order && order.id === opts.payload.orderId && Number(order.price_usd) === 80, JSON.stringify(order))
     await shot('1-widget-opened')
 
@@ -165,7 +173,8 @@ async function run({ BASE, chain }) {
     check('dynamic configuration answers well inside the 2 s limit', conf.status === 200 && conf.ms < 2000, `${conf.status} ${conf.ms}ms`)
     check('dynamic configuration is signed with our key (RSA-PSS, SHA-256, base64url)', !!conf.signature && verifySig(conf.text, conf.signature, ours.publicKey))
     const accept = JSON.parse(conf.text).accept?.[0]
-    check('configuration comes from the server order: chain, token, receiver and exact amount', accept && accept.blockchain === 'arbitrum' && accept.token === TOKEN && accept.receiver === RECEIVER && accept.amount === '80', conf.text)
+    check('configuration comes from the server order: chain, token, receiver and exact amount', accept && accept.blockchain === 'arbitrum' && accept.token === TOKEN && accept.receiver === RECEIVER && accept.amount === 80, conf.text)
+    check('an unsigned configuration request (not from DePay) is rejected', (await dePayAskConfiguration(BASE, order.id, { unsigned: true })).status === 401)
     check('configuration is refused for an unknown order', (await dePayAskConfiguration(BASE, crypto.randomUUID())).status === 404)
     check('configuration is refused for a malformed order id', (await dePayAskConfiguration(BASE, 'nope')).status === 400)
 

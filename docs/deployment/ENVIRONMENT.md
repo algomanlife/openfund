@@ -17,8 +17,9 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `VITE_DIRECTUS_HOST` | openfund | R | PUB | `fromService: openfund-cms / envVarKey: RENDER_EXTERNAL_HOSTNAME`; runtime fallback when `CMS_PUBLIC_URL` is unset |
 | `KEY`, `SECRET` | openfund-cms | R | SEC | `generateValue: true` (created once at first apply) |
 | `WEBSOCKETS_ENABLED`, `CORS_ENABLED`, `CORS_ORIGIN`, `CORS_METHODS`, `MAX_PAYLOAD_SIZE` | openfund-cms | R | PUB | Directus hardening (public read-only API) |
+| `IP_TRUST_PROXY` | openfund-cms | R | PUB | `true`: Render terminates TLS in front of Directus; explicit so Directus 12 (default `false`) keeps client-IP resolution identical to 11.x |
 | `SESSION_TTL_HOURS` | openfund | R | PUB | default `168` (7 days) |
-| `PURCHASE_PAYMENT_CHAIN` | openfund | R | PUB | default `11155111` (Ethereum Sepolia) — chain accepted for challenge payments |
+| `PURCHASE_PAYMENT_CHAIN` | openfund | R | PUB | `42161`. Legacy single settlement chain, used only while `PURCHASE_PAYMENT_CHAINS` is unset. Payments are **not** tied to the Arbitrum sign-in chain. The live service still carried `11155111` at the 2026-11-10 audit. |
 | `PURCHASE_PAYMENT_DECIMALS` | openfund | R | PUB | default `18` — token decimals used in server-side amount checks |
 | `PURCHASE_LATE_GRACE_MINUTES` | openfund | R | PUB | default `60` — a payment verified within this many minutes after order expiry still pays the order; outside the window → explicit `order_expired` for manual reconciliation |
 
@@ -35,12 +36,15 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `VITE_INSTAGRAM_COMMUNITY_URL` | openfund (runtime, public) | optional owner-verified HTTPS Instagram profile; blank/invalid means Coming Soon. URL validation does not establish ownership. |
 | `CORS_ORIGINS` | openfund | optional; only needed for extra origins / custom domains |
 | `PURCHASE_PAYMENT_RECEIVER` | openfund | **deliberately unset by default — purchasing stays disabled (`purchases_disabled`) until an approved payment address is entered.** No hardcoded production destination exists in the repository. |
-| `PURCHASE_PAYMENT_CHAIN` | openfund | payment chain id: `1`, `42161`, `8453` or `11155111`. DePay serves mainnets only. |
+| `PURCHASE_PAYMENT_CHAINS` | openfund | Public JSON list of DePay settlement chains, e.g. `[{"blockchain":"arbitrum","token":"0x…","receiver":"0x…","routers":["0x…"]}]`. `blockchain` uses DePay identifiers (`ethereum`, `bsc`, `polygon`, `avalanche`, `gnosis`, `arbitrum`, `optimism`, `base`, `worldchain`, `solana`); `token` is the settlement token (Solana: SPL mint); `receiver` the merchant address (Solana: owner key); optional `tokenDecimals`, `minConfirmations`. Each complete entry is offered by the DePay button and the dynamic configuration and verified on its own chain. Unset = the legacy `PURCHASE_PAYMENT_*` single chain. See [DePay](../payments/DEPAY.md). |
+| `PURCHASE_RPC_URLS` | openfund | **secret.** JSON map from chain id or DePay blockchain name to a dedicated RPC endpoint, e.g. `{"42161":"https://…","solana":"https://…"}`. Required in production for every configured chain. |
+| `AUTH_RPC_URL` | openfund | optional dedicated Arbitrum One RPC used by SIWE for contract-wallet (EIP-1271 / ERC-6492) signature checks. Unset = viem's public Arbitrum endpoint. Wallet authentication accepts chain `42161` only. |
 | `PURCHASE_PAYMENT_TOKEN` | openfund | approved ERC-20 USD stablecoin contract (priced 1:1 to USD). **Required in production**; unset permits native test-chain payments outside production only. |
 | `PURCHASE_PAYMENT_DECIMALS` | openfund | optional; must equal the token's on-chain `decimals()` (mismatch fails closed). Unset = read from the contract. |
 | `PURCHASE_RPC_URL` | openfund | **secret.** Dedicated RPC endpoint for the payment chain; required in production, no public fallback. Its chain id is checked. |
 | `PURCHASE_ROUTER_ADDRESSES` | openfund | optional comma-separated approved payment routers (for example the DePay Payment Router on the configured chain). Empty = direct token transfers only. See [Verification](../payments/VERIFICATION.md). |
-| `DEPAY_CALLBACK_PUBLIC_KEY` | openfund | optional PEM public key that verifies DePay server callbacks (`x-signature`). Callbacks only register a retryable hint; the on-chain verifier decides. Unset = route returns 404. |
+| `DEPAY_VERIFY_PUBLIC_KEY` | openfund | PEM public key from the integration's **Verify** section on app.depay.com. Verifies the `x-signature` (RSA-PSS / SHA-256) of the dynamic-configuration request, callbacks and events over the raw body. Callbacks and events only register retryable hints; the on-chain verifier decides. Unset = all three DePay routes return 404. See [DePay](../payments/DEPAY.md). |
+| `DEPAY_CALLBACK_PUBLIC_KEY` | openfund | legacy name of `DEPAY_VERIFY_PUBLIC_KEY`, read only when the new name is unset. Prefer the new name. |
 | `PURCHASE_PAYMENT_MIN_CONFIRMATIONS` | openfund | finality depth: the verifier waits for this many confirmations before provisioning (retryable `tx_not_final`). Unset = `12` in production, `0` elsewhere. |
 | `ADMIN_API_TOKEN` | openfund | **secret service token for the `/admin/*` operational API (user directory, challenge directory, withdrawal review). Unset = the whole admin API stays disabled (404).** Bearer-auth, constant-time compare. Never expose to the browser. |
 | `CSP_EXTRA_CONNECT` | openfund | optional comma-separated extra origins for the CSP `connect-src` (production CMS is HTTPS so normally unneeded; used for non-HTTPS local CMS deployments) |
@@ -49,7 +53,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `VITE_DEPAY_WIDGET_URL` | openfund (runtime, public) | approved DePay widget bundle URL (https) |
 | `VITE_DEPAY_WIDGET_INTEGRITY` | openfund (runtime, public) | Subresource Integrity hash (`sha384-…`) of that exact bundle. The widget stays hidden unless the toggle, an https URL and this hash are all set. |
 | `VITE_DEPAY_INTEGRATION_ID` | openfund (runtime, public) | public DePay integration id created at app.depay.com. Required together with the three widget variables above. |
-| `DEPAY_CONFIG_PRIVATE_KEY` | openfund | **secret.** RSA private key (PEM, newlines as `\n`) that signs the dynamic configuration (`accept`) our server returns when DePay asks for it. Generate with `openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048`; store only the public half on app.depay.com. Unset = the configuration endpoint returns 404. |
+| `DEPAY_CONFIG_PRIVATE_KEY` | openfund | **secret.** RSA private key (PEM, newlines as `\n`) that signs the dynamic configuration (`accept`) our server returns when DePay asks for it. Generate with `openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048`; store only the public half on app.depay.com (Dynamic Configuration public key field). Unset = the configuration endpoint returns 404. The endpoint also requires `DEPAY_VERIFY_PUBLIC_KEY`. |
 | `PAYMENT_RECOVERY_INTERVAL_MS`, `PAYMENT_RECOVERY_MIN_AGE_S` | openfund | optional tuning of the payment recovery sweep (defaults 60000 ms / 45 s). Lower values exist only to shorten acceptance tests. |
 | `CSP_EXTRA_SCRIPT_SRC` | openfund | optional comma-separated https origins (no paths, no wildcards) added to `script-src`, for the approved DePay widget origin |
 | `CSP_EXTRA_FRAME_SRC` | openfund | optional comma-separated https origins added to `frame-src` for the approved DePay widget |

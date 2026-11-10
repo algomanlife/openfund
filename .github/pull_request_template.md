@@ -50,7 +50,7 @@
 ## Evidence checklist
 
 - [ ] Required checks executed; outcomes, warnings and external limits recorded
-- [ ] Product documentation and Feature Status aligned with implementation
+- [ ] Product documentation and Feature Status aligned with implementation (README sections, ENVIRONMENT.md, CHANGELOG; `npm run docs:check` green)
 - [ ] Roadmap milestones/dependencies/acceptance criteria updated
 - [ ] Genuine screenshots/provenance refreshed after significant UI changes
 - [ ] English documentation; Persian application/RTL fixtures preserved

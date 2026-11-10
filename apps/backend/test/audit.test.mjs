@@ -135,7 +135,7 @@ test('SIWE validates URI, expiry, both product chains and atomic nonce consumpti
   const post=async(path,body)=>{const r=await fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return {status:r.status,data:await r.json()}}
   async function message(patch={}) {
     const n=await post('/auth/nonce',{address:wallet.address})
-    const message=createSiweMessage({domain:'localhost:5173',uri:'http://localhost:5173/',address:wallet.address,chainId:11155111,nonce:n.data.nonce,version:'1',...patch})
+    const message=createSiweMessage({domain:'localhost:5173',uri:'http://localhost:5173/',address:wallet.address,chainId:42161,nonce:n.data.nonce,version:'1',...patch})
     return {message,signature:await wallet.signMessage({message})}
   }
   const payload=await message()

@@ -2885,7 +2885,7 @@
   "profit factor = gross profit / gross loss": "профит-фактор = валовая прибыль / валовой убыток",
   "profit_factor = gross_profit / gross_loss": "profit_factor = gross_profit / gross_loss",
   "proven performance.": "подтверждённые результаты.",
-  "purchase_orders (status=paid, set only by verified on-chain payment), payment_adjustments": "purchase_orders (статус paid устанавливается только после подтверждённого платежа в блокчейне), payment_adjustments",
+  "purchase_orders (status=paid with a verified on-chain payment; 100% coupon orders excluded), payment_adjustments": "purchase_orders (статус paid после подтверждённого платежа в блокчейне; заказы с купоном на 100% исключены), payment_adjustments",
   "questions": "вопросов",
   "real capital, real controls.": "реальный капитал, реальный контроль.",
   "recipients": "получатели",
@@ -2956,5 +2956,17 @@
   "“Build an opportunity where traders understand the path and its criteria from the start.”": "«Создайте возможность, в которой трейдеры с самого начала понимают путь и его критерии».",
   "“Good technology works quietly: precise, inspectable and ready to grow.”": "«Хорошая технология работает незаметно: точно, проверяемо и с готовностью к росту».",
   "“Market complexity belongs in the analysis. The experience should remain clear and simple.”": "«Сложности рынка место в анализе. Опыт должен оставаться ясным и простым».",
-  "“Sustainable progress begins when risk is part of the plan.”": "«Устойчивый прогресс начинается, когда риск — часть плана»."
+  "“Sustainable progress begins when risk is part of the plan.”": "«Устойчивый прогресс начинается, когда риск — часть плана».",
+  "Activate challenge": "Активировать челлендж",
+  "Ambassador (IB)": "Амбассадор (IB)",
+  "Amount due": "Сумма к оплате",
+  "Approving one role never grants the other. Trader and firm profit-sharing tiers beyond the coach share are pending business decisions and are not offered here.": "Одобрение одной роли никогда не даёт другую. Уровни распределения прибыли между трейдером и компанией сверх доли коуча — это ожидающие бизнес-решения, и здесь они не предлагаются.",
+  "Coupon code": "Код купона",
+  "Discount": "Скидка",
+  "Of distributable realized net profit from eligible live trades, after costs": "От распределяемой реализованной чистой прибыли по допустимым реальным сделкам, после вычета затрат",
+  "Of the referred customer’s first eligible confirmed purchase only": "Только с первой подтверждённой допустимой покупки приглашённого клиента",
+  "One place for Openfund’s two partner roles: Brand Ambassadors who introduce customers, and Verified Trading Coaches who mentor traders toward live market access. Each role is applied for, reviewed and paid independently.": "Единое место для двух партнёрских ролей Openfund: амбассадоров бренда, которые приводят клиентов, и верифицированных торговых коучей, которые ведут трейдеров к доступу к реальному рынку. Заявка, проверка и выплаты по каждой роли независимы.",
+  "Separate applications, approvals and rules.": "Отдельные заявки, одобрения и правила.",
+  "TWO INDEPENDENT ROLES": "ДВЕ НЕЗАВИСИМЫЕ РОЛИ",
+  "With this coupon the challenge is activated without payment.": "С этим купоном челлендж активируется без оплаты."
 }

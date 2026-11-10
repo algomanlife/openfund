@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import InformationShell, { Hero, useInformationLocale } from '../information/InformationShell'
+import { Navigate, useParams } from 'react-router-dom'
 import { labels, text as t, type Locale } from '../information/content'
 import { apiFetch, useOpenfundSession } from '../../session/useOpenfundSession'
 import { Field, Kpi, StateBlock, Status, errorCopy, int, usd, when, useRemote } from '../economy/ui'
@@ -79,17 +78,17 @@ function TraderLink({ locale }: { locale: Locale }) {
   </div>
 }
 
-export default function Coach() {
-  const locale = useInformationLocale()
+/** Verified Trading Coach program — its own application, approval,
+ *  trader links and profit-share ledger (server: partners.js, live-funding.js).
+ *  Rendered inside the consolidated Ambassador (IB) page. */
+export function CoachProgram({ locale }: { locale: Locale }) {
   const [me, reload] = usePartners()
   const data = me?.status === 'ready' ? me.data : null
   const app = data?.applications.coach || null
-  return <InformationShell page="coach" description={intro[locale]}>
-    <Hero locale={locale} page="coach" title="Openfund" accent={labels.coach[locale]} intro={intro[locale]}>
-      <div className="hero-actions"><a className="button" href="#apply">{t('Apply as a coach', 'درخواست کوچ شدن')[locale]} <span aria-hidden="true">↓</span></a><a className="text-link" href="#trader">{t('I am a trader', 'معامله‌گر هستم')[locale]} ↓</a></div>
-    </Hero>
-    <div className="container">
-      <section className="econ-section" id="role"><div className="section-top"><div><span className="eyebrow">01 / {t('THE ROLE', 'نقش')[locale]}</span><h2>{t('Independent from ambassadors.', 'مستقل از سفیران.')[locale]}</h2></div></div>
+  return <>
+      <p className="econ-msg">{intro[locale]}</p>
+
+      <section className="econ-section" id="coach-role"><div className="section-top"><div><span className="eyebrow">01 / {t('THE ROLE', 'نقش')[locale]}</span><h2>{t('Independent from ambassadors.', 'مستقل از سفیران.')[locale]}</h2></div></div>
         <div className="econ-grid three">
           <Kpi label={t('Audience requirement', 'شرط مخاطب')[locale]} value={t('None', 'ندارد')[locale]} note={t('Coaching is judged on verifiable trading and risk experience.', 'کوچینگ بر اساس سابقهٔ قابل‌تأیید معامله و مدیریت ریسک سنجیده می‌شود.')[locale]} />
           <Kpi label={t('Coach share', 'سهم کوچ')[locale]} value="10%" note={t('Of distributable realized net profit of eligible live trades only', 'فقط از سود خالص تحقق‌یافتهٔ قابل‌توزیع معاملات واقعی واجد شرایط')[locale]} />
@@ -97,7 +96,7 @@ export default function Coach() {
         </div>
         <p className="econ-source">{t('Distributable profit = verified realized PnL − trading fees − execution costs. No share is paid on simulated accounts or unrealized PnL. Coaches see only the traders linked to them.', 'سود قابل‌توزیع = سود تحقق‌یافتهٔ تأییدشده − کارمزد معامله − هزینهٔ اجرا. از حساب شبیه‌سازی‌شده یا سود تحقق‌نیافته سهمی پرداخت نمی‌شود. کوچ فقط معامله‌گران مرتبط با خودش را می‌بیند.')[locale]}</p>
       </section>
-      <section className="econ-section" id="apply"><div className="section-top"><div><span className="eyebrow">02 / {t('COACH APPLICATION', 'درخواست کوچ')[locale]}</span><h2>{data?.coach ? t('Your coach dashboard.', 'داشبورد کوچ تو.')[locale] : t('Show your track record.', 'سابقه‌ات را نشان بده.')[locale]}</h2></div></div>
+      <section className="econ-section" id="coach-apply"><div className="section-top"><div><span className="eyebrow">02 / {t('COACH APPLICATION', 'درخواست کوچ')[locale]}</span><h2>{data?.coach ? t('Your coach dashboard.', 'داشبورد کوچ تو.')[locale] : t('Show your track record.', 'سابقه‌ات را نشان بده.')[locale]}</h2></div></div>
         {me && me.status !== 'ready' && <StateBlock state={me} locale={locale} />}
         {data?.coach ? <CoachDashboard locale={locale} /> : <>
           <ApplicationStatus app={app} locale={locale} />
@@ -118,11 +117,16 @@ export default function Coach() {
           </ApplicationForm>}
         </>}
       </section>
-      <section className="econ-section" id="trader"><div className="section-top"><div><span className="eyebrow">03 / {t('FOR TRADERS', 'برای معامله‌گران')[locale]}</span><h2>{t('Link your coach.', 'به کوچت متصل شو.')[locale]}</h2></div></div>
+      <section className="econ-section" id="coach-trader"><div className="section-top"><div><span className="eyebrow">03 / {t('FOR TRADERS', 'برای معامله‌گران')[locale]}</span><h2>{t('Link your coach.', 'به کوچت متصل شو.')[locale]}</h2></div></div>
         <p className="econ-msg">{t('A verified coach relationship is one of the conditions for Live Market Access. Your coach sees your eligibility progress, never your private journal.', 'ارتباط با کوچ تأییدشده یکی از شرایط اتصال به بازار است. کوچ پیشرفت احراز شرایط تو را می‌بیند، نه ژورنال خصوصی‌ات را.')[locale]}</p>
         <TraderLink locale={locale} />
       </section>
-      <div className="info-end"><img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="38" height="42" alt="" /><p>{t('Live capital follows verified skill.', 'سرمایهٔ واقعی به‌دنبال مهارت تأییدشده است.')[locale]}</p><Link className="button" to={`/${locale}/live-market-access`}>{labels['live-market-access'][locale]} <span aria-hidden="true">↗</span></Link></div>
-    </div>
-  </InformationShell>
+  </>
+}
+
+/** `/:locale/coach` keeps working: it opens the coach section of the
+ *  consolidated Ambassador (IB) page. */
+export default function Coach() {
+  const { locale } = useParams()
+  return <Navigate to={`/${locale}/ambassador#verified-coach`} replace />
 }

@@ -3,8 +3,11 @@ import InformationShell, { Hero, useInformationLocale } from '../information/Inf
 import { labels, text as t, type Locale } from '../information/content'
 import { Bars, Field, Kpi, StateBlock, Status, int, usd, when, useRemote } from '../economy/ui'
 import { ApplicationForm, ApplicationStatus, usePartners } from './shared'
+import { CoachProgram } from './Coach'
+import EconomyNav from '../economy/EconomyNav'
 
-const intro = t('A reviewed partnership for creators who teach financial markets to a real audience. Approved ambassadors earn 10% of each referred customer’s first confirmed purchase.', 'همکاری‌ای بررسی‌شده برای تولیدکنندگان محتوای بازارهای مالی با مخاطب واقعی. سفیران تأییدشده ۱۰٪ اولین خرید تأییدشدهٔ هر مشتری معرفی‌شده را دریافت می‌کنند.')
+const ibIntro = t('One place for Openfund’s two partner roles: Brand Ambassadors who introduce customers, and Verified Trading Coaches who mentor traders toward live market access. Each role is applied for, reviewed and paid independently.', 'یک صفحه برای دو نقش همکاری اوپن‌فاند: سفیران برند که مشتری معرفی می‌کنند و کوچ‌های معاملاتی تأییدشده که معامله‌گران را تا اتصال به بازار واقعی همراهی می‌کنند. درخواست، بررسی و پرداخت هر نقش مستقل است.')
+const ambassadorIntro = t('A reviewed partnership for creators who teach financial markets to a real audience. Approved ambassadors earn 10% of each referred customer’s first confirmed purchase.', 'همکاری‌ای بررسی‌شده برای تولیدکنندگان محتوای بازارهای مالی با مخاطب واقعی. سفیران تأییدشده ۱۰٪ اولین خرید تأییدشدهٔ هر مشتری معرفی‌شده را دریافت می‌کنند.')
 
 interface Dashboard {
   status: string; code: string; linkPath: string; commissionRate: string
@@ -45,18 +48,18 @@ function AmbassadorDashboard({ locale }: { locale: Locale }) {
   </>
 }
 
-export default function Ambassador() {
-  const locale = useInformationLocale()
+/** Brand Ambassador program — its own application, approval, attribution
+ *  and commission (server: partners.js). Rendered inside the consolidated
+ *  Ambassador (IB) page; it never shares state or rules with the coach role. */
+export function AmbassadorProgram({ locale }: { locale: Locale }) {
   const [me, reload] = usePartners()
   const data = me?.status === 'ready' ? me.data : null
   const app = data?.applications.ambassador || null
   const canApply = !app || app.status === 'rejected'
-  return <InformationShell page="ambassador" description={intro[locale]}>
-    <Hero locale={locale} page="ambassador" title="Openfund" accent={labels.ambassador[locale]} intro={intro[locale]}>
-      <div className="hero-actions"><a className="button" href="#apply">{t('Apply', 'ارسال درخواست')[locale]} <span aria-hidden="true">↓</span></a><a className="text-link" href="#policy">{t('Commission policy', 'سیاست کمیسیون')[locale]} ↓</a></div>
-    </Hero>
-    <div className="container">
-      <section className="econ-section" id="eligibility"><div className="section-top"><div><span className="eyebrow">01 / {t('ELIGIBILITY', 'شرایط')[locale]}</span><h2>{t('Real audience, reviewed by people.', 'مخاطب واقعی، بررسی‌شده توسط انسان.')[locale]}</h2></div><Status kind="info">{t('Applying is not approval', 'ثبت درخواست به معنای پذیرش نیست')[locale]}</Status></div>
+  return <>
+      <p className="econ-msg">{ambassadorIntro[locale]}</p>
+
+      <section className="econ-section" id="ambassador-eligibility"><div className="section-top"><div><span className="eyebrow">01 / {t('ELIGIBILITY', 'شرایط')[locale]}</span><h2>{t('Real audience, reviewed by people.', 'مخاطب واقعی، بررسی‌شده توسط انسان.')[locale]}</h2></div><Status kind="info">{t('Applying is not approval', 'ثبت درخواست به معنای پذیرش نیست')[locale]}</Status></div>
         <ul className="econ-check-list econ-panel">{[
           t('At least 50,000 followers on Instagram OR YouTube (one platform is enough)', 'حداقل ۵۰٬۰۰۰ دنبال‌کننده در اینستاگرام یا یوتیوب (یک پلتفرم کافی است)'),
           t('Genuine activity on a second platform', 'فعالیت واقعی در پلتفرم دوم'),
@@ -66,7 +69,7 @@ export default function Ambassador() {
         ].map((x, i) => <li key={i}>{x[locale]}</li>)}</ul>
         <p className="econ-source">{t('Follower counts you enter are recorded as claims. Only counts confirmed by an Openfund reviewer with evidence are treated as verified.', 'تعداد دنبال‌کنندگانی که وارد می‌کنی به‌عنوان ادعا ثبت می‌شود؛ فقط اعدادی که بازبین اوپن‌فاند با مدرک تأیید کند «تأییدشده» محسوب می‌شوند.')[locale]}</p>
       </section>
-      <section className="econ-section" id="policy"><div className="section-top"><div><span className="eyebrow">02 / {t('REFERRAL POLICY', 'سیاست معرفی')[locale]}</span><h2>{t('10% of the first purchase.', '۱۰٪ اولین خرید.')[locale]}</h2></div></div>
+      <section className="econ-section" id="ambassador-policy"><div className="section-top"><div><span className="eyebrow">02 / {t('REFERRAL POLICY', 'سیاست معرفی')[locale]}</span><h2>{t('10% of the first purchase.', '۱۰٪ اولین خرید.')[locale]}</h2></div></div>
         <div className="econ-grid three">
           <Kpi label="Commission Rate" value="10%" note={t('Of the confirmed net purchase amount after discounts', 'از مبلغ خالص تأییدشدهٔ خرید پس از تخفیف')[locale]} />
           <Kpi label="Scope" value={t('First eligible purchase', 'اولین خرید واجد شرایط')[locale]} note={t('Later purchases by the same customer create no commission', 'خریدهای بعدی همان مشتری کمیسیون ندارد')[locale]} />
@@ -74,7 +77,7 @@ export default function Ambassador() {
         </div>
         <p className="econ-source">{t('Duplicate callbacks or reprocessing never create a second commission. Refunds and chargebacks append an auditable reversal; history is never deleted. Commission transfer to your wallet is recorded separately.', 'Callback تکراری یا پردازش دوباره هرگز کمیسیون دوم ایجاد نمی‌کند. بازپرداخت و برگشت وجه، ردیف اصلاحی قابل حسابرسی اضافه می‌کند و تاریخچه حذف نمی‌شود. انتقال کمیسیون به کیف پول تو جداگانه ثبت می‌شود.')[locale]}</p>
       </section>
-      <section className="econ-section" id="apply"><div className="section-top"><div><span className="eyebrow">03 / {t('APPLICATION', 'درخواست')[locale]}</span><h2>{data?.ambassador ? t('Your ambassador dashboard.', 'داشبورد سفیر تو.')[locale] : t('Apply to the program.', 'برای برنامه درخواست بده.')[locale]}</h2></div></div>
+      <section className="econ-section" id="ambassador-apply"><div className="section-top"><div><span className="eyebrow">03 / {t('APPLICATION', 'درخواست')[locale]}</span><h2>{data?.ambassador ? t('Your ambassador dashboard.', 'داشبورد سفیر تو.')[locale] : t('Apply to the program.', 'برای برنامه درخواست بده.')[locale]}</h2></div></div>
         {me && me.status !== 'ready' && <StateBlock state={me} locale={locale} />}
         {data?.ambassador ? <AmbassadorDashboard locale={locale} /> : <>
           <ApplicationStatus app={app} locale={locale} />
@@ -95,7 +98,31 @@ export default function Ambassador() {
           </ApplicationForm>}
         </>}
       </section>
-      <div className="info-end"><img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="38" height="42" alt="" /><p>{t('Teaching traders is a different role, with its own review.', 'آموزش معامله‌گران نقشی جداگانه با بررسی مستقل است.')[locale]}</p><Link className="button" to={`/${locale}/coach`}>{labels.coach[locale]} <span aria-hidden="true">↗</span></Link></div>
+  </>
+}
+
+/** Consolidated Ambassador (IB) page — Economy › Ambassador (IB). Two
+ *  independent roles on one page: Brand Ambassador and Verified Trading
+ *  Coach, each with its own application, approval status, dashboard,
+ *  referral / trader links, commission history, settlements and rules. */
+export default function Ambassador() {
+  const locale = useInformationLocale()
+  return <InformationShell page="ambassador" description={ibIntro[locale]}>
+    <Hero locale={locale} page="ambassador" title="Openfund" accent={labels.ambassador[locale]} intro={ibIntro[locale]}>
+      <div className="hero-actions"><a className="button" href="#brand-ambassador">{labels.brandAmbassador[locale]} <span aria-hidden="true">↓</span></a><a className="button" href="#verified-coach">{labels.coach[locale]} <span aria-hidden="true">↓</span></a></div>
+    </Hero>
+    <div className="container">
+      <EconomyNav locale={locale} current="ambassador" />
+      <section className="econ-section" id="programs"><div className="section-top"><div><span className="eyebrow">{t('TWO INDEPENDENT ROLES', 'دو نقش مستقل')[locale]}</span><h2>{t('Separate applications, approvals and rules.', 'درخواست، تأیید و قوانین جداگانه.')[locale]}</h2></div></div>
+        <div className="econ-grid two">
+          <Kpi label={labels.brandAmbassador[locale]} value="10%" note={t('Of the referred customer’s first eligible confirmed purchase only', 'فقط از اولین خرید تأییدشدهٔ واجد شرایط مشتری معرفی‌شده')[locale]} />
+          <Kpi label={labels.coach[locale]} value="10%" note={t('Of distributable realized net profit from eligible live trades, after costs', 'از سود خالص تحقق‌یافتهٔ قابل‌توزیع معاملات واقعی واجد شرایط، پس از کسر هزینه‌ها')[locale]} />
+        </div>
+        <p className="econ-source">{t('Approving one role never grants the other. Trader and firm profit-sharing tiers beyond the coach share are pending business decisions and are not offered here.', 'تأیید یک نقش هرگز نقش دیگر را اعطا نمی‌کند. سطوح تقسیم سود معامله‌گر و شرکت فراتر از سهم کوچ تصمیم تجاری در انتظار تأیید است و اینجا ارائه نمی‌شود.')[locale]}</p>
+      </section>
+      <div id="brand-ambassador" className="econ-program"><h2 className="econ-program-title">{labels.brandAmbassador[locale]}</h2><AmbassadorProgram locale={locale} /></div>
+      <div id="verified-coach" className="econ-program"><h2 className="econ-program-title">{labels.coach[locale]}</h2><CoachProgram locale={locale} /></div>
+      <div className="info-end"><img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="38" height="42" alt="" /><p>{t('Live capital follows verified skill.', 'سرمایهٔ واقعی به‌دنبال مهارت تأییدشده است.')[locale]}</p><Link className="button" to={`/${locale}/live-market-access`}>{labels['live-market-access'][locale]} <span aria-hidden="true">↗</span></Link></div>
     </div>
   </InformationShell>
 }

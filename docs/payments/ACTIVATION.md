@@ -29,7 +29,8 @@ necessary, not sufficient.
 | DePay dynamic configuration signing key (public half stored at DePay) | `DEPAY_CONFIG_PRIVATE_KEY` |
 | Endpoint URLs set on the DePay integration | `https://<host>/purchases/depay/configuration` and `https://<host>/purchases/depay/callback` |
 | CSP origins for the widget | `CSP_EXTRA_SCRIPT_SRC`, `CSP_EXTRA_FRAME_SRC` |
-| DePay callback public key | `DEPAY_CALLBACK_PUBLIC_KEY` |
+| DePay Verify public key (signs configuration requests, callbacks and events) | `DEPAY_VERIFY_PUBLIC_KEY` (legacy name `DEPAY_CALLBACK_PUBLIC_KEY`) |
+| Checkout chain | `PURCHASE_PAYMENT_CHAIN=42161` (Arbitrum One only; any other value keeps purchases disabled) |
 
 Compute the SRI hash from the exact approved bundle:
 `curl -s <widget-url> | openssl dgst -sha384 -binary | openssl base64 -A`,

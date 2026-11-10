@@ -3,8 +3,8 @@
  *
  * For each page it checks, from the rendered DOM (including the legacy
  * terminal iframe):
- *  - no redirect: the final path is the requested path (language never
- *    sends a visitor to another product or locale);
+ *  - expected path: public coach bookmarks open the consolidated ambassador
+ *    page; no route sends a visitor to another product or locale;
  *  - <html lang> and dir (fa/ar rtl, en/ru/zh-CN ltr);
  *  - no untranslated-text report (window.__ofI18nMisses) and no visible
  *    "not yet translated" notice;
@@ -121,7 +121,8 @@ function leaks(locale, texts) {
             s = await page.evaluate(collect)
           }
           const id = `${vp} ${locale} ${route}`
-          check(`${id}: no redirect`, s.path === path, s.path)
+          const expectedPath = route === 'coach' ? `/${locale}/ambassador` : path
+          check(`${id}: expected route`, s.path === expectedPath, s.path)
           check(`${id}: lang`, s.lang === locale, s.lang)
           check(`${id}: dir`, s.dir === (RTL.has(locale) ? 'rtl' : 'ltr'), s.dir)
           check(`${id}: no untranslated strings`, !(s.misses[locale] || []).length, (s.misses[locale] || []).slice(0, 8).join(' | '))

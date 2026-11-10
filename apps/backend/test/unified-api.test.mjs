@@ -13,7 +13,7 @@ async function api(path,body,cookie,method=body?'POST':'GET'){
  const r=await fetch(base+path,{method,headers:{'Content-Type':'application/json','Idempotency-Key':randomUUID(),Origin:'http://localhost:5173',...(cookie?{Cookie:cookie}:{})},body:body?JSON.stringify(body):undefined});
  return {status:r.status,data:await r.json(),cookie:r.headers.get('set-cookie')?.split(';')[0]}
 }
-async function login(wallet){const n=await api('/auth/nonce',{address:wallet.address});const message=createSiweMessage({address:wallet.address,domain:'localhost:5173',uri:'http://localhost:5173/',chainId:11155111,nonce:n.data.nonce,version:'1'});const r=await api('/auth/verify',{message,signature:await wallet.signMessage({message})});assert.equal(r.status,200);return r.cookie}
+async function login(wallet){const n=await api('/auth/nonce',{address:wallet.address});const message=createSiweMessage({address:wallet.address,domain:'localhost:5173',uri:'http://localhost:5173/',chainId:42161,nonce:n.data.nonce,version:'1'});const r=await api('/auth/verify',{message,signature:await wallet.signMessage({message})});assert.equal(r.status,200);return r.cookie}
 test('owned account API isolates Challenge journals and enforces disabled read-only state after reauthentication',async()=>{
  const wallet=privateKeyToAccount(generatePrivateKey()),cookie=await login(wallet),me=(await api('/auth/me',null,cookie)).data.user;
  const trial=(await api('/accounts',null,cookie)).data.accounts.find(a=>a.type==='free_trial');

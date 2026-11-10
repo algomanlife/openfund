@@ -30,7 +30,7 @@ const admin = (method, path, body, actor = 'test-operator') => j(method, path, b
 async function signIn(extraCookie) {
   const wallet = privateKeyToAccount(generatePrivateKey())
   const n = (await j('POST', '/auth/nonce', { address: wallet.address })).data
-  const message = createSiweMessage({ domain: 'localhost:5173', address: wallet.address, uri: 'http://localhost:5173/', chainId: 11155111, nonce: n.nonce, version: '1' })
+  const message = createSiweMessage({ domain: 'localhost:5173', address: wallet.address, uri: 'http://localhost:5173/', chainId: 42161, nonce: n.nonce, version: '1' })
   const r = await j('POST', '/auth/verify', { message, signature: await wallet.signMessage({ message }) }, extraCookie)
   assert.equal(r.status, 200, JSON.stringify(r.data))
   return { wallet, cookie: r.cookie, userId: r.data?.user?.id }

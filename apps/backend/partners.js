@@ -148,7 +148,9 @@ export async function attributeAmbassador(pool, req, { newUserId }) {
  */
 export async function attributeAtFirstOrder(pool, req, userId) {
   try {
-    const paid = await pool.query(`SELECT 1 FROM purchase_orders WHERE user_id=$1 AND status='paid' LIMIT 1`, [userId])
+    /* zero-payment (coupon) orders are not purchases: they never use up the
+       customer's first-paid-purchase attribution slot */
+    const paid = await pool.query(`SELECT 1 FROM purchase_orders WHERE user_id=$1 AND status='paid' AND payment_required LIMIT 1`, [userId])
     if (paid.rowCount) return false
     return await attributeTx(pool, req, userId, 'first_order')
   } catch (e) { console.error('ambassador attribution failed:', e?.message); return false }
@@ -174,18 +176,21 @@ async function attributeTx(db, req, userId, source) {
 export async function recognizeCommissionTx(client, { orderId, userId, paymentId, payerAddress }) {
   const { rows: [attr] } = await client.query(`SELECT * FROM ambassador_attributions WHERE referred_user_id=$1`, [userId])
   if (!attr) return { recognized: false, reason: 'not_attributed' }
-  const { rows: [order] } = await client.query(`SELECT id, price_usd, created_at, status FROM purchase_orders WHERE id=$1`, [orderId])
+  const { rows: [order] } = await client.query(`SELECT id, price_usd, created_at, status, payment_required FROM purchase_orders WHERE id=$1`, [orderId])
   const skip = async reason => {
     await financialAudit(client, 'system', 'commission_not_recognized', 'purchase_order', orderId, null, { reason, ambassador: attr.ambassador_user_id })
     return { recognized: false, reason }
   }
   if (!order || order.status !== 'paid') return skip('order_not_paid')
+  /* a 100% coupon order (internal test or promotional) has no confirmed
+     payment: no commission, and it is not the customer's first purchase */
+  if (order.payment_required === false) return skip('zero_payment_order')
   const { rows: [prof] } = await client.query(
     `SELECT a.status, u.wallet_address FROM ambassador_profiles a JOIN openfund_users u ON u.id=a.user_id WHERE a.user_id=$1 FOR SHARE OF a`, [attr.ambassador_user_id])
   if (!prof || prof.status !== 'active') return skip('ambassador_not_active')
   if (new Date(attr.attributed_at) > new Date(order.created_at)) return skip('attributed_after_order')
   if (payerAddress && String(payerAddress).toLowerCase() === String(prof.wallet_address).toLowerCase()) return skip('self_referral_payer')
-  const earlier = await client.query(`SELECT 1 FROM purchase_orders WHERE user_id=$1 AND status='paid' AND id<>$2 LIMIT 1`, [userId, orderId])
+  const earlier = await client.query(`SELECT 1 FROM purchase_orders WHERE user_id=$1 AND status='paid' AND payment_required AND id<>$2 LIMIT 1`, [userId, orderId])
   if (earlier.rowCount) return skip('not_first_purchase')
   const c = commissionFor(order.price_usd)
   if (!c) return skip('zero_amount')

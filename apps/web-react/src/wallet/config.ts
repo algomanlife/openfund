@@ -1,13 +1,17 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 import { createConfig, http } from 'wagmi'
 import { injected } from 'wagmi/connectors'
-import { sepolia, arbitrum } from 'wagmi/chains'
+import { arbitrum } from 'wagmi/chains'
 import { publicRuntimeConfig } from '../config/runtime'
 
 /**
  * Wallet configuration — Phase 3.
  *
- * - Prop uses Ethereum Sepolia; Perpetual reads Gains on Arbitrum One.
+ * - Arbitrum One (chain 42161) is the ONLY wallet network for every
+ *   product (Prop, Perpetual, checkout, SIWE). Other networks are not
+ *   offered; a wallet on another chain is asked to switch before signing
+ *   or paying, and the backend rejects any other SIWE chain id.
+ *   `WALLET_CHAINS` keeps the multi-chain shape for future networks.
  *   No on-chain execution or testnet Gains contracts are assumed.
  * - WalletConnect projectId comes from VITE_WALLETCONNECT_PROJECT_ID
  *   (.env / .env.local). WITH a project id, the full RainbowKit config
@@ -22,15 +26,17 @@ export const WALLETCONNECT_PROJECT_ID =
 
 export const walletConnectEnabled = WALLETCONNECT_PROJECT_ID.length > 0
 
+export const WALLET_CHAINS = [arbitrum] as const
+
 export const wagmiConfig = walletConnectEnabled
   ? getDefaultConfig({
       appName: 'Openfund',
       projectId: WALLETCONNECT_PROJECT_ID,
-      chains: [sepolia, arbitrum],
+      chains: WALLET_CHAINS,
       ssr: false
     })
   : createConfig({
-      chains: [sepolia, arbitrum],
-      transports: { [sepolia.id]: http(), [arbitrum.id]: http() },
+      chains: WALLET_CHAINS,
+      transports: { [arbitrum.id]: http() },
       connectors: [injected({ shimDisconnect: true })]
     })

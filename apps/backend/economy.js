@@ -57,22 +57,26 @@ export async function computeFinancialPosition(db, treasuryView) {
 
 async function transparencyReport(pool, treasury) {
   const q = async (sql, params = []) => (await pool.query(sql, params)).rows
+  /* revenue = orders paid with a verified payment; 100% coupon orders
+     (payment_required = false, incl. internal tests) are reported separately */
   const [sales] = await q(`SELECT count(*)::int AS orders, coalesce(sum(price_usd),0) AS gross, count(DISTINCT user_id)::int AS customers
-                             FROM purchase_orders WHERE status='paid'`)
+                             FROM purchase_orders WHERE status='paid' AND payment_required`)
+  const [zeroPayment] = await q(`SELECT count(*)::int AS orders, count(*) FILTER (WHERE payment_method='internal_coupon')::int AS internal
+                                   FROM purchase_orders WHERE status='paid' AND NOT payment_required`)
   const [adj] = await q(`SELECT coalesce(sum(amount_usd) FILTER (WHERE kind='refund'),0) AS refunds, coalesce(sum(amount_usd) FILTER (WHERE kind='chargeback'),0) AS chargebacks,
                                 count(*) FILTER (WHERE kind='refund')::int AS refund_count, count(*) FILTER (WHERE kind='chargeback')::int AS chargeback_count FROM payment_adjustments`)
-  const [states] = await q(`SELECT count(*) FILTER (WHERE status='paid')::int AS paid, count(*) FILTER (WHERE status='expired')::int AS expired,
+  const [states] = await q(`SELECT count(*) FILTER (WHERE status='paid' AND payment_required)::int AS paid, count(*) FILTER (WHERE status='expired')::int AS expired,
                                    count(*) FILTER (WHERE status='cancelled')::int AS cancelled, count(*) FILTER (WHERE status='pending')::int AS pending FROM purchase_orders`)
   const [pay] = await q(`SELECT count(*) FILTER (WHERE status='confirmed')::int AS confirmed, count(*) FILTER (WHERE status='failed')::int AS failed FROM payments`)
   const bySize = await q(`SELECT p.slug AS plan, o.account_size_usd AS size, count(*)::int AS orders, sum(o.price_usd) AS gross
-                            FROM purchase_orders o JOIN challenge_plans p ON p.id=o.challenge_plan_id WHERE o.status='paid' GROUP BY 1,2 ORDER BY 1,2`)
+                            FROM purchase_orders o JOIN challenge_plans p ON p.id=o.challenge_plan_id WHERE o.status='paid' AND o.payment_required GROUP BY 1,2 ORDER BY 1,2`)
   const periods = (await q(`SELECT
       count(*) FILTER (WHERE paid_at > now() - interval '7 days')::int AS d7, coalesce(sum(price_usd) FILTER (WHERE paid_at > now() - interval '7 days'),0) AS g7,
       count(*) FILTER (WHERE paid_at > now() - interval '30 days')::int AS d30, coalesce(sum(price_usd) FILTER (WHERE paid_at > now() - interval '30 days'),0) AS g30,
       count(*) FILTER (WHERE paid_at > now() - interval '90 days')::int AS d90, coalesce(sum(price_usd) FILTER (WHERE paid_at > now() - interval '90 days'),0) AS g90
-      FROM purchase_orders WHERE status='paid'`))[0]
+      FROM purchase_orders WHERE status='paid' AND payment_required`))[0]
   const monthly = await q(`SELECT to_char(date_trunc('month', paid_at),'YYYY-MM') AS month, count(*)::int AS orders, sum(price_usd) AS gross
-                             FROM purchase_orders WHERE status='paid' AND paid_at > now() - interval '12 months' GROUP BY 1 ORDER BY 1`)
+                             FROM purchase_orders WHERE status='paid' AND payment_required AND paid_at > now() - interval '12 months' GROUP BY 1 ORDER BY 1`)
   const net = D(sales.gross).minus(adj.refunds).minus(adj.chargebacks)
   const finalOrders = states.paid + states.expired + states.cancelled
 
@@ -106,7 +110,7 @@ async function transparencyReport(pool, treasury) {
   const payoutMonthly = await q(`SELECT to_char(date_trunc('month', reviewed_at),'YYYY-MM') AS month, count(*)::int AS payouts, sum(amount_usd) AS total
                                    FROM withdrawal_requests WHERE status='paid' AND reviewed_at > now() - interval '12 months' GROUP BY 1 ORDER BY 1`)
   const payoutTx = await q(`SELECT reviewed_at, amount_usd, payout_ref FROM withdrawal_requests WHERE status='paid' AND payout_ref ~* '^0x[0-9a-f]{64}$' ORDER BY reviewed_at DESC LIMIT 25`)
-  const chain = Number(process.env.PURCHASE_PAYMENT_CHAIN || 11155111)
+  const chain = Number(process.env.PURCHASE_PAYMENT_CHAIN || 42161)
 
   const tv = await treasury.view()
   const position = await computeFinancialPosition(pool, tv)
@@ -127,8 +131,9 @@ async function transparencyReport(pool, treasury) {
     generatedAt: new Date().toISOString(),
     cacheSeconds: CACHE_MS / 1000,
     sales: {
-      source: 'purchase_orders (status=paid, set only by verified on-chain payment), payment_adjustments',
+      source: 'purchase_orders (status=paid with a verified on-chain payment; 100% coupon orders excluded), payment_adjustments',
       challengesSold: sales.orders, uniqueCustomers: sales.customers,
+      couponActivations: { orders: zeroPayment.orders, internalTest: zeroPayment.internal, note: 'zero-payment coupon orders: not revenue, no commission' },
       grossRevenueUsd: usd(sales.gross), refundsUsd: usd(adj.refunds), chargebacksUsd: usd(adj.chargebacks),
       refundCount: adj.refund_count, chargebackCount: adj.chargeback_count,
       netRevenueUsd: usd(net), confirmedPayments: pay.confirmed, failedPaymentRecords: pay.failed,

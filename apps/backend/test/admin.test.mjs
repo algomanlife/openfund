@@ -48,7 +48,7 @@ const j = async (method, path, body, cookie, headers = {}) => {
 
 async function login(wallet) {
   const n = (await j('POST', '/auth/nonce', { address: wallet.address })).data
-  const message = createSiweMessage({ domain: DOMAIN, address: wallet.address, uri: 'http://localhost:5173/', chainId: 11155111, nonce: n.nonce, version: '1' })
+  const message = createSiweMessage({ domain: DOMAIN, address: wallet.address, uri: 'http://localhost:5173/', chainId: 42161, nonce: n.nonce, version: '1' })
   const r = await j('POST', '/auth/verify', { message, signature: await wallet.signMessage({ message }) })
   return { cookie: r.cookie, userId: (await pool.query('SELECT id FROM openfund_users WHERE wallet_address=$1', [wallet.address.toLowerCase()])).rows[0].id }
 }
@@ -79,7 +79,7 @@ const w1 = privateKeyToAccount(generatePrivateKey())
     [userId, plan.id])
   const purchase = await confirmPurchase(pool, {
     orderId: order.id, userId,
-    evidence: { txHash: '0x' + 'cd'.repeat(32), chainId: 11155111, blockNumber: 7, fromAddress: w1.address.toLowerCase(), toAddress: null, amount: '44', tokenAddress: null, blockTimestamp: new Date().toISOString() },
+    evidence: { txHash: '0x' + 'cd'.repeat(32), chainId: 42161, blockNumber: 7, fromAddress: w1.address.toLowerCase(), toAddress: null, amount: '44', tokenAddress: null, blockTimestamp: new Date().toISOString() },
     source: 'unit_test',
   })
   ok('purchase provisioned for the admin view', !!purchase.challengeId)
@@ -146,7 +146,7 @@ const w1 = privateKeyToAccount(generatePrivateKey())
   try {
     await confirmPurchase(pool, {
       orderId: stale.id, userId,
-      evidence: { txHash: '0x' + 'ef'.repeat(32), chainId: 11155111, blockNumber: 1, fromAddress: w2.address.toLowerCase(), toAddress: null, amount: '44', tokenAddress: null, blockTimestamp: new Date(Date.now() - 90 * 60_000).toISOString() },
+      evidence: { txHash: '0x' + 'ef'.repeat(32), chainId: 42161, blockNumber: 1, fromAddress: w2.address.toLowerCase(), toAddress: null, amount: '44', tokenAddress: null, blockTimestamp: new Date(Date.now() - 90 * 60_000).toISOString() },
       source: 'unit_test',
     })
   } catch (e) { farLate = e }
@@ -160,7 +160,7 @@ const w1 = privateKeyToAccount(generatePrivateKey())
      VALUES ($1,$2,5000,44, now() - interval '2 minutes') RETURNING id`, [userId, plan.id])
   const lateOk = await confirmPurchase(pool, {
     orderId: recent.id, userId,
-    evidence: { txHash: '0x' + 'be'.repeat(32), chainId: 11155111, blockNumber: 2, fromAddress: w2.address.toLowerCase(), toAddress: null, amount: '44', tokenAddress: null, blockTimestamp: new Date().toISOString() },
+    evidence: { txHash: '0x' + 'be'.repeat(32), chainId: 42161, blockNumber: 2, fromAddress: w2.address.toLowerCase(), toAddress: null, amount: '44', tokenAddress: null, blockTimestamp: new Date().toISOString() },
     source: 'unit_test',
   })
   ok('payment inside the grace window still pays the expired order',

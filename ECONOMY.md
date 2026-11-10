@@ -37,7 +37,7 @@ things and are never added together.
 | Term | Meaning |
 |---|---|
 | Gross sales | Price of challenges ordered and paid, before any deduction. |
-| Discounts | Reductions granted at purchase. No discount is active today (see [Ambassador economics](#ambassador-economics)). |
+| Discounts | Reductions granted at purchase through server-validated coupons ([Coupons](docs/payments/COUPONS.md)). The engine is implemented; no coupon is active in production. Ambassador commission is computed on the net amount after discounts. |
 | Refunds | Money returned to a customer, including chargebacks. |
 | Commissions | Amounts owed to partners such as ambassadors. They are an acquisition cost, recorded as obligations. |
 | Net collected revenue | Gross sales minus discounts minus refunds. |
@@ -134,6 +134,7 @@ No assumption is a forecast, a commitment or a statement of results.
 |---|---|
 | 20% customer referral discount | Proposed, not active |
 | Trader profit-share tiers for real-capital trading | Not approved in this document |
+| Whether a 100%-coupon order counts as a customer's "first eligible purchase" for ambassador commission | Pending decision; current behavior: any earlier paid order (including a free one) makes later purchases non-first |
 | Treasury wallet, operational reserves and risk reserves | Management configuration still required |
 
 ## Implementation notes

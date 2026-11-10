@@ -1,0 +1,7 @@
+# Reviewed false positives only: exact commit fingerprints, no rule disabled.
+# a004d37 commerce.test.mjs:25 matched generic-api-key on a variable named
+# TOKEN holding the PUBLIC USDC contract address on Arbitrum One (not a
+# credential); renamed to USDC_ARBITRUM in 093e0cf. 093e0cf's first version
+# of this file quoted that address in a comment and matched again.
+a004d37f8db907a735dfdfb27ad5aff46471eee8:apps/backend/test/commerce.test.mjs:generic-api-key:25
+093e0cf8f1cceb74ee65c8cafcea81ae79591207:.gitleaksignore:generic-api-key:3

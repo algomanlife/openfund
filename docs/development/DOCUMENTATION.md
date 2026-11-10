@@ -32,6 +32,26 @@ npm run docs:check
 
 Local link/image checks include repository-root and relative paths, fragments, HTML attributes and reference-style definitions. HTTP links are external references and are not all availability-probed on each check; localhost examples and upstream API path examples are intentional. Mermaid uses the pinned parser; Markdown checks enforce structural/syntax rules while allowing wide tables and GitHub HTML. Future edits must not weaken exclusions to hide untranslated prose.
 
+## Synchronization gate
+
+`npm run docs:required` (`scripts/docs/check-required.mjs`, part of
+`docs:check` and therefore of CI) reports, and never fixes:
+
+- missing required documents (README, CONTRIBUTING, SECURITY, CHANGELOG,
+  THIRD_PARTY_NOTICES, payment, deployment, operations, licensing and
+  governance references, PR and issue templates);
+- README sections that are missing from the 38 required entry-point sections;
+- `render.yaml` environment variables not documented in
+  `docs/deployment/ENVIRONMENT.md`;
+- a changelog whose first section is not `Unreleased`.
+
+Content stays human-written and reviewed. CI only validates. Nothing commits
+generated documentation or bypasses branch protection. Version information
+comes from the release tooling (`scripts/release/version.mjs`, the release
+manifest and `/version`), never from hand-edited README values. Every pull
+request that changes behavior updates the affected documents in the same
+change (PR template checklist).
+
 ## Documentation dependency hygiene
 
 Root tooling is development-only. The Markdown parser currently requires scoped overrides for patched `re2js` 2.8.7 and KaTeX 0.18.11 through its math extension; these address the audit findings in the newly added documentation dependency graph. Application dependency versions and lockfiles are unchanged. Recheck `npm audit --registry=https://registry.npmjs.org` before removing the overrides.

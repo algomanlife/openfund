@@ -19,9 +19,9 @@ import { staticCacheControl, NO_STORE } from './static-cache.js'
 import { seoRoutes } from './seo.js'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
-import { createClient, isHex, http } from 'viem'
+import { createClient, isHex, http, recoverMessageAddress } from 'viem'
 import { parseSiweMessage, verifySiweMessage } from 'viem/siwe'
-import { sepolia, arbitrum } from 'viem/chains'
+import { arbitrum } from 'viem/chains'
 import pg from 'pg'
 import { marketData } from './market-data.js'
 import { Engine } from './engine.js'
@@ -30,6 +30,7 @@ import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
 import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments } from './purchases.js'
 import { adminRoutes } from './admin.js'
+import { couponAdminRoutes } from './coupons.js'
 import { paymentAdminRoutes } from './payments-admin.js'
 import { governanceRoutes } from './governance-routes.js'
 import { partnerRoutes, partnerAdminRoutes, attributeAmbassador } from './partners.js'
@@ -139,7 +140,9 @@ app.use((req, res, next) => {
 app.use('/products', express.json({ limit: '2mb' }))
 app.use('/auth/profile', express.json({ limit: '512kb' })) /* avatar data URLs */
 /* the DePay callback is signed over its exact bytes: keep the raw body for that one route */
-app.use(express.json({ limit: '32kb', verify: (req, res, buf) => { if (req.path === '/purchases/depay/callback') req.rawBody = buf } }))
+/* DePay signs the exact request bytes: keep the raw body for its routes */
+const DEPAY_SIGNED_PATHS = new Set(['/purchases/depay/configuration', '/purchases/depay/callback', '/purchases/depay/events'])
+app.use(express.json({ limit: '32kb', verify: (req, res, buf) => { if (DEPAY_SIGNED_PATHS.has(req.path)) req.rawBody = buf } }))
 
 /* ---------- CORS (credentials for session cookies) ---------- */
 app.use((req, res, next) => {
@@ -238,8 +241,14 @@ const requireAuth = async (req, res, next) => {
   }
 }
 
-/* public client for EIP-1271 contract-wallet signature checks */
-const clients = new Map([sepolia, arbitrum].map(chain => [chain.id, createClient({ chain, transport: http(undefined, { timeout: 5000, retryCount: 0 }) })]))
+/* Wallet authentication is Arbitrum One only (chain 42161). The map keeps
+   the multi-chain shape for future networks, but only chains listed here
+   are accepted: a SIWE message for any other chain id is rejected with
+   `invalid_chain` before any signature work. The public client is used
+   for EIP-1271 / ERC-6492 contract-wallet checks; AUTH_RPC_URL optionally
+   points it at a dedicated Arbitrum endpoint. */
+const AUTH_CHAINS = [arbitrum]
+const clients = new Map(AUTH_CHAINS.map(chain => [chain.id, createClient({ chain, transport: http(process.env.AUTH_RPC_URL || undefined, { timeout: 5000, retryCount: 0 }) })]))
 
 import { referralRoutes, attributeReferral, sanitizeCode } from './referrals.js'
 
@@ -320,9 +329,16 @@ app.post("/auth/verify", limit(60), async (req, res) => {
 
     /* cryptographic verification (viem handles EIP-1271 for contract wallets via client) */
     let ok = false;
+    /* EOA signatures (EIP-191) are verified locally by ECDSA recovery, so an
+       RPC outage never blocks ordinary wallet sign-in. Domain, URI, chain,
+       times and nonce were validated above. Only when recovery does not match
+       (contract wallets: EIP-1271 / ERC-6492) is the Arbitrum RPC consulted. */
     try {
-      /* viem signature: verifySiweMessage(client, params) — covers EOAs (EIP-191)
-         and contract wallets (EIP-1271 / ERC-6492) via the public client */
+      ok = (await recoverMessageAddress({ message, signature })).toLowerCase() === parsed.address.toLowerCase();
+    } catch {
+      ok = false;
+    }
+    if (!ok) try {
       ok = await verifySiweMessage(client, {
         address: parsed.address,
         message,
@@ -355,7 +371,7 @@ app.post("/auth/verify", limit(60), async (req, res) => {
       `INSERT INTO openfund_users (wallet_address, wallet_chain, last_login_at)
        VALUES ($1, $2, now())
        ON CONFLICT (wallet_address)
-       DO UPDATE SET last_login_at = now(), updated_at = now()
+       DO UPDATE SET last_login_at = now(), updated_at = now(), wallet_chain = EXCLUDED.wallet_chain
        RETURNING id, wallet_address, status, display_name, created_at, last_login_at`,
       [address, parsed.chainId],
     );
@@ -661,7 +677,7 @@ if (testMode) {
     const result = await confirmPurchase(pool, {
       orderId, userId: user.user_id,
       evidence: {
-        txHash, chainId: Number(process.env.PURCHASE_PAYMENT_CHAIN || 11155111),
+        txHash, chainId: Number(process.env.PURCHASE_PAYMENT_CHAIN || 42161),
         blockNumber: 1, fromAddress: user.wallet_address, toAddress: null,
         amount: null, tokenAddress: null, blockTimestamp: new Date().toISOString(),
       },
@@ -710,7 +726,7 @@ app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) 
 
 app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
 app.use(referralRoutes({ pool, requireAuth, audit }))
-app.use(purchaseRoutes({ pool, requireAuth, audit }))
+app.use(purchaseRoutes({ pool, requireAuth, audit, limit }))
 app.use('/governance', governanceRoutes({ pool, requireAuth, limit }))
 /* Economy, Brand Ambassador, Verified Coach and Live Market Access */
 const treasury = new Treasury(pool)
@@ -722,6 +738,7 @@ app.use(liveRoutes({ pool, requireAuth, treasury, marketData, limit, config: liv
 app.use('/admin/economy', economyAdminRoutes({ pool, treasury, onChange: () => economy.invalidate() }))
 app.use('/admin/partners', partnerAdminRoutes({ pool }))
 app.use('/admin/live', liveAdminRoutes({ pool, treasury, config: live }))
+app.use('/admin/coupons', couponAdminRoutes({ pool }))
 app.use('/admin/payments', paymentAdminRoutes({ pool, verifier: (...a) => defaultPaymentVerifier()(...a) }))
 app.use('/admin', adminRoutes({ pool, audit }))
 

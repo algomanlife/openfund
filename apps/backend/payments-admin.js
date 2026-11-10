@@ -83,6 +83,7 @@ export function paymentAdminRoutes({ pool, verifier }) {
       const result = await verifyAndConfirm({
         pool, verifier, order: { id: a.purchase_order_id, price_usd: a.price_usd, created_at: a.order_created_at },
         userId: a.user_id, walletAddress: a.wallet_address, txHash: a.tx_hash, source: 'operator',
+        chainId: a.chain_id, attested: a.attested, reported: a.reported,
       })
       await financialAudit(pool, actor, 'payment_reverify_confirmed', 'payment_attempt', a.id, null, result)
       res.json({ ok: true, result })
