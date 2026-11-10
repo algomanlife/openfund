@@ -7,6 +7,7 @@ export interface PublicRuntimeConfig {
   depayWidget?: boolean
   depayWidgetUrl?: string
   depayWidgetIntegrity?: string
+  depayIntegrationId?: string
 }
 
 export function publicRuntimeConfig(): PublicRuntimeConfig {

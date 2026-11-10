@@ -48,6 +48,9 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `VITE_DEPAY_WIDGET` | openfund (runtime, public) | optional; `1` enables the DePay checkout widget |
 | `VITE_DEPAY_WIDGET_URL` | openfund (runtime, public) | approved DePay widget bundle URL (https) |
 | `VITE_DEPAY_WIDGET_INTEGRITY` | openfund (runtime, public) | Subresource Integrity hash (`sha384-…`) of that exact bundle. The widget stays hidden unless the toggle, an https URL and this hash are all set. |
+| `VITE_DEPAY_INTEGRATION_ID` | openfund (runtime, public) | public DePay integration id created at app.depay.com. Required together with the three widget variables above. |
+| `DEPAY_CONFIG_PRIVATE_KEY` | openfund | **secret.** RSA private key (PEM, newlines as `\n`) that signs the dynamic configuration (`accept`) our server returns when DePay asks for it. Generate with `openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048`; store only the public half on app.depay.com. Unset = the configuration endpoint returns 404. |
+| `PAYMENT_RECOVERY_INTERVAL_MS`, `PAYMENT_RECOVERY_MIN_AGE_S` | openfund | optional tuning of the payment recovery sweep (defaults 60000 ms / 45 s). Lower values exist only to shorten acceptance tests. |
 | `CSP_EXTRA_SCRIPT_SRC` | openfund | optional comma-separated https origins (no paths, no wildcards) added to `script-src`, for the approved DePay widget origin |
 | `CSP_EXTRA_FRAME_SRC` | openfund | optional comma-separated https origins added to `frame-src` for the approved DePay widget |
 | `TREASURY_WALLET_ADDRESS` | openfund | public Openfund Treasury address read by the backend scheduler. Unset = `Not configured`; allocatable capital stays `Unknown`. Never a private key or seed phrase. See [Treasury](../economy/TREASURY.md). |

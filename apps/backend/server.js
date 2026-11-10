@@ -809,11 +809,14 @@ setInterval(() => {
 /* payment recovery: a payment that is mined but was never provisioned
    (frontend request lost, RPC down, not yet final) is re-verified on the
    chain until it provisions or becomes a reviewable rejection */
+/* interval / minimum age are operator-tunable only to shorten test runs */
+const recoveryEvery = Math.max(Number(process.env.PAYMENT_RECOVERY_INTERVAL_MS) || 60_000, 1000)
+const recoveryMinAge = Math.max(Number(process.env.PAYMENT_RECOVERY_MIN_AGE_S) || 45, 1)
 const paymentRecoveryTimer = setInterval(() => {
-  recoverPendingPayments({ pool, log: (order, err) => console.log('[payments] recovery', order, err) })
+  recoverPendingPayments({ pool, minAgeSeconds: recoveryMinAge, log: (order, err) => console.log('[payments] recovery', order, err) })
     .then(r => { if (r.recovered) console.log('[payments] recovered ' + r.recovered + ' order(s)') })
     .catch(e => console.error('[payments] recovery sweep failed', e.message))
-}, 60_000)
+}, recoveryEvery)
 paymentRecoveryTimer.unref()
 /* treasury snapshots (60–120 min schedule) and live settlement retries */
 treasury.start()

@@ -11,7 +11,7 @@ necessary, not sufficient.
 | Receipt/log correlation, amount, replay, finality, reorg, RPC failure | Implemented and tested (deterministic fixtures) |
 | Attempt records, recovery sweep, operator investigation API | Implemented and tested (database + HTTP) |
 | Checkout resume after refresh, retryable states | Implemented; browser acceptance pending |
-| DePay widget (SRI-pinned bundle, mainnet token payment) | Implemented; **awaiting real-network acceptance** |
+| DePay checkout (Buy Challenge → widget → signed callback → verification → challenge) | Implemented; browser-tested end to end with a **stub widget, mock chain and locally signed callbacks** ([acceptance test](../../e2e/test-depay-checkout.cjs)); **awaiting real-network acceptance** |
 | DePay router path (`PURCHASE_ROUTER_ADDRESSES`) | Implemented; **awaiting real-network acceptance** |
 | DePay server callback hint | Implemented; **awaiting real-network acceptance** (signature format is verified only against locally generated keys) |
 | Refund execution | Not automated by design; manual with recorded adjustment |
@@ -25,7 +25,9 @@ necessary, not sufficient.
 | Dedicated RPC endpoint for that chain | `PURCHASE_RPC_URL` (secret) |
 | Official DePay router for that chain | `PURCHASE_ROUTER_ADDRESSES` |
 | Confirmation depth (default 12 in production) | `PURCHASE_PAYMENT_MIN_CONFIRMATIONS` |
-| DePay integration, widget URL and its SRI hash | `VITE_DEPAY_WIDGET`, `VITE_DEPAY_WIDGET_URL`, `VITE_DEPAY_WIDGET_INTEGRITY` |
+| DePay integration (created at app.depay.com), widget URL and its SRI hash | `VITE_DEPAY_WIDGET`, `VITE_DEPAY_WIDGET_URL`, `VITE_DEPAY_WIDGET_INTEGRITY`, `VITE_DEPAY_INTEGRATION_ID` |
+| DePay dynamic configuration signing key (public half stored at DePay) | `DEPAY_CONFIG_PRIVATE_KEY` |
+| Endpoint URLs set on the DePay integration | `https://<host>/purchases/depay/configuration` and `https://<host>/purchases/depay/callback` |
 | CSP origins for the widget | `CSP_EXTRA_SCRIPT_SRC`, `CSP_EXTRA_FRAME_SRC` |
 | DePay callback public key | `DEPAY_CALLBACK_PUBLIC_KEY` |
 
