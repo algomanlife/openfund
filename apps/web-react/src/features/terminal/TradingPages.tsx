@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useSession } from "../../session/useOpenfundSession";
 import body from "../../pages/terminal-body.html?raw";
 import workspaceStyles from "./workspace.css?raw";
@@ -146,6 +147,35 @@ function useAccountAdapter(product: Product, context: any) {
     [product, signed, context?.accounts?.[0]?.type],
   );
 }
+const QUICK_TRADE_MARKUP = `
+<div class="qt-bar" dir="ltr">
+  <span class="qt-meta"><span class="qt-mode" id="qt-mode"></span><span class="qt-px" id="qt-px" aria-live="off"></span></span>
+  <button type="button" class="qt-btn short" id="qt-sell" aria-expanded="false" aria-controls="qt-panel" data-i18n="qt.sell">Sell</button>
+  <button type="button" class="qt-btn long" id="qt-buy" aria-expanded="false" aria-controls="qt-panel" data-i18n="qt.buy">Buy</button>
+</div>
+<div class="qt-panel" id="qt-panel" role="group" aria-labelledby="qt-title" hidden>
+  <div class="qt-head">
+    <b id="qt-title" class="qt-title"></b>
+    <button type="button" class="qt-close" id="qt-close" aria-label="Close">×</button>
+  </div>
+  <label class="qt-field"><span data-i18n="qt.amount">Amount (USD)</span>
+    <input id="qt-amount" type="text" inputmode="decimal" autocomplete="off" dir="ltr"></label>
+  <div class="qt-chips" id="qt-chips" role="group">
+    <button type="button" data-pct="25">25%</button><button type="button" data-pct="50">50%</button><button type="button" data-pct="100">100%</button>
+  </div>
+  <label class="qt-field"><span><span data-i18n="lev">Leverage</span> <b id="qt-lev-val" dir="ltr"></b></span>
+    <input id="qt-lev" type="range" min="1" max="100" step="1" value="1"></label>
+  <dl class="qt-stats">
+    <div><dt data-i18n="ac.available">Available</dt><dd id="qt-avail" class="num">—</dd></div>
+    <div><dt data-i18n="of.size">Size</dt><dd id="qt-size" class="num">—</dd></div>
+    <div><dt data-i18n="rk.margin">Est. margin</dt><dd id="qt-margin" class="num">—</dd></div>
+    <div><dt data-i18n="rk.fee">Est. fee (open)</dt><dd id="qt-fee" class="num">—</dd></div>
+    <div><dt data-i18n="rk.liq">Est. liquidation</dt><dd id="qt-liq" class="num">—</dd></div>
+  </dl>
+  <p class="qt-note" id="qt-note" data-i18n="qt.note"></p>
+  <p class="qt-err" id="qt-err" role="alert" hidden></p>
+  <button type="button" class="submit long" id="qt-submit"></button>
+</div>`;
 function workspaceMarkup(locale: AppLocale) {
   const template = document.createElement("template");
   template.innerHTML = body;
@@ -179,6 +209,13 @@ function workspaceMarkup(locale: AppLocale) {
     if (row) secondary.append(row);
   });
   risk.append(details);
+  /* Quick Trade (Chart tab only; hidden by CSS in the Trading layout). Behaviour
+     lives in legacy/terminal.js and calls the active account adapter. */
+  const quick = document.createElement("div");
+  quick.id = "qt-root";
+  quick.className = "qt";
+  quick.innerHTML = QUICK_TRADE_MARKUP;
+  template.content.querySelector("#chart-host")?.append(quick);
   const feed = document.createElement('p'); feed.id = 'account-feed-state'; feed.setAttribute('role','status');
   template.content.querySelector('.trade-panel')?.prepend(feed);
   // Preserve legacy IDs used by event wiring, while removing obsolete customer copy.
@@ -228,6 +265,9 @@ function workspaceMarkup(locale: AppLocale) {
  * both routes. The product changes adapters/configuration, never the interface. */
 export function SharedTradingTerminal() {
   const { product, locale, context } = useTerminal(),
+    /* Trading and Chart are the same mounted workspace; only the layout differs */
+    layout = useLocation().pathname.split("/").at(-1) === "chart" ? "chart" : "trade",
+    bootLayout = useRef(layout),
     frame = useRef<HTMLIFrameElement>(null),
     adapter = useAccountAdapter(product, context),
     [cms, setCms] = useState<any>(undefined);
@@ -274,6 +314,9 @@ export function SharedTradingTerminal() {
     });
     return () => observer.disconnect();
   }, [locale, cms]);
+  useEffect(() => {
+    frame.current?.contentWindow?.postMessage({ type: "openfund-layout", layout }, location.origin);
+  }, [layout]);
   /* The workspace document is built once per product; language changes are
      applied live through the openfund-display message. Rebuilding srcDoc on
      a locale change reloaded the whole iframe, dropping the chart, price
@@ -318,8 +361,8 @@ export function SharedTradingTerminal() {
        logic itself is the external legacy/react-boot.js so the strict
        script-src 'self' CSP holds for the whole terminal */
     const bootData = safe({ locale, product, translations });
-    return `<!doctype html><html lang="${locale}" dir="${dirOf(locale)}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><style>html{color-scheme:only dark}html[data-theme="light"]{color-scheme:only light}</style><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>${workspaceStyles}</style></head><body><script type="application/json" id="of-boot-data">${bootData}</script>${workspaceMarkup(locale)}<script src="legacy/react-boot.js"></script>${["legacy/gains-adapter.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/market-depth.js", "legacy/share-card.js", "legacy/terminal-locales.js", "legacy/terminal.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
-  }, [cms, product]);
+    return `<!doctype html><html lang="${locale}" dir="${dirOf(locale)}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><style>html{color-scheme:only dark}html[data-theme="light"]{color-scheme:only light}</style><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>${workspaceStyles}</style></head><body data-layout="${bootLayout.current}"><script type="application/json" id="of-boot-data">${bootData}</script>${workspaceMarkup(locale)}<script src="legacy/react-boot.js"></script>${["legacy/gains-adapter.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/market-depth.js", "legacy/share-card.js", "legacy/terminal-locales.js", "legacy/terminal.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
+  }, [cms, product, locale]);
   return (
     <>
       <iframe
@@ -331,6 +374,7 @@ export function SharedTradingTerminal() {
         onLoad={() => {
           const w = frame.current?.contentWindow;
           w?.postMessage({type: "openfund-display", locale, theme: document.documentElement.dataset.theme || "dark"}, location.origin);
+          w?.postMessage({type: "openfund-layout", layout}, location.origin);
           if (frame.current?.contentDocument) setupWorkspaceLayout(frame.current.contentDocument);
           if (w) w.dispatchEvent(new (w as any).Event("of-trading-ready"));
         }}

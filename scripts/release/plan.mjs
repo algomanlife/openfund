@@ -9,6 +9,7 @@ if(requested && (process.env.GITHUB_EVENT_NAME!=='workflow_dispatch' || process.
   throw Error('Explicit release versions are allowed only on a main-branch manual dispatch.');
 if(requested && exact && requested!==exact.slice(1))
   throw Error(`This commit already has immutable release tag ${exact}.`);
-const version=exact?.slice(1) || (requested ? requestedPatchVersion(latest,requested) : nextVersion(tags,git('log','--format=%B',latest?`${latest}..${sha}`:sha)));
+const candidate=process.env.RELEASE_CANDIDATE==='true';
+const version=exact?.slice(1) || (candidate && latest ? latest.slice(1) : requested ? requestedPatchVersion(latest,requested) : nextVersion(tags,git('log','--format=%B',latest?`${latest}..${sha}`:sha)));
 if(process.env.GITHUB_ENV)fs.appendFileSync(process.env.GITHUB_ENV,`RELEASE_VERSION=${version}\n`);
 console.log(version);

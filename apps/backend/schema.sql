@@ -493,6 +493,362 @@ UPDATE challenge_plans
    AND NOT (configuration ? 'dailyLossPctAlt');
 
 -- ==================================================================
+-- Openfund Hybrid Governance v1.0 (additive; see GOVERNANCE.md)
+--
+-- ISOLATION: these tables reference openfund_users ONLY. They have no
+-- foreign key to, and are never written together with, any trading,
+-- order, payment, payout, treasury or pricing table. A council decision
+-- is a record, never an executable instruction.
+-- Evidence tables (votes, decisions, history, audit) are append-only,
+-- enforced by triggers, not just by application code.
+-- ===========================================================
+CREATE OR REPLACE FUNCTION gov_forbid_mutation() RETURNS trigger AS $$
+BEGIN
+  RAISE EXCEPTION 'governance evidence table % is append-only', TG_TABLE_NAME USING ERRCODE = '23000';
+END; $$ LANGUAGE plpgsql;
+
+CREATE TABLE IF NOT EXISTS gov_terms (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  label              text NOT NULL UNIQUE,
+  starts_at          timestamptz NOT NULL,
+  ends_at            timestamptz NOT NULL,
+  appointment_method text NOT NULL CHECK (appointment_method IN ('appointed', 'elected')),
+  status             text NOT NULL DEFAULT 'planned' CHECK (status IN ('planned', 'active', 'ended')),
+  notes              text,
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  CHECK (ends_at > starts_at)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_gov_one_active_term ON gov_terms ((true)) WHERE status = 'active';
+
+CREATE TABLE IF NOT EXISTS gov_seats (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  term_id       uuid NOT NULL REFERENCES gov_terms (id),
+  constituency  text NOT NULL CHECK (constituency IN ('ambassador', 'coach', 'community_trader', 'funded_trader', 'moderator')),
+  seat_no       integer NOT NULL CHECK (seat_no IN (1, 2)),
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (term_id, constituency, seat_no)
+);
+
+CREATE TABLE IF NOT EXISTS gov_eligibility (
+  id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id      uuid NOT NULL REFERENCES openfund_users (id),
+  constituency text NOT NULL CHECK (constituency IN ('ambassador', 'coach', 'community_trader', 'funded_trader', 'moderator')),
+  status       text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'verified', 'rejected', 'revoked')),
+  person_ref   text,                        -- management-assigned identity group: one person, several wallets
+  evidence_ref text,                        -- reference to the verification record (never personal data)
+  source       text NOT NULL DEFAULT 'management_review',
+  decided_by   text,
+  decided_at   timestamptz,
+  expires_at   timestamptz,
+  created_at   timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (user_id, constituency)
+);
+
+CREATE TABLE IF NOT EXISTS gov_memberships (
+  id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  seat_id             uuid NOT NULL REFERENCES gov_seats (id),
+  user_id             uuid NOT NULL REFERENCES openfund_users (id),
+  person_ref          text,
+  status              text NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'revoked', 'ended')),
+  starts_at           timestamptz NOT NULL,
+  ends_at             timestamptz NOT NULL,
+  appointment_method  text NOT NULL CHECK (appointment_method IN ('appointed', 'elected')),
+  appointed_by        text NOT NULL,
+  public_display_name text,
+  public_consent      boolean NOT NULL DEFAULT false,
+  revoked_at          timestamptz,
+  revoked_reason      text,
+  created_at          timestamptz NOT NULL DEFAULT now(),
+  CHECK (ends_at > starts_at)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_gov_active_seat ON gov_memberships (seat_id) WHERE status = 'active';
+CREATE UNIQUE INDEX IF NOT EXISTS uq_gov_active_user ON gov_memberships (user_id) WHERE status = 'active';
+CREATE UNIQUE INDEX IF NOT EXISTS uq_gov_active_person ON gov_memberships (person_ref) WHERE status = 'active' AND person_ref IS NOT NULL;
+
+-- session-based governance roles beyond the derived ones (council seat,
+-- proposal author). Written only through the protected admin API.
+CREATE TABLE IF NOT EXISTS gov_roles (
+  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    uuid NOT NULL REFERENCES openfund_users (id),
+  role       text NOT NULL CHECK (role IN ('moderator', 'reviewer', 'administrator')),
+  granted_by text NOT NULL,
+  granted_at timestamptz NOT NULL DEFAULT now(),
+  revoked_at timestamptz
+);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_gov_role_active ON gov_roles (user_id, role) WHERE revoked_at IS NULL;
+
+CREATE SEQUENCE IF NOT EXISTS gov_ofp_seq;
+CREATE TABLE IF NOT EXISTS gov_proposals (
+  id                      uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  ofp_number              bigint NOT NULL UNIQUE DEFAULT nextval('gov_ofp_seq'),
+  ofp_id                  text GENERATED ALWAYS AS ('OFP-' || lpad(ofp_number::text, 4, '0')) STORED,
+  author_id               uuid NOT NULL REFERENCES openfund_users (id),
+  title                   text NOT NULL CHECK (char_length(title) BETWEEN 5 AND 160),
+  summary                 text NOT NULL CHECK (char_length(summary) BETWEEN 10 AND 600),
+  description             text NOT NULL DEFAULT '',
+  category                text NOT NULL,
+  classification          text NOT NULL DEFAULT 'advisory' CHECK (classification IN ('binding', 'advisory')),
+  product_area            text,
+  technical_implications  text,
+  resource_requirements   text,
+  expected_benefits       text,
+  risks                   text,
+  documentation_links     jsonb NOT NULL DEFAULT '[]'::jsonb,
+  github_issue_url        text,
+  github_pr_url           text,
+  status                  text NOT NULL DEFAULT 'draft' CHECK (status IN
+    ('draft','discussion','submitted','under_review','voting','approved','rejected',
+     'implementation_scheduled','in_progress','implemented','blocked','archived')),
+  revision                integer NOT NULL DEFAULT 1,
+  capacity_confirmed      boolean NOT NULL DEFAULT false,   -- management confirmed the resource envelope
+  capacity_confirmed_by   text,
+  decision                text,
+  decision_rationale      text,
+  implementation_status   text NOT NULL DEFAULT 'not_started' CHECK (implementation_status IN
+    ('not_started','scheduled','in_progress','implemented','blocked')),
+  created_at              timestamptz NOT NULL DEFAULT now(),
+  updated_at              timestamptz NOT NULL DEFAULT now(),
+  -- reserved company powers can only ever be advisory: enforced in the database
+  CONSTRAINT gov_reserved_is_advisory CHECK (
+    classification = 'advisory' OR category IN
+      ('product_priority','community_policy','open_source','roadmap','documentation','accessibility','governance_amendment')
+  )
+);
+CREATE INDEX IF NOT EXISTS idx_gov_proposals_status ON gov_proposals (status, updated_at DESC);
+
+CREATE OR REPLACE FUNCTION gov_proposal_guard() RETURNS trigger AS $$
+BEGIN
+  IF NEW.author_id IS DISTINCT FROM OLD.author_id OR NEW.ofp_number IS DISTINCT FROM OLD.ofp_number THEN
+    RAISE EXCEPTION 'a proposal identifier and its author are immutable' USING ERRCODE = '23000';
+  END IF;
+  IF OLD.status NOT IN ('draft','discussion','submitted','under_review')
+     AND (NEW.category IS DISTINCT FROM OLD.category OR NEW.classification IS DISTINCT FROM OLD.classification) THEN
+    RAISE EXCEPTION 'proposal category and classification are frozen once voting has opened' USING ERRCODE = '23000';
+  END IF;
+  NEW.updated_at := now();
+  RETURN NEW;
+END; $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_gov_proposal_guard ON gov_proposals;
+CREATE TRIGGER trg_gov_proposal_guard BEFORE UPDATE ON gov_proposals FOR EACH ROW EXECUTE FUNCTION gov_proposal_guard();
+
+CREATE TABLE IF NOT EXISTS gov_proposal_revisions (
+  proposal_id uuid NOT NULL REFERENCES gov_proposals (id),
+  revision    integer NOT NULL,
+  snapshot    jsonb NOT NULL,
+  created_by  uuid NOT NULL REFERENCES openfund_users (id),
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (proposal_id, revision)
+);
+DROP TRIGGER IF EXISTS trg_gov_revisions_append ON gov_proposal_revisions;
+CREATE TRIGGER trg_gov_revisions_append BEFORE UPDATE OR DELETE ON gov_proposal_revisions FOR EACH ROW EXECUTE FUNCTION gov_forbid_mutation();
+
+CREATE TABLE IF NOT EXISTS gov_proposal_history (
+  id          bigserial PRIMARY KEY,
+  proposal_id uuid NOT NULL REFERENCES gov_proposals (id),
+  from_status text,
+  to_status   text NOT NULL,
+  actor_id    uuid REFERENCES openfund_users (id),
+  actor_role  text NOT NULL,
+  note        text,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_gov_history_proposal ON gov_proposal_history (proposal_id, id);
+DROP TRIGGER IF EXISTS trg_gov_history_append ON gov_proposal_history;
+CREATE TRIGGER trg_gov_history_append BEFORE UPDATE OR DELETE ON gov_proposal_history FOR EACH ROW EXECUTE FUNCTION gov_forbid_mutation();
+
+-- public discussion; a stance is non-binding community feedback, never a vote
+CREATE TABLE IF NOT EXISTS gov_comments (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  proposal_id uuid NOT NULL REFERENCES gov_proposals (id),
+  user_id     uuid NOT NULL REFERENCES openfund_users (id),
+  body        text NOT NULL CHECK (char_length(body) BETWEEN 1 AND 2000),
+  stance      text CHECK (stance IN ('support', 'oppose', 'neutral')),
+  status      text NOT NULL DEFAULT 'visible' CHECK (status IN ('visible', 'hidden')),
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_gov_comments_proposal ON gov_comments (proposal_id, created_at);
+
+CREATE TABLE IF NOT EXISTS gov_voting_sessions (
+  id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  proposal_id     uuid NOT NULL REFERENCES gov_proposals (id),
+  revision        integer NOT NULL,
+  threshold_kind  text NOT NULL CHECK (threshold_kind IN ('ordinary', 'constitutional')),
+  council_size    integer NOT NULL,
+  quorum          integer NOT NULL,
+  threshold       integer NOT NULL,
+  opens_at        timestamptz NOT NULL,
+  closes_at       timestamptz NOT NULL,
+  snapshot        jsonb NOT NULL,           -- seats + members + term at the voting boundary
+  snapshot_hash   text NOT NULL,
+  status          text NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'finalized', 'void')),
+  void_reason     text,
+  created_by      text NOT NULL,
+  created_at      timestamptz NOT NULL DEFAULT now(),
+  finalized_at    timestamptz,
+  CHECK (closes_at > opens_at)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_gov_one_active_session ON gov_voting_sessions (proposal_id) WHERE status = 'active';
+
+CREATE OR REPLACE FUNCTION gov_session_guard() RETURNS trigger AS $$
+BEGIN
+  IF TG_OP = 'DELETE' THEN RAISE EXCEPTION 'voting sessions cannot be deleted' USING ERRCODE = '23000'; END IF;
+  IF OLD.status <> 'active' THEN RAISE EXCEPTION 'a closed voting session is immutable' USING ERRCODE = '23000'; END IF;
+  IF NEW.proposal_id IS DISTINCT FROM OLD.proposal_id OR NEW.revision IS DISTINCT FROM OLD.revision
+     OR NEW.threshold_kind IS DISTINCT FROM OLD.threshold_kind OR NEW.council_size IS DISTINCT FROM OLD.council_size
+     OR NEW.quorum IS DISTINCT FROM OLD.quorum OR NEW.threshold IS DISTINCT FROM OLD.threshold
+     OR NEW.opens_at IS DISTINCT FROM OLD.opens_at OR NEW.closes_at IS DISTINCT FROM OLD.closes_at
+     OR NEW.snapshot IS DISTINCT FROM OLD.snapshot OR NEW.snapshot_hash IS DISTINCT FROM OLD.snapshot_hash THEN
+    RAISE EXCEPTION 'voting rules and the eligibility snapshot are fixed once the session exists' USING ERRCODE = '23000';
+  END IF;
+  RETURN NEW;
+END; $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_gov_session_guard ON gov_voting_sessions;
+CREATE TRIGGER trg_gov_session_guard BEFORE UPDATE OR DELETE ON gov_voting_sessions FOR EACH ROW EXECUTE FUNCTION gov_session_guard();
+
+CREATE TABLE IF NOT EXISTS gov_vote_challenges (
+  nonce      text PRIMARY KEY,
+  user_id    uuid NOT NULL REFERENCES openfund_users (id),
+  session_id uuid NOT NULL REFERENCES gov_voting_sessions (id),
+  message    text NOT NULL,
+  expires_at timestamptz NOT NULL,
+  used_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS gov_votes (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id  uuid NOT NULL REFERENCES gov_voting_sessions (id),
+  seat_id     uuid NOT NULL REFERENCES gov_seats (id),
+  user_id     uuid NOT NULL REFERENCES openfund_users (id),
+  choice      text NOT NULL CHECK (choice IN ('approve', 'reject', 'abstain')),
+  nonce       text REFERENCES gov_vote_challenges (nonce),
+  signed_message text,
+  signature   text,
+  cast_at     timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (session_id, seat_id),
+  UNIQUE (session_id, user_id)
+);
+DROP TRIGGER IF EXISTS trg_gov_votes_append ON gov_votes;
+CREATE TRIGGER trg_gov_votes_append BEFORE UPDATE OR DELETE ON gov_votes FOR EACH ROW EXECUTE FUNCTION gov_forbid_mutation();
+
+CREATE TABLE IF NOT EXISTS gov_conflicts (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  proposal_id uuid NOT NULL REFERENCES gov_proposals (id),
+  seat_id     uuid NOT NULL REFERENCES gov_seats (id),
+  user_id     uuid NOT NULL REFERENCES openfund_users (id),
+  reason      text NOT NULL CHECK (char_length(reason) BETWEEN 5 AND 1000),
+  seeks_recusal boolean NOT NULL DEFAULT true,
+  status      text NOT NULL DEFAULT 'declared' CHECK (status IN ('declared', 'recused', 'no_recusal')),
+  reviewed_by text,
+  review_note text,
+  reviewed_at timestamptz,
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (proposal_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS gov_decisions (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  proposal_id uuid NOT NULL REFERENCES gov_proposals (id),
+  session_id  uuid NOT NULL UNIQUE REFERENCES gov_voting_sessions (id),
+  outcome     text NOT NULL CHECK (outcome IN ('approved', 'rejected', 'unresolved')),
+  binding     boolean NOT NULL,
+  rationale   text,
+  tally       jsonb NOT NULL,
+  decided_by  text NOT NULL,
+  decided_at  timestamptz NOT NULL DEFAULT now()
+);
+DROP TRIGGER IF EXISTS trg_gov_decisions_append ON gov_decisions;
+CREATE TRIGGER trg_gov_decisions_append BEFORE UPDATE OR DELETE ON gov_decisions FOR EACH ROW EXECUTE FUNCTION gov_forbid_mutation();
+
+-- corrections never edit a decision: they are explicit, reasoned amendments
+CREATE TABLE IF NOT EXISTS gov_decision_amendments (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  decision_id uuid NOT NULL REFERENCES gov_decisions (id),
+  amended_by  text NOT NULL,
+  reason      text NOT NULL CHECK (char_length(reason) >= 10),
+  correction  jsonb NOT NULL,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+DROP TRIGGER IF EXISTS trg_gov_amend_append ON gov_decision_amendments;
+CREATE TRIGGER trg_gov_amend_append BEFORE UPDATE OR DELETE ON gov_decision_amendments FOR EACH ROW EXECUTE FUNCTION gov_forbid_mutation();
+
+CREATE TABLE IF NOT EXISTS gov_implementation_log (
+  id             bigserial PRIMARY KEY,
+  proposal_id    uuid NOT NULL REFERENCES gov_proposals (id),
+  status         text NOT NULL CHECK (status IN ('scheduled','in_progress','implemented','blocked')),
+  evidence_url   text,
+  evidence_note  text,
+  blocked_reason text,
+  blocked_evidence text,
+  next_review_on date,
+  recorded_by    text NOT NULL,
+  created_at     timestamptz NOT NULL DEFAULT now()
+);
+DROP TRIGGER IF EXISTS trg_gov_impl_append ON gov_implementation_log;
+CREATE TRIGGER trg_gov_impl_append BEFORE UPDATE OR DELETE ON gov_implementation_log FOR EACH ROW EXECUTE FUNCTION gov_forbid_mutation();
+
+-- elections (architecture v1: disabled until management approves the rules)
+CREATE TABLE IF NOT EXISTS gov_elections (
+  id               uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  term_id          uuid NOT NULL REFERENCES gov_terms (id),
+  constituency     text NOT NULL CHECK (constituency IN ('ambassador', 'coach', 'community_trader', 'funded_trader', 'moderator')),
+  status           text NOT NULL DEFAULT 'draft' CHECK (status IN
+    ('draft','applications','candidates_approved','voting','closed','finalized','cancelled')),
+  rules_approved   boolean NOT NULL DEFAULT false,
+  rules_approved_by text,
+  applications_open_at timestamptz,
+  applications_close_at timestamptz,
+  voting_opens_at  timestamptz,
+  voting_closes_at timestamptz,
+  snapshot_taken_at timestamptz,
+  result           jsonb,
+  created_at       timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (term_id, constituency)
+);
+CREATE TABLE IF NOT EXISTS gov_election_candidates (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  election_id uuid NOT NULL REFERENCES gov_elections (id),
+  user_id     uuid NOT NULL REFERENCES openfund_users (id),
+  statement   text,
+  public_display_name text,
+  status      text NOT NULL DEFAULT 'applied' CHECK (status IN ('applied', 'approved', 'rejected', 'withdrawn')),
+  decided_by  text,
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (election_id, user_id)
+);
+CREATE TABLE IF NOT EXISTS gov_election_voters (
+  election_id uuid NOT NULL REFERENCES gov_elections (id),
+  user_id     uuid NOT NULL REFERENCES openfund_users (id),
+  PRIMARY KEY (election_id, user_id)
+);
+CREATE TABLE IF NOT EXISTS gov_election_votes (
+  id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  election_id  uuid NOT NULL REFERENCES gov_elections (id),
+  voter_id     uuid NOT NULL REFERENCES openfund_users (id),
+  candidate_id uuid NOT NULL REFERENCES gov_election_candidates (id),
+  cast_at      timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (election_id, voter_id)
+);
+DROP TRIGGER IF EXISTS trg_gov_elvotes_append ON gov_election_votes;
+CREATE TRIGGER trg_gov_elvotes_append BEFORE UPDATE OR DELETE ON gov_election_votes FOR EACH ROW EXECUTE FUNCTION gov_forbid_mutation();
+DROP TRIGGER IF EXISTS trg_gov_elvoters_append ON gov_election_voters;
+CREATE TRIGGER trg_gov_elvoters_append BEFORE UPDATE OR DELETE ON gov_election_voters FOR EACH ROW EXECUTE FUNCTION gov_forbid_mutation();
+
+-- tamper-evident audit chain: every row hashes its predecessor
+CREATE TABLE IF NOT EXISTS gov_audit_events (
+  id            bigserial PRIMARY KEY,
+  event_type    text NOT NULL,
+  actor_user_id uuid REFERENCES openfund_users (id),
+  actor_role    text NOT NULL,
+  subject_type  text NOT NULL,
+  subject_id    text,
+  details       jsonb NOT NULL DEFAULT '{}'::jsonb,
+  prev_hash     text NOT NULL,
+  hash          text NOT NULL,
+  created_at    timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_gov_audit_subject ON gov_audit_events (subject_type, subject_id, id);
+DROP TRIGGER IF EXISTS trg_gov_audit_append ON gov_audit_events;
+CREATE TRIGGER trg_gov_audit_append BEFORE UPDATE OR DELETE ON gov_audit_events FOR EACH ROW EXECUTE FUNCTION gov_forbid_mutation();
 -- Economy, transparency, Brand Ambassador, Verified Coach and Live
 -- Market Access (additive only; no existing table is altered except
 -- through ADD COLUMN IF NOT EXISTS). The backend is the only writer of

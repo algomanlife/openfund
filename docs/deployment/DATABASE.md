@@ -8,6 +8,13 @@
   `openfund_users`, `auth_nonces`, `auth_sessions`, `challenge_plans`,
   `openfund_challenges`, `demo_accounts`, `trading_orders`, `trading_positions`,
   `trading_events`, `trading_ledger`, `trade_notes`, `audit_log`
+- **Governance tables** (`gov_*`, also in `apps/backend/schema.sql`, additive and
+  idempotent): terms, seats, memberships, eligibility, roles, proposals,
+  revisions, history, comments, voting sessions, votes, conflicts, decisions,
+  amendments, implementation log, elections and a hash-chained audit log.
+  They reference only `openfund_users` and each other, evidence tables are
+  append-only by trigger, and Directus has no permission on them. See
+  [governance documentation](../governance/README.md).
 - **Directus CMS tables** (`directus_*`, `ui_messages`, `pages`,
   `navigation_items`, `home_content`, `faqs`, `trading_rules`,
   `legal_documents`, `footer_links`, `site_settings`, …)
