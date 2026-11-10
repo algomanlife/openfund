@@ -18,6 +18,48 @@
   `apply_schema.py`, the Render health check on `/server/ping` and explicit `IP_TRUST_PROXY=true` (both
   safe on 11.x), backup/restore guide, production migration and rollback runbook and ADR 0020.
 
+- Dependency governance: a machine-checked upstream registry (Vela, Vela Pine
+  addon, PineTS, Gains SDK and APIs, journal-core, Directus, wallet libraries,
+  protocol source) with versions, licenses, local modifications and update
+  procedures; a conservative `dependabot.yml` (weekly grouped minor/patch, no
+  automatic majors, upstream families excluded); and `npm run deps:check`, which
+  fails when a pin drifts from the registry. Records that only the journal-core
+  library of the LuxAlgo Trade Journal is integrated and that `vendor/gains-sdk`
+  is unused.
+- DePay checkout completed as the intended customer flow: **Buy Challenge**
+  creates the server-priced order and opens the official widget with the
+  integration id and only the order id; DePay asks the new signed dynamic
+  configuration endpoint for chain, token, amount and receiver; DePay's
+  signed callback is acknowledged at once and verified on-chain, then the
+  existing provisioning creates exactly one challenge and the checkout shows
+  *Payment successful*. Failed payments are shown in plain words, a pending
+  order resumes after a page refresh, and a tampered widget bundle is
+  blocked. Browser acceptance (`npm run test:browser:depay`) runs the real
+  backend against a stub widget and a mock chain; real-network acceptance
+  is still pending. Also fixes RPC HTTP errors (for example a 503) being
+  reported as a final rejection instead of a retryable `rpc_unavailable`,
+  and finality using a cached chain head.
+- Challenge payment verification rewritten around an explicit correlation
+  policy: the signer must be the signed-in wallet, only the approved ERC-20
+  counts, and the amount is the sum of that token's transfers to the
+  merchant from the payer or an approved router, so DePay router and swap
+  payments verify and unrelated transfers never do. A dedicated
+  `PURCHASE_RPC_URL` is required in production (no public-RPC fallback);
+  token decimals come from the contract; native value is no longer treated as
+  USD; production defaults to 12 confirmations with a reorg check; RPC
+  outages and pending transactions are retryable instead of failures.
+- Payment attempts are stored (`payment_attempts`), recovered by a
+  background sweep after restarts or lost browser requests, and surfaced to
+  operators through `/admin/payments` (lookup by order or hash, review
+  queue for underpayment, wrong token, late, duplicate and overpayment,
+  re-verify, audited resolution). Refunds stay manual.
+- Orders swept to `expired` can now be paid inside the late-payment grace
+  window as documented (previously unreachable).
+- DePay checkout: Subresource-Integrity-pinned bundle, explicit CSP origins,
+  mainnet token payments only, refresh-safe resume of a pending order and
+  automatic follow-up of a submitted hash. Optional signed DePay server
+  callback registers a retryable hint. Real-network acceptance is pending;
+  see [payment activation](docs/payments/ACTIVATION.md).
 - Repository: the generated `react/` build output (22.7 MB, 241 files) is no
   longer tracked; `npm run build:web` creates it and `Backend` CI builds it
   before booting the server. Removes the main source of merge conflicts between

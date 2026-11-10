@@ -24,4 +24,4 @@ Openfund depends on LuxAlgo Vela (vendored, with three local source edits), its 
 - Retiring a patch is a deliberate, tested act (OF-VELA-001 is the first candidate).
 - The registry must be kept current; the dependency-governance workflow proposes updates but a human approves.
 
-[ADR index](README.md) · [Upstream dependency registry](../integrations/UPSTREAM_DEPENDENCIES.md)
+[ADR index](README.md) · [Upstream dependency registry](../integrations/UPSTREAM_REGISTRY.md) · [Patch registry](../integrations/UPSTREAM_DEPENDENCIES.md)

@@ -1,6 +1,6 @@
-# Upstream dependency registry and isolation
+# Upstream isolation and patch registry
 
-This page is the authoritative register of external code and services Openfund depends on, how each one is isolated from Openfund's own work, and how it is updated. Its machine-readable twin is [`infra/upstream/registry.json`](../../infra/upstream/registry.json); `npm run test:upstream` fails if the two disagree with the vendored manifests, lockfiles or `render.yaml`. Decision record: [ADR 0019](../decisions/0019-upstream-isolation.md).
+The **inventory of record** (versions, licences, pins, locations, tests, risks) is the generated [upstream dependency registry](UPSTREAM_REGISTRY.md); changes to it follow [Dependency governance](../development/DEPENDENCY_GOVERNANCE.md). This page does not duplicate that inventory. It records what the inventory cannot: the isolation layers, the patch registry, the status of each provider against newer upstream versions, rollback limits, and the controlled update procedure. Its machine-readable twin is [`infra/upstream/registry.json`](../../infra/upstream/registry.json) (enforcement data: recipes, guards, observed versions); `npm run test:upstream` fails if it disagrees with the vendored manifests, lockfiles or `render.yaml`, and `npm run deps:check` guards the inventory. Decision record: [ADR 0019](../decisions/0019-upstream-isolation.md).
 
 Reviewed 2026-11-10. "Observed" means the version exists upstream; it does **not** mean it was reviewed or is compatible.
 
@@ -29,7 +29,7 @@ Direct modification of upstream source exists in exactly one place: three files 
 
 ## Patch registry
 
-Source of truth: [`infra/upstream/patches.json`](../../infra/upstream/patches.json). Patch files are reversible unified diffs under `infra/upstream/patches/`.
+Source of truth for modifications: [`infra/upstream/patches.json`](../../infra/upstream/patches.json). Patch files are reversible unified diffs under `infra/upstream/patches/`.
 
 | ID | Applies to | Reason | Regression test |
 | :--- | :--- | :--- | :--- |
