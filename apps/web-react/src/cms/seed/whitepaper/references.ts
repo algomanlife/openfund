@@ -33,7 +33,7 @@ export const references: WpReference[] = [
     note: t('Implementation and documentation of the transparency report, treasury snapshots, partner programs and the Live Market Access control plane. Under review; not yet released.', 'پیاده‌سازی و مستندات گزارش شفافیت، تصاویر لحظه‌ای خزانه، برنامه‌های همکاری و لایهٔ کنترل اتصال به بازار. در حال بازبینی و هنوز منتشرنشده.') },
   { key: 'protocol-provenance', sort: 12, kind: 'repository', title: 'Openfund Protocol source provenance', publisher: 'Openfund', url: blob('packages/openfund-protocol/PROVENANCE.md'), accessed: CHECKED,
     note: t('Dormant Solidity foundation imported from MUX Protocol under GPL-2.0; not connected to any runtime.', 'زیربنای غیرفعال Solidity برگرفته از MUX Protocol تحت GPL-2.0؛ به هیچ بخش اجرایی متصل نیست.') },
-  { key: 'render-blueprint', sort: 13, kind: 'repository', title: 'Render Blueprint', publisher: 'Openfund', url: blob('render.yaml'), accessed: CHECKED,
+  { key: 'deployment-blueprint', sort: 13, kind: 'repository', title: 'Deployment blueprint', publisher: 'Openfund', url: blob('render.yaml'), accessed: CHECKED,
     note: t('Three deployed resources: the web/API service, PostgreSQL and Directus.', 'سه منبع مستقر: سرویس وب/API، پایگاه داده PostgreSQL و Directus.') },
   { key: 'release-v044', sort: 14, kind: 'release', title: 'Openfund v0.4.4 release', publisher: 'Openfund', url: `${REPO}/releases/tag/v0.4.4`, published: '2026-11-08', accessed: CHECKED,
     note: t('Latest official release at the time of writing; its version and commit are served by the production /version endpoint.', 'آخرین نسخهٔ رسمی در زمان نگارش؛ نسخه و کامیت آن از نقطهٔ پایانی /version محیط اصلی قابل بررسی است.') },

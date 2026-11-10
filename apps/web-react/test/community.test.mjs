@@ -36,16 +36,17 @@ test('Discord validator accepts only HTTPS invitations on authentic hosts', () =
   for (const url of ['', 'https://discord.gg/', 'https://discord.com/', 'https://discord.com/channels/123', 'https://discord.com/invite/', 'https://discord.gg.evil.test/ExampleInvite', 'https://user:pass@discord.gg/ExampleInvite', 'https://discord.gg:8443/ExampleInvite', 'http://discord.gg/ExampleInvite', 'javascript:alert(1)', 'https://discord.gg/ExampleInvite?x=1', 'https://discord.gg/ExampleInvite#x']) assert.equal(discordCommunityUrl(url), null)
 })
 
-test('every compatible default group renders three exact localized unavailable actions', () => {
+test('every compatible default group renders two exact localized unavailable actions', () => {
   const mod = load()
   for (const locale of ['en', 'fa']) {
     const doc = render(mod.default, locale)
     assert.equal(doc.querySelectorAll('[role="group"]').length, 1)
     assert.equal(doc.querySelectorAll('a').length, 0)
-    assert.equal(doc.querySelectorAll('button[aria-disabled="true"]').length, 3)
-    for (const name of ['Telegram', 'Discord', 'Instagram']) {
+    assert.equal(doc.querySelectorAll('button[aria-disabled="true"]').length, 2)
+    assert.equal(doc.querySelector('[data-provider="instagram"]'), null)
+    for (const name of ['Telegram', 'Discord']) {
       const button = doc.querySelector(`[data-provider="${name.toLowerCase()}"]`)
-      assert.equal(button.querySelector('.community-copy > span').textContent, name === 'Instagram' ? (locale === 'fa' ? 'اخبار، آموزش و سرگرمی' : 'News, Education & Entertainment') : (locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'))
+      assert.equal(button.querySelector('.community-copy > span').textContent, locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on')
       assert.equal(button.querySelector('small').textContent, locale === 'fa' ? 'به‌زودی' : 'Coming Soon')
       assert.equal(button.querySelector('img').alt, name)
       assert.ok(button.getAttribute('aria-label').includes(name))
@@ -65,30 +66,16 @@ test('provider availability is independent and enabled links preserve security a
       assert.equal(link.rel, 'noopener noreferrer')
       assert.equal(link.querySelector('small'), null)
     }
-    assert.equal(doc.querySelectorAll('.community-button').length, 3)
+    assert.equal(doc.querySelectorAll('.community-button').length, 2)
   }
 })
 
-test('source and classic mirror retain five identical compact monochrome platform wrappers', () => {
-  for (const path of ['apps/web-react/src/pages/landing-body.html', 'dist/index.html']) {
-    const doc = new JSDOM(read(path)).window.document
-    const cards = [...doc.querySelectorAll('.desktop-btns .desktop-btn')]
-    assert.equal(cards.length, 5)
-    assert.equal(doc.querySelectorAll('.desktop-btns img').length, 0)
-    for (const card of cards) {
-      const icon = card.querySelector('.platform-icon > svg')
-      assert.ok(icon)
-      assert.equal(icon.getAttribute('width'), '20')
-      assert.equal(icon.getAttribute('height'), '20')
-      assert.equal(card.getAttribute('aria-disabled'), 'true')
-    }
-    assert.equal(doc.querySelectorAll('.credits-row .service-logo-slot').length, 5)
-    assert.equal(doc.querySelectorAll('.credits-row img[src="assets/vela-logo.svg"]').length, 1)
-    for (const [index, name] of [[3, 'app-store'], [4, 'google-play']]) {
-      const original = new JSDOM(read(`apps/web-react/public/assets/${name}-icon.svg`), { contentType: 'image/svg+xml' }).window.document
-      assert.equal(cards[index].querySelector('path').getAttribute('d'), original.querySelector('path').getAttribute('d'))
-    }
-  }
+test('the public page lists no unreleased app downloads and four service credits without a hosting provider', () => {
+  const doc = new JSDOM(read('apps/web-react/src/pages/landing-body.html')).window.document
+  assert.equal(doc.querySelectorAll('#desktop, .desktop-btns').length, 0)
+  assert.equal(doc.querySelectorAll('.credits-row .service-logo-slot').length, 4)
+  assert.equal(doc.querySelectorAll('.credits-row img[src="assets/vela-logo.svg"]').length, 1)
+  assert.equal(doc.querySelectorAll('.credits-row a[href*="render.com"]').length, 0)
 })
 
 test('owned styles remove logo recoloring and support shared reduced motion', () => {
@@ -115,18 +102,15 @@ test('Instagram accepts only HTTPS profile destinations and never infers ownersh
   }
   for (const value of ['', 'http://instagram.com/example/', 'https://www.instagram.com/example/', 'https://instagram.com.evil.test/example/', 'https://user@instagram.com/example/', 'https://instagram.com:8443/example/', 'https://instagram.com/', 'https://instagram.com/explore/', 'https://instagram.com/accounts/', 'https://instagram.com/p/123/', 'https://instagram.com/reels/', 'https://instagram.com/foo../', 'https://instagram.com/.foo/', 'https://instagram.com/foo./', 'https://instagram.com/foo/?x=1', 'https://instagram.com/foo/#x', 'https://instagram.com/' + 'x'.repeat(31), 'javascript:alert(1)']) assert.equal(instagramCommunityUrl(value), null, value)
   for (const locale of ['en', 'fa']) {
+    // The Instagram promo button was retired: even a valid configured profile renders nothing.
     const doc = render(load('', '', 'https://instagram.com/ExampleCommunity/').default, locale)
-    assert.equal(doc.querySelectorAll('a').length, 1)
-    const link = doc.querySelector('a')
-    assert.equal(link.dataset.provider, 'instagram')
-    assert.equal(link.rel, 'noopener noreferrer')
-    assert.equal(link.target, '_blank')
-    assert.equal(link.querySelector('small'), null)
+    assert.equal(doc.querySelectorAll('a').length, 0)
+    assert.equal(doc.querySelector('[data-provider="instagram"]'), null)
     assert.equal(doc.querySelectorAll('button[aria-disabled="true"]').length, 2)
   }
 })
 
-test('all five footer marks and community glyphs are actual vectors without raster payloads', () => {
+test('all footer marks and community glyphs are actual vectors without raster payloads', () => {
   for (const file of ['apps/web-react/src/pages/landing-body.html', 'dist/index.html']) {
     const doc = new JSDOM(read(file)).window.document
     for (const card of doc.querySelectorAll('.credits-row > a')) {

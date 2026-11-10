@@ -230,7 +230,7 @@ export const foundationChapters: WpChapter[] = [
         [t('API and engine', 'API و موتور'), t('Node.js, Express, Decimal arithmetic, Server-Sent Events', 'Node.js، Express، محاسبات Decimal، Server-Sent Events'), t('Authentication, simulated execution, evaluation, commerce, economy', 'احراز هویت، اجرای شبیه‌سازی‌شده، ارزیابی، تجارت، اقتصاد')],
         [t('Database', 'پایگاه داده'), t('PostgreSQL 17, idempotent additive migrations', 'PostgreSQL 17، مهاجرت‌های افزودنی و تکرارپذیر'), t('System of record for every financial row', 'سامانهٔ ثبت برای هر ردیف مالی')],
         [t('Content', 'محتوا'), t('Directus 11.9.1, public read of published rows', 'Directus 11.9.1، خواندن عمومی ردیف‌های منتشرشده'), t('Editorial pages, catalog administration, this whitepaper', 'صفحات محتوایی، مدیریت کاتالوگ، همین وایت‌پیپر')],
-        [t('Hosting and release', 'میزبانی و انتشار'), t('Render Blueprint, GitHub Actions, immutable release manifests', 'Render Blueprint، GitHub Actions، مانیفست‌های تغییرناپذیر انتشار'), t('Reproducible, verifiable deployments', 'استقرارهای تکرارپذیر و قابل راستی‌آزمایی')],
+        [t('Deployment and release', 'استقرار و انتشار'), t('Infrastructure-as-code blueprint, GitHub Actions, immutable release manifests', 'نقشهٔ زیرساخت به‌صورت کد، GitHub Actions، مانیفست‌های تغییرناپذیر انتشار'), t('Reproducible, verifiable deployments', 'استقرارهای تکرارپذیر و قابل راستی‌آزمایی')],
       ] },
       { type: 'h3', text: t('Security boundaries', 'مرزهای امنیتی') },
       { type: 'list', items: [
@@ -239,13 +239,13 @@ export const foundationChapters: WpChapter[] = [
         t('The CMS public role reads published content only and can never see accounts, sessions or financial tables.', 'نقش عمومی CMS فقط محتوای منتشرشده را می‌خواند و هرگز به حساب‌ها، نشست‌ها یا جداول مالی دسترسی ندارد.'),
         t('Administrative financial actions require a server-side token and a named operator, and are written to an append-only audit log.', 'اقدامات مالی مدیریتی به توکن سمت سرور و اپراتور مشخص نیاز دارند و در گزارش ممیزی فقط‌افزودنی ثبت می‌شوند.'),
         t('No private keys exist in the system. Treasury reads use a public address; execution and payout adapters are disabled by default.', 'هیچ کلید خصوصی در سامانه وجود ندارد. خواندن خزانه با نشانی عمومی انجام می‌شود و آداپتورهای اجرا و پرداخت به‌طور پیش‌فرض غیرفعال‌اند.'),
-        t('Secret scanning runs in continuous integration, and secrets are injected only through the hosting environment.', 'جست‌وجوی اسرار در یکپارچه‌سازی پیوسته اجرا می‌شود و اسرار فقط از طریق محیط میزبانی تزریق می‌شوند.'),
+        t('Secret scanning runs in continuous integration, and secrets are injected only through the deployment environment.', 'جست‌وجوی اسرار در یکپارچه‌سازی پیوسته اجرا می‌شود و اسرار فقط از طریق محیط استقرار تزریق می‌شوند.'),
       ] },
       { type: 'h3', text: t('Protocol status', 'وضعیت پروتکل') },
       { type: 'p', text: t(
         'The long-term Openfund Protocol aims to aggregate liquidity across venues and choose execution paths intelligently. Today the repository holds only a dormant Solidity foundation imported from MUX Protocol under GPL-2.0. It is not referenced by the application, not compiled by the release pipeline and not deployed to any chain. Turning it into a product is a separate, separately authorised project.',
         'هدف بلندمدت پروتکل اوپن‌فاند تجمیع نقدینگی میان بازارها و انتخاب هوشمند مسیر اجراست. امروز مخزن فقط یک زیربنای غیرفعال Solidity را نگه می‌دارد که از MUX Protocol تحت GPL-2.0 وارد شده است. این زیربنا در اپلیکیشن ارجاع داده نمی‌شود، در خط انتشار کامپایل نمی‌شود و روی هیچ زنجیره‌ای مستقر نیست. تبدیل آن به محصول، پروژه‌ای جداگانه و نیازمند مجوز جداگانه است.') },
-      { type: 'refs', keys: ['architecture', 'render-blueprint', 'siwe', 'protocol-provenance', 'release-v044'] },
+      { type: 'refs', keys: ['architecture', 'deployment-blueprint', 'siwe', 'protocol-provenance', 'release-v044'] },
     ],
   },
 ]
