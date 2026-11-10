@@ -202,7 +202,7 @@ export async function confirmPurchaseTx(client, { orderId, userId, evidence, sou
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'confirmed',$13) RETURNING id`,
       [orderId, userId, evidence.txHash, evidence.chainId, evidence.blockchain ?? null, evidence.blockNumber ?? null,
         evidence.fromAddress, evidence.toAddress ?? null, evidence.amount ?? null,
-        evidence.tokenAddress ?? null, evidence.reported?.token ?? null, evidence.reported?.amount ?? null,
+        evidence.tokenAddress ?? null, evidence.reported?.sentToken ?? null, evidence.reported?.sentAmount ?? null,
         JSON.stringify({ ...evidence, source })])).rows[0]
     }
 
@@ -424,8 +424,12 @@ export async function recordPaymentHint(pool, body) {
         AND created_at > now() - interval '24 hours'`, [wanted])).rows[0]
   if (!order) return { recorded: false, reason: 'no_open_order' }
   const keep = v => (c.solana ? String(v || '') : lower(v))
+  /* DePay's `token`/`amount` describe what the receiver GETS (settlement);
+     the payer's source token/amount arrive only in `sent_token`/`sent_amount`
+     ("Include sent token information" in the DePay integration) */
   const reported = { blockchain: c.blockchain, sender: keep(body?.sender) || null, token: keep(body?.token) || null,
-    amount: body?.amount == null ? null : String(body.amount).slice(0, 60), receiver: keep(body?.receiver) || null }
+    amount: body?.amount == null ? null : String(body.amount).slice(0, 60), receiver: keep(body?.receiver) || null,
+    sentToken: keep(body?.sent_token) || null, sentAmount: body?.sent_amount == null ? null : String(body.sent_amount).slice(0, 60) }
   await pool.query(
     `INSERT INTO payment_attempts (purchase_order_id, user_id, chain_id, tx_hash, status, retryable, attested, reported, detail)
      VALUES ($1,$2,$3,$4,'pending',true,true,$5,$6) ON CONFLICT (purchase_order_id, chain_id, tx_hash) DO NOTHING`,

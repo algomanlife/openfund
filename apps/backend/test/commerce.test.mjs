@@ -520,7 +520,9 @@ test('M2 a Base payment (non-Arbitrum EVM) from ANY wallet, attested by DePay, i
   const o = (await order(u)).data.order
   const otherWallet = rndAddr()
   seen.length = 0
-  const body = { ...callbackBody(u, o), blockchain: 'base', sender: otherWallet, receiver: RECEIVER, token: '0x' + 'ee'.repeat(20), amount: '0.031' }
+  const body = { ...callbackBody(u, o), blockchain: 'base', sender: otherWallet, receiver: RECEIVER,
+    /* DePay: token/amount = what the receiver gets; sent_token/sent_amount = what the payer sent */
+    token: BASE_USDC, amount: o.price_usd, sent_token: '0x' + 'ee'.repeat(20), sent_amount: '0.031' }
   const app2 = express()
   app2.use(express.json({ verify: (req, res, buf) => { req.rawBody = buf } }))
   app2.use(purchaseRoutes({ pool, requireAuth, audit: async () => {}, verifier: recordingVerifier }))

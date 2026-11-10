@@ -21,7 +21,7 @@ necessary, not sufficient.
 | Item | Where |
 | --- | --- |
 | Approved receiver (a multisig, never a hot key) | `PURCHASE_PAYMENT_RECEIVER` |
-| Chain and approved USD stablecoin contract | `PURCHASE_PAYMENT_CHAIN`, `PURCHASE_PAYMENT_TOKEN` |
+| Settlement chains, approved USD stablecoin and receiver per chain | `PURCHASE_PAYMENT_CHAINS` (JSON) and `PURCHASE_RPC_URLS` (secret); see [DePay](DEPAY.md) |
 | Dedicated RPC endpoint for that chain | `PURCHASE_RPC_URL` (secret) |
 | Official DePay router for that chain | `PURCHASE_ROUTER_ADDRESSES` |
 | Confirmation depth (default 12 in production) | `PURCHASE_PAYMENT_MIN_CONFIRMATIONS` |
@@ -30,7 +30,7 @@ necessary, not sufficient.
 | Endpoint URLs set on the DePay integration | `https://<host>/purchases/depay/configuration` and `https://<host>/purchases/depay/callback` |
 | CSP origins for the widget | `CSP_EXTRA_SCRIPT_SRC`, `CSP_EXTRA_FRAME_SRC` |
 | DePay Verify public key (signs configuration requests, callbacks and events) | `DEPAY_VERIFY_PUBLIC_KEY` (legacy name `DEPAY_CALLBACK_PUBLIC_KEY`) |
-| Checkout chain | `PURCHASE_PAYMENT_CHAIN=42161` (Arbitrum One only; any other value keeps purchases disabled) |
+| Checkout chains | Every complete entry in `PURCHASE_PAYMENT_CHAINS` (EVM networks and Solana). Wallet sign-in stays Arbitrum One only; payment is not tied to it |
 
 Compute the SRI hash from the exact approved bundle:
 `curl -s <widget-url> | openssl dgst -sha384 -binary | openssl base64 -A`,
