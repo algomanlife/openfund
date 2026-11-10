@@ -173,7 +173,7 @@ origin, so session cookies stay first-party. PostgreSQL is the single store,
 shared with Directus, which edits content and catalog tables.
 
 ```mermaid
-flowchart LR
+flowchart TB
   subgraph Browser
     SPA["React app<br/>website + terminal"]
     Wallet["Wallet<br/>(RainbowKit, wagmi)"]
