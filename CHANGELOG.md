@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Upstream governance automation: `scripts/upstream/check-releases.mjs` reads upstream releases and
+  release notes, classifies risk by each provider's versioning policy (0.x, Directus breaking minors,
+  semver majors, source heads) and feeds the weekly read-only `Upstream watch` workflow, which opens one
+  draft proposal PR changing only `latest_observed`. `Upstream update candidate` (manual dispatch) runs
+  the controlled vendor update and opens a draft PR with the report. No auto-merge, no deployment.
+  ADR 0021 and `docs/integrations/UPSTREAM_AUTOMATION.md`.
+
 - Upstream isolation and dependency registry: separates upstream, integration and Openfund-custom
   layers for Vela, the Pine addon and PineTS, the Gains API and SDK, the LuxAlgo journal core,
   Directus and key libraries. Adds `infra/upstream/` (registry, patch registry with three reversible
