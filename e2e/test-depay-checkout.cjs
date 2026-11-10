@@ -177,6 +177,7 @@ async function run({ BASE, chain }) {
     check('the signed callback is acknowledged with 200 at once', cbShort.status === 200 && cbShort.data?.recorded === true)
     await page.getByRole('alert').filter({ hasText: 'below the order price' }).waitFor({ timeout: 15000 })
     check('the checkout shows the payment failure (underpayment) in plain words', true)
+    check('with DePay the customer never sees an address or a transaction-hash field', (await page.locator('.of-checkout-tx').count()) === 0 && (await page.locator('.of-checkout-addr').count()) === 0)
     await shot('2-underpayment')
     check('no challenge was created for the underpayment', (await challengesOf()).length === before)
     const attempts = (await call(`/purchases/orders/${order.id}/attempts`)).data.attempts

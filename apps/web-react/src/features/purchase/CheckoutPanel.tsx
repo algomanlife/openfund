@@ -108,6 +108,7 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
   const [waiting, setWaiting] = useState<string | null>(null)
   const [attemptError, setAttemptError] = useState<string | null>(null)
   const [widgetOpen, setWidgetOpen] = useState(false)
+  const [manual, setManual] = useState(false) /* manual payment only when the widget cannot load */
   const polling = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const plan = plans?.find(p => p.slug === planSlug) || null
@@ -236,6 +237,7 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
   const rc = publicRuntimeConfig()
   const depayUrl = rc.depayWidget && rc.depayWidgetUrl && rc.depayWidgetIntegrity && rc.depayIntegrationId ? rc.depayWidgetUrl : undefined
   const depayAvailable = !!(depayUrl && paymentCfg?.token)
+  const showManual = !depayAvailable || manual
   const widgetFailed = t('درگاه پرداخت بارگذاری نشد؛ پرداخت دستی را انجام بده.', 'The payment widget could not be loaded — use the manual payment below.')
 
   /* Official DePay widget: DePayWidgets.Payment({ integration, payload }).
@@ -263,7 +265,7 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
     if (!w.DePayWidgets?.Payment) throw new Error('depay_unavailable')
     setWidgetOpen(true)
     void Promise.resolve(w.DePayWidgets.Payment({ integration: rc.depayIntegrationId, payload: { orderId } }))
-      .catch(() => { setError(widgetFailed) })
+      .catch(() => { setError(widgetFailed); setManual(true) })
   }
   const buyChallenge = async () => {
     setError(null)
@@ -272,7 +274,7 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
       if (!o) return
       setBusy(true)
       await openDepay(o.id)
-    } catch { setError(widgetFailed) } finally { setBusy(false) }
+    } catch { setError(widgetFailed); setManual(true) } finally { setBusy(false) }
   }
 
   return createPortal(
@@ -326,13 +328,15 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
           <div className="of-checkout-pay">
             {order.status === 'pending' ? (
               <>
-                <p className="of-checkout-step">{t('۱. مبلغ دقیق را به این آدرس بفرست', '1. Send the exact amount to this address')}:</p>
-                <div className="of-checkout-addr">
-                  <code dir="ltr">{payment?.receiver}</code>
-                  <button className="of-profile-plainbtn" onClick={() => void navigator.clipboard?.writeText(payment?.receiver || '')}>
-                    {t('کپی', 'Copy')}
-                  </button>
-                </div>
+                {showManual && <>
+                  <p className="of-checkout-step">{t('۱. مبلغ دقیق را به این آدرس بفرست', '1. Send the exact amount to this address')}:</p>
+                  <div className="of-checkout-addr">
+                    <code dir="ltr">{payment?.receiver}</code>
+                    <button className="of-profile-plainbtn" onClick={() => void navigator.clipboard?.writeText(payment?.receiver || '')}>
+                      {t('کپی', 'Copy')}
+                    </button>
+                  </div>
+                </>}
                 <div className="of-checkout-meta">
                   <span>{t('مبلغ', 'Amount')}: <b dir="ltr">{payment ? fmtMoney(order.price_usd) : '—'}</b></span>
                   <span>{t('زنجیره', 'Chain')}: <b>{CHAIN_LABEL[payment?.chainId || 0] || payment?.chainId}</b></span>
@@ -345,13 +349,15 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
                 )}
                 {waiting && <p className="of-checkout-status" role="status">{waiting}</p>}
                 {attemptError && <p className="of-profile-error" role="alert">{attemptError}</p>}
-                <p className="of-checkout-step">{t('۲. پس از پرداخت، هش تراکنش را وارد کن', '2. After paying, enter the transaction hash')}:</p>
-                <input dir="ltr" className="of-checkout-tx" placeholder="0x…" value={txHash}
-                  onChange={e => setTxHash(e.target.value)} spellCheck={false} />
+                {showManual && <>
+                  <p className="of-checkout-step">{t('۲. پس از پرداخت، هش تراکنش را وارد کن', '2. After paying, enter the transaction hash')}:</p>
+                  <input dir="ltr" className="of-checkout-tx" placeholder="0x…" value={txHash}
+                    onChange={e => setTxHash(e.target.value)} spellCheck={false} />
+                </>}
                 <div className="of-checkout-actions">
-                  <button className="button" disabled={busy || !/^0x[0-9a-fA-F]{64}$/.test(txHash.trim())} onClick={verify}>
+                  {showManual && <button className="button" disabled={busy || !/^0x[0-9a-fA-F]{64}$/.test(txHash.trim())} onClick={verify}>
                     {busy ? '…' : t('تأیید پرداخت', 'Verify payment')}
-                  </button>
+                  </button>}
                   <button className="of-profile-plainbtn" disabled={busy}
                     onClick={() => { void apiFetch(`/purchases/orders/${order.id}/cancel`, { method: 'POST', body: '{}' }); onClose() }}>
                     {t('لغو سفارش', 'Cancel order')}
