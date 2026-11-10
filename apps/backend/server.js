@@ -26,8 +26,9 @@ import { Engine } from './engine.js'
 import { Portfolio } from './portfolio.js'
 import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
-import { purchaseRoutes, confirmPurchase } from './purchases.js'
+import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments } from './purchases.js'
 import { adminRoutes } from './admin.js'
+import { paymentAdminRoutes } from './payments-admin.js'
 import { governanceRoutes } from './governance-routes.js'
 import { partnerRoutes, partnerAdminRoutes, attributeAmbassador } from './partners.js'
 import { economyRoutes, economyAdminRoutes } from './economy.js'
@@ -113,11 +114,17 @@ const CSP_LEGACY_HASHES = legacyScriptHashes()
 const cspExtraConnect = (process.env.CSP_EXTRA_CONNECT || '').split(',').map(v => v.trim()).filter(Boolean).join(' ')
 /* WalletConnect v2 loads its Verify API in an iframe; allowed only when a
    WalletConnect Cloud project id is configured (remote wallets enabled). */
+const cspList = name => (process.env[name] || '').split(',').map(v => v.trim()).filter(v => /^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(v)).join(' ')
+/* CSP_EXTRA_SCRIPT_SRC / CSP_EXTRA_FRAME_SRC: https origins (no paths, no
+   wildcards) for the approved DePay widget, e.g. https://integrate.depay.com.
+   Unset = nothing cross-origin may script or frame the application. */
+const cspExtraScript = cspList('CSP_EXTRA_SCRIPT_SRC')
+const cspExtraFrame = cspList('CSP_EXTRA_FRAME_SRC')
 const cspWalletFrames = process.env.VITE_WALLETCONNECT_PROJECT_ID ? ' https://verify.walletconnect.org https://verify.walletconnect.com' : ''
 const buildCsp = (allowEval) =>
-  "default-src 'self'; script-src 'self' " + CSP_THEME_BOOT_HASH + (allowEval ? " 'unsafe-eval' " + CSP_LEGACY_HASHES : '') + "; style-src 'self' 'unsafe-inline'; " +
+  "default-src 'self'; script-src 'self' " + (cspExtraScript ? cspExtraScript + ' ' : '') + CSP_THEME_BOOT_HASH + (allowEval ? " 'unsafe-eval' " + CSP_LEGACY_HASHES : '') + "; style-src 'self' 'unsafe-inline'; " +
   "img-src 'self' data: blob: https:; connect-src 'self' https: wss:" + (cspExtraConnect ? ' ' + cspExtraConnect : '') + "; " +
-  "worker-src 'self' blob:; frame-src 'self'" + cspWalletFrames + "; frame-ancestors 'self'; " +
+  "worker-src 'self' blob:; frame-src 'self'" + (cspExtraFrame ? ' ' + cspExtraFrame : '') + cspWalletFrames + "; frame-ancestors 'self'; " +
   "object-src 'none'; base-uri 'self'; form-action 'self'"
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff')
@@ -129,7 +136,8 @@ app.use((req, res, next) => {
 })
 app.use('/products', express.json({ limit: '2mb' }))
 app.use('/auth/profile', express.json({ limit: '512kb' })) /* avatar data URLs */
-app.use(express.json({ limit: '32kb' }))
+/* the DePay callback is signed over its exact bytes: keep the raw body for that one route */
+app.use(express.json({ limit: '32kb', verify: (req, res, buf) => { if (req.path === '/purchases/depay/callback') req.rawBody = buf } }))
 
 /* ---------- CORS (credentials for session cookies) ---------- */
 app.use((req, res, next) => {
@@ -712,6 +720,7 @@ app.use(liveRoutes({ pool, requireAuth, treasury, marketData, limit, config: liv
 app.use('/admin/economy', economyAdminRoutes({ pool, treasury, onChange: () => economy.invalidate() }))
 app.use('/admin/partners', partnerAdminRoutes({ pool }))
 app.use('/admin/live', liveAdminRoutes({ pool, treasury, config: live }))
+app.use('/admin/payments', paymentAdminRoutes({ pool, verifier: (...a) => defaultPaymentVerifier()(...a) }))
 app.use('/admin', adminRoutes({ pool, audit }))
 
 /* Public release identity contains build metadata only, never runtime secrets. */
@@ -797,6 +806,18 @@ setInterval(() => {
     .then(r => { if (r.rowCount) console.log(`[purchases] ${r.rowCount} pending order(s) expired`) })
     .catch(() => {})
 }, 60_000).unref()
+/* payment recovery: a payment that is mined but was never provisioned
+   (frontend request lost, RPC down, not yet final) is re-verified on the
+   chain until it provisions or becomes a reviewable rejection */
+/* interval / minimum age are operator-tunable only to shorten test runs */
+const recoveryEvery = Math.max(Number(process.env.PAYMENT_RECOVERY_INTERVAL_MS) || 60_000, 1000)
+const recoveryMinAge = Math.max(Number(process.env.PAYMENT_RECOVERY_MIN_AGE_S) || 45, 1)
+const paymentRecoveryTimer = setInterval(() => {
+  recoverPendingPayments({ pool, minAgeSeconds: recoveryMinAge, log: (order, err) => console.log('[payments] recovery', order, err) })
+    .then(r => { if (r.recovered) console.log('[payments] recovered ' + r.recovered + ' order(s)') })
+    .catch(e => console.error('[payments] recovery sweep failed', e.message))
+}, recoveryEvery)
+paymentRecoveryTimer.unref()
 /* treasury snapshots (60–120 min schedule) and live settlement retries */
 treasury.start()
 const settlementTimer = setInterval(() => {
@@ -805,6 +826,6 @@ const settlementTimer = setInterval(() => {
 }, 60_000)
 settlementTimer.unref()
 let shuttingDown=false
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;engine.stop();marketData.stop();treasury.stop();clearInterval(settlementTimer);server.close(()=>pool.end()) }
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;engine.stop();marketData.stop();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);server.close(()=>pool.end()) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)
