@@ -5,7 +5,7 @@ import { text as t, type Localized } from '../information/content'
    Keys are the exact English strings the API returns. Technical table names
    inside the provenance lines are kept verbatim. */
 const ENTRIES: Localized[] = [
-  t('purchase_orders (status=paid, set only by verified on-chain payment), payment_adjustments', 'purchase_orders (وضعیت paid که فقط با پرداخت تأییدشدهٔ آن‌چین ثبت می‌شود)، payment_adjustments'),
+  t('purchase_orders (status=paid with a verified on-chain payment; 100% coupon orders excluded), payment_adjustments', 'purchase_orders (وضعیت paid با پرداخت تأییدشدهٔ آن‌چین؛ سفارش‌های کوپن ۱۰۰٪ لحاظ نمی‌شوند)، payment_adjustments'),
   t('paid ÷ (paid + expired + cancelled orders); pending orders excluded', 'پرداخت‌شده ÷ (پرداخت‌شده + منقضی‌شده + لغوشده)؛ سفارش‌های در انتظار حذف شده‌اند'),
   t('openfund_challenges, challenge_events (evaluation engine state of record, read-only), withdrawal_requests', 'openfund_challenges، challenge_events (وضعیت ثبت‌شدهٔ موتور ارزیابی، فقط‌خواندنی)، withdrawal_requests'),
   t('Instant (stage 0) accounts plus accounts whose final evaluation stage passed', 'حساب‌های فوری (مرحلهٔ ۰) به‌علاوهٔ حساب‌هایی که مرحلهٔ نهایی ارزیابی را گذرانده‌اند'),

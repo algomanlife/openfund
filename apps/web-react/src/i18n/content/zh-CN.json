@@ -2864,7 +2864,7 @@
   "profit factor = gross profit / gross loss": "盈利因子 = 总盈利 / 总亏损",
   "profit_factor = gross_profit / gross_loss": "profit_factor = gross_profit / gross_loss",
   "proven performance.": "经过验证的表现。",
-  "purchase_orders (status=paid, set only by verified on-chain payment), payment_adjustments": "purchase_orders（状态 paid 仅在链上付款经验证后设置）、payment_adjustments",
+  "purchase_orders (status=paid with a verified on-chain payment; 100% coupon orders excluded), payment_adjustments": "purchase_orders（状态 paid 须有经验证的链上付款；不计入使用 100% 优惠券的订单）、payment_adjustments",
   "questions": "个问题",
   "real capital, real controls.": "真正的资本，真正的控制。",
   "recipients": "收件人",

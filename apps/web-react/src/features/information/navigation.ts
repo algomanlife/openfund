@@ -58,6 +58,8 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
   }
   const nav = root.querySelector('#navigation')
   if (nav) {
+    // The legacy landing translator must not translate React-localized links again.
+    (nav as HTMLElement).dataset.localeOwned = 'react'
     const economyLinks = economy.map(route => link(route))
     nav.replaceChildren(...primary.map(route => link(route)),
       dropdownGroup('website-economy', labels.economy, economyLinks, economyLinks.some(a => a.hasAttribute('aria-current'))),
@@ -65,6 +67,7 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
   }
   const footer = root.querySelector('#footer-links')
   if (footer) {
+    (footer as HTMLElement).dataset.localeOwned = 'react'
     const defaults = [...primary, ...economy, ...resources, 'glossary' as const].map(route => ({ destination: route === 'team' ? 'team-section' : route, label: navigationLabels[route] }))
     const seen = new Set<string>()
     footer.replaceChildren()

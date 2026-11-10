@@ -2864,7 +2864,7 @@
   "profit factor = gross profit / gross loss": "профит-фактор = валовая прибыль / валовой убыток",
   "profit_factor = gross_profit / gross_loss": "profit_factor = gross_profit / gross_loss",
   "proven performance.": "подтверждённые результаты.",
-  "purchase_orders (status=paid, set only by verified on-chain payment), payment_adjustments": "purchase_orders (статус paid устанавливается только после подтверждённого платежа в блокчейне), payment_adjustments",
+  "purchase_orders (status=paid with a verified on-chain payment; 100% coupon orders excluded), payment_adjustments": "purchase_orders (статус paid после подтверждённого платежа в блокчейне; заказы с купоном на 100% исключены), payment_adjustments",
   "questions": "вопросов",
   "real capital, real controls.": "реальный капитал, реальный контроль.",
   "recipients": "получатели",

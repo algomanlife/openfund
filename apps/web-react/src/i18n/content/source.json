@@ -2884,7 +2884,7 @@
 "plain definitions",
 "positive = you pay",
 "proven performance.",
-"purchase_orders (status=paid, set only by verified on-chain payment), payment_adjustments",
+"purchase_orders (status=paid with a verified on-chain payment; 100% coupon orders excluded), payment_adjustments",
 "questions",
 "real capital, real controls.",
 "recipients",

@@ -2864,7 +2864,7 @@
   "profit factor = gross profit / gross loss": "معامل الربح = إجمالي الربح / إجمالي الخسارة",
   "profit_factor = gross_profit / gross_loss": "profit_factor = gross_profit / gross_loss",
   "proven performance.": "أداء مُثبت.",
-  "purchase_orders (status=paid, set only by verified on-chain payment), payment_adjustments": "purchase_orders (الحالة paid لا تُسجَّل إلا بعد دفعة مؤكدة على السلسلة)، payment_adjustments",
+  "purchase_orders (status=paid with a verified on-chain payment; 100% coupon orders excluded), payment_adjustments": "purchase_orders (الحالة paid بعد دفعة مؤكدة على السلسلة؛ لا تُحتسب طلبات القسائم بخصم ١٠٠٪)، payment_adjustments",
   "questions": "أسئلة",
   "real capital, real controls.": "رأس المال الحقيقي، والضوابط الحقيقية.",
   "recipients": "المستلمين",
