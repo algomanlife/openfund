@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Upstream isolation and dependency registry: separates upstream, integration and Openfund-custom
+  layers for Vela, the Pine addon and PineTS, the Gains API and SDK, the LuxAlgo journal core,
+  Directus and key libraries. Adds `infra/upstream/` (registry, patch registry with three reversible
+  Vela patches, customization guards, vendor manifest), `npm run check:upstream`, a controlled
+  `update-vendor` report/apply tool that proves vendored source equals upstream plus registered
+  patches, Gains market-data contract tests on recorded fixtures plus an optional live check, and the
+  Vela/Gains upgrade protection guides. Vela stays at 0.9.3 (0.10.4 assessed: patch conflict, not
+  adopted). `MarketData` gains an options seam with unchanged defaults; the trading engine is untouched.
 - Directus upgrade readiness (no version change): staged rehearsal of 11.9.1 to 12.6.1 on an isolated
   PostgreSQL 17 database shows Directus 12 locks the current content model without a licence (Core tier:
   25 collections, no custom permission rules; Openfund registers 43 and filters every public read by

@@ -1,0 +1,57 @@
+name: Upstream guard
+
+# Offline checks that Openfund's upstream isolation still holds. A separate workflow so it does not
+# interfere with ci.yml. Runs only when upstream-related paths change.
+on:
+  pull_request:
+    paths:
+      - 'vendor/**'
+      - 'third_party/**'
+      - 'infra/upstream/**'
+      - 'scripts/upstream/**'
+      - 'scripts/build-charts.mjs'
+      - 'packages/openfund-charts/**'
+      - 'packages/openfund-gains-adapter/**'
+      - 'apps/backend/market-data.js'
+      - 'apps/backend/test/market-data-contract.test.mjs'
+      - 'apps/backend/test/fixtures/gains/**'
+      - 'apps/web-react/public/assets/**'
+      - 'apps/web-react/public/legacy/vela-bridge.js'
+      - 'apps/web-react/public/legacy/gains-adapter.js'
+      - 'apps/web-react/package.json'
+      - 'apps/web-react/package-lock.json'
+      - 'apps/backend/package-lock.json'
+      - 'render.yaml'
+      - '.github/workflows/upstream-guard.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: upstream-guard-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    name: Upstream isolation, patches and Gains contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install root tooling and backend dependencies
+        run: |
+          npm ci
+          npm ci --prefix apps/backend
+      - name: Registry, vendor manifest, patches, customization guards, mirrors
+        run: npm run check:upstream
+      - name: Update tool, verification unit tests and Gains contract tests
+        run: npm run test:upstream
+      - name: Chart bundle is reproducible from vendored source
+        run: |
+          npm ci --include=dev --prefix apps/web-react
+          node scripts/build-charts.mjs
+          git diff --exit-code -- apps/web-react/public/assets apps/web-react/public/legacy dist/assets dist/vela-bridge.js dist/gains-adapter.js
+      - name: Pine conformance
+        run: npm run test:charts

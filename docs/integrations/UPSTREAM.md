@@ -1,6 +1,6 @@
 # Upstream Source Management
 
-Openfund preserves selected upstream sources and their attribution. Vela is integrated; the Gains SDK remains vendored without transaction execution.
+Openfund preserves selected upstream sources and their attribution. Vela is integrated; the Gains SDK remains vendored without transaction execution. The authoritative register, patch list and update procedures are in the [upstream dependency registry](UPSTREAM_DEPENDENCIES.md); this page keeps the original provenance notes.
 
 ## LuxAlgo Vela
 

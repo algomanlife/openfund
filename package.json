@@ -38,7 +38,11 @@
     "test:browser:polish": "node e2e/test-ui-polish.cjs",
     "test:browser:website": "node e2e/test-website-refresh.cjs",
     "test:browser:wallet": "node e2e/test-wallet-connect.cjs",
-    "test:browser:locale": "node e2e/test-locale-matrix.cjs"
+    "test:browser:locale": "node e2e/test-locale-matrix.cjs",
+    "test:upstream": "node --test scripts/upstream/test/*.test.mjs && node --test apps/backend/test/market-data-contract.test.mjs",
+    "check:upstream": "node scripts/upstream/verify.mjs",
+    "check:gains-live": "node scripts/upstream/gains-live-check.mjs",
+    "update:vendor": "node scripts/upstream/update-vendor.mjs"
   },
   "devDependencies": {
     "js-yaml": "^4.1.0",

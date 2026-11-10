@@ -21,6 +21,6 @@ Openfund pins Directus 11.9.1 as its editorial backstage. Directus 12 changes li
 
 - The repository keeps `directus/directus:11.9.1` until the owner provides a licence or Open Innovation Grant key and the rehearsal passes with it.
 - Preflight in `apply_schema.py` stops early on an unlicensed Directus 12 instead of failing half-way.
-- Every future Directus change is reviewed against this checklist and recorded in the upstream dependency registry (`docs/integrations/UPSTREAM_DEPENDENCIES.md`).
+- Every future Directus change is reviewed against this checklist and recorded in the [upstream dependency registry](../integrations/UPSTREAM_DEPENDENCIES.md).
 
 [ADR index](README.md) · [Migration runbook](../deployment/DIRECTUS_MIGRATION_RUNBOOK.md)

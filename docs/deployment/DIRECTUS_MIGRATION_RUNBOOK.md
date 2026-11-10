@@ -64,7 +64,7 @@ Rollback steps:
 
 ## Post-upgrade
 
-- [ ] Update the upstream dependency registry (`docs/integrations/UPSTREAM_DEPENDENCIES.md`, added by the upstream-isolation change): installed version, last upgrade date, compatibility result, evidence links.
+- [ ] Update the [upstream dependency registry](../integrations/UPSTREAM_DEPENDENCIES.md): installed version, last upgrade date, compatibility result, evidence links.
 - [ ] Update the version references listed in the [assessment](../backstage/DIRECTUS_12_ASSESSMENT.md): README, Blueprint comment, architecture and deployment pages, `compose.yaml`, `release.yml`.
 - [ ] Review Studio-only changes: Tiptap rich-text prompts, new AI settings (leave AI disabled), `directus_settings` read scope for any non-admin App Access policy (12.2.0 note).
 - [ ] Keep the pre-upgrade dump and disk snapshot for the retention period agreed with the owner.
