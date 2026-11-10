@@ -14,123 +14,98 @@ Trading software for market discovery, simulated Prop trading and wallet-scoped 
 
 </div>
 
+## Status at a glance
+
+> This README is not live status. The authority order is: GitHub Release/tag, then
+> commit SHA, then the running service's `/version`, then the frontend manifest, then
+> pull requests, then this file and the changelog
+> ([version authority](docs/deployment/RELEASES.md#version-authority-hierarchy)).
+
+**Verified production snapshot (read-only checks on 2026-11-10):**
+
+| Source | Result |
+| --- | --- |
+| `https://openfund.cloud/version` and `https://openfi.cloud/version` | `status: matched`, version **0.4.4**, commit `c1cb7073e4f1eb16c2b204ec9b0b1158b1dde4b1`, backend and frontend identities equal |
+| GitHub Release `v0.4.4` (latest, published 2026-11-08) | tag points to `c1cb707`, the live SHA |
+| `https://openfund.cloud/purchases/plans` | `paymentsEnabled: false` (challenge purchases are not active in production) |
+
+Check live status yourself with `curl https://openfund.cloud/version` and
+`gh release list`. A merged pull request, a `main` commit or an open pull request is
+**not** deployed until `/version` says so.
+
+| State | What it covers |
+| --- | --- |
+| **Live (v0.4.4)** | Prop and Perpetual terminals, wallet sign-in, bilingual website, Prop engine with the v0.4.2 corrections, release-driven deployment |
+| **Merged to `main`, not released, not deployed** | Economy / Transparency / Ambassador / Coach / Live Market Access (#59), explicit wallet choice and extra locales (#58), Whitepaper v1.0 (#60), terminal Chart tab with Quick Trade (#63) and Hybrid Governance v1.0 (#64, carried by #63), CI pipeline work (#62). Generate the exact list with `node scripts/release/summary.mjs --from v0.4.4` |
+| **Open pull requests** | Payments verification and DePay reliability (#65) and the DePay checkout flow (#66, stacked on #65), plus tooling pull requests. Not on `main`, not deployed. See the [open pull requests](https://github.com/algomanlife/openfund/pulls) |
+| **Disabled pending activation** | Challenge purchases (`PURCHASE_PAYMENT_RECEIVER` unset), funded capital and payouts, Gains transaction execution, Live Market Access allocation (needs verified capital of at least $500,000) |
+| **Planned** | Desktop and mobile apps, rewards, operational Protocol routing |
+
 ## Product overview
 
-Openfund is an early-stage trading technology project maintained in a public repository. It combines a bilingual website, shared trading terminal, wallet identity, portfolios and private journals. Prop and Perpetual share presentation, not financial balances or execution authority.
-
-This repository supports open-source collaboration, but has **no root license granting blanket reuse rights**. Component licenses and upstream notices apply separately; see [Licensing and upstream attribution](#licensing-and-upstream-attribution). Source availability is not a claim of production readiness, audited security or an active funded-trading service.
-
-**Current version: v0.4.3.** The release authority is the
-[GitHub Release](https://github.com/algomanlife/openfund/releases) and the
-running service's `/version` endpoint. This README is not live status. Since
-v0.4.1 the line adds the Prop engine audit corrections, the system-default
-theme, the Persian RTL/mobile terminal fixes, release-driven deployment and a
-GHCR image per release. v0.4.2 is published but could not be deployed (see
-below); v0.4.3 carries the same application with the deploy fix.
-Production serves one application on `openfi.cloud` and `openfund.cloud`. See
-[Current version and changelog](#current-version-and-changelog).
-
-### Product areas
+Openfund is an early-stage trading technology project maintained in a public repository: a bilingual website, a shared trading terminal, wallet identity, portfolios and private journals. Prop and Perpetual share presentation, not financial balances or execution authority. The repository has **no root license granting blanket reuse rights**; component licenses apply separately ([Licensing](#licensing-and-upstream-attribution)). Source availability is not a claim of production readiness, audited security or an active funded-trading service.
 
 | Area | Implemented scope | Boundaries |
 | --- | --- | --- |
-| **Prop** | Persistent server-side simulation; market, limit and stop orders; SL/TP, partial close, cancellation and liquidation; challenge evaluation; account performance and journals | New Free Trial accounts receive 100,000 virtual USD; legacy virtual-DAI histories remain intact. Challenge purchases are disabled in production (`paymentsEnabled: false`); funded capital and payouts are not active. |
-| **Perpetual** | Gains Network market data and wallet-scoped Arbitrum One positions, orders, history and statistics | Read-only. Transactions, approvals and collateral transfers remain disabled. Missing balances or unsupported PnL stay unknown. |
+| **Prop** | Server-side simulation; market, limit and stop orders; SL/TP, partial close, liquidation; challenge evaluation; performance and journals | Free Trial accounts get 100,000 virtual USD. Purchases, funded capital and payouts are not active. |
+| **Perpetual** | Gains Network market data; wallet-scoped Arbitrum One positions, orders, history | Read-only. Transactions, approvals and collateral transfers are disabled. |
 
-The current [router](apps/web-react/src/main.tsx) exposes both products in Persian and Prop in English; English Perpetual routes redirect to Prop. Language availability does not determine residency eligibility. [Prop guide](docs/trading/PROP.md) · [Perpetual guide](docs/trading/PERPETUAL.md)
+[Prop guide](docs/trading/PROP.md) · [Perpetual guide](docs/trading/PERPETUAL.md) · [Capability guide](docs/product/CAPABILITIES.md) · [Feature status register](docs/product/FEATURE_STATUS.md)
 
-## Current capabilities
+## Capabilities and their status
 
-- **Market discovery and charting:** Gains REST/WebSocket feeds, shared Vela workspace and a Pine indicator catalog. Source freshness and upstream failures remain visible; reference-platform indicator conformance is still open.
-- **Identity and accounts:** wallet connection, Sign-In with Ethereum (SIWE), first-party sessions and an owned account directory. Signing in is not a blockchain transaction.
-- **Portfolio and Journal:** product-scoped records, supported analytics, private notes, tags, filters and exports. Journal imports cannot create trades or balances.
-- **Prop evaluation engine:** challenge accounts trade through the same server-authoritative simulation engine while the Rulebook rules are enforced: profit targets on closed net profit (also after settling open positions), daily and maximum loss limits (static or trailing) at the 00:00 UTC+3 day boundary, minimum trading days counted by fill day, and time limits. Breaches settle into an immutable event history; two-phase challenges progress with a frozen rules snapshot. A pass establishes eligibility, never a payout. See [Prop Trading Engine](#prop-trading-engine).
-- **Governance (built, not in production use):** Hybrid Governance v1.0 — an off-chain, auditable framework in which a ten-seat Community Council holds binding authority over delegated non-financial domains while company management keeps treasury and all financial decisions. Proposals (OFP), voting records, council membership rules, an election architecture and a public Governance page exist and are tested; no council is seated and no election is scheduled. [GOVERNANCE.md](GOVERNANCE.md) · [ECONOMY.md](ECONOMY.md) · [Governance docs](docs/governance/README.md). Not a DAO; no token.
-- **Public website:** English/Persian content, RTL support, FAQ, browser-side calculators, learning resources and pre-launch referral information; Directus content with supported bundled fallbacks.
-- **Official Whitepaper v1.0:** a bilingual, CMS-managed single-page publication at `/{locale}/whitepaper`, linked from the footer, that describes the ecosystem, architecture, business model, economics and roadmap with verified status labels. See [Whitepaper](docs/website/WHITEPAPER.md).
-- **Economy and partner programs:** a public Economy menu (Transparency, Revenue Model, Live Market Access) computed from operational records; scheduled on-chain treasury snapshots once a public treasury address is configured; reviewed Brand Ambassador (10% first-purchase commission ledger) and Verified Trading Coach roles; and a Live Market Access control plane gated by verified allocatable capital ≥ $500,000. Real live execution and transfers are disabled. See [Economy](docs/economy/README.md).
-- **Gated commerce and operations:** server-priced challenge orders, receipt verification with a finality policy and late-payment grace, invoices, withdrawal requests and the token-gated `/admin` operational API (user directory, withdrawal review). A confirmed payment provisions exactly one challenge; a withdrawal approval records a decision, never a fund transfer.
+The [feature register](docs/product/FEATURE_STATUS.md) is canonical; this table only orients you.
 
-[Capability guide](docs/product/CAPABILITIES.md) · [Terminal](docs/trading/TERMINAL.md) · [Identity](docs/wallet/IDENTITY.md) · [Portfolio and Journal](docs/trading/PORTFOLIO_JOURNAL.md)
-
-### Delivery status
-
-| Delivery boundary | Status | What it means |
-| --- | --- | --- |
-| **v0.4.3** | Current release (see the [GitHub Release](https://github.com/algomanlife/openfund/releases) for publication and `/version` for deployment) | v0.4.2 plus the release-asset download fix and the GHCR image |
-| **v0.4.2** at `fc4df52` | Published 2026-11-08; not deployed | Prop engine corrections, theme and terminal fixes, release-driven deployment. Its Render build cannot download the manifest (see the changelog) |
-| **v0.4.1** at `b8389ca` | Released and deployed 2026-11-07 | Runtime public configuration, CMS bootstrap hardening; rollback target |
-| Desktop installers, mobile applications, funded-stage payouts, rewards, operational Protocol routing | Planned | Platform cards remain Coming Soon; dormant Protocol source is not an active venue. |
-| Live payment activation and Perpetual execution | Blocked | Approved destinations/contracts, real-chain acceptance and security gates remain required. `PURCHASE_PAYMENT_RECEIVER` unset keeps purchases disabled. |
-
-Real wallet/device acceptance, official release review, external chart conformance and operational recovery remain open. Transparency figures come from operational records; treasury balance and allocatable capital stay `Not configured`/`Unknown` until management configures the treasury and reserves. The [feature register](docs/product/FEATURE_STATUS.md) qualifies every capability; dated [reviews](docs/reviews/README.md) retain their original provenance.
-
-## Screenshots
-
-<a id="product-gallery"></a>
-
-Fresh P0 screenshots use real theme-button clicks, normal anonymous sessions and the actual canonical port 8080 application. The [gallery](docs/assets/screenshots/README.md) and [manifest](docs/assets/screenshots/manifest.json) identify each capture's runtime and distinguish the pre-packaging audit from final immutable-candidate evidence. No CSS injection, forced theme attributes, wallet injection or intercepted market/CMS responses are used. Prior `refinement-*` and `addendum-*` captures are historical, not evidence of the current build or owner acceptance.
-
-| Persian Home — dark | Persian Home — light |
+| Capability | Where it stands |
 | --- | --- |
-| ![Actual Persian Home dark](docs/assets/screenshots/p0-dark-fa-public-dark.png) | ![Actual Persian Home light](docs/assets/screenshots/p0-dark-fa-public-light.png) |
-| **English Dashboard — dark** | **English Dashboard — light** |
-| ![Actual anonymous Dashboard dark](docs/assets/screenshots/p0-dark-en-dashboard-dark.png) | ![Actual anonymous Dashboard light](docs/assets/screenshots/p0-dark-en-dashboard-light.png) |
-| **English Prop Terminal — dark** | **English Prop Terminal — light** |
-| ![Actual Prop terminal dark](docs/assets/screenshots/p0-dark-en-terminal-dark.png) | ![Actual Prop terminal light](docs/assets/screenshots/p0-dark-en-terminal-light.png) |
-
-Charts retain live or explicit unavailable states. Anonymous Dashboard captures do not certify authenticated account contents. Chromium auto-dark emulation reproduces computed white backgrounds painted RGB(18,18,18); `color-scheme: only light` opts application-owned light surfaces out, including the nested workspace. Saved Vela cosmetics restore before the app palette. The existing polish gate runs `e2e/test-auto-dark.cjs` with real theme clicks, reloads, both OS preferences, persisted chart settings and screenshot-pixel assertions at 3360 × 1216. Owner Opera settings are not inspected; these images are not owner acceptance, an official release update or production deployment.
-
-## Technology stack
-
-| Layer | Technology |
-| --- | --- |
-| Web interface | React 19, TypeScript, Vite 6, React Router 7; Persian/English and RTL |
-| Wallet and identity | RainbowKit, wagmi, viem, SIWE and HttpOnly sessions |
-| Charting and market data | Vela 0.9.3, Vela Pine addon 0.3.2, PineTS 0.13.1, Gains adapters |
-| API and simulation | Node.js 22, Express, Decimal arithmetic, WebSocket feeds and SSE |
-| Persistence and content | PostgreSQL 17; Directus 11.9.1 for editorial/catalog administration |
-| Quality and delivery | Per-app npm lockfiles, Playwright, GitHub Actions, Render Blueprint |
-
-[Technology registry](docs/architecture/TECH_STACK.md) · [Upstream provenance](docs/integrations/UPSTREAM.md)
+| Wallet authentication | Live: wallet connection and Sign-In with Ethereum, first-party HttpOnly sessions. Signing in is not a blockchain transaction. [Identity](docs/wallet/IDENTITY.md) |
+| Charting (Vela, Pine indicators) | Live: shared Vela workspace with the Openfund bridge and Pine runtime. The terminal Chart tab with Quick Trade is merged, unreleased. [Vela](docs/integrations/VELA.md) |
+| Gains Network | Live, read-only: REST/WebSocket market data and wallet reads. No order-book depth is inferred from oracle prices; execution is disabled by default. [Gains](docs/integrations/GAINS.md) |
+| Prop engine | Live: server-authoritative simulation and challenge evaluation (daily and overall drawdown, targets, trading days). [Engine audit](docs/audits/PROP_ENGINE_AUDIT.md) |
+| Payments and DePay checkout | Purchase verification exists in `main`, but **live payments are disabled** (`paymentsEnabled: false`). Verification/recovery hardening (#65) and the DePay checkout flow (#66) are open pull requests. [ADR 0009](docs/decisions/0009-challenge-purchases-and-payment-verification.md) |
+| Funded accounts and payouts | Not active. A withdrawal approval records a decision, never a fund transfer. |
+| Economy, Treasury, Ambassador, Coach, Live Market Access | Merged, unreleased. Figures come from operational records; treasury and allocatable capital stay `Not configured` or `Unknown` until configured. [Economy](docs/economy/README.md) |
+| Governance | Merged, unreleased, not in production use: off-chain Hybrid Governance v1.0 (council, OFP proposals, voting, public Governance page). [GOVERNANCE.md](GOVERNANCE.md) · [ADR 0017](docs/decisions/0017-hybrid-governance.md) |
+| Whitepaper v1.0 | Merged, unreleased: CMS-managed bilingual publication at `/{locale}/whitepaper`. [Whitepaper](docs/website/WHITEPAPER.md) |
+| Portfolio and Trade Journal | Live. Analytics use only the vendored `journal-core` library of LuxAlgo Trade Journal; the journal application and its importers are **not** integrated. [Registry](docs/integrations/UPSTREAM_REGISTRY.md) |
+| Localization | Persian and English with RTL are live; Arabic, Russian and Simplified Chinese are on `main` (unreleased). Language availability does not determine residency eligibility. |
+| Directus CMS | Live: editorial content and plan catalog (Directus 11.9.1). Market data never flows through it. |
 
 ## Architecture
 
 | Component | Implementation |
 | --- | --- |
-| Frontend | React 19 + Vite SPA under `apps/web-react/`, built into `react/` and served by the API at `/react/` (hash routing, same origin). Public settings come from the no-store `/react/runtime-config.js`, not the bundle ([ADR 0010](docs/decisions/0010-runtime-public-configuration.md)). |
-| Backend | Express API in `apps/backend/server.js`: SIWE sign-in and host-only HttpOnly sessions, product-scoped accounts, purchases, portfolio/journal and the token-gated `/admin` API. |
-| Trading engine | `apps/backend/engine.js` with `trading-math.js` (decimal.js valuation) and `instruments.js`. Server-authoritative fills at server marks; an in-process loop (about 1 s) runs pending orders, SL/TP, liquidation and challenge enforcement; SSE at `/trading/stream`. |
-| Challenge evaluation | `apps/backend/evaluation.js`: a pure `evaluateRules()` over a frozen rules snapshot plus persisted day and trailing state. |
-| Market data | `apps/backend/market-data.js` consumes Gains Network price feeds. Stale or future marks are rejected; no order-book depth is inferred from oracle prices. |
-| Database | PostgreSQL 17. `apps/backend/schema.sql` + `migrate.js` (additive, idempotent) run on every start. |
-| CMS | Directus 11.9.1 (`openfund-cms`) for editorial content and the plan catalog; market data never flows through it. |
-| Infrastructure | Render Blueprint (`render.yaml`): `openfund`, `openfund-cms`, `openfund-db` in Frankfurt. |
-| CI/CD | GitHub Actions: `ci.yml` (required checks), `release.yml` (candidate on every PR/main push, publication on dispatch), `deploy-release.yml` (deploy and rollback). |
+| Frontend | React 19 + Vite SPA in `apps/web-react/`, built into the **untracked** `react/` directory and served by the API same-origin. Public settings come from the no-store `runtime-config.js` ([ADR 0010](docs/decisions/0010-runtime-public-configuration.md)). |
+| Backend | Express API in `apps/backend/server.js`: SIWE sessions, product-scoped accounts, purchases, portfolio/journal and the token-gated `/admin` API |
+| Trading engine | `engine.js`, `trading-math.js` (decimal.js), `instruments.js`; server-authoritative fills, an in-process loop (about 1 s), SSE at `/trading/stream` |
+| Challenge evaluation | `evaluation.js`: pure `evaluateRules()` over a frozen rules snapshot |
+| Market data | `market-data.js` consumes Gains feeds; stale or future marks are rejected |
+| Database | PostgreSQL 17; `schema.sql` + `migrate.js` (additive, idempotent) run on every start |
+| CMS | Directus 11.9.1 (`openfund-cms`) |
+| Infrastructure | Render Blueprint (`render.yaml`): `openfund`, `openfund-cms`, `openfund-db` in Frankfurt; commit auto-deploy is off |
+| CI/CD | `ci.yml`, `release.yml`, `deploy-release.yml`, `package-image.yml` ([CI](docs/development/CI.md)) |
 
-The API also hosts the simulation monitor and SSE; scaling requires coordinated mutation ownership. [System architecture](docs/architecture/ARCHITECTURE.md) · [Flows](docs/architecture/FLOWS.md) · [Product contracts](docs/architecture/PRODUCT_TERMINALS.md)
+[System architecture](docs/architecture/ARCHITECTURE.md) · [Flows](docs/architecture/FLOWS.md) · [Product contracts](docs/architecture/PRODUCT_TERMINALS.md)
 
 ## Repository structure
 
 | Path | Responsibility |
 | --- | --- |
-| `apps/web-react/` | Active React app, product routes, wallet/session context and public compatibility assets |
-| `apps/backend/` | API, ownership checks, Prop simulation, product reads, purchases and additive migrations |
-| `apps/backstage/scripts/` | Directus schema, content seeding and administration utilities |
-| `packages/` | Shared chart/Gains/CMS contracts and integrations; dormant Protocol source |
-| `vendor/`, `third_party/` | Upstream source, licenses, notices and analytical-core dependencies |
+| `apps/web-react/` | React app, product routes, wallet/session context, public compatibility assets |
+| `apps/backend/` | API, engine, purchases, product reads and additive migrations |
+| `apps/backstage/scripts/` | Directus schema, content seeding and administration |
+| `packages/` | Chart/Gains/CMS contracts; dormant Protocol source |
+| `vendor/`, `third_party/` | Upstream source, licenses and notices ([registry](docs/integrations/UPSTREAM_REGISTRY.md)) |
 | `dist/` | Source-critical classic compatibility deliverable; do not delete as build output |
-| `react/` | Tracked frontend output, replaced by current Vite builds |
-| `scripts/`, `infra/render/`, `e2e/` | Release/docs/build tooling, Blueprint validation and browser checks |
-| `docs/`, `brand/` | Product/engineering contracts, evidence and approved brand assets |
+| `react/` | **Generated** by `npm run build:web`; not tracked ([hygiene](docs/development/REPOSITORY_HYGIENE.md)) |
+| `scripts/`, `infra/render/`, `e2e/` | Release/docs/CI tooling, Blueprint validation, browser checks |
+| `docs/`, `brand/` | Contracts, evidence, approved brand assets |
 
-The root package orchestrates commands; applications install from their own lockfiles. `apps/web/`, `apps/terminal/` and `packages/openfund-ui/` are contract/ownership directories, not extra deployed applications.
+The root package orchestrates commands; applications install from their own lockfiles.
 
-## Quick start
+## Development
 
-Prerequisites: **Node.js 22**, npm and a running **PostgreSQL 17** service. Python 3 is needed only for optional Directus utilities. The browser application is the supported delivery surface; Windows/macOS/Linux installers and iOS/Android apps are not released. Local commands below use a POSIX shell; no native Windows setup acceptance is claimed.
-
-From the repository root, using a new dedicated development database and your own local credentials:
+Prerequisites: Node.js 22, npm, PostgreSQL 17 (Python 3 only for optional Directus utilities).
 
 ```bash
 npm ci
@@ -140,31 +115,13 @@ createdb openfund_dev
 export DATABASE_URL=postgresql://localhost:5432/openfund_dev
 npm run migrate --prefix apps/backend
 npm run seed-plans --prefix apps/backend
-# Check port ownership first. Use 8180 if it is free; preserve official port 8080.
+# Check port ownership first; keep 8080 for an official local runtime.
 PORT=8180 npm run dev:backend
 ```
 
-In a second terminal:
+In a second terminal run `VITE_BACKEND_URL=http://localhost:8180 npm run dev:web`, then open the [English Home](http://localhost:5173/react/#/en/home) or the [Prop Terminal](http://localhost:5173/react/#/en/prop/trade).
 
-```bash
-VITE_BACKEND_URL=http://localhost:8180 npm run dev:web
-```
-
-Open [English Home](http://localhost:5173/react/#/en/home), [Persian Home](http://localhost:5173/react/#/fa/home), [Prop Terminal](http://localhost:5173/react/#/en/prop/trade) or [Persian Perpetual Terminal](http://localhost:5173/react/#/fa/perpetual/trade). Private views require wallet connection and SIWE. Never migrate or test against an existing user/production database.
-
-## Development
-
-`npm run dev:web` starts Vite on 5173; `npm run dev:backend` starts the watching API (default 8080 unless `PORT` is set). Inspect occupied ports before starting either. Directus is optional for supported fallback views; follow [CMS local setup](docs/backstage/LOCAL_SETUP.md) for published content.
-
-To inspect a same-origin development build, stop only your own development backend and run:
-
-```bash
-npm run build:web
-# Keep DATABASE_URL set to the dedicated development database.
-PORT=8180 npm start --prefix apps/backend
-```
-
-Open [built Home](http://localhost:8180/react/#/en/home). This is development output, not an official installation. Builds replace tracked `react/`; review generated changes and preserve `dist/`. [Local development](docs/development/LOCAL_DEVELOPMENT.md) documents custom origins, database safety and source care.
+For a same-origin build run `npm run build:web` first (the API reads `react/index.html` at start-up), then `PORT=8180 npm start --prefix apps/backend`. This is development output, not an official installation; run an official version with `npm run release:local -- --version current --migrate`. See [Local development](docs/development/LOCAL_DEVELOPMENT.md).
 
 ### Environment configuration
 
@@ -184,12 +141,10 @@ Use [.env.example](.env.example) as a reference, not a production credential fil
 
 Every `VITE_*` value is bundled publicly: never use it for secrets. Discord configuration is part of the in-progress addendum; follow the owning implementation and [environment reference](docs/deployment/ENVIRONMENT.md) rather than inventing an invitation. New variables must stay aligned with the existing Blueprint and template.
 
-## Testing
-
-Run repository checks under Node 22:
+## Build and test commands
 
 ```bash
-npm run docs:check
+npm run docs:check          # language, links, Markdown, Mermaid, upstream registry
 npm run typecheck
 npm run test:web
 npm run test:charts
@@ -198,200 +153,27 @@ npm run build:web
 npm run validate:blueprint
 ```
 
-Backend and browser suites require a **new isolated test database and running test backend**. Follow [Testing and CI](docs/development/TESTING.md) before `npm run test:backend`, `npm run test:browser:audit`, `npm run test:browser:polish`, `npm run test:browser:website` or the explicit suites. Test payment receivers and mark injection must never reach the official runtime. Playwright Chromium is required for browser gates.
+Backend and browser suites need an isolated test database (name contains `test`) and a running test backend; see [Testing](docs/development/TESTING.md) and [CI](docs/development/CI.md). `npm run release:build -- --candidate` runs the integrated package gates and produces an explicitly unofficial candidate.
 
-`test:backend` includes the challenge evaluation (48 checks), Prop engine (`test:engine`, 31 checks) and admin (25 checks) suites, and the browser gates add `npm run test:browser:challenge` (full purchase → start → trade → evaluate journey through the SIM seam) and `npm run test:browser:auto-dark` (theme paint regression). Set `ADMIN_API_TOKEN` on the test backend for the admin suite.
+## Pull request workflow
 
-The existing unified candidate command is `npm run release:build -- --candidate`; it installs all three lockfiles and runs integrated package gates. It is not an official release, and does not replace real-wallet, live-payment, deployed or manual visual acceptance. [Release runbook](docs/deployment/RELEASES.md) defines database/port restrictions and verification stages.
+Branch from current `main`, use Conventional Commits, fill in the pull request template (checked by CI) and follow [Pull requests and merge readiness](docs/development/PULL_REQUESTS.md): stacked-PR rules, branch-update practice, scopes and the merge checklist. Required checks: `Web (React + Vite)`, `Backend (API + engine)`, `Render Blueprint`, `Secret scan`, `Release package gates`, `Release secret scan`. Never force-push or push directly to `main`. See [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md).
 
-## Production infrastructure
+## Versioning and release process
 
-The [Render Blueprint](render.yaml) defines three resources, all in Frankfurt:
+Tags are `vMAJOR.MINOR.PATCH`, allocated from Conventional Commits by `scripts/release/plan.mjs` (`feat` minor, `fix` and others patch, `!` major). A maintainer dispatches **Unified release** on `main` with `publish=true`; after the gates a tag and GitHub Release are created and, once the `production` environment is approved, Render deploys the exact commit and the workflow checks the live `/version`. Pushes and pull requests build unofficial candidates only. The `version` fields in `package.json` (`0.1.0`) are component provenance, not the application version. Render rebuilds either a published official tag or the fully gated current-`main` candidate (`scripts/release/render-build.mjs`). Details, artifacts, the GHCR image and rollback: [Releases](docs/deployment/RELEASES.md) · [Rollback](docs/deployment/ROLLBACK.md) · [Render](docs/deployment/RENDER.md) (including [production domains](docs/deployment/RENDER.md#production-domains): `openfund.cloud`, `openfi.cloud`).
 
-| Resource | Type | Build / start | Health check |
-| --- | --- | --- | --- |
-| `openfund` | Node 22 web service, one instance | `node scripts/release/render-build.mjs` / `npm run migrate --prefix apps/backend && npm start --prefix apps/backend` | `/health` |
-| `openfund-cms` | Directus 11.9.1 image with a 5 GB uploads disk | official image | `/server/health` |
-| `openfund-db` | PostgreSQL 17 | managed | managed |
+## Upstream dependencies and licenses
 
-Both services have commit auto-deploy turned off. `render-build.mjs` builds
-only a commit that has a published, non-prerelease GitHub Release and stops if
-the rebuilt frontend, backend or schema hash differs from the release
-manifest. Migrations are additive and run at start. Secrets are Render
-environment values (`sync: false` or `generateValue`), never Git; see the
-[environment reference](docs/deployment/ENVIRONMENT.md). There is no separate
-frontend service or worker. [Render runbook](docs/deployment/RENDER.md) ·
-[Database operations](docs/deployment/DATABASE.md)
+The [upstream dependency registry](docs/integrations/UPSTREAM_REGISTRY.md) lists version, license, location, local modifications and update procedure for Vela, the Vela Pine addon, PineTS, the Gains SDK and APIs, LuxAlgo journal-core, Directus, the wallet libraries and the dormant Protocol source. [Dependency governance](docs/development/DEPENDENCY_GOVERNANCE.md) defines how they change.
 
-## GitHub Releases and packages
+## Security and operational limits
 
-- **Version tags:** `vMAJOR.MINOR.PATCH`, annotated, immutable, allocated by
-  `scripts/release/plan.mjs` from Conventional Commits since the previous tag
-  (`feat` → minor, `fix` and others → patch, `!` → major).
-- **GitHub Release:** `Openfund vX.Y.Z`, stable (never a prerelease), with
-  generated notes and these assets:
-  `openfund-vX.Y.Z.tar.gz` (the versioned deployable package),
-  `SHA256SUMS`, `release-manifest.json`, `verification.json` and
-  `release-status.md`.
-- **Provenance:** the manifest records the exact source SHA, frontend and
-  backend content hashes, schema hash, toolchain and every CI verification
-  stage. The same manifest is served at `/react/release-manifest.json`, and
-  `/version` reports `matched` only when frontend and backend agree.
-- **GitHub Package (GHCR):** `ghcr.io/algomanlife/openfund:X.Y.Z` (also
-  `vX.Y.Z`, no `latest`), built only from the verified release archive,
-  smoke-tested, then pushed once. The digest is attached to the release as
-  `image-digest.txt` with a build-provenance attestation
-  ([ADR 0014](docs/decisions/0014-ghcr-release-image.md)). Render does not
-  run the image; it rebuilds the same commit from source.
+Report suspected vulnerabilities privately through GitHub security advisories ([SECURITY.md](SECURITY.md)). Keep secrets, private keys and user data out of Git (gitleaks runs in CI). The repository does not claim an independent security audit, regulatory approval or production readiness. Generated-signature tests do not certify real wallet devices. Production runs one API instance that also hosts the simulation loop; scaling needs coordinated mutation ownership. [Security architecture](docs/security/SECURITY.md)
 
-  ```bash
-  docker run -p 8080:8080 -e DATABASE_URL=... -e CMS_PUBLIC_URL=https://... \
-    -e ALLOWED_DOMAINS=your.host ghcr.io/algomanlife/openfund:0.4.3
-  ```
+## Roadmap and documentation
 
-- `package.json` `version` fields stay `0.1.0`: they are component
-  provenance, not the application version.
-
-## Automated deployment
-
-```
-Reviewed merge to main → Unified release (publish=true) → gates → tag + GitHub Release
-  → production approval → Render deploy of the exact commit → live identity check
-```
-
-- **Trigger:** a maintainer dispatches **Unified release** on `main` with
-  `publish=true`. Pushes and pull requests only build unofficial candidates.
-- **CI requirements:** package gates (lockfile installs, Blueprint, docs,
-  typecheck, unit suites, two reproducible frontend builds, double migration,
-  backend and browser suites), exact-commit secret scan, disposable Directus
-  bootstrap and a live public CMS check.
-- **Deployment:** the chained `deploy` job waits for the `production`
-  environment reviewer, then calls Render with the manifest's `commitId`.
-- **Validation:** `/version` and `/react/release-manifest.json` on
-  `RELEASE_PUBLIC_URL` must match the release; the CMS must be healthy.
-- **Failure:** the job fails as `blocked` or `failed_or_partial` and uploads
-  `output/deployment-status.json`; Render keeps the previous deploy live when
-  a build or health check fails.
-- **Safety:** prereleases and drafts are refused; a tag older than the latest
-  release needs `rollback=true`; a retry on an already-live release does not
-  redeploy.
-
-[Release runbook](docs/deployment/RELEASES.md) · [Rollback](docs/deployment/ROLLBACK.md)
-
-## Production domains
-
-| Hostname | Behavior |
-| --- | --- |
-| `https://openfi.cloud` | Existing production domain; serves the application |
-| `https://openfund.cloud` | Second production domain; the same `openfund` service |
-| `https://www.openfi.cloud`, `https://www.openfund.cloud` | `301` to the matching root domain, path preserved |
-
-DNS is on Cloudflare (proxied) with Render custom domains on the one
-`openfund` service; HTTPS uses edge certificates with HSTS, and HTTP redirects
-to HTTPS. Neither root domain redirects to the other. Sessions are host-only
-cookies, so each domain signs in separately against the same accounts. Wallet
-sign-in requires every serving hostname in `ALLOWED_DOMAINS`.
-[Production domains](docs/deployment/RENDER.md#production-domains)
-
-## Prop Trading Engine
-
-- **Orders:** market, limit and stop orders with idempotency keys,
-  pre-trade validation (market, size, leverage and plan caps, SL/TP side) and
-  a free-margin check that includes the opening fee.
-- **Positions:** linear virtual-USD contracts; partial closes are slices of a
-  root position. Spread and fee tiers come from `trading-math.js`.
-- **PnL:** unrealized `qty × (mark − entry) × direction`; realized PnL books
-  exit spread and the closing fee. Every balance change has a ledger row.
-- **Daily drawdown:** floor `basis × (1 − daily %)`, with basis the higher of
-  the day-opening balance and equity at 00:00 UTC+3. Touching the floor is a
-  breach.
-- **Overall drawdown:** static `start × (1 − max %)` or trailing (Instant
-  plans) from peak equity.
-- **Evaluation:** target on closed net profit, which must also hold after
-  settling every open position at the current mark; minimum trading days by
-  fill day; time limits; two-phase progression.
-- **Risk enforcement:** on every fill and close and on each loop pass. A
-  breach closes positions at the mark; positions in closed markets settle
-  once tradeable.
-- **v0.4.2 corrections:** five defects fixed (P0 pass while settlement
-  realized the target away; post-fill fee blind spot; trading days by order
-  date; orphan positions after breach; misreported daily limit) with 31 new
-  checks in `npm run test:engine --prefix apps/backend`.
-- **Open policy decision:** the Rulebook's Instant trailing limit "locks at
-  breakeven", but with the published 5%/5% values the floor keeps trailing
-  above breakeven. The behavior is unchanged from v0.4.1, deterministic and
-  pinned by tests; a product decision is still required before it can be
-  treated as matching the Rulebook.
-
-[Engine audit](docs/audits/PROP_ENGINE_AUDIT.md) ·
-[ADR 0012](docs/decisions/0012-challenge-pass-settlement-and-trading-days.md) ·
-[Prop guide](docs/trading/PROP.md)
-
-## Current version and changelog
-
-**v0.4.3** is the current release. Since v0.4.1 the line contains:
-
-- Prop engine audit corrections (PR #52) and the audit report.
-- System-default light/dark theme until the user chooses (PR #51).
-- Persian terminal RTL, phone header and wallet-menu fixes (PR #50).
-- Release-driven deployment and the dual-domain runbook (PR #53, v0.4.2).
-- GHCR image per release and the release-asset download fix (PR #54, v0.4.3).
-
-[GitHub Release v0.4.3](https://github.com/algomanlife/openfund/releases/tag/v0.4.3) ·
-[v0.4.2](https://github.com/algomanlife/openfund/releases/tag/v0.4.2) ·
-[Changelog](CHANGELOG.md) · [Engine audit](docs/audits/PROP_ENGINE_AUDIT.md) ·
-[ADR 0012](docs/decisions/0012-challenge-pass-settlement-and-trading-days.md) ·
-[ADR 0013](docs/decisions/0013-release-driven-production-deployment.md)
-
-## Operational maintenance
-
-- **Release:** merge reviewed PRs into `main`, wait for green required
-  checks, dispatch **Unified release** with `publish=true`, then approve the
-  `production` deployment when it is requested.
-- **Verify health and version:**
-  `curl https://openfund.cloud/health` and
-  `curl https://openfund.cloud/version`. Expect `"status":"matched"` and the
-  release commit; repeat on `openfi.cloud`.
-- **Failed deployment:** download the `deployment-status-*` artifact, check
-  the Render deploy log for the `commitId`, fix forward through a new release
-  or roll back. Do not move tags or re-upload assets.
-- **Rollback:** dispatch **Deploy or roll back official release** with the
-  previous tag and `rollback=true`.
-- **Local run of an official version:**
-  `npm run release:local -- --version current --migrate` with a dedicated
-  local `DATABASE_URL`; check `/version`.
-- **Database:** take a Render backup before deploying a release that changes
-  `schema.sql`; migrations are additive only.
-
-## Roadmap
-
-The [seven-phase roadmap](ROADMAP.md) covers platform foundation, trading core, product experience, production infrastructure, advanced trading, Protocol and ecosystem expansion. Current priorities are addendum verification, coordinated release versioning, real-wallet/device acceptance and operational recovery; live payments and execution retain their explicit gates.
-
-[Milestones and acceptance criteria](docs/roadmap/MILESTONES.md) distinguish implemented foundations from unfinished delivery. [Product](docs/roadmap/PRODUCT.md) · [Engineering](docs/roadmap/ENGINEERING.md) · [Protocol](docs/roadmap/PROTOCOL.md). No speculative release dates or future version allocations are promised.
-
-## Documentation index
-
-The [full documentation index](docs/README.md) groups maintained contracts and historical evidence.
-
-| Start here | Reference |
-| --- | --- |
-| Product intent and maturity | [Overview](docs/product/OVERVIEW.md), [Feature status](docs/product/FEATURE_STATUS.md) |
-| System and integration contracts | [Architecture](docs/architecture/ARCHITECTURE.md), [ADRs](docs/decisions/README.md), [Gains](docs/integrations/GAINS.md), [Vela](docs/integrations/VELA.md) |
-| Governance and economy | [GOVERNANCE.md](GOVERNANCE.md), [ECONOMY.md](ECONOMY.md), [Governance documentation](docs/governance/README.md) |
-| Development and operations | [Local setup](docs/development/LOCAL_DEVELOPMENT.md), [Testing](docs/development/TESTING.md), [Environment](docs/deployment/ENVIRONMENT.md), [Releases](docs/deployment/RELEASES.md) |
-| Design and evidence | [Design system](docs/design/DESIGN_SYSTEM.md), [Screenshots](docs/assets/screenshots/README.md), [Reviews](docs/reviews/README.md) |
-
-## Contributing
-
-Read [CONTRIBUTING.md](CONTRIBUTING.md), [AGENTS.md](AGENTS.md), current product/architecture contracts and acceptance gates before changing code. Branch from current main, preserve others' work, use focused Conventional Commits and submit a reviewed PR with relevant tests, screenshots and limitations.
-
-Keep first-party documentation in English while preserving Persian application localization and RTL. Update feature status, roadmap dependencies and affected contracts together. Preserve source-critical assets, financial isolation, disabled execution defaults and upstream notices. [Changelog](CHANGELOG.md)
-
-## Security and responsible disclosure
-
-Report suspected vulnerabilities privately through the repository's GitHub security advisory channel, as described in [SECURITY.md](SECURITY.md); do not file public vulnerability issues. Keep secrets, private keys and user data out of Git. SIWE verifies identity; the backend enforces product/account ownership and first-party sessions.
-
-The repository does not claim an independent security audit, regulatory approval or production readiness. Generated-signature tests do not certify real wallet devices. [Security architecture and release gates](docs/security/SECURITY.md)
+[Seven-phase roadmap](ROADMAP.md) · [Milestones](docs/roadmap/MILESTONES.md) · [Documentation index](docs/README.md) · [Architecture decisions](docs/decisions/README.md) · [Governance](GOVERNANCE.md) · [Economy](ECONOMY.md) · [Design system](docs/design/DESIGN_SYSTEM.md) · [Screenshots](docs/assets/screenshots/README.md) · [Reviews](docs/reviews/README.md) · [Changelog](CHANGELOG.md)
 
 ## Licensing and upstream attribution
 

@@ -66,3 +66,39 @@ A breach closes positions at the server mark, cancels pending orders and closes 
 ## Free Trial and instrument scope update
 
 See [Unified accounts](UNIFIED_ACCOUNTS.md) for the separate zero-equity permanent stop and new virtual-USD funding. `instruments.js` validates the USD-quoted linear contract model, supported market categories, unit contract size, quantity precision, instrument minimums and leverage maximum. Non-USD quotes requiring conversion or non-unit contract sizes fail explicitly. This is a virtual USD CFD model, not exchange futures lots, physical commodity contracts, or a Gains-contract replica. Independent decimal constants cover both directions in crypto, forex, stocks, indices and commodities.
+
+## Engine rules summary
+
+(Moved from the root README so the README stays an entrypoint.)
+
+- **Orders:** market, limit and stop orders with idempotency keys,
+  pre-trade validation (market, size, leverage and plan caps, SL/TP side) and
+  a free-margin check that includes the opening fee.
+- **Positions:** linear virtual-USD contracts; partial closes are slices of a
+  root position. Spread and fee tiers come from `trading-math.js`.
+- **PnL:** unrealized `qty × (mark − entry) × direction`; realized PnL books
+  exit spread and the closing fee. Every balance change has a ledger row.
+- **Daily drawdown:** floor `basis × (1 − daily %)`, with basis the higher of
+  the day-opening balance and equity at 00:00 UTC+3. Touching the floor is a
+  breach.
+- **Overall drawdown:** static `start × (1 − max %)` or trailing (Instant
+  plans) from peak equity.
+- **Evaluation:** target on closed net profit, which must also hold after
+  settling every open position at the current mark; minimum trading days by
+  fill day; time limits; two-phase progression.
+- **Risk enforcement:** on every fill and close and on each loop pass. A
+  breach closes positions at the mark; positions in closed markets settle
+  once tradeable.
+- **v0.4.2 corrections:** five defects fixed (P0 pass while settlement
+  realized the target away; post-fill fee blind spot; trading days by order
+  date; orphan positions after breach; misreported daily limit) with 31 new
+  checks in `npm run test:engine --prefix apps/backend`.
+- **Open policy decision:** the Rulebook's Instant trailing limit "locks at
+  breakeven", but with the published 5%/5% values the floor keeps trailing
+  above breakeven. The behavior is unchanged from v0.4.1, deterministic and
+  pinned by tests; a product decision is still required before it can be
+  treated as matching the Rulebook.
+
+[Engine audit](../audits/PROP_ENGINE_AUDIT.md) ·
+[ADR 0012](../decisions/0012-challenge-pass-settlement-and-trading-days.md) ·
+[Prop guide](../trading/PROP.md)
