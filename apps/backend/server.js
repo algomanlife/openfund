@@ -18,7 +18,7 @@ import { runtimeConfigScript } from './runtime-config.js'
 import { staticCacheControl, NO_STORE } from './static-cache.js'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
-import { createClient, isHex, http } from 'viem'
+import { createClient, isHex, http, recoverMessageAddress } from 'viem'
 import { parseSiweMessage, verifySiweMessage } from 'viem/siwe'
 import { arbitrum } from 'viem/chains'
 import pg from 'pg'
@@ -328,9 +328,16 @@ app.post("/auth/verify", limit(60), async (req, res) => {
 
     /* cryptographic verification (viem handles EIP-1271 for contract wallets via client) */
     let ok = false;
+    /* EOA signatures (EIP-191) are verified locally by ECDSA recovery, so an
+       RPC outage never blocks ordinary wallet sign-in. Domain, URI, chain,
+       times and nonce were validated above. Only when recovery does not match
+       (contract wallets: EIP-1271 / ERC-6492) is the Arbitrum RPC consulted. */
     try {
-      /* viem signature: verifySiweMessage(client, params) — covers EOAs (EIP-191)
-         and contract wallets (EIP-1271 / ERC-6492) via the public client */
+      ok = (await recoverMessageAddress({ message, signature })).toLowerCase() === parsed.address.toLowerCase();
+    } catch {
+      ok = false;
+    }
+    if (!ok) try {
       ok = await verifySiweMessage(client, {
         address: parsed.address,
         message,
