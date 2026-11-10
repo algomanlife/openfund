@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Pull request governance: a required-sections pull request template with a
+  structural `PR description` check (and Conventional Commit title check),
+  documented stacked-PR policy, branch-update practice, Conventional Commit
+  scopes and merge-readiness checklist (`docs/development/PULL_REQUESTS.md`);
+  release-traceability authority hierarchy in `docs/deployment/RELEASES.md` and a
+  read-only release summary generator (`node scripts/release/summary.mjs`).
 - Terminal Chart tab and Quick Trade (branch `feat/terminal-chart-quick-trade`,
   implementation candidate): a Chart tab beside Trading shows
   the same Vela workspace full-viewport (order form, book and positions hidden)
