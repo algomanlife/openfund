@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Website launch content: removed hosting-provider and release notes, the
+  unverified office-location document, sample/illustrative product notes,
+  placeholder documents, unreleased app badges, the public Team section and the
+  Instagram promotion button from the public website; corrected the Challenges
+  page claim that no plan has minimum trading days; exact `A-Book` / `B-Book`
+  labels with a simulated-routing disclosure; protocol research labelled as not
+  active; `/sitemap.xml`, `/robots.txt`, `og:locale` and indexable Economy and
+  partner routes. Adds the five-locale content validation test
+  (`test:content`), the product-rules consistency check
+  (`check:product-rules`, backend mirror moved to `apps/backend/plan-catalog.js`)
+  and `docs/website/CONTENT_ARCHITECTURE.md` / `docs/product/PRODUCT_RULES.md`.
 - Fix (P0 production UI): explicit cache policy for the same-origin frontend
   (`apps/backend/static-cache.js`). Content-hashed Vite assets are `immutable`,
   unhashed files (`legacy/*`, fonts, `translations.json`, the Vela bundle)

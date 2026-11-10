@@ -12,6 +12,16 @@
   **third-party** and must be re-verified against the official pages before any
   commercial decision. Third-party sources can lag behind pricing changes.
 
+## Re-verification 2026-11-10
+
+The official pages were read directly in a browser session on 2026-11-10:
+[Compare Account Models](https://help.fundingpips.com/hc/en-us/articles/48368490585105-Compare-Account-Models)
+and [Trading Objectives](https://fundingpips.com/trading-objectives). The
+current mapping to the Openfund catalog, the differences that need a product
+decision and the policy topics that require legal review are recorded in
+[Product Rules](../product/PRODUCT_RULES.md#policy-references). The tables
+below are the earlier third-party snapshot and are kept for history.
+
 ## Program lineup (as reported)
 
 | Program | Model | Notes |
