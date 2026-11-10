@@ -177,7 +177,7 @@ async function run() {
     check('replay is idempotent', replay.status === 200 && replay.data.replayed === true);
 
     /* ---------- 5. the panel detects the paid order (polling) ---------- */
-    await page.getByText('Payment verified', { exact: false }).waitFor({ timeout: 15000 });
+    await page.getByText('Payment successful', { exact: false }).waitFor({ timeout: 15000 });
     check('checkout panel transitions to the verified state', true);
     await shot(page, 'checkout-verified');
 

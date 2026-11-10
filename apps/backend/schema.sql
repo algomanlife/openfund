@@ -1209,3 +1209,33 @@ CREATE TABLE IF NOT EXISTS settlement_records (
 );
 CREATE INDEX IF NOT EXISTS idx_settlements_status ON settlement_records (status) WHERE status IN ('pending','failed','processing');
 CREATE INDEX IF NOT EXISTS idx_settlements_beneficiary ON settlement_records (beneficiary_user_id, created_at DESC);
+
+-- Payment attempts (v0.5): every on-chain verification the customer, the
+-- recovery sweep or an operator triggers is recorded — pending, rejected
+-- or confirmed — so a payment that is mined but not yet provisioned can be
+-- retried automatically, investigated by order id / tx hash, and reviewed
+-- (underpayment, wrong token, late, overpayment, duplicate). Additive only;
+-- the payments table stays the single record of CONFIRMED payments.
+CREATE TABLE IF NOT EXISTS payment_attempts (
+  id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  purchase_order_id uuid NOT NULL REFERENCES purchase_orders(id),
+  user_id           uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  chain_id          integer NOT NULL,
+  tx_hash           text NOT NULL,
+  status            text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','rejected','confirmed')),
+  error_code        text,
+  retryable         boolean NOT NULL DEFAULT false,
+  classification    text,              -- underpayment | wrong_token | wrong_receiver | wrong_sender | late | overpayment | duplicate | reverted | other
+  detail            jsonb NOT NULL DEFAULT '{}'::jsonb,
+  attempts          integer NOT NULL DEFAULT 1,
+  first_seen_at     timestamptz NOT NULL DEFAULT now(),
+  last_attempt_at   timestamptz NOT NULL DEFAULT now(),
+  review_status     text NOT NULL DEFAULT 'none' CHECK (review_status IN ('none','open','resolved')),
+  review_note       text,
+  reviewed_by       text,
+  reviewed_at       timestamptz,
+  UNIQUE (purchase_order_id, chain_id, tx_hash)
+);
+CREATE INDEX IF NOT EXISTS idx_payment_attempts_retry ON payment_attempts (last_attempt_at) WHERE status = 'pending' AND retryable;
+CREATE INDEX IF NOT EXISTS idx_payment_attempts_review ON payment_attempts (review_status) WHERE review_status = 'open';
+CREATE INDEX IF NOT EXISTS idx_payment_attempts_tx ON payment_attempts (chain_id, tx_hash);
