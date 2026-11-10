@@ -1,5 +1,13 @@
 # Feature status
 
+2026-11-10 reconciliation (read-only checks): production serves **v0.4.4**
+(`c1cb707`) on `openfund.cloud` and `openfi.cloud` (`/version` matched on both),
+and `paymentsEnabled` is `false`. Work merged to `main` after v0.4.4 (Economy,
+Transparency and partner programs, extra locales, Whitepaper v1.0, terminal Chart
+tab with Quick Trade, Hybrid Governance v1.0) is **unreleased and not deployed**;
+open pull requests are not on `main`. The dated notes below are history. The
+wallet sign-in `ALLOWED_DOMAINS` item below was not re-probed on 2026-11-10.
+
 2026-11-08 v0.4.2 release batch: `main` contains PR #50 (Persian terminal
 RTL/mobile), PR #51 (system-default theme) and PR #52 (Prop engine audit),
 plus release-driven deployment ([ADR 0013](../decisions/0013-release-driven-production-deployment.md)).

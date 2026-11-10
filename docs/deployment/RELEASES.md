@@ -8,6 +8,8 @@ The latest published and deployed release is **v0.4.4** at
 Resolve the latest official release and candidate version from GitHub at
 execution time; this paragraph is a dated record, not live status.
 
+Re-verified read-only on 2026-11-10: `https://openfund.cloud/version` and `https://openfi.cloud/version` both report `matched`, version 0.4.4, commit `c1cb7073e4f1eb16c2b204ec9b0b1158b1dde4b1`; the GitHub Release `v0.4.4` is the latest. `main` was at `1d95def` (six pull requests after v0.4.4, none deployed).
+
 ## Release-to-production pipeline
 
 ```mermaid
