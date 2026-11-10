@@ -71,6 +71,35 @@ The [feature register](docs/product/FEATURE_STATUS.md) is canonical; this table 
 | Localization | Persian and English with RTL are live; Arabic, Russian and Simplified Chinese are on `main` (unreleased). Language availability does not determine residency eligibility. |
 | Directus CMS | Live: editorial content and plan catalog (Directus 11.9.1). Market data never flows through it. |
 
+## Screenshots
+
+<a id="product-gallery"></a>
+
+Fresh P0 screenshots use real theme-button clicks, normal anonymous sessions and the actual canonical port 8080 application. The [gallery](docs/assets/screenshots/README.md) and [manifest](docs/assets/screenshots/manifest.json) identify each capture's runtime and distinguish the pre-packaging audit from final immutable-candidate evidence. No CSS injection, forced theme attributes, wallet injection or intercepted market/CMS responses are used. Prior `refinement-*` and `addendum-*` captures are historical, not evidence of the current build or owner acceptance.
+
+| Persian Home — dark | Persian Home — light |
+| --- | --- |
+| ![Actual Persian Home dark](docs/assets/screenshots/p0-dark-fa-public-dark.png) | ![Actual Persian Home light](docs/assets/screenshots/p0-dark-fa-public-light.png) |
+| **English Dashboard — dark** | **English Dashboard — light** |
+| ![Actual anonymous Dashboard dark](docs/assets/screenshots/p0-dark-en-dashboard-dark.png) | ![Actual anonymous Dashboard light](docs/assets/screenshots/p0-dark-en-dashboard-light.png) |
+| **English Prop Terminal — dark** | **English Prop Terminal — light** |
+| ![Actual Prop terminal dark](docs/assets/screenshots/p0-dark-en-terminal-dark.png) | ![Actual Prop terminal light](docs/assets/screenshots/p0-dark-en-terminal-light.png) |
+
+Charts retain live or explicit unavailable states. Anonymous Dashboard captures do not certify authenticated account contents. Chromium auto-dark emulation reproduces computed white backgrounds painted RGB(18,18,18); `color-scheme: only light` opts application-owned light surfaces out, including the nested workspace. Saved Vela cosmetics restore before the app palette. The existing polish gate runs `e2e/test-auto-dark.cjs` with real theme clicks, reloads, both OS preferences, persisted chart settings and screenshot-pixel assertions at 3360 × 1216. Owner Opera settings are not inspected; these images are not owner acceptance, an official release update or production deployment.
+
+## Technology stack
+
+| Layer | Technology |
+| --- | --- |
+| Web interface | React 19, TypeScript, Vite 6, React Router 7; Persian/English and RTL |
+| Wallet and identity | RainbowKit, wagmi, viem, SIWE and HttpOnly sessions |
+| Charting and market data | Vela 0.9.3, Vela Pine addon 0.3.2, PineTS 0.13.1, Gains adapters |
+| API and simulation | Node.js 22, Express, Decimal arithmetic, WebSocket feeds and SSE |
+| Persistence and content | PostgreSQL 17; Directus 11.9.1 for editorial/catalog administration |
+| Quality and delivery | Per-app npm lockfiles, Playwright, GitHub Actions, Render Blueprint |
+
+[Technology registry](docs/architecture/TECH_STACK.md) · [Upstream provenance](docs/integrations/UPSTREAM.md)
+
 ## Architecture
 
 | Component | Implementation |
