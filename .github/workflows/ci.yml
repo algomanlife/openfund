@@ -114,6 +114,13 @@ jobs:
           npm run migrate
       - name: Seed plan catalog
         run: npm run seed-plans
+      # react/ is generated output and is not tracked: the server reads
+      # react/index.html and react/legacy at start-up, so build before booting.
+      - name: Build the frontend the server serves (react/ is not tracked)
+        working-directory: .
+        run: |
+          npm ci --include=dev --prefix apps/web-react
+          npm run build:web
       - name: Boot server (integration suites hit it on :8080)
         run: |
           # PURCHASE_PAYMENT_RECEIVER is a CI-only placeholder so the purchase
@@ -137,8 +144,6 @@ jobs:
         run: |
           npm ci
           npx playwright install --with-deps chromium
-          npm ci --include=dev --prefix apps/web-react
-          npm run build:web
       - name: Browser integration (controlled CMS/Gains and generated test wallets)
         working-directory: .
         env:

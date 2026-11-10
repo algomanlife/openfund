@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Repository: the generated `react/` build output (22.7 MB, 241 files) is no
+  longer tracked; `npm run build:web` creates it and `Backend` CI builds it
+  before booting the server. Removes the main source of merge conflicts between
+  frontend pull requests. See `docs/development/REPOSITORY_HYGIENE.md`.
 - Terminal Chart tab and Quick Trade (branch `feat/terminal-chart-quick-trade`,
   implementation candidate): a Chart tab beside Trading shows
   the same Vela workspace full-viewport (order form, book and positions hidden)
