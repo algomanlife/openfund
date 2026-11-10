@@ -1,0 +1,361 @@
+{
+  "schema": 1,
+  "verifiedOn": "2026-11-10",
+  "verifiedAgainst": "main a8a4386",
+  "note": "Facts here are read from the repository (package manifests, lockfiles, render.yaml, source imports and PROVENANCE files). Anything not verified from the repository is stated as such. License summaries are an engineering inventory, not legal advice. Isolation layers, the patch registry, customisation guards and the controlled update tool are in [Upstream isolation and patch registry](UPSTREAM_DEPENDENCIES.md) (enforcement data in infra/upstream/). The Directus upgrade is tracked separately; this file records the state, it does not decide that upgrade.",
+  "entries": [
+    {
+      "id": "vela",
+      "name": "LuxAlgo Vela (charting core)",
+      "category": "charting",
+      "upstream": "https://github.com/LuxAlgo/Vela",
+      "license": "Apache-2.0 plus a NOTICE attribution requirement (vendor/vela/NOTICE: visible Vela attribution wherever a Vela chart is displayed)",
+      "version": "0.9.3",
+      "commit": "57d011ab796c541cbb9e1282722ad6cd521c8f55 (upstream tag v0.9.3). Vendored tree verified by diff against the tag: byte-identical except the three registered patches",
+      "pins": [
+        {
+          "file": "apps/web-react/package.json",
+          "pattern": "\"@luxalgo/vela\": \"(0\\.9\\.3)\""
+        },
+        {
+          "file": "vendor/vela/package.json",
+          "pattern": "\"version\": \"(0\\.9\\.3)\""
+        }
+      ],
+      "locations": [
+        "vendor/vela (source, Apache-2.0)",
+        "apps/web-react node_modules/@luxalgo/vela (npm 0.9.3)",
+        "packages/openfund-charts (Openfund bridge)",
+        "apps/web-react/public/assets/vela-workspace.global.min.js (built bundle, mirrored to dist/ and react/)"
+      ],
+      "vendoring": "Two sources: the npm package is the runtime dependency; vendor/vela is a source copy used by scripts/build-charts.mjs through an esbuild alias for `@luxalgo/vela/plugin` only. Output is bundled by `npm run build:charts`.",
+      "localModifications": "Yes, exactly three files, registered as reversible patches OF-VELA-001 (menu z-index), OF-VELA-002 (no picker badge) and OF-VELA-003 (proprietary studies first) in infra/upstream/patches.json. Every vendored file is checksummed in infra/upstream/vendor-manifest.json.",
+      "usedAtRuntime": true,
+      "tests": [
+        "npm run check:upstream",
+        "npm run test:browser:charts",
+        "npm run test:charts",
+        "npm run test:upstream",
+        "npm run typecheck"
+      ],
+      "updateProcedure": "Controlled tool, never by hand: `npm run update:vendor -- --provider vela --to <tag>` (read-only report; --apply only after review), then rebuild and run the tests. See docs/integrations/VELA_UPGRADE.md. 0.10.4 is observed but not adopted (patch conflict).",
+      "risks": [
+        "Attribution obligation in NOTICE must stay satisfied on every chart screen.",
+        "Local patches can be lost on update.",
+        "Vendored tree and npm package could drift apart."
+      ]
+    },
+    {
+      "id": "vela-pinets",
+      "name": "Vela Pine addon (@luxalgo/vela-pinets)",
+      "category": "charting",
+      "upstream": "https://github.com/LuxAlgo/Vela-pinets",
+      "license": "AGPL-3.0-only (npm metadata)",
+      "version": "0.3.2",
+      "commit": null,
+      "pins": [
+        {
+          "file": "apps/web-react/package.json",
+          "pattern": "\"@luxalgo/vela-pinets\": \"(0\\.3\\.2)\""
+        }
+      ],
+      "locations": [
+        "apps/web-react node_modules/@luxalgo/vela-pinets (npm)",
+        "apps/web-react/public/assets/openfund-pine-worker.min.js (worker extracted and patched by scripts/build-charts.mjs)"
+      ],
+      "vendoring": "npm dependency. scripts/build-charts.mjs extracts the embedded worker from dist/index.js and inserts packages/openfund-charts/src/pine-compatibility.mjs; it throws if the upstream layout changes.",
+      "localModifications": "Build-time wrapper OF-BUILD-001 (Pine worker compatibility), registered in infra/upstream/patches.json. No forked source.",
+      "usedAtRuntime": true,
+      "tests": [
+        "npm run test:charts",
+        "npm run test:browser:charts"
+      ],
+      "updateProcedure": "Update only with PineTS (same family). The build script's marker checks fail loudly if the worker changes; review the compatibility insertion before adjusting the markers.",
+      "risks": [
+        "AGPL-3.0 network-use obligations apply to the served bundle; notices are shipped in dist/assets/notices. Confirm obligations with counsel before changing distribution.",
+        "Build-time string patching is brittle across upstream releases."
+      ]
+    },
+    {
+      "id": "pinets",
+      "name": "PineTS (Pine Script runtime)",
+      "category": "charting",
+      "upstream": "https://github.com/LuxAlgo/PineTS",
+      "license": "AGPL-3.0-only (npm metadata; notices in dist/assets/notices/PineTS-AGPL-3.0.txt)",
+      "version": "0.13.1",
+      "commit": null,
+      "pins": [
+        {
+          "file": "apps/web-react/package.json",
+          "pattern": "\"pinets\": \"(0\\.13\\.1)\""
+        }
+      ],
+      "locations": [
+        "apps/web-react node_modules/pinets (npm)",
+        "bundled into the Vela workspace and Pine worker assets"
+      ],
+      "vendoring": "npm dependency, exact pin.",
+      "localModifications": "None to the package. Openfund-original Pine sources live in indicators/ and packages/openfund-charts.",
+      "usedAtRuntime": true,
+      "tests": [
+        "npm run test:charts"
+      ],
+      "updateProcedure": "Exact-pin bump in a dedicated PR together with @luxalgo/vela-pinets; run the chart tests and the browser chart regression.",
+      "risks": [
+        "AGPL-3.0 obligations (see vela-pinets).",
+        "Exact pin: security fixes are not picked up automatically."
+      ]
+    },
+    {
+      "id": "gains-sdk",
+      "name": "Gains Network SDK (@gainsnetwork/sdk)",
+      "category": "markets",
+      "upstream": "https://github.com/GainsNetwork-org/sdk",
+      "license": "MIT (vendor/gains-sdk/LICENSE)",
+      "version": "1.8.10",
+      "commit": "aa7a05a4919ba6667513c128e6bf5806af0be181 (upstream HEAD observed when vendored)",
+      "pins": [
+        {
+          "file": "vendor/gains-sdk/package.json",
+          "pattern": "\"version\": \"(1\\.8\\.10)\""
+        }
+      ],
+      "locations": [
+        "vendor/gains-sdk"
+      ],
+      "vendoring": "Source copy only. It is NOT imported by any application, package or script (verified by searching the repository); the build neither compiles nor ships it.",
+      "localModifications": "None. Byte-identical to upstream commit aa7a05a, enforced by the vendor manifest.",
+      "usedAtRuntime": false,
+      "tests": [],
+      "updateProcedure": "Do not update until transaction execution is a planned, funded milestone; AGENTS.md keeps Gains execution disabled. When it becomes active: new dependency-governance review, testnet contracts, simulation.",
+      "risks": [
+        "6 MB of tracked source that nothing consumes.",
+        "Stale ABIs could be mistaken for supported integration."
+      ]
+    },
+    {
+      "id": "gains-api",
+      "name": "Gains Network public APIs (market data)",
+      "category": "markets",
+      "upstream": "https://api.gains.trade/v1/arbitrum (REST + WebSocket)",
+      "license": "Service terms of the provider (not verified from the repository)",
+      "version": "unversioned external service (path /v1)",
+      "commit": null,
+      "pins": [],
+      "locations": [
+        "apps/backend/market-data.js",
+        "packages/openfund-gains-adapter",
+        "dist/gains-adapter.js (generated mirror)"
+      ],
+      "vendoring": "None — runtime HTTP/WebSocket calls. Chart acceptance tests use the recorded fixture packages/openfund-charts/test/fixtures/gains-btc-usd.json.",
+      "localModifications": "n/a",
+      "usedAtRuntime": true,
+      "tests": [
+        "apps/backend test:gains",
+        "node --test apps/backend/test/market-data-contract.test.mjs",
+        "npm run check:gains-live (optional, live)",
+        "npm run test:charts"
+      ],
+      "updateProcedure": "Contract tests on recorded fixtures (apps/backend/test/fixtures/gains) plus the optional live check; see docs/integrations/GAINS_UPGRADE.md.",
+      "risks": [
+        "Third-party availability and rate limits.",
+        "Provider can change payloads without notice."
+      ]
+    },
+    {
+      "id": "luxalgo-journal-core",
+      "name": "LuxAlgo Trade Journal — journal-core only",
+      "category": "analytics",
+      "upstream": "https://github.com/LuxAlgo/trade-journal",
+      "license": "MIT (third_party/luxalgo-trade-journal/LICENSE)",
+      "version": "@luxalgo/journal-core (see packages-core/package.json)",
+      "commit": "834e7b68f553d1aba0d7777875cdc4622f5a7eb5",
+      "pins": [
+        {
+          "file": "third_party/luxalgo-trade-journal/PROVENANCE.md",
+          "pattern": "(834e7b68f553d1aba0d7777875cdc4622f5a7eb5)"
+        }
+      ],
+      "locations": [
+        "third_party/luxalgo-trade-journal/packages-core (TypeScript sources)",
+        "third_party/luxalgo-trade-journal/dist/index.js (compiled ESM bundle, imported by apps/backend/portfolio.js)"
+      ],
+      "vendoring": "Source copy of packages/core plus a committed esbuild bundle (`node third_party/luxalgo-trade-journal/build.mjs`). Included in the release payload (scripts/release/build.mjs).",
+      "localModifications": "None to the sources (byte-identical, vendor manifest enforced); the compiled dist/index.js is rebuilt by build.mjs.",
+      "usedAtRuntime": true,
+      "truth": "INTEGRATED, narrowly: only the dependency-free analytics library `journal-core` is used, by the backend Portfolio module, to compute round-trips and metrics from Openfund's own trade rows. The upstream Trade Journal application (apps/web), its importers and any broker/CSV import are NOT vendored and NOT integrated.",
+      "tests": [
+        "npm --prefix apps/backend run test:all (portfolio.test.mjs)"
+      ],
+      "updateProcedure": "Re-vendor packages/core from a reviewed upstream commit, rebuild dist/index.js, run backend portfolio tests, update PROVENANCE.md.",
+      "risks": [
+        "The compiled bundle is committed; ensure it is rebuilt from the recorded commit."
+      ]
+    },
+    {
+      "id": "directus",
+      "name": "Directus (CMS)",
+      "category": "cms",
+      "upstream": "https://github.com/directus/directus",
+      "license": "BSL 1.1 for the Directus core (inventory note, not legal advice; confirm the licence terms of the pinned image)",
+      "version": "11.9.1",
+      "commit": null,
+      "pins": [
+        {
+          "file": "render.yaml",
+          "pattern": "directus/directus:(11\\.9\\.1)"
+        },
+        {
+          "file": ".github/workflows/release.yml",
+          "pattern": "directus/directus:(11\\.9\\.1)"
+        },
+        {
+          "file": "infrastructure/directus/compose.yaml",
+          "pattern": "directus/directus:(11\\.9\\.1)"
+        }
+      ],
+      "locations": [
+        "render.yaml (openfund-cms, official Docker image)",
+        ".github/workflows/release.yml (package and cms jobs)",
+        "infrastructure/directus/compose.yaml (local)",
+        "apps/backstage/scripts (schema + seed)"
+      ],
+      "vendoring": "Official container image pinned by tag; no source in the repository.",
+      "localModifications": "None to Directus. Openfund schema is applied by apps/backstage/scripts/apply_schema.py.",
+      "usedAtRuntime": true,
+      "tests": [
+        "Release workflow job 'Directus bootstrap and public permissions'",
+        "scripts/release/test-cms-bootstrap.mjs"
+      ],
+      "updateProcedure": "Handled by the dedicated Directus-upgrade assignment: change every location above in one PR, run the bootstrap job twice (idempotency), back up the CMS database first.",
+      "risks": [
+        "The version appears in five places; they must change together (check-registry verifies the three pins above).",
+        "Major upgrades can change the schema API."
+      ]
+    },
+    {
+      "id": "wallet-stack",
+      "name": "Wallet libraries (wagmi, viem, RainbowKit)",
+      "category": "wallet",
+      "upstream": "https://github.com/wevm/wagmi, https://github.com/wevm/viem, https://github.com/rainbow-me/rainbowkit",
+      "license": "MIT (npm metadata)",
+      "version": "wagmi 2.19.5, viem 2.57.13, RainbowKit 2.2.11 (installed; manifests use caret ranges)",
+      "commit": null,
+      "pins": [],
+      "locations": [
+        "apps/web-react/package.json",
+        "apps/backend/package.json (viem for SIWE verification)"
+      ],
+      "vendoring": "npm dependencies with caret ranges; lockfiles pin the resolved versions.",
+      "localModifications": "None.",
+      "usedAtRuntime": true,
+      "tests": [
+        "npm run test:browser:wallet",
+        "apps/backend test (siwe.test.mjs)"
+      ],
+      "updateProcedure": "Grouped minor/patch updates via the scheduled review; major versions (wagmi/RainbowKit/viem move together) in a dedicated PR with the wallet browser tests.",
+      "risks": [
+        "Wallet SDKs are fast-moving and security-sensitive; some transitive packages are deprecated (for example @metamask/sdk-communication-layer)."
+      ]
+    },
+    {
+      "id": "openfund-protocol",
+      "name": "Openfund Protocol (MUX protocol source, dormant)",
+      "category": "protocol",
+      "upstream": "https://github.com/mux-world/mux-protocol",
+      "license": "GPL-2.0 (packages/openfund-protocol/LICENSE)",
+      "version": "revision 0f70a70b9b3410c2ae7209900e5d2521635249d1 (2025-07-14)",
+      "commit": "0f70a70b9b3410c2ae7209900e5d2521635249d1",
+      "pins": [
+        {
+          "file": "packages/openfund-protocol/PROVENANCE.md",
+          "pattern": "(0f70a70b9b3410c2ae7209900e5d2521635249d1)"
+        }
+      ],
+      "locations": [
+        "packages/openfund-protocol"
+      ],
+      "vendoring": "Source import. Not part of the application build, deploy or runtime (PROVENANCE.md).",
+      "localModifications": "Documentation and package metadata renamed only; known upstream compile defect documented in PROVENANCE.md.",
+      "usedAtRuntime": false,
+      "tests": [],
+      "updateProcedure": "Do not enable or update without the separate protocol roadmap decision.",
+      "risks": [
+        "GPL-2.0 obligations if ever distributed with the application.",
+        "Upstream revision does not compile (documented)."
+      ]
+    },
+    {
+      "id": "web-toolchain",
+      "name": "Frontend runtime and build toolchain",
+      "category": "build",
+      "upstream": "https://github.com/facebook/react, https://github.com/vitejs/vite, https://github.com/TanStack/query, https://github.com/remix-run/react-router",
+      "license": "MIT (npm metadata)",
+      "version": "see apps/web-react/package.json and package-lock.json",
+      "commit": null,
+      "pins": [],
+      "locations": [
+        "apps/web-react"
+      ],
+      "vendoring": "npm dependencies, lockfile-pinned (`npm ci`).",
+      "localModifications": "None.",
+      "usedAtRuntime": true,
+      "tests": [
+        "npm run typecheck",
+        "npm run test:web",
+        "npm run build:web"
+      ],
+      "updateProcedure": "Scheduled grouped minor/patch review; majors one at a time.",
+      "risks": [
+        "Major jumps (React, Vite) affect the whole frontend."
+      ]
+    },
+    {
+      "id": "backend-runtime",
+      "name": "Backend runtime dependencies (express, pg, ws, decimal.js)",
+      "category": "backend",
+      "upstream": "npm registry",
+      "license": "MIT/ISC family (npm metadata)",
+      "version": "see apps/backend/package.json and package-lock.json",
+      "commit": null,
+      "pins": [],
+      "locations": [
+        "apps/backend"
+      ],
+      "vendoring": "npm dependencies, lockfile-pinned. Money math uses decimal.js.",
+      "localModifications": "None.",
+      "usedAtRuntime": true,
+      "tests": [
+        "npm run test:backend"
+      ],
+      "updateProcedure": "Security patches promptly; everything else in the scheduled grouped review. Never change decimal.js or pg majors without the full engine and economy suites.",
+      "risks": [
+        "Trading engine, payments and Economy depend on these; keep updates small and fully tested."
+      ]
+    },
+    {
+      "id": "test-and-docs-tooling",
+      "name": "Repository tooling (Playwright, markdownlint, mermaid, jsdom, js-yaml)",
+      "category": "tooling",
+      "upstream": "npm registry",
+      "license": "MIT/Apache-2.0 family (npm metadata)",
+      "version": "see package.json (playwright is range-pinned; CI caches browsers per lockfile)",
+      "commit": null,
+      "pins": [],
+      "locations": [
+        "package.json (root)"
+      ],
+      "vendoring": "npm devDependencies.",
+      "localModifications": "overrides in package.json for markdownlint (re2js) and micromark-extension-math (katex).",
+      "usedAtRuntime": false,
+      "tests": [
+        "npm run docs:check",
+        "npm run test:release"
+      ],
+      "updateProcedure": "Scheduled grouped review; a Playwright bump also changes the browser cache key.",
+      "risks": [
+        "Tooling only; never shipped."
+      ]
+    }
+  ]
+}

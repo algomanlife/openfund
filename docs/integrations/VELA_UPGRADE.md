@@ -2,7 +2,7 @@
 
 Procedure for moving the vendored LuxAlgo Vela, its Pine addon and PineTS to a newer version **without** replacing Openfund's modified chart, branding, indicators or terminal behaviour. Vela is not upgraded by this change; it is pinned at 0.9.3 until a version is separately reviewed and approved.
 
-Registry: [Upstream dependency registry](UPSTREAM_DEPENDENCIES.md). Integration description: [Vela chart integration](VELA.md).
+Inventory of record: [Upstream dependency registry](UPSTREAM_REGISTRY.md). Patches and rollback limits: [Upstream isolation and patch registry](UPSTREAM_DEPENDENCIES.md). Integration description: [Vela chart integration](VELA.md).
 
 ## Openfund customisations that an update must not touch
 
@@ -59,4 +59,4 @@ Observed 2026-11-10 with the report tool, not adopted:
 
 Vela is therefore left at 0.9.3.
 
-[Dependency registry](UPSTREAM_DEPENDENCIES.md) · [Vela integration](VELA.md) · [ADR 0019](../decisions/0019-upstream-isolation.md)
+[Upstream dependency registry](UPSTREAM_REGISTRY.md) · [Patch registry](UPSTREAM_DEPENDENCIES.md) · [Vela integration](VELA.md) · [ADR 0019](../decisions/0019-upstream-isolation.md)

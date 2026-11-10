@@ -2,7 +2,7 @@
 
 Gains Network is a hosted API with no versioned releases, so protection is by **contract**, not by version number. Gains specifics stay inside the market-data integration layer; the trading engine, execution rules and evaluation logic never learn a Gains field name.
 
-Registry: [Upstream dependency registry](UPSTREAM_DEPENDENCIES.md). Protocol description: [Gains integration](GAINS.md).
+Inventory of record: [Upstream dependency registry](UPSTREAM_REGISTRY.md). Patches and rollback limits: [Upstream isolation and patch registry](UPSTREAM_DEPENDENCIES.md). Protocol description: [Gains integration](GAINS.md).
 
 ## Stable internal contract
 
@@ -38,4 +38,4 @@ Registry: [Upstream dependency registry](UPSTREAM_DEPENDENCIES.md). Protocol des
 
 `vendor/gains-sdk` is byte-identical to upstream commit `aa7a05a` and is not imported by any application code. Updating it follows the [vendored source procedure](UPSTREAM_DEPENDENCIES.md#vendored-source-update-procedure); it does not change market-data behaviour.
 
-[Dependency registry](UPSTREAM_DEPENDENCIES.md) · [Gains integration](GAINS.md) · [Gains depth](GAINS_DEPTH.md) · [ADR 0019](../decisions/0019-upstream-isolation.md)
+[Upstream dependency registry](UPSTREAM_REGISTRY.md) · [Patch registry](UPSTREAM_DEPENDENCIES.md) · [Gains integration](GAINS.md) · [Gains depth](GAINS_DEPTH.md) · [ADR 0019](../decisions/0019-upstream-isolation.md)

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "reviewed_on": "2026-11-10",
-  "notes": "Machine-readable twin of docs/integrations/UPSTREAM_DEPENDENCIES.md. Edited only by reviewed pull requests. installed versions are verified against vendored manifests and lockfiles by `npm run test:upstream`; latest_observed values are informational snapshots that the release watcher refreshes.",
+  "notes": "Enforcement data behind docs/integrations/UPSTREAM_DEPENDENCIES.md (patches, guards, update recipes, observed versions). The inventory of record is docs/integrations/UPSTREAM_REGISTRY.md. Edited only by reviewed pull requests. installed versions are verified against vendored manifests and lockfiles by `npm run test:upstream`; latest_observed values are informational snapshots that the release watcher refreshes.",
   "providers": [
     {
       "id": "vela",
