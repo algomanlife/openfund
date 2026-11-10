@@ -23,7 +23,8 @@ suspected vulnerabilities.
   `dist/`), whose minified third-party SDK code embeds public constants (the
   documented RainbowKit provider fallback key and wallet-SDK telemetry keys that
   ship inside the published npm packages). Source directories stay fully
-  scanned. `VITE_*` variables are public by definition and must never carry
+  scanned. One further exact-path allowlist covers `infra/upstream/vendor-manifest.json`,
+  which holds only vendored-file path to sha256 checksums. `VITE_*` variables are public by definition and must never carry
   secrets.
 - **Frontend safety**: CMS-rendered text is DOM-built (no HTML injection), link
   destinations pass fixed whitelists, and anonymous CMS writes are rejected
