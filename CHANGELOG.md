@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Upstream isolation and dependency registry: separates upstream, integration and Openfund-custom
+  layers for Vela, the Pine addon and PineTS, the Gains API and SDK, the LuxAlgo journal core,
+  Directus and key libraries. Adds `infra/upstream/` (registry, patch registry with three reversible
+  Vela patches, customization guards, vendor manifest), `npm run check:upstream`, a controlled
+  `update-vendor` report/apply tool that proves vendored source equals upstream plus registered
+  patches, Gains market-data contract tests on recorded fixtures plus an optional live check, and the
+  Vela/Gains upgrade protection guides. Vela stays at 0.9.3 (0.10.4 assessed: patch conflict, not
+  adopted). `MarketData` gains an options seam with unchanged defaults; the trading engine is untouched.
+
 - Dependency governance: a machine-checked upstream registry (Vela, Vela Pine
   addon, PineTS, Gains SDK and APIs, journal-core, Directus, wallet libraries,
   protocol source) with versions, licenses, local modifications and update
