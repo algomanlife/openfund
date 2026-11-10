@@ -42,6 +42,16 @@ async function shot(page, name, route, locator) {
     baseline: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
     candidate: true, source: 'website refresh working tree (unreleased)', capturedAt: new Date().toISOString() });
 }
+/* The Vela toolbar (including #vela-tool-vela-widget-panel-dataWindow) is only
+ * created after the chart workspace inside the terminal iframe has initialised.
+ * Wait for that state explicitly instead of racing the first locator against it. */
+async function velaReady(page) {
+  await page.locator('iframe').first().waitFor({ state: 'attached' });
+  await page.waitForFunction(() => !!document.querySelector('iframe')?.contentWindow?.__openfundChart?.chart, null, { timeout: 60000 });
+  const child = page.frames().find(f => f.parentFrame());
+  await child.evaluate(() => window.__openfundChart.chart.ready());
+}
+
 async function realThemeClicks(browser) {
   const directory = path.resolve(process.env.THEME_EVIDENCE_DIR || 'output/playwright/theme-clicks');
   fs.mkdirSync(directory, { recursive: true });
@@ -89,11 +99,13 @@ async function realThemeClicks(browser) {
       await page.locator(`a[href="/${locale}/prop/trade"]`).first().click();
       await page.locator('.of-terminal-top').waitFor();
       const iframe = page.frameLocator('iframe');
+      await velaReady(page);
       await iframe.locator('#vela-tool-vela-widget-panel-dataWindow').click();
       await sample(page, `${prefix}-terminal-light`, 'light', true);
       await page.locator('button[aria-label="' + (locale === 'fa' ? 'تغییر پوسته' : 'Toggle theme') + '"]').click();
       await sample(page, `${prefix}-terminal-dark`, 'dark', true);
       await page.reload({ waitUntil: 'domcontentloaded' });
+      await velaReady(page);
       await iframe.locator('#vela-tool-vela-widget-panel-dataWindow').waitFor();
       await sample(page, `${prefix}-terminal-refresh-dark`, 'dark');
       await page.locator(`#terminal-navigation a[href="/${locale}/prop/dashboard"]:not(.of-compact-destination)`).click();
@@ -105,6 +117,7 @@ async function realThemeClicks(browser) {
       await sample(page, `${prefix}-dashboard-refresh-light`, 'light');
       if (locale === 'fa') {
         await page.goto(`${BASE}/fa/perpetual/trade`, { waitUntil: 'domcontentloaded' });
+        await velaReady(page);
         await iframe.locator('#vela-tool-vela-widget-panel-dataWindow').click();
         await sample(page, `${prefix}-perpetual-light`, 'light', true);
       }
