@@ -1,0 +1,51 @@
+# Controlled dependency updates (see docs/development/DEPENDENCY_GOVERNANCE.md).
+#
+# Rules that keep updates reviewable:
+#  - weekly, one grouped minor/patch PR per ecosystem and directory, small PR limit;
+#  - semver-major updates are never proposed automatically (they get a dedicated
+#    human-planned PR);
+#  - pinned upstream families and the CMS image are updated only through the
+#    registry procedure (docs/integrations/UPSTREAM_REGISTRY.md), so they are ignored here;
+#  - security advisories are still raised by GitHub Dependabot security updates
+#    independently of this schedule.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /apps/web-react
+    schedule: { interval: weekly, day: monday }
+    open-pull-requests-limit: 2
+    groups: { web-minor-patch: { update-types: [minor, patch] } }
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+      # Exact-pinned upstream family: registry procedure only.
+      - dependency-name: '@luxalgo/*'
+      - dependency-name: pinets
+    commit-message: { prefix: 'chore(deps)' }
+  - package-ecosystem: npm
+    directory: /apps/backend
+    schedule: { interval: weekly, day: monday }
+    open-pull-requests-limit: 2
+    groups: { backend-minor-patch: { update-types: [minor, patch] } }
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+    commit-message: { prefix: 'chore(deps)' }
+  - package-ecosystem: npm
+    directory: /
+    schedule: { interval: weekly, day: monday }
+    open-pull-requests-limit: 1
+    groups: { tooling-minor-patch: { update-types: [minor, patch] } }
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+    commit-message: { prefix: 'chore(deps)' }
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly, day: monday }
+    open-pull-requests-limit: 1
+    groups: { actions: { update-types: [minor, patch] } }
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+    commit-message: { prefix: 'ci(deps)' }
