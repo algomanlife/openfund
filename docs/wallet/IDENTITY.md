@@ -8,12 +8,20 @@ RainbowKit, wagmi and viem provide connection, chain selection and signature req
 
 Mobile wallets (WalletConnect QR / deep link) need a WalletConnect Cloud project id in the public runtime variable `VITE_WALLETCONNECT_PROJECT_ID` (create a free project at cloud.reown.com and add every serving origin, e.g. `https://openfund.cloud`, to its allowed domains). Without it the picker says mobile connection is not configured on this deployment; browser wallets keep working. When it is set, the picker offers "Mobile wallet (WalletConnect)", which opens the RainbowKit modal, and the CSP allows the WalletConnect Verify frame. Never commit a project id or invent a placeholder.
 
-The product network policy is (any of the five locales — `/:locale/perpetual/*` always means Arbitrum One):
+The network policy is **Arbitrum One (42161) only**, for every product and
+route ([ADR 0022](../decisions/0022-arbitrum-checkout-coupons-order-lifecycle.md)).
+It is implemented on branch `codex/production-readiness` and not yet deployed.
+Production still serves the previous policy, where Prop used Ethereum Sepolia.
 
 | Product | Chain | Purpose |
 | --- | --- | --- |
-| Prop | Ethereum Sepolia, 11155111 | SIWE sign-in context; account collateral remains virtual DAI in PostgreSQL |
+| Prop | Arbitrum One, 42161 | SIWE sign-in context; account collateral remains virtual DAI in PostgreSQL (no chain transaction funds it) |
 | Perpetual | Arbitrum One, 42161 | SIWE context and Gains wallet-scoped reads; execution disabled |
+| Checkout | Arbitrum One, 42161 | DePay button restricted to `arbitrum`; on-chain verification on Arbitrum One |
+
+A wallet on another network is asked to switch before signing. The backend
+rejects SIWE messages for any other chain id (`invalid_chain`). Sessions
+created earlier stay valid until they expire.
 
 The wallet must approve network changes and message signatures. A connected address is not itself an authenticated account. The account menu offers an explicit network switch and "Disconnect wallet".
 

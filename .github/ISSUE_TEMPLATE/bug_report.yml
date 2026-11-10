@@ -1,0 +1,41 @@
+name: Bug report
+description: Something in Openfund behaves incorrectly
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not report security vulnerabilities here — use a private GitHub security advisory (see SECURITY.md).
+        Never paste private keys, seed phrases, session cookies, API tokens or personal data.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `curl https://openfund.cloud/version` (version and commit), or the local commit SHA
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [Website, Prop terminal, Perpetual terminal, Wallet / sign-in, Checkout / payments, Coupons, Economy / Ambassador (IB), Governance, Directus content, Deployment, Other]
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Route, locale (fa/en/…), theme, wallet type (redact addresses), network
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Screenshots or logs with secrets and personal data removed

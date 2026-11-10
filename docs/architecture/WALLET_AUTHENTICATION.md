@@ -13,7 +13,7 @@
 
 ## Validation and session controls
 
-Message verification checks domain against `ALLOWED_DOMAINS`, expected URI host/scheme, version, allowed chain (11155111 or 42161), issued/expiry/not-before times, nonce ownership and cryptographic signature. Contract-wallet verification uses the message chain. Signature and nonce validation failures return generic errors; rate limits and mutation-origin checks bound abuse.
+Message verification checks domain against `ALLOWED_DOMAINS`, expected URI host/scheme, version, allowed chain (42161 Arbitrum One only, see ADR 0022; Sepolia is rejected), issued/expiry/not-before times, nonce ownership and cryptographic signature. Contract-wallet verification uses the message chain. Signature and nonce validation failures return generic errors; rate limits and mutation-origin checks bound abuse.
 
 Session IDs are opaque random 256-bit values, stored SHA-256-hashed. Cookies use HttpOnly, SameSite=Lax, path `/`, default seven-day expiry and Secure in production. Normalized wallet uniqueness preserves one identity per wallet. Suspension and session revocation are enforced server-side, including periodic SSE revalidation.
 

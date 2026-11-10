@@ -1,5 +1,14 @@
 # Feature status
 
+2026-11-10 production-readiness branch (`codex/production-readiness`, **unmerged,
+not deployed**): Arbitrum-only wallet/SIWE/checkout, DePay request/callback/event
+signature verification, coupon engine with a zero-payment flow, an explicit
+database-enforced order lifecycle, and the Economy › Governance / Ambassador (IB)
+restructuring. Statuses below marked "(branch)" describe that branch only.
+Production on 2026-11-10: `/version` commit `0c45594` (manifest 0.4.4,
+`official: false`), `paymentsEnabled: false`, `PURCHASE_PAYMENT_CHAIN=11155111`,
+no payment/DePay/admin secrets configured.
+
 2026-11-10 reconciliation (read-only checks): production serves **v0.4.4**
 (`c1cb707`) on `openfund.cloud` and `openfi.cloud` (`/version` matched on both),
 and `paymentsEnabled` is `false`. Work merged to `main` after v0.4.4 (Economy,
@@ -55,7 +64,7 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | Shared Decimal valuation | Completed | [Math](../../apps/backend/trading-math.js); fees/spread and stale values; no Gains contract parity |
 | Drawdown telemetry | Completed | [Portfolio](../../apps/backend/portfolio.js); observed fresh equity since first measurement, UTC; no reconstructed earlier peaks |
 | SIWE and sessions | Completed | [Backend](../../apps/backend/server.js); nonce/domain/URI/time/chain/signature, hashed session IDs, suspension, logout and SSE revalidation |
-| Product network policy | Completed | [Wallet config](../../apps/web-react/src/wallet/config.ts); Prop Sepolia 11155111, Perpetual Arbitrum One 42161; no transactions |
+| Product network policy | In Progress (branch) | [Wallet config](../../apps/web-react/src/wallet/config.ts); **Arbitrum One 42161 only** for every route and SIWE ([ADR 0022](../decisions/0022-arbitrum-checkout-coupons-order-lifecycle.md)); backend rejects other chains; unit- and backend-tested; production still serves Prop on Sepolia until deployed |
 | Real extension, hardware and remote WalletConnect acceptance | In Progress | Generated EIP-1193 browser tests exist; actual wallet/device and live contract-wallet acceptance still need external evidence |
 | Prop portfolio and reporting | Completed | Owned positions/order history, trade detail, fee-aware analytics, filters and CSV; partial-close slices preserve parent provenance |
 | Gains wallet portfolio reads | Completed | [Read adapter](../../apps/backend/gains-portfolio.js); official Arbitrum positions/orders/history/stats; upstream failure is explicit; unsupported PnL/balance stays unknown |
@@ -66,12 +75,16 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | Referral rewards and partner agreement | Planned | Growth Partner invite codes still carry no reward; the separate Brand Ambassador program below is the only commission-bearing referral |
 | Brand Ambassador program | Completed (local) | [Partner programs](../economy/PARTNER_PROGRAMS.md); reviewed applications with recorded audience evidence, codes only after approval, 10% first-purchase commission recognized in the payment transaction, idempotent, refund/chargeback reversals, recorded payouts, referral dashboard; commission transfers are performed by operators |
 | Verified Trading Coach program | Completed (local) | Independent approval, trader linking and qualification, coach-scoped visibility, 10% of distributable realized live profit only |
+| Economy › Governance and consolidated Ambassador (IB) page | In Progress (branch) | Economy menu: Governance, Ambassador (IB), Transparency, Revenue Model, Live Market Access; one `/{locale}/ambassador` page with independent Brand Ambassador and Verified Coach sections; `/coach` redirects; ar/ru/zh-CN strings added; navigation unit tests updated; real-browser mobile/RTL captures not refreshed in this branch |
 | Live Market Access control plane | Completed (local, execution disabled) | [Live Market Access](../economy/LIVE_MARKET_ACCESS.md); record-based eligibility (10 + 5 paid withdrawals, exact 2× second account, verified coach), explicit-tier approval, verified-capital gate ≥ $500,000, collateral-based risk checks, circuit breaker, idempotent profit split and settlement with reconciliation; only non-monetary sandbox adapters exist |
 | Live order execution on Gains and automatic payout transfers | Blocked | Approved signer/custody design, supported testnet contracts, simulation, security review and explicit management activation required |
 | Challenge account records and catalog selection | Completed | Backend/schema and catalog UI; challenge accounts trade through the same server-authoritative engine (v0.3.1) |
 | Profile editing (display name and avatar) | Completed | `PATCH /auth/profile` ([backend](../../apps/backend/server.js)); `ProfilePanel.tsx` editor with avatar upload (≤256 KB image data URL or https); wallet identity stays immutable — one wallet, one user |
 | Payment correlation policy, dedicated RPC, DePay router compatibility, attempt recovery and operator investigation | Implemented (local, deterministic fixtures); awaiting real-network acceptance | [ADR 0018](../decisions/0018-payment-verification-and-recovery.md); [Verification](../payments/VERIFICATION.md); [Activation checklist](../payments/ACTIVATION.md); payments stay disabled in production until every gate passes |
 | Challenge purchase, server-priced orders and on-chain payment verification | Completed (local) | [ADR 0009](../decisions/0009-challenge-purchases-and-payment-verification.md); [purchases module](../../apps/backend/purchases.js) — viem receipt/token/amount/timing checks server-side, exactly-once provisioning, idempotent orders, confirmation-depth finality policy and late-payment grace window; purchases stay disabled while `PURCHASE_PAYMENT_RECEIVER` is unset; live-chain verification and production payment activation pending an approved destination |
+| DePay request, callback and event signature verification; Arbitrum-only button | In Progress (branch): implemented, live verification pending | [DePay](../payments/DEPAY.md); configuration request verified with `DEPAY_VERIFY_PUBLIC_KEY`, signed `accept` with the net server price, new `/purchases/depay/events`, append-only `depay_events`; tested in-process with a simulated chain ([commerce tests](../../apps/backend/test/commerce.test.mjs)). **Blocked — external configuration required** for production: integration id, token, receiver, RPC, router, both keys |
+| Coupon engine and zero-payment purchases | In Progress (branch): implemented, live verification pending | [Coupons](../payments/COUPONS.md); percent/fixed/100%, plan/size/user/time/usage limits, internal test coupons bound to ≤2 wallets, race-safe redemption (row lock), admin CRUD and append-only audit; no coupon exists in production |
+| Explicit purchase order lifecycle | In Progress (branch): implemented, live verification pending | [Order lifecycle](../payments/ORDER_LIFECYCLE.md); database-validated transitions, append-only `purchase_order_events`, immutable pricing snapshot, refund states |
 | DePay checkout widget | Completed (local, gated) | `CheckoutPanel.tsx` loads the widget only with `VITE_DEPAY_WIDGET=1` plus `VITE_DEPAY_WIDGET_URL`, built from backend order data; manual payment instructions + transaction-hash verification remain the default; no widget bundle ships enabled |
 | Purchase history, payment history and invoices | Completed (local) | `GET /purchases/history`, `GET /invoices/:id` (dependency-free PDF, [invoice-pdf.js](../../apps/backend/invoice-pdf.js)), Prop route `#/{locale}/prop/purchases`; browser E2E [purchase flow](../../e2e/test-purchase-flow.cjs) |
 | Withdrawal requests and operator review | Completed (local) | `withdrawal_requests` + `GET/POST /withdrawals`; Prop route `#/{locale}/prop/withdrawals`; v0.3.1 adds the `/admin/withdrawals` review workflow (approve/reject/paid with payout reference, invalid-transition rejection, duplicate prevention, audit log) behind `ADMIN_API_TOKEN` — disabled while unset. Payout EXECUTION (real fund transfers) remains out of scope by design |
