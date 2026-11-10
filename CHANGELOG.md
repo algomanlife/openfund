@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Dependency lockfiles and npm configuration now use the official npm registry, avoiding CI timeouts from the previous package mirror.
+
 - Unofficial Render candidates now retain the latest published version number while identifying new code by its exact commit SHA and `official: false`; only an explicit publish action allocates a new version.
 
 - Hybrid Governance v1.0 (implementation candidate; council and voting remain inactive): off-chain, auditable governance with a ten-seat Community
