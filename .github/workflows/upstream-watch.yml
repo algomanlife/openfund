@@ -1,0 +1,95 @@
+name: Upstream watch
+
+# Lightweight dependency governance: weekly, read-only monitoring of upstream releases.
+# It records what is new, classifies compatibility risk by each provider's own policy and opens or
+# refreshes ONE draft proposal pull request. It never changes a pinned version, vendored source,
+# lockfile or the Blueprint, never enables auto-merge and never deploys. Majors and anything high
+# risk need an explicit human decision (see docs/integrations/UPSTREAM_AUTOMATION.md).
+#
+# Repository setting required for the PR step: Settings > Actions > General > "Allow GitHub
+# Actions to create and approve pull requests". Without it the report is still published as the
+# job summary and an artifact.
+
+on:
+  schedule:
+    - cron: '17 6 * * 1'      # Mondays 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: upstream-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    name: Check upstream releases
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install tooling
+        run: |
+          npm ci
+          npm ci --prefix apps/backend
+      - name: Check releases and classify risk
+        run: node scripts/upstream/check-releases.mjs --json watch.json --md watch.md --write-registry
+      - name: Offline compatibility tests (current pins)
+        id: tests
+        continue-on-error: true
+        run: |
+          {
+            echo "== npm run check:upstream"; npm run check:upstream 2>&1 | tail -15
+            echo; echo "== npm run test:upstream"; npm run test:upstream 2>&1 | grep -E '^# (tests|pass|fail)'
+          } | tee tests.txt
+      - name: Optional live Gains contract check
+        continue-on-error: true
+        run: |
+          { echo; echo "== npm run check:gains-live"; npm run check:gains-live 2>&1 | tail -5; } | tee -a tests.txt
+      - name: Read-only update reports for vendored sources
+        continue-on-error: true
+        run: |
+          mkdir -p reports
+          for p in vela gains-sdk luxalgo-trade-journal; do
+            node scripts/upstream/update-vendor.mjs --provider "$p" > "reports/$p.txt" 2>&1 || echo "(exit $?)" >> "reports/$p.txt"
+          done
+      - name: Publish report
+        run: |
+          node scripts/upstream/watch-proposal.mjs --results watch.json --tests tests.txt --reports reports > body.md
+          cat body.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: upstream-watch
+          path: |
+            watch.json
+            watch.md
+            body.md
+            tests.txt
+            reports/
+      - name: Open or refresh the proposal pull request
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- infra/upstream/registry.json; then
+            echo "Registry unchanged: nothing new to propose."; exit 0
+          fi
+          branch="upstream-watch/proposal"
+          git config user.name "openfund-upstream-watch"
+          git config user.email "upstream-watch@users.noreply.github.com"
+          git checkout -B "$branch"
+          git add infra/upstream/registry.json
+          git commit -m "chore(upstream): record observed upstream releases"
+          git push --force-with-lease origin "$branch"
+          gh label create upstream --color 1d76db --description "Upstream dependency governance" 2>/dev/null || true
+          gh label create needs-human-approval --color d93f0b --description "Do not merge or deploy without a human decision" 2>/dev/null || true
+          if gh pr view "$branch" --json state --jq .state 2>/dev/null | grep -q OPEN; then
+            gh pr edit "$branch" --body-file body.md
+          else
+            gh pr create --draft --base main --head "$branch" --title "chore(upstream): observed upstream releases" --body-file body.md --label upstream --label needs-human-approval
+          fi
