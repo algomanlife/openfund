@@ -5,9 +5,10 @@ import { pickRecord, type AppLocale } from '../../i18n/locales'
 type Locale = AppLocale
 
 const primary = ['challenges', 'markets', 'rulebook'] as const
-/** Economy dropdown (replaces the former single Transparency link). */
-const economy = ['transparency', 'revenue-model', 'live-market-access'] as const
-const resources = ['faq', 'learn', 'tools', 'referral', 'ambassador', 'coach', 'governance', 'team'] as const
+/** Economy dropdown: Governance and the consolidated Ambassador (IB) page
+ * (Brand Ambassador + Verified Trading Coach) first, then the economy pages. */
+const economy = ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access'] as const
+const resources = ['faq', 'learn', 'tools', 'referral', 'team'] as const
 /** footer "Openfund documents" entries */
 const documentLabels = { whitepaper: text('Read the whitepaper', 'مطالعهٔ وایت‌پیپر') }
 const navigationLabels = { ...labels, team: text('Team', 'تیم'), glossary: text('Glossary', 'واژه‌نامه') }

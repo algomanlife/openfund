@@ -35,7 +35,7 @@ test('governance routes are registered and use clean locale paths', () => {
 })
 test('governance is a public, SEO-routable page in navigation, CMS whitelists and the Directus schema', () => {
   assert.match(read('../src/features/loading/seoHead.ts'), /\|governance\|/)
-  assert.match(read('../src/features/information/navigation.ts'), /resources = \[[^\n]*'governance'/)
+  assert.match(read('../src/features/information/navigation.ts'), /economy = \[[^\n]*'governance'/)
   assert.match(read('../src/features/information/content.ts'), /governance: text\('Governance', 'حاکمیت'\)/)
   const client = read('../src/cms/client.ts')
   assert.match(client, /NAV_ROUTES = new Set\([^)]*'governance'/); assert.match(client, /FOOTER_DESTINATIONS = new Set\([^)]*'governance'/)

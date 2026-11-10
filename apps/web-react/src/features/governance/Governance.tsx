@@ -11,6 +11,7 @@ import {
 } from './GovernanceViews'
 import ProposalVote from './ProposalVote'
 import { formatDate, categoryLabel } from './governanceModel'
+import EconomyNav from '../economy/EconomyNav'
 import './governance.css'
 
 const SECTIONS = [
@@ -48,6 +49,8 @@ export default function Governance() {
       </div>
     </Hero>
     <div className="container gv-page">
+      {/* Governance lives under Economy: same sub-navigation as the other Economy pages */}
+      <EconomyNav locale={locale} current="governance" />
       <nav className="gv-toc" aria-label={text('On this page', 'در این صفحه')[locale]}>{SECTIONS.map(([id, label]) => <a key={id} href={`#${id}`}>{label[locale]}</a>)}</nav>
 
       <section id="overview" className="gv-section" aria-labelledby="gv-h-overview">
