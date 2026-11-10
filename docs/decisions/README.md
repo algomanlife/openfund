@@ -22,5 +22,6 @@
 - [0016 — CMS-managed structured Whitepaper](0016-cms-managed-whitepaper.md)
 - [0017 — Hybrid governance](0017-hybrid-governance.md)
 - [0018 — Payment verification policy, recovery and DePay integration](0018-payment-verification-and-recovery.md)
+- [0019 — Upstream isolation](0019-upstream-isolation.md)
 
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)
