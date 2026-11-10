@@ -1,71 +1,76 @@
 # Licensing audit and compatibility report
 
-Engineering inventory, not legal advice. Audited 2026-11-10 against the
-repository at `main 123ecfb` plus branch `codex/production-readiness`.
-Component facts are maintained in the
-[upstream dependency registry](../integrations/UPSTREAM_REGISTRY.md). This
-page draws the repository-level conclusions.
+Engineering inventory, not legal advice. Audited 2026-11-10 against `main`
+`123ecfb` plus branch `codex/production-readiness`. Component facts are kept in
+the [upstream dependency registry](../integrations/UPSTREAM_REGISTRY.md), the
+generated [production dependency licenses](DEPENDENCY_LICENSES.md) (checked in
+CI) and the [PineTS report](PINETS.md).
 
-## Current state
+## 1. Completed in the repository
 
-- **No root `LICENSE` file exists.** The first-party Openfund code has no
-  published license. Public visibility grants no reuse rights beyond what
-  GitHub's terms allow. The README states this.
-- **The owner has not selected a license.** This audit does **not** add or
-  choose one. The decision is **pending owner approval**.
-- No root `NOTICE` is required today. The Apache-2.0 NOTICE obligation
-  attaches to the Vela distribution, whose NOTICE is kept unmodified in
-  `vendor/vela/NOTICE` and shipped with the web assets
-  (`apps/web-react/public/assets/notices/Vela-NOTICE.txt`,
-  `dist/assets/notices/Vela-NOTICE.txt`).
-- Third-party notices are indexed in [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md).
+- Inventory of first-party, vendored, third-party and npm production licenses
+  (this page, [DEPENDENCY_LICENSES.md](DEPENDENCY_LICENSES.md),
+  [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)).
+- Every upstream LICENSE/NOTICE kept unmodified: Vela (Apache-2.0 + NOTICE),
+  Gains SDK (MIT), LuxAlgo journal-core (MIT), Openfund Protocol import (GPL-2.0),
+  PineTS and Vela-pinets (AGPL-3.0 texts shipped in `assets/notices/`).
+- **Added the missing MetaMask SDK notice**
+  (`apps/web-react/public/assets/notices/MetaMask-SDK-LICENSE.txt`). The SDK
+  ships in the React build (`metamask-sdk-*.js`, through wagmi's MetaMask
+  connector), and its license requires a prominent ConsenSys notice.
+- CI gate `npm run legal:licenses` (part of `docs:check`): fails when a
+  non-permissive or undeclared license appears in, or changes among,
+  production dependencies.
+- The README license section points here and makes no license claim.
+- No root `LICENSE` or `NOTICE` was added: no license has been chosen, and
+  the Apache NOTICE obligation is met where the Vela distribution ships.
 
-## Component inventory (license → obligation)
+## 2. Obligations that apply today
 
-| Component | Location | License | Key obligations |
-| --- | --- | --- | --- |
-| Vela charting library (LuxAlgo) | `vendor/vela/` | Apache-2.0 + NOTICE | Keep LICENSE and NOTICE. Mark modified files. **Visible "Vela" attribution with a link on every screen that shows a Vela chart** (NOTICE). The terminal keeps the attribution mark |
-| Vela Pine addon (`@luxalgo/vela-pinets`) | npm, plus the patched worker in `apps/web-react/public/assets/openfund-pine-worker.min.js` | **AGPL-3.0-only** | Network-use clause (section 13): users interacting with the served application must be offered the Corresponding Source of the AGPL-covered work, including Openfund's modifications (the worker patch) |
-| PineTS | npm, bundled into the workspace and worker | **AGPL-3.0-only** | As above |
-| LuxAlgo trade journal / journal-core | `third_party/luxalgo-trade-journal/` | MIT | Keep the copyright and permission notice |
-| Gains SDK | `vendor/gains-sdk/` | MIT | Keep the notice |
-| Dormant Openfund Protocol (MUX import) | `packages/openfund-protocol/` | GPL-2.0 (`LICENSE`). Files are mostly `GPL-2.0-or-later` (73), a few MIT (2) and `UNLICENSED` (4) | GPL terms if distributed. Not built, deployed or linked into the application |
-| Directus | Render image `directus/directus` | BSL 1.1 (see registry; confirm terms for the pinned version) | Separate service, not distributed in this repository |
-| npm dependencies | per-app lockfiles | Mostly MIT / ISC / Apache-2.0 / BSD (registry) | Keep the notices in distributed bundles |
-| Fonts, brand and service marks | `apps/web-react/public/assets/`, `brand/` | Vazirmatn (OFL), TradingView logo notice, Simple Icons CC0, Openfund marks | Per-asset notices. Openfund marks are not open-licensed |
-
-## Compatibility findings
-
-1. **AGPL-3.0 code ships in the public web application.** PineTS and the Vela
-   Pine addon are executed in users' browsers from the Openfund-served
-   bundle. Any first-party license for the web application must allow
-   AGPL-3.0 combination for the parts that form a combined work. Openfund must
-   keep offering the Corresponding Source of the AGPL-covered parts and its
-   modifications. The public repository currently provides the source, but a
-   visible source offer in the application is recommended, and counsel should
-   confirm which parts of the frontend form a combined work. This is the most
-   restrictive constraint on the frontend.
-2. **Apache-2.0 (Vela) is compatible with AGPL-3.0 and GPL-3.0** (one-way),
-   and with permissive or proprietary first-party terms, provided NOTICE and
-   attribution are kept.
-3. **GPL-2.0-only material would be incompatible with Apache-2.0.** The
-   Protocol files are mostly `GPL-2.0-or-later`, which allows GPL-3.0. The
-   package is dormant and not combined with the application. Before it is ever
-   built into a distributed artifact with Apache-2.0 or AGPL-3.0 code, confirm
-   that every file is "or later" and resolve the four `UNLICENSED` files.
-4. **Backend (`apps/backend`)** contains no copyleft dependency in its runtime
-   (registry). Its license can be chosen independently of the frontend
-   constraint.
-
-## Options for the owner (decision pending)
-
-| Option | Effect | Fit |
+| Component | Where it ships | Obligation |
 | --- | --- | --- |
-| A. Keep "all rights reserved" (no LICENSE) | No reuse rights for first-party code. AGPL obligations still apply to the AGPL parts | Current state. Consistent with a closed commercial product, but the AGPL source offer remains |
-| B. AGPL-3.0-or-later for the whole repository | Uniform copyleft. Directly compatible with PineTS/Vela-pinets | Strongest consistency with the frontend constraint. Allows competitors to reuse code under the same terms |
-| C. Split licensing: AGPL-3.0 for `apps/web-react`, proprietary or permissive (for example Apache-2.0) for `apps/backend` and docs | Matches the obligations per component | Needs a `LICENSE` per package and precise scoping in the README |
-| D. Replace the AGPL Pine runtime | Removes the copyleft constraint | Engineering change; not part of this task |
+| Vela (Apache-2.0 + NOTICE) | Web bundle, `dist/` | Keep LICENSE and NOTICE; mark modified files; **visible "Vela" attribution with a link on every screen showing a Vela chart** (met in terminal status) |
+| PineTS, Vela-pinets (AGPL-3.0-only) | Web bundle + patched worker | Corresponding Source of the modified program to every user (section 6), and a prominent source offer to network users (section 13). See [PineTS](PINETS.md) |
+| MetaMask SDK (ConsenSys proprietary license) | React build (lazy chunk) | Prominent notice with each copy (now shipped as a notice file; "prominent" placement is a legal question). Use is limited to **"Non-Commercial Use"**, defined as including a product whose monthly active users never exceed **10,000** |
+| MIT / ISC / BSD / Apache npm packages | Bundles | Keep copyright and license notices (license comments retained by the build) |
+| Gains SDK, journal-core (MIT) | Vendored | Keep notices |
+| Openfund Protocol (GPL-2.0, files mostly GPL-2.0-or-later, 4 `UNLICENSED`) | Dormant, not built or shipped | GPL terms only if distributed |
+| MPL-2.0 (`@ethereumjs/*`, `webextension-polyfill`), AGPL-3.0-or-later `ua-parser-js` 2.x | Installed transitively; **not found in the current bundles** | None while unshipped; re-check if a bundle starts including them |
+| Directus (BSL 1.1 on 11.x; MSCL-1.0-GPL from 12.0) | Separate service | Service terms; see [Directus 12 assessment](../backstage/DIRECTUS_12_ASSESSMENT.md) |
+
+## 3. Items for legal review
+
+1. **AGPL scope.** Does the bundled Openfund chart code form a combined work
+   with PineTS? What form must the section 13 source offer take? See
+   [PineTS](PINETS.md).
+2. **MetaMask SDK commercial-use limit.** Openfund is a commercial product.
+   The ConsenSys license allows non-commercial use, which it defines to include
+   products with ≤ 10,000 monthly active users. Confirm whether Openfund
+   qualifies, and how "prominent notice" must be shown. The engineering
+   alternative is to drop the MetaMask SDK connector and rely on injected
+   (EIP-6963) and WalletConnect wallets: a product decision, not made here.
+3. <a id="pine-indicator-sources"></a>**Pine indicator sources (`indicators/`).**
+   `smc-v1.pine` states *CC BY-NC-SA 4.0* with "© Openfund". `pac v1.pine`
+   displays "SDK © Algoman.life". The indicator names ("Smart Money Concepts",
+   "Price Action Concepts") are also names of indicators published by third
+   parties. The repository does not document where these sources came from.
+   `indicators/README.md` calls them "proprietary", which conflicts with the
+   CC notice. CC BY-NC-SA forbids commercial use. Confirm authorship, the
+   correct copyright holder and the applicable license before commercial use.
+   The files are kept byte-for-byte as the repository requires, so nothing in
+   them was changed.
+4. `@metamask/eth-json-rpc-provider` declares no license.
+5. Compatibility of whatever first-party license is chosen with items 1–3.
+
+## 4. Decisions for the owner
+
+| Decision | Options |
+| --- | --- |
+| First-party license (currently none: all rights reserved) | A. Keep all rights reserved (the AGPL source offer for the PineTS parts still applies). B. AGPL-3.0-or-later for the whole repository: consistent with the frontend constraint, and allows reuse under the same terms. C. Split: AGPL-3.0 for the web application, proprietary or permissive (for example Apache-2.0) for the backend and docs, each with its own LICENSE. D. Replace PineTS (engineering) to remove the constraint |
+| MetaMask SDK | Keep it (subject to item 2), or remove the connector |
+| Indicator sources | Establish provenance; relicense or replace if they are third-party works |
+| Source offer in the UI | Approve a footer and terminal "Source code" link to the released tag |
 
 Whatever is chosen: keep every upstream LICENSE/NOTICE unmodified, keep the
-Vela attribution, keep a single, non-conflicting license statement in the
-README, and record the choice as an ADR.
+Vela attribution, keep one non-conflicting license statement in the README,
+and record the choice as an ADR.

@@ -58,5 +58,8 @@ for (const target of ['apps/web-react/public/assets/notices', 'dist/assets/notic
     ['vendor/vela/NOTICE', 'Vela-NOTICE.txt'],
     ['vendor/vela/LICENSE', 'Vela-Apache-2.0.txt'],
   ]) await copyFile(path.join(root, source), path.join(root, target, name));
+/* MetaMask SDK (ConsenSys licence: prominent notice required) ships only in the
+   React build; its notice lives in apps/web-react/public/assets/notices and is
+   maintained by hand from apps/web-react/node_modules/@metamask/sdk/LICENSE. */
 }
 console.log('Built shared Vela workspace, Pine worker, local libraries and chart adapters.');
