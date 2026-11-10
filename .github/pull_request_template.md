@@ -48,6 +48,7 @@
 <!-- Is the capability live or disabled pending activation? Never claim deployed without /version evidence. -->
 
 ## Evidence checklist
+
 - [ ] Required checks executed; outcomes, warnings and external limits recorded
 - [ ] Product documentation and Feature Status aligned with implementation
 - [ ] Roadmap milestones/dependencies/acceptance criteria updated
