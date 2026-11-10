@@ -10,6 +10,10 @@
   fails when a pin drifts from the registry. Records that only the journal-core
   library of the LuxAlgo Trade Journal is integrated and that `vendor/gains-sdk`
   is unused.
+- Repository: the generated `react/` build output (22.7 MB, 241 files) is no
+  longer tracked; `npm run build:web` creates it and `Backend` CI builds it
+  before booting the server. Removes the main source of merge conflicts between
+  frontend pull requests. See `docs/development/REPOSITORY_HYGIENE.md`.
 - CI: the locale matrix and the UI polish matrix (≈ 17 and ≈ 15.5 minutes
   sequentially in the release gates) now run as concurrent, never-retried
   shards, cutting the `Release package gates` job; documentation-only pull
