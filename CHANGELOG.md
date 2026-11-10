@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Fix (P0 production UI): explicit cache policy for the same-origin frontend
+  (`apps/backend/static-cache.js`). Content-hashed Vite assets are `immutable`,
+  unhashed files (`legacy/*`, fonts, `translations.json`, the Vela bundle)
+  revalidate with `no-cache`, and 404s are `no-store`. Previously Cloudflare's
+  4-hour Browser Cache TTL applied to every response without a stronger origin
+  header, so a deploy-cutover 404 for the new stylesheet stayed cached and the
+  site rendered unstyled (terminal collapsed to a 300x150 iframe).
 - Pull request governance: a required-sections pull request template with a
   structural `PR description` check (and Conventional Commit title check),
   documented stacked-PR policy, branch-update practice, Conventional Commit
