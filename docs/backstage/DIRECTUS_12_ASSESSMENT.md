@@ -35,6 +35,7 @@ Directus 12 relicensed from BUSL-1.1 to MSCL-1.0-GPL and enforces entitlements. 
 | :--- | :--- | :--- |
 | Collections | **25** | **43 registered content collections** (plus translation tables) |
 | Custom permission rules | **disabled** | Every public read permission filters on `status` (published or active); translation reads filter on the parent status |
+| Field-level permissions | **dropped with custom rules** (measured 2026-11-11) | The Commerce Admin policy limits fields on coupon create/update and on order, model and customer reads; on Core the role can no longer create or edit coupons |
 | Studio seats | 3 | the number of editors with Studio access (1 in staging) |
 | Flows | 5 | none defined in the repository |
 | SSO, custom LLMs, AI translations | disabled | not used |
@@ -59,6 +60,15 @@ Interpretation, with its limits:
 - Telemetry cannot be disabled on Core (`telemetry_required`). Outbound access to `telemetry.directus.com` is expected.
 - **Not verified:** behaviour with a real licence or Open Innovation Grant key, since none was provided. The full suite must be re-run on staging with the key before production.
 
+### Coupon administration on 12.6.1 (2026-11-11)
+
+Rerun on a copy of the coupon acceptance database: migrations succeed and all
+commerce data is preserved, but on the Core tier the Commerce Admin can only
+list coupons (Create disabled, form read-only, Purchase Orders hidden), new
+Studio users are refused above 3 seats, and the public catalog read returns
+403. On 11.9.1 the same workflow passes 16/16. Details:
+[staging evidence](../reviews/directus-12-staging/README.md).
+
 ## Decision required from the owner
 
 | Option | What it means | Verdict |
@@ -78,7 +88,9 @@ These are safe on 11.9.1 and on 12.x, so they can merge before the upgrade:
 - `apply_schema.py`: licence preflight, as described above.
 - `apps/backstage/upgrade/`: repeatable staging harness and the `cms-check.mjs` inventory and verification tool.
 
-Deliberately **not** changed here: the image tag in `render.yaml`, `compose.yaml` and the release workflow (`/server/health` in `.github/workflows/release.yml` must become `/server/ping` in the same change as the image bump), `autoDeployTrigger` (stays `off`), and the Node runtime of the application.
+Also safe on 11.x and applied on 2026-11-11: the `release.yml` readiness probes use `/server/ping` (production 11.x answers `pong`), and `render.yaml` declares an empty `LICENSE_KEY` secret slot on `openfund-cms`.
+
+Deliberately **not** changed: the image tag in `render.yaml`, `compose.yaml` and the release workflow, `autoDeployTrigger` (stays `off`), and the Node runtime of the application.
 
 ## Breaking changes 11.9.1 to 12.6.1 and Openfund impact
 
@@ -87,7 +99,7 @@ Compiled from the official release notes and breaking-changes page.
 | Change (version) | Openfund impact | Action |
 | :--- | :--- | :--- |
 | Licence enforcement, Core limits (12.0.0) | **Blocking** (see above) | Decision A |
-| `/server/health` requires a token (12.0.0) | Render health check and `release.yml` curl probes | `/server/ping` (done for Render; workflow in the upgrade PR) |
+| `/server/health` requires a token (12.0.0) | Render health check and `release.yml` curl probes | `/server/ping` (done for Render and `release.yml`) |
 | `IP_TRUST_PROXY` default `false` (12.0.0) | Client IP behind Render | Set explicitly (done) |
 | Node.js 26 minimum (12.6.0) | CMS image only | Image already ships Node 26.13.0; do not run the npm package on Node 22 |
 | Published items in versioned collections are locked; `?version=main` becomes `published` (12.0.0) | Openfund collections do not enable content versioning | Re-check if versioning is enabled later |

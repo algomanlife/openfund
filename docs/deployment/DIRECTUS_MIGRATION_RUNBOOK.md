@@ -13,7 +13,7 @@ Target values used below (re-verify on the day): Directus **12.6.1**, image `doc
 - [ ] Studio users counted (seat limit) and registered collections counted (limit) against the licence.
 - [ ] Egress to `telemetry.directus.com` permitted.
 - [ ] Window announced; editors told to stop editing; backend traffic expectations agreed (see rollback limits in [backup and restore](../backstage/BACKUP_RESTORE.md)).
-- [ ] The upgrade change set is merged on a reviewed branch: image tag (or digest), `release.yml` probes changed from `/server/health` to `/server/ping`, `infrastructure/directus/compose.yaml` updated, documentation version references updated.
+- [ ] The upgrade change set is merged on a reviewed branch: image tag (or digest), `LICENSE_KEY` set on `openfund-cms` (Render secret), `infrastructure/directus/compose.yaml` updated, documentation version references updated.
 
 ## Backup (immediately before)
 

@@ -18,6 +18,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `KEY`, `SECRET` | openfund-cms | R | SEC | `generateValue: true` (created once at first apply) |
 | `WEBSOCKETS_ENABLED`, `CORS_ENABLED`, `CORS_ORIGIN`, `CORS_METHODS`, `MAX_PAYLOAD_SIZE` | openfund-cms | R | PUB | Directus hardening (public read-only API) |
 | `IP_TRUST_PROXY` | openfund-cms | R | PUB | `true`: Render terminates TLS in front of Directus; explicit so Directus 12 (default `false`) keeps client-IP resolution identical to 11.x |
+| `LICENSE_KEY` | openfund-cms | R | **SECRET** | Directus 12+ licence or Open Innovation Grant key. Unset on 11.x. Required before the image moves to 12.x: the unlicensed Core tier ignores field-level and row-level permission rules, which breaks public content reads and the Commerce Admin coupon workflow. `PUBLIC_URL` must be an absolute URL. Never set together with `LICENSE_TOKEN`. See [Directus 12 assessment](../backstage/DIRECTUS_12_ASSESSMENT.md) |
 | `SESSION_TTL_HOURS` | openfund | R | PUB | default `168` (7 days) |
 | `PURCHASE_PAYMENT_CHAIN` | openfund | R | PUB | `42161`. Legacy single settlement chain, used only while `PURCHASE_PAYMENT_CHAINS` is unset. Payments are **not** tied to the Arbitrum sign-in chain. The live service still carried `11155111` at the 2026-11-10 audit. |
 | `PURCHASE_PAYMENT_DECIMALS` | openfund | R | PUB | default `18` — token decimals used in server-side amount checks |
