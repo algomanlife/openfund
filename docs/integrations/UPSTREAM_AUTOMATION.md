@@ -49,4 +49,6 @@ Every upgrade therefore leaves four records: the version change (registry and lo
 - npm releases carry no release notes in the registry, so npm-based classification relies on the version class only. Read the provider's changelog before adopting.
 - These workflows were written and unit-tested locally but **have not been executed on GitHub Actions**. Run `Upstream watch` once manually and read the first proposal before relying on the schedule.
 
-[Dependency registry](UPSTREAM_DEPENDENCIES.md) · [ADR 0021](../decisions/0021-upstream-governance-automation.md)
+Relation to Dependabot: `.github/dependabot.yml` (see [Dependency governance](../development/DEPENDENCY_GOVERNANCE.md)) proposes grouped npm minor/patch updates and deliberately excludes the exact-pinned upstream families. This watcher covers what Dependabot does not (vendored sources, the Directus image, hosted contracts, majors) and only refreshes observed versions; neither merges or deploys.
+
+[Upstream dependency registry](UPSTREAM_REGISTRY.md) · [Patch registry](UPSTREAM_DEPENDENCIES.md) · [Dependency governance](../development/DEPENDENCY_GOVERNANCE.md) · [ADR 0021](../decisions/0021-upstream-governance-automation.md)
