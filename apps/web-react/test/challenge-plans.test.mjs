@@ -109,10 +109,10 @@ test('legacy bridge shape matches the app.js/features.js contract', () => {
 })
 
 test('backend seed stays in sync with the catalog (contract compatibility)', () => {
-  /* apps/backend/seed-plans.js seeds the same catalog: slugs, sizes, prices,
+  /* apps/backend/plan-catalog.js (seeded by seed-plans.js) mirrors the same catalog: slugs, sizes, prices,
      losses, phases, splits and flags must match the React source of truth. */
   const fs = require('node:fs')
-  const seed = fs.readFileSync(fileURLToPath(new URL('../../backend/seed-plans.js', import.meta.url)), 'utf8')
+  const seed = fs.readFileSync(fileURLToPath(new URL('../../backend/plan-catalog.js', import.meta.url)), 'utf8')
   for (const slug of ['standard', 'one-phase', 'instant', 'free-trial']) assert.ok(seed.includes(`slug: '${slug}'`), slug)
   for (const sizes of ['[5000, 10000, 25000, 50000, 100000]', '[5000, 10000, 25000, 50000, 100000, 200000]']) assert.ok(seed.includes(sizes), sizes)
   /* prices */
