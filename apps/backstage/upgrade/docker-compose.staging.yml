@@ -1,0 +1,52 @@
+# Image-level Directus upgrade rehearsal. NOT EXECUTED by the authors: Docker was not
+# available when this was written. Run it before any production migration.
+#
+#   export STAGING_PG_PASSWORD=$(openssl rand -hex 16)
+#   export DIRECTUS_IMAGE=docker.io/directus/directus:11.9.1       # start on the current version
+#   docker compose -f docker-compose.staging.yml up -d database
+#   (seed with ../scripts/bootstrap-cms.sh, take a pg_dump, then stop the stack)
+#   export DIRECTUS_IMAGE=docker.io/directus/directus:12.6.1@sha256:e1561b5e526e8e7a2ac19b7bb6eab63611dd84a862a8c45b864118768a2baff4
+#   docker compose -f docker-compose.staging.yml up -d             # migrations run in the container
+#   node cms-check.mjs verify --url http://127.0.0.1:8055 --baseline inventory-before.json
+#
+# Binds to localhost only; throw-away secrets; never point at the production database.
+services:
+  database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: openfund_cms_staging
+      POSTGRES_USER: openfund_cms
+      POSTGRES_PASSWORD: ${STAGING_PG_PASSWORD:?set a throw-away password}
+    volumes:
+      - ./staging-data/database:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openfund_cms -d openfund_cms_staging"]
+      interval: 5s
+      retries: 10
+  directus:
+    image: ${DIRECTUS_IMAGE:?set DIRECTUS_IMAGE}
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8055:8055"
+    volumes:
+      - ./staging-data/uploads:/directus/uploads
+    environment:
+      KEY: staging-key-not-secret-0000000000000001
+      SECRET: staging-secret-not-secret-00000000000001
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: ${STAGING_PG_PASSWORD}
+      DB_CLIENT: pg
+      DB_HOST: database
+      DB_PORT: "5432"
+      DB_DATABASE: openfund_cms_staging
+      DB_USER: openfund_cms
+      DB_PASSWORD: ${STAGING_PG_PASSWORD}
+      PUBLIC_URL: http://127.0.0.1:8055
+      WEBSOCKETS_ENABLED: "false"
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: "true"
+      CORS_METHODS: GET,HEAD,OPTIONS
+      IP_TRUST_PROXY: "true"
+      TELEMETRY: "false"

@@ -34,11 +34,11 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Integrations
 
-[Gains VOB and Trades](integrations/GAINS_DEPTH.md) · [Gains Network](integrations/GAINS.md) · [Vela](integrations/VELA.md) · [Markets](integrations/MARKETS_PAGE.md) · [Upstream provenance](integrations/UPSTREAM.md) · [Directus backstage](backstage/README.md) · [Content coverage](backstage/CONTENT_COVERAGE.md) · [Terminal editorial content](backstage/TERMINAL_CONTENT.md) · [CMS permissions](backstage/PERMISSIONS.md) · [Admin guide](backstage/ADMIN_GUIDE.md) · [Content model](backstage/CONTENT_MODEL.md) · [Translations](backstage/TRANSLATIONS.md) · [User management](backstage/USER_MANAGEMENT.md)
+[Gains VOB and Trades](integrations/GAINS_DEPTH.md) · [Gains Network](integrations/GAINS.md) · [Vela](integrations/VELA.md) · [Markets](integrations/MARKETS_PAGE.md) · [Upstream provenance](integrations/UPSTREAM.md) · [Directus backstage](backstage/README.md) · [Content coverage](backstage/CONTENT_COVERAGE.md) · [Terminal editorial content](backstage/TERMINAL_CONTENT.md) · [CMS permissions](backstage/PERMISSIONS.md) · [Admin guide](backstage/ADMIN_GUIDE.md) · [Content model](backstage/CONTENT_MODEL.md) · [Translations](backstage/TRANSLATIONS.md) · [User management](backstage/USER_MANAGEMENT.md) · [Directus 12 assessment](backstage/DIRECTUS_12_ASSESSMENT.md) · [Backup and restore](backstage/BACKUP_RESTORE.md)
 
 ## Deployment
 
-[Unified releases](deployment/RELEASES.md) · [Render runbook](deployment/RENDER.md) · [Environment](deployment/ENVIRONMENT.md) · [Database](deployment/DATABASE.md) · [Rollback and recovery](deployment/ROLLBACK.md) · [Blueprint](../render.yaml)
+[Unified releases](deployment/RELEASES.md) · [Render runbook](deployment/RENDER.md) · [Environment](deployment/ENVIRONMENT.md) · [Database](deployment/DATABASE.md) · [Rollback and recovery](deployment/ROLLBACK.md) · [Directus migration runbook](deployment/DIRECTUS_MIGRATION_RUNBOOK.md) · [Blueprint](../render.yaml)
 
 ## Development
 

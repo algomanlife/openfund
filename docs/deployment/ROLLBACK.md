@@ -51,7 +51,7 @@
 | Symptom | First checks |
 | :--- | :--- |
 | `openfund` unhealthy (`/health` 503) | logs → `SELECT 1` failing means Postgres outage: dashboard → database status; the service recovers automatically when the DB returns |
-| Deploys succeed but app blank | `VITE_DIRECTUS_HOST` present in the deploy env? CMS service up? (`/server/health`) |
+| Deploys succeed but app blank | `VITE_DIRECTUS_HOST` present in the deploy env? CMS service up? (`/server/ping`) |
 | SIWE login fails in prod (`invalid_domain`) | every serving hostname must be in `ALLOWED_DOMAINS` — see [Production domains](RENDER.md#production-domains) |
 | Trading engine errors in logs | usually Gains feed gaps (logged, non-fatal); persistent failures → check market-data status line in logs |
 | Directus 502 on first apply | database not ready yet — Render restarts automatically; verify `openfund-db` state |

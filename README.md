@@ -211,7 +211,7 @@ The [Render Blueprint](render.yaml) defines three resources, all in Frankfurt:
 | Resource | Type | Build / start | Health check |
 | --- | --- | --- | --- |
 | `openfund` | Node 22 web service, one instance | `node scripts/release/render-build.mjs` / `npm run migrate --prefix apps/backend && npm start --prefix apps/backend` | `/health` |
-| `openfund-cms` | Directus 11.9.1 image with a 5 GB uploads disk | official image | `/server/health` |
+| `openfund-cms` | Directus 11.9.1 image with a 5 GB uploads disk | official image | `/server/ping` |
 | `openfund-db` | PostgreSQL 17 | managed | managed |
 
 Both services have commit auto-deploy turned off. `render-build.mjs` builds

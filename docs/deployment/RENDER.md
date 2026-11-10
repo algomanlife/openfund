@@ -77,7 +77,7 @@ Blueprint (`render.yaml`, root). Applying the Blueprint is a reviewed manual ope
 4. Watch the service logs:
    - `openfund` starts with `node migrate.js` (idempotent schema), then
      `server.js`; `/health` must return `{ok:true}`.
-   - `openfund-cms` responds on `/server/health`.
+   - `openfund-cms` responds on `/server/ping` (public liveness; `/server/health` needs an access token on Directus 12).
 5. **Initialize Directus** (once, from a machine with network access to the CMS):
 
    ```bash
