@@ -7,6 +7,7 @@ export const primary = {
   prop: [
     ["dashboard", "داشبورد", "Dashboard"],
     ["trade", "ترمینال پراپ", "Prop Terminal"],
+    ["chart", "چارت", "Chart"],
     ["portfolio", "پورتفولیو", "Portfolio"],
     ["leaderboard", "لیدربورد", "Leaderboard"],
     ["purchases", "خریدها و فاکتورها", "Purchases & Invoices"],
@@ -16,6 +17,7 @@ export const primary = {
   perpetual: [
     ["dashboard", "داشبورد", "Dashboard"],
     ["trade", "ترمینال پرپچوال", "Perpetual Terminal"],
+    ["chart", "چارت", "Chart"],
     ["portfolio", "پورتفولیو", "Portfolio"],
     ["leaderboard", "لیدربورد", "Leaderboard"],
     ["rewards", "ریوارد", "Rewards"],

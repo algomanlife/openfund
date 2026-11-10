@@ -23,6 +23,7 @@
  */
 import { Router } from 'express'
 import crypto from 'node:crypto'
+import { governanceAdminRoutes } from './governance-routes.js'
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const fail = (status, error) => { const e = new Error(error); e.status = status; return e }
@@ -60,6 +61,9 @@ export function adminActor(req) {
 export function adminRoutes({ pool, audit }) {
   const router = Router()
   router.use(adminAuth)
+
+  /* Company Management governance operations (same token gate; no financial endpoints) */
+  router.use('/governance', governanceAdminRoutes({ pool }))
 
   /* ---------- users ---------- */
   router.get('/users', wrap(async (req, res) => {

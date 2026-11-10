@@ -29,6 +29,7 @@ import { accountDirectory } from './accounts.js'
 import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments } from './purchases.js'
 import { adminRoutes } from './admin.js'
 import { paymentAdminRoutes } from './payments-admin.js'
+import { governanceRoutes } from './governance-routes.js'
 import { partnerRoutes, partnerAdminRoutes, attributeAmbassador } from './partners.js'
 import { economyRoutes, economyAdminRoutes } from './economy.js'
 import { liveRoutes, liveAdminRoutes, liveConfig, processSettlements, settlementAdapter } from './live-funding.js'
@@ -708,6 +709,7 @@ app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) 
 app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
 app.use(referralRoutes({ pool, requireAuth, audit }))
 app.use(purchaseRoutes({ pool, requireAuth, audit }))
+app.use('/governance', governanceRoutes({ pool, requireAuth, limit }))
 /* Economy, Brand Ambassador, Verified Coach and Live Market Access */
 const treasury = new Treasury(pool)
 const live = liveConfig()

@@ -62,7 +62,7 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | Live order execution on Gains and automatic payout transfers | Blocked | Approved signer/custody design, supported testnet contracts, simulation, security review and explicit management activation required |
 | Challenge account records and catalog selection | Completed | Backend/schema and catalog UI; challenge accounts trade through the same server-authoritative engine (v0.3.1) |
 | Profile editing (display name and avatar) | Completed | `PATCH /auth/profile` ([backend](../../apps/backend/server.js)); `ProfilePanel.tsx` editor with avatar upload (≤256 KB image data URL or https); wallet identity stays immutable — one wallet, one user |
-| Payment correlation policy, dedicated RPC, DePay router compatibility, attempt recovery and operator investigation | Implemented (local, deterministic fixtures); awaiting real-network acceptance | [ADR 0017](../decisions/0017-payment-verification-and-recovery.md); [Verification](../payments/VERIFICATION.md); [Activation checklist](../payments/ACTIVATION.md); payments stay disabled in production until every gate passes |
+| Payment correlation policy, dedicated RPC, DePay router compatibility, attempt recovery and operator investigation | Implemented (local, deterministic fixtures); awaiting real-network acceptance | [ADR 0018](../decisions/0018-payment-verification-and-recovery.md); [Verification](../payments/VERIFICATION.md); [Activation checklist](../payments/ACTIVATION.md); payments stay disabled in production until every gate passes |
 | Challenge purchase, server-priced orders and on-chain payment verification | Completed (local) | [ADR 0009](../decisions/0009-challenge-purchases-and-payment-verification.md); [purchases module](../../apps/backend/purchases.js) — viem receipt/token/amount/timing checks server-side, exactly-once provisioning, idempotent orders, confirmation-depth finality policy and late-payment grace window; purchases stay disabled while `PURCHASE_PAYMENT_RECEIVER` is unset; live-chain verification and production payment activation pending an approved destination |
 | DePay checkout widget | Completed (local, gated) | `CheckoutPanel.tsx` loads the widget only with `VITE_DEPAY_WIDGET=1` plus `VITE_DEPAY_WIDGET_URL`, built from backend order data; manual payment instructions + transaction-hash verification remain the default; no widget bundle ships enabled |
 | Purchase history, payment history and invoices | Completed (local) | `GET /purchases/history`, `GET /invoices/:id` (dependency-free PDF, [invoice-pdf.js](../../apps/backend/invoice-pdf.js)), Prop route `#/{locale}/prop/purchases`; browser E2E [purchase flow](../../e2e/test-purchase-flow.cjs) |
@@ -84,6 +84,28 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | Dormant Openfund Protocol source foundation | Completed within source scope | `packages/openfund-protocol/` Solidity source, provenance and compile/test foundation integrated; not an active venue |
 | Operational Protocol venue routing | Planned | [Protocol roadmap](../roadmap/PROTOCOL.md); no active quote aggregation, routing or execution |
 | Additional integrations and developer services | Planned | [Product roadmap](../roadmap/PRODUCT.md); depends on validated product/execution contracts |
+
+## Hybrid Governance v1.0
+
+Branch `feat/hybrid-governance-v1`, unmerged and unreleased. Evidence is local
+automated tests against an isolated PostgreSQL database and a local browser check
+of the Governance page. **Nothing is in production use.** Authoritative policy:
+[GOVERNANCE.md](../../GOVERNANCE.md); documentation: [docs/governance](../governance/README.md);
+decision: [ADR 0017](../decisions/0017-hybrid-governance.md).
+
+| Capability | Status | Scope and evidence |
+| --- | --- | --- |
+| Governance policy and economic boundary documents | Completed (documentation) | `GOVERNANCE.md`, `ECONOMY.md`, `docs/governance/`; open decisions listed in GOVERNANCE.md section 18 |
+| Backend rules, schema, service and RBAC | Completed (local) | 10 seats, OFP lifecycle, quorum 7, approval 6 of 10 (7 for amendments), recusal, append-only evidence and hash-chained audit; automated tests, no production data |
+| Financial isolation | Completed (local) | Static and runtime tests: no financial table access, no financial endpoint, financial-shaped fields rejected |
+| Signed vote evidence | Completed (local) | Domain-separated, single-use EOA signatures; contract wallets unsupported; optional |
+| Election architecture | Completed (local), **not active** | Gated on management approving the rules; no election scheduled |
+| Public Governance page, proposal pages, council workspace | Completed (local) | `/:locale/governance`; renders real empty states; Persian RTL, English, dark and light checked locally; the authorised vote flow is covered by service tests and component rendering tests, not by a wallet-signed browser run |
+| Directus editorial content | In Progress | Collections added to `apply_schema.py`; not applied to a live Directus instance in this work |
+| Council seated and populated | Planned | Requires management appointments and eligibility verification; none exist |
+| Ambassador, Coach and Funded Trader registries feeding eligibility | Blocked | No approved registry on this base; eligibility is a management-verified record |
+| Whitepaper governance chapter | In Progress | Bilingual chapter prepared; the Whitepaper app is on the unmerged `feat/openfund-whitepaper-v1`, whose existing governance chapter must be replaced when it merges |
+| On-chain or token governance | Not planned | Not a capability and not a commitment |
 
 ## Proprietary chart indicators
 

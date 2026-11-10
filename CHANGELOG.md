@@ -23,6 +23,30 @@
   automatic follow-up of a submitted hash. Optional signed DePay server
   callback registers a retryable hint. Real-network acceptance is pending;
   see [payment activation](docs/payments/ACTIVATION.md).
+- Terminal Chart tab and Quick Trade (branch `feat/terminal-chart-quick-trade`,
+  implementation candidate): a Chart tab beside Trading shows
+  the same Vela workspace full-viewport (order form, book and positions hidden)
+  without reloading the chart, market stream, indicators or drawings. Quick
+  Trade is a compact Buy/Sell control and order panel on that chart; it builds
+  the order form's request and submits through the existing account adapter
+  (validate, preview, submit with an idempotency key), so balance, leverage,
+  margin and permission checks are unchanged. No bid/ask is shown because the
+  market-data provider supplies a mark price only. No backend, engine or
+  routing-convention change.
+- Dependency lockfiles and npm configuration now use the official npm registry, avoiding CI timeouts from the previous package mirror.
+
+- Unofficial Render candidates now retain the latest published version number while identifying new code by its exact commit SHA and `official: false`; only an explicit publish action allocates a new version.
+
+- Hybrid Governance v1.0 (implementation candidate; council and voting remain inactive): off-chain, auditable governance with a ten-seat Community
+  Council, OFP proposals, a validated lifecycle, quorum 7 and approval 6 of 10
+  (7 for governance amendments), conflict-of-interest recusal, optional signed
+  vote evidence, an election architecture gated on management approval and a
+  hash-chained audit trail. Reserved company powers are advisory-only and the
+  governance code has no access to treasury, trading, pricing or payout data.
+  Adds `gov_*` tables (additive), `/governance` and `/admin/governance`, the
+  `/:locale/governance` pages, Directus editorial collections, `GOVERNANCE.md`,
+  `ECONOMY.md` and `docs/governance/`. No council is seated and no election is
+  scheduled.
 - Economy pages (Transparency, Revenue Model, Live Market Access) now show
   definitions, provenance lines, term names, expense categories and
   eligibility checks in Arabic, Russian and Simplified Chinese instead of

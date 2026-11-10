@@ -4,7 +4,7 @@ This page is the operating contract for how Openfund decides that a challenge
 has been paid. It supersedes the verifier description in
 [ADR 0009](../decisions/0009-challenge-purchases-and-payment-verification.md)
 where they differ; the decision record is
-[ADR 0017](../decisions/0017-payment-verification-and-recovery.md).
+[ADR 0018](../decisions/0018-payment-verification-and-recovery.md).
 
 **Status.** Implemented and covered by deterministic receipt fixtures and
 database tests. **Not yet accepted on a real network**: no mocked chain test is

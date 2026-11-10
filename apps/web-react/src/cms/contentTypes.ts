@@ -22,7 +22,7 @@ export type LinkTarget =
   | { kind: 'lesson'; slug: string }
   | { kind: 'path'; slug: string }
   | { kind: 'glossary'; slug: string }
-  | { kind: 'page'; slug: 'home' | 'challenges' | 'markets' | 'rulebook' | 'transparency' | 'faq' | 'referral' | 'tools' | 'learn' }
+  | { kind: 'page'; slug: 'home' | 'challenges' | 'markets' | 'rulebook' | 'transparency' | 'faq' | 'referral' | 'tools' | 'learn' | 'governance' }
   | { kind: 'terminal'; product: 'prop' | 'perpetual' }
 
 export interface LinkRef {

@@ -20,6 +20,10 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 [Unified accounts and Free Trial](trading/UNIFIED_ACCOUNTS.md) · [Journal metrics](trading/JOURNAL_METRICS.md) · [Prop Trading](trading/PROP.md) · [Perpetual Trading](trading/PERPETUAL.md) · [Shared Terminal](trading/TERMINAL.md) · [Indicators](trading/INDICATORS.md) · [Pine runtime](trading/PINE_SCRIPT.md) · [Custom indicators](trading/CUSTOM_INDICATORS.md) · [Portfolio and Journal](trading/PORTFOLIO_JOURNAL.md)
 
+## Governance and Economy
+
+[GOVERNANCE.md](../GOVERNANCE.md) · [ECONOMY.md](../ECONOMY.md) · [Governance documentation](governance/README.md) · [Roles and permissions](governance/ROLES_AND_PERMISSIONS.md) · [Whitepaper governance chapter](governance/WHITEPAPER_GOVERNANCE.md) · [ADR 0017](decisions/0017-hybrid-governance.md)
+
 ## Wallet and Identity
 
 [Wallet, networks and sessions](wallet/IDENTITY.md) · [Authentication technical reference](architecture/WALLET_AUTHENTICATION.md)

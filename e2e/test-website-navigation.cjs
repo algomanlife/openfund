@@ -207,7 +207,7 @@ async function auditRoutes(page) {
       if(href==='#') { if(await page.locator('header a[href="#"],footer a[href="#"]').count()) throw new Error('Chrome placeholder on '+route); continue; }
       if(href.startsWith('/') && !/^\/(assets|downloads)\//.test(href)) {
         const target=href.split('?')[0];
-        if(!allowed.has(target) && !/^\/(en|fa)\/(prop|perpetual)\/(trade|dashboard)$/.test(target) && target!=='/terminal' && !/^\/(en|fa)\/whitepaper(\/|$)/.test(target)) throw new Error('Unknown route '+href+' on '+route);
+        if(!allowed.has(target) && !/^\/(en|fa)\/(prop|perpetual)\/(trade|dashboard)$/.test(target) && target!=='/terminal' && !/^\/(en|fa)\/whitepaper(\/|$)/.test(target) && !/^\/(en|fa)\/governance(\/|$)/.test(target)) throw new Error('Unknown route '+href+' on '+route);
       } else if(href.startsWith('#') && href!=='#' && !href.startsWith('#/') && !await page.evaluate(id=>!!document.getElementById(id),decodeURIComponent(href.slice(1)))) throw new Error('Missing anchor '+href+' on '+route);
     }
     if(/not found|پیدا نشد/.test(await page.locator('h1').innerText())) throw new Error('Missing content '+route);

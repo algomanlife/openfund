@@ -41,6 +41,15 @@ translation table (`fa` / `en`).
 `default_language` (fa|en), `maintenance_message` — plus future logo/favicon file fields
 (brand assets stay protected in `brand/`; the core logo is NOT editor-replaceable).
 
+## governance_milestones and governance_content_blocks
+
+Editorial wording for the Governance page, with translations and a bundled fallback:
+`governance_milestones` (roadmap items with a status of planned, in progress, built or
+not planned) and `governance_content_blocks` (`overview_intro`, `whitepaper_summary`).
+Public read, published rows only. **These are editorial only.** Councils, proposals,
+votes, eligibility and every governance decision live in the backend (`gov_*`) and are
+not exposed to Directus. See [GOVERNANCE.md](../../GOVERNANCE.md).
+
 ## Whitepaper collections
 
 `whitepaper_documents`, `whitepaper_chapters`, `whitepaper_datasets` and

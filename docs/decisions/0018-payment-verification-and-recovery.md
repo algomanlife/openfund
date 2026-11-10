@@ -1,4 +1,4 @@
-# ADR 0017 — Payment verification policy, recovery and DePay integration
+# ADR 0018 — Payment verification policy, recovery and DePay integration
 
 - **Status:** Accepted (implemented; real-network acceptance and production activation pending)
 - **Date:** 2026-11-10

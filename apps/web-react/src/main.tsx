@@ -13,6 +13,10 @@ import Coach from './features/partners/Coach'
 /* the long-form Whitepaper (content + charts) loads only when visited */
 const Whitepaper = lazy(() => import('./features/whitepaper/Whitepaper'))
 import Faq from './features/faq/Faq'
+import Governance from './features/governance/Governance'
+import ProposalPage from './features/governance/ProposalPage'
+import NewProposal from './features/governance/NewProposal'
+import CouncilWorkspace from './features/governance/CouncilWorkspace'
 import Tools from './features/tools/Tools'
 import ToolPage from './features/tools/ToolPage'
 import Learn from './features/learn/Learn'
@@ -115,6 +119,10 @@ const routes = [
   { path: '/:locale/markets', element: <Markets /> },
   { path: '/:locale/rulebook', element: <Rulebook /> },
   { path: '/:locale/transparency', element: <Transparency /> },
+  { path: '/:locale/governance', element: <Governance /> },
+  { path: '/:locale/governance/new', element: <NewProposal /> },
+  { path: '/:locale/governance/workspace', element: <CouncilWorkspace /> },
+  { path: '/:locale/governance/proposals/:ofp', element: <ProposalPage /> },
   /* Economy menu: Transparency, Revenue Model, Live Market Access */
   { path: '/:locale/economy', element: <Navigate to="../transparency" replace /> },
   { path: '/:locale/revenue-model', element: <RevenueModel /> },
@@ -140,6 +148,8 @@ const routes = [
       { path: '*', element: <Navigate to="../dashboard" replace /> },
       { path: 'dashboard', element: <ProductDashboard /> },
       { path: 'trade', element: <SharedTradingTerminal /> },
+      /* same element type + position as 'trade': React keeps one workspace instance across the two tabs */
+      { path: 'chart', element: <SharedTradingTerminal /> },
       { path: 'portfolio', element: <ProductPortfolio /> },
       { path: 'journal', element: <ProductJournal /> },
       ...(product === 'prop' ? [

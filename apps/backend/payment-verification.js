@@ -1,5 +1,5 @@
 /**
- * Openfund — on-chain payment verification (ADR 0009, amended by ADR 0017).
+ * Openfund — on-chain payment verification (ADR 0009, amended by ADR 0018).
  *
  * Two layers, deliberately separated so the security-critical rules are
  * testable with deterministic receipt fixtures and no network:

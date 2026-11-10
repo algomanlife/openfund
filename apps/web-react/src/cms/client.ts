@@ -342,11 +342,11 @@ async function fetchCmsLegalRaw(): Promise<CmsLegalDoc[] | null> {
 /* ---------------- footer links (destination whitelist) ---------------- */
 export type FooterDestination =
   | 'challenges' | 'markets' | 'rulebook' | 'transparency'
-  | 'faq' | 'referral' | 'tools' | 'learn'
+  | 'faq' | 'referral' | 'tools' | 'learn' | 'governance'
   | 'accounts-section' | 'team-section' | 'faq-section' | 'github'
 export interface CmsFooterLink { destination: FooterDestination; label: { fa: string; en: string } }
 
-const FOOTER_DESTINATIONS = new Set(['challenges', 'markets', 'rulebook', 'transparency', 'faq', 'referral', 'tools', 'learn', 'accounts-section', 'team-section', 'faq-section', 'github'])
+const FOOTER_DESTINATIONS = new Set(['challenges', 'markets', 'rulebook', 'transparency', 'faq', 'referral', 'tools', 'learn', 'governance', 'accounts-section', 'team-section', 'faq-section', 'github'])
 
 async function fetchCmsFooterLinksRaw(): Promise<CmsFooterLink[] | null> {
   interface Raw extends TranslatedRow { destination: string }
@@ -363,9 +363,9 @@ async function fetchCmsFooterLinksRaw(): Promise<CmsFooterLink[] | null> {
 }
 
 /* ---------------- navigation (public_header, whitelist) ---------------- */
-export type NavRoute = 'challenges' | 'markets' | 'rulebook' | 'transparency' | 'faq' | 'referral' | 'tools' | 'learn'
+export type NavRoute = 'challenges' | 'markets' | 'rulebook' | 'transparency' | 'faq' | 'referral' | 'tools' | 'learn' | 'governance'
 export interface CmsNavItem { route: NavRoute; label: { fa: string; en: string } }
-const NAV_ROUTES = new Set(['challenges', 'markets', 'rulebook', 'transparency', 'faq', 'referral', 'tools', 'learn'])
+const NAV_ROUTES = new Set(['challenges', 'markets', 'rulebook', 'transparency', 'faq', 'referral', 'tools', 'learn', 'governance'])
 
 async function fetchCmsNavigationRaw(): Promise<CmsNavItem[] | null> {
   interface Raw extends TranslatedRow { route: string; visible: boolean }
@@ -747,6 +747,38 @@ function mergeLocaleObject(a: Record<string, unknown>, b: Record<string, unknown
   return out
 }
 
+
+/* ---------------- governance editorial content (Directus) ----------------
+   EDITORIAL ONLY: milestone wording and short content blocks. Directus never
+   holds councils, proposals, votes or any governance authority; those live in
+   the backend (apps/backend/governance.js). Invalid rows are dropped. */
+export interface CmsGovernanceMilestone { key: string; status: 'planned' | 'in_progress' | 'implemented' | 'not_planned'; title: { fa: string; en: string }; body: { fa: string; en: string } }
+export interface CmsGovernanceContent { milestones: CmsGovernanceMilestone[]; blocks: Record<string, { fa: string; en: string }> }
+const MILESTONE_STATUSES = new Set(['planned', 'in_progress', 'implemented', 'not_planned'])
+const GOVERNANCE_BLOCK_KEYS = new Set(['overview_intro', 'whitepaper_summary'])
+
+export async function fetchCmsGovernance(): Promise<CmsGovernanceContent | null> {
+  interface RawMilestone extends TranslatedRow { key: string; milestone_status: string }
+  interface RawBlock extends TranslatedRow { key: string }
+  const [milestones, blocks] = await Promise.all([
+    getJson<RawMilestone[]>('/items/governance_milestones?fields=key,milestone_status,translations.language_code,translations.title,translations.body&filter[status][_eq]=published&sort=sort&limit=-1'),
+    getJson<RawBlock[]>('/items/governance_content_blocks?fields=key,translations.language_code,translations.body&filter[status][_eq]=published&limit=-1'),
+  ])
+  if (!milestones && !blocks) return null
+  const out: CmsGovernanceContent = { milestones: [], blocks: {} }
+  for (const row of milestones || []) {
+    if (!MILESTONE_STATUSES.has(row.milestone_status)) continue
+    const l = localized(row)
+    if (!l.fa.title || !l.en.title || !l.fa.body || !l.en.body) continue
+    out.milestones.push({ key: row.key, status: row.milestone_status as CmsGovernanceMilestone['status'], title: { fa: l.fa.title, en: l.en.title }, body: { fa: l.fa.body, en: l.en.body } })
+  }
+  for (const row of blocks || []) {
+    if (!GOVERNANCE_BLOCK_KEYS.has(row.key)) continue
+    const l = localized(row)
+    if (l.fa.body && l.en.body) out.blocks[row.key] = { fa: l.fa.body, en: l.en.body }
+  }
+  return out.milestones.length || Object.keys(out.blocks).length ? out : null
+}
 /* Every bilingual record a fetcher returns also resolves ar / ru / zh-CN. */
 const localizing = <A extends unknown[], R>(fn: (...args: A) => Promise<R>) => async (...args: A): Promise<R> => localizeRecords(await fn(...args))
 export const fetchCmsTranslations = localizing(fetchCmsTranslationsRaw)
