@@ -42,7 +42,8 @@
     "test:upstream": "node --test scripts/upstream/test/*.test.mjs && node --test apps/backend/test/market-data-contract.test.mjs",
     "check:upstream": "node scripts/upstream/verify.mjs",
     "check:gains-live": "node scripts/upstream/gains-live-check.mjs",
-    "update:vendor": "node scripts/upstream/update-vendor.mjs"
+    "update:vendor": "node scripts/upstream/update-vendor.mjs",
+    "watch:upstream": "node scripts/upstream/check-releases.mjs"
   },
   "devDependencies": {
     "js-yaml": "^4.1.0",

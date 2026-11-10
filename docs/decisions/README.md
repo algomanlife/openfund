@@ -23,5 +23,6 @@
 - [0017 — Hybrid governance](0017-hybrid-governance.md)
 - [0019 — Upstream isolation](0019-upstream-isolation.md)
 - [0020 — Directus upgrade policy](0020-directus-upgrade-policy.md)
+- [0021 — Upstream governance automation](0021-upstream-governance-automation.md)
 
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)

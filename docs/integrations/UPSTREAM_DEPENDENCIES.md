@@ -112,4 +112,4 @@ Update one dependency per pull request, with its lockfile. Run `npm run typechec
 
 `npm run check:upstream` (offline) verifies: registry schema and versions against lockfiles and manifests; every vendored file against `infra/upstream/vendor-manifest.json`; each patch reverse-applies and its guard string is present; Openfund customisation guards (including the paired legal attribution guards); byte-identical mirrors of the chart bridge, Gains adapter, bundles and licence notices; and the no-direct-vendor-import boundary. The workflow `upstream-guard.yml` runs it with the chart and Gains contract tests on pull requests that touch these areas.
 
-[Upstream source management](UPSTREAM.md) · [Vela integration](VELA.md) · [Gains integration](GAINS.md) · [ADR 0019](../decisions/0019-upstream-isolation.md)
+[Update automation](UPSTREAM_AUTOMATION.md) · [Upstream source management](UPSTREAM.md) · [Vela integration](VELA.md) · [Gains integration](GAINS.md) · [ADR 0019](../decisions/0019-upstream-isolation.md)
