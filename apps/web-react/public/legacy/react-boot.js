@@ -54,6 +54,13 @@
     }
     if (global.ofLang !== e.data.locale && global.__ofSetLang) global.__ofSetLang(e.data.locale);
   });
+  /* layout from the React shell: 'chart' (full chart + Quick Trade) or 'trade'.
+     Same document, same chart instance and market stream — only panels toggle. */
+  global.addEventListener('message', function (e) {
+    if (!e.data || e.data.type !== 'openfund-layout' || e.source !== global.parent) return;
+    document.body.dataset.layout = e.data.layout === 'chart' ? 'chart' : 'trade';
+    global.requestAnimationFrame(function () { global.dispatchEvent(new global.Event('resize')); });
+  });
   var retry = document.getElementById('account-retry');
   if (retry) retry.onclick = function () { global.parent.dispatchEvent(new global.parent.Event('of-refresh-trading')); };
 })(window);

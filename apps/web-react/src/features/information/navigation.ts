@@ -7,7 +7,7 @@ type Locale = AppLocale
 const primary = ['challenges', 'markets', 'rulebook'] as const
 /** Economy dropdown (replaces the former single Transparency link). */
 const economy = ['transparency', 'revenue-model', 'live-market-access'] as const
-const resources = ['faq', 'learn', 'tools', 'referral', 'ambassador', 'coach', 'team'] as const
+const resources = ['faq', 'learn', 'tools', 'referral', 'ambassador', 'coach', 'governance', 'team'] as const
 /** footer "Openfund documents" entries */
 const documentLabels = { whitepaper: text('Read the whitepaper', 'مطالعهٔ وایت‌پیپر') }
 const navigationLabels = { ...labels, team: text('Team', 'تیم'), glossary: text('Glossary', 'واژه‌نامه') }

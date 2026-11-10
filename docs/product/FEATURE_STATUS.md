@@ -84,6 +84,28 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | Operational Protocol venue routing | Planned | [Protocol roadmap](../roadmap/PROTOCOL.md); no active quote aggregation, routing or execution |
 | Additional integrations and developer services | Planned | [Product roadmap](../roadmap/PRODUCT.md); depends on validated product/execution contracts |
 
+## Hybrid Governance v1.0
+
+Branch `feat/hybrid-governance-v1`, unmerged and unreleased. Evidence is local
+automated tests against an isolated PostgreSQL database and a local browser check
+of the Governance page. **Nothing is in production use.** Authoritative policy:
+[GOVERNANCE.md](../../GOVERNANCE.md); documentation: [docs/governance](../governance/README.md);
+decision: [ADR 0017](../decisions/0017-hybrid-governance.md).
+
+| Capability | Status | Scope and evidence |
+| --- | --- | --- |
+| Governance policy and economic boundary documents | Completed (documentation) | `GOVERNANCE.md`, `ECONOMY.md`, `docs/governance/`; open decisions listed in GOVERNANCE.md section 18 |
+| Backend rules, schema, service and RBAC | Completed (local) | 10 seats, OFP lifecycle, quorum 7, approval 6 of 10 (7 for amendments), recusal, append-only evidence and hash-chained audit; automated tests, no production data |
+| Financial isolation | Completed (local) | Static and runtime tests: no financial table access, no financial endpoint, financial-shaped fields rejected |
+| Signed vote evidence | Completed (local) | Domain-separated, single-use EOA signatures; contract wallets unsupported; optional |
+| Election architecture | Completed (local), **not active** | Gated on management approving the rules; no election scheduled |
+| Public Governance page, proposal pages, council workspace | Completed (local) | `/:locale/governance`; renders real empty states; Persian RTL, English, dark and light checked locally; the authorised vote flow is covered by service tests and component rendering tests, not by a wallet-signed browser run |
+| Directus editorial content | In Progress | Collections added to `apply_schema.py`; not applied to a live Directus instance in this work |
+| Council seated and populated | Planned | Requires management appointments and eligibility verification; none exist |
+| Ambassador, Coach and Funded Trader registries feeding eligibility | Blocked | No approved registry on this base; eligibility is a management-verified record |
+| Whitepaper governance chapter | In Progress | Bilingual chapter prepared; the Whitepaper app is on the unmerged `feat/openfund-whitepaper-v1`, whose existing governance chapter must be replaced when it merges |
+| On-chain or token governance | Not planned | Not a capability and not a commitment |
+
 ## Proprietary chart indicators
 
 **In Progress:** Open Algo V5, Price Action Concepts and Smart Money Concepts execute original source through the shared worker; two local libraries resolve without external fetches. The ordered catalog, settings persistence, interval/symbol/menu repairs and permitted branding changes have local regression coverage. Genuine volume-dependent outputs, full optional-setting/reference conformance and deployed acceptance remain open. [Architecture](../trading/PINE_SCRIPT.md) · [Evidence](../reviews/vela-pine/DELIVERY.md).

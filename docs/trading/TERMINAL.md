@@ -33,6 +33,12 @@ Timeframe menus use canonical Pine minute/day IDs mapped to Gains intervals. A m
 
 Native indicator VELA badges and the chart footer link are removed. The visible linked Vela notice remains in terminal status, satisfying the checked-in NOTICE without CSS-hiding the required attribution. [Indicator usage](INDICATORS.md), [runtime and limits](PINE_SCRIPT.md), [extension procedure](CUSTOM_INDICATORS.md) and [verification](../reviews/vela-pine/DELIVERY.md) cover the integration.
 
+## Chart tab and Quick Trade
+
+`/:locale/:product/chart` renders the same `SharedTradingTerminal` element as `/trade`, so React keeps one workspace iframe, one Vela chart and one Gains market stream across both tabs. The shell posts `openfund-layout` to the iframe; `body[data-layout="chart"]` hides the book, order form and activity panels in CSS only. Symbol, interval, indicators, drawings and viewport therefore survive tab switches.
+
+Quick Trade (chart layout only) is implemented in `terminal.js` next to the order form. It builds the order form's request (market order, no SL/TP), validates with `tp.validate`, shows server figures from `tp.previewAsync`, and submits with `tp.submitAsync` using one idempotency key per distinct intent. It never opens its own connection, balance or execution path, and it is disabled whenever the adapter reports `canTrade === false`, the market is closed, or the price is stale/unavailable. Gains supplies a mark price only, so the widget labels it indicative and shows no bid/ask. Strings use the terminal `qt.*` keys in all five locales.
+
 ## Compact workspace contract
 
 The trading route owns a 40px application header; the framed workspace starts with a 34px market row. Chart, Book/Trades and Order remain in fixed LTR physical columns for both locales. Local text uses RTL where required and numeric inputs, symbols and columns use LTR isolation. Shared brand tokens are retained. No website shell or generated chart bundle is changed.

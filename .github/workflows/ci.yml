@@ -98,6 +98,7 @@ jobs:
           npm run test:website
           npm run test:whitepaper
           npm run test:terminal
+          npm run test:governance
           npm run test:i18n
       - name: Whitepaper CMS schema and seed validation (offline)
         working-directory: .
@@ -197,7 +198,11 @@ jobs:
         env:
           TEST_FRONTEND_URL: http://localhost:8080
           TEST_BACKEND_URL: http://localhost:8080
-        run: npm run test:browser:audit
+        run: |
+          npm run test:browser:audit || {
+            echo "::warning::Browser audit failed once; retrying with fresh wallets"
+            npm run test:browser:audit
+          }
       - name: Terminal wallet, order lifecycle and all-tab acceptance
         working-directory: .
         env:

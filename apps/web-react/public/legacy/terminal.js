@@ -71,6 +71,22 @@ const I18N = {
     'ac.equity': 'ارزش حساب', 'ac.available': 'قابل استفاده', 'ac.margin': 'مارژین در استفاده',
     'ac.unrealized': 'سود/زیان شناور', 'ac.positions': 'موقعیت‌ها', 'ac.orders': 'سفارش‌ها',
     'ac.mode': 'حالت', 'ac.modeVal': 'Cross · شبیه‌سازی‌شده',
+    /* Quick Trade (Chart tab) */
+    "qt.aria": "معامله سریع",
+    "qt.buy": "خرید",
+    "qt.sell": "فروش",
+    "qt.amount": "مبلغ (USD)",
+    "qt.longTitle": "خرید / Long",
+    "qt.shortTitle": "فروش / Short",
+    "qt.submitLong": "ثبت خرید / Long",
+    "qt.submitShort": "ثبت فروش / Short",
+    "qt.sending": "در حال ارسال…",
+    "qt.mark": "مارک",
+    "qt.stale": "قدیمی",
+    "qt.noPrice": "قیمت زنده در دسترس نیست.",
+    "qt.invalid": "مبلغ معتبر وارد کنید.",
+    "qt.close": "بستن پنل سفارش",
+    "qt.note": "قیمت مارک صرفاً راهنماست؛ قیمت اجرا را موتور اجرا تعیین می‌کند.",
     'lev': 'اهرم',
     'of.price': 'قیمت تریگر / لیمیت <em>USD</em>', 'of.collateral': 'کولترال <em>USD</em>', 'of.priceTh': 'تریگر / لیمیت',
     'of.size': 'اندازه', 'of.notional': 'نوشنال',
@@ -177,6 +193,22 @@ const EN = {
   'ac.equity': 'Equity', 'ac.available': 'Available', 'ac.margin': 'Margin used',
   'ac.unrealized': 'Unrealized', 'ac.positions': 'Positions', 'ac.orders': 'Orders',
   'ac.mode': 'Mode', 'ac.modeVal': 'Cross · Simulated',
+  /* Quick Trade (Chart tab); ar/ru/zh-CN live in terminal-locales.js */
+  "qt.aria": "Quick trade",
+  "qt.buy": "Buy",
+  "qt.sell": "Sell",
+  "qt.amount": "Amount (USD)",
+  "qt.longTitle": "Buy / Long",
+  "qt.shortTitle": "Sell / Short",
+  "qt.submitLong": "Place Buy / Long",
+  "qt.submitShort": "Place Sell / Short",
+  "qt.sending": "Sending…",
+  "qt.mark": "mark",
+  "qt.stale": "stale",
+  "qt.noPrice": "Live price unavailable.",
+  "qt.invalid": "Enter a valid amount.",
+  "qt.close": "Close order panel",
+  "qt.note": "Indicative mark price. The fill price is set by the execution engine.",
   'lev': 'Leverage',
   'of.price': 'Trigger / Limit price <em>USD</em>', 'of.collateral': 'Collateral <em>USD</em>',
   'of.size': 'Size', 'of.notional': 'Notional',
@@ -924,6 +956,7 @@ function marketClosed(){
 }
 function computeForm(){
   if (!$('submit-order')) return;   /* teardown race guard */
+  qtRender();
   const m = meta();
   const d = dp();
   const closed = marketClosed();
@@ -1055,6 +1088,194 @@ $('review-confirm').addEventListener('click', async () => {
     toast(L('وضعیت درخواست تأیید نشد؛ پوزیشن‌ها را بررسی کنید یا همین سفارش را دوباره بفرستید.', 'Request status could not be confirmed. Check positions or retry this same review.'), 'neg');
   } finally { $('review-confirm').disabled = false; $('review-cancel').disabled = false; }
 });
+
+/* ============================================================
+   QUICK TRADE (Chart tab)
+   A compact Buy/Sell control over the chart. It owns NO trading logic: it
+   builds the same request object as the order form and sends it through the
+   active account adapter `tp` (validate → previewAsync → submitAsync), i.e.
+   the exact pipeline of the Trading tab. Prices come from the shared
+   PriceBoard (no extra subscription). Gains supplies a mark price only, so
+   no bid/ask is shown.
+   ============================================================ */
+const QT = { side: 'long', open: false, amount: '', leverage: null, busy: false,
+  req: null, sig: '', status: null, preview: null, previewSig: '', previewErr: '', seq: 0, timer: null, opener: null };
+function qtMaxLev(){
+  const m = meta(), v = m ? Math.floor(Number(m.maxLeverage)) : NaN;
+  return Number.isFinite(v) && v >= 1 ? v : null;
+}
+function qtLeverage(){
+  const max = qtMaxLev();
+  if (max == null) return null;
+  if (QT.leverage == null) QT.leverage = S.leverage;
+  QT.leverage = Math.max(1, Math.min(max, Math.floor(Number(QT.leverage)) || 1));
+  return QT.leverage;
+}
+function qtPrice(){
+  const p = mark();
+  const live = board.status === 'live' && board.markAge(S.marketId) <= 90000;
+  return { p, live, ok: !!(p > 0) && live };
+}
+function qtBuild(){
+  return { market: S.marketId, side: QT.side, type: 'market', leverage: qtLeverage() || 1,
+    collateral: normNum(QT.amount) || 0, price: 0, sl: null, tp: null };
+}
+/* one request object (and idempotency key) per distinct intent; an explicit
+   retry after an unconfirmed submit reuses it, any edit starts a new one */
+function qtRequest(){
+  const r = qtBuild(), sig = [r.market, r.side, r.leverage, r.collateral].join('|');
+  if (!QT.req || QT.sig !== sig){ QT.req = r; QT.sig = sig; }
+  return QT.req;
+}
+function qtAccountBlocker(){
+  if (!tp) return L('حساب در دسترس نیست.', 'Account unavailable.');
+  if (marketClosed()) return t('mkt.closed');
+  if (tp.canTrade === false) return (tp.validate(qtBuild())[0]) || L('حساب در دسترس نیست.', 'Account unavailable.');
+  return null;
+}
+function qtBlocker(){
+  const hard = qtAccountBlocker();
+  if (hard) return hard;
+  if (!qtPrice().ok || qtLeverage() == null) return t('qt.noPrice');
+  const raw = QT.amount.trim();
+  if (!raw) return null;
+  if (!(normNum(raw) > 0)) return t('qt.invalid');
+  return tp.validate(qtBuild())[0] || QT.previewErr || null;
+}
+function qtEdited(){
+  QT.previewErr = ''; QT.preview = null; QT.previewSig = '';
+  clearTimeout(QT.timer);
+  if (QT.open && tp && tp.previewAsync && !qtBlocker() && normNum(QT.amount) > 0){
+    const req = qtBuild(), sig = [req.market, req.side, req.leverage, req.collateral].join('|'), seq = ++QT.seq;
+    QT.timer = setTimeout(async () => {
+      try {
+        const data = await tp.previewAsync(req);
+        if (seq === QT.seq){ QT.preview = data; QT.previewSig = sig; qtRender(); }
+      } catch (e) {
+        if (seq === QT.seq){ QT.previewErr = String(e && e.message || e); qtRender(); }
+      }
+    }, 450);
+  }
+  qtRender();
+}
+function qtSetText(id, text){ const el = $(id); if (el && el.textContent !== text) el.textContent = text; }
+function qtRender(){
+  const root = $('qt-root');
+  if (!root || document.body.dataset.layout !== 'chart') return;
+  const m = meta(), d = dp(), ps = qtPrice(), lev = qtLeverage(), hard = qtAccountBlocker();
+  root.setAttribute('role', 'group'); root.setAttribute('aria-label', t('qt.aria'));
+  qtSetText('qt-mode', t('ac.modeVal') + ' · ' + S.marketId);
+  const px = $('qt-px');
+  px.classList.toggle('stale', !ps.ok);
+  px.replaceChildren(document.createTextNode(ps.p > 0 ? fmt.price(ps.p, d) : '—'));
+  const tag = document.createElement('small');
+  tag.textContent = ps.p > 0 ? t(ps.live ? 'qt.mark' : 'qt.stale') : '';
+  px.append(tag);
+  for (const id of ['qt-buy', 'qt-sell']){
+    const b = $(id); b.disabled = !!hard; b.title = hard || '';
+    b.setAttribute('aria-expanded', String(QT.open && QT.side === (id === 'qt-buy' ? 'long' : 'short')));
+  }
+  const panel = $('qt-panel');
+  panel.hidden = !QT.open;
+  if (!QT.open) return;
+  const title = $('qt-title');
+  title.className = 'qt-title ' + QT.side;
+  title.textContent = t(QT.side === 'long' ? 'qt.longTitle' : 'qt.shortTitle') + ' · ' + S.marketId;
+  $('qt-close').setAttribute('aria-label', t('qt.close'));
+  const range = $('qt-lev');
+  if (lev != null){ range.max = String(qtMaxLev()); range.value = String(lev); }
+  range.disabled = lev == null || QT.busy;
+  qtSetText('qt-lev-val', lev != null ? lev + '×' : '—');
+  const acc = tp && tp.getAccount ? tp.getAccount() : null, avail = acc ? acc.available : null;
+  qtSetText('qt-avail', avail == null ? '—' : fmt.usd(avail));
+  const collateral = normNum(QT.amount) || 0, pv = QT.preview && QT.previewSig === [S.marketId, QT.side, lev || 1, collateral].join('|') ? QT.preview : null;
+  const rate = tp && tp.feeRate ? tp.feeRate(S.marketId) : null;
+  const notional = collateral * (lev || 0), size = ps.p > 0 ? notional / ps.p : 0;
+  const unitTxt = m ? ' ' + m.base : '';
+  const q = pv ? Number(pv.quantity) : size;
+  qtSetText('qt-size', q > 0 ? fmt.num(q, m ? Number(m.sizePrecision) || 2 : 2) + unitTxt : '—');
+  qtSetText('qt-margin', collateral > 0 ? fmt.usd(pv && pv.required_margin != null ? Number(pv.required_margin) : collateral) : '—');
+  const fee = pv && pv.open_fee != null ? Number(pv.open_fee) : (collateral > 0 && rate != null ? notional * rate : null);
+  qtSetText('qt-fee', fee == null ? '—' : fmt.usd(fee));
+  const liq = pv && pv.liquidation_price != null ? Number(pv.liquidation_price) : (ps.p > 0 && tp ? tp.liqPrice(QT.side, ps.p, lev || 1) : null);
+  qtSetText('qt-liq', liq ? fmt.price(liq, d) : '—');
+  document.querySelectorAll('#qt-chips button').forEach(b => { b.disabled = avail == null || !!hard || QT.busy; });
+  const err = $('qt-err'), blocker = qtBlocker();
+  if (!QT.status && blocker){ err.textContent = blocker; err.className = 'qt-err'; err.hidden = false; }
+  else if (QT.status){ err.textContent = QT.status.text; err.className = 'qt-err' + (QT.status.ok ? ' ok' : ''); err.hidden = false; }
+  else err.hidden = true;
+  const submit = $('qt-submit');
+  submit.className = 'submit ' + QT.side;
+  submit.textContent = QT.busy ? t('qt.sending') : t(QT.side === 'long' ? 'qt.submitLong' : 'qt.submitShort');
+  submit.disabled = QT.busy || !!blocker || !(collateral > 0);
+  submit.setAttribute('aria-busy', String(QT.busy));
+  const input = $('qt-amount');
+  if (input.value !== QT.amount) input.value = QT.amount;
+  input.disabled = QT.busy;
+  input.placeholder = t('qt.amount');
+}
+function qtOpen(side, opener){
+  if (QT.open && QT.side === side){ qtClose(); return; }
+  if (QT.side !== side || !QT.open){ QT.req = null; QT.status = null; }
+  QT.side = side; QT.open = true; QT.opener = opener;
+  qtEdited();
+  $('qt-amount').focus();
+}
+function qtClose(){
+  QT.open = false; QT.status = null; clearTimeout(QT.timer); QT.seq++;
+  qtRender();
+  if (QT.opener && !QT.opener.disabled) QT.opener.focus();
+}
+async function qtSubmit(){
+  if (QT.busy) return;                       /* duplicate-submission guard */
+  const blocker = qtBlocker();
+  if (blocker || !(normNum(QT.amount) > 0)){ QT.status = { text: blocker || t('qt.invalid'), ok: false }; qtRender(); return; }
+  const req = qtRequest(), provider = tp, sig = [req.market, req.side, req.leverage, req.collateral].join('|');
+  QT.busy = true; QT.status = null; qtRender();
+  try {
+    if (provider.previewAsync && QT.previewSig !== sig){
+      try { await provider.previewAsync(req); }
+      catch (e) { QT.status = { text: String(e && e.message || e), ok: false }; return; }
+    }
+    if (provider !== tp || tp.canTrade === false){
+      QT.status = { text: L('وضعیت حساب تغییر کرده است؛ سفارش را دوباره بررسی کنید.', 'Account state changed. Review the order again.'), ok: false };
+      return;
+    }
+    const res = provider.submitAsync ? await provider.submitAsync(req) : provider.submit(req);
+    if (res && res.ok){
+      QT.req = null; QT.preview = null; QT.previewSig = '';
+      toast(res.kind === 'position' ? t('toast.position') : t('toast.order'), 'pos');
+      renderBottom(); renderAccount();
+      QT.open = false; QT.status = null;
+      if (QT.opener && !QT.opener.disabled) QT.opener.focus();
+    } else {
+      QT.status = { text: res && res.errors ? res.errors[0] : 'error', ok: false };
+    }
+  } catch (error) {
+    /* keep QT.req: an explicit retry reuses the same idempotency key */
+    QT.status = { text: L('وضعیت درخواست تأیید نشد؛ پوزیشن‌ها را بررسی کنید یا همین سفارش را دوباره بفرستید.', 'Request status could not be confirmed. Check positions or retry this same review.'), ok: false };
+  } finally { QT.busy = false; qtRender(); }
+}
+if ($('qt-root')){
+  $('qt-buy').addEventListener('click', e => qtOpen('long', e.currentTarget));
+  $('qt-sell').addEventListener('click', e => qtOpen('short', e.currentTarget));
+  $('qt-close').addEventListener('click', qtClose);
+  $('qt-amount').addEventListener('input', e => { QT.amount = e.target.value; QT.status = null; qtEdited(); });
+  $('qt-amount').addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); qtSubmit(); } });
+  $('qt-lev').addEventListener('input', e => { QT.leverage = +e.target.value; QT.status = null; qtEdited(); });
+  $('qt-submit').addEventListener('click', qtSubmit);
+  $('qt-chips').addEventListener('click', e => {
+    const b = e.target.closest('button[data-pct]');
+    const avail = tp && tp.getAccount ? tp.getAccount()?.available : null;
+    if (!b || b.disabled || avail == null || tp.canTrade === false) return;
+    const rate = tp.feeRate?.(S.marketId), lev = qtLeverage() || 1;
+    const budget = tp.serverMode && rate != null ? avail / (1 + lev * rate) : avail;
+    QT.amount = (Math.floor(budget * (+b.dataset.pct) / 100 * 100) / 100).toFixed(2);
+    QT.status = null; qtEdited();
+  });
+  $('qt-root').addEventListener('keydown', e => { if (e.key === 'Escape' && QT.open){ e.stopPropagation(); qtClose(); } });
+  new MutationObserver(qtRender).observe(document.body, { attributes: true, attributeFilter: ['data-layout'] });
+}
 
 /* ============================================================
    VELA POSITION OVERLAYS — backend-managed 'position' drawings
