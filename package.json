@@ -32,6 +32,7 @@
     "test:release": "node --test scripts/release/test/*.test.mjs",
     "test:browser:release": "node e2e/test-release.cjs",
     "test:browser:purchase": "node e2e/test-purchase-flow.cjs",
+    "test:browser:depay": "node e2e/test-depay-checkout.cjs",
     "test:browser:challenge": "node e2e/test-challenge-lifecycle.cjs",
     "test:browser:auto-dark": "node e2e/test-auto-dark.cjs",
     "test:browser:routes": "node scripts/release/public-routes.mjs",

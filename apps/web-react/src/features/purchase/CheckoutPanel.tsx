@@ -46,6 +46,13 @@ const ERR_FA: Record<string, string> = {
   tx_too_old: 'این تراکنش قدیمی‌تر از سفارش است.',
   tx_already_used: 'این تراکنش قبلاً استفاده شده است.',
   unsupported_chain: 'زنجیرهٔ تراکنش پشتیبانی نمی‌شود.',
+  tx_pending: 'تراکنش هنوز در زنجیره ثبت نشده است؛ چند لحظه دیگر دوباره بررسی می‌شود.',
+  tx_not_final: 'تراکنش ثبت شده ولی هنوز تعداد تأییدهای لازم را ندارد؛ خودکار پیگیری می‌شود.',
+  tx_reorged: 'بلاک تراکنش تغییر کرده است؛ دوباره بررسی می‌شود.',
+  rpc_unavailable: 'اتصال به شبکه موقتاً در دسترس نیست؛ پرداخت شما از دست نمی‌رود و دوباره بررسی می‌شود.',
+  payment_misconfigured: 'پیکربندی پرداخت کامل نیست؛ با پشتیبانی تماس بگیر.',
+  unapproved_contract: 'این تراکنش از طریق قرارداد تأییدنشده انجام شده است.',
+  native_payment_unsupported: 'پرداخت با ارز بومی شبکه پشتیبانی نمی‌شود؛ از استیبل‌کوین پیشنهادی استفاده کن.',
 }
 const ERR_EN: Record<string, string> = {
   purchases_disabled: 'Purchasing is not enabled in this release.',
@@ -64,7 +71,20 @@ const ERR_EN: Record<string, string> = {
   tx_too_old: 'This transaction predates the order.',
   tx_already_used: 'This transaction was already used.',
   unsupported_chain: 'Unsupported transaction chain.',
+  tx_pending: 'The transaction is not on-chain yet — checking again shortly.',
+  tx_not_final: 'The transaction is mined but does not have enough confirmations yet — following up automatically.',
+  tx_reorged: 'The transaction block changed — re-checking.',
+  rpc_unavailable: 'The network is temporarily unreachable. Your payment is not lost and will be re-checked.',
+  payment_misconfigured: 'Payment configuration is incomplete — please contact support.',
+  unapproved_contract: 'This transaction went through an unapproved contract.',
+  native_payment_unsupported: 'Native-coin payments are not supported — pay with the listed stablecoin.',
 }
+/* conditions that resolve on their own: keep polling instead of failing */
+const RETRYABLE = new Set(['tx_pending', 'tx_not_final', 'tx_reorged', 'rpc_unavailable'])
+const txKey = (orderId: string) => 'of.checkout.tx.' + orderId
+const readTx = (orderId: string) => { try { return localStorage.getItem(txKey(orderId)) || '' } catch { return '' } }
+const saveTx = (orderId: string, tx: string) => { try { localStorage.setItem(txKey(orderId), tx) } catch { /* private mode */ } }
+const clearTx = (orderId: string) => { try { localStorage.removeItem(txKey(orderId)) } catch { /* private mode */ } }
 const STATUS_FA: Record<string, string> = { created: 'ایجادشده', started: 'در جریان', passed: 'قبول‌شده', failed: 'شکست‌خورده', expired: 'منقضی', cancelled: 'لغو‌شده' }
 const CHAIN_LABEL: Record<number, string> = { 11155111: 'Ethereum Sepolia', 42161: 'Arbitrum One' }
 
@@ -85,6 +105,10 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<{ challengeId: string, invoiceNumber: string } | null>(null)
+  const [waiting, setWaiting] = useState<string | null>(null)
+  const [attemptError, setAttemptError] = useState<string | null>(null)
+  const [widgetOpen, setWidgetOpen] = useState(false)
+  const [manual, setManual] = useState(false) /* manual payment only when the widget cannot load */
   const polling = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const plan = plans?.find(p => p.slug === planSlug) || null
@@ -103,52 +127,106 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const createOrder = useCallback(async () => {
+  const createOrder = useCallback(async (): Promise<OrderView | null> => {
     setBusy(true); setError(null)
     try {
       const r = await apiFetch('/purchases/orders', {
         method: 'POST',
         body: JSON.stringify({ planSlug, accountSize })
       })
-      if (!r.ok) { setError(errText(r.data?.error || 'order_failed')); return }
+      if (!r.ok) { setError(errText(r.data?.error || 'order_failed')); return null }
       setOrder(r.data.order)
       setPayment(r.data.payment || null)
+      return r.data.order as OrderView
     } finally { setBusy(false) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [planSlug, accountSize])
 
-  const verify = useCallback(async () => {
-    if (!order) return
-    setBusy(true); setError(null)
+  /* The backend on-chain verifier is the ONLY authority. A retryable answer
+     (not mined yet / not final / RPC down) is not a failure: the hash is
+     kept (survives a page refresh) and the check repeats until it settles. */
+  const runVerify = useCallback(async (orderId: string, hash: string, silent = false) => {
+    if (!silent) { setBusy(true); setError(null) }
     try {
       const r = await apiFetch('/purchases/verify', {
         method: 'POST',
-        body: JSON.stringify({ orderId: order.id, txHash: txHash.trim() })
+        body: JSON.stringify({ orderId, txHash: hash })
       })
-      if (!r.ok) { setError(errText(r.data?.error || 'verify_failed')); return }
-      setResult(r.data)
-      await session.reload?.()
-    } finally { setBusy(false) }
+      if (r.ok) {
+        clearTx(orderId); setWaiting(null); setError(null)
+        setResult(r.data)
+        await session.reload?.()
+        return 'done'
+      }
+      const code = r.data?.error || 'verify_failed'
+      if (r.data?.retryable || RETRYABLE.has(code)) { saveTx(orderId, hash); setWaiting(errText(code)); return 'retry' }
+      clearTx(orderId); setWaiting(null); setError(errText(code))
+      return 'failed'
+    } finally { if (!silent) setBusy(false) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, txHash])
+  }, [])
+  const verify = useCallback(async () => {
+    if (!order) return
+    const hash = txHash.trim()
+    saveTx(order.id, hash)
+    await runVerify(order.id, hash)
+  }, [order, txHash, runVerify])
 
-  /* poll order status while a pending order is shown (DePay widget, delayed
-     verifications and the test seam all converge here) */
+  /* resume: reopen a still-payable order for this plan/size after a refresh
+     and re-check any transaction hash that was already submitted */
+  useEffect(() => {
+    if (!authenticated || !paymentsEnabled || order || result) return
+    void (async () => {
+      const h = await apiFetch('/purchases/history').catch(() => null)
+      const row = h?.data?.orders?.find((o: any) => o.status === 'pending' && o.plan_slug === planSlug && Number(o.account_size_usd) === accountSize)
+      if (!row) return
+      const r = await apiFetch('/purchases/orders/' + row.id).catch(() => null)
+      if (r?.ok && r.data?.order?.status === 'pending') { setOrder(r.data.order); setPayment(r.data.payment || null) }
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authenticated, paymentsEnabled])
+  useEffect(() => {
+    if (!order || result || !['pending', 'expired'].includes(order.status)) return
+    const saved = readTx(order.id)
+    if (!saved) return
+    setTxHash(saved)
+    let stop = false
+    const tick = async () => { if (stop) return; const out = await runVerify(order.id, saved, true); if (out === 'retry' && !stop) timer = setTimeout(tick, 15000) }
+    let timer = setTimeout(tick, 500)
+    return () => { stop = true; clearTimeout(timer) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order?.id, result])
+
+  /* Poll while an order is payable: the DePay callback → backend verification
+     → provisioning chain runs without the browser, so this is how the page
+     learns the outcome (also after a refresh). It shows retryable waiting
+     states and rejected attempts (underpayment, wrong token …) in plain words. */
   useEffect(() => {
     if (!order || order.status !== 'pending' || result) return
-    polling.current = setInterval(async () => {
+    let stop = false
+    const tick = async () => {
       const r = await apiFetch(`/purchases/orders/${order.id}`).catch(() => null)
-      if (r?.ok && r.data?.order && r.data.order.status !== order.status) {
-        setOrder(r.data.order)
-        if (r.data.order.status === 'paid') {
-          const h = await apiFetch('/purchases/history').catch(() => null)
-          const row = h?.data?.orders?.find((o: any) => o.id === order.id)
-          if (row?.invoice?.number) setResult({ challengeId: row.challenge_id, invoiceNumber: row.invoice.number })
-          await session.reload?.()
-        }
+      if (stop) return
+      if (r?.ok && r.data?.order?.status === 'paid') {
+        setOrder(r.data.order); setWaiting(null); setAttemptError(null)
+        const h = await apiFetch('/purchases/history').catch(() => null)
+        const row = h?.data?.orders?.find((o: any) => o.id === order.id)
+        if (row?.invoice?.number) setResult({ challengeId: row.challenge_id, invoiceNumber: row.invoice.number })
+        await session.reload?.()
+        return
       }
-    }, 5000)
-    return () => { if (polling.current) clearInterval(polling.current) }
+      if (r?.ok && r.data?.order && r.data.order.status !== order.status) { setOrder(r.data.order); return }
+      const a = await apiFetch(`/purchases/orders/${order.id}/attempts`).catch(() => null)
+      if (stop || !a?.ok) return
+      const latest = (a.data?.attempts || [])[0]
+      if (!latest) return
+      if (latest.status === 'pending' && latest.error_code) { setWaiting(errText(latest.error_code)); setAttemptError(null) }
+      else if (latest.status === 'pending') { setWaiting(t('پرداخت دریافت شد؛ در حال تأیید روی زنجیره…', 'Payment received — confirming on-chain…')); setAttemptError(null) }
+      else if (latest.status === 'rejected') { setWaiting(null); setAttemptError(errText(latest.error_code || 'verify_failed')) }
+    }
+    void tick()
+    const timer = setInterval(() => { void tick() }, 3000)
+    return () => { stop = true; clearInterval(timer) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order?.id, order?.status, result])
 
@@ -156,39 +234,47 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
      + VITE_DEPAY_WIDGET_URL pointing at the approved widget bundle) AND the
      backend provides payment configuration; amounts/receivers always come
      from the backend order, never from this file */
-  const depayUrl = (import.meta.env?.PROD ? publicRuntimeConfig().depayWidget : (import.meta.env?.VITE_DEPAY_WIDGET as string | undefined) === '1')
-    ? (import.meta.env?.PROD ? publicRuntimeConfig().depayWidgetUrl : import.meta.env?.VITE_DEPAY_WIDGET_URL as string | undefined)
-    : undefined
-  const openDepay = async () => {
-    if (!payment || !paymentCfg || !depayUrl) return
-    setBusy(true)
+  const rc = publicRuntimeConfig()
+  const depayUrl = rc.depayWidget && rc.depayWidgetUrl && rc.depayWidgetIntegrity && rc.depayIntegrationId ? rc.depayWidgetUrl : undefined
+  const depayAvailable = !!(depayUrl && paymentCfg?.token)
+  const showManual = !depayAvailable || manual
+  const widgetFailed = t('درگاه پرداخت بارگذاری نشد؛ پرداخت دستی را انجام بده.', 'The payment widget could not be loaded — use the manual payment below.')
+
+  /* Official DePay widget: DePayWidgets.Payment({ integration, payload }).
+     The payload carries only the order id; DePay then asks OUR server for the
+     accepted payment (chain, token, amount, receiver — signed), so the browser
+     can never choose the price or receiver. The widget's own success is not
+     trusted: the signed callback + on-chain verification decide, and this page
+     learns the result by polling. */
+  const openDepay = async (orderId: string) => {
+    if (!depayUrl) return
+    const w = window as any
+    if (!w.DePayWidgets) {
+      await new Promise<void>((resolve, reject) => {
+        const el = document.createElement('script')
+        el.src = depayUrl
+        /* the approved bundle is pinned by hash: a changed or tampered file never executes */
+        el.integrity = rc.depayWidgetIntegrity as string
+        el.crossOrigin = 'anonymous'
+        el.dataset.ofDepay = '1'
+        el.onload = () => resolve()
+        el.onerror = () => { el.remove(); reject(new Error('depay_load_failed')) }
+        document.head.appendChild(el)
+      })
+    }
+    if (!w.DePayWidgets?.Payment) throw new Error('depay_unavailable')
+    setWidgetOpen(true)
+    void Promise.resolve(w.DePayWidgets.Payment({ integration: rc.depayIntegrationId, payload: { orderId } }))
+      .catch(() => { setError(widgetFailed); setManual(true) })
+  }
+  const buyChallenge = async () => {
+    setError(null)
     try {
-      const w = window as any
-      if (!w.DePayWidgets) {
-        await new Promise<void>((resolve, reject) => {
-          const s = document.createElement('script')
-          s.src = depayUrl
-          s.dataset.ofDepay = '1'
-          s.onload = () => resolve()
-          s.onerror = () => reject(new Error('depay_load_failed'))
-          document.head.appendChild(s)
-        })
-      }
-      const widgets = w.DePayWidgets
-      if (widgets?.payment) {
-        const blockchain = paymentCfg.chainId === 42161 ? 'arbitrum' : 'ethereum'
-        void widgets.payment({
-          accept: [{
-            blockchain,
-            amount: payment.amount,
-            token: paymentCfg.token || '0x0000000000000000000000000000000000000000',
-            receiver: payment.receiver,
-          }],
-        })
-      } else setError(t('درگاه پرداخت بارگذاری نشد؛ پرداخت دستی را انجام بده.', 'Payment widget failed to load; use the manual payment below.'))
-    } catch {
-      setError(t('درگاه پرداخت بارگذاری نشد؛ پرداخت دستی را انجام بده.', 'Payment widget failed to load; use the manual payment below.'))
-    } finally { setBusy(false) }
+      const o = order && order.status === 'pending' ? order : await createOrder()
+      if (!o) return
+      setBusy(true)
+      await openDepay(o.id)
+    } catch { setError(widgetFailed); setManual(true) } finally { setBusy(false) }
   }
 
   return createPortal(
@@ -226,9 +312,15 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
 
         {/* ---- create order ---- */}
         {authenticated && paymentsEnabled && !order && !result && (
-          <button className="button full" disabled={busy || !plan} onClick={createOrder}>
-            {busy ? '…' : t('ساخت سفارش و دریافت آدرس پرداخت', 'Create order & get payment address')}
-          </button>
+          depayAvailable ? (
+            <button className="button full" disabled={busy || !plan} onClick={buyChallenge}>
+              {busy ? '…' : t('خرید چالش', 'Buy Challenge')}
+            </button>
+          ) : (
+            <button className="button full" disabled={busy || !plan} onClick={() => { void createOrder() }}>
+              {busy ? '…' : t('ساخت سفارش و دریافت آدرس پرداخت', 'Create order & get payment address')}
+            </button>
+          )
         )}
 
         {/* ---- pay ---- */}
@@ -236,30 +328,36 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
           <div className="of-checkout-pay">
             {order.status === 'pending' ? (
               <>
-                <p className="of-checkout-step">{t('۱. مبلغ دقیق را به این آدرس بفرست', '1. Send the exact amount to this address')}:</p>
-                <div className="of-checkout-addr">
-                  <code dir="ltr">{payment?.receiver}</code>
-                  <button className="of-profile-plainbtn" onClick={() => void navigator.clipboard?.writeText(payment?.receiver || '')}>
-                    {t('کپی', 'Copy')}
-                  </button>
-                </div>
+                {showManual && <>
+                  <p className="of-checkout-step">{t('۱. مبلغ دقیق را به این آدرس بفرست', '1. Send the exact amount to this address')}:</p>
+                  <div className="of-checkout-addr">
+                    <code dir="ltr">{payment?.receiver}</code>
+                    <button className="of-profile-plainbtn" onClick={() => void navigator.clipboard?.writeText(payment?.receiver || '')}>
+                      {t('کپی', 'Copy')}
+                    </button>
+                  </div>
+                </>}
                 <div className="of-checkout-meta">
                   <span>{t('مبلغ', 'Amount')}: <b dir="ltr">{payment ? fmtMoney(order.price_usd) : '—'}</b></span>
                   <span>{t('زنجیره', 'Chain')}: <b>{CHAIN_LABEL[payment?.chainId || 0] || payment?.chainId}</b></span>
-                  <span>{t('دارایی', 'Asset')}: <b dir="ltr">{payment?.token ? 'Token' : 'ETH'}</b></span>
+                  <span>{t('دارایی', 'Asset')}: <b dir="ltr">{payment?.token ? 'USD stablecoin' : 'test ETH'}</b></span>
                 </div>
-                {depayUrl && payment && (
-                  <button className="button full" disabled={busy} onClick={openDepay}>
-                    {t('پرداخت با DePay', 'Pay with DePay')}
+                {depayAvailable && payment && (
+                  <button className="button full" disabled={busy} onClick={buyChallenge}>
+                    {widgetOpen ? t('بازکردن دوبارهٔ درگاه پرداخت', 'Reopen payment widget') : t('خرید چالش', 'Buy Challenge')}
                   </button>
                 )}
-                <p className="of-checkout-step">{t('۲. پس از پرداخت، هش تراکنش را وارد کن', '2. After paying, enter the transaction hash')}:</p>
-                <input dir="ltr" className="of-checkout-tx" placeholder="0x…" value={txHash}
-                  onChange={e => setTxHash(e.target.value)} spellCheck={false} />
+                {waiting && <p className="of-checkout-status" role="status">{waiting}</p>}
+                {attemptError && <p className="of-profile-error" role="alert">{attemptError}</p>}
+                {showManual && <>
+                  <p className="of-checkout-step">{t('۲. پس از پرداخت، هش تراکنش را وارد کن', '2. After paying, enter the transaction hash')}:</p>
+                  <input dir="ltr" className="of-checkout-tx" placeholder="0x…" value={txHash}
+                    onChange={e => setTxHash(e.target.value)} spellCheck={false} />
+                </>}
                 <div className="of-checkout-actions">
-                  <button className="button" disabled={busy || !/^0x[0-9a-fA-F]{64}$/.test(txHash.trim())} onClick={verify}>
+                  {showManual && <button className="button" disabled={busy || !/^0x[0-9a-fA-F]{64}$/.test(txHash.trim())} onClick={verify}>
                     {busy ? '…' : t('تأیید پرداخت', 'Verify payment')}
-                  </button>
+                  </button>}
                   <button className="of-profile-plainbtn" disabled={busy}
                     onClick={() => { void apiFetch(`/purchases/orders/${order.id}/cancel`, { method: 'POST', body: '{}' }); onClose() }}>
                     {t('لغو سفارش', 'Cancel order')}
@@ -275,7 +373,7 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
         {/* ---- success ---- */}
         {result && (
           <div className="of-checkout-done">
-            <p>✓ {t('پرداخت تأیید شد و چالش شما ساخته شد.', 'Payment verified — your challenge is provisioned.')}</p>
+            <p>✓ {t('پرداخت موفق بود؛ چالش شما آماده است.', 'Payment successful — your challenge is ready.')}</p>
             <div className="of-checkout-meta">
               <span>{t('شمارهٔ فاکتور', 'Invoice')}: <b dir="ltr">{result.invoiceNumber}</b></span>
               <span>{t('شناسهٔ چالش', 'Challenge')}: <b dir="ltr">{String(result.challengeId).slice(0, 8)}…</b></span>

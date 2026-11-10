@@ -130,10 +130,19 @@ services:
       - key: PURCHASE_PAYMENT_TOKEN
         sync: false             # optional ERC-20 payment token contract
       - key: PURCHASE_PAYMENT_DECIMALS
-        value: "18"             # used only when PURCHASE_PAYMENT_TOKEN is set
+        sync: false             # optional; must equal the token's decimals() when set —
+                                # unset reads decimals from the contract (no silent default)
+      - key: PURCHASE_RPC_URL
+        sync: false             # dedicated RPC endpoint for the payment chain (secret);
+                                # required in production, no public-RPC fallback
+      - key: PURCHASE_ROUTER_ADDRESSES
+        sync: false             # optional comma-separated approved payment routers
+                                # (e.g. the DePay Payment Router on the configured chain)
       - key: PURCHASE_PAYMENT_MIN_CONFIRMATIONS
-        sync: false             # optional finality depth before a payment provisions
-                                # (unset = single receipt; e.g. 12 on mainnet)
+        sync: false             # finality depth before a payment provisions
+                                # (unset = 12 in production, 0 elsewhere)
+      - key: DEPAY_CALLBACK_PUBLIC_KEY
+        sync: false             # optional DePay callback public key (PEM); unset = callback route off
       - key: PURCHASE_LATE_GRACE_MINUTES
         value: "60"             # minutes after order expiry a verified payment still pays
       - key: ADMIN_API_TOKEN
@@ -147,7 +156,18 @@ services:
       - key: VITE_DEPAY_WIDGET
         sync: false             # optional DePay widget toggle (1 = enabled)
       - key: VITE_DEPAY_WIDGET_URL
-        sync: false             # approved DePay widget bundle URL; widget stays off without it
+        sync: false             # approved DePay widget bundle URL (https); widget stays off without it
+      - key: VITE_DEPAY_WIDGET_INTEGRITY
+        sync: false             # Subresource Integrity hash (sha384-…) of that exact bundle
+      - key: VITE_DEPAY_INTEGRATION_ID
+        sync: false             # public DePay integration id from app.depay.com
+      - key: DEPAY_CONFIG_PRIVATE_KEY
+        sync: false             # secret: RSA private key (PEM) that signs the dynamic configuration
+                                # DePay requests; its public half is stored on app.depay.com
+      - key: CSP_EXTRA_SCRIPT_SRC
+        sync: false             # optional https origins allowed to serve scripts (DePay widget)
+      - key: CSP_EXTRA_FRAME_SRC
+        sync: false             # optional https origins allowed in frames (DePay widget)
       - key: SIM_TEST_MODE
         value: ""               # internal test seam — never enabled in prod
       # ---- Economy / Openfund Treasury (docs/economy/TREASURY.md) ----
