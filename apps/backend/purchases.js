@@ -424,7 +424,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
   const orderView = async (id, userId) => {
     const { rows } = await pool.query(
       `SELECT o.id, o.status, o.lifecycle_state, o.account_size_usd, o.list_price_usd, o.discount_usd, o.price_usd,
-              o.payment_required, o.currency, o.created_at, o.expires_at, o.paid_at,
+              o.payment_required, o.payment_method, o.currency, o.created_at, o.expires_at, o.paid_at,
               p.slug AS plan_slug, p.name AS plan_name, c.code AS coupon_code
          FROM purchase_orders o JOIN challenge_plans p ON p.id=o.challenge_plan_id
          LEFT JOIN coupons c ON c.id=o.coupon_id
@@ -492,10 +492,10 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
   /* 2a — authoritative quote (plan price + optional coupon); creates nothing */
   router.post('/purchases/quote', requireAuth, limit(30), wrap(async (req, res) => {
     const { planSlug, accountSize, couponCode } = req.body || {}
-    const { size, listPrice } = await planPrice(pool, planSlug, accountSize)
+    const { plan, size, listPrice } = await planPrice(pool, planSlug, accountSize)
     const code = couponArg(couponCode)
     const pricing = code
-      ? (await evaluateCoupon(pool, { code, userId: req.user.user_id, walletAddress: req.user.wallet_address, planSlug, accountSize: size, listPriceUsd: listPrice })).pricing
+      ? (await evaluateCoupon(pool, { code, userId: req.user.user_id, planId: plan.id, accountSize: size, listPriceUsd: listPrice })).pricing
       : applyCoupon(listPrice, null)
     res.json({ planSlug, accountSize: size, listPriceUsd: pricing.list, discountUsd: pricing.discount, priceUsd: pricing.net,
       couponCode: code, paymentRequired: Number(pricing.net) > 0, paymentsEnabled: paymentEnabled() })
@@ -533,7 +533,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
       const { plan, size, listPrice } = await planPrice(client, planSlug, accountSize)
       let coupon = null, pricing = applyCoupon(listPrice, null)
       if (code) ({ coupon, pricing } = await evaluateCoupon(client, {
-        code, userId: req.user.user_id, walletAddress: req.user.wallet_address, planSlug, accountSize: size, listPriceUsd: listPrice, lock: true }))
+        code, userId: req.user.user_id, planId: plan.id, accountSize: size, listPriceUsd: listPrice, lock: true }))
       const zero = Number(pricing.net) === 0
       /* paid orders need a complete payment configuration; zero-payment
          orders need only a valid coupon */
@@ -542,9 +542,12 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
         [`user:${req.user.user_id}`, coupon ? `coupon:${coupon.code}` : 'order_created'])
       const ins = await client.query(
         `INSERT INTO purchase_orders (user_id, challenge_plan_id, account_size_usd, list_price_usd, discount_usd, price_usd,
-                                      coupon_id, payment_required, idempotency_key)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) ON CONFLICT (user_id, idempotency_key) DO NOTHING RETURNING id`,
-        [req.user.user_id, plan.id, size.toFixed(2), pricing.list, pricing.discount, pricing.net, coupon?.id ?? null, !zero, key])
+                                      coupon_id, payment_required, payment_method, idempotency_key)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT (user_id, idempotency_key) DO NOTHING RETURNING id`,
+        [req.user.user_id, plan.id, size.toFixed(2), pricing.list, pricing.discount, pricing.net, coupon?.id ?? null, !zero,
+          /* payment method of record: a 100% coupon order has no payment; an
+             internal test coupon is recorded as such */
+          zero ? (coupon.internal ? 'internal_coupon' : 'coupon') : 'crypto', key])
       if (!ins.rows[0]) conflict = true /* same idempotency key committed concurrently */
       else {
       orderId = ins.rows[0].id
@@ -710,7 +713,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
   router.get('/purchases/history', requireAuth, wrap(async (req, res) => {
     const orders = (await pool.query(
       `SELECT o.id, o.status, o.lifecycle_state, o.account_size_usd, o.list_price_usd, o.discount_usd, o.price_usd,
-              o.payment_required, o.currency, o.created_at, o.paid_at,
+              o.payment_required, o.payment_method, o.currency, o.created_at, o.paid_at,
               p.slug AS plan_slug, p.name AS plan_name,
               (SELECT json_build_object('txHash', pm.tx_hash, 'chainId', pm.chain_id, 'verifiedAt', pm.verified_at)
                  FROM payments pm WHERE pm.purchase_order_id=o.id LIMIT 1) AS payment,

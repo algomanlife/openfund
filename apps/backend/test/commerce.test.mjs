@@ -82,14 +82,32 @@ const newUser = async () => {
 }
 const PLAN = 'standard', SIZE = 10000, LIST = 80 /* seed-plans.js */
 const order = (user, extra = {}) => call('POST', '/purchases/orders', { user, body: { planSlug: PLAN, accountSize: SIZE, ...extra } })
-const createCoupon = async (spec) => {
-  const r = await call('POST', '/admin/coupons', { admin: true, body: { code: 'T' + crypto.randomBytes(5).toString('hex').toUpperCase(), ...spec } })
-  assert.equal(r.status, 201, JSON.stringify(r.data))
-  return r.data.coupon
+const DIRECTUS_ADMIN = crypto.randomUUID() /* stands in for a directus_users id */
+const planIds = async slugs => (await pool.query('SELECT id FROM challenge_plans WHERE slug = ANY($1)', [slugs])).rows.map(r => r.id)
+/* Coupons are administered in Directus, which writes these rows of the shared
+   database; the fixture writes them the same way (no backend admin API). */
+const createCoupon = async ({ code = 'T' + crypto.randomBytes(5).toString('hex').toUpperCase(), kind, value, status = 'active',
+  maxRedemptions = null, perUserLimit = 1, planSlugs = null, accountSizes = null, products = null, allowedUsers = [], internal = false,
+  startsAt = null, expiresAt = null, user = DIRECTUS_ADMIN } = {}) => {
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+    const { rows: [c] } = await client.query(
+      `INSERT INTO coupons (code, kind, value, status, max_redemptions, per_user_limit, account_sizes, products, internal, starts_at, expires_at, user_created)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *`,
+      [code, kind, value, status, maxRedemptions, perUserLimit, accountSizes && JSON.stringify(accountSizes), products && JSON.stringify(products),
+        internal, startsAt, expiresAt, user])
+    for (const id of planSlugs ? await planIds(planSlugs) : []) await client.query('INSERT INTO coupon_challenge_plans (coupon_id, challenge_plan_id) VALUES ($1,$2)', [c.id, id])
+    for (const u of allowedUsers) await client.query('INSERT INTO coupon_allowed_users (coupon_id, user_id) VALUES ($1,$2)', [c.id, u.id])
+    await client.query('COMMIT')
+    return c
+  } catch (e) { await client.query('ROLLBACK'); throw e } finally { client.release() }
 }
 const events = async id => (await pool.query('SELECT from_state, to_state FROM purchase_order_events WHERE purchase_order_id=$1 ORDER BY id', [id])).rows
 const orderRow = async id => (await pool.query('SELECT * FROM purchase_orders WHERE id=$1', [id])).rows[0]
 const settle = () => new Promise(r => setTimeout(r, 250))
+/* DePay deliveries verify asynchronously after the 200 response: wait for the outcome */
+const until = async (fn, ms = 4000) => { const t = Date.now(); while (!(await fn()) && Date.now() - t < ms) await new Promise(r => setTimeout(r, 100)) }
 
 await pool.query(`SELECT 1 FROM challenge_plans WHERE slug=$1`, [PLAN]).then(r => { if (!r.rowCount) throw new Error('run npm run seed-plans first') })
 
@@ -120,65 +138,85 @@ test('P3 the quote is computed by the server from the plan of record and the cou
 })
 
 /* ================= coupon validation ================= */
-test('C1 coupon restrictions: unknown, disabled, not started, expired, plan, size, user-restricted', async () => {
+test('C1 coupon restrictions: unknown, inactive, revoked, not started, expired, product, model, size, customer-restricted', async () => {
   const u = await newUser()
   const q = code => call('POST', '/purchases/quote', { user: u, body: { planSlug: PLAN, accountSize: SIZE, couponCode: code } })
   assert.equal((await q('NOPE-NOPE')).data.error, 'coupon_not_found')
   assert.equal((await q('bad code!')).data.error, 'coupon_invalid')
-  const disabled = await createCoupon({ kind: 'fixed', value: 5 })
-  assert.equal((await call('POST', `/admin/coupons/${disabled.id}/disable`, { admin: true })).status, 200)
-  assert.equal((await q(disabled.code)).data.error, 'coupon_disabled')
+  assert.equal((await q((await createCoupon({ kind: 'fixed', value: 5, status: 'inactive' })).code)).data.error, 'coupon_disabled')
+  assert.equal((await q((await createCoupon({ kind: 'fixed', value: 5, status: 'revoked' })).code)).data.error, 'coupon_revoked')
   assert.equal((await q((await createCoupon({ kind: 'fixed', value: 5, startsAt: new Date(Date.now() + 864e5).toISOString() })).code)).data.error, 'coupon_not_started')
   assert.equal((await q((await createCoupon({ kind: 'fixed', value: 5, expiresAt: new Date(Date.now() - 1000).toISOString() })).code)).data.error, 'coupon_expired')
+  assert.equal((await q((await createCoupon({ kind: 'fixed', value: 5, products: ['perpetual'] })).code)).data.error, 'coupon_not_applicable')
   assert.equal((await q((await createCoupon({ kind: 'fixed', value: 5, planSlugs: ['instant'] })).code)).data.error, 'coupon_not_applicable')
   assert.equal((await q((await createCoupon({ kind: 'fixed', value: 5, accountSizes: [5000] })).code)).data.error, 'coupon_not_applicable')
-  const mine = await createCoupon({ kind: 'fixed', value: 5, allowedWallets: [rndAddr()] })
+  const mine = await createCoupon({ kind: 'fixed', value: 5, allowedUsers: [await newUser()] })
   assert.equal((await q(mine.code)).data.error, 'coupon_not_found', 'restricted coupons are invisible to other users')
-  const ok = await createCoupon({ kind: 'fixed', value: 5, planSlugs: [PLAN], accountSizes: [SIZE], allowedWallets: [u.wallet] })
-  assert.equal((await q(ok.code)).data.priceUsd, '75.00')
+  const ok = await createCoupon({ kind: 'fixed', value: 5, products: ['prop'], planSlugs: [PLAN], accountSizes: [String(SIZE)], allowedUsers: [u] })
+  assert.equal((await q(ok.code.toLowerCase())).data.priceUsd, '75.00')
 })
 
-test('C2 internal testing coupons: at most two named test wallets and a finite limit; nobody else can use them', async () => {
-  const bad = [
-    { internal: true },
-    { internal: true, allowedWallets: [rndAddr()] },
-    { internal: true, allowedWallets: [rndAddr(), rndAddr(), rndAddr()], maxRedemptions: 2 },
-    { kind: 'percent', value: 101 },
-  ]
-  for (const extra of bad) {
-    const r = await call('POST', '/admin/coupons', { admin: true, body: { code: 'BAD' + crypto.randomBytes(4).toString('hex').toUpperCase(), kind: 'percent', value: 100, ...extra } })
-    assert.equal(r.status, 400, JSON.stringify(extra))
-  }
-  const [a, b, outsider] = [await newUser(), await newUser(), await newUser()]
-  const c = await createCoupon({ kind: 'percent', value: 100, internal: true, allowedWallets: [a.wallet, b.wallet], maxRedemptions: 2 })
-  assert.equal((await order(outsider, { couponCode: c.code })).data.error, 'coupon_not_found')
-  const ra = await order(a, { couponCode: c.code }); assert.equal(ra.status, 200); assert.equal(ra.data.order.lifecycle_state, 'provisioned')
-  const rb = await order(b, { couponCode: c.code }); assert.equal(rb.status, 200)
-  assert.equal((await order(a, { couponCode: c.code })).data.error, 'coupon_exhausted')
+test('C2 internal testing coupons: 1–2 named test accounts and a finite limit; nobody else can use them', async () => {
+  await assert.rejects(createCoupon({ kind: 'percent', value: 100, internal: true }), /coupons_internal_limited/, 'internal needs a usage limit')
+  await assert.rejects(createCoupon({ kind: 'percent', value: 101 }), /coupons_percent_range/)
+  const [a, b, c, outsider] = [await newUser(), await newUser(), await newUser(), await newUser()]
+  await assert.rejects(createCoupon({ kind: 'percent', value: 100, internal: true, maxRedemptions: 3, allowedUsers: [a, b, c] }), /internal_coupon_max_two_test_accounts/)
+  const orphan = await createCoupon({ kind: 'percent', value: 100, internal: true, maxRedemptions: 1 })
+  assert.equal((await order(a, { couponCode: orphan.code })).data.error, 'coupon_not_found', 'an internal coupon without test accounts is unusable')
+  const cp = await createCoupon({ kind: 'percent', value: 100, internal: true, allowedUsers: [a, b], maxRedemptions: 2 })
+  assert.equal((await order(outsider, { couponCode: cp.code })).data.error, 'coupon_not_found')
+  const ra = await order(a, { couponCode: cp.code })
+  assert.equal(ra.status, 200); assert.deepEqual([ra.data.order.lifecycle_state, ra.data.order.payment_method], ['provisioned', 'internal_coupon'])
+  assert.equal((await order(b, { couponCode: cp.code })).status, 200)
+  assert.equal((await order(a, { couponCode: cp.code })).data.error, 'coupon_exhausted')
 })
 
-test('C3 admin: authentication, named actor, edit, disable, immutable pricing fields, redemptions, orders and audit', async () => {
-  assert.equal((await call('GET', '/admin/coupons')).status, 403)
-  assert.equal((await call('POST', '/admin/coupons', { body: {}, headers: { Authorization: `Bearer ${ADMIN}` } })).data.error, 'admin_actor_required')
-  const c = await createCoupon({ kind: 'percent', value: 10, maxRedemptions: 5 })
-  assert.equal((await call('POST', '/admin/coupons', { admin: true, body: { code: c.code, kind: 'fixed', value: 1 } })).data.error, 'code_exists')
-  assert.equal((await call('PATCH', `/admin/coupons/${c.id}`, { admin: true, body: { value: 50 } })).data.error, 'value_immutable')
-  const e = await call('PATCH', `/admin/coupons/${c.id}`, { admin: true, body: { maxRedemptions: 9, description: 'launch' } })
-  assert.equal(e.status, 200); assert.equal(e.data.coupon.maxRedemptions, 9)
+test('C3 audit: Directus writes are attributed to the Directus user; deactivate, revoke (final), pricing lock, read API', async () => {
+  const editor = crypto.randomUUID()
+  const c = await createCoupon({ kind: 'percent', value: 10, maxRedemptions: 5, user: editor })
+  await pool.query('UPDATE coupons SET max_redemptions=9, name=$2, user_updated=$3 WHERE id=$1', [c.id, 'Launch', editor])
+  await pool.query(`UPDATE coupons SET status='inactive', user_updated=$2 WHERE id=$1`, [c.id, editor])
+  await pool.query(`UPDATE coupons SET status='active', user_updated=$2 WHERE id=$1`, [c.id, editor])
   const u = await newUser()
   const o = await order(u, { couponCode: c.code })
   assert.equal(o.status, 200); assert.equal(o.data.order.price_usd, '72.00'); assert.equal(o.data.order.coupon_code, c.code)
-  assert.equal((await call('POST', `/admin/coupons/${c.id}/disable`, { admin: true })).data.coupon.status, 'disabled')
-  const red = (await call('GET', `/admin/coupons/${c.id}/redemptions`, { admin: true })).data.redemptions
-  assert.equal(red.length, 1); assert.equal(red[0].status, 'reserved'); assert.equal(red[0].purchase_order_id, o.data.order.id)
-  assert.equal((await call('GET', `/admin/coupons/${c.id}/orders`, { admin: true })).data.orders[0].id, o.data.order.id)
-  const audit = (await call('GET', `/admin/coupons/${c.id}/audit`, { admin: true })).data.audit
-  assert.deepEqual(audit.map(a => a.action), ['created', 'updated', 'disabled'])
-  assert.equal(audit[0].actor, 'admin:commerce-test')
+  assert.equal((await pool.query('SELECT uses_reserved FROM coupons WHERE id=$1', [c.id])).rows[0].uses_reserved, 1, 'usage counter visible in Directus')
+  await assert.rejects(pool.query('UPDATE coupons SET value=50 WHERE id=$1', [c.id]), /coupon_pricing_locked/)
+  await pool.query(`UPDATE coupons SET status='revoked', user_updated=$2 WHERE id=$1`, [c.id, editor])
+  await assert.rejects(pool.query(`UPDATE coupons SET status='active' WHERE id=$1`, [c.id]), /coupon_revoked_is_final/)
+  const audit = (await pool.query('SELECT actor, action FROM coupon_audit WHERE coupon_id=$1 ORDER BY id', [c.id])).rows
+  assert.deepEqual(audit.map(a => a.action), ['created', 'updated', 'deactivated', 'activated', 'revoked'])
+  assert.ok(audit.every(a => a.actor === `directus:${editor}`), JSON.stringify(audit))
   await assert.rejects(pool.query('UPDATE coupon_audit SET action=$1 WHERE coupon_id=$2', ['x', c.id]), /append_only/)
+  /* operator read API (Directus is the editing UI) */
+  assert.equal((await call('GET', '/admin/coupons')).status, 403)
+  assert.equal((await call('GET', `/admin/coupons/${c.id}/redemptions`, { admin: true })).data.redemptions[0].purchase_order_id, o.data.order.id)
+  assert.equal((await call('GET', `/admin/coupons/${c.id}/orders`, { admin: true })).data.orders[0].id, o.data.order.id)
+  assert.equal((await call('GET', `/admin/coupons/${c.id}/audit`, { admin: true })).data.audit.length, 5)
   /* cancelling the order releases the reservation */
   assert.equal((await call('POST', `/purchases/orders/${o.data.order.id}/cancel`, { user: u, body: {} })).status, 200)
   assert.equal((await pool.query('SELECT status FROM coupon_redemptions WHERE purchase_order_id=$1', [o.data.order.id])).rows[0].status, 'released')
+  assert.equal((await pool.query('SELECT uses_reserved FROM coupons WHERE id=$1', [c.id])).rows[0].uses_reserved, 0)
+})
+
+test('C4 relation edits (challenge models, allowed customers) are audited; codes are normalized', async () => {
+  const tag = crypto.randomBytes(3).toString('hex')
+  const c = await createCoupon({ code: `  mixed-Case_${tag} `, kind: 'fixed', value: 1 })
+  assert.equal(c.code, `MIXED-CASE_${tag.toUpperCase()}`)
+  const u = await newUser()
+  await pool.query('INSERT INTO coupon_allowed_users (coupon_id, user_id) VALUES ($1,$2)', [c.id, u.id])
+  await pool.query('DELETE FROM coupon_allowed_users WHERE coupon_id=$1', [c.id])
+  await pool.query('INSERT INTO coupon_challenge_plans (coupon_id, challenge_plan_id) SELECT $1, id FROM challenge_plans WHERE slug=$2', [c.id, PLAN])
+  const actions = (await pool.query('SELECT action FROM coupon_audit WHERE coupon_id=$1 ORDER BY id', [c.id])).rows.map(r => r.action)
+  assert.deepEqual(actions, ['created', 'allowed_user_insert', 'allowed_user_delete', 'challenge_model_insert'])
+})
+
+test('C5 expiry while an order is open: the coupon cannot start new orders after it expires', async () => {
+  const c = await createCoupon({ kind: 'fixed', value: 10, expiresAt: new Date(Date.now() + 1500).toISOString() })
+  const u = await newUser()
+  assert.equal((await order(u, { couponCode: c.code })).status, 200)
+  await new Promise(r => setTimeout(r, 1700))
+  assert.equal((await order(await newUser(), { couponCode: c.code })).data.error, 'coupon_expired')
 })
 
 /* ================= zero-payment flow ================= */
@@ -188,7 +226,7 @@ test('Z1 a 100% coupon provisions through the zero-payment flow: no payment row,
   const r = await order(u, { couponCode: c.code, idempotencyKey: 'zero-1' })
   assert.equal(r.status, 200, JSON.stringify(r.data))
   const o = r.data.order
-  assert.deepEqual([o.status, o.lifecycle_state, o.price_usd, o.payment_required], ['paid', 'provisioned', '0.00', false])
+  assert.deepEqual([o.status, o.lifecycle_state, o.price_usd, o.payment_required, o.payment_method], ['paid', 'provisioned', '0.00', false, 'coupon'])
   assert.equal(r.data.payment, null, 'no payment instructions for a zero-payment order')
   assert.ok(r.data.result.challengeId); assert.ok(r.data.result.invoiceNumber); assert.equal(r.data.result.paymentId, null)
   assert.equal((await pool.query('SELECT count(*)::int n FROM payments WHERE purchase_order_id=$1', [o.id])).rows[0].n, 0)
@@ -220,6 +258,28 @@ test('Z2 a zero-payment order is atomic: a provisioning failure leaves no order,
   assert.equal((await pool.query('SELECT count(*)::int n FROM coupon_redemptions WHERE user_id=$1', [u.id])).rows[0].n, 0)
   const retry = await order(u, { couponCode: c.code })
   assert.equal(retry.data.order.lifecycle_state, 'provisioned', 'the user can simply retry after recovery')
+})
+
+test('Z3 a 100% coupon order earns no commission, keeps the first-paid-purchase slot and is not revenue', async () => {
+  const amb = await newUser(), cust = await newUser()
+  const { rows: [app] } = await pool.query(`INSERT INTO partner_applications (user_id, role, status, contact_email, payload, terms_version)
+    VALUES ($1,'ambassador','approved','a@example.test','{}','ambassador-2026-11') RETURNING id`, [amb.id])
+  const refCode = 'AMB' + crypto.randomBytes(4).toString('hex').toUpperCase()
+  await pool.query(`INSERT INTO ambassador_profiles (user_id, application_id, referral_code, approved_by) VALUES ($1,$2,$3,'test')`, [amb.id, app.id, refCode])
+  await pool.query(`INSERT INTO ambassador_attributions (referred_user_id, ambassador_user_id, referral_code, source, attributed_at)
+    VALUES ($1,$2,$3,'signup', now() - interval '1 minute')`, [cust.id, amb.id, refCode])
+  const before = (await pool.query(`SELECT coalesce(sum(price_usd),0) AS g FROM purchase_orders WHERE status='paid' AND payment_required`)).rows[0].g
+  const free = await createCoupon({ kind: 'percent', value: 100, internal: true, maxRedemptions: 1, allowedUsers: [cust] })
+  const z = await order(cust, { couponCode: free.code })
+  assert.equal(z.data.order.payment_method, 'internal_coupon')
+  assert.equal((await pool.query('SELECT count(*)::int n FROM referral_commissions WHERE purchase_order_id=$1', [z.data.order.id])).rows[0].n, 0, 'no commission on a free order')
+  chain = { mode: 'ok' }
+  const paid = (await order(cust)).data.order
+  assert.equal((await call('POST', '/purchases/verify', { user: cust, body: { orderId: paid.id, txHash: rndHash() } })).status, 200)
+  const earned = (await pool.query(`SELECT amount_usd FROM referral_commissions WHERE purchase_order_id=$1 AND entry_type='earned'`, [paid.id])).rows
+  assert.deepEqual(earned.map(r => r.amount_usd), ['8.00'], 'the first PAID purchase still earns 10%')
+  const after = (await pool.query(`SELECT coalesce(sum(price_usd),0) AS g FROM purchase_orders WHERE status='paid' AND payment_required`)).rows[0].g
+  assert.equal(Number(after) - Number(before), 80, 'only the paid order counts as revenue')
 })
 
 /* ================= concurrency ================= */

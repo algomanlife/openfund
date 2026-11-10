@@ -1248,31 +1248,57 @@ CREATE INDEX IF NOT EXISTS idx_payment_attempts_tx ON payment_attempts (chain_id
 -- compatibility field and `lifecycle_state` is the explicit state.
 -- ------------------------------------------------------------------
 
+/* Coupons are administered in Directus (Data Studio, role "Commerce Admin")
+   on these tables of the shared database; the backend reads them at checkout
+   and stays the only authority for validation, pricing and redemption.
+   Directus-friendly types: JSON instead of PostgreSQL arrays, M2M junction
+   tables for challenge models and allowed test accounts, and the Directus
+   user stamps (user_created / user_updated: UUIDs of directus_users, no FK
+   because the backend migrates before Directus bootstraps). */
 CREATE TABLE IF NOT EXISTS coupons (
   id               uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   code             text NOT NULL CHECK (code = upper(code) AND code ~ '^[A-Z0-9][A-Z0-9_-]{2,39}$'),
+  name             text,
   description      text,
   kind             text NOT NULL CHECK (kind IN ('percent','fixed')),
   value            numeric(12,2) NOT NULL CHECK (value > 0),
-  status           text NOT NULL DEFAULT 'active' CHECK (status IN ('active','disabled')),
+  status           text NOT NULL DEFAULT 'inactive' CHECK (status IN ('active','inactive','revoked')),
   max_redemptions  integer CHECK (max_redemptions IS NULL OR max_redemptions > 0),
   per_user_limit   integer NOT NULL DEFAULT 1 CHECK (per_user_limit > 0),
-  plan_slugs       text[],               -- NULL = every purchasable plan
-  account_sizes    numeric(12,2)[],      -- NULL = every account size
-  allowed_wallets  text[],               -- NULL = any authenticated user (lowercase addresses)
+  products         jsonb CHECK (products IS NULL OR jsonb_typeof(products) = 'array'),       -- NULL = every product (checkout sells "prop" challenges)
+  account_sizes    jsonb CHECK (account_sizes IS NULL OR jsonb_typeof(account_sizes) = 'array'), -- NULL = every account size
   internal         boolean NOT NULL DEFAULT false,
   starts_at        timestamptz,
   expires_at       timestamptz,
-  created_by       text NOT NULL,
+  created_by       text NOT NULL DEFAULT 'directus',
+  user_created     uuid,
+  user_updated     uuid,
   created_at       timestamptz NOT NULL DEFAULT now(),
   updated_at       timestamptz NOT NULL DEFAULT now(),
+  uses_reserved    integer NOT NULL DEFAULT 0,   -- display counters maintained by trigger; limits are
+  uses_consumed    integer NOT NULL DEFAULT 0,   -- enforced from coupon_redemptions under a row lock
   CONSTRAINT coupons_percent_range CHECK (kind <> 'percent' OR value <= 100),
   CONSTRAINT coupons_window CHECK (expires_at IS NULL OR starts_at IS NULL OR expires_at > starts_at),
-  /* internal testing coupons: bound to at most two named test wallets and a
-     finite usage limit — never redeemable by anyone else, never unlimited */
-  CONSTRAINT coupons_internal_bounded CHECK (NOT internal OR (allowed_wallets IS NOT NULL
-    AND cardinality(allowed_wallets) BETWEEN 1 AND 2 AND max_redemptions IS NOT NULL)),
+  /* internal testing coupons always carry a finite usage limit; the allowed
+     test accounts (1–2) are enforced by trigger and at checkout */
+  CONSTRAINT coupons_internal_limited CHECK (NOT internal OR max_redemptions IS NOT NULL),
   CONSTRAINT coupons_code_unique UNIQUE (code)
+);
+
+/* eligible challenge models (M2M → challenge_plans); no rows = every model */
+CREATE TABLE IF NOT EXISTS coupon_challenge_plans (
+  id                 serial PRIMARY KEY,
+  coupon_id          uuid NOT NULL REFERENCES coupons(id) ON DELETE CASCADE,
+  challenge_plan_id  uuid NOT NULL REFERENCES challenge_plans(id),
+  UNIQUE (coupon_id, challenge_plan_id)
+);
+/* allowed customers (M2M → openfund_users); no rows = any signed-in customer.
+   Internal test coupons need 1–2 rows (more is rejected by trigger). */
+CREATE TABLE IF NOT EXISTS coupon_allowed_users (
+  id         serial PRIMARY KEY,
+  coupon_id  uuid NOT NULL REFERENCES coupons(id) ON DELETE CASCADE,
+  user_id    uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  UNIQUE (coupon_id, user_id)
 );
 
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS lifecycle_state text;
@@ -1332,6 +1358,110 @@ DROP TRIGGER IF EXISTS coupon_audit_append_only ON coupon_audit;
 CREATE TRIGGER coupon_audit_append_only BEFORE UPDATE OR DELETE ON coupon_audit
 FOR EACH ROW EXECUTE FUNCTION reject_mutation();
 
+/* Coupon integrity — identical for every writer (Directus Data Studio, the
+   backend admin API, SQL): normalized codes, final revocation, pricing locked
+   once redeemed, internal coupons limited to two test accounts, display
+   counters, and an append-only audit row for every administrative change. */
+CREATE OR REPLACE FUNCTION coupon_guard() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  NEW.code := upper(btrim(NEW.code));
+  IF TG_OP = 'INSERT' THEN RETURN NEW; END IF;
+  /* counter maintenance (trigger below) is not an administrative change */
+  IF (to_jsonb(NEW) - ARRAY['uses_reserved','uses_consumed','updated_at']) = (to_jsonb(OLD) - ARRAY['uses_reserved','uses_consumed','updated_at']) THEN
+    RETURN NEW;
+  END IF;
+  IF OLD.status = 'revoked' THEN
+    RAISE EXCEPTION 'coupon_revoked_is_final' USING ERRCODE = '23514';
+  END IF;
+  IF (NEW.code, NEW.kind, NEW.value) IS DISTINCT FROM (OLD.code, OLD.kind, OLD.value)
+     AND EXISTS (SELECT 1 FROM coupon_redemptions WHERE coupon_id = OLD.id) THEN
+    RAISE EXCEPTION 'coupon_pricing_locked: code, type and value cannot change after the first redemption' USING ERRCODE = '23514';
+  END IF;
+  IF NEW.internal AND (SELECT count(*) FROM coupon_allowed_users WHERE coupon_id = NEW.id) > 2 THEN
+    RAISE EXCEPTION 'internal_coupon_max_two_test_accounts' USING ERRCODE = '23514';
+  END IF;
+  NEW.updated_at := now();
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS coupon_guard ON coupons;
+CREATE TRIGGER coupon_guard BEFORE INSERT OR UPDATE ON coupons FOR EACH ROW EXECUTE FUNCTION coupon_guard();
+
+CREATE OR REPLACE FUNCTION coupon_audit_actor(directus_user uuid) RETURNS text LANGUAGE sql STABLE AS $$
+  SELECT coalesce(nullif(current_setting('openfund.actor', true), ''),
+                  CASE WHEN directus_user IS NOT NULL THEN 'directus:' || directus_user::text END,
+                  'database:' || current_user)
+$$;
+
+CREATE OR REPLACE FUNCTION coupon_audit_write() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE before_j jsonb; after_j jsonb; act text;
+BEGIN
+  after_j := to_jsonb(NEW) - ARRAY['uses_reserved','uses_consumed'];
+  IF TG_OP = 'INSERT' THEN
+    INSERT INTO coupon_audit (coupon_id, actor, action, after) VALUES (NEW.id, coupon_audit_actor(NEW.user_created), 'created', after_j);
+    RETURN NEW;
+  END IF;
+  before_j := to_jsonb(OLD) - ARRAY['uses_reserved','uses_consumed'];
+  IF (before_j - 'updated_at') = (after_j - 'updated_at') THEN RETURN NEW; END IF;
+  act := CASE WHEN NEW.status IS DISTINCT FROM OLD.status THEN
+           CASE NEW.status WHEN 'active' THEN 'activated' WHEN 'inactive' THEN 'deactivated' ELSE 'revoked' END
+         ELSE 'updated' END;
+  INSERT INTO coupon_audit (coupon_id, actor, action, before, after)
+  VALUES (NEW.id, coupon_audit_actor(coalesce(NEW.user_updated, NEW.user_created)), act, before_j, after_j);
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS coupon_audit_write ON coupons;
+CREATE TRIGGER coupon_audit_write AFTER INSERT OR UPDATE ON coupons FOR EACH ROW EXECUTE FUNCTION coupon_audit_write();
+
+/* eligibility relations are audited too, and internal coupons accept at most
+   two allowed test accounts */
+CREATE OR REPLACE FUNCTION coupon_relation_audit() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE r record; cid uuid; is_internal boolean; directus_user uuid;
+BEGIN
+  IF TG_OP = 'DELETE' THEN r := OLD; ELSE r := NEW; END IF;
+  cid := r.coupon_id;
+  SELECT internal, coalesce(user_updated, user_created) INTO is_internal, directus_user FROM coupons WHERE id = cid;
+  IF NOT FOUND THEN RETURN r; END IF; /* coupon itself being deleted */
+  IF TG_OP = 'INSERT' AND TG_TABLE_NAME = 'coupon_allowed_users' AND is_internal
+     AND (SELECT count(*) FROM coupon_allowed_users WHERE coupon_id = cid) > 2 THEN
+    RAISE EXCEPTION 'internal_coupon_max_two_test_accounts' USING ERRCODE = '23514';
+  END IF;
+  INSERT INTO coupon_audit (coupon_id, actor, action, after)
+  VALUES (cid, coupon_audit_actor(directus_user),
+          CASE TG_TABLE_NAME WHEN 'coupon_allowed_users' THEN 'allowed_user_' ELSE 'challenge_model_' END || lower(TG_OP),
+          to_jsonb(r) - 'id');
+  RETURN r;
+END $$;
+DROP TRIGGER IF EXISTS coupon_allowed_users_audit ON coupon_allowed_users;
+CREATE TRIGGER coupon_allowed_users_audit AFTER INSERT OR DELETE ON coupon_allowed_users FOR EACH ROW EXECUTE FUNCTION coupon_relation_audit();
+DROP TRIGGER IF EXISTS coupon_challenge_plans_audit ON coupon_challenge_plans;
+CREATE TRIGGER coupon_challenge_plans_audit AFTER INSERT OR DELETE ON coupon_challenge_plans FOR EACH ROW EXECUTE FUNCTION coupon_relation_audit();
+
+/* usage counters shown in Directus (display only) */
+CREATE OR REPLACE FUNCTION coupon_usage_counters() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  UPDATE coupons c SET
+    uses_reserved = (SELECT count(*) FROM coupon_redemptions r WHERE r.coupon_id = c.id AND r.status = 'reserved'),
+    uses_consumed = (SELECT count(*) FROM coupon_redemptions r WHERE r.coupon_id = c.id AND r.status = 'consumed')
+   WHERE c.id = NEW.coupon_id;
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS coupon_usage_counters ON coupon_redemptions;
+CREATE TRIGGER coupon_usage_counters AFTER INSERT OR UPDATE OF status ON coupon_redemptions FOR EACH ROW EXECUTE FUNCTION coupon_usage_counters();
+
+/* payment method of record: an on-chain payment, or a coupon (a 100%
+   discount); internal test coupons are recorded as such and, like every
+   zero-payment order, are excluded from revenue reporting and commissions */
+ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS payment_method text;
+UPDATE purchase_orders SET payment_method = CASE WHEN payment_required THEN 'crypto' ELSE 'coupon' END WHERE payment_method IS NULL;
+ALTER TABLE purchase_orders ALTER COLUMN payment_method SET DEFAULT 'crypto';
+ALTER TABLE purchase_orders ALTER COLUMN payment_method SET NOT NULL;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'purchase_orders_payment_method_check') THEN
+    ALTER TABLE purchase_orders ADD CONSTRAINT purchase_orders_payment_method_check
+      CHECK ((payment_method = 'crypto' AND payment_required) OR (payment_method IN ('coupon','internal_coupon') AND NOT payment_required));
+  END IF;
+END $$;
+
 -- Every lifecycle transition of every order — append-only evidence.
 CREATE TABLE IF NOT EXISTS purchase_order_events (
   id                 bigserial PRIMARY KEY,
@@ -1386,7 +1516,8 @@ BEGIN
   IF NEW.price_usd IS DISTINCT FROM OLD.price_usd
      OR (OLD.list_price_usd IS NOT NULL AND NEW.list_price_usd IS DISTINCT FROM OLD.list_price_usd)
      OR NEW.discount_usd IS DISTINCT FROM OLD.discount_usd OR NEW.coupon_id IS DISTINCT FROM OLD.coupon_id
-     OR NEW.payment_required IS DISTINCT FROM OLD.payment_required OR NEW.user_id IS DISTINCT FROM OLD.user_id THEN
+     OR NEW.payment_required IS DISTINCT FROM OLD.payment_required OR NEW.user_id IS DISTINCT FROM OLD.user_id
+     OR (OLD.payment_method IS NOT NULL AND NEW.payment_method IS DISTINCT FROM OLD.payment_method) THEN
     RAISE EXCEPTION 'order_pricing_immutable' USING ERRCODE = '23514';
   END IF;
   /* legacy writers change only `status`; derive the explicit state from it */
