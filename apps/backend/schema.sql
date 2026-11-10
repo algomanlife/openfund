@@ -213,7 +213,7 @@ CREATE TABLE IF NOT EXISTS position_close_requests (
   PRIMARY KEY (account_id, request_key)
 );
 
-ALTER TABLE openfund_users ALTER COLUMN wallet_chain SET DEFAULT 11155111;
+ALTER TABLE openfund_users ALTER COLUMN wallet_chain SET DEFAULT 42161; -- Arbitrum One (wallet auth is Arbitrum-only)
 
 -- First fresh observation starts risk history; historical marks are never invented.
 CREATE TABLE IF NOT EXISTS account_equity_risk (
@@ -1239,3 +1239,254 @@ CREATE TABLE IF NOT EXISTS payment_attempts (
 CREATE INDEX IF NOT EXISTS idx_payment_attempts_retry ON payment_attempts (last_attempt_at) WHERE status = 'pending' AND retryable;
 CREATE INDEX IF NOT EXISTS idx_payment_attempts_review ON payment_attempts (review_status) WHERE review_status = 'open';
 CREATE INDEX IF NOT EXISTS idx_payment_attempts_tx ON payment_attempts (chain_id, tx_hash);
+
+-- ------------------------------------------------------------------
+-- Purchase lifecycle state machine, coupons and DePay events
+-- (docs/payments/ORDER_LIFECYCLE.md, docs/payments/COUPONS.md,
+--  docs/payments/DEPAY.md). Additive and idempotent: existing columns,
+-- statuses and code paths keep working; `status` stays the coarse
+-- compatibility field and `lifecycle_state` is the explicit state.
+-- ------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS coupons (
+  id               uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  code             text NOT NULL CHECK (code = upper(code) AND code ~ '^[A-Z0-9][A-Z0-9_-]{2,39}$'),
+  description      text,
+  kind             text NOT NULL CHECK (kind IN ('percent','fixed')),
+  value            numeric(12,2) NOT NULL CHECK (value > 0),
+  status           text NOT NULL DEFAULT 'active' CHECK (status IN ('active','disabled')),
+  max_redemptions  integer CHECK (max_redemptions IS NULL OR max_redemptions > 0),
+  per_user_limit   integer NOT NULL DEFAULT 1 CHECK (per_user_limit > 0),
+  plan_slugs       text[],               -- NULL = every purchasable plan
+  account_sizes    numeric(12,2)[],      -- NULL = every account size
+  allowed_wallets  text[],               -- NULL = any authenticated user (lowercase addresses)
+  internal         boolean NOT NULL DEFAULT false,
+  starts_at        timestamptz,
+  expires_at       timestamptz,
+  created_by       text NOT NULL,
+  created_at       timestamptz NOT NULL DEFAULT now(),
+  updated_at       timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT coupons_percent_range CHECK (kind <> 'percent' OR value <= 100),
+  CONSTRAINT coupons_window CHECK (expires_at IS NULL OR starts_at IS NULL OR expires_at > starts_at),
+  /* internal testing coupons: bound to at most two named test wallets and a
+     finite usage limit — never redeemable by anyone else, never unlimited */
+  CONSTRAINT coupons_internal_bounded CHECK (NOT internal OR (allowed_wallets IS NOT NULL
+    AND cardinality(allowed_wallets) BETWEEN 1 AND 2 AND max_redemptions IS NOT NULL)),
+  CONSTRAINT coupons_code_unique UNIQUE (code)
+);
+
+ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS lifecycle_state text;
+ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS list_price_usd numeric(12,2);
+ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS discount_usd numeric(12,2) NOT NULL DEFAULT 0;
+ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS coupon_id uuid REFERENCES coupons(id);
+ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS payment_required boolean NOT NULL DEFAULT true;
+UPDATE purchase_orders SET lifecycle_state = CASE status WHEN 'pending' THEN 'awaiting_payment' WHEN 'paid' THEN 'provisioned' ELSE status END
+ WHERE lifecycle_state IS NULL;
+UPDATE purchase_orders SET list_price_usd = price_usd WHERE list_price_usd IS NULL;
+ALTER TABLE purchase_orders ALTER COLUMN lifecycle_state SET DEFAULT 'awaiting_payment';
+ALTER TABLE purchase_orders ALTER COLUMN lifecycle_state SET NOT NULL;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'purchase_orders_lifecycle_state_check') THEN
+    ALTER TABLE purchase_orders ADD CONSTRAINT purchase_orders_lifecycle_state_check CHECK (lifecycle_state IN
+      ('awaiting_payment','payment_detected','manual_review','paid','provisioned','cancelled','expired','partially_refunded','refunded'));
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'purchase_orders_discount_check') THEN
+    ALTER TABLE purchase_orders ADD CONSTRAINT purchase_orders_discount_check
+      CHECK (discount_usd >= 0 AND (list_price_usd IS NULL OR (discount_usd <= list_price_usd AND price_usd = list_price_usd - discount_usd)));
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'purchase_orders_zero_payment_check') THEN
+    /* a zero-payment order exists only through a 100% coupon */
+    ALTER TABLE purchase_orders ADD CONSTRAINT purchase_orders_zero_payment_check
+      CHECK ((payment_required AND price_usd > 0) OR (NOT payment_required AND price_usd = 0 AND coupon_id IS NOT NULL));
+  END IF;
+END $$;
+CREATE INDEX IF NOT EXISTS idx_purchase_orders_coupon ON purchase_orders (coupon_id) WHERE coupon_id IS NOT NULL;
+
+CREATE TABLE IF NOT EXISTS coupon_redemptions (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  coupon_id          uuid NOT NULL REFERENCES coupons(id),
+  user_id            uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  purchase_order_id  uuid NOT NULL UNIQUE REFERENCES purchase_orders(id) ON DELETE CASCADE,
+  status             text NOT NULL DEFAULT 'reserved' CHECK (status IN ('reserved','consumed','released')),
+  list_price_usd     numeric(12,2) NOT NULL,
+  discount_usd       numeric(12,2) NOT NULL,
+  net_price_usd      numeric(12,2) NOT NULL,
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  consumed_at        timestamptz,
+  released_at        timestamptz
+);
+CREATE INDEX IF NOT EXISTS idx_coupon_redemptions_coupon ON coupon_redemptions (coupon_id, status);
+CREATE INDEX IF NOT EXISTS idx_coupon_redemptions_user ON coupon_redemptions (coupon_id, user_id, status);
+
+-- Administrative coupon changes (create, edit, disable) — append-only.
+CREATE TABLE IF NOT EXISTS coupon_audit (
+  id          bigserial PRIMARY KEY,
+  coupon_id   uuid NOT NULL REFERENCES coupons(id),
+  actor       text NOT NULL,
+  action      text NOT NULL,
+  before      jsonb,
+  after       jsonb,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+DROP TRIGGER IF EXISTS coupon_audit_append_only ON coupon_audit;
+CREATE TRIGGER coupon_audit_append_only BEFORE UPDATE OR DELETE ON coupon_audit
+FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+-- Every lifecycle transition of every order — append-only evidence.
+CREATE TABLE IF NOT EXISTS purchase_order_events (
+  id                 bigserial PRIMARY KEY,
+  purchase_order_id  uuid NOT NULL REFERENCES purchase_orders(id) ON DELETE CASCADE,
+  from_state         text,
+  to_state           text NOT NULL,
+  actor              text NOT NULL DEFAULT 'system',
+  reason             text,
+  created_at         timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_purchase_order_events_order ON purchase_order_events (purchase_order_id, id);
+/* Order evidence is append-only: no UPDATE, and no DELETE while its order
+   exists. The only removal path is the cascade from deleting the order row
+   itself (the same database-level behaviour as payments and invoices; the
+   application never deletes orders). */
+CREATE OR REPLACE FUNCTION reject_order_evidence_mutation() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF TG_OP = 'DELETE' AND OLD.purchase_order_id IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM purchase_orders WHERE id = OLD.purchase_order_id) THEN RETURN OLD; END IF;
+  RAISE EXCEPTION 'append_only_table' USING ERRCODE='23514';
+END $$;
+DROP TRIGGER IF EXISTS purchase_order_events_append_only ON purchase_order_events;
+CREATE TRIGGER purchase_order_events_append_only BEFORE UPDATE OR DELETE ON purchase_order_events
+FOR EACH ROW EXECUTE FUNCTION reject_order_evidence_mutation();
+
+/* Allowed transitions — the single authority (mirrored for readability in
+   order-lifecycle.js and docs/payments/ORDER_LIFECYCLE.md). Actor/reason come
+   from the transaction-local settings openfund.actor / openfund.reason. */
+CREATE OR REPLACE FUNCTION order_transition_allowed(f text, t text) RETURNS boolean LANGUAGE sql IMMUTABLE AS $$
+  SELECT (f || '>' || t) = ANY (ARRAY[
+    'awaiting_payment>payment_detected','awaiting_payment>manual_review','awaiting_payment>paid',
+    'awaiting_payment>cancelled','awaiting_payment>expired',
+    'payment_detected>awaiting_payment','payment_detected>manual_review','payment_detected>paid','payment_detected>expired',
+    'manual_review>awaiting_payment','manual_review>paid','manual_review>cancelled','manual_review>expired',
+    'expired>payment_detected','expired>manual_review','expired>paid',
+    'paid>provisioned',
+    'provisioned>partially_refunded','provisioned>refunded','partially_refunded>refunded'])
+$$;
+
+CREATE OR REPLACE FUNCTION purchase_order_lifecycle() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE
+  actor  text := coalesce(nullif(current_setting('openfund.actor', true), ''), 'system');
+  reason text := nullif(current_setting('openfund.reason', true), '');
+  target text;
+BEGIN
+  IF TG_OP = 'INSERT' THEN
+    INSERT INTO purchase_order_events (purchase_order_id, from_state, to_state, actor, reason)
+    VALUES (NEW.id, NULL, NEW.lifecycle_state, actor, coalesce(reason, 'order_created'));
+    RETURN NEW;
+  END IF;
+  /* immutable pricing snapshot once created */
+  IF NEW.price_usd IS DISTINCT FROM OLD.price_usd
+     OR (OLD.list_price_usd IS NOT NULL AND NEW.list_price_usd IS DISTINCT FROM OLD.list_price_usd)
+     OR NEW.discount_usd IS DISTINCT FROM OLD.discount_usd OR NEW.coupon_id IS DISTINCT FROM OLD.coupon_id
+     OR NEW.payment_required IS DISTINCT FROM OLD.payment_required OR NEW.user_id IS DISTINCT FROM OLD.user_id THEN
+    RAISE EXCEPTION 'order_pricing_immutable' USING ERRCODE = '23514';
+  END IF;
+  /* legacy writers change only `status`; derive the explicit state from it */
+  IF NEW.status IS DISTINCT FROM OLD.status AND NEW.lifecycle_state = OLD.lifecycle_state THEN
+    NEW.lifecycle_state := CASE NEW.status WHEN 'paid' THEN 'provisioned' WHEN 'cancelled' THEN 'cancelled'
+      WHEN 'expired' THEN 'expired' ELSE OLD.lifecycle_state END;
+  END IF;
+  IF NEW.lifecycle_state = OLD.lifecycle_state THEN RETURN NEW; END IF;
+  target := NEW.lifecycle_state;
+  /* payment and provisioning commit in ONE transaction: record both steps */
+  IF target = 'provisioned' AND OLD.lifecycle_state <> 'paid' THEN
+    IF NOT order_transition_allowed(OLD.lifecycle_state, 'paid') THEN
+      RAISE EXCEPTION 'invalid_order_transition % -> paid', OLD.lifecycle_state USING ERRCODE = '23514';
+    END IF;
+    INSERT INTO purchase_order_events (purchase_order_id, from_state, to_state, actor, reason)
+    VALUES (NEW.id, OLD.lifecycle_state, 'paid', actor, reason);
+    INSERT INTO purchase_order_events (purchase_order_id, from_state, to_state, actor, reason)
+    VALUES (NEW.id, 'paid', 'provisioned', actor, reason);
+  ELSE
+    IF NOT order_transition_allowed(OLD.lifecycle_state, target) THEN
+      RAISE EXCEPTION 'invalid_order_transition % -> %', OLD.lifecycle_state, target USING ERRCODE = '23514';
+    END IF;
+    INSERT INTO purchase_order_events (purchase_order_id, from_state, to_state, actor, reason)
+    VALUES (NEW.id, OLD.lifecycle_state, target, actor, reason);
+  END IF;
+  /* coarse status follows the explicit state (paid/provisioned ⇒ 'paid') */
+  NEW.status := CASE WHEN target IN ('paid','provisioned','partially_refunded','refunded') THEN 'paid'
+    WHEN target IN ('cancelled','expired') THEN target
+    WHEN target IN ('awaiting_payment','payment_detected','manual_review') AND OLD.status = 'expired' THEN 'expired'
+    ELSE 'pending' END;
+  /* coupon reservation follows the order: consumed when paid, released
+     when the order is cancelled or expires unpaid */
+  IF target IN ('paid','provisioned') THEN
+    UPDATE coupon_redemptions SET status = 'consumed', consumed_at = now() WHERE purchase_order_id = NEW.id AND status <> 'consumed';
+  ELSIF target IN ('cancelled','expired') THEN
+    UPDATE coupon_redemptions SET status = 'released', released_at = now() WHERE purchase_order_id = NEW.id AND status = 'reserved';
+  END IF;
+  RETURN NEW;
+END $$;
+/* inserts that predate the explicit state (or set only `status`) get a
+   consistent snapshot: list price = price, state derived from status */
+CREATE OR REPLACE FUNCTION purchase_order_defaults() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF NEW.list_price_usd IS NULL THEN NEW.list_price_usd := NEW.price_usd + coalesce(NEW.discount_usd, 0); END IF;
+  IF NEW.status <> 'pending' AND NEW.lifecycle_state = 'awaiting_payment' THEN
+    NEW.lifecycle_state := CASE NEW.status WHEN 'paid' THEN 'provisioned' ELSE NEW.status END;
+  END IF;
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS purchase_order_defaults ON purchase_orders;
+CREATE TRIGGER purchase_order_defaults BEFORE INSERT ON purchase_orders
+FOR EACH ROW EXECUTE FUNCTION purchase_order_defaults();
+DROP TRIGGER IF EXISTS purchase_order_lifecycle_insert ON purchase_orders;
+CREATE TRIGGER purchase_order_lifecycle_insert AFTER INSERT ON purchase_orders
+FOR EACH ROW EXECUTE FUNCTION purchase_order_lifecycle();
+DROP TRIGGER IF EXISTS purchase_order_lifecycle_update ON purchase_orders;
+CREATE TRIGGER purchase_order_lifecycle_update BEFORE UPDATE ON purchase_orders
+FOR EACH ROW EXECUTE FUNCTION purchase_order_lifecycle();
+
+/* refunds/chargebacks (economy admin) move the order to a refund state; the
+   payment, invoice and challenge rows are never edited */
+CREATE OR REPLACE FUNCTION purchase_order_refund_state() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE total numeric; price numeric; cur text;
+BEGIN
+  SELECT coalesce(sum(amount_usd), 0) INTO total FROM payment_adjustments WHERE purchase_order_id = NEW.purchase_order_id;
+  SELECT price_usd, lifecycle_state INTO price, cur FROM purchase_orders WHERE id = NEW.purchase_order_id FOR UPDATE;
+  PERFORM set_config('openfund.actor', NEW.recorded_by, true);
+  PERFORM set_config('openfund.reason', NEW.kind || ':' || NEW.reference, true);
+  IF total >= price AND cur <> 'refunded' THEN
+    UPDATE purchase_orders SET lifecycle_state = 'refunded' WHERE id = NEW.purchase_order_id;
+  ELSIF total < price AND cur = 'provisioned' THEN
+    UPDATE purchase_orders SET lifecycle_state = 'partially_refunded' WHERE id = NEW.purchase_order_id;
+  END IF;
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS payment_adjustments_order_state ON payment_adjustments;
+CREATE TRIGGER payment_adjustments_order_state AFTER INSERT ON payment_adjustments
+FOR EACH ROW EXECUTE FUNCTION purchase_order_refund_state();
+
+-- DePay events (attempt | processing | failed | succeeded) and callbacks,
+-- signature-verified. Recorded for correlation and audit; an event NEVER
+-- marks an order paid (only the on-chain verifier does).
+CREATE TABLE IF NOT EXISTS depay_events (
+  id                 bigserial PRIMARY KEY,
+  kind               text NOT NULL CHECK (kind IN ('event','callback')),
+  status             text,                 -- attempt | processing | failed | succeeded | NULL (callback)
+  body_sha256        text NOT NULL UNIQUE,  -- retries of the same delivery are recorded once
+  blockchain         text,
+  tx_hash            text,
+  sender             text,
+  receiver           text,
+  token              text,
+  amount             text,
+  purchase_order_id  uuid REFERENCES purchase_orders(id) ON DELETE CASCADE,
+  outcome            text NOT NULL,        -- recorded | ignored:<reason> | hint_registered
+  payload            jsonb NOT NULL,
+  received_at        timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_depay_events_tx ON depay_events (tx_hash);
+CREATE INDEX IF NOT EXISTS idx_depay_events_order ON depay_events (purchase_order_id);
+DROP TRIGGER IF EXISTS depay_events_append_only ON depay_events;
+CREATE TRIGGER depay_events_append_only BEFORE UPDATE OR DELETE ON depay_events
+FOR EACH ROW EXECUTE FUNCTION reject_order_evidence_mutation();

@@ -15,16 +15,21 @@ import './purchase.css'
  *    (runtime env on the backend — never hardcoded in the frontend);
  *  - verification is server-side: the user submits the transaction hash and
  *    the backend checks receipt, sender, receiver, amount and timing;
- *  - DePay widget integration is optional (VITE_DEPAY_WIDGET=1) and only
- *    bootstrapped from backend-provided payment configuration.
+ *  - coupons are validated and priced by the server (/purchases/quote); a
+ *    100% discount is provisioned by the zero-payment flow, with no payment;
+ *  - the DePay button is optional (VITE_DEPAY_WIDGET=1), restricted to
+ *    Arbitrum (blockchains='["arbitrum"]') and carries only the order id —
+ *    DePay fetches the signed amount/token/receiver from the backend.
  *
  * While the backend reports payments disabled (destination unset), the panel
  * states plainly that purchasing is not active — mirroring the legacy dialog.
  */
 
 interface PlanInfo { slug: string, name: string, accountSizesUsd: number[], priceUsd: Record<string, number>, free: boolean }
+interface Quote { listPriceUsd: string, discountUsd: string, priceUsd: string, couponCode: string | null, paymentRequired: boolean }
 interface OrderView {
-  id: string, status: string, account_size_usd: string, price_usd: string, currency: string,
+  id: string, status: string, lifecycle_state?: string, account_size_usd: string, price_usd: string, currency: string,
+  list_price_usd?: string, discount_usd?: string, payment_required?: boolean, coupon_code?: string | null,
   created_at: string, expires_at: string, paid_at: string | null, plan_slug: string, plan_name: string
 }
 interface PaymentInfo { chainId: number, receiver: string, token: string | null, amount: string, reference: string }
@@ -53,6 +58,15 @@ const ERR_FA: Record<string, string> = {
   payment_misconfigured: 'پیکربندی پرداخت کامل نیست؛ با پشتیبانی تماس بگیر.',
   unapproved_contract: 'این تراکنش از طریق قرارداد تأییدنشده انجام شده است.',
   native_payment_unsupported: 'پرداخت با ارز بومی شبکه پشتیبانی نمی‌شود؛ از استیبل‌کوین پیشنهادی استفاده کن.',
+  coupon_invalid: 'کد تخفیف معتبر نیست.',
+  coupon_not_found: 'کد تخفیف یافت نشد.',
+  coupon_disabled: 'این کد تخفیف غیرفعال است.',
+  coupon_not_started: 'این کد تخفیف هنوز فعال نشده است.',
+  coupon_expired: 'زمان اعتبار این کد تخفیف تمام شده است.',
+  coupon_not_applicable: 'این کد تخفیف برای این پلن یا اندازهٔ حساب نیست.',
+  coupon_exhausted: 'ظرفیت استفاده از این کد تخفیف تمام شده است.',
+  coupon_already_used: 'شما قبلاً از این کد تخفیف استفاده کرده‌اید.',
+  rate_limited: 'درخواست‌ها زیاد است؛ کمی بعد دوباره تلاش کن.',
 }
 const ERR_EN: Record<string, string> = {
   purchases_disabled: 'Purchasing is not enabled in this release.',
@@ -78,6 +92,15 @@ const ERR_EN: Record<string, string> = {
   payment_misconfigured: 'Payment configuration is incomplete — please contact support.',
   unapproved_contract: 'This transaction went through an unapproved contract.',
   native_payment_unsupported: 'Native-coin payments are not supported — pay with the listed stablecoin.',
+  coupon_invalid: 'This coupon code is not valid.',
+  coupon_not_found: 'Coupon not found.',
+  coupon_disabled: 'This coupon is disabled.',
+  coupon_not_started: 'This coupon is not active yet.',
+  coupon_expired: 'This coupon has expired.',
+  coupon_not_applicable: 'This coupon does not apply to this plan or account size.',
+  coupon_exhausted: 'This coupon has reached its usage limit.',
+  coupon_already_used: 'You have already used this coupon.',
+  rate_limited: 'Too many requests — please try again shortly.',
 }
 /* conditions that resolve on their own: keep polling instead of failing */
 const RETRYABLE = new Set(['tx_pending', 'tx_not_final', 'tx_reorged', 'rpc_unavailable'])
@@ -87,6 +110,11 @@ const saveTx = (orderId: string, tx: string) => { try { localStorage.setItem(txK
 const clearTx = (orderId: string) => { try { localStorage.removeItem(txKey(orderId)) } catch { /* private mode */ } }
 const STATUS_FA: Record<string, string> = { created: 'ایجادشده', started: 'در جریان', passed: 'قبول‌شده', failed: 'شکست‌خورده', expired: 'منقضی', cancelled: 'لغو‌شده' }
 const CHAIN_LABEL: Record<number, string> = { 11155111: 'Ethereum Sepolia', 42161: 'Arbitrum One' }
+/** one idempotency key per checkout attempt: a retried or interrupted
+ *  request returns the same order instead of creating a second one */
+/** the only network offered to DePay (Arbitrum One, chain 42161) */
+const DEPAY_BLOCKCHAINS = ['arbitrum']
+const newAttemptKey = () => { try { return crypto.randomUUID() } catch { return String(Date.now()) + Math.random().toString(16).slice(2) } }
 
 export function CheckoutPanel(props: { planSlug: string, accountSize: number, onClose: () => void }) {
   const { planSlug, accountSize, onClose } = props
@@ -109,6 +137,10 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
   const [attemptError, setAttemptError] = useState<string | null>(null)
   const [widgetOpen, setWidgetOpen] = useState(false)
   const [manual, setManual] = useState(false) /* manual payment only when the widget cannot load */
+  const [couponInput, setCouponInput] = useState('')
+  const [quote, setQuote] = useState<Quote | null>(null)
+  const [couponError, setCouponError] = useState<string | null>(null)
+  const attemptKey = useRef(newAttemptKey())
   const polling = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const plan = plans?.find(p => p.slug === planSlug) || null
@@ -127,20 +159,37 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  /* coupon → authoritative server quote (the browser never prices) */
+  const applyCoupon = useCallback(async () => {
+    const code = couponInput.trim()
+    setCouponError(null)
+    if (!code) { setQuote(null); return }
+    setBusy(true)
+    try {
+      const r = await apiFetch('/purchases/quote', { method: 'POST', body: JSON.stringify({ planSlug, accountSize, couponCode: code }) })
+      if (!r.ok) { setQuote(null); setCouponError(errText(r.data?.error || 'coupon_invalid')); return }
+      setQuote(r.data as Quote)
+      attemptKey.current = newAttemptKey()
+    } finally { setBusy(false) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [couponInput, planSlug, accountSize])
+
   const createOrder = useCallback(async (): Promise<OrderView | null> => {
     setBusy(true); setError(null)
     try {
       const r = await apiFetch('/purchases/orders', {
         method: 'POST',
-        body: JSON.stringify({ planSlug, accountSize })
+        body: JSON.stringify({ planSlug, accountSize, couponCode: quote?.couponCode || undefined, idempotencyKey: attemptKey.current })
       })
       if (!r.ok) { setError(errText(r.data?.error || 'order_failed')); return null }
       setOrder(r.data.order)
       setPayment(r.data.payment || null)
+      /* zero-payment (100% coupon): provisioned in the same request */
+      if (r.data.result?.challengeId) { setResult(r.data.result); await session.reload?.() }
       return r.data.order as OrderView
     } finally { setBusy(false) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [planSlug, accountSize])
+  }, [planSlug, accountSize, quote])
 
   /* The backend on-chain verifier is the ONLY authority. A retryable answer
      (not mined yet / not final / RPC down) is not a failure: the hash is
@@ -240,42 +289,75 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
   const showManual = !depayAvailable || manual
   const widgetFailed = t('درگاه پرداخت بارگذاری نشد؛ پرداخت دستی را انجام بده.', 'The payment widget could not be loaded — use the manual payment below.')
 
-  /* Official DePay widget: DePayWidgets.Payment({ integration, payload }).
-     The payload carries only the order id; DePay then asks OUR server for the
-     accepted payment (chain, token, amount, receiver — signed), so the browser
-     can never choose the price or receiver. The widget's own success is not
-     trusted: the signed callback + on-chain verification decide, and this page
-     learns the result by polling. */
+  /* Official DePay button (https://depay.com/docs/payments/integrate/button/):
+     <div class="DePayButton" integration=… blockchains='["arbitrum"]' payload=…>
+     + DePayButtons.init({document}). The payload carries only the order id;
+     DePay then asks OUR server for the accepted payment (chain, token, amount,
+     receiver — signed), so the browser can never choose the price, network
+     or receiver. The button's own success is not trusted: the signed
+     callback/events + on-chain verification decide, and this page learns the
+     result by polling. If the approved bundle is the widget bundle instead,
+     DePayWidgets.Payment is opened with the same Arbitrum-only restriction. */
+  const depayHost = useRef<HTMLDivElement | null>(null)
+  const loadDepay = async () => {
+    const w = window as any
+    if (w.DePayButtons || w.DePayWidgets) return
+    await new Promise<void>((resolve, reject) => {
+      const el = document.createElement('script')
+      el.src = depayUrl as string
+      /* the approved bundle is pinned by hash: a changed or tampered file never executes */
+      el.integrity = rc.depayWidgetIntegrity as string
+      el.crossOrigin = 'anonymous'
+      el.dataset.ofDepay = '1'
+      el.onload = () => resolve()
+      el.onerror = () => { el.remove(); reject(new Error('depay_load_failed')) }
+      document.head.appendChild(el)
+    })
+  }
+  useEffect(() => {
+    if (!depayUrl || !order || order.status !== 'pending' || order.payment_required === false || result) return
+    let cancelled = false
+    void (async () => {
+      try {
+        await loadDepay()
+        const w = window as any
+        if (cancelled) return
+        if (w.DePayButtons?.init && depayHost.current) {
+          const btn = document.createElement('div')
+          btn.className = 'DePayButton'
+          btn.setAttribute('label', t('پرداخت با DePay', 'Pay with DePay'))
+          btn.setAttribute('integration', rc.depayIntegrationId as string)
+          btn.setAttribute('blockchains', JSON.stringify(DEPAY_BLOCKCHAINS))
+          btn.setAttribute('payload', JSON.stringify({ orderId: order.id }))
+          depayHost.current.replaceChildren(btn)
+          w.DePayButtons.init({ document })
+          setWidgetOpen(true)
+        } else if (!w.DePayWidgets?.Payment) throw new Error('depay_unavailable')
+      } catch { if (!cancelled) { setError(widgetFailed); setManual(true) } }
+    })()
+    return () => { cancelled = true; depayHost.current?.replaceChildren() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order?.id, order?.status, result, depayUrl])
   const openDepay = async (orderId: string) => {
     if (!depayUrl) return
+    await loadDepay()
     const w = window as any
-    if (!w.DePayWidgets) {
-      await new Promise<void>((resolve, reject) => {
-        const el = document.createElement('script')
-        el.src = depayUrl
-        /* the approved bundle is pinned by hash: a changed or tampered file never executes */
-        el.integrity = rc.depayWidgetIntegrity as string
-        el.crossOrigin = 'anonymous'
-        el.dataset.ofDepay = '1'
-        el.onload = () => resolve()
-        el.onerror = () => { el.remove(); reject(new Error('depay_load_failed')) }
-        document.head.appendChild(el)
-      })
-    }
+    if (w.DePayButtons) return /* the button rendered for the order is the entry point */
     if (!w.DePayWidgets?.Payment) throw new Error('depay_unavailable')
     setWidgetOpen(true)
-    void Promise.resolve(w.DePayWidgets.Payment({ integration: rc.depayIntegrationId, payload: { orderId } }))
+    void Promise.resolve(w.DePayWidgets.Payment({ integration: rc.depayIntegrationId, blockchains: DEPAY_BLOCKCHAINS, payload: { orderId } }))
       .catch(() => { setError(widgetFailed); setManual(true) })
   }
   const buyChallenge = async () => {
     setError(null)
     try {
       const o = order && order.status === 'pending' ? order : await createOrder()
-      if (!o) return
+      if (!o || o.payment_required === false) return
       setBusy(true)
       await openDepay(o.id)
     } catch { setError(widgetFailed); setManual(true) } finally { setBusy(false) }
   }
+  const zeroQuote = quote?.paymentRequired === false
 
   return createPortal(
     <div className="of-checkout-overlay" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
@@ -288,7 +370,24 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
           <div className="of-checkout-summary">
             <div><span>{t('پلن', 'Plan')}</span><b>{plan.name}</b></div>
             <div><span>{t('اندازهٔ حساب', 'Account size')}</span><b dir="ltr">{fmtMoney(accountSize)}</b></div>
-            <div><span>{t('هزینهٔ ارزیابی', 'Evaluation fee')}</span><b dir="ltr">{fmtMoney(plan.priceUsd[String(accountSize)] ?? '—')}</b></div>
+            <div><span>{t('هزینهٔ ارزیابی', 'Evaluation fee')}</span><b dir="ltr">{fmtMoney(quote?.listPriceUsd ?? plan.priceUsd[String(accountSize)] ?? '—')}</b></div>
+            {quote && Number(quote.discountUsd) > 0 && <div><span>{t('تخفیف', 'Discount')} <span dir="ltr">({quote.couponCode})</span></span><b dir="ltr">−{fmtMoney(quote.discountUsd)}</b></div>}
+            {quote && <div><span>{t('مبلغ قابل پرداخت', 'Amount due')}</span><b dir="ltr">{fmtMoney(quote.priceUsd)}</b></div>}
+          </div>
+        )}
+
+        {/* ---- coupon (validated and priced by the server) ---- */}
+        {authenticated && plan && !order && !result && (
+          <div className="of-checkout-coupon">
+            <label htmlFor="of-coupon">{t('کد تخفیف', 'Coupon code')}</label>
+            <div className="of-checkout-coupon-row">
+              <input id="of-coupon" dir="ltr" autoComplete="off" spellCheck={false} maxLength={40} value={couponInput}
+                onChange={e => { setCouponInput(e.target.value); setQuote(null); setCouponError(null) }}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); void applyCoupon() } }} />
+              <button className="of-profile-plainbtn" disabled={busy || !couponInput.trim()} onClick={() => { void applyCoupon() }}>{t('اعمال', 'Apply')}</button>
+            </div>
+            {couponError && <p className="of-profile-error" role="alert">{couponError}</p>}
+            {zeroQuote && <p className="of-checkout-status" role="status">{t('با این کد، چالش بدون پرداخت فعال می‌شود.', 'With this coupon the challenge is activated without payment.')}</p>}
           </div>
         )}
 
@@ -303,7 +402,7 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
         )}
 
         {/* ---- gate: payments disabled ---- */}
-        {authenticated && plans && !paymentsEnabled && (
+        {authenticated && plans && !paymentsEnabled && !zeroQuote && (
           <div className="of-checkout-note">
             <p>{t('فعال‌سازی خرید در این نسخه فراهم نیست. با تنظیم مقصد پرداخت روی سرور فعال می‌شود.',
               'Purchases are not enabled in this release. They activate once the server payment destination is configured.')}</p>
@@ -311,7 +410,12 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
         )}
 
         {/* ---- create order ---- */}
-        {authenticated && paymentsEnabled && !order && !result && (
+        {authenticated && zeroQuote && !order && !result && (
+          <button className="button full" disabled={busy || !plan} onClick={() => { void createOrder() }}>
+            {busy ? '…' : t('فعال‌سازی چالش', 'Activate challenge')}
+          </button>
+        )}
+        {authenticated && paymentsEnabled && !zeroQuote && !order && !result && (
           depayAvailable ? (
             <button className="button full" disabled={busy || !plan} onClick={buyChallenge}>
               {busy ? '…' : t('خرید چالش', 'Buy Challenge')}
@@ -342,7 +446,8 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
                   <span>{t('زنجیره', 'Chain')}: <b>{CHAIN_LABEL[payment?.chainId || 0] || payment?.chainId}</b></span>
                   <span>{t('دارایی', 'Asset')}: <b dir="ltr">{payment?.token ? 'USD stablecoin' : 'test ETH'}</b></span>
                 </div>
-                {depayAvailable && payment && (
+                {depayAvailable && payment && <div className="of-checkout-depay" ref={depayHost} />}
+                {depayAvailable && payment && !(window as any).DePayButtons && (
                   <button className="button full" disabled={busy} onClick={buyChallenge}>
                     {widgetOpen ? t('بازکردن دوبارهٔ درگاه پرداخت', 'Reopen payment widget') : t('خرید چالش', 'Buy Challenge')}
                   </button>

@@ -400,7 +400,7 @@ import { buildDepayConfiguration, signDepayConfiguration } from '../purchases.js
 test('E1 dynamic configuration is built only from the server order and configuration', async () => {
   const f = await fixture(); const o = await f.order()
   const c = await buildDepayConfiguration(pool, o.id)
-  assert.deepEqual(c, { accept: [{ blockchain: 'arbitrum', amount: '100', token: TOKEN, receiver: RECEIVER }] })
+  assert.deepEqual(c, { accept: [{ blockchain: 'arbitrum', amount: 100, token: TOKEN, receiver: RECEIVER }] })
 })
 test('E2 dynamic configuration is refused for unknown, malformed, paid, cancelled and expired orders', async () => {
   const f = await fixture()
