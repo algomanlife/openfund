@@ -10,11 +10,13 @@ export function runtimeCmsUrl(env, production = false) {
   return url.origin
 }
 
-export function depayWidgetApproved(env) {
-  if (env.VITE_DEPAY_WIDGET !== '1') return false
+export function depayWidgetApproved(env, production = true) {
+  if (env.VITE_DEPAY_WIDGET !== '1' || !env.VITE_DEPAY_INTEGRATION_ID) return false
   try {
     const url = new URL(env.VITE_DEPAY_WIDGET_URL || '')
-    if (url.protocol !== 'https:' || url.username || url.password) return false
+    /* http is accepted for a loopback host outside production only (browser tests) */
+    const loopback = !production && url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname)
+    if ((url.protocol !== 'https:' && !loopback) || url.username || url.password) return false
   } catch { return false }
   return /^sha(256|384|512)-[A-Za-z0-9+/=]{20,}$/.test(env.VITE_DEPAY_WIDGET_INTEGRITY || '')
 }
@@ -29,9 +31,11 @@ export function runtimeConfigScript(env, production = false) {
     instagramCommunityUrl: env.VITE_INSTAGRAM_COMMUNITY_URL || '',
     /* the external widget is enabled only with an https URL AND a
        Subresource Integrity hash pinning the exact approved bundle */
-    depayWidget: depayWidgetApproved(env),
-    depayWidgetUrl: depayWidgetApproved(env) ? env.VITE_DEPAY_WIDGET_URL : '',
-    depayWidgetIntegrity: depayWidgetApproved(env) ? env.VITE_DEPAY_WIDGET_INTEGRITY : '',
+    depayWidget: depayWidgetApproved(env, production),
+    depayWidgetUrl: depayWidgetApproved(env, production) ? env.VITE_DEPAY_WIDGET_URL : '',
+    depayWidgetIntegrity: depayWidgetApproved(env, production) ? env.VITE_DEPAY_WIDGET_INTEGRITY : '',
+    /* public DePay integration id (app.depay.com); not a secret */
+    depayIntegrationId: depayWidgetApproved(env, production) ? env.VITE_DEPAY_INTEGRATION_ID : '',
   }
   return `window.__OPENFUND_RUNTIME_CONFIG__=${JSON.stringify(config).replaceAll('<', '\\u003c')};\n`
 }

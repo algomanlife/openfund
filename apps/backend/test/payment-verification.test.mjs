@@ -393,3 +393,41 @@ test('D3 callback hints for unknown senders, other chains and bad payloads are i
   assert.equal((await recordPaymentHint(pool, { transaction: hash(), sender: f.wallet, blockchain: 'polygon' })).reason, 'other_chain')
   assert.equal((await recordPaymentHint(pool, { transaction: 'nope', sender: f.wallet, blockchain: 'arbitrum' })).reason, 'invalid_payload')
 })
+
+/* ---------------------------------------------------------------- E --- */
+import { buildDepayConfiguration, signDepayConfiguration } from '../purchases.js'
+
+test('E1 dynamic configuration is built only from the server order and configuration', async () => {
+  const f = await fixture(); const o = await f.order()
+  const c = await buildDepayConfiguration(pool, o.id)
+  assert.deepEqual(c, { accept: [{ blockchain: 'arbitrum', amount: '100', token: TOKEN, receiver: RECEIVER }] })
+})
+test('E2 dynamic configuration is refused for unknown, malformed, paid, cancelled and expired orders', async () => {
+  const f = await fixture()
+  await assert.rejects(buildDepayConfiguration(pool, crypto.randomUUID()), e => e.message === 'order_not_found')
+  await assert.rejects(buildDepayConfiguration(pool, 'x'), e => e.message === 'invalid_order')
+  for (const status of ['paid', 'cancelled', 'expired']) {
+    const o = await f.order({ status })
+    await assert.rejects(buildDepayConfiguration(pool, o.id), e => e.message === 'order_not_payable', status)
+  }
+  const stale = await f.order({ expiresAt: new Date(Date.now() - 1000) })
+  await assert.rejects(buildDepayConfiguration(pool, stale.id), e => e.message === 'order_not_payable')
+})
+test('E3 the signed configuration verifies with the public key (RSA-PSS, salt 64, SHA-256, base64url)', () => {
+  const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', { modulusLength: 2048 })
+  const json = JSON.stringify({ accept: [{ blockchain: 'arbitrum', amount: '1', token: TOKEN, receiver: RECEIVER }] })
+  const sig = signDepayConfiguration(json, privateKey.export({ type: 'pkcs8', format: 'pem' }).toString())
+  assert.equal(/^[A-Za-z0-9_-]+$/.test(sig), true)
+  assert.equal(crypto.verify('sha256', Buffer.from(json), { key: publicKey, padding: crypto.constants.RSA_PKCS1_PSS_PADDING, saltLength: 64 }, Buffer.from(sig, 'base64url')), true)
+  assert.equal(crypto.verify('sha256', Buffer.from(json + ' '), { key: publicKey, padding: crypto.constants.RSA_PKCS1_PSS_PADDING, saltLength: 64 }, Buffer.from(sig, 'base64url')), false)
+})
+
+test('B11 a real HTTP 503 from the RPC (viem HttpRequestError carries .status) is retryable rpc_unavailable', async () => {
+  const http = await import('node:http')
+  const srv = http.createServer((req, res) => { res.writeHead(503); res.end('unavailable') })
+  await new Promise(r => srv.listen(0, '127.0.0.1', r))
+  try {
+    const payer = rnd()
+    await rejects(createRpcVerifier({ rpcUrl: `http://127.0.0.1:${srv.address().port}` })(hash(), rpcExpect(payer)), 'rpc_unavailable', { retryable: true })
+  } finally { await new Promise(r => srv.close(r)) }
+})

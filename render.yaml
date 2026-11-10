@@ -159,6 +159,11 @@ services:
         sync: false             # approved DePay widget bundle URL (https); widget stays off without it
       - key: VITE_DEPAY_WIDGET_INTEGRITY
         sync: false             # Subresource Integrity hash (sha384-…) of that exact bundle
+      - key: VITE_DEPAY_INTEGRATION_ID
+        sync: false             # public DePay integration id from app.depay.com
+      - key: DEPAY_CONFIG_PRIVATE_KEY
+        sync: false             # secret: RSA private key (PEM) that signs the dynamic configuration
+                                # DePay requests; its public half is stored on app.depay.com
       - key: CSP_EXTRA_SCRIPT_SRC
         sync: false             # optional https origins allowed to serve scripts (DePay widget)
       - key: CSP_EXTRA_FRAME_SRC

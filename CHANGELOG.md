@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- DePay checkout completed as the intended customer flow: **Buy Challenge**
+  creates the server-priced order and opens the official widget with the
+  integration id and only the order id; DePay asks the new signed dynamic
+  configuration endpoint for chain, token, amount and receiver; DePay's
+  signed callback is acknowledged at once and verified on-chain, then the
+  existing provisioning creates exactly one challenge and the checkout shows
+  *Payment successful*. Failed payments are shown in plain words, a pending
+  order resumes after a page refresh, and a tampered widget bundle is
+  blocked. Browser acceptance (`npm run test:browser:depay`) runs the real
+  backend against a stub widget and a mock chain; real-network acceptance
+  is still pending. Also fixes RPC HTTP errors (for example a 503) being
+  reported as a final rejection instead of a retryable `rpc_unavailable`,
+  and finality using a cached chain head.
 - Challenge payment verification rewritten around an explicit correlation
   policy: the signer must be the signed-in wallet, only the approved ERC-20
   counts, and the amount is the sum of that token's transfers to the
