@@ -83,7 +83,7 @@ function caseless(locale: Added) {
 
 /* ---- untranslated text is reported, never hidden ---- */
 /** Text that is the same in every language: numbers, symbols, tickers, URLs, brand names. */
-const LANGUAGE_NEUTRAL = /^(?:[^A-Za-z]*|[A-Z0-9]{2,10}(?:[/:-][A-Z0-9]{2,10})?|https?:\/\/\S+|\S+@\S+\.\S+|Openfund(?: (?:Prop|Perpetual))?|Gains(?: Network)?|gTrade|Vela(?: by LuxAlgo)?|LuxAlgo|WalletConnect|MetaMask|Rabby|Telegram|Discord|Instagram|Directus|Arbitrum(?: One)?|Sepolia|Ethereum|Pyth|Chainlink|USDC|USDT|DAI|ETH|BTC|EIP-\d+|SIWE|CSV|PNG|API|ID|P&L|PnL|ROI|KYC|AML)$/
+const LANGUAGE_NEUTRAL = /^(?:[^A-Za-z]*|[A-Z0-9]{2,10}(?:[/:-][A-Z0-9]{2,10})?|https?:\/\/\S+|\S+@\S+\.\S+|Openfund(?: (?:Prop|Perpetual))?|Gains(?: Network)?|gTrade|Vela(?: by LuxAlgo)?|LuxAlgo|WalletConnect|MetaMask|Rabby|Telegram|Discord|Instagram|Directus|Arbitrum(?: One)?|Sepolia|Ethereum|Pyth|Chainlink|USDC|USDT|DAI|ETH|BTC|EIP-\d+|SIWE|CSV|PNG|API|ID|P&L|PnL|ROI|KYC|AML|A-Book|B-Book)$/
 const misses = new Map<string, Set<string>>()
 let missNotify = 0
 export function reportMiss(locale: string, english: string) {

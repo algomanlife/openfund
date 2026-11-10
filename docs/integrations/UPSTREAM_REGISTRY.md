@@ -17,7 +17,7 @@ The process for changing any of these is in [Dependency governance](../developme
 | Gains Network public APIs (market data) | unversioned external service (path /v1) | Service terms of the provider | yes | apps/backend/market-data.js |
 | LuxAlgo Trade Journal — journal-core only | @luxalgo/journal-core (see packages-core/package.json) | MIT | yes | third_party/luxalgo-trade-journal/packages-core |
 | Directus (CMS) | 11.9.1 | BSL 1.1 for the Directus core | yes | render.yaml |
-| Wallet libraries (wagmi, viem, RainbowKit) | wagmi 2.19.5, viem 2.57.13, RainbowKit 2.2.11 (installed; manifests use caret ranges) | MIT | yes | apps/web-react/package.json |
+| Wallet libraries (wagmi, viem, RainbowKit) | wagmi 2.19.5, viem 2.57.16, RainbowKit 2.2.11 (installed; manifests use caret ranges) | MIT | yes | apps/web-react/package.json |
 | Openfund Protocol (MUX protocol source, dormant) | revision 0f70a70b9b3410c2ae7209900e5d2521635249d1 (2025-07-14) | GPL-2.0 | no | packages/openfund-protocol |
 | Frontend runtime and build toolchain | see apps/web-react/package.json and package-lock.json | MIT | yes | apps/web-react |
 | Backend runtime dependencies (express, pg, ws, decimal.js) | see apps/backend/package.json and package-lock.json | MIT/ISC family | yes | apps/backend |
@@ -124,7 +124,7 @@ The process for changing any of these is in [Dependency governance](../developme
 
 - **Upstream:** https://github.com/wevm/wagmi, https://github.com/wevm/viem, https://github.com/rainbow-me/rainbowkit
 - **License:** MIT (npm metadata)
-- **Pinned version:** wagmi 2.19.5, viem 2.57.13, RainbowKit 2.2.11 (installed; manifests use caret ranges)
+- **Pinned version:** wagmi 2.19.5, viem 2.57.16, RainbowKit 2.2.11 (installed; manifests use caret ranges)
 - **Where:** apps/web-react/package.json; apps/backend/package.json (viem for SIWE verification)
 - **Vendoring method:** npm dependencies with caret ranges; lockfiles pin the resolved versions.
 - **Local Openfund modifications:** None.

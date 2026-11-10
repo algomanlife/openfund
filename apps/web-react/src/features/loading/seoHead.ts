@@ -10,7 +10,9 @@ import { LOCALES, normalizeLocale, type AppLocale } from '../../i18n/locales'
    own translated page, so each one is self-canonical and listed as an
    hreflang alternate. Each serving origin keeps its own canonical domain. */
 
-const PUBLIC_ROUTES = /^\/(?:fa|en|ar|ru|zh-CN)\/(?:home|challenges|markets|rulebook|transparency|governance|faq|tools|learn|glossary|referral|whitepaper)(?:\/|$)/
+/* Mirrors PUBLIC_SITE_ROUTES in apps/backend/seo.js (the sitemap); the
+   public-content test fails when the two lists disagree. */
+const PUBLIC_ROUTES = /^\/(?:fa|en|ar|ru|zh-CN)\/(?:home|challenges|markets|rulebook|transparency|revenue-model|live-market-access|ambassador|coach|governance|faq|tools|learn|glossary|referral|whitepaper)(?:\/|$)/
 
 const isPublic = (pathname: string) => PUBLIC_ROUTES.test(pathname)
 const routeLocale = (pathname: string) => normalizeLocale(pathname.split('/')[1], 'fa')
@@ -39,6 +41,18 @@ const upsertMeta = (name: string, content: string) => {
   meta.content = content
 }
 
+/* Open Graph locale names (language_TERRITORY) for the served locale. */
+const OG_LOCALE: Record<AppLocale, string> = { fa: 'fa_IR', en: 'en_US', ar: 'ar_AR', ru: 'ru_RU', 'zh-CN': 'zh_CN' }
+const upsertProperty = (property: string, content: string) => {
+  let meta = document.head.querySelector<HTMLMetaElement>(`meta[property="${property}"]`)
+  if (!meta) {
+    meta = document.createElement('meta')
+    meta.setAttribute('property', property)
+    document.head.append(meta)
+  }
+  meta.content = content
+}
+
 export function updateSeoHead(location: Location) {
   const { pathname } = location
   const origin = window.location.origin
@@ -54,6 +68,7 @@ export function updateSeoHead(location: Location) {
     return
   }
   upsertLink('canonical', canonical)
+  upsertProperty('og:locale', OG_LOCALE[current])
   document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach(l => l.remove())
   for (const locale of whitepaper ? (['fa', 'en'] as const) : LOCALES) upsertLink('alternate', origin + swapLocale(pathname, locale), locale)
   upsertLink('alternate', origin + swapLocale(pathname, 'fa'), 'x-default')

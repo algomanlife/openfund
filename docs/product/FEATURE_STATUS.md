@@ -161,14 +161,33 @@ English Prop entry remain authoritative. Review,
 product claims and unified-release acceptance remain open. [Implementation and
 local checks](../reviews/landing-motion/DELIVERY.md).
 
+## Public website launch content
+
+Branch `codex/website-launch-content`, unmerged and unreleased. Local
+verification only; Directus-backed text reaches production after an approved
+seed refresh. Authority: [Content architecture](../website/CONTENT_ARCHITECTURE.md),
+[Product rules](PRODUCT_RULES.md).
+
+| Capability | Status | Scope and evidence |
+| --- | --- | --- |
+| Hosting, development and placeholder copy removed | Completed (local) | Office-location legal document, hosting notes, provider footer credit, sample/illustrative product notes, placeholder documents and app badges removed; stale Directus rows are suppressed by code guards |
+| Public Team section removed | Completed (local) | Markup, dialog, navigation, footer seed and section routing; old links land on Challenges |
+| A-Book / B-Book labels and routing disclosure | Completed (local) | Exact labels in all five locales; copy states that orders are not routed to live markets in this release |
+| Protocol research labelling | Completed (local) | The four protocol directions are labelled as not active in this release |
+| Product-rules consistency check | Completed (local) | `check:product-rules`: catalog, backend mirror and engine snapshot agree; the backend mirror was missing the 35% consistency value for Standard and One-phase |
+| Advertised rules enforced by the backend | Blocked | `PLAN-DAILY-LOSS-VARIANT`, `PLAN-PAYOUT-CONDITIONS`, `PLAN-FEE-REFUND`; see [Product rules](PRODUCT_RULES.md) |
+| Sitemap, robots and hreflang | Completed (local) | `/sitemap.xml`, `/robots.txt` per serving domain; all public routes indexable with five-locale alternates; product routes noindex |
+| Five-locale content validation | Completed (local) | `test:content` in CI |
+| Legal review of binding policies | Requires approval | Disclaimers, refund, payout and prohibited-practice policies need legal review before launch |
+
 ## Website and distribution refresh
 
 | Capability | Status | Evidence and limits |
 | --- | --- | --- |
 | Bilingual public footer and Telegram presentation (PR #42) | Completed within merged source scope; unreleased | Integrated at `d05b4b8`, excluded from official v0.2.0; historical candidate evidence does not verify the new addendum; owner-verified destination missing |
-| Shared Telegram/Discord/Instagram public controls | Completed within locally verified source scope; UNRELEASED | Three coordinated public controls; Persian Home Hero only, English Home and other public Heroes/Footers retained; captured in both locales/themes and desktop/mobile; unavailable URLs do not navigate; owner activation remains Blocked; [evidence](../reviews/community-theme/DELIVERY.md) |
+| Shared Telegram/Discord public controls | Completed (local, unreleased) | Instagram promotion button retired from the public website (`codex/website-launch-content`); Telegram and Discord remain and show a link only when an owner-verified URL is configured. Production runtime configuration has no verified URLs, so both show the unavailable state |
 | Native white light-theme and service-logo corrections | Completed within local refinement scope; UNRELEASED | Exact white public/terminal/Vela/account canvases, text contrast >=4.5, five native service vectors and generated-session profile/purchase/portfolio/journal evidence; preserved dark-green theme; official review/deployment separate; [captures and gates](../reviews/community-theme/DELIVERY.md) |
-| Five platform availability presentation | Completed (candidate) | Windows, macOS, Linux, App Store/iOS, Google Play/Android; all Coming Soon because no installer/store listing is verified |
+| Five platform availability presentation | Retired (local, unreleased) | Download badges removed from the Challenges page: no installer or store listing exists. Desktop and mobile applications remain Planned below |
 | Desktop packaging | Planned | Unified release tar.gz packages web/API source and assets; it is not an OS installer |
 | Mobile applications | Planned | No published listing or mobile application delivery verified |
 | Official unified packaging | Completed within GitHub publication scope | v0.2.0 manifest/tag at `561e7f3`; PR #42 and current addendum excluded; requested v0.2.1 unallocated and requires coordination with the existing `feat:` minor-bump policy; local/deployed acceptance separate |

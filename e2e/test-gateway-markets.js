@@ -105,7 +105,7 @@ async function toggleLanguage(page) {
   }))
   R('challenges fa: landing hero intact', landing.h1?.includes('مهارت تو'), landing.h1)
   R('challenges fa: markets section (Gains table) intact', landing.marketsSection)
-  R('challenges fa: accounts/how/team sections intact', landing.accounts && landing.how && landing.team)
+  R('challenges fa: accounts/how sections intact, Team section retired', landing.accounts && landing.how && !landing.team)
   R('challenges fa: challenges nav item active', JSON.stringify(landing.navActive) === JSON.stringify(['چلنج‌های معاملاتی']), JSON.stringify(landing.navActive))
   R('challenges fa: nav hrefs are routes not anchors', landing.nav.every(h => /^#\/(fa|en)\//.test(h || '')), JSON.stringify(landing.nav))
   await page.screenshot({ path: `${SHOTS}/challenges-fa-1440.png` })

@@ -116,7 +116,7 @@ function swapArrows() {
   })
   const en = w().ofLang === 'en'
   document
-    .querySelectorAll('.button>span,.text-link>span,.nav-cta>span,.team-profile-link>span')
+    .querySelectorAll('.button>span,.text-link>span,.nav-cta>span')
     .forEach((sp) => {
       const ch = (sp.textContent || '').trim()
       if (ch.length === 1 && ARROW_MAP[ch]) {
@@ -160,7 +160,7 @@ export default function Landing() {
   const [searchParams] = useSearchParams()
   useEffect(() => {
     const section = searchParams.get('section')
-    if (!section || !['accounts', 'team', 'rules', 'how', 'platform', 'model', 'legal'].includes(section)) return
+    if (!section || !['accounts', 'rules', 'how', 'platform', 'model', 'legal'].includes(section)) return
     const timer = setTimeout(() => document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' }), 450)
     return () => clearTimeout(timer)
   }, [searchParams])

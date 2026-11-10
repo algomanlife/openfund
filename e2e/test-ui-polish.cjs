@@ -229,12 +229,12 @@ async function walletDisclosureFits(page){
    check(prefix+' terminal entry',await page.locator('header .nav-cta').isVisible());
    if(width===1440 && !connected || width===390 && connected){const file=`home-${locale}-${theme}-${width}-${connected?'test-wallet':'disconnected'}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file),fullPage:true});screenshots.push({file,fixture:connected?'connection-only test wallet':'none'})}
    await page.goto(BASE+`/${locale}/faq`);await page.waitForTimeout(300);await page.locator('#navigation').waitFor({state:'attached'});
-   /* 3 primary + Economy (Governance, Ambassador (IB), Transparency, Revenue Model, Live Market Access) + Resources (FAQ, Learn, Glossary, Tools, Growth Partner, Team); the coach is a section of Ambassador (IB) */
-   check(prefix+' other-page navigation',await page.locator('#navigation a').count()===14 && await page.locator(`#website-economy a[href="/${locale}/governance"]`).count()===1 && await page.locator(`#website-economy a[href="/${locale}/ambassador"]`).count()===1 && await page.locator(`#navigation a[href="/${locale}/coach"]`).count()===0);
+/* 3 primary + Economy (Governance, Ambassador, Transparency, Revenue Model, Live Market Access) + Resources (FAQ, Learn, Glossary, Tools, Growth Partner); retired Team and Coach links stay absent. */
+   check(prefix+' other-page navigation',await page.locator('#navigation a').count()===13 && await page.locator('#navigation a[href*="section=team"]').count()===0 && await page.locator(`#website-economy a[href="/${locale}/governance"]`).count()===1 && await page.locator(`#website-economy a[href="/${locale}/ambassador"]`).count()===1 && await page.locator(`#navigation a[href="/${locale}/coach"]`).count()===0);
    const tv=page.locator('.credits-row a[href="https://www.tradingview.com/news/"]');await tv.waitFor();
    check(prefix+' TradingView description',(await tv.innerText()).includes(locale==='fa'?'اطلاعات و اخبار بازارها':'Market Data & News'));
    check(prefix+' redundant external label removed',!(/منبع خارجی|External resource/.test(await tv.innerText())));
-   check(prefix+' five service references',await page.locator('.credits-row .render-credit').count()===5);
+   check(prefix+' four service references, no hosting credit',await page.locator('.credits-row .render-credit').count()===4&&await page.locator('.credits-row a[href*="render.com"]').count()===0);
    check(prefix+' public native surfaces',await nativeSurfaces(page,'html,body,header,.faq-item,.faq-help,.navlinks.open',theme));
    await whiteCanvas(page,'html,body,#root,main,.information-page',theme);
    await readableText(page,PUBLIC_TEXT,theme);

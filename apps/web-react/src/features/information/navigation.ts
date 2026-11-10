@@ -5,16 +5,17 @@ import { pickRecord, type AppLocale } from '../../i18n/locales'
 type Locale = AppLocale
 
 const primary = ['challenges', 'markets', 'rulebook'] as const
-/** Economy dropdown: Governance and the consolidated Ambassador (IB) page
- * (Brand Ambassador + Verified Trading Coach) first, then the economy pages. */
+/** Economy dropdown: governance and the consolidated Ambassador (IB) page. */
 const economy = ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access'] as const
-const resources = ['faq', 'learn', 'tools', 'referral', 'team'] as const
+const resources = ['faq', 'learn', 'tools', 'referral'] as const
 /** footer "Openfund documents" entries */
 const documentLabels = { whitepaper: text('Read the whitepaper', 'مطالعهٔ وایت‌پیپر') }
-const navigationLabels = { ...labels, team: text('Team', 'تیم'), glossary: text('Glossary', 'واژه‌نامه') }
+/** Retired public destinations (the Team section was removed); a stale CMS
+ *  footer row naming one is skipped instead of producing a dead link. */
+const RETIRED_DESTINATIONS = new Set(['team', 'team-section'])
+const navigationLabels = { ...labels, glossary: text('Glossary', 'واژه‌نامه') }
 
 export function navigationHref(route: string, locale: Locale): string {
-  if (route === 'team' || route === 'team-section') return `/${locale}/challenges?section=team`
   if (route === 'accounts-section') return `/${locale}/challenges?section=accounts`
   if (route === 'faq-section') return `/${locale}/faq`
   if (route === 'glossary') return `/${locale}/learn/glossary`
@@ -68,10 +69,11 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
   const footer = root.querySelector('#footer-links')
   if (footer) {
     (footer as HTMLElement).dataset.localeOwned = 'react'
-    const defaults = [...primary, ...economy, ...resources, 'glossary' as const].map(route => ({ destination: route === 'team' ? 'team-section' : route, label: navigationLabels[route] }))
+    const defaults = [...primary, ...economy, ...resources, 'glossary' as const].map(route => ({ destination: route, label: navigationLabels[route] }))
     const seen = new Set<string>()
     footer.replaceChildren()
     for (const item of [...(footerLinks || []), ...defaults]) {
+      if (RETIRED_DESTINATIONS.has(item.destination)) continue
       const href = navigationHref(item.destination, locale)
       const identity = item.destination === 'accounts-section' ? navigationHref('challenges', locale) : href
       if (seen.has(identity)) continue

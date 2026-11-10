@@ -21,26 +21,28 @@
     "test:terminal": "node --test test/terminal-completion.test.mjs",
     "test:i18n": "node scripts/i18n-sources.mjs --check",
     "test:governance": "node --test test/governance.test.mjs",
-    "test:chart": "node --test test/chart-quick-trade.test.mjs"
+    "test:chart": "node --test test/chart-quick-trade.test.mjs",
+    "test:content": "node --test test/public-content.test.mjs test/community.test.mjs",
+    "check:product-rules": "node --test test/product-rules.test.mjs"
   },
   "dependencies": {
     "@luxalgo/vela": "0.9.3",
     "@luxalgo/vela-pinets": "0.3.2",
     "@rainbow-me/rainbowkit": "^2.2.11",
-    "@tanstack/react-query": "^5.105.0",
+    "@tanstack/react-query": "^5.107.1",
     "pinets": "0.13.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router-dom": "^7.1.0",
-    "viem": "^2.57.13",
+    "viem": "^2.57.16",
     "wagmi": "^2.19.5"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",
-    "esbuild": "0.25.12",
-    "typescript": "~5.7.2",
+    "esbuild": "0.28.2",
+    "typescript": "~5.9.3",
     "vite": "^6.0.5"
   }
 }

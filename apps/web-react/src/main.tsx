@@ -80,7 +80,8 @@ const LEGACY_SECTIONS: Record<string, { page: 'markets' | 'challenges'; scroll?:
   markets: { page: 'markets' },
   accounts: { page: 'challenges', scroll: 'accounts' },
   how: { page: 'challenges', scroll: 'how' },
-  team: { page: 'challenges', scroll: 'team' },
+  /* the public Team section was removed; old '#team' links land on Challenges */
+  team: { page: 'challenges' },
   rules: { page: 'challenges', scroll: 'rules' },
   platform: { page: 'challenges', scroll: 'platform' },
   model: { page: 'challenges', scroll: 'model' },

@@ -66,7 +66,7 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
           <div className="home-art"><AnimatedTradingTerminalIllustration /></div>
           <div className="home-panel-copy">
             <h2>{t.propTitle}</h2>
-          <p className="home-product-note" title={t.propDescription || undefined}>{t.propDescription || pick(locale, 'تمرین و ارزیابی · تصویر نمایشی', 'Practice and evaluation · illustration')}</p>
+          <p className="home-product-note" title={t.propDescription || undefined}>{t.propDescription || pick(locale, 'ارزیابی معاملاتی در محیط شبیه‌سازی‌شده', 'Trading evaluations in a simulated environment')}</p>
             <a className="button" href={c.propCtaDestination === 'terminal' ? `/${locale}/prop/trade` : CTA_HREF.challenges(locale)}>
               {t.propCta}
               <span aria-hidden="true">←</span>

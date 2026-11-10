@@ -31,7 +31,6 @@ export const marketsSeed: MarketsSeed = {
 export interface FooterLinkSeed { destination: string; label: Localized }
 export const footerLinkSeed: FooterLinkSeed[] = [
   { destination: 'accounts-section', label: text('Challenges', 'چلنج‌ها') },
-  { destination: 'team-section', label: text('Team', 'تیم') },
   { destination: 'faq-section', label: text('FAQ', 'پرسش‌ها') },
   { destination: 'markets', label: text('Markets', 'بازارها') },
   { destination: 'rulebook', label: text('Trading Rules', 'قوانین معاملاتی') },

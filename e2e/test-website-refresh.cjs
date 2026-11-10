@@ -154,34 +154,26 @@ async function realThemeClicks(browser) {
       const tag = `${locale}/${theme}/${width}`;
       check(`${tag} direction`, await page.locator('html').getAttribute('dir') === (locale === 'fa' ? 'rtl' : 'ltr'));
       check(`${tag} theme`, await page.locator('html').getAttribute('data-theme') === theme);
-      check(`${tag} platforms`, await page.locator('.desktop-btns .desktop-btn').count() === 5);
-      check(`${tag} truthful availability`, await page.locator('.desktop-btns a').count() === 0 && await page.locator('.desktop-btns [aria-disabled="true"]').count() === 5);
-      check(`${tag} heading`, await page.locator('.desktop-title').innerText() === (locale === 'fa' ? 'دسکتاپ و موبایل' : 'Desktop & Mobile'));
-      check(`${tag} localized availability`, (await page.locator('.desktop-btns small').allTextContents()).every(t => t === (locale === 'fa' ? 'به‌زودی' : 'Coming Soon')));
-      check(`${tag} five services`, await page.locator('.credits-row > a').count() === 5);
+      check(`${tag} no unreleased app downloads`, await page.locator('#desktop, .desktop-btns').count() === 0);
+      check(`${tag} no Team section`, await page.locator('#team, .team-section, #team-dialog').count() === 0);
+      check(`${tag} four services, no hosting credit`, await page.locator('.credits-row > a').count() === 4 && await page.locator('.credits-row a[href*="render.com"]').count() === 0);
       check(`${tag} attribution`, (await page.locator('footer').innerText()).includes(locale === 'fa' ? 'توسعه داده شده توسط معامله‌گران' : 'Developed by Traders'));
       check(`${tag} no obsolete label`, !/External resource|منبع خارجی|Developed in San Francisco|توسعه‌داده‌شده در سان‌فرانسیسکو/.test(await page.locator('footer').innerText()));
       check(`${tag} two Telegram actions`, await page.locator('.telegram-community').count() === 2);
       check(`${tag} two Discord actions`, await page.locator('.discord-community').count() === 2);
-      check(`${tag} two Instagram actions`, await page.locator('.instagram-community').count() === 2);
-      check(`${tag} coordinated three-provider geometry`, await page.locator('.community-group').evaluateAll(groups => groups.every(group => {
+      check(`${tag} no Instagram promo action`, await page.locator('.instagram-community').count() === 0);
+      check(`${tag} coordinated two-provider geometry`, await page.locator('.community-group').evaluateAll(groups => groups.every(group => {
         const buttons = [...group.querySelectorAll('.community-button')];
         const boxes = buttons.map(button => button.getBoundingClientRect());
         const styles = buttons.map(button => getComputedStyle(button));
-        return buttons.length === 3 && boxes.every(box => Math.abs(box.height - 44) <= 1)
+        return buttons.length === 2 && boxes.every(box => Math.abs(box.height - 44) <= 1)
           && styles.every(style => ['borderRadius', 'padding', 'fontSize', 'fontWeight', 'lineHeight', 'gap', 'transitionDuration'].every(key => style[key] === styles[0][key]))
           && styles.every(style => style.fontSize === '12px' && style.padding === '8px 12px' && style.borderRadius === '8px')
           && buttons.every(button => { const icon = getComputedStyle(button.querySelector('img')); return icon.width === '20px' && icon.height === '20px' && icon.padding === '0px' && icon.borderWidth === '0px' && icon.backgroundColor === 'rgba(0, 0, 0, 0)'; })
           && getComputedStyle(group).display === 'inline-flex'
           && (innerWidth >= 1200 ? boxes.every(box => Math.abs(box.top - boxes[0].top) <= 1) && group.getBoundingClientRect().width < group.parentElement.getBoundingClientRect().width - 50 : true)
-          && (innerWidth <= 600 ? boxes[2].top > boxes[0].top : true)
           && buttons.every(button => { const text = button.querySelector('.community-copy'); return text.scrollWidth <= text.clientWidth + 1; });
       })));
-      const instagram = page.locator('.hero .instagram-community');
-      check(`${tag} unavailable Instagram`, await instagram.getAttribute('href') === null && await instagram.getAttribute('aria-disabled') === 'true');
-      check(`${tag} exact Instagram label`, await instagram.locator('.community-copy > span').innerText() === (locale === 'fa' ? 'اخبار، آموزش و سرگرمی' : 'News, Education & Entertainment'));
-      const beforeInstagram = page.url(); await instagram.dispatchEvent('click');
-      check(`${tag} missing Instagram never navigates`, page.url() === beforeInstagram);
       await page.waitForFunction(() => getComputedStyle(document.querySelector('.credits-row')).display === 'grid' && [...document.querySelectorAll('.credits-row img')].every(img => img.complete && img.naturalWidth > 0));
       await page.evaluate(() => document.fonts.ready);
       check(`${tag} aligned service tracks and name baselines`, await page.locator('.credits-row').evaluate(row => {
@@ -195,7 +187,6 @@ async function realThemeClicks(browser) {
       const discord = page.locator('.hero .discord-community');
       check(`${tag} unavailable Discord`, await discord.getAttribute('href') === null && await discord.getAttribute('aria-disabled') === 'true');
       check(`${tag} localized Discord`, await discord.locator('.community-copy > span').innerText() === (locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'));
-      check(`${tag} native compact platform icons`, await page.locator('.desktop-btns .platform-icon > svg').count() === 5 && await page.locator('.desktop-btns img').count() === 0);
       check(`${tag} no recolored service logos`, await page.locator('.credits-row img,.credits-row svg,.community-button img').evaluateAll(logos => logos.every(logo => getComputedStyle(logo).filter === 'none')));
       const telegram = page.locator('.hero .telegram-community');
       check(`${tag} unavailable community does not navigate`, await telegram.getAttribute('href') === null && await telegram.getAttribute('aria-disabled') === 'true');
@@ -216,7 +207,6 @@ async function realThemeClicks(browser) {
       if (width === 1440 && ['dark', 'light'].includes(theme)) {
         await page.evaluate(() => scrollTo(0, 0));
         await shot(page, `challenges-${locale}-${theme}`, `/${locale}/challenges`);
-        await shot(page, `downloads-${locale}-${theme}`, `/${locale}/challenges#desktop`, page.locator('#desktop'));
         await shot(page, `footer-${locale}-${theme}`, `/${locale}/challenges`, page.locator('footer'));
       }
       await context.close();
@@ -227,10 +217,10 @@ async function realThemeClicks(browser) {
     await page.waitForFunction(() => getComputedStyle(document.querySelector('.home-stage')).display === 'flex' && getComputedStyle(document.querySelector('.home-community .community-group')).flexWrap === 'nowrap');
     await page.evaluate(() => document.fonts.ready);
     check('Persian Home has no footer', await page.locator('footer').count() === 0);
-    check('Persian Home hero Instagram only', await page.locator('.instagram-community').count() === 1 && await page.locator('.home-community .instagram-community').count() === 1);
-    check('Persian Home desktop compact three-provider row', await page.locator('.home-community .community-button').evaluateAll(buttons => {
+    check('Persian Home has no Instagram promo', await page.locator('.instagram-community').count() === 0);
+    check('Persian Home desktop compact two-provider row', await page.locator('.home-community .community-button').evaluateAll(buttons => {
       const boxes = buttons.map(button => button.getBoundingClientRect());
-      return boxes.length === 3 && boxes.every(box => Math.abs(box.top - boxes[0].top) <= 1 && Math.abs(box.height - 44) <= 1 && box.width < 300);
+      return boxes.length === 2 && boxes.every(box => Math.abs(box.top - boxes[0].top) <= 1 && Math.abs(box.height - 44) <= 1 && box.width < 300);
     }));
     check('Persian Home hero Discord only', await page.locator('.discord-community').count() === 1 && await page.locator('.home-community .discord-community').count() === 1);
     check('Persian Home hero community including unavailable CMS', await page.locator('.telegram-community').count() === 1 && await page.locator('.home-community .telegram-community').count() === 1);
@@ -264,7 +254,7 @@ async function realThemeClicks(browser) {
       try {
         await entry.goto(`${BASE}/${route}`);
         await entry.locator('footer .telegram-community').waitFor();
-        check(`${route} shared public footer`, await entry.locator('.credits-row > a').count() === 5);
+        check(`${route} shared public footer`, await entry.locator('.credits-row > a').count() === 4 && await entry.locator('.credits-row a[href*="render.com"]').count() === 0);
       } finally { await entry.close(); }
     }
     for (const route of ['en/prop/trade', 'fa/perpetual/trade', 'en/prop/dashboard']) {
@@ -293,12 +283,10 @@ async function realThemeClicks(browser) {
         && document.querySelector('.hero .telegram-community')?.textContent.includes('جامعه معامله‌گران'));
       await toggleLanguage(localePage);
       await localePage.waitForFunction(() => document.documentElement.lang === 'en' && window.ofLang === 'en' && document.querySelector('.hero .telegram-community')?.textContent?.includes('Traders talk on'));
-      check('language toggle updates Instagram portal', await localePage.locator('.hero .instagram-community .community-copy > span').innerText() === 'News, Education & Entertainment');
       check('language toggle updates Discord portal', (await localePage.locator('.hero .discord-community').innerText()).includes('Traders talk on'));
       check('language toggle updates React portal', (await localePage.locator('.hero .telegram-community').innerText()).includes('Traders talk on'));
       await toggleLanguage(localePage);
       await localePage.waitForFunction(() => document.documentElement.lang === 'fa' && window.ofLang === 'fa' && document.querySelector('.hero .telegram-community')?.textContent?.includes('جامعه معامله‌گران'));
-      check('language roundtrip restores Instagram', await localePage.locator('.hero .instagram-community .community-copy > span').innerText() === 'اخبار، آموزش و سرگرمی');
       check('language roundtrip restores portal', (await localePage.locator('.hero .telegram-community').innerText()).includes('جامعه معامله‌گران'));
       for (const locale of ['en', 'fa', 'en', 'fa']) {
         await localePage.locator('.of-language-select select').first().selectOption(locale);
