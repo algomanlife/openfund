@@ -24,29 +24,53 @@
  *    exactly once across the whole system.
  */
 import { Router } from 'express'
-import { createClient, http } from 'viem'
-import { sepolia, arbitrum } from 'viem/chains'
+import crypto from 'node:crypto'
 import { invoicePdf } from './invoice-pdf.js'
 import { ChallengeService, normalizeRules } from './evaluation.js'
 import { recognizeCommissionTx, attributeAtFirstOrder } from './partners.js'
+import { createRpcVerifier, SUPPORTED_CHAINS } from './payment-verification.js'
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const txHashRe = /^0x[0-9a-f]{64}$/i
-const TRANSFER_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
 
-const cfg = () => ({
-  receiver: (process.env.PURCHASE_PAYMENT_RECEIVER || '').toLowerCase() || null,
-  chainId: Number(process.env.PURCHASE_PAYMENT_CHAIN || 11155111),
-  token: (process.env.PURCHASE_PAYMENT_TOKEN || '').toLowerCase() || null,
-  tokenDecimals: Number(process.env.PURCHASE_PAYMENT_DECIMALS ?? 18),
-  /* finality policy: minimum confirmations before a payment is accepted
-     (default 0 = single receipt, documented; reorg-depth configurable) */
-  minConfirmations: Number(process.env.PURCHASE_PAYMENT_MIN_CONFIRMATIONS ?? 0) || 0,
-  /* late-payment grace: a transaction mined within this many minutes
-     after order expiry still pays the order (money received is never
-     silently dropped; outside the window → manual reconciliation) */
-  lateGraceMinutes: Number(process.env.PURCHASE_LATE_GRACE_MINUTES ?? 60) || 0,
-})
+const csv = v => String(v || '').split(',').map(x => x.trim().toLowerCase()).filter(Boolean)
+const isProd = () => process.env.NODE_ENV === 'production'
+export const cfg = () => {
+  const token = (process.env.PURCHASE_PAYMENT_TOKEN || '').toLowerCase() || null
+  return {
+    receiver: (process.env.PURCHASE_PAYMENT_RECEIVER || '').toLowerCase() || null,
+    chainId: Number(process.env.PURCHASE_PAYMENT_CHAIN || 11155111),
+    token,
+    /* when unset the token's decimals are read from the contract; when set
+       they must MATCH the contract (a mismatch fails closed) */
+    tokenDecimals: process.env.PURCHASE_PAYMENT_DECIMALS === undefined || process.env.PURCHASE_PAYMENT_DECIMALS === ''
+      ? null : Number(process.env.PURCHASE_PAYMENT_DECIMALS),
+    /* dedicated RPC endpoint — the public fallback is never used */
+    rpcUrl: process.env.PURCHASE_RPC_URL || null,
+    /* operator-approved payment routers (e.g. the DePay Payment Router on
+       the configured chain). Empty = direct token transfers only. */
+    routers: csv(process.env.PURCHASE_ROUTER_ADDRESSES),
+    /* finality policy: minimum confirmations before a payment is accepted.
+       Production defaults to a conservative depth; an explicit value wins. */
+    minConfirmations: process.env.PURCHASE_PAYMENT_MIN_CONFIRMATIONS !== undefined && process.env.PURCHASE_PAYMENT_MIN_CONFIRMATIONS !== ''
+      ? Number(process.env.PURCHASE_PAYMENT_MIN_CONFIRMATIONS) || 0
+      : (isProd() ? 12 : 0),
+    /* late-payment grace: a transaction mined within this many minutes
+       after order expiry still pays the order (money received is never
+       silently dropped; outside the window → manual reconciliation) */
+    lateGraceMinutes: Number(process.env.PURCHASE_LATE_GRACE_MINUTES ?? 60) || 0,
+    /* native value is never converted to USD: only non-production test
+       chains without an approved token may use it */
+    allowNative: !isProd() && !token,
+  }
+}
+
+/** payments are offered only when the configuration is complete and safe */
+export function paymentsReady(c = cfg()) {
+  if (!c.receiver || !SUPPORTED_CHAINS.has(c.chainId)) return false
+  if (isProd()) return !!(c.token && c.rpcUrl)
+  return true
+}
 
 const fail = (status, error) => {
   const e = new Error(error)
@@ -54,56 +78,6 @@ const fail = (status, error) => {
   return e
 }
 const wrap = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
-
-const chainById = new Map([[sepolia.id, sepolia], [arbitrum.id, arbitrum]])
-
-/* ---------- default on-chain verifier (injectable for tests) ---------- */
-const clients = new Map()
-async function defaultVerifier(txHash, expect) {
-  const chain = chainById.get(expect.chainId)
-  if (!chain) throw fail(400, 'unsupported_chain')
-  if (!clients.has(chain.id)) clients.set(chain.id, createClient({ chain, transport: http(undefined, { timeout: 8000, retryCount: 0 }) }))
-  const client = clients.get(chain.id)
-  const receipt = await client.getTransactionReceipt({ hash: txHash })
-  if (!receipt || receipt.status !== 'success') throw fail(400, 'tx_not_successful')
-  const tx = await client.getTransaction({ hash: txHash })
-  if (!tx || !tx.from) throw fail(400, 'tx_not_found')
-  if (tx.from.toLowerCase() !== expect.from) throw fail(400, 'wrong_sender')
-  let amount = null
-  let toAddress = null
-  if (expect.token) {
-    /* ERC-20 transfer: match the Transfer event from payer to receiver */
-    const transfer = (receipt.logs || []).find(l => (l.topics?.[0] || '').toLowerCase() === TRANSFER_TOPIC)
-    if (!transfer || (transfer.topics?.[1] || '').toLowerCase() !== '0x' + '0'.repeat(24) + expect.from.slice(2)) throw fail(400, 'transfer_not_from_payer')
-    if ((transfer.address || '').toLowerCase() !== expect.token) throw fail(400, 'wrong_token')
-    toAddress = '0x' + (transfer.topics?.[2] || '').slice(26)
-    if (toAddress.toLowerCase() !== expect.receiver) throw fail(400, 'wrong_receiver')
-    amount = BigInt(transfer.data).toString()
-    const min = BigInt(expect.minAmountUnits)
-    if (amount < min) throw fail(400, 'insufficient_amount')
-  } else {
-    /* native transfer */
-    if ((tx.to || '').toLowerCase() !== expect.receiver) throw fail(400, 'wrong_receiver')
-    toAddress = (tx.to || '').toLowerCase()
-    amount = (tx.value || 0n).toString()
-    if (amount < expect.minAmountUnits) throw fail(400, 'insufficient_amount')
-  }
-  const block = await client.getBlock({ blockNumber: receipt.blockNumber })
-  if (Number(block.timestamp) * 1000 < expect.notBefore) throw fail(400, 'tx_too_old')
-  /* finality policy: wait for the configured confirmation depth so a
-     reorged transaction can never provision a challenge (retryable) */
-  if (expect.minConfirmations > 0) {
-    const head = await client.getBlockNumber()
-    if (head - receipt.blockNumber < BigInt(expect.minConfirmations))
-      throw Object.assign(new Error('tx_not_final'), { status: 409, retryable: true })
-  }
-  return {
-    txHash, chainId: expect.chainId, blockNumber: Number(receipt.blockNumber),
-    fromAddress: tx.from.toLowerCase(), toAddress, amount, tokenAddress: expect.token,
-    blockTimestamp: new Date(Number(block.timestamp) * 1000).toISOString(),
-    confirmations: expect.minConfirmations,
-  }
-}
 
 /* ---------- provisioning: one transaction, exactly once ---------- */
 export async function confirmPurchase(pool, { orderId, userId, evidence, source }) {
@@ -120,12 +94,12 @@ export async function confirmPurchase(pool, { orderId, userId, evidence, source 
       await client.query('COMMIT')
       return { replayed: true, orderId, paymentId: payment?.id, invoiceId: invoice?.id, invoiceNumber: invoice?.number, challengeId: challenge?.id }
     }
-    if (order.status !== 'pending') throw fail(409, 'order_not_pending')
+    if (order.status !== 'pending' && order.status !== 'expired') throw fail(409, 'order_not_pending')
     /* late-payment policy: an expired order still accepts an on-chain
        payment whose block was mined within the grace window AFTER
        expiry — money received is never silently dropped. Outside the
        window → explicit 409 for manual reconciliation (refund path). */
-    if (order.expires_at && order.expires_at < new Date()) {
+    if (order.status === 'expired' || (order.expires_at && order.expires_at < new Date())) {
       const graceMs = cfg().lateGraceMinutes * 60_000
       const minedAt = evidence.blockTimestamp ? new Date(evidence.blockTimestamp).getTime() : NaN
       if (!Number.isFinite(minedAt) || minedAt > new Date(order.expires_at).getTime() + graceMs)
@@ -143,7 +117,7 @@ export async function confirmPurchase(pool, { orderId, userId, evidence, source 
         evidence.tokenAddress ?? null, JSON.stringify({ ...evidence, source })])).rows[0]
 
     const { rows: [paid] } = await client.query(
-      `UPDATE purchase_orders SET status='paid', paid_at=now() WHERE id=$1 AND status='pending' RETURNING paid_at`,
+      `UPDATE purchase_orders SET status='paid', paid_at=now() WHERE id=$1 AND status IN ('pending','expired') RETURNING paid_at`,
       [orderId])
     if (!paid) throw fail(409, 'order_not_pending')
 
@@ -200,11 +174,164 @@ export async function confirmPurchase(pool, { orderId, userId, evidence, source 
   }
 }
 
+/* ---------- payment attempts, classification and recovery ---------- */
+const RETRYABLE = new Set(['tx_pending', 'tx_not_final', 'rpc_unavailable', 'tx_reorged'])
+const CLASSIFY = {
+  insufficient_amount: 'underpayment', wrong_token: 'wrong_token', wrong_receiver: 'wrong_receiver',
+  wrong_sender: 'wrong_sender', tx_not_successful: 'reverted', order_expired: 'late',
+  tx_already_used: 'duplicate', native_payment_unsupported: 'wrong_token', unapproved_contract: 'wrong_receiver',
+  unsupported_chain: 'wrong_token', tx_too_old: 'other',
+}
+/* outcomes a human must look at (money may have moved, or may need returning) */
+const NEEDS_REVIEW = new Set(['underpayment', 'wrong_token', 'wrong_receiver', 'late', 'duplicate', 'overpayment'])
+
+let defaultVerifier = null
+export function defaultPaymentVerifier() {
+  return defaultVerifier ||= createRpcVerifier({ rpcUrl: cfg().rpcUrl })
+}
+
+async function startAttempt(pool, { orderId, userId, chainId, txHash }) {
+  const { rows: [a] } = await pool.query(
+    `INSERT INTO payment_attempts (purchase_order_id, user_id, chain_id, tx_hash)
+     VALUES ($1,$2,$3,$4)
+     ON CONFLICT (purchase_order_id, chain_id, tx_hash)
+     DO UPDATE SET attempts = payment_attempts.attempts + 1, last_attempt_at = now()
+       WHERE payment_attempts.status <> 'confirmed'
+     RETURNING id`, [orderId, userId, chainId, txHash.toLowerCase()])
+  return a?.id ?? null
+}
+async function finishAttempt(pool, id, { status, code = null, retryable = false, classification = null, detail = {} }) {
+  if (!id) return
+  await pool.query(
+    `UPDATE payment_attempts SET status=$2, error_code=$3, retryable=$4, classification=$5, detail=$6,
+            last_attempt_at=now(),
+            review_status = CASE WHEN review_status='none' AND $7 THEN 'open' ELSE review_status END
+      WHERE id=$1`,
+    [id, status, code, retryable, classification, JSON.stringify(detail), classification ? NEEDS_REVIEW.has(classification) : false])
+}
+
+/**
+ * Verify an on-chain payment for an order and provision exactly once.
+ * Shared by the customer route, the recovery sweep and operator re-verify.
+ * The chain verifier is authoritative; the frontend never confirms payment.
+ */
+export async function verifyAndConfirm({ pool, verifier, order, userId, walletAddress, txHash, source }) {
+  const c = cfg()
+  const attemptId = await startAttempt(pool, { orderId: order.id, userId, chainId: c.chainId, txHash })
+  try {
+    const evidence = await verifier(txHash, {
+      chainId: c.chainId, receiver: c.receiver, token: c.token, tokenDecimals: c.tokenDecimals,
+      priceUsd: String(order.price_usd), routers: c.routers, allowNative: c.allowNative,
+      from: walletAddress, notBefore: new Date(order.created_at).getTime() - 5 * 60_000,
+      minConfirmations: c.minConfirmations,
+    })
+    const result = await confirmPurchase(pool, { orderId: order.id, userId, evidence, source })
+    const over = evidence.overpaymentUnits && evidence.overpaymentUnits !== '0'
+    await finishAttempt(pool, attemptId, {
+      status: 'confirmed', classification: over ? 'overpayment' : null,
+      detail: { route: evidence.route, amount: evidence.amount, confirmations: evidence.confirmations, overpaymentUnits: evidence.overpaymentUnits, source },
+    })
+    return result
+  } catch (e) {
+    const code = e.message
+    const retryable = !!e.retryable || RETRYABLE.has(code)
+    await finishAttempt(pool, attemptId, {
+      status: retryable ? 'pending' : 'rejected', code, retryable,
+      classification: retryable ? null : (CLASSIFY[code] || 'other'),
+      detail: { source, ...(e.received ? { received: e.received } : {}), ...(e.confirmations != null ? { confirmations: e.confirmations, required: e.required } : {}), ...(e.detail ? { detail: e.detail } : {}) },
+    }).catch(() => {})
+    throw e
+  }
+}
+
+/**
+ * DePay server callback → a HINT, never a confirmation.
+ * The callback is verified against the operator-configured DePay public key
+ * (RSA-PSS, SHA-256 over the raw body, x-signature, base64url) and only
+ * registers the reported transaction as a retryable attempt for the sender's
+ * order. The recovery sweep then proves the payment on-chain; nothing in the
+ * callback body (amount, token, receiver, success) is trusted.
+ */
+export function verifyDepaySignature(rawBody, signature, publicKeyPem) {
+  try {
+    return crypto.verify('sha256', rawBody, { key: publicKeyPem, padding: crypto.constants.RSA_PKCS1_PSS_PADDING, saltLength: 64 },
+      Buffer.from(String(signature || ''), 'base64url'))
+  } catch { return false }
+}
+const DEPAY_NAME = { 1: 'ethereum', 42161: 'arbitrum', 8453: 'base' }
+export async function recordPaymentHint(pool, body) {
+  const c = cfg()
+  const tx = String(body?.transaction || '').toLowerCase()
+  const sender = String(body?.sender || '').toLowerCase()
+  if (!txHashRe.test(tx) || !/^0x[0-9a-f]{40}$/.test(sender)) return { recorded: false, reason: 'invalid_payload' }
+  if (String(body?.blockchain || '').toLowerCase() !== DEPAY_NAME[c.chainId]) return { recorded: false, reason: 'other_chain' }
+  const user = (await pool.query('SELECT id FROM openfund_users WHERE lower(wallet_address)=$1', [sender])).rows[0]
+  if (!user) return { recorded: false, reason: 'unknown_sender' }
+  const wanted = body?.payload?.orderId
+  const order = (await pool.query(
+    `SELECT id FROM purchase_orders WHERE user_id=$1 AND status IN ('pending','expired')
+        AND ($2::uuid IS NULL OR id=$2::uuid) AND created_at > now() - interval '24 hours'
+      ORDER BY created_at DESC LIMIT 1`, [user.id, uuid.test(wanted || '') ? wanted : null])).rows[0]
+  if (!order) return { recorded: false, reason: 'no_open_order' }
+  await pool.query(
+    `INSERT INTO payment_attempts (purchase_order_id, user_id, chain_id, tx_hash, status, retryable, detail)
+     VALUES ($1,$2,$3,$4,'pending',true,$5) ON CONFLICT (purchase_order_id, chain_id, tx_hash) DO NOTHING`,
+    [order.id, user.id, c.chainId, tx, JSON.stringify({ source: 'depay_callback' })])
+  return { recorded: true, orderId: order.id, userId: user.id, wallet: sender, txHash: tx }
+}
+
+/**
+ * DePay dynamic configuration. DePay POSTs the widget payload ({ orderId })
+ * to our endpoint when the widget opens and expects the accepted payment
+ * (blockchain, token, amount, receiver) back, signed with OUR key, within two
+ * seconds. Everything comes from the server-held order and configuration, so
+ * the browser can neither choose the price nor the receiver. Nothing secret
+ * is returned (the receiver is a public address).
+ */
+export async function buildDepayConfiguration(pool, orderId) {
+  const c = cfg()
+  if (!uuid.test(orderId || '')) throw fail(400, 'invalid_order')
+  const blockchain = DEPAY_NAME[c.chainId]
+  if (!blockchain || !c.token || !c.receiver) throw fail(409, 'depay_unsupported_configuration')
+  const order = (await pool.query(`SELECT status, price_usd, expires_at FROM purchase_orders WHERE id=$1`, [orderId])).rows[0]
+  if (!order) throw fail(404, 'order_not_found')
+  if (order.status !== 'pending' || (order.expires_at && new Date(order.expires_at) < new Date())) throw fail(409, 'order_not_payable')
+  return { accept: [{ blockchain, amount: String(Number(order.price_usd)), token: c.token, receiver: c.receiver }] }
+}
+export function signDepayConfiguration(json, privateKeyPem) {
+  return crypto.sign('sha256', Buffer.from(json), { key: privateKeyPem, padding: crypto.constants.RSA_PKCS1_PSS_PADDING, saltLength: 64 }).toString('base64url')
+}
+const pem = v => String(v || '').replace(/\\n/g, '\n')
+
+/** background recovery: re-verify attempts stuck on a retryable condition */
+export async function recoverPendingPayments({ pool, verifier = defaultPaymentVerifier(), limit = 20, minAgeSeconds = 45, log = () => {} }) {
+  const { rows } = await pool.query(
+    `SELECT a.tx_hash, o.id AS order_id, o.price_usd, o.created_at, o.user_id, u.wallet_address
+       FROM payment_attempts a
+       JOIN purchase_orders o ON o.id = a.purchase_order_id
+       JOIN openfund_users u ON u.id = a.user_id
+      WHERE a.status='pending' AND a.retryable
+        AND a.first_seen_at > now() - interval '24 hours'
+        AND a.last_attempt_at < now() - make_interval(secs => $2)
+        AND o.status IN ('pending','expired')
+      ORDER BY a.last_attempt_at LIMIT $1`, [limit, minAgeSeconds])
+  let recovered = 0
+  for (const r of rows) {
+    try {
+      await verifyAndConfirm({ pool, verifier, order: { id: r.order_id, price_usd: r.price_usd, created_at: r.created_at },
+        userId: r.user_id, walletAddress: r.wallet_address, txHash: r.tx_hash, source: 'recovery' })
+      recovered++
+    } catch (e) { log(r.order_id, e.message) }
+  }
+  return { checked: rows.length, recovered }
+}
+
 /* ---------- routes ---------- */
-export function purchaseRoutes({ pool, requireAuth, audit, verifier = defaultVerifier }) {
+export function purchaseRoutes({ pool, requireAuth, audit, verifier = null }) {
+  const chainVerifier = () => verifier || defaultPaymentVerifier()
   const router = Router()
 
-  const paymentEnabled = () => !!cfg().receiver
+  const paymentEnabled = () => paymentsReady()
 
   const orderView = async (id, userId) => {
     const { rows } = await pool.query(
@@ -247,7 +374,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = defaultVer
       plans,
       paymentsEnabled: paymentEnabled(),
       payment: paymentEnabled()
-        ? { chainId: c.chainId, receiver: c.receiver, token: c.token }
+        ? { chainId: c.chainId, receiver: c.receiver, token: c.token, tokenDecimals: c.tokenDecimals, routers: c.routers }
         : null,
     })
   }))
@@ -304,28 +431,65 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = defaultVer
     const order = await orderView(orderId, req.user.user_id)
     if (!order) throw fail(404, 'order_not_found')
     if (order.status === 'paid') return res.json(await confirmPurchase(pool, { orderId, userId: req.user.user_id, evidence: { txHash, chainId: cfg().chainId }, source: 'replay' }))
-    if (order.status !== 'pending') throw fail(409, 'order_not_pending')
+    if (order.status !== 'pending' && order.status !== 'expired') throw fail(409, 'order_not_pending')
     /* NOTE: expiry is NOT rejected here — the on-chain evidence is
        verified first, then confirmPurchase applies the late-payment
        grace policy (money received inside the window is never dropped) */
-
-    const c = cfg()
-    /* exact decimal-string → smallest-unit conversion (float math would lose
-       precision above 2^53, e.g. $44 × 10^18) */
-    const toUnits = (usd, decimals) => {
-      const [i, f = ''] = String(usd).split('.')
-      if (f.length > decimals) throw fail(400, 'price_precision')
-      return (BigInt(i) * 10n ** BigInt(decimals) + BigInt((f + '0'.repeat(decimals)).slice(0, decimals))).toString()
+    const raw = (await pool.query('SELECT price_usd, created_at FROM purchase_orders WHERE id=$1', [orderId])).rows[0]
+    try {
+      const result = await verifyAndConfirm({
+        pool, verifier: chainVerifier(), order: { id: orderId, price_usd: raw.price_usd, created_at: raw.created_at },
+        userId: req.user.user_id, walletAddress: req.user.wallet_address, txHash, source: 'onchain',
+      })
+      await audit('purchase_verified', req.user.user_id, req, { orderId, txHash, challengeId: result.challengeId })
+      res.json(result)
+    } catch (e) {
+      if (e.retryable) return res.status(e.status || 409).json({ error: e.message, retryable: true, confirmations: e.confirmations, required: e.required })
+      throw e
     }
-    const minUnits = c.token ? toUnits(order.price_usd, c.tokenDecimals) : toUnits(order.price_usd, 18)
-    const evidence = await verifier(txHash, {
-      chainId: c.chainId, receiver: c.receiver, token: c.token, minAmountUnits: minUnits,
-      from: req.user.wallet_address, notBefore: new Date(order.created_at).getTime() - 5 * 60_000,
-      minConfirmations: c.minConfirmations,
+  }))
+
+  /* 4b — payment attempts for the checkout (page-refresh recovery: a
+     wallet transaction that succeeded but whose verification request was
+     lost is found again here and can be re-verified) */
+  router.get('/purchases/orders/:id/attempts', requireAuth, wrap(async (req, res) => {
+    if (!uuid.test(req.params.id)) throw fail(404, 'order_not_found')
+    const { rows } = await pool.query(
+      `SELECT a.tx_hash, a.chain_id, a.status, a.error_code, a.retryable, a.classification, a.attempts, a.last_attempt_at
+         FROM payment_attempts a JOIN purchase_orders o ON o.id=a.purchase_order_id
+        WHERE a.purchase_order_id=$1 AND o.user_id=$2 ORDER BY a.first_seen_at DESC LIMIT 20`,
+      [req.params.id, req.user.user_id])
+    res.json({ attempts: rows })
+  }))
+
+  /* 4c — DePay dynamic configuration (called by DePay when the widget opens) */
+  router.post('/purchases/depay/configuration', wrap(async (req, res) => {
+    const key = pem(process.env.DEPAY_CONFIG_PRIVATE_KEY)
+    if (!key || !paymentEnabled()) throw fail(404, 'not_found')
+    const orderId = req.body?.orderId ?? req.body?.payload?.orderId
+    const json = JSON.stringify(await buildDepayConfiguration(pool, orderId))
+    res.set('Content-Type', 'application/json; charset=utf-8').set('x-signature', signDepayConfiguration(json, key)).set('Cache-Control', 'no-store').send(json)
+  }))
+
+  /* 4d — DePay server callback. The signature proves the call is DePay's;
+     the body is still only a HINT (which order, which hash). The response is
+     200 immediately (DePay retries otherwise) and the on-chain verifier then
+     decides — immediately here, and again from the recovery sweep if the chain
+     is not ready. Nothing in the body (amount, token, success) is trusted. */
+  router.post('/purchases/depay/callback', wrap(async (req, res) => {
+    const key = process.env.DEPAY_CALLBACK_PUBLIC_KEY
+    if (!key || !paymentEnabled()) throw fail(404, 'not_found')
+    if (!req.rawBody || !verifyDepaySignature(req.rawBody, req.headers['x-signature'], pem(key))) throw fail(401, 'invalid_signature')
+    const out = await recordPaymentHint(pool, req.body)
+    res.json({ ok: true, recorded: out.recorded })
+    if (!out.recorded) return
+    setImmediate(async () => {
+      try {
+        const order = (await pool.query('SELECT id, price_usd, created_at FROM purchase_orders WHERE id=$1', [out.orderId])).rows[0]
+        await verifyAndConfirm({ pool, verifier: chainVerifier(), order, userId: out.userId, walletAddress: out.wallet, txHash: out.txHash, source: 'depay_callback' })
+        await audit('purchase_verified', out.userId, req, { orderId: out.orderId, txHash: out.txHash, via: 'depay_callback' })
+      } catch (e) { /* recorded on the attempt; the sweep retries retryable conditions */ }
     })
-    const result = await confirmPurchase(pool, { orderId, userId: req.user.user_id, evidence, source: 'onchain' })
-    await audit('purchase_verified', req.user.user_id, req, { orderId, txHash, challengeId: result.challengeId })
-    res.json(result)
   }))
 
   /* 5 — cancel a pending order */
