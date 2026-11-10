@@ -42,7 +42,7 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Development
 
-[Local setup](development/LOCAL_DEVELOPMENT.md) · [Testing and CI](development/TESTING.md) · [Repository hygiene](development/REPOSITORY_HYGIENE.md) · [Documentation maintenance](development/DOCUMENTATION.md) · [Directus local setup](backstage/LOCAL_SETUP.md) · [Contributing](../CONTRIBUTING.md) · [Agent instructions](../AGENTS.md)
+[Local setup](development/LOCAL_DEVELOPMENT.md) · [Testing and CI](development/TESTING.md) · [CI workflows, tiers and timing](development/CI.md) · [Repository hygiene](development/REPOSITORY_HYGIENE.md) · [Documentation maintenance](development/DOCUMENTATION.md) · [Directus local setup](backstage/LOCAL_SETUP.md) · [Contributing](../CONTRIBUTING.md) · [Agent instructions](../AGENTS.md)
 
 ## Security
 
