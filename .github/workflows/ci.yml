@@ -53,8 +53,15 @@ jobs:
           npm run test:markets
           npm run test:depth
           npm run test:website
+          npm run test:whitepaper
           npm run test:terminal
           npm run test:governance
+          npm run test:i18n
+      - name: Whitepaper CMS schema and seed validation (offline)
+        working-directory: .
+        run: |
+          python3 -m py_compile apps/backstage/scripts/apply_schema.py
+          node apps/backstage/scripts/seed_whitepaper_content.mjs --dry-run
       - name: Original Pine sources and provider regression tests
         working-directory: .
         run: npm run test:charts

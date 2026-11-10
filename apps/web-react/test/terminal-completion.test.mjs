@@ -97,14 +97,36 @@ test('locale helpers: five locales, RTL only for fa/ar, English fallback, never 
   assert.equal(i18n.pick('ru','x','Balance · USD'),'Баланс · USD','template keys re-insert interpolated values')
   assert.equal(i18n.normalizeLocale('de'),'fa')
   assert.equal(i18n.switchLocalePath('/fa/prop/trade','zh-CN'),'/zh-CN/prop/trade')
-  assert.equal(i18n.contentLocale('ar'),'en')
-  assert.equal(i18n.fallbackNotice('fa'),null)
-  assert.ok(i18n.fallbackNotice('zh-CN').includes('英文'))
+  /* no hidden English fallback: an untranslated string is reported as a miss */
+  assert.equal(typeof i18n.contentLocale,'undefined','editorial content is no longer redirected to English')
+  assert.ok(i18n.untranslatedNotice('zh-CN').length>0 && i18n.untranslatedNotice('fa').includes('ترجمه'))
+})
+test('added locales: editorial dictionaries load on demand and untranslated text is reported',async()=>{
+  const messages = load('../src/i18n/messages/index.ts')
+  for (const locale of ['ar','ru','zh-CN']) {
+    assert.equal(messages.contentLoaded(locale),false)
+    await messages.ensureLocaleContent(locale)
+    assert.equal(messages.contentLoaded(locale),true)
+    assert.equal(messages.translateSource(locale,'An untranslated sentence for the test.'),'An untranslated sentence for the test.')
+    assert.ok(messages.missesFor(locale).includes('An untranslated sentence for the test.'))
+    for (const neutral of ['BTC/USD','Openfund','12.5%','https://openfund.cloud']) assert.equal(messages.translateSource(locale,neutral),neutral)
+    assert.ok(!messages.missesFor(locale).includes('BTC/USD'))
+  }
+})
+test('bilingual records resolve every locale through localizeRecords (CMS row first, then the reviewed dictionary)',async()=>{
+  const localize = load('../src/i18n/localize.ts')
+  const record = localize.localizeRecords({ fa: 'پرتفوی', en: 'Portfolio' })
+  assert.deepEqual(Object.keys(record),['fa','en'],'added locales are non-enumerable')
+  assert.equal(record.ar,'المحفظة')
+  const nested = localize.localizeRecords({ title: { fa: { a: 'پرتفوی' }, en: { a: 'Portfolio', slug: 'portfolio' } } })
+  assert.equal(nested.title.ru.a,'Портфель'); assert.equal(nested.title.ru.slug,'portfolio','identifier fields are never translated')
+  const cms = localize.localizeRecords({ fa: 'x', en: 'Portfolio' })
+  localize.attachCmsTranslation(cms,'zh-CN','编辑部译文')
+  assert.equal(cms['zh-CN'],'编辑部译文','a Directus row for the locale wins over the bundled dictionary')
 })
 test('added-locale dictionaries share one key set and keep symbols and placeholders intact',async()=>{
   const dicts = ['ar','ru','zh-CN'].map(l=>load(`../src/i18n/messages/${l}.ts`)).map(m=>Object.values(m)[0])
-  /* each locale carries only its own 'not yet available in <language>' notice */
-  const keys = dicts.map(d=>Object.keys(d).filter(k=>!k.startsWith('This page is not yet available in ')).sort().join('\n'))
+  const keys = dicts.map(d=>Object.keys(d).sort().join('\n'))
   assert.equal(keys[1],keys[0]); assert.equal(keys[2],keys[0])
   for (const d of dicts) for (const [k,v] of Object.entries(d)) {
     assert.ok(v.trim(),'empty translation for '+k)

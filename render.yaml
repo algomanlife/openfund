@@ -150,3 +150,22 @@ services:
         sync: false             # approved DePay widget bundle URL; widget stays off without it
       - key: SIM_TEST_MODE
         value: ""               # internal test seam — never enabled in prod
+      # ---- Economy / Openfund Treasury (docs/economy/TREASURY.md) ----
+      - key: TREASURY_WALLET_ADDRESS
+        sync: false             # PUBLIC treasury address only — unset = "Not configured";
+                                # never a private key or seed phrase
+      - key: TREASURY_CHAIN_ID
+        sync: false             # treasury chain (defaults to PURCHASE_PAYMENT_CHAIN)
+      - key: TREASURY_ASSETS
+        sync: false             # JSON asset list with optional Chainlink price feeds
+      - key: TREASURY_RPC_URL
+        sync: false             # optional RPC endpoint (unset = chain default public RPC)
+      - key: TREASURY_REFRESH_MINUTES
+        value: "90"             # snapshot interval, clamped to 60–120
+      - key: TREASURY_PRICE_MAX_AGE_MINUTES
+        value: "1500"           # older Chainlink answers leave the asset unpriced
+      # ---- Live Market Access (docs/economy/LIVE_MARKET_ACCESS.md) ----
+      - key: LIVE_EXECUTION_ADAPTER
+        value: none             # none | sandbox (refused in production) | gains (not available)
+      - key: LIVE_SETTLEMENT_ADAPTER
+        value: none             # none | sandbox (refused in production)

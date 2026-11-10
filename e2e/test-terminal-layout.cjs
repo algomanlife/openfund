@@ -92,6 +92,7 @@ async function metrics(page) {
     },wallet.address);
     await page.goto(`${BASE}/en/prop/trade`);
     await page.getByRole('button',{name:'Connect Wallet',exact:true}).click();
+    await page.locator('[data-wallet-picker] [data-wallet-id]').first().click();
     await (await walletButton(page, 'Sign in')).click();
     await (await walletButton(page, 'Account')).waitFor();
     await page.keyboard.press('Escape');

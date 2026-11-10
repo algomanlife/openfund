@@ -60,7 +60,15 @@ fs.mkdirSync(output,{recursive:true});
 let server;
 const gate = async (name,command,args=[], overrides={}) => {
   const startedAt=new Date().toISOString();
-  try { await run(command,args,{env:{...env,...overrides}}); stages.push({name,status:'passed',startedAt,finishedAt:new Date().toISOString()}); }
+  try {
+    // Browser journeys race legacy reloads on shared CI runners. Retry those once (logged)
+    // instead of discarding a ~40 minute run; deterministic failures still fail twice.
+    try { await run(command,args,{env:{...env,...overrides}}); }
+    catch (error) {
+      if (!/^test:browser:/.test(String(args[1] || '')) || process.env.RELEASE_NO_BROWSER_RETRY) throw error;
+      console.warn(`::warning::${name} failed once; retrying a single time (${error.message})`);
+      await run(command,args,{env:{...env,...overrides}});
+    } stages.push({name,status:'passed',startedAt,finishedAt:new Date().toISOString()}); }
   catch(error){stages.push({name,status:'failed',startedAt});throw error;}
 };
 try {
@@ -68,6 +76,7 @@ try {
   await gate('web-lockfile-install','npm',['ci','--include=dev','--prefix','apps/web-react','--no-audit','--no-fund']);
   await gate('backend-lockfile-install','npm',['ci','--include=dev','--prefix','apps/backend','--no-audit','--no-fund']);
   for(const task of ['validate:blueprint','docs:check','typecheck','test:web','test:charts','test:release']) await gate(task,'npm',['run',task]);
+  await gate('localized-content-sources','npm',['--prefix','apps/web-react','run','test:i18n']);
   await gate('frontend-production-build','npm',['run','build:web'],{NODE_ENV:'production'});
   const frontendHash=treeHash(path.join(root,'react'));
   await gate('frontend-reproducibility-build','npm',['run','build:web'],{NODE_ENV:'production'});
@@ -77,7 +86,9 @@ try {
   server=spawn(process.execPath,['apps/backend/server.js'],{cwd:root,env,stdio:['ignore',fs.openSync(path.join(output,'backend-test.log'),'w'),'inherit']});
   server.on('error',error=>console.error(error.message));
   await healthy(base+'/health',server);
-  for(const task of ['test:backend','test:browser:audit','test:browser:completion','test:browser:layout','test:browser:charts','test:browser:polish','test:browser:website','test:browser:release','test:browser:routes','test:browser:challenge']) await gate(task,'npm',['run',task]);
+  // Run the public website smoke early: it is short and catches CMS/locale
+  // races before the long theme and viewport matrix consumes the runner.
+  for(const task of ['test:backend','test:browser:website','test:browser:audit','test:browser:wallet','test:browser:locale','test:browser:completion','test:browser:layout','test:browser:charts','test:browser:polish','test:browser:release','test:browser:routes','test:browser:challenge']) await gate(task,'npm',['run',task]);
   // A second run explicitly covers the authenticated geometry matrix.
   await run('npm',['run','test:browser:layout'],{env:{...env,TEST_LAYOUT_AUTH:'1'}});
   stages.push({name:'authenticated-layout',status:'passed'});

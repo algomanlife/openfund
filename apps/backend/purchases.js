@@ -28,6 +28,7 @@ import { createClient, http } from 'viem'
 import { sepolia, arbitrum } from 'viem/chains'
 import { invoicePdf } from './invoice-pdf.js'
 import { ChallengeService, normalizeRules } from './evaluation.js'
+import { recognizeCommissionTx, attributeAtFirstOrder } from './partners.js'
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const txHashRe = /^0x[0-9a-f]{64}$/i
@@ -171,6 +172,20 @@ export async function confirmPurchase(pool, { orderId, userId, evidence, source 
        VALUES ($1,$2,'OF-' || to_char(now(),'YYYY') || '-' || lpad(nextval('invoice_number_seq')::text,6,'0'),$3) RETURNING id, number`,
       [orderId, userId, order.price_usd])).rows[0]
 
+    /* Brand Ambassador commission: recognized in THIS transaction, so it
+       exists exactly when the payment is confirmed. Idempotent (UNIQUE
+       indexes); an unexpected error is isolated by a savepoint and audited
+       for reconciliation instead of blocking the customer's provisioning. */
+    await client.query('SAVEPOINT ambassador_commission')
+    try {
+      await recognizeCommissionTx(client, { orderId, userId, paymentId: payment.id, payerAddress: evidence.fromAddress })
+      await client.query('RELEASE SAVEPOINT ambassador_commission')
+    } catch (e) {
+      await client.query('ROLLBACK TO SAVEPOINT ambassador_commission')
+      await client.query(`INSERT INTO financial_audit_log (actor, action, entity, entity_id, after) VALUES ('system','commission_recognition_error','purchase_order',$1,$2)`,
+        [orderId, JSON.stringify({ error: String(e.message).slice(0, 200) })])
+    }
+
     await client.query(
       `INSERT INTO trading_events (account_id, kind, detail) SELECT id,'challenge_provisioned',$2 FROM demo_accounts WHERE user_id=$1 AND account_type='free_demo'`,
       [userId, JSON.stringify({ challengeId: challenge.id, orderId, source })]).catch(() => {})
@@ -261,6 +276,9 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = defaultVer
         return res.json({ order: view, payment: paymentInstructions(view) })
       }
     }
+    /* an un-attributed account that has never paid may be attributed to an
+       approved ambassador's link before its first order is created */
+    await attributeAtFirstOrder(pool, req, req.user.user_id)
     const { rows: [order] } = await pool.query(
       `INSERT INTO purchase_orders (user_id, challenge_plan_id, account_size_usd, price_usd, idempotency_key)
        VALUES ($1,$2,$3,$4,$5) RETURNING id`,

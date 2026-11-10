@@ -627,6 +627,107 @@ def main():
         {'text': 'Landing', 'value': 'landing'}, {'text': 'Terminal', 'value': 'terminal'},
         {'text': 'Website page', 'value': 'website'},
     ], 'allow_multiple': False}})
+    # the whitepaper is reachable from the footer document links (not a footer_links destination)
+
+    # ---------------- Openfund Whitepaper (living publication) --------------
+    # One document, ordered chapters made of typed JSON blocks (per locale,
+    # paired by index like lesson blocks), chart datasets whose NUMBERS live
+    # on the parent row (labels are translated), and source references.
+    # New rows default to draft: nothing is public until an editor publishes.
+    # The public client validates every block (src/cms/whitepaper/schema.ts)
+    # and falls back to the repository edition if an edition is incomplete.
+    WP_STATUS_META = {'interface': 'select-dropdown', 'options': {'choices': [
+        {'text': 'Published', 'value': 'published'}, {'text': 'Draft', 'value': 'draft'}, {'text': 'Archived', 'value': 'archived'},
+    ]}, 'special': ['status'], 'width': 'half'}
+    WP_DRAFT = {'default_value': 'draft', 'is_nullable': False}
+
+    def wp_translations(parent, fk, fields):
+        name = f'{parent[:-1] if parent.endswith("s") else parent}_translations'
+        ensure_collection(name, {'hidden': True})
+        ensure_field(name, fk, 'integer',
+            meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True, 'hidden': True}, schema={'is_nullable': False})
+        ensure_field(name, 'language_code', 'string', meta=dict(LANG_META), schema={'is_nullable': False})
+        for field, ftype, meta in fields:
+            ensure_field(name, field, ftype, meta=meta, schema={})
+        ensure_relation(name, fk, parent, one_field='translations')
+        ensure_alias(parent, 'translations', None, meta={
+            'special': ['o2m'], 'interface': 'list-o2m', 'options': {'template': '{{language_code}}'}})
+        return name
+
+    ensure_collection('whitepaper_documents', {'icon': 'description', 'display_template': '{{slug}} v{{version}}',
+        'note': 'Openfund Whitepaper — document metadata, version and SEO (one row per publication)'})
+    ensure_field('whitepaper_documents', 'slug', 'string',
+        meta={'interface': 'input', 'required': True, 'note': 'openfund-whitepaper (the public page reads this slug)'},
+        schema={'is_unique': True, 'is_nullable': False, 'max_length': 64})
+    ensure_field('whitepaper_documents', 'version', 'string',
+        meta={'interface': 'input', 'required': True, 'width': 'half', 'note': 'Semantic edition, e.g. 1.0'}, schema={'max_length': 16})
+    ensure_field('whitepaper_documents', 'published_on', 'date', meta={'interface': 'datetime', 'required': True, 'width': 'half'}, schema={})
+    ensure_field('whitepaper_documents', 'updated_on', 'date', meta={'interface': 'datetime', 'width': 'half', 'note': 'Latest editorial revision'}, schema={})
+    ensure_field('whitepaper_documents', 'status', 'string', meta=WP_STATUS_META, schema=WP_DRAFT)
+    wp_translations('whitepaper_documents', 'whitepaper_document_id', [
+        ('title', 'text', {'interface': 'input', 'required': True}),
+        ('subtitle', 'text', {'interface': 'input', 'required': True}),
+        ('abstract', 'text', {'interface': 'input-multiline', 'required': True}),
+        ('revision_note', 'text', {'interface': 'input-multiline', 'note': 'What changed in this edition'}),
+        ('seo_title', 'text', {'interface': 'input'}),
+        ('seo_description', 'text', {'interface': 'input-multiline'}),
+    ])
+
+    ensure_collection('whitepaper_chapters', {'icon': 'menu_book', 'sort_field': 'sort', 'display_template': '{{sort}}. {{slug}}',
+        'note': 'Whitepaper chapters — ordered; blocks are typed JSON validated before rendering'})
+    ensure_field('whitepaper_chapters', 'document', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True, 'width': 'half'}, schema={'is_nullable': False})
+    ensure_relation('whitepaper_chapters', 'document', 'whitepaper_documents', one_field='chapters')
+    ensure_alias('whitepaper_documents', 'chapters', None, meta={'special': ['o2m'], 'interface': 'list-o2m', 'options': {'template': '{{sort}}. {{slug}}'}})
+    ensure_field('whitepaper_chapters', 'slug', 'string',
+        meta={'interface': 'input', 'required': True, 'width': 'half', 'note': 'URL anchor (#slug); lowercase letters, digits and hyphens'},
+        schema={'is_unique': True, 'is_nullable': False, 'max_length': 64})
+    ensure_field('whitepaper_chapters', 'sort', 'integer', meta={'interface': 'input', 'hidden': True}, schema={'default_value': 0})
+    ensure_field('whitepaper_chapters', 'status', 'string', meta=WP_STATUS_META, schema=WP_DRAFT)
+    wp_translations('whitepaper_chapters', 'whitepaper_chapter_id', [
+        ('kicker', 'text', {'interface': 'input', 'required': True, 'note': 'Short chapter name used in the table of contents'}),
+        ('title', 'text', {'interface': 'input', 'required': True}),
+        ('summary', 'text', {'interface': 'input-multiline', 'required': True}),
+        ('blocks', 'json', {'interface': 'input-code', 'options': {'language': 'json'}, 'width': 'full',
+            'note': 'Blocks: lead/p/h3/list/quote/callout/features/stats/definitions/table/flow/architecture/mapping/timeline/chart/pricing/image/faq/refs — same order and types in fa and en; see docs/website/WHITEPAPER.md'}),
+    ])
+
+    ensure_collection('whitepaper_datasets', {'icon': 'bar_chart', 'sort_field': 'sort', 'display_template': '{{key}} ({{kind}})',
+        'note': 'Whitepaper chart datasets — numbers here, translated labels in translations'})
+    ensure_field('whitepaper_datasets', 'key', 'string',
+        meta={'interface': 'input', 'required': True, 'width': 'half', 'note': 'Referenced by chart blocks'}, schema={'is_unique': True, 'is_nullable': False, 'max_length': 64})
+    ensure_field('whitepaper_datasets', 'kind', 'string', meta={'interface': 'select-dropdown', 'required': True, 'width': 'half', 'options': {'choices': [
+        {'text': 'Waterfall', 'value': 'waterfall'}, {'text': 'Bars', 'value': 'bars'}, {'text': 'Stacked', 'value': 'stacked'}]}}, schema={'default_value': 'bars'})
+    ensure_field('whitepaper_datasets', 'unit', 'string', meta={'interface': 'select-dropdown', 'required': True, 'width': 'half', 'options': {'choices': [
+        {'text': 'US dollars', 'value': 'usd'}, {'text': 'Percent', 'value': 'pct'}]}}, schema={'default_value': 'usd'})
+    ensure_field('whitepaper_datasets', 'data', 'json', meta={'interface': 'input-code', 'options': {'language': 'json'}, 'width': 'full',
+        'note': '{"segments": [keys], "points": [{"key", "value" | "values", "role": start|delta|subtotal}]} — numbers only'}, schema={})
+    ensure_field('whitepaper_datasets', 'sources', 'json', meta={'interface': 'tags', 'note': 'Reference keys supporting the figures'}, schema={})
+    ensure_field('whitepaper_datasets', 'sort', 'integer', meta={'interface': 'input', 'hidden': True}, schema={'default_value': 0})
+    ensure_field('whitepaper_datasets', 'status', 'string', meta=WP_STATUS_META, schema=WP_DRAFT)
+    wp_translations('whitepaper_datasets', 'whitepaper_dataset_id', [
+        ('title', 'text', {'interface': 'input', 'required': True}),
+        ('caption', 'text', {'interface': 'input-multiline'}),
+        ('note', 'text', {'interface': 'input-multiline', 'note': 'Assumptions and limits (shown under the chart)'}),
+        ('labels', 'json', {'interface': 'input-code', 'options': {'language': 'json'}, 'note': '{"points": {key: label}, "segments": {key: label}}'}),
+    ])
+
+    ensure_collection('whitepaper_references', {'icon': 'format_quote', 'sort_field': 'sort', 'display_template': '{{key}} — {{title}}',
+        'note': 'Whitepaper sources — https only, with publication and access dates'})
+    ensure_field('whitepaper_references', 'key', 'string', meta={'interface': 'input', 'required': True, 'width': 'half'}, schema={'is_unique': True, 'is_nullable': False, 'max_length': 64})
+    ensure_field('whitepaper_references', 'kind', 'string', meta={'interface': 'select-dropdown', 'required': True, 'width': 'half', 'options': {'choices': [
+        {'text': 'Repository', 'value': 'repository'}, {'text': 'Documentation', 'value': 'documentation'}, {'text': 'Release', 'value': 'release'},
+        {'text': 'Provider', 'value': 'provider'}, {'text': 'Industry', 'value': 'industry'}]}}, schema={'default_value': 'documentation'})
+    ensure_field('whitepaper_references', 'title', 'string', meta={'interface': 'input', 'required': True}, schema={'max_length': 255})
+    ensure_field('whitepaper_references', 'publisher', 'string', meta={'interface': 'input', 'width': 'half'}, schema={'max_length': 128})
+    ensure_field('whitepaper_references', 'url', 'string', meta={'interface': 'input', 'required': True, 'note': 'https:// only'}, schema={'max_length': 512})
+    ensure_field('whitepaper_references', 'published_on', 'string', meta={'interface': 'input', 'width': 'half', 'note': 'As stated by the source'}, schema={'max_length': 128})
+    ensure_field('whitepaper_references', 'accessed_on', 'date', meta={'interface': 'datetime', 'required': True, 'width': 'half'}, schema={})
+    ensure_field('whitepaper_references', 'sort', 'integer', meta={'interface': 'input', 'hidden': True}, schema={'default_value': 0})
+    ensure_field('whitepaper_references', 'status', 'string', meta=WP_STATUS_META, schema=WP_DRAFT)
+    wp_translations('whitepaper_references', 'whitepaper_reference_id', [
+        ('note', 'text', {'interface': 'input-multiline', 'required': True}),
+    ])
 
     # ---------------- governance editorial content (Hybrid Governance v1.0) ----
     # EDITORIAL ONLY. Directus holds milestone wording and short content blocks;
@@ -733,6 +834,14 @@ def main():
         ('governance_milestone_translations', None),
         ('governance_content_blocks', {'status': {'_eq': 'published'}}),
         ('governance_content_block_translations', None),
+        ('whitepaper_documents', {'status': {'_eq': 'published'}}),
+        ('whitepaper_document_translations', None),
+        ('whitepaper_chapters', {'status': {'_eq': 'published'}}),
+        ('whitepaper_chapter_translations', None),
+        ('whitepaper_datasets', {'status': {'_eq': 'published'}}),
+        ('whitepaper_dataset_translations', None),
+        ('whitepaper_references', {'status': {'_eq': 'published'}}),
+        ('whitepaper_reference_translations', None),
     ]
     translation_parents = {
         'ui_message_translations': ('ui_message_id', 'published'),
@@ -751,6 +860,10 @@ def main():
         'referral_content_translations': ('referral_content_id', 'published'),
         'governance_milestone_translations': ('governance_milestone_id', 'published'),
         'governance_content_block_translations': ('governance_content_block_id', 'published'),
+        'whitepaper_document_translations': ('whitepaper_document_id', 'published'),
+        'whitepaper_chapter_translations': ('whitepaper_chapter_id', 'published'),
+        'whitepaper_dataset_translations': ('whitepaper_dataset_id', 'published'),
+        'whitepaper_reference_translations': ('whitepaper_reference_id', 'published'),
     }
     for coll, cond in wanted:
         if coll in translation_parents:

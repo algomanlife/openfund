@@ -14,7 +14,7 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Website
 
-[Website expansion spec](website/WEBSITE_EXPANSION.md) — FAQ hub, Tools Center, Learning Center, Growth Partner · [Expansion audit](research/WEBSITE_EXPANSION_AUDIT.md)
+[Website expansion spec](website/WEBSITE_EXPANSION.md) — FAQ hub, Tools Center, Learning Center, Growth Partner · [Official Whitepaper v1.0](website/WHITEPAPER.md) · [Expansion audit](research/WEBSITE_EXPANSION_AUDIT.md)
 
 ## Trading
 
@@ -22,11 +22,15 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Governance and Economy
 
-[GOVERNANCE.md](../GOVERNANCE.md) · [ECONOMY.md](../ECONOMY.md) · [Governance documentation](governance/README.md) · [Roles and permissions](governance/ROLES_AND_PERMISSIONS.md) · [Whitepaper governance chapter](governance/WHITEPAPER_GOVERNANCE.md) · [ADR 0016](decisions/0016-hybrid-governance.md)
+[GOVERNANCE.md](../GOVERNANCE.md) · [ECONOMY.md](../ECONOMY.md) · [Governance documentation](governance/README.md) · [Roles and permissions](governance/ROLES_AND_PERMISSIONS.md) · [Whitepaper governance chapter](governance/WHITEPAPER_GOVERNANCE.md) · [ADR 0017](decisions/0017-hybrid-governance.md)
 
 ## Wallet and Identity
 
 [Wallet, networks and sessions](wallet/IDENTITY.md) · [Authentication technical reference](architecture/WALLET_AUTHENTICATION.md)
+
+## Economy and partner programs
+
+[Economy overview](economy/README.md) · [Treasury and data sources](economy/TREASURY.md) · [Ambassador and Coach](economy/PARTNER_PROGRAMS.md) · [Live Market Access](economy/LIVE_MARKET_ACCESS.md)
 
 ## Integrations
 

@@ -190,10 +190,11 @@ async function walletDisclosureFits(page){
    await page.reload();
    await page.locator('header .nav-cta').waitFor();
    await page.waitForTimeout(locale==='en'?1800:350);
-   if(locale==='fa')await page.locator('.home-products').waitFor();
-   else await page.locator('.hero').waitFor();
+   await page.locator('.home-products').waitFor();
    if(connected && !await page.locator('.rk-account-menu').count()){
-    await page.locator('header .rk-chip-connect').click();await page.locator('.rk-account-menu').waitFor();
+    await page.locator('header .rk-chip-connect').click();
+    await page.locator('[data-wallet-picker] [data-wallet-id]').first().click();
+    await page.locator('.rk-account-menu').waitFor();
    }
    const prefix=`${locale}/${theme}/${width}/${connected?'test-wallet':'disconnected'}`;
    console.log('Checking '+prefix);
@@ -207,13 +208,13 @@ async function walletDisclosureFits(page){
     check(prefix+' technical dialog native light',await nativeSurfaces(page,'.technical-dialog[open]',theme));
     await page.keyboard.press('Escape');check(prefix+' technical dialog keyboard closes',await technical.count()===0);
    }
-   check(prefix+' Home products',await page.locator('.home-panel').count()===(locale==='fa'?2:0));
-   check(prefix+' Home navigation',await page.locator('header #navigation').count()===(locale==='fa'?0:1));
+   check(prefix+' Home products',await page.locator('.home-panel').count()===2);
+   check(prefix+' Home navigation',await page.locator('header #navigation').count()===0);
    if(connected)check(prefix+' wallet dropdown actions fit and Escape closes',await walletDisclosureFits(page));
    check(prefix+' terminal entry',await page.locator('header .nav-cta').isVisible());
    if(width===1440 && !connected || width===390 && connected){const file=`home-${locale}-${theme}-${width}-${connected?'test-wallet':'disconnected'}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file),fullPage:true});screenshots.push({file,fixture:connected?'connection-only test wallet':'none'})}
    await page.goto(BASE+`/${locale}/faq`);await page.waitForTimeout(300);await page.locator('#navigation').waitFor({state:'attached'});
-   check(prefix+' other-page navigation',await page.locator('#navigation a').count()===10);
+   check(prefix+' other-page navigation',await page.locator('#navigation a').count()===14);
    const tv=page.locator('.credits-row a[href="https://www.tradingview.com/news/"]');await tv.waitFor();
    check(prefix+' TradingView description',(await tv.innerText()).includes(locale==='fa'?'اطلاعات و اخبار بازارها':'Market Data & News'));
    check(prefix+' redundant external label removed',!(/منبع خارجی|External resource/.test(await tv.innerText())));
@@ -237,7 +238,7 @@ async function walletDisclosureFits(page){
    await page.goto(BASE+`/${locale}/faq`);await tv.waitFor();
    check(prefix+' DePay identification',await page.locator('.credits-row a[href="https://depay.com/"]').count()===1);
    if(width===1440&&!connected){const file=`footer-${locale}-${theme}.png`;await page.locator('.credits-row').evaluate(el=>el.scrollIntoView({behavior:'instant',block:'center'}));await page.screenshot({animations:'disabled',path:path.join(OUT,file)});screenshots.push({file,fixture:'none'})}
-   for(const product of locale==='fa'?['prop','perpetual']:['prop']){
+   for(const product of ['prop','perpetual']){
     for(const section of ['dashboard','trade','portfolio','journal','journal?section=accounts',...(product==='prop'?['purchases','withdrawals','leaderboard','certificates']:['leaderboard','rewards'])]){
      await page.goto(BASE+`/${locale}/${product}/${section}`);await page.locator('.of-terminal-top').waitFor();await page.waitForTimeout(250);await page.locator('.of-terminal-top').waitFor();
      check(prefix+` ${product}/${section} geometry`,Object.values(await headerGeometry(page,true)).every(v=>Array.isArray(v)?v.length===0:!v));
@@ -258,7 +259,7 @@ async function walletDisclosureFits(page){
       await page.screenshot({animations:'disabled',path:path.join(OUT,file)});screenshots.push({file,fixture:'parent-provided disposable authenticated session; no profile writes'});
       await page.keyboard.press('Escape');
      }
-     check(prefix+` ${product}/${section} product selector`,await page.locator('.of-product-switch').count()===(locale==='fa'?1:0));
+     check(prefix+` ${product}/${section} product selector`,await page.locator('.of-product-switch').count()===1);
      if(width===1440&&(!connected&&['dashboard','journal'].includes(section)||connected&&AUTH_STORAGE&&['portfolio','journal','journal?section=accounts','purchases','withdrawals'].includes(section))){const file=`${section.replace(/[?=]/g,'-')}-${product}-${locale}-${theme}-${connected?'disposable-session':'anonymous'}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file),fullPage:true});screenshots.push({file,fixture:connected?'parent-provided disposable authenticated session; no financial writes':'anonymous presentation only'})}
      if(section==='trade'){
       const frame=page.frameLocator('iframe');
@@ -310,27 +311,26 @@ async function walletDisclosureFits(page){
     const file=`wallet-modal-${surface}-${locale}-${theme}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file)});screenshots.push({file,fixture:'No installed wallet; real connection error and modal'});
     await page.keyboard.press('Escape');check(`${surface}/${locale}/${theme}: wallet modal closes`,await page.getByRole('dialog').count()===0);
   }
-  await page.goto(BASE+'/en/perpetual/trade?account=gains-private');await page.waitForURL('**/en/prop/dashboard');
-  check('Direct EN Perpetual redirects without account query',page.url().endsWith('/en/prop/dashboard'));
-  for(const suffix of ['','/dashboard','/portfolio','/journal','/rewards','/not-a-page']){
-   await page.goto(BASE+'/en/perpetual'+suffix);await page.waitForURL('**/en/prop/dashboard');
-   check('EN Perpetual route unavailable: '+suffix,true);
+  await page.goto(BASE+'/en/perpetual/trade?account=gains-private');
+  check('Direct EN Perpetual keeps product and account query',new URL(page.url()).pathname==='/en/perpetual/trade'&&new URL(page.url()).searchParams.get('account')==='gains-private');
+  for(const [suffix,expected] of [['','dashboard'],['/dashboard','dashboard'],['/portfolio','portfolio'],['/journal','journal'],['/rewards','rewards'],['/not-a-page','dashboard']]){
+   await page.goto(BASE+'/en/perpetual'+suffix);await page.waitForURL('**/en/perpetual/'+expected);
+   check('EN Perpetual route resolves within the same product: '+suffix,true);
   }
   await page.goto(BASE+'/en/home');await page.locator('.of-language-select select').first().waitFor({ state: 'attached' });await page.waitForTimeout(1800);
   await toggleLanguage(page);await page.waitForURL('**/fa/home');
   await page.locator('.home-products').waitFor();await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.home-products').waitFor();
   check('EN Home language switch returns to FA two-product Home',true);
-  await toggleLanguage(page);await page.waitForURL('**/en/home');  await page.locator('.hero').waitFor();
-  // Wait for the classic page's actual document replacement, not an intermediate route.
-  await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.hero').waitFor();
-  check('FA Home language switch returns to EN Prop landing',true);
+  await toggleLanguage(page);await page.waitForURL('**/en/home');await page.locator('.home-gateway').waitFor();
+  await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.home-gateway').waitFor();
+  check('FA Home language switch returns to EN two-product Home',true);
   await page.goto(BASE+'/fa/perpetual/journal?account=product-specific');
   await page.locator('.of-terminal-top').waitFor();
   // Leaving the classic EN Home can schedule a document reload after the
   // terminal first appears. Click only after that handoff has completed.
   await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.of-terminal-top').waitFor();
   await page.locator('.of-language-select select').first().selectOption('en');
-  await page.waitForURL('**/en/prop/dashboard');check('Perpetual language switch clears product account context',true);  check('No browser exceptions',errors.length===0);
+  await page.waitForURL('**/en/perpetual/journal?account=product-specific');check('Perpetual language switch preserves product and account context',true);  check('No browser exceptions',errors.length===0);
   await context.close();
  }
  // Delayed CMS replies must never start a classic runtime on a removed page.
@@ -338,7 +338,7 @@ async function walletDisclosureFits(page){
   const context=await browser.newContext(),page=await context.newPage(),errors=[];
   await context.route('**/items/**',async route=>{await new Promise(resolve=>setTimeout(resolve,delay));await route.abort('connectionrefused').catch(()=>{})});
   page.on('pageerror',e=>{errors.push(e.message);browserErrors.push({url:page.url(),error:e.stack||e.message});console.error('BROWSER EXCEPTION',e.stack||e.message)});
-  await page.goto(BASE+'/en/home');await page.locator('.hero').waitFor();
+  await page.goto(BASE+'/en/home');await page.locator('.home-gateway').waitFor();
   await page.goto(BASE+'/fa/prop/journal');await page.locator('.of-terminal-top').waitFor();await page.waitForTimeout(500);
   check(`Delayed CMS ${delay}ms: leaving Home does not boot stale scripts`,errors.length===0);
   await context.close();

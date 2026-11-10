@@ -65,8 +65,22 @@ async function walletContext(browser,{fixtures=false}={}){
 async function call(page,url,body,method){return page.evaluate(async({url,body,method})=>{
  const response=await fetch(url,{method:method||(body?'POST':'GET'),credentials:'include',headers:{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID()},body:body?JSON.stringify(body):undefined});return {status:response.status,data:await response.json()};
 },{url:API+url,body,method})}
-async function connect(page){await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().click();await (await walletButton(page, 'Sign in')).waitFor()}
-async function signIn(page){await (await walletButton(page, 'Sign in')).click();await (await walletButton(page, 'Account')).waitFor()}
+async function connect(page){
+ if(!await page.locator('[data-wallet-picker]').count()) await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().click();
+ await page.locator('[data-wallet-picker] [data-wallet-id]').first().click();
+ await (await walletButton(page, 'Sign in')).waitFor();
+}
+async function signIn(page){
+ const dismiss=page.locator('.of-session-dismiss:visible');
+ if(await dismiss.count()) await dismiss.first().click();
+ await (await walletButton(page, 'Sign in')).click();
+ await (await walletButton(page, 'Account')).waitFor();
+}
+async function switchToTarget(page){
+ const menu=page.locator('.rk-account-menu:visible').first();
+ if(!await menu.evaluate(el=>el.open)) await menu.locator('summary').click();
+ await menu.locator('[data-switch-network]').click();
+}
 async function functional(browser){
  const {context,page}=await walletContext(browser,{fixtures:true}),errors=[],protectionWrites=[];
  page.on('request',request=>{if(request.method()==='POST'&&request.url().includes('/protection'))protectionWrites.push(request.url())});
@@ -76,7 +90,8 @@ async function functional(browser){
   check('EIP-6963 fixture does not expose window.ethereum',await page.evaluate(()=>!window.ethereum));
   await page.evaluate(()=>window.completionWallet.rejectConnect());
   await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().click();
-  await page.getByRole('alert').filter({hasText:'Wallet connection failed'}).first().waitFor();
+  await page.locator('[data-wallet-picker] [data-wallet-id]').first().click();
+  await page.locator('[data-wallet-result="rejected"]').waitFor();
   check('Rejected connection is visible and does not authenticate',(await call(page,'/auth/me')).status===401);
   await connect(page);
   await page.goto(BASE+'/fa/prop/dashboard');
@@ -84,7 +99,7 @@ async function functional(browser){
   await page.waitForURL(/perpetual\/dashboard/);
   await page.evaluate(()=>window.completionWallet.rejectSign());
   await (await walletButton(page, 'Sign in')).click();
-  await page.getByRole('alert').filter({hasText:/Sign-in failed|ورود انجام نشد/}).first().waitFor();
+  await page.locator('[data-wallet-notice="rejected"]').first().waitFor();
   check('Rejected SIWE signature remains unauthenticated',(await call(page,'/auth/me')).status===401);
   await signIn(page);
   check('Router-driven product switch signs on Arbitrum rather than stale Sepolia',await page.evaluate(()=>window.completionWallet.network()==='0xa4b1'));
@@ -103,8 +118,7 @@ async function functional(browser){
   check('EIP-6963 connection and SIWE session reconnect after reload',true);
   await page.getByLabel('محصول',{exact:true}).selectOption('prop');
   await page.waitForURL(/prop\/trade/);
-  await (await walletButton(page,'Network: Sepolia')).click();
-  await page.getByRole('dialog').getByRole('button',{name:/Sepolia/}).first().click();
+  await switchToTarget(page);
   await page.waitForFunction(()=>window.completionWallet.network()==='0xaa36a7');
   const accounts=(await call(page,'/accounts')).data.accounts,trial=accounts.find(a=>a.type==='free_trial');
   await call(page,'/internal/inject-price',{symbol:'BTC/USD',price:'50000',metadata:{base:'BTC',group:'crypto',maxLeverage:100}});
@@ -200,10 +214,9 @@ async function functional(browser){
   await page.waitForFunction(()=>window.__ofServerTP?.canTrade);
   check('Second wallet has an independent account and empty positions',(await call(page,'/trading/state')).data.positions.length===0);
   await page.evaluate(()=>window.completionWallet.changeChain('0x1'));
-  await page.getByRole('button',{name:'Network: Sepolia',exact:true}).waitFor();
+  await page.locator('[data-switch-network]').first().waitFor({state:'attached'});
   check('Unsupported chain change preserves wallet identity and exposes a network correction',await page.locator('.rk-chip-addr').count()===1);
-  await (await walletButton(page,'Network: Sepolia')).click();
-  await page.getByRole('dialog').getByRole('button',{name:/Sepolia/}).first().click();
+  await switchToTarget(page);
   await page.waitForFunction(()=>window.completionWallet.network()==='0xaa36a7');
   if(!await page.locator('.rk-account-menu').evaluate(el=>el.open))await page.locator('.rk-account-menu > summary').click();
   await page.getByTitle('Wallet & network',{exact:true}).click();await page.getByRole('dialog').getByRole('button',{name:/Disconnect|قطع اتصال/}).click();
@@ -251,8 +264,8 @@ async function layout(browser){
       const grid=await page.locator('.of-dashboard-workspace').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length);
       check(`${product}/${locale} ${width}: account/detail dashboard grid`,grid===2);
     }
-    const component=tab==='dashboard'?'.of-dashboard-workspace':tab==='trade'?'iframe.of-trading-workspace':tab.startsWith('journal')?'.of-journal-workspace':tab==='portfolio'?'.of-tabs':'.of-empty';
-    check(`${product}/${locale}/${tab} ${width}: expected component mounted`,await page.locator(component).count()>0);
+    const component=tab==='dashboard'?'.of-dashboard-workspace':tab==='trade'?'iframe.of-trading-workspace':tab.startsWith('journal')?'.of-journal-workspace':tab==='portfolio'?'.of-tabs':tab==='withdrawals'?'.of-purchase-page':'.of-empty';
+    check(`${product}/${locale}/${tab} ${width}: expected component mounted`,await page.locator(component).first().waitFor({timeout:8000}).then(()=>true,()=>false));
     const dataSource=product==='prop'?'PostgreSQL/Engine + owned product API':'Gains native read adapter + owned journal API';
     check(`${product}/${locale}/${tab} ${width}: product context connected`,requests.some(url=>url===`/products/${product}/context`));
     measurements.push({product,locale,tab,viewport:[width,height],component,dataSource,requests:[...new Set(requests)],...record});
@@ -285,7 +298,9 @@ async function layout(browser){
   await page.locator('.of-language-select select').first().selectOption('fa');
   await page.waitForURL(BASE+'/fa/prop/journal?section=playbooks&account='+owned.id);
   check('Terminal language switching preserves the selected account and journal section',true);
-  check('All terminal tabs share one connected wallet state',await page.locator('.rk-chip-addr').count()===1);
+  await page.locator('.rk-chip-addr').first().waitFor();
+  const walletLabels=await page.locator('.rk-chip-addr').allTextContents();
+  check('All terminal tabs share one connected wallet state',walletLabels.length>0&&new Set(walletLabels).size===1);
   check('Layout verification never requests a blockchain transaction',await page.evaluate(()=>window.completionWallet.transactions===0));
   check('All terminal tabs have no uncaught JavaScript errors',errors.length===0);
   check('All terminal tabs load their scripts styles images and fonts',assetErrors.length===0);

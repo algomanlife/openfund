@@ -171,18 +171,18 @@ test('governance SQL never writes to, and only reads openfund_challenges and ope
   assert.doesNotMatch(src, /(INSERT INTO|UPDATE|DELETE FROM)\s+(openfund_|auth_|demo_|purchase|payment|withdraw)/i)
 })
 test('governance tables reference only governance tables and openfund_users', () => {
-  const block = read('../schema.sql').split('Openfund Hybrid Governance v1.0')[1]
+  const block = read('../schema.sql').split('Openfund Hybrid Governance v1.0')[1].split('-- Economy, transparency, Brand Ambassador')[0]
   const refs = [...block.matchAll(/REFERENCES (\w+)/g)].map((m) => m[1])
   assert.ok(refs.length > 20)
   for (const r of refs) assert.ok(r.startsWith('gov_') || r === 'openfund_users', r)
 })
 test('evidence tables are append-only by trigger', () => {
-  const block = read('../schema.sql').split('Openfund Hybrid Governance v1.0')[1]
+  const block = read('../schema.sql').split('Openfund Hybrid Governance v1.0')[1].split('-- Economy, transparency, Brand Ambassador')[0]
   for (const t of ['gov_votes', 'gov_decisions', 'gov_decision_amendments', 'gov_proposal_history', 'gov_audit_events', 'gov_election_votes', 'gov_implementation_log', 'gov_proposal_revisions']) {
     assert.match(block, new RegExp(`BEFORE UPDATE OR DELETE ON ${t} FOR EACH ROW EXECUTE FUNCTION gov_forbid_mutation`), t)
   }
 })
 test('no token, staking, NFT or treasury-wallet concept exists in the governance data model', () => {
-  const block = read('../schema.sql').split('Openfund Hybrid Governance v1.0')[1]
+  const block = read('../schema.sql').split('Openfund Hybrid Governance v1.0')[1].split('-- Economy, transparency, Brand Ambassador')[0]
   assert.doesNotMatch(block, /token_balance|stake|staking|nft|erc20|treasury_wallet|voting_power/i)
 })

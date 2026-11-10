@@ -50,6 +50,16 @@ Public read, published rows only. **These are editorial only.** Councils, propos
 votes, eligibility and every governance decision live in the backend (`gov_*`) and are
 not exposed to Directus. See [GOVERNANCE.md](../../GOVERNANCE.md).
 
+## Whitepaper collections
+
+`whitepaper_documents`, `whitepaper_chapters`, `whitepaper_datasets` and
+`whitepaper_references`, each with a `*_translations` table (`fa` / `en`).
+Chapters store typed JSON blocks per locale, paired by index. Datasets keep
+numbers on the parent row and translated labels in the translation row. New
+rows default to `draft`. The public page validates every block and falls back
+to the repository edition when an edition is incomplete. See the
+[Whitepaper specification](../website/WHITEPAPER.md).
+
 ## Non-goals (by design)
 
 - Market data, prices, positions → **Gains Network** (never CMS content)

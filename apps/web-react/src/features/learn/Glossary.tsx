@@ -6,7 +6,7 @@ import { useSiteLibrary } from '../../cms/siteContent'
 import { matchesQuery, normalizeText } from '../faq/search'
 import './learn.css'
 
-type Locale = 'fa' | 'en'
+type Locale = import('../../i18n/locales').AppLocale
 
 /** first letter used for the alphabet index, Latin or Persian */
 function letterOf(term: string, locale: Locale): string {

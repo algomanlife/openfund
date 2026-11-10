@@ -1,3 +1,4 @@
+import { pick } from '../../i18n/locales'
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import InformationShell, { Hero, useInformationLocale } from '../information/InformationShell'
@@ -13,19 +14,19 @@ import { rulebookIntro, rulebookNotice } from './content'
  *  - intro/notice copy ← `pages` (slug: rulebook)
  * The interface (layout, TOC, anchors, status pills, tables) is unchanged. */
 
-type Locale = 'fa' | 'en'
+type Locale = import('../../i18n/locales').AppLocale
 
 function CatalogTable({ locale, plans }: { locale: Locale; plans: ChallengePlan[] }) {
-  const pct = (v: number) => `${number(v, locale)}${locale === 'fa' ? '٪' : '%'}`
+  const pct = (v: number) => `${number(v, locale)}${pick(locale, '٪', '%')}`
   const sizesList = (sizes: number[]) => sizes.map(s => number(s, locale)).join(' / ')
   const target = (p: ChallengePlan) =>
-    p.phases === 0 ? (locale === 'fa' ? 'بدون مرحله' : '—') :
+    p.phases === 0 ? pick(locale, 'بدون مرحله', '—') :
       `${number(p.phases, locale)} · ${pct(p.phase1TargetPct!)}${p.phase2TargetPct != null ? ` + ${pct(p.phase2TargetPct)}` : ''}`
   const loss = (p: ChallengePlan) =>
-    `${pct(p.dailyLossPct)} / ${pct(p.maxTotalLossPct)}${p.drawdownMode === 'trailing' ? (locale === 'fa' ? ' شناور' : ' trailing') : ''}`
+    `${pct(p.dailyLossPct)} / ${pct(p.maxTotalLossPct)}${p.drawdownMode === 'trailing' ? pick(locale, ' شناور', ' trailing') : ''}`
   const split = (p: ChallengePlan) => p.free
     ? text('None (trial)', 'ندارد (تست)')[locale]
-    : `${pct(p.profitSplitPct)}${p.profitSplitMonthlyPct ? ` · ${pct(p.profitSplitMonthlyPct)}${locale === 'fa' ? ' ماهانه' : ' monthly'}` : ''}`
+    : `${pct(p.profitSplitPct)}${p.profitSplitMonthlyPct ? ` · ${pct(p.profitSplitMonthlyPct)}${pick(locale, ' ماهانه', ' monthly')}` : ''}`
   return <section className="rule-section" id="configurations" tabIndex={-1}>
     <div className="rule-section-meta"><span className="section-number">{number(0, locale, { minimumIntegerDigits: 2 })} /</span><span className="pill status-draft">{labels.draft[locale]}</span></div>
     <h2>{text('Challenge configurations', 'ترکیب‌های چلنج')[locale]}</h2>
@@ -91,9 +92,7 @@ export default function Rulebook() {
   }
 
   const intro = meta?.description[locale] || rulebookIntro[locale]
-  const notice = meta ? (locale === 'fa'
-    ? 'این‌ها شرایط منتشرشده و مرجع چلنج‌های اوپن‌فاند هستند. فعال‌سازی خرید، حساب فاندشده و برداشت در این نسخه فعال نیست — ترمینال فعلاً دموی شبیه‌سازی‌شدهٔ ۱۰۰٬۰۰۰ دای را اجرا می‌کند — و پیش از عرضه، قرارداد نهایی نسخه‌دار منتشر خواهد شد.'
-    : 'These are the published terms of record for the Openfund challenges. Purchase activation, funded accounts and payouts are not yet enabled in this release — the terminal currently runs the simulated 100,000 DAI demo — and a final versioned agreement will be published before launch.')
+  const notice = meta ? pick(locale, 'این‌ها شرایط منتشرشده و مرجع چلنج‌های اوپن‌فاند هستند. فعال‌سازی خرید، حساب فاندشده و برداشت در این نسخه فعال نیست — ترمینال فعلاً دموی شبیه‌سازی‌شدهٔ ۱۰۰٬۰۰۰ دای را اجرا می‌کند — و پیش از عرضه، قرارداد نهایی نسخه‌دار منتشر خواهد شد.', 'These are the published terms of record for the Openfund challenges. Purchase activation, funded accounts and payouts are not yet enabled in this release — the terminal currently runs the simulated 100,000 DAI demo — and a final versioned agreement will be published before launch.')
     : rulebookNotice[locale]
 
   return <InformationShell page="rulebook" description={intro}>
@@ -117,9 +116,7 @@ export default function Rulebook() {
     {!rules && (
       <div className="container"><aside className="info-notice">
         <span className="tiny-mark" aria-hidden="true">⚠</span>
-        <p>{locale === 'fa'
-          ? 'بارگیری بخش‌های رول‌بوک از سامانهٔ مدیریت محتوا ممکن نشد. چند لحظه بعد صفحه را تازه‌سازی کن.'
-          : 'The rulebook sections could not be loaded from the content service. Please refresh in a moment.'}
+        <p>{pick(locale, 'بارگیری بخش‌های رول‌بوک از سامانهٔ مدیریت محتوا ممکن نشد. چند لحظه بعد صفحه را تازه‌سازی کن.', 'The rulebook sections could not be loaded from the content service. Please refresh in a moment.')}
         </p>
       </aside></div>
     )}

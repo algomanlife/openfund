@@ -1,8 +1,9 @@
-import { Component, useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
+import { Component, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-router-dom'
 import { BrandedLoading, loadingGate } from './BrandedLoading'
 import { updateSeoHead } from './seoHead'
-import { dirOf, normalizeLocale, type AppLocale } from '../../i18n/locales'
+import { dirOf, normalizeLocale, pick, type AppLocale } from '../../i18n/locales'
+import { contentLoaded, ensureLocaleContent } from '../../i18n/messages'
 import './loading.css'
 
 /* ---- app frame ---------------------------------------------------------------
@@ -26,12 +27,12 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: unknown 
   }
   render() {
     if (this.state.error) {
-      const fa = routeLocale(window.location.pathname) === 'fa'
+      const locale = routeLocale(window.location.pathname)
       return (
-        <div className="of-route-error" role="alert" dir={dirOf(routeLocale(window.location.pathname))}>
-          <p>{fa ? 'صفحه بارگذاری نشد.' : 'This page could not be loaded.'}</p>
+        <div className="of-route-error" role="alert" dir={dirOf(locale)} lang={locale}>
+          <p>{pick(locale, 'صفحه بارگذاری نشد.', 'This page could not be loaded.')}</p>
           <button type="button" onClick={() => window.location.reload()}>
-            {fa ? 'تلاش دوباره' : 'Try again'}
+            {pick(locale, 'تلاش دوباره', 'Try again')}
           </button>
         </div>
       )
@@ -45,6 +46,20 @@ export default function AppFrame() {
   const location = useLocation()
   const locale = routeLocale(location.pathname)
   const previousLocale = useRef(locale)
+  /* the route locale's editorial dictionary is loaded before its pages
+     render (direct URL entry, refresh, Back/Forward and language switch) */
+  const [readyLocale, setReadyLocale] = useState<AppLocale | null>(() => contentLoaded(locale) ? locale : null)
+  const [dictionaryError, setDictionaryError] = useState(false)
+  useEffect(() => {
+    if (contentLoaded(locale)) { setReadyLocale(locale); return }
+    let active = true
+    loadingGate.hold('dictionary')
+    ensureLocaleContent(locale)
+      .then(() => { if (active) { setDictionaryError(false); setReadyLocale(locale) } })
+      .catch(() => { if (active) setDictionaryError(true) })
+      .finally(() => loadingGate.release('dictionary'))
+    return () => { active = false; loadingGate.release('dictionary') }
+  }, [locale])
 
   /* Direction and language are applied before the browser paints the new
      locale — Persian text can never appear inside an LTR layout (or the
@@ -114,7 +129,12 @@ export default function AppFrame() {
 
   return (
     <ErrorBoundary>
-      <Outlet />
+      {readyLocale === locale ? <Outlet /> : dictionaryError ? (
+        <div className="of-route-error" role="alert" dir={dirOf(locale)} lang={locale}>
+          <p>{pick(locale, 'بارگذاری زبان انجام نشد.', 'The language could not be loaded.')}</p>
+          <button type="button" onClick={() => window.location.reload()}>{pick(locale, 'تلاش دوباره', 'Try again')}</button>
+        </div>
+      ) : null}
       <BrandedLoading />
       <ScrollRestoration />
     </ErrorBoundary>

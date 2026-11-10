@@ -36,20 +36,31 @@ const PAGE = (v, def, max) => {
   return n
 }
 
+/* the admin API is disabled until the operator sets ADMIN_API_TOKEN */
+export function adminAuth(req, res, next) {
+  const expected = process.env.ADMIN_API_TOKEN || null
+  if (!expected) return res.status(404).json({ error: 'not_found' })
+  const provided = String((req.headers.authorization || '').replace(/^Bearer\s+/i, ''))
+  const a = Buffer.from(provided), b = Buffer.from(expected)
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b))
+    return res.status(403).json({ error: 'admin_forbidden' })
+  next()
+}
+
+/**
+ * Named operator for financial decisions (`X-Admin-Actor`). The shared
+ * service token authorizes; the actor name attributes the decision in the
+ * financial audit trail. Decisions without a valid actor are refused.
+ */
+export function adminActor(req) {
+  const actor = String(req.headers['x-admin-actor'] || '').trim()
+  if (!/^[\w.@ -]{2,60}$/.test(actor)) throw Object.assign(new Error('admin_actor_required'), { status: 400 })
+  return `admin:${actor}`
+}
+
 export function adminRoutes({ pool, audit }) {
   const router = Router()
-  const token = () => process.env.ADMIN_API_TOKEN || null
-
-  /* the admin API is disabled until the operator sets ADMIN_API_TOKEN */
-  router.use((req, res, next) => {
-    const expected = token()
-    if (!expected) return res.status(404).json({ error: 'not_found' })
-    const provided = String((req.headers.authorization || '').replace(/^Bearer\s+/i, ''))
-    const a = Buffer.from(provided), b = Buffer.from(expected)
-    if (a.length !== b.length || !crypto.timingSafeEqual(a, b))
-      return res.status(403).json({ error: 'admin_forbidden' })
-    next()
-  })
+  router.use(adminAuth)
 
   /* Company Management governance operations (same token gate; no financial endpoints) */
   router.use('/governance', governanceAdminRoutes({ pool }))
