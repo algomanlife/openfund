@@ -24,6 +24,9 @@ Follow [Local Development](docs/development/LOCAL_DEVELOPMENT.md) and [Testing](
 
 ## PR checklist
 
+Use the pull request template (every section is checked by CI) and follow [Pull requests](docs/development/PULL_REQUESTS.md): Conventional Commit title, stacked-PR rules and the merge-readiness checklist.
+
+
 - [ ] Scope and resulting behavior described for a new reviewer
 - [ ] Relevant product/status/roadmap/contracts updated
 - [ ] Screenshots and provenance refreshed where needed
