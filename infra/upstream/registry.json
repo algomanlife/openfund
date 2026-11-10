@@ -1,0 +1,620 @@
+{
+  "schema": 1,
+  "reviewed_on": "2026-11-10",
+  "notes": "Enforcement data behind docs/integrations/UPSTREAM_DEPENDENCIES.md (patches, guards, update recipes, observed versions). The inventory of record is docs/integrations/UPSTREAM_REGISTRY.md. Edited only by reviewed pull requests. installed versions are verified against vendored manifests and lockfiles by `npm run test:upstream`; latest_observed values are informational snapshots that the release watcher refreshes.",
+  "providers": [
+    {
+      "id": "vela",
+      "name": "LuxAlgo Vela (charting core and workspace)",
+      "kind": "vendored-source",
+      "layer": "upstream",
+      "official_source": "https://github.com/LuxAlgo/Vela",
+      "license": "Apache-2.0 with NOTICE attribution requirement",
+      "installed": {
+        "version": "0.9.3",
+        "ref": "57d011ab796c541cbb9e1282722ad6cd521c8f55",
+        "path": "vendor/vela",
+        "manifest": "vendor/vela/package.json"
+      },
+      "latest_observed": {
+        "version": "0.10.4",
+        "date": "2026-11-10",
+        "reviewed": false
+      },
+      "integration_path": [
+        "packages/openfund-charts",
+        "scripts/build-charts.mjs",
+        "apps/web-react/public/legacy/vela-bridge.js"
+      ],
+      "watch": {
+        "type": "github-releases",
+        "repo": "LuxAlgo/Vela",
+        "tag_prefix": "v"
+      },
+      "policy": {
+        "scheme": "semver-0x",
+        "summary": "0.x: every minor can break. Treat any minor or major as high risk; patch releases as medium until the changelog is read.",
+        "never_auto_merge": true
+      },
+      "compatibility": {
+        "status": "pinned-and-verified",
+        "evidence": "npm run test:charts (9 tests), build reproducibility, patch guards; browser chart regression via npm run test:browser:charts"
+      },
+      "last_upgrade": "2026-10-31 (vendored 0.9.3 at tag v0.9.3)",
+      "tests": [
+        "npm run test:upstream",
+        "npm run test:charts",
+        "npm run test:browser:charts",
+        "npm run test:browser:layout"
+      ],
+      "upgrade_instructions": "docs/integrations/VELA_UPGRADE.md (node scripts/upstream/update-vendor.mjs --provider vela --to <tag>)",
+      "rollback_limits": "Source rollback is a git revert of the vendor commit plus rebuilding the bundle. Stored browser chart settings (localStorage key of-chart-v2-<product>) are not migrated by Openfund; a rollback after a settings-schema change in Vela can discard a user's saved layout.",
+      "update": {
+        "repo_url": "https://github.com/LuxAlgo/Vela.git",
+        "tag_prefix": "v",
+        "subdir": "",
+        "vendor_path": "vendor/vela",
+        "patch_dir": "infra/upstream/patches/vela-{version}"
+      }
+    },
+    {
+      "id": "vela-pinets",
+      "name": "@luxalgo/vela-pinets (Pine addon)",
+      "kind": "npm",
+      "layer": "upstream",
+      "official_source": "https://www.npmjs.com/package/@luxalgo/vela-pinets",
+      "license": "AGPL-3.0",
+      "installed": {
+        "version": "0.3.2",
+        "lockfile": "apps/web-react/package-lock.json",
+        "package": "@luxalgo/vela-pinets"
+      },
+      "latest_observed": {
+        "version": "0.3.3",
+        "date": "2026-11-10",
+        "reviewed": false
+      },
+      "integration_path": [
+        "scripts/build-charts.mjs",
+        "packages/openfund-charts/src/pine-compatibility.mjs",
+        "packages/openfund-charts/src/workspace-entry.ts"
+      ],
+      "watch": {
+        "type": "npm",
+        "package": "@luxalgo/vela-pinets"
+      },
+      "policy": {
+        "scheme": "semver-0x",
+        "summary": "0.x addon whose worker is patched at build time; every release needs the worker-extraction guards re-checked.",
+        "never_auto_merge": true
+      },
+      "compatibility": {
+        "status": "pinned-and-verified",
+        "evidence": "npm run test:charts; build-charts.mjs throws if the worker marker moves"
+      },
+      "last_upgrade": "2026-11-02",
+      "tests": [
+        "npm run test:charts",
+        "npm run test:browser:charts"
+      ],
+      "upgrade_instructions": "docs/integrations/VELA_UPGRADE.md, section Pine addon and PineTS",
+      "rollback_limits": "Revert the lockfile and rebuild. Corresponding source for AGPL components must stay available with the distributed bundle."
+    },
+    {
+      "id": "pinets",
+      "name": "PineTS (Pine runtime)",
+      "kind": "npm",
+      "layer": "upstream",
+      "official_source": "https://www.npmjs.com/package/pinets",
+      "license": "AGPL-3.0",
+      "installed": {
+        "version": "0.13.1",
+        "lockfile": "apps/web-react/package-lock.json",
+        "package": "pinets"
+      },
+      "latest_observed": {
+        "version": "0.13.1",
+        "date": "2026-11-10",
+        "reviewed": true
+      },
+      "integration_path": [
+        "scripts/build-charts.mjs",
+        "packages/openfund-charts/src/pine-compatibility.mjs"
+      ],
+      "watch": {
+        "type": "npm",
+        "package": "pinets"
+      },
+      "policy": {
+        "scheme": "semver-0x",
+        "summary": "0.x runtime; behaviour changes can alter indicator output.",
+        "never_auto_merge": true
+      },
+      "compatibility": {
+        "status": "pinned-and-verified",
+        "evidence": "npm run test:charts; indicator conformance fixtures in packages/openfund-charts/test"
+      },
+      "last_upgrade": "2026-11-02",
+      "tests": [
+        "npm run test:charts",
+        "npm run test:browser:charts"
+      ],
+      "upgrade_instructions": "docs/integrations/VELA_UPGRADE.md, section Pine addon and PineTS",
+      "rollback_limits": "Revert the lockfile and rebuild; custom indicator output must be re-compared against reference values."
+    },
+    {
+      "id": "gains-api",
+      "name": "Gains Network public market-data API (REST and WebSocket)",
+      "kind": "hosted-api",
+      "layer": "upstream",
+      "official_source": "https://api.gains.trade/v1/arbitrum",
+      "license": "service terms (no source distributed)",
+      "installed": {
+        "version": "unversioned (v1 path)",
+        "ref": "contract recorded 2026-10-31"
+      },
+      "latest_observed": {
+        "version": "n/a",
+        "date": "2026-11-10",
+        "reviewed": false
+      },
+      "integration_path": [
+        "apps/backend/market-data.js",
+        "packages/openfund-gains-adapter/src/gains-adapter.js",
+        "apps/web-react/src/features/markets"
+      ],
+      "watch": {
+        "type": "none",
+        "reason": "no versioned releases; protected by recorded-fixture contract tests and an optional live check"
+      },
+      "policy": {
+        "scheme": "hosted-contract",
+        "summary": "A change is detected by contract tests, not by version. Protocol and contract changes are never adopted automatically.",
+        "never_auto_merge": true
+      },
+      "compatibility": {
+        "status": "contract-tested",
+        "evidence": "apps/backend/test/market-data-contract.test.mjs against recorded fixtures; live check: npm run check:gains-live (optional, network)"
+      },
+      "last_upgrade": "not applicable",
+      "tests": [
+        "node --test apps/backend/test/market-data-contract.test.mjs",
+        "npm --prefix apps/web-react run test:markets",
+        "npm --prefix apps/web-react run test:depth"
+      ],
+      "upgrade_instructions": "docs/integrations/GAINS_UPGRADE.md",
+      "rollback_limits": "Not rollbackable: the provider controls the API. Openfund can only keep the previous normaliser and fail closed (stale or invalid data is rejected, never substituted)."
+    },
+    {
+      "id": "gains-sdk",
+      "name": "Gains Network SDK (@gainsnetwork/sdk)",
+      "kind": "vendored-source",
+      "layer": "upstream",
+      "official_source": "https://github.com/GainsNetwork-org/sdk",
+      "license": "see vendor/gains-sdk/LICENSE",
+      "installed": {
+        "version": "1.8.10",
+        "ref": "aa7a05a4919ba6667513c128e6bf5806af0be181",
+        "path": "vendor/gains-sdk",
+        "manifest": "vendor/gains-sdk/package.json"
+      },
+      "latest_observed": {
+        "version": "1.8.10",
+        "date": "2026-11-10",
+        "reviewed": true
+      },
+      "integration_path": [
+        "packages/openfund-gains-adapter"
+      ],
+      "watch": {
+        "type": "github-head",
+        "repo": "GainsNetwork-org/sdk",
+        "branch": "main"
+      },
+      "policy": {
+        "scheme": "source-head",
+        "summary": "No releases or tags are published. Any new commit on the default branch is a proposal for review; transaction execution remains disabled regardless.",
+        "never_auto_merge": true
+      },
+      "compatibility": {
+        "status": "vendored-unused-at-runtime",
+        "evidence": "Byte-identical to the upstream commit (verified 2026-11-10). Market and wallet reads use public APIs; the SDK performs no execution."
+      },
+      "last_upgrade": "2026-10-31 (vendored)",
+      "tests": [
+        "npm run test:upstream"
+      ],
+      "upgrade_instructions": "docs/integrations/UPSTREAM_DEPENDENCIES.md, section Vendored source update procedure",
+      "rollback_limits": "git revert of the vendor commit; nothing at runtime depends on it.",
+      "update": {
+        "repo_url": "https://github.com/GainsNetwork-org/sdk.git",
+        "tag_prefix": "v",
+        "subdir": "",
+        "vendor_path": "vendor/gains-sdk",
+        "patch_dir": "infra/upstream/patches/gains-sdk-{version}"
+      }
+    },
+    {
+      "id": "directus",
+      "name": "Directus CMS",
+      "kind": "docker-image",
+      "layer": "upstream",
+      "official_source": "https://github.com/directus/directus",
+      "license": "MSCL-1.0-GPL from 12.0.0 (BUSL-1.1 before); licence tiers enforced from 12.0.0",
+      "installed": {
+        "version": "11.9.1",
+        "ref": "docker.io/directus/directus:11.9.1@sha256:3692e622c824d5f83b97547361b25d9f9ea2a30792c37520deb6af2733dfd66f",
+        "path": "render.yaml",
+        "image_pattern": "docker.io/directus/directus:"
+      },
+      "latest_observed": {
+        "version": "12.6.1",
+        "date": "2026-11-10",
+        "reviewed": true,
+        "note": "blocked: licence decision, see docs/backstage/DIRECTUS_12_ASSESSMENT.md"
+      },
+      "integration_path": [
+        "apps/backstage/scripts",
+        "apps/backstage/upgrade",
+        "packages/cms-client",
+        "apps/web-react/src/cms"
+      ],
+      "watch": {
+        "type": "github-releases",
+        "repo": "directus/directus",
+        "tag_prefix": "v"
+      },
+      "policy": {
+        "scheme": "directus",
+        "summary": "Any release whose notes contain a Potential Breaking Changes section is high risk even when minor (12.6.0 raised the minimum Node.js to 26). A new major is blocked pending an owner decision. Node.js 26 applies to the CMS image only.",
+        "never_auto_merge": true
+      },
+      "compatibility": {
+        "status": "blocked-on-owner-decision",
+        "evidence": "docs/reviews/directus-12-staging: 11.9.1 passes 98/98 checks; 12.6.1 preserved all data but locks the 43-collection, status-filtered content model without a licence (Core: 25 collections, no custom permission rules)"
+      },
+      "last_upgrade": "2026-11-01 (11.9.1 pinned at introduction)",
+      "tests": [
+        "node apps/backstage/upgrade/cms-check.mjs verify --baseline <inventory>",
+        "node apps/backstage/upgrade/cms-check.mjs inventory",
+        "npm run test:upstream"
+      ],
+      "upgrade_instructions": "docs/deployment/DIRECTUS_MIGRATION_RUNBOOK.md",
+      "rollback_limits": "Directus migrations are forward only; rollback is a database and media restore, which also rolls back application tables sharing the database."
+    },
+    {
+      "id": "luxalgo-trade-journal",
+      "name": "LuxAlgo Trade Journal (@luxalgo/journal-core only)",
+      "kind": "vendored-source",
+      "layer": "upstream",
+      "official_source": "https://github.com/LuxAlgo/trade-journal",
+      "license": "MIT",
+      "installed": {
+        "version": "0.1.0",
+        "ref": "834e7b68f553d1aba0d7777875cdc4622f5a7eb5",
+        "path": "third_party/luxalgo-trade-journal",
+        "manifest": "third_party/luxalgo-trade-journal/packages-core/package.json"
+      },
+      "latest_observed": {
+        "version": "0.1.0",
+        "date": "2026-11-10",
+        "reviewed": false
+      },
+      "integration_path": [
+        "apps/backend/portfolio.js"
+      ],
+      "watch": {
+        "type": "github-head",
+        "repo": "LuxAlgo/trade-journal",
+        "branch": "main"
+      },
+      "policy": {
+        "scheme": "source-head",
+        "summary": "Analytics library with no releases tracked; any change to metric definitions is high risk because Portfolio figures are user-visible.",
+        "never_auto_merge": true
+      },
+      "compatibility": {
+        "status": "integrated",
+        "evidence": "Actually integrated: apps/backend/portfolio.js imports the compiled bundle. apps/backend/test/portfolio.test.mjs compares output with independently computed values. The upstream web app and importers are not vendored."
+      },
+      "last_upgrade": "2026-11-01 (vendored)",
+      "tests": [
+        "node apps/backend/test/portfolio.test.mjs",
+        "npm run test:upstream"
+      ],
+      "upgrade_instructions": "third_party/luxalgo-trade-journal/PROVENANCE.md and the vendored source update procedure",
+      "rollback_limits": "git revert; the committed dist bundle is rebuilt by build.mjs.",
+      "update": {
+        "repo_url": "https://github.com/LuxAlgo/trade-journal.git",
+        "tag_prefix": "v",
+        "subdir": "packages/core",
+        "vendor_path": "third_party/luxalgo-trade-journal/packages-core",
+        "patch_dir": "infra/upstream/patches/luxalgo-trade-journal-{version}",
+        "post_apply": "node third_party/luxalgo-trade-journal/build.mjs"
+      }
+    },
+    {
+      "id": "react",
+      "name": "React and React DOM",
+      "kind": "npm",
+      "layer": "library",
+      "official_source": "https://github.com/facebook/react",
+      "license": "MIT",
+      "installed": {
+        "version": "19.3.1",
+        "lockfile": "apps/web-react/package-lock.json",
+        "package": "react"
+      },
+      "latest_observed": {
+        "version": "19.3.1",
+        "date": "2026-11-10",
+        "reviewed": true
+      },
+      "integration_path": [
+        "apps/web-react"
+      ],
+      "watch": {
+        "type": "npm",
+        "package": "react"
+      },
+      "policy": {
+        "scheme": "semver",
+        "summary": "Major releases are manual; minor and patch releases need typecheck and the web suite.",
+        "never_auto_merge": true
+      },
+      "compatibility": {
+        "status": "current",
+        "evidence": "npm run typecheck; npm run test:web"
+      },
+      "last_upgrade": "see lockfile history",
+      "tests": [
+        "npm run typecheck",
+        "npm run test:web"
+      ],
+      "upgrade_instructions": "docs/integrations/UPSTREAM_DEPENDENCIES.md, section Library updates",
+      "rollback_limits": "Lockfile revert."
+    },
+    {
+      "id": "vite",
+      "name": "Vite",
+      "kind": "npm",
+      "layer": "library",
+      "official_source": "https://github.com/vitejs/vite",
+      "license": "MIT",
+      "installed": {
+        "version": "6.4.5",
+        "lockfile": "apps/web-react/package-lock.json",
+        "package": "vite"
+      },
+      "latest_observed": {
+        "version": "8.3.7",
+        "date": "2026-11-10",
+        "reviewed": false
+      },
+      "integration_path": [
+        "apps/web-react"
+      ],
+      "watch": {
+        "type": "npm",
+        "package": "vite"
+      },
+      "policy": {
+        "scheme": "semver",
+        "summary": "Two majors behind; a major changes the build output and needs a full build and browser acceptance.",
+        "never_auto_merge": true
+      },
+      "compatibility": {
+        "status": "current-major-behind",
+        "evidence": "not reviewed"
+      },
+      "last_upgrade": "see lockfile history",
+      "tests": [
+        "npm run build:web",
+        "npm run typecheck"
+      ],
+      "upgrade_instructions": "docs/integrations/UPSTREAM_DEPENDENCIES.md, section Library updates",
+      "rollback_limits": "Lockfile revert."
+    },
+    {
+      "id": "express",
+      "name": "Express",
+      "kind": "npm",
+      "layer": "library",
+      "official_source": "https://github.com/expressjs/express",
+      "license": "MIT",
+      "installed": {
+        "version": "4.22.3",
+        "lockfile": "apps/backend/package-lock.json",
+        "package": "express"
+      },
+      "latest_observed": {
+        "version": "5.3.0",
+        "date": "2026-11-10",
+        "reviewed": false
+      },
+      "integration_path": [
+        "apps/backend"
+      ],
+      "watch": {
+        "type": "npm",
+        "package": "express"
+      },
+      "policy": {
+        "scheme": "semver",
+        "summary": "Express 5 changes routing and error handling; a major is a deliberate migration with the full backend suite.",
+        "never_auto_merge": true
+      },
+      "compatibility": {
+        "status": "current-major-behind",
+        "evidence": "not reviewed"
+      },
+      "last_upgrade": "see lockfile history",
+      "tests": [
+        "npm run test:backend"
+      ],
+      "upgrade_instructions": "docs/integrations/UPSTREAM_DEPENDENCIES.md, section Library updates",
+      "rollback_limits": "Lockfile revert."
+    },
+    {
+      "id": "pg",
+      "name": "node-postgres",
+      "kind": "npm",
+      "layer": "library",
+      "official_source": "https://github.com/brianc/node-postgres",
+      "license": "MIT",
+      "installed": {
+        "version": "8.23.1",
+        "lockfile": "apps/backend/package-lock.json",
+        "package": "pg"
+      },
+      "latest_observed": {
+        "version": "8.23.1",
+        "date": "2026-11-10",
+        "reviewed": true
+      },
+      "integration_path": [
+        "apps/backend"
+      ],
+      "watch": {
+        "type": "npm",
+        "package": "pg"
+      },
+      "policy": {
+        "scheme": "semver",
+        "summary": "Database driver: any update needs the backend suite against PostgreSQL 17.",
+        "never_auto_merge": true
+      },
+      "compatibility": {
+        "status": "current",
+        "evidence": "npm run test:backend"
+      },
+      "last_upgrade": "see lockfile history",
+      "tests": [
+        "npm run test:backend"
+      ],
+      "upgrade_instructions": "docs/integrations/UPSTREAM_DEPENDENCIES.md, section Library updates",
+      "rollback_limits": "Lockfile revert."
+    },
+    {
+      "id": "ws",
+      "name": "ws (market-data WebSocket client)",
+      "kind": "npm",
+      "layer": "library",
+      "official_source": "https://github.com/websockets/ws",
+      "license": "MIT",
+      "installed": {
+        "version": "8.22.1",
+        "lockfile": "apps/backend/package-lock.json",
+        "package": "ws"
+      },
+      "latest_observed": {
+        "version": "8.22.2",
+        "date": "2026-11-10",
+        "reviewed": false
+      },
+      "integration_path": [
+        "apps/backend/market-data.js"
+      ],
+      "watch": {
+        "type": "npm",
+        "package": "ws"
+      },
+      "policy": {
+        "scheme": "semver",
+        "summary": "Feeds the trading engine price stream; run the market-data contract tests.",
+        "never_auto_merge": true
+      },
+      "compatibility": {
+        "status": "current-patch-behind",
+        "evidence": "market-data contract tests"
+      },
+      "last_upgrade": "see lockfile history",
+      "tests": [
+        "node --test apps/backend/test/market-data-contract.test.mjs"
+      ],
+      "upgrade_instructions": "docs/integrations/UPSTREAM_DEPENDENCIES.md, section Library updates",
+      "rollback_limits": "Lockfile revert."
+    },
+    {
+      "id": "viem",
+      "name": "viem",
+      "kind": "npm",
+      "layer": "library",
+      "official_source": "https://github.com/wevm/viem",
+      "license": "MIT",
+      "installed": {
+        "version": "2.57.14",
+        "lockfile": "apps/backend/package-lock.json",
+        "package": "viem"
+      },
+      "latest_observed": {
+        "version": "2.57.17",
+        "date": "2026-11-10",
+        "reviewed": false
+      },
+      "integration_path": [
+        "apps/backend",
+        "apps/web-react"
+      ],
+      "watch": {
+        "type": "npm",
+        "package": "viem"
+      },
+      "policy": {
+        "scheme": "semver",
+        "summary": "Signature verification and payment verification depend on it; run the SIWE and purchase suites.",
+        "never_auto_merge": true
+      },
+      "compatibility": {
+        "status": "current-patch-behind",
+        "evidence": "npm run test:backend"
+      },
+      "last_upgrade": "see lockfile history",
+      "tests": [
+        "npm run test:backend"
+      ],
+      "upgrade_instructions": "docs/integrations/UPSTREAM_DEPENDENCIES.md, section Library updates",
+      "rollback_limits": "Lockfile revert."
+    },
+    {
+      "id": "wagmi",
+      "name": "wagmi",
+      "kind": "npm",
+      "layer": "library",
+      "official_source": "https://github.com/wevm/wagmi",
+      "license": "MIT",
+      "installed": {
+        "version": "2.19.5",
+        "lockfile": "apps/web-react/package-lock.json",
+        "package": "wagmi"
+      },
+      "latest_observed": {
+        "version": "3.7.11",
+        "date": "2026-11-10",
+        "reviewed": false
+      },
+      "integration_path": [
+        "apps/web-react"
+      ],
+      "watch": {
+        "type": "npm",
+        "package": "wagmi"
+      },
+      "policy": {
+        "scheme": "semver",
+        "summary": "A major is coupled to RainbowKit; wallet connection needs browser acceptance.",
+        "never_auto_merge": true
+      },
+      "compatibility": {
+        "status": "current-major-behind",
+        "evidence": "not reviewed"
+      },
+      "last_upgrade": "see lockfile history",
+      "tests": [
+        "npm run test:browser:wallet"
+      ],
+      "upgrade_instructions": "docs/integrations/UPSTREAM_DEPENDENCIES.md, section Library updates",
+      "rollback_limits": "Lockfile revert."
+    }
+  ]
+}

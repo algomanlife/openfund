@@ -3,7 +3,7 @@
 How Openfund adds, reviews and updates third-party code. The inventory of what
 exists today is the generated [upstream dependency registry](../integrations/UPSTREAM_REGISTRY.md)
 (source of truth: `docs/integrations/upstream-registry.json`). Vendored-source rules
-are in [Upstream source management](../integrations/UPSTREAM.md).
+are in [Upstream source management](../integrations/UPSTREAM.md); layers, the patch registry and the controlled vendor-update tool are in [Upstream isolation and patch registry](../integrations/UPSTREAM_DEPENDENCIES.md).
 
 ## Principles
 

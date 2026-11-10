@@ -1,0 +1,190 @@
+{
+  "schema": 1,
+  "policy": "Static guards for Openfund-owned behaviour that lives next to an upstream. Each guard names a file and a string or pattern that must remain; an upstream update that overwrites an Openfund customization makes `npm run test:upstream` fail. Guards are a tripwire, not a substitute for the browser regression tests listed in the registry. `mirrors` lists files that must stay byte-identical copies of a single source. Copies under react/ are deliberately not listed: that directory is generated build output (PR #68 stops tracking it).",
+  "guards": [
+    {
+      "id": "vela-attribution-mark-off",
+      "provider": "vela",
+      "area": "branding",
+      "file": "packages/openfund-charts/src/workspace-entry.ts",
+      "contains": "registerRendererDefaults({ attribution: false })",
+      "why": "Openfund replaces the built-in V mark through the public renderer default."
+    },
+    {
+      "id": "vela-attribution-notice",
+      "provider": "vela",
+      "area": "legal",
+      "file": "apps/web-react/src/pages/terminal-body.html",
+      "regex": "class=\"sb-item chart-notice\" href=\"https://velacharts.dev\"[^>]*>Vela</a>",
+      "why": "vendor/vela/NOTICE permits hiding the built-in mark only when an equivalent visible link to the Vela project is shown on the same screen. This guard and the previous one must hold together."
+    },
+    {
+      "id": "vela-notice-text",
+      "provider": "vela",
+      "area": "legal",
+      "file": "vendor/vela/NOTICE",
+      "contains": "Removing, hiding, or obscuring the attribution without providing the",
+      "why": "The condition above is read from the shipped NOTICE; if upstream rewords it, a human must re-review the attribution handling."
+    },
+    {
+      "id": "vela-themes",
+      "provider": "vela",
+      "area": "themes",
+      "file": "packages/openfund-charts/src/vela-bridge.js",
+      "regex": "background: '#060808'[\\s\\S]*background: '#FFFFFF'",
+      "why": "Openfund dark and light brand themes."
+    },
+    {
+      "id": "vela-single-chart-layout",
+      "provider": "vela",
+      "area": "layout",
+      "file": "packages/openfund-charts/src/vela-bridge.js",
+      "contains": "layout: false",
+      "why": "Single-chart workspace; Openfund owns the terminal tabs and layouts."
+    },
+    {
+      "id": "vela-toolbar",
+      "provider": "vela",
+      "area": "layout",
+      "file": "packages/openfund-charts/src/vela-bridge.js",
+      "contains": "left: ['timeframes', 'style', 'indicators', 'undo-redo']",
+      "why": "Vela's symbol chip is omitted because Openfund hosts the market selector."
+    },
+    {
+      "id": "vela-timeframes",
+      "provider": "vela",
+      "area": "market-data",
+      "file": "packages/openfund-charts/src/vela-bridge.js",
+      "contains": "const TIMEFRAMES = ['1', '5', '15', '30', '60', '240', 'D'];",
+      "why": "Only intervals the Gains feed supports."
+    },
+    {
+      "id": "vela-gains-provider",
+      "provider": "vela",
+      "area": "market-data",
+      "file": "packages/openfund-charts/src/vela-bridge.js",
+      "contains": "providers: { gains:",
+      "why": "Market data enters Vela only through the Openfund provider adapter."
+    },
+    {
+      "id": "vela-persistent-settings",
+      "provider": "vela",
+      "area": "settings",
+      "file": "packages/openfund-charts/src/vela-bridge.js",
+      "regex": "of-chart-v2-[\\s\\S]*delete chart\\.drawings",
+      "why": "Per-product chart settings; position overlays are never persisted."
+    },
+    {
+      "id": "vela-localization-rtl",
+      "provider": "vela",
+      "area": "localization",
+      "file": "packages/openfund-charts/src/workspace-entry.ts",
+      "contains": "registerLocale({locale:'fa',direction:'rtl'",
+      "why": "Persian RTL locale for the chart."
+    },
+    {
+      "id": "vela-custom-indicators",
+      "provider": "vela",
+      "area": "indicators",
+      "file": "packages/openfund-charts/src/workspace-entry.ts",
+      "contains": "createCatalog(openAlgo, pac, smc)",
+      "why": "Open Algo V5, Price Action Concepts and Smart Money Concepts."
+    },
+    {
+      "id": "vela-quick-trade",
+      "provider": "vela",
+      "area": "trading-ui",
+      "file": "apps/web-react/src/features/terminal/TradingPages.tsx",
+      "contains": "Quick Trade (Chart tab only",
+      "why": "Chart-tab Quick Trade uses the account adapter, not Vela."
+    },
+    {
+      "id": "vela-symbol-categories",
+      "provider": "vela",
+      "area": "symbol-selection",
+      "file": "apps/web-react/src/features/markets/marketsData.ts",
+      "contains": "export const CATEGORY_ORDER",
+      "why": "Openfund symbol categories."
+    },
+    {
+      "id": "gains-stale-window",
+      "provider": "gains-api",
+      "area": "freshness",
+      "file": "apps/backend/market-data.js",
+      "contains": "const STALE_MS = 5000",
+      "why": "Marks older than this are rejected for execution."
+    },
+    {
+      "id": "gains-fail-closed-schema",
+      "provider": "gains-api",
+      "area": "validation",
+      "file": "apps/backend/market-data.js",
+      "regex": "invalid_market_schema[\\s\\S]*invalid_price_schema",
+      "why": "Unexpected API shapes are errors, never silently accepted."
+    },
+    {
+      "id": "directus-public-status-rules",
+      "provider": "directus",
+      "area": "permissions",
+      "file": "apps/backstage/scripts/apply_schema.py",
+      "contains": "('pages', {'status': {'_eq': 'published'}})",
+      "why": "Public read exposes published rows only."
+    },
+    {
+      "id": "cms-client-no-credentials",
+      "provider": "directus",
+      "area": "permissions",
+      "file": "apps/web-react/src/cms/client.ts",
+      "absent": "Authorization|Bearer ",
+      "why": "The browser CMS client never carries tokens."
+    }
+  ],
+  "mirrors": [
+    {
+      "id": "vela-bridge-copies",
+      "source": "packages/openfund-charts/src/vela-bridge.js",
+      "copies": [
+        "apps/web-react/public/legacy/vela-bridge.js",
+        "dist/vela-bridge.js"
+      ]
+    },
+    {
+      "id": "gains-adapter-copies",
+      "source": "packages/openfund-gains-adapter/src/gains-adapter.js",
+      "copies": [
+        "apps/web-react/public/legacy/gains-adapter.js",
+        "dist/gains-adapter.js"
+      ]
+    },
+    {
+      "id": "vela-bundle-copies",
+      "source": "apps/web-react/public/assets/vela-workspace.global.min.js",
+      "copies": [
+        "dist/assets/vela-workspace.global.min.js"
+      ]
+    },
+    {
+      "id": "pine-worker-copies",
+      "source": "apps/web-react/public/assets/openfund-pine-worker.min.js",
+      "copies": [
+        "dist/assets/openfund-pine-worker.min.js"
+      ]
+    },
+    {
+      "id": "vela-notice-copies",
+      "source": "vendor/vela/NOTICE",
+      "copies": [
+        "apps/web-react/public/assets/notices/Vela-NOTICE.txt",
+        "dist/assets/notices/Vela-NOTICE.txt"
+      ]
+    },
+    {
+      "id": "vela-license-copies",
+      "source": "vendor/vela/LICENSE",
+      "copies": [
+        "apps/web-react/public/assets/notices/Vela-Apache-2.0.txt",
+        "dist/assets/notices/Vela-Apache-2.0.txt"
+      ]
+    }
+  ]
+}

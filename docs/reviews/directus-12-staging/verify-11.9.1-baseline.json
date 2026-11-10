@@ -1,0 +1,496 @@
+{
+ "base_host": "127.0.0.1:8055",
+ "generated_at": "2026-11-10T06:52:49.733Z",
+ "results": [
+  {
+   "name": "liveness: /server/ping is public",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "health: /server/health is reachable anonymously (11.x) or 403/404 (12.x \u2014 use /server/ping)",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "health: authenticated /server/health reports ok",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "admin: authenticated /users/me works",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "public read pages",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public pages: only status=published rows",
+   "ok": true,
+   "detail": "25 public of 25 total, 0 non-public hidden"
+  },
+  {
+   "name": "public pages: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read navigation_items",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public navigation_items: only status=published rows",
+   "ok": true,
+   "detail": "18 public of 18 total, 0 non-public hidden"
+  },
+  {
+   "name": "public navigation_items: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read ui_messages",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public ui_messages: only status=published rows",
+   "ok": true,
+   "detail": "628 public of 628 total, 0 non-public hidden"
+  },
+  {
+   "name": "public ui_messages: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read home_content",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public home_content: only status=published rows",
+   "ok": true,
+   "detail": "1 public of 1 total, 0 non-public hidden"
+  },
+  {
+   "name": "public home_content: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read faqs",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public faqs: only status=published rows",
+   "ok": true,
+   "detail": "52 public of 52 total, 0 non-public hidden"
+  },
+  {
+   "name": "public faqs: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read trading_rules",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public trading_rules: only status=published rows",
+   "ok": true,
+   "detail": "22 public of 22 total, 0 non-public hidden"
+  },
+  {
+   "name": "public trading_rules: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read legal_documents",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public legal_documents: only status=published rows",
+   "ok": true,
+   "detail": "6 public of 6 total, 0 non-public hidden"
+  },
+  {
+   "name": "public legal_documents: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read footer_links",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public footer_links: only status=published rows",
+   "ok": true,
+   "detail": "10 public of 10 total, 0 non-public hidden"
+  },
+  {
+   "name": "public footer_links: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read faq_categories",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public faq_categories: only status=published rows",
+   "ok": true,
+   "detail": "6 public of 6 total, 0 non-public hidden"
+  },
+  {
+   "name": "public faq_categories: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read learning_paths",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public learning_paths: only status=published rows",
+   "ok": true,
+   "detail": "5 public of 5 total, 0 non-public hidden"
+  },
+  {
+   "name": "public learning_paths: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read lessons",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public lessons: only status=published rows",
+   "ok": true,
+   "detail": "25 public of 25 total, 0 non-public hidden"
+  },
+  {
+   "name": "public lessons: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read glossary_terms",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public glossary_terms: only status=published rows",
+   "ok": true,
+   "detail": "40 public of 40 total, 0 non-public hidden"
+  },
+  {
+   "name": "public glossary_terms: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read tools",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public tools: only status=published rows",
+   "ok": true,
+   "detail": "10 public of 10 total, 0 non-public hidden"
+  },
+  {
+   "name": "public tools: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read referral_content",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public referral_content: only status=published rows",
+   "ok": true,
+   "detail": "1 public of 1 total, 0 non-public hidden"
+  },
+  {
+   "name": "public referral_content: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read governance_milestones",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public governance_milestones: only status=published rows",
+   "ok": true,
+   "detail": "0 public of 0 total, 0 non-public hidden"
+  },
+  {
+   "name": "public governance_milestones: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read governance_content_blocks",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public governance_content_blocks: only status=published rows",
+   "ok": true,
+   "detail": "0 public of 0 total, 0 non-public hidden"
+  },
+  {
+   "name": "public governance_content_blocks: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read whitepaper_documents",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public whitepaper_documents: only status=published rows",
+   "ok": true,
+   "detail": "1 public of 1 total, 0 non-public hidden"
+  },
+  {
+   "name": "public whitepaper_documents: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read whitepaper_chapters",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public whitepaper_chapters: only status=published rows",
+   "ok": true,
+   "detail": "20 public of 20 total, 0 non-public hidden"
+  },
+  {
+   "name": "public whitepaper_chapters: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read whitepaper_datasets",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public whitepaper_datasets: only status=published rows",
+   "ok": true,
+   "detail": "4 public of 4 total, 0 non-public hidden"
+  },
+  {
+   "name": "public whitepaper_datasets: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read whitepaper_references",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public whitepaper_references: only status=published rows",
+   "ok": true,
+   "detail": "22 public of 22 total, 0 non-public hidden"
+  },
+  {
+   "name": "public whitepaper_references: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public read challenge_plans",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public challenge_plans: only status=active rows",
+   "ok": true,
+   "detail": "4 public of 4 total, 0 non-public hidden"
+  },
+  {
+   "name": "public challenge_plans: explicit draft query returns nothing",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "public denied: users",
+   "ok": true,
+   "detail": "items HTTP 403"
+  },
+  {
+   "name": "public denied: demo_accounts",
+   "ok": true,
+   "detail": "items HTTP 403"
+  },
+  {
+   "name": "public denied: trading_positions",
+   "ok": true,
+   "detail": "items HTTP 403"
+  },
+  {
+   "name": "public denied: trading_orders",
+   "ok": true,
+   "detail": "items HTTP 403"
+  },
+  {
+   "name": "public denied: trading_ledger",
+   "ok": true,
+   "detail": "items HTTP 403"
+  },
+  {
+   "name": "public denied: trading_events",
+   "ok": true,
+   "detail": "items HTTP 403"
+  },
+  {
+   "name": "public denied: openfund_challenges",
+   "ok": true,
+   "detail": "items HTTP 403"
+  },
+  {
+   "name": "public denied: directus_users",
+   "ok": true,
+   "detail": "items HTTP 403, system HTTP 403"
+  },
+  {
+   "name": "public denied: directus_permissions",
+   "ok": true,
+   "detail": "items HTTP 403, system HTTP 403"
+  },
+  {
+   "name": "public denied: directus_settings",
+   "ok": true,
+   "detail": "items HTTP 403, system HTTP 403"
+  },
+  {
+   "name": "public denied: directus_files_private",
+   "ok": true,
+   "detail": "items HTTP 403, system HTTP 404"
+  },
+  {
+   "name": "public denied: /settings",
+   "ok": true,
+   "detail": "HTTP 403"
+  },
+  {
+   "name": "challenge catalog: active plans present",
+   "ok": true,
+   "detail": "4 plans"
+  },
+  {
+   "name": "challenge catalog: plan shape (slug/price/status fields)",
+   "ok": true,
+   "detail": "id,slug,name,status,configuration,created_at,updated_at"
+  },
+  {
+   "name": "challenge catalog: translations relation readable",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "whitepaper: published document with translations",
+   "ok": true,
+   "detail": "1 docs"
+  },
+  {
+   "name": "whitepaper: chapters with fa/en translations",
+   "ok": true,
+   "detail": "20 chapters"
+  },
+  {
+   "name": "content readable: whitepaper_datasets",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "content readable: whitepaper_references",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "content readable: governance_milestones",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "content readable: governance_content_blocks",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "translations: ui_messages carry fa and en",
+   "ok": true,
+   "detail": "628 messages"
+  },
+  {
+   "name": "editing: admin can create a draft",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "draft invisible to public",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "editing: publish makes it public",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "editing: unpublish hides it again",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "cleanup: temporary row deleted",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "media: admin file upload",
+   "ok": true,
+   "detail": "HTTP 200"
+  },
+  {
+   "name": "media: private file not public by default",
+   "ok": true,
+   "detail": "HTTP 403"
+  },
+  {
+   "name": "media: admin can fetch asset bytes",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "cleanup: temporary file deleted",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

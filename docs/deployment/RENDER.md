@@ -77,7 +77,7 @@ Blueprint (`render.yaml`, root). Applying the Blueprint is a reviewed manual ope
 4. Watch the service logs:
    - `openfund` starts with `node migrate.js` (idempotent schema), then
      `server.js`; `/health` must return `{ok:true}`.
-   - `openfund-cms` responds on `/server/health`.
+   - `openfund-cms` responds on `/server/ping` (public liveness; `/server/health` needs an access token on Directus 12).
 5. **Initialize Directus** (once, from a machine with network access to the CMS):
 
    ```bash
@@ -108,10 +108,10 @@ Blueprint (`render.yaml`, root). Applying the Blueprint is a reviewed manual ope
 One `openfund` service serves every public hostname. No second application
 or environment exists for a domain.
 
-| Hostname | Role | Observed 2026-11-08 |
+| Hostname | Role | Observed (2026-11-08; `/version` re-checked 2026-11-10) |
 | --- | --- | --- |
-| `openfi.cloud` | Existing production domain | Cloudflare-proxied, Google Trust Services certificate, `/version` matched v0.4.1 |
-| `openfund.cloud` | Second production domain; `RELEASE_PUBLIC_URL` for deploy verification | Same service and `/version` identity |
+| `openfi.cloud` | Existing production domain | Cloudflare-proxied, Google Trust Services certificate, `/version` matched v0.4.1 on 2026-11-08; matched v0.4.4 (`c1cb707`) on 2026-11-10 |
+| `openfund.cloud` | Second production domain; `RELEASE_PUBLIC_URL` for deploy verification | Same service; `/version` matched v0.4.4 (`c1cb707`) on 2026-11-10 |
 | `www.openfi.cloud`, `www.openfund.cloud` | Redirect-only | `301` to the matching root domain, path preserved |
 | `openfund-our6.onrender.com` | Render default host | Same service |
 | `cms.openfi.cloud` | Directus (`openfund-cms`) | Separate CMS service |

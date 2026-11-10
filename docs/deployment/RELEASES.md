@@ -8,6 +8,8 @@ The latest published and deployed release is **v0.4.4** at
 Resolve the latest official release and candidate version from GitHub at
 execution time; this paragraph is a dated record, not live status.
 
+Re-verified read-only on 2026-11-10: `https://openfund.cloud/version` and `https://openfi.cloud/version` both report `matched`, version 0.4.4, commit `c1cb7073e4f1eb16c2b204ec9b0b1158b1dde4b1`; the GitHub Release `v0.4.4` is the latest. `main` was at `1d95def` (six pull requests after v0.4.4, none deployed).
+
 ## Release-to-production pipeline
 
 ```mermaid
@@ -102,6 +104,19 @@ against a disposable PostgreSQL 17 database, runs the single CMS bootstrap
 twice, verifies bilingual public Home/UI/website content, preserves a test
 editorial edit on rerun and checks that a draft translation is not publicly
 readable through its child endpoint. Publication depends on this CMS job.
+
+## Version authority hierarchy
+
+When sources disagree about "what is live", trust them in this order:
+
+1. **GitHub Release and tag** (`vX.Y.Z`, immutable; `gh release view`) — what was officially published.
+2. **Commit SHA** the tag points to, and the Render deployment record for it — what source was built.
+3. **`/version` on the running service** — what the running backend and frontend report; must equal the manifest of (1).
+4. **Frontend release manifest** (`react/release-manifest.json`, served with the app) — the frontend half of the identity.
+5. **Pull requests** — proposed or merged work, *not* evidence of deployment.
+6. **`CHANGELOG.md` and documentation** — narrative; never override 1–4.
+
+An open pull request, a merge to `main` or a passing candidate is never "deployed". To state the production version, quote `/version` (version, commit, backend/frontend ids) together with the release tag and the date checked. A reviewable list of what merged since a release comes from `node scripts/release/summary.mjs --from vX.Y.Z` (read-only; it creates no tag or release).
 
 ## Authority and versioning
 
@@ -235,3 +250,78 @@ Retain the previous known-good official tag, manifest and database backup. Dispa
 ## Publish a reviewed batch
 
 After required PR checks and review, merge the consolidated changes into main. Dispatch `gh workflow run release.yml --ref main -f publish=true`, then verify the resulting tag, assets and manifest. Without `publish=true`, pushes and manual runs only validate candidates. Later batches increment the version from all changes since the last official tag. A failed run publishes nothing; fix the cause and rerun from main.
+
+## Release artifacts and packages (summary)
+
+- **Version tags:** `vMAJOR.MINOR.PATCH`, annotated, immutable, allocated by
+  `scripts/release/plan.mjs` from Conventional Commits since the previous tag
+  (`feat` → minor, `fix` and others → patch, `!` → major).
+- **GitHub Release:** `Openfund vX.Y.Z`, stable (never a prerelease), with
+  generated notes and these assets:
+  `openfund-vX.Y.Z.tar.gz` (the versioned deployable package),
+  `SHA256SUMS`, `release-manifest.json`, `verification.json` and
+  `release-status.md`.
+- **Provenance:** the manifest records the exact source SHA, frontend and
+  backend content hashes, schema hash, toolchain and every CI verification
+  stage. The same manifest is served at `/react/release-manifest.json`, and
+  `/version` reports `matched` only when frontend and backend agree.
+- **GitHub Package (GHCR):** `ghcr.io/algomanlife/openfund:X.Y.Z` (also
+  `vX.Y.Z`, no `latest`), built only from the verified release archive,
+  smoke-tested, then pushed once. The digest is attached to the release as
+  `image-digest.txt` with a build-provenance attestation
+  ([ADR 0014](../decisions/0014-ghcr-release-image.md)). Render does not
+  run the image; it rebuilds the same commit from source.
+
+  ```bash
+  docker run -p 8080:8080 -e DATABASE_URL=... -e CMS_PUBLIC_URL=https://... \
+    -e ALLOWED_DOMAINS=your.host ghcr.io/algomanlife/openfund:X.Y.Z
+  ```
+
+- `package.json` `version` fields stay `0.1.0`: they are component
+  provenance, not the application version.
+
+## Deployment flow (summary)
+
+```
+Reviewed merge to main → Unified release (publish=true) → gates → tag + GitHub Release
+  → production approval → Render deploy of the exact commit → live identity check
+```
+
+- **Trigger:** a maintainer dispatches **Unified release** on `main` with
+  `publish=true`. Pushes and pull requests only build unofficial candidates.
+- **CI requirements:** package gates (lockfile installs, Blueprint, docs,
+  typecheck, unit suites, two reproducible frontend builds, double migration,
+  backend and browser suites), exact-commit secret scan, disposable Directus
+  bootstrap and a live public CMS check.
+- **Deployment:** the chained `deploy` job waits for the `production`
+  environment reviewer, then calls Render with the manifest's `commitId`.
+- **Validation:** `/version` and `/react/release-manifest.json` on
+  `RELEASE_PUBLIC_URL` must match the release; the CMS must be healthy.
+- **Failure:** the job fails as `blocked` or `failed_or_partial` and uploads
+  `output/deployment-status.json`; Render keeps the previous deploy live when
+  a build or health check fails.
+- **Safety:** prereleases and drafts are refused; a tag older than the latest
+  release needs `rollback=true`; a retry on an already-live release does not
+  redeploy.
+
+[Release runbook](../deployment/RELEASES.md) · [Rollback](../deployment/ROLLBACK.md)
+
+## Operator quick reference
+
+- **Release:** merge reviewed PRs into `main`, wait for green required
+  checks, dispatch **Unified release** with `publish=true`, then approve the
+  `production` deployment when it is requested.
+- **Verify health and version:**
+  `curl https://openfund.cloud/health` and
+  `curl https://openfund.cloud/version`. Expect `"status":"matched"` and the
+  release commit; repeat on `openfi.cloud`.
+- **Failed deployment:** download the `deployment-status-*` artifact, check
+  the Render deploy log for the `commitId`, fix forward through a new release
+  or roll back. Do not move tags or re-upload assets.
+- **Rollback:** dispatch **Deploy or roll back official release** with the
+  previous tag and `rollback=true`.
+- **Local run of an official version:**
+  `npm run release:local -- --version current --migrate` with a dedicated
+  local `DATABASE_URL`; check `/version`.
+- **Database:** take a Render backup before deploying a release that changes
+  `schema.sql`; migrations are additive only.

@@ -1,0 +1,397 @@
+{
+ "recorded": "2026-11-10",
+ "source": "https://api.gains.trade/v1/arbitrum/markets",
+ "note": "subset of 10 of 493 markets; collaterals truncated to one entry",
+ "data": [
+  {
+   "symbol": "BTC/USD",
+   "pairIndex": 0,
+   "base": "BTC",
+   "quote": "USD",
+   "group": "crypto",
+   "groupIndex": 0,
+   "feeIndex": 13,
+   "isOpen": true,
+   "minLeverage": "1.1",
+   "maxLeverage": "200",
+   "minCollateralUsd": "0.50000125",
+   "minPositionUsd": "0.550001375",
+   "pricePrecision": 1,
+   "sizePrecision": 5,
+   "spreadRate": "0.0001",
+   "fees": {
+    "openFeeRate": "0.00035",
+    "closeFeeRate": "0.00035",
+    "minPositionSizeUsd": "285.715"
+   },
+   "funding": {
+    "fundingRateLongHourly": "0.000019615432181451275",
+    "fundingRateShortHourly": "-0.000036555827201131375",
+    "borrowingRateHourly": "0.0000022824",
+    "openInterestLongUsd": "341598.82589143916",
+    "openInterestShortUsd": "183297.96138027284",
+    "skewUsd": "158300.86451116632"
+   },
+   "onlyIsolated": true,
+   "collaterals": [
+    {
+     "symbol": "DAI",
+     "index": 1,
+     "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+     "decimals": 18
+    }
+   ]
+  },
+  {
+   "symbol": "ETH/USD",
+   "pairIndex": 1,
+   "base": "ETH",
+   "quote": "USD",
+   "group": "crypto",
+   "groupIndex": 0,
+   "feeIndex": 13,
+   "isOpen": true,
+   "minLeverage": "1.1",
+   "maxLeverage": "200",
+   "minCollateralUsd": "0.50000125",
+   "minPositionUsd": "0.550001375",
+   "pricePrecision": 2,
+   "sizePrecision": 4,
+   "spreadRate": "0.0001",
+   "fees": {
+    "openFeeRate": "0.00035",
+    "closeFeeRate": "0.00035",
+    "minPositionSizeUsd": "285.715"
+   },
+   "funding": {
+    "fundingRateLongHourly": "0.00000824447754504",
+    "fundingRateShortHourly": "-0.000007208815325110154",
+    "borrowingRateHourly": "0.0000034236",
+    "openInterestLongUsd": "19945.314571322033",
+    "openInterestShortUsd": "22810.779676827264",
+    "skewUsd": "-2865.4651055052277"
+   },
+   "onlyIsolated": true,
+   "collaterals": [
+    {
+     "symbol": "DAI",
+     "index": 1,
+     "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+     "decimals": 18
+    }
+   ]
+  },
+  {
+   "symbol": "SOL/USD",
+   "pairIndex": 33,
+   "base": "SOL",
+   "quote": "USD",
+   "group": "crypto",
+   "groupIndex": 10,
+   "feeIndex": 11,
+   "isOpen": true,
+   "minLeverage": "1.1",
+   "maxLeverage": "150",
+   "minCollateralUsd": "0.5",
+   "minPositionUsd": "0.55",
+   "pricePrecision": 4,
+   "sizePrecision": 2,
+   "spreadRate": "0",
+   "fees": {
+    "openFeeRate": "0.0005",
+    "closeFeeRate": "0.0005",
+    "minPositionSizeUsd": "200"
+   },
+   "funding": {
+    "fundingRateLongHourly": "0.000015693685574148003",
+    "fundingRateShortHourly": "-0.000009994919616288665",
+    "borrowingRateHourly": "0.0000034236",
+    "openInterestLongUsd": "16397.371742525975",
+    "openInterestShortUsd": "25746.599897636417",
+    "skewUsd": "-9349.228155110442"
+   },
+   "onlyIsolated": true,
+   "collaterals": [
+    {
+     "symbol": "DAI",
+     "index": 1,
+     "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+     "decimals": 18
+    }
+   ]
+  },
+  {
+   "symbol": "EUR/USD",
+   "pairIndex": 21,
+   "base": "EUR",
+   "quote": "USD",
+   "group": "forex",
+   "groupIndex": 1,
+   "feeIndex": 1,
+   "isOpen": true,
+   "minLeverage": "10",
+   "maxLeverage": "1000",
+   "minCollateralUsd": "0.5000004",
+   "minPositionUsd": "5.000004",
+   "pricePrecision": 5,
+   "sizePrecision": 1,
+   "spreadRate": "0.0001",
+   "fees": {
+    "openFeeRate": "0.00012",
+    "closeFeeRate": "0.00012",
+    "minPositionSizeUsd": "833.334"
+   },
+   "funding": {
+    "fundingRateLongHourly": null,
+    "fundingRateShortHourly": null,
+    "borrowingRateHourly": null,
+    "openInterestLongUsd": "95197.89641749594",
+    "openInterestShortUsd": "2494.0285714685024",
+    "skewUsd": "92703.86784602742"
+   },
+   "onlyIsolated": true,
+   "collaterals": [
+    {
+     "symbol": "DAI",
+     "index": 1,
+     "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+     "decimals": 18
+    }
+   ]
+  },
+  {
+   "symbol": "USD/JPY",
+   "pairIndex": 22,
+   "base": "USD",
+   "quote": "JPY",
+   "group": "forex",
+   "groupIndex": 1,
+   "feeIndex": 1,
+   "isOpen": true,
+   "minLeverage": "10",
+   "maxLeverage": "1000",
+   "minCollateralUsd": "0.5000004",
+   "minPositionUsd": "5.000004",
+   "pricePrecision": 3,
+   "sizePrecision": 3,
+   "spreadRate": "0.0001",
+   "fees": {
+    "openFeeRate": "0.00012",
+    "closeFeeRate": "0.00012",
+    "minPositionSizeUsd": "833.334"
+   },
+   "funding": {
+    "fundingRateLongHourly": null,
+    "fundingRateShortHourly": null,
+    "borrowingRateHourly": null,
+    "openInterestLongUsd": "9039.46084067482",
+    "openInterestShortUsd": "65411.1283988276",
+    "skewUsd": "-56371.66755815278"
+   },
+   "onlyIsolated": true,
+   "collaterals": [
+    {
+     "symbol": "DAI",
+     "index": 1,
+     "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+     "decimals": 18
+    }
+   ]
+  },
+  {
+   "symbol": "XAU/USD",
+   "pairIndex": 90,
+   "base": "XAU",
+   "quote": "USD",
+   "group": "commodities",
+   "groupIndex": 6,
+   "feeIndex": 13,
+   "isOpen": true,
+   "minLeverage": "2",
+   "maxLeverage": "250",
+   "minCollateralUsd": "0.50000125",
+   "minPositionUsd": "1.0000025",
+   "pricePrecision": 2,
+   "sizePrecision": 4,
+   "spreadRate": "0",
+   "fees": {
+    "openFeeRate": "0.00035",
+    "closeFeeRate": "0.00035",
+    "minPositionSizeUsd": "285.715"
+   },
+   "funding": {
+    "fundingRateLongHourly": "0.000013408376168534313",
+    "fundingRateShortHourly": "-0.000010366569609925935",
+    "borrowingRateHourly": "0.0000017136000000000002",
+    "openInterestLongUsd": "120748.79884177551",
+    "openInterestShortUsd": "156179.46704558653",
+    "skewUsd": "-35430.66820381103"
+   },
+   "onlyIsolated": true,
+   "collaterals": [
+    {
+     "symbol": "DAI",
+     "index": 1,
+     "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+     "decimals": 18
+    }
+   ]
+  },
+  {
+   "symbol": "XAG/USD",
+   "pairIndex": 91,
+   "base": "XAG",
+   "quote": "USD",
+   "group": "commodities",
+   "groupIndex": 6,
+   "feeIndex": 6,
+   "isOpen": true,
+   "minLeverage": "2",
+   "maxLeverage": "250",
+   "minCollateralUsd": "0.5",
+   "minPositionUsd": "1",
+   "pricePrecision": 4,
+   "sizePrecision": 2,
+   "spreadRate": "0.0005",
+   "fees": {
+    "openFeeRate": "0.0005",
+    "closeFeeRate": "0.0005",
+    "minPositionSizeUsd": "200"
+   },
+   "funding": {
+    "fundingRateLongHourly": "0.000018120039804108",
+    "fundingRateShortHourly": "-0.000015138911283288673",
+    "borrowingRateHourly": "0.0000034236",
+    "openInterestLongUsd": "5644.665076495895",
+    "openInterestShortUsd": "6756.202870405157",
+    "skewUsd": "-1111.5377939092618"
+   },
+   "onlyIsolated": true,
+   "collaterals": [
+    {
+     "symbol": "DAI",
+     "index": 1,
+     "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+     "decimals": 18
+    }
+   ]
+  },
+  {
+   "symbol": "AAPL/USD",
+   "pairIndex": 58,
+   "base": "AAPL",
+   "quote": "USD",
+   "group": "stocks",
+   "groupIndex": 3,
+   "feeIndex": 3,
+   "isOpen": false,
+   "minLeverage": "1.1",
+   "maxLeverage": "4",
+   "minCollateralUsd": "0.5",
+   "minPositionUsd": "0.55",
+   "pricePrecision": 6,
+   "sizePrecision": 0,
+   "spreadRate": "0.0004",
+   "fees": {
+    "openFeeRate": "0.0004",
+    "closeFeeRate": "0.0004",
+    "minPositionSizeUsd": "250"
+   },
+   "funding": {
+    "fundingRateLongHourly": null,
+    "fundingRateShortHourly": null,
+    "borrowingRateHourly": null,
+    "openInterestLongUsd": "0",
+    "openInterestShortUsd": "0",
+    "skewUsd": "0"
+   },
+   "onlyIsolated": true,
+   "collaterals": [
+    {
+     "symbol": "DAI",
+     "index": 1,
+     "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+     "decimals": 18
+    }
+   ]
+  },
+  {
+   "symbol": "SPY/USD",
+   "pairIndex": 86,
+   "base": "SPY",
+   "quote": "USD",
+   "group": "indices",
+   "groupIndex": 5,
+   "feeIndex": 5,
+   "isOpen": false,
+   "minLeverage": "1.1",
+   "maxLeverage": "15",
+   "minCollateralUsd": "0.5",
+   "minPositionUsd": "0.55",
+   "pricePrecision": 6,
+   "sizePrecision": 0,
+   "spreadRate": "0.0002",
+   "fees": {
+    "openFeeRate": "0.0005",
+    "closeFeeRate": "0.0005",
+    "minPositionSizeUsd": "200"
+   },
+   "funding": {
+    "fundingRateLongHourly": null,
+    "fundingRateShortHourly": null,
+    "borrowingRateHourly": null,
+    "openInterestLongUsd": "0",
+    "openInterestShortUsd": "0",
+    "skewUsd": "0"
+   },
+   "onlyIsolated": true,
+   "collaterals": [
+    {
+     "symbol": "DAI",
+     "index": 1,
+     "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+     "decimals": 18
+    }
+   ]
+  },
+  {
+   "symbol": "NVDA/USD",
+   "pairIndex": 65,
+   "base": "NVDA",
+   "quote": "USD",
+   "group": "stocks",
+   "groupIndex": 3,
+   "feeIndex": 3,
+   "isOpen": false,
+   "minLeverage": "1.1",
+   "maxLeverage": "4",
+   "minCollateralUsd": "0.5",
+   "minPositionUsd": "0.55",
+   "pricePrecision": 6,
+   "sizePrecision": 0,
+   "spreadRate": "0.0004",
+   "fees": {
+    "openFeeRate": "0.0004",
+    "closeFeeRate": "0.0004",
+    "minPositionSizeUsd": "250"
+   },
+   "funding": {
+    "fundingRateLongHourly": null,
+    "fundingRateShortHourly": null,
+    "borrowingRateHourly": null,
+    "openInterestLongUsd": "0",
+    "openInterestShortUsd": "0",
+    "skewUsd": "0"
+   },
+   "onlyIsolated": true,
+   "collaterals": [
+    {
+     "symbol": "DAI",
+     "index": 1,
+     "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+     "decimals": 18
+    }
+   ]
+  }
+ ]
+}

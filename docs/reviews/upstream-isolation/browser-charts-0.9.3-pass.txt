@@ -1,0 +1,17 @@
+PASS prop: exact catalog order, 77 built-ins and branding
+PASS prop: all three original scripts calculated with complete input schemas
+PASS prop: indicator settings input updated through dialog
+PASS prop: seven interval transitions use actual menu clicks and correct candle requests
+PASS prop: rapid switching, chart style, fullscreen notice and chart settings remain interactive
+PASS prop: symbol picker changes both chart and terminal state
+PASS prop: source indicators, edited settings and branding survive reload
+PASS prop: remove proprietary indicator through dialog
+PASS perpetual: exact catalog order, 77 built-ins and branding
+PASS perpetual: all three original scripts calculated with complete input schemas
+PASS perpetual: indicator settings input updated through dialog
+PASS perpetual: seven interval transitions use actual menu clicks and correct candle requests
+PASS perpetual: rapid switching, chart style, fullscreen notice and chart settings remain interactive
+PASS perpetual: symbol picker changes both chart and terminal state
+PASS perpetual: source indicators, edited settings and branding survive reload
+PASS perpetual: remove proprietary indicator through dialog
+PASS responsive indicator/settings dialogs and no uncaught page errors

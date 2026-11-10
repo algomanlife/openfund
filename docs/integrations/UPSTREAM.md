@@ -1,6 +1,6 @@
 # Upstream Source Management
 
-The full, machine-checked inventory (versions, licenses, local modifications, tests, risks) is the [upstream dependency registry](UPSTREAM_REGISTRY.md); the update process is in [Dependency governance](../development/DEPENDENCY_GOVERNANCE.md). The sections below are the original setup record.
+The full, machine-checked inventory (versions, licenses, local modifications, tests, risks) is the [upstream dependency registry](UPSTREAM_REGISTRY.md); the update process is in [Dependency governance](../development/DEPENDENCY_GOVERNANCE.md). Layers, the Vela patch registry, customisation guards and the controlled vendor-update tool are in [Upstream isolation and patch registry](UPSTREAM_DEPENDENCIES.md). The sections below are the original setup record.
 
 Openfund preserves selected upstream sources and their attribution. Vela is integrated; the Gains SDK remains vendored without transaction execution.
 
