@@ -229,11 +229,11 @@ async function walletDisclosureFits(page){
    check(prefix+' terminal entry',await page.locator('header .nav-cta').isVisible());
    if(width===1440 && !connected || width===390 && connected){const file=`home-${locale}-${theme}-${width}-${connected?'test-wallet':'disconnected'}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file),fullPage:true});screenshots.push({file,fixture:connected?'connection-only test wallet':'none'})}
    await page.goto(BASE+`/${locale}/faq`);await page.waitForTimeout(300);await page.locator('#navigation').waitFor({state:'attached'});
-   check(prefix+' other-page navigation',await page.locator('#navigation a').count()===15 && await page.locator(`#navigation a[href="/${locale}/governance"]`).count()===1);
+   check(prefix+' other-page navigation',await page.locator('#navigation a').count()===14 && await page.locator('#navigation a[href*="section=team"]').count()===0 && await page.locator(`#navigation a[href="/${locale}/governance"]`).count()===1);
    const tv=page.locator('.credits-row a[href="https://www.tradingview.com/news/"]');await tv.waitFor();
    check(prefix+' TradingView description',(await tv.innerText()).includes(locale==='fa'?'اطلاعات و اخبار بازارها':'Market Data & News'));
    check(prefix+' redundant external label removed',!(/منبع خارجی|External resource/.test(await tv.innerText())));
-   check(prefix+' five service references',await page.locator('.credits-row .render-credit').count()===5);
+   check(prefix+' four service references, no hosting credit',await page.locator('.credits-row .render-credit').count()===4&&await page.locator('.credits-row a[href*="render.com"]').count()===0);
    check(prefix+' public native surfaces',await nativeSurfaces(page,'html,body,header,.faq-item,.faq-help,.navlinks.open',theme));
    await whiteCanvas(page,'html,body,#root,main,.information-page',theme);
    await readableText(page,PUBLIC_TEXT,theme);

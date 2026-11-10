@@ -16,6 +16,7 @@ import path from 'node:path'
 import { releaseDiagnostics } from './release.js'
 import { runtimeConfigScript } from './runtime-config.js'
 import { staticCacheControl, NO_STORE } from './static-cache.js'
+import { seoRoutes } from './seo.js'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
 import { createClient, isHex, http } from 'viem'
@@ -729,6 +730,9 @@ app.get('/version', (req, res) => {
   const release = releaseDiagnostics();
   res.set('Cache-Control','no-store').status(release.status === 'mismatch' ? 503 : 200).json(release);
 });
+
+/* Public sitemap and robots policy for the indexable website routes. */
+seoRoutes(app)
 
 /* Public non-secret configuration is supplied at runtime, outside the
    immutable release payload. The HTML loads it before the React module.

@@ -319,6 +319,10 @@ async function fetchCmsRulesRaw(): Promise<CmsRuleSection[] | null> {
 }
 
 /* ---------------- legal documents ---------------- */
+/* Retired document types are never rendered, even while a stale published
+   CMS row still exists: 'offices' listed unverified office addresses and an
+   internal hosting note (see docs/website/CONTENT_ARCHITECTURE.md). */
+const RETIRED_LEGAL_DOCS = new Set(['offices'])
 export interface CmsLegalDoc { docType: string; title: { fa: string; en: string }; paragraphs: Array<{ fa: string; en: string }> }
 
 async function fetchCmsLegalRaw(): Promise<CmsLegalDoc[] | null> {
@@ -328,6 +332,7 @@ async function fetchCmsLegalRaw(): Promise<CmsLegalDoc[] | null> {
   if (!data) return null
   const out: CmsLegalDoc[] = []
   for (const row of data) {
+    if (RETIRED_LEGAL_DOCS.has(row.doc_type)) continue
     const fa = (row.translations || []).find(t => t.language_code === 'fa')
     const en = (row.translations || []).find(t => t.language_code === 'en')
     if (!fa?.title || !en?.title) continue
@@ -343,10 +348,12 @@ async function fetchCmsLegalRaw(): Promise<CmsLegalDoc[] | null> {
 export type FooterDestination =
   | 'challenges' | 'markets' | 'rulebook' | 'transparency'
   | 'faq' | 'referral' | 'tools' | 'learn' | 'governance'
-  | 'accounts-section' | 'team-section' | 'faq-section' | 'github'
+  | 'accounts-section' | 'faq-section' | 'github'
 export interface CmsFooterLink { destination: FooterDestination; label: { fa: string; en: string } }
 
-const FOOTER_DESTINATIONS = new Set(['challenges', 'markets', 'rulebook', 'transparency', 'faq', 'referral', 'tools', 'learn', 'governance', 'accounts-section', 'team-section', 'faq-section', 'github'])
+const FOOTER_DESTINATIONS = new Set(['challenges', 'markets', 'rulebook', 'transparency', 'faq', 'referral', 'tools', 'learn', 'governance', 'accounts-section', 'faq-section', 'github'])
+/* Retired public destinations: the Team section was removed from the website.
+   A stale CMS row pointing at it is ignored like any unknown destination. */
 
 async function fetchCmsFooterLinksRaw(): Promise<CmsFooterLink[] | null> {
   interface Raw extends TranslatedRow { destination: string }

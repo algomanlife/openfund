@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { pick, type AppLocale } from '../../i18n/locales'
 type Locale = AppLocale
 import './community.css'
@@ -42,12 +41,14 @@ export function instagramCommunityUrl(value?: string): string | null {
 }
 
 // Preserve the Telegram URL export for existing consumers.
+// Public community buttons: Telegram and Discord. The Instagram promo button
+// was retired from the website; its runtime setting and URL validator stay
+// for configuration compatibility but render nothing.
 const runtime = publicRuntimeConfig()
 export const community = { url: communityUrl(import.meta.env?.PROD ? runtime.telegramCommunityUrl : import.meta.env?.VITE_TELEGRAM_COMMUNITY_URL) }
 export const communityProviders = [
   { id: 'telegram', name: 'Telegram', icon: 'telegram-logo.svg', url: community.url, labels: { fa: 'جامعه معامله‌گران', en: 'Traders talk on' } },
   { id: 'discord', name: 'Discord', icon: 'discord-logo.svg', url: discordCommunityUrl(import.meta.env?.PROD ? runtime.discordCommunityUrl : import.meta.env?.VITE_DISCORD_COMMUNITY_URL), labels: { fa: 'جامعه معامله‌گران', en: 'Traders talk on' } },
-  { id: 'instagram', name: 'Instagram', icon: 'instagram-logo.svg', url: instagramCommunityUrl(import.meta.env?.PROD ? runtime.instagramCommunityUrl : import.meta.env?.VITE_INSTAGRAM_COMMUNITY_URL), labels: { fa: 'اخبار، آموزش و سرگرمی', en: 'News, Education & Entertainment' } },
 ] as const
 const copy = {
   fa: { label: 'جامعه معامله‌گران', unavailable: 'به‌زودی', destination: 'لینک جامعهٔ اوپن‌فاند هنوز اعلام نشده است', group: 'جامعهٔ معامله‌گران اوپن‌فاند' },
@@ -62,21 +63,11 @@ function communityCopy(locale: Locale) {
 }
 
 export function CommunityButton({ locale, provider }: { locale: Locale; provider: typeof communityProviders[number] }) {
-  const [light, setLight] = useState(() => typeof document !== 'undefined' && document.documentElement.dataset.theme === 'light')
-  useEffect(() => {
-    const root = document.documentElement
-    const sync = () => setLight(root.dataset.theme === 'light')
-    sync()
-    const observer = new MutationObserver(sync)
-    observer.observe(root, { attributes: true, attributeFilter: ['data-theme'] })
-    return () => observer.disconnect()
-  }, [])
   const t = communityCopy(locale)
   const text = pick(locale, provider.labels.fa, provider.labels.en)
   const label = `${text} — ${provider.name}${provider.url ? '' : ` — ${t.destination}`}`
-  const icon = provider.id === 'instagram' && !light ? 'instagram-logo-white.svg' : provider.icon
   const contents = <>
-    <img src={`${import.meta.env.BASE_URL}assets/${icon}`} width="20" height="20" alt={provider.name} />
+    <img src={`${import.meta.env.BASE_URL}assets/${provider.icon}`} width="20" height="20" alt={provider.name} />
     <span className="community-copy"><span>{text}</span>{!provider.url && <small>{t.unavailable}</small>}</span>
   </>
   const className = `community-button ${provider.id}-community`

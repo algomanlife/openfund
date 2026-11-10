@@ -42,13 +42,4 @@ export const legalSeed: LegalSeed[] = [
       text('Openfund’s registration details, service entity, verification requirements and geographic restrictions are not finalized and will be announced before launch. No other company’s license, registration number or address is attributed to Openfund.', 'اطلاعات ثبت، شخصیت حقوقی ارائه‌دهنده، شرایط احراز هویت و محدودیت‌های جغرافیایی اوپن‌فاند هنوز نهایی نشده‌اند و پیش از ارائهٔ خدمات اعلام خواهند شد. مجوز، شمارهٔ ثبت یا نشانی شرکت دیگری به اوپن‌فاند نسبت داده نمی‌شود.'),
     ],
   },
-  {
-    docType: 'offices',
-    title: text('Office locations', 'محل دفاتر'),
-    paragraphs: [
-      text('Iran — Fars, Shiraz, Arm Boulevard, Naron Street, between Naron and Khakshanasi', 'ایران — فارس — شیراز، بلوار ارم، خیابان نارون، بین نارون و خاکشانسی'),
-      text('United States — 525 Brannan St., Suite 300, San Francisco, CA 94107', 'ایالات متحده — سان‌فرانسیسکو، خیابان برنان ۵۲۵، سوئیت ۳۰۰، کد پستی ۹۴۱۰۷'),
-      text('This release is hosted on Sites; Render is shown as the project’s intended infrastructure provider.', 'میزبانی این نسخه در Sites انجام می‌شود؛ ذکر Render در بخش زیرساخت، معرفی زیرساخت مدنظر پروژه است.'),
-    ],
-  },
 ]

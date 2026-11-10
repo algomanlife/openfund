@@ -55,11 +55,7 @@ async function desktop(page) {
      await page.waitForURL(new URL(href, base).href);
      await page.waitForTimeout(href.includes('/challenges') || source === 'challenges' ? 500 : 60);
      assert(new URL(page.url()).pathname + new URL(page.url()).search === href, 'wrong click ' + source + ' ' + href);
-     if (href.includes('section=team')) {
-      await page.waitForTimeout(1800);
-      const top = await page.locator('#team').evaluate(el=>el.getBoundingClientRect().top);
-      assert(top >= 0 && top < 250, 'team not reached ' + top);
-     }
+     assert(!href.includes('section=team'), 'retired Team destination still linked ' + href);
     }
    }
   }
@@ -154,11 +150,11 @@ async function touch(page) {
       await trigger.tap();
       await touchPage.locator('.nav-dropdown a[href$="/learn"]').tap();
       await touchPage.waitForURL(BASE+locale+'/learn');
-      await touchPage.goto(BASE+locale+'/challenges?section=team');
+      await touchPage.goto(BASE+locale+'/challenges?section=rules');
       await touchPage.waitForTimeout(2200);
       await toggleLanguage(touchPage);
       const other=locale==='en'?'fa':'en';
-      await touchPage.waitForURL(BASE+other+'/challenges?section=team');
+      await touchPage.waitForURL(BASE+other+'/challenges?section=rules');
       records.push({locale,desktopTouch:true,enterSpace:true,localizedSection:true});
     }
   } finally { await context.close(); }

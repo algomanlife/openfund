@@ -142,7 +142,7 @@ async function toggleLanguage(page) {
   R('landing fa: free-trial banner rendered', trial)
   R('landing fa: no prototype fee/payment wording', sweep.sampleFee.length === 0, sweep.sampleFee.join(','))
   R('landing fa: FAQ rendered from CMS (9 items)', faqCount === 9, String(faqCount))
-  R('landing fa: five role cards present', sweep.roles === 5, String(sweep.roles))
+  R('landing fa: retired Team role cards absent', sweep.roles === 0, String(sweep.roles))
   R('landing fa: legal kept honest + dated', sweep.honestLegal)
   await page.screenshot({ path: `${SHOTS}/challenges-fa-1440.png` })
 
@@ -170,7 +170,7 @@ async function toggleLanguage(page) {
   R('landing en: honest sample note translated', /not available in this release/.test(en.sampleNote || ''), (en.sampleNote || '').slice(0, 70))
   R('landing en: builder numbers (8% + 5%)', en.target === '8% + 5%', en.target)
   R('landing en: FAQ translated', /What challenge models/.test((en.faq || '').replace(/\+$/, '')), en.faq)
-  R('landing en: role cards translated', en.role === 'Strategy & business development', en.role)
+  R('landing en: retired Team role cards absent', en.role === undefined, String(en.role))
   R('landing en: footer translated', en.footerLink.includes('Challenges'), JSON.stringify(en.footerLink))
   R('landing en: order note translated', /not enabled in this release/.test(en.order || ''), (en.order || '').slice(0, 60))
   R('landing en: compare headers translated', JSON.stringify(en.compareHeaders) === JSON.stringify(['Feature', 'Standard', 'One-phase', 'Instant']), JSON.stringify(en.compareHeaders))

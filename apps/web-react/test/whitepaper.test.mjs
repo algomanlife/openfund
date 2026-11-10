@@ -194,8 +194,8 @@ test('the footer Whitepaper link is active, locale-aware and has no /react prefi
     assert.equal(link.getAttribute('href'), `/${locale}/whitepaper`)
     assert.equal(link.textContent, label)
     assert.equal(link.getAttribute('aria-current'), 'page')
-    /* the other document entries are untouched */
-    assert.equal(dom.window.document.querySelectorAll('.document-links button[disabled]').length, 1)
+    /* no disabled "coming soon" placeholder documents are published */
+    assert.equal(dom.window.document.querySelectorAll('.document-links button[disabled]').length, 0)
     dom.window.close()
   }
 })
