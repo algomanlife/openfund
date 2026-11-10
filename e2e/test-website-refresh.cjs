@@ -254,7 +254,7 @@ async function realThemeClicks(browser) {
       try {
         await entry.goto(`${BASE}/${route}`);
         await entry.locator('footer .telegram-community').waitFor();
-        check(`${route} shared public footer`, await entry.locator('.credits-row > a').count() === 5);
+        check(`${route} shared public footer`, await entry.locator('.credits-row > a').count() === 4 && await entry.locator('.credits-row a[href*="render.com"]').count() === 0);
       } finally { await entry.close(); }
     }
     for (const route of ['en/prop/trade', 'fa/perpetual/trade', 'en/prop/dashboard']) {
