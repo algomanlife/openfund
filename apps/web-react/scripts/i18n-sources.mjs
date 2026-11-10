@@ -86,6 +86,10 @@ function files(dir) {
 /* legacy landing/terminal runtime (t(fa, en) pairs rendered in English for added locales) */
 const LEGACY = ['public/legacy/features.js', 'public/legacy/app.js', 'public/legacy/market.js', 'public/legacy/motion.js'].map(f => join(root, f))
 for (const file of [...files(join(root, 'src')), ...LEGACY]) {
+  // Whitepaper v1 is an explicitly bilingual publication. Its body and page
+  // controls fall back to English with a visible notice for added UI locales.
+  // Inventory those strings only when the publication supports those locales.
+  if (/(?:cms\/seed|features)\/whitepaper\//.test(file)) continue
   const text = readFileSync(file, 'utf8')
   for (const m of text.matchAll(PAIR)) {
     const a = m[1] ?? m[2] ?? (m[3] !== undefined ? normaliseTemplate(m[3]) : undefined)

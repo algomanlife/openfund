@@ -6557,5 +6557,71 @@
     "frontendHash": "acd36839acc4e87dd55a36cd1fcc062369f6ebe39b71e0b6ca583f9862f3cff7",
     "sourceFingerprint": "8e34c173dc269da85d10a209a03d28e13a3f4ea44e1912382c5401d35880ce94",
     "documentationSnapshot": "README, changelog and narrative edits preceded final packaging; this evidence-only JSON and image refresh follows packaging and never changes frontend/archive bytes"
+  },
+  "whitepaperV1": {
+    "capturedAt": "2026-11-09",
+    "branch": "feat/openfund-whitepaper-v1",
+    "source": "Local Vite development server (port 5191) from the feature branch; not official or deployed",
+    "cms": "Directus unavailable locally; the page rendered the repository edition and labelled it as such",
+    "marketData": "Not used by this page",
+    "wallet": "Anonymous; no wallet connected",
+    "checks": "No horizontal overflow at 1440 and 390 px; data-theme and document direction asserted per capture; reduced motion",
+    "screenshots": [
+      {
+        "file": "whitepaper/en-dark-1440-hero.png",
+        "route": "/en/whitepaper",
+        "theme": "dark",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "session": "anonymous",
+        "sha256": "81e2112ccc38a186ba81b22ddd94f82bbb28e0fd6d6a8d53f50d67763432d6e8"
+      },
+      {
+        "file": "whitepaper/en-dark-1440-economics.png",
+        "route": "/en/whitepaper#economics",
+        "theme": "dark",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "session": "anonymous",
+        "sha256": "571919748cf3aeab7c1f1609c47ad8ebe7cbe63d7f5022d400f432acfc94c1d8"
+      },
+      {
+        "file": "whitepaper/fa-light-1440-architecture.png",
+        "route": "/fa/whitepaper#architecture",
+        "theme": "light",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "session": "anonymous",
+        "sha256": "5448b60ba167697abf73c200788bddef77d0b8757de75782366dd7dabb883474"
+      },
+      {
+        "file": "whitepaper/fa-dark-390-live-market-access.png",
+        "route": "/fa/whitepaper#live-market-access",
+        "theme": "dark",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "session": "anonymous",
+        "sha256": "511110b20e82efdb42404aa3af14d229134a5b758cf9b0049afa44451fae2d50"
+      },
+      {
+        "file": "whitepaper/en-light-390-hero.png",
+        "route": "/en/whitepaper",
+        "theme": "light",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "session": "anonymous",
+        "sha256": "fbdc810b0f0e6efc2fd9f8efd008bc2fd032e3098d98b5db58cae8e8159e557e"
+      }
+    ]
   }
 }

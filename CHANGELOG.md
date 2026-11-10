@@ -6,6 +6,15 @@
   definitions, provenance lines, term names, expense categories and
   eligibility checks in Arabic, Russian and Simplified Chinese instead of
   English, which the five-locale acceptance matrix rejects.
+- Official Openfund Whitepaper v1.0 at `/{locale}/whitepaper`: one
+  anchor-navigated page with twenty Persian and English chapters, a sticky
+  and mobile chapter navigator, copyable chapter links, data-driven
+  architecture and flow diagrams, accessible charts (including an
+  interactive hypothetical scenario) and catalog-derived pricing. Content
+  is managed in new Directus `whitepaper_*` collections with published-only
+  public reads, validated before rendering, and seeded idempotently by
+  `seed_whitepaper_content.mjs`. The footer "Whitepaper · coming soon"
+  placeholder is now the active link.
 - Economy menu (Transparency, Revenue Model, Live Market Access) replaces
   the single Transparency link. Transparency now reports confirmed sales,
   refunds, challenge outcomes, payouts, treasury, financial position and

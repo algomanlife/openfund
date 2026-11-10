@@ -10,7 +10,7 @@ import { LOCALES, normalizeLocale, type AppLocale } from '../../i18n/locales'
    own translated page, so each one is self-canonical and listed as an
    hreflang alternate. Each serving origin keeps its own canonical domain. */
 
-const PUBLIC_ROUTES = /^\/(?:fa|en|ar|ru|zh-CN)\/(?:home|challenges|markets|rulebook|transparency|faq|tools|learn|glossary|referral)(?:\/|$)/
+const PUBLIC_ROUTES = /^\/(?:fa|en|ar|ru|zh-CN)\/(?:home|challenges|markets|rulebook|transparency|faq|tools|learn|glossary|referral|whitepaper)(?:\/|$)/
 
 const isPublic = (pathname: string) => PUBLIC_ROUTES.test(pathname)
 const routeLocale = (pathname: string) => normalizeLocale(pathname.split('/')[1], 'fa')
@@ -44,7 +44,8 @@ export function updateSeoHead(location: Location) {
   const origin = window.location.origin
   /* canonical: clean path, no query, no hash */
   const current = routeLocale(pathname)
-  const canonical = origin + (pathname === '/' ? '/' : swapLocale(pathname, current))
+  const whitepaper = /^\/(?:fa|en|ar|ru|zh-CN)\/whitepaper(?:\/|$)/.test(pathname)
+  const canonical = origin + (pathname === '/' ? '/' : swapLocale(pathname, whitepaper && current !== 'fa' ? 'en' : current))
   const public_ = isPublic(pathname)
   upsertMeta('robots', public_ ? 'index,follow' : 'noindex')
   if (!public_) {
@@ -53,6 +54,7 @@ export function updateSeoHead(location: Location) {
     return
   }
   upsertLink('canonical', canonical)
-  for (const locale of LOCALES) upsertLink('alternate', origin + swapLocale(pathname, locale), locale)
+  document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach(l => l.remove())
+  for (const locale of whitepaper ? (['fa', 'en'] as const) : LOCALES) upsertLink('alternate', origin + swapLocale(pathname, locale), locale)
   upsertLink('alternate', origin + swapLocale(pathname, 'fa'), 'x-default')
 }

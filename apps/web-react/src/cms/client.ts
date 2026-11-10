@@ -78,6 +78,12 @@ async function getJson<T>(path: string, timeout = TIMEOUT_MS): Promise<T | null>
   }
 }
 
+/** Public read of one published Directus resource for feature-level content
+ *  modules (e.g. src/cms/whitepaper); same origin rules, timeout and cache. */
+export function getCmsJson<T>(path: string, timeout = TIMEOUT_MS): Promise<T | null> {
+  return getJson<T>(path, timeout)
+}
+
 export function invalidateCmsCache(): void {
   cache.clear()
 }

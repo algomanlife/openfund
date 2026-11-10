@@ -8,6 +8,8 @@ const primary = ['challenges', 'markets', 'rulebook'] as const
 /** Economy dropdown (replaces the former single Transparency link). */
 const economy = ['transparency', 'revenue-model', 'live-market-access'] as const
 const resources = ['faq', 'learn', 'tools', 'referral', 'ambassador', 'coach', 'team'] as const
+/** footer "Openfund documents" entries */
+const documentLabels = { whitepaper: text('Read the whitepaper', 'مطالعهٔ وایت‌پیپر') }
 const navigationLabels = { ...labels, team: text('Team', 'تیم'), glossary: text('Glossary', 'واژه‌نامه') }
 
 export function navigationHref(route: string, locale: Locale): string {
@@ -76,6 +78,13 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
     }
   }
   root.querySelector('a[href$="downloads/Openfund-brandbook.zip"]')?.setAttribute('href', brandbookUrl)
+  /* Footer document link: the official Whitepaper (one link, locale-aware, no '/react' prefix) */
+  root.querySelectorAll<HTMLAnchorElement>('a[data-doc-link="whitepaper"]').forEach(a => {
+    a.setAttribute('href', `/${locale}/whitepaper`)
+    a.textContent = pickRecord(locale, documentLabels.whitepaper)
+    if (pathname === `/${locale}/whitepaper`) a.setAttribute('aria-current', 'page')
+    else a.removeAttribute('aria-current')
+  })
   root.querySelector('.nav-cta')?.setAttribute('href', `/${locale}/prop/trade`)
 }
 

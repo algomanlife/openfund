@@ -44,6 +44,8 @@ export const ar: Record<string, string> = {
   'Open menu': 'فتح القائمة',
   'Openfund documents': 'وثائق Openfund',
   'White paper · coming soon': 'الورقة البيضاء · قريبًا',
+  'Read the whitepaper': 'اقرأ الورقة البيضاء',
+  'Whitepaper': 'الورقة البيضاء',
   'Download brandbook ↓': 'تنزيل دليل الهوية ↓',
   'Protocol proposal · coming soon': 'مقترح البروتوكول · قريبًا',
   'Market data & liquidity depth': 'بيانات السوق وعمق السيولة',

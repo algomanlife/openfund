@@ -19,5 +19,6 @@
 - [0013 — Release-driven production deployment](0013-release-driven-production-deployment.md)
 - [0014 — GHCR release image](0014-ghcr-release-image.md)
 - [0015 — Economy ledgers, partner programs and Live Market Access](0015-economy-ledgers-and-live-funding.md)
+- [0016 — CMS-managed structured Whitepaper](0016-cms-managed-whitepaper.md)
 
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)

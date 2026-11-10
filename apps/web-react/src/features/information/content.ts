@@ -13,7 +13,7 @@ export const tx = (locale: AppLocale, value: Localized | { fa?: string; en?: str
 export const number = (value: number, locale: Locale, options?: Intl.NumberFormatOptions) =>
   new Intl.NumberFormat(intlLocale(locale), options).format(value)
 /** Public website pages — one authoritative navigation definition (menu order included). */
-export type InfoPage = 'rulebook' | 'transparency' | 'revenue-model' | 'live-market-access' | 'ambassador' | 'coach' | 'markets' | 'challenges' | 'home' | 'faq' | 'referral' | 'tools' | 'learn'
+export type InfoPage = 'rulebook' | 'transparency' | 'revenue-model' | 'live-market-access' | 'ambassador' | 'coach' | 'markets' | 'challenges' | 'home' | 'faq' | 'referral' | 'tools' | 'learn' | 'whitepaper'
 export const labels = {
   home: text('Home', 'خانه'),
   challenges: text('Trading Challenges', 'چلنج‌های معاملاتی'),
@@ -29,6 +29,7 @@ export const labels = {
   referral: text('Growth Partner', 'همیار رشد'),
   tools: text('Tools', 'ابزارها'),
   learn: text('Learn', 'آموزش'),
+  whitepaper: text('Whitepaper', 'وایت‌پیپر'),
   resources: text('Resources', 'منابع'),
   contents: text('On this page', 'در این صفحه'),
   top: text('Back to top ↑', 'بازگشت به بالا ↑'),

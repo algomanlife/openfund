@@ -227,14 +227,22 @@ async function realThemeClicks(browser) {
     try {
       await englishHome.goto(`${BASE}/en/home`);
       await englishHome.locator('.home-community .telegram-community').waitFor();
-      await englishHome.waitForFunction(() => document.documentElement.lang === 'en');
-      // The portal renders in the loading state too; wait for the CMS outcome.
-      await englishHome.waitForFunction(() => document.querySelectorAll('.home-panel').length === 2
-        || /content is unavailable/i.test(document.querySelector('.home-gateway h1')?.textContent || ''), null, { timeout: 30000 });
-      const panels = await englishHome.locator('.home-panel').count();
-      check('English Home shows the gateway or explicit CMS-unavailable state without a footer',
-        await englishHome.locator('footer').count() === 0 &&
-        (panels === 2 || panels === 0 && /content is unavailable/i.test(await englishHome.locator('.home-gateway h1').innerText())));
+      // CMS, language and route teardown can settle in different frames. Wait
+      // for the complete final state atomically before asserting it.
+      const ready = await englishHome.waitForFunction(() => {
+        const state = {
+          path: location.pathname, lang: document.documentElement.lang,
+          panels: document.querySelectorAll('.home-panel').length,
+          footers: document.querySelectorAll('footer').length,
+          heading: document.querySelector('.home-gateway h1')?.textContent || '',
+        };
+        return state.lang === 'en' && state.footers === 0
+          && (state.panels === 2 || state.panels === 0 && /content is unavailable/i.test(state.heading)) ? state : false;
+      }, null, { timeout: 30000 });
+      const homeState = await ready.jsonValue();
+      check(`English Home shows the gateway or explicit CMS-unavailable state without a footer: ${JSON.stringify(homeState)}`,
+        homeState.lang === 'en' && homeState.footers === 0 &&
+        (homeState.panels === 2 || homeState.panels === 0 && /content is unavailable/i.test(homeState.heading)));
     } finally { await englishHome.close(); }
     // These are direct-entry checks, not transition checks. Isolate each entry
     // from the preceding legacy Landing teardown's scheduled document reload.
@@ -295,7 +303,9 @@ async function realThemeClicks(browser) {
               const unchanged = await localePage.evaluate(() => {
                 const button = document.querySelector('.hero .telegram-community');
                 const before = button.getAttribute('aria-label');
-                window.ofTranslate();
+                // The legacy translator can be torn down during a route reload.
+                // The React-owned label must remain stable in either state.
+                if (typeof window.ofTranslate === 'function') window.ofTranslate();
                 return button.getAttribute('aria-label') === before;
               });
               // Poll: the legacy teardown can briefly leave 0 or 2 portals while the route settles.

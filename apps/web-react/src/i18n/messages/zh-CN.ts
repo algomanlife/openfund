@@ -44,6 +44,8 @@ export const zhCN: Record<string, string> = {
   'Open menu': '打开菜单',
   'Openfund documents': 'Openfund 文档',
   'White paper · coming soon': '白皮书 · 即将推出',
+  'Read the whitepaper': '阅读白皮书',
+  'Whitepaper': '白皮书',
   'Download brandbook ↓': '下载品牌手册 ↓',
   'Protocol proposal · coming soon': '协议提案 · 即将推出',
   'Market data & liquidity depth': '市场数据与流动性深度',

@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider, Navigate, useParams } from 'react-router-dom'
 import Landing from './pages/Landing'
@@ -10,6 +10,8 @@ import RevenueModel from './features/economy/RevenueModel'
 import LiveMarketAccess from './features/economy/LiveMarketAccess'
 import Ambassador from './features/partners/Ambassador'
 import Coach from './features/partners/Coach'
+/* the long-form Whitepaper (content + charts) loads only when visited */
+const Whitepaper = lazy(() => import('./features/whitepaper/Whitepaper'))
 import Faq from './features/faq/Faq'
 import Tools from './features/tools/Tools'
 import ToolPage from './features/tools/ToolPage'
@@ -119,6 +121,8 @@ const routes = [
   { path: '/:locale/live-market-access', element: <LiveMarketAccess /> },
   { path: '/:locale/ambassador', element: <Ambassador /> },
   { path: '/:locale/coach', element: <Coach /> },
+  /* Official Whitepaper v1.0 — one anchor-navigated page (footer document link) */
+  { path: '/:locale/whitepaper', element: <Suspense fallback={null}><Whitepaper /></Suspense> },
   { path: '/:locale/faq', element: <Faq /> },
   { path: '/:locale/faq/q/:key', element: <Faq /> },
   { path: '/:locale/tools', element: <Tools /> },
