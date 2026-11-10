@@ -15,11 +15,10 @@ function load(file, session) {
   return mod.exports
 }
 const { networkForHash } = load('../src/wallet/productNetwork.ts')
-test('network selection follows the product path, including query-bearing root routes, rather than account query values',()=>{
-  assert.equal(networkForHash('/en/perpetual/trade?account=owned').id,42161)
-  assert.equal(networkForHash('/fa/perpetual?account=owned').id,42161)
-  assert.equal(networkForHash('/en/prop/trade?account=perpetual').id,11155111)
-  assert.equal(networkForHash('/en/prop/dashboard?redirect=/perpetual/trade').id,11155111)
+test('wallet network is Arbitrum One (42161) on every route — Prop, Perpetual, website and checkout',()=>{
+  for (const path of ['/en/perpetual/trade?account=owned','/fa/perpetual?account=owned','/en/prop/trade?account=perpetual',
+    '/en/prop/dashboard?redirect=/perpetual/trade','/fa/challenges','/en/ambassador','/'])
+    assert.equal(networkForHash(path).id,42161,path)
 })
 
 test('trade and transaction detail links preserve the selected account query',()=>{

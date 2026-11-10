@@ -105,8 +105,8 @@ async function run() {
       request: async ({ method, params }) => {
         if (method === 'eth_accounts') return permitted ? [address] : [];
         if (method === 'eth_requestAccounts') { permitted = true; sessionStorage.setItem('purchase-wallet-approved', 'yes'); emit('accountsChanged'); return [address]; }
-        if (method === 'eth_chainId') return '0xaa36a7';
-        if (method === 'net_version') return '11155111';
+        if (method === 'eth_chainId') return '0xa4b1';
+        if (method === 'net_version') return '42161';
         if (method === 'personal_sign') return window.purchaseSign({ raw: params[0] });
         if (method === 'eth_getBalance') return '0x0';
         if (method === 'eth_blockNumber') return '0x1';

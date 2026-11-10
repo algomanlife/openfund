@@ -106,7 +106,7 @@ async function transparencyReport(pool, treasury) {
   const payoutMonthly = await q(`SELECT to_char(date_trunc('month', reviewed_at),'YYYY-MM') AS month, count(*)::int AS payouts, sum(amount_usd) AS total
                                    FROM withdrawal_requests WHERE status='paid' AND reviewed_at > now() - interval '12 months' GROUP BY 1 ORDER BY 1`)
   const payoutTx = await q(`SELECT reviewed_at, amount_usd, payout_ref FROM withdrawal_requests WHERE status='paid' AND payout_ref ~* '^0x[0-9a-f]{64}$' ORDER BY reviewed_at DESC LIMIT 25`)
-  const chain = Number(process.env.PURCHASE_PAYMENT_CHAIN || 11155111)
+  const chain = Number(process.env.PURCHASE_PAYMENT_CHAIN || 42161)
 
   const tv = await treasury.view()
   const position = await computeFinancialPosition(pool, tv)

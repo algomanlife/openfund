@@ -12,7 +12,7 @@ import pg from 'pg'
 
 const BASE = process.env.TEST_BACKEND_URL || 'http://localhost:8080'
 const DOMAIN = 'localhost:5173'
-const CHAIN = 11155111
+const CHAIN = 42161
 
 let passed = 0, failed = 0
 const ok = (name, cond, extra = '') => {
@@ -82,6 +82,13 @@ async function authenticate(wallet, domain = DOMAIN, chainId = CHAIN) {
 
   const r4 = await authenticate(wallet2, DOMAIN, 1)
   ok('wrong chain → 400', r4.verify.status === 400 && r4.verify.data.error === 'invalid_chain')
+
+  /* Arbitrum-only: Ethereum Sepolia (formerly accepted for Prop) and
+     Arbitrum Sepolia are rejected before any signature work */
+  const r5 = await authenticate(wallet2, DOMAIN, 11155111)
+  ok('Sepolia chain → 400 invalid_chain', r5.verify.status === 400 && r5.verify.data.error === 'invalid_chain')
+  const r6 = await authenticate(wallet2, DOMAIN, 421614)
+  ok('Arbitrum Sepolia chain → 400 invalid_chain', r6.verify.status === 400 && r6.verify.data.error === 'invalid_chain')
 }
 
 /* ---- 3. user identity rules ---- */

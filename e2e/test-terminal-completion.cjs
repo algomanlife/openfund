@@ -102,7 +102,7 @@ async function functional(browser){
   await page.locator('[data-wallet-notice="rejected"]').first().waitFor();
   check('Rejected SIWE signature remains unauthenticated',(await call(page,'/auth/me')).status===401);
   await signIn(page);
-  check('Router-driven product switch signs on Arbitrum rather than stale Sepolia',await page.evaluate(()=>window.completionWallet.network()==='0xa4b1'));
+  check('Router-driven product switch signs on Arbitrum One',await page.evaluate(()=>window.completionWallet.network()==='0xa4b1'));
   await page.getByTitle('کیف پول و شبکه',{exact:true}).click();
   await page.getByRole('dialog').getByRole('button',{name:/Disconnect|قطع اتصال/}).waitFor();
   check('Detected wallet account modal opens without provider errors',true);
@@ -118,8 +118,8 @@ async function functional(browser){
   check('EIP-6963 connection and SIWE session reconnect after reload',true);
   await page.getByLabel('محصول',{exact:true}).selectOption('prop');
   await page.waitForURL(/prop\/trade/);
-  await switchToTarget(page);
-  await page.waitForFunction(()=>window.completionWallet.network()==='0xaa36a7');
+  /* Arbitrum-only: switching product never changes the wallet network */
+  await page.waitForFunction(()=>window.completionWallet.network()==='0xa4b1');
   const accounts=(await call(page,'/accounts')).data.accounts,trial=accounts.find(a=>a.type==='free_trial');
   await call(page,'/internal/inject-price',{symbol:'BTC/USD',price:'50000',metadata:{base:'BTC',group:'crypto',maxLeverage:100}});
   await page.goto(BASE+'/en/prop/trade?account='+trial.id);
@@ -217,7 +217,7 @@ async function functional(browser){
   await page.locator('[data-switch-network]').first().waitFor({state:'attached'});
   check('Unsupported chain change preserves wallet identity and exposes a network correction',await page.locator('.rk-chip-addr').count()===1);
   await switchToTarget(page);
-  await page.waitForFunction(()=>window.completionWallet.network()==='0xaa36a7');
+  await page.waitForFunction(()=>window.completionWallet.network()==='0xa4b1');
   if(!await page.locator('.rk-account-menu').evaluate(el=>el.open))await page.locator('.rk-account-menu > summary').click();
   await page.getByTitle('Wallet & network',{exact:true}).click();await page.getByRole('dialog').getByRole('button',{name:/Disconnect|قطع اتصال/}).click();
   await page.getByRole('button',{name:'Connect Wallet',exact:true}).first().waitFor();

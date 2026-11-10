@@ -35,7 +35,7 @@ const { rows: [order] } = await pool.query(
 const tx = hash()
 const { rows: [attempt] } = await pool.query(
   `INSERT INTO payment_attempts (purchase_order_id, user_id, chain_id, tx_hash, status, error_code, classification, review_status, detail)
-   VALUES ($1,$2,11155111,$3,'rejected','insufficient_amount','underpayment','open','{"received":"99000000"}') RETURNING id`, [order.id, user.id, tx])
+   VALUES ($1,$2,42161,$3,'rejected','insufficient_amount','underpayment','open','{"received":"99000000"}') RETURNING id`, [order.id, user.id, tx])
 
 ok('payments admin requires the service token', (await api('GET', '/admin/payments/attempts', null, { token: 'wrong' })).status === 403)
 ok('lookup requires an order id or a transaction hash', (await api('GET', '/admin/payments/lookup')).status === 400)

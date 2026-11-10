@@ -51,7 +51,7 @@ const j = async (method, path, body, cookie, headers = {}) => {
 
 async function login(wallet) {
   const n = (await j('POST', '/auth/nonce', { address: wallet.address })).data
-  const message = createSiweMessage({ domain: DOMAIN, address: wallet.address, uri: 'http://localhost:5173/', chainId: 11155111, nonce: n.nonce, version: '1' })
+  const message = createSiweMessage({ domain: DOMAIN, address: wallet.address, uri: 'http://localhost:5173/', chainId: 42161, nonce: n.nonce, version: '1' })
   const signature = await wallet.signMessage({ message })
   const r = await j('POST', '/auth/verify', { message, signature })
   return r.cookie

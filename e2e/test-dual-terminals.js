@@ -57,8 +57,8 @@ const results = [],
       request: async ({ method, params }) => {
         if (["eth_accounts", "eth_requestAccounts"].includes(method))
           return [address];
-        if (method === "eth_chainId") return "0xaa36a7";
-        if (method === "net_version") return "11155111";
+        if (method === "eth_chainId") return "0xa4b1";
+        if (method === "net_version") return "42161";
         if (method === "personal_sign") return window.testSign(params[0]);
         if (method === "eth_getBalance") return "0x0";
         if (method === "eth_blockNumber") return "0x1";

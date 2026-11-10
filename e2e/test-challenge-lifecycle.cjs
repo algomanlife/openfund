@@ -85,8 +85,8 @@ async function signIn(page) {
       request: async ({ method, params }) => {
         if (method === 'eth_accounts') return [address];
         if (method === 'eth_requestAccounts') { emit('accountsChanged'); return [address]; }
-        if (method === 'eth_chainId') return '0xaa36a7';
-        if (method === 'net_version') return '11155111';
+        if (method === 'eth_chainId') return '0xa4b1';
+        if (method === 'net_version') return '42161';
         if (method === 'personal_sign') return window.challengeSign({ raw: params[0] });
         return null;
       },

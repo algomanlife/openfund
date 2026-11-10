@@ -23,7 +23,7 @@ const j = async (method, path, body, cookie, headers = {}) => {
 }
 async function login(w) {
   const n = (await j('POST', '/auth/nonce', { address: w.address })).data
-  const message = createSiweMessage({ domain: 'localhost:5173', address: w.address, uri: 'http://localhost:5173/', chainId: 11155111, nonce: n.nonce, version: '1' })
+  const message = createSiweMessage({ domain: 'localhost:5173', address: w.address, uri: 'http://localhost:5173/', chainId: 42161, nonce: n.nonce, version: '1' })
   return (await j('POST', '/auth/verify', { message, signature: await w.signMessage({ message }) })).cookie
 }
 const inj = (price) => fetch(BASE + '/internal/inject-price', {

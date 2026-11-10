@@ -12,7 +12,7 @@ import { createSiweMessage } from 'viem/siwe'
 
 const BASE = process.env.TEST_BACKEND_URL || 'http://localhost:8080'
 const DOMAIN = 'localhost:5173'
-const CHAIN = 11155111
+const CHAIN = 42161
 
 let passed = 0, failed = 0
 const ok = (name, cond, extra = '') => {
