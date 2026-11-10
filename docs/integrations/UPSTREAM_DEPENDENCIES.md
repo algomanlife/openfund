@@ -91,7 +91,7 @@ Each section is the registry row in readable form. Rollback limits are what a ro
 
 ### Significant libraries (npm)
 
-React 19.3.1, Vite 6.4.5 (8.3.7 observed), Express 4.22.3 (5.3.0 observed), pg 8.23.1, ws 8.22.1 (8.22.2 observed), viem 2.57.14 (2.57.17 observed), wagmi 2.19.5 (3.7.11 observed). Majors are manual migrations. Each needs the suites named in the registry; none is updated automatically.
+React 19.3.1, Vite 6.4.5 (8.3.7 observed), Express 4.22.3 (5.3.0 observed), pg 8.23.1, ws 8.22.1 (8.22.2 observed), viem 2.57.16 (2.57.17 observed), wagmi 2.19.5 (3.7.11 observed). Majors are manual migrations. Each needs the suites named in the registry; none is updated automatically.
 
 ## Vendored source update procedure
 
