@@ -70,6 +70,33 @@ needs a real, low-value mainnet payment.
 - Production purchases are offered only when receiver, token and RPC are all
   configured (`paymentsEnabled` stays `false` otherwise).
 
+## DePay checkout flow
+
+1. The customer picks a plan and size and presses **Buy Challenge**. The
+   server creates an order at the catalog price (or resumes the pending one).
+2. The page loads the widget bundle (https URL pinned by a Subresource
+   Integrity hash) and calls `DePayWidgets.Payment({ integration, payload: { orderId } })`.
+   The browser never supplies a chain, token, amount or receiver.
+3. DePay asks `POST /purchases/depay/configuration` with the payload. The
+   server answers from the order and its configuration —
+   `{ accept: [{ blockchain, amount, token, receiver }] }` — signed with
+   `DEPAY_CONFIG_PRIVATE_KEY` (RSA-PSS, SHA-256, base64url, `x-signature`),
+   within DePay's two-second limit. Only payable orders are answered.
+4. The customer pays in the widget.
+5. DePay calls `POST /purchases/depay/callback`. The signature is verified
+   against `DEPAY_CALLBACK_PUBLIC_KEY`, the call is acknowledged with 200
+   immediately and the transaction hash is registered as an attempt for the
+   sender's open order (the order id from the payload is used when present).
+6. The on-chain verifier decides (all rules above). If the chain is not
+   ready the recovery sweep keeps retrying; a rejection is shown to the
+   customer and queued for operators.
+7. One database transaction creates the payment, invoice and exactly one
+   challenge. The checkout, which polls the order, shows *Payment
+   successful* and the challenge appears in the Dashboard.
+
+The widget's own success event is not documented for the browser and is
+never used. A redelivered callback is harmless (same result).
+
 ## Lifecycle and recovery
 
 Every verification the customer, the recovery sweep or an operator triggers

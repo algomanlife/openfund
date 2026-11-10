@@ -39,7 +39,7 @@ export const SUPPORTED_CHAINS = new Map([sepolia, arbitrum, mainnet, base].map(c
 export const MAINNET_CHAIN_IDS = new Set([mainnet.id, arbitrum.id, base.id])
 
 export const paymentError = (status, error, extra = {}) =>
-  Object.assign(new Error(error), { status, ...extra })
+  Object.assign(new Error(error), { status, isPaymentError: true, ...extra })
 
 const lc = v => String(v || '').toLowerCase()
 const padAddress = a => '0x' + '0'.repeat(24) + lc(a).slice(2)
@@ -152,7 +152,7 @@ export function createRpcVerifier({ rpcUrl, clientFactory } = {}) {
 
   const rpc = async fn => {
     try { return await fn() } catch (e) {
-      if (e?.status) throw e
+      if (e?.isPaymentError) throw e /* viem HTTP errors also carry .status — only our own errors pass through */
       if (isNotFound(e)) throw paymentError(409, 'tx_pending', { retryable: true })
       throw paymentError(503, 'rpc_unavailable', { retryable: true })
     }
@@ -196,7 +196,7 @@ export function createRpcVerifier({ rpcUrl, clientFactory } = {}) {
     const block = await rpc(() => client.getBlock({ blockNumber: receipt.blockNumber }))
     if (lc(block.hash) !== lc(receipt.blockHash)) throw paymentError(409, 'tx_reorged', { retryable: true })
     if (Number(block.timestamp) * 1000 < expect.notBefore) throw paymentError(400, 'tx_too_old')
-    const head = await rpc(() => client.getBlockNumber())
+    const head = await rpc(() => client.getBlockNumber({ cacheTime: 0 }) /* never a cached head: finality must use the live tip */)
     const confirmations = Number(head - receipt.blockNumber) + 1
     if (confirmations < (expect.minConfirmations || 0))
       throw paymentError(409, 'tx_not_final', { retryable: true, confirmations, required: expect.minConfirmations })

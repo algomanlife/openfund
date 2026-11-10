@@ -20,12 +20,14 @@ test('runtime CMS origin stays outside the immutable frontend and rejects unsafe
 });
 test('the external payment widget is enabled only with an https URL and a Subresource Integrity hash',()=>{
  const hash='sha384-'+'A'.repeat(64);
- const base={VITE_DEPAY_WIDGET:'1',VITE_DEPAY_WIDGET_URL:'https://integrate.depay.com/widgets/v13.js',VITE_DEPAY_WIDGET_INTEGRITY:hash};
+ const base={VITE_DEPAY_WIDGET:'1',VITE_DEPAY_WIDGET_URL:'https://integrate.depay.com/widgets/v13.js',VITE_DEPAY_WIDGET_INTEGRITY:hash,VITE_DEPAY_INTEGRATION_ID:'int-1'};
  assert.equal(depayWidgetApproved(base),true);
- for(const over of [{VITE_DEPAY_WIDGET:'0'},{VITE_DEPAY_WIDGET_URL:'http://integrate.depay.com/w.js'},{VITE_DEPAY_WIDGET_URL:''},{VITE_DEPAY_WIDGET_INTEGRITY:''},{VITE_DEPAY_WIDGET_INTEGRITY:'md5-abc'},{VITE_DEPAY_WIDGET_URL:'https://u:p@integrate.depay.com/w.js'}])
+ for(const over of [{VITE_DEPAY_WIDGET:'0'},{VITE_DEPAY_WIDGET_URL:'http://integrate.depay.com/w.js'},{VITE_DEPAY_WIDGET_URL:''},{VITE_DEPAY_WIDGET_INTEGRITY:''},{VITE_DEPAY_WIDGET_INTEGRITY:'md5-abc'},{VITE_DEPAY_INTEGRATION_ID:''},{VITE_DEPAY_WIDGET_URL:'https://u:p@integrate.depay.com/w.js'}])
   assert.equal(depayWidgetApproved({...base,...over}),false);
  const script=runtimeConfigScript({CMS_PUBLIC_URL:'https://cms.openfi.cloud',...base},true);
- assert.match(script,/depayWidgetIntegrity/);
+ assert.match(script,/depayWidgetIntegrity/);assert.match(script,/depayIntegrationId/);
+ assert.equal(depayWidgetApproved({...base,VITE_DEPAY_WIDGET_URL:'http://localhost:9/w.js'},false),true);
+ assert.equal(depayWidgetApproved({...base,VITE_DEPAY_WIDGET_URL:'http://localhost:9/w.js'},true),false);
  const off=runtimeConfigScript({CMS_PUBLIC_URL:'https://cms.openfi.cloud',VITE_DEPAY_WIDGET:'1',VITE_DEPAY_WIDGET_URL:base.VITE_DEPAY_WIDGET_URL},true);
  assert.doesNotMatch(off,/integrate\.depay\.com/);
 });

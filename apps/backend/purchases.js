@@ -277,11 +277,34 @@ export async function recordPaymentHint(pool, body) {
     `INSERT INTO payment_attempts (purchase_order_id, user_id, chain_id, tx_hash, status, retryable, detail)
      VALUES ($1,$2,$3,$4,'pending',true,$5) ON CONFLICT (purchase_order_id, chain_id, tx_hash) DO NOTHING`,
     [order.id, user.id, c.chainId, tx, JSON.stringify({ source: 'depay_callback' })])
-  return { recorded: true, orderId: order.id }
+  return { recorded: true, orderId: order.id, userId: user.id, wallet: sender, txHash: tx }
 }
 
+/**
+ * DePay dynamic configuration. DePay POSTs the widget payload ({ orderId })
+ * to our endpoint when the widget opens and expects the accepted payment
+ * (blockchain, token, amount, receiver) back, signed with OUR key, within two
+ * seconds. Everything comes from the server-held order and configuration, so
+ * the browser can neither choose the price nor the receiver. Nothing secret
+ * is returned (the receiver is a public address).
+ */
+export async function buildDepayConfiguration(pool, orderId) {
+  const c = cfg()
+  if (!uuid.test(orderId || '')) throw fail(400, 'invalid_order')
+  const blockchain = DEPAY_NAME[c.chainId]
+  if (!blockchain || !c.token || !c.receiver) throw fail(409, 'depay_unsupported_configuration')
+  const order = (await pool.query(`SELECT status, price_usd, expires_at FROM purchase_orders WHERE id=$1`, [orderId])).rows[0]
+  if (!order) throw fail(404, 'order_not_found')
+  if (order.status !== 'pending' || (order.expires_at && new Date(order.expires_at) < new Date())) throw fail(409, 'order_not_payable')
+  return { accept: [{ blockchain, amount: String(Number(order.price_usd)), token: c.token, receiver: c.receiver }] }
+}
+export function signDepayConfiguration(json, privateKeyPem) {
+  return crypto.sign('sha256', Buffer.from(json), { key: privateKeyPem, padding: crypto.constants.RSA_PKCS1_PSS_PADDING, saltLength: 64 }).toString('base64url')
+}
+const pem = v => String(v || '').replace(/\\n/g, '\n')
+
 /** background recovery: re-verify attempts stuck on a retryable condition */
-export async function recoverPendingPayments({ pool, verifier = defaultPaymentVerifier(), limit = 20, log = () => {} }) {
+export async function recoverPendingPayments({ pool, verifier = defaultPaymentVerifier(), limit = 20, minAgeSeconds = 45, log = () => {} }) {
   const { rows } = await pool.query(
     `SELECT a.tx_hash, o.id AS order_id, o.price_usd, o.created_at, o.user_id, u.wallet_address
        FROM payment_attempts a
@@ -289,9 +312,9 @@ export async function recoverPendingPayments({ pool, verifier = defaultPaymentVe
        JOIN openfund_users u ON u.id = a.user_id
       WHERE a.status='pending' AND a.retryable
         AND a.first_seen_at > now() - interval '24 hours'
-        AND a.last_attempt_at < now() - interval '45 seconds'
+        AND a.last_attempt_at < now() - make_interval(secs => $2)
         AND o.status IN ('pending','expired')
-      ORDER BY a.last_attempt_at LIMIT $1`, [limit])
+      ORDER BY a.last_attempt_at LIMIT $1`, [limit, minAgeSeconds])
   let recovered = 0
   for (const r of rows) {
     try {
@@ -439,13 +462,34 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null }) {
     res.json({ attempts: rows })
   }))
 
-  /* 4c — DePay server callback (hint only; see recordPaymentHint) */
+  /* 4c — DePay dynamic configuration (called by DePay when the widget opens) */
+  router.post('/purchases/depay/configuration', wrap(async (req, res) => {
+    const key = pem(process.env.DEPAY_CONFIG_PRIVATE_KEY)
+    if (!key || !paymentEnabled()) throw fail(404, 'not_found')
+    const orderId = req.body?.orderId ?? req.body?.payload?.orderId
+    const json = JSON.stringify(await buildDepayConfiguration(pool, orderId))
+    res.set('Content-Type', 'application/json; charset=utf-8').set('x-signature', signDepayConfiguration(json, key)).set('Cache-Control', 'no-store').send(json)
+  }))
+
+  /* 4d — DePay server callback. The signature proves the call is DePay's;
+     the body is still only a HINT (which order, which hash). The response is
+     200 immediately (DePay retries otherwise) and the on-chain verifier then
+     decides — immediately here, and again from the recovery sweep if the chain
+     is not ready. Nothing in the body (amount, token, success) is trusted. */
   router.post('/purchases/depay/callback', wrap(async (req, res) => {
     const key = process.env.DEPAY_CALLBACK_PUBLIC_KEY
     if (!key || !paymentEnabled()) throw fail(404, 'not_found')
-    if (!req.rawBody || !verifyDepaySignature(req.rawBody, req.headers['x-signature'], key.replace(/\\n/g, '\n'))) throw fail(401, 'invalid_signature')
+    if (!req.rawBody || !verifyDepaySignature(req.rawBody, req.headers['x-signature'], pem(key))) throw fail(401, 'invalid_signature')
     const out = await recordPaymentHint(pool, req.body)
     res.json({ ok: true, recorded: out.recorded })
+    if (!out.recorded) return
+    setImmediate(async () => {
+      try {
+        const order = (await pool.query('SELECT id, price_usd, created_at FROM purchase_orders WHERE id=$1', [out.orderId])).rows[0]
+        await verifyAndConfirm({ pool, verifier: chainVerifier(), order, userId: out.userId, walletAddress: out.wallet, txHash: out.txHash, source: 'depay_callback' })
+        await audit('purchase_verified', out.userId, req, { orderId: out.orderId, txHash: out.txHash, via: 'depay_callback' })
+      } catch (e) { /* recorded on the attempt; the sweep retries retryable conditions */ }
+    })
   }))
 
   /* 5 — cancel a pending order */
