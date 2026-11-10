@@ -175,5 +175,28 @@ const w1 = privateKeyToAccount(generatePrivateKey())
   ok('sweep expires stale pending orders', swept.rows.some(r => r.id === sweepable.id))
 }
 
+/* ================= CLEANUP ================= */
+/* The release gates run the browser matrices against the same database after
+ * this suite. The plans and paid orders created above would otherwise appear on
+ * the public Transparency page (plan slug per paid order) as English test data
+ * such as "admin-test-1a2b3c4d" and trip the wrong-language checks. Remove
+ * exactly the rows this suite created, children first. */
+{
+  const planIds = `SELECT id FROM challenge_plans WHERE slug LIKE 'admin-test-%' OR slug LIKE 'expire-test-%'`
+  const orderIds = `SELECT id FROM purchase_orders WHERE challenge_plan_id IN (${planIds})`
+  const challengeIds = `SELECT id FROM openfund_challenges WHERE challenge_plan_id IN (${planIds})`
+  for (const sql of [
+    `DELETE FROM withdrawal_requests WHERE challenge_id IN (${challengeIds})`,
+    `DELETE FROM payment_adjustments WHERE purchase_order_id IN (${orderIds})`,
+    `DELETE FROM invoices WHERE purchase_order_id IN (${orderIds})`,
+    `DELETE FROM payments WHERE purchase_order_id IN (${orderIds})`,
+    `DELETE FROM openfund_challenges WHERE challenge_plan_id IN (${planIds})`,
+    `DELETE FROM purchase_orders WHERE challenge_plan_id IN (${planIds})`,
+    `DELETE FROM challenge_plans WHERE slug LIKE 'admin-test-%' OR slug LIKE 'expire-test-%'`,
+  ]) await pool.query(sql)
+  const left = await pool.query(`SELECT count(*)::int AS n FROM challenge_plans WHERE slug LIKE 'admin-test-%' OR slug LIKE 'expire-test-%'`)
+  ok('admin suite leaves no test plans or paid orders behind', left.rows[0].n === 0)
+}
+
 console.log(`\n${passed} passed, ${failed} failed`)
 process.exit(failed ? 1 : 0)
