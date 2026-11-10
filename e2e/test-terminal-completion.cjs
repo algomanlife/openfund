@@ -128,7 +128,7 @@ async function functional(browser){
   await f.locator('#of-sl').fill('bad-number');await f.locator('#submit-order').click();
   check('Invalid protection input is not silently discarded',(await f.locator('#of-err').innerText()).includes('valid number'));
   await f.locator('#of-sl').fill('');
-  await f.locator('[data-pct="100"]').click();await f.locator('#submit-order').click();
+  await f.locator('.pct-btns [data-pct="100"]').click();await f.locator('#submit-order').click();
   await f.locator('#review-dialog[open]').waitFor();
   check('MAX sizing reserves opening fees and reaches a valid review',true);await f.locator('#review-cancel').click();
   await f.locator('#of-collateral').fill('۱۰۰۰');await f.locator('#submit-order').click();
