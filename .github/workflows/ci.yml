@@ -7,6 +7,9 @@ name: CI
 #   blueprint — render.yaml structural validation (network-free)
 #   secrets   — gitleaks scan of commits
 #   audit     — dependency vulnerability report (non-blocking, critical level)
+#   changes   — classifies the pull request (docs | affected | full) so heavy
+#               jobs are skipped only when no code, build or test input changed
+#               (scripts/ci/changes.mjs; docs/development/CI.md)
 #
 # Deployment is NOT triggered from CI: the Render Blueprint in render.yaml is
 # applied manually after review (see docs/deployment/RENDER.md). Setting the
@@ -17,15 +20,55 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch: # manual full regression
+  schedule:
+    - cron: '23 3 * * *' # nightly full regression of main (catches live-dependency drift)
 
+# Superseded PR runs are cancelled. Runs for main, schedules and manual
+# dispatches are keyed by commit and never cancelled: the release flow verifies
+# the exact main commit's secret-scan result (scripts/release/check-secrets.mjs).
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.sha }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
 
 jobs:
+  changes:
+    name: Classify change (CI tier)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      tier: ${{ steps.classify.outputs.tier }}
+      run_gates: ${{ steps.classify.outputs.run_gates }}
+      run_backend_suite: ${{ steps.classify.outputs.run_backend_suite }}
+      run_presentation_matrices: ${{ steps.classify.outputs.run_presentation_matrices }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Changed files (pull requests only; everything else is full)
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --paginate "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --jq '.[].filename' > "$RUNNER_TEMP/changed.txt"
+      - name: Classify
+        id: classify
+        env:
+          CI_TIER_AFFECTED: ${{ vars.CI_TIER_AFFECTED }}
+        run: node scripts/ci/changes.mjs "$RUNNER_TEMP/changed.txt"
+      - name: Unit tests for CI tooling
+        run: node --test scripts/ci/*.test.mjs
+
   web:
     name: Web (React + Vite)
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: apps/web-react
@@ -78,7 +121,12 @@ jobs:
 
   backend:
     name: Backend (API + engine)
+    needs: changes
+    # A job skipped by `if` reports as passing to required status checks; it is
+    # skipped ONLY for documentation-only pull requests (see scripts/ci/changes.mjs).
+    if: needs.changes.outputs.run_gates == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     defaults:
       run:
         working-directory: apps/backend
@@ -128,10 +176,16 @@ jobs:
           done
           curl -fsS http://localhost:8080/health > /dev/null || { echo "health check failed"; exit 1; }
       - name: Test suite (including permanent trial risk and five-category fixtures)
+        if: needs.changes.outputs.run_backend_suite == 'true'
         env:
           TEST_BACKEND_URL: http://localhost:8080
           ADMIN_API_TOKEN: ci-admin-token-4f2a
         run: npm run test:all
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - name: Install browser test tools
         working-directory: .
         run: |
@@ -162,12 +216,21 @@ jobs:
         run: |
           npm run test:browser:layout
           TEST_LAYOUT_AUTH=1 npm run test:browser:layout
-      - name: Locale availability, wallet header and native theme matrix
+      - name: Locale availability, wallet header and native theme matrix (sharded)
+        if: needs.changes.outputs.run_presentation_matrices == 'true'
         working-directory: .
         env:
           TEST_FRONTEND_URL: http://localhost:8080
+        # The matrix is read-only and independent per locale/theme/width, so it
+        # runs as concurrent shards (previously one ~16 min sequential run).
+        # No retries: every shard runs once and any failing shard fails the job.
         run: |
-          npm run test:browser:polish
+          node scripts/ci/run-parallel.mjs --timeout-minutes 30 \
+            polish-1/4 POLISH_PART=matrix POLISH_SHARD=1/4 POLISH_OUTPUT=output/playwright/ui-polish/shard-1 node e2e/test-ui-polish.cjs +++ \
+            polish-2/4 POLISH_PART=matrix POLISH_SHARD=2/4 POLISH_OUTPUT=output/playwright/ui-polish/shard-2 node e2e/test-ui-polish.cjs +++ \
+            polish-3/4 POLISH_PART=matrix POLISH_SHARD=3/4 POLISH_OUTPUT=output/playwright/ui-polish/shard-3 node e2e/test-ui-polish.cjs +++ \
+            polish-4/4 POLISH_PART=matrix POLISH_SHARD=4/4 POLISH_OUTPUT=output/playwright/ui-polish/shard-4 node e2e/test-ui-polish.cjs +++ \
+            polish-tail POLISH_PART=tail POLISH_OUTPUT=output/playwright/ui-polish/tail AUTO_DARK_OUTPUT=output/playwright/auto-dark node e2e/test-ui-polish.cjs
           npm run test:browser:website
       - name: Persian landing viewport, motion and navigation acceptance
         working-directory: .
@@ -192,6 +255,7 @@ jobs:
           path: |
             output/playwright/audit/
             output/playwright/ui-polish/
+            output/playwright/auto-dark/
             output/playwright/website-refresh/
             output/playwright/landing-motion/
             output/playwright/purchase-flow/
@@ -204,6 +268,7 @@ jobs:
   blueprint:
     name: Render Blueprint
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -231,6 +296,7 @@ jobs:
   secrets:
     name: Secret scan
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # pull-requests: write lets gitleaks-action post its findings as a PR
     # comment; without it the job logs a "Resource not accessible by
     # integration" HttpError even when the scan itself succeeds.
