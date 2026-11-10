@@ -1239,6 +1239,15 @@ CREATE TABLE IF NOT EXISTS payment_attempts (
 CREATE INDEX IF NOT EXISTS idx_payment_attempts_retry ON payment_attempts (last_attempt_at) WHERE status = 'pending' AND retryable;
 CREATE INDEX IF NOT EXISTS idx_payment_attempts_review ON payment_attempts (review_status) WHERE review_status = 'open';
 CREATE INDEX IF NOT EXISTS idx_payment_attempts_tx ON payment_attempts (chain_id, tx_hash);
+-- Multi-chain DePay settlement (docs/payments/DEPAY.md): an attempt DePay
+-- attested for an order (signed callback/event) may come from any wallet;
+-- what DePay reported (source token/amount/sender) is kept apart from the
+-- verified settlement recorded on payments.
+ALTER TABLE payment_attempts ADD COLUMN IF NOT EXISTS attested boolean NOT NULL DEFAULT false;
+ALTER TABLE payment_attempts ADD COLUMN IF NOT EXISTS reported jsonb;
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS blockchain text;
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS source_token text;
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS source_amount text;
 
 -- ------------------------------------------------------------------
 -- Purchase lifecycle state machine, coupons and DePay events

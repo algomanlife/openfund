@@ -17,9 +17,10 @@ import './purchase.css'
  *    the backend checks receipt, sender, receiver, amount and timing;
  *  - coupons are validated and priced by the server (/purchases/quote); a
  *    100% discount is provisioned by the zero-payment flow, with no payment;
- *  - the DePay button is optional (VITE_DEPAY_WIDGET=1), restricted to
- *    Arbitrum (blockchains='["arbitrum"]') and carries only the order id —
- *    DePay fetches the signed amount/token/receiver from the backend.
+ *  - the DePay button is optional (VITE_DEPAY_WIDGET=1), lists the
+ *    settlement chains the SERVER configured (payment is not tied to the
+ *    Arbitrum sign-in chain; DePay converts the payer's token) and carries
+ *    only the order id — DePay fetches the signed accept list from the backend.
  *
  * While the backend reports payments disabled (destination unset), the panel
  * states plainly that purchasing is not active — mirroring the legacy dialog.
@@ -109,11 +110,12 @@ const readTx = (orderId: string) => { try { return localStorage.getItem(txKey(or
 const saveTx = (orderId: string, tx: string) => { try { localStorage.setItem(txKey(orderId), tx) } catch { /* private mode */ } }
 const clearTx = (orderId: string) => { try { localStorage.removeItem(txKey(orderId)) } catch { /* private mode */ } }
 const STATUS_FA: Record<string, string> = { created: 'ایجادشده', started: 'در جریان', passed: 'قبول‌شده', failed: 'شکست‌خورده', expired: 'منقضی', cancelled: 'لغو‌شده' }
-const CHAIN_LABEL: Record<number, string> = { 11155111: 'Ethereum Sepolia', 42161: 'Arbitrum One' }
+const CHAIN_LABEL: Record<number, string> = {
+  11155111: 'Ethereum Sepolia', 42161: 'Arbitrum One', 1: 'Ethereum', 8453: 'Base', 10: 'Optimism', 137: 'Polygon',
+  56: 'BNB Smart Chain', 43114: 'Avalanche', 100: 'Gnosis', 480: 'World Chain', 501: 'Solana',
+}
 /** one idempotency key per checkout attempt: a retried or interrupted
  *  request returns the same order instead of creating a second one */
-/** the only network offered to DePay (Arbitrum One, chain 42161) */
-const DEPAY_BLOCKCHAINS = ['arbitrum']
 const newAttemptKey = () => { try { return crypto.randomUUID() } catch { return String(Date.now()) + Math.random().toString(16).slice(2) } }
 
 export function CheckoutPanel(props: { planSlug: string, accountSize: number, onClose: () => void }) {
@@ -126,7 +128,7 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
 
   const [plans, setPlans] = useState<PlanInfo[] | null>(null)
   const [paymentsEnabled, setPaymentsEnabled] = useState(false)
-  const [paymentCfg, setPaymentCfg] = useState<{ chainId: number, receiver: string, token: string | null } | null>(null)
+  const [paymentCfg, setPaymentCfg] = useState<{ chainId: number, receiver: string, token: string | null, chains?: { blockchain: string | null }[] } | null>(null)
   const [order, setOrder] = useState<OrderView | null>(null)
   const [payment, setPayment] = useState<PaymentInfo | null>(null)
   const [txHash, setTxHash] = useState('')
@@ -286,18 +288,22 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
   const rc = publicRuntimeConfig()
   const depayUrl = rc.depayWidget && rc.depayWidgetUrl && rc.depayWidgetIntegrity && rc.depayIntegrationId ? rc.depayWidgetUrl : undefined
   const depayAvailable = !!(depayUrl && paymentCfg?.token)
+  /* DePay networks = the settlement chains configured on the server */
+  const depayBlockchains = (paymentCfg?.chains || []).map(c => c.blockchain).filter((b): b is string => !!b)
   const showManual = !depayAvailable || manual
   const widgetFailed = t('درگاه پرداخت بارگذاری نشد؛ پرداخت دستی را انجام بده.', 'The payment widget could not be loaded — use the manual payment below.')
 
   /* Official DePay button (https://depay.com/docs/payments/integrate/button/):
-     <div class="DePayButton" integration=… blockchains='["arbitrum"]' payload=…>
+     <div class="DePayButton" integration=… blockchains='[…server-configured chains…]' payload=…>
      + DePayButtons.init({document}). The payload carries only the order id;
      DePay then asks OUR server for the accepted payment (chain, token, amount,
      receiver — signed), so the browser can never choose the price, network
      or receiver. The button's own success is not trusted: the signed
      callback/events + on-chain verification decide, and this page learns the
      result by polling. If the approved bundle is the widget bundle instead,
-     DePayWidgets.Payment is opened with the same Arbitrum-only restriction. */
+     DePayWidgets.Payment is opened with the same server-configured chain list.
+     Wallet sign-in stays on Arbitrum One; a chain switch made by the DePay
+     UI does not affect the Openfund session. */
   const depayHost = useRef<HTMLDivElement | null>(null)
   const loadDepay = async () => {
     const w = window as any
@@ -327,7 +333,7 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
           btn.className = 'DePayButton'
           btn.setAttribute('label', t('پرداخت با DePay', 'Pay with DePay'))
           btn.setAttribute('integration', rc.depayIntegrationId as string)
-          btn.setAttribute('blockchains', JSON.stringify(DEPAY_BLOCKCHAINS))
+          if (depayBlockchains.length) btn.setAttribute('blockchains', JSON.stringify(depayBlockchains))
           btn.setAttribute('payload', JSON.stringify({ orderId: order.id }))
           depayHost.current.replaceChildren(btn)
           w.DePayButtons.init({ document })
@@ -345,7 +351,7 @@ export function CheckoutPanel(props: { planSlug: string, accountSize: number, on
     if (w.DePayButtons) return /* the button rendered for the order is the entry point */
     if (!w.DePayWidgets?.Payment) throw new Error('depay_unavailable')
     setWidgetOpen(true)
-    void Promise.resolve(w.DePayWidgets.Payment({ integration: rc.depayIntegrationId, blockchains: DEPAY_BLOCKCHAINS, payload: { orderId } }))
+    void Promise.resolve(w.DePayWidgets.Payment({ integration: rc.depayIntegrationId, ...(depayBlockchains.length ? { blockchains: depayBlockchains } : {}), payload: { orderId } }))
       .catch(() => { setError(widgetFailed); setManual(true) })
   }
   const buyChallenge = async () => {

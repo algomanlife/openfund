@@ -30,13 +30,37 @@
  *    chain_id+tx_hash) and must be mined after the order was created.
  */
 import { createPublicClient, http, erc20Abi, TransactionReceiptNotFoundError } from 'viem'
-import { sepolia, arbitrum, mainnet, base } from 'viem/chains'
+import { sepolia, arbitrum, mainnet, base, optimism, polygon, bsc, avalanche, gnosis, worldchain } from 'viem/chains'
 
 export const TRANSFER_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
 
-/** Chains an operator may configure. DePay itself serves mainnets only. */
-export const SUPPORTED_CHAINS = new Map([sepolia, arbitrum, mainnet, base].map(c => [c.id, c]))
-export const MAINNET_CHAIN_IDS = new Set([mainnet.id, arbitrum.id, base.id])
+/** EVM chains an operator may configure. DePay itself serves mainnets only. */
+export const SUPPORTED_CHAINS = new Map([sepolia, arbitrum, mainnet, base, optimism, polygon, bsc, avalanche, gnosis, worldchain].map(c => [c.id, c]))
+export const MAINNET_CHAIN_IDS = new Set([mainnet.id, arbitrum.id, base.id, optimism.id, polygon.id, bsc.id, avalanche.id, gnosis.id, worldchain.id])
+
+/** Solana has no EVM chain id; 501 (its SLIP-44 coin type) is Openfund's
+ *  internal identifier for it in chain_id columns. */
+export const SOLANA_CHAIN_ID = 501
+
+/** DePay blockchain identifiers → chain ids. Identifiers follow DePay's
+ *  documented examples (https://depay.com/docs/payments/integrate/button/);
+ *  "worldchain" is used in DePay's validation and deployment pages but is not
+ *  shown in the button example — confirm it in the DePay dashboard. */
+export const DEPAY_BLOCKCHAINS = Object.freeze({
+  ethereum: 1, bsc: 56, polygon: 137, avalanche: 43114, gnosis: 100,
+  arbitrum: 42161, optimism: 10, base: 8453, worldchain: 480, solana: SOLANA_CHAIN_ID,
+})
+export const blockchainOf = chainId => Object.keys(DEPAY_BLOCKCHAINS).find(k => DEPAY_BLOCKCHAINS[k] === Number(chainId)) || null
+export const isEvmChain = chainId => SUPPORTED_CHAINS.has(Number(chainId))
+
+/** transaction id formats: EVM hash (case-insensitive) vs Solana signature (base58, case-sensitive) */
+export const EVM_TX_RE = /^0x[0-9a-f]{64}$/i
+export const SOLANA_SIG_RE = /^[1-9A-HJ-NP-Za-km-z]{64,90}$/
+export const normalizeTxId = (chainId, tx) => {
+  const v = String(tx || '').trim()
+  if (Number(chainId) === SOLANA_CHAIN_ID) return SOLANA_SIG_RE.test(v) ? v : null
+  return EVM_TX_RE.test(v) ? v.toLowerCase() : null
+}
 
 export const paymentError = (status, error, extra = {}) =>
   Object.assign(new Error(error), { status, isPaymentError: true, ...extra })
@@ -65,8 +89,12 @@ export function toUnits(usd, decimals) {
 export function analyzePayment({ tx, receipt }, expect) {
   if (!receipt || receipt.status !== 'success') throw paymentError(400, 'tx_not_successful')
   if (!tx || !tx.from) throw paymentError(400, 'tx_not_found')
-  const payer = lc(expect.from), receiver = lc(expect.receiver)
-  if (lc(tx.from) !== payer) throw paymentError(400, 'wrong_sender')
+  /* the sender must be the customer's own wallet — except for payments that
+     DePay attested for this order in a signed callback/event
+     (requireSender:false): the payer may then use any wallet */
+  const requireSender = expect.requireSender !== false
+  const payer = requireSender ? lc(expect.from) : lc(tx.from), receiver = lc(expect.receiver)
+  if (requireSender && lc(tx.from) !== payer) throw paymentError(400, 'wrong_sender')
   const routers = new Set((expect.routers || []).map(lc))
   const min = BigInt(expect.minAmountUnits)
 
@@ -133,7 +161,7 @@ const isNotFound = e =>
  * Chain access boundary. `client` is injectable for tests; production
  * builds a client from the dedicated PURCHASE_RPC_URL.
  */
-export function createRpcVerifier({ rpcUrl, clientFactory } = {}) {
+export function createRpcVerifier({ rpcUrl, rpcUrls = {}, clientFactory } = {}) {
   const clients = new Map()
   const decimalsCache = new Map()
   const chainChecked = new Set()
@@ -142,10 +170,12 @@ export function createRpcVerifier({ rpcUrl, clientFactory } = {}) {
     if (clients.has(chainId)) return clients.get(chainId)
     const chain = SUPPORTED_CHAINS.get(chainId)
     if (!chain) throw paymentError(400, 'unsupported_chain')
-    if (!rpcUrl && !clientFactory) throw paymentError(503, 'payment_misconfigured', { retryable: false, detail: 'rpc_url_missing' })
+    /* per-chain dedicated endpoint (PURCHASE_RPC_URLS), else the legacy single one */
+    const url = rpcUrls[chainId] || rpcUrls[blockchainOf(chainId)] || rpcUrl
+    if (!url && !clientFactory) throw paymentError(503, 'payment_misconfigured', { retryable: false, detail: 'rpc_url_missing' })
     const client = clientFactory
       ? clientFactory(chain)
-      : createPublicClient({ chain, transport: http(rpcUrl, { timeout: 8000, retryCount: 1 }) })
+      : createPublicClient({ chain, transport: http(url, { timeout: 8000, retryCount: 1 }) })
     clients.set(chainId, client)
     return client
   }

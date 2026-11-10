@@ -128,7 +128,12 @@ services:
         sync: false             # challenge payment destination address — deliberately unset:
                                 # purchases stay disabled until an approved address is entered
       - key: PURCHASE_PAYMENT_CHAIN
-        value: "42161"          # Arbitrum One — the only checkout chain (any other value disables purchases)
+        value: "42161"          # legacy single settlement chain (used only while PURCHASE_PAYMENT_CHAINS is unset)
+      - key: PURCHASE_PAYMENT_CHAINS
+        sync: false             # JSON list of DePay settlement chains: [{blockchain, token, receiver, routers?,
+                                # tokenDecimals?, minConfirmations?}] — public values; unset = legacy single chain
+      - key: PURCHASE_RPC_URLS
+        sync: false             # secret: JSON map chain id / DePay blockchain name → dedicated RPC endpoint
       - key: PURCHASE_PAYMENT_TOKEN
         sync: false             # optional ERC-20 payment token contract
       - key: PURCHASE_PAYMENT_DECIMALS

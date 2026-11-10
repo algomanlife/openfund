@@ -19,7 +19,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `WEBSOCKETS_ENABLED`, `CORS_ENABLED`, `CORS_ORIGIN`, `CORS_METHODS`, `MAX_PAYLOAD_SIZE` | openfund-cms | R | PUB | Directus hardening (public read-only API) |
 | `IP_TRUST_PROXY` | openfund-cms | R | PUB | `true`: Render terminates TLS in front of Directus; explicit so Directus 12 (default `false`) keeps client-IP resolution identical to 11.x |
 | `SESSION_TTL_HOURS` | openfund | R | PUB | default `168` (7 days) |
-| `PURCHASE_PAYMENT_CHAIN` | openfund | R | PUB | `42161` (Arbitrum One) — the only checkout chain; any other value keeps purchases disabled (`paymentsReady()` = false). The live service still carried `11155111` at the 2026-11-10 audit. |
+| `PURCHASE_PAYMENT_CHAIN` | openfund | R | PUB | `42161`. Legacy single settlement chain, used only while `PURCHASE_PAYMENT_CHAINS` is unset. Payments are **not** tied to the Arbitrum sign-in chain. The live service still carried `11155111` at the 2026-11-10 audit. |
 | `PURCHASE_PAYMENT_DECIMALS` | openfund | R | PUB | default `18` — token decimals used in server-side amount checks |
 | `PURCHASE_LATE_GRACE_MINUTES` | openfund | R | PUB | default `60` — a payment verified within this many minutes after order expiry still pays the order; outside the window → explicit `order_expired` for manual reconciliation |
 
@@ -36,6 +36,8 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `VITE_INSTAGRAM_COMMUNITY_URL` | openfund (runtime, public) | optional owner-verified HTTPS Instagram profile; blank/invalid means Coming Soon. URL validation does not establish ownership. |
 | `CORS_ORIGINS` | openfund | optional; only needed for extra origins / custom domains |
 | `PURCHASE_PAYMENT_RECEIVER` | openfund | **deliberately unset by default — purchasing stays disabled (`purchases_disabled`) until an approved payment address is entered.** No hardcoded production destination exists in the repository. |
+| `PURCHASE_PAYMENT_CHAINS` | openfund | Public JSON list of DePay settlement chains, e.g. `[{"blockchain":"arbitrum","token":"0x…","receiver":"0x…","routers":["0x…"]}]`. `blockchain` uses DePay identifiers (`ethereum`, `bsc`, `polygon`, `avalanche`, `gnosis`, `arbitrum`, `optimism`, `base`, `worldchain`, `solana`); `token` is the settlement token (Solana: SPL mint); `receiver` the merchant address (Solana: owner key); optional `tokenDecimals`, `minConfirmations`. Each complete entry is offered by the DePay button and the dynamic configuration and verified on its own chain. Unset = the legacy `PURCHASE_PAYMENT_*` single chain. See [DePay](../payments/DEPAY.md). |
+| `PURCHASE_RPC_URLS` | openfund | **secret.** JSON map from chain id or DePay blockchain name to a dedicated RPC endpoint, e.g. `{"42161":"https://…","solana":"https://…"}`. Required in production for every configured chain. |
 | `AUTH_RPC_URL` | openfund | optional dedicated Arbitrum One RPC used by SIWE for contract-wallet (EIP-1271 / ERC-6492) signature checks. Unset = viem's public Arbitrum endpoint. Wallet authentication accepts chain `42161` only. |
 | `PURCHASE_PAYMENT_TOKEN` | openfund | approved ERC-20 USD stablecoin contract (priced 1:1 to USD). **Required in production**; unset permits native test-chain payments outside production only. |
 | `PURCHASE_PAYMENT_DECIMALS` | openfund | optional; must equal the token's on-chain `decimals()` (mismatch fails closed). Unset = read from the contract. |

@@ -43,7 +43,9 @@ const verifier = async (txHash, expect) => {
   if (chain.mode === 'rpc_down') throw Object.assign(new Error('rpc_unavailable'), { retryable: true, status: 503 })
   if (chain.mode === 'wrong_receiver') throw Object.assign(new Error('wrong_receiver'), { status: 409 })
   if (chain.mode === 'insufficient') throw Object.assign(new Error('insufficient_amount'), { status: 409 })
-  return { txHash, chainId: expect.chainId, blockNumber: 10, fromAddress: expect.from, toAddress: expect.receiver,
+  /* like the real verifiers, report the transaction's actual payer (an
+     attested DePay payment may come from any wallet) */
+  return { txHash, chainId: expect.chainId, blockNumber: 10, fromAddress: expect.from || '0x' + 'fa'.repeat(20), toAddress: expect.receiver,
     amount: String(Math.round(Number(expect.priceUsd) * 1e6)), tokenAddress: expect.token,
     blockTimestamp: new Date().toISOString(), overpaymentUnits: '0', route: 'direct', confirmations: 20 }
 }
@@ -121,9 +123,11 @@ test('P1 coupon pricing: percent rounds half-up to cents, fixed is capped at the
   assert.deepEqual(applyCoupon('80.00', null), { list: '80.00', discount: '0.00', net: '80.00' })
 })
 
-test('P2 checkout is Arbitrum-only: any other payment chain disables purchases', () => {
+test('P2 payment is not tied to the Arbitrum auth chain: every supported, complete chain is usable', () => {
   assert.equal(paymentsReady(), true)
-  for (const chainId of [11155111, 1, 8453, 421614]) assert.equal(paymentsReady({ ...cfg(), chainId }), false, String(chainId))
+  for (const chainId of [1, 8453, 10, 137, 56, 43114, 100, 480]) assert.equal(paymentsReady({ ...cfg(), chainId }), true, String(chainId))
+  for (const chainId of [421614, 999999]) assert.equal(paymentsReady({ ...cfg(), chainId }), false, 'unsupported ' + chainId)
+  assert.equal(paymentsReady({ ...cfg(), receiver: null }), false, 'no receiver')
 })
 
 test('P3 the quote is computed by the server from the plan of record and the coupon', async () => {
@@ -391,12 +395,12 @@ test('D2 callback: invalid signature rejected; duplicate deliveries and retries 
   assert.equal((await pool.query(`SELECT count(*)::int n FROM openfund_challenges WHERE purchase_order_id=$1`, [o.id])).rows[0].n, 1)
 })
 
-test('D3 callback validation: other chain ignored; wrong receiver / wrong amount go to review, never paid', async () => {
+test('D3 callback validation: unconfigured chain ignored; wrong receiver / wrong amount go to review, never paid', async () => {
   const u = await newUser()
   const o = (await order(u)).data.order
   const other = callbackBody(u, o, { blockchain: 'ethereum' })
   assert.equal((await depayPost('/purchases/depay/callback', other)).data.recorded, false)
-  assert.equal((await pool.query(`SELECT outcome FROM depay_events WHERE tx_hash=$1`, [other.transaction])).rows[0].outcome, 'ignored:other_chain')
+  assert.equal((await pool.query(`SELECT outcome FROM depay_events WHERE tx_hash=$1`, [other.transaction])).rows[0].outcome, 'ignored:unsupported_chain')
   chain = { mode: 'wrong_receiver' }
   const wrong = callbackBody(u, o, { receiver: rndAddr() })
   assert.equal((await depayPost('/purchases/depay/callback', wrong)).data.recorded, true)
@@ -410,12 +414,17 @@ test('D3 callback validation: other chain ignored; wrong receiver / wrong amount
   a = (await pool.query(`SELECT * FROM payment_attempts WHERE tx_hash=$1`, [under.transaction])).rows[0]
   assert.deepEqual([a.status, a.classification], ['rejected', 'underpayment'])
   assert.equal((await orderRow(o.id)).status, 'pending', 'never paid by a callback alone')
-  /* order identity: an order id that is not the sender's own is not matched */
+  /* order identity: the signed order id decides whose order is paid — a
+     payment for someone else's order credits THAT order, never the payer's */
   const stranger = await newUser()
   const theirs = (await order(stranger)).data.order
-  const spoof = callbackBody(u, theirs)
-  assert.equal((await depayPost('/purchases/depay/callback', spoof)).data.recorded, false)
+  const gift = callbackBody(u, theirs)
   chain = { mode: 'ok' }
+  assert.equal((await depayPost('/purchases/depay/callback', gift)).data.recorded, true)
+  await settle()
+  assert.equal((await orderRow(theirs.id)).lifecycle_state, 'provisioned')
+  assert.equal((await pool.query('SELECT user_id FROM openfund_challenges WHERE purchase_order_id=$1', [theirs.id])).rows[0].user_id, stranger.id)
+  assert.equal((await orderRow(o.id)).status, 'pending')
 })
 
 test('D4 events: attempt/processing only mark detection, failed is recorded, succeeded verifies; out-of-order safe', async () => {
@@ -470,4 +479,117 @@ test('D6 without the DePay verify key the DePay routes are closed', async () => 
     for (const p of ['/purchases/depay/configuration', '/purchases/depay/callback', '/purchases/depay/events'])
       assert.equal((await depayPost(p, { orderId: crypto.randomUUID() })).status, 404, p)
   } finally { process.env.DEPAY_VERIFY_PUBLIC_KEY = saved }
+})
+
+/* ================= multi-chain DePay ================= */
+const SOL_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' /* USDC mint on Solana (public) */
+const SOL_RECEIVER = '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM'
+const BASE_USDC = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913' /* USDC on Base (public) */
+const withChains = async (chains, fn) => {
+  const saved = process.env.PURCHASE_PAYMENT_CHAINS
+  process.env.PURCHASE_PAYMENT_CHAINS = JSON.stringify(chains)
+  try { return await fn() } finally { if (saved === undefined) delete process.env.PURCHASE_PAYMENT_CHAINS; else process.env.PURCHASE_PAYMENT_CHAINS = saved }
+}
+const MULTI = [
+  { blockchain: 'arbitrum', token: USDC_ARBITRUM, receiver: RECEIVER, tokenDecimals: 6 },
+  { blockchain: 'base', token: BASE_USDC, receiver: RECEIVER, tokenDecimals: 6 },
+  { blockchain: 'solana', token: SOL_MINT, receiver: SOL_RECEIVER, tokenDecimals: 6 },
+]
+const solSig = () => { const A = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'; return Array.from(crypto.randomBytes(88), b => A[b % A.length]).join('') }
+const seen = []
+const recordingVerifier = async (txId, expect) => { seen.push({ txId, expect }); return verifier(txId, expect) }
+
+test('M1 dynamic configuration offers every configured settlement chain, each with its own token and receiver', async () => withChains(MULTI, async () => {
+  const u = await newUser()
+  const o = (await order(u)).data.order
+  const raw = JSON.stringify({ orderId: o.id })
+  const r = await fetch(BASE + '/purchases/depay/configuration', { method: 'POST', body: raw, headers: { 'Content-Type': 'application/json', 'x-signature': depaySign(raw) } })
+  const text = await r.text()
+  assert.equal(r.status, 200); assert.equal(verifyOurs(text, r.headers.get('x-signature')), true)
+  assert.deepEqual(JSON.parse(text).accept, [
+    { blockchain: 'arbitrum', amount: 80, token: USDC_ARBITRUM, receiver: RECEIVER },
+    { blockchain: 'base', amount: 80, token: BASE_USDC, receiver: RECEIVER },
+    { blockchain: 'solana', amount: 80, token: SOL_MINT, receiver: SOL_RECEIVER },
+  ])
+  const plans = await call('GET', '/purchases/plans')
+  assert.deepEqual(plans.data.payment.chains.map(c => c.blockchain), ['arbitrum', 'base', 'solana'])
+}))
+
+test('M2 a Base payment (non-Arbitrum EVM) from ANY wallet, attested by DePay, is verified on Base and settles the order', async () => withChains(MULTI, async () => {
+  const u = await newUser()
+  const o = (await order(u)).data.order
+  const otherWallet = rndAddr()
+  seen.length = 0
+  const body = { ...callbackBody(u, o), blockchain: 'base', sender: otherWallet, receiver: RECEIVER, token: '0x' + 'ee'.repeat(20), amount: '0.031' }
+  const app2 = express()
+  app2.use(express.json({ verify: (req, res, buf) => { req.rawBody = buf } }))
+  app2.use(purchaseRoutes({ pool, requireAuth, audit: async () => {}, verifier: recordingVerifier }))
+  app2.use((err, req, res, next) => res.status(err.status || 500).json({ error: err.message }))
+  const srv = await new Promise(r => { const x = app2.listen(0, '127.0.0.1', () => r(x)) })
+  try {
+    const raw = JSON.stringify(body)
+    const res = await fetch(`http://127.0.0.1:${srv.address().port}/purchases/depay/callback`, { method: 'POST', body: raw, headers: { 'Content-Type': 'application/json', 'x-signature': depaySign(raw) } })
+    assert.equal(res.status, 200)
+    await until(async () => (await orderRow(o.id)).lifecycle_state === 'provisioned')
+  } finally { srv.close() }
+  const v = seen.find(x => x.txId === body.transaction)
+  assert.ok(v, 'verified')
+  assert.deepEqual([v.expect.chainId, v.expect.token, v.expect.receiver, v.expect.requireSender], [8453, BASE_USDC, RECEIVER, false])
+  const row = await orderRow(o.id)
+  assert.equal(row.lifecycle_state, 'provisioned')
+  const pay = (await pool.query('SELECT chain_id, blockchain, token_address, source_token, source_amount FROM payments WHERE purchase_order_id=$1', [o.id])).rows[0]
+  assert.deepEqual(pay, { chain_id: 8453, blockchain: 'base', token_address: BASE_USDC, source_token: '0x' + 'ee'.repeat(20), source_amount: '0.031' },
+    'settlement (verified) and source (reported) are recorded separately')
+}))
+
+test('M3 a manual hash submission still requires the customer wallet; unsupported chains and Solana manual entry are refused', async () => withChains(MULTI, async () => {
+  const u = await newUser()
+  const o = (await order(u)).data.order
+  seen.length = 0
+  const r = await call('POST', '/purchases/verify', { user: u, body: { orderId: o.id, txHash: rndHash(), chainId: 8453 } })
+  assert.equal(r.status, 200)
+  assert.equal((await pool.query('SELECT chain_id FROM payments WHERE purchase_order_id=$1', [o.id])).rows[0].chain_id, 8453)
+  const o2 = (await order(u)).data.order
+  assert.equal((await call('POST', '/purchases/verify', { user: u, body: { orderId: o2.id, txHash: rndHash(), chainId: 137 } })).data.error, 'unsupported_chain', 'Polygon is not configured')
+  assert.equal((await call('POST', '/purchases/verify', { user: u, body: { orderId: o2.id, txHash: solSig(), chainId: 501 } })).data.error, 'unsupported_chain', 'Solana payments arrive via DePay')
+  assert.equal((await depayPost('/purchases/depay/callback', { ...callbackBody(u, o2), blockchain: 'polygon' })).data.recorded, false)
+}))
+
+test('M4 Solana: signatures stay case-sensitive, verification is non-EVM, and the same id on two chains never collides', async () => withChains(MULTI, async () => {
+  const u = await newUser()
+  const o = (await order(u)).data.order
+  const sig = solSig()
+  const body = { ...callbackBody(u, o), blockchain: 'solana', transaction: sig, sender: SOL_RECEIVER.split('').reverse().join(''), receiver: SOL_RECEIVER, token: SOL_MINT }
+  assert.equal((await depayPost('/purchases/depay/callback', body)).data.recorded, true)
+  await settle()
+  const pay = (await pool.query('SELECT chain_id, tx_hash, blockchain FROM payments WHERE purchase_order_id=$1', [o.id])).rows[0]
+  assert.deepEqual(pay, { chain_id: 501, tx_hash: sig, blockchain: 'solana' })
+  /* invalid Solana signature format */
+  const o2 = (await order(u)).data.order
+  assert.equal((await depayPost('/purchases/depay/callback', { ...body, payload: { orderId: o2.id }, transaction: '0x' + 'ab'.repeat(32) })).data.recorded, false)
+}))
+
+test('M5 Solana verifier: settlement mint delta to the receiver, failures and wrong mint/receiver are classified', async () => {
+  const { analyzeSolanaPayment, createSolanaVerifier } = await import('../solana-verification.js')
+  const tx = (delta, { err = null, mint = SOL_MINT, owner = SOL_RECEIVER } = {}) => ({ slot: 5, blockTime: Math.floor(Date.now() / 1000),
+    transaction: { message: { accountKeys: [{ pubkey: 'PayerPubkey1111111111111111111111111111111' }, { pubkey: 'DePayR1gQfDmViCPKctnZXNtUgqRwnEqMax8LX9ho1Zg' }] } },
+    meta: { err, preTokenBalances: [{ owner, mint, uiTokenAmount: { amount: '1000000' } }], postTokenBalances: [{ owner, mint, uiTokenAmount: { amount: String(1000000 + delta) } }] } })
+  const expect = { receiver: SOL_RECEIVER, token: SOL_MINT, minAmountUnits: '80000000', requireSender: false, signature: 'sig' }
+  const okv = analyzeSolanaPayment(tx(80000000), expect)
+  assert.deepEqual([okv.chainId, okv.amount, okv.route], [501, '80000000', 'depay_solana'])
+  assert.throws(() => analyzeSolanaPayment(tx(79999999), expect), e => e.message === 'insufficient_amount')
+  assert.throws(() => analyzeSolanaPayment(tx(80000000, { err: { InstructionError: [0, 'Custom'] } }), expect), e => e.message === 'tx_not_successful')
+  assert.throws(() => analyzeSolanaPayment(tx(80000000, { mint: 'OtherMint1111111111111111111111111111111111' }), expect), e => e.message === 'wrong_token')
+  assert.throws(() => analyzeSolanaPayment(tx(80000000, { owner: 'Someone1111111111111111111111111111111111' }), expect), e => e.message === 'wrong_receiver')
+  /* RPC: not yet finalized → retryable; RPC error → retryable rpc_unavailable */
+  const pending = createSolanaVerifier({ rpc: async m => (m === 'getTokenSupply' ? { value: { decimals: 6 } } : null) })
+  await assert.rejects(pending('sig', { ...expect, priceUsd: '80', notBefore: 0, minConfirmations: 1 }), e => e.message === 'tx_not_final' && e.retryable)
+  const down = createSolanaVerifier({ rpcUrl: 'http://127.0.0.1:9' })
+  await assert.rejects(down('sig', { ...expect, priceUsd: '80', tokenDecimals: 6, notBefore: 0 }), e => e.message === 'rpc_unavailable' && e.retryable)
+})
+
+test('M6 wallet authentication stays Arbitrum-only while payments are multi-chain', async () => {
+  const src = (await import('node:fs')).readFileSync(new URL('../server.js', import.meta.url), 'utf8')
+  assert.match(src, /const AUTH_CHAINS = \[arbitrum\]/)
+  assert.doesNotMatch(src, /AUTH_CHAINS = \[[^\]]*(base|mainnet|polygon)/)
 })

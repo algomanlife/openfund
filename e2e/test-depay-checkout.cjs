@@ -103,7 +103,10 @@ const dePayDeliverCallback = async (BASE, body, { badSignature = false } = {}) =
   const r = await fetch(BASE + '/purchases/depay/callback', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-signature': sig }, body: raw })
   return { status: r.status, data: await r.json().catch(() => null) }
 }
-const callbackBody = (hash, sender) => ({ blockchain: 'arbitrum', transaction: hash, sender, receiver: RECEIVER, token: TOKEN, amount: '80', payload: null, after_block: 1, commitment: 'confirmed', confirmations: 1, created_at: new Date().toISOString(), confirmed_at: new Date().toISOString() })
+/* DePay forwards the button payload ({ orderId }); the server correlates the
+   payment to the order by that id only, never by the paying wallet */
+let currentOrderId = null
+const callbackBody = (hash, sender) => ({ blockchain: 'arbitrum', transaction: hash, sender, receiver: RECEIVER, token: TOKEN, amount: '80', payload: { orderId: currentOrderId }, after_block: 1, commitment: 'confirmed', confirmations: 1, created_at: new Date().toISOString(), confirmed_at: new Date().toISOString() })
 
 async function run({ BASE, chain }) {
   const API = BASE
@@ -159,8 +162,9 @@ async function run({ BASE, chain }) {
     check('the DePay widget opens through the SRI-pinned official bundle', !!opts)
     await page.locator('#mock-depay-widget').waitFor({ timeout: 5000 })
     check('widget is called with the integration id and ONLY the order id as payload', opts.integration === INTEGRATION && Object.keys(opts.payload).join() === 'orderId' && !('accept' in opts))
-    check('widget is restricted to Arbitrum (blockchains: ["arbitrum"])', JSON.stringify(opts.blockchains) === '["arbitrum"]', JSON.stringify(opts.blockchains))
+    check('widget offers exactly the server-configured settlement chains', JSON.stringify(opts.blockchains) === '["arbitrum"]', JSON.stringify(opts.blockchains))
     const order = await pendingOrder()
+    currentOrderId = order?.id ?? null
     check('the order exists server-side with the catalog price', !!order && order.id === opts.payload.orderId && Number(order.price_usd) === 80, JSON.stringify(order))
     await shot('1-widget-opened')
 
