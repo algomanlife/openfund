@@ -1,0 +1,36 @@
+name: Deploy verified candidate
+on:
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: read
+  deployments: write
+concurrency:
+  group: openfund-production
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      GITHUB_ENVIRONMENT: production
+      GH_TOKEN: ${{ github.token }}
+      RENDER_API_TOKEN: ${{ secrets.RENDER_API_TOKEN }}
+      RENDER_SERVICE_ID: ${{ vars.RENDER_SERVICE_ID }}
+      RELEASE_PUBLIC_URL: ${{ vars.RELEASE_PUBLIC_URL }}
+      RELEASE_CMS_URL: ${{ vars.RELEASE_CMS_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify package and deploy exact candidate SHA
+        run: node scripts/release/deploy-candidate.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: candidate-deployment-status-${{ github.run_id }}-${{ github.run_attempt }}
+          path: output/deployment-status.json
+          retention-days: 90

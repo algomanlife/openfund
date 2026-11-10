@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider, Navigate, useParams } from 'react-router-dom'
 import Landing from './pages/Landing'
@@ -6,6 +6,12 @@ import Home from './features/home/Home'
 import Markets from './features/markets/Markets'
 import Rulebook from './features/rulebook/Rulebook'
 import Transparency from './features/transparency/Transparency'
+import RevenueModel from './features/economy/RevenueModel'
+import LiveMarketAccess from './features/economy/LiveMarketAccess'
+import Ambassador from './features/partners/Ambassador'
+import Coach from './features/partners/Coach'
+/* the long-form Whitepaper (content + charts) loads only when visited */
+const Whitepaper = lazy(() => import('./features/whitepaper/Whitepaper'))
 import Faq from './features/faq/Faq'
 import Governance from './features/governance/Governance'
 import ProposalPage from './features/governance/ProposalPage'
@@ -30,13 +36,20 @@ import { WalletProvider } from './wallet/WalletProvider'
 import { SessionProvider } from './session/useOpenfundSession'
 import AppFrame from './features/loading/AppFrame'
 import { startThemeSync } from './theme'
-import { isLocale, storedLocale, type AppLocale } from './i18n/locales'
+import { storedLocale, type AppLocale } from './i18n/locales'
+import { translateSource } from './i18n/messages'
 
 startThemeSync()
 
+/* Same-origin legacy documents (terminal iframe) translate their static
+   English markup for ar / ru / zh-CN through the app dictionaries; misses
+   are reported exactly like React text. */
+;(window as Window & { __ofTranslateText?: (locale: string, english: string) => string }).__ofTranslateText = (locale, english) =>
+  locale === 'ar' || locale === 'ru' || locale === 'zh-CN' ? translateSource(locale, english) : english
+
 /* ---- public website architecture ----------------------------------------
    /              → language-aware redirect into the Home product gateway
-   /:locale/home  → FA two-product gateway; en/ar/ru/zh-CN the Prop landing
+   /:locale/home  → two-product gateway (every supported locale)
    /:locale/challenges → legacy landing experience (preserved, moved off "/")
    /:locale/markets → Markets directory (Gains Network authoritative data)
    /:locale/rulebook, /:locale/transparency → existing editorial pages
@@ -86,19 +99,17 @@ function LegacyAnchor() {
 function TerminalRedirect({ page }: { page: string }) { return <Navigate to={`/${preferredLocale()}/prop/${page}`} replace /> }
 function ProductRedirect({ product }: { product: 'prop' | 'perpetual' }) { return <Navigate to={`/${preferredLocale()}/${product}/${useParams().page || 'dashboard'}`} replace /> }
 
-/* fa → the Persian two-product gateway; every other supported locale
-   follows the established English behaviour (the Prop landing). */
+/* Every supported locale gets the two-product gateway; language alone never
+   hides a product. Unknown locale segments fall back to the gateway too. */
 function LocalizedHome() {
-  const { locale } = useParams()
-  return locale === 'fa' || !isLocale(locale) ? <Home /> : <Landing />
+  return <Home />
 }
 
+/* Language does not gate products. Presentation availability does not verify
+   nationality or residency, and Prop/Perpetual data stay isolated by
+   product (apps/backend/products.js), not by locale. */
 function ProductGate({ product }: { product: 'prop' | 'perpetual' }) {
-  const { locale } = useParams()
-  // Presentation availability does not verify nationality or residency.
-  return isLocale(locale) && locale !== 'fa' && product === 'perpetual'
-    ? <Navigate to={`/${locale}/prop/dashboard`} replace />
-    : <TerminalShell product={product} />
+  return <TerminalShell product={product} />
 }
 
 const routes = [
@@ -112,6 +123,14 @@ const routes = [
   { path: '/:locale/governance/new', element: <NewProposal /> },
   { path: '/:locale/governance/workspace', element: <CouncilWorkspace /> },
   { path: '/:locale/governance/proposals/:ofp', element: <ProposalPage /> },
+  /* Economy menu: Transparency, Revenue Model, Live Market Access */
+  { path: '/:locale/economy', element: <Navigate to="../transparency" replace /> },
+  { path: '/:locale/revenue-model', element: <RevenueModel /> },
+  { path: '/:locale/live-market-access', element: <LiveMarketAccess /> },
+  { path: '/:locale/ambassador', element: <Ambassador /> },
+  { path: '/:locale/coach', element: <Coach /> },
+  /* Official Whitepaper v1.0 — one anchor-navigated page (footer document link) */
+  { path: '/:locale/whitepaper', element: <Suspense fallback={null}><Whitepaper /></Suspense> },
   { path: '/:locale/faq', element: <Faq /> },
   { path: '/:locale/faq/q/:key', element: <Faq /> },
   { path: '/:locale/tools', element: <Tools /> },

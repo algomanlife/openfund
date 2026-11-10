@@ -17,6 +17,8 @@
  */
 import type { ChallengePlan, LegacyPreset } from '../data/challengePlans'
 import { assertPlansValid, serializeForLegacy } from '../data/challengePlans'
+import { ADDED_LOCALES, attachCmsTranslation, localizeRecords } from '../i18n/localize'
+import type { AddedLocale } from '../i18n/locales'
 import type {
   FaqCategoryContent, FaqItemContent, GlossaryTermContent, LearningPathContent, LessonBlock,
   LessonContent, ReferralBenefit, ReferralContent, ReferralStage, ReferralSection, ToolCopy,
@@ -76,6 +78,12 @@ async function getJson<T>(path: string, timeout = TIMEOUT_MS): Promise<T | null>
   }
 }
 
+/** Public read of one published Directus resource for feature-level content
+ *  modules (e.g. src/cms/whitepaper); same origin rules, timeout and cache. */
+export function getCmsJson<T>(path: string, timeout = TIMEOUT_MS): Promise<T | null> {
+  return getJson<T>(path, timeout)
+}
+
 export function invalidateCmsCache(): void {
   cache.clear()
 }
@@ -83,17 +91,32 @@ export function invalidateCmsCache(): void {
 type Locale = 'fa' | 'en'
 interface TranslatedRow { translations?: ReadonlyArray<{ language_code: string } & Record<string, unknown>> | null }
 
+/* Directus rows for ar / ru / zh-CN (when editors add them) override the
+   reviewed bundled translation of the English source; see i18n/localize. */
+const ADDED_CODES = new Set<string>(ADDED_LOCALES)
+const addedRows = new WeakMap<object, Partial<Record<AddedLocale, Record<string, unknown>>>>()
+function attachAdded(record: object, rows: Partial<Record<AddedLocale, Record<string, unknown>>>, pickField?: string) {
+  for (const [locale, values] of Object.entries(rows) as [AddedLocale, Record<string, unknown>][]) {
+    attachCmsTranslation(record, locale, pickField === undefined ? values : values[pickField])
+  }
+}
+
 /** flatten a Directus translations array into { fa, en } string records */
 function localized(row: TranslatedRow): Record<Locale, Record<string, string>> {
   const out: Record<Locale, Record<string, string>> = { fa: {}, en: {} }
+  const added: Partial<Record<AddedLocale, Record<string, unknown>>> = {}
   for (const t of row.translations || []) {
-    const lang = t.language_code === 'en' ? 'en' : 'fa'
+    const code = t.language_code
+    const target = code === 'en' || code === 'fa' ? out[code] : ADDED_CODES.has(code) ? (added[code as AddedLocale] ||= {}) : null
+    if (!target) continue
     for (const [k, v] of Object.entries(t)) {
       if (k === 'language_code') continue
-      if (typeof v === 'string') out[lang][k] = v
+      if (typeof v === 'string') target[k] = v
     }
   }
-  return out
+  attachAdded(out, added)
+  addedRows.set(out, added)
+  return localizeRecords(out)
 }
 
 /* ---------------- ui_messages (existing ofT contract) ---------------- */
@@ -103,7 +126,7 @@ interface RawMessage {
   translations: { language_code: string; value: string }[] | null
 }
 
-export async function fetchCmsTranslations(timeout = 2500): Promise<CmsTranslations | null> {
+async function fetchCmsTranslationsRaw(timeout = 2500): Promise<CmsTranslations | null> {
   const fields = 'key,namespace,translations.language_code,translations.value'
   const data = await getJson<RawMessage[]>(`/items/ui_messages?fields=${fields}&filter[status][_eq]=published&limit=-1`, timeout)
   if (!data) return null
@@ -179,7 +202,7 @@ function planFromRow(row: RawPlan): ChallengePlan | null {
    table that renders the catalog) */
 const PLAN_ORDER = ['standard', 'one-phase', 'instant', 'free-trial']
 
-export async function fetchCmsPlans(): Promise<ChallengePlan[] | null> {
+async function fetchCmsPlansRaw(): Promise<ChallengePlan[] | null> {
   const data = await getJson<RawPlan[]>('/items/challenge_plans?fields=slug,name,status,configuration&filter[status][_eq]=active&limit=-1')
   if (!data || !data.length) return null
   const plans = data.map(planFromRow).filter((p): p is ChallengePlan => !!p)
@@ -191,7 +214,7 @@ export async function fetchCmsPlans(): Promise<ChallengePlan[] | null> {
 }
 
 /** plans in the legacy landing-builder shape (window.__ofPlans contract) */
-export async function fetchCmsLegacyPlans(): Promise<Record<string, LegacyPreset> | null> {
+async function fetchCmsLegacyPlansRaw(): Promise<Record<string, LegacyPreset> | null> {
   const plans = await fetchCmsPlans()
   if (!plans) return null
   const legacy = serializeForLegacy(plans)
@@ -212,7 +235,7 @@ export interface CmsHome {
   }>
 }
 
-export async function fetchCmsHome(): Promise<CmsHome | null> {
+async function fetchCmsHomeRaw(): Promise<CmsHome | null> {
   interface Raw extends TranslatedRow { prop_cta_destination?: string; perpetual_cta_destination?: string; prop_image?: string | null; perpetual_image?: string | null }
   const data = await getJson<Raw>('/items/home_content?fields=*,translations.*')
   if (!data) return null
@@ -234,7 +257,7 @@ export async function fetchCmsHome(): Promise<CmsHome | null> {
 /* ---------------- faqs ---------------- */
 export interface CmsFaq { question: { fa: string; en: string }; answer: { fa: string; en: string } }
 
-export async function fetchCmsFaqs(page = 'challenges'): Promise<CmsFaq[] | null> {
+async function fetchCmsFaqsRaw(page = 'challenges'): Promise<CmsFaq[] | null> {
   interface Raw { page: string; translations?: Array<{ language_code: string; question?: string; answer?: string }> | null }
   const data = await getJson<Raw[]>(`/items/faqs?fields=page,translations.language_code,translations.question,translations.answer&filter[status][_eq]=published&filter[page][_eq]=${page}&sort=sort&limit=-1`)
   if (!data) return null
@@ -259,7 +282,7 @@ export interface CmsRuleSection {
   table?: CmsRuleTable
 }
 
-export async function fetchCmsRules(): Promise<CmsRuleSection[] | null> {
+async function fetchCmsRulesRaw(): Promise<CmsRuleSection[] | null> {
   interface RawTable { caption?: string; columns?: string[]; rows?: string[][] }
   interface RawTr { language_code: string; title?: string; paragraphs?: string[]; formula?: string | null; explanation_title?: string | null; explanation_body?: string | null; table?: RawTable | null }
   interface Raw { section_key: string; review_status: string; translations?: RawTr[] | null }
@@ -298,7 +321,7 @@ export async function fetchCmsRules(): Promise<CmsRuleSection[] | null> {
 /* ---------------- legal documents ---------------- */
 export interface CmsLegalDoc { docType: string; title: { fa: string; en: string }; paragraphs: Array<{ fa: string; en: string }> }
 
-export async function fetchCmsLegal(): Promise<CmsLegalDoc[] | null> {
+async function fetchCmsLegalRaw(): Promise<CmsLegalDoc[] | null> {
   interface RawTr { language_code: string; title?: string; paragraphs?: string[] }
   interface Raw { doc_type: string; translations?: RawTr[] | null }
   const data = await getJson<Raw[]>('/items/legal_documents?fields=doc_type,translations.*&filter[status][_eq]=published&sort=sort&limit=-1')
@@ -325,7 +348,7 @@ export interface CmsFooterLink { destination: FooterDestination; label: { fa: st
 
 const FOOTER_DESTINATIONS = new Set(['challenges', 'markets', 'rulebook', 'transparency', 'faq', 'referral', 'tools', 'learn', 'governance', 'accounts-section', 'team-section', 'faq-section', 'github'])
 
-export async function fetchCmsFooterLinks(): Promise<CmsFooterLink[] | null> {
+async function fetchCmsFooterLinksRaw(): Promise<CmsFooterLink[] | null> {
   interface Raw extends TranslatedRow { destination: string }
   const data = await getJson<Raw[]>('/items/footer_links?fields=destination,translations.language_code,translations.label&filter[status][_eq]=published&sort=sort&limit=-1')
   if (!data) return null
@@ -344,7 +367,7 @@ export type NavRoute = 'challenges' | 'markets' | 'rulebook' | 'transparency' | 
 export interface CmsNavItem { route: NavRoute; label: { fa: string; en: string } }
 const NAV_ROUTES = new Set(['challenges', 'markets', 'rulebook', 'transparency', 'faq', 'referral', 'tools', 'learn', 'governance'])
 
-export async function fetchCmsNavigation(): Promise<CmsNavItem[] | null> {
+async function fetchCmsNavigationRaw(): Promise<CmsNavItem[] | null> {
   interface Raw extends TranslatedRow { route: string; visible: boolean }
   const data = await getJson<Raw[]>('/items/navigation_items?fields=route,visible,translations.language_code,translations.label&filter[status][_eq]=published&filter[location][_eq]=public_header&filter[visible][_eq]=true&sort=sort&limit=-1')
   if (!data) return null
@@ -368,7 +391,7 @@ export interface CmsPageMeta {
   seoDescription: { fa: string; en: string }
 }
 
-export async function fetchCmsPageMeta(slug: string): Promise<CmsPageMeta | null> {
+async function fetchCmsPageMetaRaw(slug: string): Promise<CmsPageMeta | null> {
   interface RawTr { language_code: string; title?: string; subtitle?: string; description?: string; seo_title?: string; seo_description?: string }
   interface Raw { slug: string; translations?: RawTr[] | null }
   const data = await getJson<Raw[]>(`/items/pages?fields=slug,translations.*&filter[slug][_eq]=${slug}&filter[status][_eq]=published&limit=1`)
@@ -387,7 +410,7 @@ export async function fetchCmsPageMeta(slug: string): Promise<CmsPageMeta | null
 }
 
 /** Product editorial sections: CMS-only, never a financial source. */
-export async function fetchTerminalSections(product: 'prop' | 'perpetual', page: string) {
+async function fetchTerminalSectionsRaw(product: 'prop' | 'perpetual', page: string) {
   interface Raw extends TranslatedRow { id: string; illustration?: string; support_url?: string }
   const rows = await getJson<Raw[]>(`/items/terminal_sections?fields=id,illustration,support_url,translations.*&filter[status][_eq]=published&filter[product][_eq]=${product}&filter[page][_eq]=${encodeURIComponent(page)}&sort=sort&limit=-1`)
   if (!rows) return null
@@ -414,19 +437,28 @@ const str = (v: unknown): string => (typeof v === 'string' ? v : '')
  */
 function flat(row: TranslatedRow): Record<Locale, Record<string, unknown>> {
   const out: Record<Locale, Record<string, unknown>> = { fa: {}, en: {} }
+  const added: Partial<Record<AddedLocale, Record<string, unknown>>> = {}
   for (const t of row.translations || []) {
-    const lang = t.language_code === 'en' ? 'en' : 'fa'
-    for (const [k, v] of Object.entries(t)) if (k !== 'language_code') out[lang][k] = v
+    const code = t.language_code
+    const target = code === 'en' || code === 'fa' ? out[code] : ADDED_CODES.has(code) ? (added[code as AddedLocale] ||= {}) : null
+    if (!target) continue
+    for (const [k, v] of Object.entries(t)) if (k !== 'language_code') target[k] = v
   }
+  addedRows.set(out, added)
   return out
 }
 
-const pairOf = (rec: Record<Locale, Record<string, unknown>>, key: string): Bi => ({ fa: str(rec.fa[key]), en: str(rec.en[key]) })
+const pairOf = (rec: Record<Locale, Record<string, unknown>>, key: string): Bi => {
+  const pair = { fa: str(rec.fa[key]), en: str(rec.en[key]) }
+  const added = addedRows.get(rec)
+  if (added) attachAdded(pair, added, key)
+  return pair
+}
 
 /* ---------------- FAQ hub (categories + questions) ---------------- */
 export interface CmsFaqHub { categories: FaqCategoryContent[]; items: FaqItemContent[] }
 
-export async function fetchCmsFaqHub(): Promise<CmsFaqHub | null> {
+async function fetchCmsFaqHubRaw(): Promise<CmsFaqHub | null> {
   interface RawCat extends TranslatedRow { id: number | string; slug: string; sort: number; icon?: string }
   interface RawLink { target?: { kind?: string; slug?: string }; label?: Partial<Bi> }
   interface RawFaq extends TranslatedRow { slug: string | null; sort: number; category?: number | string | null }
@@ -487,7 +519,7 @@ function pairLinks(faRaw: unknown, enRaw: unknown): Array<{ target: LinkTarget; 
 /* ---------------- Learning Center library ---------------- */
 export interface CmsLearningLibrary { paths: LearningPathContent[]; glossary: GlossaryTermContent[] }
 
-export async function fetchCmsLearningLibrary(): Promise<CmsLearningLibrary | null> {
+async function fetchCmsLearningLibraryRaw(): Promise<CmsLearningLibrary | null> {
   interface RawPath extends TranslatedRow { slug: string; path_key: string; sort: number; level?: string; lessons?: RawLesson[] | null }
   interface RawLesson extends TranslatedRow { slug: string; sort: number; minutes?: number; status?: string; glossary?: unknown; tools?: unknown }
   interface RawTerm extends TranslatedRow { slug: string; sort: number; lessons?: unknown; tool?: string }
@@ -615,7 +647,7 @@ function stringList(v: unknown): string[] {
 }
 
 /* ---------------- Tools Center prose ---------------- */
-export async function fetchCmsToolCopy(): Promise<Record<string, ToolCopy> | null> {
+async function fetchCmsToolCopyRaw(): Promise<Record<string, ToolCopy> | null> {
   interface Raw extends TranslatedRow { slug: string }
   const rows = await getJson<Raw[]>('/items/tools?fields=slug,category,translations.language_code,translations.name,translations.tagline,translations.about,translations.method,translations.assumptions,translations.limitations&filter[status][_eq]=published&sort=sort&limit=-1')
   if (!rows) return null
@@ -635,7 +667,7 @@ export async function fetchCmsToolCopy(): Promise<Record<string, ToolCopy> | nul
 }
 
 /* ---------------- Growth Partner (singleton) ---------------- */
-export async function fetchCmsReferral(): Promise<{ programState: 'prelaunch' | 'live'; content: ReferralContent } | null> {
+async function fetchCmsReferralRaw(): Promise<{ programState: 'prelaunch' | 'live'; content: ReferralContent } | null> {
   interface Raw extends TranslatedRow { program_state?: string }
   const data = await getJson<Raw>('/items/referral_content?fields=program_state,translations.*')
   if (!data) return null
@@ -747,3 +779,20 @@ export async function fetchCmsGovernance(): Promise<CmsGovernanceContent | null>
   }
   return out.milestones.length || Object.keys(out.blocks).length ? out : null
 }
+/* Every bilingual record a fetcher returns also resolves ar / ru / zh-CN. */
+const localizing = <A extends unknown[], R>(fn: (...args: A) => Promise<R>) => async (...args: A): Promise<R> => localizeRecords(await fn(...args))
+export const fetchCmsTranslations = localizing(fetchCmsTranslationsRaw)
+export const fetchCmsPlans = localizing(fetchCmsPlansRaw)
+export const fetchCmsLegacyPlans = localizing(fetchCmsLegacyPlansRaw)
+export const fetchCmsHome = localizing(fetchCmsHomeRaw)
+export const fetchCmsFaqs = localizing(fetchCmsFaqsRaw)
+export const fetchCmsRules = localizing(fetchCmsRulesRaw)
+export const fetchCmsLegal = localizing(fetchCmsLegalRaw)
+export const fetchCmsFooterLinks = localizing(fetchCmsFooterLinksRaw)
+export const fetchCmsNavigation = localizing(fetchCmsNavigationRaw)
+export const fetchCmsPageMeta = localizing(fetchCmsPageMetaRaw)
+export const fetchTerminalSections = localizing(fetchTerminalSectionsRaw)
+export const fetchCmsFaqHub = localizing(fetchCmsFaqHubRaw)
+export const fetchCmsLearningLibrary = localizing(fetchCmsLearningLibraryRaw)
+export const fetchCmsToolCopy = localizing(fetchCmsToolCopyRaw)
+export const fetchCmsReferral = localizing(fetchCmsReferralRaw)

@@ -266,5 +266,5 @@ These items are implemented with a conservative default and are not final policy
 [Governance documentation index](docs/governance/README.md) ·
 [ECONOMY.md](ECONOMY.md) ·
 [Feature status](docs/product/FEATURE_STATUS.md) ·
-[ADR 0016](docs/decisions/0016-hybrid-governance.md) ·
+[ADR 0017](docs/decisions/0017-hybrid-governance.md) ·
 [CONTRIBUTING.md](CONTRIBUTING.md)

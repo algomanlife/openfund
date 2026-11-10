@@ -163,7 +163,7 @@ export default function TerminalShell({ product }: { product: Product }) {
               />
               <b dir="ltr">openfund</b>
             </Link>
-            {locale === "fa" && <label className="of-product-switch">
+            {<label className="of-product-switch">
               <span className="sr-only">{t("محصول", "Product")}</span>
               <select
                 aria-label={t("محصول", "Product")}
@@ -214,9 +214,9 @@ export default function TerminalShell({ product }: { product: Product }) {
               >
                 {theme === "dark" ? "◐" : "◑"}
               </button>
-              {/* Perpetual is offered in Persian only; other locales go to Prop */}
+              {/* same page in the chosen locale; both products in every locale */}
               <LanguageSelect locale={locale} onChange={next =>
-                navigate(product === "perpetual" && next !== "fa" ? `/${next}/prop/dashboard` : switchLocalePath(pathname, next) + search)} />
+                navigate(switchLocalePath(pathname, next) + search)} />
               <button
                 className="of-mobile-menu"
                 aria-expanded={open}

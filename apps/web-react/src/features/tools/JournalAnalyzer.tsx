@@ -1,3 +1,4 @@
+import { pick } from '../../i18n/locales'
 import { useMemo, useRef, useState } from 'react'
 import { text, number, type Locale } from '../information/content'
 import type { ToolSpec } from '../../cms/contentTypes'
@@ -28,7 +29,7 @@ export default function JournalAnalyzer({ tool, locale, library }: { tool: ToolS
     setFileName(file.name)
     const reader = new FileReader()
     reader.onload = () => setCsv(String(reader.result || ''))
-    reader.onerror = () => setParseError(locale === 'fa' ? 'خواندن فایل ممکن نشد.' : 'The file could not be read.')
+    reader.onerror = () => setParseError(pick(locale, 'خواندن فایل ممکن نشد.', 'The file could not be read.'))
     reader.readAsText(file)
   }
 
@@ -45,9 +46,7 @@ export default function JournalAnalyzer({ tool, locale, library }: { tool: ToolS
       </div>
       <div className="tool-field">
         <label htmlFor="journal-paste"><span>{text('Or paste rows', 'یا سطرها را بچسبان')[locale]}</span></label>
-        <textarea id="journal-paste" rows={6} value={csv} placeholder={locale === 'fa'
-          ? 'date,symbol,side,qty,entry,exit,pnl\n2026-10-03,BTCUSD,long,0.05,60000,63000,148'
-          : 'date,symbol,side,qty,entry,exit,pnl\n2026-10-03,BTCUSD,long,0.05,60000,63000,148'}
+        <textarea id="journal-paste" rows={6} value={csv} placeholder={'date,symbol,side,qty,entry,exit,pnl\n2026-10-03,BTCUSD,long,0.05,60000,63000,148'}
           onChange={e => { setCsv(e.target.value); setFileName('') }} />
       </div>
       <div className="tool-field">
@@ -75,7 +74,7 @@ export default function JournalAnalyzer({ tool, locale, library }: { tool: ToolS
         </div>
         <div className="tool-result-main">
           <span>{text('Win rate', 'درصد برد')[locale]}</span>
-          <strong>{`${number(metrics.winRatePct, locale, { maximumFractionDigits: 1 })}${locale === 'fa' ? '٪' : '%'}`}</strong>
+          <strong>{`${number(metrics.winRatePct, locale, { maximumFractionDigits: 1 })}${pick(locale, '٪', '%')}`}</strong>
           <small>{number(metrics.wins, locale)} / {number(metrics.wins + metrics.losses, locale)}</small>
         </div>
         <dl className="tool-result-list">
@@ -85,9 +84,9 @@ export default function JournalAnalyzer({ tool, locale, library }: { tool: ToolS
           <div><dt>{text('Average loss', 'میانگین باخت')[locale]}</dt><dd>{currency(metrics.avgLoss)}</dd></div>
           <div><dt>{text('Payoff ratio', 'نسبت برد به باخت')[locale]}</dt><dd>{metrics.payoff === null ? '—' : number(metrics.payoff, locale, { maximumFractionDigits: 2 })}</dd></div>
           <div><dt>{text('Best / worst trade', 'بهترین / بدترین معامله')[locale]}</dt><dd>{currency(metrics.bestTrade)} / {currency(metrics.worstTrade)}</dd></div>
-          <div><dt>{text('Max drawdown', 'بیشترین افت')[locale]}</dt><dd>{currency(metrics.maxDrawdown)}{metrics.maxDrawdownPct !== null ? ` (${number(metrics.maxDrawdownPct, locale, { maximumFractionDigits: 1 })}${locale === 'fa' ? '٪' : '%'})` : ''}</dd></div>
+          <div><dt>{text('Max drawdown', 'بیشترین افت')[locale]}</dt><dd>{currency(metrics.maxDrawdown)}{metrics.maxDrawdownPct !== null ? ` (${number(metrics.maxDrawdownPct, locale, { maximumFractionDigits: 1 })}${pick(locale, '٪', '%')})` : ''}</dd></div>
           <div><dt>{text('Longest win / loss streak', 'بلندترین رشتهٔ برد / باخت')[locale]}</dt><dd>{number(metrics.longestWinStreak, locale)} / {number(metrics.longestLossStreak, locale)}</dd></div>
-          <div><dt>{text('Largest day share', 'سهم بزرگ‌ترین روز')[locale]}</dt><dd>{metrics.consistencySharePct === null ? '—' : `${number(metrics.consistencySharePct, locale, { maximumFractionDigits: 1 })}${locale === 'fa' ? '٪' : '%'}`}</dd></div>
+          <div><dt>{text('Largest day share', 'سهم بزرگ‌ترین روز')[locale]}</dt><dd>{metrics.consistencySharePct === null ? '—' : `${number(metrics.consistencySharePct, locale, { maximumFractionDigits: 1 })}${pick(locale, '٪', '%')}`}</dd></div>
         </dl>
         {!('errors' in report) && report.warnings.length > 0 && <div className="journal-warnings">
           <span>{text('Notes', 'نکته‌ها')[locale]}</span>

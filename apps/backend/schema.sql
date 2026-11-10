@@ -501,7 +501,7 @@ UPDATE challenge_plans
 -- is a record, never an executable instruction.
 -- Evidence tables (votes, decisions, history, audit) are append-only,
 -- enforced by triggers, not just by application code.
--- ==================================================================
+-- ===========================================================
 CREATE OR REPLACE FUNCTION gov_forbid_mutation() RETURNS trigger AS $$
 BEGIN
   RAISE EXCEPTION 'governance evidence table % is append-only', TG_TABLE_NAME USING ERRCODE = '23000';
@@ -849,3 +849,363 @@ CREATE TABLE IF NOT EXISTS gov_audit_events (
 CREATE INDEX IF NOT EXISTS idx_gov_audit_subject ON gov_audit_events (subject_type, subject_id, id);
 DROP TRIGGER IF EXISTS trg_gov_audit_append ON gov_audit_events;
 CREATE TRIGGER trg_gov_audit_append BEFORE UPDATE OR DELETE ON gov_audit_events FOR EACH ROW EXECUTE FUNCTION gov_forbid_mutation();
+-- Economy, transparency, Brand Ambassador, Verified Coach and Live
+-- Market Access (additive only; no existing table is altered except
+-- through ADD COLUMN IF NOT EXISTS). The backend is the only writer of
+-- every table below; Directus may READ them for backstage review.
+-- Money columns are NUMERIC(20,2) USD unless stated otherwise.
+-- ==================================================================
+
+-- Append-only financial audit trail (before/after state of every
+-- financial decision). UPDATE and DELETE are rejected by trigger.
+CREATE TABLE IF NOT EXISTS financial_audit_log (
+  id         bigserial PRIMARY KEY,
+  ts         timestamptz NOT NULL DEFAULT now(),
+  actor      text NOT NULL,                 -- 'admin:<name>' | 'user:<uuid>' | 'system'
+  action     text NOT NULL,
+  entity     text NOT NULL,
+  entity_id  text,
+  before     jsonb,
+  after      jsonb
+);
+CREATE INDEX IF NOT EXISTS idx_fin_audit_entity ON financial_audit_log (entity, entity_id, id);
+CREATE OR REPLACE FUNCTION reject_mutation() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN RAISE EXCEPTION 'append_only_table' USING ERRCODE='23514'; END $$;
+DROP TRIGGER IF EXISTS financial_audit_log_append_only ON financial_audit_log;
+CREATE TRIGGER financial_audit_log_append_only BEFORE UPDATE OR DELETE ON financial_audit_log
+FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+-- Refunds and chargebacks against a confirmed payment. The original
+-- payment row is never edited or deleted; net revenue = paid − adjustments.
+CREATE TABLE IF NOT EXISTS payment_adjustments (
+  id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  payment_id        uuid NOT NULL REFERENCES payments(id),
+  purchase_order_id uuid NOT NULL REFERENCES purchase_orders(id),
+  kind              text NOT NULL CHECK (kind IN ('refund','chargeback')),
+  amount_usd        numeric(20,2) NOT NULL CHECK (amount_usd > 0),
+  reference         text NOT NULL,          -- refund tx hash or processor reference
+  reason            text,
+  recorded_by       text NOT NULL,
+  created_at        timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (payment_id, kind, reference)
+);
+CREATE INDEX IF NOT EXISTS idx_payment_adjustments_order ON payment_adjustments (purchase_order_id);
+
+-- Treasury balance snapshots taken by the backend scheduler. A failed
+-- read is stored as status='error' and never overwrites the last good one.
+CREATE TABLE IF NOT EXISTS treasury_snapshots (
+  id             bigserial PRIMARY KEY,
+  taken_at       timestamptz NOT NULL DEFAULT now(),
+  chain_id       integer NOT NULL,
+  address        text NOT NULL,
+  status         text NOT NULL CHECK (status IN ('ok','error')),
+  block_number   bigint,
+  assets         jsonb NOT NULL DEFAULT '[]'::jsonb,  -- [{symbol,address,decimals,balance,priceUsd,valueUsd,priceSource,priceUpdatedAt}]
+  total_usd      numeric(24,2),                       -- sum of PRICED assets only
+  fully_priced   boolean NOT NULL DEFAULT false,
+  error          text
+);
+CREATE INDEX IF NOT EXISTS idx_treasury_snapshots_ok ON treasury_snapshots (address, taken_at DESC) WHERE status = 'ok';
+CREATE INDEX IF NOT EXISTS idx_treasury_snapshots_ts ON treasury_snapshots (taken_at DESC);
+
+-- Capital reserves set explicitly by management (operational, risk,
+-- other). Each change inserts a new row; the latest row per kind is in force.
+CREATE TABLE IF NOT EXISTS capital_reserves (
+  id          bigserial PRIMARY KEY,
+  kind        text NOT NULL CHECK (kind IN ('operational','risk','other')),
+  amount_usd  numeric(20,2) NOT NULL CHECK (amount_usd >= 0),
+  note        text,
+  set_by      text NOT NULL,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_capital_reserves_kind ON capital_reserves (kind, id DESC);
+
+-- Other liabilities (debts, matured payables) recorded with evidence.
+CREATE TABLE IF NOT EXISTS financial_obligations (
+  id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  kind         text NOT NULL CHECK (kind IN ('liability','payable','other')),
+  description  text NOT NULL,
+  amount_usd   numeric(20,2) NOT NULL CHECK (amount_usd > 0),
+  due_on       date,
+  reference    text NOT NULL,
+  status       text NOT NULL DEFAULT 'open' CHECK (status IN ('open','settled','void')),
+  recorded_by  text NOT NULL,
+  created_at   timestamptz NOT NULL DEFAULT now(),
+  closed_at    timestamptz
+);
+
+-- Verified company expenses. Estimates are never recorded as invoices:
+-- every row needs a source and an invoice/document reference.
+CREATE TABLE IF NOT EXISTS verified_expenses (
+  id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  category          text NOT NULL CHECK (category IN ('render_infrastructure','database','cms','market_data','operational_services','marketing','ambassador_commissions','salaries_administration','other')),
+  description       text NOT NULL,
+  amount            numeric(20,2) NOT NULL CHECK (amount > 0),
+  currency          text NOT NULL,
+  amount_usd        numeric(20,2) NOT NULL CHECK (amount_usd > 0),
+  fx_reference      text,
+  incurred_on       date NOT NULL,
+  period_start      date,
+  period_end        date,
+  source            text NOT NULL CHECK (source IN ('provider_api','invoice','receipt','contract')),
+  invoice_reference text NOT NULL,
+  document_url      text,
+  status            text NOT NULL DEFAULT 'recorded' CHECK (status IN ('recorded','verified','void')),
+  payment_status    text NOT NULL DEFAULT 'unpaid' CHECK (payment_status IN ('unpaid','paid')),
+  payment_reference text,
+  recorded_by       text NOT NULL,
+  verified_by       text,
+  created_at        timestamptz NOT NULL DEFAULT now(),
+  verified_at       timestamptz,
+  UNIQUE (category, invoice_reference)
+);
+CREATE INDEX IF NOT EXISTS idx_verified_expenses_date ON verified_expenses (incurred_on DESC);
+
+-- ------------------------------------------------------------------
+-- Partner programs. One applications table serves both independent
+-- roles; each role needs its own approval (UNIQUE per user+role for
+-- open applications). Status history is append-only.
+-- ------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS partner_applications (
+  id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id        uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  role           text NOT NULL CHECK (role IN ('ambassador','coach')),
+  status         text NOT NULL DEFAULT 'submitted' CHECK (status IN ('submitted','under_review','approved','rejected','suspended')),
+  contact_email  text NOT NULL,
+  payload        jsonb NOT NULL,
+  verification   jsonb NOT NULL DEFAULT '{}'::jsonb,   -- reviewer-verified facts with evidence
+  terms_version  text NOT NULL,
+  submitted_at   timestamptz NOT NULL DEFAULT now(),
+  updated_at     timestamptz NOT NULL DEFAULT now(),
+  decided_at     timestamptz,
+  decided_by     text,
+  decision_note  text
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_partner_applications_open
+  ON partner_applications (user_id, role) WHERE status IN ('submitted','under_review','approved','suspended');
+CREATE INDEX IF NOT EXISTS idx_partner_applications_status ON partner_applications (role, status, submitted_at DESC);
+
+CREATE TABLE IF NOT EXISTS partner_application_events (
+  id             bigserial PRIMARY KEY,
+  application_id uuid NOT NULL REFERENCES partner_applications(id) ON DELETE CASCADE,
+  from_status    text,
+  to_status      text NOT NULL,
+  actor          text NOT NULL,
+  note           text,
+  ts             timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_partner_application_events ON partner_application_events (application_id, id);
+
+-- Approved ambassadors. The referral code exists ONLY after approval.
+CREATE TABLE IF NOT EXISTS ambassador_profiles (
+  user_id         uuid PRIMARY KEY REFERENCES openfund_users(id) ON DELETE CASCADE,
+  application_id  uuid NOT NULL UNIQUE REFERENCES partner_applications(id),
+  referral_code   text NOT NULL UNIQUE,
+  status          text NOT NULL DEFAULT 'active' CHECK (status IN ('active','suspended')),
+  commission_rate numeric(6,4) NOT NULL DEFAULT 0.1000 CHECK (commission_rate = 0.1000),
+  approved_at     timestamptz NOT NULL DEFAULT now(),
+  approved_by     text NOT NULL,
+  updated_at      timestamptz NOT NULL DEFAULT now()
+);
+
+-- One ambassador attribution per referred customer, never self.
+CREATE TABLE IF NOT EXISTS ambassador_attributions (
+  referred_user_id   uuid PRIMARY KEY REFERENCES openfund_users(id) ON DELETE CASCADE,
+  ambassador_user_id uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  referral_code      text NOT NULL,
+  source             text NOT NULL CHECK (source IN ('signup','first_order')),
+  campaign           text,
+  attributed_at      timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT ambassador_attributions_no_self CHECK (referred_user_id <> ambassador_user_id)
+);
+CREATE INDEX IF NOT EXISTS idx_ambassador_attributions_amb ON ambassador_attributions (ambassador_user_id, attributed_at DESC);
+
+-- Referral traffic: hashed visitor fingerprints only (no IP stored).
+CREATE TABLE IF NOT EXISTS referral_visits (
+  id            bigserial PRIMARY KEY,
+  referral_code text NOT NULL,
+  visitor_hash  text NOT NULL,
+  campaign      text,
+  day           date NOT NULL DEFAULT (now() AT TIME ZONE 'UTC')::date,
+  ts            timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (referral_code, visitor_hash, day)
+);
+CREATE INDEX IF NOT EXISTS idx_referral_visits_code ON referral_visits (referral_code, day DESC);
+
+-- Commission ledger (append-only): earned on the first confirmed
+-- purchase, reversal on refund/chargeback, payout when transferred.
+CREATE TABLE IF NOT EXISTS referral_commissions (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  ambassador_user_id uuid NOT NULL REFERENCES openfund_users(id),
+  referred_user_id   uuid REFERENCES openfund_users(id),
+  entry_type         text NOT NULL CHECK (entry_type IN ('earned','reversal','payout')),
+  purchase_order_id  uuid REFERENCES purchase_orders(id),
+  payment_id         uuid REFERENCES payments(id),
+  adjustment_id      uuid REFERENCES payment_adjustments(id),
+  base_amount_usd    numeric(20,2),
+  rate               numeric(6,4),
+  amount_usd         numeric(20,2) NOT NULL,           -- signed: earned > 0, reversal/payout < 0
+  campaign           text,
+  payout_reference   text,
+  recorded_by        text NOT NULL DEFAULT 'system',
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  CHECK ((entry_type = 'earned' AND amount_usd > 0) OR (entry_type <> 'earned' AND amount_usd < 0))
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_commission_first_purchase ON referral_commissions (referred_user_id) WHERE entry_type = 'earned';
+CREATE UNIQUE INDEX IF NOT EXISTS idx_commission_order ON referral_commissions (purchase_order_id) WHERE entry_type = 'earned';
+CREATE UNIQUE INDEX IF NOT EXISTS idx_commission_reversal ON referral_commissions (adjustment_id) WHERE entry_type = 'reversal';
+CREATE UNIQUE INDEX IF NOT EXISTS idx_commission_payout_ref ON referral_commissions (ambassador_user_id, payout_reference) WHERE entry_type = 'payout';
+CREATE INDEX IF NOT EXISTS idx_commission_amb ON referral_commissions (ambassador_user_id, created_at DESC);
+DROP TRIGGER IF EXISTS referral_commissions_append_only ON referral_commissions;
+CREATE TRIGGER referral_commissions_append_only BEFORE UPDATE OR DELETE ON referral_commissions
+FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+-- Approved coaches (independent of ambassadors).
+CREATE TABLE IF NOT EXISTS coach_profiles (
+  user_id        uuid PRIMARY KEY REFERENCES openfund_users(id) ON DELETE CASCADE,
+  application_id uuid NOT NULL UNIQUE REFERENCES partner_applications(id),
+  coach_code     text NOT NULL UNIQUE,
+  status         text NOT NULL DEFAULT 'active' CHECK (status IN ('active','suspended')),
+  approved_at    timestamptz NOT NULL DEFAULT now(),
+  approved_by    text NOT NULL,
+  updated_at     timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS trader_coach_links (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  trader_user_id     uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  coach_user_id      uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  status             text NOT NULL DEFAULT 'requested' CHECK (status IN ('requested','active','declined','ended')),
+  qualification      text NOT NULL DEFAULT 'pending' CHECK (qualification IN ('pending','verified','rejected')),
+  qualification_note text,
+  requested_at       timestamptz NOT NULL DEFAULT now(),
+  responded_at       timestamptz,
+  verified_at        timestamptz,
+  ended_at           timestamptz,
+  CONSTRAINT trader_coach_links_no_self CHECK (trader_user_id <> coach_user_id)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_trader_coach_open ON trader_coach_links (trader_user_id) WHERE status IN ('requested','active');
+CREATE INDEX IF NOT EXISTS idx_trader_coach_coach ON trader_coach_links (coach_user_id, status);
+
+-- ------------------------------------------------------------------
+-- Live Market Access. Nothing here executes by default: the execution
+-- adapter is selected by LIVE_EXECUTION_ADAPTER (default 'none').
+-- ------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS live_funding_approvals (
+  id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  trader_user_id      uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  coach_user_id       uuid NOT NULL REFERENCES openfund_users(id),
+  status              text NOT NULL DEFAULT 'pending_review' CHECK (status IN ('pending_review','approved','rejected','revoked')),
+  eligibility         jsonb NOT NULL,                 -- backend eligibility evidence at request time
+  tier                text,                           -- admin-selected; null until decided
+  trader_pct          numeric(5,2),
+  coach_pct           numeric(5,2),
+  openfund_pct        numeric(5,2),
+  requested_at        timestamptz NOT NULL DEFAULT now(),
+  decided_at          timestamptz,
+  decided_by          text,
+  note                text,
+  CHECK (status <> 'approved' OR (tier IS NOT NULL AND coach_pct = 10 AND trader_pct + coach_pct + openfund_pct = 100))
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_live_approvals_open ON live_funding_approvals (trader_user_id) WHERE status IN ('pending_review','approved');
+
+CREATE TABLE IF NOT EXISTS capital_allocations (
+  id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  approval_id     uuid NOT NULL REFERENCES live_funding_approvals(id),
+  trader_user_id  uuid NOT NULL REFERENCES openfund_users(id),
+  amount_usd      numeric(20,2) NOT NULL CHECK (amount_usd > 0),
+  realized_pnl_usd numeric(20,2) NOT NULL DEFAULT 0,
+  peak_equity_usd numeric(20,2) NOT NULL,
+  day             date NOT NULL DEFAULT (now() AT TIME ZONE 'UTC')::date,
+  day_start_equity_usd numeric(20,2) NOT NULL,
+  risk_limits     jsonb NOT NULL,
+  status          text NOT NULL DEFAULT 'active' CHECK (status IN ('active','halted','closed')),
+  halt_reason     text,
+  adapter         text NOT NULL,
+  created_by      text NOT NULL,
+  created_at      timestamptz NOT NULL DEFAULT now(),
+  closed_at       timestamptz
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_capital_allocations_open ON capital_allocations (trader_user_id) WHERE status IN ('active','halted');
+
+CREATE TABLE IF NOT EXISTS live_trades (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  allocation_id      uuid NOT NULL REFERENCES capital_allocations(id),
+  trader_user_id     uuid NOT NULL REFERENCES openfund_users(id),
+  adapter            text NOT NULL,
+  idempotency_key    text NOT NULL,
+  market             text NOT NULL,
+  side               text NOT NULL CHECK (side IN ('long','short')),
+  collateral_usd     numeric(20,2) NOT NULL CHECK (collateral_usd > 0),
+  leverage           numeric(8,2) NOT NULL CHECK (leverage > 0),
+  status             text NOT NULL DEFAULT 'submitted' CHECK (status IN ('submitted','rejected','open','closing','closed','failed','reconcile_required')),
+  reject_reason      text,
+  external_order_id  text,
+  external_trade_ref text,
+  open_tx_hash       text,
+  close_tx_hash      text,
+  entry_price        numeric(24,10),
+  exit_price         numeric(24,10),
+  realized_pnl_usd   numeric(20,2),                   -- verified gross realized PnL at close
+  trading_fees_usd   numeric(20,2),
+  execution_costs_usd numeric(20,2),
+  opened_at          timestamptz,
+  closed_at          timestamptz,
+  finalized_at       timestamptz,
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (allocation_id, idempotency_key)
+);
+CREATE INDEX IF NOT EXISTS idx_live_trades_alloc ON live_trades (allocation_id, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS live_trade_events (
+  id            bigserial PRIMARY KEY,
+  live_trade_id uuid NOT NULL REFERENCES live_trades(id) ON DELETE CASCADE,
+  kind          text NOT NULL,
+  detail        jsonb NOT NULL DEFAULT '{}'::jsonb,
+  ts            timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_live_trade_events ON live_trade_events (live_trade_id, id);
+DROP TRIGGER IF EXISTS live_trade_events_append_only ON live_trade_events;
+CREATE TRIGGER live_trade_events_append_only BEFORE UPDATE OR DELETE ON live_trade_events
+FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+-- One profit-share allocation per finalized profitable live trade.
+CREATE TABLE IF NOT EXISTS profit_share_allocations (
+  id                   uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  live_trade_id        uuid NOT NULL UNIQUE REFERENCES live_trades(id),
+  approval_id          uuid NOT NULL REFERENCES live_funding_approvals(id),
+  trader_user_id       uuid NOT NULL REFERENCES openfund_users(id),
+  coach_user_id        uuid NOT NULL REFERENCES openfund_users(id),
+  realized_pnl_usd     numeric(20,2) NOT NULL,
+  eligible_costs_usd   numeric(20,2) NOT NULL,
+  distributable_usd    numeric(20,2) NOT NULL CHECK (distributable_usd > 0),
+  trader_pct           numeric(5,2) NOT NULL,
+  coach_pct            numeric(5,2) NOT NULL CHECK (coach_pct = 10),
+  openfund_pct         numeric(5,2) NOT NULL,
+  trader_amount_usd    numeric(20,2) NOT NULL,
+  coach_amount_usd     numeric(20,2) NOT NULL,
+  openfund_amount_usd  numeric(20,2) NOT NULL,
+  created_at           timestamptz NOT NULL DEFAULT now(),
+  CHECK (trader_pct + coach_pct + openfund_pct = 100),
+  CHECK (trader_amount_usd + coach_amount_usd + openfund_amount_usd = distributable_usd)
+);
+
+CREATE TABLE IF NOT EXISTS settlement_records (
+  id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  profit_share_id     uuid NOT NULL REFERENCES profit_share_allocations(id),
+  beneficiary_role    text NOT NULL CHECK (beneficiary_role IN ('trader','coach')),
+  beneficiary_user_id uuid NOT NULL REFERENCES openfund_users(id),
+  amount_usd          numeric(20,2) NOT NULL CHECK (amount_usd > 0),
+  status              text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','processing','completed','failed','reconcile_required')),
+  adapter             text,
+  attempts            integer NOT NULL DEFAULT 0,
+  tx_hash             text,
+  settlement_reference text,
+  last_error          text,
+  created_at          timestamptz NOT NULL DEFAULT now(),
+  updated_at          timestamptz NOT NULL DEFAULT now(),
+  completed_at        timestamptz,
+  UNIQUE (profit_share_id, beneficiary_role)
+);
+CREATE INDEX IF NOT EXISTS idx_settlements_status ON settlement_records (status) WHERE status IN ('pending','failed','processing');
+CREATE INDEX IF NOT EXISTS idx_settlements_beneficiary ON settlement_records (beneficiary_user_id, created_at DESC);

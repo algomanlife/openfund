@@ -106,7 +106,7 @@ const I18N = {
     'bt.hint': 'دو موقعیت، یک سفارش Limit در انتظار و تاریخچه می‌سازد تا ترمینال را کاوش کنی.',
     'th.market': 'بازار', 'th.side': 'سمت', 'th.size': 'اندازه', 'th.lev': 'اهرم',
     'th.actions': 'عملیات', 'th.type': 'نوع', 'th.status': 'وضعیت', 'th.created': 'زمان ایجاد',
-    'th.price': 'قیمت', 'th.result': 'نتیجه', 'th.time': 'زمان', 'th.payment': 'پرداخت',
+    'th.price': 'قیمت', 'th.result': 'نتیجه', 'th.time': 'زمان', 'th.payment': 'پرداخت', 'th.fee':'کارمزد', 'th.role':'نقش', 'th.rate':'نرخ (۱ ساعت)',
     'dlg.review': 'بررسی سفارش', 'dlg.cancel': 'لغو', 'dlg.confirm': 'تأیید',
     'dlg.confirmOrder': 'تأیید سفارش شبیه‌سازی‌شده', 'dlg.save': 'ذخیره', 'dlg.close': 'بستن',
     'rv.market': 'بازار', 'rv.dir': 'جهت', 'rv.otype': 'نوع سفارش', 'rv.lev': 'اهرم',
@@ -231,7 +231,7 @@ const EN = {
   'bt.hint': 'Seeds two positions, one pending limit order and history so you can explore the terminal.',
   'th.market': 'Market', 'th.side': 'Side', 'th.size': 'Size', 'th.lev': 'Lev',
   'th.actions': 'Actions', 'th.type': 'Type', 'th.status': 'Status', 'th.created': 'Created',
-  'th.price': 'Price', 'th.result': 'Result', 'th.time': 'Time', 'th.payment': 'Payment',
+  'th.price': 'Price', 'th.result': 'Result', 'th.time': 'Time', 'th.payment': 'Payment', 'th.fee':'Fee', 'th.role':'Role', 'th.rate':'Rate (1h)',
   'dlg.review': 'Order review', 'dlg.cancel': 'Cancel', 'dlg.confirm': 'Confirm',
   'dlg.confirmOrder': 'Confirm simulated order', 'dlg.save': 'Save', 'dlg.close': 'Close',
   'rv.market': 'Market', 'rv.dir': 'Direction', 'rv.otype': 'Order type', 'rv.lev': 'Leverage',
@@ -316,9 +316,82 @@ function t(key){
   const v = (I18N[window.ofLang] && I18N[window.ofLang][key]);
   return v === undefined ? key : v;
 }
+/* Static English markup without data-i18n keys (aria-labels, titles,
+   placeholders, captions): fa uses the reviewed staticFa map, ar/ru/zh-CN
+   the app dictionaries through the parent document (misses are reported
+   there). Only nodes present in the template are tracked; dynamic text is
+   produced by t() and never re-processed. */
+const STATIC_TEXT = window.OpenfundTerminalStaticText || {};
+const staticText = new Map(), staticAttrs = new Map();
+let staticCaptured = false, staticObserver = null;
+function staticValue(source){
+  const lang = window.ofLang;
+  if (lang === 'en' || !/[A-Za-z]{2}/.test(source)) return source;
+  const own = STATIC_TEXT[lang] && STATIC_TEXT[lang][source];
+  if (own) return own;
+  if (lang === 'fa') return source;
+  let tx = null;
+  try { tx = window.parent && window.parent !== window && window.parent.__ofTranslateText; } catch (e) { tx = null; }
+  return typeof tx === 'function' ? tx(lang, source) : source;
+}
+function translateStaticMarkup(){
+  if (!staticCaptured) {
+    staticCaptured = true;
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = walker.nextNode())) {
+      const el = n.parentElement;
+      if (!el || el.closest('script,style,[data-i18n],[data-i18n-p],.num,[data-no-static-i18n]')) continue;
+      const v = n.nodeValue.trim();
+      if (/[A-Za-z]{2}/.test(v) && !/[\u0600-\u06ff]/.test(v)) staticText.set(n, n.nodeValue);
+    }
+    document.querySelectorAll('[aria-label],[title],[placeholder]').forEach(el => {
+      if (el.closest('[data-i18n-p]')) return;
+      const keep = {};
+      for (const a of ['aria-label', 'title', 'placeholder']) {
+        const v = el.getAttribute(a);
+        if (v && /[A-Za-z]{2}/.test(v) && !/[\u0600-\u06ff]/.test(v)) keep[a] = v;
+      }
+      if (Object.keys(keep).length) staticAttrs.set(el, keep);
+    });
+  }
+  if (!staticObserver && typeof MutationObserver === 'function') {
+    /* chart toolbar tooltips are created later by the chart library */
+    staticObserver = new MutationObserver(records => {
+      for (const r of records) for (const node of (r.type === 'attributes' ? [r.target] : r.addedNodes)) {
+        if (!(node instanceof Element)) continue;
+        if (r.type !== 'attributes') {
+          const tw = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+          let tn;
+          while ((tn = tw.nextNode())) {
+            const v = tn.nodeValue.trim();
+            if (v && STATIC_TEXT.fa && STATIC_TEXT.fa[v] && !staticText.has(tn)) { staticText.set(tn, tn.nodeValue); const out = tn.nodeValue.replace(v, staticValue(v)); if (out !== tn.nodeValue) tn.nodeValue = out; }
+          }
+        }
+        [node, ...node.querySelectorAll('[title],[aria-label]')].forEach(el => {
+          for (const a of ['title', 'aria-label']) {
+            const v = el.getAttribute && el.getAttribute(a);
+            if (!v || !STATIC_TEXT.fa || !STATIC_TEXT.fa[v]) continue;
+            const keep = staticAttrs.get(el) || {}; keep[a] = v; staticAttrs.set(el, keep);
+            const out = staticValue(v); if (out !== v) el.setAttribute(a, out);
+          }
+        });
+      }
+    });
+    staticObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['title', 'aria-label'] });
+  }
+  staticText.forEach((source, node) => {
+    const trimmed = source.trim(), out = source.replace(trimmed, staticValue(trimmed));
+    if (node.nodeValue !== out) node.nodeValue = out;
+  });
+  staticAttrs.forEach((attrs, el) => {
+    for (const [a, v] of Object.entries(attrs)) { const out = staticValue(v); if (el.getAttribute(a) !== out) el.setAttribute(a, out); }
+  });
+}
 function applyStaticI18n(){
   document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-p]').forEach(el => { el.placeholder = t(el.dataset.i18nP); });
+  translateStaticMarkup();
   /* The HEADER follows the language direction (rtl/fa, ltr/en); the main
      workspace is pinned LTR in CSS (.workspace{direction:ltr}) so the trade
      panel is always on the right and the chart stays in its default state. */
@@ -376,7 +449,7 @@ function initChart(){
     /* full Vela workspace: native topbar (symbol / timeframe / style /
        indicators), drawing toolbar, status line, symbol search, keyboard */
     vc = window.OpenfundCharts.mount('#chart-host', {
-      symbol: S.marketId, timeframe: S.tf, theme: curTheme
+      symbol: S.marketId, timeframe: S.tf, theme: curTheme, locale: document.documentElement.lang
     });
   } catch(e){
     chartOverlay(`<b>${t('chart.unavailable')}</b><br>${String(e.message || e)}`);

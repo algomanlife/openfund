@@ -3,7 +3,7 @@ import InformationShell, { Hero, useInformationLocale } from '../information/Inf
 import { number, text } from '../information/content'
 import { pathBySlug, useSiteLibrary } from '../../cms/siteContent'
 
-type Locale = 'fa' | 'en'
+type Locale = import('../../i18n/locales').AppLocale
 
 export default function PathPage() {
   const locale = useInformationLocale()

@@ -13,32 +13,27 @@ function load(path) {
   new Function('require', 'module', 'exports', outputFiles[0].text)(require, module, module.exports)
   return module.exports
 }
-const { mockTransparency, summarize, metricDefinitions } = load('../src/features/transparency/data/mockTransparency.ts')
+const { runScenario } = load('../src/features/economy/scenario.ts')
+const { readFileSync, existsSync } = require('node:fs')
 const { ruleSections } = load('../src/features/rulebook/content.ts')
-const { TransparencyDashboard } = load('../src/features/transparency/TransparencyDashboard.tsx')
 
-test('sample totals reconcile to history and completed outcomes, excluding in-progress from pass rate', () => {
-  assert.deepEqual(summarize(mockTransparency), { accounts: 1248, volume: 31290000, trades: 14990, completed: 280, passRate: .3, pnl: 29300 })
-  const changed = structuredClone(mockTransparency)
-  changed.outcomes.inProgress += 1000
-  assert.equal(summarize(changed).passRate, .3)
-  changed.activity[0].pnlVirtualDai -= 500
-  assert.equal(summarize(changed).pnl, 28800)
+test('scenario arithmetic matches the backend scenario model', () => {
+  const r = runScenario({ challengesSold: 1000, mix: { 10000: 50, 100000: 50 }, prices: { 10000: 100, 100000: 500 }, refundRatePct: 0,
+    passRatePct: 10, firstPayoutRatePct: 50, avgTotalPayoutUsd: 2000, ambassadorSharePct: 20, operatingCostsUsd: 50000, reservePct: 25 })
+  assert.equal(r.gross, 300000)
+  assert.equal(r.payouts, 100000)
+  assert.equal(r.commissions, 6000)
+  assert.equal(r.remaining, 144000)
+  assert.equal(r.available, 108000)
+  const empty = runScenario({ challengesSold: 10, mix: {}, prices: {}, refundRatePct: 0, passRatePct: 0, firstPayoutRatePct: 0, avgTotalPayoutUsd: 0, ambassadorSharePct: 0, operatingCostsUsd: 0, reservePct: 0 })
+  assert.equal(empty.gross, 0)
+  assert.ok(Object.values(empty).every(Number.isFinite))
 })
-test('zero completions and empty history do not fabricate results or divide by zero', () => {
-  const empty = { ...mockTransparency, activity: [], outcomes: { passed: 0, failed: 0, inProgress: 3 } }
-  assert.deepEqual(summarize(empty), { accounts: 1248, volume: 0, trades: 0, completed: 0, passRate: 0, pnl: 0 })
-})
-test('fixtures cover consecutive UTC dates and use finite locale-independent numbers', () => {
-  assert.equal(mockTransparency.provenance, 'sample')
-  assert.equal(mockTransparency.activity.length, 14)
-  assert.equal(mockTransparency.activity[0].date, mockTransparency.periodStart)
-  assert.equal(mockTransparency.activity.at(-1).date, mockTransparency.periodEnd)
-  mockTransparency.activity.forEach((p, i, points) => {
-    for (const key of ['activeAccounts', 'trades', 'volumeUsd', 'pnlVirtualDai']) assert.ok(Number.isFinite(p[key]))
-    if (i) assert.equal(Date.parse(p.date) - Date.parse(points[i - 1].date), 86400000)
-  })
-  assert.equal(new Set(metricDefinitions.map(m => m.key)).size, 6)
+test('transparency is wired to the backend report, with no synthetic dataset', () => {
+  const src = readFileSync(new URL('../src/features/transparency/Transparency.tsx', import.meta.url), 'utf8')
+  assert.ok(src.includes("'/economy/transparency'"))
+  assert.ok(!/mock|sample/i.test(src), 'no mock/sample data source')
+  assert.equal(existsSync(new URL('../src/features/transparency/data/mockTransparency.ts', import.meta.url)), false)
 })
 test('every rule section has matching bilingual content and unique anchors', () => {
   assert.equal(ruleSections.length, 22)
@@ -55,25 +50,4 @@ test('every rule section has matching bilingual content and unique anchors', () 
   /* v0.3.1: the evaluation path (purchase → start → live rules) is operational */
   assert.equal(ruleSections.find(s => s.id === 'how-it-works').status, 'current')
   for (const id of ['funded', 'payouts']) assert.equal(ruleSections.find(s => s.id === id).status, 'planned')
-})
-test('dashboard renders bilingual sample labels, accessible charts and exact history', () => {
-  for (const locale of ['en', 'fa']) {
-    const html = renderToStaticMarkup(createElement(TransparencyDashboard, { locale, state: { status: 'ready', snapshot: mockTransparency } }))
-    assert.equal((html.match(/class="metric-card model-card"/g) || []).length, 6)
-    assert.equal((html.match(/role="img"/g) || []).length, 3)
-    assert.ok(html.includes(locale === 'en' ? 'Sample data' : 'دادهٔ نمونه'))
-    assert.ok(html.includes('<caption>'))
-    assert.ok(html.includes('aria-labelledby='))
-    assert.ok(!html.includes('NaN'))
-  }
-})
-test('loading, empty, error and ready-with-empty-history states never show sample metrics', () => {
-  for (const locale of ['en', 'fa']) {
-    for (const state of [{ status: 'loading' }, { status: 'empty' }, { status: 'error' }, { status: 'ready', snapshot: { ...mockTransparency, activity: [] } }]) {
-      const html = renderToStaticMarkup(createElement(TransparencyDashboard, { locale, state }))
-      assert.ok(html.includes('role="status"'))
-      assert.ok(!html.includes('metric-card'))
-      assert.ok(!html.includes('NaN'))
-    }
-  }
 })

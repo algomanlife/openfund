@@ -2,6 +2,9 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { useAccount, useSignMessage, useSwitchChain } from 'wagmi'
 import { networkForHash, useProductNetwork } from '../wallet/productNetwork'
 import { createSiweMessage } from 'viem/siwe'
+import { classifyWalletError, OpenfundAuthError, type ClassifiedWalletError, type WalletStage } from '../wallet/errors'
+
+export interface SessionError extends ClassifiedWalletError { stage: WalletStage }
 
 /**
  * Openfund session — wallet-based identity via SIWE (EIP-4361).
@@ -65,18 +68,22 @@ export function useOpenfundSession() {
   const [status, setStatus] = useState<SessionStatus>('anonymous')
   const [user, setUser] = useState<OpenfundUser | null>(null)
   const [challenges, setChallenges] = useState<OpenfundChallenge[]>([])
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<SessionError | null>(null)
   const addressRef = useRef<string | undefined>(undefined)
   const currentAddress = useRef(address)
   currentAddress.current = isConnected ? address : undefined
 
   const api = useCallback(async (path: string, init: RequestInit = {}) => {
-    const res = await fetch(BACKEND + path, {
-      ...init,
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json', ...(init.headers || {}) }
-    })
+    let res: Response
+    try {
+      res = await fetch(BACKEND + path, {
+        ...init,
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', ...(init.headers || {}) }
+      })
+    } catch { throw new OpenfundAuthError('server_unreachable') }
     const data = await res.json().catch(() => null)
+    if (res.status >= 500 && path === '/auth/me') throw new OpenfundAuthError('server_unreachable', res.status)
     return { ok: res.ok, status: res.status, data }
   }, [])
 
@@ -133,7 +140,11 @@ export function useOpenfundSession() {
         if (currentAddress.current === expected) setStatus('unauthenticated')
         return
       }
-      const me = await loadMe().catch(() => { if(currentAddress.current === address) setStatus('error'); return null })
+      const me = await loadMe().catch(e => {
+        /* restore failure is reported with its cause; the wallet stays connected */
+        if (currentAddress.current === address) { setStatus('unauthenticated'); setError({ stage: 'restore', ...classifyWalletError(e) }) }
+        return null
+      })
       if (me && me.walletAddress.toLowerCase() !== address.toLowerCase()) {
         await mutateAuth('/auth/logout', { method: 'POST', body: '{}' }).catch(() => {})
         setStatus('unauthenticated')
@@ -149,14 +160,16 @@ export function useOpenfundSession() {
     const active = () => generation.current === run && currentAddress.current === expected && networkForHash(window.location.pathname).id === signingChain.id
     setError(null)
     setStatus('signing')
+    let stage: WalletStage = 'network'
     try {
       await authQueue.current.catch(() => {})
       if (!active()) return
       if (chainId !== signingChain.id) await switchChainAsync({ chainId: signingChain.id })
       if (!active()) return
+      stage = 'session'
       const n = await api('/auth/nonce', { method: 'POST', body: JSON.stringify({ address }) })
       if (!active()) return
-      if (!n.ok) throw new Error('nonce')
+      if (!n.ok || !n.data?.nonce) throw new OpenfundAuthError(n.data?.error || (n.status === 429 ? 'rate_limited' : 'nonce'), n.status)
       const message = createSiweMessage({
         domain: window.location.host,
         address,
@@ -167,18 +180,21 @@ export function useOpenfundSession() {
         nonce: n.data.nonce,
         version: '1'
       })
+      stage = 'sign'
       const signature = await signMessageAsync({ account: address, message })
       if (!active()) return
+      stage = 'session'
       const v = await mutateAuth('/auth/verify', { method: 'POST', body: JSON.stringify({ message, signature }) })
       if (!active()) { await mutateAuth('/auth/logout', {method:'POST',body:'{}'}).catch(() => {}); return }
       if (!v.ok) {
         if (v.data?.error === 'account_suspended') { setStatus('suspended'); return }
-        throw new Error(v.data?.error || 'verify')
+        throw new OpenfundAuthError(v.data?.error || (v.status === 429 ? 'rate_limited' : 'verify'), v.status)
       }
       await loadMe()
     } catch (e: any) {
-      /* user rejected the signature request → back to unauthenticated */
-      if (active()) { setStatus('unauthenticated'); setError(String(e?.shortMessage || e?.message || e)) }
+      /* a declined switch/signature is a user choice (neutral message);
+         every other failure names its cause — see wallet/errors.ts */
+      if (active()) { setStatus('unauthenticated'); setError({ stage, ...classifyWalletError(e) }) }
     } finally {
       if (generation.current === run) {
         signing.current = false
@@ -207,7 +223,8 @@ export function useOpenfundSession() {
   }, [loadMe])
 
   const belongs = isConnected && address && user?.walletAddress.toLowerCase() === address.toLowerCase()
-  return { status: user && !belongs ? (isConnected ? 'unauthenticated' : 'anonymous') as SessionStatus : status, user: belongs ? user : null, challenges: belongs ? challenges : [], signIn, logout, updateProfile, error, reload: loadMe }
+  const clearError = useCallback(() => setError(null), [])
+  return { clearError, status: user && !belongs ? (isConnected ? 'unauthenticated' : 'anonymous') as SessionStatus : status, user: belongs ? user : null, challenges: belongs ? challenges : [], signIn, logout, updateProfile, error, reload: loadMe }
 }
 
 

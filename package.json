@@ -7,7 +7,7 @@
     "build:web": "npm --prefix apps/web-react run build",
     "build:web:publish": "npm --prefix apps/web-react run build -- --mode publish",
     "build:backend": "npm --prefix apps/backend run migrate",
-    "test:web": "npm --prefix apps/web-react run test:plans && npm --prefix apps/web-react run test:information && npm --prefix apps/web-react run test:markets && npm --prefix apps/web-react run test:depth && npm --prefix apps/web-react run test:website && npm --prefix apps/web-react run test:terminal && npm --prefix apps/web-react run test:governance && npm --prefix apps/web-react run test:chart",
+    "test:web": "npm --prefix apps/web-react run test:plans && npm --prefix apps/web-react run test:information && npm --prefix apps/web-react run test:markets && npm --prefix apps/web-react run test:depth && npm --prefix apps/web-react run test:website && npm --prefix apps/web-react run test:whitepaper && npm --prefix apps/web-react run test:terminal && npm --prefix apps/web-react run test:governance && npm --prefix apps/web-react run test:chart",
     "test:backend": "npm --prefix apps/backend run test:all",
     "typecheck": "npm --prefix apps/web-react run typecheck",
     "validate:blueprint": "node infra/render/validate-blueprint.mjs",
@@ -36,7 +36,9 @@
     "test:browser:routes": "node scripts/release/public-routes.mjs",
     "test:browser:routing": "node e2e/test-clean-routing.cjs",
     "test:browser:polish": "node e2e/test-ui-polish.cjs",
-    "test:browser:website": "node e2e/test-website-refresh.cjs"
+    "test:browser:website": "node e2e/test-website-refresh.cjs",
+    "test:browser:wallet": "node e2e/test-wallet-connect.cjs",
+    "test:browser:locale": "node e2e/test-locale-matrix.cjs"
   },
   "devDependencies": {
     "js-yaml": "^4.1.0",
