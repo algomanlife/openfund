@@ -43,7 +43,7 @@ services:
       url: docker.io/directus/directus:11.9.1
     plan: starter
     autoDeployTrigger: off      # data plane: deploy only after review
-    healthCheckPath: /server/health
+    healthCheckPath: /server/ping   # public liveness; /server/health needs a token on Directus 12 (works on 11 too)
     disk:                       # durable uploaded media (not ephemeral FS)
       name: directus-uploads
       mountPath: /directus/uploads
@@ -77,6 +77,8 @@ services:
         value: GET,HEAD,OPTIONS
       - key: MAX_PAYLOAD_SIZE
         value: 1mb
+      - key: IP_TRUST_PROXY       # Render terminates TLS in front of the service. Explicit so Directus 12
+        value: "true"             # (default false) keeps client-IP resolution identical to 11.x.
 
   # ------------------------------------------------- API + web (one origin) --
   - type: web

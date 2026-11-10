@@ -87,7 +87,7 @@ Each section is the registry row in readable form. Rollback limits are what a ro
 
 - **Installed:** 11.9.1, pinned in `render.yaml` (index digest `sha256:3692e622c824d5f83b97547361b25d9f9ea2a30792c37520deb6af2733dfd66f`). **Latest stable:** 12.6.1 (2026-11-04), reviewed.
 - **Compatibility status:** **blocked on an owner licensing decision.** On a restored backup, 12.6.1 preserved all data but the Core tier (25 collections, no custom permission rules) locks Openfund's 43-collection, status-filtered content model. The CMS needs Node.js 26 from 12.6.0; the application stays on Node 22.
-- **Tests, instructions, rollback:** arrive with the Directus upgrade-readiness change (assessment, `cms-check.mjs`, migration runbook). Directus migrations are forward only, so rollback is a database and media restore.
+- **Tests, instructions, rollback:** [assessment](../backstage/DIRECTUS_12_ASSESSMENT.md), `apps/backstage/upgrade/cms-check.mjs`, [migration runbook](../deployment/DIRECTUS_MIGRATION_RUNBOOK.md). Directus migrations are forward only, so rollback is a database and media restore.
 
 ### Significant libraries (npm)
 

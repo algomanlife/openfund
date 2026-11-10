@@ -255,6 +255,7 @@
       },
       "integration_path": [
         "apps/backstage/scripts",
+        "apps/backstage/upgrade",
         "packages/cms-client",
         "apps/web-react/src/cms"
       ],
@@ -270,14 +271,15 @@
       },
       "compatibility": {
         "status": "blocked-on-owner-decision",
-        "evidence": "Rehearsed 2026-11-10 on an isolated database: 11.9.1 passes the public/draft/permission checks, 12.6.1 locks the content model without a licence (Core tier: 25 collections, no custom permission rules). Details arrive with the Directus upgrade-readiness change."
+        "evidence": "docs/reviews/directus-12-staging: 11.9.1 passes 98/98 checks; 12.6.1 preserved all data but locks the 43-collection, status-filtered content model without a licence (Core: 25 collections, no custom permission rules)"
       },
       "last_upgrade": "2026-11-01 (11.9.1 pinned at introduction)",
       "tests": [
-        "npm run test:upstream",
-        "npm run test:web"
+        "node apps/backstage/upgrade/cms-check.mjs verify --baseline <inventory>",
+        "node apps/backstage/upgrade/cms-check.mjs inventory",
+        "npm run test:upstream"
       ],
-      "upgrade_instructions": "docs/backstage/LOCAL_SETUP.md and docs/deployment/RENDER.md (staged migration runbook arrives with the Directus upgrade-readiness change)",
+      "upgrade_instructions": "docs/deployment/DIRECTUS_MIGRATION_RUNBOOK.md",
       "rollback_limits": "Directus migrations are forward only; rollback is a database and media restore, which also rolls back application tables sharing the database."
     },
     {

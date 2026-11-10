@@ -16,6 +16,13 @@
   patches, Gains market-data contract tests on recorded fixtures plus an optional live check, and the
   Vela/Gains upgrade protection guides. Vela stays at 0.9.3 (0.10.4 assessed: patch conflict, not
   adopted). `MarketData` gains an options seam with unchanged defaults; the trading engine is untouched.
+- Directus upgrade readiness (no version change): staged rehearsal of 11.9.1 to 12.6.1 on an isolated
+  PostgreSQL 17 database shows Directus 12 locks the current content model without a licence (Core tier:
+  25 collections, no custom permission rules; Openfund registers 43 and filters every public read by
+  status). The upgrade is blocked on an owner licensing decision; the repository stays on 11.9.1. Adds
+  `apps/backstage/upgrade/` (inventory and verification tool, staging harness), a licence preflight in
+  `apply_schema.py`, the Render health check on `/server/ping` and explicit `IP_TRUST_PROXY=true` (both
+  safe on 11.x), backup/restore guide, production migration and rollback runbook and ADR 0020.
 
 - Dependency governance: a machine-checked upstream registry (Vela, Vela Pine
   addon, PineTS, Gains SDK and APIs, journal-core, Directus, wallet libraries,
@@ -390,6 +397,14 @@ Historical entries describe their original changes, including past UI copy. They
 Notable changes are recorded here. Dates should use ISO 8601.
 
 ## Unreleased
+
+- Directus upgrade readiness (no version change): staged rehearsal of 11.9.1 to 12.6.1 on an isolated
+  PostgreSQL 17 database shows Directus 12 locks the current content model without a licence (Core tier:
+  25 collections, no custom permission rules; Openfund registers 43 and filters every public read by
+  status). The upgrade is blocked on an owner licensing decision; the repository stays on 11.9.1. Adds
+  `apps/backstage/upgrade/` (inventory and verification tool, staging harness), a licence preflight in
+  `apply_schema.py`, the Render health check on `/server/ping` and explicit `IP_TRUST_PROXY=true` (both
+  safe on 11.x), backup/restore guide, production migration and rollback runbook and ADR 0020.
 
 ### Openfund Protocol source integration (2026-11-02, branch `feat/openfund-protocol-foundation`)
 
