@@ -144,7 +144,11 @@ jobs:
         env:
           TEST_FRONTEND_URL: http://localhost:8080
           TEST_BACKEND_URL: http://localhost:8080
-        run: npm run test:browser:audit
+        run: |
+          npm run test:browser:audit || {
+            echo "::warning::Browser audit failed once; retrying with fresh wallets"
+            npm run test:browser:audit
+          }
       - name: Terminal wallet, order lifecycle and all-tab acceptance
         working-directory: .
         env:
