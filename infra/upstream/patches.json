@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "policy": "A patch exists only when a configuration seam cannot achieve the behaviour. Each entry names the reason, the exact upstream version it applies to, the reversible patch file, a content guard and the regression test that fails if the behaviour is lost. `npm run test:upstream` verifies that the patch file still reverse-applies to the vendored tree and that the guard is present. A pull request that changes a vendored file without updating the vendor manifest and this registry fails.",
+  "patches": [
+    {
+      "id": "OF-VELA-001",
+      "provider": "vela",
+      "affected_version": "0.9.3",
+      "kind": "source",
+      "files": ["vendor/vela/src/ui/components/menu/styles.ts"],
+      "patch_file": "infra/upstream/patches/vela-0.9.3/0001-menu-positioner-z-index.patch",
+      "reason": "Machine re-projection removes the menu positioner's inline z-index after hover, so the price canvas intercepts clicks on timeframe and style menus. One CSS rule restores the stacking order.",
+      "guard": { "file": "vendor/vela/src/ui/components/menu/styles.ts", "contains": ".vela-ui-layer[data-scope='menu'][data-part='positioner'] { z-index: var(--vela-z-menu); }" },
+      "regression_tests": ["npm run test:browser:charts"],
+      "upstreamable": true,
+      "removal_condition": "Upstream keeps the positioner above the canvas after hover; verify by deleting the patch and running the browser chart test."
+    },
+    {
+      "id": "OF-VELA-002",
+      "provider": "vela",
+      "affected_version": "0.9.3",
+      "kind": "source",
+      "files": ["vendor/vela/src/widget/indicator-picker.ts"],
+      "patch_file": "infra/upstream/patches/vela-0.9.3/0002-indicator-picker-no-vela-badge.patch",
+      "reason": "Openfund branding: native indicators must not be badged VELA in the picker. The required attribution is carried by the linked notice in the terminal status bar, not by this badge.",
+      "guard": { "file": "vendor/vela/src/widget/indicator-picker.ts", "contains": "const badgeText = r.native ? undefined : r.language;" },
+      "regression_tests": ["npm run test:browser:charts"],
+      "upstreamable": false,
+      "removal_condition": "Only if Openfund drops the branding decision. The attribution requirement is unaffected."
+    },
+    {
+      "id": "OF-VELA-003",
+      "provider": "vela",
+      "affected_version": "0.9.3",
+      "kind": "source",
+      "files": ["vendor/vela/src/workspace/ChartCell.ts"],
+      "patch_file": "infra/upstream/patches/vela-0.9.3/0003-library-rows-proprietary-first.patch",
+      "reason": "Openfund places its proprietary source studies (Open Algo V5, Price Action Concepts, Smart Money Concepts) before the built-in indicators in the picker and keeps the add-by-index mapping consistent.",
+      "guard": { "file": "vendor/vela/src/workspace/ChartCell.ts", "contains": "manifest precedes natives" },
+      "regression_tests": ["npm run test:browser:charts"],
+      "upstreamable": false,
+      "removal_condition": "If Vela exposes a library-order option, replace the patch with configuration."
+    },
+    {
+      "id": "OF-BUILD-001",
+      "provider": "vela-pinets",
+      "affected_version": "0.3.2 with pinets 0.13.1",
+      "kind": "build-time",
+      "files": ["scripts/build-charts.mjs", "packages/openfund-charts/src/pine-compatibility.mjs"],
+      "patch_file": null,
+      "reason": "PineTS 0.13.1 slices stop before the nested Price Action Concepts getTFData to reqSeq call. The build inserts a compatibility wrapper into the addon's embedded worker so full secondary execution is used. Indicator algorithms are unchanged. The build throws if the worker marker moves, so an addon update can never silently skip the wrapper.",
+      "guard": { "file": "scripts/build-charts.mjs", "contains": "installPineCompatibility.toString()" },
+      "regression_tests": ["npm run test:charts"],
+      "upstreamable": true,
+      "removal_condition": "The nested-request slice bug is fixed upstream; remove the wrapper and run npm run test:charts."
+    }
+  ]
+}

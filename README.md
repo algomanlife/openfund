@@ -196,6 +196,8 @@ Tags are `vMAJOR.MINOR.PATCH`, allocated from Conventional Commits by `scripts/r
 
 The [upstream dependency registry](docs/integrations/UPSTREAM_REGISTRY.md) lists version, license, location, local modifications and update procedure for Vela, the Vela Pine addon, PineTS, the Gains SDK and APIs, LuxAlgo journal-core, Directus, the wallet libraries and the dormant Protocol source. [Dependency governance](docs/development/DEPENDENCY_GOVERNANCE.md) defines how they change.
 
+External code is kept apart from Openfund's own work in three layers: upstream (vendored or pinned), integration (adapters, normalisation, error handling) and Openfund custom (branding, UI, indicators, trading logic). Vela, its Pine addon, the Gains API and SDK, the LuxAlgo journal core, Directus and the significant libraries are inventoried in the [upstream dependency registry](docs/integrations/UPSTREAM_REGISTRY.md), and their layers, patches and rollback limits are in the [upstream isolation and patch registry](docs/integrations/UPSTREAM_DEPENDENCIES.md). Direct edits to upstream source are limited to a registered patch list. `npm run check:upstream` and `npm run test:upstream` verify the isolation, and upgrades follow the [Vela](docs/integrations/VELA_UPGRADE.md) and [Gains](docs/integrations/GAINS_UPGRADE.md) procedures; no upstream is upgraded automatically. A weekly read-only workflow proposes observed updates with a risk classification ([automation](docs/integrations/UPSTREAM_AUTOMATION.md)); majors and high-risk updates need an explicit owner decision.
+
 ## Security and operational limits
 
 Report suspected vulnerabilities privately through GitHub security advisories ([SECURITY.md](SECURITY.md)). Keep secrets, private keys and user data out of Git (gitleaks runs in CI). The repository does not claim an independent security audit, regulatory approval or production readiness. Generated-signature tests do not certify real wallet devices. Production runs one API instance that also hosts the simulation loop; scaling needs coordinated mutation ownership. [Security architecture](docs/security/SECURITY.md)
@@ -203,6 +205,7 @@ Report suspected vulnerabilities privately through GitHub security advisories ([
 ## Roadmap and documentation
 
 [Seven-phase roadmap](ROADMAP.md) · [Milestones](docs/roadmap/MILESTONES.md) · [Documentation index](docs/README.md) · [Architecture decisions](docs/decisions/README.md) · [Governance](GOVERNANCE.md) · [Economy](ECONOMY.md) · [Design system](docs/design/DESIGN_SYSTEM.md) · [Screenshots](docs/assets/screenshots/README.md) · [Reviews](docs/reviews/README.md) · [Changelog](CHANGELOG.md)
+
 
 ## Licensing and upstream attribution
 

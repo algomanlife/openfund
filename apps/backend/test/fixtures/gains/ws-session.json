@@ -1,0 +1,16 @@
+{
+  "recorded": "2026-11-10",
+  "source": "wss://api.gains.trade/v1/arbitrum/ws, send {op:'subscribe',channel:'prices'}",
+  "note": "First four server messages of a live session, data arrays truncated to the markets in markets.json. Message shapes are unmodified.",
+  "messages": [
+    { "op": "hello", "chain": "arbitrum", "heartbeatMs": 30000 },
+    { "channel": "prices", "snapshot": true, "seq": 0, "data": [
+      { "market": "BTC/USD", "mark": "74583.9", "index": "75817.8", "updatedAt": 1794294840850 },
+      { "market": "ETH/USD", "mark": "2114.09", "index": "2240.68", "updatedAt": 1794294840850 }
+    ] },
+    { "op": "subscribed", "channel": "prices" },
+    { "channel": "prices", "snapshot": false, "seq": 1, "data": [
+      { "market": "EUR/USD", "mark": "1.12293", "index": "1.11398", "updatedAt": 1794294841337 }
+    ] }
+  ]
+}

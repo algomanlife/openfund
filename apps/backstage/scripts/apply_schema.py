@@ -33,6 +33,33 @@ def req(method, url, token=None, body=None):
         err = e.read().decode()[:400]
         raise SystemExit(f'HTTP {e.code} {method} {url}\n{err}')
 
+def license_preflight(base, token):
+    """Directus 12 enforces a license tier (GET /license). The Core tier allows 25
+    collections and ignores custom permission rules, which this schema needs
+    (public read filtered by status). Directus 11.x has no /license route — skip.
+    Fail early with an actionable message instead of a confusing 403/RESOURCE_RESTRICTED
+    half-way through the run. See docs/backstage/DIRECTUS_12_ASSESSMENT.md."""
+    r = urllib.request.Request(f'{base}/license', method='GET')
+    r.add_header('Authorization', f'Bearer {token}')
+    try:
+        with urllib.request.urlopen(r, timeout=30) as resp:
+            lic = json.loads(resp.read() or b'{}').get('data') or {}
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return  # Directus 11.x: no licensing subsystem
+        raise SystemExit(f'HTTP {e.code} GET {base}/license')
+    ent = lic.get('entitlements') or {}
+    rules = (ent.get('custom_permission_rules_enabled') or {}).get('default')
+    limit = (ent.get('collections') or {}).get('limit')
+    used = (lic.get('usage') or {}).get('collections')
+    print(f"license: {lic.get('name')} status={lic.get('status')} collections={used}/{limit} custom_permission_rules={rules}")
+    if lic.get('status') == 'locked' or rules is False:
+        raise SystemExit(
+            'ABORT: this Directus instance is not licensed for Openfund\'s content model '
+            '(custom permission rules and/or more than the Core collection limit). '
+            'Add a license or Open Innovation Grant key first — see docs/backstage/DIRECTUS_12_ASSESSMENT.md. '
+            'No schema or permission changes were made.')
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--url', default=os.environ.get('DIRECTUS_URL', 'http://localhost:8055'))
@@ -43,6 +70,7 @@ def main():
 
     token = req('POST', f'{base}/auth/login', body={'email': a.email, 'password': a.password})['data']['access_token']
     print('login OK')
+    license_preflight(base, token)
 
     existing = {c['collection'] for c in req('GET', f'{base}/collections', token)['data']}
 

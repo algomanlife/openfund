@@ -22,9 +22,38 @@ concurrency:
   group: ${{ github.event_name == 'pull_request' && format('openfund-pr-{0}', github.event.pull_request.number) || 'openfund-official-release' }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
+  changes:
+    name: Classify change (CI tier)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      run_gates: ${{ steps.classify.outputs.run_gates }}
+      run_backend_suite: ${{ steps.classify.outputs.run_backend_suite }}
+      run_presentation_matrices: ${{ steps.classify.outputs.run_presentation_matrices }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Changed files (pull requests only; main and dispatches are always full)
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --paginate "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --jq '.[].filename' > "$RUNNER_TEMP/changed.txt"
+      - name: Classify
+        id: classify
+        env:
+          CI_TIER_AFFECTED: ${{ vars.CI_TIER_AFFECTED }}
+        run: node scripts/ci/changes.mjs "$RUNNER_TEMP/changed.txt"
   package:
     name: Release package gates
-    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    needs: changes
+    # Skipped (reported as passing to required checks) ONLY for documentation-only
+    # pull requests; main pushes and release dispatches always run every gate.
+    if: (github.ref == 'refs/heads/main' || github.event_name == 'pull_request') && needs.changes.outputs.run_gates == 'true'
     runs-on: ubuntu-latest
     # The full candidate build (three lockfiles, unit suites, dual frontend
     # builds, double migration, boot + the whole browser matrix — now also
@@ -95,6 +124,8 @@ jobs:
       # Includes the bilingual responsive wallet/theme/product-availability matrix.
       - name: All integrated release gates and packaging
         env:
+          RELEASE_SKIP_BACKEND_SUITE: ${{ github.event_name == 'pull_request' && needs.changes.outputs.run_backend_suite == 'false' && '1' || '' }}
+          RELEASE_SKIP_PRESENTATION: ${{ github.event_name == 'pull_request' && needs.changes.outputs.run_presentation_matrices == 'false' && '1' || '' }}
           RELEASE_CANDIDATE: ${{ github.event_name != 'workflow_dispatch' || !inputs.publish }}
         run: |
           if [ "$RELEASE_CANDIDATE" = true ]; then npm run release:build -- --candidate; else npm run release:build; fi
@@ -142,6 +173,8 @@ jobs:
         run: node scripts/release/check-secrets.mjs
   cms:
     name: Directus bootstrap and public permissions
+    needs: changes
+    if: needs.changes.outputs.run_gates == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     services:

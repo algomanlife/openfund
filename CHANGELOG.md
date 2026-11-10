@@ -2,6 +2,81 @@
 
 ## Unreleased
 
+- Upstream governance automation: `scripts/upstream/check-releases.mjs` reads upstream releases and
+  release notes, classifies risk by each provider's versioning policy (0.x, Directus breaking minors,
+  semver majors, source heads) and feeds the weekly read-only `Upstream watch` workflow, which opens one
+  draft proposal PR changing only `latest_observed`. `Upstream update candidate` (manual dispatch) runs
+  the controlled vendor update and opens a draft PR with the report. No auto-merge, no deployment.
+  ADR 0021 and `docs/integrations/UPSTREAM_AUTOMATION.md`.
+
+- Upstream isolation and dependency registry: separates upstream, integration and Openfund-custom
+  layers for Vela, the Pine addon and PineTS, the Gains API and SDK, the LuxAlgo journal core,
+  Directus and key libraries. Adds `infra/upstream/` (registry, patch registry with three reversible
+  Vela patches, customization guards, vendor manifest), `npm run check:upstream`, a controlled
+  `update-vendor` report/apply tool that proves vendored source equals upstream plus registered
+  patches, Gains market-data contract tests on recorded fixtures plus an optional live check, and the
+  Vela/Gains upgrade protection guides. Vela stays at 0.9.3 (0.10.4 assessed: patch conflict, not
+  adopted). `MarketData` gains an options seam with unchanged defaults; the trading engine is untouched.
+- Directus upgrade readiness (no version change): staged rehearsal of 11.9.1 to 12.6.1 on an isolated
+  PostgreSQL 17 database shows Directus 12 locks the current content model without a licence (Core tier:
+  25 collections, no custom permission rules; Openfund registers 43 and filters every public read by
+  status). The upgrade is blocked on an owner licensing decision; the repository stays on 11.9.1. Adds
+  `apps/backstage/upgrade/` (inventory and verification tool, staging harness), a licence preflight in
+  `apply_schema.py`, the Render health check on `/server/ping` and explicit `IP_TRUST_PROXY=true` (both
+  safe on 11.x), backup/restore guide, production migration and rollback runbook and ADR 0020.
+
+- Dependency governance: a machine-checked upstream registry (Vela, Vela Pine
+  addon, PineTS, Gains SDK and APIs, journal-core, Directus, wallet libraries,
+  protocol source) with versions, licenses, local modifications and update
+  procedures; a conservative `dependabot.yml` (weekly grouped minor/patch, no
+  automatic majors, upstream families excluded); and `npm run deps:check`, which
+  fails when a pin drifts from the registry. Records that only the journal-core
+  library of the LuxAlgo Trade Journal is integrated and that `vendor/gains-sdk`
+  is unused.
+- DePay checkout completed as the intended customer flow: **Buy Challenge**
+  creates the server-priced order and opens the official widget with the
+  integration id and only the order id; DePay asks the new signed dynamic
+  configuration endpoint for chain, token, amount and receiver; DePay's
+  signed callback is acknowledged at once and verified on-chain, then the
+  existing provisioning creates exactly one challenge and the checkout shows
+  *Payment successful*. Failed payments are shown in plain words, a pending
+  order resumes after a page refresh, and a tampered widget bundle is
+  blocked. Browser acceptance (`npm run test:browser:depay`) runs the real
+  backend against a stub widget and a mock chain; real-network acceptance
+  is still pending. Also fixes RPC HTTP errors (for example a 503) being
+  reported as a final rejection instead of a retryable `rpc_unavailable`,
+  and finality using a cached chain head.
+- Challenge payment verification rewritten around an explicit correlation
+  policy: the signer must be the signed-in wallet, only the approved ERC-20
+  counts, and the amount is the sum of that token's transfers to the
+  merchant from the payer or an approved router, so DePay router and swap
+  payments verify and unrelated transfers never do. A dedicated
+  `PURCHASE_RPC_URL` is required in production (no public-RPC fallback);
+  token decimals come from the contract; native value is no longer treated as
+  USD; production defaults to 12 confirmations with a reorg check; RPC
+  outages and pending transactions are retryable instead of failures.
+- Payment attempts are stored (`payment_attempts`), recovered by a
+  background sweep after restarts or lost browser requests, and surfaced to
+  operators through `/admin/payments` (lookup by order or hash, review
+  queue for underpayment, wrong token, late, duplicate and overpayment,
+  re-verify, audited resolution). Refunds stay manual.
+- Orders swept to `expired` can now be paid inside the late-payment grace
+  window as documented (previously unreachable).
+- DePay checkout: Subresource-Integrity-pinned bundle, explicit CSP origins,
+  mainnet token payments only, refresh-safe resume of a pending order and
+  automatic follow-up of a submitted hash. Optional signed DePay server
+  callback registers a retryable hint. Real-network acceptance is pending;
+  see [payment activation](docs/payments/ACTIVATION.md).
+- Repository: the generated `react/` build output (22.7 MB, 241 files) is no
+  longer tracked; `npm run build:web` creates it and `Backend` CI builds it
+  before booting the server. Removes the main source of merge conflicts between
+  frontend pull requests. See `docs/development/REPOSITORY_HYGIENE.md`.
+- CI: the locale matrix and the UI polish matrix (≈ 17 and ≈ 15.5 minutes
+  sequentially in the release gates) now run as concurrent, never-retried
+  shards, cutting the `Release package gates` job; documentation-only pull
+  requests skip the heavy gates through a change classifier; pull request runs
+  are cancelled when superseded while `main` and release runs never are; the
+  Playwright browser cache is shared. See `docs/development/CI.md`.
 - Terminal Chart tab and Quick Trade (branch `feat/terminal-chart-quick-trade`,
   implementation candidate): a Chart tab beside Trading shows
   the same Vela workspace full-viewport (order form, book and positions hidden)
@@ -323,6 +398,14 @@ Historical entries describe their original changes, including past UI copy. They
 Notable changes are recorded here. Dates should use ISO 8601.
 
 ## Unreleased
+
+- Directus upgrade readiness (no version change): staged rehearsal of 11.9.1 to 12.6.1 on an isolated
+  PostgreSQL 17 database shows Directus 12 locks the current content model without a licence (Core tier:
+  25 collections, no custom permission rules; Openfund registers 43 and filters every public read by
+  status). The upgrade is blocked on an owner licensing decision; the repository stays on 11.9.1. Adds
+  `apps/backstage/upgrade/` (inventory and verification tool, staging harness), a licence preflight in
+  `apply_schema.py`, the Render health check on `/server/ping` and explicit `IP_TRUST_PROXY=true` (both
+  safe on 11.x), backup/restore guide, production migration and rollback runbook and ADR 0020.
 
 ### Openfund Protocol source integration (2026-11-02, branch `feat/openfund-protocol-foundation`)
 

@@ -19,7 +19,8 @@
     "docs:links": "node scripts/docs/check-links.mjs",
     "docs:markdown": "markdownlint-cli2",
     "docs:mermaid": "node scripts/docs/check-mermaid.mjs",
-    "docs:check": "npm run docs:language && npm run docs:links && npm run docs:markdown && npm run docs:mermaid",
+    "deps:check": "node --test scripts/deps/*.test.mjs && node scripts/deps/check-registry.mjs",
+    "docs:check": "npm run docs:language && npm run docs:links && npm run docs:markdown && npm run docs:mermaid && npm run deps:check",
     "test:charts": "node --test packages/openfund-charts/test/pine.test.mjs",
     "test:browser:charts": "node e2e/test-chart-indicators.mjs",
     "test:browser:unified": "node e2e/test-unified-trading.cjs",
@@ -31,6 +32,7 @@
     "test:release": "node --test scripts/release/test/*.test.mjs",
     "test:browser:release": "node e2e/test-release.cjs",
     "test:browser:purchase": "node e2e/test-purchase-flow.cjs",
+    "test:browser:depay": "node e2e/test-depay-checkout.cjs",
     "test:browser:challenge": "node e2e/test-challenge-lifecycle.cjs",
     "test:browser:auto-dark": "node e2e/test-auto-dark.cjs",
     "test:browser:routes": "node scripts/release/public-routes.mjs",
@@ -38,7 +40,12 @@
     "test:browser:polish": "node e2e/test-ui-polish.cjs",
     "test:browser:website": "node e2e/test-website-refresh.cjs",
     "test:browser:wallet": "node e2e/test-wallet-connect.cjs",
-    "test:browser:locale": "node e2e/test-locale-matrix.cjs"
+    "test:browser:locale": "node e2e/test-locale-matrix.cjs",
+    "test:upstream": "node --test scripts/upstream/test/*.test.mjs && node --test apps/backend/test/market-data-contract.test.mjs",
+    "check:upstream": "node scripts/upstream/verify.mjs",
+    "check:gains-live": "node scripts/upstream/gains-live-check.mjs",
+    "update:vendor": "node scripts/upstream/update-vendor.mjs",
+    "watch:upstream": "node scripts/upstream/check-releases.mjs"
   },
   "devDependencies": {
     "js-yaml": "^4.1.0",
