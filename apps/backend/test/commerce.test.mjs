@@ -22,10 +22,10 @@ if (!/test|audit|_ci/.test(process.env.DATABASE_URL || '')) throw new Error('Use
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL, max: 30 })
 
 const RECEIVER = '0x' + 'c1'.repeat(20)
-const TOKEN = '0xaf88d065e77c8cc2239327c5edb3a432268e5831' /* USDC on Arbitrum One (public contract) */
-const ADMIN = 'commerce-test-admin-token'
+const USDC_ARBITRUM = '0xaf88d065e77c8cc2239327c5edb3a432268e5831' /* USDC on Arbitrum One (public contract) */
+const ADMIN = crypto.randomBytes(24).toString('hex') /* per-run test value, never a credential */
 Object.assign(process.env, {
-  PURCHASE_PAYMENT_RECEIVER: RECEIVER, PURCHASE_PAYMENT_CHAIN: '42161', PURCHASE_PAYMENT_TOKEN: TOKEN,
+  PURCHASE_PAYMENT_RECEIVER: RECEIVER, PURCHASE_PAYMENT_CHAIN: '42161', PURCHASE_PAYMENT_TOKEN: USDC_ARBITRUM,
   PURCHASE_PAYMENT_DECIMALS: '6', ADMIN_API_TOKEN: ADMIN,
 })
 /* test-only RSA key pairs: "Openfund" (signs configuration) and "DePay" (signs deliveries) */
@@ -298,14 +298,14 @@ test('D1 dynamic configuration: DePay-signed request only; signed Arbitrum-only 
   assert.equal(res.status, 200)
   const text = await res.text()
   assert.equal(verifyOurs(text, res.headers.get('x-signature')), true, 'response signed with the Openfund key')
-  assert.deepEqual(JSON.parse(text), { accept: [{ blockchain: 'arbitrum', amount: 50, token: TOKEN, receiver: RECEIVER }] })
+  assert.deepEqual(JSON.parse(text), { accept: [{ blockchain: 'arbitrum', amount: 50, token: USDC_ARBITRUM, receiver: RECEIVER }] })
   assert.equal(res.headers.get('cache-control'), 'no-store')
   assert.equal((await depayPost('/purchases/depay/configuration', { orderId: crypto.randomUUID() })).status, 404, 'missing order')
   await pool.query(`UPDATE purchase_orders SET status='expired' WHERE id=$1`, [o.id])
   assert.equal((await depayPost('/purchases/depay/configuration', { orderId: o.id })).data.error, 'order_not_payable', 'expired order')
 })
 
-const callbackBody = (u, o, over = {}) => ({ blockchain: 'arbitrum', transaction: rndHash(), sender: u.wallet, receiver: RECEIVER, token: TOKEN,
+const callbackBody = (u, o, over = {}) => ({ blockchain: 'arbitrum', transaction: rndHash(), sender: u.wallet, receiver: RECEIVER, token: USDC_ARBITRUM,
   amount: String(o.price_usd), payload: { orderId: o.id }, after_block: '1', commitment: 'confirmed', confirmations: 1,
   created_at: new Date().toISOString(), confirmed_at: new Date().toISOString(), ...over })
 
