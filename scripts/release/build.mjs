@@ -4,6 +4,7 @@ import { spawn } from 'node:child_process';
 import { root, git, run, validateEnv, healthy, json, writeJson, sha256, filesIn, semver, treeHash } from './lib.mjs';
 import { manifest } from './manifest.mjs';
 import { verify } from './verify.mjs';
+import { runParallel, parseJobs } from '../ci/run-parallel.mjs';
 import { runtimeCmsUrl } from '../../apps/backend/runtime-config.js';
 const candidate = process.argv.includes('--candidate');
 if (Number(process.versions.node.split('.')[0]) !== 22) throw Error('Release builds require Node.js 22.');
@@ -60,17 +61,32 @@ fs.mkdirSync(output,{recursive:true});
 let server;
 const gate = async (name,command,args=[], overrides={}) => {
   const startedAt=new Date().toISOString();
+  let attempts=1;
   try {
-    // Browser journeys race legacy reloads on shared CI runners. Retry those once (logged)
-    // instead of discarding a ~40 minute run; deterministic failures still fail twice.
+    // Browser journeys race legacy reloads on shared CI runners. Retry those once
+    // instead of discarding a long run; deterministic failures still fail twice.
+    // A retry is never silent: it is annotated and recorded as attempts:2 in the
+    // verification evidence so a flaky journey is visible and gets fixed.
     try { await run(command,args,{env:{...env,...overrides}}); }
     catch (error) {
       if (!/^test:browser:/.test(String(args[1] || '')) || process.env.RELEASE_NO_BROWSER_RETRY) throw error;
       console.warn(`::warning::${name} failed once; retrying a single time (${error.message})`);
+      attempts=2;
       await run(command,args,{env:{...env,...overrides}});
-    } stages.push({name,status:'passed',startedAt,finishedAt:new Date().toISOString()}); }
-  catch(error){stages.push({name,status:'failed',startedAt});throw error;}
+    } stages.push({name,status:'passed',attempts,startedAt,finishedAt:new Date().toISOString()}); }
+  catch(error){stages.push({name,status:'failed',attempts,startedAt,finishedAt:new Date().toISOString()});throw error;}
 };
+// Independent read-only matrices run as concurrent shards against the same
+// server. Shards are never retried: every shard runs exactly once and any
+// failing shard fails the gate after all shards have reported.
+const parallelGate = async (name,jobs) => {
+  const startedAt=new Date().toISOString();
+  const results=await runParallel(parseJobs(jobs.flatMap((job,index)=>[...(index?['+++']:[]),...job])),{cwd:root,timeoutMinutes:Number(process.env.RELEASE_SHARD_TIMEOUT_MINUTES||35),env});
+  const failed=results.filter(result=>!result.ok);
+  stages.push({name,status:failed.length?'failed':'passed',attempts:1,shards:results.map(({label,seconds,ok})=>({label,seconds,ok})),startedAt,finishedAt:new Date().toISOString()});
+  if(failed.length)throw Error(`${name} failed in shard(s): ${failed.map(result=>`${result.label} (${result.detail})`).join(', ')}`);
+};
+const shardJobs=(prefix,count,script,shardEnv,outEnv,outDir,extra=[])=>Array.from({length:count},(_,index)=>[`${prefix}-${index+1}/${count}`,`${shardEnv}=${index+1}/${count}`,`${outEnv}=${outDir}/shard-${index+1}`,...extra,'node',script]);
 try {
   await gate('root-lockfile-install','npm',['ci','--include=dev','--no-audit','--no-fund']);
   await gate('web-lockfile-install','npm',['ci','--include=dev','--prefix','apps/web-react','--no-audit','--no-fund']);
@@ -88,7 +104,26 @@ try {
   await healthy(base+'/health',server);
   // Run the public website smoke early: it is short and catches CMS/locale
   // races before the long theme and viewport matrix consumes the runner.
-  for(const task of ['test:backend','test:browser:website','test:browser:audit','test:browser:wallet','test:browser:locale','test:browser:completion','test:browser:layout','test:browser:charts','test:browser:polish','test:browser:release','test:browser:routes','test:browser:challenge']) await gate(task,'npm',['run',task]);
+  // Opt-in "affected" CI tier (scripts/ci/changes.mjs, PRs only, never main or
+  // dispatches): suites that cannot depend on the changed component are skipped
+  // and recorded as skipped-by-tier so the evidence is explicit.
+  const skipStage=(name,reason)=>{console.log(`::notice::${name} skipped by CI tier: ${reason}`);stages.push({name,status:'skipped-by-tier',reason,startedAt:new Date().toISOString()});};
+  if(process.env.RELEASE_SKIP_BACKEND_SUITE==='1')skipStage('test:backend','no backend or shared input changed');
+  else await gate('test:backend','npm',['run','test:backend']);
+  for(const task of ['test:browser:website','test:browser:audit','test:browser:wallet']) await gate(task,'npm',['run',task]);
+  // The two long presentation matrices (previously ~17 + ~15 min, sequential)
+  // are read-only and independent, so they run as concurrent shards. The union
+  // of the shards equals the unsharded run (see e2e/test-locale-matrix.cjs and
+  // e2e/test-ui-polish.cjs); RELEASE_LOCALE_SHARDS / RELEASE_POLISH_SHARDS tune
+  // the split.
+  const localeShards=Number(process.env.RELEASE_LOCALE_SHARDS||5),polishShards=Number(process.env.RELEASE_POLISH_SHARDS||4);
+  if(process.env.RELEASE_SKIP_PRESENTATION==='1')skipStage('test:browser:locale+polish','no web, CMS or shared input changed');
+  else await parallelGate('test:browser:locale+polish',[
+    ...shardJobs('locale',localeShards,'e2e/test-locale-matrix.cjs','LOCALE_MATRIX_SHARD','LOCALE_MATRIX_OUT','output/playwright/locale-matrix'),
+    ...shardJobs('polish',polishShards,'e2e/test-ui-polish.cjs','POLISH_SHARD','POLISH_OUTPUT','output/playwright/ui-polish',['POLISH_PART=matrix']),
+    ['polish-tail','POLISH_PART=tail','POLISH_OUTPUT=output/playwright/ui-polish/tail','AUTO_DARK_OUTPUT=output/playwright/auto-dark','node','e2e/test-ui-polish.cjs'],
+  ]);
+  for(const task of ['test:browser:completion','test:browser:layout','test:browser:charts','test:browser:release','test:browser:routes','test:browser:challenge']) await gate(task,'npm',['run',task]);
   // A second run explicitly covers the authenticated geometry matrix.
   await run('npm',['run','test:browser:layout'],{env:{...env,TEST_LAYOUT_AUTH:'1'}});
   stages.push({name:'authenticated-layout',status:'passed'});
