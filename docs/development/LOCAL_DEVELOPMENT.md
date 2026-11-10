@@ -58,7 +58,7 @@ With the backend running and database configured, open [built Home](http://local
 
 ## Source care
 
-`dist/` and `apps/web-react/public/legacy/` contain required compatibility sources. `react/` contains a tracked historical bundle; builds replace it. Inspect generated differences and exclude unintended bundle churn from a source/documentation PR. Do not blindly delete either directory. See [Testing](TESTING.md), [Repository maintenance](DOCUMENTATION.md) and [Contributing](../../CONTRIBUTING.md).
+`dist/` and `apps/web-react/public/legacy/` contain required compatibility sources. `react/` is generated build output: it is not tracked, and `npm run build:web` creates it (the backend reads `react/index.html` at start-up, so build before `npm start`). `dist/` remains a tracked source-critical deliverable; do not delete it. See [Testing](TESTING.md), [Repository maintenance](DOCUMENTATION.md) and [Contributing](../../CONTRIBUTING.md).
 
 ## Safe shared-machine acceptance
 
