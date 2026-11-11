@@ -1,0 +1,54 @@
+name: UI problem
+description: Layout, theme, RTL, responsive or accessibility problem in the interface
+labels: [bug, frontend, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not report security vulnerabilities here — use a private GitHub security advisory (see SECURITY.md).
+        Redact wallet addresses, balances and any personal data from screenshots.
+  - type: input
+    id: url
+    attributes:
+      label: Page or route
+      description: For example /react/terminal or /react/fa/
+    validations:
+      required: true
+  - type: dropdown
+    id: locale
+    attributes:
+      label: Language
+      options: [English, Persian (RTL), Other]
+    validations:
+      required: true
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme
+      options: [Light, Dark, Automatic]
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device, browser and viewport width
+      description: For example "iPhone 15, Safari, 390 px" or "Windows, Chrome 131, 1440 px"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What looks or behaves wrong
+      description: Expected versus actual appearance or behavior
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or recording
+      description: Redacted screenshots help most
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `/version` on the site you used, or the local commit SHA

@@ -39,7 +39,7 @@
 <!-- How to undo safely (revert, flag, restore). -->
 
 ## Related PRs
-<!-- Base/stack position, PRs this depends on or conflicts with, merge order. -->
+<!-- Related issue ("Closes #123") and base/stack position, PRs this depends on or conflicts with, merge order. -->
 
 ## Documentation
 <!-- Docs, FEATURE_STATUS, roadmap, ADR, CHANGELOG updated. -->
@@ -56,3 +56,7 @@
 - [ ] English documentation; Persian application/RTL fixtures preserved
 - [ ] Render three-resource architecture and same-origin `/react/` preserved
 - [ ] No unsupported business claims, secrets or unlicensed assets; upstream notices retained
+- [ ] Verified results are separated from assumptions and anything not run or not verified is named
+- [ ] Out-of-scope areas untouched (trading engine, evaluation, payments, wallet auth, schema, contracts, deployment config) unless listed under Scope
+- [ ] Only files belonging to this change are included; staged diff reviewed for secrets
+- [ ] Heightened-review areas touched are named under Security (see docs/development/REPOSITORY_GOVERNANCE.md)

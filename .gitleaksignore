@@ -5,3 +5,59 @@
 # of this file quoted that address in a comment and matched again.
 a004d37f8db907a735dfdfb27ad5aff46471eee8:apps/backend/test/commerce.test.mjs:generic-api-key:25
 093e0cf8f1cceb74ee65c8cafcea81ae79591207:.gitleaksignore:generic-api-key:3
+
+# Full-history baseline (reviewed 2026-11-11, values never printed). All 49 matches
+# are generic-api-key hits on vendored or dormant upstream code, grouped below.
+# packages/openfund-protocol/: Solidity NatSpec comments and a public token constant in the dormant protocol source
+44964ab138499fcefe7b0da85c9f8988ea804e7f:packages/openfund-protocol/contracts/core/Admin.sol:generic-api-key:20
+44964ab138499fcefe7b0da85c9f8988ea804e7f:packages/openfund-protocol/contracts/core/Liquidity.sol:generic-api-key:23
+44964ab138499fcefe7b0da85c9f8988ea804e7f:packages/openfund-protocol/contracts/interfaces/ILiquidityPool.sol:generic-api-key:66
+44964ab138499fcefe7b0da85c9f8988ea804e7f:packages/openfund-protocol/contracts/interfaces/IOrderBook.sol:generic-api-key:115
+44964ab138499fcefe7b0da85c9f8988ea804e7f:packages/openfund-protocol/contracts/interfaces/IOrderBook.sol:generic-api-key:83
+44964ab138499fcefe7b0da85c9f8988ea804e7f:packages/openfund-protocol/contracts/orderbook/OrderBook.sol:generic-api-key:180
+44964ab138499fcefe7b0da85c9f8988ea804e7f:packages/openfund-protocol/contracts/orderbook/OrderBook.sol:generic-api-key:239
+# vendor/gains-sdk/src/contracts/addresses.json: public Gains contract addresses
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:11
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:114
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:115
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:12
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:126
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:127
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:15
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:151
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:152
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:16
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:172
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:173
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:229
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:230
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:262
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:263
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:40
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:41
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:44
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:45
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:48
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:49
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:56
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:57
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:7
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:73
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:74
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:77
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:78
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:8
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:81
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:82
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:89
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/contracts/addresses.json:generic-api-key:90
+# vendor/gains-sdk/: vendored Gains SDK identifiers named pairOiToken (numeric/typed fields, not credentials)
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/markets/holdingFees/index.ts:generic-api-key:43
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/trade/fees/fundingFees/fundingFees.test.ts:generic-api-key:523
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/trade/fees/fundingFees/index.ts:generic-api-key:412
+a81233472ecb55eec941a2f4d70084403215cb02:vendor/gains-sdk/src/trade/fees/fundingFees/types.ts:generic-api-key:58
+# vendor/vela/src/locales/: Vela translation strings for keyboard-shortcut labels
+f6f956b452b657bd5ae004cf01a0b81592c5dc30:vendor/vela/src/locales/de.json:generic-api-key:2120
+f6f956b452b657bd5ae004cf01a0b81592c5dc30:vendor/vela/src/locales/it.json:generic-api-key:2123
+f6f956b452b657bd5ae004cf01a0b81592c5dc30:vendor/vela/src/locales/pl.json:generic-api-key:2123
+f6f956b452b657bd5ae004cf01a0b81592c5dc30:vendor/vela/src/locales/pt-BR.json:generic-api-key:2123

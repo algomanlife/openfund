@@ -1,0 +1,81 @@
+# Code owners for Openfund.
+#
+# Openfund currently has exactly one maintainer with write access
+# (@algomanlife). Every path below therefore names that account; no reviewer is
+# invented. GitHub never requests a review from the pull request author, so
+# while there is one maintainer this file documents ownership and routes review
+# requests from outside contributors. "Require review from Code Owners" is NOT
+# enabled, because it would block the sole maintainer's own pull requests. See
+# docs/development/REPOSITORY_GOVERNANCE.md ("Review authority").
+#
+# When a second qualified maintainer joins, add them to the relevant lines and
+# enable code-owner review in the main-branch ruleset. Later lines take
+# precedence over earlier ones.
+
+# Default owner for everything not listed below.
+*                                       @algomanlife
+
+# --- Heightened review: security, CI/CD, release and deployment -----------
+/.github/                               @algomanlife
+/SECURITY.md                            @algomanlife
+/docs/security/                         @algomanlife
+/gitleaks.toml                          @algomanlife
+/.gitleaksignore                        @algomanlife
+/render.yaml                            @algomanlife
+/infra/                                 @algomanlife
+/infrastructure/                        @algomanlife
+/scripts/release/                       @algomanlife
+/scripts/ci/                            @algomanlife
+/docs/deployment/                       @algomanlife
+/.env.example                           @algomanlife
+/.npmrc                                 @algomanlife
+/AGENTS.md                              @algomanlife
+/CLAUDE.md                              @algomanlife
+
+# --- Heightened review: authentication, wallet and sessions ---------------
+# SIWE sign-in and session handling live in the backend server module.
+/apps/backend/server.js                 @algomanlife
+/apps/web-react/src/session/            @algomanlife
+/apps/web-react/src/wallet/             @algomanlife
+/src/wallet.jsx                         @algomanlife
+
+# --- Heightened review: payments, purchases, payouts and treasury ----------
+/apps/backend/purchases.js              @algomanlife
+/apps/backend/payment-verification.js   @algomanlife
+/apps/backend/solana-verification.js    @algomanlife
+/apps/backend/payments-admin.js         @algomanlife
+/apps/backend/coupons.js                @algomanlife
+/apps/backend/invoice-pdf.js            @algomanlife
+/apps/backend/treasury.js               @algomanlife
+/apps/backend/live-funding.js           @algomanlife
+/apps/backend/referrals.js              @algomanlife
+/apps/backend/partners.js               @algomanlife
+/apps/backend/economy.js                @algomanlife
+/apps/backend/economy-math.js           @algomanlife
+/apps/backend/financial-audit.js        @algomanlife
+/docs/payments/                         @algomanlife
+
+# --- Heightened review: trading engine and Prop challenge evaluation -------
+/apps/backend/engine.js                 @algomanlife
+/apps/backend/evaluation.js             @algomanlife
+/apps/backend/trading-math.js           @algomanlife
+/apps/backend/accounts.js               @algomanlife
+/apps/backend/products.js               @algomanlife
+/apps/backend/plan-catalog.js           @algomanlife
+/apps/backend/market-data.js            @algomanlife
+
+# --- Heightened review: database schema and migrations ---------------------
+/apps/backend/schema.sql                @algomanlife
+/apps/backend/migrate.js                @algomanlife
+/apps/backstage/scripts/                @algomanlife
+
+# --- Heightened review: smart contracts and vendored upstream code ---------
+/packages/openfund-protocol/            @algomanlife
+/vendor/                                @algomanlife
+/third_party/                           @algomanlife
+
+# --- Policy documents and licensing -----------------------------------------
+/GOVERNANCE.md                          @algomanlife
+/ECONOMY.md                             @algomanlife
+/THIRD_PARTY_NOTICES.md                 @algomanlife
+/docs/legal/                            @algomanlife

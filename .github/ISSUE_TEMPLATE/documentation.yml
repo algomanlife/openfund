@@ -1,0 +1,29 @@
+name: Documentation issue
+description: Something in the documentation is wrong, missing, outdated or unclear
+labels: [documentation, needs-triage]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Document
+      description: File path or link, for example docs/development/LOCAL_DEVELOPMENT.md
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of problem
+      options: [Incorrect or outdated, Missing information, Unclear, Broken link or image, Overstates what is implemented, Other]
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong
+      description: Quote the passage when helpful
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested correction

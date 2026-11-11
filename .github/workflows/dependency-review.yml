@@ -1,0 +1,36 @@
+name: Dependency review
+
+# Flags pull requests that ADD or upgrade to a dependency with a known
+# high or critical advisory, by comparing the manifests and lockfiles of the
+# base and head commits with GitHub's advisory database. It only reads the
+# diff (no install, no code from the pull request is executed, no secrets), so
+# it is safe for pull requests from forks.
+#
+# It complements, not replaces, the report-only `npm audit` job in ci.yml
+# (which reports advisories already present on the branch) and Dependabot
+# alerts. Not a required check yet: promote it in the main-branch ruleset once
+# it has run cleanly for a while. See docs/development/REPOSITORY_SECURITY.md.
+
+on:
+  pull_request:
+    paths:
+      - '**/package.json'
+      - '**/package-lock.json'
+      - '.github/workflows/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dependency-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    name: Dependency review
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high

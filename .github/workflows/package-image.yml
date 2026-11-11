@@ -57,9 +57,16 @@ jobs:
           node-version: 22
       - name: Resolve release tag
         id: tag
+        # The input arrives through the environment, never interpolated into the
+        # script, and must be a plain vX.Y.Z tag before any later step uses it.
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          tag="${{ inputs.version }}"
+          tag="$INPUT_VERSION"
           if [ -z "$tag" ]; then tag=$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName); fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Release tag must look like vX.Y.Z"; exit 1
+          fi
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
       - name: Download and verify the official release payload
         id: payload
