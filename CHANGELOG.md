@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- UI refinement (branch `claude/ui-refinement`), frontend only:
+  - Wallet header chip no longer tilts (the FAQ accordion's `summary>span`
+    rotation leaked into it); the wallet menu is grouped into wallet
+    information (address, balance, network) and actions, RTL with LTR values.
+  - Persian/Arabic landing card copy spacing and wrapping; tiny decorative
+    English labels removed from the two landing illustrations.
+  - Footer partners: Render restored and Liara added; the corporate
+    information block is replaced by the address in five languages.
+  - Day/night theme switch (MIT design, attributed) on the website header and
+    terminal; "Growth Partner" is now Economy › Referral & Rewards (same URL).
+  - Terminal account tabs show one shared signed-out empty state that runs the
+    existing wallet flow.
 - PR #81 completion (branch `claude/pr81-completion`):
   - Coupon administration acceptance now runs against a real Directus UI and
     passes 16/16 (create a 100% internal coupon in Directus, zero-cost
