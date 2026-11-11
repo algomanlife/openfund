@@ -30,6 +30,7 @@ import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
 import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments } from './purchases.js'
 import { adminRoutes } from './admin.js'
+import { chartWorkspaceRoutes } from './chart-workspaces.js'
 import { couponAdminRoutes } from './coupons.js'
 import { paymentAdminRoutes } from './payments-admin.js'
 import { governanceRoutes } from './governance-routes.js'
@@ -139,6 +140,7 @@ app.use((req, res, next) => {
 })
 app.use('/products', express.json({ limit: '2mb' }))
 app.use('/auth/profile', express.json({ limit: '512kb' })) /* avatar data URLs */
+app.use('/chart/workspaces', express.json({ limit: '256kb' })) /* chart workspace entries (200 KB cap per entry) */
 /* the DePay callback is signed over its exact bytes: keep the raw body for that one route */
 /* DePay signs the exact request bytes: keep the raw body for its routes */
 const DEPAY_SIGNED_PATHS = new Set(['/purchases/depay/configuration', '/purchases/depay/callback', '/purchases/depay/events'])
@@ -151,7 +153,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', origin)
     res.setHeader('Vary', 'Origin')
     res.setHeader('Access-Control-Allow-Credentials', 'true')
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Idempotency-Key')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Idempotency-Key, X-Openfund-Chart-User')
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS')
   }
   if (req.method === 'OPTIONS') return res.sendStatus(204)
@@ -727,6 +729,7 @@ app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) 
 app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
 app.use(referralRoutes({ pool, requireAuth, audit }))
 app.use(purchaseRoutes({ pool, requireAuth, audit, limit }))
+app.use(chartWorkspaceRoutes({ pool, requireAuth, limit }))
 app.use('/governance', governanceRoutes({ pool, requireAuth, limit }))
 /* Economy, Brand Ambassador, Verified Coach and Live Market Access */
 const treasury = new Treasury(pool)
