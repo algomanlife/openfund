@@ -119,9 +119,9 @@ async function whiteCanvas(page,selector,theme){
   if(document.querySelector('dialog[open],[aria-modal="true"]'))return [];
   const r=el.getBoundingClientRect(),top=Math.max(r.top,100),bottom=Math.min(r.bottom,innerHeight-8);
   if(bottom-top<32)return [];
-  // The fixed Persian Bitpin price strip overlays the viewport bottom; the last sample stays above it.
-  const strip=document.querySelector('.bitpin-ticker')?.getBoundingClientRect().height||0;
-  return [top+16,(top+bottom)/2,Math.max(top+16,bottom-16-strip)].flatMap(y=>[4,innerWidth-5].map(x=>({x:Math.round(x),y:Math.round(y)})));
+  // The fixed Persian Bitpin price strip is not main paint: skip samples that land on it.
+  const strip=document.querySelector('.bitpin-ticker')?.getBoundingClientRect();
+  return [top+16,(top+bottom)/2,bottom-16].filter(y=>!strip||y<strip.top||y>strip.bottom).flatMap(y=>[4,innerWidth-5].map(x=>({x:Math.round(x),y:Math.round(y)})));
  }));
  if(points.length){
   const png=(await page.screenshot({animations:'disabled',scale:'css'})).toString('base64');

@@ -120,5 +120,10 @@
   :root .of-terminal-actions .rk-chip-connect { width: var(--hc-h); min-width: var(--hc-h); padding-inline: 0; }
   :root .of-terminal-actions .rk-chip-connect .rk-connect-label { display: none; }
   :root .of-terminal-actions .of-language-icon { display: none; }
-  :root .of-terminal-actions .rk-account-summary { gap: 6px; }
+  /* connected address chip: headroom for wider platform monospace fonts */
+  :root .of-terminal-actions .rk-account-summary { gap: 6px; max-width: 132px; overflow: hidden; }
+  :root .of-terminal-actions .rk-account-summary .rk-chevron { display: none; }
+  :root .of-terminal-actions .rk-chip-addr { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  :root .of-terminal-header .of-terminal-actions .of-daynight { --dn-w: 42px; margin-inline: 5px !important; }
+  :root .of-terminal-header .of-terminal-actions .of-daynight::before { inset-inline: -5px; }
 }
