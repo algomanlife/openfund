@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" width="360" height="240">
+  <defs>
+    <linearGradient id="face" x1="0" y1="0" x2="1" y2="0.25">
+      <stop offset="0" stop-color="#5d7067"/><stop offset=".38" stop-color="#cfdcd5"/>
+      <stop offset=".62" stop-color="#7d9086"/><stop offset="1" stop-color="#b3c3ba"/>
+    </linearGradient>
+    <linearGradient id="side" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4c5d55"/><stop offset=".5" stop-color="#2f3c36"/><stop offset="1" stop-color="#46564e"/>
+    </linearGradient>
+    <linearGradient id="wall" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#9eb0a6"/><stop offset="1" stop-color="#34433c"/>
+    </linearGradient>
+    <linearGradient id="pane" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".30"/>
+      <stop offset=".55" stop-color="#bff3da" stop-opacity=".12"/>
+      <stop offset="1" stop-color="#82e7bd" stop-opacity=".20"/>
+    </linearGradient>
+    <linearGradient id="paneEdge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".85"/><stop offset="1" stop-color="#82e7bd" stop-opacity=".45"/>
+    </linearGradient>
+    <radialGradient id="sphere" cx=".36" cy=".3" r=".78">
+      <stop offset="0" stop-color="#eef5f1"/><stop offset=".45" stop-color="#a9bbb1"/>
+      <stop offset=".85" stop-color="#4f6158"/><stop offset="1" stop-color="#3a4943"/>
+    </radialGradient>
+    <radialGradient id="rim" cx=".9" cy=".78" r=".45">
+      <stop offset="0" stop-color="#82e7bd" stop-opacity=".55"/><stop offset="1" stop-color="#82e7bd" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="shadow" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7"/>
+      <feColorMatrix values="0 0 0 0 .5  0 0 0 0 .55  0 0 0 0 .52  0 0 0 .22 0"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+    <filter id="frost" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3.2"/></filter>
+    <clipPath id="paneClip"><rect x="170" y="30" width="84" height="186" rx="9"/></clipPath>
+    <mask id="outsidePane"><rect width="360" height="240" fill="#fff"/><rect x="170" y="30" width="84" height="186" rx="9" fill="#000"/></mask>
+    <clipPath id="innerFront"><ellipse cx="150" cy="118" rx="36" ry="68"/></clipPath>
+    <mask id="hole">
+      <rect width="360" height="240" fill="#fff"/>
+      <ellipse cx="136" cy="118" rx="36" ry="68" fill="#000" clip-path="url(#innerFront)"/>
+    </mask>
+    <g id="ring">
+      <g mask="url(#hole)">
+        <ellipse cx="136" cy="118" rx="58" ry="96" fill="url(#side)"/>
+        <ellipse cx="150" cy="118" rx="58" ry="96" fill="url(#face)"/>
+        <ellipse cx="150" cy="118" rx="58" ry="96" fill="none" stroke="#82e7bd" stroke-opacity=".35" stroke-width="1.2"/>
+        <ellipse cx="150" cy="118" rx="36" ry="68" fill="url(#wall)"/>
+      </g>
+    </g>
+  </defs>
+
+  <!-- contact shadows (transparent, no backdrop) -->
+  <ellipse cx="143" cy="214" rx="60" ry="7" fill="url(#shadow)"/>
+  <ellipse cx="270" cy="216" rx="50" ry="7" fill="url(#shadow)"/>
+  <ellipse cx="212" cy="216" rx="46" ry="4" fill="url(#shadow)" opacity=".7"/>
+
+  <!-- ring: sharp outside the glass, frosted behind it -->
+  <use href="#ring" mask="url(#outsidePane)"/>
+  <g clip-path="url(#paneClip)"><use href="#ring" filter="url(#frost)" opacity=".85"/></g>
+
+  <!-- glass pane -->
+  <rect x="167" y="31" width="4" height="184" rx="2" fill="#ffffff" fill-opacity=".38"/>
+  <rect x="170" y="30" width="84" height="186" rx="9" fill="url(#pane)" stroke="url(#paneEdge)" stroke-width="1.2"/>
+  <path d="M176 40c0-3 2-5 5-5h28" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1.4" stroke-linecap="round"/>
+
+  <!-- sphere -->
+  <circle cx="270" cy="168" r="47" fill="url(#sphere)"/>
+  <circle cx="270" cy="168" r="47" fill="url(#rim)"/>
+  <circle cx="270" cy="168" r="47" fill="#000" filter="url(#grain)"/>
+  <ellipse cx="254" cy="146" rx="14" ry="9" fill="#fff" opacity=".28" transform="rotate(-28 254 146)"/>
+</svg>

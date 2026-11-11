@@ -16,10 +16,6 @@ export default function LeveragedMarketIllustration() {
         <rect width="322" height="195" rx="11" fill="url(#perpetual-surface)" stroke="#476d5b" />
         <rect x="10" y="10" width="302" height="174" rx="5" fill="#07100d" />
         <path d="M12 37h298" stroke="#294336" />
-        <g fill="#9bb6a8" fontFamily="Ubuntu, sans-serif" fontSize="8">
-          <text x="22" y="27">PERPETUAL / MARKET STUDY</text>
-          <text x="22" y="172">ILLUSTRATIVE INTERFACE</text>
-        </g>
         <circle className="terminal-pulse" cx="297" cy="24" r="3" fill="#82e7bd" />
         <g stroke="#82e7bd" strokeOpacity=".09">
           <path d="M22 65h208M22 93h208M22 121h208M22 149h208M61 47v103M102 47v103M143 47v103M184 47v103M225 47v103" />
@@ -43,10 +39,6 @@ export default function LeveragedMarketIllustration() {
     <g className="terminal-widget">
       <rect x="350" y="94" width="109" height="153" rx="9" fill="#10231c" stroke="#476d5b" />
       <path d="M360 124h89" stroke="#395d4c" />
-      <g fontFamily="Ubuntu, sans-serif" fontSize="8" fill="#a5bfae">
-        <text x="362" y="113">MARGIN / RISK</text>
-        <text x="362" y="226">CONCEPT STUDY</text>
-      </g>
       <path d="M374 179a30 30 0 1 1 60 0" fill="none" stroke="#294b3b" strokeWidth="5" strokeLinecap="round" />
       <path d="M374 179a30 30 0 0 1 40-28" fill="none" stroke="#82e7bd" strokeOpacity=".7" strokeWidth="5" strokeLinecap="round" />
       <path d="m395 172 18 13m-1-14-16 14" stroke="#d4ecdf" strokeWidth="2" strokeLinecap="round" />

@@ -9,7 +9,7 @@ import { labels, type Locale, type InfoPage } from './content'
 import './information.css'
 import TelegramCommunity from '../community/TelegramCommunity'
 import { bindNavigation, renderNavigation, navigationClick, navigationKeyDown } from './navigation'
-import { chooseTheme, currentTheme } from '../../theme'
+import { chooseTheme, currentTheme, decorateThemeToggle } from '../../theme'
 import LanguageSelect from '../../i18n/LanguageSelect'
 import UntranslatedNotice from '../../i18n/UntranslatedNotice'
 import { dirOf, isLocale, normalizeLocale, pick, pickRecord, switchLocalePath, type AppLocale } from '../../i18n/locales'
@@ -98,7 +98,7 @@ export function Chrome({ locale, part, nav = true }: { locale: AppLocale; part: 
     const toggle = template.content.querySelector('#language-toggle')
     if (toggle) { const slot = document.createElement('span'); slot.id = 'language-slot'; slot.className = 'language-slot'; toggle.replaceWith(slot) }
     const theme = template.content.querySelector('#theme-toggle')
-    if (theme) theme.textContent = document.documentElement.dataset.theme === 'light' ? '◑' : '◐'
+    if (theme) decorateThemeToggle(theme)
     return template.innerHTML
   }, [locale, part, nav, dictionary, faDictionary, location.pathname, navItems, footerLinks])
 
@@ -112,7 +112,6 @@ export function Chrome({ locale, part, nav = true }: { locale: AppLocale; part: 
     if (target.id === 'theme-toggle') {
       const next = currentTheme() === 'light' ? 'dark' : 'light'
       chooseTheme(next)
-      target.textContent = next === 'dark' ? '◐' : '◑'
     } else if (target.classList.contains('menu')) {
       const open = target.getAttribute('aria-expanded') !== 'true'
       target.setAttribute('aria-expanded', String(open))

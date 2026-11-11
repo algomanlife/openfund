@@ -26,7 +26,7 @@ import {
 } from "./model";
 import "./terminal.css";
 import { TerminalContext, useTerminal } from "./TerminalContext";
-import { chooseTheme, currentTheme } from "../../theme";
+import { chooseTheme, currentTheme, DAY_NIGHT_MARKUP } from "../../theme";
 import LanguageSelect from "../../i18n/LanguageSelect";
 import { dirOf, normalizeLocale, pick, pickRecord, switchLocalePath } from "../../i18n/locales";
 export default function TerminalShell({ product }: { product: Product }) {
@@ -205,15 +205,17 @@ export default function TerminalShell({ product }: { product: Product }) {
               {version}
               <RainbowConnect />
               <button
+                type="button"
+                className="of-daynight"
+                aria-pressed={theme === "dark"}
                 aria-label={t("تغییر پوسته", "Toggle theme")}
                 onClick={() => {
                   const next = currentTheme() === "dark" ? "light" : "dark";
                   chooseTheme(next);
                   setTheme(next);
                 }}
-              >
-                {theme === "dark" ? "◐" : "◑"}
-              </button>
+                dangerouslySetInnerHTML={{ __html: DAY_NIGHT_MARKUP }}
+              />
               {/* same page in the chosen locale; both products in every locale */}
               <LanguageSelect locale={locale} onChange={next =>
                 navigate(switchLocalePath(pathname, next) + search)} />

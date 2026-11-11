@@ -201,3 +201,19 @@ html[data-theme=light] .home-gateway .technical-dialog button{background:var(--m
  .home-gateway .home-products{grid-template-columns:minmax(0,1fr)}
  .home-gateway .home-art{height:96px}
 }
+
+/* Persian / Arabic product cards: a readable measure centred under the title,
+   no line clamping (descriptions are never cut), Latin names kept whole. */
+html:is([lang=fa],[lang=ar]) .home-gateway .home-panel-copy{gap:8px;width:100%;align-items:center;text-align:center}
+html:is([lang=fa],[lang=ar]) .home-gateway .home-panel h2{line-height:1.6;margin-top:8px;text-wrap:balance}
+html:is([lang=fa],[lang=ar]) .home-gateway .home-product-note{display:block;-webkit-line-clamp:unset;line-clamp:none;overflow:visible;width:100%;max-width:44ch;margin:0 auto 4px;font-size:13px;line-height:1.95;text-align:center;text-wrap:pretty;overflow-wrap:break-word}
+html:is([lang=fa],[lang=ar]) .home-gateway .home-product-note bdi{white-space:nowrap}
+@media(max-width:700px){
+ html:is([lang=fa],[lang=ar]) .home-gateway .home-panel h2{margin-top:4px}
+ html:is([lang=fa],[lang=ar]) .home-gateway .home-product-note{font-size:12px;line-height:1.85;max-width:none}
+}
+@media(max-height:780px){
+ html:is([lang=fa],[lang=ar]) .home-gateway .home-panel-copy{gap:4px}
+ html:is([lang=fa],[lang=ar]) .home-gateway .home-panel h2{margin-top:2px}
+ html:is([lang=fa],[lang=ar]) .home-gateway .home-product-note{font-size:12.5px;line-height:1.65}
+}

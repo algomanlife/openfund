@@ -1493,12 +1493,27 @@ function renderBottom(){
   if (feedState) { feedState.hidden = tp.status === 'ready' && !tp.readOnly; feedState.textContent = tp.readOnly && tp.status === 'ready' ? L('حساب Gains فقط خواندنی است؛ اجرای سفارش فعال نیست.', 'Gains account is read-only; order execution is not enabled.') : tp.status === 'disconnected' ? L('اتصال حساب قطع است؛ اطلاعات ممکن است قدیمی باشد.', 'Account disconnected; displayed data may be stale.') : tp.status === 'stale' ? L('قیمت حساب به‌روز نیست.', 'Account prices are stale.') : tp.status === 'error' ? L('دریافت حساب ناموفق بود.', 'Account could not be loaded.') : tp.status === 'unavailable' ? L('معاملات این چالش فعال نشده است؛ فقط حساب تمرینی فعال امکان معامله دارد.', 'Challenge execution is not activated; select an active Free Trial to trade.') : tp.status === 'signedout' ? L('برای مشاهده حساب وارد شوید.', 'Sign in to view your account.') : L('در حال دریافت حساب…', 'Loading account…'); }
   if(window.__ofTerminalConfig){
     const ready=tp.status === undefined || tp.status === 'ready';
-    const message=ready?t('bt.empty'):tp.status==='error'?L('دریافت اطلاعات حساب ناموفق بود. دوباره تلاش کنید.','Account activity could not be retrieved. Retry.'):tp.status==='signedout'?L('برای مشاهدهٔ حساب وارد شوید.','Sign in to view your account.'):L('در حال دریافت اطلاعات حساب…','Loading account activity…');
+    const walletState=tp.walletState;
+    const message=ready?t('bt.empty'):tp.status==='error'?L('دریافت اطلاعات حساب ناموفق بود. دوباره تلاش کنید.','Account activity could not be retrieved. Retry.'):tp.status==='signedout'&&walletState!=='checking'?L('برای مشاهدهٔ حساب وارد شوید.','Sign in to view your account.'):L('در حال دریافت اطلاعات حساب…','Loading account activity…');
     $('bt-empty').querySelector('p').textContent=message;
     $('cnt-positions').textContent=ready?st.positions.length:'—';$('cnt-orders').textContent=ready?st.orders.length:'—';
   }
   const hasActivity = st.positions.length || st.orders.length || st.history.length || st.fills.length || st.funding.length;
-  $('bt-empty').hidden = !!hasActivity;
+  /* signed-out empty state (one element shared by all tabs); shown only once
+     the wallet state is known, so it never flashes during reconnect/restore */
+  const walletEmpty = $('bt-wallet-empty');
+  const signedOut = !!window.__ofTerminalConfig && tp.status === 'signedout' && (tp.walletState === 'disconnected' || tp.walletState === 'connected');
+  if (walletEmpty) {
+    walletEmpty.hidden = !signedOut;
+    if (signedOut) {
+      const connected = tp.walletState === 'connected';
+      const text = connected ? L('برای مشاهدهٔ موقعیت‌ها و سفارش‌ها، وارد اوپن‌فاند شوید.', 'Sign in to Openfund to view positions and orders.') : L('برای مشاهده موقعیت‌ها و سفارش‌ها، کیف پول خود را متصل کنید.', 'Connect your wallet to view positions and orders.');
+      const label = connected ? L('ورود به اوپن‌فاند', 'Sign in') : L('اتصال کیف پول', 'Connect wallet');
+      if ($('bt-wallet-empty-text').textContent !== text) $('bt-wallet-empty-text').textContent = text;
+      if ($('bt-wallet-connect').textContent !== label) $('bt-wallet-connect').textContent = label;
+    }
+  }
+  $('bt-empty').hidden = !!hasActivity || signedOut;
   document.querySelectorAll('.bt-table').forEach(el => el.hidden = el.dataset.t !== S.btTab || !hasActivity);
   if(!window.__ofTerminalConfig || tp.status===undefined || tp.status==='ready') $('cnt-positions').textContent = st.positions.length;
   if(!window.__ofTerminalConfig || tp.status===undefined || tp.status==='ready') $('cnt-orders').textContent = st.orders.length;
@@ -1792,6 +1807,9 @@ function renderAccount(){
   $('ac-pos').textContent = a.positionCount ?? '—';
   $('ac-ord').textContent = a.orderCount ?? '—';
 }
+/* the empty-state button runs the shell's existing wallet flow (connect,
+   or Openfund sign-in when a wallet is already connected) */
+$('bt-wallet-connect')?.addEventListener('click', () => { try { window.parent.__ofOpenConnect?.(); } catch (e) { /* shell unavailable */ } });
 $('wallet-btn').addEventListener('click', () => {
   if (!wp.connected){
     wp.connectDemo();

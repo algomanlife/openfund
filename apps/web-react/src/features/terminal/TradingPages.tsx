@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useSession } from "../../session/useOpenfundSession";
+import { useAccount } from "wagmi";
 import body from "../../pages/terminal-body.html?raw";
 import workspaceStyles from "./workspace.css?raw";
 import { setupWorkspaceLayout } from "./workspaceLayout";
@@ -17,6 +18,20 @@ function useAccountAdapter(product: Product, context: any) {
     [revision, setRevision] = useState(0);
   const status = useRef("signedout"),
     signed = session.status === "authenticated";
+  /* Display-only wallet state for the signed-out empty state. 'checking'
+     covers wagmi's reconnect and the session restore so the empty state
+     never flashes before the connection is known. */
+  const { status: walletStatus, isConnected } = useAccount();
+  const walletState = useRef("checking");
+  const nextWalletState =
+    walletStatus === "reconnecting" || walletStatus === "connecting" ? "checking"
+      : !isConnected ? "disconnected"
+      : session.status === "anonymous" ? "checking" : "connected";
+  useEffect(() => {
+    if (walletState.current === nextWalletState) return;
+    walletState.current = nextWalletState;
+    window.dispatchEvent(new Event("of-trading-update"));
+  }, [nextWalletState]);
   const owner = useRef<string | null>(null);
   useEffect(() => {
     /* a manual refresh (revision) must not blank the last snapshot; only a
@@ -66,6 +81,9 @@ function useAccountAdapter(product: Product, context: any) {
       readOnly: true,
       canTrade: false,
       serverMode: true,
+      get walletState() {
+        return walletState.current;
+      },
       get status() {
         return product === "prop" && signed ? context?.accounts?.[0]?.type === "challenge" ? "unavailable" : "loading" : status.current;
       },
@@ -258,6 +276,14 @@ function workspaceMarkup(locale: AppLocale) {
   retry.setAttribute("aria-label", pick(locale, 'تازه‌سازی حساب', 'Refresh account'));
   retry.onclick = null;
   template.content.querySelector("#bt-empty")?.appendChild(retry);
+  /* One shared signed-out empty state for every account tab; terminal.js
+     shows it only once the wallet state is known (see renderBottom). */
+  const walletEmpty = document.createElement("div");
+  walletEmpty.id = "bt-wallet-empty";
+  walletEmpty.className = "wallet-empty";
+  walletEmpty.hidden = true;
+  walletEmpty.innerHTML = '<img src="assets/wallet-empty.svg" width="240" height="160" alt="" decoding="async"><p id="bt-wallet-empty-text"></p><button type="button" id="bt-wallet-connect" class="wallet-empty-btn"></button>';
+  template.content.querySelector("#bt-empty")?.after(walletEmpty);
   return template.innerHTML;
 }
 

@@ -27,7 +27,7 @@ export const labels = {
   brandAmbassador: text('Brand Ambassador', 'سفیر برند'),
   coach: text('Verified Trading Coach', 'کوچ معاملاتی تأییدشده'),
   faq: text('FAQ', 'پرسش‌های متداول'),
-  referral: text('Growth Partner', 'همیار رشد'),
+  referral: text('Referral & Rewards', 'معرفی و پاداش'),
   tools: text('Tools', 'ابزارها'),
   learn: text('Learn', 'آموزش'),
   governance: text('Governance', 'حاکمیت'),
