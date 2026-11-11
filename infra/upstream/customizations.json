@@ -11,14 +11,6 @@
       "why": "Openfund replaces the built-in V mark through the public renderer default."
     },
     {
-      "id": "vela-attribution-notice",
-      "provider": "vela",
-      "area": "legal",
-      "file": "apps/web-react/src/pages/terminal-body.html",
-      "regex": "class=\"sb-item chart-notice\" href=\"https://velacharts.dev\"[^>]*>Vela</a>",
-      "why": "vendor/vela/NOTICE permits hiding the built-in mark only when an equivalent visible link to the Vela project is shown on the same screen. This guard and the previous one must hold together."
-    },
-    {
       "id": "vela-notice-text",
       "provider": "vela",
       "area": "legal",

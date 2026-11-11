@@ -640,7 +640,10 @@ document.addEventListener('keydown', e => {
 });
 $('market-select-btn').addEventListener('click', () => ddOpen ? closeDropdown() : openDropdown());
 $('market-search').addEventListener('input', e => renderDropdown(e.target.value));
-document.addEventListener('click', e => { if (ddOpen && !e.target.closest('.market-select, .market-dropdown')) closeDropdown(); });
+document.addEventListener('click', e => { if (ddOpen && e.target.isConnected && !e.target.closest('.market-select, .market-dropdown')) closeDropdown(); });
+/* shared terminal popover coordination (workspaceLayout.ts): clicks in the
+   parent shell, or opening another popover, close this menu */
+window.addEventListener('of-close-popovers', () => { if (ddOpen) closeDropdown(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && ddOpen) closeDropdown(); });
 function renderCats(){
   const counts = { all: board.meta.size };
@@ -1955,7 +1958,10 @@ function boot(){
         /* other markets' ticks only matter to the open dropdown, positions
            and the throttled blocks below */
         if (selectedDirty) { selectedDirty = false; renderMarketStats(); renderStatus(); computeForm(); }
-        if (ddOpen) renderDropdown($('market-search').value);
+        /* live ticks patch price cells in place; rebuilding the list here
+           detached the row under the pointer, so a click was lost or read
+           as an outside click that closed the menu */
+        if (ddOpen) paintDropdown(false);
         if (now - lastBook > 1500){ lastBook = now; renderBook(); noteTrade(board.marks.get(S.marketId)); renderTrades(); }
         if (now - lastTrig > 1500){ lastTrig = now; tp.checkTriggers(); renderAccount(); velaPositionsSync(); if (S.btTab === 'positions' && tp.state.positions.length) renderBottom(); else window.OpenfundShareCard?.refresh(); }
       });

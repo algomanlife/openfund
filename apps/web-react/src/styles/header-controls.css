@@ -1,0 +1,127 @@
+/* Shared header controls — one geometry for the public website header
+   (.openfund-header .nav-actions) and the trading terminal header
+   (.of-terminal-actions): wallet, terminal entry, language and theme.
+   Only presentation lives here; no control behavior changes.
+
+   Logical order (both headers): theme · language · [terminal entry] · wallet ·
+   [menu]. The DOM follows the document direction, so Persian/Arabic mirror it.
+
+   Selectors are prefixed with :root so they outrank older per-page
+   breakpoint rules (legacy style.css, information.css) without !important,
+   except where the animated toggle itself already uses !important. */
+
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) {
+  --hc-h: 36px;          /* control height */
+  --hc-r: 6px;           /* border radius */
+  --hc-px: 12px;         /* inline padding */
+  --hc-gap: 8px;         /* gap between controls */
+  --hc-fs: 12.5px;       /* label size */
+  --hc-line: var(--line, #ffffff25);
+  display: flex; flex-wrap: nowrap; align-items: center; gap: var(--hc-gap); min-width: 0;
+}
+/* The terminal header row is 40px tall: same system, compact scale. */
+:root .of-terminal-header .of-terminal-actions { --hc-h: 30px; --hc-px: 10px; --hc-gap: 6px; --hc-fs: 12px; }
+@media (max-width: 700px) {
+  /* Comfortable touch targets on phones; labels never shrink below 11px. */
+  :root .openfund-header .nav-actions { --hc-h: 40px; --hc-px: 10px; --hc-gap: 6px; --hc-fs: 12px; }
+}
+@media (max-width: 650px) {
+  :root .of-terminal-header .of-terminal-actions { --hc-h: 32px; --hc-px: 8px; --hc-gap: 4px; --hc-fs: 11.5px; }
+}
+
+/* ---- shared box: height, border, radius, alignment ---------------------- */
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) :is(
+  .nav-cta, .rk-chip, .of-language-select, .of-mobile-menu
+) {
+  box-sizing: border-box;
+  height: var(--hc-h); min-height: var(--hc-h); max-height: var(--hc-h);
+  padding-block: 0; padding-inline: var(--hc-px);
+  border-width: 1px; border-style: solid; border-radius: var(--hc-r);
+  font-size: var(--hc-fs); line-height: 1;
+  align-items: center; justify-content: center;
+  flex: 0 0 auto; white-space: nowrap; margin: 0; vertical-align: middle;
+}
+/* visibility stays with each header's own breakpoints (the terminal menu
+   button is phone-only); only visible controls get the flex box */
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) :is(.rk-chip, .of-language-select) { display: inline-flex; }
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) :is(.rk-chip:not(.rk-chip-connect), .of-language-select, .of-mobile-menu) {
+  border-color: var(--hc-line);
+}
+
+/* ---- terminal entry (website): primary CTA look, aligned height -------- */
+:root .openfund-header .nav-actions .nav-cta { gap: 10px; font-weight: 600; }
+:root .openfund-header .nav-actions .nav-cta > span { font-size: 11px; line-height: 1; }
+
+/* ---- wallet: address stays horizontal, never squeezed by flex ----------- */
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) :is(#wallet-root, #rainbow-landing-host, .rk-wrap, .rk-account-menu) {
+  flex: 0 0 auto; display: flex; align-items: center; min-width: max-content;
+}
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .rk-chip { gap: 8px; }
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .rk-account-summary {
+  max-width: none; flex-wrap: nowrap; writing-mode: horizontal-tb;
+}
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .rk-chip-addr {
+  white-space: nowrap; direction: ltr; unicode-bidi: isolate; font-size: calc(var(--hc-fs) - 1px);
+}
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .rk-chevron { flex: 0 0 auto; display: block; }
+
+/* ---- language: icon · code · chevron, isolated from the page direction --- */
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-language-select {
+  min-width: 0; padding-inline: var(--hc-px) calc(var(--hc-px) + 10px); position: relative;
+}
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-language-select:dir(rtl) {
+  padding-inline: var(--hc-px) calc(var(--hc-px) + 10px);
+}
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-language-face {
+  gap: 6px; direction: ltr; unicode-bidi: isolate; font-size: var(--hc-fs);
+}
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-language-select::after {
+  inset-inline-end: calc(var(--hc-px) - 2px);
+}
+
+/* ---- theme: the animated pill is unchanged; a matching frame gives it the
+   same outer height/border as its neighbours. The frame is a pseudo-element
+   of the button itself, so clicking the frame still toggles the theme. ---- */
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-daynight {
+  --dn-w: 50px;
+  /* ring offset that makes the framed toggle exactly --hc-h tall */
+  --dn-ring: calc((var(--hc-h) - var(--dn-w) * 243 / 530) / 2 - 1px);
+  margin-inline: calc(var(--dn-ring) + 1px) !important;
+  /* an outline never adds to layout or scroll size (unlike a pseudo frame) */
+  outline: 1px solid var(--hc-line); outline-offset: var(--dn-ring);
+}
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-daynight:focus-visible {
+  outline: 2px solid var(--mint, #82e7bd); outline-offset: var(--dn-ring);
+}
+
+/* ---- terminal-specific neighbours keep the shared vertical axis -------- */
+:root .of-terminal-actions .of-release-version { align-self: center; }
+:root .of-terminal-actions > button.of-mobile-menu { background: transparent; color: inherit; }
+
+/* The public hamburger matches the control height (square). */
+:root .openfund-header .nav-actions .menu { box-sizing: border-box; width: var(--hc-h); height: var(--hc-h); padding: 0 10px; border-radius: var(--hc-r); flex: 0 0 auto; }
+/* Icon-only connect chip on phones stays square with its neighbours. */
+@media (max-width: 600px) {
+  :root .openfund-header .nav-actions .rk-chip-connect { width: var(--hc-h); min-width: var(--hc-h); padding-inline: 0; }
+}
+/* Smallest phones (≤420px, e.g. 360/390 with long Russian labels): tighter
+   spacing and no decorative arrow, so every control fits on one row without
+   shrinking or truncating its label. */
+@media (max-width: 420px) {
+  :root .openfund-header .nav-actions { --hc-px: 8px; --hc-gap: 4px; }
+  :root .openfund-header .nav-actions .nav-cta > span { display: none; }
+  :root .openfund-header .nav-actions .of-language-icon { display: none; }
+  :root .openfund-header .nav-actions .of-daynight { --dn-w: 44px; }
+}
+/* Terminal phone header: the connect chip is icon-only (aria-label kept) so
+   theme · language · wallet fit the first grid row. */
+@media (max-width: 650px) {
+  :root .of-terminal-actions .rk-chip-connect { width: var(--hc-h); min-width: var(--hc-h); padding-inline: 0; }
+  :root .of-terminal-actions .rk-chip-connect .rk-connect-label { display: none; }
+  :root .of-terminal-actions .of-language-icon { display: none; }
+  /* connected address chip: headroom for wider platform monospace fonts */
+  :root .of-terminal-actions .rk-account-summary { gap: 6px; max-width: 132px; overflow: hidden; }
+  :root .of-terminal-actions .rk-account-summary .rk-chevron { display: none; }
+  :root .of-terminal-actions .rk-chip-addr { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  :root .of-terminal-header .of-terminal-actions .of-daynight { --dn-w: 42px; }
+}

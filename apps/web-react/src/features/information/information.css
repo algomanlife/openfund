@@ -223,11 +223,23 @@ html[lang=en] .information-page .info-hero h1{font-size:58px;letter-spacing:-2px
 .openfund-header .nav-actions { min-width:0; gap:8px; }
 .openfund-header #wallet-root { flex:0 0 auto; }
 .tradingview-credit small { font-size:10px; opacity:.75; }
-@media(max-width:1400px) {
-  .openfund-header .menu { display:flex; }
-  .openfund-header .navlinks { display:none; }
-  .openfund-header .navlinks.open { display:flex; position:absolute; top:100%; inset-inline:12px; padding:16px; flex-direction:column; background:var(--obsidian); border:1px solid var(--line); z-index:100; }
-}
+/* Width-aware navigation (navigation.ts fitNavigation): the header measures
+   whether every label and action fits on one row; when they do not, it uses
+   the menu button. The 1000px rule below is the no-script fallback. The
+   header row may use up to 1440px so long locales fit on wide screens. */
+.openfund-header > .nav.container { width:min(1440px,100%); }
+.openfund-header .navlinks > a, .openfund-header .navlinks > .nav-account, .openfund-header .resources-toggle { flex:0 0 auto; }
+.openfund-header.nav-overflow .menu { display:flex; flex-direction:column; justify-content:center; gap:5px; border:1px solid var(--line,#ffffff26); background:none; }
+.openfund-header.nav-overflow .menu span { width:100%; height:1px; background:var(--body,#bbc6c0); }
+.openfund-header.nav-overflow .navlinks { display:none; }
+.openfund-header.nav-overflow .navlinks.open { display:flex; position:absolute; top:100%; inset-inline:12px; padding:16px; flex-direction:column; align-items:stretch; gap:16px; font-size:14px; background:var(--obsidian,#0b100d); border:1px solid var(--line); z-index:100; max-height:calc(100dvh - 90px); overflow-y:auto; }
+.openfund-header.nav-overflow .navlinks.open .nav-account { width:100%; }
+.openfund-header.nav-overflow .navlinks.open .resources-toggle { display:flex; justify-content:space-between; width:100%; }
+.openfund-header.nav-overflow .navlinks.open .nav-dropdown { display:block; position:static; opacity:1; visibility:visible; pointer-events:auto; transform:none; background:none; border:0; box-shadow:none; padding:0; width:auto; backdrop-filter:none; }
+.openfund-header.nav-overflow .navlinks.open .nav-dropdown > span { display:none; }
+.openfund-header.nav-overflow .navlinks.open .nav-dropdown a { padding:9px 4px; font-size:13px; font-weight:400; }
+/* Desktop dropdowns stay inside the viewport near the window edge. */
+.openfund-header .nav-dropdown { max-width:calc(100vw - 24px); }
 @media(max-width:600px) {
   .openfund-header .nav { gap:8px; min-height:76px; padding-block:10px; flex-wrap:wrap; }
   .openfund-header .brand { margin-inline-end:auto; }

@@ -331,8 +331,8 @@ const ADDRESS_DOC: CmsLegalDoc = {
   docType: 'address',
   title: { fa: 'آدرس', en: 'Address' },
   paragraphs: [{
-    fa: 'ایران (سرزمین پارس) - استان فارس - شهر شیراز - خیابان دانش آموز (بین خیابان مهر و بلوار مطهری) کوچه ۱۳ دانش آموز',
-    en: 'Iran (Land of Persia), Fars Province, Shiraz, Danesh Amouz Street (between Mehr Street and Motahari Boulevard), Danesh Amouz Alley 13.',
+    fa: 'ایران – استان فارس – شهر شیراز – خیابان دانش‌آموز (بین خیابان مهر و بلوار مطهری) – کوچه ۱۳ دانش‌آموز',
+    en: 'Iran, Fars Province, Shiraz, Danesh Amouz Street (between Mehr Street and Motahari Boulevard), Danesh Amouz Alley 13.',
   }],
 }
 export interface CmsLegalDoc { docType: string; title: { fa: string; en: string }; paragraphs: Array<{ fa: string; en: string }> }

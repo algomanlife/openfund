@@ -42,13 +42,14 @@ async function fixture(context) {
     for (const [width,height] of [[1920,1080],[1440,900],[1366,768],[1280,720],[1024,768],[768,1024],[390,844],[375,667]]) {
       await page.setViewportSize({width,height}); await page.goto(BASE+'/fa/home');
       await page.locator('.technical-feature').last().waitFor(); await page.evaluate(()=>document.fonts.ready);
-      await page.waitForFunction(() => Math.abs(parseFloat(getComputedStyle(document.querySelector('.home-gateway')).minHeight) - (innerHeight - document.querySelector('header').getBoundingClientRect().height)) <= 1 && getComputedStyle(document.querySelector('.home-stage')).display === 'flex');
+      // Usable height excludes the header and, on Persian pages, the access notice and fixed price strip.
+      await page.waitForFunction(() => Math.abs(parseFloat(getComputedStyle(document.querySelector('.home-gateway')).minHeight) - (innerHeight - document.querySelector('header').getBoundingClientRect().height - (document.querySelector('.iran-access-notice')?.getBoundingClientRect().height || 0) - (document.querySelector('.bitpin-ticker')?.getBoundingClientRect().height || 0))) <= 1 && getComputedStyle(document.querySelector('.home-stage')).display === 'flex');
       const geometry = await page.evaluate(() => {
         const visible = [...document.querySelectorAll('.home-gateway h1,.home-panel h2,.home-product-note,.home-panel .button,.home-community .telegram-community,.technical-heading,.technical-feature,.made-by-humans,header a,header button')].filter(e=>e.getBoundingClientRect().width);
         const gateway = document.querySelector('.home-gateway').getBoundingClientRect();
         const footerCount = document.querySelectorAll('footer').length;
-        return {width:innerWidth,height:innerHeight,scrollWidth:document.documentElement.scrollWidth,scrollHeight:document.documentElement.scrollHeight,gatewayBottom:gateway.bottom,footerCount,
-          outside:visible.filter(e=>{const r=e.getBoundingClientRect();return r.left<-.5||r.top<-.5||r.right>innerWidth+.5||r.bottom>innerHeight+.5}).map(e=>e.textContent),
+        return {width:innerWidth,height:innerHeight,strip:document.querySelector('.bitpin-ticker')?.getBoundingClientRect().height||0,scrollWidth:document.documentElement.scrollWidth,scrollHeight:document.documentElement.scrollHeight,gatewayBottom:gateway.bottom,footerCount,
+          outside:visible.filter(e=>{const r=e.getBoundingClientRect();return r.left<-.5||r.top<-.5||r.right>innerWidth+.5||r.bottom>innerHeight-(document.querySelector('.bitpin-ticker')?.getBoundingClientRect().height||0)+.5}).map(e=>e.textContent),
           /* phones scroll vertically; nothing may leave the viewport sideways */
           outsideX:visible.filter(e=>{const r=e.getBoundingClientRect();return r.left<-.5||r.right>innerWidth+.5}).map(e=>e.textContent),
           // Decorative button shine intentionally extends scrollWidth. Inspect
@@ -64,7 +65,7 @@ async function fixture(context) {
       matrix.push(geometry); console.log(JSON.stringify(geometry));
       // Desktop/tablet: the gateway fits the usable viewport. Phones (≤700px)
       // keep readable sizes and may scroll vertically, never horizontally.
-      if (width > 700) check(`${width}x${height} gateway fits usable viewport`,geometry.scrollWidth<=width+1&&geometry.scrollHeight<=height+1&&geometry.gatewayBottom<=height+1&&geometry.outside.length===0&&geometry.clipped.length===0);
+      if (width > 700) check(`${width}x${height} gateway fits usable viewport`,geometry.scrollWidth<=width+1&&geometry.scrollHeight<=height+1&&geometry.gatewayBottom<=height-geometry.strip+1&&geometry.outside.length===0&&geometry.clipped.length===0);
       else check(`${width}x${height} phone gateway has no horizontal overflow or clipping`,geometry.scrollWidth<=width+1&&geometry.outsideX.length===0&&geometry.clipped.length===0);
       check(`${width}x${height} Persian gateway has no footer`,geometry.footerCount===0);
       check(`${width}x${height} 44px product/feature targets`,geometry.targets.every(r=>r.w>=44&&r.h>=44));

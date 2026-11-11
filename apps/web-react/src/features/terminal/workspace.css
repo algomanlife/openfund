@@ -493,3 +493,19 @@ html[data-theme="light"] .wallet-empty-btn { color: #fff; }
   .wallet-empty p { font-size: 12px; line-height: 1.7; }
   .wallet-empty-btn { min-height: 44px; }
 }
+
+/* Market information strip follows the interface direction: RTL for fa/ar,
+   LTR for en/ru/zh-CN. Separators and the More stats control use logical
+   sides; trading symbols and numeric values stay isolated LTR so signs,
+   decimals and pairs read correctly in either direction. The chart and the
+   workspace columns below are unaffected. */
+html[dir="rtl"] .market-bar { direction: rtl; }
+.market-select { border-right: 0; border-inline-end: 1px solid var(--line); }
+.stat { border-right: 0; border-inline-end: 1px solid var(--line); }
+.market-details { margin-left: 0; margin-inline-start: auto; }
+.market-details summary { border-left: 0; border-inline-start: 1px solid var(--line); white-space: nowrap; }
+.market-details-content { right: auto; inset-inline-end: 0; max-width: calc(100vw - 16px); }
+.market-dropdown { left: auto; right: auto; inset-inline-start: 8px; max-width: calc(100vw - 16px); }
+#cur-pair, .stat dd, .dd-list .mk b { direction: ltr; unicode-bidi: isolate; }
+.stat dt, .stat dd { white-space: nowrap; }
+html[dir="rtl"] .market-details-content .stat dd { text-align: left; }

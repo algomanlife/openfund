@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useParams, useSearchParams, useNavigate, Navigate, useLocation } from 'react-router-dom'
-import { bindNavigation, renderNavigation, navigationClick, navigationKeyDown } from '../features/information/navigation'
+import { bindNavigation, fitNavigation, renderNavigation, navigationClick, navigationKeyDown } from '../features/information/navigation'
 import '../features/information/information.css'
 import landingBody from './landing-body.html?raw'
 import { RainbowConnect } from '../wallet/RainbowConnect'
+import { legacyStylesheet } from '../config/legacyAssets'
+import ChallengeWalletPanel from '../wallet/ChallengeWalletPanel'
+import IranAccessNotice from '../features/notice/IranAccessNotice'
+import BitpinTicker from '../features/ticker/BitpinTicker'
 import TelegramCommunity from '../features/community/TelegramCommunity'
 import { CheckoutHost } from '../features/purchase/CheckoutHost'
 import { fetchCmsNavigation, fetchCmsTranslations, fetchCmsLegacyPlans, fetchCmsFaqs, fetchCmsLegal, fetchCmsFooterLinks, invalidateCmsCache } from '../cms/client'
@@ -166,6 +170,7 @@ export default function Landing() {
   }, [searchParams])
   useEffect(() => {
     const unbind = bindNavigation(document)
+    const unfit = fitNavigation(document)
     let active = true
     let timer: ReturnType<typeof setTimeout>
     let nav: Awaited<ReturnType<typeof fetchCmsNavigation>> = null
@@ -201,7 +206,7 @@ export default function Landing() {
     const keydown = (event: KeyboardEvent) => { navigationKeyDown(event, document) }
     document.addEventListener('click', click, true)
     document.addEventListener('keydown', keydown, true)
-    return () => { unbind(); active = false; clearTimeout(timer); removeEventListener('of-language', refresh); document.removeEventListener('click', click, true); document.removeEventListener('keydown', keydown, true) }
+    return () => { unbind(); unfit(); active = false; clearTimeout(timer); removeEventListener('of-language', refresh); document.removeEventListener('click', click, true); document.removeEventListener('keydown', keydown, true) }
   }, [])
   useEffect(() => {
     /* the route locale is authoritative on entry — sync the stored preference
@@ -247,15 +252,31 @@ export default function Landing() {
     mount.id = 'rainbow-landing-host'
     host.appendChild(mount)
     setWalletHost(mount)
-    /* the "Sign in with a Web3 wallet" feature card opens the real RainbowKit modal
-       (window.__ofOpenConnect is exposed by RainbowConnect) */
-    const trigger = document.getElementById('wallet-trigger')
-    const onTrigger = () => { (window as any).__ofOpenConnect?.() }
-    trigger?.addEventListener('click', onTrigger)
-    return () => {
-      trigger?.removeEventListener('click', onTrigger)
-      mount.remove()
-    }
+    return () => { mount.remove() }
+  }, [])
+  /* The "Sign in with a Web3 wallet" card follows the existing wallet/SIWE
+     session (ChallengeWalletPanel); its static legacy markup is replaced by a
+     React-owned host so the legacy translator leaves it alone. */
+  const [walletCardHost, setWalletCardHost] = useState<HTMLElement | null>(null)
+  useEffect(() => {
+    const card = document.getElementById('wallet-trigger')?.closest('article')
+    if (!card) return
+    const host = document.createElement('div')
+    host.className = 'wallet-panel-host'
+    host.dataset.localeOwned = 'react'
+    card.replaceChildren(host)
+    setWalletCardHost(host)
+  }, [])
+  /* Persian-only access notice directly below the shared header */
+  const [noticeHost, setNoticeHost] = useState<HTMLElement | null>(null)
+  useEffect(() => {
+    const header = document.querySelector('header.openfund-header')
+    if (!header) return
+    const host = document.createElement('div')
+    host.dataset.localeOwned = 'react'
+    header.after(host)
+    setNoticeHost(host)
+    return () => { host.remove() }
   }, [])
 
   useEffect(() => {
@@ -276,7 +297,7 @@ export default function Landing() {
       STYLES.forEach(href => {
         const l = document.createElement('link')
         l.rel = 'stylesheet'
-        l.href = base + href
+        l.href = legacyStylesheet(href)
         l.dataset.page = 'landing'
         document.head.appendChild(l)
       })
@@ -389,6 +410,9 @@ export default function Landing() {
       {languageHost && createPortal(<LanguageSelect locale={routeLocale} onChange={next => navigate(switchLocalePath(routerLocation.pathname, next) + routerLocation.search)} />, languageHost)}
       {communityHosts.map((host, i) => createPortal(<TelegramCommunity locale={communityLocale} />, host, String(i)))}
       <CheckoutHost />
+      {walletCardHost && createPortal(<ChallengeWalletPanel locale={communityLocale} />, walletCardHost)}
+      {noticeHost && communityLocale === 'fa' && createPortal(<IranAccessNotice />, noticeHost)}
+      {communityLocale === 'fa' && <BitpinTicker />}
       <div dangerouslySetInnerHTML={{ __html: landingMarkup }} />
     </>
   )
