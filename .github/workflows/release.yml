@@ -118,7 +118,7 @@ jobs:
             -e CORS_ENABLED=true -e CORS_ORIGIN=true directus/directus:11.9.1
           ready=false
           for i in $(seq 1 90); do
-            if curl -fsS "$DIRECTUS_URL/server/health" >/dev/null; then ready=true; break; fi
+            if curl -fsS "$DIRECTUS_URL/server/ping" >/dev/null; then ready=true; break; fi
             sleep 1
           done
           if [ "$ready" != true ]; then docker logs openfund-package-cms --tail 50; exit 1; fi
@@ -216,7 +216,7 @@ jobs:
           trap 'docker stop openfund-cms-ci >/dev/null' EXIT
           ready=false
           for i in $(seq 1 90); do
-            if curl -fsS "$DIRECTUS_URL/server/health" >/dev/null; then ready=true; break; fi
+            if curl -fsS "$DIRECTUS_URL/server/ping" >/dev/null; then ready=true; break; fi
             sleep 1
           done
           if [ "$ready" != true ]; then docker logs openfund-cms-ci --tail 50; exit 1; fi

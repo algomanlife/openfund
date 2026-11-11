@@ -87,7 +87,10 @@ td.up{color:#82e7bd}td.down{color:#e89483}
 .pf-overlay{position:fixed;inset:0;background:#000000aa;display:grid;place-items:center;z-index:2147483000}
 .pf-detail{width:min(560px,calc(100vw - 40px));max-height:86vh;overflow:auto;margin:0;
   background:#0c1710;color:#f1f3ef;border:1px solid #82e7bd44;border-radius:14px;padding:22px 24px;
-  font-family:'Irancell',Tahoma,sans-serif}
+  font-family:Ubuntu,'Irancell',Tahoma,sans-serif}
+/* Irancell renders ASCII digits as Persian numerals: Persian only */
+:lang(fa) .pf-detail{font-family:'Irancell',Tahoma,sans-serif}
+:lang(ar) .pf-detail{font-family:Ubuntu,Vazirmatn,Tahoma,sans-serif}
 .pf-detail h2{font-size:18px;font-weight:600;margin:4px 0 16px}
 .pf-detail h3{font-size:13px;font-weight:600;color:#cbd8d0;margin:18px 0 8px}
 .pf-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 22px}

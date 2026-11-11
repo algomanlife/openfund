@@ -79,6 +79,9 @@ services:
         value: 1mb
       - key: IP_TRUST_PROXY       # Render terminates TLS in front of the service. Explicit so Directus 12
         value: "true"             # (default false) keeps client-IP resolution identical to 11.x.
+      - key: LICENSE_KEY          # Directus 12+ licence / Open Innovation Grant key (secret). Required before the
+        sync: false               # image moves to 12.x (Core ignores field-level and row-level permission rules);
+                                  # unset on 11.x. Never set together with LICENSE_TOKEN.
 
   # ------------------------------------------------- API + web (one origin) --
   - type: web

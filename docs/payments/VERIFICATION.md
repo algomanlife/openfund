@@ -61,8 +61,10 @@ needs a real, low-value mainnet payment.
 
 ### Configuration is validated at verification time
 
-- `PURCHASE_RPC_URL` is required in production. There is no public-RPC
-  fallback. The RPC's `eth_chainId` must equal `PURCHASE_PAYMENT_CHAIN`.
+- A dedicated RPC endpoint per payment chain (`PURCHASE_RPC_URLS`, or the
+  legacy `PURCHASE_RPC_URL`) is required in production. There is no public-RPC
+  fallback. Each EVM RPC's `eth_chainId` must equal the chain it is configured for in
+  `PURCHASE_RPC_URLS`.
 - `PURCHASE_PAYMENT_DECIMALS` is optional. When set it must equal the
   contract's `decimals()`; a mismatch fails closed (`payment_misconfigured`).
   When unset the contract value is used. The previous silent default of 18

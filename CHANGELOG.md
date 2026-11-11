@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+- PR #81 completion (branch `claude/pr81-completion`):
+  - Coupon administration acceptance now runs against a real Directus UI and
+    passes 16/16 (create a 100% internal coupon in Directus, zero-cost
+    checkout, provisioning, redemption history, reuse rejection, access
+    control). Test fixes only; no schema change.
+  - Checkout, profile and order dialogs: Latin digits outside Persian (the
+    Irancell font rendered `$80` as Persian numerals) and the localized plan
+    name instead of the bilingual catalog label (`/purchases/plans` adds
+    `names`).
+  - Payments: `payments.source_token` / `source_amount` now store DePay's
+    `sent_token` / `sent_amount` (the payer's token) instead of the settlement
+    values. DePay documentation rewritten for multi-chain settlement with the
+    exact dashboard and Render settings.
+  - Directus 12: second rehearsal shows the unlicensed Core tier also drops
+    field-restricted permissions (Commerce Admin loses coupon create/update).
+    `release.yml` probes use `/server/ping`; `render.yaml` adds a `LICENSE_KEY`
+    secret slot. The image stays on 11.9.1 pending a licence.
+  - README rewritten as a business-and-technical project homepage with real
+    screenshots; engineering sections moved to
+    `docs/development/ENGINEERING_REFERENCE.md` and checked by `docs:required`.
+
 - Production readiness (branch `codex/production-readiness`, ADR 0022):
   - Wallet, SIWE and checkout are **Arbitrum One (42161) only**; other SIWE
     chains are rejected (`invalid_chain`), wallets are asked to switch, and

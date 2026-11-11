@@ -1,145 +1,251 @@
 <div align="center">
 
-<img src="docs/assets/brand/mark-mint.svg" alt="Official Openfund mark" width="64" />
+<img src="docs/assets/brand/mark-mint.svg" alt="Openfund logo" width="88" />
 
 # Openfund
 
-**OPENFUND — A CLEARER WAY FORWARD**
+**A clearer way forward**
 
-Trading software for market discovery, simulated Prop trading and wallet-scoped Perpetual account review.
+Trading challenges, a professional trading terminal and a transparent economy,
+in one wallet-native platform.
 
-[Documentation](docs/README.md) · [Feature status](docs/product/FEATURE_STATUS.md) · [Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md)
+[**openfi.cloud**](https://openfi.cloud) · [**openfund.cloud**](https://openfund.cloud)
 
+[![Latest release](https://img.shields.io/github/v/release/algomanlife/openfund?label=release&color=82e7bd&labelColor=060808)](https://github.com/algomanlife/openfund/releases/latest)
+[![Deployed version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fopenfi.cloud%2Fversion&query=%24.version&label=deployed&color=82e7bd&labelColor=060808)](https://openfi.cloud/version)
 [![CI](https://github.com/algomanlife/openfund/actions/workflows/ci.yml/badge.svg)](https://github.com/algomanlife/openfund/actions/workflows/ci.yml)
+![License: not yet selected](https://img.shields.io/badge/license-not%20yet%20selected-C6FF52?labelColor=060808)
+
+[Product](#product-ecosystem) · [Gallery](#product-gallery) · [Business model](#business-model) · [Architecture](#technical-architecture) · [Development](#development-workflow) · [Releases](#versioning-and-releases) · [Docs](docs/README.md)
+
+<br />
+
+<img src="docs/assets/screenshots/readme/home-en-desktop.jpg" alt="Openfund homepage on openfi.cloud: Prop Trading Challenges and Leveraged Perpetual Trading" width="880" />
 
 </div>
 
-## Status at a glance
-
-> This README is not live status. The authority order is: GitHub Release/tag, then
-> commit SHA, then the running service's `/version`, then the frontend manifest, then
-> pull requests, then this file and the changelog
-> ([version authority](docs/deployment/RELEASES.md#version-authority-hierarchy)).
-
-**Read-only production snapshot (2026-11-10):**
-
-| Source | Result |
-| --- | --- |
-| `https://openfund.cloud/version` | `status: matched`, version **0.4.4**, commit `0c45594`, manifest `official: false` (a gated current-`main` build) |
-| GitHub Release `v0.4.4` (latest official) | Tag points to `c1cb707` |
-| `https://openfund.cloud/purchases/plans` | `paymentsEnabled: false`: challenge purchases are not active in production |
-| Render service `openfund` | Commit auto-deploy off. `PURCHASE_PAYMENT_CHAIN=11155111`, no payment receiver, token, RPC or DePay keys configured |
-
-Check live status with `curl https://openfund.cloud/version` and `gh release list`.
-A merged pull request is **not** deployed until `/version` says so.
-
-| State | What it covers |
-| --- | --- |
-| **Live** | Prop and Perpetual terminals, wallet sign-in, bilingual website, Prop engine |
-| **Implemented in source, disabled in production** | Challenge purchases with DePay and coupons (owner configuration required), admin APIs (`ADMIN_API_TOKEN` unset) |
-| **Implemented, not production-active** | Economy, Ambassador (IB), Governance (off-chain), Live Market Access control plane |
-| **Planned** | Desktop and mobile apps, rewards, operational Protocol routing |
-
 ## Project overview
 
-Openfund is an early-stage trading-technology project maintained in a public
-repository: a bilingual website, a shared trading terminal, wallet identity,
-portfolios and private journals. Prop and Perpetual share presentation, not
-financial balances or execution authority. Source availability is not a claim
-of production readiness, audited security or an active funded-trading service.
+Openfund is a trading-technology company building a platform for traders who
+want to prove their skill without risking their own capital first.
 
-| Area | Implemented scope | Boundaries |
+- **Who it serves.** Retail traders who want a structured, rules-based path to
+  larger trading accounts, and partners (ambassadors and trading coaches) who
+  bring and develop those traders.
+- **The problem.** Traditional prop-trading evaluations are opaque: rules are
+  hard to verify, purchases and payouts are hard to trace, and the business
+  economics behind them are invisible to the trader.
+- **The product.** A multilingual website (English and right-to-left Persian,
+  plus Arabic, Russian and Simplified Chinese) and a shared professional terminal.
+  Traders pick a challenge, trade a simulated account under published rules
+  that the server evaluates, and follow their account in a dashboard, portfolio
+  and journal. Sign-in is a wallet signature, not a password.
+- **Commercial purpose.** Openfund sells challenge evaluations. Transparency is
+  part of the product: rules, prices, the revenue model, partner commissions
+  and governance limits are published, and economic figures come only from
+  operational records.
+
+Openfund is early-stage. Nothing in this repository is a claim of revenue,
+user numbers, funding, partnerships or regulatory approval.
+
+## Product ecosystem
+
+Status reflects the [feature register](docs/product/FEATURE_STATUS.md) and the
+running service at [`/version`](https://openfi.cloud/version), not plans.
+
+| Module | What it does | Status |
 | --- | --- | --- |
-| **Prop** | Server-side simulation; market, limit and stop orders; SL/TP, partial close, liquidation; challenge evaluation; journals | Free Trial accounts get 100,000 virtual USD. Purchases, funded capital and payouts are not active |
-| **Perpetual** | Gains Network market data; wallet-scoped Arbitrum One positions, orders, history | Read-only. Transactions, approvals and collateral transfers are disabled |
-
-## Product architecture
-
-One origin serves the React application and the API. The API owns
-authentication, accounts, simulation, purchases and economy records in
-PostgreSQL. Directus owns editorial content and the plan catalog. Gains
-Network supplies market data. See [System architecture](docs/architecture/ARCHITECTURE.md),
-[Flows](docs/architecture/FLOWS.md) and [Product contracts](docs/architecture/PRODUCT_TERMINALS.md).
-
-## Core features
-
-The [feature register](docs/product/FEATURE_STATUS.md) is canonical.
-
-| Capability | Where it stands |
-| --- | --- |
-| Wallet authentication | Live. Arbitrum-only sign-in is implemented, not deployed ([Wallet integration](#wallet-integration)) |
-| Charting (Vela, Pine indicators) | Live. Vela workspace with the Openfund bridge and Pine runtime ([Vela](docs/integrations/VELA.md)) |
-| Gains Network | Live, read-only. No order-book depth is inferred from oracle prices; execution is disabled ([Gains](docs/integrations/GAINS.md)) |
-| Prop engine and evaluation | Live. Server-authoritative simulation and challenge evaluation ([Engine audit](docs/audits/PROP_ENGINE_AUDIT.md)) |
-| Challenge purchases, DePay, coupons | Implemented, **disabled in production** ([Payment architecture](#payment-architecture)) |
-| Funded accounts and payouts | Not active. A withdrawal approval records a decision, never a fund transfer |
-| Economy, Ambassador (IB), Live Market Access | Implemented, not production-active ([Economy](#economy)) |
-| Governance | Implemented off-chain, not in production use ([Governance](#governance)) |
-| Portfolio and Trade Journal | Live. Uses the vendored LuxAlgo `journal-core` only |
-| Localization | Persian and English with RTL live; Arabic, Russian, Simplified Chinese on `main` |
-
-### Screenshots
+| **Openfund Prop** | Simulated challenge accounts: Free Trial, Standard (two-phase), One-phase and Instant models | **Live** (simulation) |
+| **Trading terminal** | One shared terminal for Prop and Perpetual: Vela charts with Pine indicators, order book, market/limit/stop orders, SL/TP, positions and history | **Live** |
+| **Perpetual** | Read-only Gains Network market data and wallet-scoped Arbitrum One positions | **Live, read-only** (no execution) |
+| **User accounts** | Wallet identity, dashboard, portfolio, trade journal, purchase history and invoices | **Live** |
+| **Challenge evaluation** | Server-authoritative rule engine over a frozen rules snapshot | **Live** |
+| **Wallet authentication** | Sign-In with Ethereum on Arbitrum One, HttpOnly sessions | **Live** |
+| **Checkout and purchases** | Server-priced orders, coupons, multi-chain DePay payments, on-chain verification, atomic provisioning | **Implemented, disabled in production** until the owner configures payments |
+| **Economy** | Transparency, Revenue Model and Live Market Access pages driven by operational records | **Live pages**, no live revenue data yet |
+| **Governance** | Hybrid Governance v1.0: off-chain Community Council, proposals and voting | **Implemented, not in production use** (no council seated) |
+| **Ambassador (IB)** | Brand Ambassador referral program with application, approval and commission ledger | **Implemented, not production-active** |
+| **Coach program** | Verified Trading Coach role with an independent approval track | **Implemented, not production-active** (depends on live trading) |
+| **Administration and CMS** | Directus for content, plan catalog and coupon administration; token-gated operational API | **Live CMS**; coupon administration verified locally, pending production bootstrap |
+| Desktop and mobile apps, rewards, protocol routing | — | **Planned** ([Roadmap](ROADMAP.md)) |
 
 <a id="product-gallery"></a>
 
-Genuine captures from the canonical runtime. Their provenance is in the
-[gallery](docs/assets/screenshots/README.md) and the
-[manifest](docs/assets/screenshots/manifest.json). They predate the Economy
-and checkout changes on this branch.
+## Product gallery
 
-| Persian Home — dark | English Prop Terminal — dark |
+Genuine captures of the running application. Public pages are from production
+(openfi.cloud, v0.4.4) on 2026-11-11. Signed-in views use a disposable test
+wallet on a local test runtime of the same code, because production purchases
+are not yet enabled. Provenance for every image is in the
+[screenshot manifest](docs/assets/screenshots/manifest.json).
+
+**Challenges**
+
+| Challenge selection | Challenge detail and rules |
 | --- | --- |
-| ![Actual Persian Home dark](docs/assets/screenshots/p0-dark-fa-public-dark.png) | ![Actual Prop terminal dark](docs/assets/screenshots/p0-dark-en-terminal-dark.png) |
+| ![Challenges landing page: "Your skill deserves a bigger opportunity"](docs/assets/screenshots/readme/challenges-en-desktop.jpg) | ![Standard challenge, 10k account, 8% + 5% target, 10% max loss, 80% reward share, $80 fee](docs/assets/screenshots/readme/challenge-builder-en-desktop.jpg) |
+| ![Evaluation rules, funded account and rewards panels for the Standard challenge](docs/assets/screenshots/readme/challenge-rules-en-desktop.jpg) | ![Challenge checkout with an internal 100% test coupon: amount due $0 (local test runtime)](docs/assets/screenshots/readme/checkout-coupon-en-desktop.jpg) |
+
+**Trading and accounts**
+
+| Trading terminal | User dashboard |
+| --- | --- |
+| ![Prop terminal: BTC/USD chart from Gains market data, order book and order ticket](docs/assets/screenshots/readme/prop-terminal-en-desktop.jpg) | ![Prop dashboard with a Free Trial account and a provisioned Standard challenge (local test runtime)](docs/assets/screenshots/readme/prop-dashboard-en-desktop.jpg) |
+
+**Economy**
+
+| Ambassador (IB) | Governance |
+| --- | --- |
+| ![Ambassador (IB) page: Brand Ambassador and Verified Trading Coach roles](docs/assets/screenshots/readme/ambassador-en-desktop.jpg) | ![Governance page: Community-Governed Development, Company-Managed Treasury](docs/assets/screenshots/readme/governance-en-desktop.jpg) |
+| ![Transparency page: the Openfund economy in verifiable numbers](docs/assets/screenshots/readme/transparency-en-desktop.jpg) | ![Revenue Model page: how the Openfund economy works](docs/assets/screenshots/readme/revenue-model-en-desktop.jpg) |
+
+**Administration (Directus CMS, test data)**
+
+| Coupon administration | Coupon with redemption counters |
+| --- | --- |
+| ![Directus coupon form: challenge models and allowed customers](docs/assets/screenshots/readme/cms-coupon-form.jpg) | ![Directus coupon item: 100% internal test coupon, active, limited to one use](docs/assets/screenshots/readme/cms-coupon-detail.jpg) |
+
+**Mobile and Persian**
+
+| Home (mobile) | Terminal (mobile) | Challenges (mobile) | Persian home (desktop) |
+| --- | --- | --- | --- |
+| <img src="docs/assets/screenshots/readme/home-en-mobile.jpg" alt="Openfund home on a 390 px phone" width="180" /> | <img src="docs/assets/screenshots/readme/prop-terminal-en-mobile.jpg" alt="Prop terminal chart on a 390 px phone" width="180" /> | <img src="docs/assets/screenshots/readme/challenges-en-mobile.jpg" alt="Challenges page on a 390 px phone" width="180" /> | <img src="docs/assets/screenshots/readme/home-fa-desktop.jpg" alt="Persian right-to-left homepage" width="320" /> |
+
+Not captured: a real paid checkout (purchases are disabled in production) and
+a seated governance council (none exists).
+
+## Business model
+
+The approved model is recorded in [ECONOMY.md](ECONOMY.md) and summarised in
+[Business model](docs/economy/BUSINESS_MODEL.md). No revenue, profitability or
+growth figures have been published, and none are implied here.
+
+**Challenge sales.** Openfund sells one-time evaluation fees for simulated
+challenge accounts. Prices come from the plan catalog in the CMS; the server,
+never the browser, prices every order. Current published catalog
+([live](https://openfi.cloud/purchases/plans)):
+
+| Model | Structure | Account sizes | Evaluation fee |
+| --- | --- | --- | --- |
+| Free Trial | Practice account | 5k – 100k | Free |
+| Standard | Two-phase evaluation (8% + 5% targets, 10% max loss) | 5k – 100k | $44 – $652 |
+| One-phase | Single target, one rule set | 5k – 100k | $74 – $666 |
+| Instant | Funded from day one | 5k – 200k | $60 – $888 |
+
+**Purchase lifecycle.** Order (server price, optional coupon) → payment through
+DePay on any configured network → on-chain verification → atomic provisioning
+of exactly one challenge account and one invoice. Every state change is
+recorded. See [Order lifecycle](docs/payments/ORDER_LIFECYCLE.md).
+
+**Revenue recognition principles.** Net collected revenue is gross sales minus
+coupon discounts minus refunds, recognised from the verified settlement amount
+on chain. Internal 100% test coupons are excluded from revenue and reported
+separately. Ambassador commissions are an acquisition cost, recorded as
+obligations.
+
+**Costs.** Ambassador commissions, coach compensation (once live trading
+exists), trader rewards under published plan rules, refunds and infrastructure
+(Render, PostgreSQL, Directus, RPC providers).
+
+## Economy and governance
+
+| Program | Approved rule | Status |
+| --- | --- | --- |
+| **Brand Ambassador (IB)** | 10% of the referred customer's **first** eligible confirmed purchase, on the net amount after discounts, recognised at verified payment. Eligibility: 50,000+ followers on Instagram or YouTube plus an active second platform; approval by company management | Implemented, not production-active |
+| **Verified Trading Coach** | 10% of distributable **realised** net profit from eligible live trades, after trading and execution costs; never on simulated or unrealised PnL | Implemented, inactive until live trading exists |
+| Customer referral discount (20%) | **Proposed**, not approved, not active | — |
+| Real-capital profit-sharing tiers | **Pending decision** | — |
+
+**Governance.** Hybrid Governance v1.0: *community-governed development,
+company-managed treasury*. A ten-seat Community Council holds binding
+authority over delegated, non-financial domains through proposals and votes.
+Company management keeps exclusive control of the treasury and every financial
+decision. It is not a DAO: there is no governance token, and votes are recorded
+off-chain. Role-based administration separates content editors, commerce
+administrators and operators.
+
+[ECONOMY.md](ECONOMY.md) · [GOVERNANCE.md](GOVERNANCE.md) · [Partner programs](docs/economy/PARTNER_PROGRAMS.md) · [Treasury](docs/economy/TREASURY.md)
+
+## Technical architecture
+
+One web service serves the React application and the API from the same
+origin, so session cookies stay first-party. PostgreSQL is the single store,
+shared with Directus, which edits content and catalog tables.
+
+```mermaid
+flowchart TB
+  subgraph Browser
+    SPA["React app<br/>website + terminal"]
+    Wallet["Wallet<br/>(RainbowKit, wagmi)"]
+    DePayBtn["DePay button"]
+  end
+  subgraph Render["Render (Frankfurt)"]
+    API["openfund<br/>Node.js API + SPA<br/>engine, SSE, purchases"]
+    CMS["openfund-cms<br/>Directus 11.9.1"]
+    DB[("openfund-db<br/>PostgreSQL 17")]
+  end
+  Gains["Gains Network<br/>market data"]
+  DePay["DePay"]
+  Chains["Payment chains<br/>EVM + Solana RPC"]
+  Arb["Arbitrum One RPC<br/>(contract-wallet sign-in)"]
+
+  SPA -->|"REST, SSE"| API
+  SPA -->|"public content"| CMS
+  SPA -->|"quotes, charts"| Gains
+  Wallet -->|"SIWE signature"| API
+  API --> DB
+  CMS --> DB
+  API -->|"prices, positions"| Gains
+  API -.->|"EIP-1271 checks"| Arb
+  DePayBtn --> DePay
+  DePay -->|"signed config, callbacks, events"| API
+  API -->|"verify payment"| Chains
+```
+
+- **Wallet authentication** is Arbitrum One only. **Payments** are independent
+  of it: DePay offers every settlement chain the owner configures, and the
+  backend verifies each payment on its own chain. See [DePay](docs/payments/DEPAY.md).
+- **Content versus data.** Directus holds editorial content, the plan catalog
+  and coupon administration. Market data comes from Gains. Prices, orders and
+  payments are decided only by the backend.
+- More: [Architecture](docs/architecture/ARCHITECTURE.md) · [Flows](docs/architecture/FLOWS.md) · [Product contracts](docs/architecture/PRODUCT_TERMINALS.md)
 
 ## Technology stack
 
+Verified against the package manifests.
+
 | Layer | Technology |
 | --- | --- |
-| Web interface | React 19, TypeScript, Vite 6, React Router 7; Persian/English and RTL |
-| Wallet and identity | RainbowKit, wagmi, viem, SIWE and HttpOnly sessions |
-| Charting and market data | Vela 0.9.3, Vela Pine addon 0.3.2, PineTS 0.13.1, Gains adapters |
-| API and simulation | Node.js 22, Express, Decimal arithmetic, WebSocket feeds and SSE |
-| Persistence and content | PostgreSQL 17; Directus 11.9.1 |
-| Quality and delivery | Per-app npm lockfiles, Playwright, GitHub Actions, Render Blueprint |
+| Frontend | React 19, TypeScript 5.9, Vite 6, React Router 7 |
+| Wallet | RainbowKit 2, wagmi 2, viem 2, Sign-In with Ethereum |
+| Charts and market data | Vela 0.9.3, Vela Pine addon 0.3.2, PineTS 0.13.1, Gains Network API |
+| Backend | Node.js 22, Express 4, `pg`, decimal.js, viem, `ws` |
+| Database | PostgreSQL 17 |
+| CMS | Directus 11.9.1 (official Docker image) |
+| Payments | DePay (button, dynamic configuration, signed callbacks and events) |
+| Testing | Node test runner, Playwright browser suites |
+| CI/CD | GitHub Actions (CI, unified release, gated deploy), gitleaks, Dependabot |
+| Hosting | Render Blueprint (`render.yaml`): web service, Docker CMS, managed PostgreSQL |
+| Monitoring | `/health`, `/version`, Render logs, payment review queue |
 
 [Technology registry](docs/architecture/TECH_STACK.md) · [Upstream provenance](docs/integrations/UPSTREAM.md)
 
-## Repository structure
+## Infrastructure
 
-| Path | Responsibility |
+| Element | Setup |
 | --- | --- |
-| `apps/web-react/` | React app, product routes, wallet/session context, checkout |
-| `apps/backend/` | API, engine, purchases, coupons, economy, governance, additive migrations |
-| `apps/backstage/scripts/` | Directus schema, content seeding and administration |
-| `packages/` | Chart/Gains/CMS contracts; dormant Protocol source |
-| `vendor/`, `third_party/` | Upstream source, licenses and notices ([registry](docs/integrations/UPSTREAM_REGISTRY.md)) |
-| `dist/` | Source-critical classic compatibility deliverable; not disposable output |
-| `react/` | **Generated** by `npm run build:web`; not tracked |
-| `scripts/`, `infra/render/`, `e2e/` | Release/docs/CI tooling, Blueprint validation, browser checks |
-| `docs/`, `brand/` | Contracts, evidence, approved brand assets |
+| **GitHub** | Canonical repository; protected `main` with required checks; releases and tags |
+| **Render** | `openfund` (Node web service, API + SPA), `openfund-cms` (Directus image with a persistent media disk), `openfund-db` (PostgreSQL 17), all in Frankfurt. Commit auto-deploy is off |
+| **Domains** | `openfi.cloud` and `openfund.cloud` serve the same service |
+| **Deployment** | A maintainer publishes a release; the release workflow deploys the exact tagged commit after environment approval and checks `/version` on both domains |
+| **Build** | `node scripts/release/render-build.mjs` builds the frontend; migrations run at start-up and are additive and idempotent |
+| **Health** | `/health` (API), `/server/ping` (CMS), `/version` (exact version and commit) |
+| **Backups** | Render PostgreSQL backups plus manual `pg_dump` before risky changes; Directus media on its disk ([Backup and restore](docs/backstage/BACKUP_RESTORE.md)) |
+| **Rollback** | Redeploy the previous official release; additive migrations keep older code compatible ([Rollback](docs/deployment/ROLLBACK.md)) |
 
-The root package orchestrates commands; applications install from their own lockfiles.
+[Render runbook](docs/deployment/RENDER.md) · [Environment variables](docs/deployment/ENVIRONMENT.md)
 
-## System components
-
-| Component | Implementation |
-| --- | --- |
-| Web service `openfund` | `apps/backend/server.js` serving the API and the built `react/` SPA |
-| Trading engine | `engine.js`, `trading-math.js`, `instruments.js`; in-process loop (about 1 s), SSE at `/trading/stream` |
-| Challenge evaluation | `evaluation.js`: pure `evaluateRules()` over a frozen rules snapshot |
-| Purchases and payments | `purchases.js`, `payment-verification.js`, `coupons.js`, `payments-admin.js` |
-| Economy and partners | `economy.js`, `partners.js`, `treasury.js`, `live-funding.js` |
-| Governance | `governance.js`, `governance-routes.js`, `governance-rules.js` |
-| Database `openfund-db` | PostgreSQL 17 |
-| CMS `openfund-cms` | Directus 11.9.1 |
-
-## Development environment
-
-Prerequisites: Node.js 22, npm, PostgreSQL 17 (Python 3 only for optional
-Directus utilities). Check port ownership first, and keep 8080 for an official
-local runtime. See [Local development](docs/development/LOCAL_DEVELOPMENT.md).
-
-## Installation
+## Development workflow
 
 ```bash
 npm ci
@@ -152,250 +258,61 @@ npm run seed-plans --prefix apps/backend
 PORT=8180 npm run dev:backend
 ```
 
-In a second terminal run `VITE_BACKEND_URL=http://localhost:8180 npm run dev:web`.
-For a same-origin build run `npm run build:web` first (the API reads
-`react/index.html` at start-up), then `PORT=8180 npm start --prefix apps/backend`.
-Run an official version with `npm run release:local -- --version current --migrate`.
+In a second terminal: `VITE_BACKEND_URL=http://localhost:8180 npm run dev:web`.
 
-## Environment variables
+| Topic | Where |
+| --- | --- |
+| Repository layout | `apps/web-react` (frontend), `apps/backend` (API, engine, payments), `apps/backstage` (Directus tooling), `packages/` (shared sources), `vendor/` and `third_party/` (upstream code), `docs/` |
+| Environment | [.env.example](.env.example), [Environment variables](docs/deployment/ENVIRONMENT.md) |
+| Checks | `npm run docs:check`, `npm run typecheck`, `npm run test:web`, `npm run validate:blueprint`, `npm run test:backend` (isolated test database) |
+| Pull requests | Branch from `main`, Conventional Commits, PR template ([Pull requests](docs/development/PULL_REQUESTS.md), [CONTRIBUTING.md](CONTRIBUTING.md)) |
+| Full engineering reference | [Engineering reference](docs/development/ENGINEERING_REFERENCE.md): installation, database, services, CMS, wallet, payments, coupons, testing, CI/CD, release, deployment, security, monitoring |
+| Troubleshooting | [Local development](docs/development/LOCAL_DEVELOPMENT.md), [Testing](docs/development/TESTING.md) |
 
-[.env.example](.env.example) is a reference, not a credential file. The
-complete list, with owner service and secret classification, is
-[docs/deployment/ENVIRONMENT.md](docs/deployment/ENVIRONMENT.md). CI checks
-that every `render.yaml` variable is documented there. Every `VITE_*` value is
-public. Never use one for a secret. Secrets are `sync: false` in the Blueprint
-and never committed.
+## Versioning and releases
 
-## Database setup
-
-PostgreSQL 17. Use an isolated database per environment. Test databases must
-contain `test`, `audit` or `ci` in the name (the test seams refuse anything
-else). See [Database](docs/deployment/DATABASE.md).
-
-## Database migrations
-
-`apps/backend/schema.sql` is applied by `migrate.js` on every start. It is
-additive and idempotent, and CI runs it twice. Never hand-alter a live
-database. The 2026-11 additions (coupons, `lifecycle_state`,
-`purchase_order_events`, `depay_events`) are additive, backfill existing rows
-and keep the legacy `status` column.
-
-## Backend services
-
-The Express API (`apps/backend/`) provides SIWE sessions, product-scoped
-accounts, the trading engine, purchases, invoices, the economy, partner and
-governance routes, and the token-gated `/admin/*` API (disabled without
-`ADMIN_API_TOKEN`). [Backend README](apps/backend/README.md)
-
-## Frontend applications
-
-`apps/web-react/` is a React 19 + Vite SPA built into the untracked `react/`
-directory and served same-origin. Public runtime settings come from the
-no-store `runtime-config.js` ([ADR 0010](docs/decisions/0010-runtime-public-configuration.md)).
-`dist/` is the classic compatibility deliverable.
-
-## Directus CMS
-
-Directus (`openfund-cms`) holds editorial content and the plan catalog.
-Market data and payments never flow through it. Collections are defined in
-`apps/backstage/scripts/apply_schema.py`. [Backstage docs](docs/backstage/README.md)
-
-## Wallet integration
-
-Wallet connection (RainbowKit/wagmi, EIP-6963, optional WalletConnect) and
-authenticated login (SIWE) are distinct states. A signature over a fresh,
-single-use, address-bound nonce creates a server session (HttpOnly cookie,
-hashed at rest). One wallet address is exactly one user (unique constraint).
-A wallet change logs the session out, and sessions never follow another
-wallet. [Identity](docs/wallet/IDENTITY.md) · [Authentication reference](docs/architecture/WALLET_AUTHENTICATION.md)
-
-## Arbitrum configuration
-
-Arbitrum One (chain `42161`) is the only network for wallet connection, SIWE
-and checkout. It is implemented on branch `codex/production-readiness`, which
-is not deployed. Other chain ids are rejected server-side (`invalid_chain`), and
-wallets are asked to switch. `PURCHASE_PAYMENT_CHAIN` must be `42161`, or
-purchases stay disabled. `AUTH_RPC_URL` optionally points contract-wallet
-signature checks at a dedicated Arbitrum RPC. The Gains market-data
-integration is unchanged. [ADR 0022](docs/decisions/0022-arbitrum-checkout-coupons-order-lifecycle.md)
-
-## Payment architecture
-
-Server-priced orders, one approved USD stablecoin on Arbitrum One, and an
-on-chain verifier as the only authority. The verifier checks receipt status,
-sender (the signed-in wallet), receiver, token, amount, block time and
-finality. Each transaction is usable once. Provisioning is atomic and
-recoverable. [Verification](docs/payments/VERIFICATION.md) · [Activation checklist](docs/payments/ACTIVATION.md)
-
-## DePay integration
-
-The official DePay button with `blockchains='["arbitrum"]'` carries only the
-order id. DePay fetches a server-signed dynamic configuration. Configuration
-requests, callbacks and events are all verified by DePay `x-signature` and
-remain hints. Endpoints: `/purchases/depay/configuration`,
-`/purchases/depay/callback`, `/purchases/depay/events`. The integration ID,
-keys, token, receiver and RPC are **not configured** in production.
-[DePay reference and dashboard report](docs/payments/DEPAY.md)
-
-## Challenge purchase lifecycle
-
-Explicit, database-enforced states: `awaiting_payment → payment_detected →
-paid → provisioned`, plus `manual_review`, `cancelled`, `expired`,
-`partially_refunded` and `refunded`. Every transition is recorded
-append-only. [Order lifecycle](docs/payments/ORDER_LIFECYCLE.md)
-
-## Coupon management
-
-Percentage, fixed, 100% (zero-payment flow), product-, usage-, user- and
-time-restricted coupons. Coupons are validated server-side under a row lock
-and administered through `/admin/coupons` with a full audit trail.
-Internal test coupons are limited to two named wallets. No coupon is active in
-production. [Coupons](docs/payments/COUPONS.md)
-
-## Economy
-
-The Economy menu groups **Governance**, **Ambassador (IB)**, Transparency,
-Revenue Model and Live Market Access. Figures come only from operational
-records and show "Not configured" or "Unknown" otherwise.
-[Economy documentation](docs/economy/README.md) · [ECONOMY.md](ECONOMY.md)
-
-## Ambassador (IB)
-
-One page, `/{locale}/ambassador`, covers two **independent** roles. Each has
-its own application, approval, permissions and commission calculation.
-`/{locale}/coach` opens the coach section.
-
-- **Brand Ambassador** (approved policy): at least 50,000 followers on
-  Instagram or YouTube plus an active second platform; independent approval;
-  10% of the referred customer's first eligible confirmed purchase only;
-  recognized at confirmed payment; never repeated for the same customer.
-- **Verified Trading Coach** (approved policy): independent verification; 10%
-  of distributable realized net profit from eligible live trades after trading
-  and execution costs; never on unrealized or simulated PnL.
-- Trader and firm profit-sharing tiers are **pending business decisions**.
-
-[Partner programs](docs/economy/PARTNER_PROGRAMS.md)
-
-## Governance
-
-Off-chain Hybrid Governance v1.0: a Community Council with delegated
-non-financial authority, OFP proposals and voting. Company management keeps
-treasury and financial decisions. No token-based or on-chain governance is
-implemented. [GOVERNANCE.md](GOVERNANCE.md) · [Operating governance](docs/governance/OPERATING_GOVERNANCE.md)
-
-## Business model summary
-
-Revenue comes from challenge evaluation fees (implemented, disabled in
-production). Costs include ambassador commissions, coach shares of real
-profit (not active), refunds and infrastructure. No revenue figures are
-published. [Business model](docs/economy/BUSINESS_MODEL.md)
-
-## Testing and validation
+- **Latest official release:** shown by the *release* badge above and on the
+  [Releases page](https://github.com/algomanlife/openfund/releases); history in
+  the [changelog](CHANGELOG.md).
+- **Deployed version:** shown by the *deployed* badge, read live from
+  [`/version`](https://openfi.cloud/version), which returns the version, exact
+  commit and whether the build is an official release. A deployed build is not
+  automatically an official release; a merged pull request is not deployed
+  until `/version` says so.
+- **Repository version:** tags are `vMAJOR.MINOR.PATCH`, allocated from
+  Conventional Commits. `package.json` versions describe components, not the
+  application. See [Releases](docs/deployment/RELEASES.md).
 
 ```bash
-npm run docs:check          # language, links, Markdown, Mermaid, required docs, dependency checks
-npm run typecheck
-npm run test:web
-npm run validate:blueprint
-npm run build:web
-npm run test:backend        # needs an isolated test database and a running test backend
+curl -s https://openfi.cloud/version
+gh release list -R algomanlife/openfund
 ```
-
-Backend and browser suites need an isolated test database and a test backend
-on a free port; see [Testing](docs/development/TESTING.md).
-`apps/backend/test/commerce.test.mjs` covers coupons, zero payment, races,
-order transitions and DePay security. Its simulated chain verifier is not
-evidence of a real payment.
-
-## GitHub workflow
-
-Issues use the templates in `.github/ISSUE_TEMPLATE/`. Vulnerabilities are
-reported privately ([SECURITY.md](SECURITY.md)). Dependabot proposes updates.
-A weekly read-only workflow watches upstreams ([automation](docs/integrations/UPSTREAM_AUTOMATION.md)).
-
-## Branch and pull request conventions
-
-Branch from current `main` (`codex/<topic>`, `qwen/<topic>`, `docs/<topic>`),
-use Conventional Commits and fill in every section of the pull request template
-(checked by CI). Never force-push or push directly to `main`.
-[Pull requests](docs/development/PULL_REQUESTS.md) · [AGENTS.md](AGENTS.md)
-
-## CI/CD pipeline
-
-`ci.yml` runs the required checks: `Web (React + Vite)`, `Backend (API +
-engine)`, `Render Blueprint`, `Secret scan`, `Release package gates` and
-`Release secret scan`. `release.yml` and `deploy-release.yml` publish and
-deploy. Branch protection on `main` requires these checks and blocks force
-pushes. Required pull request reviews are **not** currently enforced by
-branch protection. [CI](docs/development/CI.md)
-
-## Versioning
-
-Tags are `vMAJOR.MINOR.PATCH`, allocated from Conventional Commits by
-`scripts/release/plan.mjs`. The `version` fields in `package.json` are
-component provenance, not the application version. The release manifest and
-`/version` carry the application version and exact commit.
-
-## Release process
-
-A maintainer dispatches **Unified release** on `main` with `publish=true`.
-After the gates, the workflow creates a tag and GitHub Release. No release is
-created by pull requests. [Releases](docs/deployment/RELEASES.md) · [Checklists](docs/deployment/CHECKLISTS.md)
-
-## Render infrastructure
-
-The Blueprint (`render.yaml`) defines `openfund` (web, API + SPA),
-`openfund-cms` (Directus) and `openfund-db` (PostgreSQL) in Frankfurt. Commit
-auto-deploy is off. `npm run validate:blueprint` gates every PR.
-[Render runbook](docs/deployment/RENDER.md) · production domains
-`openfund.cloud`, `openfi.cloud`.
-
-## Production deployment
-
-After the `production` environment approval, Render deploys the exact
-released commit, and the workflow checks `/version` on both domains. Follow
-the [deployment checklist](docs/deployment/CHECKLISTS.md#deployment-checklist-production).
-A merge never deploys.
-
-## Rollback procedures
-
-Redeploy the previous official release. Migrations are additive, so older code
-keeps working on the newer schema. [Rollback](docs/deployment/ROLLBACK.md)
-
-## Backup and recovery
-
-Render PostgreSQL backups and manual dumps: [Database](docs/deployment/DATABASE.md).
-Directus content: [Backup and restore](docs/backstage/BACKUP_RESTORE.md).
-Confirm a restorable backup before any risky schema change.
-
-## Security
-
-SIWE with single-use nonces; HttpOnly hashed sessions; strict CSP; origin
-checks; rate limits; server-side ownership checks; signature-verified DePay
-deliveries; idempotent, append-only financial records; gitleaks in CI. No
-independent security audit is claimed. Report vulnerabilities privately:
-[SECURITY.md](SECURITY.md) · [Security architecture](docs/security/SECURITY.md)
-
-## Operational monitoring
-
-`/health`, `/version`, Render logs and the payment review queue. No automated
-alerting is configured yet. [Operations](docs/operations/README.md)
 
 ## License
 
-**No root `LICENSE` is present, and no first-party license has been selected
-(owner decision pending).** Do not read this public repository as an
-open-source license grant. Third-party components keep their own licenses:
-Vela (Apache-2.0 + NOTICE with a visible attribution requirement), the Vela
-Pine addon and PineTS (AGPL-3.0-only, shipped in the web bundle), LuxAlgo
-journal-core and the Gains SDK (MIT), the dormant Protocol (GPL-2.0), and
-fonts and marks with per-asset notices. [Licensing report](docs/legal/LICENSING.md) · [Third-party notices](THIRD_PARTY_NOTICES.md)
+**No first-party license has been selected yet (owner decision pending), so no
+open-source licence is granted.** The repository is public for transparency.
+Third-party components keep their own terms:
 
-## Contribution guidelines
+| Component | License | Note |
+| --- | --- | --- |
+| Vela | Apache-2.0 + NOTICE | Visible "Vela" attribution on chart screens |
+| PineTS, Vela Pine addon | AGPL-3.0-only | Shipped in the web bundle, modified worker; source-offer obligations under review ([PineTS report](docs/legal/PINETS.md)) |
+| LuxAlgo journal-core, Gains SDK | MIT | Vendored with notices |
+| MetaMask SDK | ConsenSys licence | Notice shipped; commercial-use terms under review |
+| Openfund Protocol (dormant) | GPL-2.0 | Not built or shipped |
+
+[Licensing report](docs/legal/LICENSING.md) · [Third-party notices](THIRD_PARTY_NOTICES.md) · [Dependency licenses](docs/legal/DEPENDENCY_LICENSES.md)
+
+## Contributing and security
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) and the [documentation index](docs/README.md).
-Keep documentation in English, preserve Persian localization and RTL, update
-Feature Status, the changelog and the affected docs in the same pull request,
-and never commit secrets or personal data.
+Report vulnerabilities privately through [SECURITY.md](SECURITY.md).
 
-[Canonical repository](https://github.com/algomanlife/openfund) · [Issues](https://github.com/algomanlife/openfund/issues) · [Releases](https://github.com/algomanlife/openfund/releases) · [Changelog](CHANGELOG.md)
+<div align="center">
+
+<img src="docs/assets/brand/mark.svg" alt="Openfund mark" width="32" />
+
+[openfi.cloud](https://openfi.cloud) · [openfund.cloud](https://openfund.cloud) · [Releases](https://github.com/algomanlife/openfund/releases) · [Changelog](CHANGELOG.md)
+
+</div>

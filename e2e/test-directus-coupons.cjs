@@ -65,8 +65,8 @@ async function main() {
     await cms('POST', '/access', admin, { role: editorRole.id, policy: pol.id })
   }
   const run = crypto.randomBytes(3).toString('hex')
-  const commerceUser = { email: `commerce-${run}@example.test`, password: crypto.randomBytes(12).toString('hex') }
-  const editorUser = { email: `editor-${run}@example.test`, password: crypto.randomBytes(12).toString('hex') }
+  const commerceUser = { email: `commerce-${run}@example.com`, password: crypto.randomBytes(12).toString('hex') }
+  const editorUser = { email: `editor-${run}@example.com`, password: crypto.randomBytes(12).toString('hex') }
   await cms('POST', '/users', admin, { ...commerceUser, first_name: 'Commerce', last_name: 'Admin', role: commerceRole.id })
   await cms('POST', '/users', admin, { ...editorUser, first_name: 'Content', last_name: 'Editor', role: editorRole.id })
 
@@ -99,21 +99,25 @@ async function main() {
     await apage.goto(CMS + '/admin/content/coupons/+'); await apage.waitForTimeout(1500)
     const field = label => apage.locator('.field').filter({ has: apage.locator('.field-label', { hasText: new RegExp(`^\\s*${label}`, 'i') }) }).first()
     const code = `OPENFUND-INTERNAL-TEST-${run.toUpperCase()}`
-    await field('Code').locator('input').fill(code)
-    await field('Name').locator('input').fill('Internal acceptance test (100%)')
-    const pick = async (label, option) => { await field(label).locator('.v-input, .v-select, button').first().click(); await apage.locator('.v-menu-content .v-list-item', { hasText: option }).first().click() }
+    await field('Code').locator('.interface input').fill(code)
+    await field('Name').locator('.interface input').fill('Internal acceptance test (100%)')
+    const pick = async (label, option) => { await field(label).locator('.interface .v-input').first().click(); await apage.locator('.v-menu-content .v-list-item', { hasText: option }).first().click() }
     await pick('Kind', 'Percentage')
-    await field('Value').locator('input').fill('100')
+    await field('Value').locator('.interface input').fill('100')
     await pick('Status', 'Active')
-    await field('Internal').locator('button, .v-checkbox, input').first().click()
-    await field('Max Redemptions').locator('input').fill('1')
+    await field('Internal').locator('.interface .v-checkbox, .interface button').first().click()
+    await field('Max Redemptions').locator('.interface input').fill('1')
     /* M2M: allowed customer + eligible challenge model, chosen from existing rows */
     const addExisting = async (label, rowText) => {
       await field(label).locator('button', { hasText: /add existing/i }).click()
       const drawer = apage.locator('.v-drawer').last()
       await drawer.waitFor()
-      const search = drawer.locator('input[placeholder*="Search" i]').first()
-      if (await search.count()) { await search.fill(rowText); await apage.waitForTimeout(900) }
+      /* the drawer search box is collapsed behind its icon until clicked */
+      const searchIcon = drawer.locator('.search-input .icon-search').first()
+      if (await searchIcon.count()) {
+        await searchIcon.click()
+        await drawer.locator('.search-input input').first().fill(rowText); await apage.waitForTimeout(900)
+      }
       await drawer.locator('.table-row, tr').filter({ hasText: rowText }).first().click()
       await drawer.locator('.header-bar .v-button, button.action-button, [class*="actions"] button').last().click()
       await apage.waitForTimeout(600)
@@ -121,7 +125,7 @@ async function main() {
     await addExisting('Allowed Customers', wallet.address.toLowerCase().slice(0, 14))
     await addExisting('Challenge Models', 'standard')
     await shot(apage, '02-directus-coupon-form')
-    await apage.locator('.header-bar .v-button, button').filter({ has: apage.locator('i, .v-icon', { hasText: /^check$/ }) }).first().click()
+    await apage.locator('.header-bar button:has(i[data-icon="check"])').first().click()
     await apage.waitForTimeout(2000)
     const created = (await db.query('SELECT * FROM coupons WHERE code=$1', [code])).rows[0]
     check('coupon saved through the Directus UI', !!created, code)

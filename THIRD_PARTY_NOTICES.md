@@ -19,7 +19,7 @@ has **no published license** ([Licensing](docs/legal/LICENSING.md)).
 | TradingView logo | Brand-owner terms | [TradingView-logo-LICENSE.txt](apps/web-react/public/assets/notices/TradingView-logo-LICENSE.txt) |
 | Public service brand assets | Brand-owner terms | [Public-brand-assets.txt](apps/web-react/public/assets/notices/Public-brand-assets.txt) |
 | npm packages | Per package (mostly MIT / ISC / Apache-2.0 / BSD) | Lockfiles; non-permissive production licenses listed in [DEPENDENCY_LICENSES.md](docs/legal/DEPENDENCY_LICENSES.md) (CI-checked); [upstream registry](docs/integrations/UPSTREAM_REGISTRY.md) |
-| Directus (separate service) | BSL 1.1 (confirm for the pinned image) | Not distributed in this repository |
+| Directus (separate service) | BSL 1.1 for the pinned 11.9.1 image (shown in its Studio licence notice); 12.x is MSCL-1.0-GPL with licence-key entitlements | Not distributed in this repository; runs as a separate container |
 
 Service names and logos identify technologies only. They do not indicate
 partnership or endorsement.

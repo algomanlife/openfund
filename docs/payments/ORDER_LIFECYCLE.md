@@ -55,7 +55,7 @@ stateDiagram-v2
 | 4–6 | Plan, authoritative price, coupon | `POST /purchases/quote`, `planPrice()`, `evaluateCoupon()` |
 | 7 | Order created | `POST /purchases/orders` (idempotency key, coupon lock) |
 | 8 | Payment only if amount > 0 | `payment_required`; zero-payment flow otherwise |
-| 9 | Payment verified | `verifyAndConfirm()` → `payment-verification.js` (Arbitrum RPC) |
+| 9 | Payment verified | `verifyAndConfirm()` → `payment-verification.js` (EVM chains) or `solana-verification.js` (Solana), on the payment's own chain |
 | 10–13 | Paid, provisioned, ownership, receipt | `confirmPurchaseTx()`: one transaction |
 | 14 | Dashboard updated | Checkout polling, `/purchases/history`, `/auth/me` challenges |
 | 15 | Commission events | `recognizeCommissionTx()` inside the same transaction (savepoint) |
