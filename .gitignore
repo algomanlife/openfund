@@ -8,6 +8,19 @@ infrastructure/directus/runtime/
 infrastructure/directus/data/
 apps/web-react/.env
 
+# Local environment files and key material anywhere in the tree. Committed
+# templates stay tracked through the negation below.
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+
 # Local verification artifacts (may contain private test-session exports)
 /output/
 /.playwright-cli/
