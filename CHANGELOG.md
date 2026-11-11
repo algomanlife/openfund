@@ -2,6 +2,33 @@
 
 ## Unreleased
 
+- Production fix and terminal refinement (branch
+  `agent/claude/production-fix-ui-refinement`):
+  - Header controls: the theme switch is now a real box with the shared
+    height, border and radius (it was a 23px pill with a faked outline
+    frame); the signed-in wallet menu opts out of the landing FAQ `details`
+    border that made it 37px and half a pixel off; unified hover/focus.
+    Measured equal on 5 locales × 2 themes × 7 widths and while signed in.
+  - Per-wallet chart workspaces: drawings, indicators, timeframe, chart and
+    tool settings are saved to the backend for the signed-in wallet
+    (`chart_workspaces`, revisioned, session-owned) and restored on any
+    device; wallets never see each other's chart state
+    ([Chart workspaces](docs/trading/CHART_WORKSPACES.md), ADR 0023).
+  - Live position risk/reward overlay: SL-only and TP-only positions now get
+    their zone (previously only positions with both), correct LONG/SHORT
+    direction, theme colors, a compact per-position legend; the overlay's
+    options are now actually applied (Vela takes them under `props`), so the
+    fabricated "Loss · Size" line from a default 10,000 balance is gone.
+  - SL/TP dialog: Persian and Arabic-Indic digits are accepted exactly
+    (unreadable input previously became NaN and silently removed the level);
+    closes only after the server confirms; shortened position id with copy.
+  - Order review: one label/value row per field, LTR-isolated values, no
+    clipping in RTL; values and submission path unchanged.
+  - Payments: no code defect found in the purchase/DePay path; production
+    `paymentsEnabled` is false because the owner-controlled payment
+    configuration is unset. The activation checklist now lists the DePay
+    events URL and the widget's `connect-src` origins.
+
 - Final frontend UI refinement (branch `agent/claude/final-ui-refinement`),
   frontend only, no backend, trading, payment or SIWE change:
   - One header-control geometry (wallet, terminal entry, language, theme) for

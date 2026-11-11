@@ -27,8 +27,8 @@ necessary, not sufficient.
 | Confirmation depth (default 12 in production) | `PURCHASE_PAYMENT_MIN_CONFIRMATIONS` |
 | DePay integration (created at app.depay.com), widget URL and its SRI hash | `VITE_DEPAY_WIDGET`, `VITE_DEPAY_WIDGET_URL`, `VITE_DEPAY_WIDGET_INTEGRITY`, `VITE_DEPAY_INTEGRATION_ID` |
 | DePay dynamic configuration signing key (public half stored at DePay) | `DEPAY_CONFIG_PRIVATE_KEY` |
-| Endpoint URLs set on the DePay integration | `https://<host>/purchases/depay/configuration` and `https://<host>/purchases/depay/callback` |
-| CSP origins for the widget | `CSP_EXTRA_SCRIPT_SRC`, `CSP_EXTRA_FRAME_SRC` |
+| Endpoint URLs set on the DePay integration | `https://<host>/purchases/depay/configuration`, `https://<host>/purchases/depay/callback` and the events URL `https://<host>/purchases/depay/events` |
+| CSP origins for the widget | `CSP_EXTRA_SCRIPT_SRC`, `CSP_EXTRA_FRAME_SRC`, and the API/RPC origins the widget fetches in `CSP_EXTRA_CONNECT` (the default `connect-src` is `'self'` plus the market stream; read the blocked origins from the browser console during staging acceptance) |
 | DePay Verify public key (signs configuration requests, callbacks and events) | `DEPAY_VERIFY_PUBLIC_KEY` (legacy name `DEPAY_CALLBACK_PUBLIC_KEY`) |
 | Checkout chains | Every complete entry in `PURCHASE_PAYMENT_CHAINS` (EVM networks and Solana). Wallet sign-in stays Arbitrum One only; payment is not tied to it |
 

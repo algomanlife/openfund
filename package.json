@@ -28,6 +28,7 @@
     "test:browser:unified": "node e2e/test-unified-trading.cjs",
     "test:browser:layout": "node e2e/test-terminal-layout.cjs",
     "test:browser:completion": "node e2e/test-terminal-completion.cjs",
+    "test:browser:risk": "node e2e/test-terminal-risk-workspace.cjs",
     "release:build": "node scripts/release/build.mjs",
     "release:local": "node scripts/release/local.mjs",
     "release:version": "node scripts/release/version.mjs",
