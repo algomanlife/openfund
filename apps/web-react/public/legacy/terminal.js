@@ -413,6 +413,18 @@ function setLang(lang){
 }
 $('language-toggle').addEventListener('click', () => setLang(window.ofLang === 'fa' ? 'en' : 'fa'));
 /* the React shell applies its route locale through this hook */
+/* Read-mostly diagnostics for browser acceptance tests and support: the
+   live chart controller, the symbol, and which drawings are live position
+   overlays (never persisted) vs user drawings (persisted per wallet). */
+window.OpenfundTerminalInspect = {
+  chart: () => vc && vc.chart,
+  controller: () => vc,
+  symbol: () => S.marketId,
+  /* true once the saved drawings of the current identity are restored */
+  restored: () => velaRestored,
+  positionOverlays: () => { const all = vc?.chart?.drawings?.all?.() || []; return [...posDrawings].map(([positionId, id]) => ({ positionId, drawing: all.find(d => d.id === id) || null })); },
+  userDrawings: () => { const ids = new Set(posDrawings.values()); return (vc?.chart?.drawings?.all?.() || []).filter(d => !ids.has(d.id)); },
+};
 window.__ofSetLang = lang => { if (I18N[lang] && lang !== window.ofLang) setLang(lang); };
 
 /* ============================================================
@@ -1362,6 +1374,19 @@ const VELA_DRAW_KEY = (sym) => 'of-vela-drawings-' + sym;
 let velaRestored = false;   /* saves are skipped until the initial restore completes */
 const VELA_CONF_KEY = 'of-vela-config';
 const VELA_TOOLS_KEY = 'of-vela-tools';
+/* per-identity local cache (guest → original keys; signed-in wallet →
+   namespaced keys hydrated from its server workspace) */
+const chartStore = {
+  get(k){ const W = window.OpenfundChartWorkspace; try { return W ? W.getLocal(k) : localStorage.getItem(k); } catch(e){ return null; } },
+  set(k, v){ const W = window.OpenfundChartWorkspace; try { if (W) W.setLocal(k, v); else localStorage.setItem(k, v); } catch(e){} }
+};
+/* a newer save from another tab/device won the revision race: re-apply it
+   (only the current symbol's drawings can be applied live) */
+window.addEventListener('of-chart-workspace-remote', e => {
+  if (!vc?.chart?.drawings || e.detail?.scope !== S.marketId) return;
+  velaRestoreDrawings(); posDrawings.clear(); velaPositionsSync();
+  toast(L('نمودار از نشست دیگری به‌روز شد.', 'Chart updated from another session.'), 'info');
+});
 
 function velaSaveDrawings(){
   if (!vc || !vc.chart || !vc.chart.drawings) return;
@@ -1372,29 +1397,32 @@ function velaSaveDrawings(){
     if (fullDoc && Array.isArray(fullDoc.drawings)){
       fullDoc.drawings = fullDoc.drawings.filter(d => !posIds.has(d.id));
     }
-    localStorage.setItem(VELA_DRAW_KEY(S.marketId), JSON.stringify(fullDoc));
+    chartStore.set(VELA_DRAW_KEY(S.marketId), JSON.stringify(fullDoc));
     /* renderer config + tool defaults (once, not per symbol) */
     const conf = vc.chart.renderer.getConfig ? vc.chart.renderer.getConfig() : null;
-    if (conf) localStorage.setItem(VELA_CONF_KEY, JSON.stringify(conf));
+    if (conf) chartStore.set(VELA_CONF_KEY, JSON.stringify(conf));
     const tools = vc.chart.drawings.toolDefaults ? vc.chart.drawings.toolDefaults() : null;
-    if (tools) localStorage.setItem(VELA_TOOLS_KEY, JSON.stringify(tools));
+    if (tools) chartStore.set(VELA_TOOLS_KEY, JSON.stringify(tools));
+    /* mirror to the signed-in wallet's server workspace (debounced) */
+    const W = window.OpenfundChartWorkspace;
+    if (W) { W.saveSymbol(S.marketId, fullDoc); W.saveSettings(); }
   } catch(e){ /* storage full or private mode — silently skip */ }
 }
 
 function velaRestoreDrawings(){
   if (!vc || !vc.chart || !vc.chart.drawings) return;
   try {
-    const raw = localStorage.getItem(VELA_DRAW_KEY(S.marketId));
+    const raw = chartStore.get(VELA_DRAW_KEY(S.marketId));
     const doc = JSON.parse(raw || 'null');
     if (doc && doc.drawings) {
       vc.chart.drawings.fromJSON(doc);
       }
     velaRestored = true;   /* allow saves from now on */
-    const conf = JSON.parse(localStorage.getItem(VELA_CONF_KEY) || 'null');
+    const conf = JSON.parse(chartStore.get(VELA_CONF_KEY) || 'null');
     if (conf && vc.chart.renderer.applyConfig) vc.chart.renderer.applyConfig(conf);
     // Restore user cosmetics first, then enforce the app-owned canvas palette.
     vc.setTheme(document.documentElement.dataset.theme);
-    const tools = JSON.parse(localStorage.getItem(VELA_TOOLS_KEY) || 'null');
+    const tools = JSON.parse(chartStore.get(VELA_TOOLS_KEY) || 'null');
     if (tools && vc.chart.drawings.setToolDefaults) vc.chart.drawings.setToolDefaults(tools);
   } catch(e){ /* corrupted JSON — start fresh */ }
 }
@@ -1973,7 +2001,9 @@ function boot(){
   $('market-select-btn').disabled = true;
   $('submit-order').disabled = true;
   chartOverlay(`<b>${t('boot.loading')}</b>`);
-  board.boot().then(() => {
+  /* the signed-in wallet's chart workspace is hydrated BEFORE the chart
+     mounts, so default initialization never overwrites a restored state */
+  Promise.all([board.boot(), window.OpenfundChartWorkspace ? window.OpenfundChartWorkspace.ready : null]).then(() => {
     let requestedSymbol = null;
     /* market deep-link from the Markets page (sessionStorage handshake;
        applied once at boot, only when the symbol exists in Gains metadata) */

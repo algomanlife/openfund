@@ -23,6 +23,7 @@ import { TradingBridge } from '../trading/TradingBridge'
 
 const SCRIPTS = [
   'legacy/gains-adapter.js',
+  'legacy/chart-workspace.js',
   'assets/vela-workspace.global.min.js',
   'legacy/vela-bridge.js',
   'legacy/terminal-data.js',
