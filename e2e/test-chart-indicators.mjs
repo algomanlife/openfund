@@ -27,7 +27,8 @@ const waitIndicators = async child => {
 const checkBranding = async frame => {
   assert.equal(await frame.locator('.vela-ip-badge').filter({ hasText: /^vela$/i }).count(), 0);
   assert.equal(await frame.locator('.vela-bb-credit:visible,.vela-attribution:visible').count(), 0);
-  assert.equal(await frame.locator('.chart-notice:visible').count(), 1);
+  // The terminal status-bar Vela label was removed at the owner's direction.
+  assert.equal(await frame.locator('.chart-notice').count(), 0);
 };
 
 let page;

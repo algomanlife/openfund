@@ -29,6 +29,9 @@
     wallet menu share outside-click, Escape and one-open-at-a-time dismissal
     across the shell and the workspace iframe; the market strip follows RTL/LTR
     with symbols and numbers isolated LTR.
+  - Terminal: the status-bar "Vela" label is removed at the owner's
+    direction; chart engine, indicators and the website's Vela credit and
+    notices are unchanged.
   - Challenges: the Web3 wallet card reflects the existing wallet and SIWE
     session (restoring, connected but not signed in, signed in with address
     and network) instead of always asking to connect.

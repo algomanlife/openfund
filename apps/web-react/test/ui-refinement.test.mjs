@@ -190,3 +190,9 @@ test('Home drops the proposal label and labels Perpetual as inactive in every lo
   assert.match(src('features/home/Home.tsx'), /'غیرفعال \/ در حال توسعه', 'Inactive \/ In Development'/)
   for (const locale of ['ar', 'ru', 'zh-CN']) assert.match(src(`i18n/messages/${locale}.ts`), /'Inactive \/ In Development':/, locale)
 })
+
+test('the terminal status bar has no Vela label while the website keeps its Vela credit', () => {
+  const terminal = src('pages/terminal-body.html')
+  assert.doesNotMatch(terminal, /chart-notice|velacharts\.dev|>Vela</)
+  assert.match(src('pages/landing-body.html'), /<b dir="ltr">Vela<\/b>/)
+})
