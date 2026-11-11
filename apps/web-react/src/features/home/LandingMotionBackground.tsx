@@ -8,9 +8,19 @@ export default function LandingMotionBackground() {
     const page = element?.closest<HTMLElement>('.home-gateway')
     if (!element || !page) return
     const header = page.closest('.information-page')?.querySelector('header')
-    const sizeHeader = () => { if (header) page.style.setProperty('--landing-header-height', `${header.getBoundingClientRect().height}px`) }
+    /* Persian pages add the access notice under the header and the fixed
+       price strip at the bottom; the one-screen gateway subtracts both. */
+    const notice = page.closest('.information-page')?.querySelector<HTMLElement>('.iran-access-notice')
+    const strip = document.querySelector<HTMLElement>('.bitpin-ticker')
+    const sizeHeader = () => {
+      if (header) page.style.setProperty('--landing-header-height', `${header.getBoundingClientRect().height}px`)
+      const extra = (notice?.getBoundingClientRect().height || 0) + (strip?.getBoundingClientRect().height || 0)
+      page.style.setProperty('--landing-chrome-extra', `${extra}px`)
+    }
     const resize = new ResizeObserver(sizeHeader)
     if (header) resize.observe(header)
+    if (notice) resize.observe(notice)
+    if (strip) resize.observe(strip)
     sizeHeader()
     const preference = matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)')
     let frame = 0

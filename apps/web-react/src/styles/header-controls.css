@@ -84,18 +84,18 @@
    of the button itself, so clicking the frame still toggles the theme. ---- */
 :root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-daynight {
   --dn-w: 50px;
-  margin-inline: 9px !important;
-  overflow: visible;
+  /* ring offset that makes the framed toggle exactly --hc-h tall */
+  --dn-ring: calc((var(--hc-h) - var(--dn-w) * 243 / 530) / 2 - 1px);
+  margin-inline: calc(var(--dn-ring) + 1px) !important;
+  /* an outline never adds to layout or scroll size (unlike a pseudo frame) */
+  outline: 1px solid var(--hc-line); outline-offset: var(--dn-ring);
 }
-:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-daynight::before {
-  content: ""; position: absolute; z-index: 0;
-  inset-block: calc((var(--dn-w) * 243 / 530 - var(--hc-h)) / 2);
-  inset-inline: -9px;
-  border: 1px solid var(--hc-line); border-radius: var(--hc-r);
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-daynight:focus-visible {
+  outline: 2px solid var(--mint, #82e7bd); outline-offset: var(--dn-ring);
 }
 
 /* ---- terminal-specific neighbours keep the shared vertical axis -------- */
-:root .of-terminal-actions .of-release-version { display: inline-flex; align-items: center; height: var(--hc-h); }
+:root .of-terminal-actions .of-release-version { align-self: center; }
 :root .of-terminal-actions > button.of-mobile-menu { background: transparent; color: inherit; }
 
 /* The public hamburger matches the control height (square). */
@@ -111,8 +111,7 @@
   :root .openfund-header .nav-actions { --hc-px: 8px; --hc-gap: 4px; }
   :root .openfund-header .nav-actions .nav-cta > span { display: none; }
   :root .openfund-header .nav-actions .of-language-icon { display: none; }
-  :root .openfund-header .nav-actions .of-daynight { --dn-w: 44px; margin-inline: 6px !important; }
-  :root .openfund-header .nav-actions .of-daynight::before { inset-inline: -6px; }
+  :root .openfund-header .nav-actions .of-daynight { --dn-w: 44px; }
 }
 /* Terminal phone header: the connect chip is icon-only (aria-label kept) so
    theme · language · wallet fit the first grid row. */
@@ -124,6 +123,5 @@
   :root .of-terminal-actions .rk-account-summary { gap: 6px; max-width: 132px; overflow: hidden; }
   :root .of-terminal-actions .rk-account-summary .rk-chevron { display: none; }
   :root .of-terminal-actions .rk-chip-addr { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-  :root .of-terminal-header .of-terminal-actions .of-daynight { --dn-w: 42px; margin-inline: 5px !important; }
-  :root .of-terminal-header .of-terminal-actions .of-daynight::before { inset-inline: -5px; }
+  :root .of-terminal-header .of-terminal-actions .of-daynight { --dn-w: 42px; }
 }
