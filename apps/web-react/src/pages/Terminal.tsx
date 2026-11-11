@@ -26,6 +26,7 @@ const SCRIPTS = [
   'assets/vela-workspace.global.min.js',
   'legacy/vela-bridge.js',
   'legacy/terminal-data.js',
+  'legacy/numeric-input.js',
   'legacy/terminal.js'
 ]
 const STYLES = ['legacy/terminal.css']

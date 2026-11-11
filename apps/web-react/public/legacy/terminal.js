@@ -1044,22 +1044,27 @@ $('submit-order').addEventListener('click', async () => {
   const notional = preview ? Number(preview.notional) : req.collateral * req.leverage;
   const liq = preview ? Number(preview.liquidation_price) : tp.liqPrice(req.side, entry, req.leverage);
   const acc = tp.getAccount();
+  /* [label, value, technical, extraClass] — presentation only: the values are
+     the same ones computed above (nothing is re-rounded here). Technical
+     values (symbols, prices, amounts) are isolated LTR so RTL labels never
+     reorder them; localized words (direction, order type) keep the page
+     direction. One label/value pair per row, so nothing is clipped. */
   const rows = [
-    [t('rv.market'), m ? m.symbol : S.marketId], [t('rv.dir'), t(req.side === 'long' ? 'rv.side.long' : 'rv.side.short')],
-    [t('rv.otype'), t('ot.' + req.type)], [t('rv.lev'), req.leverage + '×'],
-    [t('rv.size'), fmt.num(size, m ? Number(m.sizePrecision) || 2 : 2) + ' ' + (m ? m.base : '')],
-    [t('rv.notional'), fmt.usd(notional)],
-    [t('rv.collateral'), fmt.usd(req.collateral)], [t('rk.entry'), fmt.price(entry, d)],
-    [t('rv.oracle'), board.getIndex(S.marketId) ? fmt.price(board.getIndex(S.marketId), d) : '—'],
-    [t('rk.liq'), fmt.price(liq, d)],
-    [t('rv.fee'), fmt.usd(preview ? Number(preview.open_fee) : notional * (tp.feeRate?.(S.marketId) ?? FEE_RATE))],
-    [t('rv.sl'), req.sl ? fmt.price(req.sl, d) : '—'],
-    [t('rv.tp'), req.tp ? fmt.price(req.tp, d) : '—'],
-    [L('مارجین آزاد تخمینی','Estimated free margin'), fmt.usd(preview ? Number(preview.available_margin)-Number(preview.required_margin)-Number(preview.open_fee) : acc.available-req.collateral)],
-    [t('rv.exec'), L('برآورد شبیه‌سازی؛ نتیجهٔ اجرا قطعی نیست','Simulation estimate; execution may differ')]
+    [t('rv.market'), m ? m.symbol : S.marketId, true], [t('rv.dir'), t(req.side === 'long' ? 'rv.side.long' : 'rv.side.short'), false, req.side === 'long' ? 'up' : 'down'],
+    [t('rv.otype'), t('ot.' + req.type), false], [t('rv.lev'), req.leverage + '×', true],
+    [t('rv.size'), fmt.num(size, m ? Number(m.sizePrecision) || 2 : 2) + ' ' + (m ? m.base : ''), true],
+    [t('rv.notional'), fmt.usd(notional), true],
+    [t('rv.collateral'), fmt.usd(req.collateral), true], [t('rk.entry'), fmt.price(entry, d), true],
+    [t('rv.oracle'), board.getIndex(S.marketId) ? fmt.price(board.getIndex(S.marketId), d) : '—', true],
+    [t('rk.liq'), fmt.price(liq, d), true],
+    [t('rv.fee'), fmt.usd(preview ? Number(preview.open_fee) : notional * (tp.feeRate?.(S.marketId) ?? FEE_RATE)), true],
+    [t('rv.sl'), req.sl ? fmt.price(req.sl, d) : '—', true],
+    [t('rv.tp'), req.tp ? fmt.price(req.tp, d) : '—', true],
+    [L('مارجین آزاد تخمینی','Estimated free margin'), fmt.usd(preview ? Number(preview.available_margin)-Number(preview.required_margin)-Number(preview.open_fee) : acc.available-req.collateral), true]
   ];
-  $('review-body').innerHTML = `<div class="review-grid">` +
-    rows.map(([k, v]) => `<div><span>${k}</span><b class="num">${v}</b></div>`).join('') + `</div>`;
+  $('review-body').innerHTML = `<dl class="review-list">` +
+    rows.map(([k, v, tech, cls]) => `<div><dt>${esc(k)}</dt><dd class="${tech ? 'num' : ''}${cls ? ' ' + cls : ''}">${tech ? `<bdi dir="ltr">${esc(v)}</bdi>` : esc(v)}</dd></div>`).join('') +
+    `</dl><p class="review-note"><b>${esc(t('rv.exec'))}:</b> ${esc(L('برآورد شبیه‌سازی؛ نتیجهٔ اجرا قطعی نیست','Simulation estimate; execution may differ'))}</p>`;
   $('review-confirm').className = 'submit ' + req.side;
   $('review-dialog').showModal();
   pendingOrder = { req, provider: tp };
@@ -1736,13 +1741,7 @@ function wireRowActions(){
     if (b.matches('[data-sltp]')) {
     const p = tp.getPosition(b.dataset.sltp);
     if (!p) return;
-    const m = board.getMeta(p.market);
-    $('sltp-title').textContent = `${t('sltp.title')} — ${m.symbol} #${p.id}`;
-    $('sltp-sl').value = p.sl || '';
-    $('sltp-tp').value = p.tp || '';
-    $('sltp-err').hidden = true;
-    $('sltp-dialog').showModal();
-    sltpTarget = p.id;
+    openSltpDialog(p);
       return;
     }
     if (b.matches('[data-detail]')) {
@@ -1771,15 +1770,74 @@ function wireRowActions(){
     }
   });
 }
-let sltpTarget = null;
-$('sltp-cancel').addEventListener('click', () => $('sltp-dialog').close());
+/* SL/TP dialog. Input is normalized at the UI boundary only
+   (OpenfundNumericInput: English, Persian and Arabic-Indic digits, locale
+   decimal separators); the parsed number goes to the SAME provider
+   modifyRisk() as before, which keeps every price rule. A blank field
+   clears that level; an unreadable field is reported and never sent (it
+   used to become NaN → null and silently REMOVE the level). The dialog
+   closes only after the provider confirms; the server provider refreshes
+   positions (and with them the chart overlay) from the backend first. */
+let sltpTarget = null, sltpBusy = false;
+const shortId = id => { const s = String(id); return s.length > 12 ? s.slice(0, 6) + '…' + s.slice(-4) : s; };
+function sltpError(msg, field){
+  $('sltp-err').textContent = msg; $('sltp-err').hidden = !msg;
+  for (const id of ['sltp-sl', 'sltp-tp']) {
+    $(id).closest('.field').classList.toggle('invalid', id === field);
+    $(id).setAttribute('aria-invalid', String(id === field));
+  }
+}
+function openSltpDialog(p){
+  const m = board.getMeta(p.market) || {};
+  const d = Number(m.pricePrecision ?? 2);
+  sltpTarget = p.id;
+  $('sltp-title').textContent = t('sltp.title');
+  const side = p.side === 'long' ? 'long' : 'short';
+  $('sltp-meta').innerHTML =
+    `<bdi dir="ltr" class="sltp-sym">${esc(m.symbol || p.market)}</bdi>` +
+    `<span class="sltp-side ${side === 'long' ? 'up' : 'down'}">${esc(t(side === 'long' ? 'rv.side.long' : 'rv.side.short'))}</span>` +
+    `<button type="button" class="sltp-id" id="sltp-copy-id" title="${esc(String(p.id))}" aria-label="${esc(L('کپی شناسهٔ موقعیت', 'Copy position ID') + ' ' + p.id)}"><bdi dir="ltr">#${esc(shortId(p.id))}</bdi></button>`;
+  $('sltp-hint').innerHTML = `${esc(t('rk.entry'))}: <bdi dir="ltr" class="num">${esc(fmt.price(p.entry, d))}</bdi>`;
+  /* show stored levels exactly as stored (no reformatting / rounding) */
+  $('sltp-sl').value = p.sl != null && p.sl !== '' ? String(p.sl) : '';
+  $('sltp-tp').value = p.tp != null && p.tp !== '' ? String(p.tp) : '';
+  sltpError('');
+  sltpBusy = false; $('sltp-save').disabled = false; $('sltp-save').removeAttribute('aria-busy');
+  $('sltp-dialog').showModal();
+}
+document.addEventListener('click', e => {
+  const b = e.target && e.target.closest && e.target.closest('#sltp-copy-id');
+  if (!b) return;
+  const full = b.getAttribute('title') || '';
+  try { navigator.clipboard?.writeText(full).then(() => toast(L('شناسه کپی شد.', 'ID copied.'), 'pos'), () => {}); } catch(err){}
+});
+$('sltp-cancel').addEventListener('click', () => { if (!sltpBusy) $('sltp-dialog').close(); });
+$('sltp-dialog').addEventListener('cancel', e => { if (sltpBusy) e.preventDefault(); });
 $('sltp-save').addEventListener('click', async () => {
-  if (sltpTarget == null) return;
-  const res = tp.modifyRiskAsync || !tp.submitAsync
-    ? tp.modifyRisk(sltpTarget, +$('sltp-sl').value || null, +$('sltp-tp').value || null)
-    : await tp.modifyRisk(sltpTarget, +$('sltp-sl').value || null, +$('sltp-tp').value || null);
-  if (!res.ok){ $('sltp-err').textContent = res.errors[0]; $('sltp-err').hidden = false; return; }
-  $('sltp-dialog').close(); renderBottom();
+  if (sltpTarget == null || sltpBusy) return;
+  const NI = window.OpenfundNumericInput;
+  const read = id => {
+    const r = NI ? NI.parseDecimal($(id).value, { lang: window.ofLang }) : (() => { const v = normNum($(id).value); return !$(id).value.trim() ? { ok: true, empty: true } : Number.isFinite(v) ? { ok: true, value: v } : { ok: false }; })();
+    if (r.ok && !r.empty && !(r.value > 0)) return { ok: false };
+    return r;
+  };
+  const sl = read('sltp-sl'), tpv = read('sltp-tp');
+  if (!sl.ok) { sltpError(L('قیمت حد ضرر معتبر نیست.', 'Enter a valid Stop Loss price.'), 'sltp-sl'); $('sltp-sl').focus(); return; }
+  if (!tpv.ok) { sltpError(L('قیمت حد سود معتبر نیست.', 'Enter a valid Take Profit price.'), 'sltp-tp'); $('sltp-tp').focus(); return; }
+  sltpError('');
+  sltpBusy = true; $('sltp-save').disabled = true; $('sltp-save').setAttribute('aria-busy', 'true');
+  const target = sltpTarget, provider = tp;
+  try {
+    const res = await Promise.resolve(provider.modifyRisk(target, sl.empty ? null : sl.value, tpv.empty ? null : tpv.value));
+    if (!res || !res.ok) { sltpError((res && res.errors && res.errors[0]) || L('تغییر حد ضرر و سود رد شد.', 'SL/TP update rejected.')); return; }
+    $('sltp-dialog').close();
+    toast(L('حد ضرر و سود به‌روز شد.', 'SL/TP updated.'), 'pos');
+    renderBottom(); velaPositionsSync();
+  } catch (err) {
+    sltpError(String((err && err.message) || L('به‌روزرسانی حد ضرر و سود ناموفق بود.', 'SL/TP update failed.')));
+  } finally {
+    sltpBusy = false; $('sltp-save').disabled = false; $('sltp-save').removeAttribute('aria-busy');
+  }
 });
 
 let confirmCb = null;

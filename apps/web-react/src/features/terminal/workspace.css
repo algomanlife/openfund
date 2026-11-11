@@ -321,6 +321,32 @@ html[dir="rtl"] .review-grid > div > b { direction: ltr; unicode-bidi: isolate; 
   .review-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
+/* Order review: one label/value pair per row on the logical axis (labels
+   at the start edge, values at the end edge), equal row heights, nothing
+   clipped. Technical values are <bdi dir="ltr"> so RTL never reorders them. */
+#review-dialog { width: min(460px, calc(100vw - 24px)); }
+.review-list { margin: 0; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.review-list > div {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, auto); align-items: center; column-gap: 16px;
+  min-height: 34px; padding: 6px 12px; box-sizing: border-box; font-size: 12.5px; line-height: 1.45;
+}
+.review-list > div + div { border-top: 1px solid var(--line); }
+.review-list > div:nth-child(even) { background: color-mix(in srgb, var(--surface) 55%, transparent); }
+.review-list dt { margin: 0; color: var(--muted); min-width: 0; overflow-wrap: break-word; }
+.review-list dd { margin: 0; min-width: 0; max-width: 100%; text-align: end; font-weight: 500; color: var(--white);
+  font-variant-numeric: tabular-nums; overflow-wrap: break-word; }
+.review-list dd bdi { white-space: nowrap; }
+.review-list dd.up { color: var(--pos, var(--mint)); }
+.review-list dd.down { color: var(--neg); }
+.review-note { margin: 10px 0 0; font-size: 11.5px; line-height: 1.7; color: var(--muted); }
+.review-note b { color: var(--body, var(--white)); font-weight: 600; }
+#review-dialog .dlg-actions > button { min-width: 112px; min-height: 36px; }
+@media (max-width: 420px) {
+  .review-list > div { padding: 6px 10px; column-gap: 10px; }
+  .review-list dd bdi { white-space: normal; }
+  #review-dialog .dlg-actions > button { flex: 1 1 0; min-width: 0; }
+}
+
 /* Position details: each row is a label/value pair laid out on the logical
    axis, so RTL locales mirror the structure while ids, symbols, prices and
    dates stay isolated LTR. Labels wrap instead of being clipped. */
@@ -509,3 +535,34 @@ html[dir="rtl"] .market-bar { direction: rtl; }
 #cur-pair, .stat dd, .dd-list .mk b { direction: ltr; unicode-bidi: isolate; }
 .stat dt, .stat dd { white-space: nowrap; }
 html[dir="rtl"] .market-details-content .stat dd { text-align: left; }
+
+/* Stop Loss / Take Profit dialog: compact identity line (symbol · side ·
+   shortened id with the full id in the title and a copy action), two
+   equal-width price fields with the unit inside the field, LTR-isolated
+   numbers, and actions aligned with the order review dialog. */
+#sltp-dialog { width: min(420px, calc(100vw - 24px)); }
+#sltp-dialog h2 { margin-bottom: 8px; }
+.sltp-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0 0 14px; font-size: 12px; color: var(--muted); }
+.sltp-sym { font-weight: 600; color: var(--white); }
+.sltp-side { padding: 1px 7px; border-radius: 4px; border: 1px solid currentColor; font-size: 11px; line-height: 1.6; }
+.sltp-side.up { color: var(--pos, var(--mint)); }
+.sltp-side.down { color: var(--neg); }
+.sltp-id { margin-inline-start: auto; padding: 1px 7px; border: 1px solid var(--line); border-radius: 4px; background: transparent;
+  color: var(--muted); font: inherit; font-size: 11px; line-height: 1.6; cursor: copy; max-width: 100%; }
+.sltp-id:hover, .sltp-id:focus-visible { color: var(--white); border-color: var(--mint); outline: none; }
+.sltp-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.sltp-field > span:first-child { min-height: 16px; }
+.sltp-input { position: relative; display: block; }
+.sltp-field input { box-sizing: border-box; width: 100%; height: 38px; padding-block: 0; padding-inline: 10px 44px;
+  direction: ltr; text-align: left; font-variant-numeric: tabular-nums; }
+.sltp-input em { position: absolute; inset-block: 0; right: 10px; display: flex; align-items: center; pointer-events: none;
+  font-style: normal; font-size: 10.5px; color: var(--muted); }
+html[dir="rtl"] .sltp-field input { text-align: left; }
+.sltp-hint { margin: 10px 0 0; font-size: 11.5px; color: var(--muted); }
+#sltp-dialog .field-err { margin-top: 8px; }
+#sltp-dialog .dlg-actions > button { min-width: 112px; min-height: 36px; }
+#sltp-save[aria-busy="true"] { opacity: .7; cursor: progress; }
+@media (max-width: 420px) {
+  .sltp-fields { grid-template-columns: minmax(0, 1fr); }
+  #sltp-dialog .dlg-actions > button { flex: 1 1 0; min-width: 0; }
+}
