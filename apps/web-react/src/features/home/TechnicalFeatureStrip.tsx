@@ -34,7 +34,7 @@ export default function TechnicalFeatureStrip({ locale }: { locale: import('../.
   const [selected, setSelected] = useState(0)
   const closeDetail = () => { dialog.current?.close(); trigger.current?.focus() }
   return <section className="technical-features" aria-labelledby="technical-title">
-    <div className="technical-heading"><h2 id="technical-title">{pick(locale, 'افق فنی معاملات پرپچوال', 'Perpetual trading technical horizon')}</h2><span>{pick(locale, 'طرح پیشنهادی · نیازمند تأیید محصول', 'Proposed design · product approval required')}</span></div>
+    <div className="technical-heading"><h2 id="technical-title">{pick(locale, 'افق فنی معاملات پرپچوال', 'Perpetual trading technical horizon')}</h2></div>
     <div className="technical-grid">
       {features.map((feature,index) => <button type="button" key={feature.title} className="technical-feature" aria-haspopup="dialog" onClick={event => {
         trigger.current = event.currentTarget

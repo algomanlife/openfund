@@ -163,3 +163,46 @@ export function bindNavigation(root: ParentNode) {
     root.removeEventListener('pointerover', enter)
   }
 }
+
+/** Width-aware header: when the navigation labels plus the header actions do
+ *  not fit on one row (long locales such as Russian, or a narrow window), the
+ *  header switches to its existing menu button instead of letting labels clip
+ *  or overlap. Measured from real rendered widths, never from a breakpoint
+ *  that assumes English label lengths. Returns a cleanup function. */
+export function fitNavigation(root: ParentNode): () => void {
+  const header = root.querySelector<HTMLElement>('.openfund-header')
+  const nav = header?.querySelector<HTMLElement>('.nav')
+  const links = header?.querySelector<HTMLElement>('#navigation')
+  const actions = header?.querySelector<HTMLElement>('.nav-actions')
+  if (!header || !nav || !links || !actions) return () => {}
+  let frame = 0
+  const measure = () => {
+    frame = 0
+    /* an open menu keeps its mode until it is closed */
+    if (links.classList.contains('open')) return
+    header.classList.remove('nav-overflow')
+    /* Sum the in-flow items (scrollWidth would also count the hidden,
+       absolutely positioned dropdown panels and report false overflow). */
+    const needed = (row: HTMLElement) => {
+      const items = [...row.children].filter(el => {
+        const style = getComputedStyle(el)
+        return style.display !== 'none' && style.position !== 'absolute' && style.position !== 'fixed'
+      })
+      const gap = parseFloat(getComputedStyle(row).columnGap) || 0
+      return items.reduce((sum, el) => sum + el.getBoundingClientRect().width, 0) + gap * Math.max(0, items.length - 1)
+    }
+    const fits = needed(links) <= links.getBoundingClientRect().width + 1
+      && needed(actions) <= actions.getBoundingClientRect().width + 1
+      && needed(nav) <= nav.clientWidth - parseFloat(getComputedStyle(nav).paddingInlineStart) - parseFloat(getComputedStyle(nav).paddingInlineEnd) + 1
+    header.classList.toggle('nav-overflow', !fits)
+  }
+  const schedule = () => { if (!frame) frame = requestAnimationFrame(measure) }
+  const resize = new ResizeObserver(schedule)
+  resize.observe(nav)
+  const content = new MutationObserver(schedule)
+  content.observe(links, { childList: true, subtree: true, characterData: true })
+  content.observe(actions, { childList: true, subtree: true })
+  void document.fonts?.ready.then(schedule)
+  schedule()
+  return () => { cancelAnimationFrame(frame); resize.disconnect(); content.disconnect() }
+}

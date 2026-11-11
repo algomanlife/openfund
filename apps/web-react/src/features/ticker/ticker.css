@@ -1,0 +1,74 @@
+/* Persian-only Bitpin price strip, fixed to the bottom of the public site.
+   Slim (40px + safe area), reserves its own space, never covers dialogs. */
+.bitpin-ticker {
+  --ticker-h: 40px;
+  position: fixed; inset-inline: 0; bottom: 0; z-index: 40;
+  height: calc(var(--ticker-h) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  box-sizing: border-box;
+  display: flex; align-items: stretch;
+  background: #070c0acc; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line, #ffffff18);
+  color: var(--body, #b5bebb);
+  font: 400 12px/1 'Irancell', Tahoma, sans-serif;
+}
+html.has-bitpin-ticker body { padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
+
+.bitpin-ticker-source {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 8px;
+  padding-inline: 14px; border-inline-end: 1px solid var(--line, #ffffff18);
+  background: inherit; position: relative; z-index: 1; white-space: nowrap;
+}
+.bitpin-ticker-dot { width: 6px; height: 6px; border-radius: 50%; background: #84928e; flex: 0 0 auto; }
+.bitpin-ticker[data-status="live"] .bitpin-ticker-dot { background: var(--mint, #82e7bd); box-shadow: 0 0 6px #82e7bd88; }
+.bitpin-ticker[data-status="delayed"] .bitpin-ticker-dot { background: #d8b45c; }
+.bitpin-ticker[data-status="unavailable"] .bitpin-ticker-dot { background: #e89483; }
+.bitpin-ticker-status { color: var(--muted, #84928e); font-size: 11px; }
+.bitpin-ticker-brand { color: var(--white, #f1f3ef); font-weight: 600; font-size: 12px; text-decoration: none; }
+.bitpin-ticker-brand:hover { color: var(--mint, #82e7bd); }
+
+.bitpin-ticker-viewport { position: relative; flex: 1 1 auto; min-width: 0; overflow: hidden; display: flex; align-items: center;
+  mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent); }
+.bitpin-ticker-track { display: flex; width: max-content; flex-wrap: nowrap;
+  animation: bitpin-ticker-rtl calc(var(--ticker-items, 10) * 5s) linear infinite; will-change: transform; }
+.bitpin-ticker:hover .bitpin-ticker-track, .bitpin-ticker:focus-within .bitpin-ticker-track { animation-play-state: paused; }
+/* delayed data is dimmed and stops moving, so it never reads as live */
+.bitpin-ticker[data-status="delayed"] .bitpin-ticker-track { animation-play-state: paused; opacity: .6; }
+.bitpin-ticker-list { display: flex; align-items: center; margin: 0; padding: 0; list-style: none; flex-wrap: nowrap; }
+.bitpin-ticker-item { display: inline-flex; align-items: center; gap: 7px; padding-inline: 18px; white-space: nowrap;
+  border-inline-start: 1px solid #ffffff10; height: 24px; }
+.bitpin-ticker-icon { flex: 0 0 auto; display: block; }
+.bitpin-ticker-name { color: var(--white, #f1f3ef); font-weight: 500; }
+.bitpin-ticker-symbol { color: var(--muted, #84928e); font: 500 10.5px/1 'Ubuntu', sans-serif; letter-spacing: .3px; }
+.bitpin-ticker-price { color: var(--white, #f1f3ef); font-variant-numeric: tabular-nums; }
+.bitpin-ticker-price small { color: var(--muted, #84928e); font-size: 10px; }
+.bitpin-ticker-change { font-variant-numeric: tabular-nums; font-size: 11.5px; min-width: 6ch; text-align: left; }
+.bitpin-ticker-change.up { color: var(--mint, #82e7bd); }
+.bitpin-ticker-change.down { color: #f08a7a; }
+.bitpin-ticker-change.flat { color: var(--muted, #84928e); }
+
+/* RTL strip: the content travels toward the reading direction's end and the
+   duplicated list makes the loop seamless (−/+50% = exactly one copy). */
+@keyframes bitpin-ticker-rtl { from { transform: translateX(0); } to { transform: translateX(50%); } }
+
+@media (max-width: 700px) {
+  .bitpin-ticker { --ticker-h: 36px; font-size: 11px; }
+  html.has-bitpin-ticker body { padding-bottom: calc(36px + env(safe-area-inset-bottom, 0px)); }
+  .bitpin-ticker-source { padding-inline: 10px; gap: 6px; }
+  .bitpin-ticker-status { display: none; }
+  .bitpin-ticker[data-status="unavailable"] .bitpin-ticker-status,
+  .bitpin-ticker[data-status="loading"] .bitpin-ticker-status { display: inline; }
+  .bitpin-ticker-item { padding-inline: 12px; gap: 5px; }
+  .bitpin-ticker-symbol { display: none; }
+}
+/* Reduced motion: no movement; the strip scrolls by hand instead. */
+@media (prefers-reduced-motion: reduce) {
+  .bitpin-ticker-track { animation: none; }
+  .bitpin-ticker-track > .bitpin-ticker-list[aria-hidden="true"] { display: none; }
+  .bitpin-ticker-viewport { overflow-x: auto; scrollbar-width: none; mask-image: none; }
+}
+
+html[data-theme="light"] .bitpin-ticker { background: #ffffffe6; border-top-color: var(--line, #0a120d24); }
+html[data-theme="light"] .bitpin-ticker-item { border-inline-start-color: #0a120d14; }
+html[data-theme="light"] .bitpin-ticker-change.up { color: #087b4a; }
+html[data-theme="light"] .bitpin-ticker-change.down { color: #b33f35; }

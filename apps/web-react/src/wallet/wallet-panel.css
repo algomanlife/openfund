@@ -1,0 +1,22 @@
+/* Challenges page wallet card (ChallengeWalletPanel). Inherits the card's
+   typography from the landing platform grid. */
+.wallet-panel-host, .wallet-panel { display: flex; flex-direction: column; gap: 10px; min-width: 0; height: 100%; }
+.wallet-panel h3 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.wallet-panel .wallet-trigger { align-self: flex-start; margin-top: auto; }
+.wallet-panel .wallet-trigger:disabled { opacity: .6; cursor: progress; }
+.wallet-panel-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: 0 0 auto; background: #84928e; }
+.wallet-panel-dot.live { background: var(--mint, #82e7bd); box-shadow: 0 0 6px #82e7bd88; }
+.wallet-panel-dot.info { background: #86a8ff; }
+.wallet-panel-dot.warn { background: #e89483; }
+.wallet-panel-status { display: flex; align-items: center; gap: 8px; color: var(--muted, #84928e); }
+.wallet-panel-status .wallet-panel-dot { animation: wallet-panel-pulse 1.4s ease-in-out infinite; }
+@keyframes wallet-panel-pulse { 50% { opacity: .35; } }
+.wallet-panel-details { display: grid; gap: 6px; margin: 0; font-size: 13px; }
+.wallet-panel-details > div { display: flex; justify-content: space-between; gap: 12px; padding-block: 4px; border-bottom: 1px solid var(--line, #ffffff18); min-width: 0; }
+.wallet-panel-details dt { color: var(--muted, #84928e); }
+.wallet-panel-details dd { margin: 0; color: var(--white, #f1f3ef); min-width: 0; overflow-wrap: anywhere; }
+.wallet-panel-details bdi { font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; }
+.wallet-panel-ready { color: var(--mint, #82e7bd); font-weight: 500; }
+.wallet-panel-note { color: var(--body, #b5bebb); font-size: 13px; }
+html[data-theme="light"] .wallet-panel-ready { color: #087b4a; }
+@media (prefers-reduced-motion: reduce) { .wallet-panel-status .wallet-panel-dot { animation: none; } }

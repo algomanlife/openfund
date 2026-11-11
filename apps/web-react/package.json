@@ -22,7 +22,7 @@
     "test:i18n": "node scripts/i18n-sources.mjs --check",
     "test:governance": "node --test test/governance.test.mjs",
     "test:chart": "node --test test/chart-quick-trade.test.mjs",
-    "test:content": "node --test test/public-content.test.mjs test/community.test.mjs",
+    "test:content": "node --test test/public-content.test.mjs test/community.test.mjs test/ui-refinement.test.mjs",
     "check:product-rules": "node --test test/product-rules.test.mjs"
   },
   "dependencies": {

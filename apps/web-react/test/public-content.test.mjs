@@ -140,13 +140,17 @@ test('the footer corporate-information block is replaced by the address in every
   assert.match(client, /if \(row\.doc_type === 'corporate' \|\| row\.doc_type === 'address'\) continue/)
   assert.match(client, /return out\.length \? \[\.\.\.out, ADDRESS_DOC\] : null/)
   assert.match(client, /title: \{ fa: 'آدرس', en: 'Address' \}/)
-  assert.ok(client.includes('ایران (سرزمین پارس) - استان فارس - شهر شیراز - خیابان دانش آموز (بین خیابان مهر و بلوار مطهری) کوچه ۱۳ دانش آموز'))
-  const en = 'Iran (Land of Persia), Fars Province, Shiraz, Danesh Amouz Street (between Mehr Street and Motahari Boulevard), Danesh Amouz Alley 13.'
+  assert.ok(client.includes('ایران – استان فارس – شهر شیراز – خیابان دانش‌آموز (بین خیابان مهر و بلوار مطهری) – کوچه ۱۳ دانش‌آموز'))
+  const en = 'Iran, Fars Province, Shiraz, Danesh Amouz Street (between Mehr Street and Motahari Boulevard), Danesh Amouz Alley 13.'
   assert.ok(client.includes(en))
+  // The removed parenthetical ("Land of Persia") must not return in any locale.
+  const removed = /سرزمین پارس|Land of Persia|أرض فارس|Земля Персии|波斯之地/
+  assert.doesNotMatch(client, removed)
   for (const l of ['ar', 'ru', 'zh-CN']) {
     const messages = read(`src/i18n/messages/${l}.ts`)
     assert.ok(messages.includes(`'${en}':`), l)
     assert.ok(messages.includes(`'Address':`), l)
+    assert.doesNotMatch(messages, removed, l)
   }
 })
 

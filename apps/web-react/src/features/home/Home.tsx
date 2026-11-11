@@ -75,8 +75,8 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
         <article className="home-panel home-enter e3">
           <div className="home-art"><AnimatedTradingTerminalIllustration /></div>
           <div className="home-panel-copy">
-            <h2>{t.propTitle}</h2>
-          <p className="home-product-note" title={t.propDescription || undefined}>{isolateLatin(t.propDescription || pick(locale, 'ارزیابی معاملاتی در محیط شبیه‌سازی‌شده', 'Trading evaluations in a simulated environment'), rtl)}</p>
+            <div className="home-panel-heading"><h2>{t.propTitle}</h2></div>
+            <p className="home-product-note" title={t.propDescription || undefined}>{isolateLatin(t.propDescription || pick(locale, 'ارزیابی معاملاتی در محیط شبیه‌سازی‌شده', 'Trading evaluations in a simulated environment'), rtl)}</p>
             <a className="button" href={c.propCtaDestination === 'terminal' ? `/${locale}/prop/trade` : CTA_HREF.challenges(locale)}>
               {t.propCta}
               <span aria-hidden="true">←</span>
@@ -89,8 +89,12 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
             <LeveragedMarketIllustration />
           </div>
           <div className="home-panel-copy">
-            <h2>{t.perpetualTitle}</h2>
-          <p className="home-product-note" title={t.perpetualDescription || undefined}>{isolateLatin(t.perpetualDescription || pick(locale, 'داده‌های بازار · دسترسی خواندنی', 'Market data · read-only access'), rtl)}</p>
+            <div className="home-panel-heading">
+              <h2 id="home-perpetual-title">{t.perpetualTitle}</h2>
+              {/* status label only: market data, charts and routing stay as they are */}
+              <span className="home-status-badge" aria-describedby="home-perpetual-title">{pick(locale, 'غیرفعال / در حال توسعه', 'Inactive / In Development')}</span>
+            </div>
+            <p className="home-product-note" title={t.perpetualDescription || undefined}>{isolateLatin(t.perpetualDescription || pick(locale, 'داده‌های بازار · دسترسی خواندنی', 'Market data · read-only access'), rtl)}</p>
             <a className="button" href={CTA_HREF[c.perpetualCtaDestination](locale)}>
               {t.perpetualCta}
               <span aria-hidden="true">↙</span>

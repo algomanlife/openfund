@@ -2,6 +2,36 @@
 
 ## Unreleased
 
+- Final frontend UI refinement (branch `agent/claude/final-ui-refinement`),
+  frontend only, no backend, trading, payment or SIWE change:
+  - One header-control geometry (wallet, terminal entry, language, theme) for
+    the website and the terminal (`src/styles/header-controls.css`); the
+    terminal now orders them like the website.
+  - The public header measures real label/action widths and falls back to the
+    menu only when they do not fit (replaces the fixed 1400px breakpoint that
+    clipped Russian labels); smallest-phone tier keeps every control on one row.
+  - Footer address no longer includes the "Land of Persia" parenthetical in
+    any locale; footer service credits gain Bitpin (official logo) and lay out
+    as one row of seven on desktop with balanced wrapping below; legacy
+    stylesheets are requested with a per-build version so a cached copy cannot
+    differ between domains.
+  - Persian-only: Iran access notice under the header (shown only in
+    development builds until the owner approves the claim,
+    `src/config/iranAccess.ts`) and a fixed bottom Bitpin price strip in Toman
+    (read-only public API, one shared 30s poller, paused in hidden tabs,
+    backoff on failure, prices withdrawn after 10 minutes without data).
+  - Home: product cards share one structure with bottom-aligned CTAs; the
+    Perpetual card carries an "Inactive / In Development" badge in five
+    languages; the "Proposed design · product approval required" label is gone.
+  - Terminal: the open market list no longer rebuilds on every price tick
+    (rows under the pointer were detached, so the first click was lost or
+    closed the menu); market selector, More stats, the More menu and the
+    wallet menu share outside-click, Escape and one-open-at-a-time dismissal
+    across the shell and the workspace iframe; the market strip follows RTL/LTR
+    with symbols and numbers isolated LTR.
+  - Challenges: the Web3 wallet card reflects the existing wallet and SIWE
+    session (restoring, connected but not signed in, signed in with address
+    and network) instead of always asking to connect.
 - Repository governance and security (branch `agent/claude/repo-governance`,
   no application code changed): add `CODE_OF_CONDUCT.md`, `SUPPORT.md`,
   `.github/CODEOWNERS`, `CLAUDE.md`, UI-problem and documentation issue

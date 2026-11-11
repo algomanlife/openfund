@@ -14,6 +14,7 @@ import { classifyWalletError, isNeutral, walletErrorMessage, type ClassifiedWall
 /* RainbowKit ships ar/ru/zh-CN; Persian is translated by the DOM pass below. */
 const RAINBOW_LOCALE: Record<string, RainbowLocale> = { fa: 'en-US', en: 'en-US', ar: 'ar-AR', ru: 'ru-RU', 'zh-CN': 'zh-CN' }
 import '../session/session.css'
+import { closeOthers, registerPopover, type Popover } from '../features/terminal/popovers'
 
 /* RainbowKit theme follows the app theme (html[data-theme=light]) with the
    Openfund mint accent. The provider wraps ONLY this button — its data-rk
@@ -164,15 +165,25 @@ export function RainbowConnect() {
   const session = useSession()
   const [profileOpen, setProfileOpen] = useState(false)
   const accountMenu = useRef<HTMLDetailsElement>(null)
+  /* outside click / Escape / one-open-at-a-time come from the shared popover
+     registry, which also sees clicks inside the terminal workspace iframe */
+  const accountPopover = useRef<Popover>({
+    contains: target => !!target && !!accountMenu.current?.contains(target),
+    isOpen: () => !!accountMenu.current?.open,
+    close: restoreFocus => {
+      const menu = accountMenu.current
+      if (!menu) return
+      const focusInside = menu.contains(document.activeElement)
+      menu.open = false
+      if (restoreFocus && focusInside) menu.querySelector('summary')?.focus()
+    },
+  })
+  useEffect(() => registerPopover(accountPopover.current), [])
   useEffect(() => {
     const close = () => { if (accountMenu.current) accountMenu.current.open = false }
     close()
-    const outside = (event: PointerEvent) => {
-      if (event.target instanceof Node && !accountMenu.current?.contains(event.target)) close()
-    }
     addEventListener('hashchange', close)
-    document.addEventListener('pointerdown', outside)
-    return () => { removeEventListener('hashchange', close); document.removeEventListener('pointerdown', outside) }
+    return () => { removeEventListener('hashchange', close) }
   }, [session.status])
 
   return (
@@ -209,7 +220,9 @@ export function RainbowConnect() {
                 <span className='rk-connect-label'>{connectLabel}</span>
               </button>
             ) : (
-              <details ref={accountMenu} className="rk-account-menu" onClick={event => {
+              <details ref={accountMenu} className="rk-account-menu" onToggle={event => {
+                if (event.currentTarget.open) closeOthers(accountPopover.current)
+              }} onClick={event => {
                 if ((event.target as Element).closest('button')) event.currentTarget.open = false
               }} onKeyDown={event => {
                 if (event.key === 'Escape') {

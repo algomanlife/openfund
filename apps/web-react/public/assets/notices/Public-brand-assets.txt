@@ -34,7 +34,12 @@ Liara: official logo, unchanged (paths, gradients and viewBox as published)
 https://liara.ir/assets/images/liara-logo.svg  https://liara.ir
 Liara trademark/brand guidelines apply.
 
-All six footer service logos (Gains, Vela, TradingView, DePay, Render, Liara)
-use one neutral wrapper; no CSS color filters.
+Bitpin: official logo, unchanged (single path, #00d890 fill, viewBox as published)
+https://bitpin.ir/assets/logo/bitpin.svg  https://bitpin.ir
+Displayed as a market-data credit only; it does not indicate a commercial
+agreement or a live integration status. Bitpin trademark/brand guidelines apply.
+
+All seven footer service logos (Gains, Vela, TradingView, DePay, Render, Liara,
+Bitpin) use one neutral wrapper; no CSS color filters.
 Community destinations remain owner-configured. No Telegram, Discord or
 Instagram destination ownership is verified by these assets or URL validators.

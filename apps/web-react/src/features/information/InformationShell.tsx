@@ -8,10 +8,13 @@ import { RainbowConnect } from '../../wallet/RainbowConnect'
 import { labels, type Locale, type InfoPage } from './content'
 import './information.css'
 import TelegramCommunity from '../community/TelegramCommunity'
-import { bindNavigation, renderNavigation, navigationClick, navigationKeyDown } from './navigation'
+import { bindNavigation, fitNavigation, renderNavigation, navigationClick, navigationKeyDown } from './navigation'
 import { chooseTheme, currentTheme, decorateThemeToggle } from '../../theme'
 import LanguageSelect from '../../i18n/LanguageSelect'
 import UntranslatedNotice from '../../i18n/UntranslatedNotice'
+import { legacyStylesheet } from '../../config/legacyAssets'
+import IranAccessNotice from '../notice/IranAccessNotice'
+import BitpinTicker from '../ticker/BitpinTicker'
 import { dirOf, isLocale, normalizeLocale, pick, pickRecord, switchLocalePath, type AppLocale } from '../../i18n/locales'
 
 const header = landingBody.match(/<header\b[^>]*>[\s\S]*?<\/header>/)![0]
@@ -103,6 +106,7 @@ export function Chrome({ locale, part, nav = true }: { locale: AppLocale; part: 
   }, [locale, part, nav, dictionary, faDictionary, location.pathname, navItems, footerLinks])
 
   useEffect(() => { if (part === 'header' && host.current) return bindNavigation(host.current) }, [markup, part])
+  useEffect(() => { if (part === 'header' && nav && host.current) return fitNavigation(host.current) }, [markup, part, nav])
   useEffect(() => { setWalletHost(host.current?.querySelector<HTMLElement>('#wallet-root') || null); setLanguageHost(host.current?.querySelector<HTMLElement>('#language-slot') || null); setCommunityHost(host.current?.querySelector<HTMLElement>('[data-community-slot]') || null) }, [markup])
 
   return <div ref={host} className="info-chrome" onClick={e => {
@@ -187,15 +191,18 @@ export default function InformationShell({ page, description, footer = true, nav
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }) }, [page])
   if (!isLocale(routeLocale)) return <Navigate to={`/fa/${page}`} replace />
   return <div className={`information-page${footer ? '' : ' chrome-only'}`}>
-    <link rel="stylesheet" href={`${base}legacy/style.css`} precedence="openfund" />
-    <link rel="stylesheet" href={`${base}legacy/wallet.css`} precedence="openfund" />
+    <link rel="stylesheet" href={legacyStylesheet('legacy/style.css')} precedence="openfund" />
+    <link rel="stylesheet" href={legacyStylesheet('legacy/wallet.css')} precedence="openfund" />
     <a className="skip" href="#main">{pickRecord(locale, labels.skip)}</a>
     <Chrome locale={locale} part="header" nav={nav} />
+    {/* Persian-only public additions: access notice and live Bitpin prices */}
+    {locale === 'fa' && <IranAccessNotice />}
     <main id="main" className="info-main" tabIndex={-1}>
       <UntranslatedNotice locale={locale} />
       {children}
     </main>
     {footer && <Chrome locale={locale} part="footer" />}
+    {locale === 'fa' && <BitpinTicker />}
   </div>
 }
 

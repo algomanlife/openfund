@@ -25,6 +25,7 @@ import {
   type Locale,
 } from "./model";
 import "./terminal.css";
+import { detailsPopover, registerPopover } from "./popovers";
 import { TerminalContext, useTerminal } from "./TerminalContext";
 import { chooseTheme, currentTheme, DAY_NIGHT_MARKUP } from "../../theme";
 import LanguageSelect from "../../i18n/LanguageSelect";
@@ -96,6 +97,13 @@ export default function TerminalShell({ product }: { product: Product }) {
     pickRecord(locale, messages[`products.${product}.${key}`]) ||
     pickRecord(locale, messages[`products.${key}`]) ||
     "";
+  /* the More menu shares outside-click / Escape / one-open-at-a-time
+     dismissal with the wallet menu and the workspace popovers */
+  const moreMenu = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    if (!moreMenu.current) return;
+    return registerPopover(detailsPopover(moreMenu.current));
+  }, [pathname, search]);
   const accountsSection = page === "journal" && new URLSearchParams(search).get("section") === "accounts";
   const accountsPath = route(locale, product, "journal");
   const accountsHref = accountsPath + (accountsPath.includes("?") ? "&" : "?") + "section=accounts";
@@ -111,7 +119,7 @@ export default function TerminalShell({ product }: { product: Product }) {
         aria-current={page === "journal" && !accountsSection ? "page" : undefined}>{t("ژورنال", "Journal")}</Link>
       <Link to={accountsHref} className={accountsSection ? "active" : ""}
         aria-current={accountsSection ? "page" : undefined}>{t("حساب‌ها", "Accounts")}</Link>
-      <details className="of-terminal-more" key={pathname + search} onKeyDown={event => {
+      <details className="of-terminal-more" key={pathname + search} ref={moreMenu} onKeyDown={event => {
         if (event.key === "Escape") { event.currentTarget.open = false; event.currentTarget.querySelector("summary")?.focus(); }
       }}>
         <summary>{t("بیشتر", "More")} <span aria-hidden="true">▾</span></summary>
@@ -203,7 +211,6 @@ export default function TerminalShell({ product }: { product: Product }) {
             </label>
             <div className="of-terminal-actions">
               {version}
-              <RainbowConnect />
               <button
                 type="button"
                 className="of-daynight"
@@ -219,6 +226,8 @@ export default function TerminalShell({ product }: { product: Product }) {
               {/* same page in the chosen locale; both products in every locale */}
               <LanguageSelect locale={locale} onChange={next =>
                 navigate(switchLocalePath(pathname, next) + search)} />
+              {/* shared header order: theme · language · wallet (see styles/header-controls.css) */}
+              <RainbowConnect />
               <button
                 className="of-mobile-menu"
                 aria-expanded={open}

@@ -70,11 +70,13 @@ test('provider availability is independent and enabled links preserve security a
   }
 })
 
-test('the public page lists no unreleased app downloads and six service credits including both cloud infrastructures', () => {
+test('the public page lists no unreleased app downloads and seven service credits including both cloud infrastructures and Bitpin', () => {
   const doc = new JSDOM(read('apps/web-react/src/pages/landing-body.html')).window.document
   assert.equal(doc.querySelectorAll('#desktop, .desktop-btns').length, 0)
-  assert.equal(doc.querySelectorAll('.credits-row .service-logo-slot').length, 6)
-  assert.deepEqual([...doc.querySelectorAll('.credits-row > a b')].map(b => b.textContent), ['Gains', 'Vela', 'TradingView', 'DePay', 'Render', 'Liara'])
+  assert.equal(doc.querySelectorAll('.credits-row .service-logo-slot').length, 7)
+  assert.deepEqual([...doc.querySelectorAll('.credits-row > a b')].map(b => b.textContent), ['Gains', 'Vela', 'TradingView', 'DePay', 'Render', 'Liara', 'Bitpin'])
+  assert.equal(doc.querySelectorAll('.credits-row a[href="https://bitpin.ir"] img[src="assets/bitpin-logo.svg"]').length, 1)
+  assert.equal(doc.querySelector('.credits-row a[href="https://bitpin.ir"] .service-description').textContent, 'داده‌های بازار و عمق بازار ایران')
   assert.equal(doc.querySelectorAll('.credits-row img[src="assets/vela-logo.svg"]').length, 1)
   assert.equal(doc.querySelectorAll('.credits-row a[href="https://render.com"] img[src="assets/render-logo.svg"]').length, 1)
   assert.equal(doc.querySelectorAll('.credits-row a[href="https://liara.ir"] img[src="assets/liara-logo.svg"]').length, 1)
