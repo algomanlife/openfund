@@ -514,7 +514,7 @@ test('nested pages highlight their section without claiming the section landing 
   dom.window.close()
 })
 
-test('Economy menu groups Governance, Ambassador (IB), Transparency, Revenue Model and Live Market Access', () => {
+test('Economy menu groups Governance, Ambassador (IB), Transparency, Revenue Model, Live Market Access and Referral & Rewards', () => {
   for (const locale of ['en', 'fa']) {
     const dom = navigationFixture(locale, `/${locale}/revenue-model`)
     const trigger = document.querySelector('.resources-toggle[aria-controls="website-economy"]')
@@ -522,12 +522,13 @@ test('Economy menu groups Governance, Ambassador (IB), Transparency, Revenue Mod
     assert.ok(trigger.textContent.includes(locale === 'en' ? 'Economy' : 'اقتصاد'))
     assert.equal(trigger.getAttribute('data-active-section'), 'true')
     const hrefs = [...document.querySelectorAll('#website-economy a')].map(a => a.getAttribute('href'))
-    assert.deepEqual(hrefs, [`/${locale}/governance`, `/${locale}/ambassador`, `/${locale}/transparency`, `/${locale}/revenue-model`, `/${locale}/live-market-access`])
+    assert.deepEqual(hrefs, [`/${locale}/governance`, `/${locale}/ambassador`, `/${locale}/transparency`, `/${locale}/revenue-model`, `/${locale}/live-market-access`, `/${locale}/referral`])
+    assert.equal(document.querySelector(`#website-economy a[href="/${locale}/referral"]`).textContent, locale === 'en' ? 'Referral & Rewards' : 'معرفی و پاداش')
     assert.equal(document.querySelector(`#website-economy a[href="/${locale}/revenue-model"]`).getAttribute('aria-current'), 'page')
     const resources = [...document.querySelectorAll('#website-resources a')].map(a => a.getAttribute('href'))
     /* Governance and the partner programs moved under Economy (one consolidated
        Ambassador (IB) page; /coach redirects into it) */
-    for (const route of ['ambassador', 'coach', 'governance']) assert.ok(!resources.includes(`/${locale}/${route}`), route)
+    for (const route of ['ambassador', 'coach', 'governance', 'referral']) assert.ok(!resources.includes(`/${locale}/${route}`), route)
     assert.ok(!hrefs.includes(`/${locale}/coach`), 'Verified Coach is a section of the Ambassador (IB) page')
     dom.window.close()
   }

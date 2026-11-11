@@ -9,7 +9,7 @@ import TelegramCommunity from '../features/community/TelegramCommunity'
 import { CheckoutHost } from '../features/purchase/CheckoutHost'
 import { fetchCmsNavigation, fetchCmsTranslations, fetchCmsLegacyPlans, fetchCmsFaqs, fetchCmsLegal, fetchCmsFooterLinks, invalidateCmsCache } from '../cms/client'
 import { loadingGate } from '../features/loading/BrandedLoading'
-import { chooseTheme, currentTheme } from '../theme'
+import { chooseTheme, currentTheme, decorateThemeToggle } from '../theme'
 import LanguageSelect from '../i18n/LanguageSelect'
 import { dirOf, isLocale, switchLocalePath, untranslatedNotice, type AppLocale } from '../i18n/locales'
 import { missesFor, translateSource } from '../i18n/messages'
@@ -79,7 +79,7 @@ const installTranslator = () => {
 function initTheme() {
   const b = document.getElementById('theme-toggle')
   if (!b) return
-  b.textContent = currentTheme() === 'dark' ? '◐' : '◑'
+  decorateThemeToggle(b)
   if (!(b as any).__ofThemeWired) {
     ;(b as any).__ofThemeWired = true
     b.addEventListener('click', () =>

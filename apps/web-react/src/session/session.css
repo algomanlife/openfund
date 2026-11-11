@@ -90,20 +90,44 @@ html[data-theme='light'] .rk-chip-bal { color: #6b7a70 }
 .of-profile-actions .button:hover { background: #e8948344 }
 
 /* A single header control keeps every connected-wallet action available. */
-.rk-account-menu { position:relative; flex:0 0 auto; }
-.rk-account-menu > summary { list-style:none; max-width:160px; }
+.rk-account-menu { position:relative; flex:0 0 auto; min-width:0; }
+.rk-account-menu > summary { list-style:none; max-width:168px; min-width:0; }
 .rk-account-menu > summary::-webkit-details-marker { display:none; }
+/* The landing FAQ accordion styles every `summary>span` (22px glyph, rotated
+   45deg while open). Reset that for the wallet chip so the address stays
+   level, sized and aligned with the status dot and the chevron. */
+.rk-account-menu > summary > span { transform:none !important; transition:none; font:inherit; color:inherit; }
+.rk-account-menu > summary .rk-chip-addr { font-family:ui-monospace, Consolas, monospace; font-size:11.5px; line-height:1; }
 .rk-chip-addr { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+.rk-chevron { flex:0 0 auto; opacity:.7; transition:transform .18s; }
+.rk-account-menu[open] .rk-chevron { transform:rotate(180deg); }
 .rk-account-controls {
   position:absolute; top:calc(100% + 8px); right:0; z-index:200;
-  display:flex; flex-direction:column; align-items:stretch; gap:8px;
-  width:max-content; max-width:calc(100vw - 24px); min-width:190px; padding:12px;
-  background:#0d1511; color:#e6eee9; border:1px solid #ffffff25; border-radius:6px;
-  box-shadow:0 12px 32px #0004;
+  display:flex; flex-direction:column; align-items:stretch; gap:12px;
+  width:248px; max-width:calc(100vw - 24px); padding:12px; box-sizing:border-box;
+  background:#0d1511; color:#e6eee9; border:1px solid #ffffff25; border-radius:8px;
+  box-shadow:0 12px 32px #0004; text-align:start; white-space:normal;
+  font:500 12.5px/1.5 Ubuntu, 'Irancell', system-ui, sans-serif;
 }
-.rk-account-controls .rk-chip-bal { display:inline !important; }
-.rk-network-status { font-size:11px; text-align:center; }
+.rk-account-controls:lang(fa) { font-family:'Irancell', Ubuntu, Tahoma, sans-serif; }
+.rk-account-controls:lang(ar) { font-family:Ubuntu, 'Vazirmatn', Tahoma, sans-serif; }
+.rk-menu-section { display:flex; flex-direction:column; gap:6px; min-width:0; }
+.rk-menu-section + .rk-menu-section { padding-top:12px; border-top:1px solid #ffffff17; }
+.rk-menu-heading { font-size:10.5px; font-weight:600; letter-spacing:.02em; color:#8fa69a; }
+.rk-account-controls .rk-chip { width:100%; justify-content:center; }
+.rk-account-controls .rk-menu-address { justify-content:flex-start; }
+.rk-menu-address .rk-chip-addr { direction:ltr; unicode-bidi:isolate; }
+.rk-menu-row { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:26px; padding:0 2px; font-size:12px; color:#a9bdb1; }
+.rk-menu-row > bdi { color:#e6eee9; font-family:ui-monospace, Consolas, monospace; font-size:11.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+.rk-menu-row .rk-chip-bal::before { content:none; }
+.rk-chip-disconnect { color:#f0b3a6; border-color:#e8948344; }
+.rk-chip-disconnect:hover { border-color:#e89483aa; color:#f6c9bf; }
 html[data-theme='light'] .rk-account-controls { background:#fff; color:#16281e; border-color:#0a120d28; }
+html[data-theme='light'] .rk-menu-section + .rk-menu-section { border-color:#0a120d1a; }
+html[data-theme='light'] .rk-menu-heading { color:#52665b; }
+html[data-theme='light'] .rk-menu-row { color:#52665b; }
+html[data-theme='light'] .rk-menu-row > bdi { color:#16281e; }
+html[data-theme='light'] .rk-chip-disconnect { color:#94392f; border-color:#94392f44; }
 .rk-wrap > [role='alert'] { white-space:normal; }
 html[data-theme='light'] .of-profile { background:var(--surface,#fff); color:var(--white,#16281e); border-color:var(--line,#0a120d28); }
 html[data-theme='light'] .of-profile :is(h3,.of-profile-rows b,.of-challenges b) { color:#304e3d; }
@@ -146,3 +170,10 @@ html[data-theme='light'] .of-wallet-list button, html[data-theme='light'] .of-wa
 .of-wallet-status { margin: 12px 0 0; padding: 10px 12px; border-radius: 8px; border: 1px solid #82e7bd55; line-height: 1.6 }
 .of-wallet-status-error { border-color: #e8948377; color: #f0b3a6 }
 html[data-theme='light'] .of-wallet-status-error { color: #a33a22 }
+/* Inside the menu the balance is always shown (compact terminal headers hide
+   it in the chip) and the narrow-header chip cap does not apply. */
+.rk-account-controls .rk-chip-bal { display:inline !important; }
+.nav-actions .rk-account-controls .rk-chip { max-width:none; }
+@media (max-width:700px) {
+  .nav-actions .rk-account-menu > summary.rk-chip { max-width:124px; padding-inline:8px; gap:6px; }
+}

@@ -323,6 +323,18 @@ async function fetchCmsRulesRaw(): Promise<CmsRuleSection[] | null> {
    CMS row still exists: 'offices' listed unverified office addresses and an
    internal hosting note (see docs/website/CONTENT_ARCHITECTURE.md). */
 const RETIRED_LEGAL_DOCS = new Set(['offices'])
+/* The footer's corporate-information block is replaced by the contact address.
+   The address is display copy owned by the website (not a verified registered
+   office); a stale Directus 'corporate' row is skipped and this block takes
+   its place at the end of the legal section. */
+const ADDRESS_DOC: CmsLegalDoc = {
+  docType: 'address',
+  title: { fa: 'آدرس', en: 'Address' },
+  paragraphs: [{
+    fa: 'ایران (سرزمین پارس) - استان فارس - شهر شیراز - خیابان دانش آموز (بین خیابان مهر و بلوار مطهری) کوچه ۱۳ دانش آموز',
+    en: 'Iran (Land of Persia), Fars Province, Shiraz, Danesh Amouz Street (between Mehr Street and Motahari Boulevard), Danesh Amouz Alley 13.',
+  }],
+}
 export interface CmsLegalDoc { docType: string; title: { fa: string; en: string }; paragraphs: Array<{ fa: string; en: string }> }
 
 async function fetchCmsLegalRaw(): Promise<CmsLegalDoc[] | null> {
@@ -333,6 +345,7 @@ async function fetchCmsLegalRaw(): Promise<CmsLegalDoc[] | null> {
   const out: CmsLegalDoc[] = []
   for (const row of data) {
     if (RETIRED_LEGAL_DOCS.has(row.doc_type)) continue
+    if (row.doc_type === 'corporate' || row.doc_type === 'address') continue
     const fa = (row.translations || []).find(t => t.language_code === 'fa')
     const en = (row.translations || []).find(t => t.language_code === 'en')
     if (!fa?.title || !en?.title) continue
@@ -341,7 +354,7 @@ async function fetchCmsLegalRaw(): Promise<CmsLegalDoc[] | null> {
     if (!parasFa.length || !parasEn.length) continue
     out.push({ docType: row.doc_type, title: { fa: fa.title, en: en.title }, paragraphs: parasFa.map((p, i) => ({ fa: p, en: parasEn[i] })) })
   }
-  return out.length ? out : null
+  return out.length ? [...out, ADDRESS_DOC] : null
 }
 
 /* ---------------- footer links (destination whitelist) ---------------- */

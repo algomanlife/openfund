@@ -1,0 +1,77 @@
+/* Day/night theme switch — shared by the website header and the terminal.
+   Visual design adapted from "interactive-day-night-toggle" by Hamzeh
+   Ghoreyshi (MIT; see THIRD_PARTY_NOTICES.md). State is read from the
+   existing html[data-theme] attribute, so every instance stays in sync with
+   the one theme module (src/theme.ts) without component state. Only
+   transitions run on a switch; there are no idle/infinite animations. */
+.of-daynight {
+  --dn-w: 54px;
+  --dn-sky-day: #3a77b6; --dn-sky-night: #1c1e27;
+  --dn-sun: #f3c22f; --dn-moon-hi: #e4e5e8; --dn-moon-lo: #a9abb2; --dn-crater: #8e96ac;
+  --dn-cloud-1: #a9c8e7; --dn-cloud-2: #d2e4f5; --dn-cloud-3: #f1f7fc;
+  --dn-bezel: #0a120d33;
+  --dn-spring: linear(0, .0454, .1554, .2976, .4484, .592, .7189, .8242, .9067, .9677, 1.0096, 1.0358, 1.0495, 1.0542, 1.0526, 1.0471, 1.0396, 1.0314, 1.0235, 1.0164, 1.0105, 1.0058, 1.0023, .9998, .9983, .9974, .9971, .9974, .9982, .999, 1);
+  --dn-ease-in: cubic-bezier(.55, 0, .75, .2);
+  --dn-ease-out: cubic-bezier(.22, 1, .36, 1);
+  position: relative; flex: 0 0 auto;
+  width: var(--dn-w) !important; height: calc(var(--dn-w) * 243 / 530) !important; min-width: 0 !important; min-height: 0 !important; aspect-ratio: auto;
+  padding: 0 !important; margin: 0; border: 0 !important; border-radius: 999px;
+  background: none !important; cursor: pointer; container-type: inline-size;
+  -webkit-tap-highlight-color: transparent; vertical-align: middle;
+}
+.of-daynight:focus-visible { outline: 2px solid var(--mint, #82e7bd); outline-offset: 3px; }
+.of-daynight > .of-dn-pill {
+  position: absolute; inset: 0; border-radius: inherit; overflow: hidden; isolation: isolate;
+  background: var(--dn-sky-day);
+  box-shadow: 0 0 0 1px var(--dn-bezel);
+}
+.of-dn-pill::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 10;
+  box-shadow: inset 0 1.6cqw 2.4cqw rgba(0,0,0,.32), inset 0 .3cqw .5cqw rgba(0,0,0,.25), inset 0 -.6cqw 1.2cqw rgba(255,255,255,.25);
+}
+.of-dn-layer { position: absolute; inset: 0; display: block; pointer-events: none; }
+.of-dn-night { background: var(--dn-sky-night); opacity: 0; transition: opacity 700ms var(--dn-ease-out); }
+.of-dn-stars { width: 100%; height: 100%; }
+.of-dn-star { transform-box: fill-box; transform-origin: center; fill: #fff; opacity: 0;
+  transform: translateY(-6px) scale(.2) rotate(-90deg);
+  transition: transform 450ms var(--dn-ease-in), opacity 300ms var(--dn-ease-in); transition-delay: calc(var(--i) * 15ms); }
+.of-dn-track { position: absolute; top: 4.18cqw; left: 4.18cqw; width: 37.5cqw; height: 37.5cqw; z-index: 2;
+  transition: transform 900ms var(--dn-spring); }
+.of-dn-halo { position: absolute; inset: 0; border-radius: 50%;
+  box-shadow: 0 0 0 7cqw rgba(255,255,255,.075), 0 0 0 15cqw rgba(255,255,255,.075), 0 0 0 24cqw rgba(255,255,255,.075), 0 0 0 34cqw rgba(255,255,255,.075); }
+.of-dn-knob { position: absolute; inset: 0; border-radius: 50%; overflow: hidden;
+  box-shadow: .8cqw 1.4cqw 2.2cqw rgba(0,0,0,.35), .2cqw .4cqw .5cqw rgba(0,0,0,.2); }
+.of-dn-sun, .of-dn-moon { position: absolute; inset: 0; border-radius: 50%; }
+.of-dn-sun { background: var(--dn-sun);
+  box-shadow: inset 0 0 0 .35cqw rgba(190,120,0,.22), inset 0 1cqw 1.2cqw rgba(255,240,170,.55), inset -.6cqw -1.4cqw 1.8cqw rgba(210,130,0,.35);
+  transition: transform 900ms var(--dn-spring); }
+.of-dn-moon { background: radial-gradient(circle at 35% 30%, var(--dn-moon-hi) 0%, #c7c9ce 55%, var(--dn-moon-lo) 100%);
+  box-shadow: inset 0 0 0 .35cqw rgba(0,0,0,.12), inset 0 1cqw 1.2cqw rgba(255,255,255,.5), inset -.6cqw -1.4cqw 1.8cqw rgba(60,65,80,.3);
+  transform: translateX(105%) rotate(90deg); transition: transform 700ms var(--dn-ease-in); }
+.of-dn-moon > i { position: absolute; border-radius: 50%; background: var(--dn-crater);
+  box-shadow: inset .5cqw .7cqw .9cqw rgba(40,50,80,.45); }
+.of-dn-moon > i:nth-child(1) { left: 42%; top: 15%; width: 17%; height: 17%; }
+.of-dn-moon > i:nth-child(2) { left: 20%; top: 52%; width: 34%; height: 34%; }
+.of-dn-moon > i:nth-child(3) { left: 64%; top: 52%; width: 25%; height: 25%; }
+.of-dn-cloud { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.of-dn-cloud.c1 { z-index: 3; fill: var(--dn-cloud-1); transition: transform 1100ms var(--dn-spring) 180ms; }
+.of-dn-cloud.c2 { z-index: 4; fill: var(--dn-cloud-2); transition: transform 1100ms var(--dn-spring) 110ms; }
+.of-dn-cloud.c3 { z-index: 5; fill: var(--dn-cloud-3); transition: transform 1100ms var(--dn-spring) 40ms; }
+
+/* Night (dark theme) */
+html[data-theme='dark'] .of-dn-night { opacity: 1; }
+html[data-theme='dark'] .of-dn-star { opacity: 1; transform: none;
+  transition: transform 1000ms var(--dn-spring), opacity 500ms var(--dn-ease-out); transition-delay: calc(250ms + var(--i) * 45ms); }
+html[data-theme='dark'] .of-dn-track { transform: translateX(54.14cqw); }
+html[data-theme='dark'] .of-dn-sun { transform: rotate(120deg); opacity: 0; transition: transform 900ms var(--dn-spring), opacity 0s 1000ms; }
+html[data-theme='dark'] .of-dn-moon { transform: none; transition: transform 1000ms var(--dn-spring) 80ms; }
+html[data-theme='dark'] .of-dn-cloud.c3 { transform: translate(6cqw, 50cqw); transition: transform 600ms var(--dn-ease-in); }
+html[data-theme='dark'] .of-dn-cloud.c2 { transform: translate(10cqw, 54cqw); transition: transform 650ms var(--dn-ease-in) 60ms; }
+html[data-theme='dark'] .of-dn-cloud.c1 { transform: translate(14cqw, 60cqw); transition: transform 700ms var(--dn-ease-in) 120ms; }
+html[data-theme='dark'] .of-daynight { --dn-bezel: #ffffff2e; }
+
+.of-daynight:hover > .of-dn-pill { box-shadow: 0 0 0 1px var(--mint, #82e7bd); }
+@media (max-width: 600px) { .of-daynight { --dn-w: 46px; } }
+@media (prefers-reduced-motion: reduce) {
+  .of-daynight, .of-daynight * { transition-duration: 1ms !important; transition-delay: 0ms !important; }
+}

@@ -30,6 +30,11 @@ See TradingView-logo-LICENSE.txt. The existing wordmark asset is preserved.
 Gains and Render: existing official vector files and colors remain unchanged.
 https://gains.trade/  https://render.com/brand
 
-All five service logos use one neutral wrapper; no CSS color filters.
+Liara: official logo, unchanged (paths, gradients and viewBox as published)
+https://liara.ir/assets/images/liara-logo.svg  https://liara.ir
+Liara trademark/brand guidelines apply.
+
+All six footer service logos (Gains, Vela, TradingView, DePay, Render, Liara)
+use one neutral wrapper; no CSS color filters.
 Community destinations remain owner-configured. No Telegram, Discord or
 Instagram destination ownership is verified by these assets or URL validators.

@@ -10,6 +10,15 @@ import TechnicalFeatureStrip from './TechnicalFeatureStrip'
 import LeveragedMarketIllustration from './LeveragedMarketIllustration'
 import './home.css'
 import TelegramCommunity from '../community/TelegramCommunity'
+import type { ReactNode } from 'react'
+
+/* Right-to-left copy: isolate embedded Latin names (e.g. "Gains Network") so
+   they keep their word order and never split across lines. Display only. */
+function isolateLatin(text: string, rtl: boolean): ReactNode {
+  if (!rtl) return text
+  return text.split(/([A-Za-z][A-Za-z0-9.&'-]*(?: [A-Za-z0-9][A-Za-z0-9.&'-]*)*)/).map((part, index) =>
+    index % 2 ? <bdi key={index} dir="ltr">{part}</bdi> : part)
+}
 
 
 /** Persian-only product gateway. Editorial fields remain owned by Directus;
@@ -50,6 +59,7 @@ function HomeUnavailable({ locale }: { locale: Locale }) {
 
 function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) {
   const t = c.translations[locale]
+  const rtl = locale === 'fa' || locale === 'ar'
   /* headline split: last word becomes the accent line (two-line composition) */
   const cut = t.headline.lastIndexOf(' ')
   const [main, accent] = cut > 0 ? [t.headline.slice(0, cut), t.headline.slice(cut + 1)] : [t.headline, '']
@@ -66,7 +76,7 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
           <div className="home-art"><AnimatedTradingTerminalIllustration /></div>
           <div className="home-panel-copy">
             <h2>{t.propTitle}</h2>
-          <p className="home-product-note" title={t.propDescription || undefined}>{t.propDescription || pick(locale, 'ارزیابی معاملاتی در محیط شبیه‌سازی‌شده', 'Trading evaluations in a simulated environment')}</p>
+          <p className="home-product-note" title={t.propDescription || undefined}>{isolateLatin(t.propDescription || pick(locale, 'ارزیابی معاملاتی در محیط شبیه‌سازی‌شده', 'Trading evaluations in a simulated environment'), rtl)}</p>
             <a className="button" href={c.propCtaDestination === 'terminal' ? `/${locale}/prop/trade` : CTA_HREF.challenges(locale)}>
               {t.propCta}
               <span aria-hidden="true">←</span>
@@ -80,7 +90,7 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
           </div>
           <div className="home-panel-copy">
             <h2>{t.perpetualTitle}</h2>
-          <p className="home-product-note" title={t.perpetualDescription || undefined}>{t.perpetualDescription || pick(locale, 'داده‌های بازار · دسترسی خواندنی', 'Market data · read-only access')}</p>
+          <p className="home-product-note" title={t.perpetualDescription || undefined}>{isolateLatin(t.perpetualDescription || pick(locale, 'داده‌های بازار · دسترسی خواندنی', 'Market data · read-only access'), rtl)}</p>
             <a className="button" href={CTA_HREF[c.perpetualCtaDestination](locale)}>
               {t.perpetualCta}
               <span aria-hidden="true">↙</span>

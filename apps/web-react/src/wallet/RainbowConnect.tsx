@@ -1,4 +1,4 @@
-import { currentLocale, pick } from '../i18n/locales'
+import { currentLocale, dirOf, pick } from '../i18n/locales'
 import { useEffect, useState, useRef } from 'react'
 import { ConnectButton, RainbowKitProvider, darkTheme, lightTheme, type Locale as RainbowLocale } from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'   /* REQUIRED: without it the modal renders unstyled (position:static at the end of <body>, breaking the page layout) */
@@ -217,41 +217,54 @@ export function RainbowConnect() {
                   event.currentTarget.querySelector('summary')?.focus()
                 }
               }}>
-                <summary className="rk-chip" title={address}>
-                  <i className={correctNetwork ? 'rk-dot rk-dot-live' : 'rk-dot rk-dot-info'} />
-                  <span dir="ltr" className="rk-chip-addr">{fmtAddr(address)}</span><span aria-hidden="true">▾</span>
+                <summary className="rk-chip rk-account-summary" title={address} aria-label={t('منوی کیف پول', 'Wallet menu')}>
+                  <i className={correctNetwork ? 'rk-dot rk-dot-live' : 'rk-dot rk-dot-info'} aria-hidden="true" />
+                  <span dir="ltr" className="rk-chip-addr">{fmtAddr(address)}</span>
+                  <svg className="rk-chevron" viewBox="0 0 10 6" width="10" height="6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
                 </summary>
-                <div className="rk-account-controls">
-                {/* ONE wallet chip — network dot + address + balance (opens the account modal) */}
-                <button onClick={openAccountModal} type='button' className='rk-chip' title={t('کیف پول و شبکه', 'Wallet & network')}>
-                  <i className={correctNetwork ? 'rk-dot rk-dot-live' : 'rk-dot rk-dot-info'} />
-                  <span dir='ltr'>{fmtAddr(address)}</span>
-                  {balance ? <span dir='ltr' className='rk-chip-bal'>{fmtBal()}</span> : null}
-                </button>
-                {!correctNetwork && <button type="button" className="rk-chip" data-switch-network disabled={switching} onClick={() => void switchNetwork()}>
-                  {switching ? t('در انتظار تأیید شبکه…', 'Confirm the network in your wallet…') : <>{t('تغییر شبکه به ', 'Switch network to ')}<bdi dir="ltr">{targetChain.name}</bdi></>}
-                </button>}
-                {/* ONE action chip — identical template, mint accent */}
-                {session.status === 'authenticated' ? (
-                  <button onClick={() => setProfileOpen(true)} type='button' className='rk-chip rk-chip-action' title={t('حساب اوپن‌فاند', 'Openfund account')}>
-                    <i className='rk-dot rk-dot-live' />
-                    {t('حساب من', 'Account')}
-                  </button>
-                ) : session.status === 'signing' ? (
-                  <button type='button' className='rk-chip rk-chip-action' disabled>
-                    {t('در حال امضا…', 'Signing…')}
-                  </button>
-                ) : session.status === 'suspended' ? (
-                  <span className='rk-chip rk-chip-suspended'>
-                    {t('حساب معلق', 'Suspended')}
-                  </span>
-                ) : (
-                  <button onClick={() => void session.signIn()} type='button' className='rk-chip rk-chip-action'>
-                    {t('ورود به اوپن‌فاند', 'Sign in')}
-                  </button>
-                )}
-                <span className="rk-network-status">{chain?.name || (t('شبکه ناشناخته', 'Unknown network'))}</span>
-                <button type="button" className="rk-chip" data-wallet-disconnect onClick={() => { setWalletNotice(null); session.clearError(); disconnect() }}>{t('قطع اتصال کیف پول', 'Disconnect wallet')}</button>
+                <div className="rk-account-controls" dir={dirOf(locale)} lang={locale}>
+                  {/* Wallet information: address (opens the account modal), balance, network */}
+                  <div className="rk-menu-section" role="group" aria-label={t('اطلاعات کیف پول', 'Wallet information')}>
+                    <span className="rk-menu-heading">{t('اطلاعات کیف پول', 'Wallet information')}</span>
+                    <button onClick={openAccountModal} type='button' className='rk-chip rk-menu-address' title={t('کیف پول و شبکه', 'Wallet & network')}>
+                      <i className={correctNetwork ? 'rk-dot rk-dot-live' : 'rk-dot rk-dot-info'} aria-hidden="true" />
+                      <bdi dir='ltr' className='rk-chip-addr'>{fmtAddr(address)}</bdi>
+                    </button>
+                    <div className="rk-menu-row">
+                      <span>{t('موجودی', 'Balance')}</span>
+                      <bdi dir='ltr' className='rk-chip-bal'>{balance ? fmtBal() : '—'}</bdi>
+                    </div>
+                    <div className="rk-menu-row">
+                      <span>{t('شبکه', 'Network')}</span>
+                      <bdi dir='ltr' className="rk-network-status">{chain?.name || (t('شبکه ناشناخته', 'Unknown network'))}</bdi>
+                    </div>
+                    {!correctNetwork && <button type="button" className="rk-chip" data-switch-network disabled={switching} onClick={() => void switchNetwork()}>
+                      {switching ? t('در انتظار تأیید شبکه…', 'Confirm the network in your wallet…') : <>{t('تغییر شبکه به ', 'Switch network to ')}<bdi dir="ltr">{targetChain.name}</bdi></>}
+                    </button>}
+                  </div>
+                  {/* Actions: Openfund sign-in / account, then disconnect */}
+                  <div className="rk-menu-section" role="group" aria-label={t('عملیات', 'Actions')}>
+                    <span className="rk-menu-heading">{t('عملیات', 'Actions')}</span>
+                    {session.status === 'authenticated' ? (
+                      <button onClick={() => setProfileOpen(true)} type='button' className='rk-chip rk-chip-action' title={t('حساب اوپن‌فاند', 'Openfund account')}>
+                        <i className='rk-dot rk-dot-live' aria-hidden="true" />
+                        {t('حساب من', 'Account')}
+                      </button>
+                    ) : session.status === 'signing' ? (
+                      <button type='button' className='rk-chip rk-chip-action' disabled>
+                        {t('در حال امضا…', 'Signing…')}
+                      </button>
+                    ) : session.status === 'suspended' ? (
+                      <span className='rk-chip rk-chip-suspended'>
+                        {t('حساب معلق', 'Suspended')}
+                      </span>
+                    ) : (
+                      <button onClick={() => void session.signIn()} type='button' className='rk-chip rk-chip-action'>
+                        {t('ورود به اوپن‌فاند', 'Sign in')}
+                      </button>
+                    )}
+                    <button type="button" className="rk-chip rk-chip-disconnect" data-wallet-disconnect onClick={() => { setWalletNotice(null); session.clearError(); disconnect() }}>{t('قطع اتصال کیف پول', 'Disconnect wallet')}</button>
+                  </div>
                 </div>
               </details>
             )}

@@ -45,7 +45,10 @@ const WHITEPAPER = walkFiles('src/cms/seed/whitepaper')
 
 /** the public text of each locale */
 function localeCorpus() {
-  const fa = [landing, ...Object.keys(faToEn), ...SEEDS.map(read), ...WHITEPAPER.map(read)].join('\n')
+  /* the footer partner credits are checked separately against an exact
+     approved list (Render appears there by owner request as a service credit) */
+  const publicLanding = landing.replace(/<div class="credits-row">[\s\S]*?<\/div><\/div>/, '')
+  const fa = [publicLanding, ...Object.keys(faToEn), ...SEEDS.map(read), ...WHITEPAPER.map(read)].join('\n')
   const en = [...source, ...Object.values(faToEn)].join('\n')
   const out = { fa, en }
   for (const l of ADDED) out[l] = source.map(s => dictionaries[l][s] ?? '').join('\n')
@@ -127,7 +130,24 @@ test('no unreleased app downloads or placeholder documents are published', () =>
   const doc = new (require('jsdom').JSDOM)(landing).window.document
   assert.equal(doc.querySelectorAll('#desktop, .desktop-btns, .document-links button[disabled]').length, 0)
   assert.doesNotMatch(landing, /به‌زودی|coming soon/i)
-  assert.equal(doc.querySelectorAll('.credits-row a[href*="render.com"]').length, 0)
+  /* the only Render reference is its footer service credit */
+  assert.equal(doc.querySelectorAll('a[href*="render.com"]').length, 1)
+  assert.equal(doc.querySelectorAll('.credits-row a[href="https://render.com"]').length, 1)
+})
+
+test('the footer corporate-information block is replaced by the address in every locale', () => {
+  const client = read('src/cms/client.ts')
+  assert.match(client, /if \(row\.doc_type === 'corporate' \|\| row\.doc_type === 'address'\) continue/)
+  assert.match(client, /return out\.length \? \[\.\.\.out, ADDRESS_DOC\] : null/)
+  assert.match(client, /title: \{ fa: 'آدرس', en: 'Address' \}/)
+  assert.ok(client.includes('ایران (سرزمین پارس) - استان فارس - شهر شیراز - خیابان دانش آموز (بین خیابان مهر و بلوار مطهری) کوچه ۱۳ دانش آموز'))
+  const en = 'Iran (Land of Persia), Fars Province, Shiraz, Danesh Amouz Street (between Mehr Street and Motahari Boulevard), Danesh Amouz Alley 13.'
+  assert.ok(client.includes(en))
+  for (const l of ['ar', 'ru', 'zh-CN']) {
+    const messages = read(`src/i18n/messages/${l}.ts`)
+    assert.ok(messages.includes(`'${en}':`), l)
+    assert.ok(messages.includes(`'Address':`), l)
+  }
 })
 
 test('retired legal documents never render even if a stale CMS row is published', () => {

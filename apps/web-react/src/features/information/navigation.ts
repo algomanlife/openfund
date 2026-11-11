@@ -5,9 +5,12 @@ import { pickRecord, type AppLocale } from '../../i18n/locales'
 type Locale = AppLocale
 
 const primary = ['challenges', 'markets', 'rulebook'] as const
-/** Economy dropdown: governance and the consolidated Ambassador (IB) page. */
-const economy = ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access'] as const
-const resources = ['faq', 'learn', 'tools', 'referral'] as const
+/** Economy dropdown: governance, the consolidated Ambassador (IB) page and
+ *  Referral & Rewards (formerly "Growth Partner" under Resources; same /referral page). */
+const economy = ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'] as const
+const resources = ['faq', 'learn', 'tools'] as const
+/** Website-owned labels that win over a stale CMS navigation/footer label. */
+const FIXED_LABELS = new Set(['referral'])
 /** footer "Openfund documents" entries */
 const documentLabels = { whitepaper: text('Read the whitepaper', 'مطالعهٔ وایت‌پیپر') }
 /** Retired public destinations (the Team section was removed); a stale CMS
@@ -26,7 +29,8 @@ export function navigationHref(route: string, locale: Locale): string {
 /** Shared navigation only; the legacy page keeps its body and runtime. */
 export function renderNavigation(root: ParentNode, locale: Locale, pathname: string, navItems: CmsNavItem[] | null, footerLinks: CmsFooterLink[] | null) {
   const cmsLabels = new Map(navItems?.map(item => [item.route as string, item.label]))
-  const link = (route: string, label = cmsLabels.get(route) || navigationLabels[route as keyof typeof navigationLabels]) => {
+  const link = (route: string, cmsLabel?: { fa: string; en: string }) => {
+    const label = (!FIXED_LABELS.has(route) && (cmsLabel || cmsLabels.get(route))) || navigationLabels[route as keyof typeof navigationLabels]
     const a = document.createElement('a')
     a.href = navigationHref(route, locale)
     a.textContent = pickRecord(locale, label)

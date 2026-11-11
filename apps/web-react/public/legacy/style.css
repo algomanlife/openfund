@@ -302,7 +302,7 @@ address.offices p{font-size:12px;color:#a3bbab;line-height:2.1;direction:rtl}
 .desktop-btns .dl small { font-size: 11px; color: var(--mint, #82e7bd); }
 .footer-credits { display: grid; grid-template-columns: minmax(0,1fr); gap: 24px; }
 .footer-credits > div:first-child { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; }
-.footer-credits .credits-row { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 24px 16px; align-items: start; }
+.footer-credits .credits-row { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 24px 16px; align-items: start; }
 .footer-credits .render-credit { display: grid; grid-template-rows: 64px auto; gap: 12px; text-align: center; min-width: 0; color: var(--body); }
 .footer-credits .service-heading { display: flex; align-items: baseline; justify-content: center; gap: 8px; min-width: 0; }
 /* Every official mark uses the same neutral canvas; no recoloring or per-logo offsets. */
