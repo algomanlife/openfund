@@ -1314,52 +1314,113 @@ function velaPositionsSync(){
   const st = srv.state;
   syncingPositionDrawings = true;
   try {
-  /* last bar time for the anchor x-position (managed box starts at "now") */
+  /* the box spans from the position's open time to "now" */
   const t = Math.floor(Date.now() / 60000) * 60000;
-  const want = new Map();  /* positionId → {entry, stop, target, side} */
+  const want = new Map();  /* positionId → overlay model (positionOverlayModel) */
   for (const p of st.positions){
     if (p.market !== S.marketId) continue;          /* symbol isolation */
-    // A risk box requires both actual protection prices; never invent levels.
-    if (p.sl == null || p.tp == null) continue;
-    const entry = p.entry;
-    const stop = p.sl;
-    const target = p.tp;
-    want.set(p.id, { entry, stop, target, side: p.side });
+    const model = positionOverlayModel(p);
+    if (model) want.set(p.id, model);               /* no SL and no TP → no invented zones */
   }
   /* remove stale/closed (and all when the symbol switched) */
   for (const [pid, did] of [...posDrawings]){
     if (!want.has(pid)){ clearTimeout(positionEdits.get(pid)?.timer); positionEdits.delete(pid); try { dr.remove(did) } catch(e){}; posDrawings.delete(pid); }
   }
+  const colors = positionOverlayColors();
+  /* a chart rebuild (e.g. a data reload) can drop managed drawings; a
+     mapping to a drawing that no longer exists is recreated, not patched */
+  const present = new Set((dr.all ? dr.all() : []).filter(d => d.type === 'position').map(d => d.id));
+  for (const [pid, did] of [...posDrawings]) if (!present.has(did)) posDrawings.delete(pid);
   /* create or update */
   for (const [pid, lv] of want){
     if (positionEdits.has(pid)) continue;
+    /* the box covers the recent bars up to the latest bar (from the open
+       time when that is earlier), so a just-opened position is not a sliver
+       under the price axis and the labels stay inside the plot */
+    const bar = ({ '1': 1, '5': 5, '15': 15, '30': 30, '60': 60, '240': 240, 'D': 1440, '1m': 1, '5m': 5, '15m': 15, '30m': 30, '1h': 60, '4h': 240, '1d': 1440 }[String(vc?.chart?.market?.timeframe ?? S.tf)] || 1) * 60000;
+    const opened = Number(lv.openedAt);
+    const recent = t - 60 * bar;
+    const start = Number.isFinite(opened) && opened > 0 && opened < recent ? Math.floor(opened / bar) * bar : recent;
+    const end = t;
+    /* Vela's position tool is [entry, stop, target]. A missing level sits on
+       the entry, so its zone has zero height and is not painted or labelled. */
     const anchors = [
-      { time: t, price: lv.entry },
-      { time: t, price: lv.stop },
-      { time: t, price: lv.target }
+      { time: start, price: lv.entry },
+      { time: end, price: lv.stop ?? lv.entry },
+      { time: end, price: lv.target ?? lv.entry }
     ];
+    /* Labels: only price-distance % and level prices from the real position.
+       The tool's own "Loss · Size" line is derived from a hypothetical
+       balance × risk % and is never shown; the R:R header only when both
+       levels exist (it is then the conventional |TP−E| / |E−SL|). */
+    /* Vela applies per-type options only under `props` (DrawingStore.update) */
+    const props = {
+      anchors,
+      /* one-sided boxes are read-only (a drag could otherwise invent the
+         missing level); two-sided boxes keep the existing drag-to-edit */
+      locked: !(lv.stop != null && lv.target != null && window.__ofServerTP?.canTrade),
+      props: {
+        showText: true, showPrices: true, showLossSize: false,
+        showHeader: lv.ratio != null, showStopLabel: lv.stop != null, showTargetLabel: lv.target != null,
+        profitColor: colors.profit, lossColor: colors.loss
+      }
+    };
     const did = posDrawings.get(pid);
     if (did != null){
-      try { dr.update(did, { anchors }) } catch(e){ posDrawings.delete(pid); }
+      try { dr.update(did, props) } catch(e){ posDrawings.delete(pid); }
     } else {
       try {
         const d = dr.add('position', { paneId: 'price', anchors });
         if (d && d.id){
           posDrawings.set(pid, d.id);
-          /* brand the box: real account balance + our labels */
-          try { dr.update(d.id, { accountBalance: tp.getAccount()?.balance ?? tp.getAccount()?.equity ?? 0, showPrices: true, showText: true }) } catch(e){}
+          try { dr.update(d.id, props) } catch(e){}
         }
       } catch(e){ /* renderer without drawing support — table still works */ }
     }
   }
+  renderPositionLegend(want);
   } finally { syncingPositionDrawings = false; }
 }
+function positionOverlayModel(p){ return window.OpenfundPositionOverlay ? window.OpenfundPositionOverlay.model(p) : null; }
+function positionOverlayColors(){
+  const light = document.documentElement.dataset.theme === 'light';
+  return light ? { profit: '#12965D', loss: '#C0453E' } : { profit: '#82E7BD', loss: '#E89483' };
+}
+/* Compact, non-blocking legend (one chip per overlaid position): side ·
+   entry · SL · TP · R. Clicking a chip selects that position's box. */
+function renderPositionLegend(want){
+  const host = document.getElementById('chart-host');
+  if (!host) return;
+  let el = document.getElementById('pos-rr-legend');
+  if (!want || !want.size){ if (el) el.remove(); return; }
+  if (!el){ el = document.createElement('div'); el.id = 'pos-rr-legend'; el.className = 'pos-rr-legend'; el.setAttribute('aria-label', L('خلاصهٔ ریسک و بازده موقعیت‌ها', 'Position risk/reward')); host.appendChild(el); }
+  const d = Number(board.getMeta(S.marketId)?.pricePrecision ?? 2);
+  const pct = v => v == null ? '' : ` (${v.toFixed(2)}%)`;
+  const html = [...want.values()].map(m => {
+    const parts = [
+      `<b class="${m.side === 'long' ? 'up' : 'down'}">${esc(m.side === 'long' ? 'LONG' : 'SHORT')}</b>`,
+      `<span>${esc(t('rk.entry'))} <bdi dir="ltr">${esc(fmt.price(m.entry, d))}</bdi></span>`,
+      m.stop != null ? `<span class="down">SL <bdi dir="ltr">${esc(fmt.price(m.stop, d))}${pct(m.stopPct)}</bdi></span>` : '',
+      m.target != null ? `<span class="up">TP <bdi dir="ltr">${esc(fmt.price(m.target, d))}${pct(m.targetPct)}</bdi></span>` : '',
+      m.ratio != null ? `<span>R <bdi dir="ltr">${m.ratio.toFixed(2)}</bdi></span>` : ''
+    ].filter(Boolean).join('');
+    return `<button type="button" class="pos-rr-chip" data-pos-rr="${esc(String(m.id))}" title="#${esc(String(m.id))}">${parts}</button>`;
+  }).join('');
+  if (el.dataset.html !== html){ el.innerHTML = html; el.dataset.html = html; }
+}
+document.addEventListener('click', e => {
+  const b = e.target && e.target.closest && e.target.closest('[data-pos-rr]');
+  if (!b || !vc?.chart?.drawings) return;
+  const did = [...posDrawings].find(([pid]) => String(pid) === b.dataset.posRr)?.[1];
+  if (did != null) try { vc.chart.drawings.select(did) } catch(err){}
+});
 function velaPositionsClear(){
   for (const edit of positionEdits.values()) clearTimeout(edit.timer);
   positionEdits.clear();
   if (!vc || !vc.chart || !vc.chart.drawings) return;
   for (const [, did] of [...posDrawings]){ try { vc.chart.drawings.remove(did) } catch(e){} }
   posDrawings.clear();
+  renderPositionLegend(null);
 }
 
 /* ============================================================
@@ -1416,6 +1477,10 @@ function velaRestoreDrawings(){
     const doc = JSON.parse(raw || 'null');
     if (doc && doc.drawings) {
       vc.chart.drawings.fromJSON(doc);
+      /* fromJSON replaced every drawing (overlays included) and Vela may
+         reuse their ids: forget the overlay mapping so a user drawing is
+         never mistaken for an overlay; the next sync rebuilds them */
+      posDrawings.clear();
       }
     velaRestored = true;   /* allow saves from now on */
     const conf = JSON.parse(chartStore.get(VELA_CONF_KEY) || 'null');
@@ -1430,6 +1495,7 @@ function velaRestoreDrawings(){
 function velaClearDrawings(){
   if (!vc || !vc.chart || !vc.chart.drawings) return;
   try { vc.chart.drawings.fromJSON({ drawings: [] }) } catch(e){}
+  posDrawings.clear();
 }
 
 /* ============================================================

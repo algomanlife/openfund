@@ -566,3 +566,24 @@ html[dir="rtl"] .sltp-field input { text-align: left; }
   .sltp-fields { grid-template-columns: minmax(0, 1fr); }
   #sltp-dialog .dlg-actions > button { flex: 1 1 0; min-width: 0; }
 }
+
+/* Position risk/reward legend: compact chips over the chart's top start
+   corner; they never take pointer events outside the chips themselves, so
+   dragging, zooming and the crosshair keep working underneath. */
+#chart-host { position: relative; }
+.pos-rr-legend { position: absolute; z-index: 4; inset-block-end: 64px; inset-inline-start: 96px; max-width: calc(100% - 190px);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none; }
+.pos-rr-chip { pointer-events: auto; display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; max-width: 100%;
+  padding: 3px 8px; border: 1px solid var(--line-strong); border-radius: 4px; cursor: pointer;
+  background: color-mix(in srgb, var(--surface-2) 82%, transparent); color: var(--body, var(--white));
+  font: 500 11px/1.5 Ubuntu, Irancell, system-ui, sans-serif; font-variant-numeric: tabular-nums; text-align: start; }
+.pos-rr-chip:hover, .pos-rr-chip:focus-visible { border-color: var(--mint); outline: none; }
+.pos-rr-chip .up { color: var(--pos, var(--mint)); }
+.pos-rr-chip .down { color: var(--neg); }
+.pos-rr-chip b { font-weight: 700; letter-spacing: .3px; }
+@media (max-width: 650px) { .pos-rr-legend { inset-inline-start: 8px; inset-block-end: 56px; max-width: calc(100% - 70px); } .pos-rr-chip { font-size: 10.5px; } }
+/* technical values in the new dialogs and legend use the same Latin-digit
+   face as every other number in RTL (ids, prices, ratios) */
+html[dir="rtl"] :is(.sltp-id, .sltp-meta bdi, .sltp-hint bdi, .pos-rr-chip bdi, .review-list dd bdi) {
+  font-family: Ubuntu, Irancell, system-ui, sans-serif;
+}
