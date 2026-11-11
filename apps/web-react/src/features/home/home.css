@@ -212,7 +212,8 @@ html:is([lang=fa],[lang=ar]) .home-gateway .home-product-note bdi{white-space:no
  html:is([lang=fa],[lang=ar]) .home-gateway .home-panel h2{margin-top:4px}
  html:is([lang=fa],[lang=ar]) .home-gateway .home-product-note{font-size:12px;line-height:1.85;max-width:none}
 }
-@media(max-height:700px){
+@media(max-height:780px){
  html:is([lang=fa],[lang=ar]) .home-gateway .home-panel-copy{gap:4px}
- html:is([lang=fa],[lang=ar]) .home-gateway .home-product-note{line-height:1.55}
+ html:is([lang=fa],[lang=ar]) .home-gateway .home-panel h2{margin-top:2px}
+ html:is([lang=fa],[lang=ar]) .home-gateway .home-product-note{font-size:12.5px;line-height:1.65}
 }
