@@ -55,6 +55,16 @@
 /* ---- wallet: address stays horizontal, never squeezed by flex ----------- */
 :root :is(.openfund-header .nav-actions, .of-terminal-actions) :is(#wallet-root, #rainbow-landing-host, .rk-wrap, .rk-account-menu) {
   flex: 0 0 auto; display: flex; align-items: center; min-width: max-content;
+  /* the wrappers are exactly one control tall, so the authenticated
+     address chip (details > summary) shares the same centre line instead
+     of sitting half a pixel off inside an odd-height wrapper; the account
+     panel is absolutely positioned and unaffected */
+  height: var(--hc-h);
+}
+/* the landing FAQ accordion styles every <details> (border/padding); the
+   wallet account menu is a <details> too, so it opts out explicitly */
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .rk-account-menu {
+  box-sizing: border-box; margin: 0; padding: 0; border: 0; background: none;
 }
 :root :is(.openfund-header .nav-actions, .of-terminal-actions) .rk-chip { gap: 8px; }
 :root :is(.openfund-header .nav-actions, .of-terminal-actions) .rk-account-summary {
@@ -79,19 +89,37 @@
   inset-inline-end: calc(var(--hc-px) - 2px);
 }
 
-/* ---- theme: the animated pill is unchanged; a matching frame gives it the
-   same outer height/border as its neighbours. The frame is a pseudo-element
-   of the button itself, so clicking the frame still toggles the theme. ---- */
+/* ---- theme: the button itself is the shared box (same height, border,
+   radius and hit area as its neighbours); the animated pill is unchanged in
+   shape and is centred inside it. The pill becomes the size container so
+   its cqw-based artwork keeps its proportions. Earlier versions faked the
+   frame with an outline ring, which left the real box ~23px tall with a
+   pill radius and a ~35px visual frame — not equal to the other controls. */
 :root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-daynight {
-  --dn-w: 50px;
-  /* ring offset that makes the framed toggle exactly --hc-h tall */
-  --dn-ring: calc((var(--hc-h) - var(--dn-w) * 243 / 530) / 2 - 1px);
-  margin-inline: calc(var(--dn-ring) + 1px) !important;
-  /* an outline never adds to layout or scroll size (unlike a pseudo frame) */
-  outline: 1px solid var(--hc-line); outline-offset: var(--dn-ring);
+  --dn-w: 46px;
+  --dn-pad: 7px;
+  box-sizing: border-box; container-type: normal;
+  width: calc(var(--dn-w) + 2 * var(--dn-pad) + 2px) !important;
+  height: var(--hc-h) !important; min-height: var(--hc-h) !important; max-height: var(--hc-h) !important;
+  margin: 0 !important; padding: 0 !important;
+  border: 1px solid var(--hc-line) !important; border-radius: var(--hc-r);
+  outline: none;
 }
-:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-daynight:focus-visible {
-  outline: 2px solid var(--mint, #82e7bd); outline-offset: var(--dn-ring);
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-daynight > .of-dn-pill {
+  inset: 0; margin: auto; width: var(--dn-w); height: calc(var(--dn-w) * 243 / 530);
+  border-radius: 999px; container-type: inline-size;
+}
+
+/* ---- unified hover / keyboard focus for all four controls -------------- */
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) :is(.of-daynight, .of-language-select, .rk-chip:not(.rk-chip-connect)):hover {
+  border-color: #82e7bd88 !important;
+}
+html[data-theme='light'] :is(.openfund-header .nav-actions, .of-terminal-actions) :is(.of-daynight, .of-language-select, .rk-chip:not(.rk-chip-connect)):hover {
+  border-color: #12965D88 !important;
+}
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) :is(.of-daynight, .nav-cta, .rk-chip):focus-visible,
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-language-select:focus-within {
+  outline: 2px solid var(--mint, #82e7bd); outline-offset: 2px;
 }
 
 /* ---- terminal-specific neighbours keep the shared vertical axis -------- */
@@ -111,7 +139,7 @@
   :root .openfund-header .nav-actions { --hc-px: 8px; --hc-gap: 4px; }
   :root .openfund-header .nav-actions .nav-cta > span { display: none; }
   :root .openfund-header .nav-actions .of-language-icon { display: none; }
-  :root .openfund-header .nav-actions .of-daynight { --dn-w: 44px; }
+  :root .openfund-header .nav-actions .of-daynight { --dn-w: 40px; --dn-pad: 5px; }
 }
 /* Terminal phone header: the connect chip is icon-only (aria-label kept) so
    theme · language · wallet fit the first grid row. */
@@ -123,5 +151,5 @@
   :root .of-terminal-actions .rk-account-summary { gap: 6px; max-width: 132px; overflow: hidden; }
   :root .of-terminal-actions .rk-account-summary .rk-chevron { display: none; }
   :root .of-terminal-actions .rk-chip-addr { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-  :root .of-terminal-header .of-terminal-actions .of-daynight { --dn-w: 42px; }
+  :root .of-terminal-header .of-terminal-actions .of-daynight { --dn-w: 40px; --dn-pad: 5px; }
 }

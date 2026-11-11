@@ -7,7 +7,8 @@
 - **Application tables** (owned by the backend, `apps/backend/schema.sql`):
   `openfund_users`, `auth_nonces`, `auth_sessions`, `challenge_plans`,
   `openfund_challenges`, `demo_accounts`, `trading_orders`, `trading_positions`,
-  `trading_events`, `trading_ledger`, `trade_notes`, `audit_log`
+  `trading_events`, `trading_ledger`, `trade_notes`, `audit_log`,
+  `chart_workspaces` (per-wallet chart state, [Chart workspaces](../trading/CHART_WORKSPACES.md))
 - **Governance tables** (`gov_*`, also in `apps/backend/schema.sql`, additive and
   idempotent): terms, seats, memberships, eligibility, roles, proposals,
   revisions, history, comments, voting sessions, votes, conflicts, decisions,

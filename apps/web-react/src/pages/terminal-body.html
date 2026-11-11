@@ -269,10 +269,16 @@
 </dialog>
 
 <dialog id="sltp-dialog" class="dlg">
-  <h2 id="sltp-title">Modify risk</h2>
-  <label class="field"><span>Stop Loss <em>USD</em></span><input type="text" inputmode="decimal" id="sltp-sl" step="any" min="0" placeholder="—"></label>
-  <label class="field"><span>Take Profit <em>USD</em></span><input type="text" inputmode="decimal" id="sltp-tp" step="any" min="0" placeholder="—"></label>
-  <p class="field-err" id="sltp-err" hidden></p>
+  <h2 id="sltp-title" data-i18n="sltp.title">Modify risk</h2>
+  <div class="sltp-meta" id="sltp-meta"></div>
+  <div class="sltp-fields">
+    <label class="field sltp-field" for="sltp-sl"><span data-i18n="rv.sl">Stop Loss</span>
+      <span class="sltp-input"><input type="text" inputmode="decimal" id="sltp-sl" dir="ltr" autocomplete="off" spellcheck="false" placeholder="—" aria-describedby="sltp-err"><em>USD</em></span></label>
+    <label class="field sltp-field" for="sltp-tp"><span data-i18n="rv.tp">Take Profit</span>
+      <span class="sltp-input"><input type="text" inputmode="decimal" id="sltp-tp" dir="ltr" autocomplete="off" spellcheck="false" placeholder="—" aria-describedby="sltp-err"><em>USD</em></span></label>
+  </div>
+  <p class="sltp-hint" id="sltp-hint"></p>
+  <p class="field-err" id="sltp-err" role="alert" hidden></p>
   <div class="dlg-actions">
     <button class="ghost-btn" id="sltp-cancel" data-i18n="dlg.cancel">Cancel</button>
     <button class="submit long" id="sltp-save" data-i18n="dlg.save">Save</button>

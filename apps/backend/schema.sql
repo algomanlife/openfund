@@ -1630,3 +1630,24 @@ CREATE INDEX IF NOT EXISTS idx_depay_events_order ON depay_events (purchase_orde
 DROP TRIGGER IF EXISTS depay_events_append_only ON depay_events;
 CREATE TRIGGER depay_events_append_only BEFORE UPDATE OR DELETE ON depay_events
 FOR EACH ROW EXECUTE FUNCTION reject_order_evidence_mutation();
+
+-- ============================================================
+-- Per-wallet chart workspaces (Vela chart state).
+-- Additive and idempotent. Ownership is the authenticated session's user
+-- (never a browser-supplied address). One row per (user, workspace, scope):
+-- scope '*' holds workspace-wide settings (timeframe, indicators, chart
+-- style, renderer config, tool defaults); any other scope is one market
+-- symbol's drawings. `revision` gives optimistic concurrency so a stale
+-- tab can never silently overwrite a newer save. Live position overlays
+-- are NOT stored here (they are rebuilt from position state).
+-- ============================================================
+CREATE TABLE IF NOT EXISTS chart_workspaces (
+  user_id        uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  workspace      text NOT NULL CHECK (workspace ~ '^[a-z0-9_-]{1,32}$'),
+  scope          text NOT NULL CHECK (scope = '*' OR scope ~ '^[A-Za-z0-9._:/-]{1,64}$'),
+  schema_version integer NOT NULL DEFAULT 1 CHECK (schema_version BETWEEN 1 AND 1000),
+  revision       bigint NOT NULL DEFAULT 1 CHECK (revision >= 1),
+  data           jsonb NOT NULL CHECK (jsonb_typeof(data) = 'object'),
+  updated_at     timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (user_id, workspace, scope)
+);

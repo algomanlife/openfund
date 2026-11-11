@@ -413,6 +413,18 @@ function setLang(lang){
 }
 $('language-toggle').addEventListener('click', () => setLang(window.ofLang === 'fa' ? 'en' : 'fa'));
 /* the React shell applies its route locale through this hook */
+/* Read-mostly diagnostics for browser acceptance tests and support: the
+   live chart controller, the symbol, and which drawings are live position
+   overlays (never persisted) vs user drawings (persisted per wallet). */
+window.OpenfundTerminalInspect = {
+  chart: () => vc && vc.chart,
+  controller: () => vc,
+  symbol: () => S.marketId,
+  /* true once the saved drawings of the current identity are restored */
+  restored: () => velaRestored,
+  positionOverlays: () => { const all = vc?.chart?.drawings?.all?.() || []; return [...posDrawings].map(([positionId, id]) => ({ positionId, drawing: all.find(d => d.id === id) || null })); },
+  userDrawings: () => { const ids = new Set(posDrawings.values()); return (vc?.chart?.drawings?.all?.() || []).filter(d => !ids.has(d.id)); },
+};
 window.__ofSetLang = lang => { if (I18N[lang] && lang !== window.ofLang) setLang(lang); };
 
 /* ============================================================
@@ -1044,22 +1056,27 @@ $('submit-order').addEventListener('click', async () => {
   const notional = preview ? Number(preview.notional) : req.collateral * req.leverage;
   const liq = preview ? Number(preview.liquidation_price) : tp.liqPrice(req.side, entry, req.leverage);
   const acc = tp.getAccount();
+  /* [label, value, technical, extraClass] — presentation only: the values are
+     the same ones computed above (nothing is re-rounded here). Technical
+     values (symbols, prices, amounts) are isolated LTR so RTL labels never
+     reorder them; localized words (direction, order type) keep the page
+     direction. One label/value pair per row, so nothing is clipped. */
   const rows = [
-    [t('rv.market'), m ? m.symbol : S.marketId], [t('rv.dir'), t(req.side === 'long' ? 'rv.side.long' : 'rv.side.short')],
-    [t('rv.otype'), t('ot.' + req.type)], [t('rv.lev'), req.leverage + '×'],
-    [t('rv.size'), fmt.num(size, m ? Number(m.sizePrecision) || 2 : 2) + ' ' + (m ? m.base : '')],
-    [t('rv.notional'), fmt.usd(notional)],
-    [t('rv.collateral'), fmt.usd(req.collateral)], [t('rk.entry'), fmt.price(entry, d)],
-    [t('rv.oracle'), board.getIndex(S.marketId) ? fmt.price(board.getIndex(S.marketId), d) : '—'],
-    [t('rk.liq'), fmt.price(liq, d)],
-    [t('rv.fee'), fmt.usd(preview ? Number(preview.open_fee) : notional * (tp.feeRate?.(S.marketId) ?? FEE_RATE))],
-    [t('rv.sl'), req.sl ? fmt.price(req.sl, d) : '—'],
-    [t('rv.tp'), req.tp ? fmt.price(req.tp, d) : '—'],
-    [L('مارجین آزاد تخمینی','Estimated free margin'), fmt.usd(preview ? Number(preview.available_margin)-Number(preview.required_margin)-Number(preview.open_fee) : acc.available-req.collateral)],
-    [t('rv.exec'), L('برآورد شبیه‌سازی؛ نتیجهٔ اجرا قطعی نیست','Simulation estimate; execution may differ')]
+    [t('rv.market'), m ? m.symbol : S.marketId, true], [t('rv.dir'), t(req.side === 'long' ? 'rv.side.long' : 'rv.side.short'), false, req.side === 'long' ? 'up' : 'down'],
+    [t('rv.otype'), t('ot.' + req.type), false], [t('rv.lev'), req.leverage + '×', true],
+    [t('rv.size'), fmt.num(size, m ? Number(m.sizePrecision) || 2 : 2) + ' ' + (m ? m.base : ''), true],
+    [t('rv.notional'), fmt.usd(notional), true],
+    [t('rv.collateral'), fmt.usd(req.collateral), true], [t('rk.entry'), fmt.price(entry, d), true],
+    [t('rv.oracle'), board.getIndex(S.marketId) ? fmt.price(board.getIndex(S.marketId), d) : '—', true],
+    [t('rk.liq'), fmt.price(liq, d), true],
+    [t('rv.fee'), fmt.usd(preview ? Number(preview.open_fee) : notional * (tp.feeRate?.(S.marketId) ?? FEE_RATE)), true],
+    [t('rv.sl'), req.sl ? fmt.price(req.sl, d) : '—', true],
+    [t('rv.tp'), req.tp ? fmt.price(req.tp, d) : '—', true],
+    [L('مارجین آزاد تخمینی','Estimated free margin'), fmt.usd(preview ? Number(preview.available_margin)-Number(preview.required_margin)-Number(preview.open_fee) : acc.available-req.collateral), true]
   ];
-  $('review-body').innerHTML = `<div class="review-grid">` +
-    rows.map(([k, v]) => `<div><span>${k}</span><b class="num">${v}</b></div>`).join('') + `</div>`;
+  $('review-body').innerHTML = `<dl class="review-list">` +
+    rows.map(([k, v, tech, cls]) => `<div><dt>${esc(k)}</dt><dd class="${tech ? 'num' : ''}${cls ? ' ' + cls : ''}">${tech ? `<bdi dir="ltr">${esc(v)}</bdi>` : esc(v)}</dd></div>`).join('') +
+    `</dl><p class="review-note"><b>${esc(t('rv.exec'))}:</b> ${esc(L('برآورد شبیه‌سازی؛ نتیجهٔ اجرا قطعی نیست','Simulation estimate; execution may differ'))}</p>`;
   $('review-confirm').className = 'submit ' + req.side;
   $('review-dialog').showModal();
   pendingOrder = { req, provider: tp };
@@ -1297,52 +1314,113 @@ function velaPositionsSync(){
   const st = srv.state;
   syncingPositionDrawings = true;
   try {
-  /* last bar time for the anchor x-position (managed box starts at "now") */
+  /* the box spans from the position's open time to "now" */
   const t = Math.floor(Date.now() / 60000) * 60000;
-  const want = new Map();  /* positionId → {entry, stop, target, side} */
+  const want = new Map();  /* positionId → overlay model (positionOverlayModel) */
   for (const p of st.positions){
     if (p.market !== S.marketId) continue;          /* symbol isolation */
-    // A risk box requires both actual protection prices; never invent levels.
-    if (p.sl == null || p.tp == null) continue;
-    const entry = p.entry;
-    const stop = p.sl;
-    const target = p.tp;
-    want.set(p.id, { entry, stop, target, side: p.side });
+    const model = positionOverlayModel(p);
+    if (model) want.set(p.id, model);               /* no SL and no TP → no invented zones */
   }
   /* remove stale/closed (and all when the symbol switched) */
   for (const [pid, did] of [...posDrawings]){
     if (!want.has(pid)){ clearTimeout(positionEdits.get(pid)?.timer); positionEdits.delete(pid); try { dr.remove(did) } catch(e){}; posDrawings.delete(pid); }
   }
+  const colors = positionOverlayColors();
+  /* a chart rebuild (e.g. a data reload) can drop managed drawings; a
+     mapping to a drawing that no longer exists is recreated, not patched */
+  const present = new Set((dr.all ? dr.all() : []).filter(d => d.type === 'position').map(d => d.id));
+  for (const [pid, did] of [...posDrawings]) if (!present.has(did)) posDrawings.delete(pid);
   /* create or update */
   for (const [pid, lv] of want){
     if (positionEdits.has(pid)) continue;
+    /* the box covers the recent bars up to the latest bar (from the open
+       time when that is earlier), so a just-opened position is not a sliver
+       under the price axis and the labels stay inside the plot */
+    const bar = ({ '1': 1, '5': 5, '15': 15, '30': 30, '60': 60, '240': 240, 'D': 1440, '1m': 1, '5m': 5, '15m': 15, '30m': 30, '1h': 60, '4h': 240, '1d': 1440 }[String(vc?.chart?.market?.timeframe ?? S.tf)] || 1) * 60000;
+    const opened = Number(lv.openedAt);
+    const recent = t - 60 * bar;
+    const start = Number.isFinite(opened) && opened > 0 && opened < recent ? Math.floor(opened / bar) * bar : recent;
+    const end = t;
+    /* Vela's position tool is [entry, stop, target]. A missing level sits on
+       the entry, so its zone has zero height and is not painted or labelled. */
     const anchors = [
-      { time: t, price: lv.entry },
-      { time: t, price: lv.stop },
-      { time: t, price: lv.target }
+      { time: start, price: lv.entry },
+      { time: end, price: lv.stop ?? lv.entry },
+      { time: end, price: lv.target ?? lv.entry }
     ];
+    /* Labels: only price-distance % and level prices from the real position.
+       The tool's own "Loss · Size" line is derived from a hypothetical
+       balance × risk % and is never shown; the R:R header only when both
+       levels exist (it is then the conventional |TP−E| / |E−SL|). */
+    /* Vela applies per-type options only under `props` (DrawingStore.update) */
+    const props = {
+      anchors,
+      /* one-sided boxes are read-only (a drag could otherwise invent the
+         missing level); two-sided boxes keep the existing drag-to-edit */
+      locked: !(lv.stop != null && lv.target != null && window.__ofServerTP?.canTrade),
+      props: {
+        showText: true, showPrices: true, showLossSize: false,
+        showHeader: lv.ratio != null, showStopLabel: lv.stop != null, showTargetLabel: lv.target != null,
+        profitColor: colors.profit, lossColor: colors.loss
+      }
+    };
     const did = posDrawings.get(pid);
     if (did != null){
-      try { dr.update(did, { anchors }) } catch(e){ posDrawings.delete(pid); }
+      try { dr.update(did, props) } catch(e){ posDrawings.delete(pid); }
     } else {
       try {
         const d = dr.add('position', { paneId: 'price', anchors });
         if (d && d.id){
           posDrawings.set(pid, d.id);
-          /* brand the box: real account balance + our labels */
-          try { dr.update(d.id, { accountBalance: tp.getAccount()?.balance ?? tp.getAccount()?.equity ?? 0, showPrices: true, showText: true }) } catch(e){}
+          try { dr.update(d.id, props) } catch(e){}
         }
       } catch(e){ /* renderer without drawing support — table still works */ }
     }
   }
+  renderPositionLegend(want);
   } finally { syncingPositionDrawings = false; }
 }
+function positionOverlayModel(p){ return window.OpenfundPositionOverlay ? window.OpenfundPositionOverlay.model(p) : null; }
+function positionOverlayColors(){
+  const light = document.documentElement.dataset.theme === 'light';
+  return light ? { profit: '#12965D', loss: '#C0453E' } : { profit: '#82E7BD', loss: '#E89483' };
+}
+/* Compact, non-blocking legend (one chip per overlaid position): side ·
+   entry · SL · TP · R. Clicking a chip selects that position's box. */
+function renderPositionLegend(want){
+  const host = document.getElementById('chart-host');
+  if (!host) return;
+  let el = document.getElementById('pos-rr-legend');
+  if (!want || !want.size){ if (el) el.remove(); return; }
+  if (!el){ el = document.createElement('div'); el.id = 'pos-rr-legend'; el.className = 'pos-rr-legend'; el.setAttribute('aria-label', L('خلاصهٔ ریسک و بازده موقعیت‌ها', 'Position risk/reward')); host.appendChild(el); }
+  const d = Number(board.getMeta(S.marketId)?.pricePrecision ?? 2);
+  const pct = v => v == null ? '' : ` (${v.toFixed(2)}%)`;
+  const html = [...want.values()].map(m => {
+    const parts = [
+      `<b class="${m.side === 'long' ? 'up' : 'down'}">${esc(m.side === 'long' ? 'LONG' : 'SHORT')}</b>`,
+      `<span>${esc(t('rk.entry'))} <bdi dir="ltr">${esc(fmt.price(m.entry, d))}</bdi></span>`,
+      m.stop != null ? `<span class="down">SL <bdi dir="ltr">${esc(fmt.price(m.stop, d))}${pct(m.stopPct)}</bdi></span>` : '',
+      m.target != null ? `<span class="up">TP <bdi dir="ltr">${esc(fmt.price(m.target, d))}${pct(m.targetPct)}</bdi></span>` : '',
+      m.ratio != null ? `<span>R <bdi dir="ltr">${m.ratio.toFixed(2)}</bdi></span>` : ''
+    ].filter(Boolean).join('');
+    return `<button type="button" class="pos-rr-chip" data-pos-rr="${esc(String(m.id))}" title="#${esc(String(m.id))}">${parts}</button>`;
+  }).join('');
+  if (el.dataset.html !== html){ el.innerHTML = html; el.dataset.html = html; }
+}
+document.addEventListener('click', e => {
+  const b = e.target && e.target.closest && e.target.closest('[data-pos-rr]');
+  if (!b || !vc?.chart?.drawings) return;
+  const did = [...posDrawings].find(([pid]) => String(pid) === b.dataset.posRr)?.[1];
+  if (did != null) try { vc.chart.drawings.select(did) } catch(err){}
+});
 function velaPositionsClear(){
   for (const edit of positionEdits.values()) clearTimeout(edit.timer);
   positionEdits.clear();
   if (!vc || !vc.chart || !vc.chart.drawings) return;
   for (const [, did] of [...posDrawings]){ try { vc.chart.drawings.remove(did) } catch(e){} }
   posDrawings.clear();
+  renderPositionLegend(null);
 }
 
 /* ============================================================
@@ -1357,6 +1435,19 @@ const VELA_DRAW_KEY = (sym) => 'of-vela-drawings-' + sym;
 let velaRestored = false;   /* saves are skipped until the initial restore completes */
 const VELA_CONF_KEY = 'of-vela-config';
 const VELA_TOOLS_KEY = 'of-vela-tools';
+/* per-identity local cache (guest → original keys; signed-in wallet →
+   namespaced keys hydrated from its server workspace) */
+const chartStore = {
+  get(k){ const W = window.OpenfundChartWorkspace; try { return W ? W.getLocal(k) : localStorage.getItem(k); } catch(e){ return null; } },
+  set(k, v){ const W = window.OpenfundChartWorkspace; try { if (W) W.setLocal(k, v); else localStorage.setItem(k, v); } catch(e){} }
+};
+/* a newer save from another tab/device won the revision race: re-apply it
+   (only the current symbol's drawings can be applied live) */
+window.addEventListener('of-chart-workspace-remote', e => {
+  if (!vc?.chart?.drawings || e.detail?.scope !== S.marketId) return;
+  velaRestoreDrawings(); posDrawings.clear(); velaPositionsSync();
+  toast(L('نمودار از نشست دیگری به‌روز شد.', 'Chart updated from another session.'), 'info');
+});
 
 function velaSaveDrawings(){
   if (!vc || !vc.chart || !vc.chart.drawings) return;
@@ -1367,29 +1458,36 @@ function velaSaveDrawings(){
     if (fullDoc && Array.isArray(fullDoc.drawings)){
       fullDoc.drawings = fullDoc.drawings.filter(d => !posIds.has(d.id));
     }
-    localStorage.setItem(VELA_DRAW_KEY(S.marketId), JSON.stringify(fullDoc));
+    chartStore.set(VELA_DRAW_KEY(S.marketId), JSON.stringify(fullDoc));
     /* renderer config + tool defaults (once, not per symbol) */
     const conf = vc.chart.renderer.getConfig ? vc.chart.renderer.getConfig() : null;
-    if (conf) localStorage.setItem(VELA_CONF_KEY, JSON.stringify(conf));
+    if (conf) chartStore.set(VELA_CONF_KEY, JSON.stringify(conf));
     const tools = vc.chart.drawings.toolDefaults ? vc.chart.drawings.toolDefaults() : null;
-    if (tools) localStorage.setItem(VELA_TOOLS_KEY, JSON.stringify(tools));
+    if (tools) chartStore.set(VELA_TOOLS_KEY, JSON.stringify(tools));
+    /* mirror to the signed-in wallet's server workspace (debounced) */
+    const W = window.OpenfundChartWorkspace;
+    if (W) { W.saveSymbol(S.marketId, fullDoc); W.saveSettings(); }
   } catch(e){ /* storage full or private mode — silently skip */ }
 }
 
 function velaRestoreDrawings(){
   if (!vc || !vc.chart || !vc.chart.drawings) return;
   try {
-    const raw = localStorage.getItem(VELA_DRAW_KEY(S.marketId));
+    const raw = chartStore.get(VELA_DRAW_KEY(S.marketId));
     const doc = JSON.parse(raw || 'null');
     if (doc && doc.drawings) {
       vc.chart.drawings.fromJSON(doc);
+      /* fromJSON replaced every drawing (overlays included) and Vela may
+         reuse their ids: forget the overlay mapping so a user drawing is
+         never mistaken for an overlay; the next sync rebuilds them */
+      posDrawings.clear();
       }
     velaRestored = true;   /* allow saves from now on */
-    const conf = JSON.parse(localStorage.getItem(VELA_CONF_KEY) || 'null');
+    const conf = JSON.parse(chartStore.get(VELA_CONF_KEY) || 'null');
     if (conf && vc.chart.renderer.applyConfig) vc.chart.renderer.applyConfig(conf);
     // Restore user cosmetics first, then enforce the app-owned canvas palette.
     vc.setTheme(document.documentElement.dataset.theme);
-    const tools = JSON.parse(localStorage.getItem(VELA_TOOLS_KEY) || 'null');
+    const tools = JSON.parse(chartStore.get(VELA_TOOLS_KEY) || 'null');
     if (tools && vc.chart.drawings.setToolDefaults) vc.chart.drawings.setToolDefaults(tools);
   } catch(e){ /* corrupted JSON — start fresh */ }
 }
@@ -1397,6 +1495,7 @@ function velaRestoreDrawings(){
 function velaClearDrawings(){
   if (!vc || !vc.chart || !vc.chart.drawings) return;
   try { vc.chart.drawings.fromJSON({ drawings: [] }) } catch(e){}
+  posDrawings.clear();
 }
 
 /* ============================================================
@@ -1736,13 +1835,7 @@ function wireRowActions(){
     if (b.matches('[data-sltp]')) {
     const p = tp.getPosition(b.dataset.sltp);
     if (!p) return;
-    const m = board.getMeta(p.market);
-    $('sltp-title').textContent = `${t('sltp.title')} — ${m.symbol} #${p.id}`;
-    $('sltp-sl').value = p.sl || '';
-    $('sltp-tp').value = p.tp || '';
-    $('sltp-err').hidden = true;
-    $('sltp-dialog').showModal();
-    sltpTarget = p.id;
+    openSltpDialog(p);
       return;
     }
     if (b.matches('[data-detail]')) {
@@ -1771,15 +1864,74 @@ function wireRowActions(){
     }
   });
 }
-let sltpTarget = null;
-$('sltp-cancel').addEventListener('click', () => $('sltp-dialog').close());
+/* SL/TP dialog. Input is normalized at the UI boundary only
+   (OpenfundNumericInput: English, Persian and Arabic-Indic digits, locale
+   decimal separators); the parsed number goes to the SAME provider
+   modifyRisk() as before, which keeps every price rule. A blank field
+   clears that level; an unreadable field is reported and never sent (it
+   used to become NaN → null and silently REMOVE the level). The dialog
+   closes only after the provider confirms; the server provider refreshes
+   positions (and with them the chart overlay) from the backend first. */
+let sltpTarget = null, sltpBusy = false;
+const shortId = id => { const s = String(id); return s.length > 12 ? s.slice(0, 6) + '…' + s.slice(-4) : s; };
+function sltpError(msg, field){
+  $('sltp-err').textContent = msg; $('sltp-err').hidden = !msg;
+  for (const id of ['sltp-sl', 'sltp-tp']) {
+    $(id).closest('.field').classList.toggle('invalid', id === field);
+    $(id).setAttribute('aria-invalid', String(id === field));
+  }
+}
+function openSltpDialog(p){
+  const m = board.getMeta(p.market) || {};
+  const d = Number(m.pricePrecision ?? 2);
+  sltpTarget = p.id;
+  $('sltp-title').textContent = t('sltp.title');
+  const side = p.side === 'long' ? 'long' : 'short';
+  $('sltp-meta').innerHTML =
+    `<bdi dir="ltr" class="sltp-sym">${esc(m.symbol || p.market)}</bdi>` +
+    `<span class="sltp-side ${side === 'long' ? 'up' : 'down'}">${esc(t(side === 'long' ? 'rv.side.long' : 'rv.side.short'))}</span>` +
+    `<button type="button" class="sltp-id" id="sltp-copy-id" title="${esc(String(p.id))}" aria-label="${esc(L('کپی شناسهٔ موقعیت', 'Copy position ID') + ' ' + p.id)}"><bdi dir="ltr">#${esc(shortId(p.id))}</bdi></button>`;
+  $('sltp-hint').innerHTML = `${esc(t('rk.entry'))}: <bdi dir="ltr" class="num">${esc(fmt.price(p.entry, d))}</bdi>`;
+  /* show stored levels exactly as stored (no reformatting / rounding) */
+  $('sltp-sl').value = p.sl != null && p.sl !== '' ? String(p.sl) : '';
+  $('sltp-tp').value = p.tp != null && p.tp !== '' ? String(p.tp) : '';
+  sltpError('');
+  sltpBusy = false; $('sltp-save').disabled = false; $('sltp-save').removeAttribute('aria-busy');
+  $('sltp-dialog').showModal();
+}
+document.addEventListener('click', e => {
+  const b = e.target && e.target.closest && e.target.closest('#sltp-copy-id');
+  if (!b) return;
+  const full = b.getAttribute('title') || '';
+  try { navigator.clipboard?.writeText(full).then(() => toast(L('شناسه کپی شد.', 'ID copied.'), 'pos'), () => {}); } catch(err){}
+});
+$('sltp-cancel').addEventListener('click', () => { if (!sltpBusy) $('sltp-dialog').close(); });
+$('sltp-dialog').addEventListener('cancel', e => { if (sltpBusy) e.preventDefault(); });
 $('sltp-save').addEventListener('click', async () => {
-  if (sltpTarget == null) return;
-  const res = tp.modifyRiskAsync || !tp.submitAsync
-    ? tp.modifyRisk(sltpTarget, +$('sltp-sl').value || null, +$('sltp-tp').value || null)
-    : await tp.modifyRisk(sltpTarget, +$('sltp-sl').value || null, +$('sltp-tp').value || null);
-  if (!res.ok){ $('sltp-err').textContent = res.errors[0]; $('sltp-err').hidden = false; return; }
-  $('sltp-dialog').close(); renderBottom();
+  if (sltpTarget == null || sltpBusy) return;
+  const NI = window.OpenfundNumericInput;
+  const read = id => {
+    const r = NI ? NI.parseDecimal($(id).value, { lang: window.ofLang }) : (() => { const v = normNum($(id).value); return !$(id).value.trim() ? { ok: true, empty: true } : Number.isFinite(v) ? { ok: true, value: v } : { ok: false }; })();
+    if (r.ok && !r.empty && !(r.value > 0)) return { ok: false };
+    return r;
+  };
+  const sl = read('sltp-sl'), tpv = read('sltp-tp');
+  if (!sl.ok) { sltpError(L('قیمت حد ضرر معتبر نیست.', 'Enter a valid Stop Loss price.'), 'sltp-sl'); $('sltp-sl').focus(); return; }
+  if (!tpv.ok) { sltpError(L('قیمت حد سود معتبر نیست.', 'Enter a valid Take Profit price.'), 'sltp-tp'); $('sltp-tp').focus(); return; }
+  sltpError('');
+  sltpBusy = true; $('sltp-save').disabled = true; $('sltp-save').setAttribute('aria-busy', 'true');
+  const target = sltpTarget, provider = tp;
+  try {
+    const res = await Promise.resolve(provider.modifyRisk(target, sl.empty ? null : sl.value, tpv.empty ? null : tpv.value));
+    if (!res || !res.ok) { sltpError((res && res.errors && res.errors[0]) || L('تغییر حد ضرر و سود رد شد.', 'SL/TP update rejected.')); return; }
+    $('sltp-dialog').close();
+    toast(L('حد ضرر و سود به‌روز شد.', 'SL/TP updated.'), 'pos');
+    renderBottom(); velaPositionsSync();
+  } catch (err) {
+    sltpError(String((err && err.message) || L('به‌روزرسانی حد ضرر و سود ناموفق بود.', 'SL/TP update failed.')));
+  } finally {
+    sltpBusy = false; $('sltp-save').disabled = false; $('sltp-save').removeAttribute('aria-busy');
+  }
 });
 
 let confirmCb = null;
@@ -1915,7 +2067,9 @@ function boot(){
   $('market-select-btn').disabled = true;
   $('submit-order').disabled = true;
   chartOverlay(`<b>${t('boot.loading')}</b>`);
-  board.boot().then(() => {
+  /* the signed-in wallet's chart workspace is hydrated BEFORE the chart
+     mounts, so default initialization never overwrites a restored state */
+  Promise.all([board.boot(), window.OpenfundChartWorkspace ? window.OpenfundChartWorkspace.ready : null]).then(() => {
     let requestedSymbol = null;
     /* market deep-link from the Markets page (sessionStorage handshake;
        applied once at boot, only when the symbol exists in Gains metadata) */

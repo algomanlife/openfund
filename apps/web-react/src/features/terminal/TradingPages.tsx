@@ -296,7 +296,15 @@ export function SharedTradingTerminal() {
     bootLayout = useRef(layout),
     frame = useRef<HTMLIFrameElement>(null),
     adapter = useAccountAdapter(product, context),
+    session = useSession(),
     [cms, setCms] = useState<any>(undefined);
+  /* Chart workspace identity (legacy/chart-workspace.js): the signed-in
+     session's user id, or null for a guest. It is published BEFORE the
+     terminal document renders and is part of the iframe key, so login,
+     logout and a wallet switch remount the chart with that identity's own
+     workspace — one document never mixes two wallets' chart state. */
+  const chartUser = session.status === "authenticated" && session.user?.id ? session.user.id : null;
+  (window as any).__ofChartIdentity = { user: chartUser };
   useEffect(() => {
     let active = true;
     fetchCmsTranslations().then((x) => {
@@ -387,12 +395,12 @@ export function SharedTradingTerminal() {
        logic itself is the external legacy/react-boot.js so the strict
        script-src 'self' CSP holds for the whole terminal */
     const bootData = safe({ locale, product, translations });
-    return `<!doctype html><html lang="${locale}" dir="${dirOf(locale)}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><style>html{color-scheme:only dark}html[data-theme="light"]{color-scheme:only light}</style><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>${workspaceStyles}</style></head><body data-layout="${bootLayout.current}"><script type="application/json" id="of-boot-data">${bootData}</script>${workspaceMarkup(locale)}<script src="legacy/react-boot.js"></script>${["legacy/gains-adapter.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/market-depth.js", "legacy/share-card.js", "legacy/terminal-locales.js", "legacy/terminal.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
+    return `<!doctype html><html lang="${locale}" dir="${dirOf(locale)}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><style>html{color-scheme:only dark}html[data-theme="light"]{color-scheme:only light}</style><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>${workspaceStyles}</style></head><body data-layout="${bootLayout.current}"><script type="application/json" id="of-boot-data">${bootData}</script>${workspaceMarkup(locale)}<script src="legacy/react-boot.js"></script>${["legacy/gains-adapter.js", "legacy/chart-workspace.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/market-depth.js", "legacy/share-card.js", "legacy/terminal-locales.js", "legacy/numeric-input.js", "legacy/position-overlay.js", "legacy/terminal.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
   }, [cms, product, locale]);
   return (
     <>
       <iframe
-        key={product}
+        key={`${product}:${chartUser || "guest"}`}
         ref={frame}
         className="of-trading-workspace"
         title={pick(locale, "فضای معاملات", "Trading workspace")}

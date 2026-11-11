@@ -18,7 +18,7 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Trading
 
-[Unified accounts and Free Trial](trading/UNIFIED_ACCOUNTS.md) · [Journal metrics](trading/JOURNAL_METRICS.md) · [Prop Trading](trading/PROP.md) · [Perpetual Trading](trading/PERPETUAL.md) · [Shared Terminal](trading/TERMINAL.md) · [Indicators](trading/INDICATORS.md) · [Pine runtime](trading/PINE_SCRIPT.md) · [Custom indicators](trading/CUSTOM_INDICATORS.md) · [Portfolio and Journal](trading/PORTFOLIO_JOURNAL.md)
+[Unified accounts and Free Trial](trading/UNIFIED_ACCOUNTS.md) · [Journal metrics](trading/JOURNAL_METRICS.md) · [Prop Trading](trading/PROP.md) · [Perpetual Trading](trading/PERPETUAL.md) · [Shared Terminal](trading/TERMINAL.md) · [Indicators](trading/INDICATORS.md) · [Pine runtime](trading/PINE_SCRIPT.md) · [Custom indicators](trading/CUSTOM_INDICATORS.md) · [Portfolio and Journal](trading/PORTFOLIO_JOURNAL.md) · [Chart workspaces and position overlays](trading/CHART_WORKSPACES.md)
 
 ## Governance and Economy
 

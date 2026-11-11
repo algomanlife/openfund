@@ -64,14 +64,25 @@ function mount(container, opts){
     engines: { pine: () => { const engine = WLib.createPineEngine(); engines.push(engine); return engine; } },
     indicators: WLib.indicators,
     persist: true,
+    /* Per-wallet workspace (legacy/chart-workspace.js): the local cache is
+       namespaced by the signed-in identity and mirrored to the backend;
+       guests keep the original browser-only key. The terminal mounts the
+       chart only after OpenfundChartWorkspace.ready, so get() is synchronous. */
     storage: {
-      get(){ try { return localStorage.getItem('of-chart-v2-' + (global.__ofTerminalConfig?.product || 'classic')); } catch(e){ return null; } },
+      get(){
+        const k = 'of-chart-v2-' + (global.__ofTerminalConfig?.product || 'classic');
+        const W = global.OpenfundChartWorkspace;
+        try { return W ? W.getLocal(k) : localStorage.getItem(k); } catch(e){ return null; }
+      },
       set(_key, value){
         try {
           const state = JSON.parse(value);
           // Position overlays belong to the account bridge, never chart persistence.
           state.charts?.forEach(chart => { delete chart.drawings; });
-          localStorage.setItem('of-chart-v2-' + (global.__ofTerminalConfig?.product || 'classic'), JSON.stringify(state));
+          const k = 'of-chart-v2-' + (global.__ofTerminalConfig?.product || 'classic');
+          const W = global.OpenfundChartWorkspace;
+          if (W) { W.setLocal(k, JSON.stringify(state)); W.saveSettings(); }
+          else localStorage.setItem(k, JSON.stringify(state));
         } catch(e){}
       }
     },

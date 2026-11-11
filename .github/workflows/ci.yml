@@ -218,6 +218,12 @@ jobs:
           TEST_FRONTEND_URL: http://localhost:8080
           TEST_BACKEND_URL: http://localhost:8080
         run: npm run test:browser:completion
+      - name: Terminal SL/TP, order review, position overlay and per-wallet chart workspace
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080
+          TEST_BACKEND_URL: http://localhost:8080
+        run: npm run test:browser:risk
       - name: Terminal layout, bilingual geometry and overflow acceptance
         working-directory: .
         env:

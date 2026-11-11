@@ -123,7 +123,7 @@ try {
     ...shardJobs('polish',polishShards,'e2e/test-ui-polish.cjs','POLISH_SHARD','POLISH_OUTPUT','output/playwright/ui-polish',['POLISH_PART=matrix']),
     ['polish-tail','POLISH_PART=tail','POLISH_OUTPUT=output/playwright/ui-polish/tail','AUTO_DARK_OUTPUT=output/playwright/auto-dark','node','e2e/test-ui-polish.cjs'],
   ]);
-  for(const task of ['test:browser:completion','test:browser:layout','test:browser:charts','test:browser:release','test:browser:routes','test:browser:challenge']) await gate(task,'npm',['run',task]);
+  for(const task of ['test:browser:completion','test:browser:risk','test:browser:layout','test:browser:charts','test:browser:release','test:browser:routes','test:browser:challenge']) await gate(task,'npm',['run',task]);
   // A second run explicitly covers the authenticated geometry matrix.
   await run('npm',['run','test:browser:layout'],{env:{...env,TEST_LAYOUT_AUTH:'1'}});
   stages.push({name:'authenticated-layout',status:'passed'});
