@@ -19,17 +19,21 @@ const ok = (name, cond, extra = '') => {
   if (cond) { passed++; console.log('PASS -', name) }
   else { failed++; console.log('FAIL -', name, extra) }
 }
-const j = async (method, path, body, cookie) => {
+const j = async (method, path, body, cookie, originHost = null) => {
+  /* Use the production HTTPS Origin while the request goes to the isolated
+     localhost test server. CI explicitly permits these origins for this test. */
+  const origin = originHost ? `https://${originHost}` : 'http://localhost:5173'
   const res = await fetch(BASE + path, {
     method,
     signal: AbortSignal.timeout(45000),
-    headers: { 'Content-Type': 'application/json', Origin: 'http://localhost:5173', ...(cookie ? { Cookie: cookie } : {}) },
+    headers: { 'Content-Type': 'application/json', Origin: origin,
+      ...(cookie ? { Cookie: cookie } : {}) },
     body: body ? JSON.stringify(body) : undefined
   })
   const setCookie = res.headers.get('set-cookie') || ''
   let data = null
   try { data = await res.json() } catch {}
-  return { status: res.status, data, cookie: setCookie.split(';')[0] }
+  return { status: res.status, data, cookie: setCookie.split(';')[0], setCookie }
 }
 
 const wallet1 = privateKeyToAccount(generatePrivateKey())
@@ -91,7 +95,64 @@ async function authenticate(wallet, domain = DOMAIN, chainId = CHAIN) {
   ok('Arbitrum Sepolia chain → 400 invalid_chain', r6.verify.status === 400 && r6.verify.data.error === 'invalid_chain')
 }
 
-/* ---- 3. user identity rules ---- */
+/* ---- 3. production browser origins through an HTTPS reverse proxy ---- */
+if (process.env.TEST_PRODUCTION_SIWE_ORIGINS === '1') {
+  for (const domain of ['openfi.cloud', 'openfund.cloud']) {
+    const first = privateKeyToAccount(generatePrivateKey())
+    const second = privateKeyToAccount(generatePrivateKey())
+    const nonce = (await j('POST', '/auth/nonce', { address: first.address }, null, domain)).data?.nonce
+    ok(`${domain}: HTTPS-origin nonce`, typeof nonce === 'string')
+    const message = createSiweMessage({ domain, address: first.address, uri: `https://${domain}/`, chainId: CHAIN,
+      nonce, version: '1', issuedAt: new Date() })
+    const signature = await first.signMessage({ message })
+    const login = await j('POST', '/auth/verify', { message, signature }, null, domain)
+    ok(`${domain}: signed Arbitrum SIWE succeeds`, login.status === 200 && login.data?.user?.walletAddress === first.address.toLowerCase())
+    ok(`${domain}: HttpOnly session cookie`, login.cookie.startsWith('openfund_session=') && /HttpOnly/i.test(login.setCookie))
+    const me = await j('GET', '/auth/me', null, login.cookie, domain)
+    const restored = await j('GET', '/auth/me', null, login.cookie, domain)
+    ok(`${domain}: own profile and reload`, me.status === 200 && restored.status === 200 &&
+      me.data?.user?.id === login.data?.user?.id && restored.data?.user?.walletAddress === first.address.toLowerCase())
+
+    const wrongNonce = (await j('POST', '/auth/nonce', { address: second.address }, null, domain)).data?.nonce
+    const wrongMessage = createSiweMessage({ domain, address: second.address, uri: `https://${domain}/`, chainId: CHAIN,
+      nonce: wrongNonce, version: '1', issuedAt: new Date() })
+    const wrong = await j('POST', '/auth/verify', { message: wrongMessage,
+      signature: await first.signMessage({ message: wrongMessage }) }, null, domain)
+    ok(`${domain}: wrong-wallet signature rejected`, wrong.status === 401 && wrong.data?.error === 'invalid_signature')
+    const switched = await j('POST', '/auth/verify', { message: wrongMessage,
+      signature: await second.signMessage({ message: wrongMessage }) }, null, domain)
+    const secondMe = await j('GET', '/auth/me', null, switched.cookie, domain)
+    ok(`${domain}: switched wallet owns a distinct profile`, switched.status === 200 && secondMe.status === 200 &&
+      secondMe.data?.user?.walletAddress === second.address.toLowerCase() && secondMe.data?.user?.id !== me.data?.user?.id)
+
+    const logout = await j('POST', '/auth/logout', {}, login.cookie, domain)
+    const afterLogout = await j('GET', '/auth/me', null, login.cookie, domain)
+    ok(`${domain}: logout revokes session`, logout.status === 200 && afterLogout.status === 401)
+
+    const deniedNonce = (await j('POST', '/auth/nonce', { address: first.address }, null, domain)).data?.nonce
+    const deniedMessage = createSiweMessage({ domain: 'unauthorized.example', address: first.address,
+      uri: 'https://unauthorized.example/', chainId: CHAIN, nonce: deniedNonce, version: '1', issuedAt: new Date() })
+    const denied = await j('POST', '/auth/verify', { message: deniedMessage,
+      signature: await first.signMessage({ message: deniedMessage }) }, null, domain)
+    ok(`${domain}: unknown SIWE domain remains rejected`, denied.status === 400 && denied.data?.error === 'invalid_domain')
+
+    const expiredNonce = (await j('POST', '/auth/nonce', { address: first.address }, null, domain)).data?.nonce
+    const expiredMessage = createSiweMessage({ domain, address: first.address, uri: `https://${domain}/`,
+      chainId: CHAIN, nonce: expiredNonce, version: '1', issuedAt: new Date(Date.now() - 30000),
+      expirationTime: new Date(Date.now() - 10000) })
+    const expiredLogin = await j('POST', '/auth/verify', { message: expiredMessage,
+      signature: await first.signMessage({ message: expiredMessage }) }, null, domain)
+    ok(`${domain}: expired SIWE rejected`, expiredLogin.status === 400 && expiredLogin.data?.error === 'invalid_message_time')
+
+    const expiryPool = new pg.Pool({ connectionString: process.env.DATABASE_URL })
+    await expiryPool.query("UPDATE auth_sessions SET expires_at=now() - interval '1 second' WHERE user_id=$1", [secondMe.data.user.id])
+    await expiryPool.end()
+    const expiredSession = await j('GET', '/auth/me', null, switched.cookie, domain)
+    ok(`${domain}: expired session cannot restore`, expiredSession.status === 401)
+  }
+}
+
+/* ---- 4. user identity rules ---- */
 {
   const a = await authenticate(wallet1)
   const b = await authenticate(wallet1) // same wallet again
@@ -100,7 +161,7 @@ async function authenticate(wallet, domain = DOMAIN, chainId = CHAIN) {
   ok('different wallet → different user', c.verify.data.user.id !== a.verify.data.user.id)
 }
 
-/* ---- 4. challenges: multi + ownership ---- */
+/* ---- 5. challenges: multi + ownership ---- */
 {
   const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL || 'postgres://openfund_cms:openfund_local_dev@127.0.0.1:5432/openfund_cms' })
   const u1 = (await authenticate(wallet1))
@@ -133,7 +194,7 @@ async function authenticate(wallet, domain = DOMAIN, chainId = CHAIN) {
   await pool.end()
 }
 
-/* ---- 5. independent signature-recovery cross-check (EIP-191) ---- */
+/* ---- 6. independent signature-recovery cross-check (EIP-191) ---- */
 {
   const message = createSiweMessage({ domain: DOMAIN, address: wallet1.address, uri: 'http://localhost:5173/', chainId: CHAIN, nonce: 'abcdef1234567890', version: '1' })
   const sig = await wallet1.signMessage({ message })

@@ -148,7 +148,8 @@ jobs:
           --health-retries 10
     env:
       DATABASE_URL: postgres://openfund_ci:openfund_ci@localhost:5432/openfund_ci
-      ALLOWED_DOMAINS: localhost:5173,localhost:8080
+      ALLOWED_DOMAINS: localhost:5173,localhost:8080,openfund-our6.onrender.com,openfi.cloud,openfund.cloud
+      CORS_ORIGINS: http://localhost:5173,http://localhost:8080,https://openfi.cloud,https://openfund.cloud
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -188,6 +189,7 @@ jobs:
         if: needs.changes.outputs.run_backend_suite == 'true'
         env:
           TEST_BACKEND_URL: http://localhost:8080
+          TEST_PRODUCTION_SIWE_ORIGINS: '1'
           ADMIN_API_TOKEN: ci-admin-token-4f2a
         run: npm run test:all
       - name: Cache Playwright browsers
