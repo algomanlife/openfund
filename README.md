@@ -60,7 +60,7 @@ running service at [`/version`](https://openfi.cloud/version), not plans.
 | **Perpetual** | Read-only Gains Network market data and wallet-scoped Arbitrum One positions | **Live, read-only** (no execution) |
 | **User accounts** | Wallet identity, dashboard, portfolio, trade journal, purchase history and invoices | **Live** |
 | **Challenge evaluation** | Server-authoritative rule engine over a frozen rules snapshot | **Live** |
-| **Wallet authentication** | Sign-In with Ethereum on Arbitrum One, HttpOnly sessions | **Live** |
+| **Wallet authentication** | Sign-In with Ethereum on Arbitrum One, HttpOnly sessions | **Implemented; public-domain sign-in blocked** until the SIWE allowlist correction is deployed and verified with a real wallet |
 | **Checkout and purchases** | Server-priced orders, coupons, multi-chain DePay payments, on-chain verification, atomic provisioning | **Implemented, disabled in production** until the owner configures payments |
 | **Economy** | Transparency, Revenue Model and Live Market Access pages driven by operational records | **Live pages**, no live revenue data yet |
 | **Governance** | Hybrid Governance v1.0: off-chain Community Council, proposals and voting | **Implemented, not in production use** (no council seated) |

@@ -99,9 +99,9 @@ Blueprint (`render.yaml`, root). Applying the Blueprint is a reviewed manual ope
    directory, challenge directory, withdrawal review; constant-time bearer
    auth, fully disabled while unset).
 7. **Custom domain** (optional): add the verified hostname to the `openfund`
-   service, then add it to the service's `ALLOWED_DOMAINS` (comma-separated)
-   so SIWE domain validation accepts it. The Blueprint seeds that variable
-   with the onrender hostname only. See [Production domains](#production-domains).
+   service, then add it to the Blueprint's `ALLOWED_DOMAINS` list
+   (comma-separated) so SIWE domain validation accepts it. Validate the
+   Blueprint before syncing it. See [Production domains](#production-domains).
 
 ## Production domains
 
@@ -128,16 +128,19 @@ mutation-origin check accepts same-origin requests. Live trading updates use
 Server-Sent Events (`/trading/stream`), not WebSockets.
 
 **Required setting.** Wallet sign-in (SIWE) compares the message domain with
-`ALLOWED_DOMAINS`. On 2026-11-08 the live service accepted only the onrender
-host: a domain probe returned `invalid_domain` for both `openfi.cloud` and
-`openfund.cloud`. Set, on the `openfund` service:
+`ALLOWED_DOMAINS`. A 2026-11-11 production probe reproduced `POST /auth/verify`
+returning `400 invalid_domain` for both `openfi.cloud` and `openfund.cloud`;
+the effective Render value contained only `openfund-our6.onrender.com`. The
+Blueprint now declares the complete list on the `openfund` service:
 
 ```
 ALLOWED_DOMAINS=openfund-our6.onrender.com,openfi.cloud,openfund.cloud
 ```
 
-A Blueprint sync re-applies `fromService` values, so re-check this variable
-after any sync.
+The Blueprint validator fails if either public host is removed or if the
+variable is changed back to `fromService`. The source fix alone does not
+change the running service: deploy only after approval, then inspect the
+effective value and repeat the HTTPS SIWE and real-wallet acceptance tests.
 
 **Verification checklist** (both root domains): DNS resolves through
 Cloudflare; the certificate covers the root and `www`; `http://` → `https://`;

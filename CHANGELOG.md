@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Fix the Render Blueprint SIWE allowlist for both public domains and the
+  onrender host. Add a Blueprint guard and CI coverage for signed Arbitrum
+  login, owned profile, session restore, wallet switching and logout through
+  both production origins. Production real-wallet acceptance remains pending.
+
 - PR #81 completion (branch `claude/pr81-completion`):
   - Coupon administration acceptance now runs against a real Directus UI and
     passes 16/16 (create a 100% internal coupon in Directus, zero-cost

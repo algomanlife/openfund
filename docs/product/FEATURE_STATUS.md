@@ -1,5 +1,17 @@
 # Feature status
 
+2026-11-11 P0 SIWE production-domain correction (**source branch; not deployed**):
+`POST /auth/verify` returned `400 invalid_domain` on both public domains while
+the onrender host reached signature validation. The effective Render
+`ALLOWED_DOMAINS` contained only the onrender host. The Blueprint now lists
+all three serving hosts, and CI exercises signed SIWE, owned profile,
+session restore, logout, wallet switching and domain rejection for both
+production HTTPS origins against an isolated local server. Real wallet
+acceptance on the deployed site remains **Blocked** until an approved deploy
+and device/browser verification. WalletConnect mobile access is separately
+unconfigured (`VITE_WALLETCONNECT_PROJECT_ID` absent); injected wallets are
+not dependent on it.
+
 2026-11-10 production-readiness branch (`codex/production-readiness`, **unmerged,
 not deployed**): Arbitrum-only wallet/SIWE/checkout, DePay request/callback/event
 signature verification, coupon engine with a zero-payment flow, an explicit
