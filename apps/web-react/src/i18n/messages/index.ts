@@ -99,7 +99,7 @@ export function reportMiss(locale: string, english: string) {
 }
 export const missesFor = (locale: string) => [...(misses.get(locale) || [])]
 /* numbers with unit letters (100x, 00y 02m, 5K), key names, the lowercase wordmark */
-const NEUTRAL_EXTRA = /^(?:openfund|penfund|[\w.-]+\.trade|UTC[+-]\d{1,2}|\d\d:\d\d(?::\d\d)?\s+UTC[+-]\d{1,2}|\d{4}-\d\d-\d\dT\S+|Windows|macOS|Linux|TradingView|Render|Liara|DePay|S&P|Au|\/?USD|[A-Z]|App Store — iOS|Google Play — Android|[\d.,]+[a-zA-Z]{0,2}(?:\s+[\d.,]+[a-zA-Z]{0,2})*|Enter|Esc|Tab|Shift|Alt|Ctrl|Cmd|⌘[A-Z])$/
+const NEUTRAL_EXTRA = /^(?:openfund|penfund|[\w.-]+\.trade|UTC[+-]\d{1,2}|\d\d:\d\d(?::\d\d)?\s+UTC[+-]\d{1,2}|\d{4}-\d\d-\d\dT\S+|Windows|macOS|Linux|TradingView|Render|Liara|Bitpin|DePay|S&P|Au|\/?USD|[A-Z]|App Store — iOS|Google Play — Android|[\d.,]+[a-zA-Z]{0,2}(?:\s+[\d.,]+[a-zA-Z]{0,2})*|Enter|Esc|Tab|Shift|Alt|Ctrl|Cmd|⌘[A-Z])$/
 export const isLanguageNeutral = (text: string) => {
   const core = text.replace(/[↗↘↙↖→←↑↓·•|]+/g, ' ').replace(/\s+/g, ' ').trim()
   return LANGUAGE_NEUTRAL.test(core) || NEUTRAL_EXTRA.test(core) || core.split(' / ').every(part => LANGUAGE_NEUTRAL.test(part) || NEUTRAL_EXTRA.test(part))

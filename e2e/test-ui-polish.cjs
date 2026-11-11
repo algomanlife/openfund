@@ -117,11 +117,11 @@ async function whiteCanvas(page,selector,theme){
  const points=await page.locator('main:not(.of-terminal-main)').evaluateAll(elements=>elements.flatMap(el=>{
   // Native modal backdrops intentionally dim the underlying main canvas.
   if(document.querySelector('dialog[open],[aria-modal="true"]'))return [];
-  // The fixed Persian Bitpin price strip overlays the viewport bottom; sample main above it.
-  const strip=document.querySelector('.bitpin-ticker')?.getBoundingClientRect().height||0;
-  const r=el.getBoundingClientRect(),top=Math.max(r.top,100),bottom=Math.min(r.bottom,innerHeight-8-strip);
+  const r=el.getBoundingClientRect(),top=Math.max(r.top,100),bottom=Math.min(r.bottom,innerHeight-8);
   if(bottom-top<32)return [];
-  return [top+16,(top+bottom)/2,bottom-16].flatMap(y=>[4,innerWidth-5].map(x=>({x:Math.round(x),y:Math.round(y)})));
+  // The fixed Persian Bitpin price strip overlays the viewport bottom; the last sample stays above it.
+  const strip=document.querySelector('.bitpin-ticker')?.getBoundingClientRect().height||0;
+  return [top+16,(top+bottom)/2,Math.max(top+16,bottom-16-strip)].flatMap(y=>[4,innerWidth-5].map(x=>({x:Math.round(x),y:Math.round(y)})));
  }));
  if(points.length){
   const png=(await page.screenshot({animations:'disabled',scale:'css'})).toString('base64');
