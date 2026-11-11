@@ -18,6 +18,10 @@ The [bridge](../../packages/openfund-charts/src/vela-bridge.js) exposes `mount`,
 
 `market:changed` synchronizes committed symbols and timeframes with terminal state. Product-specific workspace keys preserve chart/indicator settings; position drawings are excluded from those snapshots. Financial context, Gains wallet reads, Prop execution and account schemas remain unchanged. Controller destruction disconnects resize observation and terminates workers.
 
+## Footprint plugin
+
+The Footprint chart style and overlay are a Vela plugin built only on the public SDK (`registerChartType`, `registerRendererLayer`, `registerNativeIndicator`) in [packages/openfund-charts/src/footprint](../../packages/openfund-charts/src/footprint). No vendored Vela file changes. The bridge calls `installFootprint()` before the workspace mounts, and only when the runtime config enables `footprint`. Gains remains the chart's price and candle provider. See [Footprint](FOOTPRINT.md).
+
 ## Interaction repairs
 
 Browser reproduction showed that machine re-projection removes the menu positioner's inline z-index after hover. Its isolated stacking context then falls beneath the price canvas, which intercepts clicks. A scoped rule in the menu component preserves stacking. Timeframe and style choices now receive actual pointer clicks. Canonical Pine resolutions prevent lowercase `1m` being displayed as the calendar-month label `1M`.

@@ -49,6 +49,14 @@ function mount(container, opts){
   if (!el) throw new Error('Vela mount: container not found');
   const engines = [];
 
+  /* Footprint (Hyperliquid order flow, chart-only): registered before the workspace
+     mounts, and only when the server's FOOTPRINT_ENABLED flag is on. Off, nothing is
+     registered, fetched or painted; a failure here never blocks the Gains chart. */
+  try {
+    const rc = global.__OPENFUND_RUNTIME_CONFIG__ || (global.parent !== global ? global.parent.__OPENFUND_RUNTIME_CONFIG__ : null);
+    if (rc && rc.footprint === true && typeof WLib.installFootprint === 'function') WLib.installFootprint({ apiBase: '' });
+  } catch (e) { console.warn('[footprint] not installed', e); }
+
   /* Openfund hosts its own market selector — Vela's symbol chip is omitted.
      Timeframe / style / indicators / undo-redo stay (left side),
      alerts / panels / screenshot on the right. */

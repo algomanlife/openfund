@@ -31,6 +31,7 @@ import { accountDirectory } from './accounts.js'
 import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments } from './purchases.js'
 import { adminRoutes } from './admin.js'
 import { chartWorkspaceRoutes } from './chart-workspaces.js'
+import { createFootprintService } from './footprint/service.js'
 import { couponAdminRoutes } from './coupons.js'
 import { paymentAdminRoutes } from './payments-admin.js'
 import { governanceRoutes } from './governance-routes.js'
@@ -730,6 +731,10 @@ app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tra
 app.use(referralRoutes({ pool, requireAuth, audit }))
 app.use(purchaseRoutes({ pool, requireAuth, audit, limit }))
 app.use(chartWorkspaceRoutes({ pool, requireAuth, limit }))
+/* Footprint (Hyperliquid order-flow analytics for the chart only). Read-only,
+   isolated from the engine/accounts/payments; inert unless FOOTPRINT_ENABLED=1. */
+const footprint = createFootprintService({ mainPool: pool })
+app.use(footprint.router)
 app.use('/governance', governanceRoutes({ pool, requireAuth, limit }))
 /* Economy, Brand Ambassador, Verified Coach and Live Market Access */
 const treasury = new Treasury(pool)
@@ -825,6 +830,7 @@ const server = app.listen(cfg.port, () =>
 /* market data (authoritative server-side marks) + trading engine loop */
 marketData.bootstrap().catch(e => console.error('[market-data] bootstrap failed', e.message))
 engine.start(1000)
+footprint.start().catch(e => console.error('[footprint] start failed', e.message))
 /* pending purchase orders past their expiry are swept to 'expired'
    (verified late payments are still accepted inside the grace window —
    see purchases.js confirmPurchase) */
@@ -853,6 +859,6 @@ const settlementTimer = setInterval(() => {
 }, 60_000)
 settlementTimer.unref()
 let shuttingDown=false
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;engine.stop();marketData.stop();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);server.close(()=>pool.end()) }
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;engine.stop();marketData.stop();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);footprint.stop().catch(()=>{}).finally(()=>server.close(()=>pool.end())) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)

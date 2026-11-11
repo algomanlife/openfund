@@ -110,6 +110,9 @@ jobs:
       - name: Original Pine sources and provider regression tests
         working-directory: .
         run: npm run test:charts
+      - name: Footprint core (aggregation, price compatibility, symbol mapping)
+        working-directory: .
+        run: npm run test:footprint
       - name: Release integrity tests
         working-directory: .
         run: npm run test:release
@@ -224,6 +227,12 @@ jobs:
           TEST_FRONTEND_URL: http://localhost:8080
           TEST_BACKEND_URL: http://localhost:8080
         run: npm run test:browser:risk
+      - name: Footprint feature flag off (no footprint request, no style entry)
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080
+          FOOTPRINT_EXPECT_OFF: '1'
+        run: npm run test:browser:footprint
       - name: Terminal layout, bilingual geometry and overflow acceptance
         working-directory: .
         env:
