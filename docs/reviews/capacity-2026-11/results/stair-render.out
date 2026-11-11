@@ -1,0 +1,13 @@
+== run stair-render profile=render stages=baseline,low ramp=60s hold=180s const= cdn=0.95
+[market-data] ws subscribed
+cpu limits: backend 50% / postgres 10%
+sltp: {"n":1,"p50":16525,"p95":16525,"p99":16525,"max":16525}
+integrity exit 0 ("violations": 0)
+STOPPED: {"t":1794422923782,"reason":"pg pool queue 520 waiting for 30 s","last":{"t":1794422923695,"connections":{"total":16,"max":100,"byState":{"active":2,"idle:Client":6,"idle in transaction:Client":2},"longestQueryS":0},"lockWaits":0,"ungrantedLocks":0,"engineLoopPassesPs":0,"tps":954,"rollbacksPs":0,"d
+==> <workspace>/capacity/results/stair-render/k6-charts.log <==
+charts: 17010 req, failed 0.00%, integrity 0
+time="2026-11-11T22:48:43+04:00" level=error msg="test run was aborted because k6 received a 'interrupt' signal"
+
+==> <workspace>/capacity/results/stair-render/k6-visitors.log <==
+visitors: 51708 req, failed 0.00%
+time="2026-11-11T22:48:43+04:00" level=error msg="test run was aborted because k6 received a 'interrupt' signal"

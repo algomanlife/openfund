@@ -1,0 +1,9 @@
+== run sustained-recovery profile=uncapped stages=low,medium ramp=60s hold=420s const= cdn=0.95
+PROFILE=uncapped
+STAGES=low,medium
+start_ms=1794424212000
+end_ms=1794424365000
+RECOVERY_S=240
+RECOVERY_CHARTS=100
+RECOVERY_VISITORS=200
+STAGE_HOLD_S=420

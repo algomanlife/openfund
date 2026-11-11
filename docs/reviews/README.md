@@ -4,6 +4,7 @@ These documents record specific branches, dates and environments. Their test cou
 
 | Review | Scope |
 | --- | --- |
+| [Capacity assessment 2026-11](capacity-2026-11/REPORT.md) | Isolated load, stress and recovery tests of `b018c25`; measured stable concurrency, bottlenecks, data integrity and ranked fixes |
 | [Production fix and terminal refinement](production-fix-2026-11/DELIVERY.md) | Header geometry, SL/TP and order review dialogs, live position overlay, per-wallet chart workspaces; local candidate captures |
 | [UI refinement](ui-refinement/DELIVERY.md) | Wallet menu, landing cards and art, footer partners and address, day/night toggle, Economy menu and terminal empty state; before/after captures |
 | [Community/theme addendum](community-theme/DELIVERY.md) | Unreleased integrated candidate, isolated validation, authentic light/dark captures and owned local preview |

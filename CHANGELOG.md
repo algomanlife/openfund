@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Capacity assessment (branch `agent/claude/capacity-assessment`): isolated
+  k6 + SSE + Playwright capacity harness (`scripts/capacity/`) and measured
+  report ([Capacity assessment 2026-11](docs/reviews/capacity-2026-11/REPORT.md)).
+  Measured: 100 chart users + 200 visitors stable on one uncapped core; not
+  stable at that stage under a Render-equivalent CPU quota; first bottleneck is
+  per-stream SSE database polling on the 10-connection pool and the serial
+  engine loop. No application code changed.
+
 - Production fix and terminal refinement (branch
   `agent/claude/production-fix-ui-refinement`):
   - Header controls: the theme switch is now a real box with the shared

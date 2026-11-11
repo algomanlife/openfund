@@ -1,0 +1,5 @@
+== run stair-uncapped-pool40 profile=uncapped stages=all ramp=60s hold=180s const= cdn=0.95
+HARNESS_PG_MAX=40
+PROFILE=uncapped
+start_ms=1794422984000
+end_ms=1794423268000

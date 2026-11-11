@@ -1,0 +1,9 @@
+== run overload-recovery profile=uncapped stages=baseline,medium ramp=60s hold=300s const= cdn=0.95
+[market-data] ws subscribed
+sltp: {"n":889,"p50":4231,"p95":132871,"p99":182431,"max":210366}
+integrity exit 0 ("violations": 0)
+==> <workspace>/capacity/results/overload-recovery/k6-charts.log <==
+charts: 121761 req, failed 0.00%, integrity 0
+
+==> <workspace>/capacity/results/overload-recovery/k6-visitors.log <==
+visitors: 385439 req, failed 0.00%

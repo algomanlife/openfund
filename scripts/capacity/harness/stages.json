@@ -1,0 +1,10 @@
+{
+  "note": "Concurrency staircase from the assessment brief. rampS/holdS are the local defaults; override with STAGE_RAMP_S / STAGE_HOLD_S.",
+  "stages": [
+    { "name": "baseline", "charts": 100,  "visitors": 200 },
+    { "name": "low",      "charts": 300,  "visitors": 500 },
+    { "name": "medium",   "charts": 500,  "visitors": 1000 },
+    { "name": "high",     "charts": 1000, "visitors": 1500 },
+    { "name": "peak",     "charts": 1500, "visitors": 2000 }
+  ]
+}
