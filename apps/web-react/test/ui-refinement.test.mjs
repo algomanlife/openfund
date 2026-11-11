@@ -110,17 +110,15 @@ test('the ticker and the Iran notice are Persian-only and never mounted in the t
   assert.match(src('features/ticker/ticker.css'), /safe-area-inset-bottom/)
 })
 
-test('the Iran access notice stays off in production builds until the owner approves it', () => {
+test('the Iran access notice is owner-approved for production and renders the approved copy', () => {
   const React = require('react'), server = require('react-dom/server')
-  const off = load('features/notice/IranAccessNotice.tsx', { 'import.meta.env.DEV': 'false' }).default
-  assert.equal(server.renderToStaticMarkup(React.createElement(off)), '')
-  const on = load('features/notice/IranAccessNotice.tsx', { 'import.meta.env.DEV': 'true' }).default
+  const on = load('features/notice/IranAccessNotice.tsx', { 'import.meta.env.DEV': 'false' }).default
   const doc = new JSDOM(server.renderToStaticMarkup(React.createElement(on))).window.document
   assert.equal(doc.querySelector('strong').textContent, 'دسترسی پایدار به اوپن‌فاند')
   const link = doc.querySelector('a[href="https://iran.openfund.cloud"]')
   assert.equal(link.getAttribute('dir'), 'ltr')
   assert.equal(link.textContent, 'iran.openfund.cloud')
-  assert.match(src('config/iranAccess.ts'), /IRAN_ACCESS_NOTICE_APPROVED = false/)
+  assert.match(src('config/iranAccess.ts'), /IRAN_ACCESS_NOTICE_APPROVED = true/)
 })
 
 /* ---------------- Challenges wallet panel ---------------- */

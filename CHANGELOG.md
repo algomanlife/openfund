@@ -15,9 +15,9 @@
     as one row of seven on desktop with balanced wrapping below; legacy
     stylesheets are requested with a per-build version so a cached copy cannot
     differ between domains.
-  - Persian-only: Iran access notice under the header (shown only in
-    development builds until the owner approves the claim,
-    `src/config/iranAccess.ts`) and a fixed bottom Bitpin price strip in Toman
+  - Persian-only: Iran access notice under the header (owner-approved for
+    production, `src/config/iranAccess.ts`; the iran.openfund.cloud host is
+    connected separately) and a fixed bottom Bitpin price strip in Toman
     (read-only public API, one shared 30s poller, paused in hidden tabs,
     backoff on failure, prices withdrawn after 10 minutes without data).
   - Home: product cards share one structure with bottom-aligned CTAs; the

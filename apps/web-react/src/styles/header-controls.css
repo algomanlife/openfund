@@ -20,13 +20,13 @@
   display: flex; flex-wrap: nowrap; align-items: center; gap: var(--hc-gap); min-width: 0;
 }
 /* The terminal header row is 40px tall: same system, compact scale. */
-:root .of-terminal-actions { --hc-h: 30px; --hc-px: 10px; --hc-gap: 6px; --hc-fs: 12px; }
+:root .of-terminal-header .of-terminal-actions { --hc-h: 30px; --hc-px: 10px; --hc-gap: 6px; --hc-fs: 12px; }
 @media (max-width: 700px) {
   /* Comfortable touch targets on phones; labels never shrink below 11px. */
   :root .openfund-header .nav-actions { --hc-h: 40px; --hc-px: 10px; --hc-gap: 6px; --hc-fs: 12px; }
 }
 @media (max-width: 650px) {
-  :root .of-terminal-actions { --hc-h: 32px; --hc-px: 8px; --hc-gap: 4px; --hc-fs: 11.5px; }
+  :root .of-terminal-header .of-terminal-actions { --hc-h: 32px; --hc-px: 8px; --hc-gap: 4px; --hc-fs: 11.5px; }
 }
 
 /* ---- shared box: height, border, radius, alignment ---------------------- */
@@ -113,4 +113,10 @@
   :root .openfund-header .nav-actions .of-language-icon { display: none; }
   :root .openfund-header .nav-actions .of-daynight { --dn-w: 44px; margin-inline: 6px !important; }
   :root .openfund-header .nav-actions .of-daynight::before { inset-inline: -6px; }
+}
+/* Terminal phone header: the connect chip is icon-only (aria-label kept) so
+   theme · language · wallet fit the first grid row. */
+@media (max-width: 650px) {
+  :root .of-terminal-actions .rk-chip-connect { width: var(--hc-h); min-width: var(--hc-h); padding-inline: 0; }
+  :root .of-terminal-actions .rk-chip-connect .rk-connect-label { display: none; }
 }

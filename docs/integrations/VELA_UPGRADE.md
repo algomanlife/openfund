@@ -11,7 +11,7 @@ Each row is protected by a guard in [`infra/upstream/customizations.json`](../..
 | Area | Where it lives | Protected by |
 | :--- | :--- | :--- |
 | Branding: built-in V mark replaced, picker badge removed | `workspace-entry.ts` (`registerRendererDefaults({ attribution: false })`), patch OF-VELA-002 | guards, `test:browser:charts` (no `.vela-ip-badge`, no `.vela-attribution`) |
-| **Attribution (legal)** | Linked `Vela` notice `a.chart-notice` in `terminal-body.html`; `vendor/vela/NOTICE` | paired guards, `test:browser:charts` asserts exactly one visible `.chart-notice` |
+| **Attribution (legal)** | The terminal status-bar `Vela` link was removed on 2026-11-11 at the owner's direction (owner-accepted deviation from the on-screen attribution condition in `vendor/vela/NOTICE`); Vela stays credited in the website footer and shipped notices | `vela-notice-text` guard (NOTICE re-review trigger), `test:browser:charts` asserts no `.chart-notice` |
 | Brand themes (dark and light) | `vela-bridge.js` `THEMES` | guard, theme assertions in browser suite |
 | Single-chart layout, toolbar subset, hosted symbol selector | `vela-bridge.js` (`layout:false`, `topbar`) | guards |
 | Chart tabs and Quick Trade | Terminal UI (`TradingPages.tsx`), account adapter; Vela only draws the chart | guard, `npm run test:web` (`chart-quick-trade.test.mjs`), `test:browser:completion` |

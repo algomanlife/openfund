@@ -156,7 +156,7 @@ async function realThemeClicks(browser) {
       check(`${tag} theme`, await page.locator('html').getAttribute('data-theme') === theme);
       check(`${tag} no unreleased app downloads`, await page.locator('#desktop, .desktop-btns').count() === 0);
       check(`${tag} no Team section`, await page.locator('#team, .team-section, #team-dialog').count() === 0);
-      check(`${tag} six services incl. Render and Liara`, await page.locator('.credits-row > a').count() === 6 && await page.locator('.credits-row a[href="https://render.com"]').count() === 1 && await page.locator('.credits-row a[href="https://liara.ir"]').count() === 1);
+      check(`${tag} seven services incl. Render, Liara and Bitpin`, await page.locator('.credits-row > a').count() === 7 && await page.locator('.credits-row a[href="https://bitpin.ir"]').count() === 1 && await page.locator('.credits-row a[href="https://render.com"]').count() === 1 && await page.locator('.credits-row a[href="https://liara.ir"]').count() === 1);
       check(`${tag} attribution`, (await page.locator('footer').innerText()).includes(locale === 'fa' ? 'توسعه داده شده توسط معامله‌گران' : 'Developed by Traders'));
       check(`${tag} no obsolete label`, !/External resource|منبع خارجی|Developed in San Francisco|توسعه‌داده‌شده در سان‌فرانسیسکو/.test(await page.locator('footer').innerText()));
       check(`${tag} two Telegram actions`, await page.locator('.telegram-community').count() === 2);

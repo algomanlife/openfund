@@ -234,7 +234,7 @@ async function walletDisclosureFits(page){
    const tv=page.locator('.credits-row a[href="https://www.tradingview.com/news/"]');await tv.waitFor();
    check(prefix+' TradingView description',(await tv.innerText()).includes(locale==='fa'?'اطلاعات و اخبار بازارها':'Market Data & News'));
    check(prefix+' redundant external label removed',!(/منبع خارجی|External resource/.test(await tv.innerText())));
-   check(prefix+' six service references incl. Render and Liara',await page.locator('.credits-row .render-credit').count()===6&&await page.locator('.credits-row a[href="https://render.com"]').count()===1&&await page.locator('.credits-row a[href="https://liara.ir"]').count()===1);
+   check(prefix+' seven service references incl. Render, Liara and Bitpin',await page.locator('.credits-row .render-credit').count()===7&&await page.locator('.credits-row a[href="https://bitpin.ir"]').count()===1&&await page.locator('.credits-row a[href="https://render.com"]').count()===1&&await page.locator('.credits-row a[href="https://liara.ir"]').count()===1);
    check(prefix+' public native surfaces',await nativeSurfaces(page,'html,body,header,.faq-item,.faq-help,.navlinks.open',theme));
    await whiteCanvas(page,'html,body,#root,main,.information-page',theme);
    await readableText(page,PUBLIC_TEXT,theme);
