@@ -28,6 +28,8 @@ import ReferralEntry from './features/referral/ReferralEntry'
 import TerminalShell from './features/terminal/TerminalShell'
 import './theme-toggle.css'
 import './styles/header-controls.css'
+import './brand/seasonal-logo.css'
+import { installSeasonalLogo } from './brand/seasonalLogo'
 import { SharedTradingTerminal } from './features/terminal/TradingPages'
 import { ProductDashboard, CapabilityPage } from './features/terminal/Dashboard'
 import ProductPortfolio from './features/terminal/Portfolio'
@@ -181,6 +183,9 @@ const router = createBrowserRouter([
      scroll restoration. */
   { element: <AppFrame />, children: routes }
 ])
+/* Yalda / Christmas header logo (header and terminal navigation only) */
+installSeasonalLogo()
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <WalletProvider>

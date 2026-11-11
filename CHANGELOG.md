@@ -24,6 +24,12 @@
     closes only after the server confirms; shortened position id with copy.
   - Order review: one label/value row per field, LTR-isolated values, no
     clipping in RTL; values and submission path unchanged.
+  - Seasonal header logo (designs approved by the owner): Yalda
+    pomegranates from 28 Azar through 1 Dey (Tehran date, Jalali via the
+    built-in Intl Persian calendar) and a Santa hat from 25 to 31 December
+    (visitor's local date), on the website and terminal header logo only.
+    The master mark is untouched (a CSS layer over the measured logo box);
+    the normal logo returns automatically after each holiday.
   - Payments: no code defect found in the purchase/DePay path; production
     `paymentsEnabled` is false because the owner-controlled payment
     configuration is unset. The activation checklist now lists the DePay

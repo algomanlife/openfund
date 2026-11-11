@@ -12,6 +12,7 @@ Wallet addresses shown are throwaway test keys.
 | [overlay-long-sl-only](overlay-long-sl-only.png) | LONG with SL only: loss zone only, no ratio |
 | [overlay-long-both](overlay-long-both.png) | LONG with SL and TP: red below, green above, R in the legend |
 | [overlay-fa-light](overlay-fa-light.png), [overlay-fa-toggled-dark](overlay-fa-toggled-dark.png) | SHORT (SL+TP) and LONG (TP only) on one symbol, RTL, both themes |
+| [seasonal-yalda-markets-en-1440-light](seasonal-yalda-markets-en-1440-light.png), [seasonal-yalda-markets-fa-390-light](seasonal-yalda-markets-fa-390-light.png), [seasonal-christmas-markets-fa-1440-dark](seasonal-christmas-markets-fa-1440-dark.png), [seasonal-christmas-prop-trade-fa-390-light](seasonal-christmas-prop-trade-fa-390-light.png) | Approved seasonal header logos with a mocked clock (21 Dec / 26 Dec 2026, Tehran) |
 | [wallet-a-restored](wallet-a-restored.png) | Wallet A on a fresh browser context after wallet B used the same browser |
 
 Automated: `npm run test:browser:risk` (51 checks),
