@@ -68,7 +68,7 @@ html.has-bitpin-ticker body { padding-bottom: calc(40px + env(safe-area-inset-bo
   .bitpin-ticker-viewport { overflow-x: auto; scrollbar-width: none; mask-image: none; }
 }
 
-html[data-theme="light"] .bitpin-ticker { background: #ffffffe6; border-top-color: var(--line, #0a120d24); }
+html[data-theme="light"] .bitpin-ticker { background: #ffffff; backdrop-filter: none; -webkit-backdrop-filter: none; border-top-color: var(--line, #0a120d24); }
 html[data-theme="light"] .bitpin-ticker-item { border-inline-start-color: #0a120d14; }
 html[data-theme="light"] .bitpin-ticker-change.up { color: #087b4a; }
 html[data-theme="light"] .bitpin-ticker-change.down { color: #b33f35; }
