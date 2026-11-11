@@ -267,4 +267,5 @@ These items are implemented with a conservative default and are not final policy
 [ECONOMY.md](ECONOMY.md) ·
 [Feature status](docs/product/FEATURE_STATUS.md) ·
 [ADR 0017](docs/decisions/0017-hybrid-governance.md) ·
-[CONTRIBUTING.md](CONTRIBUTING.md)
+[CONTRIBUTING.md](CONTRIBUTING.md) ·
+[Repository governance](docs/development/REPOSITORY_GOVERNANCE.md) (who reviews, merges and releases code; separate from this product governance)

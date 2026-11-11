@@ -3,3 +3,6 @@ contact_links:
   - name: Report a security vulnerability privately
     url: https://github.com/algomanlife/openfund/security/advisories/new
     about: Never open a public issue for vulnerabilities; follow SECURITY.md.
+  - name: Ask a question or discuss an idea
+    url: https://github.com/algomanlife/openfund/discussions
+    about: Questions, ideas and help with local setup (see SUPPORT.md).

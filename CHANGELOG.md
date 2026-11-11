@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- Repository governance and security (branch `agent/claude/repo-governance`,
+  no application code changed): add `CODE_OF_CONDUCT.md`, `SUPPORT.md`,
+  `.github/CODEOWNERS`, `CLAUDE.md`, UI-problem and documentation issue
+  templates, [Repository governance](docs/development/REPOSITORY_GOVERNANCE.md)
+  and [Repository security settings](docs/development/REPOSITORY_SECURITY.md);
+  extend `CONTRIBUTING.md` with the fork-to-merge workflow, `SECURITY.md` with
+  scope and expectations, and `AGENTS.md` with agent safety rules. Pin the
+  third-party gitleaks action to a commit, validate the image workflow's
+  version input, add a dependency-review workflow, ignore local `.env` and key
+  files, and record reviewed full-history gitleaks false positives. Enabled on
+  GitHub: private vulnerability reporting, secret scanning, Dependabot alerts
+  and security updates, CodeQL default setup.
 - Fix the Render Blueprint SIWE allowlist for both public domains and the
   onrender host. Add a Blueprint guard and CI coverage for signed Arbitrum
   login, owned profile, session restore, wallet switching and logout through

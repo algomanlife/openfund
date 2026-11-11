@@ -1,6 +1,6 @@
 name: Feature or change request
 description: Propose a capability, policy-dependent change or documentation improvement
-labels: [enhancement]
+labels: [enhancement, needs-triage]
 body:
   - type: textarea
     id: problem

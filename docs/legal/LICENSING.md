@@ -72,6 +72,7 @@ CI) and the [PineTS report](PINETS.md).
 | MetaMask SDK | Keep it (subject to item 2), or remove the connector |
 | Indicator sources | Establish provenance; relicense or replace if they are third-party works |
 | Source offer in the UI | Approve a footer and terminal "Source code" link to the released tag |
+| Inbound contribution terms | Until a first-party license exists, GitHub's "inbound = outbound" rule has no license to apply, so the terms of outside contributions are undefined. A. Adopt the [Developer Certificate of Origin](https://developercertificate.org) (`Signed-off-by` trailer, enforceable with a check) together with the chosen license. B. A contributor license agreement, if the company needs to relicense contributions later. C. Accept only maintainer contributions until the license is chosen |
 
 Whatever is chosen: keep every upstream LICENSE/NOTICE unmodified, keep the
 Vela attribution, keep one non-conflicting license statement in the README,

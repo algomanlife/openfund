@@ -306,8 +306,22 @@ Third-party components keep their own terms:
 
 ## Contributing and security
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) and the [documentation index](docs/README.md).
-Report vulnerabilities privately through [SECURITY.md](SECURITY.md).
+Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) (fork,
+set up, branch, test, open a pull request) and the
+[documentation index](docs/README.md); look for issues labelled
+[`good first issue`](https://github.com/algomanlife/openfund/labels/good%20first%20issue).
+Ordinary local development needs no production credentials.
+
+| | |
+| --- | --- |
+| Security vulnerabilities | Report **privately** through [SECURITY.md](SECURITY.md), never in a public issue |
+| Questions and help | [SUPPORT.md](SUPPORT.md) |
+| Community standards | [Code of conduct](CODE_OF_CONDUCT.md) |
+| Who reviews, merges and releases | [Repository governance](docs/development/REPOSITORY_GOVERNANCE.md) |
+| Coding agents | [AGENTS.md](AGENTS.md) |
+
+Merging a pull request does not deploy it, and a release is not live until
+`/version` reports it (see [Versioning and releases](#versioning-and-releases)).
 
 <div align="center">
 
