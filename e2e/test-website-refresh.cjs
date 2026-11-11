@@ -254,7 +254,7 @@ async function realThemeClicks(browser) {
       try {
         await entry.goto(`${BASE}/${route}`);
         await entry.locator('footer .telegram-community').waitFor();
-        check(`${route} shared public footer`, await entry.locator('.credits-row > a').count() === 4 && await entry.locator('.credits-row a[href*="render.com"]').count() === 0);
+        check(`${route} shared public footer`, await entry.locator('.credits-row > a').count() === 6 && await entry.locator('.credits-row a[href="https://render.com"]').count() === 1 && await entry.locator('.credits-row a[href="https://liara.ir"]').count() === 1);
       } finally { await entry.close(); }
     }
     for (const route of ['en/prop/trade', 'fa/perpetual/trade', 'en/prop/dashboard']) {
