@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Fix the Render Blueprint SIWE allowlist for both public domains and the
+  onrender host. Add a Blueprint guard and CI coverage for signed Arbitrum
+  login, owned profile, session restore, wallet switching and logout through
+  both production origins. Production real-wallet acceptance remains pending.
 - UI refinement (branch `claude/ui-refinement`), frontend only:
   - Wallet header chip no longer tilts (the FAQ accordion's `summary>span`
     rotation leaked into it); the wallet menu is grouped into wallet

@@ -104,10 +104,9 @@ services:
           name: openfund-db
           property: connectionString
       - key: ALLOWED_DOMAINS
-        fromService:
-          name: openfund
-          type: web
-          envVarKey: RENDER_EXTERNAL_HOSTNAME # SIWE uses the public browser origin
+        value: "openfund-our6.onrender.com,openfi.cloud,openfund.cloud"
+        # SIWE compares the exact browser host. Keep both serving domains here:
+        # Blueprint sync must not reset this to the onrender host alone.
       - key: CORS_ORIGINS
         sync: false             # only needed for extra origins / custom domain
       - key: SESSION_TTL_HOURS

@@ -1,5 +1,11 @@
 # Milestones and acceptance gates
 
+2026-11-11 P0 SIWE custom-domain fix: **In Progress / source only**. The
+Blueprint and CI regression now cover both public origins; production
+acceptance still requires an approved deploy and a real wallet to sign in,
+load its own profile and restore its session on each domain. A connected
+address without an authenticated `/auth/me` response is insufficient.
+
 2026-11-08 theme preference follow-up: **In Progress / unreleased**. Acceptance
 requires fresh-session OS-light and OS-dark defaults, OS-change propagation
 until a user toggles, manual choice precedence across routes/reload, and native
