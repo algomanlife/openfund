@@ -57,7 +57,6 @@ export const ar: Record<string, string> = {
   'Iranian Cloud Infrastructure': 'بنية تحتية سحابية إيرانية',
   'Address': 'العنوان',
   'Referral & Rewards': 'الإحالة والمكافآت',
-  'Dark mode': 'الوضع الداكن',
   'Wallet menu': 'قائمة المحفظة',
   'Wallet information': 'معلومات المحفظة',
   'Balance': 'الرصيد',

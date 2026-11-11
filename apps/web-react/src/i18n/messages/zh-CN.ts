@@ -57,7 +57,6 @@ export const zhCN: Record<string, string> = {
   'Iranian Cloud Infrastructure': '伊朗云基础设施',
   'Address': '地址',
   'Referral & Rewards': '推荐与奖励',
-  'Dark mode': '深色模式',
   'Wallet menu': '钱包菜单',
   'Wallet information': '钱包信息',
   'Balance': '余额',

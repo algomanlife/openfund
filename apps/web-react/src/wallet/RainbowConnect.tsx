@@ -228,7 +228,7 @@ export function RainbowConnect() {
                     <span className="rk-menu-heading">{t('اطلاعات کیف پول', 'Wallet information')}</span>
                     <button onClick={openAccountModal} type='button' className='rk-chip rk-menu-address' title={t('کیف پول و شبکه', 'Wallet & network')}>
                       <i className={correctNetwork ? 'rk-dot rk-dot-live' : 'rk-dot rk-dot-info'} aria-hidden="true" />
-                      <bdi dir='ltr' className='rk-chip-addr'>{fmtAddr(address)}</bdi>
+                      <bdi dir='ltr' className='rk-menu-addr'>{fmtAddr(address)}</bdi>
                     </button>
                     <div className="rk-menu-row">
                       <span>{t('موجودی', 'Balance')}</span>

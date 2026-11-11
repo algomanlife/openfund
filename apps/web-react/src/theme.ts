@@ -51,15 +51,15 @@ export const DAY_NIGHT_MARKUP = '<span class="of-dn-pill" aria-hidden="true">'
   + '</span>'
 
 /** Turns an existing theme button into the day/night switch (idempotent).
- *  role=switch + aria-checked report the state: checked = dark (night). */
+ *  It stays a native button with its existing label; aria-pressed reports
+ *  the state (pressed = dark / night). */
 export function decorateThemeToggle(button: Element, theme: Theme = currentTheme()): void {
   if (!button.querySelector('.of-dn-pill')) {
     button.innerHTML = DAY_NIGHT_MARKUP
     button.classList.add('of-daynight')
     button.removeAttribute('title')
   }
-  button.setAttribute('role', 'switch')
-  button.setAttribute('aria-checked', String(theme === 'dark'))
+  button.setAttribute('aria-pressed', String(theme === 'dark'))
 }
 
 export function chooseTheme(theme: Theme): void {

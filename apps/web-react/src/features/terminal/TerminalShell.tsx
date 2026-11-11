@@ -207,9 +207,8 @@ export default function TerminalShell({ product }: { product: Product }) {
               <button
                 type="button"
                 className="of-daynight"
-                role="switch"
-                aria-checked={theme === "dark"}
-                aria-label={t("حالت تیره", "Dark mode")}
+                aria-pressed={theme === "dark"}
+                aria-label={t("تغییر پوسته", "Toggle theme")}
                 onClick={() => {
                   const next = currentTheme() === "dark" ? "light" : "dark";
                   chooseTheme(next);

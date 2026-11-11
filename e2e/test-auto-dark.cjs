@@ -24,7 +24,8 @@ async function runAutoDark({ configureContext = async () => {} } = {}) {
     const state = await page.evaluate(() => ({ theme: document.documentElement.dataset.theme, stored: localStorage.getItem('of-theme'), scheme: getComputedStyle(document.documentElement).colorScheme, body: getComputedStyle(document.body).backgroundColor, height: document.documentElement.scrollHeight }));
     assert.equal(state.theme, theme, label + ' outer theme'); assert.equal(state.stored, theme, label + ' stored theme');
     assert.equal(state.body, theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(6, 8, 8)');
-    assert.equal((await page.locator('#theme-toggle,button[aria-label="Toggle theme"],button[aria-label="تغییر پوسته"]').first().textContent()).trim(), theme === 'light' ? '◑' : '◐', label + ' theme control');
+    /* the day/night switch reports its state with aria-pressed (pressed = dark) */
+    assert.equal(await page.locator('#theme-toggle,button[aria-label="Toggle theme"],button[aria-label="تغییر پوسته"]').first().getAttribute('aria-pressed'), String(theme === 'dark'), label + ' theme control');
     if (theme === 'light') assert.match(state.scheme, /only/);
     let points = [{ x: 4, y: 200 }, { x: 3355, y: 500 }], chart;
     if (trade) {

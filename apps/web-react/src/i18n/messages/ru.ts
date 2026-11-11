@@ -57,7 +57,6 @@ export const ru: Record<string, string> = {
   'Iranian Cloud Infrastructure': 'Иранская облачная инфраструктура',
   'Address': 'Адрес',
   'Referral & Rewards': 'Рефералы и вознаграждения',
-  'Dark mode': 'Тёмная тема',
   'Wallet menu': 'Меню кошелька',
   'Wallet information': 'Информация о кошельке',
   'Balance': 'Баланс',
