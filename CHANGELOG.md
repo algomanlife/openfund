@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Vite 8 (branch `agent/claude/vite-8`): `apps/web-react` moves from Vite
+  6.4.5 and `@vitejs/plugin-react` 4.7.0 to Vite 8.3.8 (Rolldown bundler) and
+  `@vitejs/plugin-react` 6.3.0. `vite.config.ts` needed no change. Production
+  build time fell from about 9 s to 1.4 s locally. Landing pages render
+  pixel-identically to the Vite 6 build (English, Persian, 390 px), and the
+  wallet, purchase, DePay, chart, layout, risk, completion and responsive
+  browser suites pass. Upstream registry updated.
+
 - TypeScript 7 (branch `agent/claude/typescript-7`): `npm run typecheck` in
   `apps/web-react` moves from TypeScript 5.9.3 to 7.0.2 (native compiler,
   about 1.4 s per run). TypeScript 7 no longer ships the stable JavaScript
