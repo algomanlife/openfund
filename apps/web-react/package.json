@@ -26,8 +26,8 @@
     "check:product-rules": "node --test test/product-rules.test.mjs"
   },
   "dependencies": {
-    "@luxalgo/vela": "0.9.3",
-    "@luxalgo/vela-pinets": "0.3.2",
+    "@luxalgo/vela": "0.10.6",
+    "@luxalgo/vela-pinets": "0.3.4",
     "@rainbow-me/rainbowkit": "^2.2.11",
     "@tanstack/react-query": "^5.107.1",
     "pinets": "0.13.1",

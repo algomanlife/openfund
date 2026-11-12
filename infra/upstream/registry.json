@@ -11,15 +11,15 @@
       "official_source": "https://github.com/LuxAlgo/Vela",
       "license": "Apache-2.0 with NOTICE attribution requirement",
       "installed": {
-        "version": "0.9.3",
-        "ref": "57d011ab796c541cbb9e1282722ad6cd521c8f55",
+        "version": "0.10.6",
+        "ref": "f6769868c5c0e78ba7977a5c89640df896a8f2f3",
         "path": "vendor/vela",
         "manifest": "vendor/vela/package.json"
       },
       "latest_observed": {
-        "version": "0.10.4",
-        "date": "2026-11-10",
-        "reviewed": false
+        "version": "0.10.6",
+        "date": "2026-11-12",
+        "reviewed": true
       },
       "integration_path": [
         "packages/openfund-charts",
@@ -38,9 +38,9 @@
       },
       "compatibility": {
         "status": "pinned-and-verified",
-        "evidence": "npm run test:charts (9 tests), build reproducibility, patch guards; browser chart regression via npm run test:browser:charts"
+        "evidence": "npm run test:charts (9 tests), patch guards, build reproducibility; browser charts 17/17, footprint 26/26, risk 51/51 and 53/53 with footprint (PR #92); merged at owner request 2026-11-12"
       },
-      "last_upgrade": "2026-10-31 (vendored 0.9.3 at tag v0.9.3)",
+      "last_upgrade": "2026-11-12 (vendored 0.10.6 at tag v0.10.6)",
       "tests": [
         "npm run test:upstream",
         "npm run test:charts",
@@ -65,14 +65,14 @@
       "official_source": "https://www.npmjs.com/package/@luxalgo/vela-pinets",
       "license": "AGPL-3.0",
       "installed": {
-        "version": "0.3.2",
+        "version": "0.3.4",
         "lockfile": "apps/web-react/package-lock.json",
         "package": "@luxalgo/vela-pinets"
       },
       "latest_observed": {
-        "version": "0.3.3",
-        "date": "2026-11-10",
-        "reviewed": false
+        "version": "0.3.4",
+        "date": "2026-11-12",
+        "reviewed": true
       },
       "integration_path": [
         "scripts/build-charts.mjs",
@@ -92,7 +92,7 @@
         "status": "pinned-and-verified",
         "evidence": "npm run test:charts; build-charts.mjs throws if the worker marker moves"
       },
-      "last_upgrade": "2026-11-02",
+      "last_upgrade": "2026-11-12 (candidate 0.3.4 with Vela 0.10.6; not yet reviewed)",
       "tests": [
         "npm run test:charts",
         "npm run test:browser:charts"
