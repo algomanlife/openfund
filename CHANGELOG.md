@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Payments: [activation checklist](docs/payments/ACTIVATION.md) records the
+  production state verified on 2026-11-12 (`paymentsEnabled: false`; no
+  complete settlement chain, widget URL, SRI hash or CSP origins configured;
+  DePay endpoints closed by design). Documentation only.
+
 - Express 5 (branch `agent/claude/express-5`): `apps/backend` moves from
   Express 4.22.3 to 5.3.0. No route, middleware or handler changes were
   needed: the backend uses no Express 4-only path syntax or APIs. Observable
