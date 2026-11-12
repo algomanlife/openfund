@@ -16,7 +16,7 @@ Every other production package declares a common permissive license (MIT, ISC, A
 | `@ethereumjs/rlp` | 4.0.1 | MPL-2.0 |
 | `@ethereumjs/tx` | 4.2.0 | MPL-2.0 |
 | `@ethereumjs/util` | 8.1.0 | MPL-2.0 |
-| `@luxalgo/vela-pinets` | 0.3.2 | AGPL-3.0-only |
+| `@luxalgo/vela-pinets` | 0.3.4 | AGPL-3.0-only |
 | `@metamask/eth-json-rpc-provider` | 1.0.1 | UNDECLARED (no license field or file in the package) |
 | `@metamask/sdk` | 0.33.1 | LicenseRef-ConsenSys-NonCommercial (see notice) |
 | `@metamask/sdk-communication-layer` | 0.33.1 | LicenseRef-ConsenSys-NonCommercial (see notice) |

@@ -7,6 +7,67 @@
   complete settlement chain, widget URL, SRI hash or CSP origins configured;
   DePay endpoints closed by design). Documentation only.
 
+- Express 5 (branch `agent/claude/express-5`): `apps/backend` moves from
+  Express 4.22.3 to 5.3.0. No route, middleware or handler changes were
+  needed: the backend uses no Express 4-only path syntax or APIs. Observable
+  differences: static JavaScript is served as `text/javascript` (RFC 9239)
+  instead of `application/javascript`, and the HTML/CSS `charset` parameter is
+  lower case. Upstream registry updated.
+
+- Vite 8 (branch `agent/claude/vite-8`): `apps/web-react` moves from Vite
+  6.4.5 and `@vitejs/plugin-react` 4.7.0 to Vite 8.3.8 (Rolldown bundler) and
+  `@vitejs/plugin-react` 6.3.0. `vite.config.ts` needed no change. Production
+  build time fell from about 9 s to 1.4 s locally. Landing pages render
+  pixel-identically to the Vite 6 build (English, Persian, 390 px), and the
+  wallet, purchase, DePay, chart, layout, risk, completion and responsive
+  browser suites pass. Upstream registry updated.
+
+- TypeScript 7 (branch `agent/claude/typescript-7`): `npm run typecheck` in
+  `apps/web-react` moves from TypeScript 5.9.3 to 7.0.2 (native compiler,
+  about 1.4 s per run). TypeScript 7 no longer ships the stable JavaScript
+  compiler API, which `scripts/docs/check-language.mjs` uses to read comments;
+  that scanner now loads the pinned `typescript-js-api` alias
+  (`npm:typescript@6.0.3`, the newest stable release with the API). Vite and
+  esbuild do not use `tsc`, so build output is unaffected.
+
+- Vela 0.10.6 (branch `agent/claude/vela-0.10.6`;
+  [Vela upgrade](docs/integrations/VELA_UPGRADE.md#upgrade-to-vela-0106-2026-11-12)):
+  vendored LuxAlgo Vela 0.9.3 to 0.10.6 through the controlled update tool,
+  `@luxalgo/vela` 0.10.6 (adds `@luxalgo/vela-ui` 0.4.1) and
+  `@luxalgo/vela-pinets` 0.3.4; PineTS stays 0.13.1 (latest).
+  - Patch OF-VELA-001 retired: 0.10.x keeps menus above the chart upstream.
+    OF-VELA-002 and OF-VELA-003 re-apply cleanly. `LICENSE` and `NOTICE`
+    unchanged; the shipped AGPL notice only changed line endings upstream.
+  - OF-BUILD-001 re-anchored: the Pine worker's minified identifiers changed,
+    so `build-charts.mjs` now locates them structurally and still fails
+    unless each matches exactly once.
+  - Visual parity: Vela 0.10 moves its chrome CSS into the `vela.chrome`
+    cascade layer, so the terminal's unlayered element resets stripped the
+    toolbar and range-bar button padding. Those resets now live in an
+    `openfund-reset` layer ordered before Vela's, which restores the 0.9
+    appearance without changing any other terminal rule.
+  - `e2e/test-chart-indicators.mjs` finds numeric Pine inputs by the
+    `spinbutton` role (native number input on 0.9, Zag number input on 0.10).
+
+- Dependency patch updates (branch `agent/claude/deps-patch-2026-11`):
+  `viem` 2.57.16 to 2.57.19 in `apps/backend` and `apps/web-react`, and `ws`
+  8.22.1 to 8.22.2 in `apps/backend` (the version the capacity harness already
+  uses). Upstream registry updated. No application code changed.
+  The 30 open `npm audit` advisories in `apps/web-react` are all transitive
+  through the wallet stack and are resolved only by wagmi 3, which the latest
+  stable RainbowKit (2.2.11, peer `wagmi ^2.9.0`) does not support yet.
+
+- Footprint archive importer (branch `agent/claude/footprint-archive-import`;
+  [Footprint](docs/integrations/FOOTPRINT.md#archive-importer-prepared-not-yet-run-against-real-files)):
+  `apps/backend/footprint/archive.js` and `scripts/footprint/import-archive.mjs`
+  import decompressed Hyperliquid `node_fills_by_block` files into
+  `footprint_minutes` with `source = 'archive'`, using the live path's
+  normalization and deduplication. Taker fills only, fail-closed completeness
+  checks, dry run by default, one transaction with `--apply`, recorded gaps
+  trimmed to the imported window. Not yet run against real archive files: the
+  requester-pays bucket needs owner AWS access. No schema change; the feature
+  flag and production state are unchanged.
+
 - Community, footer, platform motion and responsive navigation (branch
   `agent/claude/community-motion-responsive-ui`):
   - Community: Telegram is the only public community action (home, hero,
