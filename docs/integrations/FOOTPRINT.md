@@ -83,10 +83,53 @@ flowchart LR
 market-wide historical trades endpoint (`recentTrades` returns the last few
 trades). Its only official archive of fills is
 `s3://hl-mainnet-node-data/node_fills_by_block` (older:
-`node_fills`, `node_trades`), and the requester pays for it. Importing it
-needs owner-provided AWS credentials and a format check against real files.
-Both are listed under *Remaining work*. No synthetic or interpolated history
-is ever generated.
+`node_fills`, `node_trades`), and the requester pays for it. No synthetic or
+interpolated history is ever generated.
+
+The chart already separates complete from partial history. Every interval
+without verified capture is stored in `footprint_gaps` (`coverage_start` before
+the first trade the service saw, `restart` and `reconnect` after outages). Bars
+that touch such an interval are drawn at reduced opacity, and their tooltip
+says "partial coverage".
+
+### Archive importer (prepared; not yet run against real files)
+
+`apps/backend/footprint/archive.js` and `scripts/footprint/import-archive.mjs`
+import decompressed `node_fills_by_block` files:
+
+- Only the taker fill of each trade (`crossed: true`) is used; its `side` is
+  the aggressor side, the same meaning as the live `WsTrade.side`. User
+  addresses, hashes, fees and PnL are never read into the output.
+- Trades pass through the live path's `normalizeTrade` and `MinuteBook`, so
+  units, the aggressor rule and `(time, tid)` deduplication are identical.
+- Market precision comes from the live Hyperliquid meta and the same
+  verification as the service. Unsupported markets are skipped.
+- The run fails closed: any malformed line, any taker fill that fails
+  normalization, any hour of the window without a block (a missing file), or
+  no trades at all stops it before anything is written.
+- `--apply` writes in one transaction to `FOOTPRINT_DATABASE_URL`, else
+  `DATABASE_URL`. Archive rows carry `source = 'archive'`. A live minute is
+  kept unless it touches a recorded gap (then it is partial and the archive
+  minute replaces it). Gaps that overlap the window are trimmed to the part
+  outside it. A window older than `FOOTPRINT_RETENTION_DAYS` is refused,
+  because the service would prune it.
+- Tests: `apps/backend/test/footprint-archive.test.mjs` (hand-built lines in
+  the documented shape; the write test runs only against an isolated test
+  database).
+
+The line shape is taken from Hyperliquid's node output documentation and has
+**not** been checked against a real archive file. The fail-closed checks mean a
+different shape stops the import instead of writing wrong rows.
+
+Owner steps (requires an AWS account; the requester pays transfer costs):
+
+1. Download the hourly files for the window, for example
+   `aws s3 cp --request-payer requester --recursive s3://hl-mainnet-node-data/node_fills_by_block/hourly/20261110/ ./fills/20261110/`.
+2. Decompress: `lz4 -d <file>` for each file.
+3. Dry run: `node scripts/footprint/import-archive.mjs --from 2026-11-10T00:00Z --to 2026-11-11T00:00Z ./fills/20261110/*`.
+   Review the statistics and confirm there is no `PROBLEM` line.
+4. With approval, repeat with `--apply` and the production
+   `FOOTPRINT_DATABASE_URL` or `DATABASE_URL`.
 
 ## Price compatibility
 
@@ -264,8 +307,9 @@ registered in the browser, and saved styles fall back to candles. The
 
 ## Remaining work
 
-- Historical backfill from the requester-pays S3 archive (needs owner AWS
-  credentials and a format check against real files).
+- Historical backfill: the importer is prepared and tested on hand-built
+  input; a first run needs owner AWS access to the requester-pays archive and
+  a check against real files (see *Archive importer*).
 - Shift-hover magnifier and unfinished-auction markers from the Vela reference
   are not implemented.
 - A dedicated service process or instance, if production load requires it.

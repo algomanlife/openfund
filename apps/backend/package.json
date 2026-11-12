@@ -29,7 +29,7 @@
     "test:payments": "node --test test/payment-verification.test.mjs && node test/payments-admin.test.mjs",
     "test:commerce": "node --test --test-concurrency=1 test/commerce.test.mjs",
     "test:chart-workspaces": "node --test test/chart-workspaces.test.mjs",
-    "test:footprint": "node --test --test-concurrency=1 test/footprint.test.mjs"
+    "test:footprint": "node --test --test-concurrency=1 test/footprint.test.mjs test/footprint-archive.test.mjs"
   },
   "dependencies": {
     "decimal.js": "^10.6.0",
