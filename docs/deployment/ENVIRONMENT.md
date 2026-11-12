@@ -61,6 +61,8 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `PAYMENT_RECOVERY_INTERVAL_MS`, `PAYMENT_RECOVERY_MIN_AGE_S` | openfund | optional tuning of the payment recovery sweep (defaults 60000 ms / 45 s). Lower values exist only to shorten acceptance tests. |
 | `CSP_EXTRA_SCRIPT_SRC` | openfund | optional comma-separated https origins (no paths, no wildcards) added to `script-src`, for the approved DePay widget origin |
 | `CSP_EXTRA_FRAME_SRC` | openfund | optional comma-separated https origins added to `frame-src` for the approved DePay widget |
+
+The application CSP (HTML documents only) always allows `https://widgets.tradingview-widget.com` in `script-src` and `https://www.tradingview-widget.com` in `frame-src` for the terminal's News & Information tab (official TradingView Economic Calendar widget, [ADR 0025](../decisions/0025-prop-leverage-sizing-and-economic-calendar.md)). No environment variable is involved.
 | `TREASURY_WALLET_ADDRESS` | openfund | public Openfund Treasury address read by the backend scheduler. Unset = `Not configured`; allocatable capital stays `Unknown`. Never a private key or seed phrase. See [Treasury](../economy/TREASURY.md). |
 | `TREASURY_CHAIN_ID` | openfund | treasury chain id (supported: 1, 42161, 8453, 11155111, 421614); defaults to `PURCHASE_PAYMENT_CHAIN` |
 | `TREASURY_ASSETS` | openfund | JSON list of `{symbol, address \| "native", decimals, priceFeed?}`; an asset without a valid Chainlink `priceFeed` is shown unpriced and excluded from the USD total |

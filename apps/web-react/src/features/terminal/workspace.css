@@ -2,9 +2,11 @@
    event targets come from the established terminal; financial logic is unchanged. */
 :root {
   --terminal-space: 10px;
-  --terminal-control: 32px;
-  --terminal-label: 11.5px;
-  --terminal-text: 12px;
+  /* readability pass: 13px body, 12px labels, 34px controls (dense, legible) */
+  --terminal-control: 34px;
+  --terminal-label: 12px;
+  --terminal-text: 13px;
+  --terminal-figure: 14px;
   --terminal-divider: var(--line);
   --radius: 3px;
 }
@@ -36,16 +38,16 @@ body, html[dir="rtl"] body {
 }
 .market-select { height: 100%; flex-shrink: 0; padding: 0 10px; border: 0; border-right: 1px solid var(--line); }
 .market-select-btn { height: 28px; padding: 0 4px; border: 0; border-radius: 0; background: transparent; }
-.market-select-btn b { font-size: 13px; }
+.market-select-btn b { font-size: 14px; }
 .market-select .star { width: 26px; height: 26px; border: 0; }
 .market-stats, html[dir="rtl"] .market-stats {
   flex: 1; min-width: 0; height: 100%; flex-wrap: nowrap;
   gap: 0; padding: 0; margin: 0; overflow: hidden;
 }
 .stat { flex: 0 0 auto; gap: 6px; margin: 0; padding: 0 12px; height: 22px; align-items: center; border-right: 1px solid var(--line); }
-.stat dt { font-size: 10px; letter-spacing: 0; text-transform: none; }
-.stat dd, html[dir="rtl"] .stat dd { font-size: 12px; line-height: 1.4; }
-.stat[data-k="last"] dd { font-size: 14px; color: var(--mint); }
+.stat dt { font-size: 11.5px; letter-spacing: 0; text-transform: none; }
+.stat dd, html[dir="rtl"] .stat dd { font-size: 13px; line-height: 1.4; }
+.stat[data-k="last"] dd { font-size: 15px; color: var(--mint); }
 .stat[data-k="vol"] { display: none; }
 .stat[data-k="oi"], .stat[data-k="funding"], .stat[data-k="lev"] { order: 1; }
 .market-dropdown { left: 8px; right: auto; max-height: min(440px, calc(100dvh - 50px)); }
@@ -55,7 +57,7 @@ body, html[dir="rtl"] body {
   min-height: 0;
   min-width: 0;
   overflow: hidden;
-  grid-template-columns: minmax(0, 1fr) 240px 344px;
+  grid-template-columns: minmax(0, 1fr) 240px 356px;
   grid-template-rows: minmax(0, 1fr) auto;
   gap: 1px;
   border-top: 0;
@@ -84,27 +86,27 @@ body, html[dir="rtl"] body {
   border-top: 0;
 }
 .panel-tabs { height: 32px; flex-shrink: 0; padding: 0 8px; gap: 4px; align-items: stretch; }
-.panel-tabs button { font-size: 12px; padding: 0 10px; white-space: nowrap; }
+.panel-tabs button { font-size: 13px; padding: 0 10px; white-space: nowrap; }
 .panel-tabs.bt { padding: 0 8px; overflow-x: auto; }
 .resize-handle { height: 4px; flex-shrink: 0; }
 .bt-body { padding: 0; }
 .bt-table, .bt-table table { direction: ltr; }
-.bt-table th { font-size: 11px; letter-spacing: 0; text-transform: none; }
+.bt-table th { font-size: 12px; letter-spacing: 0; text-transform: none; }
 .empty-state { height: 100%; min-height: 0; padding: 12px 18px; gap: 6px; flex-direction: row; align-items: center; }
 .empty-state p { margin: 0; }
 #account-retry { padding: 0; width: 28px; height: 28px; transform: none; }
-.book-controls { height: 32px; padding: 0 8px; gap: 8px; flex-shrink: 0; font-size: 11px; }
+.book-controls { height: 34px; padding: 0 8px; gap: 8px; flex-shrink: 0; font-size: 12px; }
 .book-controls label { gap: 4px; }
 .book-controls select { height: 24px; padding: 0 3px; }
 .book-controls input { margin: 0; }
 .book-cols, .bk-row { grid-template-columns: 1.1fr 1fr 1fr; padding-inline: 8px; direction: ltr; }
-.book-cols { font-size: 10px; text-transform: none; letter-spacing: 0; flex-shrink: 0; }
+.book-cols { font-size: 11.5px; text-transform: none; letter-spacing: 0; flex-shrink: 0; }
 .book-cols span:not(:first-child), .bk-row span:not(:first-child) { text-align: right; }
 .book-view[hidden], .trades-view[hidden] { display: none !important; }
 .book-view, .trades-view { min-height: 0; overflow: hidden; }
 .book-side { overflow-y: auto; justify-content: flex-start; scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
 .book-side .bk-row, html[dir="rtl"] .book-side .bk-row span {
-  flex: 0 0 auto; line-height: 20px; font-size: 11.5px; padding-block: 0;
+  flex: 0 0 auto; line-height: 21px; font-size: 12.5px; padding-block: 0;
   font-family: Ubuntu, system-ui, sans-serif; font-variant-numeric: tabular-nums;
 }
 .book-view.dense .book-side .bk-row, html[dir="rtl"] .book-view.dense .bk-row span { line-height: 18px; }
@@ -112,59 +114,68 @@ body, html[dir="rtl"] body {
 .bk-row.a { color: var(--neg); }
 .bk-row.b { color: var(--pos); }
 .book-mid { min-height: 32px; flex-shrink: 0; padding: 4px 8px; }
-.book-mid b { font-size: 14px; }
-.book-mid span { font-size: 10px; }
-.book-note { margin: 0; padding: 6px 8px; font-size: 11px; line-height: 1.45; border-top: 1px solid var(--line); flex-shrink: 0; }
-#depth-feed-status { padding: 6px 8px; font-size: 11px; color: var(--muted); border-top: 1px solid var(--line); flex-shrink: 0; }
+.book-mid b { font-size: 15px; }
+.book-mid span { font-size: 11.5px; }
+.book-note { margin: 0; padding: 6px 8px; font-size: 12px; line-height: 1.45; border-top: 1px solid var(--line); flex-shrink: 0; }
+#depth-feed-status { padding: 6px 8px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); flex-shrink: 0; }
 .depth-unavailable { padding: 10px 8px; font-size: 12px; color: var(--muted); }
 .trades-list { padding: 4px 8px; }
-.tr-row { min-height: 20px; font-size: 11.5px; direction: ltr; }
-#acct-strip { padding: 6px var(--terminal-space); background: var(--surface-2); }
-.acct-row { gap: 8px; padding: 1px 0; line-height: 16px; }
-.acct-row > span { display: inline-flex; gap: 4px; align-items: baseline; font-size: 11px; }
-.acct-row em { margin: 0; font-size: 11px; }
-.acct-row b { font-size: 12px; margin: 0; }
-.acct-row.dim { border-top: 1px solid var(--line); padding-top: 4px; margin-top: 3px; }
-.acct-row.dim b { font-size: 10.5px; }
+.tr-row { min-height: 21px; font-size: 12.5px; direction: ltr; }
+/* Account summary: a separated panel above the order form. Labels above
+   values, tabular figures; the values themselves are unchanged. */
+#acct-strip { margin: 6px var(--terminal-space) 4px; padding: 7px 10px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-2); }
+.acct-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 4px; min-width: 0; }
+.acct-head h2 { margin: 0; font-size: 13px; font-weight: 700; color: var(--white); letter-spacing: 0; }
+.acct-mode { display: inline-flex; gap: 4px; align-items: baseline; min-width: 0; font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.acct-mode em { font-style: normal; }
+.acct-mode b { font-weight: 600; color: var(--body); overflow: hidden; text-overflow: ellipsis; }
+.acct-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px 10px; margin: 0; }
+.acct-cell { display: grid; gap: 1px; min-width: 0; }
+.acct-cell dt { font-size: 11.5px; line-height: 15px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.acct-cell dd { margin: 0; min-width: 0; }
+.acct-cell b { display: block; font-size: 13.5px; line-height: 18px; font-weight: 600; color: var(--white); font-variant-numeric: tabular-nums; direction: ltr; text-align: start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+html[dir="rtl"] .acct-cell b { text-align: right; }
+.acct-cell.primary b { font-size: 14.5px; line-height: 19px; }
+.acct-grid .acct-cell:nth-child(n+5) b { font-size: 13px; color: var(--body); }
 #account-feed-state {
   margin: 0; padding: 4px var(--terminal-space); font-size: 11px;
   line-height: 16px; color: var(--body); border-bottom: 1px solid var(--line);
 }
 .side-group { height: 32px; flex-shrink: 0; }
-.side { padding: 0 8px; font-size: 12px; }
+.side { padding: 0 8px; font-size: 14px; font-weight: 600; }
 .otype-group { height: 32px; padding: 0 var(--terminal-space); gap: 18px; align-items: stretch; border-bottom: 1px solid var(--line); }
-.ot { padding: 0 2px; font-size: 12px; }
+.ot { padding: 0 2px; font-size: 13px; }
 .lev-box { padding: 6px var(--terminal-space); border-bottom: 1px solid var(--line); }
 .lev-head { height: 18px; align-items: center; }
 .lev-head span { font-size: var(--terminal-label); letter-spacing: 0; text-transform: none; }
-.lev-val { font-size: 13px; }
+.lev-val { font-size: 15px; font-variant-numeric: tabular-nums; }
 input[type="range"] { display: block; height: 18px; margin: 2px 0; }
 .lev-presets { gap: 4px; }
-.lev-presets button { height: 24px; padding: 0; font-size: 11px; }
+.lev-presets button { height: 26px; padding: 0; font-size: 12px; font-variant-numeric: tabular-nums; }
 .form-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 8px var(--terminal-space); gap: 6px 10px; }
 .field { min-width: 0; gap: 3px; }
 .field > span, .field .lbl-row { min-height: 16px; line-height: 16px; font-size: var(--terminal-label); white-space: nowrap; }
-.field em { font-size: 10px; }
-.field input, .out { width: 100%; min-width: 0; height: var(--terminal-control); padding: 4px 8px; font-size: 13px; line-height: 22px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface-2); }
+.field em { font-size: 11.5px; }
+.field input, .out { width: 100%; min-width: 0; height: var(--terminal-control); padding: 4px 10px; font-size: var(--terminal-figure); line-height: 24px; font-variant-numeric: tabular-nums; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface-2); }
 .field input:focus-visible { outline: 1px solid var(--mint); outline-offset: 1px; }
 #price-field { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 10px; }
 #price-field:has(input:disabled) { display: none; }
 #price-field > span { white-space: normal; }
 .sizing-tools { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 24px; }
-.sizing-tools .kv { font-size: 11px; gap: 6px; }
+.sizing-tools .kv { font-size: 12.5px; gap: 6px; }
 .pct-btns { gap: 3px; }
-.pct-btns button { min-height: 24px; padding: 0 6px; font-size: 10.5px; }
+.pct-btns button { min-height: 26px; padding: 0 7px; font-size: 12px; }
 .form-grid > .field-err { grid-column: 1 / -1; }
-.field-err { font-size: 11.5px; line-height: 16px; margin: 0; overflow-wrap: anywhere; }
+.field-err { font-size: 12px; line-height: 17px; margin: 0; overflow-wrap: anywhere; }
 .risk-box {
   position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px;
   margin: 0; padding: 8px var(--terminal-space) 0;
   border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent;
 }
-.risk-box > .kv { flex-direction: column; align-items: start; gap: 1px; padding: 0; font-size: 12px; line-height: 16px; }
-.risk-box > .kv > span { font-size: 11px; color: var(--muted); }
+.risk-box > .kv { flex-direction: column; align-items: start; gap: 2px; padding: 0; font-size: 13px; line-height: 18px; }
+.risk-box > .kv > span { font-size: 12px; color: var(--muted); }
 .risk-box > .kv:has(#rk-liq) b, .risk-box > .kv:has(#rk-maxloss) b { color: var(--neg); }
-.order-details { grid-column: 1 / -1; position: relative; font-size: 11.5px; }
+.order-details { grid-column: 1 / -1; position: relative; font-size: 12.5px; }
 .order-details summary { display: flex; justify-content: space-between; align-items: center; min-height: 26px; cursor: pointer; color: var(--body); list-style: none; border-top: 1px solid var(--line); }
 .order-details summary::-webkit-details-marker { display: none; }
 .order-details[open] summary { color: var(--mint); }
@@ -173,17 +184,17 @@ input[type="range"] { display: block; height: 18px; margin: 2px 0; }
   width: 280px; padding: 10px 12px; background: var(--surface-2);
   border: 1px solid var(--line-strong); border-radius: 3px;
 }
-.order-details-content .kv { font-size: 12px; padding: 4px 0; }
-.trade-panel > .submit { margin: auto var(--terminal-space) 0; min-height: 36px; padding: 5px 12px; font-size: 13px; border-radius: 3px; flex-shrink: 0; }
+.order-details-content .kv { font-size: 13px; padding: 4px 0; }
+.trade-panel > .submit { margin: auto var(--terminal-space) 0; min-height: 40px; padding: 6px 12px; font-size: 15px; font-weight: 700; border-radius: 3px; flex-shrink: 0; }
 .submit, .submit:hover, .ghost-btn:hover { transform: none; box-shadow: none; }
 .submit.long { background: var(--mint); border-color: var(--mint); }
 .submit.short { background: var(--neg); border-color: var(--neg); }
 html[data-theme="light"] .submit:is(.long,.short) { color: #fff; }
 .submit:disabled { opacity: .4; }
-.status-bar { direction: ltr; height: 24px; min-width: 0; padding: 0 10px; gap: 14px; font-size: 10.5px; overflow: hidden; }
+.status-bar { direction: ltr; height: 24px; min-width: 0; padding: 0 10px; gap: 14px; font-size: 11.5px; overflow: hidden; }
 .sb-right { margin: 0 0 0 auto; }
 .status-bar .sb-sep { display: none; }
-.status-bar a { font-size: 10.5px; }
+.status-bar a { font-size: 11.5px; }
 #cur-pair, .stat dd, .acct-row b, .kv b, .out, .field input,
 .book-mid, .book-cols, .bk-row, .tr-row, .bt-table td {
   direction: ltr; unicode-bidi: isolate; font-variant-numeric: tabular-nums;
@@ -196,12 +207,12 @@ html[dir="rtl"] .risk-box { direction: ltr; }
 html[dir="rtl"] .field, html[dir="rtl"] .risk-box > .kv,
 html[dir="rtl"] .order-details, html[dir="rtl"] .sizing-tools .kv { direction: rtl; text-align: right; }
 html[dir="rtl"] .risk-box > .kv { align-items: stretch; }
-html[dir="rtl"] .kv b { font-family: Ubuntu, system-ui, sans-serif; font-size: 12px; line-height: 16px; }
+html[dir="rtl"] .kv b { font-family: Ubuntu, system-ui, sans-serif; font-size: 13px; line-height: 18px; }
 html[dir="rtl"] .field em { font-family: Irancell, sans-serif; }
 html[dir="rtl"] .field-err { direction: rtl; text-align: right; }
 html[dir="rtl"] .panel-tabs, html[dir="rtl"] .book-controls { direction: rtl; }
 @media (min-width: 1600px) {
-  .workspace { grid-template-columns: minmax(0, 1fr) 264px 360px; }
+  .workspace { grid-template-columns: minmax(0, 1fr) 264px 376px; }
 }
 @media (max-height: 800px) {
   :root { --terminal-control: 30px; --terminal-space: 10px; }
@@ -209,18 +220,19 @@ html[dir="rtl"] .panel-tabs, html[dir="rtl"] .book-controls { direction: rtl; }
   .lev-presets button { height: 22px; }
   .form-grid { padding-block: 6px; gap-block: 5px; }
   .risk-box { padding-top: 6px; gap-block: 4px; }
-  .acct-row.dim { padding-top: 2px; margin-top: 2px; }
+  #acct-strip { margin-block: 6px 2px; padding-block: 6px; }
+  .acct-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px 10px; }
 }
 /* Small screens use explicit view controls; the order form never becomes a
    scrolling page. At short desktop heights it uses a horizontal form layout. */
 @media (max-width: 1100px), (max-height: 635px) {
   body, html[dir="rtl"] body { grid-template-rows: 34px 32px minmax(0, 1fr) 24px; }
   .workspace-views { display: flex; gap: 0; background: var(--surface); border-bottom: 1px solid var(--line); direction: ltr; }
-  .workspace-views button { flex: 1; font-size: 12px; color: var(--muted); border-bottom: 2px solid transparent; }
+  .workspace-views button { flex: 1; font-size: 13px; color: var(--muted); border-bottom: 2px solid transparent; }
   .workspace-views button[aria-pressed="true"] { color: var(--mint); border-color: var(--mint); }
   .workspace { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); overflow: visible; }
   .workspace > * { grid-area: 1 / 1; display: none; height: auto; max-height: none; }
-  body[data-workspace-view="chart"] .chart-panel { display: flex; }
+  body[data-workspace-view="chart"] .chart-panel, body[data-workspace-view="news"] .chart-panel { display: flex; }
   body[data-workspace-view="book"] .book-panel { display: flex; }
   body[data-workspace-view="trade"] .trade-panel { display: flex; width: min(440px, 100%); justify-self: center; border-inline: 1px solid var(--line); }
   body[data-workspace-view="activity"] .bottom-panel { display: flex; }
@@ -248,7 +260,7 @@ html[dir="rtl"] .panel-tabs, html[dir="rtl"] .book-controls { direction: rtl; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
 .market-details { flex-shrink: 0; margin-left: auto; position: relative; height: 100%; }
-.market-details summary { display: flex; align-items: center; height: 100%; padding: 0 12px; cursor: pointer; list-style: none; font-size: 11px; color: var(--muted); border-left: 1px solid var(--line); }
+.market-details summary { display: flex; align-items: center; height: 100%; padding: 0 12px; cursor: pointer; list-style: none; font-size: 12px; color: var(--muted); border-left: 1px solid var(--line); }
 .market-details summary::-webkit-details-marker { display: none; }
 .market-details[open] summary { color: var(--mint); }
 .market-details-content { position: absolute; z-index: 40; top: 100%; right: 0; width: 260px; padding: 8px 0; background: var(--surface-2); border: 1px solid var(--line-strong); }
@@ -301,7 +313,7 @@ html[dir="rtl"] :is(.num, .stat dd, .bt-table td, .tr-row, .bk-row span, .book-m
   .field input, .out, .lev-val, .lev-presets button, .pct-btns button, .cnt, .review-grid b) {
   font-family: Ubuntu, Irancell, system-ui, sans-serif;
 }
-html[dir="rtl"] .bt-table td { font-size: 12.5px; line-height: 1.5; }
+html[dir="rtl"] .bt-table td { font-size: 13px; line-height: 1.5; }
 html[dir="rtl"] .acct-row > span { align-items: center; line-height: 16px; }
 html[dir="rtl"] .acct-row b { line-height: 16px; }
 
@@ -338,7 +350,7 @@ html[dir="rtl"] .review-grid > div > b { direction: ltr; unicode-bidi: isolate; 
 .review-list dd bdi { white-space: nowrap; }
 .review-list dd.up { color: var(--pos, var(--mint)); }
 .review-list dd.down { color: var(--neg); }
-.review-note { margin: 10px 0 0; font-size: 11.5px; line-height: 1.7; color: var(--muted); }
+.review-note { margin: 10px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
 .review-note b { color: var(--body, var(--white)); font-weight: 600; }
 #review-dialog .dlg-actions > button { min-width: 112px; min-height: 36px; }
 @media (max-width: 420px) {
@@ -448,8 +460,8 @@ body[data-layout="chart"] .qt {
   background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: 6px;
 }
 .qt-meta { display: flex; flex-direction: column; gap: 1px; padding-inline: 6px; min-width: 0; line-height: 1.2; }
-.qt-mode { font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
-.qt-px { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.qt-mode { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
+.qt-px { font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 700; white-space: nowrap; }
 .qt-px small { font-weight: 400; font-size: 10px; color: var(--muted); margin-inline-start: 4px; }
 .qt-px.stale { color: var(--muted); }
 .qt-btn {
@@ -468,11 +480,11 @@ body[data-layout="chart"] .qt {
 }
 html[dir="rtl"] .qt-panel { direction: rtl; text-align: right; }
 .qt-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.qt-title { font-size: 12px; }
+.qt-title { font-size: 13px; }
 .qt-title.long { color: var(--pos); } .qt-title.short { color: var(--neg); }
 .qt-close { width: 28px; height: 28px; border-radius: 4px; color: var(--muted); font-size: 18px; line-height: 1; }
 .qt-close:hover { color: var(--mint); }
-.qt-field { display: grid; gap: 4px; font-size: 11px; color: var(--muted); }
+.qt-field { display: grid; gap: 4px; font-size: 12px; color: var(--muted); }
 .qt-field input[type="text"] {
   height: 32px; padding: 0 8px; border-radius: 4px; background: var(--bg); color: var(--white);
   border: 1px solid var(--line-strong); font-size: 13px; font-variant-numeric: tabular-nums;
@@ -586,4 +598,81 @@ html[dir="rtl"] .sltp-field input { text-align: left; }
    face as every other number in RTL (ids, prices, ratios) */
 html[dir="rtl"] :is(.sltp-id, .sltp-meta bdi, .sltp-hint bdi, .pos-rr-chip bdi, .review-list dd bdi) {
   font-family: Ubuntu, Irancell, system-ui, sans-serif;
+}
+
+/* ---------- Prop ticket: leverage ceiling, sizing modes, equivalents ---------- */
+.lev-cap { flex: 1 1 auto; min-width: 0; margin: 0 8px; font-size: 12px; line-height: 16px; color: var(--muted); text-align: end; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lev-cap:empty { display: none; }
+.field-err.notice { color: var(--body); }
+.size-mode { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 2px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface-2); }
+.size-mode[hidden] { display: none; }
+.size-mode button { min-height: 26px; padding: 0 6px; border-radius: 3px; font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.size-mode button[aria-checked="true"] { background: var(--surface); color: var(--white); box-shadow: inset 0 0 0 1px var(--line-strong); font-weight: 600; }
+.size-mode button:disabled { opacity: .45; cursor: not-allowed; }
+.size-note { grid-column: 1 / -1; margin: 0; font-size: 12px; color: var(--muted); }
+.size-equiv { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 12px; margin: 0; padding: 4px 8px; border: 1px dashed var(--line); border-radius: 4px; }
+.size-equiv[hidden] { display: none; }
+.size-equiv > div { display: flex; justify-content: space-between; gap: 6px; min-width: 0; font-size: 12px; }
+.size-equiv dt { color: var(--muted); white-space: nowrap; }
+.size-equiv dd { margin: 0; min-width: 0; text-align: end; font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.size-equiv dd.na { color: var(--muted); font-size: 12px; }
+/* The ticket scrolls internally when content exceeds the panel height; the
+   primary action stays reachable at the bottom. */
+@media (min-width: 1101px) and (min-height: 636px) {
+  .trade-panel { overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+  .trade-panel > .submit { position: sticky; bottom: 0; z-index: 2; box-shadow: 0 -8px 12px var(--surface); }
+  /* inside a scrolling panel the details expand in place instead of floating out */
+  .order-details-content { position: static; width: auto; margin-top: 6px; }
+}
+
+/* ---------- News & Information (TradingView Economic Calendar) ---------- */
+.chart-panel { position: relative; }
+.chart-tabs { display: flex; gap: 2px; flex: 0 0 auto; height: 30px; padding: 0 6px; align-items: stretch; border-bottom: 1px solid var(--line); background: var(--surface); }
+html[dir="rtl"] .chart-tabs { direction: rtl; }
+.chart-tabs button { padding: 0 12px; font-size: 13px; color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap; }
+.chart-tabs button[aria-selected="true"] { color: var(--white); border-bottom-color: var(--mint); }
+.chart-tabs button:focus-visible { outline: 2px solid var(--mint); outline-offset: -2px; }
+/* overlays the chart host (never unmounts or resizes the chart) */
+.news-panel { position: absolute; inset: 30px 0 0 0; z-index: 1000; isolation: isolate; display: flex; flex-direction: column; min-height: 0; background: var(--obsidian); }
+.news-panel[hidden] { display: none; }
+.news-state { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 13px; color: var(--muted); }
+.news-state:empty { display: none; }
+.news-state[data-state="failed"] { color: var(--body); }
+.news-state small { font-size: 12px; }
+.news-spinner { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--line-strong); border-top-color: var(--mint); animation: news-spin .8s linear infinite; }
+@keyframes news-spin { to { transform: rotate(360deg); } }
+.news-host { flex: 1 1 auto; min-height: 0; padding: 0 6px 6px; }
+/* official widget, themed through its documented --tv-widget-* tokens */
+.news-host tv-economic-calendar { display: block; width: 100%; height: 100%;
+  --tv-widget-background-color: var(--obsidian); --tv-widget-popup-background-color: var(--surface);
+  --tv-widget-accent-color: var(--mint); --tv-widget-focus-outline-color: var(--mint);
+  --tv-widget-border-color: var(--line); --tv-widget-hover-background-color: var(--surface-2); }
+/* compact layouts switch with the workspace views instead of the in-panel tabs */
+@media (max-width: 1100px), (max-height: 635px) {
+  .chart-tabs { display: none; }
+  .news-panel { inset: 0; }
+}
+
+/* Account summary toggle: only shown where vertical space is short */
+.acct-toggle { display: none; width: 24px; height: 20px; padding: 0; border-radius: 4px; color: var(--muted); font-size: 12px; line-height: 1; }
+.acct-toggle:focus-visible { outline: 2px solid var(--mint); outline-offset: 1px; }
+#acct-strip[data-expanded="true"] .acct-toggle { transform: rotate(180deg); }
+@media (max-height: 800px) {
+  .acct-toggle { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+  .acct-head { margin-bottom: 2px; }
+  .acct-head h2 { font-size: 12.5px; }
+  #acct-strip:not([data-expanded="true"]) .acct-cell:not(.key) { display: none; }
+  /* collapsed: no title row; the toggle sits in the panel corner */
+  #acct-strip { position: relative; }
+  #acct-strip:not([data-expanded="true"]) .acct-head { position: absolute; inset-block-start: 4px; inset-inline-end: 6px; margin: 0; }
+  #acct-strip:not([data-expanded="true"]) .acct-head > :not(.acct-toggle) { display: none; }
+  #acct-strip:not([data-expanded="true"]) .acct-grid { padding-inline-end: 22px; }
+  /* risk summary: one line per value */
+  .risk-box { gap: 3px 12px; padding-top: 6px; }
+  .risk-box > .kv { flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 6px; min-width: 0; line-height: 17px; }
+  /* a long figure wraps under its label instead of leaving the panel */
+  .risk-box > .kv > b { min-width: 0; max-width: 100%; overflow-wrap: anywhere; text-align: end; margin-inline-start: auto; }
+  .risk-box > .kv > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .size-equiv { display: none; }
+  .size-mode button { min-height: 24px; }
 }

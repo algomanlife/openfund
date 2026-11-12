@@ -126,10 +126,16 @@ const cspList = name => (process.env[name] || '').split(',').map(v => v.trim()).
 const cspExtraScript = cspList('CSP_EXTRA_SCRIPT_SRC')
 const cspExtraFrame = cspList('CSP_EXTRA_FRAME_SRC')
 const cspWalletFrames = process.env.VITE_WALLETCONNECT_PROJECT_ID ? ' https://verify.walletconnect.org https://verify.walletconnect.com' : ''
+/* The terminal's News & Information tab embeds the official TradingView
+   Economic Calendar web component: an ES module (and its chunks) from
+   widgets.tradingview-widget.com that renders its own iframe from
+   www.tradingview-widget.com. Allowed on application documents only. */
+const CSP_TV_SCRIPT = ' https://widgets.tradingview-widget.com'
+const CSP_TV_FRAME = ' https://www.tradingview-widget.com'
 const buildCsp = (allowEval) =>
-  "default-src 'self'; script-src 'self' " + (cspExtraScript ? cspExtraScript + ' ' : '') + CSP_THEME_BOOT_HASH + (allowEval ? " 'unsafe-eval' " + CSP_LEGACY_HASHES : '') + "; style-src 'self' 'unsafe-inline'; " +
+  "default-src 'self'; script-src 'self' " + (cspExtraScript ? cspExtraScript + ' ' : '') + CSP_THEME_BOOT_HASH + (allowEval ? " 'unsafe-eval' " + CSP_LEGACY_HASHES + CSP_TV_SCRIPT : '') + "; style-src 'self' 'unsafe-inline'; " +
   "img-src 'self' data: blob: https:; connect-src 'self' https: wss:" + (cspExtraConnect ? ' ' + cspExtraConnect : '') + "; " +
-  "worker-src 'self' blob:; frame-src 'self'" + (cspExtraFrame ? ' ' + cspExtraFrame : '') + cspWalletFrames + "; frame-ancestors 'self'; " +
+  "worker-src 'self' blob:; frame-src 'self'" + (cspExtraFrame ? ' ' + cspExtraFrame : '') + cspWalletFrames + (allowEval ? CSP_TV_FRAME : '') + "; frame-ancestors 'self'; " +
   "object-src 'none'; base-uri 'self'; form-action 'self'"
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff')

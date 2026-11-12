@@ -212,7 +212,7 @@
   "en": "Trigger / Limit price <em>USD</em>"
  },
  "of.collateral": {
-  "fa": "کولترال <em>USD</em>",
+  "fa": "کولترال / وثیقه <em>USD</em>",
   "en": "Collateral <em>USD</em>"
  },
  "of.priceTh": {
@@ -236,7 +236,7 @@
   "en": "Take Profit <em>USD · optional</em>"
  },
  "rk.entry": {
-  "fa": "انتری تخمینی",
+  "fa": "نقطه ورود تخمینی",
   "en": "Est. entry"
  },
  "rk.oracle": {
@@ -320,7 +320,7 @@
   "en": "Funding"
  },
  "th.entry": {
-  "fa": "انتری",
+  "fa": "نقطه ورود",
   "en": "Entry"
  },
  "th.mark": {
@@ -456,7 +456,7 @@
   "en": "Collateral"
  },
  "rv.entry": {
-  "fa": "انتری تخمینی",
+  "fa": "نقطه ورود تخمینی",
   "en": "Est. entry"
  },
  "rv.oracle": {
@@ -516,7 +516,7 @@
   "en": "Position details"
  },
  "sltp.title": {
-  "fa": "ویرایش ریسک",
+  "fa": "مدیریت سود و ضرر",
   "en": "Modify risk"
  },
  "pos.details": {

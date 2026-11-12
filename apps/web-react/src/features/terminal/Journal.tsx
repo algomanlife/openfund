@@ -7,7 +7,7 @@ import { api, download, money, useResource } from "./model";
 import { GainsAnalytics } from "./GainsPortfolio";
 import { PnlCalendar } from "./Analytics";
 import { AccountCards, AccountPicker } from "./Accounts";
-import { JournalAnalytics } from "./JournalAnalytics";
+import { JournalAnalytics, JOURNAL_CARD_LABELS } from "./JournalAnalytics";
 import ProductPortfolio from "./Portfolio";
 const empty = () => ({
   id: crypto.randomUUID(),
@@ -555,46 +555,89 @@ export default function ProductJournal() {
     </div>
   );
 }
+const RANGES = ["7D", "30D", "90D", "YTD", "All"];
 function JournalSettings() {
+  /* A form over the existing preference model ({ range, layout, hidden })
+     and the existing GET/PUT /preferences API. Unknown fields that the
+     server may return are kept in the payload; the raw record stays
+     available as a read-only troubleshooting view. */
   const { product, context, t } = useTerminal(),
     prefs = useResource(product, "/preferences"),
-    [status, setStatus] = useState("");
+    [draft, setDraft] = useState<any>(null),
+    [status, setStatus] = useState(""),
+    [busy, setBusy] = useState(false);
   const readOnly = context?.state?.account?.status === "permanently_disabled";
+  const current = draft ?? prefs.data ?? null;
+  const hidden: string[] = Array.isArray(current?.hidden) ? current.hidden : [];
+  const edit = (patch: any) => { setDraft({ ...(current || {}), ...patch }); setStatus(""); };
+  const save = async (body: any, done: string) => {
+    setBusy(true);
+    try {
+      await api(product, "/preferences", { method: "PUT", body: JSON.stringify(body) });
+      setDraft(body);
+      setStatus(done);
+    } catch (e) {
+      setStatus((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const disabled = readOnly || busy || !current;
   return (
-    <section className="of-panel">
+    <section className="of-panel of-journal-settings">
       <AccountPicker />
-      <p>
-        {t(
-          "مرز روزهای معاملاتی: UTC. ترجیحات چیدمان و کارت‌ها در داشبورد ذخیره می‌شوند.",
-          "Trading day boundary: UTC. Dashboard layouts and card visibility are saved per account.",
-        )}
-      </p>
-      <p>
-        {t("واحد حساب", "Account currency")}:{" "}
-        {context?.state?.account?.currency || "Native protocol collateral"}
-      </p>
-      <pre>{JSON.stringify(prefs.data, null, 2)}</pre>
-      <button
-        disabled={readOnly}
-        onClick={async () => {
-          try {
-            await api(product, "/preferences", {
-              method: "PUT",
-              body: JSON.stringify({
-                range: "All",
-                layout: "comfortable",
-                hidden: [],
-              }),
-            });
-            setStatus("Preferences restored.");
-          } catch (e) {
-            setStatus((e as Error).message);
-          }
-        }}
+      <dl className="of-settings-facts">
+        <div><dt>{t("مرز روز معاملاتی", "Trading day boundary")}</dt><dd>UTC</dd></div>
+        <div><dt>{t("واحد حساب", "Account currency")}</dt><dd>{context?.state?.account?.currency || t("وثیقهٔ بومی پروتکل", "Native protocol collateral")}</dd></div>
+        <div><dt>{t("حساب انتخاب‌شده", "Selected account")}</dt><dd><bdi className="of-account-ref">{context?.accountRef || "—"}</bdi></dd></div>
+      </dl>
+      {prefs.error && <p role="alert" className="of-error">{t("دریافت تنظیمات ناموفق بود.", "Preferences could not be loaded.")}</p>}
+      <form
+        className="of-settings-form"
+        onSubmit={(e) => { e.preventDefault(); if (current) void save({ ...current, hidden }, t("تنظیمات ذخیره شد.", "Preferences saved.")); }}
       >
-        {t("بازگردانی تنظیمات نمایش", "Restore display preferences")}
-      </button>
-      {status && <p role="status">{status}</p>}
+        <fieldset disabled={disabled}>
+          <legend>{t("بازهٔ زمانی پیش‌فرض", "Default date range")}</legend>
+          <div className="of-segmented" role="radiogroup" aria-label={t("بازهٔ زمانی پیش‌فرض", "Default date range")}>
+            {RANGES.map((v) => (
+              <button type="button" role="radio" key={v} aria-checked={current?.range === v} aria-pressed={current?.range === v} onClick={() => edit({ range: v })}>{v}</button>
+            ))}
+          </div>
+        </fieldset>
+        <fieldset disabled={disabled}>
+          <legend>{t("چیدمان داشبورد", "Dashboard layout")}</legend>
+          <div className="of-settings-options">
+            {[["comfortable", "راحت", "Comfortable"], ["compact", "فشرده", "Compact"]].map(([v, fa, en]) => (
+              <label key={v}><input type="radio" name="journal-layout" value={v} checked={current?.layout === v} onChange={() => edit({ layout: v })} /> {t(fa, en)}</label>
+            ))}
+          </div>
+        </fieldset>
+        <fieldset disabled={disabled}>
+          <legend>{t("کارت‌های نمایش‌داده‌شده", "Visible cards")}</legend>
+          <div className="of-settings-options">
+            {JOURNAL_CARD_LABELS.map(([en, fa]) => (
+              <label key={en}>
+                <input type="checkbox" checked={!hidden.includes(en)} onChange={(e) => edit({ hidden: e.target.checked ? hidden.filter((v) => v !== en) : [...hidden, en] })} /> {t(fa, en)}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <div className="of-settings-actions">
+          <button type="submit" className="of-primary" disabled={disabled || !draft}>{t("ذخیرهٔ تنظیمات", "Save preferences")}</button>
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={() => void save({ ...(current || {}), range: "All", layout: "comfortable", hidden: [] }, t("تنظیمات نمایش بازگردانی شد.", "Display preferences restored."))}
+          >
+            {t("بازگردانی تنظیمات نمایش", "Restore display preferences")}
+          </button>
+        </div>
+        {status && <p role="status">{status}</p>}
+      </form>
+      <details className="of-settings-raw">
+        <summary>{t("دادهٔ خام (عیب‌یابی)", "Raw data (troubleshooting)")}</summary>
+        <pre dir="ltr">{JSON.stringify(prefs.data, null, 2)}</pre>
+      </details>
     </section>
   );
 }

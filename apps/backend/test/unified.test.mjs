@@ -163,7 +163,7 @@ test("negative equity forced settlement is atomic under concurrent opening reque
   const a = await setup();
   const p = await a.engine.submitOrder(
     a.id,
-    { ...req, margin: "90000", leverage: 100 },
+    { ...req, margin: "90000", leverage: 20 },
     "large",
   );
   a.md.injectPrice("BTC/USD", "100");
@@ -327,3 +327,27 @@ test('partial close respects base quantity precision and allocates only the clos
  near(Number(out.position.margin)+Number(st.positions[0].margin),1000,.011);near(Number(out.position.open_fee)+Number(st.positions[0].open_fee),3.5,.00011);
  assert.ok(Number(out.position.margin)<=500);
 })
+test("Prop leverage policy is enforced server-side in preview and submit", async () => {
+  const a = await setup();
+  a.md.markets.set("BTC/USD", { symbol: "BTC/USD", base: "BTC", group: "crypto", maxLeverage: 200, isOpen: true });
+  a.md.markets.set("SOL/USD", { symbol: "SOL/USD", base: "SOL", group: "crypto", maxLeverage: 150, isOpen: true });
+  a.md.markets.set("EUR/USD", { symbol: "EUR/USD", base: "EUR", group: "forex", maxLeverage: 1000, isOpen: true });
+  a.md.injectPrice("SOL/USD", "150");
+  a.md.injectPrice("EUR/USD", "1.1");
+  const order = (market, leverage) => ({ ...req, market, margin: "100", leverage });
+  await assert.rejects(() => a.engine.previewOrder(a.id, order("BTC/USD", 21)), /leverage_exceeded/);
+  await assert.rejects(() => a.engine.previewOrder(a.id, order("SOL/USD", 16)), /leverage_exceeded/);
+  await assert.rejects(() => a.engine.previewOrder(a.id, order("EUR/USD", 51)), /leverage_exceeded/);
+  assert.equal((await a.engine.previewOrder(a.id, order("BTC/USD", 20))).estimate, true);
+  assert.equal((await a.engine.previewOrder(a.id, order("SOL/USD", 15))).estimate, true);
+  assert.equal((await a.engine.previewOrder(a.id, order("EUR/USD", 50))).estimate, true);
+  /* a direct API submission above the ceiling is recorded as rejected, never filled */
+  const rejected = await a.engine.submitOrder(a.id, order("BTC/USD", 21), "lev-btc-21");
+  assert.equal(rejected.ok, false);
+  assert.equal(rejected.reason, "leverage_exceeded");
+  assert.equal((await a.engine.submitOrder(a.id, order("SOL/USD", 16), "lev-sol-16")).reason, "leverage_exceeded");
+  assert.equal((await a.engine.submitOrder(a.id, order("BTC/USD", 20), "lev-btc-20")).ok, true);
+  assert.equal((await a.engine.submitOrder(a.id, order("EUR/USD", 50), "lev-eur-50")).ok, true);
+  const st = await a.engine.state(a.id);
+  assert.deepEqual(st.positions.map((p) => p.leverage).sort((x, y) => x - y), [20, 50]);
+});

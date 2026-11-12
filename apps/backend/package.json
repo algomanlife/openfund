@@ -23,7 +23,7 @@
     "test:audit": "node --test test/audit.test.mjs",
     "test:unified": "node --test test/unified.test.mjs test/instruments.test.mjs test/unified-api.test.mjs",
     "test:referral": "node test/referral.test.mjs",
-    "test:engine": "node --test test/engine-rules.test.mjs test/engine-audit.test.mjs",
+    "test:engine": "node --test test/engine-rules.test.mjs test/engine-audit.test.mjs test/prop-leverage.test.mjs",
     "test:governance": "node --test --test-concurrency=1 test/governance-rules.test.mjs test/governance.test.mjs test/governance-http.test.mjs",
     "test:economy": "node --test test/economy-math.test.mjs test/treasury.test.mjs test/live-funding.test.mjs test/partners.test.mjs",
     "test:payments": "node --test test/payment-verification.test.mjs && node test/payments-admin.test.mjs",

@@ -159,6 +159,7 @@ const clean = async (userId) => {
     [{ market: 'NOPE/USD', side: 'long', order_type: 'market', margin: 100, leverage: 5 }, 'unknown_market', 'unknown market'],
     [{ market: MKT, side: 'long', order_type: 'market', margin: 0.5, leverage: 5 }, 'margin_too_small', 'margin below minimum'],
     [{ market: MKT, side: 'long', order_type: 'market', margin: 100, leverage: 500 }, 'leverage_exceeded', 'leverage above max (200×)'],
+    [{ market: MKT, side: 'long', order_type: 'market', margin: 100, leverage: 21 }, 'leverage_exceeded', 'BTC above the Prop ceiling (20×)'],
     [{ market: MKT, side: 'long', order_type: 'limit', margin: 100, leverage: 5 }, 'target_price_required', 'limit without target'],
     [{ market: MKT, side: 'long', order_type: 'market', margin: 999999999, leverage: 5 }, 'margin_too_large', 'margin above hard cap'],
     [{ market: MKT, side: 'long', order_type: 'market', margin: 100, leverage: 5, sl: 51000 }, 'sl_above_mark', 'SL above mark for long'],
@@ -220,13 +221,14 @@ const clean = async (userId) => {
 /* ================= 8. LIQUIDATION ================= */
 {
   marketDataPrice(MKT, '50000')
-  /* margin 100, lev 50 → notional 5000, qty 0.1; liquidation at ~10% margin = loss ≥ 90 */
-  await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'market', margin: 100, leverage: 50 }, C1, { 'Idempotency-Key': 'liq-1' })
-  marketDataPrice(MKT, '49900')   /* −0.1*100 = −10 not yet */
+  /* margin 100, lev 20 (the Prop BTC ceiling) → notional 2000, qty ≈ 0.04;
+     liquidation at ~10% margin = loss ≥ 90 (≈ a 2,250 move) */
+  await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'market', margin: 100, leverage: 20 }, C1, { 'Idempotency-Key': 'liq-1' })
+  marketDataPrice(MKT, '49000')   /* −0.04*1000 = −40 not yet */
   await new Promise(r => setTimeout(r, 1500))
   let st = await j('GET', '/trading/state', null, C1)
   ok('still open before liquidation level', st.data.positions.length === 1)
-  marketDataPrice(MKT, '49100')   /* −0.1*900 = −90 ≥ 90% of margin → liquidation */
+  marketDataPrice(MKT, '47500')   /* −0.04*2500 = −100 ≥ 90% of margin → liquidation */
   await new Promise(r => setTimeout(r, 2000))
   st = await j('GET', '/trading/state', null, C1)
   const liq = st.data.history.find(h => h.exit_reason === 'liquidation')

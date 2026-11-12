@@ -29,6 +29,8 @@ const SCRIPTS = [
   'legacy/terminal-data.js',
   'legacy/numeric-input.js',
   'legacy/position-overlay.js',
+  'legacy/prop-leverage.js',
+  'legacy/position-sizing.js',
   'legacy/terminal.js'
 ]
 const STYLES = ['legacy/terminal.css']

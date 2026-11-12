@@ -454,7 +454,7 @@ export default function Portfolio() {
                 <table className="pf-table">
                   <thead><tr>
                     <th>{t('نماد', 'Symbol')}</th><th>{t('جهت', 'Side')}</th><th>{t('باز', 'Opened')}</th>
-                    <th>{t('بسته', 'Closed')}</th><th>{t('انتری', 'Entry')}</th><th>{t('خروج', 'Exit')}</th>
+                    <th>{t('بسته', 'Closed')}</th><th>{t('نقطه ورود', 'Entry')}</th><th>{t('خروج', 'Exit')}</th>
                     <th>{t('کولترال', 'Collateral')}</th><th>{t('اهرم', 'Lev')}</th>
                     <th>{t('سود خالص', 'Net PnL')}</th><th>{t('کارمزد', 'Fees')}</th><th>{t('وضعیت', 'Status')}</th><th />
                   </tr></thead>

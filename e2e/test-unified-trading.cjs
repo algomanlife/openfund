@@ -334,7 +334,7 @@ function check(name, value) {
       side: "long",
       order_type: "market",
       margin: "95000",
-      leverage: 100,
+      leverage: 20,
     });
     await call("/internal/inject-price", { symbol: "BTC/USD", price: "100" });
     await page.waitForFunction(() => window.__ofServerTP?.canTrade === false);

@@ -18,7 +18,7 @@
     "test:depth": "node --test test/market-depth.test.mjs",
     "test:website": "node --test test/website-expansion.test.mjs test/seasonal-logo.test.mjs",
     "test:whitepaper": "node --test test/whitepaper.test.mjs",
-    "test:terminal": "node --test test/terminal-completion.test.mjs test/terminal-risk.test.mjs",
+    "test:terminal": "node --test test/terminal-completion.test.mjs test/terminal-risk.test.mjs test/position-sizing.test.mjs",
     "test:i18n": "node scripts/i18n-sources.mjs --check",
     "test:governance": "node --test test/governance.test.mjs",
     "test:chart": "node --test test/chart-quick-trade.test.mjs",

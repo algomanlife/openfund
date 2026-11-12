@@ -21,6 +21,7 @@
  */
 import crypto from 'node:crypto'
 import {instrumentSpec} from './instruments.js'
+import { propMaxLeverage } from './prop-leverage.js'
 import Decimal from 'decimal.js'
 
 import { D, SIM, feePct, spreadPct, withSpread, pnl, freshMark, positionMetrics, accountMetrics } from './trading-math.js'
@@ -451,9 +452,8 @@ export class Engine {
     try { margin=D(req.margin); leverage=D(req.leverage); target=req.target_price == null ? null : D(req.target_price); sl=req.sl == null ? null : D(req.sl); tp=req.tp == null ? null : D(req.tp) } catch { fail('invalid_numeric_input') }
     if (!['long','short'].includes(req.side) || !['market','limit','stop'].includes(req.order_type || 'market')) fail('invalid_order')
     if (!margin.isFinite() || margin.lt(SIM.MIN_MARGIN) || margin.gt('100000000')) fail('invalid_order_size')
-    const maxLev = a.type === 'challenge'
-      ? Math.min(Number(t.meta.maxLeverage || 100), Number(a.risk_policy?.plan_leverage ?? 100))
-      : Number(t.meta.maxLeverage || 100)
+    /* strictest of: market limit, Prop leverage policy, challenge plan limit */
+    const maxLev = propMaxLeverage(t.meta, req.market, a.type === 'challenge' ? (a.risk_policy?.plan_leverage ?? 100) : null)
     if (!leverage.isInteger() || leverage.lt(1) || leverage.gt(maxLev)) fail('leverage_exceeded')
     const pending = req.order_type && req.order_type !== 'market'
     if (pending && (!target?.isFinite() || target.lte(0))) fail('target_price_required')
@@ -606,6 +606,7 @@ export class Engine {
     if (
       order.leverage < 1 ||
       order.leverage > Number(t.meta.maxLeverage || 100) ||
+      order.leverage > propMaxLeverage(t.meta, order.market) ||
       (rules && rules.referenceLeverageX && order.leverage > Number(rules.referenceLeverageX))
     )
       return reject("leverage_exceeded");

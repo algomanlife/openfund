@@ -42,6 +42,8 @@ export function TradingBridge({ pricing, accountId }: { pricing?: Record<string,
       balance: n(a.balance), equity: n(a.equity), available: n(a.free_margin),
       marginUsed: Number(a.used_margin), upnl: n(a.unrealized_pnl),
       realized: Number(a.realized_pnl),
+      /* challenge plan leverage limit (stricter limits always win) */
+      planLeverage: a.risk_policy?.challenge_rules ? n(a.risk_policy.plan_leverage) : null,
       positionCount: state.positions.length, orderCount: state.orders.length
     }
 
@@ -58,6 +60,8 @@ export function TradingBridge({ pricing, accountId }: { pricing?: Record<string,
         return {
           positions: state.positions.map(p => ({
             id: p.id, market: p.market, side: p.side,
+            /* the original fill a partial-close remainder belongs to (chart markers) */
+            rootId: p.parent_position_id || p.id,
             size: Number(p.quantity), entry: Number(p.entry_price), leverage: p.leverage,
             margin: Number(p.margin), currency: state.account?.currency || 'USD', sl: p.sl_price != null ? Number(p.sl_price) : null,
             tp: p.tp_price != null ? Number(p.tp_price) : null,
@@ -77,6 +81,7 @@ export function TradingBridge({ pricing, accountId }: { pricing?: Record<string,
           })),
           history: state.history.map(h => ({
             id: h.id, market: h.market, side: h.side,
+            rootId: h.parent_position_id || h.id,
             size: Number(h.quantity), price: Number(h.exit_price),
             time: new Date(h.closed_at).getTime(),
             type: h.exit_reason === 'sl' ? 'stop-loss'

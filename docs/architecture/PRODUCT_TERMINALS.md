@@ -81,6 +81,15 @@ user choice exists. A manual toggle stores `of-theme-choice`; the legacy
 then broadcasts theme changes to the shared trading iframe and Vela chart.
 This does not override browser features that recolor the final page paint.
 
+## Prop ticket and chart additions
+
+Prop-only maximum leverage, the Collateral / Quantity / Lots sizing control,
+BUY/SELL fill markers, entry-anchored SL/TP zones and the News & Information
+tab are described in [ADR 0025](../decisions/0025-prop-leverage-sizing-and-economic-calendar.md).
+The Prop ceiling is enforced by the engine; the ticket mirrors it. Every sizing
+mode resolves to the engine's existing `{ margin, leverage }` order. Perpetual
+keeps the market's own leverage limit and no sizing control.
+
 ## Locale availability
 
 The English browser experience exposes Prop only. EN Perpetual routes redirect to
