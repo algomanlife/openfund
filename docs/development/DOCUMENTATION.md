@@ -14,7 +14,7 @@ Current documentation screenshots use the English UI. Native controls may show a
 
 A capability change updates product documentation, feature status, milestone status/dependencies and affected architecture/integration contracts. Material changes add a changelog entry. Significant UI changes refresh screenshots from the current build and update `manifest.json`; do not fabricate states, overlay fake balances or expose personal wallets.
 
-New environment variables update the owning Blueprint service, environment register and example file. Preserve the three Render resources and same-origin `/react/`. New validation requirements update CI in the same PR.
+New environment variables update the owning Blueprint service, environment register and example file. Preserve the three Render resources and same-origin app hosting. New validation requirements update CI in the same PR.
 
 ## Asset workflow
 
@@ -40,7 +40,7 @@ Local link/image checks include repository-root and relative paths, fragments, H
 - missing required documents (README, CONTRIBUTING, SECURITY, CHANGELOG,
   THIRD_PARTY_NOTICES, payment, deployment, operations, licensing and
   governance references, PR and issue templates);
-- README sections that are missing from the 38 required entry-point sections;
+- README sections that are missing from the 12 required entry-point sections (and the 29 engineering-reference sections);
 - `render.yaml` environment variables not documented in
   `docs/deployment/ENVIRONMENT.md`;
 - a changelog whose first section is not `Unreleased`.

@@ -9,7 +9,7 @@
 | React | 19.3.1 | UI runtime (app shell, hash routing pages) | Active | MIT |
 | React DOM | 19.3.1 | DOM renderer | Active | MIT |
 | TypeScript | 7.0.2 (6.0.3 JS API for the docs scanner) | Type-safe app source | Active | Apache-2.0 |
-| Vite | 8.3.8 | Dev server + bundler (`react/` output, base `/react/`) | Active | MIT |
+| Vite | 8.3.8 | Dev server + bundler (`react/` output, base `/`) | Active | MIT |
 | react-router-dom | 7.18.5 | Hash router (locale/product hash routes and compatibility redirects) | Active | MIT |
 
 ## Backend (apps/backend)
@@ -66,7 +66,7 @@ Notes:
 
 | Technology | Role | Status |
 | :--- | :--- | :--- |
-| Node same-origin hosting | API + built React at `/react/`; Vite for local development | Active |
+| Node same-origin hosting | API + built React at `/` (`/react/` redirects); Vite for local development | Active |
 | Playwright (playwright-core 1.64) | Browser acceptance for routes, wallets, accounts, purchases, charts and public presentation; results belong to their recorded source/runtime checkpoints | Active (test) |
 | GitHub (branches `qwen/*`, `codex/*`, PR review) | Agent collaboration workflow | Active |
 

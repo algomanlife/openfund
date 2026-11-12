@@ -56,7 +56,7 @@ python3 apps/backstage/scripts/seed_content.py   # idempotent, never overwrites 
 ## 5 — React
 
 ```bash
-cd apps/web-react && npm run dev    # http://localhost:5173/react/#/
+cd apps/web-react && npm run dev    # http://localhost:5173/
 ```
 
 Optional `apps/web-react/.env`: `VITE_DIRECTUS_URL=http://localhost:8055`.

@@ -75,7 +75,7 @@ Three Render resources share a region. Blueprint apply and deployed acceptance r
 ```mermaid
 flowchart TB
   Git[GitHub reviewed main] --> Build[Render openfund build]
-  Build --> Web[React assets at /react/]
+  Build --> Web[React assets at site root]
   Build --> API[Node API one process]
   API --> Migrate[Additive schema migration at startup]
   Migrate --> DB[(openfund-db PostgreSQL 17)]
