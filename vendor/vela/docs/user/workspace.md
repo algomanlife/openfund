@@ -148,13 +148,50 @@ chart over the grid, and the stop lights up as an inverse chip whenever somethin
 isolated — the chart itself, or a pane inside it (a double-tap in the plot maximizes
 a pane). Tapping the lit stop restores the view.
 
+### A timeframe the source never serves
+
+When a cell's data source refuses the requested timeframe for good — a monthly economic
+series asked for hourly bars, which a provider signals with a `DataUnavailableError` (see
+[Adding a data provider](../contributing/adding-a-data-provider.md#failures-transient-or-permanent))
+— the cell switches to the timeframe the source suggests (its `default`, else its `finest`)
+and a toast says so: *GDP is not available at 1h. Showing 1D instead.* The timeframe the user
+asked for stays the cell's own:
+
+- `cell.requestedTimeframe` reads it, the saved state keeps it, and the `timeframe` sync link
+  shares it, never the fallback.
+- The next symbol that serves it runs it again.
+- `cell.timeframe`, the topbar and the status line show the timeframe the chart runs.
+- Picking a timeframe by hand (the topbar, a range chip, `ctx.setTimeframe`) makes it the
+  requested one, the fallback included.
+
+A source that suggests no other timeframe gets an error toast, and the chart keeps the
+timeframe as set. The cell never chains switches: a refused fallback is only reported.
+
+### A style the symbol's data cannot draw
+
+A symbol whose source has one value per bar (`SymbolInfo.ohlc: false`, an economic series;
+see [Adding a data provider](../contributing/adding-a-data-provider.md)) has nothing to show in
+candles, bars or Heikin Ashi, nor in a plugin chart type whose `supports` rules it out. On such
+a symbol the cell draws a line instead, and the style menus (the topbar, the mobile drawer, the
+chart settings dialog) show those styles greyed out, with a tooltip saying why. The style the
+user chose stays the cell's own:
+
+- `cell.requestedPriceStyle` reads it, and the saved state keeps it.
+- The next symbol that can draw it shows it again.
+- `cell.priceStyle`, the topbar and the status line show the style the chart draws;
+  `cell.unavailablePriceStyles()` lists the greyed ids.
+- Picking a style by hand on such a symbol (a line, an area…) makes it the cell's style.
+
+Nothing is greyed while the symbol's facts are still loading, or when its source states none.
+
 ## Sync links
 
 Per kind — `viewport`, `symbol`, `timeframe`, `crosshair`, `drawings`, `style` — link
 every cell (`true`) or named groups keyed by cell IDENTITY (`{ btc: 'a', eth: 'a',
 sol: 'b' }`: only same-group cells follow each other). Cross-timeframe viewport groups
 align on the **right edge** (a finer-timeframe cell clamps the window to its own
-minimum zoom).
+minimum zoom). The `timeframe` link carries each cell's requested timeframe, never one a
+source forced on a cell ([A timeframe the source never serves](#a-timeframe-the-source-never-serves)).
 
 `crosshair` mirrors the pointer's TIME onto same-group cells as a **ghost crosshair**
 (a dimmed vertical line snapped to each follower's own bar, with its time chip);
@@ -172,15 +209,24 @@ at completion). Link membership is session-scoped and survives a toggle-off: tur
 the link off freezes create/edit/delete propagation (and clears placement ghosts) but
 keeps the in-memory pairs, so re-enabling resumes edit/delete for drawings that were
 linked earlier in the session. Drawings created while the link was off stay
-independent — re-enabling never copies or pairs them. A reload (or `applyState`)
-drops the pairs, so previously synced drawings are independent again.
+independent — re-enabling never copies them onto peers.
+
+The pairs themselves are not saved. When the link is on after a reload (or
+`applyState`), drawings with identical content (type, pane, anchors, style, text and
+per-type settings) on same-group cells are linked again, so drawings synced in an
+earlier session keep moving, restyling and deleting together, in documents saved by
+any version. Identical duplicates pair one to one, in each cell's drawing order. A
+copy edited while the link was off no longer matches and stays independent. Turning
+the link on applies the same rule to the drawings on screen, on top of the pairs
+already made in the session, so drawings restored while the link was off link once
+it comes on.
 
 Cells a later layout change adds to a linked group arrive with every drawing of the
 active cell (or of another group member when the active cell is outside the group),
 including drawings made while the link was off or on a one-chart layout. The copies
 are linked like any synced drawing and add no undo steps on the new cell. A cell
 returning to the grid refreshes the linked copies it already holds instead of
-duplicating them.
+duplicating them; copies it restored from a saved document link by content first.
 
 `style` mirrors the chart's presentation across same-group cells: the settings
 dialog's **Symbol** tab looks (candle body, border and wick colors, the bar, line,
@@ -675,6 +721,34 @@ pin your own action in its place (`right: ['actions', 'alerts', 'panels',
 'mytool.screenshot.open']`), and the contributed dropdown sits exactly where the
 built-in button was.
 
+## The sidebar
+
+`sidebar: true` adds a toolbar along the shell's right edge, beside the topbar, the charts
+and the bottom bar, so the shell has a toolbar on every side. It is off by default; a shell
+without it keeps its layout exactly as before.
+
+```ts
+new VelaWorkspace('#chart', {
+    sidebar: true, // or { top: [...], bottom: [...] }
+});
+```
+
+- **It takes over the side-panel toggles.** On the desktop layout the panel buttons
+  (object tree, data window, every contributed panel) move from the topbar to the sidebar;
+  they stay in step with the dock either way.
+- **Plugins add their own entries** with `registerWidgetAction({ target: 'sidebar', … })`
+  (see the [plugin SDK](../contributing/plugin-sdk.md#the-sidebar)).
+- **Its layout is declarative**, like the topbar's: `{ top, bottom }` list the entries of the
+  upper section (from the top edge down) and of the lower section (anchored to the bottom
+  edge). Entries are panel ids (`'objects'`, `'dataWindow'`, a `registerSidePanel` id),
+  sidebar action ids, the flow slots `'panels'` and `'actions'` (everything of that kind not
+  listed elsewhere, in order) and `'|'` for a separator. An undeclared section keeps its
+  default: `top: ['panels']`, `bottom: ['objects', 'dataWindow', '|', 'actions']`.
+- **Desktop only.** On the mobile layout the sidebar is hidden: the panels keep their rows
+  in the three-dots menu, and the sidebar actions join them there.
+- It sits outermost on the right, outside full-height `placement: 'column'` panels and any
+  element a plugin docks at the edge.
+
 ## Mobile
 
 In a container narrower than ~640px (or up to ~920px with a coarse pointer — a
@@ -745,8 +819,8 @@ Three levels, shallow to deep:
 3. **Contributed actions** — plugins and hosts add topbar buttons and context-menu items
    as data descriptors via
    [`registerWidgetAction`](../contributing/plugin-sdk.md#widget-actions--registerwidgetaction);
-   the kit's primitives (`Dialog`, `Drawer`, `Menu`, `Tooltip`, `Popover`, `Switch`,
-   `Select`, `NumberInput`, `TextField`, `ColorField` / `buildColorPicker`,
+   the kit's primitives (`Dialog`, `Drawer`, `DropdownMenu`, `Tooltip`, `Popover`, `Checkbox`,
+   `Select`, `NumberInput`, `Input`, `ColorField` / `buildColorPicker`,
    `KeymapManager`) are exported from `@luxalgo/vela/ui` for building your own panels against
    the headless core. Form controls share `md` (settings dialogs: 34px fields, hover
    steppers, chip colors) and a compact `sm` size so a host panel can match either

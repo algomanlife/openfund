@@ -82,7 +82,9 @@ try {
     const settings = frame.getByRole('dialog');
     await settings.waitFor();
     // A real Pine input edit through the existing settings dialog.
-    const sensitivity = settings.locator('input[type="number"]').first();
+    // Numeric Pine inputs are spinbuttons: a native number input on Vela 0.9,
+    // Zag's text-based number input with role="spinbutton" on Vela 0.10+.
+    const sensitivity = settings.getByRole('spinbutton').first();
     const before = await sensitivity.inputValue();
     await sensitivity.fill(String(Number(before) + 1));
     await sensitivity.press('Tab');

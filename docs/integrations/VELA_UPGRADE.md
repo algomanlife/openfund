@@ -1,6 +1,6 @@
 # Vela upgrade protection
 
-Procedure for moving the vendored LuxAlgo Vela, its Pine addon and PineTS to a newer version **without** replacing Openfund's modified chart, branding, indicators or terminal behaviour. Vela is not upgraded by this change; it is pinned at 0.9.3 until a version is separately reviewed and approved.
+Procedure for moving the vendored LuxAlgo Vela, its Pine addon and PineTS to a newer version **without** replacing Openfund's modified chart, branding, indicators or terminal behaviour. Vela is pinned to an exact reviewed version (currently 0.10.6).
 
 Inventory of record: [Upstream dependency registry](UPSTREAM_REGISTRY.md). Patches and rollback limits: [Upstream isolation and patch registry](UPSTREAM_DEPENDENCIES.md). Integration description: [Vela chart integration](VELA.md).
 
@@ -48,15 +48,16 @@ Each row is protected by a guard in [`infra/upstream/customizations.json`](../..
 
 `@luxalgo/vela-pinets` and `pinets` are npm dependencies pinned to exact versions in `apps/web-react/package.json`. After changing either: run `node scripts/build-charts.mjs` (it throws if the worker marker moved), `npm run test:charts`, and `test:browser:charts`. Both packages are AGPL-3.0; keep the licence copies and the corresponding-source availability intact. Remove OF-BUILD-001 only after proving the nested-request bug is fixed upstream.
 
-## Current assessment of Vela 0.10.4
+## Upgrade to Vela 0.10.6 (2026-11-12)
 
-Observed 2026-11-10 with the report tool, not adopted:
+Previous assessment (0.10.4, 2026-11-10) stopped on one conflict: OF-VELA-001 patched `src/ui/components/menu/styles.ts`, which 0.10.x removed, and the 0.10.x changelog says open menus now stay above the chart. The 0.10.6 upgrade therefore:
 
-- Version class minor on a 0.x line, classified high risk.
-- 167 files added, 68 removed, 141 modified; new required package `@luxalgo/vela-ui` 0.4.0; dependency fields changed.
-- Upstream changed two files that Openfund patches. OF-VELA-001 **does not apply** (the menu stylesheet file no longer exists; the changelog says menus now stay above the chart). The other two patches re-apply cleanly.
-- The run exits 2 and writes nothing. A separate, reviewed change is needed to port the patches, rebuild, and pass the browser regression.
+1. Retired OF-VELA-001: reverse-applied to the vendored tree, patch file and registry entry removed.
+2. Ran `npm run update:vendor -- --provider vela --to v0.10.6 --apply`: vendored tree proven identical to v0.9.3 plus the registered patches, 178 files added, 68 removed, 173 modified, OF-VELA-002 and OF-VELA-003 re-applied cleanly, no `LICENSE` or `NOTICE` change.
+3. Pinned `@luxalgo/vela` 0.10.6 (adds `@luxalgo/vela-ui` 0.4.1) and `@luxalgo/vela-pinets` 0.3.4 in `apps/web-react`.
+4. Re-anchored OF-BUILD-001: vela-pinets 0.3.4 renamed the minified worker identifiers (indicator class `Nr` to `Dr`, worker entry `y0` to `q0`). `build-charts.mjs` now finds both structurally and still throws unless each matches exactly once. PineTS is unchanged at 0.13.1, so the wrapper is still required.
+5. Rebuilt the chart bundles and the web build, then ran the regression set. Results are recorded in the pull request.
 
-Vela is therefore left at 0.9.3.
+The upgrade needs human review before merge, as with every 0.x minor.
 
 [Upstream dependency registry](UPSTREAM_REGISTRY.md) · [Patch registry](UPSTREAM_DEPENDENCIES.md) · [Vela integration](VELA.md) · [ADR 0019](../decisions/0019-upstream-isolation.md)

@@ -18,14 +18,14 @@ Application code does not import vendored source directly (checked by `npm run c
 
 | Dependency | Integration, verified in code | Modified upstream source? |
 | :--- | :--- | :--- |
-| LuxAlgo Vela | `vendor/vela` is upstream tag **v0.9.3** (commit `57d011a`). `scripts/build-charts.mjs` bundles `packages/openfund-charts/src/workspace-entry.ts` against it into `apps/web-react/public/assets/vela-workspace.global.min.js`. The bundle is byte-reproducible. | **Yes, three files**, registered below |
-| Vela Pine addon and PineTS | npm `@luxalgo/vela-pinets` 0.3.2 and `pinets` 0.13.1 in `apps/web-react`. The addon's embedded worker is extracted and wrapped at build time into `openfund-pine-worker.min.js`. | No source edit; one build-time wrapper, registered |
+| LuxAlgo Vela | `vendor/vela` is upstream tag **v0.10.6** (commit `f676986`). `scripts/build-charts.mjs` bundles `packages/openfund-charts/src/workspace-entry.ts` against it into `apps/web-react/public/assets/vela-workspace.global.min.js`. The bundle is byte-reproducible. | **Yes, two files**, registered below |
+| Vela Pine addon and PineTS | npm `@luxalgo/vela-pinets` 0.3.4 and `pinets` 0.13.1 in `apps/web-react`. The addon's embedded worker is extracted and wrapped at build time into `openfund-pine-worker.min.js`. | No source edit; one build-time wrapper, registered |
 | Gains Network API | `apps/backend/market-data.js` (engine price stream) and `packages/openfund-gains-adapter` (browser chart and markets). Hosted API, no version. | n/a |
 | Gains Network SDK | `vendor/gains-sdk` is byte-identical to upstream commit `aa7a05a` (package 1.8.10). No application code imports it; market and wallet reads use the public API. | No |
 | LuxAlgo Trade Journal | **Integrated, partially.** Only `packages/core` (`@luxalgo/journal-core`) is vendored. `apps/backend/portfolio.js` imports its compiled bundle for Portfolio analytics. The upstream web app and importers are not used. | No (byte-identical sources, committed build output) |
 | Directus | `docker.io/directus/directus:11.9.1` in `render.yaml`; schema and seeders in `apps/backstage/scripts`. | No |
 
-Direct modification of upstream source exists in exactly one place: three files of `vendor/vela`. This was established by diffing the vendored tree against `git archive` of the upstream tag, and the repository re-proves it on every update (`update-vendor.mjs` refuses to run unless the vendored tree equals "upstream at the installed ref plus the registered patches").
+Direct modification of upstream source exists in exactly one place: two files of `vendor/vela`. This was established by diffing the vendored tree against `git archive` of the upstream tag, and the repository re-proves it on every update (`update-vendor.mjs` refuses to run unless the vendored tree equals "upstream at the installed ref plus the registered patches").
 
 ## Patch registry
 
@@ -33,12 +33,11 @@ Source of truth for modifications: [`infra/upstream/patches.json`](../../infra/u
 
 | ID | Applies to | Reason | Regression test |
 | :--- | :--- | :--- | :--- |
-| OF-VELA-001 | Vela 0.9.3, `ui/components/menu/styles.ts` | Menu positioner lost its z-index after hover, so the canvas swallowed timeframe and style clicks | `npm run test:browser:charts` |
-| OF-VELA-002 | Vela 0.9.3, `widget/indicator-picker.ts` | Native indicators must not carry a VELA badge (branding); attribution is carried by the terminal notice | `npm run test:browser:charts` |
-| OF-VELA-003 | Vela 0.9.3, `workspace/ChartCell.ts` | Proprietary studies precede the built-in indicators in the picker | `npm run test:browser:charts` |
-| OF-BUILD-001 | `@luxalgo/vela-pinets` 0.3.2 with `pinets` 0.13.1 (build time) | PAC's nested `getTFData` request needs full secondary execution | `npm run test:charts` |
+| OF-VELA-002 | Vela 0.10.6, `widget/indicator-picker.ts` | Native indicators must not carry a VELA badge (branding); attribution is carried by the terminal notice | `npm run test:browser:charts` |
+| OF-VELA-003 | Vela 0.10.6, `workspace/ChartCell.ts` | Proprietary studies precede the built-in indicators in the picker | `npm run test:browser:charts` |
+| OF-BUILD-001 | `@luxalgo/vela-pinets` 0.3.4 with `pinets` 0.13.1 (build time) | PAC's nested `getTFData` request needs full secondary execution | `npm run test:charts` |
 
-Upstream has since moved: Vela 0.10.4's own changelog says open menus now stay above the chart, and the file OF-VELA-001 patches no longer exists there. When Vela is next reviewed, retire OF-VELA-001 first.
+Retired: OF-VELA-001 (menu positioner z-index, Vela 0.9.3). Vela 0.10.x keeps open menus above the chart and the patched file no longer exists. It was removed with the 0.10.6 upgrade on 2026-11-12; `npm run test:browser:charts` (timeframe and style menu clicks after hover) is the regression evidence.
 
 ## Providers
 
@@ -46,20 +45,20 @@ Each section is the registry row in readable form. Rollback limits are what a ro
 
 ### LuxAlgo Vela (vendored source)
 
-- **Installed:** 0.9.3 (`57d011a`), vendored 2026-10-31. **Observed:** 0.10.4 (2026-11-10), **not reviewed**.
+- **Installed:** 0.10.6 (`f676986`), vendored 2026-11-12 with the controlled update tool. **Observed:** 0.10.6 (2026-11-12), reviewed.
 - **Source and licence:** <https://github.com/LuxAlgo/Vela>; Apache-2.0 plus a NOTICE that requires a visible attribution on every screen that shows a chart.
 - **Integration path:** `packages/openfund-charts`, `scripts/build-charts.mjs`, `apps/web-react/public/legacy/vela-bridge.js`.
 - **Openfund customisations:** see [Vela upgrade protection](VELA_UPGRADE.md#openfund-customisations-that-an-update-must-not-touch).
-- **Compatibility status:** pinned and verified at 0.9.3. 0.10.4 is **not** a drop-in: 167 files added, 68 removed, 141 modified, a new `@luxalgo/vela-ui` dependency, and a patch conflict (see the upgrade page).
+- **Compatibility status:** candidate 0.10.6, awaiting human review. From 0.9.3: 178 files added, 68 removed, 173 modified, a new `@luxalgo/vela-ui` 0.4.1 dependency; OF-VELA-001 retired, the other two patches re-apply cleanly (see the upgrade page).
 - **Tests:** `npm run test:upstream`, `npm run test:charts`, `npm run test:browser:charts`, `npm run test:browser:layout`.
 - **Upgrade instructions:** [VELA_UPGRADE.md](VELA_UPGRADE.md).
 - **Rollback limits:** a git revert restores the source and bundle. Saved chart settings in browser `localStorage` (`of-chart-v2-<product>`) are not migrated by Openfund, so a settings-schema change in Vela can discard a user's saved layout either way.
 
 ### Vela Pine addon and PineTS (npm)
 
-- **Installed:** `@luxalgo/vela-pinets` 0.3.2 (observed 0.3.3, not reviewed); `pinets` 0.13.1 (current).
+- **Installed:** `@luxalgo/vela-pinets` 0.3.4 (current); `pinets` 0.13.1 (current).
 - **Licence:** AGPL-3.0. Corresponding source must remain available with the distributed bundle; licence copies ship under `assets/notices/`.
-- **Customisation:** OF-BUILD-001. The build throws if the worker marker moves, so an update cannot silently drop the wrapper.
+- **Customisation:** OF-BUILD-001. The build locates the worker entry and the indicator class structurally (minified names changed from 0.3.2 to 0.3.4) and throws unless each matches exactly once, so an update cannot silently drop the wrapper.
 - **Tests / instructions:** `npm run test:charts`; [VELA_UPGRADE.md](VELA_UPGRADE.md#pine-addon-and-pinets).
 - **Rollback limits:** lockfile revert and rebuild; indicator output must be compared against reference values again.
 

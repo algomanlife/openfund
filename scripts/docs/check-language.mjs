@@ -2,7 +2,9 @@ import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { files, upstream } from './files.mjs'
 const require = createRequire(new URL('../../apps/web-react/package.json', import.meta.url))
-const ts = require('typescript')
+/* TypeScript 7 (the compiler used by `npm run typecheck`) no longer ships the
+   stable JavaScript API; this scanner uses the pinned 6.x API alias. */
+const ts = require('typescript-js-api')
 // Persian/Arabic letters and numerals are preserved inside application strings,
 // but cannot appear in first-party documentation or explanatory prose.
 const nonEnglish = /[\u0600-\u06ff\u0750-\u077f\u08a0-\u08ff\ufb50-\ufdff\ufe70-\ufeff]/u
