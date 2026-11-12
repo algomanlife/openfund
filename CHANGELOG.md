@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Payments: [activation checklist](docs/payments/ACTIVATION.md) records the
+  production state verified on 2026-11-12 (`paymentsEnabled: false`; no
+  complete settlement chain, widget URL, SRI hash or CSP origins configured;
+  DePay endpoints closed by design). Documentation only.
+
 - Community, footer, platform motion and responsive navigation (branch
   `agent/claude/community-motion-responsive-ui`):
   - Community: Telegram is the only public community action (home, hero,

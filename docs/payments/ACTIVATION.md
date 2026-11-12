@@ -16,6 +16,42 @@ necessary, not sufficient.
 | DePay server callback hint | Implemented; **awaiting real-network acceptance** (signature format is verified only against locally generated keys) |
 | Refund execution | Not automated by design; manual with recorded adjustment |
 
+## Production state (verified 2026-11-12)
+
+Read-only checks against `https://openfi.cloud` and `https://openfund.cloud`
+(both serving `4e1ca3d`, deployed manually 2026-11-12 06:14 UTC) and the
+Render service `openfund` (variable **names** and whether a value is set; no
+value was printed or changed):
+
+| Check | Result |
+| --- | --- |
+| `GET /purchases/plans` | `paymentsEnabled: false`, `payment: null` |
+| `/runtime-config.js` | `depayWidget: false`, empty `depayWidgetUrl`, `depayWidgetIntegrity`, `depayIntegrationId` |
+| `POST /purchases/depay/configuration`, `/callback`, `/events` (unsigned) | `404 not_found`: by design, these stay closed until at least one settlement chain is complete |
+| Set on Render | `DEPAY_CONFIG_PRIVATE_KEY`, `DEPAY_VERIFY_PUBLIC_KEY`, `VITE_DEPAY_INTEGRATION_ID`, `PURCHASE_PAYMENT_CHAIN=42161`, `PURCHASE_PAYMENT_DECIMALS`, `PURCHASE_LATE_GRACE_MINUTES` |
+| **Not set on Render** | `PURCHASE_PAYMENT_CHAINS`, `PURCHASE_RPC_URLS`, `PURCHASE_PAYMENT_RECEIVER`, `PURCHASE_PAYMENT_TOKEN`, `PURCHASE_RPC_URL`, `PURCHASE_ROUTER_ADDRESSES`, `VITE_DEPAY_WIDGET`, `VITE_DEPAY_WIDGET_URL`, `VITE_DEPAY_WIDGET_INTEGRITY`, `CSP_EXTRA_SCRIPT_SRC`, `CSP_EXTRA_FRAME_SRC`, `VITE_WALLETCONNECT_PROJECT_ID` |
+| `PURCHASE_PAYMENT_MIN_CONFIRMATIONS` | declared but empty (production default 12 applies) |
+
+Consequences:
+
+- No settlement chain is complete (no receiver, token or RPC), so purchases
+  and the DePay endpoints are off. This, not application code, is why
+  Challenge purchases do not work in production.
+- With only the legacy `PURCHASE_PAYMENT_CHAIN=42161` and no
+  `PURCHASE_PAYMENT_CHAINS`, an activation would be single-chain (Arbitrum
+  One). Set `PURCHASE_PAYMENT_CHAINS` to offer the intended networks; wallet
+  sign-in stays Arbitrum One regardless.
+- Without the CSP variables the approved widget bundle cannot load even after
+  `VITE_DEPAY_WIDGET_*` are set.
+- Without `VITE_WALLETCONNECT_PROJECT_ID` only browser-extension (injected)
+  wallets can connect; mobile WalletConnect wallets cannot reach checkout.
+
+Local acceptance on the same code (Node 22, isolated database, stub widget,
+mock chain): `test:browser:purchase` 17 passed, `test:browser:depay` 31
+passed, `test:browser:wallet` 32/32. A wallet network change does not end the
+SIWE session (`useOpenfundSession` logs out only on disconnect or an address
+change). No real payment has been made; gate 3 below is still open.
+
 ## Owner-controlled configuration
 
 | Item | Where |
