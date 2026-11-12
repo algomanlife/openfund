@@ -12,9 +12,16 @@ const addon = await readFile(addonPath, 'utf8');
 const embedded = addon.match(/^var worker_default = (.+);$/m);
 if (!embedded) throw new Error('Pine addon changed: review the worker extraction');
 const worker = vm.runInNewContext(embedded[1]);
-const marker = 'var y0=self';
-if (worker.split(marker).length !== 2 || !worker.includes('Nr.from(t)')) throw new Error('Pine worker changed: review compatibility insertion');
-const patchedWorker = worker.replace(marker, `(${installPineCompatibility.toString()})(Nr);${marker}`);
+/* Minified identifiers change between addon releases (0.3.2: Nr / y0, 0.3.4:
+   Dr / q0), so both anchors are located structurally. Each must match exactly
+   once, otherwise the build stops and the insertion is reviewed by hand. */
+const markers = [...worker.matchAll(/var (\w+)=self,/g)];
+const indicators = [...worker.matchAll(/[,;](\w+)=class \w+\{constructor\(e,n=\{\}\)\{\w+\(this,"source"\),\w+\(this,"inputs"\),\w+\(this,"_prepared",null\)/g)];
+if (markers.length !== 1 || indicators.length !== 1) throw new Error('Pine worker changed: review compatibility insertion');
+const marker = `var ${markers[0][1]}=self`;
+const indicator = indicators[0][1];
+if (worker.split(marker).length !== 2 || !worker.includes(`${indicator}.from(t)`) || !/\bprepare\(/.test(worker)) throw new Error('Pine worker changed: review compatibility insertion');
+const patchedWorker = worker.replace(marker, `(${installPineCompatibility.toString()})(${indicator});${marker}`);
 const workerAsset = 'assets/openfund-pine-worker.min.js';
 await writeFile(path.join(root, `apps/web-react/public/${workerAsset}`), patchedWorker);
 await build({

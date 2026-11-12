@@ -68,7 +68,8 @@ test('a registered patch stops reverse-applying when upstream content replaces t
   const root = scratch()
   try {
     const file = 'vendor/vela/src/widget/indicator-picker.ts'
-    const patchRel = 'infra/upstream/patches/vela-0.9.3/0002-indicator-picker-no-vela-badge.patch'
+    /* the registered OF-VELA-002 patch file, wherever the current Vela version keeps it */
+    const patchRel = JSON.parse(readFileSync(path.join(real, 'infra/upstream/patches.json'), 'utf8')).patches.find((p) => p.id === 'OF-VELA-002').patch_file
     put(root, patchRel, readFileSync(path.join(real, patchRel), 'utf8'))
     put(root, 'package.json', JSON.stringify({ scripts: { 'test:browser:charts': 'x' } }))
     const patches = { patches: [{ id: 'T', kind: 'source', files: [file], patch_file: patchRel, reason: 'r', affected_version: '0.9.3', removal_condition: 'c', regression_tests: ['npm run test:browser:charts'], guard: { file, contains: 'badgeText = r.native ? undefined' } }] }
