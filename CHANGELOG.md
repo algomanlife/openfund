@@ -9,6 +9,8 @@
   stable at that stage under a Render-equivalent CPU quota; first bottleneck is
   per-stream SSE database polling on the 10-connection pool and the serial
   engine loop. No application code changed.
+  Harness dependencies pinned to patched `ws` 8.22.2 and `viem` 2.57.16
+  (GHSA-96hv-2xvq-fx4p); k6 dashboard HTML exports are no longer committed.
 
 - Production fix and terminal refinement (branch
   `agent/claude/production-fix-ui-refinement`):

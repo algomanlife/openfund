@@ -349,7 +349,9 @@ contaminated by a throttler left running from the previous run.
 ## Files
 
 - `results/<run>/summary.json` — per-stage tables used above
-- `results/<run>/k6-*-summary.json`, `k6-*-dashboard.html` — k6 raw summaries and dashboards
+- `results/<run>/k6-*-summary.json` — k6 raw summaries (the `k6-*-dashboard.html` exports that
+  `run.sh` writes stay local: they embed k6's third-party dashboard bundle and add no data beyond
+  the summaries, `series.json` and graphs)
 - `results/<run>/sse.jsonl`, `backend-metrics.jsonl`, `monitor.jsonl` — 1–2 s time series
 - `results/<run>/pg-statements.json`, `pg-slow.log`, `integrity.json`, `sltp-latency.json`, `STOP`
 - `graphs/<run>/*.svg` — streams, CPU, event loop, pool queue, PostgreSQL TPS, SSE gap and market-data delay, engine loop
