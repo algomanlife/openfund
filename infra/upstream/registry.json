@@ -37,10 +37,10 @@
         "never_auto_merge": true
       },
       "compatibility": {
-        "status": "candidate-unreviewed",
-        "evidence": "update-vendor --apply ran; regression suite and review pending"
+        "status": "pinned-and-verified",
+        "evidence": "npm run test:charts (9 tests), patch guards, build reproducibility; browser charts 17/17, footprint 26/26, risk 51/51 and 53/53 with footprint (PR #92); merged at owner request 2026-11-12"
       },
-      "last_upgrade": "2026-11-12 (candidate 0.10.6; not yet reviewed)",
+      "last_upgrade": "2026-11-12 (vendored 0.10.6 at tag v0.10.6)",
       "tests": [
         "npm run test:upstream",
         "npm run test:charts",
