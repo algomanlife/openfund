@@ -51,7 +51,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 26
       - name: Changed files (pull requests only; everything else is full)
         if: github.event_name == 'pull_request'
         env:
@@ -76,7 +76,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 26
           cache: npm
           cache-dependency-path: apps/web-react/package-lock.json
       - name: Install (lockfile integrity)
@@ -157,7 +157,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 26
           cache: npm
           cache-dependency-path: apps/backend/package-lock.json
       - name: Install (lockfile integrity)
@@ -301,7 +301,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 26
           cache: npm
           cache-dependency-path: package-lock.json
       - name: Install root tooling
@@ -352,7 +352,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 26
       - name: repository tooling audit
         run: npm audit --registry=https://registry.npmjs.org --audit-level=critical || echo "::warning::critical advisories in repository tooling — see log"
       - name: web-react audit

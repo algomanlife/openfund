@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Openfund backend \u2014 SIWE wallet authentication, sessions, users & challenges (PostgreSQL). Directus remains the admin data interface, never the auth boundary.",
   "engines": {
-    "node": ">=22"
+    "node": ">=26"
   },
   "scripts": {
     "start": "node server.js",

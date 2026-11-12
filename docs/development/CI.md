@@ -92,6 +92,6 @@ workflows). Recommended owner follow-up: none of them needs to be required.
 
 ## Local reproduction
 
-Use Node 22, an isolated PostgreSQL database whose name contains `test`, and the
+Use Node 26, an isolated PostgreSQL database whose name contains `test`, and the
 variables from `scripts/release/build.mjs`. See
 [Local development](LOCAL_DEVELOPMENT.md) and [Testing](TESTING.md).

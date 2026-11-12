@@ -20,7 +20,7 @@ jobs:
           sparse-checkout: scripts/pr
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 26
       - name: Check description sections and Conventional Commit title
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
