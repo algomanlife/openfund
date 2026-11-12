@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+- Vela 0.10.6 (branch `agent/claude/vela-0.10.6`;
+  [Vela upgrade](docs/integrations/VELA_UPGRADE.md#upgrade-to-vela-0106-2026-11-12)):
+  vendored LuxAlgo Vela 0.9.3 to 0.10.6 through the controlled update tool,
+  `@luxalgo/vela` 0.10.6 (adds `@luxalgo/vela-ui` 0.4.1) and
+  `@luxalgo/vela-pinets` 0.3.4; PineTS stays 0.13.1 (latest).
+  - Patch OF-VELA-001 retired: 0.10.x keeps menus above the chart upstream.
+    OF-VELA-002 and OF-VELA-003 re-apply cleanly. `LICENSE` and `NOTICE`
+    unchanged; the shipped AGPL notice only changed line endings upstream.
+  - OF-BUILD-001 re-anchored: the Pine worker's minified identifiers changed,
+    so `build-charts.mjs` now locates them structurally and still fails
+    unless each matches exactly once.
+  - Visual parity: Vela 0.10 moves its chrome CSS into the `vela.chrome`
+    cascade layer, so the terminal's unlayered element resets stripped the
+    toolbar and range-bar button padding. Those resets now live in an
+    `openfund-reset` layer ordered before Vela's, which restores the 0.9
+    appearance without changing any other terminal rule.
+  - `e2e/test-chart-indicators.mjs` finds numeric Pine inputs by the
+    `spinbutton` role (native number input on 0.9, Zag number input on 0.10).
+
 - Community, footer, platform motion and responsive navigation (branch
   `agent/claude/community-motion-responsive-ui`):
   - Community: Telegram is the only public community action (home, hero,

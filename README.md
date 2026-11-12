@@ -218,7 +218,7 @@ Verified against the package manifests.
 | --- | --- |
 | Frontend | React 19, TypeScript 5.9, Vite 6, React Router 7 |
 | Wallet | RainbowKit 2, wagmi 2, viem 2, Sign-In with Ethereum |
-| Charts and market data | Vela 0.9.3, Vela Pine addon 0.3.2, PineTS 0.13.1, Gains Network API |
+| Charts and market data | Vela 0.10.6, Vela Pine addon 0.3.4, PineTS 0.13.1, Gains Network API |
 | Backend | Node.js 22, Express 4, `pg`, decimal.js, viem, `ws` |
 | Database | PostgreSQL 17 |
 | CMS | Directus 11.9.1 (official Docker image) |
