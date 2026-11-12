@@ -43,3 +43,19 @@ All seven footer service logos (Gains, Vela, TradingView, DePay, Render, Liara,
 Bitpin) use one neutral wrapper; no CSS color filters.
 Community destinations remain owner-configured. No Telegram, Discord or
 Instagram destination ownership is verified by these assets or URL validators.
+
+Hyperliquid: official vector mark embedded in https://hyperliquid.xyz
+(inline SVG "Layer_1", viewBox 0 0 856 200, captured 2026-11-12). The mark
+path (first path) is preserved unchanged; the wordmark paths are omitted.
+hyperliquid-mark.svg: the mark alone in Hyperliquid's mint #97FCE4 (platform
+motion orb). hyperliquid-logo.svg: the same mark on Hyperliquid's dark teal
+#072723 rounded square, as in its app icon, so it reads on light and dark
+footers (footer service listing). Shown as a visual provider listing only; it does
+not indicate an active trading, liquidity or data integration.
+Hyperliquid trademark/brand guidelines apply.
+
+GMX: official brand repository https://github.com/gmx-io/gmx-assets
+Original: GMX-Assets/SVG/GMX_LOGO ONLY.svg. Path and gradient preserved;
+the transparent artboard, clip path and nested transforms are flattened into
+one equivalent translate with a tight viewBox. No artwork traced or recolored.
+GMX trademark/brand guidelines apply.

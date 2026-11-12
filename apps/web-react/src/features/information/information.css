@@ -277,3 +277,24 @@ html[lang=ar] :is(body,button,input,select,summary,.numeric){font-family:'Ubuntu
 html:is([lang=ru],[lang=zh-CN]) :is(td,th),.info-main[dir=ltr] :is(td,th){text-align:left}
 html:is([lang=ru],[lang=zh-CN]) .information-page .info-hero h1,.info-main[lang=en] .info-hero h1{font-size:58px;letter-spacing:-2px}
 @media(max-width:700px){html:is([lang=ru],[lang=zh-CN]) .information-page .info-hero h1,.info-main[lang=en] .info-hero h1{font-size:39px;letter-spacing:-1px;line-height:1.5}}
+
+/* ---- Compact header contract (website + challenges page) -----------------
+   Root cause of the clipped/overlapping phone header: in compact mode the
+   .nav row wrapped onto a second line, and that line still had to hold every
+   action (theme, language, terminal entry, wallet, menu) — wider than a phone,
+   so the inline-end controls were pushed off-screen. Compact mode is now one
+   row; actions the off-canvas drawer also provides step out of the header
+   at the widths where they can no longer fit, instead of shrinking labels. */
+:root .openfund-header.nav-overflow .nav { flex-wrap: nowrap; }
+:root .openfund-header.nav-overflow .nav > .brand { flex: 0 0 auto; }
+:root .openfund-header.nav-overflow .nav-actions { margin-inline-start: auto; flex: 0 0 auto; }
+:root .openfund-header.nav-overflow .nav-actions .menu { display: inline-flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 5px; }
+/* staged by fitNavigation from real widths (long locales, wallet states) */
+:root .openfund-header.nav-overflow.nav-tight .nav-actions .nav-cta { display: none; }
+:root .openfund-header.nav-overflow.nav-tighter .nav-actions :is(#language-slot, .language-slot, .theme-toggle) { display: none; }
+@media (max-width: 600px) {
+  /* the two-row phone header stays only for the menu-less product gateway */
+  :root .openfund-header.nav-overflow .nav { height: 70px; min-height: 0; padding-block: 0; gap: 10px; }
+  :root .openfund-header.nav-overflow .nav-actions { width: auto; gap: 6px; }
+  :root .openfund-header.nav-overflow .brand { margin-inline-end: auto; flex: 0 0 auto; }
+}

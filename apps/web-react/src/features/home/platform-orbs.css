@@ -1,0 +1,71 @@
+/* Platform flow motion: three glass orbs (Gains, Hyperliquid, GMX) replace
+   the former static Gains mark at the end of the challenges-page platform
+   flow. Decorative presentation only — no data source or integration.
+   Motion uses transform/opacity only (compositor-friendly); the logos
+   themselves never rotate or distort. Reduced motion shows the same
+   composition, static. */
+.platform-flow .platform-orbs {
+  position: relative; display: block; flex: 0 0 auto;
+  width: 132px; height: 92px; isolation: isolate;
+}
+.platform-flow .platform-orb {
+  --orb-size: 52px; --orb-tint: #82e7bd; --orb-deep: #0a2219; --orb-glow: #82e7bd59;
+  --orb-dx: 3px; --orb-dy: -5px; --orb-time: 7.5s; --orb-delay: 0s;
+  position: absolute; display: grid; place-items: center;
+  width: var(--orb-size); height: var(--orb-size); border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 26%, #ffffffa6 0, #ffffff26 16%, transparent 34%),
+    radial-gradient(circle at 70% 82%, color-mix(in srgb, var(--orb-tint) 55%, transparent) 0, transparent 48%),
+    radial-gradient(circle at 50% 44%, color-mix(in srgb, var(--orb-tint) 28%, var(--orb-deep)) 0, var(--orb-deep) 74%);
+  box-shadow:
+    inset 0 -8px 16px #00000059, inset 0 2px 5px #ffffff40, inset 0 0 0 1px #ffffff1f,
+    0 12px 22px -12px var(--orb-glow), 0 0 26px -6px var(--orb-glow);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  animation: platform-orb-orbit var(--orb-time) ease-in-out var(--orb-delay) infinite;
+  will-change: transform;
+}
+/* soft specular rim highlight */
+.platform-flow .platform-orb::after {
+  content: ''; position: absolute; inset: 7% 18% auto; height: 22%; border-radius: 50%;
+  background: linear-gradient(#ffffff59, #ffffff00); pointer-events: none;
+}
+.platform-flow .platform-orb img {
+  position: relative; z-index: 1; display: block;
+  width: 54%; height: 54%; max-width: none; object-fit: contain;
+  filter: drop-shadow(0 1px 2px #00000059);
+}
+.platform-flow .orb-gains { inset-inline-start: 0; top: 22px; z-index: 3; }
+.platform-flow .orb-hyperliquid {
+  --orb-size: 44px; --orb-tint: #97fce4; --orb-deep: #062b26; --orb-glow: #2fd6c066;
+  --orb-dx: -4px; --orb-dy: 4px; --orb-time: 9s; --orb-delay: -3s;
+  inset-inline-end: 2px; top: 0; z-index: 2;
+}
+.platform-flow .orb-gmx {
+  --orb-size: 38px; --orb-tint: #3ab4ff; --orb-deep: #0a1838; --orb-glow: #3a9cff66;
+  --orb-dx: 4px; --orb-dy: 3px; --orb-time: 10.5s; --orb-delay: -6s;
+  inset-inline-end: 22px; bottom: 0; z-index: 1;
+}
+.platform-flow .orb-hyperliquid img { width: 58%; }
+.platform-flow .orb-gmx img { width: 56%; }
+/* the shared hover lift applies to the whole orb, not the logo alone */
+.platform-flow .platform-orb:hover img { transform: none; }
+.platform-flow .orb-gains:focus-visible { outline: 2px solid var(--mint, #82e7bd); outline-offset: 3px; }
+
+/* gentle closed orbit: every keyframe returns to the origin for a seamless loop */
+@keyframes platform-orb-orbit {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(var(--orb-dx), var(--orb-dy), 0); }
+  50% { transform: translate3d(0, calc(var(--orb-dy) * 1.6), 0); }
+  75% { transform: translate3d(calc(var(--orb-dx) * -1), var(--orb-dy), 0); }
+}
+
+@media (max-width: 700px) {
+  .platform-flow .platform-orbs { width: 104px; height: 74px; }
+  .platform-flow .orb-gains { --orb-size: 42px; top: 18px; }
+  .platform-flow .orb-hyperliquid { --orb-size: 36px; }
+  .platform-flow .orb-gmx { --orb-size: 31px; inset-inline-end: 18px; }
+  .platform-flow .platform-orb img { max-width: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .platform-flow .platform-orb { animation: none; will-change: auto; }
+}

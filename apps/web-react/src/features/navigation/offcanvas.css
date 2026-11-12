@@ -1,0 +1,111 @@
+/* Shared off-canvas drawer (website + terminal). Uses the existing Openfund
+   tokens (--bg/--surface/--line/--white/--body/--mint) with dark fallbacks;
+   the light theme redefines those tokens on :root, so no extra rules. */
+.of-offcanvas {
+  --oc-bg: var(--surface, #0b100d);
+  --oc-text: var(--white, #e8f1ec);
+  --oc-muted: var(--body, #a9baae);
+  --oc-line: var(--line, #ffffff1f);
+  --oc-accent: var(--mint, #82e7bd);
+  --oc-width: min(360px, 86vw);
+  position: fixed; inset: 0; z-index: 1000;
+}
+.of-offcanvas .sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.of-offcanvas-backdrop {
+  position: absolute; inset: 0; background: #020604a6;
+  opacity: 0; transition: opacity .22s ease;
+}
+.of-offcanvas[data-state="open"] .of-offcanvas-backdrop { opacity: 1; }
+/* inline-start edge: right in RTL (fa, ar), left in LTR (en, ru, zh-CN) */
+.of-offcanvas-panel {
+  position: absolute; inset-block: 0; inset-inline-start: 0;
+  width: var(--oc-width); max-width: 100%;
+  display: flex; flex-direction: column;
+  background: var(--oc-bg); color: var(--oc-text);
+  border-inline-end: 1px solid var(--oc-line);
+  box-shadow: 0 0 48px #00000066;
+  transform: translateX(-100%); transition: transform .22s cubic-bezier(.2, .8, .2, 1);
+  padding-top: env(safe-area-inset-top);
+  outline: none;
+}
+.of-offcanvas[dir="rtl"] .of-offcanvas-panel { transform: translateX(100%); }
+.of-offcanvas[data-state="open"] .of-offcanvas-panel { transform: none; }
+.of-offcanvas-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 64px; padding: 0 16px; padding-inline-start: max(16px, env(safe-area-inset-left));
+  border-bottom: 1px solid var(--oc-line); flex: 0 0 auto;
+}
+.of-offcanvas[dir="rtl"] .of-offcanvas-head { padding-inline-start: max(16px, env(safe-area-inset-right)); }
+.of-offcanvas-brand { display: flex; align-items: center; min-width: 0; }
+.of-offcanvas-brand a { display: inline-flex; align-items: center; gap: 8px; color: var(--oc-text); text-decoration: none; }
+.of-offcanvas-brand img { width: 24px; height: auto; flex: 0 0 auto; }
+.of-offcanvas-brand b, .of-offcanvas-brand span { font-family: 'Ubuntu', system-ui, sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -.5px; }
+.of-offcanvas-close {
+  display: inline-grid; place-items: center; flex: 0 0 auto;
+  width: 44px; height: 44px; margin-inline-end: -8px; padding: 0;
+  border: 0; border-radius: 8px; background: none; color: var(--oc-muted); cursor: pointer;
+}
+.of-offcanvas-close:hover { color: var(--oc-text); background: color-mix(in srgb, var(--oc-text) 8%, transparent); }
+.of-offcanvas :focus-visible { outline: 2px solid var(--oc-accent); outline-offset: 2px; }
+/* the drawer scrolls on its own; the last item clears the home indicator */
+.of-offcanvas-body {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 16px calc(16px + env(safe-area-inset-bottom));
+}
+.of-offcanvas-foot {
+  flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--oc-line);
+}
+.of-offcanvas-body + .of-offcanvas-foot { margin-top: 0; }
+.of-offcanvas:has(.of-offcanvas-foot) .of-offcanvas-body { padding-bottom: 16px; }
+
+/* ---- navigation list ---------------------------------------------------- */
+.of-drawer-nav { display: flex; flex-direction: column; }
+.of-drawer-nav ul { list-style: none; margin: 0; padding: 0; }
+.of-drawer-link {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 48px; padding: 0 4px; color: var(--oc-text); text-decoration: none;
+  font-size: 15px; font-weight: 500; line-height: 1.4;
+  border-bottom: 1px solid color-mix(in srgb, var(--oc-line) 70%, transparent);
+  overflow-wrap: anywhere;
+}
+.of-drawer-link:hover { color: var(--oc-accent); }
+.of-drawer-link[aria-current="page"], .of-drawer-link[data-active-section] { color: var(--oc-accent); }
+.of-drawer-link[aria-current="page"]::after {
+  content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--oc-accent); flex: 0 0 auto;
+}
+.of-drawer-section { padding-top: 18px; }
+.of-drawer-section > h3 {
+  margin: 0 0 4px; padding: 0 4px; font-size: 11px; font-weight: 600; letter-spacing: .04em;
+  color: var(--oc-muted); text-transform: uppercase;
+}
+.of-offcanvas[dir="rtl"] .of-drawer-section > h3 { letter-spacing: 0; text-transform: none; font-size: 12px; }
+.of-drawer-section .of-drawer-link {
+  min-height: 44px; font-size: 14px; font-weight: 400;
+  padding-inline-start: 14px; color: color-mix(in srgb, var(--oc-text) 86%, var(--oc-muted));
+}
+.of-drawer-section .of-drawer-link[aria-current="page"], .of-drawer-section .of-drawer-link[data-active-section] { color: var(--oc-accent); }
+.of-drawer-cta {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; margin-top: 22px; padding: 0 16px; border-radius: 8px;
+  background: var(--oc-accent); color: #06120c; font-size: 14px; font-weight: 600; text-decoration: none;
+}
+.of-drawer-cta:hover { filter: brightness(1.05); color: #06120c; }
+
+/* drawer footer controls: same geometry as the header controls */
+.of-offcanvas-foot .of-language-select { height: 40px; min-height: 40px; }
+.of-offcanvas-foot .of-drawer-theme {
+  display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px;
+  border: 1px solid var(--oc-line); border-radius: 6px; background: none; color: var(--oc-text);
+  font: inherit; font-size: 13px; cursor: pointer;
+}
+.of-offcanvas-foot .of-drawer-theme span[aria-hidden] { font-size: 15px; line-height: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .of-offcanvas-backdrop, .of-offcanvas-panel { transition: none; }
+}

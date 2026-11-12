@@ -1,7 +1,6 @@
 import { pick, type AppLocale } from '../../i18n/locales'
 type Locale = AppLocale
 import './community.css'
-import { publicRuntimeConfig } from '../../config/runtime'
 
 /** Only an owner-verified Telegram destination may be configured at build time. */
 export function communityUrl(value?: string): string | null {
@@ -40,15 +39,13 @@ export function instagramCommunityUrl(value?: string): string | null {
   } catch { return null }
 }
 
-// Preserve the Telegram URL export for existing consumers.
-// Public community buttons: Telegram and Discord. The Instagram promo button
-// was retired from the website; its runtime setting and URL validator stay
-// for configuration compatibility but render nothing.
-const runtime = publicRuntimeConfig()
-export const community = { url: communityUrl(import.meta.env?.PROD ? runtime.telegramCommunityUrl : import.meta.env?.VITE_TELEGRAM_COMMUNITY_URL) }
+// Public community CTA: Telegram only. The Discord and Instagram validators and
+// runtime settings stay for configuration compatibility but render nothing.
+/** Owner-announced official Openfund Telegram community (@communitybuopenfund). */
+export const OFFICIAL_TELEGRAM_URL = 'https://t.me/communitybuopenfund'
+export const community = { url: communityUrl(OFFICIAL_TELEGRAM_URL) }
 export const communityProviders = [
   { id: 'telegram', name: 'Telegram', icon: 'telegram-logo.svg', url: community.url, labels: { fa: 'جامعه معامله‌گران', en: 'Traders talk on' } },
-  { id: 'discord', name: 'Discord', icon: 'discord-logo.svg', url: discordCommunityUrl(import.meta.env?.PROD ? runtime.discordCommunityUrl : import.meta.env?.VITE_DISCORD_COMMUNITY_URL), labels: { fa: 'جامعه معامله‌گران', en: 'Traders talk on' } },
 ] as const
 const copy = {
   fa: { label: 'جامعه معامله‌گران', unavailable: 'به‌زودی', destination: 'لینک جامعهٔ اوپن‌فاند هنوز اعلام نشده است', group: 'جامعهٔ معامله‌گران اوپن‌فاند' },

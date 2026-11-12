@@ -93,11 +93,13 @@ async function interactions(page) {
     await page.setViewportSize({width,height:844});
     await page.locator('.menu').click();
     check(await page.locator('.menu').getAttribute('aria-expanded')==='true', 'mobile open '+route);
-    const target=page.locator('.nav-dropdown a[href$="/tools"]');
+    // compact navigation lives in the off-canvas drawer
+    const target=page.locator('.of-offcanvas a.of-drawer-link[href$="/tools"]');
     check(await target.isVisible(),'mobile resources visible '+width+' '+route);
     await target.click();
     await page.waitForURL(base+other+'/tools');
     check(await page.locator('.menu').getAttribute('aria-expanded')==='false','mobile closed');
+    check(await page.locator('.of-offcanvas').count()===0,'drawer closed after route selection');
     await page.waitForTimeout(300);
     await page.goto(base+other+'/'+route);
     await page.locator('.resources-toggle[aria-controls="website-resources"]').waitFor({state:'attached'});

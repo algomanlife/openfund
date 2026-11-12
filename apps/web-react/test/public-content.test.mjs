@@ -118,12 +118,13 @@ test('the public Team section is removed from navigation, footer, routes and the
   for (const [key, value] of Object.entries(faToEn)) assert.doesNotMatch(value, /^(?:Team|Our team|Openfund team)$/, key)
 })
 
-test('the Instagram promo button is gone and the other community channels stay', () => {
+test('the public community action is Telegram only (Instagram and Discord retired)', () => {
   const community = read('src/features/community/TelegramCommunity.tsx')
   assert.doesNotMatch(community, /id: 'instagram'/)
   assert.doesNotMatch(community, /News, Education & Entertainment|اخبار، آموزش و سرگرمی/)
   assert.match(community, /id: 'telegram'/)
-  assert.match(community, /id: 'discord'/)
+  assert.doesNotMatch(community, /id: 'discord'/)
+  assert.match(community, /https:\/\/t\.me\/communitybuopenfund/)
 })
 
 test('no unreleased app downloads or placeholder documents are published', () => {

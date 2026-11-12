@@ -29,6 +29,7 @@ import { detailsPopover, registerPopover } from "./popovers";
 import { TerminalContext, useTerminal } from "./TerminalContext";
 import { chooseTheme, currentTheme, DAY_NIGHT_MARKUP } from "../../theme";
 import LanguageSelect from "../../i18n/LanguageSelect";
+import TerminalMenu from "./TerminalMenu";
 import { dirOf, normalizeLocale, pick, pickRecord, switchLocalePath } from "../../i18n/locales";
 export default function TerminalShell({ product }: { product: Product }) {
   const params = useParams(),
@@ -37,8 +38,7 @@ export default function TerminalShell({ product }: { product: Product }) {
     navigate = useNavigate(),
     session = useSession(),
     directory = useAccounts();
-  const [open, setOpen] = useState(false),
-    [revision, setRevision] = useState(0);
+  const [revision, setRevision] = useState(0);
   const previousOwner = useRef<string | undefined>(undefined);
   useEffect(() => {
     const owner = session.user?.id;
@@ -72,7 +72,6 @@ export default function TerminalShell({ product }: { product: Product }) {
     if (!runtime.__ofLegacyLandingLoaded && !runtime.__ofLegacyTerminalLoaded) {
       window.dispatchEvent(new Event("of-language"));
     }
-    setOpen(false);
   }, [locale, pathname, search]);
   useEffect(() => {
     const sync = () => setTheme(currentTheme());
@@ -108,10 +107,10 @@ export default function TerminalShell({ product }: { product: Product }) {
   const accountsPath = route(locale, product, "journal");
   const accountsHref = accountsPath + (accountsPath.includes("?") ? "&" : "?") + "section=accounts";
   const navigation = (
-    <nav id="terminal-navigation" aria-label={t("ناوبری ترمینال", "Terminal navigation")} className={open ? "open" : ""}>
+    <nav id="terminal-navigation" aria-label={t("ناوبری ترمینال", "Terminal navigation")}>
       {primary[product].filter(([id]) => ["dashboard", "trade", "chart", "portfolio"].includes(id)).map(([id, fa, en]) => (
         <Link key={id} to={route(locale, product, id)} aria-current={page === id ? "page" : undefined}
-          className={page === id ? "active" : ""} onClick={() => setOpen(false)}>
+          className={page === id ? "active" : ""}>
           {id === "trade" ? t("معاملات", "Trading") : t(fa, en)}
         </Link>
       ))}
@@ -195,6 +194,8 @@ export default function TerminalShell({ product }: { product: Product }) {
               </select>
             </label>}
             {navigation}
+            <TerminalMenu locale={locale} product={product} page={page} accountsHref={accountsHref}
+              accountsSection={accountsSection} pathname={pathname} search={search} />
             <label className="of-header-account">
               <span className="sr-only">{t("حساب فعال", "Active account")}</span>
               <select aria-label={t("حساب فعال", "Active account")} value={context.data?.accountRef || ""}
@@ -228,14 +229,6 @@ export default function TerminalShell({ product }: { product: Product }) {
                 navigate(switchLocalePath(pathname, next) + search)} />
               {/* shared header order: theme · language · wallet (see styles/header-controls.css) */}
               <RainbowConnect />
-              <button
-                className="of-mobile-menu"
-                aria-expanded={open}
-                aria-controls="terminal-navigation"
-                onClick={() => setOpen((x) => !x)}
-              >
-                {t("منو", "Menu")} ☰
-              </button>
             </div>
           </div>}</ReleaseStatus>
         </header>

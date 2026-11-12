@@ -1010,3 +1010,30 @@ html[data-theme="light"] .of-terminal :is(.of-negative,.negative) { color:#b33f3
 @font-face { font-family: Vazirmatn; src: url("../../../public/assets/Vazirmatn.ttf") format("truetype"); font-weight: 100 900; font-display: swap; }
 .of-terminal:lang(ar) { font-family: Ubuntu, Vazirmatn, Tahoma, sans-serif; }
 .of-terminal-compact[dir="rtl"]:lang(ar) .of-terminal-more { font-family: Ubuntu, Vazirmatn, sans-serif; }
+
+/* ---- Compact terminal navigation (off-canvas) ----------------------------
+   Desktop keeps the inline tabs + More menu. Once those no longer fit
+   (≤1100px), every destination moves into the TerminalMenu drawer instead of
+   a partially hidden tab row; the trigger takes the tabs' place in the row
+   (phones: second header row, inline-end). Chart and panel sizing untouched. */
+.of-terminal-compact .of-terminal-menu-trigger {
+  display: none; align-items: center; justify-content: center; gap: 7px; flex: 0 0 auto;
+  box-sizing: border-box; height: 28px; padding: 0 10px; border: 1px solid var(--of-line);
+  border-radius: 3px; background: transparent; color: inherit; font: inherit; font-size: 12px;
+  line-height: 1; white-space: nowrap; cursor: pointer;
+}
+.of-terminal-compact .of-terminal-menu-trigger:hover,
+.of-terminal-compact .of-terminal-menu-trigger[aria-expanded="true"] { border-color: var(--of-mint); color: var(--of-mint); }
+.of-terminal-compact .of-terminal-menu-trigger:focus-visible { outline: 2px solid var(--of-mint); outline-offset: 1px; }
+.of-terminal-menu-icon { display: inline-flex; flex-direction: column; justify-content: center; gap: 3px; width: 14px; }
+.of-terminal-menu-icon i { display: block; height: 1.5px; border-radius: 1px; background: currentColor; }
+@media (max-width: 1100px) {
+  .of-terminal-compact #terminal-navigation { display: none; }
+  .of-terminal-compact .of-terminal-menu-trigger { display: inline-flex; }
+}
+@media (max-width: 650px) {
+  .of-terminal-compact .of-terminal-menu-trigger { grid-area: 2/4; justify-self: end; height: 32px; min-width: 44px; }
+}
+@media (max-width: 380px) {
+  .of-terminal-compact .of-terminal-menu-label { display: none; }
+}
