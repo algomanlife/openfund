@@ -44,7 +44,7 @@ Notes:
 
 | Technology | Version | Role | Status | License |
 | :--- | :--- | :--- | :--- | :--- |
-| @luxalgo/vela | 0.9.3 | Full Vela workspace bundle (`vela-workspace.global.min.js` → `window.VelaWorkspace`): topbar, drawings, indicators, symbol search | Active | See `vendor/vela/NOTICE` — visible built-in Vela attribution kept for compliance |
+| @luxalgo/vela | 0.10.6 | Full Vela workspace bundle (`vela-workspace.global.min.js` → `window.VelaWorkspace`): topbar, drawings, indicators, symbol search | Active | See `vendor/vela/NOTICE` — visible built-in Vela attribution kept for compliance |
 | esbuild | (dev-time) | Bundles the Vela workspace into the IIFE global | Build tool | MIT |
 
 ## Market data
