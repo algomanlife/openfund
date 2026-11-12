@@ -64,13 +64,13 @@ change). No real payment has been made; gate 3 below is still open.
 | DePay integration (created at app.depay.com), widget URL and its SRI hash | `VITE_DEPAY_WIDGET`, `VITE_DEPAY_WIDGET_URL`, `VITE_DEPAY_WIDGET_INTEGRITY`, `VITE_DEPAY_INTEGRATION_ID` |
 | DePay dynamic configuration signing key (public half stored at DePay) | `DEPAY_CONFIG_PRIVATE_KEY` |
 | Endpoint URLs set on the DePay integration | `https://<host>/purchases/depay/configuration`, `https://<host>/purchases/depay/callback` and the events URL `https://<host>/purchases/depay/events` |
-| CSP origins for the widget | `CSP_EXTRA_SCRIPT_SRC`, `CSP_EXTRA_FRAME_SRC`, and the API/RPC origins the widget fetches in `CSP_EXTRA_CONNECT` (the default `connect-src` is `'self'` plus the market stream; read the blocked origins from the browser console during staging acceptance) |
+| CSP origins for the widget | `CSP_EXTRA_SCRIPT_SRC` (`https://integrate.depay.com`) and, only if the browser console reports a blocked frame, `CSP_EXTRA_FRAME_SRC`. `CSP_EXTRA_CONNECT` is not needed for HTTPS/WSS origins: the default `connect-src` is `'self' https: wss:` (`apps/backend/server.js`) |
 | DePay Verify public key (signs configuration requests, callbacks and events) | `DEPAY_VERIFY_PUBLIC_KEY` (legacy name `DEPAY_CALLBACK_PUBLIC_KEY`) |
 | Checkout chains | Every complete entry in `PURCHASE_PAYMENT_CHAINS` (EVM networks and Solana). Wallet sign-in stays Arbitrum One only; payment is not tied to it |
 
 Compute the SRI hash from the exact approved bundle:
-`curl -s <widget-url> | openssl dgst -sha384 -binary | openssl base64 -A`,
-prefixed with `sha384-`. Re-compute it whenever DePay publishes a new bundle;
+`openssl dgst -sha384 -binary v13.js | openssl base64 -A`,
+prefixed with `sha384-`. The DePay CDN answered a non-browser `curl` with HTTP 403 on 2026-11-12, so save the file from a browser first and hash that file; a hash of an error page would block the widget. Re-compute it whenever DePay publishes a new bundle;
 the widget does not load if the bytes differ.
 
 ## Activation gates
