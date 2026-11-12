@@ -87,6 +87,9 @@ jobs:
       - name: Documentation language, links, images, Markdown and Mermaid
         working-directory: .
         run: npm run docs:check
+      - name: Vendored DePay widget matches its generated SRI manifest
+        working-directory: .
+        run: node scripts/upstream/vendor-depay-widgets.mjs
       - name: TypeScript
         run: npx tsc --noEmit
       - name: Unit tests (plans / rulebook seed / markets)

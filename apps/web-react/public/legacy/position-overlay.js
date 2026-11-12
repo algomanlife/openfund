@@ -78,5 +78,46 @@
     const start = Number.isFinite(opened) && opened > 0 ? bucket(opened, barMs) : lastBar - 60 * barMs;
     return { start, end: Math.max(lastBar, start) + (ahead == null ? 12 : ahead) * barMs };
   }
-  global.OpenfundPositionOverlay = { model, executionFills, executionGroups, markerPrice, bucket, span };
+  /* ---------- SL / TP drag: what may be submitted ----------
+     The executed entry is the immutable reference. A drag may change only a
+     level the position already has (never invent one), and the new level must
+     stay on its own side of the entry: LONG stop < entry < target, SHORT the
+     reverse. The engine re-validates every rule; this only refuses a request
+     that can not be valid. Returns { sl, tp } or { error }. */
+  function riskEdit(p, proposed, precision) {
+    const entry = Number(p && p.entry);
+    if (!(entry > 0)) return { error: 'no_entry' };
+    const long = p.side !== 'short';
+    const round = v => (v == null ? null : Number(Number(v).toFixed(precision == null ? 8 : precision)));
+    const had = { sl: Number(p.sl) > 0 ? Number(p.sl) : null, tp: Number(p.tp) > 0 ? Number(p.tp) : null };
+    const sl = had.sl == null ? null : round(proposed.sl);
+    const tp = had.tp == null ? null : round(proposed.tp);
+    if (sl != null && !(sl > 0)) return { error: 'invalid_sl' };
+    if (tp != null && !(tp > 0)) return { error: 'invalid_tp' };
+    if (sl != null && (long ? sl >= entry : sl <= entry)) return { error: 'sl_wrong_side' };
+    if (tp != null && (long ? tp <= entry : tp >= entry)) return { error: 'tp_wrong_side' };
+    return { sl, tp, changed: sl !== round(had.sl) || tp !== round(had.tp) };
+  }
+  /* ---------- right-hand information labels: collision-free placement ----------
+     `items` carry the wanted y (the entry's pixel row, or null when unknown).
+     Labels keep their price order, never overlap (min `gap` between them) and
+     stay inside [top, bottom]; items without a y are appended in order. */
+  function stackLabels(items, opts) {
+    const top = opts.top || 0, bottom = opts.bottom, gap = opts.gap == null ? 4 : opts.gap;
+    const placed = items.map((it, i) => ({ ...it, i, want: Number.isFinite(it.y) ? it.y - it.h / 2 : null }));
+    let cursor = top;
+    const sorted = placed.slice().sort((a, b) => (a.want ?? Infinity) - (b.want ?? Infinity) || a.i - b.i);
+    for (const it of sorted) { it.top = Math.max(it.want ?? cursor, cursor); cursor = it.top + it.h + gap; }
+    /* overflow at the bottom: shift the stack up, but never above `top` */
+    if (Number.isFinite(bottom) && sorted.length) {
+      let limit = bottom;
+      for (let k = sorted.length - 1; k >= 0; k--) {
+        const it = sorted[k];
+        if (it.top + it.h > limit) it.top = Math.max(top, limit - it.h);
+        limit = it.top - gap;
+      }
+    }
+    return placed.map(it => ({ id: it.id, top: Math.round(it.top) }));
+  }
+  global.OpenfundPositionOverlay = { model, executionFills, executionGroups, markerPrice, bucket, span, riskEdit, stackLabels };
 })(typeof window !== 'undefined' ? window : globalThis);

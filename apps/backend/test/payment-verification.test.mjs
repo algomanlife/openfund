@@ -349,7 +349,8 @@ test('C9 a rolled-back provisioning leaves no partial financial records', async 
   /* force a failure LATE in provisioning (after payment + order update) */
   await pool.query(`CREATE OR REPLACE FUNCTION pv_fail() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'pv_forced_failure'; END $$`)
   await pool.query('CREATE TRIGGER pv_fail_trg BEFORE INSERT ON invoices FOR EACH ROW EXECUTE FUNCTION pv_fail()')
-  try { await assert.rejects(run(f, o, ok(f.wallet)), /pv_forced_failure/) } finally {
+  /* the payment is proven, so the failure is retryable (the sweep re-runs it) and keeps the cause */
+  try { await assert.rejects(run(f, o, ok(f.wallet)), e => e.message === 'provisioning_retry' && e.retryable === true && /pv_forced_failure/.test(e.detail)) } finally {
     await pool.query('DROP TRIGGER pv_fail_trg ON invoices')
   }
   const cnt = async t => (await pool.query(`SELECT count(*)::int n FROM ${t} WHERE purchase_order_id=$1`, [o.id])).rows[0].n

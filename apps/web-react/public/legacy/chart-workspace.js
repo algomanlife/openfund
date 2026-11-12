@@ -34,7 +34,7 @@
   const backend = (() => { try { return String((parentWin && parentWin.__ofBackendUrl) || '').replace(/\/$/, ''); } catch (e) { return ''; } })();
   const SCOPE_RE = /^[A-Za-z0-9._:/-]{1,64}$/;
   const DEBOUNCE_MS = 1200, RETRY_MS = 15000, HYDRATE_TIMEOUT_MS = 4000;
-  const SETTINGS_KEYS = { workspace: 'of-chart-v2-' + product, config: 'of-vela-config', tools: 'of-vela-tools' };
+  const SETTINGS_KEYS = { workspace: 'of-chart-v2-' + product, config: 'of-vela-config', tools: 'of-vela-tools', trading: 'of-chart-trading' };
   const drawingsKey = sym => 'of-vela-drawings-' + sym;
 
   const nsKey = k => identity ? k + '@' + identity : k;
@@ -59,7 +59,8 @@
   });
 
   function settingsDoc() {
-    return { workspace: getLocal(SETTINGS_KEYS.workspace), config: parse(getLocal(SETTINGS_KEYS.config)), tools: parse(getLocal(SETTINGS_KEYS.tools)) };
+    /* trading: Chart Settings → Trading display preferences (BUY/SELL markers, position labels) */
+    return { workspace: getLocal(SETTINGS_KEYS.workspace), config: parse(getLocal(SETTINGS_KEYS.config)), tools: parse(getLocal(SETTINGS_KEYS.tools)), trading: parse(getLocal(SETTINGS_KEYS.trading)) };
   }
   /* write one server entry into this identity's local cache */
   function adopt(entry) {
@@ -69,6 +70,7 @@
       if (typeof d.workspace === 'string') setLocal(SETTINGS_KEYS.workspace, d.workspace);
       if (d.config && typeof d.config === 'object') setLocal(SETTINGS_KEYS.config, JSON.stringify(d.config));
       if (d.tools && typeof d.tools === 'object') setLocal(SETTINGS_KEYS.tools, JSON.stringify(d.tools));
+      if (d.trading && typeof d.trading === 'object') setLocal(SETTINGS_KEYS.trading, JSON.stringify(d.trading));
     } else if (SCOPE_RE.test(entry.scope) && Array.isArray(entry.data.drawings)) {
       setLocal(drawingsKey(entry.scope), JSON.stringify(entry.data));
     }
@@ -129,7 +131,7 @@
   function saveSettings() {
     if (!identity) return;
     const d = settingsDoc();
-    if (d.workspace == null && d.config == null && d.tools == null) return;
+    if (d.workspace == null && d.config == null && d.tools == null && d.trading == null) return;
     pending.set('*', d);
     schedule('*');
   }
