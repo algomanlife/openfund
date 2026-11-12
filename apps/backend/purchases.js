@@ -708,7 +708,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
      record, the payment the chain verifier wrote (settlement token, amount,
      receiver, network, transaction), DePay's reported source token/amount
      (labelled as reported), the invoice and the provisioned challenge. */
-  router.get('/purchases/orders/:id/receipt', requireAuth, wrap(async (req, res) => {
+  router.get('/purchases/orders/:id/receipt', requireAuth, limit(60), wrap(async (req, res) => {
     if (!uuid.test(req.params.id)) throw fail(404, 'order_not_found')
     const { rows: [r] } = await pool.query(
       `SELECT o.id, o.status, o.lifecycle_state, o.account_size_usd, o.list_price_usd, o.discount_usd, o.price_usd, o.currency,
