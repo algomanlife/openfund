@@ -8,7 +8,10 @@
     {
       "file": "theme-preference/light-default.png",
       "route": "/react/#/fa/prop/trade",
-      "viewport": { "width": 1440, "height": 900 },
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
       "session": "anonymous",
       "capturedAt": "2026-11-08T05:21:25Z",
       "state": "Unreleased local Vite preview; fresh OS light preference, no explicit theme choice; live Gains connection unavailable at capture; no financial fixture"
@@ -16,7 +19,10 @@
     {
       "file": "theme-preference/dark-default.png",
       "route": "/react/#/fa/prop/trade",
-      "viewport": { "width": 1440, "height": 900 },
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
       "session": "anonymous",
       "capturedAt": "2026-11-08T05:21:25Z",
       "state": "Unreleased local Vite preview; fresh OS dark preference, no explicit theme choice; live Gains connection unavailable at capture; no financial fixture"
@@ -935,19 +941,19 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           }
         ]
@@ -978,11 +984,11 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           }
         ]
@@ -1013,19 +1019,19 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           }
         ]
@@ -1056,19 +1062,19 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           }
         ]
@@ -1099,11 +1105,11 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           }
         ]
@@ -1134,19 +1140,19 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           }
         ]
@@ -1177,19 +1183,19 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           }
         ]
@@ -1220,11 +1226,11 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           }
         ]
@@ -1255,19 +1261,19 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           }
         ]
@@ -1298,19 +1304,19 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           }
         ]
@@ -1341,11 +1347,11 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           }
         ]
@@ -1376,19 +1382,19 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           }
         ]
@@ -1955,11 +1961,11 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           }
         ]
@@ -2042,11 +2048,11 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           }
         ]
@@ -2199,15 +2205,15 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           }
         ]
@@ -2240,15 +2246,15 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           }
         ]
@@ -2281,27 +2287,27 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           }
         ]
@@ -2334,15 +2340,15 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           }
         ]
@@ -2375,15 +2381,15 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           }
         ]
@@ -2416,27 +2422,27 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           }
         ]
@@ -2469,15 +2475,15 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           }
         ]
@@ -2510,15 +2516,15 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           }
         ]
@@ -2551,27 +2557,27 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           }
         ]
@@ -2604,15 +2610,15 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           }
         ]
@@ -2645,15 +2651,15 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           }
         ]
@@ -2686,27 +2692,27 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           }
         ]
@@ -3383,15 +3389,15 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           }
         ]
@@ -3480,15 +3486,15 @@
         "overflow": false,
         "community": [
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u062c\u0627\u0645\u0639\u0647 \u0645\u0639\u0627\u0645\u0644\u0647\u200c\u06af\u0631\u0627\u0646\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "جامعه معامله‌گرانبه‌زودی",
             "href": null
           },
           {
-            "text": "\u0627\u062e\u0628\u0627\u0631\u060c \u0622\u0645\u0648\u0632\u0634 \u0648 \u0633\u0631\u06af\u0631\u0645\u06cc\u0628\u0647\u200c\u0632\u0648\u062f\u06cc",
+            "text": "اخبار، آموزش و سرگرمیبه‌زودی",
             "href": null
           }
         ]
@@ -5698,40 +5704,395 @@
       "state": "v0.4.1 source branch, Vite development server, light theme; live Gains market feed. Public production CMS ui_messages returned 403 and local backend was unavailable; screenshot verifies visual theme only.",
       "source": "codex/release-v0.4.1-stabilization local source; not official or deployed"
     },
-    {"file": "website-launch/after-ar-challenges-accounts.png", "route": "/ar/challenges", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Unreleased local candidate (codex/website-launch-content) on an isolated test server and disposable database; no CMS configured locally, so CMS-backed rows use bundled defaults; live Gains data; element capture, reduced motion", "candidate": true},
-    {"file": "website-launch/after-en-challenges-footer.png", "route": "/en/challenges", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Unreleased local candidate (codex/website-launch-content) on an isolated test server and disposable database; no CMS configured locally, so CMS-backed rows use bundled defaults; live Gains data; element capture, reduced motion", "candidate": true},
-    {"file": "website-launch/after-en-challenges-model.png", "route": "/en/challenges", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Unreleased local candidate (codex/website-launch-content) on an isolated test server and disposable database; no CMS configured locally, so CMS-backed rows use bundled defaults; live Gains data; element capture, reduced motion", "candidate": true},
-    {"file": "website-launch/after-fa-challenges-footer.png", "route": "/fa/challenges", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Unreleased local candidate (codex/website-launch-content) on an isolated test server and disposable database; no CMS configured locally, so CMS-backed rows use bundled defaults; live Gains data; element capture, reduced motion", "candidate": true},
-    {"file": "website-launch/after-fa-challenges-model.png", "route": "/fa/challenges", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Unreleased local candidate (codex/website-launch-content) on an isolated test server and disposable database; no CMS configured locally, so CMS-backed rows use bundled defaults; live Gains data; element capture, reduced motion", "candidate": true},
-    {"file": "website-launch/after-fa-challenges-top.png", "route": "/fa/challenges", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Unreleased local candidate (codex/website-launch-content) on an isolated test server and disposable database; no CMS configured locally, so CMS-backed rows use bundled defaults; live Gains data; element capture, reduced motion", "candidate": true},
-    {"file": "website-launch/after-zh-CN-challenges-footer.png", "route": "/zh-CN/challenges", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Unreleased local candidate (codex/website-launch-content) on an isolated test server and disposable database; no CMS configured locally, so CMS-backed rows use bundled defaults; live Gains data; element capture, reduced motion", "candidate": true},
-    {"file": "website-launch/before-ar-challenges-accounts.png", "route": "/ar/challenges", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion", "candidate": false},
-    {"file": "website-launch/before-en-challenges-footer.png", "route": "/en/challenges", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion", "candidate": false},
-    {"file": "website-launch/before-en-challenges-model.png", "route": "/en/challenges", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion", "candidate": false},
-    {"file": "website-launch/before-fa-challenges-footer.png", "route": "/fa/challenges", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion", "candidate": false},
-    {"file": "website-launch/before-fa-challenges-model.png", "route": "/fa/challenges", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion", "candidate": false},
-    {"file": "website-launch/before-fa-challenges-team.png", "route": "/fa/challenges", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion", "candidate": false},
-    {"file": "website-launch/before-fa-challenges-top.png", "route": "/fa/challenges", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion", "candidate": false},
-    {"file": "website-launch/before-fa-home.png", "route": "/fa/home", "viewport": {"width": 1280, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-10T15:45:15Z", "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion", "candidate": false},
-    {"file": "readme/home-en-desktop.jpg", "route": "/en/home", "viewport": {"width": 1440, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-11", "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"},
-    {"file": "readme/home-fa-desktop.jpg", "route": "/fa/home", "viewport": {"width": 1440, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-11", "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"},
-    {"file": "readme/home-en-mobile.jpg", "route": "/en/home", "viewport": {"width": 390, "height": 844}, "session": "anonymous", "capturedAt": "2026-11-11", "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"},
-    {"file": "readme/challenges-en-desktop.jpg", "route": "/en/challenges", "viewport": {"width": 1440, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-11", "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"},
-    {"file": "readme/challenges-en-mobile.jpg", "route": "/en/challenges", "viewport": {"width": 390, "height": 844}, "session": "anonymous", "capturedAt": "2026-11-11", "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"},
-    {"file": "readme/challenge-builder-en-desktop.jpg", "route": "/en/challenges (Standard, 10k selected)", "viewport": {"width": 1440, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-11", "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"},
-    {"file": "readme/challenge-rules-en-desktop.jpg", "route": "/en/challenges (rules panel)", "viewport": {"width": 1440, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-11", "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"},
-    {"file": "readme/prop-terminal-en-desktop.jpg", "route": "/en/prop/trade", "viewport": {"width": 1440, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-11", "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"},
-    {"file": "readme/prop-terminal-en-mobile.jpg", "route": "/en/prop/trade", "viewport": {"width": 390, "height": 844}, "session": "anonymous", "capturedAt": "2026-11-11", "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"},
-    {"file": "readme/ambassador-en-desktop.jpg", "route": "/en/ambassador", "viewport": {"width": 1440, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-11", "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"},
-    {"file": "readme/governance-en-desktop.jpg", "route": "/en/governance", "viewport": {"width": 1440, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-11", "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"},
-    {"file": "readme/transparency-en-desktop.jpg", "route": "/en/transparency", "viewport": {"width": 1440, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-11", "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"},
-    {"file": "readme/revenue-model-en-desktop.jpg", "route": "/en/revenue-model", "viewport": {"width": 1440, "height": 900}, "session": "anonymous", "capturedAt": "2026-11-11", "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"},
-    {"file": "readme/checkout-coupon-en-desktop.jpg", "route": "/en/challenges checkout dialog", "viewport": {"width": 1440, "height": 900}, "session": "test", "capturedAt": "2026-11-11", "state": "Local test runtime of branch claude/pr81-completion (main 67cc812 + checkout fixes) on a disposable PostgreSQL database; generated test wallet, 100% internal test coupon; development build without release manifest; no real payment"},
-    {"file": "readme/prop-dashboard-en-desktop.jpg", "route": "/en/prop/dashboard", "viewport": {"width": 1440, "height": 900}, "session": "test", "capturedAt": "2026-11-11", "state": "Local test runtime of branch claude/pr81-completion (main 67cc812 + checkout fixes) on a disposable PostgreSQL database; generated test wallet, 100% internal test coupon; development build without release manifest; no real payment"},
-    {"file": "readme/prop-purchases-en-desktop.jpg", "route": "/en/prop/purchases", "viewport": {"width": 1440, "height": 900}, "session": "test", "capturedAt": "2026-11-11", "state": "Local test runtime of branch claude/pr81-completion (main 67cc812 + checkout fixes) on a disposable PostgreSQL database; generated test wallet, 100% internal test coupon; development build without release manifest; no real payment"},
-    {"file": "readme/cms-coupons-list.jpg", "route": "Directus /admin/content/coupons", "viewport": {"width": 1440, "height": 900}, "session": "test", "capturedAt": "2026-11-11", "state": "Local Directus 11.9.1 on the same disposable database; Commerce Admin test user; synthetic coupon and generated test wallet only"},
-    {"file": "readme/cms-coupon-form.jpg", "route": "Directus /admin/content/coupons/+", "viewport": {"width": 1440, "height": 900}, "session": "test", "capturedAt": "2026-11-11", "state": "Local Directus 11.9.1 on the same disposable database; Commerce Admin test user; synthetic coupon and generated test wallet only"},
-    {"file": "readme/cms-coupon-detail.jpg", "route": "Directus coupon item", "viewport": {"width": 1440, "height": 900}, "session": "test", "capturedAt": "2026-11-11", "state": "Local Directus 11.9.1 on the same disposable database; Commerce Admin test user; synthetic coupon and generated test wallet only"}
+    {
+      "file": "website-launch/after-ar-challenges-accounts.png",
+      "route": "/ar/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Unreleased local candidate (codex/website-launch-content) on an isolated test server and disposable database; no CMS configured locally, so CMS-backed rows use bundled defaults; live Gains data; element capture, reduced motion",
+      "candidate": true
+    },
+    {
+      "file": "website-launch/after-en-challenges-footer.png",
+      "route": "/en/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Unreleased local candidate (codex/website-launch-content) on an isolated test server and disposable database; no CMS configured locally, so CMS-backed rows use bundled defaults; live Gains data; element capture, reduced motion",
+      "candidate": true
+    },
+    {
+      "file": "website-launch/after-en-challenges-model.png",
+      "route": "/en/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Unreleased local candidate (codex/website-launch-content) on an isolated test server and disposable database; no CMS configured locally, so CMS-backed rows use bundled defaults; live Gains data; element capture, reduced motion",
+      "candidate": true
+    },
+    {
+      "file": "website-launch/after-fa-challenges-footer.png",
+      "route": "/fa/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Unreleased local candidate (codex/website-launch-content) on an isolated test server and disposable database; no CMS configured locally, so CMS-backed rows use bundled defaults; live Gains data; element capture, reduced motion",
+      "candidate": true
+    },
+    {
+      "file": "website-launch/after-fa-challenges-model.png",
+      "route": "/fa/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Unreleased local candidate (codex/website-launch-content) on an isolated test server and disposable database; no CMS configured locally, so CMS-backed rows use bundled defaults; live Gains data; element capture, reduced motion",
+      "candidate": true
+    },
+    {
+      "file": "website-launch/after-fa-challenges-top.png",
+      "route": "/fa/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Unreleased local candidate (codex/website-launch-content) on an isolated test server and disposable database; no CMS configured locally, so CMS-backed rows use bundled defaults; live Gains data; element capture, reduced motion",
+      "candidate": true
+    },
+    {
+      "file": "website-launch/after-zh-CN-challenges-footer.png",
+      "route": "/zh-CN/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Unreleased local candidate (codex/website-launch-content) on an isolated test server and disposable database; no CMS configured locally, so CMS-backed rows use bundled defaults; live Gains data; element capture, reduced motion",
+      "candidate": true
+    },
+    {
+      "file": "website-launch/before-ar-challenges-accounts.png",
+      "route": "/ar/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion",
+      "candidate": false
+    },
+    {
+      "file": "website-launch/before-en-challenges-footer.png",
+      "route": "/en/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion",
+      "candidate": false
+    },
+    {
+      "file": "website-launch/before-en-challenges-model.png",
+      "route": "/en/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion",
+      "candidate": false
+    },
+    {
+      "file": "website-launch/before-fa-challenges-footer.png",
+      "route": "/fa/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion",
+      "candidate": false
+    },
+    {
+      "file": "website-launch/before-fa-challenges-model.png",
+      "route": "/fa/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion",
+      "candidate": false
+    },
+    {
+      "file": "website-launch/before-fa-challenges-team.png",
+      "route": "/fa/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion",
+      "candidate": false
+    },
+    {
+      "file": "website-launch/before-fa-challenges-top.png",
+      "route": "/fa/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion",
+      "candidate": false
+    },
+    {
+      "file": "website-launch/before-fa-home.png",
+      "route": "/fa/home",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-10T15:45:15Z",
+      "state": "Production https://openfi.cloud at release 0.4.4 (0c45594); live public CMS and Gains data; element capture, reduced motion",
+      "candidate": false
+    },
+    {
+      "file": "readme/home-en-desktop.jpg",
+      "route": "/en/home",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-11",
+      "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"
+    },
+    {
+      "file": "readme/home-fa-desktop.jpg",
+      "route": "/fa/home",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-11",
+      "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"
+    },
+    {
+      "file": "readme/home-en-mobile.jpg",
+      "route": "/en/home",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-11",
+      "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"
+    },
+    {
+      "file": "readme/challenges-en-desktop.jpg",
+      "route": "/en/challenges",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-11",
+      "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"
+    },
+    {
+      "file": "readme/challenges-en-mobile.jpg",
+      "route": "/en/challenges",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-11",
+      "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"
+    },
+    {
+      "file": "readme/challenge-builder-en-desktop.jpg",
+      "route": "/en/challenges (Standard, 10k selected)",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-11",
+      "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"
+    },
+    {
+      "file": "readme/challenge-rules-en-desktop.jpg",
+      "route": "/en/challenges (rules panel)",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-11",
+      "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"
+    },
+    {
+      "file": "readme/prop-terminal-en-desktop.jpg",
+      "route": "/en/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-11",
+      "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"
+    },
+    {
+      "file": "readme/prop-terminal-en-mobile.jpg",
+      "route": "/en/prop/trade",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-11",
+      "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"
+    },
+    {
+      "file": "readme/ambassador-en-desktop.jpg",
+      "route": "/en/ambassador",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-11",
+      "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"
+    },
+    {
+      "file": "readme/governance-en-desktop.jpg",
+      "route": "/en/governance",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-11",
+      "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"
+    },
+    {
+      "file": "readme/transparency-en-desktop.jpg",
+      "route": "/en/transparency",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-11",
+      "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"
+    },
+    {
+      "file": "readme/revenue-model-en-desktop.jpg",
+      "route": "/en/revenue-model",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-11",
+      "state": "Production https://openfi.cloud, v0.4.4 commit 67cc812, anonymous visitor, dark color scheme; read-only capture"
+    },
+    {
+      "file": "readme/checkout-coupon-en-desktop.jpg",
+      "route": "/en/challenges checkout dialog",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "test",
+      "capturedAt": "2026-11-11",
+      "state": "Local test runtime of branch claude/pr81-completion (main 67cc812 + checkout fixes) on a disposable PostgreSQL database; generated test wallet, 100% internal test coupon; development build without release manifest; no real payment"
+    },
+    {
+      "file": "readme/prop-dashboard-en-desktop.jpg",
+      "route": "/en/prop/dashboard",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "test",
+      "capturedAt": "2026-11-11",
+      "state": "Local test runtime of branch claude/pr81-completion (main 67cc812 + checkout fixes) on a disposable PostgreSQL database; generated test wallet, 100% internal test coupon; development build without release manifest; no real payment"
+    },
+    {
+      "file": "readme/prop-purchases-en-desktop.jpg",
+      "route": "/en/prop/purchases",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "test",
+      "capturedAt": "2026-11-11",
+      "state": "Local test runtime of branch claude/pr81-completion (main 67cc812 + checkout fixes) on a disposable PostgreSQL database; generated test wallet, 100% internal test coupon; development build without release manifest; no real payment"
+    },
+    {
+      "file": "readme/cms-coupons-list.jpg",
+      "route": "Directus /admin/content/coupons",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "test",
+      "capturedAt": "2026-11-11",
+      "state": "Local Directus 11.9.1 on the same disposable database; Commerce Admin test user; synthetic coupon and generated test wallet only"
+    },
+    {
+      "file": "readme/cms-coupon-form.jpg",
+      "route": "Directus /admin/content/coupons/+",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "test",
+      "capturedAt": "2026-11-11",
+      "state": "Local Directus 11.9.1 on the same disposable database; Commerce Admin test user; synthetic coupon and generated test wallet only"
+    },
+    {
+      "file": "readme/cms-coupon-detail.jpg",
+      "route": "Directus coupon item",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "test",
+      "capturedAt": "2026-11-11",
+      "state": "Local Directus 11.9.1 on the same disposable database; Commerce Admin test user; synthetic coupon and generated test wallet only"
+    }
   ],
   "finalIntegration": {
     "sourceCommit": "6c436e4d2215a930c0680c5e76cc7764787571a9",
@@ -6655,6 +7016,128 @@
         },
         "session": "anonymous",
         "sha256": "fbdc810b0f0e6efc2fd9f8efd008bc2fd032e3098d98b5db58cae8e8159e557e"
+      }
+    ]
+  },
+  "footprint": {
+    "branch": "agent/claude/hybrid-footprint",
+    "baseCommit": "b018c25f35ee1cfc3d0461e560d3e3014040b30f",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "source": "npm run build:web + apps/backend on isolated test port 8181, disposable database openfund_footprint_test_20261112, FOOTPRINT_ENABLED=1",
+    "capturedAt": "2026-11-11T22:43Z",
+    "marketData": "Live Gains (price, candles) and live Hyperliquid trades through the local footprint service; no fixtures; the outage capture aborts /api/footprint/* only",
+    "wallet": "Anonymous; no wallet",
+    "producer": "e2e/test-footprint.cjs",
+    "screenshots": [
+      {
+        "file": "footprint/outage-1440.png",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "session": "anonymous",
+        "state": "Footprint service unreachable: error chip, Gains candles unaffected",
+        "sha256": "eaafd452181e551f26c488f25e3a8633b527ae0e7d03457ff068c0499df663c5"
+      },
+      {
+        "file": "footprint/overlay-on-candles-1440.png",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "session": "anonymous",
+        "state": "Footprint overlay on untouched Gains candles",
+        "sha256": "f1ac980221fb9d326289dccba524a3448302cb6b14334a9e2dce054219534991"
+      },
+      {
+        "file": "footprint/style-absoluteDelta-1440.png",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "session": "anonymous",
+        "state": "Footprint chart style, Absolute Delta",
+        "sha256": "42e7b7c4ad75e8bcf7d9cf45221b8c772f33986e753e59e1686ec1a551a95a29"
+      },
+      {
+        "file": "footprint/style-bidAskLadder-1440.png",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "session": "anonymous",
+        "state": "Footprint chart style, Bid × Ask Ladder (default), BTC/USD 1m, cell numbers, POC, imbalance outlines, stat table",
+        "sha256": "468073827504713990773a7fc1d49ab657344b8401eea5f0560891639fa96d67"
+      },
+      {
+        "file": "footprint/style-bidAskProfile-1440.png",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "session": "anonymous",
+        "state": "Footprint chart style, Bid × Ask Profile",
+        "sha256": "9713f07f6f3747843dafaac9ed86581aa3bfae18165e918d52fa36ed5a3e329c"
+      },
+      {
+        "file": "footprint/style-deltaProfile-1440.png",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "session": "anonymous",
+        "state": "Footprint chart style, Delta Profile",
+        "sha256": "19e93d613b14e78482cee5ad54ac153ebeba7cfade564e07383c0b1bbce473e6"
+      },
+      {
+        "file": "footprint/style-fa-rtl-1440.png",
+        "route": "/fa/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "session": "anonymous",
+        "state": "Persian (RTL) terminal: bid column left, ask right, localized status chip",
+        "sha256": "1111b85cea025ef322400b411bade40a3581797b55c82742ab56bd15f3aa236a"
+      },
+      {
+        "file": "footprint/style-mobile-390.png",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "session": "anonymous",
+        "state": "style-mobile",
+        "sha256": "11f5caa7d5beae9e9bd316dec414179d33aca866e99bdc574e070661233c2e00"
+      },
+      {
+        "file": "footprint/style-multi-instance-1440.png",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "session": "anonymous",
+        "state": "Two instances (Within ladder + Left delta profile), CVD row and naked POC",
+        "sha256": "4938a24a6b5cbd4a2b51df644bccf5d1c9cb51d0a870abc3edcdc4475255a50f"
+      },
+      {
+        "file": "footprint/style-volumeProfile-1440.png",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "session": "anonymous",
+        "state": "Footprint chart style, Volume Profile",
+        "sha256": "6acbf7b8d6bf3530650a792e694a36b4a0ceebc03cf78b5b300381d739446ce0"
       }
     ]
   }

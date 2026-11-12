@@ -12,6 +12,28 @@
   Harness dependencies pinned to patched `ws` 8.22.2 and `viem` 2.57.16
   (GHSA-96hv-2xvq-fx4p); k6 dashboard HTML exports are no longer committed.
 
+- Hybrid footprint chart (branch `agent/claude/hybrid-footprint`, disabled by
+  default with `FOOTPRINT_ENABLED=0`; [Footprint](docs/integrations/FOOTPRINT.md),
+  ADR 0024):
+  - Gains stays the chart's price, candle and market source. Hyperliquid
+    executed trades (aggressor side, exact prices) drive a footprint built
+    only on Vela's public plugin SDK: a "Footprint" chart style and a
+    "Footprint" overlay. Five display modes, with Bid × Ask Ladder as the
+    default. POC, naked POC, value area, diagonal and stacked imbalances,
+    filters, a stat table, a visible-range profile and up to three instances.
+  - Footprint service: one shared Hyperliquid WebSocket per process, exact
+    one-minute per-price slices in `footprint_minutes` (with optional
+    `FOOTPRINT_DATABASE_URL`), recorded capture gaps, `/api/footprint/*`
+    history and SSE stream. It is read-only and isolated from the engine,
+    accounts and payments.
+  - Price compatibility: footprint prices are never shifted. Per-market
+    limits come from a measured Gains↔Hyperliquid basis, and the footprint
+    is flagged, hidden or marked stale accordingly. The status chip states
+    the offset.
+  - BTC, ETH, SOL, gold, silver, EUR/USD, GBP/USD and USD/JPY were verified
+    against live Hyperliquid metadata. History is captured from first run;
+    archive backfill is pending.
+
 - Production fix and terminal refinement (branch
   `agent/claude/production-fix-ui-refinement`):
   - Header controls: the theme switch is now a real box with the shared
