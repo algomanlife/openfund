@@ -1,0 +1,10 @@
+== run overload-recovery profile=uncapped stages=baseline,medium ramp=60s hold=300s const= cdn=0.95
+PROFILE=uncapped
+STAGES=baseline,medium
+start_ms=1794424414000
+end_ms=1794425396000
+RECOVERY_S=240
+RECOVERY_CHARTS=100
+RECOVERY_VISITORS=200
+MON_POOL_STOP=0
+STAGE_HOLD_S=300

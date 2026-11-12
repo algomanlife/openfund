@@ -1,0 +1,427 @@
+{
+ "run": "stair-render",
+ "env": {
+  "PROFILE": "render",
+  "STAGES": "baseline,low",
+  "start_ms": "1794422637000",
+  "end_ms": "1794422923000"
+ },
+ "startMs": 1794422637000,
+ "endMs": 1794422923000,
+ "stop": {
+  "t": 1794422923782,
+  "reason": "pg pool queue 520 waiting for 30 s",
+  "last": {
+   "t": 1794422923695,
+   "connections": {
+    "total": 16,
+    "max": 100,
+    "byState": {
+     "active": 2,
+     "idle:Client": 6,
+     "idle in transaction:Client": 2
+    },
+    "longestQueryS": 0
+   },
+   "lockWaits": 0,
+   "ungrantedLocks": 0,
+   "engineLoopPassesPs": 0,
+   "tps": 954,
+   "rollbacksPs": 0,
+   "deadlocks": 0,
+   "tempFiles": 0,
+   "tupReturnedPs": 4235,
+   "tupInsertedPs": 23,
+   "tupUpdatedPs": 339,
+   "cacheHit": 1,
+   "cpu": {
+    "backend": 26.2,
+    "backendRssMB": 204.9,
+    "postgres": 16.8,
+    "generators": 18.5,
+    "generatorsRssMB": 747.6
+   },
+   "raw": {
+    "c": "12266147",
+    "r": "5",
+    "d": 0,
+    "tf": 0,
+    "tr": "117890190",
+    "tfch": "89557374",
+    "ti": "87652",
+    "tu": "3895852",
+    "bh": "155676959",
+    "br": "142"
+   },
+   "loopCalls": 6
+  }
+ },
+ "stages": [
+  {
+   "stage": "baseline",
+   "charts": 100,
+   "visitors": 200,
+   "combined": 300,
+   "reached": true,
+   "window": {
+    "from": 1794422707000,
+    "to": 1794422872000
+   },
+   "http": {
+    "charts": {
+     "n": 10519,
+     "rps": 58.4,
+     "avg": 319,
+     "p50": 287.9,
+     "p95": 719.2,
+     "p99": 928.5,
+     "max": 1681,
+     "errPct": 0
+    },
+    "visitors": {
+     "n": 29883,
+     "rps": 166,
+     "avg": 14.1,
+     "p50": 0.2,
+     "p95": 76.9,
+     "p99": 361.8,
+     "max": 1262,
+     "errPct": 0
+    }
+   },
+   "endpoints": {
+    "context": {
+     "n": 7199,
+     "rps": 40,
+     "avg": 340.2,
+     "p50": 306.5,
+     "p95": 719.1,
+     "p99": 922.4,
+     "max": 1192,
+     "errPct": 0
+    },
+    "accounts": {
+     "n": 1202,
+     "rps": 6.7,
+     "avg": 324.3,
+     "p50": 298.9,
+     "p95": 742.3,
+     "p99": 975.4,
+     "max": 1236,
+     "errPct": 0
+    },
+    "ws_get": {
+     "n": 168,
+     "rps": 0.9,
+     "avg": 168,
+     "p50": 116.7,
+     "p95": 415.8,
+     "p99": 555.4,
+     "max": 644,
+     "errPct": 0
+    },
+    "ws_put": {
+     "n": 1167,
+     "rps": 6.5,
+     "avg": 207.3,
+     "p50": 186.9,
+     "p95": 533.9,
+     "p99": 707.8,
+     "max": 931,
+     "errPct": 0
+    },
+    "preview": {
+     "n": 213,
+     "rps": 1.2,
+     "avg": 183.1,
+     "p50": 132.4,
+     "p95": 505.9,
+     "p99": 599.7,
+     "max": 642,
+     "errPct": 0
+    },
+    "order": {
+     "n": 270,
+     "rps": 1.5,
+     "avg": 449.2,
+     "p50": 415.9,
+     "p95": 1020.9,
+     "p99": 1158,
+     "max": 1681,
+     "errPct": 0
+    },
+    "protection": {
+     "n": 226,
+     "rps": 1.3,
+     "avg": 283.1,
+     "p50": 222.5,
+     "p95": 725.1,
+     "p99": 1006.2,
+     "max": 1136,
+     "errPct": 0
+    },
+    "close": {
+     "n": 71,
+     "rps": 0.4,
+     "avg": 303.1,
+     "p50": 292.1,
+     "p95": 658.8,
+     "p99": 825.7,
+     "max": 835,
+     "errPct": 0
+    },
+    "state": {
+     "n": 2,
+     "rps": 0,
+     "avg": 211.3,
+     "p50": 211.3,
+     "p95": 212,
+     "p99": 212.1,
+     "max": 212,
+     "errPct": 0
+    },
+    "me": {
+     "n": 1,
+     "rps": 0,
+     "avg": 182.8,
+     "p50": 182.8,
+     "p95": 182.8,
+     "p99": 182.8,
+     "max": 183,
+     "errPct": 0
+    },
+    "v_document": {
+     "n": 1213,
+     "rps": 6.7,
+     "avg": 2.8,
+     "p50": 0.6,
+     "p95": 8.8,
+     "p99": 34.4,
+     "max": 85,
+     "errPct": 0
+    },
+    "v_asset": {
+     "n": 208,
+     "rps": 1.2,
+     "avg": 1,
+     "p50": 0.3,
+     "p95": 3.6,
+     "p99": 16.5,
+     "max": 28,
+     "errPct": 0
+    },
+    "v_legacy": {
+     "n": 24487,
+     "rps": 136,
+     "avg": 0.7,
+     "p50": 0.2,
+     "p95": 3.3,
+     "p99": 7.3,
+     "max": 81,
+     "errPct": 0
+    },
+    "v_runtime": {
+     "n": 1213,
+     "rps": 6.7,
+     "avg": 0.4,
+     "p50": 0.2,
+     "p95": 1.9,
+     "p99": 2.9,
+     "max": 21,
+     "errPct": 0
+    },
+    "v_api_public": {
+     "n": 2762,
+     "rps": 15.3,
+     "avg": 144.6,
+     "p50": 91.6,
+     "p95": 477.5,
+     "p99": 710.7,
+     "max": 1262,
+     "errPct": 0
+    }
+   },
+   "sse": {
+    "activeAvg": 100,
+    "target": 100,
+    "stalledMax": 0,
+    "drops": 0,
+    "reconnects": 0,
+    "errors": {},
+    "eventsPerSec": 213.72,
+    "dataPerSec": 213.72,
+    "gapP95": 746,
+    "gapP99": 834,
+    "gapMax": 1509,
+    "mdDelayP50": 126,
+    "mdDelayP95": 238,
+    "mdDelayP99": 248,
+    "mdDelayMax": 293,
+    "connectP95": null
+   },
+   "backend": {
+    "cpuAvg": 31.22,
+    "cpuMax": 41.6,
+    "rssMax": 235.5,
+    "heapMax": 135.6,
+    "eldP50": 1.14,
+    "eldP99": 2.36,
+    "eldMax": 88.21,
+    "poolWaitingAvg": 58.7,
+    "poolWaitingMax": 135,
+    "poolTotalMax": 10,
+    "poolMax": 10
+   },
+   "postgres": {
+    "connMax": 16,
+    "connLimit": 100,
+    "tpsAvg": 1465.92,
+    "cpuAvg": 25.45,
+    "cpuMax": 39.4,
+    "lockWaitsMax": 0,
+    "ungrantedLocksMax": 0,
+    "longestQueryS": 0.091227,
+    "deadlocks": 0,
+    "cacheHit": 1,
+    "engineLoopPassesPs": 0.01
+   },
+   "generators": {
+    "cpuAvg": 12.2,
+    "cpuMax": 76.5,
+    "rssMB": 700
+   }
+  },
+  {
+   "stage": "low",
+   "charts": 300,
+   "visitors": 500,
+   "combined": 800,
+   "reached": true,
+   "window": {
+    "from": 1794422947000,
+    "to": 1794423112000
+   },
+   "http": {
+    "charts": null,
+    "visitors": null
+   },
+   "endpoints": {
+    "context": null,
+    "accounts": null,
+    "ws_get": null,
+    "ws_put": null,
+    "preview": null,
+    "order": null,
+    "protection": null,
+    "close": null,
+    "state": null,
+    "me": null,
+    "v_document": null,
+    "v_asset": null,
+    "v_legacy": null,
+    "v_runtime": null,
+    "v_api_public": null
+   },
+   "sse": null,
+   "backend": {
+    "cpuAvg": 7.02,
+    "cpuMax": 11.6,
+    "rssMax": 255.4,
+    "heapMax": 123.8,
+    "eldP50": 1.15,
+    "eldP99": 1.79,
+    "eldMax": 76.48,
+    "poolWaitingAvg": 0,
+    "poolWaitingMax": 0,
+    "poolTotalMax": 1,
+    "poolMax": 10
+   },
+   "postgres": null,
+   "generators": null
+  }
+ ],
+ "k6Extra": {
+  "chart_save_ms": {
+   "med": 203.3315,
+   "p(90)": 1060.9153000000001,
+   "p(95)": 1311.2591499999999,
+   "p(99)": 1821.6906999999999,
+   "max": 2331.353,
+   "count": 1430,
+   "avg": 349.816451048951,
+   "min": 0.655
+  },
+  "workspace_restore_ms": {
+   "avg": 450.1614669811318,
+   "min": 0.78,
+   "med": 216.993,
+   "p(90)": 1275.2198999999998,
+   "p(95)": 1560.1342999999997,
+   "p(99)": 1920.7511199999997,
+   "max": 2320.944,
+   "count": 424
+  },
+  "order_submit_ms": {
+   "p(99)": 3852.66464,
+   "max": 3979.969,
+   "count": 313,
+   "avg": 784.6576038338658,
+   "min": 3.06,
+   "med": 428.114,
+   "p(90)": 2432.377,
+   "p(95)": 3194.5421999999994
+  },
+  "sltp_update_ms": {
+   "max": 2313.419,
+   "count": 332,
+   "avg": 423.9616807228915,
+   "min": 1.187,
+   "med": 259.29,
+   "p(90)": 1062.6632,
+   "p(95)": 1586.88315,
+   "p(99)": 2022.6002899999996
+  }
+ },
+ "integrity": {
+  "t": 1794422958564,
+  "violations": 0,
+  "checks": {
+   "workspace_owner_mismatch": 0,
+   "workspace_malformed": 0,
+   "workspace_symbol_mismatch": 0,
+   "workspace_over_entry_limit": 0,
+   "duplicate_idempotency_keys": 0,
+   "filled_orders_without_position": 0,
+   "positions_sharing_order": 0,
+   "position_invalid_numbers": 0,
+   "position_open_with_close_fields": 0,
+   "position_closed_without_exit": 0,
+   "position_cross_user": 0,
+   "sltp_inverted": 0,
+   "sltp_last_update_not_applied": 0,
+   "account_negative_balance": 0,
+   "account_used_margin_drift": 0,
+   "duplicate_demo_funding": 0
+  },
+  "counts": {
+   "users": 1500,
+   "workspace_entries": 3329,
+   "orders": 4273,
+   "positions": 4509,
+   "open_positions": 1747,
+   "sltp_updates": 3047
+  }
+ },
+ "sltp": {
+  "n": 1,
+  "p50": 16525,
+  "p95": 16525,
+  "p99": 16525,
+  "max": 16525
+ },
+ "k6Counts": {
+  "integrityViolations": 0,
+  "timeouts": 0,
+  "conflictRate": 0
+ }
+}

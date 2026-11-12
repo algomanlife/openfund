@@ -1,0 +1,2205 @@
+{
+ "/fa/home": [
+  {
+   "path": "/fa/home",
+   "type": "document",
+   "status": 200,
+   "bytes": 3960,
+   "cache": "no-cache, must-revalidate"
+  },
+  {
+   "path": "/assets/mark-mint.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 56033,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/index-D1IC5Rif.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 190168,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/runtime-config.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 265,
+   "cache": "no-store"
+  },
+  {
+   "path": "/assets/index-B1xxeXPV.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 2300435,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/discord-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1310,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/wallet.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 42898,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/style.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 77216,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/telegram-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 2051,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/irancell-600.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 76336,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-500.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80764,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 351884,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/assets-Q6ZU7ZJ5-P8HioiAD.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 23619,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/login-UP3DZBGS-Db_wM5oQ.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 11995,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/ubuntu-700.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 331612,
+   "cache": "no-cache"
+  }
+ ],
+ "/en/home": [
+  {
+   "path": "/en/home",
+   "type": "document",
+   "status": 200,
+   "bytes": 3960,
+   "cache": "no-cache, must-revalidate"
+  },
+  {
+   "path": "/runtime-config.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 265,
+   "cache": "no-store"
+  },
+  {
+   "path": "/assets/index-D1IC5Rif.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 190168,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/mark-mint.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 56033,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/index-B1xxeXPV.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 2300435,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/legacy/style.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 77216,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/wallet.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 42898,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/telegram-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 2051,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/discord-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1310,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 351884,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-700.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 331612,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/assets-Q6ZU7ZJ5-P8HioiAD.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 23619,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/login-UP3DZBGS-Db_wM5oQ.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 11995,
+   "cache": "public, max-age=31536000, immutable"
+  }
+ ],
+ "/fa/challenges": [
+  {
+   "path": "/fa/challenges",
+   "type": "document",
+   "status": 200,
+   "bytes": 3960,
+   "cache": "no-cache, must-revalidate"
+  },
+  {
+   "path": "/runtime-config.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 265,
+   "cache": "no-store"
+  },
+  {
+   "path": "/assets/mark-mint.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 56033,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/index-D1IC5Rif.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 190168,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/index-B1xxeXPV.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 2300435,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/vela-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 275,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/tradingview-mark.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 303,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/gains-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1342,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/depay-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 10163,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/liara-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 3046,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/bitpin-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 382,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/render-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 508,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/legacy/style.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 77216,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/wallet.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 42898,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/telegram-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 2051,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/discord-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1310,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/purchases/plans",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 893,
+   "cache": ""
+  },
+  {
+   "path": "/assets/irancell-600.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 76336,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-500.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80764,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-700.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 331612,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 351884,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/assets-Q6ZU7ZJ5-P8HioiAD.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 23619,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/login-UP3DZBGS-Db_wM5oQ.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 11995,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/legacy/locale.js",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 3781,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/app.js",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 6391,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/market.js",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 15635,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/features.js",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 9259,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/motion.js",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 8354,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/translations.json?v=15",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 50535,
+   "cache": "no-cache"
+  }
+ ],
+ "/en/challenges": [
+  {
+   "path": "/en/challenges",
+   "type": "document",
+   "status": 200,
+   "bytes": 3960,
+   "cache": "no-cache, must-revalidate"
+  },
+  {
+   "path": "/runtime-config.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 265,
+   "cache": "no-store"
+  },
+  {
+   "path": "/assets/index-D1IC5Rif.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 190168,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/mark-mint.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 56033,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/index-B1xxeXPV.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 2300435,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/vela-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 275,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/gains-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1342,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/tradingview-mark.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 303,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/depay-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 10163,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/render-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 508,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/liara-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 3046,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/bitpin-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 382,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/wallet.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 42898,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/style.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 77216,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/telegram-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 2051,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/discord-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1310,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/purchases/plans",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 893,
+   "cache": ""
+  },
+  {
+   "path": "/assets/irancell-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-700.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 331612,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 351884,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/assets-Q6ZU7ZJ5-P8HioiAD.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 23619,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/login-UP3DZBGS-Db_wM5oQ.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 11995,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/legacy/locale.js",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 3781,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/features.js",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 9259,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/app.js",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 6391,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/motion.js",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 8354,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/market.js",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 15635,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/translations.json?v=15",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 50535,
+   "cache": "no-cache"
+  }
+ ],
+ "/fa/markets": [
+  {
+   "path": "/fa/markets",
+   "type": "document",
+   "status": 200,
+   "bytes": 3960,
+   "cache": "no-cache, must-revalidate"
+  },
+  {
+   "path": "/runtime-config.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 265,
+   "cache": "no-store"
+  },
+  {
+   "path": "/assets/index-D1IC5Rif.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 190168,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/mark-mint.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 56033,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/index-B1xxeXPV.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 2300435,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/legacy/style.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 77216,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/wallet.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 42898,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/vela-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 275,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/gains-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1342,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/tradingview-mark.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 303,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/depay-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 10163,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/liara-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 3046,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/render-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 508,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/bitpin-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 382,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/irancell-500.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80764,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-600.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 76336,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-700.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 331612,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 351884,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/gains-adapter.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 14474,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/telegram-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 2051,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/discord-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1310,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/login-UP3DZBGS-Db_wM5oQ.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 11995,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/assets-Q6ZU7ZJ5-P8HioiAD.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 23619,
+   "cache": "public, max-age=31536000, immutable"
+  }
+ ],
+ "/en/markets": [
+  {
+   "path": "/en/markets",
+   "type": "document",
+   "status": 200,
+   "bytes": 3960,
+   "cache": "no-cache, must-revalidate"
+  },
+  {
+   "path": "/runtime-config.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 265,
+   "cache": "no-store"
+  },
+  {
+   "path": "/assets/index-D1IC5Rif.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 190168,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/mark-mint.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 56033,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/index-B1xxeXPV.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 2300435,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/legacy/wallet.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 42898,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/style.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 77216,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/gains-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1342,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/vela-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 275,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/tradingview-mark.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 303,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/depay-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 10163,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/render-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 508,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/liara-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 3046,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/bitpin-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 382,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 351884,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/ubuntu-700.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 331612,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/telegram-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 2051,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/discord-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1310,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/gains-adapter.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 14474,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/login-UP3DZBGS-Db_wM5oQ.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 11995,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/assets-Q6ZU7ZJ5-P8HioiAD.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 23619,
+   "cache": "public, max-age=31536000, immutable"
+  }
+ ],
+ "/fa/rulebook": [
+  {
+   "path": "/fa/rulebook",
+   "type": "document",
+   "status": 200,
+   "bytes": 3960,
+   "cache": "no-cache, must-revalidate"
+  },
+  {
+   "path": "/runtime-config.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 265,
+   "cache": "no-store"
+  },
+  {
+   "path": "/assets/index-D1IC5Rif.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 190168,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/mark-mint.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 56033,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/index-B1xxeXPV.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 2300435,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/gains-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1342,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/vela-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 275,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/wallet.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 42898,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/style.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 77216,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/tradingview-mark.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 303,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/depay-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 10163,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/render-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 508,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/liara-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 3046,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/bitpin-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 382,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-600.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 76336,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-500.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80764,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/ubuntu-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 351884,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/telegram-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 2051,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/discord-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1310,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/login-UP3DZBGS-Db_wM5oQ.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 11995,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/assets-Q6ZU7ZJ5-P8HioiAD.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 23619,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/ubuntu-700.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 331612,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "no-cache"
+  }
+ ],
+ "/fa/transparency": [
+  {
+   "path": "/fa/transparency",
+   "type": "document",
+   "status": 200,
+   "bytes": 3960,
+   "cache": "no-cache, must-revalidate"
+  },
+  {
+   "path": "/runtime-config.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 265,
+   "cache": "no-store"
+  },
+  {
+   "path": "/assets/mark-mint.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 56033,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/index-D1IC5Rif.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 190168,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/index-B1xxeXPV.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 2300435,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/gains-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1342,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/style.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 77216,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/wallet.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 42898,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/vela-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 275,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/tradingview-mark.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 303,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/depay-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 10163,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/render-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 508,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/liara-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 3046,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/bitpin-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 382,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/irancell-600.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 76336,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-500.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80764,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 351884,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/telegram-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 2051,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/discord-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1310,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-700.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 331612,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/assets-Q6ZU7ZJ5-P8HioiAD.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 23619,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/login-UP3DZBGS-Db_wM5oQ.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 11995,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/economy/transparency",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 4003,
+   "cache": "public, max-age=60"
+  },
+  {
+   "path": "/assets/irancell-700.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 75632,
+   "cache": "no-cache"
+  }
+ ],
+ "/fa/faq": [
+  {
+   "path": "/fa/faq",
+   "type": "document",
+   "status": 200,
+   "bytes": 3960,
+   "cache": "no-cache, must-revalidate"
+  },
+  {
+   "path": "/runtime-config.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 265,
+   "cache": "no-store"
+  },
+  {
+   "path": "/assets/mark-mint.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 56033,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/index-D1IC5Rif.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 190168,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/index-B1xxeXPV.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 2300435,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/gains-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1342,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/vela-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 275,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/style.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 77216,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/wallet.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 42898,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/tradingview-mark.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 303,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/depay-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 10163,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/render-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 508,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/liara-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 3046,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/bitpin-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 382,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/irancell-500.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80764,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-600.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 76336,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 351884,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/telegram-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 2051,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/discord-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1310,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-700.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 331612,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/assets-Q6ZU7ZJ5-P8HioiAD.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 23619,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/login-UP3DZBGS-Db_wM5oQ.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 11995,
+   "cache": "public, max-age=31536000, immutable"
+  }
+ ],
+ "/en/learn": [
+  {
+   "path": "/en/learn",
+   "type": "document",
+   "status": 200,
+   "bytes": 3960,
+   "cache": "no-cache, must-revalidate"
+  },
+  {
+   "path": "/runtime-config.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 265,
+   "cache": "no-store"
+  },
+  {
+   "path": "/assets/index-D1IC5Rif.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 190168,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/mark-mint.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 56033,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/index-B1xxeXPV.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 2300435,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/gains-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1342,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/vela-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 275,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/style.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 77216,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/wallet.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 42898,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/tradingview-mark.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 303,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/depay-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 10163,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/render-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 508,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/liara-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 3046,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/bitpin-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 382,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 351884,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/ubuntu-700.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 331612,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/telegram-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 2051,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/discord-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1310,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/assets-Q6ZU7ZJ5-P8HioiAD.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 23619,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/login-UP3DZBGS-Db_wM5oQ.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 11995,
+   "cache": "public, max-age=31536000, immutable"
+  }
+ ],
+ "/fa/governance": [
+  {
+   "path": "/fa/governance",
+   "type": "document",
+   "status": 200,
+   "bytes": 3960,
+   "cache": "no-cache, must-revalidate"
+  },
+  {
+   "path": "/runtime-config.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 265,
+   "cache": "no-store"
+  },
+  {
+   "path": "/assets/mark-mint.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 56033,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/index-D1IC5Rif.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 190168,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/index-B1xxeXPV.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 2300435,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/gains-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1342,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/style.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 77216,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/vela-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 275,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/wallet.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 42898,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/tradingview-mark.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 303,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/depay-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 10163,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/render-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 508,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/liara-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 3046,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/bitpin-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 382,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/irancell-500.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80764,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-600.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 76336,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 351884,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/telegram-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 2051,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/discord-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1310,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/governance/council",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 838,
+   "cache": ""
+  },
+  {
+   "path": "/governance/overview",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 1302,
+   "cache": "no-store"
+  },
+  {
+   "path": "/governance/proposals?limit=50",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 48,
+   "cache": ""
+  },
+  {
+   "path": "/governance/decisions?limit=50",
+   "type": "fetch",
+   "status": 200,
+   "bytes": 29,
+   "cache": ""
+  },
+  {
+   "path": "/assets/ubuntu-700.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 331612,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/assets-Q6ZU7ZJ5-P8HioiAD.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 23619,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/login-UP3DZBGS-Db_wM5oQ.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 11995,
+   "cache": "public, max-age=31536000, immutable"
+  }
+ ],
+ "/en/whitepaper": [
+  {
+   "path": "/en/whitepaper",
+   "type": "document",
+   "status": 200,
+   "bytes": 3960,
+   "cache": "no-cache, must-revalidate"
+  },
+  {
+   "path": "/runtime-config.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 265,
+   "cache": "no-store"
+  },
+  {
+   "path": "/assets/mark-mint.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 56033,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/index-D1IC5Rif.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 190168,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/index-B1xxeXPV.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 2300435,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/Whitepaper-CowTGKxQ.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 23630,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/Whitepaper-EdUR5boj.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 168323,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/legacy/style.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 77216,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/wallet.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 42898,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/gains-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1342,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/vela-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 275,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/tradingview-mark.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 303,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/depay-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 10163,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/render-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 508,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/liara-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 3046,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/bitpin-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 382,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 351884,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-700.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 331612,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-500.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80764,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/discord-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1310,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/telegram-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 2051,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/assets-Q6ZU7ZJ5-P8HioiAD.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 23619,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/login-UP3DZBGS-Db_wM5oQ.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 11995,
+   "cache": "public, max-age=31536000, immutable"
+  }
+ ],
+ "/fa/tools": [
+  {
+   "path": "/fa/tools",
+   "type": "document",
+   "status": 200,
+   "bytes": 3960,
+   "cache": "no-cache, must-revalidate"
+  },
+  {
+   "path": "/runtime-config.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 265,
+   "cache": "no-store"
+  },
+  {
+   "path": "/assets/mark-mint.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 56033,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/index-D1IC5Rif.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 190168,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/index-B1xxeXPV.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 2300435,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/legacy/style.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 77216,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/gains-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1342,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/legacy/wallet.css?v=b018c25f35ee",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 42898,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/vela-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 275,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/tradingview-mark.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 303,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/depay-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 10163,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/render-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 508,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/bitpin-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 382,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/liara-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 3046,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-500.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80764,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/irancell-600.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 76336,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 351884,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/telegram-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 2051,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/discord-logo.svg",
+   "type": "image",
+   "status": 200,
+   "bytes": 1310,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/irancell-400.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 80760,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/ubuntu-700.ttf",
+   "type": "font",
+   "status": 200,
+   "bytes": 331612,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/login-UP3DZBGS-Db_wM5oQ.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 11995,
+   "cache": "public, max-age=31536000, immutable"
+  },
+  {
+   "path": "/assets/assets-Q6ZU7ZJ5-P8HioiAD.js",
+   "type": "script",
+   "status": 200,
+   "bytes": 23619,
+   "cache": "public, max-age=31536000, immutable"
+  }
+ ]
+}

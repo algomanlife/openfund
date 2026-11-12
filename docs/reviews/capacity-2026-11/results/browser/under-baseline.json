@@ -1,0 +1,699 @@
+{
+ "t": 1794424611923,
+ "browsers": 4,
+ "seconds": 90,
+ "results": [
+  {
+   "user": 1400,
+   "nav": {
+    "ttfb": 30.100000023841858,
+    "dcl": 271.2000000476837,
+    "load": 271.2000000476837
+   },
+   "chartReadyMs": 734,
+   "restoredMs": 790,
+   "fpsMedian": 60,
+   "fpsMin": 59.8,
+   "heapMBMax": 26.8,
+   "heapMBFirst": 22.9,
+   "heapMBLast": 26.8,
+   "longTaskMs": 0,
+   "samples": [
+    {
+     "t": 1794424523470,
+     "fps": 59.8,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 22.9,
+     "nodes": 4884,
+     "overlays": 0
+    },
+    {
+     "t": 1794424528958,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 20.9,
+     "nodes": 4054,
+     "overlays": 0
+    },
+    {
+     "t": 1794424534459,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 18.5,
+     "nodes": 4370,
+     "overlays": 0
+    },
+    {
+     "t": 1794424539944,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 19.4,
+     "nodes": 4292,
+     "overlays": 0
+    },
+    {
+     "t": 1794424545564,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 19.7,
+     "nodes": 3460,
+     "overlays": 0
+    },
+    {
+     "t": 1794424551080,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 20.9,
+     "nodes": 4809,
+     "overlays": 0
+    },
+    {
+     "t": 1794424556579,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 21.1,
+     "nodes": 3838,
+     "overlays": 0
+    },
+    {
+     "t": 1794424562191,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 22.8,
+     "nodes": 3992,
+     "overlays": 0
+    },
+    {
+     "t": 1794424567704,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 23,
+     "nodes": 4039,
+     "overlays": 0
+    },
+    {
+     "t": 1794424573190,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 22.3,
+     "nodes": 4476,
+     "overlays": 0
+    },
+    {
+     "t": 1794424578679,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 23.6,
+     "nodes": 4588,
+     "overlays": 0
+    },
+    {
+     "t": 1794424584219,
+     "fps": 60.1,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 24.2,
+     "nodes": 5097,
+     "overlays": 0
+    },
+    {
+     "t": 1794424589707,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 24.7,
+     "nodes": 4625,
+     "overlays": 0
+    },
+    {
+     "t": 1794424595236,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 24.4,
+     "nodes": 3932,
+     "overlays": 0
+    },
+    {
+     "t": 1794424600828,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 24.6,
+     "nodes": 4537,
+     "overlays": 0
+    },
+    {
+     "t": 1794424606347,
+     "fps": 60.2,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 24.5,
+     "nodes": 4825,
+     "overlays": 0
+    },
+    {
+     "t": 1794424611853,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 26.8,
+     "nodes": 4675,
+     "overlays": 0
+    }
+   ],
+   "errors": [],
+   "blocked": []
+  },
+  {
+   "user": 1401,
+   "nav": {
+    "ttfb": 33.59999990463257,
+    "dcl": 271.1999999284744,
+    "load": 271.1999999284744
+   },
+   "chartReadyMs": 736,
+   "restoredMs": 800,
+   "fpsMedian": 60,
+   "fpsMin": 59.2,
+   "heapMBMax": 26.3,
+   "heapMBFirst": 24.1,
+   "heapMBLast": 26.3,
+   "longTaskMs": 76,
+   "samples": [
+    {
+     "t": 1794424523516,
+     "fps": 59.2,
+     "longTasks": 1,
+     "longMs": 76,
+     "heapMB": 24.1,
+     "nodes": 5006,
+     "overlays": 0
+    },
+    {
+     "t": 1794424528959,
+     "fps": 60.1,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 20.5,
+     "nodes": 3979,
+     "overlays": 0
+    },
+    {
+     "t": 1794424534464,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 17.6,
+     "nodes": 4211,
+     "overlays": 0
+    },
+    {
+     "t": 1794424539933,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 18.4,
+     "nodes": 3768,
+     "overlays": 0
+    },
+    {
+     "t": 1794424545551,
+     "fps": 59.8,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 20.1,
+     "nodes": 4419,
+     "overlays": 0
+    },
+    {
+     "t": 1794424551038,
+     "fps": 60.1,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 21.7,
+     "nodes": 3742,
+     "overlays": 0
+    },
+    {
+     "t": 1794424556547,
+     "fps": 60.1,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 19.7,
+     "nodes": 3699,
+     "overlays": 0
+    },
+    {
+     "t": 1794424562105,
+     "fps": 60.1,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 21.5,
+     "nodes": 3823,
+     "overlays": 0
+    },
+    {
+     "t": 1794424567639,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 22.2,
+     "nodes": 3809,
+     "overlays": 0
+    },
+    {
+     "t": 1794424573082,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 21.8,
+     "nodes": 4300,
+     "overlays": 0
+    },
+    {
+     "t": 1794424578569,
+     "fps": 60.1,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 22.7,
+     "nodes": 5220,
+     "overlays": 0
+    },
+    {
+     "t": 1794424584097,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 23.6,
+     "nodes": 4382,
+     "overlays": 0
+    },
+    {
+     "t": 1794424589543,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 24.6,
+     "nodes": 4967,
+     "overlays": 0
+    },
+    {
+     "t": 1794424595097,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 24,
+     "nodes": 4300,
+     "overlays": 0
+    },
+    {
+     "t": 1794424600596,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 24.9,
+     "nodes": 4129,
+     "overlays": 0
+    },
+    {
+     "t": 1794424606102,
+     "fps": 60.1,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 26,
+     "nodes": 4275,
+     "overlays": 0
+    },
+    {
+     "t": 1794424611614,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 26.3,
+     "nodes": 4247,
+     "overlays": 0
+    }
+   ],
+   "errors": [],
+   "blocked": []
+  },
+  {
+   "user": 1402,
+   "nav": {
+    "ttfb": 25.199999928474426,
+    "dcl": 272.89999997615814,
+    "load": 273
+   },
+   "chartReadyMs": 736,
+   "restoredMs": 801,
+   "fpsMedian": 60,
+   "fpsMin": 59.3,
+   "heapMBMax": 26.6,
+   "heapMBFirst": 23.9,
+   "heapMBLast": 26.6,
+   "longTaskMs": 83,
+   "samples": [
+    {
+     "t": 1794424523540,
+     "fps": 59.3,
+     "longTasks": 1,
+     "longMs": 83,
+     "heapMB": 23.9,
+     "nodes": 5009,
+     "overlays": 0
+    },
+    {
+     "t": 1794424529029,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 19.3,
+     "nodes": 3832,
+     "overlays": 0
+    },
+    {
+     "t": 1794424534496,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 19,
+     "nodes": 4250,
+     "overlays": 0
+    },
+    {
+     "t": 1794424539987,
+     "fps": 60.1,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 19.6,
+     "nodes": 3969,
+     "overlays": 0
+    },
+    {
+     "t": 1794424545627,
+     "fps": 59.8,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 19.7,
+     "nodes": 3479,
+     "overlays": 0
+    },
+    {
+     "t": 1794424551127,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 20.9,
+     "nodes": 4692,
+     "overlays": 0
+    },
+    {
+     "t": 1794424556612,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 21,
+     "nodes": 3626,
+     "overlays": 0
+    },
+    {
+     "t": 1794424562243,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 21.9,
+     "nodes": 3931,
+     "overlays": 0
+    },
+    {
+     "t": 1794424567774,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 22.4,
+     "nodes": 4033,
+     "overlays": 0
+    },
+    {
+     "t": 1794424573258,
+     "fps": 59.8,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 23.1,
+     "nodes": 4408,
+     "overlays": 0
+    },
+    {
+     "t": 1794424578742,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 23.6,
+     "nodes": 4602,
+     "overlays": 0
+    },
+    {
+     "t": 1794424584237,
+     "fps": 60.1,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 23,
+     "nodes": 4405,
+     "overlays": 0
+    },
+    {
+     "t": 1794424589740,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 25.7,
+     "nodes": 5017,
+     "overlays": 0
+    },
+    {
+     "t": 1794424595233,
+     "fps": 60.1,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 25.2,
+     "nodes": 4094,
+     "overlays": 0
+    },
+    {
+     "t": 1794424600822,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 25.5,
+     "nodes": 4081,
+     "overlays": 0
+    },
+    {
+     "t": 1794424606321,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 25.9,
+     "nodes": 4396,
+     "overlays": 0
+    },
+    {
+     "t": 1794424611808,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 26.6,
+     "nodes": 5241,
+     "overlays": 0
+    }
+   ],
+   "errors": [],
+   "blocked": []
+  },
+  {
+   "user": 1403,
+   "nav": {
+    "ttfb": 24.200000047683716,
+    "dcl": 271.7000000476837,
+    "load": 271.7000000476837
+   },
+   "chartReadyMs": 754,
+   "restoredMs": 798,
+   "fpsMedian": 60,
+   "fpsMin": 59.3,
+   "heapMBMax": 26.2,
+   "heapMBFirst": 22.7,
+   "heapMBLast": 26.2,
+   "longTaskMs": 82,
+   "samples": [
+    {
+     "t": 1794424523537,
+     "fps": 59.3,
+     "longTasks": 1,
+     "longMs": 82,
+     "heapMB": 22.7,
+     "nodes": 4978,
+     "overlays": 0
+    },
+    {
+     "t": 1794424529012,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 21.5,
+     "nodes": 4413,
+     "overlays": 0
+    },
+    {
+     "t": 1794424534526,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 19.2,
+     "nodes": 3841,
+     "overlays": 0
+    },
+    {
+     "t": 1794424540011,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 19.5,
+     "nodes": 4326,
+     "overlays": 0
+    },
+    {
+     "t": 1794424545630,
+     "fps": 60.2,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 19.5,
+     "nodes": 3809,
+     "overlays": 0
+    },
+    {
+     "t": 1794424551135,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 21,
+     "nodes": 4960,
+     "overlays": 0
+    },
+    {
+     "t": 1794424556652,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 20.6,
+     "nodes": 3746,
+     "overlays": 0
+    },
+    {
+     "t": 1794424562263,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 21.6,
+     "nodes": 4016,
+     "overlays": 0
+    },
+    {
+     "t": 1794424567749,
+     "fps": 60.2,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 23.2,
+     "nodes": 4024,
+     "overlays": 0
+    },
+    {
+     "t": 1794424573241,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 22.8,
+     "nodes": 4413,
+     "overlays": 0
+    },
+    {
+     "t": 1794424578712,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 23.5,
+     "nodes": 4370,
+     "overlays": 0
+    },
+    {
+     "t": 1794424584220,
+     "fps": 60.1,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 24,
+     "nodes": 4790,
+     "overlays": 0
+    },
+    {
+     "t": 1794424589722,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 23.6,
+     "nodes": 4461,
+     "overlays": 0
+    },
+    {
+     "t": 1794424595237,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 24.3,
+     "nodes": 5673,
+     "overlays": 0
+    },
+    {
+     "t": 1794424600817,
+     "fps": 59.9,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 25.5,
+     "nodes": 4322,
+     "overlays": 0
+    },
+    {
+     "t": 1794424606321,
+     "fps": 60.1,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 25.8,
+     "nodes": 4617,
+     "overlays": 0
+    },
+    {
+     "t": 1794424611808,
+     "fps": 60,
+     "longTasks": 0,
+     "longMs": 0,
+     "heapMB": 26.2,
+     "nodes": 4563,
+     "overlays": 0
+    }
+   ],
+   "errors": [],
+   "blocked": []
+  }
+ ]
+}

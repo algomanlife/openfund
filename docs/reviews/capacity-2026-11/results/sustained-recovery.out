@@ -1,0 +1,12 @@
+== run sustained-recovery profile=uncapped stages=low,medium ramp=60s hold=420s const= cdn=0.95
+[market-data] ws subscribed
+sltp: {"n":0,"p50":null,"p95":null,"p99":null,"max":null}
+integrity exit 0 ("violations": 0)
+STOPPED: {"t":1794424364357,"reason":"pg pool queue 352 waiting for 30 s","last":{"t":1794424364303,"connections":{"total":16,"max":100,"byState":{"active:Client":1,"active":1,"idle:Client":5,"idle in transaction:Client":1,"idle in transaction":2},"longestQueryS":0},"lockWaits":0,"ungrantedLocks":0,"engineLo
+==> <workspace>/capacity/results/sustained-recovery/k6-charts.log <==
+charts: 21942 req, failed 0.00%, integrity 0
+time="2026-11-11T23:12:44+04:00" level=error msg="test run was aborted because k6 received a 'interrupt' signal"
+
+==> <workspace>/capacity/results/sustained-recovery/k6-visitors.log <==
+visitors: 56217 req, failed 0.00%
+time="2026-11-11T23:12:44+04:00" level=error msg="test run was aborted because k6 received a 'interrupt' signal"

@@ -1,0 +1,12 @@
+{
+  "name": "openfund-capacity-harness",
+  "private": true,
+  "type": "module",
+  "description": "Isolated load, stress and capacity harness for Openfund (k6 + Node + Playwright). Never targets production.",
+  "dependencies": {
+    "pg": "8.16.3",
+    "playwright": "1.65.0",
+    "viem": "2.57.16",
+    "ws": "8.22.2"
+  }
+}

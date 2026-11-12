@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Capacity assessment (branch `agent/claude/capacity-assessment`): isolated
+  k6 + SSE + Playwright capacity harness (`scripts/capacity/`) and measured
+  report ([Capacity assessment 2026-11](docs/reviews/capacity-2026-11/REPORT.md)).
+  Measured: 100 chart users + 200 visitors stable on one uncapped core; not
+  stable at that stage under a Render-equivalent CPU quota; first bottleneck is
+  per-stream SSE database polling on the 10-connection pool and the serial
+  engine loop. No application code changed.
+  Harness dependencies pinned to patched `ws` 8.22.2 and `viem` 2.57.16
+  (GHSA-96hv-2xvq-fx4p); k6 dashboard HTML exports are no longer committed.
+
 - Hybrid footprint chart (branch `agent/claude/hybrid-footprint`, disabled by
   default with `FOOTPRINT_ENABLED=0`; [Footprint](docs/integrations/FOOTPRINT.md),
   ADR 0024):
