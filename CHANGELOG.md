@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- TypeScript 7 (branch `agent/claude/typescript-7`): `npm run typecheck` in
+  `apps/web-react` moves from TypeScript 5.9.3 to 7.0.2 (native compiler,
+  about 1.4 s per run). TypeScript 7 no longer ships the stable JavaScript
+  compiler API, which `scripts/docs/check-language.mjs` uses to read comments;
+  that scanner now loads the pinned `typescript-js-api` alias
+  (`npm:typescript@6.0.3`, the newest stable release with the API). Vite and
+  esbuild do not use `tsc`, so build output is unaffected.
+
 - Community, footer, platform motion and responsive navigation (branch
   `agent/claude/community-motion-responsive-ui`):
   - Community: Telegram is the only public community action (home, hero,
