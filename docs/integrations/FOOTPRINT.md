@@ -1,7 +1,10 @@
 # Footprint chart — Gains price, Hyperliquid order flow
 
-Status: **Implemented on branch `agent/claude/hybrid-footprint`, not deployed.**
-Disabled by default (`FOOTPRINT_ENABLED=0`). Decision record:
+Status: **Enabled for production by owner request (2026-11-12).** The code
+merged in PR #90; the Render Blueprint sets `FOOTPRINT_ENABLED=1` on the
+`openfund` service. The application default outside the Blueprint stays off
+(`.env.example`). Production acceptance is recorded in the activation pull
+request. Decision record:
 [ADR 0024](../decisions/0024-hybrid-footprint-chart.md).
 
 ## Boundary

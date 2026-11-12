@@ -112,8 +112,8 @@ services:
       - key: SESSION_TTL_HOURS
         value: "168"
       - key: FOOTPRINT_ENABLED
-        value: "0"              # Footprint chart (Hyperliquid order-flow analytics). "1" enables it;
-                                # off by default until the owner approves the production rollout.
+        value: "1"              # Footprint chart (Hyperliquid order-flow analytics), enabled on owner
+                                # request 2026-11-12. "0" turns it off (chart falls back to candles).
       - key: FOOTPRINT_DATABASE_URL
         sync: false             # optional dedicated market-data database; unset = footprint_* tables
                                 # in the main database (self-contained, no foreign keys)

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Footprint activation (branch `agent/claude/footprint-activation`): the
+  Render Blueprint sets `FOOTPRINT_ENABLED=1` on `openfund`, on the owner's
+  request, so the terminal offers Chart Style → Footprint and the Footprint
+  overlay (default Bid × Ask Ladder) with live Hyperliquid order flow over
+  Gains candles. No code, schema, retention or stream-capacity change. Gains
+  remains the price and candle source; trading, evaluation and PnL are
+  untouched. History starts when the service first runs in production.
+
 - Footprint archive importer (branch `agent/claude/footprint-archive-import`;
   [Footprint](docs/integrations/FOOTPRINT.md#archive-importer-prepared-not-yet-run-against-real-files)):
   `apps/backend/footprint/archive.js` and `scripts/footprint/import-archive.mjs`
