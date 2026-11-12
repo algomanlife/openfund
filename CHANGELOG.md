@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Repository: stop tracking 92 stale generated `react/assets/` files that
+  were re-committed by `afe173f` despite `.gitignore`; a fresh `build:web`
+  deletes all of them, so nothing served changes. A release test now fails if
+  any `react/` path is tracked
+  ([hygiene record](docs/development/REPOSITORY_HYGIENE.md#regression-fixed-on-2026-11-12)).
 - Terminal and Prop UI refinement (branch `agent/claude/terminal-prop-ui-refinement`,
   [ADR 0025](docs/decisions/0025-prop-leverage-sizing-and-economic-calendar.md)):
   BUY/SELL markers on the candle of each confirmed Prop fill (grouped with a
