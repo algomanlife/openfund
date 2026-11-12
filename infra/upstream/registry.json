@@ -242,8 +242,8 @@
       "official_source": "https://github.com/directus/directus",
       "license": "MSCL-1.0-GPL from 12.0.0 (BUSL-1.1 before); licence tiers enforced from 12.0.0",
       "installed": {
-        "version": "11.9.1",
-        "ref": "docker.io/directus/directus:11.9.1@sha256:3692e622c824d5f83b97547361b25d9f9ea2a30792c37520deb6af2733dfd66f",
+        "version": "11.17.4",
+        "ref": "docker.io/directus/directus:11.17.4@sha256:eb326f679ae847c0a776f93b972761dc2ebe84980e0b9d274a6bc31cd62809f7",
         "path": "render.yaml",
         "image_pattern": "docker.io/directus/directus:"
       },
@@ -271,9 +271,9 @@
       },
       "compatibility": {
         "status": "blocked-on-owner-decision",
-        "evidence": "docs/reviews/directus-12-staging: 11.9.1 passes 98/98 checks; 12.6.1 preserved all data but locks the 43-collection, status-filtered content model without a licence (Core: 25 collections, no custom permission rules)"
+        "evidence": "11.9.1 baseline 98/98; 11.9.1 to 11.17.4 restored-backup rehearsal 103/104 (2026-11-12, only Directus's own-profile permission gained the provider field); docs/reviews/directus-12-staging: 12.6.1 preserved all data but locks the 43-collection, status-filtered content model without a licence (Core: 25 collections, no custom permission rules)"
       },
-      "last_upgrade": "2026-11-01 (11.9.1 pinned at introduction)",
+      "last_upgrade": "2026-11-12 (candidate 11.17.4; not yet deployed)",
       "tests": [
         "node apps/backstage/upgrade/cms-check.mjs verify --baseline <inventory>",
         "node apps/backstage/upgrade/cms-check.mjs inventory",

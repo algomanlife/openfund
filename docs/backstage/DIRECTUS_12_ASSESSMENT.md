@@ -77,7 +77,7 @@ Studio users are refused above 3 seats, and the public catalog read returns
 | B. Stay on 11.x for now | Optionally move to 11.17.4 (still Node 22) as a stepping stone. No new security fixes are published for 11.x | Short-term only; accept the open advisories knowingly |
 | C. Re-architect the CMS layer | Fewer collections and no per-row rules, for example Openfund-owned published views | Not recommended; changes the content architecture |
 
-Until A is complete, the repository stays on `docker.io/directus/directus:11.9.1`.
+Until A is complete, the repository stays on Directus 11.x. Option B was taken on 2026-11-12: the pin moves to `docker.io/directus/directus:11.17.4` (latest 11.x, BUSL-1.1 like 11.9.1). A restored-backup rehearsal on seeded data passed 103 of 104 checks; the only difference is Directus adding `provider` to its built-in own-profile read permission ([evidence](../reviews/directus-11.17.4-staging/README.md)). Deploying it still needs the production-backup rehearsal and owner approval.
 
 ## Compatibility changes included in this branch
 
