@@ -148,4 +148,15 @@ try {
   fs.writeFileSync(path.join(output,'SHA256SUMS'),`${sha256(fs.readFileSync(path.join(output,archive)))}  ${archive}\n`);
   console.log(`Packaged ${m.official?'official release':'UNOFFICIAL CANDIDATE'} v${version} from ${commit}. Deployment: not_deployed. Output: ${output}`);
 } catch(error){writeJson(path.join(output,'verification.json'),{status:'failed',stages,error:error.message});throw error;}
-finally {server?.kill('SIGTERM');}
+finally {
+  /* The test backend must not outlive the gates: a graceful shutdown that
+     stalls (for example an engine tick racing pool.end) kept this process
+     alive until the CI job timeout after the package was already written.
+     Ask politely, then force it after a bounded wait. */
+  if(server&&server.exitCode===null&&server.signalCode===null){
+    const exited=new Promise(resolve=>server.once('exit',resolve));
+    server.kill('SIGTERM');
+    const timer=setTimeout(()=>{console.warn('Release test backend ignored SIGTERM for 15 s; sending SIGKILL.');server.kill('SIGKILL');},15000);
+    await exited;clearTimeout(timer);
+  }
+}

@@ -34,16 +34,23 @@
   --mono:'Ubuntu',system-ui,sans-serif;
 }
 
+/* Vela 0.10+ ships its chart chrome in the `vela.chrome` cascade layer, and
+   unlayered rules always beat layered ones. The element resets below live in a
+   layer ordered BEFORE Vela's, so Vela's class rules win over them exactly as
+   they did by specificity on 0.9.x; every other rule here stays unlayered. */
+@layer openfund-reset, vela;
+@layer openfund-reset{
 *{box-sizing:border-box}
+a{color:inherit;text-decoration:none}
+button,input,select,output{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+}
 html,body{height:100%}
 body{
   margin:0;background:var(--obsidian);color:var(--white);
   font:400 13.5px/1.5 'Ubuntu',system-ui,sans-serif;
   -webkit-font-smoothing:antialiased;overflow:hidden;
 }
-a{color:inherit;text-decoration:none}
-button,input,select,output{font:inherit;color:inherit}
-button{cursor:pointer;background:none;border:0;padding:0}
 :focus-visible{outline:1px solid var(--mint);outline-offset:2px}
 ::selection{background:var(--mint);color:#060808}
 [hidden]{display:none!important}

@@ -1,5 +1,5 @@
 import type { Drawing, Projector, DrawingStyle } from '../../../core/drawings';
-import { SegmentDrawing, TrendLine, FibRatios, RadialFib, FibSpiral, GannSquare, GANN_SQUARE_ARCS, DedekindTessellation, MachFigure, MeasureBox, PositionTool, PatternDrawing, CalloutBase, Callout, Comment, PriceNote, Signpost, Note, PriceLabel, ArrowMark, GlyphStamp, RegressionChannel, AnchoredVwap, FixedRangeVolumeProfile, Magnifier, PriceActionZone, Liquidity, magnifierTimeframeLabel, lineSegmentIntersection, effectiveFillColor, VALID_FILL, INVALID_FILL, DEFAULT_DRAWING_COLOR } from '../../../core/drawings';
+import { Box, SegmentDrawing, TrendLine, FibRatios, RadialFib, FibSpiral, GannSquare, GANN_SQUARE_ARCS, DedekindTessellation, MachFigure, MeasureBox, PositionTool, PatternDrawing, CalloutBase, Callout, Comment, PriceNote, Signpost, Note, PriceLabel, ArrowMark, GlyphStamp, RegressionChannel, AnchoredVwap, FixedRangeVolumeProfile, Magnifier, PriceActionZone, Liquidity, magnifierTimeframeLabel, lineSegmentIntersection, effectiveFillColor, VALID_FILL, INVALID_FILL, DEFAULT_DRAWING_COLOR } from '../../../core/drawings';
 import type { VelaTheme } from '../../../core/options';
 import { contrastColor, dashPattern, extendEndpoints, namedFontSize, labelLineHeight, TEXT_FRAME_INSET, TEXT_FRAME_RISE, uprightLineAngle } from '../../shared/drawing-geometry';
 import { BEARISH, BULLISH, NEUTRAL, SLATE, SLATE_DEEP } from '../../../core/palette';
@@ -35,6 +35,16 @@ const BADGE_STROKE = SLATE;
 /** The frame a text label wears when it's the target: firm once clicked, a hint under the cursor.
  *  (Its box is the shared TEXT_FRAME inset/rise, so it coincides with the inline editor's border.) */
 const TEXT_FRAME_ALPHA = { selected: 0.3, hovered: 0.12 };
+/** How the magnifier inset paints each built-in price style (anything else: candles). */
+const MAGNIFIER_MODES: ReadonlyMap<string, 'bars' | 'line' | 'area'> = new Map([
+    ['bars', 'bars'],
+    ['line', 'line'],
+    ['linemarkers', 'line'],
+    ['stepline', 'line'],
+    ['baseline', 'line'],
+    ['area', 'area'],
+    ['columns', 'area'],
+]);
 
 /**
  * Paints user drawings onto the L1.5 canvas. The caller has already applied the DPR
@@ -485,6 +495,18 @@ export class DrawingPainter {
                     ctx.fillRect(x, y, w, h);
                     ctx.restore();
                 }
+                // The midline sits over the fill and under the label (painted after the shape).
+                // It breaks where the box's centered label sits, so the text reads clear of it.
+                const mid = d instanceof Box ? d.midline(proj) : null;
+                if (mid) {
+                    const gap = this.boxLabelGap(ctx, d, proj, theme, mid.y);
+                    this.stroke(ctx, { lineColor: mid.color, lineWidth: d.style.lineWidth, lineStyle: mid.lineStyle }, () => {
+                        for (const [from, to] of midlineSegments(mid.x1, mid.x2, gap)) {
+                            ctx.moveTo(from, mid.y);
+                            ctx.lineTo(to, mid.y);
+                        }
+                    });
+                }
                 this.applyStroke(ctx, d.style);
                 ctx.strokeRect(x, y, w, h);
                 ctx.setLineDash([]);
@@ -494,6 +516,25 @@ export class DrawingPainter {
                 break; // text has no geometry — its label is drawn below
         }
         this.paintLabel(ctx, d, proj, theme); // every drawing can carry an optional label
+    }
+
+    /** The span `[left, right]` a box's centered label covers on the row at `y`, padded so the
+     *  line stops just short of the text — null when the box has no label or the label doesn't
+     *  reach that row. Measured with the same font {@link paintLabel} draws it in. */
+    private boxLabelGap(ctx: CanvasRenderingContext2D, d: Drawing, proj: Projector, theme: VelaTheme, y: number): [number, number] | null {
+        const text = d.text;
+        if (!text || !text.value) return null;
+        const layout = labelLayout(d, proj);
+        if (!layout) return null;
+        const fs = namedFontSize(text.size);
+        const lines = text.value.split('\n');
+        if (y < layout.top || y > layout.top + labelLineHeight(fs) * lines.length) return null;
+        ctx.save();
+        ctx.font = `${text.bold ? 'bold ' : ''}${text.italic ? 'italic ' : ''}${fs}px ${theme.fontFamily}`;
+        const width = Math.max(...lines.map((line) => ctx.measureText(line).width));
+        ctx.restore();
+        const half = width / 2 + MIDLINE_LABEL_PAD;
+        return [layout.x - half, layout.x + half];
     }
 
     /** Draw a drawing's optional text label at a type-appropriate anchor (multi-line aware).
@@ -977,13 +1018,13 @@ export class DrawingPainter {
         if (res && (res.state === 'ready' || res.state === 'loading') && seriesBars.length > 0) {
             // The inset mirrors the CHART's series look: bar-transform styles (Heikin Ashi,
             // and any registered type that declares one) transform the raw fetched bars;
-            // line/area/bars restyle the paint; unknown/custom styles fall back to candles.
+            // line/area/bars restyle the paint (the line family as a line, columns as the
+            // filled area they read as); unknown/custom styles fall back to candles.
             // Colors default to the main series' own; a user-picked color wins.
             const look = this.seriesLook;
             const transform = look.style !== 'candles' ? barTransformFor(look.style) : null;
             if (transform) seriesBars = transform.full(seriesBars as readonly OHLCV[]);
-            const mode: 'candles' | 'bars' | 'line' | 'area' =
-                look.style === 'bars' ? 'bars' : look.style === 'line' || look.style === 'baseline' ? 'line' : look.style === 'area' ? 'area' : 'candles';
+            const mode: 'candles' | 'bars' | 'line' | 'area' = MAGNIFIER_MODES.get(look.style) ?? 'candles';
             const halfPitch = (proj.xOf(from + chartMs) - proj.xOf(from)) / 2;
             ctx.save();
             ctx.beginPath();
@@ -1896,6 +1937,19 @@ function calloutBubblePath(
     seg('left', x, y + r);
     ctx.arcTo(x, y, x + r, y, r);
     ctx.closePath();
+}
+
+/** Space kept clear on each side of a box's label where its midline breaks around it, in px. */
+const MIDLINE_LABEL_PAD = 6;
+
+/** The pieces of the midline from `x1` to `x2` left once the label's `gap` is cut out of it
+ *  (the whole line without a gap; nothing of a side the gap swallows). */
+export function midlineSegments(x1: number, x2: number, gap: readonly [number, number] | null): Array<[number, number]> {
+    if (!gap || gap[1] <= x1 || gap[0] >= x2) return [[x1, x2]];
+    const pieces: Array<[number, number]> = [];
+    if (gap[0] > x1) pieces.push([x1, gap[0]]);
+    if (gap[1] < x2) pieces.push([gap[1], x2]);
+    return pieces;
 }
 
 /** Compact ratio text for Mach circle labels (trim trailing zeros). */
