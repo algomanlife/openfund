@@ -1,6 +1,6 @@
 # Local development
 
-Use Node.js 22, npm, PostgreSQL 17 and Python 3 for optional Directus utilities. Run commands from the repository root unless shown otherwise. Root dependencies are orchestration/tooling only; each application has its own lockfile.
+Use Node.js 26 (Active LTS), npm, PostgreSQL 17 and Python 3 for optional Directus utilities. Run commands from the repository root unless shown otherwise. Root dependencies are orchestration/tooling only; each application has its own lockfile.
 
 ## Install
 

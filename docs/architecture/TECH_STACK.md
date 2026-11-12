@@ -23,7 +23,7 @@
 | ws | 8.x | Gains WebSocket client (server-side marks) | Active | MIT |
 | decimal.js | 10.x | authoritative money math (NUMERIC storage) | Active | MIT |
 
-Run with Node 22 (viem/siwe + ESM). Server port 8080; env: DATABASE_URL, ALLOWED_DOMAINS, CORS_ORIGINS, SESSION_TTL_HOURS.
+Run with Node 26 (viem/siwe + ESM). Server port 8080; env: DATABASE_URL, ALLOWED_DOMAINS, CORS_ORIGINS, SESSION_TTL_HOURS.
 
 ## Wallet layer
 

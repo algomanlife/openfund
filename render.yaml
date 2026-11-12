@@ -96,7 +96,7 @@ services:
     startCommand: npm run migrate --prefix apps/backend && npm start --prefix apps/backend
     envVars:
       - key: NODE_VERSION
-        value: "22"
+        value: "26"
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
