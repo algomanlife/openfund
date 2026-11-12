@@ -17,7 +17,7 @@
 | Technology | Version | Role | Status | License |
 | :--- | :--- | :--- | :--- | :--- |
 | Node.js | 22 (required) | backend runtime | Active | Node license |
-| Express | 4.21 | Auth/profile, account/trading, portfolio/journal, purchases/invoices/withdrawal requests and diagnostics APIs | Active | MIT |
+| Express | 5.3 | Auth/profile, account/trading, portfolio/journal, purchases/invoices/withdrawal requests and diagnostics APIs | Active | MIT |
 | viem (siwe) | 2.57 | EIP-4361 parse + verify (EOA + EIP-1271) | Active | MIT |
 | pg | 8.13 | PostgreSQL access | Active | MIT |
 | ws | 8.x | Gains WebSocket client (server-side marks) | Active | MIT |

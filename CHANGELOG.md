@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Express 5 (branch `agent/claude/express-5`): `apps/backend` moves from
+  Express 4.22.3 to 5.3.0. No route, middleware or handler changes were
+  needed: the backend uses no Express 4-only path syntax or APIs. Observable
+  differences: static JavaScript is served as `text/javascript` (RFC 9239)
+  instead of `application/javascript`, and the HTML/CSS `charset` parameter is
+  lower case. Upstream registry updated.
+
 - Community, footer, platform motion and responsive navigation (branch
   `agent/claude/community-motion-responsive-ui`):
   - Community: Telegram is the only public community action (home, hero,
