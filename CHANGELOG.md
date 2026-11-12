@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Express 5 (branch `agent/claude/express-5`): `apps/backend` moves from
+  Express 4.22.3 to 5.3.0. No route, middleware or handler changes were
+  needed: the backend uses no Express 4-only path syntax or APIs. Observable
+  differences: static JavaScript is served as `text/javascript` (RFC 9239)
+  instead of `application/javascript`, and the HTML/CSS `charset` parameter is
+  lower case. Upstream registry updated.
+
 - Vite 8 (branch `agent/claude/vite-8`): `apps/web-react` moves from Vite
   6.4.5 and `@vitejs/plugin-react` 4.7.0 to Vite 8.3.8 (Rolldown bundler) and
   `@vitejs/plugin-react` 6.3.0. `vite.config.ts` needed no change. Production

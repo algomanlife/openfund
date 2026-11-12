@@ -423,14 +423,14 @@
       "official_source": "https://github.com/expressjs/express",
       "license": "MIT",
       "installed": {
-        "version": "4.22.3",
+        "version": "5.3.0",
         "lockfile": "apps/backend/package-lock.json",
         "package": "express"
       },
       "latest_observed": {
         "version": "5.3.0",
-        "date": "2026-11-10",
-        "reviewed": false
+        "date": "2026-11-12",
+        "reviewed": true
       },
       "integration_path": [
         "apps/backend"
@@ -445,10 +445,10 @@
         "never_auto_merge": true
       },
       "compatibility": {
-        "status": "current-major-behind",
-        "evidence": "not reviewed"
+        "status": "candidate-unreviewed",
+        "evidence": "full backend suite (npm run test:all) identical pass counts to 4.22.3; HTTP status/redirect/cache headers compared on 31 paths; browser wallet, purchase, DePay, routing suites"
       },
-      "last_upgrade": "see lockfile history",
+      "last_upgrade": "2026-11-12 (candidate 5.3.0; not yet reviewed)",
       "tests": [
         "npm run test:backend"
       ],
