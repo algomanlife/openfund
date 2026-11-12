@@ -23,7 +23,7 @@ Application code does not import vendored source directly (checked by `npm run c
 | Gains Network API | `apps/backend/market-data.js` (engine price stream) and `packages/openfund-gains-adapter` (browser chart and markets). Hosted API, no version. | n/a |
 | Gains Network SDK | `vendor/gains-sdk` is byte-identical to upstream commit `aa7a05a` (package 1.8.10). No application code imports it; market and wallet reads use the public API. | No |
 | LuxAlgo Trade Journal | **Integrated, partially.** Only `packages/core` (`@luxalgo/journal-core`) is vendored. `apps/backend/portfolio.js` imports its compiled bundle for Portfolio analytics. The upstream web app and importers are not used. | No (byte-identical sources, committed build output) |
-| Directus | `docker.io/directus/directus:11.9.1` in `render.yaml`; schema and seeders in `apps/backstage/scripts`. | No |
+| Directus | `docker.io/directus/directus:11.17.4` in `render.yaml`; schema and seeders in `apps/backstage/scripts`. | No |
 
 Direct modification of upstream source exists in exactly one place: three files of `vendor/vela`. This was established by diffing the vendored tree against `git archive` of the upstream tag, and the repository re-proves it on every update (`update-vendor.mjs` refuses to run unless the vendored tree equals "upstream at the installed ref plus the registered patches").
 
@@ -85,8 +85,8 @@ Each section is the registry row in readable form. Rollback limits are what a ro
 
 ### Directus (container image)
 
-- **Installed:** 11.9.1, pinned in `render.yaml` (index digest `sha256:3692e622c824d5f83b97547361b25d9f9ea2a30792c37520deb6af2733dfd66f`). **Latest stable:** 12.6.1 (2026-11-04), reviewed.
-- **Compatibility status:** **blocked on an owner licensing decision.** On a restored backup, 12.6.1 preserved all data but the Core tier (25 collections, no custom permission rules) locks Openfund's 43-collection, status-filtered content model. The CMS needs Node.js 26 from 12.6.0; the application stays on Node 22.
+- **Installed:** 11.17.4 (latest 11.x), pinned in `render.yaml` (index digest `sha256:eb326f679ae847c0a776f93b972761dc2ebe84980e0b9d274a6bc31cd62809f7`); previously 11.9.1. **Latest stable:** 12.6.1 (2026-11-04), reviewed.
+- **Compatibility status:** 11.9.1 to 11.17.4 rehearsed on 2026-11-12 (backup restored into a new database, migrations run, 103/104 contract checks; the one difference is Directus adding `provider` to its built-in own-profile read permission). Directus 12 is **blocked on an owner licensing decision.** On a restored backup, 12.6.1 preserved all data but the Core tier (25 collections, no custom permission rules) locks Openfund's 43-collection, status-filtered content model. The CMS needs Node.js 26 from 12.6.0; the application stays on Node 22.
 - **Tests, instructions, rollback:** [assessment](../backstage/DIRECTUS_12_ASSESSMENT.md), `apps/backstage/upgrade/cms-check.mjs`, [migration runbook](../deployment/DIRECTUS_MIGRATION_RUNBOOK.md). Directus migrations are forward only, so rollback is a database and media restore.
 
 ### Significant libraries (npm)

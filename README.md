@@ -181,7 +181,7 @@ flowchart TB
   end
   subgraph Render["Render (Frankfurt)"]
     API["openfund<br/>Node.js API + SPA<br/>engine, SSE, purchases"]
-    CMS["openfund-cms<br/>Directus 11.9.1"]
+    CMS["openfund-cms<br/>Directus 11.17.4"]
     DB[("openfund-db<br/>PostgreSQL 17")]
   end
   Gains["Gains Network<br/>market data"]
@@ -221,7 +221,7 @@ Verified against the package manifests.
 | Charts and market data | Vela 0.9.3, Vela Pine addon 0.3.2, PineTS 0.13.1, Gains Network API |
 | Backend | Node.js 22, Express 4, `pg`, decimal.js, viem, `ws` |
 | Database | PostgreSQL 17 |
-| CMS | Directus 11.9.1 (official Docker image) |
+| CMS | Directus 11.17.4 (official Docker image) |
 | Payments | DePay (button, dynamic configuration, signed callbacks and events) |
 | Testing | Node test runner, Playwright browser suites |
 | CI/CD | GitHub Actions (CI, unified release, gated deploy), gitleaks, Dependabot |

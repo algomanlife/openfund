@@ -79,7 +79,7 @@ flowchart TB
   Build --> API[Node API one process]
   API --> Migrate[Additive schema migration at startup]
   Migrate --> DB[(openfund-db PostgreSQL 17)]
-  CMS[openfund-cms Directus 11.9.1] --> DB
+  CMS[openfund-cms Directus 11.17.4] --> DB
   CMS --> Disk[5 GB uploads disk]
   API --> Health[DB-aware /health]
   CMS --> CMSHealth["/server/ping"]

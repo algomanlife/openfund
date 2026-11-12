@@ -13,7 +13,7 @@ Homebrew, 2026-11-01).
 
   ```bash
   mkdir -p ~/openfund-backstage && cd ~/openfund-backstage
-  PATH=/opt/homebrew/opt/node@22/bin:$PATH npm i directus@11.9.1
+  PATH=/opt/homebrew/opt/node@22/bin:$PATH npm i directus@11.17.4
   ```
 
   (Installing inside the repo dir fails: the path contains a space + esbuild's

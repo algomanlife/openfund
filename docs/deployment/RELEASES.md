@@ -99,7 +99,7 @@ never injected into the package. The current production CMS 403 response
 blocks official publication until the permission migration is applied after
 backup review.
 
-The Unified release workflow also boots a separate pinned Directus 11.9.1 container
+The Unified release workflow also boots a separate pinned Directus 11.17.4 container
 against a disposable PostgreSQL 17 database, runs the single CMS bootstrap
 twice, verifies bilingual public Home/UI/website content, preserves a test
 editorial edit on rerun and checks that a draft translation is not publicly

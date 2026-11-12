@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Directus 11.17.4 (branch `agent/claude/directus-11.17.4`; **not deployed,
+  needs owner approval and a production-backup rehearsal**): the CMS image pin
+  moves from 11.9.1 to 11.17.4, the latest 11.x (same BUSL-1.1 licence) in
+  `render.yaml`, `infrastructure/directus/compose.yaml` and the release
+  workflow. Restored-backup rehearsal on seeded data: 103 of 104 checks, with
+  collections, relations, roles, policies and item counts unchanged
+  ([evidence](docs/reviews/directus-11.17.4-staging/README.md)). Directus 12
+  stays blocked on the licence decision.
+
 - Community, footer, platform motion and responsive navigation (branch
   `agent/claude/community-motion-responsive-ui`):
   - Community: Telegram is the only public community action (home, hero,

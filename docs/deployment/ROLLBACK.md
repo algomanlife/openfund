@@ -5,7 +5,7 @@
 | Service | Trigger | Rollback unit |
 | :--- | :--- | :--- |
 | `openfund` (API + web) | after a stable release is published, the chained deploy job (production approval) deploys its exact commit; commit auto-deploy is `off` ([ADR 0013](../decisions/0013-release-driven-production-deployment.md)) | any earlier published release tag |
-| `openfund-cms` (Directus) | manual only (`off`) | image tag pinned in `render.yaml` (11.9.1) + snapshot/backup |
+| `openfund-cms` (Directus) | manual only (`off`) | image tag pinned in `render.yaml` (11.17.4; previous 11.9.1) + snapshot/backup |
 | `openfund-db` (Postgres) | migrations run in the API startCommand | idempotent, additive-first migrations |
 
 ## Rolling back the application
