@@ -669,7 +669,9 @@ html[dir="rtl"] .chart-tabs { direction: rtl; }
   #acct-strip:not([data-expanded="true"]) .acct-grid { padding-inline-end: 22px; }
   /* risk summary: one line per value */
   .risk-box { gap: 3px 12px; padding-top: 6px; }
-  .risk-box > .kv { flex-direction: row; justify-content: space-between; align-items: baseline; gap: 6px; line-height: 17px; }
+  .risk-box > .kv { flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 6px; min-width: 0; line-height: 17px; }
+  /* a long figure wraps under its label instead of leaving the panel */
+  .risk-box > .kv > b { min-width: 0; max-width: 100%; overflow-wrap: anywhere; text-align: end; margin-inline-start: auto; }
   .risk-box > .kv > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .size-equiv { display: none; }
   .size-mode button { min-height: 24px; }
