@@ -69,7 +69,15 @@
 
   <!-- C. ADVANCED CHART -->
   <section class="chart-panel" aria-label="Trading chart">
-    <div class="chart-host" id="chart-host">
+    <div class="chart-tabs" role="tablist" aria-label="Chart views">
+      <button type="button" role="tab" id="tab-chart" aria-selected="true" aria-controls="chart-host" data-chart-tab="chart" data-i18n="ctab.chart">Chart</button>
+      <button type="button" role="tab" id="tab-news" aria-selected="false" aria-controls="news-panel" data-chart-tab="news" tabindex="-1" data-i18n="ctab.news">News &amp; Information</button>
+    </div>
+    <section class="news-panel" id="news-panel" role="tabpanel" aria-labelledby="tab-news" hidden>
+      <div class="news-state" id="news-state" role="status" aria-live="polite"></div>
+      <div class="news-host" id="news-host"></div>
+    </section>
+    <div class="chart-host" id="chart-host" role="tabpanel" aria-labelledby="tab-chart">
       <button class="chart-float" id="chart-full" title="Fullscreen" aria-label="Fullscreen">⛶</button>
       <div class="chart-brand" id="chart-brand" aria-hidden="false">
         <span class="brand-o">O</span><span class="brand-rest">penfund</span>
@@ -110,20 +118,21 @@
 
   <!-- E. ORDER ENTRY + G. ACCOUNT -->
   <aside class="trade-panel" aria-label="Order entry">
-    <div class="acct-strip" id="acct-strip">
-      <div class="acct-row">
-        <span><em data-i18n="ac.equity">Equity</em> <b id="ac-equity" class="pos-acc" title="Balance + unrealized PnL">$25,000.00</b></span>
-        <span><em data-i18n="ac.available">Available</em> <b id="ac-available">$25,000.00</b></span>
-      </div>
-      <div class="acct-row">
-        <span><em data-i18n="ac.margin">Margin used</em> <b id="ac-margin">$0.00</b></span>
-        <span><em data-i18n="ac.unrealized">Unrealized</em> <b id="ac-upnl">$0.00</b></span>
-      </div>
-      <div class="acct-row dim">
-        <span><em data-i18n="ac.positions">Positions</em> <b id="ac-pos">0</b> · <em data-i18n="ac.orders">Orders</em> <b id="ac-ord">0</b></span>
-        <span><em data-i18n="ac.mode">Mode</em> <b data-i18n="ac.modeVal">Cross · Simulated</b></span>
-      </div>
-    </div>
+    <section class="acct-strip" id="acct-strip" aria-labelledby="acct-title">
+      <header class="acct-head">
+        <h2 id="acct-title" data-i18n="ac.title">Account summary</h2>
+        <span class="acct-mode"><em data-i18n="ac.mode">Mode</em> <b data-i18n="ac.modeVal">Cross · Simulated</b></span>
+        <button type="button" class="acct-toggle" id="acct-toggle" aria-expanded="false" aria-controls="acct-grid" aria-label="Show full account summary">▾</button>
+      </header>
+      <dl class="acct-grid" id="acct-grid">
+        <div class="acct-cell primary key"><dt data-i18n="ac.equity">Equity</dt><dd><b id="ac-equity" class="pos-acc" title="Balance + unrealized PnL">$25,000.00</b></dd></div>
+        <div class="acct-cell primary key"><dt data-i18n="ac.available">Available</dt><dd><b id="ac-available">$25,000.00</b></dd></div>
+        <div class="acct-cell"><dt data-i18n="ac.margin">Margin used</dt><dd><b id="ac-margin">$0.00</b></dd></div>
+        <div class="acct-cell key"><dt data-i18n="ac.unrealized">Unrealized</dt><dd><b id="ac-upnl">$0.00</b></dd></div>
+        <div class="acct-cell"><dt data-i18n="ac.positions">Positions</dt><dd><b id="ac-pos">0</b></dd></div>
+        <div class="acct-cell"><dt data-i18n="ac.orders">Orders</dt><dd><b id="ac-ord">0</b></dd></div>
+      </dl>
+    </section>
 
     <div class="side-group" role="group" aria-label="Direction">
       <button id="side-long" class="side long active" aria-pressed="true" data-i18n="side.long">Long</button>
@@ -139,6 +148,7 @@
     <div class="lev-box">
       <div class="lev-head">
         <span data-i18n="lev">Leverage</span>
+        <span class="lev-cap" id="lev-cap" aria-live="polite"></span>
         <b id="lev-val" class="lev-val">5×</b>
       </div>
       <input type="range" id="lev-range" min="1" max="100" value="5" step="1" aria-label="Leverage">
@@ -153,7 +163,21 @@
         <span data-i18n="of.price">Trigger / Limit price <em>USD</em></span>
         <input type="text" inputmode="decimal" id="of-price" step="any" min="0" placeholder="—" autocomplete="off" disabled>
       </label>
-      <label class="field">
+      <div class="size-mode" id="size-mode" role="radiogroup" aria-label="Position sizing" hidden>
+        <button type="button" role="radio" data-size-mode="collateral" aria-checked="true" data-i18n="sz.collateral">Collateral</button>
+        <button type="button" role="radio" data-size-mode="quantity" aria-checked="false" data-i18n="sz.quantity">Quantity</button>
+        <button type="button" role="radio" data-size-mode="lots" aria-checked="false" data-i18n="sz.lots">Lots</button>
+      </div>
+      <label class="field" id="qty-field" hidden>
+        <span><span data-i18n="sz.qtyLabel">Quantity</span> <em id="qty-unit">—</em></span>
+        <input type="text" inputmode="decimal" id="of-qty" placeholder="0" autocomplete="off" dir="ltr">
+      </label>
+      <label class="field" id="lots-field" hidden>
+        <span data-i18n="sz.lotsLabel">Lots</span>
+        <input type="text" inputmode="decimal" id="of-lots" placeholder="—" autocomplete="off" dir="ltr" disabled>
+      </label>
+      <p class="size-note" id="size-note" hidden></p>
+      <label class="field" id="collateral-field">
         <span data-i18n="of.collateral">Collateral <em>USD</em></span>
         <input type="text" inputmode="decimal" id="of-collateral" step="any" min="0" placeholder="0.00" autocomplete="off" value="100">
       </label>
@@ -166,6 +190,10 @@
         <output id="of-size" class="out">0.000000</output>
       </div>
       <div class="kv"><span data-i18n="of.notional">Notional</span><b id="of-notional">$0.00</b></div>
+      <dl class="size-equiv" id="size-equiv" hidden>
+        <div><dt data-i18n="sz.lots">Lots</dt><dd id="eq-lots">—</dd></div>
+        <div><dt data-i18n="sz.collateralShort">Collateral</dt><dd id="eq-coll">—</dd></div>
+      </dl>
       <label class="field sl">
         <span data-i18n="of.sl">Stop Loss <em>USD · optional</em></span>
         <input type="text" inputmode="decimal" id="of-sl" step="any" min="0" placeholder="—" autocomplete="off">

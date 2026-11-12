@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+- Terminal and Prop UI refinement (branch `agent/claude/terminal-prop-ui-refinement`,
+  [ADR 0025](docs/decisions/0025-prop-leverage-sizing-and-economic-calendar.md)):
+  BUY/SELL markers on the candle of each confirmed Prop fill (grouped with a
+  count per candle, re-mapped on timeframe change, details on the timeline
+  lane); SL/TP zones start at the entry candle with a dashed "Entry" boundary
+  at the position's own entry price; renamed Persian risk-editor and entry
+  labels (requested wording, terminal-wide); larger terminal typography; a separate
+  account summary panel (collapsible on short screens); Prop-only maximum
+  leverage (BTC/ETH 20×, other crypto 15×, forex/stocks/indices/commodities
+  50×) enforced by the engine and the ticket; Collateral / Quantity sizing
+  modes with Lots shown as unavailable until an approved contract
+  specification exists; a larger Edge Score radar; an aligned dashboard
+  Activity list; grouped journal toolbars; a visual journal settings form;
+  internal page layout fixes; and a "News & Information" tab with the official
+  TradingView Economic Calendar widget (two origins added to the application
+  CSP). Perpetual leverage and execution are unchanged.
+
 - Footprint activation (branch `agent/claude/footprint-activation`): the
   Render Blueprint sets `FOOTPRINT_ENABLED=1` on `openfund`, on the owner's
   request, so the terminal offers Chart Style → Footprint and the Footprint

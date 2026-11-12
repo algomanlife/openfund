@@ -78,3 +78,73 @@ test('header controls share one height, radius and border; the theme switch is a
   assert.match(theme, /border: 1px solid var\(--hc-line\) !important; border-radius: var\(--hc-r\)/)
   assert.doesNotMatch(theme, /outline-offset/, 'the old outline ring is gone')
 })
+
+/* ---------- confirmed-fill BUY/SELL markers and entry-anchored zones ---------- */
+const MIN = 60000, H = 60 * MIN, DAY = 24 * H
+const T0 = Date.UTC(2026, 10, 12, 10, 7, 30)   /* 10:07:30 UTC */
+
+test('markers: only confirmed fills of the chart market; partial closes count once', () => {
+  const records = [
+    { id: 'a', market: 'BTC/USD', side: 'long', entry: 100, openedAt: T0 },
+    { id: 'a-part', rootId: 'a', market: 'BTC/USD', side: 'long', entry: 100, openedAt: T0 },   /* partial-close remainder */
+    { id: 'b', market: 'ETH/USD', side: 'short', entry: 5, openedAt: T0 },                       /* other symbol */
+    { id: 'c', market: 'BTC/USD', side: 'short', entry: 0, openedAt: T0 },                       /* no fill price */
+    { id: 'd', market: 'BTC/USD', side: 'short', entry: 101, openedAt: null },                   /* no fill time */
+  ]
+  const fills = PO.executionFills(records, 'BTC/USD')
+  assert.deepEqual(fills, [{ id: 'a', side: 'long', time: T0, price: 100 }])
+  assert.deepEqual(PO.executionFills([], 'BTC/USD'), [])
+})
+
+test('markers: long = BUY below the candle, short = SELL above it', () => {
+  const fills = [{ id: '1', side: 'long', time: T0, price: 100 }, { id: '2', side: 'short', time: T0 + 10000, price: 102 }]
+  const g = PO.executionGroups(fills, MIN)
+  const buy = g.get(Date.UTC(2026, 10, 12, 10, 7) + '|long'), sell = g.get(Date.UTC(2026, 10, 12, 10, 7) + '|short')
+  assert.equal(buy.label, 'BUY'); assert.equal(buy.placement, 'below')
+  assert.equal(sell.label, 'SELL'); assert.equal(sell.placement, 'above')
+  assert.equal(PO.markerPrice(buy, { high: 105, low: 95 }), 95)
+  assert.equal(PO.markerPrice(sell, { high: 105, low: 95 }), 105)
+  /* without candle data the fill price anchors the marker */
+  assert.equal(PO.markerPrice(buy, null), 100)
+  assert.equal(PO.markerPrice(sell, null), 102)
+})
+
+test('markers: the fill maps to the right candle on every timeframe', () => {
+  const f = [{ id: '1', side: 'long', time: T0, price: 100 }]
+  const at = (barMs) => [...PO.executionGroups(f, barMs).values()][0].bucket
+  assert.equal(at(MIN), Date.UTC(2026, 10, 12, 10, 7))
+  assert.equal(at(5 * MIN), Date.UTC(2026, 10, 12, 10, 5))
+  assert.equal(at(15 * MIN), Date.UTC(2026, 10, 12, 10, 0))
+  assert.equal(at(H), Date.UTC(2026, 10, 12, 10, 0))
+  assert.equal(at(4 * H), Date.UTC(2026, 10, 12, 8, 0))
+  assert.equal(at(DAY), Date.UTC(2026, 10, 12))
+  /* a fill exactly on a boundary belongs to the candle that opens there */
+  assert.equal(PO.bucket(Date.UTC(2026, 10, 12, 11, 0), H), Date.UTC(2026, 10, 12, 11, 0))
+  assert.equal(PO.bucket(Date.UTC(2026, 10, 12, 11, 0) - 1, H), Date.UTC(2026, 10, 12, 10, 0))
+})
+
+test('markers: several fills in one candle group with a count, separate candles stay separate', () => {
+  const fills = [
+    { id: '1', side: 'long', time: T0, price: 100 },
+    { id: '2', side: 'long', time: T0 + 20000, price: 100.5 },
+    { id: '3', side: 'long', time: T0 + 5 * MIN, price: 101 },
+  ]
+  const m1 = PO.executionGroups(fills, MIN)
+  assert.equal(m1.size, 2)
+  const first = m1.get(Date.UTC(2026, 10, 12, 10, 7) + '|long')
+  assert.equal(first.label, 'BUY ×2')
+  assert.deepEqual(first.fills.map(x => x.id), ['1', '2'])        /* individual fills kept */
+  const m15 = PO.executionGroups(fills, 15 * MIN)
+  assert.equal(m15.size, 1)
+  assert.equal([...m15.values()][0].label, 'BUY ×3')
+})
+
+test('zones: start at the entry candle and extend past the latest candle', () => {
+  const now = T0 + 3 * H
+  assert.deepEqual(PO.span(T0, now, MIN, 12), { start: Date.UTC(2026, 10, 12, 10, 7), end: Date.UTC(2026, 10, 12, 13, 7) + 12 * MIN })
+  assert.deepEqual(PO.span(T0, now, H, 12), { start: Date.UTC(2026, 10, 12, 10), end: Date.UTC(2026, 10, 12, 13) + 12 * H })
+  /* a just-opened position still starts on its own candle */
+  const fresh = PO.span(now, now, MIN, 12)
+  assert.equal(fresh.start, PO.bucket(now, MIN))
+  assert.ok(fresh.end > fresh.start)
+})

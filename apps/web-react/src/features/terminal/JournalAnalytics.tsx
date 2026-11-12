@@ -5,7 +5,7 @@ import { api, csvCell, download, money, route, useResource } from "./model";
 import { Curve, PnlCalendar, RatioGauge } from "./Analytics";
 import { AccountPicker } from "./Accounts";
 import { GainsAnalytics } from "./GainsPortfolio";
-const labels = [
+export const JOURNAL_CARD_LABELS = [
   ["Net P&L", "سود خالص"],
   ["Trade Win %", "درصد معاملات موفق"],
   ["Profit Factor", "ضریب سود"],
@@ -13,6 +13,7 @@ const labels = [
   ["Avg Win / Loss", "میانگین سود به زیان"],
   ["Edge Score", "امتیاز عملکرد"],
 ];
+const labels = JOURNAL_CARD_LABELS;
 export function JournalAnalytics({
   calendarOnly = false,
   reports = false,
@@ -126,9 +127,9 @@ export function JournalAnalytics({
     );
   return (
     <>
-      <div className="of-account-bar">
+      <div className="of-account-bar of-journal-toolbar">
         <AccountPicker />
-        <div className="of-tabs">
+        <div className="of-segmented" role="group" aria-label={t("بازهٔ زمانی", "Date range")}>
           {["7D", "30D", "90D", "YTD", "All"].map((v) => (
             <button
               key={v}
@@ -142,7 +143,9 @@ export function JournalAnalytics({
               {v}
             </button>
           ))}
-          <button onClick={() => setShowFilters((x) => !x)}>
+        </div>
+        <div className="of-toolbar-actions">
+          <button aria-expanded={showFilters} onClick={() => setShowFilters((x) => !x)}>
             {t("فیلترها", "Filters")}
           </button>
           <label>
@@ -160,7 +163,7 @@ export function JournalAnalytics({
               <option value="compact">{t("فشرده", "Compact")}</option>
             </select>
           </label>
-          <button onClick={() => setCustomize((x) => !x)}>
+          <button aria-expanded={customize} onClick={() => setCustomize((x) => !x)}>
             {t("شخصی‌سازی", "Customize")}
           </button>
           {reports && (
@@ -304,21 +307,35 @@ export function JournalAnalytics({
                 <p>
                   {t("پوزیشن باز", "Open Positions")}: {a?.openPositions ?? "—"}
                 </p>
-                {trades.data?.trades
-                  ?.filter((r: any) => r.status !== "open")
-                  .map((r: any) => (
-                    <Link
-                      className="of-trade-activity"
-                      key={r.key}
-                      to={`${route(locale, product, "journal")}${route(locale, product, "journal").includes("?") ? "&" : "?"}trade=${r.ofPositionId}&section=notebook`}
-                    >
-                      <bdi>{r.symbol}</bdi>
-                      <span>{r.direction}</span>
-                      <bdi className={r.netPnl >= 0 ? "positive" : "negative"}>
-                        {money(r.netPnl)} {unit}
-                      </bdi>
-                    </Link>
-                  ))}
+                {(() => {
+                  const recent = trades.data?.trades?.filter((r: any) => r.status !== "open") || [];
+                  if (!recent.length) return null;
+                  return (
+                    <div className="of-activity" role="table" aria-label={t("معاملات اخیر", "Recent trades")}>
+                      <div className="of-activity-row of-activity-head" role="row">
+                        <span role="columnheader">{t("نماد", "Symbol")}</span>
+                        <span role="columnheader">{t("جهت", "Side")}</span>
+                        <span role="columnheader">{t("سود / زیان", "P&L")} · {unit}</span>
+                      </div>
+                      {recent.map((r: any) => (
+                        <Link
+                          className="of-activity-row of-trade-activity"
+                          role="row"
+                          key={r.key}
+                          to={`${route(locale, product, "journal")}${route(locale, product, "journal").includes("?") ? "&" : "?"}trade=${r.ofPositionId}&section=notebook`}
+                        >
+                          <bdi role="cell" className="of-activity-symbol">{r.symbol}</bdi>
+                          <span role="cell" className={`of-side-badge ${String(r.direction).toLowerCase() === "short" ? "short" : "long"}`}>
+                            {String(r.direction).toLowerCase() === "short" ? t("شورت", "Short") : t("لانگ", "Long")}
+                          </span>
+                          <bdi role="cell" dir="ltr" className={`of-activity-pnl ${r.netPnl > 0 ? "positive" : r.netPnl < 0 ? "negative" : ""}`}>
+                            {r.netPnl > 0 ? "+" : ""}{money(r.netPnl)}
+                          </bdi>
+                        </Link>
+                      ))}
+                    </div>
+                  );
+                })()}
               </section>
             )}
           </div>
@@ -395,41 +412,51 @@ function DailyBars({ days }: { days: any[] }) {
   );
 }
 function EdgeRadar({ components }: { components: Record<string, number> }) {
+  /* Presentation only: the component values come from the API unchanged. */
   const entries = Object.entries(components),
-    point = (i: number, r: number) => [
-      150 + Math.sin((i * Math.PI) / 3) * r,
-      140 - Math.cos((i * Math.PI) / 3) * r,
-    ];
+    n = Math.max(entries.length, 3),
+    cx = 200,
+    cy = 175,
+    R = 118,
+    angle = (i: number) => (i * 2 * Math.PI) / n,
+    point = (i: number, r: number) => [cx + Math.sin(angle(i)) * r, cy - Math.cos(angle(i)) * r];
   return (
-    <svg viewBox="0 0 300 290" role="img" aria-label="Edge Score components">
+    <svg className="of-edge-radar" viewBox="0 0 400 350" role="img" aria-label="Edge Score components">
       {[0.25, 0.5, 0.75, 1].map((r) => (
         <polygon
           key={r}
-          points={entries.map((_, i) => point(i, 95 * r).join(",")).join(" ")}
+          points={entries.map((_, i) => point(i, R * r).join(",")).join(" ")}
           fill="none"
           stroke="currentColor"
-          opacity=".15"
+          opacity={r === 1 ? 0.4 : 0.2}
         />
       ))}
+      {entries.map((_, i) => {
+        const [x, y] = point(i, R);
+        return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="currentColor" opacity=".2" />;
+      })}
+      {[25, 50, 75].map((v) => (
+        <text key={v} x={cx + 4} y={cy - (R * v) / 100 + 4} fontSize="10" fill="currentColor" opacity=".55">{v}</text>
+      ))}
       <polygon
-        points={entries
-          .map(([, v], i) => point(i, (95 * v) / 100).join(","))
-          .join(" ")}
+        points={entries.map(([, v], i) => point(i, (R * Math.max(0, Math.min(100, v))) / 100).join(",")).join(" ")}
         fill="var(--of-chart-fill)"
         stroke="var(--of-mint)"
+        strokeWidth="2"
       />
+      {entries.map(([, v], i) => {
+        const [x, y] = point(i, (R * Math.max(0, Math.min(100, v))) / 100);
+        return <circle key={i} cx={x} cy={y} r="3.5" fill="var(--of-mint)" />;
+      })}
       {entries.map(([k, v], i) => {
-        const [x, y] = point(i, 115);
+        const [x, y] = point(i, R + 20),
+          dx = x - cx,
+          anchor = Math.abs(dx) < 8 ? "middle" : dx > 0 ? "start" : "end",
+          top = y < cy - R / 2;
         return (
-          <text
-            key={k}
-            x={x}
-            y={y}
-            textAnchor="middle"
-            fill="currentColor"
-            fontSize="9"
-          >
-            {k} {money(v)}
+          <text key={k} x={x} y={top ? y - 10 : y} textAnchor={anchor} fill="currentColor" direction="ltr">
+            <tspan x={x} fontSize="13" opacity=".8">{k}</tspan>
+            <tspan x={x} dy="17" fontSize="14" fontWeight="700" fill="var(--of-mint)">{money(v)}</tspan>
           </text>
         );
       })}

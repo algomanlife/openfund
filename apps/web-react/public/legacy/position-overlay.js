@@ -33,5 +33,50 @@
       ratio: risk != null && reward != null && risk > 0 ? reward / risk : null,
     };
   }
-  global.OpenfundPositionOverlay = { model };
+  /* ---------- confirmed executions → candle markers ----------
+     `records` are the account's open positions and closed history. A record
+     exists only once its order filled; `openedAt` is that fill time and
+     `rootId` the original fill a partial-close remainder belongs to. */
+  function executionFills(records, market) {
+    const out = new Map();
+    for (const p of records || []) {
+      if (!p || p.market !== market) continue;
+      const time = Number(p.openedAt), price = Number(p.entry);
+      if (!Number.isFinite(time) || time <= 0 || !(price > 0)) continue;
+      const root = String(p.rootId != null ? p.rootId : p.id);
+      if (!out.has(root)) out.set(root, { id: root, side: p.side === 'short' ? 'short' : 'long', time, price });
+    }
+    return [...out.values()];
+  }
+  /* UTC start of the candle containing `time` */
+  function bucket(time, barMs) { return Math.floor(Number(time) / barMs) * barMs; }
+  /* one marker per candle and side; individual fills are kept */
+  function executionGroups(fills, barMs) {
+    const groups = new Map();
+    for (const f of fills) {
+      const b = bucket(f.time, barMs), key = b + '|' + f.side;
+      const g = groups.get(key) || { key, bucket: b, side: f.side, fills: [] };
+      g.fills.push(f); groups.set(key, g);
+    }
+    for (const g of groups.values()) {
+      g.fills.sort((a, b) => a.time - b.time);
+      g.label = (g.side === 'long' ? 'BUY' : 'SELL') + (g.fills.length > 1 ? ' ×' + g.fills.length : '');
+      g.placement = g.side === 'long' ? 'below' : 'above';
+    }
+    return groups;
+  }
+  /* marker price: BUY under the candle low, SELL over the candle high; without
+     candle data the fill price (still on the correct candle) */
+  function markerPrice(group, range) {
+    const prices = group.fills.map(f => f.price);
+    if (range) return group.side === 'long' ? range.low : range.high;
+    return group.side === 'long' ? Math.min(...prices) : Math.max(...prices);
+  }
+  /* zone span: from the entry candle to `ahead` bars past the latest candle */
+  function span(openedAt, now, barMs, ahead) {
+    const opened = Number(openedAt), lastBar = bucket(now, barMs);
+    const start = Number.isFinite(opened) && opened > 0 ? bucket(opened, barMs) : lastBar - 60 * barMs;
+    return { start, end: Math.max(lastBar, start) + (ahead == null ? 12 : ahead) * barMs };
+  }
+  global.OpenfundPositionOverlay = { model, executionFills, executionGroups, markerPrice, bucket, span };
 })(typeof window !== 'undefined' ? window : globalThis);

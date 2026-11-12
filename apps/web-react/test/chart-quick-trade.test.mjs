@@ -36,7 +36,13 @@ test('Quick Trade uses only the existing account adapter pipeline', () => {
   assert.doesNotMatch(quickSection, /fetch\(|WebSocket|XMLHttpRequest|new TradingProvider|EventSource/)
   assert.doesNotMatch(quickSection.replace(/\/\*[\s\S]*?\*\//g, ''), /\b(bid|ask)\b/i, 'no invented bid/ask prices')
   assert.match(quickSection, /qtMaxLev\(\)/)
-  assert.match(quickSection, /Number\(m\.maxLeverage\)/, 'leverage limit comes from the market metadata')
+  /* the limit is the ticket's shared effective maximum: the market metadata
+     limit, tightened for Prop by the Prop leverage policy */
+  assert.match(quickSection, /function qtMaxLev\(\)\{ return maxLeverage\(\); \}/, 'quick trade shares the ticket leverage limit')
+  const levFn = terminal.slice(terminal.indexOf('function maxLeverage()'), terminal.indexOf('function leverageCapNote('))
+  assert.match(levFn, /Number\(m\.maxLeverage\)/, 'leverage limit comes from the market metadata')
+  assert.match(levFn, /OpenfundPropLeverage\.maxLeverage\(m, S\.marketId, plan\)/, 'Prop applies the Prop leverage policy')
+  assert.match(levFn, /if \(!isPropTerminal\(\)/, 'Perpetual keeps the market limit unchanged')
   assert.match(quickSection, /if \(QT\.busy\) return/, 'duplicate-submission guard')
   assert.match(quickSection, /marketClosed\(\)/)
 })
