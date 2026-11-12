@@ -21,6 +21,25 @@
   - `e2e/test-chart-indicators.mjs` finds numeric Pine inputs by the
     `spinbutton` role (native number input on 0.9, Zag number input on 0.10).
 
+- Dependency patch updates (branch `agent/claude/deps-patch-2026-11`):
+  `viem` 2.57.16 to 2.57.19 in `apps/backend` and `apps/web-react`, and `ws`
+  8.22.1 to 8.22.2 in `apps/backend` (the version the capacity harness already
+  uses). Upstream registry updated. No application code changed.
+  The 30 open `npm audit` advisories in `apps/web-react` are all transitive
+  through the wallet stack and are resolved only by wagmi 3, which the latest
+  stable RainbowKit (2.2.11, peer `wagmi ^2.9.0`) does not support yet.
+
+- Footprint archive importer (branch `agent/claude/footprint-archive-import`;
+  [Footprint](docs/integrations/FOOTPRINT.md#archive-importer-prepared-not-yet-run-against-real-files)):
+  `apps/backend/footprint/archive.js` and `scripts/footprint/import-archive.mjs`
+  import decompressed Hyperliquid `node_fills_by_block` files into
+  `footprint_minutes` with `source = 'archive'`, using the live path's
+  normalization and deduplication. Taker fills only, fail-closed completeness
+  checks, dry run by default, one transaction with `--apply`, recorded gaps
+  trimmed to the imported window. Not yet run against real archive files: the
+  requester-pays bucket needs owner AWS access. No schema change; the feature
+  flag and production state are unchanged.
+
 - Community, footer, platform motion and responsive navigation (branch
   `agent/claude/community-motion-responsive-ui`):
   - Community: Telegram is the only public community action (home, hero,

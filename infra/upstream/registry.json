@@ -503,7 +503,7 @@
       "official_source": "https://github.com/websockets/ws",
       "license": "MIT",
       "installed": {
-        "version": "8.22.1",
+        "version": "8.22.2",
         "lockfile": "apps/backend/package-lock.json",
         "package": "ws"
       },
@@ -543,7 +543,7 @@
       "official_source": "https://github.com/wevm/viem",
       "license": "MIT",
       "installed": {
-        "version": "2.57.16",
+      "version": "2.57.19",
         "lockfile": "apps/backend/package-lock.json",
         "package": "viem"
       },
