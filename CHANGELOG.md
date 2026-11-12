@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Dependency patch updates (branch `agent/claude/deps-patch-2026-11`):
+  `viem` 2.57.16 to 2.57.19 in `apps/backend` and `apps/web-react`, and `ws`
+  8.22.1 to 8.22.2 in `apps/backend` (the version the capacity harness already
+  uses). Upstream registry updated. No application code changed.
+  The 30 open `npm audit` advisories in `apps/web-react` are all transitive
+  through the wallet stack and are resolved only by wagmi 3, which the latest
+  stable RainbowKit (2.2.11, peer `wagmi ^2.9.0`) does not support yet.
+
 - Community, footer, platform motion and responsive navigation (branch
   `agent/claude/community-motion-responsive-ui`):
   - Community: Telegram is the only public community action (home, hero,
