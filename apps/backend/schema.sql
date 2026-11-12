@@ -1651,3 +1651,7 @@ CREATE TABLE IF NOT EXISTS chart_workspaces (
   updated_at     timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (user_id, workspace, scope)
 );
+
+-- Dedicated checkout (v0.6): optional customer details captured on the order
+-- for the receipt. The wallet remains the account identity. Additive only.
+ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS customer jsonb;

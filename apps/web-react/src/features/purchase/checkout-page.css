@@ -1,0 +1,92 @@
+/* Dedicated challenge checkout (/:locale/checkout). Uses the information-page
+   tokens (--line, --muted, --body) and the purchase mint accent so it reads
+   as a native Openfund page in dark and light themes, LTR and RTL. */
+.of-co {
+  --co-accent: #82e7bd;
+  --co-card: color-mix(in srgb, var(--body, #f1f3ef) 4%, transparent);
+  width: min(760px, 100%);
+  margin: 0 auto;
+  padding: 40px 16px 80px;
+  display: grid;
+  gap: 16px;
+  font-size: 14px;
+}
+html[data-theme="light"] .of-co { --co-accent: #127a52 }
+.of-co h1 { font-size: clamp(24px, 4vw, 32px); font-weight: 600; margin: 0 0 14px }
+.of-co h2 { font-size: 16px; font-weight: 600; margin: 0 0 12px }
+.of-co h3 { font-size: 13px; font-weight: 600; margin: 18px 0 8px; color: var(--muted, #9fb3a8) }
+.of-co-muted { color: var(--muted, #9fb3a8); font-size: 12px; line-height: 1.8; margin: 8px 0 }
+.of-co-note { border: 1px solid var(--line, #ffffff1f); border-radius: 8px; padding: 10px 12px; font-size: 13px; margin: 8px 0 }
+.of-co-ok { color: var(--co-accent); font-variant-numeric: tabular-nums; margin: 0 }
+.of-co-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; overflow-wrap: anywhere }
+.of-co-card {
+  border: 1px solid var(--line, #ffffff1f);
+  border-radius: 12px;
+  background: var(--co-card);
+  padding: 20px;
+  min-width: 0;
+}
+
+.of-co-steps { display: flex; gap: 6px; list-style: none; padding: 0; margin: 0; flex-wrap: wrap }
+.of-co-steps li { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted, #9fb3a8); padding: 4px 10px 4px 4px; border: 1px solid var(--line, #ffffff1f); border-radius: 999px }
+[dir="rtl"] .of-co-steps li { padding: 4px 4px 4px 10px }
+.of-co-steps li span { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; border: 1px solid currentColor; font-size: 11px }
+.of-co-steps li.current { color: var(--body, #f1f3ef); border-color: var(--co-accent) }
+.of-co-steps li.current span { background: var(--co-accent); border-color: var(--co-accent); color: #0c1710 }
+.of-co-steps li.done { color: var(--co-accent) }
+
+.of-co fieldset { border: 0; padding: 0; margin: 0 0 14px; display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) }
+.of-co-sizes { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important }
+.of-co legend { font-size: 12px; color: var(--muted, #9fb3a8); margin-bottom: 8px; padding: 0 }
+.of-co fieldset label {
+  position: relative; display: grid; gap: 4px; cursor: pointer;
+  border: 1px solid var(--line, #ffffff1f); border-radius: 9px; padding: 11px 12px;
+  transition: border-color .15s, background .15s;
+}
+.of-co fieldset label:hover { border-color: color-mix(in srgb, var(--co-accent) 55%, transparent) }
+.of-co fieldset label.selected { border-color: var(--co-accent); background: color-mix(in srgb, var(--co-accent) 9%, transparent) }
+.of-co fieldset label:focus-within { outline: 2px solid var(--co-accent); outline-offset: 2px }
+.of-co fieldset input { position: absolute; opacity: 0; pointer-events: none }
+.of-co fieldset b { font-size: 13px; font-weight: 600 }
+.of-co fieldset small { font-size: 11px; color: var(--muted, #9fb3a8) }
+
+.of-co-coupon label, .of-co-customer label { display: grid; gap: 6px; font-size: 12px; color: var(--muted, #9fb3a8); margin-bottom: 10px }
+.of-co-customer input, .of-co-coupon input {
+  width: 100%; min-width: 0; box-sizing: border-box;
+  background: transparent; color: inherit; font: inherit; font-size: 14px;
+  border: 1px solid var(--line, #ffffff2a); border-radius: 8px; padding: 10px 12px;
+}
+.of-co-customer input:focus, .of-co-coupon input:focus { outline: none; border-color: var(--co-accent) }
+.of-co-customer input[aria-invalid="true"] { border-color: #ef6f6c }
+
+.of-co-summary { margin: 14px 0 }
+.of-co-summary .of-co-total b { font-size: 16px; color: var(--co-accent) }
+.of-co-accept { display: flex; gap: 10px; align-items: flex-start; font-size: 12px; line-height: 1.8; margin: 12px 0 }
+.of-co-accept input { margin-top: 5px; accent-color: var(--co-accent) }
+.of-co-accept a { color: var(--co-accent) }
+.of-co-pay { margin-top: 6px }
+.of-co .button.full { width: 100% }
+.of-co .button[disabled] { opacity: .45; cursor: not-allowed }
+.of-co-networks { margin-top: 10px }
+
+.of-co-receipt h2 { color: var(--co-accent) }
+.of-co-receipt dl { margin: 0; display: grid }
+.of-co-receipt dl > div { display: grid; grid-template-columns: minmax(120px, 34%) 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line, #ffffff14) }
+.of-co-receipt dt { color: var(--muted, #9fb3a8); font-size: 12px }
+.of-co-receipt dd { margin: 0; min-width: 0; overflow-wrap: anywhere; font-size: 13px }
+.of-co-receipt dd a { color: var(--co-accent) }
+.of-co .of-checkout-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px }
+.of-co-foot { text-align: center }
+.of-co-foot a { color: var(--co-accent) }
+
+@media (max-width: 560px) {
+  .of-co { padding-top: 24px }
+  .of-co-card { padding: 16px }
+  .of-co-receipt dl > div { grid-template-columns: 1fr; gap: 2px }
+  .of-co-steps li { font-size: 11px }
+}
+@media print {
+  .info-chrome, .of-co-head, .of-co-card:not(.of-co-receipt), .of-co-foot, .of-co-receipt .of-checkout-actions { display: none !important }
+  .of-co-receipt { border: 0; background: none; color: #000 }
+  .of-co-receipt dt, .of-co-receipt dd, .of-co-receipt h2 { color: #000 }
+}

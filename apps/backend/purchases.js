@@ -261,7 +261,7 @@ export async function confirmPurchaseTx(client, { orderId, userId, evidence, sou
 }
 
 /* ---------- payment attempts, classification and recovery ---------- */
-const RETRYABLE = new Set(['tx_pending', 'tx_not_final', 'rpc_unavailable', 'tx_reorged'])
+const RETRYABLE = new Set(['tx_pending', 'tx_not_final', 'rpc_unavailable', 'tx_reorged', 'provisioning_retry'])
 const CLASSIFY = {
   insufficient_amount: 'underpayment', wrong_token: 'wrong_token', wrong_receiver: 'wrong_receiver',
   wrong_sender: 'wrong_sender', tx_not_successful: 'reverted', order_expired: 'late',
@@ -331,7 +331,15 @@ export async function verifyAndConfirm({ pool, verifier, order, userId, walletAd
       minConfirmations: c.minConfirmations,
     })
     const evidence = { ...verdict, blockchain: c.blockchain, reported: reported || undefined }
-    const result = await confirmPurchase(pool, { orderId: order.id, userId, evidence, source })
+    let result
+    try { result = await confirmPurchase(pool, { orderId: order.id, userId, evidence, source }) } catch (e) {
+      /* The payment is proven on-chain but provisioning failed for an
+         unexpected (non-business) reason, e.g. a database timeout. Nothing
+         was committed, so the attempt stays retryable: the recovery sweep
+         re-runs it and the customer never pays twice. */
+      if (e.status) throw e
+      throw Object.assign(new Error('provisioning_retry'), { status: 503, retryable: true, detail: String(e?.message || e).slice(0, 200) })
+    }
     const over = evidence.overpaymentUnits && evidence.overpaymentUnits !== '0'
     await finishAttempt(pool, attemptId, {
       status: 'confirmed', classification: over ? 'overpayment' : null,
@@ -587,6 +595,17 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
     return normalizeCode(v)
   }
 
+  /* optional customer details for the receipt (the wallet stays the identity) */
+  const customerArg = v => {
+    if (v == null) return null
+    if (typeof v !== 'object') throw fail(400, 'invalid_customer')
+    const name = typeof v.name === 'string' ? v.name.trim().slice(0, 120) : ''
+    const email = typeof v.email === 'string' ? v.email.trim().toLowerCase() : ''
+    if (email && (email.length > 254 || !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]{2,}$/.test(email))) throw fail(400, 'invalid_email')
+    if (/[<>]/.test(name)) throw fail(400, 'invalid_customer')
+    return name || email ? { name: name || null, email: email || null } : null
+  }
+
   /* 2a — authoritative quote (plan price + optional coupon); creates nothing */
   router.post('/purchases/quote', requireAuth, limit(30), wrap(async (req, res) => {
     const { planSlug, accountSize, couponCode } = req.body || {}
@@ -606,6 +625,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
     const { planSlug, accountSize, idempotencyKey, couponCode } = req.body || {}
     const key = typeof idempotencyKey === 'string' && idempotencyKey.length <= 120 ? idempotencyKey : null
     const code = couponArg(couponCode)
+    const customer = customerArg(req.body?.customer)
 
     const replay = async () => {
       if (!key) return null
@@ -640,12 +660,12 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
         [`user:${req.user.user_id}`, coupon ? `coupon:${coupon.code}` : 'order_created'])
       const ins = await client.query(
         `INSERT INTO purchase_orders (user_id, challenge_plan_id, account_size_usd, list_price_usd, discount_usd, price_usd,
-                                      coupon_id, payment_required, payment_method, idempotency_key)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT (user_id, idempotency_key) DO NOTHING RETURNING id`,
+                                      coupon_id, payment_required, payment_method, idempotency_key, customer)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) ON CONFLICT (user_id, idempotency_key) DO NOTHING RETURNING id`,
         [req.user.user_id, plan.id, size.toFixed(2), pricing.list, pricing.discount, pricing.net, coupon?.id ?? null, !zero,
           /* payment method of record: a 100% coupon order has no payment; an
              internal test coupon is recorded as such */
-          zero ? (coupon.internal ? 'internal_coupon' : 'coupon') : 'crypto', key])
+          zero ? (coupon.internal ? 'internal_coupon' : 'coupon') : 'crypto', key, customer && JSON.stringify(customer)])
       if (!ins.rows[0]) conflict = true /* same idempotency key committed concurrently */
       else {
       orderId = ins.rows[0].id
@@ -682,6 +702,60 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
     const order = await orderView(req.params.id, req.user.user_id)
     if (!order) throw fail(404, 'order_not_found')
     res.json({ order, payment: order.status === 'pending' ? paymentInstructions(order) : null })
+  }))
+
+  /* 3b — purchase receipt, built only from verified records: the order of
+     record, the payment the chain verifier wrote (settlement token, amount,
+     receiver, network, transaction), DePay's reported source token/amount
+     (labelled as reported), the invoice and the provisioned challenge. */
+  router.get('/purchases/orders/:id/receipt', requireAuth, wrap(async (req, res) => {
+    if (!uuid.test(req.params.id)) throw fail(404, 'order_not_found')
+    const { rows: [r] } = await pool.query(
+      `SELECT o.id, o.status, o.lifecycle_state, o.account_size_usd, o.list_price_usd, o.discount_usd, o.price_usd, o.currency,
+              o.payment_required, o.payment_method, o.created_at, o.paid_at, o.customer,
+              p.slug AS plan_slug, p.name AS plan_name, p.configuration->'name' AS plan_names, c.code AS coupon_code,
+              pm.tx_hash, pm.chain_id, pm.blockchain, pm.token_address, pm.amount, pm.to_address, pm.from_address,
+              pm.source_token, pm.source_amount, pm.verified_at,
+              pm.verification->>'tokenDecimals' AS token_decimals, pm.verification->>'blockTimestamp' AS block_time,
+              pm.verification->>'route' AS route,
+              i.id AS invoice_id, i.number AS invoice_number, i.issued_at AS invoice_issued_at,
+              ch.id AS challenge_id, ch.status AS challenge_status, u.wallet_address
+         FROM purchase_orders o
+         JOIN challenge_plans p ON p.id=o.challenge_plan_id
+         JOIN openfund_users u ON u.id=o.user_id
+         LEFT JOIN coupons c ON c.id=o.coupon_id
+         LEFT JOIN payments pm ON pm.purchase_order_id=o.id AND pm.status='confirmed'
+         LEFT JOIN invoices i ON i.purchase_order_id=o.id
+         LEFT JOIN openfund_challenges ch ON ch.purchase_order_id=o.id
+        WHERE o.id=$1 AND o.user_id=$2`, [req.params.id, req.user.user_id])
+    if (!r) throw fail(404, 'order_not_found')
+    /* decimals recorded by the verifier, else the configured settlement token's */
+    const decimals = r.token_decimals != null ? Number(r.token_decimals)
+      : (r.chain_id != null ? paymentChains().find(c => c.chainId === Number(r.chain_id))?.tokenDecimals ?? null : null)
+    const human = (units, d) => {
+      if (units == null || !Number.isInteger(d)) return null
+      const v = BigInt(String(units).split('.')[0]); const base = 10n ** BigInt(d)
+      const frac = (v % base).toString().padStart(d, '0').replace(/0+$/, '')
+      return (v / base).toString() + (frac ? '.' + frac : '')
+    }
+    res.json({ receipt: {
+      orderId: r.id, status: r.status, lifecycleState: r.lifecycle_state,
+      plan: { slug: r.plan_slug, name: r.plan_name, names: r.plan_names && typeof r.plan_names === 'object' ? r.plan_names : null },
+      accountSizeUsd: r.account_size_usd, listPriceUsd: r.list_price_usd, discountUsd: r.discount_usd, priceUsd: r.price_usd,
+      currency: r.currency, couponCode: r.coupon_code, paymentRequired: r.payment_required, paymentMethod: r.payment_method,
+      customer: r.customer || null, walletAddress: r.wallet_address,
+      createdAt: r.created_at, paidAt: r.paid_at,
+      payment: r.tx_hash ? {
+        txHash: r.tx_hash, chainId: r.chain_id, blockchain: r.blockchain || blockchainOf(r.chain_id), route: r.route,
+        settlement: { token: r.token_address, amountUnits: r.amount, amount: human(r.amount, decimals), decimals, receiver: r.to_address },
+        sender: r.from_address,
+        /* reported by DePay ("Include sent token information"); not verified */
+        sent: r.source_token || r.source_amount ? { token: r.source_token, amount: r.source_amount, reported: true } : null,
+        blockTime: r.block_time, verifiedAt: r.verified_at,
+      } : null,
+      invoice: r.invoice_id ? { id: r.invoice_id, number: r.invoice_number, issuedAt: r.invoice_issued_at } : null,
+      challenge: r.challenge_id ? { id: r.challenge_id, status: r.challenge_status } : null,
+    } })
   }))
 
   /* 4 — verify an on-chain payment and provision exactly once */

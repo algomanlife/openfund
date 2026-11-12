@@ -35,6 +35,7 @@ import { ProductDashboard, CapabilityPage } from './features/terminal/Dashboard'
 import ProductPortfolio from './features/terminal/Portfolio'
 import ProductJournal from './features/terminal/Journal'
 import PurchaseHistory from './features/purchase/PurchaseHistory'
+import CheckoutPage from './features/purchase/CheckoutPage'
 import WithdrawalsPage from './features/purchase/WithdrawalsPage'
 import { WalletProvider } from './wallet/WalletProvider'
 import { SessionProvider } from './session/useOpenfundSession'
@@ -121,6 +122,7 @@ const routes = [
   { path: '/', element: <RootRedirect /> },
   { path: '/:locale/home', element: <LocalizedHome /> },
   { path: '/:locale/challenges', element: <Landing /> },
+  { path: '/:locale/checkout', element: <CheckoutPage /> },
   { path: '/:locale/markets', element: <Markets /> },
   { path: '/:locale/rulebook', element: <Rulebook /> },
   { path: '/:locale/transparency', element: <Transparency /> },

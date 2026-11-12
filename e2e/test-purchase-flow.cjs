@@ -156,8 +156,13 @@ async function run() {
     await page.locator('#review-selection').click();
     await page.locator('#selection-dialog[open], dialog[open]').first().waitFor();
     await page.locator('#dialog-done').click();
-    await page.getByRole('heading', { name: 'Challenge Checkout' }).waitFor({ timeout: 5000 });
-    check('React checkout panel opens from the legacy dialog', true);
+    await page.waitForURL(/\/en\/checkout\?plan=[^&]+&size=\d+/, { timeout: 10000, waitUntil: 'load' });
+    await page.getByRole('heading', { name: 'Buy a Challenge', level: 1 }).waitFor({ timeout: 10000 });
+    await connect(page);
+    await signIn(page);
+    check('the dedicated checkout page opens from the legacy dialog with the selection', /size=\d+/.test(page.url()));
+    await page.getByLabel('Email for the receipt').fill('buyer@example.test');
+    await page.locator('.of-co-accept input').check();
     await shot(page, 'checkout-open');
 
     /* ---------- 3. create the server-priced order ---------- */
@@ -178,7 +183,7 @@ async function run() {
 
     /* ---------- 5. the panel detects the paid order (polling) ---------- */
     await page.getByText('Payment successful', { exact: false }).waitFor({ timeout: 15000 });
-    check('checkout panel transitions to the verified state', true);
+    check('checkout page transitions to the verified receipt', await page.locator('.of-co-receipt').count() === 1);
     await shot(page, 'checkout-verified');
 
     const me = await call(page, '/auth/me');
