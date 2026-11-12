@@ -36,7 +36,7 @@ The root package orchestrates commands; applications install from their own lock
 
 ## Development environment
 
-Prerequisites: Node.js 22, npm, PostgreSQL 17 (Python 3 only for optional
+Prerequisites: Node.js 26, npm, PostgreSQL 17 (Python 3 only for optional
 Directus utilities). Check port ownership first, and keep 8080 for an official
 local runtime. See [Local development](../development/LOCAL_DEVELOPMENT.md).
 

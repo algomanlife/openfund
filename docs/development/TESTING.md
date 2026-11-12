@@ -1,6 +1,6 @@
 # Testing and validation
 
-Use Node 22 and the per-app lockfiles. [Local setup](LOCAL_DEVELOPMENT.md) describes installation. Run checks against the current branch and report their actual outcomes.
+Use Node 26 and the per-app lockfiles. [Local setup](LOCAL_DEVELOPMENT.md) describes installation. Run checks against the current branch and report their actual outcomes.
 
 ## Frontend and documentation
 

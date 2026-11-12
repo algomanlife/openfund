@@ -146,7 +146,7 @@ flowchart LR
 One root command orchestrates the existing application boundaries:
 
 ```sh
-# Node.js 22, PostgreSQL 17, installed Playwright Chromium
+# Node.js 26, PostgreSQL 17, installed Playwright Chromium
 # Create a NEW local database; never use the application's existing database.
 createdb openfund_release_test
 DATABASE_URL=postgresql://localhost/openfund_release_test npm run release:build -- --candidate
@@ -156,7 +156,7 @@ DATABASE_URL=postgresql://localhost/openfund_release_test npm run release:build 
 
 Payment coverage is narrower than a production acceptance certificate. Main v0.2.0 packaging did not run the explicit `test:browser:purchase` suite or inject a receiver; CI separately enables a test-only placeholder and runs that browser lifecycle. The current website candidate adds `test:browser:website` to packaging. Inspect the current script and its verification stages before claiming coverage; [Testing](../development/TESTING.md) documents the isolated receiver setup. Receiver/widget defaults remain off for official runtime use.
 
-Official mode additionally requires a clean checkout and the exact main GitHub Actions SHA. Node major 22 is required. Candidates are explicitly `official:false`; their SHA is a base commit, not proof that uncommitted changes were integrated. Only a clean main workflow can produce official identity.
+Official mode additionally requires a clean checkout and the exact main GitHub Actions SHA. Node major 26 is required. Candidates are explicitly `official:false`; their SHA is a base commit, not proof that uncommitted changes were integrated. Only a clean main workflow can produce official identity.
 
 The deployable archive contains current `react/`, backend source/lockfile/schema, the actual vendored journal-core dependency and licenses, the Blueprint, changelog, manifests and per-file checksums. It excludes `.env`, credentials, personal data, database contents, browser sessions and `node_modules`. Backend dependencies are installed from their lockfile on startup/deployment. Existing classic `dist/` source stays preserved in Git; the frontend build includes the assets it actually loads. CMS is the existing pinned Directus service; its schema tools and source are available at the release tag, not represented as a newly deployed service.
 
@@ -210,7 +210,7 @@ The build fails if Render's public build variables differ from official CI hashe
 ## Run an exact official version locally
 
 ```sh
-# Requires authenticated gh, Git, tar, npm, Node 22, and local PostgreSQL.
+# Requires authenticated gh, Git, tar, npm, Node 26, and local PostgreSQL.
 # Pick a dedicated local database and an official published version.
 createdb openfund_release_local
 DATABASE_URL=postgresql://localhost/openfund_release_local PORT=8080 \
@@ -226,7 +226,7 @@ with the existing `release:build -- --candidate` on a fresh isolated local test
 DB, after documentation edits. Preserve the verified archive and external
 SHA256SUMS; extract it into a separate workspace directory and run the existing
 `scripts/release/verify.mjs` on that exact payload before installing backend
-lockfile dependencies. Use Node 22 and the existing server entrypoint, never
+lockfile dependencies. Use Node 26 and the existing server entrypoint, never
 mutable worktree frontend output. Do not rebuild frontend after packaging.
 
 For authorized canonical 8080 preview, inspect and stop only the explicitly

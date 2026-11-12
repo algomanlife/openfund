@@ -50,7 +50,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 26
       - name: Deploy exact approved SHA and verify runtime identity
         run: node scripts/release/deploy.mjs "$RELEASE_TAG"
       - uses: actions/upload-artifact@v4

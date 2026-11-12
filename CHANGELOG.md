@@ -11,6 +11,14 @@
   ([evidence](docs/reviews/directus-11.17.4-staging/README.md)). Directus 12
   stays blocked on the licence decision.
 
+- Node.js 26 LTS (branch `agent/claude/node-26`; **needs owner approval
+  before deployment**): CI workflows, the release image
+  (`node:26-bookworm-slim`), the Render Blueprint `NODE_VERSION`, the backend
+  `engines` field and the release build guards move from Node 22 (maintenance
+  LTS) to Node 26 (Active LTS). Current development and release docs, and the
+  release-candidate rule in `AGENTS.md`, say Node 26. Historical audit and
+  review records are unchanged. No application code changed.
+
 - Footprint activation (branch `agent/claude/footprint-activation`): the
   Render Blueprint sets `FOOTPRINT_ENABLED=1` on `openfund`, on the owner's
   request, so the terminal offers Chart Style → Footprint and the Footprint
