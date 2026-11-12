@@ -41,3 +41,22 @@ export const createPineEngine = () => preserveUnknownVolume(new PineWorkerEngine
   importResolver,
   workerUrl: new URL('assets/openfund-pine-worker.min.js', document.baseURI).href,
 }));
+
+/* Footprint (Hyperliquid order flow on the Gains chart). Registration is NOT a
+   side effect of loading this bundle: the host calls installFootprint() before
+   mounting the workspace, and only when the footprint feature flag is on. */
+export { installFootprint, footprintDiagnostics } from './footprint/plugin';
+registerLocale({locale:'fa',direction:'rtl',messages:{
+  'footprint.title':'فوت‌پرینت',
+  'footprint.overlay.title':'فوت‌پرینت (لایه جریان سفارش)',
+  'footprint.source':'فوت‌پرینت · Hyperliquid {coin}',
+  'footprint.state.loading':'در حال بارگذاری جریان سفارش…',
+  'footprint.state.live':'زنده',
+  'footprint.state.warn':'اختلاف قیمت با نمودار بیش از حد معمول است',
+  'footprint.state.hide':'پنهان: قیمت‌ها با نمودار قابل مقایسه نیستند',
+  'footprint.state.stale':'اتصال قطع شده — داده زنده نیست',
+  'footprint.state.calibrating':'در حال بررسی سازگاری قیمت…',
+  'footprint.state.unsupported':'برای این بازار در دسترس نیست',
+  'footprint.state.error':'سرویس جریان سفارش در دسترس نیست',
+  'footprint.basis':'{bps} نقطه پایه نسبت به نمودار',
+}});

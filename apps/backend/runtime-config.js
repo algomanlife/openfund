@@ -36,6 +36,8 @@ export function runtimeConfigScript(env, production = false) {
     depayWidgetIntegrity: depayWidgetApproved(env, production) ? env.VITE_DEPAY_WIDGET_INTEGRITY : '',
     /* public DePay integration id (app.depay.com); not a secret */
     depayIntegrationId: depayWidgetApproved(env, production) ? env.VITE_DEPAY_INTEGRATION_ID : '',
+    /* Footprint chart plugin (Hyperliquid order-flow analytics); off unless enabled */
+    footprint: env.FOOTPRINT_ENABLED === '1',
   }
   return `window.__OPENFUND_RUNTIME_CONFIG__=${JSON.stringify(config).replaceAll('<', '\\u003c')};\n`
 }

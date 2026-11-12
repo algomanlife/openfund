@@ -111,6 +111,16 @@ services:
         sync: false             # only needed for extra origins / custom domain
       - key: SESSION_TTL_HOURS
         value: "168"
+      - key: FOOTPRINT_ENABLED
+        value: "0"              # Footprint chart (Hyperliquid order-flow analytics). "1" enables it;
+                                # off by default until the owner approves the production rollout.
+      - key: FOOTPRINT_DATABASE_URL
+        sync: false             # optional dedicated market-data database; unset = footprint_* tables
+                                # in the main database (self-contained, no foreign keys)
+      - key: FOOTPRINT_RETENTION_DAYS
+        value: "30"             # stored one-minute footprint history kept, in days
+      - key: FOOTPRINT_MAX_STREAMS
+        value: "5000"           # concurrent live footprint streams this process accepts
       - key: VITE_DIRECTUS_HOST
         fromService:
           name: openfund-cms

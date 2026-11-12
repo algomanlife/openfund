@@ -1,0 +1,82 @@
+{
+  "measuredAt": "2026-11-11T21:06:50.672Z",
+  "durationMin": 30,
+  "intervalSec": 5,
+  "rounds": 322,
+  "failures": 36,
+  "method": "Hyperliquid allMids vs Gains /prices mark, Gains marks older than 15 s skipped",
+  "markets": {
+    "BTC/USD": {
+      "n": 322,
+      "medianBps": 5.98,
+      "madBps": 0.5,
+      "p05Bps": 4.18,
+      "p95Bps": 7.52,
+      "p99Bps": 9.05,
+      "maxAbsBps": 12.68
+    },
+    "ETH/USD": {
+      "n": 319,
+      "medianBps": 6.45,
+      "madBps": 0.43,
+      "p05Bps": 3.75,
+      "p95Bps": 7.99,
+      "p99Bps": 9.24,
+      "maxAbsBps": 13.1
+    },
+    "SOL/USD": {
+      "n": 319,
+      "medianBps": 5.57,
+      "madBps": 0.59,
+      "p05Bps": 3.44,
+      "p95Bps": 7.61,
+      "p99Bps": 9.36,
+      "maxAbsBps": 10.8
+    },
+    "XAU/USD": {
+      "n": 322,
+      "medianBps": 6.53,
+      "madBps": 0.7,
+      "p05Bps": 5.3,
+      "p95Bps": 8.53,
+      "p99Bps": 8.96,
+      "maxAbsBps": 9.74
+    },
+    "XAG/USD": {
+      "n": 322,
+      "medianBps": 6.03,
+      "madBps": 0.42,
+      "p05Bps": 4.62,
+      "p95Bps": 7.11,
+      "p99Bps": 8.1,
+      "maxAbsBps": 8.86
+    },
+    "EUR/USD": {
+      "n": 257,
+      "medianBps": 4.33,
+      "madBps": 0.45,
+      "p05Bps": 2.71,
+      "p95Bps": 4.96,
+      "p99Bps": 5.14,
+      "maxAbsBps": 5.23
+    },
+    "GBP/USD": {
+      "n": 306,
+      "medianBps": 0.9,
+      "madBps": 0.23,
+      "p05Bps": 0.6,
+      "p95Bps": 2.11,
+      "p99Bps": 3.01,
+      "maxAbsBps": 3.24
+    },
+    "USD/JPY": {
+      "n": 314,
+      "medianBps": -6.07,
+      "madBps": 0.25,
+      "p05Bps": -6.51,
+      "p95Bps": -5.63,
+      "p99Bps": -5.38,
+      "maxAbsBps": 6.82
+    }
+  }
+}

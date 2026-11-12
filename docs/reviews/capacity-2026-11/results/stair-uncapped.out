@@ -1,0 +1,12 @@
+== run stair-uncapped profile=uncapped stages=all ramp=60s hold=180s const= cdn=0.95
+[market-data] ws subscribed
+sltp: {"n":458,"p50":7240,"p95":114934,"p99":133213,"max":141003}
+integrity exit 0 ("violations": 0)
+STOPPED: {"t":1794421572037,"reason":"pg pool queue 566 waiting for 30 s","last":{"t":1794421571989,"connections":{"total":16,"max":100,"byState":{"active:Client":1,"active":3,"idle:Client":4,"idle":2},"longestQueryS":0},"lockWaits":0,"ungrantedLocks":0,"engineLoopPassesPs":0.5,"tps":10658,"rollbacksPs":0,"d
+==> <workspace>/capacity/results/stair-uncapped/k6-charts.log <==
+charts: 101459 req, failed 0.00%, integrity 0
+time="2026-11-11T22:26:12+04:00" level=error msg="test run was aborted because k6 received a 'interrupt' signal"
+
+==> <workspace>/capacity/results/stair-uncapped/k6-visitors.log <==
+visitors: 280439 req, failed 0.00%
+time="2026-11-11T22:26:12+04:00" level=error msg="test run was aborted because k6 received a 'interrupt' signal"

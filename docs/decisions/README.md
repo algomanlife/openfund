@@ -27,5 +27,6 @@
 - [0021 — Upstream governance automation](0021-upstream-governance-automation.md)
 - [0022 — Arbitrum-only wallet and checkout, coupons and an explicit order lifecycle](0022-arbitrum-checkout-coupons-order-lifecycle.md)
 - [0023 — Per-wallet chart workspaces](0023-per-wallet-chart-workspaces.md)
+- [0024 — Hybrid footprint chart (Gains price, Hyperliquid order flow)](0024-hybrid-footprint-chart.md)
 
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)

@@ -25,6 +25,37 @@
     or remounted); desktop tabs and the More menu are unchanged.
   - New browser regression suite `e2e/test-responsive-navigation.cjs`
     (11 widths × 5 locales, short viewports, terminal state persistence).
+- Capacity assessment (branch `agent/claude/capacity-assessment`): isolated
+  k6 + SSE + Playwright capacity harness (`scripts/capacity/`) and measured
+  report ([Capacity assessment 2026-11](docs/reviews/capacity-2026-11/REPORT.md)).
+  Measured: 100 chart users + 200 visitors stable on one uncapped core; not
+  stable at that stage under a Render-equivalent CPU quota; first bottleneck is
+  per-stream SSE database polling on the 10-connection pool and the serial
+  engine loop. No application code changed.
+  Harness dependencies pinned to patched `ws` 8.22.2 and `viem` 2.57.16
+  (GHSA-96hv-2xvq-fx4p); k6 dashboard HTML exports are no longer committed.
+
+- Hybrid footprint chart (branch `agent/claude/hybrid-footprint`, disabled by
+  default with `FOOTPRINT_ENABLED=0`; [Footprint](docs/integrations/FOOTPRINT.md),
+  ADR 0024):
+  - Gains stays the chart's price, candle and market source. Hyperliquid
+    executed trades (aggressor side, exact prices) drive a footprint built
+    only on Vela's public plugin SDK: a "Footprint" chart style and a
+    "Footprint" overlay. Five display modes, with Bid × Ask Ladder as the
+    default. POC, naked POC, value area, diagonal and stacked imbalances,
+    filters, a stat table, a visible-range profile and up to three instances.
+  - Footprint service: one shared Hyperliquid WebSocket per process, exact
+    one-minute per-price slices in `footprint_minutes` (with optional
+    `FOOTPRINT_DATABASE_URL`), recorded capture gaps, `/api/footprint/*`
+    history and SSE stream. It is read-only and isolated from the engine,
+    accounts and payments.
+  - Price compatibility: footprint prices are never shifted. Per-market
+    limits come from a measured Gains↔Hyperliquid basis, and the footprint
+    is flagged, hidden or marked stale accordingly. The status chip states
+    the offset.
+  - BTC, ETH, SOL, gold, silver, EUR/USD, GBP/USD and USD/JPY were verified
+    against live Hyperliquid metadata. History is captured from first run;
+    archive backfill is pending.
 
 - Production fix and terminal refinement (branch
   `agent/claude/production-fix-ui-refinement`):
