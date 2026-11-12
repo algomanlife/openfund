@@ -222,7 +222,7 @@ Render values to set on `openfund`: `PURCHASE_PAYMENT_CHAINS`,
 `DEPAY_CONFIG_PRIVATE_KEY` (secret), `VITE_DEPAY_WIDGET=1`,
 `VITE_DEPAY_WIDGET_URL`, `VITE_DEPAY_WIDGET_INTEGRITY`,
 `VITE_DEPAY_INTEGRATION_ID`, `CSP_EXTRA_SCRIPT_SRC`, `CSP_EXTRA_FRAME_SRC`.
-Changing `VITE_*` values requires a rebuild.
+The `VITE_DEPAY_*` and `VITE_WALLETCONNECT_PROJECT_ID` values are read at runtime by `/runtime-config.js` (`apps/backend/runtime-config.js`), not baked into the build; a restart or redeploy applies them.
 
 Key generation (operator workstation, never in the repository):
 

@@ -56,7 +56,13 @@ try {
     await frame.locator('.vela-widget-indicators').click();
     const rows = frame.locator('[data-library] .vela-ip-name');
     assert.deepEqual((await rows.allTextContents()).slice(0,3), names);
-    assert.equal(await rows.count(), 80);
+    /* the server's FOOTPRINT_ENABLED flag adds exactly one library row, the
+       Footprint overlay; the 80 catalog rows are unchanged either way */
+    const footprintOn = await page.evaluate(() => !!(window.__OPENFUND_RUNTIME_CONFIG__ || {}).footprint);
+    const rowNames = await rows.allTextContents();
+    if (product === 'prop') /* English page; the Persian page localizes the label */
+      assert.equal(rowNames.filter(n => n === 'Footprint (order flow overlay)').length, footprintOn ? 1 : 0);
+    assert.equal(rowNames.length, 80 + (footprintOn ? 1 : 0));
     await checkBranding(frame);
     record(`${product}: exact catalog order, 77 built-ins and branding`);
     if (live) await page.screenshot({ path: path.join(output, `${product}-catalog.png`) });
@@ -82,7 +88,9 @@ try {
     const settings = frame.getByRole('dialog');
     await settings.waitFor();
     // A real Pine input edit through the existing settings dialog.
-    const sensitivity = settings.locator('input[type="number"]').first();
+    // Numeric Pine inputs are spinbuttons: a native number input on Vela 0.9,
+    // Zag's text-based number input with role="spinbutton" on Vela 0.10+.
+    const sensitivity = settings.getByRole('spinbutton').first();
     const before = await sensitivity.inputValue();
     await sensitivity.fill(String(Number(before) + 1));
     await sensitivity.press('Tab');
