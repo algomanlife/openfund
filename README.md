@@ -14,7 +14,7 @@ in one wallet-native platform.
 [![Latest release](https://img.shields.io/github/v/release/algomanlife/openfund?label=release&color=82e7bd&labelColor=060808)](https://github.com/algomanlife/openfund/releases/latest)
 [![Deployed version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fopenfi.cloud%2Fversion&query=%24.version&label=deployed&color=82e7bd&labelColor=060808)](https://openfi.cloud/version)
 [![CI](https://github.com/algomanlife/openfund/actions/workflows/ci.yml/badge.svg)](https://github.com/algomanlife/openfund/actions/workflows/ci.yml)
-![License: not yet selected](https://img.shields.io/badge/license-not%20yet%20selected-C6FF52?labelColor=060808)
+![License: all rights reserved, decision pending](https://img.shields.io/badge/license-all%20rights%20reserved%20%28decision%20pending%29-C6FF52?labelColor=060808)
 
 [Product](#product-ecosystem) · [Gallery](#product-gallery) · [Business model](#business-model) · [Architecture](#technical-architecture) · [Development](#development-workflow) · [Releases](#versioning-and-releases) · [Docs](docs/README.md)
 
@@ -291,7 +291,10 @@ gh release list -R algomanlife/openfund
 ## License
 
 **No first-party license has been selected yet (owner decision pending), so no
-open-source licence is granted.** The repository is public for transparency.
+open-source licence is granted: Openfund's own code is all rights reserved.**
+The repository is public for transparency; viewing it does not grant a right
+to copy, modify or redistribute. The options and blockers are in the
+[license decision document](docs/legal/LICENSE_DECISION.md).
 Third-party components keep their own terms:
 
 | Component | License | Note |
@@ -301,6 +304,8 @@ Third-party components keep their own terms:
 | LuxAlgo journal-core, Gains SDK | MIT | Vendored with notices |
 | MetaMask SDK | ConsenSys licence | Notice shipped; commercial-use terms under review |
 | Openfund Protocol (dormant) | GPL-2.0 | Not built or shipped |
+| Vazirmatn, Ubuntu fonts | OFL 1.1, Ubuntu Font Licence 1.0 | Licence texts shipped beside the fonts |
+| Irancell-derived fonts | Unresolved ("all rights reserved" in the font files) | Provenance needed before any license decision |
 
 [Licensing report](docs/legal/LICENSING.md) · [Third-party notices](THIRD_PARTY_NOTICES.md) · [Dependency licenses](docs/legal/DEPENDENCY_LICENSES.md)
 
