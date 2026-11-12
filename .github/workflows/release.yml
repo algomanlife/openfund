@@ -115,7 +115,7 @@ jobs:
             -e DB_DATABASE=openfund_release_ci -e DB_USER=openfund_ci -e DB_PASSWORD=openfund_ci \
             -e KEY="$(openssl rand -hex 16)" -e SECRET="$(openssl rand -hex 32)" \
             -e ADMIN_EMAIL="$DIRECTUS_ADMIN_EMAIL" -e ADMIN_PASSWORD="$DIRECTUS_ADMIN_PASSWORD" \
-            -e CORS_ENABLED=true -e CORS_ORIGIN=true directus/directus:11.9.1
+            -e CORS_ENABLED=true -e CORS_ORIGIN=true directus/directus:11.17.4
           ready=false
           for i in $(seq 1 90); do
             if curl -fsS "$DIRECTUS_URL/server/ping" >/dev/null; then ready=true; break; fi
@@ -203,7 +203,7 @@ jobs:
           npm ci --include=dev --prefix apps/web-react
           npm ci --prefix apps/backend
           npm --prefix apps/backend run migrate
-      - name: Fresh Directus 11.9.1 bootstrap, rerun and draft isolation
+      - name: Fresh Directus 11.17.4 bootstrap, rerun and draft isolation
         run: |
           export DIRECTUS_URL=http://127.0.0.1:8055
           export DIRECTUS_ADMIN_EMAIL=release-ci@example.com
@@ -213,7 +213,7 @@ jobs:
             -e DB_DATABASE=openfund_cms_ci -e DB_USER=openfund_ci -e DB_PASSWORD=openfund_ci \
             -e KEY="$(openssl rand -hex 16)" -e SECRET="$(openssl rand -hex 32)" \
             -e ADMIN_EMAIL="$DIRECTUS_ADMIN_EMAIL" -e ADMIN_PASSWORD="$DIRECTUS_ADMIN_PASSWORD" \
-            -e CORS_ENABLED=true -e CORS_ORIGIN=true directus/directus:11.9.1
+            -e CORS_ENABLED=true -e CORS_ORIGIN=true directus/directus:11.17.4
           trap 'docker stop openfund-cms-ci >/dev/null' EXIT
           ready=false
           for i in $(seq 1 90); do

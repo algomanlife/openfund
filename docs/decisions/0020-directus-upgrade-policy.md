@@ -23,4 +23,11 @@ Openfund pins Directus 11.9.1 as its editorial backstage. Directus 12 changes li
 - Preflight in `apply_schema.py` stops early on an unlicensed Directus 12 instead of failing half-way.
 - Every future Directus change is reviewed against this checklist and recorded in the [upstream dependency registry](../integrations/UPSTREAM_DEPENDENCIES.md).
 
+## Addendum 2026-11-12: Directus 11.17.4
+
+The repository pin moves from 11.9.1 to 11.17.4, the latest 11.x release (option B of the [assessment](../backstage/DIRECTUS_12_ASSESSMENT.md)). Directus 12 remains blocked on the licence decision. The [rehearsal](../reviews/directus-11.17.4-staging/README.md) used a restored backup of a seeded database and passed 103 of 104 checks. Two conditions of rule 1 are still open before production deployment:
+
+- a rehearsal on a restored copy of a recent **production** backup, with the container image;
+- reviewer acceptance of the one baseline difference, which is a Directus-owned permission row (own-profile read gains the `provider` field), not an Openfund policy.
+
 [ADR index](README.md) · [Migration runbook](../deployment/DIRECTUS_MIGRATION_RUNBOOK.md)

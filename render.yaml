@@ -6,7 +6,7 @@
 #                                     + Directus CMS tables; one database on
 #                                     purpose: Directus is the editing surface
 #                                     for catalog tables such as challenge_plans)
-#   openfund-cms   Directus 11.9.1 (official Docker image) — editorial content,
+#   openfund-cms   Directus 11.17.4 (official Docker image) — editorial content,
 #                                     plan catalog editing, media (persistent disk)
 #   openfund       Node web service   — backend API (SIWE auth, demo trading
 #                                     engine, portfolio/journal APIs) AND the
@@ -40,7 +40,7 @@ services:
     region: frankfurt        # private PostgreSQL connection stays in-region
     runtime: image
     image:
-      url: docker.io/directus/directus:11.9.1
+      url: docker.io/directus/directus:11.17.4
     plan: starter
     autoDeployTrigger: off      # data plane: deploy only after review
     healthCheckPath: /server/ping   # public liveness; /server/health needs a token on Directus 12 (works on 11 too)

@@ -32,7 +32,7 @@ Blueprint (`render.yaml`, root). Applying the Blueprint is a reviewed manual ope
                                 ▼              ▼ (https://cms-host)
                     ┌────────────────┐   ┌───────────────────┐
                     │ openfund-db    │   │ openfund-cms      │
-                    │ Postgres 17    │◀──│ Directus 11.9.1   │
+                    │ Postgres 17    │◀──│ Directus 11.17.4  │
                     │ (managed)      │   │ (official image)  │
                     └────────────────┘   │ uploads on disk   │
                                          └───────────────────┘
@@ -41,7 +41,7 @@ Blueprint (`render.yaml`, root). Applying the Blueprint is a reviewed manual ope
 | Resource | Render type | Why |
 | :--- | :--- | :--- |
 | `openfund-db` | Managed Postgres 17 (0.1c-256mb) | the single persistent store — application tables (users, sessions, challenges, trading engine, portfolio) AND Directus CMS tables. One database **on purpose**: Directus is the editing surface for catalog tables (`challenge_plans`), so splitting it would create a second source of truth. |
-| `openfund-cms` | web service from the official `directus/directus:11.9.1` image | editorial content, challenge catalog editing, media. `KEY`/`SECRET` auto-generated; admin credentials prompted at first apply; uploads on a persistent 5GB disk. |
+| `openfund-cms` | web service from the official `directus/directus:11.17.4` image | editorial content, challenge catalog editing, media. `KEY`/`SECRET` auto-generated; admin credentials prompted at first apply; uploads on a persistent 5GB disk. |
 | `openfund` | Node web service | the whole product surface: builds the React app (`apps/web-react`), runs the backend (`apps/backend`), serves the app same-origin at `/react/` (HttpOnly session cookies stay first-party; hash routing needs no SPA fallback). |
 
 ### Deliberate non-services (documented decisions)

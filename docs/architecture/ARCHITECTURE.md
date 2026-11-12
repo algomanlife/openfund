@@ -11,7 +11,7 @@ Integrated source baseline: `d05b4b88fc2776e09bf1a701254ac229e8145a7f`, includin
 ```mermaid
 flowchart TB
   Browser[Browser React and wallet UI] -->|same origin /react/ and API| Node[openfund Node.js API]
-  Browser -->|public published content| CMS[openfund-cms Directus 11.9.1]
+  Browser -->|public published content| CMS[openfund-cms Directus 11.17.4]
   Browser -->|REST candles and WS marks| Gains[Gains market data]
   Node -->|server execution marks and wallet reads| Gains
   Node --> Auth[SIWE sessions and ownership]

@@ -198,20 +198,20 @@
       "category": "cms",
       "upstream": "https://github.com/directus/directus",
       "license": "BSL 1.1 for the Directus core (inventory note, not legal advice; confirm the licence terms of the pinned image)",
-      "version": "11.9.1",
+      "version": "11.17.4",
       "commit": null,
       "pins": [
         {
           "file": "render.yaml",
-          "pattern": "directus/directus:(11\\.9\\.1)"
+          "pattern": "directus/directus:(11\\.17\\.4)"
         },
         {
           "file": ".github/workflows/release.yml",
-          "pattern": "directus/directus:(11\\.9\\.1)"
+          "pattern": "directus/directus:(11\\.17\\.4)"
         },
         {
           "file": "infrastructure/directus/compose.yaml",
-          "pattern": "directus/directus:(11\\.9\\.1)"
+          "pattern": "directus/directus:(11\\.17\\.4)"
         }
       ],
       "locations": [
