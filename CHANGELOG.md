@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- TypeScript 7 (branch `agent/claude/typescript-7`): `npm run typecheck` in
+  `apps/web-react` moves from TypeScript 5.9.3 to 7.0.2 (native compiler,
+  about 1.4 s per run). TypeScript 7 no longer ships the stable JavaScript
+  compiler API, which `scripts/docs/check-language.mjs` uses to read comments;
+  that scanner now loads the pinned `typescript-js-api` alias
+  (`npm:typescript@6.0.3`, the newest stable release with the API). Vite and
+  esbuild do not use `tsc`, so build output is unaffected.
+
 - Vela 0.10.6 (branch `agent/claude/vela-0.10.6`;
   [Vela upgrade](docs/integrations/VELA_UPGRADE.md#upgrade-to-vela-0106-2026-11-12)):
   vendored LuxAlgo Vela 0.9.3 to 0.10.6 through the controlled update tool,

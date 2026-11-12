@@ -8,7 +8,7 @@
 | :--- | :--- | :--- | :--- | :--- |
 | React | 19.3.1 | UI runtime (app shell, hash routing pages) | Active | MIT |
 | React DOM | 19.3.1 | DOM renderer | Active | MIT |
-| TypeScript | 5.7.3 | Type-safe app source | Active | Apache-2.0 |
+| TypeScript | 7.0.2 (6.0.3 JS API for the docs scanner) | Type-safe app source | Active | Apache-2.0 |
 | Vite | 6.4.5 | Dev server + bundler (`react/` output, base `/react/`) | Active | MIT |
 | react-router-dom | 7.18.5 | Hash router (locale/product hash routes and compatibility redirects) | Active | MIT |
 
