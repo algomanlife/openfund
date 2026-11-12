@@ -36,47 +36,52 @@ test('Discord validator accepts only HTTPS invitations on authentic hosts', () =
   for (const url of ['', 'https://discord.gg/', 'https://discord.com/', 'https://discord.com/channels/123', 'https://discord.com/invite/', 'https://discord.gg.evil.test/ExampleInvite', 'https://user:pass@discord.gg/ExampleInvite', 'https://discord.gg:8443/ExampleInvite', 'http://discord.gg/ExampleInvite', 'javascript:alert(1)', 'https://discord.gg/ExampleInvite?x=1', 'https://discord.gg/ExampleInvite#x']) assert.equal(discordCommunityUrl(url), null)
 })
 
-test('every compatible default group renders two exact localized unavailable actions', () => {
+test('the community group renders only the official Telegram action in every locale', () => {
   const mod = load()
-  for (const locale of ['en', 'fa']) {
+  assert.equal(mod.OFFICIAL_TELEGRAM_URL, 'https://t.me/communitybuopenfund')
+  for (const locale of ['en', 'fa', 'ar', 'ru', 'zh-CN']) {
     const doc = render(mod.default, locale)
     assert.equal(doc.querySelectorAll('[role="group"]').length, 1)
-    assert.equal(doc.querySelectorAll('a').length, 0)
-    assert.equal(doc.querySelectorAll('button[aria-disabled="true"]').length, 2)
+    assert.equal(doc.querySelectorAll('.community-button').length, 1)
+    assert.equal(doc.querySelector('[data-provider="discord"], .discord-community'), null)
     assert.equal(doc.querySelector('[data-provider="instagram"]'), null)
-    for (const name of ['Telegram', 'Discord']) {
-      const button = doc.querySelector(`[data-provider="${name.toLowerCase()}"]`)
-      assert.equal(button.querySelector('.community-copy > span').textContent, locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on')
-      assert.equal(button.querySelector('small').textContent, locale === 'fa' ? 'به‌زودی' : 'Coming Soon')
-      assert.equal(button.querySelector('img').alt, name)
-      assert.ok(button.getAttribute('aria-label').includes(name))
-      assert.equal(button.getAttribute('data-locale-owned'), 'react')
-      assert.equal(button.getAttribute('href'), null)
-    }
+    const link = doc.querySelector('a[data-provider="telegram"]')
+    assert.ok(link)
+    assert.equal(link.getAttribute('href'), 'https://t.me/communitybuopenfund')
+    assert.equal(link.getAttribute('target'), '_blank')
+    assert.equal(link.getAttribute('rel'), 'noopener noreferrer')
+    assert.equal(link.querySelector('img').getAttribute('src'), '/react/assets/telegram-logo.svg')
+    assert.equal(link.querySelector('img').alt, 'Telegram')
+    assert.equal(link.querySelector('small'), null)
+    assert.ok(link.getAttribute('aria-label').includes('Telegram'))
+    assert.equal(link.getAttribute('data-locale-owned'), 'react')
+    if (locale === 'fa') assert.equal(link.querySelector('.community-copy > span').textContent, 'جامعه معامله‌گران')
+    if (locale === 'en') assert.equal(link.querySelector('.community-copy > span').textContent, 'Traders talk on')
   }
 })
 
-test('provider availability is independent and enabled links preserve security attributes', () => {
-  // Synthetic destinations exercise validation, not Openfund ownership.
+test('configured community settings can neither replace Telegram nor add Discord', () => {
+  // Synthetic destinations exercise isolation, not Openfund ownership.
   for (const [telegram, discord] of [['https://t.me/ExampleCommunity', ''], ['', 'https://discord.gg/ExampleInvite'], ['https://t.me/ExampleCommunity', 'https://discord.com/invite/ExampleInvite']]) {
     const doc = render(load(telegram, discord).default, 'en')
-    assert.equal(doc.querySelectorAll('a').length, Number(Boolean(telegram)) + Number(Boolean(discord)))
-    for (const link of doc.querySelectorAll('a')) {
-      assert.equal(link.target, '_blank')
-      assert.equal(link.rel, 'noopener noreferrer')
-      assert.equal(link.querySelector('small'), null)
-    }
-    assert.equal(doc.querySelectorAll('.community-button').length, 2)
+    assert.equal(doc.querySelectorAll('.community-button').length, 1)
+    assert.equal(doc.querySelectorAll('a').length, 1)
+    assert.equal(doc.querySelector('a').getAttribute('href'), 'https://t.me/communitybuopenfund')
+    assert.equal(doc.querySelector('.discord-community'), null)
   }
 })
 
-test('the public page lists no unreleased app downloads and seven service credits including both cloud infrastructures and Bitpin', () => {
+test('the public page lists no unreleased app downloads and eight service credits including both cloud infrastructures, Bitpin and Hyperliquid', () => {
   const doc = new JSDOM(read('apps/web-react/src/pages/landing-body.html')).window.document
   assert.equal(doc.querySelectorAll('#desktop, .desktop-btns').length, 0)
-  assert.equal(doc.querySelectorAll('.credits-row .service-logo-slot').length, 7)
-  assert.deepEqual([...doc.querySelectorAll('.credits-row > a b')].map(b => b.textContent), ['Gains', 'Vela', 'TradingView', 'DePay', 'Render', 'Liara', 'Bitpin'])
+  assert.equal(doc.querySelectorAll('.credits-row .service-logo-slot').length, 8)
+  assert.deepEqual([...doc.querySelectorAll('.credits-row > a b')].map(b => b.textContent), ['Gains', 'Vela', 'TradingView', 'DePay', 'Render', 'Liara', 'Bitpin', 'Hyperliquid'])
   assert.equal(doc.querySelectorAll('.credits-row a[href="https://bitpin.ir"] img[src="assets/bitpin-logo.svg"]').length, 1)
   assert.equal(doc.querySelector('.credits-row a[href="https://bitpin.ir"] .service-description').textContent, 'داده‌های بازار و عمق بازار ایران')
+  const hyperliquid = doc.querySelector('.credits-row a[href="https://hyperliquid.xyz"]')
+  assert.equal(hyperliquid.getAttribute('rel'), 'noopener noreferrer')
+  assert.equal(hyperliquid.querySelector('img').getAttribute('src'), 'assets/hyperliquid-logo.svg')
+  assert.equal(hyperliquid.querySelector('.service-description').textContent, 'داده‌های بازار و عمق نقدینگی')
   assert.equal(doc.querySelectorAll('.credits-row img[src="assets/vela-logo.svg"]').length, 1)
   assert.equal(doc.querySelectorAll('.credits-row a[href="https://render.com"] img[src="assets/render-logo.svg"]').length, 1)
   assert.equal(doc.querySelectorAll('.credits-row a[href="https://liara.ir"] img[src="assets/liara-logo.svg"]').length, 1)
@@ -108,9 +113,9 @@ test('Instagram accepts only HTTPS profile destinations and never infers ownersh
   for (const locale of ['en', 'fa']) {
     // The Instagram promo button was retired: even a valid configured profile renders nothing.
     const doc = render(load('', '', 'https://instagram.com/ExampleCommunity/').default, locale)
-    assert.equal(doc.querySelectorAll('a').length, 0)
+    assert.equal(doc.querySelectorAll('a').length, 1)
     assert.equal(doc.querySelector('[data-provider="instagram"]'), null)
-    assert.equal(doc.querySelectorAll('button[aria-disabled="true"]').length, 2)
+    assert.equal(doc.querySelectorAll('button[aria-disabled="true"]').length, 0)
   }
 })
 

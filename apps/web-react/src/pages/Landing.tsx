@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { useParams, useSearchParams, useNavigate, Navigate, useLocation } from 'react-router-dom'
 import { bindNavigation, fitNavigation, renderNavigation, navigationClick, navigationKeyDown } from '../features/information/navigation'
 import '../features/information/information.css'
+import '../features/home/platform-orbs.css'
 import landingBody from './landing-body.html?raw'
 import { RainbowConnect } from '../wallet/RainbowConnect'
 import { legacyStylesheet } from '../config/legacyAssets'
@@ -10,6 +11,8 @@ import ChallengeWalletPanel from '../wallet/ChallengeWalletPanel'
 import IranAccessNotice from '../features/notice/IranAccessNotice'
 import BitpinTicker from '../features/ticker/BitpinTicker'
 import TelegramCommunity from '../features/community/TelegramCommunity'
+import SiteNavDrawer from '../features/navigation/SiteNavDrawer'
+import type { CmsNavItem } from '../cms/client'
 import { CheckoutHost } from '../features/purchase/CheckoutHost'
 import { fetchCmsNavigation, fetchCmsTranslations, fetchCmsLegacyPlans, fetchCmsFaqs, fetchCmsLegal, fetchCmsFooterLinks, invalidateCmsCache } from '../cms/client'
 import { loadingGate } from '../features/loading/BrandedLoading'
@@ -157,6 +160,7 @@ export default function Landing() {
     addEventListener('of-language', sync)
     return () => removeEventListener('of-language', sync)
   }, [])
+  const [drawerNav, setDrawerNav] = useState<CmsNavItem[] | null>(null)
   const navigate = useNavigate()
   const routeLocale = useParams().locale
   const routerLocation = useLocation()
@@ -184,24 +188,11 @@ export default function Landing() {
     }
     // Run after the classic translation/footer listeners, including late boot.
     const refresh = () => { clearTimeout(timer); timer = setTimeout(render, 80) }
-    void Promise.all([fetchCmsNavigation(), fetchCmsFooterLinks()]).then(([n, f]) => { nav = n; footer = f; refresh() })
+    void Promise.all([fetchCmsNavigation(), fetchCmsFooterLinks()]).then(([n, f]) => { nav = n; footer = f; if (active) setDrawerNav(n); refresh() })
     addEventListener('of-language', refresh)
+    /* the header's .menu button opens SiteNavDrawer (it owns that click) */
     const click = (event: MouseEvent) => {
-      const menu = (event.target as Element)?.closest('.menu')
-      if (menu) {
-        // Own navigation here so classic boot timing cannot double-toggle it.
-        event.preventDefault()
-        event.stopPropagation()
-        const open = menu.getAttribute('aria-expanded') !== 'true'
-        menu.setAttribute('aria-expanded', String(open))
-        document.querySelector('#navigation')?.classList.toggle('open', open)
-        return
-      }
       if (navigationClick(event, document)) return
-      if ((event.target as Element)?.closest('#navigation a')) {
-        document.querySelector('#navigation')?.classList.remove('open')
-        document.querySelector('.menu')?.setAttribute('aria-expanded', 'false')
-      }
     }
     const keydown = (event: KeyboardEvent) => { navigationKeyDown(event, document) }
     document.addEventListener('click', click, true)
@@ -409,6 +400,8 @@ export default function Landing() {
       {walletHost && createPortal(<RainbowConnect />, walletHost)}
       {languageHost && createPortal(<LanguageSelect locale={routeLocale} onChange={next => navigate(switchLocalePath(routerLocation.pathname, next) + routerLocation.search)} />, languageHost)}
       {communityHosts.map((host, i) => createPortal(<TelegramCommunity locale={communityLocale} />, host, String(i)))}
+      <SiteNavDrawer locale={communityLocale} pathname={`/${communityLocale}/challenges`} navItems={drawerNav}
+        onLocaleChange={next => navigate(switchLocalePath(routerLocation.pathname, next) + routerLocation.search)} />
       <CheckoutHost />
       {walletCardHost && createPortal(<ChallengeWalletPanel locale={communityLocale} />, walletCardHost)}
       {noticeHost && communityLocale === 'fa' && createPortal(<IranAccessNotice />, noticeHost)}

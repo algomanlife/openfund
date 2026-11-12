@@ -26,38 +26,68 @@ export function navigationHref(route: string, locale: Locale): string {
   return `/${locale}/${route}`
 }
 
+export interface NavigationLink { route: string; href: string; label: string; current: boolean; activeSection: boolean }
+export interface NavigationGroup { id: string; label: string; links: NavigationLink[]; current: boolean }
+export interface NavigationModel { primary: NavigationLink[]; groups: NavigationGroup[] }
+
+/** One source for the website's primary destinations and dropdown groups:
+ *  the desktop header and the off-canvas drawer render the same model. */
+export function navigationModel(locale: Locale, pathname: string, navItems: CmsNavItem[] | null): NavigationModel {
+  const cmsLabels = new Map(navItems?.map(item => [item.route as string, item.label]))
+  const link = (route: string, cmsLabel?: { fa: string; en: string }): NavigationLink => {
+    const label = (!FIXED_LABELS.has(route) && (cmsLabel || cmsLabels.get(route))) || navigationLabels[route as keyof typeof navigationLabels]
+    const section = route === 'glossary' ? 'learn/glossary' : route
+    const current = pathname === `/${locale}/${section}`
+    return { route, href: navigationHref(route, locale), label: pickRecord(locale, label), current, activeSection: !current && pathname.startsWith(`/${locale}/${section}/`) }
+  }
+  const group = (id: string, label: { fa: string; en: string }, links: NavigationLink[]): NavigationGroup =>
+    ({ id, label: pickRecord(locale, label), links, current: links.some(item => item.current) })
+  return {
+    primary: primary.map(route => link(route)),
+    groups: [
+      group('website-economy', labels.economy, economy.map(route => link(route))),
+      /* the economy group alone marks its trigger active (existing behaviour) */
+      { ...group('website-resources', labels.resources, resources.flatMap(route => route === 'learn' ? [link(route), link('glossary')] : [link(route)])), current: false },
+    ],
+  }
+}
+
 /** Shared navigation only; the legacy page keeps its body and runtime. */
 export function renderNavigation(root: ParentNode, locale: Locale, pathname: string, navItems: CmsNavItem[] | null, footerLinks: CmsFooterLink[] | null) {
   const cmsLabels = new Map(navItems?.map(item => [item.route as string, item.label]))
-  const link = (route: string, cmsLabel?: { fa: string; en: string }) => {
-    const label = (!FIXED_LABELS.has(route) && (cmsLabel || cmsLabels.get(route))) || navigationLabels[route as keyof typeof navigationLabels]
+  const anchor = (item: NavigationLink) => {
     const a = document.createElement('a')
-    a.href = navigationHref(route, locale)
-    a.textContent = pickRecord(locale, label)
-    const section = route === 'glossary' ? 'learn/glossary' : route
-    if (pathname === `/${locale}/${section}`) a.setAttribute('aria-current', 'page')
-    else if (pathname.startsWith(`/${locale}/${section}/`)) a.setAttribute('data-active-section', 'true')
+    a.href = item.href
+    a.textContent = item.label
+    if (item.current) a.setAttribute('aria-current', 'page')
+    else if (item.activeSection) a.setAttribute('data-active-section', 'true')
     return a
   }
+  const link = (route: string, cmsLabel?: { fa: string; en: string }) => {
+    const label = (!FIXED_LABELS.has(route) && (cmsLabel || cmsLabels.get(route))) || navigationLabels[route as keyof typeof navigationLabels]
+    const section = route === 'glossary' ? 'learn/glossary' : route
+    const current = pathname === `/${locale}/${section}`
+    return anchor({ route, href: navigationHref(route, locale), label: pickRecord(locale, label), current, activeSection: !current && pathname.startsWith(`/${locale}/${section}/`) })
+  }
   /* one dropdown group (same markup/behaviour as the Resources menu) */
-  const dropdownGroup = (id: string, label: { fa: string; en: string }, links: HTMLAnchorElement[], current = false) => {
+  const dropdownGroup = (item: NavigationGroup) => {
     const group = document.createElement('div')
     group.className = 'nav-account'
     const trigger = document.createElement('button')
     trigger.type = 'button'
     trigger.className = 'resources-toggle'
     trigger.setAttribute('aria-expanded', 'false')
-    trigger.setAttribute('aria-controls', id)
-    if (current) trigger.setAttribute('data-active-section', 'true')
-    trigger.append(pickRecord(locale, label) + ' ')
+    trigger.setAttribute('aria-controls', item.id)
+    if (item.current) trigger.setAttribute('data-active-section', 'true')
+    trigger.append(item.label + ' ')
     const chevron = document.createElement('span')
     chevron.className = 'chevron'; chevron.setAttribute('aria-hidden', 'true'); chevron.textContent = '⌄'
     trigger.append(chevron)
     const dropdown = document.createElement('div')
-    dropdown.className = 'nav-dropdown'; dropdown.id = id
+    dropdown.className = 'nav-dropdown'; dropdown.id = item.id
     const heading = document.createElement('span')
-    heading.textContent = pickRecord(locale, label)
-    dropdown.append(heading, ...links)
+    heading.textContent = item.label
+    dropdown.append(heading, ...item.links.map(anchor))
     group.append(trigger, dropdown)
     return group
   }
@@ -65,10 +95,8 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
   if (nav) {
     // The legacy landing translator must not translate React-localized links again.
     (nav as HTMLElement).dataset.localeOwned = 'react'
-    const economyLinks = economy.map(route => link(route))
-    nav.replaceChildren(...primary.map(route => link(route)),
-      dropdownGroup('website-economy', labels.economy, economyLinks, economyLinks.some(a => a.hasAttribute('aria-current'))),
-      dropdownGroup('website-resources', labels.resources, resources.flatMap(route => route === 'learn' ? [link(route), link('glossary')] : [link(route)])))
+    const model = navigationModel(locale, pathname, navItems)
+    nav.replaceChildren(...model.primary.map(anchor), ...model.groups.map(dropdownGroup))
   }
   const footer = root.querySelector('#footer-links')
   if (footer) {
@@ -178,9 +206,7 @@ export function fitNavigation(root: ParentNode): () => void {
   let frame = 0
   const measure = () => {
     frame = 0
-    /* an open menu keeps its mode until it is closed */
-    if (links.classList.contains('open')) return
-    header.classList.remove('nav-overflow')
+    header.classList.remove('nav-overflow', 'nav-tight', 'nav-tighter')
     /* Sum the in-flow items (scrollWidth would also count the hidden,
        absolutely positioned dropdown panels and report false overflow). */
     const needed = (row: HTMLElement) => {
@@ -191,10 +217,19 @@ export function fitNavigation(root: ParentNode): () => void {
       const gap = parseFloat(getComputedStyle(row).columnGap) || 0
       return items.reduce((sum, el) => sum + el.getBoundingClientRect().width, 0) + gap * Math.max(0, items.length - 1)
     }
-    const fits = needed(links) <= links.getBoundingClientRect().width + 1
+    const rowFits = () => needed(nav) <= nav.clientWidth - parseFloat(getComputedStyle(nav).paddingInlineStart) - parseFloat(getComputedStyle(nav).paddingInlineEnd) + 1
+    /* links hidden by a narrow-screen stylesheet count as compact too, so
+       there is one compact mode instead of breakpoint and measured variants */
+    const fits = getComputedStyle(links).display !== 'none'
+      && needed(links) <= links.getBoundingClientRect().width + 1
       && needed(actions) <= actions.getBoundingClientRect().width + 1
-      && needed(nav) <= nav.clientWidth - parseFloat(getComputedStyle(nav).paddingInlineStart) - parseFloat(getComputedStyle(nav).paddingInlineEnd) + 1
-    header.classList.toggle('nav-overflow', !fits)
+      && rowFits()
+    if (fits) return
+    /* compact: links move to the drawer; if the single row still does not
+       fit, the drawer also takes the terminal entry, then language/theme */
+    header.classList.add('nav-overflow')
+    if (!rowFits()) header.classList.add('nav-tight')
+    if (!rowFits()) header.classList.add('nav-tighter')
   }
   const schedule = () => { if (!frame) frame = requestAnimationFrame(measure) }
   const resize = new ResizeObserver(schedule)

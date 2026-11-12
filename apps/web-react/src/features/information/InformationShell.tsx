@@ -8,6 +8,7 @@ import { RainbowConnect } from '../../wallet/RainbowConnect'
 import { labels, type Locale, type InfoPage } from './content'
 import './information.css'
 import TelegramCommunity from '../community/TelegramCommunity'
+import SiteNavDrawer from '../navigation/SiteNavDrawer'
 import { bindNavigation, fitNavigation, renderNavigation, navigationClick, navigationKeyDown } from './navigation'
 import { chooseTheme, currentTheme, decorateThemeToggle } from '../../theme'
 import LanguageSelect from '../../i18n/LanguageSelect'
@@ -116,28 +117,17 @@ export function Chrome({ locale, part, nav = true }: { locale: AppLocale; part: 
     if (target.id === 'theme-toggle') {
       const next = currentTheme() === 'light' ? 'dark' : 'light'
       chooseTheme(next)
-    } else if (target.classList.contains('menu')) {
-      const open = target.getAttribute('aria-expanded') !== 'true'
-      target.setAttribute('aria-expanded', String(open))
-      host.current?.querySelector('#navigation')?.classList.toggle('open', open)
     } else if (target.dataset.menuPreset) {
       try { sessionStorage.setItem('ofScrollTo', 'accounts') } catch { /* optional */ }
       navigate(`/${locale}/challenges`)
-    } else if (target.tagName === 'A') {
-      host.current?.querySelector('#navigation')?.classList.remove('open')
-      host.current?.querySelector('.menu')?.setAttribute('aria-expanded', 'false')
     }
   }} onKeyDown={e => {
     if (navigationKeyDown(e.nativeEvent, host.current!)) return
-    if (e.key === 'Escape') {
-      host.current?.querySelector('#navigation')?.classList.remove('open')
-      const menu = host.current?.querySelector<HTMLButtonElement>('.menu')
-      menu?.setAttribute('aria-expanded', 'false')
-      menu?.focus()
-    }
   }}>
     <div dangerouslySetInnerHTML={{ __html: markup }} />
     {part === 'header' && walletHost && createPortal(<RainbowConnect />, walletHost)}
+    {part === 'header' && nav && <SiteNavDrawer locale={locale} pathname={location.pathname} navItems={navItems}
+      onLocaleChange={next => navigate(switchLocalePath(location.pathname, next) + location.search)} />}
     {part === 'header' && languageHost && createPortal(<LanguageSelect locale={locale} onChange={next => navigate(switchLocalePath(location.pathname, next) + location.search)} />, languageHost)}
     {part === 'footer' && communityHost && createPortal(<TelegramCommunity locale={locale} />, communityHost)}
   </div>

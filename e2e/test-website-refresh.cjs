@@ -28,9 +28,9 @@ function configuredCommunityChecks() {
     const result = buildSync({ entryPoints: ['apps/web-react/src/features/community/TelegramCommunity.tsx'], bundle: true, write: false, platform: 'node', format: 'cjs', packages: 'external', loader: { '.css': 'empty' }, define: { 'import.meta.env.BASE_URL': '"/"', 'import.meta.env.VITE_TELEGRAM_COMMUNITY_URL': JSON.stringify(value), 'import.meta.env.VITE_DISCORD_COMMUNITY_URL': '""', 'import.meta.env.VITE_INSTAGRAM_COMMUNITY_URL': '""' }, jsx: 'automatic' });
     const mod = { exports: {} }; new Function('require', 'module', 'exports', result.outputFiles[0].text)(appRequire, mod, mod.exports);
     const valid = value === 'https://t.me/ExampleCommunity' || value === 'https://t.me/+ExampleInvite';
-    check(`community URL validation: ${value || 'unset'}`, Boolean(mod.exports.community.url) === valid);
+    check(`community URL validation: ${value || 'unset'}`, Boolean(mod.exports.communityUrl(value)) === valid);
     const markup = appRequire('react-dom/server').renderToStaticMarkup(appRequire('react').createElement(mod.exports.default, { locale: 'en' }));
-    check(`community state rendering: ${value || 'unset'}`, valid ? markup.includes('rel="noopener noreferrer"') && markup.includes(`href="${value}"`) : markup.includes('aria-disabled="true"') && !/<a\b/.test(markup));
+    check(`official Telegram destination regardless of build setting: ${value || 'unset'}`, markup.includes('href="https://t.me/communitybuopenfund"') && markup.includes('rel="noopener noreferrer"') && !markup.includes('discord'));
   }
 }
 async function shot(page, name, route, locator) {
@@ -156,17 +156,17 @@ async function realThemeClicks(browser) {
       check(`${tag} theme`, await page.locator('html').getAttribute('data-theme') === theme);
       check(`${tag} no unreleased app downloads`, await page.locator('#desktop, .desktop-btns').count() === 0);
       check(`${tag} no Team section`, await page.locator('#team, .team-section, #team-dialog').count() === 0);
-      check(`${tag} seven services incl. Render, Liara and Bitpin`, await page.locator('.credits-row > a').count() === 7 && await page.locator('.credits-row a[href="https://bitpin.ir"]').count() === 1 && await page.locator('.credits-row a[href="https://render.com"]').count() === 1 && await page.locator('.credits-row a[href="https://liara.ir"]').count() === 1);
+      check(`${tag} eight services incl. Render, Liara, Bitpin and Hyperliquid`, await page.locator('.credits-row > a').count() === 8 && await page.locator('.credits-row a[href="https://hyperliquid.xyz"]').count() === 1 && await page.locator('.credits-row a[href="https://bitpin.ir"]').count() === 1 && await page.locator('.credits-row a[href="https://render.com"]').count() === 1 && await page.locator('.credits-row a[href="https://liara.ir"]').count() === 1);
       check(`${tag} attribution`, (await page.locator('footer').innerText()).includes(locale === 'fa' ? 'توسعه داده شده توسط معامله‌گران' : 'Developed by Traders'));
       check(`${tag} no obsolete label`, !/External resource|منبع خارجی|Developed in San Francisco|توسعه‌داده‌شده در سان‌فرانسیسکو/.test(await page.locator('footer').innerText()));
       check(`${tag} two Telegram actions`, await page.locator('.telegram-community').count() === 2);
-      check(`${tag} two Discord actions`, await page.locator('.discord-community').count() === 2);
+      check(`${tag} no Discord action`, await page.locator('.discord-community').count() === 0);
       check(`${tag} no Instagram promo action`, await page.locator('.instagram-community').count() === 0);
-      check(`${tag} coordinated two-provider geometry`, await page.locator('.community-group').evaluateAll(groups => groups.every(group => {
+      check(`${tag} single-provider community geometry`, await page.locator('.community-group').evaluateAll(groups => groups.every(group => {
         const buttons = [...group.querySelectorAll('.community-button')];
         const boxes = buttons.map(button => button.getBoundingClientRect());
         const styles = buttons.map(button => getComputedStyle(button));
-        return buttons.length === 2 && boxes.every(box => Math.abs(box.height - 44) <= 1)
+        return buttons.length === 1 && boxes.every(box => Math.abs(box.height - 44) <= 1)
           && styles.every(style => ['borderRadius', 'padding', 'fontSize', 'fontWeight', 'lineHeight', 'gap', 'transitionDuration'].every(key => style[key] === styles[0][key]))
           && styles.every(style => style.fontSize === '12px' && style.padding === '8px 12px' && style.borderRadius === '8px')
           && buttons.every(button => { const icon = getComputedStyle(button.querySelector('img')); return icon.width === '20px' && icon.height === '20px' && icon.padding === '0px' && icon.borderWidth === '0px' && icon.backgroundColor === 'rgba(0, 0, 0, 0)'; })
@@ -184,15 +184,11 @@ async function realThemeClicks(browser) {
         const response = await page.request.get(src), svg = await response.text();
         check(`${tag} real vector ${src.split('/').pop()}`, response.ok() && /<svg\b/.test(svg) && /<path\b/.test(svg) && !/<(?:image|foreignObject)\b|data:image|base64/i.test(svg));
       }
-      const discord = page.locator('.hero .discord-community');
-      check(`${tag} unavailable Discord`, await discord.getAttribute('href') === null && await discord.getAttribute('aria-disabled') === 'true');
-      check(`${tag} localized Discord`, await discord.locator('.community-copy > span').innerText() === (locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'));
       check(`${tag} no recolored service logos`, await page.locator('.credits-row img,.credits-row svg,.community-button img').evaluateAll(logos => logos.every(logo => getComputedStyle(logo).filter === 'none')));
       const telegram = page.locator('.hero .telegram-community');
-      check(`${tag} unavailable community does not navigate`, await telegram.getAttribute('href') === null && await telegram.getAttribute('aria-disabled') === 'true');
+      check(`${tag} official Telegram destination`, await telegram.getAttribute('href') === 'https://t.me/communitybuopenfund' && await telegram.getAttribute('target') === '_blank' && await telegram.getAttribute('rel') === 'noopener noreferrer');
       check(`${tag} localized Telegram`, (await telegram.locator('.community-copy > span').innerText()).trim() === (locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'));
-      check(`${tag} visible community availability`, await telegram.locator('small').innerText() === (locale === 'fa' ? 'به‌زودی' : 'Coming Soon'));
-      const urlBefore = page.url(); await telegram.dispatchEvent('click'); check(`${tag} unavailable click stays on page`, page.url() === urlBefore);
+      check(`${tag} available community has no Coming Soon label`, await telegram.locator('small').count() === 0);
       await telegram.focus();
       check(`${tag} keyboard focus`, await telegram.evaluate(el => document.activeElement === el && getComputedStyle(el).outlineStyle !== 'none'));
       check(`${tag} reduced motion`, await telegram.evaluate(el => getComputedStyle(el).transitionDuration === '0s'));
@@ -218,11 +214,11 @@ async function realThemeClicks(browser) {
     await page.evaluate(() => document.fonts.ready);
     check('Persian Home has no footer', await page.locator('footer').count() === 0);
     check('Persian Home has no Instagram promo', await page.locator('.instagram-community').count() === 0);
-    check('Persian Home desktop compact two-provider row', await page.locator('.home-community .community-button').evaluateAll(buttons => {
+    check('Persian Home desktop single community action', await page.locator('.home-community .community-button').evaluateAll(buttons => {
       const boxes = buttons.map(button => button.getBoundingClientRect());
-      return boxes.length === 2 && boxes.every(box => Math.abs(box.top - boxes[0].top) <= 1 && Math.abs(box.height - 44) <= 1 && box.width < 300);
+      return boxes.length === 1 && boxes.every(box => Math.abs(box.top - boxes[0].top) <= 1 && Math.abs(box.height - 44) <= 1 && box.width < 300);
     }));
-    check('Persian Home hero Discord only', await page.locator('.discord-community').count() === 1 && await page.locator('.home-community .discord-community').count() === 1);
+    check('Persian Home has no Discord action', await page.locator('.discord-community').count() === 0);
     check('Persian Home hero community including unavailable CMS', await page.locator('.telegram-community').count() === 1 && await page.locator('.home-community .telegram-community').count() === 1);
     await shot(page, 'home-fa', '/fa/home');
     await page.close();
@@ -254,7 +250,7 @@ async function realThemeClicks(browser) {
       try {
         await entry.goto(`${BASE}/${route}`);
         await entry.locator('footer .telegram-community').waitFor();
-        check(`${route} shared public footer`, await entry.locator('.credits-row > a').count() === 7 && await entry.locator('.credits-row a[href="https://bitpin.ir"]').count() === 1 && await entry.locator('.credits-row a[href="https://render.com"]').count() === 1 && await entry.locator('.credits-row a[href="https://liara.ir"]').count() === 1);
+        check(`${route} shared public footer`, await entry.locator('.credits-row > a').count() === 8 && await entry.locator('.credits-row a[href="https://bitpin.ir"]').count() === 1 && await entry.locator('.credits-row a[href="https://render.com"]').count() === 1 && await entry.locator('.credits-row a[href="https://liara.ir"]').count() === 1);
       } finally { await entry.close(); }
     }
     for (const route of ['en/prop/trade', 'fa/perpetual/trade', 'en/prop/dashboard']) {
@@ -283,7 +279,7 @@ async function realThemeClicks(browser) {
         && document.querySelector('.hero .telegram-community')?.textContent.includes('جامعه معامله‌گران'));
       await toggleLanguage(localePage);
       await localePage.waitForFunction(() => document.documentElement.lang === 'en' && window.ofLang === 'en' && document.querySelector('.hero .telegram-community')?.textContent?.includes('Traders talk on'));
-      check('language toggle updates Discord portal', (await localePage.locator('.hero .discord-community').innerText()).includes('Traders talk on'));
+      check('language toggle updates the Telegram portal', (await localePage.locator('.hero .telegram-community').innerText()).includes('Traders talk on'));
       check('language toggle updates React portal', (await localePage.locator('.hero .telegram-community').innerText()).includes('Traders talk on'));
       await toggleLanguage(localePage);
       await localePage.waitForFunction(() => document.documentElement.lang === 'fa' && window.ofLang === 'fa' && document.querySelector('.hero .telegram-community')?.textContent?.includes('جامعه معامله‌گران'));

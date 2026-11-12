@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+- Community, footer, platform motion and responsive navigation (branch
+  `agent/claude/community-motion-responsive-ui`):
+  - Community: Telegram is the only public community action (home, hero,
+    footer) and links to the official `https://t.me/communitybuopenfund`;
+    the Discord button is removed. The Discord/Instagram validators and
+    runtime settings remain for configuration compatibility.
+  - Footer services: Hyperliquid added as the eighth provider (visual
+    listing only, no integration); balanced grid of 8 / 4 + 4 / 2 × 4.
+    Official logo provenance is recorded in `Public-brand-assets.txt`.
+  - Challenges platform flow: the static Gains mark is replaced by a CSS-only
+    composition of three floating glass orbs (Gains, Hyperliquid, GMX);
+    transform-only motion, static under reduced motion.
+  - Website header: one compact mode decided from measured widths (links,
+    then terminal entry, then language/theme move into the drawer) instead
+    of a two-row phone header that pushed controls off-screen; new shared
+    off-canvas drawer (`features/navigation/OffCanvas`) opening from the
+    right in fa/ar and the left in en/ru/zh-CN, with focus trap, Escape,
+    backdrop close, scroll lock and focus return.
+  - Terminal: at ≤1100px every destination moves into a terminal drawer
+    (`TerminalMenu`, own state, so the chart workspace is never re-rendered
+    or remounted); desktop tabs and the More menu are unchanged.
+  - New browser regression suite `e2e/test-responsive-navigation.cjs`
+    (11 widths × 5 locales, short viewports, terminal state persistence).
+
 - Production fix and terminal refinement (branch
   `agent/claude/production-fix-ui-refinement`):
   - Header controls: the theme switch is now a real box with the shared

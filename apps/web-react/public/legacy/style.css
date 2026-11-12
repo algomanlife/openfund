@@ -302,9 +302,9 @@ address.offices p{font-size:12px;color:#a3bbab;line-height:2.1;direction:rtl}
 .desktop-btns .dl small { font-size: 11px; color: var(--mint, #82e7bd); }
 .footer-credits { display: grid; grid-template-columns: minmax(0,1fr); gap: 24px; }
 .footer-credits > div:first-child { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; }
-/* Service credits: one row of seven on desktop, four per row on tablets
-   (4 + 3), two per row on phones with a lone last item spanning the row. */
-.footer-credits .credits-row { --credit-cols: 7; display: grid; grid-template-columns: repeat(var(--credit-cols), minmax(0, 1fr)); gap: 24px 16px; align-items: start; }
+/* Service credits: one row of eight on desktop, four per row on tablets and
+   small desktops (4 + 4), two per row on phones (4 × 2) — no orphaned logo. */
+.footer-credits .credits-row { --credit-cols: 8; display: grid; grid-template-columns: repeat(var(--credit-cols), minmax(0, 1fr)); gap: 24px 16px; align-items: start; }
 /* an odd last item on a two-column phone row is centred across both tracks */
 .footer-credits .credits-row > .render-credit:last-child:nth-child(odd) { grid-column: var(--credit-last-span, auto); }
 .footer-credits .render-credit { display: grid; grid-template-rows: auto auto; align-content: start; gap: 10px; text-align: center; min-width: 0; color: var(--body); }
@@ -321,6 +321,6 @@ footer .document-links h3 { color: var(--white); }
 .desktop-btns .desktop-btn { color: var(--white); min-height: 64px; }
 .desktop-btns .dl small { color: var(--mint); letter-spacing: normal; }
 @media(max-width:1050px) { .desktop-btns { grid-template-columns: repeat(3, minmax(0,1fr)); } }
-@media(max-width:1100px) { .footer-credits .credits-row { --credit-cols: 4; } }
+@media(max-width:1199px) { .footer-credits .credits-row { --credit-cols: 4; } }
 @media(max-width:700px) { .desktop-btns { grid-template-columns: repeat(2,minmax(0,1fr)); } .desktop-btns .desktop-btn:last-child { grid-column: 1/-1; } .footer-credits .credits-row { width: 100%; --credit-cols: 4; } }
 @media(max-width:520px) { .footer-credits .credits-row { --credit-cols: 2; --credit-last-span: 1 / -1; } }
