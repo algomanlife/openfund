@@ -1,0 +1,13 @@
+diff --git a/src/widget/indicator-picker.ts b/src/widget/indicator-picker.ts
+index 8682161..40d2d86 100644
+--- a/src/widget/indicator-picker.ts
++++ b/src/widget/indicator-picker.ts
+@@ -250,7 +250,7 @@ export class IndicatorPicker {
+                 row.appendChild(beta);
+             }
+             if (opts.instance !== undefined) {
+-                const badgeText = r.native ? 'vela' : r.language;
++                const badgeText = r.native ? undefined : r.language;
+                 if (badgeText) {
+                     const badge = doc.createElement('span');
+                     badge.className = 'vela-ip-badge';

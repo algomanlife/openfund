@@ -16,6 +16,42 @@ necessary, not sufficient.
 | DePay server callback hint | Implemented; **awaiting real-network acceptance** (signature format is verified only against locally generated keys) |
 | Refund execution | Not automated by design; manual with recorded adjustment |
 
+## Production state (verified 2026-11-12)
+
+Read-only checks against `https://openfi.cloud` and `https://openfund.cloud`
+(both serving `4e1ca3d`, deployed manually 2026-11-12 06:14 UTC) and the
+Render service `openfund` (variable **names** and whether a value is set; no
+value was printed or changed):
+
+| Check | Result |
+| --- | --- |
+| `GET /purchases/plans` | `paymentsEnabled: false`, `payment: null` |
+| `/runtime-config.js` | `depayWidget: false`, empty `depayWidgetUrl`, `depayWidgetIntegrity`, `depayIntegrationId` |
+| `POST /purchases/depay/configuration`, `/callback`, `/events` (unsigned) | `404 not_found`: by design, these stay closed until at least one settlement chain is complete |
+| Set on Render | `DEPAY_CONFIG_PRIVATE_KEY`, `DEPAY_VERIFY_PUBLIC_KEY`, `VITE_DEPAY_INTEGRATION_ID`, `PURCHASE_PAYMENT_CHAIN=42161`, `PURCHASE_PAYMENT_DECIMALS`, `PURCHASE_LATE_GRACE_MINUTES` |
+| **Not set on Render** | `PURCHASE_PAYMENT_CHAINS`, `PURCHASE_RPC_URLS`, `PURCHASE_PAYMENT_RECEIVER`, `PURCHASE_PAYMENT_TOKEN`, `PURCHASE_RPC_URL`, `PURCHASE_ROUTER_ADDRESSES`, `VITE_DEPAY_WIDGET`, `VITE_DEPAY_WIDGET_URL`, `VITE_DEPAY_WIDGET_INTEGRITY`, `CSP_EXTRA_SCRIPT_SRC`, `CSP_EXTRA_FRAME_SRC`, `VITE_WALLETCONNECT_PROJECT_ID` |
+| `PURCHASE_PAYMENT_MIN_CONFIRMATIONS` | declared but empty (production default 12 applies) |
+
+Consequences:
+
+- No settlement chain is complete (no receiver, token or RPC), so purchases
+  and the DePay endpoints are off. This, not application code, is why
+  Challenge purchases do not work in production.
+- With only the legacy `PURCHASE_PAYMENT_CHAIN=42161` and no
+  `PURCHASE_PAYMENT_CHAINS`, an activation would be single-chain (Arbitrum
+  One). Set `PURCHASE_PAYMENT_CHAINS` to offer the intended networks; wallet
+  sign-in stays Arbitrum One regardless.
+- Without the CSP variables the approved widget bundle cannot load even after
+  `VITE_DEPAY_WIDGET_*` are set.
+- Without `VITE_WALLETCONNECT_PROJECT_ID` only browser-extension (injected)
+  wallets can connect; mobile WalletConnect wallets cannot reach checkout.
+
+Local acceptance on the same code (Node 22, isolated database, stub widget,
+mock chain): `test:browser:purchase` 17 passed, `test:browser:depay` 31
+passed, `test:browser:wallet` 32/32. A wallet network change does not end the
+SIWE session (`useOpenfundSession` logs out only on disconnect or an address
+change). No real payment has been made; gate 3 below is still open.
+
 ## Owner-controlled configuration
 
 | Item | Where |
@@ -28,13 +64,13 @@ necessary, not sufficient.
 | DePay integration (created at app.depay.com), widget URL and its SRI hash | `VITE_DEPAY_WIDGET`, `VITE_DEPAY_WIDGET_URL`, `VITE_DEPAY_WIDGET_INTEGRITY`, `VITE_DEPAY_INTEGRATION_ID` |
 | DePay dynamic configuration signing key (public half stored at DePay) | `DEPAY_CONFIG_PRIVATE_KEY` |
 | Endpoint URLs set on the DePay integration | `https://<host>/purchases/depay/configuration`, `https://<host>/purchases/depay/callback` and the events URL `https://<host>/purchases/depay/events` |
-| CSP origins for the widget | `CSP_EXTRA_SCRIPT_SRC`, `CSP_EXTRA_FRAME_SRC`, and the API/RPC origins the widget fetches in `CSP_EXTRA_CONNECT` (the default `connect-src` is `'self'` plus the market stream; read the blocked origins from the browser console during staging acceptance) |
+| CSP origins for the widget | `CSP_EXTRA_SCRIPT_SRC` (`https://integrate.depay.com`) and, only if the browser console reports a blocked frame, `CSP_EXTRA_FRAME_SRC`. `CSP_EXTRA_CONNECT` is not needed for HTTPS/WSS origins: the default `connect-src` is `'self' https: wss:` (`apps/backend/server.js`) |
 | DePay Verify public key (signs configuration requests, callbacks and events) | `DEPAY_VERIFY_PUBLIC_KEY` (legacy name `DEPAY_CALLBACK_PUBLIC_KEY`) |
 | Checkout chains | Every complete entry in `PURCHASE_PAYMENT_CHAINS` (EVM networks and Solana). Wallet sign-in stays Arbitrum One only; payment is not tied to it |
 
 Compute the SRI hash from the exact approved bundle:
-`curl -s <widget-url> | openssl dgst -sha384 -binary | openssl base64 -A`,
-prefixed with `sha384-`. Re-compute it whenever DePay publishes a new bundle;
+`openssl dgst -sha384 -binary v13.js | openssl base64 -A`,
+prefixed with `sha384-`. The DePay CDN answered a non-browser `curl` with HTTP 403 on 2026-11-12, so save the file from a browser first and hash that file; a hash of an error page would block the widget. Re-compute it whenever DePay publishes a new bundle;
 the widget does not load if the bytes differ.
 
 ## Activation gates

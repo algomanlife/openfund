@@ -8,8 +8,8 @@
 | :--- | :--- | :--- | :--- | :--- |
 | React | 19.3.1 | UI runtime (app shell, hash routing pages) | Active | MIT |
 | React DOM | 19.3.1 | DOM renderer | Active | MIT |
-| TypeScript | 5.7.3 | Type-safe app source | Active | Apache-2.0 |
-| Vite | 6.4.5 | Dev server + bundler (`react/` output, base `/react/`) | Active | MIT |
+| TypeScript | 7.0.2 (6.0.3 JS API for the docs scanner) | Type-safe app source | Active | Apache-2.0 |
+| Vite | 8.3.8 | Dev server + bundler (`react/` output, base `/react/`) | Active | MIT |
 | react-router-dom | 7.18.5 | Hash router (locale/product hash routes and compatibility redirects) | Active | MIT |
 
 ## Backend (apps/backend)
@@ -17,7 +17,7 @@
 | Technology | Version | Role | Status | License |
 | :--- | :--- | :--- | :--- | :--- |
 | Node.js | 22 (required) | backend runtime | Active | Node license |
-| Express | 4.21 | Auth/profile, account/trading, portfolio/journal, purchases/invoices/withdrawal requests and diagnostics APIs | Active | MIT |
+| Express | 5.3 | Auth/profile, account/trading, portfolio/journal, purchases/invoices/withdrawal requests and diagnostics APIs | Active | MIT |
 | viem (siwe) | 2.57 | EIP-4361 parse + verify (EOA + EIP-1271) | Active | MIT |
 | pg | 8.13 | PostgreSQL access | Active | MIT |
 | ws | 8.x | Gains WebSocket client (server-side marks) | Active | MIT |
@@ -44,7 +44,7 @@ Notes:
 
 | Technology | Version | Role | Status | License |
 | :--- | :--- | :--- | :--- | :--- |
-| @luxalgo/vela | 0.9.3 | Full Vela workspace bundle (`vela-workspace.global.min.js` → `window.VelaWorkspace`): topbar, drawings, indicators, symbol search | Active | See `vendor/vela/NOTICE` — visible built-in Vela attribution kept for compliance |
+| @luxalgo/vela | 0.10.6 | Full Vela workspace bundle (`vela-workspace.global.min.js` → `window.VelaWorkspace`): topbar, drawings, indicators, symbol search | Active | See `vendor/vela/NOTICE` — visible built-in Vela attribution kept for compliance |
 | esbuild | (dev-time) | Bundles the Vela workspace into the IIFE global | Build tool | MIT |
 
 ## Market data
