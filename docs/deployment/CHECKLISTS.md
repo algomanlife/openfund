@@ -24,7 +24,7 @@ tag `v0.4.4` points to `c1cb707`.
 ## Release checklist (reviewed batch on `main`)
 
 - [ ] All batch PRs merged after review; required checks green on the merge commit
-- [ ] `npm run release:build -- --candidate` passes with Node 22 and an isolated test database
+- [ ] `npm run release:build -- --candidate` passes with Node 26 and an isolated test database
 - [ ] CHANGELOG "Unreleased" section describes the batch; Feature Status and milestones aligned
 - [ ] `npm run docs:check` passes (links, required documents, README sections)
 - [ ] Migrations are additive and idempotent (`npm run migrate` twice on a copy)

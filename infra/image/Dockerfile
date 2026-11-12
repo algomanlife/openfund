@@ -9,7 +9,7 @@
 #   ALLOWED_DOMAINS    SIWE hostnames, comma-separated
 #   PORT               listening port (default 8080)
 # Migrations are additive and run before the server starts.
-FROM node:22-bookworm-slim
+FROM node:26-bookworm-slim
 
 ARG OPENFUND_VERSION
 ARG OPENFUND_COMMIT

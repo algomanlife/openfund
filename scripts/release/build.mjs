@@ -7,7 +7,7 @@ import { verify } from './verify.mjs';
 import { runParallel, parseJobs } from '../ci/run-parallel.mjs';
 import { runtimeCmsUrl } from '../../apps/backend/runtime-config.js';
 const candidate = process.argv.includes('--candidate');
-if (Number(process.versions.node.split('.')[0]) !== 22) throw Error('Release builds require Node.js 22.');
+if (Number(process.versions.node.split('.')[0]) !== 26) throw Error('Release builds require Node.js 26.');
 const version = process.env.RELEASE_VERSION || '0.1.0';
 if (!semver.test(version)) throw Error('Set RELEASE_VERSION to MAJOR.MINOR.PATCH.');
 validateEnv(process.env);

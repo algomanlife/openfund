@@ -9,7 +9,7 @@ let version=args.includes('--version') ? args[args.indexOf('--version')+1] : 'cu
 if(version==='current') version=JSON.parse(execFileSync('gh',['release','view','--repo','algomanlife/openfund','--json','tagName'],{encoding:'utf8'})).tagName;
 if(!/^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(version || ''))throw Error('Select an official vMAJOR.MINOR.PATCH tag or current.');
 console.log(`Resolved official Openfund release: ${version}`);
-if (Number(process.versions.node.split('.')[0]) !== 22) throw Error('Official local releases require Node.js 22.');
+if (Number(process.versions.node.split('.')[0]) !== 26) throw Error('Official local releases require Node.js 26.');
 validateEnv(process.env,'local');
 if(process.env.SIM_TEST_MODE)throw Error('Official local releases do not enable test-only execution endpoints.');
 const dir=fs.mkdtempSync(path.join(os.tmpdir(),`openfund-${version}-`));
