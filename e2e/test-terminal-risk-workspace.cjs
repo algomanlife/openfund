@@ -134,6 +134,18 @@ async function liveMark(symbol) {
     const fw = async (fn, arg) => (await page.$('iframe.of-trading-workspace')).contentFrame().then(f => f.evaluate(fn, arg))
     await page.waitForFunction(() => document.querySelector('iframe.of-trading-workspace')?.contentWindow?.OpenfundTerminalInspect?.chart()?.drawings, null, { timeout: 30000 })
     check('terminal identity is the signed-in session user', await fw(() => !!window.OpenfundChartWorkspace.identity))
+    /* RISK_TEST_FOOTPRINT=1 reruns every position/SL/TP assertion below with the
+       Footprint chart style AND the Footprint overlay active (server must run with
+       FOOTPRINT_ENABLED=1): the overlays must behave exactly as on plain candles. */
+    if (process.env.RISK_TEST_FOOTPRINT === '1') {
+      const fp = await fw(() => {
+        const ctl = window.OpenfundTerminalInspect.controller()
+        ctl.workspace.active.setPriceStyle('footprint')
+        const h = ctl.chart.addNativeIndicator('footprint-overlay')
+        return { style: ctl.chart.renderer.get('priceStyle'), overlay: !!h, registered: typeof window.VelaWorkspace?.installFootprint === 'function' }
+      })
+      check('footprint style + overlay active for the position suite', fp.style === 'footprint' && fp.overlay && fp.registered, JSON.stringify(fp))
+    }
     const gTerm = await page.evaluate(() => { const d = document.querySelector('iframe.of-trading-workspace').contentDocument; return null })
     void gTerm
 
@@ -266,6 +278,11 @@ async function liveMark(symbol) {
     await page.reload(); await page.waitForFunction(() => window.__ofServerTP?.canTrade, null, { timeout: 30000 })
     await page.waitForFunction(() => document.querySelector('iframe.of-trading-workspace')?.contentWindow?.OpenfundTerminalInspect?.positionOverlays?.().length === 2, null, { timeout: 30000 })
     check('page refresh rebuilds the overlays from position state', true)
+    if (process.env.RISK_TEST_FOOTPRINT === '1') {
+      await wait(1500)
+      const style = await fw(() => window.OpenfundTerminalInspect.chart().renderer.get('priceStyle'))
+      check('footprint chart style is restored after refresh (per-wallet workspace)', style === 'footprint', style)
+    }
 
     /* ---------------- wallet A chart workspace ---------------- */
     await page.waitForFunction(() => document.querySelector('iframe.of-trading-workspace').contentWindow.OpenfundTerminalInspect.restored(), null, { timeout: 30000 })

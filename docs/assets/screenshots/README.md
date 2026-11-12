@@ -128,3 +128,11 @@ sessions, CMS-sourced content, no fixtures. [Expansion spec](../../website/WEBSI
 - The initial market render may vary with upstream availability. Old captures are preserved through [historical Git links](../../reviews/repository-transformation/REMOVED_FILES.md), outside the active image tree.
 
 [Terminal before/after gallery](../../reviews/terminal-ui/DELIVERY.md#before-and-after) · [README gallery](../../../README.md#product-gallery) · [Feature Status](../../product/FEATURE_STATUS.md)
+
+## Footprint chart — unmerged branch
+
+`footprint/*.png` are genuine captures from `e2e/test-footprint.cjs` on the
+`agent/claude/hybrid-footprint` branch. They show live Gains candles and live
+Hyperliquid trades through the local footprint service on an isolated test
+port and database, from an anonymous session. The outage capture blocks only
+`/api/footprint/*`. See `footprint` in [manifest.json](manifest.json).

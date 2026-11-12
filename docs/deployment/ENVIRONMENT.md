@@ -23,6 +23,9 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `PURCHASE_PAYMENT_CHAIN` | openfund | R | PUB | `42161`. Legacy single settlement chain, used only while `PURCHASE_PAYMENT_CHAINS` is unset. Payments are **not** tied to the Arbitrum sign-in chain. The live service still carried `11155111` at the 2026-11-10 audit. |
 | `PURCHASE_PAYMENT_DECIMALS` | openfund | R | PUB | default `18` — token decimals used in server-side amount checks |
 | `PURCHASE_LATE_GRACE_MINUTES` | openfund | R | PUB | default `60` — a payment verified within this many minutes after order expiry still pays the order; outside the window → explicit `order_expired` for manual reconciliation |
+| `FOOTPRINT_ENABLED` | openfund | R | PUB | `0` (off). `1` starts the footprint service (one shared Hyperliquid trade WebSocket, `/api/footprint/*`) and exposes `footprint: true` in the public runtime config so the terminal registers the Footprint chart style and overlay. Off: nothing is registered, fetched or rendered and every `/api/footprint/*` route answers 404. See [Footprint](../integrations/FOOTPRINT.md). |
+| `FOOTPRINT_RETENTION_DAYS` | openfund | R | PUB | `30` — days of stored one-minute footprint history (1–3650) |
+| `FOOTPRINT_MAX_STREAMS` | openfund | R | PUB | `5000` — concurrent live footprint SSE streams one process accepts; extra streams are refused with `footprint_stream_capacity` |
 
 ## Prompted at first blueprint apply (`sync: false` — never in Git)
 
@@ -66,6 +69,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `TREASURY_PRICE_MAX_AGE_MINUTES` | openfund | maximum Chainlink answer age before an asset is treated as unpriced (default 1500) |
 | `LIVE_EXECUTION_ADAPTER` | openfund | `none` (default, every live order refused), `sandbox` (non-monetary, refused when `NODE_ENV=production`), `gains` (reserved; reports `adapter_unavailable`). See [Live Market Access](../economy/LIVE_MARKET_ACCESS.md). |
 | `LIVE_SETTLEMENT_ADAPTER` | openfund | `none` (default, settlements stay `pending`) or `sandbox` (non-monetary, refused in production) |
+| `FOOTPRINT_DATABASE_URL` | openfund | **secret.** Optional dedicated PostgreSQL for footprint market data (`footprint_minutes`, `footprint_gaps`). Unset = those self-contained tables live in the main database. `npm run migrate` applies `apps/backend/footprint/schema.sql` to whichever database is used. |
 
 ## Local development defaults (code fallbacks — no .env required)
 
@@ -80,6 +84,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `SIM_TEST_MODE` | apps/backend | unset in production — internal price-injection seam for E2E only |
 | `SIM_MAINT_PCT` | apps/backend engine | 10 (maintenance/liquidation level) |
 | `PORTFOLIO_TZ` | apps/backend | `UTC` (PnL calendar policy) |
+| `FOOTPRINT_HL_INFO_URL`, `FOOTPRINT_HL_WS_URL` | apps/backend | official `https://api.hyperliquid.xyz/info` and `wss://api.hyperliquid.xyz/ws`; overrides exist only for replay/isolated tests and are never set in production |
 
 See root `.env.example` for a copy-paste template. Anything Vite-exposed
 (`VITE_*`) is PUBLIC by definition — never point it at secret material.
