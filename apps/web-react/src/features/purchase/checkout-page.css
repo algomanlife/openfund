@@ -11,7 +11,8 @@
   gap: 16px;
   font-size: 14px;
 }
-html[data-theme="light"] .of-co { --co-accent: #127a52 }
+/* light theme: native white canvas (cards are outlined, not tinted) */
+html[data-theme="light"] .of-co { --co-accent: #127a52; --co-card: #FFFFFF }
 .of-co h1 { font-size: clamp(24px, 4vw, 32px); font-weight: 600; margin: 0 0 14px }
 .of-co h2 { font-size: 16px; font-weight: 600; margin: 0 0 12px }
 .of-co h3 { font-size: 13px; font-weight: 600; margin: 18px 0 8px; color: var(--muted, #9fb3a8) }

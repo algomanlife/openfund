@@ -24,6 +24,7 @@
  *    exactly once across the whole system.
  */
 import { Router } from 'express'
+import { rateLimit } from 'express-rate-limit'
 import crypto from 'node:crypto'
 import { invoicePdf } from './invoice-pdf.js'
 import { ChallengeService, normalizeRules } from './evaluation.js'
@@ -707,8 +708,12 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
   /* 3b — purchase receipt, built only from verified records: the order of
      record, the payment the chain verifier wrote (settlement token, amount,
      receiver, network, transaction), DePay's reported source token/amount
-     (labelled as reported), the invoice and the provisioned challenge. */
-  router.get('/purchases/orders/:id/receipt', requireAuth, limit(60), wrap(async (req, res) => {
+     (labelled as reported), the invoice and the provisioned challenge.
+     Rate-limited per client IP (express-rate-limit; `trust proxy` is set in
+     server.js) — the receipt page reads it once per load and after payment. */
+  const receiptLimiter = rateLimit({ windowMs: 60_000, limit: 60, standardHeaders: 'draft-7', legacyHeaders: false,
+    message: { error: 'rate_limited' } })
+  router.get('/purchases/orders/:id/receipt', receiptLimiter, requireAuth, wrap(async (req, res) => {
     if (!uuid.test(req.params.id)) throw fail(404, 'order_not_found')
     const { rows: [r] } = await pool.query(
       `SELECT o.id, o.status, o.lifecycle_state, o.account_size_usd, o.list_price_usd, o.discount_usd, o.price_usd, o.currency,

@@ -368,6 +368,7 @@ export default function CheckoutPage() {
                   <button className="of-profile-plainbtn" disabled={busy || !couponInput.trim()} onClick={() => { void applyCoupon() }}>{t('اعمال', 'Apply')}</button>
                 </div>
                 {couponError && <p className="of-profile-error" role="alert">{couponError}</p>}
+                {zeroQuote && <p className="of-checkout-status" role="status">{t('با این کد، چالش بدون پرداخت فعال می‌شود.', 'With this coupon the challenge is activated without payment.')}</p>}
               </div>
             )}
 

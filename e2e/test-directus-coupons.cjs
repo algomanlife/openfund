@@ -143,14 +143,19 @@ async function main() {
     await cpage.locator('#review-selection').click()
     await cpage.locator('#selection-dialog[open], dialog[open]').first().waitFor()
     await cpage.locator('#dialog-done').click()
-    await cpage.getByRole('heading', { name: 'Challenge Checkout' }).waitFor({ timeout: 8000 })
+    /* the selection hands off to the dedicated checkout page (full navigation) */
+    await cpage.waitForURL(/\/en\/checkout\?plan=[^&]+&size=\d+/, { timeout: 10000, waitUntil: 'load' })
+    await cpage.getByRole('heading', { name: 'Buy a Challenge', level: 1 }).waitFor({ timeout: 10000 })
+    await connect(cpage); await signIn(cpage)
+    await cpage.getByLabel('Email for the receipt').fill('coupon-buyer@example.test')
+    await cpage.locator('.of-co-accept input').check()
     await cpage.locator('#of-coupon').fill(code.toLowerCase())
     await cpage.getByRole('button', { name: 'Apply', exact: true }).click()
     await cpage.getByText('With this coupon the challenge is activated without payment.').waitFor({ timeout: 8000 })
     await shot(cpage, '03-checkout-coupon-applied')
     check('checkout shows the server quote: $0.00 due', (await cpage.locator('.of-checkout-summary').innerText()).includes('$0'))
     await cpage.getByRole('button', { name: 'Activate challenge' }).click()
-    await cpage.locator('.of-checkout-done').waitFor({ timeout: 15000 })
+    await cpage.locator('.of-co-receipt').waitFor({ timeout: 15000 })
     await shot(cpage, '04-checkout-activated')
     const order = (await db.query('SELECT * FROM purchase_orders WHERE coupon_id=$1', [created.id])).rows[0]
     check('zero-cost order provisioned, recorded as internal coupon, no payment', order && order.lifecycle_state === 'provisioned' && order.payment_method === 'internal_coupon' && order.price_usd === '0.00'
