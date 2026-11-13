@@ -44,6 +44,16 @@ const duplicate = (row, req, position) => {
    state listeners keep the main pool. */
 const loopScope = new AsyncLocalStorage()
 const locks = new Map()
+/* equity-sample writes per account, in call order (see #sampleRisk) */
+const SAMPLE_MINUTE_MARGIN_MS = 5000
+const sampleOrder = new Map()
+async function withSampleOrder(accountId, fn) {
+  const prev = sampleOrder.get(accountId) || Promise.resolve()
+  const run = prev.then(fn, fn)
+  const tail = run.catch(() => {})
+  sampleOrder.set(accountId, tail)
+  try { return await run } finally { if (sampleOrder.get(accountId) === tail) sampleOrder.delete(accountId) }
+}
 async function withAccountLock(accountId, fn) {
   const prev = locks.get(accountId) || Promise.resolve()
   const run = prev.then(fn, fn)
@@ -378,7 +388,7 @@ export class Engine {
           rules_version: rules.rulesVersion,
         }
       } else {
-        view.risk = await this.#sampleRisk(account.id, view.equity, c)
+        view.risk = await this.#sampleRisk(account.id, view.equity, c, { idle: positions.length === 0 })
       }
       return { as_of, account: view, positions: positions.map(p => this.#positionView(p)), orders, history: history.map(p => this.#positionView(p)) }
     } catch (e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
@@ -397,13 +407,27 @@ export class Engine {
       if (!account) { await c.query('COMMIT'); return }
       const positions = (await c.query("SELECT * FROM trading_positions WHERE account_id=$1 AND status='open' ORDER BY opened_at DESC", [account.id])).rows
       await c.query('COMMIT')
-      await this.#sampleRisk(account.id, this.#accountView(account, positions, null).equity, c)
+      await this.#sampleRisk(account.id, this.#accountView(account, positions, null).equity, c, { idle: positions.length === 0 })
     } catch (e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
   }
 
-  async #sampleRisk(accountId, equity, c = this.db) {
+  /* Equity-risk sampling (free_demo). Both writes go in one statement (one
+     round trip and one commit instead of two; the pair is now atomic). A
+     write that is provably a no-op is skipped: for an account with no open
+     position (equity = balance, read from the database), writing the same
+     equity again in the same database minute leaves every column of the
+     risk row except updated_at unchanged (day, day start, GREATEST peak and
+     drawdowns are idempotent for a repeated equity) and the per-minute
+     sample insert is ON CONFLICT DO NOTHING. Writes per account are
+     serialized in-process so the last-write record follows commit order;
+     it is only used for idle accounts and expires with the database minute
+     (estimated from the database's own clock, with a safety margin). */
+  async #sampleRisk(accountId, equity, c = this.db, { idle = false } = {}) {
     if (equity === null) return null
-    const {rows} = await c.query(`INSERT INTO account_equity_risk
+    return withSampleOrder(accountId, async () => {
+      const last = this.#lastSample.get(accountId)
+      if (idle && last && last.equity === equity && Date.now() + last.skew < last.minuteEnd - SAMPLE_MINUTE_MARGIN_MS) return { ...last.risk }
+      const {rows} = await c.query(`WITH r AS (INSERT INTO account_equity_risk
       (account_id,day,day_start_equity,peak_equity,last_equity)
       VALUES ($1,(now() AT TIME ZONE 'UTC')::date,$2,$2,$2)
       ON CONFLICT (account_id) DO UPDATE SET
@@ -413,15 +437,26 @@ export class Engine {
         maximum_drawdown = GREATEST(account_equity_risk.maximum_drawdown,account_equity_risk.peak_equity-excluded.last_equity,0),
         daily_drawdown = CASE WHEN account_equity_risk.day=excluded.day THEN GREATEST(account_equity_risk.daily_drawdown,account_equity_risk.day_start_equity-excluded.last_equity,0) ELSE 0 END,
         last_equity=excluded.last_equity,updated_at=now()
-      RETURNING *`,[accountId,equity])
-    const r = rows[0]
-    await c.query(`INSERT INTO account_equity_samples(account_id,sampled_at,equity,balance) SELECT id,date_trunc('minute',now()),$2,balance FROM demo_accounts WHERE id=$1 ON CONFLICT DO NOTHING`,[accountId,equity])
-    return { basis:'sampled_equity', timezone:'UTC', since:r.created_at, day:r.day,
-      day_start_equity:r.day_start_equity, peak_equity:r.peak_equity,
-      drawdown:Decimal.max(0,D(r.peak_equity).minus(equity)).toFixed(2),
-      daily_drawdown:r.daily_drawdown, maximum_drawdown:r.maximum_drawdown,
-      daily_limit:null, maximum_limit:null }
+      RETURNING *),
+      s AS (INSERT INTO account_equity_samples(account_id,sampled_at,equity,balance) SELECT id,date_trunc('minute',now()),$2,balance FROM demo_accounts WHERE id=$1 ON CONFLICT DO NOTHING)
+      SELECT * FROM r`,[accountId,equity])
+      const r = rows[0]
+      const risk = { basis:'sampled_equity', timezone:'UTC', since:r.created_at, day:r.day,
+        day_start_equity:r.day_start_equity, peak_equity:r.peak_equity,
+        drawdown:Decimal.max(0,D(r.peak_equity).minus(equity)).toFixed(2),
+        daily_drawdown:r.daily_drawdown, maximum_drawdown:r.maximum_drawdown,
+        daily_limit:null, maximum_limit:null }
+      const dbMs = new Date(r.updated_at).getTime(), now = Date.now()
+      this.#lastSample.set(accountId, { equity, risk: { ...risk }, skew: dbMs - now, minuteEnd: Math.floor(dbMs / 60000) * 60000 + 60000 })
+      if (now - this.#lastSamplePrune > 60000) {
+        this.#lastSamplePrune = now
+        for (const [id, v] of this.#lastSample) if (now + v.skew >= v.minuteEnd) this.#lastSample.delete(id)
+      }
+      return risk
+    })
   }
+  #lastSample = new Map()
+  #lastSamplePrune = 0
 
   /** equity = balance + unrealized (all open positions) */
   #accountView(account, openPositions, challenge = null) {
