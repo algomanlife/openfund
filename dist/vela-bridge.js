@@ -12,7 +12,7 @@
      controller.setSymbol(symbol)      in-place market switch
      controller.setTimeframe(tf)
      controller.setTheme('dark'|'light')
-     controller.setLocale(tag)
+     controller.setLocale()             chart UI is always English (LTR)
      controller.resize()
      controller.chart                   → active Vela chart
      controller.workspace               → VelaWorkspace instance
@@ -61,7 +61,9 @@ function mount(container, opts){
      Timeframe / style / indicators / undo-redo stay (left side),
      alerts / panels / screenshot on the right. */
   const ws = new WLib.VelaWorkspace(el, {
-    locale: opts.locale === 'zh-CN' ? 'zh-Hans' : (opts.locale || 'en'),
+    /* Vela's own UI is English-only and LTR in every Openfund locale
+       (docs/integrations/VELA.md): the host locale is never forwarded */
+    locale: 'en',
     layout: false,                    /* single-chart mode */
     symbol: 'gains:' + (opts.symbol || 'BTC/USD'),
     timeframe: canonicalTimeframe(opts.timeframe || '1'),
@@ -140,7 +142,8 @@ function mount(container, opts){
       });
       return ws;
     },
-    setLocale(tag){ try { return ws.setLocale(tag); } catch(e){} },
+    /* kept for API compatibility: the chart UI stays English whatever is asked */
+    setLocale(){ try { return ws.setLocale('en'); } catch(e){} },
     resize(){ try { return ws.chart && ws.chart.resize(); } catch(e){} },
     on(event, handler){ return ws.chart.on(event, handler); },
     destroy(){

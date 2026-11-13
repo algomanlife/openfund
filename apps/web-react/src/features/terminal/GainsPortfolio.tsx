@@ -215,7 +215,7 @@ export default function GainsPortfolio() {
                     "وثیقه|Collateral",
                     "ارز وثیقه|Collateral currency",
                     "اهرم|Leverage",
-                    "قیمت ورود|Entry",
+                    "نقطه ورود|Entry Price",
                     "حد ضرر|Stop loss",
                     "حد سود|Take profit",
                   ]

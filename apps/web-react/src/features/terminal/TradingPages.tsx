@@ -232,6 +232,11 @@ function workspaceMarkup(locale: AppLocale) {
   const quick = document.createElement("div");
   quick.id = "qt-root";
   quick.className = "qt";
+  /* Openfund trading UI placed over the chart: it keeps the page language and
+     direction (the surrounding #chart-host is the English/LTR Vela layer) */
+  quick.dataset.openfundUi = "";
+  quick.lang = locale;
+  quick.dir = locale === "fa" || locale === "ar" ? "rtl" : "ltr";
   quick.innerHTML = QUICK_TRADE_MARKUP;
   template.content.querySelector("#chart-host")?.append(quick);
   const feed = document.createElement('p'); feed.id = 'account-feed-state'; feed.setAttribute('role','status');

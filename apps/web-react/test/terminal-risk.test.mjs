@@ -7,7 +7,7 @@
    - the shared header-control geometry contract in styles/header-controls.css. */
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 
 const load = (file, name) => { const w = {}; new Function('window', 'globalThis', readFileSync(new URL(file, import.meta.url), 'utf8'))(w, w); return w[name] }
 const NI = load('../public/legacy/numeric-input.js', 'OpenfundNumericInput')
@@ -192,4 +192,96 @@ test('markers: BUY ×2 / SELL ×2 aggregate per candle and side without merging 
   assert.deepEqual([...g.values()].map(x => [x.label, x.placement]).sort(), [['BUY ×2', 'below'], ['SELL ×2', 'above']])
   const range = { high: 105, low: 98 }
   for (const x of g.values()) assert.equal(PO.markerPrice(x, range), x.side === 'long' ? 98 : 105)
+})
+
+/* ---------- SL/TP created on the chart (drag from the entry line) ---------- */
+test('SL/TP drag-to-create: a position without SL/TP gets an editable zero-height box, never invented zones', () => {
+  assert.equal(PO.model({ id: 1, side: 'long', entry: 100 }), null)          /* read-only accounts: unchanged, no box */
+  const m = PO.model({ id: 1, side: 'long', entry: 100 }, { allowEmpty: true })
+  assert.deepEqual([m.entry, m.stop, m.target, m.lossZone, m.profitZone, m.ratio], [100, null, null, null, null, null])
+})
+
+test('SL/TP drag-to-create: all four states, LONG and SHORT, each level on its own side of the entry', () => {
+  const create = { allowCreate: true }
+  for (const side of ['long', 'short']) {
+    const L = side === 'long', below = 95, above = 105
+    const sl = L ? below : above, tp = L ? above : below
+    /* 1. no SL/TP → create SL only, TP only, or both */
+    assert.deepEqual(PO.riskEdit({ side, entry: 100 }, { sl, tp: 100 }, 2, create), { sl, tp: null, changed: true, created: true })
+    assert.deepEqual(PO.riskEdit({ side, entry: 100 }, { sl: 100, tp }, 2, create), { sl: null, tp, changed: true, created: true })
+    assert.deepEqual(PO.riskEdit({ side, entry: 100 }, { sl, tp }, 2, create), { sl, tp, changed: true, created: true })
+    /* untouched: both still on the entry → nothing to submit */
+    assert.deepEqual(PO.riskEdit({ side, entry: 100 }, { sl: 100, tp: 100 }, 2, create), { sl: null, tp: null, changed: false, created: false })
+    /* 2. SL only → add TP / move SL */
+    assert.deepEqual(PO.riskEdit({ side, entry: 100, sl }, { sl, tp }, 2, create), { sl, tp, changed: true, created: true })
+    assert.deepEqual(PO.riskEdit({ side, entry: 100, sl }, { sl: L ? 96 : 104, tp: 100 }, 2, create), { sl: L ? 96 : 104, tp: null, changed: true, created: false })
+    /* 3. TP only → add SL */
+    assert.deepEqual(PO.riskEdit({ side, entry: 100, tp }, { sl, tp }, 2, create), { sl, tp, changed: true, created: true })
+    /* 4. both → move both */
+    assert.deepEqual(PO.riskEdit({ side, entry: 100, sl, tp }, { sl: L ? 94 : 106, tp: L ? 107 : 93 }, 2, create), { sl: L ? 94 : 106, tp: L ? 107 : 93, changed: true, created: false })
+    /* invalid: a created level on the wrong side is refused (the drag is reverted) */
+    assert.equal(PO.riskEdit({ side, entry: 100 }, { sl: tp, tp: 100 }, 2, create).error, 'sl_wrong_side')
+    assert.equal(PO.riskEdit({ side, entry: 100 }, { sl: 100, tp: sl }, 2, create).error, 'tp_wrong_side')
+  }
+})
+
+test('SL/TP drag-to-create: market price precision; a drag that rounds back onto the entry creates nothing', () => {
+  const create = { allowCreate: true }
+  assert.deepEqual(PO.riskEdit({ side: 'long', entry: 1.08345 }, { sl: 1.0812349, tp: 1.08345 }, 5, create), { sl: 1.08123, tp: null, changed: true, created: true })
+  assert.deepEqual(PO.riskEdit({ side: 'long', entry: 100 }, { sl: 99.999, tp: 100 }, 2, create), { sl: null, tp: null, changed: false, created: false })
+  /* without allowCreate the previous contract holds: a missing level is never created */
+  assert.deepEqual(PO.riskEdit({ side: 'long', entry: 100 }, { sl: 95, tp: 110 }, 2), { sl: null, tp: null, changed: false })
+})
+
+test('SL/TP drag-to-create: the terminal makes both levels draggable only on tradable accounts and submits through the position API', () => {
+  const term = readFileSync(new URL('../public/legacy/terminal.js', import.meta.url), 'utf8')
+  const drawings = readFileSync(new URL('../../../packages/openfund-charts/src/openfund-drawings.ts', import.meta.url), 'utf8')
+  assert.match(term, /positionOverlayModel\(p, \{ allowEmpty: !!window\.__ofServerTP\?\.canTrade \}\)/)
+  assert.match(term, /const editable = window\.__ofServerTP\?\.canTrade \? \['stop', 'target'\] : \[\];/)
+  assert.match(term, /ofMissing: missing/)
+  assert.match(term, /riskEdit\(p, \{ sl: d\.anchors\[1\]\?\.price, tp: d\.anchors\[2\]\?\.price \}, precision, \{ allowCreate: true \}\)/)
+  /* still the one existing position-update service, serialized per position */
+  assert.match(term, /await srv\.modifyRisk\(posId, intent\.sl, intent\.tp\)/)
+  assert.match(term, /positionRiskQueues\.get\(posId\)/)
+  /* the drawing picks stop/target by drag direction and keeps an untouched missing level on the entry */
+  assert.match(drawings, /private dragTarget\(index: number, price: number\): 1 \| 2/)
+  assert.match(drawings, /if \(i !== target && this\.missing\(i\) && this\.editable\(i\) && entry != null && this\.anchors\[i\]\) this\.anchors\[i\]\.price = entry;/)
+})
+
+/* ---------- Vela chart UI: English only, LTR always ---------- */
+test('Vela chart layer is English-only and LTR in every Openfund locale', () => {
+  const term = readFileSync(new URL('../public/legacy/terminal.js', import.meta.url), 'utf8')
+  const body = readFileSync(new URL('../src/pages/terminal-body.html', import.meta.url), 'utf8')
+  const entry = readFileSync(new URL('../../../packages/openfund-charts/src/workspace-entry.ts', import.meta.url), 'utf8')
+  const bridge = readFileSync(new URL('../../../packages/openfund-charts/src/vela-bridge.js', import.meta.url), 'utf8')
+  const footprint = readFileSync(new URL('../../../packages/openfund-charts/src/footprint/plugin.ts', import.meta.url), 'utf8')
+  const PERSIAN = /[؀-ۿ]/
+  /* no Persian chart strings are registered with Vela and no other locale can be chosen */
+  assert.doesNotMatch(entry, PERSIAN)
+  assert.doesNotMatch(entry, /registerLocale\(/)
+  assert.match(bridge, /locale: 'en',/)
+  assert.match(bridge, /setLocale\(\)\{ try \{ return ws\.setLocale\('en'\); \}/)
+  assert.match(term, /locale: CHART_LOCALE/)
+  assert.match(term, /const CHART_LOCALE = 'en';/)
+  assert.match(body, /id="chart-host" role="tabpanel" aria-labelledby="tab-chart" dir="ltr" lang="en"/)
+  /* the static translator never rewrites Vela tooltips, menus or dialogs */
+  assert.match(term, /if \(inChartLayer\(node\)\) continue;/)
+  assert.match(term, /\|\| inChartLayer\(el\)\) continue;/)
+  /* chart-layer strings resolve to English (CL) — Settings → Trading, executions, position labels, drag notices */
+  const CL = (fa, en) => en
+  for (const [fa, en] of [...term.matchAll(/CL\('([^']*)', '([^']*)'\)/g)].map(m => [m[1], m[2]])) {
+    assert.ok(PERSIAN.test(fa) && !PERSIAN.test(CL(fa, en)) && en.length > 0, en)
+  }
+  for (const label of ["CL('معاملات', 'Trading')", "CL('نمایش روی نمودار', 'Display on Chart')",
+    "CL('نمایش نشانگرهای خرید و فروش', 'Show Buy/Sell Markers')", "CL('نمایش اطلاعات موقعیت', 'Show Position Information')"]) assert.ok(term.includes(label), label)
+  assert.doesNotMatch(term, /(?<![A-Za-z_])L\('(معاملات|نمایش روی نمودار|نمایش نشانگرهای خرید و فروش)'/)
+  /* chart overlay messages use the English dictionary */
+  assert.match(term, /chartOverlay\(`<b>\$\{ct\('chart\.loading'\)\}<\/b>`\)/)
+  assert.match(footprint, /'Footprint \(Order Flow Overlay\)'/)
+})
+
+test('Vela bundle (built) carries no Persian chart strings', { skip: !existsSync(new URL('../public/assets/vela-workspace.global.min.js', import.meta.url)) }, () => {
+  const bundle = readFileSync(new URL('../public/assets/vela-workspace.global.min.js', import.meta.url), 'utf8')
+  for (const fa of ['فوت‌پرینت', 'لایه جریان سفارش', 'نمایش راهنمای اندیکاتورها', 'تنظیمات']) assert.ok(!bundle.includes(fa), fa)
+  assert.ok(bundle.includes('Footprint (Order Flow Overlay)'))
 })

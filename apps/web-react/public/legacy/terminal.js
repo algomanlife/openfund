@@ -92,8 +92,8 @@ const I18N = {
     'lev': 'اهرم',
     'of.price': 'قیمت تریگر / لیمیت <em>USD</em>', 'of.collateral': 'کولترال / وثیقه <em>USD</em>', 'of.priceTh': 'تریگر / لیمیت',
     'of.size': 'اندازه', 'of.notional': 'نوشنال',
-    'sz.collateral': 'کولترال / وثیقه', 'sz.collateralShort': 'کولترال / وثیقه', 'sz.quantity': 'اندازه نماد', 'sz.lots': 'لات',
-    'sz.qtyLabel': 'اندازه نماد', 'sz.lotsLabel': 'لات', 'pos.entry': 'نقطه ورود',
+    'sz.collateral': 'کولترال / وثیقه', 'sz.collateralShort': 'کولترال / وثیقه', 'sz.quantity': 'اندازه نماد', 'sz.lots': 'لاتیج',
+    'sz.qtyLabel': 'اندازه نماد', 'sz.lotsLabel': 'لاتیج', 'pos.entry': 'نقطه ورود',
     'ctab.chart': 'نمودار', 'ctab.news': 'اخبار و اطلاعات', 'news.loading': 'در حال بارگذاری تقویم اقتصادی…',
     'news.unavailable': 'تقویم اقتصادی در حال حاضر در دسترس نیست.', 'news.retry': 'تلاش دوباره', 'news.source': 'منبع: TradingView',
     'news.localeNote': 'این تقویم زبان فارسی ندارد و به انگلیسی نمایش داده می‌شود.',
@@ -125,7 +125,7 @@ const I18N = {
     'cf.close': 'بستن موقعیت', 'cf.closeTxt': 'این موقعیت شبیه‌سازی‌شده در قیمت Mark فعلی بسته شود؟ سود/زیان شناور و کارمزد بستن اعمال می‌شود.',
     'cf.cancel': 'لغو سفارش', 'cf.cancelTxt': 'این سفارش شبیه‌سازی‌شدهٔ در انتظار حذف شود؟',
     'cf.detail': 'جزئیات موقعیت', 'sltp.title': 'مدیریت سود و ضرر',
-    'pos.details': ['موقعیت', 'بازار', 'جهت', 'اندازه', 'قیمت ورود', 'قیمت مارک', 'اهرم', 'کولترال', 'لیکوییدیشن تخمینی', 'سود/زیان شناور', 'استاپ‌لاس / تیک‌پرافیت', 'زمان باز شدن', 'کارمزد باز شدن'],
+    'pos.details': ['موقعیت', 'بازار', 'جهت', 'اندازه', 'نقطه ورود', 'قیمت مارک', 'اهرم', 'کولترال', 'لیکوییدیشن تخمینی', 'سود/زیان شناور', 'استاپ‌لاس / تیک‌پرافیت', 'زمان باز شدن', 'کارمزد باز شدن'],
     'act.close': 'بستن', 'act.sltp': 'SL/TP', 'act.details': 'جزئیات', 'act.cancel': 'لغو',
     'act.share': 'اشتراک‌گذاری',
     'share.title': 'اشتراک‌گذاری سود و زیان', 'share.download': 'دانلود PNG', 'share.native': 'اشتراک‌گذاری', 'share.close': 'بستن',
@@ -219,20 +219,20 @@ const EN = {
   'lev': 'Leverage',
   'of.price': 'Trigger / Limit price <em>USD</em>', 'of.collateral': 'Collateral <em>USD</em>',
   'of.size': 'Size', 'of.notional': 'Notional',
-  'sz.collateral': 'Collateral', 'sz.collateralShort': 'Collateral', 'sz.quantity': 'Quantity', 'sz.lots': 'Lots',
-  'sz.qtyLabel': 'Quantity', 'sz.lotsLabel': 'Lots', 'pos.entry': 'Entry',
+  'sz.collateral': 'Collateral', 'sz.collateralShort': 'Collateral', 'sz.quantity': 'Quantity', 'sz.lots': 'Lotage',
+  'sz.qtyLabel': 'Quantity', 'sz.lotsLabel': 'Lotage', 'pos.entry': 'Entry Price',
   'ctab.chart': 'Chart', 'ctab.news': 'News & Information', 'news.loading': 'Loading the economic calendar…',
   'news.unavailable': 'The economic calendar is unavailable right now.', 'news.retry': 'Retry', 'news.source': 'Source: TradingView',
   'news.localeNote': '',
   'of.sl': 'Stop Loss <em>USD · optional</em>', 'of.tp': 'Take Profit <em>USD · optional</em>',
-  'rk.entry': 'Est. entry', 'rk.oracle': 'Index price', 'rk.liq': 'Est. liquidation',
+  'rk.entry': 'Est. Entry Price', 'rk.oracle': 'Index price', 'rk.liq': 'Est. liquidation',
   'rk.margin': 'Est. margin', 'rk.fee': 'Est. fee (open)', 'rk.impact': 'Price impact',
   'rk.impactVal': 'N/A', 'rk.maxloss': 'Est. PnL at SL',
   'submit.long': 'Review order — Long', 'submit.short': 'Review order — Short',
   'side.long': 'Long', 'side.short': 'Short',
   'ot.market': 'Market', 'ot.limit': 'Limit', 'ot.stop': 'Stop',
   'of.priceTh': 'Trigger / Limit',
-  'th.entry': 'Entry', 'th.mark': 'Mark', 'th.liq': 'Liq. price', 'th.sltp': 'SL / TP', 'th.collateral': 'Collateral', 'th.unrealized': 'Unrealized PnL',
+  'th.entry': 'Entry Price', 'th.mark': 'Mark', 'th.liq': 'Liq. price', 'th.sltp': 'SL / TP', 'th.collateral': 'Collateral', 'th.unrealized': 'Unrealized PnL',
   'mkt.closed': 'This market is closed — viewing only, no trading.',
   'cat.all': 'All',
   'demoBanner': 'Demo Mode — No Real Orders Are Submitted',
@@ -248,11 +248,11 @@ const EN = {
   'dlg.confirmOrder': 'Confirm simulated order', 'dlg.save': 'Save', 'dlg.close': 'Close',
   'rv.market': 'Market', 'rv.dir': 'Direction', 'rv.otype': 'Order type', 'rv.lev': 'Leverage',
   'rv.size': 'Size', 'rv.notional': 'Notional', 'rv.collateral': 'Collateral',
-  'rv.entry': 'Est. entry', 'rv.oracle': 'Index', 'rv.liq': 'Est. liquidation',
+  'rv.entry': 'Est. Entry Price', 'rv.oracle': 'Index', 'rv.liq': 'Est. liquidation',
   'rv.fee': 'Est. fee (open)', 'rv.sl': 'Stop Loss', 'rv.tp': 'Take Profit',
   'rv.equityAfter': 'Equity after', 'rv.exec': 'Simulated — local engine',
   'rv.side.long': 'Long', 'rv.side.short': 'Short',
-  'pos.details': ['Position', 'Market', 'Side', 'Size', 'Entry', 'Mark', 'Leverage', 'Collateral', 'Est. liquidation', 'Unrealized PnL', 'SL / TP', 'Opened', 'Opening fee'],
+  'pos.details': ['Position', 'Market', 'Side', 'Size', 'Entry Price', 'Mark', 'Leverage', 'Collateral', 'Est. liquidation', 'Unrealized PnL', 'SL / TP', 'Opened', 'Opening fee'],
   'cf.close': 'Close position', 'cf.closeTxt': 'Close this simulated position at the current mark price? Unrealized PnL and a closing fee will be applied.',
   'cf.cancel': 'Cancel order', 'cf.cancelTxt': 'Remove this pending simulated order?',
   'cf.detail': 'Position details', 'sltp.title': 'Modify risk',
@@ -328,6 +328,20 @@ function t(key){
   const v = (I18N[window.ofLang] && I18N[window.ofLang][key]);
   return v === undefined ? key : v;
 }
+/* ---------- Vela chart layer: English only, LTR always ----------
+   The chart workspace (#chart-host) and everything Vela renders — style,
+   indicator, drawing and settings menus, dialogs, tooltips, overlays,
+   labels and chart notifications — stay English and LTR in every Openfund
+   locale. Only the chart layer: the rest of the terminal keeps the user's
+   language. ct(key) reads the English terminal dictionary; CL(fa, en) marks
+   a chart-layer string whose Persian source is kept for reference only. */
+const CHART_LOCALE = 'en';
+function ct(key){ return EN[key] !== undefined ? EN[key] : key; }
+function CL(fa, en){ return en; }
+const CHART_LAYER = '#chart-host,[class^="vela"],[class*=" vela"]';
+/* Openfund controls placed over the chart (quick trade) are marked
+   data-openfund-ui and keep the terminal language */
+function inChartLayer(el){ try { return !!(el && el.closest && el.closest(CHART_LAYER) && !el.closest('[data-openfund-ui]')); } catch(e){ return false; } }
 /* Static English markup without data-i18n keys (aria-labels, titles,
    placeholders, captions): fa uses the reviewed staticFa map, ar/ru/zh-CN
    the app dictionaries through the parent document (misses are reported
@@ -353,12 +367,12 @@ function translateStaticMarkup(){
     let n;
     while ((n = walker.nextNode())) {
       const el = n.parentElement;
-      if (!el || el.closest('script,style,[data-i18n],[data-i18n-p],.num,[data-no-static-i18n]')) continue;
+      if (!el || el.closest('script,style,[data-i18n],[data-i18n-p],.num,[data-no-static-i18n]') || inChartLayer(el)) continue;
       const v = n.nodeValue.trim();
       if (/[A-Za-z]{2}/.test(v) && !/[\u0600-\u06ff]/.test(v)) staticText.set(n, n.nodeValue);
     }
     document.querySelectorAll('[aria-label],[title],[placeholder]').forEach(el => {
-      if (el.closest('[data-i18n-p]')) return;
+      if (el.closest('[data-i18n-p]') || inChartLayer(el)) return;
       const keep = {};
       for (const a of ['aria-label', 'title', 'placeholder']) {
         const v = el.getAttribute(a);
@@ -372,6 +386,8 @@ function translateStaticMarkup(){
     staticObserver = new MutationObserver(records => {
       for (const r of records) for (const node of (r.type === 'attributes' ? [r.target] : r.addedNodes)) {
         if (!(node instanceof Element)) continue;
+        /* Vela creates its toolbar tooltips, menus and dialogs later: they stay English */
+        if (inChartLayer(node)) continue;
         if (r.type !== 'attributes') {
           const tw = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
           let tn;
@@ -381,6 +397,7 @@ function translateStaticMarkup(){
           }
         }
         [node, ...node.querySelectorAll('[title],[aria-label]')].forEach(el => {
+          if (inChartLayer(el)) return;
           for (const a of ['title', 'aria-label']) {
             const v = el.getAttribute && el.getAttribute(a);
             if (!v || !STATIC_TEXT.fa || !STATIC_TEXT.fa[v]) continue;
@@ -547,24 +564,24 @@ function chartOverlay(html){
 }
 
 function initChart(){
-  if (!window.OpenfundCharts){ chartOverlay(`<b>${t('chart.unavailable')}</b><br>${t('chart.msg')}`); return; }
+  if (!window.OpenfundCharts){ chartOverlay(`<b>${ct('chart.unavailable')}</b><br>${ct('chart.msg')}`); return; }
   try{
     /* full Vela workspace: native topbar (symbol / timeframe / style /
        indicators), drawing toolbar, status line, symbol search, keyboard */
     vc = window.OpenfundCharts.mount('#chart-host', {
-      symbol: S.marketId, timeframe: S.tf, theme: curTheme, locale: document.documentElement.lang
+      symbol: S.marketId, timeframe: S.tf, theme: curTheme, locale: CHART_LOCALE
     });
   } catch(e){
-    chartOverlay(`<b>${t('chart.unavailable')}</b><br>${String(e.message || e)}`);
+    chartOverlay(`<b>${ct('chart.unavailable')}</b><br>${String(e.message || e)}`);
     return;
   }
   const c = () => vc.chart;
-  vc.on('load:start', () => chartOverlay(`<b>${t('chart.loading')}</b>`));
+  vc.on('load:start', () => chartOverlay(`<b>${ct('chart.loading')}</b>`));
   vc.on('load:end', ev => {
     if (ev && ev.bars > 0){ chartOverlay(null); chartReady = true; }
-    else chartOverlay(`<b>${t('chart.error')}</b>`);
+    else chartOverlay(`<b>${ct('chart.error')}</b>`);
   });
-  vc.on('data:unresolved', () => chartOverlay(`<b>${t('chart.error')}</b>`));
+  vc.on('data:unresolved', () => chartOverlay(`<b>${ct('chart.error')}</b>`));
   /* the user can switch markets from Vela's own search — keep the
      terminal chrome in sync with the chart's market */
   vc.on('market:changed', ev => {
@@ -585,7 +602,7 @@ function initChart(){
 
 function setChartMarket(){
   if (!vc) return;
-  Promise.resolve(vc.setSymbol(S.marketId)).catch(() => chartOverlay(`<b>${t('chart.error')}</b>`));
+  Promise.resolve(vc.setSymbol(S.marketId)).catch(() => chartOverlay(`<b>${ct('chart.error')}</b>`));
 }
 
 $('chart-full').addEventListener('click', () => {
@@ -782,6 +799,7 @@ function selectMarket(id){
   if (meta()) applyLeverageCap(true);
   /* a quantity is in the previous market's base units — never carry it over */
   if (SZ.mode === 'quantity' && $('of-qty')) $('of-qty').value = '';
+  if ($('of-lots')) $('of-lots').value = '';
   if (S.otype !== 'market'){
     const p = mark();
     if (p) $('of-price').value = p.toFixed(dp());
@@ -1102,6 +1120,12 @@ document.querySelectorAll('.pct-btns button').forEach(b => b.addEventListener('c
     const q = PSZ().quantityFromCollateral({ collateral: v.toFixed(2), leverage: S.leverage, price: sizingPrice() || '', quantityPrecision: qtyPrecision() });
     $('of-qty').value = q && Number(q) > 0 ? q.replace(/\.?0+$/, '') : '';
   }
+  if (SZ.mode === 'lots' && PSZ()){
+    /* the most lots on the lot grid this budget buys */
+    const q = PSZ().quantityFromCollateral({ collateral: v.toFixed(2), leverage: S.leverage, price: sizingPrice() || '', quantityPrecision: qtyPrecision() });
+    const lots = q ? PSZ().lotsFloor(q, currentLotSpec()) : null;
+    $('of-lots').value = lots && Number(lots) > 0 ? lots : '';
+  }
   computeForm();
 }));
 
@@ -1203,6 +1227,12 @@ function setSizeMode(mode){
     const q = PSZ()?.quantityFromCollateral({ collateral: exactInput('of-collateral') || '', leverage: S.leverage, price: sizingPrice() || '', quantityPrecision: qtyPrecision() });
     $('of-qty').value = q && Number(q) > 0 ? q.replace(/\.?0+$/, '') : '';
   }
+  if (mode === 'lots' && SZ.mode !== 'lots'){
+    /* start from the lots the current collateral buys (rounded DOWN to the lot step) */
+    const q = PSZ()?.quantityFromCollateral({ collateral: exactInput('of-collateral') || '', leverage: S.leverage, price: sizingPrice() || '', quantityPrecision: qtyPrecision() });
+    const lots = q ? PSZ().lotsFloor(q, currentLotSpec()) : null;
+    $('of-lots').value = lots && Number(lots) > 0 ? lots : '';
+  }
   SZ.mode = mode;
   document.querySelectorAll('[data-size-mode]').forEach(b => b.setAttribute('aria-checked', String(b.dataset.sizeMode === mode)));
   $('collateral-field').hidden = mode !== 'collateral';
@@ -1221,12 +1251,62 @@ function renderSizingModes(){
   const lotsBtn = box.querySelector('[data-size-mode="lots"]');
   lotsBtn.disabled = !spec.available;
   lotsBtn.setAttribute('aria-disabled', String(!spec.available));
-  lotsBtn.title = spec.available ? '' : L('برای این بازار مشخصات قرارداد تأییدشده‌ای برای لات وجود ندارد.', 'No approved contract specification defines a lot for this market.');
+  lotsBtn.title = spec.available ? '' : lotUnavailableText(spec);
+  $('of-lots').disabled = !spec.available;
   if (SZ.mode === 'lots' && !spec.available) setSizeMode('collateral');
+  const note = $('size-note');
+  if (note){
+    /* the lot definition in use is always stated next to the input */
+    note.hidden = SZ.mode !== 'lots' || !spec.available;
+    if (!note.hidden) note.innerHTML = lotDefinitionHtml(spec);
+  }
   $('qty-unit').textContent = meta()?.base || '';
+}
+/* Lotage texts. Gains has no lot concept: the definition shown is the
+   Openfund convention for the asset class (legacy/position-sizing.js). */
+function lotUnavailableText(spec){
+  const r = spec && spec.reason;
+  if (r === 'no_lot_standard_crypto') return L('برای رمزارزها لاتیج استاندارد وجود ندارد؛ اندازه را با وثیقه یا اندازهٔ نماد وارد کنید.', 'Crypto has no standard lot size — enter the size as collateral or symbol size.');
+  if (r === 'no_lot_standard_stocks') return L('برای سهام لاتیج استاندارد واحدی وجود ندارد؛ اندازه را با وثیقه یا اندازهٔ نماد وارد کنید.', 'Stocks have no single standard lot size — enter the size as collateral or symbol size.');
+  if (r === 'no_lot_standard_indices') return L('اندازهٔ قرارداد شاخص‌ها در بازارها متفاوت است؛ لاتیج برای این بازار تعریف نشده است.', 'Index contract sizes differ between venues — no lotage is defined for this market.');
+  if (r === 'non_usd_quote') return L('لاتیج فقط برای جفت‌ارزهای با ارز مظنهٔ دلار تعریف شده است.', 'Lotage is defined only for USD-quoted markets.');
+  if (r === 'no_lot_standard_commodity') return L('برای این کالا اندازهٔ قرارداد استاندارد تعریف نشده است.', 'No standard contract size is defined for this commodity.');
+  return L('برای این بازار مشخصات قرارداد تأییدشده‌ای برای لاتیج وجود ندارد.', 'No approved contract specification defines a lot for this market.');
+}
+function lotDefinitionText(spec){
+  const unit = spec.baseUnit || meta()?.base || '';
+  const size = Number(spec.contractSize).toLocaleString(document.documentElement.lang === 'fa' ? 'fa-IR' : 'en-US');
+  return L(`هر ۱ لات = ${size} ${unit} (قرارداد اوپن‌فاند؛ Gains لات ندارد). حداقل و گام: ${spec.lotStep} لات.`,
+    `1 lot = ${size} ${unit} (Openfund convention; Gains itself has no lots). Minimum and step: ${spec.lotStep} lot.`);
+}
+/* the same definition with the figures isolated for right-to-left text */
+function lotDefinitionHtml(spec){
+  const unit = spec.baseUnit || meta()?.base || '';
+  const size = Number(spec.contractSize).toLocaleString('en-US');
+  const amount = `<bdi dir="ltr">${esc(size)} ${esc(unit)}</bdi>`, step = `<bdi dir="ltr">${esc(spec.lotStep)}</bdi>`;
+  return L(`هر ۱ لات = ${amount}<br>قرارداد اوپن‌فاند؛ <bdi dir="ltr">Gains</bdi> لات ندارد · حداقل و گام: ${step} لات`,
+    `1 lot = ${amount}<br>Openfund convention (Gains itself has no lots) · minimum and step: ${step} lot`);
+}
+/* lots mode: lots → quantity (lots × contract size) → collateral, the same
+   canonical path as the quantity mode; the engine still derives the final
+   quantity from collateral × leverage / entry and the market precision */
+function syncCollateralFromLots(){
+  const spec = currentLotSpec();
+  const lots = exactInput('of-lots');
+  if (lots === null) return L('لاتیج نامعتبر است.', 'Enter a valid lotage.');
+  const price = sizingPrice();
+  if (!lots || !price) { $('of-collateral').value = ''; return null; }
+  const r = PSZ().quantityFromLots(lots, spec);
+  if (!r.ok) return r.reason === 'below_lot_min' ? `${L('حداقل لاتیج', 'Minimum lotage')}: ${spec.lotMin}`
+    : r.reason === 'above_lot_max' ? `${L('حداکثر لاتیج', 'Maximum lotage')}: ${spec.lotMax}`
+    : r.reason === 'off_lot_step' ? `${L('گام لاتیج', 'Lotage step')}: ${spec.lotStep}` : lotUnavailableText(spec);
+  if (!PSZ().quantityOnGrid(r.quantity, qtyPrecision())) return `${L('حداکثر رقم اعشار مجاز برای اندازه', 'Maximum quantity decimals')}: ${qtyPrecision()}`;
+  $('of-collateral').value = PSZ().collateralFromQuantity({ quantity: r.quantity, leverage: S.leverage, price }) || '';
+  return null;
 }
 /* quantity mode: collateral follows the requested quantity (rounded UP to cents) */
 function syncCollateralFromQuantity(){
+  if (SZ.mode === 'lots' && PSZ()) return syncCollateralFromLots();
   if (SZ.mode !== 'quantity' || !PSZ()) return null;
   const q = exactInput('of-qty');
   if (q === null) return L('اندازه نماد نامعتبر است.', 'Enter a valid quantity.');
@@ -1244,7 +1324,7 @@ function renderSizeEquivalents(price){
   const spec = currentLotSpec();
   const lots = spec.available && q ? PSZ().lotsFromQuantity(q, spec) : null;
   $('eq-lots').textContent = spec.available ? (lots ?? '—') : L('در دسترس نیست', 'Unavailable');
-  $('eq-lots').title = spec.available ? '' : L('برای این بازار مشخصات قرارداد تأییدشده‌ای برای لات وجود ندارد.', 'No approved contract specification defines a lot for this market.');
+  $('eq-lots').title = spec.available ? lotDefinitionText(spec) : lotUnavailableText(spec);
   $('eq-lots').className = spec.available ? 'num' : 'na';
   $('eq-coll').innerHTML = coll ? `<bdi dir="ltr">${esc(fmt.usd(Number(coll)))}</bdi>` : '—';
 }
@@ -1257,6 +1337,7 @@ $('acct-toggle')?.addEventListener('click', () => {
   $('acct-toggle').setAttribute('aria-label', open ? L('نمایش خلاصهٔ کوتاه حساب', 'Show short account summary') : L('نمایش کامل خلاصهٔ حساب', 'Show full account summary'));
 });
 $('of-qty')?.addEventListener('input', computeForm);
+$('of-lots')?.addEventListener('input', computeForm);
 
 function buildRequest(){
   return {
@@ -1294,6 +1375,7 @@ $('submit-order').addEventListener('click', async () => {
     [t('rv.market'), m ? m.symbol : S.marketId, true], [t('rv.dir'), t(req.side === 'long' ? 'rv.side.long' : 'rv.side.short'), false, req.side === 'long' ? 'up' : 'down'],
     [t('rv.otype'), t('ot.' + req.type), false], [t('rv.lev'), req.leverage + '×', true],
     ...(SZ.mode === 'quantity' ? [[L('اندازه درخواستی', 'Requested quantity'), (exactInput('of-qty') || '—') + ' ' + (m ? m.base : ''), true]] : []),
+    ...(SZ.mode === 'lots' ? [[L('لاتیج درخواستی', 'Requested lotage'), (exactInput('of-lots') || '—') + ' · ' + lotDefinitionText(currentLotSpec()), true]] : []),
     [preview ? L('اندازه طبق پیش‌نمایش سرور', 'Quantity (server preview)') : t('rv.size'), fmt.num(size, m ? Number(m.sizePrecision) || 2 : 2) + ' ' + (m ? m.base : ''), true],
     [t('rv.notional'), fmt.usd(notional), true],
     [t('rv.collateral'), fmt.usd(req.collateral), true], [t('rk.entry'), fmt.price(entry, d), true],
@@ -1556,11 +1638,11 @@ function setTradingPrefs(patch){
   return next;
 }
 function tradingSettingsSection(){
-  return { id: 'trading', title: L('معاملات', 'Trading'), placement: 'end', rows: [
-    { kind: 'heading', id: 'markers', label: L('نمایش روی نمودار', 'On the chart') },
-    { kind: 'toggle', id: 'buy-sell-markers', label: L('نمایش نشانگرهای خرید و فروش', 'Show Buy / Sell Markers'),
+  return { id: 'trading', title: CL('معاملات', 'Trading'), placement: 'end', rows: [
+    { kind: 'heading', id: 'markers', label: CL('نمایش روی نمودار', 'Display on Chart') },
+    { kind: 'toggle', id: 'buy-sell-markers', label: CL('نمایش نشانگرهای خرید و فروش', 'Show Buy/Sell Markers'),
       get: () => tradingPrefs().showExecMarkers, set: v => { setTradingPrefs({ showExecMarkers: !!v }); } },
-    { kind: 'toggle', id: 'position-info', label: L('نمایش اطلاعات موقعیت', 'Show position information'),
+    { kind: 'toggle', id: 'position-info', label: CL('نمایش اطلاعات موقعیت', 'Show Position Information'),
       get: () => tradingPrefs().showPositionInfo, set: v => { setTradingPrefs({ showPositionInfo: !!v, hiddenInfo: [] }); } }
   ] };
 }
@@ -1613,8 +1695,11 @@ function velaPositionsSync(){
   const want = new Map();  /* positionId → overlay model (positionOverlayModel) */
   for (const p of st.positions){
     if (p.market !== S.marketId) continue;          /* symbol isolation */
-    const model = positionOverlayModel(p);
-    if (model) want.set(p.id, model);               /* no SL and no TP → no invented zones */
+    /* A tradable account also gets a box for a position WITHOUT SL/TP: a
+       zero-height box (no zones, nothing invented) whose stop/target handles
+       sit on the entry so the trader can create a level by dragging. */
+    const model = positionOverlayModel(p, { allowEmpty: !!window.__ofServerTP?.canTrade });
+    if (model) want.set(p.id, model);               /* read-only and no SL/TP → no box at all */
   }
   /* remove stale/closed (and all when the symbol switched) */
   for (const [pid, did] of [...posDrawings]){
@@ -1645,11 +1730,15 @@ function velaPositionsSync(){
        balance × risk % and is never shown; the R:R header only when both
        levels exist (it is then the conventional |TP−E| / |E−SL|). */
     /* Vela applies per-type options only under `props` (DrawingStore.update) */
-    /* Only an EXISTING level is draggable (never invent the missing one);
-       the executed entry and the box itself are fixed (of-position type,
+    /* Both levels are draggable on a tradable account: an existing level
+       moves, a missing one (handle on the entry, at the box's right end) is
+       created by dragging it off the entry — the dropped price goes to the
+       position API and only the confirmed position is drawn afterwards. The
+       executed entry and the box itself are fixed (of-position type,
        packages/openfund-charts/src/openfund-drawings.ts). Labels are painted
        only during a drag; the right-hand information label carries them. */
-    const editable = window.__ofServerTP?.canTrade ? [lv.stop != null && 'stop', lv.target != null && 'target'].filter(Boolean) : [];
+    const editable = window.__ofServerTP?.canTrade ? ['stop', 'target'] : [];
+    const missing = [lv.stop == null && 'stop', lv.target == null && 'target'].filter(Boolean);
     const props = {
       anchors,
       locked: !editable.length,
@@ -1657,7 +1746,7 @@ function velaPositionsSync(){
       props: {
         showText: false, showPrices: true, showLossSize: false,
         showHeader: lv.ratio != null, showStopLabel: lv.stop != null, showTargetLabel: lv.target != null,
-        profitColor: colors.profit, lossColor: colors.loss, ofSide: lv.side, ofEditable: editable
+        profitColor: colors.profit, lossColor: colors.loss, ofSide: lv.side, ofEditable: editable, ofMissing: missing
       }
     };
     const did = posDrawings.get(pid);
@@ -1794,7 +1883,7 @@ function syncExecutionMarks(groups){
   const marks = vc?.chart?.marks;
   if (!marks || typeof marks.set !== 'function') return;
   try {
-    if (!syncExecutionMarks.defined && typeof marks.defineGroup === 'function'){ marks.defineGroup({ id: 'of-executions', label: L('اجرای معاملات', 'Executions') }); syncExecutionMarks.defined = true; }
+    if (!syncExecutionMarks.defined && typeof marks.defineGroup === 'function'){ marks.defineGroup({ id: 'of-executions', label: CL('اجرای معاملات', 'Executions') }); syncExecutionMarks.defined = true; }
     const d = Number(board.getMeta(S.marketId)?.pricePrecision ?? 2);
     const list = [];
     for (const g of groups.values()) for (const f of g.fills){
@@ -1805,8 +1894,8 @@ function syncExecutionMarks(groups){
         content: { panel: { items: [
           { type: 'field', label: t('rv.market'), value: S.marketId },
           { type: 'field', label: t('pos.entry'), value: fmt.price(f.price, d) },
-          { type: 'field', label: L('زمان اجرا (UTC)', 'Filled (UTC)'), value: new Date(f.time).toISOString().replace('T', ' ').slice(0, 19) },
-          { type: 'field', label: L('شناسه موقعیت', 'Position ID'), value: '#' + f.id }
+          { type: 'field', label: CL('زمان اجرا (UTC)', 'Filled (UTC)'), value: new Date(f.time).toISOString().replace('T', ' ').slice(0, 19) },
+          { type: 'field', label: CL('شناسه موقعیت', 'Position ID'), value: '#' + f.id }
         ] } } });
     }
     const sig = list.map(m => m.id + m.time).join(',') + '|' + S.marketId;
@@ -1819,7 +1908,7 @@ function syncExecutionMarks(groups){
 function managedDrawingIds(){
   return new Set([...posDrawings.values(), ...[...entryDrawings.values()].map(e => e.id), ...[...execMarkers.values()].map(m => m.id)]);
 }
-function positionOverlayModel(p){ return window.OpenfundPositionOverlay ? window.OpenfundPositionOverlay.model(p) : null; }
+function positionOverlayModel(p, opts){ return window.OpenfundPositionOverlay ? window.OpenfundPositionOverlay.model(p, opts) : null; }
 function positionOverlayColors(){
   const light = document.documentElement.dataset.theme === 'light';
   return light ? { profit: '#12965D', loss: '#C0453E', entry: '#3F4C44' } : { profit: '#82E7BD', loss: '#E89483', entry: '#D4E3D8' };
@@ -1840,7 +1929,7 @@ function renderPositionInfo(st){
   const prefs = tradingPrefs();
   const list = (st?.positions || []).filter(p => p.market === S.marketId && Number(p.entry) > 0);
   if (!list.length || !prefs.showPositionInfo){ if (el) el.remove(); return; }
-  if (!el){ el = document.createElement('div'); el.id = 'pos-rr-legend'; el.className = 'pos-rr-legend'; el.setAttribute('aria-label', L('اطلاعات موقعیت‌ها', 'Position information')); host.appendChild(el); }
+  if (!el){ el = document.createElement('div'); el.id = 'pos-rr-legend'; el.className = 'pos-rr-legend'; el.setAttribute('aria-label', CL('اطلاعات موقعیت‌ها', 'Position information')); host.appendChild(el); }
   const d = Number(board.getMeta(S.marketId)?.pricePrecision ?? 2);
   const hidden = new Set(prefs.hiddenInfo);
   const items = [];
@@ -1859,13 +1948,15 @@ function renderPositionInfo(st){
           `<span class="down" title="${m.stopPct != null ? '−' + m.stopPct.toFixed(2) + '%' : ''}">SL <bdi dir="ltr">${m.stop != null ? esc(fmt.price(m.stop, d)) : '—'}</bdi></span>` +
           `<span class="up" title="${m.targetPct != null ? '+' + m.targetPct.toFixed(2) + '%' : ''}">TP <bdi dir="ltr">${m.target != null ? esc(fmt.price(m.target, d)) : '—'}</bdi></span>` +
           `<span class="pos-rr-ratio" title="R:R"><bdi dir="ltr">${m.ratio != null ? '1:' + m.ratio.toFixed(2) : 'R —'}</bdi></span>` +
-          (pending ? `<span class="pos-rr-pending">${esc(L('در انتظار تأیید', 'Unconfirmed'))}</span>` : '') +
+          (pending ? `<span class="pos-rr-pending">${esc(CL('در انتظار تأیید', 'Unconfirmed'))}</span>` : '') +
+          (!pending && window.__ofServerTP?.canTrade && (m.stop == null || m.target == null)
+            ? `<span class="pos-rr-hint">${esc(m.stop == null && m.target == null ? CL('برای افزودن حد ضرر/حد سود، از انتهای خط ورود بکشید', 'Drag from the end of the entry line to add SL / TP') : m.stop == null ? CL('برای افزودن حد ضرر، از انتهای خط ورود بکشید', 'Drag from the end of the entry line to add SL') : CL('برای افزودن حد سود، از انتهای خط ورود بکشید', 'Drag from the end of the entry line to add TP'))}</span>` : '') +
         `</span>` +
-        `<button type="button" class="pos-rr-hide" data-pos-rr-hide="${esc(id)}" aria-label="${esc(L('پنهان کردن این برچسب (موقعیت بسته نمی‌شود)', 'Hide this label (does not close the position)'))}" title="${esc(L('پنهان کردن برچسب', 'Hide label'))}">×</button>` +
+        `<button type="button" class="pos-rr-hide" data-pos-rr-hide="${esc(id)}" aria-label="${esc(CL('پنهان کردن این برچسب (موقعیت بسته نمی‌شود)', 'Hide this label (does not close the position)'))}" title="${esc(CL('پنهان کردن برچسب', 'Hide label'))}">×</button>` +
       `</div>` });
   }
   const hiddenHere = list.filter(p => hidden.has(String(p.id))).length;
-  const restore = hiddenHere ? `<button type="button" class="pos-rr-restore" data-pos-rr-restore="1">${esc(L('نمایش اطلاعات موقعیت', 'Show position info'))} <bdi dir="ltr">(${hiddenHere})</bdi></button>` : '';
+  const restore = hiddenHere ? `<button type="button" class="pos-rr-restore" data-pos-rr-restore="1">${esc(CL('نمایش اطلاعات موقعیت', 'Show position info'))} <bdi dir="ltr">(${hiddenHere})</bdi></button>` : '';
   const html = items.map(i => i.html).join('') + restore;
   if (el.dataset.html !== html){ el.innerHTML = html; el.dataset.html = html; }
   el._items = items.map(i => ({ id: i.id, entry: i.entry }));
@@ -1948,7 +2039,7 @@ const chartStore = {
 window.addEventListener('of-chart-workspace-remote', e => {
   if (!vc?.chart?.drawings || e.detail?.scope !== S.marketId) return;
   velaRestoreDrawings(); posDrawings.clear(); entryDrawings.clear(); execMarkers.clear(); velaPositionsSync();
-  toast(L('نمودار از نشست دیگری به‌روز شد.', 'Chart updated from another session.'), 'info');
+  toast(CL('نمودار از نشست دیگری به‌روز شد.', 'Chart updated from another session.'), 'info');
 });
 
 function velaSaveDrawings(){
@@ -2020,13 +2111,14 @@ function onPositionDrawingEdited(drawingId){
   /* the executed entry (price and candle) is immutable */
   const entry = Number(p.entry);
   if (Math.abs(Number(d.anchors[0].price) - entry) > Math.abs(entry) * 1e-9)
-    return restore(L('نقطهٔ ورود ثابت است؛ فقط حد ضرر و حد سود قابل جابه‌جایی‌اند.', 'The entry is fixed — only SL and TP can be moved.'));
+    return restore(CL('نقطهٔ ورود ثابت است؛ فقط حد ضرر و حد سود قابل جابه‌جایی‌اند.', 'The entry is fixed — only SL and TP can be moved.'));
   const precision = Number(board.getMeta(p.market)?.pricePrecision ?? 2);
-  const edit = window.OpenfundPositionOverlay.riskEdit(p, { sl: d.anchors[1]?.price, tp: d.anchors[2]?.price }, precision);
+  /* allowCreate: a missing level dragged off the entry becomes a new SL/TP */
+  const edit = window.OpenfundPositionOverlay.riskEdit(p, { sl: d.anchors[1]?.price, tp: d.anchors[2]?.price }, precision, { allowCreate: true });
   clearTimeout(positionEdits.get(posId)?.timer);
   if (edit.error) return restore(edit.error.startsWith('sl')
-    ? L('حد ضرر باید در سمت زیان نقطهٔ ورود بماند.', 'The stop loss must stay on the loss side of the entry.')
-    : L('حد سود باید در سمت سود نقطهٔ ورود بماند.', 'The take profit must stay on the profit side of the entry.'));
+    ? CL('حد ضرر باید در سمت زیان نقطهٔ ورود بماند.', 'The stop loss must stay on the loss side of the entry.')
+    : CL('حد سود باید در سمت سود نقطهٔ ورود بماند.', 'The take profit must stay on the profit side of the entry.'));
   if (!edit.changed) return restore();
   // Capture the user intent now. SSE redraws must not overwrite a pending drag.
   const intent = { srv, market:p.market, sl: edit.sl, tp: edit.tp, timer:null };
@@ -2044,8 +2136,8 @@ function onPositionDrawingEdited(drawingId){
       try {
         /* the existing position-update service; the engine re-validates every rule */
         const result = await srv.modifyRisk(posId, intent.sl, intent.tp);
-        toast(result.ok ? L('حد ضرر و سود به‌روز شد.', 'SL/TP updated.') : result.errors?.[0] || L('تغییر حد ضرر و سود رد شد.', 'SL/TP update rejected.'), result.ok ? 'pos' : 'neg');
-      } catch(error) { toast(L('به‌روزرسانی حد ضرر و سود ناموفق بود.', 'SL/TP update failed.'), 'neg'); }
+        toast(result.ok ? CL('حد ضرر و سود به‌روز شد.', 'SL/TP updated.') : result.errors?.[0] || CL('تغییر حد ضرر و سود رد شد.', 'SL/TP update rejected.'), result.ok ? 'pos' : 'neg');
+      } catch(error) { toast(CL('به‌روزرسانی حد ضرر و سود ناموفق بود.', 'SL/TP update failed.'), 'neg'); }
       finally {
         /* confirmed → the server state now holds the new level; rejected or
            failed → the last confirmed level is redrawn */
@@ -2582,7 +2674,7 @@ setInterval(clock, 1000); clock();
 function boot(){
   $('market-select-btn').disabled = true;
   $('submit-order').disabled = true;
-  chartOverlay(`<b>${t('boot.loading')}</b>`);
+  chartOverlay(`<b>${ct('boot.loading')}</b>`);
   /* the signed-in wallet's chart workspace is hydrated BEFORE the chart
      mounts, so default initialization never overwrites a restored state */
   Promise.all([board.boot(), window.OpenfundChartWorkspace ? window.OpenfundChartWorkspace.ready : null]).then(() => {

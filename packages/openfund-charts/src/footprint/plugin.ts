@@ -240,7 +240,7 @@ export function installFootprint(opts: { apiBase?: string } = {}): boolean {
     });
     registerNativeIndicator({
         type: FOOTPRINT_OVERLAY,
-        title: msg('footprint.overlay.title', 'Footprint (order flow overlay)'),
+        title: msg('footprint.overlay.title', 'Footprint (Order Flow Overlay)'),
         shortTitle: msg('footprint.title', 'Footprint'),
         paneHint: 'price',
         overlay: true,
