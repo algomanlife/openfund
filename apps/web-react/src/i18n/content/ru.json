@@ -2983,6 +2983,7 @@
   "Coupon code (optional)": "Промокод (необязательно)",
   "Customer details": "Данные покупателя",
   "Date / time": "Дата / время",
+  "DePay reported an error. If the payment configuration did not load, close and reopen the window; contact support if it repeats. Your order stays open.": "DePay сообщил об ошибке. Если настройки платежа не загрузились, закройте и снова откройте окно; если ошибка повторится, обратитесь в поддержку. Ваш заказ остаётся открытым.",
   "DePay could not validate this payment. Openfund’s server check decides the final status.": "DePay не смог подтвердить этот платёж. Окончательный статус определяет проверка на сервере Openfund.",
   "Download invoice PDF": "Скачать счёт (PDF)",
   "Email": "Эл. почта",

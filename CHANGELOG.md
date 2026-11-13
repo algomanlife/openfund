@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- DePay checkout activation fixes (branch `agent/claude/depay-checkout-activation`,
+  **not deployed**): the DePay endpoints also answer at
+  `/api/payments/depay/{config,configuration,callback,events}`, the URLs the
+  production DePay integration calls (it received 404, so the widget could
+  never load a configuration); DePay-attested payments from smart-contract
+  wallets are verified through router or reported-payer Transfer logs; the
+  server logs why payments are disabled at startup and why a DePay request
+  was refused; the checkout shows DePay widget errors. Owner procedure with
+  verified USDC and DePayRouterV3 addresses:
+  [Owner setup](docs/payments/OWNER_SETUP.md).
 - Challenge checkout and DePay activation (branch `agent/claude/depay-checkout-chart-ux`,
   [ADR 0026](docs/decisions/0026-dedicated-checkout-vendored-depay-widget-and-chart-position-tool.md);
   **not deployed; first real payment pending the owner**): a dedicated

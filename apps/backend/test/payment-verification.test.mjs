@@ -135,6 +135,43 @@ test('A12 an unrelated third-party transfer to the receiver cannot satisfy the o
   assert.equal(code(() => analyzePayment(m, expectBase({ from: payer, routers: [ROUTER] }))), 'transfer_not_from_payer')
 })
 
+test('A12b smart-contract wallet: attested DePay router payment through an EntryPoint/Safe is accepted', () => {
+  const owner = rnd(), account = rnd(), entryPoint = rnd()
+  const m = mined(owner, [
+    log(OTHER_TOKEN, account, ROUTER, 10n ** 18n),
+    log(TOKEN, rnd(), ROUTER, usdc(100)),
+    log(TOKEN, ROUTER, RECEIVER, usdc(100)),
+  ], { tx: { to: entryPoint } })
+  const ev = analyzePayment(m, expectBase({ requireSender: false, attestedSender: account, routers: [ROUTER] }))
+  assert.equal(ev.route, 'contract_wallet'); assert.equal(ev.amount, usdc(100).toString())
+  /* also without a reported sender, as long as the router paid the merchant */
+  assert.equal(analyzePayment(m, expectBase({ requireSender: false, routers: [ROUTER] })).route, 'contract_wallet')
+})
+
+test('A12c smart-contract wallet: attested direct transfer from the DePay-reported account is accepted', () => {
+  const account = rnd()
+  const m = mined(rnd(), [log(TOKEN, account, RECEIVER, usdc(100))], { tx: { to: rnd() } })
+  assert.equal(analyzePayment(m, expectBase({ requireSender: false, attestedSender: account })).route, 'contract_wallet')
+})
+
+test('A12d smart-contract wallet path never counts third-party transfers and needs attestation', () => {
+  const account = rnd()
+  const third = mined(rnd(), [log(TOKEN, rnd(), RECEIVER, usdc(100))], { tx: { to: rnd() } })
+  assert.equal(code(() => analyzePayment(third, expectBase({ requireSender: false, attestedSender: account, routers: [ROUTER] }))), 'transfer_not_from_payer')
+  /* the tx signer itself is not trusted on this path (a bundler is not the payer) */
+  const signer = rnd()
+  const bySigner = mined(signer, [log(TOKEN, signer, RECEIVER, usdc(100))], { tx: { to: rnd() } })
+  assert.equal(code(() => analyzePayment(bySigner, expectBase({ requireSender: false, routers: [ROUTER] }))), 'transfer_not_from_payer')
+  /* no attestation (customer-submitted hash): the strict target rule stays */
+  const own = mined(account, [log(TOKEN, account, RECEIVER, usdc(100))], { tx: { to: rnd() } })
+  assert.equal(code(() => analyzePayment(own, expectBase({ from: account, routers: [ROUTER] }))), 'unapproved_contract')
+  /* attested but nothing to anchor on (no router, no reported sender) */
+  assert.equal(code(() => analyzePayment(own, expectBase({ requireSender: false }))), 'unapproved_contract')
+  /* underpayment is still rejected */
+  const under = mined(rnd(), [log(TOKEN, ROUTER, RECEIVER, usdc(99))], { tx: { to: rnd() } })
+  assert.equal(code(() => analyzePayment(under, expectBase({ requireSender: false, routers: [ROUTER] }))), 'insufficient_amount')
+})
+
 test('A13 removed (reorged) logs are ignored', () => {
   const payer = rnd()
   const m = mined(payer, [{ ...log(TOKEN, payer, RECEIVER, usdc(100)), removed: true }])

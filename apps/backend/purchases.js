@@ -106,6 +106,38 @@ export const chainReady = c => {
   return true
 }
 
+/**
+ * Operator diagnostics: why each configured settlement chain is (not) usable
+ * and what else blocks DePay. Names and missing-field labels only — never a
+ * secret value (RPC URLs and keys are reported as present/absent).
+ */
+export function paymentReadinessReport(env = process.env) {
+  const problems = []
+  const multiRpcLabel = env.PURCHASE_PAYMENT_CHAINS ? 'rpc (PURCHASE_RPC_URLS)' : 'rpc (PURCHASE_RPC_URL)'
+  const chains = paymentChains().map(c => {
+    const missing = []
+    if (!c.receiver) missing.push('receiver')
+    if (!c.token && (isProd() || c.solana)) missing.push('token')
+    if (!c.rpcUrl && isProd()) missing.push(multiRpcLabel)
+    const warnings = []
+    if (!c.solana && c.token && !c.routers.length) warnings.push('no DePay router configured: DePay router/swap payments will be rejected (unapproved_contract)')
+    return { blockchain: c.blockchain || String(c.chainId), ready: chainReady(c), missing, warnings }
+  })
+  const multi = Array.isArray(parseJson(env.PURCHASE_PAYMENT_CHAINS, 'PURCHASE_PAYMENT_CHAINS'))
+  if (env.PURCHASE_PAYMENT_CHAINS && !multi) problems.push('PURCHASE_PAYMENT_CHAINS is set but is not a JSON array')
+  if (env.PURCHASE_RPC_URLS && !parseJson(env.PURCHASE_RPC_URLS, 'PURCHASE_RPC_URLS')) problems.push('PURCHASE_RPC_URLS is set but is not a JSON object')
+  if (multi && (env.PURCHASE_PAYMENT_DECIMALS || env.PURCHASE_PAYMENT_TOKEN || env.PURCHASE_PAYMENT_RECEIVER))
+    problems.push('legacy PURCHASE_PAYMENT_RECEIVER/_TOKEN/_DECIMALS are ignored because PURCHASE_PAYMENT_CHAINS is set')
+  if (!multi && env.PURCHASE_PAYMENT_DECIMALS && env.PURCHASE_PAYMENT_TOKEN)
+    problems.push('PURCHASE_PAYMENT_DECIMALS must equal the token contract decimals (USDC = 6); a mismatch rejects every payment')
+  const verifyKey = !!depayVerifyKey(), configKey = !!pem(env.DEPAY_CONFIG_PRIVATE_KEY)
+  if (!verifyKey) problems.push('DEPAY_VERIFY_PUBLIC_KEY missing: DePay configuration/callback/events endpoints stay 404')
+  if (!configKey) problems.push('DEPAY_CONFIG_PRIVATE_KEY missing: the DePay dynamic configuration endpoint stays 404')
+  const ready = chains.some(c => c.ready)
+  if (!ready) problems.push('no settlement chain is complete: purchases are disabled and every DePay endpoint answers 404')
+  return { paymentsEnabled: ready, depayEndpoints: ready && verifyKey, depayConfiguration: ready && verifyKey && configKey, chains, problems }
+}
+
 /** legacy single-chain view (first configured chain) + the full chain list */
 export const cfg = () => {
   const chains = paymentChains()
@@ -328,7 +360,11 @@ export async function verifyAndConfirm({ pool, verifier, order, userId, walletAd
     const verdict = await verifier(txId, {
       chainId: c.chainId, receiver: c.receiver, token: c.token, tokenDecimals: c.tokenDecimals,
       priceUsd: String(order.price_usd), routers: c.routers, allowNative: !isProd() && !c.token && !c.solana,
-      from: walletAddress, requireSender: !attested, notBefore: new Date(order.created_at).getTime() - 5 * 60_000,
+      from: walletAddress, requireSender: !attested,
+      /* the paying account DePay reported in its signed delivery (may be a
+         smart-contract wallet); only used for attested payments */
+      attestedSender: attested && !c.solana ? reported?.sender || null : null,
+      notBefore: new Date(order.created_at).getTime() - 5 * 60_000,
       minConfirmations: c.minConfirmations,
     })
     const evidence = { ...verdict, blockchain: c.blockchain, reported: reported || undefined }
@@ -514,6 +550,19 @@ export async function recoverPendingPayments({ pool, verifier = defaultPaymentVe
   }
   return { checked: rows.length, recovered }
 }
+
+/* ---------- DePay endpoint paths ----------
+   The canonical paths are /purchases/depay/*. The /api/payments/depay/*
+   aliases are the names from the original integration brief, which is what
+   the production DePay integration was configured with (Render request logs,
+   2026-11-13: DePay POSTed /api/payments/depay/config and got 404). Both
+   families run the same signed handlers, so either dashboard value works. */
+export const DEPAY_PATHS = Object.freeze({
+  configuration: ['/purchases/depay/configuration', '/api/payments/depay/config', '/api/payments/depay/configuration'],
+  callback: ['/purchases/depay/callback', '/api/payments/depay/callback'],
+  events: ['/purchases/depay/events', '/api/payments/depay/events'],
+})
+export const DEPAY_SIGNED_PATHS = new Set(Object.values(DEPAY_PATHS).flat())
 
 /* ---------- routes ---------- */
 export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limit = () => (req, res, next) => next() }) {
@@ -808,14 +857,26 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
   }))
 
   /* 4c — DePay dynamic configuration (called by DePay when the widget opens) */
-  router.post('/purchases/depay/configuration', wrap(async (req, res) => {
+  router.post(DEPAY_PATHS.configuration, wrap(async (req, res) => {
     const key = pem(process.env.DEPAY_CONFIG_PRIVATE_KEY)
     const verifyKey = depayVerifyKey()
-    if (!key || !verifyKey || !paymentEnabled()) throw fail(404, 'not_found')
+    if (!key || !verifyKey || !paymentEnabled()) {
+      console.warn('[depay] configuration request refused: endpoint inactive (see the [payments] readiness report at startup)')
+      throw fail(404, 'not_found')
+    }
     /* DePay signs every request it sends (x-signature over the raw body) */
-    if (!verifyDepaySignature(req.rawBody, req.headers['x-signature'], verifyKey)) throw fail(401, 'invalid_signature')
+    if (!verifyDepaySignature(req.rawBody, req.headers['x-signature'], verifyKey)) {
+      /* the usual cause: DEPAY_VERIFY_PUBLIC_KEY is not the integration's DePay public key */
+      console.warn(`[depay] configuration request rejected: invalid x-signature (header ${req.headers['x-signature'] ? 'present' : 'missing'})`)
+      throw fail(401, 'invalid_signature')
+    }
     const orderId = req.body?.orderId ?? req.body?.payload?.orderId
-    const json = JSON.stringify(await buildDepayConfiguration(pool, orderId))
+    let configuration
+    try { configuration = await buildDepayConfiguration(pool, orderId) } catch (e) {
+      console.warn(`[depay] configuration refused for order ${String(orderId || '').slice(0, 8) || '-'}: ${e.message}`)
+      throw e
+    }
+    const json = JSON.stringify(configuration)
     res.set('Content-Type', 'application/json; charset=utf-8').set('x-signature', signDepayConfiguration(json, key)).set('Cache-Control', 'no-store').send(json)
   }))
 
@@ -827,10 +888,13 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
      200 is returned once the delivery is durably recorded (DePay retries any
      non-200, so a database failure → 500 → retry). Duplicate deliveries are
      harmless: the attempt and the payment are unique per transaction. */
-  router.post('/purchases/depay/callback', wrap(async (req, res) => {
+  router.post(DEPAY_PATHS.callback, wrap(async (req, res) => {
     const key = depayVerifyKey()
     if (!key || !paymentEnabled()) throw fail(404, 'not_found')
-    if (!req.rawBody || !verifyDepaySignature(req.rawBody, req.headers['x-signature'], key)) throw fail(401, 'invalid_signature')
+    if (!req.rawBody || !verifyDepaySignature(req.rawBody, req.headers['x-signature'], key)) {
+      console.warn(`[depay] ${req.path} rejected: invalid x-signature`)
+      throw fail(401, 'invalid_signature')
+    }
     const mismatch = depayBodyMismatch(req.body)
     const out = mismatch === 'unsupported_chain' ? { recorded: false, reason: mismatch } : await recordPaymentHint(pool, req.body)
     await recordDepayDelivery(pool, { kind: 'callback', rawBody: req.rawBody, body: req.body, orderId: out.orderId ?? null,
@@ -853,10 +917,13 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
      only move an awaiting order to payment_detected, 'succeeded' registers
      the transaction for on-chain verification exactly like a callback, and
      'failed' is recorded only. NO event ever marks an order paid. */
-  router.post('/purchases/depay/events', wrap(async (req, res) => {
+  router.post(DEPAY_PATHS.events, wrap(async (req, res) => {
     const key = depayVerifyKey()
     if (!key || !paymentEnabled()) throw fail(404, 'not_found')
-    if (!req.rawBody || !verifyDepaySignature(req.rawBody, req.headers['x-signature'], key)) throw fail(401, 'invalid_signature')
+    if (!req.rawBody || !verifyDepaySignature(req.rawBody, req.headers['x-signature'], key)) {
+      console.warn(`[depay] ${req.path} rejected: invalid x-signature`)
+      throw fail(401, 'invalid_signature')
+    }
     const status = String(req.body?.status || '')
     if (!['attempt', 'processing', 'failed', 'succeeded'].includes(status)) {
       await recordDepayDelivery(pool, { kind: 'event', rawBody: req.rawBody, body: req.body, outcome: 'ignored:unknown_status' })

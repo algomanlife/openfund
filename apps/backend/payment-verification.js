@@ -111,9 +111,21 @@ export function analyzePayment({ tx, receipt }, expect) {
   const token = lc(expect.token)
   const target = lc(tx.to)
   const direct = target === token
-  if (!direct && !routers.has(target)) throw paymentError(400, 'unapproved_contract', { target })
+  /* Smart-contract wallets (Safe, ERC-4337 accounts, Coinbase Smart Wallet…)
+     submit the transaction through their own contract or an EntryPoint, so
+     tx.to is neither the token nor the router. That is accepted ONLY for a
+     payment DePay attested for this order in a signed delivery, and then
+     only Transfer logs sent by an approved DePay router or by the paying
+     account DePay reported (expect.attestedSender) count. A customer-
+     submitted hash (requireSender) keeps the strict target rule. */
+  const contractWallet = !direct && !routers.has(target)
+  const attestedSender = !requireSender && expect.attestedSender ? lc(expect.attestedSender) : null
+  if (contractWallet && (requireSender || (!routers.size && !attestedSender)))
+    throw paymentError(400, 'unapproved_contract', { target })
 
-  const allowedSenders = new Set([payer, ...routers])
+  const allowedSenders = contractWallet
+    ? new Set([...routers, ...(attestedSender ? [attestedSender] : [])])
+    : new Set([payer, ...routers, ...(attestedSender ? [attestedSender] : [])])
   let received = 0n, anyToReceiver = false, tokenToReceiver = false
   for (const log of receipt.logs || []) {
     if (log.removed) continue
@@ -131,7 +143,7 @@ export function analyzePayment({ tx, receipt }, expect) {
     throw paymentError(400, tokenToReceiver ? 'transfer_not_from_payer' : anyToReceiver ? 'wrong_token' : 'wrong_receiver')
   }
   if (received < min) throw paymentError(400, 'insufficient_amount', { received: received.toString() })
-  return evidence({ tx, receipt, expect, amount: received, toAddress: receiver, route: direct ? 'direct' : 'router' })
+  return evidence({ tx, receipt, expect, amount: received, toAddress: receiver, route: direct ? 'direct' : contractWallet ? 'contract_wallet' : 'router' })
 }
 
 function evidence({ tx, receipt, expect, amount, toAddress, route }) {

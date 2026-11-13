@@ -15,7 +15,7 @@ import assert from 'node:assert/strict'
 import crypto from 'node:crypto'
 import express from 'express'
 import pg from 'pg'
-import { purchaseRoutes, recoverPendingPayments, paymentsReady, cfg } from '../purchases.js'
+import { purchaseRoutes, recoverPendingPayments, paymentsReady, cfg, DEPAY_SIGNED_PATHS, paymentReadinessReport } from '../purchases.js'
 import { couponAdminRoutes, applyCoupon } from '../coupons.js'
 
 if (!/test|audit|_ci/.test(process.env.DATABASE_URL || '')) throw new Error('Use an isolated test DATABASE_URL')
@@ -39,7 +39,9 @@ const depaySign = (raw, key = depayKeys.privateKey) => crypto.sign('sha256', Buf
 
 /* ---- chain verifier double: the test decides what "the chain" says ---- */
 let chain = { mode: 'ok' }
+let lastExpect = null
 const verifier = async (txHash, expect) => {
+  lastExpect = expect
   if (chain.mode === 'rpc_down') throw Object.assign(new Error('rpc_unavailable'), { retryable: true, status: 503 })
   if (chain.mode === 'wrong_receiver') throw Object.assign(new Error('wrong_receiver'), { status: 409 })
   if (chain.mode === 'insufficient') throw Object.assign(new Error('insufficient_amount'), { status: 409 })
@@ -52,7 +54,8 @@ const verifier = async (txHash, expect) => {
 
 /* ---- in-process app: real routers, header-based test authentication ---- */
 const app = express()
-const DEPAY = new Set(['/purchases/depay/configuration', '/purchases/depay/callback', '/purchases/depay/events'])
+/* the same signed-path set server.js uses (canonical paths + aliases) */
+const DEPAY = DEPAY_SIGNED_PATHS
 app.use(express.json({ limit: '32kb', verify: (req, res, buf) => { if (DEPAY.has(req.path)) req.rawBody = buf } }))
 const requireAuth = async (req, res, next) => {
   const id = req.headers['x-test-user']
@@ -661,4 +664,61 @@ test('M6 wallet authentication stays Arbitrum-only while payments are multi-chai
   const src = (await import('node:fs')).readFileSync(new URL('../server.js', import.meta.url), 'utf8')
   assert.match(src, /const AUTH_CHAINS = \[arbitrum\]/)
   assert.doesNotMatch(src, /AUTH_CHAINS = \[[^\]]*(base|mainnet|polygon)/)
+})
+
+test('A1 the /api/payments/depay/* URLs configured at DePay run the same signed handlers (production 404 regression)', async () => {
+  chain = { mode: 'ok' }
+  const u = await newUser()
+  const o = (await order(u)).data.order
+  /* configuration: unsigned refused, signed answered and signed by Openfund */
+  assert.equal((await depayPost('/api/payments/depay/config', { orderId: o.id }, null)).status, 401, 'unsigned alias request')
+  for (const path of ['/api/payments/depay/config', '/api/payments/depay/configuration']) {
+    const raw = JSON.stringify({ orderId: o.id })
+    const res = await fetch(BASE + path, { method: 'POST', body: raw, headers: { 'Content-Type': 'application/json', 'x-signature': depaySign(raw) } })
+    assert.equal(res.status, 200, path)
+    const text = await res.text()
+    assert.equal(verifyOurs(text, res.headers.get('x-signature')), true, path + ' response signed')
+    assert.deepEqual(JSON.parse(text), { accept: [{ blockchain: 'arbitrum', amount: LIST, token: USDC_ARBITRUM, receiver: RECEIVER }] })
+  }
+  /* events + callback through the aliases; a smart-contract wallet payer is passed to the verifier as the attested sender */
+  const payer = rndAddr()
+  const body = callbackBody(u, o, { sender: payer.toUpperCase().replace('0X', '0x') })
+  assert.equal((await depayPost('/api/payments/depay/events', { ...body, status: 'attempt', transaction: null })).status, 200)
+  assert.equal((await depayPost('/api/payments/depay/callback', body, depaySign('tampered'))).status, 401)
+  const rs = await Promise.all(Array.from({ length: 3 }, () => depayPost('/api/payments/depay/callback', body)))
+  assert.ok(rs.every(r => r.status === 200))
+  await until(async () => (await orderRow(o.id)).lifecycle_state === 'provisioned')
+  assert.equal((await orderRow(o.id)).lifecycle_state, 'provisioned')
+  assert.equal(lastExpect.requireSender, false)
+  assert.equal(lastExpect.attestedSender, payer.toLowerCase())
+  for (const [t, n] of [['payments', 1], ['openfund_challenges', 1], ['invoices', 1]])
+    assert.equal((await pool.query(`SELECT count(*)::int n FROM ${t} WHERE purchase_order_id=$1`, [o.id])).rows[0].n, n, t)
+})
+
+test('A2 readiness report names what blocks payments without exposing secret values', () => {
+  const r = paymentReadinessReport()
+  assert.equal(r.paymentsEnabled, true); assert.equal(r.depayConfiguration, true)
+  assert.ok(r.chains.some(c => c.blockchain === 'arbitrum' && c.ready))
+  const text = JSON.stringify(r)
+  assert.doesNotMatch(text, /PRIVATE KEY|PUBLIC KEY/)
+  const saved = { ...process.env }
+  try {
+    for (const k of ['PURCHASE_PAYMENT_RECEIVER', 'PURCHASE_PAYMENT_TOKEN', 'DEPAY_CONFIG_PRIVATE_KEY']) delete process.env[k]
+    process.env.PURCHASE_PAYMENT_DECIMALS = '18'
+    const off = paymentReadinessReport()
+    assert.equal(off.paymentsEnabled, false)
+    assert.deepEqual(off.chains[0].missing, ['receiver'])
+    assert.ok(off.problems.some(p => /no settlement chain is complete/.test(p)))
+    assert.ok(off.problems.some(p => /DEPAY_CONFIG_PRIVATE_KEY missing/.test(p)))
+    process.env.PURCHASE_PAYMENT_CHAINS = JSON.stringify([{ blockchain: 'base', token: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913', receiver: RECEIVER }]) // gitleaks:allow (public USDC contract on Base)
+    process.env.PURCHASE_PAYMENT_TOKEN = USDC_ARBITRUM
+    const multi = paymentReadinessReport()
+    assert.ok(multi.problems.some(p => /legacy .* ignored/.test(p)))
+    assert.ok(multi.chains[0].warnings.some(w => /no DePay router/.test(w)))
+    process.env.PURCHASE_PAYMENT_CHAINS = '{not json'
+    assert.ok(paymentReadinessReport().problems.some(p => /not a JSON array/.test(p)))
+  } finally {
+    for (const k of Object.keys(process.env)) if (!(k in saved)) delete process.env[k]
+    Object.assign(process.env, saved)
+  }
 })

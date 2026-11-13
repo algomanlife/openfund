@@ -2983,6 +2983,7 @@
   "Coupon code (optional)": "优惠码（可选）",
   "Customer details": "客户信息",
   "Date / time": "日期 / 时间",
+  "DePay reported an error. If the payment configuration did not load, close and reopen the window; contact support if it repeats. Your order stays open.": "DePay 报告了一个错误。如果付款配置未能加载，请关闭并重新打开窗口；如果问题重复出现，请联系支持。您的订单仍保持开放。",
   "DePay could not validate this payment. Openfund’s server check decides the final status.": "DePay 无法验证此付款。最终状态由 Openfund 服务器检查决定。",
   "Download invoice PDF": "下载发票 PDF",
   "Email": "电子邮箱",

@@ -1,6 +1,8 @@
 # DePay integration (multi-chain payments)
 
 Status: **IMPLEMENTED — REQUIRES OWNER CONFIGURATION AND LIVE VERIFICATION.**
+The step-by-step owner procedure, verified token and router addresses and the
+2026-11-13 root-cause evidence are in [Owner setup](OWNER_SETUP.md).
 The dedicated checkout and the vendored widget ([ADR 0026](../decisions/0026-dedicated-checkout-vendored-depay-widget-and-chart-position-tool.md)) are on branch
 `agent/claude/depay-checkout-chart-ux` (not merged, not deployed).
 The code is on `main` and deployed with v0.4.4 (commit `67cc812`), but
@@ -145,6 +147,19 @@ one payment chain is ready. The configuration endpoint also requires
 | Dynamic configuration | `POST /purchases/depay/configuration` | DePay `x-signature` over the raw body. Response signed with the Openfund key |
 | Callback (successful payment) | `POST /purchases/depay/callback` | DePay `x-signature` over the raw body |
 | Events (`attempt`, `processing`, `failed`, `succeeded`) | `POST /purchases/depay/events` | DePay `x-signature` over the raw body |
+
+The same three handlers also answer at `/api/payments/depay/config` (and
+`/api/payments/depay/configuration`), `/api/payments/depay/callback` and
+`/api/payments/depay/events`: the names from the original integration brief,
+which the production DePay integration was configured with (Render logs,
+2026-11-13: DePay's `POST /api/payments/depay/config` received 404, so the
+widget showed "Unable to load payment configuration").
+
+Smart-contract wallets: a DePay-attested payment may be submitted through a
+wallet contract or an ERC-4337 EntryPoint (`tx.to` is then neither the token
+nor the router). Only Transfer logs of the settlement token to the receiver
+sent by an approved router or by the payer DePay reported count
+(`route: contract_wallet`). Customer-submitted hashes keep the strict rule.
 | Receipt (customer) | `GET /purchases/orders/:id/receipt` | Openfund session; owner only. Built from the order, the verified `payments` row, the invoice and the challenge; DePay's `sent_token`/`sent_amount` are labelled as reported |
 
 ### Dynamic configuration
