@@ -49,6 +49,17 @@ Evidence that it is reproducible and never read from Git:
 Local use: run `npm run build:web` before `npm start`, as in
 [Local development](LOCAL_DEVELOPMENT.md).
 
+### Regression fixed on 2026-11-12
+
+Commit `afe173f` (dependency registry, merged through `6b82b0b`) committed
+92 content-hashed files under `react/assets/` again, although `.gitignore`
+excludes `/react/` (an ignore rule does not stop a forced or pre-existing add).
+Evidence that they were dead weight: there was no `react/index.html` in Git,
+and a clean `npm run build:web` on `main` `38e17f4` deleted all 92 of them
+(`emptyOutDir`), leaving the working tree dirty. They were untracked again, and
+`scripts/release/test/untracked-build.test.mjs` (run by `npm run test:release`
+in CI) now fails whenever any `react/` path is tracked.
+
 ## Other changes
 
 - `.gitignore`: `/react/`, logs, coverage, `*.tsbuildinfo`, `.DS_Store` anywhere.
@@ -62,4 +73,15 @@ runtime path depended on the tracked copy.
 ## Candidates needing an owner decision
 
 `vendor/gains-sdk` (6.3 MB, unused), the `dist/` mirror duplicates, and the
-duplicated brandbook archive. The dependency registry (docs/integrations) lists the vendored trees.
+duplicated brandbook archive.
+
+`dist/` (re-audited 2026-11-12): the backend never serves it; the React app
+loads its classic runtime from `apps/web-react/public/legacy/`. Of the 69
+tracked `dist/` files, 51 assets are byte-identical copies of
+`apps/web-react/public/assets/`, and its JS/CSS/translations are 2–17 commits
+older than the live copies. It is still written by `npm run build:charts`,
+diff-checked by `.github/workflows/upstream-guard.yml` and read by
+`apps/web-react/test/community.test.mjs`. Retiring it would mean, in one
+dedicated PR: removing those three references, removing `dist/` (or keeping
+only `dist/downloads/`), and changing the `AGENTS.md` rule. That is a policy
+change for the owner, not a cleanup an agent may make alone. The dependency registry (docs/integrations) lists the vendored trees.

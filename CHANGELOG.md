@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Repository: stop tracking 92 stale generated `react/assets/` files that
+  were re-committed by `afe173f` despite `.gitignore`; a fresh `build:web`
+  deletes all of them, so nothing served changes. A release test now fails if
+  any `react/` path is tracked
+  ([hygiene record](docs/development/REPOSITORY_HYGIENE.md#regression-fixed-on-2026-11-12)).
 - Licensing: component inventory covering fonts and images, a first-party
   [license decision document](docs/legal/LICENSE_DECISION.md) (no license
   chosen; owner approval gate), the missing Ubuntu Font Licence shipped beside
