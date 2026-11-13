@@ -12,6 +12,19 @@
   was refused; the checkout shows DePay widget errors. Owner procedure with
   verified USDC and DePayRouterV3 addresses:
   [Owner setup](docs/payments/OWNER_SETUP.md).
+- Capacity optimization (branch `agent/claude/capacity-optimization`,
+  [ADR 0027](docs/decisions/0027-trading-stream-fan-out-and-engine-loop-isolation.md),
+  [report](docs/reviews/capacity-2026-11-13/REPORT.md); **not deployed**):
+  `/trading/stream` computes one fresh state per account per push for all of
+  its tabs and reacts only to that account's changes; `last_seen` is written at
+  most once per minute; the engine loop samples equity without a full state
+  read, on its own small connection pool, and equity samples are written in one
+  statement with provable no-op writes skipped; shutdown waits for the running
+  engine pass and ends streams. No rule, formula, rounding or API shape changed;
+  an equivalence check against `main` gives identical financial state. Measured
+  locally: stable concurrency A (100 + 200) → C (500 + 1,000), SL/TP p95 at C
+  28.3 s → 1.7 s. The 1,500 + 2,000 target is not reached.
+
 - Challenge checkout and DePay activation (branch `agent/claude/depay-checkout-chart-ux`,
   [ADR 0026](docs/decisions/0026-dedicated-checkout-vendored-depay-widget-and-chart-position-tool.md);
   **not deployed; first real payment pending the owner**): a dedicated

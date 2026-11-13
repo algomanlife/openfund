@@ -1,0 +1,4 @@
+== run cand2-stair profile=uncapped stages=all ramp=60s hold=180s const= cdn=0.95
+PROFILE=uncapped
+start_ms=1794552786000
+end_ms=1794553594000

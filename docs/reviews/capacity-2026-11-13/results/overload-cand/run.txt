@@ -1,0 +1,8 @@
+== run overload-cand profile=uncapped stages=baseline,high ramp=60s hold=300s const= cdn=0.95
+PROFILE=uncapped
+STAGES=baseline,high
+STAGE_HOLD_S=300
+MON_POOL_STOP=0
+RECOVERY_S=240
+start_ms=1794556559000
+end_ms=1794557541000

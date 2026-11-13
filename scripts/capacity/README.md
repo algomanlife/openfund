@@ -24,11 +24,16 @@ Results and analysis: [Capacity assessment 2026-11](../../docs/reviews/capacity-
 | `harness/monitor.mjs` | PostgreSQL and process metrics every 2 s, and the automatic stop conditions |
 | `harness/throttle.mjs` | CFS-style CPU quota on macOS to emulate Render plan sizes |
 | `harness/integrity.mjs`, `harness/sltp-latency.mjs` | Post-run data-integrity audit and SL/TP execution delay |
-| `harness/summarize.mjs`, `harness/graphs.mjs` | Per-stage tables (`summary.json`) and SVG time series |
+| `harness/summarize.mjs`, `harness/graphs.mjs` | Per-stage tables (`summary.json`, including engine-loop pass time, skipped ticks and SL/TP sweep delay) and SVG time series |
+| `harness/reset-db.sh` | `snapshot` the seeded database once, `restore` it before every run so reference and candidate runs start from identical data |
+| `harness/equivalence.mjs` | Differential check: a reference build and a candidate build on fresh databases receive the same deterministic order and price sequence (SL, TP, liquidation, partial and manual closes, pending orders, idempotent retries, concurrent orders, a failed and a passed challenge); their normalized financial state must be identical |
+| `harness/resilience.sh` | Under constant load: a 20 s synthetic market-data outage with reconnect, then a graceful backend restart while streams and orders are active; integrity audit, SL/TP delay and log scan afterwards |
+| `harness/multitab.mjs` | Several tabs per wallet on `/trading/stream`: wallet isolation, identical payloads across tabs, `engine.state()` executions per wallet per second |
+| `browser/remap-route-assets.mjs` | Re-maps `k6/route-assets.json` to the current build's hashed asset names when no browser is available to re-record it with `capture-routes.mjs` |
 
 ## Prerequisites
 
-- Node 22 for the backend (Render runs 22) and Node ≥ 22 for the harness
+- Node 26 for the backend (Render runs 26; `BACKEND_NODE` overrides the binary) and Node ≥ 22 for the harness
 - k6 ≥ 0.50, PostgreSQL 17 client and server binaries
 - `npm ci` here, `npm ci` in `apps/backend` and `apps/web-react`, `npm run build:web`
 - A disposable PostgreSQL cluster; the database name must end in `_test`
@@ -58,10 +63,23 @@ node harness/summarize.mjs results/stair-uncapped && node harness/graphs.mjs res
 `results/users.json` holds session cookies for the disposable database only; it
 is ignored by Git and must not be shared.
 
+Comparable runs and an unmodified reference build:
+
+```bash
+./harness/reset-db.sh snapshot                       # once, after seed-users
+./harness/reset-db.sh restore && OPENFUND_DIR=<reference worktree> PROFILE=uncapped ./run.sh ref-stair
+./harness/reset-db.sh restore && PROFILE=uncapped ./run.sh cand-stair
+REF_DIR=<reference worktree> CAND_DIR=<candidate repo> node harness/equivalence.mjs results/equivalence.json
+```
+
+Stages `baseline`…`peak` are A–E of the 2026-11 brief; `stretch-f` (2,000 + 3,000)
+and `stretch-g` (3,000 + 5,000) are stretch stages, not production targets.
+Seed at least as many users as the largest stage's chart users.
+
 Knobs: `STAGES`, `STAGE_RAMP_S`, `STAGE_HOLD_S`, `RECOVERY_S`, `CONST=<charts>:<s>`,
 `VISITOR_RATIO`, `ASSET_CDN_HIT` (0 = no-CDN worst case), `PROFILE=render`
 (backend 50 % of one core, PostgreSQL 10 %), `HARNESS_PG_MAX` (pool-size
-experiment only).
+experiment only), `BACKEND_NODE_FLAGS` (e.g. `--cpu-prof --cpu-prof-dir=<dir>` to profile the backend).
 
 ## Stop conditions
 

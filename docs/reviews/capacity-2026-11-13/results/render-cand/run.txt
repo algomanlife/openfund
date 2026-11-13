@@ -1,0 +1,6 @@
+== run render-cand profile=render stages=baseline,low ramp=60s hold=180s const= cdn=0.95
+PROFILE=render
+STAGES=baseline,low
+cpu limits: backend 50% / postgres 10%
+start_ms=1794555022000
+end_ms=1794555341000

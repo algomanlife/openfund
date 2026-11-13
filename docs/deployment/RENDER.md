@@ -52,7 +52,11 @@ Blueprint (`render.yaml`, root). Applying the Blueprint is a reviewed manual ope
   `VITE_BACKEND_URL`) is a config-only change.
 - **No separate worker/cron** — the demo engine loop, SSE fan-out and Gains
   market-data connections all run inside the API process (`engine.start(1000)`,
-  `marketData.bootstrap()`). There is currently no queue, no scheduled job, and no
+  `marketData.bootstrap()`). The process opens at most 13 database connections
+  (API pool 10, engine-loop pool 3; [ADR 0027](../decisions/0027-trading-stream-fan-out-and-engine-loop-isolation.md)).
+  Stream scopes and the engine loop are process-local, so `numInstances` must
+  stay 1 until the coordination in the
+  [capacity optimization report](../reviews/capacity-2026-11-13/REPORT.md#horizontal-scaling-proposal) exists. There is currently no queue, no scheduled job, and no
   state that a second instance must own. When evaluation automation arrives,
   move it to a Background Worker with a lock/lease (documented in ROLLBACK.md ops
   notes); the engine module boundaries already support it.

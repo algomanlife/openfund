@@ -1,0 +1,8 @@
+restart: restart_ms=4675
+integrity: "violations": 0
+sltp: {"n":64,"p50":645,"p95":1081,"p99":1189,"max":1189}
+pool-after-end errors: 0
+unhandled errors: 0
+market-data reconnects: 3
+sse: {"drops":320,"reconnects":320,"errors":{"ECONNRESET":20}} active at end: 300 / 300
+charts: 51027 req, failed 0.89%, integrity 0

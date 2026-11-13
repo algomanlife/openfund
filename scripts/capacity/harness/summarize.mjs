@@ -54,7 +54,11 @@ const stages = plan.map(p => {
       connectP95: med(s.map(r => r.connectMs.p95).filter(x => x != null)) } : null,
     backend: b.length ? { cpuAvg: avg(b.map(r => r.cpuPct)), cpuMax: max(b.map(r => r.cpuPct)), rssMax: max(b.map(r => r.rssMB)), heapMax: max(b.map(r => r.heapMB)),
       eldP50: med(b.map(r => r.eld.p50)), eldP99: med(b.map(r => r.eld.p99)), eldMax: max(b.map(r => r.eld.max)),
-      poolWaitingAvg: avg(b.map(r => r.pool?.waiting ?? 0)), poolWaitingMax: max(b.map(r => r.pool?.waiting ?? 0)), poolTotalMax: max(b.map(r => r.pool?.total ?? 0)), poolMax: b[0].pool?.max } : null,
+      poolWaitingAvg: avg(b.map(r => r.pool?.waiting ?? 0)), poolWaitingMax: max(b.map(r => r.pool?.waiting ?? 0)), poolTotalMax: max(b.map(r => r.pool?.total ?? 0)), poolMax: b[0].pool?.max,
+      /* engine loop observed in-process (preload.mjs): passes/s, pass duration,
+         ticks skipped while a pass ran, pass start → SL/TP sweep delay */
+      engine: b.some(r => r.engine) ? (() => { const pm = b.flatMap(r => r.engine?.passMs?.max != null ? [r.engine.passMs.max] : []), sw = b.flatMap(r => r.engine?.sweepDelayMs != null ? [r.engine.sweepDelayMs] : []), q = (a, x) => { if (!a.length) return null; const t = [...a].sort((m, n) => m - n); return t[Math.min(t.length - 1, Math.floor(x * t.length))] }
+        return { passesPs: +(b.reduce((a, r) => a + (r.engine?.passes || 0), 0) / b.length).toFixed(2), passMsP50: q(pm, 0.5), passMsP95: q(pm, 0.95), passMsMax: max(pm), runningMsMax: max(b.map(r => r.engine?.runningMs ?? 0)), skippedPs: +(b.reduce((a, r) => a + (r.engine?.skipped || 0), 0) / b.length).toFixed(2), sweepDelayMsP50: q(sw, 0.5), sweepDelayMsP95: q(sw, 0.95), sweepDelayMsMax: max(sw) } })() : null } : null,
     postgres: m.length ? { connMax: max(m.map(r => r.connections.total)), connLimit: m[0].connections.max, tpsAvg: avg(m.map(r => r.tps).filter(x => x != null)), cpuAvg: avg(m.map(r => r.cpu.postgres)), cpuMax: max(m.map(r => r.cpu.postgres)),
       lockWaitsMax: max(m.map(r => r.lockWaits)), ungrantedLocksMax: max(m.map(r => r.ungrantedLocks)), longestQueryS: max(m.map(r => r.connections.longestQueryS)), deadlocks: m.at(-1).deadlocks - m[0].deadlocks,
       cacheHit: avg(m.map(r => r.cacheHit).filter(x => x != null)), engineLoopPassesPs: avg(m.map(r => r.engineLoopPassesPs).filter(x => x != null)) } : null,
@@ -74,4 +78,5 @@ for (const s of stages) {
   const c = s.http.charts || {}, v = s.http.visitors || {}, x = s.sse || {}, b = s.backend || {}, p = s.postgres || {}, g = s.generators || {}
   console.log(`${s.stage.padEnd(10)} ${String(s.charts).padStart(5)} ${String(s.visitors).padStart(5)} | ${String(f(c.rps)).padStart(6)} ${String(f(c.p50)).padStart(5)} ${String(f(c.p95)).padStart(6)} ${String(f(c.p99)).padStart(6)} ${String(f(c.errPct)).padStart(5)} | ${String(f(v.rps)).padStart(6)} ${String(f(v.p95)).padStart(5)} ${String(f(v.errPct)).padStart(5)} | ${String(f(x.activeAvg)).padStart(7)} ${String(f(x.stalledMax)).padStart(5)} ${String(f(x.drops)).padStart(4)} ${String(f(x.gapP95)).padStart(5)} ${String(f(x.mdDelayP95)).padStart(5)} | ${String(f(b.cpuAvg)).padStart(6)} ${String(f(b.eldP99)).padStart(6)} ${String(f(b.poolWaitingAvg)).padStart(5)} | ${String(f(p.connMax)).padStart(7)} ${String(f(p.tpsAvg)).padStart(5)} ${String(f(p.cpuAvg)).padStart(4)} ${String(f(p.engineLoopPassesPs)).padStart(6)} | ${f(g.cpuAvg)}`)
 }
+for (const s of stages) if (s.reached && s.backend?.engine) console.log(`engine ${s.stage.padEnd(10)} ${JSON.stringify(s.backend.engine)}`)
 console.log('sltp', JSON.stringify(out.sltp), 'integrity', out.integrity?.violations, 'k6', JSON.stringify(out.k6Counts))

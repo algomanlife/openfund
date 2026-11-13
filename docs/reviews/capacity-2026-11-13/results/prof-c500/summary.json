@@ -1,0 +1,344 @@
+{
+ "run": "prof-c500",
+ "env": {
+  "CONST": "500:150",
+  "PROFILE": "uncapped",
+  "VISITOR_RATIO": "1",
+  "start_ms": "1794553692000",
+  "end_ms": "1794553853000"
+ },
+ "startMs": 1794553692000,
+ "endMs": 1794553853000,
+ "stop": null,
+ "stages": [
+  {
+   "stage": "const",
+   "charts": 500,
+   "visitors": 500,
+   "combined": 1000,
+   "reached": true,
+   "window": {
+    "from": 1794553762000,
+    "to": 1794553837000
+   },
+   "http": {
+    "charts": {
+     "n": 25905,
+     "rps": 287.8,
+     "avg": 5.7,
+     "p50": 1.1,
+     "p95": 44.1,
+     "p99": 84.6,
+     "max": 194,
+     "errPct": 0
+    },
+    "visitors": {
+     "n": 37922,
+     "rps": 421.4,
+     "avg": 0.5,
+     "p50": 0.2,
+     "p95": 1.3,
+     "p99": 3.8,
+     "max": 103,
+     "errPct": 0
+    }
+   },
+   "endpoints": {
+    "context": {
+     "n": 18006,
+     "rps": 200.1,
+     "avg": 7.5,
+     "p50": 1.1,
+     "p95": 61,
+     "p99": 89.2,
+     "max": 194,
+     "errPct": 0
+    },
+    "accounts": {
+     "n": 2997,
+     "rps": 33.3,
+     "avg": 2.2,
+     "p50": 0.9,
+     "p95": 7.6,
+     "p99": 27,
+     "max": 177,
+     "errPct": 0
+    },
+    "ws_get": {
+     "n": 461,
+     "rps": 5.1,
+     "avg": 0.9,
+     "p50": 0.4,
+     "p95": 2.7,
+     "p99": 7.6,
+     "max": 35,
+     "errPct": 0
+    },
+    "ws_put": {
+     "n": 2876,
+     "rps": 32,
+     "avg": 1.4,
+     "p50": 0.6,
+     "p95": 4.7,
+     "p99": 18.7,
+     "max": 78,
+     "errPct": 0
+    },
+    "preview": {
+     "n": 529,
+     "rps": 5.9,
+     "avg": 1.8,
+     "p50": 0.8,
+     "p95": 5.7,
+     "p99": 21.2,
+     "max": 58,
+     "errPct": 0
+    },
+    "order": {
+     "n": 664,
+     "rps": 7.4,
+     "avg": 2.4,
+     "p50": 1.8,
+     "p95": 5.2,
+     "p99": 12.6,
+     "max": 91,
+     "errPct": 0
+    },
+    "protection": {
+     "n": 319,
+     "rps": 3.5,
+     "avg": 2.1,
+     "p50": 0.8,
+     "p95": 5.7,
+     "p99": 38.5,
+     "max": 58,
+     "errPct": 0
+    },
+    "close": {
+     "n": 51,
+     "rps": 0.6,
+     "avg": 2.7,
+     "p50": 1.7,
+     "p95": 8.9,
+     "p99": 18.8,
+     "max": 21,
+     "errPct": 0
+    },
+    "state": {
+     "n": 1,
+     "rps": 0,
+     "avg": 2.9,
+     "p50": 2.9,
+     "p95": 2.9,
+     "p99": 2.9,
+     "max": 3,
+     "errPct": 0
+    },
+    "me": {
+     "n": 1,
+     "rps": 0,
+     "avg": 58.7,
+     "p50": 58.7,
+     "p95": 58.7,
+     "p99": 58.7,
+     "max": 59,
+     "errPct": 0
+    },
+    "v_document": {
+     "n": 1514,
+     "rps": 16.8,
+     "avg": 0.8,
+     "p50": 0.4,
+     "p95": 2.4,
+     "p99": 6.2,
+     "max": 21,
+     "errPct": 0
+    },
+    "v_asset": {
+     "n": 592,
+     "rps": 6.6,
+     "avg": 0.5,
+     "p50": 0.2,
+     "p95": 1.9,
+     "p99": 4.8,
+     "max": 9,
+     "errPct": 0
+    },
+    "v_legacy": {
+     "n": 30771,
+     "rps": 341.9,
+     "avg": 0.3,
+     "p50": 0.1,
+     "p95": 1.2,
+     "p99": 2.5,
+     "max": 22,
+     "errPct": 0
+    },
+    "v_runtime": {
+     "n": 1514,
+     "rps": 16.8,
+     "avg": 0.1,
+     "p50": 0.1,
+     "p95": 0.4,
+     "p99": 0.9,
+     "max": 4,
+     "errPct": 0
+    },
+    "v_api_public": {
+     "n": 3531,
+     "rps": 39.2,
+     "avg": 2.1,
+     "p50": 0.3,
+     "p95": 10.5,
+     "p99": 44.9,
+     "max": 103,
+     "errPct": 0
+    }
+   },
+   "sse": {
+    "activeAvg": 500,
+    "target": 500,
+    "stalledMax": 0,
+    "drops": 0,
+    "reconnects": 0,
+    "errors": {},
+    "eventsPerSec": 515.27,
+    "dataPerSec": 515.27,
+    "gapP95": 1005,
+    "gapP99": 1015,
+    "gapMax": 1135,
+    "mdDelayP50": 106,
+    "mdDelayP95": 214,
+    "mdDelayP99": 231,
+    "mdDelayMax": 253,
+    "connectP95": null
+   },
+   "backend": {
+    "cpuAvg": 51.91,
+    "cpuMax": 62.5,
+    "rssMax": 326.7,
+    "heapMax": 134.8,
+    "eldP50": 1,
+    "eldP99": 1.83,
+    "eldMax": 17.51,
+    "poolWaitingAvg": 0,
+    "poolWaitingMax": 0,
+    "poolTotalMax": 10,
+    "poolMax": 10,
+    "engine": {
+     "passesPs": 0.97,
+     "passMsP50": 744.3,
+     "passMsP95": 847,
+     "passMsMax": 1196.7,
+     "runningMsMax": 384,
+     "skippedPs": 0.03,
+     "sweepDelayMsP50": 730,
+     "sweepDelayMsP95": 831.2,
+     "sweepDelayMsMax": 1014
+    }
+   },
+   "postgres": {
+    "connMax": 17,
+    "connLimit": 100,
+    "tpsAvg": 6569.84,
+    "cpuAvg": 96.86,
+    "cpuMax": 102.1,
+    "lockWaitsMax": 0,
+    "ungrantedLocksMax": 0,
+    "longestQueryS": 0.000169,
+    "deadlocks": 0,
+    "cacheHit": 1,
+    "engineLoopPassesPs": 0.97
+   },
+   "generators": {
+    "cpuAvg": 26.28,
+    "cpuMax": 63.6,
+    "rssMB": 1105.3
+   }
+  }
+ ],
+ "k6Extra": {
+  "chart_save_ms": {
+   "p(99)": 16.175359999999987,
+   "max": 78.083,
+   "count": 3109,
+   "avg": 1.298912833708589,
+   "min": 0.305,
+   "med": 0.599,
+   "p(90)": 1.5988000000000013,
+   "p(95)": 3.8005999999999984
+  },
+  "workspace_restore_ms": {
+   "p(90)": 0.6945,
+   "p(95)": 1.0609999999999995,
+   "p(99)": 6.2963000000000005,
+   "max": 35.269,
+   "count": 996,
+   "avg": 0.6170722891566267,
+   "min": 0.203,
+   "med": 0.373
+  },
+  "order_submit_ms": {
+   "p(90)": 3.6855,
+   "p(95)": 5.712749999999995,
+   "p(99)": 13.221349999999997,
+   "max": 91.176,
+   "count": 706,
+   "avg": 2.678281869688386,
+   "min": 1.412,
+   "med": 1.961
+  },
+  "sltp_update_ms": {
+   "max": 80.284,
+   "count": 394,
+   "avg": 2.206786802030456,
+   "min": 0.495,
+   "med": 0.747,
+   "p(90)": 2.4181000000000026,
+   "p(95)": 6.414049999999982,
+   "p(99)": 39.269529999999996
+  }
+ },
+ "integrity": {
+  "t": 1794553854231,
+  "violations": 0,
+  "checks": {
+   "workspace_owner_mismatch": 0,
+   "workspace_malformed": 0,
+   "workspace_symbol_mismatch": 0,
+   "workspace_over_entry_limit": 0,
+   "duplicate_idempotency_keys": 0,
+   "filled_orders_without_position": 0,
+   "positions_sharing_order": 0,
+   "position_invalid_numbers": 0,
+   "position_open_with_close_fields": 0,
+   "position_closed_without_exit": 0,
+   "position_cross_user": 0,
+   "sltp_inverted": 0,
+   "sltp_last_update_not_applied": 0,
+   "account_negative_balance": 0,
+   "account_used_margin_drift": 0,
+   "duplicate_demo_funding": 0
+  },
+  "counts": {
+   "users": 3000,
+   "workspace_entries": 2119,
+   "orders": 1606,
+   "positions": 1624,
+   "open_positions": 1250,
+   "sltp_updates": 394
+  }
+ },
+ "sltp": {
+  "n": 316,
+  "p50": 871,
+  "p95": 1034,
+  "p99": 1043,
+  "max": 1046
+ },
+ "k6Counts": {
+  "integrityViolations": 0,
+  "timeouts": 0,
+  "conflictRate": 0
+ }
+}
