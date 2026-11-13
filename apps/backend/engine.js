@@ -64,7 +64,9 @@ export class Engine {
     this.timer.unref?.()
     console.log('[engine] monitoring loop started')
   }
-  stop() { this.running = false; clearInterval(this.timer) }
+  /* resolves once an in-flight monitoring pass has finished, so a graceful
+     shutdown never ends the pool under a running pass */
+  stop() { this.running = false; clearInterval(this.timer); return this.loopPass ?? Promise.resolve() }
 
   /* =========================================================
    * ACCOUNT / FUNDING
@@ -965,6 +967,7 @@ export class Engine {
   async loop() {
     if (!this.running || this.loopBusy) return;
     this.loopBusy = true;
+    let done; this.loopPass = new Promise(r => { done = r });
     try {
       for (const { user_id } of (
         await this.pool.query(
@@ -1031,6 +1034,7 @@ export class Engine {
       }
     } finally {
       this.loopBusy = false;
+      this.loopPass = null; done();
     }
   }
 

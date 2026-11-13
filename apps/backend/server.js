@@ -865,6 +865,6 @@ const settlementTimer = setInterval(() => {
 }, 60_000)
 settlementTimer.unref()
 let shuttingDown=false
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;engine.stop();marketData.stop();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);footprint.stop().catch(()=>{}).finally(()=>server.close(()=>pool.end())) }
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;const enginePass=engine.stop();marketData.stop();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{})]).finally(()=>server.close(()=>pool.end())) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)
