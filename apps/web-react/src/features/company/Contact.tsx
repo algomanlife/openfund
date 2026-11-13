@@ -122,7 +122,7 @@ function ContactForm({ locale, initialDepartment, onDepartment }: { locale: Loca
       <label className="co-field"><span>{tx(locale, F.challengeId)}</span><input name="challengeId" dir="ltr" value={v.challengeId} onChange={e => set('challengeId', e.target.value)} maxLength={FORM_LIMITS.ref} {...a11y('challengeId')} />{err('challengeId')}</label>
       <p className="co-muted wide">{tx(locale, F.idHint)}</p>
       <label className="co-check wide"><input type="checkbox" name="privacyConsent" checked={v.privacyConsent} onChange={e => set('privacyConsent', e.target.checked)} {...a11y('privacyConsent')} />
-        <span>{tx(locale, F.consentBefore)} <Link to="/legal">{tx(locale, F.consentLink)}</Link>{tx(locale, F.consentAfter)}</span></label>
+        <span>{tx(locale, F.consentBefore)} <Link to={`/${locale}/challenges?section=legal`}>{tx(locale, F.consentLink)}</Link>{tx(locale, F.consentAfter)}</span></label>
       {err('privacyConsent')}
     </div>
     {serverError && <p className="co-error" role="alert">{serverError}</p>}
@@ -152,7 +152,7 @@ export default function Contact() {
     { label: tx(locale, h.purchase), to: L('checkout') },
     { label: tx(locale, h.payment), to: L('faq/q/how-to-pay-for-challenge') },
     { label: tx(locale, h.withdrawal), to: L('faq/q/when-payout-request') },
-    { label: tx(locale, h.legal), to: '/legal' },
+    { label: tx(locale, h.legal), to: L('challenges?section=legal') },
     { label: tx(locale, h.terms) }, { label: tx(locale, h.privacy) }, { label: tx(locale, h.refund) },
     { label: tx(locale, h.about), to: L('about') },
   ]
