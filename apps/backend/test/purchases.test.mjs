@@ -22,6 +22,12 @@ import { confirmPurchase } from '../purchases.js'
 if (!/test|audit|_ci/.test(process.env.DATABASE_URL || '')) throw new Error('Use an isolated test DATABASE_URL')
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL })
 
+/* conduct sales gate: news-dependent plans need verified calendar coverage
+   (same labelled fixture the SIM_TEST_MODE server writes at start-up) */
+await pool.query(`INSERT INTO economic_calendar_coverage (source, covers_from, covers_to, event_count, actor)
+  SELECT 'sim-test-mode', now() - interval '1 day', now() + interval '60 days', 0, 'sim-test-mode'
+   WHERE NOT EXISTS (SELECT 1 FROM economic_calendar_coverage WHERE source='sim-test-mode' AND covers_to > now() + interval '30 days')`)
+
 const BASE = process.env.TEST_BACKEND_URL || 'http://localhost:8080'
 const DOMAIN = 'localhost:5173'
 const CHAIN = 42161

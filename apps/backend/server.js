@@ -33,6 +33,7 @@ import { adminRoutes } from './admin.js'
 import { chartWorkspaceRoutes } from './chart-workspaces.js'
 import { supportRoutes, supportAdminRoutes } from './support.js'
 import { rewardRoutes, rewardAdminRoutes } from './rewards.js'
+import { calendarAdminRoutes } from './conduct.js'
 import { createFootprintService } from './footprint/service.js'
 import { couponAdminRoutes } from './coupons.js'
 import { paymentAdminRoutes } from './payments-admin.js'
@@ -156,7 +157,8 @@ app.use((req, res, next) => {
 })
 app.use('/products', express.json({ limit: '2mb' }))
 app.use('/auth/profile', express.json({ limit: '512kb' })) /* avatar data URLs */
-app.use('/chart/workspaces', express.json({ limit: '256kb' })) /* chart workspace entries (200 KB cap per entry) */
+app.use('/chart/workspaces', express.json({ limit: '256kb' }))
+app.use('/admin/calendar', express.json({ limit: '2mb' })) /* operator calendar imports (≤ 5,000 events) */ /* chart workspace entries (200 KB cap per entry) */
 /* the DePay callback is signed over its exact bytes: keep the raw body for that one route */
 /* DePay signs the exact request bytes: keep the raw body for its routes */
 /* every DePay-signed path (canonical + aliases), from purchases.js */
@@ -688,6 +690,13 @@ const internalAuth = (req, res, next) => {
   next()
 }
 if (testMode) {
+  /* test-mode calendar fixture: sales of news-dependent plans need verified
+     calendar coverage (conduct.js). SIM_TEST_MODE + test database only;
+     an empty, clearly labelled import that never exists in production. */
+  pool.query(`INSERT INTO economic_calendar_coverage (source, covers_from, covers_to, event_count, actor)
+              SELECT 'sim-test-mode', now() - interval '1 day', now() + interval '60 days', 0, 'sim-test-mode'
+               WHERE NOT EXISTS (SELECT 1 FROM economic_calendar_coverage WHERE source='sim-test-mode' AND covers_to > now() + interval '30 days')`)
+    .catch(e => console.error('[test-mode] calendar fixture failed', e.message))
   app.post('/internal/inject-price', internalAuth, (req, res) => {
     const { symbol, price, metadata } = req.body || {}
     if (typeof symbol !== 'string' || price == null) return res.status(400).json({ error: 'invalid' })
@@ -756,7 +765,7 @@ app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) 
 app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
 app.use(referralRoutes({ pool, requireAuth, audit }))
 app.use(purchaseRoutes({ pool, requireAuth, audit, limit }))
-app.use(rewardRoutes({ pool, requireAuth, audit, limit }))
+app.use(rewardRoutes({ pool, requireAuth, audit, limit, md: marketData }))
 app.use(chartWorkspaceRoutes({ pool, requireAuth, limit }))
 /* Public Contact Us submissions (write-only; operators read via /admin/support or Directus) */
 app.use(supportRoutes({ pool, limit, optionalUser: async req => (await userFromSession(req))?.user_id ?? null }))
@@ -779,6 +788,7 @@ app.use('/admin/coupons', couponAdminRoutes({ pool }))
 app.use('/admin/payments', paymentAdminRoutes({ pool, verifier: (...a) => defaultPaymentVerifier()(...a) }))
 app.use('/admin/support', supportAdminRoutes({ pool }))
 app.use('/admin/rewards', rewardAdminRoutes({ pool }))
+app.use('/admin/calendar', calendarAdminRoutes({ pool }))
 app.use('/admin', adminRoutes({ pool, audit }))
 
 /* Public release identity contains build metadata only, never runtime secrets. */
@@ -852,7 +862,7 @@ app.use((err, req, res, next) => {
   if (!err.status) console.error(err);
   res
     .status(err.status || 500)
-    .json({ error: err.status ? err.message : "internal" });
+    .json({ error: err.status ? err.message : "internal", ...(err.status && Array.isArray(err.reasons) ? { reasons: err.reasons } : {}) });
 });
 
 const server = app.listen(cfg.port, () =>

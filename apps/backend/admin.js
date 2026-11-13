@@ -24,7 +24,7 @@
 import { Router } from 'express'
 import crypto from 'node:crypto'
 import { governanceAdminRoutes } from './governance-routes.js'
-import { reverseRewardTx } from './rewards.js'
+import { reverseRewardTx, onRewardPaidTx } from './rewards.js'
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const fail = (status, error) => { const e = new Error(error); e.status = status; return e }
@@ -185,12 +185,14 @@ export function adminRoutes({ pool, audit }) {
         [req.params.id, spec.to, note ?? null, action === 'paid' ? payoutRef.trim() : null])
       /* a rejected reward request returns the reserved profit to the funded account */
       if (spec.to === 'rejected') await reverseRewardTx(client, w, 'rejected_by_operator')
+      /* D5: the fourth paid reward of a Standard lineage creates the fee refund (exactly once) */
+      const feeRefund = spec.to === 'paid' ? await onRewardPaidTx(client, { ...w, status: 'paid' }, `admin:${String(req.headers['x-admin-actor'] || 'unknown').slice(0, 60)}`) : null
       await client.query('COMMIT')
       await audit(`withdrawal_${spec.to}`, w.user_id, req, {
         withdrawalId: req.params.id, amount: Number(w.amount_usd), action, note: note ?? null,
         payoutRef: action === 'paid' ? payoutRef.trim() : undefined,
       })
-      res.json({ ok: true, status: spec.to })
+      res.json({ ok: true, status: spec.to, ...(feeRefund ? { feeRefund: { id: feeRefund.id, amountUsd: feeRefund.amount_usd, status: feeRefund.status } } : {}) })
     } catch (e) {
       await client.query('ROLLBACK').catch(() => {})
       throw e

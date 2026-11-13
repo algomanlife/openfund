@@ -1758,3 +1758,90 @@ ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS eligibility jsonb;
 -- at most one open reward request per funded account
 CREATE UNIQUE INDEX IF NOT EXISTS idx_withdrawals_one_open_reward ON withdrawal_requests (challenge_id)
   WHERE kind = 'reward' AND status IN ('requested', 'approved');
+
+-- ------------------------------------------------------------------
+-- Owner decisions D1–D8 (rules snapshot v3). Additive only.
+-- ------------------------------------------------------------------
+-- D7: the purchased daily-loss variant ('reduced' is sold only when priced)
+ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS daily_loss_variant text NOT NULL DEFAULT 'default';
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'purchase_orders_daily_loss_variant_check') THEN
+    ALTER TABLE purchase_orders ADD CONSTRAINT purchase_orders_daily_loss_variant_check CHECK (daily_loss_variant IN ('default', 'reduced'));
+  END IF;
+END $$;
+
+-- D1: reward cycle chosen once on the funded account; immutable once set
+ALTER TABLE openfund_challenges ADD COLUMN IF NOT EXISTS reward_cycle text;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'openfund_challenges_reward_cycle_check') THEN
+    ALTER TABLE openfund_challenges ADD CONSTRAINT openfund_challenges_reward_cycle_check CHECK (reward_cycle IS NULL OR reward_cycle IN ('weekly', 'biweekly', 'on_demand'));
+  END IF;
+END $$;
+CREATE OR REPLACE FUNCTION openfund_challenges_cycle_lock() RETURNS trigger AS $$
+BEGIN
+  IF OLD.reward_cycle IS NOT NULL AND NEW.reward_cycle IS DISTINCT FROM OLD.reward_cycle THEN
+    RAISE EXCEPTION 'reward_cycle_immutable';
+  END IF;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_openfund_challenges_cycle_lock ON openfund_challenges;
+CREATE TRIGGER trg_openfund_challenges_cycle_lock BEFORE UPDATE OF reward_cycle ON openfund_challenges
+  FOR EACH ROW EXECUTE FUNCTION openfund_challenges_cycle_lock();
+
+-- D8: verified economic calendar. Events are imported by an operator from a
+-- licensed source together with the period the import fully covers; news
+-- rules are only enforced for times inside verified coverage.
+CREATE TABLE IF NOT EXISTS economic_calendar_coverage (
+  id           bigserial PRIMARY KEY,
+  source       text NOT NULL CHECK (char_length(source) BETWEEN 2 AND 80),
+  covers_from  timestamptz NOT NULL,
+  covers_to    timestamptz NOT NULL CHECK (covers_to > covers_from),
+  event_count  integer NOT NULL,
+  actor        text NOT NULL,
+  imported_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_calendar_coverage_window ON economic_calendar_coverage (covers_from, covers_to);
+CREATE TABLE IF NOT EXISTS economic_events (
+  id           bigserial PRIMARY KEY,
+  source       text NOT NULL,
+  external_id  text NOT NULL,
+  title        text NOT NULL CHECK (char_length(title) BETWEEN 1 AND 200),
+  currency     text NOT NULL CHECK (currency ~ '^[A-Z]{3}$'),
+  kind         text NOT NULL CHECK (kind IN ('release', 'speech')),
+  impact       text NOT NULL CHECK (impact IN ('high', 'medium', 'low')),
+  restricted   boolean NOT NULL DEFAULT false,
+  starts_at    timestamptz NOT NULL,
+  ends_at      timestamptz,
+  imported_at  timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (source, external_id),
+  CHECK (ends_at IS NULL OR ends_at >= starts_at)
+);
+CREATE INDEX IF NOT EXISTS idx_economic_events_time ON economic_events (starts_at) WHERE restricted;
+
+-- D1/D4: strike system (on-demand cycle) — one strike per trade idea
+CREATE TABLE IF NOT EXISTS challenge_strikes (
+  challenge_id uuid NOT NULL REFERENCES openfund_challenges(id) ON DELETE CASCADE,
+  idea_key     text NOT NULL,
+  strike_no    integer NOT NULL CHECK (strike_no >= 1),
+  loss_usd     numeric(14,2) NOT NULL,
+  detail       jsonb NOT NULL DEFAULT '{}'::jsonb,
+  at           timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (challenge_id, idea_key),
+  UNIQUE (challenge_id, strike_no)
+);
+
+-- D5: challenge fee refund, created exactly once when the fourth reward of
+-- a Standard lineage is marked paid; paid out manually like rewards.
+CREATE TABLE IF NOT EXISTS fee_refunds (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  purchase_order_id  uuid NOT NULL UNIQUE REFERENCES purchase_orders(id),
+  challenge_id       uuid NOT NULL REFERENCES openfund_challenges(id),
+  user_id            uuid NOT NULL REFERENCES openfund_users(id),
+  withdrawal_id      uuid NOT NULL UNIQUE REFERENCES withdrawal_requests(id),
+  amount_usd         numeric(12,2) NOT NULL CHECK (amount_usd > 0),
+  status             text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'paid')),
+  payout_ref         text,
+  actor              text,
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  paid_at            timestamptz
+);

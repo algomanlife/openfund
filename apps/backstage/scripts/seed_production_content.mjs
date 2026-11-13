@@ -6,7 +6,7 @@
  *   - ui_messages        ← apps/web-react/public/translations.json (every landing string)
  *   - challenge_plans    ← src/data/challengePlans.ts (the commercial catalog — same table
  *                          the backend reads; Directus is the editing surface)
- *   - trading_rules      ← src/features/rulebook/content.ts (22 Rulebook sections)
+ *   - trading_rules      ← src/features/rulebook/content.ts (23 Rulebook sections)
  *   - home_content       ← src/cms/seed/homeContent.ts
  *   - faqs               ← src/cms/seed/faqContent.ts
  *   - legal_documents    ← src/cms/seed/legalContent.ts
@@ -132,21 +132,11 @@ async function main() {
   for (const p of challengePlans) {
     const payload = {
       slug: p.slug, name: `${p.name.fa} — ${p.name.en}`, status: 'active',
-      configuration: {
-        accountSizesUsd: p.accountSizesUsd, priceUsd: p.priceUsd, phases: p.phases,
-        phase1TargetPct: p.phase1TargetPct, phase2TargetPct: p.phase2TargetPct,
-        dailyLossPct: p.dailyLossPct, dailyLossPctAlt: p.dailyLossPctAlt ?? null,
-        maxTotalLossPct: p.maxTotalLossPct, drawdownMode: p.drawdownMode,
-        trailingLockAtProfitPct: p.trailingLockAtProfitPct ?? null,
-        minTradingDays: p.minTradingDays, profitableDaysPer30: p.profitableDaysPer30 ?? null,
-        consistencyPct: p.consistencyPct ?? null,
-        profitSplitPct: p.profitSplitPct, profitSplitMonthlyPct: p.profitSplitMonthlyPct ?? null,
-        payoutCapPct: p.payoutCapPct, firstPayoutDays: p.firstPayoutDays ?? null,
-        minPayoutPct: p.minPayoutPct ?? null, timeLimitDays: p.timeLimitDays,
-        trialDaysPerPhase: p.trialDaysPerPhase ?? null,
-        refundPolicy: p.refundPolicy, referenceLeverageX: p.referenceLeverageX, free: p.free,
-        status: p.status, slugName: p.slug, name: p.name, tagline: p.tagline,
-      },
+      /* the full catalog configuration (every rule field, rules snapshot v3);
+         presentation keys kept for the CMS editing view */
+      configuration: (({ slug: _slug, name: _name, tagline: _tagline, status: _status, ...rules }) => ({
+        ...rules, status: p.status, slugName: p.slug, name: p.name, tagline: p.tagline,
+      }))(p),
     }
     note('challenge_plans', await upsert('challenge_plans', { slug: p.slug }, payload, plans))
   }
