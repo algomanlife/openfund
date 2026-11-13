@@ -27,6 +27,8 @@ Results and analysis: [Capacity assessment 2026-11](../../docs/reviews/capacity-
 | `harness/summarize.mjs`, `harness/graphs.mjs` | Per-stage tables (`summary.json`, including engine-loop pass time, skipped ticks and SL/TP sweep delay) and SVG time series |
 | `harness/reset-db.sh` | `snapshot` the seeded database once, `restore` it before every run so reference and candidate runs start from identical data |
 | `harness/equivalence.mjs` | Differential check: a reference build and a candidate build on fresh databases receive the same deterministic order and price sequence (SL, TP, liquidation, partial and manual closes, pending orders, idempotent retries, concurrent orders, a failed and a passed challenge); their normalized financial state must be identical |
+| `harness/resilience.sh` | Under constant load: a 20 s synthetic market-data outage with reconnect, then a graceful backend restart while streams and orders are active; integrity audit, SL/TP delay and log scan afterwards |
+| `harness/multitab.mjs` | Several tabs per wallet on `/trading/stream`: wallet isolation, identical payloads across tabs, `engine.state()` executions per wallet per second |
 | `browser/remap-route-assets.mjs` | Re-maps `k6/route-assets.json` to the current build's hashed asset names when no browser is available to re-record it with `capture-routes.mjs` |
 
 ## Prerequisites
@@ -77,7 +79,7 @@ Seed at least as many users as the largest stage's chart users.
 Knobs: `STAGES`, `STAGE_RAMP_S`, `STAGE_HOLD_S`, `RECOVERY_S`, `CONST=<charts>:<s>`,
 `VISITOR_RATIO`, `ASSET_CDN_HIT` (0 = no-CDN worst case), `PROFILE=render`
 (backend 50 % of one core, PostgreSQL 10 %), `HARNESS_PG_MAX` (pool-size
-experiment only).
+experiment only), `BACKEND_NODE_FLAGS` (e.g. `--cpu-prof --cpu-prof-dir=<dir>` to profile the backend).
 
 ## Stop conditions
 
