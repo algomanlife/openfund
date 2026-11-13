@@ -187,7 +187,7 @@ async function transparencyReport(pool, treasury) {
   }
 }
 
-export function economyRoutes({ pool, treasury }) {
+export function economyRoutes({ pool, treasury, treasuryNetworks = null, limit = () => (req, res, next) => next() }) {
   const router = Router()
   let cache = null
   router.get('/economy/transparency', wrap(async (req, res) => {
@@ -195,6 +195,12 @@ export function economyRoutes({ pool, treasury }) {
     res.set('Cache-Control', 'public, max-age=60').json(cache.data)
   }))
   router.get('/economy/treasury', wrap(async (req, res) => res.set('Cache-Control', 'public, max-age=60').json(await treasury.view())))
+  /* treasury wallets by network: live on-chain balances behind a server-side
+     cache (TreasuryNetworks), rate-limited per client */
+  router.get('/economy/treasury/networks', limit(30), wrap(async (req, res) => {
+    const view = treasuryNetworks ? await treasuryNetworks.view() : { generatedAt: new Date().toISOString(), cacheSeconds: 0, networks: [] }
+    res.set('Cache-Control', 'public, max-age=30').json(view)
+  }))
   router.invalidate = () => { cache = null }
   return router
 }
