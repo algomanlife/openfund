@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Owner decisions D1–D8 (branch `agent/claude/launch-readiness`, **not
+  deployed**): per-model reward cycles chosen once; 30-day inactivity;
+  Instant open-risk, trade-idea, profitable-day, news and weekend rules;
+  on-demand strike system; funded auto-close and news deductions; fee refund
+  on the fourth paid Standard reward; Openfund leverage ceilings for new
+  challenges; daily-loss variants sold only when priced. Paid plans are not
+  sold until a licensed economic calendar is imported. Fixed: challenges
+  started without a frozen snapshot were provisioned from empty rules.
+  Draft Terms, Privacy and Refund policies prepared for legal review.
+
 - Launch readiness (branch `agent/claude/launch-readiness`,
   [ADR 0028](docs/decisions/0028-reward-lifecycle-and-support-queue.md),
   [report](docs/reviews/launch-readiness-2026-11-13/REPORT.md); **not deployed**):

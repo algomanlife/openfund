@@ -7,7 +7,8 @@ PostgreSQL 17.11 cluster, a local Directus 11.17.4 and the production build of
 this branch.
 
 **Recommendation: No-Go for public challenge sales until the P0 owner items
-in §6 are closed.** The engineering P0 gaps found in this review are fixed on
+in §6 are closed** (decisions D1–D8 are implemented; a calendar source and
+legal review remain). The engineering P0 gaps found in this review are fixed on
 this branch. What still blocks sales is legal text and product decisions the
 repository cannot make.
 
@@ -74,26 +75,32 @@ represented, none with horizontal overflow; listed in the manifest).
 
 ## 4. Rule matrix and owner decisions
 
-Reference pages were re-read on 2026-11-13 in a browser session (see
-[Product rules](../../product/PRODUCT_RULES.md#reference-re-verification-2026-11-13)).
-Evaluation limits match the catalog. Openfund's enforced values, and the
-points where the current reference differs:
+The owner decided D1–D8 on 2026-11-13: the current reference models are the
+baseline, with Openfund's own leverage ceilings as the only approved
+exception. They are implemented as **rules snapshot v3 / catalog v3**
+(`apps/backend/model-rules.js`, `conduct.js`, `rewards.js`); snapshots sold
+before v3 keep their recorded terms.
 
-| # | Topic | Openfund (enforced on this branch) | Current reference | Decision needed |
-| :--- | :--- | :--- | :--- | :--- |
-| D1 | Reward cycles, Standard / One-phase | Per request: bi-weekly 80%, or monthly (30 days) 100% with 35% consistency and 7 profitable days | Chosen once at the funded stage: weekly 60% (Standard only), bi-weekly 80%, on-demand 100% with 35% consistency, 7 profitable days and a 1% open-loss strike system | Keep Openfund's monthly cycle, or adopt weekly/on-demand chosen once |
-| D2 | Profitable day | Any day with positive realized net PnL | Day with ≥ 0.5% of the starting size | Threshold to publish and enforce |
-| D3 | Inactivity | None | Breach after 30 days without a completed trade (all models) | Adopt or not |
-| D4 | Instant (Zero) extra rules | Not enforced | 1% max open risk; news window and weekend holding are hard breaches; 7 profitable days per rolling 30 days to stay active | Adopt (needs engine work) or keep current Instant terms |
-| D5 | Fee refund with the fourth reward (Standard) | Enforced (from the catalog) | Not stated on the current Standard page | Keep as an Openfund term or remove |
-| D6 | Leverage | Challenge accounts: min(owner policy 20×/15×/50×, plan `referenceLeverageX` 5×) → **5× everywhere**. Free demo: 20×/15×/50× | FX 1:100, metals 1:30, indices 1:20, crypto 1:2 (1:1 funded) | Keep 5× for challenges, or raise `referenceLeverageX` |
-| D7 | Daily-loss variant (3% / 2%) | Displayed, not sellable | Sold as an add-on; removes minimum trading days on Standard | Price per variant, or remove from public copy |
-| D8 | Funded-stage holding and news | Not restricted | Standard funded: auto-close overnight/weekend; news window profits deducted | Adopt or state Openfund's own policy |
+| # | Decision | Implemented as | Evidence |
+| :--- | :--- | :--- | :--- |
+| D1 | Reward cycles per model, chosen once | Standard weekly 60 / bi-weekly 80 / on-demand 100; One-step bi-weekly 80 / on-demand 100; Instant bi-weekly 95. Funded-demo account waits in `created` until the trader picks; `reward_cycle` is immutable (DB trigger). No monthly cycle. | `test:rewards` R1–R3, R6, R9 |
+| D2 | Model-specific profitable days | On-demand: 7 days ≥ 0.5% of size; Instant: 7 days ≥ 0.25% per rolling 30-day period from the first trade (reset by a paid reward), from ledger records. | `test:conduct` M11, C6; R3 |
+| D3 | 30-day inactivity | Evaluation and funded accounts; clock from account start or the day after the last fully closed trade; open positions do not count; idle accounts swept once a minute. | M10, C7 |
+| D4 | Instant risk rules at engine level | 1% combined floating loss; 3% / 2% trade idea (below / from $50,000; same instrument and direction, 10-minute re-entry); news and weekend hard breaches; on-demand strike system (1% idea loss: 2 → half split, 3 → 20%, 4 → breach; struck profit not paid). | C3–C5, C8, C10, R4 |
+| D5 | Fourth-reward fee refund | Created exactly once when the 4th Standard reward is **paid** (`fee_refunds`, unique per order and per withdrawal), paid manually with its own reference. | R10, R11 |
+| D6 | Openfund leverage ceilings | New snapshots carry no plan-wide cap: BTC/ETH 20×, other crypto 15×, forex/stocks/commodities/indices 50×, or a lower market limit. Displayed values have a parity test with the engine. Older snapshots keep 5×. | C12, product-rules |
+| D7 | Daily-loss variants | Order field `dailyLossVariant`, frozen in the snapshot (Standard 3% also removes minimum trading days). **Not sold**: no approved price; hidden from the landing. | M13, challenge-plans |
+| D8 | News, overnight, weekend | Funded Standard/One-step: daily auto-close 15 minutes before the 21:00/22:00 UTC close; news profit deduction (±5 min, 5-hour exemption). Instant: news (±10 min) and weekend hard breaches. Evaluations unrestricted. Calendar = operator-imported licensed source with verified coverage; **plans that depend on it are not sold without coverage**. Swing add-on not offered (not priced). | M2–M6, C9, C11, R5 |
 
-Also needed before sales: the Rulebook sections `funded` and `payouts` are
-still marked "planned". They must be rewritten to describe the now-enforced
-review and reward process once D1–D5 are decided. That text is policy and
-needs owner approval.
+Open decision **D9**: the reference states the Instant trailing limit does
+not reset after a reward. Applied literally, a breakeven-locked floor equals
+the post-reward balance and the account would breach at once. Until decided,
+trailing restarts from the post-reward balance (`rewards.js`).
+
+Defect found and fixed while implementing: a challenge started without a
+frozen snapshot was provisioned from an empty configuration instead of its
+plan (it silently lost its plan rules; only the old 5× default had masked it).
+Regression test C14.
 
 ## 5. CMS and support workflow
 
@@ -109,31 +116,34 @@ verified mailbox.
 
 P0, required before public sales:
 
-1. **Terms of Service, Privacy Policy and Refund Policy do not exist** anywhere
-   in the repository or CMS seeds. The Contact page lists them as "pending
-   legal publication" and does not link to them. They need legal drafting and
-   approval.
-2. Decisions D1–D8, then the Rulebook `funded`/`payouts` text update.
-3. Deploy approval for this branch, then a production run of
-   `register_support_tables.py` (or the full bootstrap) and the additive
-   migration.
-4. Production acceptance of one complete paid purchase → challenge → dashboard
-   on the deployed build (the owner's reported payment covers the payment leg
-   only).
+1. **Licensed economic-calendar source.** Every paid plan depends on news
+   rules (D8), so with no verified coverage the server refuses to sell
+   Standard, One-step and Instant (by design). Choose and license a source,
+   then import events through `POST /admin/calendar/import` at least 7 days
+   ahead, continuously.
+2. **Legal review** of the drafts in
+   [`docs/legal/drafts/`](../../legal/drafts/README.md) (Terms of Service,
+   Privacy Policy, Refund Policy). Nothing is published until approved.
+3. Decision D9 (Instant trailing after a reward).
+4. Human review and merge of this PR, then an approved deploy with, in
+   order: backend migration; `npm --prefix apps/backend run seed-plans`
+   (catalog v3 replaces older plan rows by version); CMS bootstrap with the
+   support step and a `--refresh` of `trading_rules` for the rewritten
+   Rulebook sections (overwrites editorial edits of those rows).
+5. Production acceptance of one paid purchase → challenge → dashboard on the
+   deployed build.
 
 P1:
 
-5. Verified mailboxes for support, legal, technical and community.
-6. Exact office pin. OpenStreetMap does not map Alley 13; the page shows the
-   verified Daneshamooz Street × Mehr Boulevard point and says so.
-7. Confirm `t.me/communitybuopenfund` is the owner's group (it resolves to
-   "OpenFund | Community"; ownership cannot be verified from outside).
+6. Prices for the daily-loss variants (D7) and the Swing add-on, if they are
+   to be sold.
+7. Verified mailboxes for support, legal, technical and community.
+8. Exact office pin (Alley 13 is not in OpenStreetMap).
+9. Confirm ownership of `t.me/communitybuopenfund`.
 
-Not re-audited in this pass, with earlier findings still open: licensing
-(first-party license, AGPL-linked PineTS, vendored chart and font provenance,
-MetaMask SDK terms), terminal SL/TP creation from the chart, lot sizing, and
-production capacity (the demonstrated local result remains 500 chart users +
-1,000 visitors; the 1,500 + 2,000 target is not demonstrated).
+Not re-audited in this pass: licensing, terminal chart SL/TP creation, lot
+sizing and production capacity (demonstrated locally: 500 chart users +
+1,000 visitors).
 
 ## 7. Production risks
 

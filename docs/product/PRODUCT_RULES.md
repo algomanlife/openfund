@@ -41,7 +41,7 @@ changing the published rule to fit the code.
 
 | ID | Status | Rule | Plans | Gap |
 | :--- | :--- | :--- | :--- | :--- |
-| `PLAN-DAILY-LOSS-VARIANT` | Blocked | Cheaper daily-loss option (`dailyLossPctAlt`: 3% Standard, 2% One-phase) | Standard, One-phase | Orders carry only plan and size; the engine enforces `dailyLossPct` only; no variant price exists. Needs an owner price per variant (or removal from public copy). |
+| `PLAN-DAILY-LOSS-VARIANT` | Implemented, not sold (no approved price) | Cheaper daily-loss option (`dailyLossPctAlt`: 3% Standard, 2% One-phase) | Standard, One-phase | Orders carry only plan and size; the engine enforces `dailyLossPct` only; no variant price exists. Needs an owner price per variant (or removal from public copy). |
 | `PLAN-PAYOUT-CONDITIONS` | Implemented (local, branch `agent/claude/launch-readiness`) | Reward split, monthly 100% cycle, first payout after 14 days, 1% minimum request, consistency score, profitable days | Standard, One-phase, Instant | Enforced by `apps/backend/rewards.js` ([ADR 0028](../decisions/0028-reward-lifecycle-and-support-queue.md)). Cycle semantics still differ from the current reference model — owner decision D1 in the [launch-readiness report](../reviews/launch-readiness-2026-11-13/REPORT.md). |
 | `PLAN-FEE-REFUND` | Implemented (local) | Standard fee refunded with the fourth reward | Standard | The fee paid on the originating order is added to the fourth reward request. The current reference page no longer states this term — owner decision D5. |
 
@@ -108,3 +108,13 @@ breakeven). Differences that need an owner decision before public sales are
 listed with their exact interpretation in the
 [launch-readiness report](../reviews/launch-readiness-2026-11-13/REPORT.md#4-rule-matrix-and-owner-decisions).
 No reference wording is reproduced in Openfund copy.
+
+### Owner decisions D1–D8 (2026-11-13)
+
+Applied as catalog v3 / rules snapshot v3 — see the
+[launch-readiness report](../reviews/launch-readiness-2026-11-13/REPORT.md#4-rule-matrix-and-owner-decisions).
+The catalog fields `rewardCycles`, `inactivityDays`, `conduct` and
+`dailyLossVariantPriceUsd` are classified in the support register;
+`profitSplitMonthlyPct` and `firstPayoutDays` are null on every published
+plan. `npm run seed-plans` replaces a stored plan configuration only when the
+catalog version is higher.

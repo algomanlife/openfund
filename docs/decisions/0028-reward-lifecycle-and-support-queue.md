@@ -69,3 +69,14 @@ of a phased plan, so it would treat an open funded-demo account (stage 0,
 phases ≥ 1) as an evaluation. Before rolling back after any review has been
 approved, pause those accounts (or finish the rollback before approving the
 first review), and settle open reward requests manually.
+
+## Addendum — owner decisions D1–D8 (2026-11-13)
+
+Rules snapshot v3 adds per-model reward cycles chosen once before the
+funded-demo account starts, model conduct rules enforced inside the engine's
+challenge transaction (`apps/backend/conduct.js`, pure logic in
+`model-rules.js`), the fee refund created when the fourth reward is paid
+(`fee_refunds`), and a verified operator-imported economic calendar
+(`economic_events`, `economic_calendar_coverage`). A plan whose rules depend
+on calendar data is not sold while coverage is missing. Snapshots v1/v2 keep
+their terms (`legacyEligibility`). See the launch-readiness report §4.
