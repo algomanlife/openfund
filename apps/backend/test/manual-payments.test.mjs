@@ -101,7 +101,7 @@ async function fixture() {
   const wallet = rnd()
   const { rows: [user] } = await pool.query(`INSERT INTO openfund_users (wallet_address, wallet_chain) VALUES ($1, 42161) RETURNING id`, [wallet])
   const { rows: [plan] } = await pool.query(
-    `INSERT INTO challenge_plans (slug, name, configuration) VALUES ('manual-pay-plan','Manual Pay Test',$1)
+    `INSERT INTO challenge_plans (slug, name, configuration) VALUES ('mp-test','MP Test',$1)
      ON CONFLICT (slug) DO UPDATE SET configuration = EXCLUDED.configuration RETURNING id`,
     [JSON.stringify({ accountSizesUsd: [5000], priceUsd: { 5000: 49 }, phases: 1 })])
   const order = async () => (await pool.query(

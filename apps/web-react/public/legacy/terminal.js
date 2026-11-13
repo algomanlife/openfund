@@ -1275,17 +1275,16 @@ function lotUnavailableText(spec){
 }
 function lotDefinitionText(spec){
   const unit = spec.baseUnit || meta()?.base || '';
-  const size = Number(spec.contractSize).toLocaleString(document.documentElement.lang === 'fa' ? 'fa-IR' : 'en-US');
-  return L(`هر ۱ لات = ${size} ${unit} (قرارداد اوپن‌فاند؛ Gains لات ندارد). حداقل و گام: ${spec.lotStep} لات.`,
-    `1 lot = ${size} ${unit} (Openfund convention; Gains itself has no lots). Minimum and step: ${spec.lotStep} lot.`);
+  const size = Number(spec.contractSize).toLocaleString('en-US');
+  return `${L('هر ۱ لات =', '1 lot =')} ${size} ${unit} (${L('قرارداد اوپن‌فاند؛ Gains لات ندارد', 'Openfund convention (Gains itself has no lots)')}). ${L('حداقل و گام', 'minimum and step')}: ${spec.lotStep} ${L('لات', 'lot')}.`;
 }
 /* the same definition with the figures isolated for right-to-left text */
 function lotDefinitionHtml(spec){
   const unit = spec.baseUnit || meta()?.base || '';
   const size = Number(spec.contractSize).toLocaleString('en-US');
   const amount = `<bdi dir="ltr">${esc(size)} ${esc(unit)}</bdi>`, step = `<bdi dir="ltr">${esc(spec.lotStep)}</bdi>`;
-  return L(`هر ۱ لات = ${amount}<br>قرارداد اوپن‌فاند؛ <bdi dir="ltr">Gains</bdi> لات ندارد · حداقل و گام: ${step} لات`,
-    `1 lot = ${amount}<br>Openfund convention (Gains itself has no lots) · minimum and step: ${step} lot`);
+  /* fixed phrases only, so L() can translate them for ar/ru/zh-CN */
+  return `${esc(L('هر ۱ لات =', '1 lot ='))} ${amount}<br>${esc(L('قرارداد اوپن‌فاند؛ Gains لات ندارد', 'Openfund convention (Gains itself has no lots)'))} · ${esc(L('حداقل و گام', 'minimum and step'))}: ${step} ${esc(L('لات', 'lot'))}`;
 }
 /* lots mode: lots → quantity (lots × contract size) → collateral, the same
    canonical path as the quantity mode; the engine still derives the final
