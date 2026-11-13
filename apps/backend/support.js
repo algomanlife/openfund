@@ -52,8 +52,8 @@ const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 /** Random public reference: OF-YYMMDD-XXXXXX (no sequence leaks volume). */
 export function newReference(now = new Date()) {
   const d = now.toISOString().slice(2, 10).replace(/-/g, '')
-  const bytes = crypto.randomBytes(6)
-  return `OF-${d}-${[...bytes].map(b => ALPHABET[b % ALPHABET.length]).join('')}`
+  /* crypto.randomInt is uniform (rejection sampling): no modulo bias */
+  return `OF-${d}-${Array.from({ length: 6 }, () => ALPHABET[crypto.randomInt(ALPHABET.length)]).join('')}`
 }
 
 const clean = (v, { multiline = false } = {}) => {
