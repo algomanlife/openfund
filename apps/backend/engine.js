@@ -371,6 +371,23 @@ export class Engine {
     } catch (e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
   }
 
+  /* engine-loop equity sampling for a free_demo account: exactly the
+     account_equity_risk / account_equity_samples writes that state() makes
+     for that account (same snapshot isolation, same rows and ordering, same
+     #accountView equity), without the pending-order and closed-history
+     reads that the loop never used */
+  async #sampleTrialEquity(userId) {
+    const c = await this.pool.connect()
+    try {
+      await c.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY')
+      const account = (await c.query("SELECT * FROM demo_accounts WHERE user_id=$1 AND account_type='free_demo'", [userId])).rows[0]
+      if (!account) { await c.query('COMMIT'); return }
+      const positions = (await c.query("SELECT * FROM trading_positions WHERE account_id=$1 AND status='open' ORDER BY opened_at DESC", [account.id])).rows
+      await c.query('COMMIT')
+      await this.#sampleRisk(account.id, this.#accountView(account, positions, null).equity, c)
+    } catch (e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
+  }
+
   async #sampleRisk(accountId, equity, c = this.pool) {
     if (equity === null) return null
     const {rows} = await c.query(`INSERT INTO account_equity_risk
@@ -975,7 +992,7 @@ export class Engine {
         )
       ).rows) {
         await this.enforceTrialRisk(user_id);
-        await this.state(user_id);
+        await this.#sampleTrialEquity(user_id);
       }
       /* challenge evaluation: accounts with live positions (equity moves
          with the marks) and challenges that have reached their time limit */
