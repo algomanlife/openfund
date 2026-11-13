@@ -609,8 +609,9 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
     correlation: c.solana ? 'memo' : 'sender',
   })
   /* a manual payment needs a settlement token (native coins are never
-     converted to USD) */
-  const manualChains = () => cfg().readyChains.filter(c => c.token).map(manualChain)
+     converted to USD); only a non-production EVM test chain without a token
+     settles in its native coin, exactly as the verifier allows */
+  const manualChains = () => cfg().readyChains.filter(c => c.token || (!isProd() && !c.solana)).map(manualChain)
   const paymentInstructions = order => {
     const c = cfg()
     if (!c.receiver || !order || order.payment_required === false) return null
