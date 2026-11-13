@@ -1,0 +1,809 @@
+{
+ "run": "overload-cand",
+ "env": {
+  "PROFILE": "uncapped",
+  "STAGES": "baseline,high",
+  "STAGE_HOLD_S": "300",
+  "MON_POOL_STOP": "0",
+  "RECOVERY_S": "240",
+  "start_ms": "1794556559000",
+  "end_ms": "1794557541000"
+ },
+ "startMs": 1794556559000,
+ "endMs": 1794557541000,
+ "stop": null,
+ "stages": [
+  {
+   "stage": "baseline",
+   "charts": 100,
+   "visitors": 200,
+   "combined": 300,
+   "reached": true,
+   "window": {
+    "from": 1794556629000,
+    "to": 1794556914000
+   },
+   "http": {
+    "charts": {
+     "n": 17463,
+     "rps": 58.2,
+     "avg": 1.8,
+     "p50": 1.3,
+     "p95": 3.8,
+     "p99": 11.9,
+     "max": 100,
+     "errPct": 0
+    },
+    "visitors": {
+     "n": 51373,
+     "rps": 171.2,
+     "avg": 0.3,
+     "p50": 0.2,
+     "p95": 0.7,
+     "p99": 1.7,
+     "max": 43,
+     "errPct": 0
+    }
+   },
+   "endpoints": {
+    "context": {
+     "n": 11997,
+     "rps": 40,
+     "avg": 2.1,
+     "p50": 1.5,
+     "p95": 4.2,
+     "p99": 12.8,
+     "max": 100,
+     "errPct": 0
+    },
+    "accounts": {
+     "n": 2000,
+     "rps": 6.7,
+     "avg": 1.4,
+     "p50": 1.1,
+     "p95": 2.7,
+     "p99": 6.5,
+     "max": 22,
+     "errPct": 0
+    },
+    "ws_get": {
+     "n": 282,
+     "rps": 0.9,
+     "avg": 0.6,
+     "p50": 0.6,
+     "p95": 1,
+     "p99": 2.4,
+     "max": 8,
+     "errPct": 0
+    },
+    "ws_put": {
+     "n": 1979,
+     "rps": 6.6,
+     "avg": 0.9,
+     "p50": 0.7,
+     "p95": 1.7,
+     "p99": 3.2,
+     "max": 23,
+     "errPct": 0
+    },
+    "preview": {
+     "n": 371,
+     "rps": 1.2,
+     "avg": 1.4,
+     "p50": 1,
+     "p95": 2.5,
+     "p99": 8.2,
+     "max": 25,
+     "errPct": 0
+    },
+    "order": {
+     "n": 469,
+     "rps": 1.6,
+     "avg": 2.4,
+     "p50": 2.1,
+     "p95": 4.4,
+     "p99": 7.4,
+     "max": 26,
+     "errPct": 0
+    },
+    "protection": {
+     "n": 312,
+     "rps": 1,
+     "avg": 1.1,
+     "p50": 0.8,
+     "p95": 2,
+     "p99": 3.1,
+     "max": 14,
+     "errPct": 0
+    },
+    "close": {
+     "n": 51,
+     "rps": 0.2,
+     "avg": 2.2,
+     "p50": 2,
+     "p95": 3.8,
+     "p99": 4.6,
+     "max": 5,
+     "errPct": 0
+    },
+    "state": {
+     "n": 1,
+     "rps": 0,
+     "avg": 0.8,
+     "p50": 0.8,
+     "p95": 0.8,
+     "p99": 0.8,
+     "max": 1,
+     "errPct": 0
+    },
+    "me": {
+     "n": 1,
+     "rps": 0,
+     "avg": 1.2,
+     "p50": 1.2,
+     "p95": 1.2,
+     "p99": 1.2,
+     "max": 1,
+     "errPct": 0
+    },
+    "v_document": {
+     "n": 2056,
+     "rps": 6.9,
+     "avg": 0.7,
+     "p50": 0.5,
+     "p95": 1.3,
+     "p99": 6,
+     "max": 14,
+     "errPct": 0
+    },
+    "v_asset": {
+     "n": 835,
+     "rps": 2.8,
+     "avg": 0.5,
+     "p50": 0.2,
+     "p95": 1.5,
+     "p99": 3.6,
+     "max": 12,
+     "errPct": 0
+    },
+    "v_legacy": {
+     "n": 41689,
+     "rps": 139,
+     "avg": 0.2,
+     "p50": 0.1,
+     "p95": 0.5,
+     "p99": 1.4,
+     "max": 16,
+     "errPct": 0
+    },
+    "v_runtime": {
+     "n": 2056,
+     "rps": 6.9,
+     "avg": 0.1,
+     "p50": 0.1,
+     "p95": 0.3,
+     "p99": 0.7,
+     "max": 2,
+     "errPct": 0
+    },
+    "v_api_public": {
+     "n": 4737,
+     "rps": 15.8,
+     "avg": 0.5,
+     "p50": 0.4,
+     "p95": 1,
+     "p99": 3.1,
+     "max": 43,
+     "errPct": 0
+    }
+   },
+   "sse": {
+    "activeAvg": 100,
+    "target": 100,
+    "stalledMax": 0,
+    "drops": 0,
+    "reconnects": 0,
+    "errors": {},
+    "eventsPerSec": 102.95,
+    "dataPerSec": 102.95,
+    "gapP95": 1002,
+    "gapP99": 1003,
+    "gapMax": 1110,
+    "mdDelayP50": 129,
+    "mdDelayP95": 153,
+    "mdDelayP99": 207,
+    "mdDelayMax": 262,
+    "connectP95": null
+   },
+   "backend": {
+    "cpuAvg": 30.02,
+    "cpuMax": 38.9,
+    "rssMax": 205.3,
+    "heapMax": 86.8,
+    "eldP50": 1.02,
+    "eldP99": 1.77,
+    "eldMax": 27.2,
+    "poolWaitingAvg": 0,
+    "poolWaitingMax": 0,
+    "poolTotalMax": 10,
+    "poolMax": 10,
+    "engine": {
+     "passesPs": 1,
+     "passMsP50": 571.1,
+     "passMsP95": 658.3,
+     "passMsMax": 810.8,
+     "runningMsMax": 253,
+     "skippedPs": 0,
+     "sweepDelayMsP50": 557.8,
+     "sweepDelayMsP95": 632.9,
+     "sweepDelayMsMax": 798.1
+    }
+   },
+   "postgres": {
+    "connMax": 17,
+    "connLimit": 100,
+    "tpsAvg": 4364.34,
+    "cpuAvg": 64.41,
+    "cpuMax": 68.7,
+    "lockWaitsMax": 0,
+    "ungrantedLocksMax": 0,
+    "longestQueryS": 0,
+    "deadlocks": 0,
+    "cacheHit": 1,
+    "engineLoopPassesPs": 1
+   },
+   "generators": {
+    "cpuAvg": 11.52,
+    "cpuMax": 222.3,
+    "rssMB": 1814.9
+   }
+  },
+  {
+   "stage": "high",
+   "charts": 1000,
+   "visitors": 1500,
+   "combined": 2500,
+   "reached": true,
+   "window": {
+    "from": 1794556989000,
+    "to": 1794557274000
+   },
+   "http": {
+    "charts": {
+     "n": 173462,
+     "rps": 578.2,
+     "avg": 211.2,
+     "p50": 72,
+     "p95": 934.4,
+     "p99": 1592.9,
+     "max": 3202,
+     "errPct": 0
+    },
+    "visitors": {
+     "n": 381766,
+     "rps": 1272.6,
+     "avg": 12.6,
+     "p50": 1.4,
+     "p95": 16.4,
+     "p99": 299.9,
+     "max": 2850,
+     "errPct": 0
+    }
+   },
+   "endpoints": {
+    "context": {
+     "n": 119356,
+     "rps": 397.9,
+     "avg": 227.8,
+     "p50": 110.1,
+     "p95": 937.7,
+     "p99": 1535.8,
+     "max": 2607,
+     "errPct": 0
+    },
+    "accounts": {
+     "n": 19935,
+     "rps": 66.5,
+     "avg": 230.4,
+     "p50": 60.7,
+     "p95": 1220.3,
+     "p99": 1920.7,
+     "max": 2682,
+     "errPct": 0
+    },
+    "ws_get": {
+     "n": 3061,
+     "rps": 10.2,
+     "avg": 96,
+     "p50": 22.8,
+     "p95": 550.5,
+     "p99": 907.1,
+     "max": 1314,
+     "errPct": 0
+    },
+    "ws_put": {
+     "n": 19083,
+     "rps": 63.6,
+     "avg": 121.5,
+     "p50": 30.4,
+     "p95": 670.6,
+     "p99": 1104.7,
+     "max": 1899,
+     "errPct": 0
+    },
+    "preview": {
+     "n": 3605,
+     "rps": 12,
+     "avg": 114.1,
+     "p50": 32.5,
+     "p95": 640,
+     "p99": 998.7,
+     "max": 1388,
+     "errPct": 0
+    },
+    "order": {
+     "n": 4678,
+     "rps": 15.6,
+     "avg": 247.7,
+     "p50": 33,
+     "p95": 1455.6,
+     "p99": 2618.7,
+     "max": 3202,
+     "errPct": 0
+    },
+    "protection": {
+     "n": 3151,
+     "rps": 10.5,
+     "avg": 176.5,
+     "p50": 48.3,
+     "p95": 897.2,
+     "p99": 1530.5,
+     "max": 1773,
+     "errPct": 0
+    },
+    "close": {
+     "n": 587,
+     "rps": 2,
+     "avg": 197.3,
+     "p50": 60.1,
+     "p95": 993,
+     "p99": 1537.6,
+     "max": 2156,
+     "errPct": 0
+    },
+    "state": {
+     "n": 6,
+     "rps": 0,
+     "avg": 131.2,
+     "p50": 114.8,
+     "p95": 210.4,
+     "p99": 210.9,
+     "max": 211,
+     "errPct": 0
+    },
+    "me": null,
+    "v_document": {
+     "n": 15273,
+     "rps": 50.9,
+     "avg": 4.3,
+     "p50": 2.8,
+     "p95": 12,
+     "p99": 39.8,
+     "max": 195,
+     "errPct": 0
+    },
+    "v_asset": {
+     "n": 6300,
+     "rps": 21,
+     "avg": 3.7,
+     "p50": 2,
+     "p95": 15.9,
+     "p99": 37.2,
+     "max": 172,
+     "errPct": 0
+    },
+    "v_legacy": {
+     "n": 309662,
+     "rps": 1032.2,
+     "avg": 2.1,
+     "p50": 1.3,
+     "p95": 6.2,
+     "p99": 12.7,
+     "max": 204,
+     "errPct": 0
+    },
+    "v_runtime": {
+     "n": 15273,
+     "rps": 50.9,
+     "avg": 0.9,
+     "p50": 0.5,
+     "p95": 2.6,
+     "p99": 5.1,
+     "max": 97,
+     "errPct": 0
+    },
+    "v_api_public": {
+     "n": 35258,
+     "rps": 117.5,
+     "avg": 115.3,
+     "p50": 11.4,
+     "p95": 581,
+     "p99": 1304.8,
+     "max": 2850,
+     "errPct": 0
+    }
+   },
+   "sse": {
+    "activeAvg": 1000,
+    "target": 1000,
+    "stalledMax": 0,
+    "drops": 0,
+    "reconnects": 0,
+    "errors": {},
+    "eventsPerSec": 1016.27,
+    "dataPerSec": 1016.27,
+    "gapP95": 1020,
+    "gapP99": 1083,
+    "gapMax": 2581,
+    "mdDelayP50": 119,
+    "mdDelayP95": 238,
+    "mdDelayP99": 249,
+    "mdDelayMax": 347,
+    "connectP95": null
+   },
+   "backend": {
+    "cpuAvg": 88.75,
+    "cpuMax": 111.5,
+    "rssMax": 451.8,
+    "heapMax": 266.2,
+    "eldP50": 1.01,
+    "eldP99": 2.43,
+    "eldMax": 126.09,
+    "poolWaitingAvg": 124.82,
+    "poolWaitingMax": 1571,
+    "poolTotalMax": 10,
+    "poolMax": 10,
+    "engine": {
+     "passesPs": 0.26,
+     "passMsP50": 2641.8,
+     "passMsP95": 7181.7,
+     "passMsMax": 14679.2,
+     "runningMsMax": 14281,
+     "skippedPs": 0.74,
+     "sweepDelayMsP50": 2604.5,
+     "sweepDelayMsP95": 6729.5,
+     "sweepDelayMsMax": 13986.3
+    }
+   },
+   "postgres": {
+    "connMax": 17,
+    "connLimit": 100,
+    "tpsAvg": 6873.11,
+    "cpuAvg": 109.36,
+    "cpuMax": 162.4,
+    "lockWaitsMax": 0,
+    "ungrantedLocksMax": 0,
+    "longestQueryS": 0,
+    "deadlocks": 0,
+    "cacheHit": 1,
+    "engineLoopPassesPs": 0.26
+   },
+   "generators": {
+    "cpuAvg": 108.97,
+    "cpuMax": 334,
+    "rssMB": 2521.7
+   }
+  },
+  {
+   "stage": "recovery",
+   "charts": 100,
+   "visitors": 200,
+   "combined": 300,
+   "reached": true,
+   "window": {
+    "from": 1794557299000,
+    "to": 1794557524000
+   },
+   "http": {
+    "charts": {
+     "n": 14004,
+     "rps": 58.4,
+     "avg": 2.9,
+     "p50": 1.5,
+     "p95": 8.4,
+     "p99": 39.1,
+     "max": 280,
+     "errPct": 0
+    },
+    "visitors": {
+     "n": 41129,
+     "rps": 171.4,
+     "avg": 0.4,
+     "p50": 0.2,
+     "p95": 0.9,
+     "p99": 4.2,
+     "max": 130,
+     "errPct": 0
+    }
+   },
+   "endpoints": {
+    "context": {
+     "n": 9600,
+     "rps": 40,
+     "avg": 3.6,
+     "p50": 1.6,
+     "p95": 14.4,
+     "p99": 42.5,
+     "max": 255,
+     "errPct": 0
+    },
+    "accounts": {
+     "n": 1602,
+     "rps": 6.7,
+     "avg": 1.8,
+     "p50": 1.3,
+     "p95": 3.1,
+     "p99": 13.4,
+     "max": 55,
+     "errPct": 0
+    },
+    "ws_get": {
+     "n": 280,
+     "rps": 1.2,
+     "avg": 0.8,
+     "p50": 0.6,
+     "p95": 1.4,
+     "p99": 6.6,
+     "max": 14,
+     "errPct": 0
+    },
+    "ws_put": {
+     "n": 1501,
+     "rps": 6.3,
+     "avg": 1,
+     "p50": 0.6,
+     "p95": 1.6,
+     "p99": 7.4,
+     "max": 98,
+     "errPct": 0
+    },
+    "preview": {
+     "n": 297,
+     "rps": 1.2,
+     "avg": 1.6,
+     "p50": 1.2,
+     "p95": 2.4,
+     "p99": 8.7,
+     "max": 45,
+     "errPct": 0
+    },
+    "order": {
+     "n": 367,
+     "rps": 1.5,
+     "avg": 3.3,
+     "p50": 2,
+     "p95": 4,
+     "p99": 16.4,
+     "max": 280,
+     "errPct": 0
+    },
+    "protection": {
+     "n": 267,
+     "rps": 1.1,
+     "avg": 1.1,
+     "p50": 0.8,
+     "p95": 2.1,
+     "p99": 5.8,
+     "max": 10,
+     "errPct": 0
+    },
+    "close": {
+     "n": 90,
+     "rps": 0.4,
+     "avg": 2,
+     "p50": 1.7,
+     "p95": 3.7,
+     "p99": 4.7,
+     "max": 6,
+     "errPct": 0
+    },
+    "state": null,
+    "me": null,
+    "v_document": {
+     "n": 1636,
+     "rps": 6.8,
+     "avg": 1.1,
+     "p50": 0.4,
+     "p95": 4.8,
+     "p99": 18.7,
+     "max": 32,
+     "errPct": 0
+    },
+    "v_asset": {
+     "n": 632,
+     "rps": 2.6,
+     "avg": 0.9,
+     "p50": 0.2,
+     "p95": 2.2,
+     "p99": 6.9,
+     "max": 130,
+     "errPct": 0
+    },
+    "v_legacy": {
+     "n": 33366,
+     "rps": 139,
+     "avg": 0.3,
+     "p50": 0.1,
+     "p95": 0.7,
+     "p99": 3.5,
+     "max": 57,
+     "errPct": 0
+    },
+    "v_runtime": {
+     "n": 1636,
+     "rps": 6.8,
+     "avg": 0.2,
+     "p50": 0.1,
+     "p95": 0.6,
+     "p99": 1.5,
+     "max": 18,
+     "errPct": 0
+    },
+    "v_api_public": {
+     "n": 3859,
+     "rps": 16.1,
+     "avg": 0.9,
+     "p50": 0.3,
+     "p95": 1.3,
+     "p99": 20,
+     "max": 58,
+     "errPct": 0
+    }
+   },
+   "sse": {
+    "activeAvg": 100,
+    "target": 100,
+    "stalledMax": 0,
+    "drops": 0,
+    "reconnects": 0,
+    "errors": {},
+    "eventsPerSec": 104.03,
+    "dataPerSec": 104.03,
+    "gapP95": 1005,
+    "gapP99": 1009,
+    "gapMax": 1224,
+    "mdDelayP50": 120,
+    "mdDelayP95": 176,
+    "mdDelayP99": 218,
+    "mdDelayMax": 256,
+    "connectP95": null
+   },
+   "backend": {
+    "cpuAvg": 39.67,
+    "cpuMax": 52.4,
+    "rssMax": 354.4,
+    "heapMax": 178.1,
+    "eldP50": 1,
+    "eldP99": 1.78,
+    "eldMax": 39.78,
+    "poolWaitingAvg": 0,
+    "poolWaitingMax": 0,
+    "poolTotalMax": 10,
+    "poolMax": 10,
+    "engine": {
+     "passesPs": 0.82,
+     "passMsP50": 863,
+     "passMsP95": 1100.6,
+     "passMsMax": 2008.2,
+     "runningMsMax": 1304,
+     "skippedPs": 0.18,
+     "sweepDelayMsP50": 832.3,
+     "sweepDelayMsP95": 1034.5,
+     "sweepDelayMsMax": 1380.6
+    }
+   },
+   "postgres": {
+    "connMax": 17,
+    "connLimit": 100,
+    "tpsAvg": 5244.91,
+    "cpuAvg": 58.1,
+    "cpuMax": 72.2,
+    "lockWaitsMax": 0,
+    "ungrantedLocksMax": 0,
+    "longestQueryS": 0.000105,
+    "deadlocks": 0,
+    "cacheHit": 1,
+    "engineLoopPassesPs": 0.82
+   },
+   "generators": {
+    "cpuAvg": 17.87,
+    "cpuMax": 311.2,
+    "rssMB": 2293.5
+   }
+  }
+ ],
+ "k6Extra": {
+  "chart_save_ms": {
+   "med": 9.29,
+   "p(90)": 265.7388000000001,
+   "p(95)": 541.6947999999992,
+   "p(99)": 983.9292,
+   "max": 1761.802,
+   "count": 20577,
+   "avg": 89.06436258929848,
+   "min": 0.296
+  },
+  "workspace_restore_ms": {
+   "avg": 62.66317925645256,
+   "min": 0.194,
+   "med": 1.121,
+   "p(90)": 162.63600000000002,
+   "p(95)": 412.07049999999936,
+   "p(99)": 830.3318999999998,
+   "max": 1313.823,
+   "count": 4223
+  },
+  "order_submit_ms": {
+   "med": 20.376,
+   "p(90)": 746.8072000000001,
+   "p(95)": 1267.7233999999996,
+   "p(99)": 2610.82894,
+   "max": 3201.778,
+   "count": 4783,
+   "avg": 207.45895985783014,
+   "min": 1.37
+  },
+  "sltp_update_ms": {
+   "max": 1772.709,
+   "count": 4003,
+   "avg": 140.0247496877342,
+   "min": 0.485,
+   "med": 22.733,
+   "p(90)": 522.6398,
+   "p(95)": 801.7474,
+   "p(99)": 1494.6235599999998
+  }
+ },
+ "integrity": {
+  "t": 1794557545847,
+  "violations": 0,
+  "checks": {
+   "workspace_owner_mismatch": 0,
+   "workspace_malformed": 0,
+   "workspace_symbol_mismatch": 0,
+   "workspace_over_entry_limit": 0,
+   "duplicate_idempotency_keys": 0,
+   "filled_orders_without_position": 0,
+   "positions_sharing_order": 0,
+   "position_invalid_numbers": 0,
+   "position_open_with_close_fields": 0,
+   "position_closed_without_exit": 0,
+   "position_cross_user": 0,
+   "sltp_inverted": 0,
+   "sltp_last_update_not_applied": 0,
+   "account_negative_balance": 0,
+   "account_used_margin_drift": 0,
+   "duplicate_demo_funding": 0
+  },
+  "counts": {
+   "users": 3000,
+   "workspace_entries": 6960,
+   "orders": 5683,
+   "positions": 5895,
+   "open_positions": 2253,
+   "sltp_updates": 4003
+  }
+ },
+ "sltp": {
+  "n": 2472,
+  "p50": 1213,
+  "p95": 4020,
+  "p99": 9884,
+  "max": 14994
+ },
+ "k6Counts": {
+  "integrityViolations": 0,
+  "timeouts": 0,
+  "conflictRate": 0
+ }
+}

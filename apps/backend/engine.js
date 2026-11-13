@@ -20,6 +20,7 @@
  *  - funding not simulated in v1
  */
 import crypto from 'node:crypto'
+import { AsyncLocalStorage } from 'node:async_hooks'
 import {instrumentSpec} from './instruments.js'
 import { propMaxLeverage } from './prop-leverage.js'
 import Decimal from 'decimal.js'
@@ -35,7 +36,24 @@ const duplicate = (row, req, position) => {
   if (intent(row.request_meta.requested) !== intent(req)) throw Object.assign(new Error('idempotency_conflict'), {status:409})
   return {ok: row.status !== 'rejected',reason:row.reject_reason,duplicate:true,pending:row.status === 'pending',order:row,position}
 }
+/* Work started by the monitoring loop (risk sweeps, pending-order triggers,
+   SL/TP/liquidation exits) runs on an optional dedicated pool so it never
+   queues behind ordinary API queries in the main pool. The queries,
+   transactions, row locks and the per-account mutex are exactly the same;
+   only the connection source differs. API-initiated engine calls and the
+   state listeners keep the main pool. */
+const loopScope = new AsyncLocalStorage()
 const locks = new Map()
+/* equity-sample writes per account, in call order (see #sampleRisk) */
+const SAMPLE_MINUTE_MARGIN_MS = 5000
+const sampleOrder = new Map()
+async function withSampleOrder(accountId, fn) {
+  const prev = sampleOrder.get(accountId) || Promise.resolve()
+  const run = prev.then(fn, fn)
+  const tail = run.catch(() => {})
+  sampleOrder.set(accountId, tail)
+  try { return await run } finally { if (sampleOrder.get(accountId) === tail) sampleOrder.delete(accountId) }
+}
 async function withAccountLock(accountId, fn) {
   const prev = locks.get(accountId) || Promise.resolve()
   const run = prev.then(fn, fn)
@@ -45,8 +63,9 @@ async function withAccountLock(accountId, fn) {
 }
 
 export class Engine {
-  constructor(pool, marketData) {
+  constructor(pool, marketData, { loopPool = null } = {}) {
     this.pool = pool
+    this.loopPool = loopPool
     this.md = marketData
     this.challenges = new ChallengeService(pool)
     this.listeners = new Set()          /* state-change → SSE push */
@@ -54,17 +73,23 @@ export class Engine {
     this.running = false
   }
 
+  /** connection source: the loop pool inside a monitoring pass, else the main pool */
+  get db() { return (this.loopPool && loopScope.getStore()) || this.pool }
+
   onState(fn) { this.listeners.add(fn); return () => this.listeners.delete(fn) }
-  emit(accountId) { for (const fn of this.listeners) { try { fn(accountId) } catch {} } }
+  /* listeners (SSE pushes) never inherit the loop's connection scope */
+  emit(accountId) { loopScope.exit(() => { for (const fn of this.listeners) { try { fn(accountId) } catch {} } }) }
 
   start(intervalMs = 1000) {
     if (this.running) return
     this.running = true
-    this.timer = setInterval(() => { this.loop().catch(console.error) }, intervalMs)
+    this.timer = setInterval(() => { loopScope.run(this.loopPool, () => this.loop()).catch(console.error) }, intervalMs)
     this.timer.unref?.()
     console.log('[engine] monitoring loop started')
   }
-  stop() { this.running = false; clearInterval(this.timer) }
+  /* resolves once an in-flight monitoring pass has finished, so a graceful
+     shutdown never ends the pool under a running pass */
+  stop() { this.running = false; clearInterval(this.timer); return this.loopPass ?? Promise.resolve() }
 
   /* =========================================================
    * ACCOUNT / FUNDING
@@ -72,7 +97,7 @@ export class Engine {
 
   /** one free_demo account per user — atomic + idempotent funding event */
   async ensureDemoAccount(userId, client) {
-    const c = client || this.pool
+    const c = client || this.db
     return c.connect ? c.connect().then(async cc => { try { return await this.#ensureTx(cc, userId) } finally { cc.release() } })
                       : this.#ensureTx(c, userId)
   }
@@ -130,7 +155,7 @@ export class Engine {
     const account = await this.getAccount(userId)
     if (!account || account.status === 'permanently_disabled') return
     return withAccountLock(account.id, async () => {
-      const c = await this.pool.connect()
+      const c = await this.db.connect()
       try {
         await c.query('BEGIN')
         const acc = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [account.id])).rows[0]
@@ -266,7 +291,7 @@ export class Engine {
   /** standalone challenge enforcement entry (engine loop / pre-submit) */
   async enforceChallengeRisk(accountId) {
     return withAccountLock(accountId, async () => {
-      const c = await this.pool.connect()
+      const c = await this.db.connect()
       try {
         await c.query('BEGIN')
         const acc = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [accountId])).rows[0]
@@ -281,14 +306,14 @@ export class Engine {
   /** free_demo account (default) or an owned challenge account by id */
   async getAccount(userId, accountId = null) {
     if (accountId) {
-      const { rows } = await this.pool.query(
+      const { rows } = await this.db.query(
         `SELECT a.* FROM demo_accounts a
            JOIN openfund_challenges c ON c.demo_account_id = a.id
           WHERE a.id = $1 AND c.user_id = $2 AND a.account_type = 'challenge'`,
         [accountId, userId])
       return rows[0] || null
     }
-    const { rows } = await this.pool.query(
+    const { rows } = await this.db.query(
       'SELECT * FROM demo_accounts WHERE user_id=$1 AND account_type=$2', [userId, 'free_demo'])
     return rows[0] || null
   }
@@ -307,7 +332,7 @@ export class Engine {
    * ======================================================= */
 
   async state(userId, accountId = null) {
-    const c = await this.pool.connect()
+    const c = await this.db.connect()
     const as_of = Date.now()
     try {
       await c.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY')
@@ -327,12 +352,12 @@ export class Engine {
       if (challenge) {
         /* read-only risk view from the challenge evaluation tables
            (sampling happens on the engine's write path / loop) */
-        const day = (await this.pool.query(
+        const day = (await this.db.query(
           'SELECT * FROM challenge_equity_days WHERE challenge_id=$1 ORDER BY day DESC LIMIT 1', [challenge.id])).rows[0]
-        const trailing = (await this.pool.query(
+        const trailing = (await this.db.query(
           'SELECT * FROM challenge_trailing WHERE challenge_id=$1', [challenge.id])).rows[0]
         const rules = challenge.rules_snapshot ?? normalizeRules(challenge.plan_configuration ?? {})
-        const tradingDays = await countTradingDays(this.pool, account.id)
+        const tradingDays = await countTradingDays(this.db, account.id)
         const evaluation = evaluateRules({
           rules, stage: challenge.stage, startingBalance: challenge.account_size_usd,
           balance: account.balance, equity: view.equity,
@@ -363,15 +388,46 @@ export class Engine {
           rules_version: rules.rulesVersion,
         }
       } else {
-        view.risk = await this.#sampleRisk(account.id, view.equity, c)
+        view.risk = await this.#sampleRisk(account.id, view.equity, c, { idle: positions.length === 0 })
       }
       return { as_of, account: view, positions: positions.map(p => this.#positionView(p)), orders, history: history.map(p => this.#positionView(p)) }
     } catch (e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
   }
 
-  async #sampleRisk(accountId, equity, c = this.pool) {
+  /* engine-loop equity sampling for a free_demo account: exactly the
+     account_equity_risk / account_equity_samples writes that state() makes
+     for that account (same snapshot isolation, same rows and ordering, same
+     #accountView equity), without the pending-order and closed-history
+     reads that the loop never used */
+  async #sampleTrialEquity(userId) {
+    const c = await this.db.connect()
+    try {
+      await c.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY')
+      const account = (await c.query("SELECT * FROM demo_accounts WHERE user_id=$1 AND account_type='free_demo'", [userId])).rows[0]
+      if (!account) { await c.query('COMMIT'); return }
+      const positions = (await c.query("SELECT * FROM trading_positions WHERE account_id=$1 AND status='open' ORDER BY opened_at DESC", [account.id])).rows
+      await c.query('COMMIT')
+      await this.#sampleRisk(account.id, this.#accountView(account, positions, null).equity, c, { idle: positions.length === 0 })
+    } catch (e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
+  }
+
+  /* Equity-risk sampling (free_demo). Both writes go in one statement (one
+     round trip and one commit instead of two; the pair is now atomic). A
+     write that is provably a no-op is skipped: for an account with no open
+     position (equity = balance, read from the database), writing the same
+     equity again in the same database minute leaves every column of the
+     risk row except updated_at unchanged (day, day start, GREATEST peak and
+     drawdowns are idempotent for a repeated equity) and the per-minute
+     sample insert is ON CONFLICT DO NOTHING. Writes per account are
+     serialized in-process so the last-write record follows commit order;
+     it is only used for idle accounts and expires with the database minute
+     (estimated from the database's own clock, with a safety margin). */
+  async #sampleRisk(accountId, equity, c = this.db, { idle = false } = {}) {
     if (equity === null) return null
-    const {rows} = await c.query(`INSERT INTO account_equity_risk
+    return withSampleOrder(accountId, async () => {
+      const last = this.#lastSample.get(accountId)
+      if (idle && last && last.equity === equity && Date.now() + last.skew < last.minuteEnd - SAMPLE_MINUTE_MARGIN_MS) return { ...last.risk }
+      const {rows} = await c.query(`WITH r AS (INSERT INTO account_equity_risk
       (account_id,day,day_start_equity,peak_equity,last_equity)
       VALUES ($1,(now() AT TIME ZONE 'UTC')::date,$2,$2,$2)
       ON CONFLICT (account_id) DO UPDATE SET
@@ -381,15 +437,26 @@ export class Engine {
         maximum_drawdown = GREATEST(account_equity_risk.maximum_drawdown,account_equity_risk.peak_equity-excluded.last_equity,0),
         daily_drawdown = CASE WHEN account_equity_risk.day=excluded.day THEN GREATEST(account_equity_risk.daily_drawdown,account_equity_risk.day_start_equity-excluded.last_equity,0) ELSE 0 END,
         last_equity=excluded.last_equity,updated_at=now()
-      RETURNING *`,[accountId,equity])
-    const r = rows[0]
-    await c.query(`INSERT INTO account_equity_samples(account_id,sampled_at,equity,balance) SELECT id,date_trunc('minute',now()),$2,balance FROM demo_accounts WHERE id=$1 ON CONFLICT DO NOTHING`,[accountId,equity])
-    return { basis:'sampled_equity', timezone:'UTC', since:r.created_at, day:r.day,
-      day_start_equity:r.day_start_equity, peak_equity:r.peak_equity,
-      drawdown:Decimal.max(0,D(r.peak_equity).minus(equity)).toFixed(2),
-      daily_drawdown:r.daily_drawdown, maximum_drawdown:r.maximum_drawdown,
-      daily_limit:null, maximum_limit:null }
+      RETURNING *),
+      s AS (INSERT INTO account_equity_samples(account_id,sampled_at,equity,balance) SELECT id,date_trunc('minute',now()),$2,balance FROM demo_accounts WHERE id=$1 ON CONFLICT DO NOTHING)
+      SELECT * FROM r`,[accountId,equity])
+      const r = rows[0]
+      const risk = { basis:'sampled_equity', timezone:'UTC', since:r.created_at, day:r.day,
+        day_start_equity:r.day_start_equity, peak_equity:r.peak_equity,
+        drawdown:Decimal.max(0,D(r.peak_equity).minus(equity)).toFixed(2),
+        daily_drawdown:r.daily_drawdown, maximum_drawdown:r.maximum_drawdown,
+        daily_limit:null, maximum_limit:null }
+      const dbMs = new Date(r.updated_at).getTime(), now = Date.now()
+      this.#lastSample.set(accountId, { equity, risk: { ...risk }, skew: dbMs - now, minuteEnd: Math.floor(dbMs / 60000) * 60000 + 60000 })
+      if (now - this.#lastSamplePrune > 60000) {
+        this.#lastSamplePrune = now
+        for (const [id, v] of this.#lastSample) if (now + v.skew >= v.minuteEnd) this.#lastSample.delete(id)
+      }
+      return risk
+    })
   }
+  #lastSample = new Map()
+  #lastSamplePrune = 0
 
   /** equity = balance + unrealized (all open positions) */
   #accountView(account, openPositions, challenge = null) {
@@ -484,7 +551,7 @@ export class Engine {
     const legacyKey = idempotencyKey;
     idempotencyKey = idempotencyKey ? `${userId}:${idempotencyKey}` : null;
     if (idempotencyKey) {
-      const { rows } = await this.pool.query(
+      const { rows } = await this.db.query(
         "SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key IN ($2,$3)",
         [userId, idempotencyKey, legacyKey],
       );
@@ -504,7 +571,7 @@ export class Engine {
     /* challenge status is reported first — a finished evaluation reads
        clearer than the generic account-status error */
     const challenge = account.account_type === 'challenge'
-      ? await this.#challengeOfAccount(this.pool, account.id)
+      ? await this.#challengeOfAccount(this.db, account.id)
       : null
     if (challenge && challenge.status !== 'started')
       throw Object.assign(new Error(
@@ -556,7 +623,7 @@ export class Engine {
     /* ---------- validation ---------- */
     const reject = async (reason) => {
       if (!idempotencyKey) return { ok: false, reason };
-      const { rows } = await this.pool.query(
+      const { rows } = await this.db.query(
         `INSERT INTO trading_orders (idempotency_key, account_id, user_id, market, side, order_type,
            margin, leverage, target_price, sl_price, tp_price, status, reject_reason, request_meta)
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'rejected',$12,$13) ON CONFLICT (idempotency_key) DO NOTHING RETURNING *`,
@@ -578,7 +645,7 @@ export class Engine {
       );
       if (!rows[0]) {
         const winner = (
-          await this.pool.query(
+          await this.db.query(
             "SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key=$2",
             [userId, idempotencyKey],
           )
@@ -633,7 +700,7 @@ export class Engine {
     }
 
     return withAccountLock(account.id, async () => {
-      const c = await this.pool.connect();
+      const c = await this.db.connect();
       try {
         await c.query("BEGIN");
         const acc = (
@@ -773,7 +840,7 @@ export class Engine {
         await c.query("ROLLBACK").catch(() => {});
         /* unique idempotency race → return the winner */
         if (String(e.code) === "23505" && idempotencyKey) {
-          const { rows } = await this.pool.query(
+          const { rows } = await this.db.query(
             "SELECT * FROM trading_orders WHERE user_id=$1 AND idempotency_key IN ($2,$3)",
             [userId, idempotencyKey, legacyKey],
           );
@@ -840,7 +907,7 @@ export class Engine {
   }
 
   async #positionById(id) {
-    return this.#positionByIdTx(this.pool, id)
+    return this.#positionByIdTx(this.db, id)
   }
   async #positionByIdTx(c, id) {
     const { rows } = await c.query('SELECT * FROM trading_positions WHERE id=$1', [id])
@@ -859,11 +926,11 @@ export class Engine {
     if (idempotencyKey && (typeof idempotencyKey !== 'string' || idempotencyKey.length > 160)) throw Object.assign(new Error('invalid_idempotency_key'), { status: 400 })
     /* the account is derived from the owned position itself, so closing
        works identically on free_demo and challenge accounts */
-    const owned = (await this.pool.query(
+    const owned = (await this.db.query(
       'SELECT account_id FROM trading_positions WHERE id=$1 AND user_id=$2', [positionId, userId])).rows[0]
     if (!owned) throw Object.assign(new Error('not_found'), { status: 404 })
     return withAccountLock(owned.account_id, async () => {
-      const c = await this.pool.connect()
+      const c = await this.db.connect()
       try {
         await c.query('BEGIN')
         const locked = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [owned.account_id])).rows[0]
@@ -908,7 +975,7 @@ export class Engine {
   }
 
   async updateProtection(userId, positionId, { sl, tp }) {
-    const owned = (await this.pool.query(
+    const owned = (await this.db.query(
       'SELECT account_id FROM trading_positions WHERE id=$1 AND user_id=$2', [positionId, userId])).rows[0]
     if (!owned) throw Object.assign(new Error('not_found'), { status: 404 })
     return this.#mutateOwned(userId, owned.account_id, async (c, account) => {
@@ -930,7 +997,7 @@ export class Engine {
   }
 
   async cancelOrder(userId, orderId) {
-    const owned = (await this.pool.query(
+    const owned = (await this.db.query(
       'SELECT account_id FROM trading_orders WHERE id=$1 AND user_id=$2', [orderId, userId])).rows[0]
     if (!owned) throw Object.assign(new Error('not_found'), { status: 404 })
     return this.#mutateOwned(userId, owned.account_id, async (c, account) => {
@@ -946,7 +1013,7 @@ export class Engine {
 
   async #mutateOwned(userId, accountId, fn) {
     return withAccountLock(accountId, async () => {
-      const c = await this.pool.connect()
+      const c = await this.db.connect()
       try {
         await c.query('BEGIN')
         const locked = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE',[accountId])).rows[0]
@@ -965,19 +1032,20 @@ export class Engine {
   async loop() {
     if (!this.running || this.loopBusy) return;
     this.loopBusy = true;
+    let done; this.loopPass = new Promise(r => { done = r });
     try {
       for (const { user_id } of (
-        await this.pool.query(
+        await this.db.query(
           "SELECT a.user_id FROM demo_accounts a WHERE a.account_type='free_demo' AND a.status='active' AND (a.balance<=0 OR EXISTS(SELECT 1 FROM trading_positions p WHERE p.account_id=a.id AND p.status='open'))",
         )
       ).rows) {
         await this.enforceTrialRisk(user_id);
-        await this.state(user_id);
+        await this.#sampleTrialEquity(user_id);
       }
       /* challenge evaluation: accounts with live positions (equity moves
          with the marks) and challenges that have reached their time limit */
       for (const { id } of (
-        await this.pool.query(
+        await this.db.query(
           `SELECT a.id FROM demo_accounts a
              JOIN openfund_challenges c ON c.demo_account_id = a.id
             WHERE a.account_type='challenge' AND a.status='active' AND c.status='started'
@@ -991,7 +1059,7 @@ export class Engine {
          a position (market closed / no tradeable quote at that moment):
          finish the settlement as soon as the market is tradeable again */
       for (const { id } of (
-        await this.pool.query(
+        await this.db.query(
           `SELECT DISTINCT a.id FROM demo_accounts a
              JOIN trading_positions p ON p.account_id = a.id AND p.status = 'open'
             WHERE a.account_type = 'challenge' AND a.status = 'closed'`,
@@ -999,7 +1067,7 @@ export class Engine {
       ).rows) {
         await withAccountLock(id, () => this.#settleOrphans(id)).catch(console.error);
       }
-      const pending = await this.pool.query(
+      const pending = await this.db.query(
         `SELECT o.*, a.balance, a.used_margin FROM trading_orders o
          JOIN demo_accounts a ON a.id = o.account_id
         WHERE o.status='pending'`,
@@ -1011,7 +1079,7 @@ export class Engine {
           );
         }
       }
-      const open = await this.pool.query(
+      const open = await this.db.query(
         `SELECT p.*, a.balance FROM trading_positions p
          JOIN demo_accounts a ON a.id = p.account_id
         WHERE p.status='open'`,
@@ -1031,6 +1099,7 @@ export class Engine {
       }
     } finally {
       this.loopBusy = false;
+      this.loopPass = null; done();
     }
   }
 
@@ -1061,7 +1130,7 @@ export class Engine {
   }
 
   async #triggerPending(o) {
-    const c = await this.pool.connect()
+    const c = await this.db.connect()
     try {
       await c.query('BEGIN')
       await c.query('SELECT id FROM demo_accounts WHERE id=$1 FOR UPDATE', [o.account_id])
@@ -1093,7 +1162,7 @@ export class Engine {
   }
 
   async #settleOrphans(accountId) {
-    const c = await this.pool.connect()
+    const c = await this.db.connect()
     try {
       await c.query('BEGIN')
       const acc = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [accountId])).rows[0]
@@ -1112,7 +1181,7 @@ export class Engine {
   }
 
   async #autoExit(p, mark, reason) {
-    const c = await this.pool.connect()
+    const c = await this.db.connect()
     try {
       await c.query('BEGIN')
       await c.query('SELECT id FROM demo_accounts WHERE id=$1 FOR UPDATE', [p.account_id])

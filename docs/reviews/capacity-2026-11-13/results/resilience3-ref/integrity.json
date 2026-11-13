@@ -1,0 +1,30 @@
+{
+ "t": 1794558693918,
+ "violations": 0,
+ "checks": {
+  "workspace_owner_mismatch": 0,
+  "workspace_malformed": 0,
+  "workspace_symbol_mismatch": 0,
+  "workspace_over_entry_limit": 0,
+  "duplicate_idempotency_keys": 0,
+  "filled_orders_without_position": 0,
+  "positions_sharing_order": 0,
+  "position_invalid_numbers": 0,
+  "position_open_with_close_fields": 0,
+  "position_closed_without_exit": 0,
+  "position_cross_user": 0,
+  "sltp_inverted": 0,
+  "sltp_last_update_not_applied": 0,
+  "account_negative_balance": 0,
+  "account_used_margin_drift": 0,
+  "duplicate_demo_funding": 0
+ },
+ "counts": {
+  "users": 3000,
+  "workspace_entries": 1867,
+  "orders": 1732,
+  "positions": 1755,
+  "open_positions": 1322,
+  "sltp_updates": 566
+ }
+}

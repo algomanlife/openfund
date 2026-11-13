@@ -1,10 +1,40 @@
 {
-  "note": "Concurrency staircase from the assessment brief. rampS/holdS are the local defaults; override with STAGE_RAMP_S / STAGE_HOLD_S.",
+  "note": "Concurrency staircase. baseline..peak are stages A-E of the brief; stretch-f and stretch-g (F, G) are stretch tests, not production targets. rampS/holdS are the local defaults; override with STAGE_RAMP_S / STAGE_HOLD_S.",
   "stages": [
-    { "name": "baseline", "charts": 100,  "visitors": 200 },
-    { "name": "low",      "charts": 300,  "visitors": 500 },
-    { "name": "medium",   "charts": 500,  "visitors": 1000 },
-    { "name": "high",     "charts": 1000, "visitors": 1500 },
-    { "name": "peak",     "charts": 1500, "visitors": 2000 }
+    {
+      "name": "baseline",
+      "charts": 100,
+      "visitors": 200
+    },
+    {
+      "name": "low",
+      "charts": 300,
+      "visitors": 500
+    },
+    {
+      "name": "medium",
+      "charts": 500,
+      "visitors": 1000
+    },
+    {
+      "name": "high",
+      "charts": 1000,
+      "visitors": 1500
+    },
+    {
+      "name": "peak",
+      "charts": 1500,
+      "visitors": 2000
+    },
+    {
+      "name": "stretch-f",
+      "charts": 2000,
+      "visitors": 3000
+    },
+    {
+      "name": "stretch-g",
+      "charts": 3000,
+      "visitors": 5000
+    }
   ]
 }

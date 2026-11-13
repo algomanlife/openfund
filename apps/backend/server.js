@@ -39,6 +39,7 @@ import { partnerRoutes, partnerAdminRoutes, attributeAmbassador } from './partne
 import { economyRoutes, economyAdminRoutes } from './economy.js'
 import { liveRoutes, liveAdminRoutes, liveConfig, processSettlements, settlementAdapter } from './live-funding.js'
 import { Treasury } from './treasury.js'
+import { createTradingStreamHub } from './trading-stream.js'
 
 const cfg = {
   port: Number(process.env.PORT || 8080),
@@ -55,8 +56,14 @@ const testDatabase = /(?:^|[_-])(test|audit|ci)(?:$|[_-])/.test(new URL(cfg.dbUr
 const testMode = !cfg.prod && process.env.SIM_TEST_MODE === '1' && testDatabase
 
 const pool = new pg.Pool({ connectionString: cfg.dbUrl })
-const engine = new Engine(pool, marketData)
+/* dedicated connections for the engine monitoring loop (SL/TP, liquidation,
+   pending orders, risk sweeps): the loop is serial, so 3 covers its deepest
+   nesting; it keeps risk processing out of the API pool's queue */
+const loopPool = new pg.Pool({ connectionString: cfg.dbUrl, max: 3 })
+const engine = new Engine(pool, marketData, { loopPool })
 const portfolio = new Portfolio(pool, marketData)
+/* checkStreamSessions is a hoisted function declaration (session helpers below) */
+const tradingStreams = createTradingStreamHub({ engine, checkSessions: (hashes, userId) => checkStreamSessions(hashes, userId) })
 const asyncRoute = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
 const app = express()
 app.disable('x-powered-by')
@@ -221,18 +228,54 @@ function sanitizeCookieCode(req) {
   return match ? (sanitizeCode(decodeURIComponent(match[1])) || null) : null
 }
 
+/* auth_sessions.last_seen is activity bookkeeping only (nothing reads it for
+   authorization or expiry), so it is written at most once per minute per
+   session instead of on every authenticated request and stream tick. The
+   session itself is still read and validated on every request. */
+const SESSION_TOUCH_MS = 60_000
+const sessionTouched = new Map()   /* id_hash → last last_seen write (ms) */
+setInterval(() => {
+  const cutoff = Date.now() - SESSION_TOUCH_MS
+  for (const [h, t] of sessionTouched) if (t < cutoff) sessionTouched.delete(h)
+}, SESSION_TOUCH_MS).unref()
+function touchSessions(hashes) {
+  const now = Date.now(), due = []
+  for (const h of hashes) {
+    if (now - (sessionTouched.get(h) ?? 0) < SESSION_TOUCH_MS) continue
+    sessionTouched.set(h, now); due.push(h)
+  }
+  if (!due.length) return Promise.resolve()
+  return pool.query('UPDATE auth_sessions SET last_seen = now() WHERE id_hash = ANY($1)', [due]).catch(() => {
+    for (const h of due) sessionTouched.delete(h)   /* retry on the next request */
+  })
+}
+
 async function userFromSession(req) {
   const sid = parseCookie(req.headers.cookie)[COOKIE]
   if (!sid) return null
+  const hash = sha(sid)
   const { rows } = await pool.query(
     `SELECT s.user_id, u.wallet_address, u.display_name, u.avatar_url, u.status, u.created_at, u.last_login_at,
             (s.expires_at > now()) AS valid
        FROM auth_sessions s JOIN openfund_users u ON u.id = s.user_id
-      WHERE s.id_hash = $1`, [sha(sid)])
+      WHERE s.id_hash = $1`, [hash])
   const row = rows[0]
   if (!row || !row.valid) return null
-  await pool.query('UPDATE auth_sessions SET last_seen = now() WHERE id_hash = $1', [sha(sid)]).catch(() => {})
+  await touchSessions([hash])
   return row
+}
+
+/* stream session check: the same validity rule as userFromSession followed
+   by the stream's `status === 'active'` gate, for every open stream of one
+   trading scope in a single query. Returns the set of still-valid hashes. */
+async function checkStreamSessions(hashes, userId) {
+  const { rows } = await pool.query(
+    `SELECT s.id_hash FROM auth_sessions s JOIN openfund_users u ON u.id = s.user_id
+      WHERE s.id_hash = ANY($1) AND s.user_id = $2 AND s.expires_at > now() AND u.status = 'active'`,
+    [hashes, userId])
+  const valid = new Set(rows.map(r => r.id_hash))
+  await touchSessions(valid)
+  return valid
 }
 
 const requireAuth = async (req, res, next) => {
@@ -490,6 +533,8 @@ app.post('/auth/logout', asyncRoute(async (req, res) => {
   const sid = parseCookie(req.headers.cookie)[COOKIE]
   if (sid) {
     const { rows } = await pool.query('DELETE FROM auth_sessions WHERE id_hash = $1 RETURNING user_id', [sha(sid)])
+    sessionTouched.delete(sha(sid))
+    tradingStreams.revokeSession(sha(sid))   /* open streams of this session end now */
     if (rows[0]) await audit('auth_logout', rows[0].user_id, req, {})
   }
   clearSessionCookie(res)
@@ -621,40 +666,13 @@ app.get("/trading/stream", tradingAuth, async (req, res) => {
     "X-Accel-Buffering": "no",
   });
   res.write("retry: 3000\n\n");
-  let last = "",
-    busy = false;
-  const push = async () => {
-    if (busy || res.destroyed || res.writableEnded) return;
-    busy = true;
-    try {
-      const current = await userFromSession(req);
-      if (!current || current.status !== "active") {
-        res.end();
-        return;
-      }
-      const state = await engine.state(req.user.user_id, req.accountId || null);
-      const snapshot = JSON.stringify(state);
-      if (snapshot !== last) {
-        /* only push actual changes */
-        last = snapshot;
-        res.write(`data: ${snapshot}\n\n`);
-      } else {
-        res.write(": hb\n\n");
-      }
-    } catch {
-      res.end();
-    } finally {
-      busy = false;
-    }
-  };
-  const onState = () => push();
-  engine.onState(onState);
-  const hb = setInterval(push, 1000);
-  req.on("close", () => {
-    clearInterval(hb);
-    engine.listeners.delete(onState);
+  /* one state computation per account scope per tick, shared by every tab
+     of that scope; session re-checked before each push (trading-stream.js) */
+  tradingStreams.attach(req, res, {
+    sidHash: sha(parseCookie(req.headers.cookie)[COOKIE]),
+    userId: req.user.user_id,
+    accountId: req.accountId || null,
   });
-  await push();
 });
 
 /* test-only price injection seam — enabled ONLY with SIM_TEST_MODE=1
@@ -865,6 +883,6 @@ const settlementTimer = setInterval(() => {
 }, 60_000)
 settlementTimer.unref()
 let shuttingDown=false
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;engine.stop();marketData.stop();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);footprint.stop().catch(()=>{}).finally(()=>server.close(()=>pool.end())) }
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;const enginePass=engine.stop();tradingStreams.close();marketData.stop();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{})]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)

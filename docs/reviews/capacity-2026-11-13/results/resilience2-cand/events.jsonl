@@ -1,0 +1,5 @@
+{"t":1794558110000,"event":"market_data_down"}
+{"t":1794558130000,"event":"market_data_up"}
+{"t":1794558200000,"event":"backend_sigterm"}
+{"t":1794558201000,"event":"backend_exited"}
+{"t":1794558205000,"event":"backend_up"}

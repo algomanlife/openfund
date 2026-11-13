@@ -1,0 +1,345 @@
+{
+ "run": "d1000-noloop",
+ "env": {
+  "CONST": "1000:240",
+  "PROFILE": "uncapped",
+  "MON_POOL_STOP": "0",
+  "VISITOR_RATIO": "1.5",
+  "start_ms": "1794555670000",
+  "end_ms": "1794555922000"
+ },
+ "startMs": 1794555670000,
+ "endMs": 1794555922000,
+ "stop": null,
+ "stages": [
+  {
+   "stage": "const",
+   "charts": 1000,
+   "visitors": 1500,
+   "combined": 2500,
+   "reached": true,
+   "window": {
+    "from": 1794555740000,
+    "to": 1794555905000
+   },
+   "http": {
+    "charts": {
+     "n": 95444,
+     "rps": 530.2,
+     "avg": 622.2,
+     "p50": 121.4,
+     "p95": 2761.8,
+     "p99": 3704.1,
+     "max": 8006,
+     "errPct": 0
+    },
+    "visitors": {
+     "n": 221392,
+     "rps": 1230,
+     "avg": 42.6,
+     "p50": 1.9,
+     "p95": 40.6,
+     "p99": 1203.2,
+     "max": 5960,
+     "errPct": 0
+    }
+   },
+   "endpoints": {
+    "context": {
+     "n": 65886,
+     "rps": 366,
+     "avg": 622.7,
+     "p50": 144.9,
+     "p95": 2706.2,
+     "p99": 3539.1,
+     "max": 4816,
+     "errPct": 0
+    },
+    "accounts": {
+     "n": 11002,
+     "rps": 61.1,
+     "avg": 784.7,
+     "p50": 99,
+     "p95": 3601.3,
+     "p99": 4276.9,
+     "max": 5403,
+     "errPct": 0
+    },
+    "ws_get": {
+     "n": 1652,
+     "rps": 9.2,
+     "avg": 363.8,
+     "p50": 37.7,
+     "p95": 1786.9,
+     "p99": 2289.8,
+     "max": 3573,
+     "errPct": 0
+    },
+    "ws_put": {
+     "n": 10635,
+     "rps": 59.1,
+     "avg": 457.9,
+     "p50": 55.1,
+     "p95": 1983.4,
+     "p99": 3093,
+     "max": 5018,
+     "errPct": 0
+    },
+    "preview": {
+     "n": 1969,
+     "rps": 10.9,
+     "avg": 363.9,
+     "p50": 53.8,
+     "p95": 1750.8,
+     "p99": 2311.8,
+     "max": 3145,
+     "errPct": 0
+    },
+    "order": {
+     "n": 2554,
+     "rps": 14.2,
+     "avg": 958.9,
+     "p50": 65.7,
+     "p95": 4731.2,
+     "p99": 5901.5,
+     "max": 8006,
+     "errPct": 0
+    },
+    "protection": {
+     "n": 1506,
+     "rps": 8.4,
+     "avg": 606.2,
+     "p50": 84.2,
+     "p95": 2525.6,
+     "p99": 3457.6,
+     "max": 4380,
+     "errPct": 0
+    },
+    "close": {
+     "n": 233,
+     "rps": 1.3,
+     "avg": 733.7,
+     "p50": 157.4,
+     "p95": 2834.9,
+     "p99": 3607.3,
+     "max": 3956,
+     "errPct": 0
+    },
+    "state": {
+     "n": 6,
+     "rps": 0,
+     "avg": 24.8,
+     "p50": 21.5,
+     "p95": 38,
+     "p99": 41.3,
+     "max": 42,
+     "errPct": 0
+    },
+    "me": {
+     "n": 1,
+     "rps": 0,
+     "avg": 78.3,
+     "p50": 78.3,
+     "p95": 78.3,
+     "p99": 78.3,
+     "max": 78,
+     "errPct": 0
+    },
+    "v_document": {
+     "n": 8853,
+     "rps": 49.2,
+     "avg": 10,
+     "p50": 3.6,
+     "p95": 31.6,
+     "p99": 146.9,
+     "max": 530,
+     "errPct": 0
+    },
+    "v_asset": {
+     "n": 3652,
+     "rps": 20.3,
+     "avg": 6.6,
+     "p50": 2.4,
+     "p95": 24.4,
+     "p99": 70.9,
+     "max": 615,
+     "errPct": 0
+    },
+    "v_legacy": {
+     "n": 179734,
+     "rps": 998.5,
+     "avg": 3.5,
+     "p50": 1.8,
+     "p95": 10.7,
+     "p99": 27.5,
+     "max": 525,
+     "errPct": 0
+    },
+    "v_runtime": {
+     "n": 8853,
+     "rps": 49.2,
+     "avg": 1.5,
+     "p50": 0.7,
+     "p95": 4.6,
+     "p99": 10.2,
+     "max": 157,
+     "errPct": 0
+    },
+    "v_api_public": {
+     "n": 20300,
+     "rps": 112.8,
+     "avg": 427.4,
+     "p50": 28.5,
+     "p95": 2221.9,
+     "p99": 4312.8,
+     "max": 5960,
+     "errPct": 0
+    }
+   },
+   "sse": {
+    "activeAvg": 1000,
+    "target": 1000,
+    "stalledMax": 0,
+    "drops": 0,
+    "reconnects": 0,
+    "errors": {},
+    "eventsPerSec": 891.78,
+    "dataPerSec": 891.78,
+    "gapP95": 1068,
+    "gapP99": 1118,
+    "gapMax": 4065,
+    "mdDelayP50": 135,
+    "mdDelayP95": 241,
+    "mdDelayP99": 249,
+    "mdDelayMax": 301,
+    "connectP95": null
+   },
+   "backend": {
+    "cpuAvg": 85.37,
+    "cpuMax": 106,
+    "rssMax": 445.6,
+    "heapMax": 264.7,
+    "eldP50": 1.01,
+    "eldP99": 2.85,
+    "eldMax": 307.49,
+    "poolWaitingAvg": 691.39,
+    "poolWaitingMax": 2112,
+    "poolTotalMax": 10,
+    "poolMax": 10,
+    "engine": {
+     "passesPs": 0.18,
+     "passMsP50": 2475.6,
+     "passMsP95": 6465.2,
+     "passMsMax": 6948.2,
+     "runningMsMax": 65074,
+     "skippedPs": 0.82,
+     "sweepDelayMsP50": 2436.4,
+     "sweepDelayMsP95": 6429.1,
+     "sweepDelayMsMax": 6928.6
+    }
+   },
+   "postgres": {
+    "connMax": 16,
+    "connLimit": 100,
+    "tpsAvg": 5736.02,
+    "cpuAvg": 98.59,
+    "cpuMax": 160.9,
+    "lockWaitsMax": 0,
+    "ungrantedLocksMax": 0,
+    "longestQueryS": 0,
+    "deadlocks": 0,
+    "cacheHit": 1,
+    "engineLoopPassesPs": 0.18
+   },
+   "generators": {
+    "cpuAvg": 100.95,
+    "cpuMax": 243.2,
+    "rssMB": 2356.8
+   }
+  }
+ ],
+ "k6Extra": {
+  "chart_save_ms": {
+   "med": 28.79,
+   "p(90)": 1255.2408,
+   "p(95)": 1804.4289999999996,
+   "p(99)": 2855.9296,
+   "max": 4858.492,
+   "count": 10369,
+   "avg": 367.5058021024198,
+   "min": 0.318
+  },
+  "workspace_restore_ms": {
+   "count": 2569,
+   "avg": 215.65649202024153,
+   "min": 0.186,
+   "med": 1.183,
+   "p(90)": 937.5608000000001,
+   "p(95)": 1255.7278,
+   "p(99)": 2174.7120799999993,
+   "max": 3573.146
+  },
+  "order_submit_ms": {
+   "p(90)": 3082.7926,
+   "p(95)": 4613.877199999999,
+   "p(99)": 5908.6464,
+   "max": 8006.023,
+   "count": 2357,
+   "avg": 846.6853440814591,
+   "min": 1.392,
+   "med": 47.302
+  },
+  "sltp_update_ms": {
+   "max": 4380.045,
+   "count": 1691,
+   "avg": 550.463222945003,
+   "min": 0.517,
+   "med": 63.42,
+   "p(90)": 1732.944,
+   "p(95)": 2503.1775,
+   "p(99)": 3427.6488999999997
+  }
+ },
+ "integrity": {
+  "t": 1794555925905,
+  "violations": 0,
+  "checks": {
+   "workspace_owner_mismatch": 0,
+   "workspace_malformed": 0,
+   "workspace_symbol_mismatch": 0,
+   "workspace_over_entry_limit": 0,
+   "duplicate_idempotency_keys": 0,
+   "filled_orders_without_position": 0,
+   "positions_sharing_order": 0,
+   "position_invalid_numbers": 0,
+   "position_open_with_close_fields": 0,
+   "position_closed_without_exit": 0,
+   "position_cross_user": 0,
+   "sltp_inverted": 0,
+   "sltp_last_update_not_applied": 0,
+   "account_negative_balance": 0,
+   "account_used_margin_drift": 0,
+   "duplicate_demo_funding": 0
+  },
+  "counts": {
+   "users": 3000,
+   "workspace_entries": 5632,
+   "orders": 3257,
+   "positions": 3312,
+   "open_positions": 2941,
+   "sltp_updates": 1691
+  }
+ },
+ "sltp": {
+  "n": 79,
+  "p50": 17358,
+  "p95": 58546,
+  "p99": 68605,
+  "max": 68605
+ },
+ "k6Counts": {
+  "integrityViolations": 0,
+  "timeouts": 0,
+  "conflictRate": 0
+ }
+}
