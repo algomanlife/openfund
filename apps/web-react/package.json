@@ -8,6 +8,7 @@
     "test:information": "node --test test/information.test.mjs",
     "test:markets": "node --test test/markets.test.mjs",
     "test:plans": "node --test test/challenge-plans.test.mjs",
+    "test:checkout": "node --test test/checkout-payments.test.mjs test/campaign-cta.test.mjs",
     "build": "vite build",
     "build:check": "tsc --noEmit",
     "preview": "vite preview",

@@ -10,6 +10,18 @@ The host installs **@luxalgo/vela-pinets 0.3.4** and **pinets 0.13.1**. Its host
 
 Open Algo V5, Price Action Concepts and Smart Money Concepts precede all 77 built-ins. Input schemas, settings edits, scene conversion, historical evaluation and live sessions use the official addon and Vela's existing orchestration. See [Pine architecture](../trading/PINE_SCRIPT.md) for the export inventory, exact import transformation, supported constructs and limits.
 
+## Chart UI language: English only, LTR always
+
+The Vela chart layer is English and left-to-right in every Openfund locale
+([ADR 0028](../decisions/0028-manual-payment-treasury-networks-campaign-chart-english-lotage.md)):
+`vela-bridge.js` mounts with locale `en` and `setLocale` keeps English; no other
+Vela locale is registered in `workspace-entry.ts`; `#chart-host` carries
+`dir="ltr" lang="en"`; host strings painted in the chart (Settings → Trading,
+execution marks, position labels, chart notices) are English; and the
+terminal's static translator skips Vela DOM. Openfund controls placed over the
+chart (quick trade, `data-openfund-ui`) keep the terminal language. Guarded by
+`test/terminal-risk.test.mjs` (source and built-bundle checks).
+
 ## Market-data and controller contract
 
 The bar shape remains `{ time, open, high, low, close, volume? }`: epoch milliseconds, ascending open time. Gains supplies OHLC but no volume. The Pine wrapper preserves missing volume as `na`. The provider supplies main candles, subscriptions, market metadata and secondary requests. Additional supported intraday intervals and UTC Monday/calendar-month bars aggregate genuine smaller candles without interpolation.

@@ -61,7 +61,7 @@ try {
     const footprintOn = await page.evaluate(() => !!(window.__OPENFUND_RUNTIME_CONFIG__ || {}).footprint);
     const rowNames = await rows.allTextContents();
     if (product === 'prop') /* English page; the Persian page localizes the label */
-      assert.equal(rowNames.filter(n => n === 'Footprint (order flow overlay)').length, footprintOn ? 1 : 0);
+      assert.equal(rowNames.filter(n => n === 'Footprint (Order Flow Overlay)').length, footprintOn ? 1 : 0);
     assert.equal(rowNames.length, 80 + (footprintOn ? 1 : 0));
     await checkBranding(frame);
     record(`${product}: exact catalog order, 77 built-ins and branding`);

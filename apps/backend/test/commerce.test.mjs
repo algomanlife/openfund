@@ -620,7 +620,7 @@ test('M2 a Base payment (non-Arbitrum EVM) from ANY wallet, attested by DePay, i
     'settlement (verified) and source (reported) are recorded separately')
 }))
 
-test('M3 a manual hash submission still requires the customer wallet; unsupported chains and Solana manual entry are refused', async () => withChains(MULTI, async () => {
+test('M3 a manual hash submission still requires the customer wallet; unsupported chains are refused; Solana manual entry is bound by the order memo', async () => withChains(MULTI, async () => {
   const u = await newUser()
   const o = (await order(u)).data.order
   seen.length = 0
@@ -629,8 +629,13 @@ test('M3 a manual hash submission still requires the customer wallet; unsupporte
   assert.equal((await pool.query('SELECT chain_id FROM payments WHERE purchase_order_id=$1', [o.id])).rows[0].chain_id, 8453)
   const o2 = (await order(u)).data.order
   assert.equal((await call('POST', '/purchases/verify', { user: u, body: { orderId: o2.id, txHash: rndHash(), chainId: 137 } })).data.error, 'unsupported_chain', 'Polygon is not configured')
-  assert.equal((await call('POST', '/purchases/verify', { user: u, body: { orderId: o2.id, txHash: solSig(), chainId: 501 } })).data.error, 'unsupported_chain', 'Solana payments arrive via DePay')
-  assert.equal((await depayPost('/purchases/depay/callback', { ...callbackBody(u, o2), blockchain: 'polygon' })).data.recorded, false)
+  /* Solana manual payment (ADR 0028): accepted for on-chain verification on Solana; the
+     binding to the order is the order id in an SPL Memo (test/manual-payments.test.mjs N1, M2) */
+  const solR = await call('POST', '/purchases/verify', { user: u, body: { orderId: o2.id, txHash: solSig(), chainId: 501 } })
+  assert.equal(solR.status, 200, JSON.stringify(solR.data))
+  assert.equal((await pool.query('SELECT chain_id FROM payments WHERE purchase_order_id=$1', [o2.id])).rows[0].chain_id, 501)
+  const o3 = (await order(u)).data.order
+  assert.equal((await depayPost('/purchases/depay/callback', { ...callbackBody(u, o3), blockchain: 'polygon' })).data.recorded, false)
 }))
 
 test('M4 Solana: signatures stay case-sensitive, verification is non-EVM, and the same id on two chains never collides', async () => withChains(MULTI, async () => {

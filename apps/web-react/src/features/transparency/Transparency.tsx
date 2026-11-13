@@ -5,6 +5,7 @@ import EconomyNav from '../economy/EconomyNav'
 import { Bars, Kpi, Source, StateBlock, Status, backendText, day, int, pct, usd, when, useRemote } from '../economy/ui'
 import type { TransparencyReport, TreasuryView } from '../economy/types'
 import { infrastructure, transparencyIntro } from './content'
+import TreasuryWallets from './TreasuryWallets'
 
 const CATEGORY: Record<string, Localized> = {
   render_infrastructure: t('Technical infrastructure', 'زیرساخت فنی'), database: t('Database', 'پایگاه داده'), cms: t('CMS', 'سیستم مدیریت محتوا'),
@@ -98,6 +99,7 @@ function Report({ r, locale }: { r: TransparencyReport; locale: Locale }) {
     </section>
 
     <section className="econ-section" id="treasury"><div className="section-top"><div><span className="eyebrow">04 / OPENFUND TREASURY</span><h2>{t('Read from the chain, not typed in.', 'خوانده‌شده از زنجیره، نه واردشده با دست.')[locale]}</h2></div></div>
+      <TreasuryWallets locale={locale} />
       <Treasury tv={r.treasury} locale={locale} />
       <div className="econ-panel"><h3>{t('Identifiable flows', 'جریان‌های قابل شناسایی')[locale]}</h3><div className="econ-grid">
         <Kpi label={t('Verified payments into treasury', 'پرداخت‌های تأییدشده به خزانه')[locale]} value={r.flows.inflows ? usd(r.flows.inflows.totalUsd, locale) : '—'} note={r.flows.inflows ? `${int(r.flows.inflows.verifiedPayments, locale)}` : t('Treasury not configured', 'خزانه پیکربندی نشده')[locale]} />

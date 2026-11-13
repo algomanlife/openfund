@@ -106,9 +106,12 @@ async function fixture(context) {
     await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'))});
     check('visible document resumes',await page.locator('.home-gateway').getAttribute('data-paused')==='false');
     for (const [i,target] of [[0,/\/fa\/(challenges|prop\/trade)$/],[1,/\/fa\/(perpetual\/trade|challenges)$/]]) {
-      await page.goto(BASE+'/fa/home'); await page.locator('.home-panel .button').nth(i).click(); await page.waitForURL(target);
+      await page.goto(BASE+'/fa/home'); await page.locator('.home-panel').nth(i).locator('.button:not(.home-buy-cta)').first().click(); await page.waitForURL(target);
       check('product '+i+' follows existing destination',target.test(page.url()));
     }
+    /* the Prop card's quick "Buy Challenge" opens the shared checkout */
+    await page.goto(BASE+'/fa/home'); await page.locator('.home-buy-cta').click(); await page.waitForURL(/\/fa\/checkout$/);
+    check('quick Buy Challenge opens the checkout',/\/fa\/checkout$/.test(page.url()));
     await page.goto(BASE+'/fa/home');
     await page.reload();
     await page.locator('.of-language-select select').first().waitFor({ state: 'attached' });

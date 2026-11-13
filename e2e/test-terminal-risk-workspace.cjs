@@ -174,7 +174,11 @@ async function liveMark(symbol) {
     await page.waitForFunction(() => window.__ofServerTP?.state.positions.length === 1)
     const pos = (await call(page, `/trading/state?account=${trial.id}`)).data.positions[0]
     await wait(1800)
-    check('no SL/TP → no risk/reward zones are invented', (await fw(() => window.OpenfundTerminalInspect.positionOverlays().length)) === 0)
+    const bare = await fw(() => window.OpenfundTerminalInspect.positionOverlays())
+    check('no SL/TP → an editable box with no zones: both levels sit on the entry and can be created by dragging; nothing is invented',
+      bare.length === 1 && bare[0].drawing && bare[0].drawing.anchors[1].price === bare[0].drawing.anchors[0].price && bare[0].drawing.anchors[2].price === bare[0].drawing.anchors[0].price &&
+      (bare[0].drawing.props?.ofEditable || []).join() === 'stop,target' && (bare[0].drawing.props?.ofMissing || []).join() === 'stop,target' && bare[0].drawing.props?.showHeader === false &&
+      pos.sl_price == null && pos.tp_price == null, JSON.stringify(bare))
 
     /* SL/TP dialog: Persian digits, rejected input, exact values */
     await frame.locator('[data-bt="positions"]').click().catch(() => {})
@@ -198,7 +202,7 @@ async function liveMark(symbol) {
     await page.waitForFunction(v => window.__ofServerTP?.state.positions[0]?.sl === v, slLong)
     await wait(1800)
     let ov = await fw(() => window.OpenfundTerminalInspect.positionOverlays())
-    check('LONG SL only: one overlay, stop below entry, no target zone, only the SL is editable, no R:R header', ov.length === 1 && ov[0].drawing && ov[0].drawing.anchors[1].price === slLong && ov[0].drawing.anchors[2].price === ov[0].drawing.anchors[0].price && ov[0].drawing.locked === false && (ov[0].drawing.props?.ofEditable || []).join() === 'stop' && ov[0].drawing.props?.showHeader === false && ov[0].drawing.props?.showLossSize === false, JSON.stringify(ov))
+    check('LONG SL only: one overlay, stop below entry, no target zone (TP creatable from the entry), no R:R header', ov.length === 1 && ov[0].drawing && ov[0].drawing.anchors[1].price === slLong && ov[0].drawing.anchors[2].price === ov[0].drawing.anchors[0].price && ov[0].drawing.locked === false && (ov[0].drawing.props?.ofEditable || []).join() === 'stop,target' && (ov[0].drawing.props?.ofMissing || []).join() === 'target' && ov[0].drawing.props?.showHeader === false && ov[0].drawing.props?.showLossSize === false, JSON.stringify(ov))
     await page.screenshot({ path: `${OUT}/overlay-long-sl-only.png` })
 
     /* add TP with Arabic-Indic digits → both levels */
@@ -267,7 +271,7 @@ async function liveMark(symbol) {
     })
     check('position box: translating the body leaves every anchor in place', JSON.stringify(tool.moved) === JSON.stringify(tool.orig), JSON.stringify(tool))
     check('position box: the entry handle neither changes price nor candle', tool.afterSl[0].price === 100 && tool.afterSl[0].time === tool.orig[0].time)
-    check('position box: a level the position does not have is never draggable (no invented TP)', tool.afterSl[2].price === 120)
+    check('position box: a level that is not editable never moves', tool.afterSl[2].price === 120, JSON.stringify(tool))
     check('position box: SL handle moves vertically only (candle/time unchanged)', tool.afterSl[1].price === 92 && tool.afterSl[1].time === tool.orig[1].time)
     check('position box: a level dragged across the entry is clamped to its own side', tool.clamped < 100 && tool.clamped > 99.99 && tool.type === 'of-position', JSON.stringify(tool))
     /* the edit path: entry move refused, invalid level refused, valid level confirmed by the existing service */
@@ -277,6 +281,7 @@ async function liveMark(symbol) {
       const a = ov.drawing.anchors.map(x => ({ ...x }))
       if (change.entry != null) a[0].price = change.entry
       if (change.tp != null) a[2].price = change.tp
+      if (change.sl != null) a[1].price = change.sl
       window.OpenfundTerminalInspect.chart().drawings.update(ov.drawing.id, { anchors: a })
       window.OpenfundTerminalInspect.positionEdited(ov.drawing.id)
       return document.querySelector(`[data-pos-rr="${posId}"]`)?.classList.contains('pending') || false
@@ -318,18 +323,18 @@ async function liveMark(symbol) {
     check('the position box itself stays on the chart while its label is hidden', (await fw(() => window.OpenfundTerminalInspect.positionOverlays().length)) === 3)
     await frame.locator('[data-pos-rr-restore]').click(); await wait(600)
     check('the restore control brings the label back', (await frame.locator(`[data-pos-rr="${shortBoth.id}"]`).count()) === 1)
-    /* Chart Settings → Trading → Show Buy / Sell Markers (real Vela settings dialog) */
+    /* Chart Settings → Trading → Show Buy/Sell Markers (real Vela settings dialog) */
     await frame.locator('.vela-bb-settings').first().click({ timeout: 8000 }).catch(() => {})
     let usedUi = false
     try {
       await frame.locator('.vela-sd-tab', { hasText: 'Trading' }).first().click({ timeout: 6000 })
-      const toggleRow = frame.locator('.vela-sd-bool').filter({ hasText: /^Show Buy \/ Sell Markers$/ }).last()
+      const toggleRow = frame.locator('.vela-sd-bool').filter({ hasText: /^Show Buy\/Sell Markers$/ }).last()
       await toggleRow.locator('input').uncheck({ force: true, timeout: 6000 })
       usedUi = true
       await page.screenshot({ path: `${OUT}/settings-trading-tab.png` })
       await page.keyboard.press('Escape').catch(() => {})
     } catch (e) { console.log('settings dialog DOM:', await fw(() => [...document.querySelectorAll('[class*="vela-sd"]')].slice(0, 40).map(e => e.className + ':' + (e.textContent || '').slice(0, 40)).join(' | '))) }
-    check('Chart Settings has a Trading tab with "Show Buy / Sell Markers"', usedUi)
+    check('Chart Settings has a Trading tab with "Show Buy/Sell Markers"', usedUi)
     await wait(800)
     let prefs = await fw(() => ({ markers: window.OpenfundTerminalInspect.executionMarkers().length, overlays: window.OpenfundTerminalInspect.positionOverlays().length, stored: JSON.parse(window.OpenfundChartWorkspace.getLocal('of-chart-trading') || 'null') }))
     check('turning the setting off removes every BUY/SELL marker but keeps the position visuals', prefs.markers === 0 && prefs.overlays === 3 && prefs.stored?.showExecMarkers === false, JSON.stringify(prefs))
@@ -362,6 +367,40 @@ async function liveMark(symbol) {
     /* timeframe switch keeps the overlays */
     await fw(() => window.OpenfundTerminalInspect.controller().setTimeframe('5')); await wait(1800)
     check('timeframe switch keeps every overlay', (await fw(() => window.OpenfundTerminalInspect.positionOverlays().filter(o => o.drawing).length)) === 3)
+
+    /* ---------- SL/TP created on the chart for positions opened without them (LONG and SHORT) ---------- */
+    for (const side of ['long', 'short']) {
+      const before = (await call(page, `/trading/state?account=${trial.id}`)).data.positions.map(p => p.id)
+      check(`${side.toUpperCase()} without SL/TP opened`, [200, 201].includes(await order(side, null, null)))
+      await page.evaluate(() => dispatchEvent(new Event('of-refresh-trading')))
+      await page.waitForFunction(n => window.__ofServerTP?.state.positions.length === n, before.length + 1, { timeout: 15000 }); await wait(1800)
+      const fresh = (await call(page, `/trading/state?account=${trial.id}`)).data.positions.find(p => !before.includes(p.id))
+      const e = Number(fresh.entry_price), L = side === 'long'
+      const tpNew = L ? Math.ceil(e * 1.02) : Math.floor(e * 0.98), slNew = L ? Math.floor(e * 0.985) : Math.ceil(e * 1.015)
+      const box = await fw(id => window.OpenfundTerminalInspect.positionOverlays().find(o => String(o.positionId) === String(id))?.drawing, fresh.id)
+      check(`${side.toUpperCase()} without SL/TP: creation handles on the entry (no zones)`, box && (box.props?.ofMissing || []).join() === 'stop,target' && box.anchors[1].price === e && box.anchors[2].price === e, JSON.stringify(box))
+      /* create the TP alone by dragging its handle off the entry to the profit side */
+      await editOn(fresh.id, { tp: tpNew })
+      await page.waitForFunction(({ id, v }) => window.__ofServerTP?.state.positions.find(p => p.id === id)?.tp === v, { id: fresh.id, v: tpNew }, { timeout: 15000 }).catch(() => {}); await wait(1200)
+      let srv = (await call(page, `/trading/state?account=${trial.id}`)).data.positions.find(p => p.id === fresh.id)
+      check(`${side.toUpperCase()}: a TP created on the chart is committed by the position service (SL stays absent)`, Number(srv.tp_price) === tpNew && srv.sl_price == null, JSON.stringify([srv.sl_price, srv.tp_price]))
+      /* a created SL on the wrong side is refused and nothing is sent */
+      await editOn(fresh.id, { sl: L ? e + 50 : e - 50 }); await wait(1200)
+      srv = (await call(page, `/trading/state?account=${trial.id}`)).data.positions.find(p => p.id === fresh.id)
+      check(`${side.toUpperCase()}: an SL created on the profit side is refused (no write)`, srv.sl_price == null && Number(srv.tp_price) === tpNew)
+      /* then create the SL on the loss side */
+      await editOn(fresh.id, { sl: slNew })
+      await page.waitForFunction(({ id, v }) => window.__ofServerTP?.state.positions.find(p => p.id === id)?.sl === v, { id: fresh.id, v: slNew }, { timeout: 15000 }).catch(() => {}); await wait(1200)
+      srv = (await call(page, `/trading/state?account=${trial.id}`)).data.positions.find(p => p.id === fresh.id)
+      const drawn = await fw(id => window.OpenfundTerminalInspect.positionOverlays().find(o => String(o.positionId) === String(id))?.drawing, fresh.id)
+      check(`${side.toUpperCase()}: an SL created on the chart is committed; the box shows both confirmed levels`, Number(srv.sl_price) === slNew && Number(srv.tp_price) === tpNew &&
+        drawn.anchors[1].price === slNew && drawn.anchors[2].price === tpNew && (drawn.props?.ofMissing || []).length === 0, JSON.stringify({ srv: [srv.sl_price, srv.tp_price], a: drawn?.anchors }))
+      await page.screenshot({ path: `${OUT}/overlay-created-${side}.png` })
+      const c = await call(page, `/trading/positions/${fresh.id}/close?account=${trial.id}`, { fraction: 1, product: 'prop', accountId: trial.id })
+      check(`${side.toUpperCase()} test position closed`, c.status < 300, JSON.stringify(c))
+      await page.evaluate(() => dispatchEvent(new Event('of-refresh-trading')))
+      await page.waitForFunction(n => window.__ofServerTP?.state.positions.length === n, before.length, { timeout: 15000 }); await wait(1200)
+    }
 
     /* close one position → its overlay disappears */
     const toClose = shorts.find(p => p.tp_price == null)

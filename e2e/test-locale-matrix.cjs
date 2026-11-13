@@ -45,6 +45,9 @@ const ARABIC_SCRIPT = /[؀-ۿ]/
 
 function collect() {
   /* runs in the page: visible text (and key attributes) of the document and same-origin frames */
+  /* the Vela chart layer is English-only in every locale by design (ADR 0028);
+     Openfund controls placed over it (data-openfund-ui, e.g. quick trade) are still checked */
+  const inChartLayer = el => !!el.closest('#chart-host,[class^="vela"],[class*=" vela"]') && !el.closest('[data-openfund-ui]')
   const docs = [document]
   document.querySelectorAll('iframe').forEach(f => { try { if (f.contentDocument) docs.push(f.contentDocument) } catch {} })
   const texts = []
@@ -54,6 +57,7 @@ function collect() {
     while ((node = walker.nextNode())) {
       const el = node.parentElement
       if (!el || el.closest('script,style,noscript,svg,canvas,option,select,[aria-hidden="true"],.of-language-select,[data-wallet-address],code,pre,kbd,.formula,.lesson-formula,[translate="no"]')) continue
+      if (inChartLayer(el)) continue
       const style = doc.defaultView.getComputedStyle(el)
       if (style.display === 'none' || style.visibility === 'hidden') continue
       const rect = el.getBoundingClientRect()
@@ -62,7 +66,7 @@ function collect() {
       if (t) texts.push(t)
     }
     doc.querySelectorAll('[aria-label],[placeholder],[title]').forEach(el => {
-      if (el.closest('.of-language-select,svg,[aria-hidden="true"]')) return
+      if (el.closest('.of-language-select,svg,[aria-hidden="true"]') || inChartLayer(el)) return
       for (const a of ['aria-label', 'placeholder', 'title']) { const v = el.getAttribute(a); if (v && v.trim()) texts.push(v.trim()) }
     })
   }

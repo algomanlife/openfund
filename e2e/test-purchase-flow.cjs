@@ -169,7 +169,7 @@ async function run() {
     await shot(page, 'checkout-open');
 
     /* ---------- 3. create the server-priced order ---------- */
-    await page.getByRole('button', { name: 'Create order & get payment address' }).click();
+    await page.getByRole('button', { name: 'Manual Payment' }).click();
     await page.locator('.of-checkout-addr code').waitFor({ timeout: 10000 });
     const receiver = await page.locator('.of-checkout-addr code').textContent();
     check('payment instructions carry the receiver address', /^0x[0-9a-f]{40}$/i.test((receiver || '').trim()));

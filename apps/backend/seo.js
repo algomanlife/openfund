@@ -15,9 +15,10 @@ export const SITE_LOCALES = ['fa', 'en', 'ar', 'ru', 'zh-CN']
 /** route → locales that publish it (the whitepaper is a fa/en publication) */
 export const PUBLIC_SITE_ROUTES = [
   'home', 'challenges', 'markets', 'rulebook', 'transparency', 'revenue-model', 'live-market-access',
-  'ambassador', 'coach', 'governance', 'faq', 'tools', 'learn', 'learn/glossary', 'referral', 'whitepaper', 'about', 'contact',
+  'ambassador', 'coach', 'governance', 'faq', 'tools', 'learn', 'learn/glossary', 'referral', 'whitepaper', 'campaign', 'about', 'contact',
 ]
-const ROUTE_LOCALES = { whitepaper: ['fa', 'en'] }
+/* the whitepaper and the sales-campaign landing are fa/en publications */
+const ROUTE_LOCALES = { whitepaper: ['fa', 'en'], campaign: ['fa', 'en'] }
 export const localesFor = route => ROUTE_LOCALES[route] || SITE_LOCALES
 
 const HOST = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$|^localhost$|^127\.0\.0\.1$/i

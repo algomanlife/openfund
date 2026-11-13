@@ -6094,6 +6094,120 @@
       "state": "Local Directus 11.9.1 on the same disposable database; Commerce Admin test user; synthetic coupon and generated test wallet only"
     },
     {
+      "file": "../../../apps/web-react/public/assets/campaign/terminal-fa.jpg",
+      "route": "/fa/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "crop": {
+        "x": 0,
+        "y": 77,
+        "width": 1440,
+        "height": 823
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13",
+      "state": "Prop terminal, Chart tab",
+      "source": "Unedited Chromium capture (Playwright, JPEG q80, cropped below the local-only release-manifest notice) of the local production build of branch agent/claude/checkout-campaign-chart-trading at localhost:8191, anonymous session, live public Gains data; no financial, market, depth or wallet fixtures",
+      "usedBy": "/fa/campaign, /en/campaign"
+    },
+    {
+      "file": "../../../apps/web-react/public/assets/campaign/terminal-en.jpg",
+      "route": "/en/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "crop": {
+        "x": 0,
+        "y": 77,
+        "width": 1440,
+        "height": 823
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13",
+      "state": "Prop terminal, Chart tab",
+      "source": "Unedited Chromium capture (Playwright, JPEG q80, cropped below the local-only release-manifest notice) of the local production build of branch agent/claude/checkout-campaign-chart-trading at localhost:8191, anonymous session, live public Gains data; no financial, market, depth or wallet fixtures",
+      "usedBy": "/fa/campaign, /en/campaign"
+    },
+    {
+      "file": "../../../apps/web-react/public/assets/campaign/chart-fa.jpg",
+      "route": "/fa/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "crop": {
+        "x": 0,
+        "y": 77,
+        "width": 1440,
+        "height": 823
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13",
+      "state": "Chart tab in fullscreen",
+      "source": "Unedited Chromium capture (Playwright, JPEG q80, cropped below the local-only release-manifest notice) of the local production build of branch agent/claude/checkout-campaign-chart-trading at localhost:8191, anonymous session, live public Gains data; no financial, market, depth or wallet fixtures",
+      "usedBy": "/fa/campaign, /en/campaign"
+    },
+    {
+      "file": "../../../apps/web-react/public/assets/campaign/chart-en.jpg",
+      "route": "/en/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "crop": {
+        "x": 0,
+        "y": 77,
+        "width": 1440,
+        "height": 823
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13",
+      "state": "Chart tab in fullscreen",
+      "source": "Unedited Chromium capture (Playwright, JPEG q80, cropped below the local-only release-manifest notice) of the local production build of branch agent/claude/checkout-campaign-chart-trading at localhost:8191, anonymous session, live public Gains data; no financial, market, depth or wallet fixtures",
+      "usedBy": "/fa/campaign, /en/campaign"
+    },
+    {
+      "file": "../../../apps/web-react/public/assets/campaign/ticket-fa.jpg",
+      "route": "/fa/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "crop": {
+        "x": 0,
+        "y": 77,
+        "width": 1440,
+        "height": 823
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13",
+      "state": "EUR/USD order ticket in Lotage mode (0.10 lot)",
+      "source": "Unedited Chromium capture (Playwright, JPEG q80, cropped below the local-only release-manifest notice) of the local production build of branch agent/claude/checkout-campaign-chart-trading at localhost:8191, anonymous session, live public Gains data; no financial, market, depth or wallet fixtures",
+      "usedBy": "/fa/campaign, /en/campaign"
+    },
+    {
+      "file": "../../../apps/web-react/public/assets/campaign/ticket-en.jpg",
+      "route": "/en/prop/trade",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "crop": {
+        "x": 0,
+        "y": 77,
+        "width": 1440,
+        "height": 823
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13",
+      "state": "EUR/USD order ticket in Lotage mode (0.10 lot)",
+      "source": "Unedited Chromium capture (Playwright, JPEG q80, cropped below the local-only release-manifest notice) of the local production build of branch agent/claude/checkout-campaign-chart-trading at localhost:8191, anonymous session, live public Gains data; no financial, market, depth or wallet fixtures",
+      "usedBy": "/fa/campaign, /en/campaign"
+    },
+    {
       "file": "launch-readiness/about-desktop-dark-en.png",
       "route": "/en/about",
       "viewport": {

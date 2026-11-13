@@ -30,5 +30,6 @@
 - [0024 — Hybrid footprint chart (Gains price, Hyperliquid order flow)](0024-hybrid-footprint-chart.md)
 - [0025 — Prop leverage ceilings, position sizing modes and the economic calendar tab](0025-prop-leverage-sizing-and-economic-calendar.md)
 - [0026 — Dedicated checkout, vendored DePay widget and the chart position tool](0026-dedicated-checkout-vendored-depay-widget-and-chart-position-tool.md)
+- [0028 — Manual payment, treasury by network, campaign landing, English chart layer, SL/TP creation and Lotage](0028-manual-payment-treasury-networks-campaign-chart-english-lotage.md)
 
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)

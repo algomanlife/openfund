@@ -1,0 +1,88 @@
+/* Sales-campaign landing (/fa/campaign, /en/campaign). Uses the information-
+   page tokens (--line, --muted, --body, --mint) so it follows the Openfund
+   identity in dark and light themes, RTL and LTR. Motion is a single short
+   reveal, disabled for prefers-reduced-motion. */
+.cmp { --cmp-accent: var(--mint, #82e7bd); --cmp-card: color-mix(in srgb, var(--body, #f1f3ef) 3.5%, transparent); padding-bottom: 72px; overflow-x: clip }
+html[data-theme="light"] .cmp { --cmp-accent: #087b4a; --cmp-card: #ffffff }
+.cmp .container { width: min(1180px, 100%); margin-inline: auto; padding-inline: 16px; box-sizing: border-box }
+.cmp h1 { font-size: clamp(30px, 5.2vw, 56px); line-height: 1.15; font-weight: 600; margin: 10px 0 16px; text-wrap: balance; letter-spacing: -.01em }
+html[lang="fa"] .cmp h1 { line-height: 1.45; letter-spacing: 0 }
+.cmp h2 { font-size: clamp(22px, 3vw, 34px); font-weight: 600; margin: 6px 0 10px; text-wrap: balance }
+.cmp h3 { font-size: 16px; font-weight: 600; margin: 0 0 6px }
+.cmp p { line-height: 1.85 }
+.cmp .eyebrow { color: var(--cmp-accent); font-size: 12px; letter-spacing: .08em }
+.cmp-lead { font-size: clamp(15px, 1.6vw, 18px); color: var(--muted, #9fb3a8); max-width: 58ch; margin: 0 0 22px }
+.cmp-sub { color: var(--muted, #9fb3a8); max-width: 70ch; margin: 0 0 22px }
+.cmp-fine { font-size: 12px; color: var(--muted, #9fb3a8); margin: 14px 0 0 }
+.cmp-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px }
+.cmp-actions .button, .cmp-plan .button, .cmp-final .button { min-height: 46px; justify-content: center; text-decoration: none }
+.cmp .button-secondary { background: transparent; color: var(--body, #f1f3ef); border: 1px solid var(--cmp-accent) }
+html[data-theme="light"] .cmp .button-secondary { color: #0c1710 }
+.cmp .button-secondary:hover { background: color-mix(in srgb, var(--cmp-accent) 12%, transparent) }
+.cmp a:focus-visible, .cmp summary:focus-visible { outline: 2px solid var(--cmp-accent); outline-offset: 3px; border-radius: 6px }
+
+/* hero */
+.cmp-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(24px, 4vw, 56px); align-items: center; padding-top: clamp(32px, 6vw, 72px); padding-bottom: 32px }
+.cmp-hero-shot { margin: 0; border: 1px solid var(--line, #ffffff1f); border-radius: 14px; overflow: hidden; background: #060808; box-shadow: 0 30px 80px -40px color-mix(in srgb, var(--cmp-accent) 45%, transparent) }
+.cmp-hero-shot img, .cmp-shots img { display: block; width: 100%; height: auto }
+
+/* sections */
+.cmp-section { padding-top: clamp(48px, 7vw, 88px) }
+.cmp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 14px }
+.cmp-card, .cmp-plan, .cmp-qa { border: 1px solid var(--line, #ffffff1f); border-radius: 12px; background: var(--cmp-card) }
+.cmp-card { padding: 18px }
+.cmp-card p { margin: 0; color: var(--muted, #9fb3a8); font-size: 14px }
+.cmp-shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 18px }
+.cmp-shots figure { margin: 0; display: grid; gap: 10px }
+.cmp-shots img { border: 1px solid var(--line, #ffffff1f); border-radius: 12px }
+.cmp-shots figcaption { font-size: 13px; color: var(--muted, #9fb3a8); line-height: 1.8 }
+.cmp #terminal .cmp-actions { margin-top: 18px }
+
+/* plans */
+.cmp-plans { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 14px }
+.cmp-plan { padding: 20px; display: grid; gap: 10px; align-content: start }
+.cmp-plan h3 { font-size: 18px; margin: 0 }
+.cmp-plan-tag { margin: 0; font-size: 13px; color: var(--muted, #9fb3a8) }
+.cmp-plan-price { margin: 0; font-size: 14px }
+.cmp-plan-price b { font-size: 22px; color: var(--cmp-accent); font-variant-numeric: tabular-nums }
+.cmp-plan dl { margin: 0; display: grid; gap: 6px }
+.cmp-plan dl div { display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid var(--line, #ffffff14); padding-top: 6px; font-size: 13px }
+.cmp-plan dt { color: var(--muted, #9fb3a8) }
+.cmp-plan dd { margin: 0; font-variant-numeric: tabular-nums }
+.cmp-plan .button { margin-top: 6px }
+
+/* steps */
+.cmp-steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 14px; counter-reset: s }
+.cmp-steps li { display: flex; gap: 12px; align-items: flex-start }
+.cmp-steps li > span { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--cmp-accent); color: var(--cmp-accent); font-weight: 600 }
+.cmp-steps p { margin: 0; color: var(--muted, #9fb3a8); font-size: 13.5px }
+
+/* transparency + faq */
+.cmp-links { display: flex; flex-wrap: wrap; gap: 10px }
+.cmp-link { display: inline-flex; gap: 8px; align-items: center; min-height: 44px; padding: 10px 16px; border: 1px solid var(--line, #ffffff2a); border-radius: 10px; color: inherit; text-decoration: none }
+.cmp-link:hover { border-color: var(--cmp-accent) }
+.cmp-faq { display: grid; gap: 10px }
+.cmp-qa summary { cursor: pointer; padding: 16px 18px; font-weight: 600; list-style-position: inside; min-height: 44px; box-sizing: border-box }
+.cmp-qa p { margin: 0; padding: 0 18px 16px; color: var(--muted, #9fb3a8) }
+
+/* final */
+.cmp-final { margin-top: clamp(56px, 8vw, 96px); display: grid; justify-items: center; text-align: center; gap: 14px; padding-top: 40px; padding-bottom: 40px; border-top: 1px solid var(--line, #ffffff1f) }
+
+/* motion */
+@media (prefers-reduced-motion: no-preference) {
+  .cmp-reveal { animation: cmp-in .55s cubic-bezier(.2, .7, .2, 1) both }
+  .cmp-hero-copy .cmp-reveal:nth-child(2) { animation-delay: .05s }
+  .cmp-hero-copy .cmp-reveal:nth-child(3) { animation-delay: .1s }
+  .cmp-hero-copy .cmp-reveal:nth-child(4) { animation-delay: .15s }
+  .cmp-hero-shot.cmp-reveal { animation-delay: .12s }
+  @keyframes cmp-in { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+}
+
+/* tablet / phone */
+@media (max-width: 900px) {
+  .cmp-hero { grid-template-columns: minmax(0, 1fr) }
+}
+@media (max-width: 560px) {
+  .cmp-actions .button { flex: 1 1 100% }
+  .cmp-links .cmp-link { flex: 1 1 100% }
+}

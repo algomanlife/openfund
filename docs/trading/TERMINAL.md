@@ -44,3 +44,14 @@ Quick Trade (chart layout only) is implemented in `terminal.js` next to the orde
 The trading route owns a 40px application header; the framed workspace starts with a 34px market row. Chart, Book/Trades and Order remain in fixed LTR physical columns for both locales. Local text uses RTL where required and numeric inputs, symbols and columns use LTR isolation. Shared brand tokens are retained. No website shell or generated chart bundle is changed.
 
 The order form fits without scrolling at the four supported desktop sizes. Paired fields, conditional trigger input and a compact account summary retain original IDs and handlers. Liquidation, margin, fees and maximum loss stay visible; Order Details exposes entry, index and impact without displacing the action. Variable data lists and activity tables retain internal scrolling. Short/narrow windows expose explicit workspace views. [Exact sizes, screenshots, verification and limits](../reviews/terminal-ui/DELIVERY.md).
+
+## Creating SL/TP on the chart
+
+On a tradable Prop account every open position has a chart box, also without
+SL/TP (zero height, no zones). Drag the handle at the right end of the entry
+line to the loss side to create a stop loss, or to the profit side to create a
+take profit; existing levels move the same way. The proposed price is
+validated (own side of the entry, market price precision), sent through the
+existing position-update service and drawn only after the server confirms it;
+a rejected change restores the confirmed levels with a message. Sizing by
+[Lotage](LOTAGE.md) is described separately.

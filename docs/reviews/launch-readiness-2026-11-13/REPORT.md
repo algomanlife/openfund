@@ -151,7 +151,7 @@ sizing and production capacity (demonstrated locally: 500 chart users +
   customers without a funded account can no longer submit a request (intended).
 - Reward reservation changes the funded account balance; it is covered by
   ledger rows and tests, but it is new financial code. Review before merge.
-- Rollback after the first funded-demo approval needs care (see ADR 0028).
+- Rollback after the first funded-demo approval needs care (see ADR 0029).
 - Several new `PLAN` terms are enforced from catalog values that differ from
   the current reference (D1, D5). Publishing before the decisions risks
   advertising terms that later change for existing customers. Snapshots

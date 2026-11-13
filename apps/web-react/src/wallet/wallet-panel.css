@@ -20,3 +20,6 @@
 .wallet-panel-note { color: var(--body, #b5bebb); font-size: 13px; }
 html[data-theme="light"] .wallet-panel-ready { color: #087b4a; }
 @media (prefers-reduced-motion: reduce) { .wallet-panel-status .wallet-panel-dot { animation: none; } }
+/* "Buy Challenge" under "Ready to choose a challenge": opens the shared checkout */
+.wallet-panel .wallet-buy { align-self: flex-start; margin-top: 4px; min-height: 44px; text-decoration: none; }
+@media (max-width: 560px) { .wallet-panel .wallet-buy { align-self: stretch; justify-content: center; } }

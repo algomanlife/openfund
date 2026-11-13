@@ -77,7 +77,7 @@
       <div class="news-state" id="news-state" role="status" aria-live="polite"></div>
       <div class="news-host" id="news-host"></div>
     </section>
-    <div class="chart-host" id="chart-host" role="tabpanel" aria-labelledby="tab-chart">
+    <div class="chart-host" id="chart-host" role="tabpanel" aria-labelledby="tab-chart" dir="ltr" lang="en">
       <button class="chart-float" id="chart-full" title="Fullscreen" aria-label="Fullscreen">⛶</button>
       <div class="chart-brand" id="chart-brand" aria-hidden="false">
         <span class="brand-o">O</span><span class="brand-rest">penfund</span>
@@ -166,14 +166,14 @@
       <div class="size-mode" id="size-mode" role="radiogroup" aria-label="Position sizing" hidden>
         <button type="button" role="radio" data-size-mode="collateral" aria-checked="true" data-i18n="sz.collateral">Collateral</button>
         <button type="button" role="radio" data-size-mode="quantity" aria-checked="false" data-i18n="sz.quantity">Quantity</button>
-        <button type="button" role="radio" data-size-mode="lots" aria-checked="false" data-i18n="sz.lots">Lots</button>
+        <button type="button" role="radio" data-size-mode="lots" aria-checked="false" data-i18n="sz.lots">Lotage</button>
       </div>
       <label class="field" id="qty-field" hidden>
         <span><span data-i18n="sz.qtyLabel">Quantity</span> <em id="qty-unit">—</em></span>
         <input type="text" inputmode="decimal" id="of-qty" placeholder="0" autocomplete="off" dir="ltr">
       </label>
       <label class="field" id="lots-field" hidden>
-        <span data-i18n="sz.lotsLabel">Lots</span>
+        <span data-i18n="sz.lotsLabel">Lotage</span>
         <input type="text" inputmode="decimal" id="of-lots" placeholder="—" autocomplete="off" dir="ltr" disabled>
       </label>
       <p class="size-note" id="size-note" hidden></p>
@@ -191,7 +191,7 @@
       </div>
       <div class="kv"><span data-i18n="of.notional">Notional</span><b id="of-notional">$0.00</b></div>
       <dl class="size-equiv" id="size-equiv" hidden>
-        <div><dt data-i18n="sz.lots">Lots</dt><dd id="eq-lots">—</dd></div>
+        <div><dt data-i18n="sz.lots">Lotage</dt><dd id="eq-lots">—</dd></div>
         <div><dt data-i18n="sz.collateralShort">Collateral</dt><dd id="eq-coll">—</dd></div>
       </dl>
       <label class="field sl">
@@ -237,7 +237,7 @@
       </div>
       <div class="bt-table" id="bt-positions" data-t="positions" hidden>
         <table><thead><tr>
-          <th data-i18n="th.market">Market</th><th data-i18n="th.side">Side</th><th class="r" data-i18n="th.size">Size</th><th class="r" data-i18n="th.entry">Entry</th><th class="r" data-i18n="th.mark">Mark</th><th data-i18n="th.lev">Lev</th><th class="r" data-i18n="th.collateral">Collateral</th><th class="r" data-i18n="th.unrealized">Unrealized PnL</th><th class="r">ROE</th><th class="r" data-i18n="th.liq">Liq. price</th><th class="r" data-i18n="th.sltp">SL / TP</th><th data-i18n="th.actions">Actions</th>
+          <th data-i18n="th.market">Market</th><th data-i18n="th.side">Side</th><th class="r" data-i18n="th.size">Size</th><th class="r" data-i18n="th.entry">Entry Price</th><th class="r" data-i18n="th.mark">Mark</th><th data-i18n="th.lev">Lev</th><th class="r" data-i18n="th.collateral">Collateral</th><th class="r" data-i18n="th.unrealized">Unrealized PnL</th><th class="r">ROE</th><th class="r" data-i18n="th.liq">Liq. price</th><th class="r" data-i18n="th.sltp">SL / TP</th><th data-i18n="th.actions">Actions</th>
         </tr></thead><tbody id="tb-positions"></tbody></table>
       </div>
       <div class="bt-table" id="bt-orders" data-t="orders" hidden>

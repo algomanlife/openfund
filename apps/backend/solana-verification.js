@@ -19,6 +19,20 @@
 import { paymentError, toUnits, SOLANA_CHAIN_ID } from './payment-verification.js'
 
 const DEPAY_SOLANA_ACCOUNT = 'DePayR1gQfDmViCPKctnZXNtUgqRwnEqMax8LX9ho1Zg'
+const MEMO_PROGRAMS = new Set(['MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr', 'Memo1UhkJRfHyvLMcVucJwxXeuD728EQVDDwQDxFjZgdkx'])
+
+/** every SPL Memo text in the transaction (top-level and inner instructions) */
+export function solanaMemos(tx) {
+  const out = []
+  const visit = ix => {
+    if (!ix) return
+    const memoProgram = ix.program === 'spl-memo' || MEMO_PROGRAMS.has(String(ix.programId || ''))
+    if (memoProgram && typeof ix.parsed === 'string') out.push(ix.parsed)
+  }
+  for (const ix of tx?.transaction?.message?.instructions || []) visit(ix)
+  for (const inner of tx?.meta?.innerInstructions || []) for (const ix of inner.instructions || []) visit(ix)
+  return out
+}
 
 export function analyzeSolanaPayment(tx, expect) {
   if (!tx) throw paymentError(409, 'tx_pending', { retryable: true })
@@ -26,6 +40,13 @@ export function analyzeSolanaPayment(tx, expect) {
   const keys = (tx.transaction?.message?.accountKeys || []).map(k => (typeof k === 'string' ? k : k.pubkey))
   const feePayer = keys[0] || null
   if (expect.requireSender !== false && feePayer !== expect.from) throw paymentError(400, 'wrong_sender')
+  /* a customer-submitted (manual) Solana payment cannot be tied to the
+     customer's EVM sign-in wallet, so it must carry the order reference in
+     an SPL Memo; without it anyone could claim someone else's transfer */
+  if (expect.memo) {
+    const want = String(expect.memo).toLowerCase()
+    if (!solanaMemos(tx).some(m => m.toLowerCase().includes(want))) throw paymentError(400, 'memo_missing')
+  }
   const owned = list => (list || []).filter(b => b.owner === expect.receiver && b.mint === expect.token)
   const sum = list => owned(list).reduce((acc, b) => acc + BigInt(b.uiTokenAmount?.amount || '0'), 0n)
   const received = sum(tx.meta.postTokenBalances) - sum(tx.meta.preTokenBalances)

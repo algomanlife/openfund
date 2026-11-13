@@ -99,3 +99,22 @@ non-Arbitrum chain through the widget, then record order id, transaction id,
 
 Rollback: delete `PURCHASE_PAYMENT_CHAINS` (purchases stop immediately; paid
 orders, invoices and challenges are untouched).
+
+## Treasury receivers
+
+The approved Openfund treasury addresses (public, owner-provided 2026-11-13)
+are the `receiver` values of `PURCHASE_PAYMENT_CHAINS` — the single place they
+are configured. DePay settlement, the manual-payment instructions
+([Manual payment](MANUAL_PAYMENT.md)) and the per-network treasury balances on
+the transparency page all read them from there; no code hard-codes them.
+
+| Networks | Receiver |
+|---|---|
+| EVM: Ethereum, Arbitrum, Base, Polygon, Optimism, BNB Smart Chain | `0x2BB7c512Bb3bADfCC543D5E5309d98872b10E6B9` <!-- gitleaks:allow: public treasury address --> |
+| Solana | `9U7cmxeHzLYBRh5gWxgzsteP8hTfZSQMfoHKSN6SQSpM` <!-- gitleaks:allow: public treasury address --> |
+
+Each chain entry may add the public display field `"tokenSymbol": "USDC"`
+(shown in the manual instructions; verification always checks the contract or
+mint itself). Every listed chain needs its dedicated endpoint in
+`PURCHASE_RPC_URLS` — the same endpoints read the treasury balances. Changing
+the receivers in production is an owner action in the Render dashboard.

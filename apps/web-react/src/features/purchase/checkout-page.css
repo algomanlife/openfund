@@ -94,3 +94,31 @@ html[data-theme="light"] .of-co-steps li.current span { color: #FFFFFF }
   .of-co-receipt dt, .of-co-receipt dd, .of-co-receipt h2 { color: #000 }
 }
 .of-co-unavailable{display:block;color:var(--muted);font-size:11px}
+
+/* payment methods: DePay and Manual Payment side by side (one order, one verifier) */
+.of-co-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 12px }
+.of-co-methods .button { width: 100%; justify-content: center }
+.of-co .button-secondary { background: transparent; color: var(--body, #f1f3ef); border: 1px solid var(--co-accent) }
+.of-co .button-secondary:hover:not(:disabled) { background: color-mix(in srgb, var(--co-accent) 12%, transparent) }
+.of-co-tabs { display: flex; gap: 4px; border: 1px solid var(--line, #ffffff1f); border-radius: 10px; padding: 4px; margin: 12px 0 }
+.of-co-tabs button { flex: 1; min-height: 40px; border: 0; border-radius: 7px; background: transparent; color: var(--muted, #9fb3a8); font: inherit; font-size: 13px; cursor: pointer }
+.of-co-tabs button.active { background: color-mix(in srgb, var(--co-accent) 16%, transparent); color: var(--body, #f1f3ef); font-weight: 600 }
+.of-co-tabs button:focus-visible { outline: 2px solid var(--co-accent); outline-offset: 1px }
+.of-co-state { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 12px 0 4px; font-size: 13px }
+.of-co-state b { padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line, #ffffff2a) }
+.of-co-state-verification_pending b, .of-co-state-activation_pending b { border-color: #e8c27a; color: #e8c27a }
+.of-co-state-payment_failed b, .of-co-state-expired b { border-color: #e89483; color: #e89483 }
+.of-co-state-payment_confirmed b, .of-co-state-challenge_activated b { border-color: var(--co-accent); color: var(--co-accent) }
+html[data-theme="light"] .of-co-state-verification_pending b, html[data-theme="light"] .of-co-state-activation_pending b { border-color: #8a5a00; color: #8a5a00 }
+html[data-theme="light"] .of-co-state-payment_failed b, html[data-theme="light"] .of-co-state-expired b { border-color: #b0392f; color: #b0392f }
+.of-co-manual { display: grid; gap: 10px; margin-top: 8px }
+.of-co-field { display: grid; gap: 6px; font-size: 12px; color: var(--muted, #9fb3a8) }
+.of-co-field select, .of-co-field input {
+  width: 100%; min-width: 0; box-sizing: border-box; background: transparent; color: var(--body, #f1f3ef); font: inherit; font-size: 14px;
+  border: 1px solid var(--line, #ffffff2a); border-radius: 8px; padding: 10px 12px; min-height: 44px;
+}
+.of-co-field select option { color: #0c1710 }
+.of-co-field select:focus, .of-co-field input:focus { outline: 2px solid var(--co-accent); outline-offset: 1px }
+.of-co-manual .of-checkout-addr { flex-wrap: wrap }
+.of-co-manual .of-checkout-addr code { overflow-wrap: anywhere; min-width: 0; flex: 1 1 220px }
+.of-co-manual a.of-profile-plainbtn { text-decoration: none }

@@ -259,3 +259,13 @@ html:is([lang]) .home-gateway .home-panel .home-panel-heading h2{margin:0}
  .home-gateway .home-art{height:max(44px,calc(100px - var(--landing-chrome-extra,0px)))}
  .home-gateway .technical-art{height:max(36px,calc(58px - var(--landing-chrome-extra,0px) * .25))}
 }
+
+/* Prop card: the existing challenges CTA plus "Buy Challenge" straight to the
+   shared checkout. Side by side when there is room, stacked on small cards;
+   the row (not each button) is pushed to the card bottom. */
+.home-gateway .home-cta-row{margin-top:auto;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;width:100%}
+.home-gateway .home-cta-row .button{margin-top:0;flex:1 1 150px}
+.home-gateway .home-panel .home-cta-row .home-buy-cta{background:transparent;border-color:#82e7bd88;color:#bcebd4}
+.home-gateway .home-panel .home-cta-row .home-buy-cta:hover{background:#82e7bd14}
+html[data-theme=light] .home-gateway .home-panel .home-cta-row .home-buy-cta{border-color:#087b4a88;color:#065f39}
+@media(max-width:700px){.home-gateway .home-cta-row{flex-direction:column;gap:6px}.home-gateway .home-cta-row .button{flex:none;width:100%}}

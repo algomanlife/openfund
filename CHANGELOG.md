@@ -13,7 +13,7 @@
   Draft Terms, Privacy and Refund policies prepared for legal review.
 
 - Launch readiness (branch `agent/claude/launch-readiness`,
-  [ADR 0028](docs/decisions/0028-reward-lifecycle-and-support-queue.md),
+  [ADR 0029](docs/decisions/0029-reward-lifecycle-and-support-queue.md),
   [report](docs/reviews/launch-readiness-2026-11-13/REPORT.md); **not deployed**):
   server-computed reward requests on funded accounts enforce the published
   split, first-payout wait, minimum request, consistency score, profitable days,
@@ -25,6 +25,19 @@
   `support_messages` and handled in Directus by a new `Support Agent` role.
   The terminal support link no longer points to an unverified mailbox.
 
+- Checkout, campaign, chart and trading completion (branch `agent/claude/checkout-campaign-chart-trading`, not deployed;
+  [ADR 0028](docs/decisions/0028-manual-payment-treasury-networks-campaign-chart-english-lotage.md)):
+  **Manual Payment** next to Pay with DePay on the same order, verified on-chain
+  by the existing verifier (EVM: signed by the sign-in wallet; Solana: order id
+  in an SPL Memo), with Verification Pending / Payment Failed / Activation
+  statuses, rate limiting and two race fixes (`tx_already_used`,
+  `order_already_paid`); Openfund Treasury wallets per network on the
+  transparency page; a fa/en sales-campaign landing; the Vela chart layer is
+  English and LTR in every locale; SL/TP can be created by dragging from the
+  entry line; Lotage sizing for USD-quoted forex, gold, silver and WTI; "Buy
+  Challenge" CTAs on the Home Prop card and the connected-wallet card; "Entry Price" terminology (Persian
+  label "entry point"). No engine, PnL, drawdown, margin, price-feed
+  or DePay-signature change.
 - DePay checkout activation fixes (branch `agent/claude/depay-checkout-activation`,
   **not deployed**): the DePay endpoints also answer at
   `/api/payments/depay/{config,configuration,callback,events}`, the URLs the

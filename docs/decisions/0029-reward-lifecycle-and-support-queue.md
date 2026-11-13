@@ -1,4 +1,4 @@
-# ADR 0028 — Server-computed reward lifecycle and a backend-owned support queue
+# ADR 0029 — Server-computed reward lifecycle and a backend-owned support queue
 
 - Status: Proposed (implemented on branch `agent/claude/launch-readiness`, not deployed)
 - Date: 2026-11-13

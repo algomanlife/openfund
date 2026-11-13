@@ -95,6 +95,7 @@ jobs:
       - name: Unit tests (plans / rulebook seed / markets)
         run: |
           npm run test:plans
+          npm run test:checkout
           npm run test:information
           npm run test:markets
           npm run test:depth
