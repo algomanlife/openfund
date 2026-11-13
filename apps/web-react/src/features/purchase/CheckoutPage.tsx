@@ -257,6 +257,8 @@ export default function CheckoutPage() {
         validated: ok => { if (!ok) setWidgetNote(t('DePay پرداخت را تأیید نکرد؛ وضعیت نهایی را سرور اوپن‌فاند تعیین می‌کند.', 'DePay could not validate this payment. Openfund’s server check decides the final status.')) },
         failed: () => setWidgetNote(t('تراکنش روی زنجیره ناموفق بود؛ می‌توانی در همان پنجره دوباره تلاش کنی.', 'The transaction failed on-chain. You can retry in the payment window.')),
         closed: () => setWidget(w => (w === 'sent' ? 'sent' : 'closed')),
+        /* previously dropped: e.g. DePay could not load the signed payment configuration */
+        error: () => setWidgetNote(t('درگاه DePay خطا گزارش داد. اگر پیکربندی پرداخت بارگذاری نشد، پنجره را ببند و دوباره باز کن؛ در صورت تکرار با پشتیبانی تماس بگیر. سفارش شما باز می‌ماند.', 'DePay reported an error. If the payment configuration did not load, close and reopen the window; contact support if it repeats. Your order stays open.')),
         critical: () => { setWidget('closed'); setError(t('درگاه پرداخت با خطا بسته شد؛ دوباره باز کن.', 'The payment window stopped with an error — open it again.')) },
       })
       setWidget(w => (w === 'loading' ? 'open' : w))

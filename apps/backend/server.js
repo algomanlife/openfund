@@ -28,7 +28,7 @@ import { Engine } from './engine.js'
 import { Portfolio } from './portfolio.js'
 import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
-import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments } from './purchases.js'
+import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments, paymentReadinessReport, DEPAY_SIGNED_PATHS } from './purchases.js'
 import { adminRoutes } from './admin.js'
 import { chartWorkspaceRoutes } from './chart-workspaces.js'
 import { createFootprintService } from './footprint/service.js'
@@ -157,7 +157,7 @@ app.use('/auth/profile', express.json({ limit: '512kb' })) /* avatar data URLs *
 app.use('/chart/workspaces', express.json({ limit: '256kb' })) /* chart workspace entries (200 KB cap per entry) */
 /* the DePay callback is signed over its exact bytes: keep the raw body for that one route */
 /* DePay signs the exact request bytes: keep the raw body for its routes */
-const DEPAY_SIGNED_PATHS = new Set(['/purchases/depay/configuration', '/purchases/depay/callback', '/purchases/depay/events'])
+/* every DePay-signed path (canonical + aliases), from purchases.js */
 app.use(express.json({ limit: '32kb', verify: (req, res, buf) => { if (DEPAY_SIGNED_PATHS.has(req.path)) req.rawBody = buf } }))
 
 /* ---------- CORS (credentials for session cookies) ---------- */
@@ -851,6 +851,14 @@ app.use((err, req, res, next) => {
 const server = app.listen(cfg.port, () =>
   console.log(`openfund-backend :${cfg.port}`),
 );
+/* payment readiness (names and missing fields only, never secret values):
+   makes a disabled checkout diagnosable from the service log */
+try {
+  const r = paymentReadinessReport()
+  console.log(`[payments] readiness: paymentsEnabled=${r.paymentsEnabled} depayEndpoints=${r.depayEndpoints} depayConfiguration=${r.depayConfiguration}`)
+  for (const c of r.chains) console.log(`[payments] chain ${c.blockchain}: ${c.ready ? 'ready' : 'NOT ready, missing ' + c.missing.join(', ')}${c.warnings.length ? ' — ' + c.warnings.join('; ') : ''}`)
+  for (const p of r.problems) console.warn(`[payments] ${p}`)
+} catch (e) { console.error('[payments] readiness report failed', e.message) }
 /* market data (authoritative server-side marks) + trading engine loop */
 marketData.bootstrap().catch(e => console.error('[market-data] bootstrap failed', e.message))
 engine.start(1000)

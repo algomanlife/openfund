@@ -16,6 +16,17 @@ necessary, not sufficient.
 | DePay server callback hint | Implemented; **awaiting real-network acceptance** (signature format is verified only against locally generated keys) |
 | Refund execution | Not automated by design; manual with recorded adjustment |
 
+## Production state (verified 2026-11-13)
+
+Read-only, commit `6587b75` live on both hosts. Same variable state as below
+(no settlement chain; `PURCHASE_PAYMENT_DECIMALS=18` is still set). New
+evidence: the official widget, opened on `https://openfi.cloud` in Chromium,
+loads (SRI and CSP pass) and DePay POSTs to
+`https://openfi.cloud/api/payments/depay/config`, which returned 404, so DePay
+answered the widget with 500 ("Unable to load payment configuration!"). The
+branch `agent/claude/depay-checkout-activation` serves that URL; the owner
+steps are in [Owner setup](OWNER_SETUP.md).
+
 ## Production state (verified 2026-11-12)
 
 Read-only checks against `https://openfi.cloud` and `https://openfund.cloud`
