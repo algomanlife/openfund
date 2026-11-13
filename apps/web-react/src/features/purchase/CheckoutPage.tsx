@@ -5,6 +5,7 @@ import { dirOf, pick } from '../../i18n/locales'
 import { apiFetch, backendUrl, useSession } from '../../session/useOpenfundSession'
 import { closeDePayPayment, depayConfigured, depayOpenFor, openDePayPayment } from './depay'
 import { chainLabel, txExplorerUrl } from './chains'
+import { checkoutStatus, STATUS_TEXT, txIdValid, type StatusAttempt } from './checkoutStatus'
 import './purchase.css'
 import './checkout-page.css'
 
@@ -12,7 +13,8 @@ import './checkout-page.css'
  * Dedicated challenge purchase page — /:locale/checkout
  *
  *   wallet → challenge model → account size → price/coupon → customer
- *   details → review → Pay with DePay → server verification → receipt
+ *   details → review → Pay with DePay | Manual Payment → server
+ *   verification → receipt
  *
  * Contract (backend /purchases/*, unchanged trust model):
  *  - prices come from the server catalog and the server quote; the order is
@@ -20,6 +22,11 @@ import './checkout-page.css'
  *    DePay charges, through the signed dynamic configuration;
  *  - the DePay widget gets only the integration id and { orderId }; Openfund
  *    does not narrow DePay's wallets, networks or payer tokens;
+ *  - Manual Payment uses the SAME order: the customer transfers the order's
+ *    server price in the settlement token to the treasury address of the
+ *    chosen network (from the server's settlement configuration) and submits
+ *    the transaction id; POST /purchases/verify proves it on-chain. The
+ *    transaction id is never treated as proof by itself;
  *  - widget events only update this page. The order is paid when the signed
  *    DePay callback/event plus the on-chain verifier say so; the page learns
  *    it by polling, so it survives refreshes, wallet disconnects and closed
@@ -33,7 +40,15 @@ interface OrderView {
   list_price_usd?: string, discount_usd?: string, payment_required?: boolean, coupon_code?: string | null,
   created_at: string, expires_at: string, paid_at: string | null, plan_slug: string, plan_name: string
 }
-interface PaymentInfo { chainId: number, receiver: string, token: string | null, amount: string, reference: string }
+interface ManualChain {
+  chainId: number, blockchain: string | null, network: string | null, family: 'evm' | 'solana',
+  receiver: string, receiverExplorerUrl: string | null, token: string | null, tokenSymbol: string | null,
+  tokenDecimals: number | null, tokenExplorerUrl: string | null, minConfirmations: number, correlation: 'sender' | 'memo'
+}
+interface PaymentInfo {
+  chainId: number, receiver: string, token: string | null, amount: string, reference: string,
+  manual?: { chains: ManualChain[], amount: string, memo: string }
+}
 interface Receipt {
   orderId: string, status: string, lifecycleState: string | null,
   plan: { slug: string, name: string, names: { en?: string, fa?: string } | null },
@@ -85,6 +100,11 @@ const ERR: Record<string, [string, string]> = {
   coupon_exhausted: ['ظرفیت این کد تخفیف تمام شده است.', 'This coupon has reached its usage limit.'],
   coupon_already_used: ['قبلاً از این کد تخفیف استفاده کرده‌ای.', 'You have already used this coupon.'],
   rate_limited: ['درخواست‌ها زیاد است؛ کمی بعد دوباره تلاش کن.', 'Too many requests — please try again shortly.'],
+  memo_missing: ['شناسهٔ سفارش در Memo این تراکنش سولانا نیست؛ تراکنش قابل انتساب به این سفارش نیست.', 'This Solana transaction has no Memo with the order ID, so it cannot be matched to this order.'],
+  order_already_paid: ['این سفارش قبلاً با تراکنش دیگری پرداخت شده است.', 'This order was already paid with a different transaction.'],
+  invalid_request: ['شبکه یا شناسهٔ تراکنش معتبر نیست.', 'The network or transaction ID is not valid.'],
+  tx_too_old: ['این تراکنش پیش از ساخت سفارش انجام شده است.', 'This transaction was made before the order was created.'],
+  verify_failed: ['تأیید پرداخت ناموفق بود.', 'Payment verification failed.'],
 }
 const RETRYABLE = new Set(['tx_pending', 'tx_not_final', 'tx_reorged', 'rpc_unavailable', 'provisioning_retry'])
 const newKey = () => { try { return crypto.randomUUID() } catch { return Date.now().toString(36) + Math.random().toString(16).slice(2) } }
@@ -107,6 +127,7 @@ export default function CheckoutPage() {
   const [plans, setPlans] = useState<PlanInfo[] | null>(null)
   const [paymentsEnabled, setPaymentsEnabled] = useState(false)
   const [settlementChains, setSettlementChains] = useState<string[]>([])
+  const [manualAvailable, setManualAvailable] = useState(false)
   const [loadError, setLoadError] = useState<string | null>(null)
   useEffect(() => {
     void apiFetch('/purchases/plans').then(r => {
@@ -114,6 +135,7 @@ export default function CheckoutPage() {
       setPlans((r.data?.plans || []).filter((p: PlanInfo) => !p.free && p.accountSizesUsd?.length))
       setPaymentsEnabled(!!r.data?.paymentsEnabled)
       setSettlementChains(((r.data?.payment?.chains || []) as { blockchain?: string | null, chainId?: number }[]).map(c => chainLabel(c.blockchain || c.chainId)))
+      setManualAvailable(((r.data?.payment?.manualChains || []) as unknown[]).length > 0)
     }).catch(() => setLoadError(t('دریافت چلنج‌ها ناموفق بود.', 'Could not load the challenges.')))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -179,6 +201,10 @@ export default function CheckoutPage() {
   const [widgetNote, setWidgetNote] = useState<string | null>(null)
   const [txHash, setTxHash] = useState('')
   const useDePay = depayConfigured()
+  /* both methods share the order; the customer can switch before paying */
+  const [method, setMethod] = useState<'depay' | 'manual'>(useDePay ? 'depay' : 'manual')
+  const [manualChainId, setManualChainId] = useState<number | null>(null)
+  const [latestAttempt, setLatestAttempt] = useState<StatusAttempt | null>(null)
 
   const loadReceipt = useCallback(async (id: string) => {
     const r = await apiFetch(`/purchases/orders/${id}/receipt`).catch(() => null)
@@ -218,6 +244,7 @@ export default function CheckoutPage() {
       const a = await apiFetch(`/purchases/orders/${order.id}/attempts`).catch(() => null)
       if (stop || !a?.ok) return
       const latest = (a.data?.attempts || [])[0]
+      setLatestAttempt(latest || null)
       if (!latest) return
       if (latest.status === 'pending') { setWaiting(latest.error_code ? errText(latest.error_code) : t('پرداخت دریافت شد؛ در حال تأیید روی زنجیره…', 'Payment received — confirming on-chain…')); setAttemptError(null) }
       else if (latest.status === 'rejected') { setWaiting(null); setAttemptError(errText(latest.error_code || 'verify_failed')) }
@@ -246,6 +273,7 @@ export default function CheckoutPage() {
 
   const payWithDePay = async () => {
     if (busy || depayOpenFor()) return
+    setMethod('depay')
     setBusy(true); setError(null); setWidgetNote(null)
     try {
       const o = order && order.status === 'pending' ? order : await createOrder()
@@ -269,16 +297,30 @@ export default function CheckoutPage() {
   }
 
   const createManual = async () => { if (busy) return; setBusy(true); try { await createOrder() } finally { setBusy(false) } }
+  const startManual = async () => {
+    if (busy) return
+    setMethod('manual'); closeDePayPayment()
+    if (order && order.status === 'pending') return
+    setBusy(true); try { await createOrder() } finally { setBusy(false) }
+  }
+  const manualChains = payment?.manual?.chains || []
+  const manualChain = manualChains.find(c => c.chainId === manualChainId) || manualChains[0] || null
   const verifyManual = async () => {
-    if (!order) return
-    setBusy(true); setError(null)
+    if (!order || !manualChain || busy) return
+    setBusy(true); setError(null); setAttemptError(null)
     try {
-      const r = await apiFetch('/purchases/verify', { method: 'POST', body: JSON.stringify({ orderId: order.id, txHash: txHash.trim() }) })
-      if (r.ok) { await loadReceipt(order.id); setOrder(o => o && { ...o, status: 'paid' }); await session.reload?.(); return }
+      /* the server re-checks everything on-chain; the id is only a pointer */
+      const r = await apiFetch('/purchases/verify', { method: 'POST', body: JSON.stringify({ orderId: order.id, chainId: manualChain.chainId, txHash: txHash.trim() }) })
+      if (r.ok) { await loadReceipt(order.id); setOrder(o => o && { ...o, status: 'paid', lifecycle_state: 'provisioned' }); await session.reload?.(); return }
       const code = r.data?.error || 'verify_failed'
-      if (r.data?.retryable || RETRYABLE.has(code)) setWaiting(errText(code)); else setError(errText(code))
+      if (r.data?.retryable || RETRYABLE.has(code)) {
+        setWaiting(errText(code)); setLatestAttempt({ status: 'pending', error_code: code })
+        setOrder(o => o && { ...o, lifecycle_state: 'payment_detected' })
+      } else { setAttemptError(errText(code)); setLatestAttempt({ status: 'rejected', error_code: code }) }
     } finally { setBusy(false) }
   }
+  const copy = (v: string) => { void navigator.clipboard?.writeText(v).catch(() => {}) }
+  const status = checkoutStatus(order, latestAttempt, !!receipt?.challenge)
   const cancelOrder = async () => {
     if (!order) return
     const r = await apiFetch(`/purchases/orders/${order.id}/cancel`, { method: 'POST', body: '{}' })
@@ -287,7 +329,7 @@ export default function CheckoutPage() {
     const next = new URLSearchParams(params); next.delete('order'); setParams(next, { replace: true })
   }
   const startOver = () => {
-    setOrder(null); setReceipt(null); setPayment(null); setWidget('idle'); setSentTx(null); setWaiting(null); setAttemptError(null); setError(null)
+    setOrder(null); setReceipt(null); setPayment(null); setWidget('idle'); setSentTx(null); setWaiting(null); setAttemptError(null); setError(null); setLatestAttempt(null); setTxHash('')
     attemptKey.current = newKey()
     const next = new URLSearchParams(params); next.delete('order'); setParams(next, { replace: true })
   }
@@ -414,16 +456,27 @@ export default function CheckoutPage() {
             {authenticated && zeroQuote && (
               <button className="button full" disabled={busy || !ready} onClick={createManual}>{busy ? '…' : t('فعال‌سازی چلنج', 'Activate challenge')}</button>
             )}
-            {authenticated && paymentsEnabled && !zeroQuote && (useDePay ? (
-              <button className="button full of-co-pay" disabled={busy || !ready} onClick={() => { void payWithDePay() }}>
-                {busy ? '…' : t('پرداخت با DePay', 'Pay with DePay')}
-              </button>
-            ) : (
-              <button className="button full" disabled={busy || !ready} onClick={createManual}>{busy ? '…' : t('ساخت سفارش و دریافت آدرس پرداخت', 'Create order & get payment address')}</button>
-            ))}
-            {authenticated && paymentsEnabled && useDePay && !zeroQuote && (
+            {authenticated && paymentsEnabled && !zeroQuote && (
+              <div className="of-co-methods" role="group" aria-label={t('روش پرداخت', 'Payment method')}>
+                {useDePay && (
+                  <button className="button of-co-pay" disabled={busy || !ready} onClick={() => { void payWithDePay() }}>
+                    {busy && method === 'depay' ? '…' : t('پرداخت با DePay', 'Pay with DePay')}
+                  </button>
+                )}
+                {manualAvailable && (
+                  <button className={useDePay ? 'button button-secondary' : 'button'} disabled={busy || !ready} onClick={() => { void startManual() }}>
+                    {busy && method === 'manual' ? '…' : t('پرداخت دستی', 'Manual Payment')}
+                  </button>
+                )}
+                {!useDePay && !manualAvailable && (
+                  <button className="button" disabled={busy || !ready} onClick={createManual}>{busy ? '…' : t('ساخت سفارش و دریافت آدرس پرداخت', 'Create order & get payment address')}</button>
+                )}
+              </div>
+            )}
+            {authenticated && paymentsEnabled && !zeroQuote && (
               <p className="of-co-muted of-co-networks">
-                {t('در پنجرهٔ DePay هر کیف پول، شبکه و توکنی را که DePay برای این پرداخت پیشنهاد می‌دهد می‌توانی انتخاب کنی؛ DePay در صورت نیاز توکن را تبدیل می‌کند.', 'In the DePay window you can choose any wallet, network and token DePay offers for this payment; DePay converts the token when needed.')}
+                {useDePay && t('در پنجرهٔ DePay هر کیف پول، شبکه و توکنی را که DePay برای این پرداخت پیشنهاد می‌دهد می‌توانی انتخاب کنی؛ DePay در صورت نیاز توکن را تبدیل می‌کند.', 'In the DePay window you can choose any wallet, network and token DePay offers for this payment; DePay converts the token when needed.')}
+                {manualAvailable && <> {t('در پرداخت دستی، توکن تسویه را خودت به آدرس خزانهٔ اوپن‌فاند می‌فرستی و شناسهٔ تراکنش را ثبت می‌کنی؛ سرور تراکنش را روی زنجیره بررسی می‌کند.', 'With Manual Payment you send the settlement token to the Openfund treasury yourself and submit the transaction ID; the server verifies it on-chain.')}</>}
                 {settlementChains.length > 0 && <> {t('شبکه‌های تسویهٔ پیکربندی‌شده:', 'Configured settlement networks:')} <span dir="ltr">{settlementChains.join(' · ')}</span></>}
               </p>
             )}
@@ -441,7 +494,18 @@ export default function CheckoutPage() {
               <div className="of-co-total"><span>{t('مبلغ', 'Amount')}</span><b dir="ltr">{money(order.price_usd)}</b></div>
               <div><span>{t('اعتبار سفارش تا', 'Order valid until')}</span><b>{dateTime(order.expires_at)}</b></div>
             </div>
-            {useDePay ? (
+            {status && (
+              <p className={`of-co-state of-co-state-${status}`} role="status" data-status={status}>
+                <span>{t('وضعیت', 'Status')}:</span> <b>{t(...STATUS_TEXT[status])}</b>
+              </p>
+            )}
+            {useDePay && manualChains.length > 0 && (
+              <div className="of-co-tabs" role="tablist" aria-label={t('روش پرداخت', 'Payment method')}>
+                <button type="button" role="tab" aria-selected={method === 'depay'} className={method === 'depay' ? 'active' : ''} onClick={() => setMethod('depay')}>{t('پرداخت با DePay', 'Pay with DePay')}</button>
+                <button type="button" role="tab" aria-selected={method === 'manual'} className={method === 'manual' ? 'active' : ''} onClick={() => { closeDePayPayment(); setMethod('manual') }}>{t('پرداخت دستی', 'Manual Payment')}</button>
+              </div>
+            )}
+            {useDePay && method === 'depay' && (
               <>
                 <button className="button full of-co-pay" disabled={busy || widget === 'loading' || widget === 'open'} onClick={() => { void payWithDePay() }}>
                   {widget === 'loading' ? t('در حال باز کردن DePay…', 'Opening DePay…') : widget === 'idle' ? t('پرداخت با DePay', 'Pay with DePay') : t('باز کردن دوبارهٔ DePay', 'Reopen DePay')}
@@ -451,18 +515,52 @@ export default function CheckoutPage() {
                   <p className="of-co-muted" dir="ltr">{sentTx.url ? <a href={sentTx.url} target="_blank" rel="noreferrer">{sentTx.id.slice(0, 14)}…</a> : sentTx.id.slice(0, 14) + '…'}</p>
                 )}
               </>
-            ) : (
-              <>
-                <p className="of-checkout-step">{t('۱. مبلغ دقیق را به این آدرس بفرست', '1. Send the exact amount to this address')}:</p>
-                <div className="of-checkout-addr">
-                  <code dir="ltr">{payment?.receiver}</code>
-                  <button className="of-profile-plainbtn" onClick={() => void navigator.clipboard?.writeText(payment?.receiver || '')}>{t('کپی', 'Copy')}</button>
+            )}
+            {(!useDePay || method === 'manual') && manualChain && payment?.manual && (
+              <div className="of-co-manual">
+                <label className="of-co-field">{t('۱. شبکه و توکن تسویه', '1. Network and settlement token')}
+                  <select value={manualChain.chainId} onChange={e => { setManualChainId(Number(e.target.value)); setTxHash('') }}>
+                    {manualChains.map(c => <option key={c.chainId} value={c.chainId}>{chainLabel(c.blockchain || c.chainId)}{c.tokenSymbol ? ` · ${c.tokenSymbol}` : ''}</option>)}
+                  </select>
+                </label>
+                <div className="of-co-summary of-checkout-summary">
+                  <div className="of-co-total"><span>{t('مبلغ قابل انتقال', 'Amount to send')}</span><b dir="ltr">{payment.manual.amount} {manualChain.tokenSymbol || t('توکن تسویه', 'settlement token')}</b></div>
+                  {manualChain.token && <div><span>{t('قرارداد توکن', 'Token contract')}</span><b dir="ltr" className="of-co-mono">{manualChain.tokenExplorerUrl ? <a href={manualChain.tokenExplorerUrl} target="_blank" rel="noreferrer">{manualChain.token.slice(0, 10)}…{manualChain.token.slice(-6)}</a> : manualChain.token}</b></div>}
+                  <div><span>{t('شبکه', 'Network')}</span><b>{chainLabel(manualChain.blockchain || manualChain.chainId)}</b></div>
                 </div>
-                <p className="of-co-muted">{t('شبکه', 'Network')}: <b>{chainLabel(payment?.chainId)}</b></p>
-                <p className="of-checkout-step">{t('۲. پس از پرداخت، هش تراکنش را وارد کن', '2. After paying, enter the transaction hash')}:</p>
-                <input dir="ltr" className="of-checkout-tx" placeholder="0x…" value={txHash} onChange={e => setTxHash(e.target.value)} spellCheck={false} />
-                <button className="button" disabled={busy || !/^0x[0-9a-fA-F]{64}$/.test(txHash.trim())} onClick={() => { void verifyManual() }}>{busy ? '…' : t('تأیید پرداخت', 'Verify payment')}</button>
-              </>
+                <p className="of-checkout-step">{t('۲. دقیقاً همین مبلغ از همین توکن را به آدرس خزانهٔ اوپن‌فاند در همین شبکه بفرست:', '2. Send exactly this amount of this token to the Openfund treasury address on this network:')}</p>
+                <div className="of-checkout-addr">
+                  <code dir="ltr">{manualChain.receiver}</code>
+                  <button type="button" className="of-profile-plainbtn" onClick={() => copy(manualChain.receiver)}>{t('کپی', 'Copy')}</button>
+                  {manualChain.receiverExplorerUrl && <a className="of-profile-plainbtn" href={manualChain.receiverExplorerUrl} target="_blank" rel="noreferrer">{t('مشاهده در کاوشگر', 'View in explorer')} ↗</a>}
+                </div>
+                {manualChain.correlation === 'sender' ? (
+                  <p className="of-co-note">{t('تراکنش باید از همان کیف پولی ارسال شود که با آن وارد شده‌ای', 'Send it from the same wallet you signed in with')} (<bdi dir="ltr">{session.user?.walletAddress ? session.user.walletAddress.slice(0, 6) + '…' + session.user.walletAddress.slice(-4) : ''}</bdi>){t('؛ انتقال از صرافی یا کیف پول دیگر به این سفارش منتسب نمی‌شود.', '. A transfer from an exchange or another wallet cannot be matched to this order.')}</p>
+                ) : (
+                  <>
+                    <p className="of-co-note">{t('در سولانا، شناسهٔ سفارش زیر را حتماً در فیلد Memo تراکنش وارد کن؛ بدون آن، پرداخت به این سفارش منتسب نمی‌شود.', 'On Solana, put the order ID below in the transaction Memo. Without it, the payment cannot be matched to this order.')}</p>
+                    <div className="of-checkout-addr">
+                      <code dir="ltr">{payment.manual.memo}</code>
+                      <button type="button" className="of-profile-plainbtn" onClick={() => copy(payment.manual!.memo)}>{t('کپی Memo', 'Copy Memo')}</button>
+                    </div>
+                  </>
+                )}
+                <p className="of-co-muted">{t('ارز بومی شبکه (مثل ETH یا SOL) و توکن‌های دیگر پذیرفته نمی‌شوند. مبلغ کمتر از مبلغ سفارش تأیید نمی‌شود.', 'Native coins (such as ETH or SOL) and other tokens are not accepted. A smaller amount than the order total is not confirmed.')}
+                  {manualChain.minConfirmations > 0 && <> {t('تأیید پس از', 'Confirmed after')} <bdi dir="ltr">{manualChain.minConfirmations}</bdi> {t('تأیید بلاک.', 'block confirmations.')}</>}</p>
+                <label className="of-co-field">{t('۳. شناسهٔ تراکنش (TXID)', '3. Transaction ID (TXID)')}
+                  <input dir="ltr" className="of-checkout-tx" placeholder={manualChain.family === 'solana' ? t('امضای تراکنش سولانا', 'Solana transaction signature') : '0x…'} value={txHash}
+                    onChange={e => setTxHash(e.target.value)} spellCheck={false} autoComplete="off"
+                    aria-invalid={txHash.trim() !== '' && !txIdValid(manualChain.family, txHash)} />
+                </label>
+                {txHash.trim() !== '' && !txIdValid(manualChain.family, txHash) && <p className="of-profile-error" role="alert">{errText('invalid_request')}</p>}
+                <button className="button" disabled={busy || !txIdValid(manualChain.family, txHash)} onClick={() => { void verifyManual() }}>
+                  {busy ? '…' : status === 'verification_pending' || status === 'payment_failed' ? t('بررسی مجدد تراکنش', 'Check transaction again') : t('ثبت و بررسی تراکنش', 'Submit & verify transaction')}
+                </button>
+                <p className="of-co-muted">{t('شناسهٔ تراکنش به‌تنهایی مدرک پرداخت نیست: سرور اوپن‌فاند شبکه، توکن، گیرنده، مبلغ، تعداد تأیید و تطابق با سفارش را مستقیماً روی بلاک‌چین بررسی می‌کند. تراکنش در انتظار، خودکار دوباره بررسی می‌شود.', 'A transaction ID alone is not proof of payment: Openfund’s server checks the network, token, receiver, amount, confirmations and the match to this order directly on-chain. A pending transaction is re-checked automatically.')}</p>
+              </div>
+            )}
+            {!useDePay && !manualChain && (
+              <p className="of-co-note">{t('اطلاعات پرداخت دستی در دسترس نیست.', 'Manual payment details are not available.')}</p>
             )}
             {widgetNote && <p className="of-checkout-status" role="status">{widgetNote}</p>}
             {waiting && <p className="of-checkout-status" role="status">{waiting}</p>}

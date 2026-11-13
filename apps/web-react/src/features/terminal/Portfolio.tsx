@@ -283,7 +283,7 @@ export default function ProductPortfolio() {
                   "جهت|Side",
                   "باز شدن|Opened",
                   "بسته شدن|Closed",
-                  "قیمت ورود|Entry",
+                  "نقطه ورود|Entry Price",
                   "قیمت خروج|Exit",
                   "اهرم|Leverage",
                   `سود تحقق‌یافته · ${unit}|Realized PnL · ${unit}`,

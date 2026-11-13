@@ -181,3 +181,158 @@ export class Treasury {
   }
   stop() { if (this.timer) clearInterval(this.timer); this.timer = null }
 }
+
+/* ======================================================================
+ * Treasury wallets by network (public transparency page).
+ *
+ * The Openfund treasury addresses are the settlement receivers of the
+ * payment configuration (PURCHASE_PAYMENT_CHAINS — the one place they are
+ * configured; nothing is hard-coded here). Balances are read per network
+ * through the same dedicated RPC endpoints the payment verifier uses
+ * (PURCHASE_RPC_URLS, Alchemy in production) and are NEVER summed across
+ * networks or converted to USD: a treasury balance is not revenue, profit,
+ * payout liquidity or a guaranteed reserve.
+ *
+ *  - native coin + the network's configured settlement token(s);
+ *  - token decimals and symbol are read from the chain (ERC-20 decimals()/
+ *    symbol(), SPL mint account), never assumed;
+ *  - each network is cached for `ttlMs` and refreshed single-flight, so the
+ *    public endpoint cannot multiply RPC traffic;
+ *  - a failed network read keeps its last good balances, flagged `stale`
+ *    with the time they were read; without a good read it reports `error`
+ *    and no number at all. Other networks are unaffected.
+ * ====================================================================== */
+import { SUPPORTED_CHAINS as PAYMENT_CHAINS, SOLANA_CHAIN_ID, chainNameOf, explorerAddressUrlFor, explorerTokenUrlFor, blockchainOf } from './payment-verification.js'
+
+const ERC20_META = parseAbi([
+  'function balanceOf(address) view returns (uint256)',
+  'function decimals() view returns (uint8)',
+  'function symbol() view returns (string)',
+])
+
+/** networks to show: one entry per configured settlement chain with a receiver */
+export function treasuryNetworksConfig(paymentChains = []) {
+  const byChain = new Map()
+  for (const c of paymentChains) {
+    if (!c || !c.receiver) continue
+    const solana = c.chainId === SOLANA_CHAIN_ID
+    if (!solana && !PAYMENT_CHAINS.has(c.chainId)) continue
+    const key = `${c.chainId}:${c.receiver}`
+    const n = byChain.get(key) || { chainId: c.chainId, blockchain: c.blockchain || blockchainOf(c.chainId), family: solana ? 'solana' : 'evm',
+      network: chainNameOf(c.chainId), address: c.receiver, tokens: [], symbols: {}, rpcUrl: c.rpcUrl || null }
+    if (c.token && !n.tokens.includes(c.token)) n.tokens.push(c.token)
+    if (c.token && c.tokenSymbol) n.symbols[c.token] = c.tokenSymbol
+    byChain.set(key, n)
+  }
+  return [...byChain.values()]
+}
+
+const units = (raw, decimals) => formatUnits(BigInt(raw), Number(decimals))
+
+/** default network reader (injectable for tests) */
+export function networkReader(n) {
+  if (!n.rpcUrl) return null
+  if (n.family === 'solana') {
+    const rpc = async (method, params) => {
+      const res = await fetch(n.rpcUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(10_000),
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) })
+      if (!res.ok) throw new Error(`rpc_http_${res.status}`)
+      const body = await res.json()
+      if (body.error) throw new Error('rpc_error')
+      return body.result
+    }
+    return {
+      native: async () => ({ raw: BigInt((await rpc('getBalance', [n.address, { commitment: 'finalized' }]))?.value ?? 0), decimals: 9, symbol: 'SOL', name: 'Solana' }),
+      token: async mint => {
+        /* the mint filter selects the token accounts of either SPL program */
+        const r = await rpc('getTokenAccountsByOwner', [n.address, { mint }, { encoding: 'jsonParsed', commitment: 'finalized' }])
+        let raw = 0n, decimals = null
+        for (const a of r?.value || []) {
+          const amt = a.account?.data?.parsed?.info?.tokenAmount
+          if (!amt) continue
+          raw += BigInt(amt.amount); decimals = Number(amt.decimals)
+        }
+        if (decimals == null) decimals = Number((await rpc('getTokenSupply', [mint]))?.value?.decimals)
+        if (!Number.isInteger(decimals)) throw new Error('mint_decimals_unknown')
+        return { raw, decimals, symbol: null, name: null }
+      },
+    }
+  }
+  const client = createPublicClient({ chain: PAYMENT_CHAINS.get(n.chainId), transport: http(n.rpcUrl, { timeout: 10_000, retryCount: 1 }) })
+  return {
+    native: async () => {
+      const c = PAYMENT_CHAINS.get(n.chainId).nativeCurrency
+      return { raw: await client.getBalance({ address: n.address }), decimals: c.decimals, symbol: c.symbol, name: c.name }
+    },
+    token: async token => {
+      const [raw, decimals, symbol] = await Promise.all([
+        client.readContract({ address: token, abi: ERC20_META, functionName: 'balanceOf', args: [n.address] }),
+        client.readContract({ address: token, abi: ERC20_META, functionName: 'decimals' }),
+        client.readContract({ address: token, abi: ERC20_META, functionName: 'symbol' }).catch(() => null),
+      ])
+      return { raw, decimals: Number(decimals), symbol: typeof symbol === 'string' ? symbol.slice(0, 16) : null, name: null }
+    },
+  }
+}
+
+export class TreasuryNetworks {
+  constructor({ networks = [], readerFor = networkReader, ttlMs = 5 * 60_000, now = () => Date.now() } = {}) {
+    this.networks = networks; this.ttlMs = ttlMs; this.now = now
+    this.readers = new Map(networks.map(n => [n, readerFor(n)]))
+    this.state = new Map()   /* network → { good, goodAt, attemptAt, error, inflight } */
+  }
+
+  async read(n) {
+    const reader = this.readers.get(n)
+    if (!reader) throw new Error('rpc_not_configured')
+    const balances = []
+    const native = await reader.native()
+    balances.push({ kind: 'native', symbol: native.symbol, name: native.name, decimals: native.decimals, contract: null,
+      raw: native.raw.toString(), balance: units(native.raw, native.decimals), contractExplorerUrl: null })
+    for (const token of n.tokens) {
+      const t = await reader.token(token)
+      /* the on-chain symbol; else the configured display symbol (SPL mints carry none) */
+      balances.push({ kind: 'token', symbol: t.symbol || n.symbols?.[token] || null, name: t.name, decimals: t.decimals, contract: token,
+        raw: t.raw.toString(), balance: units(t.raw, t.decimals), contractExplorerUrl: explorerTokenUrlFor(n.chainId, token) })
+    }
+    return balances
+  }
+
+  async refresh(n) {
+    const s = this.state.get(n) || {}
+    if (s.inflight) return s.inflight
+    s.inflight = (async () => {
+      s.attemptAt = this.now()
+      try { s.good = await this.read(n); s.goodAt = s.attemptAt; s.error = null }
+      catch (e) { s.error = String(e?.shortMessage || e?.message || e).slice(0, 120) }
+      finally { s.inflight = null }
+    })()
+    this.state.set(n, s)
+    return s.inflight
+  }
+
+  /** public view; refreshes networks whose last attempt is older than the TTL */
+  async view() {
+    await Promise.all(this.networks.map(n => {
+      const s = this.state.get(n)
+      return !s || !s.attemptAt || this.now() - s.attemptAt >= this.ttlMs ? this.refresh(n) : s.inflight
+    }))
+    return {
+      generatedAt: new Date(this.now()).toISOString(),
+      cacheSeconds: Math.round(this.ttlMs / 1000),
+      networks: this.networks.map(n => {
+        const s = this.state.get(n) || {}
+        const status = s.good ? (s.error ? 'stale' : 'ok') : (s.error ? 'error' : 'pending')
+        return {
+          chainId: n.chainId, blockchain: n.blockchain, network: n.network, family: n.family,
+          address: n.address, explorerUrl: explorerAddressUrlFor(n.chainId, n.address),
+          status, readAt: s.goodAt ? new Date(s.goodAt).toISOString() : null,
+          attemptedAt: s.attemptAt ? new Date(s.attemptAt).toISOString() : null,
+          error: s.error || null,
+          /* last good balances (labelled with readAt); none without a good read */
+          balances: s.good || [],
+        }
+      }),
+    }
+  }
+}

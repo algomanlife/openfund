@@ -82,3 +82,25 @@
 /* consolidated Ambassador (IB) page: two independent program blocks */
 .econ-program { scroll-margin-top: 96px; border-top: 1px solid var(--line, #ffffff1a); margin-top: 40px; padding-top: 32px }
 .econ-program-title { font-size: clamp(1.5rem, 4vw, 2.1rem); margin: 0 0 12px }
+
+/* Treasury wallets by network (transparency): one card per network, never summed */
+.treasury-wallets { margin-bottom: 16px }
+.treasury-addresses { display: grid; gap: 8px; margin: 12px 0 }
+.treasury-addresses div { display: grid; gap: 2px; min-width: 0 }
+.treasury-addresses dt { font-size: 12px; color: var(--muted) }
+.treasury-addresses dd { margin: 0; min-width: 0 }
+.treasury-addresses code { overflow-wrap: anywhere; font-size: 12.5px }
+.treasury-network-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 12px; margin-top: 12px }
+.treasury-network { border: 1px solid var(--line); border-radius: 12px; padding: 14px; min-width: 0; display: grid; gap: 8px; align-content: start }
+.treasury-network header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px }
+.treasury-network h4 { margin: 0; font-size: 15px; font-weight: 600 }
+.treasury-network[data-status="error"] { border-style: dashed }
+.treasury-network-address { margin: 0; font-size: 12px; color: var(--muted); overflow-wrap: anywhere }
+.treasury-balance-table { width: 100%; border-collapse: collapse; font-size: 13px }
+.treasury-balance-table th, .treasury-balance-table td { padding: 6px 4px; border-top: 1px solid var(--line); text-align: start; vertical-align: top }
+.treasury-balance-table thead th { border-top: 0; font-size: 11px; font-weight: 500; color: var(--muted) }
+.treasury-balance-table td.num { font-variant-numeric: tabular-nums; overflow-wrap: anywhere }
+.treasury-balance-table small { color: var(--muted); font-weight: 400 }
+.treasury-wallets .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
+/* hex addresses and exact balances: Latin digits in every locale (Persian fonts substitute digit glyphs) */
+.treasury-hex { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; font-feature-settings: normal }

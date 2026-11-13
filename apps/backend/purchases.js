@@ -29,7 +29,7 @@ import crypto from 'node:crypto'
 import { invoicePdf } from './invoice-pdf.js'
 import { ChallengeService, normalizeRules } from './evaluation.js'
 import { recognizeCommissionTx, attributeAtFirstOrder } from './partners.js'
-import { createRpcVerifier, DEPAY_BLOCKCHAINS, SOLANA_CHAIN_ID, blockchainOf, isEvmChain, normalizeTxId } from './payment-verification.js'
+import { createRpcVerifier, DEPAY_BLOCKCHAINS, SOLANA_CHAIN_ID, blockchainOf, isEvmChain, normalizeTxId, explorerAddressUrlFor, explorerTokenUrlFor, chainNameOf } from './payment-verification.js'
 import { createSolanaVerifier } from './solana-verification.js'
 import { evaluateCoupon, applyCoupon, isCouponCode, normalizeCode } from './coupons.js'
 
@@ -75,6 +75,9 @@ export function paymentChains() {
         receiver: c.receiver ? (solana ? String(c.receiver) : String(c.receiver).toLowerCase()) : null,
         token: c.token ? (solana ? String(c.token) : String(c.token).toLowerCase()) : null,
         tokenDecimals: c.tokenDecimals == null || c.tokenDecimals === '' ? null : Number(c.tokenDecimals),
+        /* optional public display symbol of the settlement token (e.g. "USDC");
+           never used for verification, which checks the contract/mint itself */
+        tokenSymbol: typeof c.tokenSymbol === 'string' && /^[A-Za-z0-9.]{1,12}$/.test(c.tokenSymbol) ? c.tokenSymbol : null,
         routers: (Array.isArray(c.routers) ? c.routers : csv(c.routers)).map(r => String(r).toLowerCase()),
         minConfirmations: c.minConfirmations == null ? minConfirmationsDefault() : Number(c.minConfirmations) || 0,
         rpcUrl: rpcs[chainId] || rpcs[blockchainOf(chainId)] || null,
@@ -92,6 +95,7 @@ export function paymentChains() {
        they must MATCH the contract (a mismatch fails closed) */
     tokenDecimals: process.env.PURCHASE_PAYMENT_DECIMALS === undefined || process.env.PURCHASE_PAYMENT_DECIMALS === ''
       ? null : Number(process.env.PURCHASE_PAYMENT_DECIMALS),
+    tokenSymbol: null,
     routers: csv(process.env.PURCHASE_ROUTER_ADDRESSES),
     minConfirmations: minConfirmationsDefault(),
     rpcUrl: process.env.PURCHASE_RPC_URL || rpcs[chainId] || null,
@@ -296,6 +300,7 @@ export async function confirmPurchaseTx(client, { orderId, userId, evidence, sou
 /* ---------- payment attempts, classification and recovery ---------- */
 const RETRYABLE = new Set(['tx_pending', 'tx_not_final', 'rpc_unavailable', 'tx_reorged', 'provisioning_retry'])
 const CLASSIFY = {
+  memo_missing: 'other', order_already_paid: 'duplicate',
   insufficient_amount: 'underpayment', wrong_token: 'wrong_token', wrong_receiver: 'wrong_receiver',
   wrong_sender: 'wrong_sender', tx_not_successful: 'reverted', order_expired: 'late',
   tx_already_used: 'duplicate', native_payment_unsupported: 'wrong_token', unapproved_contract: 'wrong_receiver',
@@ -356,11 +361,16 @@ export async function verifyAndConfirm({ pool, verifier, order, userId, walletAd
   const txId = normalizeTxId(c.chainId, txHash)
   if (!txId) throw fail(400, 'invalid_request')
   const attemptId = await startAttempt(pool, { orderId: order.id, userId, chainId: c.chainId, txHash: txId, attested, reported })
+  /* A customer-submitted Solana payment (manual checkout) can not be bound to
+     the customer's EVM sign-in wallet; it is bound to the order by the order
+     id in an SPL Memo instead (solana-verification.js). EVM manual payments
+     keep the strict rule: signed by the customer's own wallet. */
+  const manualSolana = c.solana && !attested
   try {
     const verdict = await verifier(txId, {
       chainId: c.chainId, receiver: c.receiver, token: c.token, tokenDecimals: c.tokenDecimals,
       priceUsd: String(order.price_usd), routers: c.routers, allowNative: !isProd() && !c.token && !c.solana,
-      from: walletAddress, requireSender: !attested,
+      from: walletAddress, requireSender: !attested && !manualSolana, memo: manualSolana ? String(order.id) : null,
       /* the paying account DePay reported in its signed delivery (may be a
          smart-contract wallet); only used for attested payments */
       attestedSender: attested && !c.solana ? reported?.sender || null : null,
@@ -375,6 +385,9 @@ export async function verifyAndConfirm({ pool, verifier, order, userId, walletAd
          was committed, so the attempt stays retryable: the recovery sweep
          re-runs it and the customer never pays twice. */
       if (e.status) throw e
+      /* two orders raced for the same transaction: the UNIQUE (chain_id,
+         tx_hash) index let exactly one of them commit */
+      if (e.code === '23505' && /payments/.test(String(e.constraint || e.table || e.detail || ''))) throw fail(409, 'tx_already_used')
       throw Object.assign(new Error('provisioning_retry'), { status: 503, retryable: true, detail: String(e?.message || e).slice(0, 200) })
     }
     const over = evidence.overpaymentUnits && evidence.overpaymentUnits !== '0'
@@ -583,6 +596,22 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
   }
 
   const publicChain = c => ({ chainId: c.chainId, blockchain: c.blockchain, receiver: c.receiver, token: c.token, tokenDecimals: c.tokenDecimals, routers: c.routers })
+  /* Manual payment instructions per ready settlement chain — the same
+     configuration (receiver = Openfund treasury on that chain, settlement
+     token) DePay settles into, so both methods share one source of truth.
+     Public values only; RPC endpoints are never exposed. */
+  const manualChain = c => ({
+    chainId: c.chainId, blockchain: c.blockchain, network: chainNameOf(c.chainId), family: c.solana ? 'solana' : 'evm',
+    receiver: c.receiver, receiverExplorerUrl: explorerAddressUrlFor(c.chainId, c.receiver),
+    token: c.token, tokenSymbol: c.tokenSymbol, tokenDecimals: c.tokenDecimals, tokenExplorerUrl: explorerTokenUrlFor(c.chainId, c.token),
+    minConfirmations: c.minConfirmations,
+    /* EVM: signed by the signed-in wallet; Solana: the order id as an SPL Memo */
+    correlation: c.solana ? 'memo' : 'sender',
+  })
+  /* a manual payment needs a settlement token (native coins are never
+     converted to USD); only a non-production EVM test chain without a token
+     settles in its native coin, exactly as the verifier allows */
+  const manualChains = () => cfg().readyChains.filter(c => c.token || (!isProd() && !c.solana)).map(manualChain)
   const paymentInstructions = order => {
     const c = cfg()
     if (!c.receiver || !order || order.payment_required === false) return null
@@ -595,6 +624,8 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
       /* every settlement chain DePay may offer (payment is NOT tied to the
          Arbitrum authentication chain) */
       chains: c.readyChains.map(publicChain),
+      /* the same chains as manual-transfer instructions */
+      manual: { chains: manualChains(), amount: String(order.price_usd), memo: order.id },
     }
   }
 
@@ -620,7 +651,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
       plans,
       paymentsEnabled: paymentEnabled(),
       payment: paymentEnabled()
-        ? { ...publicChain(c), chains: c.readyChains.map(publicChain) }
+        ? { ...publicChain(c), chains: c.readyChains.map(publicChain), manualChains: manualChains() }
         : null,
     })
   }))
@@ -813,18 +844,31 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
   }))
 
   /* 4 — verify an on-chain payment and provision exactly once */
-  router.post('/purchases/verify', requireAuth, wrap(async (req, res) => {
+  /* Manual payment: the customer submits the network and transaction id of
+     a transfer to the treasury. The id is only a pointer — the chain
+     verifier proves token, receiver, amount, finality and the binding to
+     this order (EVM: signed by the customer's wallet; Solana: order id in
+     an SPL Memo). Rate-limited per client: every call may reach an RPC. */
+  /* per-client ceiling (express-rate-limit, like the receipt route) on top of
+     the stricter per-path limit(10) */
+  const verifyLimiter = rateLimit({ windowMs: 60_000, limit: 20, standardHeaders: 'draft-7', legacyHeaders: false,
+    message: { error: 'rate_limited' } })
+  router.post('/purchases/verify', verifyLimiter, requireAuth, limit(10), wrap(async (req, res) => {
     if (!paymentEnabled()) throw fail(403, 'purchases_disabled')
     const { orderId, txHash } = req.body || {}
     const chainId = req.body?.chainId == null ? cfg().chainId : Number(req.body.chainId)
-    /* a customer-submitted hash is checked against the customer's own wallet,
-       so only EVM chains apply here; other payments arrive via DePay */
-    if (!isEvmChain(chainId) || !chainConfig(chainId)) throw fail(400, 'unsupported_chain')
+    const chain = chainConfig(chainId)
+    if (!chain || !(isEvmChain(chainId) || chain.solana) || (!chain.token && isProd())) throw fail(400, 'unsupported_chain')
     if (!uuid.test(orderId || '') || !normalizeTxId(chainId, txHash)) throw fail(400, 'invalid_request')
     const order = await orderView(orderId, req.user.user_id)
     if (!order) throw fail(404, 'order_not_found')
     if (order.payment_required === false) throw fail(409, 'zero_payment_order')
-    if (order.status === 'paid') return res.json(await confirmPurchase(pool, { orderId, userId: req.user.user_id, evidence: { txHash: normalizeTxId(chainId, txHash), chainId }, source: 'replay' }))
+    if (order.status === 'paid') {
+      /* idempotent only for the transaction that actually paid the order */
+      const paidBy = (await pool.query('SELECT chain_id, tx_hash FROM payments WHERE purchase_order_id=$1 AND status=$2', [orderId, 'confirmed'])).rows[0]
+      if (!paidBy || paidBy.chain_id !== chainId || paidBy.tx_hash !== normalizeTxId(chainId, txHash)) throw fail(409, 'order_already_paid')
+      return res.json(await confirmPurchase(pool, { orderId, userId: req.user.user_id, evidence: { txHash: paidBy.tx_hash, chainId }, source: 'replay' }))
+    }
     if (order.status !== 'pending' && order.status !== 'expired') throw fail(409, 'order_not_pending')
     /* NOTE: expiry is NOT rejected here — the on-chain evidence is
        verified first, then confirmPurchase applies the late-payment
@@ -835,10 +879,15 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
         pool, verifier: chainVerifier(), order: { id: orderId, price_usd: raw.price_usd, created_at: raw.created_at },
         userId: req.user.user_id, walletAddress: req.user.wallet_address, txHash, source: 'onchain', chainId,
       })
-      await audit('purchase_verified', req.user.user_id, req, { orderId, txHash, challengeId: result.challengeId })
+      await audit('purchase_verified', req.user.user_id, req, { orderId, txHash, chainId, via: 'manual', challengeId: result.challengeId })
       res.json(result)
     } catch (e) {
-      if (e.retryable) return res.status(e.status || 409).json({ error: e.message, retryable: true, confirmations: e.confirmations, required: e.required })
+      if (e.retryable) {
+        /* Verification Pending: the transaction is registered on the order
+           and the recovery sweep keeps checking it server-side */
+        await markPaymentDetected(pool, orderId, `manual:${chainId}:${String(txHash).slice(0, 100)}`).catch(() => {})
+        return res.status(e.status || 409).json({ error: e.message, retryable: true, confirmations: e.confirmations, required: e.required })
+      }
       throw e
     }
   }))

@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- Checkout, campaign, chart and trading completion (branch `agent/claude/checkout-campaign-chart-trading`, not deployed;
+  [ADR 0028](docs/decisions/0028-manual-payment-treasury-networks-campaign-chart-english-lotage.md)):
+  **Manual Payment** next to Pay with DePay on the same order, verified on-chain
+  by the existing verifier (EVM: signed by the sign-in wallet; Solana: order id
+  in an SPL Memo), with Verification Pending / Payment Failed / Activation
+  statuses, rate limiting and two race fixes (`tx_already_used`,
+  `order_already_paid`); Openfund Treasury wallets per network on the
+  transparency page; a fa/en sales-campaign landing; the Vela chart layer is
+  English and LTR in every locale; SL/TP can be created by dragging from the
+  entry line; Lotage sizing for USD-quoted forex, gold, silver and WTI; "Buy
+  Challenge" CTAs on the Home Prop card and the connected-wallet card; "Entry Price" terminology (Persian
+  label "entry point"). No engine, PnL, drawdown, margin, price-feed
+  or DePay-signature change.
 - DePay checkout activation fixes (branch `agent/claude/depay-checkout-activation`,
   **not deployed**): the DePay endpoints also answer at
   `/api/payments/depay/{config,configuration,callback,events}`, the URLs the

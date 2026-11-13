@@ -17,6 +17,8 @@ test('sitemap lists every public route per published locale with hreflang altern
   for (const locale of SITE_LOCALES) assert.ok(xml.includes(`<loc>https://openfi.cloud/${locale}/challenges</loc>`))
   assert.ok(xml.includes('<loc>https://openfi.cloud/en/whitepaper</loc>'))
   assert.ok(!xml.includes('/ar/whitepaper'), 'the whitepaper is a fa/en publication')
+  assert.ok(xml.includes('<loc>https://openfi.cloud/fa/campaign</loc>') && xml.includes('<loc>https://openfi.cloud/en/campaign</loc>'))
+  assert.ok(!/\/(ar|ru|zh-CN)\/campaign/.test(xml), 'the campaign landing is a fa/en page')
   assert.ok(!/\/(?:prop|perpetual)\//.test(xml), 'authenticated product routes are never listed')
 })
 

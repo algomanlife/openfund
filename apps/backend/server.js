@@ -28,7 +28,7 @@ import { Engine } from './engine.js'
 import { Portfolio } from './portfolio.js'
 import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
-import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments, paymentReadinessReport, DEPAY_SIGNED_PATHS } from './purchases.js'
+import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments, paymentReadinessReport, paymentChains, DEPAY_SIGNED_PATHS } from './purchases.js'
 import { adminRoutes } from './admin.js'
 import { chartWorkspaceRoutes } from './chart-workspaces.js'
 import { createFootprintService } from './footprint/service.js'
@@ -38,7 +38,7 @@ import { governanceRoutes } from './governance-routes.js'
 import { partnerRoutes, partnerAdminRoutes, attributeAmbassador } from './partners.js'
 import { economyRoutes, economyAdminRoutes } from './economy.js'
 import { liveRoutes, liveAdminRoutes, liveConfig, processSettlements, settlementAdapter } from './live-funding.js'
-import { Treasury } from './treasury.js'
+import { Treasury, TreasuryNetworks, treasuryNetworksConfig } from './treasury.js'
 import { createTradingStreamHub } from './trading-stream.js'
 
 const cfg = {
@@ -763,7 +763,9 @@ app.use('/governance', governanceRoutes({ pool, requireAuth, limit }))
 /* Economy, Brand Ambassador, Verified Coach and Live Market Access */
 const treasury = new Treasury(pool)
 const live = liveConfig()
-const economy = economyRoutes({ pool, treasury })
+/* treasury wallets per network = the payment settlement receivers (one configuration) */
+const treasuryNetworks = new TreasuryNetworks({ networks: treasuryNetworksConfig(paymentChains()) })
+const economy = economyRoutes({ pool, treasury, treasuryNetworks, limit })
 app.use(economy)
 app.use(partnerRoutes({ pool, requireAuth, audit, limit }))
 app.use(liveRoutes({ pool, requireAuth, treasury, marketData, limit, config: live }))

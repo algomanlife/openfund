@@ -50,7 +50,23 @@ export const DEPAY_BLOCKCHAINS = Object.freeze({
   ethereum: 1, bsc: 56, polygon: 137, avalanche: 43114, gnosis: 100,
   arbitrum: 42161, optimism: 10, base: 8453, worldchain: 480, solana: SOLANA_CHAIN_ID,
 })
-export const blockchainOf = chainId => Object.keys(DEPAY_BLOCKCHAINS).find(k => DEPAY_BLOCKCHAINS[k] === Number(chainId)) || null
+/** public block-explorer links (viem chain metadata; Solscan for Solana) */
+const SOLANA_EXPLORER = 'https://solscan.io'
+export function explorerBaseFor(chainId) {
+  if (Number(chainId) === SOLANA_CHAIN_ID) return SOLANA_EXPLORER
+  return SUPPORTED_CHAINS.get(Number(chainId))?.blockExplorers?.default?.url || null
+}
+export const explorerAddressUrlFor = (chainId, address) => {
+  const base = explorerBaseFor(chainId)
+  return base && address ? `${base}/${Number(chainId) === SOLANA_CHAIN_ID ? 'account' : 'address'}/${address}` : null
+}
+export const explorerTokenUrlFor = (chainId, token) => {
+  const base = explorerBaseFor(chainId)
+  return base && token ? `${base}/token/${token}` : null
+}
+export const chainNameOf = chainId => Number(chainId) === SOLANA_CHAIN_ID ? 'Solana' : (SUPPORTED_CHAINS.get(Number(chainId))?.name || null)
+
+export const blockchainOf = chainId =>Object.keys(DEPAY_BLOCKCHAINS).find(k => DEPAY_BLOCKCHAINS[k] === Number(chainId)) || null
 export const isEvmChain = chainId => SUPPORTED_CHAINS.has(Number(chainId))
 
 /** transaction id formats: EVM hash (case-insensitive) vs Solana signature (base58, case-sensitive) */

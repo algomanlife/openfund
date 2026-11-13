@@ -91,7 +91,9 @@ for (const file of [...files(join(root, 'src')), ...LEGACY]) {
   // Inventory those strings only when the publication supports those locales.
   // Governance v1 is also authored in Persian and English. Added locales show
   // the English fallback with the page-level missing-translation notice.
-  if (/(?:cms\/seed|features)\/whitepaper\//.test(file) || /features\/governance\//.test(file)) continue
+  // The sales-campaign landing is a Persian/English page by product decision
+  // (/fa/campaign, /en/campaign; other locales redirect to /en/campaign).
+  if (/(?:cms\/seed|features)\/whitepaper\//.test(file) || /features\/governance\//.test(file) || /features\/campaign\//.test(file)) continue
   const text = readFileSync(file, 'utf8')
   for (const m of text.matchAll(PAIR)) {
     const a = m[1] ?? m[2] ?? (m[3] !== undefined ? normaliseTemplate(m[3]) : undefined)

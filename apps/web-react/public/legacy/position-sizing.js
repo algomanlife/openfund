@@ -9,13 +9,25 @@
 
    Arithmetic is exact decimal on BigInt (no binary floating point).
 
-   Lots: a lot is defined only by an approved contract specification
-   (contract size, lot min/max/step). The verified Gains market metadata
-   carries no lot fields and the engine's instrument model is linear with
-   contract size 1, so no instrument has an approved lot specification yet.
-   lotSpec() therefore returns `available: false` until an approved entry is
-   added to APPROVED_LOT_SPECS (or provided as approved contract metadata);
-   nothing here guesses a lot size.
+   Lotage: Gains Network has NO lot or contract-size concept —
+   position size = collateral × leverage, and order size is in base-asset
+   units on the market's sizePrecision grid (docs.gains.trade: start page,
+   glossary, Trading API orders; /markets metadata carries no lot field).
+   The engine is linear with contract size 1. A lot is therefore an
+   Openfund display/entry convention, applied only where one standard unit
+   exists across the industry, and stated on screen with its unit:
+     forex        1 lot = 100,000 units of the base currency (standard FX lot),
+                  USD-quoted pairs only — the engine values positions in USD and
+                  refuses other quote currencies (instruments.js)
+     XAU/USD      1 lot = 100 troy oz   (CME GC contract unit)
+     XAG/USD      1 lot = 5,000 troy oz (CME SI contract unit)
+     WTI/USD      1 lot = 1,000 barrels (CME CL contract unit)
+   Crypto, stocks, indices and other commodities have no single standard
+   (venues differ), so lotSpec() returns `available: false` for them and the
+   ticket says why. An explicitly approved per-market specification
+   (APPROVED_LOT_SPECS or meta.contractSpec.approved) takes precedence.
+   Lotage never changes the order: lots → quantity → the canonical
+   collateral, exactly like the quantity mode (docs/trading/LOTAGE.md).
    ============================================================ */
 (function (global) {
   'use strict';
@@ -98,18 +110,44 @@
     return cmp(round(q, quantityPrecision, 'down'), q) === 0;
   }
 
-  /* ---------- lots (approved contract specifications only) ---------- */
-  /* market symbol → { contractSize, baseUnit, lotMin, lotMax, lotStep, source }.
-     Intentionally empty: no approved contract specification exists yet. */
+  /* ---------- lots ---------- */
+  /* market symbol → { contractSize, baseUnit, lotMin, lotMax, lotStep, source }
+     for an explicitly approved per-market specification (none yet). */
   const APPROVED_LOT_SPECS = Object.freeze({});
+  /* Openfund lot conventions (see the header): the industry-standard unit per
+     asset class; never applied to a market outside these entries. */
+  const LOT_CONVENTIONS = Object.freeze({
+    forex: Object.freeze({ contractSize: '100000', lotMin: '0.01', lotMax: null, lotStep: '0.01', unit: 'base', source: 'convention:fx_standard_lot' }),
+    'commodities:XAU': Object.freeze({ contractSize: '100', lotMin: '0.01', lotMax: null, lotStep: '0.01', unit: 'troy oz', source: 'convention:cme_gc_100oz' }),
+    'commodities:XAG': Object.freeze({ contractSize: '5000', lotMin: '0.01', lotMax: null, lotStep: '0.01', unit: 'troy oz', source: 'convention:cme_si_5000oz' }),
+    'commodities:WTI': Object.freeze({ contractSize: '1000', lotMin: '0.01', lotMax: null, lotStep: '0.01', unit: 'barrels', source: 'convention:cme_cl_1000bbl' }),
+  });
+  /* the reason Lotage is unavailable for a market (shown in the ticket) */
+  function noLotReason(meta) {
+    const g = meta && String(meta.group || '').replace(/-.*$/, '');
+    if (meta && meta.quote && String(meta.quote).toUpperCase() !== 'USD') return 'non_usd_quote';
+    return g === 'crypto' ? 'no_lot_standard_crypto' : g === 'stocks' ? 'no_lot_standard_stocks' : g === 'indices' ? 'no_lot_standard_indices'
+      : g === 'commodities' ? 'no_lot_standard_commodity' : 'no_approved_contract_spec';
+  }
+  function conventionFor(meta) {
+    if (!meta || typeof meta.base !== 'string') return null;
+    const g = String(meta.group || '').replace(/-.*$/, '');
+    const quote = String(meta.quote || 'USD').toUpperCase();
+    if (quote !== 'USD') return null;
+    if (g === 'forex') return LOT_CONVENTIONS.forex;
+    if (g === 'commodities') return LOT_CONVENTIONS['commodities:' + meta.base.toUpperCase()] || null;
+    return null;
+  }
   function lotSpec(meta, market) {
     const own = Object.prototype.hasOwnProperty;
     const approved = own.call(APPROVED_LOT_SPECS, market) ? APPROVED_LOT_SPECS[market]
-      : (meta && meta.contractSpec && meta.contractSpec.approved === true ? meta.contractSpec : null);
+      : (meta && meta.contractSpec && meta.contractSpec.approved === true ? meta.contractSpec
+        : conventionFor(meta));
     const valid = approved && isPos(parse(String(approved.contractSize))) && isPos(parse(String(approved.lotStep))) &&
       isPos(parse(String(approved.lotMin)));
-    if (!valid) return { available: false, reason: 'no_approved_contract_spec' };
-    return { available: true, contractSize: String(approved.contractSize), baseUnit: approved.baseUnit || (meta && meta.base) || '',
+    if (!valid) return { available: false, reason: noLotReason(meta) };
+    return { available: true, contractSize: String(approved.contractSize),
+      baseUnit: approved.baseUnit || (approved.unit && approved.unit !== 'base' ? approved.unit : (meta && meta.base) || ''),
       lotMin: String(approved.lotMin), lotMax: approved.lotMax != null ? String(approved.lotMax) : null,
       lotStep: String(approved.lotStep), source: approved.source || 'approved' };
   }
@@ -124,6 +162,14 @@
     if (cmp(mul(steps, step), l) !== 0) return { ok: false, reason: 'off_lot_step' };
     return { ok: true, quantity: text(mul(l, parse(spec.contractSize))) };
   }
+  /** the largest number of lots on the lot grid not above `quantity` (for budget buttons) */
+  function lotsFloor(quantity, spec) {
+    if (!spec || !spec.available) return null;
+    const q = parse(quantity), step = parse(spec.lotStep);
+    if (!q || !isPos(step)) return null;
+    const steps = div(q, mul(step, parse(spec.contractSize)), 0, 'down');
+    return text(mul(steps, step));
+  }
   /** lots = quantity / contractSize (display; rounded down to the lot step's decimals) */
   function lotsFromQuantity(quantity, spec) {
     if (!spec || !spec.available) return null;
@@ -136,6 +182,6 @@
   global.OpenfundPositionSizing = {
     parse: s => { const d = parse(s); return d ? text(d) : null; },
     quantityFromCollateral, collateralFromQuantity, notional, quantityOnGrid,
-    lotSpec, quantityFromLots, lotsFromQuantity, APPROVED_LOT_SPECS
+    lotSpec, quantityFromLots, lotsFromQuantity, lotsFloor, APPROVED_LOT_SPECS, LOT_CONVENTIONS
   };
 })(typeof window !== 'undefined' ? window : globalThis);

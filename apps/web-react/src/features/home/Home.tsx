@@ -1,6 +1,6 @@
 import { normalizeLocale, pick } from '../../i18n/locales'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import InformationShell from '../information/InformationShell'
 import type { Locale } from '../information/content'
 import { fetchCmsHome, type CmsHome } from '../../cms/client'
@@ -45,6 +45,9 @@ const CTA_HREF: Record<'challenges' | 'terminal', (locale: Locale) => string> = 
   terminal: locale => `/${locale}/perpetual/trade`,
 }
 
+/* the single shared checkout route (also used by the wallet card and the campaign page) */
+export const CHECKOUT_HREF = (locale: string) => `/${locale}/checkout`
+
 function HomeUnavailable({ locale }: { locale: Locale }) {
   return <div id="top" className="home-gateway">
     <div className="container home-stage">
@@ -77,10 +80,17 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
           <div className="home-panel-copy">
             <div className="home-panel-heading"><h2>{t.propTitle}</h2></div>
             <p className="home-product-note" title={t.propDescription || undefined}>{isolateLatin(t.propDescription || pick(locale, 'ارزیابی معاملاتی در محیط شبیه‌سازی‌شده', 'Trading evaluations in a simulated environment'), rtl)}</p>
-            <a className="button" href={c.propCtaDestination === 'terminal' ? `/${locale}/prop/trade` : CTA_HREF.challenges(locale)}>
-              {t.propCta}
-              <span aria-hidden="true">←</span>
-            </a>
+            <div className="home-cta-row">
+              <a className="button" href={c.propCtaDestination === 'terminal' ? `/${locale}/prop/trade` : CTA_HREF.challenges(locale)}>
+                {t.propCta}
+                <span aria-hidden="true">←</span>
+              </a>
+              {/* straight to the one shared checkout; the challenge type is chosen there.
+                  Client-side navigation keeps the wallet connection and session. */}
+              <Link className="button button-secondary home-buy-cta" to={CHECKOUT_HREF(locale)} data-cta="home-quick-buy">
+                {pick(locale, 'خرید سریع چالش', 'Buy Challenge')}
+              </Link>
+            </div>
           </div>
         </article>
 

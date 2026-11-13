@@ -12,6 +12,22 @@ Every public economy figure has exactly one source. Figures are never typed in b
 - **History:** the last good snapshot of each day.
 - **Flows:** inflows are confirmed challenge payments whose on-chain receiver is the treasury address. Outflows are transfers recorded with a reference: paid withdrawals, ambassador payouts, completed live settlements, paid expenses and refunds. Flows are not inferred from general chain traffic.
 
+## Treasury wallets by network
+
+`GET /economy/treasury/networks` (public, rate limited) lists every configured
+settlement chain's treasury receiver (`PURCHASE_PAYMENT_CHAINS`, see
+[Owner setup](../payments/OWNER_SETUP.md#treasury-receivers)) with its native
+balance and settlement-token balance, read on-chain through the payment RPC
+endpoints (`PURCHASE_RPC_URLS`). Decimals and symbols are read from the chain
+(ERC-20 `decimals()`/`symbol()`, SPL token accounts). Balances are shown per
+network only — never summed, priced or presented as revenue, profit, payout
+liquidity or reserves. Each network is cached for five minutes and refreshed
+single-flight; a failed read keeps the last good balances flagged
+`stale` with their `readAt`, or reports `error` with no number. A network
+without an RPC endpoint reports `rpc_not_configured`. The transparency page
+renders this as "Openfund Treasury wallets" (`TreasuryWallets.tsx`); the
+snapshot below remains the source of the financial position.
+
 ## Financial position
 
 Three figures are reported separately and never merged:

@@ -1,4 +1,5 @@
 import { useAccount } from 'wagmi'
+import { Link } from 'react-router-dom'
 import { useSession } from '../session/useOpenfundSession'
 import { walletPanelState } from './walletPanelState'
 import { useProductNetwork } from './productNetwork'
@@ -44,6 +45,9 @@ export default function ChallengeWalletPanel({ locale }: { locale: AppLocale }) 
         ? t('آماده انتخاب چالش', 'Ready to choose a challenge')
         : <>{t('برای خرید چالش، شبکهٔ کیف پول را به ', 'To buy a challenge, switch your wallet network to ')}<bdi dir="ltr">{target.name}</bdi>{t(' تغییر دهید.', '.')}</>}
     </p>
+    {/* the shared checkout; client-side navigation keeps the connection and the
+        signed-in session, so no reconnect or new signature is requested */}
+    {correctNetwork && <Link className="button wallet-buy" to={`/${locale}/checkout`} data-cta="wallet-buy">{t('خرید چالش', 'Buy Challenge')}</Link>}
   </div>
 
   if (state === 'suspended') return <div className="wallet-panel" data-wallet-state={state} dir={dirOf(locale)} lang={locale}>

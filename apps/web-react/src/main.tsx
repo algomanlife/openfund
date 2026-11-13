@@ -36,6 +36,7 @@ import ProductPortfolio from './features/terminal/Portfolio'
 import ProductJournal from './features/terminal/Journal'
 import PurchaseHistory from './features/purchase/PurchaseHistory'
 import CheckoutPage from './features/purchase/CheckoutPage'
+import Campaign from './features/campaign/Campaign'
 import WithdrawalsPage from './features/purchase/WithdrawalsPage'
 import { WalletProvider } from './wallet/WalletProvider'
 import { SessionProvider } from './session/useOpenfundSession'
@@ -123,6 +124,8 @@ const routes = [
   { path: '/:locale/home', element: <LocalizedHome /> },
   { path: '/:locale/challenges', element: <Landing /> },
   { path: '/:locale/checkout', element: <CheckoutPage /> },
+  /* sales-campaign landing: fa (RTL) and en (LTR) only; other locales → /en/campaign */
+  { path: '/:locale/campaign', element: <Campaign /> },
   { path: '/:locale/markets', element: <Markets /> },
   { path: '/:locale/rulebook', element: <Rulebook /> },
   { path: '/:locale/transparency', element: <Transparency /> },
