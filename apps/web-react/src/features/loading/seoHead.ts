@@ -12,7 +12,7 @@ import { LOCALES, normalizeLocale, type AppLocale } from '../../i18n/locales'
 
 /* Mirrors PUBLIC_SITE_ROUTES in apps/backend/seo.js (the sitemap); the
    public-content test fails when the two lists disagree. */
-const PUBLIC_ROUTES = /^\/(?:fa|en|ar|ru|zh-CN)\/(?:home|challenges|markets|rulebook|transparency|revenue-model|live-market-access|ambassador|coach|governance|faq|tools|learn|glossary|referral|whitepaper)(?:\/|$)/
+const PUBLIC_ROUTES = /^\/(?:fa|en|ar|ru|zh-CN)\/(?:home|challenges|markets|rulebook|transparency|revenue-model|live-market-access|ambassador|coach|governance|faq|tools|learn|glossary|referral|about|contact|whitepaper)(?:\/|$)/
 
 const isPublic = (pathname: string) => PUBLIC_ROUTES.test(pathname)
 const routeLocale = (pathname: string) => normalizeLocale(pathname.split('/')[1], 'fa')

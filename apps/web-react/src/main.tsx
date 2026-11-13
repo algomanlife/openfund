@@ -13,6 +13,8 @@ import Coach from './features/partners/Coach'
 /* the long-form Whitepaper (content + charts) loads only when visited */
 const Whitepaper = lazy(() => import('./features/whitepaper/Whitepaper'))
 import Faq from './features/faq/Faq'
+import About from './features/company/About'
+import Contact from './features/company/Contact'
 import Governance from './features/governance/Governance'
 import ProposalPage from './features/governance/ProposalPage'
 import NewProposal from './features/governance/NewProposal'
@@ -81,7 +83,7 @@ function RootRedirect() {
    ('#markets', '#accounts', '#how', '#team', '#rules') and bare locale
    hashes ('#fa') arrive as single-segment paths — send them to the page
    that now owns that content instead of dropping them on Home. */
-const LEGACY_SECTIONS: Record<string, { page: 'markets' | 'challenges'; scroll?: string }> = {
+const LEGACY_SECTIONS: Record<string, { page: 'markets' | 'challenges' | 'about' | 'contact'; scroll?: string }> = {
   markets: { page: 'markets' },
   accounts: { page: 'challenges', scroll: 'accounts' },
   how: { page: 'challenges', scroll: 'how' },
@@ -91,6 +93,9 @@ const LEGACY_SECTIONS: Record<string, { page: 'markets' | 'challenges'; scroll?:
   platform: { page: 'challenges', scroll: 'platform' },
   model: { page: 'challenges', scroll: 'model' },
   legal: { page: 'challenges', scroll: 'legal' },
+  about: { page: 'about' },
+  contact: { page: 'contact' },
+  support: { page: 'contact' },
   fa: { page: 'challenges' },
   en: { page: 'challenges' },
 }
@@ -138,6 +143,8 @@ const routes = [
   { path: '/:locale/coach', element: <Coach /> },
   /* Official Whitepaper v1.0 — one anchor-navigated page (footer document link) */
   { path: '/:locale/whitepaper', element: <Suspense fallback={null}><Whitepaper /></Suspense> },
+  { path: '/:locale/about', element: <About /> },
+  { path: '/:locale/contact', element: <Contact /> },
   { path: '/:locale/faq', element: <Faq /> },
   { path: '/:locale/faq/q/:key', element: <Faq /> },
   { path: '/:locale/tools', element: <Tools /> },

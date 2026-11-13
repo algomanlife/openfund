@@ -816,3 +816,23 @@ export const fetchCmsFaqHub = localizing(fetchCmsFaqHubRaw)
 export const fetchCmsLearningLibrary = localizing(fetchCmsLearningLibraryRaw)
 export const fetchCmsToolCopy = localizing(fetchCmsToolCopyRaw)
 export const fetchCmsReferral = localizing(fetchCmsReferralRaw)
+
+/* ---------------- public contact settings (site_settings) ----------------
+   Department mailboxes are owner-entered in Directus. An empty or malformed
+   value is treated as NOT published: the Contact page shows the department
+   without an address instead of inventing one. */
+export type ContactDepartment = 'support' | 'legal' | 'technical' | 'community'
+export type CmsContactEmails = Partial<Record<ContactDepartment, string>>
+const MAILBOX = /^[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$/
+export function publishedMailbox(value: unknown): string | null {
+  return typeof value === 'string' && MAILBOX.test(value.trim()) ? value.trim().toLowerCase() : null
+}
+export async function fetchCmsContactEmails(): Promise<CmsContactEmails> {
+  const row = await getJson<Record<string, unknown>>('/items/site_settings?fields=support_email,legal_email,technical_email,community_email')
+  const out: CmsContactEmails = {}
+  for (const d of ['support', 'legal', 'technical', 'community'] as const) {
+    const v = publishedMailbox(row?.[`${d}_email`])
+    if (v) out[d] = v
+  }
+  return out
+}
