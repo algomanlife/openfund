@@ -70,7 +70,7 @@ test('every catalog field is classified and every enforced rule reaches the engi
   for (const field of fields) assert.ok(planRuleSupport[field], `unclassified catalog field: ${field}`)
   const snapshotKeys = new Set(Object.keys(normalizeRules({ dailyLossPct: 1, maxTotalLossPct: 1 })))
   for (const [field, entry] of Object.entries(planRuleSupport)) {
-    if (entry.support === 'enforced' || entry.support === 'metric-only') assert.ok(snapshotKeys.has(field), `${field} is classified ${entry.support} but normalizeRules drops it`)
+    if (entry.support === 'enforced' || entry.support === 'metric-only' || entry.support === 'reward') assert.ok(snapshotKeys.has(field), `${field} is classified ${entry.support} but normalizeRules drops it`)
     if (entry.support === 'not-implemented' || entry.support === 'metric-only') assert.ok(entry.blocker, `${field} needs a launch-blocker id`)
   }
 })
@@ -79,13 +79,6 @@ test('every catalog field is classified and every enforced rule reaches the engi
    docs/product/PRODUCT_RULES.md in the same change. */
 const KNOWN_BLOCKERS = {
   'PLAN-DAILY-LOSS-VARIANT:dailyLossPctAlt': ['standard', 'one-phase'],
-  'PLAN-PAYOUT-CONDITIONS:profitableDaysPer30': ['instant'],
-  'PLAN-PAYOUT-CONDITIONS:consistencyPct': ['standard', 'one-phase', 'instant'],
-  'PLAN-PAYOUT-CONDITIONS:profitSplitPct': ['standard', 'one-phase', 'instant'],
-  'PLAN-PAYOUT-CONDITIONS:profitSplitMonthlyPct': ['standard', 'one-phase'],
-  'PLAN-PAYOUT-CONDITIONS:firstPayoutDays': ['standard', 'one-phase', 'instant'],
-  'PLAN-PAYOUT-CONDITIONS:minPayoutPct': ['standard', 'one-phase', 'instant'],
-  'PLAN-FEE-REFUND:refundPolicy': ['standard'],
 }
 
 test('advertised rules without backend support are reported as launch blockers', t => {

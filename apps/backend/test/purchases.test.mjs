@@ -243,26 +243,27 @@ if (plansData?.paymentsEnabled) {
   ok('orders refused while payments disabled', disabled.status === 403 && disabled.data.error === 'purchases_disabled')
 }
 
-/* ================= 4. HTTP: withdrawals ================= */
+/* ================= 4. HTTP: withdrawals (server-computed reward requests) ================= */
 {
-  const bad = await j('POST', '/withdrawals', { amountUsd: -5 }, cookieA)
-  ok('negative withdrawal rejected', bad.status === 400)
-  const bad2 = await j('POST', '/withdrawals', { amountUsd: 0 }, cookieA)
-  ok('zero withdrawal rejected', bad2.status === 400)
-  const w = await j('POST', '/withdrawals', { amountUsd: 120.5, note: 'first payout' }, cookieA)
-  ok('withdrawal request created', w.status === 200 && w.data.status === 'requested')
+  const free = await j('POST', '/withdrawals', { amountUsd: 120.5, note: 'first payout' }, cookieA)
+  ok('free-amount withdrawal refused (reward account required)', free.status === 400 && free.data?.error === 'reward_account_required')
+  const bad = await j('POST', '/withdrawals', { challengeId: 'not-a-uuid' }, cookieA)
+  ok('malformed challenge id rejected', bad.status === 400)
+  const userA = (await j('GET', '/auth/me', null, cookieA)).data?.user?.id
+  const { rows: [legacy] } = await pool.query(
+    `INSERT INTO withdrawal_requests (user_id, amount_usd, note) SELECT id, 120.5, 'legacy' FROM openfund_users WHERE id=$1 RETURNING id`, [userA])
   const list = await j('GET', '/withdrawals', null, cookieA)
-  ok('withdrawal listed', list.status === 200 && list.data.withdrawals.some(x => x.id === w.data.id && Number(x.amount_usd) === 120.5))
+  ok('withdrawal listed', list.status === 200 && list.data.withdrawals.some(x => x.id === legacy?.id && Number(x.amount_usd) === 120.5))
   const listB = await j('GET', '/withdrawals', null, cookieB)
-  ok('withdrawals wallet-scoped', !listB.data.withdrawals.some(x => x.id === w.data.id))
-  const cancel = await j('POST', `/withdrawals/${w.data.id}/cancel`, {}, cookieA)
-  ok('withdrawal cancellable while requested', cancel.status === 200)
-  const cancelB = await j('POST', `/withdrawals/${w.data.id}/cancel`, {}, cookieB)
+  ok('withdrawals wallet-scoped', !listB.data.withdrawals.some(x => x.id === legacy?.id))
+  const cancelB = await j('POST', `/withdrawals/${legacy?.id}/cancel`, {}, cookieB)
   ok('other wallet cannot cancel', cancelB.status === 409 || cancelB.status === 404)
+  const cancel = await j('POST', `/withdrawals/${legacy?.id}/cancel`, {}, cookieA)
+  ok('withdrawal cancellable while requested', cancel.status === 200)
   if (provisioned) {
-    const w2 = await j('POST', '/withdrawals', { amountUsd: 60, challengeId: provisioned.challengeId }, cookieA)
-    ok('withdrawal attachable to owned challenge', w2.status === 200)
-    const w3 = await j('POST', '/withdrawals', { amountUsd: 60, challengeId: provisioned.challengeId }, cookieB)
+    const w2 = await j('POST', '/withdrawals', { challengeId: provisioned.challengeId }, cookieA)
+    ok('an evaluation account is not a reward account', w2.status === 409 && w2.data?.error === 'not_a_funded_account')
+    const w3 = await j('POST', '/withdrawals', { challengeId: provisioned.challengeId }, cookieB)
     ok('withdrawal cannot reference foreign challenge', w3.status === 404)
   }
 }

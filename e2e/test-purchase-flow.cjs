@@ -219,17 +219,15 @@ async function run() {
       await connect(page);
       await signIn(page);
     }
-    await page.locator('.of-withdraw-form input').first().waitFor({ timeout: 15000 });
-    await page.waitForTimeout(1000); /* let the SPA route settle before interacting */
-    await page.locator('.of-withdraw-form input').first().fill('150.00');
-    await page.getByRole('button', { name: 'Submit request' }).click();
-    await page.locator('.of-purchase-table tbody tr').first().waitFor({ timeout: 10000 });
-    const wl = await call(page, '/withdrawals');
-    check('withdrawal request recorded', (wl.data?.withdrawals || []).length >= 1);
-    await page.getByRole('button', { name: 'Cancel', exact: true }).first().click();
-    await page.waitForTimeout(500);
-    const wl2 = await call(page, '/withdrawals');
-    check('withdrawal cancelled from the UI', (wl2.data?.withdrawals || []).some(w => w.status === 'cancelled'));
+    /* rewards are computed by the server for funded accounts only: the page
+       shows the reward status instead of a free-amount form (ADR 0028) */
+    await page.getByRole('heading', { name: 'Rewards & Withdrawals' }).waitFor({ timeout: 15000 });
+    const free = await call(page, '/withdrawals', { amountUsd: 150 });
+    check('free-amount withdrawal refused by the server', free.status === 400 && free.data?.error === 'reward_account_required');
+    const evalAccount = await call(page, '/withdrawals', { challengeId: confirm.data.challengeId });
+    check('an evaluation account cannot request a reward', evalAccount.status === 409 && evalAccount.data?.error === 'not_a_funded_account');
+    const status = await call(page, '/rewards/status');
+    check('reward status lists no funded account before an approved pass', status.status === 200 && Array.isArray(status.data?.funded) && status.data.funded.length === 0);
     await shot(page, 'withdrawals');
 
     /* ---------- 8. profile editing (name + avatar) ---------- */

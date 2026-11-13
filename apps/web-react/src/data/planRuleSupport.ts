@@ -24,6 +24,9 @@ export type RuleSupport =
   | 'purchase'
   /** frozen into the rules snapshot and enforced by the evaluation engine */
   | 'enforced'
+  /** frozen into the rules snapshot and enforced by the reward
+   *  eligibility engine (apps/backend/rewards.js) on funded accounts */
+  | 'reward'
   /** snapshotted and reported as a metric, not enforced as a condition */
   | 'metric-only'
   /** advertised but not implemented by the backend */
@@ -52,16 +55,16 @@ export const planRuleSupport: Record<keyof ChallengePlan, RuleSupportEntry> = {
   drawdownMode: { support: 'enforced', note: 'Static versus trailing maximum loss.' },
   trailingLockAtProfitPct: { support: 'enforced', note: 'Trailing floor locks at breakeven.' },
   minTradingDays: { support: 'enforced', note: 'Distinct UTC+3 fill days required for a pass.' },
-  profitableDaysPer30: { support: 'metric-only', blocker: 'PLAN-PAYOUT-CONDITIONS', note: 'A payout condition; withdrawals are manual requests and do not evaluate it.' },
-  consistencyPct: { support: 'metric-only', blocker: 'PLAN-PAYOUT-CONDITIONS', note: 'A payout condition; withdrawals are manual requests and do not evaluate it.' },
-  profitSplitPct: { support: 'metric-only', blocker: 'PLAN-PAYOUT-CONDITIONS', note: 'Snapshotted only; no reward calculation enforces the split.' },
-  profitSplitMonthlyPct: { support: 'not-implemented', blocker: 'PLAN-PAYOUT-CONDITIONS', note: 'No reward-cycle selection exists in the backend.' },
-  payoutCapPct: { support: 'not-implemented', blocker: 'PLAN-PAYOUT-CONDITIONS', note: 'No payout cap logic (all published plans currently state no cap).' },
-  firstPayoutDays: { support: 'not-implemented', blocker: 'PLAN-PAYOUT-CONDITIONS', note: 'Withdrawal requests are accepted without the 14-day waiting period check.' },
-  minPayoutPct: { support: 'not-implemented', blocker: 'PLAN-PAYOUT-CONDITIONS', note: 'Withdrawal requests are accepted without the minimum request check.' },
+  profitableDaysPer30: { support: 'reward', note: 'Profitable UTC+3 days required for a reward request (Instant: every request; monthly cycle: 7).' },
+  consistencyPct: { support: 'reward', note: 'Best profitable day ≤ this share of cycle profit (Instant: every request; Standard/One-phase: monthly cycle).' },
+  profitSplitPct: { support: 'reward', note: 'Bi-weekly reward share computed by the server from realized net profit.' },
+  profitSplitMonthlyPct: { support: 'reward', note: 'Monthly (30-day) cycle share, chosen per request; requires consistency and 7 profitable days.' },
+  payoutCapPct: { support: 'reward', note: 'Reward cap as % of account size; 0 = no cap.' },
+  firstPayoutDays: { support: 'reward', note: 'First reward request opens this many days after the first funded fill.' },
+  minPayoutPct: { support: 'reward', note: 'Realized profit must reach this % of account size.' },
   timeLimitDays: { support: 'enforced', note: 'Challenge expiry at start time.' },
   trialDaysPerPhase: { support: 'enforced', note: 'Free Trial expiry per phase.' },
-  refundPolicy: { support: 'not-implemented', blocker: 'PLAN-FEE-REFUND', note: 'The Standard fee refund with the fourth reward is not automated.' },
+  refundPolicy: { support: 'reward', note: "'fourth-reward': the fee paid on the originating order is added to the fourth reward request." },
   referenceLeverageX: { support: 'enforced', note: 'Order leverage above the plan reference is rejected by the engine.' },
   free: { support: 'enforced', note: 'Free Trial flag (no fee, no reward).' },
 }

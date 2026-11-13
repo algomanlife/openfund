@@ -1014,35 +1014,8 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
     res.json({ withdrawals: rows })
   }))
 
-  router.post('/withdrawals', requireAuth, wrap(async (req, res) => {
-    const { amountUsd, challengeId, note } = req.body || {}
-    const amount = Number(amountUsd)
-    if (!Number.isFinite(amount) || amount <= 0 || amount > 1_000_000) throw fail(400, 'invalid_amount')
-    if (note != null && (typeof note !== 'string' || note.length > 500)) throw fail(400, 'invalid_note')
-    let challenge = null
-    if (challengeId) {
-      if (!uuid.test(challengeId)) throw fail(400, 'invalid_challenge')
-      challenge = (await pool.query(
-        `SELECT id FROM openfund_challenges WHERE id=$1 AND user_id=$2`, [challengeId, req.user.user_id])).rows[0]
-      if (!challenge) throw fail(404, 'challenge_not_found')
-    }
-    const { rows: [w] } = await pool.query(
-      `INSERT INTO withdrawal_requests (user_id, challenge_id, amount_usd, note)
-       VALUES ($1,$2,$3,$4) RETURNING id, requested_at`,
-      [req.user.user_id, challenge ? challenge.id : null, amount.toFixed(2), note || null])
-    await audit('withdrawal_requested', req.user.user_id, req, { withdrawalId: w.id, amount })
-    res.json({ id: w.id, requestedAt: w.requested_at, status: 'requested' })
-  }))
-
-  router.post('/withdrawals/:id/cancel', requireAuth, wrap(async (req, res) => {
-    if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')
-    const { rows } = await pool.query(
-      `UPDATE withdrawal_requests SET status='cancelled', reviewed_at=now()
-        WHERE id=$1 AND user_id=$2 AND status='requested' RETURNING id`, [req.params.id, req.user.user_id])
-    if (!rows[0]) throw fail(409, 'withdrawal_not_cancellable')
-    await audit('withdrawal_cancelled', req.user.user_id, req, { withdrawalId: req.params.id })
-    res.json({ ok: true })
-  }))
+  /* POST /withdrawals and /withdrawals/:id/cancel live in rewards.js:
+     reward requests are computed and rule-checked by the server */
 
   return router
 }

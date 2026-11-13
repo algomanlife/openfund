@@ -31,6 +31,8 @@ import { accountDirectory } from './accounts.js'
 import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments, paymentReadinessReport, DEPAY_SIGNED_PATHS } from './purchases.js'
 import { adminRoutes } from './admin.js'
 import { chartWorkspaceRoutes } from './chart-workspaces.js'
+import { supportRoutes, supportAdminRoutes } from './support.js'
+import { rewardRoutes, rewardAdminRoutes } from './rewards.js'
 import { createFootprintService } from './footprint/service.js'
 import { couponAdminRoutes } from './coupons.js'
 import { paymentAdminRoutes } from './payments-admin.js'
@@ -754,7 +756,10 @@ app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) 
 app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
 app.use(referralRoutes({ pool, requireAuth, audit }))
 app.use(purchaseRoutes({ pool, requireAuth, audit, limit }))
+app.use(rewardRoutes({ pool, requireAuth, audit, limit }))
 app.use(chartWorkspaceRoutes({ pool, requireAuth, limit }))
+/* Public Contact Us submissions (write-only; operators read via /admin/support or Directus) */
+app.use(supportRoutes({ pool, limit, optionalUser: async req => (await userFromSession(req))?.user_id ?? null }))
 /* Footprint (Hyperliquid order-flow analytics for the chart only). Read-only,
    isolated from the engine/accounts/payments; inert unless FOOTPRINT_ENABLED=1. */
 const footprint = createFootprintService({ mainPool: pool })
@@ -772,6 +777,8 @@ app.use('/admin/partners', partnerAdminRoutes({ pool }))
 app.use('/admin/live', liveAdminRoutes({ pool, treasury, config: live }))
 app.use('/admin/coupons', couponAdminRoutes({ pool }))
 app.use('/admin/payments', paymentAdminRoutes({ pool, verifier: (...a) => defaultPaymentVerifier()(...a) }))
+app.use('/admin/support', supportAdminRoutes({ pool }))
+app.use('/admin/rewards', rewardAdminRoutes({ pool }))
 app.use('/admin', adminRoutes({ pool, audit }))
 
 /* Public release identity contains build metadata only, never runtime secrets. */

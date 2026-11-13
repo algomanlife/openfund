@@ -42,7 +42,11 @@
  */
 import { D } from './trading-math.js'
 
-export const RULES_VERSION = 1
+/** 2 — payout terms (first reward wait, minimum request, monthly split,
+ *  cap, fee refund) are frozen into the snapshot. Version-1 snapshots
+ *  stay valid and immutable; rewards.js reads their payout terms from the
+ *  plan configuration and flags the request for operator confirmation. */
+export const RULES_VERSION = 2
 /** Day boundary 00:00 UTC+3 (fixed offset, no DST) — published rule of record. */
 export const DAY_UTC3_OFFSET_MS = 3 * 60 * 60 * 1000
 
@@ -79,6 +83,11 @@ export function normalizeRules(planConfiguration = {}) {
     consistencyPct: num(c.consistencyPct),
     profitableDaysPer30: num(c.profitableDaysPer30),
     profitSplitPct: num(c.profitSplitPct),
+    profitSplitMonthlyPct: num(c.profitSplitMonthlyPct),
+    payoutCapPct: num(c.payoutCapPct),
+    firstPayoutDays: num(c.firstPayoutDays),
+    minPayoutPct: num(c.minPayoutPct),
+    refundPolicy: typeof c.refundPolicy === 'string' ? c.refundPolicy : 'none',
     free: !!c.free,
   }
   /* integrity: a plan without positive loss limits cannot be evaluated —
@@ -157,8 +166,10 @@ export function evaluateRules({ rules, stage = 1, startingBalance, balance, equi
     if (eq.lte(threshold)) violations.push({ rule: 'maximum_loss_breach', detail: { threshold: threshold.toFixed(2), equity: eq.toFixed(2) } })
   }
 
-  /* ---- pass: target on closed profit + minimum trading days (phases ≥ 1) ---- */
-  if ((rules.phases ?? 0) >= 1) {
+  /* ---- pass: target on closed profit + minimum trading days (phases ≥ 1) ----
+     stage 0 is a funded simulation (Instant, or a funded-demo account after
+     an approved evaluation): loss limits only, never a second pass */
+  if ((rules.phases ?? 0) >= 1 && stage >= 1 && !rules.funded) {
     const target = D(stage === 2 ? (rules.phase2TargetPct ?? rules.phase1TargetPct) : (rules.phase1TargetPct ?? 0))
     const targetAmount = starting.times(target).div(100)
     /* A pass settles every open position at the mark. The target is measured

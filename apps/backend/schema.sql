@@ -1655,3 +1655,106 @@ CREATE TABLE IF NOT EXISTS chart_workspaces (
 -- Dedicated checkout (v0.6): optional customer details captured on the order
 -- for the receipt. The wallet remains the account identity. Additive only.
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS customer jsonb;
+
+-- ------------------------------------------------------------------
+-- Customer support messages (public Contact Us form).
+--
+-- Written ONLY by the backend (POST /support/messages, validated and
+-- rate limited). Directus registers this table for the Support role
+-- (apps/backstage/scripts/register_support_tables.py); the public policy
+-- gets no permission on it, so submissions can never be enumerated.
+-- The public reference is random (not a sequence) and is the only
+-- identifier returned to the submitter.
+-- ------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS support_messages (
+  id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  reference       text NOT NULL UNIQUE CHECK (reference ~ '^OF-[0-9]{6}-[A-Z2-9]{6}$'),
+  full_name       text NOT NULL CHECK (char_length(full_name) BETWEEN 2 AND 120),
+  email           text NOT NULL CHECK (char_length(email) BETWEEN 6 AND 254),
+  department      text NOT NULL CHECK (department IN ('support', 'legal', 'technical', 'community')),
+  subject         text NOT NULL CHECK (char_length(subject) BETWEEN 3 AND 160),
+  message         text NOT NULL CHECK (char_length(message) BETWEEN 20 AND 5000),
+  order_ref       text CHECK (order_ref IS NULL OR order_ref ~ '^[A-Za-z0-9_-]{1,64}$'),
+  challenge_ref   text CHECK (challenge_ref IS NULL OR challenge_ref ~ '^[A-Za-z0-9_-]{1,64}$'),
+  locale          text NOT NULL DEFAULT 'en' CHECK (locale IN ('fa', 'en', 'ar', 'ru', 'zh-CN')),
+  status          text NOT NULL DEFAULT 'new'
+                  CHECK (status IN ('new', 'in_progress', 'waiting_customer', 'resolved', 'closed')),
+  internal_notes  text,
+  assigned_to     text,
+  user_id         uuid REFERENCES openfund_users(id) ON DELETE SET NULL,
+  privacy_consent_at timestamptz NOT NULL,
+  created_at      timestamptz NOT NULL DEFAULT now(),
+  updated_at      timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_support_messages_status ON support_messages (status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_support_messages_email ON support_messages (email, created_at DESC);
+
+-- Append-only operator history (status changes, assignment, notes).
+CREATE TABLE IF NOT EXISTS support_message_events (
+  id          bigserial PRIMARY KEY,
+  message_id  uuid NOT NULL REFERENCES support_messages(id) ON DELETE CASCADE,
+  actor       text NOT NULL,
+  from_status text,
+  to_status   text,
+  detail      jsonb NOT NULL DEFAULT '{}'::jsonb,
+  ts          timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_support_message_events_msg ON support_message_events (message_id, id);
+
+CREATE OR REPLACE FUNCTION support_messages_touch() RETURNS trigger AS $$
+BEGIN
+  /* submitter-supplied content is immutable once stored; only operator
+     fields (status, notes, assignment) may change, from any writer */
+  IF NEW.reference IS DISTINCT FROM OLD.reference OR NEW.full_name IS DISTINCT FROM OLD.full_name
+     OR NEW.email IS DISTINCT FROM OLD.email OR NEW.department IS DISTINCT FROM OLD.department
+     OR NEW.subject IS DISTINCT FROM OLD.subject OR NEW.message IS DISTINCT FROM OLD.message
+     OR NEW.order_ref IS DISTINCT FROM OLD.order_ref OR NEW.challenge_ref IS DISTINCT FROM OLD.challenge_ref
+     OR NEW.created_at IS DISTINCT FROM OLD.created_at OR NEW.privacy_consent_at IS DISTINCT FROM OLD.privacy_consent_at THEN
+    RAISE EXCEPTION 'support_message_content_immutable';
+  END IF;
+  NEW.updated_at := now();
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_support_messages_touch ON support_messages;
+CREATE TRIGGER trg_support_messages_touch BEFORE UPDATE ON support_messages
+  FOR EACH ROW EXECUTE FUNCTION support_messages_touch();
+
+-- ------------------------------------------------------------------
+-- Reward lifecycle: final-pass manual review, funded-demo transition and
+-- rule-checked reward (withdrawal) requests. See apps/backend/rewards.js.
+--
+-- parent_challenge_id links stage 2 → stage 1 and funded-demo → final
+-- passed stage (lineage to the purchase order, e.g. for the fee refund).
+-- funded_from_challenge_id is UNIQUE: one funded-demo account per passed
+-- evaluation, enforced by the database (duplicate approvals impossible).
+-- ------------------------------------------------------------------
+ALTER TABLE openfund_challenges ADD COLUMN IF NOT EXISTS parent_challenge_id uuid REFERENCES openfund_challenges(id);
+ALTER TABLE openfund_challenges ADD COLUMN IF NOT EXISTS funded_from_challenge_id uuid REFERENCES openfund_challenges(id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_challenges_funded_from ON openfund_challenges (funded_from_challenge_id) WHERE funded_from_challenge_id IS NOT NULL;
+
+-- One immutable decision per final-passed evaluation.
+CREATE TABLE IF NOT EXISTS challenge_reviews (
+  challenge_id        uuid PRIMARY KEY REFERENCES openfund_challenges(id),
+  decision            text NOT NULL CHECK (decision IN ('approved', 'rejected')),
+  actor               text NOT NULL,
+  note                text,
+  funded_challenge_id uuid REFERENCES openfund_challenges(id),
+  decided_at          timestamptz NOT NULL DEFAULT now()
+);
+
+-- Reward requests computed by the server (kind='reward'); rows created
+-- before this release keep kind='legacy' and are reviewed as before.
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS kind text NOT NULL DEFAULT 'legacy';
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'withdrawal_requests_kind_check') THEN
+    ALTER TABLE withdrawal_requests ADD CONSTRAINT withdrawal_requests_kind_check CHECK (kind IN ('legacy', 'reward'));
+  END IF;
+END $$;
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS reward_cycle text;
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS gross_profit_usd numeric(14,2);
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS split_pct numeric(6,2);
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS fee_refund_usd numeric(12,2) NOT NULL DEFAULT 0;
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS eligibility jsonb;
+-- at most one open reward request per funded account
+CREATE UNIQUE INDEX IF NOT EXISTS idx_withdrawals_one_open_reward ON withdrawal_requests (challenge_id)
+  WHERE kind = 'reward' AND status IN ('requested', 'approved');

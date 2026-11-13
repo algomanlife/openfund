@@ -152,7 +152,7 @@ await inject(MKT, 50000)
     before.data.challenges.some(c => c.id === ch.id && c.status === 'created'))
   const view = (await j('GET', '/challenges/' + ch.id, null, cookie1)).data
   ok('challenge view carries frozen rules snapshot',
-    view.rules?.dailyLossPct === 100 && view.rules?.phase1TargetPct === 12 && view.rules?.rulesVersion === 1)
+    view.rules?.dailyLossPct === 100 && view.rules?.phase1TargetPct === 12 && view.rules?.rulesVersion === 2)
 
   /* trading on a not-yet-started challenge is impossible: no account yet */
   const early = await order(cookie1, randomUUID(), { market: MKT, side: 'long', margin: 100, leverage: 1 })

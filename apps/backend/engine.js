@@ -245,10 +245,10 @@ export class Engine {
           { stage: 1, metrics: evaluation.metrics })
         /* stage 2 inherits the frozen rules snapshot; no new purchase */
         const stage2 = (await c.query(
-          `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd, stage, rules_snapshot)
-           VALUES ($1,$2,'created',$3,2,$4) RETURNING *`,
+          `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd, stage, rules_snapshot, parent_challenge_id)
+           VALUES ($1,$2,'created',$3,2,$4,$5) RETURNING *`,
           [challenge.user_id, challenge.challenge_plan_id, challenge.account_size_usd,
-            JSON.stringify(rules)])).rows[0]
+            JSON.stringify(rules), challenge.id])).rows[0]
         await this.challenges.startTx(c, stage2)
         return 'stage_passed'
       }
