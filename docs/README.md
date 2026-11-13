@@ -1,8 +1,25 @@
 # Openfund documentation
 
-P0 audit correction: the earlier mutable 8080 preview lost its frontend manifest and was unversioned. Clean-context real clicks verify white light canvases, not the owner Opera profile (permission unavailable). Final candidate hashes, pipeline outcomes and canonical extracted-archive captures are tracked in [P0 evidence](../docs/assets/screenshots/manifest.json). Historical captures and prior matched-runtime claims do not identify the final build. Official v0.2.0 and integrated base `d05b4b8` remain unchanged; owner acceptance is open.
-
 Openfund is a trading technology startup building a connected Prop and Perpetual ecosystem. This index separates product intent, current implementation and future delivery. Start with the [Product Overview](product/OVERVIEW.md), [Feature Status](product/FEATURE_STATUS.md), [System Architecture](architecture/ARCHITECTURE.md) and [Roadmap](../ROADMAP.md).
+
+## Canonical sources
+
+Each kind of fact has one maintained home; every other page links to it
+instead of repeating it. Historical reviews keep their original wording.
+
+| Fact | Canonical source |
+| --- | --- |
+| Capability status (Completed / In Progress / Planned / Blocked) | [Feature Status](product/FEATURE_STATUS.md) |
+| Milestones, dependencies and acceptance criteria | [Milestones](roadmap/MILESTONES.md) (phase summary: [ROADMAP.md](../ROADMAP.md)) |
+| Deployed version and commit | `/version` on the running service and the [release runbook](deployment/RELEASES.md), never hand-edited docs |
+| Render resources and image versions | [render.yaml](../render.yaml) ([Render runbook](deployment/RENDER.md)) |
+| Environment variables | [Environment](deployment/ENVIRONMENT.md) (CI-checked against the Blueprint) |
+| Upstream and vendored versions, patches | [Upstream registry](integrations/UPSTREAM_REGISTRY.md) |
+| Licenses and notices | [Licensing report](legal/LICENSING.md), [Third-party notices](../THIRD_PARTY_NOTICES.md) |
+| Release and rollback procedure | [Releases](deployment/RELEASES.md), [Rollback](deployment/ROLLBACK.md) |
+| Frontend source versus generated output | [Engineering reference](development/ENGINEERING_REFERENCE.md#frontend-applications) |
+| Agent and contributor rules | [AGENTS.md](../AGENTS.md), [CONTRIBUTING.md](../CONTRIBUTING.md) |
+| Architectural decisions | [ADRs](decisions/README.md) |
 
 ## Product and Business
 
@@ -36,6 +53,10 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 [Payment verification and recovery](payments/VERIFICATION.md) · [Payment activation checklist](payments/ACTIVATION.md) · [DePay (Arbitrum) and dashboard report](payments/DEPAY.md) · [Coupons and zero-payment purchases](payments/COUPONS.md) · [Order lifecycle](payments/ORDER_LIFECYCLE.md)
 
+## Protocol (dormant)
+
+[Overview](protocol/OVERVIEW.md) · [Architecture](protocol/ARCHITECTURE.md) · [Development](protocol/DEVELOPMENT.md) · [Roadmap](roadmap/PROTOCOL.md). Source is integrated but not built, shipped or routed.
+
 ## Integrations
 
 [Gains VOB and Trades](integrations/GAINS_DEPTH.md) · [Gains Network](integrations/GAINS.md) · [Upstream dependency registry](integrations/UPSTREAM_REGISTRY.md) · [Dependency governance](development/DEPENDENCY_GOVERNANCE.md) · [Upstream isolation and patch registry](integrations/UPSTREAM_DEPENDENCIES.md) · [Vela upgrade protection](integrations/VELA_UPGRADE.md) · [Gains upgrade protection](integrations/GAINS_UPGRADE.md) · [Vela](integrations/VELA.md) · [Markets](integrations/MARKETS_PAGE.md) · [Upstream provenance](integrations/UPSTREAM.md) · [Directus backstage](backstage/README.md) · [Content coverage](backstage/CONTENT_COVERAGE.md) · [Terminal editorial content](backstage/TERMINAL_CONTENT.md) · [CMS permissions](backstage/PERMISSIONS.md) · [Admin guide](backstage/ADMIN_GUIDE.md) · [Content model](backstage/CONTENT_MODEL.md) · [Translations](backstage/TRANSLATIONS.md) · [User management](backstage/USER_MANAGEMENT.md) · [Directus 12 assessment](backstage/DIRECTUS_12_ASSESSMENT.md) · [Backup and restore](backstage/BACKUP_RESTORE.md) · [Upstream update automation](integrations/UPSTREAM_AUTOMATION.md)
@@ -54,7 +75,7 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 ## Legal
 
-[Licensing audit and compatibility report](legal/LICENSING.md) · [Third-party notices](../THIRD_PARTY_NOTICES.md)
+[Licensing audit and compatibility report](legal/LICENSING.md) · [Production dependency licenses](legal/DEPENDENCY_LICENSES.md) · [PineTS (AGPL) report](legal/PINETS.md) · [Third-party notices](../THIRD_PARTY_NOTICES.md)
 
 ## Roadmap
 
@@ -68,6 +89,11 @@ Openfund is a trading technology startup building a connected Prop and Perpetual
 
 [Brand assets](assets/brand/README.md) · [Screenshot gallery and provenance](assets/screenshots/README.md) · [Asset inventory](assets/README.md) · [Design system](design/DESIGN_SYSTEM.md) · [Repository metadata](development/GITHUB_METADATA.md) · [Reviews and audit index](reviews/README.md) · [Change log](../CHANGELOG.md)
 
-## Current website and release audit
+## Historical records
 
-[2026-11-03 source/release audit](reviews/website-refresh/AUDIT.md) · [Website delivery and validation](reviews/website-refresh/DELIVERY.md) · [Distribution/community gates](roadmap/PRODUCT.md). Official v0.2.0 identifies `561e7f3`. PR #42 is now merged at integrated source `d05b4b8`, but unreleased. The [community/theme addendum delivery](reviews/community-theme/DELIVERY.md) records new genuine bilingual/theme captures and isolated checks. Final refinements are locally verified and UNRELEASED: three community providers, white light canvases, preserved dark-green identity, aligned service vectors and Persian Home without a footer; English Home and other public footers remain intact. Generated-session checks retain WCAG text contrast >=4.5 and exact white-canvas assertions. Historical PR #42 captures predate the addendum. The requested v0.2.1 is unallocated and conflicts with the current minor bump for `feat:` commits; coordinate the exact target under the [release policy](deployment/RELEASES.md), without bypassing checks. Preserve dated historical reviews; publication does not establish current port 8080 or deployed acceptance.
+Dated delivery reports, audits, migration snapshots, capacity results and
+captures are kept for audit and rollback evidence; they describe the state at
+their date, not current behavior. Start from the
+[reviews and audit index](reviews/README.md). Earlier release audits (for
+example the [2026-11-03 website audit](reviews/website-refresh/AUDIT.md)) are
+listed there.

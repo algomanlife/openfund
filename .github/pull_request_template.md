@@ -54,7 +54,7 @@
 - [ ] Roadmap milestones/dependencies/acceptance criteria updated
 - [ ] Genuine screenshots/provenance refreshed after significant UI changes
 - [ ] English documentation; Persian application/RTL fixtures preserved
-- [ ] Render three-resource architecture and same-origin `/react/` preserved
+- [ ] Render three-resource architecture and same-origin app hosting preserved
 - [ ] No unsupported business claims, secrets or unlicensed assets; upstream notices retained
 - [ ] Verified results are separated from assumptions and anything not run or not verified is named
 - [ ] Out-of-scope areas untouched (trading engine, evaluation, payments, wallet auth, schema, contracts, deployment config) unless listed under Scope

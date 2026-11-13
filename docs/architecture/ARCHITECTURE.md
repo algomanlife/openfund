@@ -10,7 +10,7 @@ Integrated source baseline: `d05b4b88fc2776e09bf1a701254ac229e8145a7f`, includin
 
 ```mermaid
 flowchart TB
-  Browser[Browser React and wallet UI] -->|same origin /react/ and API| Node[openfund Node.js API]
+  Browser[Browser React and wallet UI] -->|same origin / and API| Node[openfund Node.js API]
   Browser -->|public published content| CMS[openfund-cms Directus 11.17.4]
   Browser -->|REST candles and WS marks| Gains[Gains market data]
   Node -->|server execution marks and wallet reads| Gains
@@ -59,7 +59,7 @@ Directus shares the managed PostgreSQL service and edits catalog/editorial colle
 
 ## Deployment boundary
 
-The [Render Blueprint](../../render.yaml) preserves exactly `openfund`, `openfund-db` and `openfund-cms`. The Node service builds and serves React under `/react/`, redirects `/` there, and hosts the API, SSE and one engine loop. Directus uses its official image and persistent uploads disk. There is no separate frontend service, queue, worker or Redis. Horizontal engine scaling requires coordinated ownership before deployment.
+The [Render Blueprint](../../render.yaml) preserves exactly `openfund`, `openfund-db` and `openfund-cms`. The Node service builds React and serves it from the site root with a browser-history SPA fallback (the former `/react/` prefix is a permanent redirect plus a compatibility asset mount), and hosts the API, SSE and one engine loop. Directus uses its official image and persistent uploads disk. There is no separate frontend service, queue, worker or Redis. Horizontal engine scaling requires coordinated ownership before deployment.
 
 See [Render operations](../deployment/RENDER.md), [Database](../deployment/DATABASE.md), [technology registry](TECH_STACK.md), and [ADRs](../decisions/README.md). Configuration and local checks do not establish a live deployment.
 

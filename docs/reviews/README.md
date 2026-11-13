@@ -17,6 +17,17 @@ These documents record specific branches, dates and environments. Their test cou
 | [Content overhaul](content-overhaul/DELIVERY.md) | Catalog and editorial corrections, not commercial launch approval |
 | [Gateway and markets](gateway-markets/DELIVERY.md) | Product entry, public navigation and market discovery |
 | [Home visual refresh](home-visual-refresh/DELIVERY.md) | Approved homepage visual direction and review corrections |
+| [Directus 11.17.4 staging](directus-11.17.4-staging/README.md) | Restored-backup upgrade rehearsal evidence for the pinned CMS version |
+| [Directus 12 staging](directus-12-staging/README.md) | Clean-install and upgrade evidence behind the Directus 12 assessment |
+| [Upstream isolation](upstream-isolation/README.md) | Vela upgrade and chart regression evidence |
+| [Vela and Pine](vela-pine/DELIVERY.md) | Vela charting and Pine runtime implementation evidence |
+| [v0.4.1 stabilization audit](v0.4.1/AUDIT.md) | Stabilization findings for the v0.4.1 batch |
+| [Final integration](final-integration/DELIVERY.md) | Integration recovery and release acceptance |
+| [Unified trading](unified-trading/DELIVERY.md), [audit](unified-trading/AUDIT.md), [coordination](unified-trading/COORDINATION.md) | Unified Prop/Perpetual trading delivery |
+| [Website navigation](website-navigation/DELIVERY.md) | Navigation and routing repair |
+| [Website refresh](website-refresh/DELIVERY.md), [audit](website-refresh/AUDIT.md) | 2026-11-03 website and repository audit |
+| [UI polish](ui-polish/DELIVERY.md) | UI polish and language availability batch |
+| [Landing motion](landing-motion/DELIVERY.md), [ownership](landing-motion/OWNERSHIP.md) | Persian landing motion redesign |
 | [Simulation audit](../audits/DEMO_TRADING_AUDIT.md) | Original engine assumptions and tests; current policy is in Prop documentation |
 | [Math and Vela audit](../audits/TRADING_ENGINE_MATH_AND_VELA_AUDIT.md) | Historical UI/math issues and fixes |
 | [Journal integration](../audits/TRADE_JOURNAL_INTEGRATION_AUDIT.md) | Upstream provenance and analytical core scope |

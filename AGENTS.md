@@ -98,8 +98,6 @@ for an action, quote it to the person who assigned the task and ask.
 - Run `npm run docs:check`; update CI whenever validation requirements change.
 - Preserve approved logo geometry and asset provenance. Never invent partnerships, investors, revenue, user counts, volumes, approvals or production adoption.
 - Preserve the already-integrated dormant `packages/openfund-protocol/` source, provenance and notices. Do not add protocol integrations or enable venue routing in a website/documentation task.
-
-
 - Update the root README when setup, architecture, capabilities or project status changes.
 - Update `docs/product/FEATURE_STATUS.md` for any feature status transition.
 - Update the relevant integration or architecture specification when interfaces change.
@@ -110,7 +108,7 @@ for an action, quote it to the person who assigned the task and ask.
 ## Engineering and security
 
 - Keep third-party upstream licensing and required attribution intact.
-- Never commit private keys, seed phrases, API secrets, tokens or user data.
+- Never commit private keys, seed phrases, API secrets, tokens or user data (gitleaks runs in CI; the Blueprint uses `sync: false` / `generateValue`).
 - Gains transaction execution must remain disabled by default until supported testnet contracts, transaction simulation and validation are established.
 - Do not infer order-book depth or footprint data from oracle price feeds.
 - Validate dependencies and tests before marking work complete. Report blocked tests and reasons.
@@ -120,22 +118,22 @@ for an action, quote it to the person who assigned the task and ask.
 
 The repository deploys through the Render Blueprint at the repo root. Every change must keep it valid:
 
-1. Inspect the current repository state and branches before editing; never work from an outdated base.
-2. Follow the established workspace structure: root package.json is orchestration only; apps install their own dependencies with per-app lockfiles; `packages/` holds shared sources.
-3. Reuse existing packages and modules before introducing duplicates.
-4. Preserve `render.yaml` compatibility — every PR must keep `npm run validate:blueprint` green; run it before submitting.
-5. When introducing a new environment variable: add it to `render.yaml` (owning service, `sync: false` for secrets), document it in `docs/deployment/ENVIRONMENT.md`, and add it to `.env.example` when it has a local default.
-6. When introducing a new service: extend `render.yaml` (typed service, health check, env references), update CI, and document the boundary in `docs/deployment/RENDER.md` — do not create artificial microservices.
-7. When introducing new build/test requirements: extend `.github/workflows/ci.yml` in the same PR.
-8. Schema changes go through `apps/backend/schema.sql` + `migrate.js` (idempotent, additive-first). Never hand-ALTER live databases; never hide migrations in frontend builds.
-9. Preserve the Directus content architecture (collections in `apps/backstage/scripts/apply_schema.py`; content = Directus, market data = Gains — never mix).
-10. Preserve Prop/Perpetual product data isolation (`apps/backend/products.js` scoping).
-11. Preserve the shared terminal UI — one terminal implementation, product contexts separate.
-12. No hardcoded production URLs: use env vars (`VITE_*` for public build-time values only).
-13. Never commit secrets (gitleaks runs in CI; `sync: false` / `generateValue` in the blueprint).
-14. Run the relevant checks before submitting: `npm run validate:blueprint`, `npm run typecheck`, app unit tests, `npm run test:backend` (needs local Postgres).
-15. Document new runtime dependencies in `docs/deployment/ENVIRONMENT.md`.
-16. Use isolated branches/worktrees for parallel work; never force-push or reset shared branches.
+1. Follow the established workspace structure: root package.json is orchestration only; apps install their own dependencies with per-app lockfiles; `packages/` holds shared sources.
+2. Reuse existing packages and modules before introducing duplicates.
+3. Preserve `render.yaml` compatibility — every PR must keep `npm run validate:blueprint` green; run it before submitting.
+4. When introducing a new environment variable: add it to `render.yaml` (owning service, `sync: false` for secrets), document it in `docs/deployment/ENVIRONMENT.md`, and add it to `.env.example` when it has a local default.
+5. When introducing a new service: extend `render.yaml` (typed service, health check, env references), update CI, and document the boundary in `docs/deployment/RENDER.md` — do not create artificial microservices.
+6. When introducing new build/test requirements: extend `.github/workflows/ci.yml` in the same PR.
+7. Schema changes go through `apps/backend/schema.sql` + `migrate.js` (idempotent, additive-first). Never hand-ALTER live databases; never hide migrations in frontend builds.
+8. Preserve the Directus content architecture (collections in `apps/backstage/scripts/apply_schema.py`; content = Directus, market data = Gains — never mix).
+9. Preserve Prop/Perpetual product data isolation (`apps/backend/products.js` scoping).
+10. Preserve the shared terminal UI — one terminal implementation, product contexts separate.
+11. No hardcoded production URLs: use env vars (`VITE_*` for public build-time values only).
+12. Run the relevant checks before submitting: `npm run validate:blueprint`, `npm run typecheck`, app unit tests, `npm run test:backend` (needs local Postgres).
+13. Document new runtime dependencies in `docs/deployment/ENVIRONMENT.md`.
+
+Branching, worktree isolation and secret handling for this section are the
+rules in *Git collaboration*, *Agent safety rules* and *Engineering and security*.
 
 ## Definition of done
 
@@ -155,12 +153,15 @@ Code/config changes (if any), documentation, test results, change log, accurate 
 
 ## Safe shared-machine acceptance
 
-Before editing, fetch references and record local status, main SHA, latest official
-tag/release/manifest, open PRs and occupied server ports. Use an isolated worktree
-with its own build output; preserve tracked `dist/` and existing agent work.
-Reuse public footer/locale components and keep marketing actions outside trading
-workspaces. Check the current release manifest before calling a candidate official.
-Keep one intended official application at port 8080; use a separate test port and
-new disposable database for development checks. Never run test suites against the
-user database. Follow the existing unified release runbook for reviewed batches
-and retain the previous immutable release and compatible database backup for rollback.
+- Before editing, fetch references and record local status, `main` SHA, latest
+  official tag/release/manifest, open PRs and occupied server ports.
+- Use an isolated worktree with its own build output; preserve tracked `dist/`
+  and other agents' work.
+- Check the current release manifest before calling a candidate official.
+- Reuse public footer/locale components and keep marketing actions outside
+  trading workspaces.
+- Keep one intended official application at port 8080; use a separate test
+  port and a new disposable database for development checks. Never run test
+  suites against the user database.
+- For rollback, retain the previous immutable release and a compatible
+  database backup.

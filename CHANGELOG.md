@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Documentation: correct current pages that still described the app as
+  served at `/react/` (it is served from `/`; `/react/` redirects) and the
+  web README's Node 22 requirement (Node 26); replace the stale v0.2.0 audit
+  text in the documentation index with a canonical-source map; index the
+  dormant protocol docs and 11 unlisted review records; remove two orphaned
+  pointer pages (`docs/architecture/RENDER_DEPLOYMENT.md`,
+  `docs/development/ROADMAP.md`); remove duplicated rules from `AGENTS.md`
+  without changing any policy.
 - Repository: stop tracking 92 stale generated `react/assets/` files that
   were re-committed by `afe173f` despite `.gitignore`; a fresh `build:web`
   deletes all of them, so nothing served changes. A release test now fails if
