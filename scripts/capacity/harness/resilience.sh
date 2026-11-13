@@ -23,8 +23,10 @@ node harness/sse-swarm.mjs "$USERS" "$RUN/sse.jsonl" "const:$N:$S" > "$RUN/sse.l
 CONST="$N:$S" VISITOR_RATIO=0 k6 run --quiet --no-usage-report k6/charts.js > "$RUN/k6-charts.log" 2>&1 & KC=$!
 
 sleep 60
-log market_data_down; kill "$(cat "$RUN/mock.pid")"; sleep 20
-node harness/mock-gains.mjs >> "$RUN/mock-gains.log" 2>&1 & echo $! > "$RUN/mock.pid"; log market_data_up
+log market_data_down; pkill -f "capacity/harness/mock-gains.mjs"; sleep 1
+curl -sf "http://127.0.0.1:$MOCK_PORT/v1/arbitrum/markets" -o /dev/null && { echo "market-data server still up — outage not applied" | tee "$RUN/INVALID"; }
+sleep 19
+node "$CAP_DIR/harness/mock-gains.mjs" >> "$RUN/mock-gains.log" 2>&1 & echo $! > "$RUN/mock.pid"; log market_data_up
 
 sleep 70
 OLD=$(cat "$RUN/backend.pid"); log backend_sigterm; T0=$(date +%s%N)
@@ -50,4 +52,4 @@ node harness/integrity.mjs "$RUN" > "$RUN/integrity.log" 2>&1
     const last=l.slice(-20); console.log("sse:",JSON.stringify(s),"active at end:",Math.min(...last.map(r=>r.active)),"/",last[0].target)' "$RUN/sse.jsonl"
   tail -1 "$RUN/k6-charts.log"
 } | tee "$RUN/RESULT"
-lsof -ti tcp:18080 | xargs kill 2>/dev/null; true
+lsof -ti tcp:18080 -sTCP:LISTEN | xargs kill 2>/dev/null; pkill -f "capacity/harness/mock-gains.mjs"; true

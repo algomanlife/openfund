@@ -11,7 +11,7 @@ RUN="${1:?run dir}"; mkdir -p "$RUN"; RUN="$(cd "$RUN" && pwd)"
 if [ -z "${SKIP_MOCK:-}" ]; then
   pkill -f "capacity/harness/mock-gains.mjs" 2>/dev/null || true
 fi
-lsof -ti tcp:18080 | xargs kill 2>/dev/null || true
+lsof -ti tcp:18080 -sTCP:LISTEN | xargs kill 2>/dev/null || true
 sleep 1
 if [ -z "${SKIP_MOCK:-}" ]; then
   node "$CAP_DIR/harness/mock-gains.mjs" > "$RUN/mock-gains.log" 2>&1 &
