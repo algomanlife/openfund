@@ -34,6 +34,8 @@ html[data-theme="light"] .of-co { --co-accent: #127a52; --co-card: #FFFFFF }
 .of-co-steps li span { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; border: 1px solid currentColor; font-size: 11px }
 .of-co-steps li.current { color: var(--body, #f1f3ef); border-color: var(--co-accent) }
 .of-co-steps li.current span { background: var(--co-accent); border-color: var(--co-accent); color: #0c1710 }
+/* light accent #127a52: white digits keep WCAG AA (≈5.4:1); dark digits were 3.4:1 */
+html[data-theme="light"] .of-co-steps li.current span { color: #FFFFFF }
 .of-co-steps li.done { color: var(--co-accent) }
 
 .of-co fieldset { border: 0; padding: 0; margin: 0 0 14px; display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) }
