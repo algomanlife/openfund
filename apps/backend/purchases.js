@@ -848,7 +848,11 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
      verifier proves token, receiver, amount, finality and the binding to
      this order (EVM: signed by the customer's wallet; Solana: order id in
      an SPL Memo). Rate-limited per client: every call may reach an RPC. */
-  router.post('/purchases/verify', requireAuth, limit(10), wrap(async (req, res) => {
+  /* per-client ceiling (express-rate-limit, like the receipt route) on top of
+     the stricter per-path limit(10) */
+  const verifyLimiter = rateLimit({ windowMs: 60_000, limit: 20, standardHeaders: 'draft-7', legacyHeaders: false,
+    message: { error: 'rate_limited' } })
+  router.post('/purchases/verify', verifyLimiter, requireAuth, limit(10), wrap(async (req, res) => {
     if (!paymentEnabled()) throw fail(403, 'purchases_disabled')
     const { orderId, txHash } = req.body || {}
     const chainId = req.body?.chainId == null ? cfg().chainId : Number(req.body.chainId)

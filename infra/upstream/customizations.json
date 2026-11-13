@@ -67,12 +67,20 @@
       "why": "Per-product chart settings; position overlays are never persisted."
     },
     {
-      "id": "vela-localization-rtl",
+      "id": "vela-localization-english-only",
+      "provider": "vela",
+      "area": "localization",
+      "file": "packages/openfund-charts/src/vela-bridge.js",
+      "contains": "locale: 'en',",
+      "why": "The Vela chart UI is English-only and LTR in every Openfund locale (ADR 0028)."
+    },
+    {
+      "id": "vela-no-translated-locales",
       "provider": "vela",
       "area": "localization",
       "file": "packages/openfund-charts/src/workspace-entry.ts",
-      "contains": "registerLocale({locale:'fa',direction:'rtl'",
-      "why": "Persian RTL locale for the chart."
+      "absent": "registerLocale\\(",
+      "why": "No other Vela locale (Persian/RTL or translated chart chrome) is registered (ADR 0028)."
     },
     {
       "id": "vela-custom-indicators",
