@@ -43,12 +43,15 @@ async function connect(page) {
   await page.getByRole('button', { name: /^(Sign in|Account|ورود به اوپن‌فاند|حساب من)$/, includeHidden: true }).first().waitFor({ state: 'attached', timeout: 20000 });
 }
 async function signIn(page) {
+  const account = page.getByRole('button', { name: /^(Account|حساب من)$/, includeHidden: true }).first();
+  const signInButton = page.getByRole('button', { name: /^(Sign in|ورود به اوپن‌فاند)$/, includeHidden: true }).first();
   for (let attempt = 0; attempt < 3; attempt++) {
-    // Cookie restoration may finish after connect: an already authenticated
-    // account has no Sign in button, so do not wait for an impossible control.
-    const account = page.getByRole('button', { name: /^(Account|حساب من)$/, includeHidden: true }).first();
-    if (await account.count()) return;
-    await (await walletButton(page, 'Sign in')).click();
+    // Cookie restoration may finish after connect: after a navigation the
+    // header shows Sign in briefly, then Account. Give the session a moment
+    // and click Sign in only while it actually exists.
+    try { await account.waitFor({ state: 'attached', timeout: 4000 }); return; } catch { /* not signed in (yet) */ }
+    if (!await signInButton.count()) continue;
+    try { await (await walletButton(page, 'Sign in')).click({ timeout: 5000 }); } catch { continue; }
     try {
       await (await walletButton(page, 'Account')).waitFor({ state: 'attached', timeout: 15000 });
       return;
