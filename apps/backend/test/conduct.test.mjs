@@ -221,8 +221,7 @@ test('C11 funded Standard: open positions are closed in the daily holding window
   const ch = await challenge('standard', { funded: true, cycle: 'biweekly', startedAt: '2026-07-06T09:00:00Z' })
   await position(ch, { openedAt: new Date(Date.now() - 3_600_000).toISOString() })
   clock.now = T('2026-07-08T20:50:00Z')
-  engine.running = true
-  try { await engine.loop() } finally { engine.running = false }
+  await engine.holdingSweep()
   const open = (await pool.query(`SELECT count(*)::int n FROM trading_positions WHERE account_id=$1 AND status='open'`, [ch.accountId])).rows[0].n
   assert.equal(open, 0)
   assert.equal((await pool.query(`SELECT exit_reason FROM trading_positions WHERE account_id=$1`, [ch.accountId])).rows[0].exit_reason, 'holding_auto_close')

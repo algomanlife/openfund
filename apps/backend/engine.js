@@ -269,6 +269,22 @@ export class Engine {
     return null
   }
 
+  /** D8 funded holding rule: close every open position of funded Standard /
+   *  One-step accounts in the daily window (not a breach). Engine-loop step. */
+  async holdingSweep() {
+    for (const { id, rules_snapshot } of (
+      await this.db.query(
+        `SELECT DISTINCT a.id, c.rules_snapshot FROM demo_accounts a
+           JOIN openfund_challenges c ON c.demo_account_id = a.id
+           JOIN trading_positions p ON p.account_id = a.id AND p.status = 'open'
+          WHERE a.account_type='challenge' AND a.status='active' AND c.status='started'
+            AND c.rules_snapshot->'conduct'->'holding'->>'mode' = 'auto_close_daily'`,
+      )
+    ).rows) {
+      if (this.conduct.autoCloseDue(rules_snapshot)) await withAccountLock(id, () => this.#holdingAutoClose(id)).catch(console.error)
+    }
+  }
+
   /** D8 funded holding rule: close every open position at the daily window (no breach) */
   async #holdingAutoClose(accountId) {
     const c = await this.db.connect()
@@ -1106,18 +1122,8 @@ export class Engine {
         this.idleChecked.set(id, nowMs)
         await this.enforceChallengeRisk(id).catch(console.error);
       }
-      /* D8 funded daily holding window: close every open position (not a breach) */
-      for (const { id, rules_snapshot } of (
-        await this.db.query(
-          `SELECT DISTINCT a.id, c.rules_snapshot FROM demo_accounts a
-             JOIN openfund_challenges c ON c.demo_account_id = a.id
-             JOIN trading_positions p ON p.account_id = a.id AND p.status = 'open'
-            WHERE a.account_type='challenge' AND a.status='active' AND c.status='started'
-              AND c.rules_snapshot->'conduct'->'holding'->>'mode' = 'auto_close_daily'`,
-        )
-      ).rows) {
-        if (this.conduct.autoCloseDue(rules_snapshot)) await withAccountLock(id, () => this.#holdingAutoClose(id)).catch(console.error)
-      }
+      /* D8 funded daily holding window (isolated: an error elsewhere never skips it) */
+      await this.holdingSweep().catch(console.error)
       /* terminal challenge accounts whose breach settlement could not close
          a position (market closed / no tradeable quote at that moment):
          finish the settlement as soon as the market is tradeable again */
