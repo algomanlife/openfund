@@ -7,6 +7,12 @@
   deletes all of them, so nothing served changes. A release test now fails if
   any `react/` path is tracked
   ([hygiene record](docs/development/REPOSITORY_HYGIENE.md#regression-fixed-on-2026-11-12)).
+- Licensing: component inventory covering fonts and images, a first-party
+  [license decision document](docs/legal/LICENSE_DECISION.md) (no license
+  chosen; owner approval gate), the missing Ubuntu Font Licence shipped beside
+  the Ubuntu fonts, `dist/` notices re-synced with the React notices, and the
+  unresolved Irancell font provenance recorded. README states plainly that
+  Openfund's own code is all rights reserved.
 - Terminal and Prop UI refinement (branch `agent/claude/terminal-prop-ui-refinement`,
   [ADR 0025](docs/decisions/0025-prop-leverage-sizing-and-economic-calendar.md)):
   BUY/SELL markers on the candle of each confirmed Prop fill (grouped with a

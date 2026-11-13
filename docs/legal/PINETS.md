@@ -8,7 +8,7 @@ replaces PineTS or changes the chart engine.
 
 | Item | Fact | Evidence |
 | --- | --- | --- |
-| Implementation | `pinets` **0.13.1** (LuxAlgo PineTS, the Pine Script runtime) and `@luxalgo/vela-pinets` **0.3.2** (the official Vela Pine addon that embeds a PineTS worker) | `apps/web-react/package.json` (exact pins), `apps/web-react/package-lock.json` |
+| Implementation | `pinets` **0.13.1** (LuxAlgo PineTS, the Pine Script runtime) and `@luxalgo/vela-pinets` **0.3.4** (0.3.2 when first audited) (the official Vela Pine addon that embeds a PineTS worker) | `apps/web-react/package.json` (exact pins), `apps/web-react/package-lock.json` |
 | Declared license | **AGPL-3.0-only** for both | `node_modules/pinets/package.json`, `node_modules/@luxalgo/vela-pinets/package.json` and their `LICENSE` files |
 | Upstream source | <https://github.com/LuxAlgo/PineTS>, <https://github.com/LuxAlgo/Vela-pinets> | package metadata |
 
