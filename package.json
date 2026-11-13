@@ -7,7 +7,7 @@
     "build:web": "npm --prefix apps/web-react run build",
     "build:web:publish": "npm --prefix apps/web-react run build -- --mode publish",
     "build:backend": "npm --prefix apps/backend run migrate",
-    "test:web": "npm --prefix apps/web-react run test:plans && npm --prefix apps/web-react run test:information && npm --prefix apps/web-react run test:markets && npm --prefix apps/web-react run test:depth && npm --prefix apps/web-react run test:website && npm --prefix apps/web-react run test:whitepaper && npm --prefix apps/web-react run test:terminal && npm --prefix apps/web-react run test:governance && npm --prefix apps/web-react run test:chart && npm --prefix apps/web-react run test:content && npm --prefix apps/web-react run check:product-rules",
+    "test:web": "npm --prefix apps/web-react run test:plans && npm --prefix apps/web-react run test:checkout && npm --prefix apps/web-react run test:information && npm --prefix apps/web-react run test:markets && npm --prefix apps/web-react run test:depth && npm --prefix apps/web-react run test:website && npm --prefix apps/web-react run test:whitepaper && npm --prefix apps/web-react run test:terminal && npm --prefix apps/web-react run test:governance && npm --prefix apps/web-react run test:chart && npm --prefix apps/web-react run test:content && npm --prefix apps/web-react run check:product-rules",
     "test:backend": "npm --prefix apps/backend run test:all",
     "typecheck": "npm --prefix apps/web-react run typecheck",
     "validate:blueprint": "node infra/render/validate-blueprint.mjs",

@@ -12,7 +12,7 @@ import { LOCALES, normalizeLocale, type AppLocale } from '../../i18n/locales'
 
 /* Mirrors PUBLIC_SITE_ROUTES in apps/backend/seo.js (the sitemap); the
    public-content test fails when the two lists disagree. */
-const PUBLIC_ROUTES = /^\/(?:fa|en|ar|ru|zh-CN)\/(?:home|challenges|markets|rulebook|transparency|revenue-model|live-market-access|ambassador|coach|governance|faq|tools|learn|glossary|referral|whitepaper)(?:\/|$)/
+const PUBLIC_ROUTES = /^\/(?:fa|en|ar|ru|zh-CN)\/(?:home|challenges|markets|rulebook|transparency|revenue-model|live-market-access|ambassador|coach|governance|faq|tools|learn|glossary|referral|campaign|whitepaper)(?:\/|$)/
 
 const isPublic = (pathname: string) => PUBLIC_ROUTES.test(pathname)
 const routeLocale = (pathname: string) => normalizeLocale(pathname.split('/')[1], 'fa')
@@ -58,7 +58,8 @@ export function updateSeoHead(location: Location) {
   const origin = window.location.origin
   /* canonical: clean path, no query, no hash */
   const current = routeLocale(pathname)
-  const whitepaper = /^\/(?:fa|en|ar|ru|zh-CN)\/whitepaper(?:\/|$)/.test(pathname)
+  /* fa/en-only publications: the whitepaper and the sales-campaign landing */
+  const whitepaper = /^\/(?:fa|en|ar|ru|zh-CN)\/(?:whitepaper|campaign)(?:\/|$)/.test(pathname)
   const canonical = origin + (pathname === '/' ? '/' : swapLocale(pathname, whitepaper && current !== 'fa' ? 'en' : current))
   const public_ = isPublic(pathname)
   upsertMeta('robots', public_ ? 'index,follow' : 'noindex')
