@@ -1,0 +1,7 @@
+== run d1000-noloop profile=uncapped stages=all ramp=60s hold=180s const=1000:240 cdn=0.95
+CONST=1000:240
+PROFILE=uncapped
+MON_POOL_STOP=0
+VISITOR_RATIO=1.5
+start_ms=1794555670000
+end_ms=1794555922000

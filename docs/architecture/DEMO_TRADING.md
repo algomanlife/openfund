@@ -6,7 +6,8 @@ The maintained product, formulas, fee/spread policy, risk limitations and order 
 
 | Module | Authority |
 | --- | --- |
-| `apps/backend/engine.js` | Account funding, orders, position lifecycle, locks, settlement and engine loop |
+| `apps/backend/engine.js` | Account funding, orders, position lifecycle, locks, settlement and engine loop (dedicated pool of at most 3 connections for loop work) |
+| `apps/backend/trading-stream.js` | `/trading/stream` fan-out: one fresh state computation per account scope shared by all its tabs, session check before every push ([ADR 0027](../decisions/0027-trading-stream-fan-out-and-engine-loop-isolation.md)) |
 | `apps/backend/trading-math.js` | Decimal valuation, freshness, fee/spread policy and liquidation thresholds |
 | `apps/backend/market-data.js` | Server-owned Gains marks, reconnection and tradeability |
 | `apps/backend/portfolio.js` | Owned record queries, net analytics and sampled risk telemetry |

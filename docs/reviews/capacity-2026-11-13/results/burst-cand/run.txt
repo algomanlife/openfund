@@ -1,0 +1,7 @@
+== run burst-cand profile=uncapped stages=low,medium ramp=5s hold=120s const= cdn=0.95
+STAGE_RAMP_S=5
+PROFILE=uncapped
+STAGES=low,medium
+STAGE_HOLD_S=120
+start_ms=1794557557000
+end_ms=1794557819000

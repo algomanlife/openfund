@@ -1,0 +1,2090 @@
+{
+  "equivalent": true,
+  "differences": [],
+  "streamSnapshotMatchesState": true,
+  "coverage": {
+    "users": 8,
+    "positions": 17,
+    "exitReasons": [
+      "challenge_settlement",
+      "liquidation",
+      "manual",
+      "partial",
+      "sl",
+      "tp"
+    ],
+    "challengeOutcomes": [
+      "eq-breach:failed",
+      "eq-pass:passed"
+    ]
+  },
+  "observations": {
+    "reference": [
+      {
+        "step": "login",
+        "result": true
+      },
+      {
+        "step": "U0 long EQA 10x SL95 TP110",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "order": {
+              "idempotency_key": "<uuid>:u0-1",
+              "market": "EQA/USD",
+              "side": "long",
+              "order_type": "market",
+              "margin": "1000.0000000000",
+              "leverage": 10,
+              "target_price": null,
+              "sl_price": "95.0000000000",
+              "tp_price": "110.0000000000",
+              "status": "filled",
+              "reject_reason": null,
+              "filled_price": "100.0000000000",
+              "request_meta": {
+                "mark": "100",
+                "requested": {
+                  "sl": "95",
+                  "tp": "110",
+                  "side": "long",
+                  "margin": "1000",
+                  "market": "EQA/USD",
+                  "product": "prop",
+                  "leverage": 10,
+                  "order_type": "market"
+                }
+              }
+            },
+            "position": {
+              "market": "EQA/USD",
+              "side": "long",
+              "quantity": "100",
+              "entry_price": "100.00",
+              "mark_price": "100.00",
+              "liquidation_price": "91.0500000000",
+              "unrealized_pnl": "0.00",
+              "gross_pnl": "0.00",
+              "net_pnl": "-10.0000000000",
+              "roi_pct": "0.0000",
+              "valuation_status": "fresh",
+              "parent_position_id": null,
+              "margin": "1000.00",
+              "leverage": 10,
+              "sl_price": "95.00",
+              "tp_price": "110.00",
+              "status": "open",
+              "exit_price": null,
+              "exit_reason": null,
+              "open_fee": "5.0000",
+              "close_fee": "0.0000",
+              "realized_pnl": "0.00",
+              "closed_at": null
+            },
+            "pending": false
+          }
+        }
+      },
+      {
+        "step": "U0 idempotent retry",
+        "result": {
+          "status": 200
+        }
+      },
+      {
+        "step": "U1 short EQA 10x SL104 TP90",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "order": {
+              "idempotency_key": "<uuid>:u1-1",
+              "market": "EQA/USD",
+              "side": "short",
+              "order_type": "market",
+              "margin": "500.0000000000",
+              "leverage": 10,
+              "target_price": null,
+              "sl_price": "104.0000000000",
+              "tp_price": "90.0000000000",
+              "status": "filled",
+              "reject_reason": null,
+              "filled_price": "100.0000000000",
+              "request_meta": {
+                "mark": "100",
+                "requested": {
+                  "sl": "104",
+                  "tp": "90",
+                  "side": "short",
+                  "margin": "500",
+                  "market": "EQA/USD",
+                  "product": "prop",
+                  "leverage": 10,
+                  "order_type": "market"
+                }
+              }
+            },
+            "position": {
+              "market": "EQA/USD",
+              "side": "short",
+              "quantity": "50",
+              "entry_price": "100.00",
+              "mark_price": "100.00",
+              "liquidation_price": "108.9500000000",
+              "unrealized_pnl": "0.00",
+              "gross_pnl": "0.00",
+              "net_pnl": "-5.0000000000",
+              "roi_pct": "0.0000",
+              "valuation_status": "fresh",
+              "parent_position_id": null,
+              "margin": "500.00",
+              "leverage": 10,
+              "sl_price": "104.00",
+              "tp_price": "90.00",
+              "status": "open",
+              "exit_price": null,
+              "exit_reason": null,
+              "open_fee": "2.5000",
+              "close_fee": "0.0000",
+              "realized_pnl": "0.00",
+              "closed_at": null
+            },
+            "pending": false
+          }
+        }
+      },
+      {
+        "step": "U2 limit long EQA @98",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "order": {
+              "idempotency_key": "<uuid>:u2-1",
+              "market": "EQA/USD",
+              "side": "long",
+              "order_type": "limit",
+              "margin": "200.0000000000",
+              "leverage": 5,
+              "target_price": "98.0000000000",
+              "sl_price": null,
+              "tp_price": null,
+              "status": "pending",
+              "reject_reason": null,
+              "filled_price": null,
+              "position_id": null,
+              "request_meta": {
+                "mark": "100",
+                "requested": {
+                  "side": "long",
+                  "margin": "200",
+                  "market": "EQA/USD",
+                  "product": "prop",
+                  "leverage": 5,
+                  "order_type": "limit",
+                  "target_price": "98"
+                }
+              }
+            },
+            "position": null,
+            "pending": true
+          }
+        }
+      },
+      {
+        "step": "U3 stop short EQB @1990",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "order": {
+              "idempotency_key": "<uuid>:u3-1",
+              "market": "EQB/USD",
+              "side": "short",
+              "order_type": "stop",
+              "margin": "300.0000000000",
+              "leverage": 10,
+              "target_price": "1990.0000000000",
+              "sl_price": null,
+              "tp_price": null,
+              "status": "pending",
+              "reject_reason": null,
+              "filled_price": null,
+              "position_id": null,
+              "request_meta": {
+                "mark": "2000",
+                "requested": {
+                  "side": "short",
+                  "margin": "300",
+                  "market": "EQB/USD",
+                  "product": "prop",
+                  "leverage": 10,
+                  "order_type": "stop",
+                  "target_price": "1990"
+                }
+              }
+            },
+            "position": null,
+            "pending": true
+          }
+        }
+      },
+      {
+        "step": "U4 long EQB 10x (liquidation candidate)",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "order": {
+              "idempotency_key": "<uuid>:u4-1",
+              "market": "EQB/USD",
+              "side": "long",
+              "order_type": "market",
+              "margin": "900.0000000000",
+              "leverage": 10,
+              "target_price": null,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null,
+              "filled_price": "2000.0000000000",
+              "request_meta": {
+                "mark": "2000",
+                "requested": {
+                  "side": "long",
+                  "margin": "900",
+                  "market": "EQB/USD",
+                  "product": "prop",
+                  "leverage": 10,
+                  "order_type": "market"
+                }
+              }
+            },
+            "position": {
+              "market": "EQB/USD",
+              "side": "long",
+              "quantity": "4.5",
+              "entry_price": "2000.00",
+              "mark_price": "2000.00",
+              "liquidation_price": "1821.0000000000",
+              "unrealized_pnl": "0.00",
+              "gross_pnl": "0.00",
+              "net_pnl": "-9.0000000000",
+              "roi_pct": "0.0000",
+              "valuation_status": "fresh",
+              "parent_position_id": null,
+              "margin": "900.00",
+              "leverage": 10,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "open",
+              "exit_price": null,
+              "exit_reason": null,
+              "open_fee": "4.5000",
+              "close_fee": "0.0000",
+              "realized_pnl": "0.00",
+              "closed_at": null
+            },
+            "pending": false
+          }
+        }
+      },
+      {
+        "step": "U5 three longs EQA SL97 (same-tick SL)",
+        "result": [
+          {
+            "status": 200,
+            "body": {
+              "ok": true,
+              "order": {
+                "idempotency_key": "<uuid>:u5-0",
+                "market": "EQA/USD",
+                "side": "long",
+                "order_type": "market",
+                "margin": "100.0000000000",
+                "leverage": 10,
+                "target_price": null,
+                "sl_price": "97.0000000000",
+                "tp_price": null,
+                "status": "filled",
+                "reject_reason": null,
+                "filled_price": "100.0000000000",
+                "request_meta": {
+                  "mark": "100",
+                  "requested": {
+                    "sl": "97",
+                    "side": "long",
+                    "margin": "100",
+                    "market": "EQA/USD",
+                    "product": "prop",
+                    "leverage": 10,
+                    "order_type": "market"
+                  }
+                }
+              },
+              "position": {
+                "market": "EQA/USD",
+                "side": "long",
+                "quantity": "10",
+                "entry_price": "100.00",
+                "mark_price": "100.00",
+                "liquidation_price": "91.0500000000",
+                "unrealized_pnl": "0.00",
+                "gross_pnl": "0.00",
+                "net_pnl": "-1.0000000000",
+                "roi_pct": "0.0000",
+                "valuation_status": "fresh",
+                "parent_position_id": null,
+                "margin": "100.00",
+                "leverage": 10,
+                "sl_price": "97.00",
+                "tp_price": null,
+                "status": "open",
+                "exit_price": null,
+                "exit_reason": null,
+                "open_fee": "0.5000",
+                "close_fee": "0.0000",
+                "realized_pnl": "0.00",
+                "closed_at": null
+              },
+              "pending": false
+            }
+          },
+          {
+            "status": 200,
+            "body": {
+              "ok": true,
+              "order": {
+                "idempotency_key": "<uuid>:u5-1",
+                "market": "EQA/USD",
+                "side": "long",
+                "order_type": "market",
+                "margin": "150.0000000000",
+                "leverage": 10,
+                "target_price": null,
+                "sl_price": "97.0000000000",
+                "tp_price": null,
+                "status": "filled",
+                "reject_reason": null,
+                "filled_price": "100.0000000000",
+                "request_meta": {
+                  "mark": "100",
+                  "requested": {
+                    "sl": "97",
+                    "side": "long",
+                    "margin": "150",
+                    "market": "EQA/USD",
+                    "product": "prop",
+                    "leverage": 10,
+                    "order_type": "market"
+                  }
+                }
+              },
+              "position": {
+                "market": "EQA/USD",
+                "side": "long",
+                "quantity": "15",
+                "entry_price": "100.00",
+                "mark_price": "100.00",
+                "liquidation_price": "91.0500000000",
+                "unrealized_pnl": "0.00",
+                "gross_pnl": "0.00",
+                "net_pnl": "-1.5000000000",
+                "roi_pct": "0.0000",
+                "valuation_status": "fresh",
+                "parent_position_id": null,
+                "margin": "150.00",
+                "leverage": 10,
+                "sl_price": "97.00",
+                "tp_price": null,
+                "status": "open",
+                "exit_price": null,
+                "exit_reason": null,
+                "open_fee": "0.7500",
+                "close_fee": "0.0000",
+                "realized_pnl": "0.00",
+                "closed_at": null
+              },
+              "pending": false
+            }
+          },
+          {
+            "status": 200,
+            "body": {
+              "ok": true,
+              "order": {
+                "idempotency_key": "<uuid>:u5-2",
+                "market": "EQA/USD",
+                "side": "long",
+                "order_type": "market",
+                "margin": "200.0000000000",
+                "leverage": 10,
+                "target_price": null,
+                "sl_price": "97.0000000000",
+                "tp_price": null,
+                "status": "filled",
+                "reject_reason": null,
+                "filled_price": "100.0000000000",
+                "request_meta": {
+                  "mark": "100",
+                  "requested": {
+                    "sl": "97",
+                    "side": "long",
+                    "margin": "200",
+                    "market": "EQA/USD",
+                    "product": "prop",
+                    "leverage": 10,
+                    "order_type": "market"
+                  }
+                }
+              },
+              "position": {
+                "market": "EQA/USD",
+                "side": "long",
+                "quantity": "20",
+                "entry_price": "100.00",
+                "mark_price": "100.00",
+                "liquidation_price": "91.0500000000",
+                "unrealized_pnl": "0.00",
+                "gross_pnl": "0.00",
+                "net_pnl": "-2.0000000000",
+                "roi_pct": "0.0000",
+                "valuation_status": "fresh",
+                "parent_position_id": null,
+                "margin": "200.00",
+                "leverage": 10,
+                "sl_price": "97.00",
+                "tp_price": null,
+                "status": "open",
+                "exit_price": null,
+                "exit_reason": null,
+                "open_fee": "1.0000",
+                "close_fee": "0.0000",
+                "realized_pnl": "0.00",
+                "closed_at": null
+              },
+              "pending": false
+            }
+          }
+        ]
+      },
+      {
+        "step": "U6 six concurrent orders on one account",
+        "result": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      },
+      {
+        "step": "U7 rejected order (insufficient margin)",
+        "result": {
+          "status": 400,
+          "error": "insufficient_margin"
+        }
+      },
+      {
+        "step": "U1 SL/TP edit on an open short",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true
+          }
+        }
+      },
+      {
+        "step": "U4 partial close 50%",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "position": {
+              "market": "EQB/USD",
+              "side": "long",
+              "quantity": "2.25",
+              "entry_price": "2000.00",
+              "mark_price": "2000.00",
+              "liquidation_price": "1821.0000000000",
+              "unrealized_pnl": null,
+              "gross_pnl": "0.0000000000",
+              "net_pnl": "-4.5000000000",
+              "roi_pct": "-1.0000",
+              "valuation_status": "fresh",
+              "margin": "450.00",
+              "leverage": 10,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "closed",
+              "exit_price": "2000.00",
+              "exit_reason": "partial",
+              "open_fee": "2.2500",
+              "close_fee": "2.2500",
+              "realized_pnl": "-2.25"
+            }
+          }
+        }
+      },
+      {
+        "step": "U4 partial close retry (idempotent)",
+        "result": 200
+      },
+      {
+        "step": "challenges",
+        "result": [
+          {
+            "start": 200,
+            "order": 200,
+            "err": null
+          },
+          {
+            "start": 200,
+            "order": 200,
+            "err": null
+          }
+        ]
+      },
+      {
+        "step": "U1 closes its challenge position in profit (target on realized balance)",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "position": {
+              "market": "EQA/USD",
+              "side": "long",
+              "quantity": "56.1797752808",
+              "entry_price": "89.00",
+              "mark_price": "92.00",
+              "liquidation_price": "73.0245000000",
+              "unrealized_pnl": null,
+              "gross_pnl": "168.5393258424",
+              "net_pnl": "163.5393258424",
+              "roi_pct": "16.3539",
+              "valuation_status": "fresh",
+              "parent_position_id": null,
+              "margin": "1000.00",
+              "leverage": 5,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "closed",
+              "exit_price": "92.00",
+              "exit_reason": "manual",
+              "open_fee": "2.5000",
+              "close_fee": "2.5000",
+              "realized_pnl": "166.04"
+            }
+          }
+        }
+      },
+      {
+        "step": "stream first snapshot = state",
+        "result": [
+          true,
+          true,
+          true
+        ]
+      }
+    ],
+    "candidate": [
+      {
+        "step": "login",
+        "result": true
+      },
+      {
+        "step": "U0 long EQA 10x SL95 TP110",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "order": {
+              "idempotency_key": "<uuid>:u0-1",
+              "market": "EQA/USD",
+              "side": "long",
+              "order_type": "market",
+              "margin": "1000.0000000000",
+              "leverage": 10,
+              "target_price": null,
+              "sl_price": "95.0000000000",
+              "tp_price": "110.0000000000",
+              "status": "filled",
+              "reject_reason": null,
+              "filled_price": "100.0000000000",
+              "request_meta": {
+                "mark": "100",
+                "requested": {
+                  "sl": "95",
+                  "tp": "110",
+                  "side": "long",
+                  "margin": "1000",
+                  "market": "EQA/USD",
+                  "product": "prop",
+                  "leverage": 10,
+                  "order_type": "market"
+                }
+              }
+            },
+            "position": {
+              "market": "EQA/USD",
+              "side": "long",
+              "quantity": "100",
+              "entry_price": "100.00",
+              "mark_price": "100.00",
+              "liquidation_price": "91.0500000000",
+              "unrealized_pnl": "0.00",
+              "gross_pnl": "0.00",
+              "net_pnl": "-10.0000000000",
+              "roi_pct": "0.0000",
+              "valuation_status": "fresh",
+              "parent_position_id": null,
+              "margin": "1000.00",
+              "leverage": 10,
+              "sl_price": "95.00",
+              "tp_price": "110.00",
+              "status": "open",
+              "exit_price": null,
+              "exit_reason": null,
+              "open_fee": "5.0000",
+              "close_fee": "0.0000",
+              "realized_pnl": "0.00",
+              "closed_at": null
+            },
+            "pending": false
+          }
+        }
+      },
+      {
+        "step": "U0 idempotent retry",
+        "result": {
+          "status": 200
+        }
+      },
+      {
+        "step": "U1 short EQA 10x SL104 TP90",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "order": {
+              "idempotency_key": "<uuid>:u1-1",
+              "market": "EQA/USD",
+              "side": "short",
+              "order_type": "market",
+              "margin": "500.0000000000",
+              "leverage": 10,
+              "target_price": null,
+              "sl_price": "104.0000000000",
+              "tp_price": "90.0000000000",
+              "status": "filled",
+              "reject_reason": null,
+              "filled_price": "100.0000000000",
+              "request_meta": {
+                "mark": "100",
+                "requested": {
+                  "sl": "104",
+                  "tp": "90",
+                  "side": "short",
+                  "margin": "500",
+                  "market": "EQA/USD",
+                  "product": "prop",
+                  "leverage": 10,
+                  "order_type": "market"
+                }
+              }
+            },
+            "position": {
+              "market": "EQA/USD",
+              "side": "short",
+              "quantity": "50",
+              "entry_price": "100.00",
+              "mark_price": "100.00",
+              "liquidation_price": "108.9500000000",
+              "unrealized_pnl": "0.00",
+              "gross_pnl": "0.00",
+              "net_pnl": "-5.0000000000",
+              "roi_pct": "0.0000",
+              "valuation_status": "fresh",
+              "parent_position_id": null,
+              "margin": "500.00",
+              "leverage": 10,
+              "sl_price": "104.00",
+              "tp_price": "90.00",
+              "status": "open",
+              "exit_price": null,
+              "exit_reason": null,
+              "open_fee": "2.5000",
+              "close_fee": "0.0000",
+              "realized_pnl": "0.00",
+              "closed_at": null
+            },
+            "pending": false
+          }
+        }
+      },
+      {
+        "step": "U2 limit long EQA @98",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "order": {
+              "idempotency_key": "<uuid>:u2-1",
+              "market": "EQA/USD",
+              "side": "long",
+              "order_type": "limit",
+              "margin": "200.0000000000",
+              "leverage": 5,
+              "target_price": "98.0000000000",
+              "sl_price": null,
+              "tp_price": null,
+              "status": "pending",
+              "reject_reason": null,
+              "filled_price": null,
+              "position_id": null,
+              "request_meta": {
+                "mark": "100",
+                "requested": {
+                  "side": "long",
+                  "margin": "200",
+                  "market": "EQA/USD",
+                  "product": "prop",
+                  "leverage": 5,
+                  "order_type": "limit",
+                  "target_price": "98"
+                }
+              }
+            },
+            "position": null,
+            "pending": true
+          }
+        }
+      },
+      {
+        "step": "U3 stop short EQB @1990",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "order": {
+              "idempotency_key": "<uuid>:u3-1",
+              "market": "EQB/USD",
+              "side": "short",
+              "order_type": "stop",
+              "margin": "300.0000000000",
+              "leverage": 10,
+              "target_price": "1990.0000000000",
+              "sl_price": null,
+              "tp_price": null,
+              "status": "pending",
+              "reject_reason": null,
+              "filled_price": null,
+              "position_id": null,
+              "request_meta": {
+                "mark": "2000",
+                "requested": {
+                  "side": "short",
+                  "margin": "300",
+                  "market": "EQB/USD",
+                  "product": "prop",
+                  "leverage": 10,
+                  "order_type": "stop",
+                  "target_price": "1990"
+                }
+              }
+            },
+            "position": null,
+            "pending": true
+          }
+        }
+      },
+      {
+        "step": "U4 long EQB 10x (liquidation candidate)",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "order": {
+              "idempotency_key": "<uuid>:u4-1",
+              "market": "EQB/USD",
+              "side": "long",
+              "order_type": "market",
+              "margin": "900.0000000000",
+              "leverage": 10,
+              "target_price": null,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null,
+              "filled_price": "2000.0000000000",
+              "request_meta": {
+                "mark": "2000",
+                "requested": {
+                  "side": "long",
+                  "margin": "900",
+                  "market": "EQB/USD",
+                  "product": "prop",
+                  "leverage": 10,
+                  "order_type": "market"
+                }
+              }
+            },
+            "position": {
+              "market": "EQB/USD",
+              "side": "long",
+              "quantity": "4.5",
+              "entry_price": "2000.00",
+              "mark_price": "2000.00",
+              "liquidation_price": "1821.0000000000",
+              "unrealized_pnl": "0.00",
+              "gross_pnl": "0.00",
+              "net_pnl": "-9.0000000000",
+              "roi_pct": "0.0000",
+              "valuation_status": "fresh",
+              "parent_position_id": null,
+              "margin": "900.00",
+              "leverage": 10,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "open",
+              "exit_price": null,
+              "exit_reason": null,
+              "open_fee": "4.5000",
+              "close_fee": "0.0000",
+              "realized_pnl": "0.00",
+              "closed_at": null
+            },
+            "pending": false
+          }
+        }
+      },
+      {
+        "step": "U5 three longs EQA SL97 (same-tick SL)",
+        "result": [
+          {
+            "status": 200,
+            "body": {
+              "ok": true,
+              "order": {
+                "idempotency_key": "<uuid>:u5-0",
+                "market": "EQA/USD",
+                "side": "long",
+                "order_type": "market",
+                "margin": "100.0000000000",
+                "leverage": 10,
+                "target_price": null,
+                "sl_price": "97.0000000000",
+                "tp_price": null,
+                "status": "filled",
+                "reject_reason": null,
+                "filled_price": "100.0000000000",
+                "request_meta": {
+                  "mark": "100",
+                  "requested": {
+                    "sl": "97",
+                    "side": "long",
+                    "margin": "100",
+                    "market": "EQA/USD",
+                    "product": "prop",
+                    "leverage": 10,
+                    "order_type": "market"
+                  }
+                }
+              },
+              "position": {
+                "market": "EQA/USD",
+                "side": "long",
+                "quantity": "10",
+                "entry_price": "100.00",
+                "mark_price": "100.00",
+                "liquidation_price": "91.0500000000",
+                "unrealized_pnl": "0.00",
+                "gross_pnl": "0.00",
+                "net_pnl": "-1.0000000000",
+                "roi_pct": "0.0000",
+                "valuation_status": "fresh",
+                "parent_position_id": null,
+                "margin": "100.00",
+                "leverage": 10,
+                "sl_price": "97.00",
+                "tp_price": null,
+                "status": "open",
+                "exit_price": null,
+                "exit_reason": null,
+                "open_fee": "0.5000",
+                "close_fee": "0.0000",
+                "realized_pnl": "0.00",
+                "closed_at": null
+              },
+              "pending": false
+            }
+          },
+          {
+            "status": 200,
+            "body": {
+              "ok": true,
+              "order": {
+                "idempotency_key": "<uuid>:u5-1",
+                "market": "EQA/USD",
+                "side": "long",
+                "order_type": "market",
+                "margin": "150.0000000000",
+                "leverage": 10,
+                "target_price": null,
+                "sl_price": "97.0000000000",
+                "tp_price": null,
+                "status": "filled",
+                "reject_reason": null,
+                "filled_price": "100.0000000000",
+                "request_meta": {
+                  "mark": "100",
+                  "requested": {
+                    "sl": "97",
+                    "side": "long",
+                    "margin": "150",
+                    "market": "EQA/USD",
+                    "product": "prop",
+                    "leverage": 10,
+                    "order_type": "market"
+                  }
+                }
+              },
+              "position": {
+                "market": "EQA/USD",
+                "side": "long",
+                "quantity": "15",
+                "entry_price": "100.00",
+                "mark_price": "100.00",
+                "liquidation_price": "91.0500000000",
+                "unrealized_pnl": "0.00",
+                "gross_pnl": "0.00",
+                "net_pnl": "-1.5000000000",
+                "roi_pct": "0.0000",
+                "valuation_status": "fresh",
+                "parent_position_id": null,
+                "margin": "150.00",
+                "leverage": 10,
+                "sl_price": "97.00",
+                "tp_price": null,
+                "status": "open",
+                "exit_price": null,
+                "exit_reason": null,
+                "open_fee": "0.7500",
+                "close_fee": "0.0000",
+                "realized_pnl": "0.00",
+                "closed_at": null
+              },
+              "pending": false
+            }
+          },
+          {
+            "status": 200,
+            "body": {
+              "ok": true,
+              "order": {
+                "idempotency_key": "<uuid>:u5-2",
+                "market": "EQA/USD",
+                "side": "long",
+                "order_type": "market",
+                "margin": "200.0000000000",
+                "leverage": 10,
+                "target_price": null,
+                "sl_price": "97.0000000000",
+                "tp_price": null,
+                "status": "filled",
+                "reject_reason": null,
+                "filled_price": "100.0000000000",
+                "request_meta": {
+                  "mark": "100",
+                  "requested": {
+                    "sl": "97",
+                    "side": "long",
+                    "margin": "200",
+                    "market": "EQA/USD",
+                    "product": "prop",
+                    "leverage": 10,
+                    "order_type": "market"
+                  }
+                }
+              },
+              "position": {
+                "market": "EQA/USD",
+                "side": "long",
+                "quantity": "20",
+                "entry_price": "100.00",
+                "mark_price": "100.00",
+                "liquidation_price": "91.0500000000",
+                "unrealized_pnl": "0.00",
+                "gross_pnl": "0.00",
+                "net_pnl": "-2.0000000000",
+                "roi_pct": "0.0000",
+                "valuation_status": "fresh",
+                "parent_position_id": null,
+                "margin": "200.00",
+                "leverage": 10,
+                "sl_price": "97.00",
+                "tp_price": null,
+                "status": "open",
+                "exit_price": null,
+                "exit_reason": null,
+                "open_fee": "1.0000",
+                "close_fee": "0.0000",
+                "realized_pnl": "0.00",
+                "closed_at": null
+              },
+              "pending": false
+            }
+          }
+        ]
+      },
+      {
+        "step": "U6 six concurrent orders on one account",
+        "result": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      },
+      {
+        "step": "U7 rejected order (insufficient margin)",
+        "result": {
+          "status": 400,
+          "error": "insufficient_margin"
+        }
+      },
+      {
+        "step": "U1 SL/TP edit on an open short",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true
+          }
+        }
+      },
+      {
+        "step": "U4 partial close 50%",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "position": {
+              "market": "EQB/USD",
+              "side": "long",
+              "quantity": "2.25",
+              "entry_price": "2000.00",
+              "mark_price": "2000.00",
+              "liquidation_price": "1821.0000000000",
+              "unrealized_pnl": null,
+              "gross_pnl": "0.0000000000",
+              "net_pnl": "-4.5000000000",
+              "roi_pct": "-1.0000",
+              "valuation_status": "fresh",
+              "margin": "450.00",
+              "leverage": 10,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "closed",
+              "exit_price": "2000.00",
+              "exit_reason": "partial",
+              "open_fee": "2.2500",
+              "close_fee": "2.2500",
+              "realized_pnl": "-2.25"
+            }
+          }
+        }
+      },
+      {
+        "step": "U4 partial close retry (idempotent)",
+        "result": 200
+      },
+      {
+        "step": "challenges",
+        "result": [
+          {
+            "start": 200,
+            "order": 200,
+            "err": null
+          },
+          {
+            "start": 200,
+            "order": 200,
+            "err": null
+          }
+        ]
+      },
+      {
+        "step": "U1 closes its challenge position in profit (target on realized balance)",
+        "result": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "position": {
+              "market": "EQA/USD",
+              "side": "long",
+              "quantity": "56.1797752808",
+              "entry_price": "89.00",
+              "mark_price": "92.00",
+              "liquidation_price": "73.0245000000",
+              "unrealized_pnl": null,
+              "gross_pnl": "168.5393258424",
+              "net_pnl": "163.5393258424",
+              "roi_pct": "16.3539",
+              "valuation_status": "fresh",
+              "parent_position_id": null,
+              "margin": "1000.00",
+              "leverage": 5,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "closed",
+              "exit_price": "92.00",
+              "exit_reason": "manual",
+              "open_fee": "2.5000",
+              "close_fee": "2.5000",
+              "realized_pnl": "166.04"
+            }
+          }
+        }
+      },
+      {
+        "step": "stream first snapshot = state",
+        "result": [
+          true,
+          true,
+          true
+        ]
+      }
+    ]
+  },
+  "reference": {
+    "0": {
+      "accounts": [
+        {
+          "type": "challenge",
+          "status": "closed",
+          "balance": "4826.4606741576",
+          "used_margin": "0.0000000000",
+          "realized_pnl": "-171.0393258424",
+          "disable_reason": null,
+          "positions": [
+            {
+              "market": "EQA/USD",
+              "side": "short",
+              "quantity": "56.1797752808",
+              "entry_price": "89.0000000000",
+              "margin": "1000.0000000000",
+              "leverage": 5,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "closed",
+              "exit_price": "92.0000000000",
+              "exit_reason": "challenge_settlement",
+              "open_fee": "2.5000000000",
+              "close_fee": "2.5000000000",
+              "realized_pnl": "-171.0393258424",
+              "partial": false
+            }
+          ],
+          "orders": [
+            {
+              "market": "EQA/USD",
+              "side": "short",
+              "order_type": "market",
+              "margin": "1000.0000000000",
+              "leverage": 5,
+              "target_price": null,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null
+            }
+          ],
+          "ledger": {
+            "entries": [
+              "challenge_funding 5000.0000000000",
+              "close -171.0393258424",
+              "open_fee -2.5000000000"
+            ],
+            "final": "4826.4606741576",
+            "chainConsistent": true
+          },
+          "events": [
+            "challenge_settled",
+            "order_created",
+            "order_filled",
+            "position_closed"
+          ],
+          "equity_risk": []
+        },
+        {
+          "type": "free_demo",
+          "status": "active",
+          "balance": "99390.0000000000",
+          "used_margin": "0.0000000000",
+          "realized_pnl": "-605.0000000000",
+          "disable_reason": null,
+          "positions": [
+            {
+              "market": "EQA/USD",
+              "side": "long",
+              "quantity": "100.0000000000",
+              "entry_price": "100.0000000000",
+              "margin": "1000.0000000000",
+              "leverage": 10,
+              "sl_price": "95.0000000000",
+              "tp_price": "110.0000000000",
+              "status": "closed",
+              "exit_price": "94.0000000000",
+              "exit_reason": "sl",
+              "open_fee": "5.0000000000",
+              "close_fee": "5.0000000000",
+              "realized_pnl": "-605.0000000000",
+              "partial": false
+            }
+          ],
+          "orders": [
+            {
+              "market": "EQA/USD",
+              "side": "long",
+              "order_type": "market",
+              "margin": "1000.0000000000",
+              "leverage": 10,
+              "target_price": null,
+              "sl_price": "95.0000000000",
+              "tp_price": "110.0000000000",
+              "status": "filled",
+              "reject_reason": null
+            }
+          ],
+          "ledger": {
+            "entries": [
+              "close -605.0000000000",
+              "demo_funding 100000.0000000000",
+              "open_fee -5.0000000000"
+            ],
+            "final": "99390.0000000000",
+            "chainConsistent": true
+          },
+          "events": [
+            "demo_account_created",
+            "order_created",
+            "order_filled",
+            "position_closed"
+          ],
+          "equity_risk": [
+            {
+              "day_start_equity": "99995.0000000000",
+              "peak_equity": "99995.0000000000",
+              "maximum_drawdown": "600.0000000000",
+              "daily_drawdown": "600.0000000000",
+              "last_equity": "99395.0000000000"
+            }
+          ]
+        }
+      ],
+      "challenges": [
+        {
+          "status": "failed",
+          "stage": 1,
+          "account_size_usd": "5000.00",
+          "slug": "eq-breach",
+          "events": [
+            "account_provisioned",
+            "started",
+            "violation"
+          ],
+          "days": [
+            {
+              "basis": 5000,
+              "peak": 5000,
+              "start": 5000
+            }
+          ]
+        }
+      ]
+    },
+    "1": {
+      "accounts": [
+        {
+          "type": "challenge",
+          "status": "closed",
+          "balance": "5163.5393258424",
+          "used_margin": "0.0000000000",
+          "realized_pnl": "166.0393258424",
+          "disable_reason": null,
+          "positions": [
+            {
+              "market": "EQA/USD",
+              "side": "long",
+              "quantity": "56.1797752808",
+              "entry_price": "89.0000000000",
+              "margin": "1000.0000000000",
+              "leverage": 5,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "closed",
+              "exit_price": "92.0000000000",
+              "exit_reason": "manual",
+              "open_fee": "2.5000000000",
+              "close_fee": "2.5000000000",
+              "realized_pnl": "166.0393258424",
+              "partial": false
+            }
+          ],
+          "orders": [
+            {
+              "market": "EQA/USD",
+              "side": "long",
+              "order_type": "market",
+              "margin": "1000.0000000000",
+              "leverage": 5,
+              "target_price": null,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null
+            }
+          ],
+          "ledger": {
+            "entries": [
+              "challenge_funding 5000.0000000000",
+              "close 166.0393258424",
+              "open_fee -2.5000000000"
+            ],
+            "final": "5163.5393258424",
+            "chainConsistent": true
+          },
+          "events": [
+            "challenge_settled",
+            "order_created",
+            "order_filled",
+            "position_closed"
+          ],
+          "equity_risk": []
+        },
+        {
+          "type": "free_demo",
+          "status": "active",
+          "balance": "100545.0000000000",
+          "used_margin": "0.0000000000",
+          "realized_pnl": "547.5000000000",
+          "disable_reason": null,
+          "positions": [
+            {
+              "market": "EQA/USD",
+              "side": "short",
+              "quantity": "50.0000000000",
+              "entry_price": "100.0000000000",
+              "margin": "500.0000000000",
+              "leverage": 10,
+              "sl_price": "103.0000000000",
+              "tp_price": "91.0000000000",
+              "status": "closed",
+              "exit_price": "89.0000000000",
+              "exit_reason": "tp",
+              "open_fee": "2.5000000000",
+              "close_fee": "2.5000000000",
+              "realized_pnl": "547.5000000000",
+              "partial": false
+            }
+          ],
+          "orders": [
+            {
+              "market": "EQA/USD",
+              "side": "short",
+              "order_type": "market",
+              "margin": "500.0000000000",
+              "leverage": 10,
+              "target_price": null,
+              "sl_price": "104.0000000000",
+              "tp_price": "90.0000000000",
+              "status": "filled",
+              "reject_reason": null
+            }
+          ],
+          "ledger": {
+            "entries": [
+              "close 547.5000000000",
+              "demo_funding 100000.0000000000",
+              "open_fee -2.5000000000"
+            ],
+            "final": "100545.0000000000",
+            "chainConsistent": true
+          },
+          "events": [
+            "demo_account_created",
+            "order_created",
+            "order_filled",
+            "position_closed",
+            "protection_updated"
+          ],
+          "equity_risk": [
+            {
+              "day_start_equity": "99997.5000000000",
+              "peak_equity": "100547.5000000000",
+              "maximum_drawdown": "0.0000000000",
+              "daily_drawdown": "0.0000000000",
+              "last_equity": "100547.5000000000"
+            }
+          ]
+        }
+      ],
+      "challenges": [
+        {
+          "status": "passed",
+          "stage": 1,
+          "account_size_usd": "5000.00",
+          "slug": "eq-pass",
+          "events": [
+            "account_provisioned",
+            "passed",
+            "started"
+          ],
+          "days": [
+            {
+              "basis": 5000,
+              "peak": 5166.04,
+              "start": 5000
+            }
+          ]
+        }
+      ]
+    },
+    "2": {
+      "accounts": [
+        {
+          "type": "free_demo",
+          "status": "active",
+          "balance": "99999.5000000000",
+          "used_margin": "200.0000000000",
+          "realized_pnl": "0.0000000000",
+          "disable_reason": null,
+          "positions": [
+            {
+              "market": "EQA/USD",
+              "side": "long",
+              "quantity": "10.2040816326",
+              "entry_price": "98.0000000000",
+              "margin": "200.0000000000",
+              "leverage": 5,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "open",
+              "exit_price": null,
+              "exit_reason": null,
+              "open_fee": "0.5000000000",
+              "close_fee": "0.0000000000",
+              "realized_pnl": "0.0000000000",
+              "partial": false
+            }
+          ],
+          "orders": [
+            {
+              "market": "EQA/USD",
+              "side": "long",
+              "order_type": "limit",
+              "margin": "200.0000000000",
+              "leverage": 5,
+              "target_price": "98.0000000000",
+              "sl_price": null,
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null
+            }
+          ],
+          "ledger": {
+            "entries": [
+              "demo_funding 100000.0000000000",
+              "open_fee -0.5000000000"
+            ],
+            "final": "99999.5000000000",
+            "chainConsistent": true
+          },
+          "events": [
+            "demo_account_created",
+            "order_created",
+            "order_filled",
+            "order_triggered"
+          ],
+          "equity_risk": [
+            {
+              "day_start_equity": "99999.5000000000",
+              "peak_equity": "99999.5000000000",
+              "maximum_drawdown": "91.8400000000",
+              "daily_drawdown": "91.8400000000",
+              "last_equity": "99938.2800000000"
+            }
+          ]
+        }
+      ],
+      "challenges": []
+    },
+    "3": {
+      "accounts": [
+        {
+          "type": "free_demo",
+          "status": "active",
+          "balance": "99998.5000000000",
+          "used_margin": "300.0000000000",
+          "realized_pnl": "0.0000000000",
+          "disable_reason": null,
+          "positions": [
+            {
+              "market": "EQB/USD",
+              "side": "short",
+              "quantity": "1.5082956259",
+              "entry_price": "1989.0000000000",
+              "margin": "300.0000000000",
+              "leverage": 10,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "open",
+              "exit_price": null,
+              "exit_reason": null,
+              "open_fee": "1.5000000000",
+              "close_fee": "0.0000000000",
+              "realized_pnl": "0.0000000000",
+              "partial": false
+            }
+          ],
+          "orders": [
+            {
+              "market": "EQB/USD",
+              "side": "short",
+              "order_type": "stop",
+              "margin": "300.0000000000",
+              "leverage": 10,
+              "target_price": "1990.0000000000",
+              "sl_price": null,
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null
+            }
+          ],
+          "ledger": {
+            "entries": [
+              "demo_funding 100000.0000000000",
+              "open_fee -1.5000000000"
+            ],
+            "final": "99998.5000000000",
+            "chainConsistent": true
+          },
+          "events": [
+            "demo_account_created",
+            "order_created",
+            "order_filled",
+            "order_triggered"
+          ],
+          "equity_risk": [
+            {
+              "day_start_equity": "99998.5000000000",
+              "peak_equity": "100268.4800000000",
+              "maximum_drawdown": "15.0800000000",
+              "daily_drawdown": "0.0000000000",
+              "last_equity": "100253.4000000000"
+            }
+          ]
+        }
+      ],
+      "challenges": []
+    },
+    "4": {
+      "accounts": [
+        {
+          "type": "free_demo",
+          "status": "active",
+          "balance": "99563.5000000000",
+          "used_margin": "0.0000000000",
+          "realized_pnl": "-432.0000000000",
+          "disable_reason": null,
+          "positions": [
+            {
+              "market": "EQB/USD",
+              "side": "long",
+              "quantity": "2.2500000000",
+              "entry_price": "2000.0000000000",
+              "margin": "450.0000000000",
+              "leverage": 10,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "closed",
+              "exit_price": "2000.0000000000",
+              "exit_reason": "partial",
+              "open_fee": "2.2500000000",
+              "close_fee": "2.2500000000",
+              "realized_pnl": "-2.2500000000",
+              "partial": true
+            },
+            {
+              "market": "EQB/USD",
+              "side": "long",
+              "quantity": "2.2500000000",
+              "entry_price": "2000.0000000000",
+              "margin": "450.0000000000",
+              "leverage": 10,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "liquidated",
+              "exit_price": "1810.0000000000",
+              "exit_reason": "liquidation",
+              "open_fee": "2.2500000000",
+              "close_fee": "2.2500000000",
+              "realized_pnl": "-429.7500000000",
+              "partial": false
+            }
+          ],
+          "orders": [
+            {
+              "market": "EQB/USD",
+              "side": "long",
+              "order_type": "market",
+              "margin": "900.0000000000",
+              "leverage": 10,
+              "target_price": null,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null
+            }
+          ],
+          "ledger": {
+            "entries": [
+              "close -2.2500000000",
+              "demo_funding 100000.0000000000",
+              "liquidation -429.7500000000",
+              "open_fee -4.5000000000"
+            ],
+            "final": "99563.5000000000",
+            "chainConsistent": true
+          },
+          "events": [
+            "demo_account_created",
+            "order_created",
+            "order_filled",
+            "position_closed",
+            "position_closed"
+          ],
+          "equity_risk": [
+            {
+              "day_start_equity": "99995.5000000000",
+              "peak_equity": "99995.5000000000",
+              "maximum_drawdown": "429.7500000000",
+              "daily_drawdown": "429.7500000000",
+              "last_equity": "99565.7500000000"
+            }
+          ]
+        }
+      ],
+      "challenges": []
+    },
+    "5": {
+      "accounts": [
+        {
+          "type": "free_demo",
+          "status": "active",
+          "balance": "99838.0000000000",
+          "used_margin": "0.0000000000",
+          "realized_pnl": "-159.7500000000",
+          "disable_reason": null,
+          "positions": [
+            {
+              "market": "EQA/USD",
+              "side": "long",
+              "quantity": "10.0000000000",
+              "entry_price": "100.0000000000",
+              "margin": "100.0000000000",
+              "leverage": 10,
+              "sl_price": "97.0000000000",
+              "tp_price": null,
+              "status": "closed",
+              "exit_price": "96.5000000000",
+              "exit_reason": "sl",
+              "open_fee": "0.5000000000",
+              "close_fee": "0.5000000000",
+              "realized_pnl": "-35.5000000000",
+              "partial": false
+            },
+            {
+              "market": "EQA/USD",
+              "side": "long",
+              "quantity": "15.0000000000",
+              "entry_price": "100.0000000000",
+              "margin": "150.0000000000",
+              "leverage": 10,
+              "sl_price": "97.0000000000",
+              "tp_price": null,
+              "status": "closed",
+              "exit_price": "96.5000000000",
+              "exit_reason": "sl",
+              "open_fee": "0.7500000000",
+              "close_fee": "0.7500000000",
+              "realized_pnl": "-53.2500000000",
+              "partial": false
+            },
+            {
+              "market": "EQA/USD",
+              "side": "long",
+              "quantity": "20.0000000000",
+              "entry_price": "100.0000000000",
+              "margin": "200.0000000000",
+              "leverage": 10,
+              "sl_price": "97.0000000000",
+              "tp_price": null,
+              "status": "closed",
+              "exit_price": "96.5000000000",
+              "exit_reason": "sl",
+              "open_fee": "1.0000000000",
+              "close_fee": "1.0000000000",
+              "realized_pnl": "-71.0000000000",
+              "partial": false
+            }
+          ],
+          "orders": [
+            {
+              "market": "EQA/USD",
+              "side": "long",
+              "order_type": "market",
+              "margin": "100.0000000000",
+              "leverage": 10,
+              "target_price": null,
+              "sl_price": "97.0000000000",
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null
+            },
+            {
+              "market": "EQA/USD",
+              "side": "long",
+              "order_type": "market",
+              "margin": "150.0000000000",
+              "leverage": 10,
+              "target_price": null,
+              "sl_price": "97.0000000000",
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null
+            },
+            {
+              "market": "EQA/USD",
+              "side": "long",
+              "order_type": "market",
+              "margin": "200.0000000000",
+              "leverage": 10,
+              "target_price": null,
+              "sl_price": "97.0000000000",
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null
+            }
+          ],
+          "ledger": {
+            "entries": [
+              "close -35.5000000000",
+              "close -53.2500000000",
+              "close -71.0000000000",
+              "demo_funding 100000.0000000000",
+              "open_fee -0.5000000000",
+              "open_fee -0.7500000000",
+              "open_fee -1.0000000000"
+            ],
+            "final": "99838.0000000000",
+            "chainConsistent": true
+          },
+          "events": [
+            "demo_account_created",
+            "order_created",
+            "order_created",
+            "order_created",
+            "order_filled",
+            "order_filled",
+            "order_filled",
+            "position_closed",
+            "position_closed",
+            "position_closed"
+          ],
+          "equity_risk": [
+            {
+              "day_start_equity": "99997.7500000000",
+              "peak_equity": "99997.7500000000",
+              "maximum_drawdown": "157.5000000000",
+              "daily_drawdown": "157.5000000000",
+              "last_equity": "99840.2500000000"
+            }
+          ]
+        }
+      ],
+      "challenges": []
+    },
+    "6": {
+      "accounts": [
+        {
+          "type": "free_demo",
+          "status": "active",
+          "balance": "99998.8750000000",
+          "used_margin": "450.0000000000",
+          "realized_pnl": "0.0000000000",
+          "disable_reason": null,
+          "positions": [
+            {
+              "market": "EQB/USD",
+              "side": "long",
+              "quantity": "0.1250000000",
+              "entry_price": "2000.0000000000",
+              "margin": "50.0000000000",
+              "leverage": 5,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "open",
+              "exit_price": null,
+              "exit_reason": null,
+              "open_fee": "0.1250000000",
+              "close_fee": "0.0000000000",
+              "realized_pnl": "0.0000000000",
+              "partial": false
+            },
+            {
+              "market": "EQB/USD",
+              "side": "long",
+              "quantity": "0.1750000000",
+              "entry_price": "2000.0000000000",
+              "margin": "70.0000000000",
+              "leverage": 5,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "open",
+              "exit_price": null,
+              "exit_reason": null,
+              "open_fee": "0.1750000000",
+              "close_fee": "0.0000000000",
+              "realized_pnl": "0.0000000000",
+              "partial": false
+            },
+            {
+              "market": "EQB/USD",
+              "side": "long",
+              "quantity": "0.2250000000",
+              "entry_price": "2000.0000000000",
+              "margin": "90.0000000000",
+              "leverage": 5,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "open",
+              "exit_price": null,
+              "exit_reason": null,
+              "open_fee": "0.2250000000",
+              "close_fee": "0.0000000000",
+              "realized_pnl": "0.0000000000",
+              "partial": false
+            },
+            {
+              "market": "EQB/USD",
+              "side": "short",
+              "quantity": "0.1500000000",
+              "entry_price": "2000.0000000000",
+              "margin": "60.0000000000",
+              "leverage": 5,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "open",
+              "exit_price": null,
+              "exit_reason": null,
+              "open_fee": "0.1500000000",
+              "close_fee": "0.0000000000",
+              "realized_pnl": "0.0000000000",
+              "partial": false
+            },
+            {
+              "market": "EQB/USD",
+              "side": "short",
+              "quantity": "0.2000000000",
+              "entry_price": "2000.0000000000",
+              "margin": "80.0000000000",
+              "leverage": 5,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "open",
+              "exit_price": null,
+              "exit_reason": null,
+              "open_fee": "0.2000000000",
+              "close_fee": "0.0000000000",
+              "realized_pnl": "0.0000000000",
+              "partial": false
+            },
+            {
+              "market": "EQB/USD",
+              "side": "short",
+              "quantity": "0.2500000000",
+              "entry_price": "2000.0000000000",
+              "margin": "100.0000000000",
+              "leverage": 5,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "open",
+              "exit_price": null,
+              "exit_reason": null,
+              "open_fee": "0.2500000000",
+              "close_fee": "0.0000000000",
+              "realized_pnl": "0.0000000000",
+              "partial": false
+            }
+          ],
+          "orders": [
+            {
+              "market": "EQB/USD",
+              "side": "long",
+              "order_type": "market",
+              "margin": "50.0000000000",
+              "leverage": 5,
+              "target_price": null,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null
+            },
+            {
+              "market": "EQB/USD",
+              "side": "long",
+              "order_type": "market",
+              "margin": "70.0000000000",
+              "leverage": 5,
+              "target_price": null,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null
+            },
+            {
+              "market": "EQB/USD",
+              "side": "long",
+              "order_type": "market",
+              "margin": "90.0000000000",
+              "leverage": 5,
+              "target_price": null,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null
+            },
+            {
+              "market": "EQB/USD",
+              "side": "short",
+              "order_type": "market",
+              "margin": "60.0000000000",
+              "leverage": 5,
+              "target_price": null,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null
+            },
+            {
+              "market": "EQB/USD",
+              "side": "short",
+              "order_type": "market",
+              "margin": "80.0000000000",
+              "leverage": 5,
+              "target_price": null,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null
+            },
+            {
+              "market": "EQB/USD",
+              "side": "short",
+              "order_type": "market",
+              "margin": "100.0000000000",
+              "leverage": 5,
+              "target_price": null,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "filled",
+              "reject_reason": null
+            }
+          ],
+          "ledger": {
+            "entries": [
+              "demo_funding 100000.0000000000",
+              "open_fee -0.1250000000",
+              "open_fee -0.1500000000",
+              "open_fee -0.1750000000",
+              "open_fee -0.2000000000",
+              "open_fee -0.2250000000",
+              "open_fee -0.2500000000"
+            ],
+            "final": "99998.8750000000",
+            "chainConsistent": true
+          },
+          "events": [
+            "demo_account_created",
+            "order_created",
+            "order_created",
+            "order_created",
+            "order_created",
+            "order_created",
+            "order_created",
+            "order_filled",
+            "order_filled",
+            "order_filled",
+            "order_filled",
+            "order_filled",
+            "order_filled"
+          ],
+          "equity_risk": [
+            {
+              "day_start_equity": "99998.8800000000",
+              "peak_equity": "100013.1300000000",
+              "maximum_drawdown": "0.7500000000",
+              "daily_drawdown": "0.0000000000",
+              "last_equity": "100012.3800000000"
+            }
+          ]
+        }
+      ],
+      "challenges": []
+    },
+    "7": {
+      "accounts": [
+        {
+          "type": "free_demo",
+          "status": "active",
+          "balance": "100000.0000000000",
+          "used_margin": "0.0000000000",
+          "realized_pnl": "0.0000000000",
+          "disable_reason": null,
+          "positions": [],
+          "orders": [
+            {
+              "market": "EQA/USD",
+              "side": "long",
+              "order_type": "market",
+              "margin": "500000.0000000000",
+              "leverage": 2,
+              "target_price": null,
+              "sl_price": null,
+              "tp_price": null,
+              "status": "rejected",
+              "reject_reason": "insufficient_margin"
+            }
+          ],
+          "ledger": {
+            "entries": [
+              "demo_funding 100000.0000000000"
+            ],
+            "final": "100000.0000000000",
+            "chainConsistent": true
+          },
+          "events": [
+            "demo_account_created"
+          ],
+          "equity_risk": []
+        }
+      ],
+      "challenges": []
+    }
+  }
+}

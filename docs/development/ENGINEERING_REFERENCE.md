@@ -26,7 +26,7 @@ The root package orchestrates commands; applications install from their own lock
 | Component | Implementation |
 | --- | --- |
 | Web service `openfund` | `apps/backend/server.js` serving the API and the built `react/` SPA |
-| Trading engine | `engine.js`, `trading-math.js`, `instruments.js`; in-process loop (about 1 s), SSE at `/trading/stream` |
+| Trading engine | `engine.js`, `trading-math.js`, `instruments.js`; in-process loop (about 1 s) on its own small connection pool, SSE at `/trading/stream` fanned out per account by `trading-stream.js` ([ADR 0027](../decisions/0027-trading-stream-fan-out-and-engine-loop-isolation.md)) |
 | Challenge evaluation | `evaluation.js`: pure `evaluateRules()` over a frozen rules snapshot |
 | Purchases and payments | `purchases.js`, `payment-verification.js`, `coupons.js`, `payments-admin.js` |
 | Economy and partners | `economy.js`, `partners.js`, `treasury.js`, `live-funding.js` |

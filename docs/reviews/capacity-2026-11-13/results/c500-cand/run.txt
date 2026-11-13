@@ -1,0 +1,6 @@
+== run c500-cand profile=uncapped stages=all ramp=60s hold=180s const=500:240 cdn=0.95
+CONST=500:240
+PROFILE=uncapped
+VISITOR_RATIO=2
+start_ms=1794554179000
+end_ms=1794554430000
