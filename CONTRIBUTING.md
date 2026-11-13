@@ -141,7 +141,7 @@ in the [changelog](CHANGELOG.md) entry for the change.
 
 ## Architecture contract
 
-Preserve the three Render resources (`openfund`, `openfund-db`, `openfund-cms`) and same-origin React at `/react/`. Keep the shared terminal presentation and product financial state isolated. PostgreSQL/Decimal own Prop simulation; Gains owns Perpetual read records; Directus owns published content/catalog administration. `dist/` remains source-critical. The integrated Protocol source is dormant; operational venue routing remains planned.
+Preserve the three Render resources (`openfund`, `openfund-db`, `openfund-cms`) and same-origin React hosting (site root; `/react/` is a compatibility redirect). Keep the shared terminal presentation and product financial state isolated. PostgreSQL/Decimal own Prop simulation; Gains owns Perpetual read records; Directus owns published content/catalog administration. `dist/` remains source-critical. The integrated Protocol source is dormant; operational venue routing remains planned.
 
 ## Validation
 

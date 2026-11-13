@@ -3,7 +3,9 @@
 Engineering inventory, not legal advice. Audited 2026-11-10; re-verified
 2026-11-11 against `main` `67cc812` (deployed as v0.4.4): `npm run
 legal:licenses` passes, the built application contains all eight notice files,
-and production serves them under `/assets/notices/`. Component facts are kept in
+and production serves them under `/assets/notices/`. Re-audited 2026-11-12 on
+`main` `38e17f4` including fonts and images (section 1a); the license choice
+itself is prepared in the [decision document](LICENSE_DECISION.md). Component facts are kept in
 the [upstream dependency registry](../integrations/UPSTREAM_REGISTRY.md), the
 generated [production dependency licenses](DEPENDENCY_LICENSES.md) (checked in
 CI) and the [PineTS report](PINETS.md).
@@ -26,6 +28,32 @@ CI) and the [PineTS report](PINETS.md).
 - The README license section points here and makes no license claim.
 - No root `LICENSE` or `NOTICE` was added: no license has been chosen, and
   the Apache NOTICE obligation is met where the Vela distribution ships.
+
+## 1a. Component inventory (2026-11-12)
+
+Licenses were confirmed from each component's own LICENSE file, package
+manifest or embedded font metadata, not inferred from neighbours.
+
+| Component | Source | License | Modifications | Distribution obligations | Status |
+| --- | --- | --- | --- | --- | --- |
+| Openfund application and packages (`apps/`, `packages/openfund-charts`, `-footprint`, `-gains-adapter`, `cms-client`, `scripts/`, `e2e/`, `infra/`) | First party | **None selected (all rights reserved)** | — | — | Owner decision pending ([decision](LICENSE_DECISION.md)) |
+| Docs and brand (`docs/`, `brand/` logos) | First party | None selected; logo is a trademark | — | — | Owner decision pending |
+| Vela 0.10.6 (`vendor/vela`) | LuxAlgo | Apache-2.0 + NOTICE | Patched (see [registry](../integrations/UPSTREAM_REGISTRY.md)) | LICENSE, NOTICE, modified-file notices, visible "Vela" attribution with link | Met |
+| PineTS 0.13.1, Vela-pinets 0.3.4 | LuxAlgo (npm) | AGPL-3.0-only | Worker patched by `build-charts.mjs` | Corresponding Source, section 13 offer | License texts shipped; offer form and combined-work scope **open** ([PineTS](PINETS.md)) |
+| MetaMask SDK 0.33.1 | ConsenSys (npm, via wagmi) | ConsenSys proprietary | None | Prominent notice; non-commercial use (≤ 10,000 MAU) | Notice shipped; commercial-use limit **open** |
+| Gains SDK (`vendor/gains-sdk`) | Ingenium Labs | MIT | None; not imported | Keep notice | Met (dormant) |
+| Journal core (`third_party/luxalgo-trade-journal`) | LuxAlgo | MIT | Built `dist/` vendored | Keep notice | Met |
+| Openfund Protocol import (`packages/openfund-protocol`) | mux-protocol | GPL-2.0 (files mostly or-later; 4 `UNLICENSED`) | Renamed | GPL only if distributed | Dormant, not shipped |
+| npm production dependencies (web, backend) | npm | MIT / ISC / BSD / Apache-2.0 (exceptions listed) | None | Keep license comments | CI-checked ([dependency licenses](DEPENDENCY_LICENSES.md)) |
+| Directus 11.17.4 | Docker image | BSL 1.1 (12.x: MSCL-1.0-GPL) | None | Service terms; not distributed here | Separate service |
+| Vazirmatn font | Vazirmatn Project | SIL OFL 1.1 | None | Ship license | Met (`Vazirmatn-LICENSE.txt`) |
+| Ubuntu font (`ubuntu-400/700.ttf`) | Canonical | Ubuntu Font Licence 1.0 | None | Ship licence with the fonts | **Fixed in this change**: `assets/Ubuntu-LICENSE.txt` added (text taken from the brandbook archive, where it already shipped) |
+| Irancell fonts (`irancell-*.ttf`) and renamed copies (`openfund-1…5.ttf`, `openfund-persian-*-v4.woff2`, `brand/typography/`) | Irancell (MTN Irancell) per embedded metadata | **"All rights reserved"**; no license recorded | Renamed; woff2 files re-named "Openfund Persian" | Unknown without a license | **Blocker: provenance missing** |
+| Pine indicators (`indicators/`) | Undocumented | CC BY-NC-SA 4.0 stated in one file; "proprietary" in README | — | NC forbids commercial use | **Blocker: provenance missing** |
+| Service logos (Gains, Vela, TradingView, DePay, Render, Liara, Bitpin, Hyperliquid, GMX, MetaMask, Rabby, social glyphs) | Brand owners / Simple Icons | Brand terms / CC0 | Per [Public-brand-assets.txt](../../apps/web-react/public/assets/notices/Public-brand-assets.txt) | Brand guidelines | Documented; `dist/` copy of the notice re-synced in this change |
+| Day/night toggle design | Hamzeh Ghoreyshi | MIT | Adapted | Keep notice | Met |
+| `team-portraits.png` | AI-generated (per `DESIGN_AND_CONTENT_NOTES.md`) | Uncertain by jurisdiction | — | — | Record generator terms |
+| `react/` build output, `dist/` mirrors | Generated from the above | Inherit their inputs | — | Same notices as inputs | `dist/` notices re-synced |
 
 ## 2. Obligations that apply today
 
@@ -63,8 +91,18 @@ CI) and the [PineTS report](PINETS.md).
    them was changed.
 4. `@metamask/eth-json-rpc-provider` declares no license.
 5. Compatibility of whatever first-party license is chosen with items 1–3.
+6. **Irancell fonts.** Ten served font files and the brand typography folder
+   are Irancell fonts or renamed derivatives that state "All rights reserved"
+   (section 1a). Obtain the rights holder's license or replace them; any
+   replacement is a visual change that needs design approval.
+7. **Copyright ownership.** Commits come from three human GitHub identities and
+   from AI agents working for the owner; confirm the owning entity and that
+   each human author's work is assigned or licensed to it.
 
 ## 4. Decisions for the owner
+
+The consolidated comparison, blockers and recommendation are in the
+[license decision document](LICENSE_DECISION.md).
 
 | Decision | Options |
 | --- | --- |

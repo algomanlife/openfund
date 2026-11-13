@@ -22,6 +22,25 @@
   Trading → "Show Buy / Sell Markers" (with its requested Persian label),
   saved per wallet.
 
+- Documentation: correct current pages that still described the app as
+  served at `/react/` (it is served from `/`; `/react/` redirects) and the
+  web README's Node 22 requirement (Node 26); replace the stale v0.2.0 audit
+  text in the documentation index with a canonical-source map; index the
+  dormant protocol docs and 11 unlisted review records; remove two orphaned
+  pointer pages (`docs/architecture/RENDER_DEPLOYMENT.md`,
+  `docs/development/ROADMAP.md`); remove duplicated rules from `AGENTS.md`
+  without changing any policy.
+- Repository: stop tracking 92 stale generated `react/assets/` files that
+  were re-committed by `afe173f` despite `.gitignore`; a fresh `build:web`
+  deletes all of them, so nothing served changes. A release test now fails if
+  any `react/` path is tracked
+  ([hygiene record](docs/development/REPOSITORY_HYGIENE.md#regression-fixed-on-2026-11-12)).
+- Licensing: component inventory covering fonts and images, a first-party
+  [license decision document](docs/legal/LICENSE_DECISION.md) (no license
+  chosen; owner approval gate), the missing Ubuntu Font Licence shipped beside
+  the Ubuntu fonts, `dist/` notices re-synced with the React notices, and the
+  unresolved Irancell font provenance recorded. README states plainly that
+  Openfund's own code is all rights reserved.
 - Terminal and Prop UI refinement (branch `agent/claude/terminal-prop-ui-refinement`,
   [ADR 0025](docs/decisions/0025-prop-leverage-sizing-and-economic-calendar.md)):
   BUY/SELL markers on the candle of each confirmed Prop fill (grouped with a

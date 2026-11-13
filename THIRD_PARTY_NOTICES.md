@@ -3,7 +3,7 @@
 Openfund includes or depends on third-party software. Each component keeps its
 own license. The files below are the authoritative texts, preserved
 unmodified. PineTS details: [docs/legal/PINETS.md](docs/legal/PINETS.md). This index adds no license terms. Openfund's own code currently
-has **no published license** ([Licensing](docs/legal/LICENSING.md)).
+has **no published license** ([Licensing](docs/legal/LICENSING.md), [decision document](docs/legal/LICENSE_DECISION.md)).
 
 | Component | License | Notice / license text |
 | --- | --- | --- |
@@ -16,6 +16,8 @@ has **no published license** ([Licensing](docs/legal/LICENSING.md)).
 | DePay Payment Widget (`@depay/widgets` 13.0.45 UMD bundle, vendored) | MIT | [DePay-Widgets-MIT.txt](apps/web-react/public/assets/notices/DePay-Widgets-MIT.txt); source: <https://github.com/DePayFi/widgets>; [ADR 0026](docs/decisions/0026-dedicated-checkout-vendored-depay-widget-and-chart-position-tool.md) |
 | Openfund Protocol (dormant import of mux-protocol) | GPL-2.0 (files mostly GPL-2.0-or-later) | [packages/openfund-protocol/LICENSE](packages/openfund-protocol/LICENSE), [PROVENANCE](packages/openfund-protocol/PROVENANCE.md) |
 | Vazirmatn font | SIL Open Font License | [Vazirmatn-LICENSE.txt](apps/web-react/public/assets/Vazirmatn-LICENSE.txt) |
+| Ubuntu font, Canonical Ltd. (`ubuntu-400.ttf`, `ubuntu-700.ttf`) | Ubuntu Font Licence 1.0 | [Ubuntu-LICENSE.txt](apps/web-react/public/assets/Ubuntu-LICENSE.txt) |
+| Irancell font (`irancell-*.ttf`) and renamed copies (`openfund-1…5.ttf`, `openfund-persian-*-v4.woff2`) | **Unresolved**: embedded metadata says "Copyright © 2017 by Irancell. All rights reserved." No license is recorded | None. Listed so the attribution is not lost; see [Licensing › item 6](docs/legal/LICENSING.md#3-items-for-legal-review) |
 | Simple Icons (service glyphs) | CC0-1.0 | [Simple-Icons-CC0.txt](apps/web-react/public/assets/notices/Simple-Icons-CC0.txt) |
 | TradingView logo | Brand-owner terms | [TradingView-logo-LICENSE.txt](apps/web-react/public/assets/notices/TradingView-logo-LICENSE.txt) |
 | Interactive day/night toggle design, Hamzeh Ghoreyshi (adapted in `apps/web-react/src/theme-toggle.css` and `src/theme.ts`) | MIT | [Day-Night-Toggle-MIT.txt](apps/web-react/public/assets/notices/Day-Night-Toggle-MIT.txt); source: <https://github.com/HamzehGhoreyshi/interactive-day-night-toggle> |
