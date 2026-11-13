@@ -6092,6 +6092,182 @@
       "session": "test",
       "capturedAt": "2026-11-11",
       "state": "Local Directus 11.9.1 on the same disposable database; Commerce Admin test user; synthetic coupon and generated test wallet only"
+    },
+    {
+      "file": "launch-readiness/about-desktop-dark-en.png",
+      "route": "/en/about",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme dark; anonymous public page; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/about-desktop-light-fa.png",
+      "route": "/fa/about",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme light; anonymous public page; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/about-mobile-dark-en.png",
+      "route": "/en/about",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme dark; anonymous public page; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/about-mobile-dark-ar.png",
+      "route": "/ar/about",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme dark; anonymous public page; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/contact-desktop-dark-en.png",
+      "route": "/en/contact",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme dark; anonymous public page; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/contact-desktop-light-ru.png",
+      "route": "/ru/contact",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme light; anonymous public page; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/contact-mobile-dark-fa.png",
+      "route": "/fa/contact",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme dark; anonymous public page; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/contact-mobile-light-zh.png",
+      "route": "/zh-CN/contact",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme light; anonymous public page; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/contact-form-validation-en.png",
+      "route": "/en/contact",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme dark; empty form submitted: client-side validation errors; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/contact-form-success-en.png",
+      "route": "/en/contact",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme dark; real submission to the local test backend (POST /support/messages); reference generated by the server; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/contact-map-dark.png",
+      "route": "/en/contact",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme dark; branded map section, dark theme; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/contact-map-light.png",
+      "route": "/en/contact",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme light; branded map section, light theme; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/rulebook-desktop-dark-en.png",
+      "route": "/en/rulebook",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme dark; anonymous public page; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/challenges-desktop-dark-en.png",
+      "route": "/en/challenges",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme dark; anonymous public page; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/checkout-desktop-dark-en.png",
+      "route": "/en/checkout",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme dark; anonymous public page; no horizontal overflow: True; no personal wallet or financial fixture"
+    },
+    {
+      "file": "launch-readiness/nav-resources-desktop-en.png",
+      "route": "/en/about",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-13T14:53:04Z",
+      "state": "Unreleased branch agent/claude/launch-readiness (base 7f95433); production build served by the local test backend with an isolated PostgreSQL test database and a local Directus 11.17.4; theme dark; Resources menu opened (About Us / Contact Us entries); no horizontal overflow: True; no personal wallet or financial fixture"
     }
   ],
   "finalIntegration": {

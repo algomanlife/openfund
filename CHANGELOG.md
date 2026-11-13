@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- Launch readiness (branch `agent/claude/launch-readiness`,
+  [ADR 0028](docs/decisions/0028-reward-lifecycle-and-support-queue.md),
+  [report](docs/reviews/launch-readiness-2026-11-13/REPORT.md); **not deployed**):
+  server-computed reward requests on funded accounts enforce the published
+  split, first-payout wait, minimum request, consistency score, profitable days,
+  monthly cycle and fourth-reward fee refund (the free-amount withdrawal request
+  is removed); a final evaluation pass now goes to operator review, and an
+  approval creates exactly one funded-demo account; rules snapshots move to
+  version 2 (payout terms frozen; older snapshots untouched). New About Us and
+  Contact Us pages in all five locales with a working support form stored in
+  `support_messages` and handled in Directus by a new `Support Agent` role.
+  The terminal support link no longer points to an unverified mailbox.
+
 - DePay checkout activation fixes (branch `agent/claude/depay-checkout-activation`,
   **not deployed**): the DePay endpoints also answer at
   `/api/payments/depay/{config,configuration,callback,events}`, the URLs the
