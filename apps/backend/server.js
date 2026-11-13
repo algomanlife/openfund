@@ -56,7 +56,11 @@ const testDatabase = /(?:^|[_-])(test|audit|ci)(?:$|[_-])/.test(new URL(cfg.dbUr
 const testMode = !cfg.prod && process.env.SIM_TEST_MODE === '1' && testDatabase
 
 const pool = new pg.Pool({ connectionString: cfg.dbUrl })
-const engine = new Engine(pool, marketData)
+/* dedicated connections for the engine monitoring loop (SL/TP, liquidation,
+   pending orders, risk sweeps): the loop is serial, so 3 covers its deepest
+   nesting; it keeps risk processing out of the API pool's queue */
+const loopPool = new pg.Pool({ connectionString: cfg.dbUrl, max: 3 })
+const engine = new Engine(pool, marketData, { loopPool })
 const portfolio = new Portfolio(pool, marketData)
 /* checkStreamSessions is a hoisted function declaration (session helpers below) */
 const tradingStreams = createTradingStreamHub({ engine, checkSessions: (hashes, userId) => checkStreamSessions(hashes, userId) })
@@ -879,6 +883,6 @@ const settlementTimer = setInterval(() => {
 }, 60_000)
 settlementTimer.unref()
 let shuttingDown=false
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;const enginePass=engine.stop();tradingStreams.close();marketData.stop();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{})]).finally(()=>server.close(()=>pool.end())) }
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;const enginePass=engine.stop();tradingStreams.close();marketData.stop();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{})]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)
