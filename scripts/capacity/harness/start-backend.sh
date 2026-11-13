@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Start the synthetic Gains server and the unmodified Openfund backend
-# (production mode, single process — the Render topology) against the
+# (production mode, single process — the Render topology; Node 26 as on
+# Render since the Node 26 upgrade, override with BACKEND_NODE) against the
 # disposable test database. Usage: start-backend.sh <run-dir> [pg_pool_max]
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
@@ -15,7 +16,7 @@ sleep 1
 ( cd "$BACKEND_DIR" && \
   PORT=18080 NODE_ENV=production ALLOWED_DOMAINS=127.0.0.1:18080 CMS_PUBLIC_URL=https://cms.invalid CORS_ORIGINS=http://127.0.0.1:18080 \
   METRICS_FILE="$RUN/backend-metrics.jsonl" \
-  exec "${BACKEND_NODE:-/opt/homebrew/opt/node@22/bin/node}" --import "$CAP_DIR/harness/preload.mjs" server.js ) > "$RUN/backend.log" 2>&1 &
+  exec "${BACKEND_NODE:-node}" --import "$CAP_DIR/harness/preload.mjs" server.js ) > "$RUN/backend.log" 2>&1 &
 echo $! > "$RUN/backend.pid"
 for i in $(seq 1 40); do curl -sf "$TARGET/health" >/dev/null && break; sleep 0.5; done
 curl -sf "$TARGET/health" && echo " backend up (pid $(cat "$RUN/backend.pid"))"
