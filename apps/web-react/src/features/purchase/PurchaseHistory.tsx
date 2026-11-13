@@ -1,6 +1,7 @@
 import { dirOf, normalizeLocale, pick } from '../../i18n/locales'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import { txExplorerUrl } from './chains'
 import { apiFetch, useSession } from '../../session/useOpenfundSession'
 import { backendUrl } from '../../session/useOpenfundSession'
 import './purchase.css'
@@ -20,8 +21,7 @@ interface HistoryRow {
 }
 
 const STATUS_FA: Record<string, string> = { pending: 'در انتظار پرداخت', paid: 'پرداخت‌شده', cancelled: 'لغو‌شده', expired: 'منقضی' }
-const EXPLORER: Record<number, string> = { 11155111: 'https://sepolia.etherscan.io', 42161: 'https://arbiscan.io' }
-const txUrl = (chainId: number, txHash: string) => `${EXPLORER[chainId] || ''}/tx/${txHash}`
+const txUrl = (chainId: number, txHash: string) => txExplorerUrl(chainId, txHash) || undefined
 
 export default function PurchaseHistory() {
   const { locale: routeLocale } = useParams()
@@ -64,7 +64,7 @@ export default function PurchaseHistory() {
         <div className="of-empty">
           <p>{t('هنوز خریدی نداری. پلن‌ها را در صفحهٔ چلنج‌ها ببین.',
             'No purchases yet. See the plans on the Challenges page.')}</p>
-          <a className="button" href={`/${locale}/challenges`}>{t('دیدن پلن‌ها', 'View plans')}</a>        </div>
+          <a className="button" href={`/${locale}/checkout`}>{t('خرید چلنج', 'Buy a Challenge')}</a>        </div>
       )}
       {rows && rows.length > 0 && (
         <table className="of-purchase-table" dir={dirOf(locale)}>
@@ -82,7 +82,7 @@ export default function PurchaseHistory() {
           <tbody>
             {rows.map(o => (
               <tr key={o.id}>
-                <td><b>{o.plan_name}</b></td>
+                <td><Link to={`/${locale}/checkout?order=${o.id}`}><b>{o.plan_name}</b></Link></td>
                 <td dir="ltr">{fmtMoney(o.account_size_usd)}</td>
                 <td dir="ltr">{fmtMoney(o.price_usd)}</td>
                 <td><span className={`of-status-pill of-status-${o.status}`}>{isFa ? (STATUS_FA[o.status] || o.status) : o.status}</span></td>

@@ -472,6 +472,73 @@ test('D5 database failure during a callback returns 500 so DePay retries; the re
   assert.equal((await orderRow(o.id)).lifecycle_state, 'provisioned')
 })
 
+test('K1 dedicated checkout: customer details on the order, receipt from verified records only, owner-scoped', async () => {
+  chain = { mode: 'ok' }
+  const u = await newUser()
+  assert.equal((await order(u, { customer: { name: 'A', email: 'not-an-email' } })).data.error, 'invalid_email')
+  assert.equal((await order(u, { customer: 'x' })).data.error, 'invalid_customer')
+  const o = (await order(u, { customer: { name: ' Test Trader ', email: 'Trader@Example.test' }, idempotencyKey: crypto.randomUUID() })).data.order
+  assert.deepEqual((await orderRow(o.id)).customer, { name: 'Test Trader', email: 'trader@example.test' })
+  let r = await call('GET', `/purchases/orders/${o.id}/receipt`, { user: u })
+  assert.equal(r.status, 200)
+  assert.deepEqual([r.data.receipt.status, r.data.receipt.payment, r.data.receipt.invoice, r.data.receipt.challenge], ['pending', null, null, null], 'nothing is claimed before verification')
+  assert.equal(r.data.receipt.priceUsd, '80.00')
+  const stranger = await newUser()
+  assert.equal((await call('GET', `/purchases/orders/${o.id}/receipt`, { user: stranger })).status, 404, 'another customer cannot read the receipt')
+  const body = { ...callbackBody(u, o), sent_token: '0x' + 'ee'.repeat(20), sent_amount: '0.031' }
+  assert.equal((await depayPost('/purchases/depay/callback', body)).status, 200)
+  await until(async () => (await orderRow(o.id)).lifecycle_state === 'provisioned')
+  r = await call('GET', `/purchases/orders/${o.id}/receipt`, { user: u })
+  const rc = r.data.receipt
+  assert.deepEqual([rc.status, rc.lifecycleState], ['paid', 'provisioned'])
+  assert.equal(rc.payment.txHash, body.transaction)
+  assert.equal(rc.payment.blockchain, 'arbitrum')
+  assert.deepEqual([rc.payment.settlement.amount, rc.payment.settlement.decimals], ['80', 6], 'settlement amount converted with the verified decimals')
+  assert.deepEqual(rc.payment.sent, { token: body.sent_token, amount: '0.031', reported: true }, 'source token is labelled as reported')
+  assert.match(rc.invoice.number, /^OF-\d{4}-\d{6}$/)
+  assert.ok(rc.challenge.id)
+  assert.equal(rc.customer.email, 'trader@example.test')
+})
+
+test('K2 late attempt/processing events never downgrade a confirmed payment', async () => {
+  chain = { mode: 'ok' }
+  const u = await newUser()
+  const o = (await order(u)).data.order
+  const base = callbackBody(u, o)
+  await depayPost('/purchases/depay/events', { ...base, status: 'succeeded' })
+  await until(async () => (await orderRow(o.id)).lifecycle_state === 'provisioned')
+  for (const status of ['attempt', 'processing', 'failed']) assert.equal((await depayPost('/purchases/depay/events', { ...base, status })).status, 200)
+  await depayPost('/purchases/depay/callback', base)
+  await settle()
+  const row = await orderRow(o.id)
+  assert.deepEqual([row.status, row.lifecycle_state], ['paid', 'provisioned'])
+  assert.equal((await pool.query(`SELECT count(*)::int n FROM openfund_challenges WHERE purchase_order_id=$1`, [o.id])).rows[0].n, 1)
+})
+
+test('K3 a verified payment whose provisioning fails stays retryable and is provisioned exactly once by the sweep', async () => {
+  chain = { mode: 'ok' }
+  const u = await newUser()
+  const o = (await order(u)).data.order
+  const body = callbackBody(u, o)
+  await pool.query(`CREATE OR REPLACE FUNCTION commerce_test_fail() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'simulated_issuance_failure'; END $$`)
+  await pool.query(`CREATE TRIGGER commerce_test_issuance BEFORE INSERT ON invoices FOR EACH ROW EXECUTE FUNCTION commerce_test_fail()`)
+  try {
+    assert.equal((await depayPost('/purchases/depay/callback', body)).status, 200)
+    await until(async () => (await pool.query(`SELECT error_code FROM payment_attempts WHERE tx_hash=$1`, [body.transaction])).rows[0]?.error_code === 'provisioning_retry')
+  } finally { await pool.query('DROP TRIGGER commerce_test_issuance ON invoices') }
+  const a = (await pool.query(`SELECT status, retryable, error_code FROM payment_attempts WHERE tx_hash=$1`, [body.transaction])).rows[0]
+  assert.deepEqual([a.status, a.retryable, a.error_code], ['pending', true, 'provisioning_retry'])
+  let row = await orderRow(o.id)
+  assert.deepEqual([row.status, row.lifecycle_state], ['pending', 'payment_detected'], 'the payment is kept as detected; no second payment is requested')
+  await pool.query(`UPDATE payment_attempts SET last_attempt_at = now() - interval '5 minutes' WHERE tx_hash=$1`, [body.transaction])
+  await recoverPendingPayments({ pool, verifier, minAgeSeconds: 1 })
+  await recoverPendingPayments({ pool, verifier, minAgeSeconds: 0 })
+  row = await orderRow(o.id)
+  assert.deepEqual([row.status, row.lifecycle_state], ['paid', 'provisioned'])
+  for (const t of ['payments', 'openfund_challenges', 'invoices'])
+    assert.equal((await pool.query(`SELECT count(*)::int n FROM ${t} WHERE purchase_order_id=$1`, [o.id])).rows[0].n, 1, t)
+})
+
 test('D6 without the DePay verify key the DePay routes are closed', async () => {
   const saved = process.env.DEPAY_VERIFY_PUBLIC_KEY
   delete process.env.DEPAY_VERIFY_PUBLIC_KEY

@@ -422,6 +422,8 @@ function setLang(lang){
   renderBook(); renderTrades();
   computeForm(); renderAccount(); renderBottom();
   renderStatus();
+  registerTradingSettings();
+  velaPositionsSync();
 }
 $('language-toggle').addEventListener('click', () => setLang(window.ofLang === 'fa' ? 'en' : 'fa'));
 /* the React shell applies its route locale through this hook */
@@ -508,6 +510,11 @@ window.OpenfundTerminalInspect = {
   userDrawings: () => { const ids = managedDrawingIds(); return (vc?.chart?.drawings?.all?.() || []).filter(d => !ids.has(d.id)); },
   entryBoundaries: () => { const all = vc?.chart?.drawings?.all?.() || []; return [...entryDrawings].map(([positionId, e]) => ({ positionId, drawing: all.find(d => d.id === e.id) || null })); },
   executionMarkers: () => { const all = vc?.chart?.drawings?.all?.() || []; return [...execMarkers].map(([key, m]) => ({ key, drawing: all.find(d => d.id === m.id) || null })); },
+  /* acceptance hooks: the same paths a drag release / settings toggle take
+     (all validation and the server's position-update rules still apply) */
+  positionEdited: drawingId => onPositionDrawingEdited(drawingId),
+  tradingPrefs: () => tradingPrefs(),
+  setTradingPrefs: patch => setTradingPrefs(patch),
 };
 window.__ofSetLang = lang => { if (I18N[lang] && lang !== window.ofLang) setLang(lang); };
 
@@ -1526,6 +1533,73 @@ const posDrawings = new Map();   /* backend position id → vela drawing id */
 const positionEdits = new Map(), positionRiskQueues = new Map();
 let syncingPositionDrawings = false;
 
+/* ---------- Chart Settings → Trading ----------
+   Per-wallet chart preference, stored with the chart workspace settings
+   (legacy/chart-workspace.js: namespaced local cache mirrored to the
+   signed-in wallet's server workspace). Display only: hiding markers or an
+   information label never touches positions, orders, SL/TP or history. */
+const TRADING_PREFS_KEY = 'of-chart-trading';
+function tradingPrefs(){
+  let v = null;
+  try { v = JSON.parse(chartStore.get(TRADING_PREFS_KEY) || 'null'); } catch(e){}
+  return {
+    showExecMarkers: v?.showExecMarkers !== false,                 /* default: on */
+    showPositionInfo: v?.showPositionInfo !== false,               /* default: on */
+    hiddenInfo: Array.isArray(v?.hiddenInfo) ? v.hiddenInfo.map(String).slice(0, 200) : []
+  };
+}
+function setTradingPrefs(patch){
+  const next = { ...tradingPrefs(), ...patch };
+  chartStore.set(TRADING_PREFS_KEY, JSON.stringify(next));
+  try { window.OpenfundChartWorkspace?.saveSettings?.(); } catch(e){}
+  velaPositionsSync();
+  return next;
+}
+function tradingSettingsSection(){
+  return { id: 'trading', title: L('معاملات', 'Trading'), placement: 'end', rows: [
+    { kind: 'heading', id: 'markers', label: L('نمایش روی نمودار', 'On the chart') },
+    { kind: 'toggle', id: 'buy-sell-markers', label: L('نمایش نشانگرهای خرید و فروش', 'Show Buy / Sell Markers'),
+      get: () => tradingPrefs().showExecMarkers, set: v => { setTradingPrefs({ showExecMarkers: !!v }); } },
+    { kind: 'toggle', id: 'position-info', label: L('نمایش اطلاعات موقعیت', 'Show position information'),
+      get: () => tradingPrefs().showPositionInfo, set: v => { setTradingPrefs({ showPositionInfo: !!v, hiddenInfo: [] }); } }
+  ] };
+}
+/* Vela's chart cell pushes its own host sections (status line, advanced,
+   timezone, …) and each push replaces the whole list, so the Trading tab is
+   appended to every push rather than set once. */
+function registerTradingSettings(){
+  const r = vc?.chart?.renderer;
+  if (!r || typeof r.setSettingsSections !== 'function') return;
+  try {
+    if (!r.__ofTradingSection){
+      const own = r.setSettingsSections.bind(r);
+      r.__ofTradingSection = true;
+      r.setSettingsSections = sections => {
+        r.__ofCellSections = Array.isArray(sections) ? sections.filter(x => x && x.id !== 'trading') : [];
+        return own([...r.__ofCellSections, tradingSettingsSection()]);
+      };
+      /* re-run the cell's own push (it happened before the wrap); an empty
+         localization patch changes nothing else */
+      vc.workspace?.setLocale?.({});
+    } else r.setSettingsSections(r.__ofCellSections || []);
+  } catch(e){ /* renderer without a settings dialog */ }
+}
+/* price → pixel row of the price pane, from Vela's per-frame price-axis hook
+   (called on every range/size change: pan, zoom, resize, timeframe). The
+   hook returns null, so the built-in axis ticks are unchanged. */
+let priceFrame = null, infoLayoutQueued = false;
+function installPriceProjection(){
+  try {
+    vc.chart.renderer.set('priceAxisTicks', ctx => {
+      if (ctx && ctx.pane && ctx.pane.kind === 'price' && typeof ctx.priceToY === 'function'){
+        priceFrame = { toY: ctx.priceToY, height: ctx.height };
+        if (!infoLayoutQueued){ infoLayoutQueued = true; requestAnimationFrame(() => { infoLayoutQueued = false; layoutPositionInfo(); }); }
+      }
+      return null;
+    });
+  } catch(e){ priceFrame = null; }
+}
+
 function velaPositionsSync(){
   if (!vc || !vc.chart || !vc.chart.drawings) return;
   const dr = vc.chart.drawings;
@@ -1549,7 +1623,7 @@ function velaPositionsSync(){
   const colors = positionOverlayColors();
   /* a chart rebuild (e.g. a data reload) can drop managed drawings; a
      mapping to a drawing that no longer exists is recreated, not patched */
-  const present = new Set((dr.all ? dr.all() : []).filter(d => d.type === 'position').map(d => d.id));
+  const present = new Set((dr.all ? dr.all() : []).filter(d => d.type === 'position' || d.type === 'of-position').map(d => d.id));
   for (const [pid, did] of [...posDrawings]) if (!present.has(did)) posDrawings.delete(pid);
   /* create or update */
   for (const [pid, lv] of want){
@@ -1571,15 +1645,19 @@ function velaPositionsSync(){
        balance × risk % and is never shown; the R:R header only when both
        levels exist (it is then the conventional |TP−E| / |E−SL|). */
     /* Vela applies per-type options only under `props` (DrawingStore.update) */
+    /* Only an EXISTING level is draggable (never invent the missing one);
+       the executed entry and the box itself are fixed (of-position type,
+       packages/openfund-charts/src/openfund-drawings.ts). Labels are painted
+       only during a drag; the right-hand information label carries them. */
+    const editable = window.__ofServerTP?.canTrade ? [lv.stop != null && 'stop', lv.target != null && 'target'].filter(Boolean) : [];
     const props = {
       anchors,
-      /* one-sided boxes are read-only (a drag could otherwise invent the
-         missing level); two-sided boxes keep the existing drag-to-edit */
-      locked: !(lv.stop != null && lv.target != null && window.__ofServerTP?.canTrade),
+      locked: !editable.length,
+      style: { lineColor: colors.entry, lineWidth: 1, lineStyle: 'solid' },
       props: {
-        showText: true, showPrices: true, showLossSize: false,
+        showText: false, showPrices: true, showLossSize: false,
         showHeader: lv.ratio != null, showStopLabel: lv.stop != null, showTargetLabel: lv.target != null,
-        profitColor: colors.profit, lossColor: colors.loss
+        profitColor: colors.profit, lossColor: colors.loss, ofSide: lv.side, ofEditable: editable
       }
     };
     const did = posDrawings.get(pid);
@@ -1587,7 +1665,7 @@ function velaPositionsSync(){
       try { dr.update(did, props) } catch(e){ posDrawings.delete(pid); }
     } else {
       try {
-        const d = dr.add('position', { paneId: 'price', anchors });
+        const d = dr.add('of-position', { paneId: 'price', anchors }) || dr.add('position', { paneId: 'price', anchors });
         if (d && d.id){
           posDrawings.set(pid, d.id);
           try { dr.update(d.id, props) } catch(e){}
@@ -1597,7 +1675,7 @@ function velaPositionsSync(){
   }
   syncEntryBoundaries(dr, st, t);
   syncExecutionMarkers(dr, st);
-  renderPositionLegend(want);
+  renderPositionInfo(st);
   } finally { syncingPositionDrawings = false; }
 }
 /* ---------- candle mapping (chart timeframe → bucket) ---------- */
@@ -1626,13 +1704,15 @@ function syncEntryBoundaries(dr, st, now){
   const d = Number(board.getMeta(S.marketId)?.pricePrecision ?? 2);
   for (const [pid, p] of want){
     const { start, end } = positionSpan(p.openedAt, now);
-    const label = `${t('pos.entry')} · ${fmt.price(Number(p.entry), d)}`;
+    /* the right-hand information label carries the entry price: the line
+       itself stays unlabelled to keep the candles readable */
+    const label = '';
     const sig = [start, end, p.entry, label, color].join('|');
     const cur = entryDrawings.get(pid);
     if (cur && cur.sig === sig) continue;
     const patch = { anchors: [{ time: start, price: Number(p.entry) }, { time: end, price: Number(p.entry) }], locked: true,
       style: { lineColor: color, lineWidth: 1, lineStyle: 'dashed' },
-      text: { value: label, color, size: 'small', bold: true, place: 'start' } };
+      text: { value: label, color, size: 'tiny', bold: false, place: 'start' } };
     if (cur){ try { dr.update(cur.id, patch); cur.sig = sig; continue; } catch(err){ entryDrawings.delete(pid); } }
     try {
       const drw = dr.add('trendline', { paneId: 'price', anchors: patch.anchors });
@@ -1672,6 +1752,13 @@ function candleRange(bucket, barMs){
 function syncExecutionMarkers(dr, st){
   const PO = window.OpenfundPositionOverlay;
   if (!PO?.executionGroups) return;
+  /* Chart Settings → Trading → Show Buy / Sell Markers (display only) */
+  if (!tradingPrefs().showExecMarkers){
+    for (const m of execMarkers.values()) try { dr.remove(m.id) } catch(err){}
+    execMarkers.clear();
+    syncExecutionMarks(new Map());
+    return;
+  }
   const barMs = chartBarMs();
   const groups = PO.executionGroups(PO.executionFills([...(st.positions || []), ...(st.history || [])], S.marketId), barMs);
   const present = new Set((dr.all ? dr.all() : []).map(d => d.id));
@@ -1689,11 +1776,13 @@ function syncExecutionMarkers(dr, st){
     const sig = [g.bucket, price, label, color].join('|');
     const cur = execMarkers.get(key);
     if (cur && cur.sig === sig) continue;
-    const patch = { anchors: [{ time: g.bucket, price }], locked: true, style: { lineColor: color },
-      text: { value: label, color, size: 'small', bold: true } };
+    /* compact marker: 7px triangle 3px off the wick, 10px label beyond it */
+    const patch = { anchors: [{ time: g.bucket, price }], locked: true, style: { lineColor: color, lineWidth: 1, lineStyle: 'solid' },
+      text: { value: label, color, size: 'tiny', bold: false } };
     if (cur){ try { dr.update(cur.id, patch); cur.sig = sig; continue; } catch(err){ execMarkers.delete(key); } }
     try {
-      const drw = dr.add(long ? 'arrowmarkup' : 'arrowmarkdown', { paneId: 'price', anchors: patch.anchors });
+      const drw = dr.add(long ? 'of-exec-buy' : 'of-exec-sell', { paneId: 'price', anchors: patch.anchors })
+        || dr.add(long ? 'arrowmarkup' : 'arrowmarkdown', { paneId: 'price', anchors: patch.anchors });
       if (drw && drw.id){ execMarkers.set(key, { id: drw.id, sig }); try { dr.update(drw.id, patch) } catch(err){} }
     } catch(err){ /* renderer without drawing support */ }
   }
@@ -1733,35 +1822,97 @@ function managedDrawingIds(){
 function positionOverlayModel(p){ return window.OpenfundPositionOverlay ? window.OpenfundPositionOverlay.model(p) : null; }
 function positionOverlayColors(){
   const light = document.documentElement.dataset.theme === 'light';
-  return light ? { profit: '#12965D', loss: '#C0453E' } : { profit: '#82E7BD', loss: '#E89483' };
+  return light ? { profit: '#12965D', loss: '#C0453E', entry: '#3F4C44' } : { profit: '#82E7BD', loss: '#E89483', entry: '#D4E3D8' };
 }
-/* Compact, non-blocking legend (one chip per overlaid position): side ·
-   entry · SL · TP · R. Clicking a chip selects that position's box. */
-function renderPositionLegend(want){
+/* ---------- right-hand position information labels ----------
+   One compact label per open position of this market, on the right of the
+   plot next to the price axis, at the entry's row (collision-free when
+   several positions are open). LONG/SHORT · entry · SL · TP · R from the
+   confirmed position; a pending SL/TP drag shows its proposed values marked
+   as unconfirmed. The × hides the LABEL only (never closes, cancels or
+   edits anything); the restore chip or Chart Settings → Trading brings it
+   back. On narrow screens a label shows side + entry and expands on tap. */
+let infoExpanded = null;
+function renderPositionInfo(st){
   const host = document.getElementById('chart-host');
   if (!host) return;
   let el = document.getElementById('pos-rr-legend');
-  if (!want || !want.size){ if (el) el.remove(); return; }
-  if (!el){ el = document.createElement('div'); el.id = 'pos-rr-legend'; el.className = 'pos-rr-legend'; el.setAttribute('aria-label', L('خلاصهٔ ریسک و بازده موقعیت‌ها', 'Position risk/reward')); host.appendChild(el); }
+  const prefs = tradingPrefs();
+  const list = (st?.positions || []).filter(p => p.market === S.marketId && Number(p.entry) > 0);
+  if (!list.length || !prefs.showPositionInfo){ if (el) el.remove(); return; }
+  if (!el){ el = document.createElement('div'); el.id = 'pos-rr-legend'; el.className = 'pos-rr-legend'; el.setAttribute('aria-label', L('اطلاعات موقعیت‌ها', 'Position information')); host.appendChild(el); }
   const d = Number(board.getMeta(S.marketId)?.pricePrecision ?? 2);
-  const pct = v => v == null ? '' : ` (${v.toFixed(2)}%)`;
-  const html = [...want.values()].map(m => {
-    const parts = [
-      `<b class="${m.side === 'long' ? 'up' : 'down'}">${esc(m.side === 'long' ? 'LONG' : 'SHORT')}</b>`,
-      `<span>${esc(t('pos.entry'))} <bdi dir="ltr">${esc(fmt.price(m.entry, d))}</bdi></span>`,
-      m.stop != null ? `<span class="down">SL <bdi dir="ltr">${esc(fmt.price(m.stop, d))}${pct(m.stopPct)}</bdi></span>` : '',
-      m.target != null ? `<span class="up">TP <bdi dir="ltr">${esc(fmt.price(m.target, d))}${pct(m.targetPct)}</bdi></span>` : '',
-      m.ratio != null ? `<span>R <bdi dir="ltr">${m.ratio.toFixed(2)}</bdi></span>` : ''
-    ].filter(Boolean).join('');
-    return `<button type="button" class="pos-rr-chip" data-pos-rr="${esc(String(m.id))}" title="#${esc(String(m.id))}">${parts}</button>`;
-  }).join('');
+  const hidden = new Set(prefs.hiddenInfo);
+  const items = [];
+  for (const p of list){
+    const id = String(p.id);
+    if (hidden.has(id)) continue;
+    const pending = positionEdits.get(p.id);
+    const m = positionOverlayModel(pending ? { ...p, sl: pending.sl ?? p.sl, tp: pending.tp ?? p.tp } : p) || { side: p.side === 'short' ? 'short' : 'long', entry: Number(p.entry), stop: null, target: null, ratio: null };
+    const long = m.side === 'long';
+    const open = infoExpanded === id;
+    items.push({ id, entry: m.entry, html:
+      `<div class="pos-rr-chip${pending ? ' pending' : ''}${open ? ' open' : ''}" data-pos-rr="${esc(id)}" role="group" aria-label="${esc((long ? 'LONG' : 'SHORT') + ' #' + id)}">` +
+        `<button type="button" class="pos-rr-main" data-pos-rr-toggle="${esc(id)}" aria-expanded="${open}" title="#${esc(id)}">` +
+          `<b class="${long ? 'up' : 'down'}">${long ? 'LONG' : 'SHORT'}</b><bdi dir="ltr">${esc(fmt.price(m.entry, d))}</bdi></button>` +
+        `<span class="pos-rr-detail">` +
+          `<span class="down" title="${m.stopPct != null ? '−' + m.stopPct.toFixed(2) + '%' : ''}">SL <bdi dir="ltr">${m.stop != null ? esc(fmt.price(m.stop, d)) : '—'}</bdi></span>` +
+          `<span class="up" title="${m.targetPct != null ? '+' + m.targetPct.toFixed(2) + '%' : ''}">TP <bdi dir="ltr">${m.target != null ? esc(fmt.price(m.target, d)) : '—'}</bdi></span>` +
+          `<span class="pos-rr-ratio" title="R:R"><bdi dir="ltr">${m.ratio != null ? '1:' + m.ratio.toFixed(2) : 'R —'}</bdi></span>` +
+          (pending ? `<span class="pos-rr-pending">${esc(L('در انتظار تأیید', 'Unconfirmed'))}</span>` : '') +
+        `</span>` +
+        `<button type="button" class="pos-rr-hide" data-pos-rr-hide="${esc(id)}" aria-label="${esc(L('پنهان کردن این برچسب (موقعیت بسته نمی‌شود)', 'Hide this label (does not close the position)'))}" title="${esc(L('پنهان کردن برچسب', 'Hide label'))}">×</button>` +
+      `</div>` });
+  }
+  const hiddenHere = list.filter(p => hidden.has(String(p.id))).length;
+  const restore = hiddenHere ? `<button type="button" class="pos-rr-restore" data-pos-rr-restore="1">${esc(L('نمایش اطلاعات موقعیت', 'Show position info'))} <bdi dir="ltr">(${hiddenHere})</bdi></button>` : '';
+  const html = items.map(i => i.html).join('') + restore;
   if (el.dataset.html !== html){ el.innerHTML = html; el.dataset.html = html; }
+  el._items = items.map(i => ({ id: i.id, entry: i.entry }));
+  layoutPositionInfo();
 }
+/* place each label at its entry row (Vela's price projection), without overlaps */
+function layoutPositionInfo(){
+  const el = document.getElementById('pos-rr-legend');
+  const host = document.getElementById('chart-host');
+  if (!el || !host || !el._items) return;
+  const PO = window.OpenfundPositionOverlay;
+  const canvas = host.querySelector('canvas');
+  const hostRect = host.getBoundingClientRect();
+  const paneTop = canvas ? canvas.getBoundingClientRect().top - hostRect.top : 0;
+  const chips = new Map([...el.querySelectorAll('.pos-rr-chip')].map(c => [c.dataset.posRr, c]));
+  const height = priceFrame?.height || (canvas ? canvas.getBoundingClientRect().height : host.clientHeight);
+  const items = el._items.map(i => {
+    let y = null;
+    if (priceFrame){ try { const v = priceFrame.toY(i.entry); if (Number.isFinite(v) && v >= 0 && v <= height) y = v; } catch(e){} }
+    return { id: i.id, y, h: chips.get(i.id)?.offsetHeight || 22 };
+  });
+  const restore = el.querySelector('.pos-rr-restore');
+  const reserve = restore ? restore.offsetHeight + 6 : 0;
+  const placed = PO?.stackLabels ? PO.stackLabels(items, { top: 6, bottom: height - 6 - reserve, gap: 4 }) : items.map((it, k) => ({ id: it.id, top: 6 + k * (it.h + 4) }));
+  for (const p of placed){ const c = chips.get(p.id); if (c) c.style.top = (paneTop + p.top) + 'px'; }
+  if (restore) restore.style.top = (paneTop + Math.max(6, height - restore.offsetHeight - 6)) + 'px';
+}
+window.addEventListener('resize', () => requestAnimationFrame(layoutPositionInfo));
 document.addEventListener('click', e => {
-  const b = e.target && e.target.closest && e.target.closest('[data-pos-rr]');
-  if (!b || !vc?.chart?.drawings) return;
-  const did = [...posDrawings].find(([pid]) => String(pid) === b.dataset.posRr)?.[1];
-  if (did != null) try { vc.chart.drawings.select(did) } catch(err){}
+  const target = e.target && e.target.closest ? e.target : null;
+  if (!target) return;
+  const hide = target.closest('[data-pos-rr-hide]');
+  if (hide){
+    /* hides the information label only — the position, its orders and SL/TP are untouched */
+    const prefs = tradingPrefs();
+    setTradingPrefs({ hiddenInfo: [...new Set([...prefs.hiddenInfo, hide.dataset.posRrHide])] });
+    return;
+  }
+  if (target.closest('[data-pos-rr-restore]')){ setTradingPrefs({ hiddenInfo: [] }); return; }
+  const toggle = target.closest('[data-pos-rr-toggle]');
+  if (toggle){
+    const id = toggle.dataset.posRrToggle;
+    infoExpanded = infoExpanded === id ? null : id;
+    renderPositionInfo(window.__ofServerTP?.state);
+    const did = [...posDrawings].find(([pid]) => String(pid) === id)?.[1];
+    if (did != null && vc?.chart?.drawings) try { vc.chart.drawings.select(did) } catch(err){}
+  }
 });
 function velaPositionsClear(){
   for (const edit of positionEdits.values()) clearTimeout(edit.timer);
@@ -1771,7 +1922,7 @@ function velaPositionsClear(){
   for (const e of [...entryDrawings.values(), ...execMarkers.values()]){ try { vc.chart.drawings.remove(e.id) } catch(err){} }
   posDrawings.clear(); entryDrawings.clear(); execMarkers.clear();
   try { vc.chart.marks?.set?.([]); syncExecutionMarks.sig = ''; } catch(err){}
-  renderPositionLegend(null);
+  renderPositionInfo(null);
 }
 
 /* ============================================================
@@ -1858,33 +2009,46 @@ function velaClearDrawings(){
    ============================================================ */
 function onPositionDrawingEdited(drawingId){
   if (syncingPositionDrawings || !vc?.chart?.drawings) return;
-  const srv = window.__ofServerTP;
-  if (!srv?.canTrade) return;
   const pair = [...posDrawings].find(([, id]) => id === drawingId);
   if (!pair) return;
-  const posId = pair[0], p = srv.state.positions.find(p => p.id === posId);
+  const srv = window.__ofServerTP;
+  const posId = pair[0], p = srv?.state.positions.find(p => p.id === posId);
   const d = vc.chart.drawings.all().find(d => d.id === drawingId);
-  if (!p || !d?.anchors || d.anchors.length < 3) return;
-  const stop = d.anchors[1]?.price, target = d.anchors[2]?.price;
-  if (!Number.isFinite(stop) || !Number.isFinite(target)) return;
+  /* anything that is not a valid SL/TP edit is put back to the confirmed state */
+  const restore = msg => { if (msg) toast(msg, 'neg'); positionEdits.delete(posId); velaPositionsSync(); };
+  if (!srv?.canTrade || !p || !d?.anchors || d.anchors.length < 3) return restore();
+  /* the executed entry (price and candle) is immutable */
+  const entry = Number(p.entry);
+  if (Math.abs(Number(d.anchors[0].price) - entry) > Math.abs(entry) * 1e-9)
+    return restore(L('نقطهٔ ورود ثابت است؛ فقط حد ضرر و حد سود قابل جابه‌جایی‌اند.', 'The entry is fixed — only SL and TP can be moved.'));
   const precision = Number(board.getMeta(p.market)?.pricePrecision ?? 2);
-  const sl = Number((p.side === 'long' ? Math.min(stop, target) : Math.max(stop, target)).toFixed(precision));
-  const targetPrice = Number((p.side === 'long' ? Math.max(stop, target) : Math.min(stop, target)).toFixed(precision));
+  const edit = window.OpenfundPositionOverlay.riskEdit(p, { sl: d.anchors[1]?.price, tp: d.anchors[2]?.price }, precision);
   clearTimeout(positionEdits.get(posId)?.timer);
-  if (sl === Number(p.sl) && targetPrice === Number(p.tp)) { positionEdits.delete(posId); return; }
+  if (edit.error) return restore(edit.error.startsWith('sl')
+    ? L('حد ضرر باید در سمت زیان نقطهٔ ورود بماند.', 'The stop loss must stay on the loss side of the entry.')
+    : L('حد سود باید در سمت سود نقطهٔ ورود بماند.', 'The take profit must stay on the profit side of the entry.'));
+  if (!edit.changed) return restore();
   // Capture the user intent now. SSE redraws must not overwrite a pending drag.
-  const intent = { srv, market:p.market, sl, tp:targetPrice, timer:null };
+  const intent = { srv, market:p.market, sl: edit.sl, tp: edit.tp, timer:null };
   positionEdits.set(posId, intent);
+  /* unconfirmed preview: dashed lines + "Unconfirmed" on the information label */
+  syncingPositionDrawings = true;
+  try { vc.chart.drawings.update(drawingId, { style: { lineColor: positionOverlayColors().entry, lineWidth: 1, lineStyle: 'dashed' } }) } catch(e){}
+  finally { syncingPositionDrawings = false; }
+  renderPositionInfo(srv.state);
   intent.timer = setTimeout(() => {
     const previous = positionRiskQueues.get(posId) || Promise.resolve();
     const write = previous.catch(() => {}).then(async () => {
       if (positionEdits.get(posId) !== intent) return;
       if (window.__ofServerTP !== srv || !srv.canTrade || S.marketId !== intent.market) { positionEdits.delete(posId); velaPositionsSync(); return; }
       try {
+        /* the existing position-update service; the engine re-validates every rule */
         const result = await srv.modifyRisk(posId, intent.sl, intent.tp);
         toast(result.ok ? L('حد ضرر و سود به‌روز شد.', 'SL/TP updated.') : result.errors?.[0] || L('تغییر حد ضرر و سود رد شد.', 'SL/TP update rejected.'), result.ok ? 'pos' : 'neg');
       } catch(error) { toast(L('به‌روزرسانی حد ضرر و سود ناموفق بود.', 'SL/TP update failed.'), 'neg'); }
       finally {
+        /* confirmed → the server state now holds the new level; rejected or
+           failed → the last confirmed level is redrawn */
         if (positionEdits.get(posId) === intent) positionEdits.delete(posId);
         velaPositionsSync();
       }
@@ -2486,6 +2650,8 @@ function boot(){
       try { vc.chart.on('drawing:edited', (ev) => { if (ev && ev.id) onPositionDrawingEdited(ev.id) }) } catch(e){}
       /* the forming candle's high/low anchors a marker placed on it */
       try { vc.chart.on('bar', b => { if (b && Number.isFinite(Number(b.time))) liveBar = b; }) } catch(e){}
+      registerTradingSettings();
+      installPriceProjection();
       velaPositionsSync();
     }) : setTimeout(() => { velaRestoreDrawings(); velaPositionsSync(); }, 1000);
     $('market-select-btn').disabled = false;

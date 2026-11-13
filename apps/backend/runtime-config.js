@@ -10,15 +10,26 @@ export function runtimeCmsUrl(env, production = false) {
   return url.origin
 }
 
-export function depayWidgetApproved(env, production = true) {
-  if (env.VITE_DEPAY_WIDGET !== '1' || !env.VITE_DEPAY_INTEGRATION_ID) return false
+/* The DePay Payment Widget is the official `@depay/widgets` UMD bundle,
+   vendored and served from this origin (scripts/upstream/vendor-depay-widgets.mjs);
+   its Subresource Integrity hash is compiled into the frontend. It is enabled by
+   the public integration id alone; VITE_DEPAY_WIDGET=0 is the kill switch.
+   VITE_DEPAY_WIDGET_URL + VITE_DEPAY_WIDGET_INTEGRITY optionally replace the
+   vendored file with an externally hosted bundle (https, SRI-pinned). */
+export function depayWidgetApproved(env) {
+  if (env.VITE_DEPAY_WIDGET === '0' || !/^[A-Za-z0-9-]{8,64}$/.test(env.VITE_DEPAY_INTEGRATION_ID || '')) return false
+  return true
+}
+export function depayExternalBundle(env, production = true) {
+  if (!env.VITE_DEPAY_WIDGET_URL) return null
   try {
-    const url = new URL(env.VITE_DEPAY_WIDGET_URL || '')
+    const url = new URL(env.VITE_DEPAY_WIDGET_URL)
     /* http is accepted for a loopback host outside production only (browser tests) */
     const loopback = !production && url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname)
-    if ((url.protocol !== 'https:' && !loopback) || url.username || url.password) return false
-  } catch { return false }
-  return /^sha(256|384|512)-[A-Za-z0-9+/=]{20,}$/.test(env.VITE_DEPAY_WIDGET_INTEGRITY || '')
+    if ((url.protocol !== 'https:' && !loopback) || url.username || url.password) return null
+  } catch { return null }
+  if (!/^sha(256|384|512)-[A-Za-z0-9+/=]{20,}$/.test(env.VITE_DEPAY_WIDGET_INTEGRITY || '')) return null
+  return { url: env.VITE_DEPAY_WIDGET_URL, integrity: env.VITE_DEPAY_WIDGET_INTEGRITY }
 }
 
 export function runtimeConfigScript(env, production = false) {
@@ -29,13 +40,12 @@ export function runtimeConfigScript(env, production = false) {
     telegramCommunityUrl: env.VITE_TELEGRAM_COMMUNITY_URL || '',
     discordCommunityUrl: env.VITE_DISCORD_COMMUNITY_URL || '',
     instagramCommunityUrl: env.VITE_INSTAGRAM_COMMUNITY_URL || '',
-    /* the external widget is enabled only with an https URL AND a
-       Subresource Integrity hash pinning the exact approved bundle */
-    depayWidget: depayWidgetApproved(env, production),
-    depayWidgetUrl: depayWidgetApproved(env, production) ? env.VITE_DEPAY_WIDGET_URL : '',
-    depayWidgetIntegrity: depayWidgetApproved(env, production) ? env.VITE_DEPAY_WIDGET_INTEGRITY : '',
+    depayWidget: depayWidgetApproved(env),
+    /* empty = the vendored same-origin bundle */
+    depayWidgetUrl: depayWidgetApproved(env) ? depayExternalBundle(env, production)?.url || '' : '',
+    depayWidgetIntegrity: depayWidgetApproved(env) ? depayExternalBundle(env, production)?.integrity || '' : '',
     /* public DePay integration id (app.depay.com); not a secret */
-    depayIntegrationId: depayWidgetApproved(env, production) ? env.VITE_DEPAY_INTEGRATION_ID : '',
+    depayIntegrationId: depayWidgetApproved(env) ? env.VITE_DEPAY_INTEGRATION_ID : '',
     /* Footprint chart plugin (Hyperliquid order-flow analytics); off unless enabled */
     footprint: env.FOOTPRINT_ENABLED === '1',
   }

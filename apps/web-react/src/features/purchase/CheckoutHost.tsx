@@ -1,18 +1,17 @@
 import { normalizeLocale, pick } from '../../i18n/locales'
 const currentUiLocale = () => normalizeLocale((window as any).ofUiLang ?? (window as any).ofLang, 'fa')
 import { useEffect, useState } from 'react'
-import { CheckoutPanel } from './CheckoutPanel'
 import { apiFetch } from '../../session/useOpenfundSession'
 
 /**
- * Bridge between the legacy landing runtime (challenges page) and the React
- * checkout panel.
+ * Bridge between the legacy landing runtime (challenges page) and the
+ * dedicated checkout page (/:locale/checkout).
  *
  * The legacy page's own summary dialog (#selection-dialog, the
  * "start challenge" review) stays
  * untouched. When its confirm button (#dialog-done) is clicked AND the backend
- * reports payments enabled, we open the React checkout panel with the builder's
- * current selection (active preset + #account-value). The legacy files
+ * reports payments enabled, the customer is taken to the checkout page with the
+ * builder's current selection (active preset + #account-value). The legacy files
  * themselves are never modified — the hook is added from the React side.
  *
  * Also exposes window.__ofOpenCheckout(slug, size) for programmatic use and
@@ -80,6 +79,11 @@ export function CheckoutHost() {
     return () => document.removeEventListener('click', onClick)
   }, [paymentsEnabled])
 
-  if (!checkout) return null
-  return <CheckoutPanel planSlug={checkout.planSlug} accountSize={checkout.accountSize} onClose={() => setCheckout(null)} />
+  /* one checkout implementation: the dedicated page. A full document
+     navigation, because leaving the legacy landing runtime reloads anyway. */
+  useEffect(() => {
+    if (!checkout) return
+    location.assign(`/${currentUiLocale()}/checkout?plan=${encodeURIComponent(checkout.planSlug)}&size=${checkout.accountSize}`)
+  }, [checkout])
+  return null
 }

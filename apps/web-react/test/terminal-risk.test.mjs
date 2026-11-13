@@ -148,3 +148,48 @@ test('zones: start at the entry candle and extend past the latest candle', () =>
   assert.equal(fresh.start, PO.bucket(now, MIN))
   assert.ok(fresh.end > fresh.start)
 })
+
+test('SL/TP drag: only existing levels, each on its own side of the immutable entry', () => {
+  const long = { side: 'long', entry: 100, sl: 95, tp: 110 }
+  assert.deepEqual(PO.riskEdit(long, { sl: 96.123, tp: 112 }, 2), { sl: 96.12, tp: 112, changed: true })
+  assert.deepEqual(PO.riskEdit(long, { sl: 95, tp: 110 }, 2), { sl: 95, tp: 110, changed: false })
+  assert.equal(PO.riskEdit(long, { sl: 101, tp: 110 }, 2).error, 'sl_wrong_side')
+  assert.equal(PO.riskEdit(long, { sl: 95, tp: 99 }, 2).error, 'tp_wrong_side')
+  const short = { side: 'short', entry: 100, sl: 105, tp: 90 }
+  assert.deepEqual(PO.riskEdit(short, { sl: 104, tp: 88 }, 2), { sl: 104, tp: 88, changed: true })
+  assert.equal(PO.riskEdit(short, { sl: 99, tp: 90 }, 2).error, 'sl_wrong_side')
+  assert.equal(PO.riskEdit(short, { sl: 105, tp: 101 }, 2).error, 'tp_wrong_side')
+  /* a missing level is never invented, whatever the drawing reports */
+  assert.deepEqual(PO.riskEdit({ side: 'long', entry: 100, sl: 95, tp: null }, { sl: 97, tp: 130 }, 2), { sl: 97, tp: null, changed: true })
+  assert.deepEqual(PO.riskEdit({ side: 'short', entry: 100, sl: null, tp: 90 }, { sl: 140, tp: 91 }, 2), { sl: null, tp: 91, changed: true })
+  assert.equal(PO.riskEdit({ side: 'long', entry: 0, sl: 1 }, { sl: 1 }, 2).error, 'no_entry')
+})
+
+test('information labels: price order kept, no overlap, kept inside the pane', () => {
+  const h = 22, gap = 4
+  const overlap = rows => rows.slice().sort((a, b) => a.top - b.top).some((r, i, a) => i && r.top < a[i - 1].top + h + gap)
+  /* three positions with almost the same entry row */
+  const out = PO.stackLabels([{ id: 'a', y: 200, h }, { id: 'b', y: 202, h }, { id: 'c', y: 205, h }], { top: 6, bottom: 500, gap })
+  assert.equal(overlap(out), false)
+  assert.deepEqual(out.map(r => r.id), ['a', 'b', 'c'])
+  assert.ok(out[0].top < out[1].top && out[1].top < out[2].top)
+  /* near the bottom edge the stack moves up instead of leaving the pane */
+  const low = PO.stackLabels([{ id: 'a', y: 495, h }, { id: 'b', y: 498, h }], { top: 6, bottom: 500, gap })
+  assert.ok(low.every(r => r.top >= 6 && r.top + h <= 500), JSON.stringify(low))
+  assert.equal(overlap(low), false)
+  /* entry off-screen (no row): labels are still placed, in order, without overlap */
+  const none = PO.stackLabels([{ id: 'a', y: null, h }, { id: 'b', y: null, h }], { top: 6, bottom: 500, gap })
+  assert.deepEqual(none.map(r => r.top), [6, 32])
+})
+
+test('markers: BUY ×2 / SELL ×2 aggregate per candle and side without merging opposite sides', () => {
+  const bar = 60_000, t0 = 1_700_000_040_000
+  const fills = [
+    { id: '1', side: 'long', time: t0 + 1000, price: 100 }, { id: '2', side: 'long', time: t0 + 2000, price: 101 },
+    { id: '3', side: 'short', time: t0 + 3000, price: 102 }, { id: '4', side: 'short', time: t0 + 4000, price: 103 },
+  ]
+  const g = PO.executionGroups(fills, bar)
+  assert.deepEqual([...g.values()].map(x => [x.label, x.placement]).sort(), [['BUY ×2', 'below'], ['SELL ×2', 'above']])
+  const range = { high: 105, low: 98 }
+  for (const x of g.values()) assert.equal(PO.markerPrice(x, range), x.side === 'long' ? 98 : 105)
+})

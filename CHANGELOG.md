@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+- Challenge checkout and DePay activation (branch `agent/claude/depay-checkout-chart-ux`,
+  [ADR 0026](docs/decisions/0026-dedicated-checkout-vendored-depay-widget-and-chart-position-tool.md);
+  **not deployed; first real payment pending the owner**): a dedicated
+  `/:locale/checkout` page (wallet, challenge, size, coupon, customer email,
+  review, Pay with DePay, live status, verified receipt, resume by link)
+  replaces the checkout dialog. The official DePay widget is vendored
+  same-origin and opened with the integration id and the order id only, so
+  Openfund no longer depends on a CDN bundle, a CSP exception or a
+  hand-computed hash, and never restricts DePay networks or tokens. A
+  provisioning failure after a verified payment is retried without a second
+  payment.
+- Chart trading UX (same branch): compact BUY/SELL markers that sit off the
+  wick (BUY ×n / SELL ×n per candle); the position box keeps the executed
+  entry fixed and lets only an existing SL/TP move vertically, with
+  validation, an unconfirmed preview and the existing position-update
+  service; position information moves to compact right-hand labels that can
+  be hidden and restored without touching the position; Chart Settings →
+  Trading → "Show Buy / Sell Markers" (with its requested Persian label),
+  saved per wallet.
+
 - Documentation: correct current pages that still described the app as
   served at `/react/` (it is served from `/`; `/react/` redirects) and the
   web README's Node 22 requirement (Node 26); replace the stale v0.2.0 audit

@@ -1,7 +1,8 @@
 /* DePay → Openfund → Challenge activation: full checkout acceptance in a real browser.
  *
  * What is REAL: the Openfund backend (spawned here), PostgreSQL, SIWE sign-in,
- * the React checkout panel, the Subresource-Integrity-pinned widget loader, the
+ * the dedicated checkout page (/:locale/checkout), the Subresource-Integrity-pinned
+ * widget loader (operator-override path; the vendored bundle is checked separately), the
  * dynamic-configuration endpoint and its RSA-PSS signature, the signed callback
  * endpoint, and the backend's on-chain verifier talking JSON-RPC over HTTP.
  *
@@ -45,7 +46,8 @@ const verifySig = (data, sig, pubKey) => crypto.verify('sha256', Buffer.from(dat
 
 /* ---- the stub widget bundle (what the browser would download from DePay) ---- */
 const WIDGET_BODY = `window.DePayWidgets = { Payment: function (opts) {
-  window.__depayOpts = opts;
+  window.__depayOpts = opts; window.__depayOpenCount = (window.__depayOpenCount || 0) + 1;
+  window.__depayCallbacks = Object.keys(opts).filter(function (k) { return typeof opts[k] === 'function' }).sort().join(',');
   var d = document.createElement('div'); d.id = 'mock-depay-widget'; d.textContent = 'DePay payment widget (test stub)';
   document.body.appendChild(d);
   return window.__depayOpened(JSON.stringify(opts));
@@ -143,29 +145,44 @@ async function run({ BASE, chain }) {
     await page.locator('#review-selection').click()
     await page.locator('#selection-dialog[open], dialog[open]').first().waitFor()
     await page.locator('#dialog-done').click()
-    await page.getByRole('heading', { name: 'Challenge Checkout' }).waitFor({ timeout: 8000 })
+    await page.waitForURL(/\/en\/checkout\?plan=[^&]+&size=\d+/, { timeout: 10000, waitUntil: 'load' })
+    await page.getByRole('heading', { name: 'Buy a Challenge', level: 1 }).waitFor({ timeout: 10000 })
+    await connect(page); await signIn(page)
   }
-  const shot = name => page.screenshot({ path: path.join(OUT, name + '.png') }).catch(() => {})
+  const shot = name => page.screenshot({ path: path.join(OUT, name + '.png'), fullPage: true }).catch(() => {})
   const challengesOf = async () => (await call('/auth/me')).data?.challenges || []
   const pendingOrder = async () => ((await call('/purchases/history')).data?.orders || []).find(o => o.status === 'pending')
 
   try {
-    /* ===== 1. Buy Challenge: order is created server-side and the official widget opens ===== */
+    /* ===== 1. challenge builder → dedicated checkout page → Pay with DePay ===== */
     await openCheckout(1)
-    const buy = page.getByRole('button', { name: 'Buy Challenge', exact: true })
-    await buy.waitFor({ timeout: 8000 })
-    check('checkout offers a single "Buy Challenge" action when DePay is configured', true)
+    check('the challenge builder hands the selection to the dedicated checkout page', /plan=standard&size=10000/.test(page.url()), page.url())
+    const pay = page.getByRole('button', { name: 'Pay with DePay', exact: true })
+    await pay.waitFor({ timeout: 8000 })
+    check('Pay with DePay stays disabled until the required customer details are complete', await pay.isDisabled())
+    await page.getByLabel('Email for the receipt').fill('not-an-email')
+    await page.getByRole('alert').filter({ hasText: 'valid email' }).waitFor()
+    await page.getByLabel('Email for the receipt').fill('buyer@example.test')
+    await page.getByLabel('Name (optional)').fill('E2E Buyer')
+    await page.locator('.of-co-accept input').check()
+    check('the summary shows the server catalog price for the selection', /\$80/.test(await page.locator('.of-co-total').first().textContent()))
+    await shot('0-checkout-page')
     const before = (await challengesOf()).length
     const widgetOpened = waitOpened()
-    await buy.click()
+    await pay.dblclick() /* a double click must not create two orders or two widgets */
     const opts = await Promise.race([widgetOpened, sleep(15000).then(() => null)])
-    check('the DePay widget opens through the SRI-pinned official bundle', !!opts)
+    check('the DePay widget opens through the SRI-pinned bundle loader', !!opts)
     await page.locator('#mock-depay-widget').waitFor({ timeout: 5000 })
-    check('widget is called with the integration id and ONLY the order id as payload', opts.integration === INTEGRATION && Object.keys(opts.payload).join() === 'orderId' && !('accept' in opts))
-    check('widget offers exactly the server-configured settlement chains', JSON.stringify(opts.blockchains) === '["arbitrum"]', JSON.stringify(opts.blockchains))
+    check('widget is called with the integration id and ONLY the order id as payload', opts.integration === INTEGRATION && Object.keys(opts.payload).join() === 'orderId')
+    check('Openfund does not restrict DePay networks or tokens (no accept/allow/deny/blockchains passed)', !['accept', 'allow', 'deny', 'blockchains', 'whitelist', 'blacklist'].some(k => k in opts), Object.keys(opts).join())
+    check('the widget registers the documented client callbacks (UI only)', await page.evaluate(() => window.__depayCallbacks) === 'closed,critical,error,failed,sent,succeeded,validated', await page.evaluate(() => window.__depayCallbacks))
+    check('one widget instance only, even on a double click', await page.evaluate(() => window.__depayOpenCount) === 1)
     const order = await pendingOrder()
     currentOrderId = order?.id ?? null
-    check('the order exists server-side with the catalog price', !!order && order.id === opts.payload.orderId && Number(order.price_usd) === 80, JSON.stringify(order))
+    check('exactly one server order exists with the catalog price', !!order && order.id === opts.payload.orderId && Number(order.price_usd) === 80, JSON.stringify(order))
+    check('the order id is in the page URL, so the purchase can be revisited', page.url().includes('order=' + order.id))
+    const pendingReceipt = (await call(`/purchases/orders/${order.id}/receipt`)).data?.receipt
+    check('the receipt claims nothing before verification and keeps the customer details', pendingReceipt?.status === 'pending' && pendingReceipt.payment === null && pendingReceipt.customer?.email === 'buyer@example.test')
     await shot('1-widget-opened')
 
     /* ===== 2. DePay asks OUR server for the payment configuration ===== */
@@ -201,8 +218,8 @@ async function run({ BASE, chain }) {
     await sleep(1500)
     check('the order stays unpaid while the chain cannot be read', (await pendingOrder())?.id === order.id)
     await page.reload()               // ---- the customer refreshes the page mid-payment ----
-    await openCheckout(1)
-    await page.getByText('temporarily unreachable', { exact: false }).waitFor({ timeout: 15000 })
+    await connect(page); await signIn(page)
+    await page.getByText('temporarily unreachable', { exact: false }).waitFor({ timeout: 20000 })
     check('after a refresh the checkout resumes the same order and explains the wait (payment not lost)', true)
     await shot('3-resumed-after-refresh')
     check('still exactly the same single pending order after the refresh', (await pendingOrder())?.id === order.id)
@@ -210,6 +227,10 @@ async function run({ BASE, chain }) {
     chain.state.down = false          // ---- the RPC recovers; the recovery sweep proves the payment ----
     await page.getByText('Payment successful', { exact: false }).waitFor({ timeout: 30000 })
     check('Payment Successful is shown once the backend has verified the payment on-chain', true)
+    const receiptText = await page.locator('.of-co-receipt').textContent()
+    check('the receipt shows order id, network, transaction hash, invoice and challenge id from verified records',
+      receiptText.includes(order.id) && receiptText.includes('Arbitrum One') && receiptText.includes(goodTx) && /OF-\d{4}-\d{6}/.test(receiptText) && receiptText.includes('Challenge ID'), receiptText.slice(0, 400))
+    check('the receipt links to the dashboard to access the challenge', await page.getByRole('link', { name: 'Go to Dashboard' }).count() === 1)
     await shot('4-payment-successful')
     const after = await challengesOf()
     check('exactly one challenge account was created', after.length === before + 1)
@@ -227,6 +248,12 @@ async function run({ BASE, chain }) {
       ((await call('/purchases/history')).data.orders.filter(o => o.id === order.id && o.invoice).length === 1))
     check('the paid order is no longer payable (configuration refused)', (await dePayAskConfiguration(BASE, order.id)).status === 409)
 
+    /* ===== revisit later: the receipt is reachable from the order link ===== */
+    await page.goto(BASE + '/en/checkout?order=' + order.id)
+    await connect(page); await signIn(page)
+    await page.locator('.of-co-receipt').waitFor({ timeout: 15000 })
+    check('revisiting the order link shows the same verified receipt (no second payment requested)', (await page.getByRole('button', { name: 'Pay with DePay' }).count()) === 0)
+
     /* ===== 6. a tampered widget bundle never executes (Subresource Integrity) ===== */
     const ctx2 = await browser.newContext({ viewport: { width: 1440, height: 900 } })
     await ctx2.route('http://localhost:8055/**', route => route.abort())
@@ -234,15 +261,14 @@ async function run({ BASE, chain }) {
     await ctx2.route(WIDGET_URL, route => route.fulfill({ status: 200, contentType: 'application/javascript', headers: { 'Access-Control-Allow-Origin': '*' }, body: WIDGET_BODY + '\nwindow.__pwned = true;' }))
     const page2 = await newPage(ctx2)
     const call2 = makeCall(page2, API)
-    await page2.goto(BASE + '/en/challenges'); await page2.waitForTimeout(3000)
+    await page2.goto(BASE + '/en/checkout?plan=standard&size=25000'); await page2.waitForTimeout(2000)
     await connect(page2); await signIn(page2)
-    const sizes2 = page2.locator('#builder-sizes button')
-    await sizes2.first().waitFor({ state: 'attached' }); await sizes2.nth(2).click()
-    await page2.locator('#review-selection').click(); await page2.locator('#selection-dialog[open], dialog[open]').first().waitFor(); await page2.locator('#dialog-done').click()
-    await page2.getByRole('button', { name: 'Buy Challenge', exact: true }).click()
+    await page2.getByLabel('Email for the receipt').fill('buyer@example.test')
+    await page2.locator('.of-co-accept input').check()
+    await page2.getByRole('button', { name: 'Pay with DePay', exact: true }).click()
     await page2.getByRole('alert').filter({ hasText: 'could not be loaded' }).waitFor({ timeout: 15000 })
-    check('a tampered widget bundle is blocked and the checkout falls back safely', !(await page2.evaluate(() => window.__pwned === true || !!window.DePayWidgets)))
-    check('the manual payment fallback (receiver address) stays available', await page2.locator('.of-checkout-addr code').count() === 1)
+    check('a tampered widget bundle is blocked (Subresource Integrity) and nothing executes', !(await page2.evaluate(() => window.__pwned === true || !!window.DePayWidgets)))
+    check('the order stays open and payment can be retried from the same page', await page2.getByRole('button', { name: /Pay with DePay|Reopen DePay/ }).count() === 1)
     await page2.screenshot({ path: path.join(OUT, '5-tampered-bundle.png') }).catch(() => {})
     await ctx2.close()
 

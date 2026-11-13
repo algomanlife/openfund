@@ -579,21 +579,42 @@ html[dir="rtl"] .sltp-field input { text-align: left; }
   #sltp-dialog .dlg-actions > button { flex: 1 1 0; min-width: 0; }
 }
 
-/* Position risk/reward legend: compact chips over the chart's top start
-   corner; they never take pointer events outside the chips themselves, so
-   dragging, zooming and the crosshair keep working underneath. */
+/* Position information labels: compact chart-native labels on the right of
+   the plot, next to the price axis, each at its entry's row (placed by
+   terminal.js layoutPositionInfo, collision-free). The column itself takes
+   no pointer events, so dragging, zooming and the crosshair keep working. */
 #chart-host { position: relative; }
-.pos-rr-legend { position: absolute; z-index: 4; inset-block-end: 64px; inset-inline-start: 96px; max-width: calc(100% - 190px);
-  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none; }
-.pos-rr-chip { pointer-events: auto; display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; max-width: 100%;
-  padding: 3px 8px; border: 1px solid var(--line-strong); border-radius: 4px; cursor: pointer;
-  background: color-mix(in srgb, var(--surface-2) 82%, transparent); color: var(--body, var(--white));
-  font: 500 11px/1.5 Ubuntu, Irancell, system-ui, sans-serif; font-variant-numeric: tabular-nums; text-align: start; }
-.pos-rr-chip:hover, .pos-rr-chip:focus-visible { border-color: var(--mint); outline: none; }
+.pos-rr-legend { position: absolute; z-index: 4; top: 0; bottom: 0; right: var(--of-price-axis-w, 68px); width: 0; pointer-events: none; }
+/* the price axis is on the right in LTR and RTL alike: physical offsets */
+.pos-rr-chip, .pos-rr-restore { position: absolute; right: 4px; pointer-events: auto; white-space: nowrap;
+  font: 500 10px/1.4 Ubuntu, Irancell, system-ui, sans-serif; font-variant-numeric: tabular-nums; color: var(--body, var(--white)); }
+.pos-rr-chip { display: flex; align-items: center; gap: 5px; padding: 1px 2px 1px 5px; border: 1px solid var(--line-strong); border-radius: 4px;
+  background: color-mix(in srgb, var(--surface-2) 74%, transparent); box-shadow: 0 1px 3px rgb(0 0 0 / .14); opacity: .9; transition: top .12s ease-out, opacity .12s; }
+.pos-rr-chip:hover, .pos-rr-chip:focus-within, .pos-rr-chip.open { opacity: 1; z-index: 2; background: color-mix(in srgb, var(--surface-2) 94%, transparent); }
+html[dir="rtl"] .pos-rr-chip { padding: 1px 5px 1px 2px; }
+.pos-rr-chip.pending { border-style: dashed; }
+.pos-rr-chip:hover, .pos-rr-chip:focus-within { border-color: var(--mint); }
+.pos-rr-main { display: inline-flex; align-items: center; gap: 5px; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.pos-rr-main:focus-visible, .pos-rr-hide:focus-visible, .pos-rr-restore:focus-visible { outline: 1px solid var(--mint); outline-offset: 1px; }
+.pos-rr-chip b { font-weight: 700; letter-spacing: .3px; font-size: 10px; }
+.pos-rr-detail { display: inline-flex; align-items: center; gap: 5px; }
+.pos-rr-ratio { color: var(--muted, #9fb3a8); }
+.pos-rr-detail small { opacity: .75; font-size: 9.5px; }
 .pos-rr-chip .up { color: var(--pos, var(--mint)); }
 .pos-rr-chip .down { color: var(--neg); }
-.pos-rr-chip b { font-weight: 700; letter-spacing: .3px; }
-@media (max-width: 650px) { .pos-rr-legend { inset-inline-start: 8px; inset-block-end: 56px; max-width: calc(100% - 70px); } .pos-rr-chip { font-size: 10.5px; } }
+.pos-rr-pending { font-size: 9.5px; color: var(--warn, #e3b35f); }
+.pos-rr-hide { display: inline-grid; place-items: center; width: 16px; height: 16px; padding: 0; border: 0; border-radius: 3px; background: none;
+  color: var(--muted, #9fb3a8); font: 600 12px/1 system-ui, sans-serif; cursor: pointer; opacity: .6; }
+.pos-rr-hide:hover, .pos-rr-hide:focus-visible { opacity: 1; background: color-mix(in srgb, var(--line-strong) 60%, transparent); }
+.pos-rr-restore { padding: 2px 7px; border: 1px dashed var(--line-strong); border-radius: 4px; background: color-mix(in srgb, var(--surface-2) 80%, transparent); cursor: pointer; color: var(--muted, #9fb3a8); }
+/* touch: larger targets; narrow: side + entry only, details on tap */
+@media (pointer: coarse) { .pos-rr-hide { width: 22px; height: 22px; font-size: 14px; } .pos-rr-main { min-height: 22px; } }
+@media (max-width: 650px) {
+  .pos-rr-legend { right: var(--of-price-axis-w, 56px); }
+  .pos-rr-chip { flex-wrap: wrap; max-width: min(240px, 62vw); white-space: normal; }
+  .pos-rr-chip:not(.open):not(.pending) .pos-rr-detail { display: none; }
+  .pos-rr-detail { flex-wrap: wrap; gap: 2px 6px; width: 100%; }
+}
 /* technical values in the new dialogs and legend use the same Latin-digit
    face as every other number in RTL (ids, prices, ratios) */
 html[dir="rtl"] :is(.sltp-id, .sltp-meta bdi, .sltp-hint bdi, .pos-rr-chip bdi, .review-list dd bdi) {

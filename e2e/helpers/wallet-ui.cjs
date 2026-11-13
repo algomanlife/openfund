@@ -47,10 +47,15 @@ async function connect(page) {
   await page.getByRole('button', { name: NAME, includeHidden: true }).first().waitFor({ state: 'attached', timeout: 20000 })
 }
 async function signIn(page) {
+  const account = page.getByRole('button', { name: /^(Account|حساب من)$/, includeHidden: true }).first()
+  const signInButton = page.getByRole('button', { name: /^(Sign in|ورود به اوپن‌فاند)$/, includeHidden: true }).first()
   for (let attempt = 0; attempt < 3; attempt++) {
-    const account = page.getByRole('button', { name: /^(Account|حساب من)$/, includeHidden: true }).first()
-    if (await account.count()) return
-    await (await walletButton(page, 'Sign in')).click()
+    /* after a navigation an existing session is restored asynchronously: the
+       header shows "Sign in" briefly and then "Account" — give it a moment
+       instead of clicking a button that is about to disappear */
+    try { await account.waitFor({ state: 'attached', timeout: 4000 }); return } catch { /* not signed in (yet) */ }
+    if (!await signInButton.count()) continue
+    try { await (await walletButton(page, 'Sign in')).click({ timeout: 5000 }) } catch { continue }
     try { await (await walletButton(page, 'Account')).waitFor({ state: 'attached', timeout: 15000 }); return } catch { /* retry */ }
   }
   await (await walletButton(page, 'Account')).waitFor({ state: 'attached', timeout: 30000 })

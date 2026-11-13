@@ -7,7 +7,7 @@ import { execFileSync } from 'node:child_process';
 import {nextVersion,requestedPatchVersion,validateEnv,sha256,writeJson,treeHash,filesIn,root} from '../lib.mjs';
 import {verify} from '../verify.mjs';
 import {exactSecretScan} from '../check-secrets.mjs';
-import {runtimeCmsUrl,runtimeConfigScript,depayWidgetApproved} from '../../../apps/backend/runtime-config.js';
+import {runtimeCmsUrl,runtimeConfigScript,depayWidgetApproved,depayExternalBundle} from '../../../apps/backend/runtime-config.js';
 test('runtime CMS origin stays outside the immutable frontend and rejects unsafe production URLs',()=>{
  assert.equal(runtimeCmsUrl({CMS_PUBLIC_URL:'https://cms.openfi.cloud'},true),'https://cms.openfi.cloud');
  assert.equal(runtimeCmsUrl({VITE_DIRECTUS_HOST:'openfund-cms.onrender.com'},true),'https://openfund-cms.onrender.com');
@@ -18,18 +18,26 @@ test('runtime CMS origin stays outside the immutable frontend and rejects unsafe
  assert.match(script,/public-id/);
  assert.doesNotMatch(script,/localhost/);
 });
-test('the external payment widget is enabled only with an https URL and a Subresource Integrity hash',()=>{
+test('the DePay widget is enabled by the integration id; an external bundle needs an https URL and a Subresource Integrity hash',()=>{
  const hash='sha384-'+'A'.repeat(64);
- const base={VITE_DEPAY_WIDGET:'1',VITE_DEPAY_WIDGET_URL:'https://integrate.depay.com/widgets/v13.js',VITE_DEPAY_WIDGET_INTEGRITY:hash,VITE_DEPAY_INTEGRATION_ID:'int-1'};
- assert.equal(depayWidgetApproved(base),true);
- for(const over of [{VITE_DEPAY_WIDGET:'0'},{VITE_DEPAY_WIDGET_URL:'http://integrate.depay.com/w.js'},{VITE_DEPAY_WIDGET_URL:''},{VITE_DEPAY_WIDGET_INTEGRITY:''},{VITE_DEPAY_WIDGET_INTEGRITY:'md5-abc'},{VITE_DEPAY_INTEGRATION_ID:''},{VITE_DEPAY_WIDGET_URL:'https://u:p@integrate.depay.com/w.js'}])
-  assert.equal(depayWidgetApproved({...base,...over}),false);
- const script=runtimeConfigScript({CMS_PUBLIC_URL:'https://cms.openfi.cloud',...base},true);
- assert.match(script,/depayWidgetIntegrity/);assert.match(script,/depayIntegrationId/);
- assert.equal(depayWidgetApproved({...base,VITE_DEPAY_WIDGET_URL:'http://localhost:9/w.js'},false),true);
- assert.equal(depayWidgetApproved({...base,VITE_DEPAY_WIDGET_URL:'http://localhost:9/w.js'},true),false);
- const off=runtimeConfigScript({CMS_PUBLIC_URL:'https://cms.openfi.cloud',VITE_DEPAY_WIDGET:'1',VITE_DEPAY_WIDGET_URL:base.VITE_DEPAY_WIDGET_URL},true);
- assert.doesNotMatch(off,/integrate\.depay\.com/);
+ const id='a42b60b9-ab0a-422e-ad3c-a5580d8ba64d';
+ /* integration id alone: vendored same-origin bundle */
+ assert.equal(depayWidgetApproved({VITE_DEPAY_INTEGRATION_ID:id}),true);
+ for(const over of [{VITE_DEPAY_WIDGET:'0'},{VITE_DEPAY_INTEGRATION_ID:''},{VITE_DEPAY_INTEGRATION_ID:'bad id<script>'}])
+  assert.equal(depayWidgetApproved({VITE_DEPAY_INTEGRATION_ID:id,...over}),false);
+ const vendored=runtimeConfigScript({CMS_PUBLIC_URL:'https://cms.openfi.cloud',VITE_DEPAY_INTEGRATION_ID:id},true);
+ assert.match(vendored,/"depayWidget":true/);assert.match(vendored,/"depayWidgetUrl":""/);assert.match(vendored,new RegExp(id));
+ /* optional external bundle */
+ const base={VITE_DEPAY_WIDGET_URL:'https://integrate.depay.com/widgets/v13.js',VITE_DEPAY_WIDGET_INTEGRITY:hash};
+ assert.deepEqual(depayExternalBundle(base),{url:base.VITE_DEPAY_WIDGET_URL,integrity:hash});
+ for(const over of [{VITE_DEPAY_WIDGET_URL:'http://integrate.depay.com/w.js'},{VITE_DEPAY_WIDGET_URL:''},{VITE_DEPAY_WIDGET_INTEGRITY:''},{VITE_DEPAY_WIDGET_INTEGRITY:'md5-abc'},{VITE_DEPAY_WIDGET_URL:'https://u:p@integrate.depay.com/w.js'}])
+  assert.equal(depayExternalBundle({...base,...over}),null);
+ assert.ok(depayExternalBundle({...base,VITE_DEPAY_WIDGET_URL:'http://localhost:9/w.js'},false));
+ assert.equal(depayExternalBundle({...base,VITE_DEPAY_WIDGET_URL:'http://localhost:9/w.js'},true),null);
+ const ext=runtimeConfigScript({CMS_PUBLIC_URL:'https://cms.openfi.cloud',VITE_DEPAY_INTEGRATION_ID:id,...base},true);
+ assert.match(ext,/integrate\.depay\.com/);assert.match(ext,/depayWidgetIntegrity":"sha384-/);
+ const off=runtimeConfigScript({CMS_PUBLIC_URL:'https://cms.openfi.cloud',VITE_DEPAY_WIDGET:'0',VITE_DEPAY_INTEGRATION_ID:id,...base},true);
+ assert.match(off,/"depayWidget":false/);assert.doesNotMatch(off,/integrate\.depay\.com/);
 });
 test('version allocation preserves tags, increments all change categories and handles numeric ordering',()=>{
  assert.equal(nextVersion([]),'0.1.0');

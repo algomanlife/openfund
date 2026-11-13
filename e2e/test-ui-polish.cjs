@@ -247,10 +247,10 @@ async function walletDisclosureFits(page){
     await readableText(page,PUBLIC_TEXT,theme);
     if(publicRoute==='challenges'&&width===1440){
      await page.waitForFunction(()=>typeof window.__ofOpenCheckout==='function');
-     await page.evaluate(()=>window.__ofOpenCheckout('standard',10000));
-     await page.locator('.of-checkout').waitFor();
-     await whiteCanvas(page,'.of-checkout',theme);await readableText(page,'.of-checkout',theme);
-     await page.locator('.of-checkout-close').click();
+     // the challenge selection hands off to the dedicated checkout page (/:locale/checkout)
+     await Promise.all([page.waitForURL(/\/checkout\?plan=standard&size=10000/),page.evaluate(()=>window.__ofOpenCheckout('standard',10000))]);
+     await page.locator('.of-co .of-co-card').first().waitFor();
+     await whiteCanvas(page,'.of-co,.of-co-card',theme);await readableText(page,'.of-co',theme);
     }
    }
    await page.goto(BASE+`/${locale}/faq`);await tv.waitFor();

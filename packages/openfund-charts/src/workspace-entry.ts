@@ -3,6 +3,8 @@ import { PineWorkerEngine } from '@luxalgo/vela-pinets';
 import { createCatalog, createLibraryResolver } from './pine-sources.mjs';
 import { preserveUnknownVolume } from './pine-data.mjs';
 import { registerRendererDefaults } from '../../../vendor/vela/src/plugin';
+/* Openfund host-managed drawing types (live position box, compact BUY/SELL markers) */
+import './openfund-drawings';
 import { registerLocale } from '../../../vendor/vela/src/core/i18n/registry';
 import ar from '../../../vendor/vela/src/locales/ar';
 import ru from '../../../vendor/vela/src/locales/ru';
