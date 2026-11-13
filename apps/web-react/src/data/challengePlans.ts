@@ -299,7 +299,8 @@ export function assertPlansValid(plans: ChallengePlan[]): void {
     if (p.drawdownMode === 'trailing' && p.trailingLockAtProfitPct == null) throw new Error(`plan ${p.slug}: trailing drawdown needs a lock point`)
     if (p.free !== (p.slug === 'free-trial')) throw new Error(`plan ${p.slug}: free flag mismatch`)
     if (p.free && (p.firstPayoutDays != null || p.profitSplitPct > 0 || p.rewardCycles.length)) throw new Error(`plan ${p.slug}: trial must not promise rewards`)
-    if (!p.free && !p.rewardCycles.length) throw new Error(`plan ${p.slug}: a paid plan needs at least one reward cycle`)
+    /* catalog v3 terms only: rows published before v3 (e.g. a CMS not yet re-seeded) stay valid */
+    if (!p.free && p.catalogVersion >= 3 && !p.rewardCycles.length) throw new Error(`plan ${p.slug}: a paid plan needs at least one reward cycle`)
     for (const c of p.rewardCycles) {
       if (!(c.splitPct > 0 && c.splitPct <= 100)) throw new Error(`plan ${p.slug}: invalid ${c.key} split`)
       if ((c.firstAfterDays == null) !== (c.key === 'on_demand')) throw new Error(`plan ${p.slug}: ${c.key} timing mismatch`)

@@ -158,3 +158,9 @@ test('the landing never advertises an unpriced daily-loss variant (D7)', () => {
   const legacy = serializeForLegacy(publishedPlans())
   for (const k of Object.keys(legacy)) assert.equal(legacy[k].dailyLossAlt, null, k)
 })
+
+test('a plan row published before catalog v3 (no reward cycles yet) still renders', () => {
+  const legacy = { ...planBySlug('standard'), catalogVersion: 1, rewardCycles: [], conduct: {}, inactivityDays: null }
+  assert.doesNotThrow(() => assertPlansValid([legacy]))
+  assert.throws(() => assertPlansValid([{ ...legacy, catalogVersion: 3 }]), /reward cycle/)
+})
