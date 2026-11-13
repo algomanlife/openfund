@@ -80,7 +80,8 @@ before(async () => {
   for (const s of PLAN_SEEDS) {
     plans[s.slug] = (await pool.query(`INSERT INTO challenge_plans (slug, name, configuration) VALUES ($1,$2,$3) RETURNING *`, [`${s.slug}-rw-${Date.now()}`, s.name, JSON.stringify(s.configuration)])).rows[0]
   }
-  plans.legacy = (await pool.query(`INSERT INTO challenge_plans (slug, name, configuration) VALUES ($1,$2,$3) RETURNING *`, [`standard-legacy-rw-${Date.now()}`, 'legacy', JSON.stringify(LEGACY_STANDARD)])).rows[0]
+  /* inactive: a fixture plan must never appear on public pages that later suites render */
+  plans.legacy = (await pool.query(`INSERT INTO challenge_plans (slug, name, status, configuration) VALUES ($1,$2,'inactive',$3) RETURNING *`, [`standard-legacy-rw-${Date.now()}`, 'legacy', JSON.stringify(LEGACY_STANDARD)])).rows[0]
   const app = express()
   app.use(express.json())
   app.use(rewardRoutes({ pool, requireAuth }))

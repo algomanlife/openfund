@@ -250,7 +250,7 @@ test('C13 snapshots before v3 are never given new conduct obligations', async ()
 test('C14 regression: a challenge created without a snapshot is provisioned from its own plan, not defaults', async () => {
   const user = await newUser()
   const cfg = { accountSizesUsd: [5000], priceUsd: { 5000: 44 }, phases: 1, phase1TargetPct: 12, dailyLossPct: 4, maxTotalLossPct: 9, drawdownMode: 'static', minTradingDays: 0, referenceLeverageX: 5 }
-  const plan = (await pool.query(`INSERT INTO challenge_plans (slug, name, configuration) VALUES ($1,'regression',$2) RETURNING id`, [`snap-reg-${Date.now()}`, JSON.stringify(cfg)])).rows[0]
+  const plan = (await pool.query(`INSERT INTO challenge_plans (slug, name, status, configuration) VALUES ($1,'regression','inactive',$2) RETURNING id`, [`snap-reg-${Date.now()}`, JSON.stringify(cfg)])).rows[0]
   const c = (await pool.query(`INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd) VALUES ($1,$2,'created',5000) RETURNING id`, [user, plan.id])).rows[0]
   await new ChallengeService(pool).start(user, c.id)
   const snap = (await pool.query('SELECT rules_snapshot FROM openfund_challenges WHERE id=$1', [c.id])).rows[0].rules_snapshot
