@@ -92,8 +92,7 @@ export default function Rulebook() {
   }
 
   const intro = meta?.description[locale] || rulebookIntro[locale]
-  const notice = meta ? pick(locale, 'این‌ها شرایط منتشرشده و مرجع چلنج‌های اوپن‌فاند هستند. فعال‌سازی خرید، حساب فاندشده و برداشت در این نسخه فعال نیست — ترمینال فعلاً دموی شبیه‌سازی‌شدهٔ ۱۰۰٬۰۰۰ دای را اجرا می‌کند — و پیش از عرضه، قرارداد نهایی نسخه‌دار منتشر خواهد شد.', 'These are the published terms of record for the Openfund challenges. Purchase activation, funded accounts and payouts are not yet enabled in this release — the terminal currently runs the simulated 100,000 DAI demo — and a final versioned agreement will be published before launch.')
-    : rulebookNotice[locale]
+  const notice = rulebookNotice[locale]
 
   return <InformationShell page="rulebook" description={intro}>
     <Hero locale={locale} page="rulebook"

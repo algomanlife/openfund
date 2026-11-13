@@ -191,7 +191,13 @@ function planFromRow(row: RawPlan): ChallengePlan | null {
     timeLimitDays: num(c.timeLimitDays),
     trialDaysPerPhase: num(c.trialDaysPerPhase),
     refundPolicy: (c.refundPolicy as 'none' | 'fourth-reward') || 'none',
-    referenceLeverageX: num(c.referenceLeverageX) ?? 5,
+    referenceLeverageX: num(c.referenceLeverageX),
+    catalogVersion: num(c.catalogVersion) ?? 1,
+    model: (['standard', 'one-step', 'instant', 'trial'].includes(String(c.model)) ? c.model : (row.slug === 'free-trial' ? 'trial' : 'standard')) as ChallengePlan['model'],
+    rewardCycles: Array.isArray(c.rewardCycles) ? (c.rewardCycles as ChallengePlan['rewardCycles']) : [],
+    inactivityDays: num(c.inactivityDays),
+    conduct: (c.conduct && typeof c.conduct === 'object' ? c.conduct : {}) as ChallengePlan['conduct'],
+    dailyLossVariantPriceUsd: (c.dailyLossVariantPriceUsd && typeof c.dailyLossVariantPriceUsd === 'object' ? c.dailyLossVariantPriceUsd : null) as ChallengePlan['dailyLossVariantPriceUsd'],
     free: c.free === true || row.slug === 'free-trial',
   }
   try { assertPlansValid([plan]) } catch { return null }

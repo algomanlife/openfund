@@ -36,8 +36,8 @@ test('transparency is wired to the backend report, with no synthetic dataset', (
   assert.equal(existsSync(new URL('../src/features/transparency/data/mockTransparency.ts', import.meta.url)), false)
 })
 test('every rule section has matching bilingual content and unique anchors', () => {
-  assert.equal(ruleSections.length, 22)
-  assert.equal(new Set(ruleSections.map(s => s.id)).size, 22)
+  assert.equal(ruleSections.length, 23)
+  assert.equal(new Set(ruleSections.map(s => s.id)).size, 23)
   const check = value => {
     if (Array.isArray(value)) return value.forEach(check)
     if (value && typeof value === 'object') {
@@ -49,5 +49,6 @@ test('every rule section has matching bilingual content and unique anchors', () 
   for (const id of ['configurations', 'stages', 'targets', 'daily-loss', 'maximum-loss', 'violations', 'identity', 'fees', 'free-trial', 'practices']) assert.equal(ruleSections.find(s => s.id === id).status, 'draft')
   /* v0.3.1: the evaluation path (purchase → start → live rules) is operational */
   assert.equal(ruleSections.find(s => s.id === 'how-it-works').status, 'current')
-  for (const id of ['funded', 'payouts']) assert.equal(ruleSections.find(s => s.id === id).status, 'planned')
+  /* implemented and enforced by the server (owner decisions D1–D8, ADR 0028) */
+  for (const id of ['funded', 'payouts', 'conduct']) assert.equal(ruleSections.find(s => s.id === id).status, 'current')
 })

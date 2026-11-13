@@ -77,9 +77,7 @@ test('every catalog field is classified and every enforced rule reaches the engi
 
 /* Pinned launch-blocker register. Changing it requires updating
    docs/product/PRODUCT_RULES.md in the same change. */
-const KNOWN_BLOCKERS = {
-  'PLAN-DAILY-LOSS-VARIANT:dailyLossPctAlt': ['standard', 'one-phase'],
-}
+const KNOWN_BLOCKERS = {}
 
 test('advertised rules without backend support are reported as launch blockers', t => {
   const blockers = launchBlockers(publishedPlans())
@@ -87,6 +85,15 @@ test('advertised rules without backend support are reported as launch blockers',
   assert.deepEqual(Object.fromEntries(blockers.map(b => [`${b.blocker}:${b.field}`, b.plans])), KNOWN_BLOCKERS)
   const doc = read('../../../docs/product/PRODUCT_RULES.md')
   for (const id of new Set(blockers.map(b => b.blocker))) assert.ok(doc.includes(id), `${id} is not documented in docs/product/PRODUCT_RULES.md`)
+})
+
+test('D6: the published leverage ceilings are the ones the engine enforces', async () => {
+  const { PROP_LEVERAGE_CEILINGS: shown } = load('../src/data/leveragePolicy.ts')
+  const { PROP_LEVERAGE_POLICY: engine } = await import('../../backend/prop-leverage.js')
+  assert.equal(shown.btcEth, engine.majors['BTC/USD']); assert.equal(shown.btcEth, engine.majors['ETH/USD'])
+  for (const g of ['crypto', 'forex', 'stocks', 'indices', 'commodities']) assert.equal(shown[g], engine.groups[g], g)
+  for (const p of publishedPlans()) assert.equal(p.referenceLeverageX, null, `${p.slug}: no plan-wide cap under catalog v3`)
+
 })
 
 test('public copy never contradicts the catalog minimum trading days', () => {

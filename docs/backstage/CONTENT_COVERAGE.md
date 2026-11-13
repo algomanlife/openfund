@@ -55,7 +55,7 @@ Legend: F = fa content, E = en content, P = publication control, ✔ verified by
 
 | Element | Collection | F | E | Verified |
 | :--- | :--- | ✔ | ✔ | ✔ |
-| 22 sections: title/paragraphs/formula/explanation/tables | trading_rules + trading_rule_translations | ✔ | ✔ | section-edit check #4 ✔ |
+| 23 sections: title/paragraphs/formula/explanation/tables | trading_rules + trading_rule_translations | ✔ | ✔ | section-edit check #4 ✔ |
 | Section order & anchors | trading_rules.sort / section_key | ✔ | — | ✔ |
 | Review-status pill (current/draft/planned) | trading_rules.review_status | ✔ | — | ✔ |
 | Challenge-configurations catalog table | challenge_plans (derived — cannot disagree with landing) | ✔ | ✔ | ✔ |

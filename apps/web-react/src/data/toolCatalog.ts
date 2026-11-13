@@ -233,7 +233,7 @@ const DEFINITIONS: Definition[] = [
     glossary: ['consistency-rule', 'profit-factor', 'expectancy'],
     lessons: ['consistency-and-payout-conditions', 'trading-journal-that-works'],
     inputs: [
-      { key: 'consistencyPct', kind: 'percent', label: text('Consistency limit', 'حد تداوم'), help: text('35% on the monthly path, 15% on Instant in the published terms.', 'در شرایط منتشرشده ۳۵٪ برای مسیر ماهانه و ۱۵٪ برای مدل آنی.'), default: 35, min: 1, max: 100 },
+      { key: 'consistencyPct', kind: 'percent', label: text('Consistency limit', 'حد تداوم'), help: text('35% on the on-demand cycle, 15% on Instant in the published terms.', 'در شرایط منتشرشده ۳۵٪ برای چرخهٔ درخواستی و ۱۵٪ برای مدل آنی.'), default: 35, min: 1, max: 100 },
       { key: 'dailyProfits', kind: 'list', label: text('Net profit per day', 'سود خالص هر روز'), help: text('Comma, space or line separated. Losing days count as negative numbers.', 'با ویرگول، فاصله یا خط جدید جدا کن. روزهای زیان‌ده منفی وارد شوند.'), default: undefined as unknown as number },
       { key: 'plannedDay', kind: 'currency', label: text('Planned single day (optional)', 'یک روزِ برنامه‌ریزی‌شده (اختیاری)'), unit: text('USD', 'دلار'), help: text('Tests whether one more day of that size keeps you compliant.', 'می‌سنجد که یک روز دیگر به این بزرگی تداوم را نمی‌شکند.'), default: 0, min: 0 },
     ],

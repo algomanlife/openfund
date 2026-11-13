@@ -38,6 +38,36 @@ import { text, type Localized } from '../features/information/content'
 
 export type PlanStatus = 'published' | 'draft'
 export type DrawdownMode = 'static' | 'trailing'
+export type PlanModel = 'standard' | 'one-step' | 'instant' | 'trial'
+export interface RewardCycle {
+  key: 'weekly' | 'biweekly' | 'on_demand'
+  /** trader share of realized net profit (%) */
+  splitPct: number
+  /** days after the first funded trade before the first request; null = on demand */
+  firstAfterDays: number | null
+  /** days between requests; null = on demand */
+  everyDays: number | null
+  /** best profitable day ≤ this share of cycle profit; null = none */
+  consistencyPct: number | null
+  /** profitable days required in the cycle; null = none */
+  profitableDays: number | null
+  /** a profitable day needs net realized profit ≥ this % of the account size */
+  profitableDayPct: number | null
+  /** trade-idea loss (% of size) that records a strike; null = no strike system */
+  strikeLossPct: number | null
+}
+export interface ConductRules {
+  /** combined floating loss of losing positions ≥ this % of size = breach */
+  maxOpenRiskPct?: number | null
+  /** trade-idea loss limit: belowPct under thresholdUsd, atOrAbovePct from it */
+  tradeIdea?: { thresholdUsd: number; belowPct: number; atOrAbovePct: number; reentryMin: number } | null
+  /** rolling requirement of qualifying profitable days (breach when missed) */
+  profitableDayRule?: { days: number; windowDays: number; minPct: number } | null
+  /** high-impact news: 'deduct' profit (funded) or 'prohibit' (breach) */
+  news?: { mode: 'deduct' | 'prohibit'; stage: 'funded' | 'all'; windowMin: number; exemptHours?: number | null } | null
+  /** holding: daily auto-close on funded accounts, or no weekend holding (breach) */
+  holding?: { mode: 'auto_close_daily' | 'prohibit_weekend'; stage: 'funded' | 'all' } | null
+}
 
 export interface ChallengePlan {
   slug: string
@@ -85,8 +115,20 @@ export interface ChallengePlan {
   trialDaysPerPhase?: number | null
   /** fee refund policy */
   refundPolicy: 'none' | 'fourth-reward'
-  /** plan reference leverage (published plan setting) */
-  referenceLeverageX: number
+  /** plan leverage cap; null = Openfund leverage ceilings only (D6) */
+  referenceLeverageX: number | null
+  /** catalog version of these terms (rules snapshot v3 = owner decisions D1–D8) */
+  catalogVersion: number
+  /** reference model the plan follows */
+  model: PlanModel
+  /** reward cycles offered on the funded account; the trader picks one, once (D1) */
+  rewardCycles: RewardCycle[]
+  /** breach after this many calendar days without a fully closed trade; null = none (D3) */
+  inactivityDays: number | null
+  /** model conduct rules enforced by the engine (D2, D4, D8) */
+  conduct: ConductRules
+  /** approved prices for the lower daily-loss variant; null = not sold (D7) */
+  dailyLossVariantPriceUsd: Record<number, number> | null
   /** true for the free trial: no fee, no reward, no conversion */
   free: boolean
 }
@@ -108,16 +150,26 @@ export const challengePlans: ChallengePlan[] = [
     drawdownMode: 'static',
     minTradingDays: 3,
     profitableDaysPer30: null,
-    consistencyPct: 35, /* monthly 100% cycle only */
-    profitSplitPct: 80,
-    profitSplitMonthlyPct: 100,
+    consistencyPct: 35, /* on-demand cycle only (see rewardCycles) */
+    profitSplitPct: 80, /* bi-weekly cycle (headline) */
+    profitSplitMonthlyPct: null, /* D1: no monthly cycle */
     payoutCapPct: 0,
-    firstPayoutDays: 14,
+    firstPayoutDays: null, /* per cycle (see rewardCycles) */
     minPayoutPct: 1,
     timeLimitDays: null,
     trialDaysPerPhase: null,
     refundPolicy: 'fourth-reward',
-    referenceLeverageX: 5,
+    referenceLeverageX: null,
+    catalogVersion: 3,
+    model: 'standard',
+    rewardCycles: [
+      { key: 'weekly', splitPct: 60, firstAfterDays: 7, everyDays: 7, consistencyPct: null, profitableDays: null, profitableDayPct: null, strikeLossPct: null },
+      { key: 'biweekly', splitPct: 80, firstAfterDays: 14, everyDays: 14, consistencyPct: null, profitableDays: null, profitableDayPct: null, strikeLossPct: null },
+      { key: 'on_demand', splitPct: 100, firstAfterDays: null, everyDays: null, consistencyPct: 35, profitableDays: 7, profitableDayPct: 0.5, strikeLossPct: 1 },
+    ],
+    inactivityDays: 30,
+    conduct: { news: { mode: 'deduct', stage: 'funded', windowMin: 5, exemptHours: 5 }, holding: { mode: 'auto_close_daily', stage: 'funded' } },
+    dailyLossVariantPriceUsd: null,
     free: false,
   },
   {
@@ -136,16 +188,25 @@ export const challengePlans: ChallengePlan[] = [
     drawdownMode: 'static',
     minTradingDays: 0,
     profitableDaysPer30: null,
-    consistencyPct: 35, /* monthly 100% cycle only */
-    profitSplitPct: 80,
-    profitSplitMonthlyPct: 100,
+    consistencyPct: 35, /* on-demand cycle only (see rewardCycles) */
+    profitSplitPct: 80, /* bi-weekly cycle (headline) */
+    profitSplitMonthlyPct: null, /* D1: no monthly cycle */
     payoutCapPct: 0,
-    firstPayoutDays: 14,
+    firstPayoutDays: null, /* per cycle (see rewardCycles) */
     minPayoutPct: 1,
     timeLimitDays: null,
     trialDaysPerPhase: null,
     refundPolicy: 'none',
-    referenceLeverageX: 5,
+    referenceLeverageX: null,
+    catalogVersion: 3,
+    model: 'one-step',
+    rewardCycles: [
+      { key: 'biweekly', splitPct: 80, firstAfterDays: 14, everyDays: 14, consistencyPct: null, profitableDays: null, profitableDayPct: null, strikeLossPct: null },
+      { key: 'on_demand', splitPct: 100, firstAfterDays: null, everyDays: null, consistencyPct: 35, profitableDays: 7, profitableDayPct: 0.5, strikeLossPct: 1 },
+    ],
+    inactivityDays: 30,
+    conduct: { news: { mode: 'deduct', stage: 'funded', windowMin: 5, exemptHours: 5 }, holding: { mode: 'auto_close_daily', stage: 'funded' } },
+    dailyLossVariantPriceUsd: null,
     free: false,
   },
   {
@@ -169,12 +230,20 @@ export const challengePlans: ChallengePlan[] = [
     profitSplitPct: 95,
     profitSplitMonthlyPct: null,
     payoutCapPct: 0,
-    firstPayoutDays: 14,
+    firstPayoutDays: null, /* per cycle (see rewardCycles) */
     minPayoutPct: 1,
     timeLimitDays: null,
     trialDaysPerPhase: null,
     refundPolicy: 'none',
-    referenceLeverageX: 5,
+    referenceLeverageX: null,
+    catalogVersion: 3,
+    model: 'instant',
+    rewardCycles: [
+      { key: 'biweekly', splitPct: 95, firstAfterDays: 14, everyDays: 14, consistencyPct: 15, profitableDays: null, profitableDayPct: null, strikeLossPct: null },
+    ],
+    inactivityDays: 30,
+    conduct: { maxOpenRiskPct: 1, tradeIdea: { thresholdUsd: 50_000, belowPct: 3, atOrAbovePct: 2, reentryMin: 10 }, profitableDayRule: { days: 7, windowDays: 30, minPct: 0.25 }, news: { mode: 'prohibit', stage: 'all', windowMin: 10 }, holding: { mode: 'prohibit_weekend', stage: 'all' } },
+    dailyLossVariantPriceUsd: null,
     free: false,
   },
   {
@@ -202,7 +271,14 @@ export const challengePlans: ChallengePlan[] = [
     timeLimitDays: 14, /* per phase */
     trialDaysPerPhase: 14,
     refundPolicy: 'none',
-    referenceLeverageX: 5,
+    referenceLeverageX: null,
+    catalogVersion: 3,
+    model: 'trial',
+    rewardCycles: [
+    ],
+    inactivityDays: null,
+    conduct: {},
+    dailyLossVariantPriceUsd: null,
     free: true,
   },
 ]
@@ -222,7 +298,15 @@ export function assertPlansValid(plans: ChallengePlan[]): void {
     if (!p.free && (p.profitSplitPct <= 0 || p.profitSplitPct > 100)) throw new Error(`plan ${p.slug}: invalid profit split`)
     if (p.drawdownMode === 'trailing' && p.trailingLockAtProfitPct == null) throw new Error(`plan ${p.slug}: trailing drawdown needs a lock point`)
     if (p.free !== (p.slug === 'free-trial')) throw new Error(`plan ${p.slug}: free flag mismatch`)
-    if (p.free && (p.firstPayoutDays != null || p.profitSplitPct > 0)) throw new Error(`plan ${p.slug}: trial must not promise rewards`)
+    if (p.free && (p.firstPayoutDays != null || p.profitSplitPct > 0 || p.rewardCycles.length)) throw new Error(`plan ${p.slug}: trial must not promise rewards`)
+    if (!p.free && !p.rewardCycles.length) throw new Error(`plan ${p.slug}: a paid plan needs at least one reward cycle`)
+    for (const c of p.rewardCycles) {
+      if (!(c.splitPct > 0 && c.splitPct <= 100)) throw new Error(`plan ${p.slug}: invalid ${c.key} split`)
+      if ((c.firstAfterDays == null) !== (c.key === 'on_demand')) throw new Error(`plan ${p.slug}: ${c.key} timing mismatch`)
+    }
+    if (p.dailyLossVariantPriceUsd) for (const size of p.accountSizesUsd) {
+      if (!(p.dailyLossVariantPriceUsd[size] > 0)) throw new Error(`plan ${p.slug}: variant price missing for ${size}`)
+    }
   }
 }
 assertPlansValid(challengePlans)
@@ -280,7 +364,8 @@ export function serializeForLegacy(plans: ChallengePlan[]): Record<string, Legac
       loss: p.maxTotalLossPct,
       lossMode: p.drawdownMode,
       dailyLoss: p.dailyLossPct,
-      dailyLossAlt: p.dailyLossPctAlt ?? null,
+      /* D7: the lower daily-loss variant is shown only when it is priced (purchasable) */
+      dailyLossAlt: p.dailyLossVariantPriceUsd ? p.dailyLossPctAlt ?? null : null,
       phases: p.phases,
       phase1Pct: p.phase1TargetPct,
       phase2Pct: p.phase2TargetPct,
@@ -289,7 +374,7 @@ export function serializeForLegacy(plans: ChallengePlan[]): Record<string, Legac
       profitableDays: p.profitableDaysPer30 ?? null,
       consistency: p.consistencyPct ?? null,
       timeLimitDays: p.timeLimitDays,
-      leverage: p.referenceLeverageX,
+      leverage: p.referenceLeverageX ?? 50,
       refund: p.refundPolicy,
     }
   }

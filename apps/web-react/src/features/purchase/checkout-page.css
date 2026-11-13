@@ -93,3 +93,4 @@ html[data-theme="light"] .of-co-steps li.current span { color: #FFFFFF }
   .of-co-receipt { border: 0; background: none; color: #000 }
   .of-co-receipt dt, .of-co-receipt dd, .of-co-receipt h2 { color: #000 }
 }
+.of-co-unavailable{display:block;color:var(--muted);font-size:11px}
