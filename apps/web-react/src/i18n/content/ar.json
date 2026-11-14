@@ -3398,5 +3398,6 @@
   "Verification link copied": "تم نسخ رابط التحقق",
   "Verify certificate": "تحقق من الشهادة",
   "Verify the current status using the QR code. A downloaded copy may have been revoked after issue.": "تحقق من الحالة الحالية باستخدام رمز QR. ربما أُلغيت الشهادة بعد تنزيلها.",
-  "Your verified milestones, issued from recorded Openfund events.": "إنجازاتك الموثقة، تصدر استنادًا إلى سجلات Openfund."
+  "Your verified milestones, issued from recorded Openfund events.": "إنجازاتك الموثقة، تصدر استنادًا إلى سجلات Openfund.",
+  "Trader": "المتداول"
 }

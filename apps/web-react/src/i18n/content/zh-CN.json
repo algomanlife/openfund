@@ -3398,5 +3398,6 @@
   "Verification link copied": "验证链接已复制",
   "Verify certificate": "验证证书",
   "Verify the current status using the QR code. A downloaded copy may have been revoked after issue.": "请通过二维码查看当前状态。证书可能在签发后被撤销。",
-  "Your verified milestones, issued from recorded Openfund events.": "您在 Openfund 的已核实成就，依据平台记录签发。"
+  "Your verified milestones, issued from recorded Openfund events.": "您在 Openfund 的已核实成就，依据平台记录签发。",
+  "Trader": "交易员"
 }

@@ -3398,5 +3398,6 @@
   "Verification link copied": "Ссылка для проверки скопирована",
   "Verify certificate": "Проверить сертификат",
   "Verify the current status using the QR code. A downloaded copy may have been revoked after issue.": "Проверьте текущий статус по QR-коду. Сертификат мог быть отозван после выдачи.",
-  "Your verified milestones, issued from recorded Openfund events.": "Ваши подтверждённые достижения по данным Openfund."
+  "Your verified milestones, issued from recorded Openfund events.": "Ваши подтверждённые достижения по данным Openfund.",
+  "Trader": "Трейдер"
 }
