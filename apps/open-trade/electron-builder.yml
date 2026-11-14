@@ -1,0 +1,36 @@
+appId: cloud.openfund.opentrade
+productName: Open Trade
+copyright: Copyright © Openfund
+asar: true
+npmRebuild: false
+directories:
+  output: release
+  buildResources: build
+files:
+  - out/**
+  - package.json
+  - '!**/*.map'
+  - '!node_modules/**'
+artifactName: Open-Trade-${version}-beta-unsigned-${os}-${arch}.${ext}
+mac:
+  category: public.app-category.finance
+  target:
+    - target: dmg
+      arch: [arm64, x64]
+  identity: null
+  icon: build/icon.png
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: build/icon.png
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+linux:
+  target: [AppImage, deb]
+  category: Finance
+  icon: build/icon.png
+  maintainer: Openfund
+publish: null

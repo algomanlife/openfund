@@ -22,6 +22,7 @@ The process for changing any of these is in [Dependency governance](../developme
 | Frontend runtime and build toolchain | see apps/web-react/package.json and package-lock.json | MIT | yes | apps/web-react |
 | Backend runtime dependencies (express, pg, ws, decimal.js) | see apps/backend/package.json and package-lock.json | MIT/ISC family | yes | apps/backend |
 | Repository tooling (Playwright, markdownlint, mermaid, jsdom, js-yaml) | see package.json (playwright is range-pinned; CI caches browsers per lockfile) | MIT/Apache-2.0 family | no | package.json |
+| Open Trade desktop runtime and packager | Electron 45.3.2; electron-builder 26.18.0; WalletConnect ethereum-provider 2.26.0 | Electron MIT | yes | apps/open-trade/ |
 
 ## Details
 
@@ -185,3 +186,16 @@ The process for changing any of these is in [Dependency governance](../developme
 - **Tests:** npm run docs:check; npm run test:release
 - **Update procedure:** Scheduled grouped review; a Playwright bump also changes the browser cache key.
 - **Risks:** Tooling only; never shipped.
+
+### Open Trade desktop runtime and packager
+
+- **Upstream:** https://github.com/electron/electron; https://github.com/electron-userland/electron-builder; https://github.com/WalletConnect/walletconnect-monorepo
+- **License:** Electron MIT; electron-builder MIT; WalletConnect Community License (review required for public distribution)
+- **Pinned version:** Electron 45.3.2; electron-builder 26.18.0; WalletConnect ethereum-provider 2.26.0
+- **Where:** apps/open-trade/
+- **Vendoring method:** Per-application npm package-lock.json; existing Vela bundle copied at build time
+- **Local Openfund modifications:** Desktop shell, sandboxed preload and allowlisted backend adapter; no vendored Electron changes
+- **Used by the running application:** yes
+- **Tests:** npm test --prefix apps/open-trade; npm run test:desktop --prefix apps/open-trade
+- **Update procedure:** Review upstream release/security notes, update exact pins and lockfile, rerun Electron acceptance and three-platform package workflow.
+- **Risks:** Real WalletConnect device sign-in remains pending project configuration. Unsigned internal beta only; existing indicator provenance and AGPL combined-work questions remain public-distribution blockers.

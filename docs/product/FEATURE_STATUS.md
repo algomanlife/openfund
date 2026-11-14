@@ -239,3 +239,11 @@ is local verification against an isolated backend and disposable database.
 | Explicit wallet choice and classified wallet errors | Completed (local verification) | EIP-6963 picker, neutral declined-request status, actionable failures, explicit network switch and disconnect; verified with scripted EIP-1193 providers only — real extensions, mobile WalletConnect and the deployed site are not yet accepted |
 | Position Details layout | Completed (local) | Full labels in all five locales, LTR-isolated identifiers and numbers |
 
+
+## Open Trade desktop — 2026-11-13
+
+**In Progress (unmerged):** secure Electron host, chart-first bilingual workspace,
+existing Vela/Gains integration and shared account API client. See the
+[acceptance record](../../apps/open-trade/ACCEPTANCE.md) for executed checks and
+platform artifacts. Real WalletConnect acceptance is pending a valid project ID
+and wallet. Public release/signing and existing license decisions remain Blocked.

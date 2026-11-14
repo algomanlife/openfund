@@ -335,3 +335,10 @@ Merging a pull request does not deploy it, and a release is not live until
 [openfi.cloud](https://openfi.cloud) · [openfund.cloud](https://openfund.cloud) · [Releases](https://github.com/algomanlife/openfund/releases) · [Changelog](CHANGELOG.md)
 
 </div>
+
+## Open Trade desktop beta
+
+The separate [Open Trade application](apps/open-trade/README.md) is In Progress
+on `feature/open-trade-desktop`. It shares Vela and the existing backend. Internal
+unsigned packaging is separate from the web release; public distribution and
+real-wallet acceptance remain gated. See [acceptance](apps/open-trade/ACCEPTANCE.md).

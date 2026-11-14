@@ -6206,6 +6206,102 @@
       "state": "EUR/USD order ticket in Lotage mode (0.10 lot)",
       "source": "Unedited Chromium capture (Playwright, JPEG q80, cropped below the local-only release-manifest notice) of the local production build of branch agent/claude/checkout-campaign-chart-trading at localhost:8191, anonymous session, live public Gains data; no financial, market, depth or wallet fixtures",
       "usedBy": "/fa/campaign, /en/campaign"
+    },
+    {
+      "file": "open-trade/chart.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T03:59:01.727882+00:00",
+      "state": "Compact desktop shell with floating order ticket; live Gains candles; one Vela chart; actual macOS Electron 45.3.2, internal unsigned source build; no wallet or fabricated market data",
+      "sha256": "8ebe14748f5380b53fdb3714d250f402cc1e3ef5848065eb4db465e5309a73ed"
+    },
+    {
+      "file": "open-trade/two-charts.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T03:59:01.952425+00:00",
+      "state": "Two independent Vela charts; actual macOS Electron 45.3.2, internal unsigned source build; no wallet or fabricated market data",
+      "sha256": "c19e6646033c167d59df59a46e78c640f710afb075801488b2e1f1a0669f0b3f"
+    },
+    {
+      "file": "open-trade/four-charts.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T03:59:02.275210+00:00",
+      "state": "Four independent Vela charts; actual macOS Electron 45.3.2, internal unsigned source build; no wallet or fabricated market data",
+      "sha256": "bef6cb1f826e2446e8f4ef8fba5300e22c023b9190cd187cbd6c7ad9944e0172"
+    },
+    {
+      "file": "open-trade/settings-glass.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T03:59:02.450619+00:00",
+      "state": "Desktop settings dialog, translucent blurred surface; actual macOS Electron 45.3.2, internal unsigned source build; no wallet or fabricated market data",
+      "sha256": "a9aea3ccddc55aacd857dea0c56f6247947924c0f2383fd4b63e1ad887d9c7ff"
+    },
+    {
+      "file": "open-trade/watchlist-ticket.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T03:59:02.369481+00:00",
+      "state": "Compact watchlist and floating order ticket; actual macOS Electron 45.3.2, internal unsigned source build; no wallet or fabricated market data",
+      "sha256": "80b2480d814ec471322567fb90187434da779bf3ce91d8360b7613df34d5ea46"
+    },
+    {
+      "file": "open-trade/resized.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1000,
+        "height": 720
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T03:59:02.655792+00:00",
+      "state": "1000 by 720 desktop window, English dark mode; actual macOS Electron 45.3.2, internal unsigned source build; no wallet or fabricated market data",
+      "sha256": "aa492f4632456c72e6f15831de5e348f7d57fffdd3df02691c6bb9d553d8a2df"
+    },
+    {
+      "file": "open-trade/settings-fa-light.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T03:59:02.556134+00:00",
+      "state": "Persian settings and light appearance; actual macOS Electron 45.3.2, internal unsigned source build; no wallet or fabricated market data",
+      "sha256": "328756a09781e53c81aff4328771cc7f17ad453f1b711e82b85af7c5905176b1"
+    },
+    {
+      "file": "open-trade/packaged-macos.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T04:01:54.821316+00:00",
+      "state": "Actual packaged unsigned macOS arm64 Open Trade.app; neutral compact desktop shell with real Gains candles; no personal wallet",
+      "sha256": "be74f2a89c52c63bf0370c94e9582186217992c8187c1d03be388eb76dac9156"
     }
   ],
   "finalIntegration": {
