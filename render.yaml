@@ -104,9 +104,11 @@ services:
           name: openfund-db
           property: connectionString
       - key: ALLOWED_DOMAINS
-        value: "openfund-our6.onrender.com,openfi.cloud,openfund.cloud"
+        value: "openfund-our6.onrender.com,openfi.cloud,openfund.cloud,iran.openfund.cloud"
         # SIWE compares the exact browser host. Keep both serving domains here:
         # Blueprint sync must not reset this to the onrender host alone.
+        # iran.openfund.cloud: the Iran edge on Liara (ADR 0031), a proxy to this
+        # same service; it adds no backend and no database.
       - key: CORS_ORIGINS
         sync: false             # only needed for extra origins / custom domain
       - key: SESSION_TTL_HOURS
