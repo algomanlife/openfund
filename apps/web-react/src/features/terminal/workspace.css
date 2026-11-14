@@ -699,3 +699,24 @@ html[dir="rtl"] .chart-tabs { direction: rtl; }
   .size-equiv { display: none; }
   .size-mode button { min-height: 24px; }
 }
+
+/* Chart protection controls: native entry labels with independent handles. */
+.pos-risk-level { display: inline-flex; align-items: center; gap: 2px; unicode-bidi: isolate; }
+.pos-risk-handle, .pos-risk-remove { min-height: 28px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface); color: inherit; font: inherit; }
+.pos-risk-handle { display: grid; grid-template-columns: auto auto; gap: 1px 4px; padding: 3px 6px; cursor: ns-resize; touch-action: none; }
+.pos-risk-handle small { grid-column: 1 / -1; font-size: 10px; opacity: 1; }
+.pos-risk-remove { min-width: 28px; padding: 2px; cursor: pointer; }
+.pos-risk-handle:focus-visible, .pos-risk-remove:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+.pos-risk-handle:disabled, .pos-risk-remove:disabled { opacity: .6; cursor: default; }
+#pos-risk-preview { position: absolute; inset-inline: 12px; bottom: 36px; z-index: 5; padding: 8px; border: 1px dashed var(--mint); border-radius: 4px; background: var(--surface); color: var(--body); font-size: 12px; pointer-events: none; direction: ltr; }
+@media (pointer: coarse) { .pos-risk-handle, .pos-risk-remove { min-height: 44px; } .pos-risk-remove { min-width: 44px; } }
+@media (max-width: 650px) { .pos-risk-level { width: 100%; } .pos-risk-handle { flex: 1; } }
+
+.of-chart-beta { display: inline-block; margin-inline-start: 5px; padding: 1px 5px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface-2); color: var(--muted); font-size: 10px; line-height: 1.4; vertical-align: middle; }
+.pos-risk-handle { font-size: 12px; }
+
+@media (max-width: 650px) {
+  .pos-rr-chip.open, .pos-rr-chip.pending { width: min(240px, 62vw); }
+  .pos-risk-handle, .pos-risk-remove { min-height: 44px; }
+  .pos-risk-remove { min-width: 44px; }
+}

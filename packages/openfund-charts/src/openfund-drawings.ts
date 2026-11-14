@@ -50,9 +50,17 @@ export class OpenfundPositionTool extends PositionTool {
     declare ofMissing: Level[];
     /** anchor index the current drag edits (a missing-level drag may redirect) */
     declare ofActive: 1 | 2 | null;
+    declare ofQuantity: number;
+    declare ofCurrency: string;
+    declare ofPrecision: number;
+    declare ofTick: number;
 
     protected override readProps(props: Record<string, unknown>): void {
         super.readProps(props);
+        if (Number(props.ofQuantity) > 0) this.ofQuantity = Number(props.ofQuantity);
+        if (typeof props.ofCurrency === 'string') this.ofCurrency = props.ofCurrency;
+        if (Number.isInteger(props.ofPrecision)) this.ofPrecision = Math.max(0, Math.min(12, Number(props.ofPrecision)));
+        if (Number(props.ofTick) > 0) this.ofTick = Number(props.ofTick);
         if (props.ofSide === 'long' || props.ofSide === 'short') this.ofSide = props.ofSide;
         if (Array.isArray(props.ofEditable)) this.ofEditable = props.ofEditable.filter((l): l is Level => l === 'stop' || l === 'target');
         if (Array.isArray(props.ofMissing)) this.ofMissing = props.ofMissing.filter((l): l is Level => l === 'stop' || l === 'target');
@@ -60,7 +68,7 @@ export class OpenfundPositionTool extends PositionTool {
     }
 
     protected override writeProps(): Record<string, unknown> {
-        return { ...super.writeProps(), ofSide: this.ofSide, ofEditable: this.ofEditable ?? [], ofMissing: this.ofMissing ?? [] };
+        return { ...super.writeProps(), ofSide: this.ofSide, ofEditable: this.ofEditable ?? [], ofMissing: this.ofMissing ?? [], ofQuantity: this.ofQuantity, ofCurrency: this.ofCurrency, ofPrecision: this.ofPrecision, ofTick: this.ofTick };
     }
 
     private missing(index: number): boolean {
@@ -101,7 +109,8 @@ export class OpenfundPositionTool extends PositionTool {
         for (const i of [1, 2] as const) if (i !== target && this.missing(i) && this.editable(i) && entry != null && this.anchors[i]) this.anchors[i].price = entry;
         const a = this.anchors[target];
         if (!a) return;
-        a.price = pt.price;
+        const precision = this.ofPrecision ?? 8, tick = this.ofTick || 10 ** -precision;
+        a.price = Number((Math.round(pt.price / tick) * tick).toFixed(precision));
         this.ofActive = target;
         this.ofDragging = true;
         this.showText = true;
@@ -120,11 +129,22 @@ export class OpenfundPositionTool extends PositionTool {
         const a = this.anchors[index];
         if (entry == null || !a || (index !== 1 && index !== 2)) return;
         const long = (this.ofSide ?? 'long') === 'long';
-        const eps = Math.abs(entry) * 1e-6 || 1e-9;
+        const eps = this.ofTick || 10 ** -(this.ofPrecision ?? 8);
         const below = (index === 1) === long; /* long stop / short target sit below the entry */
-        if (below && a.price >= entry) a.price = entry - eps;
-        if (!below && a.price <= entry) a.price = entry + eps;
+        if (below && a.price >= entry) a.price = Number(((Math.ceil(entry / eps) - 1) * eps).toFixed(this.ofPrecision ?? 8));
+        if (!below && a.price <= entry) a.price = Number(((Math.floor(entry / eps) + 1) * eps).toFixed(this.ofPrecision ?? 8));
     }
+
+    override directionLabel(): string { return this.ofSide === 'short' ? 'SHORT' : 'LONG'; }
+    private protectionLabel(index: 1 | 2): string {
+        const price = this.anchors[index]?.price, entry = this.anchors[0]?.price;
+        if (!(price > 0 && entry > 0)) return '';
+        const move = (price - entry) * (this.ofSide === 'short' ? -1 : 1);
+        const gross = this.ofQuantity > 0 ? move * this.ofQuantity : null;
+        return `${index === 1 ? 'SL' : 'TP'} @ ${price.toFixed(this.ofPrecision ?? 8)} · ${gross != null ? (gross >= 0 ? '+' : '') + gross.toFixed(2) + ' ' + (this.ofCurrency || 'USD') + ' gross est. · ' : ''}${(move / entry * 100).toFixed(2)}% price`;
+    }
+    override stopLabel(): string { return this.protectionLabel(1); }
+    override targetLabel(): string { return this.protectionLabel(2); }
 
     /** Only the editable levels expose a grab handle (an editable missing level's handle sits
      *  on the entry line at the box's right end); the entry itself never does. */
