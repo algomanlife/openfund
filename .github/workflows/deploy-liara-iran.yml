@@ -150,9 +150,10 @@ jobs:
     env:
       DATABASE_URL: postgres://openfund_ci:openfund_ci@127.0.0.1:5432/openfund_edge_test
     steps:
+      # Default checkout: the pull request code on PRs, main on a dispatch. The
+      # backend under test is never taken from a job output (CodeQL
+      # actions/cache-poisoning); the edge image comes from `validate`.
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.validate.outputs.commit }}
       - uses: actions/setup-node@v4
         with:
           node-version: 26
