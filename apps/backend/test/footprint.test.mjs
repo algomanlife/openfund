@@ -296,7 +296,7 @@ test('isolation: footprint modules import nothing from trading, accounts, wallet
   /* the service is constructed from the DB pool only (no engine, market data, accounts) … */
   assert.deepEqual(code.filter(l => l.includes('createFootprintService(')), ['const footprint = createFootprintService({ mainPool: pool })'])
   /* … and is otherwise only imported, mounted, started and stopped */
-  for (const l of code) assert.match(l, /^(import \{ createFootprintService \} from '\.\/footprint\/service\.js'|const footprint = createFootprintService\(\{ mainPool: pool \}\)|app\.use\(footprint\.router\)|footprint\.start\(\)\.catch\(.*\)|const shutdown = .*footprint\.stop\(\).*|isolated from the engine.*|.*inert unless FOOTPRINT_ENABLED=1.*)$/, l)
+  for (const l of code) assert.match(l, /^(import \{ createFootprintService \} from '\.\/footprint\/service\.js'|const footprint = createFootprintService\(\{ mainPool: pool \}\)|app\.use\(footprint\.router\)|(?:if \(hasRole\(region, 'footprint'\)\) )?footprint\.start\(\)\.catch\(.*\)|const shutdown = .*footprint\.stop\(\).*|isolated from the engine.*|.*inert unless FOOTPRINT_ENABLED=1.*)$/, l)
 })
 
 const dbUrl = process.env.DATABASE_URL || ''
