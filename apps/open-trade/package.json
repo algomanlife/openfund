@@ -36,6 +36,9 @@
   "overrides": {
     "@reown/appkit-wallet": {
       "zod": "4.6.6"
+    },
+    "@coinbase/cdp-sdk": {
+      "zod": "4.6.6"
     }
   }
 }
