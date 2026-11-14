@@ -1,0 +1,144 @@
+# Openfund Iran edge (Liara) - same-origin reverse proxy to the Render origin.
+#
+# Rendered at container start by the nginx image entrypoint (envsubst, filtered
+# to OPENFUND_* / EDGE_* / NGINX_LOCAL_RESOLVERS). See ADR 0031 and
+# docs/deployment/LIARA_IRAN.md.
+#
+# This edge runs no Openfund code, holds no database and no secrets. Every
+# application response (HTML, CSP, runtime config, API, SSE) comes from the one
+# authoritative backend, so the edge always serves exactly the release Render
+# serves. Only content-hashed /assets/ files are cached locally.
+
+proxy_cache_path /tmp/openfund-edge-cache levels=1:2 keys_zone=openfund_assets:10m
+                 max_size=512m inactive=7d use_temp_path=off;
+
+# No client IPs, query strings or cookies in the access log.
+log_format openfund_edge '$time_iso8601 $request_method $uri $status $body_bytes_sent '
+                         '$request_time up=$upstream_status $upstream_response_time cache=$upstream_cache_status';
+
+server {
+    listen ${EDGE_PORT} default_server;
+    server_name _;
+    server_tokens off;
+    access_log /dev/stdout openfund_edge;
+
+    resolver ${NGINX_LOCAL_RESOLVERS} valid=60s ipv6=off;
+    resolver_timeout 5s;
+
+    # The backend's largest public JSON body is well under this.
+    client_max_body_size 1m;
+
+    set $upstream_host "${OPENFUND_UPSTREAM_HOST}";
+    set $upstream_origin "${OPENFUND_UPSTREAM_SCHEME}://${OPENFUND_UPSTREAM_HOST}";
+
+    # The backend accepts a state-changing request only when Origin equals its
+    # own origin (or an allowlisted CORS origin). The browser's Origin here is
+    # this edge's public origin, which the backend cannot see. Translate exactly
+    # that one value; any other Origin passes through untouched and is still
+    # rejected upstream, so the CSRF boundary is unchanged.
+    set $edge_origin $http_origin;
+    if ($http_origin = "${EDGE_PUBLIC_SCHEME}://$http_host") {
+        set $edge_origin $upstream_origin;
+    }
+
+    proxy_http_version 1.1;
+    proxy_set_header Host $upstream_host;
+    proxy_set_header Origin $edge_origin;
+    proxy_set_header Connection "";
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto ${EDGE_PUBLIC_SCHEME};
+    proxy_set_header X-Forwarded-Host $http_host;
+    proxy_set_header X-Openfund-Edge liara-iran;
+
+    proxy_ssl_server_name on;
+    proxy_ssl_verify on;
+    proxy_ssl_verify_depth 4;
+    proxy_ssl_trusted_certificate ${EDGE_CA_BUNDLE};
+    proxy_ssl_protocols TLSv1.2 TLSv1.3;
+
+    proxy_connect_timeout 10s;
+    proxy_send_timeout 60s;
+    # SSE streams (/trading/stream, /api/footprint/stream) send heartbeats
+    # every 1-5 s; buffering is off so every event is forwarded immediately.
+    proxy_read_timeout 120s;
+    proxy_buffering off;
+    proxy_request_buffering on;
+
+    # Upstream absolute redirects to its own origin become relative, and stay
+    # relative: TLS ends at Liara's proxy, so nginx must never build an
+    # absolute http://host:EDGE_PORT/ URL itself.
+    proxy_redirect $upstream_origin/ /;
+    absolute_redirect off;
+
+    # The mirror is not indexed: the backend builds canonical/sitemap URLs from
+    # the Host it receives (the Render host), and openfund.cloud stays the
+    # canonical public site.
+    add_header X-Robots-Tag "noindex, nofollow" always;
+
+    # ---- edge-local endpoints (no upstream call) ----------------------------
+    location = /__edge/live {
+        access_log off;
+        default_type application/json;
+        add_header Cache-Control "no-store" always;
+        add_header X-Robots-Tag "noindex, nofollow" always;
+        return 200 '{"ok":true,"edge":"liara-iran"}';
+    }
+    location = /__edge/info {
+        default_type application/json;
+        add_header Cache-Control "no-store" always;
+        add_header X-Robots-Tag "noindex, nofollow" always;
+        alias /usr/share/openfund-edge/edge-release.json;
+    }
+    # Readiness: the authoritative backend answers its own /health through
+    # this edge (database reachable from the origin, network path from Iran).
+    location = /__edge/ready {
+        add_header Cache-Control "no-store" always;
+        add_header X-Robots-Tag "noindex, nofollow" always;
+        proxy_pass $upstream_origin/health;
+    }
+    location = /robots.txt {
+        default_type text/plain;
+        add_header Cache-Control "public, max-age=3600" always;
+        add_header X-Robots-Tag "noindex, nofollow" always;
+        return 200 "User-agent: *\nDisallow: /\n";
+    }
+    location = /sitemap.xml {
+        default_type application/json;
+        add_header Cache-Control "no-store" always;
+        return 404 '{"error":"not_found"}';
+    }
+
+    # ---- never served through the Iran edge ---------------------------------
+    # Operator API, test seam and DePay server-to-server routes (signed
+    # configuration, callbacks, events). DePay keeps calling the Render origin
+    # configured on app.depay.com; geographic routing can never divert or
+    # duplicate a payment callback.
+    location ~ ^/(admin|internal)(/|$) {
+        default_type application/json;
+        add_header Cache-Control "no-store" always;
+        return 404 '{"error":"not_found"}';
+    }
+    location ~ ^/(purchases/depay|api/payments/depay)/(configuration|config|callback|events)/?$ {
+        default_type application/json;
+        add_header Cache-Control "no-store" always;
+        return 404 '{"error":"not_found"}';
+    }
+
+    # ---- content-hashed build output: cached at the edge --------------------
+    location ^~ /assets/ {
+        proxy_buffering on;
+        proxy_cache openfund_assets;
+        proxy_cache_key $request_uri;
+        proxy_cache_valid 200 7d;
+        proxy_cache_lock on;
+        proxy_cache_use_stale error timeout updating http_502 http_503 http_504;
+        add_header X-Edge-Cache $upstream_cache_status always;
+        add_header X-Robots-Tag "noindex, nofollow" always;
+        proxy_pass $upstream_origin;
+    }
+
+    # ---- everything else: transparent pass-through --------------------------
+    location / {
+        proxy_pass $upstream_origin;
+    }
+}

@@ -1,0 +1,168 @@
+name: Deploy Iran edge (Liara)
+# Deploys the Iran edge reverse proxy (infra/liara-iran, ADR 0031) to Liara.
+# Independent of the Render production workflows: it never deploys, restarts or
+# reconfigures Render. The edge serves whatever release Render serves.
+on:
+  # Manual only: an exact, reviewed main commit; never a branch tip.
+  workflow_dispatch:
+    inputs:
+      edge_commit:
+        description: Exact 40-character main commit whose infra/liara-iran is deployed (also used for rollback)
+        required: true
+        type: string
+      expect_app_commit:
+        description: Optional - Openfund commit Render must be serving (40 characters); empty records whatever it serves
+        required: false
+        default: ''
+        type: string
+      confirm:
+        description: Type DEPLOY-IRAN-EDGE to confirm
+        required: true
+        type: string
+  # Pull requests touching the edge build and contract-test it; nothing deploys.
+  pull_request:
+    paths:
+      - infra/liara-iran/**
+      - scripts/liara/**
+      - .github/workflows/deploy-liara-iran.yml
+permissions:
+  contents: read
+concurrency:
+  group: openfund-liara-iran-${{ github.event_name == 'pull_request' && github.ref || 'deploy' }}
+  cancel-in-progress: false
+jobs:
+  validate:
+    name: Build and contract-test the edge image
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      commit: ${{ steps.ref.outputs.commit }}
+    steps:
+      - name: Resolve the edge commit
+        id: ref
+        # Inputs arrive through the environment, never interpolated into the script.
+        env:
+          EVENT: ${{ github.event_name }}
+          INPUT_COMMIT: ${{ inputs.edge_commit }}
+          INPUT_CONFIRM: ${{ inputs.confirm }}
+          PR_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then echo "commit=$PR_SHA" >> "$GITHUB_OUTPUT"; exit 0; fi
+          [ "$INPUT_CONFIRM" = DEPLOY-IRAN-EDGE ] || { echo "::error::Confirmation text does not match"; exit 1; }
+          [[ "$INPUT_COMMIT" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::edge_commit must be a full 40-character SHA"; exit 1; }
+          echo "commit=$INPUT_COMMIT" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.ref.outputs.commit }}
+          fetch-depth: 0
+      - name: Require a reviewed main commit
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git fetch --quiet origin main
+          git merge-base --is-ancestor "${{ steps.ref.outputs.commit }}" origin/main \
+            || { echo "::error::Commit is not on main; only reviewed main commits deploy"; exit 1; }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+      - name: Build the edge image
+        run: docker build infra/liara-iran -t openfund-edge:candidate
+      - name: Refuse to start without an upstream
+        run: |
+          if docker run --rm openfund-edge:candidate >/tmp/no-upstream.log 2>&1; then
+            echo "::error::the edge started without OPENFUND_UPSTREAM_HOST"; exit 1
+          fi
+          grep -q "OPENFUND_UPSTREAM_HOST is required" /tmp/no-upstream.log
+      - name: Contract tests against a stub upstream
+        run: |
+          docker run -d --name edge --network host \
+            -e EDGE_PORT=18080 -e OPENFUND_UPSTREAM_HOST=127.0.0.1:18081 -e OPENFUND_UPSTREAM_SCHEME=http \
+            -e EDGE_ALLOW_HTTP_UPSTREAM=1 -e EDGE_PUBLIC_SCHEME=http openfund-edge:candidate
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:18080/__edge/live >/dev/null && break; sleep 1; done
+          EDGE_URL=http://127.0.0.1:18080 STUB_PORT=18081 node --test scripts/liara/test/edge-contract.test.mjs
+          [ "$(docker exec edge id -u)" = 101 ]
+      - name: Read-only check against the live Render origin
+        if: vars.OPENFUND_UPSTREAM_HOST != ''
+        env:
+          UPSTREAM: ${{ vars.OPENFUND_UPSTREAM_HOST }}
+        run: |
+          docker rm -f edge >/dev/null
+          docker run -d --name edge --network host -e EDGE_PORT=18080 -e EDGE_PUBLIC_SCHEME=http \
+            -e OPENFUND_UPSTREAM_HOST="$UPSTREAM" openfund-edge:candidate
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:18080/__edge/live >/dev/null && break; sleep 1; done
+          node scripts/liara/verify-edge.mjs --edge http://127.0.0.1:18080 --upstream "https://$UPSTREAM"
+      - name: Edge logs
+        if: always()
+        run: docker logs edge --tail 60 2>&1 || true
+
+  deploy:
+    name: Deploy to Liara and verify
+    needs: validate
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Owner-configured environment with required reviewers (docs/deployment/LIARA_IRAN.md).
+    environment: liara-iran
+    env:
+      EDGE_COMMIT: ${{ needs.validate.outputs.commit }}
+      LIARA_API_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
+      LIARA_APP: ${{ vars.LIARA_APP_NAME }}
+      LIARA_PUBLIC_URL: ${{ vars.LIARA_PUBLIC_URL }}
+      UPSTREAM: ${{ vars.OPENFUND_UPSTREAM_HOST }}
+      EXPECT_APP_COMMIT: ${{ inputs.expect_app_commit }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.EDGE_COMMIT }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+      - name: Check required configuration (names only)
+        run: |
+          missing=""
+          [ -n "$LIARA_API_TOKEN" ] || missing="$missing secret:LIARA_API_TOKEN"
+          [ -n "$LIARA_APP" ] || missing="$missing var:LIARA_APP_NAME"
+          [ -n "$LIARA_PUBLIC_URL" ] || missing="$missing var:LIARA_PUBLIC_URL"
+          [ -n "$UPSTREAM" ] || missing="$missing var:OPENFUND_UPSTREAM_HOST"
+          [ -z "$missing" ] || { echo "::error::liara-iran environment is missing:$missing"; exit 1; }
+          if [ -n "$EXPECT_APP_COMMIT" ] && [[ ! "$EXPECT_APP_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::expect_app_commit must be a full 40-character SHA"; exit 1
+          fi
+      - name: Stamp the edge release identity
+        run: |
+          printf '{"edge":"liara-iran","commit":"%s","deployedBy":"github-actions","run":"%s"}\n' \
+            "$EDGE_COMMIT" "$GITHUB_RUN_ID" > infra/liara-iran/edge-release.json
+      - name: Install the Liara CLI (pinned)
+        run: npm install -g @liara/cli@9.6.7 && liara --version
+      - name: Deploy (Liara keeps the previous release live if this fails)
+        run: |
+          liara deploy --app "$LIARA_APP" --api-token "$LIARA_API_TOKEN" \
+            --path infra/liara-iran --platform docker --port 8080 \
+            --message "edge $EDGE_COMMIT (run $GITHUB_RUN_ID)" --no-app-logs
+      - name: Verify the deployed edge
+        run: |
+          args="--edge $LIARA_PUBLIC_URL --upstream https://$UPSTREAM --expect-edge-commit $EDGE_COMMIT --out output/liara-edge-status.json"
+          [ -z "$EXPECT_APP_COMMIT" ] || args="$args --expect-app-commit $EXPECT_APP_COMMIT"
+          ok=0
+          for i in 1 2 3 4 5 6; do
+            node scripts/liara/verify-edge.mjs $args && { ok=1; break; }
+            echo "retrying in 20 s ($i/6)"; sleep 20
+          done
+          [ "$ok" = 1 ]
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Iran edge deployment"
+            echo "- Edge commit: \`$EDGE_COMMIT\`"
+            echo "- Liara app: \`$LIARA_APP\` - $LIARA_PUBLIC_URL"
+            if [ -f output/liara-edge-status.json ]; then
+              node -e 'const s=require("./output/liara-edge-status.json");console.log(`- Result: **${s.status}** - application ${s.application?.version} \`${s.application?.commit}\``)'
+            else echo "- Result: **not verified** (deploy did not complete)"; fi
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: liara-edge-status-${{ github.run_id }}-${{ github.run_attempt }}
+          path: output/liara-edge-status.json
+          if-no-files-found: ignore
+          retention-days: 90

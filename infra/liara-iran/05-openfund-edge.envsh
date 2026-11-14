@@ -1,0 +1,35 @@
+#!/bin/sh
+# Sourced by the nginx image entrypoint before template rendering.
+# Validates the edge configuration and refuses to start on anything unsafe,
+# so a misconfigured Liara app fails its deploy instead of serving traffic.
+# (No `set -u` here: this file is sourced into the entrypoint's own shell.)
+
+fail() { echo "openfund-edge: $1" >&2; exit 1; }
+
+[ -n "${OPENFUND_UPSTREAM_HOST:-}" ] || fail "OPENFUND_UPSTREAM_HOST is required (the Render origin host, e.g. the service's onrender.com host)"
+echo "$OPENFUND_UPSTREAM_HOST" | grep -Eq '^[a-z0-9]([a-z0-9.-]*[a-z0-9])?(:[0-9]{1,5})?$' \
+  || fail "OPENFUND_UPSTREAM_HOST must be a bare lowercase host[:port] without scheme or path"
+
+: "${OPENFUND_UPSTREAM_SCHEME:=https}"
+case "$OPENFUND_UPSTREAM_SCHEME" in
+  https) ;;
+  http) [ "${EDGE_ALLOW_HTTP_UPSTREAM:-}" = "1" ] || fail "plain-http upstream is allowed only for local tests (EDGE_ALLOW_HTTP_UPSTREAM=1)" ;;
+  *) fail "OPENFUND_UPSTREAM_SCHEME must be https" ;;
+esac
+
+: "${EDGE_PUBLIC_SCHEME:=https}"
+case "$EDGE_PUBLIC_SCHEME" in https|http) ;; *) fail "EDGE_PUBLIC_SCHEME must be https or http" ;; esac
+
+: "${EDGE_PORT:=8080}"
+echo "$EDGE_PORT" | grep -Eq '^[0-9]{2,5}$' || fail "EDGE_PORT must be numeric"
+
+: "${EDGE_CA_BUNDLE:=/etc/ssl/certs/ca-certificates.crt}"
+[ -r "$EDGE_CA_BUNDLE" ] || fail "CA bundle $EDGE_CA_BUNDLE is not readable"
+
+if [ -z "${NGINX_LOCAL_RESOLVERS:-}" ]; then
+  NGINX_LOCAL_RESOLVERS=$(awk '/^nameserver/ { print $2 }' /etc/resolv.conf | tr '\n' ' ')
+fi
+[ -n "$NGINX_LOCAL_RESOLVERS" ] || fail "no DNS resolver found in /etc/resolv.conf"
+
+export OPENFUND_UPSTREAM_HOST OPENFUND_UPSTREAM_SCHEME EDGE_PUBLIC_SCHEME EDGE_PORT EDGE_CA_BUNDLE NGINX_LOCAL_RESOLVERS
+echo "openfund-edge: proxying to $OPENFUND_UPSTREAM_SCHEME://$OPENFUND_UPSTREAM_HOST on :$EDGE_PORT"
