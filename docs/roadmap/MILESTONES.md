@@ -103,3 +103,13 @@ requires actual Electron/Vela rendering, generated-signature account/trading
 tests, verified Windows/macOS/Linux artifacts and real-wallet acceptance.
 Public distribution additionally needs owner approval, signing credentials and
 license decisions. [Evidence](../../apps/open-trade/ACCEPTANCE.md).
+
+
+## Final product refinement
+
+**In Progress.** Accept shared navigation and purchase history through bilingual
+responsive browser checks, and chart protection through confirmed Prop position
+updates. Verify certificates with isolated purchase, approved completion and
+recorded payout events. Confirm Directus draft isolation and publication before
+claiming full content editability. Public desktop downloads depend on verified
+published installers. Review and release remain separate milestones.

@@ -34,3 +34,5 @@
 - [0031 — Iran edge on Liara (same-origin reverse proxy, phase one)](0031-iran-edge-on-liara.md)
 
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)
+
+- [0032 — Editorial and distribution authority](0032-editorial-and-distribution-authority.md)

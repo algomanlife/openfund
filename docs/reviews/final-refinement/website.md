@@ -26,3 +26,16 @@ format, byte count, SHA-256, platform architecture and installation guide. A
 stable installer must be signed. Mark verified experimental releases as beta.
 The page validates the record and restricts executables to reviewed assets from
 the canonical GitHub releases. Archive packages are not installers.
+
+## Local browser check
+
+The 140 route checks cover Home, Challenges, Checkout, Transparency, FAQ,
+Applications, and Prop Purchases at 1440, 1024, 768, 390, and 360 pixels, in
+Persian and English and in light and dark themes. Checks include page overflow,
+locale direction, keyboard navigation, pointer interaction, compact menu,
+installer availability and the shortcut from purchases to checkout. Captures
+use anonymous sessions and bundled editorial fallbacks.
+
+- [English checkout with Economy open](../../assets/screenshots/final-refinement/checkout-en-dark.png)
+- [Persian mobile Applications](../../assets/screenshots/final-refinement/apps-fa-dark-390.png)
+- [Persian mobile purchase history](../../assets/screenshots/final-refinement/purchases-fa-light-390.png)

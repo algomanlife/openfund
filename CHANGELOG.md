@@ -8,6 +8,14 @@
 
 ## Unreleased
 
+- Keep public navigation above checkout content, add an Applications destination,
+  and improve the localized purchase history and checkout entry point.
+- Add direct chart controls for creating, moving and independently removing
+  position protection. Show estimated gross profit or loss during dragging.
+- Add an interface content registry and an editing workflow through Directus.
+- Add certificates for eligible purchase, approved completion and recorded
+  payout events, with public verification, QR codes, and PDF and PNG downloads.
+
 - Iran edge on Liara (branch `infra/liara-iran-mirror`,
   [ADR 0031](docs/decisions/0031-iran-edge-on-liara.md); **not deployed**):
   a stateless nginx reverse proxy for `iran.openfund.cloud` that serves the
