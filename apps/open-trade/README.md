@@ -19,9 +19,8 @@ OPEN_TRADE_BACKEND=https://openfi.cloud npm run dev --prefix apps/open-trade
 ```
 
 Set `OPEN_TRADE_WALLETCONNECT_PROJECT_ID` to your real project ID before building
-or launching. Both configuration values can also be saved in Settings. Never
+or launching. Configure these values before launch. Never
 put a private credential in these public settings. `OPEN_TRADE_BACKEND` accepts
-HTTPS origins and HTTP loopback for isolated tests. Saving settings logs out the
 current session. No Render environment variable or deployment is needed.
 
 `npm run dev` builds the renderer and launches Electron. It does not use a
@@ -91,3 +90,17 @@ mode and resizing. It saves genuine captures and process measurements in
 `artifacts/`. `TEST_BACKEND_URL` plus matching `OPEN_TRADE_BACKEND` enables generated
 signature and trading acceptance, but only against a loopback test backend using
 an isolated database and `SIM_TEST_MODE=1`. Never use a production account for tests.
+
+### Version 0.0.2 beta
+
+The startup region selector reports HTTPS health round-trip times. International
+is the default. Iran stays disabled until its endpoint is healthy and operators
+explicitly enable it with `OPEN_TRADE_IRAN_APPROVED=1` after confirming shared
+accounts and trading state. WalletConnect uses
+`OPEN_TRADE_WALLETCONNECT_PROJECT_ID` from launch or build configuration.
+
+Drag the Quick Trade header to move it, or drag the divider above Positions to
+resize the bottom panel. The three-chart layout has a resizable left chart and
+two stacked right charts. Use Capture in the workspace toolbar to preview,
+save, or copy a chart PNG. The preview includes unrealized P&L only when the
+account snapshot reports a fresh valuation and has a matching position.

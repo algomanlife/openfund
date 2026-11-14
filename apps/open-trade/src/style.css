@@ -930,3 +930,27 @@ html[data-theme="light"] .chart-cell {
   display: block;
   margin-top: 8px;
 }
+
+.layout-3 {
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+.charts.maximized { grid-template: minmax(0, 1fr) / minmax(0, 1fr); }
+.ticket.floating .ticket-head { cursor: grab; touch-action: none; }
+.ticket.floating .ticket-head:active { cursor: grabbing; }
+.positions.expanded { resize: none; }
+.positions-divider { height: 6px; cursor: ns-resize; touch-action: none; background: var(--line); }
+.app-rail img { width: 28px; height: 32px; }
+.workspace-settings { margin-block: 16px; }
+.region-selector { display: grid; gap: 6px; text-align: left; }
+.region-status { display: flex; gap: 14px; color: var(--muted); font-size: 11px; }
+.launch.scene-online { box-shadow: 0 20px 90px #43b99119; }
+.launch.scene-wallet { box-shadow: 0 20px 90px #9998ff26; }
+.launch.scene-offline .emblem { filter: grayscale(1); opacity: .7; }
+.chart-preview { width: min(900px, 90vw); }
+.chart-preview img { display: block; width: 100%; max-height: 65vh; object-fit: contain; margin-bottom: 14px; }
+
+.capturing-chart .ticket.floating, .capturing-chart .notice { visibility: hidden; }
+.layout-3:not(.maximized) { position: relative; grid-template-columns: minmax(0, var(--chart-split, 66%)) minmax(0, 1fr); }
+.layout-3:not(.maximized) > .chart-cell:first-of-type { grid-row: span 2; }
+.layout-3:not(.maximized) > .chart-splitter { position: absolute; inset-block: 0; left: var(--chart-split, 66%); width: 7px; z-index: 7; transform: translateX(-2px); cursor: col-resize; touch-action: none; }

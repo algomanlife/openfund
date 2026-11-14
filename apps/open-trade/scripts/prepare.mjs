@@ -30,7 +30,7 @@ try {
 } catch {}
 await writeFile(
   "public/build.json",
-  JSON.stringify({ version: "0.0.1", sha, channel: "beta", signed: false }),
+  JSON.stringify({ version: "0.0.2", sha, channel: "beta", signed: false }),
 );
 
 import { Resvg } from "@resvg/resvg-js";
