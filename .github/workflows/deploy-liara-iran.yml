@@ -188,7 +188,7 @@ jobs:
           docker logs edge --tail 40 2>&1 || true
 
   deploy:
-    name: Deploy to Liara (${{ inputs.target }}) and verify
+    name: Deploy to Liara and verify
     needs: [validate, edge-auth]
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
