@@ -8,7 +8,7 @@ const primary = ['challenges', 'markets', 'rulebook'] as const
 /** Economy dropdown: governance, the consolidated Ambassador (IB) page and
  *  Referral & Rewards (formerly "Growth Partner" under Resources; same /referral page). */
 const economy = ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'] as const
-const resources = ['faq', 'learn', 'tools', 'about', 'contact'] as const
+const resources = ['faq', 'learn', 'tools', 'apps', 'certificate-verification', 'about', 'contact'] as const
 /** Website-owned labels that win over a stale CMS navigation/footer label. */
 const FIXED_LABELS = new Set(['referral'])
 /** footer "Openfund documents" entries */
@@ -135,8 +135,12 @@ export function navigationClick(event: MouseEvent, root: ParentNode): boolean {
     })
     return false
   }
-  trigger.parentElement?.classList.remove('resources-dismissed')
   const open = trigger.getAttribute('aria-expanded') !== 'true'
+  root.querySelectorAll('.resources-toggle').forEach(button => {
+    button.setAttribute('aria-expanded', 'false')
+    button.parentElement?.classList.remove('resources-open')
+  })
+  trigger.parentElement?.classList.remove('resources-dismissed')
   trigger.setAttribute('aria-expanded', String(open))
   trigger.parentElement?.classList.toggle('resources-open', open)
   trigger.parentElement?.classList.toggle('resources-dismissed', !open)

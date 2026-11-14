@@ -13,6 +13,7 @@ import Coach from './features/partners/Coach'
 /* the long-form Whitepaper (content + charts) loads only when visited */
 const Whitepaper = lazy(() => import('./features/whitepaper/Whitepaper'))
 import Faq from './features/faq/Faq'
+import Applications from './features/applications/Applications'
 import About from './features/company/About'
 import Contact from './features/company/Contact'
 import Governance from './features/governance/Governance'
@@ -146,6 +147,7 @@ const routes = [
   { path: '/:locale/coach', element: <Coach /> },
   /* Official Whitepaper v1.0 — one anchor-navigated page (footer document link) */
   { path: '/:locale/whitepaper', element: <Suspense fallback={null}><Whitepaper /></Suspense> },
+  { path: '/:locale/apps', element: <Applications /> },
   { path: '/:locale/about', element: <About /> },
   { path: '/:locale/contact', element: <Contact /> },
   { path: '/:locale/faq', element: <Faq /> },

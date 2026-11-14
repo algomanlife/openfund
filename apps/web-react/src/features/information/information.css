@@ -298,3 +298,16 @@ html:is([lang=ru],[lang=zh-CN]) .information-page .info-hero h1,.info-main[lang=
   :root .openfund-header.nav-overflow .nav-actions { width: auto; gap: 6px; }
   :root .openfund-header.nav-overflow .brand { margin-inline-end: auto; flex: 0 0 auto; }
 }
+
+/* The page body owns a lower stacking context than shared navigation. Local
+   checkout headers/cards cannot compete with the sticky chrome's layer. */
+.information-page > .info-main { position: relative; isolation: isolate; z-index: 0; }
+.openfund-header, .openfund-header .nav, .openfund-header .nav-account { overflow: visible; }
+/* Disclosure state is explicit: hover/focus must not reopen a dismissed menu. */
+:root .openfund-header .nav-account:has(.resources-toggle):not(.resources-open) .nav-dropdown {
+  opacity: 0; visibility: hidden; pointer-events: none;
+}
+:root .openfund-header .nav-account.resources-open .nav-dropdown {
+  opacity: 1; visibility: visible; pointer-events: auto; transform: none;
+  max-height: calc(100dvh - 110px); overflow-y: auto; overscroll-behavior: contain;
+}
