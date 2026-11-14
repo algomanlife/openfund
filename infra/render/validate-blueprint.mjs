@@ -132,13 +132,15 @@ if (api?.numInstances !== 1) fail('graph: engine/SSE service requires numInstanc
 if (api?.buildCommand?.trim() !== 'node scripts/release/render-build.mjs') fail('graph: API must use the verified official release build')
 if (api?.autoDeployTrigger !== 'off') fail('graph: production requires approved exact-release deployment')
 const domains = api?.envVars?.find(v => v.key === 'ALLOWED_DOMAINS')
-const requiredDomains = ['openfund-our6.onrender.com','openfi.cloud','openfund.cloud']
+/* exact SIWE hosts: the Render host, both production origins and the Iran edge
+   (ADR 0031); no other host may be added without changing this list */
+const requiredDomains = ['openfund-our6.onrender.com','openfi.cloud','openfund.cloud','iran.openfund.cloud']
 const configuredDomains = String(domains?.value || '').split(',').map(v => v.trim()).filter(Boolean)
 if (domains?.fromService || configuredDomains.length !== requiredDomains.length ||
     new Set(configuredDomains).size !== requiredDomains.length ||
     !requiredDomains.every(v => configuredDomains.includes(v)))
-  fail('graph: ALLOWED_DOMAINS must explicitly list the onrender host and both production origins; Blueprint sync must preserve them')
-else ok('graph: SIWE accepts the three exact production hosts')
+  fail('graph: ALLOWED_DOMAINS must list exactly the onrender host, both production origins and the Iran edge host; Blueprint sync must preserve them')
+else ok('graph: SIWE accepts the four exact production hosts')
 if (!api?.envVars?.some(v => v.key === 'VITE_DIRECTUS_HOST' && v.fromService?.envVarKey === 'RENDER_EXTERNAL_HOSTNAME'))
   fail('graph: VITE_DIRECTUS_HOST must reference a public hostname, not the private-network host property')
 const databaseRegion = databases.find(d => d.name === 'openfund-db')?.region

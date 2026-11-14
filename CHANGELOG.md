@@ -8,6 +8,11 @@
 
 ## Unreleased
 
+- SIWE: `ALLOWED_DOMAINS` gains `iran.openfund.cloud` (Iran edge on Liara,
+  [ADR 0031](docs/decisions/0031-iran-edge-on-liara.md)); the Blueprint
+  validator now requires exactly the four hosts. Takes effect only after an
+  approved Blueprint sync. **Not deployed.**
+
 - Iran edge on Liara (branch `infra/liara-iran-mirror`,
   [ADR 0031](docs/decisions/0031-iran-edge-on-liara.md); **not deployed**):
   a stateless nginx reverse proxy for `iran.openfund.cloud`. It is not an
