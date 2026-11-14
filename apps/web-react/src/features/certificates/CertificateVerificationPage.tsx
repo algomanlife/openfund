@@ -24,7 +24,7 @@ export default function CertificateVerificationPage() {
   }, [search, locale])
   const submit = (e: FormEvent) => { e.preventDefault(); setSearch({ serial: serial.trim().toLowerCase() }) }
   return <InformationShell page="certificate-verification" title={t('verification')} description={t('verificationIntro')}>
-    <section className="of-certificates-page" dir={dirOf(locale)}>
+    <section id="top" className="of-certificates-page" dir={dirOf(locale)}>
       <h1>{t('verification')}</h1><p>{t('verificationIntro')}</p>
       <form className="of-certificate-lookup" onSubmit={submit}><label htmlFor="certificate-serial">{t('serial')}</label><input id="certificate-serial" dir="ltr" required pattern="[a-fA-F0-9]{32}" maxLength={32} value={serial} onChange={e => setSerial(e.target.value)} autoComplete="off" /><button className="button" disabled={pending}>{t('verify')}</button></form>
       {pending && <p role="status">{t('loading')}</p>}{error && <p role="alert">{error}</p>}

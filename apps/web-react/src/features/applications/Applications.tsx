@@ -9,7 +9,7 @@ export default function Applications() {
   const locale = useInformationLocale()
   const c = (key: keyof typeof copy) => tx(locale, copy[key])
   return <InformationShell page="apps" description={c('intro')}>
-    <section className="container of-apps-hero">
+    <section id="top" className="container of-apps-hero">
       <div className="eyebrow">OPENFUND · {c('eyebrow')}</div>
       <h1>{c('title')}</h1><p className="hero-intro">{c('intro')}</p>
       <Link className="button" to={`/${locale}/prop/trade`}>{c('open')} <span aria-hidden="true">↗</span></Link>
