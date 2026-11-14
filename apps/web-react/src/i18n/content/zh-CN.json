@@ -3399,5 +3399,13 @@
   "Verify certificate": "验证证书",
   "Verify the current status using the QR code. A downloaded copy may have been revoked after issue.": "请通过二维码查看当前状态。证书可能在签发后被撤销。",
   "Your verified milestones, issued from recorded Openfund events.": "您在 Openfund 的已核实成就，依据平台记录签发。",
-  "Trader": "交易员"
+  "Trader": "交易员",
+  "Accessing Openfund from Iran": "从伊朗境内访问 Openfund",
+  "Access addresses from Iran": "伊朗境内访问地址",
+  "From inside Iran you can use the addresses below. They are hosted on Liara infrastructure, and openfi.live is Openfund's separately managed domain for Iran. Service and trading features depend on connectivity and on access to authoritative market data. Sign in with your wallet separately on each address.": "在伊朗境内可以使用以下地址。它们托管在 Liara 基础设施上，openfi.live 是 Openfund 为伊朗单独管理的域名。服务和交易功能取决于网络连接以及能否获取权威市场数据。请在每个地址分别使用钱包登录。",
+  "This page is served by Openfund's Iran infrastructure on Liara and is available at all three addresses below. openfi.live is a separately managed route to the Iran version. Service and trading features depend on connectivity and on access to authoritative market data. New challenge purchases are currently available only on Openfund's international address.": "本页面由 Openfund 位于 Liara 的伊朗基础设施提供，可通过以下三个地址访问。openfi.live 是通往伊朗版本的单独管理的访问途径。服务和交易功能取决于网络连接以及能否获取权威市场数据。新挑战目前仅可在 Openfund 的国际地址购买。",
+  "International connectivity is currently unavailable: trading and payout recording are paused. Account information and withdrawal requests remain available.": "国际网络连接目前不可用：交易和付款登记已暂停。账户信息和提款申请仍可使用。",
+  "International connectivity is being restored and data is being reconciled. Trading is paused until this review is complete.": "国际网络连接正在恢复，数据正在核对。在核对完成之前，交易暂停。",
+  "Less": "收起",
+  "More": "更多"
 }

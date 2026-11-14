@@ -33,6 +33,7 @@
 - [0028 — Manual payment, treasury by network, campaign landing, English chart layer, SL/TP creation and Lotage](0028-manual-payment-treasury-networks-campaign-chart-english-lotage.md)
 - [0031 — Iran edge on Liara (same-origin reverse proxy, phase one)](0031-iran-edge-on-liara.md)
 - [0032 — Iran sovereign regional runtime (foundations)](0032-iran-sovereign-regional-runtime.md)
+- [0033 — Regional account authority, synchronization and the independent Iran runtime](0033-regional-authority-and-synchronization.md)
 
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)
 

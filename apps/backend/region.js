@@ -34,13 +34,14 @@ export const ROLES = Object.freeze([
   'settlement',       // live-settlement retries
   'treasury',         // treasury snapshots (external RPC)
   'footprint',        // Hyperliquid order-flow ingestion
+  'sync',             // regional synchronization worker (ADR 0033)
 ])
 
-/* Roles that move or provision money or depend on global payment rails.
-   They belong to the GLOBAL region only. `engine` is refused in IRAN until
-   regional account ownership (ADR 0032 §4) and an execution price policy
-   are implemented and signed off. */
-const GLOBAL_ONLY_ROLES = new Set(['engine', 'purchase-expiry', 'payment-recovery', 'settlement', 'treasury'])
+/* Roles that move or provision money through global payment rails. They
+   belong to the GLOBAL region only. The engine may run in IRAN since ADR
+   0033: the database ownership fence restricts it to IRAN-owned accounts,
+   and it executes only on fresh authoritative (Gains) marks. */
+const GLOBAL_ONLY_ROLES = new Set(['purchase-expiry', 'payment-recovery', 'settlement', 'treasury'])
 const IRAN_DEFAULT_ROLES = ['http']
 
 const fail = (status, error, extra = {}) => Object.assign(new Error(error), { status, ...extra })
@@ -69,9 +70,9 @@ export const hasRole = (config, role) => config.roles.includes(role)
  * Operation policy
  * ------------------------------------------------------------------- */
 
-/* State-changing requests the IRAN region permits in every mode. Everything
-   else that is not GET/HEAD/OPTIONS is denied in IRAN (default deny). None of
-   these writes a financial record. */
+/* State-changing requests the IRAN region permits in every mode. Account
+   writes among them (withdrawal requests, staff review) are additionally
+   limited by the database ownership fence to IRAN-owned accounts. */
 const IRAN_ALLOWED_MUTATIONS = [
   ['POST', /^\/auth\/(nonce|verify|logout)$/],
   ['PATCH', /^\/auth\/profile$/],
@@ -79,8 +80,24 @@ const IRAN_ALLOWED_MUTATIONS = [
   ['PUT', /^\/portfolio\/notes$/],
   ['PUT', /^\/products\/[^/]+\/preferences$/],
   ['POST', /^\/support\/messages$/],
+  ['POST', /^\/certificates\/(verify|identity)$/],  // attestations (#118): no financial authority
+  ['POST', /^\/admin\/certificates\/[^/]+\/revoke$/], // revokes a certificate this region issued
+  ['POST', /^\/admin\/certificates\/identities\/[^/]+\/correct$/],
   ['POST', /^\/trading\/preview$/],  // computes a quote; writes nothing
+  ['POST', /^\/withdrawals$/],
+  ['POST', /^\/withdrawals\/[^/]+\/cancel$/],
+  ['POST', /^\/rewards\/accounts\/[^/]+\/cycle$/],
+  ['POST', /^\/admin\/withdrawals\/[^/]+\/review$/], // 'paid' additionally needs GLOBAL_CONNECTED (body guard)
   ['POST', /^\/admin\/runtime\/mode$/], // the operator control plane itself
+  ['POST', /^\/admin\/regional\/[\w/-]+$/],  // regional operations (sync, reconciliation, handoff)
+  ['POST', /^\/sync\/v1\/(events|checkpoint-request)$/], // signed peer requests (verified by the sync router)
+]
+/* Additionally permitted in IRAN only while GLOBAL_CONNECTED: they need
+   authoritative market data or create accounts. */
+const IRAN_CONNECTED_MUTATIONS = [
+  ['POST', /^\/trading\/(order|positions\/[^/]+\/(close|protection)|orders\/[^/]+\/cancel)$/],
+  ['POST', /^\/challenges\/[^/]+\/start$/],
+  ['POST', /^\/admin\/rewards\/reviews\/[^/]+$/],
 ]
 
 /* Named operations, for the status endpoint and audit messages. The request
@@ -99,41 +116,58 @@ export const OPERATIONS = Object.freeze({
 export function classifyRequest(method, path) {
   if (/^\/(purchases|depay)(\/|$)/.test(path)) return 'purchase'
   if (/^\/challenges\/[^/]+\/start$/.test(path)) return 'challenge.provision'
+  if (/^\/admin\/rewards\/reviews\//.test(path)) return 'challenge.provision'
   if (/^\/trading\/preview$/.test(path)) return 'account.profile'
   if (/^\/(trading|products\/[^/]+\/(orders|positions|trade))(\/|$)/.test(path)) return 'trading.execute'
   if (/^\/(withdrawals|rewards)(\/|$)/.test(path)) return 'withdrawal.request'
   if (/^\/admin\/(withdrawals|rewards)(\/|$)/.test(path)) return 'withdrawal.review'
   if (/^\/(live|admin\/live)(\/|$)/.test(path)) return 'live'
-  if (/^\/admin\/runtime(\/|$)/.test(path)) return 'account.profile'
+  if (/^\/admin\/(runtime|regional|certificates)(\/|$)/.test(path)) return 'account.profile'
   if (/^\/admin(\/|$)/.test(path)) return 'admin.financial'
-  if (/^\/(auth|chart|portfolio\/notes|support)(\/|$)/.test(path) || /^\/products\/[^/]+\/preferences$/.test(path)) return 'account.profile'
+  if (/^\/(auth|chart|portfolio\/notes|support|sync|certificates)(\/|$)/.test(path) || /^\/products\/[^/]+\/preferences$/.test(path)) return 'account.profile'
   return 'other'
 }
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS'])
+const matches = (list, method, path) => list.some(([m, re]) => m === method && re.test(path))
 
 /**
  * May this request run? Pure function of region, mode and the request line.
- * GLOBAL: always yes (unchanged behaviour). IRAN: reads yes; writes only when
- * explicitly allowlisted.
+ * GLOBAL: always yes (unchanged behaviour; the ownership fence still guards
+ * accounts). IRAN: reads yes; writes only when explicitly allowlisted, and
+ * execution/provisioning only while GLOBAL_CONNECTED.
  */
 export function permits({ region, mode }, method, path) {
   method = String(method).toUpperCase()
   if (region === 'GLOBAL') return { allowed: true }
   if (SAFE_METHODS.has(method)) return { allowed: true }
-  if (IRAN_ALLOWED_MUTATIONS.some(([m, re]) => m === method && re.test(path))) return { allowed: true }
-  return { allowed: false, operation: classifyRequest(method, path), reason: denialReason(classifyRequest(method, path), mode) }
+  if (matches(IRAN_ALLOWED_MUTATIONS, method, path)) return { allowed: true }
+  if (mode === 'GLOBAL_CONNECTED' && matches(IRAN_CONNECTED_MUTATIONS, method, path)) return { allowed: true }
+  const operation = classifyRequest(method, path)
+  return { allowed: false, operation, reason: denialReason(operation, mode) }
 }
 
 function denialReason(operation, mode) {
   switch (operation) {
-    case 'purchase':
-    case 'challenge.provision': return 'purchases_global_region_only'
-    case 'trading.execute': return mode === 'IRAN_ISOLATED' ? 'execution_suspended_isolated' : 'regional_execution_not_signed_off'
-    case 'withdrawal.request':
-    case 'withdrawal.review': return 'regional_withdrawals_not_enabled'
+    case 'purchase': return 'purchases_global_region_only'
+    case 'challenge.provision': return mode === 'GLOBAL_CONNECTED' ? 'operation_not_enabled_in_region' : 'provisioning_suspended_until_connected'
+    case 'trading.execute': return mode === 'GLOBAL_CONNECTED' ? 'operation_not_enabled_in_region' : 'execution_suspended_no_authoritative_market_data'
     case 'live': return 'live_markets_global_region_only'
     default: return 'operation_not_enabled_in_region'
+  }
+}
+
+/** Body-aware rule, mounted after JSON parsing: in IRAN a payout may be
+    recorded as paid only while connected (settlement must be verifiable). */
+export function payoutGuard(runtime) {
+  return (req, res, next) => {
+    if (runtime.config.region === 'GLOBAL' || req.method !== 'POST' || !/^\/admin\/(withdrawals\/[^/]+\/review|rewards\/fee-refunds\/[^/]+\/paid)$/.test(req.path)) return next()
+    const paying = /fee-refunds/.test(req.path) || req.body?.action === 'paid'
+    if (!paying) return next()
+    runtime.current().then(state => {
+      if (state.mode === 'GLOBAL_CONNECTED') return next()
+      res.status(503).set('Cache-Control', 'no-store').json({ error: 'operation_unavailable', operation: 'withdrawal.review', reason: 'payout_recording_requires_connected_mode', region: state.region, mode: state.mode })
+    }, next)
   }
 }
 
@@ -186,28 +220,39 @@ export function validateTransition({ region, from, to, expectedEpoch, epoch, con
 }
 
 /**
- * Gates evaluated before a transition. Each returns {ok, detail}. Entering
- * IRAN_ISOLATED (more restrictive) needs only a healthy database; leaving
- * RECOVERY for GLOBAL_CONNECTED needs every reopening gate to pass.
+ * Gates evaluated before a transition. Entering IRAN_ISOLATED or RECOVERY
+ * (more restrictive) needs only a healthy database. Reopening
+ * (RECOVERY → GLOBAL_CONNECTED) needs every reconciliation gate (ADR 0033):
+ * connectivity alone is never proof of financial consistency.
+ *
+ * probes.peer(): signed handshake with the other region → {ok, compatible, ...peer health}
  */
-export async function evaluateGates({ pool, to, probes = {} }) {
+export async function evaluateGates({ pool, to, probes = {}, recoveryStartedAt = null }) {
   const gates = []
-  try { await pool.query('SELECT 1'); gates.push({ gate: 'database', ok: true }) }
-  catch (e) { gates.push({ gate: 'database', ok: false, detail: 'database_unreachable' }) }
+  const gate = (name, ok, detail) => gates.push({ gate: name, ok: !!ok, ...(detail != null ? { detail } : {}) })
+  try { await pool.query('SELECT 1'); gate('database', true) }
+  catch { gate('database', false, 'database_unreachable') }
   if (to === 'GLOBAL_CONNECTED') {
-    const reach = probes.globalReachable ? await probes.globalReachable().catch(() => false) : false
-    gates.push({ gate: 'global_origin_reachable', ok: !!reach, ...(reach ? {} : { detail: 'global_origin_unreachable_or_unprobed' }) })
-    /* Reconciliation: this release writes no regional financial records in
-       IRAN (every financial mutation is denied above), so there is nothing to
-       replay. When the outbox lands (ADR 0032 §6) this gate checks it is
-       drained and the reconciliation report has no open discrepancy. */
-    const { rows } = await pool.query(`SELECT to_regclass('public.region_outbox') IS NOT NULL AS present`)
-    if (rows[0].present) {
-      const pending = (await pool.query(`SELECT count(*)::int AS n FROM region_outbox WHERE acked_at IS NULL`)).rows[0].n
-      gates.push({ gate: 'outbox_drained', ok: pending === 0, ...(pending ? { detail: `${pending}_events_pending` } : {}) })
-    } else {
-      gates.push({ gate: 'outbox_drained', ok: true, detail: 'no_regional_financial_events_in_this_release' })
-    }
+    const peer = probes.peer ? await probes.peer().catch(e => ({ ok: false, error: e.message })) : { ok: false, error: 'sync_peer_not_configured' }
+    gate('peer_reachable', peer.ok, peer.ok ? undefined : peer.error)
+    gate('protocol_compatible', peer.ok && peer.compatible, peer.ok ? { peer_protocol: peer.protocol, peer_release: peer.release } : 'unknown')
+    const one = async sql => (await pool.query(sql)).rows[0]
+    const out = await one(`SELECT count(*) FILTER (WHERE acked_at IS NULL AND dead_at IS NULL)::int AS pending, count(*) FILTER (WHERE dead_at IS NOT NULL AND acked_at IS NULL)::int AS dead FROM region_outbox`)
+    gate('local_outbox_drained', out.pending === 0 && out.dead === 0, out)
+    const inb = await one(`SELECT count(*) FILTER (WHERE status='held')::int AS held, count(*) FILTER (WHERE status='rejected')::int AS rejected FROM region_inbox`)
+    /* every rejected event opens a discrepancy (gated below); held = a gap in a stream */
+    gate('local_inbox_no_gaps', inb.held === 0, inb)
+    gate('peer_outbox_drained', peer.ok && peer.outboxPending === 0 && peer.outboxDead === 0, peer.ok ? { pending: peer.outboxPending, dead: peer.outboxDead } : 'unknown')
+    gate('peer_inbox_no_gaps', peer.ok && peer.inboxHeld === 0, peer.ok ? { held: peer.inboxHeld, rejected: peer.inboxRejected } : 'unknown')
+    const run = (await pool.query(
+      `SELECT id, status, mismatched, started_at FROM region_reconciliation_runs
+        WHERE ($1::timestamptz IS NULL OR started_at >= $1) ORDER BY started_at DESC LIMIT 1`, [recoveryStartedAt])).rows[0]
+    gate('reconciliation_complete', run && run.status === 'complete' && run.mismatched === 0,
+      run ? { run: run.id, status: run.status, mismatched: run.mismatched } : 'no_reconciliation_run_since_recovery_started')
+    const disc = await one(`SELECT count(*)::int AS open FROM region_discrepancies WHERE status='open'`)
+    gate('no_open_discrepancies', disc.open === 0 && peer.ok && peer.openDiscrepancies === 0, { local: disc.open, peer: peer.ok ? peer.openDiscrepancies : 'unknown' })
+    const q = await one(`SELECT count(*)::int AS n FROM account_ownership WHERE state='quarantined'`)
+    gate('no_quarantined_accounts', q.n === 0 && peer.ok && peer.quarantined === 0, { local: q.n, peer: peer.ok ? peer.quarantined : 'unknown' })
   }
   return { ok: gates.every(g => g.ok), gates }
 }
@@ -223,6 +268,10 @@ export async function claimDatabaseRegion(pool, region) {
                     ON CONFLICT (singleton) DO NOTHING`)
   const owner = (await pool.query(`SELECT region FROM runtime_region WHERE singleton`)).rows[0].region
   if (owner !== region) throw new Error(`database belongs to region ${owner}; this process is configured for ${region} — refusing (ADR 0032)`)
+  /* ADR 0033: every existing account belongs to the region that owns the
+     database (idempotent; never changes an existing ownership row) */
+  await pool.query(`INSERT INTO account_ownership (account_id, home_region, updated_by)
+                    SELECT id, $1, 'system:backfill' FROM demo_accounts ON CONFLICT (account_id) DO NOTHING`, [region])
   return owner
 }
 
@@ -259,10 +308,10 @@ export class RuntimeState {
     const client = await this.pool.connect()
     try {
       await client.query('BEGIN')
-      const row = (await client.query(`SELECT mode, epoch::int AS epoch FROM runtime_mode WHERE singleton FOR UPDATE`)).rows[0]
+      const row = (await client.query(`SELECT mode, epoch::int AS epoch, changed_at FROM runtime_mode WHERE singleton FOR UPDATE`)).rows[0]
       if (!row) throw fail(409, 'runtime_mode_not_migrated')
       validateTransition({ region: this.config.region, from: row.mode, to, expectedEpoch, epoch: row.epoch, confirm, reason })
-      const gates = await evaluateGates({ pool: client, to, probes: this.probes })
+      const gates = await evaluateGates({ pool: client, to, probes: this.probes, recoveryStartedAt: row.mode === 'RECOVERY' ? row.changed_at : null })
       if (!gates.ok) {
         await client.query('ROLLBACK')
         await this.pool.query(
@@ -310,7 +359,7 @@ export function regionGuard(runtime) {
 
 /** `http` role off: only liveness and status stay reachable (worker process). */
 export function httpRoleGate(config) {
-  const open = new Set(['/health', '/version', '/runtime/status'])
+  const open = new Set(['/health', '/ready', '/version', '/runtime/status'])
   return (req, res, next) => hasRole(config, 'http') || open.has(req.path) ? next() : res.status(404).json({ error: 'not_found' })
 }
 

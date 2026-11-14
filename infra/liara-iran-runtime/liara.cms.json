@@ -1,0 +1,6 @@
+{
+  "platform": "docker",
+  "port": 8055,
+  "image": "docker.io/directus/directus:11.17.4",
+  "disks": [{ "name": "directus-uploads", "mountTo": "/directus/uploads" }]
+}

@@ -88,7 +88,7 @@ function leaks(locale, texts) {
     if (locale !== 'en' && ENGLISH_RUN.test(t)) out.push(['english', raw])
     if (locale !== 'fa' && locale !== 'ar' && ARABIC_SCRIPT.test(raw)) out.push(['arabic-script', raw])
     if (locale === 'ar' && PERSIAN.test(raw)) out.push(['persian', raw])
-    if (/^[a-z]+(?:\.[a-zA-Z]+)+$/.test(raw.trim()) && !/\.(?:com|org|io|trade|cloud|js|json)$/.test(raw.trim())) out.push(['raw-key', raw])
+    if (/^[a-z]+(?:\.[a-zA-Z]+)+$/.test(raw.trim()) && !/\.(?:com|org|io|trade|cloud|live|js|json)$/.test(raw.trim())) out.push(['raw-key', raw])
   }
   return out
 }
