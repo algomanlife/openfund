@@ -39,3 +39,11 @@ use anonymous sessions and bundled editorial fallbacks.
 - [English checkout with Economy open](../../assets/screenshots/final-refinement/checkout-en-dark.png)
 - [Persian mobile Applications](../../assets/screenshots/final-refinement/apps-fa-dark-390.png)
 - [Persian mobile purchase history](../../assets/screenshots/final-refinement/purchases-fa-light-390.png)
+
+A generated SIWE signer also loaded a real paid fixture persisted by the
+existing isolated confirmation seam. Both Persian and English rendered the
+purchase, horizontally scrollable table and localized checkout action at 390 px.
+The invoice endpoint returned a PDF in both locales. The older purchase browser
+suite signed in successfully but did not find the legacy Challenges builder's
+size buttons. The authenticated history check exercised the updated route
+independently of that builder.

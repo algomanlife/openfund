@@ -6544,6 +6544,83 @@
       "session": "anonymous",
       "capturedAt": "2026-11-14T16:25:37Z",
       "state": "Local development build, light theme, Anonymous purchase history and localized checkout action. Bundled editorial fallback."
+    },
+    {
+      "file": "final-refinement-chart/protection-en-light-1440.png",
+      "route": "/en/prop/chart",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "disposable generated SIWE signer",
+      "capturedAt": "2026-11-14T16:29:22Z",
+      "state": "Local unofficial light theme. Actual isolated simulated positions, live Gains chart and a test-mode backend mark."
+    },
+    {
+      "file": "final-refinement-chart/protection-fa-light-1024.png",
+      "route": "/fa/prop/chart",
+      "viewport": {
+        "width": 1024,
+        "height": 900
+      },
+      "session": "disposable generated SIWE signer",
+      "capturedAt": "2026-11-14T16:29:30Z",
+      "state": "Local unofficial light theme. Actual isolated simulated positions, live Gains chart and a test-mode backend mark."
+    },
+    {
+      "file": "final-refinement-chart/protection-fa-dark-360.png",
+      "route": "/fa/prop/chart",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "session": "disposable generated SIWE signer",
+      "capturedAt": "2026-11-14T16:29:35Z",
+      "state": "Local unofficial dark theme. Actual isolated simulated positions, live Gains chart and a test-mode backend mark."
+    },
+    {
+      "file": "final-refinement-chart/protection-en-dark-390.png",
+      "route": "/en/prop/chart",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "session": "disposable generated SIWE signer",
+      "capturedAt": "2026-11-14T16:29:28Z",
+      "state": "Local unofficial dark theme. Actual isolated simulated positions, live Gains chart and a test-mode backend mark."
+    },
+    {
+      "file": "final-refinement-chart/footprint-beta-light-1440.png",
+      "route": "/en/prop/chart",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:30:10Z",
+      "state": "Local unofficial light theme. Footprint menu and Beta badge."
+    },
+    {
+      "file": "final-refinement/content-registry-desktop.png",
+      "route": "/content-registry.html",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:29:45Z",
+      "state": "Local standalone registry. Search and browse versioned publication keys and coverage."
+    },
+    {
+      "file": "final-refinement/content-registry-mobile.png",
+      "route": "/content-registry.html",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:29:45Z",
+      "state": "Local standalone registry. Search and browse versioned publication keys and coverage."
     }
   ],
   "finalIntegration": {
