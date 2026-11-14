@@ -114,7 +114,14 @@ test('the Iran access notice is owner-approved for production and renders the ap
   const React = require('react'), server = require('react-dom/server')
   const on = load('features/notice/IranAccessNotice.tsx', { 'import.meta.env.DEV': 'false' }).default
   const doc = new JSDOM(server.renderToStaticMarkup(React.createElement(on))).window.document
-  assert.equal(doc.querySelector('strong').textContent, 'دسترسی پایدار به اوپن‌فاند')
+  assert.equal(doc.querySelector('strong').textContent, 'نشانی جایگزین اوپن‌فاند در ایران')
+  /* The Iran edge proxies the international backend (ADR 0031): the copy must
+     state that dependency and must not promise access during an international
+     cutoff, paused sales or domestic market-data sources. */
+  const copy = doc.querySelector('p').textContent
+  assert.match(copy, /وابسته است/)
+  assert.match(copy, /هنگام قطع اینترنت بین‌الملل در دسترس نخواهد بود/)
+  for (const claim of [/منابع داخلی/, /عمق بازار/, /فروش چالش/, /دسترسی پایدار/, /در صورت اختلال/]) assert.doesNotMatch(copy, claim)
   const link = doc.querySelector('a[href="https://iran.openfund.cloud"]')
   assert.equal(link.getAttribute('dir'), 'ltr')
   assert.equal(link.textContent, 'iran.openfund.cloud')

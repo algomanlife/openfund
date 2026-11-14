@@ -175,6 +175,9 @@ services:
       - key: CSP_EXTRA_CONNECT
         sync: false             # optional extra connect-src origins for the CSP
                                 # (production CMS is https, same as VITE_DIRECTUS_HOST)
+      - key: EDGE_CLIENT_IP_KEY
+        sync: false             # secret shared only with the Iran edge (ADR 0031): lets it pass the visitor IP
+                                # for rate limits and audit logs; unset = edge visitors share the edge's IP
       - key: INTERNAL_API_TOKEN
         sync: false             # optional constant-time token on the test-only /internal seam
       - key: VITE_DEPAY_WIDGET

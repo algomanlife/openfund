@@ -78,10 +78,10 @@ longer match Render's.
 - **The edge does not make Openfund independent of the international
   internet.** If the Liara-to-Render path or Render is unreachable, the edge
   answers 502 and only `/__edge/live` stays up.
-  - The Persian notice shipped on 2026-11-11 (`config/iranAccess.ts`) promises
-    reachability during international-internet disruption and domestic
-    price/depth sources. This phase does not deliver that. The owner must
-    reword or hide the notice before routing users here.
+  - The Persian notice shipped on 2026-11-11 promised reachability during
+    disruption, paused sales and domestic price/depth sources. It was
+    corrected on 2026-11-14 to state the dependency on Openfund's
+    international servers.
 - Browsers still contact some origins directly:
   - the CMS (`CMS_PUBLIC_URL`, on Render)
   - the market-data and wallet services the CSP allows (Gains, Hyperliquid,
@@ -93,10 +93,20 @@ longer match Render's.
   reviewed `render.yaml` change. Without it, SIWE answers `invalid_domain` and
   the edge is read-only. Sessions are per host: a user signs in again on the
   edge.
-- The backend trusts one proxy hop, so it sees every edge user as Liara's
-  egress IP. Per-IP rate limits (for example 60 `/auth/verify` per minute) and
-  audit-log IPs are shared by all edge users. Fixing this needs a backend
-  change (a trusted edge header) in a later release.
+- The backend trusts one proxy hop, so it would see every edge visitor as the
+  edge's egress IP. That means one shared bucket for per-IP rate limits, and
+  one address in `audit_log`, `auth_sessions` and referral visitor hashes.
+  - An opt-in shared key fixes this: `EDGE_CLIENT_IP_KEY` on Render, matching
+    `OPENFUND_EDGE_CLIENT_IP_KEY` on Liara.
+  - With the key, the backend takes `req.ip` from the edge's
+    `X-Openfund-Edge-Client-Ip`, which is the last `X-Forwarded-For` entry
+    appended by Liara's single proxy hop.
+  - Without the key, behaviour is unchanged.
+  - The single-hop assumption is checked on staging with `/__edge/whoami`
+    before the key is set.
+- Deployments go to a staging Liara app first. Production accepts only an edge
+  commit with verified staging evidence. Both proxy the one production
+  backend.
 - Phase two (a domestic backend) needs the engine and payment jobs to become
   single-leader or switchable, and needs domestic market data. Those are
   application changes with their own ADR.
