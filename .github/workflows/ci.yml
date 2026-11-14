@@ -363,3 +363,13 @@ jobs:
         run: npm --prefix apps/web-react audit --audit-level=critical || echo "::warning::critical advisories in apps/web-react — see log"
       - name: backend audit
         run: npm --prefix apps/backend audit --audit-level=critical || echo "::warning::critical advisories in apps/backend — see log"
+
+  desktop-contract:
+    name: Desktop IPC policy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+      - run: node --test apps/open-trade/tests/policy.test.mjs

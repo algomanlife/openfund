@@ -80,7 +80,7 @@ function mount(container, opts){
        chart only after OpenfundChartWorkspace.ready, so get() is synchronous. */
     storage: {
       get(){
-        const k = 'of-chart-v2-' + (global.__ofTerminalConfig?.product || 'classic');
+        const k = opts.storageKey || ('of-chart-v2-' + (global.__ofTerminalConfig?.product || 'classic'));
         const W = global.OpenfundChartWorkspace;
         try { return W ? W.getLocal(k) : localStorage.getItem(k); } catch(e){ return null; }
       },
@@ -89,7 +89,7 @@ function mount(container, opts){
           const state = JSON.parse(value);
           // Position overlays belong to the account bridge, never chart persistence.
           state.charts?.forEach(chart => { delete chart.drawings; });
-          const k = 'of-chart-v2-' + (global.__ofTerminalConfig?.product || 'classic');
+          const k = opts.storageKey || ('of-chart-v2-' + (global.__ofTerminalConfig?.product || 'classic'));
           const W = global.OpenfundChartWorkspace;
           if (W) { W.setLocal(k, JSON.stringify(state)); W.saveSettings(); }
           else localStorage.setItem(k, JSON.stringify(state));

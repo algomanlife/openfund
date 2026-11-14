@@ -95,3 +95,11 @@ Proposed Perpetual concepts do not establish routing or zero-spread execution.
 This snapshot supersedes older compound milestone wording where it conflates
 implementation with production acceptance. Prior acceptance evidence remains
 historical; no previous release is rewritten.
+
+## D1: Open Trade desktop beta
+
+**In Progress:** independent Electron 0.0.1 application and platform CI. Acceptance
+requires actual Electron/Vela rendering, generated-signature account/trading
+tests, verified Windows/macOS/Linux artifacts and real-wallet acceptance.
+Public distribution additionally needs owner approval, signing credentials and
+license decisions. [Evidence](../../apps/open-trade/ACCEPTANCE.md).

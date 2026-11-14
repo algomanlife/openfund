@@ -87,3 +87,10 @@ ordering; the DePay widget is opt-in. Displaying its footer logo does not enable
 payments. Withdrawals record requests intended for later operator review; no
 operator review interface or payout settlement is established. Purchased challenge
 records remain read-only, not evaluated or funded accounts. [Design decision](../decisions/0009-challenge-purchases-and-payment-verification.md).
+
+## Open Trade desktop companion
+
+The unmerged [desktop beta](../../apps/open-trade/README.md) adds a local Electron
+renderer and narrow main-process API adapter. Existing wallet sessions, account
+ownership and the trading engine remain authoritative. See
+[ADR 0030](../decisions/0030-open-trade-desktop.md).

@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — Open Trade desktop beta
+
+- Add an isolated Electron desktop companion, shared Vela chart integration and
+  internal cross-platform packaging. Real-wallet acceptance, signing and public
+  distribution remain pending; see `apps/open-trade/ACCEPTANCE.md`.
+
 ## Unreleased
 
 - Iran edge on Liara (branch `infra/liara-iran-mirror`,
