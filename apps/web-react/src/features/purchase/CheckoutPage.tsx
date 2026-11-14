@@ -33,7 +33,9 @@ import './checkout-page.css'
  *    tabs (?order=<id> resumes the same order and shows its receipt).
  */
 
-interface PlanInfo { slug: string, name: string, names?: { en: string | null, fa: string | null } | null, accountSizesUsd: number[], priceUsd: Record<string, number>, free: boolean }
+interface PlanInfo { slug: string, name: string, names?: { en: string | null, fa: string | null } | null, accountSizesUsd: number[], priceUsd: Record<string, number>, free: boolean,
+  /* false when a rule of the plan cannot be enforced yet (server sales gate) */
+  available?: boolean, unavailableReasons?: string[] }
 interface Quote { listPriceUsd: string, discountUsd: string, priceUsd: string, couponCode: string | null, paymentRequired: boolean }
 interface OrderView {
   id: string, status: string, lifecycle_state?: string, account_size_usd: string, price_usd: string, currency: string,
@@ -73,6 +75,8 @@ const ERR: Record<string, [string, string]> = {
   plan_not_found: ['چلنج یافت نشد.', 'Challenge not found.'],
   order_expired: ['زمان اعتبار سفارش تمام شد؛ سفارش تازه بساز.', 'This order expired — start a new one.'],
   order_not_pending: ['این سفارش قابل پرداخت نیست.', 'This order is not payable.'],
+  plan_unavailable: ['این چلنج فعلاً برای خرید در دسترس نیست.', 'This challenge is not available for purchase right now.'],
+  variant_unavailable: ['این گزینهٔ ضرر روزانه هنوز قیمت‌گذاری نشده و قابل خرید نیست.', 'This daily-loss option is not priced yet and cannot be purchased.'],
   order_not_found: ['سفارش یافت نشد.', 'Order not found.'],
   invalid_email: ['ایمیل معتبر نیست.', 'Enter a valid email address.'],
   invalid_customer: ['اطلاعات خریدار معتبر نیست.', 'The customer details are not valid.'],
@@ -187,7 +191,7 @@ export default function CheckoutPage() {
   const [email, setEmail] = useState(saved?.email || '')
   const [accepted, setAccepted] = useState(false)
   const emailOk = EMAIL.test(email.trim())
-  const ready = authenticated && !!plan && validSize && emailOk && accepted && (paymentsEnabled || zeroQuote)
+  const ready = authenticated && !!plan && plan.available !== false && validSize && emailOk && accepted && (paymentsEnabled || zeroQuote)
 
   /* ---- order, payment and status ---- */
   const [order, setOrder] = useState<OrderView | null>(null)
@@ -383,10 +387,14 @@ export default function CheckoutPage() {
                     <label key={p.slug} className={p.slug === planSlug ? 'selected' : ''}>
                       <input type="radio" name="of-co-model" value={p.slug} checked={p.slug === planSlug} onChange={() => setSelection(p.slug)} />
                       <b>{planName(p)}</b>
+                      {p.available === false && <small className="of-co-unavailable">{t('فعلاً در دسترس نیست', 'Not available yet')}</small>}
                       <small dir="ltr">{t('از', 'from')} {money(Math.min(...p.accountSizesUsd.map(s => Number(p.priceUsd[String(s)])).filter(Number.isFinite)))}</small>
                     </label>
                   ))}
                 </fieldset>
+                {plan && plan.available === false && <p className="of-co-note" role="status">{t(
+                  'این چلنج تا زمانی که همهٔ قوانین آن (از جمله قوانین اخبار با تقویم اقتصادی تأییدشده) قابل اجرا نباشد فروخته نمی‌شود.',
+                  'This challenge is not sold until every one of its rules can be enforced, including the news rules, which need a verified economic calendar.')}</p>}
                 {plan && (
                   <fieldset className="of-co-sizes">
                     <legend>{t('اندازهٔ حساب', 'Account size')}</legend>

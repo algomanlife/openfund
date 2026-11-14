@@ -84,14 +84,14 @@ export const faqItems: FaqItemContent[] = [
   /* --------------------------------------------- Payouts & Withdrawals -- */
   { key: 'profit-split', category: 'payouts', sort: 1,
     question: text('What is the profit split for funded traders?', 'سهم سودِ معامله‌گر فاندشده چقدر است؟'),
-    answer: text('Published terms: Standard and One-phase pay 80% on a bi-weekly cycle, or 100% monthly when you keep 7 profitable days and meet the 35% consistency score. Instant pays 95% every 14 calendar days. Funded accounts and payouts are not active in this release.', 'شرایط منتشرشده: استاندارد و تک‌مرحله‌ای ۸۰٪ در سیکل دوهفته‌ای، یا ۱۰۰٪ ماهانه با ۷ روز سودده و رعایت امتیاز تداومِ ۳۵٪. آنی ۹۵٪ هر ۱۴ روز تقویمی. حساب فاندشده و برداشت در این نسخه فعال نیستند.'),
+    answer: text('Published terms: Standard offers weekly 60%, bi-weekly 80% or on-demand 100%; One-phase bi-weekly 80% or on-demand 100%; Instant bi-weekly 95%. On demand needs 7 profitable days and a 35% consistency score. Rewards are reviewed and paid manually.', 'شرایط منتشرشده: استاندارد هفتگی ۶۰٪، دوهفته‌ای ۸۰٪ یا درخواستی ۱۰۰٪؛ تک‌مرحله‌ای دوهفته‌ای ۸۰٪ یا درخواستی ۱۰۰٪؛ آنی دوهفته‌ای ۹۵٪. چرخهٔ درخواستی به ۷ روز سودده و امتیاز ثبات ۳۵٪ نیاز دارد. پاداش‌ها به‌صورت دستی بررسی و پرداخت می‌شوند.'),
     links: [
       { target: { kind: 'glossary', slug: 'consistency-rule' }, label: text('Consistency rule', 'قاعدهٔ تداوم') },
       { target: { kind: 'lesson', slug: 'consistency-and-payout-conditions' }, label: text('Consistency and payout conditions', 'تداوم و شرایط برداشت') },
     ] },
   { key: 'when-payout-request', category: 'payouts', sort: 2,
     question: text('When can I request a payout?', 'کِی می‌توانم برداشت درخواست کنم؟'),
-    answer: text('Under published terms, the first payout opens 14 days after your first funded trade, then follows the reward cycle of your model — bi-weekly or monthly for Standard and One-phase, every 14 calendar days for Instant. The payout stage is not active yet and provisioning starts with the commercial launch.', 'طبق شرایط منتشرشده، نخستین برداشت ۱۴ روز پس از اولین معاملهٔ فاندشده باز می‌شود و سپس طبق سیکل پاداشِ مدل تو پیش می‌رود — دوهفته‌ای یا ماهانه برای استاندارد و تک‌مرحله‌ای، هر ۱۴ روز تقویمی برای آنی. مرحلهٔ برداشت هنوز فعال نیست و تأمین آن با عرضهٔ تجاری آغاز می‌شود.'),
+    answer: text('The first request follows the cycle you chose: 7 days after your first funded trade on the weekly cycle, 14 days on a bi-weekly cycle, and no waiting period on demand (its conditions still apply). Each later request opens one cycle after the previous one.', 'نخستین درخواست از چرخه‌ای که انتخاب کرده‌ای پیروی می‌کند: در چرخهٔ هفتگی ۷ روز پس از اولین معاملهٔ فاندشده، در چرخهٔ دوهفته‌ای ۱۴ روز، و در چرخهٔ درخواستی بدون انتظار (اما با شرایط خودش). هر درخواست بعدی یک چرخه پس از درخواست قبلی باز می‌شود.'),
     links: [
       { target: { kind: 'page', slug: 'rulebook' }, label: text('Payout terms', 'شرایط برداشت') },
     ] },
@@ -103,7 +103,7 @@ export const faqItems: FaqItemContent[] = [
     ] },
   { key: 'payout-timeline', category: 'payouts', sort: 4,
     question: text('How long does a payout take?', 'برداشت چقدر طول می‌کشد؟'),
-    answer: text('The reward cycle is published — bi-weekly or monthly for Standard and One-phase, every 14 calendar days for Instant, with the first request opening 14 days after the first funded trade. How quickly a settlement reaches you, and its payment rails, are not committed in this release and will be stated in the final agreement.', 'سیکل پاداش منتشرشده است — دوهفته‌ای یا ماهانه برای استاندارد و تک‌مرحله‌ای، هر ۱۴ روز تقویمی برای آنی — و نخستین برداشت ۱۴ روز پس از اولین معاملهٔ فاندشده باز می‌شود. اما سرعت رسیدن تسویه و مسیر پرداخت آن، در این نسخه تعهد نشده و در قرارداد نهایی اعلام خواهد شد.'),
+    answer: text('Reward cycles are published per model and chosen once when the funded account starts. Rewards are reviewed and paid manually; how quickly a settlement reaches you, and its payment rails, are not committed yet and will be stated in the final agreement.', 'چرخه‌های پاداش برای هر مدل منتشر شده‌اند و هنگام شروع حساب فاندشده یک بار انتخاب می‌شوند. پاداش‌ها به‌صورت دستی بررسی و پرداخت می‌شوند؛ سرعت رسیدن تسویه و مسیر پرداخت آن هنوز تعهد نشده و در قرارداد نهایی اعلام خواهد شد.'),
     links: [
       { target: { kind: 'page', slug: 'rulebook' }, label: text('Payout cycle', 'سیکل برداشت') },
     ] },
@@ -149,7 +149,7 @@ export const faqItems: FaqItemContent[] = [
     ] },
   { key: 'consistency-score-rule', category: 'trading-rules', sort: 3,
     question: text('How does the consistency rule or best-day rule work?', 'قاعدهٔ تداوم یا قاعدهٔ بهترین روز چگونه کار می‌کند؟'),
-    answer: text('The consistency score is a payout condition, not a trading restriction. To use the 100% monthly split on Standard and One-phase, your best day must not exceed 35% of total profit; on the Instant model the limit is 15%. Meeting it never blocks you from placing trades.', 'امتیاز تداوم شرطِ برداشت است، نه محدودیت معامله. برای استفاده از سهمِ ماهانهٔ ۱۰۰٪ در استاندارد و تک‌مرحله‌ای، بهترین روز نباید از ۳۵٪ سود کل بیشتر شود؛ در مدل آنی این حد ۱۵٪ است. رعایت آن هرگز جلوی ثبت معامله را نمی‌گیرد.'),
+    answer: text('The consistency score is a reward condition, not a trading restriction. On the on-demand cycle of Standard and One-phase your best day must not exceed 35% of the cycle profit; on Instant the limit is 15%. It never blocks you from placing trades.', 'امتیاز ثبات شرطِ پاداش است، نه محدودیت معامله. در چرخهٔ درخواستیِ استاندارد و تک‌مرحله‌ای، بهترین روز نباید از ۳۵٪ سود چرخه بیشتر شود؛ در مدل آنی این حد ۱۵٪ است. این شرط هرگز جلوی ثبت معامله را نمی‌گیرد.'),
     links: [
       { target: { kind: 'glossary', slug: 'consistency-rule' }, label: text('Consistency rule', 'قاعدهٔ تداوم') },
       { target: { kind: 'lesson', slug: 'consistency-and-payout-conditions' }, label: text('Consistency and payout conditions', 'تداوم و شرایط برداشت') },
@@ -256,7 +256,7 @@ export const faqItems: FaqItemContent[] = [
     ] },
   { key: 'terminal-leverage', category: 'terminal', sort: 5,
     question: text('How is leverage applied per market?', 'اهرم چگونه برای هر بازار اعمال می‌شود؟'),
-    answer: text('The maximum leverage for each market comes from the Gains Network market feed. Challenge plans carry a reference leverage of 5×, and the demo validates the whole-number leverage you pick against that per-market limit, so the terminal can show higher caps than the plan setting.', 'حداکثر اهرمِ هر بازار از خوراکِ بازارِ Gains Network می‌آید. پلن‌های چلنج اهرمِ مرجع ۵ برابر دارند و دمو اهرمِ صحیحِ انتخابی تو را با همان سقفِ بازار می‌سنجد؛ پس ترمینال می‌تواند سقف‌هایی بالاتر از تنظیمِ پلن نشان دهد.'),
+    answer: text('Each market’s maximum leverage comes from the Gains Network market feed and is capped by Openfund’s ceilings: BTC and ETH 20×, other crypto 15×, forex, stocks, commodities and indices 50×. The lower of the two applies. Challenges sold before these terms keep the limit recorded in their rules.', 'حداکثر اهرمِ هر بازار از خوراکِ بازارِ Gains Network می‌آید و سقف‌های اوپن‌فاند بر آن اعمال می‌شود: بیت‌کوین و اتریوم ۲۰ برابر، سایر رمزارزها ۱۵ برابر، فارکس، سهام، کالاها و شاخص‌ها ۵۰ برابر. مقدار کمتر اعمال می‌شود. چلنج‌هایی که پیش از این شرایط فروخته شده‌اند، سقف ثبت‌شده در قوانین خود را نگه می‌دارند.'),
     links: [
       { target: { kind: 'tool', slug: 'leverage-margin' }, label: text('Leverage and margin', 'اهرم و وجه تضمین') },
       { target: { kind: 'glossary', slug: 'leverage' }, label: text('Leverage', 'اهرم') },

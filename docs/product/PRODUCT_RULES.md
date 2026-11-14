@@ -41,13 +41,18 @@ changing the published rule to fit the code.
 
 | ID | Status | Rule | Plans | Gap |
 | :--- | :--- | :--- | :--- | :--- |
-| `PLAN-DAILY-LOSS-VARIANT` | Blocked | Cheaper daily-loss option (`dailyLossPctAlt`: 3% Standard, 2% One-phase) | Standard, One-phase | Orders carry only plan and size; the engine enforces `dailyLossPct` only; no variant price exists. |
-| `PLAN-PAYOUT-CONDITIONS` | Blocked | Reward split, monthly 100% cycle, first payout after 14 days, 1% minimum request, consistency score, 7 profitable days per 30 | Standard, One-phase, Instant | Withdrawals are manual requests (`POST /withdrawals`); none of these conditions is evaluated. |
-| `PLAN-FEE-REFUND` | Blocked | Standard fee refunded with the fourth reward | Standard | No automated refund exists. |
+| `PLAN-DAILY-LOSS-VARIANT` | Implemented, not sold (no approved price) | Cheaper daily-loss option (`dailyLossPctAlt`: 3% Standard, 2% One-phase) | Standard, One-phase | Orders carry only plan and size; the engine enforces `dailyLossPct` only; no variant price exists. Needs an owner price per variant (or removal from public copy). |
+| `PLAN-PAYOUT-CONDITIONS` | Implemented (local, branch `agent/claude/launch-readiness`) | Reward split, monthly 100% cycle, first payout after 14 days, 1% minimum request, consistency score, profitable days | Standard, One-phase, Instant | Enforced by `apps/backend/rewards.js` ([ADR 0029](../decisions/0029-reward-lifecycle-and-support-queue.md)). Cycle semantics still differ from the current reference model — owner decision D1 in the [launch-readiness report](../reviews/launch-readiness-2026-11-13/REPORT.md). |
+| `PLAN-FEE-REFUND` | Implemented (local) | Standard fee refunded with the fourth reward | Standard | The fee paid on the originating order is added to the fourth reward request. The current reference page no longer states this term — owner decision D5. |
 
-Purchasing itself is disabled in production (`paymentsEnabled: false`), so the
-public pages show the purchase-availability notice. The notice may only be
-removed after purchase is verified end to end in the deployed application.
+Production payments were enabled after 2026-11-10 (the owner reports a completed
+real payment on the deployed `7f95433`); end-to-end acceptance of the deployed
+purchase-to-provisioning flow is tracked in the launch-readiness report.
+
+The register classifies payout terms as `reward`: frozen into the rules
+snapshot (`RULES_VERSION` 2) and enforced by the reward eligibility engine on
+funded accounts. Snapshots taken before version 2 are never rewritten; their
+payout terms are read from the plan row and flagged on every request.
 
 ## Policy references
 
@@ -90,3 +95,26 @@ review** before any public statement:
 
 The Rulebook and FAQ describe only the rules in the catalog. None of the
 topics above is presented as an Openfund policy.
+
+### Reference re-verification (2026-11-13)
+
+Loaded in a browser session (direct HTTP fetches of the help center return 403):
+[2 Step Standard](https://help.fundingpips.com/hc/en-us/articles/34501809112081-2-Step-Standard),
+[1 Step Flex](https://help.fundingpips.com/hc/en-us/articles/34501697434385-1-Step-Flex),
+[FundingPips Zero](https://help.fundingpips.com/hc/en-us/articles/34502157694865-FundingPips-Zero).
+Evaluation limits still match the catalog (8% / 5%, 3% or 5% daily, 10% static;
+12%, 2% or 3% daily, 12% static; Zero 3% daily, 5% trailing locking at
+breakeven). Differences that need an owner decision before public sales are
+listed with their exact interpretation in the
+[launch-readiness report](../reviews/launch-readiness-2026-11-13/REPORT.md#4-rule-matrix-and-owner-decisions).
+No reference wording is reproduced in Openfund copy.
+
+### Owner decisions D1–D8 (2026-11-13)
+
+Applied as catalog v3 / rules snapshot v3 — see the
+[launch-readiness report](../reviews/launch-readiness-2026-11-13/REPORT.md#4-rule-matrix-and-owner-decisions).
+The catalog fields `rewardCycles`, `inactivityDays`, `conduct` and
+`dailyLossVariantPriceUsd` are classified in the support register;
+`profitSplitMonthlyPct` and `firstPayoutDays` are null on every published
+plan. `npm run seed-plans` replaces a stored plan configuration only when the
+catalog version is higher.

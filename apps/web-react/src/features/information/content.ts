@@ -13,7 +13,7 @@ export const tx = (locale: AppLocale, value: Localized | { fa?: string; en?: str
 export const number = (value: number, locale: Locale, options?: Intl.NumberFormatOptions) =>
   new Intl.NumberFormat(intlLocale(locale), options).format(value)
 /** Public website pages — one authoritative navigation definition (menu order included). */
-export type InfoPage = 'rulebook' | 'transparency' | 'revenue-model' | 'live-market-access' | 'ambassador' | 'coach' | 'markets' | 'challenges' | 'home' | 'faq' | 'referral' | 'tools' | 'learn' | 'whitepaper' | 'governance' | 'checkout' | 'campaign'
+export type InfoPage = 'rulebook' | 'transparency' | 'revenue-model' | 'live-market-access' | 'ambassador' | 'coach' | 'markets' | 'challenges' | 'home' | 'faq' | 'referral' | 'tools' | 'learn' | 'whitepaper' | 'governance' | 'checkout' | 'campaign' | 'about' | 'contact'
 export const labels = {
   home: text('Home', 'خانه'),
   challenges: text('Trading Challenges', 'چلنج‌های معاملاتی'),
@@ -33,6 +33,8 @@ export const labels = {
   tools: text('Tools', 'ابزارها'),
   learn: text('Learn', 'آموزش'),
   governance: text('Governance', 'حاکمیت'),
+  about: text('About Us', 'دربارهٔ ما'),
+  contact: text('Contact Us', 'تماس با ما'),
   whitepaper: text('Whitepaper', 'وایت‌پیپر'),
   resources: text('Resources', 'منابع'),
   contents: text('On this page', 'در این صفحه'),

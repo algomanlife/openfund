@@ -24,6 +24,9 @@ export type RuleSupport =
   | 'purchase'
   /** frozen into the rules snapshot and enforced by the evaluation engine */
   | 'enforced'
+  /** frozen into the rules snapshot and enforced by the reward
+   *  eligibility engine (apps/backend/rewards.js) on funded accounts */
+  | 'reward'
   /** snapshotted and reported as a metric, not enforced as a condition */
   | 'metric-only'
   /** advertised but not implemented by the backend */
@@ -47,22 +50,28 @@ export const planRuleSupport: Record<keyof ChallengePlan, RuleSupportEntry> = {
   phase1TargetPct: { support: 'enforced', note: 'Pass condition on closed net profit.' },
   phase2TargetPct: { support: 'enforced', note: 'Stage-2 pass condition.' },
   dailyLossPct: { support: 'enforced', note: 'Equity breach against the higher of day-start balance or equity (00:00 UTC+3).' },
-  dailyLossPctAlt: { support: 'not-implemented', blocker: 'PLAN-DAILY-LOSS-VARIANT', note: 'The cheaper daily-loss option is displayed, but orders carry only plan and size and the engine enforces dailyLossPct only. No price exists for the variant.' },
+  dailyLossPctAlt: { support: 'enforced', note: 'D7: the order selects the variant; the snapshot freezes the chosen daily loss (Standard 3% also removes minimum trading days). Sold only when dailyLossVariantPriceUsd has an approved price; otherwise refused at order creation and hidden from public copy.' },
   maxTotalLossPct: { support: 'enforced', note: 'Static or trailing maximum-loss breach.' },
   drawdownMode: { support: 'enforced', note: 'Static versus trailing maximum loss.' },
   trailingLockAtProfitPct: { support: 'enforced', note: 'Trailing floor locks at breakeven.' },
   minTradingDays: { support: 'enforced', note: 'Distinct UTC+3 fill days required for a pass.' },
-  profitableDaysPer30: { support: 'metric-only', blocker: 'PLAN-PAYOUT-CONDITIONS', note: 'A payout condition; withdrawals are manual requests and do not evaluate it.' },
-  consistencyPct: { support: 'metric-only', blocker: 'PLAN-PAYOUT-CONDITIONS', note: 'A payout condition; withdrawals are manual requests and do not evaluate it.' },
-  profitSplitPct: { support: 'metric-only', blocker: 'PLAN-PAYOUT-CONDITIONS', note: 'Snapshotted only; no reward calculation enforces the split.' },
-  profitSplitMonthlyPct: { support: 'not-implemented', blocker: 'PLAN-PAYOUT-CONDITIONS', note: 'No reward-cycle selection exists in the backend.' },
-  payoutCapPct: { support: 'not-implemented', blocker: 'PLAN-PAYOUT-CONDITIONS', note: 'No payout cap logic (all published plans currently state no cap).' },
-  firstPayoutDays: { support: 'not-implemented', blocker: 'PLAN-PAYOUT-CONDITIONS', note: 'Withdrawal requests are accepted without the 14-day waiting period check.' },
-  minPayoutPct: { support: 'not-implemented', blocker: 'PLAN-PAYOUT-CONDITIONS', note: 'Withdrawal requests are accepted without the minimum request check.' },
+  profitableDaysPer30: { support: 'enforced', note: 'Instant: 7 qualifying days (≥ 0.25% of size) per rolling 30-day period from the first trade; breach when missed (conduct.profitableDayRule).' },
+  consistencyPct: { support: 'reward', note: 'Headline of the cycle consistency score: on-demand cycle (35%) for Standard/One-step; every Instant request (15%).' },
+  profitSplitPct: { support: 'reward', note: 'Headline split = the bi-weekly cycle; the selected rewardCycles entry is applied.' },
+  profitSplitMonthlyPct: { support: 'presentation', note: 'D1: no monthly cycle is offered (null on every published plan).' },
+  payoutCapPct: { support: 'reward', note: 'Reward cap as % of account size; 0 = no cap.' },
+  firstPayoutDays: { support: 'presentation', note: 'Superseded by rewardCycles[].firstAfterDays (null on every published plan).' },
+  minPayoutPct: { support: 'reward', note: 'Realized profit must reach this % of account size.' },
   timeLimitDays: { support: 'enforced', note: 'Challenge expiry at start time.' },
   trialDaysPerPhase: { support: 'enforced', note: 'Free Trial expiry per phase.' },
-  refundPolicy: { support: 'not-implemented', blocker: 'PLAN-FEE-REFUND', note: 'The Standard fee refund with the fourth reward is not automated.' },
-  referenceLeverageX: { support: 'enforced', note: 'Order leverage above the plan reference is rejected by the engine.' },
+  refundPolicy: { support: 'reward', note: "'fourth-reward': the fee paid on the originating order is added to the fourth reward request." },
+  referenceLeverageX: { support: 'enforced', note: 'D6: null = only the Openfund leverage ceilings (BTC/ETH 20×, other crypto 15×, forex/stocks/commodities/indices 50×) and market limits apply. A number would cap every market.' },
+  catalogVersion: { support: 'presentation', note: 'Version of the published terms; rules snapshot v3 = owner decisions D1–D8.' },
+  model: { support: 'enforced', note: 'Reference model frozen into the snapshot.' },
+  rewardCycles: { support: 'reward', note: 'D1: the trader selects one cycle once when the funded account is activated (immutable); split, timing, consistency, profitable days and strikes per cycle.' },
+  inactivityDays: { support: 'enforced', note: 'D3: breach after 30 calendar days without a fully closed trade (evaluation and funded stages).' },
+  conduct: { support: 'enforced', note: 'D4/D8: open-risk, trade-idea, profitable-day, news and holding rules enforced by apps/backend/conduct.js. News rules need verified calendar coverage; plans that depend on them are not sold without it.' },
+  dailyLossVariantPriceUsd: { support: 'purchase', note: 'D7: approved variant prices; null = the variant is not sold.' },
   free: { support: 'enforced', note: 'Free Trial flag (no fee, no reward).' },
 }
 
