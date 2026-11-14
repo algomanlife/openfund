@@ -88,7 +88,7 @@ const clean = async (userId) => {
 
 /* ================= 2. MARKET LONG + PnL + CLOSE ================= */
 {
-  marketDataPrice(MKT, '50000')
+  await marketDataPrice(MKT, '50000')
   const order = { market: MKT, side: 'long', order_type: 'market', margin: 1000, leverage: 10 }
   const r = await j('POST', '/trading/order', order, C1, { 'Idempotency-Key': 'long-1' })
   ok('market long filled', r.status === 200 && r.data.position?.status === 'open', JSON.stringify(r.data).slice(0, 150))
@@ -104,7 +104,7 @@ const clean = async (userId) => {
   ok('free margin includes open spread loss', near(st.data.account.free_margin, 98996.5 + (50000-expEntry)*(10000/expEntry), 0.01), st.data.account.free_margin)
 
   /* live PnL at 51000: qty × (mark − entry) — presentation uses the raw mark */
-  marketDataPrice(MKT, '51000')
+  await marketDataPrice(MKT, '51000')
   const st2 = await j('GET', '/trading/state', null, C1)
   ok('unrealized PnL ≈ +199.95', near(st2.data.account.unrealized_pnl, (10000 / expEntry) * (51000 - expEntry), 0.02), st2.data.account.unrealized_pnl)
   ok('equity = balance + upnl', near(st2.data.account.equity, 99996.5 + (10000 / expEntry) * (51000 - expEntry), 0.03), st2.data.account.equity)
@@ -138,10 +138,10 @@ const clean = async (userId) => {
 
 /* ================= 3. SHORT + LOSS ================= */
 {
-  marketDataPrice(MKT, '50000')
+  await marketDataPrice(MKT, '50000')
   const r = await j('POST', '/trading/order', { market: MKT, side: 'short', order_type: 'market', margin: 500, leverage: 5 }, C1, { 'Idempotency-Key': 'short-1' })
   ok('market short filled', r.data.position?.status === 'open')
-  marketDataPrice(MKT, '50200')    /* price up → short loses 0.05*200 = 10 */
+  await marketDataPrice(MKT, '50200')    /* price up → short loses 0.05*200 = 10 */
   const close = await j('POST', `/trading/positions/${r.data.position.id}/close`, {}, C1)
   /* short: entry 50000−spread, exit 50200+spread, fees 0.875/side (0.035% of 2500) */
   const sEntry = fx(50000, 'short', 'open'), sExit = fx(50200, 'short', 'close')
@@ -173,14 +173,14 @@ const clean = async (userId) => {
 
 /* ================= 5. LIMIT ORDER TRIGGER ================= */
 {
-  marketDataPrice(MKT, '50000')
+  await marketDataPrice(MKT, '50000')
   const r = await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'limit', margin: 400, leverage: 5, target_price: 49500 }, C1, { 'Idempotency-Key': 'lim-1' })
   ok('limit order pending', r.data.pending === true && r.data.order?.status === 'pending')
   const st = await j('GET', '/trading/state', null, C1)
   ok('pending order visible', st.data.orders.length === 1)
   /* price falls to 49500 → trigger, filled at target */
   await new Promise(r2 => setTimeout(r2, 1500))
-  marketDataPrice(MKT, '49500')
+  await marketDataPrice(MKT, '49500')
   await new Promise(r2 => setTimeout(r2, 2000))
   const st2 = await j('GET', '/trading/state', null, C1)
   ok('limit triggered → open position at 49500', st2.data.positions.some(p => p.entry_price === '49500.00'))
@@ -191,9 +191,9 @@ const clean = async (userId) => {
 
 /* ================= 6. STOP ORDER TRIGGER ================= */
 {
-  marketDataPrice(MKT, '50000')
+  await marketDataPrice(MKT, '50000')
   await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'stop', margin: 400, leverage: 5, target_price: 50500 }, C1, { 'Idempotency-Key': 'stp-1' })
-  marketDataPrice(MKT, '50500')
+  await marketDataPrice(MKT, '50500')
   await new Promise(r => setTimeout(r, 2000))
   const st = await j('GET', '/trading/state', null, C1)
   ok('stop triggered at executable mark plus spread', st.data.positions.some(p => p.entry_price === '50502.525'))
@@ -202,17 +202,17 @@ const clean = async (userId) => {
 
 /* ================= 7. SL / TP EXECUTION (server-side, no browser) ================= */
 {
-  marketDataPrice(MKT, '50000')
+  await marketDataPrice(MKT, '50000')
   const r = await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'market', margin: 1000, leverage: 5, sl: 49500 }, C1, { 'Idempotency-Key': 'sl-1' })
-  marketDataPrice(MKT, '49400')   /* crosses SL */
+  await marketDataPrice(MKT, '49400')   /* crosses SL */
   await new Promise(r2 => setTimeout(r2, 2000))
   const st = await j('GET', '/trading/state', null, C1)
   ok('SL executed (exit_reason=sl)', st.data.history.some(h => h.exit_reason === 'sl'))
   ok('SL exit = mark − spread', near(st.data.history.find(h => h.exit_reason === 'sl')?.exit_price, fx(49400, 'long', 'close'), 0.01))
 
-  marketDataPrice(MKT, '50000')
+  await marketDataPrice(MKT, '50000')
   const r2 = await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'market', margin: 1000, leverage: 5, tp: 50800 }, C1, { 'Idempotency-Key': 'tp-1' })
-  marketDataPrice(MKT, '50900')
+  await marketDataPrice(MKT, '50900')
   await new Promise(r3 => setTimeout(r3, 2000))
   const st2 = await j('GET', '/trading/state', null, C1)
   ok('TP executed (exit_reason=tp)', st2.data.history.some(h => h.exit_reason === 'tp'))
@@ -220,15 +220,15 @@ const clean = async (userId) => {
 
 /* ================= 8. LIQUIDATION ================= */
 {
-  marketDataPrice(MKT, '50000')
+  await marketDataPrice(MKT, '50000')
   /* margin 100, lev 20 (the Prop BTC ceiling) → notional 2000, qty ≈ 0.04;
      liquidation at ~10% margin = loss ≥ 90 (≈ a 2,250 move) */
   await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'market', margin: 100, leverage: 20 }, C1, { 'Idempotency-Key': 'liq-1' })
-  marketDataPrice(MKT, '49000')   /* −0.04*1000 = −40 not yet */
+  await marketDataPrice(MKT, '49000')   /* −0.04*1000 = −40 not yet */
   await new Promise(r => setTimeout(r, 1500))
   let st = await j('GET', '/trading/state', null, C1)
   ok('still open before liquidation level', st.data.positions.length === 1)
-  marketDataPrice(MKT, '47500')   /* −0.04*2500 = −100 ≥ 90% of margin → liquidation */
+  await marketDataPrice(MKT, '47500')   /* −0.04*2500 = −100 ≥ 90% of margin → liquidation */
   await new Promise(r => setTimeout(r, 2000))
   st = await j('GET', '/trading/state', null, C1)
   const liq = st.data.history.find(h => h.exit_reason === 'liquidation')
@@ -244,7 +244,7 @@ const clean = async (userId) => {
   const st2 = await j('GET', '/trading/state', null, c2)
   ok('other user has own 100k account (empty)', st2.data.account.balance === '100000.00' && st2.data.positions.length === 0)
   /* user2 cannot close user1's position */
-  marketDataPrice(MKT, '50000')
+  await marketDataPrice(MKT, '50000')
   const r1 = await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'market', margin: 100, leverage: 5 }, C1, { 'Idempotency-Key': 'own-1' })
   const pid = r1.data.position.id
   const steal = await j('POST', `/trading/positions/${pid}/close`, {}, c2)
@@ -279,13 +279,14 @@ const clean = async (userId) => {
 }
 
 /* helper: inject a deterministic price through the backend (test seam) */
-function marketDataPrice(symbol, price) {
+async function marketDataPrice(symbol, price) {
   /* the engine reads marks from the server process; the injection seam is
      exercised through a test-only debug endpoint when SIM_TEST_MODE is on */
-  fetch(BASE + '/internal/inject-price', {
+  const response = await fetch(BASE + '/internal/inject-price', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ symbol, price })
-  }).catch(() => {})
+    body: JSON.stringify({ symbol, price, metadata: { base: 'BTC', group: 'crypto', maxLeverage: 100 } })
+  })
+  if (!response.ok) throw new Error('Price fixture injection failed: HTTP ' + response.status)
 }
 
 console.log(`\n${passed} passed, ${failed} failed`)

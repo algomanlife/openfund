@@ -1,0 +1,86 @@
+name: Open Trade desktop
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - apps/open-trade/**
+      - packages/openfund-charts/**
+      - packages/openfund-gains-adapter/**
+      - apps/web-react/public/legacy/position-*.js
+      - apps/web-react/package*.json
+      - vendor/vela/**
+      - indicators/**
+      - scripts/build-charts.mjs
+      - .github/workflows/open-trade-desktop.yml
+  push:
+    branches: [feature/open-trade-desktop]
+    paths:
+      - apps/open-trade/**
+      - packages/openfund-charts/**
+      - .github/workflows/open-trade-desktop.yml
+permissions:
+  contents: read
+concurrency:
+  group: open-trade-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+jobs:
+  desktop:
+    name: Desktop ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    env:
+      OPEN_TRADE_BACKEND: https://openfi.cloud
+      OPEN_TRADE_WALLETCONNECT_PROJECT_ID: ${{ vars.OPEN_TRADE_WALLETCONNECT_PROJECT_ID }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: |
+            apps/web-react/package-lock.json
+            apps/open-trade/package-lock.json
+      - run: npm ci --prefix apps/web-react --no-audit --no-fund
+      - run: npm ci --prefix apps/open-trade --no-audit --no-fund
+      - run: npm run build:charts --prefix apps/web-react
+      - run: npm run typecheck --prefix apps/open-trade
+      - run: npm test --prefix apps/open-trade
+      - run: npm run build --prefix apps/open-trade
+      - name: Electron acceptance (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a npm run test:desktop --prefix apps/open-trade
+      - name: Electron acceptance (Windows and macOS)
+        if: runner.os != 'Linux'
+        run: npm run test:desktop --prefix apps/open-trade
+      - name: Package internal unsigned beta
+        if: github.event_name != 'pull_request'
+        working-directory: apps/open-trade
+        run: npx electron-builder --publish never
+      - name: Checksums
+        if: github.event_name != 'pull_request'
+        working-directory: apps/open-trade
+        run: node scripts/checksums.mjs
+      - uses: actions/upload-artifact@v4
+        if: github.event_name != 'pull_request'
+        with:
+          name: Open-Trade-0.0.1-beta-unsigned-${{ runner.os }}
+          path: |
+            apps/open-trade/release/*.exe
+            apps/open-trade/release/*.dmg
+            apps/open-trade/release/*.AppImage
+            apps/open-trade/release/*.deb
+            apps/open-trade/release/SHA256SUMS.txt
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Open-Trade-diagnostics-${{ runner.os }}
+          path: |
+            apps/open-trade/artifacts/
+            apps/open-trade/release/builder-*.yml
+          if-no-files-found: warn

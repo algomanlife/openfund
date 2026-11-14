@@ -1,0 +1,44 @@
+{
+  "name": "open-trade",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Open Trade by Openfund — desktop beta",
+  "author": "Openfund",
+  "main": "out/main.cjs",
+  "scripts": {
+    "dev": "npm run build && electron .",
+    "build": "node scripts/prepare.mjs && vite build && node scripts/electron.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "test:desktop": "node tests/desktop.mjs",
+    "package": "npm run build && electron-builder --publish never"
+  },
+  "dependencies": {
+    "@walletconnect/ethereum-provider": "2.26.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "viem": "2.57.19"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "2.6.2",
+    "@types/node": "26.0.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "electron": "45.3.2",
+    "electron-builder": "26.18.0",
+    "esbuild": "0.28.2",
+    "playwright": "1.65.0",
+    "typescript": "7.0.2",
+    "vite": "8.3.8"
+  },
+  "type": "module",
+  "homepage": "https://github.com/algomanlife/openfund",
+  "overrides": {
+    "@reown/appkit-wallet": {
+      "zod": "4.6.6"
+    },
+    "@coinbase/cdp-sdk": {
+      "zod": "4.6.6"
+    }
+  }
+}
