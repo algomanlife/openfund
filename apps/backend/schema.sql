@@ -1845,3 +1845,48 @@ CREATE TABLE IF NOT EXISTS fee_refunds (
   created_at         timestamptz NOT NULL DEFAULT now(),
   paid_at            timestamptz
 );
+
+-- Certificate identities and immutable issuance snapshots: no financial authority.
+CREATE TABLE IF NOT EXISTS certificate_identities (
+  user_id uuid PRIMARY KEY REFERENCES openfund_users(id),
+  display_name text CHECK (display_name IS NULL OR char_length(display_name) BETWEEN 2 AND 80),
+  confirmed_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS certificates (
+  serial text PRIMARY KEY DEFAULT replace(gen_random_uuid()::text,'-',''),
+  user_id uuid NOT NULL REFERENCES openfund_users(id),
+  kind text NOT NULL CHECK (kind IN ('purchase','completion','payout')),
+  source_id uuid NOT NULL,
+  holder text NOT NULL,
+  plan text NOT NULL,
+  amount numeric(20,2) NOT NULL CHECK (amount > 0),
+  currency text NOT NULL DEFAULT 'USD' CHECK (currency='USD'),
+  event_at timestamptz NOT NULL,
+  issued_at timestamptz NOT NULL DEFAULT now(),
+  status text NOT NULL DEFAULT 'valid' CHECK (status IN ('valid','revoked')),
+  revoked_at timestamptz,
+  UNIQUE (kind,source_id),
+  CHECK ((status='revoked') = (revoked_at IS NOT NULL))
+);
+CREATE INDEX IF NOT EXISTS idx_certificates_user ON certificates(user_id,issued_at DESC);
+CREATE TABLE IF NOT EXISTS certificate_events (
+  id bigserial PRIMARY KEY,
+  serial text NOT NULL REFERENCES certificates(serial),
+  action text NOT NULL CHECK (action IN ('issued','revoked')),
+  actor text NOT NULL,
+  detail jsonb NOT NULL DEFAULT '{}',
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE OR REPLACE FUNCTION certificate_snapshot_guard() RETURNS trigger AS $$
+BEGIN
+  IF TG_OP = 'DELETE' THEN RAISE EXCEPTION 'certificate_history_immutable'; END IF;
+  IF (to_jsonb(NEW) - 'status' - 'revoked_at') IS DISTINCT FROM (to_jsonb(OLD) - 'status' - 'revoked_at')
+     OR OLD.status='revoked' THEN RAISE EXCEPTION 'certificate_snapshot_immutable'; END IF;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_certificate_snapshot ON certificates;
+CREATE TRIGGER trg_certificate_snapshot BEFORE UPDATE OR DELETE ON certificates FOR EACH ROW EXECUTE FUNCTION certificate_snapshot_guard();
+CREATE OR REPLACE FUNCTION certificate_history_guard() RETURNS trigger AS $$
+BEGIN RAISE EXCEPTION 'certificate_history_immutable'; END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_certificate_history ON certificate_events;
+CREATE TRIGGER trg_certificate_history BEFORE UPDATE OR DELETE ON certificate_events FOR EACH ROW EXECUTE FUNCTION certificate_history_guard();
