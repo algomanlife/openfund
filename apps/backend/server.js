@@ -44,6 +44,8 @@ import { liveRoutes, liveAdminRoutes, liveConfig, processSettlements, settlement
 import { Treasury, TreasuryNetworks, treasuryNetworksConfig } from './treasury.js'
 import { createTradingStreamHub } from './trading-stream.js'
 import { edgeClientIpMiddleware } from './edge-client-ip.js'
+import { regionConfig, hasRole, assertDatabaseRegion, RuntimeState, regionGuard, httpRoleGate, statusBody, runtimeAdminRoutes } from './region.js'
+import { adminAuth, adminActor } from './admin.js'
 
 const cfg = {
   port: Number(process.env.PORT || 8080),
@@ -59,7 +61,13 @@ const cfg = {
 const testDatabase = /(?:^|[_-])(test|audit|ci)(?:$|[_-])/.test(new URL(cfg.dbUrl).pathname.slice(1))
 const testMode = !cfg.prod && process.env.SIM_TEST_MODE === '1' && testDatabase
 
+/* Regional runtime (ADR 0032). Unset OPENFUND_REGION/OPENFUND_ROLES = GLOBAL
+   with every role: exactly the previous behaviour. */
+const region = regionConfig(process.env)
 const pool = new pg.Pool({ connectionString: cfg.dbUrl })
+/* fence: never serve a database that belongs to another region */
+await assertDatabaseRegion(pool, region.region)
+const runtime = new RuntimeState({ pool, config: region })
 /* dedicated connections for the engine monitoring loop (SL/TP, liquidation,
    pending orders, risk sweeps): the loop is serial, so 3 covers its deepest
    nesting; it keeps risk processing out of the API pool's queue */
@@ -75,6 +83,11 @@ app.set('trust proxy', 1)
 /* Iran edge (ADR 0031): a request carrying EDGE_CLIENT_IP_KEY may supply the
    visitor's IP; unset key = unchanged behaviour. Runs before every limiter. */
 app.use(edgeClientIpMiddleware(process.env))
+/* worker processes (no `http` role) expose only liveness and status */
+app.use(httpRoleGate(region))
+/* region/mode policy: in IRAN every state-changing request not on the
+   allowlist is refused here, before any route runs; GLOBAL passes through */
+app.use(regionGuard(runtime))
 app.use((req,res,next) => {
   const origin = req.headers.origin
   if (origin && !['GET','HEAD','OPTIONS'].includes(req.method)) {
@@ -795,7 +808,13 @@ app.use('/admin/payments', paymentAdminRoutes({ pool, verifier: (...a) => defaul
 app.use('/admin/support', supportAdminRoutes({ pool }))
 app.use('/admin/rewards', rewardAdminRoutes({ pool }))
 app.use('/admin/calendar', calendarAdminRoutes({ pool }))
+app.use('/admin/runtime', runtimeAdminRoutes({ Router: express.Router, runtime, adminAuth, adminActor, audit }))
 app.use('/admin', adminRoutes({ pool, audit }))
+
+/* Public, read-only: region, mode and which operations the backend permits. */
+app.get('/runtime/status', asyncRoute(async (req, res) => {
+  res.set('Cache-Control', 'no-store').json(await statusBody(runtime))
+}))
 
 /* Public release identity contains build metadata only, never runtime secrets. */
 app.get('/version', (req, res) => {
@@ -883,37 +902,41 @@ try {
   for (const p of r.problems) console.warn(`[payments] ${p}`)
 } catch (e) { console.error('[payments] readiness report failed', e.message) }
 /* market data (authoritative server-side marks) + trading engine loop */
-marketData.bootstrap().catch(e => console.error('[market-data] bootstrap failed', e.message))
-engine.start(1000)
-footprint.start().catch(e => console.error('[footprint] start failed', e.message))
+/* Each background job runs only when its role is enabled (ADR 0032). The
+   GLOBAL default enables every role, so Render starts exactly what it did. */
+console.log(`[region] ${region.region}, roles: ${region.roles.join(', ') || '(none)'}`)
+if (hasRole(region, 'market-data')) marketData.bootstrap().catch(e => console.error('[market-data] bootstrap failed', e.message))
+if (hasRole(region, 'engine')) engine.start(1000)
+if (hasRole(region, 'footprint')) footprint.start().catch(e => console.error('[footprint] start failed', e.message))
 /* pending purchase orders past their expiry are swept to 'expired'
    (verified late payments are still accepted inside the grace window —
    see purchases.js confirmPurchase) */
-setInterval(() => {
+const purchaseExpiryTimer = hasRole(region, 'purchase-expiry') ? setInterval(() => {
   pool.query(`UPDATE purchase_orders SET status='expired' WHERE status='pending' AND expires_at < now()`)
     .then(r => { if (r.rowCount) console.log(`[purchases] ${r.rowCount} pending order(s) expired`) })
     .catch(() => {})
-}, 60_000).unref()
+}, 60_000) : null
+purchaseExpiryTimer?.unref()
 /* payment recovery: a payment that is mined but was never provisioned
    (frontend request lost, RPC down, not yet final) is re-verified on the
    chain until it provisions or becomes a reviewable rejection */
 /* interval / minimum age are operator-tunable only to shorten test runs */
 const recoveryEvery = Math.max(Number(process.env.PAYMENT_RECOVERY_INTERVAL_MS) || 60_000, 1000)
 const recoveryMinAge = Math.max(Number(process.env.PAYMENT_RECOVERY_MIN_AGE_S) || 45, 1)
-const paymentRecoveryTimer = setInterval(() => {
+const paymentRecoveryTimer = hasRole(region, 'payment-recovery') ? setInterval(() => {
   recoverPendingPayments({ pool, minAgeSeconds: recoveryMinAge, log: (order, err) => console.log('[payments] recovery', order, err) })
     .then(r => { if (r.recovered) console.log('[payments] recovered ' + r.recovered + ' order(s)') })
     .catch(e => console.error('[payments] recovery sweep failed', e.message))
-}, recoveryEvery)
-paymentRecoveryTimer.unref()
+}, recoveryEvery) : null
+paymentRecoveryTimer?.unref()
 /* treasury snapshots (60–120 min schedule) and live settlement retries */
-treasury.start()
-const settlementTimer = setInterval(() => {
+if (hasRole(region, 'treasury')) treasury.start()
+const settlementTimer = hasRole(region, 'settlement') ? setInterval(() => {
   const adapter = settlementAdapter(live.settlement)
   if (adapter) processSettlements(pool, adapter).catch(e => console.error('[settlements]', e.message))
-}, 60_000)
-settlementTimer.unref()
+}, 60_000) : null
+settlementTimer?.unref()
 let shuttingDown=false
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;const enginePass=engine.stop();tradingStreams.close();marketData.stop();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{})]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;const enginePass=engine.stop();tradingStreams.close();marketData.stop();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);clearInterval(purchaseExpiryTimer);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{})]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)

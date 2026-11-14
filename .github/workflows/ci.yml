@@ -199,6 +199,19 @@ jobs:
           TEST_PRODUCTION_SIWE_ORIGINS: '1'
           ADMIN_API_TOKEN: ci-admin-token-4f2a
         run: npm run test:all
+      - name: Regional runtime suite (ADR 0032, two disposable databases)
+        if: needs.changes.outputs.run_backend_suite == 'true'
+        env:
+          PGPASSWORD: openfund_ci
+          REGION_TEST_IRAN_URL: postgres://openfund_ci:openfund_ci@localhost:5432/openfund_region_iran_test
+          REGION_TEST_GLOBAL_URL: postgres://openfund_ci:openfund_ci@localhost:5432/openfund_region_global_test
+        run: |
+          for d in openfund_region_iran_test openfund_region_global_test; do
+            psql -h localhost -U openfund_ci -d openfund_ci -c "CREATE DATABASE $d"
+          done
+          DATABASE_URL="$REGION_TEST_IRAN_URL" OPENFUND_REGION=IRAN npm run migrate
+          DATABASE_URL="$REGION_TEST_GLOBAL_URL" npm run migrate
+          npm run test:region
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:

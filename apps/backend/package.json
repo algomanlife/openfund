@@ -15,6 +15,7 @@
     "test": "node test/siwe.test.mjs",
     "test:products": "node test/products.test.mjs",
     "test:edge": "node --test test/edge-client-ip.test.mjs",
+    "test:region": "node --test --test-concurrency=1 test/region.test.mjs",
     "test:static": "node --test test/static-cache.test.mjs test/seo.test.mjs",
     "test:stream": "node --test test/trading-stream.test.mjs",
     "test:gains": "node --test test/gains-portfolio.test.mjs",
