@@ -32,5 +32,10 @@
     "vite": "8.3.8"
   },
   "type": "module",
-  "homepage": "https://github.com/algomanlife/openfund"
+  "homepage": "https://github.com/algomanlife/openfund",
+  "overrides": {
+    "@reown/appkit-wallet": {
+      "zod": "4.6.6"
+    }
+  }
 }
