@@ -85241,7 +85241,7 @@
       "page": "notice",
       "route": "/:locale/*",
       "reason": "literal-jsx-review",
-      "text": "دسترسی پایدار به اوپن‌فاند"
+      "text": "نشانی جایگزین اوپن‌فاند در ایران"
     },
     {
       "component": "apps/web-react/src/features/notice/IranAccessNotice.tsx",
@@ -85249,7 +85249,7 @@
       "page": "notice",
       "route": "/:locale/*",
       "reason": "literal-jsx-review",
-      "text": "در صورت اختلال یا قطعی اینترنت بین‌الملل، می‌توانید از طریق"
+      "text": "نشانی"
     },
     {
       "component": "apps/web-react/src/features/notice/IranAccessNotice.tsx",
@@ -85257,7 +85257,7 @@
       "page": "notice",
       "route": "/:locale/*",
       "reason": "literal-jsx-review",
-      "text": "به اوپن‌فاند دسترسی داشته باشید. در این حالت، فروش چالش‌های جدید موقتاً غیرفعال است؛ اما سایر بخش‌های پلتفرم فعال می‌مانند و اطلاعات قیمت و عمق بازار از منابع داخلی تأمین می‌شود."
+      "text": "همان سرویس اوپن‌فاند را از طریق میزبانی داخلی نمایش می‌دهد. این نشانی همچنان به سرورهای بین‌المللی اوپن‌فاند وابسته است و هنگام قطع اینترنت بین‌الملل در دسترس نخواهد بود. ورود در این نشانی جداگانه است و باید کیف پول خود را دوباره متصل کنید."
     },
     {
       "component": "apps/web-react/src/features/partners/Coach.tsx",
