@@ -105,6 +105,7 @@ jobs:
           npm run test:governance
           npm run test:i18n
           npm run test:content
+          npm run test:content-registry
           npm run check:product-rules
       - name: Whitepaper CMS schema and seed validation (offline)
         working-directory: .

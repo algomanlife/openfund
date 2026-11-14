@@ -53,7 +53,7 @@ export default function TechnicalFeatureStrip({ locale }: { locale: import('../.
       <span className="technical-status">{pick(locale, 'معاملات پرپچوال · طرح پیشنهادی', 'Perpetual trading · proposed design')}</span>
       <h2 id="feature-dialog-title">{features[selected].title}</h2>
       <p id="feature-dialog-detail">{features[selected].detail}</p>
-      {locale === 'fa' && <><p className="technical-source-label">متن مرجع · نیازمند تأیید محصول پیش از انتشار</p><blockquote>{originals[selected]?.copy}</blockquote></>}
+      {locale === 'fa' && <><p className="technical-source-label">{pick(locale, "متن مرجع · نیازمند تأیید محصول پیش از انتشار", "Reference copy · requires product approval before publication")}</p><blockquote>{originals[selected]?.copy}</blockquote></>}
       <button type="button" autoFocus onClick={closeDetail}>{pick(locale, 'بستن', 'Close')}</button>
     </dialog>
   </section>

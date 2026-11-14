@@ -24,7 +24,8 @@
     "test:governance": "node --test test/governance.test.mjs",
     "test:chart": "node --test test/chart-quick-trade.test.mjs",
     "test:content": "node --test test/public-content.test.mjs test/community.test.mjs test/ui-refinement.test.mjs",
-    "check:product-rules": "node --test test/product-rules.test.mjs"
+    "check:product-rules": "node --test test/product-rules.test.mjs",
+    "test:content-registry": "node scripts/content-registry.mjs --check && node scripts/validate-locale-contracts.mjs && node --test test/interface-content.test.mjs"
   },
   "dependencies": {
     "@luxalgo/vela": "0.10.6",
