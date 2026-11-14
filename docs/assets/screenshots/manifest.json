@@ -6621,6 +6621,28 @@
       "session": "anonymous",
       "capturedAt": "2026-11-14T16:29:45Z",
       "state": "Local standalone registry. Search and browse versioned publication keys and coverage."
+    },
+    {
+      "file": "final-refinement/certificate-en-light-1440.png",
+      "route": "/en/certificate-verification",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:31:45Z",
+      "state": "Full-page local light capture. Public verification of isolated test evidence, no production issuance."
+    },
+    {
+      "file": "final-refinement/certificate-fa-dark-390.png",
+      "route": "/fa/certificate-verification",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:31:51Z",
+      "state": "Full-page local dark capture. Public verification of isolated test evidence, no production issuance."
     }
   ],
   "finalIntegration": {

@@ -43,9 +43,19 @@ publication acceptance are not yet verified. No production content was modified.
 
 ## Remaining acceptance
 
-Local Directus 11.17.4 setup is in progress using an isolated PostgreSQL database;
-production CMS access is not used. Apply/seed, parent/child draft permissions,
-editor publication and actual route rendering require live acceptance.
+Directus 11.17.4 ran locally with isolated PostgreSQL. Schema bootstrap and
+base content seed succeeded. The interface importer created 3,977 draft rows
+in the initial registry snapshot. Anonymous reads excluded draft purchase and
+dashboard title rows, returned both translations on publication, and excluded
+them again after restoring drafts. Independently edited Persian and English
+purchase titles rendered in both real React routes after publication and reload.
+The test restored both original values and draft status. Production CMS and a
+publish-and-render demonstration for every product area remain unverified.
+
+The integrated inventory contains 4,052 records, 2,004 with a literal call
+mapping, plus 74 to review and 28 reviewed neutral exclusions. These are counts
+for the scanner scope, not a percentage of all eligible application content.
+
 Registry flat records need `pickRecord` or the repository-only `interfaceRecord`
 helper; dedicated editorial clients retain their existing authority. Dynamic
 financial prose, arbitrary JSX/attribute literals and indirect arrays still need
