@@ -163,10 +163,11 @@ Template: [`infra/liara-iran/liara.env.example`](../../infra/liara-iran/liara.en
 
 ### Render (owner-approved; takes effect only after a reviewed release and Blueprint sync)
 
-- `ALLOWED_DOMAINS` must gain `iran.openfund.cloud`. For wallet sign-in on
-  staging, it can also temporarily gain the staging `liara.run` host. This is a
-  Blueprint `value`, so it is changed in Git, in its own PR. It is **not** part
-  of this branch.
+- `ALLOWED_DOMAINS` must gain `iran.openfund.cloud`. That change is prepared in
+  its own draft PR, algomanlife/openfund#117. It also makes the validator
+  require exactly four hosts. For wallet sign-in on staging, the staging
+  `liara.run` host could also be added temporarily; that would be another
+  separate decision. This is a Blueprint `value`, so it is changed in Git.
 - `EDGE_CLIENT_IP_KEY` is declared `sync: false` in `render.yaml` by this
   branch. It has no value until the owner enters one. A malformed value stops
   the service at start-up.

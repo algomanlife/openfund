@@ -179,7 +179,7 @@ Workflow فقط وقتی مستقر می‌کند که اجرای آزمایشی
 
 ## ۱۰. تغییرات تولیدی در Render (هر کدام با PR جداگانه و تأیید صریح شما)
 
-**الف) ورود با کیف پول:** `ALLOWED_DOMAINS` در `render.yaml` باید `iran.openfund.cloud` را داشته باشد. برای آزمایش ورود روی نسخه آزمایشی، می‌توانید `openfund-iran-staging.liara.run` را موقتاً اضافه و بعد حذف کنید. تغییر فقط در داشبورد با همگام‌سازی بعدی Blueprint پاک می‌شود.
+**الف) ورود با کیف پول:** `ALLOWED_DOMAINS` در `render.yaml` باید `iran.openfund.cloud` را داشته باشد. این تغییر در PR جداگانه [#117](https://github.com/algomanlife/openfund/pull/117) آماده است. آن را فقط پس از پذیرش آزمایشی ادغام کنید و سپس Blueprint را همگام کنید. برای آزمایش ورود روی نسخه آزمایشی، می‌توانید `openfund-iran-staging.liara.run` را موقتاً اضافه و بعد حذف کنید. تغییر فقط در داشبورد با همگام‌سازی بعدی Blueprint پاک می‌شود.
 
 ```yaml
       - key: ALLOWED_DOMAINS
