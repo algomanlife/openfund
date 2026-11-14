@@ -119,6 +119,7 @@ or environment exists for a domain.
 | `www.openfi.cloud`, `www.openfund.cloud` | Redirect-only | `301` to the matching root domain, path preserved |
 | `openfund-our6.onrender.com` | Render default host | Same service |
 | `cms.openfi.cloud` | Directus (`openfund-cms`) | Separate CMS service |
+| `iran.openfund.cloud` | Iran edge on Liara, a reverse proxy to this service ([ADR 0031](../decisions/0031-iran-edge-on-liara.md)); not a Render custom domain | Not live: no DNS record at the time of this change; SIWE-allowed so wallet sign-in works once the edge is accepted |
 
 Neither root domain redirects to the other; both stay canonical for their own
 visitors. HTTP redirects to HTTPS and responses carry HSTS.
@@ -138,11 +139,11 @@ the effective Render value contained only `openfund-our6.onrender.com`. The
 Blueprint now declares the complete list on the `openfund` service:
 
 ```
-ALLOWED_DOMAINS=openfund-our6.onrender.com,openfi.cloud,openfund.cloud
+ALLOWED_DOMAINS=openfund-our6.onrender.com,openfi.cloud,openfund.cloud,iran.openfund.cloud
 ```
 
-The Blueprint validator fails if either public host is removed or if the
-variable is changed back to `fromService`. The source fix alone does not
+The Blueprint validator fails if any listed host is removed, if another host
+is added, or if the variable is changed back to `fromService`. The source fix alone does not
 change the running service: deploy only after approval, then inspect the
 effective value and repeat the HTTPS SIWE and real-wallet acceptance tests.
 
