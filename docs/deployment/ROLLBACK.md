@@ -38,6 +38,14 @@
   service; content edits are versioned in Directus revisions with one-click
   item-level rollback.
 
+## Iran edge (Liara)
+
+The Iran edge holds no state. Roll it back by dispatching **Deploy Iran edge
+(Liara)** with an earlier edge commit, take it offline by stopping the Liara
+app, and switch country routing off with its Cloudflare redirect rule. An
+application rollback on Render applies to the edge automatically. See
+[Iran edge on Liara](LIARA_IRAN.md#deploy-verify-and-roll-back).
+
 ## Database rollback
 
 1. Dashboard → `openfund-db` → **Backups** → restore (creates a new instance).

@@ -18,7 +18,16 @@ function check(file,text,offset=0) {
   }
 }
 let prose=0, source=0
+/* Owner-requested Persian operator runbooks (one exact path each). Every one
+   must keep an English authoritative counterpart, which is checked normally. */
+const PERSIAN_OWNER_GUIDES = new Map([
+  ['docs/deployment/LIARA_IRAN_SETUP.md', 'docs/deployment/LIARA_IRAN.md'],
+])
 for (const file of files) {
+  if (PERSIAN_OWNER_GUIDES.has(file)) {
+    if (!fs.existsSync(PERSIAN_OWNER_GUIDES.get(file))) problems.push(`${file}: missing English counterpart ${PERSIAN_OWNER_GUIDES.get(file)}`)
+    prose++;continue
+  }
   if (file === 'vendor/vela/docs/user/localization.md') {
     // Upstream reference table lists native language names as localization data.
     const text=fs.readFileSync(file,'utf8').replace(/```[\s\S]*?```/g, match => match.replace(/[^\n]/g, ' ')).replace(/^\|[^\n]*\|$/gm, match => match.replace(/[\u0600-\u06ff]+/g, '[native language name]'))

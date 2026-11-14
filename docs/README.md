@@ -63,7 +63,7 @@ instead of repeating it. Historical reviews keep their original wording.
 
 ## Deployment
 
-[Unified releases](deployment/RELEASES.md) · [Release and deployment checklists](deployment/CHECKLISTS.md) · [Operations and monitoring](operations/README.md) · [Render runbook](deployment/RENDER.md) · [Environment](deployment/ENVIRONMENT.md) · [Database](deployment/DATABASE.md) · [Rollback and recovery](deployment/ROLLBACK.md) · [Directus migration runbook](deployment/DIRECTUS_MIGRATION_RUNBOOK.md) · [Blueprint](../render.yaml)
+[Unified releases](deployment/RELEASES.md) · [Release and deployment checklists](deployment/CHECKLISTS.md) · [Operations and monitoring](operations/README.md) · [Render runbook](deployment/RENDER.md) · [Environment](deployment/ENVIRONMENT.md) · [Database](deployment/DATABASE.md) · [Rollback and recovery](deployment/ROLLBACK.md) · [Iran edge on Liara](deployment/LIARA_IRAN.md) · [Directus migration runbook](deployment/DIRECTUS_MIGRATION_RUNBOOK.md) · [Blueprint](../render.yaml)
 
 ## Development
 

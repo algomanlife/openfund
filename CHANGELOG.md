@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Iran edge on Liara (branch `infra/liara-iran-mirror`,
+  [ADR 0031](docs/decisions/0031-iran-edge-on-liara.md); **not deployed**):
+  a stateless nginx reverse proxy for `iran.openfund.cloud` that serves the
+  exact release Render serves, caches hashed assets, blocks operator and DePay
+  server routes, and runs no backend, database or secret in Iran. A manual,
+  reviewer-gated `Deploy Iran edge (Liara)` workflow deploys an exact `main`
+  commit and verifies it; country routing is prepared but disabled. Owner
+  guide in Persian: `docs/deployment/LIARA_IRAN_SETUP.md`.
+
 - Owner decisions D1–D8 (branch `agent/claude/launch-readiness`, **not
   deployed**): per-model reward cycles chosen once; 30-day inactivity;
   Instant open-risk, trade-idea, profitable-day, news and weekend rules;
