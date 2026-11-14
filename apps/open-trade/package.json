@@ -2,7 +2,7 @@
   "name": "open-trade",
   "version": "0.0.1",
   "private": true,
-  "description": "Open Trade by Openfund \u2014 desktop beta",
+  "description": "Open Trade by Openfund — desktop beta",
   "author": "Openfund",
   "main": "out/main.cjs",
   "scripts": {
@@ -14,22 +14,23 @@
     "package": "npm run build && electron-builder --publish never"
   },
   "dependencies": {
+    "@walletconnect/ethereum-provider": "2.26.0",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "viem": "2.57.19",
-    "@walletconnect/ethereum-provider": "2.26.0"
+    "viem": "2.57.19"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "2.6.2",
+    "@types/node": "26.0.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "@types/node": "26.0.0",
-    "typescript": "7.0.2",
-    "vite": "8.3.8",
-    "esbuild": "0.28.2",
     "electron": "45.3.2",
     "electron-builder": "26.18.0",
+    "esbuild": "0.28.2",
     "playwright": "1.65.0",
-    "@resvg/resvg-js": "2.6.2"
+    "typescript": "7.0.2",
+    "vite": "8.3.8"
   },
-  "type": "module"
+  "type": "module",
+  "homepage": "https://github.com/algomanlife/openfund"
 }
