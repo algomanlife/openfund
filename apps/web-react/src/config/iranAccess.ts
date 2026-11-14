@@ -15,5 +15,11 @@
  *  market data or purchasing. */
 export const IRAN_ACCESS_NOTICE_APPROVED = true
 
+import { publicRuntimeConfig } from './runtime'
+
+/* The notice describes the ADR 0031 edge (a proxy to the international
+   servers). The independent Iran runtime (ADR 0033) is not that, so the copy
+   would be false there: it is never shown when the serving region is IRAN.
+   Replacement copy for the Iran runtime is an owner decision. */
 export const iranAccessNoticeEnabled = (): boolean =>
-  IRAN_ACCESS_NOTICE_APPROVED || Boolean(import.meta.env.DEV)
+  publicRuntimeConfig().region !== 'IRAN' && (IRAN_ACCESS_NOTICE_APPROVED || Boolean(import.meta.env.DEV))

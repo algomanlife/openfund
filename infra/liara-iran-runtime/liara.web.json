@@ -1,0 +1,8 @@
+{
+  "platform": "docker",
+  "port": 8080,
+  "build": {
+    "dockerfile": "infra/liara-iran-runtime/Dockerfile",
+    "location": "germany"
+  }
+}

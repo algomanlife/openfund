@@ -48,6 +48,8 @@ export function runtimeConfigScript(env, production = false) {
     depayIntegrationId: depayWidgetApproved(env) ? env.VITE_DEPAY_INTEGRATION_ID : '',
     /* Footprint chart plugin (Hyperliquid order-flow analytics); off unless enabled */
     footprint: env.FOOTPRINT_ENABLED === '1',
+    /* serving region (ADR 0032/0033): lets region-specific notices tell the truth */
+    region: String(env.OPENFUND_REGION || 'GLOBAL').toUpperCase() === 'IRAN' ? 'IRAN' : 'GLOBAL',
   }
   return `window.__OPENFUND_RUNTIME_CONFIG__=${JSON.stringify(config).replaceAll('<', '\\u003c')};\n`
 }

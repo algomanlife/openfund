@@ -8,6 +8,20 @@
 
 ## Unreleased
 
+- Independent Iran regional runtime and regional synchronization (branch
+  `infra/iran-regional-authority`, [ADR 0033](docs/decisions/0033-regional-authority-and-synchronization.md);
+  **not deployed, not merged**). A database-enforced single home region per
+  trading account (ownership fence with epochs, quarantine on conflicting
+  claims, explicit two-sided handoff); a trigger-written transactional outbox,
+  signed HTTPS delivery, an ordered idempotent inbox and read models of the
+  other region; initial state transfer; checkpoint reconciliation that gates
+  reopening after an outage; an operator API (`/admin/regional`); `/ready`;
+  the Liara image, desired-state manifest, create-only provisioning tool and
+  a gated deploy workflow. Render is unchanged until sync is configured and
+  enabled. Tested with two real regions, fault injection and a simulated
+  120-day backlog. Not implemented: purchases in IRAN, CMS content
+  distribution, an operations UI.
+
 - SIWE: `ALLOWED_DOMAINS` gains `iran.openfund.cloud` (Iran edge on Liara,
   [ADR 0031](docs/decisions/0031-iran-edge-on-liara.md)); the Blueprint
   validator now requires exactly the four hosts. Takes effect only after an
