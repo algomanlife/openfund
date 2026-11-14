@@ -96,12 +96,13 @@ test('one shared poller: remounts never duplicate the loop, unmount cancels, dat
   }
 })
 
-test('the ticker and the Iran notice are Persian-only and never mounted in the terminal', () => {
+test('the Bitpin ticker is Persian-only; the Iran notice is shown in every locale; neither is mounted in the terminal', () => {
   const shell = src('features/information/InformationShell.tsx')
-  assert.match(shell, /\{locale === 'fa' && <IranAccessNotice \/>\}/)
+  assert.match(shell, /<IranAccessNotice locale=\{locale\} \/>/)
   assert.match(shell, /\{locale === 'fa' && <BitpinTicker \/>\}/)
   const landing = src('pages/Landing.tsx')
-  assert.match(landing, /communityLocale === 'fa' && createPortal\(<IranAccessNotice \/>/)
+  assert.match(landing, /createPortal\(<IranAccessNotice locale=\{communityLocale\} \/>/)
+  assert.doesNotMatch(landing, /communityLocale === 'fa' && createPortal\(<IranAccessNotice/)
   assert.match(landing, /\{communityLocale === 'fa' && <BitpinTicker \/>\}/)
   for (const file of ['features/terminal/TerminalShell.tsx', 'features/terminal/TradingPages.tsx']) {
     assert.doesNotMatch(src(file), /BitpinTicker|IranAccessNotice/)
@@ -110,21 +111,55 @@ test('the ticker and the Iran notice are Persian-only and never mounted in the t
   assert.match(src('features/ticker/ticker.css'), /safe-area-inset-bottom/)
 })
 
-test('the Iran access notice is owner-approved for production and renders the approved copy', () => {
+/* The notice follows the verified serving region (runtime config), never the
+   hostname, and never claims outage availability, independence of a proxy,
+   or trading without authoritative market data. */
+function renderNotice(locale, region) {
   const React = require('react'), server = require('react-dom/server')
-  const on = load('features/notice/IranAccessNotice.tsx', { 'import.meta.env.DEV': 'false' }).default
-  const doc = new JSDOM(server.renderToStaticMarkup(React.createElement(on))).window.document
-  assert.equal(doc.querySelector('strong').textContent, 'نشانی جایگزین اوپن‌فاند در ایران')
-  /* The Iran edge proxies the international backend (ADR 0031): the copy must
-     state that dependency and must not promise access during an international
-     cutoff, paused sales or domestic market-data sources. */
-  const copy = doc.querySelector('p').textContent
-  assert.match(copy, /وابسته است/)
-  assert.match(copy, /هنگام قطع اینترنت بین‌الملل در دسترس نخواهد بود/)
-  for (const claim of [/منابع داخلی/, /عمق بازار/, /فروش چالش/, /دسترسی پایدار/, /در صورت اختلال/]) assert.doesNotMatch(copy, claim)
-  const link = doc.querySelector('a[href="https://iran.openfund.cloud"]')
-  assert.equal(link.getAttribute('dir'), 'ltr')
-  assert.equal(link.textContent, 'iran.openfund.cloud')
+  const saved = globalThis.window
+  globalThis.window = { __OPENFUND_RUNTIME_CONFIG__: region ? { region } : {} }
+  try {
+    const Notice = load('features/notice/IranAccessNotice.tsx').default
+    return new JSDOM(server.renderToStaticMarkup(React.createElement(Notice, { locale }))).window.document
+  } finally { if (saved === undefined) delete globalThis.window; else globalThis.window = saved }
+}
+const FORBIDDEN_CLAIMS = [/هنگام قطع اینترنت بین‌الملل در دسترس/, /همیشه در دسترس/, /دسترسی پایدار/, /بدون وقفه/, /منابع داخلی/, /عمق بازار/,
+  /دوباره متصل کنید/, /always available/i, /uninterrupted/i, /guarantee/i, /reconnect your wallet/i, /fully independent/i]
+
+test('the Iran notice lists all three Iran addresses as HTTPS links, in RTL and LTR', () => {
+  for (const [locale, dir] of [['fa', 'rtl'], ['en', 'ltr'], ['ar', 'rtl']]) {
+    const doc = renderNotice(locale)
+    const aside = doc.querySelector('aside.iran-access-notice')
+    assert.equal(aside.getAttribute('dir'), dir); assert.equal(aside.getAttribute('lang'), locale)
+    const links = [...doc.querySelectorAll('.iran-access-domains a')]
+    assert.deepEqual(links.map(a => a.getAttribute('href')), ['https://iran.openfund.cloud/', 'https://iran.openfi.cloud/', 'https://openfi.live/'])
+    assert.deepEqual(links.map(a => a.textContent), ['iran.openfund.cloud', 'iran.openfi.cloud', 'openfi.live'])
+    assert.ok(links.every(a => a.getAttribute('dir') === 'ltr'))
+    assert.equal(doc.querySelector('a.is-independent').textContent, 'openfi.live')
+    assert.equal(doc.querySelectorAll('aside').length, 1)
+  }
+})
+
+test('GLOBAL (Render or the edge): a transition notice that claims no independence', () => {
+  const fa = renderNotice('fa').querySelector('aside'), en = renderNotice('en').querySelector('aside')
+  assert.equal(fa.getAttribute('data-region'), 'GLOBAL')
+  assert.equal(fa.querySelector('strong').textContent, 'دسترسی به اوپن‌فاند از داخل ایران')
+  assert.match(fa.textContent, /لیارا/); assert.match(fa.textContent, /داده‌های معتبر بازار/)
+  assert.match(en.textContent, /Liara/); assert.match(en.textContent, /authoritative market data/)
+  assert.doesNotMatch(fa.textContent, /زیرساخت ایران اوپن‌فاند روی لیارا ارائه/)
+  for (const claim of FORBIDDEN_CLAIMS) { assert.doesNotMatch(fa.textContent, claim); assert.doesNotMatch(en.textContent, claim) }
+})
+
+test('IRAN runtime: says it is served by the Iran infrastructure and that purchases are international-only', () => {
+  const fa = renderNotice('fa', 'IRAN').querySelector('aside'), en = renderNotice('en', 'IRAN').querySelector('aside')
+  assert.equal(fa.getAttribute('data-region'), 'IRAN')
+  assert.match(fa.textContent, /زیرساخت ایران اوپن‌فاند روی لیارا/); assert.match(fa.textContent, /مسیر مستقل دیگری/)
+  assert.match(en.textContent, /Iran infrastructure on Liara/); assert.match(en.textContent, /purchases are currently available only/)
+  for (const claim of FORBIDDEN_CLAIMS) { assert.doesNotMatch(fa.textContent, claim); assert.doesNotMatch(en.textContent, claim) }
+  /* mode wording exists for isolation and recovery, and promises no trading */
+  const source = src('features/notice/IranAccessNotice.tsx')
+  assert.match(source, /معامله و ثبت پرداخت موقتاً متوقف است/); assert.match(source, /Trading is paused until this review is complete/)
+  assert.match(source, /fetch\('\/runtime\/status'/)
   assert.match(src('config/iranAccess.ts'), /IRAN_ACCESS_NOTICE_APPROVED = true/)
 })
 

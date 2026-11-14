@@ -3399,5 +3399,13 @@
   "Verify certificate": "تحقق من الشهادة",
   "Verify the current status using the QR code. A downloaded copy may have been revoked after issue.": "تحقق من الحالة الحالية باستخدام رمز QR. ربما أُلغيت الشهادة بعد تنزيلها.",
   "Your verified milestones, issued from recorded Openfund events.": "إنجازاتك الموثقة، تصدر استنادًا إلى سجلات Openfund.",
-  "Trader": "المتداول"
+  "Trader": "المتداول",
+  "Accessing Openfund from Iran": "الوصول إلى Openfund من داخل إيران",
+  "Access addresses from Iran": "عناوين الوصول من إيران",
+  "From inside Iran you can use the addresses below. They are hosted on Liara infrastructure, and openfi.live is Openfund's separately managed domain for Iran. Service and trading features depend on connectivity and on access to authoritative market data. Sign in with your wallet separately on each address.": "من داخل إيران يمكنك استخدام العناوين أدناه. تُستضاف هذه العناوين على بنية Liara التحتية، والنطاق openfi.live هو نطاق Openfund المُدار بشكل منفصل لإيران. تعتمد الخدمات وميزات التداول على حالة الاتصال وعلى الوصول إلى بيانات سوق موثوقة. سجّل الدخول بمحفظتك بشكل منفصل على كل عنوان.",
+  "This page is served by Openfund's Iran infrastructure on Liara and is available at all three addresses below. openfi.live is a separately managed route to the Iran version. Service and trading features depend on connectivity and on access to authoritative market data. New challenge purchases are currently available only on Openfund's international address.": "تُقدَّم هذه الصفحة من البنية التحتية الإيرانية لـ Openfund على Liara، وهي متاحة عبر العناوين الثلاثة أدناه. النطاق openfi.live مسار مُدار بشكل منفصل للوصول إلى النسخة الإيرانية. تعتمد الخدمات وميزات التداول على حالة الاتصال وعلى الوصول إلى بيانات سوق موثوقة. شراء التحديات الجديدة متاح حاليًا فقط على العنوان الدولي لـ Openfund.",
+  "International connectivity is currently unavailable: trading and payout recording are paused. Account information and withdrawal requests remain available.": "الاتصال الدولي غير متاح حاليًا: تم إيقاف التداول وتسجيل المدفوعات مؤقتًا. تبقى معلومات الحساب وطلبات السحب متاحة.",
+  "International connectivity is being restored and data is being reconciled. Trading is paused until this review is complete.": "يجري استعادة الاتصال الدولي ومطابقة البيانات. يبقى التداول متوقفًا حتى تكتمل هذه المراجعة.",
+  "Less": "أقل",
+  "More": "المزيد"
 }

@@ -3399,5 +3399,13 @@
   "Verify certificate": "Проверить сертификат",
   "Verify the current status using the QR code. A downloaded copy may have been revoked after issue.": "Проверьте текущий статус по QR-коду. Сертификат мог быть отозван после выдачи.",
   "Your verified milestones, issued from recorded Openfund events.": "Ваши подтверждённые достижения по данным Openfund.",
-  "Trader": "Трейдер"
+  "Trader": "Трейдер",
+  "Accessing Openfund from Iran": "Доступ к Openfund из Ирана",
+  "Access addresses from Iran": "Адреса для доступа из Ирана",
+  "From inside Iran you can use the addresses below. They are hosted on Liara infrastructure, and openfi.live is Openfund's separately managed domain for Iran. Service and trading features depend on connectivity and on access to authoritative market data. Sign in with your wallet separately on each address.": "Из Ирана можно пользоваться адресами ниже. Они размещены на инфраструктуре Liara, а openfi.live — отдельно управляемый домен Openfund для Ирана. Работа сервиса и торговых функций зависит от подключения и от доступа к достоверным рыночным данным. На каждом адресе вход с кошельком выполняется отдельно.",
+  "This page is served by Openfund's Iran infrastructure on Liara and is available at all three addresses below. openfi.live is a separately managed route to the Iran version. Service and trading features depend on connectivity and on access to authoritative market data. New challenge purchases are currently available only on Openfund's international address.": "Эта страница обслуживается иранской инфраструктурой Openfund на Liara и доступна по всем трём адресам ниже. openfi.live — отдельно управляемый путь к иранской версии. Работа сервиса и торговых функций зависит от подключения и от доступа к достоверным рыночным данным. Покупка новых челленджей пока доступна только на международном адресе Openfund.",
+  "International connectivity is currently unavailable: trading and payout recording are paused. Account information and withdrawal requests remain available.": "Международное подключение сейчас недоступно: торговля и регистрация выплат приостановлены. Информация о счёте и заявки на вывод остаются доступными.",
+  "International connectivity is being restored and data is being reconciled. Trading is paused until this review is complete.": "Международное подключение восстанавливается, данные сверяются. Торговля приостановлена до завершения проверки.",
+  "Less": "Свернуть",
+  "More": "Подробнее"
 }

@@ -48,6 +48,7 @@ import { edgeClientIpMiddleware } from './edge-client-ip.js'
 import { regionConfig, hasRole, assertDatabaseRegion, RuntimeState, regionGuard, httpRoleGate, statusBody, runtimeAdminRoutes, payoutGuard } from './region.js'
 import { syncConfig, SyncWorker, syncPeerRoutes, PROTOCOL_VERSION } from './regional-sync.js'
 import { regionalAdminRoutes, remoteAccountRoutes } from './regional-admin.js'
+import { cmsSnapshotRoutes, cmsSnapshotOrigin } from './cms-snapshot.js'
 import { adminAuth, adminActor } from './admin.js'
 
 const cfg = {
@@ -827,6 +828,8 @@ app.use('/admin/calendar', calendarAdminRoutes({ pool }))
 app.use('/admin/runtime', runtimeAdminRoutes({ Router: express.Router, runtime, adminAuth, adminActor, audit }))
 app.use('/admin/regional', regionalAdminRoutes({ Router: express.Router, pool, runtime, adminAuth, adminActor, syncWorker, audit, health: regionalHealth }))
 app.use(remoteAccountRoutes({ Router: express.Router, pool, requireAuth }))
+/* same-origin public CMS content with a last-known-good snapshot (primary on IRAN, fallback on GLOBAL) */
+app.use('/cms', limit(240), cmsSnapshotRoutes({ pool, origin: cmsSnapshotOrigin(process.env) }))
 app.use('/admin', adminRoutes({ pool, audit }))
 
 /* Public, read-only: region, mode and which operations the backend permits. */

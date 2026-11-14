@@ -404,7 +404,7 @@ export default function Landing() {
         onLocaleChange={next => navigate(switchLocalePath(routerLocation.pathname, next) + routerLocation.search)} />
       <CheckoutHost />
       {walletCardHost && createPortal(<ChallengeWalletPanel locale={communityLocale} />, walletCardHost)}
-      {noticeHost && communityLocale === 'fa' && createPortal(<IranAccessNotice />, noticeHost)}
+      {noticeHost && createPortal(<IranAccessNotice locale={communityLocale} />, noticeHost)}
       {communityLocale === 'fa' && <BitpinTicker />}
       <div dangerouslySetInnerHTML={{ __html: landingMarkup }} />
     </>

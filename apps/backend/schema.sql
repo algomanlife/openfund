@@ -2155,7 +2155,9 @@ BEGIN
       ('trading_orders', 'order.v1', 'account_id', 'account', 'INSERT OR UPDATE'),
       ('trading_positions', 'position.v1', 'account_id', 'account', 'INSERT OR UPDATE'),
       ('trading_ledger', 'ledger.v1', 'account_id', 'account', 'INSERT'),
-      ('withdrawal_requests', 'withdrawal.v1', 'challenge_id', 'challenge', 'INSERT OR UPDATE')
+      ('withdrawal_requests', 'withdrawal.v1', 'challenge_id', 'challenge', 'INSERT OR UPDATE'),
+      /* attestations (#118): verifiable on the other region's domains through its read model */
+      ('certificates', 'certificate.v1', 'serial', 'none', 'INSERT OR UPDATE')
     ) AS v(tbl, typ, col, via, ops)
   LOOP
     IF to_regclass('public.' || t.tbl) IS NOT NULL
@@ -2282,4 +2284,17 @@ CREATE TABLE IF NOT EXISTS region_handoff_offers (
   decided_at     timestamptz,
   decided_by     text,
   PRIMARY KEY (account_id, epoch)
+);
+
+-- ------------------------------------------------------------------
+-- Last-known-good public CMS content per request (cms-snapshot.js). Public,
+-- published data only; replaced only when the content hash changes.
+-- ------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS cms_snapshot (
+  key           text PRIMARY KEY,
+  collection    text NOT NULL,
+  content_type  text NOT NULL,
+  body          bytea NOT NULL,
+  sha256        text NOT NULL,
+  fetched_at    timestamptz NOT NULL DEFAULT now()
 );

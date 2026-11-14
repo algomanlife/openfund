@@ -14,6 +14,11 @@
  *    navigation does not re-query Directus; content edits therefore appear
  *    on the next load/refetch WITHOUT a frontend rebuild
  *  - NO admin tokens ever live here — public endpoints only
+ *  - content sources (ADR 0033): the same-origin `/cms` path of the backend
+ *    serves the CMS's own published answer, or its last-known-good snapshot
+ *    with `X-Openfund-Content: snapshot` when the CMS is unreachable. The
+ *    Iran runtime reads it first; GLOBAL reads the CMS directly and uses
+ *    `/cms` only when that fails. Snapshots are real published content.
  */
 import type { ChallengePlan, LegacyPreset } from '../data/challengePlans'
 import { assertPlansValid, serializeForLegacy } from '../data/challengePlans'
@@ -50,8 +55,31 @@ function configuredCmsUrl(): string {
 const TIMEOUT_MS = 4000
 const CACHE_TTL = 20_000
 
+/* same-origin content path (backend cms-snapshot.js); '' outside a browser */
+function sameOriginCms(): string {
+  return typeof location !== 'undefined' && /^https?:$/.test(location.protocol) ? `${location.origin}/cms` : ''
+}
+const iranRegion = () => publicRuntimeConfig().region === 'IRAN'
+
+/** Base URL for CMS assets: the same-origin path on the Iran runtime. */
 export function directusUrl(): string {
-  return configuredCmsUrl()
+  return iranRegion() ? sameOriginCms() || configuredCmsUrl() : configuredCmsUrl()
+}
+
+async function fetchData<T>(base: string, path: string, timeout: number): Promise<T | null> {
+  if (!base) return null
+  const ctrl = new AbortController()
+  const timer = setTimeout(() => ctrl.abort(), timeout)
+  try {
+    const res = await fetch(`${base}${path}`, { signal: ctrl.signal })
+    if (!res.ok) return null
+    const json = await res.json() as { data: T }
+    return json?.data == null ? null : json.data
+  } catch {
+    return null
+  } finally {
+    clearTimeout(timer)
+  }
 }
 
 /* ---------------- tiny fetch + cache core ---------------- */
@@ -60,22 +88,14 @@ const cache = new Map<string, { at: number; value: unknown }>()
 async function getJson<T>(path: string, timeout = TIMEOUT_MS): Promise<T | null> {
   const cached = cache.get(path)
   if (cached && Date.now() - cached.at < CACHE_TTL) return cached.value as T
-  const ctrl = new AbortController()
-  const timer = setTimeout(() => ctrl.abort(), timeout)
-  try {
-    const origin = configuredCmsUrl()
-    if (!origin) return null
-    const res = await fetch(`${origin}${path}`, { signal: ctrl.signal })
-    if (!res.ok) return null
-    const json = await res.json() as { data: T }
-    if (json?.data == null) return null
-    cache.set(path, { at: Date.now(), value: json.data })
-    return json.data
-  } catch {
-    return null /* Directus unavailable — caller renders an explicit error state */
-  } finally {
-    clearTimeout(timer)
+  const direct = configuredCmsUrl(), local = sameOriginCms()
+  /* IRAN: same-origin first (it carries the snapshot); GLOBAL: CMS first, same-origin as fallback */
+  const sources = (iranRegion() ? [local, direct] : [direct, local]).filter((v, i, a) => v && a.indexOf(v) === i)
+  for (const base of sources) {
+    const data = await fetchData<T>(base, path, timeout)
+    if (data != null) { cache.set(path, { at: Date.now(), value: data }); return data }
   }
+  return null /* no source answered — caller renders an explicit error state */
 }
 
 /** Public read of one published Directus resource for feature-level content

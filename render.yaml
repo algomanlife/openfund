@@ -177,6 +177,8 @@ services:
       - key: CSP_EXTRA_CONNECT
         sync: false             # optional extra connect-src origins for the CSP
                                 # (production CMS is https, same as VITE_DIRECTUS_HOST)
+      - key: CMS_SNAPSHOT_ORIGIN
+        sync: false             # optional origin for the same-origin /cms content path; unset = CMS_PUBLIC_URL
       - key: REGION_SYNC_KEYS
         sync: false             # secret (ADR 0033): JSON {kid: secret} shared with the Iran runtime; unset = /sync/v1 404, no delivery
       - key: REGION_SYNC_ACTIVE_KID

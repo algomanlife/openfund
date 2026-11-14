@@ -99,7 +99,19 @@ A reconciliation appends a checkpoint, the authoritative balance and ledger coun
 
 - The IRAN runtime boots and serves with Render and every foreign host unreachable. This is tested with the peer down and in a browser that aborts every non-local request.
 - Wallet sign-in for normal wallets (EOA) works with the Arbitrum RPC unreachable, on `iran.openfund.cloud`, `iran.openfi.cloud` and `openfi.live`. viem falls back to local `ecrecover`; see the test. Contract wallets (EIP-1271/6492) and WalletConnect cannot sign in during isolation. This is unchanged and not faked.
-- **The CMS is required for content pages.** Without a reachable Directus, the home page shows its "content unavailable" state. The Iran Directus deployment unit exists. Distributing GLOBAL-edited content to it is **not implemented**: today it is bootstrapped from the repository seeds (`apps/backstage/scripts/bootstrap-cms.sh`), so content is versioned in Git.
+- **Content availability.** Public CMS content is read through a same-origin `/cms` path in the backend (`cms-snapshot.js`).
+  - The path fetches the configured CMS origin server-to-server (`CMS_SNAPSHOT_ORIGIN`, default `CMS_PUBLIC_URL`) using the public role only.
+  - Collections and query parameters are allowlisted.
+  - Every successful answer is stored as the last-known-good snapshot of that exact request. Rows are rewritten only when the content hash changes.
+  - When the CMS is unreachable, the snapshot is served, labelled `X-Openfund-Content: snapshot`. With no snapshot, the response is an explicit 503.
+  - On the Iran runtime this path is the frontend's primary source. On GLOBAL it is the fallback after a failed direct CMS request.
+  - The Iran runtime can therefore point `CMS_SNAPSHOT_ORIGIN` at the centrally edited GLOBAL Directus. Snapshots taken while connected keep the published pages available during an outage.
+  - Coverage is limited to requests made while connected (see the warm-up step in the deployment guide). Nothing is fabricated.
+- **Certificates (#118).**
+  - They are issued only from evidence this region owns.
+  - They are captured as `certificate.v1` and verified on the other region's domains from its read model.
+  - Revocation propagates.
+  - Verify and identity routes are allowed in IRAN; revocation applies to certificates the region issued.
 - Open positions during a long outage stay open, with their protections recorded but **not executed**. Decisions on risk evaluation, protection execution and challenge clocks during an extended outage belong to the separate market-data policy phase.
 
 ## 6. DNS and TLS

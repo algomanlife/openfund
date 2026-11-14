@@ -26,7 +26,8 @@ Plain values are in `stack.json`. Store the secrets listed below in the Liara ap
 | `ADMIN_API_TOKEN` | web | Operator API, including `/admin/runtime` and `/admin/regional`. Use a value different from Render's |
 | `ALLOWED_DOMAINS` | web | `iran.openfund.cloud,iran.openfi.cloud,openfi.live` (add the staging host on staging) |
 | `CORS_ORIGINS` | web | `https://iran.openfund.cloud,https://iran.openfi.cloud,https://openfi.live` |
-| `CMS_PUBLIC_URL` | web | The Iran Directus origin, e.g. `https://cms.openfi.live`. It must not be the Render CMS |
+| `CMS_PUBLIC_URL` | web | Required in production by the runtime config. On the Iran runtime the browser reads content from the same-origin `/cms` path first, so this is only the direct fallback |
+| `CMS_SNAPSHOT_ORIGIN` | web | Optional. Where `/cms` fetches published content server-to-server and snapshots it (default `CMS_PUBLIC_URL`). Recommended: the centrally edited GLOBAL Directus (`https://openfund-cms.onrender.com` or its custom domain), or the Iran Directus if content is edited there |
 | `REGION_SYNC_KEYS` | web, worker (Iran) **and** Render `openfund` | JSON `{"<kid>":"<secret ≥32 chars>"}`. The same set on both sides. Rotate by adding a new kid, switching `REGION_SYNC_ACTIVE_KID` on both sides, then removing the old kid |
 | `REGION_SYNC_ACTIVE_KID` | web, worker, Render | The key id this side signs with |
 | `REGION_SYNC_PEER_URL` | Iran: the Render origin (`https://openfund.cloud`). Render: `https://iran.openfund.cloud` | The worker pushes here. Both sides use HTTPS in production |
@@ -73,7 +74,7 @@ Production needs the same commit's successful staging run id.
 ## First activation (owner-supervised)
 
 1. Provision, deploy and smoke-test staging.
-2. Bootstrap Directus content from the repository seeds (`apps/backstage/scripts/bootstrap-cms.sh` against the Iran CMS).
+2. **Warm the content snapshot while connected.** Open every public page in every locale once on the Iran host. For example, run `TEST_FRONTEND_URL=https://<iran host> EXPECT_CONTENT=1 node e2e/test-iran-isolation.cjs` and the website navigation suites against it. Then check that `GET /cms/items/home_content?fields=*,translations.*` answers 200. An Iran Directus is optional; to use one instead, bootstrap it from the repository seeds (`apps/backstage/scripts/bootstrap-cms.sh`) and point `CMS_SNAPSHOT_ORIGIN` at it.
 3. Set `REGION_SYNC_*` on both sides.
 4. Enable sync on each side: `POST /admin/regional/sync/enable` with `{"confirm":"ENABLE-REGIONAL-SYNC","reason":"…"}`. Enabling performs the initial state transfer: it briefly locks the financial tables for the snapshot.
 5. Watch `GET /admin/regional` until both outboxes drain.
