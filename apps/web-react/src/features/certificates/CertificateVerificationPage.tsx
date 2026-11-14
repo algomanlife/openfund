@@ -13,7 +13,7 @@ export default function CertificateVerificationPage() {
   const [serial, setSerial] = useState(search.get('serial') || ''), [result, setResult] = useState<Verification | null>(null), [pending, setPending] = useState(false), [error, setError] = useState('')
   useEffect(() => {
     const value = search.get('serial'); setSerial(value || ''); setResult(null); setError('')
-    if (!value) return
+    if (!value) { setPending(false); return }
     let active = true; setPending(true)
     void apiFetch('/certificates/verify', { method: 'POST', body: JSON.stringify({ serial: value }) }).then(r => {
       if (!active) return

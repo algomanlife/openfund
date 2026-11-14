@@ -36,3 +36,4 @@
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)
 
 - [0032 — Editorial and distribution authority](0032-editorial-and-distribution-authority.md)
+- [0033 — Certificate event attestations](0033-certificate-event-attestations.md)

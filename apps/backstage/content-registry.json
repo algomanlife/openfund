@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 3977,
-    "mappedCalls": 2012,
+    "uniqueRecords": 4052,
+    "mappedCalls": 2004,
     "exceptions": 74,
     "validationFindings": 0,
     "reviewedExclusions": 28
@@ -219,6 +219,26 @@
           "line": 42,
           "page": "learn",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.00b43fc6424007c6",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کپی پیوند راستی‌آزمایی",
+      "en": "Copy verification link",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 29,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
         }
       ]
@@ -912,6 +932,26 @@
       ]
     },
     {
+      "key": "react.01f555e40dafabae",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دستاوردهای تأییدشدهٔ شما، صادرشده بر پایهٔ سوابق اوپن‌فاند.",
+      "en": "Your verified milestones, issued from recorded Openfund events.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 4,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.021c14f528062e9f",
       "namespace": "react",
       "area": "Website",
@@ -1299,6 +1339,26 @@
       ]
     },
     {
+      "key": "react.033a759621a067b8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بتا",
+      "en": "Beta",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 11,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.0352bda4a0e672c4",
       "namespace": "react",
       "area": "Website",
@@ -1585,7 +1645,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 39,
+          "line": 42,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -3258,6 +3318,26 @@
       ]
     },
     {
+      "key": "react.096da326d8f838ac",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازپرداخت جزئی",
+      "en": "Partially refunded",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 23,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.099c641bcd80258b",
       "namespace": "react",
       "area": "Global Content",
@@ -3926,6 +4006,46 @@
       ]
     },
     {
+      "key": "react.0c422eff26d93719",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "معماری",
+      "en": "Architecture",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 14,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.0c56e058dde1e3d0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نسخهٔ آزمایشی — پیش از نصب، یادداشت‌های انتشار را بخوانید.",
+      "en": "Experimental release — review the release notes before installing.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 15,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.0c64c4d3edbd37ff",
       "namespace": "react",
       "area": "Global Content",
@@ -4377,6 +4497,13 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 20,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -5817,6 +5944,26 @@
       ]
     },
     {
+      "key": "react.12aab81d3a77b569",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ورود به ترمینال وب",
+      "en": "Open Web Terminal",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 8,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.12ac6571462ebaa7",
       "namespace": "react",
       "area": "Global Content",
@@ -5932,6 +6079,26 @@
           "line": 96,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.130ea116144e4862",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ترمینال وب به فایل نصب نیاز ندارد. با بارگذاری دوبارهٔ صفحه، نسخهٔ منتشرشدهٔ فعلی دریافت می‌شود.",
+      "en": "The Web Terminal does not need an installer. Reload the page to load the currently published version.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 24,
+          "page": "applications",
+          "route": "/:locale/apps",
           "method": "bilingual-record"
         }
       ]
@@ -6718,7 +6885,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 44,
+          "line": 47,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -8085,6 +8252,26 @@
       ]
     },
     {
+      "key": "react.194061ed58a06ea3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در حال دریافت خریدها…",
+      "en": "Loading purchases…",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 10,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.196bab1e53ce7106",
       "namespace": "react",
       "area": "Website",
@@ -8097,7 +8284,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 38,
+          "line": 39,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -8205,6 +8392,26 @@
       ]
     },
     {
+      "key": "react.19afdedb6c9f9187",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شروع کار",
+      "en": "Getting started",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 16,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.19b8754542e37ac3",
       "namespace": "react",
       "area": "Website",
@@ -8240,26 +8447,6 @@
           "line": 93,
           "page": "global",
           "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.19d0a3d13a86b38b",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "برای دیدن تاریخچهٔ خرید، کیف پول را وصل و وارد شو.",
-      "en": "Connect and sign in with your wallet to view your purchase history.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 51,
-          "page": "purchase",
-          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -8946,7 +9133,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 35,
+          "line": 36,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -9447,7 +9634,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 31,
+          "line": 32,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -11020,6 +11207,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.21ebf8525d9689d6",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دانلود",
+      "en": "Download",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 13,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -12726,6 +12933,26 @@
       ]
     },
     {
+      "key": "react.271e71056dcc3ea9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "به‌زودی",
+      "en": "Coming Soon",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 11,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.272c50b7bc97f935",
       "namespace": "react",
       "area": "Global Content",
@@ -13701,14 +13928,41 @@
       "en": "Version",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 13,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/features/whitepaper/Whitepaper.tsx",
           "line": 132,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.2a348c2084f9148e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پس از تکمیل خرید و ایجاد حساب چالش در دسترس قرار می‌گیرد.",
+      "en": "Available after a completed purchase and challenge provisioning.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 8,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -13994,6 +14248,26 @@
       ]
     },
     {
+      "key": "react.2ae1d1377e19c24d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ترمینال وب را چگونه به‌روزرسانی کنم؟",
+      "en": "How do I update the Web Terminal?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 23,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.2aefd38d71a42cbf",
       "namespace": "react",
       "area": "Global Content",
@@ -14126,7 +14400,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 37,
+          "line": 38,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -15157,6 +15431,26 @@
       ]
     },
     {
+      "key": "react.2e89ce50416b998c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نامشخص",
+      "en": "Unknown",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 15,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.2ea1889a02ae7dcc",
       "namespace": "react",
       "area": "Website",
@@ -16050,6 +16344,26 @@
           "line": 63,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.30ab022e2ca20e5c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شمارهٔ گواهی را وارد کنید یا پیوند کد QR آن را باز کنید. نیازی به اتصال کیف پول نیست.",
+      "en": "Enter a certificate serial or open its QR link. No wallet connection is required.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 12,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
         }
       ]
@@ -17191,6 +17505,26 @@
       ]
     },
     {
+      "key": "react.337e87c23c12c854",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اپلیکیشن‌های دسکتاپ",
+      "en": "Desktop applications",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 9,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.338638359f5eff05",
       "namespace": "react",
       "area": "Website",
@@ -17587,6 +17921,33 @@
       ]
     },
     {
+      "key": "react.34b7473a335a0fac",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اپلیکیشن‌ها",
+      "en": "Applications",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 5,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/information/content.ts",
+          "line": 40,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.34c79ed2e4d66dea",
       "namespace": "react",
       "area": "Global Content",
@@ -17797,6 +18158,26 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.3565ae65f31c3eff",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پیش از دانلود",
+      "en": "Before you download",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 20,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -18117,6 +18498,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.36880a7e7e150e4a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سیستم‌عامل خود را انتخاب کنید. گزینهٔ دانلود فقط برای فایل نصبِ منتشرشده و تأییدشده نمایش داده می‌شود.",
+      "en": "Choose your operating system. Download actions appear only for verified published installers.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 10,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -19463,11 +19864,11 @@
           "method": "pick-pipeline"
         },
         {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 77,
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 13,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
+          "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/terminal/Journal.tsx",
@@ -19954,7 +20355,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 27,
+          "line": 28,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -20207,11 +20608,11 @@
           "method": "pick-pipeline"
         },
         {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 78,
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 13,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
+          "method": "bilingual-record"
         }
       ]
     },
@@ -21110,7 +21511,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 45,
+          "line": 48,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -21234,6 +21635,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.4067709826b93034",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در دسترس نیست",
+      "en": "Unavailable",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 11,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -22225,7 +22646,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 42,
+          "line": 45,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -22349,6 +22770,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.43f7f64d2914ffbb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اندازهٔ حساب چالش (شبیه‌سازی‌شده)",
+      "en": "Challenge account size (simulated)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 23,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -23262,6 +23703,26 @@
           "line": 68,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.46e82ee4d433ce12",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پاداش پرداخت‌شده",
+      "en": "Completed payout",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 24,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
         }
       ]
@@ -24787,7 +25248,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 47,
+          "line": 50,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -25791,6 +26252,26 @@
       ]
     },
     {
+      "key": "react.4dea8385064c1123",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نام نمایشی گواهی (اختیاری)",
+      "en": "Certificate display name (optional)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 13,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.4dfe8272efbed184",
       "namespace": "react",
       "area": "Global Content",
@@ -26139,7 +26620,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 22,
+          "line": 23,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -26227,26 +26708,6 @@
       ]
     },
     {
-      "key": "react.4f1145f5b0b3242b",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "هنوز خریدی نداری. پلن‌ها را در صفحهٔ چلنج‌ها ببین.",
-      "en": "No purchases yet. See the plans on the Challenges page.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 65,
-          "page": "purchase",
-          "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.4f1eb9b6dcd3e6f8",
       "namespace": "react",
       "area": "Website",
@@ -26323,6 +26784,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.4f783caaf9169acc",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ترمینال وب",
+      "en": "Web Terminal",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 6,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -27364,6 +27845,26 @@
       ]
     },
     {
+      "key": "react.52278d2a24d20e80",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "باز کردن پیوند راستی‌آزمایی",
+      "en": "Open verification link",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 31,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.5241c80b01c0852b",
       "namespace": "react",
       "area": "Website",
@@ -27931,6 +28432,26 @@
       ]
     },
     {
+      "key": "react.545a021914da01cf",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "انجام درخواست ممکن نشد. دوباره تلاش کنید.",
+      "en": "Could not complete the request. Please try again.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 19,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.54638bf29d3209f8",
       "namespace": "react",
       "area": "Global Content",
@@ -28108,6 +28629,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.55142ef23368b310",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "این انتخاب فقط یک‌بار انجام می‌شود و پس از تأیید، خودتان نمی‌توانید نام را تغییر دهید. با خالی گذاشتن نام، نشانی کیف پول نمایش داده می‌شود. این نام تأیید هویت قانونی نیست. نام دارنده، نوع گواهی، مبلغ و تاریخ‌ها برای هر فردی که پیوند راستی‌آزمایی را دارد قابل مشاهده خواهد بود.",
+      "en": "Choose once. You cannot change this name yourself later. Leave it blank to use your wallet address. This name is not proof of legal identity. The holder, certificate type, amount and dates will be public to anyone with the verification link.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 14,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -30071,7 +30612,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 26,
+          "line": 27,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -30399,7 +30940,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 29,
+          "line": 30,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -30994,6 +31535,26 @@
       ]
     },
     {
+      "key": "react.5d49d2852a55f511",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گواهی موفقیت در چالش",
+      "en": "Challenge Completion Certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 6,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.5d5527051e6ab8f3",
       "namespace": "react",
       "area": "Global Content",
@@ -31169,6 +31730,26 @@
           "line": 65,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.5e22b565a67e237b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اتصال اینترنت را بررسی کنید، صفحه را دوباره بارگذاری کنید و مطمئن شوید کیف پول در مرورگر در دسترس است. اگر مشکل ادامه داشت، با پشتیبانی تماس بگیرید.",
+      "en": "Check your connection, reload the page and confirm that your wallet is available in this browser. Contact support if the issue continues.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 26,
+          "page": "applications",
+          "route": "/:locale/apps",
           "method": "bilingual-record"
         }
       ]
@@ -32142,6 +32723,33 @@
       ]
     },
     {
+      "key": "react.60eab66dd0125af5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "راستی‌آزمایی گواهی",
+      "en": "Certificate Verification",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 11,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/information/content.ts",
+          "line": 41,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.60ed392926590c65",
       "namespace": "react",
       "area": "Global Content",
@@ -32258,6 +32866,26 @@
           "page": "campaign",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.61433f9d01a366b1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بررسی گواهی",
+      "en": "Verify certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 20,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -33204,6 +33832,26 @@
       ]
     },
     {
+      "key": "react.6551556157eccc93",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هنوز خریدی ثبت نشده است. برای شروع، یک چالش انتخاب کنید.",
+      "en": "No purchases yet. Choose a challenge to get started.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 11,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.6562734be7c9a4a9",
       "namespace": "react",
       "area": "Website",
@@ -33240,6 +33888,13 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 21,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -33279,6 +33934,26 @@
           "line": 499,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.6596046f646899a7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فقط پس از ثبت پرداخت انجام‌شده توسط مسئول مجاز صادر می‌شود.",
+      "en": "Available only after an authorized operator records the completed payout.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 10,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
         }
       ]
@@ -33359,6 +34034,26 @@
           "line": 114,
           "page": "governance",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.65e7b7fc9646bbbe",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خرید چالش‌ها، سوابق پرداخت و فاکتورهای صادرشده را بررسی کنید.",
+      "en": "Review your challenge purchases, payment records and issued invoices.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 5,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
         }
       ]
@@ -35915,6 +36610,26 @@
       ]
     },
     {
+      "key": "react.6d9aee008a0198ec",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گواهی دریافت پاداش",
+      "en": "Payout Certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 7,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.6db71baf5ac0bc19",
       "namespace": "react",
       "area": "Global Content",
@@ -36305,6 +37020,26 @@
           "line": 319,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.6ed15b7a9b3ec1fc",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در دسترس",
+      "en": "Available",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 11,
+          "page": "applications",
+          "route": "/:locale/apps",
           "method": "bilingual-record"
         }
       ]
@@ -36991,6 +37726,26 @@
       ]
     },
     {
+      "key": "react.70e563416d97effd",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تماس با پشتیبانی",
+      "en": "Contact support",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 27,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.70e63bbe9d4077a0",
       "namespace": "react",
       "area": "Website",
@@ -37392,6 +38147,26 @@
       ]
     },
     {
+      "key": "react.72df9cabcbfa0625",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دریافت PDF",
+      "en": "Download PDF",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 28,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.72dfb43622d4c02e",
       "namespace": "react",
       "area": "Global Content",
@@ -37626,6 +38401,26 @@
       ]
     },
     {
+      "key": "react.7417daa09bac88ca",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "با گزینه‌های زبان و ظاهر، محیط کار را مطابق ترجیح خود تنظیم کنید.",
+      "en": "Use the language and theme controls to personalize your workspace.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 19,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.7429b1104a3671e8",
       "namespace": "react",
       "area": "Website",
@@ -37742,6 +38537,13 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 22,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -38113,6 +38915,26 @@
       ]
     },
     {
+      "key": "react.764129a267ed6048",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دریافت تصویر",
+      "en": "Download image",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 27,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.7668c7b198355735",
       "namespace": "react",
       "area": "User Dashboard",
@@ -38181,14 +39003,14 @@
       "en": "Invoice",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
         {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 79,
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 14,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
+          "method": "bilingual-record"
         }
       ]
     },
@@ -40323,6 +41145,26 @@
       ]
     },
     {
+      "key": "react.7c3eade760aa3d67",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در انتظار پرداخت",
+      "en": "Awaiting payment",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 21,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.7c46801a43f5f454",
       "namespace": "react",
       "area": "Global Content",
@@ -41320,6 +42162,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.7fb531bf829a63c7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کانال انتشار",
+      "en": "Release channel",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 13,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -42796,6 +43658,26 @@
       ]
     },
     {
+      "key": "react.856249a53e830c6b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "راهنمای نصب",
+      "en": "Installation guide",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 15,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8565f69139eb7205",
       "namespace": "react",
       "area": "Global Content",
@@ -42935,7 +43817,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 43,
+          "line": 46,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -43206,6 +44088,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.86c5143ed2f17a4c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پیوند راستی‌آزمایی کپی شد",
+      "en": "Verification link copied",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 30,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -43970,7 +44872,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 40,
+          "line": 43,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -44021,6 +44923,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.8945384e32462ff2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سازگاری، مراحل نصب و راهنمای به‌روزرسانی همراه هر فایل نصبِ تأییدشده منتشر می‌شود. نیازمندی‌ها پیش از بررسی سیستم‌عامل اعلام نمی‌شوند.",
+      "en": "Compatibility, installation and upgrade instructions accompany each verified installer. Requirements are not published before platform verification.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 22,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -44100,6 +45022,26 @@
           "line": 277,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.899da0d14cc031d1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قالب فایل",
+      "en": "Package format",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 14,
+          "page": "applications",
+          "route": "/:locale/apps",
           "method": "bilingual-record"
         }
       ]
@@ -44211,7 +45153,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 19,
+          "line": 20,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -44596,6 +45538,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.8b3444a3664e4567",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در حال دریافت…",
+      "en": "Loading…",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 35,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -45108,6 +46070,26 @@
       ]
     },
     {
+      "key": "react.8d00aaeaf56f9da0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هنوز فایل نصب عمومیِ تأییدشده‌ای برای این سیستم‌عامل در دسترس نیست. برای استفاده از اوپن‌فاند، وارد ترمینال وب شوید.",
+      "en": "No verified public installer is currently available for this platform. Use the Web Terminal to access Openfund.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 12,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8d02d7b4585f2240",
       "namespace": "react",
       "area": "Global Content",
@@ -45177,21 +46159,14 @@
     {
       "key": "react.8d30e6d81050c33e",
       "namespace": "react",
-      "area": "Website",
+      "area": "Global Content",
       "owner": "Content editor",
       "fa": "fa-IR",
       "en": "en-US",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
-        {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 43,
-          "page": "purchase",
-          "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
-        },
         {
           "component": "apps/web-react/src/i18n/locales.ts",
           "line": 82,
@@ -45424,6 +46399,26 @@
           "line": 14,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.8e2327931f5d3a83",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اوپن‌فاند، روی صفحهٔ شما",
+      "en": "Openfund, on your screen",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 3,
+          "page": "applications",
+          "route": "/:locale/apps",
           "method": "bilingual-record"
         }
       ]
@@ -47366,14 +48361,14 @@
       "en": "Download PDF",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
         {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 96,
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 14,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
+          "method": "bilingual-record"
         }
       ]
     },
@@ -48225,6 +49220,26 @@
       ]
     },
     {
+      "key": "react.962bba7cb31d7e36",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "معتبر",
+      "en": "Valid",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 16,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.963d8341d17b161d",
       "namespace": "react",
       "area": "Website",
@@ -48357,7 +49372,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 32,
+          "line": 33,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -48825,7 +49840,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 30,
+          "line": 31,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -49193,7 +50208,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 23,
+          "line": 24,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -50384,14 +51399,14 @@
       "en": "Fee",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
         {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 75,
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 12,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
+          "method": "bilingual-record"
         }
       ]
     },
@@ -50976,7 +51991,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 41,
+          "line": 44,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -51705,7 +52720,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 34,
+          "line": 35,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -53501,7 +54516,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 46,
+          "line": 49,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -55310,6 +56325,26 @@
       ]
     },
     {
+      "key": "react.a97e51e8e8fedf88",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "وضعیت فعلی را با کد QR بررسی کنید. ممکن است نسخهٔ دریافت‌شده پس از صدور باطل شده باشد.",
+      "en": "Verify the current status using the QR code. A downloaded copy may have been revoked after issue.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 37,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.a98559cf660aae5d",
       "namespace": "react",
       "area": "Global Content",
@@ -55951,7 +56986,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 18,
+          "line": 19,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -56531,6 +57566,26 @@
           "line": 417,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.acfd1fa04b49329c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برای دیدن گواهی‌ها، کیف پول را متصل کنید و وارد شوید.",
+      "en": "Connect and sign in with your wallet to view your certificates.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 33,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
         }
       ]
@@ -57795,6 +58850,26 @@
           "line": 420,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.b03508b4f6fcf7da",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در دسترس نیست",
+      "en": "Not available",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 15,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
         }
       ]
@@ -59275,6 +60350,26 @@
       ]
     },
     {
+      "key": "react.b51e017f65c33a9f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تقدیم به",
+      "en": "Presented to",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 22,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.b54700c800ab76b8",
       "namespace": "react",
       "area": "Global Content",
@@ -59337,6 +60432,46 @@
           "line": 169,
           "page": "faq",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.b5aecda16e43b741",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کیف پول خود را متصل کنید و برای دسترسی به حساب‌ها وارد شوید.",
+      "en": "Connect your wallet and sign in to access your accounts.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 18,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.b5bd3d3554038895",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گواهی پیدا نشد",
+      "en": "Certificate not found",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 18,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
         }
       ]
@@ -60419,7 +61554,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 24,
+          "line": 25,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -61281,6 +62416,26 @@
       ]
     },
     {
+      "key": "react.bbe80884a973c5f2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پس از موفقیت در مرحلهٔ نهایی چالش و تأیید مسئول بررسی صادر می‌شود.",
+      "en": "Available after the final challenge pass is approved by an authorized reviewer.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 9,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.bbec0e85710857bd",
       "namespace": "react",
       "area": "Website",
@@ -61316,6 +62471,26 @@
           "line": 100,
           "page": "company",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.bbf29d56215e7a48",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "همان محیط معاملاتی اوپن‌فاند، بدون نیاز به نصب. برای دسترسی به حساب خود، کیف پولتان را متصل کنید.",
+      "en": "Your existing Openfund workspace, without an installation. Connect your wallet to access your account.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 7,
+          "page": "applications",
+          "route": "/:locale/apps",
           "method": "bilingual-record"
         }
       ]
@@ -61895,6 +63070,26 @@
       ]
     },
     {
+      "key": "react.bda6abc427e9a306",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تعداد درخواست‌ها زیاد است. یک دقیقه بعد دوباره تلاش کنید.",
+      "en": "Too many attempts. Please wait a minute and try again.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 36,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.bde0b7261a7a0dc0",
       "namespace": "react",
       "area": "Global Content",
@@ -62424,6 +63619,26 @@
           "line": 417,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.bfc606c2077430f4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گواهی خرید چالش",
+      "en": "Challenge Purchase Certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 5,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
         }
       ]
@@ -63158,21 +64373,14 @@
       "en": "Purchases & Invoices",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
         {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 49,
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 4,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 60,
-          "page": "purchase",
-          "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
+          "method": "bilingual-record"
         }
       ]
     },
@@ -63340,6 +64548,26 @@
           "page": "campaign",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.c2a3d667124c2eeb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "انتخاب نهایی را تأیید می‌کنم",
+      "en": "Confirm my permanent choice",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 15,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -63526,14 +64754,21 @@
     {
       "key": "react.c34288e3fdba1f0f",
       "namespace": "react",
-      "area": "Global Content",
+      "area": "Website",
       "owner": "Content editor",
       "fa": "خرید چالش",
       "en": "Buy Challenge",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 6,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/wallet/ChallengeWalletPanel.tsx",
           "line": 50,
@@ -64934,6 +66169,26 @@
       ]
     },
     {
+      "key": "react.c84ad43ad76ec1e4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "محیط معاملات را در مرورگر باز کنید. نسخه‌های تأییدشدهٔ دسکتاپ پس از انتشار، در همین صفحه در دسترس خواهند بود.",
+      "en": "Open the trading workspace in your browser. Find verified desktop releases here when they become available.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 4,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.c85a9a971870055d",
       "namespace": "react",
       "area": "Global Content",
@@ -65447,7 +66702,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 21,
+          "line": 22,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -65650,18 +66905,18 @@
       "en": "Connect wallet",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 34,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
           "line": 371,
-          "page": "purchase",
-          "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 52,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -65672,6 +66927,13 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 8,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/wallet/ChallengeWalletPanel.tsx",
@@ -67655,6 +68917,26 @@
       ]
     },
     {
+      "key": "react.d05a92419319c533",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هنوز گواهی صادر نشده است.",
+      "en": "No certificates have been issued yet.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 32,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d05bc1731d04cef7",
       "namespace": "react",
       "area": "Website",
@@ -68105,6 +69387,13 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 18,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -68545,6 +69834,26 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.d2ed137c9fec06ae",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گواهی‌ها",
+      "en": "Certificates",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 3,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -69510,6 +70819,26 @@
       ]
     },
     {
+      "key": "react.d6011ff2f8841b0e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازپرداخت‌شده",
+      "en": "Refunded",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 23,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d615505aaac446a0",
       "namespace": "react",
       "area": "Global Content",
@@ -70200,6 +71529,26 @@
       ]
     },
     {
+      "key": "react.d78ddba64b5fdbb4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برای ورود به محیط معاملات به کمک نیاز دارید؟",
+      "en": "Need help opening the workspace?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 25,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d79bde896fb8ecb1",
       "namespace": "react",
       "area": "Global Content",
@@ -70495,21 +71844,14 @@
       "en": "Could not load history.",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
         {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 38,
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 9,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 39,
-          "page": "purchase",
-          "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
+          "method": "bilingual-record"
         }
       ]
     },
@@ -70647,11 +71989,11 @@
           "method": "pick-pipeline"
         },
         {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 74,
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 12,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
+          "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
@@ -71731,7 +73073,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 25,
+          "line": 26,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -71891,7 +73233,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 20,
+          "line": 21,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -71906,13 +73248,6 @@
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
           "line": 352,
-          "page": "purchase",
-          "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 67,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -72837,6 +74172,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.dfa98d57a49bc2fb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تاریخ رویداد",
+      "en": "Event date",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 25,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -74828,6 +76183,26 @@
       ]
     },
     {
+      "key": "react.e5591a666b1ed40a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اندازهٔ فایل",
+      "en": "File size",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 14,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.e576d705b872fded",
       "namespace": "react",
       "area": "Global Content",
@@ -75817,8 +77192,15 @@
       "en": "Expired",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 22,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
           "line": 73,
@@ -76021,7 +77403,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 28,
+          "line": 29,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -76397,6 +77779,26 @@
       ]
     },
     {
+      "key": "react.eab9c1738114e4c3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نیازمندی‌های سیستم را کجا ببینم؟",
+      "en": "Where are the system requirements?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 21,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.eaf402bef23198cc",
       "namespace": "react",
       "area": "Global Content",
@@ -76593,6 +77995,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.eb787a93b280c8a5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تاریخ انتشار",
+      "en": "Release date",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 14,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -77631,18 +79053,18 @@
           "method": "pick-pipeline"
         },
         {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 76,
-          "page": "purchase",
-          "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
-        },
-        {
           "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
           "line": 212,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 13,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
@@ -78061,7 +79483,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 36,
+          "line": 37,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -78424,6 +79846,26 @@
           "line": 397,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.f09ceef0c8932cae",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تاریخ صدور",
+      "en": "Issued on",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 26,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
         }
       ]
@@ -79711,6 +81153,26 @@
       ]
     },
     {
+      "key": "react.f4a34193a0d5ec07",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "باطل‌شده",
+      "en": "Revoked",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 17,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.f4b208af0b0a67f1",
       "namespace": "react",
       "area": "Global Content",
@@ -80173,6 +81635,26 @@
           "line": 53,
           "page": "company",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.f5ce8a80abfd0990",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برای مشاهدهٔ سوابق خرید، کیف پول خود را متصل کنید و وارد شوید.",
+      "en": "Connect and sign in with your wallet to view your purchase history.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 7,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
         }
       ]
@@ -80673,14 +82155,14 @@
       "en": "Plan",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
         {
-          "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-          "line": 73,
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 12,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
+          "method": "bilingual-record"
         }
       ]
     },
@@ -81165,6 +82647,26 @@
       ]
     },
     {
+      "key": "react.f981da8a4096f17e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "یادداشت‌های انتشار",
+      "en": "Release notes",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 15,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.f9a2b38115ae71d9",
       "namespace": "react",
       "area": "Global Content",
@@ -81180,6 +82682,26 @@
           "line": 439,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.f9a67a414bd11445",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شمارهٔ گواهی",
+      "en": "Certificate serial",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 21,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
         }
       ]
@@ -81623,6 +83145,13 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 19,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -82068,7 +83597,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 33,
+          "line": 34,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -82118,6 +83647,26 @@
           "line": 107,
           "page": "company",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.fb8da0cd3375fa9f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ترمینال وب را باز کنید و محصول موردنظر را انتخاب کنید.",
+      "en": "Open the Web Terminal and choose your product.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 17,
+          "page": "applications",
+          "route": "/:locale/apps",
           "method": "bilingual-record"
         }
       ]
@@ -83551,6 +85100,14 @@
       "expression": "label('segments', k)"
     },
     {
+      "component": "apps/web-react/src/features/applications/Applications.tsx",
+      "line": 13,
+      "page": "applications",
+      "route": "/:locale/apps",
+      "reason": "literal-jsx-review",
+      "text": "OPENFUND ·"
+    },
+    {
       "component": "apps/web-react/src/features/campaign/Campaign.tsx",
       "line": 73,
       "page": "campaign",
@@ -83725,14 +85282,6 @@
       "route": "/:locale/checkout; /:locale/:product/purchases",
       "reason": "dynamic-pair",
       "expression": "t(e[0], e[1])"
-    },
-    {
-      "component": "apps/web-react/src/features/purchase/PurchaseHistory.tsx",
-      "line": 29,
-      "page": "purchase",
-      "route": "/:locale/checkout; /:locale/:product/purchases",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
     },
     {
       "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",

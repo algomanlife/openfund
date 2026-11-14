@@ -59,7 +59,7 @@ const walk = value => {
 /* 1 — content modules (seeds, catalogs, editorial constants) */
 const MODULES = [
   'src/cms/siteContent.ts', 'src/cms/seed/homeContent.ts', 'src/cms/seed/legalContent.ts', 'src/cms/seed/faqContent.ts',
-  'src/cms/seed/marketsContent.ts', 'src/features/rulebook/content.ts', 'src/features/information/content.ts',
+  'src/cms/seed/marketsContent.ts', 'src/features/rulebook/content.ts', 'src/features/certificates/content.ts', 'src/features/information/content.ts',
   'src/features/tools/messages.ts', 'src/data/toolCatalog.ts', 'src/data/challengePlans.ts', 'src/features/markets/marketsData.ts',
 ]
 for (const path of MODULES) {

@@ -13,6 +13,8 @@ import Coach from './features/partners/Coach'
 /* the long-form Whitepaper (content + charts) loads only when visited */
 const Whitepaper = lazy(() => import('./features/whitepaper/Whitepaper'))
 import Faq from './features/faq/Faq'
+const CertificatesPage = lazy(() => import('./features/certificates/CertificatesPage'))
+const CertificateVerificationPage = lazy(() => import('./features/certificates/CertificateVerificationPage'))
 import Applications from './features/applications/Applications'
 import About from './features/company/About'
 import Contact from './features/company/Contact'
@@ -147,6 +149,7 @@ const routes = [
   { path: '/:locale/coach', element: <Coach /> },
   /* Official Whitepaper v1.0 — one anchor-navigated page (footer document link) */
   { path: '/:locale/whitepaper', element: <Suspense fallback={null}><Whitepaper /></Suspense> },
+  { path: '/:locale/certificate-verification', element: <Suspense fallback={null}><CertificateVerificationPage /></Suspense> },
   { path: '/:locale/apps', element: <Applications /> },
   { path: '/:locale/about', element: <About /> },
   { path: '/:locale/contact', element: <Contact /> },
@@ -172,10 +175,11 @@ const routes = [
       { path: 'portfolio', element: <ProductPortfolio /> },
       { path: 'journal', element: <ProductJournal /> },
       ...(product === 'prop' ? [
+        { path: 'certificates', element: <Suspense fallback={null}><CertificatesPage /></Suspense> },
         { path: 'purchases', element: <PurchaseHistory /> },
         { path: 'withdrawals', element: <WithdrawalsPage /> },
       ] : []),
-      ...(['leaderboard', ...(product === 'prop' ? ['certificates'] : ['rewards'])]).map(path => ({ path, element: <CapabilityPage /> }))
+      ...(['leaderboard', ...(product === 'perpetual' ? ['rewards'] : [])]).map(path => ({ path, element: <CapabilityPage /> }))
     ]
   })),
   { path: '/terminal', element: <TerminalRedirect page="trade" /> },
