@@ -4,7 +4,8 @@
    Usage:
      node scripts/liara/verify-edge.mjs --edge https://iran.openfund.cloud \
        --upstream https://<render-service>.onrender.com \
-       [--expect-edge-commit <sha>] [--expect-app-commit <sha>] [--out output/liara-edge-status.json]
+       [--target staging|production] [--expect-edge-commit <sha>] [--expect-app-commit <sha>]
+       [--out output/liara-edge-status.json]
 
    Read-only: GET requests plus one POST to a path that does not exist (the
    backend answers it before any route or database write). No credentials,
@@ -125,6 +126,14 @@ await check('authenticated API answers through the edge (unauthenticated = 401)'
   expect(r.status === 401, `status ${r.status}`)
 })
 
+await check('visitor IP echo answers (/__edge/whoami)', async () => {
+  const r = await get(edge, '/__edge/whoami')
+  expect(r.status === 200, `status ${r.status}`)
+  const { clientIp } = await r.json()
+  expect(typeof clientIp === 'string' && clientIp.length > 0, 'no clientIp')
+  return { clientIp }
+})
+
 await check('robots.txt disallows the mirror', async () => {
   const t = await (await get(edge, '/robots.txt')).text()
   expect(/Disallow: \/\s*$/.test(t), 'robots.txt does not disallow /')
@@ -132,11 +141,11 @@ await check('robots.txt disallows the mirror', async () => {
 
 const failed = results.filter(r => !r.ok)
 const status = {
-  checkedAt: new Date().toISOString(), edge, upstream,
+  checkedAt: new Date().toISOString(), target: args.target || 'manual', edge, upstream,
   edgeCommit: results.find(r => r.name.startsWith('edge release'))?.detail?.commit ?? null,
   application: edgeVersion ? { version: edgeVersion.version, commit: edgeVersion.commit } : null,
   status: failed.length ? 'failed' : 'verified', results,
-  notVerifiedHere: ['wallet sign-in (SIWE) on the edge host', 'authenticated SSE streaming', 'checkout', 'reachability from Iranian ISPs'],
+  notVerifiedHere: ['that clientIp above equals the caller address as seen from outside Liara', 'wallet sign-in (SIWE) on the edge host', 'authenticated SSE streaming', 'checkout', 'reachability from Iranian ISPs'],
 }
 if (args.out) { fs.mkdirSync(path.dirname(args.out), { recursive: true }); fs.writeFileSync(args.out, JSON.stringify(status, null, 2) + '\n') }
 console.log(`\n${failed.length ? 'FAILED' : 'VERIFIED'}: ${results.length - failed.length}/${results.length} checks passed`)

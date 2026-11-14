@@ -43,6 +43,7 @@ import { economyRoutes, economyAdminRoutes } from './economy.js'
 import { liveRoutes, liveAdminRoutes, liveConfig, processSettlements, settlementAdapter } from './live-funding.js'
 import { Treasury, TreasuryNetworks, treasuryNetworksConfig } from './treasury.js'
 import { createTradingStreamHub } from './trading-stream.js'
+import { edgeClientIpMiddleware } from './edge-client-ip.js'
 
 const cfg = {
   port: Number(process.env.PORT || 8080),
@@ -71,6 +72,9 @@ const asyncRoute = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch
 const app = express()
 app.disable('x-powered-by')
 app.set('trust proxy', 1)
+/* Iran edge (ADR 0031): a request carrying EDGE_CLIENT_IP_KEY may supply the
+   visitor's IP; unset key = unchanged behaviour. Runs before every limiter. */
+app.use(edgeClientIpMiddleware(process.env))
 app.use((req,res,next) => {
   const origin = req.headers.origin
   if (origin && !['GET','HEAD','OPTIONS'].includes(req.method)) {
