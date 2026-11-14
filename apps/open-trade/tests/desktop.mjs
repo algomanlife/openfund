@@ -82,6 +82,15 @@ try {
     { timeout: 45000 },
   );
   await page.screenshot({ path: "artifacts/four-charts.png" });
+  await page.getByRole("button", { name: "3 chart layout", exact: true }).click();
+  await page.locator(".layout-3").waitFor();
+  assert.equal(await page.locator(".layout-3 .chart-cell").count(), 3);
+  await page.screenshot({ path: "artifacts/three-charts.png" });
+  await page.getByRole("button", { name: "Capture chart" }).click();
+  const capture = page.getByRole("dialog", { name: "Chart capture preview" });
+  await capture.getByRole("img").waitFor();
+  assert.ok((await capture.getByRole("img").getAttribute("src")).startsWith("data:image/png;"));
+  await capture.getByRole("button", { name: "Close preview" }).click();
   await page
     .getByRole("button", { name: "1 chart layout", exact: true })
     .click();
@@ -94,9 +103,8 @@ try {
     .first()
     .click();
   await page.screenshot({ path: "artifacts/settings-glass.png" });
-  await page.getByRole("dialog").locator("select").nth(0).selectOption("fa");
-  await page.getByRole("dialog").locator("select").nth(1).selectOption("light");
-  await page.screenshot({ path: "artifacts/settings-fa-light.png" });
+  await page.getByRole("dialog").locator("select").first().selectOption("light");
+  await page.screenshot({ path: "artifacts/settings-light.png" });
   await app.evaluate(({ BrowserWindow }) =>
     BrowserWindow.getAllWindows()[0].setSize(1000, 720),
   );
@@ -106,8 +114,7 @@ try {
     ),
     true,
   );
-  await page.getByRole("dialog").locator("select").nth(0).selectOption("en");
-  await page.getByRole("dialog").locator("select").nth(1).selectOption("dark");
+  await page.getByRole("dialog").locator("select").first().selectOption("dark");
   await page
     .getByRole("dialog")
     .getByRole("button", { name: "×", exact: true })

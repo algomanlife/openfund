@@ -67,9 +67,8 @@ class Boundary extends React.Component<
   }
 }
 function App() {
-  const [locale, setLocale] = useState(read("ot-locale", "en")),
-    [theme, setTheme] = useState(read("ot-theme", "dark"));
-  const t = (en: string, fa: string) => (locale === "fa" ? fa : en);
+  const [theme, setTheme] = useState(read("ot-theme", "dark"));
+  const t = (english: string, _translation: string) => english;
   const [config, setConfig] = useState<any>({ origin: "", projectId: "" }),
     [settings, setSettings] = useState(false),
     [network, setNetwork] = useState("initializing"),
@@ -88,7 +87,7 @@ function App() {
     [focus, setFocus] = useState(false),
     [watch, setWatch] = useState(false),
     [ticket, setTicket] = useState(true),
-    [tab, setTab] = useState("positions");
+    [tab, setTab] = useState(read("ot-tab", "positions"));
   const [markets, setMarkets] = useState<Map<string, any>>(new Map()),
     [prices, setPrices] = useState<Record<string, any>>({}),
     [feed, setFeed] = useState("connecting"),
@@ -100,10 +99,49 @@ function App() {
     [tp, setTp] = useState(""),
     [preview, setPreview] = useState<any>(null),
     [pending, setPending] = useState<any>(null);
-  const [positionsOpen, setPositionsOpen] = useState(false),
-    [ticketDock, setTicketDock] = useState(false),
+  const [positionsOpen, setPositionsOpen] = useState(read("ot-positions-open", false)),
+    [ticketDock, setTicketDock] = useState(read("ot-ticket-dock", false)),
     [accountMenu, setAccountMenu] = useState(false),
     [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
+  const [ticketPosition, setTicketPosition] = useState(read<{x: number; y: number} | null>("ot-ticket-position", null));
+  const [chartSplit, setChartSplit] = useState(read("ot-chart-split", 66));
+  useEffect(() => localStorage.setItem("ot-chart-split", JSON.stringify(chartSplit)), [chartSplit]);
+  const [panelHeight, setPanelHeight] = useState(read("ot-panel-height", 180));
+  const ticketElement = useRef<HTMLElement>(null);
+  const drag = useRef<{x: number; y: number; left: number; top: number} | null>(null);
+  const resizeStart = useRef<{y: number; height: number} | null>(null);
+  useEffect(() => {
+    for (const [key, value] of Object.entries({
+      "ot-ticket-position": ticketPosition, "ot-panel-height": panelHeight,
+      "ot-tab": tab, "ot-positions-open": positionsOpen, "ot-ticket-dock": ticketDock,
+    })) localStorage.setItem(key, JSON.stringify(value));
+  }, [ticketPosition, panelHeight, tab, positionsOpen, ticketDock]);
+
+  useEffect(() => {
+    const element = ticketElement.current;
+    const workspace = element?.offsetParent;
+    if (!element || !workspace || ticketDock) return;
+    const observer = new ResizeObserver(() => setTicketPosition((position) => {
+      if (!position) return null;
+      const x = Math.max(0, Math.min(position.x, workspace.clientWidth - element.offsetWidth));
+      const y = Math.max(0, Math.min(position.y, workspace.clientHeight - element.offsetHeight));
+      return x === position.x && y === position.y ? position : { x, y };
+    }));
+    observer.observe(workspace);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [ticketDock, ticket, focus, account, explore]);
+  const [regions, setRegions] = useState<{international: number | null; iran: number | null; iranEnabled: boolean} | null>(null);
+  useEffect(() => {
+    if (account || explore) return;
+    let active = true;
+    const measure = () => void bridge.regions().then((result: NonNullable<typeof regions>) => {
+      if (active) setRegions(result);
+    }).catch(() => {});
+    measure();
+    const timer = setInterval(measure, 30_000);
+    return () => { active = false; clearInterval(timer); };
+  }, [account, explore]);
   const scope = useRef(""),
     provider = useRef<any>(null),
     operation = useRef(false),
@@ -111,6 +149,43 @@ function App() {
   const selected = charts[active] || charts[0],
     meta = markets.get(selected.symbol),
     price = prices[selected.symbol];
+  const [chartImage, setChartImage] = useState("");
+  async function captureChart() {
+    document.documentElement.classList.add("capturing-chart");
+    try {
+      await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+      const chart = document.querySelector(".chart-cell.active:not([hidden])");
+      if (!chart) throw new Error("Select a visible chart first.");
+      const r = chart.getBoundingClientRect();
+      const x = Math.max(0, Math.ceil(r.left)), y = Math.max(0, Math.ceil(r.top));
+      const data = await bridge.captureChart({
+        x, y, width: Math.min(innerWidth, Math.floor(r.right)) - x,
+        height: Math.min(innerHeight, Math.floor(r.bottom)) - y,
+      });
+      const image = new Image();
+      image.src = data;
+      await image.decode();
+      const canvas = document.createElement("canvas");
+      canvas.width = image.width;
+      canvas.height = image.height + 80;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#17181d";
+      ctx.fillRect(0, 0, canvas.width, 80);
+      ctx.fillStyle = "#eef0f4";
+      ctx.font = "bold 24px system-ui";
+      ctx.fillText("Open Trade", 20, 33);
+      ctx.font = "17px system-ui";
+      const position = state?.positions?.find((p: any) => p.market === selected.symbol);
+      const pnl = position?.unrealized_pnl;
+      const detail = pnl != null && Number.isFinite(Number(pnl)) && state?.account?.valuation_status === "fresh"
+        ? " · " + (state.account.type === "free_demo" ? "Demo" : state.account.type === "challenge" ? "Evaluation" : "Trading account") + " · Unrealized P&L " + money(pnl) + " USD"
+        : "";
+      ctx.fillText(selected.symbol + " · " + selected.timeframe + detail, 20, 61);
+      ctx.drawImage(image, 0, 80);
+      setChartImage(canvas.toDataURL("image/png"));
+    } catch (error) { setNotice(String(error)); }
+    finally { document.documentElement.classList.remove("capturing-chart"); }
+  }
   const fresh = feed === "live" && price && clock - price.updatedAt < 45000;
   const ready =
     !!account &&
@@ -122,11 +197,6 @@ function App() {
     fresh &&
     !pending &&
     !busy;
-  useEffect(() => {
-    document.documentElement.lang = locale;
-    document.documentElement.dir = locale === "fa" ? "rtl" : "ltr";
-    localStorage.setItem("ot-locale", JSON.stringify(locale));
-  }, [locale]);
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem("ot-theme", JSON.stringify(theme));
@@ -209,6 +279,7 @@ function App() {
     const key = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setSettings(false);
+        setChartImage("");
         setAccountMenu(false);
         setMenu(null);
         return;
@@ -224,7 +295,7 @@ function App() {
         e.preventDefault();
         setSettings((v) => !v);
       }
-      if (mod && ["1", "2", "4"].includes(e.key)) {
+      if (mod && ["1", "2", "3", "4"].includes(e.key)) {
         e.preventDefault();
         setLayout(Number(e.key));
         setActive(0);
@@ -317,7 +388,7 @@ function App() {
       if (!config.projectId)
         throw new Error(
           t(
-            "Set the WalletConnect project ID in Settings to connect your wallet.",
+            "Wallet connection is unavailable in this build. Contact Openfund support.",
             "شناسه پروژه WalletConnect را در تنظیمات وارد کنید.",
           ),
         );
@@ -567,7 +638,7 @@ function App() {
     <div className="app">
       <header className="titlebar">
         <div className="window-title">
-          Open Trade <span>0.0.1 BETA</span>
+          Open Trade <span>{config.version || "0.0.2"} BETA</span>
         </div>
         <div className="titlebar-actions">
           {terminal && (
@@ -597,7 +668,24 @@ function App() {
           <div className="orbit o1" />
           <div className="orbit o2" />
           <div className="orbit o3" />
-          <section className="launch glass">
+          <section className={"launch glass scene-" + (busy ? "wallet" : network === "online" ? "online" : "offline")}>
+            <label className="region-selector">Server region
+              <select aria-label="Server region" value={config.region || "international"} disabled={busy || !!pending}
+                onChange={async (event) => {
+                  try {
+                    await bridge.selectRegion(event.target.value);
+                    setUser(null); setAccounts([]); setAccount(null);
+                    setConfig(await bridge.config());
+                    setNetwork(await bridge.connectivity());
+                  } catch (error) { setNotice(String(error)); }
+                }}>
+                <option value="international">International</option>
+                <option value="iran" disabled={!regions?.iranEnabled || regions.iran === null}>Iran</option>
+              </select>
+            </label>
+            <p className="region-status" aria-label="API latency">{(["international", "iran"] as const).map((key) => (
+              <span key={key}>{key === "iran" ? "Iran" : "International"} · {regions ? regions[key] === null ? "Unavailable" : regions[key] + " ms RTT" : "Checking"}</span>
+            ))}</p>
             <img className="emblem" src="./assets/mark-mint.svg" />
             <p className="eyebrow">OPEN TRADE / OPENFUND</p>
             <h1>
@@ -801,7 +889,7 @@ function App() {
             >
               <div className="workspace-layouts">
                 <span className="workspace-name">{selected.symbol}</span>
-                {[1, 2, 4].map((n) => (
+                {[1, 2, 3, 4].map((n) => (
                   <button
                     aria-label={`${n} chart layout`}
                     title={`${n} chart${n === 1 ? "" : "s"} · ⌘${n}`}
@@ -834,12 +922,22 @@ function App() {
                   {t("Quick Trade", "معامله سریع")}
                 </button>
               </div>
+              <button onClick={() => void captureChart()} aria-label="Capture chart">Capture</button>
             </nav>
             <div
               className={
                 "charts layout-" + layout + (max !== null ? " maximized" : "")
               }
+              style={layout === 3 && max === null ? { "--chart-split": chartSplit + "%" } as React.CSSProperties : undefined}
             >
+              {layout === 3 && max === null && <div className="chart-splitter" role="separator" aria-label="Resize chart columns"
+                onPointerDown={(event) => { if (event.button === 0) event.currentTarget.setPointerCapture(event.pointerId); }}
+                onPointerMove={(event) => {
+                  if (!event.currentTarget.hasPointerCapture(event.pointerId)) return;
+                  const rect = event.currentTarget.parentElement!.getBoundingClientRect();
+                  setChartSplit(Math.min(78, Math.max(42, (event.clientX - rect.left) / rect.width * 100)));
+                }}
+              />}
               {charts.slice(0, layout).map((c, i) => (
                 <Chart
                   key={i}
@@ -854,7 +952,7 @@ function App() {
                   ready={ready}
                   onActivate={() => setActive(i)}
                   onMarket={(p: any) => updateChart(i, p)}
-                  onMax={() => setMax(max === i ? null : i)}
+                  onMax={() => { setActive(i); setMax(max === i ? null : i); }}
                   onRisk={(p: any, edit: any) =>
                     void mutate(`/trading/positions/${p.id}/protection`, edit)
                   }
@@ -867,7 +965,20 @@ function App() {
                 className={
                   "positions " + (positionsOpen ? "expanded" : "collapsed")
                 }
+                style={positionsOpen ? { height: panelHeight } : undefined}
               >
+                {positionsOpen && <div className="positions-divider" role="separator" aria-label="Resize trading panel"
+                  onPointerDown={(event) => {
+                    if (event.button !== 0) return;
+                    resizeStart.current = { y: event.clientY, height: event.currentTarget.parentElement!.offsetHeight };
+                    event.currentTarget.setPointerCapture(event.pointerId);
+                  }}
+                  onPointerMove={(event) => {
+                    const start = resizeStart.current;
+                    if (start) setPanelHeight(Math.max(105, Math.min(900, start.height + start.y - event.clientY)));
+                  }}
+                  onLostPointerCapture={() => { resizeStart.current = null; }}
+                />}
                 <nav>
                   <button
                     aria-label="Expand or collapse positions"
@@ -999,12 +1110,31 @@ function App() {
 
             {!focus && ticket && (
               <aside
+                ref={ticketElement}
+                style={!ticketDock && ticketPosition && Number.isFinite(ticketPosition.x) && Number.isFinite(ticketPosition.y) ? { left: ticketPosition.x, top: ticketPosition.y, bottom: "auto" } : undefined}
                 aria-label="Quick Trade ticket"
                 className={
                   "ticket glass " + (ticketDock ? "docked" : "floating")
                 }
               >
-                <div className="ticket-head">
+                <div className="ticket-head"
+                  onPointerDown={(event) => {
+                    const element = ticketElement.current;
+                    if (!element || ticketDock || event.button !== 0 || (event.target as HTMLElement).closest("button, input, select, textarea")) return;
+                    drag.current = { x: event.clientX, y: event.clientY, left: element.offsetLeft, top: element.offsetTop };
+                    event.currentTarget.setPointerCapture(event.pointerId);
+                  }}
+                  onPointerMove={(event) => {
+                    const start = drag.current, element = ticketElement.current;
+                    const workspace = element?.offsetParent;
+                    if (!start || !element || !workspace) return;
+                    setTicketPosition({
+                      x: Math.max(0, Math.min(start.left + event.clientX - start.x, workspace.clientWidth - element.offsetWidth)),
+                      y: Math.max(0, Math.min(start.top + event.clientY - start.y, workspace.clientHeight - element.offsetHeight)),
+                    });
+                  }}
+                  onLostPointerCapture={() => { drag.current = null; }}
+                >
                   <strong>{selected.symbol}</strong>
                   <span className="order-type">{t("MARKET", "بازار")} ⇄</span>
                   <button
@@ -1298,6 +1428,14 @@ function App() {
           </section>
         </div>
       )}
+      {chartImage && <div className="modal-backdrop">
+        <section className="settings glass chart-preview" role="dialog" aria-modal="true" aria-label="Chart capture preview">
+          <div className="panel-title"><h2>Chart capture preview</h2><button aria-label="Close preview" onClick={() => setChartImage("")}>×</button></div>
+          <img src={chartImage} alt="Captured chart" />
+          <button onClick={() => void bridge.saveChart(chartImage).catch((error: unknown) => setNotice(String(error)))}>Save PNG</button>
+          <button onClick={() => void bridge.copyChart(chartImage).then(() => setNotice("Chart copied to clipboard.")).catch((error: unknown) => setNotice(String(error)))}>Copy image</button>
+        </section>
+      </div>}
       {settings && (
         <div className="modal-backdrop">
           <section
@@ -1311,69 +1449,17 @@ function App() {
               <button onClick={() => setSettings(false)}>×</button>
             </div>
             <label>
-              {t("Language", "زبان")}
-              <select
-                value={locale}
-                onChange={(e) => setLocale(e.target.value)}
-              >
-                <option value="en">English</option>
-                <option value="fa">فارسی</option>
-              </select>
-            </label>
-            <label>
               {t("Appearance", "ظاهر")}
               <select value={theme} onChange={(e) => setTheme(e.target.value)}>
                 <option value="dark">Dark</option>
                 <option value="light">Light</option>
               </select>
             </label>
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault();
-                const f = new FormData(e.currentTarget);
-                try {
-                  await logout();
-                  await bridge.configure({
-                    origin: f.get("origin"),
-                    projectId: f.get("projectId"),
-                  });
-                  setConfig(await bridge.config());
-                  setNetwork(await bridge.connectivity());
-                  setSettings(false);
-                } catch (err) {
-                  setNotice(String(err));
-                }
-              }}
-            >
-              <label>
-                {t("Openfund backend", "آدرس سرویس اوپن‌فاند")}
-                <input
-                  name="origin"
-                  defaultValue={config.origin}
-                  required
-                  type="url"
-                  dir="ltr"
-                />
-              </label>
-              <label>
-                WalletConnect Project ID
-                <input
-                  name="projectId"
-                  defaultValue={config.projectId}
-                  dir="ltr"
-                  autoComplete="off"
-                />
-              </label>
-              <p className="muted">
-                {t(
-                  "Saving disconnects the current session. Authentication: Arbitrum One (42161).",
-                  "ذخیره تنظیمات نشست فعلی را قطع می‌کند. شبکه احراز هویت: آربیتروم وان (۴۲۱۶۱).",
-                )}
-              </p>
-              <button disabled={busy || !!pending} className="primary">
-                {t("Save settings", "ذخیره تنظیمات")}
-              </button>
-            </form>
+            <div className="workspace-settings">
+              <h3>Workspace</h3>
+              <button onClick={() => { setLayout(1); setActive(0); setMax(null); setTicketPosition(null); setPanelHeight(180); setChartSplit(66); setTicketDock(false); }}>Reset workspace layout</button>
+              <p className="muted">Open Trade {config.version}</p>
+            </div>
             <p className="muted">
               {config.secureStorage
                 ? t(

@@ -13,7 +13,7 @@ on:
       - scripts/build-charts.mjs
       - .github/workflows/open-trade-desktop.yml
   push:
-    branches: [feature/open-trade-desktop]
+    branches: [feature/open-trade-desktop, feature/open-trade-v0.0.2]
     paths:
       - apps/open-trade/**
       - packages/openfund-charts/**
@@ -68,7 +68,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: github.event_name != 'pull_request'
         with:
-          name: Open-Trade-0.0.1-beta-unsigned-${{ runner.os }}
+          name: Open-Trade-0.0.2-beta-unsigned-${{ runner.os }}
           path: |
             apps/open-trade/release/*.exe
             apps/open-trade/release/*.dmg
