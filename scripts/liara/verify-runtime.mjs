@@ -14,6 +14,7 @@ import { dirname } from 'node:path'
 
 const arg = k => { const i = process.argv.indexOf(k); return i >= 0 ? process.argv[i + 1] : null }
 const base = (arg('--url') || '').replace(/\/+$/, ''), region = arg('--region') || 'IRAN', expect = arg('--expect-commit'), out = arg('--out')
+const expectVersion = arg('--expect-version'), compareWith = (arg('--compare-with') || '').replace(/\/+$/, '')
 if (!/^https?:\/\//.test(base)) { console.error('--url is required'); process.exit(2) }
 const checks = []
 const check = (name, ok, detail) => { checks.push({ name, ok: !!ok, detail }); console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${detail != null ? ' — ' + JSON.stringify(detail) : ''}`) }
@@ -29,11 +30,22 @@ try {
   check('runtime status region', st?.region === region, { mode: st?.mode, roles: st?.roles })
   const v = json((await get('/version')).text)
   if (expect) check('release commit', v?.commit === expect, v?.commit)
+  if (expectVersion) check('release version', v?.version === expectVersion, v?.version)
+  check('release manifests consistent', v?.status === 'matched', v?.status)
+  if (compareWith) {
+    /* the other region must serve the same release (Render first, then Liara) */
+    const g = json(await (await fetch(compareWith + '/version', { signal: AbortSignal.timeout(15000) })).text())
+    check('same commit and version as the compared region', g?.commit === v?.commit && g?.version === v?.version, { here: [v?.version, v?.commit], there: [g?.version, g?.commit] })
+    /* identical source normally builds identical trees; a difference is reported for review */
+    console.log(`info frontend id ${v?.frontend?.id === g?.frontend?.id ? 'identical' : 'differs'}, backend id ${v?.backend?.id === g?.backend?.id ? 'identical' : 'differs'}`)
+  }
   const home = await get('/'); check('website shell', home.status === 200 && home.type.includes('text/html'), home.status)
   const rc = await get('/runtime-config.js'); check('runtime config', rc.status === 200, rc.status)
-  const cms = rc.text.match(/"cmsUrl":"([^"]+)"/)?.[1]
   if (region === 'IRAN') {
-    check('CMS is not the global Render service', cms && !/onrender\.com/.test(cms), cms)
+    check('runtime config reports region IRAN', /"region":"IRAN"/.test(rc.text))
+    /* essential content comes from the same origin (live or last-known-good snapshot) */
+    const home = await get('/cms/items/home_content?fields=*,translations.*')
+    check('home content served by this runtime', home.status === 200 && json(home.text)?.data != null, home.status)
     const p = await get('/purchases/orders', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' })
     check('purchases refused by the Iran policy', p.status === 503 && json(p.text)?.reason === 'purchases_global_region_only', p.status)
   }

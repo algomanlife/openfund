@@ -49,6 +49,7 @@ jobs:
     timeout-minutes: 30
     outputs:
       commit: ${{ steps.ref.outputs.commit }}
+      version: ${{ steps.release.outputs.version }}
     services:
       postgres:
         image: postgres:17-alpine
@@ -88,8 +89,21 @@ jobs:
           node-version: 26
       - name: Provisioning planner tests
         run: node --test scripts/liara/test/provision.test.mjs
+      - name: Release identity (same rule as Render's build)
+        id: release
+        env:
+          EVENT: ${{ github.event_name }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then echo "version=0.1.0" >> "$GITHUB_OUTPUT"; exit 0; fi
+          src=$(node scripts/liara/release-source.mjs "${{ steps.ref.outputs.commit }}")
+          echo "release source: $src"
+          echo "version=$(node -e 'console.log(JSON.parse(process.argv[1]).version)' "$src")" >> "$GITHUB_OUTPUT"
       - name: Build the image
-        run: docker build -f infra/liara-iran-runtime/Dockerfile --build-arg SOURCE_COMMIT=${{ steps.ref.outputs.commit }} -t openfund-iran-runtime:candidate .
+        run: |
+          docker build -f infra/liara-iran-runtime/Dockerfile \
+            --build-arg SOURCE_COMMIT=${{ steps.ref.outputs.commit }} --build-arg RELEASE_VERSION=${{ steps.release.outputs.version }} \
+            -t openfund-iran-runtime:candidate .
       - name: Refuse to start without an explicit IRAN region
         run: |
           if docker run --rm openfund-iran-runtime:candidate >/tmp/refused.log 2>&1; then echo "::error::started without OPENFUND_REGION"; exit 1; fi
@@ -103,7 +117,7 @@ jobs:
           docker run -d --name worker --network host -e PORT=18081 -e OPENFUND_REGION=IRAN -e OPENFUND_ROLES=engine,sync \
             -e DATABASE_URL=$db -e NODE_ENV=development -e FOOTPRINT_ENABLED=0 openfund-iran-runtime:candidate
           for _ in $(seq 1 60); do curl -fsS http://127.0.0.1:18081/health >/dev/null && break; sleep 1; done
-          node scripts/liara/verify-runtime.mjs --url http://127.0.0.1:18080 --region IRAN --expect-commit ${{ steps.ref.outputs.commit }}
+          node scripts/liara/verify-runtime.mjs --url http://127.0.0.1:18080 --region IRAN --expect-commit ${{ steps.ref.outputs.commit }} --expect-version ${{ steps.release.outputs.version }}
           # the worker exposes no public routes
           [ "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18081/)" = 404 ]
           [ "$(docker exec web id -u)" != 0 ]
@@ -128,6 +142,8 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       TARGET: ${{ inputs.target }}
       COMMIT: ${{ needs.validate.outputs.commit }}
+      VERSION: ${{ needs.validate.outputs.version }}
+      GLOBAL_URL: ${{ vars.OPENFUND_GLOBAL_URL }}
       STAGING_RUN: ${{ inputs.staging_run_id }}
       LIARA_API_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
       WEB_APP: ${{ vars.LIARA_RUNTIME_WEB_APP }}
@@ -168,14 +184,17 @@ jobs:
           for pair in "$WORKER_APP:liara.worker.json" "$WEB_APP:liara.web.json"; do
             app="${pair%%:*}" cfg="${pair#*:}"
             liara deploy --app "$app" --api-token "$LIARA_API_TOKEN" --path . \
-              --liara-json "infra/liara-iran-runtime/$cfg" --build-arg "SOURCE_COMMIT=$COMMIT" \
+              --liara-json "infra/liara-iran-runtime/$cfg" --build-arg "SOURCE_COMMIT=$COMMIT" --build-arg "RELEASE_VERSION=$VERSION" \
               --message "openfund $COMMIT $TARGET (run $GITHUB_RUN_ID)" --no-app-logs
           done
       - name: Verify the deployed runtime
         run: |
           ok=0
           for i in 1 2 3 4 5 6 7 8; do
-            node scripts/liara/verify-runtime.mjs --url "$PUBLIC_URL" --region IRAN --expect-commit "$COMMIT" --target "$TARGET" --out output/runtime-status.json && { ok=1; break; }
+            args=(--url "$PUBLIC_URL" --region IRAN --expect-commit "$COMMIT" --expect-version "$VERSION" --target "$TARGET" --out output/runtime-status.json)
+            # Render first: the Iran release must be the release GLOBAL already serves
+            [ -z "$GLOBAL_URL" ] || args+=(--compare-with "$GLOBAL_URL")
+            node scripts/liara/verify-runtime.mjs "${args[@]}" && { ok=1; break; }
             echo "retrying in 20 s ($i/8)"; sleep 20
           done
           [ "$ok" = 1 ]
