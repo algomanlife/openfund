@@ -2,13 +2,29 @@ name: Deploy Iran edge (Liara)
 # Deploys the Iran edge reverse proxy (infra/liara-iran, ADR 0031) to Liara.
 # Independent of the Render production workflows: it never deploys, restarts or
 # reconfigures Render. The edge serves whatever release Render serves.
+#
+# Targets: `staging` (its own Liara app on a liara.run host, environment
+# liara-iran-staging) and `production` (iran.openfund.cloud, environment
+# liara-iran). Production only accepts an edge commit that a successful
+# staging run of this workflow already verified.
 on:
   # Manual only: an exact, reviewed main commit; never a branch tip.
   workflow_dispatch:
     inputs:
+      target:
+        description: Liara target
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
       edge_commit:
         description: Exact 40-character main commit whose infra/liara-iran is deployed (also used for rollback)
         required: true
+        type: string
+      staging_run_id:
+        description: Production only - run id of the successful staging deployment of this same edge commit
+        required: false
+        default: ''
         type: string
       expect_app_commit:
         description: Optional - Openfund commit Render must be serving (40 characters); empty records whatever it serves
@@ -19,16 +35,18 @@ on:
         description: Type DEPLOY-IRAN-EDGE to confirm
         required: true
         type: string
-  # Pull requests touching the edge build and contract-test it; nothing deploys.
+  # Pull requests touching the edge build and test it; nothing deploys.
   pull_request:
     paths:
       - infra/liara-iran/**
       - scripts/liara/**
+      - apps/backend/edge-client-ip.js
+      - apps/backend/server.js
       - .github/workflows/deploy-liara-iran.yml
 permissions:
   contents: read
 concurrency:
-  group: openfund-liara-iran-${{ github.event_name == 'pull_request' && github.ref || 'deploy' }}
+  group: openfund-liara-iran-${{ github.event_name == 'pull_request' && github.ref || inputs.target }}
   cancel-in-progress: false
 jobs:
   validate:
@@ -66,19 +84,31 @@ jobs:
           node-version: 26
       - name: Build the edge image
         run: docker build infra/liara-iran -t openfund-edge:candidate
-      - name: Refuse to start without an upstream
+      - name: Refuse to start on unsafe configuration
         run: |
-          if docker run --rm openfund-edge:candidate >/tmp/no-upstream.log 2>&1; then
-            echo "::error::the edge started without OPENFUND_UPSTREAM_HOST"; exit 1
-          fi
-          grep -q "OPENFUND_UPSTREAM_HOST is required" /tmp/no-upstream.log
-      - name: Contract tests against a stub upstream
+          expect_refusal() {
+            if docker run --rm "$@" openfund-edge:candidate >/tmp/refused.log 2>&1; then
+              echo "::error::the edge started with: $*"; exit 1
+            fi
+          }
+          expect_refusal
+          grep -q "OPENFUND_UPSTREAM_HOST is required" /tmp/refused.log
+          expect_refusal -e OPENFUND_UPSTREAM_HOST=x.onrender.com -e OPENFUND_UPSTREAM_SCHEME=http
+          grep -q "plain-http upstream" /tmp/refused.log
+          expect_refusal -e OPENFUND_UPSTREAM_HOST=x.onrender.com -e OPENFUND_EDGE_CLIENT_IP_KEY=short
+          grep -q "OPENFUND_EDGE_CLIENT_IP_KEY must be" /tmp/refused.log
+      - name: Contract tests against a stub upstream (without and with a client-IP key)
         run: |
-          docker run -d --name edge --network host \
-            -e EDGE_PORT=18080 -e OPENFUND_UPSTREAM_HOST=127.0.0.1:18081 -e OPENFUND_UPSTREAM_SCHEME=http \
-            -e EDGE_ALLOW_HTTP_UPSTREAM=1 -e EDGE_PUBLIC_SCHEME=http openfund-edge:candidate
-          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:18080/__edge/live >/dev/null && break; sleep 1; done
-          EDGE_URL=http://127.0.0.1:18080 STUB_PORT=18081 node --test scripts/liara/test/edge-contract.test.mjs
+          key="ci_$(openssl rand -hex 24)"
+          for k in "" "$key"; do
+            docker rm -f edge >/dev/null 2>&1 || true
+            docker run -d --name edge --network host \
+              -e EDGE_PORT=18080 -e OPENFUND_UPSTREAM_HOST=127.0.0.1:18081 -e OPENFUND_UPSTREAM_SCHEME=http \
+              -e EDGE_ALLOW_HTTP_UPSTREAM=1 -e EDGE_PUBLIC_SCHEME=http -e OPENFUND_EDGE_CLIENT_IP_KEY="$k" \
+              openfund-edge:candidate
+            for _ in $(seq 1 30); do curl -fsS http://127.0.0.1:18080/__edge/live >/dev/null && break; sleep 1; done
+            EDGE_URL=http://127.0.0.1:18080 STUB_PORT=18081 EDGE_KEY="$k" node --test scripts/liara/test/edge-contract.test.mjs
+          done
           [ "$(docker exec edge id -u)" = 101 ]
       - name: Read-only check against the live Render origin
         if: vars.OPENFUND_UPSTREAM_HOST != ''
@@ -88,22 +118,90 @@ jobs:
           docker rm -f edge >/dev/null
           docker run -d --name edge --network host -e EDGE_PORT=18080 -e EDGE_PUBLIC_SCHEME=http \
             -e OPENFUND_UPSTREAM_HOST="$UPSTREAM" openfund-edge:candidate
-          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:18080/__edge/live >/dev/null && break; sleep 1; done
+          for _ in $(seq 1 30); do curl -fsS http://127.0.0.1:18080/__edge/live >/dev/null && break; sleep 1; done
           node scripts/liara/verify-edge.mjs --edge http://127.0.0.1:18080 --upstream "https://$UPSTREAM"
+      - name: Save the image for the auth job
+        run: docker save openfund-edge:candidate -o /tmp/openfund-edge.tar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openfund-edge-image-${{ github.run_id }}
+          path: /tmp/openfund-edge.tar
+          retention-days: 1
       - name: Edge logs
         if: always()
         run: docker logs edge --tail 60 2>&1 || true
 
-  deploy:
-    name: Deploy to Liara and verify
+  edge-auth:
+    name: Wallet sign-in, cookies, CSRF and client IP through the edge
     needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: openfund_edge_test
+          POSTGRES_USER: openfund_ci
+          POSTGRES_PASSWORD: openfund_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U openfund_ci -d openfund_edge_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://openfund_ci:openfund_ci@127.0.0.1:5432/openfund_edge_test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.validate.outputs.commit }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+      - uses: actions/download-artifact@v4
+        with:
+          name: openfund-edge-image-${{ github.run_id }}
+          path: /tmp
+      - name: Start the backend (disposable database) and the edge
+        run: |
+          docker load -i /tmp/openfund-edge.tar
+          key="ci_$(openssl rand -hex 24)"
+          npm ci --prefix apps/backend --no-audit --no-fund
+          npm --prefix apps/backend run migrate
+          # The API process reads the app shell at start-up; react/ is untracked build output.
+          mkdir -p react/legacy
+          printf '<!doctype html><html><head><script>/*ci*/</script></head><body></body></html>' > react/index.html
+          PORT=18090 ALLOWED_DOMAINS=127.0.0.1:18080 CORS_ORIGINS=http://localhost:5173 FOOTPRINT_ENABLED=0 \
+            EDGE_CLIENT_IP_KEY="$key" nohup node apps/backend/server.js > /tmp/backend.log 2>&1 &
+          docker run -d --name edge --network host -e EDGE_PORT=18080 -e OPENFUND_UPSTREAM_HOST=127.0.0.1:18090 \
+            -e OPENFUND_UPSTREAM_SCHEME=http -e EDGE_ALLOW_HTTP_UPSTREAM=1 -e EDGE_PUBLIC_SCHEME=http \
+            -e OPENFUND_EDGE_CLIENT_IP_KEY="$key" openfund-edge:candidate
+          for _ in $(seq 1 60); do curl -fsS http://127.0.0.1:18080/__edge/ready >/dev/null && break; sleep 1; done
+          curl -fsS http://127.0.0.1:18080/__edge/ready
+      - name: Edge client-IP unit tests
+        run: node --test apps/backend/test/edge-client-ip.test.mjs
+      - name: End-to-end auth through the edge
+        run: node scripts/liara/test/edge-auth.integration.mjs
+      - name: Logs
+        if: always()
+        run: |
+          tail -60 /tmp/backend.log || true
+          docker logs edge --tail 40 2>&1 || true
+
+  deploy:
+    name: Deploy to Liara (${{ inputs.target }}) and verify
+    needs: [validate, edge-auth]
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Owner-configured environment with required reviewers (docs/deployment/LIARA_IRAN.md).
-    environment: liara-iran
+    permissions:
+      contents: read
+      actions: read          # read the staging run's evidence for a production deploy
+    # Owner-configured environments with required reviewers (docs/deployment/LIARA_IRAN.md).
+    environment: ${{ inputs.target == 'production' && 'liara-iran' || 'liara-iran-staging' }}
     env:
+      GH_TOKEN: ${{ github.token }}
+      TARGET: ${{ inputs.target }}
       EDGE_COMMIT: ${{ needs.validate.outputs.commit }}
+      STAGING_RUN: ${{ inputs.staging_run_id }}
       LIARA_API_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
       LIARA_APP: ${{ vars.LIARA_APP_NAME }}
       LIARA_PUBLIC_URL: ${{ vars.LIARA_PUBLIC_URL }}
@@ -123,28 +221,42 @@ jobs:
           [ -n "$LIARA_APP" ] || missing="$missing var:LIARA_APP_NAME"
           [ -n "$LIARA_PUBLIC_URL" ] || missing="$missing var:LIARA_PUBLIC_URL"
           [ -n "$UPSTREAM" ] || missing="$missing var:OPENFUND_UPSTREAM_HOST"
-          [ -z "$missing" ] || { echo "::error::liara-iran environment is missing:$missing"; exit 1; }
+          [ -z "$missing" ] || { echo "::error::$TARGET environment is missing:$missing"; exit 1; }
           if [ -n "$EXPECT_APP_COMMIT" ] && [[ ! "$EXPECT_APP_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
             echo "::error::expect_app_commit must be a full 40-character SHA"; exit 1
           fi
+      - name: Production requires verified staging evidence for this edge commit
+        if: inputs.target == 'production'
+        run: |
+          [[ "$STAGING_RUN" =~ ^[0-9]+$ ]] || { echo "::error::staging_run_id is required for production"; exit 1; }
+          info=$(gh run view "$STAGING_RUN" --repo "$GITHUB_REPOSITORY" --json workflowName,conclusion,headBranch)
+          node -e 'const r=JSON.parse(process.argv[1]); if(r.workflowName!=="Deploy Iran edge (Liara)"||r.conclusion!=="success"||r.headBranch!=="main"){console.error("::error::staging run is not a successful main run of this workflow: "+process.argv[1]);process.exit(1)}' "$info"
+          gh run download "$STAGING_RUN" --repo "$GITHUB_REPOSITORY" --pattern 'liara-edge-status-*' --dir staging-evidence
+          node -e '
+            const fs=require("fs"),path=require("path");
+            const files=fs.readdirSync("staging-evidence",{recursive:true}).filter(f=>f.endsWith("liara-edge-status.json"));
+            const ok=files.map(f=>JSON.parse(fs.readFileSync(path.join("staging-evidence",f),"utf8")))
+              .some(s=>s.target==="staging"&&s.status==="verified"&&s.edgeCommit===process.env.EDGE_COMMIT);
+            if(!ok){console.error("::error::no verified staging status for edge commit "+process.env.EDGE_COMMIT);process.exit(1)}
+            console.log("staging evidence verified for",process.env.EDGE_COMMIT)'
       - name: Stamp the edge release identity
         run: |
-          printf '{"edge":"liara-iran","commit":"%s","deployedBy":"github-actions","run":"%s"}\n' \
-            "$EDGE_COMMIT" "$GITHUB_RUN_ID" > infra/liara-iran/edge-release.json
+          printf '{"edge":"liara-iran","target":"%s","commit":"%s","deployedBy":"github-actions","run":"%s"}\n' \
+            "$TARGET" "$EDGE_COMMIT" "$GITHUB_RUN_ID" > infra/liara-iran/edge-release.json
       - name: Install the Liara CLI (pinned)
         run: npm install -g @liara/cli@9.6.7 && liara --version
       - name: Deploy (Liara keeps the previous release live if this fails)
         run: |
           liara deploy --app "$LIARA_APP" --api-token "$LIARA_API_TOKEN" \
             --path infra/liara-iran --platform docker --port 8080 \
-            --message "edge $EDGE_COMMIT (run $GITHUB_RUN_ID)" --no-app-logs
+            --message "edge $EDGE_COMMIT $TARGET (run $GITHUB_RUN_ID)" --no-app-logs
       - name: Verify the deployed edge
         run: |
-          args="--edge $LIARA_PUBLIC_URL --upstream https://$UPSTREAM --expect-edge-commit $EDGE_COMMIT --out output/liara-edge-status.json"
-          [ -z "$EXPECT_APP_COMMIT" ] || args="$args --expect-app-commit $EXPECT_APP_COMMIT"
+          args=(--target "$TARGET" --edge "$LIARA_PUBLIC_URL" --upstream "https://$UPSTREAM" --expect-edge-commit "$EDGE_COMMIT" --out output/liara-edge-status.json)
+          [ -z "$EXPECT_APP_COMMIT" ] || args+=(--expect-app-commit "$EXPECT_APP_COMMIT")
           ok=0
           for i in 1 2 3 4 5 6; do
-            node scripts/liara/verify-edge.mjs $args && { ok=1; break; }
+            node scripts/liara/verify-edge.mjs "${args[@]}" && { ok=1; break; }
             echo "retrying in 20 s ($i/6)"; sleep 20
           done
           [ "$ok" = 1 ]
@@ -152,12 +264,13 @@ jobs:
         if: always()
         run: |
           {
-            echo "### Iran edge deployment"
+            echo "### Iran edge deployment ($TARGET)"
             echo "- Edge commit: \`$EDGE_COMMIT\`"
             echo "- Liara app: \`$LIARA_APP\` - $LIARA_PUBLIC_URL"
             if [ -f output/liara-edge-status.json ]; then
               node -e 'const s=require("./output/liara-edge-status.json");console.log(`- Result: **${s.status}** - application ${s.application?.version} \`${s.application?.commit}\``)'
             else echo "- Result: **not verified** (deploy did not complete)"; fi
+            [ "$TARGET" != staging ] || echo "- For production, dispatch again with target=production and staging_run_id=$GITHUB_RUN_ID"
           } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()

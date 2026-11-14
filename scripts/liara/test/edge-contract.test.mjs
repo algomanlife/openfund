@@ -5,7 +5,8 @@
    EDGE_PUBLIC_SCHEME=http (see the Liara workflow's validate job).
 
    EDGE_URL   edge base URL (default http://127.0.0.1:18080)
-   STUB_PORT  port this test binds for the stub upstream (default 18081) */
+   STUB_PORT  port this test binds for the stub upstream (default 18081)
+   EDGE_KEY   the OPENFUND_EDGE_CLIENT_IP_KEY the edge was started with ('' = none) */
 import { test, before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import http from 'node:http'
@@ -14,6 +15,7 @@ const EDGE = (process.env.EDGE_URL || 'http://127.0.0.1:18080').replace(/\/$/, '
 const STUB_PORT = Number(process.env.STUB_PORT || 18081)
 const UPSTREAM_HOST = `127.0.0.1:${STUB_PORT}`
 const EDGE_ORIGIN = new URL(EDGE).origin
+const EDGE_KEY = process.env.EDGE_KEY || ''
 
 const seen = []
 const hits = new Map()
@@ -146,6 +148,23 @@ for (const path of ['/admin', '/admin/payments', '/internal/reset', '/purchases/
     assert.equal(seen.length, before)
   })
 }
+
+test('the visitor IP is the last X-Forwarded-For entry (the hop Liara appends)', async () => {
+  const who = await (await fetch(`${EDGE}/__edge/whoami`, { headers: { 'x-forwarded-for': '6.6.6.6, 5.6.7.8' } })).json()
+  assert.deepEqual(who, { clientIp: '5.6.7.8' })
+  const direct = await (await fetch(`${EDGE}/__edge/whoami`)).json()
+  assert.equal(direct.clientIp, '127.0.0.1')
+  const malformed = await (await fetch(`${EDGE}/__edge/whoami`, { headers: { 'x-forwarded-for': '5.6.7.8, "><script>' } })).json()
+  assert.equal(malformed.clientIp, '127.0.0.1', 'a non-IP entry falls back to the socket peer')
+})
+
+test('the visitor IP and the edge key reach the upstream; client-supplied values are replaced', async () => {
+  await fetch(`${EDGE}/api/ip-probe`, { headers: { 'x-forwarded-for': '6.6.6.6, 5.6.7.8', 'x-openfund-edge-key': 'forged-by-client', 'x-openfund-edge-client-ip': '1.1.1.1' } })
+  const h = last().headers
+  assert.equal(h['x-openfund-edge-client-ip'], '5.6.7.8')
+  if (EDGE_KEY) assert.equal(h['x-openfund-edge-key'], EDGE_KEY)
+  else assert.equal(h['x-openfund-edge-key'], undefined, 'no key configured: no key header, never the client value')
+})
 
 test('robots.txt disallows the mirror and sitemap.xml is absent', async () => {
   const robots = await fetch(`${EDGE}/robots.txt`)
