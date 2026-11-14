@@ -8,6 +8,29 @@
 
 ## Unreleased
 
+- Owner decisions D1–D8 (branch `agent/claude/launch-readiness`, **not
+  deployed**): per-model reward cycles chosen once; 30-day inactivity;
+  Instant open-risk, trade-idea, profitable-day, news and weekend rules;
+  on-demand strike system; funded auto-close and news deductions; fee refund
+  on the fourth paid Standard reward; Openfund leverage ceilings for new
+  challenges; daily-loss variants sold only when priced. Paid plans are not
+  sold until a licensed economic calendar is imported. Fixed: challenges
+  started without a frozen snapshot were provisioned from empty rules.
+  Draft Terms, Privacy and Refund policies prepared for legal review.
+
+- Launch readiness (branch `agent/claude/launch-readiness`,
+  [ADR 0029](docs/decisions/0029-reward-lifecycle-and-support-queue.md),
+  [report](docs/reviews/launch-readiness-2026-11-13/REPORT.md); **not deployed**):
+  server-computed reward requests on funded accounts enforce the published
+  split, first-payout wait, minimum request, consistency score, profitable days,
+  monthly cycle and fourth-reward fee refund (the free-amount withdrawal request
+  is removed); a final evaluation pass now goes to operator review, and an
+  approval creates exactly one funded-demo account; rules snapshots move to
+  version 2 (payout terms frozen; older snapshots untouched). New About Us and
+  Contact Us pages in all five locales with a working support form stored in
+  `support_messages` and handled in Directus by a new `Support Agent` role.
+  The terminal support link no longer points to an unverified mailbox.
+
 - Checkout, campaign, chart and trading completion (branch `agent/claude/checkout-campaign-chart-trading`, not deployed;
   [ADR 0028](docs/decisions/0028-manual-payment-treasury-networks-campaign-chart-english-lotage.md)):
   **Manual Payment** next to Pay with DePay on the same order, verified on-chain

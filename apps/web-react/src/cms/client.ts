@@ -191,7 +191,13 @@ function planFromRow(row: RawPlan): ChallengePlan | null {
     timeLimitDays: num(c.timeLimitDays),
     trialDaysPerPhase: num(c.trialDaysPerPhase),
     refundPolicy: (c.refundPolicy as 'none' | 'fourth-reward') || 'none',
-    referenceLeverageX: num(c.referenceLeverageX) ?? 5,
+    referenceLeverageX: num(c.referenceLeverageX),
+    catalogVersion: num(c.catalogVersion) ?? 1,
+    model: (['standard', 'one-step', 'instant', 'trial'].includes(String(c.model)) ? c.model : (row.slug === 'free-trial' ? 'trial' : 'standard')) as ChallengePlan['model'],
+    rewardCycles: Array.isArray(c.rewardCycles) ? (c.rewardCycles as ChallengePlan['rewardCycles']) : [],
+    inactivityDays: num(c.inactivityDays),
+    conduct: (c.conduct && typeof c.conduct === 'object' ? c.conduct : {}) as ChallengePlan['conduct'],
+    dailyLossVariantPriceUsd: (c.dailyLossVariantPriceUsd && typeof c.dailyLossVariantPriceUsd === 'object' ? c.dailyLossVariantPriceUsd : null) as ChallengePlan['dailyLossVariantPriceUsd'],
     free: c.free === true || row.slug === 'free-trial',
   }
   try { assertPlansValid([plan]) } catch { return null }
@@ -816,3 +822,23 @@ export const fetchCmsFaqHub = localizing(fetchCmsFaqHubRaw)
 export const fetchCmsLearningLibrary = localizing(fetchCmsLearningLibraryRaw)
 export const fetchCmsToolCopy = localizing(fetchCmsToolCopyRaw)
 export const fetchCmsReferral = localizing(fetchCmsReferralRaw)
+
+/* ---------------- public contact settings (site_settings) ----------------
+   Department mailboxes are owner-entered in Directus. An empty or malformed
+   value is treated as NOT published: the Contact page shows the department
+   without an address instead of inventing one. */
+export type ContactDepartment = 'support' | 'legal' | 'technical' | 'community'
+export type CmsContactEmails = Partial<Record<ContactDepartment, string>>
+const MAILBOX = /^[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$/
+export function publishedMailbox(value: unknown): string | null {
+  return typeof value === 'string' && MAILBOX.test(value.trim()) ? value.trim().toLowerCase() : null
+}
+export async function fetchCmsContactEmails(): Promise<CmsContactEmails> {
+  const row = await getJson<Record<string, unknown>>('/items/site_settings?fields=support_email,legal_email,technical_email,community_email')
+  const out: CmsContactEmails = {}
+  for (const d of ['support', 'legal', 'technical', 'community'] as const) {
+    const v = publishedMailbox(row?.[`${d}_email`])
+    if (v) out[d] = v
+  }
+  return out
+}

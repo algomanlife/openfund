@@ -15,7 +15,7 @@ export const SITE_LOCALES = ['fa', 'en', 'ar', 'ru', 'zh-CN']
 /** route → locales that publish it (the whitepaper is a fa/en publication) */
 export const PUBLIC_SITE_ROUTES = [
   'home', 'challenges', 'markets', 'rulebook', 'transparency', 'revenue-model', 'live-market-access',
-  'ambassador', 'coach', 'governance', 'faq', 'tools', 'learn', 'learn/glossary', 'referral', 'whitepaper', 'campaign',
+  'ambassador', 'coach', 'governance', 'faq', 'tools', 'learn', 'learn/glossary', 'referral', 'whitepaper', 'campaign', 'about', 'contact',
 ]
 /* the whitepaper and the sales-campaign landing are fa/en publications */
 const ROUTE_LOCALES = { whitepaper: ['fa', 'en'], campaign: ['fa', 'en'] }

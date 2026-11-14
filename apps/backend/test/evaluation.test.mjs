@@ -152,7 +152,7 @@ await inject(MKT, 50000)
     before.data.challenges.some(c => c.id === ch.id && c.status === 'created'))
   const view = (await j('GET', '/challenges/' + ch.id, null, cookie1)).data
   ok('challenge view carries frozen rules snapshot',
-    view.rules?.dailyLossPct === 100 && view.rules?.phase1TargetPct === 12 && view.rules?.rulesVersion === 1)
+    view.rules?.dailyLossPct === 100 && view.rules?.phase1TargetPct === 12 && view.rules?.rulesVersion === 3)
 
   /* trading on a not-yet-started challenge is impossible: no account yet */
   const early = await order(cookie1, randomUUID(), { market: MKT, side: 'long', margin: 100, leverage: 1 })
@@ -198,7 +198,7 @@ await inject(MKT, 50000)
 
   /* plan leverage cap (5×) applies to challenge accounts only */
   const levReject = await order(cookie1, started.demo_account_id, { market: MKT, side: 'long', margin: 100, leverage: 10 })
-  ok('challenge account enforces plan leverage 5×', levReject.status === 400 && levReject.data.error === 'leverage_exceeded')
+  ok('challenge account enforces plan leverage 5×', levReject.status === 400 && levReject.data.error === 'leverage_exceeded', JSON.stringify(levReject))
   const freeLev = await order(cookie1, undefined, { market: MKT, side: 'long', margin: 100, leverage: 10 })
   ok('free demo still allows market-metadata leverage', freeLev.status === 200 || freeLev.data.error === 'insufficient_margin')
 }

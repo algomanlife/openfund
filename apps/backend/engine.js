@@ -27,6 +27,7 @@ import Decimal from 'decimal.js'
 
 import { D, SIM, feePct, spreadPct, withSpread, pnl, freshMark, positionMetrics, accountMetrics } from './trading-math.js'
 import { ChallengeService, evaluateRules, normalizeRules, countTradingDays } from './evaluation.js'
+import { ConductService } from './conduct.js'
 export { SIM, feePct, spreadPct, withSpread } from './trading-math.js'
 
 /* ---------- per-account async mutex (safe concurrency) ---------- */
@@ -63,11 +64,14 @@ async function withAccountLock(accountId, fn) {
 }
 
 export class Engine {
-  constructor(pool, marketData, { loopPool = null } = {}) {
+  constructor(pool, marketData, { loopPool = null, conduct = null } = {}) {
     this.pool = pool
     this.loopPool = loopPool
     this.md = marketData
     this.challenges = new ChallengeService(pool)
+    /* rules snapshot v3 conduct rules (D1–D8); applied only to snapshots that carry them */
+    this.conduct = conduct ?? new ConductService(pool)
+    this.idleChecked = new Map()        /* accountId → last idle conduct sweep (ms) */
     this.listeners = new Set()          /* state-change → SSE push */
     this.timer = null
     this.running = false
@@ -229,6 +233,12 @@ export class Engine {
       tradingDays, expiresAt: challenge.expires_at,
     })
     if (evaluation.status === 'deferred') return null  /* never settle with stale marks */
+    /* v3 conduct rules (inactivity, open risk, trade ideas, strikes,
+       profitable days, news, weekend holding): any hit is a hard breach */
+    if (Number(rules.rulesVersion) >= 3) {
+      const extra = await this.conduct.violations(c, { challenge, acc, rules, md: this.md })
+      if (extra.length) { evaluation.violations.push(...extra); evaluation.status = 'fail' }
+    }
 
     if (evaluation.status === 'fail') {
       const breach = evaluation.violations.find(v => v.rule !== 'time_limit')
@@ -245,10 +255,10 @@ export class Engine {
           { stage: 1, metrics: evaluation.metrics })
         /* stage 2 inherits the frozen rules snapshot; no new purchase */
         const stage2 = (await c.query(
-          `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd, stage, rules_snapshot)
-           VALUES ($1,$2,'created',$3,2,$4) RETURNING *`,
+          `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd, stage, rules_snapshot, parent_challenge_id)
+           VALUES ($1,$2,'created',$3,2,$4,$5) RETURNING *`,
           [challenge.user_id, challenge.challenge_plan_id, challenge.account_size_usd,
-            JSON.stringify(rules)])).rows[0]
+            JSON.stringify(rules), challenge.id])).rows[0]
         await this.challenges.startTx(c, stage2)
         return 'stage_passed'
       }
@@ -257,6 +267,43 @@ export class Engine {
       return 'passed'
     }
     return null
+  }
+
+  /** D8 funded holding rule: close every open position of funded Standard /
+   *  One-step accounts in the daily window (not a breach). Engine-loop step. */
+  async holdingSweep() {
+    for (const { id, rules_snapshot } of (
+      await this.db.query(
+        `SELECT DISTINCT a.id, c.rules_snapshot FROM demo_accounts a
+           JOIN openfund_challenges c ON c.demo_account_id = a.id
+           JOIN trading_positions p ON p.account_id = a.id AND p.status = 'open'
+          WHERE a.account_type='challenge' AND a.status='active' AND c.status='started'
+            AND c.rules_snapshot->'conduct'->'holding'->>'mode' = 'auto_close_daily'`,
+      )
+    ).rows) {
+      if (this.conduct.autoCloseDue(rules_snapshot)) await withAccountLock(id, () => this.#holdingAutoClose(id)).catch(console.error)
+    }
+  }
+
+  /** D8 funded holding rule: close every open position at the daily window (no breach) */
+  async #holdingAutoClose(accountId) {
+    const c = await this.db.connect()
+    let closed = []
+    try {
+      await c.query('BEGIN')
+      const acc = (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [accountId])).rows[0]
+      if (acc?.status === 'active') {
+        for (const p of (await c.query("SELECT * FROM trading_positions WHERE account_id=$1 AND status='open' FOR UPDATE", [accountId])).rows) {
+          const m = freshMark(this.md, p.market)
+          if (!m || !this.md.tradeable(p.market).ok) continue  /* retried on the next pass inside the window */
+          await this.#closeTx(c, p, m.mark, 'holding_auto_close')
+          closed.push(p.id)
+        }
+        if (closed.length) await c.query(`INSERT INTO trading_events(account_id,kind,detail) VALUES ($1,'holding_auto_close',$2)`, [accountId, JSON.stringify({ closed })])
+      }
+      await c.query('COMMIT')
+    } catch (e) { await c.query('ROLLBACK').catch(() => {}); throw e } finally { c.release() }
+    if (closed.length) this.emit(accountId)
   }
 
   /** close positions + cancel pending + terminal status (fail / expire / pass) */
@@ -663,6 +710,10 @@ export class Engine {
 
     const t = this.md.tradeable(order.market);
     if (!t.ok) return reject(t.reason);
+    if (challenge && rules && Number(rules.rulesVersion) >= 3) {
+      const blocked = await this.conduct.preTradeBlock(this.db, { rules, market: order.market })
+      if (blocked) return reject(blocked);
+    }
     if (!order.margin.gte(SIM.MIN_MARGIN)) return reject("margin_too_small");
     const spec = instrumentSpec(t.meta, order.market);
     if (
@@ -1055,6 +1106,24 @@ export class Engine {
       ).rows) {
         await this.enforceChallengeRisk(id).catch(console.error);
       }
+      /* v3 conduct on idle accounts (inactivity, rolling profitable days):
+         no open position moves equity, so check each at most once a minute */
+      const nowMs = Date.now()
+      for (const { id } of (
+        await this.db.query(
+          `SELECT a.id FROM demo_accounts a
+             JOIN openfund_challenges c ON c.demo_account_id = a.id
+            WHERE a.account_type='challenge' AND a.status='active' AND c.status='started'
+              AND coalesce((c.rules_snapshot->>'rulesVersion')::int, 1) >= 3
+              AND NOT EXISTS(SELECT 1 FROM trading_positions p WHERE p.account_id=a.id AND p.status='open')`,
+        )
+      ).rows) {
+        if (nowMs - (this.idleChecked.get(id) ?? 0) < 60_000) continue
+        this.idleChecked.set(id, nowMs)
+        await this.enforceChallengeRisk(id).catch(console.error);
+      }
+      /* D8 funded daily holding window (isolated: an error elsewhere never skips it) */
+      await this.holdingSweep().catch(console.error)
       /* terminal challenge accounts whose breach settlement could not close
          a position (market closed / no tradeable quote at that moment):
          finish the settlement as soon as the market is tradeable again */

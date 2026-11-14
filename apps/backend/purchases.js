@@ -23,6 +23,7 @@
  *  - UNIQUE (chain_id, tx_hash) makes every on-chain payment usable
  *    exactly once across the whole system.
  */
+import { ConductService } from './conduct.js'
 import { Router } from 'express'
 import { rateLimit } from 'express-rate-limit'
 import crypto from 'node:crypto'
@@ -257,7 +258,8 @@ export async function confirmPurchaseTx(client, { orderId, userId, evidence, sou
       `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd, purchase_order_id, rules_snapshot)
        VALUES ($1,$2,'created',$3,$4,$5) RETURNING *`,
       [userId, order.challenge_plan_id, order.account_size_usd, orderId,
-        JSON.stringify(normalizeRules(planConfiguration))])).rows[0]
+        /* D7: the purchased daily-loss variant is frozen with the rules */
+        JSON.stringify(normalizeRules(planConfiguration, { dailyLossVariant: order.daily_loss_variant || 'default' }))])).rows[0]
 
     /* provision the challenge trading account (challenge_funding ledger
        event, immutable provisioning event, frozen rules snapshot) —
@@ -578,7 +580,7 @@ export const DEPAY_PATHS = Object.freeze({
 export const DEPAY_SIGNED_PATHS = new Set(Object.values(DEPAY_PATHS).flat())
 
 /* ---------- routes ---------- */
-export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limit = () => (req, res, next) => next() }) {
+export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limit = () => (req, res, next) => next(), conduct = new ConductService(pool) }) {
   const chainVerifier = () => verifier || defaultPaymentVerifier()
   const router = Router()
 
@@ -634,8 +636,9 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
   router.get('/purchases/plans', wrap(async (req, res) => {
     const { rows } = await pool.query(
       `SELECT slug, name, configuration FROM challenge_plans WHERE status='active' ORDER BY created_at`)
-    const plans = rows.map(p => {
+    const plans = await Promise.all(rows.map(async p => {
       const c = p.configuration || {}
+      const blockers = c.free ? [] : await conduct.salesBlockers(c)
       return {
         slug: p.slug,
         name: p.name,
@@ -644,8 +647,14 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
         accountSizesUsd: c.accountSizesUsd || [],
         priceUsd: c.priceUsd || {},
         free: !!c.free,
+        /* rules that need data the server cannot verify yet block the plan from sale */
+        available: blockers.length === 0,
+        unavailableReasons: blockers,
+        dailyLossVariant: c.dailyLossPctAlt
+          ? { dailyLossPct: Number(c.dailyLossPctAlt), priceUsd: c.dailyLossVariantPriceUsd || null, available: !!c.dailyLossVariantPriceUsd }
+          : null,
       }
-    })
+    }))
     const c = cfg()
     res.json({
       plans,
@@ -657,8 +666,9 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
   }))
 
   /* server-side pricing of record for one plan + size (never the browser's) */
-  const planPrice = async (q, planSlug, accountSize) => {
+  const planPrice = async (q, planSlug, accountSize, variant = 'default') => {
     if (typeof planSlug !== 'string' || !Number.isFinite(Number(accountSize))) throw fail(400, 'invalid_request')
+    if (!['default', 'reduced'].includes(variant)) throw fail(400, 'invalid_variant')
     const { rows: [plan] } = await q.query(
       `SELECT id, slug, configuration FROM challenge_plans WHERE slug=$1 AND status='active'`, [planSlug])
     if (!plan) throw fail(404, 'plan_not_found')
@@ -666,9 +676,16 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
     if (c.free) throw fail(400, 'not_purchasable')
     const size = Number(accountSize)
     if (!(c.accountSizesUsd || []).includes(size)) throw fail(400, 'invalid_account_size')
-    const price = c.priceUsd && c.priceUsd[size]
+    /* D7: a lower daily-loss variant is sold only at an approved price */
+    const price = variant === 'reduced'
+      ? (c.dailyLossPctAlt && c.dailyLossVariantPriceUsd ? c.dailyLossVariantPriceUsd[size] : null)
+      : c.priceUsd && c.priceUsd[size]
+    if (variant === 'reduced' && !(Number(price) > 0)) throw fail(409, 'variant_unavailable')
     if (!Number.isFinite(Number(price)) || Number(price) <= 0) throw fail(400, 'not_purchasable')
-    return { plan, size, listPrice: Number(price).toFixed(2) }
+    /* D4/D8: a plan whose rules cannot be enforced right now is not sold */
+    const blockers = await conduct.salesBlockers(c, q)
+    if (blockers.length) throw Object.assign(fail(409, 'plan_unavailable'), { reasons: blockers })
+    return { plan, size, variant, listPrice: Number(price).toFixed(2) }
   }
   const couponArg = v => {
     if (v == null || v === '') return null
@@ -689,13 +706,13 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
 
   /* 2a — authoritative quote (plan price + optional coupon); creates nothing */
   router.post('/purchases/quote', requireAuth, limit(30), wrap(async (req, res) => {
-    const { planSlug, accountSize, couponCode } = req.body || {}
-    const { plan, size, listPrice } = await planPrice(pool, planSlug, accountSize)
+    const { planSlug, accountSize, couponCode, dailyLossVariant = 'default' } = req.body || {}
+    const { plan, size, listPrice } = await planPrice(pool, planSlug, accountSize, dailyLossVariant)
     const code = couponArg(couponCode)
     const pricing = code
       ? (await evaluateCoupon(pool, { code, userId: req.user.user_id, planId: plan.id, accountSize: size, listPriceUsd: listPrice })).pricing
       : applyCoupon(listPrice, null)
-    res.json({ planSlug, accountSize: size, listPriceUsd: pricing.list, discountUsd: pricing.discount, priceUsd: pricing.net,
+    res.json({ planSlug, accountSize: size, dailyLossVariant, listPriceUsd: pricing.list, discountUsd: pricing.discount, priceUsd: pricing.net,
       couponCode: code, paymentRequired: Number(pricing.net) > 0, paymentsEnabled: paymentEnabled() })
   }))
 
@@ -703,7 +720,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
      reservation race-safe under the coupon row lock). A 100% discount is
      provisioned here, in the same transaction, without any payment. */
   router.post('/purchases/orders', requireAuth, limit(30), wrap(async (req, res) => {
-    const { planSlug, accountSize, idempotencyKey, couponCode } = req.body || {}
+    const { planSlug, accountSize, idempotencyKey, couponCode, dailyLossVariant = 'default' } = req.body || {}
     const key = typeof idempotencyKey === 'string' && idempotencyKey.length <= 120 ? idempotencyKey : null
     const code = couponArg(couponCode)
     const customer = customerArg(req.body?.customer)
@@ -729,7 +746,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
     let orderId, result = null, created = null, conflict = false
     try {
       await client.query('BEGIN')
-      const { plan, size, listPrice } = await planPrice(client, planSlug, accountSize)
+      const { plan, size, listPrice, variant } = await planPrice(client, planSlug, accountSize, dailyLossVariant)
       let coupon = null, pricing = applyCoupon(listPrice, null)
       if (code) ({ coupon, pricing } = await evaluateCoupon(client, {
         code, userId: req.user.user_id, planId: plan.id, accountSize: size, listPriceUsd: listPrice, lock: true }))
@@ -741,12 +758,12 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
         [`user:${req.user.user_id}`, coupon ? `coupon:${coupon.code}` : 'order_created'])
       const ins = await client.query(
         `INSERT INTO purchase_orders (user_id, challenge_plan_id, account_size_usd, list_price_usd, discount_usd, price_usd,
-                                      coupon_id, payment_required, payment_method, idempotency_key, customer)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) ON CONFLICT (user_id, idempotency_key) DO NOTHING RETURNING id`,
+                                      coupon_id, payment_required, payment_method, idempotency_key, customer, daily_loss_variant)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) ON CONFLICT (user_id, idempotency_key) DO NOTHING RETURNING id`,
         [req.user.user_id, plan.id, size.toFixed(2), pricing.list, pricing.discount, pricing.net, coupon?.id ?? null, !zero,
           /* payment method of record: a 100% coupon order has no payment; an
              internal test coupon is recorded as such */
-          zero ? (coupon.internal ? 'internal_coupon' : 'coupon') : 'crypto', key, customer && JSON.stringify(customer)])
+          zero ? (coupon.internal ? 'internal_coupon' : 'coupon') : 'crypto', key, customer && JSON.stringify(customer), variant])
       if (!ins.rows[0]) conflict = true /* same idempotency key committed concurrently */
       else {
       orderId = ins.rows[0].id
@@ -1063,35 +1080,8 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
     res.json({ withdrawals: rows })
   }))
 
-  router.post('/withdrawals', requireAuth, wrap(async (req, res) => {
-    const { amountUsd, challengeId, note } = req.body || {}
-    const amount = Number(amountUsd)
-    if (!Number.isFinite(amount) || amount <= 0 || amount > 1_000_000) throw fail(400, 'invalid_amount')
-    if (note != null && (typeof note !== 'string' || note.length > 500)) throw fail(400, 'invalid_note')
-    let challenge = null
-    if (challengeId) {
-      if (!uuid.test(challengeId)) throw fail(400, 'invalid_challenge')
-      challenge = (await pool.query(
-        `SELECT id FROM openfund_challenges WHERE id=$1 AND user_id=$2`, [challengeId, req.user.user_id])).rows[0]
-      if (!challenge) throw fail(404, 'challenge_not_found')
-    }
-    const { rows: [w] } = await pool.query(
-      `INSERT INTO withdrawal_requests (user_id, challenge_id, amount_usd, note)
-       VALUES ($1,$2,$3,$4) RETURNING id, requested_at`,
-      [req.user.user_id, challenge ? challenge.id : null, amount.toFixed(2), note || null])
-    await audit('withdrawal_requested', req.user.user_id, req, { withdrawalId: w.id, amount })
-    res.json({ id: w.id, requestedAt: w.requested_at, status: 'requested' })
-  }))
-
-  router.post('/withdrawals/:id/cancel', requireAuth, wrap(async (req, res) => {
-    if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')
-    const { rows } = await pool.query(
-      `UPDATE withdrawal_requests SET status='cancelled', reviewed_at=now()
-        WHERE id=$1 AND user_id=$2 AND status='requested' RETURNING id`, [req.params.id, req.user.user_id])
-    if (!rows[0]) throw fail(409, 'withdrawal_not_cancellable')
-    await audit('withdrawal_cancelled', req.user.user_id, req, { withdrawalId: req.params.id })
-    res.json({ ok: true })
-  }))
+  /* POST /withdrawals and /withdrawals/:id/cancel live in rewards.js:
+     reward requests are computed and rule-checked by the server */
 
   return router
 }

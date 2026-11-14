@@ -41,8 +41,8 @@ test('standard plan carries the adopted two-phase specification', () => {
   assert.equal(p.drawdownMode, 'static')
   assert.equal(p.minTradingDays, 3)
   assert.equal(p.profitSplitPct, 80)
-  assert.equal(p.profitSplitMonthlyPct, 100)
-  assert.equal(p.firstPayoutDays, 14)
+  assert.equal(p.profitSplitMonthlyPct, null, 'D1: no monthly cycle')
+  assert.equal(p.firstPayoutDays, null, 'timing lives in rewardCycles')
   assert.equal(p.minPayoutPct, 1)
   assert.equal(p.refundPolicy, 'fourth-reward')
   assert.equal(p.timeLimitDays, null)
@@ -126,4 +126,41 @@ test('backend seed stays in sync with the catalog (contract compatibility)', () 
   assert.ok(seed.includes("drawdownMode: 'trailing'") && seed.includes("drawdownMode: 'static'"))
   assert.ok(seed.includes('profitSplitPct: 95') && seed.includes('profitSplitPct: 80'))
   assert.ok(seed.includes('trialDaysPerPhase: 14'))
+})
+
+test('owner decisions D1–D8 (catalog v3): reward cycles, leverage, variants, conduct', () => {
+  const std = planBySlug('standard'), one = planBySlug('one-phase'), inst = planBySlug('instant'), trial = planBySlug('free-trial')
+  for (const p of [std, one, inst, trial]) assert.equal(p.catalogVersion, 3)
+  const cyc = p => p.rewardCycles.map(c => `${c.key}:${c.splitPct}`)
+  assert.deepEqual(cyc(std), ['weekly:60', 'biweekly:80', 'on_demand:100'])
+  assert.deepEqual(cyc(one), ['biweekly:80', 'on_demand:100'])
+  assert.deepEqual(cyc(inst), ['biweekly:95'])
+  assert.deepEqual(trial.rewardCycles, [])
+  const od = std.rewardCycles.find(c => c.key === 'on_demand')
+  assert.deepEqual([od.consistencyPct, od.profitableDays, od.profitableDayPct, od.strikeLossPct], [35, 7, 0.5, 1])
+  assert.equal(inst.rewardCycles[0].consistencyPct, 15)
+  assert.deepEqual(inst.conduct.profitableDayRule, { days: 7, windowDays: 30, minPct: 0.25 })
+  assert.equal(inst.conduct.maxOpenRiskPct, 1)
+  assert.deepEqual(inst.conduct.tradeIdea, { thresholdUsd: 50000, belowPct: 3, atOrAbovePct: 2, reentryMin: 10 })
+  assert.deepEqual([inst.conduct.news.mode, inst.conduct.news.windowMin, inst.conduct.holding.mode], ['prohibit', 10, 'prohibit_weekend'])
+  for (const p of [std, one]) {
+    assert.deepEqual([p.conduct.news.mode, p.conduct.news.stage, p.conduct.news.windowMin, p.conduct.news.exemptHours], ['deduct', 'funded', 5, 5])
+    assert.deepEqual([p.conduct.holding.mode, p.conduct.holding.stage], ['auto_close_daily', 'funded'])
+  }
+  for (const p of [std, one, inst]) assert.equal(p.inactivityDays, 30)
+  for (const p of [std, one, inst, trial]) assert.equal(p.referenceLeverageX, null, 'D6: no plan-wide leverage cap')
+  assert.deepEqual([std.dailyLossPctAlt, one.dailyLossPctAlt], [3, 2])
+  for (const p of [std, one, inst, trial]) assert.equal(p.dailyLossVariantPriceUsd, null, 'D7: no approved variant price yet')
+  assert.equal(std.refundPolicy, 'fourth-reward'); assert.equal(one.refundPolicy, 'none'); assert.equal(inst.refundPolicy, 'none')
+})
+
+test('the landing never advertises an unpriced daily-loss variant (D7)', () => {
+  const legacy = serializeForLegacy(publishedPlans())
+  for (const k of Object.keys(legacy)) assert.equal(legacy[k].dailyLossAlt, null, k)
+})
+
+test('a plan row published before catalog v3 (no reward cycles yet) still renders', () => {
+  const legacy = { ...planBySlug('standard'), catalogVersion: 1, rewardCycles: [], conduct: {}, inactivityDays: null }
+  assert.doesNotThrow(() => assertPlansValid([legacy]))
+  assert.throws(() => assertPlansValid([{ ...legacy, catalogVersion: 3 }]), /reward cycle/)
 })

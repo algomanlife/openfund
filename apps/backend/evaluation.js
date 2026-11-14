@@ -41,8 +41,15 @@
  * normalization and never written back to live plan rows.
  */
 import { D } from './trading-math.js'
+import { normalizeModelPolicy } from './model-rules.js'
 
-export const RULES_VERSION = 1
+/** 2 — payout terms frozen into the snapshot.
+ *  3 — owner decisions D1–D8: model, reward cycles, inactivity, conduct
+ *      rules (open risk, trade ideas, profitable days, news, holding), the
+ *      purchased daily-loss variant and no plan-wide leverage cap.
+ *  Older snapshots stay valid and immutable: a rule a snapshot does not
+ *  carry is not applied to that account. */
+export const RULES_VERSION = 3
 /** Day boundary 00:00 UTC+3 (fixed offset, no DST) — published rule of record. */
 export const DAY_UTC3_OFFSET_MS = 3 * 60 * 60 * 1000
 
@@ -59,9 +66,12 @@ const num = (v) => {
  * snapshot frozen at provisioning time. Legacy `maxDailyLossPct` keys
  * are accepted; `dailyLossPct` wins when both are present.
  */
-export function normalizeRules(planConfiguration = {}) {
+export function normalizeRules(planConfiguration = {}, { dailyLossVariant = 'default' } = {}) {
   const c = planConfiguration || {}
-  const dailyLossPct = num(c.dailyLossPct) ?? num(c.maxDailyLossPct)
+  const reduced = dailyLossVariant === 'reduced' && num(c.dailyLossPctAlt) > 0
+  /* D7: the purchased lower daily-loss variant replaces the daily limit;
+     on the Standard model it also removes the minimum trading days */
+  const dailyLossPct = reduced ? num(c.dailyLossPctAlt) : (num(c.dailyLossPct) ?? num(c.maxDailyLossPct))
   const rules = {
     rulesVersion: RULES_VERSION,
     phases: num(c.phases) ?? 0,
@@ -72,14 +82,22 @@ export function normalizeRules(planConfiguration = {}) {
     maxTotalLossPct: num(c.maxTotalLossPct),
     drawdownMode: c.drawdownMode === 'trailing' ? 'trailing' : 'static',
     trailingLockAtProfitPct: num(c.trailingLockAtProfitPct),
-    minTradingDays: num(c.minTradingDays) ?? 0,
+    minTradingDays: reduced && c.model === 'standard' ? 0 : (num(c.minTradingDays) ?? 0),
+    dailyLossVariant: reduced ? 'reduced' : 'default',
     timeLimitDays: num(c.timeLimitDays),
     trialDaysPerPhase: num(c.trialDaysPerPhase),
-    referenceLeverageX: num(c.referenceLeverageX) ?? 5,
+    /* D6: null = Openfund leverage ceilings only (no plan-wide cap) */
+    referenceLeverageX: num(c.referenceLeverageX),
     consistencyPct: num(c.consistencyPct),
     profitableDaysPer30: num(c.profitableDaysPer30),
     profitSplitPct: num(c.profitSplitPct),
+    profitSplitMonthlyPct: num(c.profitSplitMonthlyPct),
+    payoutCapPct: num(c.payoutCapPct),
+    firstPayoutDays: num(c.firstPayoutDays),
+    minPayoutPct: num(c.minPayoutPct),
+    refundPolicy: typeof c.refundPolicy === 'string' ? c.refundPolicy : 'none',
     free: !!c.free,
+    ...normalizeModelPolicy(c),
   }
   /* integrity: a plan without positive loss limits cannot be evaluated —
      its challenges stay inert (trading blocked) rather than mis-governed */
@@ -157,8 +175,10 @@ export function evaluateRules({ rules, stage = 1, startingBalance, balance, equi
     if (eq.lte(threshold)) violations.push({ rule: 'maximum_loss_breach', detail: { threshold: threshold.toFixed(2), equity: eq.toFixed(2) } })
   }
 
-  /* ---- pass: target on closed profit + minimum trading days (phases ≥ 1) ---- */
-  if ((rules.phases ?? 0) >= 1) {
+  /* ---- pass: target on closed profit + minimum trading days (phases ≥ 1) ----
+     stage 0 is a funded simulation (Instant, or a funded-demo account after
+     an approved evaluation): loss limits only, never a second pass */
+  if ((rules.phases ?? 0) >= 1 && stage >= 1 && !rules.funded) {
     const target = D(stage === 2 ? (rules.phase2TargetPct ?? rules.phase1TargetPct) : (rules.phase1TargetPct ?? 0))
     const targetAmount = starting.times(target).div(100)
     /* A pass settles every open position at the mark. The target is measured
@@ -264,7 +284,11 @@ export class ChallengeService {
    * already started; rejects invalid transitions otherwise.
    */
   async startTx(client, challenge) {
-    const locked = (await client.query('SELECT * FROM openfund_challenges WHERE id=$1 FOR UPDATE', [challenge.id])).rows[0]
+    /* the plan configuration travels with the row: a challenge created without
+       a frozen snapshot is provisioned from ITS plan, never from defaults */
+    const locked = (await client.query(
+      `SELECT c.*, p.configuration AS plan_configuration FROM openfund_challenges c
+         JOIN challenge_plans p ON p.id = c.challenge_plan_id WHERE c.id=$1 FOR UPDATE OF c`, [challenge.id])).rows[0]
     if (!locked) throw Object.assign(new Error('challenge_not_found'), { status: 404 })
     if (locked.status === 'started') return locked
     if (locked.status !== 'created') throw Object.assign(new Error(`challenge_${locked.status}_not_startable`), { status: 409 })
