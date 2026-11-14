@@ -3,7 +3,7 @@ import { backendUrl } from '../../session/useOpenfundSession';
 import { pick, type AppLocale } from '../../i18n/locales';
 export default function ReleaseStatus({locale,children}: {locale:AppLocale;children:(version:ReactNode)=>ReactNode}) {
   const build=__OPENFUND_BUILD__;
-  const [version,setVersion]=useState(build.version === 'development' ? '' : build.version);
+  const [version,setVersion]=useState('');
   const [official,setOfficial]=useState<boolean | null>(null);
   const [diagnostic,setDiagnostic]=useState<'missing'|'unavailable'|'mismatch'|null>(null);
   useEffect(()=>{
