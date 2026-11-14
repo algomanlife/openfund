@@ -277,7 +277,7 @@ export class Engine {
         `SELECT DISTINCT a.id, c.rules_snapshot FROM demo_accounts a
            JOIN openfund_challenges c ON c.demo_account_id = a.id
            JOIN trading_positions p ON p.account_id = a.id AND p.status = 'open'
-          WHERE a.account_type='challenge' AND a.status='active' AND c.status='started'
+          WHERE a.account_type='challenge' AND a.status='active' AND c.status='started' AND openfund_account_writable(a.id)
             AND c.rules_snapshot->'conduct'->'holding'->>'mode' = 'auto_close_daily'`,
       )
     ).rows) {
@@ -1080,6 +1080,10 @@ export class Engine {
    * (runs even with no browser open)
    * ======================================================= */
 
+  /* ADR 0033: every selection below is restricted to accounts this region
+     may write (openfund_account_writable): foreign-owned, fenced, transferred
+     and quarantined accounts are never processed. The database fence rejects
+     any write that slips through. Trading rules are unchanged. */
   async loop() {
     if (!this.running || this.loopBusy) return;
     this.loopBusy = true;
@@ -1087,7 +1091,7 @@ export class Engine {
     try {
       for (const { user_id } of (
         await this.db.query(
-          "SELECT a.user_id FROM demo_accounts a WHERE a.account_type='free_demo' AND a.status='active' AND (a.balance<=0 OR EXISTS(SELECT 1 FROM trading_positions p WHERE p.account_id=a.id AND p.status='open'))",
+          "SELECT a.user_id FROM demo_accounts a WHERE a.account_type='free_demo' AND a.status='active' AND openfund_account_writable(a.id) AND (a.balance<=0 OR EXISTS(SELECT 1 FROM trading_positions p WHERE p.account_id=a.id AND p.status='open'))",
         )
       ).rows) {
         await this.enforceTrialRisk(user_id);
@@ -1099,7 +1103,7 @@ export class Engine {
         await this.db.query(
           `SELECT a.id FROM demo_accounts a
              JOIN openfund_challenges c ON c.demo_account_id = a.id
-            WHERE a.account_type='challenge' AND a.status='active' AND c.status='started'
+            WHERE a.account_type='challenge' AND a.status='active' AND c.status='started' AND openfund_account_writable(a.id)
               AND (EXISTS(SELECT 1 FROM trading_positions p WHERE p.account_id=a.id AND p.status='open')
                    OR c.expires_at <= now())`,
         )
@@ -1113,7 +1117,7 @@ export class Engine {
         await this.db.query(
           `SELECT a.id FROM demo_accounts a
              JOIN openfund_challenges c ON c.demo_account_id = a.id
-            WHERE a.account_type='challenge' AND a.status='active' AND c.status='started'
+            WHERE a.account_type='challenge' AND a.status='active' AND c.status='started' AND openfund_account_writable(a.id)
               AND coalesce((c.rules_snapshot->>'rulesVersion')::int, 1) >= 3
               AND NOT EXISTS(SELECT 1 FROM trading_positions p WHERE p.account_id=a.id AND p.status='open')`,
         )
@@ -1131,7 +1135,7 @@ export class Engine {
         await this.db.query(
           `SELECT DISTINCT a.id FROM demo_accounts a
              JOIN trading_positions p ON p.account_id = a.id AND p.status = 'open'
-            WHERE a.account_type = 'challenge' AND a.status = 'closed'`,
+            WHERE a.account_type = 'challenge' AND a.status = 'closed' AND openfund_account_writable(a.id)`,
         )
       ).rows) {
         await withAccountLock(id, () => this.#settleOrphans(id)).catch(console.error);
@@ -1139,7 +1143,7 @@ export class Engine {
       const pending = await this.db.query(
         `SELECT o.*, a.balance, a.used_margin FROM trading_orders o
          JOIN demo_accounts a ON a.id = o.account_id
-        WHERE o.status='pending'`,
+        WHERE o.status='pending' AND openfund_account_writable(a.id)`,
       );
       for (const o of pending.rows) {
         if (this.#shouldTrigger(o)) {
@@ -1151,7 +1155,7 @@ export class Engine {
       const open = await this.db.query(
         `SELECT p.*, a.balance FROM trading_positions p
          JOIN demo_accounts a ON a.id = p.account_id
-        WHERE p.status='open'`,
+        WHERE p.status='open' AND openfund_account_writable(a.id)`,
       );
       for (const p of open.rows) {
         const m = freshMark(this.md, p.market);
@@ -1167,6 +1171,7 @@ export class Engine {
         }
       }
     } finally {
+      this.lastPassAt = Date.now();   /* engine health for the regional operations view */
       this.loopBusy = false;
       this.loopPass = null; done();
     }
