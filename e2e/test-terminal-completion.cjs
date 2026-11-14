@@ -247,7 +247,7 @@ async function layout(browser){
     await page.getByRole('button',{name:'Toggle theme',exact:true}).click();
     await page.waitForFunction(()=>document.documentElement.dataset.theme==='dark');
   }
-  const tabs={prop:['dashboard','trade','portfolio','journal','journal?section=accounts','leaderboard','withdrawals','certificates'],perpetual:['dashboard','trade','portfolio','journal','journal?section=accounts','leaderboard','rewards']};
+  const tabs={prop:['dashboard','trade','portfolio','journal','journal?section=accounts','leaderboard','withdrawals','purchases','certificates'],perpetual:['dashboard','trade','portfolio','journal','journal?section=accounts','leaderboard','rewards']};
   for(const product of ['prop','perpetual'])for(const locale of (product==='perpetual'?['fa']:['en','fa']))for(const [width,height]of [[1920,1080],[1440,900],[1366,768],[1280,720]])for(const tab of tabs[product]){
     await page.setViewportSize({width,height});await page.goto(`${BASE}/${locale}/${product}/${tab}`);
     await page.locator('.of-terminal-compact').waitFor();await page.waitForTimeout(tab==='trade'?1400:250);
@@ -264,7 +264,7 @@ async function layout(browser){
       const grid=await page.locator('.of-dashboard-workspace').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length);
       check(`${product}/${locale} ${width}: account/detail dashboard grid`,grid===2);
     }
-    const component=tab==='dashboard'?'.of-dashboard-workspace':tab==='trade'?'iframe.of-trading-workspace':tab.startsWith('journal')?'.of-journal-workspace':tab==='portfolio'?'.of-tabs':tab==='withdrawals'?'.of-purchase-page':'.of-empty';
+    const component=tab==='dashboard'?'.of-dashboard-workspace':tab==='trade'?'iframe.of-trading-workspace':tab.startsWith('journal')?'.of-journal-workspace':tab==='portfolio'?'.of-tabs':tab==='withdrawals'||tab==='purchases'?'.of-purchase-page':tab==='certificates'?'.of-certificates-page':'.of-empty';
     check(`${product}/${locale}/${tab} ${width}: expected component mounted`,await page.locator(component).first().waitFor({timeout:8000}).then(()=>true,()=>false));
     const dataSource=product==='prop'?'PostgreSQL/Engine + owned product API':'Gains native read adapter + owned journal API';
     check(`${product}/${locale}/${tab} ${width}: product context connected`,requests.some(url=>url===`/products/${product}/context`));
