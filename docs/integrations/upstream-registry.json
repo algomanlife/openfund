@@ -356,6 +356,43 @@
       "risks": [
         "Tooling only; never shipped."
       ]
+    },
+    {
+      "id": "open-trade-desktop",
+      "name": "Open Trade desktop runtime and packager",
+      "category": "desktop",
+      "upstream": "https://github.com/electron/electron; https://github.com/electron-userland/electron-builder; https://github.com/WalletConnect/walletconnect-monorepo",
+      "license": "Electron MIT; electron-builder MIT; WalletConnect Community License (review required for public distribution)",
+      "version": "Electron 45.3.2; electron-builder 26.18.0; WalletConnect ethereum-provider 2.26.0",
+      "pins": [
+        {
+          "file": "apps/open-trade/package.json",
+          "pattern": "\"electron\": \"45\\.3\\.2\""
+        },
+        {
+          "file": "apps/open-trade/package.json",
+          "pattern": "\"electron-builder\": \"26\\.18\\.0\""
+        },
+        {
+          "file": "apps/open-trade/package.json",
+          "pattern": "\"@walletconnect/ethereum-provider\": \"2\\.26\\.0\""
+        }
+      ],
+      "locations": [
+        "apps/open-trade/"
+      ],
+      "vendoring": "Per-application npm package-lock.json; existing Vela bundle copied at build time",
+      "localModifications": "Desktop shell, sandboxed preload and allowlisted backend adapter; no vendored Electron changes",
+      "usedAtRuntime": true,
+      "tests": [
+        "npm test --prefix apps/open-trade",
+        "npm run test:desktop --prefix apps/open-trade"
+      ],
+      "updateProcedure": "Review upstream release/security notes, update exact pins and lockfile, rerun Electron acceptance and three-platform package workflow.",
+      "risks": [
+        "Real WalletConnect device sign-in remains pending project configuration.",
+        "Unsigned internal beta only; existing indicator provenance and AGPL combined-work questions remain public-distribution blockers."
+      ]
     }
   ]
 }
