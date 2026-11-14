@@ -7,6 +7,10 @@ import {
   session,
   safeStorage,
   shell,
+  clipboard,
+  ClipboardItem,
+  dialog,
+  nativeImage,
 } from "electron";
 import { readFile, writeFile, mkdir, unlink } from "node:fs/promises";
 import path from "node:path";
@@ -39,6 +43,18 @@ protocol.registerSchemesAsPrivileged([
   },
 ]);
 if (!app.requestSingleInstanceLock()) app.quit();
+const regions = { international: "https://openfi.cloud", iran: "https://iran.openfund.cloud" } as const;
+type Region = keyof typeof regions;
+let region: Region = "international";
+async function probe(url: string) {
+  const start = performance.now();
+  try {
+    const response = await fetch(url + "/health", { signal: AbortSignal.timeout(5000), redirect: "error" });
+    if (response.ok && (await response.json()).ok === true) return Math.round((performance.now() - start) / 5) * 5;
+  } catch {}
+  return null;
+}
+
 let win: BrowserWindow | null = null,
   token = "",
   origin = "",
@@ -213,13 +229,14 @@ app.whenReady().then(async () => {
     const bundled = JSON.parse(
       await readFile(path.join(__dirname, "config.json"), "utf8"),
     );
-    origin = bundled.origin ? backendOrigin(bundled.origin) : "";
+    origin = bundled.origin ? backendOrigin(bundled.origin) : regions.international;
     projectId = bundled.projectId || "";
   } catch {}
   try {
     const saved = JSON.parse(await readFile(configPath(), "utf8"));
-    origin = saved.origin ? backendOrigin(saved.origin) : "";
-    projectId = String(saved.projectId || "");
+    region = saved.region === "iran" ? "iran" : "international";
+    if (region === "iran" && process.env.OPEN_TRADE_IRAN_APPROVED !== "1") region = "international";
+    origin = regions[region];
     bounds = {
       width: Math.max(960, Math.min(3000, Number(saved.width) || 1440)),
       height: Math.max(640, Math.min(2000, Number(saved.height) || 960)),
@@ -298,22 +315,31 @@ app.whenReady().then(async () => {
   handle("config", () => ({
     origin,
     projectId,
+    region,
     secureStorage: encrypted(),
     version: app.getVersion(),
   }));
-  handle("configure", async (v) => {
-    const next = backendOrigin(v.origin);
-    if (!/^[a-f0-9]{32}$/i.test(v.projectId || "") && v.projectId !== "")
-      throw new Error("Invalid WalletConnect project ID");
+  let measurements: ReturnType<typeof measureRegions> | undefined;
+  let measuredAt = 0;
+  async function measureRegions() {
+    const [international, iran] = await Promise.all([probe(regions.international), probe(regions.iran)]);
+    return { international, iran, iranEnabled: process.env.OPEN_TRADE_IRAN_APPROVED === "1" };
+  }
+  handle("regions", () => {
+    if (!measurements || Date.now() - measuredAt >= 30_000) {
+      measuredAt = Date.now();
+      measurements = measureRegions();
+    }
+    return measurements;
+  });
+  handle("select-region", async (value: unknown) => {
+    if (value !== "international" && value !== "iran") throw new Error("Unknown server region");
+    if (value === "iran" && process.env.OPEN_TRADE_IRAN_APPROVED !== "1") throw new Error("Iran server is not enabled for trading");
+    if (region === value && origin === regions[value]) return;
     await clearToken();
-    origin = next;
-    projectId = v.projectId;
-    await writeFile(
-      configPath(),
-      JSON.stringify({ origin, projectId, ...bounds }),
-      { mode: 0o600 },
-    );
-    return true;
+    region = value;
+    origin = regions[value];
+    await writeFile(configPath(), JSON.stringify({ region, ...bounds }), { mode: 0o600 });
   });
   handle("request", api);
   handle("stream", (account) => {
@@ -341,6 +367,28 @@ app.whenReady().then(async () => {
       }
     }
   });
+  handle("capture-chart", async (rect: unknown) => {
+    if (!win || !rect || typeof rect !== "object") throw new Error("Invalid chart bounds");
+    const { x, y, width, height } = rect as Record<string, number>;
+    const view = win.getContentBounds();
+    if (![x, y, width, height].every(Number.isInteger) || x < 0 || y < 0 ||
+        width < 1 || height < 1 || x + width > view.width || y + height > view.height)
+      throw new Error("Chart is outside the visible window");
+    return (await win.webContents.capturePage({ x, y, width, height })).toDataURL();
+  });
+  for (const action of ["copy-chart", "save-chart"] as const) {
+    handle(action, async (value: unknown) => {
+      if (typeof value !== "string" || !value.startsWith("data:image/png;base64,") || value.length > 32_000_000)
+        throw new Error("Invalid chart image");
+      const image = nativeImage.createFromDataURL(value);
+      if (image.isEmpty()) throw new Error("Invalid chart image");
+      if (action === "copy-chart") { await clipboard.write([new ClipboardItem({ "image/png": new Blob([new Uint8Array(image.toPNG())], { type: "image/png" }) })]); return true; }
+      const result = await dialog.showSaveDialog(win!, { defaultPath: "Open Trade chart.png", filters: [{ name: "PNG image", extensions: ["png"] }] });
+      if (result.canceled || !result.filePath) return false;
+      await writeFile(result.filePath, image.toPNG());
+      return true;
+    });
+  }
   handle("external", (target) => {
     const links: Record<string, string> = {
       vela: "https://github.com/LuxAlgo/Vela",
@@ -356,7 +404,7 @@ app.whenReady().then(async () => {
       configPath(),
       JSON.stringify({
         origin,
-        projectId,
+        region,
         width: bounds.width,
         height: bounds.height,
       }),
