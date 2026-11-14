@@ -80,6 +80,9 @@ const IRAN_ALLOWED_MUTATIONS = [
   ['PUT', /^\/portfolio\/notes$/],
   ['PUT', /^\/products\/[^/]+\/preferences$/],
   ['POST', /^\/support\/messages$/],
+  ['POST', /^\/certificates\/(verify|identity)$/],  // attestations (#118): no financial authority
+  ['POST', /^\/admin\/certificates\/[^/]+\/revoke$/], // revokes a certificate this region issued
+  ['POST', /^\/admin\/certificates\/identities\/[^/]+\/correct$/],
   ['POST', /^\/trading\/preview$/],  // computes a quote; writes nothing
   ['POST', /^\/withdrawals$/],
   ['POST', /^\/withdrawals\/[^/]+\/cancel$/],
@@ -119,9 +122,9 @@ export function classifyRequest(method, path) {
   if (/^\/(withdrawals|rewards)(\/|$)/.test(path)) return 'withdrawal.request'
   if (/^\/admin\/(withdrawals|rewards)(\/|$)/.test(path)) return 'withdrawal.review'
   if (/^\/(live|admin\/live)(\/|$)/.test(path)) return 'live'
-  if (/^\/admin\/(runtime|regional)(\/|$)/.test(path)) return 'account.profile'
+  if (/^\/admin\/(runtime|regional|certificates)(\/|$)/.test(path)) return 'account.profile'
   if (/^\/admin(\/|$)/.test(path)) return 'admin.financial'
-  if (/^\/(auth|chart|portfolio\/notes|support|sync)(\/|$)/.test(path) || /^\/products\/[^/]+\/preferences$/.test(path)) return 'account.profile'
+  if (/^\/(auth|chart|portfolio\/notes|support|sync|certificates)(\/|$)/.test(path) || /^\/products\/[^/]+\/preferences$/.test(path)) return 'account.profile'
   return 'other'
 }
 

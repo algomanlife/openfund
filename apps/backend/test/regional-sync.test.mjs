@@ -405,6 +405,19 @@ test('ownership handoff GLOBAL → IRAN: fenced, imported, verified, transferred
   assert.equal((await one(gPool, `SELECT openfund_account_writable($1) AS w`, [gu.account])).w, false)
 })
 
+test('certificates (#118): issued in GLOBAL, verifiable on IRAN; revocation follows', { skip }, async () => {
+  const gu = await newUser(gPool, gEngine)
+  const serial = (await one(gPool, `INSERT INTO certificates (user_id, kind, source_id, holder, plan, amount, event_at)
+    VALUES ($1,'purchase',$2,'Test Holder','Test plan',100,now()) RETURNING serial`, [gu.id, randomUUID()])).serial
+  await drained(gPool, 'GLOBAL')
+  const verify = srv => fetch(srv.base + '/certificates/verify', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ serial }) }).then(r => r.json())
+  assert.equal((await verify(I)).status, 'valid', 'the IRAN runtime verifies a GLOBAL certificate from its read model')
+  assert.equal((await verify(I)).certificate.holder, 'Test Holder')
+  await gPool.query(`UPDATE certificates SET status='revoked', revoked_at=now() WHERE serial=$1`, [serial])
+  await drained(gPool, 'GLOBAL')
+  assert.equal((await verify(I)).status, 'revoked')
+})
+
 test('9. a region process killed during delivery loses nothing', { skip }, async () => {
   const before = await one(iPool, `SELECT count(*)::int AS n FROM region_inbox WHERE status = 'rejected'`)
   const users = []

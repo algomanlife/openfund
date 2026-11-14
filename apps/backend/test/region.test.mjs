@@ -75,7 +75,7 @@ const connectedOnly = [
   ['POST', '/trading/order'], ['POST', '/trading/positions/p1/close'], ['POST', '/trading/positions/p1/protection'], ['POST', '/trading/orders/o1/cancel'],
 ]
 /* account writes: additionally limited to IRAN-owned accounts by the database fence */
-const everyMode = [['POST', '/withdrawals'], ['POST', '/withdrawals/w1/cancel'], ['POST', '/rewards/accounts/a1/cycle'], ['POST', '/admin/withdrawals/w1/review'],
+const everyMode = [['POST', '/certificates/verify'], ['POST', '/certificates/identity'], ['POST', '/admin/certificates/abc/revoke'], ['POST', '/withdrawals'], ['POST', '/withdrawals/w1/cancel'], ['POST', '/rewards/accounts/a1/cycle'], ['POST', '/admin/withdrawals/w1/review'],
   ['POST', '/admin/regional/reconcile'], ['POST', '/sync/v1/events']]
 
 test('IRAN: purchases, live markets and other financial admin are denied in every mode (default deny)', () => {

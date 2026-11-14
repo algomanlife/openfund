@@ -46,6 +46,7 @@ const ROW = {
   'position.v1':         { id: isUuid, account_id: isUuid, market: isStr, side: isStr, status: isStr },
   'ledger.v1':           { id: isNum, account_id: isUuid, event: isStr, amount: isNum, balance_after: isNum },
   'withdrawal.v1':       { id: isUuid, user_id: isUuid, amount_usd: isNum, status: isStr },
+  'certificate.v1':      { serial: v => isStr(v) && /^[0-9a-f]{32}$/.test(v), user_id: isUuid, kind: isStr, status: isStr },
 }
 const CONTROL = {
   'checkpoint.v1': p => isUuid(p.run_id ?? '00000000-0000-0000-0000-000000000000') && Array.isArray(p.accounts) &&
@@ -57,7 +58,7 @@ export const SUPPORTED_TYPES = Object.freeze([...Object.keys(ROW), ...Object.key
 
 /* entity name in the read model for row-snapshot events */
 const ENTITY = { 'user.v1': 'user', 'account.v1': 'account', 'ownership.v1': 'ownership', 'challenge.v1': 'challenge',
-  'order.v1': 'order', 'position.v1': 'position', 'withdrawal.v1': 'withdrawal' }
+  'order.v1': 'order', 'position.v1': 'position', 'withdrawal.v1': 'withdrawal', 'certificate.v1': 'certificate' }
 /* append-only entries */
 const ENTRY = { 'ledger.v1': 'ledger', 'challenge_event.v1': 'challenge_event', 'challenge_review.v1': 'challenge_review' }
 
@@ -194,7 +195,7 @@ async function project(c, source, local, e) {
   const p = e.payload
   if (ENTITY[e.type]) {
     const row = p.row, entity = ENTITY[e.type]
-    const id = entity === 'ownership' ? row.account_id : row.id
+    const id = entity === 'ownership' ? row.account_id : entity === 'certificate' ? row.serial : row.id
     const account = e.account_id ?? (entity === 'account' ? row.id : null)
     await c.query(
       `INSERT INTO region_remote_rows (source_region, entity, entity_id, account_id, wallet, stream_seq, data)
@@ -468,6 +469,8 @@ const SNAPSHOT_SOURCES = [
   ['withdrawal.v1', 'a', `SELECT 'user:'||w.user_id, c.demo_account_id, to_jsonb(w), u.wallet_address, 'withdrawal_requests' FROM withdrawal_requests w
                        JOIN openfund_users u ON u.id=w.user_id LEFT JOIN openfund_challenges c ON c.id=w.challenge_id
                        WHERE c.demo_account_id IS NULL OR openfund_account_writable(c.demo_account_id) ORDER BY w.requested_at, w.id`],
+  ['certificate.v1', null, `SELECT 'user:'||c.user_id, NULL::uuid, to_jsonb(c), u.wallet_address, 'certificates' FROM certificates c
+                       JOIN openfund_users u ON u.id=c.user_id ORDER BY c.issued_at, c.serial`],
 ]
 
 /**
@@ -484,7 +487,7 @@ export async function enableSyncWithSnapshot(pool, { actor }) {
     const enabled = (await c.query(`SELECT openfund_sync_enabled() AS e`)).rows[0].e
     if (enabled) throw fail(409, 'sync_already_enabled')
     /* block concurrent financial writers for the snapshot's duration */
-    for (const t of ['demo_accounts', 'openfund_challenges', 'trading_orders', 'trading_positions', 'trading_ledger', 'withdrawal_requests', 'challenge_events', 'challenge_reviews', 'account_ownership', 'openfund_users'])
+    for (const t of ['demo_accounts', 'openfund_challenges', 'trading_orders', 'trading_positions', 'trading_ledger', 'withdrawal_requests', 'challenge_events', 'challenge_reviews', 'account_ownership', 'openfund_users', 'certificates'])
       await c.query(`LOCK TABLE ${t} IN SHARE MODE`)
     const counts = {}
     for (const [type, , sql] of SNAPSHOT_SOURCES) {

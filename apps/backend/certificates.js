@@ -35,12 +35,14 @@ export async function syncCertificates(pool, userId) {
       FROM challenge_reviews r JOIN openfund_challenges c ON c.id=r.challenge_id
       JOIN challenge_plans p ON p.id=c.challenge_plan_id
       WHERE c.user_id=$1 AND c.status='passed' AND c.completed_at IS NOT NULL AND c.account_size_usd > 0
+        AND (c.demo_account_id IS NULL OR openfund_account_writable(c.demo_account_id))
         AND r.decision='approved' AND r.actor IS NOT NULL AND r.funded_challenge_id IS NOT NULL
       UNION ALL
       SELECT 'payout', w.id, p.name, w.amount_usd, w.reviewed_at
       FROM withdrawal_requests w JOIN openfund_challenges c ON c.id=w.challenge_id
       JOIN challenge_plans p ON p.id=c.challenge_plan_id
       WHERE w.user_id=$1 AND c.user_id=w.user_id AND w.status='paid'
+        AND (c.demo_account_id IS NULL OR openfund_account_writable(c.demo_account_id))
         AND nullif(trim(w.payout_ref),'') IS NOT NULL AND w.reviewed_at IS NOT NULL`, [userId])).rows
     for (const event of events) {
       const inserted = await client.query(`INSERT INTO certificates (user_id,kind,source_id,holder,plan,amount,event_at)
@@ -61,7 +63,9 @@ export function certificateRoutes({ pool, requireAuth }) {
     res.set('Cache-Control', 'no-store')
     const serial = req.body?.serial
     if (typeof serial !== 'string' || !serialPattern.test(serial)) return res.status(404).json({ status: 'not_found' })
+    /* ADR 0033: a certificate issued by the other region is verified from its synchronized read model */
     const row = (await pool.query('SELECT * FROM certificates WHERE serial=$1', [serial])).rows[0]
+      ?? (await pool.query(`SELECT data FROM region_remote_rows WHERE entity='certificate' AND entity_id=$1`, [serial]).catch(() => ({ rows: [] }))).rows[0]?.data
     if (!row) return res.status(404).json({ status: 'not_found' })
     // A revoked record discloses only its identifier and revocation date.
     res.json(row.status === 'revoked' ? { status: 'revoked', serial, revokedAt: row.revoked_at } : { status: 'valid', certificate: view(row) })
