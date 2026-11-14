@@ -233,7 +233,7 @@ export default function TerminalShell({ product }: { product: Product }) {
           </div>}</ReleaseStatus>
         </header>
         <main id="terminal-main" tabIndex={-1} className="of-terminal-main">
-          {page !== "trade" && page !== "chart" && <Editorial page={page} />}
+          {page !== "trade" && page !== "chart" && page !== "purchases" && page !== "certificates" && <Editorial page={page} />}
           {page !== "trade" && page !== "chart" && context.error && (
             <div role="alert" className="of-error">
               {t("دریافت حساب ناموفق بود.", "Account could not be loaded.")}{" "}

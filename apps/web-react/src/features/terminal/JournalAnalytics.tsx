@@ -178,7 +178,7 @@ export function JournalAnalytics({
           <label>
             {t("نماد", "Instrument")}
             <input
-              aria-label="Analytics instrument"
+              aria-label={t("نماد تحلیل", "Analytics instrument")}
               value={market}
               onChange={(e) => setMarket(e.target.value)}
             />
@@ -186,13 +186,13 @@ export function JournalAnalytics({
           <label>
             {t("جهت", "Direction")}
             <select value={side} onChange={(e) => setSide(e.target.value)}>
-              <option value="">All</option>
-              <option value="long">Long</option>
-              <option value="short">Short</option>
+              <option value="">{t("همه", "All")}</option>
+              <option value="long">{t("خرید", "Long")}</option>
+              <option value="short">{t("فروش", "Short")}</option>
             </select>
           </label>
           <span>
-            UTC · {from || "All"} → {to}
+            UTC · {from || t("همه", "All")} → {to}
           </span>
         </div>
       )}
@@ -379,10 +379,11 @@ export function JournalAnalytics({
   );
 }
 function DailyBars({ days }: { days: any[] }) {
-  if (!days.length) return <p>No closed trading days in this range.</p>;
+  const { t } = useTerminal();
+  if (!days.length) return <p>{t("در این بازه روز معاملاتی بسته‌شده‌ای وجود ندارد.", "No closed trading days in this range.")}</p>;
   const max = Math.max(1, ...days.map((d) => Math.abs(d.netPnl)));
   return (
-    <svg viewBox="0 0 600 180" role="img" aria-label="Daily net PnL">
+    <svg viewBox="0 0 600 180" role="img" aria-label={t("سود خالص روزانه", "Daily net PnL")}>
       <line
         x1="0"
         y1="90"

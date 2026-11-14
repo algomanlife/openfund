@@ -546,6 +546,6 @@ test('Resources is a disclosure rather than a route, with arrow navigation and E
   navigationKeyDown({ target: document.activeElement, key: 'Escape', preventDefault() {}, stopPropagation() {} }, document)
   assert.equal(document.activeElement, trigger)
   assert.equal(trigger.getAttribute('aria-expanded'), 'false')
-  assert.ok(trigger.parentElement.classList.contains('resources-dismissed'))
+  assert.ok(!trigger.parentElement.classList.contains('resources-open'))
   dom.window.close()
 })

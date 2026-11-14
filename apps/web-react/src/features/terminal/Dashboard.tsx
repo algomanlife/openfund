@@ -36,9 +36,9 @@ export function ProductDashboard() {
       <AccountLinks />
       {selected?.type === "challenge" ? <>
         {context?.state?.account?.status === "active" && <div className="of-metrics of-dashboard-summary">
-          <Metric label={t(`موجودی · ${unit}`, `Balance · ${unit}`)} value={context?.state?.account?.balance} />
-          <Metric label={t(`ارزش حساب · ${unit}`, `Equity · ${unit}`)} value={context?.state?.account?.equity} />
-          <Metric label={t(`سود باز · ${unit}`, `Unrealized PnL · ${unit}`)} value={context?.state?.account?.unrealized_pnl} />
+          <Metric label={t('موجودی', 'Balance') + " · " + unit} value={context?.state?.account?.balance} />
+          <Metric label={t('ارزش حساب', 'Equity') + " · " + unit} value={context?.state?.account?.equity} />
+          <Metric label={t('سود باز', 'Unrealized PnL') + " · " + unit} value={context?.state?.account?.unrealized_pnl} />
         </div>}
         {context?.state?.positions?.length ? <div className="of-table-wrap"><table><thead><tr><th>{t("بازار", "Market")}</th><th>{t("جهت", "Side")}</th><th>{t("سود باز", "Unrealized PnL")}</th></tr></thead>
           <tbody>{context.state.positions.slice(0, 5).map((position: any) => <tr key={position.id}><td>{position.market}</td><td>{position.side === "long" ? t("خرید", "Long") : t("فروش", "Short")}</td><td dir="ltr">{money(position.unrealized_pnl)} {unit}</td></tr>)}</tbody></table></div> : null}
@@ -47,10 +47,10 @@ export function ProductDashboard() {
         {context?.state?.account?.status === "permanently_disabled" && <p role="status" className="of-error">{t("این حساب برای همیشه غیرفعال شده است. تاریخچه قابل مشاهده است.", "Permanently disabled. Historical records remain available in read-only mode.")}</p>}
         {overview.error && <p role="alert" className="of-error">{t("دریافت خلاصه ناموفق بود.", "Summary unavailable.")}</p>}
         <div className="of-metrics of-dashboard-summary">
-          <Metric label={t(`موجودی · ${unit}`, `Balance · ${unit}`)} value={a?.balance} />
-          <Metric label={t(`ارزش حساب · ${unit}`, `Equity · ${unit}`)} value={a?.equity} />
-          <Metric label={t(`سود تحقق‌یافته · ${unit}`, `Realized PnL · ${unit}`)} value={a?.realizedPnl} />
-          <Metric label={t(`سود باز · ${unit}`, `Unrealized PnL · ${unit}`)} value={a?.unrealizedPnl} />
+          <Metric label={t('موجودی', 'Balance') + " · " + unit} value={a?.balance} />
+          <Metric label={t('ارزش حساب', 'Equity') + " · " + unit} value={a?.equity} />
+          <Metric label={t('سود تحقق\u200cیافته', 'Realized PnL') + " · " + unit} value={a?.realizedPnl} />
+          <Metric label={t('سود باز', 'Unrealized PnL') + " · " + unit} value={a?.unrealizedPnl} />
         </div>
         <div className="of-dashboard-grid">
           <section className="of-panel">

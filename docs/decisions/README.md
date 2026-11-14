@@ -35,3 +35,6 @@
 - [0032 — Iran sovereign regional runtime (foundations)](0032-iran-sovereign-regional-runtime.md)
 
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)
+
+- [0034 — Editorial and distribution authority](0034-editorial-and-distribution-authority.md)
+- [0033 — Certificate event attestations](0033-certificate-event-attestations.md)

@@ -257,7 +257,7 @@ async function liveMark(symbol) {
     const tool = await fw(() => {
       const c = window.OpenfundTerminalInspect.chart()
       const t0 = Date.now() - 600000, t1 = Date.now() + 600000
-      const d = c.drawings.add('of-position', { paneId: 'price', anchors: [{ time: t0, price: 100 }, { time: t1, price: 90 }, { time: t1, price: 120 }], props: { ofSide: 'long', ofEditable: ['stop'] } })
+      const d = c.drawings.add('of-position', { paneId: 'price', anchors: [{ time: t0, price: 100 }, { time: t1, price: 90 }, { time: t1, price: 120 }], props: { ofSide: 'long', ofEditable: ['stop'], ofTick: 0.1, ofPrecision: 1 } })
       const orig = d.anchors.map(a => ({ ...a }))
       const moved = d.translateBody(3600000, 50, orig)
       d.dragHandle(0, { time: t0 + 9e5, price: 105 })
@@ -273,7 +273,7 @@ async function liveMark(symbol) {
     check('position box: the entry handle neither changes price nor candle', tool.afterSl[0].price === 100 && tool.afterSl[0].time === tool.orig[0].time)
     check('position box: a level that is not editable never moves', tool.afterSl[2].price === 120, JSON.stringify(tool))
     check('position box: SL handle moves vertically only (candle/time unchanged)', tool.afterSl[1].price === 92 && tool.afterSl[1].time === tool.orig[1].time)
-    check('position box: a level dragged across the entry is clamped to its own side', tool.clamped < 100 && tool.clamped > 99.99 && tool.type === 'of-position', JSON.stringify(tool))
+    check('position box: a level dragged across the entry is clamped one tick below it', tool.clamped === 99.9 && tool.type === 'of-position', JSON.stringify(tool))
     /* the edit path: entry move refused, invalid level refused, valid level confirmed by the existing service */
     const longPos = (await call(page, `/trading/state?account=${trial.id}`)).data.positions.find(p => p.side === 'long')
     const editOn = (posId, change) => fw(({ posId, change }) => {

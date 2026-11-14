@@ -1,9 +1,11 @@
-import { dirOf, normalizeLocale, pick } from '../../i18n/locales'
+import { dirOf, normalizeLocale, pickRecord, intlLocale } from '../../i18n/locales'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { txExplorerUrl } from './chains'
 import { apiFetch, useSession } from '../../session/useOpenfundSession'
 import { backendUrl } from '../../session/useOpenfundSession'
+import { planBySlug } from '../../data/challengePlans'
+import { purchaseCopy as copy, purchaseStatuses } from './purchaseContent'
 import './purchase.css'
 
 /**
@@ -13,94 +15,89 @@ import './purchase.css'
  */
 
 interface HistoryRow {
-  id: string, status: string, account_size_usd: string, price_usd: string, currency: string,
+  id: string, status: string, lifecycle_state?: string, account_size_usd: string, price_usd: string,
   created_at: string, paid_at: string | null, plan_slug: string, plan_name: string,
   payment: { txHash: string, chainId: number, verifiedAt: string } | null,
   invoice: { id: string, number: string, issuedAt: string } | null,
   challenge_id: string | null
 }
 
-const STATUS_FA: Record<string, string> = { pending: 'در انتظار پرداخت', paid: 'پرداخت‌شده', cancelled: 'لغو‌شده', expired: 'منقضی' }
 const txUrl = (chainId: number, txHash: string) => txExplorerUrl(chainId, txHash) || undefined
 
 export default function PurchaseHistory() {
   const { locale: routeLocale } = useParams()
-  const locale = normalizeLocale(routeLocale, 'fa'), isFa = locale === 'fa'
-  const t = (fa: string, en: string) => pick(locale, fa, en)
+  const locale = normalizeLocale(routeLocale, 'fa')
+  const c = (key: keyof typeof copy) => pickRecord(locale, copy[key])
   const session = useSession()
   const [rows, setRows] = useState<HistoryRow[] | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (session.status !== 'authenticated') { setRows(null); return }
+    let active = true
+    setRows(null); setError(null)
+    if (session.status !== 'authenticated') return
+
     void apiFetch('/purchases/history').then(r => {
+      if (!active) return
       if (r.ok) setRows(r.data?.orders || [])
-      else setError(t('دریافت تاریخچه ناموفق بود.', 'Could not load history.'))
-    }).catch(() => setError(t('دریافت تاریخچه ناموفق بود.', 'Could not load history.')))
+      else setError(c('loadError'))
+    }).catch(() => { if (active) setError(c('loadError')) })
+    return () => { active = false }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session.status])
+  }, [session.status, session.user?.id, locale])
 
-  const fmtDate = (d?: string | null) => (d ? new Date(d).toLocaleDateString(t('fa-IR', 'en-US')) : '—')
-  const fmtMoney = (v: string | number) => '$' + Number(v).toLocaleString('en-US', { maximumFractionDigits: 2 })
-
-  if (session.status !== 'authenticated') {
-    return (
-      <div className="of-purchase-page">
-        <h2>{t('خریدها و فاکتورها', 'Purchases & Invoices')}</h2>
-        <div className="of-empty">
-          <p>{t('برای دیدن تاریخچهٔ خرید، کیف پول را وصل و وارد شو.', 'Connect and sign in with your wallet to view your purchase history.')}</p>
-          <button className="button" onClick={() => (window as any).__ofOpenConnect?.()}>{t('اتصال کیف پول', 'Connect wallet')}</button>
-        </div>
-      </div>
-    )
-  }
+  const fmtDate = (d?: string | null) => d && Number.isFinite(Date.parse(d)) ? new Intl.DateTimeFormat(intlLocale(locale), { dateStyle: 'medium' }).format(new Date(d)) : '—'
+  const fmtMoney = (v: string | number) => Number.isFinite(Number(v))
+    ? new Intl.NumberFormat(intlLocale(locale), { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(Number(v)) : '—'
 
   return (
-    <div className="of-purchase-page">
-      <h2>{t('خریدها و فاکتورها', 'Purchases & Invoices')}</h2>
+    <div className="of-purchase-page" dir={dirOf(locale)}>
+      <div className="of-purchase-heading">
+        <div><h1>{c('title')}</h1><p>{c('description')}</p></div>
+        <Link className="button of-purchase-cta" to={`/${locale}/checkout`}>{c('buy')}</Link>
+      </div>
+      {session.status !== 'authenticated' && <div className="of-empty"><p>{c('signIn')}</p><button className="button" onClick={() => (window as any).__ofOpenConnect?.()}>{c('connect')}</button></div>}
       {error && <p className="of-profile-error" role="alert">{error}</p>}
-      {!rows && <p className="of-empty">…</p>}
+      {session.status === 'authenticated' && !rows && !error && <p className="of-empty" role="status">{c('loading')}</p>}
       {rows && rows.length === 0 && (
         <div className="of-empty">
-          <p>{t('هنوز خریدی نداری. پلن‌ها را در صفحهٔ چلنج‌ها ببین.',
-            'No purchases yet. See the plans on the Challenges page.')}</p>
-          <a className="button" href={`/${locale}/checkout`}>{t('خرید چلنج', 'Buy a Challenge')}</a>        </div>
+          <p>{c('empty')}</p>        </div>
       )}
       {rows && rows.length > 0 && (
-        <table className="of-purchase-table" dir={dirOf(locale)}>
+        <div className="of-purchase-scroll" role="region" aria-label={c('title')} tabIndex={0}><table className="of-purchase-table" dir={dirOf(locale)}>
           <thead>
             <tr>
-              <th>{t('پلن', 'Plan')}</th>
-              <th>{t('اندازهٔ حساب', 'Account size')}</th>
-              <th>{t('هزینه', 'Fee')}</th>
-              <th>{t('وضعیت', 'Status')}</th>
-              <th>{t('تاریخ', 'Date')}</th>
-              <th>{t('پرداخت', 'Payment')}</th>
-              <th>{t('فاکتور', 'Invoice')}</th>
+              <th scope="col">{c('plan')}</th>
+              <th scope="col">{c('size')}</th>
+              <th scope="col">{c('fee')}</th>
+              <th scope="col">{c('status')}</th>
+              <th scope="col">{c('date')}</th>
+              <th scope="col">{c('payment')}</th>
+              <th scope="col">{c('invoice')}</th>
             </tr>
           </thead>
           <tbody>
             {rows.map(o => (
               <tr key={o.id}>
-                <td><Link to={`/${locale}/checkout?order=${o.id}`}><b>{o.plan_name}</b></Link></td>
+                <td><Link to={`/${locale}/checkout?order=${o.id}`}><b>{pickRecord(locale, planBySlug(o.plan_slug)?.name) || o.plan_name}</b></Link></td>
                 <td dir="ltr">{fmtMoney(o.account_size_usd)}</td>
                 <td dir="ltr">{fmtMoney(o.price_usd)}</td>
-                <td><span className={`of-status-pill of-status-${o.status}`}>{isFa ? (STATUS_FA[o.status] || o.status) : o.status}</span></td>
+                <td><span className={`of-status-pill of-status-${o.status}`}>{pickRecord(locale, purchaseStatuses[o.lifecycle_state || ''] || purchaseStatuses[o.status]) || c('unknown')}</span></td>
                 <td>{fmtDate(o.created_at)}</td>
                 <td dir="ltr" className="of-payment-cell">
-                  {o.payment ? <a href={txUrl(o.payment.chainId, o.payment.txHash)} target="_blank" rel="noreferrer">{o.payment.txHash.slice(0, 10)}…</a> : '—'}
+                  {o.payment && txUrl(o.payment.chainId, o.payment.txHash) ? <a href={txUrl(o.payment.chainId, o.payment.txHash)} target="_blank" rel="noreferrer">{o.payment.txHash.slice(0, 10)}…</a> : <span>{c('unavailable')}</span>}
                 </td>
                 <td>
                   {o.invoice ? (
                     <a className="button small" href={`${backendUrl()}/invoices/${o.invoice.id}`} target="_blank" rel="noreferrer">
-                      {t('دانلود PDF', 'Download PDF')}
+                      {c('pdf')}
                     </a>
-                  ) : '—'}
+                  ) : <span className="of-receipt-unavailable">{c('unavailable')}</span>}
                 </td>
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       )}
     </div>
   )

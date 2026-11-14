@@ -11,8 +11,6 @@
 .information-page .info-chrome:has(header){position:sticky;top:0;z-index:50}
 .information-page header{position:relative}
 .information-page .navlinks a[aria-current=page]{color:var(--mint)}
-.information-page .nav-dropdown:focus-within{opacity:1;visibility:visible;pointer-events:auto}
-.information-page .nav-account:focus-within .nav-dropdown{opacity:1;visibility:visible;pointer-events:auto}
 .information-page .info-hero{position:relative;isolation:isolate;text-align:center;padding-block:76px 64px}
 .information-page .info-hero h1{font-size:65px;font-weight:600;line-height:1.45;letter-spacing:-1.5px;margin:24px 0 20px}
 .information-page .info-hero h1 em{color:#b3c7be;font-weight:500}
@@ -188,9 +186,7 @@ html[lang=en] .information-page .info-hero h1{font-size:58px;letter-spacing:-2px
 }
 @media(prefers-reduced-motion:reduce){.information-page *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
-/* Resources dropdown in the shared header (website expansion). Desktop opens
-   on hover/focus like the landing account menu; inside the mobile menu it
-   renders as a flat group. */
+/* Shared public navigation groups. Compact screens use the off-canvas drawer. */
 .openfund-header .nav-account .chevron{font:10px system-ui;color:#7c9185;margin-inline-start:6px}
 .openfund-header .nav-dropdown a{display:flex;flex-direction:column;gap:3px;text-decoration:none;padding:11px 9px;border-radius:5px;color:var(--white);font-size:13px;font-weight:500;transition:background .2s}
 .openfund-header .nav-dropdown a:hover{background:#82e7bd0d;color:var(--mint)}
@@ -209,7 +205,6 @@ html[lang=en] .information-page .info-hero h1{font-size:58px;letter-spacing:-2px
 .openfund-header .resources-toggle{background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer}
 .openfund-header .resources-toggle .chevron{font:10px system-ui;color:#7c9185;margin-inline-start:6px}
 .openfund-header .nav-account.resources-open .nav-dropdown{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto;transition:none}
-.openfund-header .nav-account.resources-dismissed .nav-dropdown{opacity:0;visibility:hidden;pointer-events:none}
 .openfund-header .navlinks [data-active-section],.openfund-header .navlinks [aria-current=page]{color:var(--mint)}
 @media(max-width:1000px){
   .openfund-header .navlinks.open{max-height:calc(100dvh - 84px);overflow-y:auto}
@@ -297,4 +292,18 @@ html:is([lang=ru],[lang=zh-CN]) .information-page .info-hero h1,.info-main[lang=
   :root .openfund-header.nav-overflow .nav { height: 70px; min-height: 0; padding-block: 0; gap: 10px; }
   :root .openfund-header.nav-overflow .nav-actions { width: auto; gap: 6px; }
   :root .openfund-header.nav-overflow .brand { margin-inline-end: auto; flex: 0 0 auto; }
+}
+
+/* The page body owns a lower stacking context than shared navigation. Local
+   checkout headers/cards cannot compete with the sticky chrome's layer. */
+.information-page > .info-main { position: relative; isolation: isolate; z-index: 0; }
+.openfund-header, .openfund-header .nav, .openfund-header .nav-account { overflow: visible; }
+/* Disclosure state is explicit: hover/focus must not reopen a dismissed menu. */
+:root .openfund-header .nav-account:has(.resources-toggle):not(.resources-open) .nav-dropdown {
+  opacity: 0; visibility: hidden; pointer-events: none; transition: none;
+}
+:root .openfund-header .nav-account.resources-open .nav-dropdown {
+  opacity: 1; visibility: visible; pointer-events: auto; transform: none;
+  background: var(--surface); max-height: calc(100dvh - 110px);
+  overflow-y: auto; overscroll-behavior: contain;
 }

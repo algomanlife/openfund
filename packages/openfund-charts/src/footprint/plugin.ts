@@ -232,7 +232,7 @@ export function installFootprint(opts: { apiBase?: string } = {}): boolean {
     registerRendererLayer({ id: FOOTPRINT_OVERLAY, placement: 'above-data', repaintOnCursor: true, create: () => new FootprintLayer(true) });
     registerChartType({
         id: FOOTPRINT_TYPE,
-        label: msg('footprint.title', 'Footprint'),
+        label: msg('footprint.style.beta', 'Footprint · Beta'),
         icon: ICON,
         settings: chartTypeSettings(),
         dataEngine: () => new FootprintEngine(),

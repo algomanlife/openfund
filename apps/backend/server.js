@@ -33,6 +33,7 @@ import { adminRoutes } from './admin.js'
 import { chartWorkspaceRoutes } from './chart-workspaces.js'
 import { supportRoutes, supportAdminRoutes } from './support.js'
 import { rewardRoutes, rewardAdminRoutes } from './rewards.js'
+import { certificateRoutes, certificateAdminRoutes } from './certificates.js'
 import { calendarAdminRoutes } from './conduct.js'
 import { createFootprintService } from './footprint/service.js'
 import { couponAdminRoutes } from './coupons.js'
@@ -783,6 +784,7 @@ app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tra
 app.use(referralRoutes({ pool, requireAuth, audit }))
 app.use(purchaseRoutes({ pool, requireAuth, audit, limit }))
 app.use(rewardRoutes({ pool, requireAuth, audit, limit, md: marketData }))
+app.use(certificateRoutes({ pool, requireAuth }))
 app.use(chartWorkspaceRoutes({ pool, requireAuth, limit }))
 /* Public Contact Us submissions (write-only; operators read via /admin/support or Directus) */
 app.use(supportRoutes({ pool, limit, optionalUser: async req => (await userFromSession(req))?.user_id ?? null }))
@@ -806,6 +808,7 @@ app.use('/admin/live', liveAdminRoutes({ pool, treasury, config: live }))
 app.use('/admin/coupons', couponAdminRoutes({ pool }))
 app.use('/admin/payments', paymentAdminRoutes({ pool, verifier: (...a) => defaultPaymentVerifier()(...a) }))
 app.use('/admin/support', supportAdminRoutes({ pool }))
+app.use('/admin/certificates', certificateAdminRoutes({ pool }))
 app.use('/admin/rewards', rewardAdminRoutes({ pool }))
 app.use('/admin/calendar', calendarAdminRoutes({ pool }))
 app.use('/admin/runtime', runtimeAdminRoutes({ Router: express.Router, runtime, adminAuth, adminActor, audit }))

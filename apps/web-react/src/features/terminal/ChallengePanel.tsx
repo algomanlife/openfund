@@ -72,9 +72,9 @@ export function ChallengePanel({ challengeId }: { challengeId: string }) {
 
     {view.metrics && <>
       <div className="of-metrics of-dashboard-summary">
-        <Metric label={t(`ارزش حساب · ${unit}`, `Equity · ${unit}`)} value={m.equity} />
-        <Metric label={t(`سود تحقق‌یافته · ${unit}`, `Realized PnL · ${unit}`)} value={m.realizedProfit} />
-        {m.target?.amount != null && <Metric label={t(`هدف سود · ${unit}`, `Profit target · ${unit}`)} value={m.target.amount} />}
+        <Metric label={t('ارزش حساب', 'Equity') + " · " + unit} value={m.equity} />
+        <Metric label={t('سود تحقق\u200cیافته', 'Realized PnL') + " · " + unit} value={m.realizedProfit} />
+        {m.target?.amount != null && <Metric label={t('هدف سود', 'Profit target') + " · " + unit} value={m.target.amount} />}
       </div>
       <dl className="of-dashboard-values">
         <div><dt>{t("مبنای سقف روزانه", "Daily loss basis")}</dt><dd dir="ltr">{money(m.day?.basis)} {unit}</dd></div>
@@ -88,7 +88,7 @@ export function ChallengePanel({ challengeId }: { challengeId: string }) {
       {m.target?.amount != null && <p role="status" className="of-challenge-progress">
         {m.target.reached
           ? t("هدف سود محقق شده است.", "Profit target reached.")
-          : t(`فاصله تا هدف: ${unit} `, `Remaining to target: `) + money(Math.max(0, Number(m.target.amount) - Number(m.realizedProfit || 0)))}
+          : t("فاصله تا هدف:", "Remaining to target:") + " " + unit + " " + money(Math.max(0, Number(m.target.amount) - Number(m.realizedProfit || 0)))}
         {rules.minTradingDays > 0 && ` · ${t("حداقل روز معاملاتی", "min trading days")}: ${m.tradingDays ?? 0}/${rules.minTradingDays}`}
       </p>}
       {view.violations?.length ? <div role="alert" className="of-error">

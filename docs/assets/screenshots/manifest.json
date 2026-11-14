@@ -6478,6 +6478,171 @@
       "capturedAt": "2026-11-14T04:01:54.821316+00:00",
       "state": "Actual packaged unsigned macOS arm64 Open Trade.app; neutral compact desktop shell with real Gains candles; no personal wallet",
       "sha256": "be74f2a89c52c63bf0370c94e9582186217992c8187c1d03be388eb76dac9156"
+    },
+    {
+      "file": "final-refinement/checkout-en-dark.png",
+      "route": "/en/checkout",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:27:03Z",
+      "state": "Local development build, dark theme, Economy disclosure open above checkout. Bundled editorial fallback."
+    },
+    {
+      "file": "final-refinement/checkout-fa-light.png",
+      "route": "/fa/checkout",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:25:12Z",
+      "state": "Local development build, light theme, Economy disclosure open above checkout. Bundled editorial fallback."
+    },
+    {
+      "file": "final-refinement/apps-en-light-1440.png",
+      "route": "/en/apps",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:26:28Z",
+      "state": "Local development build, light theme, Web terminal and verified installer availability. Bundled editorial fallback."
+    },
+    {
+      "file": "final-refinement/apps-fa-dark-390.png",
+      "route": "/fa/apps",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:26:14Z",
+      "state": "Local development build, dark theme, Applications on mobile. Bundled editorial fallback."
+    },
+    {
+      "file": "final-refinement/purchases-en-dark-390.png",
+      "route": "/en/prop/purchases",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:27:29Z",
+      "state": "Local development build, dark theme, Anonymous purchase history and localized checkout action. Bundled editorial fallback."
+    },
+    {
+      "file": "final-refinement/purchases-fa-light-390.png",
+      "route": "/fa/prop/purchases",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:25:37Z",
+      "state": "Local development build, light theme, Anonymous purchase history and localized checkout action. Bundled editorial fallback."
+    },
+    {
+      "file": "final-refinement-chart/protection-en-light-1440.png",
+      "route": "/en/prop/chart",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "disposable generated SIWE signer",
+      "capturedAt": "2026-11-14T16:29:22Z",
+      "state": "Local unofficial light theme. Actual isolated simulated positions, live Gains chart and a test-mode backend mark."
+    },
+    {
+      "file": "final-refinement-chart/protection-fa-light-1024.png",
+      "route": "/fa/prop/chart",
+      "viewport": {
+        "width": 1024,
+        "height": 900
+      },
+      "session": "disposable generated SIWE signer",
+      "capturedAt": "2026-11-14T16:29:30Z",
+      "state": "Local unofficial light theme. Actual isolated simulated positions, live Gains chart and a test-mode backend mark."
+    },
+    {
+      "file": "final-refinement-chart/protection-fa-dark-360.png",
+      "route": "/fa/prop/chart",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "session": "disposable generated SIWE signer",
+      "capturedAt": "2026-11-14T16:29:35Z",
+      "state": "Local unofficial dark theme. Actual isolated simulated positions, live Gains chart and a test-mode backend mark."
+    },
+    {
+      "file": "final-refinement-chart/protection-en-dark-390.png",
+      "route": "/en/prop/chart",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "session": "disposable generated SIWE signer",
+      "capturedAt": "2026-11-14T16:29:28Z",
+      "state": "Local unofficial dark theme. Actual isolated simulated positions, live Gains chart and a test-mode backend mark."
+    },
+    {
+      "file": "final-refinement-chart/footprint-beta-light-1440.png",
+      "route": "/en/prop/chart",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:30:10Z",
+      "state": "Local unofficial light theme. Footprint menu and Beta badge."
+    },
+    {
+      "file": "final-refinement/content-registry-desktop.png",
+      "route": "/content-registry.html",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:29:45Z",
+      "state": "Local standalone registry. Search and browse versioned publication keys and coverage."
+    },
+    {
+      "file": "final-refinement/content-registry-mobile.png",
+      "route": "/content-registry.html",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:29:45Z",
+      "state": "Local standalone registry. Search and browse versioned publication keys and coverage."
+    },
+    {
+      "file": "final-refinement/certificate-en-light-1440.png",
+      "route": "/en/certificate-verification",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:31:45Z",
+      "state": "Full-page local light capture. Public verification of isolated test evidence, no production issuance."
+    },
+    {
+      "file": "final-refinement/certificate-fa-dark-390.png",
+      "route": "/fa/certificate-verification",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-14T16:31:51Z",
+      "state": "Full-page local dark capture. Public verification of isolated test evidence, no production issuance."
     }
   ],
   "finalIntegration": {

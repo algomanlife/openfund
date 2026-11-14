@@ -8,6 +8,13 @@
 
 ## Unreleased
 
+- Keep public navigation above checkout content, add an Applications destination,
+  and improve the localized purchase history and checkout entry point.
+- Add direct chart controls for creating, moving and independently removing
+  position protection. Show estimated gross profit or loss during dragging.
+- Add an interface content registry and an editing workflow through Directus.
+- Add certificates for eligible purchase, approved completion and recorded
+  payout events, with public verification, QR codes, and PDF and PNG downloads.
 - SIWE: `ALLOWED_DOMAINS` gains `iran.openfund.cloud` (Iran edge on Liara,
   [ADR 0031](docs/decisions/0031-iran-edge-on-liara.md)); the Blueprint
   validator now requires exactly the four hosts. Takes effect only after an

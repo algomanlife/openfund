@@ -17,7 +17,7 @@ test('Chart tab sits next to Trading and shares the Trading workspace element', 
   assert.match(main, /path: 'chart', element: <SharedTradingTerminal \/>/)
   const shell = read('../src/features/terminal/TerminalShell.tsx')
   assert.match(shell, /\["dashboard", "trade", "chart", "portfolio"\]/)
-  assert.match(shell, /page !== "trade" && page !== "chart" && <Editorial/)
+  assert.match(shell, /page !== "trade" && page !== "chart" && page !== "purchases" && page !== "certificates" && <Editorial/)
 })
 
 test('layout switches by message into the same iframe document, never by rebuilding it', () => {
