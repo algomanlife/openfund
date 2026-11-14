@@ -39,6 +39,8 @@ COPY --from=build --chown=openfund:openfund /src/apps/backend /app/apps/backend
 COPY --from=build --chown=openfund:openfund /src/react /app/react
 COPY --from=build --chown=openfund:openfund /src/release-manifest.json /app/release-manifest.json
 COPY --from=build --chown=openfund:openfund /src/packages /app/packages
+# bundled third-party journal analytics imported by the backend (licence and provenance kept)
+COPY --from=build --chown=openfund:openfund /src/third_party /app/third_party
 COPY --chown=openfund:openfund infra/liara-iran-runtime/start.sh /app/start.sh
 USER openfund
 # release identity reported by /version and the regional handshake

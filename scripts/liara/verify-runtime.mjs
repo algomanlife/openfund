@@ -14,6 +14,8 @@ import { dirname } from 'node:path'
 
 const arg = k => { const i = process.argv.indexOf(k); return i >= 0 ? process.argv[i + 1] : null }
 const base = (arg('--url') || '').replace(/\/+$/, ''), region = arg('--region') || 'IRAN', expect = arg('--expect-commit'), out = arg('--out')
+/* --content required (deployments, default) | path (CI boot without any CMS: the path must answer, content or an explicit 503) */
+const contentMode = arg('--content') || 'required'
 const expectVersion = arg('--expect-version'), compareWith = (arg('--compare-with') || '').replace(/\/+$/, '')
 if (!/^https?:\/\//.test(base)) { console.error('--url is required'); process.exit(2) }
 const checks = []
@@ -45,7 +47,8 @@ try {
     check('runtime config reports region IRAN', /"region":"IRAN"/.test(rc.text))
     /* essential content comes from the same origin (live or last-known-good snapshot) */
     const home = await get('/cms/items/home_content?fields=*,translations.*')
-    check('home content served by this runtime', home.status === 200 && json(home.text)?.data != null, home.status)
+    if (contentMode === 'path') check('content path answers (content or explicit content_unavailable)', (home.status === 200 && json(home.text)?.data != null) || (home.status === 503 && json(home.text)?.error === 'content_unavailable'), home.status)
+    else check('home content served by this runtime', home.status === 200 && json(home.text)?.data != null, home.status)
     const p = await get('/purchases/orders', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' })
     check('purchases refused by the Iran policy', p.status === 503 && json(p.text)?.reason === 'purchases_global_region_only', p.status)
   }

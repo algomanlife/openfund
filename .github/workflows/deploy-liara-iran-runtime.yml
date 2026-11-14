@@ -117,7 +117,7 @@ jobs:
           docker run -d --name worker --network host -e PORT=18081 -e OPENFUND_REGION=IRAN -e OPENFUND_ROLES=engine,sync \
             -e DATABASE_URL=$db -e NODE_ENV=development -e FOOTPRINT_ENABLED=0 openfund-iran-runtime:candidate
           for _ in $(seq 1 60); do curl -fsS http://127.0.0.1:18081/health >/dev/null && break; sleep 1; done
-          node scripts/liara/verify-runtime.mjs --url http://127.0.0.1:18080 --region IRAN --expect-commit ${{ steps.ref.outputs.commit }} --expect-version ${{ steps.release.outputs.version }}
+          node scripts/liara/verify-runtime.mjs --url http://127.0.0.1:18080 --region IRAN --expect-commit ${{ steps.ref.outputs.commit }} --expect-version ${{ steps.release.outputs.version }} --content path
           # the worker exposes no public routes
           [ "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18081/)" = 404 ]
           [ "$(docker exec web id -u)" != 0 ]
