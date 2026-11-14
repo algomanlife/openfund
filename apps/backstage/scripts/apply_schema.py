@@ -175,6 +175,30 @@ def main():
     ensure_relation('ui_message_translations', 'ui_message_id', 'ui_messages', one_field='translations')
     ensure_alias('ui_messages', 'translations', None)
 
+    # React labels use the same translation table and publication permissions.
+    # Searchable metadata contains presentation provenance only, never accounts.
+    update_field_meta('ui_messages', 'namespace', {
+        'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Website (legacy)', 'value': 'landing'},
+            {'text': 'Terminal (legacy)', 'value': 'terminal'},
+            {'text': 'Shared', 'value': 'common'},
+            {'text': 'Website / Dashboard / Terminal (React)', 'value': 'react'},
+        ]}, 'required': True})
+    for name, label in [
+        ('product_area', 'Product area'), ('content_page', 'Page'),
+        ('content_routes', 'Routes'), ('source_location', 'Source location'),
+        ('content_owner', 'Content owner'),
+    ]:
+        ensure_field('ui_messages', name, 'text',
+                     meta={'interface': 'input-multiline', 'note': label})
+    ensure_field('ui_messages', 'translation_status', 'string', meta={
+        'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Review required', 'value': 'review_required'},
+            {'text': 'Reviewed', 'value': 'reviewed'},
+        ]}}, schema={'default_value': 'review_required'})
+    ensure_field('ui_messages', 'date_updated', 'timestamp',
+                 meta={'special': ['date-updated'], 'interface': 'datetime', 'readonly': True, 'hidden': False})
+
     # ---------------- navigation -----------------------------------------
     ensure_collection('navigation_items', {'sort_field': 'sort'})
     ensure_field('navigation_items', 'location', 'string',

@@ -342,3 +342,8 @@ The separate [Open Trade application](apps/open-trade/README.md) is In Progress
 on `feature/open-trade-desktop`. It shares Vela and the existing backend. Internal
 unsigned packaging is separate from the web release; public distribution and
 real-wallet acceptance remain gated. See [acceptance](apps/open-trade/ACCEPTANCE.md).
+
+
+The website Applications page lists the Web Terminal and reviewed installer
+availability. See the [distribution notes](docs/reviews/final-refinement/website.md)
+for the evidence required before publishing a desktop download.

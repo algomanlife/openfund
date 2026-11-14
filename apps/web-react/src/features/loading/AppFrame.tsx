@@ -5,6 +5,8 @@ import { updateSeoHead } from './seoHead'
 import { dirOf, normalizeLocale, pick, type AppLocale } from '../../i18n/locales'
 import { contentLoaded, ensureLocaleContent } from '../../i18n/messages'
 import './loading.css'
+import { fetchInterfaceContent } from '../../cms/client'
+import { installInterfaceContent } from '../../i18n/interfaceContent'
 
 /* ---- app frame ---------------------------------------------------------------
    Wraps every route so the whole platform shares:
@@ -46,6 +48,20 @@ export default function AppFrame() {
   const location = useLocation()
   const locale = routeLocale(location.pathname)
   const previousLocale = useRef(locale)
+  const [interfaceReady, setInterfaceReady] = useState(false)
+  useEffect(() => {
+    let active = true
+    loadingGate.hold('interface-content')
+    const refresh = async () => {
+      const rows = await fetchInterfaceContent()
+      if (!active) return
+      installInterfaceContent(rows || [])
+      setInterfaceReady(true)
+      loadingGate.release('interface-content')
+    }
+    void refresh()
+    return () => { active = false; loadingGate.release('interface-content') }
+  }, [])
   /* the route locale's editorial dictionary is loaded before its pages
      render (direct URL entry, refresh, Back/Forward and language switch) */
   const [readyLocale, setReadyLocale] = useState<AppLocale | null>(() => contentLoaded(locale) ? locale : null)
@@ -129,7 +145,7 @@ export default function AppFrame() {
 
   return (
     <ErrorBoundary>
-      {readyLocale === locale ? <Outlet /> : dictionaryError ? (
+      {readyLocale === locale && interfaceReady ? <Outlet /> : dictionaryError ? (
         <div className="of-route-error" role="alert" dir={dirOf(locale)} lang={locale}>
           <p>{pick(locale, 'بارگذاری زبان انجام نشد.', 'The language could not be loaded.')}</p>
           <button type="button" onClick={() => window.location.reload()}>{pick(locale, 'تلاش دوباره', 'Try again')}</button>

@@ -1,3 +1,4 @@
+import { compileTranslationTemplate, applyTranslationTemplate, type TranslationTemplate } from '../template'
 import { ar } from './ar'
 import { ru } from './ru'
 import { zhCN } from './zh-CN'
@@ -7,13 +8,8 @@ const DICTIONARIES: Record<'ar' | 'ru' | 'zh-CN', Dictionary> = { ar, ru, 'zh-CN
 
 /* Call sites that interpolate (`Balance · ${unit}`) reach the lookup with
    the value already substituted, so keys containing `${…}` are matched as
-   templates and their captured values are re-inserted in order. */
-const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-const TEMPLATES = Object.fromEntries(Object.entries(DICTIONARIES).map(([locale, dict]) => [locale,
-  Object.entries(dict).filter(([key]) => key.includes('${')).map(([key, value]) => ({
-    pattern: new RegExp('^' + key.split(/\$\{[^}]+\}/).map(escape).join('(.+?)') + '$', 's'),
-    parts: value.split(/\$\{[^}]+\}/),
-  }))])) as Record<keyof typeof DICTIONARIES, { pattern: RegExp; parts: string[] }[]>
+   templates and their captured values are re-inserted by placeholder name. */
+const TEMPLATES = Object.fromEntries(Object.entries(DICTIONARIES).map(([locale, dict]) => [locale, templatesOf(dict)])) as Record<keyof typeof DICTIONARIES, TranslationTemplate[]>
 
 type Added = keyof typeof DICTIONARIES
 
@@ -21,7 +17,7 @@ type Added = keyof typeof DICTIONARIES
    Large, so each loads on demand; AppFrame waits for the route locale's
    dictionary before rendering, so no English flash and no false misses. */
 const CONTENT: Partial<Record<Added, Dictionary>> = {}
-const CONTENT_TEMPLATES: Partial<Record<Added, { pattern: RegExp; parts: string[] }[]>> = {}
+const CONTENT_TEMPLATES: Partial<Record<Added, TranslationTemplate[]>> = {}
 const LOADERS: Record<Added, () => Promise<{ default: Dictionary }>> = {
   ar: () => import('../content/ar.json'),
   ru: () => import('../content/ru.json'),
@@ -38,16 +34,16 @@ export function ensureLocaleContent(locale: string): Promise<void> {
     CONTENT_TEMPLATES[key] = templatesOf(dict)
   })
 }
-function templatesOf(dict: Dictionary) {
-  return Object.entries(dict).filter(([key]) => key.includes('${')).map(([key, value]) => ({
-    pattern: new RegExp('^' + key.split(/\$\{[^}]+\}/).map(escape).join('(.+?)') + '$', 's'),
-    parts: value.split(/\$\{[^}]+\}/),
-  }))
+function templatesOf(dict: Dictionary): TranslationTemplate[] {
+  return Object.entries(dict).flatMap(([key, value]) => {
+    const template = compileTranslationTemplate(key, value)
+    return template ? [template] : []
+  })
 }
-function applyTemplates(list: { pattern: RegExp; parts: string[] }[] | undefined, english: string) {
-  for (const t of list || []) {
-    const m = t.pattern.exec(english)
-    if (m) return t.parts.reduce((out, part, i) => out + part + (i < m.length - 1 ? m[i + 1] : ''), '')
+function applyTemplates(list: TranslationTemplate[] | undefined, english: string) {
+  for (const template of list || []) {
+    const value = applyTranslationTemplate(template, english)
+    if (value !== undefined) return value
   }
   return undefined
 }

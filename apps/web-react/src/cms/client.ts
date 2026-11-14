@@ -842,3 +842,11 @@ export async function fetchCmsContactEmails(): Promise<CmsContactEmails> {
   }
   return out
 }
+
+/** React labels share ui_messages with the established legacy translations.
+ * Keep status in the response for defensive validation; API permissions must
+ * independently restrict both parents and translation children to published.
+ */
+export async function fetchInterfaceContent(): Promise<unknown[] | null> {
+  return getJson<unknown[]>('/items/ui_messages?fields=key,namespace,status,translations.language_code,translations.value&filter[status][_eq]=published&filter[namespace][_eq]=react&limit=-1')
+}

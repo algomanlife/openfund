@@ -114,6 +114,34 @@
     if (create) out.created = (had.sl == null && sl != null) || (had.tp == null && tp != null);
     return out;
   }
+  /* Display-only gross PnL: same quantity × price move basis as trading-math.
+     Fees, spread and slippage are excluded; never used to authorize a trade. */
+  function estimate(p, price) {
+    const entry = Number(p.entry), quantity = Number(p.size), target = Number(price);
+    if (!(entry > 0 && quantity > 0 && target > 0)) return null;
+    const move = (target - entry) * (p.side === 'short' ? -1 : 1);
+    return { gross: quantity * move, percent: move / entry * 100, currency: p.currency || 'USD' };
+  }
+  /* Invert Vela's public projection, retaining log/inverted scale behavior. */
+  function priceAtY(frame, y) {
+    if (!frame || !Number.isFinite(y) || !(frame.max > frame.min)) return null;
+    let low = frame.min, high = frame.max;
+    const lowY = frame.toY(low), highY = frame.toY(high);
+    if (!Number.isFinite(lowY) || !Number.isFinite(highY) || lowY === highY) return null;
+    y = Math.max(Math.min(lowY, highY), Math.min(Math.max(lowY, highY), y));
+    for (let i = 0; i < 52; i++) {
+      const mid = (low + high) / 2;
+      if ((frame.toY(mid) < y) === (lowY < highY)) low = mid;
+      else high = mid;
+    }
+    return (low + high) / 2;
+  }
+  function snapPrice(value, precision, tick) {
+    if (!Number.isFinite(value)) return null;
+    const places = Math.max(0, Math.min(12, Number.isInteger(precision) ? precision : 8));
+    const step = Number(tick) > 0 ? Number(tick) : 10 ** -places;
+    return Number((Math.round(value / step) * step).toFixed(places));
+  }
   /* ---------- right-hand information labels: collision-free placement ----------
      `items` carry the wanted y (the entry's pixel row, or null when unknown).
      Labels keep their price order, never overlap (min `gap` between them) and
@@ -135,5 +163,5 @@
     }
     return placed.map(it => ({ id: it.id, top: Math.round(it.top) }));
   }
-  global.OpenfundPositionOverlay = { model, executionFills, executionGroups, markerPrice, bucket, span, riskEdit, stackLabels };
+  global.OpenfundPositionOverlay = { model, executionFills, executionGroups, markerPrice, bucket, span, riskEdit, stackLabels, estimate, priceAtY, snapPrice };
 })(typeof window !== 'undefined' ? window : globalThis);

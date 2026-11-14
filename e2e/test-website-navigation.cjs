@@ -76,15 +76,15 @@ async function interactions(page) {
    if(route==='challenges') await page.waitForTimeout(1800);
    await page.locator('.resources-toggle[aria-controls="website-resources"]').focus();
    await page.keyboard.press('ArrowDown');
-   await page.waitForFunction(()=>document.querySelector('.nav-dropdown a')===document.activeElement,null,{timeout:3000}).catch(async error=>{ console.log(await page.evaluate(()=>({focus:document.activeElement.outerHTML,group:document.querySelector('.nav-account').outerHTML,dropdownStyle:{visibility:getComputedStyle(document.querySelector('.nav-dropdown')).visibility,display:getComputedStyle(document.querySelector('.nav-dropdown')).display}})));throw error; });
+   await page.waitForFunction(()=>document.querySelector('#website-resources a')===document.activeElement,null,{timeout:3000}).catch(async error=>{ console.log(await page.evaluate(()=>({focus:document.activeElement.outerHTML,group:document.querySelector('.nav-account').outerHTML,dropdownStyle:{visibility:getComputedStyle(document.querySelector('.nav-dropdown')).visibility,display:getComputedStyle(document.querySelector('.nav-dropdown')).display}})));throw error; });
    await page.keyboard.press('End');
-   check(await page.locator('.nav-dropdown a').last().evaluate(el=>el===document.activeElement), 'End '+route);
+   check(await page.locator('#website-resources a').last().evaluate(el=>el===document.activeElement), 'End '+route);
    await page.keyboard.press('Escape');
    check(await page.locator('.resources-toggle[aria-controls="website-resources"]').evaluate(el=>el===document.activeElement), 'Escape focus '+route);
    check(await page.locator('.resources-toggle[aria-controls="website-resources"]').getAttribute('aria-expanded')==='false','Escape aria');
-   await page.locator('.resources-toggle[aria-controls="website-resources"]').hover();
-   await page.locator('.nav-dropdown a[href$="/learn"]').hover();
-   check(await page.locator('.nav-dropdown a[href$="/learn"]').isVisible(), 'hover bridge');
+   await page.locator('.resources-toggle[aria-controls="website-resources"]').click();
+   await page.locator('#website-resources a[href$="/learn"]').click({trial:true});
+   check(await page.locator('#website-resources a[href$="/learn"]').isVisible(), 'open disclosure remains actionable');
    await toggleLanguage(page);
    const other=locale==='en'?'fa':'en';
    await page.waitForURL(base+other+'/'+route);
@@ -134,7 +134,7 @@ async function touch(page) {
       await touchPage.locator('.resources-toggle[aria-controls="website-resources"]').waitFor({state:'attached'});
       await touchPage.waitForTimeout(route==='challenges'?1800:700);
       await touchPage.locator('.menu').tap();
-      await touchPage.locator('.nav-dropdown a[href$="/learn/glossary"]').tap();
+      await touchPage.locator('#site-navigation-drawer a[href$="/learn/glossary"]').tap();
       await touchPage.waitForURL(BASE+locale+'/learn/glossary');
       await touchPage.waitForTimeout(300);
       records.push({locale,route,touch:true});
@@ -187,7 +187,7 @@ async function ancillary(page) {
 
 async function auditRoutes(page) {
   const library = loadLibrary();
-  const routes = ['home','challenges','markets','rulebook','transparency','revenue-model','live-market-access','ambassador','coach','faq','learn','learn/glossary','tools','referral','about','contact',
+  const routes = ['home','challenges','markets','rulebook','transparency','revenue-model','live-market-access','ambassador','coach','faq','learn','learn/glossary','tools','referral','about','contact','apps','certificate-verification',
     ...library.faqItems.map(item=>'faq/q/'+item.key),
     ...library.paths.flatMap(p=>['learn/paths/'+p.slug,...p.lessons.map(l=>'learn/lessons/'+l.slug)]),
     ...library.glossary.map(t=>'learn/glossary/'+t.slug),...library.tools.map(t=>'tools/'+t.slug)];

@@ -1,0 +1,200 @@
+{
+  "results": [
+    {
+      "name": "long: create SL by pointer with no initial protection",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "long: create TP while SL exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "long: move SL and TP",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Escape cancels pointer preview without changing server protection",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Footprint picker displays Beta badge",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Footprint remains selectable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "en/light/1440: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":961.8125,\"y\":663.390625,\"width\":406.1875,\"height\":43.796875}"
+    },
+    {
+      "name": "en/light/1024: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":545.8125,\"y\":643.390625,\"width\":406.1875,\"height\":43.796875}"
+    },
+    {
+      "name": "en/light/768: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":289.8125,\"y\":591.390625,\"width\":406.1875,\"height\":43.796875}"
+    },
+    {
+      "name": "en/light/390: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":90,\"y\":539.78125,\"width\":240,\"height\":150}"
+    },
+    {
+      "name": "en/light/360: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":76.8125,\"y\":498.78125,\"width\":223.1875,\"height\":150}"
+    },
+    {
+      "name": "en/dark/1440: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":961.8125,\"y\":663.390625,\"width\":406.1875,\"height\":43.796875}"
+    },
+    {
+      "name": "en/dark/1024: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":545.8125,\"y\":643.390625,\"width\":406.1875,\"height\":43.796875}"
+    },
+    {
+      "name": "en/dark/768: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":289.8125,\"y\":591.390625,\"width\":406.1875,\"height\":43.796875}"
+    },
+    {
+      "name": "en/dark/390: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":90,\"y\":539.78125,\"width\":240,\"height\":150}"
+    },
+    {
+      "name": "en/dark/360: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":76.8125,\"y\":498.78125,\"width\":223.1875,\"height\":150}"
+    },
+    {
+      "name": "fa/light/1440: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":961.8125,\"y\":663.390625,\"width\":406.1875,\"height\":43.796875}"
+    },
+    {
+      "name": "fa/light/1024: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":545.8125,\"y\":643.390625,\"width\":406.1875,\"height\":43.796875}"
+    },
+    {
+      "name": "fa/light/768: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":289.8125,\"y\":591.390625,\"width\":406.1875,\"height\":43.796875}"
+    },
+    {
+      "name": "fa/light/390: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":90,\"y\":539.78125,\"width\":240,\"height\":150}"
+    },
+    {
+      "name": "fa/light/360: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":76.8125,\"y\":498.78125,\"width\":223.1875,\"height\":150}"
+    },
+    {
+      "name": "fa/dark/1440: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":961.8125,\"y\":663.390625,\"width\":406.1875,\"height\":43.796875}"
+    },
+    {
+      "name": "fa/dark/1024: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":545.8125,\"y\":643.390625,\"width\":406.1875,\"height\":43.796875}"
+    },
+    {
+      "name": "fa/dark/768: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":289.8125,\"y\":591.390625,\"width\":406.1875,\"height\":43.796875}"
+    },
+    {
+      "name": "fa/dark/390: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":90,\"y\":539.78125,\"width\":240,\"height\":150}"
+    },
+    {
+      "name": "fa/dark/360: protection controls fit viewport",
+      "ok": true,
+      "detail": "{\"x\":76.8125,\"y\":498.78125,\"width\":223.1875,\"height\":150}"
+    },
+    {
+      "name": "mobile: native touch drag updates only SL",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "long: remove only SL",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "long: recreate SL from TP-only state",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "long: remove TP without closing position",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "long: reload restores confirmed empty levels",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "short: create SL by pointer with no initial protection",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "short: create TP while SL exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "short: move SL and TP",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "short: remove only SL",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "short: recreate SL from TP-only state",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "short: remove TP without closing position",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "short: reload restores confirmed empty levels",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no browser runtime errors",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "errors": []
+}

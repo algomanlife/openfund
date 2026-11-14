@@ -36,3 +36,6 @@
 - [0033 — Regional account authority, synchronization and the independent Iran runtime](0033-regional-authority-and-synchronization.md)
 
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)
+
+- [0034 — Editorial and distribution authority](0034-editorial-and-distribution-authority.md)
+- [0033 — Certificate event attestations](0033-certificate-event-attestations.md)

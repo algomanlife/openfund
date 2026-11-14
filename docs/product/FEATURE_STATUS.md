@@ -252,3 +252,13 @@ existing Vela/Gains integration and shared account API client. See the
 [acceptance record](../../apps/open-trade/ACCEPTANCE.md) for executed checks and
 platform artifacts. Real WalletConnect acceptance is pending a valid project ID
 and wallet. Public release/signing and existing license decisions remain Blocked.
+
+
+## Final product refinement
+
+| Capability | Status | Scope |
+| --- | --- | --- |
+| Navigation, purchase history and Applications | In Progress | Local review branch. Web Terminal available; verified desktop installers remain pending. [Website evidence](../reviews/final-refinement/website.md) |
+| Position protection controls | In Progress | Isolated Prop simulation acceptance. Production and device acceptance remain open. |
+| Interface content registry | In Progress | Source-derived editing map and published overrides. See the coverage limits in the content evidence. |
+| Certificates | In Progress | Issuance tied to server records. Review and production rollout remain open. |

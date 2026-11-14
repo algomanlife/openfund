@@ -167,19 +167,19 @@ export default function ProductPortfolio() {
       )}
       <div className="of-metrics">
         <Metric
-          label={t(`موجودی حساب · ${unit}`, `Account balance · ${unit}`)}
+          label={t('موجودی حساب', 'Account balance') + " · " + unit}
           value={a?.balance}
         />
         <Metric
-          label={t(`سود تحقق‌یافتهٔ حساب · ${unit}`, `Account realized PnL · ${unit}`)}
+          label={t('سود تحقق\u200cیافتهٔ حساب', 'Account realized PnL') + " · " + unit}
           value={a?.realizedPnl}
         />
         <Metric
-          label={t(`سود باز · ${unit}`, `Unrealized PnL · ${unit}`)}
+          label={t('سود باز', 'Unrealized PnL') + " · " + unit}
           value={a?.unrealizedPnl}
         />
         <Metric
-          label={t(`مارجین مصرفی · ${unit}`, `Used margin · ${unit}`)}
+          label={t('مارجین مصرفی', 'Used margin') + " · " + unit}
           value={a?.usedMargin}
         />
       </div>
@@ -412,7 +412,7 @@ export default function ProductPortfolio() {
         <>
           <div className="of-metrics">
             <Metric
-              label={t(`سود دوره · ${unit}`, `Period PnL · ${unit}`)}
+              label={t('سود دوره', 'Period PnL') + " · " + unit}
               value={m?.netPnl}
             />
             <Metric
@@ -424,12 +424,12 @@ export default function ProductPortfolio() {
               value={m?.profitFactor}
             />
             <Metric
-              label={t(`افت سرمایه · ${unit}`, `Drawdown · ${unit}`)}
+              label={t('افت سرمایه', 'Drawdown') + " · " + unit}
               value={data?.drawdown?.maxDrawdown}
             />
           </div>
           <section className="of-panel">
-            <h2>Edge Score v{data?.edgeScore?.version || 2}</h2>
+            <h2>{t("امتیاز مزیت معاملاتی", "Edge Score")} <bdi>v{data?.edgeScore?.version || 2}</bdi></h2>
             <b dir="ltr">{money(data?.edgeScore?.score)} / 100</b>
             <div className="of-score-components">
               {Object.entries(data?.edgeScore?.components || {}).map(
@@ -450,7 +450,7 @@ export default function ProductPortfolio() {
           </section>
           <section className="of-panel">
             <h2>
-              {t(`منحنی سود تحقق‌یافته · ${unit}`, `Realized PnL curve · ${unit}`)}
+              {t('منحنی سود تحقق\u200cیافته', 'Realized PnL curve') + " · " + unit}
             </h2>
             <p>{message("realizedCurve")}</p>
             <Curve points={data?.equityCurve || []} />
@@ -541,7 +541,7 @@ export default function ProductPortfolio() {
             <h2>{detail.trade.symbol}</h2>
             <p dir="ltr">{detail.trade.ofPositionId}</p>
             <p>
-              {t(`سود تحقق‌یافته · ${unit}`, `Realized PnL · ${unit}`)}:{" "}
+              {t('سود تحقق\u200cیافته', 'Realized PnL') + " · " + unit}:{" "}
               <bdi>
                 {detail.trade.status === "open"
                   ? "—"

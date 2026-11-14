@@ -28,7 +28,7 @@ const API=process.env.TEST_BACKEND_URL || 'http://localhost:8288';
  const backend=await fetch(API+'/version').then(r=>r.json());const frontend=await fetch(BASE+'/release-manifest.json').then(r=>r.json());
  assert.equal(backend.status,'matched');assert.equal(frontend.commit,backend.commit);assert.equal(frontend.frontend.id,backend.frontend.id);
  const response=await fetch(BASE+'/index.html');assert.match(response.headers.get('cache-control'),/no-cache/);
- await page.goto(BASE+'/en/prop/dashboard');await page.locator('.of-release-version').waitFor();assert.equal(await page.locator('.of-release-version').innerText(),'v'+frontend.version+(frontend.official===false?' candidate':''));
+ await page.goto(BASE+'/en/prop/dashboard');await page.locator('.of-release-version').and(page.getByText('v'+frontend.version+(frontend.official===false?' candidate':''),{exact:true})).waitFor();
  await page.route('**/version',async route=>{await route.fulfill({status:503,json:{...backend,status:'mismatch',commit:'0'.repeat(40)}})});
  await page.reload();await page.getByRole('alert').filter({hasText:'Application and server versions differ'}).waitFor();await warningDoesNotOccludeWallet(page);
  await page.unroute('**/version');

@@ -13,6 +13,7 @@
    ============================================================ */
 import type { AddedLocale } from './locales'
 import { translateSource } from './messages'
+import { interfaceSource, interfaceOverride } from './interfaceContent'
 
 export const ADDED_LOCALES: readonly AddedLocale[] = ['ar', 'ru', 'zh-CN']
 
@@ -75,7 +76,11 @@ function walk(value: unknown) {
       if (Object.prototype.hasOwnProperty.call(record, locale)) continue
       Object.defineProperty(record, locale, {
         configurable: true, enumerable: false,
-        get() { return overlay(translateTree(locale, record.en), cmsRows.get(record)?.[locale]) },
+        get() {
+          const source = interfaceSource(record)
+          const override = source ? interfaceOverride(locale, source.fa, source.en) : undefined
+          return override ?? overlay(translateTree(locale, source?.en ?? record.en), cmsRows.get(record)?.[locale])
+        },
       })
     }
   }

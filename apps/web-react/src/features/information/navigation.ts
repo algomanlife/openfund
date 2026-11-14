@@ -8,7 +8,7 @@ const primary = ['challenges', 'markets', 'rulebook'] as const
 /** Economy dropdown: governance, the consolidated Ambassador (IB) page and
  *  Referral & Rewards (formerly "Growth Partner" under Resources; same /referral page). */
 const economy = ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'] as const
-const resources = ['faq', 'learn', 'tools', 'about', 'contact'] as const
+const resources = ['faq', 'learn', 'tools', 'apps', 'certificate-verification', 'about', 'contact'] as const
 /** Website-owned labels that win over a stale CMS navigation/footer label. */
 const FIXED_LABELS = new Set(['referral'])
 /** footer "Openfund documents" entries */
@@ -126,69 +126,63 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
   root.querySelector('.nav-cta')?.setAttribute('href', `/${locale}/prop/trade`)
 }
 
+function closeDisclosures(root: ParentNode) {
+  root.querySelectorAll('.resources-toggle[aria-expanded="true"]').forEach(button => {
+    button.setAttribute('aria-expanded', 'false')
+    button.parentElement?.classList.remove('resources-open')
+  })
+}
+
 export function navigationClick(event: MouseEvent, root: ParentNode): boolean {
   const trigger = (event.target as Element)?.closest<HTMLButtonElement>('.resources-toggle')
-  if (!trigger) {
-    root.querySelectorAll('.resources-toggle').forEach(button => {
-      button.setAttribute('aria-expanded', 'false')
-      button.parentElement?.classList.remove('resources-open')
-    })
-    return false
+  const open = trigger?.getAttribute('aria-expanded') === 'false'
+  closeDisclosures(root)
+  if (!trigger) return false
+  if (open) {
+    trigger.setAttribute('aria-expanded', 'true')
+    trigger.parentElement?.classList.add('resources-open')
   }
-  trigger.parentElement?.classList.remove('resources-dismissed')
-  const open = trigger.getAttribute('aria-expanded') !== 'true'
-  trigger.setAttribute('aria-expanded', String(open))
-  trigger.parentElement?.classList.toggle('resources-open', open)
-  trigger.parentElement?.classList.toggle('resources-dismissed', !open)
   return true
 }
 
 export function navigationKeyDown(event: KeyboardEvent, root: ParentNode): boolean {
   const target = event.target as HTMLElement
   const group = target.closest('.nav-account')
-  if (!group) return false
-  const trigger = group.querySelector<HTMLButtonElement>('.resources-toggle')!
+  const trigger = group?.querySelector<HTMLButtonElement>('.resources-toggle')
+  if (!group || !trigger) return false
   const links = Array.from(group.querySelectorAll<HTMLAnchorElement>('.nav-dropdown a'))
   if (event.key === 'Escape') {
     event.preventDefault(); event.stopPropagation()
-    trigger.setAttribute('aria-expanded', 'false'); group.classList.remove('resources-open'); group.classList.add('resources-dismissed'); trigger.focus()
+    trigger.setAttribute('aria-expanded', 'false'); group.classList.remove('resources-open'); trigger.focus()
     return true
   }
   if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
-    event.preventDefault(); group.classList.remove('resources-dismissed'); group.classList.add('resources-open'); trigger.setAttribute('aria-expanded', 'true')
+    event.preventDefault()
+    closeDisclosures(root)
+    group.classList.add('resources-open')
+    trigger.setAttribute('aria-expanded', 'true')
     const index = links.indexOf(target as HTMLAnchorElement)
     const next = event.key === 'Home' ? 0 : event.key === 'End' ? links.length - 1 : event.key === 'ArrowDown' ? (index + 1) % links.length : (index <= 0 ? links.length : index) - 1
     links[next]?.focus()
     return true
   }
-  group.classList.remove('resources-dismissed')
   return false
 }
 
 export function bindNavigation(root: ParentNode) {
-  const close = () => root.querySelectorAll('.nav-account').forEach(group => {
-    group.classList.remove('resources-open', 'resources-dismissed')
-    group.querySelector('.resources-toggle')?.setAttribute('aria-expanded', 'false')
-  })
   const outside = (event: Event) => {
-    if (!(event.target as Element)?.closest('.nav-account')) close()
+    if (!(event.target as Element)?.closest('.nav-account')) closeDisclosures(root)
   }
   const leave = (event: Event) => {
     const focus = event as FocusEvent
-    if (!(focus.relatedTarget as Element)?.closest?.('.nav-account')) close()
-  }
-  const enter = (event: Event) => {
-    const pointer = event as PointerEvent
-    const group = (pointer.target as Element)?.closest('.nav-account')
-    if (group && !group.contains(pointer.relatedTarget as Node)) group.classList.remove('resources-dismissed')
+    const group = (focus.target as Element)?.closest('.nav-account')
+    if (group && !group.contains(focus.relatedTarget as Node | null)) closeDisclosures(root)
   }
   document.addEventListener('pointerdown', outside)
   root.addEventListener('focusout', leave)
-  root.addEventListener('pointerover', enter)
   return () => {
     document.removeEventListener('pointerdown', outside)
     root.removeEventListener('focusout', leave)
-    root.removeEventListener('pointerover', enter)
   }
 }
 

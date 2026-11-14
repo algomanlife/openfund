@@ -285,3 +285,37 @@ test('Vela bundle (built) carries no Persian chart strings', { skip: !existsSync
   for (const fa of ['فوت‌پرینت', 'لایه جریان سفارش', 'نمایش راهنمای اندیکاتورها', 'تنظیمات']) assert.ok(!bundle.includes(fa), fa)
   assert.ok(bundle.includes('Footprint (Order Flow Overlay)'))
 })
+
+test('protection preview estimates gross PnL from filled quantity, not margin or leveraged ROE', () => {
+  for (const side of ['long', 'short']) {
+    const p = { side, entry: 100, size: 3, margin: 20, leverage: 15, currency: 'DAI' }
+    const sign = side === 'long' ? 1 : -1
+    assert.deepEqual(PO.estimate(p, 110), { gross: sign * 30, percent: sign * 10, currency: 'DAI' })
+    assert.deepEqual(PO.estimate(p, 90), { gross: sign * -30, percent: sign * -10, currency: 'DAI' })
+  }
+  assert.equal(PO.estimate({ entry: 100, size: null }, 110), null)
+})
+
+test('pointer projection honors linear, logarithmic and inverted Vela scales', () => {
+  for (const toY of [p => 200 - p, p => p - 10, p => 100 * Math.log(200 / p), p => 100 * Math.log(p / 10)]) {
+    const frame = { min: 10, max: 200, toY }
+    for (const price of [10, 35.5, 100, 199, 200]) assert.ok(Math.abs(PO.priceAtY(frame, toY(price)) - price) < 1e-10)
+  }
+  assert.equal(PO.priceAtY(null, 10), null)
+  assert.equal(PO.priceAtY({ min: 10, max: 10 }, 10), null)
+  assert.equal(PO.snapPrice(100.127, 2, 0.05), 100.15)
+  assert.equal(PO.snapPrice(1.083456, 5), 1.08346)
+})
+
+test('each protection can be removed without changing its sibling for either side and every initial state', () => {
+  for (const side of ['long', 'short']) {
+    for (const hasSl of [false, true]) for (const hasTp of [false, true]) {
+      const p = { side, entry: 100, sl: hasSl ? side === 'long' ? 95 : 105 : null, tp: hasTp ? side === 'long' ? 110 : 90 : null }
+      const removeSl = PO.riskEdit(p, { sl: null, tp: p.tp }, 2, { allowCreate: true })
+      const removeTp = PO.riskEdit(p, { sl: p.sl, tp: null }, 2, { allowCreate: true })
+      assert.equal(removeSl.sl, null); assert.equal(removeSl.tp, p.tp)
+      assert.equal(removeTp.tp, null); assert.equal(removeTp.sl, p.sl)
+      assert.equal(removeSl.changed, hasSl); assert.equal(removeTp.changed, hasTp)
+    }
+  }
+})

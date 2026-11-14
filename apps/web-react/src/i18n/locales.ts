@@ -9,6 +9,7 @@
    a visible notice, and the locale acceptance tests fail.
    ============================================================ */
 import { translateSource } from './messages'
+import { interfaceOverride, interfaceSource } from './interfaceContent'
 
 export const LOCALES = ['fa', 'en', 'ar', 'ru', 'zh-CN'] as const
 export type AppLocale = typeof LOCALES[number]
@@ -36,6 +37,8 @@ export const dirOf = (locale: AppLocale): 'rtl' | 'ltr' => (isRtl(locale) ? 'rtl
 
 /** Interface string for `locale` from the existing Persian/English pair. */
 export function pick(locale: AppLocale, fa: string, en: string): string {
+  const published = interfaceOverride(locale, fa, en)
+  if (published !== undefined) return published
   if (locale === 'fa') return fa
   if (locale === 'en') return en
   return translateSource(locale, en)
@@ -43,11 +46,14 @@ export function pick(locale: AppLocale, fa: string, en: string): string {
 /** `{fa, en}` record (CMS rows, labels) → string for `locale` */
 export function pickRecord(locale: AppLocale, value: { fa?: string; en?: string } | null | undefined): string {
   if (!value) return ''
+  const source = interfaceSource(value)
+  const published = interfaceOverride(locale, source?.fa ?? value.fa ?? '', source?.en ?? value.en ?? '')
+  if (published !== undefined) return published
   if (locale !== 'fa' && locale !== 'en') {
     const own = (value as Record<string, unknown>)[locale] /* CMS row or localizeRecords getter */
     if (typeof own === 'string') return own
   }
-  return pick(locale, value.fa ?? value.en ?? '', value.en ?? value.fa ?? '')
+  return pick(locale, source?.fa ?? value.fa ?? value.en ?? '', source?.en ?? value.en ?? value.fa ?? '')
 }
 
 /** Current UI locale as published by the shells on `window.ofLang`. */
