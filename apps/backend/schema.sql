@@ -1890,3 +1890,45 @@ CREATE OR REPLACE FUNCTION certificate_history_guard() RETURNS trigger AS $$
 BEGIN RAISE EXCEPTION 'certificate_history_immutable'; END $$ LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS trg_certificate_history ON certificate_events;
 CREATE TRIGGER trg_certificate_history BEFORE UPDATE OR DELETE ON certificate_events FOR EACH ROW EXECUTE FUNCTION certificate_history_guard();
+-- ------------------------------------------------------------------
+-- Regional runtime (ADR 0032). Additive only: no existing table changes.
+--
+-- runtime_region: which region owns this database. Claimed once by
+-- migrate.js (OPENFUND_REGION, default GLOBAL); server.js refuses to start
+-- when its own region differs, so an Iran runtime can never write to the
+-- Render database. Changing the claim is a manual, reviewed DBA action.
+-- runtime_mode: the region's durable operational mode, versioned by epoch.
+-- runtime_mode_events: append-only audit of applied and refused transitions.
+-- ------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS runtime_region (
+  singleton   boolean PRIMARY KEY DEFAULT true CHECK (singleton),
+  region      text NOT NULL CHECK (region IN ('GLOBAL', 'IRAN')),
+  claimed_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS runtime_mode (
+  singleton   boolean PRIMARY KEY DEFAULT true CHECK (singleton),
+  mode        text NOT NULL CHECK (mode IN ('GLOBAL_CONNECTED', 'IRAN_ISOLATED', 'RECOVERY')),
+  epoch       bigint NOT NULL CHECK (epoch >= 0),
+  changed_at  timestamptz NOT NULL DEFAULT now(),
+  changed_by  text NOT NULL,
+  reason      text NOT NULL
+);
+CREATE TABLE IF NOT EXISTS runtime_mode_events (
+  id          bigserial PRIMARY KEY,
+  epoch       bigint NOT NULL,
+  from_mode   text NOT NULL,
+  to_mode     text NOT NULL,
+  actor       text NOT NULL,
+  reason      text NOT NULL,
+  outcome     text NOT NULL CHECK (outcome IN ('applied', 'refused')),
+  gates       jsonb NOT NULL DEFAULT '[]',
+  at          timestamptz NOT NULL DEFAULT now()
+);
+CREATE OR REPLACE FUNCTION runtime_mode_events_immutable() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN RAISE EXCEPTION 'runtime_mode_events is append-only'; END $$;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_runtime_mode_events_immutable') THEN
+    CREATE TRIGGER trg_runtime_mode_events_immutable BEFORE UPDATE OR DELETE ON runtime_mode_events
+      FOR EACH ROW EXECUTE FUNCTION runtime_mode_events_immutable();
+  END IF;
+END $$;

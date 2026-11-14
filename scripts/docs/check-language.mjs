@@ -22,6 +22,7 @@ let prose=0, source=0
    must keep an English authoritative counterpart, which is checked normally. */
 const PERSIAN_OWNER_GUIDES = new Map([
   ['docs/deployment/LIARA_IRAN_SETUP.md', 'docs/deployment/LIARA_IRAN.md'],
+  ['docs/operations/IRAN_RUNTIME_MODES.fa.md', 'docs/decisions/0032-iran-sovereign-regional-runtime.md'],
 ])
 for (const file of files) {
   if (PERSIAN_OWNER_GUIDES.has(file)) {

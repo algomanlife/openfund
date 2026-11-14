@@ -32,8 +32,9 @@
 - [0026 — Dedicated checkout, vendored DePay widget and the chart position tool](0026-dedicated-checkout-vendored-depay-widget-and-chart-position-tool.md)
 - [0028 — Manual payment, treasury by network, campaign landing, English chart layer, SL/TP creation and Lotage](0028-manual-payment-treasury-networks-campaign-chart-english-lotage.md)
 - [0031 — Iran edge on Liara (same-origin reverse proxy, phase one)](0031-iran-edge-on-liara.md)
+- [0032 — Iran sovereign regional runtime (foundations)](0032-iran-sovereign-regional-runtime.md)
 
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)
 
-- [0032 — Editorial and distribution authority](0032-editorial-and-distribution-authority.md)
+- [0034 — Editorial and distribution authority](0034-editorial-and-distribution-authority.md)
 - [0033 — Certificate event attestations](0033-certificate-event-attestations.md)

@@ -1,4 +1,4 @@
-# 0032. Editorial and distribution authority
+# 0034. Editorial and distribution authority
 
 Status: proposed for review.
 
