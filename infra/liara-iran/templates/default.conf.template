@@ -12,6 +12,15 @@
 proxy_cache_path /tmp/openfund-edge-cache levels=1:2 keys_zone=openfund_assets:10m
                  max_size=512m inactive=7d use_temp_path=off;
 
+# Visitor IP. Liara's front proxy is a single hop in front of this container
+# (Liara documents `trust proxy` = 1 for Express), so the last
+# X-Forwarded-For entry is the address it saw; anything to its left is
+# client-supplied. Without the header, the socket peer is used.
+map $http_x_forwarded_for $edge_client_ip {
+    "~(?:^|,)\s*(?<edge_last>[0-9A-Fa-f:.]+)\s*$" $edge_last;
+    default $remote_addr;
+}
+
 # No client IPs, query strings or cookies in the access log.
 log_format openfund_edge '$time_iso8601 $request_method $uri $status $body_bytes_sent '
                          '$request_time up=$upstream_status $upstream_response_time cache=$upstream_cache_status';
@@ -49,6 +58,11 @@ server {
     proxy_set_header X-Forwarded-Proto ${EDGE_PUBLIC_SCHEME};
     proxy_set_header X-Forwarded-Host $http_host;
     proxy_set_header X-Openfund-Edge liara-iran;
+    # Visitor IP for the backend's rate limits and audit log. The backend honours
+    # it only with the shared key (EDGE_CLIENT_IP_KEY there). These always
+    # replace anything the client sent; an empty key sends no key header.
+    proxy_set_header X-Openfund-Edge-Client-Ip $edge_client_ip;
+    proxy_set_header X-Openfund-Edge-Key "${OPENFUND_EDGE_CLIENT_IP_KEY}";
 
     proxy_ssl_server_name on;
     proxy_ssl_verify on;
@@ -88,6 +102,14 @@ server {
         add_header Cache-Control "no-store" always;
         add_header X-Robots-Tag "noindex, nofollow" always;
         alias /usr/share/openfund-edge/edge-release.json;
+    }
+    # The visitor IP this edge forwards (lets the owner confirm Liara's
+    # X-Forwarded-For behaviour after a deploy; it only echoes the caller).
+    location = /__edge/whoami {
+        default_type application/json;
+        add_header Cache-Control "no-store" always;
+        add_header X-Robots-Tag "noindex, nofollow" always;
+        return 200 '{"clientIp":"$edge_client_ip"}';
     }
     # Readiness: the authoritative backend answers its own /health through
     # this edge (database reachable from the origin, network path from Iran).

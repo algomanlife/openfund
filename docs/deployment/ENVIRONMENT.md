@@ -32,6 +32,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | Variable | Owner | Notes |
 | :--- | :--- | :--- |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | openfund-cms | Directus administrator |
+| `EDGE_CLIENT_IP_KEY` | openfund | **SECRET**, optional. At least 32 characters of `[A-Za-z0-9_-]`; the same value is set on the Iran edge (Liara). A request that carries it in `X-Openfund-Edge-Key` may set `req.ip` from `X-Openfund-Edge-Client-Ip`, so per-IP rate limits, `audit_log`, `auth_sessions` and referral visitor hashes see the real visitor. Unset (default): unchanged behaviour, and edge visitors share the edge's egress IP. A malformed value stops the service at start-up. See [ADR 0031](../decisions/0031-iran-edge-on-liara.md) |
 | `PUBLIC_URL` | openfund-cms | e.g. `https://openfund-cms.onrender.com` |
 | `CMS_PUBLIC_URL` | openfund | Preferred public browser CMS origin, e.g. `https://cms.openfi.cloud`. Credential-free HTTPS origin; served by `/react/runtime-config.js`. |
 | `VITE_WALLETCONNECT_PROJECT_ID` | openfund (runtime, public) | optional; enables mobile wallets (WalletConnect QR / deep link) in the wallet picker. Create a project at cloud.reown.com and list every serving origin in its allowed domains. Unset: browser (EIP-6963) wallets only, and the picker says mobile connection is not configured. Setting it also allows the WalletConnect Verify frame in the CSP. Public value, but never committed |

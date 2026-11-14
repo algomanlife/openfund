@@ -18,12 +18,17 @@
 
 - Iran edge on Liara (branch `infra/liara-iran-mirror`,
   [ADR 0031](docs/decisions/0031-iran-edge-on-liara.md); **not deployed**):
-  a stateless nginx reverse proxy for `iran.openfund.cloud` that serves the
-  exact release Render serves, caches hashed assets, blocks operator and DePay
-  server routes, and runs no backend, database or secret in Iran. A manual,
-  reviewer-gated `Deploy Iran edge (Liara)` workflow deploys an exact `main`
-  commit and verifies it; country routing is prepared but disabled. Owner
-  guide in Persian: `docs/deployment/LIARA_IRAN_SETUP.md`.
+  a stateless nginx reverse proxy for `iran.openfund.cloud`. It is not an
+  independent Iranian deployment: it serves the exact release Render serves,
+  caches hashed assets, blocks operator and DePay server routes, and runs no
+  backend, database or secret in Iran. Manual, reviewer-gated deploys go to
+  a staging Liara app first; production requires verified staging evidence for
+  the same commit. The backend can accept the visitor IP from the edge with an
+  opt-in shared key (`EDGE_CLIENT_IP_KEY`), so per-IP rate limits and audit
+  logs are not collapsed onto one address. Country routing is prepared but
+  disabled. The Persian Iran notice no longer promises access during an
+  international cutoff or domestic market data. Owner guide in Persian:
+  `docs/deployment/LIARA_IRAN_SETUP.md`.
 
 - Owner decisions D1–D8 (branch `agent/claude/launch-readiness`, **not
   deployed**): per-model reward cycles chosen once; 30-day inactivity;

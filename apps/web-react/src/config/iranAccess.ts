@@ -1,8 +1,13 @@
 /** Owner approval gate for the Persian Iran-access notice.
  *
- *  The notice states that https://iran.openfund.cloud keeps Openfund
- *  reachable during international-internet disruption, with challenge sales
- *  paused and domestic price/depth sources. On 2026-11-11 that host had no
+ *  The notice presents https://iran.openfund.cloud as an alternative address
+ *  that serves the same Openfund service through domestic hosting (the Liara
+ *  edge, ADR 0031). It states that the address still depends on Openfund's
+ *  international servers and does not work during an international-internet
+ *  cutoff, and that sign-in there is separate. Corrected on 2026-11-14: the
+ *  earlier copy promised availability during disruption, paused challenge
+ *  sales and domestic price/depth sources, none of which the edge provides.
+ *  On 2026-11-11 that host had no
  *  DNS record. On 2026-11-11 the owner approved showing the notice in
  *  production ahead of connecting that host (owner decision; the route itself
  *  is configured outside this repository). Set to `false` to hide it again.
