@@ -29,9 +29,7 @@ export const aboutHero = {
   eyebrow: text('About us', 'دربارهٔ ما'),
   title: text('A clearer way forward', 'راهی روشن‌تر به جلو'),
   accent: text('for traders who want to see the rules.', 'برای معامله‌گرانی که می‌خواهند قوانین را ببینند.'),
-  intro: text(
-    'Openfund began with a simple frustration shared by many traders: the tools were powerful, but the terms were hard to see. We are building a trading environment where access starts with your wallet, the rules are published before you pay, and every evaluation decision can be traced to a number.',
-    'اوپن‌فاند از یک دلخوری ساده آغاز شد که میان بسیاری از معامله‌گران مشترک است: ابزارها قدرتمند بودند، اما شرایط به‌سختی دیده می‌شد. ما محیطی معاملاتی می‌سازیم که دسترسی در آن با کیف پول خودت شروع می‌شود، قوانین پیش از پرداخت منتشر شده‌اند و هر تصمیم ارزیابی را می‌توان تا یک عدد دنبال کرد.'),
+  intro: text('Openfund is a prop trading firm and trading technology platform.', 'اوپن‌فاند یک شرکت پراپ‌تریدینگ و پلتفرم فناوری معاملات است.'),
   note: text(
     'This page describes why Openfund exists and where it is heading. It is a statement of motivation and direction, not a company history.',
     'این صفحه توضیح می‌دهد اوپن‌فاند چرا وجود دارد و به کجا می‌رود. این متن بیان انگیزه و مسیر است، نه تاریخچهٔ شرکت.'),

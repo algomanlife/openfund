@@ -152,14 +152,19 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
     paid: { from: 'approved', to: 'paid' },
   }
 
-  router.get('/withdrawals', wrap(async (req, res) => {
+  const withdrawalReadLimit = rateLimit({ windowMs: 60_000, limit: 90 })
+  router.get('/withdrawals', withdrawalReadLimit, wrap(async (req, res) => {
     const limit = PAGE(req.query.limit, 25, 100), offset = PAGE(req.query.offset, 0, 1000000)
     const params = []
-    let where = 'TRUE'
+    let where = req.query.kind === 'reward' ? "w.kind='reward'" : 'TRUE'
     if (['requested', 'approved', 'paid', 'rejected', 'cancelled'].includes(req.query.status)) {
       params.push(req.query.status)
       where += ` AND w.status = $${params.length}`
     }
+    if (req.query.status === 'reconciliation') where += " AND w.status='approved' AND w.payment_evidence IS NULL"
+    if (req.query.status === 'appeal') where += ` AND (
+      SELECT e.value->>'kind'='appeal' FROM jsonb_array_elements(w.thread_events) WITH ORDINALITY e(value, idx)
+      WHERE e.value->>'kind' IN ('appeal','appeal_resolved') ORDER BY idx DESC LIMIT 1)`
     const total = (await pool.query(`SELECT count(*)::int c FROM withdrawal_requests w WHERE ${where}`, params)).rows[0].c
     const { rows } = await pool.query(
       `SELECT w.id, w.user_id, u.wallet_address, w.amount_usd, w.status, w.note, w.requested_at,
@@ -172,6 +177,13 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
          FROM withdrawal_requests w JOIN openfund_users u ON u.id = w.user_id
         WHERE ${where} ORDER BY w.requested_at DESC LIMIT ${limit + 1} OFFSET ${offset}`, params)
     res.json({ total, withdrawals: rows.slice(0, limit) })
+  }))
+
+  router.get('/withdrawals/:id/audit', withdrawalReadLimit, wrap(async (req, res) => {
+    if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')
+    const { rows } = await pool.query(`SELECT ts, actor, action, before, after FROM financial_audit_log
+      WHERE entity='withdrawal' AND entity_id=$1 ORDER BY id DESC LIMIT 200`, [req.params.id])
+    res.set('Cache-Control', 'no-store').json({ events: rows })
   }))
 
   const withdrawalReviewLimit = rateLimit({ windowMs: 60_000, limit: 60, standardHeaders: 'draft-8', legacyHeaders: false,

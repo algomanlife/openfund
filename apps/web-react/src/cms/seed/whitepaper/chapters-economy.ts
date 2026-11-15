@@ -37,7 +37,7 @@ export const economyChapters: WpChapter[] = [
       { type: 'flow', label: t('The Openfund Prop trader journey', 'مسیر معامله‌گر در اوپن‌فاند پراپ'), steps: [
         { title: t('1 · Challenge purchase', '۱ · خرید چلنج'), text: t('Connect a wallet, choose a program and account size, pay a server-set price. The payment is verified on-chain before the account exists.', 'اتصال کیف پول، انتخاب برنامه و اندازهٔ حساب و پرداخت قیمت تعیین‌شده در سرور. پرداخت پیش از ایجاد حساب روی زنجیره تأیید می‌شود.'), status: 'implemented' },
         { title: t('2 · Evaluation', '۲ · ارزیابی'), text: t('Trade a simulated account under the rule version frozen at purchase: profit targets, daily and maximum loss limits, minimum trading days.', 'معامله روی حساب شبیه‌سازی‌شده تحت نسخهٔ قوانینِ ثبت‌شده در لحظهٔ خرید: هدف سود، حدود زیان روزانه و کل، حداقل روزهای معاملاتی.'), status: 'live' },
-        { title: t('3 · Simulated funded account', '۳ · حساب فاندد شبیه‌سازی‌شده'), text: t('After the final stage passes, the account of record continues as a simulated funded account. It is still a simulation.', 'پس از قبولی در مرحلهٔ نهایی، حساب ثبت‌شده به‌عنوان حساب فاندد شبیه‌سازی‌شده ادامه می‌یابد. این حساب همچنان شبیه‌سازی است.'), status: 'live' },
+        { title: t('3 · Simulated funded account', '۳ · حساب فاندد شبیه‌سازی‌شده'), text: t('After the final stage passes, an operator reviews the evaluation before the trader can activate a simulated funded account.', 'پس از قبولی در مرحلهٔ نهایی، اپراتور ارزیابی را بررسی می‌کند و سپس تریدر می‌تواند حساب فاندد شبیه‌سازی‌شده را فعال کند.'), status: 'live' },
         { title: t('4 · Trader rewards', '۴ · پاداش معامله‌گر'), text: t('Eligible traders request a reward. Each request is reviewed, approved and transferred by an operator, and each step is recorded.', 'معامله‌گر واجد شرایط درخواست پاداش می‌دهد. هر درخواست توسط اپراتور بررسی، تأیید و منتقل می‌شود و هر گام ثبت می‌شود.'), status: 'implemented' },
       ] },
       { type: 'h3', text: t('Published programs and pricing', 'برنامه‌ها و قیمت‌های منتشرشده') },
@@ -50,7 +50,6 @@ export const economyChapters: WpChapter[] = [
         [t('Daily loss limit', 'حد زیان روزانه'), t('5%', '۵٪'), t('3%', '۳٪'), t('3%', '۳٪')],
         [t('Maximum loss', 'حداکثر زیان'), t('10% static', '۱۰٪ ثابت'), t('12% static', '۱۲٪ ثابت'), t('5% trailing, locks at breakeven after 5% profit', '۵٪ شناور، پس از ۵٪ سود در نقطهٔ سربه‌سر قفل می‌شود')],
         [t('Minimum trading days', 'حداقل روزهای معاملاتی'), t('3', '۳'), t('0', '۰'), t('0', '۰')],
-        [t('Reward split', 'سهم پاداش'), t('80%', '۸۰٪'), t('80%', '۸۰٪'), t('95%', '۹۵٪')],
       ] },
       { type: 'h3', text: t('How the evaluation engine decides', 'موتور ارزیابی چگونه تصمیم می‌گیرد') },
       { type: 'list', items: [
@@ -61,8 +60,11 @@ export const economyChapters: WpChapter[] = [
         t('When stage one of a two-step program passes, stage two is provisioned automatically under the same frozen rules.', 'با قبولی در مرحلهٔ اول برنامهٔ دومرحله‌ای، مرحلهٔ دوم به‌طور خودکار و با همان قوانین ثبت‌شده ایجاد می‌شود.'),
       ] },
       { type: 'callout', tone: 'warning', title: t('Simulated profit is not a payout', 'سود شبیه‌سازی‌شده پرداخت نیست'), text: t(
-        'A simulated funded account does not trade in a real market. Rewards are paid by Openfund from its own funds under the program rules; they are not a share of market profits. A reward exists only once a request is approved and the transfer is recorded with a reference. Automated payout settlement and certificates are planned, not live.',
-        'حساب فاندد شبیه‌سازی‌شده در بازار واقعی معامله نمی‌کند. پاداش را اوپن‌فاند طبق قوانین برنامه از منابع خود می‌پردازد و سهمی از سود بازار نیست. پاداش فقط زمانی وجود دارد که درخواست تأیید و انتقال با شمارهٔ مرجع ثبت شود. تسویهٔ خودکار پرداخت و گواهی‌نامه‌ها برنامه‌ریزی‌شده‌اند، نه فعال.') },
+        'A simulated funded account does not trade in a real market. Rewards are paid by Openfund from its own funds under the program rules; they are not a share of market profits. Staff approve and transfer rewards manually. A finalized matching Arbitrum One DAI receipt is required to record payment and issue a payout certificate.',
+        'حساب فاندد شبیه‌سازی‌شده در بازار واقعی معامله نمی‌کند. پاداش را اوپن‌فاند طبق قوانین برنامه از منابع خود می‌پردازد و سهمی از سود بازار نیست. کارکنان پاداش را دستی تأیید و منتقل می‌کنند. برای ثبت پرداخت و صدور گواهی، رسید نهایی‌شدهٔ منطبق برای DAI روی Arbitrum One لازم است.') },
+      { type: 'p', text: t(
+        'The new funded plan schedules rewards every 7, 14 or 21 days or monthly. Trader shares are 75%, 85%, 90% and 100%. The remaining share belongs to a qualifying attributed IB, or to Openfund for accounts without one. Existing accounts retain their issued terms. Activation for new purchases requires approved sales terms.',
+        'چرخه‌های طرح فاندد جدید ۷، ۱۴ یا ۲۱ روزه یا ماهانه‌اند. سهم معامله‌گر به ترتیب ۷۵٪، ۸۵٪، ۹۰٪ و ۱۰۰٪ است. سهم باقی‌مانده به IB منتسبِ واجد شرایط می‌رسد و برای حساب‌های بدون IB واجد شرایط، سهم اوپن‌فاند است. حساب‌های فعلی شرایط زمان صدور را حفظ می‌کنند و فعال‌سازی برای خریدهای جدید نیاز به تأیید شرایط فروش دارد.') },
       { type: 'faq', items: [
         { q: t('Can the rules change after I buy a challenge?', 'آیا قوانین پس از خرید چلنج تغییر می‌کنند؟'), a: t('No. The rule set is snapshotted at purchase, and your account is evaluated against that snapshot for its whole life.', 'خیر. مجموعهٔ قوانین در لحظهٔ خرید ثبت می‌شود و حساب شما در تمام عمرش بر اساس همان نسخه ارزیابی می‌شود.') },
         { q: t('Is the Free Trial ever rewarded?', 'آیا تست رایگان پاداش دارد؟'), a: t('No. The Free Trial rehearses the two-step rules for fourteen days per phase and carries no reward and no conversion.', 'خیر. تست رایگان قوانین دومرحله‌ای را چهارده روز در هر مرحله تمرین می‌کند و پاداش یا امکان تبدیل ندارد.') },
@@ -120,6 +122,9 @@ export const economyChapters: WpChapter[] = [
         { term: t('Outstanding liabilities', 'بدهی‌های پرداخت‌نشده'), text: t('Approved unpaid rewards, unpaid commissions, unsettled profit shares, payable expenses and other recorded liabilities.', 'پاداش‌های تأییدشدهٔ پرداخت‌نشده، کمیسیون‌های پرداخت‌نشده، سهم‌های سود تسویه‌نشده، هزینه‌های قابل پرداخت و سایر بدهی‌های ثبت‌شده.') },
         { term: t('Available allocatable capital', 'سرمایهٔ آزاد قابل تخصیص'), text: t('Treasury balance minus liabilities, reserves and existing allocations. Unknown whenever any input is missing.', 'موجودی خزانه منهای بدهی‌ها، ذخایر و تخصیص‌های موجود. هرگاه هر ورودی موجود نباشد، نامعلوم است.') },
       ] },
+      { type: 'p', text: t(
+        'The approved allocation ratio assigns 59% of eligible purchase revenue to treasury and 41% to operations. Posting requires an approved definition of eligible revenue. Funded rewards and IB settlements are recorded separately.',
+        'نسبت تخصیص مصوب، ۵۹٪ درآمد مشمول خرید را به خزانه و ۴۱٪ را به عملیات اختصاص می‌دهد. ثبت تخصیص به تعریف مصوب درآمد مشمول نیاز دارد. پاداش فاندد و تسویهٔ IB جداگانه ثبت می‌شوند.') },
       { type: 'h3', text: t('An illustrative scenario', 'یک سناریوی نمایشی') },
       { type: 'p', text: t(
         'The scenario below starts from $1,000,000 of gross challenge sales and an illustrative 56% trader payout ratio, leaving $440,000 before other expenses. Adjust any line to see how quickly costs and prudent reserves consume what looks like a large surplus. These are hypothetical values, not Openfund results.',

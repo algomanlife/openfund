@@ -104,6 +104,13 @@ export function referralRoutes({ pool, requireAuth, audit }) {
           ORDER BY a.attributed_at DESC
           LIMIT 200`,
         [req.user.user_id])
+      const { rows: [purchases] } = await pool.query(
+        `SELECT count(DISTINCT o.user_id)::int AS count
+           FROM referral_attributions a
+           JOIN purchase_orders o ON o.user_id=a.referred_user_id AND o.created_at>=a.attributed_at
+          WHERE a.referrer_user_id=$1 AND o.payment_required AND o.lifecycle_state IN ('provisioned','partially_refunded')
+            AND EXISTS (SELECT 1 FROM payments p WHERE p.purchase_order_id=o.id AND p.status='confirmed')`,
+        [req.user.user_id])
       const mine = await pool.query(
         `SELECT a.code, a.attributed_at, u.wallet_address AS referrer
            FROM referral_attributions a
@@ -114,6 +121,7 @@ export function referralRoutes({ pool, requireAuth, audit }) {
         code: code.code,
         codeCreatedAt: code.created_at,
         programState: 'prelaunch',
+        verifiedFirstPurchases: purchases.count,
         attributed: {
           count: referrals.rowCount,
           referrals: referrals.rows.map(row => ({

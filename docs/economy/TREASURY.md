@@ -76,3 +76,20 @@ Authorized economy operators can inspect policy and journal records at
 `GET /admin/economy/treasury/allocations`. The public report presents
 aggregate allocations and paid/unpaid verified expenses while operator
 records retain supporting references.
+
+## Finalized token transfer reconciliation
+
+The reconciler reads configured EVM treasury tokens from an owner-approved
+initial block in `treasury_transfer_cursors`. A treasury wallet, its token
+list and an RPC supporting finalized blocks and historical balances are
+required. The migration seeds no address or cursor. An account receiving
+checkouts can identify internal transfers when it is configured for the same
+network. It does not acquire payout authority.
+
+Each batch compares opening and closing token balances with finalized
+transfer logs. An imbalance leaves the cursor in place and reports a
+reconciliation warning. Matched results advance atomically, with chain,
+transaction hash and log index providing unique movement identity. Public
+explorer links exclude internal transfers and do not establish sales
+recognition. The reporting snapshot continues to distinguish allocation
+entries, recorded expenses and observed movements.

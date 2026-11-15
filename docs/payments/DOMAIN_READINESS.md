@@ -5,9 +5,9 @@ order, signed verification request or nonce request.
 
 | Host | HTTPS and runtime | SIWE | Checkout | DePay |
 | --- | --- | --- | --- | --- |
-| openfi.cloud | Verified TLS, GLOBAL, source 60d5df9 | Anonymous session returns 401; same-origin preflight returns 204 with credentials and origin headers; signed login untested | Catalog 200 and payments enabled; direct localized checkout returns 404 | Public widget and integration ID configured; live checkout untested |
-| openfund.cloud | Verified TLS, GLOBAL, source 60d5df9 | Anonymous session 401; preflight 204 without an allow-origin header; signed login untested | Catalog 200 and payments enabled; direct localized checkout returns 404 | Public widget and integration ID configured; live checkout untested |
-| openfund-our6.onrender.com | Verified TLS, GLOBAL, source 60d5df9 | Anonymous session 401; preflight 204 without an allow-origin header; signed login untested | Catalog 200 and payments enabled; direct localized checkout returns 404 | Public widget and integration ID configured; live checkout untested |
+| openfi.cloud | Verified TLS, GLOBAL, source 60d5df9 | Anonymous session returns 401; same-origin preflight returns 204 with credentials and origin headers; signed login untested | Catalog 200 and payments enabled; browser-document checkout returns HTML 200 | Public widget and integration ID configured; live checkout untested |
+| openfund.cloud | Verified TLS, GLOBAL, source 60d5df9 | Anonymous session 401; preflight 204 without an allow-origin header; signed login untested | Catalog 200 and payments enabled; browser-document checkout returns HTML 200 | Public widget and integration ID configured; live checkout untested |
+| openfund-our6.onrender.com | Verified TLS, GLOBAL, source 60d5df9 | Anonymous session 401; preflight 204 without an allow-origin header; signed login untested | Catalog 200 and payments enabled; browser-document checkout returns HTML 200 | Public widget and integration ID configured; live checkout untested |
 | iran.openfund.cloud | Verified TLS; Liara returned 503 | Blocked by 503 | Blocked by 503 | Unknown |
 | iran.openfi.cloud | Verified TLS; Liara returned 503 | Blocked by 503 | Blocked by 503 | Unknown |
 | openfi.live | Verified TLS; Liara returned 503 | Blocked by 503 | Blocked by 503 | Unknown |
@@ -37,3 +37,11 @@ The public [treasury snapshot](https://openfi.cloud/economy/treasury) returned
 [checkout receiver balance view](https://openfi.cloud/economy/treasury/networks)
 reported six successful reads and one Optimism read error. Those checkout
 receivers do not establish an authorized payout sender.
+
+A later read-only probe requested `Accept: text/html` on `/en/challenges`
+and the registered `/en/checkout` route. Both returned HTML 200 on all
+three GLOBAL hosts. The previous bare HTTP 404 did not exercise the
+browser-document fallback. The local checkout flow provides plan selection
+on the challenge page and carries the choice into checkout. Real order
+creation, signed session restoration and actual transfers remain separate
+acceptance steps.

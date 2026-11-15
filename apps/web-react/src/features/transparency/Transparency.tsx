@@ -40,6 +40,20 @@ function Treasury({ tv, locale }: { tv: TreasuryView; locale: Locale }) {
         <tbody>{s.assets.map(a => <tr key={a.symbol + a.address}><th scope="row">{a.symbol}</th><td dir="ltr">{a.balance}</td><td>{a.priceUsd ? usd(a.priceUsd, locale, 4) : '—'}</td><td>{a.valueUsd ? usd(a.valueUsd, locale) : <Status kind="warn">{a.priceError}</Status>}</td><td dir="ltr" style={{ overflowWrap: 'anywhere' }}>{a.priceSource || '—'}{a.priceUpdatedAt ? ` · ${when(a.priceUpdatedAt, locale)}` : ''}</td></tr>)}</tbody></table></div>}
       <Source locale={locale}>{t('On-chain balanceOf / getBalance at the snapshot block; USD via configured Chainlink aggregators only', 'balanceOf / getBalance روی زنجیره در بلاک تصویر؛ ارزش دلاری فقط از Chainlink پیکربندی‌شده')[locale]}</Source>
     </div>
+    {!!tv.reconciliation?.length && <div className="econ-panel">
+      <h3>{t('Treasury transfer reconciliation', 'تطبیق نقل‌وانتقال خزانه')[locale]}</h3>
+      <div className="econ-list">{tv.reconciliation.map(asset => <div key={asset.token}>
+        <span dir="ltr">{asset.token}</span>
+        <span>{asset.stale ? t('Stale data', 'دادهٔ قدیمی')[locale] :
+          asset.status === 'current' ? t('Current', 'به‌روز')[locale] :
+            asset.status === 'unreconciled' ? t('Requires reconciliation', 'نیازمند تطبیق')[locale] : t('Unavailable', 'در دسترس نیست')[locale]}
+        {' · '}{asset.syncedAt ? when(asset.syncedAt, locale) : '—'}</span>
+      </div>)}</div>
+      <div className="econ-list">{tv.movements?.map((m, i) => <div key={i}>
+        <span>{m.direction === 'inbound' ? t('Inbound', 'ورودی')[locale] : t('Outbound', 'خروجی')[locale]} · <bdi>{m.amount ?? '—'}</bdi></span>
+        <span>{m.explorerUrl && <a href={m.explorerUrl} target="_blank" rel="noopener noreferrer">{t('Explorer', 'کاوشگر')[locale]}</a>}</span>
+      </div>)}</div>
+    </div>}
     {tv.history.length > 1 && <div className="econ-panel"><h3>{t('Treasury balance history', 'تاریخچهٔ موجودی خزانه')[locale]}</h3>
       <Bars locale={locale} label={t('Daily last priced balance, USD', 'آخرین موجودی قیمت‌گذاری‌شدهٔ روزانه، دلار')[locale]} points={tv.history.map(h => ({ key: h.day.slice(0, 10), value: Number(h.totalUsd || 0) }))} format={v => usd(v, locale)} /></div>}
   </>

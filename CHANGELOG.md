@@ -4,6 +4,8 @@
 
 - Add versioned 7-, 14-, 21-day and monthly UTC payout choices behind an owner-approved sales cutoff.
 - Verify manual funded rewards against finalized Arbitrum One DAI receipts before recording payment or issuing a new payout certificate.
+- Add payout discussions, operator appeals, funded IB settlement and cross-region receipt claims.
+- Journal approved revenue allocations and reconcile finalized treasury transfers against on-chain balances.
 - Add a shared four-quarter product roadmap to the website and whitepaper seed and clarify the prop-firm product scope in the README.
 
 ## Unreleased — v0.6.5 candidate (branch `agent/claude/v0.6.5-modernization`)

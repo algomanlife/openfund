@@ -44,7 +44,7 @@ import { governanceRoutes } from './governance-routes.js'
 import { partnerRoutes, partnerAdminRoutes, attributeAmbassador } from './partners.js'
 import { economyRoutes, economyAdminRoutes } from './economy.js'
 import { liveRoutes, liveAdminRoutes, liveConfig, processSettlements, settlementAdapter } from './live-funding.js'
-import { Treasury, TreasuryNetworks, treasuryNetworksConfig } from './treasury.js'
+import { treasuryConfig, Treasury, TreasuryNetworks, treasuryNetworksConfig } from './treasury.js'
 import { createTradingStreamHub } from './trading-stream.js'
 import { edgeClientIpMiddleware } from './edge-client-ip.js'
 import { regionConfig, hasRole, assertDatabaseRegion, RuntimeState, regionGuard, httpRoleGate, statusBody, runtimeAdminRoutes, payoutGuard } from './region.js'
@@ -813,7 +813,9 @@ const footprint = createFootprintService({ mainPool: pool })
 app.use(footprint.router)
 app.use('/governance', governanceRoutes({ pool, requireAuth, limit }))
 /* Economy, Brand Ambassador, Verified Coach and Live Market Access */
-const treasury = new Treasury(pool)
+const treasurySettings = treasuryConfig()
+const treasury = new Treasury(pool, { config: treasurySettings,
+  receivers: paymentChains().filter(c => c.chainId === treasurySettings.chainId).map(c => c.receiver).filter(Boolean) })
 const live = liveConfig()
 /* treasury wallets per network = the payment settlement receivers (one configuration) */
 const treasuryNetworks = new TreasuryNetworks({ networks: treasuryNetworksConfig(paymentChains()) })

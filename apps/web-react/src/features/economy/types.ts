@@ -3,6 +3,8 @@ export interface TreasuryAsset { symbol: string; address: string; decimals: numb
 export interface TreasuryView {
   configured: boolean; configError: string | null; address: string | null; chainId: number; network: string | null; explorerUrl: string | null; refreshMinutes: number
   status: 'not_configured' | 'ok' | 'stale' | 'unavailable' | 'pending_first_read'; stale?: boolean
+  reconciliation?: { token: string; status: string; syncedAt: string | null; block: string | null; differenceUnits: string | null; stale: boolean }[]
+  movements?: { direction: 'inbound' | 'outbound'; explorerUrl: string | null; token: string; block: string; amount: string | null }[]
   lastAttempt?: { at: string; status: string } | null
   snapshot: { takenAt: string; blockNumber: number; assets: TreasuryAsset[]; totalUsd: string; fullyPriced: boolean } | null
   history: { day: string; totalUsd: string; fullyPriced: boolean }[]

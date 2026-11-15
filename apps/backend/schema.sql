@@ -2484,3 +2484,36 @@ END $$;
 DROP TRIGGER IF EXISTS withdrawal_financial_evidence_immutable ON withdrawal_requests;
 CREATE TRIGGER withdrawal_financial_evidence_immutable BEFORE UPDATE ON withdrawal_requests
   FOR EACH ROW EXECUTE FUNCTION protect_withdrawal_financial_evidence();
+
+-- Owner-controlled reconciliation scope. No cursor is provisioned by migration.
+CREATE TABLE IF NOT EXISTS treasury_transfer_cursors (
+  chain_id integer NOT NULL,
+  treasury_address text NOT NULL CHECK (treasury_address ~ '^0x[0-9a-f]{40}$'),
+  token_address text NOT NULL CHECK (token_address ~ '^0x[0-9a-f]{40}$'),
+  next_block bigint NOT NULL CHECK (next_block > 0),
+  status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','current','catching_up','error','unreconciled')),
+  last_sync_at timestamptz,
+  reconciled_block bigint,
+  balance_units numeric(78,0),
+  difference_units numeric(78,0),
+  PRIMARY KEY (chain_id,treasury_address,token_address)
+);
+CREATE TABLE IF NOT EXISTS treasury_token_movements (
+  chain_id integer NOT NULL,
+  transaction_hash text NOT NULL CHECK (transaction_hash ~ '^0x[0-9a-f]{64}$'),
+  log_index integer NOT NULL CHECK (log_index >= 0),
+  treasury_address text NOT NULL,
+  token_address text NOT NULL,
+  block_number bigint NOT NULL,
+  from_address text NOT NULL,
+  to_address text NOT NULL,
+  amount_units numeric(78,0) NOT NULL CHECK (amount_units >= 0),
+  direction text NOT NULL CHECK (direction IN ('internal','inbound','outbound')),
+  observed_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (chain_id, transaction_hash, log_index),
+  FOREIGN KEY (chain_id,treasury_address,token_address)
+    REFERENCES treasury_transfer_cursors (chain_id,treasury_address,token_address)
+);
+DROP TRIGGER IF EXISTS treasury_token_movements_immutable ON treasury_token_movements;
+CREATE TRIGGER treasury_token_movements_immutable BEFORE UPDATE OR DELETE ON treasury_token_movements
+  FOR EACH ROW EXECUTE FUNCTION reject_mutation();

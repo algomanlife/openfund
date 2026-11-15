@@ -2,9 +2,9 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4257,
-    "mappedCalls": 2111,
-    "exceptions": 71,
+    "uniqueRecords": 4277,
+    "mappedCalls": 2130,
+    "exceptions": 74,
     "validationFindings": 0,
     "reviewedExclusions": 27
   },
@@ -22,7 +22,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 67,
+          "line": 69,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -45,6 +45,26 @@
           "line": 38,
           "page": "economy",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.001ead82c56f0c28",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ثبت تسویهٔ IB",
+      "en": "Record IB settlement",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 115,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -737,7 +757,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 62,
+          "line": 76,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -777,7 +797,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 169,
+          "line": 167,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -817,7 +837,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 106,
+          "line": 108,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -1411,7 +1431,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 133,
+          "line": 147,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -1491,7 +1511,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 106,
+          "line": 104,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -1551,7 +1571,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 88,
+          "line": 90,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -1751,7 +1771,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 105,
+          "line": 110,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -1785,7 +1805,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 174,
+          "line": 179,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -1905,9 +1925,29 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 80,
+          "line": 94,
           "page": "transparency",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.04ba179aac58b990",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "محاسبه و مدارک",
+      "en": "Calculation and evidence",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 91,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -1992,7 +2032,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 60,
+          "line": 61,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -2526,7 +2566,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 98,
+          "line": 112,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -2666,7 +2706,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 95,
+          "line": 97,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -2766,7 +2806,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 74,
+          "line": 88,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -2806,7 +2846,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 111,
+          "line": 109,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -3084,6 +3124,26 @@
       ]
     },
     {
+      "key": "react.07eed71b34ef7571",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مدیریت پرداخت‌ها",
+      "en": "Payout operations",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 72,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.0813acfe86bea30c",
       "namespace": "react",
       "area": "Global Content",
@@ -3210,14 +3270,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 87,
+          "line": 89,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 119,
+          "line": 133,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -3604,7 +3664,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 177,
+          "line": 182,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -3688,6 +3748,33 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.0a09d72e5042d0be",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نیازمند تطبیق",
+      "en": "Requires reconciliation",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 69,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 49,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -3924,7 +4011,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 155,
+          "line": 153,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -4081,6 +4168,26 @@
           "line": 155,
           "page": "global",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.0b4439bd49c78465",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "توکن اپراتور",
+      "en": "Operator token",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 74,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -4252,7 +4359,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 57,
+          "line": 56,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -4968,7 +5075,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 119,
+          "line": 133,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -4988,7 +5095,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 150,
+          "line": 155,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -5237,7 +5344,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 57,
+          "line": 55,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -5811,7 +5918,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 43,
+          "line": 57,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -6045,7 +6152,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 71,
+          "line": 72,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -6580,7 +6687,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 91,
+          "line": 93,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -6620,7 +6727,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 126,
+          "line": 124,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -7214,7 +7321,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 152,
+          "line": 166,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -7294,7 +7401,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 86,
+          "line": 88,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -7486,6 +7593,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.15622d58b42b5004",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خروجی",
+      "en": "Outbound",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 53,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -7723,7 +7850,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 182,
+          "line": 187,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8387,7 +8514,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 133,
+          "line": 147,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8627,7 +8754,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 201,
+          "line": 206,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8647,7 +8774,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 110,
+          "line": 124,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8747,7 +8874,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 137,
+          "line": 151,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8895,6 +9022,26 @@
       ]
     },
     {
+      "key": "react.198d6326fde5bf9c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نسخهٔ سیاست IB",
+      "en": "IB policy version",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 110,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.19a43f6e5ccefcf8",
       "namespace": "react",
       "area": "Global Content",
@@ -8967,7 +9114,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 93,
+          "line": 95,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -9215,7 +9362,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 85,
+          "line": 87,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -9395,7 +9542,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 189,
+          "line": 194,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -9635,7 +9782,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 173,
+          "line": 171,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -9856,7 +10003,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 162,
+          "line": 167,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -10258,7 +10405,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 190,
+          "line": 195,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -11586,7 +11733,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 129,
+          "line": 134,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -11706,7 +11853,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 135,
+          "line": 133,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -11886,7 +12033,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 154,
+          "line": 168,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -11993,7 +12140,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 108,
+          "line": 106,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -12113,7 +12260,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 60,
+          "line": 58,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -12213,7 +12360,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 64,
+          "line": 78,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -12473,7 +12620,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 59,
+          "line": 57,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -13348,7 +13495,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 92,
+          "line": 94,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -13428,7 +13575,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 160,
+          "line": 165,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -13695,7 +13842,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 77,
+          "line": 79,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -13935,7 +14082,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 94,
+          "line": 96,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -14135,7 +14282,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 67,
+          "line": 65,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -14262,7 +14409,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 70,
+          "line": 84,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -14629,7 +14776,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 93,
+          "line": 91,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -14696,7 +14843,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 86,
+          "line": 88,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -14710,7 +14857,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 123,
+          "line": 137,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15230,14 +15377,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 115,
+          "line": 117,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 55,
+          "line": 69,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15351,7 +15498,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 159,
+          "line": 164,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15893,7 +16040,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 108,
+          "line": 122,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15953,7 +16100,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 67,
+          "line": 69,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -16053,7 +16200,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 59,
+          "line": 73,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -16073,7 +16220,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 189,
+          "line": 194,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -16307,7 +16454,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 202,
+          "line": 207,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -16663,7 +16810,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 59,
+          "line": 57,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -17273,7 +17420,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 54,
+          "line": 52,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -18309,7 +18456,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 72,
+          "line": 73,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -18509,7 +18656,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 116,
+          "line": 130,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -18677,7 +18824,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 96,
+          "line": 94,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -19003,6 +19150,13 @@
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 47,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -19029,6 +19183,26 @@
           "line": 142,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.3527c092a71be0b2",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "چرخه‌های طرح فاندد جدید ۷، ۱۴ یا ۲۱ روزه یا ماهانه‌اند. سهم معامله‌گر به ترتیب ۷۵٪، ۸۵٪، ۹۰٪ و ۱۰۰٪ است. سهم باقی‌مانده به IB منتسبِ واجد شرایط می‌رسد و برای حساب‌های بدون IB واجد شرایط، سهم اوپن‌فاند است. حساب‌های فعلی شرایط زمان صدور را حفظ می‌کنند و فعال‌سازی برای خریدهای جدید نیاز به تأیید شرایط فروش دارد.",
+      "en": "The new funded plan schedules rewards every 7, 14 or 21 days or monthly. Trader shares are 75%, 85%, 90% and 100%. The remaining share belongs to a qualifying attributed IB, or to Openfund for accounts without one. Existing accounts retain their issued terms. Activation for new purchases requires approved sales terms.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
+          "line": 65,
+          "page": "global",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -19146,7 +19320,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 182,
+          "line": 187,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -19186,7 +19360,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 69,
+          "line": 71,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -19246,7 +19420,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 114,
+          "line": 116,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -19586,7 +19760,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 183,
+          "line": 188,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -19680,7 +19854,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 94,
+          "line": 108,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -19834,7 +20008,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 78,
+          "line": 80,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20404,7 +20578,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 78,
+          "line": 92,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20444,7 +20618,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 87,
+          "line": 89,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20999,7 +21173,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 129,
+          "line": 134,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21312,6 +21486,13 @@
           "method": "bilingual-record"
         },
         {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 66,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
           "line": 47,
           "page": "purchase",
@@ -21340,7 +21521,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 89,
+          "line": 91,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21381,7 +21562,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 194,
+          "line": 199,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21697,26 +21878,6 @@
       ]
     },
     {
-      "key": "react.3d1df717abb33681",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اوپن‌فاند از یک دلخوری ساده آغاز شد که میان بسیاری از معامله‌گران مشترک است: ابزارها قدرتمند بودند، اما شرایط به‌سختی دیده می‌شد. ما محیطی معاملاتی می‌سازیم که دسترسی در آن با کیف پول خودت شروع می‌شود، قوانین پیش از پرداخت منتشر شده‌اند و هر تصمیم ارزیابی را می‌توان تا یک عدد دنبال کرد.",
-      "en": "Openfund began with a simple frustration shared by many traders: the tools were powerful, but the terms were hard to see. We are building a trading environment where access starts with your wallet, the rules are published before you pay, and every evaluation decision can be traced to a number.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 32,
-          "page": "company",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.3d1f542bf1dc1371",
       "namespace": "react",
       "area": "Global Content",
@@ -21789,7 +21950,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 85,
+          "line": 99,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21809,7 +21970,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 118,
+          "line": 120,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21903,7 +22064,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 96,
+          "line": 110,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22163,7 +22324,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 99,
+          "line": 101,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22403,7 +22564,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 203,
+          "line": 208,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22544,7 +22705,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 116,
+          "line": 130,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22795,6 +22956,13 @@
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 49,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -22811,7 +22979,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 124,
+          "line": 138,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22871,7 +23039,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 35,
+          "line": 33,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -23105,7 +23273,7 @@
         },
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 148,
+          "line": 146,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -23505,7 +23673,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 161,
+          "line": 166,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -23545,7 +23713,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 107,
+          "line": 109,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -23946,7 +24114,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 130,
+          "line": 128,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -23966,7 +24134,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 194,
+          "line": 199,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24153,7 +24321,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 187,
+          "line": 192,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24313,7 +24481,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 120,
+          "line": 122,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24393,7 +24561,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 59,
+          "line": 73,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24493,7 +24661,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 55,
+          "line": 53,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -24577,6 +24745,26 @@
           "page": "tools",
           "route": "/:locale/tools",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.45e7edb84eae5046",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تأیید",
+      "en": "Approve",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 103,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -24693,7 +24881,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 87,
+          "line": 101,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24900,7 +25088,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 158,
+          "line": 163,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -25180,7 +25368,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 192,
+          "line": 197,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -25240,7 +25428,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 206,
+          "line": 211,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -25907,7 +26095,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 119,
+          "line": 133,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -25967,7 +26155,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 107,
+          "line": 105,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -25991,13 +26179,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 53,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -26134,7 +26315,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 87,
+          "line": 101,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27028,7 +27209,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 204,
+          "line": 209,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27118,7 +27299,7 @@
     {
       "key": "react.4c71ae6eb15f86bc",
       "namespace": "react",
-      "area": "User Dashboard",
+      "area": "Website",
       "owner": "Content editor",
       "fa": "قبلی",
       "en": "Previous",
@@ -27126,6 +27307,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 86,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
           "line": 303,
@@ -27469,6 +27657,13 @@
       "validation": "mapped",
       "locations": [
         {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 75,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/PayoutThread.tsx",
           "line": 60,
           "page": "purchase",
@@ -27517,7 +27712,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 94,
+          "line": 96,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27537,7 +27732,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 58,
+          "line": 57,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27837,7 +28032,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 53,
+          "line": 67,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -28186,7 +28381,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 84,
+          "line": 86,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -28433,7 +28628,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 89,
+          "line": 103,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -28473,7 +28668,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 93,
+          "line": 95,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -28923,6 +29118,26 @@
       ]
     },
     {
+      "key": "react.510bee5df2cc4ec5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تأیید تسویهٔ IB",
+      "en": "Approve IB settlement",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 112,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.5112efda5024f7d6",
       "namespace": "react",
       "area": "Global Content",
@@ -29095,7 +29310,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 61,
+          "line": 60,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -29490,7 +29705,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 125,
+          "line": 139,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -29737,7 +29952,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 92,
+          "line": 93,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -30077,7 +30292,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 92,
+          "line": 94,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -30318,7 +30533,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 96,
+          "line": 94,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -30658,7 +30873,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 124,
+          "line": 138,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -30958,7 +31173,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 54,
+          "line": 68,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -31118,7 +31333,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 95,
+          "line": 97,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -31429,7 +31644,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 118,
+          "line": 116,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -31683,7 +31898,7 @@
         },
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 145,
+          "line": 143,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -31714,6 +31929,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.592c8dfa7716fea8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ورودی",
+      "en": "Inbound",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 53,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -31811,6 +32046,26 @@
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
           "line": 23,
+          "page": "company",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.595c1bf7e646d647",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اوپن‌فاند یک شرکت پراپ‌تریدینگ و پلتفرم فناوری معاملات است.",
+      "en": "Openfund is a prop trading firm and trading technology platform.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/company/aboutContent.ts",
+          "line": 32,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -31958,7 +32213,7 @@
         },
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 90,
+          "line": 91,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -32129,6 +32384,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.59fab908b0bbe9cc",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ثبت نتیجهٔ بازبینی",
+      "en": "Record reconsideration outcome",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 100,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -32606,7 +32881,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 180,
+          "line": 185,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -32673,7 +32948,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 109,
+          "line": 123,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -32733,7 +33008,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 134,
+          "line": 132,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -32753,7 +33028,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 101,
+          "line": 115,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -33220,7 +33495,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 93,
+          "line": 107,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -33554,7 +33829,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 95,
+          "line": 100,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -33840,6 +34115,13 @@
       "validation": "mapped",
       "locations": [
         {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 97,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
           "line": 227,
           "page": "purchase",
@@ -34001,7 +34283,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 68,
+          "line": 70,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -34655,7 +34937,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 115,
+          "line": 117,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35062,7 +35344,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 45,
+          "line": 43,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -35122,7 +35404,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 104,
+          "line": 109,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -35309,7 +35591,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 184,
+          "line": 189,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35690,6 +35972,13 @@
           "method": "pick-pipeline"
         },
         {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 67,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
           "line": 47,
           "page": "purchase",
@@ -35705,7 +35994,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 136,
+          "line": 150,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35885,7 +36174,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 182,
+          "line": 180,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -35905,7 +36194,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 173,
+          "line": 178,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35969,6 +36258,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.66077f82e62594ac",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تازه‌سازی",
+      "en": "Refresh",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 79,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -36125,7 +36434,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 108,
+          "line": 106,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -36473,7 +36782,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 88,
+          "line": 90,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -36907,7 +37216,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 85,
+          "line": 83,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -36927,7 +37236,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 110,
+          "line": 108,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -37147,7 +37456,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 95,
+          "line": 109,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -37541,7 +37850,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 116,
+          "line": 114,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -37575,7 +37884,7 @@
         },
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 38,
+          "line": 39,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -38029,7 +38338,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 198,
+          "line": 203,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -38169,7 +38478,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 118,
+          "line": 132,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -38229,7 +38538,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 204,
+          "line": 209,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -38376,6 +38685,13 @@
       "validation": "mapped",
       "locations": [
         {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 98,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/PayoutThread.tsx",
           "line": 66,
           "page": "purchase",
@@ -38437,7 +38753,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 109,
+          "line": 123,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -38761,6 +39077,13 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 65,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -38837,7 +39160,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 149,
+          "line": 154,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -38944,7 +39267,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 120,
+          "line": 134,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -40649,7 +40972,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 171,
+          "line": 169,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -40720,6 +41043,26 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.74b3f5655c3f0251",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جزئیات پرداخت",
+      "en": "Payout details",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 89,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -40960,6 +41303,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.758bd6ed162e1fe1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سوابق بررسی",
+      "en": "Audit history",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 94,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -41357,7 +41720,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 123,
+          "line": 128,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -41397,7 +41760,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 73,
+          "line": 87,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -41437,7 +41800,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 197,
+          "line": 202,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -41671,7 +42034,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 111,
+          "line": 109,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -41871,7 +42234,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 124,
+          "line": 138,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -42311,7 +42674,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 141,
+          "line": 146,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -42371,7 +42734,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 141,
+          "line": 139,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -42391,7 +42754,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 144,
+          "line": 149,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -42885,7 +43248,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 150,
+          "line": 155,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -43105,7 +43468,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 97,
+          "line": 99,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -43346,7 +43709,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 163,
+          "line": 168,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -43386,7 +43749,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 59,
+          "line": 73,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -43493,7 +43856,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 133,
+          "line": 147,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -44040,7 +44403,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 217,
+          "line": 222,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -44120,7 +44483,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 83,
+          "line": 85,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -44214,7 +44577,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 65,
+          "line": 63,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -44342,6 +44705,26 @@
       ]
     },
     {
+      "key": "react.7e87651a11dde17e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "رد",
+      "en": "Reject",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 104,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.7eb5176c14814706",
       "namespace": "react",
       "area": "Global Content",
@@ -44374,7 +44757,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 110,
+          "line": 108,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -44729,6 +45112,26 @@
       ]
     },
     {
+      "key": "react.803d1171acfcbf83",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تطبیق نقل‌وانتقال خزانه",
+      "en": "Treasury transfer reconciliation",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 44,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.804a412ffd3dba47",
       "namespace": "react",
       "area": "Global Content",
@@ -44761,7 +45164,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 130,
+          "line": 135,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -45330,7 +45733,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 103,
+          "line": 117,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -45666,7 +46069,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 53,
+          "line": 67,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -45953,7 +46356,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 174,
+          "line": 172,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -46420,7 +46823,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 206,
+          "line": 211,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -46527,7 +46930,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 204,
+          "line": 209,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -46707,7 +47110,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 109,
+          "line": 107,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -47081,7 +47484,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 128,
+          "line": 126,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -47161,7 +47564,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 58,
+          "line": 56,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -47241,7 +47644,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 131,
+          "line": 136,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -47468,7 +47871,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 129,
+          "line": 127,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -47542,7 +47945,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 60,
+          "line": 59,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -47769,7 +48172,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 95,
+          "line": 54,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 109,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -48500,7 +48910,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 151,
+          "line": 156,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -49015,7 +49425,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 85,
+          "line": 87,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -49075,7 +49485,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 104,
+          "line": 118,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -49429,7 +49839,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 181,
+          "line": 179,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -49589,7 +49999,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 161,
+          "line": 159,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -49864,6 +50274,26 @@
       ]
     },
     {
+      "key": "react.8fa85a956483ce4b",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "پس از قبولی در مرحلهٔ نهایی، اپراتور ارزیابی را بررسی می‌کند و سپس تریدر می‌تواند حساب فاندد شبیه‌سازی‌شده را فعال کند.",
+      "en": "After the final stage passes, an operator reviews the evaluation before the trader can activate a simulated funded account.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
+          "line": 40,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.8fc00495af0e21d5",
       "namespace": "react",
       "area": "Website",
@@ -49936,7 +50366,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 143,
+          "line": 148,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -50123,7 +50553,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 183,
+          "line": 188,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50143,7 +50573,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 73,
+          "line": 87,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50243,7 +50673,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 139,
+          "line": 137,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -50283,7 +50713,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 77,
+          "line": 75,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -50904,7 +51334,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 149,
+          "line": 147,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -51004,7 +51434,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 59,
+          "line": 60,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -51046,26 +51476,6 @@
           "component": "apps/web-react/src/features/campaign/Campaign.tsx",
           "line": 137,
           "page": "campaign",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.9313ebfbba7cdfc5",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "پس از قبولی در مرحلهٔ نهایی، حساب ثبت‌شده به‌عنوان حساب فاندد شبیه‌سازی‌شده ادامه می‌یابد. این حساب همچنان شبیه‌سازی است.",
-      "en": "After the final stage passes, the account of record continues as a simulated funded account. It is still a simulation.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 40,
-          "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -51124,7 +51534,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 203,
+          "line": 208,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -51264,7 +51674,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 112,
+          "line": 126,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -51411,7 +51821,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 148,
+          "line": 162,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -51771,7 +52181,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 76,
+          "line": 74,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -51871,7 +52281,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 119,
+          "line": 121,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -52552,7 +52962,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 42,
+          "line": 40,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52712,7 +53122,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 197,
+          "line": 202,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -52839,7 +53249,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 106,
+          "line": 104,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53334,7 +53744,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 133,
+          "line": 138,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -53394,7 +53804,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 90,
+          "line": 104,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -53661,7 +54071,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 88,
+          "line": 102,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -53828,14 +54238,14 @@
         },
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 58,
+          "line": 59,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 67,
+          "line": 68,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54202,7 +54612,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 91,
+          "line": 89,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54402,7 +54812,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 56,
+          "line": 70,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -54462,7 +54872,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 176,
+          "line": 174,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54522,7 +54932,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 162,
+          "line": 160,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -55258,7 +55668,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 157,
+          "line": 162,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -55699,7 +56109,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 55,
+          "line": 54,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -55899,7 +56309,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 91,
+          "line": 93,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -56668,7 +57078,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 44,
+          "line": 58,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -56868,7 +57278,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 131,
+          "line": 136,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -56948,7 +57358,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 165,
+          "line": 170,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -57482,7 +57892,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 59,
+          "line": 58,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -57762,7 +58172,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 204,
+          "line": 209,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -57802,7 +58212,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 188,
+          "line": 193,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -58071,26 +58481,6 @@
       ]
     },
     {
-      "key": "react.a54d55bf9a724fb5",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "حساب فاندد شبیه‌سازی‌شده در بازار واقعی معامله نمی‌کند. پاداش را اوپن‌فاند طبق قوانین برنامه از منابع خود می‌پردازد و سهمی از سود بازار نیست. پاداش فقط زمانی وجود دارد که درخواست تأیید و انتقال با شمارهٔ مرجع ثبت شود. تسویهٔ خودکار پرداخت و گواهی‌نامه‌ها برنامه‌ریزی‌شده‌اند، نه فعال.",
-      "en": "A simulated funded account does not trade in a real market. Rewards are paid by Openfund from its own funds under the program rules; they are not a share of market profits. A reward exists only once a request is approved and the transfer is recorded with a reference. Automated payout settlement and certificates are planned, not live.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 63,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.a566b5e961986b21",
       "namespace": "react",
       "area": "Global Content",
@@ -58245,7 +58635,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 116,
+          "line": 130,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -58289,33 +58679,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.a5bcca542f5bf740",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "۸۰٪",
-      "en": "80%",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 53,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 53,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -58492,7 +58855,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 87,
+          "line": 101,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -58512,7 +58875,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 191,
+          "line": 196,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -58866,7 +59229,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 51,
+          "line": 65,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -59316,7 +59679,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 120,
+          "line": 122,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -59336,7 +59699,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 175,
+          "line": 173,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -59450,7 +59813,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 160,
+          "line": 165,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -59570,7 +59933,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 140,
+          "line": 138,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -59945,7 +60308,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 131,
+          "line": 129,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -60075,7 +60438,7 @@
     {
       "key": "react.aae577d0e04222ba",
       "namespace": "react",
-      "area": "User Dashboard",
+      "area": "Website",
       "owner": "Content editor",
       "fa": "بعدی",
       "en": "Next",
@@ -60083,6 +60446,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 87,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
           "line": 313,
@@ -60566,7 +60936,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 60,
+          "line": 58,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -60789,14 +61159,14 @@
         },
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 180,
+          "line": 178,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 197,
+          "line": 202,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -61003,7 +61373,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 192,
+          "line": 197,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61070,7 +61440,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 69,
+          "line": 71,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61417,7 +61787,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 170,
+          "line": 175,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -61617,7 +61987,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 186,
+          "line": 191,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61637,7 +62007,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 110,
+          "line": 112,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61812,7 +62182,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 95,
+          "line": 93,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -62087,7 +62457,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 91,
+          "line": 93,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62267,7 +62637,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 75,
+          "line": 89,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62350,6 +62720,26 @@
           "line": 114,
           "page": "economy",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b0a5c5eea94ac442",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "درخواست ناموفق بود.",
+      "en": "The request failed.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 81,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -62467,7 +62857,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 63,
+          "line": 62,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62554,7 +62944,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 154,
+          "line": 159,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62594,7 +62984,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 76,
+          "line": 78,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62634,7 +63024,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 68,
+          "line": 70,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62934,7 +63324,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 154,
+          "line": 168,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63289,7 +63679,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 159,
+          "line": 164,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -63349,7 +63739,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 158,
+          "line": 163,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63389,7 +63779,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 149,
+          "line": 154,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63469,7 +63859,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 77,
+          "line": 78,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -63776,7 +64166,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 190,
+          "line": 195,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63930,7 +64320,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 114,
+          "line": 116,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63990,7 +64380,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 116,
+          "line": 118,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -64552,7 +64942,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 109,
+          "line": 107,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -64880,7 +65270,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 43,
+          "line": 41,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -64940,7 +65330,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 82,
+          "line": 83,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -65008,7 +65398,7 @@
         },
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 172,
+          "line": 170,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -65115,7 +65505,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 94,
+          "line": 92,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -65275,7 +65665,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 94,
+          "line": 96,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65335,7 +65725,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 191,
+          "line": 196,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65422,7 +65812,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 150,
+          "line": 148,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -65482,7 +65872,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 95,
+          "line": 97,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65556,7 +65946,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 121,
+          "line": 119,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -65636,7 +66026,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 133,
+          "line": 138,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65716,7 +66106,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 142,
+          "line": 147,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65816,7 +66206,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 51,
+          "line": 65,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65876,7 +66266,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 124,
+          "line": 138,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65916,7 +66306,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 145,
+          "line": 150,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65976,7 +66366,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 100,
+          "line": 98,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -66076,7 +66466,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 203,
+          "line": 208,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -66096,7 +66486,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 90,
+          "line": 104,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -66116,7 +66506,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 55,
+          "line": 69,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -66143,7 +66533,7 @@
         },
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 147,
+          "line": 145,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -66163,7 +66553,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 117,
+          "line": 119,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -66203,7 +66593,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 91,
+          "line": 93,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -66952,6 +67342,26 @@
       ]
     },
     {
+      "key": "react.bf286d2e70681ac8",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "حساب فاندد شبیه‌سازی‌شده در بازار واقعی معامله نمی‌کند. پاداش را اوپن‌فاند طبق قوانین برنامه از منابع خود می‌پردازد و سهمی از سود بازار نیست. کارکنان پاداش را دستی تأیید و منتقل می‌کنند. برای ثبت پرداخت و صدور گواهی، رسید نهایی‌شدهٔ منطبق برای DAI روی Arbitrum One لازم است.",
+      "en": "A simulated funded account does not trade in a real market. Rewards are paid by Openfund from its own funds under the program rules; they are not a share of market profits. Staff approve and transfer rewards manually. A finalized matching Arbitrum One DAI receipt is required to record payment and issue a payout certificate.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
+          "line": 62,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.bf36d9508c609862",
       "namespace": "react",
       "area": "Global Content",
@@ -67004,7 +67414,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 119,
+          "line": 121,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67104,7 +67514,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 79,
+          "line": 93,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67284,7 +67694,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 134,
+          "line": 148,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67344,7 +67754,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 55,
+          "line": 69,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67384,7 +67794,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 170,
+          "line": 168,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -68045,7 +68455,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 153,
+          "line": 151,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -68232,7 +68642,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 118,
+          "line": 120,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -68332,7 +68742,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 202,
+          "line": 207,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -68419,7 +68829,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 90,
+          "line": 88,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -68648,7 +69058,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 188,
+          "line": 193,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -68828,7 +69238,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 129,
+          "line": 143,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -68868,7 +69278,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 84,
+          "line": 86,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -69188,7 +69598,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 96,
+          "line": 98,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -69750,7 +70160,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 84,
+          "line": 82,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -70050,7 +70460,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 116,
+          "line": 118,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -70150,7 +70560,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 96,
+          "line": 98,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -70438,7 +70848,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 160,
+          "line": 158,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -70646,7 +71056,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 93,
+          "line": 91,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -70812,6 +71222,13 @@
       "validation": "mapped",
       "locations": [
         {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 68,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/PayoutThread.tsx",
           "line": 68,
           "page": "purchase",
@@ -70833,7 +71250,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 57,
+          "line": 55,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -71155,7 +71572,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 89,
+          "line": 91,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -71403,7 +71820,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 80,
+          "line": 82,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -71636,6 +72053,13 @@
           "method": "bilingual-record"
         },
         {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 96,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/PayoutThread.tsx",
           "line": 65,
           "page": "purchase",
@@ -71720,6 +72144,26 @@
           "line": 62,
           "page": "terminal",
           "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.cdab886c8bea055e",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "نسبت تخصیص مصوب، ۵۹٪ درآمد مشمول خرید را به خزانه و ۴۱٪ را به عملیات اختصاص می‌دهد. ثبت تخصیص به تعریف مصوب درآمد مشمول نیاز دارد. پاداش فاندد و تسویهٔ IB جداگانه ثبت می‌شوند.",
+      "en": "The approved allocation ratio assigns 59% of eligible purchase revenue to treasury and 41% to operations. Posting requires an approved definition of eligible revenue. Funded rewards and IB settlements are recorded separately.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
+          "line": 125,
+          "page": "global",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -71895,6 +72339,13 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/referral/Referral.tsx",
+          "line": 96,
+          "page": "referral",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -72211,7 +72662,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 108,
+          "line": 110,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -72291,7 +72742,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 72,
+          "line": 86,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -72645,7 +73096,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 163,
+          "line": 168,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -73400,7 +73851,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 127,
+          "line": 141,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -73540,7 +73991,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 184,
+          "line": 189,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -73620,7 +74071,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 124,
+          "line": 129,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -74100,7 +74551,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 51,
+          "line": 65,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -74360,7 +74811,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 124,
+          "line": 129,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -75719,7 +76170,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 38,
+          "line": 39,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -76242,7 +76693,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 48,
+          "line": 46,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -76282,7 +76733,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 101,
+          "line": 99,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -76336,7 +76787,7 @@
         },
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 146,
+          "line": 144,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -76496,7 +76947,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 58,
+          "line": 56,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -76716,7 +77167,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 121,
+          "line": 123,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76796,7 +77247,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 130,
+          "line": 135,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76944,7 +77395,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 115,
+          "line": 113,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -77064,7 +77515,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 155,
+          "line": 169,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77525,7 +77976,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 144,
+          "line": 142,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -77545,7 +77996,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 95,
+          "line": 93,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -77846,7 +78297,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 162,
+          "line": 167,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77994,6 +78445,26 @@
       ]
     },
     {
+      "key": "react.decbffdcf0084e0e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "به‌روز",
+      "en": "Current",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 48,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.ded295c43576f8a0",
       "namespace": "react",
       "area": "User Dashboard",
@@ -78086,7 +78557,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 148,
+          "line": 162,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -78593,7 +79064,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 125,
+          "line": 123,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -78613,7 +79084,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 72,
+          "line": 86,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -78793,7 +79264,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 59,
+          "line": 73,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -78913,7 +79384,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 187,
+          "line": 192,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -79373,7 +79844,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 165,
+          "line": 170,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -79437,6 +79908,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.e33c100499f2fa92",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ثبت پرداخت",
+      "en": "Record payment",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 107,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -79613,7 +80104,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 203,
+          "line": 208,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -79980,7 +80471,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 154,
+          "line": 152,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80227,7 +80718,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 111,
+          "line": 125,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -80687,7 +81178,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 97,
+          "line": 99,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -81014,7 +81505,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 121,
+          "line": 123,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -81415,7 +81906,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 73,
+          "line": 87,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -81575,7 +82066,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 63,
+          "line": 77,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -81730,7 +82221,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 151,
+          "line": 156,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -81977,7 +82468,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 116,
+          "line": 130,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82177,7 +82668,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 159,
+          "line": 164,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82217,7 +82708,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 96,
+          "line": 98,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82377,7 +82868,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 64,
+          "line": 62,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -82417,7 +82908,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 124,
+          "line": 138,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82624,7 +83115,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 92,
+          "line": 94,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82778,7 +83269,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 94,
+          "line": 92,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -82838,7 +83329,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 117,
+          "line": 119,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -83272,7 +83763,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 93,
+          "line": 95,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -83333,6 +83824,13 @@
           "method": "pick-pipeline"
         },
         {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 76,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
           "line": 223,
           "page": "purchase",
@@ -83348,7 +83846,7 @@
         },
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 106,
+          "line": 111,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -83656,7 +84154,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 83,
+          "line": 81,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -83936,7 +84434,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 161,
+          "line": 166,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -84056,7 +84554,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 107,
+          "line": 105,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -84870,7 +85368,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 97,
+          "line": 99,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -85351,7 +85849,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 99,
+          "line": 101,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -85458,7 +85956,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 123,
+          "line": 128,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -85945,7 +86443,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 85,
+          "line": 99,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -86612,7 +87110,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 70,
+          "line": 68,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -86632,7 +87130,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 175,
+          "line": 180,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -87172,7 +87670,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 102,
+          "line": 100,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -87520,6 +88018,13 @@
           "method": "bilingual-record"
         },
         {
+          "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+          "line": 64,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
           "line": 46,
           "page": "purchase",
@@ -87608,7 +88113,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 120,
+          "line": 134,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -88204,7 +88709,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 143,
+          "line": 148,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -88284,7 +88789,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 70,
+          "line": 84,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -88504,7 +89009,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 54,
+          "line": 68,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -88564,7 +89069,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 202,
+          "line": 207,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -88986,7 +89491,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 206,
+          "line": 211,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -89006,7 +89511,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 218,
+          "line": 223,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -89070,13 +89575,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 53,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -89354,7 +89852,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 78,
+          "line": 76,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -89554,7 +90052,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
-          "line": 119,
+          "line": 124,
           "page": "referral",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -89778,6 +90276,30 @@
       "route": "/:locale/checkout; /:locale/:product/purchases",
       "reason": "dynamic-pair",
       "expression": "t(e[0], e[1])"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+      "line": 16,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "dynamic-pair",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+      "line": 83,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "literal-jsx-review",
+      "text": "USD ·"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+      "line": 90,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "literal-jsx-review",
+      "text": "USD ·"
     },
     {
       "component": "apps/web-react/src/features/purchase/PayoutThread.tsx",
@@ -90109,7 +90631,7 @@
     },
     {
       "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-      "line": 101,
+      "line": 115,
       "page": "transparency",
       "route": "/:locale/*",
       "reason": "literal-jsx-review",

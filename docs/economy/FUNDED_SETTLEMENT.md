@@ -29,7 +29,9 @@ and operator capture require explicit reconciliation before settlement.
 
 Each funded request has a private thread. Traders can open it from the
 withdrawal history, see the rejection reason, reply and ask for reconsideration.
-The operator queue includes unread counts and an appeal flag. An operator
+The operator queue includes unread counts and an appeal flag. Authorized
+operators use `/:locale/operations/payouts` with the existing operator
+credential. The browser holds it in memory while the queue is open. An operator
 responds or records a reconsideration outcome under
 `/admin/withdrawals/:id/thread`. The decision recorded there does not
 automatically change the payout status or restore its reservation. Signed
