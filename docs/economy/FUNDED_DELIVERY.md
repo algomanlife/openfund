@@ -16,7 +16,7 @@ unreleased.
 | Treasury and Economy | Added conservative, base and stress inputs for funded conversion, IB liability, existing debt and modeled 59/41 coverage. These are planning outputs. Verified actual treasury balances and new purchase allocation journals are outside this checkpoint. |
 | Product roadmap | Added a four-quarter shared source for the website and Whitepaper seed. README and repository roadmap point to it. The 2,000 registrations figure is a Q1 target. Planned platform connections depend on licensing and security. |
 | Product identity | Updated the README to describe the prop firm's funded programs, rewards and technology. A broader homepage and whitepaper rewrite is still open. |
-| Localization | New bilingual source content follows locale resolution. Local browser checked the Persian roadmap and English Economy route. Full language review remains open. |
+| Localization | New roadmap and Economy source copy includes Persian, English, Arabic, Russian and Simplified Chinese. Local browser checked the Persian roadmap and English Economy route. Full language review remains open. |
 | SIWE and DePay | Read-only [domain check](../payments/DOMAIN_READINESS.md). Merchant and signed browser flows remain unverified. |
 | Database migration | Additive withdrawal fields and a unique verified-hash index. Applied twice in isolated PostgreSQL. |
 | Verification | Targeted rewards, certificate, Economy and roadmap tests, certificate browser tests and local UI evidence. The official release and deployment are separate from these checks. |

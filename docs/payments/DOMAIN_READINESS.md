@@ -9,6 +9,10 @@ order, signed verification request or nonce request.
 | openfund.cloud | Verified TLS, GLOBAL, source 60d5df9 | Anonymous session 401; preflight 204 without an allow-origin header; signed login untested | Catalog 200 and payments enabled; direct localized checkout returns 404 | Public widget and integration ID configured; live checkout untested |
 | openfund-our6.onrender.com | Verified TLS, GLOBAL, source 60d5df9 | Anonymous session 401; preflight 204 without an allow-origin header; signed login untested | Catalog 200 and payments enabled; direct localized checkout returns 404 | Public widget and integration ID configured; live checkout untested |
 | iran.openfund.cloud | Verified TLS; Liara returned 503 | Blocked by 503 | Blocked by 503 | Unknown |
+| iran.openfi.cloud | Verified TLS; Liara returned 503 | Blocked by 503 | Blocked by 503 | Unknown |
+| openfi.live | Verified TLS; Liara returned 503 | Blocked by 503 | Blocked by 503 | Unknown |
+| www.openfi.live | TLS handshake rejected | Unknown | Unknown | Unknown |
+| openfund-iran-staging.liara.run | DNS did not resolve from the probe location | Unknown | Unknown | Unknown |
 | www.openfi.cloud | Verified TLS; redirects to openfi.cloud | Canonical origin | Canonical origin | Canonical origin |
 | www.openfund.cloud | Verified TLS; redirects to openfund.cloud | Canonical origin | Canonical origin | Canonical origin |
 | cms.openfi.cloud | Verified TLS; separate CMS host | Commerce session path 404 | Checkout path 404 | Commerce not deployed here |
@@ -27,3 +31,9 @@ in [purchases.js](../../apps/backend/purchases.js), with receipt verification
 and purchase binding. The merchant dashboard's callback destinations,
 receiving configuration and end-to-end verification were unavailable to these
 public checks. Documented source aliases do not confirm merchant configuration.
+
+The public [treasury snapshot](https://openfi.cloud/economy/treasury) returned
+`not_configured` for the central reporting treasury. The separate
+[checkout receiver balance view](https://openfi.cloud/economy/treasury/networks)
+reported six successful reads and one Optimism read error. Those checkout
+receivers do not establish an authorized payout sender.
