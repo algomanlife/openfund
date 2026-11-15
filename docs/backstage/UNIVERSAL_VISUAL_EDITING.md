@@ -8,8 +8,8 @@ Commits:
 
 - `b7fec1ed076008c6454024d0017fa08e21176605` — `feat(cms): [Cursor] implement universal visual content editing`
 - `8c98b4d6b0749b1e51bbeeba8f75f304556f4263` — `docs(cms): [Cursor] record visual editing implementation SHA`
-
-The commit that adds this list is the branch head that follows those two.
+- `90f744f2917974aa87aae132f0df6f9066e3b1cf` — `docs(cms): [Cursor] list visual editing commit SHAs`
+- `440ecb8a0b437d57adc138c116126f87d7b74bb1` — `fix(cms): [Cursor] stop srcdoc postMessage errors and lock TypeScript 5.9.3`
 
 ## Directus version
 
