@@ -1932,3 +1932,369 @@ DO $$ BEGIN
       FOR EACH ROW EXECUTE FUNCTION runtime_mode_events_immutable();
   END IF;
 END $$;
+
+-- ------------------------------------------------------------------
+-- Regional account authority and synchronization (ADR 0033).
+-- Additive only. Existing rows are never rewritten by this block.
+--
+-- account_ownership: exactly one home region per trading account, with a
+-- monotonically increasing epoch (fencing token). A database trigger on
+-- every account-scoped financial table rejects a write unless the account
+-- is owned by THIS database's region and its ownership state is 'active'.
+-- The check takes a FOR SHARE lock on the ownership row, so a handoff
+-- (FOR UPDATE) waits for in-flight writers, and every writer that starts
+-- after the handoff is rejected: a stale worker cannot commit.
+-- Rows are created automatically for every new demo account (this region)
+-- and back-filled by migrate.js after the region claim.
+-- ------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS account_ownership (
+  account_id      uuid PRIMARY KEY REFERENCES demo_accounts(id) ON DELETE CASCADE,
+  home_region     text NOT NULL CHECK (home_region IN ('GLOBAL', 'IRAN')),
+  epoch           bigint NOT NULL DEFAULT 1 CHECK (epoch >= 1),
+  state           text NOT NULL DEFAULT 'active' CHECK (state IN ('active', 'fenced', 'transferred', 'quarantined')),
+  reconciliation  text NOT NULL DEFAULT 'clean' CHECK (reconciliation IN ('clean', 'pending', 'discrepancy')),
+  updated_at      timestamptz NOT NULL DEFAULT now(),
+  updated_by      text NOT NULL DEFAULT 'system'
+);
+CREATE INDEX IF NOT EXISTS idx_account_ownership_state ON account_ownership (home_region, state);
+
+CREATE TABLE IF NOT EXISTS account_ownership_events (
+  id          bigserial PRIMARY KEY,
+  account_id  uuid NOT NULL,
+  epoch       bigint NOT NULL,
+  action      text NOT NULL,           -- created | released | granted | transferred | quarantined | released_quarantine
+  from_region text,
+  to_region   text,
+  actor       text NOT NULL,
+  reason      text,
+  detail      jsonb NOT NULL DEFAULT '{}',
+  at          timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_account_ownership_events_account ON account_ownership_events (account_id, id);
+
+CREATE OR REPLACE FUNCTION openfund_local_region() RETURNS text LANGUAGE sql STABLE AS $$
+  SELECT coalesce((SELECT region FROM runtime_region WHERE singleton), 'GLOBAL')
+$$;
+
+/* true when this region may write the account (used by the engine loop to
+   skip foreign, fenced, transferred or quarantined accounts) */
+CREATE OR REPLACE FUNCTION openfund_account_writable(acc uuid) RETURNS boolean LANGUAGE sql STABLE AS $$
+  SELECT coalesce((SELECT o.home_region = openfund_local_region() AND o.state = 'active'
+                     FROM account_ownership o WHERE o.account_id = acc), true)
+$$;
+
+CREATE OR REPLACE FUNCTION openfund_assert_account_writable(acc uuid) RETURNS void LANGUAGE plpgsql AS $$
+DECLARE o record;
+BEGIN
+  IF acc IS NULL THEN RETURN; END IF;
+  /* a reviewed ownership import of exactly this account (regional-ownership.js) */
+  IF current_setting('openfund.ownership_import', true) = acc::text THEN RETURN; END IF;
+  SELECT home_region, state, epoch INTO o FROM account_ownership WHERE account_id = acc FOR SHARE;
+  IF NOT FOUND THEN RETURN; END IF;   -- created in this transaction (ownership row follows) or pre-claim
+  IF o.home_region <> openfund_local_region() OR o.state <> 'active' THEN
+    RAISE EXCEPTION 'account_not_writable_in_region'
+      USING DETAIL = format('account %s home_region=%s state=%s epoch=%s local=%s', acc, o.home_region, o.state, o.epoch, openfund_local_region());
+  END IF;
+END $$;
+
+CREATE OR REPLACE FUNCTION openfund_fence_account_row() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE col text := TG_ARGV[0]; via text := TG_ARGV[1]; ref uuid; r jsonb;
+BEGIN
+  FOREACH r IN ARRAY ARRAY[CASE WHEN TG_OP <> 'INSERT' THEN to_jsonb(OLD) END, CASE WHEN TG_OP <> 'DELETE' THEN to_jsonb(NEW) END] LOOP
+    CONTINUE WHEN r IS NULL;
+    ref := (r->>col)::uuid;
+    CONTINUE WHEN ref IS NULL;
+    IF via = 'challenge' THEN
+      SELECT demo_account_id INTO ref FROM openfund_challenges WHERE id = ref;
+    END IF;
+    PERFORM openfund_assert_account_writable(ref);
+  END LOOP;
+  RETURN CASE WHEN TG_OP = 'DELETE' THEN OLD ELSE NEW END;
+END $$;
+
+DO $$
+DECLARE t record;
+BEGIN
+  FOR t IN SELECT * FROM (VALUES
+      ('demo_accounts', 'id', 'account', 'UPDATE OR DELETE'),
+      ('openfund_challenges', 'demo_account_id', 'account', 'UPDATE OR DELETE'),
+      ('trading_orders', 'account_id', 'account', 'INSERT OR UPDATE OR DELETE'),
+      ('trading_positions', 'account_id', 'account', 'INSERT OR UPDATE OR DELETE'),
+      ('trading_ledger', 'account_id', 'account', 'INSERT OR UPDATE OR DELETE'),
+      ('trading_events', 'account_id', 'account', 'INSERT OR UPDATE OR DELETE'),
+      ('account_equity_risk', 'account_id', 'account', 'INSERT OR UPDATE OR DELETE'),
+      ('account_equity_samples', 'account_id', 'account', 'INSERT OR UPDATE OR DELETE'),
+      ('position_close_requests', 'account_id', 'account', 'INSERT OR UPDATE OR DELETE'),
+      ('challenge_events', 'challenge_id', 'challenge', 'INSERT OR UPDATE OR DELETE'),
+      ('challenge_equity_days', 'challenge_id', 'challenge', 'INSERT OR UPDATE OR DELETE'),
+      ('challenge_trailing', 'challenge_id', 'challenge', 'INSERT OR UPDATE OR DELETE'),
+      ('challenge_strikes', 'challenge_id', 'challenge', 'INSERT OR UPDATE OR DELETE'),
+      ('challenge_reviews', 'challenge_id', 'challenge', 'INSERT OR UPDATE OR DELETE'),
+      ('fee_refunds', 'challenge_id', 'challenge', 'INSERT OR UPDATE OR DELETE'),
+      ('withdrawal_requests', 'challenge_id', 'challenge', 'INSERT OR UPDATE OR DELETE')
+    ) AS v(tbl, col, via, ops)
+  LOOP
+    IF to_regclass('public.' || t.tbl) IS NOT NULL
+       AND NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_region_fence_' || t.tbl) THEN
+      EXECUTE format('CREATE TRIGGER %I BEFORE %s ON %I FOR EACH ROW EXECUTE FUNCTION openfund_fence_account_row(%L, %L)',
+                     'trg_region_fence_' || t.tbl, t.ops, t.tbl, t.col, t.via);
+    END IF;
+  END LOOP;
+END $$;
+
+/* every new demo account is owned by the region whose database creates it */
+CREATE OR REPLACE FUNCTION openfund_own_new_account() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF current_setting('openfund.ownership_import', true) = NEW.id::text THEN RETURN NEW; END IF;
+  INSERT INTO account_ownership (account_id, home_region) VALUES (NEW.id, openfund_local_region())
+    ON CONFLICT (account_id) DO NOTHING;
+  INSERT INTO account_ownership_events (account_id, epoch, action, to_region, actor)
+    VALUES (NEW.id, 1, 'created', openfund_local_region(), 'system');
+  RETURN NEW;
+END $$;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_region_own_new_account') THEN
+    CREATE TRIGGER trg_region_own_new_account AFTER INSERT ON demo_accounts
+      FOR EACH ROW EXECUTE FUNCTION openfund_own_new_account();
+  END IF;
+END $$;
+
+-- ------------------------------------------------------------------
+-- Transactional outbox. Rows are written by triggers in the SAME
+-- transaction as the financial change, so a committed change always has
+-- its event and a rolled-back change never does. One ordered stream per
+-- user (stream_seq), so a receiver applies a user's events in commit order.
+-- Rows are kept until the peer acknowledges them (no time-based expiry).
+-- ------------------------------------------------------------------
+/* The outbox records nothing until synchronization is enabled for this
+   database (migrate.js with REGION_SYNC_ENABLED=1, or the operator API), so a
+   region without a peer never accumulates unacknowledged events. State that
+   existed before enabling is sent by the initial state transfer (snapshot). */
+CREATE TABLE IF NOT EXISTS region_sync_settings (
+  singleton   boolean PRIMARY KEY DEFAULT true CHECK (singleton),
+  enabled     boolean NOT NULL DEFAULT false,
+  changed_at  timestamptz NOT NULL DEFAULT now(),
+  changed_by  text NOT NULL DEFAULT 'system'
+);
+CREATE OR REPLACE FUNCTION openfund_sync_enabled() RETURNS boolean LANGUAGE sql STABLE AS $$
+  SELECT coalesce((SELECT enabled FROM region_sync_settings WHERE singleton), false)
+$$;
+
+CREATE TABLE IF NOT EXISTS region_stream_heads (
+  stream  text PRIMARY KEY,
+  seq     bigint NOT NULL
+);
+CREATE TABLE IF NOT EXISTS region_outbox (
+  id              bigserial PRIMARY KEY,
+  event_id        uuid NOT NULL UNIQUE DEFAULT gen_random_uuid(),
+  stream          text NOT NULL,
+  stream_seq      bigint NOT NULL,
+  type            text NOT NULL,
+  schema_version  int NOT NULL DEFAULT 1,
+  account_id      uuid,
+  epoch           bigint,
+  payload         jsonb NOT NULL,
+  created_at      timestamptz NOT NULL DEFAULT now(),
+  acked_at        timestamptz,
+  attempts        int NOT NULL DEFAULT 0,
+  last_error      text,
+  dead_at         timestamptz,
+  UNIQUE (stream, stream_seq)
+);
+CREATE INDEX IF NOT EXISTS idx_region_outbox_pending ON region_outbox (id) WHERE acked_at IS NULL;
+
+CREATE OR REPLACE FUNCTION openfund_outbox_append(p_stream text, p_type text, p_account uuid, p_payload jsonb) RETURNS void LANGUAGE plpgsql AS $$
+DECLARE s bigint; v_home text; v_epoch bigint;
+BEGIN
+  INSERT INTO region_stream_heads (stream, seq) VALUES (p_stream, 1)
+    ON CONFLICT (stream) DO UPDATE SET seq = region_stream_heads.seq + 1 RETURNING seq INTO s;
+  IF p_account IS NOT NULL THEN
+    SELECT home_region, epoch INTO v_home, v_epoch FROM account_ownership WHERE account_id = p_account;
+  END IF;
+  INSERT INTO region_outbox (stream, stream_seq, type, account_id, epoch, payload)
+    VALUES (p_stream, s, p_type, p_account, v_epoch,
+            p_payload || jsonb_build_object('home_region', coalesce(v_home, openfund_local_region())));
+END $$;
+
+/* AFTER trigger: TG_ARGV = event type, account column, account resolution ('account' | 'challenge' | 'none') */
+CREATE OR REPLACE FUNCTION openfund_outbox_row() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE r jsonb := to_jsonb(NEW); acc uuid; uid uuid; wallet text;
+BEGIN
+  IF NOT openfund_sync_enabled() THEN RETURN NULL; END IF;
+  /* applying the peer's events never echoes them back */
+  IF current_setting('openfund.sync_apply', true) = '1' THEN RETURN NULL; END IF;
+  IF current_setting('openfund.ownership_import', true) IS NOT NULL
+     AND current_setting('openfund.ownership_import', true) <> '' THEN RETURN NULL; END IF;
+  IF TG_ARGV[2] = 'account' THEN acc := (r->>TG_ARGV[1])::uuid;
+  ELSIF TG_ARGV[2] = 'challenge' THEN SELECT demo_account_id INTO acc FROM openfund_challenges WHERE id = (r->>TG_ARGV[1])::uuid;
+  END IF;
+  IF TG_TABLE_NAME = 'openfund_users' THEN uid := NEW.id;
+  ELSIF r ? 'user_id' THEN uid := (r->>'user_id')::uuid;
+  ELSIF acc IS NOT NULL THEN SELECT user_id INTO uid FROM demo_accounts WHERE id = acc;
+  ELSIF TG_ARGV[2] = 'challenge' THEN SELECT user_id INTO uid FROM openfund_challenges WHERE id = (r->>TG_ARGV[1])::uuid;
+  END IF;
+  IF uid IS NULL THEN RETURN NULL; END IF;
+  SELECT wallet_address INTO wallet FROM openfund_users WHERE id = uid;
+  /* never replicated: avatar data (large, user-uploaded), session or auth data */
+  r := r - 'avatar_url';
+  PERFORM openfund_outbox_append('user:' || uid, TG_ARGV[0], acc,
+    jsonb_build_object('row', r, 'wallet', wallet, 'op', lower(TG_OP), 'table', TG_TABLE_NAME));
+  RETURN NULL;
+END $$;
+
+DO $$
+DECLARE t record;
+BEGIN
+  FOR t IN SELECT * FROM (VALUES
+      ('openfund_users', 'user.v1', 'id', 'none', 'INSERT OR UPDATE OF wallet_address, status, display_name'),
+      ('demo_accounts', 'account.v1', 'id', 'account', 'INSERT OR UPDATE'),
+      ('account_ownership', 'ownership.v1', 'account_id', 'account', 'INSERT OR UPDATE'),
+      ('openfund_challenges', 'challenge.v1', 'id', 'challenge', 'INSERT OR UPDATE'),
+      ('challenge_events', 'challenge_event.v1', 'challenge_id', 'challenge', 'INSERT'),
+      ('challenge_reviews', 'challenge_review.v1', 'challenge_id', 'challenge', 'INSERT'),
+      ('trading_orders', 'order.v1', 'account_id', 'account', 'INSERT OR UPDATE'),
+      ('trading_positions', 'position.v1', 'account_id', 'account', 'INSERT OR UPDATE'),
+      ('trading_ledger', 'ledger.v1', 'account_id', 'account', 'INSERT'),
+      ('withdrawal_requests', 'withdrawal.v1', 'challenge_id', 'challenge', 'INSERT OR UPDATE'),
+      /* attestations (#118): verifiable on the other region's domains through its read model */
+      ('certificates', 'certificate.v1', 'serial', 'none', 'INSERT OR UPDATE')
+    ) AS v(tbl, typ, col, via, ops)
+  LOOP
+    IF to_regclass('public.' || t.tbl) IS NOT NULL
+       AND NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_region_outbox_' || t.tbl) THEN
+      EXECUTE format('CREATE TRIGGER %I AFTER %s ON %I FOR EACH ROW EXECUTE FUNCTION openfund_outbox_row(%L, %L, %L)',
+                     'trg_region_outbox_' || t.tbl, t.ops, t.tbl, t.typ, t.col, t.via);
+    END IF;
+  END LOOP;
+END $$;
+
+-- ------------------------------------------------------------------
+-- Inbox, checkpoints and read models of the OTHER region's data.
+-- Foreign data never enters the engine's tables: it lives here, so the
+-- local engine cannot see, let alone execute, a foreign-owned account.
+-- ------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS region_inbox (
+  event_id        uuid PRIMARY KEY,
+  source_region   text NOT NULL,
+  stream          text NOT NULL,
+  stream_seq      bigint NOT NULL,
+  type            text NOT NULL,
+  schema_version  int NOT NULL,
+  account_id      uuid,
+  epoch           bigint,
+  payload         jsonb NOT NULL,
+  status          text NOT NULL CHECK (status IN ('applied', 'held', 'rejected')),
+  error           text,
+  received_at     timestamptz NOT NULL DEFAULT now(),
+  applied_at      timestamptz,
+  UNIQUE (source_region, stream, stream_seq)
+);
+CREATE INDEX IF NOT EXISTS idx_region_inbox_held ON region_inbox (source_region, stream, stream_seq) WHERE status = 'held';
+CREATE INDEX IF NOT EXISTS idx_region_inbox_rejected ON region_inbox (received_at) WHERE status = 'rejected';
+
+CREATE TABLE IF NOT EXISTS region_stream_checkpoints (
+  source_region text NOT NULL,
+  stream        text NOT NULL,
+  applied_seq   bigint NOT NULL,
+  updated_at    timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (source_region, stream)
+);
+
+/* latest state of each foreign entity (account, challenge, order, position,
+   withdrawal, user, ownership), versioned by the source stream sequence */
+CREATE TABLE IF NOT EXISTS region_remote_rows (
+  source_region text NOT NULL,
+  entity        text NOT NULL,
+  entity_id     text NOT NULL,
+  account_id    uuid,
+  wallet        text,
+  stream_seq    bigint NOT NULL,
+  data          jsonb NOT NULL,
+  updated_at    timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (source_region, entity, entity_id)
+);
+CREATE INDEX IF NOT EXISTS idx_region_remote_rows_wallet ON region_remote_rows (wallet, entity);
+CREATE INDEX IF NOT EXISTS idx_region_remote_rows_account ON region_remote_rows (account_id, entity);
+
+/* append-only foreign ledger entries and challenge events */
+CREATE TABLE IF NOT EXISTS region_remote_entries (
+  source_region text NOT NULL,
+  entity        text NOT NULL,
+  entity_id     text NOT NULL,
+  account_id    uuid,
+  stream_seq    bigint NOT NULL,
+  data          jsonb NOT NULL,
+  PRIMARY KEY (source_region, entity, entity_id)
+);
+CREATE INDEX IF NOT EXISTS idx_region_remote_entries_account ON region_remote_entries (account_id, entity);
+
+CREATE TABLE IF NOT EXISTS region_sync_nonces (
+  nonce       text PRIMARY KEY,
+  seen_at     timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS region_peer_status (
+  peer_region      text PRIMARY KEY,
+  last_attempt_at  timestamptz,
+  last_success_at  timestamptz,
+  last_error       text,
+  peer_release     text,
+  peer_protocol    int,
+  compatible       boolean,
+  detail           jsonb NOT NULL DEFAULT '{}'
+);
+
+CREATE TABLE IF NOT EXISTS region_reconciliation_runs (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  started_at    timestamptz NOT NULL DEFAULT now(),
+  started_by    text NOT NULL,
+  mode_epoch    bigint,
+  status        text NOT NULL DEFAULT 'waiting' CHECK (status IN ('waiting', 'complete', 'failed')),
+  expected      int,
+  compared      int NOT NULL DEFAULT 0,
+  mismatched    int NOT NULL DEFAULT 0,
+  completed_at  timestamptz,
+  detail        jsonb NOT NULL DEFAULT '{}'
+);
+
+CREATE TABLE IF NOT EXISTS region_discrepancies (
+  id            bigserial PRIMARY KEY,
+  run_id        uuid,
+  source_region text,
+  account_id    uuid,
+  kind          text NOT NULL,      -- balance_mismatch | ledger_count_mismatch | ownership_conflict | stale_epoch | unauthorized_source | schema_unsupported
+  detail        jsonb NOT NULL DEFAULT '{}',
+  status        text NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'acknowledged')),
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  resolved_by   text,
+  resolved_at   timestamptz,
+  resolution    text
+);
+CREATE INDEX IF NOT EXISTS idx_region_discrepancies_open ON region_discrepancies (created_at) WHERE status = 'open';
+
+/* account handoff offers received from the owner region (ADR 0033 §handoff) */
+CREATE TABLE IF NOT EXISTS region_handoff_offers (
+  account_id     uuid NOT NULL,
+  source_region  text NOT NULL,
+  epoch          bigint NOT NULL,
+  bundle         jsonb NOT NULL,
+  digest         jsonb NOT NULL,
+  status         text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
+  received_at    timestamptz NOT NULL DEFAULT now(),
+  decided_at     timestamptz,
+  decided_by     text,
+  PRIMARY KEY (account_id, epoch)
+);
+
+-- ------------------------------------------------------------------
+-- Last-known-good public CMS content per request (cms-snapshot.js). Public,
+-- published data only; replaced only when the content hash changes.
+-- ------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS cms_snapshot (
+  key           text PRIMARY KEY,
+  collection    text NOT NULL,
+  content_type  text NOT NULL,
+  body          bytea NOT NULL,
+  sha256        text NOT NULL,
+  fetched_at    timestamptz NOT NULL DEFAULT now()
+);

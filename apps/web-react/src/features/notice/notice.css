@@ -1,15 +1,32 @@
-/* Compact Persian access notice between the public header and the page. */
+/* Compact Iran access notice between the public header and the page (all locales, RTL and LTR). */
 .iran-access-notice { border-bottom: 1px solid var(--line, #ffffff18); background: linear-gradient(90deg, #82e7bd0d, #82e7bd05); color: var(--body, #b5bebb); }
 .iran-access-inner { display: flex; align-items: flex-start; gap: 10px; padding-block: 6px; }
 .iran-access-icon { flex: 0 0 auto; color: var(--mint, #82e7bd); display: inline-flex; margin-top: 4px; }
+.iran-access-text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .iran-access-notice p { margin: 0; font-size: 12px; line-height: 1.75; min-width: 0; overflow-wrap: anywhere; }
+.iran-access-state { color: var(--white, #f1f3ef); }
+.iran-access-domains { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; line-height: 1.6; }
+.iran-access-domains a.is-independent { font-weight: 700; }
 .iran-access-notice strong { color: var(--white, #f1f3ef); font-weight: 600; margin-inline-end: 8px; }
 .iran-access-notice a { color: var(--mint, #82e7bd); font-family: 'Ubuntu', sans-serif; font-weight: 500; unicode-bidi: isolate; white-space: nowrap; text-decoration: underline; text-underline-offset: 3px; }
 .iran-access-notice a:hover { color: var(--white, #f1f3ef); }
-@media (max-width: 700px) {
-  .iran-access-inner { padding-block: 8px; gap: 8px; }
-  .iran-access-notice p { font-size: 12px; line-height: 1.85; }
+.iran-access-toggle { display: none; }
+/* wide screens: links continue the text line, so the notice stays as short as the previous one */
+@media (min-width: 901px) {
+  .iran-access-text { display: block; }
+  .iran-access-body { display: inline; }
+  .iran-access-state { display: block; }
+  .iran-access-domains { display: inline-flex; vertical-align: baseline; margin: 0; margin-inline-start: 10px; gap: 0 12px; }
+}
+@media (max-width: 900px) {
+  .iran-access-inner { padding-block: 6px; gap: 8px; }
+  .iran-access-notice p { font-size: 12px; line-height: 1.7; }
   .iran-access-notice strong { display: block; margin: 0; }
+  /* keep the notice short on phones: title + one line, links always visible */
+  .iran-access-body:not(.is-expanded) { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+  .iran-access-toggle { display: inline; align-self: flex-start; background: none; border: 0; padding: 0; color: var(--mint, #82e7bd); font: inherit; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 }
 html[data-theme="light"] .iran-access-notice { background: #087b4a0a; border-bottom-color: var(--line, #0a120d24); }
 html[data-theme="light"] .iran-access-notice a { color: #087b4a; }
+html[data-theme="light"] .iran-access-state { color: #0a120d; }
+html[data-theme="light"] .iran-access-toggle { color: #087b4a; }

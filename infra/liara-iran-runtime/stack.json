@@ -1,0 +1,64 @@
+{
+  "$comment": "Desired state of the Openfund Iran regional runtime on Liara (ADR 0033). No secrets: `secrets` lists NAMES that must exist in the app's Liara environment. `plan: null` = owner must choose a Liara plan before --apply. Applied by scripts/liara/provision.mjs (plan by default, create-only, never deletes).",
+  "version": 1,
+  "environments": {
+    "staging": {
+      "network": "openfund-iran-staging-net",
+      "database": { "name": "openfund-iran-staging-db", "type": "postgres", "version": "17.10", "plan": null, "publicNetwork": false },
+      "apps": [
+        {
+          "id": "openfund-iran-staging", "role": "web", "platform": "docker", "plan": null,
+          "config": "infra/liara-iran-runtime/liara.web.json",
+          "env": { "OPENFUND_REGION": "IRAN", "OPENFUND_ROLES": "http", "MIGRATE_ON_START": "1", "FOOTPRINT_ENABLED": "0" },
+          "secrets": ["DATABASE_URL", "ADMIN_API_TOKEN", "ALLOWED_DOMAINS", "CORS_ORIGINS", "CMS_PUBLIC_URL", "REGION_SYNC_KEYS", "REGION_SYNC_ACTIVE_KID", "REGION_SYNC_PEER_URL"],
+          "domains": ["<staging host on liara.run>"],
+          "public": true
+        },
+        {
+          "id": "openfund-iran-staging-worker", "role": "worker", "platform": "docker", "plan": null,
+          "config": "infra/liara-iran-runtime/liara.worker.json",
+          "env": { "OPENFUND_REGION": "IRAN", "OPENFUND_ROLES": "engine,market-data,sync", "FOOTPRINT_ENABLED": "0" },
+          "secrets": ["DATABASE_URL", "REGION_SYNC_KEYS", "REGION_SYNC_ACTIVE_KID", "REGION_SYNC_PEER_URL"],
+          "public": false
+        },
+        {
+          "id": "openfund-iran-staging-cms", "role": "cms", "platform": "docker", "plan": null,
+          "config": "infra/liara-iran-runtime/liara.cms.json",
+          "disks": [{ "name": "directus-uploads", "sizeGB": 5 }],
+          "env": { "DB_CLIENT": "pg", "WEBSOCKETS_ENABLED": "false", "CORS_ENABLED": "true", "CORS_ORIGIN": "true", "CORS_METHODS": "GET,HEAD,OPTIONS", "IP_TRUST_PROXY": "true", "PORT": "8055" },
+          "secrets": ["DB_CONNECTION_STRING", "KEY", "SECRET", "ADMIN_EMAIL", "ADMIN_PASSWORD", "PUBLIC_URL"],
+          "public": true
+        }
+      ]
+    },
+    "production": {
+      "network": "openfund-iran-net",
+      "database": { "name": "openfund-iran-db", "type": "postgres", "version": "17.10", "plan": null, "publicNetwork": false },
+      "apps": [
+        {
+          "id": "openfund-iran-web", "role": "web", "platform": "docker", "plan": null,
+          "config": "infra/liara-iran-runtime/liara.web.json",
+          "env": { "OPENFUND_REGION": "IRAN", "OPENFUND_ROLES": "http", "MIGRATE_ON_START": "1", "FOOTPRINT_ENABLED": "0" },
+          "secrets": ["DATABASE_URL", "ADMIN_API_TOKEN", "ALLOWED_DOMAINS", "CORS_ORIGINS", "CMS_PUBLIC_URL", "REGION_SYNC_KEYS", "REGION_SYNC_ACTIVE_KID", "REGION_SYNC_PEER_URL"],
+          "domains": ["iran.openfund.cloud", "iran.openfi.cloud", "openfi.live"],
+          "public": true
+        },
+        {
+          "id": "openfund-iran-worker", "role": "worker", "platform": "docker", "plan": null,
+          "config": "infra/liara-iran-runtime/liara.worker.json",
+          "env": { "OPENFUND_REGION": "IRAN", "OPENFUND_ROLES": "engine,market-data,sync", "FOOTPRINT_ENABLED": "0" },
+          "secrets": ["DATABASE_URL", "REGION_SYNC_KEYS", "REGION_SYNC_ACTIVE_KID", "REGION_SYNC_PEER_URL"],
+          "public": false
+        },
+        {
+          "id": "openfund-iran-cms", "role": "cms", "platform": "docker", "plan": null,
+          "config": "infra/liara-iran-runtime/liara.cms.json",
+          "disks": [{ "name": "directus-uploads", "sizeGB": 5 }],
+          "env": { "DB_CLIENT": "pg", "WEBSOCKETS_ENABLED": "false", "CORS_ENABLED": "true", "CORS_ORIGIN": "true", "CORS_METHODS": "GET,HEAD,OPTIONS", "IP_TRUST_PROXY": "true", "PORT": "8055" },
+          "secrets": ["DB_CONNECTION_STRING", "KEY", "SECRET", "ADMIN_EMAIL", "ADMIN_PASSWORD", "PUBLIC_URL"],
+          "public": true
+        }
+      ]
+    }
+  }
+}

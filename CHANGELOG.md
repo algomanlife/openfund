@@ -8,6 +8,26 @@
 
 ## Unreleased
 
+- Independent Iran regional runtime and regional synchronization (branch
+  `infra/iran-regional-authority`, [ADR 0033](docs/decisions/0033-regional-authority-and-synchronization.md);
+  **not deployed, not merged**). A database-enforced single home region per
+  trading account (ownership fence with epochs, quarantine on conflicting
+  claims, explicit two-sided handoff); a trigger-written transactional outbox,
+  signed HTTPS delivery, an ordered idempotent inbox and read models of the
+  other region; initial state transfer; checkpoint reconciliation that gates
+  reopening after an outage; an operator API (`/admin/regional`); `/ready`;
+  the Liara image, desired-state manifest, create-only provisioning tool and
+  a gated deploy workflow. Render is unchanged until sync is configured and
+  enabled. Tested with two real regions, fault injection and a simulated
+  120-day backlog. Not implemented: purchases in IRAN, an operations UI.
+- Iran access notice: lists all three Iran addresses (`iran.openfund.cloud`,
+  `iran.openfi.cloud`, `openfi.live`) in every locale, with wording driven by
+  the verified serving region and mode; replaces the single-address proxy copy.
+- Same-origin `/cms` content path with last-known-good snapshots: the Iran
+  runtime reads published content through its own backend and keeps serving
+  it while the CMS is unreachable; GLOBAL uses it as a fallback. Certificates
+  (#118) are region-aware and verifiable across regions.
+
 - Keep public navigation above checkout content, add an Applications destination,
   and improve the localized purchase history and checkout entry point.
 - Add direct chart controls for creating, moving and independently removing

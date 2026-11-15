@@ -1,0 +1,217 @@
+name: Deploy Iran regional runtime (Liara)
+# Deploys the INDEPENDENT Iran runtime (ADR 0033): the same reviewed main
+# commit as Render, built into one image and run as two Liara apps (web, worker)
+# with OPENFUND_REGION=IRAN and their own PostgreSQL. It never deploys,
+# restarts or reconfigures Render, and it never runs migrations against the
+# global database (the database region fence refuses that anyway).
+#
+# Manual only. Production needs: the `liara-iran-runtime` environment's
+# required reviewers, the typed confirmation, and a successful staging run of
+# this workflow for the same commit.
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Liara target
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+      commit:
+        description: Exact 40-character main commit to deploy (also used for rollback)
+        required: true
+        type: string
+      staging_run_id:
+        description: Production only - run id of the successful staging deployment of this same commit
+        required: false
+        default: ''
+        type: string
+      confirm:
+        description: Type DEPLOY-IRAN-RUNTIME to confirm
+        required: true
+        type: string
+  pull_request:
+    paths:
+      - infra/liara-iran-runtime/**
+      - scripts/liara/**
+      - apps/backend/region.js
+      - apps/backend/regional-*.js
+      - .github/workflows/deploy-liara-iran-runtime.yml
+permissions:
+  contents: read
+concurrency:
+  group: openfund-liara-iran-runtime-${{ github.event_name == 'pull_request' && github.ref || inputs.target }}
+  cancel-in-progress: false
+jobs:
+  validate:
+    name: Build the runtime image and test it as IRAN
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      commit: ${{ steps.ref.outputs.commit }}
+      version: ${{ steps.release.outputs.version }}
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: openfund_iran_runtime_test
+          POSTGRES_USER: openfund_ci
+          POSTGRES_PASSWORD: openfund_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U openfund_ci -d openfund_iran_runtime_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - name: Resolve the commit
+        id: ref
+        env:
+          EVENT: ${{ github.event_name }}
+          INPUT_COMMIT: ${{ inputs.commit }}
+          INPUT_CONFIRM: ${{ inputs.confirm }}
+          PR_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then echo "commit=$PR_SHA" >> "$GITHUB_OUTPUT"; exit 0; fi
+          [ "$INPUT_CONFIRM" = DEPLOY-IRAN-RUNTIME ] || { echo "::error::Confirmation text does not match"; exit 1; }
+          [[ "$INPUT_COMMIT" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::commit must be a full 40-character SHA"; exit 1; }
+          echo "commit=$INPUT_COMMIT" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.ref.outputs.commit }}
+          fetch-depth: 0
+      - name: Require a reviewed main commit
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git fetch --quiet origin main
+          git merge-base --is-ancestor "${{ steps.ref.outputs.commit }}" origin/main \
+            || { echo "::error::Commit is not on main; only reviewed main commits deploy"; exit 1; }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+      - name: Provisioning planner tests
+        run: node --test scripts/liara/test/provision.test.mjs
+      - name: Release identity (same rule as Render's build)
+        id: release
+        env:
+          EVENT: ${{ github.event_name }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then echo "version=0.1.0" >> "$GITHUB_OUTPUT"; exit 0; fi
+          src=$(node scripts/liara/release-source.mjs "${{ steps.ref.outputs.commit }}")
+          echo "release source: $src"
+          echo "version=$(node -e 'console.log(JSON.parse(process.argv[1]).version)' "$src")" >> "$GITHUB_OUTPUT"
+      - name: Build the image
+        run: |
+          docker build -f infra/liara-iran-runtime/Dockerfile \
+            --build-arg SOURCE_COMMIT=${{ steps.ref.outputs.commit }} --build-arg RELEASE_VERSION=${{ steps.release.outputs.version }} \
+            -t openfund-iran-runtime:candidate .
+      - name: Refuse to start without an explicit IRAN region
+        run: |
+          if docker run --rm openfund-iran-runtime:candidate >/tmp/refused.log 2>&1; then echo "::error::started without OPENFUND_REGION"; exit 1; fi
+          grep -q "OPENFUND_REGION=IRAN is required" /tmp/refused.log
+      - name: Boot as IRAN with no route to Render (migrate, web, worker) and smoke test
+        run: |
+          db=postgres://openfund_ci:openfund_ci@127.0.0.1:5432/openfund_iran_runtime_test
+          docker run -d --name web --network host -e PORT=18080 -e OPENFUND_REGION=IRAN -e OPENFUND_ROLES=http -e MIGRATE_ON_START=1 \
+            -e DATABASE_URL=$db -e NODE_ENV=development -e FOOTPRINT_ENABLED=0 -e ALLOWED_DOMAINS=127.0.0.1:18080 openfund-iran-runtime:candidate
+          for _ in $(seq 1 60); do curl -fsS http://127.0.0.1:18080/health >/dev/null && break; sleep 1; done
+          docker run -d --name worker --network host -e PORT=18081 -e OPENFUND_REGION=IRAN -e OPENFUND_ROLES=engine,sync \
+            -e DATABASE_URL=$db -e NODE_ENV=development -e FOOTPRINT_ENABLED=0 openfund-iran-runtime:candidate
+          for _ in $(seq 1 60); do curl -fsS http://127.0.0.1:18081/health >/dev/null && break; sleep 1; done
+          node scripts/liara/verify-runtime.mjs --url http://127.0.0.1:18080 --region IRAN --expect-commit ${{ steps.ref.outputs.commit }} --expect-version ${{ steps.release.outputs.version }} --content path
+          # the worker exposes no public routes
+          [ "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18081/)" = 404 ]
+          [ "$(docker exec web id -u)" != 0 ]
+      - name: Container logs
+        if: always()
+        run: |
+          docker logs web --tail 60 2>&1 || true
+          docker logs worker --tail 30 2>&1 || true
+
+  deploy:
+    name: Deploy web and worker to Liara and verify
+    needs: validate
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      actions: read
+    # Owner-configured environments with required reviewers.
+    environment: ${{ inputs.target == 'production' && 'liara-iran-runtime' || 'liara-iran-runtime-staging' }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TARGET: ${{ inputs.target }}
+      COMMIT: ${{ needs.validate.outputs.commit }}
+      VERSION: ${{ needs.validate.outputs.version }}
+      GLOBAL_URL: ${{ vars.OPENFUND_GLOBAL_URL }}
+      STAGING_RUN: ${{ inputs.staging_run_id }}
+      LIARA_API_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
+      WEB_APP: ${{ vars.LIARA_RUNTIME_WEB_APP }}
+      WORKER_APP: ${{ vars.LIARA_RUNTIME_WORKER_APP }}
+      PUBLIC_URL: ${{ vars.LIARA_RUNTIME_PUBLIC_URL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.COMMIT }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+      - name: Check required configuration (names only)
+        run: |
+          missing=""
+          [ -n "$LIARA_API_TOKEN" ] || missing="$missing secret:LIARA_API_TOKEN"
+          [ -n "$WEB_APP" ] || missing="$missing var:LIARA_RUNTIME_WEB_APP"
+          [ -n "$WORKER_APP" ] || missing="$missing var:LIARA_RUNTIME_WORKER_APP"
+          [ -n "$PUBLIC_URL" ] || missing="$missing var:LIARA_RUNTIME_PUBLIC_URL"
+          [ -z "$missing" ] || { echo "::error::$TARGET environment is missing:$missing"; exit 1; }
+      - name: Production requires verified staging evidence for this commit
+        if: inputs.target == 'production'
+        run: |
+          [[ "$STAGING_RUN" =~ ^[0-9]+$ ]] || { echo "::error::staging_run_id is required for production"; exit 1; }
+          info=$(gh run view "$STAGING_RUN" --repo "$GITHUB_REPOSITORY" --json workflowName,conclusion,headBranch)
+          node -e 'const r=JSON.parse(process.argv[1]); if(r.workflowName!=="Deploy Iran regional runtime (Liara)"||r.conclusion!=="success"||r.headBranch!=="main"){console.error("::error::staging run is not a successful main run of this workflow: "+process.argv[1]);process.exit(1)}' "$info"
+          gh run download "$STAGING_RUN" --repo "$GITHUB_REPOSITORY" --pattern 'liara-runtime-status-*' --dir staging-evidence
+          node -e '
+            const fs=require("fs"),path=require("path");
+            const files=fs.readdirSync("staging-evidence",{recursive:true}).filter(f=>f.endsWith("runtime-status.json"));
+            const ok=files.map(f=>JSON.parse(fs.readFileSync(path.join("staging-evidence",f),"utf8")))
+              .some(s=>s.target==="staging"&&s.status==="verified"&&s.commit===process.env.COMMIT);
+            if(!ok){console.error("::error::no verified staging status for commit "+process.env.COMMIT);process.exit(1)}'
+      - name: Install the Liara CLI (pinned)
+        run: npm install -g @liara/cli@9.6.7 && liara --version
+      - name: Deploy the worker, then the web app (Liara keeps the previous release live if a build fails)
+        run: |
+          for pair in "$WORKER_APP:liara.worker.json" "$WEB_APP:liara.web.json"; do
+            app="${pair%%:*}" cfg="${pair#*:}"
+            liara deploy --app "$app" --api-token "$LIARA_API_TOKEN" --path . \
+              --liara-json "infra/liara-iran-runtime/$cfg" --build-arg "SOURCE_COMMIT=$COMMIT" --build-arg "RELEASE_VERSION=$VERSION" \
+              --message "openfund $COMMIT $TARGET (run $GITHUB_RUN_ID)" --no-app-logs
+          done
+      - name: Verify the deployed runtime
+        run: |
+          ok=0
+          for i in 1 2 3 4 5 6 7 8; do
+            args=(--url "$PUBLIC_URL" --region IRAN --expect-commit "$COMMIT" --expect-version "$VERSION" --target "$TARGET" --out output/runtime-status.json)
+            # Render first: the Iran release must be the release GLOBAL already serves
+            [ -z "$GLOBAL_URL" ] || args+=(--compare-with "$GLOBAL_URL")
+            node scripts/liara/verify-runtime.mjs "${args[@]}" && { ok=1; break; }
+            echo "retrying in 20 s ($i/8)"; sleep 20
+          done
+          [ "$ok" = 1 ]
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Iran regional runtime deployment ($TARGET)"
+            echo "- Commit: \`$COMMIT\` — apps \`$WEB_APP\`, \`$WORKER_APP\` — $PUBLIC_URL"
+            if [ -f output/runtime-status.json ]; then node -e 'const s=require("./output/runtime-status.json");console.log(`- Result: **${s.status}**`)'; else echo "- Result: **not verified**"; fi
+            echo "- Rollback: dispatch again with the previous verified commit."
+            [ "$TARGET" != staging ] || echo "- For production, dispatch with target=production and staging_run_id=$GITHUB_RUN_ID"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: liara-runtime-status-${{ github.run_id }}-${{ github.run_attempt }}
+          path: output/runtime-status.json
+          if-no-files-found: ignore
+          retention-days: 90

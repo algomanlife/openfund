@@ -45,7 +45,10 @@ import { liveRoutes, liveAdminRoutes, liveConfig, processSettlements, settlement
 import { Treasury, TreasuryNetworks, treasuryNetworksConfig } from './treasury.js'
 import { createTradingStreamHub } from './trading-stream.js'
 import { edgeClientIpMiddleware } from './edge-client-ip.js'
-import { regionConfig, hasRole, assertDatabaseRegion, RuntimeState, regionGuard, httpRoleGate, statusBody, runtimeAdminRoutes } from './region.js'
+import { regionConfig, hasRole, assertDatabaseRegion, RuntimeState, regionGuard, httpRoleGate, statusBody, runtimeAdminRoutes, payoutGuard } from './region.js'
+import { syncConfig, SyncWorker, syncPeerRoutes, PROTOCOL_VERSION } from './regional-sync.js'
+import { regionalAdminRoutes, remoteAccountRoutes } from './regional-admin.js'
+import { cmsSnapshotRoutes, cmsSnapshotOrigin } from './cms-snapshot.js'
 import { adminAuth, adminActor } from './admin.js'
 
 const cfg = {
@@ -69,6 +72,13 @@ const pool = new pg.Pool({ connectionString: cfg.dbUrl })
 /* fence: never serve a database that belongs to another region */
 await assertDatabaseRegion(pool, region.region)
 const runtime = new RuntimeState({ pool, config: region })
+/* Regional synchronization (ADR 0033): peer endpoints answer only when
+   REGION_SYNC_KEYS is set; the worker runs only with the `sync` role and
+   REGION_SYNC_PEER_URL. Neither is needed for the region to boot or serve. */
+const sync = syncConfig(process.env, region.region)
+const releaseCommit = () => releaseDiagnostics().commit
+const syncWorker = new SyncWorker({ pool, config: sync, release: releaseCommit() })
+runtime.probes = { peer: () => sync.peerUrl ? syncWorker.hello() : Promise.resolve({ ok: false, error: 'sync_peer_not_configured' }) }
 /* dedicated connections for the engine monitoring loop (SL/TP, liquidation,
    pending orders, risk sweeps): the loop is serial, so 3 covers its deepest
    nesting; it keeps risk processing out of the API pool's queue */
@@ -180,7 +190,11 @@ app.use('/admin/calendar', express.json({ limit: '2mb' })) /* operator calendar 
 /* the DePay callback is signed over its exact bytes: keep the raw body for that one route */
 /* DePay signs the exact request bytes: keep the raw body for its routes */
 /* every DePay-signed path (canonical + aliases), from purchases.js */
+/* signed region-to-region API: verified over its exact bytes, so it parses its own raw body */
+app.use('/sync/v1', syncPeerRoutes({ Router: express.Router, raw: express.raw, pool, config: sync, release: releaseCommit, mode: async () => (await runtime.current()).mode }))
 app.use(express.json({ limit: '32kb', verify: (req, res, buf) => { if (DEPAY_SIGNED_PATHS.has(req.path)) req.rawBody = buf } }))
+/* IRAN: payouts are recorded as paid only while connected (ADR 0033) */
+app.use(payoutGuard(runtime))
 
 /* ---------- CORS (credentials for session cookies) ---------- */
 app.use((req, res, next) => {
@@ -812,6 +826,10 @@ app.use('/admin/certificates', certificateAdminRoutes({ pool }))
 app.use('/admin/rewards', rewardAdminRoutes({ pool }))
 app.use('/admin/calendar', calendarAdminRoutes({ pool }))
 app.use('/admin/runtime', runtimeAdminRoutes({ Router: express.Router, runtime, adminAuth, adminActor, audit }))
+app.use('/admin/regional', regionalAdminRoutes({ Router: express.Router, pool, runtime, adminAuth, adminActor, syncWorker, audit, health: regionalHealth }))
+app.use(remoteAccountRoutes({ Router: express.Router, pool, requireAuth }))
+/* same-origin public CMS content with a last-known-good snapshot (primary on IRAN, fallback on GLOBAL) */
+app.use('/cms', limit(240), cmsSnapshotRoutes({ pool, origin: cmsSnapshotOrigin(process.env) }))
 app.use('/admin', adminRoutes({ pool, audit }))
 
 /* Public, read-only: region, mode and which operations the backend permits. */
@@ -842,6 +860,27 @@ app.get('/runtime-config.js', (req, res) => {
 
 /* health */
 app.get('/health', asyncRoute(async (req, res) => { try { await pool.query('SELECT 1'); res.json({ ok: true, ts: Date.now() }) } catch { res.status(503).json({ ok: false }) } }))
+/* Regional readiness: database + region claim. Market data is reported, not
+   required: without fresh authoritative marks execution is suspended, which
+   is a valid serving state (ADR 0033). */
+async function regionalHealth() {
+  let db = true; try { await pool.query('SELECT 1') } catch { db = false }
+  const now = Date.now()
+  let fresh = 0, newest = null
+  for (const [, m] of marketData.marks) { if (now - m.at < 5000) fresh++; newest = Math.max(newest ?? 0, m.at) }
+  return {
+    release: releaseCommit(), protocol: PROTOCOL_VERSION,
+    api: { ok: true }, database: { ok: db },
+    engine: { role: hasRole(region, 'engine'), running: !!engine.running, lastPassAgeMs: engine.lastPassAt ? now - engine.lastPassAt : null },
+    marketData: { role: hasRole(region, 'market-data'), markets: marketData.markets.size, freshMarks: fresh, newestMarkAgeMs: newest ? now - newest : null,
+                  execution: fresh > 0 ? 'available_for_fresh_markets' : 'suspended_no_authoritative_marks' },
+  }
+}
+app.get('/ready', asyncRoute(async (req, res) => {
+  const h = await regionalHealth()
+  const state = await runtime.current()
+  res.set('Cache-Control', 'no-store').status(h.database.ok ? 200 : 503).json({ ok: h.database.ok, region: region.region, mode: state.mode, ...h })
+}))
 app.get('/trading/health', tradingAuth, async (req, res) => {
   const st = await engine.state(req.user.user_id)
   res.json({ ok: true, account: st.account != null, markets: marketData.markets.size })
@@ -885,6 +924,8 @@ app.use((req, res, next) => {
    during deploy cutover) must never be cached by Cloudflare or the browser */
 app.use((req, res) => res.set('Cache-Control', NO_STORE).status(404).json({ error: 'not_found' }))
 app.use((err, req, res, next) => {
+  /* ADR 0033 ownership fence: the account belongs to another region, or is fenced/quarantined */
+  if (err.message === "account_not_writable_in_region") err.status = 409;
   if (err.code === "23514" && err.message === "account_permanently_disabled")
     err.status = 403;
   if (!err.status) console.error(err);
@@ -939,7 +980,11 @@ const settlementTimer = hasRole(region, 'settlement') ? setInterval(() => {
   if (adapter) processSettlements(pool, adapter).catch(e => console.error('[settlements]', e.message))
 }, 60_000) : null
 settlementTimer?.unref()
+if (hasRole(region, 'sync') && sync.peerUrl) { syncWorker.start(); console.log(`[sync] delivering to ${sync.peerRegion}`) }
+/* replay-protection nonces older than a day can never validate again (±5 min window) */
+const nonceSweep = setInterval(() => pool.query(`DELETE FROM region_sync_nonces WHERE seen_at < now() - interval '1 day'`).catch(() => {}), 3_600_000)
+nonceSweep.unref()
 let shuttingDown=false
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;const enginePass=engine.stop();tradingStreams.close();marketData.stop();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);clearInterval(purchaseExpiryTimer);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{})]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;const enginePass=engine.stop();tradingStreams.close();marketData.stop();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)

@@ -185,8 +185,8 @@ export default function InformationShell({ page, description, footer = true, nav
     <link rel="stylesheet" href={legacyStylesheet('legacy/wallet.css')} precedence="openfund" />
     <a className="skip" href="#main">{pickRecord(locale, labels.skip)}</a>
     <Chrome locale={locale} part="header" nav={nav} />
-    {/* Persian-only public additions: access notice and live Bitpin prices */}
-    {locale === 'fa' && <IranAccessNotice />}
+    {/* Iran access notice (every locale); live Bitpin prices stay Persian-only */}
+    <IranAccessNotice locale={locale} />
     <main id="main" className="info-main" tabIndex={-1}>
       <UntranslatedNotice locale={locale} />
       {children}

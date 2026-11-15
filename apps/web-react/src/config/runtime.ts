@@ -8,6 +8,8 @@ export interface PublicRuntimeConfig {
   depayWidgetUrl?: string
   depayWidgetIntegrity?: string
   depayIntegrationId?: string
+  /** serving region; absent on releases before ADR 0033 (= GLOBAL) */
+  region?: 'GLOBAL' | 'IRAN'
 }
 
 export function publicRuntimeConfig(): PublicRuntimeConfig {

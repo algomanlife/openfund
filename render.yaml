@@ -177,6 +177,14 @@ services:
       - key: CSP_EXTRA_CONNECT
         sync: false             # optional extra connect-src origins for the CSP
                                 # (production CMS is https, same as VITE_DIRECTUS_HOST)
+      - key: CMS_SNAPSHOT_ORIGIN
+        sync: false             # optional origin for the same-origin /cms content path; unset = CMS_PUBLIC_URL
+      - key: REGION_SYNC_KEYS
+        sync: false             # secret (ADR 0033): JSON {kid: secret} shared with the Iran runtime; unset = /sync/v1 404, no delivery
+      - key: REGION_SYNC_ACTIVE_KID
+        sync: false             # key id this region signs with
+      - key: REGION_SYNC_PEER_URL
+        sync: false             # https origin of the Iran runtime; unset = sync worker off. Capture also needs an operator enable
       - key: EDGE_CLIENT_IP_KEY
         sync: false             # secret shared only with the Iran edge (ADR 0031): lets it pass the visitor IP
                                 # for rate limits and audit logs; unset = edge visitors share the edge's IP

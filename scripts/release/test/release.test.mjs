@@ -17,6 +17,8 @@ test('runtime CMS origin stays outside the immutable frontend and rejects unsafe
  assert.match(script,/cms\.openfi\.cloud/);
  assert.match(script,/public-id/);
  assert.doesNotMatch(script,/localhost/);
+ assert.match(script,/"region":"GLOBAL"/);
+ assert.match(runtimeConfigScript({CMS_PUBLIC_URL:'https://cms.openfi.live',OPENFUND_REGION:'iran'},true),/"region":"IRAN"/);
 });
 test('the DePay widget is enabled by the integration id; an external bundle needs an https URL and a Subresource Integrity hash',()=>{
  const hash='sha384-'+'A'.repeat(64);
