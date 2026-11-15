@@ -206,6 +206,19 @@ test('R9 v3: review → funded account waits for a one-time cycle choice → req
   assert.equal((await call('POST', '/withdrawals', { user, body: { challengeId: fundedId } })).status, 409, 'one open request per account')
   assert.equal((await call('POST', `/admin/withdrawals/${req1.data.id}/review`, { admin: true, body: { action: 'reject', note: 'needs review' } })).status, 200)
   assert.equal(await bal(), 10600, 'rejection re-credits the profit')
+  const threadPath = `/withdrawals/${req1.data.id}/thread`
+  assert.equal((await call('GET', threadPath, { user: other })).status, 404)
+  assert.equal((await call('GET', threadPath, { user })).data.rejectionReason, 'needs review')
+  const appeal = await call('POST', threadPath, { user, body: { action: 'appeal', message: 'Please review the trade history again.' } })
+  assert.equal(appeal.data.appealPending, true)
+  assert.equal(appeal.data.status, 'rejected')
+  assert.equal((await call('GET', `/admin${threadPath}`, { admin: true })).data.unread, 1)
+  const reply = await call('POST', `/admin${threadPath}`, { admin: true, body: { action: 'resolve_appeal', message: 'Original review upheld.' } })
+  assert.equal(reply.data.appealPending, false)
+  assert.equal(reply.data.status, 'rejected')
+  assert.equal((await call('GET', threadPath, { user })).data.unread, 1)
+  assert.equal((await call('POST', threadPath, { user, body: { action: 'read', through: reply.data.total } })).data.unread, 0)
+
   const req2 = await call('POST', '/withdrawals', { user, body: { challengeId: fundedId } })
   assert.equal(req2.status, 200)
   assert.equal((await call('POST', `/admin/withdrawals/${req2.data.id}/review`, { admin: true, body: { action: 'approve', note: 'ok' } })).status, 200)
@@ -334,4 +347,43 @@ test('a qualifying purchase snapshots the four plans and locks the selected cycl
   const account = (await call('GET', '/rewards/status', { user })).data.funded[0]
   assert.equal(account.requestedPayoutUsd, '540.00')
   assert.equal(account.equity, '10000.00')
+})
+
+test('funded IB entitlement becomes independently payable after verified trader payment', async () => {
+  const user = await newUser(), ambassador = await newUser()
+  const { final, order } = await finalPass(user, 'one-phase')
+  const { rows: [application] } = await pool.query(`INSERT INTO partner_applications (user_id,role,status,payload,contact_email,terms_version)
+    VALUES ($1,'ambassador','approved','{}','ib-test@example.test','test') RETURNING id`, [ambassador])
+  await pool.query(`INSERT INTO ambassador_profiles (user_id,application_id,referral_code,approved_by)
+    VALUES ($1,$2,$3,'test')`, [ambassador, application.id, ambassador])
+  const { rows: [payment] } = await pool.query(`INSERT INTO payments
+    (purchase_order_id,user_id,chain_id,tx_hash,from_address,to_address,amount) VALUES ($1,$2,42161,$3,$4,$5,80) RETURNING id`,
+  [order.id, user, hash(41), '0x' + '12'.repeat(20), '0x' + '34'.repeat(20)])
+  await pool.query(`INSERT INTO referral_commissions (ambassador_user_id,referred_user_id,entry_type,purchase_order_id,payment_id,amount_usd)
+    VALUES ($1,$2,'earned',$3,$4,8)`, [ambassador, user, order.id, payment.id])
+  const review = await call('POST', `/new-policy/admin/rewards/reviews/${final.id}`, { admin: true, body: { decision: 'approve' } })
+  assert.equal(review.status, 200)
+  const funded = review.data.fundedChallengeId
+  assert.equal((await call('POST', `/rewards/accounts/${funded}/cycle`, { user, body: { cycle: 'weekly' } })).status, 200)
+  await pool.query(`UPDATE openfund_challenges SET started_at=now() - interval '8 days' WHERE id=$1`, [funded])
+  await trade(user, funded, [{ daysAgo: 2, net: 600 }])
+  const requested = await call('POST', '/withdrawals', { user, body: { challengeId: funded } })
+  assert.equal(requested.status, 200, JSON.stringify(requested.data))
+  const w = requested.data.id
+  const policyVersion = `test-${w}`
+  const settle = (action, payoutRef) => call('POST', `/admin/withdrawals/${w}/ib-settlement`, { admin: true, body: { action, policyVersion, payoutRef } })
+  assert.equal((await settle('approve')).data.error, 'ib_settlement_not_eligible')
+  assert.equal((await call('POST', `/admin/withdrawals/${w}/review`, { admin: true, body: { action: 'approve' } })).status, 200)
+  assert.equal((await settle('approve')).data.error, 'ib_settlement_not_eligible')
+  assert.equal((await recordPaid(w, 42)).status, 200)
+  assert.equal((await settle('approve')).data.error, 'ib_policy_unavailable')
+  await pool.query(`INSERT INTO ib_settlement_policies (version,chain_id,token_address,waiting_days,approval_reference,approved_by,effective_at)
+    VALUES ($1,42161,'0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',0,'test approval','test',now())`, [policyVersion])
+  const approved = await settle('approve')
+  assert.equal(approved.status, 200)
+  assert.equal(approved.data.settlement.amount, '150.00')
+  assert.equal(approved.data.settlement.status, 'approved')
+  assert.equal((await settle('paid', hash(42))).status, 409)
+  assert.equal((await settle('paid', hash(43))).data.settlement.status, 'paid')
+  assert.equal((await settle('paid', hash(43))).data.settlement.status, 'paid')
 })

@@ -85,9 +85,9 @@ const IRAN_ALLOWED_MUTATIONS = [
   ['POST', /^\/admin\/certificates\/identities\/[^/]+\/correct$/],
   ['POST', /^\/trading\/preview$/],  // computes a quote; writes nothing
   ['POST', /^\/withdrawals$/],
-  ['POST', /^\/withdrawals\/[^/]+\/cancel$/],
+  ['POST', /^\/withdrawals\/[^/]+\/(cancel|thread)$/],
   ['POST', /^\/rewards\/accounts\/[^/]+\/cycle$/],
-  ['POST', /^\/admin\/withdrawals\/[^/]+\/review$/], // 'paid' additionally needs GLOBAL_CONNECTED (body guard)
+  ['POST', /^\/admin\/withdrawals\/[^/]+\/(review|thread|ib-settlement)$/], // 'paid' additionally needs GLOBAL_CONNECTED (body guard)
   ['POST', /^\/admin\/runtime\/mode$/], // the operator control plane itself
   ['POST', /^\/admin\/regional\/[\w/-]+$/],  // regional operations (sync, reconciliation, handoff)
   ['POST', /^\/sync\/v1\/(events|checkpoint-request)$/], // signed peer requests (verified by the sync router)
@@ -161,7 +161,7 @@ function denialReason(operation, mode) {
     recorded as paid only while connected (settlement must be verifiable). */
 export function payoutGuard(runtime) {
   return (req, res, next) => {
-    if (runtime.config.region === 'GLOBAL' || req.method !== 'POST' || !/^\/admin\/(withdrawals\/[^/]+\/review|rewards\/fee-refunds\/[^/]+\/paid)$/.test(req.path)) return next()
+    if (runtime.config.region === 'GLOBAL' || req.method !== 'POST' || !/^\/admin\/(withdrawals\/[^/]+\/(review|ib-settlement)|rewards\/fee-refunds\/[^/]+\/paid)$/.test(req.path)) return next()
     const paying = /fee-refunds/.test(req.path) || req.body?.action === 'paid'
     if (!paying) return next()
     runtime.current().then(state => {

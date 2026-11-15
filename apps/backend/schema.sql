@@ -2436,3 +2436,51 @@ SELECT lower(w.payout_ref),w.id,coalesce(o.home_region,'GLOBAL')
  WHERE openfund_local_region()='GLOBAL' AND w.payment_evidence IS NOT NULL
    AND w.payout_ref ~* '^0x[0-9a-f]{64}$'
 ON CONFLICT DO NOTHING;
+
+-- Thread events travel with the withdrawal in existing signed handoff and
+-- synchronization payloads. Message bodies are visible only to participants.
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS thread_events jsonb NOT NULL DEFAULT '[]'::jsonb;
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS trader_read_count integer NOT NULL DEFAULT 0;
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS operator_read_count integer NOT NULL DEFAULT 0;
+
+-- The first receipt verifier supports Arbitrum DAI. Every usable policy
+-- still needs an explicit owner approval, asset, chain and schedule.
+CREATE TABLE IF NOT EXISTS ib_settlement_policies (
+  version text PRIMARY KEY,
+  chain_id integer NOT NULL CHECK (chain_id > 0),
+  token_address text NOT NULL CHECK (token_address ~ '^0x[0-9a-f]{40}$'),
+  waiting_days smallint NOT NULL CHECK (waiting_days BETWEEN 0 AND 365),
+  approval_reference text NOT NULL CHECK (length(trim(approval_reference)) > 0),
+  approved_by text NOT NULL CHECK (length(trim(approved_by)) > 0),
+  effective_at timestamptz NOT NULL
+);
+DROP TRIGGER IF EXISTS ib_settlement_policies_immutable ON ib_settlement_policies;
+CREATE TRIGGER ib_settlement_policies_immutable BEFORE UPDATE OR DELETE ON ib_settlement_policies
+  FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS ib_settlement jsonb;
+
+CREATE OR REPLACE FUNCTION protect_withdrawal_financial_evidence() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF OLD.kind='reward' AND OLD.eligibility IS NOT NULL
+    AND NEW.eligibility IS DISTINCT FROM OLD.eligibility THEN
+    RAISE EXCEPTION 'withdrawal_calculation_immutable';
+  END IF;
+  IF OLD.payment_evidence IS NOT NULL AND NEW.payment_evidence IS DISTINCT FROM OLD.payment_evidence THEN
+    RAISE EXCEPTION 'withdrawal_payment_evidence_immutable';
+  END IF;
+  IF OLD.ib_settlement->>'status'='paid' AND NEW.ib_settlement IS DISTINCT FROM OLD.ib_settlement THEN
+    RAISE EXCEPTION 'ib_settlement_evidence_immutable';
+  END IF;
+  IF NEW.thread_events IS DISTINCT FROM OLD.thread_events AND (
+    jsonb_array_length(NEW.thread_events) < jsonb_array_length(OLD.thread_events) OR EXISTS (
+      SELECT 1 FROM jsonb_array_elements(OLD.thread_events) WITH ORDINALITY AS old_event(value, seq)
+       WHERE old_event.value IS DISTINCT FROM NEW.thread_events->((old_event.seq-1)::int)
+    )
+  ) THEN
+    RAISE EXCEPTION 'withdrawal_thread_immutable';
+  END IF;
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS withdrawal_financial_evidence_immutable ON withdrawal_requests;
+CREATE TRIGGER withdrawal_financial_evidence_immutable BEFORE UPDATE ON withdrawal_requests
+  FOR EACH ROW EXECUTE FUNCTION protect_withdrawal_financial_evidence();

@@ -34,7 +34,9 @@ export async function financialInputs(db) {
       (SELECT coalesce(sum(p),0) FROM (SELECT sum(amount_usd) p FROM referral_commissions GROUP BY ambassador_user_id) x WHERE p > 0) AS commissions,
       (SELECT coalesce(sum(amount_usd),0) FROM settlement_records WHERE status <> 'completed') AS live_shares,
       (SELECT coalesce(sum(amount_usd),0) FROM verified_expenses WHERE status='verified' AND payment_status='unpaid') AS expenses,
-      (SELECT coalesce(sum(amount_usd),0) FROM financial_obligations WHERE status='open') AS other`)
+      (SELECT coalesce(sum(amount_usd),0) FROM financial_obligations WHERE status='open') AS other,
+      (SELECT coalesce(sum((eligibility->'distribution'->>'ib')::numeric),0) FROM withdrawal_requests
+        WHERE status='paid' AND coalesce(ib_settlement->>'status','')<>'paid') AS funded_ib`)
   const reserves = { operational: null, risk: null, other: null }
   for (const r of (await db.query(`SELECT DISTINCT ON (kind) kind, amount_usd, created_at, set_by FROM capital_reserves ORDER BY kind, id DESC`)).rows)
     reserves[r.kind] = r.amount_usd
@@ -42,7 +44,7 @@ export async function financialInputs(db) {
       (SELECT coalesce(sum(amount_usd),0) FROM capital_allocations WHERE status IN ('active','halted')) AS allocated,
       (SELECT coalesce(sum(collateral_usd),0) FROM live_trades WHERE status IN ('submitted','open','closing','reconcile_required')) AS open_margin`)
   return {
-    obligations: { traderRewardsApprovedUnpaid: o.trader_rewards, ambassadorCommissionsUnpaid: o.commissions, liveProfitSharesUnsettled: o.live_shares, expensesPayable: o.expenses, otherLiabilities: o.other },
+    obligations: { traderRewardsApprovedUnpaid: o.trader_rewards, ambassadorCommissionsUnpaid: o.commissions, liveProfitSharesUnsettled: o.live_shares, expensesPayable: o.expenses, otherLiabilities: D(o.other).plus(o.funded_ib).toFixed(2) },
     reserves,
     allocations: { allocatedUsd: a.allocated, openMarginUsd: a.open_margin },
   }

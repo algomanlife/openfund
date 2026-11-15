@@ -3743,5 +3743,17 @@
   "Active": "已激活",
   "Operations allocation": "运营分配",
   "Treasury allocation": "资金库分配",
-  "Unpaid": "未支付"
+  "Unpaid": "未支付",
+  "Could not load or send messages.": "无法加载或发送消息。",
+  "Messages": "消息",
+  "Older messages": "更早的消息",
+  "Operator": "运营人员",
+  "Payout messages": "付款消息",
+  "Reconsideration is pending.": "复核申请正在审核。",
+  "Rejection reason": "拒绝原因",
+  "Request reconsideration": "申请复核",
+  "Send message": "发送消息",
+  "Approved": "已批准",
+  "Contingent": "或有款项",
+  "Funded IB rewards": "资助账户 IB 奖励"
 }

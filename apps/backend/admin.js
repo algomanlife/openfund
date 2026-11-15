@@ -24,11 +24,13 @@
 import { Router } from 'express'
 import { rateLimit } from 'express-rate-limit'
 import crypto from 'node:crypto'
+import { D } from './trading-math.js'
 import { governanceAdminRoutes } from './governance-routes.js'
 import { reverseRewardTx, onRewardPaidTx } from './rewards.js'
 import { financialAudit } from './financial-audit.js'
+import { mountPayoutThreads } from './payout-threads.js'
 import { createPayoutClaimClient } from './payout-claims.js'
-import { payoutHash, payoutVerifier } from './payout-settlement.js'
+import { DAI_PAYOUT_TOKEN, payoutHash, payoutVerifier } from './payout-settlement.js'
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const fail = (status, error) => { const e = new Error(error); e.status = status; return e }
@@ -66,6 +68,7 @@ export function adminActor(req) {
 export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), claimPayout = createPayoutClaimClient({ region: 'GLOBAL' }) }) {
   const router = Router()
   router.use(adminAuth)
+  mountPayoutThreads(router, { pool, operator: true })
 
   /* Company Management governance operations (same token gate; no financial endpoints) */
   router.use('/governance', governanceAdminRoutes({ pool }))
@@ -160,7 +163,11 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
     const total = (await pool.query(`SELECT count(*)::int c FROM withdrawal_requests w WHERE ${where}`, params)).rows[0].c
     const { rows } = await pool.query(
       `SELECT w.id, w.user_id, u.wallet_address, w.amount_usd, w.status, w.note, w.requested_at,
-              w.reviewed_at, w.payout_ref, w.challenge_id, w.recipient_wallet, w.approved_by, w.payment_evidence, w.eligibility,
+              w.reviewed_at, w.payout_ref, w.challenge_id, w.recipient_wallet, w.approved_by, w.payment_evidence, w.eligibility, w.ib_settlement,
+              (SELECT count(*)::int FROM jsonb_array_elements(w.thread_events) WITH ORDINALITY e(value, idx)
+                WHERE e.idx>w.operator_read_count AND e.value->>'role'='trader') AS unread_messages,
+              (SELECT e.value->>'kind'='appeal' FROM jsonb_array_elements(w.thread_events) WITH ORDINALITY e(value, idx)
+                WHERE e.value->>'kind' IN ('appeal','appeal_resolved') ORDER BY idx DESC LIMIT 1) AS appeal_pending,
               (SELECT p.slug FROM openfund_challenges c JOIN challenge_plans p ON p.id = c.challenge_plan_id WHERE c.id = w.challenge_id) AS plan_slug
          FROM withdrawal_requests w JOIN openfund_users u ON u.id = w.user_id
         WHERE ${where} ORDER BY w.requested_at DESC LIMIT ${limit + 1} OFFSET ${offset}`, params)
@@ -230,6 +237,57 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
       await client.query('ROLLBACK').catch(() => {})
       if (e.constraint === 'idx_withdrawals_verified_hash') throw fail(409, 'payout_transaction_already_recorded')
       throw e
+    } finally { client.release() }
+  }))
+
+  router.post('/withdrawals/:id/ib-settlement', withdrawalReviewLimit, wrap(async (req, res) => {
+    if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')
+    const actor = adminActor(req)
+    const { action, policyVersion, payoutRef } = req.body || {}
+    if (!['approve', 'paid'].includes(action)) throw fail(400, 'invalid_action')
+    const client = await pool.connect()
+    try {
+      await client.query('BEGIN')
+      const { rows: [w] } = await client.query(`SELECT w.*, c.demo_account_id FROM withdrawal_requests w
+        JOIN openfund_challenges c ON c.id=w.challenge_id WHERE w.id=$1 FOR UPDATE OF w`, [req.params.id])
+      if (!w) throw fail(404, 'withdrawal_not_found')
+      const distribution = w.eligibility?.distribution
+      const ibId = distribution?.ibEvidence?.ambassador_user_id
+      if (!ibId || !D(distribution.ib).gt(0) || w.status !== 'paid' || w.payment_evidence?.finality !== 'finalized')
+        throw fail(409, 'ib_settlement_not_eligible')
+      await client.query('SELECT openfund_assert_account_writable($1)', [w.demo_account_id])
+      let settlement = w.ib_settlement
+      if (action === 'approve' && !settlement) {
+        if (typeof policyVersion !== 'string' || policyVersion.length > 80) throw fail(400, 'ib_policy_required')
+        const { rows: [policy] } = await client.query('SELECT * FROM ib_settlement_policies WHERE version=$1 AND effective_at<=now()', [policyVersion])
+        if (!policy || policy.chain_id !== 42161 || policy.token_address !== DAI_PAYOUT_TOKEN)
+          throw fail(409, 'ib_policy_unavailable')
+        const eligibleAt = new Date(w.payment_evidence.transactionAt).getTime() + policy.waiting_days * 86_400_000
+        if (!Number.isFinite(eligibleAt) || Date.now() < eligibleAt) throw fail(409, 'ib_settlement_not_due')
+        const { rows: [beneficiary] } = await client.query('SELECT wallet_address FROM openfund_users WHERE id=$1 FOR SHARE', [ibId])
+        if (!beneficiary) throw fail(409, 'ib_recipient_unavailable')
+        settlement = { id: crypto.randomUUID(), status: 'approved', policyVersion, recipient: beneficiary.wallet_address,
+          amount: distribution.ib, approvedBy: actor, approvedAt: new Date().toISOString(), chainId: policy.chain_id, token: policy.token_address }
+      } else if (action === 'paid') {
+        if (!settlement) throw fail(409, 'ib_approval_required')
+        if (typeof payoutRef !== 'string' || !payoutHash.test(payoutRef)) throw fail(400, 'payout_transaction_hash_required')
+        const hash = payoutRef.toLowerCase()
+        if (settlement.status === 'paid' && settlement.evidence.transactionHash !== hash) throw fail(409, 'payout_already_recorded')
+        if (settlement.status !== 'paid') {
+          const evidence = await verifyPayout({ hash, recipient: settlement.recipient, amount: settlement.amount, approvedAt: settlement.approvedAt })
+          await claimPayout(client, { hash, requestId: settlement.id })
+          settlement = { ...settlement, status: 'paid', evidence, recordedBy: actor }
+        }
+      }
+      if (settlement !== w.ib_settlement) {
+        await client.query('UPDATE withdrawal_requests SET ib_settlement=$2 WHERE id=$1', [w.id, settlement])
+        await financialAudit(client, actor, `ib_settlement_${settlement.status}`, 'withdrawal', w.id, w.ib_settlement, settlement)
+      }
+      await client.query('COMMIT')
+      res.set('Cache-Control', 'no-store').json({ settlement })
+    } catch (error) {
+      await client.query('ROLLBACK')
+      throw error
     } finally { client.release() }
   }))
 

@@ -3743,5 +3743,17 @@
   "Active": "نشط",
   "Operations allocation": "تخصيص العمليات",
   "Treasury allocation": "تخصيص الخزانة",
-  "Unpaid": "غير مدفوعة"
+  "Unpaid": "غير مدفوعة",
+  "Could not load or send messages.": "تعذر تحميل الرسائل أو إرسالها.",
+  "Messages": "الرسائل",
+  "Older messages": "رسائل أقدم",
+  "Operator": "المشغّل",
+  "Payout messages": "رسائل المدفوعات",
+  "Reconsideration is pending.": "طلب إعادة النظر قيد المراجعة.",
+  "Rejection reason": "سبب الرفض",
+  "Request reconsideration": "طلب إعادة النظر",
+  "Send message": "إرسال رسالة",
+  "Approved": "معتمد",
+  "Contingent": "مشروطة",
+  "Funded IB rewards": "مكافآت IB للحسابات المموّلة"
 }

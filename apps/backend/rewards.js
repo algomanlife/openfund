@@ -45,6 +45,7 @@ import { FUNDED_PAYOUT_VERSION, FUNDED_PAYOUT_CYCLES, fundedPayoutBoundary } fro
  */
 import { Router } from 'express'
 import { D, accountMetrics } from './trading-math.js'
+import { mountPayoutThreads } from './payout-threads.js'
 import { financialAudit } from './financial-audit.js'
 import { ChallengeService, normalizeRules, DAY_UTC3_OFFSET_MS } from './evaluation.js'
 import { adminAuth, adminActor } from './admin.js'
@@ -314,6 +315,7 @@ const challengeView = (c, extra = {}) => ({ id: c.id, planSlug: c.plan_slug, pla
 /** Customer routes: reward status, cycle selection and requests. */
 export function rewardRoutes({ pool, requireAuth, audit = async () => {}, limit = () => (req, res, next) => next(), md = null, challenges = new ChallengeService(pool) }) {
   const router = Router()
+  mountPayoutThreads(router, { pool, requireAuth })
   const ownChallenges = userId => pool.query(
     `SELECT c.*, p.slug AS plan_slug, p.name AS plan_name, r.decision AS review_decision, r.decided_at AS review_decided_at, r.note AS review_note
        FROM openfund_challenges c JOIN challenge_plans p ON p.id=c.challenge_plan_id

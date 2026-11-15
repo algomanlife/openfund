@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { apiFetch, useSession } from '../../session/useOpenfundSession'
 import './purchase.css'
+import PayoutThread from './PayoutThread'
 
 /**
  * Prop product page — evaluation reviews, funded-account reward eligibility,
@@ -15,7 +16,7 @@ import './purchase.css'
 interface WithdrawalRow {
   id: string, amount_usd: string, status: string, note: string | null,
   requested_at: string, reviewed_at: string | null, payout_ref: string | null,
-  challenge_id: string | null, plan_name: string | null
+  challenge_id: string | null, plan_name: string | null, kind?: string, unread_messages?: number
 }
 interface Check { key: string, ok: boolean, [detail: string]: unknown }
 interface Eligibility { eligible: boolean, cycle: string | null, checks: Check[], splitPct: number, grossProfit: string, reward: string, deducted?: string, deductions?: { kind: string, amount: string }[] }
@@ -34,6 +35,7 @@ export default function WithdrawalsPage() {
   const t = (fa: string, en: string) => pick(locale, fa, en)
   const session = useSession()
   const [rows, setRows] = useState<WithdrawalRow[] | null>(null)
+  const [thread, setThread] = useState<string | null>(null)
   const [status, setStatus] = useState<{ reviews: Review[], awaitingCycle?: Awaiting[], funded: Funded[] } | null>(null)
   const [choice, setChoice] = useState<Record<string, string>>({})
   const [error, setError] = useState<string | null>(null)
@@ -237,13 +239,16 @@ export default function WithdrawalsPage() {
                   <td dir="ltr">{w.status === 'paid' ? (w.payout_ref || '—') : '—'}</td>
                   <td>{w.status === 'requested' && (
                     <button className="of-profile-plainbtn" disabled={busy} onClick={() => cancel(w.id)}>{t('لغو', 'Cancel')}</button>
-                  )}</td>
+                  )}{w.kind === 'reward' && <button className="of-profile-plainbtn" onClick={() => setThread(w.id)}>
+                    {t('پیام‌ها', 'Messages')}{w.unread_messages ? ` (${w.unread_messages})` : ''}
+                  </button>}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
+      {thread && <PayoutThread key={thread} id={thread} locale={locale} close={() => { setThread(null); void load() }} />}
     </div>
   )
 }

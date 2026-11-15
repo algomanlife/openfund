@@ -25,6 +25,16 @@ chain recorded with each receipt. Historical operator-paid amounts remain
 visible in accounting totals. Historical approvals created before recipient
 and operator capture require explicit reconciliation before settlement.
 
+## Payout messages and reconsideration
+
+Each funded request has a private thread. Traders can open it from the
+withdrawal history, see the rejection reason, reply and ask for reconsideration.
+The operator queue includes unread counts and an appeal flag. An operator
+responds or records a reconsideration outcome under
+`/admin/withdrawals/:id/thread`. The decision recorded there does not
+automatically change the payout status or restore its reservation. Signed
+regional handoffs carry the thread with its withdrawal.
+
 ## Policy for new activations
 
 | Cycle | Trader | Eligible attributed IB | Openfund without eligible IB |
@@ -45,6 +55,21 @@ The next request opens at the first boundary after the prior live request.
 The backend freezes the new catalog on eligible funded accounts and locks
 selection before account activation. Until the owner approves the sales
 terms and sets `FUNDED_PAYOUT_V1_FROM`, existing catalog terms apply.
+
+## IB settlement
+
+An originating purchase qualifies for attribution when it has a verified
+ambassador commission from an active ambassador at activation. The frozen
+reference follows the funded account. A reward request records contingent
+trader, IB and retained allocations on the same distributable amount.
+Rejected and cancelled requests are excluded from payable totals.
+
+After a final trader receipt, operators can inspect the obligation and
+approve settlement at `POST /admin/withdrawals/:id/ib-settlement` with an
+owner-approved policy version. A subsequent paid action requires a distinct
+finalized receipt and global claim. The policy registry starts empty and
+specifies the chain, token and delay explicitly. The current verifier accepts
+Arbitrum DAI when an approved policy specifies it.
 
 ## Policy decisions still open
 

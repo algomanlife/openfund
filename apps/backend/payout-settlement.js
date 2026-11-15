@@ -2,7 +2,7 @@ import { createPublicClient, http, isAddress, parseAbiItem, parseEventLogs, pars
 import { arbitrum } from 'viem/chains'
 import { treasuryConfig } from './treasury.js'
 
-const DAI = '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'
+export const DAI_PAYOUT_TOKEN = '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'
 const transfer = parseAbiItem('event Transfer(address indexed from, address indexed to, uint256 value)')
 export const payoutHash = /^0x[0-9a-f]{64}$/i
 const fail = (status, message) => Object.assign(new Error(message), { status })
@@ -33,10 +33,10 @@ export function payoutVerifier(config = treasuryConfig(), reader = null) {
     if (finalized.number < receipt.blockNumber) throw fail(409, 'payout_not_finalized')
     const timestamp = new Date(Number(block.timestamp) * 1000)
     if (timestamp <= new Date(approvedAt)) throw fail(409, 'payout_precedes_approval')
-    const matches = parseEventLogs({ abi: [transfer], logs: receipt.logs.filter(log => log.address.toLowerCase() === DAI) })
+    const matches = parseEventLogs({ abi: [transfer], logs: receipt.logs.filter(log => log.address.toLowerCase() === DAI_PAYOUT_TOKEN) })
       .filter(({ args }) => args.from.toLowerCase() === sender && args.to.toLowerCase() === destination && args.value === units)
     if (matches.length !== 1) throw fail(409, 'payout_transfer_mismatch')
-    return { chainId, token: DAI, transactionHash: hash.toLowerCase(), sender, recipient: destination,
+    return { chainId, token: DAI_PAYOUT_TOKEN, transactionHash: hash.toLowerCase(), sender, recipient: destination,
       amount, amountUnits: units.toString(), blockNumber: receipt.blockNumber.toString(), blockHash: block.hash,
       logIndex: matches[0].logIndex, transactionAt: timestamp.toISOString(), finality: 'finalized' }
   }
