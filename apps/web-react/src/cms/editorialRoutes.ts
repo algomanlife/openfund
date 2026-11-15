@@ -1,0 +1,68 @@
+/** Routes from apps/web-react/src/main.tsx. The visual-editing check fails
+ * when a new path literal is added here without a registry entry.
+ */
+export type EditorialRoute = {
+  path: string
+  view: string
+  collections: string[]
+}
+
+const react = ['ui_messages']
+const site = ['ui_messages', 'pages', 'navigation_items', 'footer_links']
+
+export const EDITORIAL_ROUTES: readonly EditorialRoute[] = [
+  { path: '/', view: 'root-redirect', collections: react },
+  { path: '/:locale/home', view: 'home', collections: ['home_content', ...site] },
+  { path: '/:locale/challenges', view: 'challenges', collections: ['faqs', 'legal_documents', 'pages', ...site] },
+  { path: '/:locale/operations/payouts', view: 'payout-operations', collections: react },
+  { path: '/:locale/checkout', view: 'checkout', collections: react },
+  { path: '/:locale/campaign', view: 'campaign', collections: react },
+  { path: '/:locale/markets', view: 'markets', collections: ['pages', ...site] },
+  { path: '/:locale/rulebook', view: 'rulebook', collections: ['trading_rules', 'pages', ...site] },
+  { path: '/:locale/transparency', view: 'transparency', collections: site },
+  { path: '/:locale/governance', view: 'governance', collections: ['governance_milestones', 'governance_content_blocks', ...site] },
+  { path: '/:locale/governance/new', view: 'governance-new', collections: react },
+  { path: '/:locale/governance/workspace', view: 'governance-workspace', collections: react },
+  { path: '/:locale/governance/proposals/:ofp', view: 'governance-proposal', collections: react },
+  { path: '/:locale/economy', view: 'economy-redirect', collections: react },
+  { path: '/:locale/revenue-model', view: 'revenue-model', collections: site },
+  { path: '/:locale/live-market-access', view: 'live-market-access', collections: site },
+  { path: '/:locale/ambassador', view: 'ambassador', collections: site },
+  { path: '/:locale/coach', view: 'coach', collections: site },
+  { path: '/:locale/whitepaper', view: 'whitepaper', collections: ['whitepaper_documents', 'whitepaper_chapters', 'whitepaper_datasets', 'whitepaper_references', ...site] },
+  { path: '/:locale/certificate-verification', view: 'certificate-verification', collections: react },
+  { path: '/:locale/apps', view: 'applications', collections: site },
+  { path: '/:locale/roadmap', view: 'roadmap', collections: site },
+  { path: '/:locale/about', view: 'about', collections: site },
+  { path: '/:locale/contact', view: 'contact', collections: ['site_settings', ...site] },
+  { path: '/:locale/faq', view: 'faq', collections: ['faqs', 'faq_categories', ...site] },
+  { path: '/:locale/faq/q/:key', view: 'faq-question', collections: ['faqs', 'faq_categories'] },
+  { path: '/:locale/tools', view: 'tools', collections: ['tools', ...site] },
+  { path: '/:locale/tools/:slug', view: 'tool', collections: ['tools'] },
+  { path: '/:locale/learn', view: 'learn', collections: ['learning_paths', ...site] },
+  { path: '/:locale/learn/paths/:slug', view: 'learning-path', collections: ['learning_paths', 'lessons'] },
+  { path: '/:locale/learn/lessons/:slug', view: 'lesson', collections: ['lessons'] },
+  { path: '/:locale/learn/glossary', view: 'glossary', collections: ['glossary_terms'] },
+  { path: '/:locale/learn/glossary/:slug', view: 'glossary-term', collections: ['glossary_terms'] },
+  { path: '/:locale/referral', view: 'referral', collections: ['referral_content', ...site] },
+  { path: '/:locale/ref/:code', view: 'referral-entry', collections: react },
+  { path: '/:locale/${product}', view: 'product-shell', collections: ['terminal_sections', 'ui_messages'] },
+  { path: 'dashboard', view: 'dashboard', collections: react },
+  { path: 'trade', view: 'trade', collections: ['ui_messages', 'terminal_sections'] },
+  { path: 'chart', view: 'chart', collections: ['ui_messages', 'terminal_sections'] },
+  { path: 'radar', view: 'radar', collections: react },
+  { path: 'heatmap', view: 'heatmap', collections: react },
+  { path: 'portfolio', view: 'portfolio', collections: react },
+  { path: 'journal', view: 'journal', collections: react },
+  { path: 'certificates', view: 'certificates', collections: react },
+  { path: 'purchases', view: 'purchases', collections: react },
+  { path: 'withdrawals', view: 'withdrawals', collections: react },
+  { path: 'leaderboard', view: 'leaderboard', collections: react },
+  { path: 'rewards', view: 'rewards', collections: react },
+  { path: '/terminal', view: 'terminal-redirect', collections: react },
+  { path: '/portfolio', view: 'portfolio-redirect', collections: react },
+  { path: '/journal', view: 'journal-redirect', collections: react },
+  { path: '/${product}/:page', view: 'legacy-product-redirect', collections: react },
+  { path: '/:section', view: 'legacy-anchor', collections: react },
+  { path: '*', view: 'fallback', collections: react },
+]

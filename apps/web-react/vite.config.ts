@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
 import react from '@vitejs/plugin-react'
+import { visualEditingPlugin } from './scripts/visual-editing-plugin.mjs'
 import { execFileSync } from 'node:child_process'
 
 /* cwd-independent absolute output paths (the build must always land in
@@ -9,7 +10,7 @@ const repoReact = fileURLToPath(new URL('../../react', import.meta.url))
 const publishDir = fileURLToPath(new URL('../../publish-openfund', import.meta.url))
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), {
+  plugins: [visualEditingPlugin(), react(), {
     name: 'local-runtime-config',
     configureServer(server) {
       const serve = (_req: unknown, res: {setHeader: (key: string, value: string) => void; end: (value: string) => void}) => {

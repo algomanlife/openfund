@@ -277,6 +277,7 @@ and wallet. Public release/signing and existing license decisions remain Blocked
 | Navigation, purchase history and Applications | In Progress | Local review branch. Web Terminal available; verified desktop installers remain pending. [Website evidence](../reviews/final-refinement/website.md) |
 | Position protection controls | In Progress | Isolated Prop simulation acceptance. Production and device acceptance remain open. |
 | Interface content registry | In Progress | Source-derived editing map and published overrides. See the coverage limits in the content evidence. |
+| Universal visual CMS editing | In Progress (isolated Directus 11.17.4 click-through recorded; not applied to production; not deployed) | Studio opened the Value popover for a Persian label, a draft stayed off the public API, and publishing appeared on reload. Public pages have no `data-directus` attributes. `challenge_plans` anonymous writes return 403. Production schema has not been migrated. [Report](../backstage/UNIVERSAL_VISUAL_EDITING.md) |
 | Certificates | In Progress | Issuance tied to server records. Review and production rollout remain open. |
 
 ## v0.6.5 candidate — 2026-11-15

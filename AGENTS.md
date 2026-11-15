@@ -165,3 +165,31 @@ Code/config changes (if any), documentation, test results, change log, accurate 
   suites against the user database.
 - For rollback, retain the previous immutable release and a compatible
   database backup.
+
+## Editorial content
+
+These rules apply to user-facing copy. They do not authorize layout, theme,
+trading, payment, wallet, or financial changes.
+
+- Register every new page in `apps/web-react/src/cms/editorialRoutes.ts` with
+  the route literal from `main.tsx`, a view name, and the Directus collections
+  that own its copy.
+- Register every new static string with the existing bilingual `pick` /
+  `pickRecord` path, or with the structured collection that already owns that
+  surface. Stable ids come from `interfaceKey`. Do not invent a second CMS.
+- Cover `fa`, `en`, `ar`, `ru` and `zh-CN`. `fa` and `en` are required in the
+  source registry. Added locales may use the reviewed dictionary until an
+  editor publishes a Directus row. Do not publish machine translations.
+- Keep Directus records and schema support in `apps/backstage/scripts/`.
+  Schema and seed changes stay idempotent and must not overwrite editor values.
+- Attach visual editing through `cmsEditAttrs` / `cmsText` or the JSX transform.
+  The reference is the Directus collection, item and field, not a DOM position.
+- Editor chrome appears only after Directus 11.17.4 confirms the Studio
+  session. Visitors must not see editing controls or unpublished copy.
+- Conditional or ambiguous copy belongs in the editor content catalog.
+- `npm run test:content-registry` is the coverage check. It fails on duplicate
+  ids, missing `fa`/`en`, unregistered routes, forbidden financial collections,
+  and direct JSX copy with no visual-editing reference. It does not match
+  dynamic prices, balances, PnL, leverage or account state.
+- Definition of done for a content change includes that check, locale coverage,
+  and a published-only fallback when Directus is down.

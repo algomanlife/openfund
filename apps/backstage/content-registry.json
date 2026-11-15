@@ -1499,6 +1499,26 @@
       ]
     },
     {
+      "key": "react.033ce6a81d88b5d6",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "فهرست محتوا",
+      "en": "Content catalog",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/ContentCatalog.tsx",
+          "line": 25,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.0352bda4a0e672c4",
       "namespace": "react",
       "area": "Website",
@@ -19528,6 +19548,26 @@
       ]
     },
     {
+      "key": "react.361abab4c45c9400",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "پیش‌نویس تا زمان انتشار برای بازدیدکننده دیده نمی‌شود. بازگشت نسخه از تاریخچهٔ Directus است.",
+      "en": "Drafts stay hidden from visitors until published. Restore earlier copy from the Directus revision history.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/ContentCatalog.tsx",
+          "line": 38,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.362dc8990008a7a5",
       "namespace": "react",
       "area": "Global Content",
@@ -20958,7 +20998,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/loading/AppFrame.tsx",
-          "line": 35,
+          "line": 37,
           "page": "loading",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -29913,6 +29953,26 @@
       ]
     },
     {
+      "key": "react.531ab58e23c83c10",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "جستجو",
+      "en": "Search",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/ContentCatalog.tsx",
+          "line": 30,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.5327a7e1d4bdb9c3",
       "namespace": "react",
       "area": "Website",
@@ -37204,6 +37264,26 @@
       ]
     },
     {
+      "key": "react.6878710206021318",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "جستجوی محتوا",
+      "en": "Search content",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/ContentCatalog.tsx",
+          "line": 30,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.68a4676a5120cdd8",
       "namespace": "react",
       "area": "Website",
@@ -38388,6 +38468,26 @@
           "line": 54,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.6bbb85fa5487082c",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "متن‌های ثابت همین نما و رکوردهایی که در صفحه دیده نمی‌شوند. مقادیر قیمت، موجودی و معامله اینجا نیستند.",
+      "en": "Static copy on this view, plus records that are not on screen. Prices, balances and trades are not listed.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/ContentCatalog.tsx",
+          "line": 29,
+          "page": "global",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -42256,6 +42356,26 @@
       ]
     },
     {
+      "key": "react.77f5a27ac12bd0d0",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "فقط ترجمه‌های ناقص",
+      "en": "Missing translations only",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/ContentCatalog.tsx",
+          "line": 33,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.7815904575307efd",
       "namespace": "react",
       "area": "Website",
@@ -45113,6 +45233,26 @@
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
           "line": 91,
           "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.7fd31253612855cf",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "فهرست محتوای قابل ویرایش",
+      "en": "Editable content catalog",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/ContentCatalog.tsx",
+          "line": 28,
+          "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -59343,7 +59483,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/loading/AppFrame.tsx",
-          "line": 150,
+          "line": 166,
           "page": "loading",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -66248,6 +66388,26 @@
       ]
     },
     {
+      "key": "react.bb1742517848bfb7",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "بدون ترجمه",
+      "en": "missing",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/ContentCatalog.tsx",
+          "line": 55,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.bb28debb1b2c064b",
       "namespace": "react",
       "area": "Website",
@@ -69839,14 +69999,14 @@
         },
         {
           "component": "apps/web-react/src/features/loading/AppFrame.tsx",
-          "line": 37,
+          "line": 39,
           "page": "loading",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/loading/AppFrame.tsx",
-          "line": 151,
+          "line": 167,
           "page": "loading",
           "route": "/:locale/*",
           "method": "pick-pipeline"

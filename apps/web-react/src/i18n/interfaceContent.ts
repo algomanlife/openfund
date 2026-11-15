@@ -15,6 +15,11 @@ export function placeholders(value: string): string[] {
   return (value.match(/\$\{[^}]+\}|\{\{[^}]+\}\}|\{[A-Za-z_][\w.]*\}/g) || []).sort()
 }
 let published: Record<string, Record<string, string>> = Object.create(null)
+/** Editor-iframe only. Returns a draft string for one key and locale, or undefined. */
+let previewReader: ((locale: string, key: string) => string | undefined) | undefined
+export function setInterfacePreviewReader(reader: ((locale: string, key: string) => string | undefined) | undefined): void {
+  previewReader = reader
+}
 export function installInterfaceContent(rows: unknown): void {
   const next: typeof published = Object.create(null)
   if (Array.isArray(rows)) for (const row of rows) {
@@ -32,7 +37,10 @@ export function installInterfaceContent(rows: unknown): void {
 export function interfaceOverride(locale: string, fa: string, en: string): string | undefined {
   // Already-interpolated values are deliberately not pattern-matched: dynamic
   // account data must never be mistaken for editable content.
-  const value = published[interfaceKey(fa, en)]?.[locale]
+  const key = interfaceKey(fa, en)
+  const stored = published[key]?.[locale]
+  const preview = previewReader?.(locale, key)
+  const value = preview !== undefined && preview !== stored ? preview : stored
   if (value === undefined || JSON.stringify(placeholders(value)) !== JSON.stringify(placeholders(en))) return undefined
   return value
 }
