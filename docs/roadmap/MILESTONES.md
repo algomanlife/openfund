@@ -114,3 +114,13 @@ updates. Verify certificates with isolated purchase, approved completion and
 recorded payout events. Confirm Directus draft isolation and publication before
 claiming full content editability. Public desktop downloads depend on verified
 published installers. Review and release remain separate milestones.
+
+
+## Controlled challenge acceptance
+
+**In Progress:** two private test lineages with wallet-bound zero-payment
+checkout, risk enforcement, final-pass review and separate simulated payout
+history. Depends on the current Prop engine, registered test wallets and a
+disposable GLOBAL runtime. Owner acceptance includes checkout, both 1%
+evaluation passes, simulated settlement, financial isolation, regional
+projection and archiving. [Procedure](../payments/CONTROLLED_CHALLENGES.md)

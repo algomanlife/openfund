@@ -18,14 +18,23 @@ import pg from 'pg'
 import { purchaseRoutes, recoverPendingPayments, paymentsReady, cfg, DEPAY_SIGNED_PATHS, paymentReadinessReport } from '../purchases.js'
 import { couponAdminRoutes, applyCoupon } from '../coupons.js'
 
+import { Engine } from '../engine.js'
+import { inWeekend } from '../model-rules.js'
+import { ConductService } from '../conduct.js'
+import { ChallengeService } from '../evaluation.js'
+import { rewardRoutes, rewardAdminRoutes } from '../rewards.js'
+import { adminRoutes } from '../admin.js'
+import { financialInputs } from '../economy.js'
+import { accountLineages } from '../live-funding.js'
+
 if (!/test|audit|_ci/.test(process.env.DATABASE_URL || '')) throw new Error('Use an isolated test DATABASE_URL')
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL, max: 30 })
 
 /* conduct sales gate: news-dependent plans need verified calendar coverage
    (same labelled fixture the SIM_TEST_MODE server writes at start-up) */
 await pool.query(`INSERT INTO economic_calendar_coverage (source, covers_from, covers_to, event_count, actor)
-  SELECT 'sim-test-mode', now() - interval '1 day', now() + interval '60 days', 0, 'sim-test-mode'
-   WHERE NOT EXISTS (SELECT 1 FROM economic_calendar_coverage WHERE source='sim-test-mode' AND covers_to > now() + interval '30 days')`)
+  SELECT 'sim-test-mode', now() - interval '7 days', now() + interval '60 days', 0, 'sim-test-mode'
+   WHERE NOT EXISTS (SELECT 1 FROM economic_calendar_coverage WHERE source='sim-test-mode' AND covers_from <= now() - interval '6 days' AND covers_to > now() + interval '30 days')`)
 
 const RECEIVER = '0x' + 'c1'.repeat(20)
 const USDC_ARBITRUM = '0xaf88d065e77c8cc2239327c5edb3a432268e5831' /* USDC on Arbitrum One (public contract) */
@@ -71,7 +80,25 @@ const requireAuth = async (req, res, next) => {
 }
 app.use(purchaseRoutes({ pool, requireAuth, audit: async () => {}, verifier }))
 app.use('/admin/coupons', couponAdminRoutes({ pool }))
-app.use((err, req, res, next) => res.status(err.status || 500).json({ error: err.status ? err.message : 'internal' }))
+const prices = {
+  value: '50000',
+  marketMeta: () => ({ base: 'BTC', group: 'crypto', maxLeverage: 100 }),
+  mark: () => ({ mark: prices.value, at: Date.now() }),
+  tradeable: () => ({ ok: true, mark: prices.value, meta: prices.marketMeta() }),
+}
+const tradingDay = () => {
+  const now = new Date()
+  now.setUTCHours(12, 0, 0, 0)
+  while ([0, 6].includes(now.getUTCDay())) now.setUTCDate(now.getUTCDate() - 1)
+  return +now
+}
+const controlledEngine = new Engine(pool, prices, { conduct: new ConductService(pool, { now: tradingDay }) })
+const challengeService = new ChallengeService(pool)
+app.use(rewardRoutes({ pool, requireAuth, md: prices }))
+app.use('/admin/rewards', rewardAdminRoutes({ pool, fundedPolicyFrom: '2020-01-01' }))
+let payoutVerifierCalls = 0
+app.use('/admin', adminRoutes({ pool, audit: async () => {}, verifyPayout: async () => { payoutVerifierCalls++; throw new Error('unexpected_verification') } }))
+app.use((err, req, res, next) => res.status(err.status || 500).json({ error: err.status ? err.message : 'internal', ...(err.status ? {} : { detail: err.message }) }))
 const server = await new Promise(r => { const s = app.listen(0, '127.0.0.1', () => r(s)) })
 const BASE = `http://127.0.0.1:${server.address().port}`
 test.after(async () => { server.close(); await pool.end() })
@@ -732,4 +759,178 @@ test('A2 readiness report names what blocks payments without exposing secret val
     for (const k of Object.keys(process.env)) if (!(k in saved)) delete process.env[k]
     Object.assign(process.env, saved)
   }
+})
+
+test('controlled checkout and both Prop lineages use the real evaluation, review and payout engines', async () => {
+  const instantOwner = await newUser(), standardOwner = await newUser(), stranger = await newUser()
+  const setup = (profile, user, admin = true) => call('POST', '/admin/coupons/controlled', {
+    admin, body: { profile, walletAddress: user.wallet },
+  })
+  const operator = (route, body) => call('POST', '/admin' + route, { admin: true, body })
+  const review = (id, action, extra = {}) => operator(`/withdrawals/${id}/review`, { action, ...extra })
+  const fetchRow = async (sql, args) => (await pool.query(sql, args)).rows[0]
+  const challenge = id => fetchRow('SELECT * FROM openfund_challenges WHERE id=$1', [id])
+  const balance = async id => Number((await fetchRow('SELECT balance FROM demo_accounts WHERE id=$1', [id])).balance)
+  const request = (user, challengeId) => call('POST', '/withdrawals', {
+    user, body: { challengeId, cycle: 'weekly', test_mode: false },
+  })
+  assert.equal((await setup('instant', instantOwner, false)).status, 403)
+  const issuing = await Promise.all([setup('instant', instantOwner), setup('instant', instantOwner)])
+  assert.deepEqual(issuing.map(x => x.status).sort(), [201, 409])
+  const instantCoupon = issuing.find(x => x.status === 201).data
+  const standardIssue = await setup('standard', standardOwner)
+  assert.equal(standardIssue.status, 201, JSON.stringify(standardIssue.data))
+  const standardCoupon = standardIssue.data
+  const quote = (user, planSlug, couponCode) => call('POST', '/purchases/quote', {
+    user, body: { planSlug, accountSize: SIZE, couponCode },
+  })
+  assert.equal((await quote(stranger, 'instant', instantCoupon.code)).status, 404)
+  assert.equal((await order(stranger, { planSlug: 'instant', couponCode: instantCoupon.code })).status, 404)
+  assert.equal((await quote(instantOwner, 'standard', instantCoupon.code)).status, 409)
+  assert.equal((await quote(instantOwner, 'instant', instantCoupon.code)).data.priceUsd, '0.00')
+
+  const checkout = (user, coupon, key = crypto.randomUUID()) => order(user, {
+    planSlug: coupon.profile, couponCode: coupon.code, idempotencyKey: key, controlledTest: false,
+  })
+  const responses = await Promise.all(Array.from({ length: 8 }, () => checkout(instantOwner, instantCoupon)))
+  assert.equal(responses.filter(r => r.status === 200).length, 1, JSON.stringify(responses.map(r => [r.status, r.data?.error, r.data?.detail])))
+  assert.equal(responses.filter(r => r.status === 409 && r.data.error === 'coupon_exhausted').length, 7)
+  const instantPurchase = responses.find(r => r.status === 200).data
+  const requestKey = crypto.randomUUID()
+  const [a, b] = await Promise.all([checkout(standardOwner, standardCoupon, requestKey), checkout(standardOwner, standardCoupon, requestKey)])
+  assert.equal(a.status, 200, JSON.stringify(a.data)); assert.equal(b.status, 200, JSON.stringify(b.data))
+  assert.equal(a.data.order.id, b.data.order.id)
+  for (const { order: o } of [instantPurchase, a.data]) {
+    assert.equal(o.payment_required, false)
+    assert.equal((await depayPost('/purchases/depay/configuration', { orderId: o.id })).data.error, 'order_not_payable')
+  }
+  const instant = await challenge(instantPurchase.result.challengeId)
+  assert.equal(instant.status, 'started')
+  assert.equal(instant.stage, 0)
+  assert.equal(instant.expires_at, null)
+  assert.equal(instant.rules_snapshot.conduct.profitableDayRule, null)
+  assert.equal(instant.rules_snapshot.rewardCycles[0].consistencyPct, 15)
+  assert.equal(instant.rules_snapshot.dailyLossPct, 3)
+  await assert.rejects(pool.query(`UPDATE openfund_challenges SET rules_snapshot='{}' WHERE id=$1`, [instant.id]), /controlled_challenge_snapshot_immutable/)
+  const s1 = await challenge(a.data.result.challengeId)
+  assert.equal(s1.status, 'created')
+  assert.equal(s1.rules_snapshot.phase1TargetPct, 1)
+  assert.equal(s1.rules_snapshot.phase2TargetPct, 1)
+  assert.equal(s1.rules_snapshot.minTradingDays, 0)
+  const requestedEarly = await request(instantOwner, instant.id)
+  assert.equal(requestedEarly.status, 409)
+
+  // Constant market-day fixture for the real engine; generated marks never reach a venue.
+  const trade = async (user, c, exit, { margin = 500, leverage = 10, sl } = {}) => {
+    prices.value = '50000'
+    const opened = await controlledEngine.submitOrder(user.id, {
+      market: 'BTC/USD', side: 'long', order_type: 'market', margin, leverage, ...(sl ? { sl } : {}),
+    }, crypto.randomUUID(), c.demo_account_id)
+    assert.ok(opened.position, JSON.stringify(opened))
+    prices.value = String(exit)
+    const closed = await controlledEngine.closePosition(user.id, opened.position.id)
+    assert.equal(closed.position.status, 'closed')
+    return opened.position.id
+  }
+
+  await challengeService.start(standardOwner.id, s1.id)
+  await trade(standardOwner, s1, 50600)
+  assert.equal((await challenge(s1.id)).status, 'started', 'less than 1% is insufficient')
+  await trade(standardOwner, s1, 50600)
+  assert.equal((await challenge(s1.id)).status, 'passed')
+  const s2 = await fetchRow('SELECT * FROM openfund_challenges WHERE parent_challenge_id=$1', [s1.id])
+  assert.equal(s2.stage, 2)
+  assert.equal(s2.expires_at, null)
+  assert.deepEqual(s2.rules_snapshot, s1.rules_snapshot)
+  await trade(standardOwner, s2, 51100)
+  assert.equal((await challenge(s2.id)).status, 'passed')
+  assert.equal((await request(standardOwner, s2.id)).status, 409)
+  assert.equal((await call('GET', '/admin/rewards/reviews', { admin: true })).data.reviews.find(r => r.id === s2.id).test_mode, true)
+  const approval = await operator(`/rewards/reviews/${s2.id}`, { decision: 'approve', note: 'Controlled test pass' })
+  assert.equal(approval.status, 200, JSON.stringify(approval.data))
+  const funded = await challenge(approval.data.fundedChallengeId)
+  assert.equal(funded.status, 'created')
+  assert.equal(funded.rules_snapshot.fundedIb, null)
+  assert.deepEqual(funded.rules_snapshot.controlledTest, s1.rules_snapshot.controlledTest)
+  assert.equal((await call('POST', `/rewards/accounts/${funded.id}/cycle`, { user: standardOwner, body: { cycle: 'weekly' } })).status, 200)
+  await trade(standardOwner, funded, 51200)
+  assert.equal((await request(stranger, funded.id)).status, 404)
+  const beforeRequest = await balance(funded.demo_account_id)
+  assert.ok(beforeRequest > SIZE + 100)
+  const pending = await request(standardOwner, funded.id)
+  assert.equal(pending.status, 200, JSON.stringify(pending.data))
+  assert.equal((await review(pending.data.id, 'simulate')).status, 409)
+  assert.equal((await review(pending.data.id, 'reject', { note: 'Review fixture' })).status, 200)
+  assert.ok(Math.abs(await balance(funded.demo_account_id) - beforeRequest) < 0.011)
+  assert.equal((await call('POST', `/withdrawals/${pending.data.id}/thread`, {
+    user: standardOwner, body: { action: 'appeal', message: 'Please reconsider' },
+  })).status, 200)
+  assert.equal((await operator(`/withdrawals/${pending.data.id}/thread`, { action: 'reply', message: 'Reviewed the test trades' })).status, 200)
+  assert.equal((await operator(`/withdrawals/${pending.data.id}/thread`, { action: 'resolve_appeal', message: 'Submit a new test request' })).status, 200)
+  const retry = await request(standardOwner, funded.id)
+  assert.equal(retry.status, 200, JSON.stringify(retry.data))
+  const w = retry.data.id
+  assert.equal((await review(w, 'approve')).status, 200)
+  const obligations = await financialInputs(pool)
+  const commercialApproved = await fetchRow("SELECT coalesce(sum(amount_usd),0) AS n FROM withdrawal_requests WHERE status='approved' AND NOT test_mode")
+  assert.equal(obligations.obligations.traderRewardsApprovedUnpaid, commercialApproved.n)
+  assert.equal((await review(w, 'paid', { payoutRef: rndHash() })).data.error, 'test_payout_requires_simulation')
+  assert.equal(payoutVerifierCalls, 0)
+  const reservedBalance = await balance(funded.demo_account_id)
+  const completed = await Promise.all([review(w, 'simulate'), review(w, 'simulate')])
+  assert.deepEqual(completed.map(r => r.data.status), ['simulated_settled', 'simulated_settled'])
+  assert.equal(completed.filter(r => r.data.duplicate).length, 1)
+  assert.equal(await balance(funded.demo_account_id), reservedBalance)
+  const simulated = await fetchRow('SELECT * FROM withdrawal_requests WHERE id=$1', [w])
+  assert.equal(simulated.test_mode, true)
+  assert.equal(simulated.payout_ref, null)
+  assert.equal(simulated.payment_evidence, null)
+  assert.equal(simulated.eligibility.distribution, undefined)
+  assert.equal((await call('GET', '/admin/withdrawals?scope=test&status=simulated_settled', { admin: true })).data.withdrawals.find(r => r.id === w).test_mode, true)
+  assert.ok(!(await call('GET', '/admin/withdrawals?scope=real', { admin: true })).data.withdrawals.some(row => row.id === w))
+  assert.deepEqual(await accountLineages(pool, standardOwner.id), [])
+  assert.deepEqual(await accountLineages(pool, instantOwner.id), [])
+
+  // Replay seven independently timestamped days of Instant profits. On
+  // weekends the separate suite server enforces its real calendar, so use
+  // closed ledger history with no live position for that worker to sweep.
+  for (let daysAgo = 0; daysAgo < 7; daysAgo++) {
+    if (process.env.TEST_BACKEND_URL && inWeekend(Date.now())) {
+      await pool.query(`INSERT INTO trading_ledger (account_id,user_id,event,amount,balance_after,ts)
+        VALUES ($1,$2,'close',40,$3,now()-make_interval(days => $4))`,
+      [instant.demo_account_id, instantOwner.id, SIZE + (daysAgo + 1) * 40, daysAgo])
+    } else {
+      const positionId = await trade(instantOwner, instant, 51400, { margin: 300, leverage: 5, sl: 49000 })
+      await pool.query(`UPDATE trading_ledger SET ts=ts-make_interval(days => $2) WHERE position_id=$1`, [positionId, daysAgo])
+    }
+  }
+  if (process.env.TEST_BACKEND_URL && inWeekend(Date.now()))
+    await pool.query('UPDATE demo_accounts SET balance=$2, realized_pnl=280 WHERE id=$1', [instant.demo_account_id, SIZE + 280])
+  const fastPayout = await request(instantOwner, instant.id)
+  assert.equal(fastPayout.status, 200, JSON.stringify(fastPayout.data))
+  assert.equal((await review(fastPayout.data.id, 'approve')).status, 200)
+  assert.equal((await review(fastPayout.data.id, 'simulate')).data.status, 'simulated_settled')
+  const finance = await fetchRow(`SELECT
+    (SELECT count(*) FROM payments WHERE purchase_order_id=ANY($1::uuid[])) AS payments,
+    (SELECT count(*) FROM revenue_allocation_journal WHERE purchase_order_id=ANY($1::uuid[])) AS allocations,
+    (SELECT count(*) FROM referral_commissions WHERE purchase_order_id=ANY($1::uuid[])) AS commissions,
+    (SELECT count(*) FROM fee_refunds WHERE purchase_order_id=ANY($1::uuid[])) AS refunds`, [[instantPurchase.order.id, a.data.order.id]])
+  assert.deepEqual(finance, { payments: '0', allocations: '0', commissions: '0', refunds: '0' })
+  const ordinaryCoupon = await createCoupon({ kind: 'percent', value: 100 })
+  const ordinary = await order(stranger, { couponCode: ordinaryCoupon.code, controlledTest: true })
+  assert.equal(ordinary.status, 200)
+  const ordinaryChallenge = await challenge(ordinary.data.result.challengeId)
+  assert.equal(ordinaryChallenge.rules_snapshot.controlledTest, undefined)
+  assert.equal(ordinaryChallenge.rules_snapshot.phase1TargetPct, 8)
+  const ordinaryRequest = await fetchRow(`INSERT INTO withdrawal_requests (user_id,challenge_id,amount_usd,kind)
+    VALUES ($1,$2,1,'reward') RETURNING id`, [stranger.id, ordinaryChallenge.id])
+  assert.equal((await review(ordinaryRequest.id, 'approve')).status, 200)
+  assert.equal((await review(ordinaryRequest.id, 'simulate')).data.error, 'real_payout_requires_verification')
+  assert.equal((await review(ordinaryRequest.id, 'paid', { payoutRef: rndHash() })).status, 500)
+  assert.equal(payoutVerifierCalls, 1)
+  await assert.rejects(pool.query(`UPDATE withdrawal_requests SET status='paid' WHERE id=$1`, [w]), /withdrawal_test_classification_immutable/)
+  const report = await call('GET', '/admin/coupons/controlled', { admin: true })
+  assert.equal(report.data.controlledTests.length, 2)
+  assert.ok(report.data.controlledTests.every(t => t.uses_consumed === 1 && t.simulated_payouts.some(p => p.status === 'simulated_settled')))
+  assert.equal((await operator('/coupons/controlled/instant/revoke', {})).data.status, 'revoked')
 })

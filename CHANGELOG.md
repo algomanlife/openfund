@@ -6,6 +6,11 @@
 - Arabic, Russian and Simplified Chinese (`zh-CN`) are selectable translation slots. They are not auto-published.
 - Public pages keep the current layout and fall back to bundled copy when Directus is unavailable. Financial, trading and payment fields are not editable this way.
 
+## Unreleased — controlled challenge acceptance
+
+- Add wallet-bound Instant and Two-Step test checkout with isolated rule
+  snapshots, operator review and a dedicated simulated payout settlement.
+
 ## Unreleased — funded financial controls and product roadmap
 
 - Add versioned 7-, 14-, 21-day and monthly UTC payout choices behind an owner-approved sales cutoff.

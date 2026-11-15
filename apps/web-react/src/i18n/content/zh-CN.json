@@ -1,4 +1,11 @@
 {
+  "Complete simulated settlement": "完成模拟结算",
+  "Payout scope": "出金类型",
+  "Request simulated payout": "申请模拟出金",
+  "Simulated settlement completed": "模拟结算已完成",
+  "Test": "测试",
+  "Test payout details": "测试出金详情",
+  "Simulated payout request queued for review.": "模拟出金申请已提交审核。",
   "% monthly": "% 每月",
   "0% Spread & Price Impact": "0% 点差与价格影响",
   "01 / Market pulse": "01 / 市场脉搏",

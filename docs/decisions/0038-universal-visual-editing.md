@@ -1,4 +1,4 @@
-# ADR 0037 — Universal visual editing on Directus 11.17.4
+# ADR 0038 — Universal visual editing on Directus 11.17.4
 
 - **Status:** Accepted for the source tree. Not applied to production Directus and not deployed.
 - **Date:** 2026-11-15

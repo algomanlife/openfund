@@ -1,3 +1,4 @@
+import { controlledRules } from './controlled-challenges.js'
 /**
  * Openfund — challenge purchases, on-chain payment verification,
  * invoices, purchase/payment history and withdrawal requests.
@@ -254,12 +255,19 @@ export async function confirmPurchaseTx(client, { orderId, userId, evidence, sou
     const planConfiguration = (await client.query(
       'SELECT configuration FROM challenge_plans WHERE id=$1', [order.challenge_plan_id])).rows[0]?.configuration ?? {}
 
+    const { rows: [controlled] } = order.coupon_id ? await client.query(
+      'SELECT * FROM controlled_challenge_coupons WHERE coupon_id=$1', [order.coupon_id]) : { rows: [] }
+    if (controlled && (!zeroPayment || order.payment_method !== 'internal_coupon' ||
+        controlled.user_id !== order.user_id || controlled.challenge_plan_id !== order.challenge_plan_id))
+      throw fail(409, 'controlled_order_invalid')
+    const rules = controlledRules(normalizeRules(planConfiguration, { dailyLossVariant: order.daily_loss_variant || 'default' }), controlled)
+
     const challenge = (await client.query(
-      `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd, purchase_order_id, rules_snapshot)
-       VALUES ($1,$2,'created',$3,$4,$5) RETURNING *`,
+      `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd, purchase_order_id, rules_snapshot, stage)
+       VALUES ($1,$2,'created',$3,$4,$5,$6) RETURNING *`,
       [userId, order.challenge_plan_id, order.account_size_usd, orderId,
         /* D7: the purchased daily-loss variant is frozen with the rules */
-        JSON.stringify(normalizeRules(planConfiguration, { dailyLossVariant: order.daily_loss_variant || 'default' }))])).rows[0]
+        JSON.stringify(rules), controlled?.profile === 'instant' ? 0 : 1])).rows[0]
 
     /* provision the challenge trading account (challenge_funding ledger
        event, immutable provisioning event, frozen rules snapshot) —
@@ -270,6 +278,8 @@ export async function confirmPurchaseTx(client, { orderId, userId, evidence, sou
       plan_configuration: planConfiguration,
     })
 
+    if (controlled?.profile === 'instant') await challenges.startTx(client, challenge)
+
     const invoice = (await client.query(
       `INSERT INTO invoices (purchase_order_id, user_id, number, total_usd)
        VALUES ($1,$2,'OF-' || to_char(now(),'YYYY') || '-' || lpad(nextval('invoice_number_seq')::text,6,'0'),$3) RETURNING id, number`,
@@ -279,16 +289,18 @@ export async function confirmPurchaseTx(client, { orderId, userId, evidence, sou
        exists exactly when the payment is confirmed. Idempotent (UNIQUE
        indexes); an unexpected error is isolated by a savepoint and audited
        for reconciliation instead of blocking the customer's provisioning. */
-    await client.query('SAVEPOINT ambassador_commission')
-    try {
-      /* a zero-payment order has no confirmed payment, so it earns no
-         commission (recognizeCommissionTx records 'zero_amount') */
-      await recognizeCommissionTx(client, { orderId, userId, paymentId: payment?.id ?? null, payerAddress: evidence?.fromAddress ?? null })
-      await client.query('RELEASE SAVEPOINT ambassador_commission')
-    } catch (e) {
-      await client.query('ROLLBACK TO SAVEPOINT ambassador_commission')
-      await client.query(`INSERT INTO financial_audit_log (actor, action, entity, entity_id, after) VALUES ('system','commission_recognition_error','purchase_order',$1,$2)`,
-        [orderId, JSON.stringify({ error: String(e.message).slice(0, 200) })])
+    if (!controlled) {
+      await client.query('SAVEPOINT ambassador_commission')
+      try {
+        /* a zero-payment order has no confirmed payment, so it earns no
+           commission (recognizeCommissionTx records 'zero_amount') */
+        await recognizeCommissionTx(client, { orderId, userId, paymentId: payment?.id ?? null, payerAddress: evidence?.fromAddress ?? null })
+        await client.query('RELEASE SAVEPOINT ambassador_commission')
+      } catch (e) {
+        await client.query('ROLLBACK TO SAVEPOINT ambassador_commission')
+        await client.query(`INSERT INTO financial_audit_log (actor, action, entity, entity_id, after) VALUES ('system','commission_recognition_error','purchase_order',$1,$2)`,
+          [orderId, JSON.stringify({ error: String(e.message).slice(0, 200) })])
+      }
     }
 
     await client.query(
@@ -740,10 +752,12 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
 
     /* an un-attributed account that has never paid may be attributed to an
        approved ambassador's link before its first order is created */
-    await attributeAtFirstOrder(pool, req, req.user.user_id)
+    const controlledCoupon = code && (await pool.query(`SELECT 1 FROM controlled_challenge_coupons t
+      JOIN coupons c ON c.id=t.coupon_id WHERE c.code=$1`, [code])).rowCount
+    if (!controlledCoupon) await attributeAtFirstOrder(pool, req, req.user.user_id)
 
     const client = await pool.connect()
-    let orderId, result = null, created = null, conflict = false
+    let orderId, result = null, created = null, conflict = false, exhausted = null
     try {
       await client.query('BEGIN')
       const { plan, size, listPrice, variant } = await planPrice(client, planSlug, accountSize, dailyLossVariant)
@@ -755,7 +769,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
          orders need only a valid coupon */
       if (!zero && !paymentEnabled()) throw fail(403, 'purchases_disabled')
       await client.query(`SELECT set_config('openfund.actor', $1, true), set_config('openfund.reason', $2, true)`,
-        [`user:${req.user.user_id}`, coupon ? `coupon:${coupon.code}` : 'order_created'])
+        [`user:${req.user.user_id}`, coupon ? `coupon:${controlledCoupon ? coupon.id : coupon.code}` : 'order_created'])
       const ins = await client.query(
         `INSERT INTO purchase_orders (user_id, challenge_plan_id, account_size_usd, list_price_usd, discount_usd, price_usd,
                                       coupon_id, payment_required, payment_method, idempotency_key, customer, daily_loss_variant)
@@ -771,14 +785,19 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
         `INSERT INTO coupon_redemptions (coupon_id, user_id, purchase_order_id, list_price_usd, discount_usd, net_price_usd)
          VALUES ($1,$2,$3,$4,$5,$6)`, [coupon.id, req.user.user_id, orderId, pricing.list, pricing.discount, pricing.net])
       if (zero) result = await confirmPurchaseTx(client, { orderId, userId: req.user.user_id, evidence: null, source: 'zero_payment' })
-      created = { planSlug, size, listPrice: pricing.list, discount: pricing.discount, price: pricing.net, coupon: coupon?.code ?? null }
+      created = { planSlug, size, listPrice: pricing.list, discount: pricing.discount, price: pricing.net, coupon: controlledCoupon ? coupon.id : coupon?.code ?? null }
       }
       await client.query(conflict ? 'ROLLBACK' : 'COMMIT')
     } catch (e) {
       await client.query('ROLLBACK').catch(() => {})
-      throw e
+      if (controlledCoupon && e.message === 'coupon_exhausted' && key) exhausted = e
+      else throw e
     } finally { client.release() }
-    if (conflict) return res.json(await replay())
+    if (conflict || exhausted) {
+      const existing = await replay()
+      if (!existing && exhausted) throw exhausted
+      return res.json(existing)
+    }
     await audit('purchase_order_created', req.user.user_id, req, { orderId, ...created })
     if (result) await audit('purchase_zero_payment_provisioned', req.user.user_id, req, { orderId, challengeId: result.challengeId, coupon: created.coupon })
     const view = await orderView(orderId, req.user.user_id)
@@ -1072,7 +1091,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
   router.get('/withdrawals', requireAuth, wrap(async (req, res) => {
     const { rows } = await pool.query(
       `SELECT w.id, w.amount_usd, w.status, w.note, w.requested_at, w.reviewed_at, w.payout_ref,
-              c.id AS challenge_id, p.name AS plan_name, w.kind,
+              c.id AS challenge_id, p.name AS plan_name, w.kind, w.test_mode,
               (SELECT count(*)::int FROM jsonb_array_elements(w.thread_events) WITH ORDINALITY e(value, idx)
                 WHERE e.idx>w.trader_read_count AND e.value->>'role'='operator') AS unread_messages
          FROM withdrawal_requests w

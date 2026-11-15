@@ -223,4 +223,4 @@ or deployment file was edited except `TradingPages.tsx`, which only appends
 `legacy/visual-editing.js` to the existing terminal iframe script list. The
 script is inert until the editor session starts.
 
-[ADR 0037](../decisions/0037-universal-visual-editing.md) · [Content registry](CONTENT_REGISTRY.md)
+[ADR 0038](../decisions/0038-universal-visual-editing.md) · [Content registry](CONTENT_REGISTRY.md)

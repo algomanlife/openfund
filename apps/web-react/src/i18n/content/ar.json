@@ -1,4 +1,11 @@
 {
+  "Complete simulated settlement": "إتمام التسوية المحاكية",
+  "Payout scope": "نطاق المدفوعات",
+  "Request simulated payout": "طلب دفعة محاكية",
+  "Simulated settlement completed": "اكتملت التسوية المحاكية",
+  "Test": "اختباري",
+  "Test payout details": "تفاصيل الدفعة الاختبارية",
+  "Simulated payout request queued for review.": "أُدرج طلب الدفعة المحاكية في قائمة المراجعة.",
   "% monthly": "% شهريًا",
   "0% Spread & Price Impact": "0% فارق سعري وأثر سعري",
   "01 / Market pulse": "01 / نبض السوق",
