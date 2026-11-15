@@ -81,9 +81,12 @@ html:is([lang=fa],[lang=ar]) .home-gateway .home-product-note bdi{white-space:no
 
 /* --- background: network + slow aurora accents ---------------------------- */
 .home-gateway .landing-motion{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none;contain:strict;--pointer-x:0px;--pointer-y:0px}
-.home-gateway .landing-motion::before,.home-gateway .landing-motion::after{content:"";position:absolute;width:52vmax;height:52vmax;border-radius:50%;filter:blur(70px);opacity:.22;will-change:transform}
-.home-gateway .landing-motion::before{inset-inline-start:-14vmax;top:-22vmax;background:radial-gradient(circle,#2fbf86 0%,transparent 65%);animation:home-aurora 26s ease-in-out infinite alternate}
-.home-gateway .landing-motion::after{inset-inline-end:-18vmax;bottom:-28vmax;background:radial-gradient(circle,#82e7bd 0%,transparent 65%);opacity:.14;animation:home-aurora 32s ease-in-out infinite alternate-reverse}
+/* aurora accents stay inside the near-black atmosphere: the brightest point
+   (mint at 10% over #060808) remains below 30 per channel, and the page
+   edges stay at the base colour (e2e/test-auto-dark.cjs samples them) */
+.home-gateway .landing-motion::before,.home-gateway .landing-motion::after{content:"";position:absolute;border-radius:50%;filter:blur(70px);will-change:transform;pointer-events:none}
+.home-gateway .landing-motion::before{width:56vmin;height:56vmin;left:50%;top:-10vmin;margin-left:-28vmin;background:radial-gradient(circle,#2fbf86 0%,transparent 62%);opacity:.10;animation:home-aurora 26s ease-in-out infinite alternate}
+.home-gateway .landing-motion::after{width:40vmin;height:40vmin;left:58%;top:42%;background:radial-gradient(circle,#82e7bd 0%,transparent 62%);opacity:.07;animation:home-aurora 32s ease-in-out infinite alternate-reverse}
 .home-gateway .landing-light{position:absolute;inset:-12%;background:radial-gradient(ellipse at 30% 35%,#65c69512,transparent 45%),radial-gradient(ellipse at 80% 70%,#82e7bd09,transparent 50%);transform:translate3d(var(--pointer-x),var(--pointer-y),0);transition:transform .6s ease-out}
 .home-gateway .landing-network{position:absolute;inset:-3%;width:106%;height:106%;fill:#82e7bd;stroke:#82e7bd;stroke-width:1;opacity:.12;transform:translate3d(calc(var(--pointer-x)*.4),calc(var(--pointer-y)*.4),0);transition:transform .8s ease-out;
   -webkit-mask-image:radial-gradient(ellipse at 50% 40%,#000 30%,transparent 80%);mask-image:radial-gradient(ellipse at 50% 40%,#000 30%,transparent 80%)}
@@ -106,7 +109,7 @@ html:is([lang=fa],[lang=ar]) .home-gateway .home-product-note bdi{white-space:no
 
 @keyframes home-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 @keyframes home-sheen{from{background-position:120% 0}to{background-position:0 0}}
-@keyframes home-aurora{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(6vmax,4vmax,0) scale(1.12)}}
+@keyframes home-aurora{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(4vmin,3vmin,0) scale(1.1)}}
 @keyframes home-spin{to{transform:rotate(360deg)}}
 @keyframes landing-pulse{0%,100%{opacity:.45}50%{opacity:1}}
 @keyframes landing-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
@@ -139,7 +142,6 @@ html[data-theme=light] .home-gateway .technical-dialog button{background:var(--m
  .home-gateway .home-art{aspect-ratio:16/6;max-height:170px}
  .home-gateway .technical-heading{flex-direction:column;align-items:center;text-align:center;gap:2px}
  .home-gateway .network-near{display:none}
- .home-gateway .landing-motion::before,.home-gateway .landing-motion::after{filter:blur(50px)}
 }
 @media(max-width:430px){
  .home-gateway .home-stage{padding-inline:16px}
