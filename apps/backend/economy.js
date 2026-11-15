@@ -30,7 +30,7 @@ const EXPENSE_CATEGORIES = ['render_infrastructure', 'database', 'cms', 'market_
 export async function financialInputs(db) {
   const one = async (sql) => (await db.query(sql)).rows[0]
   const o = await one(`SELECT
-      (SELECT coalesce(sum(amount_usd),0) FROM withdrawal_requests WHERE status='approved') AS trader_rewards,
+      (SELECT coalesce(sum(amount_usd),0) FROM withdrawal_requests WHERE status='approved' AND NOT test_mode) AS trader_rewards,
       (SELECT coalesce(sum(p),0) FROM (SELECT sum(amount_usd) p FROM referral_commissions GROUP BY ambassador_user_id) x WHERE p > 0) AS commissions,
       (SELECT coalesce(sum(amount_usd),0) FROM settlement_records WHERE status <> 'completed') AS live_shares,
       (SELECT coalesce(sum(amount_usd),0) FROM verified_expenses WHERE status='verified' AND payment_status='unpaid') AS expenses,
@@ -94,22 +94,22 @@ async function transparencyReport(pool, treasury) {
       count(*) FILTER (WHERE stage=2 AND status='passed')::int AS s2_passed,
       count(*) FILTER (WHERE stage=2 AND status IN ('passed','failed','expired'))::int AS s2_done,
       count(*) FILTER (WHERE stage=0)::int AS instant
-      FROM openfund_challenges`)
+      FROM openfund_challenges WHERE NOT coalesce(rules_snapshot ? 'controlledTest',false)`)
   /* final stage of record: stage = number of phases (1-phase → 1, 2-phase → 2);
      the same definition live-funding.js uses for eligibility */
   const FINAL_PASSED = `c.status='passed' AND c.stage >= 1 AND c.stage = coalesce((c.rules_snapshot->>'phases')::int, 0)`
-  const [ev] = await q(`SELECT count(*)::int AS final_passed FROM openfund_challenges c WHERE ${FINAL_PASSED}`)
+  const [ev] = await q(`SELECT count(*)::int AS final_passed FROM openfund_challenges c WHERE ${FINAL_PASSED} AND NOT coalesce(c.rules_snapshot ? 'controlledTest',false)`)
   const [wd] = await q(`SELECT
       count(*) FILTER (WHERE status='paid')::int AS paid_count, coalesce(sum(amount_usd) FILTER (WHERE status='paid'),0) AS paid_sum,
       count(*) FILTER (WHERE status='approved')::int AS approved_count, coalesce(sum(amount_usd) FILTER (WHERE status='approved'),0) AS approved_sum,
       count(*) FILTER (WHERE status='requested')::int AS requested_count, coalesce(sum(amount_usd) FILTER (WHERE status='requested'),0) AS requested_sum,
       count(DISTINCT user_id) FILTER (WHERE status='paid')::int AS recipients,
       count(DISTINCT challenge_id) FILTER (WHERE status='paid')::int AS accounts_with_payout
-      FROM withdrawal_requests`)
+      FROM withdrawal_requests WHERE NOT test_mode`)
   const [funded] = await q(`SELECT count(DISTINCT c.id)::int AS n,
         count(DISTINCT c.id) FILTER (WHERE EXISTS (SELECT 1 FROM withdrawal_requests w WHERE w.challenge_id=c.id AND w.status='paid'))::int AS with_payout
       FROM openfund_challenges c
-     WHERE c.stage=0 OR (${FINAL_PASSED})`)
+     WHERE (c.stage=0 OR (${FINAL_PASSED})) AND NOT coalesce(c.rules_snapshot ? 'controlledTest',false)`)
   const payoutMonthly = await q(`SELECT to_char(date_trunc('month', reviewed_at),'YYYY-MM') AS month, count(*)::int AS payouts, sum(amount_usd) AS total
                                    FROM withdrawal_requests WHERE status='paid' AND reviewed_at > now() - interval '12 months' GROUP BY 1 ORDER BY 1`)
   const payoutTx = await q(`SELECT payment_evidence->>'transactionAt' AS transaction_at, (payment_evidence->>'chainId')::int AS chain_id, amount_usd, payout_ref FROM withdrawal_requests WHERE status='paid' AND payment_evidence->>'finality'='finalized' ORDER BY transaction_at DESC LIMIT 25`)

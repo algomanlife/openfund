@@ -74,6 +74,9 @@ export async function releaseAccount(pool, accountId, { to, actor, reason }) {
     const o = (await c.query(`SELECT * FROM account_ownership WHERE account_id=$1 FOR UPDATE`, [accountId])).rows[0]
     if (!o) throw fail(404, 'account_not_found')
     if (o.home_region !== local || o.state !== 'active') throw fail(409, 'account_not_owned_active', { reasons: [{ home_region: o.home_region, state: o.state }] })
+    const controlled = await c.query(`SELECT 1 FROM openfund_challenges
+      WHERE demo_account_id=$1 AND rules_snapshot ? 'controlledTest'`, [accountId])
+    if (controlled.rowCount) throw fail(409, 'controlled_challenge_home_region_only')
     const busy = (await c.query(
       `SELECT (SELECT count(*) FROM trading_positions WHERE account_id=$1 AND status='open')::int AS positions,
               (SELECT count(*) FROM trading_orders WHERE account_id=$1 AND status='pending')::int AS orders,
@@ -138,6 +141,8 @@ export async function acceptAccount(pool, accountId, { epoch, actor, reason }) {
       throw fail(409, 'source_not_fenced_at_epoch', { reasons: [{ seen: remoteOwn?.data ?? null }] })
     if ((await c.query(`SELECT 1 FROM account_ownership WHERE account_id=$1`, [accountId])).rowCount) throw fail(409, 'account_already_present')
     const b = offer.bundle
+    if (b.openfund_challenges?.some(c => c.rules_snapshot?.controlledTest))
+      throw fail(409, 'controlled_challenge_home_region_only')
     const DIGEST_FIELDS = ['balance', 'realized_pnl', 'status', 'ledger_count', 'ledger_sum', 'last_balance_after', 'positions']
     const offered = bundleDigest(b)
     /* field by field: jsonb storage does not keep key order */

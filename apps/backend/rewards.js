@@ -133,7 +133,9 @@ export function cycleEligibility({ rules, cycleKey, startingBalance, balance, op
   add('profit', profit.gt(0), { profit: profit.toFixed(2) })
   const minimum = starting.times(D(rules.minPayoutPct || 0)).div(100)
   add('minimum_request', profit.gte(minimum) && profit.gt(0), { minimum: minimum.toFixed(2) })
-  if (rules.fundedPayoutVersion === FUNDED_PAYOUT_VERSION && cycle) {
+  if (rules.controlledTest && cycle) {
+    add('waiting_period', true, { from: 'controlled_test' })
+  } else if (rules.fundedPayoutVersion === FUNDED_PAYOUT_VERSION && cycle) {
     const opensAt = fundedPayoutBoundary(activatedAt, cycle, lastRequestAt)
     add('waiting_period', !!opensAt && +opensAt <= now, { opensAt: opensAt?.toISOString() ?? null, from: 'funded_activation' })
   } else if (cycle?.firstAfterDays != null) {
@@ -200,7 +202,7 @@ export async function rewardContext(client, challenge, md, { lock = false, now =
   const [{ pending }] = (await client.query(`SELECT count(*)::int AS pending FROM trading_orders WHERE account_id=$1 AND status='pending'`, [acc.id])).rows
   const firstFillAt = (await client.query(`SELECT min(opened_at) AS t FROM trading_positions WHERE account_id=$1 AND parent_position_id IS NULL`, [acc.id])).rows[0].t
   const prior = (await client.query(
-    `SELECT max(requested_at) FILTER (WHERE status IN ('requested','approved','paid')) AS last
+    `SELECT max(requested_at) FILTER (WHERE status IN ('requested','approved','paid','simulated_settled')) AS last
        FROM withdrawal_requests WHERE challenge_id=$1 AND kind='reward'`, [challenge.id])).rows[0]
   const dailyNet = await dailyNetSince(client, acc.id, prior.last)
   const base = { acc, valuation: open && !md ? { equity: null } : accountMetrics(acc, openPositions, md), openPositions: open, pendingOrders: pending, firstFillAt, lastRequestAt: prior.last, dailyNet, startingBalance: challenge.account_size_usd, balance: acc.balance, now }
@@ -290,7 +292,7 @@ export async function reverseRewardTx(client, w, reason) {
  * snapshot carries `refundPolicy: 'fourth-reward'`. Returns the refund or null.
  */
 export async function onRewardPaidTx(client, w, actor) {
-  if (w.kind !== 'reward' || !w.challenge_id) return null
+  if (w.kind !== 'reward' || !w.challenge_id || w.test_mode) return null
   const challenge = (await client.query('SELECT * FROM openfund_challenges WHERE id=$1', [w.challenge_id])).rows[0]
   if (challenge?.rules_snapshot?.refundPolicy !== 'fourth-reward') return null
   const { n } = (await client.query(`SELECT count(*)::int AS n FROM withdrawal_requests WHERE challenge_id=$1 AND kind='reward' AND status='paid'`, [challenge.id])).rows[0]
@@ -310,7 +312,7 @@ export async function onRewardPaidTx(client, w, actor) {
 
 const challengeView = (c, extra = {}) => ({ id: c.id, planSlug: c.plan_slug, planName: c.plan_name, stage: c.stage, status: c.status,
   accountSizeUsd: c.account_size_usd, fundedFrom: c.funded_from_challenge_id || null, startedAt: c.started_at,
-  rewardCycle: effectiveCycle(c), ...extra })
+  rewardCycle: effectiveCycle(c), testMode: !!c.rules_snapshot?.controlledTest, ...extra })
 
 /** Customer routes: reward status, cycle selection and requests. */
 export function rewardRoutes({ pool, requireAuth, audit = async () => {}, limit = () => (req, res, next) => next(), md = null, challenges = new ChallengeService(pool) }) {
@@ -392,7 +394,8 @@ export function rewardRoutes({ pool, requireAuth, audit = async () => {}, limit 
       const amount = D(decision.reward)
       if (!amount.gt(0)) throw fail(409, 'reward_amount_too_small')
       const { wallet_address: recipient } = (await client.query('SELECT wallet_address FROM openfund_users WHERE id=$1 FOR SHARE', [c.user_id])).rows[0]
-      if (ctx.rules?.fundedPayoutVersion === FUNDED_PAYOUT_VERSION) {
+      const testMode = !!c.rules_snapshot?.controlledTest
+      if (!testMode && ctx.rules?.fundedPayoutVersion === FUNDED_PAYOUT_VERSION) {
         const basis = D(decision.grossProfit).minus(decision.deducted ?? 0)
         const capBase = D(ctx.rules.payoutCapPct || 0).gt(0)
           ? D(ctx.startingBalance).times(ctx.rules.payoutCapPct).div(decision.splitPct) : basis
@@ -404,16 +407,16 @@ export function rewardRoutes({ pool, requireAuth, audit = async () => {}, limit 
           retained: (ib ? D(0) : remainder).toFixed(2), ibEvidence: ib ?? null }
       }
       const { rows: [w] } = await client.query(
-        `INSERT INTO withdrawal_requests (user_id, challenge_id, amount_usd, note, kind, reward_cycle, gross_profit_usd, split_pct, fee_refund_usd, eligibility, recipient_wallet)
-         VALUES ($1,$2,$3,$4,'reward',$5,$6,$7,0,$8,$9) RETURNING id, requested_at`,
-        [req.user.user_id, c.id, amount.toFixed(2), note || null, decision.cycle, decision.grossProfit, decision.splitPct, JSON.stringify(decision), recipient])
+        `INSERT INTO withdrawal_requests (user_id, challenge_id, amount_usd, note, kind, reward_cycle, gross_profit_usd, split_pct, fee_refund_usd, eligibility, recipient_wallet, test_mode)
+         VALUES ($1,$2,$3,$4,'reward',$5,$6,$7,0,$8,$9,$10) RETURNING id, requested_at`,
+        [req.user.user_id, c.id, amount.toFixed(2), note || null, decision.cycle, decision.grossProfit, decision.splitPct, JSON.stringify(decision), recipient, testMode])
       await adjustBalance(client, c, ctx.acc, D(decision.grossProfit).negated(), 'reward_withdrawal', { withdrawalId: w.id, cycle: decision.cycle, splitPct: decision.splitPct })
       await ChallengeService.event(client, c.id, 'reward_requested', { withdrawalId: w.id, grossProfit: decision.grossProfit, reward: decision.reward, deducted: decision.deducted ?? '0.00', cycle: decision.cycle })
       await financialAudit(client, `user:${c.user_id}`, 'withdrawal_requested', 'withdrawal', w.id, null,
-        { challengeId: c.id, amount: decision.reward, distribution: decision.distribution ?? null })
+        { challengeId: c.id, amount: decision.reward, testMode, distribution: decision.distribution ?? null })
       await client.query('COMMIT')
       await audit('withdrawal_requested', req.user.user_id, req, { withdrawalId: w.id, amount: amount.toFixed(2), kind: 'reward' })
-      res.json({ id: w.id, requestedAt: w.requested_at, status: 'requested', amountUsd: amount.toFixed(2), reward: decision.reward, grossProfit: decision.grossProfit, deducted: decision.deducted ?? '0.00', cycle: decision.cycle })
+      res.json({ id: w.id, requestedAt: w.requested_at, status: 'requested', testMode, amountUsd: amount.toFixed(2), reward: decision.reward, grossProfit: decision.grossProfit, deducted: decision.deducted ?? '0.00', cycle: decision.cycle })
     } catch (e) {
       await client.query('ROLLBACK').catch(() => {})
       if (e.code === '23505') throw fail(409, 'reward_request_open')
@@ -452,6 +455,7 @@ export function rewardAdminRoutes({ pool, challenges = new ChallengeService(pool
     const { rows } = await pool.query(
       `SELECT c.id, c.user_id, u.wallet_address, p.slug AS plan_slug, c.stage, c.account_size_usd, c.completed_at,
               r.decision, r.actor, r.decided_at, r.funded_challenge_id,
+              coalesce(c.rules_snapshot ? 'controlledTest',false) AS test_mode,
               (SELECT detail FROM challenge_events e WHERE e.challenge_id=c.id AND e.kind='passed' ORDER BY id DESC LIMIT 1) AS pass_event
          FROM openfund_challenges c JOIN challenge_plans p ON p.id=c.challenge_plan_id JOIN openfund_users u ON u.id=c.user_id
          LEFT JOIN challenge_reviews r ON r.challenge_id=c.id
@@ -490,7 +494,7 @@ export function rewardAdminRoutes({ pool, challenges = new ChallengeService(pool
           if (sale?.created_at && Number.isFinite(+cutoff) && cutoff.toISOString().slice(0, 10) === fundedPolicyFrom && +new Date(sale.created_at) >= +cutoff) {
             snapshot.fundedPayoutVersion = FUNDED_PAYOUT_VERSION
             snapshot.rewardCycles = FUNDED_PAYOUT_CYCLES
-            const { rows: [ib] } = await client.query(
+            const { rows: [ib] } = snapshot.controlledTest ? { rows: [] } : await client.query(
               `SELECT q.id AS evidence_id, q.ambassador_user_id FROM referral_commissions q
                  JOIN ambassador_profiles p ON p.user_id=q.ambassador_user_id AND p.status='active'
                 WHERE q.purchase_order_id=$1 AND q.referred_user_id=$2 AND q.entry_type='earned'

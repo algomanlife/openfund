@@ -16,17 +16,17 @@ import PayoutThread from './PayoutThread'
 interface WithdrawalRow {
   id: string, amount_usd: string, status: string, note: string | null,
   requested_at: string, reviewed_at: string | null, payout_ref: string | null,
-  challenge_id: string | null, plan_name: string | null, kind?: string, unread_messages?: number
+  challenge_id: string | null, plan_name: string | null, kind?: string, test_mode?: boolean, unread_messages?: number
 }
 interface Check { key: string, ok: boolean, [detail: string]: unknown }
 interface Eligibility { eligible: boolean, cycle: string | null, checks: Check[], splitPct: number, grossProfit: string, reward: string, deducted?: string, deductions?: { kind: string, amount: string }[] }
 interface CycleOption { key: string, intervalDays?: number | null, splitPct: number, firstAfterDays: number | null, everyDays: number | null, consistencyPct: number | null, profitableDays: number | null, profitableDayPct: number | null, strikeLossPct: number | null }
-interface Funded { id: string, planName: string, accountSizeUsd: string, balance: string, equity: string | null, realizedPnl: string, startedAt: string | null, requestedPayoutUsd: string, approvedPayoutUsd: string, recipientWallet: string | null, ibAttributed: boolean, fundedFrom: string | null, rewardCycle: string | null, legacyTerms?: boolean, strikes?: number, eligibility: Eligibility[], feeRefund?: { amount_usd: string, status: string, payout_ref: string | null } | null }
-interface Awaiting { id: string, planName: string, accountSizeUsd: string, cycles: CycleOption[] }
-interface Review { id: string, planName: string, accountSizeUsd: string, review: 'under_review' | 'approved' | 'rejected', decidedAt: string | null, note: string | null, fundedChallengeId: string | null }
+interface Funded { id: string, testMode?: boolean, planName: string, accountSizeUsd: string, balance: string, equity: string | null, realizedPnl: string, startedAt: string | null, requestedPayoutUsd: string, approvedPayoutUsd: string, recipientWallet: string | null, ibAttributed: boolean, fundedFrom: string | null, rewardCycle: string | null, legacyTerms?: boolean, strikes?: number, eligibility: Eligibility[], feeRefund?: { amount_usd: string, status: string, payout_ref: string | null } | null }
+interface Awaiting { id: string, testMode?: boolean, planName: string, accountSizeUsd: string, cycles: CycleOption[] }
+interface Review { id: string, testMode?: boolean, planName: string, accountSizeUsd: string, review: 'under_review' | 'approved' | 'rejected', decidedAt: string | null, note: string | null, fundedChallengeId: string | null }
 
 const STATUS_CLASS: Record<string, string> = {
-  requested: 'pending', approved: 'approved', paid: 'paid', rejected: 'cancelled', cancelled: 'cancelled'
+  requested: 'pending', approved: 'approved', paid: 'paid', simulated_settled: 'approved', rejected: 'cancelled', cancelled: 'cancelled'
 }
 
 export default function WithdrawalsPage() {
@@ -44,8 +44,10 @@ export default function WithdrawalsPage() {
 
   const statusLabel: Record<string, string> = {
     requested: t('در حال بررسی', 'Under review'), approved: t('تأییدشده — در انتظار پرداخت', 'Approved — payout pending'),
+    simulated_settled: t('تسویهٔ آزمایشی انجام شد', 'Simulated settlement completed'),
     paid: t('پرداخت‌شده', 'Paid'), rejected: t('ردشده', 'Rejected'), cancelled: t('لغوشده', 'Cancelled'),
   }
+  const testLabel = t('آزمایشی', 'Test')
   const checkLabel: Record<string, string> = {
     reward_plan: t('پلن دارای پاداش', 'Plan pays rewards'),
     flat_account: t('همهٔ پوزیشن‌ها و سفارش‌ها بسته', 'All positions and orders closed'),
@@ -87,7 +89,7 @@ export default function WithdrawalsPage() {
           : r.data?.error === 'reward_request_open' ? t('برای این حساب یک درخواست باز وجود دارد.', 'This account already has an open request.')
             : t('ثبت درخواست ناموفق بود.', 'Could not submit request.'))
       } else {
-        setNotice(t('درخواست پاداش ثبت شد و در صف بررسی است. پرداخت دستی انجام می‌شود و تا ثبت مرجع پرداخت، «پرداخت‌شده» نمایش داده نمی‌شود.',
+        setNotice(r.data?.testMode ? t('درخواست پرداخت آزمایشی در صف بررسی است.', 'Simulated payout request queued for review.') : t('درخواست پاداش ثبت شد و در صف بررسی است. پرداخت دستی انجام می‌شود و تا ثبت مرجع پرداخت، «پرداخت‌شده» نمایش داده نمی‌شود.',
           'Reward request recorded and queued for review. Payouts are made manually and are never shown as paid before a payout reference is recorded.'))
       }
       await load()
@@ -152,7 +154,7 @@ export default function WithdrawalsPage() {
         <h3>{t('بررسی ارزیابی‌های قبول‌شده', 'Passed evaluation review')}</h3>
         <ul className="of-reward-list">
           {status.reviews.map(r => <li key={r.id}>
-            <span>{r.planName} · <bdi dir="ltr">{fmtMoney(r.accountSizeUsd)}</bdi></span>
+            <span>{r.planName}{r.testMode && ` · ${testLabel}`} · <bdi dir="ltr">{fmtMoney(r.accountSizeUsd)}</bdi></span>
             <span className={`of-status-pill of-status-${r.review === 'approved' ? 'approved' : r.review === 'rejected' ? 'cancelled' : 'pending'}`}>
               {r.review === 'approved' ? t('تأییدشده — حساب فاندشدهٔ دمو فعال است', 'Approved — funded demo account active')
                 : r.review === 'rejected' ? t('ردشده', 'Rejected') : t('در انتظار بررسی دستی', 'Awaiting manual review')}
@@ -165,28 +167,28 @@ export default function WithdrawalsPage() {
       </section>}
 
       {status && (status.awaitingCycle || []).map(a => <section className="of-reward-block" key={a.id}>
-        <h3>{a.planName} · <bdi dir="ltr">{fmtMoney(a.accountSizeUsd)}</bdi> — {t('انتخاب چرخهٔ پاداش', 'Choose your reward cycle')}</h3>
+        <h3>{a.planName}{a.testMode && ` · ${testLabel}`} · <bdi dir="ltr">{fmtMoney(a.accountSizeUsd)}</bdi> — {t('انتخاب چرخهٔ پاداش', 'Choose your reward cycle')}</h3>
         <p className="of-page-note">{t('حساب فاندشدهٔ دموی تو آماده است. یک چرخهٔ پاداش را یک بار انتخاب کن؛ حساب پس از انتخاب فعال می‌شود و چرخه دیگر تغییر نمی‌کند.',
           'Your funded demo account is ready. Choose one reward cycle, once: the account starts after the choice and the cycle can never be changed.')}</p>
         <fieldset className="of-reward-cycles">
           <legend className="sr-only">{t('چرخهٔ پاداش', 'Reward cycle')}</legend>
           {a.cycles.map(c => <label key={c.key} data-selected={choice[a.id] === c.key}>
             <input type="radio" name={`cycle-${a.id}`} value={c.key} checked={choice[a.id] === c.key} onChange={() => setChoice(x => ({ ...x, [a.id]: c.key }))} />
-            <strong>{cycleLabel(c.key)} · {c.splitPct}%</strong> <small>{cycleTerms(c)}</small>
+            <strong>{cycleLabel(c.key)} · {c.splitPct}%</strong> <small>{cycleTerms(a.testMode ? { ...c, intervalDays: null, firstAfterDays: null, everyDays: null } : c)}</small>
           </label>)}
         </fieldset>
         <button className="button" disabled={busy || !choice[a.id]} onClick={() => selectCycle(a.id)}>{t('ثبت قطعی چرخه و فعال‌سازی', 'Confirm cycle and activate')}</button>
       </section>)}
 
       {status && status.funded.map(f => <section className="of-reward-block" key={f.id}>
-        <h3>{f.planName} · <bdi dir="ltr">{fmtMoney(f.accountSizeUsd)}</bdi> — {t('موجودی', 'Balance')} <bdi dir="ltr">{fmtMoney(f.balance)}</bdi></h3>
+        <h3>{f.planName}{f.testMode && ` · ${testLabel}`} · <bdi dir="ltr">{fmtMoney(f.accountSizeUsd)}</bdi> — {t('موجودی', 'Balance')} <bdi dir="ltr">{fmtMoney(f.balance)}</bdi></h3>
         <dl className="of-reward-checks">
           <div><dt>{t('موجودی خالص', 'Equity')}</dt><dd>{f.equity == null ? '—' : fmtMoney(f.equity)}</dd></div>
           <div><dt>{checkLabel.profit}</dt><dd>{fmtMoney(f.realizedPnl)}</dd></div>
           <div><dt>{statusLabel.requested}</dt><dd>{fmtMoney(f.requestedPayoutUsd)}</dd></div>
           <div><dt>{statusLabel.approved}</dt><dd>{fmtMoney(f.approvedPayoutUsd)}</dd></div>
           {f.startedAt && <div><dt>{t('تاریخ فعال‌سازی', 'Activation date')}</dt><dd>{fmtDate(f.startedAt)}</dd></div>}
-          {f.recipientWallet && <div><dt>{t('کیف پول گیرنده', 'Recipient wallet')}</dt><dd><bdi dir="ltr">{f.recipientWallet}</bdi></dd></div>}
+          {!f.testMode && f.recipientWallet && <div><dt>{t('کیف پول گیرنده', 'Recipient wallet')}</dt><dd><bdi dir="ltr">{f.recipientWallet}</bdi></dd></div>}
           {f.ibAttributed && <div><dt>{t('همکار معرفی‌کننده', 'Attributed IB')}</dt><dd>{t('فعال', 'Active')}</dd></div>}
         </dl>
         {f.eligibility.map(e => <div className="of-reward-cycle" key={e.cycle}>
@@ -194,7 +196,7 @@ export default function WithdrawalsPage() {
             <strong>{cycleLabel(e.cycle)} · {e.splitPct}%</strong>
             <span dir="ltr">{fmtMoney(e.reward)}{Number(e.deducted || 0) > 0 ? ` (−${fmtMoney(e.deducted!)} ${t('کسر', 'deducted')})` : ''}</span>
             <button className="button" disabled={busy || !e.eligible} onClick={() => request(f.id, e.cycle)}>
-              {e.eligible ? t('درخواست پاداش', 'Request reward') : t('هنوز واجد شرایط نیست', 'Not eligible yet')}
+              {e.eligible ? (f.testMode ? t('درخواست پرداخت آزمایشی', 'Request simulated payout') : t('درخواست پاداش', 'Request reward')) : t('هنوز واجد شرایط نیست', 'Not eligible yet')}
             </button>
           </div>
           <ul className="of-reward-checks">
@@ -233,7 +235,7 @@ export default function WithdrawalsPage() {
                 <tr key={w.id}>
                   <td dir="ltr">{fmtMoney(w.amount_usd)}</td>
                   <td><span className={`of-status-pill of-status-${STATUS_CLASS[w.status] || 'pending'}`}>{statusLabel[w.status] || w.status}</span></td>
-                  <td>{w.plan_name || '—'}</td>
+                  <td>{w.plan_name || '—'}{w.test_mode && ` · ${testLabel}`}</td>
                   <td>{fmtDate(w.requested_at)}</td>
                   <td>{fmtDate(w.reviewed_at)}</td>
                   <td dir="ltr">{w.status === 'paid' ? (w.payout_ref || '—') : '—'}</td>

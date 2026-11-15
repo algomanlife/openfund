@@ -97,7 +97,7 @@ export async function accountLineages(db, userId) {
     `SELECT o.id AS order_id, o.account_size_usd, o.paid_at, c.id AS challenge_id, c.status, c.stage, c.challenge_plan_id,
             c.completed_at, coalesce((c.rules_snapshot->>'phases')::int, 0) AS phases
        FROM purchase_orders o JOIN openfund_challenges c ON c.purchase_order_id=o.id
-      WHERE o.user_id=$1 AND o.status='paid' ORDER BY o.paid_at, o.id`, [userId])
+      WHERE o.user_id=$1 AND o.status='paid' AND NOT coalesce(c.rules_snapshot ? 'controlledTest',false) ORDER BY o.paid_at, o.id`, [userId])
   const out = []
   for (const r of rows) {
     let final = r
@@ -105,6 +105,7 @@ export async function accountLineages(db, userId) {
       const { rows: [s2] } = await db.query(
         `SELECT id AS challenge_id, status, stage FROM openfund_challenges
           WHERE user_id=$1 AND challenge_plan_id=$2 AND stage=2 AND account_size_usd=$3 AND purchase_order_id IS NULL
+            AND NOT coalesce(rules_snapshot ? 'controlledTest',false)
             AND created_at >= $4::timestamptz - interval '5 seconds' ORDER BY created_at LIMIT 1`,
         [userId, r.challenge_plan_id, r.account_size_usd, r.completed_at])
       final = s2 ? { ...r, ...s2 } : { ...r, status: 'stage_2_missing' }
