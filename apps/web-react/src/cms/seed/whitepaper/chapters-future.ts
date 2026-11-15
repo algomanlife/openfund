@@ -1,9 +1,10 @@
 import type { WpChapter } from '../../whitepaper/types'
 import { text as t } from '../../../features/information/content'
 
+import { PRODUCT_ROADMAP } from '../../../features/roadmap/productRoadmap'
+
 /* Chapters 14–20: live capital, risk, governance, roadmap, long-term
-   vision, disclosures and references. The roadmap mirrors ROADMAP.md and
-   docs/roadmap/MILESTONES.md and promises no dates. */
+   vision, disclosures and references. Product planning uses the shared rolling roadmap. */
 export const futureChapters: WpChapter[] = [
   {
     slug: 'live-market-access', sort: 14,
@@ -49,8 +50,8 @@ export const futureChapters: WpChapter[] = [
       { type: 'chart', dataset: 'live-split-tiers' },
       { type: 'h3', text: t('Fast settlement — an objective, not a promise', 'تسویهٔ سریع — هدف، نه وعده') },
       { type: 'p', text: t(
-        'The intent is near-immediate settlement after a profitable position is verifiably closed. Each split is written exactly once, and a settlement worker retries failed transfers up to five times before handing them to an operator for reconciliation with evidence. Actual timing depends on trade finality, reconciliation, execution costs and payment-network conditions, so instant payment is never unconditional.',
-        'هدف، تسویهٔ تقریباً فوری پس از بسته‌شدن تأییدپذیر یک پوزیشن سودآور است. هر تقسیم دقیقاً یک بار ثبت می‌شود و یک فرایند تسویه، انتقال‌های ناموفق را تا پنج بار تکرار می‌کند و سپس برای تطبیق مستند به اپراتور می‌سپارد. زمان واقعی به قطعیت معامله، تطبیق، هزینه‌های اجرا و شرایط شبکهٔ پرداخت بستگی دارد؛ بنابراین پرداخت فوری هرگز بی‌قیدوشرط نیست.') },
+        'Staff review settlement evidence after verifying a closed position and its costs. Timing depends on trade finality, reconciliation and payment-network conditions. The real-market IB formula requires separate policy approval.',
+        'کارکنان پس از تأیید پوزیشن بسته‌شده و هزینه‌های آن، مستندات تسویه را بررسی می‌کنند. زمان تسویه به قطعیت معامله، تطبیق و شرایط شبکهٔ پرداخت بستگی دارد. فرمول سهم IB در بازار واقعی به تأیید جداگانه نیاز دارد.') },
       { type: 'callout', tone: 'risk', title: t('Real execution means real losses', 'اجرای واقعی یعنی زیان واقعی'), text: t(
         'Live trading exposes Openfund capital to realized losses, margin and liquidation risk, volatility, gaps, slippage and execution failures. Drawdown limits reduce exposure but do not eliminate it: an isolated position can lose its full collateral, which is why orders are admitted only if the worst case fits above the drawdown floors.',
         'معامله‌گری واقعی سرمایهٔ اوپن‌فاند را در معرض زیان تحقق‌یافته، ریسک مارجین و لیکوئید شدن، نوسان، شکاف قیمتی، لغزش و خطای اجرا قرار می‌دهد. حدود افت سرمایه ریسک را کاهش می‌دهند اما از بین نمی‌برند: یک پوزیشن ایزوله می‌تواند کل وثیقه‌اش را از دست بدهد و به همین دلیل سفارش فقط زمانی پذیرفته می‌شود که بدترین حالت بالاتر از کف‌های افت سرمایه قرار گیرد.') },
@@ -99,23 +100,16 @@ export const futureChapters: WpChapter[] = [
   {
     slug: 'roadmap', sort: 17,
     kicker: t('Roadmap', 'نقشهٔ راه'),
-    title: t('Milestones, not dates.', 'نقاط عطف، نه تاریخ‌ها.'),
-    summary: t('Where development stands across the seven phases and the economy track.', 'وضعیت توسعه در هفت فاز و مسیر اقتصادی.'),
+    title: t('One-year product roadmap', 'نقشهٔ راه یک‌سالهٔ محصول'),
+    summary: t('Four planning quarters for the prop firm, its technology and financial operations.', 'چهار سه‌ماهه برای برنامه‌ریزی شرکت پراپ، فناوری و عملیات مالی آن.'),
     blocks: [
       { type: 'p', text: t(
         'The roadmap orders work by dependency. No delivery dates are promised: a milestone advances only when its acceptance criteria are met with evidence. Between 3 and 8 November 2026 the project published nine official releases, from v0.1.0 to v0.4.4.',
         'نقشهٔ راه کارها را بر اساس وابستگی مرتب می‌کند. هیچ تاریخ تحویلی وعده داده نمی‌شود: هر نقطهٔ عطف فقط زمانی پیش می‌رود که معیارهای پذیرشش با شواهد برآورده شود. پروژه میان ۱۲ تا ۱۷ آبان ۱۴۰۵ نُه نسخهٔ رسمی، از v0.1.0 تا v0.4.4، منتشر کرد.') },
-      { type: 'timeline', items: [
-        { phase: t('Phase 1', 'فاز ۱'), status: 'completed', title: t('Platform foundation', 'زیربنای پلتفرم'), text: t('React and Node application, Vela charting and Gains market feeds — delivered within the current application scope.', 'اپلیکیشن React و Node، چارت Vela و فیدهای بازار گینز — در محدودهٔ فعلی اپلیکیشن تحویل شده است.') },
-        { phase: t('Phase 2', 'فاز ۲'), status: 'completed', title: t('Trading core', 'هستهٔ معاملاتی'), text: t('Persistent simulated execution, decimal valuation, drawdown telemetry and the paid-challenge evaluation engine.', 'اجرای شبیه‌سازی‌شدهٔ پایدار، ارزش‌گذاری دهدهی، پایش افت سرمایه و موتور ارزیابی چلنج پولی.') },
-        { phase: t('Phase 3', 'فاز ۳'), status: 'in_progress', title: t('Product experience', 'تجربهٔ محصول'), text: t('Portfolios, journals, catalog, purchases and five locales are built; real wallet/device acceptance and production payment activation remain.', 'پورتفولیو، ژورنال، کاتالوگ، خرید و پنج زبان ساخته شده‌اند؛ پذیرش کیف پول و دستگاه واقعی و فعال‌سازی پرداخت در محیط اصلی باقی مانده است.') },
-        { phase: t('Economy', 'اقتصاد'), status: 'in_progress', title: t('Transparency, treasury and partner programs', 'شفافیت، خزانه و برنامه‌های همکاری'), text: t('Implemented and tested; under review for release. Treasury address, reserves and reviewer roles need management configuration.', 'پیاده‌سازی و آزموده شده و برای انتشار در حال بازبینی است. نشانی خزانه، ذخایر و نقش‌های بازبین به پیکربندی مدیریت نیاز دارند.') },
-        { phase: t('Phase 4', 'فاز ۴'), status: 'in_progress', title: t('Production infrastructure', 'زیرساخت محیط اصلی'), text: t('Infrastructure configuration, CI and release-driven deployment are in place; operational monitoring and a rehearsed recovery remain.', 'پیکربندی زیرساخت، یکپارچه‌سازی پیوسته و استقرار مبتنی بر انتشار برقرارند؛ پایش عملیاتی و تمرین بازیابی باقی مانده است.') },
-        { phase: t('Live capital', 'سرمایهٔ واقعی'), status: 'planned', title: t('Live Market Access execution', 'اجرای اتصال به بازار'), text: t('Requires custody design, supported testnet contracts, transaction simulation, a security review, $500,000 of verified free capital and explicit activation.', 'به طراحی حضانت، قراردادهای آزمایشی پشتیبانی‌شده، شبیه‌سازی تراکنش، بازبینی امنیتی، ۵۰۰٬۰۰۰ دلار سرمایهٔ آزاد تأییدشده و فعال‌سازی صریح نیاز دارد.') },
-        { phase: t('Phase 5', 'فاز ۵'), status: 'planned', title: t('Advanced trading', 'معامله‌گری پیشرفته'), text: t('Extended order workflows, deeper analytics and, once its gates are met, wallet-confirmed Perpetual execution.', 'جریان‌های سفارش گسترده‌تر، تحلیل‌های عمیق‌تر و پس از عبور از دروازه‌ها، اجرای پرپچوال با تأیید کیف پول.') },
-        { phase: t('Phase 6', 'فاز ۶'), status: 'research', title: t('Openfund Protocol', 'پروتکل اوپن‌فاند'), text: t('Venue adapters, liquidity aggregation and intelligent routing. Only a dormant source foundation exists today.', 'آداپتورهای بازار، تجمیع نقدینگی و مسیریابی هوشمند. امروز فقط زیربنای غیرفعال کد وجود دارد.') },
-        { phase: t('Phase 7', 'فاز ۷'), status: 'planned', title: t('Ecosystem expansion', 'گسترش اکوسیستم'), text: t('Developer services, further integrations, coordinated scaling, and desktop and mobile applications.', 'خدمات توسعه‌دهندگان، یکپارچگی‌های بیشتر، مقیاس‌پذیری هماهنگ و اپلیکیشن‌های دسکتاپ و موبایل.') },
-      ] },
+      { type: 'timeline', items: PRODUCT_ROADMAP.map(item => {
+        const period = `Q${item.quarter} · ${item.start} – ${item.end}`
+        return { phase: { en: period, fa: period }, title: item.title, text: item.body, status: item.status }
+      }) },
       { type: 'refs', keys: ['milestones', 'releases'] },
     ],
   },

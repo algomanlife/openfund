@@ -1755,6 +1755,12 @@ ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS gross_profit_usd numeri
 ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS split_pct numeric(6,2);
 ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS fee_refund_usd numeric(12,2) NOT NULL DEFAULT 0;
 ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS eligibility jsonb;
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS recipient_wallet text;
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS approved_by text;
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS payment_evidence jsonb;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_withdrawals_verified_hash
+  ON withdrawal_requests (lower(payout_ref)) WHERE payment_evidence IS NOT NULL;
+
 -- at most one open reward request per funded account
 CREATE UNIQUE INDEX IF NOT EXISTS idx_withdrawals_one_open_reward ON withdrawal_requests (challenge_id)
   WHERE kind = 'reward' AND status IN ('requested', 'approved');
@@ -1773,19 +1779,30 @@ END $$;
 -- D1: reward cycle chosen once on the funded account; immutable once set
 ALTER TABLE openfund_challenges ADD COLUMN IF NOT EXISTS reward_cycle text;
 DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'openfund_challenges_reward_cycle_check') THEN
-    ALTER TABLE openfund_challenges ADD CONSTRAINT openfund_challenges_reward_cycle_check CHECK (reward_cycle IS NULL OR reward_cycle IN ('weekly', 'biweekly', 'on_demand'));
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint
+    WHERE conrelid = 'openfund_challenges'::regclass AND conname = 'openfund_challenges_reward_cycle_check'
+      AND pg_get_constraintdef(oid) LIKE '%triweekly%') THEN
+    ALTER TABLE openfund_challenges DROP CONSTRAINT IF EXISTS openfund_challenges_reward_cycle_check;
+    ALTER TABLE openfund_challenges ADD CONSTRAINT openfund_challenges_reward_cycle_check
+      CHECK (reward_cycle IS NULL OR reward_cycle IN ('weekly', 'biweekly', 'triweekly', 'monthly', 'on_demand'));
   END IF;
 END $$;
 CREATE OR REPLACE FUNCTION openfund_challenges_cycle_lock() RETURNS trigger AS $$
 BEGIN
+  IF OLD.rules_snapshot->>'fundedPayoutVersion' = 'funded-v1' AND (
+    NEW.rules_snapshot->>'fundedPayoutVersion' IS DISTINCT FROM OLD.rules_snapshot->>'fundedPayoutVersion'
+    OR NEW.rules_snapshot->'rewardCycles' IS DISTINCT FROM OLD.rules_snapshot->'rewardCycles'
+    OR NEW.rules_snapshot->'fundedIb' IS DISTINCT FROM OLD.rules_snapshot->'fundedIb'
+  ) THEN
+    RAISE EXCEPTION 'funded_payout_policy_immutable';
+  END IF;
   IF OLD.reward_cycle IS NOT NULL AND NEW.reward_cycle IS DISTINCT FROM OLD.reward_cycle THEN
     RAISE EXCEPTION 'reward_cycle_immutable';
   END IF;
   RETURN NEW;
 END $$ LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS trg_openfund_challenges_cycle_lock ON openfund_challenges;
-CREATE TRIGGER trg_openfund_challenges_cycle_lock BEFORE UPDATE OF reward_cycle ON openfund_challenges
+CREATE TRIGGER trg_openfund_challenges_cycle_lock BEFORE UPDATE OF reward_cycle, rules_snapshot ON openfund_challenges
   FOR EACH ROW EXECUTE FUNCTION openfund_challenges_cycle_lock();
 
 -- D8: verified economic calendar. Events are imported by an operator from a
@@ -2298,3 +2315,205 @@ CREATE TABLE IF NOT EXISTS cms_snapshot (
   sha256        text NOT NULL,
   fetched_at    timestamptz NOT NULL DEFAULT now()
 );
+
+-- Recognition starts only after an owner-approved policy is provisioned.
+-- An empty registry produces no journal entries and requires no backfill.
+CREATE TABLE IF NOT EXISTS revenue_allocation_policies (
+  version text PRIMARY KEY,
+  effective_at timestamptz NOT NULL UNIQUE,
+  allocation_base text NOT NULL CHECK (allocation_base IN ('listed_price', 'verified_order_price')),
+  approval_reference text NOT NULL CHECK (length(trim(approval_reference)) > 0),
+  approved_by text NOT NULL CHECK (length(trim(approved_by)) > 0),
+  recorded_at timestamptz NOT NULL DEFAULT now()
+);
+DROP TRIGGER IF EXISTS revenue_allocation_policies_immutable ON revenue_allocation_policies;
+CREATE TRIGGER revenue_allocation_policies_immutable BEFORE UPDATE OR DELETE ON revenue_allocation_policies
+  FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+CREATE TABLE IF NOT EXISTS revenue_allocation_journal (
+  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  purchase_order_id uuid NOT NULL REFERENCES purchase_orders(id),
+  payment_id uuid NOT NULL REFERENCES payments(id),
+  adjustment_id uuid UNIQUE REFERENCES payment_adjustments(id),
+  policy_version text NOT NULL REFERENCES revenue_allocation_policies(version),
+  accounting_period date NOT NULL,
+  list_price_usd numeric(20,2) NOT NULL,
+  discount_usd numeric(20,2) NOT NULL,
+  received_usd numeric(20,2) NOT NULL,
+  provider_fee_usd numeric(20,2),
+  adjustment_usd numeric(20,2) NOT NULL DEFAULT 0,
+  allocation_base_usd numeric(20,2) NOT NULL,
+  treasury_usd numeric(20,2) NOT NULL,
+  operations_usd numeric(20,2) NOT NULL,
+  recorded_at timestamptz NOT NULL DEFAULT now(),
+  CHECK (treasury_usd + operations_usd = allocation_base_usd)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_revenue_allocation_purchase
+  ON revenue_allocation_journal(purchase_order_id) WHERE adjustment_id IS NULL;
+DROP TRIGGER IF EXISTS revenue_allocation_journal_immutable ON revenue_allocation_journal;
+CREATE TRIGGER revenue_allocation_journal_immutable BEFORE UPDATE OR DELETE ON revenue_allocation_journal
+  FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+CREATE OR REPLACE FUNCTION recognize_revenue_allocation() RETURNS trigger AS $$
+DECLARE policy revenue_allocation_policies%ROWTYPE;
+DECLARE payment payments%ROWTYPE;
+DECLARE base numeric(20,2);
+DECLARE treasury numeric(20,2);
+BEGIN
+  SELECT * INTO policy FROM revenue_allocation_policies WHERE effective_at <= NEW.created_at
+   ORDER BY effective_at DESC LIMIT 1;
+  IF NOT FOUND THEN RETURN NEW; END IF;
+  SELECT * INTO payment FROM payments WHERE purchase_order_id=NEW.id AND status='confirmed'
+   ORDER BY verified_at, id LIMIT 1;
+  IF NOT FOUND THEN RETURN NEW; END IF;
+  base := CASE policy.allocation_base WHEN 'listed_price' THEN NEW.list_price_usd ELSE NEW.price_usd END;
+  treasury := round(base * 0.59, 2);
+  INSERT INTO revenue_allocation_journal
+    (purchase_order_id,payment_id,policy_version,accounting_period,list_price_usd,discount_usd,received_usd,
+     allocation_base_usd,treasury_usd,operations_usd)
+  VALUES
+    (NEW.id,payment.id,policy.version,date_trunc('month',NEW.paid_at AT TIME ZONE 'UTC')::date,
+     NEW.list_price_usd,NEW.discount_usd,NEW.price_usd,base,treasury,base-treasury)
+  ON CONFLICT DO NOTHING;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS recognize_revenue_allocation ON purchase_orders;
+CREATE TRIGGER recognize_revenue_allocation AFTER UPDATE ON purchase_orders FOR EACH ROW
+  WHEN (NEW.status='paid' AND NEW.payment_required AND NEW.paid_at IS NOT NULL AND OLD.paid_at IS NULL)
+  EXECUTE FUNCTION recognize_revenue_allocation();
+
+CREATE OR REPLACE FUNCTION reverse_revenue_allocation() RETURNS trigger AS $$
+DECLARE original revenue_allocation_journal%ROWTYPE;
+DECLARE totals record;
+DECLARE fraction numeric;
+DECLARE target_base numeric(20,2);
+DECLARE target_treasury numeric(20,2);
+DECLARE delta_base numeric(20,2);
+DECLARE delta_treasury numeric(20,2);
+BEGIN
+  PERFORM 1 FROM purchase_orders WHERE id=NEW.purchase_order_id FOR UPDATE;
+  SELECT * INTO original FROM revenue_allocation_journal
+   WHERE purchase_order_id=NEW.purchase_order_id AND adjustment_id IS NULL;
+  IF NOT FOUND THEN RETURN NEW; END IF;
+  SELECT sum(adjustment_usd) AS adjustments, sum(allocation_base_usd) AS base, sum(treasury_usd) AS treasury
+    INTO totals FROM revenue_allocation_journal WHERE purchase_order_id=NEW.purchase_order_id;
+  fraction := greatest(0, 1 - (totals.adjustments + NEW.amount_usd) / original.received_usd);
+  target_base := round(original.allocation_base_usd * fraction, 2);
+  target_treasury := round(target_base * 0.59, 2);
+  delta_base := target_base - totals.base;
+  delta_treasury := target_treasury - totals.treasury;
+  INSERT INTO revenue_allocation_journal
+    (purchase_order_id,payment_id,adjustment_id,policy_version,accounting_period,list_price_usd,discount_usd,received_usd,
+     adjustment_usd,allocation_base_usd,treasury_usd,operations_usd)
+  VALUES
+    (NEW.purchase_order_id,NEW.payment_id,NEW.id,original.policy_version,date_trunc('month',NEW.created_at AT TIME ZONE 'UTC')::date,
+     original.list_price_usd,original.discount_usd,original.received_usd,NEW.amount_usd,
+     delta_base,delta_treasury,delta_base-delta_treasury)
+  ON CONFLICT DO NOTHING;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS reverse_revenue_allocation ON payment_adjustments;
+CREATE TRIGGER reverse_revenue_allocation AFTER INSERT ON payment_adjustments
+  FOR EACH ROW EXECUTE FUNCTION reverse_revenue_allocation();
+
+-- A claim is durable even if a remote region loses the reply or its
+-- settlement transaction rolls back. That region can retry the same claim.
+CREATE TABLE IF NOT EXISTS payout_transaction_claims (
+  tx_hash text PRIMARY KEY CHECK (tx_hash ~ '^0x[0-9a-f]{64}$'),
+  request_id uuid NOT NULL UNIQUE,
+  home_region text NOT NULL CHECK (home_region IN ('GLOBAL','IRAN')),
+  claimed_at timestamptz NOT NULL DEFAULT now()
+);
+DROP TRIGGER IF EXISTS payout_transaction_claims_immutable ON payout_transaction_claims;
+CREATE TRIGGER payout_transaction_claims_immutable BEFORE UPDATE OR DELETE ON payout_transaction_claims
+  FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+INSERT INTO payout_transaction_claims(tx_hash,request_id,home_region)
+SELECT lower(w.payout_ref),w.id,coalesce(o.home_region,'GLOBAL')
+  FROM withdrawal_requests w
+  LEFT JOIN openfund_challenges c ON c.id=w.challenge_id
+  LEFT JOIN account_ownership o ON o.account_id=c.demo_account_id
+ WHERE openfund_local_region()='GLOBAL' AND w.payment_evidence IS NOT NULL
+   AND w.payout_ref ~* '^0x[0-9a-f]{64}$'
+ON CONFLICT DO NOTHING;
+
+-- Thread events travel with the withdrawal in existing signed handoff and
+-- synchronization payloads. Message bodies are visible only to participants.
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS thread_events jsonb NOT NULL DEFAULT '[]'::jsonb;
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS trader_read_count integer NOT NULL DEFAULT 0;
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS operator_read_count integer NOT NULL DEFAULT 0;
+
+-- The first receipt verifier supports Arbitrum DAI. Every usable policy
+-- still needs an explicit owner approval, asset, chain and schedule.
+CREATE TABLE IF NOT EXISTS ib_settlement_policies (
+  version text PRIMARY KEY,
+  chain_id integer NOT NULL CHECK (chain_id > 0),
+  token_address text NOT NULL CHECK (token_address ~ '^0x[0-9a-f]{40}$'),
+  waiting_days smallint NOT NULL CHECK (waiting_days BETWEEN 0 AND 365),
+  approval_reference text NOT NULL CHECK (length(trim(approval_reference)) > 0),
+  approved_by text NOT NULL CHECK (length(trim(approved_by)) > 0),
+  effective_at timestamptz NOT NULL
+);
+DROP TRIGGER IF EXISTS ib_settlement_policies_immutable ON ib_settlement_policies;
+CREATE TRIGGER ib_settlement_policies_immutable BEFORE UPDATE OR DELETE ON ib_settlement_policies
+  FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS ib_settlement jsonb;
+
+CREATE OR REPLACE FUNCTION protect_withdrawal_financial_evidence() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF OLD.kind='reward' AND OLD.eligibility IS NOT NULL
+    AND NEW.eligibility IS DISTINCT FROM OLD.eligibility THEN
+    RAISE EXCEPTION 'withdrawal_calculation_immutable';
+  END IF;
+  IF OLD.payment_evidence IS NOT NULL AND NEW.payment_evidence IS DISTINCT FROM OLD.payment_evidence THEN
+    RAISE EXCEPTION 'withdrawal_payment_evidence_immutable';
+  END IF;
+  IF OLD.ib_settlement->>'status'='paid' AND NEW.ib_settlement IS DISTINCT FROM OLD.ib_settlement THEN
+    RAISE EXCEPTION 'ib_settlement_evidence_immutable';
+  END IF;
+  IF NEW.thread_events IS DISTINCT FROM OLD.thread_events AND (
+    jsonb_array_length(NEW.thread_events) < jsonb_array_length(OLD.thread_events) OR EXISTS (
+      SELECT 1 FROM jsonb_array_elements(OLD.thread_events) WITH ORDINALITY AS old_event(value, seq)
+       WHERE old_event.value IS DISTINCT FROM NEW.thread_events->((old_event.seq-1)::int)
+    )
+  ) THEN
+    RAISE EXCEPTION 'withdrawal_thread_immutable';
+  END IF;
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS withdrawal_financial_evidence_immutable ON withdrawal_requests;
+CREATE TRIGGER withdrawal_financial_evidence_immutable BEFORE UPDATE ON withdrawal_requests
+  FOR EACH ROW EXECUTE FUNCTION protect_withdrawal_financial_evidence();
+
+-- Owner-controlled reconciliation scope. No cursor is provisioned by migration.
+CREATE TABLE IF NOT EXISTS treasury_transfer_cursors (
+  chain_id integer NOT NULL,
+  treasury_address text NOT NULL CHECK (treasury_address ~ '^0x[0-9a-f]{40}$'),
+  token_address text NOT NULL CHECK (token_address ~ '^0x[0-9a-f]{40}$'),
+  next_block bigint NOT NULL CHECK (next_block > 0),
+  status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','current','catching_up','error','unreconciled')),
+  last_sync_at timestamptz,
+  reconciled_block bigint,
+  balance_units numeric(78,0),
+  difference_units numeric(78,0),
+  PRIMARY KEY (chain_id,treasury_address,token_address)
+);
+CREATE TABLE IF NOT EXISTS treasury_token_movements (
+  chain_id integer NOT NULL,
+  transaction_hash text NOT NULL CHECK (transaction_hash ~ '^0x[0-9a-f]{64}$'),
+  log_index integer NOT NULL CHECK (log_index >= 0),
+  treasury_address text NOT NULL,
+  token_address text NOT NULL,
+  block_number bigint NOT NULL,
+  from_address text NOT NULL,
+  to_address text NOT NULL,
+  amount_units numeric(78,0) NOT NULL CHECK (amount_units >= 0),
+  direction text NOT NULL CHECK (direction IN ('internal','inbound','outbound')),
+  observed_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (chain_id, transaction_hash, log_index),
+  FOREIGN KEY (chain_id,treasury_address,token_address)
+    REFERENCES treasury_transfer_cursors (chain_id,treasury_address,token_address)
+);
+DROP TRIGGER IF EXISTS treasury_token_movements_immutable ON treasury_token_movements;
+CREATE TRIGGER treasury_token_movements_immutable BEFORE UPDATE OR DELETE ON treasury_token_movements
+  FOR EACH ROW EXECUTE FUNCTION reject_mutation();

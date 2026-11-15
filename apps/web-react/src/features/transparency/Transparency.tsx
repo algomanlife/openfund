@@ -40,6 +40,20 @@ function Treasury({ tv, locale }: { tv: TreasuryView; locale: Locale }) {
         <tbody>{s.assets.map(a => <tr key={a.symbol + a.address}><th scope="row">{a.symbol}</th><td dir="ltr">{a.balance}</td><td>{a.priceUsd ? usd(a.priceUsd, locale, 4) : '—'}</td><td>{a.valueUsd ? usd(a.valueUsd, locale) : <Status kind="warn">{a.priceError}</Status>}</td><td dir="ltr" style={{ overflowWrap: 'anywhere' }}>{a.priceSource || '—'}{a.priceUpdatedAt ? ` · ${when(a.priceUpdatedAt, locale)}` : ''}</td></tr>)}</tbody></table></div>}
       <Source locale={locale}>{t('On-chain balanceOf / getBalance at the snapshot block; USD via configured Chainlink aggregators only', 'balanceOf / getBalance روی زنجیره در بلاک تصویر؛ ارزش دلاری فقط از Chainlink پیکربندی‌شده')[locale]}</Source>
     </div>
+    {!!tv.reconciliation?.length && <div className="econ-panel">
+      <h3>{t('Treasury transfer reconciliation', 'تطبیق نقل‌وانتقال خزانه')[locale]}</h3>
+      <div className="econ-list">{tv.reconciliation.map(asset => <div key={asset.token}>
+        <span dir="ltr">{asset.token}</span>
+        <span>{asset.stale ? t('Stale data', 'دادهٔ قدیمی')[locale] :
+          asset.status === 'current' ? t('Current', 'به‌روز')[locale] :
+            asset.status === 'unreconciled' ? t('Requires reconciliation', 'نیازمند تطبیق')[locale] : t('Unavailable', 'در دسترس نیست')[locale]}
+        {' · '}{asset.syncedAt ? when(asset.syncedAt, locale) : '—'}</span>
+      </div>)}</div>
+      <div className="econ-list">{tv.movements?.map((m, i) => <div key={i}>
+        <span>{m.direction === 'inbound' ? t('Inbound', 'ورودی')[locale] : t('Outbound', 'خروجی')[locale]} · <bdi>{m.amount ?? '—'}</bdi></span>
+        <span>{m.explorerUrl && <a href={m.explorerUrl} target="_blank" rel="noopener noreferrer">{t('Explorer', 'کاوشگر')[locale]}</a>}</span>
+      </div>)}</div>
+    </div>}
     {tv.history.length > 1 && <div className="econ-panel"><h3>{t('Treasury balance history', 'تاریخچهٔ موجودی خزانه')[locale]}</h3>
       <Bars locale={locale} label={t('Daily last priced balance, USD', 'آخرین موجودی قیمت‌گذاری‌شدهٔ روزانه، دلار')[locale]} points={tv.history.map(h => ({ key: h.day.slice(0, 10), value: Number(h.totalUsd || 0) }))} format={v => usd(v, locale)} /></div>}
   </>
@@ -95,10 +109,14 @@ function Report({ r, locale }: { r: TransparencyReport; locale: Locale }) {
           {p.transactions.length ? <div className="econ-list">{p.transactions.map((x, i) => <div key={i}><span>{day(x.at, locale)} · {usd(x.amountUsd, locale)}</span><span>{x.explorerUrl ? <a className="text-link" href={x.explorerUrl} target="_blank" rel="noopener noreferrer">{t('Explorer', 'کاوشگر')[locale]} ↗</a> : '—'}</span></div>)}</div> : <p className="econ-empty">{t('No payout with an on-chain transaction reference yet.', 'هنوز پرداختی با مرجع تراکنش آن‌چین ثبت نشده است.')[locale]}</p>}
           <p className="econ-source">{t('Recipients are not identified. Only date, amount and the public transaction are listed.', 'دریافت‌کنندگان معرفی نمی‌شوند؛ فقط تاریخ، مبلغ و تراکنش عمومی آمده است.')[locale]}</p></div>
       </div>
-      <Source locale={locale}>{p.source}</Source>
+      <p className="econ-source">{t('Paid totals include historical operator records. Explorer links show finalized transfers.', 'جمع پرداخت‌ها شامل سوابق قدیمی ثبت‌شده توسط اپراتورهاست. پیوندهای کاوشگر انتقال‌های نهایی‌شده را نشان می‌دهند.')[locale]}</p>
     </section>
 
     <section className="econ-section" id="treasury"><div className="section-top"><div><span className="eyebrow">04 / OPENFUND TREASURY</span><h2>{t('Read from the chain, not typed in.', 'خوانده‌شده از زنجیره، نه واردشده با دست.')[locale]}</h2></div></div>
+      {r.allocations && <div className="econ-grid">
+        <Kpi label={t('Treasury allocation', 'تخصیص خزانه')[locale]} value={usd(r.allocations.treasuryUsd, locale)} />
+        <Kpi label={t('Operations allocation', 'تخصیص عملیاتی')[locale]} value={usd(r.allocations.operationsUsd, locale)} />
+      </div>}
       <TreasuryWallets locale={locale} />
       <Treasury tv={r.treasury} locale={locale} />
       <div className="econ-panel"><h3>{t('Identifiable flows', 'جریان‌های قابل شناسایی')[locale]}</h3><div className="econ-grid">
@@ -128,8 +146,10 @@ function Report({ r, locale }: { r: TransparencyReport; locale: Locale }) {
 
     <section className="econ-section" id="expenses"><div className="section-top"><div><span className="eyebrow">06 / {t('COMPANY EXPENSES', 'هزینه‌های شرکت')[locale]}</span><h2>{t('Invoices, not estimates.', 'فاکتور، نه برآورد.')[locale]}</h2></div><p>{int(r.expenses.awaitingVerification, locale)} {t('records awaiting verification', 'رکورد در انتظار تأیید')[locale]}</p></div>
       <div className="econ-grid">{r.expenses.categories.map(cat => <Kpi key={cat.category} label={(CATEGORY[cat.category]?.[locale] ?? cat.category)} value={usd(cat.totalUsd, locale)} note={`${int(cat.records, locale)} ${t('verified records', 'رکورد تأییدشده')[locale]}`} />)}</div>
-      {r.expenses.records.length > 0 && <div className="info-table-wrap"><table><caption>{t('Verified expense records', 'رکوردهای تأییدشدهٔ هزینه')[locale]}</caption><thead><tr>{[t('Date', 'تاریخ'), t('Category', 'دسته'), t('Description', 'شرح'), t('Amount', 'مبلغ'), t('Source / reference', 'منبع / مرجع'), t('Status', 'وضعیت')].map((h, i) => <th key={i} scope="col">{h[locale]}</th>)}</tr></thead>
-        <tbody>{r.expenses.records.map((e, i) => <tr key={i}><td>{day(e.incurredOn, locale)}</td><td>{(CATEGORY[e.category]?.[locale] ?? e.category)}</td><td>{e.description}</td><td dir="ltr">{e.amount} {e.currency}{e.currency !== 'USD' ? ` (${usd(e.amountUsd, locale)})` : ''}</td><td dir="ltr">{e.source} · {e.reference}</td><td>{e.paymentStatus}</td></tr>)}</tbody></table></div>}
+      <div className="econ-grid">
+        <Kpi label={t('Paid', 'پرداخت‌شده')[locale]} value={usd(r.expenses.paidUsd, locale)} />
+        <Kpi label={t('Unpaid', 'پرداخت‌نشده')[locale]} value={usd(r.expenses.unpaidUsd, locale)} />
+      </div>
       <Source locale={locale}>{r.expenses.source}</Source>
     </section>
   </>

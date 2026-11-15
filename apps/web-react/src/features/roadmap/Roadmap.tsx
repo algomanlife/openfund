@@ -1,7 +1,8 @@
 import InformationShell, { useInformationLocale } from '../information/InformationShell'
 import { text, tx } from '../information/content'
 import { useReveal } from '../company/reveal'
-import { ROADMAP_PHASES, OWNER_ROADMAP, REGISTER_URL, MILESTONES_URL, type RoadmapStatus } from './roadmapData'
+import { ROADMAP_PHASES, REGISTER_URL, MILESTONES_URL, type RoadmapStatus } from './roadmapData'
+import { PRODUCT_ROADMAP } from './productRoadmap'
 import './roadmap.css'
 
 const copy = {
@@ -15,8 +16,8 @@ const copy = {
   phase: text('Phase', 'فاز'),
   milestones: text('Milestones', 'نقاط عطف'),
   noDates: text('No delivery dates are committed. A phase advances only with deployed or verified evidence.', 'هیچ تاریخ تحویلی تعهد نشده است. هر فاز فقط با شواهد استقرار یا تأییدشده پیش می‌رود.'),
-  ownerTitle: text('Product roadmap', 'نقشهٔ راه محصول'),
-  ownerPending: text('The product roadmap is being prepared by the Openfund team and will be published here. Until then, nothing on this page is a commitment beyond the repository register.', 'نقشهٔ راه محصول توسط تیم اوپن‌فاند در حال آماده‌سازی است و در همین بخش منتشر خواهد شد. تا آن زمان، هیچ‌چیز در این صفحه فراتر از ثبت مخزن کد تعهد محسوب نمی‌شود.'),
+  ownerTitle: text('One-year product roadmap', 'نقشهٔ راه یک‌سالهٔ محصول'),
+  quarter: text('Quarter', 'سه‌ماههٔ'),
   register: text('Read the register on GitHub', 'مشاهدهٔ ثبت در GitHub'),
   milestoneRegister: text('Milestones and acceptance criteria', 'نقاط عطف و معیارهای پذیرش'),
 }
@@ -26,7 +27,7 @@ const ORDER: RoadmapStatus[] = ['completed', 'in-progress', 'planned', 'vision']
 export default function Roadmap() {
   const locale = useInformationLocale()
   const c = (key: keyof typeof copy) => tx(locale, copy[key])
-  const counts = Object.fromEntries(ORDER.map(s => [s, ROADMAP_PHASES.filter(p => p.status === s).length + OWNER_ROADMAP.filter(p => p.status === s).length])) as Record<RoadmapStatus, number>
+  const counts = Object.fromEntries(ORDER.map(s => [s, ROADMAP_PHASES.filter(p => p.status === s).length])) as Record<RoadmapStatus, number>
   const timeline = useReveal<HTMLOListElement>(), owner = useReveal<HTMLElement>()
   return <InformationShell page="roadmap" description={c('intro')}>
     <section id="top" className="of-roadmap-hero">
@@ -60,8 +61,12 @@ export default function Roadmap() {
 
       <section ref={owner} className="of-roadmap-owner of-reveal" aria-labelledby="owner-roadmap" data-status="vision">
         <h2 id="owner-roadmap">{c('ownerTitle')}</h2>
-        {OWNER_ROADMAP.length ? <ul>{OWNER_ROADMAP.map(item => <li key={tx('en', item.title)} data-status={item.status}><h3>{tx(locale, item.title)}</h3><p>{tx(locale, item.body)}</p></li>)}</ul>
-          : <p role="status">{c('ownerPending')}</p>}
+        <ul>{PRODUCT_ROADMAP.map(item => <li key={item.quarter} data-status={item.status}>
+          <h3>{c('quarter')} {item.quarter} · {tx(locale, item.title)}</h3>
+          <p><bdi dir="ltr"><time dateTime={item.start}>{item.start}</time> – <time dateTime={item.end}>{item.end}</time></bdi> · {c(item.status)}</p>
+          <p>{tx(locale, item.body)}</p>
+          <p>{tx(locale, item.dependencies)}</p>
+        </li>)}</ul>
         <div className="of-roadmap-links">
           <a className="text-link" href={REGISTER_URL} rel="noopener noreferrer" target="_blank">{c('register')} ↗</a>
           <a className="text-link" href={MILESTONES_URL} rel="noopener noreferrer" target="_blank">{c('milestoneRegister')} ↗</a>

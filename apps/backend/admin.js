@@ -18,13 +18,19 @@
  *    evaluation state or payments — Directus keeps its read/edit
  *    interface, and withdrawal REVIEW is an operational decision on
  *    withdrawal_requests only. Payout EXECUTION (transferring real
- *    funds) is deliberately out of scope: marking 'paid' records the
- *    operator's payout reference and nothing more.
+ *    funds) is external. Reward settlement records verified evidence for
+ *    a transfer the operator has already made.
  */
 import { Router } from 'express'
+import { rateLimit } from 'express-rate-limit'
 import crypto from 'node:crypto'
+import { D } from './trading-math.js'
 import { governanceAdminRoutes } from './governance-routes.js'
 import { reverseRewardTx, onRewardPaidTx } from './rewards.js'
+import { financialAudit } from './financial-audit.js'
+import { mountPayoutThreads } from './payout-threads.js'
+import { createPayoutClaimClient } from './payout-claims.js'
+import { DAI_PAYOUT_TOKEN, payoutHash, payoutVerifier } from './payout-settlement.js'
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const fail = (status, error) => { const e = new Error(error); e.status = status; return e }
@@ -59,9 +65,10 @@ export function adminActor(req) {
   return `admin:${actor}`
 }
 
-export function adminRoutes({ pool, audit }) {
+export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), claimPayout = createPayoutClaimClient({ region: 'GLOBAL' }) }) {
   const router = Router()
   router.use(adminAuth)
+  mountPayoutThreads(router, { pool, operator: true })
 
   /* Company Management governance operations (same token gate; no financial endpoints) */
   router.use('/governance', governanceAdminRoutes({ pool }))
@@ -145,25 +152,43 @@ export function adminRoutes({ pool, audit }) {
     paid: { from: 'approved', to: 'paid' },
   }
 
-  router.get('/withdrawals', wrap(async (req, res) => {
+  const withdrawalReadLimit = rateLimit({ windowMs: 60_000, limit: 90 })
+  router.get('/withdrawals', withdrawalReadLimit, wrap(async (req, res) => {
     const limit = PAGE(req.query.limit, 25, 100), offset = PAGE(req.query.offset, 0, 1000000)
     const params = []
-    let where = 'TRUE'
+    let where = req.query.kind === 'reward' ? "w.kind='reward'" : 'TRUE'
     if (['requested', 'approved', 'paid', 'rejected', 'cancelled'].includes(req.query.status)) {
       params.push(req.query.status)
       where += ` AND w.status = $${params.length}`
     }
+    if (req.query.status === 'reconciliation') where += " AND w.status='approved' AND w.payment_evidence IS NULL"
+    if (req.query.status === 'appeal') where += ` AND (
+      SELECT e.value->>'kind'='appeal' FROM jsonb_array_elements(w.thread_events) WITH ORDINALITY e(value, idx)
+      WHERE e.value->>'kind' IN ('appeal','appeal_resolved') ORDER BY idx DESC LIMIT 1)`
     const total = (await pool.query(`SELECT count(*)::int c FROM withdrawal_requests w WHERE ${where}`, params)).rows[0].c
     const { rows } = await pool.query(
       `SELECT w.id, w.user_id, u.wallet_address, w.amount_usd, w.status, w.note, w.requested_at,
-              w.reviewed_at, w.payout_ref, w.challenge_id,
+              w.reviewed_at, w.payout_ref, w.challenge_id, w.recipient_wallet, w.approved_by, w.payment_evidence, w.eligibility, w.ib_settlement,
+              (SELECT count(*)::int FROM jsonb_array_elements(w.thread_events) WITH ORDINALITY e(value, idx)
+                WHERE e.idx>w.operator_read_count AND e.value->>'role'='trader') AS unread_messages,
+              (SELECT e.value->>'kind'='appeal' FROM jsonb_array_elements(w.thread_events) WITH ORDINALITY e(value, idx)
+                WHERE e.value->>'kind' IN ('appeal','appeal_resolved') ORDER BY idx DESC LIMIT 1) AS appeal_pending,
               (SELECT p.slug FROM openfund_challenges c JOIN challenge_plans p ON p.id = c.challenge_plan_id WHERE c.id = w.challenge_id) AS plan_slug
          FROM withdrawal_requests w JOIN openfund_users u ON u.id = w.user_id
         WHERE ${where} ORDER BY w.requested_at DESC LIMIT ${limit + 1} OFFSET ${offset}`, params)
     res.json({ total, withdrawals: rows.slice(0, limit) })
   }))
 
-  router.post('/withdrawals/:id/review', wrap(async (req, res) => {
+  router.get('/withdrawals/:id/audit', withdrawalReadLimit, wrap(async (req, res) => {
+    if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')
+    const { rows } = await pool.query(`SELECT ts, actor, action, before, after FROM financial_audit_log
+      WHERE entity='withdrawal' AND entity_id=$1 ORDER BY id DESC LIMIT 200`, [req.params.id])
+    res.set('Cache-Control', 'no-store').json({ events: rows })
+  }))
+
+  const withdrawalReviewLimit = rateLimit({ windowMs: 60_000, limit: 60, standardHeaders: 'draft-8', legacyHeaders: false,
+    message: { error: 'rate_limited' } })
+  router.post('/withdrawals/:id/review', withdrawalReviewLimit, wrap(async (req, res) => {
     if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')
     const { action, note, payoutRef } = req.body || {}
     const spec = WITHDRAWAL_ACTIONS[action]
@@ -177,16 +202,43 @@ export function adminRoutes({ pool, audit }) {
       await client.query('BEGIN')
       const w = (await client.query('SELECT * FROM withdrawal_requests WHERE id=$1 FOR UPDATE', [req.params.id])).rows[0]
       if (!w) throw fail(404, 'withdrawal_not_found')
-      if (w.status === spec.to) { await client.query('COMMIT'); return res.json({ ok: true, duplicate: true, status: w.status }) }
+      const reward = w.kind === 'reward'
+      if (w.status === spec.to) {
+        if (reward && action === 'paid' && w.payout_ref?.toLowerCase() !== payoutRef.trim().toLowerCase())
+          throw fail(409, 'payout_already_recorded')
+        await client.query('COMMIT')
+        return res.json({ ok: true, duplicate: true, status: w.status })
+      }
       if (w.status !== spec.from) throw fail(409, `withdrawal_${w.status}_not_reviewable`)
+      const actor = reward ? adminActor(req) : null
+      let evidence = null
+      let reference = action === 'paid' ? payoutRef.trim() : null
+      let recipient = w.recipient_wallet
+      if (reward && !recipient && action === 'approve') {
+        recipient = (await client.query('SELECT wallet_address FROM openfund_users WHERE id=$1 FOR SHARE', [w.user_id])).rows[0].wallet_address
+      }
+      if (reward && action === 'paid') {
+        if (!payoutHash.test(reference)) throw fail(400, 'payout_transaction_hash_required')
+        reference = reference.toLowerCase()
+        if (!w.approved_by || !recipient) throw fail(409, 'payout_approval_evidence_required')
+        const used = await client.query(`SELECT 1 FROM withdrawal_requests WHERE lower(payout_ref)=$1 AND status='paid' LIMIT 1`, [reference])
+        if (used.rowCount) throw fail(409, 'payout_transaction_already_recorded')
+        await client.query(`SELECT openfund_assert_account_writable(c.demo_account_id)
+          FROM openfund_challenges c WHERE c.id=$1 AND c.demo_account_id IS NOT NULL`, [w.challenge_id])
+        evidence = { ...await verifyPayout({ hash: reference, recipient, amount: w.amount_usd, approvedAt: w.reviewed_at }), recordedBy: actor }
+        await claimPayout(client, { hash: reference, requestId: w.id })
+      }
       await client.query(
-        `UPDATE withdrawal_requests SET status=$2, reviewed_at=now(), note=coalesce($3, note), payout_ref=coalesce($4, payout_ref)
+        `UPDATE withdrawal_requests SET status=$2, reviewed_at=now(), note=coalesce($3, note),
+           payout_ref=coalesce($4, payout_ref), recipient_wallet=$5, approved_by=$6, payment_evidence=$7
           WHERE id=$1`,
-        [req.params.id, spec.to, note ?? null, action === 'paid' ? payoutRef.trim() : null])
-      /* a rejected reward request returns the reserved profit to the funded account */
+        [w.id, spec.to, note ?? null, reference, recipient, reward && action === 'approve' ? actor : w.approved_by, evidence])
+      if (reward) {
+        await financialAudit(client, actor, `withdrawal_${spec.to}`, 'withdrawal', w.id, { status: w.status },
+          { status: spec.to, amount: w.amount_usd, recipient, reason: note ?? null, payment: evidence })
+      }
       if (spec.to === 'rejected') await reverseRewardTx(client, w, 'rejected_by_operator')
-      /* D5: the fourth paid reward of a Standard lineage creates the fee refund (exactly once) */
-      const feeRefund = spec.to === 'paid' ? await onRewardPaidTx(client, { ...w, status: 'paid' }, `admin:${String(req.headers['x-admin-actor'] || 'unknown').slice(0, 60)}`) : null
+      const feeRefund = spec.to === 'paid' ? await onRewardPaidTx(client, { ...w, status: 'paid' }, actor) : null
       await client.query('COMMIT')
       await audit(`withdrawal_${spec.to}`, w.user_id, req, {
         withdrawalId: req.params.id, amount: Number(w.amount_usd), action, note: note ?? null,
@@ -195,7 +247,59 @@ export function adminRoutes({ pool, audit }) {
       res.json({ ok: true, status: spec.to, ...(feeRefund ? { feeRefund: { id: feeRefund.id, amountUsd: feeRefund.amount_usd, status: feeRefund.status } } : {}) })
     } catch (e) {
       await client.query('ROLLBACK').catch(() => {})
+      if (e.constraint === 'idx_withdrawals_verified_hash') throw fail(409, 'payout_transaction_already_recorded')
       throw e
+    } finally { client.release() }
+  }))
+
+  router.post('/withdrawals/:id/ib-settlement', withdrawalReviewLimit, wrap(async (req, res) => {
+    if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')
+    const actor = adminActor(req)
+    const { action, policyVersion, payoutRef } = req.body || {}
+    if (!['approve', 'paid'].includes(action)) throw fail(400, 'invalid_action')
+    const client = await pool.connect()
+    try {
+      await client.query('BEGIN')
+      const { rows: [w] } = await client.query(`SELECT w.*, c.demo_account_id FROM withdrawal_requests w
+        JOIN openfund_challenges c ON c.id=w.challenge_id WHERE w.id=$1 FOR UPDATE OF w`, [req.params.id])
+      if (!w) throw fail(404, 'withdrawal_not_found')
+      const distribution = w.eligibility?.distribution
+      const ibId = distribution?.ibEvidence?.ambassador_user_id
+      if (!ibId || !D(distribution.ib).gt(0) || w.status !== 'paid' || w.payment_evidence?.finality !== 'finalized')
+        throw fail(409, 'ib_settlement_not_eligible')
+      await client.query('SELECT openfund_assert_account_writable($1)', [w.demo_account_id])
+      let settlement = w.ib_settlement
+      if (action === 'approve' && !settlement) {
+        if (typeof policyVersion !== 'string' || policyVersion.length > 80) throw fail(400, 'ib_policy_required')
+        const { rows: [policy] } = await client.query('SELECT * FROM ib_settlement_policies WHERE version=$1 AND effective_at<=now()', [policyVersion])
+        if (!policy || policy.chain_id !== 42161 || policy.token_address !== DAI_PAYOUT_TOKEN)
+          throw fail(409, 'ib_policy_unavailable')
+        const eligibleAt = new Date(w.payment_evidence.transactionAt).getTime() + policy.waiting_days * 86_400_000
+        if (!Number.isFinite(eligibleAt) || Date.now() < eligibleAt) throw fail(409, 'ib_settlement_not_due')
+        const { rows: [beneficiary] } = await client.query('SELECT wallet_address FROM openfund_users WHERE id=$1 FOR SHARE', [ibId])
+        if (!beneficiary) throw fail(409, 'ib_recipient_unavailable')
+        settlement = { id: crypto.randomUUID(), status: 'approved', policyVersion, recipient: beneficiary.wallet_address,
+          amount: distribution.ib, approvedBy: actor, approvedAt: new Date().toISOString(), chainId: policy.chain_id, token: policy.token_address }
+      } else if (action === 'paid') {
+        if (!settlement) throw fail(409, 'ib_approval_required')
+        if (typeof payoutRef !== 'string' || !payoutHash.test(payoutRef)) throw fail(400, 'payout_transaction_hash_required')
+        const hash = payoutRef.toLowerCase()
+        if (settlement.status === 'paid' && settlement.evidence.transactionHash !== hash) throw fail(409, 'payout_already_recorded')
+        if (settlement.status !== 'paid') {
+          const evidence = await verifyPayout({ hash, recipient: settlement.recipient, amount: settlement.amount, approvedAt: settlement.approvedAt })
+          await claimPayout(client, { hash, requestId: settlement.id })
+          settlement = { ...settlement, status: 'paid', evidence, recordedBy: actor }
+        }
+      }
+      if (settlement !== w.ib_settlement) {
+        await client.query('UPDATE withdrawal_requests SET ib_settlement=$2 WHERE id=$1', [w.id, settlement])
+        await financialAudit(client, actor, `ib_settlement_${settlement.status}`, 'withdrawal', w.id, w.ib_settlement, settlement)
+      }
+      await client.query('COMMIT')
+      res.set('Cache-Control', 'no-store').json({ settlement })
+    } catch (error) {
+      await client.query('ROLLBACK')
+      throw error
     } finally { client.release() }
   }))
 

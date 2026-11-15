@@ -21,6 +21,7 @@ import { randomUUID } from 'node:crypto'
 import pg from 'pg'
 import { Engine } from '../engine.js'
 import { signedHeaders, syncConfig } from '../regional-sync.js'
+import { createPayoutClaimClient } from '../payout-claims.js'
 
 const GLOBAL_URL = process.env.REGION_SYNC_TEST_GLOBAL_URL
 const IRAN_URL = process.env.REGION_SYNC_TEST_IRAN_URL
@@ -441,4 +442,25 @@ test('9. a region process killed during delivery loses nothing', { skip }, async
   for (const u of users) assert.equal(await remoteLedger(iPool, u.account), await localLedger(gPool, u.account))
   assert.equal((await one(iPool, `SELECT count(*)::int AS n FROM region_inbox WHERE status = 'held'`)).n, 0, 'no gap left behind')
   assert.equal((await one(iPool, `SELECT count(*)::int AS n FROM region_inbox WHERE status = 'rejected'`)).n, before.n, 'nothing rejected by the crash')
+})
+
+test('payout claims reject cross-region collisions and fail closed during a partition', { skip }, async () => {
+  const iran = createPayoutClaimClient(syncConfig({ ...envOf('IRAN'), REGION_SYNC_KEYS: KEYS }, 'IRAN'), signedHeaders)
+  const global = createPayoutClaimClient({ region: 'GLOBAL' })
+  const hash = () => '0x' + randomUUID().replaceAll('-', '').padStart(64, '0')
+  const contested = hash()
+  const fromIran = { hash: contested, requestId: randomUUID() }
+  const fromGlobal = { hash: contested, requestId: randomUUID() }
+  const [iResult, gResult] = await Promise.allSettled([iran(iPool, fromIran), global(gPool, fromGlobal)])
+  assert.deepEqual([iResult.status, gResult.status].sort(), ['fulfilled', 'rejected'])
+  const [winner, db, claim] = iResult.status === 'fulfilled' ? [iran, iPool, fromIran] : [global, gPool, fromGlobal]
+  await winner(db, claim)
+  await assert.rejects(winner(db, { ...claim, hash: hash() }), /payout_transaction_already_claimed/)
+  const disconnected = { hash: hash(), requestId: randomUUID() }
+  toGlobal.state.mode = 'down'
+  try { await assert.rejects(iran(iPool, disconnected), /payout_claim_authority_unavailable/) }
+  finally { toGlobal.state.mode = 'up' }
+  await iran(iPool, disconnected)
+  assert.equal((await one(gPool, 'SELECT home_region FROM payout_transaction_claims WHERE request_id=$1', [disconnected.requestId])).home_region, 'IRAN')
+  assert.equal((await one(iPool, 'SELECT count(*)::int AS n FROM payout_transaction_claims')).n, 0)
 })

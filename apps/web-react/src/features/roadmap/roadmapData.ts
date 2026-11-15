@@ -1,10 +1,4 @@
-/* Website mirror of the phase table in /ROADMAP.md — the repository register
-   is the source of truth and test/roadmap.test.mjs fails when the two
-   disagree, so the site can never carry a contradictory roadmap.
-
-   `owner` is the integration point for the owner's product roadmap. It is
-   intentionally empty: no milestone, date, commitment or percentage is
-   published until the owner supplies the content. */
+/* The engineering phases mirror the register in ROADMAP.md. */
 import { text } from '../information/content'
 
 export type RoadmapStatus = 'completed' | 'in-progress' | 'planned' | 'vision'
@@ -22,9 +16,6 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
   phase(6, 'planned', 'P1, P2', ['Openfund Protocol', 'پروتکل اوپن‌فاند'], ['Venue adapters, aggregation and intelligent routing', 'آداپتورهای بازار، تجمیع و مسیریابی هوشمند'], ['Dormant source foundation integrated; operational routing planned', 'پایهٔ کد غیرفعال یکپارچه شده؛ مسیریابی عملیاتی برنامه‌ریزی شده است']),
   phase(7, 'planned', 'E1, E2', ['Ecosystem Expansion', 'گسترش اکوسیستم'], ['Integrations, developer services, scalability', 'یکپارچه‌سازی‌ها، خدمات توسعه‌دهندگان و مقیاس‌پذیری'], ['Planned', 'برنامه‌ریزی شده']),
 ]
-
-/** Owner-supplied product roadmap items. Empty until the owner provides them. */
-export const OWNER_ROADMAP: { title: ReturnType<typeof text>; body: ReturnType<typeof text>; status: RoadmapStatus }[] = []
 
 export const REGISTER_URL = 'https://github.com/algomanlife/openfund/blob/main/ROADMAP.md'
 export const MILESTONES_URL = 'https://github.com/algomanlife/openfund/blob/main/docs/roadmap/MILESTONES.md'

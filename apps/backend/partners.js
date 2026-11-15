@@ -308,11 +308,20 @@ export function partnerRoutes({ pool, requireAuth, audit, limit }) {
          FULL JOIN (SELECT coalesce(campaign,'(none)') k, count(*) purchases, sum(amount_usd) earned FROM referral_commissions WHERE ambassador_user_id=$2 AND entry_type='earned' GROUP BY 1) c
            ON c.k = v.k
         ORDER BY 2 DESC`, [p.referral_code, req.user.user_id])).rows
+    const { rows: [fundedRewards] } = await pool.query(
+      `SELECT count(DISTINCT challenge_id)::int AS accounts,
+        sum((eligibility->'distribution'->>'ib')::numeric) FILTER (WHERE status IN ('requested','approved')) AS contingent,
+        sum((eligibility->'distribution'->>'ib')::numeric) FILTER (WHERE status='paid' AND ib_settlement IS NULL) AS pending,
+        sum((eligibility->'distribution'->>'ib')::numeric) FILTER (WHERE ib_settlement->>'status'='approved') AS approved,
+        sum((eligibility->'distribution'->>'ib')::numeric) FILTER (WHERE ib_settlement->>'status'='paid') AS paid
+        FROM withdrawal_requests WHERE eligibility->'distribution'->'ibEvidence'->>'ambassador_user_id'=$1`, [req.user.user_id])
     res.json({
       status: p.status, code: p.referral_code, linkPath: `/ref/${p.referral_code}`, commissionRate: p.commission_rate,
       traffic: { uniqueVisitorDays: traffic.visits, last30Days: traffic.visits30, series },
       referredSignups: signups,
       confirmedFirstPurchases: b.first_purchases,
+      fundedRewards: { accounts: fundedRewards.accounts, contingentUsd: usd(fundedRewards.contingent ?? '0'), pendingUsd: usd(fundedRewards.pending ?? '0'),
+        approvedUsd: usd(fundedRewards.approved ?? '0'), paidUsd: usd(fundedRewards.paid ?? '0') },
       eligibleRevenueUsd: usd(b.eligible_revenue),
       earnedUsd: usd(b.earned), reversedUsd: usd(b.reversed), paidUsd: usd(b.paid), pendingSettlementUsd: usd(b.pending),
       history: history.map(h => ({ id: h.id, type: h.entry_type, baseUsd: h.base_amount_usd, amountUsd: h.amount_usd, payoutReference: h.payout_reference, campaign: h.campaign, at: h.created_at })),

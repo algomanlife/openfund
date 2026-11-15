@@ -110,7 +110,7 @@ try {
   const skipStage=(name,reason)=>{console.log(`::notice::${name} skipped by CI tier: ${reason}`);stages.push({name,status:'skipped-by-tier',reason,startedAt:new Date().toISOString()});};
   if(process.env.RELEASE_SKIP_BACKEND_SUITE==='1')skipStage('test:backend','no backend or shared input changed');
   else await gate('test:backend','npm',['run','test:backend']);
-  for(const task of ['test:browser:website','test:browser:audit','test:browser:wallet']) await gate(task,'npm',['run',task]);
+  for(const task of ['test:browser:website','test:browser:audit','test:browser:wallet','test:browser:payout-operations']) await gate(task,'npm',['run',task]);
   // The two long presentation matrices (previously ~17 + ~15 min, sequential)
   // are read-only and independent, so they run as concurrent shards. The union
   // of the shards equals the unsharded run (see e2e/test-locale-matrix.cjs and

@@ -12,6 +12,7 @@
  * date and amount only.
  */
 import { Router } from 'express'
+import { rateLimit } from 'express-rate-limit'
 import { adminAuth, adminActor } from './admin.js'
 import { financialAudit } from './financial-audit.js'
 import { reverseCommissionTx } from './partners.js'
@@ -33,7 +34,9 @@ export async function financialInputs(db) {
       (SELECT coalesce(sum(p),0) FROM (SELECT sum(amount_usd) p FROM referral_commissions GROUP BY ambassador_user_id) x WHERE p > 0) AS commissions,
       (SELECT coalesce(sum(amount_usd),0) FROM settlement_records WHERE status <> 'completed') AS live_shares,
       (SELECT coalesce(sum(amount_usd),0) FROM verified_expenses WHERE status='verified' AND payment_status='unpaid') AS expenses,
-      (SELECT coalesce(sum(amount_usd),0) FROM financial_obligations WHERE status='open') AS other`)
+      (SELECT coalesce(sum(amount_usd),0) FROM financial_obligations WHERE status='open') AS other,
+      (SELECT coalesce(sum((eligibility->'distribution'->>'ib')::numeric),0) FROM withdrawal_requests
+        WHERE status='paid' AND coalesce(ib_settlement->>'status','')<>'paid') AS funded_ib`)
   const reserves = { operational: null, risk: null, other: null }
   for (const r of (await db.query(`SELECT DISTINCT ON (kind) kind, amount_usd, created_at, set_by FROM capital_reserves ORDER BY kind, id DESC`)).rows)
     reserves[r.kind] = r.amount_usd
@@ -41,7 +44,7 @@ export async function financialInputs(db) {
       (SELECT coalesce(sum(amount_usd),0) FROM capital_allocations WHERE status IN ('active','halted')) AS allocated,
       (SELECT coalesce(sum(collateral_usd),0) FROM live_trades WHERE status IN ('submitted','open','closing','reconcile_required')) AS open_margin`)
   return {
-    obligations: { traderRewardsApprovedUnpaid: o.trader_rewards, ambassadorCommissionsUnpaid: o.commissions, liveProfitSharesUnsettled: o.live_shares, expensesPayable: o.expenses, otherLiabilities: o.other },
+    obligations: { traderRewardsApprovedUnpaid: o.trader_rewards, ambassadorCommissionsUnpaid: o.commissions, liveProfitSharesUnsettled: o.live_shares, expensesPayable: o.expenses, otherLiabilities: D(o.other).plus(o.funded_ib).toFixed(2) },
     reserves,
     allocations: { allocatedUsd: a.allocated, openMarginUsd: a.open_margin },
   }
@@ -109,8 +112,7 @@ async function transparencyReport(pool, treasury) {
      WHERE c.stage=0 OR (${FINAL_PASSED})`)
   const payoutMonthly = await q(`SELECT to_char(date_trunc('month', reviewed_at),'YYYY-MM') AS month, count(*)::int AS payouts, sum(amount_usd) AS total
                                    FROM withdrawal_requests WHERE status='paid' AND reviewed_at > now() - interval '12 months' GROUP BY 1 ORDER BY 1`)
-  const payoutTx = await q(`SELECT reviewed_at, amount_usd, payout_ref FROM withdrawal_requests WHERE status='paid' AND payout_ref ~* '^0x[0-9a-f]{64}$' ORDER BY reviewed_at DESC LIMIT 25`)
-  const chain = Number(process.env.PURCHASE_PAYMENT_CHAIN || 42161)
+  const payoutTx = await q(`SELECT payment_evidence->>'transactionAt' AS transaction_at, (payment_evidence->>'chainId')::int AS chain_id, amount_usd, payout_ref FROM withdrawal_requests WHERE status='paid' AND payment_evidence->>'finality'='finalized' ORDER BY transaction_at DESC LIMIT 25`)
 
   const tv = await treasury.view()
   const position = await computeFinancialPosition(pool, tv)
@@ -122,9 +124,12 @@ async function transparencyReport(pool, treasury) {
       (SELECT coalesce(sum(amount_usd),0) FROM settlement_records WHERE status='completed') AS live_settlements,
       (SELECT coalesce(sum(amount_usd),0) FROM verified_expenses WHERE status='verified' AND payment_status='paid') AS expenses,
       (SELECT coalesce(sum(amount_usd),0) FROM payment_adjustments) AS refunds`)
-  const expenses = await q(`SELECT category, coalesce(sum(amount_usd),0) AS total, count(*)::int AS records FROM verified_expenses WHERE status='verified' GROUP BY category`)
-  const expenseRows = await q(`SELECT category, description, amount, currency, amount_usd, incurred_on, period_start, period_end, source, invoice_reference, payment_status
-                                 FROM verified_expenses WHERE status='verified' ORDER BY incurred_on DESC LIMIT 100`)
+  const expenses = await q(`SELECT category, sum(amount_usd) AS total, count(*)::int AS records,
+    sum(amount_usd) FILTER (WHERE payment_status='paid') AS paid,
+    sum(amount_usd) FILTER (WHERE payment_status='unpaid') AS unpaid
+    FROM verified_expenses WHERE status='verified' GROUP BY category`)
+  const [allocations] = await q(`SELECT count(*)::int AS count, sum(treasury_usd) AS treasury, sum(operations_usd) AS operations
+    FROM revenue_allocation_journal`)
   const [pendingExpenses] = await q(`SELECT count(*)::int AS n FROM verified_expenses WHERE status='recorded'`)
 
   return {
@@ -159,7 +164,7 @@ async function transparencyReport(pool, treasury) {
       rateDefinitions: 'Pass rate = passed ÷ (passed + failed + expired) for that stage. First payout rate = funded accounts with ≥1 paid withdrawal ÷ funded accounts.',
     },
     payouts: {
-      source: 'withdrawal_requests (approved = reviewed obligation; paid = transfer recorded with payout reference)',
+      source: 'withdrawal_requests',
       paid: { count: wd.paid_count, totalUsd: usd(wd.paid_sum) },
       approvedAwaitingTransfer: { count: wd.approved_count, totalUsd: usd(wd.approved_sum) },
       requestedUnderReview: { count: wd.requested_count, totalUsd: usd(wd.requested_sum) },
@@ -167,7 +172,7 @@ async function transparencyReport(pool, treasury) {
       averagePerRecipientUsd: wd.recipients ? usd(D(wd.paid_sum).div(wd.recipients)) : null,
       payoutToNetRevenue: ratio(wd.paid_sum, net),
       monthly: payoutMonthly.map(m => ({ month: m.month, payouts: m.payouts, totalUsd: usd(m.total) })),
-      transactions: payoutTx.map(t => ({ at: t.reviewed_at, amountUsd: t.amount_usd, explorerUrl: explorerTxUrl(chain, t.payout_ref) })),
+      transactions: payoutTx.map(t => ({ at: t.transaction_at, amountUsd: t.amount_usd, explorerUrl: explorerTxUrl(t.chain_id, t.payout_ref) })),
     },
     treasury: tv,
     flows: {
@@ -177,12 +182,14 @@ async function transparencyReport(pool, treasury) {
     },
     position,
     liveProgram: programCapacity(position),
+    allocations: allocations.count ? { treasuryUsd: usd(allocations.treasury), operationsUsd: usd(allocations.operations) } : null,
     expenses: {
       source: 'verified_expenses (status=verified; each row cites a provider API, invoice, receipt or contract reference)',
       categories: EXPENSE_CATEGORIES.map(c => { const r = expenses.find(e => e.category === c); return { category: c, totalUsd: usd(r?.total || 0), records: r?.records || 0 } }),
       totalUsd: usd(expenses.reduce((s, e) => s.plus(e.total), D(0))),
       awaitingVerification: pendingExpenses.n,
-      records: expenseRows.map(r => ({ category: r.category, description: r.description, amount: r.amount, currency: r.currency, amountUsd: r.amount_usd, incurredOn: r.incurred_on, periodStart: r.period_start, periodEnd: r.period_end, source: r.source, reference: r.invoice_reference, paymentStatus: r.payment_status })),
+      paidUsd: usd(expenses.reduce((s, e) => s.plus(e.paid ?? 0), D(0))),
+      unpaidUsd: usd(expenses.reduce((s, e) => s.plus(e.unpaid ?? 0), D(0))),
     },
   }
 }
@@ -213,6 +220,13 @@ export function economyAdminRoutes({ pool, treasury, onChange = () => {} }) {
   const text = (v, max, req = true) => { if (v == null || v === '') { if (req) throw fail(400, 'missing_field'); return null } if (typeof v !== 'string' || v.length > max) throw fail(400, 'invalid_field'); return v.trim() }
   const date = (v, req = true) => { if (v == null || v === '') { if (req) throw fail(400, 'missing_date'); return null } if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) throw fail(400, 'invalid_date'); return v }
   const done = (res, body) => { onChange(); res.json(body) }
+
+  const allocationReadLimit = rateLimit({ windowMs: 60_000, limit: 30 })
+  router.get('/treasury/allocations', allocationReadLimit, wrap(async (req, res) => {
+    const policies = (await pool.query('SELECT * FROM revenue_allocation_policies ORDER BY effective_at DESC LIMIT 100')).rows
+    const entries = (await pool.query('SELECT * FROM revenue_allocation_journal ORDER BY id DESC LIMIT 200')).rows
+    res.set('Cache-Control', 'no-store').json({ policies, entries })
+  }))
 
   router.post('/treasury/refresh', wrap(async (req, res) => { adminActor(req); done(res, await treasury.refresh()) }))
 

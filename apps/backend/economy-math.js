@@ -226,15 +226,24 @@ export function scenario(input) {
   }
   const refunds = gross.mul(D(input.refundRatePct || 0).div(100))
   const net = gross.minus(refunds)
-  const paidTraders = sold.mul(D(input.passRatePct || 0).div(100)).mul(D(input.firstPayoutRatePct || 0).div(100))
+  const funded = sold.mul(D(input.passRatePct || 0).div(100)).mul(D(input.activationRatePct ?? 100).div(100))
+  const paidTraders = funded.mul(D(input.firstPayoutRatePct || 0).div(100))
   const payouts = paidTraders.mul(D(input.avgTotalPayoutUsd || 0))
+  const traderSplit = Dx.clamp(D(input.averageTraderSplitPct ?? 100), 75, 100)
+  const ibPayouts = payouts.mul(D(input.attributedIbPct || 0).div(100)).mul(D(100).minus(traderSplit)).div(traderSplit)
+  const payoutLiabilities = payouts.plus(ibPayouts).plus(D(input.existingPayoutLiabilitiesUsd || 0))
+  const estimatedTreasuryAllocation = cents(net.mul('0.59'))
+  const estimatedOperationsAllocation = cents(net).minus(estimatedTreasuryAllocation)
   const commissions = net.mul(D(input.ambassadorSharePct || 0).div(100)).mul(AMBASSADOR_COMMISSION_RATE)
   const opex = D(input.operatingCostsUsd || 0)
-  const remaining = net.minus(payouts).minus(commissions).minus(opex)
+  const remaining = net.minus(payoutLiabilities).minus(commissions).minus(opex)
   const reserves = Dx.max(D(0), remaining).mul(D(input.reservePct || 0).div(100))
   return {
     grossRevenue: usd(gross), refunds: usd(refunds), netRevenue: usd(net), paidTraders: paidTraders.toFixed(1),
-    traderPayouts: usd(payouts), ambassadorCommissions: usd(commissions), operatingCosts: usd(opex),
+    funded: funded.toFixed(1), traderPayouts: usd(payouts), ibPayouts: usd(ibPayouts), payoutLiabilities: usd(payoutLiabilities),
+    estimatedTreasuryAllocation: usd(estimatedTreasuryAllocation), estimatedOperationsAllocation: usd(estimatedOperationsAllocation),
+    payoutCoverage: payoutLiabilities.gt(0) ? estimatedTreasuryAllocation.div(payoutLiabilities).toFixed(6) : null,
+    ambassadorCommissions: usd(commissions), operatingCosts: usd(opex),
     remainingCapital: usd(remaining), reserves: usd(reserves), availableAllocatable: usd(remaining.minus(reserves)),
   }
 }

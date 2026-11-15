@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { rateLimit } from 'express-rate-limit'
 import crypto from 'node:crypto'
 
 /**
@@ -93,7 +94,8 @@ export function referralRoutes({ pool, requireAuth, audit }) {
      attribution list. Nothing else exists to show — reward data is not
      invented here. Auth is applied per route — a router-level guard would
      also swallow requests for unrelated routes mounted after this router. */
-  router.get('/referral/summary', requireAuth, async (req, res) => {
+  const summaryLimit = rateLimit({ windowMs: 60_000, limit: 60 })
+  router.get('/referral/summary', requireAuth, summaryLimit, async (req, res) => {
     try {
       const code = await ensureCode(pool, req.user.user_id)
       const referrals = await pool.query(
@@ -103,6 +105,13 @@ export function referralRoutes({ pool, requireAuth, audit }) {
           WHERE a.referrer_user_id = $1
           ORDER BY a.attributed_at DESC
           LIMIT 200`,
+        [req.user.user_id])
+      const { rows: [purchases] } = await pool.query(
+        `SELECT count(DISTINCT o.user_id)::int AS count
+           FROM referral_attributions a
+           JOIN purchase_orders o ON o.user_id=a.referred_user_id AND o.created_at>=a.attributed_at
+          WHERE a.referrer_user_id=$1 AND o.payment_required AND o.lifecycle_state IN ('provisioned','partially_refunded')
+            AND EXISTS (SELECT 1 FROM payments p WHERE p.purchase_order_id=o.id AND p.status='confirmed')`,
         [req.user.user_id])
       const mine = await pool.query(
         `SELECT a.code, a.attributed_at, u.wallet_address AS referrer
@@ -114,6 +123,7 @@ export function referralRoutes({ pool, requireAuth, audit }) {
         code: code.code,
         codeCreatedAt: code.created_at,
         programState: 'prelaunch',
+        verifiedFirstPurchases: purchases.count,
         attributed: {
           count: referrals.rowCount,
           referrals: referrals.rows.map(row => ({

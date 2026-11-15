@@ -48,7 +48,7 @@ The position is `verified` only when the snapshot exists, is fresh, is fully pri
 |---|---|
 | Sales | `purchase_orders` with `status='paid'`, a state set only by verified payment. Net revenue is gross minus refunds and chargebacks from `payment_adjustments`. Payment success rate is paid ÷ (paid + expired + cancelled). |
 | Challenges | `openfund_challenges`, read only. Final pass means the final stage (stage = number of phases) has `status='passed'`. Funded means instant (stage 0) or a final pass. Stage pass rates are passed ÷ (passed + failed + expired). |
-| Payouts | `withdrawal_requests`: `approved` is an obligation, `paid` is a transfer recorded with a reference. Explorer links are listed with date and amount only. |
+| Payouts | `withdrawal_requests`: `approved` is an obligation, `paid` is a transfer recorded with a reference. Finalized Arbitrum One DAI evidence supplies the explorer links for new funded rewards. See [funded reward settlement](FUNDED_SETTLEMENT.md). |
 | Expenses | `verified_expenses` with `status='verified'`. Each record needs a source (`provider_api`, `invoice`, `receipt`, `contract`) and an invoice reference. Non-USD records need an FX reference. A record must be verified by a different operator than the one who recorded it. Estimates from server usage are never recorded as invoices. |
 
 None of the Render, database, CMS or market-data providers is currently connected through a billing API. Their costs enter as verified invoice records.
@@ -56,3 +56,40 @@ None of the Render, database, CMS or market-data providers is currently connecte
 ## Privacy
 
 Only aggregates are published. The report never contains user ids, user wallet addresses, per-trader outcomes, or links between a wallet and a failed challenge. The cache is five minutes.
+
+## Revenue allocation journal
+
+An owner-approved immutable policy records a UTC sales cutoff and an eligible
+base. The registry starts empty. Verified purchases at or after an approved
+cutoff can recognize listed price or the verified order price, according to
+the policy. Prior purchases require a separately reviewed backfill. Provider
+fees remain unknown when settlement evidence does not establish them. A base
+that deducts fees requires an authoritative fee source and a new policy.
+
+The journal allocates 59% of the selected base to treasury and 41% to
+operations. Operations receives rounding residue. Refund and chargeback
+entries reverse the original policy proportionally and reconcile exactly
+when fully reversed. The journal represents obligations and allocation.
+On-chain movements are separately reconciled.
+
+Authorized economy operators can inspect policy and journal records at
+`GET /admin/economy/treasury/allocations`. The public report presents
+aggregate allocations and paid/unpaid verified expenses while operator
+records retain supporting references.
+
+## Finalized token transfer reconciliation
+
+The reconciler reads configured EVM treasury tokens from an owner-approved
+initial block in `treasury_transfer_cursors`. A treasury wallet, its token
+list and an RPC supporting finalized blocks and historical balances are
+required. The migration seeds no address or cursor. An account receiving
+checkouts can identify internal transfers when it is configured for the same
+network. It does not acquire payout authority.
+
+Each batch compares opening and closing token balances with finalized
+transfer logs. An imbalance leaves the cursor in place and reports a
+reconciliation warning. Matched results advance atomically, with chain,
+transaction hash and log index providing unique movement identity. Public
+explorer links exclude internal transfers and do not establish sales
+recognition. The reporting snapshot continues to distinguish allocation
+entries, recorded expenses and observed movements.

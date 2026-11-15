@@ -47,11 +47,11 @@ instead of repeating it. Historical reviews keep their original wording.
 
 ## Economy and partner programs
 
-[Economy overview](economy/README.md) · [Business model and operations overview](economy/BUSINESS_MODEL.md) · [Treasury and data sources](economy/TREASURY.md) · [Ambassador (IB): Ambassador and Coach](economy/PARTNER_PROGRAMS.md) · [Live Market Access](economy/LIVE_MARKET_ACCESS.md)
+[Economy overview](economy/README.md) · [Business model and operations overview](economy/BUSINESS_MODEL.md) · [Treasury and data sources](economy/TREASURY.md) · [Funded settlement](economy/FUNDED_SETTLEMENT.md) · [Ambassador (IB): Ambassador and Coach](economy/PARTNER_PROGRAMS.md) · [Live Market Access](economy/LIVE_MARKET_ACCESS.md)
 
 ## Payments
 
-[Payment verification and recovery](payments/VERIFICATION.md) · [Payment activation checklist](payments/ACTIVATION.md) · [DePay (multi-chain) and dashboard report](payments/DEPAY.md) · [DePay owner setup](payments/OWNER_SETUP.md) · [Coupons and zero-payment purchases](payments/COUPONS.md) · [Order lifecycle](payments/ORDER_LIFECYCLE.md)
+[Payment verification and recovery](payments/VERIFICATION.md) · [Payment activation checklist](payments/ACTIVATION.md) · [SIWE and DePay domain check](payments/DOMAIN_READINESS.md) · [DePay (multi-chain) and dashboard report](payments/DEPAY.md) · [DePay owner setup](payments/OWNER_SETUP.md) · [Coupons and zero-payment purchases](payments/COUPONS.md) · [Order lifecycle](payments/ORDER_LIFECYCLE.md)
 
 ## Protocol (dormant)
 

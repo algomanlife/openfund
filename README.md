@@ -6,8 +6,8 @@
 
 **A clearer way forward**
 
-Trading evaluations with published rules, a professional trading terminal,
-read-only market analytics and a transparent economy — in one wallet-native platform.
+An open-development prop trading firm and trading technology platform for
+trading evaluations, funded programs, trader rewards and financial transparency.
 
 [**openfi.cloud**](https://openfi.cloud) · [**openfund.cloud**](https://openfund.cloud) · [Documentation](docs/README.md) · [Roadmap](ROADMAP.md) · [Changelog](CHANGELOG.md)
 
@@ -28,9 +28,11 @@ read-only market analytics and a transparent economy — in one wallet-native pl
 
 ## Project overview
 
-Openfund is building a fairer trading ecosystem for traders who want to prove
-their skill before risking their own capital, and who want to be able to check
-the rules they are measured by.
+Openfund develops challenge and funded programs alongside the Web Terminal,
+Open Trade desktop and market analytics. Evaluation and funded-demo trades are
+simulated. Trader rewards follow the applicable terms and require human review.
+Real-market allocation depends on verified free capital, controls and explicit
+authorization.
 
 - **Prop trading evaluation.** Traders choose a challenge, trade a simulated
   account under published rules, and the server — never the browser —
@@ -49,6 +51,9 @@ the rules they are measured by.
 
 Openfund is early-stage. Nothing here claims revenue, user numbers, funding,
 partnerships or regulatory approval.
+
+The [one-year roadmap](ROADMAP.md#one-year-product-roadmap) covers funded operations,
+partner growth, platform expansion and operational scaling.
 
 ## Product ecosystem
 

@@ -16,7 +16,18 @@ Openfund develops a shared trading environment in seven phases. The order expres
 
 Every milestone has a status, dependencies, acceptance criteria and evidence in [Milestones](docs/roadmap/MILESTONES.md). Use that register for completion decisions.
 
-The website Roadmap page (`/:locale/roadmap`) mirrors the phase table above; `apps/web-react/test/roadmap.test.mjs` fails when they differ, so edit this table first. The owner's product roadmap will be added to both when supplied; no milestones, dates or percentages are published before then.
+The website Roadmap page (`/:locale/roadmap`) mirrors the engineering phase
+table above. The roadmap test checks the descriptions against this register.
+
+## One-year product roadmap
+
+The plan runs from November 15, 2026 through November 14, 2027. The
+[structured product roadmap](apps/web-react/src/features/roadmap/productRoadmap.ts)
+is the source for the website and whitepaper. The first quarter targets
+approximately 2,000 registered users by early 2027. Later growth targets
+await owner approval for public use. External trading platform integrations
+depend on licensing and technical access. Live allocation also requires at
+least $500,000 in verified free capital after relevant reserves and obligations.
 
 - [Product roadmap](docs/roadmap/PRODUCT.md)
 - [Engineering roadmap](docs/roadmap/ENGINEERING.md)

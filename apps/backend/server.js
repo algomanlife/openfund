@@ -30,6 +30,7 @@ import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
 import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments, paymentReadinessReport, paymentChains, DEPAY_SIGNED_PATHS } from './purchases.js'
 import { adminRoutes } from './admin.js'
+import { createPayoutClaimClient } from './payout-claims.js'
 import { chartWorkspaceRoutes } from './chart-workspaces.js'
 import { supportRoutes, supportAdminRoutes } from './support.js'
 import { rewardRoutes, rewardAdminRoutes } from './rewards.js'
@@ -43,11 +44,11 @@ import { governanceRoutes } from './governance-routes.js'
 import { partnerRoutes, partnerAdminRoutes, attributeAmbassador } from './partners.js'
 import { economyRoutes, economyAdminRoutes } from './economy.js'
 import { liveRoutes, liveAdminRoutes, liveConfig, processSettlements, settlementAdapter } from './live-funding.js'
-import { Treasury, TreasuryNetworks, treasuryNetworksConfig } from './treasury.js'
+import { treasuryConfig, Treasury, TreasuryNetworks, treasuryNetworksConfig } from './treasury.js'
 import { createTradingStreamHub } from './trading-stream.js'
 import { edgeClientIpMiddleware } from './edge-client-ip.js'
 import { regionConfig, hasRole, assertDatabaseRegion, RuntimeState, regionGuard, httpRoleGate, statusBody, runtimeAdminRoutes, payoutGuard } from './region.js'
-import { syncConfig, SyncWorker, syncPeerRoutes, PROTOCOL_VERSION } from './regional-sync.js'
+import { syncConfig, SyncWorker, syncPeerRoutes, signedHeaders, PROTOCOL_VERSION } from './regional-sync.js'
 import { regionalAdminRoutes, remoteAccountRoutes } from './regional-admin.js'
 import { cmsSnapshotRoutes, cmsSnapshotOrigin } from './cms-snapshot.js'
 import { adminAuth, adminActor } from './admin.js'
@@ -812,7 +813,9 @@ const footprint = createFootprintService({ mainPool: pool })
 app.use(footprint.router)
 app.use('/governance', governanceRoutes({ pool, requireAuth, limit }))
 /* Economy, Brand Ambassador, Verified Coach and Live Market Access */
-const treasury = new Treasury(pool)
+const treasurySettings = treasuryConfig()
+const treasury = new Treasury(pool, { config: treasurySettings,
+  receivers: paymentChains().filter(c => c.chainId === treasurySettings.chainId).map(c => c.receiver).filter(Boolean) })
 const live = liveConfig()
 /* treasury wallets per network = the payment settlement receivers (one configuration) */
 const treasuryNetworks = new TreasuryNetworks({ networks: treasuryNetworksConfig(paymentChains()) })
@@ -834,7 +837,7 @@ app.use('/admin/regional', regionalAdminRoutes({ Router: express.Router, pool, r
 app.use(remoteAccountRoutes({ Router: express.Router, pool, requireAuth }))
 /* same-origin public CMS content with a last-known-good snapshot (primary on IRAN, fallback on GLOBAL) */
 app.use('/cms', limit(240), cmsSnapshotRoutes({ pool, origin: cmsSnapshotOrigin(process.env) }))
-app.use('/admin', adminRoutes({ pool, audit }))
+app.use('/admin', adminRoutes({ pool, audit, claimPayout: createPayoutClaimClient(sync, signedHeaders) }))
 
 /* Public, read-only: region, mode and which operations the backend permits. */
 app.get('/runtime/status', asyncRoute(async (req, res) => {

@@ -3,6 +3,8 @@ export interface TreasuryAsset { symbol: string; address: string; decimals: numb
 export interface TreasuryView {
   configured: boolean; configError: string | null; address: string | null; chainId: number; network: string | null; explorerUrl: string | null; refreshMinutes: number
   status: 'not_configured' | 'ok' | 'stale' | 'unavailable' | 'pending_first_read'; stale?: boolean
+  reconciliation?: { token: string; status: string; syncedAt: string | null; block: string | null; differenceUnits: string | null; stale: boolean }[]
+  movements?: { direction: 'inbound' | 'outbound'; explorerUrl: string | null; token: string; block: string; amount: string | null }[]
   lastAttempt?: { at: string; status: string } | null
   snapshot: { takenAt: string; blockNumber: number; assets: TreasuryAsset[]; totalUsd: string; fullyPriced: boolean } | null
   history: { day: string; totalUsd: string; fullyPriced: boolean }[]
@@ -28,7 +30,8 @@ export interface TransparencyReport {
   flows: { inflows: { verifiedPayments: number; totalUsd: string } | null; outflows: { traderRewardsUsd: string; ambassadorCommissionsUsd: string; liveSettlementsUsd: string; expensesUsd: string; refundsUsd: string; definition: string } }
   position: FinancialPosition
   liveProgram: Capacity
+  allocations?: { treasuryUsd: string; operationsUsd: string } | null
   expenses: { source: string; categories: { category: string; totalUsd: string; records: number }[]; totalUsd: string; awaitingVerification: number
-    records: { category: string; description: string; amount: string; currency: string; amountUsd: string; incurredOn: string; source: string; reference: string; paymentStatus: string }[] }
+    paidUsd?: string; unpaidUsd?: string }
 }
 export interface EligibilityCheck { key: string; ok: boolean; value?: number | string | null; required?: number | string | null }

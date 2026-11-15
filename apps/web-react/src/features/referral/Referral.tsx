@@ -18,6 +18,7 @@ const BENEFIT_GLYPHS: Record<ReferralBenefit['icon'], string> = {
 interface ReferralSummary {
   code: string
   programState: string
+  verifiedFirstPurchases?: number
   attributed: { count: number, referrals: Array<{ joinedAt: string, wallet: string, status: string }> }
   attributedTo: { code: string, at: string, referrer: string } | null
 }
@@ -91,6 +92,10 @@ function ReferralDashboard({ locale }: { locale: Locale }) {
           <strong>{number(data.attributed.count, locale)}</strong>
           <small>{text('created through your code', 'ساخته‌شده با کد تو')[locale]}</small>
         </div>
+        {data.verifiedFirstPurchases != null && <div className="referral-stat">
+          <span>{text('Confirmed first purchases', 'اولین خریدهای تأییدشده')[locale]}</span>
+          <strong>{number(data.verifiedFirstPurchases, locale)}</strong>
+        </div>}
         {data.attributedTo && <div className="referral-stat">
           <span>{text('Your account was referred by', 'حساب تو معرفی شده توسط')[locale]}</span>
           <strong dir="ltr">{data.attributedTo.code}</strong>

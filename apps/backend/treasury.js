@@ -1,3 +1,4 @@
+import { reconcileTreasuryTransfers } from './treasury-reconciliation.js'
 /**
  * Openfund Treasury reader.
  *
@@ -66,6 +67,10 @@ export function chainReader(config) {
   const client = createPublicClient({ chain: CHAINS.get(config.chainId), transport: http(config.rpcUrl, { timeout: 10_000, retryCount: 1 }) })
   return {
     blockNumber: () => client.getBlockNumber(),
+    getChainId: () => client.getChainId(),
+    getBlock: args => client.getBlock(args),
+    getLogs: args => client.getLogs(args),
+    balance: (token, address, blockNumber) => client.readContract({ address: token, abi: ERC20, functionName: 'balanceOf', args: [address], blockNumber }),
     nativeBalance: (address, blockNumber) => client.getBalance({ address, blockNumber }),
     tokenBalance: (token, address, blockNumber) => client.readContract({ address: token, abi: ERC20, functionName: 'balanceOf', args: [address], blockNumber }),
     price: async (feed) => {
@@ -79,10 +84,12 @@ export function chainReader(config) {
 }
 
 export class Treasury {
-  constructor(pool, { config = treasuryConfig(), reader = null, now = () => Date.now() } = {}) {
+  constructor(pool, { config = treasuryConfig(), reader = null, now = () => Date.now(), receivers = [] } = {}) {
     this.pool = pool; this.config = config; this.now = now
     this.reader = reader || (config.configured ? chainReader(config) : null)
     this.timer = null
+    this.receivers = receivers
+    this.reconciling = null
   }
 
   /** One snapshot attempt; always records the outcome. */
@@ -122,6 +129,11 @@ export class Treasury {
         `INSERT INTO treasury_snapshots (chain_id, address, status, block_number, assets, total_usd, fully_priced)
          VALUES ($1,$2,'ok',$3,$4,$5,$6) RETURNING id, taken_at`,
         [c.chainId, c.address, Number(blockNumber), JSON.stringify(assets), centsToUsd(totalCents), fullyPriced])
+      if (this.reader.getLogs && !this.reconciling) {
+        this.reconciling = reconcileTreasuryTransfers(this.pool, c, this.reader, this.receivers)
+          .catch(error => console.error('[treasury] transfer reconciliation:', error.message))
+          .finally(() => { this.reconciling = null })
+      }
       return { status: 'ok', id: row.id }
     } catch (e) {
       await this.pool.query(
@@ -150,12 +162,23 @@ export class Treasury {
       `SELECT DISTINCT ON (date_trunc('day', taken_at)) date_trunc('day', taken_at) AS day, total_usd, fully_priced, taken_at
          FROM treasury_snapshots WHERE address=$1 AND chain_id=$2 AND status='ok' AND taken_at > now() - ($3 || ' days')::interval
         ORDER BY date_trunc('day', taken_at), taken_at DESC`, [c.address, c.chainId, String(historyDays)])).rows
+    const transfers = (await this.pool.query(`SELECT token_address, status, last_sync_at, reconciled_block, difference_units
+      FROM treasury_transfer_cursors WHERE chain_id=$1 AND treasury_address=$2 ORDER BY token_address`, [c.chainId, c.address])).rows
+    const movements = transfers.length ? (await this.pool.query(`SELECT direction,transaction_hash,token_address,amount_units,block_number
+      FROM treasury_token_movements WHERE chain_id=$1 AND treasury_address=$2 AND direction<>'internal'
+      ORDER BY block_number DESC,log_index DESC LIMIT 20`, [c.chainId, c.address])).rows : []
     const ageMs = ok ? this.now() - new Date(ok.taken_at).getTime() : Infinity
     const stale = !ok || ageMs > c.refreshMinutes * 2 * 60_000 || (last && last.status === 'error')
     return {
       ...base,
       status: ok ? (stale ? 'stale' : 'ok') : (last ? 'unavailable' : 'pending_first_read'),
       stale: !!stale,
+      reconciliation: transfers.map(t => ({ token: t.token_address, status: t.status, syncedAt: t.last_sync_at,
+        block: t.reconciled_block, differenceUnits: t.difference_units,
+        stale: !t.last_sync_at || this.now() - +new Date(t.last_sync_at) > c.refreshMinutes * 2 * 60_000 })),
+      movements: movements.map(m => ({ direction: m.direction, explorerUrl: explorerTxUrl(c.chainId, m.transaction_hash),
+        token: m.token_address, block: m.block_number,
+        amount: (() => { const asset = c.assets.find(a => a.address === m.token_address); return asset ? formatUnits(BigInt(m.amount_units), asset.decimals) : null })() })),
       lastAttempt: last ? { at: last.taken_at, status: last.status } : null,
       snapshot: ok ? { takenAt: ok.taken_at, blockNumber: Number(ok.block_number), assets: ok.assets, totalUsd: ok.total_usd, fullyPriced: ok.fully_priced } : null,
       history: history.map(h => ({ day: h.day, totalUsd: h.total_usd, fullyPriced: h.fully_priced })),

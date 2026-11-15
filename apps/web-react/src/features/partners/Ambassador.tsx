@@ -15,6 +15,7 @@ interface Dashboard {
   referredSignups: number; confirmedFirstPurchases: number; eligibleRevenueUsd: string
   earnedUsd: string; reversedUsd: string; paidUsd: string; pendingSettlementUsd: string
   history: { id: string; type: string; baseUsd: string | null; amountUsd: string; payoutReference: string | null; campaign: string | null; at: string }[]
+  fundedRewards?: { accounts: number; contingentUsd: string; pendingUsd: string; approvedUsd: string; paidUsd: string }
   campaigns: { campaign: string; visits: number; purchases: number; earnedUsd: string }[]
 }
 
@@ -36,6 +37,15 @@ function AmbassadorDashboard({ locale }: { locale: Locale }) {
       <Kpi label={t('Paid commissions', 'کمیسیون پرداخت‌شده')[locale]} value={usd(x.paidUsd, locale)} />
       <Kpi label={t('Pending settlement', 'در انتظار تسویه')[locale]} value={usd(x.pendingSettlementUsd, locale)} tone="warn" />
     </div>
+    {x.fundedRewards && <section className="econ-panel">
+      <h3>{t('Funded IB rewards', 'پاداش IB حساب فاندد')[locale]}</h3>
+      <div className="econ-grid">
+        <Kpi label={t('Contingent', 'مشروط')[locale]} value={usd(x.fundedRewards.contingentUsd, locale)} />
+        <Kpi label={t('Pending settlement', 'در انتظار تسویه')[locale]} value={usd(x.fundedRewards.pendingUsd, locale)} />
+        <Kpi label={t('Approved', 'تأییدشده')[locale]} value={usd(x.fundedRewards.approvedUsd, locale)} />
+        <Kpi label={t('Paid', 'پرداخت‌شده')[locale]} value={usd(x.fundedRewards.paidUsd, locale)} />
+      </div>
+    </section>}
     <div className="econ-grid two" style={{ marginTop: 16 }}>
       <div className="econ-panel"><h3>{t('Traffic, last 30 days', 'ترافیک ۳۰ روز اخیر')[locale]}</h3><Bars locale={locale} label={t('Unique visitor-days', 'بازدیدکنندهٔ یکتا در روز')[locale]} points={x.traffic.series.map(p => ({ key: String(p.day).slice(0, 10), value: p.visits }))} format={v => int(v, locale)} /></div>
       <div className="econ-panel"><h3>{t('Campaign performance', 'عملکرد کمپین‌ها')[locale]}</h3>{x.campaigns.length ? <div className="econ-list">{x.campaigns.map(c => <div key={c.campaign}><span dir="ltr">{c.campaign}</span><span>{int(c.visits, locale)} · {int(c.purchases, locale)} · {usd(c.earnedUsd, locale)}</span></div>)}</div> : <p className="econ-empty">{t('No campaign activity yet.', 'هنوز فعالیتی برای کمپین ثبت نشده است.')[locale]}</p>}</div>

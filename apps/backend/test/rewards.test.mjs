@@ -1,3 +1,5 @@
+import { FUNDED_PAYOUT_CYCLES, fundedPayoutBoundary } from '../funded-policy.js'
+import { randomBytes } from 'node:crypto'
 /**
  * Reward lifecycle on real PostgreSQL — owner decisions D1, D2 and D5 on
  * rules snapshot v3, plus the unchanged terms of snapshots sold before it:
@@ -73,6 +75,15 @@ async function trade(userId, challengeId, trades) {
   await pool.query('UPDATE demo_accounts SET balance=$2 WHERE id=$1', [c.demo_account_id, balance])
   return balance
 }
+const hashPrefix = randomBytes(31).toString('hex')
+const hash = n => '0x' + hashPrefix + n.toString(16).padStart(2, '0')
+const recordPaid = (id, n) => call('POST', `/admin/withdrawals/${id}/review`, { admin: true, body: { action: 'paid', payoutRef: hash(n) } })
+const seedRequested = async (user, challenge, days = 0) => {
+  const { rows: [w] } = await pool.query(`INSERT INTO withdrawal_requests (user_id, challenge_id, amount_usd, kind, requested_at)
+    VALUES ($1,$2,100,'reward',now() - make_interval(days => $3)) RETURNING id`, [user, challenge, days])
+  assert.equal((await call('POST', `/admin/withdrawals/${w.id}/review`, { admin: true, body: { action: 'approve' } })).status, 200)
+  return w
+}
 const approve = async id => call('POST', `/admin/rewards/reviews/${id}`, { admin: true, body: { decision: 'approve', note: 'clean evaluation' } })
 
 before(async () => {
@@ -86,7 +97,8 @@ before(async () => {
   app.use(express.json())
   app.use(rewardRoutes({ pool, requireAuth }))
   app.use('/admin/rewards', rewardAdminRoutes({ pool }))
-  app.use('/admin', adminRoutes({ pool, audit: async () => {} }))
+  app.use('/new-policy/admin/rewards', rewardAdminRoutes({ pool, fundedPolicyFrom: '2020-01-01' }))
+  app.use('/admin', adminRoutes({ pool, audit: async () => {}, verifyPayout: async ({ hash, recipient, amount }) => ({ transactionHash: hash, recipient, amount, finality: 'finalized', transactionAt: new Date().toISOString() }) }))
   app.use((err, req, res, next) => res.status(err.status || 500).json({ error: err.status ? err.message : 'internal', detail: err.status ? undefined : String(err.message) }))
   server = app.listen(0); base = `http://127.0.0.1:${server.address().port}`
 })
@@ -194,12 +206,26 @@ test('R9 v3: review → funded account waits for a one-time cycle choice → req
   assert.equal((await call('POST', '/withdrawals', { user, body: { challengeId: fundedId } })).status, 409, 'one open request per account')
   assert.equal((await call('POST', `/admin/withdrawals/${req1.data.id}/review`, { admin: true, body: { action: 'reject', note: 'needs review' } })).status, 200)
   assert.equal(await bal(), 10600, 'rejection re-credits the profit')
+  const threadPath = `/withdrawals/${req1.data.id}/thread`
+  assert.equal((await call('GET', threadPath, { user: other })).status, 404)
+  assert.equal((await call('GET', threadPath, { user })).data.rejectionReason, 'needs review')
+  const appeal = await call('POST', threadPath, { user, body: { action: 'appeal', message: 'Please review the trade history again.' } })
+  assert.equal(appeal.data.appealPending, true)
+  assert.equal(appeal.data.status, 'rejected')
+  assert.equal((await call('GET', `/admin${threadPath}`, { admin: true })).data.unread, 1)
+  const reply = await call('POST', `/admin${threadPath}`, { admin: true, body: { action: 'resolve_appeal', message: 'Original review upheld.' } })
+  assert.equal(reply.data.appealPending, false)
+  assert.equal(reply.data.status, 'rejected')
+  assert.equal((await call('GET', threadPath, { user })).data.unread, 1)
+  assert.equal((await call('POST', threadPath, { user, body: { action: 'read', through: reply.data.total } })).data.unread, 0)
+
   const req2 = await call('POST', '/withdrawals', { user, body: { challengeId: fundedId } })
   assert.equal(req2.status, 200)
   assert.equal((await call('POST', `/admin/withdrawals/${req2.data.id}/review`, { admin: true, body: { action: 'approve', note: 'ok' } })).status, 200)
-  assert.equal((await call('POST', `/admin/withdrawals/${req2.data.id}/review`, { admin: true, body: { action: 'paid', payoutRef: 'manual-usdt-0001' } })).status, 200)
+  assert.equal((await call('POST', `/admin/withdrawals/${req2.data.id}/review`, { admin: true, body: { action: 'paid', payoutRef: 'manual-usdt-0001' } })).status, 400)
+  assert.equal((await recordPaid(req2.data.id, 1)).status, 200)
   const row = (await pool.query('SELECT * FROM withdrawal_requests WHERE id=$1', [req2.data.id])).rows[0]
-  assert.deepEqual([row.kind, row.status, row.payout_ref, row.amount_usd, row.gross_profit_usd, Number(row.split_pct), row.reward_cycle], ['reward', 'paid', 'manual-usdt-0001', '480.00', '600.00', 80, 'biweekly'])
+  assert.deepEqual([row.kind, row.status, row.payout_ref, row.amount_usd, row.gross_profit_usd, Number(row.split_pct), row.reward_cycle], ['reward', 'paid', hash(1), '480.00', '600.00', 80, 'biweekly'])
   await trade(user, fundedId, [{ daysAgo: 0, net: 300 }])
   const next = await call('POST', '/withdrawals', { user, body: { challengeId: fundedId } })
   assert.equal(next.status, 409); assert.ok(next.data.checks.some(c => c.key === 'waiting_period'))
@@ -212,16 +238,18 @@ test('R10 D5: the Standard fee refund is created exactly once, when the fourth r
   await call('POST', `/rewards/accounts/${fundedId}/cycle`, { user, body: { cycle: 'weekly' } })
   const ids = []
   for (let i = 0; i < 4; i++) {
-    const w = (await pool.query(`INSERT INTO withdrawal_requests (user_id, challenge_id, amount_usd, status, kind, requested_at) VALUES ($1,$2,100,'approved','reward', now() - make_interval(days => $3)) RETURNING id`, [user, fundedId, 40 - i * 7])).rows[0]
+    const w = await seedRequested(user, fundedId, 40 - i * 7)
     ids.push(w.id)
-    const r = await call('POST', `/admin/withdrawals/${w.id}/review`, { admin: true, body: { action: 'paid', payoutRef: `ref-${i}` } })
+    const r = await call('POST', `/admin/withdrawals/${w.id}/review`, { admin: true, body: { action: 'paid', payoutRef: hash(10 + i) } })
     assert.equal(r.status, 200)
     assert.equal(!!r.data.feeRefund, i === 3, `refund only with the 4th paid reward (got ${JSON.stringify(r.data)})`)
   }
+  const duplicatePayment = await seedRequested(user, fundedId)
+  assert.equal((await recordPaid(duplicatePayment.id, 13)).status, 409)
   const refunds = (await pool.query('SELECT * FROM fee_refunds WHERE purchase_order_id=$1', [order.id])).rows
   assert.equal(refunds.length, 1); assert.equal(refunds[0].amount_usd, '80.00'); assert.equal(refunds[0].status, 'pending')
   assert.equal(refunds[0].withdrawal_id, ids[3])
-  const again = await call('POST', `/admin/withdrawals/${ids[3]}/review`, { admin: true, body: { action: 'paid', payoutRef: 'ref-3' } })
+  const again = await call('POST', `/admin/withdrawals/${ids[3]}/review`, { admin: true, body: { action: 'paid', payoutRef: hash(13) } })
   assert.equal(again.data.duplicate, true)
   assert.equal((await pool.query('SELECT count(*)::int n FROM fee_refunds WHERE purchase_order_id=$1', [order.id])).rows[0].n, 1)
   assert.equal((await call('POST', `/admin/rewards/fee-refunds/${refunds[0].id}/paid`, { admin: true, body: {} })).status, 400)
@@ -237,8 +265,8 @@ test('R11 no fee refund for One-step, nor when the originating order cannot be t
   const fundedId = (await approve(final.id)).data.fundedChallengeId
   await call('POST', `/rewards/accounts/${fundedId}/cycle`, { user, body: { cycle: 'biweekly' } })
   for (let i = 0; i < 4; i++) {
-    const w = (await pool.query(`INSERT INTO withdrawal_requests (user_id, challenge_id, amount_usd, status, kind) VALUES ($1,$2,100,'approved','reward') RETURNING id`, [user, fundedId])).rows[0]
-    assert.equal((await call('POST', `/admin/withdrawals/${w.id}/review`, { admin: true, body: { action: 'paid', payoutRef: `r${i}` } })).data.feeRefund, undefined)
+    const w = await seedRequested(user, fundedId)
+    assert.equal((await call('POST', `/admin/withdrawals/${w.id}/review`, { admin: true, body: { action: 'paid', payoutRef: hash(20 + i) } })).data.feeRefund, undefined)
   }
   const u2 = await newUser()
   const untraced = await finalPass(u2, 'standard', { price: 80 })
@@ -247,8 +275,8 @@ test('R11 no fee refund for One-step, nor when the originating order cannot be t
   const f2 = (await approve(untraced.s2.id)).data.fundedChallengeId
   await call('POST', `/rewards/accounts/${f2}/cycle`, { user: u2, body: { cycle: 'biweekly' } })
   for (let i = 0; i < 4; i++) {
-    const w = (await pool.query(`INSERT INTO withdrawal_requests (user_id, challenge_id, amount_usd, status, kind) VALUES ($1,$2,100,'approved','reward') RETURNING id`, [u2, f2])).rows[0]
-    await call('POST', `/admin/withdrawals/${w.id}/review`, { admin: true, body: { action: 'paid', payoutRef: `z${i}` } })
+    const w = await seedRequested(u2, f2)
+    await call('POST', `/admin/withdrawals/${w.id}/review`, { admin: true, body: { action: 'paid', payoutRef: hash(30 + i) } })
   }
   assert.equal((await pool.query('SELECT count(*)::int n FROM fee_refunds WHERE challenge_id=$1', [f2])).rows[0].n, 0)
   const ev = (await pool.query(`SELECT detail FROM challenge_events WHERE challenge_id=$1 AND kind='fee_refund_not_applicable'`, [f2])).rows[0]
@@ -281,4 +309,81 @@ test('R13 a v2 (pre-v3) final pass is approved under its own terms: starts at on
   assert.equal(w.status, 200, JSON.stringify(w.data)); assert.equal(w.data.amountUsd, '480.00')
   const view = (await call('GET', '/rewards/status', { user })).data.funded.find(f => f.id === funded.id)
   assert.equal(view.legacyTerms, true)
+})
+
+test('calendar anniversaries clamp short months and return to the original UTC day', () => {
+  const monthly = FUNDED_PAYOUT_CYCLES.find(cycle => cycle.key === 'monthly')
+  const activation = '2028-01-31T13:18:00.000Z'
+  assert.equal(fundedPayoutBoundary(activation, monthly).toISOString(), '2028-02-29T13:18:00.000Z')
+  assert.equal(fundedPayoutBoundary(activation, monthly, '2028-02-29T13:18:00.000Z').toISOString(), '2028-03-31T13:18:00.000Z')
+})
+
+test('a qualifying purchase snapshots the four plans and locks the selected cycle', async () => {
+  const user = await newUser()
+  const { final } = await finalPass(user, 'one-phase')
+  const review = await call('POST', `/new-policy/admin/rewards/reviews/${final.id}`, { admin: true, body: { decision: 'approve' } })
+  assert.equal(review.status, 200)
+  const funded = review.data.fundedChallengeId
+  const view = await call('GET', '/rewards/status', { user })
+  assert.deepEqual(view.data.awaitingCycle[0].cycles.map(({key, splitPct}) => [key, splitPct]),
+    [['weekly', 75], ['biweekly', 85], ['triweekly', 90], ['monthly', 100]])
+  const select = cycle => call('POST', `/rewards/accounts/${funded}/cycle`, { user, body: { cycle } })
+  assert.equal((await select('triweekly')).status, 200)
+  assert.equal((await select('monthly')).status, 409)
+  const active = (await call('GET', '/rewards/status', { user })).data.funded[0]
+  assert.equal(active.rewardCycle, 'triweekly')
+  assert.equal(active.eligibility[0].checks.find(check => check.key === 'waiting_period').opensAt,
+    new Date(new Date(active.startedAt).getTime() + 21 * DAY).toISOString())
+  await assert.rejects(pool.query(`UPDATE openfund_challenges SET rules_snapshot=rules_snapshot - 'rewardCycles' WHERE id=$1`, [funded]),
+    /funded_payout_policy_immutable/)
+  await pool.query(`UPDATE openfund_challenges SET started_at=now() - interval '22 days' WHERE id=$1`, [funded])
+  await trade(user, funded, [{ daysAgo: 2, net: 600 }])
+  const request = await call('POST', '/withdrawals', { user, body: { challengeId: funded } })
+  assert.equal(request.status, 200, JSON.stringify(request.data))
+  const snapshot = (await pool.query('SELECT eligibility FROM withdrawal_requests WHERE id=$1', [request.data.id])).rows[0].eligibility
+  assert.deepEqual(snapshot.distribution, {
+    policy: 'funded-v1', distributable: '600.00', trader: '540.00', ib: '0.00', retained: '60.00', ibEvidence: null,
+  })
+  const account = (await call('GET', '/rewards/status', { user })).data.funded[0]
+  assert.equal(account.requestedPayoutUsd, '540.00')
+  assert.equal(account.equity, '10000.00')
+})
+
+test('funded IB entitlement becomes independently payable after verified trader payment', async () => {
+  const user = await newUser(), ambassador = await newUser()
+  const { final, order } = await finalPass(user, 'one-phase')
+  const { rows: [application] } = await pool.query(`INSERT INTO partner_applications (user_id,role,status,payload,contact_email,terms_version)
+    VALUES ($1,'ambassador','approved','{}','ib-test@example.test','test') RETURNING id`, [ambassador])
+  await pool.query(`INSERT INTO ambassador_profiles (user_id,application_id,referral_code,approved_by)
+    VALUES ($1,$2,$3,'test')`, [ambassador, application.id, ambassador])
+  const { rows: [payment] } = await pool.query(`INSERT INTO payments
+    (purchase_order_id,user_id,chain_id,tx_hash,from_address,to_address,amount) VALUES ($1,$2,42161,$3,$4,$5,80) RETURNING id`,
+  [order.id, user, hash(41), '0x' + '12'.repeat(20), '0x' + '34'.repeat(20)])
+  await pool.query(`INSERT INTO referral_commissions (ambassador_user_id,referred_user_id,entry_type,purchase_order_id,payment_id,amount_usd)
+    VALUES ($1,$2,'earned',$3,$4,8)`, [ambassador, user, order.id, payment.id])
+  const review = await call('POST', `/new-policy/admin/rewards/reviews/${final.id}`, { admin: true, body: { decision: 'approve' } })
+  assert.equal(review.status, 200)
+  const funded = review.data.fundedChallengeId
+  assert.equal((await call('POST', `/rewards/accounts/${funded}/cycle`, { user, body: { cycle: 'weekly' } })).status, 200)
+  await pool.query(`UPDATE openfund_challenges SET started_at=now() - interval '8 days' WHERE id=$1`, [funded])
+  await trade(user, funded, [{ daysAgo: 2, net: 600 }])
+  const requested = await call('POST', '/withdrawals', { user, body: { challengeId: funded } })
+  assert.equal(requested.status, 200, JSON.stringify(requested.data))
+  const w = requested.data.id
+  const policyVersion = `test-${w}`
+  const settle = (action, payoutRef) => call('POST', `/admin/withdrawals/${w}/ib-settlement`, { admin: true, body: { action, policyVersion, payoutRef } })
+  assert.equal((await settle('approve')).data.error, 'ib_settlement_not_eligible')
+  assert.equal((await call('POST', `/admin/withdrawals/${w}/review`, { admin: true, body: { action: 'approve' } })).status, 200)
+  assert.equal((await settle('approve')).data.error, 'ib_settlement_not_eligible')
+  assert.equal((await recordPaid(w, 42)).status, 200)
+  assert.equal((await settle('approve')).data.error, 'ib_policy_unavailable')
+  await pool.query(`INSERT INTO ib_settlement_policies (version,chain_id,token_address,waiting_days,approval_reference,approved_by,effective_at)
+    VALUES ($1,42161,'0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',0,'test approval','test',now())`, [policyVersion])
+  const approved = await settle('approve')
+  assert.equal(approved.status, 200)
+  assert.equal(approved.data.settlement.amount, '150.00')
+  assert.equal(approved.data.settlement.status, 'approved')
+  assert.equal((await settle('paid', hash(42))).status, 409)
+  assert.equal((await settle('paid', hash(43))).data.settlement.status, 'paid')
+  assert.equal((await settle('paid', hash(43))).data.settlement.status, 'paid')
 })

@@ -135,10 +135,13 @@ function ProductGate({ product }: { product: 'prop' | 'perpetual' }) {
   return <TerminalShell product={product} />
 }
 
+const PayoutOperations = lazy(() => import('./features/purchase/PayoutOperations'))
+
 const routes = [
   { path: '/', element: <RootRedirect /> },
   { path: '/:locale/home', element: <LocalizedHome /> },
   { path: '/:locale/challenges', element: <Landing /> },
+  { path: '/:locale/operations/payouts', element: <Suspense fallback={null}><PayoutOperations /></Suspense> },
   { path: '/:locale/checkout', element: <CheckoutPage /> },
   /* sales-campaign landing: fa (RTL) and en (LTR) only; other locales → /en/campaign */
   { path: '/:locale/campaign', element: <Campaign /> },

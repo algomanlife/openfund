@@ -1072,7 +1072,9 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
   router.get('/withdrawals', requireAuth, wrap(async (req, res) => {
     const { rows } = await pool.query(
       `SELECT w.id, w.amount_usd, w.status, w.note, w.requested_at, w.reviewed_at, w.payout_ref,
-              c.id AS challenge_id, p.name AS plan_name
+              c.id AS challenge_id, p.name AS plan_name, w.kind,
+              (SELECT count(*)::int FROM jsonb_array_elements(w.thread_events) WITH ORDINALITY e(value, idx)
+                WHERE e.idx>w.trader_read_count AND e.value->>'role'='operator') AS unread_messages
          FROM withdrawal_requests w
          LEFT JOIN openfund_challenges c ON c.id=w.challenge_id
          LEFT JOIN challenge_plans p ON p.id=c.challenge_plan_id

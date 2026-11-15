@@ -207,6 +207,8 @@ services:
         sync: false             # optional https origins allowed in frames (DePay widget)
       - key: SIM_TEST_MODE
         value: ""               # internal test seam — never enabled in prod
+      - key: FUNDED_PAYOUT_V1_FROM
+        sync: false             # owner-approved UTC sale cutoff for new funded payout terms
       # ---- Economy / Openfund Treasury (docs/economy/TREASURY.md) ----
       - key: TREASURY_WALLET_ADDRESS
         sync: false             # PUBLIC treasury address only — unset = "Not configured";

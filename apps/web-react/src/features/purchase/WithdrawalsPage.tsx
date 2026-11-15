@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { apiFetch, useSession } from '../../session/useOpenfundSession'
 import './purchase.css'
+import PayoutThread from './PayoutThread'
 
 /**
  * Prop product page — evaluation reviews, funded-account reward eligibility,
@@ -15,12 +16,12 @@ import './purchase.css'
 interface WithdrawalRow {
   id: string, amount_usd: string, status: string, note: string | null,
   requested_at: string, reviewed_at: string | null, payout_ref: string | null,
-  challenge_id: string | null, plan_name: string | null
+  challenge_id: string | null, plan_name: string | null, kind?: string, unread_messages?: number
 }
 interface Check { key: string, ok: boolean, [detail: string]: unknown }
 interface Eligibility { eligible: boolean, cycle: string | null, checks: Check[], splitPct: number, grossProfit: string, reward: string, deducted?: string, deductions?: { kind: string, amount: string }[] }
-interface CycleOption { key: string, splitPct: number, firstAfterDays: number | null, everyDays: number | null, consistencyPct: number | null, profitableDays: number | null, profitableDayPct: number | null, strikeLossPct: number | null }
-interface Funded { id: string, planName: string, accountSizeUsd: string, balance: string, fundedFrom: string | null, rewardCycle: string | null, legacyTerms?: boolean, strikes?: number, eligibility: Eligibility[], feeRefund?: { amount_usd: string, status: string, payout_ref: string | null } | null }
+interface CycleOption { key: string, intervalDays?: number | null, splitPct: number, firstAfterDays: number | null, everyDays: number | null, consistencyPct: number | null, profitableDays: number | null, profitableDayPct: number | null, strikeLossPct: number | null }
+interface Funded { id: string, planName: string, accountSizeUsd: string, balance: string, equity: string | null, realizedPnl: string, startedAt: string | null, requestedPayoutUsd: string, approvedPayoutUsd: string, recipientWallet: string | null, ibAttributed: boolean, fundedFrom: string | null, rewardCycle: string | null, legacyTerms?: boolean, strikes?: number, eligibility: Eligibility[], feeRefund?: { amount_usd: string, status: string, payout_ref: string | null } | null }
 interface Awaiting { id: string, planName: string, accountSizeUsd: string, cycles: CycleOption[] }
 interface Review { id: string, planName: string, accountSizeUsd: string, review: 'under_review' | 'approved' | 'rejected', decidedAt: string | null, note: string | null, fundedChallengeId: string | null }
 
@@ -34,6 +35,7 @@ export default function WithdrawalsPage() {
   const t = (fa: string, en: string) => pick(locale, fa, en)
   const session = useSession()
   const [rows, setRows] = useState<WithdrawalRow[] | null>(null)
+  const [thread, setThread] = useState<string | null>(null)
   const [status, setStatus] = useState<{ reviews: Review[], awaitingCycle?: Awaiting[], funded: Funded[] } | null>(null)
   const [choice, setChoice] = useState<Record<string, string>>({})
   const [error, setError] = useState<string | null>(null)
@@ -58,8 +60,8 @@ export default function WithdrawalsPage() {
     news_calendar_verified: t('تقویم اخبار تأییدشده برای این دوره', 'Verified news calendar for this period'),
   }
   const cycleLabel = (c: string | null) => c === 'monthly' ? t('ماهانه', 'Monthly') : c === 'weekly' ? t('هفتگی', 'Weekly')
-    : c === 'on_demand' ? t('درخواستی', 'On demand') : t('دوهفته‌ای', 'Bi-weekly')
-  const cycleTerms = (c: CycleOption) => c.firstAfterDays != null
+    : c === 'triweekly' ? t('۲۱ روز', '21 days') : c === 'on_demand' ? t('درخواستی', 'On demand') : t('دوهفته‌ای', 'Bi-weekly')
+  const cycleTerms = (c: CycleOption) => c.intervalDays !== undefined ? null : c.firstAfterDays != null
     ? t(`نخستین درخواست ${c.firstAfterDays} روز پس از اولین معامله، سپس هر ${c.everyDays} روز`, `First request ${c.firstAfterDays} days after the first trade, then every ${c.everyDays} days`)
     : t(`بدون انتظار؛ ثبات ${c.consistencyPct}٪، ${c.profitableDays} روز سودده (هر روز ≥ ${c.profitableDayPct}٪) و سامانهٔ اخطار`, `No waiting period; ${c.consistencyPct}% consistency, ${c.profitableDays} profitable days (each ≥ ${c.profitableDayPct}%) and the strike system`)
 
@@ -178,6 +180,15 @@ export default function WithdrawalsPage() {
 
       {status && status.funded.map(f => <section className="of-reward-block" key={f.id}>
         <h3>{f.planName} · <bdi dir="ltr">{fmtMoney(f.accountSizeUsd)}</bdi> — {t('موجودی', 'Balance')} <bdi dir="ltr">{fmtMoney(f.balance)}</bdi></h3>
+        <dl className="of-reward-checks">
+          <div><dt>{t('موجودی خالص', 'Equity')}</dt><dd>{f.equity == null ? '—' : fmtMoney(f.equity)}</dd></div>
+          <div><dt>{checkLabel.profit}</dt><dd>{fmtMoney(f.realizedPnl)}</dd></div>
+          <div><dt>{statusLabel.requested}</dt><dd>{fmtMoney(f.requestedPayoutUsd)}</dd></div>
+          <div><dt>{statusLabel.approved}</dt><dd>{fmtMoney(f.approvedPayoutUsd)}</dd></div>
+          {f.startedAt && <div><dt>{t('تاریخ فعال‌سازی', 'Activation date')}</dt><dd>{fmtDate(f.startedAt)}</dd></div>}
+          {f.recipientWallet && <div><dt>{t('کیف پول گیرنده', 'Recipient wallet')}</dt><dd><bdi dir="ltr">{f.recipientWallet}</bdi></dd></div>}
+          {f.ibAttributed && <div><dt>{t('همکار معرفی‌کننده', 'Attributed IB')}</dt><dd>{t('فعال', 'Active')}</dd></div>}
+        </dl>
         {f.eligibility.map(e => <div className="of-reward-cycle" key={e.cycle}>
           <div className="of-reward-head">
             <strong>{cycleLabel(e.cycle)} · {e.splitPct}%</strong>
@@ -228,13 +239,16 @@ export default function WithdrawalsPage() {
                   <td dir="ltr">{w.status === 'paid' ? (w.payout_ref || '—') : '—'}</td>
                   <td>{w.status === 'requested' && (
                     <button className="of-profile-plainbtn" disabled={busy} onClick={() => cancel(w.id)}>{t('لغو', 'Cancel')}</button>
-                  )}</td>
+                  )}{w.kind === 'reward' && <button className="of-profile-plainbtn" onClick={() => setThread(w.id)}>
+                    {t('پیام‌ها', 'Messages')}{w.unread_messages ? ` (${w.unread_messages})` : ''}
+                  </button>}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
+      {thread && <PayoutThread key={thread} id={thread} locale={locale} close={() => { setThread(null); void load() }} />}
     </div>
   )
 }
