@@ -34,6 +34,7 @@ import { chartWorkspaceRoutes } from './chart-workspaces.js'
 import { supportRoutes, supportAdminRoutes } from './support.js'
 import { rewardRoutes, rewardAdminRoutes } from './rewards.js'
 import { certificateRoutes, certificateAdminRoutes } from './certificates.js'
+import { createRadar, radarRoutes } from './radar.js'
 import { calendarAdminRoutes } from './conduct.js'
 import { createFootprintService } from './footprint/service.js'
 import { couponAdminRoutes } from './coupons.js'
@@ -799,6 +800,9 @@ app.use(referralRoutes({ pool, requireAuth, audit }))
 app.use(purchaseRoutes({ pool, requireAuth, audit, limit }))
 app.use(rewardRoutes({ pool, requireAuth, audit, limit, md: marketData }))
 app.use(certificateRoutes({ pool, requireAuth }))
+/* Trade Radar + heatmap: read-only public Hyperliquid data, one shared cache and socket */
+const radar = createRadar()
+app.use(radarRoutes({ radar, gainsMarkets: () => marketData.markets }))
 app.use(chartWorkspaceRoutes({ pool, requireAuth, limit }))
 /* Public Contact Us submissions (write-only; operators read via /admin/support or Directus) */
 app.use(supportRoutes({ pool, limit, optionalUser: async req => (await userFromSession(req))?.user_id ?? null }))
@@ -987,6 +991,6 @@ nonceSweep.unref()
 let shuttingDown=false
 /* bounded graceful shutdown: idle keep-alive sockets close at once; if anything still holds the
    process after 10 s (a long-lived peer or proxy connection), every socket is closed and it exits */
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;server.closeIdleConnections?.();setTimeout(()=>{console.warn('[shutdown] forced after 10 s');server.closeAllConnections?.();process.exit(0)},10_000).unref();const enginePass=engine.stop();tradingStreams.close();marketData.stop();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;server.closeIdleConnections?.();setTimeout(()=>{console.warn('[shutdown] forced after 10 s');server.closeAllConnections?.();process.exit(0)},10_000).unref();const enginePass=engine.stop();tradingStreams.close();marketData.stop();radar.close();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)

@@ -1,0 +1,46 @@
+MIT License
+
+Copyright (c) 2026 drk
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+----- NOTICE -----
+whales
+Copyright 2026 drk
+
+Licensed under the MIT License. See LICENSE.
+
+The data shown comes from Hyperliquid's public info API, websocket and leaderboard. Hyperliquid is a trademark
+of its owner; this project is not affiliated with, endorsed by or connected to Hyperliquid. Wallet addresses
+and display names are shown as Hyperliquid serves them. Coin logos are loaded from Hyperliquid's app when a list
+shows them; they are not part of this repository and belong to their projects.
+
+demo/sample/recorded.json.gz holds a condensed board, info answers and forty seconds of trades of $10K and up,
+recorded from those public sources on October 27, 2026 (UTC) and trimmed to the fields the library reads. The
+recording tour replays them so the preview is the same on every loop: the trades are shown as just made, though
+they were made when the recording was. They are real data from that date, not made up, and they are not current.
+
+The demo page ships the Geist and Geist Mono typefaces by Vercel, in collaboration with basement.studio, in
+demo/fonts/. They are licensed under the SIL Open Font License 1.1. See demo/fonts/OFL.txt.
+
+The recording tour (demo/tour.html) draws an iPhone and a MacBook running Safari to show the demo at their
+sizes. iPhone, MacBook and Safari are trademarks of Apple Inc.; the drawings are approximations made for this
+demo and imply no connection with Apple.
+
+The library itself bundles no fonts, icons or images.

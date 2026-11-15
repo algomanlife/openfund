@@ -14,6 +14,8 @@ import Coach from './features/partners/Coach'
 const Whitepaper = lazy(() => import('./features/whitepaper/Whitepaper'))
 import Faq from './features/faq/Faq'
 const CertificatesPage = lazy(() => import('./features/certificates/CertificatesPage'))
+const RadarPage = lazy(() => import('./features/radar/RadarPage'))
+const HeatmapPage = lazy(() => import('./features/radar/HeatmapPage'))
 const CertificateVerificationPage = lazy(() => import('./features/certificates/CertificateVerificationPage'))
 import Applications from './features/applications/Applications'
 import About from './features/company/About'
@@ -172,6 +174,9 @@ const routes = [
       { path: 'trade', element: <SharedTradingTerminal /> },
       /* same element type + position as 'trade': React keeps one workspace instance across the two tabs */
       { path: 'chart', element: <SharedTradingTerminal /> },
+      /* read-only Hyperliquid analytics, lazy so their code never loads with the chart */
+      { path: 'radar', element: <Suspense fallback={null}><RadarPage /></Suspense> },
+      { path: 'heatmap', element: <Suspense fallback={null}><HeatmapPage /></Suspense> },
       { path: 'portfolio', element: <ProductPortfolio /> },
       { path: 'journal', element: <ProductJournal /> },
       ...(product === 'prop' ? [
