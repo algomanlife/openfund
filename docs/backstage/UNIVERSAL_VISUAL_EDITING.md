@@ -188,6 +188,18 @@ checks, including "No uncaught JavaScript errors" and the partial-close margin
 wait that had timed out in CI. Main's CI at `a439f24` was green, so this
 failure was introduced by the new terminal script.
 
+On head `e61b9c9` the CI job `Backend (API + engine)` completed successfully,
+including `Browser integration`. That step is the audit that had failed on
+`90f744f` and, on `7fb3a7c`, at "Disconnect revokes backend session". The same
+audit also passed locally three times (27 checks). `Web (React + Vite)`,
+secret scan, blueprint validation, desktop builds, dependency review, upstream
+guard and CodeQL were green on that head. `Release package gates` failed once
+in `apps/backend/test/manual-payments.test.mjs` (`P2`, expected 200, got 503).
+`apps/backend` matches `main` at `4bf95f7`, where the same release workflow
+passed, and this PR's Backend job had already passed `npm run test:all`,
+which includes that file. A fresh local run of `manual-payments.test.mjs`
+passed 14 tests. That 503 is not a visual-editing change.
+
 ## Lockfile
 
 `npm ci` with npm 10.9.9 failed: `Missing: typescript@5.9.3 from lock file`.
