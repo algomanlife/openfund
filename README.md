@@ -67,7 +67,9 @@ running service at [`/version`](https://openfi.cloud/version), not plans.
 | **Ambassador (IB)** | Brand Ambassador referral program with application, approval and commission ledger | **Implemented, not production-active** |
 | **Coach program** | Verified Trading Coach role with an independent approval track | **Implemented, not production-active** (depends on live trading) |
 | **Administration and CMS** | Directus for content, plan catalog and coupon administration; token-gated operational API | **Live CMS**; coupon administration verified locally, pending production bootstrap |
-| Desktop and mobile apps, rewards, protocol routing | — | **Planned** ([Roadmap](ROADMAP.md)) |
+| **Trade Radar and Market Heatmap** | Read-only public Hyperliquid analytics in the terminal (whale tape, positioning, wallet profiles, market treemap) through a shared backend cache | **v0.6.5 candidate**, not deployed ([spec](docs/integrations/HYPERLIQUID_RADAR.md)) |
+| **Open Trade desktop** | Lightweight Electron workspace (1–4 Vela charts, watchlist, floating ticket) | **0.0.2 beta built and CI-verified** for macOS, Windows and Linux; unsigned, public download pending owner approval |
+| Mobile apps, rewards, protocol routing | — | **Planned** ([Roadmap](ROADMAP.md)) |
 
 <a id="product-gallery"></a>
 

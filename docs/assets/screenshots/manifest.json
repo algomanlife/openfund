@@ -6727,6 +6727,90 @@
       "capturedAt": "2026-11-15T08:41:15.151984+00:00",
       "state": "Settings dialog, translucent blurred surface; actual macOS Electron 45.3.2, Open Trade 0.0.2 beta source build via tests/desktop.mjs; no wallet or fabricated market data",
       "sha256": "61874621eb1c690ed577f1da9705821a1b87e9f131b7e189d6d01d0141358933"
+    },
+    {
+      "file": "v0.6.5/heatmap.png",
+      "route": "/en/prop/heatmap",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T09:00:30.620744+00:00",
+      "state": "Market Heatmap, dark, live Hyperliquid metaAndAssetCtxs through the backend cache; local test runtime of branch agent/claude/v0.6.5-modernization, not production",
+      "sha256": "ed93dd62ce9cdacaba5e28c06d2fddadec41b2cb03e5771d204fa4ea9cdeb3a9"
+    },
+    {
+      "file": "v0.6.5/radar-positioning.png",
+      "route": "/en/prop/radar",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T09:00:30.620744+00:00",
+      "state": "Trade Radar aggregated positioning, dark, live public Hyperliquid leaderboard wallets; local test runtime of branch agent/claude/v0.6.5-modernization, not production",
+      "sha256": "b247110eebad6815758266823bde619dd55d0549bc3e4ca33cf8f6dd84156720"
+    },
+    {
+      "file": "v0.6.5/applications.png",
+      "route": "/en/apps",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T09:00:30.620744+00:00",
+      "state": "Applications page, dark; desktop builds shown as awaiting release approval; local test runtime of branch agent/claude/v0.6.5-modernization, not production",
+      "sha256": "2119505a6eecbb9c6e875b471e3d3a3fcd7f3c052e511d49607cb4e4cabac1d0"
+    },
+    {
+      "file": "v0.6.5/roadmap.png",
+      "route": "/fa/roadmap",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T09:00:30.620744+00:00",
+      "state": "Roadmap page, Persian RTL, phases mirrored from ROADMAP.md; local test runtime of branch agent/claude/v0.6.5-modernization, not production",
+      "sha256": "e5a88df0593cd53f11ccc1eedee9aeaebad0e209367b1462f2227611c2960b9e"
+    },
+    {
+      "file": "v0.6.5/certificate-verification.png",
+      "route": "/en/certificate-verification",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T09:00:30.620744+00:00",
+      "state": "Public verification page, no serial entered; anonymous template previews; local test runtime of branch agent/claude/v0.6.5-modernization, not production",
+      "sha256": "495fa466c3ad991ea20358c6024cff1614d04af62cf588127f00a39c54fb6f03"
+    },
+    {
+      "file": "v0.6.5/certificates-fa.png",
+      "route": "/fa/prop/certificates",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T09:00:30.620744+00:00",
+      "state": "Certificates page signed out, Persian; three anonymous templates, no personal data; local test runtime of branch agent/claude/v0.6.5-modernization, not production",
+      "sha256": "0e2055c79ad425410e3de15f000971cfe03651c1c976c14e08ec1da1b85eeba4"
+    },
+    {
+      "file": "v0.6.5/certificate-completion-fa.png",
+      "route": "canvas export",
+      "viewport": {
+        "width": 1000,
+        "height": 1000
+      },
+      "session": "disposable test wallet",
+      "capturedAt": "2026-11-15T09:00:30.620744+00:00",
+      "state": "Completion certificate PNG export (downscaled to 1000px) issued by the real local API for a disposable generated test wallet in an isolated test database (e2e/test-certificates.cjs); local test runtime of branch agent/claude/v0.6.5-modernization, not production",
+      "sha256": "f77ac54d8417fae724eb8f3cadd9b5aa28159c90cbbf867a4b049c65c801ea07"
     }
   ],
   "finalIntegration": {

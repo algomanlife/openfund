@@ -1,5 +1,29 @@
 # Changelog
 
+## Unreleased — v0.6.5 candidate (branch `agent/claude/v0.6.5-modernization`)
+
+Implemented and locally verified; **not merged, not released, not deployed**.
+The release tooling would currently allocate 0.6.0 after v0.5.0; publishing as
+v0.6.5 needs an owner decision (see the delivery record).
+
+- **Certificates:** three branded square designs (purchase, completion,
+  payout) rendered on the existing region-aware issuance and verification
+  APIs; anonymous template previews for everyone; Persian/Latin-safe canvas
+  text; redesigned verification page with an explicit "unavailable" state.
+- **Trade Radar** and **Market Heatmap** terminal tabs: read-only public
+  Hyperliquid data behind one shared backend cache and socket (adapted from
+  drkxbt/whales and drkxbt/charts, MIT).
+- **Terminal copy:** the approved Persian "entry point" label is enforced over
+  CMS text; owner-specified virtual order book copy with Gains/Hyperliquid
+  marks; the footer shows only the Persian "live" label with source marks;
+  Support opens the localized Contact page.
+- **Website:** Applications page redesign with real Open Trade 0.0.2
+  captures and CI build evidence (no download links); Roadmap page mirroring
+  ROADMAP.md; shared design-system layer; the Persian ticker shows only the
+  owner-specified "live from the market" label (also on phones); `/en`, `/ru`, `/zh-CN` keep their
+  language; a phone-width overflow (670px) fixed.
+- ADR 0035; third-party notices for drkxbt/whales and drkxbt/charts.
+
 ## Unreleased — Open Trade desktop beta
 
 - Add an isolated Electron desktop companion, shared Vela chart integration and

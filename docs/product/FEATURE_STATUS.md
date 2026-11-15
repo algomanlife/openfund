@@ -262,3 +262,20 @@ and wallet. Public release/signing and existing license decisions remain Blocked
 | Position protection controls | In Progress | Isolated Prop simulation acceptance. Production and device acceptance remain open. |
 | Interface content registry | In Progress | Source-derived editing map and published overrides. See the coverage limits in the content evidence. |
 | Certificates | In Progress | Issuance tied to server records. Review and production rollout remain open. |
+
+## v0.6.5 candidate — 2026-11-15
+
+Branch `agent/claude/v0.6.5-modernization`; **implemented and locally verified,
+unmerged, not deployed**. Evidence: [delivery record](../reviews/v0.6.5/DELIVERY.md).
+
+| Capability | Status | Scope / evidence |
+| --- | --- | --- |
+| Certificate designs (purchase, completion, payout) | In Progress | Square Openfund designs on the existing issuance/verification APIs; anonymous previews for everyone; `e2e/test-certificates.cjs` 46/46 against the real local API. Production rollout open |
+| Certificate verification page | In Progress | Valid / revoked / not found / unavailable states (network failure never shown as invalid), three-step guide. Local only |
+| Trade Radar (Hyperliquid) | In Progress | Live tape, aggregated positioning, whale positions, leaderboard, wallet profile, alerts; read-only via a shared backend cache. Verified against live Hyperliquid locally; not deployed ([spec](../integrations/HYPERLIQUID_RADAR.md)) |
+| Market Heatmap (Hyperliquid) | In Progress | Treemap of perps (24h volume or OI; 24h change), grouping, drill-down, chart deep-link. Locally verified; not deployed |
+| Terminal Persian terminology and footer | In Progress | Approved Persian "entry point" label enforced over CMS text, owner VOB copy, Persian "live" label + source marks, localized Support link. Regression-tested; not deployed |
+| Applications page | In Progress | Redesign with real Open Trade 0.0.2 captures; no download links until a GitHub Release is approved |
+| Open Trade desktop 0.0.2 installers | Blocked | Built and acceptance-tested in CI run 43611941782 for macOS (arm64, x64), Windows (x64) and Linux (AppImage, deb). Unsigned; publication requires owner approval |
+| Roadmap page | In Progress | Mirrors ROADMAP.md (test-enforced); owner product roadmap pending |
+| Design-system foundation | In Progress | Shared `--ds-*` tokens and primitives; [ADR 0035](../decisions/0035-design-system-foundation-and-ui-kit-evaluation.md) |

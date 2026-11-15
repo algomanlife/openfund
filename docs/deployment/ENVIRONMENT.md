@@ -157,3 +157,14 @@ run locally in the browser; no QR service receives holder data. The existing
 Openfund Persian font and approved emblem are reused. PNG and landscape PDF
 exports embed the same 2400 × 1600 canvas. No additional environment variable,
 service, backend renderer or production credential is introduced.
+
+## Trade Radar and Market Heatmap (runtime dependency, no new variables)
+
+`apps/backend/radar.js` needs outbound HTTPS to `api.hyperliquid.xyz` and
+`stats-data.hyperliquid.xyz` and a websocket to `wss://api.hyperliquid.xyz/ws`.
+No environment variable, secret or Render service is added. The leaderboard
+is condensed in a short-lived child process (`radar-board-worker.js`,
+`--max-old-space-size=384`), so the starter-plan API process stays near
+120 MB. Where Hyperliquid is unreachable (for example the Iran runtime) the
+`/radar/*` endpoints answer 503 and the tabs show an outage state.
+[Specification](../integrations/HYPERLIQUID_RADAR.md)
