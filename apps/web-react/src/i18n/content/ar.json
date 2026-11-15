@@ -3736,5 +3736,9 @@
   "These terms describe the planned policy for newly activated accounts. Existing accounts follow their issued terms. Staff review each request and record verified manual settlement.": "تصف هذه الشروط السياسة المخطط لها للحسابات المفعّلة حديثًا. تخضع الحسابات الحالية لشروط الإصدار. يراجع الموظفون كل طلب ويسجّلون التسوية اليدوية المتحقق منها.",
   "This scenario applies 59/41 to sales net of modeled refunds. The operating policy still requires confirmation of the allocation base. Trader payout estimates multiply sales, pass rate, activation rate, payout rate and average total payout.": "يطبّق هذا السيناريو نسبة ٥٩/٤١ بعد خصم الاستردادات المقدّرة من المبيعات. لا تزال السياسة التشغيلية تتطلب تأكيد أساس التخصيص. تُقدّر مدفوعات المتداول من حاصل ضرب المبيعات ونسبة النجاح ونسبة التفعيل ونسبة الدفع ومتوسط إجمالي الدفع.",
   "Total payout obligations": "إجمالي التزامات الدفع",
-  "Paid totals include historical operator records. Explorer links show finalized transfers.": "تشمل إجماليات المدفوعات سجلات المشغّلين السابقة. تعرض روابط المستكشف التحويلات النهائية."
+  "Paid totals include historical operator records. Explorer links show finalized transfers.": "تشمل إجماليات المدفوعات سجلات المشغّلين السابقة. تعرض روابط المستكشف التحويلات النهائية.",
+  "Activation date": "تاريخ التفعيل",
+  "Recipient wallet": "محفظة المستلم",
+  "Attributed IB": "شريك IB المنسوب",
+  "Active": "نشط"
 }

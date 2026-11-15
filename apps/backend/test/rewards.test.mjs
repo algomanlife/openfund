@@ -1,3 +1,4 @@
+import { FUNDED_PAYOUT_CYCLES, fundedPayoutBoundary } from '../funded-policy.js'
 import { randomBytes } from 'node:crypto'
 /**
  * Reward lifecycle on real PostgreSQL — owner decisions D1, D2 and D5 on
@@ -96,6 +97,7 @@ before(async () => {
   app.use(express.json())
   app.use(rewardRoutes({ pool, requireAuth }))
   app.use('/admin/rewards', rewardAdminRoutes({ pool }))
+  app.use('/new-policy/admin/rewards', rewardAdminRoutes({ pool, fundedPolicyFrom: '2020-01-01' }))
   app.use('/admin', adminRoutes({ pool, audit: async () => {}, verifyPayout: async ({ hash, recipient, amount }) => ({ transactionHash: hash, recipient, amount, finality: 'finalized', transactionAt: new Date().toISOString() }) }))
   app.use((err, req, res, next) => res.status(err.status || 500).json({ error: err.status ? err.message : 'internal', detail: err.status ? undefined : String(err.message) }))
   server = app.listen(0); base = `http://127.0.0.1:${server.address().port}`
@@ -294,4 +296,42 @@ test('R13 a v2 (pre-v3) final pass is approved under its own terms: starts at on
   assert.equal(w.status, 200, JSON.stringify(w.data)); assert.equal(w.data.amountUsd, '480.00')
   const view = (await call('GET', '/rewards/status', { user })).data.funded.find(f => f.id === funded.id)
   assert.equal(view.legacyTerms, true)
+})
+
+test('calendar anniversaries clamp short months and return to the original UTC day', () => {
+  const monthly = FUNDED_PAYOUT_CYCLES.find(cycle => cycle.key === 'monthly')
+  const activation = '2028-01-31T13:18:00.000Z'
+  assert.equal(fundedPayoutBoundary(activation, monthly).toISOString(), '2028-02-29T13:18:00.000Z')
+  assert.equal(fundedPayoutBoundary(activation, monthly, '2028-02-29T13:18:00.000Z').toISOString(), '2028-03-31T13:18:00.000Z')
+})
+
+test('a qualifying purchase snapshots the four plans and locks the selected cycle', async () => {
+  const user = await newUser()
+  const { final } = await finalPass(user, 'one-phase')
+  const review = await call('POST', `/new-policy/admin/rewards/reviews/${final.id}`, { admin: true, body: { decision: 'approve' } })
+  assert.equal(review.status, 200)
+  const funded = review.data.fundedChallengeId
+  const view = await call('GET', '/rewards/status', { user })
+  assert.deepEqual(view.data.awaitingCycle[0].cycles.map(({key, splitPct}) => [key, splitPct]),
+    [['weekly', 75], ['biweekly', 85], ['triweekly', 90], ['monthly', 100]])
+  const select = cycle => call('POST', `/rewards/accounts/${funded}/cycle`, { user, body: { cycle } })
+  assert.equal((await select('triweekly')).status, 200)
+  assert.equal((await select('monthly')).status, 409)
+  const active = (await call('GET', '/rewards/status', { user })).data.funded[0]
+  assert.equal(active.rewardCycle, 'triweekly')
+  assert.equal(active.eligibility[0].checks.find(check => check.key === 'waiting_period').opensAt,
+    new Date(new Date(active.startedAt).getTime() + 21 * DAY).toISOString())
+  await assert.rejects(pool.query(`UPDATE openfund_challenges SET rules_snapshot=rules_snapshot - 'rewardCycles' WHERE id=$1`, [funded]),
+    /funded_payout_policy_immutable/)
+  await pool.query(`UPDATE openfund_challenges SET started_at=now() - interval '22 days' WHERE id=$1`, [funded])
+  await trade(user, funded, [{ daysAgo: 2, net: 600 }])
+  const request = await call('POST', '/withdrawals', { user, body: { challengeId: funded } })
+  assert.equal(request.status, 200, JSON.stringify(request.data))
+  const snapshot = (await pool.query('SELECT eligibility FROM withdrawal_requests WHERE id=$1', [request.data.id])).rows[0].eligibility
+  assert.deepEqual(snapshot.distribution, {
+    policy: 'funded-v1', distributable: '600.00', trader: '540.00', ib: '0.00', retained: '60.00', ibEvidence: null,
+  })
+  const account = (await call('GET', '/rewards/status', { user })).data.funded[0]
+  assert.equal(account.requestedPayoutUsd, '540.00')
+  assert.equal(account.equity, '10000.00')
 })

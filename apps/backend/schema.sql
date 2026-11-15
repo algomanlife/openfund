@@ -1779,19 +1779,30 @@ END $$;
 -- D1: reward cycle chosen once on the funded account; immutable once set
 ALTER TABLE openfund_challenges ADD COLUMN IF NOT EXISTS reward_cycle text;
 DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'openfund_challenges_reward_cycle_check') THEN
-    ALTER TABLE openfund_challenges ADD CONSTRAINT openfund_challenges_reward_cycle_check CHECK (reward_cycle IS NULL OR reward_cycle IN ('weekly', 'biweekly', 'on_demand'));
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint
+    WHERE conrelid = 'openfund_challenges'::regclass AND conname = 'openfund_challenges_reward_cycle_check'
+      AND pg_get_constraintdef(oid) LIKE '%triweekly%') THEN
+    ALTER TABLE openfund_challenges DROP CONSTRAINT IF EXISTS openfund_challenges_reward_cycle_check;
+    ALTER TABLE openfund_challenges ADD CONSTRAINT openfund_challenges_reward_cycle_check
+      CHECK (reward_cycle IS NULL OR reward_cycle IN ('weekly', 'biweekly', 'triweekly', 'monthly', 'on_demand'));
   END IF;
 END $$;
 CREATE OR REPLACE FUNCTION openfund_challenges_cycle_lock() RETURNS trigger AS $$
 BEGIN
+  IF OLD.rules_snapshot->>'fundedPayoutVersion' = 'funded-v1' AND (
+    NEW.rules_snapshot->>'fundedPayoutVersion' IS DISTINCT FROM OLD.rules_snapshot->>'fundedPayoutVersion'
+    OR NEW.rules_snapshot->'rewardCycles' IS DISTINCT FROM OLD.rules_snapshot->'rewardCycles'
+    OR NEW.rules_snapshot->'fundedIb' IS DISTINCT FROM OLD.rules_snapshot->'fundedIb'
+  ) THEN
+    RAISE EXCEPTION 'funded_payout_policy_immutable';
+  END IF;
   IF OLD.reward_cycle IS NOT NULL AND NEW.reward_cycle IS DISTINCT FROM OLD.reward_cycle THEN
     RAISE EXCEPTION 'reward_cycle_immutable';
   END IF;
   RETURN NEW;
 END $$ LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS trg_openfund_challenges_cycle_lock ON openfund_challenges;
-CREATE TRIGGER trg_openfund_challenges_cycle_lock BEFORE UPDATE OF reward_cycle ON openfund_challenges
+CREATE TRIGGER trg_openfund_challenges_cycle_lock BEFORE UPDATE OF reward_cycle, rules_snapshot ON openfund_challenges
   FOR EACH ROW EXECUTE FUNCTION openfund_challenges_cycle_lock();
 
 -- D8: verified economic calendar. Events are imported by an operator from a

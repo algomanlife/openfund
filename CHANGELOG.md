@@ -2,6 +2,7 @@
 
 ## Unreleased — funded financial controls and product roadmap
 
+- Add versioned 7-, 14-, 21-day and monthly UTC payout choices behind an owner-approved sales cutoff.
 - Verify manual funded rewards against finalized Arbitrum One DAI receipts before recording payment or issuing a new payout certificate.
 - Add a shared four-quarter product roadmap to the website and whitepaper seed and clarify the prop-firm product scope in the README.
 

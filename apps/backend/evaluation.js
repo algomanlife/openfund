@@ -1,3 +1,4 @@
+import { FUNDED_PAYOUT_VERSION } from './funded-policy.js'
 /**
  * Openfund challenge evaluation engine (v0.3.1 soft launch).
  *
@@ -292,6 +293,8 @@ export class ChallengeService {
     if (!locked) throw Object.assign(new Error('challenge_not_found'), { status: 404 })
     if (locked.status === 'started') return locked
     if (locked.status !== 'created') throw Object.assign(new Error(`challenge_${locked.status}_not_startable`), { status: 409 })
+    if (locked.rules_snapshot?.fundedPayoutVersion === FUNDED_PAYOUT_VERSION && !locked.reward_cycle)
+      throw Object.assign(new Error('reward_cycle_required'), { status: 409 })
     const account = await this.provisionTx(client, locked)
     /* re-read: provisioning just froze the rules snapshot */
     const rules = (await client.query('SELECT rules_snapshot FROM openfund_challenges WHERE id=$1', [locked.id])).rows[0].rules_snapshot ?? normalizeRules({})

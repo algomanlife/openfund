@@ -3736,5 +3736,9 @@
   "These terms describe the planned policy for newly activated accounts. Existing accounts follow their issued terms. Staff review each request and record verified manual settlement.": "这些条款描述新激活账户的计划政策。现有账户遵循发行时的条款。工作人员审核每项申请并记录已核实的人工结算。",
   "This scenario applies 59/41 to sales net of modeled refunds. The operating policy still requires confirmation of the allocation base. Trader payout estimates multiply sales, pass rate, activation rate, payout rate and average total payout.": "此情景按扣除模拟退款后的销售额进行 59/41 分配。实际运营政策仍需确认分配基数。交易员付款估算由销量、通过率、激活率、付款率和平均付款总额相乘得出。",
   "Total payout obligations": "付款义务总额",
-  "Paid totals include historical operator records. Explorer links show finalized transfers.": "付款总额包含运营人员的历史记录。区块浏览器链接仅显示已最终确认的转账。"
+  "Paid totals include historical operator records. Explorer links show finalized transfers.": "付款总额包含运营人员的历史记录。区块浏览器链接仅显示已最终确认的转账。",
+  "Activation date": "激活日期",
+  "Recipient wallet": "收款钱包",
+  "Attributed IB": "归因的 IB",
+  "Active": "已激活"
 }

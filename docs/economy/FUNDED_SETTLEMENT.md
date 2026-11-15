@@ -35,10 +35,17 @@ The public Economy scenario estimates trader and IB obligations from the
 same profit pool. Its modeled 59% treasury and 41% operating allocations
 use sales less modeled refunds. They do not post journal entries.
 
+Fixed-day boundaries are 7, 14 or 21 UTC days from activation. Monthly
+boundaries repeat the activation day and time in UTC. If a month lacks that
+day, its last day applies. The next month uses the original anniversary.
+The next request opens at the first boundary after the prior live request.
+The backend freezes the new catalog on eligible funded accounts and locks
+selection before account activation. Until the owner approves the sales
+terms and sets `FUNDED_PAYOUT_V1_FROM`, existing catalog terms apply.
+
 ## Policy decisions still open
 
-- Define the monthly UTC period and treatment of previously issued contracts
-  before activating the new cycle catalog.
+- Approve activation of the monthly UTC anniversary policy for new purchases.
 - Confirm competing IB attribution precedence and the settlement asset,
   network, minimum and schedule. Eligible payout participation is the
   remainder of the same distributable profit after the trader share. A

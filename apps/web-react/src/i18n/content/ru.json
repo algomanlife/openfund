@@ -3736,5 +3736,9 @@
   "These terms describe the planned policy for newly activated accounts. Existing accounts follow their issued terms. Staff review each request and record verified manual settlement.": "Здесь описаны планируемые правила для новых активаций. Действующие счета сохраняют условия, полученные при выдаче. Сотрудники проверяют каждую заявку и записывают подтверждённый ручной расчёт.",
   "This scenario applies 59/41 to sales net of modeled refunds. The operating policy still requires confirmation of the allocation base. Trader payout estimates multiply sales, pass rate, activation rate, payout rate and average total payout.": "В этом сценарии соотношение 59/41 применяется к продажам за вычетом моделируемых возвратов. Базу операционного распределения ещё предстоит утвердить. Расчёт выплат трейдерам учитывает продажи, долю успешных оценок, долю активаций, долю выплат и среднюю полную выплату.",
   "Total payout obligations": "Общие обязательства по выплатам",
-  "Paid totals include historical operator records. Explorer links show finalized transfers.": "Итоги выплат включают прежние записи операторов. Ссылки на обозреватель ведут к окончательно подтверждённым переводам."
+  "Paid totals include historical operator records. Explorer links show finalized transfers.": "Итоги выплат включают прежние записи операторов. Ссылки на обозреватель ведут к окончательно подтверждённым переводам.",
+  "Activation date": "Дата активации",
+  "Recipient wallet": "Кошелёк получателя",
+  "Attributed IB": "Привлечён через IB",
+  "Active": "Активен"
 }
