@@ -34,6 +34,7 @@ test('titles must be Conventional Commits', () => {
   const body = full('ok');
   assert.equal(check(body, { title: 'feat(payments): finish DePay checkout' }).ok, true);
   assert.equal(check(body, { title: 'ci: shard browser matrices' }).ok, true);
+  assert.equal(check(body, { title: '[Cursor] feat(cms): implement universal visual content editing' }).ok, true);
   assert.equal(check(body, { title: 'Feat/terminal chart quick trade' }).ok, false);
   assert.equal(check(body, { title: 'Update README' }).ok, false);
 });

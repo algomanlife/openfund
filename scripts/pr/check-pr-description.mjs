@@ -17,7 +17,7 @@ export const REQUIRED_SECTIONS = [
   'Production-enabled?',
 ];
 
-export const TITLE = /^(feat|fix|perf|security|refactor|docs|test|ci|build|chore|revert)(\([a-z0-9][a-z0-9,/ .-]*\))?!?: \S.{3,}$/;
+export const TITLE = /^(?:\[Cursor\] )?(feat|fix|perf|security|refactor|docs|test|ci|build|chore|revert)(\([a-z0-9][a-z0-9,/ .-]*\))?!?: \S.{3,}$/;
 
 const stripComments = text => text.replace(/<!--[\s\S]*?-->/g, '');
 

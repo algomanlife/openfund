@@ -15,6 +15,20 @@ source code** — changes appear on the website on the next page load (no rebuil
    the trading backend reads — edit carefully (see *Pricing* below).
 4. Market prices and instruments come from Gains Network, never from the CMS.
 
+## Visual editing
+
+Directus 11.17.4 can open the website inside Studio's visual editor. After the
+site confirms that Studio session, click a highlighted string to edit its
+Directus field. Choose the website language with the existing language control
+before editing that language. Save a draft in Directus when the change should
+stay unpublished. Publish when it should appear on the next public load.
+Revisions in the Directus item sidebar are the rollback path.
+
+The in-app content catalog lists copy that is not currently on screen,
+including missing `ar`, `ru` and `zh-CN` rows. Visitors never see that catalog.
+Do not edit prices, limits, wallet addresses or payment destinations from a
+text field.
+
 ## Where things live
 
 | What you want to edit | Collection |

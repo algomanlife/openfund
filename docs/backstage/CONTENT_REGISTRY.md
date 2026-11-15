@@ -6,6 +6,13 @@ not introduce a second translation engine. Directus is authoritative for
 published overrides; repository text is the fallback when an override is absent,
 unpublished, invalid or the CMS cannot be reached.
 
+## Visual editing
+
+Directus 11.17.4 Studio is the click-to-edit surface. The running website
+attaches a record reference only inside a confirmed Studio session. The
+registry remains the source inventory. See
+[Universal visual editing](UNIVERSAL_VISUAL_EDITING.md).
+
 ## Locate and edit
 
 1. Serve `apps/backstage` locally, for example with

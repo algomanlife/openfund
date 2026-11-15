@@ -69,6 +69,7 @@ the trading terminal (Persian + English) is managed in the Directus Data Studio.
 - [Local setup](LOCAL_SETUP.md) — prerequisites, exact commands, troubleshooting
 - [Translations](TRANSLATIONS.md) — how fa/en flows from Directus into the pages
 - [Permissions](PERMISSIONS.md) — roles, public policy, security rules
+- [Universal visual editing](UNIVERSAL_VISUAL_EDITING.md) — Directus 11.17.4 click-to-edit for existing copy
 
 ## Editing content (the point of all this)
 

@@ -13,7 +13,9 @@ translation table (`fa` / `en`).
 | status | published / draft / archined | only `published` is public and rendered |
 | translations | o2m → ui_message_translations | fa + en rows |
 
-`ui_message_translations`: `ui_message_id`, `language_code` (fa|en), `value`.
+`ui_message_translations`: `ui_message_id`, `language_code` (`fa`, `en`, `ar`, `ru`, or `zh-CN`), `value`.
+`fa` and `en` are the required authored pair. The other three codes are
+optional rows; the site does not invent them when they are missing.
 
 ## navigation_items
 
