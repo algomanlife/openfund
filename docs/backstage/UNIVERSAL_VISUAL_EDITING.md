@@ -128,16 +128,16 @@ Directus `GET /server/info` on the isolated instance reported version **11.17.4*
 The database was a new PostgreSQL 16 database, not a production copy. Schema
 was applied with `apply_schema.py`. `seed_interface_content.py` created 4285
 draft `ui_messages` and left existing rows untouched (there were none). One
-home singleton and one interface row (`react.38b877ee39f7a358`, "Buy Challenge"
-/ "خرید سریع چالش") were published for the click-through.
+home singleton and one interface row (`react.38b877ee39f7a358`, English
+"Buy Challenge" and its bundled Persian label) were published for the click-through.
 
 | Check | Result |
 | --- | --- |
 | Studio visual module framed `http://127.0.0.1:5173/fa/home` | Persian page, `dir=rtl`. Three `data-directus` nodes. |
-| Click "خرید سریع چالش" | Directus opened a Value popover on that translation. |
-| Type `ویرایش آزمایشی چالش` and press the check control | API read-back: fa value changed; en stayed `Buy Challenge`; status stayed `published`. |
+| Click the bundled Persian challenge label | Directus opened a Value popover on that translation. |
+| Type a distinct Persian test sentence and press the check control | API read-back: fa value changed; en stayed `Buy Challenge`; status stayed `published`. |
 | Parent set back to `draft` | Anonymous `GET /items/ui_messages?filter[id][_eq]=964` returned `[]`. Public `/fa/home` showed the bundled label, not the draft. |
-| Parent set to `published` again and the public page reloaded | `/fa/home` showed `ویرایش آزمایشی چالش` with no rebuild. |
+| Parent set to `published` again and the public page reloaded | `/fa/home` showed the new Persian sentence with no rebuild. |
 | `/en/home` | `dir=ltr`, still "Buy Challenge", Persian draft text absent. |
 | `/ar/home`, `/ru/home`, `/zh-CN/home` | `dir` rtl, ltr, ltr. `lang` ar, ru, zh-CN. No horizontal overflow at 1280px. The published row has no ar/ru/zh-CN translation, so those pages keep the dictionary fallback. |
 | Revisions | Studio Revisions tab and `GET /revisions` showed create plus three updates (ids 3289, 13258, 13260, 13261). `POST /revisions/13261/revert` is not a route on 11.17.4 (404). |
@@ -182,8 +182,11 @@ message. A local Chromium reproduction of the trading `srcdoc` iframe showed:
 `legacy/visual-editing.js` posted to `location.origin`. A `srcdoc` document
 reports that origin as `null`, and `postMessage` throws. The script now posts
 to `parent.location.origin` and ignores a cross-origin parent. The same
-reproduction then reported no page error. Main's CI at `a439f24` was green, so
-this failure was introduced by the new terminal script.
+reproduction then reported no page error. After rebuilding `react/` and booting
+the API on a disposable database, `npm run test:browser:audit` passed all 27
+checks, including "No uncaught JavaScript errors" and the partial-close margin
+wait that had timed out in CI. Main's CI at `a439f24` was green, so this
+failure was introduced by the new terminal script.
 
 ## Lockfile
 
