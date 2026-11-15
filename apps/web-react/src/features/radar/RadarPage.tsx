@@ -124,8 +124,7 @@ function Tape({ coin, min, side, wallet, onWallet, sideLabel }: { coin: string; 
     new Notification(t('رادار معاملات', 'Trade Radar'), { body: `${top.coin} ${sideLabel(top.side)} ${usd(top.usd)} @ ${price(top.price)}${fresh.length > 1 ? ` (+${fresh.length - 1})` : ''}`, tag: 'openfund-radar' })
   }, [rows, notify])
   const notificationsSupported = typeof Notification !== 'undefined'
-  /* LRI…PDI keeps "$50K" intact inside Persian/Arabic sentences */
-  const minimum = `\u2066${usd(min)}\u2069`, markets = tape.data?.coins.length ?? 0
+  const markets = tape.data?.coins.length ?? 0
   const toggle = async () => {
     if (notify) return setNotify(false)
     if (!notificationsSupported) return
@@ -135,7 +134,7 @@ function Tape({ coin, min, side, wallet, onWallet, sideLabel }: { coin: string; 
   return <>
     <div className="of-radar-bar">
       <Freshness state={tape.data?.state} fetchedAt={tape.fetchedAt} updated={tape.data?.lastMessageAt} error={tape.error} />
-      <span className="of-radar-note">{t(`معاملات بالای ${minimum} در ${markets} بازار پرحجم Hyperliquid`, `Trades of ${minimum}+ on Hyperliquid's ${markets} busiest perps`)}</span>
+      <span className="of-radar-note">{t('حداقل ارزش معامله', 'Minimum trade value')}: <bdi dir="ltr">{usd(min)}</bdi> · {t('بازارهای پرحجم Hyperliquid', 'Busiest Hyperliquid perps')}: <bdi dir="ltr">{markets}</bdi></span>
       {notificationsSupported && <button type="button" className="of-radar-toggle" aria-pressed={notify} onClick={() => void toggle()} disabled={Notification.permission === 'denied'}>
         {Notification.permission === 'denied' ? t('اعلان مرورگر مسدود است', 'Browser notifications blocked') : notify ? t('اعلان‌ها روشن', 'Alerts on') : t('اعلان مرورگر', 'Browser alerts')}</button>}
     </div>
@@ -162,7 +161,7 @@ function Positioning({ window, coin, wallet, marketMap, onChart, onWallet }: { w
   return <>
     <div className="of-radar-bar">
       <Freshness fetchedAt={data.fetchedAt} updated={data.data?.updated} stale={data.data?.stale} error={data.error} />
-      {data.data && <span className="of-radar-note">{t(`${answered} از ${tracked} کیف‌پول برتر لیدربورد`, `${answered} of the top ${tracked} leaderboard wallets`)}</span>}
+      {data.data && <span className="of-radar-note">{t('کیف‌پول‌های برتر لیدربورد (پاسخ‌داده / بررسی‌شده)', 'Top leaderboard wallets (answered / tracked)')}: <bdi dir="ltr">{answered} / {tracked}</bdi></span>}
     </div>
     {data.data && <div className="of-radar-cards">
       <Card label={t('معامله‌گران خرید', 'Long traders')} value={String(longTraders.size)} />

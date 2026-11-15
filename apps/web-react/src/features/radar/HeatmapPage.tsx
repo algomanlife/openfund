@@ -15,7 +15,7 @@ import './radar.css'
 
 type Metric = 'dayVolume' | 'openInterest'
 type Grouping = 'leverage' | 'openfund'
-const HEADER = 22, MAX_CHANGE = 0.1
+const HEADER = 22, MAX_CHANGE = 0.1, ESCAPE_KEY = 'Esc'
 /** Colour from the change, deeper the further it moves (clamped at ±10%). */
 function colour(change: number | null) {
   if (change == null || !Number.isFinite(change)) return 'var(--hm-flat)'
@@ -85,7 +85,7 @@ export default function HeatmapPage() {
       <span className="of-radar-chip" title={t('Hyperliquid فقط تغییر ۲۴ ساعته را در یک درخواست ارائه می‌دهد.', 'Hyperliquid serves only the 24h change in one request.')}>{t('بازه: ۲۴ ساعت', 'Window: 24h')}</span>
       <span className="of-hm-legend" aria-hidden="true"><i data-v="-" />−10%<i data-v="0" />0<i data-v="+" />+10%</span>
     </div>
-    {zoom && <button type="button" className="of-hm-back" onClick={() => setZoom(null)}>← {t('همهٔ گروه‌ها', 'All groups')} · <b>{zoom}</b> <kbd>Esc</kbd></button>}
+    {zoom && <button type="button" className="of-hm-back" onClick={() => setZoom(null)}>← {t('همهٔ گروه‌ها', 'All groups')} · <b>{zoom}</b> <kbd>{ESCAPE_KEY}</kbd></button>}
     <div className="of-hm-wrap">
       <div className="of-hm" ref={setBox} role="group" aria-label={`${t('نقشه حرارتی بازار', 'Market Heatmap')} — ${metricLabel}`}>
         {!markets.length && <p className="of-radar-empty" role={data.error ? 'alert' : 'status'}>{data.error ? t('دادهٔ بازار Hyperliquid در دسترس نیست.', 'Hyperliquid market data is unavailable.') : t('در حال دریافت…', 'Loading…')}</p>}

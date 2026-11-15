@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "note": "CI build evidence only. A build listed here is NOT downloadable; download buttons come exclusively from releases.json entries that point at a published GitHub Release.",
+  "product": "Open Trade",
+  "version": "0.0.2",
+  "channel": "beta",
+  "signed": false,
+  "verifiedOn": "2026-11-14",
+  "ciRun": "https://github.com/algomanlife/openfund/actions/runs/43611941782",
+  "sourceCommit": "76512b5",
+  "files": [
+    { "platform": "macos", "architecture": "arm64", "format": "dmg", "file": "Open-Trade-0.0.2-beta-unsigned-mac-arm64.dmg" },
+    { "platform": "macos", "architecture": "x64", "format": "dmg", "file": "Open-Trade-0.0.2-beta-unsigned-mac-x64.dmg" },
+    { "platform": "windows", "architecture": "x64", "format": "exe", "file": "Open-Trade-0.0.2-beta-unsigned-win-x64.exe" },
+    { "platform": "linux", "architecture": "x64", "format": "AppImage", "file": "Open-Trade-0.0.2-beta-unsigned-linux-x86_64.AppImage" },
+    { "platform": "linux", "architecture": "x64", "format": "deb", "file": "Open-Trade-0.0.2-beta-unsigned-linux-amd64.deb" }
+  ]
+}

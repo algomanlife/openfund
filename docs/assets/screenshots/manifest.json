@@ -6643,6 +6643,90 @@
       "session": "anonymous",
       "capturedAt": "2026-11-14T16:31:51Z",
       "state": "Full-page local dark capture. Public verification of isolated test evidence, no production issuance."
+    },
+    {
+      "file": "open-trade-0.0.2/startup.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T08:41:15.151984+00:00",
+      "state": "Start screen with server region and Explore charts; actual macOS Electron 45.3.2, Open Trade 0.0.2 beta source build via tests/desktop.mjs; no wallet or fabricated market data",
+      "sha256": "51452feee85ea0c3fa5dde1884263b703ea02a8276ccd14b9c15f6885a2b066e"
+    },
+    {
+      "file": "open-trade-0.0.2/chart.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T08:41:15.151984+00:00",
+      "state": "One Vela chart with floating order ticket; live Gains candles; actual macOS Electron 45.3.2, Open Trade 0.0.2 beta source build via tests/desktop.mjs; no wallet or fabricated market data",
+      "sha256": "9de817b4db49f23d9523006f577a0eeb5ca404a8caa136494a6c65ddfb839a82"
+    },
+    {
+      "file": "open-trade-0.0.2/two-charts.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T08:41:15.151984+00:00",
+      "state": "Two independent Vela charts; actual macOS Electron 45.3.2, Open Trade 0.0.2 beta source build via tests/desktop.mjs; no wallet or fabricated market data",
+      "sha256": "e86cbd6a3ffb26775ef6ecdd095d062a0fdd8f7e7d6101e75f507134668b9d1d"
+    },
+    {
+      "file": "open-trade-0.0.2/three-charts.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T08:41:15.151984+00:00",
+      "state": "Three-chart layout; actual macOS Electron 45.3.2, Open Trade 0.0.2 beta source build via tests/desktop.mjs; no wallet or fabricated market data",
+      "sha256": "518fc354c1b787c8a81e8340a64c98883a180f8c891ecab0335a7b6bb858824c"
+    },
+    {
+      "file": "open-trade-0.0.2/four-charts.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T08:41:15.151984+00:00",
+      "state": "Four independent Vela charts; actual macOS Electron 45.3.2, Open Trade 0.0.2 beta source build via tests/desktop.mjs; no wallet or fabricated market data",
+      "sha256": "b79ee4dac7ac7d0bb2037bbd972ca86745625ef052df3a9433a25e86e3b77aa8"
+    },
+    {
+      "file": "open-trade-0.0.2/watchlist-ticket.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T08:41:15.151984+00:00",
+      "state": "Compact watchlist and floating order ticket; actual macOS Electron 45.3.2, Open Trade 0.0.2 beta source build via tests/desktop.mjs; no wallet or fabricated market data",
+      "sha256": "3b347cf97991b03d5094aeb55f7a04e978164da8508d7853b80714ffff4b2fde"
+    },
+    {
+      "file": "open-trade-0.0.2/settings-glass.png",
+      "route": "open-trade://app/index.html",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T08:41:15.151984+00:00",
+      "state": "Settings dialog, translucent blurred surface; actual macOS Electron 45.3.2, Open Trade 0.0.2 beta source build via tests/desktop.mjs; no wallet or fabricated market data",
+      "sha256": "61874621eb1c690ed577f1da9705821a1b87e9f131b7e189d6d01d0141358933"
     }
   ],
   "finalIntegration": {
