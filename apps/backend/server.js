@@ -29,6 +29,7 @@ import { Portfolio } from './portfolio.js'
 import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
 import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments, paymentReadinessReport, paymentChains, DEPAY_SIGNED_PATHS } from './purchases.js'
+import { backstageReads } from './backstage-reads.js'
 import { adminRoutes } from './admin.js'
 import { createPayoutClaimClient } from './payout-claims.js'
 import { chartWorkspaceRoutes } from './chart-workspaces.js'
@@ -837,6 +838,7 @@ app.use('/admin/regional', regionalAdminRoutes({ Router: express.Router, pool, r
 app.use(remoteAccountRoutes({ Router: express.Router, pool, requireAuth }))
 /* same-origin public CMS content with a last-known-good snapshot (primary on IRAN, fallback on GLOBAL) */
 app.use('/cms', limit(240), cmsSnapshotRoutes({ pool, origin: cmsSnapshotOrigin(process.env) }))
+app.use('/admin/backstage', backstageReads({ pool }))
 app.use('/admin', adminRoutes({ pool, audit, claimPayout: createPayoutClaimClient(sync, signedHeaders) }))
 
 /* Public, read-only: region, mode and which operations the backend permits. */

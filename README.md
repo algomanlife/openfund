@@ -65,6 +65,8 @@ partner growth, platform expansion and operational scaling.
 | **Certificates** | Purchase, completion and payout certificates issued from recorded events, verifiable by serial or QR in either region | `/:locale/certificate-verification` |
 | **Backstage** | Directus for editorial content, plan catalog and coupons; token-gated operational API | Operators only |
 
+[Backstage operations](docs/backstage/OPERATIONS_GUIDE.md) provides a separate owner workspace for Prop operations.
+
 ## Product gallery
 
 Genuine captures. Website and terminal: local test runtime of the v0.6.5

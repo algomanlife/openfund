@@ -1,6 +1,11 @@
 # Feature status
 
-Controlled challenge acceptance is **In Progress** on the source branch.
+Backstage operations is **In Progress**. The initial owner workspace
+uses authoritative backend directories and review actions. Controlled test
+operations require the PR #125 contract. See the
+[operations guide](../backstage/OPERATIONS_GUIDE.md).
+
+Controlled challenge acceptance is **In Progress** on main.
 Wallet-bound zero-payment purchases, isolated rule snapshots and simulated
 payout settlement are implemented for the two private test lineages.
 Owner acceptance is pending. See the

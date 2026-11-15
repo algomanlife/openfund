@@ -6,6 +6,13 @@
 - Arabic, Russian and Simplified Chinese (`zh-CN`) are selectable translation slots. They are not auto-published.
 - Public pages keep the current layout and fall back to bundled copy when Directus is unavailable. Financial, trading and payment fields are not editable this way.
 
+## Unreleased — Backstage operations
+
+- Add a bilingual owner workspace with secure sign-in, linked operational
+  directories and password-confirmed Prop decisions.
+- Use the trading engine's account-first lock order for reward requests and
+  reversals to prevent contention from deadlocking a payout workflow.
+
 ## Unreleased — controlled challenge acceptance
 
 - Add wallet-bound Instant and Two-Step test checkout with isolated rule

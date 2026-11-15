@@ -115,6 +115,14 @@ recorded payout events. Confirm Directus draft isolation and publication before
 claiming full content editability. Public desktop downloads depend on verified
 published installers. Review and release remain separate milestones.
 
+## Backstage operations
+
+**In Progress:** independent owner authentication, bilingual navigation,
+linked administrative directories and protected decision workflows.
+Dependencies include the authoritative GLOBAL API, owner provisioning and
+PR #125 for test operations. Remaining milestones cover risk, financial
+operations, contact and support workflows, analytics and durable audit.
+[Architecture](../backstage/OPERATIONS_ARCHITECTURE.md)
 
 ## Controlled challenge acceptance
 

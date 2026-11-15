@@ -204,3 +204,12 @@ migration procedure if an already-provisioned service is in another region.
 Sources: [Render Blueprint](https://render.com/docs/blueprint-spec),
 [Directus database configuration](https://directus.com/docs/configuration/database),
 [Directus 11.9.1 database source](https://github.com/directus/directus/blob/v11.9.1/api/src/database/index.ts).
+
+## Backstage administrative service
+
+The Backstage Node service is independently built, with one instance and an
+explicit manual deployment trigger. It serves the owner UI and proxies an
+allowlisted set of requests to the authoritative GLOBAL backend. It uses the
+existing backend and CMS origins, with no database connection of its own.
+See the [provisioning and domain instructions](../backstage/OPERATIONS_GUIDE.md)
+before applying the Blueprint change.

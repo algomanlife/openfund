@@ -26,7 +26,7 @@ import { rateLimit } from 'express-rate-limit'
 import crypto from 'node:crypto'
 import { D } from './trading-math.js'
 import { governanceAdminRoutes } from './governance-routes.js'
-import { reverseRewardTx, onRewardPaidTx } from './rewards.js'
+import { lockRewardReversalAccount, reverseRewardTx, onRewardPaidTx } from './rewards.js'
 import { financialAudit } from './financial-audit.js'
 import { mountPayoutThreads } from './payout-threads.js'
 import { createPayoutClaimClient } from './payout-claims.js'
@@ -203,6 +203,7 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
     const client = await pool.connect()
     try {
       await client.query('BEGIN')
+      if (action === 'reject') await lockRewardReversalAccount(client, req.params.id)
       const w = (await client.query('SELECT * FROM withdrawal_requests WHERE id=$1 FOR UPDATE', [req.params.id])).rows[0]
       if (!w) throw fail(404, 'withdrawal_not_found')
       const reward = w.kind === 'reward'

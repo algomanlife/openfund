@@ -6,6 +6,30 @@
   "wallet": "Public pages anonymous; account captures use a disposable generated signer, real local SIWE/API and no fabricated market or financial responses. No personal wallet, approvals or chain transactions.",
   "screenshots": [
     {
+      "file": "backstage-operations/backstage-overview-en.png",
+      "route": "/#/dashboard",
+      "viewport": {
+        "width": 1366,
+        "height": 900
+      },
+      "session": "disposable owner session",
+      "capturedAt": "2026-11-15T16:39:30.532851+00:00",
+      "state": "EN Backstage overview from Chromium with real local API and PostgreSQL acceptance records. No production data.",
+      "sha256": "96ee215a8ace9c330dab36216a4fd3382d2ff3ab578dd74d9ea17c3c4db50043"
+    },
+    {
+      "file": "backstage-operations/backstage-overview-fa.png",
+      "route": "/#/dashboard",
+      "viewport": {
+        "width": 1366,
+        "height": 900
+      },
+      "session": "disposable owner session",
+      "capturedAt": "2026-11-15T16:39:30.615929+00:00",
+      "state": "FA Backstage overview from Chromium with real local API and PostgreSQL acceptance records. No production data.",
+      "sha256": "9cca82b2917e3dcd3c035a40ab2cba4c660c0e9b0f9e8152ff802af32aa3eaf0"
+    },
+    {
       "file": "controlled-challenges/operator-test-payout.png",
       "route": "/en/operations/payouts",
       "viewport": {
