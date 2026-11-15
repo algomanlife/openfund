@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4229,
-    "mappedCalls": 2094,
+    "uniqueRecords": 4239,
+    "mappedCalls": 2092,
     "exceptions": 70,
     "validationFindings": 0,
     "reviewedExclusions": 27
@@ -176,7 +176,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 167,
+          "line": 161,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -196,7 +196,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 104,
+          "line": 149,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -485,6 +485,26 @@
       ]
     },
     {
+      "key": "react.011f5739e1dab45d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اوپن‌فاند در نبود IB واجد شرایط",
+      "en": "Openfund without eligible IB",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 136,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.0122a5b09aa10e20",
       "namespace": "react",
       "area": "Website",
@@ -639,6 +659,26 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 269,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.0163f059e431785f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گسترش پلتفرم",
+      "en": "Platform expansion",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/productRoadmap.ts",
+          "line": 27,
+          "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -1191,7 +1231,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 29,
+          "line": 30,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -1571,7 +1611,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 83,
+          "line": 84,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -1805,7 +1845,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 24,
+          "line": 25,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -2686,7 +2726,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
-          "line": 20,
+          "line": 21,
           "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -3130,7 +3170,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 63,
+          "line": 64,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -3704,7 +3744,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 96,
+          "line": 120,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -3728,6 +3768,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.0a55dda8eda96eba",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پوشش پرداخت با تخصیص سناریو",
+      "en": "Payout coverage from modeled allocation",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 99,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -3924,7 +3984,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 78,
+          "line": 102,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -3998,7 +4058,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 161,
+          "line": 155,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -4105,7 +4165,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 22,
+          "line": 23,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -4292,7 +4352,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 71,
+          "line": 72,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -4332,7 +4392,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 160,
+          "line": 154,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -4462,6 +4522,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathE.ts",
           "line": 91,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.0cb81f720957c4dc",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بررسی شرایط تجاری و دسترسی فنی با ارائه‌دهندهٔ هر پلتفرم.",
+      "en": "Commercial terms and technical access verified with each platform provider.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/productRoadmap.ts",
+          "line": 32,
+          "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -5077,7 +5157,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 90,
+          "line": 114,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -5404,7 +5484,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 22,
+          "line": 23,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -5495,26 +5575,6 @@
           "page": "tools",
           "route": "/:locale/tools",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.1011498c62d6a8d4",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "زیربنای پلتفرم",
-      "en": "Platform foundation",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 109,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -6125,7 +6185,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 11,
+          "line": 12,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -6600,7 +6660,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 63,
+          "line": 74,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -6629,6 +6689,26 @@
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
           "line": 121,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.1377ffb1618e5e8b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "۷ روز",
+      "en": "7 days",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 139,
+          "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -6775,6 +6855,26 @@
       ]
     },
     {
+      "key": "react.13b51edad99676d8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "زیرساخت و تثبیت",
+      "en": "Foundation and stabilization",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/productRoadmap.ts",
+          "line": 7,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.13c17b158673d0f9",
       "namespace": "react",
       "area": "Global Content",
@@ -6867,7 +6967,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 159,
+          "line": 153,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -7122,6 +7222,26 @@
       ]
     },
     {
+      "key": "react.1455ed49c36db80b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کانال‌های جذب اعتبارسنجی‌شده، گزارش ذخایر، بازیابی، حسابرسی و هماهنگی وب و دسکتاپ را گسترش دهیم. اتصال به پلتفرم‌های بیرونی و پایلوت بازار واقعی به مجوز، امنیت و تأیید صریح وابسته‌اند.",
+      "en": "Scale proven acquisition channels, reserve reporting, recovery, audits and web–desktop interoperability. Third-party connectivity and real-market pilots depend on licensing, security and explicit authorization.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/productRoadmap.ts",
+          "line": 38,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.148823c405bb21fc",
       "namespace": "react",
       "area": "Global Content",
@@ -7208,7 +7328,7 @@
         },
         {
           "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
-          "line": 13,
+          "line": 14,
           "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -7591,6 +7711,33 @@
       ]
     },
     {
+      "key": "react.15c3896328df9baf",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "نقشهٔ راه یک‌سالهٔ محصول",
+      "en": "One-year product roadmap",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
+          "line": 103,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 19,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.15c82b77d203de1d",
       "namespace": "react",
       "area": "Website",
@@ -7763,7 +7910,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 40,
+          "line": 41,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8019,13 +8166,6 @@
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
           "line": 38,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 112,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8427,7 +8567,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 73,
+          "line": 74,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8707,7 +8847,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 54,
+          "line": 55,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8963,26 +9103,6 @@
       ]
     },
     {
-      "key": "react.1a30bb29ea01d6e3",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "نقشهٔ راه محصول",
-      "en": "Product roadmap",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
-          "line": 18,
-          "page": "roadmap",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.1a33b172d2e601f2",
       "namespace": "react",
       "area": "Global Content",
@@ -9135,7 +9255,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 157,
+          "line": 151,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -9596,7 +9716,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 34,
+          "line": 35,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -9636,7 +9756,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 152,
+          "line": 146,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -9736,7 +9856,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 72,
+          "line": 73,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -10024,7 +10144,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 102,
+          "line": 126,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -10585,7 +10705,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 153,
+          "line": 147,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -10899,7 +11019,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 100,
+          "line": 124,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -11326,7 +11446,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 90,
+          "line": 91,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -11366,7 +11486,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 82,
+          "line": 83,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -11626,7 +11746,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 35,
+          "line": 36,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -12996,26 +13116,6 @@
       ]
     },
     {
-      "key": "react.260f25d94d3dcc65",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "اجرای اتصال به بازار",
-      "en": "Live Market Access execution",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 114,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.261a53e382de2247",
       "namespace": "react",
       "area": "Website",
@@ -13356,6 +13456,26 @@
       ]
     },
     {
+      "key": "react.26ef93a9d8717635",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سه‌ماههٔ",
+      "en": "Quarter",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 20,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.26fd2864e05690a0",
       "namespace": "react",
       "area": "Global Content",
@@ -13369,26 +13489,6 @@
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
           "line": 142,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.2707b2b6ff9381ae",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "آداپتورهای بازار، تجمیع نقدینگی و مسیریابی هوشمند. امروز فقط زیربنای غیرفعال کد وجود دارد.",
-      "en": "Venue adapters, liquidity aggregation and intelligent routing. Only a dormant source foundation exists today.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 116,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -13448,7 +13548,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 37,
+          "line": 38,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -13815,7 +13915,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 168,
+          "line": 162,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -14563,7 +14663,7 @@
         },
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 99,
+          "line": 123,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15030,7 +15130,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 64,
+          "line": 65,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15251,7 +15351,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 90,
+          "line": 91,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15633,7 +15733,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 126,
+          "line": 120,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15693,7 +15793,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 68,
+          "line": 69,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15874,6 +15974,26 @@
         {
           "component": "apps/web-react/src/features/economy/backendCopy.ts",
           "line": 8,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.2e518b5727cc431d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "این جدول سیاست برنامه‌ریزی‌شده برای حساب‌های تازه فعال‌شده را نشان می‌دهد. حساب‌های موجود تابع شرایط زمان صدور خود هستند. کارکنان هر درخواست را بررسی و تسویهٔ دستی تأییدشده را ثبت می‌کنند.",
+      "en": "These terms describe the planned policy for newly activated accounts. Existing accounts follow their issued terms. Staff review each request and record verified manual settlement.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 130,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -16154,7 +16274,7 @@
         },
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 34,
+          "line": 35,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -16169,6 +16289,13 @@
         {
           "component": "apps/web-react/src/features/economy/LiveMarketAccess.tsx",
           "line": 132,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 134,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -16406,6 +16533,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.2f669601cae090e1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "چرخه",
+      "en": "Cycle",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 133,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -17112,7 +17259,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 69,
+          "line": 70,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -17654,7 +17801,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 72,
+          "line": 73,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -17696,26 +17843,6 @@
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
           "line": 210,
           "page": "radar",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.3246b87805153d62",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "پورتفولیو، ژورنال، کاتالوگ، خرید و پنج زبان ساخته شده‌اند؛ پذیرش کیف پول و دستگاه واقعی و فعال‌سازی پرداخت در محیط اصلی باقی مانده است.",
-      "en": "Portfolios, journals, catalog, purchases and five locales are built; real wallet/device acceptance and production payment activation remain.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 111,
-          "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -19025,7 +19152,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 134,
+          "line": 128,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -19067,26 +19194,6 @@
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
           "line": 114,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.36134019dbe616e3",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "پاداش = فروش × نرخ قبولی × نرخ اولین پاداش × میانگین کل پاداش. کمیسیون = خالص × سهم مشمول × ۱۰٪ (طبق سیاست فقط خرید اول).",
-      "en": "Payouts = sold × pass rate × first-payout rate × average total payout. Commissions = net × eligible share × 10% (first purchases only in policy).",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 77,
-          "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -19385,7 +19492,27 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 111,
+          "line": 156,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.3711955f2439c2f7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تعهدات پرداخت موجود (دلار)",
+      "en": "Existing payout liabilities (USD)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 81,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -19445,7 +19572,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 39,
+          "line": 40,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -19863,7 +19990,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 161,
+          "line": 155,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21045,7 +21172,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 40,
+          "line": 41,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21173,7 +21300,7 @@
         },
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 10,
+          "line": 11,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21327,7 +21454,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 98,
+          "line": 122,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21414,7 +21541,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 62,
+          "line": 73,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22097,6 +22224,26 @@
       ]
     },
     {
+      "key": "react.3f32e1d0e4daf112",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کل تعهدات پرداخت",
+      "en": "Total payout obligations",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 96,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.3f3ab57a7990621e",
       "namespace": "react",
       "area": "Website",
@@ -22697,7 +22844,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 72,
+          "line": 87,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -23079,6 +23226,26 @@
       ]
     },
     {
+      "key": "react.41a5ffbb81cde8d1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مقیاس‌پذیری و بلوغ اکوسیستم",
+      "en": "Scaling and ecosystem maturity",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/productRoadmap.ts",
+          "line": 37,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.41aa777ddfd14bdd",
       "namespace": "react",
       "area": "Website",
@@ -23113,6 +23280,46 @@
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 272,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.41b922b90803b5bf",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "IB واجد شرایط",
+      "en": "Eligible IB",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 135,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.41c31369df75095f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سوابق مالی تطبیق‌یافته، صف عملیاتی پشتیبانی و آستانه‌های توافق‌شدهٔ پایداری.",
+      "en": "Reconciled financial records, an operational support queue and agreed reliability thresholds.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/productRoadmap.ts",
+          "line": 12,
+          "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -23195,26 +23402,6 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.421023521ea749b2",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "پیکربندی زیرساخت، یکپارچه‌سازی پیوسته و استقرار مبتنی بر انتشار برقرارند؛ پایش عملیاتی و تمرین بازیابی باقی مانده است.",
-      "en": "Infrastructure configuration, CI and release-driven deployment are in place; operational monitoring and a rehearsed recovery remain.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 113,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -24079,7 +24266,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 54,
+          "line": 55,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24247,6 +24434,26 @@
       ]
     },
     {
+      "key": "react.459930241e1b88ae",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ابزارهای حرفه‌ای وب و دسکتاپ را توسعه دهیم، کنترل ریسک خزانه را تقویت کنیم و الزامات مجوز و یکپارچه‌سازی MetaTrader و cTrader را بررسی کنیم.",
+      "en": "Extend the professional web and desktop tools, improve treasury risk controls and investigate MetaTrader and cTrader licensing and integration requirements.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/productRoadmap.ts",
+          "line": 28,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.45a3521a62b3f94c",
       "namespace": "react",
       "area": "Website",
@@ -24319,7 +24526,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 36,
+          "line": 37,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24781,6 +24988,26 @@
       ]
     },
     {
+      "key": "react.4736530fb62ea6df",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تخصیص نمونه به عملیات (۴۱٪)",
+      "en": "Illustrative operating allocation (41%)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 98,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.4747b763ddab69ff",
       "namespace": "react",
       "area": "Website",
@@ -25188,6 +25415,26 @@
       ]
     },
     {
+      "key": "react.484373954aaddab9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در این سناریو، تقسیم ۵۹/۴۱ پس از کسر بازپرداخت فرضی اعمال می‌شود. مبنای تخصیص عملیاتی هنوز نیازمند تأیید است. پرداخت تخمینی از ضرب فروش، نرخ قبولی، نرخ فعال‌سازی، نرخ پرداخت و میانگین پرداخت به دست می‌آید.",
+      "en": "This scenario applies 59/41 to sales net of modeled refunds. The operating policy still requires confirmation of the allocation base. Trader payout estimates multiply sales, pass rate, activation rate, payout rate and average total payout.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 101,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.4847153363220da5",
       "namespace": "react",
       "area": "Global Content",
@@ -25224,26 +25471,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.485e9478874489d4",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "فاز ۶",
-      "en": "Phase 6",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 116,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -25520,7 +25747,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 74,
+          "line": 75,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -25911,6 +26138,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.4a21757c52f2f6ea",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نرخ اولین پاداش ٪ (از حساب‌های فعال‌شده)",
+      "en": "First payout rate % (of activated accounts)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 75,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -26381,7 +26628,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 69,
+          "line": 70,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -26701,7 +26948,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 39,
+          "line": 40,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27534,13 +27781,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 116,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -27846,7 +28086,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 68,
+          "line": 69,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -28655,7 +28895,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 94,
+          "line": 95,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -28994,6 +29234,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.5218943781e373ab",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سهم پرداخت‌های منتسب به IB ٪",
+      "en": "IB-attributed share of payouts %",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 79,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -29525,6 +29785,26 @@
       ]
     },
     {
+      "key": "react.53f5d713f6efc8cd",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "میانگین سهم سود تریدر ٪",
+      "en": "Average trader profit share %",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 80,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.53fb056f02f36bdf",
       "namespace": "react",
       "area": "Global Content",
@@ -29537,7 +29817,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 169,
+          "line": 163,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -29918,7 +30198,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 153,
+          "line": 147,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -30078,7 +30358,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
-          "line": 9,
+          "line": 10,
           "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -30362,26 +30642,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.56dbd164f0fd02d4",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "فاز ۴",
-      "en": "Phase 4",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 113,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -31070,6 +31330,26 @@
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
           "line": 227,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.5885072a4b3f6108",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "چهار سه‌ماهه برای برنامه‌ریزی شرکت پراپ، فناوری و عملیات مالی آن.",
+      "en": "Four planning quarters for the prop firm, its technology and financial operations.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
+          "line": 104,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -32166,7 +32446,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 60,
+          "line": 71,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -32233,7 +32513,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 62,
+          "line": 63,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -32373,7 +32653,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
-          "line": 10,
+          "line": 11,
           "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -33314,7 +33594,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 17,
+          "line": 18,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -33581,7 +33861,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 98,
+          "line": 122,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -34334,6 +34614,13 @@
       "validation": "mapped",
       "locations": [
         {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 140,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
           "line": 60,
           "page": "purchase",
@@ -34603,6 +34890,26 @@
       ]
     },
     {
+      "key": "react.62e76a27daf7227b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نرخ فعال‌سازی حساب فاندد ٪",
+      "en": "Funded activation rate %",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 78,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.62fa45c323f74701",
       "namespace": "react",
       "area": "Website",
@@ -34759,26 +35066,6 @@
           "page": "learn",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.63f4c7a1963b8121",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "هستهٔ معاملاتی",
-      "en": "Trading core",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 110,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -35225,6 +35512,26 @@
       ]
     },
     {
+      "key": "react.6559278bcc2e6ca5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فعال‌سازی‌های مورد انتظار",
+      "en": "Expected funded activations",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 93,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.6562734be7c9a4a9",
       "namespace": "react",
       "area": "Website",
@@ -35328,26 +35635,6 @@
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.65b7e2ca1720aeca",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "معامله‌گری پیشرفته",
-      "en": "Advanced trading",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 115,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -35644,7 +35931,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 76,
+          "line": 77,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35784,7 +36071,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 35,
+          "line": 36,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35898,7 +36185,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 146,
+          "line": 140,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -36446,7 +36733,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 74,
+          "line": 75,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -36546,7 +36833,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 12,
+          "line": 13,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -36666,7 +36953,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 70,
+          "line": 71,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -37040,7 +37327,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 70,
+          "line": 71,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -37156,6 +37443,26 @@
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
           "line": 211,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.6ada92b10111444b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "۲۱ روز",
+      "en": "21 days",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 140,
+          "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -37414,7 +37721,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 57,
+          "line": 66,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -37474,7 +37781,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 69,
+          "line": 70,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -38409,7 +38716,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 75,
+          "line": 90,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -38517,7 +38824,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 68,
+          "line": 83,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -39647,7 +39954,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 67,
+          "line": 68,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -39811,6 +40118,26 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.7313271051c1167e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پوشش پایدار ذخایر، سرمایهٔ آزاد تأییدشده برای تخصیص واقعی و کنترل‌ها و مجوزهای مصوب.",
+      "en": "Sustainable reserve coverage, verified free capital for live allocation, and approved controls and licensing.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/productRoadmap.ts",
+          "line": 42,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -40368,7 +40695,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 71,
+          "line": 72,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -40575,7 +40902,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
-          "line": 15,
+          "line": 16,
           "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -41164,26 +41491,6 @@
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
           "line": 242,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.77daf12a04181f40",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "پیاده‌سازی و آزموده شده و برای انتشار در حال بازبینی است. نشانی خزانه، ذخایر و نقش‌های بازبین به پیکربندی مدیریت نیاز دارند.",
-      "en": "Implemented and tested; under review for release. Treasury address, reserves and reviewer roles need management configuration.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 112,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -42137,7 +42444,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 92,
+          "line": 93,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -42197,7 +42504,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 156,
+          "line": 150,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -42297,7 +42604,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 38,
+          "line": 39,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -42477,7 +42784,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 96,
+          "line": 120,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -43065,7 +43372,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 105,
+          "line": 106,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -44006,7 +44313,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 45,
+          "line": 46,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -44066,7 +44373,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 23,
+          "line": 24,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -44882,7 +45189,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
-          "line": 21,
+          "line": 22,
           "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -46306,7 +46613,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 105,
+          "line": 150,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -46373,7 +46680,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 23,
+          "line": 24,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -46597,6 +46904,26 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.882614f168ce81cb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "۱۴ روز",
+      "en": "14 days",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 139,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -46956,6 +47283,26 @@
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
           "line": 60,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.89249e02afab3dc2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تعهدات پرداخت به IB",
+      "en": "Associated IB payout obligations",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 95,
+          "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -47972,7 +48319,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 145,
+          "line": 139,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -48300,7 +48647,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 171,
+          "line": 165,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -48701,7 +49048,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 66,
+          "line": 77,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -49595,7 +49942,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 144,
+          "line": 138,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -49635,7 +49982,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 24,
+          "line": 25,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50022,7 +50369,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 155,
+          "line": 149,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50133,26 +50480,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.92439c7b17e1afeb",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "وضعیت توسعه در هفت فاز و مسیر اقتصادی.",
-      "en": "Where development stands across the seven phases and the economy track.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 103,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -50903,7 +51230,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 38,
+          "line": 39,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -51817,7 +52144,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 154,
+          "line": 148,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -51904,7 +52231,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 89,
+          "line": 90,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -52133,6 +52460,26 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 305,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.97e27bb6c7081476",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ترمینال وب و Open Trade را پایدار کنیم. فعال‌سازی حساب فاندد، پرداخت‌های دستی، حسابداری IB، تطبیق خزانه و بازیابی منطقه‌ای را راستی‌آزمایی کنیم. هدف اوایل ۲۰۲۷ حدود ۲٬۰۰۰ کاربر ثبت‌نام‌شده است. برای سوابق معاملات فاندد، سازوکار ثبت تعهد رمزنگاری‌شده با حفظ حریم خصوصی طراحی کنیم.",
+      "en": "Stabilize the web terminal and Open Trade. Verify funded activation, manual payouts, IB accounting, treasury reconciliation and regional recovery. Target approximately 2,000 registered users by early 2027. Design privacy-preserving commitments for funded trading records.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/productRoadmap.ts",
+          "line": 8,
+          "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -52806,7 +53153,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 71,
+          "line": 72,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -52826,7 +53173,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 92,
+          "line": 93,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -52846,7 +53193,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 93,
+          "line": 94,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -53291,26 +53638,6 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.9adbe568fc567594",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "فاز ۷",
-      "en": "Phase 7",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 117,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -53994,7 +54321,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 17,
+          "line": 18,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -54064,6 +54391,26 @@
           "line": 167,
           "page": "terminal",
           "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.9d76b5f63ab4bf08",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پایه",
+      "en": "Base",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 44,
+          "page": "economy",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -54697,7 +55044,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 125,
+          "line": 119,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -54951,7 +55298,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 14,
+          "line": 15,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -55386,26 +55733,6 @@
       ]
     },
     {
-      "key": "react.a06043cd88053ecf",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "اجرای شبیه‌سازی‌شدهٔ پایدار، ارزش‌گذاری دهدهی، پایش افت سرمایه و موتور ارزیابی چلنج پولی.",
-      "en": "Persistent simulated execution, decimal valuation, drawdown telemetry and the paid-challenge evaluation engine.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 110,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.a06569b4c36ce8b8",
       "namespace": "react",
       "area": "Website",
@@ -55505,7 +55832,7 @@
         },
         {
           "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
-          "line": 12,
+          "line": 13,
           "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -55848,26 +56175,6 @@
       ]
     },
     {
-      "key": "react.a1179b6a0b9f48b4",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "نقشهٔ راه محصول توسط تیم اوپن‌فاند در حال آماده‌سازی است و در همین بخش منتشر خواهد شد. تا آن زمان، هیچ‌چیز در این صفحه فراتر از ثبت مخزن کد تعهد محسوب نمی‌شود.",
-      "en": "The product roadmap is being prepared by the Openfund team and will be published here. Until then, nothing on this page is a commitment beyond the repository register.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
-          "line": 19,
-          "page": "roadmap",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.a135e212f73e484a",
       "namespace": "react",
       "area": "Website",
@@ -55901,26 +56208,6 @@
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
           "line": 155,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.a1434f79604d13d7",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "خدمات توسعه‌دهندگان، یکپارچگی‌های بیشتر، مقیاس‌پذیری هماهنگ و اپلیکیشن‌های دسکتاپ و موبایل.",
-      "en": "Developer services, further integrations, coordinated scaling, and desktop and mobile applications.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 117,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -56680,7 +56967,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 99,
+          "line": 123,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -57074,7 +57361,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 93,
+          "line": 94,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -57302,26 +57589,6 @@
       ]
     },
     {
-      "key": "react.a4dccd38e92f4694",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "فاز ۳",
-      "en": "Phase 3",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 111,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.a4e996a70f4e026f",
       "namespace": "react",
       "area": "Website",
@@ -57515,7 +57782,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 50,
+          "line": 51,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -57645,26 +57912,6 @@
       ]
     },
     {
-      "key": "react.a59fb7ad405860fd",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "زیرساخت محیط اصلی",
-      "en": "Production infrastructure",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 113,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.a5a0e843f1f19c67",
       "namespace": "react",
       "area": "Website",
@@ -57772,6 +58019,26 @@
       ]
     },
     {
+      "key": "react.a5d4c8f1428bae13",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دریافت‌کنندگان مورد انتظار",
+      "en": "Expected payout recipients",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 94,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.a5f47ecad6a94834",
       "namespace": "react",
       "area": "Website",
@@ -57808,6 +58075,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.a61096723a75f574",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "محافظه‌کارانه",
+      "en": "Conservative",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 43,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -57964,7 +58251,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 67,
+          "line": 68,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -58768,7 +59055,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 42,
+          "line": 43,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -60018,7 +60305,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 101,
+          "line": 102,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -60375,7 +60662,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 33,
+          "line": 34,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -60602,7 +60889,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 66,
+          "line": 67,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -60669,7 +60956,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 73,
+          "line": 74,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -60689,7 +60976,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
-          "line": 17,
+          "line": 18,
           "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -60749,7 +61036,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 128,
+          "line": 122,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -60849,7 +61136,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 91,
+          "line": 92,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61679,7 +61966,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 66,
+          "line": 67,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61739,7 +62026,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 90,
+          "line": 114,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62146,7 +62433,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 72,
+          "line": 73,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62574,7 +62861,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 148,
+          "line": 142,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62961,7 +63248,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 100,
+          "line": 124,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62988,7 +63275,7 @@
         },
         {
           "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
-          "line": 8,
+          "line": 9,
           "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -63376,26 +63663,6 @@
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
           "line": 116,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.b5de20fe4d461968",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "نقاط عطف، نه تاریخ‌ها.",
-      "en": "Milestones, not dates.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 102,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63857,7 +64124,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 158,
+          "line": 152,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63977,7 +64244,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 46,
+          "line": 47,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -64440,7 +64707,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 155,
+          "line": 149,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -64867,7 +65134,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 135,
+          "line": 129,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65441,7 +65708,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 86,
+          "line": 110,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65655,7 +65922,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 91,
+          "line": 92,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -66035,7 +66302,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 66,
+          "line": 67,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -66153,26 +66420,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.be475a7f021b4727",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "تجربهٔ محصول",
-      "en": "Product experience",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 111,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -67024,6 +67271,26 @@
       ]
     },
     {
+      "key": "react.c0dcb91580c0913f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "رشد و بلوغ عملیاتی",
+      "en": "Growth and operational maturity",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/productRoadmap.ts",
+          "line": 17,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.c0dce915693379cf",
       "namespace": "react",
       "area": "Website",
@@ -67151,26 +67418,6 @@
       ]
     },
     {
-      "key": "react.c116a36a859b491c",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "سرمایهٔ واقعی",
-      "en": "Live capital",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 114,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.c12dd15aa2c7d4bc",
       "namespace": "react",
       "area": "User Dashboard",
@@ -67243,7 +67490,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 78,
+          "line": 102,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67605,6 +67852,26 @@
       ]
     },
     {
+      "key": "react.c2b58a15a1bed53f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "از ۱٬۰۰۰ دای سود واجد شرایط در چرخهٔ ۷روزه، تریدر ۷۵۰ دای و IB واجد شرایط ۲۵۰ دای دریافت می‌کنند. اگر IB واجد شرایط وجود نداشته باشد، ۲۵۰ دای سهم اوپن‌فاند است. معرفی عادی می‌تواند طبق شرایط خودش کمیسیون خرید داشته باشد. سهم IB از پرداخت فاندد تنها پس از تأیید پرداخت تریدر واجد شرایط تسویه می‌شود.",
+      "en": "On 1,000 DAI of eligible profit in a 7-day cycle, the trader receives 750 DAI and the eligible IB receives 250 DAI. If there is no eligible IB, Openfund retains 250 DAI. An ordinary referral may earn a purchase commission under its own terms. An IB may qualify separately for funded payout participation after the trader payment is verified.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 147,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.c2b5fa1ea4397684",
       "namespace": "react",
       "area": "User Dashboard",
@@ -67657,7 +67924,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 104,
+          "line": 149,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67717,7 +67984,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 94,
+          "line": 95,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67738,26 +68005,6 @@
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
           "line": 202,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.c3235cec660eee94",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "فاز ۵",
-      "en": "Phase 5",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 115,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67924,7 +68171,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 67,
+          "line": 82,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -68093,7 +68340,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 62,
+          "line": 73,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -68113,7 +68360,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 65,
+          "line": 76,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -68255,26 +68502,6 @@
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
           "line": 125,
           "page": "transparency",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.c4a2bf28741d5ad4",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "فاز ۲",
-      "en": "Phase 2",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 110,
-          "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -68473,7 +68700,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 66,
+          "line": 67,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -68537,6 +68764,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.c574fcdb29b12139",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برنامه‌های معرفی و سفیران را گسترش دهیم، مراحل جذب را قابل‌اندازه‌گیری کنیم و تحلیل حساب فاندد، تطبیق پرداخت و سطح خدمات پشتیبانی را بهبود دهیم.",
+      "en": "Expand referral and ambassador programs, build measurable acquisition funnels and improve funded analytics, payout reconciliation and support service levels.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/productRoadmap.ts",
+          "line": 18,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -68689,26 +68936,6 @@
           "component": "apps/web-react/src/features/loading/AppFrame.tsx",
           "line": 151,
           "page": "loading",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.c6076f308485dd96",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "هدف، تسویهٔ تقریباً فوری پس از بسته‌شدن تأییدپذیر یک پوزیشن سودآور است. هر تقسیم دقیقاً یک بار ثبت می‌شود و یک فرایند تسویه، انتقال‌های ناموفق را تا پنج بار تکرار می‌کند و سپس برای تطبیق مستند به اپراتور می‌سپارد. زمان واقعی به قطعیت معامله، تطبیق، هزینه‌های اجرا و شرایط شبکهٔ پرداخت بستگی دارد؛ بنابراین پرداخت فوری هرگز بی‌قیدوشرط نیست.",
-      "en": "The intent is near-immediate settlement after a profitable position is verifiably closed. Each split is written exactly once, and a settlement worker retries failed transfers up to five times before handing them to an operator for reconciliation with evidence. Actual timing depends on trade finality, reconciliation, execution costs and payment-network conditions, so instant payment is never unconditional.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 51,
-          "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -68881,7 +69108,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 156,
+          "line": 150,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -69335,7 +69562,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 20,
+          "line": 21,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -69695,7 +69922,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 75,
+          "line": 90,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -69719,26 +69946,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.c9809a866c0cd64c",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "گسترش اکوسیستم",
-      "en": "Ecosystem expansion",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 117,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -70151,7 +70358,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 73,
+          "line": 74,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -70238,7 +70445,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 67,
+          "line": 68,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -70768,7 +70975,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 108,
+          "line": 153,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -71175,7 +71382,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 158,
+          "line": 152,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -71282,7 +71489,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 70,
+          "line": 71,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -71369,7 +71576,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 159,
+          "line": 153,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -72357,7 +72564,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 89,
+          "line": 90,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -73278,7 +73485,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 154,
+          "line": 148,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -73481,6 +73688,26 @@
           "line": 48,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.d3c085a27842c48e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تخصیص نمونه به خزانه (۵۹٪)",
+      "en": "Illustrative treasury allocation (59%)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 97,
+          "page": "economy",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -73898,7 +74125,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 133,
+          "line": 127,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -74327,7 +74554,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 30,
+          "line": 31,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -74562,6 +74789,26 @@
       ]
     },
     {
+      "key": "react.d6bfba95fbd162a7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تنش",
+      "en": "Stress",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 45,
+          "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.d6e6a55e350e7920",
       "namespace": "react",
       "area": "Website",
@@ -74722,7 +74969,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 137,
+          "line": 131,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -75224,7 +75471,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 59,
+          "line": 70,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -75523,26 +75770,6 @@
           "line": 301,
           "page": "terminal",
           "route": "/:locale/:product/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.d8e73be03f783c70",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "نرخ اولین پاداش ٪ (از قبول‌شدگان)",
-      "en": "First payout rate % (of passed)",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 64,
-          "page": "economy",
-          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -75854,7 +76081,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 93,
+          "line": 117,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76422,7 +76649,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 93,
+          "line": 117,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76559,21 +76786,14 @@
     {
       "key": "react.dbc31bff683c24e1",
       "namespace": "react",
-      "area": "Global Content",
+      "area": "Website",
       "owner": "Content editor",
       "fa": "اقتصاد",
       "en": "Economy",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 112,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        },
         {
           "component": "apps/web-react/src/features/information/content.ts",
           "line": 26,
@@ -77651,7 +77871,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 160,
+          "line": 154,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -79445,7 +79665,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 26,
+          "line": 27,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -80125,7 +80345,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 86,
+          "line": 110,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -80267,6 +80487,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 214,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.e711193a8c15b81e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت پایدار، تداوم خدمات منطقه‌ای و اندازه‌گیری معتبر از ثبت‌نام تا پرداخت تأییدشده.",
+      "en": "Stable payouts, regional continuity and reliable measurement from registration through verified payments.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/productRoadmap.ts",
+          "line": 22,
+          "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -81216,26 +81456,6 @@
       ]
     },
     {
-      "key": "react.ea14a146b8725114",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "به طراحی حضانت، قراردادهای آزمایشی پشتیبانی‌شده، شبیه‌سازی تراکنش، بازبینی امنیتی، ۵۰۰٬۰۰۰ دلار سرمایهٔ آزاد تأییدشده و فعال‌سازی صریح نیاز دارد.",
-      "en": "Requires custody design, supported testnet contracts, transaction simulation, a security review, $500,000 of verified free capital and explicit activation.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 114,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.ea2a0a1e6b7fcc30",
       "namespace": "react",
       "area": "Global Content",
@@ -81415,7 +81635,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 61,
+          "line": 72,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -81596,26 +81816,6 @@
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
           "line": 159,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.eb6014235cb9d867",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "جریان‌های سفارش گسترده‌تر، تحلیل‌های عمیق‌تر و پس از عبور از دروازه‌ها، اجرای پرپچوال با تأیید کیف پول.",
-      "en": "Extended order workflows, deeper analytics and, once its gates are met, wallet-confirmed Perpetual execution.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 115,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82336,7 +82536,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 74,
+          "line": 75,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82416,7 +82616,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 36,
+          "line": 37,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -83561,7 +83761,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
-          "line": 108,
+          "line": 153,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -83761,7 +83961,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 148,
+          "line": 142,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -84055,7 +84255,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 137,
+          "line": 131,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -84991,26 +85191,6 @@
       ]
     },
     {
-      "key": "react.f4b8d5b452e7bf94",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "فاز ۱",
-      "en": "Phase 1",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 109,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.f4c394f4be763824",
       "namespace": "react",
       "area": "Global Content",
@@ -85725,26 +85905,6 @@
       ]
     },
     {
-      "key": "react.f71bdc0dd2e6790f",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "اپلیکیشن React و Node، چارت Vela و فیدهای بازار گینز — در محدودهٔ فعلی اپلیکیشن تحویل شده است.",
-      "en": "React and Node application, Vela charting and Gains market feeds — delivered within the current application scope.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 109,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.f74c39496bcb2d61",
       "namespace": "react",
       "area": "Website",
@@ -85777,7 +85937,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 152,
+          "line": 146,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -86137,7 +86297,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 132,
+          "line": 126,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -86157,7 +86317,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 81,
+          "line": 82,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -86379,6 +86539,26 @@
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
           "line": 12,
           "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.f9367566b2a4be62",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سیاست پرداخت حساب فاندد",
+      "en": "Funded payout policy",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
+          "line": 129,
+          "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -86758,7 +86938,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 37,
+          "line": 38,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -86932,7 +87112,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
-          "line": 11,
+          "line": 12,
           "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -87375,7 +87555,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
-          "line": 16,
+          "line": 17,
           "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -87395,7 +87575,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 124,
+          "line": 118,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -87549,7 +87729,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 68,
+          "line": 69,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -87909,7 +88089,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 85,
+          "line": 86,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -88391,7 +88571,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
-          "line": 14,
+          "line": 15,
           "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -88556,6 +88736,26 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.febf22321b5ea6da",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "کارکنان پس از تأیید پوزیشن بسته‌شده و هزینه‌های آن، مستندات تسویه را بررسی می‌کنند. زمان تسویه به قطعیت معامله، تطبیق و شرایط شبکهٔ پرداخت بستگی دارد. فرمول سهم IB در بازار واقعی به تأیید جداگانه نیاز دارد.",
+      "en": "Staff review settlement evidence after verifying a closed position and its costs. Timing depends on trade finality, reconciliation and payment-network conditions. The real-market IB formula requires separate policy approval.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
+          "line": 52,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -88906,7 +89106,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
-          "line": 157,
+          "line": 151,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"

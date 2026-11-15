@@ -33,9 +33,29 @@ unreleased.
   eligibility before enabling new financial behavior.
 - Implement 59/41 revenue recognition and expense reporting after confirming
   the eligible revenue base. Add reconciled on-chain transfer ingestion and
-  investigate Iran-specific industry evidence for the forecast methodology.
+  collect comparable outcome data for the forecast methodology.
 - Verify configured payout treasury, live receipt handling and end-to-end
   regional consistency. Confirm the real-market IB policy and Coach
   interaction separately.
 - Keep provisional secondary-quarter growth estimates for owner review.
   Verify commercial licensing before promising external platform access.
+
+## Public research and licensing dependencies
+
+- Topstep's 2025 disclosure reports that 16.8% of started Trading Combines
+  qualified to advance and 33.3% of funded-level participants received a
+  payout. The measures use different denominators and describe a single
+  futures firm. The Openfund scenario inputs remain assumptions.
+  [Topstep performance disclosure](https://www.topstep.com/express-funded-account-rules)
+- Two Persian-language providers publish withdrawal rules and eligibility
+  terms. The reviewed pages gave no comparable evaluated cohort and
+  paid-recipient denominators. The scenario assumes no Iran-wide rate.
+  [PropAI FAQ](https://propai.ir/faq) ·
+  [PropXpro rules](https://fa.propx.pro/wp-content/uploads/2025/09/PropXpro_Trading_Rules_and_Termspropx.pro_.pdf)
+- MetaQuotes advertises MetaTrader 5 institutional APIs and white-label
+  licensing. Spotware advertises cTrader Open API access for connected
+  accounts. Both roadmap items depend on confirming commercial terms,
+  approved jurisdictions, testing access, integration and data costs, and
+  the intended prop-firm model with providers.
+  [MetaQuotes broker platform](https://www.metaquotes.net/en/metatrader5/brokers) ·
+  [Spotware Open API](https://www.spotware.com/ctrader/dev-resources/open-api/)

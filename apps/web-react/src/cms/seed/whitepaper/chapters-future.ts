@@ -106,10 +106,10 @@ export const futureChapters: WpChapter[] = [
       { type: 'p', text: t(
         'The roadmap orders work by dependency. No delivery dates are promised: a milestone advances only when its acceptance criteria are met with evidence. Between 3 and 8 November 2026 the project published nine official releases, from v0.1.0 to v0.4.4.',
         'نقشهٔ راه کارها را بر اساس وابستگی مرتب می‌کند. هیچ تاریخ تحویلی وعده داده نمی‌شود: هر نقطهٔ عطف فقط زمانی پیش می‌رود که معیارهای پذیرشش با شواهد برآورده شود. پروژه میان ۱۲ تا ۱۷ آبان ۱۴۰۵ نُه نسخهٔ رسمی، از v0.1.0 تا v0.4.4، منتشر کرد.') },
-      { type: 'timeline', items: PRODUCT_ROADMAP.map(item => ({
-        phase: t(`Q${item.quarter} · ${item.start} – ${item.end}`, `سه‌ماههٔ ${item.quarter} · ${item.start} – ${item.end}`),
-        title: item.title, text: item.body, status: item.status,
-      })) },
+      { type: 'timeline', items: PRODUCT_ROADMAP.map(item => {
+        const period = `Q${item.quarter} · ${item.start} – ${item.end}`
+        return { phase: { en: period, fa: period }, title: item.title, text: item.body, status: item.status }
+      }) },
       { type: 'refs', keys: ['milestones', 'releases'] },
     ],
   },
