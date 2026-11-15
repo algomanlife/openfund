@@ -1,0 +1,41 @@
+# Funded operations and product roadmap delivery checkpoint
+
+The branch is based on `f7ea682c054a24a55b6369077697b953ea534963`, the
+verified merge of PR #122. The latest official release observed at the start
+was v0.5.0. The public GLOBAL service reported `60d5df9`; this branch is
+unreleased.
+
+## Scope and verification
+
+| Requirement | Evidence and remaining acceptance |
+| --- | --- |
+| Funded lifecycle | Reused evaluation pass, operator review, linked funded account, frozen rules and separate starting balance. Existing catalog v3 tests cover the transitions. |
+| Trader payout workflow | Reused the review endpoint, reservation and reversal. Captures the owned recipient and named approver and requires a finalized matching DAI transfer for new funded settlement. Verified using isolated database and receipt fixtures. |
+| Ledger | Reused trading ledger, withdrawal state and financial audit. The receipt and financial event commit together. Duplicate receipt hashes are rejected within one database. Independent-region transaction exclusion remains open. |
+| Certificates | Reused the historical purchase and approval triggers. New payout issuance and public settlement evidence require verified payment. Existing certificates remain immutable. |
+| Treasury and Economy | Added conservative, base and stress inputs for funded conversion, IB liability, existing debt and modeled 59/41 coverage. These are planning outputs. Verified actual treasury balances and new purchase allocation journals are outside this checkpoint. |
+| Product roadmap | Added a four-quarter shared source for the website and Whitepaper seed. README and repository roadmap point to it. The 2,000 registrations figure is a Q1 target. Planned platform connections depend on licensing and security. |
+| Product identity | Updated the README to describe the prop firm's funded programs, rewards and technology. A broader homepage and whitepaper rewrite is still open. |
+| Localization | New bilingual source content follows locale resolution. Local browser checked the Persian roadmap and English Economy route. Full language review remains open. |
+| SIWE and DePay | Read-only [domain check](../payments/DOMAIN_READINESS.md). Merchant and signed browser flows remain unverified. |
+| Database migration | Additive withdrawal fields and a unique verified-hash index. Applied twice in isolated PostgreSQL. |
+| Verification | Targeted rewards, certificate, Economy and roadmap tests, certificate browser tests and local UI evidence. The official release and deployment are separate from these checks. |
+
+## Open implementation and decisions
+
+- Activate the 7/14/21-day and monthly schedule after defining the monthly
+  UTC boundary and grandfathering. Existing funded rules still control
+  eligibility. Complete the funded dashboard and payout-specific messaging,
+  unread indicators, appeals and operator queue.
+- Extend the shared journal for IB payout entitlements, attribution evidence
+  and independently reconciled human settlement. Confirm competing code
+  precedence, payout asset/network/schedule, commission base and purchase
+  eligibility before enabling new financial behavior.
+- Implement 59/41 revenue recognition and expense reporting after confirming
+  the eligible revenue base. Add reconciled on-chain transfer ingestion and
+  investigate Iran-specific industry evidence for the forecast methodology.
+- Verify configured payout treasury, live receipt handling and end-to-end
+  regional consistency. Confirm the real-market IB policy and Coach
+  interaction separately.
+- Keep provisional secondary-quarter growth estimates for owner review.
+  Verify commercial licensing before promising external platform access.

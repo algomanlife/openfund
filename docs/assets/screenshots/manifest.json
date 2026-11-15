@@ -6,6 +6,30 @@
   "wallet": "Public pages anonymous; account captures use a disposable generated signer, real local SIWE/API and no fabricated market or financial responses. No personal wallet, approvals or chain transactions.",
   "screenshots": [
     {
+      "file": "funded-economy/roadmap-fa.png",
+      "route": "/fa/roadmap",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T12:31:17.974906+00:00",
+      "state": "Persian RTL one-year plan, planning statuses and first-quarter registration target; section crop from local branch build",
+      "sha256": "5cd4c147053cd291ef0086ce2a585a4717f4b7692c3f04b26012fc2947824f74"
+    },
+    {
+      "file": "funded-economy/economy-en.png",
+      "route": "/en/revenue-model",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T12:31:17.977614+00:00",
+      "state": "English planned funded payout policy; no account, balance or payment data; section crop from local branch build",
+      "sha256": "532a6ca0faa400ad6d75bd7f5ac0d28c5c2e5fc540d2a2560dcf70393f770ea6"
+    },
+    {
       "file": "theme-preference/light-default.png",
       "route": "/react/#/fa/prop/trade",
       "viewport": {

@@ -374,10 +374,12 @@ export function rewardRoutes({ pool, requireAuth, audit = async () => {}, limit 
       const decision = decide({ ...ctx, cycle })
       if (!decision.eligible) throw fail(409, 'not_eligible', { checks: decision.checks.filter(x => !x.ok) })
       const amount = D(decision.reward)
+      if (!amount.gt(0)) throw fail(409, 'reward_amount_too_small')
+      const { wallet_address: recipient } = (await client.query('SELECT wallet_address FROM openfund_users WHERE id=$1 FOR SHARE', [c.user_id])).rows[0]
       const { rows: [w] } = await client.query(
-        `INSERT INTO withdrawal_requests (user_id, challenge_id, amount_usd, note, kind, reward_cycle, gross_profit_usd, split_pct, fee_refund_usd, eligibility)
-         VALUES ($1,$2,$3,$4,'reward',$5,$6,$7,0,$8) RETURNING id, requested_at`,
-        [req.user.user_id, c.id, amount.toFixed(2), note || null, decision.cycle, decision.grossProfit, decision.splitPct, JSON.stringify(decision)])
+        `INSERT INTO withdrawal_requests (user_id, challenge_id, amount_usd, note, kind, reward_cycle, gross_profit_usd, split_pct, fee_refund_usd, eligibility, recipient_wallet)
+         VALUES ($1,$2,$3,$4,'reward',$5,$6,$7,0,$8,$9) RETURNING id, requested_at`,
+        [req.user.user_id, c.id, amount.toFixed(2), note || null, decision.cycle, decision.grossProfit, decision.splitPct, JSON.stringify(decision), recipient])
       await adjustBalance(client, c, ctx.acc, D(decision.grossProfit).negated(), 'reward_withdrawal', { withdrawalId: w.id, cycle: decision.cycle, splitPct: decision.splitPct })
       await ChallengeService.event(client, c.id, 'reward_requested', { withdrawalId: w.id, grossProfit: decision.grossProfit, reward: decision.reward, deducted: decision.deducted ?? '0.00', cycle: decision.cycle })
       await client.query('COMMIT')

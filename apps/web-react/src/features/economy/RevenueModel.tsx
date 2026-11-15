@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import InformationShell, { Hero, useInformationLocale } from '../information/InformationShell'
-import { labels, text as t, type Locale } from '../information/content'
+import { labels, number, text as t, type Locale } from '../information/content'
 import { apiFetch } from '../../session/useOpenfundSession'
 import EconomyNav from './EconomyNav'
 import { Field, Kpi, usd } from './ui'
@@ -39,9 +39,15 @@ const SOURCES = [
   { name: t('Payout-to-revenue ratios (secondary estimates)', 'نسبت پرداخت به درآمد (برآوردهای ثانویه)'), url: 'https://alexfirdaus.com/perp-prop-firm-economics/', note: t('Published estimates range widely (e.g. one firm’s monthly books at 65–82%; other estimates of 35–55% for a large firm). No audited industry average exists; Openfund therefore shows this ratio only from its own records on the Transparency page.', 'برآوردهای منتشرشده بسیار پراکنده‌اند (مثلاً دفاتر ماهانهٔ یک شرکت ۶۵ تا ۸۲٪ و برآوردهای دیگر ۳۵ تا ۵۵٪ برای یک شرکت بزرگ). میانگین حسابرسی‌شده‌ای برای صنعت وجود ندارد؛ از این رو اوپن‌فاند این نسبت را فقط از سوابق خود در صفحهٔ شفافیت نشان می‌دهد.') },
 ]
 
+const ASSUMPTIONS = [
+  { label: t('Conservative', 'محافظه‌کارانه'), values: { passRatePct: 6, activationRatePct: 75, firstPayoutRatePct: 20, avgTotalPayoutUsd: 600, attributedIbPct: 10, averageTraderSplitPct: 85 } },
+  { label: t('Base', 'پایه'), values: { passRatePct: 10, activationRatePct: 85, firstPayoutRatePct: 33, avgTotalPayoutUsd: 1000, attributedIbPct: 20, averageTraderSplitPct: 85 } },
+  { label: t('Stress', 'تنش'), values: { passRatePct: 20, activationRatePct: 95, firstPayoutRatePct: 55, avgTotalPayoutUsd: 1800, attributedIbPct: 70, averageTraderSplitPct: 75 } },
+] as const
+
 function Scenario({ locale }: { locale: Locale }) {
   const [inputs, setInputs] = useState<Inputs>({ challengesSold: 1000, mix: { 10000: 40, 25000: 30, 50000: 20, 100000: 10 }, prices: { 10000: 0, 25000: 0, 50000: 0, 100000: 0 },
-    passRatePct: 10, firstPayoutRatePct: 33, avgTotalPayoutUsd: 1000, ambassadorSharePct: 20, operatingCostsUsd: 20000, reservePct: 25, refundRatePct: 2 })
+    ...ASSUMPTIONS[1].values, ambassadorSharePct: 20, operatingCostsUsd: 20000, reservePct: 25, refundRatePct: 2, existingPayoutLiabilitiesUsd: 0 })
   const [priceSource, setPriceSource] = useState<'catalog' | 'manual' | 'loading'>('loading')
   useEffect(() => {
     void apiFetch('/purchases/plans').then(r => {
@@ -51,21 +57,30 @@ function Scenario({ locale }: { locale: Locale }) {
   }, [])
   const out = useMemo(() => runScenario(inputs), [inputs])
   const num = (key: keyof Inputs) => ({ type: 'number', min: 0, step: 'any', value: String(inputs[key]), onChange: (e: { target: { value: string } }) => setInputs(v => ({ ...v, [key]: Math.max(0, Number(e.target.value) || 0) })) })
+  const rate = (key: keyof Inputs, min = 0, max = 100) => ({ ...num(key), min, max, onChange: (e: { target: { value: string } }) => setInputs(v => ({
+    ...v, [key]: Math.max(min, Math.min(max, Number(e.target.value) || 0)),
+  })) })
   const nested = (group: 'mix' | 'prices', k: string) => ({ type: 'number', min: 0, step: 'any', value: String(inputs[group][k]), onChange: (e: { target: { value: string } }) => { setInputs(v => ({ ...v, [group]: { ...v[group], [k]: Math.max(0, Number(e.target.value) || 0) } })); if (group === 'prices') setPriceSource('manual') } })
   return <div className="econ-calc">
     <div className="econ-panel">
       <div className="econ-banner" role="note">{t('SCENARIO ONLY. Every input is hypothetical and editable. Results are not company figures, not treasury balances and not forecasts. Defaults for pass and payout rates are illustrative values informed by, but not equal to, the sources below.', 'فقط سناریو. همهٔ ورودی‌ها فرضی و قابل ویرایش‌اند. نتایج، آمار شرکت، موجودی خزانه یا پیش‌بینی نیستند. مقادیر پیش‌فرض نرخ قبولی و پرداخت، نمایشی و الهام‌گرفته از منابع زیرند و با آن‌ها برابر نیستند.')[locale]}</div>
       <div className="econ-form">
+        {ASSUMPTIONS.map(preset => <button key={preset.label.en} type="button" className="button" onClick={() =>
+          setInputs(previous => ({ ...previous, ...preset.values }))}>{preset.label[locale]}</button>)}
         <Field label={t('Challenges sold', 'تعداد چلنج فروخته‌شده')[locale]}><input {...num('challengesSold')} /></Field>
-        <Field label={t('Refunds, % of gross', 'بازپرداخت، ٪ ناخالص')[locale]}><input {...num('refundRatePct')} /></Field>
+        <Field label={t('Refunds, % of gross', 'بازپرداخت، ٪ ناخالص')[locale]}><input {...rate('refundRatePct')} /></Field>
         {SIZES.map(k => <Field key={'m' + k} label={`${t('Mix weight', 'وزن ترکیب')[locale]} ${Number(k) / 1000}K`}><input {...nested('mix', k)} /></Field>)}
         {SIZES.map(k => <Field key={'p' + k} label={`${t('Price', 'قیمت')[locale]} ${Number(k) / 1000}K (USD)`} hint={priceSource === 'catalog' ? t('Loaded from the live catalog', 'بارگیری‌شده از کاتالوگ فعلی')[locale] : undefined}><input {...nested('prices', k)} /></Field>)}
-        <Field label={t('Pass rate %', 'نرخ قبولی ٪')[locale]}><input {...num('passRatePct')} /></Field>
-        <Field label={t('First payout rate % (of passed)', 'نرخ اولین پاداش ٪ (از قبول‌شدگان)')[locale]}><input {...num('firstPayoutRatePct')} /></Field>
+        <Field label={t('Pass rate %', 'نرخ قبولی ٪')[locale]}><input {...rate('passRatePct')} /></Field>
+        <Field label={t('First payout rate % (of activated accounts)', 'نرخ اولین پاداش ٪ (از حساب‌های فعال‌شده)')[locale]}><input {...rate('firstPayoutRatePct')} /></Field>
         <Field label={t('Average total payout per paid trader (USD)', 'میانگین کل پاداش هر دریافت‌کننده (دلار)')[locale]}><input {...num('avgTotalPayoutUsd')} /></Field>
-        <Field label={t('Sales eligible for ambassador commission %', 'فروش مشمول کمیسیون سفیر ٪')[locale]}><input {...num('ambassadorSharePct')} /></Field>
+        <Field label={t('Sales eligible for ambassador commission %', 'فروش مشمول کمیسیون سفیر ٪')[locale]}><input {...rate('ambassadorSharePct')} /></Field>
+        <Field label={t('Funded activation rate %', 'نرخ فعال‌سازی حساب فاندد ٪')[locale]}><input {...rate('activationRatePct')} /></Field>
+        <Field label={t('IB-attributed share of payouts %', 'سهم پرداخت‌های منتسب به IB ٪')[locale]}><input {...rate('attributedIbPct')} /></Field>
+        <Field label={t('Average trader profit share %', 'میانگین سهم سود تریدر ٪')[locale]}><input {...rate('averageTraderSplitPct', 75)} /></Field>
+        <Field label={t('Existing payout liabilities (USD)', 'تعهدات پرداخت موجود (دلار)')[locale]}><input {...num('existingPayoutLiabilitiesUsd')} /></Field>
         <Field label={t('Operating costs (USD)', 'هزینه‌های عملیاتی (دلار)')[locale]}><input {...num('operatingCostsUsd')} /></Field>
-        <Field label={t('Reserves, % of remaining', 'ذخایر، ٪ از باقی‌مانده')[locale]}><input {...num('reservePct')} /></Field>
+        <Field label={t('Reserves, % of remaining', 'ذخایر، ٪ از باقی‌مانده')[locale]}><input {...rate('reservePct')} /></Field>
       </div>
     </div>
     <div className="econ-panel" aria-live="polite">
@@ -74,7 +89,16 @@ function Scenario({ locale }: { locale: Locale }) {
         {([['Gross Revenue', out.gross], ['Net Revenue', out.net], ['Trader Payouts', -out.payouts], ['Ambassador Commissions (10%)', -out.commissions], ['Operating Costs', -out.opex], ['Remaining Capital', out.remaining], ['Reserves', -out.reserves]] as const).map(([k, v]) => <div key={k}><span>{k}</span><span>{usd(v, locale)}</span></div>)}
         <div className="total"><span>{t('Available Allocatable Capital', 'سرمایهٔ قابل تخصیص موجود')[locale]} ({t('scenario', 'سناریو')[locale]})</span><span>{usd(out.available, locale)}</span></div>
       </div>
-      <p className="econ-source">{t('Payouts = sold × pass rate × first-payout rate × average total payout. Commissions = net × eligible share × 10% (first purchases only in policy).', 'پاداش = فروش × نرخ قبولی × نرخ اولین پاداش × میانگین کل پاداش. کمیسیون = خالص × سهم مشمول × ۱۰٪ (طبق سیاست فقط خرید اول).')[locale]}</p>
+      <dl className="econ-list">
+        <div><dt>{t('Expected funded activations', 'فعال‌سازی‌های مورد انتظار')[locale]}</dt><dd>{number(out.funded, locale, { maximumFractionDigits: 1 })}</dd></div>
+        <div><dt>{t('Expected payout recipients', 'دریافت‌کنندگان مورد انتظار')[locale]}</dt><dd>{number(out.recipients, locale, { maximumFractionDigits: 1 })}</dd></div>
+        <div><dt>{t('Associated IB payout obligations', 'تعهدات پرداخت به IB')[locale]}</dt><dd>{usd(out.ibPayouts, locale)}</dd></div>
+        <div><dt>{t('Total payout obligations', 'کل تعهدات پرداخت')[locale]}</dt><dd>{usd(out.payoutLiabilities, locale)}</dd></div>
+        <div><dt>{t('Illustrative treasury allocation (59%)', 'تخصیص نمونه به خزانه (۵۹٪)')[locale]}</dt><dd>{usd(out.estimatedTreasuryAllocation, locale)}</dd></div>
+        <div><dt>{t('Illustrative operating allocation (41%)', 'تخصیص نمونه به عملیات (۴۱٪)')[locale]}</dt><dd>{usd(out.estimatedOperationsAllocation, locale)}</dd></div>
+        <div><dt>{t('Payout coverage from modeled allocation', 'پوشش پرداخت با تخصیص سناریو')[locale]}</dt><dd>{out.payoutCoverage === null ? '—' : number(out.payoutCoverage, locale, { style: 'percent', maximumFractionDigits: 1 })}</dd></div>
+      </dl>
+      <p className="econ-source">{t('This scenario applies 59/41 to sales net of modeled refunds. The operating policy still requires confirmation of the allocation base. Trader payout estimates multiply sales, pass rate, activation rate, payout rate and average total payout.', 'در این سناریو، تقسیم ۵۹/۴۱ پس از کسر بازپرداخت فرضی اعمال می‌شود. مبنای تخصیص عملیاتی هنوز نیازمند تأیید است. پرداخت تخمینی از ضرب فروش، نرخ قبولی، نرخ فعال‌سازی، نرخ پرداخت و میانگین پرداخت به دست می‌آید.')[locale]}</p>
       <div style={{ marginTop: 14 }}><Kpi label={t('Live program threshold', 'آستانهٔ برنامهٔ بازار واقعی')[locale]} value={usd(500000, locale, 0)} note={t('Real eligibility uses verified treasury data only — see Transparency.', 'احراز واقعی فقط از دادهٔ تأییدشدهٔ خزانه استفاده می‌کند؛ صفحهٔ شفافیت را ببین.')[locale]} /></div>
     </div>
   </div>
@@ -100,6 +124,27 @@ export default function RevenueModel() {
           <div className="econ-panel"><h3>{t('Reserves & allocation', 'ذخایر و تخصیص')[locale]}</h3><p className="econ-msg">{t('Operational and risk reserves set explicitly by management, then capital already allocated to live traders. What remains is allocatable.', 'ذخایر عملیاتی و ریسک که مدیریت صریحاً تعیین می‌کند و سپس سرمایهٔ قبلاً تخصیص‌یافته به معامله‌گران واقعی. باقی‌مانده قابل تخصیص است.')[locale]}</p></div>
         </div>
         <p className="econ-source">{t('The live figures for each item are on the Transparency page; this page explains the model and never shows them as scenario output.', 'اعداد واقعی هر مورد در صفحهٔ شفافیت است؛ این صفحه مدل را توضیح می‌دهد و آن‌ها را به‌عنوان خروجی سناریو نشان نمی‌دهد.')[locale]} <Link className="text-link" to={`/${locale}/transparency`}>{labels.transparency[locale]} ↗</Link></p>
+      </section>
+      <section className="econ-section" id="payout-policy">
+        <h2>{t('Funded payout policy', 'سیاست پرداخت حساب فاندد')[locale]}</h2>
+        <p>{t('These terms describe the planned policy for newly activated accounts. Existing accounts follow their issued terms. Staff review each request and record verified manual settlement.', 'این جدول سیاست برنامه‌ریزی‌شده برای حساب‌های تازه فعال‌شده را نشان می‌دهد. حساب‌های موجود تابع شرایط زمان صدور خود هستند. کارکنان هر درخواست را بررسی و تسویهٔ دستی تأییدشده را ثبت می‌کنند.')[locale]}</p>
+        <div className="info-table-wrap"><table>
+          <thead><tr>
+            <th scope="col">{t('Cycle', 'چرخه')[locale]}</th>
+            <th scope="col">{t('Trader', 'معامله‌گر')[locale]}</th>
+            <th scope="col">{t('Eligible IB', 'IB واجد شرایط')[locale]}</th>
+            <th scope="col">{t('Openfund without eligible IB', 'اوپن‌فاند در نبود IB واجد شرایط')[locale]}</th>
+          </tr></thead>
+          <tbody>{([
+            [t('7 days', '۷ روز'), 75], [t('14 days', '۱۴ روز'), 85],
+            [t('21 days', '۲۱ روز'), 90], [t('Monthly', 'ماهانه'), 100],
+          ] as const).map(([cycle, trader]) => <tr key={cycle.en}>
+            <th scope="row">{cycle[locale]}</th>
+            {[trader, 100 - trader, 100 - trader].map((share, index) =>
+              <td key={index}>{number(share / 100, locale, { style: 'percent' })}</td>)}
+          </tr>)}</tbody>
+        </table></div>
+        <p>{t('On 1,000 DAI of eligible profit in a 7-day cycle, the trader receives 750 DAI and the eligible IB receives 250 DAI. If there is no eligible IB, Openfund retains 250 DAI. An ordinary referral may earn a purchase commission under its own terms. An IB may qualify separately for funded payout participation after the trader payment is verified.', 'از ۱٬۰۰۰ دای سود واجد شرایط در چرخهٔ ۷روزه، تریدر ۷۵۰ دای و IB واجد شرایط ۲۵۰ دای دریافت می‌کنند. اگر IB واجد شرایط وجود نداشته باشد، ۲۵۰ دای سهم اوپن‌فاند است. معرفی عادی می‌تواند طبق شرایط خودش کمیسیون خرید داشته باشد. سهم IB از پرداخت فاندد تنها پس از تأیید پرداخت تریدر واجد شرایط تسویه می‌شود.')[locale]}</p>
       </section>
       <section className="econ-section" id="research"><div className="section-top"><div><span className="eyebrow">04 / {t('INDUSTRY RESEARCH', 'پژوهش صنعت')[locale]}</span><h2>{t('Single firms, not averages.', 'آمار یک شرکت، نه میانگین صنعت.')[locale]}</h2></div></div>
         <p className="econ-msg">{t('Prop-trading firms rarely publish audited outcome data. Each figure below belongs to one publisher, scope and definition, and must not be read as an industry average.', 'شرکت‌های پراپ به‌ندرت دادهٔ حسابرسی‌شدهٔ نتایج منتشر می‌کنند. هر عدد زیر متعلق به یک ناشر، دامنه و تعریف مشخص است و نباید میانگین صنعت تلقی شود.')[locale]}</p>

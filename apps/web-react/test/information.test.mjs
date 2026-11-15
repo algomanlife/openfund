@@ -27,7 +27,20 @@ test('scenario arithmetic matches the backend scenario model', () => {
   assert.equal(r.available, 108000)
   const empty = runScenario({ challengesSold: 10, mix: {}, prices: {}, refundRatePct: 0, passRatePct: 0, firstPayoutRatePct: 0, avgTotalPayoutUsd: 0, ambassadorSharePct: 0, operatingCostsUsd: 0, reservePct: 0 })
   assert.equal(empty.gross, 0)
-  assert.ok(Object.values(empty).every(Number.isFinite))
+  assert.equal(empty.payoutCoverage, null)
+  assert.ok(Object.values(empty).filter(value => value !== null).every(Number.isFinite))
+})
+test('funded scenario includes existing liabilities and the IB remainder', () => {
+  const r = runScenario({ challengesSold: 100, mix: { 10000: 1 }, prices: { 10000: 100 },
+    refundRatePct: 0, passRatePct: 20, activationRatePct: 50, firstPayoutRatePct: 100, avgTotalPayoutUsd: 750,
+    attributedIbPct: 100, averageTraderSplitPct: 75, existingPayoutLiabilitiesUsd: 300,
+    ambassadorSharePct: 0, operatingCostsUsd: 0, reservePct: 0 })
+  assert.equal(r.funded, 10)
+  assert.equal(r.payouts, 7500)
+  assert.equal(r.ibPayouts, 2500)
+  assert.equal(r.payoutLiabilities, 10300)
+  assert.equal(r.estimatedTreasuryAllocation, 5900)
+  assert.equal(r.estimatedOperationsAllocation, 4100)
 })
 test('transparency is wired to the backend report, with no synthetic dataset', () => {
   const src = readFileSync(new URL('../src/features/transparency/Transparency.tsx', import.meta.url), 'utf8')

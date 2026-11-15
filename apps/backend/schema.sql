@@ -1755,6 +1755,12 @@ ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS gross_profit_usd numeri
 ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS split_pct numeric(6,2);
 ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS fee_refund_usd numeric(12,2) NOT NULL DEFAULT 0;
 ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS eligibility jsonb;
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS recipient_wallet text;
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS approved_by text;
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS payment_evidence jsonb;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_withdrawals_verified_hash
+  ON withdrawal_requests (lower(payout_ref)) WHERE payment_evidence IS NOT NULL;
+
 -- at most one open reward request per funded account
 CREATE UNIQUE INDEX IF NOT EXISTS idx_withdrawals_one_open_reward ON withdrawal_requests (challenge_id)
   WHERE kind = 'reward' AND status IN ('requested', 'approved');

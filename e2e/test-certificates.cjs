@@ -32,7 +32,7 @@ const check = (name, condition) => { assert.ok(condition, name); results.push(na
   const challenge = (await pool.query(`INSERT INTO openfund_challenges (user_id,challenge_plan_id,purchase_order_id,account_size_usd,status,completed_at) VALUES ($1,$2,$3,10000,'passed',now()) RETURNING id`, [user, plan, order])).rows[0].id
   const funded = (await pool.query(`INSERT INTO openfund_challenges (user_id,challenge_plan_id,account_size_usd,funded_from_challenge_id) VALUES ($1,$2,10000,$3) RETURNING id`, [user, plan, challenge])).rows[0].id
   await pool.query(`INSERT INTO challenge_reviews (challenge_id,decision,actor,funded_challenge_id) VALUES ($1,'approved','admin:isolated browser test',$2)`, [challenge, funded])
-  await pool.query(`INSERT INTO withdrawal_requests (user_id,challenge_id,amount_usd,status,payout_ref,reviewed_at) VALUES ($1,$2,123.45,'paid','isolated-browser-test-only',now())`, [user, challenge])
+  await pool.query(`INSERT INTO withdrawal_requests (user_id,challenge_id,amount_usd,status,payout_ref,reviewed_at,payment_evidence) VALUES ($1,$2,123.45,'paid','isolated-browser-test-only',now(),jsonb_build_object('finality','finalized','transactionAt',now()))`, [user, challenge])
   const browser = await chromium.launch(process.env.PLAYWRIGHT_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH } : {})
   try {
     const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } })

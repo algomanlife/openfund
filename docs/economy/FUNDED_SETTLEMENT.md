@@ -1,0 +1,49 @@
+# Funded reward settlement
+
+The existing withdrawal review endpoint records funded reward payments after an
+operator sends DAI from the configured treasury wallet. The request binds the
+customer wallet at submission. Approval records the named operator. After
+approval, the recording operator supplies the transaction hash through the
+existing review API. The backend verifies Arbitrum One, successful execution,
+canonical and finalized block evidence, and exactly one matching DAI transfer
+from the configured treasury to the bound recipient for the approved amount.
+The [DAI contract](https://arbiscan.io/token/0xda10009cbd5d07dd0cecc66161fc93d7c9000da1)
+uses 18 decimal places.
+
+The withdrawal and append-only financial audit record commit together.
+A unique index prevents recording the same verified hash twice within the
+owning database. The signed regional sync and handoff already carry the
+withdrawal row. Global transaction uniqueness across independent databases
+still needs acceptance testing and a shared replay strategy.
+
+New payout certificates require finalized payment evidence. The public
+report shows explorer links only for verified receipts, using the settlement
+chain recorded with each receipt. Historical operator-paid amounts remain
+visible in accounting totals. Historical approvals created before recipient
+and operator capture require explicit reconciliation before settlement.
+
+## Policy for new activations
+
+| Cycle | Trader | Eligible attributed IB | Openfund without eligible IB |
+| --- | ---: | ---: | ---: |
+| 7 days | 75% | 25% | 25% |
+| 14 days | 85% | 15% | 15% |
+| 21 days | 90% | 10% | 10% |
+| Monthly | 100% | 0% | 0% |
+
+The public Economy scenario estimates trader and IB obligations from the
+same profit pool. Its modeled 59% treasury and 41% operating allocations
+use sales less modeled refunds. They do not post journal entries.
+
+## Policy decisions still open
+
+- Define the monthly UTC period and treatment of previously issued contracts
+  before activating the new cycle catalog.
+- Confirm competing IB attribution precedence and the settlement asset,
+  network, minimum and schedule. Eligible payout participation is the
+  remainder of the same distributable profit after the trader share. A
+  separate settlement becomes eligible after verified trader payment.
+- Confirm the eligible purchase revenue base for the 59/41 allocation.
+- Confirm real-market IB eligibility, rates and interaction with Coach
+  compensation. Real-market connectivity requires separate authorization.
+- Approve any external publication of provisional Q2–Q4 growth targets.

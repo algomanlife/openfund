@@ -35,7 +35,7 @@
     "test:commerce": "node --test --test-concurrency=1 test/commerce.test.mjs",
     "test:chart-workspaces": "node --test test/chart-workspaces.test.mjs",
     "test:conduct": "node --test --test-concurrency=1 test/model-rules.test.mjs test/conduct.test.mjs",
-    "test:rewards": "node --test --test-concurrency=1 test/rewards.test.mjs",
+    "test:rewards": "node --test --test-concurrency=1 test/rewards.test.mjs test/payout-settlement.test.mjs",
     "test:support": "node --test test/support.test.mjs",
     "test:footprint": "node --test --test-concurrency=1 test/footprint.test.mjs test/footprint-archive.test.mjs",
     "test:certificates": "node --test test/certificates.test.mjs",

@@ -38,12 +38,12 @@ export async function syncCertificates(pool, userId) {
         AND (c.demo_account_id IS NULL OR openfund_account_writable(c.demo_account_id))
         AND r.decision='approved' AND r.actor IS NOT NULL AND r.funded_challenge_id IS NOT NULL
       UNION ALL
-      SELECT 'payout', w.id, p.name, w.amount_usd, w.reviewed_at
+      SELECT 'payout', w.id, p.name, w.amount_usd, (w.payment_evidence->>'transactionAt')::timestamptz
       FROM withdrawal_requests w JOIN openfund_challenges c ON c.id=w.challenge_id
       JOIN challenge_plans p ON p.id=c.challenge_plan_id
       WHERE w.user_id=$1 AND c.user_id=w.user_id AND w.status='paid'
         AND (c.demo_account_id IS NULL OR openfund_account_writable(c.demo_account_id))
-        AND nullif(trim(w.payout_ref),'') IS NOT NULL AND w.reviewed_at IS NOT NULL`, [userId])).rows
+        AND w.payment_evidence->>'finality'='finalized' AND w.payment_evidence->>'transactionAt' IS NOT NULL`, [userId])).rows
     for (const event of events) {
       const inserted = await client.query(`INSERT INTO certificates (user_id,kind,source_id,holder,plan,amount,event_at)
         VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT (kind,source_id) DO NOTHING RETURNING serial`,

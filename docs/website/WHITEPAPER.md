@@ -4,6 +4,10 @@ The official Openfund Whitepaper is a single, anchor-navigated page at `/{locale
 
 Edition v1.0 has Persian and English text. On Arabic, Russian and Chinese UI routes, the publication displays the English edition with a visible translation notice; those URLs canonicalize to the English edition and are not advertised as translated alternates. The rest of the site keeps its five-language coverage. Additional whitepaper translations require reviewed content and CMS schema support.
 
+The website and the repository whitepaper seed share the
+[one-year roadmap source](../../apps/web-react/src/features/roadmap/productRoadmap.ts).
+A published CMS edition requires the existing editorial review and publication step.
+
 ## Route and navigation
 
 | Item | Behavior |

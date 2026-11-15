@@ -48,7 +48,7 @@ The position is `verified` only when the snapshot exists, is fresh, is fully pri
 |---|---|
 | Sales | `purchase_orders` with `status='paid'`, a state set only by verified payment. Net revenue is gross minus refunds and chargebacks from `payment_adjustments`. Payment success rate is paid ÷ (paid + expired + cancelled). |
 | Challenges | `openfund_challenges`, read only. Final pass means the final stage (stage = number of phases) has `status='passed'`. Funded means instant (stage 0) or a final pass. Stage pass rates are passed ÷ (passed + failed + expired). |
-| Payouts | `withdrawal_requests`: `approved` is an obligation, `paid` is a transfer recorded with a reference. Explorer links are listed with date and amount only. |
+| Payouts | `withdrawal_requests`: `approved` is an obligation, `paid` is a transfer recorded with a reference. Finalized Arbitrum One DAI evidence supplies the explorer links for new funded rewards. See [funded reward settlement](FUNDED_SETTLEMENT.md). |
 | Expenses | `verified_expenses` with `status='verified'`. Each record needs a source (`provider_api`, `invoice`, `receipt`, `contract`) and an invoice reference. Non-USD records need an FX reference. A record must be verified by a different operator than the one who recorded it. Estimates from server usage are never recorded as invoices. |
 
 None of the Render, database, CMS or market-data providers is currently connected through a billing API. Their costs enter as verified invoice records.

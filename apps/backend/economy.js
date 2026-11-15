@@ -109,8 +109,7 @@ async function transparencyReport(pool, treasury) {
      WHERE c.stage=0 OR (${FINAL_PASSED})`)
   const payoutMonthly = await q(`SELECT to_char(date_trunc('month', reviewed_at),'YYYY-MM') AS month, count(*)::int AS payouts, sum(amount_usd) AS total
                                    FROM withdrawal_requests WHERE status='paid' AND reviewed_at > now() - interval '12 months' GROUP BY 1 ORDER BY 1`)
-  const payoutTx = await q(`SELECT reviewed_at, amount_usd, payout_ref FROM withdrawal_requests WHERE status='paid' AND payout_ref ~* '^0x[0-9a-f]{64}$' ORDER BY reviewed_at DESC LIMIT 25`)
-  const chain = Number(process.env.PURCHASE_PAYMENT_CHAIN || 42161)
+  const payoutTx = await q(`SELECT payment_evidence->>'transactionAt' AS transaction_at, (payment_evidence->>'chainId')::int AS chain_id, amount_usd, payout_ref FROM withdrawal_requests WHERE status='paid' AND payment_evidence->>'finality'='finalized' ORDER BY transaction_at DESC LIMIT 25`)
 
   const tv = await treasury.view()
   const position = await computeFinancialPosition(pool, tv)
@@ -159,7 +158,7 @@ async function transparencyReport(pool, treasury) {
       rateDefinitions: 'Pass rate = passed ÷ (passed + failed + expired) for that stage. First payout rate = funded accounts with ≥1 paid withdrawal ÷ funded accounts.',
     },
     payouts: {
-      source: 'withdrawal_requests (approved = reviewed obligation; paid = transfer recorded with payout reference)',
+      source: 'withdrawal_requests (approved = reviewed obligation; paid totals include historical operator records; explorer evidence is limited to finalized receipts)',
       paid: { count: wd.paid_count, totalUsd: usd(wd.paid_sum) },
       approvedAwaitingTransfer: { count: wd.approved_count, totalUsd: usd(wd.approved_sum) },
       requestedUnderReview: { count: wd.requested_count, totalUsd: usd(wd.requested_sum) },
@@ -167,7 +166,7 @@ async function transparencyReport(pool, treasury) {
       averagePerRecipientUsd: wd.recipients ? usd(D(wd.paid_sum).div(wd.recipients)) : null,
       payoutToNetRevenue: ratio(wd.paid_sum, net),
       monthly: payoutMonthly.map(m => ({ month: m.month, payouts: m.payouts, totalUsd: usd(m.total) })),
-      transactions: payoutTx.map(t => ({ at: t.reviewed_at, amountUsd: t.amount_usd, explorerUrl: explorerTxUrl(chain, t.payout_ref) })),
+      transactions: payoutTx.map(t => ({ at: t.transaction_at, amountUsd: t.amount_usd, explorerUrl: explorerTxUrl(t.chain_id, t.payout_ref) })),
     },
     treasury: tv,
     flows: {

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — funded financial controls and product roadmap
+
+- Verify manual funded rewards against finalized Arbitrum One DAI receipts before recording payment or issuing a new payout certificate.
+- Add a shared four-quarter product roadmap to the website and whitepaper seed and clarify the prop-firm product scope in the README.
+
 ## Unreleased — v0.6.5 candidate (branch `agent/claude/v0.6.5-modernization`)
 
 Implemented and locally verified; **not merged, not released, not deployed**.

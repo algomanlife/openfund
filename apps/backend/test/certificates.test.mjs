@@ -59,12 +59,14 @@ test('passed challenge alone never issues completion; approved final review does
   await pool.query(`INSERT INTO challenge_reviews (challenge_id,decision,actor,funded_challenge_id) VALUES ($1,'approved','admin:test',$2)`, [challenge, funded])
   assert.equal((await call('/certificates')).data.certificates.filter(c => c.kind === 'completion').length, 1)
 })
-test('approved payout is ineligible; paid payout needs reference and date; duplicates prevented', async () => {
+test('approved payout is ineligible; paid payout needs finalized settlement evidence; duplicates prevented', async () => {
   payout = (await pool.query(`INSERT INTO withdrawal_requests (user_id,challenge_id,amount_usd,status) VALUES ($1,$2,123.45,'approved') RETURNING id`, [user, challenge])).rows[0].id
   assert.equal((await call('/certificates')).data.certificates.filter(c => c.kind === 'payout').length, 0)
   await pool.query(`UPDATE withdrawal_requests SET status='paid',reviewed_at=now() WHERE id=$1`, [payout])
   assert.equal((await call('/certificates')).data.certificates.filter(c => c.kind === 'payout').length, 0)
   await pool.query(`UPDATE withdrawal_requests SET payout_ref='isolated-test-record' WHERE id=$1`, [payout])
+  assert.equal((await call('/certificates')).data.certificates.filter(c => c.kind === 'payout').length, 0)
+  await pool.query(`UPDATE withdrawal_requests SET payment_evidence=jsonb_build_object('finality','finalized','transactionAt',now()) WHERE id=$1`, [payout])
   await Promise.all([syncCertificates(pool, user), syncCertificates(pool, user)])
   const rows = (await call('/certificates')).data.certificates.filter(c => c.kind === 'payout')
   assert.equal(rows.length, 1); assert.equal(rows[0].amount, '123.45')
