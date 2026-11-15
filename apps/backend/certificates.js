@@ -29,13 +29,15 @@ export async function syncCertificates(pool, userId) {
       SELECT 'purchase' AS kind, o.id AS source_id, p.name AS plan, o.account_size_usd AS amount, o.paid_at AS event_at
       FROM purchase_orders o JOIN challenge_plans p ON p.id=o.challenge_plan_id
       WHERE o.user_id=$1 AND o.status='paid' AND o.paid_at IS NOT NULL AND EXISTS
-        (SELECT 1 FROM openfund_challenges c WHERE c.purchase_order_id=o.id AND c.user_id=o.user_id)
+        (SELECT 1 FROM openfund_challenges c WHERE c.purchase_order_id=o.id AND c.user_id=o.user_id
+          AND NOT coalesce(c.rules_snapshot ? 'controlledTest',false))
       UNION ALL
       SELECT 'completion', c.id, p.name, c.account_size_usd, c.completed_at
       FROM challenge_reviews r JOIN openfund_challenges c ON c.id=r.challenge_id
       JOIN challenge_plans p ON p.id=c.challenge_plan_id
       WHERE c.user_id=$1 AND c.status='passed' AND c.completed_at IS NOT NULL AND c.account_size_usd > 0
         AND (c.demo_account_id IS NULL OR openfund_account_writable(c.demo_account_id))
+        AND NOT coalesce(c.rules_snapshot ? 'controlledTest',false)
         AND r.decision='approved' AND r.actor IS NOT NULL AND r.funded_challenge_id IS NOT NULL
       UNION ALL
       SELECT 'payout', w.id, p.name, w.amount_usd, (w.payment_evidence->>'transactionAt')::timestamptz

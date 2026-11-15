@@ -122,3 +122,12 @@ Dependencies include the authoritative GLOBAL API, owner provisioning and
 PR #125 for test operations. Remaining milestones cover risk, financial
 operations, contact and support workflows, analytics and durable audit.
 [Architecture](../backstage/OPERATIONS_ARCHITECTURE.md)
+
+## Controlled challenge acceptance
+
+**In Progress:** two private test lineages with wallet-bound zero-payment
+checkout, risk enforcement, final-pass review and separate simulated payout
+history. Depends on the current Prop engine, registered test wallets and a
+disposable GLOBAL runtime. Owner acceptance includes checkout, both 1%
+evaluation passes, simulated settlement, financial isolation, regional
+projection and archiving. [Procedure](../payments/CONTROLLED_CHALLENGES.md)

@@ -24,6 +24,7 @@
  */
 import { Router } from 'express'
 import { adminAuth } from './admin.js'
+import { mountControlledChallenges } from './controlled-challenges.js'
 import { cents } from './economy-math.js'
 
 const fail = (status, error) => Object.assign(new Error(error), { status })
@@ -57,6 +58,15 @@ export async function evaluateCoupon(q, { code, userId, planId, accountSize, lis
   if (!CODE_RE.test(c)) throw fail(400, 'coupon_invalid')
   const { rows: [coupon] } = await q.query(`SELECT * FROM coupons WHERE code=$1 ${lock ? 'FOR UPDATE' : ''}`, [c])
   if (!coupon) throw fail(404, 'coupon_not_found')
+  const { rows: [controlled] } = await q.query(
+    `SELECT t.*, u.wallet_address=t.wallet_address AS wallet_matches
+       FROM controlled_challenge_coupons t JOIN openfund_users u ON u.id=t.user_id
+      WHERE t.coupon_id=$1`, [coupon.id])
+  if (controlled && (!controlled.wallet_matches || controlled.user_id !== userId))
+    throw fail(404, 'coupon_not_found')
+  if (controlled && (controlled.challenge_plan_id !== planId || !coupon.internal ||
+      coupon.kind !== 'percent' || Number(coupon.value) !== 100 || product !== 'prop'))
+    throw fail(409, 'coupon_not_applicable')
   const allowed = (await q.query('SELECT user_id FROM coupon_allowed_users WHERE coupon_id=$1', [coupon.id])).rows.map(r => String(r.user_id))
   /* customer-restricted (and every internal) coupon is invisible to others;
      an internal coupon without 1–2 named test accounts is unusable */
@@ -76,7 +86,7 @@ export async function evaluateCoupon(q, { code, userId, planId, accountSize, lis
   const { rows: [use] } = await q.query(
     `SELECT count(*)::int AS total, count(*) FILTER (WHERE user_id=$2)::int AS mine
        FROM coupon_redemptions WHERE coupon_id=$1 AND status IN ('reserved','consumed')`, [coupon.id, userId])
-  if (coupon.max_redemptions != null && use.total >= coupon.max_redemptions) throw fail(409, 'coupon_exhausted')
+  if ((controlled && use.total > 0) || (coupon.max_redemptions != null && use.total >= coupon.max_redemptions)) throw fail(409, 'coupon_exhausted')
   if (use.mine >= coupon.per_user_limit) throw fail(409, 'coupon_already_used')
   return { coupon, pricing: applyCoupon(listPriceUsd, coupon) }
 }
@@ -85,6 +95,7 @@ export async function evaluateCoupon(q, { code, userId, planId, accountSize, lis
 export function couponAdminRoutes({ pool }) {
   const router = Router()
   router.use(adminAuth)
+  mountControlledChallenges(router, pool)
 
   router.get('/', wrap(async (req, res) => {
     const { rows } = await pool.query(

@@ -5,6 +5,11 @@
 - Add a bilingual owner workspace with secure sign-in, linked operational
   directories and password-confirmed Prop decisions.
 
+## Unreleased — controlled challenge acceptance
+
+- Add wallet-bound Instant and Two-Step test checkout with isolated rule
+  snapshots, operator review and a dedicated simulated payout settlement.
+
 ## Unreleased — funded financial controls and product roadmap
 
 - Add versioned 7-, 14-, 21-day and monthly UTC payout choices behind an owner-approved sales cutoff.

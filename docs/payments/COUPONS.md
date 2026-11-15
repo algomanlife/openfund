@@ -128,7 +128,9 @@ edit cannot bypass them.
 
 The backend also exposes read-only reporting at `/admin/coupons`,
 `/admin/coupons/:id/redemptions`, `/orders` and `/audit` (token
-`ADMIN_API_TOKEN`). There is no coupon-creation API.
+`ADMIN_API_TOKEN`). Commercial coupon creation remains in Directus. The separate
+[controlled challenge workflow](CONTROLLED_CHALLENGES.md) offers one
+operator-issued entitlement each for Instant and Two-Step acceptance.
 
 Production: the application tables exist (migrations ran with v0.4.4), but
 step 7/8 of the CMS bootstrap must be run against the production Directus

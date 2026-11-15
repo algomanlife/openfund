@@ -107,6 +107,9 @@ production until `/version` reports it.
 | **Blocked** | Gains transaction execution (needs supported contracts, simulation and security review); live DePay acceptance; public-domain wallet sign-in until the SIWE allowlist fix is deployed and verified |
 | **Planned** | Mobile apps; protocol routing; advanced order workflows — see the [roadmap](ROADMAP.md) |
 
+Controlled challenge acceptance uses two owner-issued test entitlements in an
+isolated runtime. See the [operator procedures](docs/payments/CONTROLLED_CHALLENGES.md).
+
 ## Business model
 
 The approved model is recorded in [ECONOMY.md](ECONOMY.md) and summarised in

@@ -30,6 +30,30 @@
       "sha256": "9cca82b2917e3dcd3c035a40ab2cba4c660c0e9b0f9e8152ff802af32aa3eaf0"
     },
     {
+      "file": "controlled-challenges/operator-test-payout.png",
+      "route": "/en/operations/payouts",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "test operator",
+      "capturedAt": "2026-11-15T16:02:22.666650+00:00",
+      "state": "Approved simulated payout with the test-only completion action. Local React build against the real backend, disposable wallet and deterministic test market marks.",
+      "sha256": "2d3c8ebb4a1fabf86199bcd27486cfcb0031040dde0b20c809d94cb22a98bc99"
+    },
+    {
+      "file": "controlled-challenges/trader-simulated-settlement.png",
+      "route": "/en/prop/withdrawals",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "generated SIWE test wallet",
+      "capturedAt": "2026-11-15T16:02:22.830749+00:00",
+      "state": "Two-Step funded virtual trading and simulated payout history. Local React build and PostgreSQL, deterministic test market marks and no payment evidence.",
+      "sha256": "efa3128bca60413a52f9d88d363c3b37eec1a9615a1e78355aa5f85616dbea40"
+    },
+    {
       "file": "funded-economy/roadmap-fa.png",
       "route": "/fa/roadmap",
       "viewport": {

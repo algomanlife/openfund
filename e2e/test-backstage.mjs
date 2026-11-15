@@ -47,11 +47,9 @@ try {
   await page.getByRole('heading', { name: 'Browser fixture' }).waitFor()
   assert.equal(await page.getByText(address, { exact: true }).getAttribute('dir'), 'ltr')
 
-  if (process.env.BACKSTAGE_TEST_CONTROLLED !== '1') {
-    await page.getByRole('link', { name: challenge.id, exact: true }).click()
-    await page.getByRole('heading', { name: 'Frozen rules' }).waitFor()
-    await page.getByRole('heading', { name: 'Recent positions' }).waitFor()
-  }
+  await page.getByRole('link', { name: challenge.id, exact: true }).click()
+  await page.getByRole('heading', { name: 'Frozen rules' }).waitFor()
+  await page.getByRole('heading', { name: 'Recent positions' }).waitFor()
   await page.locator('aside').getByRole('link', { name: 'Final-pass reviews' }).click()
   const review = page.getByRole('row').filter({ hasText: challenge.id })
   await review.getByRole('button', { name: 'Approve' }).click()

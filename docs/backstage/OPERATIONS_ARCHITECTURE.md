@@ -2,11 +2,11 @@
 
 ## Repository findings
 
-The reviewed integration base is `a439f24`. Open PR #124 owns visual CMS
-editing and changes editorial assets under `apps/backstage`. Open PR #125
-owns controlled coupons, frozen test lineage rules, and simulated payout
-completion. Backstage operations uses separate files and can be reviewed
-before either PR. Controlled test controls require the merged #125 contract.
+The initial integration base was `a439f24`. Open PR #124 owns visual CMS
+editing and changes editorial assets under `apps/backstage`. PR #125 merged
+at `4bf95f7` and owns controlled coupons, frozen test lineage rules and
+simulated payout completion. Backstage uses that existing contract. Its
+operations files are separate from the independent editorial PR.
 
 The current backend owns trader SIWE identity, challenge checkout and
 DePay evidence, immutable catalog snapshots, the evaluation engine and
