@@ -84,9 +84,7 @@ html :is(span.eyebrow, div.eyebrow, .eyebrow) { font-size: max(var(--ds-text-min
 .ds-glass { background: var(--ds-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
 .ds-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px; border-radius: var(--ds-radius-pill); border: 1px solid var(--ds-line); font-size: var(--ds-text-xs); color: var(--ds-text-muted); }
 .ds-num { font-variant-numeric: tabular-nums; direction: ltr; unicode-bidi: isolate; }
-/* Visually hidden tables (chart alternatives): tables ignore width:1px, so a
-   fixed position keeps them out of the scrollable area; screen readers still read them. */
-table.sr-only, table.ds-sr-only { position: fixed !important; inset-block-start: 0; inset-inline-start: 0; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.ds-sr-only { position: fixed !important; inset-block-start: 0; inset-inline-start: 0; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .ds-sr-only { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* Interactive card light: a cursor-following highlight on the border
@@ -104,10 +102,10 @@ table.sr-only, table.ds-sr-only { position: fixed !important; inset-block-start:
 
 /* Market widget on Challenges: category/view tabs and refresh were 21-23px
    tall with 9-10px labels. Readable labels and >=32px targets (44px on touch). */
-.information-page :is(.market-tabs, .market-views) button { min-block-size: 32px; min-inline-size: 32px; padding-inline: 10px; font-size: max(var(--ds-text-min), 1em) !important; }
-.information-page .refresh { min-block-size: 32px; min-inline-size: 32px; }
-.information-page :is(.feature-note, .sample-note) { font-size: var(--ds-text-xs) !important; line-height: 1.8; }
-.information-page :is(.market-frame, .market-head, .market-footer, .challenge-detail) a { font-size: max(var(--ds-text-min), 1em); }
+html :is(.market-tabs, .market-views) button { min-block-size: 32px; min-inline-size: 32px; padding-inline: 10px; font-size: max(var(--ds-text-min), 1em) !important; }
+html .market-frame .refresh, html .refresh { min-block-size: 32px; min-inline-size: 32px; }
+html :is(.feature-note, .sample-note) { font-size: var(--ds-text-xs) !important; line-height: 1.8; }
+html :is(.market-frame, .market-head, .market-footer, .challenge-detail) a { font-size: max(var(--ds-text-min), 1em); }
 @media (pointer: coarse) {
-  .information-page :is(.market-tabs, .market-views) button, .information-page .refresh { min-block-size: 44px; min-inline-size: 44px; }
+  html :is(.market-tabs, .market-views) button, html .market-frame .refresh, html .refresh { min-block-size: 44px; min-inline-size: 44px; }
 }

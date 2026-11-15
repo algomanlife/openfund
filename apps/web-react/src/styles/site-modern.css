@@ -8,7 +8,7 @@
    ========================================================================== */
 
 /* --- information hero: aurora accent + gradient accent line -------------- */
-.information-page .info-hero { position: relative; isolation: isolate; }
+.information-page .info-hero { position: relative; isolation: isolate; overflow-x: clip; }
 .information-page .info-hero::before { content: ""; position: absolute; inset: -40px 0 auto; block-size: 420px; z-index: -1; pointer-events: none;
   background: radial-gradient(42% 60% at 50% 30%, color-mix(in srgb, var(--mint) 16%, transparent), transparent 70%),
               radial-gradient(25% 45% at 78% 15%, color-mix(in srgb, var(--mint) 9%, transparent), transparent 70%);
@@ -62,3 +62,5 @@ html[data-theme=light] .information-page .econ-status.warn, html[data-theme=ligh
 html[data-theme=light] .information-page :is(.econ-panel, .econ-table) th { color: #4a5c53; }
 html[data-theme=light] .information-page .econ-panel bdi[style*="color"] { filter: none; }
 html[data-theme=light] .information-page .econ-kpi.warn :is(strong, bdi) { color: #7a4f0e; }
+/* visually hidden boxes sit at their container's start, never past its edge */
+.information-page .sr-only { inset-inline-start: 0; inset-block-start: 0; }
