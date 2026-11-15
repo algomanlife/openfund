@@ -157,7 +157,9 @@ async function realThemeClicks(browser) {
       check(`${tag} no unreleased app downloads`, await page.locator('#desktop, .desktop-btns').count() === 0);
       check(`${tag} no Team section`, await page.locator('#team, .team-section, #team-dialog').count() === 0);
       check(`${tag} eight services incl. Render, Liara, Bitpin and Hyperliquid`, await page.locator('.credits-row > a').count() === 8 && await page.locator('.credits-row a[href="https://hyperliquid.xyz"]').count() === 1 && await page.locator('.credits-row a[href="https://bitpin.ir"]').count() === 1 && await page.locator('.credits-row a[href="https://render.com"]').count() === 1 && await page.locator('.credits-row a[href="https://liara.ir"]').count() === 1);
-      check(`${tag} attribution`, (await page.locator('footer').innerText()).includes(locale === 'fa' ? 'توسعه داده شده توسط معامله‌گران' : 'Developed by Traders'));
+      const attribution = locale === 'fa' ? 'توسعه داده شده توسط معامله‌گران' : 'Developed by Traders';
+      await page.locator('footer').getByText(attribution, { exact: true }).waitFor();
+      check(`${tag} attribution`, (await page.locator('footer').innerText()).includes(attribution));
       check(`${tag} no obsolete label`, !/External resource|منبع خارجی|Developed in San Francisco|توسعه‌داده‌شده در سان‌فرانسیسکو/.test(await page.locator('footer').innerText()));
       check(`${tag} two Telegram actions`, await page.locator('.telegram-community').count() === 2);
       check(`${tag} no Discord action`, await page.locator('.discord-community').count() === 0);
