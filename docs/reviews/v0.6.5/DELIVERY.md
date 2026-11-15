@@ -1,70 +1,60 @@
 # v0.6.5 candidate — delivery record
 
-Branch `agent/claude/v0.6.5-modernization`, based on `main` `60d5df9`.
-Status: **implemented and locally verified; unmerged, untagged, not deployed.**
-Both regions use this one source; nothing here deploys Render or Liara.
+Branch `agent/claude/v0.6.5-modernization` ([PR #122](https://github.com/algomanlife/openfund/pull/122)),
+based on `main` `60d5df9`. **Unmerged, untagged, not deployed.** Both regions
+use this one source; nothing here deploys Render or Liara or changes regional
+authority, synchronization, DNS or routing.
 
-## Requirement status
+Categories: **Completed and verified** · **Implemented, not fully verified** ·
+**Blocked by an owner decision** · **Incomplete**.
 
-| # | Requirement | Status | Evidence / remaining |
-| --- | --- | --- | --- |
-| 1 | Design system, VibeFarsi evaluation | Implemented, verified | `src/styles/design-system.css`, [ADR 0035](../../decisions/0035-design-system-foundation-and-ui-kit-evaluation.md). Legacy pages are not migrated onto the tokens |
-| 2 | Website motion and responsive repair | Partially implemented | New pages use reveal/hover/cross-fade motion with reduced-motion fallbacks. Audit of home, challenges, markets, contact, apps, roadmap, verification at 320–1440px in fa/en: no horizontal overflow after fixes. Existing homepage motion (legacy `motion.js`) kept, not redesigned |
-| 3 | Homepage, header, footer, ticker | Partially implemented | Ticker label and phone visibility fixed; locale redirects fixed; small legal/status text raised. Homepage structure unchanged; no visual redesign of hero/cards beyond the audit |
-| 4 | Terminal Persian terminology, VOB copy, footer, Support | Implemented, verified | `test/terminal-copy.test.mjs`; live check in the terminal iframe |
-| 5 | Trade Radar | Implemented, verified locally against live Hyperliquid | [Spec](../../integrations/HYPERLIQUID_RADAR.md); not deployed |
-| 6 | Market Heatmap | Implemented, verified locally against live Hyperliquid | Only the 24h window is backed by data; no other windows offered |
-| 7 | Applications page | Implemented, verified | Two motion sequences and screenshots from real Open Trade 0.0.2 captures |
-| 8 | Desktop 0.0.2 artifacts | **Blocked (publication)** | Built and acceptance-tested in CI run 43611941782 (`76512b5`) for all three OS; unsigned. A GitHub Release needs owner approval; SHA-256 values come from that release |
-| 9 | Certificate verification page | Implemented, verified | `e2e/test-certificates.cjs` |
-| 10 | User certificates, three designs | Implemented, verified | Built on the existing issuance APIs; previews carry no personal data |
-| 11 | Roadmap page and repository | Implemented (structure) | Mirrors ROADMAP.md, test-enforced; owner product roadmap **pending owner content** |
-| 12 | README, docs, licences, release prep | Implemented | This record, CHANGELOG, FEATURE_STATUS, README rows, notices. Main licence remains an owner decision ([decision](../../legal/LICENSE_DECISION.md)) |
+## Requirements
 
-## Owner decisions and blockers
+| # | Requirement | Status | Evidence | Remaining |
+| --- | --- | --- | --- | --- |
+| 1 | CI and merge blockers | Completed and verified locally; CI result recorded in the PR | Earlier failures traced to a stale navigation expectation, light-theme contrast and two untranslated terminal strings — all fixed in code, none by weakening tests | Required checks on the final commit: see PR |
+| 2 | Release versioning (v0.6.5) | Completed and verified | `requestedVersion()` + tests; `plan.mjs` yields 0.6.5 for an approved main dispatch and rejects 0.7.0 | Tag only on owner approval |
+| 3 | Homepage and website redesign | Completed and verified (local) | Homepage rebuilt; `site-modern.css` + `useSiteMotion` on all information pages; captures in the README gallery | Not deployed |
+| 4 | Responsive | Completed and verified (local) | 480-load audit (9 widths fa/en, 2 widths ar/ru/zh-CN, 20 pages); re-audit 0 overflowing loads at 320/768/1024/1920 | Real-device testing not done |
+| 5 | Design system adoption | Completed (scope below) | `--ds-*` tokens used by homepage, site layer, certificates, radar, roadmap, applications | Legacy page CSS still holds page-specific rules |
+| 6 | Applications page | Completed and verified | Real Open Trade 0.0.2 captures, two motion sequences, comparison, per-OS cards with version, arch, format, size, SHA-256 | Download buttons need a published release |
+| 7 | Desktop 0.0.2 artifacts | **Blocked by an owner decision** | All five files downloaded from CI run 43611941782, SHA-256 matches, metadata 0.0.2, macOS arm64 launched; pack in [release notes](../../releases/open-trade-0.0.2.md) | Approve the pre-release; clear the indicator-licence item; signing |
+| 8 | Trade Radar | Completed and verified (local, live data) | Unit tests; 300-viewer load test (warm p95 122 ms, RSS ~77 MB settled); outage shows "Data unavailable" | Not deployed |
+| 9 | Market Heatmap | Completed and verified (local, live data) | Treemap tests; deep-link to the chart; outage state | 24h window only (data limit) |
+| 10 | Terminal copy and footer | Completed and verified | `test/terminal-copy.test.mjs`; live iframe check | VOB copy names Hyperliquid while the panel reads Gains only — owner review |
+| 11 | Certificates | Completed and verified | `e2e/test-certificates.cjs` 46/46 on the final code | Owner's official artwork not supplied; Openfund designs used |
+| 12 | Roadmap | Completed (structure) | Mirrors ROADMAP.md (test-enforced) | **Owner roadmap content** |
+| 13 | README | Completed | Redesigned; required sections kept; `docs:check` green | — |
+| 14 | Technical documentation | Completed for changed areas | Radar spec, release pack, design system, ADR 0035, environment, feature status, changelog | Older documents not rewritten |
+| 15 | Licensing | **Blocked by an owner decision** | Audit and addendum in [licence decision](../../legal/LICENSE_DECISION.md) | Choose a licence; Irancell fonts; Pine indicators; AGPL source offer |
+| 16 | Two-region compatibility | Completed and verified | Region and regional-sync suites pass; radar GETs pass the region guard and degrade to 503 | Liara not deployed (by design) |
 
-1. **Version number.** `scripts/release/version.mjs` allocates **0.6.0** after
-   `v0.5.0`; `requestedPatchVersion` only allows the next patch (0.5.1) and
-   forbids skipping. Publishing as v0.6.5 needs either releasing as 0.6.0 or an
-   approved change to the release guard. Not changed here.
-2. **Desktop publication.** Approve a GitHub Release for Open Trade 0.0.2 (unsigned
-   beta) and add its assets to `apps/web-react/src/features/applications/releases.json`;
-   download buttons appear only then.
-3. **Order-book copy accuracy.** The owner-specified VOB note says data is
-   aggregated from Gains and Hyperliquid. The order-book panel currently reads
-   the Gains VOB only (`public/legacy/market-depth.js`). The copy is implemented
-   exactly as instructed; it is accurate only once Hyperliquid depth is added.
-4. **Roadmap content** and the **primary licence** remain with the owner.
+## Owner decisions
 
-## Tests executed (2026-11-15, local)
+1. Approve the v0.6.5 dispatch (tooling ready; no tag created).
+2. Publish Open Trade 0.0.2 as a pre-release — after deciding on the bundled
+   Pine indicators and accepting unsigned installers (or funding signing).
+3. VOB note accuracy (Gains-only data vs. text naming Hyperliquid).
+4. Roadmap content; official certificate artwork if it differs.
+5. Primary licence, contributor terms, Irancell fonts, indicator authorship.
+
+## Tests executed on the final code (2026-11-15, local)
 
 | Check | Result |
 | --- | --- |
-| `npm run typecheck` (web) | Pass |
-| `npm run test:web` (all web unit suites) | Pass — 263 tests |
-| `npm run test:i18n` (ar/ru/zh-CN coverage) | Pass |
-| `npm run test:content-registry` | Pass (exceptions 74 → 70) |
-| `npm run test:backend` (`test:all`, CI-equivalent env, fresh migrated DB) | Pass — 430 node tests + 347 scripted checks, incl. `test:certificates`, new `test:radar` |
-| `test:region`, `test:regional-sync` (four disposable DBs) | Pass — 20 and 13 |
-| `e2e/test-certificates.cjs` (real API, disposable SIWE wallet) | Pass — 46 checks (fa/en × light/dark × 5 widths, PNG/PDF, QR → serial) |
-| Open Trade `npm test`, `typecheck`, `tests/desktop.mjs` (macOS) | Pass |
-| `npm run validate:blueprint` | Pass |
-| `npm run docs:check` | Pass (after this record) |
-| gitleaks on every commit | No leaks |
-| Browser suites not run locally: `test:browser:*` other than certificates | Not run — run in CI |
-
-Live-data checks (local, real upstream): `/radar/markets` 179 markets (159 mapped
-to Openfund markets); positions over 30 leaderboard wallets in ~3 s; shared tape
-live on 30 coins; API RSS ~120 MB through a leaderboard load (was ~330 MB).
+| Web typecheck, i18n coverage, content registry | Pass |
+| `npm run test:web` | Pass — 263 |
+| `npm run test:release` | Pass — 16 (incl. versioning and Open Trade manifest) |
+| `npm run test:backend` (`test:all`, CI environment, fresh DB migrated twice) | Pass — 430 node tests + 347 scripted checks |
+| `test:region`, `test:regional-sync` (four fresh DBs) | Pass — 20 and 13 |
+| `e2e/test-certificates.cjs` | Pass — 46 |
+| Open Trade `npm test`, typecheck; packaged arm64 launch | Pass |
+| `validate:blueprint`, `docs:check`, gitleaks | Pass |
+| Light-theme WCAG check (CI's algorithm) on touched pages | Pass, except a parser artifact on `color(srgb …)` backgrounds outside CI's scope |
+| Browser suites needing local Directus (`test:browser:polish`, locale matrix) | Run in CI only |
 
 ## Screenshots
 
-Genuine captures, provenance in the [manifest](../../assets/screenshots/manifest.json):
-[heatmap](../../assets/screenshots/v0.6.5/heatmap.png) ·
-[radar positioning](../../assets/screenshots/v0.6.5/radar-positioning.png) ·
-[applications](../../assets/screenshots/v0.6.5/applications.png) ·
-[roadmap (fa)](../../assets/screenshots/v0.6.5/roadmap.png) ·
-[verification](../../assets/screenshots/v0.6.5/certificate-verification.png) ·
-[certificates (fa, signed out)](../../assets/screenshots/v0.6.5/certificates-fa.png) ·
-[completion certificate export](../../assets/screenshots/v0.6.5/certificate-completion-fa.png) ·
-[Open Trade 0.0.2](../../assets/screenshots/open-trade-0.0.2/)
+README gallery (`docs/assets/screenshots/readme/v065/`), v0.6.5 captures
+(`docs/assets/screenshots/v0.6.5/`) and Open Trade 0.0.2
+(`docs/assets/screenshots/open-trade-0.0.2/`), all with manifest provenance.
