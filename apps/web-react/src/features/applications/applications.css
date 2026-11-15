@@ -116,3 +116,7 @@ html[data-theme=light] .of-seq-window { border-color: var(--line); }
   .of-seq-stage img:not(:first-child) { display: none; }
   .of-app-card { transition: none; } .of-app-card:hover { transform: none; }
 }
+/* light theme contrast (>= 4.5 on white) */
+html[data-theme=light] .of-app-tag { color: #065f39; background: #eef8f3; border-color: #9ccfb6; }
+html[data-theme=light] .of-app-status.is-pending { color: #7a5a0e; border-color: #d8c08a; }
+html[data-theme=light] .of-app-files li { background: #fafcfb; }

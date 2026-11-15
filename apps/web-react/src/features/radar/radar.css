@@ -115,3 +115,6 @@ html[data-theme=light] .of-hm-tile { color: #0e1d15; }
 @media (prefers-reduced-motion: reduce) {
   .of-hm-group, .of-hm-tile, .of-radar-tabs button { transition: none; }
 }
+html[data-theme=light] .of-radar .of-radar-side { background: #fff; border: 1px solid currentColor; }
+html[data-theme=light] .of-radar .is-up { color: #066b40; }
+html[data-theme=light] .of-radar .is-down { color: #a8322b; }

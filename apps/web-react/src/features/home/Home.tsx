@@ -11,6 +11,7 @@ import LeveragedMarketIllustration from './LeveragedMarketIllustration'
 import './home.css'
 import TelegramCommunity from '../community/TelegramCommunity'
 import type { ReactNode } from 'react'
+import { useSpotlight } from '../../styles/useSpotlight'
 
 /* Right-to-left copy: isolate embedded Latin names (e.g. "Gains Network") so
    they keep their word order and never split across lines. Display only. */
@@ -60,6 +61,12 @@ function HomeUnavailable({ locale }: { locale: Locale }) {
   </div>
 }
 
+/** Product card with a pointer-following border light (inert on touch / reduced motion). */
+function SpotPanel({ className, children }: { className: string; children: ReactNode }) {
+  const ref = useSpotlight<HTMLElement>()
+  return <article ref={ref} className={className}>{children}</article>
+}
+
 function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) {
   const t = c.translations[locale]
   const rtl = locale === 'fa' || locale === 'ar'
@@ -71,11 +78,14 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
     <LandingMotionBackground />
 
     <div className="container home-stage">
-      <div className="home-enter e1 eyebrow"><span className="tiny-mark" aria-hidden="true">✳</span> OPENFUND</div>
-      <h1 className="home-enter e2">{accent ? <>{main}<br /><em>{accent}</em></> : main}</h1>
+      <div className="home-hero">
+        <div className="home-enter e1 eyebrow"><span className="tiny-mark" aria-hidden="true">✳</span> OPENFUND</div>
+        <h1 className="home-enter e2">{accent ? <>{main} <em>{accent}</em></> : main}</h1>
+        <p className="home-lead home-enter e3">{pick(locale, 'ارزیابی معاملاتی شفاف در محیط شبیه‌سازی‌شده و ابزارهای حرفه‌ای تحلیل بازار، در یک پلتفرم.', 'Transparent trading evaluations in a simulated environment and professional market analysis tools, in one platform.')}</p>
+      </div>
 
       <div className="home-products">
-        <article className="home-panel home-enter e3">
+        <SpotPanel className="home-panel home-enter e4">
           <div className="home-art"><AnimatedTradingTerminalIllustration /></div>
           <div className="home-panel-copy">
             <div className="home-panel-heading"><h2>{t.propTitle}</h2></div>
@@ -92,9 +102,9 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
               </Link>
             </div>
           </div>
-        </article>
+        </SpotPanel>
 
-        <article className="home-panel home-enter e4">
+        <SpotPanel className="home-panel home-enter e5">
           <div className="home-art home-perpetual-art" aria-hidden="true">
             <LeveragedMarketIllustration />
           </div>
@@ -110,7 +120,7 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
               <span aria-hidden="true">↙</span>
             </a>
           </div>
-        </article>
+        </SpotPanel>
       </div>
 
       <div className="home-community"><TelegramCommunity locale={locale} /></div>

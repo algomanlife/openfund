@@ -36,6 +36,7 @@
 }
 .of-cert-panel h2 { font-size: 1.15rem; line-height: 1.6; }
 .of-cert-signin { justify-items: center; text-align: center; }
+.of-cert-panel p { color: var(--c-text); }
 .of-cert-field { display: grid; gap: 8px; }
 .of-certificates-page label { font-weight: 600; line-height: 1.6; }
 .of-certificates-page input:not([type=checkbox]) {
@@ -137,3 +138,7 @@ html[data-theme=light] .of-cert-step-index { color: #fff; }
   .of-cert-template:hover { transform: none; }
   .of-cert-template-skeleton { animation: none; }
 }
+/* light theme: plain colours behind text (no color-mix), contrast >= 4.5 */
+html[data-theme=light] .of-cert-panel { background: #f4faf7; }
+html[data-theme=light] .of-cert-panel :is(p, small, label) { color: #16281e; }
+html[data-theme=light] .of-certificate-lookup small { color: #3d5246; }

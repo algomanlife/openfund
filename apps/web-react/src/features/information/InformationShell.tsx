@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useSiteMotion } from '../../styles/useSiteMotion'
 import { createPortal } from 'react-dom'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import landingBody from '../../pages/landing-body.html?raw'
@@ -179,6 +180,8 @@ export default function InformationShell({ page, description, footer = true, nav
     return () => { tags.forEach(tag => tag.remove()); document.title = previousTitle }
   }, [locale, page, description, title])
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }) }, [page])
+  const [mainEl, setMainEl] = useState<HTMLElement | null>(null)
+  useSiteMotion(mainEl, `${page}:${routeLocale}`)
   if (!isLocale(routeLocale)) return <Navigate to={`/fa/${page}`} replace />
   return <div className={`information-page${footer ? '' : ' chrome-only'}`}>
     <link rel="stylesheet" href={legacyStylesheet('legacy/style.css')} precedence="openfund" />
@@ -187,7 +190,7 @@ export default function InformationShell({ page, description, footer = true, nav
     <Chrome locale={locale} part="header" nav={nav} />
     {/* Iran access notice (every locale); live Bitpin prices stay Persian-only */}
     <IranAccessNotice locale={locale} />
-    <main id="main" className="info-main" tabIndex={-1}>
+    <main id="main" className="info-main" tabIndex={-1} ref={setMainEl}>
       <UntranslatedNotice locale={locale} />
       {children}
     </main>
