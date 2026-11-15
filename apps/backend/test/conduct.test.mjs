@@ -201,18 +201,25 @@ test('C9 pre-trade refusals protect the trader from an immediate breach', async 
 })
 
 test('C10 on-demand strike system: one strike per 1% trade idea; the fourth is a breach', async () => {
-  clock.now = T('2026-07-08T18:00:00Z')
-  const ch = await challenge('standard', { funded: true, cycle: 'on_demand', startedAt: '2026-07-06T09:00:00Z' })
-  const ideas = ['09', '11', '13']
-  for (const h of ideas) await position(ch, { openedAt: `2026-07-08T${h}:00:00Z`, closedAt: `2026-07-08T${h}:30:00Z`, net: '-1000' })
+  // Keep these fixtures recent when the integration server shares the test DB.
+  // Either risk engine may record the fourth strike first.
+  const day = Math.floor(Date.now() / DAY) * DAY - DAY
+  const at = (hours, minutes = 0) => new Date(day + (hours * 60 + minutes) * 60_000).toISOString()
+  clock.now = T(at(18))
+  const ch = await challenge('standard', { funded: true, cycle: 'on_demand', startedAt: at(8) })
+  for (const hour of [9, 11, 13]) await position(ch, { openedAt: at(hour), closedAt: at(hour, 30), net: '-1000' })
   assert.equal(await engine.enforceChallengeRisk(ch.accountId), null)
-  assert.equal((await pool.query('SELECT count(*)::int n FROM challenge_strikes WHERE challenge_id=$1', [ch.id])).rows[0].n, 3)
+  const strikes = async () => (await pool.query('SELECT count(*)::int n FROM challenge_strikes WHERE challenge_id=$1', [ch.id])).rows[0].n
+  assert.equal(await strikes(), 3)
   assert.equal(await engine.enforceChallengeRisk(ch.accountId), null, 'strikes are recorded once per idea')
-  await position(ch, { openedAt: '2026-07-08T15:00:00Z', closedAt: '2026-07-08T15:30:00Z', net: '-1000' })
-  assert.equal(await engine.enforceChallengeRisk(ch.accountId), 'failed')
-  assert.ok((await violation(ch)).includes('strike_breach'))
-  const biweekly = await challenge('standard', { funded: true, cycle: 'biweekly', startedAt: '2026-07-06T09:00:00Z' })
-  await position(biweekly, { openedAt: '2026-07-08T09:00:00Z', closedAt: '2026-07-08T09:30:00Z', net: '-1500' })
+  assert.equal(await status(ch), 'started', 'three strikes do not breach the account')
+  await position(ch, { openedAt: at(15), closedAt: at(15, 30), net: '-1000' })
+  await engine.enforceChallengeRisk(ch.accountId)
+  assert.equal(await status(ch), 'failed')
+  assert.equal(await strikes(), 4)
+  assert.deepEqual(await violation(ch), ['strike_breach'])
+  const biweekly = await challenge('standard', { funded: true, cycle: 'biweekly', startedAt: at(8) })
+  await position(biweekly, { openedAt: at(9), closedAt: at(9, 30), net: '-1500' })
   await engine.enforceChallengeRisk(biweekly.accountId)
   assert.equal((await pool.query('SELECT count(*)::int n FROM challenge_strikes WHERE challenge_id=$1', [biweekly.id])).rows[0].n, 0, 'no strikes outside the on-demand cycle')
 })
