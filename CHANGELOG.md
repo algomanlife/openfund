@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — universal visual CMS editing
+
+- Editors can open the existing Directus 11.17.4 visual editor, click registered editorial text, and save a draft or publish it without a frontend rebuild.
+- Arabic, Russian and Simplified Chinese (`zh-CN`) are selectable translation slots. They are not auto-published.
+- Public pages keep the current layout and fall back to bundled copy when Directus is unavailable. Financial, trading and payment fields are not editable this way.
+
 ## Unreleased — Backstage operations
 
 - Add a bilingual owner workspace with secure sign-in, linked operational

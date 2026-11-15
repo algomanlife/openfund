@@ -136,12 +136,19 @@ def main():
         })
         print(f'  relation {collection}.{field} → {related}: created')
 
+    # fa/en remain the required authored pair. ar, ru and zh-CN are the same
+    # codes the React app already uses (zh-CN, not zh). Choices are additive:
+    # existing translation rows are never rewritten.
+    LANGUAGE_CHOICES = [
+        {'text': 'فارسی (fa)', 'value': 'fa'},
+        {'text': 'English (en)', 'value': 'en'},
+        {'text': 'العربية (ar)', 'value': 'ar'},
+        {'text': 'Русский (ru)', 'value': 'ru'},
+        {'text': '简体中文 (zh-CN)', 'value': 'zh-CN'},
+    ]
     LANG_META = {
         'interface': 'select-dropdown',
-        'options': {'choices': [
-            {'text': 'فارسی (fa)', 'value': 'fa'},
-            {'text': 'English (en)', 'value': 'en'},
-        ]},
+        'options': {'choices': LANGUAGE_CHOICES},
         'required': True,
     }
     STATUS_SCHEMA = {'default_value': 'published', 'has_auto_increment': False}
@@ -943,6 +950,44 @@ def main():
             'fields': ['*'], 'permissions': cond or {},
         })
         print(f'public read: {coll}')
+
+    def ensure_language_choices(collection, field):
+        try:
+            fields = req('GET', f'{base}/fields/{collection}', token)['data']
+        except SystemExit as exc:
+            if '404' in str(exc):
+                print(f'  language choices {collection}.{field}: collection absent, skipped')
+                return
+            raise
+        current = next((f for f in fields if f['field'] == field), None)
+        if not current:
+            return
+        choices = (((current.get('meta') or {}).get('options') or {}).get('choices')) or []
+        have = {c.get('value') for c in choices}
+        if {'fa', 'en', 'ar', 'ru', 'zh-CN'} <= have:
+            return
+        update_field_meta(collection, field, {
+            'interface': 'select-dropdown',
+            'options': {'choices': LANGUAGE_CHOICES},
+        })
+
+    for coll in translation_parents:
+        ensure_language_choices(coll, 'language_code')
+    ensure_language_choices('site_settings', 'default_language')
+    # Directus item revisions are the rollback path. Only correct a collection
+    # that was explicitly set to something other than full accountability.
+    for coll, _cond in wanted:
+        if coll.endswith('_translations'):
+            continue
+        try:
+            meta = (req('GET', f'{base}/collections/{coll}', token)['data'].get('meta') or {})
+        except SystemExit as exc:
+            if '404' in str(exc):
+                continue
+            raise
+        if meta.get('accountability') not in (None, 'all'):
+            req('PATCH', f'{base}/collections/{coll}', token, {'meta': {'accountability': 'all'}})
+            print(f'  revisions {coll}: accountability=all')
     print('schema OK')
 
 if __name__ == '__main__':

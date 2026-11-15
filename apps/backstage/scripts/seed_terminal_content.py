@@ -32,7 +32,15 @@ field('terminal_sections', 'status', 'string', {'interface': 'select-dropdown', 
 field('terminal_sections', 'support_url', 'string', {'interface': 'input', 'note': 'HTTPS only; optional support or educational link.'})
 field('terminal_sections', 'illustration', 'uuid', {'interface': 'file-image', 'special': ['file']})
 field('terminal_section_translations', 'section_id', 'integer', {'interface': 'select-dropdown-m2o', 'special': ['m2o']})
-field('terminal_section_translations', 'language_code', 'string', {'interface': 'select-dropdown', 'options': {'choices': [{'text': 'فارسی', 'value': 'fa'}, {'text': 'English', 'value': 'en'}]}})
+TERMINAL_LANGUAGES = [
+    {'text': 'فارسی', 'value': 'fa'}, {'text': 'English', 'value': 'en'},
+    {'text': 'العربية', 'value': 'ar'}, {'text': 'Русский', 'value': 'ru'}, {'text': '简体中文', 'value': 'zh-CN'},
+]
+field('terminal_section_translations', 'language_code', 'string', {'interface': 'select-dropdown', 'options': {'choices': TERMINAL_LANGUAGES}})
+language_field = next(x for x in call('GET', '/fields/terminal_section_translations') if x['field'] == 'language_code')
+have = {c.get('value') for c in (((language_field.get('meta') or {}).get('options') or {}).get('choices') or [])}
+if not {'fa', 'en', 'ar', 'ru', 'zh-CN'} <= have:
+    call('PATCH', '/fields/terminal_section_translations/language_code', {'meta': {'interface': 'select-dropdown', 'options': {'choices': TERMINAL_LANGUAGES}}})
 field('terminal_section_translations', 'title', 'text')
 field('terminal_section_translations', 'body', 'text', {'interface': 'input-multiline'})
 field('terminal_sections', 'translations', 'alias', {'special': ['o2m'], 'interface': 'list-o2m', 'options': {'template': '{{language_code}}: {{title}}'}}, None)

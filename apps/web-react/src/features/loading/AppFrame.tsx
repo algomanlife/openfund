@@ -1,12 +1,14 @@
-import { Component, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { Component, useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-router-dom'
 import { BrandedLoading, loadingGate } from './BrandedLoading'
 import { updateSeoHead } from './seoHead'
 import { dirOf, normalizeLocale, pick, type AppLocale } from '../../i18n/locales'
 import { contentLoaded, ensureLocaleContent } from '../../i18n/messages'
 import './loading.css'
-import { fetchInterfaceContent } from '../../cms/client'
+import { directusUrl, fetchInterfaceContent, invalidateCmsCache } from '../../cms/client'
 import { installInterfaceContent } from '../../i18n/interfaceContent'
+import ContentCatalog from '../../cms/ContentCatalog'
+import { startVisualEditing, subscribeVisualEditing, syncVisualLocale } from '../../cms/visualEditing'
 
 /* ---- app frame ---------------------------------------------------------------
    Wraps every route so the whole platform shares:
@@ -49,19 +51,33 @@ export default function AppFrame() {
   const locale = routeLocale(location.pathname)
   const previousLocale = useRef(locale)
   const [interfaceReady, setInterfaceReady] = useState(false)
+  const [, setVisualEpoch] = useState(0)
+  const refreshInterface = useCallback(async (gate: boolean) => {
+    if (gate) loadingGate.hold('interface-content')
+    const rows = await fetchInterfaceContent()
+    installInterfaceContent(rows || [])
+    setInterfaceReady(true)
+    if (gate) loadingGate.release('interface-content')
+  }, [])
   useEffect(() => {
     let active = true
-    loadingGate.hold('interface-content')
-    const refresh = async () => {
-      const rows = await fetchInterfaceContent()
-      if (!active) return
-      installInterfaceContent(rows || [])
-      setInterfaceReady(true)
-      loadingGate.release('interface-content')
-    }
-    void refresh()
-    return () => { active = false; loadingGate.release('interface-content') }
-  }, [])
+    void refreshInterface(true).finally(() => { if (!active) loadingGate.release('interface-content') })
+    return () => { active = false }
+  }, [refreshInterface])
+  useEffect(() => subscribeVisualEditing(() => setVisualEpoch(value => value + 1)), [])
+  useEffect(() => {
+    startVisualEditing({
+      directusUrl: directusUrl(),
+      locale,
+      onPublished: () => { invalidateCmsCache(); void refreshInterface(false) },
+    })
+  }, [locale, refreshInterface])
+  useEffect(() => { syncVisualLocale(locale) }, [locale])
+  useEffect(() => {
+    const onFocus = () => { invalidateCmsCache(); void refreshInterface(false) }
+    window.addEventListener('focus', onFocus)
+    return () => window.removeEventListener('focus', onFocus)
+  }, [refreshInterface])
   /* the route locale's editorial dictionary is loaded before its pages
      render (direct URL entry, refresh, Back/Forward and language switch) */
   const [readyLocale, setReadyLocale] = useState<AppLocale | null>(() => contentLoaded(locale) ? locale : null)
@@ -152,6 +168,7 @@ export default function AppFrame() {
         </div>
       ) : null}
       <BrandedLoading />
+      <ContentCatalog locale={locale} />
       <ScrollRestoration />
     </ErrorBoundary>
   )
