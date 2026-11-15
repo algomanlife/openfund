@@ -225,3 +225,19 @@ html[data-theme=light] .home-gateway .technical-dialog button{background:var(--m
   .home-gateway .home-art { height: max(30px, calc(clamp(32px, 6dvh, 70px) - var(--landing-chrome-extra, 0px) * .9)); }
   .home-gateway .home-product-note { font-size: 12px; line-height: 1.6; }
 }
+
+/* --- desktop/tablet: fit by construction, not by tuned heights -------------
+   The gateway is exactly the usable viewport; the illustrations are the
+   flexible part and shrink to absorb whatever height the text needs, so
+   the layout fits regardless of font metrics (CI renders text taller than
+   local machines). Text never shrinks below its readable size. */
+@media (min-width: 701px) {
+  .home-gateway { height: calc(100svh - var(--landing-header-height, 85px) - var(--landing-chrome-extra, 0px));
+                  height: calc(100dvh - var(--landing-header-height, 85px) - var(--landing-chrome-extra, 0px)); }
+  .home-gateway .home-stage { height: 100%; min-height: 0; justify-content: flex-start; }
+  .home-gateway .home-hero, .home-gateway .home-community, .home-gateway .technical-features { flex: none; }
+  .home-gateway .home-products { flex: 1 1 auto; min-height: 0; grid-template-rows: minmax(0, 1fr); }
+  .home-gateway .home-panel { min-height: 0; overflow: hidden; }
+  .home-gateway .home-panel-copy { flex: none; }
+  .home-gateway .home-art { flex: 1 1 0; min-height: 24px; max-height: 220px; height: auto !important; }
+}
