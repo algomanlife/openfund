@@ -239,7 +239,7 @@ services:
     autoDeployTrigger: off
     healthCheckPath: /health
     domains:
-      - backstage.openfund.cloud
+      - backstage.openfi.cloud
     renderSubdomainPolicy: disabled
     buildCommand: npm --prefix apps/backstage ci && npm --prefix apps/backstage run build
     startCommand: npm --prefix apps/backstage start

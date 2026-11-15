@@ -4,6 +4,8 @@
 
 - Add a bilingual owner workspace with secure sign-in, linked operational
   directories and password-confirmed Prop decisions.
+- Align the Backstage Blueprint with the existing production hostname,
+  `backstage.openfi.cloud`, and document the backend release prerequisite.
 - Use the trading engine's account-first lock order for reward requests and
   reversals to prevent contention from deadlocking a payout workflow.
 
