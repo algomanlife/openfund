@@ -15,7 +15,8 @@ const LARGE = 500_000
 export function Freshness({ state, fetchedAt, updated, stale, error }: { state?: string; fetchedAt: number; updated?: number | null; stale?: boolean; error?: boolean }) {
   const { t } = useTerminal(), now = useNow()
   const age = Math.max(0, Math.round((now - (updated || fetchedAt)) / 1000))
-  const kind = error && !fetchedAt ? 'down' : error || stale ? 'stale' : state === 'connecting' || state === 'reconnecting' || state === 'idle' ? 'connecting' : 'live'
+  /* no answer yet is "connecting", never "live" */
+  const kind = error && !fetchedAt ? 'down' : error || stale ? 'stale' : !fetchedAt || state === 'connecting' || state === 'reconnecting' || state === 'idle' ? 'connecting' : 'live'
   const label = kind === 'down' ? t('داده در دسترس نیست', 'Data unavailable') : kind === 'stale' ? t('دادهٔ قدیمی', 'Stale data') : kind === 'connecting' ? t('در حال اتصال…', 'Connecting…') : t('زنده', 'Live')
   return <span className="of-radar-fresh" data-kind={kind} role="status">
     <i aria-hidden="true" />{label}{fetchedAt > 0 && <span className="of-radar-age"> · <bdi dir="ltr">{age < 60 ? `${age}s` : `${Math.round(age / 60)}m`}</bdi></span>}

@@ -53,7 +53,7 @@ test('terminal footer shows live status with two source marks and a localized su
   assert.match(terminal, /support\.href = '\/' \+ encodeURIComponent\(window\.ofLang\) \+ '\/contact'; support\.target = '_top'/)
 })
 
-test('Persian market ticker reads exactly "زنده از بازار" without the provider name', () => {
+test('Persian market ticker shows only the owner-specified live label, without the provider name', () => {
   const ticker = readFileSync('src/features/ticker/BitpinTicker.tsx', 'utf8')
   assert.match(ticker, /status === 'live' \? 'زنده از بازار'/)
   assert.ok(!/>بیت‌پین</.test(ticker))
