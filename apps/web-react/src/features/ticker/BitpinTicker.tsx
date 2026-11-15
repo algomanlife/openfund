@@ -20,7 +20,7 @@ export default function BitpinTicker() {
     : 'قیمت‌ها در دسترس نیست'
   const items = (copy: boolean) => quotes.map(quote => <TickerItem key={(copy ? 'b-' : 'a-') + quote.symbol} quote={quote} />)
 
-  return <aside className="bitpin-ticker" dir="rtl" lang="fa" aria-label="قیمت لحظه‌ای رمزارزها به تومان از بیت‌پین" data-status={status}>
+  return <aside className="bitpin-ticker" data-locale-owned dir="rtl" lang="fa" aria-label="قیمت لحظه‌ای رمزارزها به تومان از بیت‌پین" data-status={status}>
     <div className="bitpin-ticker-source">
       <i aria-hidden="true" className="bitpin-ticker-dot" />
       <span className="bitpin-ticker-status" role="status">{statusText}</span>

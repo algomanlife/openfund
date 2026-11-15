@@ -36,6 +36,7 @@ import ReferralEntry from './features/referral/ReferralEntry'
 import TerminalShell from './features/terminal/TerminalShell'
 import './theme-toggle.css'
 import './styles/header-controls.css'
+import './styles/design-system.css'
 import './brand/seasonal-logo.css'
 import { installSeasonalLogo } from './brand/seasonalLogo'
 import { SharedTradingTerminal } from './features/terminal/TradingPages'
@@ -50,7 +51,7 @@ import { WalletProvider } from './wallet/WalletProvider'
 import { SessionProvider } from './session/useOpenfundSession'
 import AppFrame from './features/loading/AppFrame'
 import { startThemeSync } from './theme'
-import { storedLocale, type AppLocale } from './i18n/locales'
+import { LOCALES, storedLocale, type AppLocale } from './i18n/locales'
 import { translateSource } from './i18n/messages'
 
 startThemeSync()
@@ -107,10 +108,13 @@ const LEGACY_SECTIONS: Record<string, { page: 'markets' | 'challenges' | 'about'
   en: { page: 'challenges' },
 }
 function LegacyAnchor() {
-  const segment = (useParams().section || '').toLowerCase()
-  const known = LEGACY_SECTIONS[segment]
+  const raw = useParams().section || '', segment = raw.toLowerCase()
+  /* a bare locale ('/en', '/zh-CN') keeps that language instead of the stored one */
+  const locale = LOCALES.find(l => l.toLowerCase() === segment)
+  const known = LEGACY_SECTIONS[segment] ?? (locale ? { page: 'challenges' as const } : undefined)
   if (known?.scroll) { try { sessionStorage.setItem('ofScrollTo', known.scroll) } catch { /* optional */ } }
-  const target = known ? `/${preferredLocale()}/${known.page}` : `/${preferredLocale()}/home`
+  const lang = locale ?? preferredLocale()
+  const target = known ? `/${lang}/${known.page}` : `/${lang}/home`
   return <Navigate to={target} replace />
 }
 

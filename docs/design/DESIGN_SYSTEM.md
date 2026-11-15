@@ -59,3 +59,36 @@ filters. Final refinement captures record native terminal/service marks and
 readable public labels/footer text; official review and deployed acceptance
 remain separate from passing local theme checks.
 Official artwork provenance remains in the website refresh report.
+
+## Shared foundation (v0.6.5)
+
+`apps/web-react/src/styles/design-system.css` is the single shared layer,
+imported once in `main.tsx`. It adds `--ds-*` tokens that **map onto** the
+existing palettes (site `--mint/--surface/--line/--body`, terminal `--of-*`)
+rather than introducing a second brand: semantic colour (brand, positive,
+negative, warning, info), a type scale with an 11px floor for real copy,
+4px spacing rhythm, radii, elevation, z-index layers, motion durations and
+easings, and documented breakpoints (430, 768, 1024, 1440). Light-theme
+overrides live under `html[data-theme=light]`.
+
+Opt-in primitives: `.ds-card`, `.ds-glass`, `.ds-chip`, `.ds-num` (tabular,
+isolated LTR numbers inside RTL text), `.ds-sr-only`, `.ds-reveal` (with
+`useReveal`) and `.ds-spotlight` (cursor-following border light with
+`useSpotlight`, inert on touch and reduced motion).
+
+Rules:
+
+- Website: entrance, reveal and hover motion use transforms/opacity only and
+  stop under `prefers-reduced-motion`. Terminal: functional transitions only
+  (`--ds-dur-fast`); no decorative motion on charts, order forms, positions or
+  financial tables.
+- Grid containers that hold wide tables or treemaps must declare
+  `grid-template-columns: minmax(0, 1fr)` (or `min-width: 0` on items); a
+  min-content track widened the page to 670px on phones before v0.6.5.
+- Numbers, tickers, serials and wallet addresses are isolated as LTR (`dir="ltr"`,
+  `<bdi>` or LRI/PDI in canvas text). Canvas text that mixes scripts uses the
+  Persian face only for the Arabic range so Latin digits stay Latin.
+- React components that render inside legacy pages and own their text must set
+  `data-locale-owned`, or the legacy static translator re-applies stale text.
+
+Third-party UI kits were evaluated in [ADR 0035](../decisions/0035-design-system-foundation-and-ui-kit-evaluation.md).

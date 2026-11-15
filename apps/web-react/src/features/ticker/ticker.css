@@ -55,7 +55,8 @@ html.has-bitpin-ticker body { padding-bottom: calc(40px + env(safe-area-inset-bo
   .bitpin-ticker-source { padding-inline: 10px; gap: 6px; }
   .bitpin-ticker-status { display: none; }
   .bitpin-ticker[data-status="unavailable"] .bitpin-ticker-status,
-  .bitpin-ticker[data-status="loading"] .bitpin-ticker-status { display: inline; }
+  .bitpin-ticker[data-status="loading"] .bitpin-ticker-status,
+  .bitpin-ticker[data-status="live"] .bitpin-ticker-status { display: inline; }
   .bitpin-ticker-item { padding-inline: 12px; gap: 5px; }
   .bitpin-ticker-symbol { display: none; }
 }

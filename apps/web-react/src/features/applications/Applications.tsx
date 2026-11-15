@@ -5,6 +5,7 @@ import { useReveal } from '../company/reveal'
 import { applicationCopy as copy } from './content'
 import { applicationReleases, type Platform } from './releases'
 import builds from './builds.json'
+import { useSpotlight } from '../../styles/useSpotlight'
 import './applications.css'
 
 const shot = (name: string) => `${import.meta.env.BASE_URL}assets/apps/open-trade/${name}.webp`
@@ -24,6 +25,11 @@ function Sequence({ frames, label }: { frames: { src: string; caption: string }[
     </div>
     <figcaption className="of-seq-steps" aria-hidden="true">{frames.map((f, i) => <span key={f.caption} style={{ ['--i' as string]: i }}>{f.caption}</span>)}</figcaption>
   </figure>
+}
+
+function SpotCard({ children }: { children: React.ReactNode }) {
+  const ref = useSpotlight<HTMLElement>()
+  return <article ref={ref} className="of-app-card ds-spotlight">{children}</article>
 }
 
 function PlatformIcon({ platform }: { platform: Platform }) {
@@ -95,7 +101,7 @@ export default function Applications() {
         <div className="of-app-grid">{(['macos', 'windows', 'linux'] as const).map(platform => {
           const published = applicationReleases.filter(r => r.platform === platform)
           const built = builds.files.filter(f => f.platform === platform)
-          return <article className="of-app-card" key={platform}>
+          return <SpotCard key={platform}>
             <header><PlatformIcon platform={platform} /><h3 dir="ltr">{PLATFORM_NAME[platform]}</h3></header>
             {published.length ? published.map(r => <div key={`${r.version}-${r.architecture}-${r.format}`} className="of-app-release">
               <span className="of-app-status">{c(r.channel === 'beta' ? 'beta' : 'available')}</span>
@@ -115,7 +121,7 @@ export default function Applications() {
               <p className="of-apps-note">{c('unsignedNote')}</p>
               <a className="text-link" href={builds.ciRun} rel="noopener noreferrer" target="_blank">{c('ciRecord')} ↗</a>
             </> : <><span className="of-app-status muted">{c('unavailable')}</span><p>{c('noInstaller')}</p></>}
-          </article>
+          </SpotCard>
         })}</div>
       </section>
 

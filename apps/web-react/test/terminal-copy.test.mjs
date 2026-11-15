@@ -57,4 +57,13 @@ test('Persian market ticker reads exactly "زنده از بازار" without the
   const ticker = readFileSync('src/features/ticker/BitpinTicker.tsx', 'utf8')
   assert.match(ticker, /status === 'live' \? 'زنده از بازار'/)
   assert.ok(!/>بیت‌پین</.test(ticker))
+  /* the legacy static translator must not freeze the label at its first text */
+  assert.match(ticker, /<aside className="bitpin-ticker" data-locale-owned/)
+  assert.match(readFileSync('src/features/ticker/ticker.css', 'utf8'), /\[data-status="live"\] \.bitpin-ticker-status \{ display: inline; \}/)
+})
+
+test('a bare locale URL keeps its language', () => {
+  const main = readFileSync('src/main.tsx', 'utf8')
+  assert.match(main, /const locale = LOCALES\.find\(l => l\.toLowerCase\(\) === segment\)/)
+  assert.match(main, /const lang = locale \?\? preferredLocale\(\)/)
 })
