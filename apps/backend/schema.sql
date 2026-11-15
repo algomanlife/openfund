@@ -2517,3 +2517,66 @@ CREATE TABLE IF NOT EXISTS treasury_token_movements (
 DROP TRIGGER IF EXISTS treasury_token_movements_immutable ON treasury_token_movements;
 CREATE TRIGGER treasury_token_movements_immutable BEFORE UPDATE OR DELETE ON treasury_token_movements
   FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+-- Controlled challenge entitlements are issued exclusively by the operator API.
+-- Directus commerce permissions do not include this table.
+CREATE TABLE IF NOT EXISTS controlled_challenge_coupons (
+  coupon_id uuid PRIMARY KEY REFERENCES coupons(id),
+  profile text NOT NULL UNIQUE CHECK (profile IN ('instant', 'standard')),
+  user_id uuid NOT NULL REFERENCES openfund_users(id),
+  wallet_address text NOT NULL,
+  challenge_plan_id uuid NOT NULL REFERENCES challenge_plans(id),
+  issued_at timestamptz NOT NULL DEFAULT now(),
+  issued_by text NOT NULL
+);
+
+CREATE OR REPLACE FUNCTION protect_controlled_challenge_snapshot() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF (OLD.rules_snapshot ? 'controlledTest' OR NEW.rules_snapshot ? 'controlledTest')
+    AND NEW.rules_snapshot IS DISTINCT FROM OLD.rules_snapshot THEN
+    RAISE EXCEPTION 'controlled_challenge_snapshot_immutable';
+  END IF;
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS controlled_challenge_snapshot_immutable ON openfund_challenges;
+CREATE TRIGGER controlled_challenge_snapshot_immutable BEFORE UPDATE ON openfund_challenges
+  FOR EACH ROW EXECUTE FUNCTION protect_controlled_challenge_snapshot();
+
+ALTER TABLE withdrawal_requests ADD COLUMN IF NOT EXISTS test_mode boolean NOT NULL DEFAULT false;
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='withdrawal_simulated_settlement_check'
+      AND conrelid='withdrawal_requests'::regclass) THEN
+    ALTER TABLE withdrawal_requests DROP CONSTRAINT withdrawal_requests_status_check;
+    ALTER TABLE withdrawal_requests ADD CONSTRAINT withdrawal_requests_status_check
+      CHECK (status IN ('requested','approved','paid','rejected','cancelled','simulated_settled'));
+    ALTER TABLE withdrawal_requests ADD CONSTRAINT withdrawal_simulated_settlement_check CHECK (
+      (status <> 'simulated_settled' OR test_mode) AND
+      (NOT test_mode OR (kind='reward' AND challenge_id IS NOT NULL AND status <> 'paid'
+        AND payout_ref IS NULL AND payment_evidence IS NULL AND ib_settlement IS NULL AND fee_refund_usd=0))
+    );
+  END IF;
+END $$;
+
+CREATE OR REPLACE FUNCTION protect_withdrawal_test_mode() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE is_test boolean;
+BEGIN
+  IF TG_OP = 'UPDATE' THEN
+    IF NEW.test_mode IS DISTINCT FROM OLD.test_mode OR (OLD.test_mode AND NEW.challenge_id IS DISTINCT FROM OLD.challenge_id)
+        OR (OLD.status='simulated_settled' AND NEW.status IS DISTINCT FROM OLD.status) THEN
+      RAISE EXCEPTION 'withdrawal_test_classification_immutable';
+    END IF;
+    IF NEW.status='simulated_settled' AND OLD.status NOT IN ('approved','simulated_settled') THEN
+      RAISE EXCEPTION 'withdrawal_simulated_settlement_requires_approval';
+    END IF;
+  ELSE
+    SELECT rules_snapshot ? 'controlledTest' INTO is_test FROM openfund_challenges WHERE id=NEW.challenge_id;
+    IF NEW.test_mode IS DISTINCT FROM coalesce(is_test,false) OR NEW.status='simulated_settled' THEN
+      RAISE EXCEPTION 'withdrawal_test_classification_invalid';
+    END IF;
+  END IF;
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS withdrawal_test_mode_immutable ON withdrawal_requests;
+CREATE TRIGGER withdrawal_test_mode_immutable BEFORE INSERT OR UPDATE ON withdrawal_requests
+  FOR EACH ROW EXECUTE FUNCTION protect_withdrawal_test_mode();

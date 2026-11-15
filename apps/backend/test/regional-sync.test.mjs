@@ -21,6 +21,7 @@ import { randomUUID } from 'node:crypto'
 import pg from 'pg'
 import { Engine } from '../engine.js'
 import { signedHeaders, syncConfig } from '../regional-sync.js'
+import { releaseAccount } from '../regional-ownership.js'
 import { createPayoutClaimClient } from '../payout-claims.js'
 
 const GLOBAL_URL = process.env.REGION_SYNC_TEST_GLOBAL_URL
@@ -463,4 +464,29 @@ test('payout claims reject cross-region collisions and fail closed during a part
   await iran(iPool, disconnected)
   assert.equal((await one(gPool, 'SELECT home_region FROM payout_transaction_claims WHERE request_id=$1', [disconnected.requestId])).home_region, 'IRAN')
   assert.equal((await one(iPool, 'SELECT count(*)::int AS n FROM payout_transaction_claims')).n, 0)
+})
+
+test('controlled test classification and simulated settlement replicate as read-only history', { skip }, async () => {
+  const u = await newUser(gPool, gEngine)
+  const plan = await one(gPool, "INSERT INTO challenge_plans (slug,name,status) VALUES ($1,'Regional test','inactive') RETURNING id", [randomUUID()])
+  const account = await one(gPool, "INSERT INTO demo_accounts (user_id,account_type,currency,balance) VALUES ($1,'challenge','USD',10000) RETURNING id", [u.id])
+  const marker = { profile: 'standard', couponId: randomUUID() }
+  const challenge = await one(gPool, `INSERT INTO openfund_challenges (user_id,challenge_plan_id,demo_account_id,rules_snapshot)
+    VALUES ($1,$2,$3,$4) RETURNING id`, [u.id, plan.id, account.id, JSON.stringify({ controlledTest: marker })])
+  const withdrawal = await one(gPool, `INSERT INTO withdrawal_requests (user_id,challenge_id,amount_usd,kind,test_mode)
+    VALUES ($1,$2,10,'reward',true) RETURNING id`, [u.id, challenge.id])
+  const payout = action => admin(G, 'POST', `/admin/withdrawals/${withdrawal.id}/review`, { action })
+  assert.equal((await payout('approve')).status, 200)
+  assert.equal((await payout('simulate')).body.status, 'simulated_settled')
+  await drained(gPool, 'controlled test GLOBAL')
+  const projected = (entity, id) => one(iPool, "SELECT data FROM region_remote_rows WHERE source_region='GLOBAL' AND entity=$1 AND entity_id=$2", [entity, id])
+  assert.deepEqual((await projected('challenge', challenge.id)).data.rules_snapshot.controlledTest, marker)
+  const peerPayout = (await projected('withdrawal', withdrawal.id)).data
+  assert.equal(peerPayout.test_mode, true)
+  assert.equal(peerPayout.status, 'simulated_settled')
+  assert.equal(peerPayout.payout_ref, null)
+  assert.equal(peerPayout.payment_evidence, null)
+  assert.equal(await one(iPool, 'SELECT id FROM withdrawal_requests WHERE id=$1', [withdrawal.id]), undefined)
+  assert.equal((await admin(I, 'POST', '/admin/coupons/controlled', { profile: 'instant', walletAddress: u.wallet })).status, 503)
+  await assert.rejects(releaseAccount(gPool, account.id, { to: 'IRAN', actor: 'test', reason: 'Verify fixed test ownership' }), /controlled_challenge_home_region_only/)
 })

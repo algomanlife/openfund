@@ -150,6 +150,7 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
     approve: { from: 'requested', to: 'approved' },
     reject: { from: 'requested', to: 'rejected' },
     paid: { from: 'approved', to: 'paid' },
+    simulate: { from: 'approved', to: 'simulated_settled' },
   }
 
   const withdrawalReadLimit = rateLimit({ windowMs: 60_000, limit: 90 })
@@ -157,18 +158,20 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
     const limit = PAGE(req.query.limit, 25, 100), offset = PAGE(req.query.offset, 0, 1000000)
     const params = []
     let where = req.query.kind === 'reward' ? "w.kind='reward'" : 'TRUE'
-    if (['requested', 'approved', 'paid', 'rejected', 'cancelled'].includes(req.query.status)) {
+    if (req.query.scope === 'test') where += ' AND w.test_mode'
+    if (req.query.scope === 'real') where += ' AND NOT w.test_mode'
+    if (['requested', 'approved', 'paid', 'rejected', 'cancelled', 'simulated_settled'].includes(req.query.status)) {
       params.push(req.query.status)
       where += ` AND w.status = $${params.length}`
     }
-    if (req.query.status === 'reconciliation') where += " AND w.status='approved' AND w.payment_evidence IS NULL"
+    if (req.query.status === 'reconciliation') where += " AND w.status='approved' AND NOT w.test_mode AND w.payment_evidence IS NULL"
     if (req.query.status === 'appeal') where += ` AND (
       SELECT e.value->>'kind'='appeal' FROM jsonb_array_elements(w.thread_events) WITH ORDINALITY e(value, idx)
       WHERE e.value->>'kind' IN ('appeal','appeal_resolved') ORDER BY idx DESC LIMIT 1)`
     const total = (await pool.query(`SELECT count(*)::int c FROM withdrawal_requests w WHERE ${where}`, params)).rows[0].c
     const { rows } = await pool.query(
       `SELECT w.id, w.user_id, u.wallet_address, w.amount_usd, w.status, w.note, w.requested_at,
-              w.reviewed_at, w.payout_ref, w.challenge_id, w.recipient_wallet, w.approved_by, w.payment_evidence, w.eligibility, w.ib_settlement,
+              w.reviewed_at, w.payout_ref, w.challenge_id, w.recipient_wallet, w.approved_by, w.payment_evidence, w.eligibility, w.ib_settlement, w.test_mode,
               (SELECT count(*)::int FROM jsonb_array_elements(w.thread_events) WITH ORDINALITY e(value, idx)
                 WHERE e.idx>w.operator_read_count AND e.value->>'role'='trader') AS unread_messages,
               (SELECT e.value->>'kind'='appeal' FROM jsonb_array_elements(w.thread_events) WITH ORDINALITY e(value, idx)
@@ -192,7 +195,7 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
     if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')
     const { action, note, payoutRef } = req.body || {}
     const spec = WITHDRAWAL_ACTIONS[action]
-    if (!spec) throw fail(400, 'invalid_action')
+    if (!Object.hasOwn(WITHDRAWAL_ACTIONS, action)) throw fail(400, 'invalid_action')
     if (note != null && (typeof note !== 'string' || note.length > 500)) throw fail(400, 'invalid_note')
     if (action === 'reject' && !(typeof note === 'string' && note.trim())) throw fail(400, 'reason_required')
     if (action === 'paid' && (typeof payoutRef !== 'string' || !payoutRef.trim() || payoutRef.length > 200))
@@ -203,6 +206,8 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
       const w = (await client.query('SELECT * FROM withdrawal_requests WHERE id=$1 FOR UPDATE', [req.params.id])).rows[0]
       if (!w) throw fail(404, 'withdrawal_not_found')
       const reward = w.kind === 'reward'
+      if (action === 'paid' && w.test_mode) throw fail(409, 'test_payout_requires_simulation')
+      if (action === 'simulate' && !w.test_mode) throw fail(409, 'real_payout_requires_verification')
       if (w.status === spec.to) {
         if (reward && action === 'paid' && w.payout_ref?.toLowerCase() !== payoutRef.trim().toLowerCase())
           throw fail(409, 'payout_already_recorded')
@@ -216,6 +221,11 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
       let recipient = w.recipient_wallet
       if (reward && !recipient && action === 'approve') {
         recipient = (await client.query('SELECT wallet_address FROM openfund_users WHERE id=$1 FOR SHARE', [w.user_id])).rows[0].wallet_address
+      }
+      if (action === 'simulate') {
+        if (!w.approved_by) throw fail(409, 'payout_approval_evidence_required')
+        await client.query(`SELECT openfund_assert_account_writable(c.demo_account_id)
+          FROM openfund_challenges c WHERE c.id=$1`, [w.challenge_id])
       }
       if (reward && action === 'paid') {
         if (!payoutHash.test(reference)) throw fail(400, 'payout_transaction_hash_required')
@@ -235,7 +245,7 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
         [w.id, spec.to, note ?? null, reference, recipient, reward && action === 'approve' ? actor : w.approved_by, evidence])
       if (reward) {
         await financialAudit(client, actor, `withdrawal_${spec.to}`, 'withdrawal', w.id, { status: w.status },
-          { status: spec.to, amount: w.amount_usd, recipient, reason: note ?? null, payment: evidence })
+          { status: spec.to, amount: w.amount_usd, recipient, testMode: w.test_mode, reason: note ?? null, payment: evidence })
       }
       if (spec.to === 'rejected') await reverseRewardTx(client, w, 'rejected_by_operator')
       const feeRefund = spec.to === 'paid' ? await onRewardPaidTx(client, { ...w, status: 'paid' }, actor) : null
@@ -265,7 +275,7 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
       if (!w) throw fail(404, 'withdrawal_not_found')
       const distribution = w.eligibility?.distribution
       const ibId = distribution?.ibEvidence?.ambassador_user_id
-      if (!ibId || !D(distribution.ib).gt(0) || w.status !== 'paid' || w.payment_evidence?.finality !== 'finalized')
+      if (w.test_mode || !ibId || !D(distribution.ib).gt(0) || w.status !== 'paid' || w.payment_evidence?.finality !== 'finalized')
         throw fail(409, 'ib_settlement_not_eligible')
       await client.query('SELECT openfund_assert_account_writable($1)', [w.demo_account_id])
       let settlement = w.ib_settlement

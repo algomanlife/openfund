@@ -1,5 +1,11 @@
 # Feature status
 
+Controlled challenge acceptance is **In Progress** on the source branch.
+Wallet-bound zero-payment purchases, isolated rule snapshots and simulated
+payout settlement are implemented for the two private test lineages.
+Owner acceptance is pending. See the
+[operator procedures](../payments/CONTROLLED_CHALLENGES.md).
+
 **In Progress** — funded reward settlement checks finalized Arbitrum One DAI
 evidence in the existing review API. Historical paid records and issued
 certificates remain available. Isolated payout, IB settlement, appeal and two-database replay checks passed.

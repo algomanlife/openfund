@@ -1,4 +1,11 @@
 {
+  "Complete simulated settlement": "Завершить имитацию расчёта",
+  "Payout scope": "Тип выплат",
+  "Request simulated payout": "Запросить имитацию выплаты",
+  "Simulated settlement completed": "Имитация расчёта завершена",
+  "Test": "Тестовый",
+  "Test payout details": "Сведения о тестовой выплате",
+  "Simulated payout request queued for review.": "Запрос на имитацию выплаты отправлен на проверку.",
   "% monthly": "% в месяц",
   "0% Spread & Price Impact": "0% спреда и ценового влияния",
   "01 / Market pulse": "01 / Пульс рынка",
