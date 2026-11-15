@@ -195,7 +195,32 @@ test('R9 v3: review → funded account waits for a one-time cycle choice → req
   funded = (await pool.query('SELECT * FROM openfund_challenges WHERE id=$1', [fundedId])).rows[0]
   assert.ok(isFundedAccount(funded))
 
-  assert.equal((await call('POST', '/withdrawals', { user, body: { challengeId: fundedId } })).data.error, 'not_eligible')
+  // The engine locks the account before inspecting the challenge. A reward
+  // request waiting on that account must leave the challenge unlocked.
+  const engine = await pool.connect()
+  let earlyRequest
+  try {
+    await engine.query('BEGIN')
+    await engine.query('SELECT id FROM demo_accounts WHERE id=$1 FOR UPDATE', [funded.demo_account_id])
+    const { rows: [{ pid }] } = await engine.query('SELECT pg_backend_pid() AS pid')
+    earlyRequest = call('POST', '/withdrawals', { user, body: { challengeId: fundedId } })
+    const deadline = Date.now() + 2000
+    let waiting = false
+    while (!waiting && Date.now() < deadline) {
+      const { rows: [state] } = await pool.query(
+        `SELECT EXISTS (SELECT 1 FROM pg_stat_activity WHERE $1 = ANY(pg_blocking_pids(pid))
+          AND query LIKE '%demo_accounts%FOR UPDATE%') AS waiting`, [pid])
+      waiting = state.waiting
+      if (!waiting) await new Promise(resolve => setTimeout(resolve, 10))
+    }
+    assert.ok(waiting, 'the reward request waits for the account lock')
+    await engine.query('SELECT id FROM openfund_challenges WHERE id=$1 FOR UPDATE NOWAIT', [fundedId])
+  } finally {
+    await engine.query('ROLLBACK')
+    engine.release()
+  }
+  const early = await earlyRequest
+  assert.equal(early.data.error, 'not_eligible', JSON.stringify(early.data))
   /* no restricted news in the calendar for this period: verified coverage, no events */
   await pool.query(`INSERT INTO economic_calendar_coverage (source, covers_from, covers_to, event_count, actor) VALUES ('rw-test', now() - interval '40 days', now() + interval '1 day', 0, 'test')`)
   await trade(user, fundedId, [{ daysAgo: 20, net: 300 }, { daysAgo: 10, net: 200 }, { daysAgo: 2, net: 100 }])

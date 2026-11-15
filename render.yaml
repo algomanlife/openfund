@@ -228,3 +228,35 @@ services:
         value: none             # none | sandbox (refused in production) | gains (not available)
       - key: LIVE_SETTLEMENT_ADAPTER
         value: none             # none | sandbox (refused in production)
+
+  # Operations UI. The service starts only after owner provisioning.
+  - type: web
+    name: openfund-backstage
+    runtime: node
+    region: frankfurt
+    plan: starter
+    numInstances: 1
+    autoDeployTrigger: off
+    healthCheckPath: /health
+    domains:
+      - backstage.openfund.cloud
+    renderSubdomainPolicy: disabled
+    buildCommand: npm --prefix apps/backstage ci && npm --prefix apps/backstage run build
+    startCommand: npm --prefix apps/backstage start
+    envVars:
+      - key: NODE_VERSION
+        value: "26.13.0"
+      - key: NODE_ENV
+        value: production
+      - key: BACKSTAGE_ORIGIN
+        sync: false
+      - key: BACKSTAGE_BACKEND_ORIGIN
+        sync: false
+      - key: BACKSTAGE_DIRECTUS_ORIGIN
+        sync: false
+      - key: BACKSTAGE_OWNER
+        sync: false
+      - key: BACKSTAGE_PASSWORD_VERIFIER
+        sync: false
+      - key: BACKSTAGE_BACKEND_TOKEN
+        sync: false

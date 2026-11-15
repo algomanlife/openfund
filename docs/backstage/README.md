@@ -87,3 +87,8 @@ Open **ui_messages** in the Data Studio:
 - ✅ React pages read published content; live edit verified end-to-end (edit in Data Studio → refresh → visible)
 - ✅ Silent fallback when the backstage is down (static translations; page stays fully usable)
 - 🔜 Media management, navigation-driven rendering, page-builder blocks, editorial roles (Translator/Publisher) — see the roadmap in [PERMISSIONS.md](PERMISSIONS.md)
+
+## Backstage business operations
+
+Use the [Backstage operations guide](OPERATIONS_GUIDE.md) for the independent
+owner application. This Directus guide covers editorial administration.

@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — Backstage operations
+
+- Add a bilingual owner workspace with secure sign-in, linked operational
+  directories and password-confirmed Prop decisions.
+- Use the trading engine's account-first lock order for reward requests and
+  reversals to prevent contention from deadlocking a payout workflow.
+
 ## Unreleased — controlled challenge acceptance
 
 - Add wallet-bound Instant and Two-Step test checkout with isolated rule
