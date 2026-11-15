@@ -1,0 +1,60 @@
+/* Regression coverage for the approved terminal and ticker copy (v0.6.5). */
+import { test } from 'node:test'
+import assert from 'node:assert/strict'
+import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { join, extname } from 'node:path'
+import { buildSync } from 'esbuild'
+
+const load = entry => {
+  const output = buildSync({ entryPoints: [entry], bundle: true, platform: 'node', format: 'cjs', write: false }).outputFiles[0].text
+  const module = { exports: {} }; new Function('module', 'exports', output)(module, module.exports)
+  return module.exports
+}
+const PROHIBITED = 'انتری'
+const walk = dir => readdirSync(dir).flatMap(name => {
+  const path = join(dir, name)
+  return statSync(path).isDirectory() ? walk(path) : ['.ts', '.tsx', '.js', '.mjs', '.html', '.json'].includes(extname(path)) ? [path] : []
+})
+
+test('no user-facing source or dictionary contains the prohibited Persian label', () => {
+  const files = [...walk('src'), ...walk('public/legacy'), 'public/translations.json']
+  const hits = files.filter(file => readFileSync(file, 'utf8').includes(PROHIBITED) && !file.endsWith('terminology.ts'))
+  assert.deepEqual(hits, [])
+})
+
+test('CMS-published Persian text is normalised to the approved term', () => {
+  const { normalizePersianTerms, normalizeDictionary } = load('src/i18n/terminology.ts')
+  assert.equal(normalizePersianTerms('قیمت انتری'), 'قیمت نقطه ورود')
+  const out = normalizeDictionary({ 'th.entry': { fa: 'انتری', en: 'Entry' }, other: 'x' })
+  assert.deepEqual(out['th.entry'], { fa: 'نقطه ورود', en: 'Entry' })
+  assert.equal(out.other, 'x')
+  const { interfaceKey, installInterfaceContent, interfaceOverride } = load('src/i18n/interfaceContent.ts')
+  installInterfaceContent([{ key: interfaceKey('ورود', 'Entry'), namespace: 'react', status: 'published', translations: [{ language_code: 'fa', value: 'انتری' }] }])
+  assert.equal(interfaceOverride('fa', 'ورود', 'Entry'), 'نقطه ورود')
+})
+
+test('the terminal workspace normalises CMS translations and uses the exact order-book copy', () => {
+  const pages = readFileSync('src/features/terminal/TradingPages.tsx', 'utf8')
+  assert.match(pages, /\.\.\.normalizeDictionary\(cms\)/)
+  assert.ok(pages.includes('نقدینگی شبیه سازی شده؛ این یک دفتر سفارش غیر متمرکز مجازی است\\nداده های از بروکر های Gains و hyperliquid تجمیع میشود.'))
+  assert.ok(!pages.includes('نقدینگی مجازی Gains؛ دفتر سفارش متمرکز نیست.'))
+  const depth = readFileSync('public/legacy/market-depth.js', 'utf8')
+  assert.ok(depth.includes('"نقدینگی مجازی مبتنی بر مخزن"'))
+  assert.ok(!depth.includes('Gains VOB · نقدینگی'))
+  assert.match(depth, /gains-logo\.svg/); assert.match(depth, /hyperliquid-mark\.svg/)
+})
+
+test('terminal footer shows live status with two source marks and a localized support link', () => {
+  const body = readFileSync('src/pages/terminal-body.html', 'utf8')
+  const footer = body.slice(body.indexOf('<footer class="status-bar">'), body.indexOf('</footer>'))
+  assert.ok(!footer.includes('api.gains.trade'))
+  assert.match(footer, /assets\/gains-logo\.svg/); assert.match(footer, /assets\/hyperliquid-mark\.svg/)
+  const terminal = readFileSync('public/legacy/terminal.js', 'utf8')
+  assert.match(terminal, /support\.href = '\/' \+ encodeURIComponent\(window\.ofLang\) \+ '\/contact'; support\.target = '_top'/)
+})
+
+test('Persian market ticker reads exactly "زنده از بازار" without the provider name', () => {
+  const ticker = readFileSync('src/features/ticker/BitpinTicker.tsx', 'utf8')
+  assert.match(ticker, /status === 'live' \? 'زنده از بازار'/)
+  assert.ok(!/>بیت‌پین</.test(ticker))
+})

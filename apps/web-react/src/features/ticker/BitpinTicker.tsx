@@ -14,7 +14,7 @@ export default function BitpinTicker() {
   }, [])
 
   const { status, quotes, updatedAt } = state
-  const statusText = status === 'live' ? 'زنده'
+  const statusText = status === 'live' ? 'زنده از بازار'
     : status === 'delayed' ? `تأخیر در به‌روزرسانی · آخرین: ${updatedAt ? formatTime(updatedAt) : '—'}`
     : status === 'loading' ? 'در حال دریافت قیمت‌ها…'
     : 'قیمت‌ها در دسترس نیست'
@@ -24,7 +24,6 @@ export default function BitpinTicker() {
     <div className="bitpin-ticker-source">
       <i aria-hidden="true" className="bitpin-ticker-dot" />
       <span className="bitpin-ticker-status" role="status">{statusText}</span>
-      <a className="bitpin-ticker-brand" href="https://bitpin.ir" target="_blank" rel="noopener noreferrer" aria-label="منبع داده: بیت‌پین">بیت‌پین</a>
     </div>
     <div className="bitpin-ticker-viewport">
       {quotes.length > 0 && <div className="bitpin-ticker-track" style={{ ['--ticker-items' as string]: quotes.length }}>

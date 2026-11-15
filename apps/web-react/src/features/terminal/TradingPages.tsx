@@ -6,6 +6,7 @@ import body from "../../pages/terminal-body.html?raw";
 import workspaceStyles from "./workspace.css?raw";
 import { setupWorkspaceLayout } from "./workspaceLayout";
 import { fetchCmsTranslations } from "../../cms/client";
+import { normalizeDictionary } from "../../i18n/terminology";
 import { useTerminal } from "./TerminalContext";
 import { api, type Product } from "./model";
 import { currentLocale, dirOf, pick, type AppLocale } from "../../i18n/locales";
@@ -367,11 +368,11 @@ export function SharedTradingTerminal() {
     const safe = (x: any) => JSON.stringify(x).replaceAll("<", "\\u003c"),
       base = `${location.origin}${import.meta.env.BASE_URL}`;
     const translations = {
-      ...cms,
+      ...normalizeDictionary(cms),
       "book.grouping": {fa:"گروه",en:"Group"},
       "book.tab": {fa:"دفتر مجازی",en:"Book"},
       "book.simulated": {fa:"Gains VOB",en:"Gains VOB"},
-      "book.note": {fa:"نقدینگی مجازی Gains؛ دفتر سفارش متمرکز نیست.",en:"Gains virtual execution liquidity; no resting orders."},
+      "book.note": {fa:"نقدینگی شبیه سازی شده؛ این یک دفتر سفارش غیر متمرکز مجازی است\nداده های از بروکر های Gains و hyperliquid تجمیع میشود.",en:"Gains virtual execution liquidity; no resting orders."},
       "trades.note": {fa:"معاملات اجراشدهٔ Gains · اندازه به USD",en:"Gains executed trades · size in USD"},
       "ac.modeVal": {
         fa: product === "prop" ? "حساب تمرینی" : "پرپچوال",

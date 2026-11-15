@@ -200,10 +200,18 @@
     received = Date.now();
     attempts = 0;
     markStale(false);
-    note.textContent = L(
-      "Gains VOB · نقدینگی مجازی مبتنی بر مخزن",
-      "Gains VOB · vault-based virtual liquidity",
-    );
+    /* copy + the two source marks; image alts keep the sources accessible */
+    const label = document.createElement("span");
+    label.textContent = L("نقدینگی مجازی مبتنی بر مخزن", "vault-based virtual liquidity");
+    const brands = document.createElement("span");
+    brands.className = "depth-brands";
+    brands.dir = "ltr";
+    for (const [src, alt, w] of [["assets/gains-logo.svg", "Gains Network", 12], ["assets/hyperliquid-mark.svg", "Hyperliquid", 14]]) {
+      const img = document.createElement("img");
+      img.src = src; img.alt = alt; img.width = w; img.height = 12;
+      brands.append(img);
+    }
+    note.replaceChildren(label, brands);
     renderBook();
     return true;
   }

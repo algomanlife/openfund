@@ -1,6 +1,7 @@
 /** Published editorial overrides for the existing bilingual pick() pipeline.
  * Values are plain text; no HTML, financial values or executable links are read.
  */
+import { normalizePersianTerms } from './terminology'
 export function interfaceKey(fa: string, en: string): string {
   const source = JSON.stringify([fa, en])
   let a = 2166136261, b = 5381
@@ -22,7 +23,7 @@ export function installInterfaceContent(rows: unknown): void {
     const values: Record<string, string> = Object.create(null)
     for (const tr of row.translations) {
       if (!['fa', 'en', 'ar', 'ru', 'zh-CN'].includes(tr?.language_code) || typeof tr.value !== 'string' || !tr.value.trim() || tr.value.length > 20000) continue
-      values[tr.language_code] = tr.value
+      values[tr.language_code] = tr.language_code === 'fa' ? normalizePersianTerms(tr.value) : tr.value
     }
     next[row.key] = values
   }

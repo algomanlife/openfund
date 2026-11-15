@@ -429,6 +429,10 @@ function applyStaticI18n(){
   document.documentElement.setAttribute('dir', RTL_LOCALES.includes(window.ofLang) ? 'rtl' : 'ltr');
   document.title = 'Openfund Terminal — ' + t('nav.trade');
   $('lang-label').textContent = window.ofLang === 'fa' ? 'EN' : 'FA';
+  /* Support opens the website Contact page for the active locale in the
+     top-level window (the workspace runs inside an iframe). */
+  const support = $('sb-support');
+  if (support) { support.href = '/' + encodeURIComponent(window.ofLang) + '/contact'; support.target = '_top'; }
 }
 function setLang(lang){
   window.ofLang = lang;
