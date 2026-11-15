@@ -34,7 +34,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms))
 async function waitFor(fn, { timeout = 20000, every = 100, what = 'condition' } = {}) {
   const end = Date.now() + timeout
   for (;;) {
-    const v = await fn().catch(() => null)
+    const v = await fn().catch(e => { if (e?.fatal) throw e; return null })
     if (v) return v
     if (Date.now() > end) throw new Error(`timed out waiting for ${what}`)
     await sleep(every)
@@ -68,8 +68,17 @@ function startServer(name, env) {
   const base = `http://127.0.0.1:${env.PORT}`
   return {
     name, child, base, log: () => log,
-    ready: () => waitFor(async () => (await fetch(base + '/health')).ok, { what: `${name} health` }),
-    stop: (signal = 'SIGTERM') => new Promise(r => { if (child.exitCode !== null) return r(); child.once('exit', r); child.kill(signal) }),
+    ready: () => waitFor(async () => {
+      if (child.exitCode !== null) throw Object.assign(new Error(`${name} exited (${child.exitCode}): ${log.slice(-600)}`), { fatal: true })
+      return (await fetch(base + '/health', { signal: AbortSignal.timeout(2000) })).ok
+    }, { what: `${name} health`, timeout: 30000 }).catch(e => { throw new Error(`${e.message}\n--- ${name} log ---\n${log.slice(-1500)}`) }),
+    /* SIGTERM first; a process that has not exited after 10 s is killed, so the port is always free */
+    stop: (signal = 'SIGTERM') => new Promise(r => {
+      if (child.exitCode !== null || child.signalCode !== null) return r()
+      const force = setTimeout(() => child.kill('SIGKILL'), 10_000)
+      child.once('exit', () => { clearTimeout(force); r() })
+      child.kill(signal)
+    }),
   }
 }
 
