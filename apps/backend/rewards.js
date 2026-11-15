@@ -276,6 +276,17 @@ async function adjustBalance(client, challenge, acc, delta, event, meta) {
   return next
 }
 
+// Balance-changing paths use the engine's account-first lock order.
+export async function lockRewardReversalAccount(client, withdrawalId, userId = null) {
+  await client.query(`
+    SELECT a.id FROM withdrawal_requests w
+    JOIN openfund_challenges c ON c.id=w.challenge_id
+    JOIN demo_accounts a ON a.id=c.demo_account_id
+    WHERE w.id=$1 AND ($2::uuid IS NULL OR w.user_id=$2)
+      AND w.kind='reward' AND w.status='requested' AND w.gross_profit_usd IS NOT NULL
+    FOR UPDATE OF a`, [withdrawalId, userId])
+}
+
 /** Re-credit the profit of a rejected / cancelled reward request (inside a transaction). */
 export async function reverseRewardTx(client, w, reason) {
   if (w.kind !== 'reward' || !w.gross_profit_usd) return
@@ -384,6 +395,8 @@ export function rewardRoutes({ pool, requireAuth, audit = async () => {}, limit 
     const client = await pool.connect()
     try {
       await client.query('BEGIN')
+      await client.query(`SELECT a.id FROM openfund_challenges c JOIN demo_accounts a ON a.id=c.demo_account_id
+        WHERE c.id=$1 AND c.user_id=$2 FOR UPDATE OF a`, [challengeId, req.user.user_id])
       const c = (await client.query('SELECT * FROM openfund_challenges WHERE id=$1 AND user_id=$2 FOR UPDATE', [challengeId, req.user.user_id])).rows[0]
       if (!c) throw fail(404, 'challenge_not_found')
       if (!isFundedAccount(c)) throw fail(409, 'not_a_funded_account')
@@ -429,6 +442,7 @@ export function rewardRoutes({ pool, requireAuth, audit = async () => {}, limit 
     const client = await pool.connect()
     try {
       await client.query('BEGIN')
+      await lockRewardReversalAccount(client, req.params.id, req.user.user_id)
       const w = (await client.query(`SELECT * FROM withdrawal_requests WHERE id=$1 AND user_id=$2 FOR UPDATE`, [req.params.id, req.user.user_id])).rows[0]
       if (!w || w.status !== 'requested') throw fail(409, 'withdrawal_not_cancellable')
       await client.query(`UPDATE withdrawal_requests SET status='cancelled', reviewed_at=now() WHERE id=$1`, [w.id])
