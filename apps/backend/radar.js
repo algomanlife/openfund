@@ -13,6 +13,8 @@
 import { Router } from 'express'
 import { rateLimit } from 'express-rate-limit'
 import WebSocket from 'ws'
+import { execFile } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 
 export const INFO_URL = 'https://api.hyperliquid.xyz/info'
 export const LEADERBOARD_URL = 'https://stats-data.hyperliquid.xyz/Mainnet/leaderboard'
@@ -155,6 +157,17 @@ export function fillRecord(fills) {
 
 const position = p => ({ wallet: p.wallet, coin: p.coin, side: p.side, size: finite(p.size), entry: finite(p.entry), value: finite(p.value), mark: finite(p.mark), upnl: finite(p.upnl), roe: finite(p.roe), liquidation: finite(p.liquidation), leverage: finite(p.leverage), leverageType: p.leverageType, margin: finite(p.margin) })
 
+/** Fetch and condense the leaderboard in a short-lived child process with a capped heap. */
+export function isolatedBoard(url, { maxBytes = 120e6, heapMb = 384, timeoutMs = 90_000 } = {}) {
+  const script = fileURLToPath(new URL('./radar-board-worker.js', import.meta.url))
+  return new Promise((resolve, reject) => {
+    execFile(process.execPath, [`--max-old-space-size=${heapMb}`, script, url, String(maxBytes)], { timeout: timeoutMs, maxBuffer: 8 * 1024 * 1024, windowsHide: true }, (error, stdout, stderr) => {
+      if (error) return reject(new Error(String(stderr || error.message).slice(0, 200)))
+      try { resolve(JSON.parse(stdout)) } catch { reject(new Error('board_parse_failed')) }
+    })
+  })
+}
+
 /* ---------------- shared cache + request budget ---------------- */
 
 /**
@@ -162,7 +175,7 @@ const position = p => ({ wallet: p.wallet, coin: p.coin, side: p.side, size: fin
  * @param {typeof fetch} [o.fetchImpl]
  * @param {typeof WebSocket} [o.WebSocketImpl]
  */
-export function createRadar({ fetchImpl = globalThis.fetch, WebSocketImpl = WebSocket, now = () => Date.now(), info = INFO_URL, leaderboard = LEADERBOARD_URL, wsUrl = WS_URL, concurrency = 4, maxLeaderboardBytes = 120e6, idleMs = 5 * 60_000, tapeCoins = 30 } = {}) {
+export function createRadar({ boardLoader, fetchImpl = globalThis.fetch, WebSocketImpl = WebSocket, now = () => Date.now(), info = INFO_URL, leaderboard = LEADERBOARD_URL, wsUrl = WS_URL, concurrency = 4, maxLeaderboardBytes = 120e6, idleMs = 5 * 60_000, tapeCoins = 30 } = {}) {
   const cache = new Map()
   let active = 0
   const queue = []
@@ -208,7 +221,9 @@ export function createRadar({ fetchImpl = globalThis.fetch, WebSocketImpl = WebS
   const post = body => request(info, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
 
   const api = {
-    board: () => remember('board', 15 * 60_000, async () => condenseBoard(await request(leaderboard), {}, now())),
+    /* production: an isolated worker; tests inject fetch and parse in-process */
+    board: () => remember('board', 15 * 60_000, async () => boardLoader ? boardLoader(leaderboard)
+      : fetchImpl === globalThis.fetch ? isolatedBoard(leaderboard, { maxBytes: maxLeaderboardBytes }) : condenseBoard(await request(leaderboard), {}, now())),
     markets: () => remember('markets', 15_000, async () => toMarkets(await post({ type: 'metaAndAssetCtxs' }))),
     account: wallet => remember(`account:${wallet}`, 60_000, async () => toAccount(wallet, await post({ type: 'clearinghouseState', user: wallet }))),
     fills: wallet => remember(`fills:${wallet}`, 60_000, async () => {
