@@ -1,5 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { buildSync } from 'esbuild'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -89,6 +90,12 @@ test('JSX literals receive stable attributes without changing the text', () => {
   assert.match(result.code, /cmsEditAttrs\("react\.[a-f0-9]{16}"\)/)
   assert.match(result.code, /pick\(locale, 'بستن', 'Close'\)/)
   assert.equal(result.direct.length, result.attached.length)
+})
+
+test('terminal iframe script does not postMessage to an opaque origin', () => {
+  const source = readFileSync(new URL('../public/legacy/visual-editing.js', import.meta.url), 'utf8')
+  assert.doesNotMatch(source, /postMessage\([^)]*location\.origin/)
+  assert.match(source, /parent\.location\.origin/)
 })
 
 test('several strings on one element stay independently addressable', () => {

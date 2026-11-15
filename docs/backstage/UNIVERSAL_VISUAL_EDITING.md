@@ -122,6 +122,78 @@ No production schema command was run.
 - The terminal iframe accepts edit forwarding only for collections on the
   editorial allowlist.
 
+## Isolated Studio verification (2026-11-15)
+
+Directus `GET /server/info` on the isolated instance reported version **11.17.4**.
+The database was a new PostgreSQL 16 database, not a production copy. Schema
+was applied with `apply_schema.py`. `seed_interface_content.py` created 4285
+draft `ui_messages` and left existing rows untouched (there were none). One
+home singleton and one interface row (`react.38b877ee39f7a358`, "Buy Challenge"
+/ "خرید سریع چالش") were published for the click-through.
+
+| Check | Result |
+| --- | --- |
+| Studio visual module framed `http://127.0.0.1:5173/fa/home` | Persian page, `dir=rtl`. Three `data-directus` nodes. |
+| Click "خرید سریع چالش" | Directus opened a Value popover on that translation. |
+| Type `ویرایش آزمایشی چالش` and press the check control | API read-back: fa value changed; en stayed `Buy Challenge`; status stayed `published`. |
+| Parent set back to `draft` | Anonymous `GET /items/ui_messages?filter[id][_eq]=964` returned `[]`. Public `/fa/home` showed the bundled label, not the draft. |
+| Parent set to `published` again and the public page reloaded | `/fa/home` showed `ویرایش آزمایشی چالش` with no rebuild. |
+| `/en/home` | `dir=ltr`, still "Buy Challenge", Persian draft text absent. |
+| `/ar/home`, `/ru/home`, `/zh-CN/home` | `dir` rtl, ltr, ltr. `lang` ar, ru, zh-CN. No horizontal overflow at 1280px. The published row has no ar/ru/zh-CN translation, so those pages keep the dictionary fallback. |
+| Revisions | Studio Revisions tab and `GET /revisions` showed create plus three updates (ids 3289, 13258, 13260, 13261). `POST /revisions/13261/revert` is not a route on 11.17.4 (404). |
+| Public editing chrome | A normal `/fa/home` load had zero `data-directus` attributes. |
+| Financial collection | Anonymous `POST /items/challenge_plans` returned 403. |
+| Layout sweep | `/fa/home`, `/en/home`, `/fa/prop/dashboard`, `/fa/prop/trade` at 390, 768 and 1280px. `scrollWidth` stayed within the viewport. Dashboard and trade were the signed-out Vite shell, not a funded trading session. |
+
+Directus's default `child-src 'self'` blocked the preview iframe until this
+isolated process set `CONTENT_SECURITY_POLICY_DIRECTIVES__CHILD_SRC` to also
+allow `http://127.0.0.1:5173`. That environment variable is local-only. It is
+not a repository or production change. A production Studio needs the same kind
+of frame allowance for its real website origin, configured by the operator.
+
+Evidence:
+
+- `/opt/cursor/artifacts/05-after-click-text.png`
+- `/opt/cursor/artifacts/07-popover-edited-fa.png`
+- `/opt/cursor/artifacts/08-after-popover-save.png`
+- `/opt/cursor/artifacts/12-item-draft-in-studio.png`
+- `/opt/cursor/artifacts/13-public-fa-while-draft.png`
+- `/opt/cursor/artifacts/14-public-fa-after-publish.png`
+- `/opt/cursor/artifacts/15-public-en-unchanged.png`
+- `/opt/cursor/artifacts/16-locale-ar.png`
+- `/opt/cursor/artifacts/16-locale-ru.png`
+- `/opt/cursor/artifacts/16-locale-zh-CN.png`
+- `/opt/cursor/artifacts/17-fa-home-390.png`, `17-fa-home-768.png`, `17-fa-home-1280.png`
+- `/opt/cursor/artifacts/17-fa-prop-dashboard-1280.png`
+- `/opt/cursor/artifacts/17-fa-prop-trade-1280.png`
+- `/opt/cursor/artifacts/18-revisions-panel.png`
+- `/opt/cursor/artifacts/studio-draft-publish-locales.webm`
+
+## CI Backend failure
+
+Job `Backend (API + engine)` on `90f744f` failed in `npm run test:browser:audit`,
+which the workflow retries once. The first attempt timed out waiting for the
+terminal partial-close control. The second attempt reached the final assertion
+`No uncaught JavaScript errors` and failed. The audit does not print the
+message. A local Chromium reproduction of the trading `srcdoc` iframe showed:
+
+`Failed to execute 'postMessage' on 'Window': Invalid target origin 'null'`
+
+`legacy/visual-editing.js` posted to `location.origin`. A `srcdoc` document
+reports that origin as `null`, and `postMessage` throws. The script now posts
+to `parent.location.origin` and ignores a cross-origin parent. The same
+reproduction then reported no page error. Main's CI at `a439f24` was green, so
+this failure was introduced by the new terminal script.
+
+## Lockfile
+
+`npm ci` with npm 10.9.9 failed: `Missing: typescript@5.9.3 from lock file`.
+`@solana/accounts@5.5.1` (under `@coinbase/cdp-sdk`) has an optional peer
+`typescript@^5.0.0`. The root TypeScript is 7.x, so npm places 5.9.3 beside
+that package. `npm install --package-lock-only` added that optional peer and
+`dev: true` markers on existing optional platform packages. No package version
+was upgraded. A clean `npm ci --ignore-scripts` then exited 0.
+
 ## Tests executed
 
 | Command | Result |
@@ -135,11 +207,11 @@ No production schema command was run.
 | `python3 -m py_compile apps/backstage/scripts/apply_schema.py apps/backstage/scripts/seed_terminal_content.py` | Pass. |
 | `python3 apps/backstage/scripts/seed_interface_content.py --dry-run` | Pass. Printed the registry summary. No network. |
 
-Not run: a live Directus 11.17.4 Studio click-through, browser visual
-regression, `npm run release:build`, and any production migration. `npm ci` in
-`apps/web-react` could not use the lockfile (`typescript@5.9.3` is missing from
-it); dependencies were installed with `--no-package-lock` and the lockfile was
-not changed.
+The isolated Studio click-through, locale checks and 390/768/1280 layout sweep
+are recorded above. Not run: `npm run release:build` and any production
+migration. After the lockfile update, `npm ci --ignore-scripts` in a clean
+directory exited 0. `node --test apps/web-react/test/visual-editing.test.mjs`
+then passed 11 tests, including the srcdoc postMessage guard.
 
 ## Unrelated functionality
 

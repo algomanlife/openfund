@@ -1,11 +1,21 @@
 /* Editor-only annotations for the terminal iframe.
  * Stays inert until the React shell, already confirmed by Directus, sends
  * editorial targets. It does not read accounts, submit orders, or change layout.
+ * srcdoc documents report location.origin as "null". postMessage rejects that
+ * target and would surface as an uncaught page error, so messages use the
+ * parent document's origin instead.
  */
 (function () {
   if (window.parent === window || !document.body) return
   var entries = []
   function norm(value) { return String(value || '').replace(/\s+/g, ' ').trim() }
+  function postParent(message) {
+    try {
+      var origin = window.parent.location.origin
+      if (!/^https?:\/\//.test(origin)) return
+      window.parent.postMessage(message, origin)
+    } catch (error) { /* cross-origin parent: do not throw into the terminal */ }
+  }
   function bind() {
     var unique = new Map()
     entries.forEach(function (entry) {
@@ -32,7 +42,10 @@
     })
   }
   window.addEventListener('message', function (event) {
-    if (event.origin !== location.origin || event.source !== window.parent) return
+    var allowed = ''
+    try { allowed = window.parent.location.origin } catch (error) { allowed = '' }
+    if (event.source !== window.parent) return
+    if (event.origin !== allowed && event.origin !== location.origin) return
     var data = event.data || {}
     if (data.type !== 'openfund-visual-session' || !Array.isArray(data.entries)) return
     entries = data.entries
@@ -44,7 +57,7 @@
     event.preventDefault()
     event.stopPropagation()
     var rect = element.getBoundingClientRect()
-    window.parent.postMessage({ type: 'openfund-visual-edit', attribute: element.getAttribute('data-directus'), rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height, top: rect.top, left: rect.left } }, location.origin)
+    postParent({ type: 'openfund-visual-edit', attribute: element.getAttribute('data-directus'), rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height, top: rect.top, left: rect.left } })
   }, true)
-  window.parent.postMessage({ type: 'openfund-visual-hello' }, location.origin)
+  postParent({ type: 'openfund-visual-hello' })
 })()
