@@ -4,8 +4,10 @@ Implemented by: Cursor Agent
 
 This is a source change on the visual-editing branch. It is not merged, not
 deployed, and it has not been applied to a production Directus database.
-Commit SHAs are filled in from `git log` after the implementation commit and
-are repeated in the pull request.
+Implementation commit: `b7fec1ed076008c6454024d0017fa08e21176605`
+(`feat(cms): [Cursor] implement universal visual content editing`).
+The commit that records this SHA is the documentation follow-up on the same
+branch. Both SHAs are listed in the pull request.
 
 ## Directus version
 
