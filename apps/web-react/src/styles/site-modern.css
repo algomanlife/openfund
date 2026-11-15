@@ -39,7 +39,7 @@ html[data-theme=light] .information-page .info-hero h1 em { background-image: li
 .information-page .faq-item:hover { border-color: color-mix(in srgb, var(--mint) 30%, transparent); }
 
 /* --- buttons and links: consistent touch targets --------------------------- */
-.information-page main :is(.button, .text-link, button:not(.of-hm-tile)) { min-block-size: 40px; }
+.information-page main :is(.button, button:not(.of-hm-tile)) { min-block-size: 44px; }
 .information-page main .button { border-radius: var(--ds-radius-sm); }
 
 /* --- scroll reveal (classes added by useSiteMotion) ------------------------- */
