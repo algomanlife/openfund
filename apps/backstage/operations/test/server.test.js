@@ -52,8 +52,11 @@ test('login, privilege checks, step-up, expiration, revocation and throttling', 
   assert.match(login.cookie, /^__Host-openfund-backstage=.*HttpOnly; SameSite=Strict;.*Secure/)
   assert.ok(!JSON.stringify(login.body).includes(secret))
   const headers = { Cookie: login.cookie.split(';')[0], 'X-CSRF-Token': login.body.csrf }
-  assert.equal((await call('/api/users?search=wallet&redirect=http://invalid', undefined, headers)).status, 200)
-  assert.equal(calls[0].path, '/admin/users?search=wallet&limit=25')
+  const search = 'wallet&status=active?#'
+  assert.equal((await call('/api/users?' + new URLSearchParams({ search, redirect: 'http://invalid' }), undefined, headers)).status, 200)
+  const inspected = new URL(calls[0].path, settings.backend)
+  assert.equal(inspected.pathname, '/admin/users')
+  assert.deepEqual(Object.fromEntries(inspected.searchParams), { search, limit: '25' })
   assert.equal(calls[0].headers.authorization, 'Bearer ' + secret)
   assert.equal(calls[0].headers.cookie, undefined)
   assert.equal(calls[0].headers['x-admin-actor'], settings.owner)

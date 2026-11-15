@@ -101,8 +101,13 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
   }
 
   async function backend(path, method = 'GET', body, correlationId) {
+    const target = new URL(config.backend)
+    const queryStart = path.indexOf('?')
+    // Assign URL components independently so operation data cannot change the origin.
+    target.pathname = queryStart === -1 ? path : path.slice(0, queryStart)
+    if (queryStart !== -1) target.search = path.slice(queryStart)
     try {
-      const res = await fetch(new URL(path, config.backend), {
+      const res = await fetch(target, {
         method, redirect: 'error', signal: AbortSignal.timeout(12_000),
         headers: { Authorization: `Bearer ${config.credential}`, 'X-Admin-Actor': config.owner,
           'X-Request-Id': correlationId, ...(body && { 'Content-Type': 'application/json' }) },
@@ -186,14 +191,14 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
       const [endpoint, list, filters] = routes[section]
       if (req.method === 'GET') {
         if (section === 'support' && supportRef.test(record || ''))
-          return send(res, 200, await backend(endpoint + '/' + record, 'GET', undefined, correlationId))
+          return send(res, 200, await backend(endpoint + '/' + encodeURIComponent(record), 'GET', undefined, correlationId))
         if (section === 'payments' && uuid.test(record || ''))
-          return send(res, 200, await backend('/admin/payments/lookup?orderId=' + record, 'GET', undefined, correlationId))
+          return send(res, 200, await backend('/admin/payments/lookup?orderId=' + encodeURIComponent(record), 'GET', undefined, correlationId))
         if (record !== undefined && !uuid.test(record)) throw fail(404, 'not_found')
-        if (section === 'challenges' && record) return send(res, 200, await backend('/admin/backstage/challenges/' + record, 'GET', undefined, correlationId))
-        if (section === 'users' && record) return send(res, 200, await backend(endpoint + '/' + record, 'GET', undefined, correlationId))
+        if (section === 'challenges' && record) return send(res, 200, await backend('/admin/backstage/challenges/' + encodeURIComponent(record), 'GET', undefined, correlationId))
+        if (section === 'users' && record) return send(res, 200, await backend(endpoint + '/' + encodeURIComponent(record), 'GET', undefined, correlationId))
         if (section === 'payouts' && record) {
-          const root = '/admin/withdrawals/' + record
+          const root = '/admin/withdrawals/' + encodeURIComponent(record)
           const [trail, thread] = await Promise.all([
             backend(root + '/audit', 'GET', undefined, correlationId),
             backend(root + '/thread', 'GET', undefined, correlationId),
@@ -253,8 +258,8 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
       const note = action === 'reverify' ? undefined : reason.trim()
       const payout = section === 'payouts'
       const correspondence = ['reply', 'resolve_appeal'].includes(action)
-      const destination = payout ? `/admin/withdrawals/${record}/${correspondence ? 'thread' : 'review'}` :
-        section === 'payments' ? endpoint + '/' + record + '/reverify' : endpoint + '/' + record
+      const destination = payout ? `/admin/withdrawals/${encodeURIComponent(record)}/${correspondence ? 'thread' : 'review'}` :
+        section === 'payments' ? endpoint + '/' + encodeURIComponent(record) + '/reverify' : endpoint + '/' + encodeURIComponent(record)
       const payload = correspondence ? { action, message: note } :
         payout ? { action, note } :
         section === 'support' ? { status: action, internalNote: note } :

@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { rateLimit } from 'express-rate-limit'
 import { adminAuth } from './admin.js'
 
 const uuid = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i
@@ -7,7 +8,9 @@ const uuid = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i
 export function backstageReads({ pool }) {
   const router = Router()
   router.use(adminAuth)
-  router.get('/challenges/:id', async (req, res, next) => {
+  const challengeReadLimit = rateLimit({ windowMs: 60_000, limit: 60, standardHeaders: 'draft-8', legacyHeaders: false,
+    message: { error: 'rate_limited' } })
+  router.get('/challenges/:id', challengeReadLimit, async (req, res, next) => {
     if (!uuid.test(req.params.id)) return res.status(404).json({ error: 'challenge_not_found' })
     try {
       const { rows: [record] } = await pool.query(`
