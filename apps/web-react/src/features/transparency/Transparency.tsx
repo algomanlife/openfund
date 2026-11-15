@@ -99,6 +99,10 @@ function Report({ r, locale }: { r: TransparencyReport; locale: Locale }) {
     </section>
 
     <section className="econ-section" id="treasury"><div className="section-top"><div><span className="eyebrow">04 / OPENFUND TREASURY</span><h2>{t('Read from the chain, not typed in.', 'خوانده‌شده از زنجیره، نه واردشده با دست.')[locale]}</h2></div></div>
+      {r.allocations && <div className="econ-grid">
+        <Kpi label={t('Treasury allocation', 'تخصیص خزانه')[locale]} value={usd(r.allocations.treasuryUsd, locale)} />
+        <Kpi label={t('Operations allocation', 'تخصیص عملیاتی')[locale]} value={usd(r.allocations.operationsUsd, locale)} />
+      </div>}
       <TreasuryWallets locale={locale} />
       <Treasury tv={r.treasury} locale={locale} />
       <div className="econ-panel"><h3>{t('Identifiable flows', 'جریان‌های قابل شناسایی')[locale]}</h3><div className="econ-grid">
@@ -128,8 +132,10 @@ function Report({ r, locale }: { r: TransparencyReport; locale: Locale }) {
 
     <section className="econ-section" id="expenses"><div className="section-top"><div><span className="eyebrow">06 / {t('COMPANY EXPENSES', 'هزینه‌های شرکت')[locale]}</span><h2>{t('Invoices, not estimates.', 'فاکتور، نه برآورد.')[locale]}</h2></div><p>{int(r.expenses.awaitingVerification, locale)} {t('records awaiting verification', 'رکورد در انتظار تأیید')[locale]}</p></div>
       <div className="econ-grid">{r.expenses.categories.map(cat => <Kpi key={cat.category} label={(CATEGORY[cat.category]?.[locale] ?? cat.category)} value={usd(cat.totalUsd, locale)} note={`${int(cat.records, locale)} ${t('verified records', 'رکورد تأییدشده')[locale]}`} />)}</div>
-      {r.expenses.records.length > 0 && <div className="info-table-wrap"><table><caption>{t('Verified expense records', 'رکوردهای تأییدشدهٔ هزینه')[locale]}</caption><thead><tr>{[t('Date', 'تاریخ'), t('Category', 'دسته'), t('Description', 'شرح'), t('Amount', 'مبلغ'), t('Source / reference', 'منبع / مرجع'), t('Status', 'وضعیت')].map((h, i) => <th key={i} scope="col">{h[locale]}</th>)}</tr></thead>
-        <tbody>{r.expenses.records.map((e, i) => <tr key={i}><td>{day(e.incurredOn, locale)}</td><td>{(CATEGORY[e.category]?.[locale] ?? e.category)}</td><td>{e.description}</td><td dir="ltr">{e.amount} {e.currency}{e.currency !== 'USD' ? ` (${usd(e.amountUsd, locale)})` : ''}</td><td dir="ltr">{e.source} · {e.reference}</td><td>{e.paymentStatus}</td></tr>)}</tbody></table></div>}
+      <div className="econ-grid">
+        <Kpi label={t('Paid', 'پرداخت‌شده')[locale]} value={usd(r.expenses.paidUsd, locale)} />
+        <Kpi label={t('Unpaid', 'پرداخت‌نشده')[locale]} value={usd(r.expenses.unpaidUsd, locale)} />
+      </div>
       <Source locale={locale}>{r.expenses.source}</Source>
     </section>
   </>

@@ -3740,5 +3740,8 @@
   "Activation date": "激活日期",
   "Recipient wallet": "收款钱包",
   "Attributed IB": "归因的 IB",
-  "Active": "已激活"
+  "Active": "已激活",
+  "Operations allocation": "运营分配",
+  "Treasury allocation": "资金库分配",
+  "Unpaid": "未支付"
 }

@@ -27,6 +27,7 @@ import crypto from 'node:crypto'
 import { governanceAdminRoutes } from './governance-routes.js'
 import { reverseRewardTx, onRewardPaidTx } from './rewards.js'
 import { financialAudit } from './financial-audit.js'
+import { createPayoutClaimClient } from './payout-claims.js'
 import { payoutHash, payoutVerifier } from './payout-settlement.js'
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -62,7 +63,7 @@ export function adminActor(req) {
   return `admin:${actor}`
 }
 
-export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier() }) {
+export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), claimPayout = createPayoutClaimClient({ region: 'GLOBAL' }) }) {
   const router = Router()
   router.use(adminAuth)
 
@@ -203,7 +204,10 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier() }) {
         if (!w.approved_by || !recipient) throw fail(409, 'payout_approval_evidence_required')
         const used = await client.query(`SELECT 1 FROM withdrawal_requests WHERE lower(payout_ref)=$1 AND status='paid' LIMIT 1`, [reference])
         if (used.rowCount) throw fail(409, 'payout_transaction_already_recorded')
+        await client.query(`SELECT openfund_assert_account_writable(c.demo_account_id)
+          FROM openfund_challenges c WHERE c.id=$1 AND c.demo_account_id IS NOT NULL`, [w.challenge_id])
         evidence = { ...await verifyPayout({ hash: reference, recipient, amount: w.amount_usd, approvedAt: w.reviewed_at }), recordedBy: actor }
+        await claimPayout(client, { hash: reference, requestId: w.id })
       }
       await client.query(
         `UPDATE withdrawal_requests SET status=$2, reviewed_at=now(), note=coalesce($3, note),

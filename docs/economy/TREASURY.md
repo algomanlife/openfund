@@ -56,3 +56,23 @@ None of the Render, database, CMS or market-data providers is currently connecte
 ## Privacy
 
 Only aggregates are published. The report never contains user ids, user wallet addresses, per-trader outcomes, or links between a wallet and a failed challenge. The cache is five minutes.
+
+## Revenue allocation journal
+
+An owner-approved immutable policy records a UTC sales cutoff and an eligible
+base. The registry starts empty. Verified purchases at or after an approved
+cutoff can recognize listed price or the verified order price, according to
+the policy. Prior purchases require a separately reviewed backfill. Provider
+fees remain unknown when settlement evidence does not establish them. A base
+that deducts fees requires an authoritative fee source and a new policy.
+
+The journal allocates 59% of the selected base to treasury and 41% to
+operations. Operations receives rounding residue. Refund and chargeback
+entries reverse the original policy proportionally and reconcile exactly
+when fully reversed. The journal represents obligations and allocation.
+On-chain movements are separately reconciled.
+
+Authorized economy operators can inspect policy and journal records at
+`GET /admin/economy/treasury/allocations`. The public report presents
+aggregate allocations and paid/unpaid verified expenses while operator
+records retain supporting references.

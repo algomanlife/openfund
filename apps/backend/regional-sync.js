@@ -1,3 +1,5 @@
+import { claimPayoutTransaction } from './payout-claims.js'
+import { rateLimit } from 'express-rate-limit'
 /**
  * Regional synchronization (ADR 0033).
  *
@@ -568,6 +570,17 @@ export function syncPeerRoutes({ Router, raw, pool, config, release = () => null
       inboxHeld: m.inbox.held, inboxRejected: m.inbox.rejected, openDiscrepancies: m.discrepancies.open,
       quarantined: m.ownership.filter(o => o.state === 'quarantined').reduce((s, o) => s + o.n, 0),
     })
+  }))
+  const payoutClaimLimit = rateLimit({ windowMs: 60_000, limit: 90 })
+  router.post('/payout-claim', payoutClaimLimit, wrap(async (req, res) => {
+    if (config.region !== 'GLOBAL' || config.peerRegion !== 'IRAN') throw fail(404, 'not_found')
+    await verify(req)
+    let body
+    try { body = JSON.parse(req.body.toString('utf8')) } catch { throw fail(400, 'invalid_json') }
+    if (!isUuid(body?.requestId) || typeof body?.hash !== 'string' || !/^0x[0-9a-f]{64}$/.test(body.hash))
+      throw fail(400, 'invalid_payout_claim')
+    await claimPayoutTransaction(pool, { requestId: body.requestId, hash: body.hash, region: config.peerRegion })
+    res.set('Cache-Control', 'no-store').status(204).end()
   }))
   router.post('/events', wrap(async (req, res) => {
     await verify(req)

@@ -12,6 +12,7 @@
  * date and amount only.
  */
 import { Router } from 'express'
+import { rateLimit } from 'express-rate-limit'
 import { adminAuth, adminActor } from './admin.js'
 import { financialAudit } from './financial-audit.js'
 import { reverseCommissionTx } from './partners.js'
@@ -121,9 +122,12 @@ async function transparencyReport(pool, treasury) {
       (SELECT coalesce(sum(amount_usd),0) FROM settlement_records WHERE status='completed') AS live_settlements,
       (SELECT coalesce(sum(amount_usd),0) FROM verified_expenses WHERE status='verified' AND payment_status='paid') AS expenses,
       (SELECT coalesce(sum(amount_usd),0) FROM payment_adjustments) AS refunds`)
-  const expenses = await q(`SELECT category, coalesce(sum(amount_usd),0) AS total, count(*)::int AS records FROM verified_expenses WHERE status='verified' GROUP BY category`)
-  const expenseRows = await q(`SELECT category, description, amount, currency, amount_usd, incurred_on, period_start, period_end, source, invoice_reference, payment_status
-                                 FROM verified_expenses WHERE status='verified' ORDER BY incurred_on DESC LIMIT 100`)
+  const expenses = await q(`SELECT category, sum(amount_usd) AS total, count(*)::int AS records,
+    sum(amount_usd) FILTER (WHERE payment_status='paid') AS paid,
+    sum(amount_usd) FILTER (WHERE payment_status='unpaid') AS unpaid
+    FROM verified_expenses WHERE status='verified' GROUP BY category`)
+  const [allocations] = await q(`SELECT count(*)::int AS count, sum(treasury_usd) AS treasury, sum(operations_usd) AS operations
+    FROM revenue_allocation_journal`)
   const [pendingExpenses] = await q(`SELECT count(*)::int AS n FROM verified_expenses WHERE status='recorded'`)
 
   return {
@@ -176,12 +180,14 @@ async function transparencyReport(pool, treasury) {
     },
     position,
     liveProgram: programCapacity(position),
+    allocations: allocations.count ? { treasuryUsd: usd(allocations.treasury), operationsUsd: usd(allocations.operations) } : null,
     expenses: {
       source: 'verified_expenses (status=verified; each row cites a provider API, invoice, receipt or contract reference)',
       categories: EXPENSE_CATEGORIES.map(c => { const r = expenses.find(e => e.category === c); return { category: c, totalUsd: usd(r?.total || 0), records: r?.records || 0 } }),
       totalUsd: usd(expenses.reduce((s, e) => s.plus(e.total), D(0))),
       awaitingVerification: pendingExpenses.n,
-      records: expenseRows.map(r => ({ category: r.category, description: r.description, amount: r.amount, currency: r.currency, amountUsd: r.amount_usd, incurredOn: r.incurred_on, periodStart: r.period_start, periodEnd: r.period_end, source: r.source, reference: r.invoice_reference, paymentStatus: r.payment_status })),
+      paidUsd: usd(expenses.reduce((s, e) => s.plus(e.paid ?? 0), D(0))),
+      unpaidUsd: usd(expenses.reduce((s, e) => s.plus(e.unpaid ?? 0), D(0))),
     },
   }
 }
@@ -212,6 +218,13 @@ export function economyAdminRoutes({ pool, treasury, onChange = () => {} }) {
   const text = (v, max, req = true) => { if (v == null || v === '') { if (req) throw fail(400, 'missing_field'); return null } if (typeof v !== 'string' || v.length > max) throw fail(400, 'invalid_field'); return v.trim() }
   const date = (v, req = true) => { if (v == null || v === '') { if (req) throw fail(400, 'missing_date'); return null } if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) throw fail(400, 'invalid_date'); return v }
   const done = (res, body) => { onChange(); res.json(body) }
+
+  const allocationReadLimit = rateLimit({ windowMs: 60_000, limit: 30 })
+  router.get('/treasury/allocations', allocationReadLimit, wrap(async (req, res) => {
+    const policies = (await pool.query('SELECT * FROM revenue_allocation_policies ORDER BY effective_at DESC LIMIT 100')).rows
+    const entries = (await pool.query('SELECT * FROM revenue_allocation_journal ORDER BY id DESC LIMIT 200')).rows
+    res.set('Cache-Control', 'no-store').json({ policies, entries })
+  }))
 
   router.post('/treasury/refresh', wrap(async (req, res) => { adminActor(req); done(res, await treasury.refresh()) }))
 

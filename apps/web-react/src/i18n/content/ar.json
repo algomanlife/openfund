@@ -3740,5 +3740,8 @@
   "Activation date": "تاريخ التفعيل",
   "Recipient wallet": "محفظة المستلم",
   "Attributed IB": "شريك IB المنسوب",
-  "Active": "نشط"
+  "Active": "نشط",
+  "Operations allocation": "تخصيص العمليات",
+  "Treasury allocation": "تخصيص الخزانة",
+  "Unpaid": "غير مدفوعة"
 }

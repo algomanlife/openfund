@@ -13,8 +13,11 @@ uses 18 decimal places.
 The withdrawal and append-only financial audit record commit together.
 A unique index prevents recording the same verified hash twice within the
 owning database. The signed regional sync and handoff already carry the
-withdrawal row. Global transaction uniqueness across independent databases
-still needs acceptance testing and a shared replay strategy.
+withdrawal row. GLOBAL owns the claim registry. IRAN reserves the transaction hash and
+withdrawal ID over the signed peer connection before recognizing settlement.
+If the authority is unreachable, the withdrawal remains approved. A lost
+reply can be retried with the same withdrawal and hash. Claims cannot be
+reassigned, including when the remote settlement needs reconciliation.
 
 New payout certificates require finalized payment evidence. The public
 report shows explorer links only for verified receipts, using the settlement

@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4244,
-    "mappedCalls": 2097,
+    "uniqueRecords": 4245,
+    "mappedCalls": 2098,
     "exceptions": 70,
     "validationFindings": 0,
     "reviewedExclusions": 27
@@ -1411,7 +1411,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 129,
+          "line": 133,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -3217,7 +3217,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 115,
+          "line": 119,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -4968,7 +4968,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 115,
+          "line": 119,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -7214,7 +7214,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 146,
+          "line": 152,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8387,7 +8387,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 129,
+          "line": 133,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8647,7 +8647,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 106,
+          "line": 110,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8730,6 +8730,26 @@
           "line": 135,
           "page": "rulebook",
           "route": "/:locale/rulebook",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.191909af29956b7d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت‌نشده",
+      "en": "Unpaid",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 137,
+          "page": "transparency",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -11866,7 +11886,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 148,
+          "line": 154,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -14690,7 +14710,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 119,
+          "line": 123,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15873,7 +15893,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 104,
+          "line": 108,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -18475,7 +18495,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 112,
+          "line": 116,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20855,13 +20875,6 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 131,
-          "page": "transparency",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -22517,7 +22530,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 112,
+          "line": 116,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22784,7 +22797,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 120,
+          "line": 124,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24047,26 +24060,6 @@
       ]
     },
     {
-      "key": "react.4430e12ae2afa3ea",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "منبع / مرجع",
-      "en": "Source / reference",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 131,
-          "page": "transparency",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.44346920bed5d6c2",
       "namespace": "react",
       "area": "Global Content",
@@ -24997,13 +24990,6 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 131,
-          "page": "transparency",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -25907,7 +25893,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 115,
+          "line": 119,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -29470,7 +29456,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 121,
+          "line": 125,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -30618,7 +30604,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 120,
+          "line": 124,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -32613,7 +32599,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 105,
+          "line": 109,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35635,6 +35621,13 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 136,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -38075,7 +38068,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 114,
+          "line": 118,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -38323,7 +38316,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 105,
+          "line": 109,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -38810,7 +38803,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 116,
+          "line": 120,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -41737,7 +41730,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 120,
+          "line": 124,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -43359,7 +43352,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 129,
+          "line": 133,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -44036,13 +44029,6 @@
           "line": 220,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 131,
-          "page": "transparency",
-          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -45158,6 +45144,26 @@
           "component": "apps/web-react/src/wallet/errors.ts",
           "line": 93,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.821b2156efc1d782",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تخصیص خزانه",
+      "en": "Treasury allocation",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 103,
+          "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -48889,6 +48895,26 @@
       ]
     },
     {
+      "key": "react.8db754406ef8bf44",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تخصیص عملیاتی",
+      "en": "Operations allocation",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 104,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.8de31f4067e3a8f8",
       "namespace": "react",
       "area": "Website",
@@ -51070,7 +51096,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 108,
+          "line": 112,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -51217,7 +51243,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 142,
+          "line": 148,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -58011,7 +58037,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 112,
+          "line": 116,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62700,7 +62726,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 148,
+          "line": 154,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65642,7 +65668,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 120,
+          "line": 124,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67050,7 +67076,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 130,
+          "line": 134,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -68594,7 +68620,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 125,
+          "line": 129,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -70541,26 +70567,6 @@
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
           "line": 68,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.cab1c07125ef4513",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "رکوردهای تأییدشدهٔ هزینه",
-      "en": "Verified expense records",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 131,
-          "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -73139,7 +73145,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 123,
+          "line": 127,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76803,7 +76809,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 149,
+          "line": 155,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77825,7 +77831,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 142,
+          "line": 148,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -79959,7 +79965,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 107,
+          "line": 111,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -81709,7 +81715,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 112,
+          "line": 116,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82149,7 +82155,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 120,
+          "line": 124,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -83097,13 +83103,6 @@
           "line": 245,
           "page": "terminal",
           "route": "/:locale/:product/*",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 131,
-          "page": "transparency",
-          "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
@@ -87347,7 +87346,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 116,
+          "line": 120,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -88620,13 +88619,6 @@
           "component": "apps/web-react/src/features/governance/NewProposal.tsx",
           "line": 50,
           "page": "governance",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 131,
-          "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }

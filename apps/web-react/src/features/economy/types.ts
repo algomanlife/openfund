@@ -28,7 +28,8 @@ export interface TransparencyReport {
   flows: { inflows: { verifiedPayments: number; totalUsd: string } | null; outflows: { traderRewardsUsd: string; ambassadorCommissionsUsd: string; liveSettlementsUsd: string; expensesUsd: string; refundsUsd: string; definition: string } }
   position: FinancialPosition
   liveProgram: Capacity
+  allocations?: { treasuryUsd: string; operationsUsd: string } | null
   expenses: { source: string; categories: { category: string; totalUsd: string; records: number }[]; totalUsd: string; awaitingVerification: number
-    records: { category: string; description: string; amount: string; currency: string; amountUsd: string; incurredOn: string; source: string; reference: string; paymentStatus: string }[] }
+    paidUsd?: string; unpaidUsd?: string }
 }
 export interface EligibilityCheck { key: string; ok: boolean; value?: number | string | null; required?: number | string | null }

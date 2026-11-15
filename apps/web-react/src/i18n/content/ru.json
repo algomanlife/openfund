@@ -3740,5 +3740,8 @@
   "Activation date": "Дата активации",
   "Recipient wallet": "Кошелёк получателя",
   "Attributed IB": "Привлечён через IB",
-  "Active": "Активен"
+  "Active": "Активен",
+  "Operations allocation": "Распределение на операционные расходы",
+  "Treasury allocation": "Распределение в казначейство",
+  "Unpaid": "Не оплачено"
 }
