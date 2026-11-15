@@ -86,7 +86,7 @@ const check = (name, condition) => { assert.ok(condition, name); results.push(na
       const image = PNG.sync.read(fs.readFileSync(pngPath))
       const { default: decode } = await import('../apps/web-react/node_modules/qr/decode.js')
       check(`${locale}/${theme}: exported PNG QR resolves to actual serial`, decode({ width: image.width, height: image.height, data: image.data }) === publicPage.url())
-      check(`${locale}/${theme}: PNG is 2400 × 1600`, image.width === 2400 && image.height === 1600)
+      check(`${locale}/${theme}: PNG is 2000 × 2000`, image.width === 2000 && image.height === 2000)
       check(`${locale}/${theme}: PDF is generated`, fs.readFileSync(pdfPath).subarray(0, 8).toString() === '%PDF-1.4')
     }
     for (const c of data) {
@@ -98,6 +98,19 @@ const check = (name, condition) => { assert.ok(condition, name); results.push(na
     await publicPage.goto(BASE + '/en/certificate-verification?serial=' + 'a'.repeat(32))
     await publicPage.getByRole('heading', { name: 'Certificate not found', exact: true }).waitFor()
     check('Unknown serial shows not found, not a decorative certificate', await publicPage.locator('canvas').count() === 0)
+    check('Unknown serial does not show template previews', await publicPage.locator('.of-cert-template').count() === 0)
+    await publicPage.goto(BASE + '/en/certificate-verification')
+    await publicPage.locator('.of-cert-template img').nth(2).waitFor({ timeout: 20000 })
+    check('Public page shows all three anonymous template previews', await publicPage.locator('.of-cert-template img').count() === 3)
+    check('Template previews are not issued certificates', await publicPage.locator('.of-certificate-preview, canvas').count() === 0)
+    check('Three-step verification guide is present', await publicPage.locator('.of-cert-steps li').count() === 3)
+    const signedOut = await (await browser.newContext()).newPage()
+    await signedOut.goto(BASE + '/en/prop/certificates')
+    await signedOut.locator('.of-cert-template img').nth(2).waitFor({ timeout: 20000 })
+    check('Signed-out certificates page shows three templates and no personal certificate', await signedOut.locator('.of-cert-template').count() === 3 && await signedOut.locator('.of-certificate-preview').count() === 0)
+    check('Signed-out template status asks to sign in', (await signedOut.locator('.of-cert-chip').first().getAttribute('data-state')) === 'signed-out')
+    check('Signed-in template status reflects issued certificates', (await page.locator('.of-cert-chip[data-state=issued]').count()) === 3)
+    await page.screenshot({ path: path.join(OUT, 'terminal-certificates.png'), fullPage: true })
     fs.writeFileSync(path.join(OUT, 'results.json'), JSON.stringify({ source: 'isolated PostgreSQL fixtures + real local API and disposable SIWE', results }, null, 2))
   } finally { await browser.close(); await pool.end() }
 })().catch(error => { console.error(error); process.exit(1) })
