@@ -42,3 +42,5 @@ Read newer decisions alongside historical ones; current implementation and expli
 - [0035 — Design-system foundation and UI kit evaluation](0035-design-system-foundation-and-ui-kit-evaluation.md)
 
 - [0036 — Finalized funded settlement evidence](0036-finalized-funded-settlement.md)
+
+- [0040 — Backstage operations boundary](0040-backstage-operations-boundary.md)

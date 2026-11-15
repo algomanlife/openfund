@@ -1,5 +1,10 @@
 # Feature status
 
+Backstage operations is **In Progress**. The initial owner workspace
+uses authoritative backend directories and review actions. Controlled test
+operations require the PR #125 contract. See the
+[operations guide](../backstage/OPERATIONS_GUIDE.md).
+
 **In Progress** — funded reward settlement checks finalized Arbitrum One DAI
 evidence in the existing review API. Historical paid records and issued
 certificates remain available. Isolated payout, IB settlement, appeal and two-database replay checks passed.

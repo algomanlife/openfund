@@ -87,6 +87,12 @@ jobs:
       - name: Documentation language, links, images, Markdown and Mermaid
         working-directory: .
         run: npm run docs:check
+      - name: Backstage build and access control
+        working-directory: .
+        run: |
+          npm --prefix apps/backstage ci
+          npm --prefix apps/backstage run build
+          npm --prefix apps/backstage test
       - name: Vendored DePay widget matches its generated SRI manifest
         working-directory: .
         run: node scripts/upstream/vendor-depay-widgets.mjs
@@ -297,6 +303,13 @@ jobs:
           TEST_FRONTEND_URL: http://localhost:8080
           TEST_BACKEND_URL: http://localhost:8080
         run: npm run test:browser:purchase
+      - name: Backstage owner browser acceptance
+        if: needs.changes.outputs.run_backend_suite == 'true'
+        working-directory: .
+        env:
+          TEST_BACKEND_URL: http://localhost:8080
+          ADMIN_API_TOKEN: ci-admin-token-4f2a
+        run: node e2e/test-backstage.mjs
       - name: DePay checkout browser acceptance (stub widget, mock chain, signed callbacks)
         working-directory: .
         run: npm run test:browser:depay
