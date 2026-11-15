@@ -2,8 +2,8 @@
 
 **In Progress** — funded reward settlement checks finalized Arbitrum One DAI
 evidence in the existing review API. Historical paid records and issued
-certificates remain available. Deployment acceptance and end-to-end regional
-reconciliation are pending. See [funded settlement](../economy/FUNDED_SETTLEMENT.md).
+certificates remain available. Isolated payout, IB settlement, appeal and two-database replay checks passed.
+Production policy activation and live treasury reconciliation remain pending. See [funded settlement](../economy/FUNDED_SETTLEMENT.md).
 
 2026-11-11 P0 SIWE production-domain correction (**source branch; not deployed**):
 `POST /auth/verify` returned `400 invalid_domain` on both public domains while

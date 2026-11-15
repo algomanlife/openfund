@@ -5,40 +5,39 @@ verified merge of PR #122. The latest official release observed at the start
 was v0.5.0. The public GLOBAL service reported `60d5df9`; this branch is
 unreleased.
 
-## Scope and verification
+## Implementation and acceptance
 
-| Requirement | Evidence and remaining acceptance |
+| Requirement | Implementation and evidence |
 | --- | --- |
-| Funded lifecycle | Reused evaluation pass, operator review, linked funded account, frozen rules and separate starting balance. Existing catalog v3 tests cover the transitions. |
-| Trader payout workflow | Reused the review endpoint, reservation and reversal. Captures the owned recipient and named approver and requires a finalized matching DAI transfer for new funded settlement. Verified using isolated database and receipt fixtures. |
-| Ledger | Reused trading ledger, withdrawal state and financial audit. The receipt and financial event commit together. Duplicate receipt hashes are rejected within one database. Independent-region transaction exclusion remains open. |
-| Certificates | Reused the historical purchase and approval triggers. New payout issuance and public settlement evidence require verified payment. Existing certificates remain immutable. |
-| Treasury and Economy | Added conservative, base and stress inputs for funded conversion, IB liability, existing debt and modeled 59/41 coverage. These are planning outputs. Verified actual treasury balances and new purchase allocation journals are outside this checkpoint. |
-| Product roadmap | Added a four-quarter shared source for the website and Whitepaper seed. README and repository roadmap point to it. The 2,000 registrations figure is a Q1 target. Planned platform connections depend on licensing and security. |
-| Product identity | Updated the README to describe the prop firm's funded programs, rewards and technology. A broader homepage and whitepaper rewrite is still open. |
-| Localization | New roadmap and Economy source copy includes Persian, English, Arabic, Russian and Simplified Chinese. Local browser checked the Persian roadmap and English Economy route. Full language review remains open. |
-| SIWE and DePay | Read-only [domain check](../payments/DOMAIN_READINESS.md). Merchant and signed browser flows remain unverified. |
-| Database migration | Additive withdrawal fields and a unique verified-hash index. Applied twice in isolated PostgreSQL. |
-| Verification | Targeted rewards, certificate, Economy and roadmap tests, certificate browser tests and local UI evidence. The official release and deployment are separate from these checks. |
+| Funded lifecycle | Approved evaluation provisions a separate funded account. Versioned 7/14/21-day and monthly terms, immutable cycle selection, UTC boundaries, dashboard balances, equity, reservations and recipient were verified locally. New sale terms require activation approval. |
+| Trader settlement | Human review, rejection reason, reservation release and finalized matching Arbitrum One DAI evidence. Global receipt claims were exercised against two regional databases. |
+| Payout correspondence | Owned request threads, timestamps, unread counts, pagination, appeals and operator outcomes. Isolated API tests cover rejection, ownership, appeal and review. |
+| Payout operations | The authorized browser queue supports reply, appeal resolution, approval, rejection and treasury evidence entry. A disposable browser test exercises the actual rejection workflow. |
+| Shared accounting | Append-only financial audit, calculation snapshots, IB distribution, receipt evidence and thread history protected by database triggers. |
+| IB rewards | Verified qualifying purchase commission freezes attribution. Trader paid status unlocks a separate manual settlement after an approved policy. The isolated test exercises the full progression and receipt reuse rejection. |
+| Ordinary referrals | Existing invitation and masked attribution remain. Verified purchases are counted separately. Compensation stays under the applicable approved program. |
+| Treasury allocation | 59/41 recognition and proportional refund and chargeback reversals verified in PostgreSQL. Policy registry starts empty; verified inputs determine the base. |
+| Expenses | Existing recording and independent verification controls remain. The public report exposes paid and unpaid totals without individual accounting references. |
+| Transfer reconciliation | Finalized EVM log ingestion, movement deduplication, internal classification, cursor freshness and balance mismatch detection verified against an isolated database and deterministic chain reader. A real wallet and approved block scope are required. |
+| Transparency and Economy | Localized display, aggregate allocations and expenses, payout evidence, transfer reconciliation and separate scenario analysis. |
+| Certificates | Existing purchase, approval and verified payment attestation flows retained. No deployment changes. |
+| Product identity | About, README, the shared four-quarter roadmap and Whitepaper source distinguish simulation and conditional live access. |
+| SIWE and DePay | Read-only [domain audit](../payments/DOMAIN_READINESS.md). Browser-document checkout is reachable on GLOBAL. Live signed login and payment require separately authorized acceptance. |
 
-## Open implementation and decisions
+## Decisions and deployment prerequisites
 
-- Activate the 7/14/21-day and monthly schedule after defining the monthly
-  UTC boundary and grandfathering. Existing funded rules still control
-  eligibility. Complete the funded dashboard and payout-specific messaging,
-  unread indicators, appeals and operator queue.
-- Extend the shared journal for IB payout entitlements, attribution evidence
-  and independently reconciled human settlement. Confirm competing code
-  precedence, payout asset/network/schedule, commission base and purchase
-  eligibility before enabling new financial behavior.
-- Implement 59/41 revenue recognition and expense reporting after confirming
-  the eligible revenue base. Add reconciled on-chain transfer ingestion and
-  collect comparable outcome data for the forecast methodology.
-- Verify configured payout treasury, live receipt handling and end-to-end
-  regional consistency. Confirm the real-market IB policy and Coach
-  interaction separately.
-- Keep provisional secondary-quarter growth estimates for owner review.
-  Verify commercial licensing before promising external platform access.
+- Approve the funded UTC cycle rules for new sales and the exact sales cutoff.
+- Confirm the 59/41 allocation base. A fee-deducted base also needs an
+  authoritative verified fee source. Approve any historical backfill separately.
+- Approve the IB settlement asset, chain, delay and attribution corrections.
+  The current IB receipt verifier can handle an explicitly selected Arbitrum DAI
+  policy. A different network or asset requires its own verified adapter.
+- Confirm the authorized payout treasury wallet, RPC, treasury tokens and initial
+  reconciliation blocks. The existing production payout wallet was unavailable
+  in the reviewed public configuration. Central revenue and treasury reports
+  await operational configuration and live reconciliation.
+- Approve real-market IB and Coach interaction and public growth targets after Q1.
+  External platform integrations remain conditional on licensing and technical access.
 
 ## Public research and licensing dependencies
 
