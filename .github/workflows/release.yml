@@ -11,7 +11,7 @@ on:
         default: false
         type: boolean
       release_version:
-        description: Optional explicit next patch version (for an approved patch batch)
+        description: Optional owner-approved version — the exact next patch, or a patch inside a newly allocated minor/major line (e.g. 0.6.5 after v0.5.0 with feat commits)
         required: false
         type: string
 permissions:

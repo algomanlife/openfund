@@ -21,6 +21,26 @@ export function nextVersion(tags, messages = '') {
   else patch++;
   return `${major}.${minor}.${patch}`;
 }
+const parts = v => v.replace(/^v/, '').split('.').map(Number);
+const compare = (a, b) => { const x = parts(a), y = parts(b); return x[0] - y[0] || x[1] - y[1] || x[2] - y[2]; };
+/** An owner-approved explicit version (manual main-branch dispatch only).
+ * The conventional-commit allocation still decides the release line:
+ * - a patch allocation (e.g. 0.5.1) must be requested exactly — no skipping;
+ * - a minor or major allocation (e.g. 0.6.0) lets the owner choose the patch
+ *   number inside that new line (0.6.0, 0.6.5 …), never a lower line, a later
+ *   minor/major line, or a version that is already tagged. */
+export function requestedVersion({ latest, requested, allocated, tags = [] }) {
+  if (!semver.test(requested || '')) throw Error('Explicit release version must be MAJOR.MINOR.PATCH.');
+  if (!/^v\d+\.\d+\.\d+$/.test(latest || '')) throw Error('An existing SemVer tag is required for an explicit release.');
+  if (tags.includes(`v${requested}`)) throw Error(`v${requested} is already released; tags are immutable.`);
+  if (compare(requested, latest) <= 0) throw Error(`Explicit release version must be newer than ${latest}.`);
+  if (compare(requested, allocated) < 0) throw Error(`The commits since ${latest} require at least ${allocated}.`);
+  const [lMajor, lMinor] = parts(latest), [aMajor, aMinor] = parts(allocated), [rMajor, rMinor] = parts(requested);
+  const patchOnly = aMajor === lMajor && aMinor === lMinor;
+  if (patchOnly) return requestedPatchVersion(latest, requested);
+  if (rMajor !== aMajor || rMinor !== aMinor) throw Error(`Explicit release version must stay in the allocated ${aMajor}.${aMinor}.x line.`);
+  return requested;
+}
 /** An explicit patch release may override conventional-commit allocation,
  * but cannot skip or reuse a published version. */
 export function requestedPatchVersion(latest, requested) {
