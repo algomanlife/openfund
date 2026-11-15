@@ -120,3 +120,4 @@ html[data-theme=light] .of-seq-window { border-color: var(--line); }
 html[data-theme=light] .of-app-tag { color: #065f39; background: #eef8f3; border-color: #9ccfb6; }
 html[data-theme=light] .of-app-status.is-pending { color: #7a5a0e; border-color: #d8c08a; }
 html[data-theme=light] .of-app-files li { background: #fafcfb; }
+.of-app-sha { font-size: 10.5px; opacity: .8; overflow-wrap: anywhere; }

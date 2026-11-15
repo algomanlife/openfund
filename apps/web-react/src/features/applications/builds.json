@@ -5,14 +5,55 @@
   "version": "0.0.2",
   "channel": "beta",
   "signed": false,
-  "verifiedOn": "2026-11-14",
+  "verifiedOn": "2026-11-15",
   "ciRun": "https://github.com/algomanlife/openfund/actions/runs/43611941782",
   "sourceCommit": "76512b5",
   "files": [
-    { "platform": "macos", "architecture": "arm64", "format": "dmg", "file": "Open-Trade-0.0.2-beta-unsigned-mac-arm64.dmg" },
-    { "platform": "macos", "architecture": "x64", "format": "dmg", "file": "Open-Trade-0.0.2-beta-unsigned-mac-x64.dmg" },
-    { "platform": "windows", "architecture": "x64", "format": "exe", "file": "Open-Trade-0.0.2-beta-unsigned-win-x64.exe" },
-    { "platform": "linux", "architecture": "x64", "format": "AppImage", "file": "Open-Trade-0.0.2-beta-unsigned-linux-x86_64.AppImage" },
-    { "platform": "linux", "architecture": "x64", "format": "deb", "file": "Open-Trade-0.0.2-beta-unsigned-linux-amd64.deb" }
-  ]
+    {
+      "platform": "macos",
+      "architecture": "arm64",
+      "format": "dmg",
+      "file": "Open-Trade-0.0.2-beta-unsigned-mac-arm64.dmg",
+      "bytes": 123102751,
+      "sha256": "0159708add92e3e9c1e22be9efc84778635d30f684de308f5938319e6a3ba540",
+      "signing": "ad-hoc signature only; Gatekeeper rejects; launched and verified on macOS arm64"
+    },
+    {
+      "platform": "macos",
+      "architecture": "x64",
+      "format": "dmg",
+      "file": "Open-Trade-0.0.2-beta-unsigned-mac-x64.dmg",
+      "bytes": 127208223,
+      "sha256": "b81b1e8c70a3ca73df394d07f36529b0da3256cb8191d17db329153ba72bdfbf",
+      "signing": "not signed; Gatekeeper rejects"
+    },
+    {
+      "platform": "windows",
+      "architecture": "x64",
+      "format": "exe",
+      "file": "Open-Trade-0.0.2-beta-unsigned-win-x64.exe",
+      "bytes": 123186356,
+      "sha256": "bbcb600e7e11396ccd1dff3d0c8a9ce484c3fb1405f92723b7017dbe414d156f",
+      "signing": "NSIS installer, not code-signed (SmartScreen warning expected)"
+    },
+    {
+      "platform": "linux",
+      "architecture": "x64",
+      "format": "AppImage",
+      "file": "Open-Trade-0.0.2-beta-unsigned-linux-x86_64.AppImage",
+      "bytes": 127864761,
+      "sha256": "de1f82b27144d4c7ef1a7735ce6ea7a6ffa994bd53f833f8c304b2068c0093f0",
+      "signing": "unsigned AppImage"
+    },
+    {
+      "platform": "linux",
+      "architecture": "x64",
+      "format": "deb",
+      "file": "Open-Trade-0.0.2-beta-unsigned-linux-amd64.deb",
+      "bytes": 102430624,
+      "sha256": "8b9ec5f714fe0820426b9ce68f49bc46dd941d50f96846ed6f62ebd86d9285cc",
+      "signing": "Debian package open-trade 0.0.2 amd64, unsigned"
+    }
+  ],
+  "integrity": "Downloaded from the CI run, SHA-256 matched the run SHA256SUMS.txt, package metadata checked (version 0.0.2, architectures), macOS arm64 build launched from the DMG."
 }

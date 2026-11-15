@@ -115,7 +115,9 @@ export default function Applications() {
                   <div><dt>{c('version')}</dt><dd><bdi dir="ltr">{builds.version} {builds.channel}</bdi></dd></div>
                   <div><dt>{c('architecture')}</dt><dd><bdi dir="ltr">{f.architecture}</bdi></dd></div>
                   <div><dt>{c('format')}</dt><dd><bdi dir="ltr">.{f.format}</bdi></dd></div>
+                  <div><dt>{c('size')}</dt><dd><bdi dir="ltr">{(f.bytes / 1048576).toFixed(1)} MB</bdi></dd></div>
                 </dl>
+                <code dir="ltr" className="of-app-sha" title="SHA-256">SHA-256 {f.sha256}</code>
                 <code dir="ltr">{f.file}</code>
               </li>)}</ul>
               <p className="of-apps-note">{c('unsignedNote')}</p>
