@@ -158,7 +158,7 @@ async function transparencyReport(pool, treasury) {
       rateDefinitions: 'Pass rate = passed ÷ (passed + failed + expired) for that stage. First payout rate = funded accounts with ≥1 paid withdrawal ÷ funded accounts.',
     },
     payouts: {
-      source: 'withdrawal_requests (approved = reviewed obligation; paid totals include historical operator records; explorer evidence is limited to finalized receipts)',
+      source: 'withdrawal_requests',
       paid: { count: wd.paid_count, totalUsd: usd(wd.paid_sum) },
       approvedAwaitingTransfer: { count: wd.approved_count, totalUsd: usd(wd.approved_sum) },
       requestedUnderReview: { count: wd.requested_count, totalUsd: usd(wd.requested_sum) },

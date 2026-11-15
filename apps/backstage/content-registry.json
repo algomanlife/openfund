@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4239,
-    "mappedCalls": 2092,
+    "uniqueRecords": 4240,
+    "mappedCalls": 2093,
     "exceptions": 70,
     "validationFindings": 0,
     "reviewedExclusions": 27
@@ -2509,6 +2509,26 @@
           "line": 81,
           "page": "terminal",
           "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.068d7d20cd00d7a6",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جمع پرداخت‌ها شامل سوابق قدیمی ثبت‌شده توسط اپراتورهاست. پیوندهای کاوشگر انتقال‌های نهایی‌شده را نشان می‌دهند.",
+      "en": "Paid totals include historical operator records. Explorer links show finalized transfers.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 98,
+          "page": "transparency",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]

@@ -95,7 +95,7 @@ function Report({ r, locale }: { r: TransparencyReport; locale: Locale }) {
           {p.transactions.length ? <div className="econ-list">{p.transactions.map((x, i) => <div key={i}><span>{day(x.at, locale)} · {usd(x.amountUsd, locale)}</span><span>{x.explorerUrl ? <a className="text-link" href={x.explorerUrl} target="_blank" rel="noopener noreferrer">{t('Explorer', 'کاوشگر')[locale]} ↗</a> : '—'}</span></div>)}</div> : <p className="econ-empty">{t('No payout with an on-chain transaction reference yet.', 'هنوز پرداختی با مرجع تراکنش آن‌چین ثبت نشده است.')[locale]}</p>}
           <p className="econ-source">{t('Recipients are not identified. Only date, amount and the public transaction are listed.', 'دریافت‌کنندگان معرفی نمی‌شوند؛ فقط تاریخ، مبلغ و تراکنش عمومی آمده است.')[locale]}</p></div>
       </div>
-      <Source locale={locale}>{p.source}</Source>
+      <p className="econ-source">{t('Paid totals include historical operator records. Explorer links show finalized transfers.', 'جمع پرداخت‌ها شامل سوابق قدیمی ثبت‌شده توسط اپراتورهاست. پیوندهای کاوشگر انتقال‌های نهایی‌شده را نشان می‌دهند.')[locale]}</p>
     </section>
 
     <section className="econ-section" id="treasury"><div className="section-top"><div><span className="eyebrow">04 / OPENFUND TREASURY</span><h2>{t('Read from the chain, not typed in.', 'خوانده‌شده از زنجیره، نه واردشده با دست.')[locale]}</h2></div></div>
