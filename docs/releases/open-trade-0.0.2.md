@@ -48,6 +48,29 @@ Proper distribution needs an Apple Developer ID with notarization and a
 Windows code-signing certificate — owner decisions with cost and identity
 implications.
 
+## Licensing obligations of the binaries (owner review before publishing)
+
+Publishing installers distributes the bundled third-party code, so the
+obligations below apply to the release itself:
+
+- **AGPL-3.0 (PineTS, Vela Pine addon).** The bundle ships the patched Pine
+  worker. Conveying object code requires access to the Corresponding Source:
+  the release notes must link the exact commit
+  `76512b53501e2c4c63e168c14b1f725b1e3fd353` and the build scripts
+  (`scripts/build-charts.mjs`, `apps/open-trade/scripts/`). The AGPL texts are
+  shipped in the app (`assets/notices/`).
+- **Apache-2.0 + NOTICE (Vela).** Shipped NOTICE and visible attribution are
+  required and present.
+- **Pine indicator sources (unresolved).** The chart bundle includes the
+  repository's indicator scripts (for example "Open Algo V5"); one source states
+  CC BY-NC-SA 4.0 and the README calls them proprietary, with authorship
+  unconfirmed ([licence decision, blocker 2](../legal/LICENSE_DECISION.md)).
+  The production website already serves them; publishing the installers would
+  distribute them as downloadable files too. Confirm authorship and the
+  licence, or remove them from the desktop bundle, before publishing.
+- Fonts in the desktop app are Ubuntu and Vazirmatn only (licences shipped);
+  the unresolved Irancell-derived fonts are not bundled.
+
 ## Known limitations
 
 From `apps/open-trade/ACCEPTANCE.md`: real-wallet sign-in needs a confirmed

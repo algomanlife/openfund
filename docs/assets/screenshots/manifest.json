@@ -6811,6 +6811,126 @@
       "capturedAt": "2026-11-15T09:00:30.620744+00:00",
       "state": "Completion certificate PNG export (downscaled to 1000px) issued by the real local API for a disposable generated test wallet in an isolated test database (e2e/test-certificates.cjs); local test runtime of branch agent/claude/v0.6.5-modernization, not production",
       "sha256": "f77ac54d8417fae724eb8f3cadd9b5aa28159c90cbbf867a4b049c65c801ea07"
+    },
+    {
+      "file": "readme/v065/about-en-desktop.jpg",
+      "route": "about-en-desktop.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Local test runtime of the v0.6.5 candidate with live public market data and published CMS content; no personal wallet; README gallery JPEG",
+      "sha256": "58ef973701cd414c39abba5caf87f1b8e1cc525d6ffbac47a2a6183bbc74c36d"
+    },
+    {
+      "file": "readme/v065/applications-en-desktop.jpg",
+      "route": "applications-en-desktop.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Local test runtime of the v0.6.5 candidate with live public market data and published CMS content; no personal wallet; README gallery JPEG",
+      "sha256": "f399152ae4a01408caedd58794c30c8015ce785bfd01a50d6f8c8c579f173abc"
+    },
+    {
+      "file": "readme/v065/certificate-completion-fa.jpg",
+      "route": "certificate-completion-fa.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Certificate PNG export for a disposable test wallet, isolated test database, resized; README gallery JPEG",
+      "sha256": "dad58ea2c9847641d796b38cc60cab2b464b61bde7da3ad7acb269d1e0c358c9"
+    },
+    {
+      "file": "readme/v065/certificates-fa-mobile.jpg",
+      "route": "certificates-fa-mobile.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Local test runtime of the v0.6.5 candidate with live public market data and published CMS content; no personal wallet; README gallery JPEG",
+      "sha256": "83dabbbb190842e3290e0a5ee5632e4a3c11c87d0c5e957f9ebafe4442ed9be3"
+    },
+    {
+      "file": "readme/v065/heatmap-en-desktop.jpg",
+      "route": "heatmap-en-desktop.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Local test runtime of the v0.6.5 candidate with live public market data and published CMS content; no personal wallet; README gallery JPEG",
+      "sha256": "e58a012ca984ba6cd7da7d0785075ea19a4f0bdeb72da141f48b7c1f79120082"
+    },
+    {
+      "file": "readme/v065/home-en-desktop.jpg",
+      "route": "home-en-desktop.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Local test runtime of the v0.6.5 candidate with live public market data and published CMS content; no personal wallet; README gallery JPEG",
+      "sha256": "7459a2f9f7b5839155efc37faffabcdc38a8aed97a4a745654e91da3b1617187"
+    },
+    {
+      "file": "readme/v065/home-en-light.jpg",
+      "route": "home-en-light.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Local test runtime of the v0.6.5 candidate with live public market data and published CMS content; no personal wallet; README gallery JPEG",
+      "sha256": "5a3164ee4cd49d1747913a164b9963328450a0771c353c823b32b430bd4eb03c"
+    },
+    {
+      "file": "readme/v065/home-fa-mobile.jpg",
+      "route": "home-fa-mobile.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Local test runtime of the v0.6.5 candidate with live public market data and published CMS content; no personal wallet; README gallery JPEG",
+      "sha256": "fc047eb396512b6eca5c3aa7f4bac154f8e08feed0df1e8fb57c53f38992c994"
+    },
+    {
+      "file": "readme/v065/open-trade-chart.jpg",
+      "route": "open-trade-chart.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Open Trade 0.0.2 capture (open-trade-0.0.2/*.png), resized; README gallery JPEG",
+      "sha256": "1918f3bb45b42575cc18290b7fb5cb34067f3cb925c4f2b9b70741ded91851c0"
+    },
+    {
+      "file": "readme/v065/open-trade-four-charts.jpg",
+      "route": "open-trade-four-charts.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Open Trade 0.0.2 capture (open-trade-0.0.2/*.png), resized; README gallery JPEG",
+      "sha256": "af7d995db072670c82d3a047aed0005b203bc129169f65e589ea3d725cec8178"
+    },
+    {
+      "file": "readme/v065/open-trade-watchlist-ticket.jpg",
+      "route": "open-trade-watchlist-ticket.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Open Trade 0.0.2 capture (open-trade-0.0.2/*.png), resized; README gallery JPEG",
+      "sha256": "eb8f78f0471a16ebec0f38887af28a4dea83f0938a24bb2e7db0b1992503faf7"
+    },
+    {
+      "file": "readme/v065/radar-en-desktop.jpg",
+      "route": "radar-en-desktop.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Local test runtime of the v0.6.5 candidate with live public market data and published CMS content; no personal wallet; README gallery JPEG",
+      "sha256": "3c565147814eea16a6a08d58093a161031f287b4c01fb8d597c1a4cab2f1c481"
+    },
+    {
+      "file": "readme/v065/roadmap-fa-desktop.jpg",
+      "route": "roadmap-fa-desktop.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Local test runtime of the v0.6.5 candidate with live public market data and published CMS content; no personal wallet; README gallery JPEG",
+      "sha256": "b23a02245f5eaebfcbbc58fe4f5ba0af69c440eef578e7e03e658b8fcd7ae33f"
+    },
+    {
+      "file": "readme/v065/terminal-en-desktop.jpg",
+      "route": "terminal-en-desktop.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Local test runtime of the v0.6.5 candidate with live public market data and published CMS content; no personal wallet; README gallery JPEG",
+      "sha256": "a7911bbc80661329c93f2e90c07b5001e432fe28950420fe3c4047b3a527befc"
+    },
+    {
+      "file": "readme/v065/verification-en-desktop.jpg",
+      "route": "verification-en-desktop.jpg",
+      "session": "anonymous",
+      "capturedAt": "2026-11-15T10:13:59.172968+00:00",
+      "state": "Local test runtime of the v0.6.5 candidate with live public market data and published CMS content; no personal wallet; README gallery JPEG",
+      "sha256": "1ed721fb9d7b3ff9fa7848f2f56ac915f4aa76f7cf0b1340ea9e4ac31ef220ae"
     }
   ],
   "finalIntegration": {

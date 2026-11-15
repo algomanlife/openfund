@@ -6,115 +6,99 @@
 
 **A clearer way forward**
 
-Trading challenges, a professional trading terminal and a transparent economy,
-in one wallet-native platform.
+Trading evaluations with published rules, a professional trading terminal,
+read-only market analytics and a transparent economy — in one wallet-native platform.
 
-[**openfi.cloud**](https://openfi.cloud) · [**openfund.cloud**](https://openfund.cloud)
+[**openfi.cloud**](https://openfi.cloud) · [**openfund.cloud**](https://openfund.cloud) · [Documentation](docs/README.md) · [Roadmap](ROADMAP.md) · [Changelog](CHANGELOG.md)
 
 [![Latest release](https://img.shields.io/github/v/release/algomanlife/openfund?label=release&color=82e7bd&labelColor=060808)](https://github.com/algomanlife/openfund/releases/latest)
 [![Deployed version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fopenfi.cloud%2Fversion&query=%24.version&label=deployed&color=82e7bd&labelColor=060808)](https://openfi.cloud/version)
 [![CI](https://github.com/algomanlife/openfund/actions/workflows/ci.yml/badge.svg)](https://github.com/algomanlife/openfund/actions/workflows/ci.yml)
-![License: all rights reserved, decision pending](https://img.shields.io/badge/license-all%20rights%20reserved%20%28decision%20pending%29-C6FF52?labelColor=060808)
-
-[Product](#product-ecosystem) · [Gallery](#product-gallery) · [Business model](#business-model) · [Architecture](#technical-architecture) · [Development](#development-workflow) · [Releases](#versioning-and-releases) · [Docs](docs/README.md)
+![License: decision pending](https://img.shields.io/badge/license-decision%20pending-C6FF52?labelColor=060808)
 
 <br />
 
-<img src="docs/assets/screenshots/readme/home-en-desktop.jpg" alt="Openfund homepage on openfi.cloud: Prop Trading Challenges and Leveraged Perpetual Trading" width="880" />
+<img src="docs/assets/screenshots/readme/v065/home-en-desktop.jpg" alt="Openfund home: All Markets One Trading Platform, with Prop Trading Challenges and Leveraged Perpetual Trading" width="880" />
 
 </div>
 
+---
+
+**Contents** · [Overview](#project-overview) · [Products](#product-ecosystem) · [Gallery](#product-gallery) · [Feature status](#feature-status) · [Business model](#business-model) · [Architecture](#technical-architecture) · [Technology](#technology-stack) · [Development](#development-workflow) · [Releases](#versioning-and-releases) · [License](#license) · [Contributing](#contributing-and-security)
+
 ## Project overview
 
-Openfund is a trading-technology company building a platform for traders who
-want to prove their skill without risking their own capital first.
+Openfund is building a fairer trading ecosystem for traders who want to prove
+their skill before risking their own capital, and who want to be able to check
+the rules they are measured by.
 
-- **Who it serves.** Retail traders who want a structured, rules-based path to
-  larger trading accounts, and partners (ambassadors and trading coaches) who
-  bring and develop those traders.
-- **The problem.** Traditional prop-trading evaluations are opaque: rules are
-  hard to verify, purchases and payouts are hard to trace, and the business
-  economics behind them are invisible to the trader.
-- **The product.** A multilingual website (English and right-to-left Persian,
-  plus Arabic, Russian and Simplified Chinese) and a shared professional terminal.
-  Traders pick a challenge, trade a simulated account under published rules
-  that the server evaluates, and follow their account in a dashboard, portfolio
-  and journal. Sign-in is a wallet signature, not a password.
-- **Commercial purpose.** Openfund sells challenge evaluations. Transparency is
-  part of the product: rules, prices, the revenue model, partner commissions
-  and governance limits are published, and economic figures come only from
-  operational records.
+- **Prop trading evaluation.** Traders choose a challenge, trade a simulated
+  account under published rules, and the server — never the browser —
+  evaluates every rule from a frozen snapshot.
+- **One professional terminal.** Prop and Perpetual share a single terminal:
+  Vela charts with Pine indicators, order panel with risk preview, positions,
+  portfolio and a trade journal.
+- **Read-only market intelligence.** Trade Radar follows public Hyperliquid
+  whale activity; the Market Heatmap maps perpetual markets by volume or open
+  interest. Neither touches orders or accounts.
+- **Desktop.** Open Trade is a lightweight desktop workspace built around the
+  chart — a focused workflow, not a cut-down web terminal.
+- **Transparency.** Rules, prices, the revenue model, partner commissions and
+  governance limits are published; economic figures come only from
+  operational records. The repository is public so all of this can be checked.
 
-Openfund is early-stage. Nothing in this repository is a claim of revenue,
-user numbers, funding, partnerships or regulatory approval.
+Openfund is early-stage. Nothing here claims revenue, user numbers, funding,
+partnerships or regulatory approval.
 
 ## Product ecosystem
 
-Status reflects the [feature register](docs/product/FEATURE_STATUS.md) and the
-running service at [`/version`](https://openfi.cloud/version), not plans.
-
-| Module | What it does | Status |
+| | What it is | Where |
 | --- | --- | --- |
-| **Openfund Prop** | Simulated challenge accounts: Free Trial, Standard (two-phase), One-phase and Instant models | **Live** (simulation) |
-| **Trading terminal** | One shared terminal for Prop and Perpetual: Vela charts with Pine indicators, order book, market/limit/stop orders, SL/TP, positions and history | **Live** |
-| **Perpetual** | Read-only Gains Network market data and wallet-scoped Arbitrum One positions | **Live, read-only** (no execution) |
-| **User accounts** | Wallet identity, dashboard, portfolio, trade journal, purchase history and invoices | **Live** |
-| **Challenge evaluation** | Server-authoritative rule engine over a frozen rules snapshot | **Live** |
-| **Wallet authentication** | Sign-In with Ethereum on Arbitrum One, HttpOnly sessions | **Implemented; public-domain sign-in blocked** until the SIWE allowlist correction is deployed and verified with a real wallet |
-| **Checkout and purchases** | Server-priced orders, coupons, multi-chain DePay payments, on-chain verification, atomic provisioning | **Implemented, disabled in production** until the owner configures payments |
-| **Economy** | Transparency, Revenue Model and Live Market Access pages driven by operational records | **Live pages**, no live revenue data yet |
-| **Governance** | Hybrid Governance v1.0: off-chain Community Council, proposals and voting | **Implemented, not in production use** (no council seated) |
-| **Ambassador (IB)** | Brand Ambassador referral program with application, approval and commission ledger | **Implemented, not production-active** |
-| **Coach program** | Verified Trading Coach role with an independent approval track | **Implemented, not production-active** (depends on live trading) |
-| **Administration and CMS** | Directus for content, plan catalog and coupon administration; token-gated operational API | **Live CMS**; coupon administration verified locally, pending production bootstrap |
-| **Trade Radar and Market Heatmap** | Read-only public Hyperliquid analytics in the terminal (whale tape, positioning, wallet profiles, market treemap) through a shared backend cache | **v0.6.5 candidate**, not deployed ([spec](docs/integrations/HYPERLIQUID_RADAR.md)) |
-| **Open Trade desktop** | Lightweight Electron workspace (1–4 Vela charts, watchlist, floating ticket) | **0.0.2 beta built and CI-verified** for macOS, Windows and Linux; unsigned, public download pending owner approval |
-| Mobile apps, rewards, protocol routing | — | **Planned** ([Roadmap](ROADMAP.md)) |
-
-<a id="product-gallery"></a>
+| **Website** | Product gateway, challenges, markets, rulebook, economy, governance, learning, certificates verification, roadmap — in Persian (RTL), English, Arabic (RTL), Russian and Simplified Chinese | [openfi.cloud](https://openfi.cloud) |
+| **Web Terminal** | The complete workspace: trading, charts, portfolio, journal, accounts, leaderboard, certificates, purchases, Trade Radar and Heatmap | `/:locale/prop/trade` |
+| **Open Trade (desktop)** | Lightweight Electron workspace: one to four independent Vela charts, compact watchlist, floating order ticket, positions strip, keyboard shortcuts | [Release preparation](docs/releases/open-trade-0.0.2.md) |
+| **Certificates** | Purchase, completion and payout certificates issued from recorded events, verifiable by serial or QR in either region | `/:locale/certificate-verification` |
+| **Backstage** | Directus for editorial content, plan catalog and coupons; token-gated operational API | Operators only |
 
 ## Product gallery
 
-Genuine captures of the running application. Public pages are from production
-(openfi.cloud, v0.4.4) on 2026-11-11. Signed-in views use a disposable test
-wallet on a local test runtime of the same code, because production purchases
-are not yet enabled. Provenance for every image is in the
-[screenshot manifest](docs/assets/screenshots/manifest.json).
+Genuine captures. Website and terminal: local test runtime of the v0.6.5
+candidate with live public market data and published CMS content (no
+personal wallet). Desktop: Open Trade 0.0.2. Provenance for every image is in
+the [screenshot manifest](docs/assets/screenshots/manifest.json).
 
-**Challenges**
-
-| Challenge selection | Challenge detail and rules |
+| Trading terminal | Trade Radar — aggregated whale positioning |
 | --- | --- |
-| ![Challenges landing page: "Your skill deserves a bigger opportunity"](docs/assets/screenshots/readme/challenges-en-desktop.jpg) | ![Standard challenge, 10k account, 8% + 5% target, 10% max loss, 80% reward share, $80 fee](docs/assets/screenshots/readme/challenge-builder-en-desktop.jpg) |
-| ![Evaluation rules, funded account and rewards panels for the Standard challenge](docs/assets/screenshots/readme/challenge-rules-en-desktop.jpg) | ![Challenge checkout with an internal 100% test coupon: amount due $0 (local test runtime)](docs/assets/screenshots/readme/checkout-coupon-en-desktop.jpg) |
+| ![Prop terminal: BTC/USD Vela chart, order book and order panel](docs/assets/screenshots/readme/v065/terminal-en-desktop.jpg) | ![Trade Radar: long and short traders, values and weighted entries per coin from top Hyperliquid leaderboard wallets](docs/assets/screenshots/readme/v065/radar-en-desktop.jpg) |
 
-**Trading and accounts**
-
-| Trading terminal | User dashboard |
+| Market Heatmap | Open Trade desktop — four charts |
 | --- | --- |
-| ![Prop terminal: BTC/USD chart from Gains market data, order book and order ticket](docs/assets/screenshots/readme/prop-terminal-en-desktop.jpg) | ![Prop dashboard with a Free Trial account and a provisioned Standard challenge (local test runtime)](docs/assets/screenshots/readme/prop-dashboard-en-desktop.jpg) |
+| ![Market Heatmap: Hyperliquid perpetuals sized by 24h volume and coloured by 24h change](docs/assets/screenshots/readme/v065/heatmap-en-desktop.jpg) | ![Open Trade 0.0.2 with four independent Vela charts and a floating order ticket](docs/assets/screenshots/readme/v065/open-trade-four-charts.jpg) |
 
-**Economy**
+| Applications | Certificate verification | Completion certificate (test record) |
+| --- | --- | --- |
+| ![Applications page comparing the Web Terminal and Open Trade](docs/assets/screenshots/readme/v065/applications-en-desktop.jpg) | ![Certificate verification page with lookup, three-step guide and templates](docs/assets/screenshots/readme/v065/verification-en-desktop.jpg) | <img src="docs/assets/screenshots/readme/v065/certificate-completion-fa.jpg" alt="Persian completion certificate issued to a disposable test wallet in an isolated database" width="300" /> |
 
-| Ambassador (IB) | Governance |
+| Home — light theme | Roadmap (Persian) | Mobile (Persian) |
+| --- | --- | --- |
+| ![Light theme homepage](docs/assets/screenshots/readme/v065/home-en-light.jpg) | ![Persian roadmap timeline](docs/assets/screenshots/readme/v065/roadmap-fa-desktop.jpg) | <img src="docs/assets/screenshots/readme/v065/home-fa-mobile.jpg" alt="Persian homepage on a 390 px phone" width="200" /> |
+
+More: [challenges, checkout, dashboard and economy pages](docs/assets/screenshots/readme/) from production v0.4.4.
+
+## Feature status
+
+From the [feature register](docs/product/FEATURE_STATUS.md). "Production" means
+served at [`/version`](https://openfi.cloud/version); a merged change is not
+production until `/version` reports it.
+
+| Status | Capabilities |
 | --- | --- |
-| ![Ambassador (IB) page: Brand Ambassador and Verified Trading Coach roles](docs/assets/screenshots/readme/ambassador-en-desktop.jpg) | ![Governance page: Community-Governed Development, Company-Managed Treasury](docs/assets/screenshots/readme/governance-en-desktop.jpg) |
-| ![Transparency page: the Openfund economy in verifiable numbers](docs/assets/screenshots/readme/transparency-en-desktop.jpg) | ![Revenue Model page: how the Openfund economy works](docs/assets/screenshots/readme/revenue-model-en-desktop.jpg) |
-
-**Administration (Directus CMS, test data)**
-
-| Coupon administration | Coupon with redemption counters |
-| --- | --- |
-| ![Directus coupon form: challenge models and allowed customers](docs/assets/screenshots/readme/cms-coupon-form.jpg) | ![Directus coupon item: 100% internal test coupon, active, limited to one use](docs/assets/screenshots/readme/cms-coupon-detail.jpg) |
-
-**Mobile and Persian**
-
-| Home (mobile) | Terminal (mobile) | Challenges (mobile) | Persian home (desktop) |
-| --- | --- | --- | --- |
-| <img src="docs/assets/screenshots/readme/home-en-mobile.jpg" alt="Openfund home on a 390 px phone" width="180" /> | <img src="docs/assets/screenshots/readme/prop-terminal-en-mobile.jpg" alt="Prop terminal chart on a 390 px phone" width="180" /> | <img src="docs/assets/screenshots/readme/challenges-en-mobile.jpg" alt="Challenges page on a 390 px phone" width="180" /> | <img src="docs/assets/screenshots/readme/home-fa-desktop.jpg" alt="Persian right-to-left homepage" width="320" /> |
-
-Not captured: a real paid checkout (purchases are disabled in production) and
-a seated governance council (none exists).
+| **Production** | Prop simulation (Free Trial, Standard, One-phase, Instant); shared terminal; Perpetual read-only market data and wallet-scoped positions; dashboard, portfolio, journal, invoices; server challenge evaluation; CMS; transparency, revenue-model and live-market pages |
+| **Implemented, not deployed** (v0.6.5 candidate, [PR #122](https://github.com/algomanlife/openfund/pull/122)) | Trade Radar and Market Heatmap; certificate designs and verification page; terminal Persian terminology and footer; homepage and site-wide redesign; Applications and Roadmap pages |
+| **Implemented, not active** | Checkout and purchases (payments disabled until configured); Hybrid Governance v1.0 (no council seated); Ambassador and Coach programs; Iran regional runtime and synchronization ([ADR 0033](docs/decisions/0033-regional-authority-and-synchronization.md)) |
+| **Beta** | Open Trade 0.0.2 — built and acceptance-tested for macOS, Windows and Linux; unsigned; publication awaiting owner approval |
+| **Blocked** | Gains transaction execution (needs supported contracts, simulation and security review); live DePay acceptance; public-domain wallet sign-in until the SIWE allowlist fix is deployed and verified |
+| **Planned** | Mobile apps; protocol routing; advanced order workflows — see the [roadmap](ROADMAP.md) |
 
 ## Business model
 
@@ -170,67 +154,70 @@ administrators and operators.
 
 ## Technical architecture
 
-One web service serves the React application and the API from the same
-origin, so session cookies stay first-party. PostgreSQL is the single store,
-shared with Directus, which edits content and catalog tables.
+One reviewed source serves two independently operated regions. Each region
+runs the API and web app from the same origin, so session cookies stay
+first-party.
 
 ```mermaid
 flowchart TB
-  subgraph Browser
-    SPA["React app<br/>website + terminal"]
-    Wallet["Wallet<br/>(RainbowKit, wagmi)"]
-    DePayBtn["DePay button"]
+  subgraph Client["Browser / Open Trade desktop"]
+    Web["React app<br/>website + terminal"]
+    Wallet["Wallet (SIWE)"]
   end
-  subgraph Render["Render (Frankfurt)"]
-    API["openfund<br/>Node.js API + SPA<br/>engine, SSE, purchases"]
-    CMS["openfund-cms<br/>Directus 11.17.4"]
-    DB[("openfund-db<br/>PostgreSQL 17")]
+  subgraph Global["GLOBAL — Render (Frankfurt), live"]
+    API["Node.js API + SPA<br/>engine · evaluation · purchases<br/>certificates · radar cache"]
+    CMS["Directus 11.17.4"]
+    DB[("PostgreSQL 17")]
   end
-  Gains["Gains Network<br/>market data"]
-  DePay["DePay"]
-  Chains["Payment chains<br/>EVM + Solana RPC"]
-  Arb["Arbitrum One RPC<br/>(contract-wallet sign-in)"]
+  subgraph Iran["IRAN — Liara, prepared, not deployed"]
+    APIIR["Same release<br/>regional runtime"]
+    DBIR[("PostgreSQL")]
+  end
+  Gains["Gains Network<br/>markets, prices, VOB"]
+  HL["Hyperliquid public API<br/>(read-only analytics)"]
+  Pay["DePay + payment chains"]
 
-  SPA -->|"REST, SSE"| API
-  SPA -->|"public content"| CMS
-  SPA -->|"quotes, charts"| Gains
-  Wallet -->|"SIWE signature"| API
+  Web -->|REST, SSE| API
+  Wallet -->|signature| API
   API --> DB
   CMS --> DB
-  API -->|"prices, positions"| Gains
-  API -.->|"EIP-1271 checks"| Arb
-  DePayBtn --> DePay
-  DePay -->|"signed config, callbacks, events"| API
-  API -->|"verify payment"| Chains
+  API -->|market data| Gains
+  API -->|one shared cache + socket| HL
+  API -->|verify payments| Pay
+  APIIR --> DBIR
+  API <-.->|"signed, ordered sync<br/>one home region per account"| APIIR
 ```
 
-- **Wallet authentication** is Arbitrum One only. **Payments** are independent
-  of it: DePay offers every settlement chain the owner configures, and the
-  backend verifies each payment on its own chain. See [DePay](docs/payments/DEPAY.md).
+- **Trading engine boundary.** Orders, positions, PnL and evaluation are
+  decided only by the backend engine; analytics modules (Radar, Heatmap) are
+  GET-only and isolated from it.
+- **Regions.** Every trading account has exactly one home region enforced by
+  the database; the other region holds a read model through signed
+  synchronization. Liara is prepared and documented but not deployed.
 - **Content versus data.** Directus holds editorial content, the plan catalog
-  and coupon administration. Market data comes from Gains. Prices, orders and
-  payments are decided only by the backend.
-- More: [Architecture](docs/architecture/ARCHITECTURE.md) · [Flows](docs/architecture/FLOWS.md) · [Product contracts](docs/architecture/PRODUCT_TERMINALS.md)
+  and coupons; market data comes from Gains (and Hyperliquid for read-only
+  analytics); prices, orders and payments are decided only by the backend.
+- More: [Architecture](docs/architecture/ARCHITECTURE.md) · [Regional runtime](docs/decisions/0033-regional-authority-and-synchronization.md) · [Trade Radar](docs/integrations/HYPERLIQUID_RADAR.md) · [Gains](docs/integrations/GAINS.md) · [Certificates](docs/decisions/0033-certificate-event-attestations.md)
 
 ## Technology stack
 
-Verified against the package manifests.
+Versions verified against the lockfiles and CI configuration.
 
 | Layer | Technology |
 | --- | --- |
-| Frontend | React 19, TypeScript 5.9, Vite 6, React Router 7 |
-| Wallet | RainbowKit 2, wagmi 2, viem 2, Sign-In with Ethereum |
-| Charts and market data | Vela 0.10.6, Vela Pine addon 0.3.4, PineTS 0.13.1, Gains Network API |
-| Backend | Node.js 22, Express 4, `pg`, decimal.js, viem, `ws` |
-| Database | PostgreSQL 17 |
-| CMS | Directus 11.17.4 (official Docker image) |
-| Payments | DePay (button, dynamic configuration, signed callbacks and events) |
-| Testing | Node test runner, Playwright browser suites |
-| CI/CD | GitHub Actions (CI, unified release, gated deploy), gitleaks, Dependabot |
-| Hosting | Render Blueprint (`render.yaml`): web service, Docker CMS, managed PostgreSQL |
-| Monitoring | `/health`, `/version`, Render logs, payment review queue |
+| Web | React 19.3, TypeScript 7.0, Vite 8.3, React Router 7 |
+| Wallet | RainbowKit 2, wagmi 2, viem 2, Sign-In with Ethereum (Arbitrum One) |
+| Charts and data | Vela 0.10.6, Vela Pine addon 0.3.4, PineTS 0.13.1; Gains Network API; Hyperliquid public API |
+| Backend | Node.js 26, Express 5.3, `pg`, decimal.js, viem, `ws` |
+| Data | PostgreSQL 17; Directus 11.17.4 |
+| Desktop | Electron 45.3, electron-builder (DMG, NSIS, AppImage, deb) |
+| Payments | DePay (signed configuration, callbacks, events); on-chain verification |
+| Quality | Node test runner, Playwright browser suites, CodeQL, gitleaks, dependency review |
+| Delivery | GitHub Actions; Render Blueprint (`render.yaml`); Liara runtime image (`infra/liara-iran-runtime`) |
 
-[Technology registry](docs/architecture/TECH_STACK.md) · [Upstream provenance](docs/integrations/UPSTREAM.md)
+Design system: shared tokens and primitives in
+[`design-system.css`](apps/web-react/src/styles/design-system.css)
+([guide](docs/design/DESIGN_SYSTEM.md)).
 
 ## Infrastructure
 
@@ -238,6 +225,7 @@ Verified against the package manifests.
 | --- | --- |
 | **GitHub** | Canonical repository; protected `main` with required checks; releases and tags |
 | **Render** | `openfund` (Node web service, API + SPA), `openfund-cms` (Directus image with a persistent media disk), `openfund-db` (PostgreSQL 17), all in Frankfurt. Commit auto-deploy is off |
+| **IRAN region** | Liara runtime image and desired-state manifest (`infra/liara-iran-runtime`, ADR 0033): same release, own database, signed synchronization. Prepared and CI-built; **not deployed** |
 | **Domains** | `openfi.cloud` and `openfund.cloud` serve the same service |
 | **Deployment** | A maintainer publishes a release; the release workflow deploys the exact tagged commit after environment approval and checks `/version` on both domains |
 | **Build** | `node scripts/release/render-build.mjs` builds the frontend; migrations run at start-up and are additive and idempotent |
@@ -249,6 +237,8 @@ Verified against the package manifests.
 
 ## Development workflow
 
+Requires Node.js 26 and a local PostgreSQL.
+
 ```bash
 npm ci
 npm ci --include=dev --prefix apps/web-react
@@ -257,78 +247,88 @@ createdb openfund_dev
 export DATABASE_URL=postgresql://localhost:5432/openfund_dev
 npm run migrate --prefix apps/backend
 npm run seed-plans --prefix apps/backend
-PORT=8180 npm run dev:backend
+npm run build:web                 # the backend serves react/
+PORT=8180 npm run dev:backend     # http://localhost:8180
 ```
 
-In a second terminal: `VITE_BACKEND_URL=http://localhost:8180 npm run dev:web`.
+For hot reload, run `VITE_BACKEND_URL=http://localhost:8180 npm run dev:web`
+in a second terminal. Desktop: `npm ci --prefix apps/open-trade && npm run dev --prefix apps/open-trade`.
 
-| Topic | Where |
-| --- | --- |
-| Repository layout | `apps/web-react` (frontend), `apps/backend` (API, engine, payments), `apps/backstage` (Directus tooling), `packages/` (shared sources), `vendor/` and `third_party/` (upstream code), `docs/` |
-| Environment | [.env.example](.env.example), [Environment variables](docs/deployment/ENVIRONMENT.md) |
-| Checks | `npm run docs:check`, `npm run typecheck`, `npm run test:web`, `npm run validate:blueprint`, `npm run test:backend` (isolated test database) |
-| Pull requests | Branch from `main`, Conventional Commits, PR template ([Pull requests](docs/development/PULL_REQUESTS.md), [CONTRIBUTING.md](CONTRIBUTING.md)) |
-| Full engineering reference | [Engineering reference](docs/development/ENGINEERING_REFERENCE.md): installation, database, services, CMS, wallet, payments, coupons, testing, CI/CD, release, deployment, security, monitoring |
-| Troubleshooting | [Local development](docs/development/LOCAL_DEVELOPMENT.md), [Testing](docs/development/TESTING.md) |
+**Tests.** `npm run typecheck`, `npm run test:web`, `npm run test:release`,
+`npm run validate:blueprint`, `npm run docs:check`; backend suites need a
+disposable database: `TEST_BACKEND_URL=… DATABASE_URL=postgres://…/openfund_test npm run test:backend`.
+Never point tests at a database you care about.
+[Testing guide](docs/development/TESTING.md) · [Local development](docs/development/LOCAL_DEVELOPMENT.md) · [Engineering reference](docs/development/ENGINEERING_REFERENCE.md)
 
 ## Versioning and releases
 
-- **Latest official release:** shown by the *release* badge above and on the
-  [Releases page](https://github.com/algomanlife/openfund/releases); history in
-  the [changelog](CHANGELOG.md).
-- **Deployed version:** shown by the *deployed* badge, read live from
-  [`/version`](https://openfi.cloud/version), which returns the version, exact
-  commit and whether the build is an official release. A deployed build is not
-  automatically an official release; a merged pull request is not deployed
-  until `/version` says so.
-- **Repository version:** tags are `vMAJOR.MINOR.PATCH`, allocated from
-  Conventional Commits. `package.json` versions describe components, not the
-  application. See [Releases](docs/deployment/RELEASES.md).
+| | Versioning | Where |
+| --- | --- | --- |
+| **Web platform** | `vMAJOR.MINOR.PATCH` tags allocated from Conventional Commits; an owner-approved manual dispatch may choose the patch inside a newly allocated line (e.g. v0.6.5) | [Releases](https://github.com/algomanlife/openfund/releases) · [runbook](docs/deployment/RELEASES.md) |
+| **Open Trade desktop** | Independent version (0.0.2); pre-release tags `open-trade-vX.Y.Z` | [0.0.2 preparation](docs/releases/open-trade-0.0.2.md) |
+
+`/version` returns the deployed version, the exact commit and whether the build
+is an official release. Render and Liara deploy independently from the same
+tagged commit; merging does not deploy either.
 
 ```bash
 curl -s https://openfi.cloud/version
-gh release list -R algomanlife/openfund
 ```
+
+## Roadmap
+
+The [roadmap](ROADMAP.md) lists seven phases ordered by dependency, each tied
+to milestones with acceptance criteria in the
+[milestone register](docs/roadmap/MILESTONES.md). The website Roadmap page
+mirrors it. The owner's product roadmap will be added there; no dates or
+completion percentages are published before then.
 
 ## License
 
-**No first-party license has been selected yet (owner decision pending), so no
-open-source licence is granted: Openfund's own code is all rights reserved.**
-The repository is public for transparency; viewing it does not grant a right
-to copy, modify or redistribute. The options and blockers are in the
-[license decision document](docs/legal/LICENSE_DECISION.md).
-Third-party components keep their own terms:
+**No first-party license has been chosen yet.** Openfund's own code is
+therefore all rights reserved: the repository is public for transparency, but
+that does not grant a right to copy, modify or redistribute it. The options,
+their consequences and the blockers are prepared for the owner in the
+[license decision](docs/legal/LICENSE_DECISION.md).
+
+Third-party components keep their own terms (full list in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)):
 
 | Component | License | Note |
 | --- | --- | --- |
 | Vela | Apache-2.0 + NOTICE | Visible "Vela" attribution on chart screens |
-| PineTS, Vela Pine addon | AGPL-3.0-only | Shipped in the web bundle, modified worker; source-offer obligations under review ([PineTS report](docs/legal/PINETS.md)) |
+| PineTS, Vela Pine addon | AGPL-3.0-only | Shipped in the web bundle; source-offer obligations under review ([report](docs/legal/PINETS.md)) |
+| drkxbt/whales, drkxbt/charts | MIT | Logic adapted for Trade Radar and Heatmap ([provenance](third_party/drkxbt-whales/PROVENANCE.md)) |
 | LuxAlgo journal-core, Gains SDK | MIT | Vendored with notices |
 | MetaMask SDK | ConsenSys licence | Notice shipped; commercial-use terms under review |
+| Directus | BSL 1.1 (11.17.4) | Separate service, not redistributed |
 | Openfund Protocol (dormant) | GPL-2.0 | Not built or shipped |
-| Vazirmatn, Ubuntu fonts | OFL 1.1, Ubuntu Font Licence 1.0 | Licence texts shipped beside the fonts |
-| Irancell-derived fonts | Unresolved ("all rights reserved" in the font files) | Provenance needed before any license decision |
+| Irancell-derived fonts, Pine indicators | **Unresolved** | Provenance needed before any license decision |
 
-[Licensing report](docs/legal/LICENSING.md) · [Third-party notices](THIRD_PARTY_NOTICES.md) · [Dependency licenses](docs/legal/DEPENDENCY_LICENSES.md)
+[Licensing report](docs/legal/LICENSING.md) · [Dependency licenses](docs/legal/DEPENDENCY_LICENSES.md)
 
 ## Contributing and security
 
-Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) (fork,
-set up, branch, test, open a pull request) and the
-[documentation index](docs/README.md); look for issues labelled
-[`good first issue`](https://github.com/algomanlife/openfund/labels/good%20first%20issue).
-Ordinary local development needs no production credentials.
+Contributions are welcome — start with [CONTRIBUTING.md](CONTRIBUTING.md):
+
+1. Branch from `main` (`feature/…`, `fix/…`; agents use `agent/<name>/<task>`).
+2. Use Conventional Commits; keep changes scoped; update docs, the feature
+   register and the changelog with the code.
+3. Run the checks above; open a pull request using the template — it lists
+   tests, risks and screenshots, and CI enforces it.
+4. Required checks must pass; merging does not deploy.
+
+Until a license is chosen, the terms for accepting contributions are also an
+open owner decision; the maintainer may ask you to confirm you have the right
+to submit your work ([CONTRIBUTING.md](CONTRIBUTING.md)).
 
 | | |
 | --- | --- |
-| Security vulnerabilities | Report **privately** through [SECURITY.md](SECURITY.md), never in a public issue |
-| Questions and help | [SUPPORT.md](SUPPORT.md) |
-| Community standards | [Code of conduct](CODE_OF_CONDUCT.md) |
-| Who reviews, merges and releases | [Repository governance](docs/development/REPOSITORY_GOVERNANCE.md) |
+| Security vulnerabilities | Report **privately** via [SECURITY.md](SECURITY.md) — never in a public issue |
+| Questions | [SUPPORT.md](SUPPORT.md) |
+| Conduct | [Code of conduct](CODE_OF_CONDUCT.md) |
+| Review and release authority | [Repository governance](docs/development/REPOSITORY_GOVERNANCE.md) |
 | Coding agents | [AGENTS.md](AGENTS.md) |
-
-Merging a pull request does not deploy it, and a release is not live until
-`/version` reports it (see [Versioning and releases](#versioning-and-releases)).
 
 <div align="center">
 
@@ -337,15 +337,3 @@ Merging a pull request does not deploy it, and a release is not live until
 [openfi.cloud](https://openfi.cloud) · [openfund.cloud](https://openfund.cloud) · [Releases](https://github.com/algomanlife/openfund/releases) · [Changelog](CHANGELOG.md)
 
 </div>
-
-## Open Trade desktop beta
-
-The separate [Open Trade application](apps/open-trade/README.md) is In Progress
-on `feature/open-trade-desktop`. It shares Vela and the existing backend. Internal
-unsigned packaging is separate from the web release; public distribution and
-real-wallet acceptance remain gated. See [acceptance](apps/open-trade/ACCEPTANCE.md).
-
-
-The website Applications page lists the Web Terminal and reviewed installer
-availability. See the [distribution notes](docs/reviews/final-refinement/website.md)
-for the evidence required before publishing a desktop download.

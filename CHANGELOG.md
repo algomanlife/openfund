@@ -23,6 +23,23 @@ v0.6.5 needs an owner decision (see the delivery record).
   owner-specified "live from the market" label (also on phones); `/en`, `/ru`, `/zh-CN` keep their
   language; a phone-width overflow (670px) fixed.
 - ADR 0035; third-party notices for drkxbt/whales and drkxbt/charts.
+- **Website redesign:** homepage rebuilt on the shared tokens (hero, product
+  cards that stack on phones, consistent CTAs, technical-horizon cards,
+  aurora accents); a site-wide layer gives every information page the same
+  card system, hero treatment and scroll reveals; reduced-motion safe.
+- **Responsive and accessibility:** 480-load audit (9 widths in fa/en, 2 in
+  ar/ru/zh-CN) — fixed hidden-table overflow on Transparency, small targets
+  and 9-10px labels on Challenges, light-theme contrast below 4.5:1 on new
+  pages, and 110 missing ar/ru/zh-CN strings on Governance and Contact.
+- **Release tooling:** an owner-approved dispatch may choose the patch inside
+  the newly allocated line (0.6.0 -> 0.6.5); tests cover skips, reuse and
+  out-of-line versions.
+- **Open Trade 0.0.2:** CI installers verified (SHA-256, metadata, macOS
+  launch); publication pack and download-manifest generator prepared; no
+  release published.
+- **README** redesigned with current captures, regional architecture, verified
+  versions and status categories; licence decision addendum for desktop
+  distribution.
 
 ## Unreleased — Open Trade desktop beta
 
