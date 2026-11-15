@@ -16,7 +16,8 @@ test('Chart tab sits next to Trading and shares the Trading workspace element', 
   assert.match(main, /path: 'trade', element: <SharedTradingTerminal \/>/)
   assert.match(main, /path: 'chart', element: <SharedTradingTerminal \/>/)
   const shell = read('../src/features/terminal/TerminalShell.tsx')
-  assert.match(shell, /\["dashboard", "trade", "chart", "portfolio"\]/)
+  /* top-level tabs: Chart directly after Trading; Trade Radar and Heatmap (v0.6.5) follow the chart */
+  assert.match(shell, /TOP_LEVEL = \["dashboard", "trade", "chart", "radar", "heatmap", "portfolio"\]/)
   assert.match(shell, /page !== "trade" && page !== "chart" && page !== "purchases" && page !== "certificates" && <Editorial/)
 })
 

@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { git, nextVersion, requestedPatchVersion } from './lib.mjs';
+import { git, nextVersion, requestedVersion } from './lib.mjs';
 const sha=git('rev-parse','HEAD');
 const tags=git('tag','--merged',sha,'--list','v*').split('\n').filter(t=>/^v\d+\.\d+\.\d+$/.test(t));
 const exact=git('tag','--points-at',sha).split('\n').find(t=>/^v\d+\.\d+\.\d+$/.test(t));
@@ -10,6 +10,7 @@ if(requested && (process.env.GITHUB_EVENT_NAME!=='workflow_dispatch' || process.
 if(requested && exact && requested!==exact.slice(1))
   throw Error(`This commit already has immutable release tag ${exact}.`);
 const candidate=process.env.RELEASE_CANDIDATE==='true';
-const version=exact?.slice(1) || (candidate && latest ? latest.slice(1) : requested ? requestedPatchVersion(latest,requested) : nextVersion(tags,git('log','--format=%B',latest?`${latest}..${sha}`:sha)));
+const allocated=nextVersion(tags,git('log','--format=%B',latest?`${latest}..${sha}`:sha));
+const version=exact?.slice(1) || (candidate && latest ? latest.slice(1) : requested ? requestedVersion({latest,requested,allocated,tags}) : allocated);
 if(process.env.GITHUB_ENV)fs.appendFileSync(process.env.GITHUB_ENV,`RELEASE_VERSION=${version}\n`);
 console.log(version);

@@ -2,8 +2,9 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { useParams } from 'react-router-dom'
 import { apiFetch, useSession } from '../../session/useOpenfundSession'
 import { dirOf, normalizeLocale, pickRecord } from '../../i18n/locales'
-import { certificateCopy as copy, type Certificate, type CertificateKind } from './content'
+import { certificateCopy as copy, type Certificate } from './content'
 import CertificatePreview from './CertificatePreview'
+import CertificateTemplates from './CertificateTemplates'
 import './certificates.css'
 interface CertificateResponse { identity: { display_name: string | null } | null; certificates: Certificate[] }
 export default function CertificatesPage() {
@@ -25,19 +26,37 @@ export default function CertificatesPage() {
       const next = await apiFetch('/certificates'); if (!next.ok) throw new Error('failed'); setData(next.data)
     } catch { setError(t('failed')) } finally { setPending(false) }
   }
+  const signedIn = session.status === 'authenticated'
   return <section className="of-certificates-page" dir={dirOf(locale)}>
-    <p>{t('intro')}</p>
-    {session.status !== 'authenticated' ? <><p>{t('signIn')}</p><button className="button" onClick={() => (window as Window & { __ofOpenConnect?: () => void }).__ofOpenConnect?.()}>{t('connect')}</button></> : <>
-      {error && <p role="alert">{error}</p>}
-      {!data && !error && <p role="status">{t('loading')}</p>}
-      {data && !data.identity && <form className="of-certificate-setup" onSubmit={e => void setup(e)}>
-        <label htmlFor="certificate-name">{t('name')}</label><input id="certificate-name" value={name} maxLength={80} onChange={e => setName(e.target.value)} autoComplete="name" />
-        <p id="certificate-name-warning">{t('nameWarning')}</p><label className="of-certificate-consent"><input type="checkbox" required checked={confirmed} onChange={e => setConfirmed(e.target.checked)} aria-describedby="certificate-name-warning" />{t('confirm')}</label>
+    <header className="of-cert-hero">
+      <span className="of-cert-eyebrow">{t('title')}</span>
+      <h1>{t('heroTitle')}</h1>
+      <p>{t('intro')}</p>
+    </header>
+
+    {!signedIn ? <div className="of-cert-panel of-cert-signin">
+      <p>{t('signIn')}</p>
+      <button className="button" onClick={() => (window as Window & { __ofOpenConnect?: () => void }).__ofOpenConnect?.()}>{t('connect')}</button>
+    </div> : <>
+      {error && <p className="of-cert-notice" role="alert">{error}</p>}
+      {!data && !error && <p className="of-cert-notice" role="status">{t('loading')}</p>}
+      {data && !data.identity && <form className="of-certificate-setup of-cert-panel" onSubmit={e => void setup(e)}>
+        <h2>{t('setupTitle')}</h2>
+        <div className="of-cert-field">
+          <label htmlFor="certificate-name">{t('name')}</label>
+          <input id="certificate-name" value={name} maxLength={80} onChange={e => setName(e.target.value)} autoComplete="name" aria-describedby="certificate-name-warning" />
+        </div>
+        <p id="certificate-name-warning" className="of-cert-warning">{t('nameWarning')}</p>
+        <label className="of-certificate-consent"><input type="checkbox" required checked={confirmed} onChange={e => setConfirmed(e.target.checked)} aria-describedby="certificate-name-warning" /><span>{t('confirm')}</span></label>
         <button className="button" disabled={pending || !confirmed}>{t('confirm')}</button>
       </form>}
-      {data?.identity && !data.certificates.length && <p>{t('empty')}</p>}
-      {data?.certificates.map(c => <CertificatePreview key={c.serial} certificate={c} locale={locale} />)}
+      {data?.identity && !data.certificates.length && <p className="of-cert-notice">{t('empty')}</p>}
+      {!!data?.certificates.length && <section className="of-cert-issued" aria-labelledby="certificate-issued">
+        <header className="of-cert-section-head"><h2 id="certificate-issued">{t('yourCertificates')}</h2></header>
+        <div className="of-cert-issued-grid">{data.certificates.map(c => <CertificatePreview key={c.serial} certificate={c} locale={locale} />)}</div>
+      </section>}
     </>}
-    <div className="of-certificate-eligibility">{(['purchase', 'completion', 'payout'] as CertificateKind[]).map(kind => <article key={kind}><h2>{t(kind)}</h2><p>{t(`${kind}Eligibility`)}</p></article>)}</div>
+
+    <CertificateTemplates locale={locale} issued={signedIn ? data?.certificates ?? null : null} />
   </section>
 }

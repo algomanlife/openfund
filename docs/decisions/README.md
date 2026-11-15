@@ -39,3 +39,4 @@ Read newer decisions alongside historical ones; current implementation and expli
 
 - [0034 — Editorial and distribution authority](0034-editorial-and-distribution-authority.md)
 - [0033 — Certificate event attestations](0033-certificate-event-attestations.md)
+- [0035 — Design-system foundation and UI kit evaluation](0035-design-system-foundation-and-ui-kit-evaluation.md)

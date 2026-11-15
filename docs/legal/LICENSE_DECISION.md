@@ -121,3 +121,21 @@ The change set is ready to write and is deliberately not created yet:
 
 Vendored LICENSE and NOTICE files, `third_party/` provenance and the shipped
 notice files under `assets/notices/` stay unchanged in every option.
+
+## 7. v0.6.5 addendum (2026-11-15)
+
+- **New third-party code:** Trade Radar and Heatmap adapt logic from
+  `drkxbt/whales` and `drkxbt/charts` (MIT, © 2026 drk); LICENSE and NOTICE are
+  kept byte-identical in `third_party/` and shipped in `assets/notices/`. MIT is
+  compatible with every option above. VibeFarsi (MIT) was evaluated and not
+  used; no code was copied ([ADR 0035](../decisions/0035-design-system-foundation-and-ui-kit-evaluation.md)).
+- **Desktop distribution makes blockers 2 and 3 concrete.** Open Trade
+  installers bundle the AGPL Pine worker and the indicator sources. Publishing
+  them conveys object code (AGPL §6: link the Corresponding Source — the
+  tagged commit) and distributes the indicator scripts whose licence is
+  unresolved. Details: [Open Trade 0.0.2 release](../releases/open-trade-0.0.2.md).
+- **Unchanged recommendation.** Option B (AGPL-3.0-or-later for first-party
+  code) remains the only option without a licence conflict in the shipped
+  chart bundle; option C needs counsel on the AGPL boundary. Blockers 1
+  (Irancell fonts — web only) and 2 (indicators — web and desktop) still have
+  to be cleared by the owner first. This document does not select a licence.

@@ -1,5 +1,46 @@
 # Changelog
 
+## Unreleased — v0.6.5 candidate (branch `agent/claude/v0.6.5-modernization`)
+
+Implemented and locally verified; **not merged, not released, not deployed**.
+The release tooling would currently allocate 0.6.0 after v0.5.0; publishing as
+v0.6.5 needs an owner decision (see the delivery record).
+
+- **Certificates:** three branded square designs (purchase, completion,
+  payout) rendered on the existing region-aware issuance and verification
+  APIs; anonymous template previews for everyone; Persian/Latin-safe canvas
+  text; redesigned verification page with an explicit "unavailable" state.
+- **Trade Radar** and **Market Heatmap** terminal tabs: read-only public
+  Hyperliquid data behind one shared backend cache and socket (adapted from
+  drkxbt/whales and drkxbt/charts, MIT).
+- **Terminal copy:** the approved Persian "entry point" label is enforced over
+  CMS text; owner-specified virtual order book copy with Gains/Hyperliquid
+  marks; the footer shows only the Persian "live" label with source marks;
+  Support opens the localized Contact page.
+- **Website:** Applications page redesign with real Open Trade 0.0.2
+  captures and CI build evidence (no download links); Roadmap page mirroring
+  ROADMAP.md; shared design-system layer; the Persian ticker shows only the
+  owner-specified "live from the market" label (also on phones); `/en`, `/ru`, `/zh-CN` keep their
+  language; a phone-width overflow (670px) fixed.
+- ADR 0035; third-party notices for drkxbt/whales and drkxbt/charts.
+- **Website redesign:** homepage rebuilt on the shared tokens (hero, product
+  cards that stack on phones, consistent CTAs, technical-horizon cards,
+  aurora accents); a site-wide layer gives every information page the same
+  card system, hero treatment and scroll reveals; reduced-motion safe.
+- **Responsive and accessibility:** 480-load audit (9 widths in fa/en, 2 in
+  ar/ru/zh-CN) — fixed hidden-table overflow on Transparency, small targets
+  and 9-10px labels on Challenges, light-theme contrast below 4.5:1 on new
+  pages, and 110 missing ar/ru/zh-CN strings on Governance and Contact.
+- **Release tooling:** an owner-approved dispatch may choose the patch inside
+  the newly allocated line (0.6.0 -> 0.6.5); tests cover skips, reuse and
+  out-of-line versions.
+- **Open Trade 0.0.2:** CI installers verified (SHA-256, metadata, macOS
+  launch); publication pack and download-manifest generator prepared; no
+  release published.
+- **README** redesigned with current captures, regional architecture, verified
+  versions and status categories; licence decision addendum for desktop
+  distribution.
+
 ## Unreleased — Open Trade desktop beta
 
 - Add an isolated Electron desktop companion, shared Vela chart integration and

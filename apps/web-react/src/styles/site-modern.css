@@ -1,0 +1,66 @@
+/* ==========================================================================
+   Public website layer (v0.6.5). Applies the shared design-system tokens to
+   the components every public page already uses, so the 18 information
+   pages share one card system, hero treatment and motion vocabulary
+   without per-page rewrites. Scoped to .information-page (never the
+   terminal). Motion is transform/opacity only and stops under
+   prefers-reduced-motion.
+   ========================================================================== */
+
+/* --- information hero: aurora accent + gradient accent line -------------- */
+.information-page .info-hero { position: relative; isolation: isolate; overflow-x: clip; }
+.information-page .info-hero::before { content: ""; position: absolute; inset: -40px 0 auto; block-size: 420px; z-index: -1; pointer-events: none;
+  background: radial-gradient(42% 60% at 50% 30%, color-mix(in srgb, var(--mint) 16%, transparent), transparent 70%),
+              radial-gradient(25% 45% at 78% 15%, color-mix(in srgb, var(--mint) 9%, transparent), transparent 70%);
+  animation: site-breathe 14s ease-in-out infinite alternate; }
+.information-page .info-hero h1 { text-wrap: balance; }
+.information-page .info-hero h1 em { font-style: normal;
+  background: linear-gradient(100deg, var(--mint) 0%, #d7fff0 40%, var(--mint) 65%, #5cc79c 100%); background-size: 220% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent; animation: site-sheen 6s var(--ds-ease-out) .4s both; }
+html[data-theme=light] .information-page .info-hero h1 em { background-image: linear-gradient(100deg, #087b4a 0%, #14a86a 45%, #087b4a 70%, #065f39 100%); }
+.information-page .info-hero > :is(.eyebrow, h1, .hero-intro) { animation: site-rise .8s var(--ds-ease-out) both; }
+.information-page .info-hero > h1 { animation-delay: .08s; }
+.information-page .info-hero > .hero-intro { animation-delay: .16s; text-wrap: pretty; }
+
+/* --- one card system ------------------------------------------------------ */
+.information-page :is(.co-card, .gv-card, .gv-seat, .tool-card, .model-card, .learn-path-card, .feature-card, .co-plan, .econ-panel, .econ-kpi, .philosophy-panel) {
+  position: relative; isolation: isolate; border-radius: var(--ds-radius-lg);
+  transition: transform .45s var(--ds-ease-out), border-color .45s, box-shadow .45s, background-color .45s; }
+.information-page :is(.co-card, .gv-card, .tool-card, .model-card, .learn-path-card, .feature-card, .co-plan, .econ-panel):hover {
+  transform: translateY(-3px); border-color: color-mix(in srgb, var(--mint) 35%, transparent); box-shadow: var(--ds-glow); }
+.information-page .econ-kpi:hover { border-color: color-mix(in srgb, var(--mint) 30%, transparent); }
+/* pointer-following border light (set by useSiteMotion; inert on touch) */
+.information-page :is(.co-card, .gv-card, .tool-card, .model-card, .learn-path-card, .feature-card, .co-plan)::after {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; pointer-events: none; opacity: 0; transition: opacity .35s;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), color-mix(in srgb, var(--mint) 80%, transparent), transparent 65%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+.information-page :is(.co-card, .gv-card, .tool-card, .model-card, .learn-path-card, .feature-card, .co-plan):hover::after { opacity: 1; }
+.information-page .faq-item { border-radius: var(--ds-radius-md); transition: border-color .3s, background-color .3s; }
+.information-page .faq-item:hover { border-color: color-mix(in srgb, var(--mint) 30%, transparent); }
+
+/* --- buttons and links: consistent touch targets --------------------------- */
+.information-page main :is(.button, button:not(.of-hm-tile)) { min-block-size: 44px; }
+.information-page main .button { border-radius: var(--ds-radius-sm); }
+
+/* --- scroll reveal (classes added by useSiteMotion) ------------------------- */
+.information-page .site-reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s var(--ds-ease-out), transform .8s var(--ds-ease-out); }
+.information-page .site-reveal.is-visible { opacity: 1; transform: none; }
+
+@keyframes site-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes site-sheen { from { background-position: 120% 0; } to { background-position: 0 0; } }
+@keyframes site-breathe { from { opacity: .75; transform: scale(1); } to { opacity: 1; transform: scale(1.06); } }
+
+@media (hover: none) { .information-page :is(.co-card, .gv-card, .tool-card, .model-card, .learn-path-card, .feature-card, .co-plan)::after { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .information-page .info-hero::before, .information-page .info-hero > *, .information-page .info-hero h1 em { animation: none !important; }
+  .information-page .site-reveal { opacity: 1; transform: none; transition: none; }
+  .information-page :is(.co-card, .gv-card, .tool-card, .model-card, .learn-path-card, .feature-card, .co-plan, .econ-panel):hover { transform: none; }
+}
+
+/* Transparency (light): warning status and table headers were 1.85 / 2.67:1. */
+html[data-theme=light] .information-page .econ-status.warn, html[data-theme=light] .information-page .econ-status.warn bdi { color: #7a4f0e; }
+html[data-theme=light] .information-page :is(.econ-panel, .econ-table) th { color: #4a5c53; }
+html[data-theme=light] .information-page .econ-panel bdi[style*="color"] { filter: none; }
+html[data-theme=light] .information-page .econ-kpi.warn :is(strong, bdi) { color: #7a4f0e; }
+/* visually hidden boxes sit at their container's start, never past its edge */
+.information-page .sr-only { inset-inline-start: 0; inset-block-start: 0; }

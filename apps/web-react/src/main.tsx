@@ -13,7 +13,10 @@ import Coach from './features/partners/Coach'
 /* the long-form Whitepaper (content + charts) loads only when visited */
 const Whitepaper = lazy(() => import('./features/whitepaper/Whitepaper'))
 import Faq from './features/faq/Faq'
+const Roadmap = lazy(() => import('./features/roadmap/Roadmap'))
 const CertificatesPage = lazy(() => import('./features/certificates/CertificatesPage'))
+const RadarPage = lazy(() => import('./features/radar/RadarPage'))
+const HeatmapPage = lazy(() => import('./features/radar/HeatmapPage'))
 const CertificateVerificationPage = lazy(() => import('./features/certificates/CertificateVerificationPage'))
 import Applications from './features/applications/Applications'
 import About from './features/company/About'
@@ -33,6 +36,8 @@ import ReferralEntry from './features/referral/ReferralEntry'
 import TerminalShell from './features/terminal/TerminalShell'
 import './theme-toggle.css'
 import './styles/header-controls.css'
+import './styles/design-system.css'
+import './styles/site-modern.css'
 import './brand/seasonal-logo.css'
 import { installSeasonalLogo } from './brand/seasonalLogo'
 import { SharedTradingTerminal } from './features/terminal/TradingPages'
@@ -47,7 +52,7 @@ import { WalletProvider } from './wallet/WalletProvider'
 import { SessionProvider } from './session/useOpenfundSession'
 import AppFrame from './features/loading/AppFrame'
 import { startThemeSync } from './theme'
-import { storedLocale, type AppLocale } from './i18n/locales'
+import { LOCALES, storedLocale, type AppLocale } from './i18n/locales'
 import { translateSource } from './i18n/messages'
 
 startThemeSync()
@@ -104,10 +109,13 @@ const LEGACY_SECTIONS: Record<string, { page: 'markets' | 'challenges' | 'about'
   en: { page: 'challenges' },
 }
 function LegacyAnchor() {
-  const segment = (useParams().section || '').toLowerCase()
-  const known = LEGACY_SECTIONS[segment]
+  const raw = useParams().section || '', segment = raw.toLowerCase()
+  /* a bare locale ('/en', '/zh-CN') keeps that language instead of the stored one */
+  const locale = LOCALES.find(l => l.toLowerCase() === segment)
+  const known = LEGACY_SECTIONS[segment] ?? (locale ? { page: 'challenges' as const } : undefined)
   if (known?.scroll) { try { sessionStorage.setItem('ofScrollTo', known.scroll) } catch { /* optional */ } }
-  const target = known ? `/${preferredLocale()}/${known.page}` : `/${preferredLocale()}/home`
+  const lang = locale ?? preferredLocale()
+  const target = known ? `/${lang}/${known.page}` : `/${lang}/home`
   return <Navigate to={target} replace />
 }
 
@@ -151,6 +159,7 @@ const routes = [
   { path: '/:locale/whitepaper', element: <Suspense fallback={null}><Whitepaper /></Suspense> },
   { path: '/:locale/certificate-verification', element: <Suspense fallback={null}><CertificateVerificationPage /></Suspense> },
   { path: '/:locale/apps', element: <Applications /> },
+  { path: '/:locale/roadmap', element: <Suspense fallback={null}><Roadmap /></Suspense> },
   { path: '/:locale/about', element: <About /> },
   { path: '/:locale/contact', element: <Contact /> },
   { path: '/:locale/faq', element: <Faq /> },
@@ -172,6 +181,9 @@ const routes = [
       { path: 'trade', element: <SharedTradingTerminal /> },
       /* same element type + position as 'trade': React keeps one workspace instance across the two tabs */
       { path: 'chart', element: <SharedTradingTerminal /> },
+      /* read-only Hyperliquid analytics, lazy so their code never loads with the chart */
+      { path: 'radar', element: <Suspense fallback={null}><RadarPage /></Suspense> },
+      { path: 'heatmap', element: <Suspense fallback={null}><HeatmapPage /></Suspense> },
       { path: 'portfolio', element: <ProductPortfolio /> },
       { path: 'journal', element: <ProductJournal /> },
       ...(product === 'prop' ? [

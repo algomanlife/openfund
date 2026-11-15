@@ -106,9 +106,11 @@ export default function TerminalShell({ product }: { product: Product }) {
   const accountsSection = page === "journal" && new URLSearchParams(search).get("section") === "accounts";
   const accountsPath = route(locale, product, "journal");
   const accountsHref = accountsPath + (accountsPath.includes("?") ? "&" : "?") + "section=accounts";
+  /* top-level tabs; Trade Radar and Heatmap sit beside the chart */
+  const TOP_LEVEL = ["dashboard", "trade", "chart", "radar", "heatmap", "portfolio"];
   const navigation = (
     <nav id="terminal-navigation" aria-label={t("ناوبری ترمینال", "Terminal navigation")}>
-      {primary[product].filter(([id]) => ["dashboard", "trade", "chart", "portfolio"].includes(id)).map(([id, fa, en]) => (
+      {primary[product].filter(([id]) => TOP_LEVEL.includes(id)).map(([id, fa, en]) => (
         <Link key={id} to={route(locale, product, id)} aria-current={page === id ? "page" : undefined}
           className={page === id ? "active" : ""}>
           {id === "trade" ? t("معاملات", "Trading") : t(fa, en)}
@@ -124,7 +126,7 @@ export default function TerminalShell({ product }: { product: Product }) {
         <summary>{t("بیشتر", "More")} <span aria-hidden="true">▾</span></summary>
         <div className="of-terminal-more-links">
           {primary[product].map(([id, fa, en]) => <Link key={id}
-            className={["dashboard", "trade", "chart", "portfolio"].includes(id) ? "of-compact-destination" : page === id ? "active" : undefined}
+            className={TOP_LEVEL.includes(id) ? "of-compact-destination" : page === id ? "active" : undefined}
             aria-current={page === id ? "page" : undefined} to={route(locale, product, id)}>{t(fa, en)}</Link>)}
           <Link className="of-compact-destination" to={route(locale, product, "journal")}>{t("ژورنال", "Journal")}</Link>
           <Link className="of-compact-destination" to={accountsHref}>{t("حساب‌ها", "Accounts")}</Link>

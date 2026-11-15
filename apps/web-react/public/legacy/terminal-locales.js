@@ -289,6 +289,7 @@
         'Market depth unavailable.': 'عمق السوق غير متاح.', 'Price': 'السعر', 'Size': 'الحجم', 'Total': 'الإجمالي', 'Spread': 'الفارق',
         'No executed trades received from the provider.': 'لم تصل صفقات منفّذة من المزوّد.',
         'Gains VOB · vault-based virtual liquidity': 'Gains VOB · سيولة افتراضية قائمة على الخزينة',
+        'vault-based virtual liquidity': 'سيولة افتراضية قائمة على الخزينة',
         'Disconnected; reconnecting…': 'انقطع الاتصال؛ جارٍ إعادة الاتصال…', 'Connecting to Gains…': 'جارٍ الاتصال بـ Gains…',
         'Gains depth unavailable.': 'عمق Gains غير متاح.', 'Depth data is stale.': 'بيانات العمق غير محدّثة.',
         'Account unavailable.': 'الحساب غير متاح.'
@@ -350,6 +351,7 @@
         'Market depth unavailable.': 'Глубина рынка недоступна.', 'Price': 'Цена', 'Size': 'Объём', 'Total': 'Итого', 'Spread': 'Спред',
         'No executed trades received from the provider.': 'Провайдер не передал исполненных сделок.',
         'Gains VOB · vault-based virtual liquidity': 'Gains VOB · виртуальная ликвидность хранилища',
+        'vault-based virtual liquidity': 'виртуальная ликвидность хранилища',
         'Disconnected; reconnecting…': 'Соединение потеряно; переподключение…', 'Connecting to Gains…': 'Подключение к Gains…',
         'Gains depth unavailable.': 'Глубина Gains недоступна.', 'Depth data is stale.': 'Данные глубины устарели.',
         'Account unavailable.': 'Счёт недоступен.'
@@ -411,6 +413,7 @@
         'Market depth unavailable.': '市场深度不可用。', 'Price': '价格', 'Size': '数量', 'Total': '累计', 'Spread': '价差',
         'No executed trades received from the provider.': '未从数据源收到已执行交易。',
         'Gains VOB · vault-based virtual liquidity': 'Gains VOB · 基于金库的虚拟流动性',
+        'vault-based virtual liquidity': '基于金库的虚拟流动性',
         'Disconnected; reconnecting…': '连接已断开；正在重新连接…', 'Connecting to Gains…': '正在连接 Gains…',
         'Gains depth unavailable.': 'Gains 深度不可用。', 'Depth data is stale.': '深度数据已过期。',
         'Account unavailable.': '账户不可用。'

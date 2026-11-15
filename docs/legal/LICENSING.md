@@ -52,6 +52,8 @@ manifest or embedded font metadata, not inferred from neighbours.
 | Pine indicators (`indicators/`) | Undocumented | CC BY-NC-SA 4.0 stated in one file; "proprietary" in README | — | NC forbids commercial use | **Blocker: provenance missing** |
 | Service logos (Gains, Vela, TradingView, DePay, Render, Liara, Bitpin, Hyperliquid, GMX, MetaMask, Rabby, social glyphs) | Brand owners / Simple Icons | Brand terms / CC0 | Per [Public-brand-assets.txt](../../apps/web-react/public/assets/notices/Public-brand-assets.txt) | Brand guidelines | Documented; `dist/` copy of the notice re-synced in this change |
 | Day/night toggle design | Hamzeh Ghoreyshi | MIT | Adapted | Keep notice | Met |
+| Trade Radar logic (`apps/backend/radar.js`, `features/radar/RadarPage.tsx`) | drkxbt/whales `34d5575` | MIT | Re-implemented and modified ([provenance](../../third_party/drkxbt-whales/PROVENANCE.md)) | Keep copyright and permission notice | Met: LICENSE/NOTICE in `third_party/`, shipped in `assets/notices/` |
+| Heatmap treemap layout (`features/radar/HeatmapPage.tsx`) | drkxbt/charts `7e5f50e` | MIT | Re-implemented as DOM tiles ([provenance](../../third_party/drkxbt-charts/PROVENANCE.md)) | Keep copyright and permission notice | Met: LICENSE/NOTICE in `third_party/`, shipped in `assets/notices/` |
 | `team-portraits.png` | AI-generated (per `DESIGN_AND_CONTENT_NOTES.md`) | Uncertain by jurisdiction | — | — | Record generator terms |
 | `react/` build output, `dist/` mirrors | Generated from the above | Inherit their inputs | — | Same notices as inputs | `dist/` notices re-synced |
 

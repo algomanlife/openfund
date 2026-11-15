@@ -62,7 +62,8 @@ export function Bars({ points, locale, label, format }: { points: { key: string;
   return <figure className="econ-bars" aria-label={label}>
     <div className="econ-bars-plot" dir="ltr">{points.map(p => <div key={p.key} className="econ-bar" title={`${p.key}: ${format(p.value)}`}><i style={{ height: `${Math.max(2, Math.abs(p.value) / max * 100)}%` }} /><span>{p.key.slice(2)}</span></div>)}</div>
     <figcaption>{label}</figcaption>
-    <table className="sr-only"><tbody>{points.map(p => <tr key={p.key}><th scope="row">{p.key}</th><td>{format(p.value)}</td></tr>)}</tbody></table>
+    {/* a div clips to 1px; a table cannot, and widened phones to ~700px */}
+    <div className="sr-only"><table><tbody>{points.map(p => <tr key={p.key}><th scope="row">{p.key}</th><td>{format(p.value)}</td></tr>)}</tbody></table></div>
   </figure>
 }
 

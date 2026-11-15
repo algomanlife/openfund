@@ -116,7 +116,7 @@ body, html[dir="rtl"] body {
 .book-mid { min-height: 32px; flex-shrink: 0; padding: 4px 8px; }
 .book-mid b { font-size: 15px; }
 .book-mid span { font-size: 11.5px; }
-.book-note { margin: 0; padding: 6px 8px; font-size: 12px; line-height: 1.45; border-top: 1px solid var(--line); flex-shrink: 0; }
+.book-note { white-space: pre-line; margin: 0; padding: 6px 8px; font-size: 12px; line-height: 1.45; border-top: 1px solid var(--line); flex-shrink: 0; }
 #depth-feed-status { padding: 6px 8px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); flex-shrink: 0; }
 .depth-unavailable { padding: 10px 8px; font-size: 12px; color: var(--muted); }
 .trades-list { padding: 4px 8px; }
@@ -278,7 +278,7 @@ html[dir="rtl"] .panel-tabs, html[dir="rtl"] .book-controls { direction: rtl; }
   .market-stats .stat dt { display: none; }
   .market-select { padding-inline: 6px; gap: 2px; }
   .market-details summary { padding-inline: 6px; font-size: 10.5px; }
-  .status-bar .sb-ver, .status-bar .sb-src { display: none; }
+  .status-bar .sb-ver { display: none; }
 }
 .status-bar .sb-item { white-space: nowrap; flex-shrink: 0; }
 /* Reserve native select-arrow width consistently across Chromium platforms. */
@@ -720,3 +720,8 @@ html[dir="rtl"] .chart-tabs { direction: rtl; }
   .pos-risk-handle, .pos-risk-remove { min-height: 44px; }
   .pos-risk-remove { min-width: 44px; }
 }
+
+/* source marks: footer status and the VOB feed note */
+.sb-brands, .depth-brands { display: inline-flex; align-items: center; gap: 5px; margin-inline-start: 6px; vertical-align: middle; }
+.sb-brands img, .depth-brands img { display: block; block-size: 12px; inline-size: auto; }
+#depth-feed-status { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }

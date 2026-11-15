@@ -24,8 +24,6 @@ html.has-bitpin-ticker body { padding-bottom: calc(40px + env(safe-area-inset-bo
 .bitpin-ticker[data-status="delayed"] .bitpin-ticker-dot { background: #d8b45c; }
 .bitpin-ticker[data-status="unavailable"] .bitpin-ticker-dot { background: #e89483; }
 .bitpin-ticker-status { color: var(--muted, #84928e); font-size: 11px; }
-.bitpin-ticker-brand { color: var(--white, #f1f3ef); font-weight: 600; font-size: 12px; text-decoration: none; }
-.bitpin-ticker-brand:hover { color: var(--mint, #82e7bd); }
 
 .bitpin-ticker-viewport { position: relative; flex: 1 1 auto; min-width: 0; overflow: hidden; display: flex; align-items: center;
   mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent); }
@@ -57,7 +55,8 @@ html.has-bitpin-ticker body { padding-bottom: calc(40px + env(safe-area-inset-bo
   .bitpin-ticker-source { padding-inline: 10px; gap: 6px; }
   .bitpin-ticker-status { display: none; }
   .bitpin-ticker[data-status="unavailable"] .bitpin-ticker-status,
-  .bitpin-ticker[data-status="loading"] .bitpin-ticker-status { display: inline; }
+  .bitpin-ticker[data-status="loading"] .bitpin-ticker-status,
+  .bitpin-ticker[data-status="live"] .bitpin-ticker-status { display: inline; }
   .bitpin-ticker-item { padding-inline: 12px; gap: 5px; }
   .bitpin-ticker-symbol { display: none; }
 }

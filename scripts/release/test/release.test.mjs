@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import {nextVersion,requestedPatchVersion,validateEnv,sha256,writeJson,treeHash,filesIn,root} from '../lib.mjs';
+import {nextVersion,requestedPatchVersion,requestedVersion,validateEnv,sha256,writeJson,treeHash,filesIn,root} from '../lib.mjs';
 import {verify} from '../verify.mjs';
 import {exactSecretScan} from '../check-secrets.mjs';
 import {runtimeCmsUrl,runtimeConfigScript,depayWidgetApproved,depayExternalBundle} from '../../../apps/backend/runtime-config.js';
@@ -51,6 +51,20 @@ test('version allocation preserves tags, increments all change categories and ha
 test('explicit patch release cannot skip, reuse or change the release line',()=>{
  assert.equal(requestedPatchVersion('v0.4.3','0.4.4'),'0.4.4');
  for(const value of ['0.4.3','0.4.5','0.5.0','1.0.0'])assert.throws(()=>requestedPatchVersion('v0.4.3',value));
+});
+test('owner-approved version may choose the patch inside a newly allocated line, never skip a line or reuse a tag',()=>{
+ const tags=['v0.4.4','v0.5.0'];
+ const allocated=nextVersion(tags,'feat(web): roadmap page');
+ assert.equal(allocated,'0.6.0');
+ for(const ok of ['0.6.0','0.6.5'])assert.equal(requestedVersion({latest:'v0.5.0',requested:ok,allocated,tags}),ok);
+ for(const bad of ['0.5.1','0.5.0','0.7.0','1.0.0','0.6','v0.6.5',''])assert.throws(()=>requestedVersion({latest:'v0.5.0',requested:bad,allocated,tags}));
+ /* patch-only allocation keeps the strict next-patch rule */
+ assert.equal(requestedVersion({latest:'v0.5.0',requested:'0.5.1',allocated:'0.5.1',tags}),'0.5.1');
+ for(const bad of ['0.5.2','0.6.5'])assert.throws(()=>requestedVersion({latest:'v0.5.0',requested:bad,allocated:'0.5.1',tags}));
+ /* a breaking change cannot be released inside the old major line */
+ assert.throws(()=>requestedVersion({latest:'v0.5.0',requested:'0.6.5',allocated:'1.0.0',tags}));
+ /* immutable tags cannot be reused */
+ assert.throws(()=>requestedVersion({latest:'v0.6.5',requested:'0.6.5',allocated:'0.6.6',tags:[...tags,'v0.6.5']}));
 });
 test('release tests reject missing, shared and remote databases',()=>{
  for(const url of [undefined,'postgres://localhost/openfund_dev','postgres://db.example/openfund_ci'])assert.throws(()=>validateEnv({DATABASE_URL:url}));

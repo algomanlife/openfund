@@ -1,0 +1,111 @@
+/* ==========================================================================
+   Openfund Design System — shared foundation (v0.6.5)
+   --------------------------------------------------------------------------
+   One place for semantic tokens, type scale, spacing, radius, elevation,
+   motion and accessibility floors. It does not replace the existing palettes:
+   site pages keep legacy/style.css (--mint, --line, --surface, --body …) and
+   the terminal keeps --of-* tokens; the --ds-* tokens below map onto them so
+   new components can use one vocabulary in both shells and both themes.
+   Documented in docs/design/DESIGN_SYSTEM.md.
+   ========================================================================== */
+:root {
+  /* brand + semantic colour (dark defaults; light overrides below) */
+  --ds-brand: #82e7bd;            /* Openfund mint */
+  --ds-brand-strong: #4fe3a0;
+  --ds-lime: #c6ff52;             /* seasonal / payout accent */
+  --ds-positive: #2fbf86;
+  --ds-negative: #e0596a;
+  --ds-warning: #d9a441;
+  --ds-info: #8fb3ff;
+  --ds-bg: var(--of-bg, var(--bg, #060808));
+  --ds-surface: var(--of-panel, var(--surface, #0d1511));
+  --ds-text: var(--of-text, var(--white, #e9f5ed));
+  --ds-text-muted: var(--of-muted, var(--body, #93a29a));
+  --ds-line: var(--of-line, var(--line, #ffffff1c));
+  --ds-focus: var(--ds-brand);
+
+  /* type scale (fluid where it matters) */
+  --ds-font-sans: 'Irancell', 'Ubuntu', Tahoma, system-ui, sans-serif;
+  --ds-font-latin: 'Ubuntu', system-ui, sans-serif;
+  --ds-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ds-text-min: 11px;            /* readable floor for real copy */
+  --ds-text-xs: 12px;
+  --ds-text-sm: 14px;
+  --ds-text-md: 16px;
+  --ds-text-lg: clamp(18px, 1.6vw, 20px);
+  --ds-text-xl: clamp(22px, 2.6vw, 30px);
+  --ds-text-2xl: clamp(28px, 4vw, 44px);
+  --ds-text-hero: clamp(32px, 5.4vw, 64px);
+  --ds-leading: 1.8;              /* Persian-friendly body leading */
+
+  /* spacing rhythm (4px base) */
+  --ds-space-1: 4px; --ds-space-2: 8px; --ds-space-3: 12px; --ds-space-4: 16px;
+  --ds-space-5: 24px; --ds-space-6: 32px; --ds-space-7: 48px; --ds-space-8: 64px; --ds-space-9: 96px;
+  --ds-section: clamp(56px, 8vw, 96px);
+  --ds-gutter: clamp(16px, 4vw, 32px);
+  --ds-container: 1200px;
+
+  /* shape + elevation */
+  --ds-radius-sm: 8px; --ds-radius-md: 12px; --ds-radius-lg: 18px; --ds-radius-xl: 24px; --ds-radius-pill: 999px;
+  --ds-shadow-1: 0 1px 0 #ffffff08 inset, 0 8px 24px -16px #000c;
+  --ds-shadow-2: 0 24px 48px -32px #000e;
+  --ds-glow: 0 24px 48px -32px color-mix(in srgb, var(--ds-brand) 55%, transparent);
+  --ds-glass: color-mix(in srgb, var(--ds-surface) 72%, transparent);
+  --ds-z-header: 50; --ds-z-ticker: 40; --ds-z-dialog: 100; --ds-z-toast: 120;
+
+  /* motion: website may use all; terminal uses --ds-dur-fast only (functional) */
+  --ds-ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ds-ease-spring: cubic-bezier(.3, 1.35, .45, 1);
+  --ds-dur-fast: .15s; --ds-dur: .3s; --ds-dur-slow: .7s;
+
+  /* breakpoints (documentation; use the literal values in @media) */
+  --ds-bp-sm: 430px; --ds-bp-md: 768px; --ds-bp-lg: 1024px; --ds-bp-xl: 1440px;
+}
+html[data-theme=light] {
+  --ds-brand: #087b4a; --ds-brand-strong: #066b40; --ds-positive: #0f9d63; --ds-negative: #c23a4a; --ds-warning: #8a6510; --ds-info: #2f5fc4;
+  --ds-shadow-1: 0 1px 2px #0a120d14; --ds-shadow-2: 0 24px 48px -32px #0a120d40;
+}
+
+/* --- accessibility baseline ------------------------------------------------ */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible { outline: 2px solid var(--ds-focus); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  :where(*, *::before, *::after) { scroll-behavior: auto !important; }
+}
+
+/* --- readability floor for real copy on public pages ------------------------
+   Legal text, data sources and status labels were rendered at 9–10px. The
+   decorative product mock-ups (card artwork) keep their miniature type. */
+html :is(.market-disclaimer, .mk-source, .mk-source a, .mk-source span, .mk-stream) { font-size: max(var(--ds-text-xs), 1em) !important; line-height: 1.7; }
+html :is(.mk-status, .mk-cat, .pair-status, .hero-micro > span, .builder-facts > span, .stage-fact > span, .step-demo > span) { font-size: max(var(--ds-text-min), 1em) !important; }
+html :is(span.eyebrow, div.eyebrow, .eyebrow) { font-size: max(var(--ds-text-min), .75rem); }
+
+/* --- shared primitives (opt-in classes for new components) ----------------- */
+.ds-card { border: 1px solid var(--ds-line); border-radius: var(--ds-radius-lg); background: var(--ds-surface); box-shadow: var(--ds-shadow-1); }
+.ds-glass { background: var(--ds-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.ds-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px; border-radius: var(--ds-radius-pill); border: 1px solid var(--ds-line); font-size: var(--ds-text-xs); color: var(--ds-text-muted); }
+.ds-num { font-variant-numeric: tabular-nums; direction: ltr; unicode-bidi: isolate; }
+.ds-sr-only { position: fixed !important; inset-block-start: 0; inset-inline-start: 0; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.ds-sr-only { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Interactive card light: a cursor-following highlight on the border
+   (pattern inspired by "spotlight card" components; re-implemented here,
+   no third-party code). --mx/--my are set by useSpotlight(). */
+.ds-spotlight { position: relative; isolation: isolate; }
+.ds-spotlight::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 1; opacity: 0; transition: opacity var(--ds-dur) ease;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), color-mix(in srgb, var(--ds-brand) 16%, transparent), transparent 70%); }
+.ds-spotlight:hover::after { opacity: 1; }
+@media (hover: none), (prefers-reduced-motion: reduce) { .ds-spotlight::after { display: none; } }
+
+/* Scroll reveal (used with useReveal from features/company/reveal.ts). */
+.ds-reveal.co-motion { opacity: 0; transform: translateY(22px); transition: opacity var(--ds-dur-slow) var(--ds-ease-out), transform var(--ds-dur-slow) var(--ds-ease-out); }
+.ds-reveal.co-motion.is-visible { opacity: 1; transform: none; }
+
+/* Market widget on Challenges: category/view tabs and refresh were 21-23px
+   tall with 9-10px labels. Readable labels and >=32px targets (44px on touch). */
+html :is(.market-tabs, .market-views) button { min-block-size: 32px; min-inline-size: 32px; padding-inline: 10px; font-size: max(var(--ds-text-min), 1em) !important; }
+html .market-frame .refresh, html .refresh { min-block-size: 32px; min-inline-size: 32px; }
+html :is(.feature-note, .sample-note) { font-size: var(--ds-text-xs) !important; line-height: 1.8; }
+html :is(.market-frame, .market-head, .market-footer, .challenge-detail) a { font-size: max(var(--ds-text-min), 1em); }
+@media (pointer: coarse) {
+  html :is(.market-tabs, .market-views) button, html .market-frame .refresh, html .refresh { min-block-size: 44px; min-inline-size: 44px; }
+}

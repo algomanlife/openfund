@@ -16,6 +16,8 @@ Openfund develops a shared trading environment in seven phases. The order expres
 
 Every milestone has a status, dependencies, acceptance criteria and evidence in [Milestones](docs/roadmap/MILESTONES.md). Use that register for completion decisions.
 
+The website Roadmap page (`/:locale/roadmap`) mirrors the phase table above; `apps/web-react/test/roadmap.test.mjs` fails when they differ, so edit this table first. The owner's product roadmap will be added to both when supplied; no milestones, dates or percentages are published before then.
+
 - [Product roadmap](docs/roadmap/PRODUCT.md)
 - [Engineering roadmap](docs/roadmap/ENGINEERING.md)
 - [Protocol roadmap](docs/roadmap/PROTOCOL.md)
