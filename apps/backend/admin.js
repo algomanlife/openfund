@@ -18,10 +18,11 @@
  *    evaluation state or payments — Directus keeps its read/edit
  *    interface, and withdrawal REVIEW is an operational decision on
  *    withdrawal_requests only. Payout EXECUTION (transferring real
- *    funds) is deliberately out of scope: marking 'paid' records the
- *    operator's payout reference and nothing more.
+ *    funds) is external. Reward settlement records verified evidence for
+ *    a transfer the operator has already made.
  */
 import { Router } from 'express'
+import { rateLimit } from 'express-rate-limit'
 import crypto from 'node:crypto'
 import { governanceAdminRoutes } from './governance-routes.js'
 import { reverseRewardTx, onRewardPaidTx } from './rewards.js'
@@ -165,7 +166,9 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier() }) {
     res.json({ total, withdrawals: rows.slice(0, limit) })
   }))
 
-  router.post('/withdrawals/:id/review', wrap(async (req, res) => {
+  const withdrawalReviewLimit = rateLimit({ windowMs: 60_000, limit: 60, standardHeaders: 'draft-8', legacyHeaders: false,
+    message: { error: 'rate_limited' } })
+  router.post('/withdrawals/:id/review', withdrawalReviewLimit, wrap(async (req, res) => {
     if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')
     const { action, note, payoutRef } = req.body || {}
     const spec = WITHDRAWAL_ACTIONS[action]
