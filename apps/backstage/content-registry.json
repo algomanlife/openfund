@@ -2,7 +2,7 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4217,
+    "uniqueRecords": 4228,
     "mappedCalls": 2093,
     "exceptions": 70,
     "validationFindings": 0,
@@ -1765,7 +1765,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 42,
+          "line": 43,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -2670,6 +2670,26 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.0708c29e4fc05fb6",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مشاهدهٔ ثبت در GitHub",
+      "en": "Read the register on GitHub",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 20,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -7181,9 +7201,16 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 47,
+          "line": 48,
           "page": "information",
           "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 13,
+          "page": "roadmap",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         },
         {
@@ -8930,6 +8957,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 333,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.1a30bb29ea01d6e3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نقشهٔ راه محصول",
+      "en": "Product roadmap",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 18,
+          "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -22390,7 +22437,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 48,
+          "line": 49,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -23545,7 +23592,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 45,
+          "line": 46,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -26247,7 +26294,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 50,
+          "line": 51,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -30019,6 +30066,26 @@
       ]
     },
     {
+      "key": "react.55bd7ae54f88e191",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مسیر پیش روی اوپن‌فاند",
+      "en": "Where Openfund is going",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 9,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.55c34d7bcce337f3",
       "namespace": "react",
       "area": "Website",
@@ -32294,6 +32361,26 @@
       ]
     },
     {
+      "key": "react.5bf20c36ce1b0532",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هفت فاز که بر اساس وابستگی مرتب شده‌اند، نه تاریخ. هر وضعیت در این صفحه از ثبت عمومی مخزن کد گرفته شده است؛ جایی که هر نقطهٔ عطف معیار پذیرش و شواهد دارد.",
+      "en": "Seven phases, ordered by dependency rather than by date. Each status below is copied from the public repository register, where every milestone has acceptance criteria and evidence.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 10,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.5c0c0c89306304ef",
       "namespace": "react",
       "area": "Global Content",
@@ -33988,7 +34075,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 41,
+          "line": 42,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -40476,6 +40563,26 @@
       ]
     },
     {
+      "key": "react.763655d448838b14",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فاز",
+      "en": "Phase",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 15,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.764129a267ed6048",
       "namespace": "react",
       "area": "Website",
@@ -44763,6 +44870,26 @@
       ]
     },
     {
+      "key": "react.82b297d7f88f70fd",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نقاط عطف و معیارهای پذیرش",
+      "en": "Milestones and acceptance criteria",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 21,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.82bebcc3153a90e3",
       "namespace": "react",
       "area": "Global Content",
@@ -45705,7 +45832,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 46,
+          "line": 47,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -46780,7 +46907,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 43,
+          "line": 44,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -54195,7 +54322,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 44,
+          "line": 45,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -55355,6 +55482,13 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 12,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -55690,6 +55824,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.a1179b6a0b9f48b4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نقشهٔ راه محصول توسط تیم اوپن‌فاند در حال آماده‌سازی است و در همین بخش منتشر خواهد شد. تا آن زمان، هیچ‌چیز در این صفحه فراتر از ثبت مخزن کد تعهد محسوب نمی‌شود.",
+      "en": "The product roadmap is being prepared by the Openfund team and will be published here. Until then, nothing on this page is a commitment beyond the repository register.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 19,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -56940,7 +57094,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 49,
+          "line": 50,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -60503,6 +60657,26 @@
       ]
     },
     {
+      "key": "react.ae0839a064e44f66",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هیچ تاریخ تحویلی تعهد نشده است. هر فاز فقط با شواهد استقرار یا تأییدشده پیش می‌رود.",
+      "en": "No delivery dates are committed. A phase advances only with deployed or verified evidence.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 17,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.ae1d8d2257667118",
       "namespace": "react",
       "area": "Global Content",
@@ -62771,6 +62945,33 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b4414ba11847ee2d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نقشه راه",
+      "en": "Roadmap",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/information/content.ts",
+          "line": 41,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 8,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -86707,8 +86908,15 @@
       "en": "Completed",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 11,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
           "line": 18,
@@ -87129,6 +87337,26 @@
           "component": "apps/web-react/src/data/toolCatalog.ts",
           "line": 64,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.fb32c1f53a8cde69",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نقاط عطف",
+      "en": "Milestones",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 16,
+          "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -88127,6 +88355,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.fe00ade808f4ab6e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "چشم‌انداز آینده",
+      "en": "Future vision",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/roadmap/Roadmap.tsx",
+          "line": 14,
+          "page": "roadmap",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },

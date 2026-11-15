@@ -13,6 +13,7 @@ import Coach from './features/partners/Coach'
 /* the long-form Whitepaper (content + charts) loads only when visited */
 const Whitepaper = lazy(() => import('./features/whitepaper/Whitepaper'))
 import Faq from './features/faq/Faq'
+const Roadmap = lazy(() => import('./features/roadmap/Roadmap'))
 const CertificatesPage = lazy(() => import('./features/certificates/CertificatesPage'))
 const RadarPage = lazy(() => import('./features/radar/RadarPage'))
 const HeatmapPage = lazy(() => import('./features/radar/HeatmapPage'))
@@ -153,6 +154,7 @@ const routes = [
   { path: '/:locale/whitepaper', element: <Suspense fallback={null}><Whitepaper /></Suspense> },
   { path: '/:locale/certificate-verification', element: <Suspense fallback={null}><CertificateVerificationPage /></Suspense> },
   { path: '/:locale/apps', element: <Applications /> },
+  { path: '/:locale/roadmap', element: <Suspense fallback={null}><Roadmap /></Suspense> },
   { path: '/:locale/about', element: <About /> },
   { path: '/:locale/contact', element: <Contact /> },
   { path: '/:locale/faq', element: <Faq /> },
