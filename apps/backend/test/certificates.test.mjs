@@ -64,7 +64,7 @@ test('approved payout is ineligible; paid payout needs finalized settlement evid
   assert.equal((await call('/certificates')).data.certificates.filter(c => c.kind === 'payout').length, 0)
   await pool.query(`UPDATE withdrawal_requests SET status='paid',reviewed_at=now() WHERE id=$1`, [payout])
   assert.equal((await call('/certificates')).data.certificates.filter(c => c.kind === 'payout').length, 0)
-  await pool.query(`UPDATE withdrawal_requests SET payout_ref='isolated-test-record' WHERE id=$1`, [payout])
+  await pool.query(`UPDATE withdrawal_requests SET payout_ref=$2 WHERE id=$1`, [payout, '0x' + payout.replaceAll('-', '').padStart(64, '0')])
   assert.equal((await call('/certificates')).data.certificates.filter(c => c.kind === 'payout').length, 0)
   await pool.query(`UPDATE withdrawal_requests SET payment_evidence=jsonb_build_object('finality','finalized','transactionAt',now()) WHERE id=$1`, [payout])
   await Promise.all([syncCertificates(pool, user), syncCertificates(pool, user)])
