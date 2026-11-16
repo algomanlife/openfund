@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import {nextVersion,requestedPatchVersion,requestedVersion,validateEnv,sha256,writeJson,treeHash,filesIn,root} from '../lib.mjs';
+import {nextVersion,requestedPatchVersion,requestedVersion,validateEnv,sha256,writeJson,treeHash,filesIn,root,releasePayloadFiles} from '../lib.mjs';
 import {verify} from '../verify.mjs';
 import {exactSecretScan} from '../check-secrets.mjs';
 import {runtimeCmsUrl,runtimeConfigScript,depayWidgetApproved,depayExternalBundle} from '../../../apps/backend/runtime-config.js';
@@ -70,6 +70,12 @@ test('release tests reject missing, shared and remote databases',()=>{
  for(const url of [undefined,'postgres://localhost/openfund_dev','postgres://db.example/openfund_ci'])assert.throws(()=>validateEnv({DATABASE_URL:url}));
  validateEnv({DATABASE_URL:'postgresql://localhost/openfund_release_ci'});
  assert.throws(()=>validateEnv({DATABASE_URL:'postgres://localhost/openfund',ALLOWED_DOMAINS:'example',SIM_TEST_MODE:'1'},'production'));
+});
+test('archive includes the footprint runtime modules and calibration loaded by the backend', () => {
+ const files = new Set(releasePayloadFiles());
+ for (const file of ['core.mjs', 'markets.mjs', 'calibration.json'])
+  assert.ok(files.has(`packages/openfund-footprint/src/${file}`), `Missing archive dependency ${file}`);
+ assert.ok(![...files].some(file => file.startsWith('packages/openfund-protocol/')));
 });
 test('payload verification rejects financial/runtime source tampering and version mismatches',()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'openfund-release-test-'));

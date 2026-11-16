@@ -68,6 +68,10 @@ export function run(command, args = [], options = {}) {
     child.on('exit', (code, signal) => code === 0 ? resolve() : reject(Error(`${command} ${args.join(' ')} failed (${signal || code})`)));
   });
 }
+export function releasePayloadFiles() {
+  return git('ls-files', 'apps/backend', 'packages/openfund-footprint/src',
+    'third_party/luxalgo-trade-journal', 'LICENSE', 'NOTICE', 'render.yaml').split('\n').filter(Boolean);
+}
 export function filesIn(dir, prefix = '') {
   return fs.readdirSync(dir, { withFileTypes: true }).sort((a,b) => a.name.localeCompare(b.name, 'en')).flatMap(e => {
     const relative = prefix + e.name, full = path.join(dir, e.name);
