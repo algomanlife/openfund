@@ -508,8 +508,8 @@
         "package": "ws"
       },
       "latest_observed": {
-        "version": "8.22.2",
-        "date": "2026-11-10",
+        "version": "8.23.0",
+        "date": "2026-11-12",
         "reviewed": false
       },
       "integration_path": [
@@ -543,13 +543,13 @@
       "official_source": "https://github.com/wevm/viem",
       "license": "MIT",
       "installed": {
-      "version": "2.57.19",
+        "version": "2.57.19",
         "lockfile": "apps/backend/package-lock.json",
         "package": "viem"
       },
       "latest_observed": {
-        "version": "2.57.17",
-        "date": "2026-11-10",
+        "version": "2.57.20",
+        "date": "2026-11-15",
         "reviewed": false
       },
       "integration_path": [
