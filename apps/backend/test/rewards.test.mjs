@@ -248,7 +248,27 @@ test('R9 v3: review → funded account waits for a one-time cycle choice → req
   assert.equal(req2.status, 200)
   assert.equal((await call('POST', `/admin/withdrawals/${req2.data.id}/review`, { admin: true, body: { action: 'approve', note: 'ok' } })).status, 200)
   assert.equal((await call('POST', `/admin/withdrawals/${req2.data.id}/review`, { admin: true, body: { action: 'paid', payoutRef: 'manual-usdt-0001' } })).status, 400)
-  assert.equal((await recordPaid(req2.data.id, 1)).status, 200)
+  const rewardPath = `/admin/withdrawals/${req2.data.id}/reward`
+  const settlementPath = `/admin/withdrawals/${req2.data.id}/settle-reward`
+  const settlement = { action: 'paid', payoutRef: hash(1) }
+  assert.equal((await call('GET', rewardPath)).status, 403)
+  assert.equal((await call('POST', settlementPath, { body: settlement })).status, 403)
+  const detail = (await call('GET', rewardPath, { admin: true })).data
+  assert.equal(detail.record.amount_usd, '480.00')
+  assert.equal(detail.record.demo_account_id, funded.demo_account_id)
+  assert.equal(detail.record.writable, true)
+  assert.equal(detail.chain.id, 42161)
+  await pool.query("UPDATE account_ownership SET state='fenced' WHERE account_id=$1", [funded.demo_account_id])
+  try {
+    assert.equal((await call('GET', rewardPath, { admin: true })).data.record.writable, false)
+    assert.equal((await call('POST', settlementPath, { admin: true, body: settlement })).status, 409)
+  } finally {
+    await pool.query("UPDATE account_ownership SET state='active' WHERE account_id=$1", [funded.demo_account_id])
+  }
+  assert.equal((await call('POST', settlementPath, { admin: true, body: { ...settlement, payoutRef: 'invalid' } })).status, 400)
+  assert.equal((await call('POST', settlementPath, { admin: true, body: settlement })).status, 200)
+  assert.equal((await call('POST', settlementPath, { admin: true, body: settlement })).data.duplicate, true)
+  assert.equal((await call('POST', settlementPath, { admin: true, body: { ...settlement, payoutRef: hash(2) } })).status, 409)
   const row = (await pool.query('SELECT * FROM withdrawal_requests WHERE id=$1', [req2.data.id])).rows[0]
   assert.deepEqual([row.kind, row.status, row.payout_ref, row.amount_usd, row.gross_profit_usd, Number(row.split_pct), row.reward_cycle], ['reward', 'paid', hash(1), '480.00', '600.00', 80, 'biweekly'])
   await trade(user, fundedId, [{ daysAgo: 0, net: 300 }])

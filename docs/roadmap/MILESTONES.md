@@ -122,6 +122,8 @@ linked administrative directories and protected decision workflows.
 Dependencies include the authoritative GLOBAL API, owner provisioning and
 PR #125 for test operations. Remaining milestones cover risk, financial
 operations, contact and support workflows, analytics and durable audit.
+Real payout evidence recording requires isolated browser acceptance and
+approval before enabling the Backstage control in production.
 [Architecture](../backstage/OPERATIONS_ARCHITECTURE.md)
 
 ## Controlled challenge acceptance

@@ -24,7 +24,7 @@ trading evaluations, funded programs, trader rewards and financial transparency.
 
 ---
 
-**Contents** · [Overview](#project-overview) · [Products](#product-ecosystem) · [Gallery](#product-gallery) · [Feature status](#feature-status) · [Business model](#business-model) · [Architecture](#technical-architecture) · [Technology](#technology-stack) · [Development](#development-workflow) · [Releases](#versioning-and-releases) · [License](#license) · [Contributing](#contributing-and-security)
+**Contents** · [Overview](#project-overview) · [Products](#product-ecosystem) · [Backstage](#openfund-backstage--business-operations-console) · [Gallery](#product-gallery) · [Feature status](#feature-status) · [Business model](#business-model) · [Architecture](#technical-architecture) · [Technology](#technology-stack) · [Development](#development-workflow) · [Releases](#versioning-and-releases) · [License](#license) · [Contributing](#contributing-and-security)
 
 ## Project overview
 
@@ -63,9 +63,39 @@ partner growth, platform expansion and operational scaling.
 | **Web Terminal** | The complete workspace: trading, charts, portfolio, journal, accounts, leaderboard, certificates, purchases, Trade Radar and Heatmap | `/:locale/prop/trade` |
 | **Open Trade (desktop)** | Lightweight Electron workspace: one to four independent Vela charts, compact watchlist, floating order ticket, positions strip, keyboard shortcuts | [Release preparation](docs/releases/open-trade-0.0.2.md) |
 | **Certificates** | Purchase, completion and payout certificates issued from recorded events, verifiable by serial or QR in either region | `/:locale/certificate-verification` |
-| **Backstage** | Directus for editorial content, plan catalog and coupons; token-gated operational API | Operators only |
+| **Backstage** | Independent, bilingual owner workspace for Prop business operations | [backstage.openfi.cloud](https://backstage.openfi.cloud) |
 
-[Backstage operations](docs/backstage/OPERATIONS_GUIDE.md) provides a separate owner workspace for Prop operations.
+## Openfund Backstage — Business Operations Console
+
+[Openfund Backstage](https://backstage.openfi.cloud) is the owner console for
+the [main platform](https://openfi.cloud). It provides English and Persian
+workspaces for trader and challenge inspection, final-pass review, payment
+investigation, controlled test coupons, payout review and correspondence,
+support intake, partner applications, financial position and system status.
+
+The website serves buyers and traders, the terminal handles trading, and
+Directus manages editorial content. Backstage runs independently on Render
+and uses the existing Openfund backend for business records and decisions.
+The service authenticates a single provisioned owner, keeps its backend
+credential server-side and asks the owner to re-enter their password for
+privileged decisions.
+
+Commercial coupon administration, trader support conversations, contact
+and callback workflows, dedicated risk monitoring, full finance and partner
+operations, persistent notifications and unified audit remain in development.
+See the [operator guide](docs/backstage/OPERATIONS_GUIDE.md) and
+[feature status](docs/product/FEATURE_STATUS.md) for current coverage.
+
+| English overview | Persian overview |
+| --- | --- |
+| ![Backstage English overview](docs/assets/screenshots/backstage-operations/backstage-overview-en.png) | ![Backstage Persian overview](docs/assets/screenshots/backstage-operations/backstage-overview-fa.png) |
+
+
+Additional local captures show [challenge inspection](docs/assets/screenshots/backstage-operations/backstage-challenge.png),
+[controlled coupons](docs/assets/screenshots/backstage-operations/backstage-controlled-coupons.png),
+[payout details](docs/assets/screenshots/backstage-operations/backstage-payout.png),
+[support intake](docs/assets/screenshots/backstage-operations/backstage-support-intake.png)
+and [financial position](docs/assets/screenshots/backstage-operations/backstage-financial-position.png).
 
 ## Product gallery
 

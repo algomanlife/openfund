@@ -19,7 +19,7 @@ const password = randomBytes(20).toString('base64url')
 const port = Number(process.env.BACKSTAGE_TEST_PORT || 8315)
 const origin = 'http://127.0.0.1:' + port
 const server = createBackstage({ origin, backend: upstream.origin, cms: 'http://127.0.0.1:8055', owner,
-  verifier: await createVerifier(password), credential: process.env.ADMIN_API_TOKEN })
+  realSettlement: true, verifier: await createVerifier(password), credential: process.env.ADMIN_API_TOKEN })
 await new Promise(resolve => server.listen(port, '127.0.0.1', resolve))
 let browser
 try {
@@ -32,6 +32,11 @@ try {
 
   browser = await chromium.launch()
   const page = await browser.newPage({ viewport: { width: 1366, height: 900 }, colorScheme: 'dark' })
+  const capture = async name => {
+    if (!process.env.OUTPUT_DIR) return
+    await mkdir(process.env.OUTPUT_DIR, { recursive: true })
+    await page.screenshot({ path: join(process.env.OUTPUT_DIR, name + '.png') })
+  }
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
   await page.goto(origin)
@@ -50,6 +55,7 @@ try {
   await page.getByRole('link', { name: challenge.id, exact: true }).click()
   await page.getByRole('heading', { name: 'Frozen rules' }).waitFor()
   await page.getByRole('heading', { name: 'Recent positions' }).waitFor()
+  await capture('backstage-challenge')
   await page.locator('aside').getByRole('link', { name: 'Final-pass reviews' }).click()
   const review = page.getByRole('row').filter({ hasText: challenge.id })
   await review.getByRole('button', { name: 'Approve' }).click()
@@ -60,6 +66,39 @@ try {
   const decision = await row('SELECT decision,funded_challenge_id FROM challenge_reviews WHERE challenge_id=$1', [challenge.id])
   assert.equal(decision.decision, 'approved')
   assert.ok(decision.funded_challenge_id)
+
+  const payout = await row(`INSERT INTO withdrawal_requests (user_id,challenge_id,amount_usd,kind,gross_profit_usd,split_pct,eligibility)
+    VALUES ($1,$2,75,'reward',100,75,'{"reward":"75.00"}') RETURNING id`, [trader.id, decision.funded_challenge_id])
+  await page.locator('aside').getByRole('link', { name: 'Payout requests' }).click()
+  const payoutRow = page.getByRole('row').filter({ hasText: payout.id })
+  await payoutRow.getByRole('button', { name: 'Approve' }).click()
+  await page.getByLabel('Decision note').fill('Reviewed the isolated payout request')
+  await page.getByRole('dialog').getByLabel('Password').fill(password)
+  await page.getByRole('button', { name: 'Confirm decision' }).click()
+  await page.getByRole('dialog').waitFor({ state: 'hidden' })
+  await payoutRow.getByRole('link', { name: payout.id }).click()
+  await page.getByRole('heading', { name: 'Payout details' }).waitFor()
+  assert.equal(await page.getByText(address, { exact: true }).getAttribute('dir'), 'ltr')
+  await capture('backstage-payout')
+  await page.getByRole('button', { name: 'Verify and record settlement' }).click()
+  const hashInput = page.getByLabel('Transaction hash', { exact: true })
+  await hashInput.fill('invalid')
+  assert.equal(await hashInput.evaluate(input => input.validity.patternMismatch), true)
+  await hashInput.fill('0x' + randomBytes(32).toString('hex'))
+  await page.getByLabel('Decision note').fill('Verify isolated evidence')
+  await page.getByRole('dialog').getByLabel('Password').fill('incorrect fixture password')
+  await page.getByRole('button', { name: 'Confirm decision' }).click()
+  await page.getByRole('dialog').getByRole('alert').filter({ hasText: 'Check the owner identity and password.' }).waitFor()
+  await page.getByRole('dialog').getByLabel('Password').fill(password)
+  await page.getByRole('button', { name: 'Confirm decision' }).click()
+  await page.getByRole('dialog').getByRole('alert').filter({ hasText: /operating backend/ }).waitFor()
+  assert.deepEqual(await row('SELECT status, payout_ref FROM withdrawal_requests WHERE id=$1', [payout.id]),
+    { status: 'approved', payout_ref: null })
+  await page.getByRole('button', { name: 'Cancel' }).click()
+  await page.getByLabel('Language').selectOption('fa')
+  await page.getByRole('button', { name: 'تأیید و ثبت تسویه' }).waitFor()
+  assert.equal(await page.getByText(address, { exact: true }).getAttribute('dir'), 'ltr')
+  await page.getByLabel('زبان').selectOption('en')
 
   const submission = await fetch(new URL('/support/messages', upstream), {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -72,6 +111,7 @@ try {
   await page.locator('aside').getByRole('link', { name: 'Support inbox' }).click()
   await page.getByRole('link', { name: contact.reference }).click()
   await page.getByRole('heading', { name: 'Browser support request' }).waitFor()
+  await capture('backstage-support-intake')
   await page.getByRole('button', { name: 'In progress', exact: true }).click()
   await page.getByLabel('Decision note').fill('Operator-only note from browser acceptance')
   await page.getByRole('dialog').getByLabel('Password').fill(password)
@@ -82,6 +122,9 @@ try {
   assert.match(handled.internal_notes, /Operator-only note/)
   assert.equal((await fetch(new URL('/admin/support/messages/' + contact.reference, upstream))).status, 403)
 
+  await page.locator('aside').getByRole('link', { name: 'Financial position' }).click()
+  await page.getByText('Available capital', { exact: true }).waitFor()
+  await capture('backstage-financial-position')
   if (process.env.BACKSTAGE_TEST_CONTROLLED === '1') {
     await page.locator('aside').getByRole('link', { name: 'Coupons' }).click()
     for (const [label, profile] of [['Instant Funding', 'instant'], ['Two-Step', 'standard']]) {
@@ -95,6 +138,8 @@ try {
       assert.equal(issued.user_id, trader.id)
       await page.getByRole('dialog').getByRole('button', { name: 'Cancel' }).click()
     }
+    await page.getByRole('heading', { name: 'Controlled test challenges' }).waitFor()
+    await capture('backstage-controlled-coupons')
     const issue = await row("SELECT coupon_id FROM controlled_challenge_coupons WHERE profile='instant'")
     const account = await row("INSERT INTO demo_accounts (user_id,account_type,currency,balance) VALUES ($1,'challenge','USD',10000) RETURNING id", [trader.id])
     const controlled = await row(`INSERT INTO openfund_challenges (user_id,challenge_plan_id,demo_account_id,rules_snapshot,stage,status,account_size_usd)
@@ -124,17 +169,14 @@ try {
   await page.locator('aside').getByRole('link', { name: 'Overview' }).click()
   await page.getByRole('heading', { name: 'Action queue' }).waitFor()
   await page.locator('main > [role=status]').waitFor({ state: 'hidden' })
-  if (process.env.OUTPUT_DIR) {
-    await mkdir(process.env.OUTPUT_DIR, { recursive: true })
-    await page.screenshot({ path: join(process.env.OUTPUT_DIR, 'backstage-overview-en.png') })
-  }
+  await capture('backstage-overview-en')
   await page.getByLabel('Language').selectOption('fa')
   assert.equal(await page.locator('html').getAttribute('dir'), 'rtl')
   await page.reload()
   await page.getByRole('heading', { name: 'نمای کلی', exact: true }).waitFor()
   assert.equal(await page.locator('html').getAttribute('lang'), 'fa')
   await page.locator('main > [role=status]').waitFor({ state: 'hidden' })
-  if (process.env.OUTPUT_DIR) await page.screenshot({ path: join(process.env.OUTPUT_DIR, 'backstage-overview-fa.png') })
+  await capture('backstage-overview-fa')
   await page.setViewportSize({ width: 480, height: 800 })
   await page.getByRole('button', { name: 'ناوبری' }).click()
   await page.locator('aside').getByRole('link', { name: 'معامله‌گران' }).click()

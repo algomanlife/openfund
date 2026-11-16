@@ -5,6 +5,11 @@ uses authoritative backend directories and review actions. Controlled test
 operations require the PR #125 contract. See the
 [operations guide](../backstage/OPERATIONS_GUIDE.md).
 
+Real payout evidence recording is **In Progress**. Backstage adds reward
+inspection and a disabled-by-default Arbitrum One DAI verification action.
+Production activation requires security acceptance.
+
+
 Controlled challenge acceptance is **In Progress** on main.
 Wallet-bound zero-payment purchases, isolated rule snapshots and simulated
 payout settlement are implemented for the two private test lineages.
