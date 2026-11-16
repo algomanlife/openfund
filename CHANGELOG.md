@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — release archive
+
+- Include the shared footprint runtime in release archives so the extracted
+  backend can start.
+
 ## Unreleased — universal visual CMS editing
 
 - Editors can open the existing Directus 11.17.4 visual editor, click registered editorial text, and save a draft or publish it without a frontend rebuild.

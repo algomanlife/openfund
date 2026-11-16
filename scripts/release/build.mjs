@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
-import { root, git, run, validateEnv, healthy, json, writeJson, sha256, filesIn, semver, treeHash } from './lib.mjs';
+import { root, git, run, validateEnv, healthy, json, writeJson, sha256, filesIn, semver, treeHash, releasePayloadFiles } from './lib.mjs';
 import { manifest } from './manifest.mjs';
 import { verify } from './verify.mjs';
 import { runParallel, parseJobs } from '../ci/run-parallel.mjs';
@@ -131,8 +131,8 @@ try {
   const m=manifest({version,commit,official:!candidate,verification});
   const payload=path.join(output,'payload');
   fs.rmSync(payload,{recursive:true,force:true});fs.mkdirSync(payload,{recursive:true});
-  // Preserve the exact application layout. Only tracked backend/third-party sources enter the payload.
-  for(const file of git('ls-files','apps/backend','third_party/luxalgo-trade-journal','LICENSE','NOTICE','render.yaml').split('\n').filter(Boolean)) {
+  // Preserve the relative paths used by the backend and its shared runtime modules.
+  for(const file of releasePayloadFiles()) {
     if(/(?:^|\/)(?:\.env(?:\.|$)|node_modules\/)/.test(file))throw Error('Unsafe payload path.');
     const target=path.join(payload,file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(path.join(root,file),target);
   }
