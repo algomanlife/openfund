@@ -260,3 +260,5 @@ services:
         sync: false
       - key: BACKSTAGE_BACKEND_TOKEN
         sync: false
+      - key: BACKSTAGE_REAL_SETTLEMENT
+        value: "false"

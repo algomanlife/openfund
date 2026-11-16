@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { validVerifier, verifyPassword } from './password.js'
 
 const uuid = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i
+const payoutHash = /^0x[a-f0-9]{64}$/i
 const supportRef = /^OF-[0-9]{6}-[A-Z2-9]{6}$/
 const supportStatuses = ['in_progress', 'waiting_customer', 'resolved', 'closed']
 const wallet = /^0x[a-f0-9]{40}$/i
@@ -47,6 +48,7 @@ export function loadConfig(env = process.env) {
     origin: origin(env.BACKSTAGE_ORIGIN, 'BACKSTAGE_ORIGIN'),
     backend: origin(env.BACKSTAGE_BACKEND_ORIGIN, 'BACKSTAGE_BACKEND_ORIGIN'),
     cms: origin(env.BACKSTAGE_DIRECTUS_ORIGIN, 'BACKSTAGE_DIRECTUS_ORIGIN'),
+    realSettlement: env.BACKSTAGE_REAL_SETTLEMENT === 'true',
     owner: env.BACKSTAGE_OWNER,
     verifier: env.BACKSTAGE_PASSWORD_VERIFIER,
     credential: env.BACKSTAGE_BACKEND_TOKEN,
@@ -199,11 +201,12 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
         if (section === 'users' && record) return send(res, 200, await backend(endpoint + '/' + encodeURIComponent(record), 'GET', undefined, correlationId))
         if (section === 'payouts' && record) {
           const root = '/admin/withdrawals/' + encodeURIComponent(record)
-          const [trail, thread] = await Promise.all([
+          const [detail, trail, thread] = await Promise.all([
+            backend(root + '/reward', 'GET', undefined, correlationId),
             backend(root + '/audit', 'GET', undefined, correlationId),
             backend(root + '/thread', 'GET', undefined, correlationId),
           ])
-          return send(res, 200, { ...trail, thread })
+          return send(res, 200, { ...detail, ...trail, thread, realSettlement: config.realSettlement === true })
         }
         if (record !== undefined) throw fail(404, 'not_found')
         if (section === 'system') {
@@ -246,21 +249,26 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
       }
       const permitted = {
         reviews: ['approve', 'reject'],
-        payouts: ['approve', 'reject', 'simulate', 'reply', 'resolve_appeal'],
+        payouts: ['approve', 'reject', 'simulate', 'settle', 'reply', 'resolve_appeal'],
         support: supportStatuses,
         payments: ['reverify'],
       }
       const identifier = section === 'support' ? supportRef : uuid
       if (!Object.hasOwn(permitted, section) || !identifier.test(record || '')) throw fail(404, 'not_found')
-      const { action, reason, password } = await json(req)
+      const { action, reason, password, payoutRef } = await json(req)
       if (!permitted[section].includes(action) || (action !== 'reverify' && (typeof reason !== 'string' || reason.length > 500 || !reason.trim())))
         throw fail(400, 'invalid_request')
+      const settlement = action === 'settle'
+      if (settlement && config.realSettlement !== true) throw fail(409, 'settlement_disabled')
+      if (settlement && (typeof payoutRef !== 'string' || !payoutHash.test(payoutRef.trim())))
+        throw fail(400, 'invalid_payout_hash')
       const note = action === 'reverify' ? undefined : reason.trim()
       const payout = section === 'payouts'
       const correspondence = ['reply', 'resolve_appeal'].includes(action)
-      const destination = payout ? `/admin/withdrawals/${encodeURIComponent(record)}/${correspondence ? 'thread' : 'review'}` :
+      const destination = payout ? `/admin/withdrawals/${encodeURIComponent(record)}/${settlement ? 'settle-reward' : correspondence ? 'thread' : 'review'}` :
         section === 'payments' ? endpoint + '/' + encodeURIComponent(record) + '/reverify' : endpoint + '/' + encodeURIComponent(record)
       const payload = correspondence ? { action, message: note } :
+        settlement ? { action: 'paid', note, payoutRef: payoutRef.trim().toLowerCase() } :
         payout ? { action, note } :
         section === 'support' ? { status: action, internalNote: note } :
         section === 'payments' ? {} : { decision: action, note }

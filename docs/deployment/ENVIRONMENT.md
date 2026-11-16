@@ -174,6 +174,7 @@ is condensed in a short-lived child process (`radar-board-worker.js`,
 
 | Variable | Value |
 | --- | --- |
+| `BACKSTAGE_REAL_SETTLEMENT` | Defaults to `false`. Set to `true` on the owner service only after settlement security acceptance. Enables submitting an already-completed transfer hash for backend verification. |
 | `BACKSTAGE_ORIGIN` | Exact browser origin for Backstage. |
 | `BACKSTAGE_BACKEND_ORIGIN` | Exact origin of the authoritative GLOBAL backend. |
 | `BACKSTAGE_DIRECTUS_ORIGIN` | Exact origin of the existing Directus editor. |
