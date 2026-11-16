@@ -78,7 +78,27 @@ existing verifier and reconciliation rules.
 Approve or reject an eligible final pass or pending payout by supplying a
 decision note and re-entering the owner password. Existing backend checks
 determine the outcome. View payout decisions and correspondence from the payout record. Send a reply
-or record the outcome of a pending reconsideration.
+or record the outcome of a pending reconsideration. The payout detail shows
+the recorded profit, payout amount, trader share, approved recipient and
+available settlement evidence. A replicated or fenced account is read-only
+for real settlement recording.
+
+### Record a real payout transfer
+
+1. Open an approved commercial reward request. Inspect the account, amount,
+   destination and Arbitrum One DAI token details.
+2. After the transfer is completed externally through the approved treasury
+   process, choose **Verify and record settlement**. Enter the actual transfer
+   hash, a decision note and the owner password.
+3. Review the updated status and the evidence in the payout record. If the
+   verifier cannot confirm the finalized transfer, the request stays approved.
+   Review the transfer and retry verification with the same genuine hash when
+   appropriate.
+
+This screen requires `BACKSTAGE_REAL_SETTLEMENT=true` after security
+acceptance. The backend uses its configured treasury sender, frozen recipient
+and stored amount for verification. It claims the hash and records the payout
+decision using the existing accounting transaction.
 
 With the PR #125 backend available, open **Coupons → Controlled test
 challenges** and enter the registered wallet for each model. Re-enter the
@@ -103,7 +123,7 @@ redirects are refused. No browser-origin CORS grant is configured.
 
 The initial stage uses password confirmation. A separate second factor,
 central audit explorer, shared session storage, support messaging and
-attachments, commercial coupon writes, real settlement UI,
+attachments, commercial coupon writes,
 specialized risk inspection, detailed analytics, partner decisions and
 cross-region operations remain follow-up work. Current regional data views
 show the configured backend's authority only. Mutations require the

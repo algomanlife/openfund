@@ -2,7 +2,7 @@
 
 ## Repository findings
 
-The initial integration base was `a439f24`. Open PR #124 owns visual CMS
+The initial integration base was `a439f24`. Merged PR #124 introduced visual CMS
 editing and changes editorial assets under `apps/backstage`. PR #125 merged
 at `4bf95f7` and owns controlled coupons, frozen test lineage rules and
 simulated payout completion. Backstage uses that existing contract. Its
@@ -41,3 +41,13 @@ coupon writes, typed notifications, contact follow-up and authenticated
 support threads. Record those capabilities independently as they ship.
 Directus remains the editor and requires its own login when opened from
 Backstage.
+
+## Reward settlement
+
+Backstage reads the reward record, correspondence and financial audit through
+fixed owner routes. The settlement action is disabled by default and requires
+an active owner session, same-origin CSRF protection and password confirmation.
+The dedicated backend route accepts only reward settlement, locks the request
+and verifies that the account is writable in GLOBAL before calling the existing
+finalized-transfer verifier and claim flow. Controlled test requests continue
+to use their dedicated simulation action. This change adds no schema migration.

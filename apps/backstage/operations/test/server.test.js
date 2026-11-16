@@ -27,7 +27,7 @@ test('login, privilege checks, step-up, expiration, revocation and throttling', 
     owner: 'owner-fixture', credential: secret, verifier: await createVerifier(password) }
   const origin = 'https://backstage.example.test'
   let clock = Date.now()
-  const server = createBackstage({ ...settings, origin }, { now: () => clock, audit: entry => events.push(entry) })
+  const server = createBackstage({ ...settings, origin, realSettlement: true }, { now: () => clock, audit: entry => events.push(entry) })
   const local = await open(server)
   t.after(() => { server.close(); upstream.close() })
   const call = (path, body, headers = {}) => new Promise((resolve, reject) => {
@@ -78,7 +78,17 @@ test('login, privilege checks, step-up, expiration, revocation and throttling', 
   region = 'IRAN'
   assert.equal((await call(path, decision, headers)).body.error, 'wrong_region')
   assert.equal(calls.at(-1).path, '/runtime/status')
+  const payoutRef = '0x' + randomBytes(32).toString('hex')
+  const settle = { ...decision, action: 'settle', payoutRef }
+  assert.equal((await call(path, settle, headers)).body.error, 'wrong_region')
   region = 'GLOBAL'
+  assert.equal((await call(path, { ...settle, payoutRef: 'placeholder' }, headers)).body.error, 'invalid_payout_hash')
+  assert.equal((await call(path, settle)).status, 401)
+  assert.equal((await call(path, settle, { Cookie: headers.Cookie })).status, 403)
+  assert.equal((await call(path, { ...settle, password: 'invalid credential' }, headers)).status, 401)
+  assert.equal((await call(path, { ...settle, amount: 5, recipient: 'discarded' }, headers)).status, 200)
+  assert.equal(calls.at(-1).path, '/admin/withdrawals/' + record + '/settle-reward')
+  assert.deepEqual(JSON.parse(calls.at(-1).body), { action: 'paid', note: decision.reason, payoutRef })
   assert.ok(events.some(e => e.target === record && e.outcome === 'success' && e.correlationId))
   assert.ok(!JSON.stringify(events).includes(password))
   clock += 31 * 60_000

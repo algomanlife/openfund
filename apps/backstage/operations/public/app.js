@@ -138,13 +138,14 @@ const table = (heading, columns, rows) => el('section', { class: 'panel table-bo
 function decide(section, row, action) {
   const reason = el('textarea', { required: '', maxlength: '500', rows: '3' })
   const password = el('input', { required: '', type: 'password', dir: 'ltr', autocomplete: 'current-password' })
+  const hash = action === 'settle' ? el('input', { required: '', maxlength: '66', pattern: '0x[0-9a-fA-F]{64}', dir: 'ltr', spellcheck: 'false' }) : null
   const submit = el('button', { class: action === 'reject' ? 'danger' : 'primary' }, t('confirm'))
   const feedback = el('p', { role: 'alert' })
   const form = el('form', { on: { submit: async event => {
     event.preventDefault()
     submit.disabled = true
     try {
-      await api(section + '/' + row.id, { action, reason: reason.value, password: password.value })
+      await api(section + '/' + row.id, { action, reason: reason.value, password: password.value, ...(hash && { payoutRef: hash.value }) })
       dialog.close()
       render()
       announce('success')
@@ -154,7 +155,7 @@ function decide(section, row, action) {
       password.value = ''
       submit.disabled = false
     }
-  } } }, el('h2', {}, t(action)), uid(row), action === 'reverify' ? null : field(['reply', 'resolve_appeal'].includes(action) ? 'message' : 'reason', reason), field('password', password),
+  } } }, el('h2', {}, t(action)), uid(row), action === 'reverify' ? null : field(['reply', 'resolve_appeal'].includes(action) ? 'message' : 'reason', reason), hash ? field('transactionHash', hash) : null, field('password', password),
   feedback, el('div', { class: 'tools' }, button('cancel', () => dialog.close()), submit))
   dialog.replaceChildren(form)
   dialog.showModal()
@@ -174,7 +175,7 @@ const columns = {
     ['date', r => date(r.completed_at)], ['action', r => decisionButtons('reviews', r)]],
   payouts: [['wallet', r => link('users', { id: r.user_id }, wallet(r))], ['plan', plan],
     ['amount', r => usd(r.amount_usd)], ['status', status], ['date', r => date(r.requested_at)],
-    ['scope', r => t(r.test_mode ? 'test' : 'commercial')], ['audit', r => link('payouts', { id: r.id }, uid(r))], ['action', r => r.status === 'requested' ? decisionButtons('payouts', r) : r.test_mode && r.status === 'approved' ? button('simulate', () => decide('payouts', r, 'simulate')) : '—']],
+    ['scope', r => t(r.test_mode ? 'test' : 'commercial')], ['payoutDetails', r => link('payouts', { id: r.id }, uid(r))], ['action', r => r.status === 'requested' ? decisionButtons('payouts', r) : r.test_mode && r.status === 'approved' ? button('simulate', () => decide('payouts', r, 'simulate')) : '—']],
   payments: [['identity', r => link('payments', { id: r.purchase_order_id }, technical(r.purchase_order_id))], ['transaction', r => technical(r.tx_hash)], ['status', status], ['date', r => date(r.created_at ?? r.last_attempt_at)],
     ['action', r => r.retryable && r.status !== 'confirmed' ? button('reverify', () => decide('payments', r, 'reverify')) : '—']],
   coupons: [['code', r => technical(r.code)], ['status', status], ['discount', r => r.kind === 'percent' ? new Intl.NumberFormat(fmt(), { style: 'percent' }).format(Number(r.value) / 100) : usd(r.value)],
@@ -228,6 +229,39 @@ async function directory(main, section, filter) {
     return
   }
   if (id && section === 'payouts') {
+    const { record, chain } = data
+    const term = (key, value) => el('div', {}, el('dt', {}, t(key)), el('dd', {}, value))
+    const evidence = record.payment_evidence
+    const split = record.split_pct == null ? '—' : new Intl.NumberFormat(fmt(), { style: 'percent', maximumFractionDigits: 2 }).format(Number(record.split_pct) / 100)
+    main.append(el('section', { class: 'panel detail' },
+      el('h2', {}, t('payoutDetails')),
+      el('dl', { class: 'payout-facts' },
+        term('identity', uid(record)),
+        term('trader', link('users', { id: record.user_id }, record.display_name || wallet(record))),
+        term('challenges', record.challenge_id ? link('challenges', { id: record.challenge_id }, technical(record.challenge_id)) : '—'),
+        term('tradingAccount', technical(record.demo_account_id)),
+        term('scope', t(record.test_mode ? 'test' : 'commercial')),
+        term('region', t(record.home_region)),
+        term('date', date(record.requested_at)),
+        term('status', status(record)),
+        term('grossProfit', usd(record.gross_profit_usd)),
+        term('payoutAmount', usd(record.amount_usd)),
+        term('eligibleAmount', usd(record.eligible_amount_usd)),
+        term('profitShare', split),
+        term('destination', technical(record.recipient_wallet)),
+        term('approvedBy', technical(record.approved_by)),
+        chain ? term('network', t('arbitrum')) : null,
+        chain ? term('token', el('span', {}, technical(chain.symbol), ' ', technical(chain.token))) : null,
+        chain ? term('transactionHash', technical(record.payout_ref)) : null,
+        chain ? term('verification', t(evidence?.finality === 'finalized' ? 'verified' : 'awaitingEvidence')) : null,
+        evidence?.transactionAt ? term('verifiedTransferTime', date(evidence.transactionAt)) : null,
+        evidence?.blockNumber ? term('settlementBlock', technical(evidence.blockNumber)) : null),
+      !record.writable ? badge('readonly') : null,
+      record.writable && record.status === 'requested' ? decisionButtons('payouts', record) : null,
+      record.writable && record.status === 'approved' && record.test_mode ? button('simulate', () => decide('payouts', record, 'simulate')) : null,
+      record.writable && record.status === 'approved' && !record.test_mode ?
+        data.realSettlement ? el('div', { class: 'detail' }, el('p', {}, t('settlementHint')), button('settle', () => decide('payouts', record, 'settle'), 'primary')) :
+          el('p', { class: 'muted' }, t('settlement_disabled')) : null))
     main.append(el('section', { class: 'panel detail' }, el('h2', {}, t('correspondence')),
       data.thread.messages.length ? data.thread.messages.map(m => el('article', { class: 'detail' },
         el('strong', {}, t(m.role)), el('span', { class: 'muted' }, date(m.at)), el('p', { class: 'message' }, m.message))) :

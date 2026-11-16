@@ -13,9 +13,9 @@
         "height": 900
       },
       "session": "disposable owner session",
-      "capturedAt": "2026-11-15T16:39:30.532851+00:00",
-      "state": "EN Backstage overview from Chromium with real local API and PostgreSQL acceptance records. No production data.",
-      "sha256": "96ee215a8ace9c330dab36216a4fd3382d2ff3ab578dd74d9ea17c3c4db50043"
+      "capturedAt": "2026-11-16T04:56:37.122470+00:00",
+      "state": "English Backstage overview. Captured from the local Backstage browser acceptance run against the Openfund backend and disposable PostgreSQL records.",
+      "sha256": "76400a1d613fba47e81bfb3ccb9b922ade2c87effefb370229bd6ff8004670c0"
     },
     {
       "file": "backstage-operations/backstage-overview-fa.png",
@@ -25,9 +25,69 @@
         "height": 900
       },
       "session": "disposable owner session",
-      "capturedAt": "2026-11-15T16:39:30.615929+00:00",
-      "state": "FA Backstage overview from Chromium with real local API and PostgreSQL acceptance records. No production data.",
+      "capturedAt": "2026-11-16T04:56:37.184491+00:00",
+      "state": "Persian Backstage overview. Captured from the local Backstage browser acceptance run against the Openfund backend and disposable PostgreSQL records.",
       "sha256": "9cca82b2917e3dcd3c035a40ab2cba4c660c0e9b0f9e8152ff802af32aa3eaf0"
+    },
+    {
+      "file": "backstage-operations/backstage-challenge.png",
+      "route": "/#/challenges?id=<fixture-id>",
+      "viewport": {
+        "width": 1366,
+        "height": 900
+      },
+      "session": "disposable owner session",
+      "capturedAt": "2026-11-16T04:56:33.920413+00:00",
+      "state": "Challenge detail and frozen rules. Captured from the local Backstage browser acceptance run against the Openfund backend and disposable PostgreSQL records.",
+      "sha256": "38df961d2d5473494a34e0fed79976dd8906c4005753541868167658ca3231e0"
+    },
+    {
+      "file": "backstage-operations/backstage-controlled-coupons.png",
+      "route": "/#/coupons",
+      "viewport": {
+        "width": 1366,
+        "height": 900
+      },
+      "session": "disposable owner session",
+      "capturedAt": "2026-11-16T04:56:36.261488+00:00",
+      "state": "Controlled coupon management after issuance. Captured from the local Backstage browser acceptance run against the Openfund backend and disposable PostgreSQL records.",
+      "sha256": "aa5a1c89f67244578872d0d8fb8774ae4803531f749f270917e86b0187e374e6"
+    },
+    {
+      "file": "backstage-operations/backstage-payout.png",
+      "route": "/#/payouts?id=<fixture-id>",
+      "viewport": {
+        "width": 1366,
+        "height": 900
+      },
+      "session": "disposable owner session",
+      "capturedAt": "2026-11-16T04:56:34.636634+00:00",
+      "state": "Approved reward payout with settlement verification enabled and no recorded transfer. Captured from the local Backstage browser acceptance run against the Openfund backend and disposable PostgreSQL records.",
+      "sha256": "18b7cb5e1627200601580d39c5053d14b30c97ddb22578724098480fa007df5a"
+    },
+    {
+      "file": "backstage-operations/backstage-support-intake.png",
+      "route": "/#/support?id=<fixture-reference>",
+      "viewport": {
+        "width": 1366,
+        "height": 900
+      },
+      "session": "disposable owner session",
+      "capturedAt": "2026-11-16T04:56:35.276937+00:00",
+      "state": "Website support intake submission. Captured from the local Backstage browser acceptance run against the Openfund backend and disposable PostgreSQL records.",
+      "sha256": "f7858777afa0256d17fa862491268efce5c685f105b16ccb4af59df6fb791120"
+    },
+    {
+      "file": "backstage-operations/backstage-financial-position.png",
+      "route": "/#/finance",
+      "viewport": {
+        "width": 1366,
+        "height": 900
+      },
+      "session": "disposable owner session",
+      "capturedAt": "2026-11-16T04:56:35.640544+00:00",
+      "state": "Financial position from the isolated database with unavailable treasury balance. Captured from the local Backstage browser acceptance run against the Openfund backend and disposable PostgreSQL records.",
+      "sha256": "7929b9e04ab55e4f657634ced3f2173ba3c21948e24b7c08c9ca6e0f0d739b67"
     },
     {
       "file": "controlled-challenges/operator-test-payout.png",

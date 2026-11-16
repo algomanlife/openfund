@@ -182,6 +182,22 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
     res.json({ total, withdrawals: rows.slice(0, limit) })
   }))
 
+  router.get('/withdrawals/:id/reward', withdrawalReadLimit, wrap(async (req, res) => {
+    if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')
+    const { rows: [record] } = await pool.query(
+      `SELECT w.id, w.user_id, u.display_name, u.wallet_address, w.challenge_id, c.demo_account_id,
+              w.status, w.amount_usd, w.gross_profit_usd, w.split_pct, w.reward_cycle, w.recipient_wallet,
+              w.approved_by, w.test_mode, w.payment_evidence, w.requested_at, w.payout_ref,
+              w.eligibility->>'reward' AS eligible_amount_usd,
+              o.home_region, (o.home_region = 'GLOBAL' AND o.home_region = openfund_local_region() AND o.state = 'active') IS TRUE AS writable
+         FROM withdrawal_requests w JOIN openfund_users u ON u.id=w.user_id
+         LEFT JOIN openfund_challenges c ON c.id=w.challenge_id
+         LEFT JOIN account_ownership o ON o.account_id=c.demo_account_id
+        WHERE w.id=$1 AND w.kind='reward'`, [req.params.id])
+    if (!record) throw fail(404, 'withdrawal_not_found')
+    res.set('Cache-Control', 'no-store').json({ record, chain: record.test_mode ? null : { id: 42161, symbol: 'DAI', token: DAI_PAYOUT_TOKEN } })
+  }))
+
   router.get('/withdrawals/:id/audit', withdrawalReadLimit, wrap(async (req, res) => {
     if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')
     const { rows } = await pool.query(`SELECT ts, actor, action, before, after FROM financial_audit_log
@@ -191,10 +207,11 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
 
   const withdrawalReviewLimit = rateLimit({ windowMs: 60_000, limit: 60, standardHeaders: 'draft-8', legacyHeaders: false,
     message: { error: 'rate_limited' } })
-  router.post('/withdrawals/:id/review', withdrawalReviewLimit, wrap(async (req, res) => {
+  const reviewWithdrawal = settleReward => wrap(async (req, res) => {
     if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')
     const { action, note, payoutRef } = req.body || {}
     const spec = WITHDRAWAL_ACTIONS[action]
+    if (settleReward && action !== 'paid') throw fail(400, 'invalid_action')
     if (!Object.hasOwn(WITHDRAWAL_ACTIONS, action)) throw fail(400, 'invalid_action')
     if (note != null && (typeof note !== 'string' || note.length > 500)) throw fail(400, 'invalid_note')
     if (action === 'reject' && !(typeof note === 'string' && note.trim())) throw fail(400, 'reason_required')
@@ -207,6 +224,14 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
       const w = (await client.query('SELECT * FROM withdrawal_requests WHERE id=$1 FOR UPDATE', [req.params.id])).rows[0]
       if (!w) throw fail(404, 'withdrawal_not_found')
       const reward = w.kind === 'reward'
+      if (settleReward) {
+        if (!reward) throw fail(404, 'withdrawal_not_found')
+        const { rowCount } = await client.query(
+          `SELECT 1 FROM openfund_challenges c JOIN account_ownership o ON o.account_id=c.demo_account_id
+            WHERE c.id=$1 AND o.home_region='GLOBAL' AND o.home_region=openfund_local_region() AND o.state='active'
+            FOR SHARE OF o`, [w.challenge_id])
+        if (!rowCount) throw fail(409, 'account_not_writable_in_region')
+      }
       if (action === 'paid' && w.test_mode) throw fail(409, 'test_payout_requires_simulation')
       if (action === 'simulate' && !w.test_mode) throw fail(409, 'real_payout_requires_verification')
       if (w.status === spec.to) {
@@ -261,7 +286,9 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
       if (e.constraint === 'idx_withdrawals_verified_hash') throw fail(409, 'payout_transaction_already_recorded')
       throw e
     } finally { client.release() }
-  }))
+  })
+  router.post('/withdrawals/:id/review', withdrawalReviewLimit, reviewWithdrawal(false))
+  router.post('/withdrawals/:id/settle-reward', withdrawalReviewLimit, reviewWithdrawal(true))
 
   router.post('/withdrawals/:id/ib-settlement', withdrawalReviewLimit, wrap(async (req, res) => {
     if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')

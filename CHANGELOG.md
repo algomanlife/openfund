@@ -13,6 +13,8 @@
 
 ## Unreleased — Backstage operations
 
+- Add reward payout details and an opt-in owner control to verify and record
+  finalized Arbitrum One DAI settlement evidence.
 - Add a bilingual owner workspace with secure sign-in, linked operational
   directories and password-confirmed Prop decisions.
 - Align the Backstage Blueprint with the existing production hostname,

@@ -477,6 +477,14 @@ test('controlled test classification and simulated settlement replicate as read-
     VALUES ($1,$2,10,'reward',true) RETURNING id`, [u.id, challenge.id])
   const payout = action => admin(G, 'POST', `/admin/withdrawals/${withdrawal.id}/review`, { action })
   assert.equal((await payout('approve')).status, 200)
+  const rewardDetail = `/admin/withdrawals/${withdrawal.id}/reward`
+  const realSettlement = `/admin/withdrawals/${withdrawal.id}/settle-reward`
+  const evidence = { action: 'paid', payoutRef: '0x' + 'd'.repeat(64) }
+  const detail = await admin(G, 'GET', rewardDetail)
+  assert.equal(detail.body.record.writable, true)
+  assert.equal(detail.body.chain, null)
+  assert.equal((await admin(G, 'POST', realSettlement, evidence)).body.error, 'test_payout_requires_simulation')
+  assert.equal((await admin(I, 'POST', realSettlement, evidence)).status, 503)
   assert.equal((await payout('simulate')).body.status, 'simulated_settled')
   await drained(gPool, 'controlled test GLOBAL')
   const projected = (entity, id) => one(iPool, "SELECT data FROM region_remote_rows WHERE source_region='GLOBAL' AND entity=$1 AND entity_id=$2", [entity, id])

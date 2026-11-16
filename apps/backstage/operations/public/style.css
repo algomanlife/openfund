@@ -59,3 +59,7 @@ dialog form{display:grid;gap:15px}
 @media(min-width:801px){.shell.nav-collapsed{grid-template-columns:minmax(0,1fr)}.nav-collapsed .sidebar{display:none}}
 @media(max-width:800px){.shell{display:block}.sidebar{display:none}.nav-open .sidebar{display:block;border-block-end:1px solid var(--line)}header{padding:10px 14px}main{padding-block:20px}}
 .message{white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+
+.payout-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1rem; margin: 0; justify-self: stretch; }
+.payout-facts dt { color: var(--muted); }
+.payout-facts dd { margin: 0.25rem 0 0; overflow-wrap: anywhere; }
