@@ -65,8 +65,40 @@ for (const file of files(join(root, 'src')).filter(f => !f.includes('/i18n/conte
   }
   visit(source)
 }
+/* Editorial catalog for the Backstage Content workspace: routes, the
+ * structured surfaces and the forbidden collections, compiled from the same
+ * TypeScript sources the site uses. Each route view names the registry areas
+ * (feature directories) whose interface copy it renders; an unmapped view
+ * fails generation so a new route always gets an explicit decision. */
+const compileModule = path => {
+  const text = buildSync({ entryPoints: [join(root, path)], bundle: true, platform: 'node', format: 'cjs', write: false }).outputFiles[0].text
+  const mod = { exports: {} }; new Function('module', 'exports', text)(mod, mod.exports); return mod.exports
+}
+const { EDITORIAL_ROUTES } = compileModule('src/cms/editorialRoutes.ts')
+const { EDITORIAL_SURFACES, FORBIDDEN_EDITORIAL_COLLECTIONS, EDITORIAL_LOCALES } = compileModule('src/cms/editorialSurfaces.ts')
+const VIEW_AREAS = {
+  'root-redirect': [], home: ['home'], challenges: ['global'], 'payout-operations': ['purchase'], checkout: ['purchase'],
+  campaign: ['campaign'], markets: ['markets'], rulebook: ['rulebook'], transparency: ['transparency'],
+  governance: ['governance'], 'governance-new': ['governance'], 'governance-workspace': ['governance'], 'governance-proposal': ['governance'],
+  'economy-redirect': [], 'revenue-model': ['economy'], 'live-market-access': ['economy'], ambassador: ['partners'], coach: ['partners'],
+  whitepaper: ['whitepaper'], 'certificate-verification': ['certificates'], applications: ['applications'], roadmap: ['roadmap'],
+  about: ['company'], contact: ['company'], faq: ['faq'], 'faq-question': ['faq'], tools: ['tools'], tool: ['tools'],
+  learn: ['learn'], 'learning-path': ['learn'], lesson: ['learn'], glossary: ['learn'], 'glossary-term': ['learn'],
+  referral: ['referral'], 'referral-entry': ['referral'], 'product-shell': ['terminal'], dashboard: ['terminal'], trade: ['terminal'],
+  chart: ['terminal'], radar: ['radar'], heatmap: ['radar'], portfolio: ['terminal'], journal: ['terminal'], inbox: ['inbox'],
+  certificates: ['certificates'], purchases: ['purchase'], withdrawals: ['purchase'], leaderboard: ['terminal'], rewards: ['terminal'],
+  'terminal-redirect': [], 'portfolio-redirect': [], 'journal-redirect': [], 'legacy-product-redirect': [], 'legacy-anchor': [], fallback: [],
+}
+const unmapped = EDITORIAL_ROUTES.filter(r => !Object.hasOwn(VIEW_AREAS, r.view)).map(r => r.view)
+if (unmapped.length) throw Error(`Map these editorial route views to registry areas in content-registry.mjs: ${unmapped.join(', ')}`)
+const editorial = {
+  locales: [...EDITORIAL_LOCALES], forbidden: [...FORBIDDEN_EDITORIAL_COLLECTIONS], surfaces: EDITORIAL_SURFACES,
+  sharedAreas: ['navigation', 'notice', 'community', 'global'],
+  routes: EDITORIAL_ROUTES.map(r => ({ ...r, areas: VIEW_AREAS[r.view] })),
+}
 const result = { version: 1, scope: 'Static React bilingual calls and flat bilingual records; not an assertion of total content coverage',
   summary: { uniqueRecords: rows.size, mappedCalls: [...rows.values()].filter(r => r.locations.some(l => l.method === 'pick-pipeline')).length, exceptions: exceptions.length, validationFindings: errors.length, reviewedExclusions: exclusions.length },
+  editorial,
   records: [...rows.values()].sort((a,b) => a.key.localeCompare(b.key)), exceptions, findings: errors, exclusions }
 const output = join(repo, 'apps/backstage/content-registry.json')
 if (process.argv.includes('--check')) {
@@ -78,6 +110,7 @@ if (process.argv.includes('--check')) {
   const additions = [...exceptions, ...errors].filter(x => !accepted.has(signature(x)))
   const registered = new Set(baseline.records.map(row => row.key))
   for (const row of rows.values()) if (!registered.has(row.key)) additions.push({ key: row.key, reason: 'unregistered-fixed-content', locations: row.locations })
+  if (JSON.stringify(baseline.editorial) !== JSON.stringify(editorial)) additions.push({ reason: 'stale-editorial-catalog', fix: 'node apps/web-react/scripts/content-registry.mjs' })
   if (additions.length) { console.error(JSON.stringify(additions, null, 2)); process.exitCode = 1 }
   console.log(JSON.stringify(result.summary))
 } else {

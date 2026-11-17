@@ -3,6 +3,7 @@ import { randomBytes, randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { validVerifier, verifyPassword } from './password.js'
+import { createContentApi } from './content.js'
 
 const uuid = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i
 const payoutHash = /^0x[a-f0-9]{64}$/i
@@ -177,7 +178,9 @@ export function loadConfig(env = process.env) {
     owner: env.BACKSTAGE_OWNER,
     verifier: env.BACKSTAGE_PASSWORD_VERIFIER,
     credential: env.BACKSTAGE_BACKEND_TOKEN,
+    contentToken: env.BACKSTAGE_DIRECTUS_TOKEN || null,
   }
+  if (config.contentToken !== null && !/^[!-~]{16,512}$/.test(config.contentToken)) throw new Error('Invalid BACKSTAGE_DIRECTUS_TOKEN')
   if (!/^[A-Za-z0-9._@-]{2,50}$/.test(config.owner || '') ||
       !validVerifier(config.verifier) ||
       !/^[!-~]{24,256}$/.test(config.credential || '')) throw new Error('Backstage owner provisioning is incomplete')
@@ -191,13 +194,13 @@ function send(res, status, data) {
   res.end(JSON.stringify(data))
 }
 
-async function json(req) {
+async function json(req, limit = 8192) {
   if (req.headers['content-type'] !== 'application/json') throw fail(415, 'invalid_request')
   const chunks = []
   let bytes = 0
   for await (const chunk of req.iterator({ destroyOnReturn: false })) {
     bytes += chunk.length
-    if (bytes > 8192) throw fail(413, 'invalid_request')
+    if (bytes > limit) throw fail(413, 'invalid_request')
     chunks.push(chunk)
   }
   try {
@@ -207,7 +210,8 @@ async function json(req) {
   throw fail(400, 'invalid_request')
 }
 
-export function createBackstage(config, { now = Date.now, audit = event => console.log(JSON.stringify(event)) } = {}) {
+export function createBackstage(config, { now = Date.now, audit = event => console.log(JSON.stringify(event)), contentFetch } = {}) {
+  const content = createContentApi({ cms: config.cms, token: config.contentToken, ...(contentFetch ? { fetchImpl: contentFetch } : {}) })
   const secure = config.origin.startsWith('https:')
   const cookieName = secure ? '__Host-openfund-backstage' : 'openfund-backstage-local'
   const duration = 8 * 60 * 60_000
@@ -267,7 +271,8 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
     res.setHeader('X-Content-Type-Options', 'nosniff')
     res.setHeader('Referrer-Policy', 'no-referrer')
     res.setHeader('X-Robots-Tag', 'noindex, nofollow')
-    res.setHeader('Content-Security-Policy', "default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
+    /* frame-src: the read-only site preview in the Content workspace only */
+    res.setHeader('Content-Security-Policy', `default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src 'self'; frame-src ${config.backend}; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`)
     if (secure) res.setHeader('Strict-Transport-Security', 'max-age=31536000')
     try {
       const url = new URL(req.url, config.origin)
@@ -311,6 +316,30 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
         res.setHeader('Set-Cookie', cookie('', 0))
         log('sign_out', 'success')
         return send(res, 200, { ok: true })
+      }
+
+      if (path.startsWith('/api/content/')) {
+        const action = path.slice('/api/content/'.length)
+        if (req.method === 'GET') {
+          const q = url.searchParams
+          if (action === 'catalog') return send(res, 200, { ...(await content.catalog()), writable: content.writable, site: config.backend, cms: config.cms })
+          if (action === 'fields') return send(res, 200, await content.fields({ view: q.get('view'), locale: q.get('locale'),
+            q: q.get('q') ?? '', offset: q.get('offset') ?? 0, shared: q.get('shared') === '1' }))
+          if (action === 'surface') return send(res, 200, await content.surface({ collection: q.get('collection'), locale: q.get('locale') }))
+          throw fail(404, 'not_found')
+        }
+        if (!['save', 'status'].includes(action)) throw fail(404, 'not_found')
+        const body = await json(req, 65536)
+        const write = action === 'save' ? await content.prepareSave(body) : await content.prepareStatus(body)
+        try {
+          await confirmOwner(current, body.password, correlationId)
+          await content.apply(write)
+          log('content.' + action, 'success', write.target)
+          return send(res, 200, { ok: true })
+        } catch (error) {
+          log('content.' + action, 'denied', write.target)
+          throw error
+        }
       }
 
       const [, , section, record, extra] = path.split('/')

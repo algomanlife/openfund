@@ -8,6 +8,894 @@
     "validationFindings": 0,
     "reviewedExclusions": 27
   },
+  "editorial": {
+    "locales": [
+      "fa",
+      "en",
+      "ar",
+      "ru",
+      "zh-CN"
+    ],
+    "forbidden": [
+      "challenge_plans",
+      "orders",
+      "payments",
+      "payment_events",
+      "wallets",
+      "positions",
+      "coupons",
+      "directus_users",
+      "gov_proposals",
+      "gov_votes",
+      "payouts",
+      "ledger_entries"
+    ],
+    "surfaces": [
+      {
+        "collection": "home_content",
+        "translationCollection": "home_content_translations",
+        "singleton": true,
+        "textFields": [
+          "headline",
+          "sub",
+          "note",
+          "prop_title",
+          "prop_description",
+          "prop_cta",
+          "perpetual_title",
+          "perpetual_description",
+          "perpetual_cta",
+          "seo_title",
+          "seo_description"
+        ],
+        "fileFields": [
+          "prop_image",
+          "perpetual_image"
+        ]
+      },
+      {
+        "collection": "faqs",
+        "translationCollection": "faq_translations",
+        "textFields": [
+          "question",
+          "answer"
+        ]
+      },
+      {
+        "collection": "faq_categories",
+        "translationCollection": "faq_category_translations",
+        "textFields": [
+          "label",
+          "description"
+        ]
+      },
+      {
+        "collection": "pages",
+        "translationCollection": "page_translations",
+        "textFields": [
+          "title",
+          "subtitle",
+          "description",
+          "seo_title",
+          "seo_description"
+        ]
+      },
+      {
+        "collection": "navigation_items",
+        "translationCollection": "navigation_item_translations",
+        "textFields": [
+          "label",
+          "description"
+        ]
+      },
+      {
+        "collection": "footer_links",
+        "translationCollection": "footer_link_translations",
+        "textFields": [
+          "label"
+        ]
+      },
+      {
+        "collection": "legal_documents",
+        "translationCollection": "legal_document_translations",
+        "textFields": [
+          "title"
+        ],
+        "jsonTextFields": [
+          "paragraphs"
+        ]
+      },
+      {
+        "collection": "trading_rules",
+        "translationCollection": "trading_rule_translations",
+        "textFields": [
+          "title",
+          "explanation_title",
+          "explanation_body"
+        ],
+        "jsonTextFields": [
+          "paragraphs",
+          "table"
+        ]
+      },
+      {
+        "collection": "learning_paths",
+        "translationCollection": "learning_path_translations",
+        "textFields": [
+          "eyebrow",
+          "title",
+          "summary"
+        ],
+        "jsonTextFields": [
+          "outcomes"
+        ]
+      },
+      {
+        "collection": "lessons",
+        "translationCollection": "lesson_translations",
+        "textFields": [
+          "title",
+          "summary"
+        ],
+        "jsonTextFields": [
+          "takeaways",
+          "blocks"
+        ]
+      },
+      {
+        "collection": "glossary_terms",
+        "translationCollection": "glossary_term_translations",
+        "textFields": [
+          "term",
+          "short",
+          "definition"
+        ]
+      },
+      {
+        "collection": "tools",
+        "translationCollection": "tool_translations",
+        "textFields": [
+          "name",
+          "tagline",
+          "about",
+          "method",
+          "limitations"
+        ],
+        "jsonTextFields": [
+          "assumptions"
+        ]
+      },
+      {
+        "collection": "referral_content",
+        "translationCollection": "referral_content_translations",
+        "singleton": true,
+        "textFields": [
+          "hero_eyebrow",
+          "hero_title",
+          "hero_accent",
+          "hero_intro",
+          "status_notice",
+          "dashboard_title",
+          "dashboard_intro",
+          "cta_title",
+          "cta_text",
+          "cta_primary",
+          "cta_secondary",
+          "seo_title",
+          "seo_description"
+        ],
+        "jsonTextFields": [
+          "benefits",
+          "stages",
+          "sections",
+          "faq",
+          "pending_decisions",
+          "dashboard_columns"
+        ]
+      },
+      {
+        "collection": "governance_milestones",
+        "translationCollection": "governance_milestone_translations",
+        "textFields": [
+          "title",
+          "body"
+        ]
+      },
+      {
+        "collection": "governance_content_blocks",
+        "translationCollection": "governance_content_block_translations",
+        "textFields": [
+          "body"
+        ]
+      },
+      {
+        "collection": "whitepaper_documents",
+        "translationCollection": "whitepaper_document_translations",
+        "textFields": [
+          "title",
+          "subtitle",
+          "abstract",
+          "revision_note",
+          "seo_title",
+          "seo_description"
+        ]
+      },
+      {
+        "collection": "whitepaper_chapters",
+        "translationCollection": "whitepaper_chapter_translations",
+        "textFields": [
+          "kicker",
+          "title",
+          "summary"
+        ],
+        "jsonTextFields": [
+          "blocks"
+        ]
+      },
+      {
+        "collection": "whitepaper_datasets",
+        "translationCollection": "whitepaper_dataset_translations",
+        "textFields": [
+          "title",
+          "caption",
+          "note"
+        ],
+        "jsonTextFields": [
+          "labels"
+        ]
+      },
+      {
+        "collection": "whitepaper_references",
+        "translationCollection": "whitepaper_reference_translations",
+        "textFields": [
+          "note"
+        ]
+      },
+      {
+        "collection": "terminal_sections",
+        "translationCollection": "terminal_section_translations",
+        "textFields": [
+          "title",
+          "body"
+        ],
+        "fileFields": [
+          "illustration"
+        ]
+      },
+      {
+        "collection": "site_settings",
+        "translationCollection": "site_settings",
+        "singleton": true,
+        "textFields": [],
+        "sharedTextFields": [
+          "maintenance_message"
+        ]
+      }
+    ],
+    "sharedAreas": [
+      "navigation",
+      "notice",
+      "community",
+      "global"
+    ],
+    "routes": [
+      {
+        "path": "/",
+        "view": "root-redirect",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      },
+      {
+        "path": "/:locale/home",
+        "view": "home",
+        "collections": [
+          "home_content",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "home"
+        ]
+      },
+      {
+        "path": "/:locale/challenges",
+        "view": "challenges",
+        "collections": [
+          "faqs",
+          "legal_documents",
+          "pages",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "global"
+        ]
+      },
+      {
+        "path": "/:locale/operations/payouts",
+        "view": "payout-operations",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "purchase"
+        ]
+      },
+      {
+        "path": "/:locale/checkout",
+        "view": "checkout",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "purchase"
+        ]
+      },
+      {
+        "path": "/:locale/campaign",
+        "view": "campaign",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "campaign"
+        ]
+      },
+      {
+        "path": "/:locale/markets",
+        "view": "markets",
+        "collections": [
+          "pages",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "markets"
+        ]
+      },
+      {
+        "path": "/:locale/rulebook",
+        "view": "rulebook",
+        "collections": [
+          "trading_rules",
+          "pages",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "rulebook"
+        ]
+      },
+      {
+        "path": "/:locale/transparency",
+        "view": "transparency",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "transparency"
+        ]
+      },
+      {
+        "path": "/:locale/governance",
+        "view": "governance",
+        "collections": [
+          "governance_milestones",
+          "governance_content_blocks",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "governance"
+        ]
+      },
+      {
+        "path": "/:locale/governance/new",
+        "view": "governance-new",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "governance"
+        ]
+      },
+      {
+        "path": "/:locale/governance/workspace",
+        "view": "governance-workspace",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "governance"
+        ]
+      },
+      {
+        "path": "/:locale/governance/proposals/:ofp",
+        "view": "governance-proposal",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "governance"
+        ]
+      },
+      {
+        "path": "/:locale/economy",
+        "view": "economy-redirect",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      },
+      {
+        "path": "/:locale/revenue-model",
+        "view": "revenue-model",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "economy"
+        ]
+      },
+      {
+        "path": "/:locale/live-market-access",
+        "view": "live-market-access",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "economy"
+        ]
+      },
+      {
+        "path": "/:locale/ambassador",
+        "view": "ambassador",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "partners"
+        ]
+      },
+      {
+        "path": "/:locale/coach",
+        "view": "coach",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "partners"
+        ]
+      },
+      {
+        "path": "/:locale/whitepaper",
+        "view": "whitepaper",
+        "collections": [
+          "whitepaper_documents",
+          "whitepaper_chapters",
+          "whitepaper_datasets",
+          "whitepaper_references",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "whitepaper"
+        ]
+      },
+      {
+        "path": "/:locale/certificate-verification",
+        "view": "certificate-verification",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "certificates"
+        ]
+      },
+      {
+        "path": "/:locale/apps",
+        "view": "applications",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "applications"
+        ]
+      },
+      {
+        "path": "/:locale/roadmap",
+        "view": "roadmap",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "roadmap"
+        ]
+      },
+      {
+        "path": "/:locale/about",
+        "view": "about",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "company"
+        ]
+      },
+      {
+        "path": "/:locale/contact",
+        "view": "contact",
+        "collections": [
+          "site_settings",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "company"
+        ]
+      },
+      {
+        "path": "/:locale/faq",
+        "view": "faq",
+        "collections": [
+          "faqs",
+          "faq_categories",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "faq"
+        ]
+      },
+      {
+        "path": "/:locale/faq/q/:key",
+        "view": "faq-question",
+        "collections": [
+          "faqs",
+          "faq_categories"
+        ],
+        "areas": [
+          "faq"
+        ]
+      },
+      {
+        "path": "/:locale/tools",
+        "view": "tools",
+        "collections": [
+          "tools",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "tools"
+        ]
+      },
+      {
+        "path": "/:locale/tools/:slug",
+        "view": "tool",
+        "collections": [
+          "tools"
+        ],
+        "areas": [
+          "tools"
+        ]
+      },
+      {
+        "path": "/:locale/learn",
+        "view": "learn",
+        "collections": [
+          "learning_paths",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "learn"
+        ]
+      },
+      {
+        "path": "/:locale/learn/paths/:slug",
+        "view": "learning-path",
+        "collections": [
+          "learning_paths",
+          "lessons"
+        ],
+        "areas": [
+          "learn"
+        ]
+      },
+      {
+        "path": "/:locale/learn/lessons/:slug",
+        "view": "lesson",
+        "collections": [
+          "lessons"
+        ],
+        "areas": [
+          "learn"
+        ]
+      },
+      {
+        "path": "/:locale/learn/glossary",
+        "view": "glossary",
+        "collections": [
+          "glossary_terms"
+        ],
+        "areas": [
+          "learn"
+        ]
+      },
+      {
+        "path": "/:locale/learn/glossary/:slug",
+        "view": "glossary-term",
+        "collections": [
+          "glossary_terms"
+        ],
+        "areas": [
+          "learn"
+        ]
+      },
+      {
+        "path": "/:locale/referral",
+        "view": "referral",
+        "collections": [
+          "referral_content",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "referral"
+        ]
+      },
+      {
+        "path": "/:locale/ref/:code",
+        "view": "referral-entry",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "referral"
+        ]
+      },
+      {
+        "path": "/:locale/${product}",
+        "view": "product-shell",
+        "collections": [
+          "terminal_sections",
+          "ui_messages"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "dashboard",
+        "view": "dashboard",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "trade",
+        "view": "trade",
+        "collections": [
+          "ui_messages",
+          "terminal_sections"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "chart",
+        "view": "chart",
+        "collections": [
+          "ui_messages",
+          "terminal_sections"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "radar",
+        "view": "radar",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "radar"
+        ]
+      },
+      {
+        "path": "heatmap",
+        "view": "heatmap",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "radar"
+        ]
+      },
+      {
+        "path": "portfolio",
+        "view": "portfolio",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "journal",
+        "view": "journal",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "inbox",
+        "view": "inbox",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "inbox"
+        ]
+      },
+      {
+        "path": "certificates",
+        "view": "certificates",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "certificates"
+        ]
+      },
+      {
+        "path": "purchases",
+        "view": "purchases",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "purchase"
+        ]
+      },
+      {
+        "path": "withdrawals",
+        "view": "withdrawals",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "purchase"
+        ]
+      },
+      {
+        "path": "leaderboard",
+        "view": "leaderboard",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "rewards",
+        "view": "rewards",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "/terminal",
+        "view": "terminal-redirect",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      },
+      {
+        "path": "/portfolio",
+        "view": "portfolio-redirect",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      },
+      {
+        "path": "/journal",
+        "view": "journal-redirect",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      },
+      {
+        "path": "/${product}/:page",
+        "view": "legacy-product-redirect",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      },
+      {
+        "path": "/:section",
+        "view": "legacy-anchor",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      },
+      {
+        "path": "*",
+        "view": "fallback",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      }
+    ]
+  },
   "records": [
     {
       "key": "react.000359ebc8b97821",

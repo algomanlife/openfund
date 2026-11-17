@@ -208,6 +208,9 @@ services:
         sync: false             # optional https origins allowed to serve scripts (DePay widget)
       - key: CSP_EXTRA_FRAME_SRC
         sync: false             # optional https origins allowed in frames (DePay widget)
+      - key: CSP_EXTRA_FRAME_ANCESTORS
+        sync: false             # optional exact https origins allowed to frame the site, e.g. the Backstage
+                                # Content preview (https://backstage.openfi.cloud); the CMS origin is added automatically
       - key: SIM_TEST_MODE
         value: ""               # internal test seam — never enabled in prod
       - key: FUNDED_PAYOUT_V1_FROM
@@ -263,5 +266,7 @@ services:
         sync: false
       - key: BACKSTAGE_BACKEND_TOKEN
         sync: false
+      - key: BACKSTAGE_DIRECTUS_TOKEN
+        sync: false             # optional secret: Directus static token of an editorial-only user; unset = Content workspace read-only
       - key: BACKSTAGE_REAL_SETTLEMENT
         value: "false"

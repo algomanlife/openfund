@@ -114,6 +114,7 @@ const groups = [
   ['business', ['payments', 'coupons', 'support', 'partners', 'commissions']],
   ['financeGroup', ['finance', 'expenses', 'reserves', 'obligations']],
   ['operations', ['audit', 'risk', 'search', 'notifications', 'system']],
+  ['contentGroup', ['content']],
 ]
 /* some section keys collide with existing table labels */
 const sectionLabels = { audit: 'auditViewer', search: 'searchx' }
@@ -571,6 +572,144 @@ async function dashboard(main) {
   }))
 }
 
+/* ---------------- Content workspace (editorial copy in Directus) ---------------- */
+let contentCatalog
+const contentState = { view: 'home', locale: 'fa', q: '', offset: 0, shared: false, surface: null }
+function previewPath(route, locale) {
+  if (!route) return `/${locale}/home`
+  let path = route.path
+  if (path === '/' || path === '*' || path.startsWith('/:section') || path.includes('${product}/:page')) return `/${locale}/home`
+  if (path.includes('${product}')) return `/${locale}/prop/dashboard`
+  if (!path.startsWith('/')) return `/${locale}/prop/${path}`
+  path = path.replace(':locale', locale).split('/').filter(part => !part.startsWith(':')).join('/')
+  return path || `/${locale}/home`
+}
+function contentEditor({ title, source, current, locale, onSave }) {
+  const value = el('textarea', { rows: '6', maxlength: '20000', required: '', dir: locale === 'fa' || locale === 'ar' ? 'rtl' : 'ltr' })
+  value.value = current ?? ''
+  const password = el('input', { required: '', type: 'password', dir: 'ltr', autocomplete: 'current-password' })
+  const submit = el('button', { class: 'primary' }, t('saveContent'))
+  const feedback = el('p', { role: 'alert' })
+  const holes = (source.en.match(/\$\{[^}]+\}|\{\{[^}]+\}\}|\{[A-Za-z_][\w.]*\}/g) || [])
+  const form = el('form', { on: { submit: async event => {
+    event.preventDefault()
+    submit.disabled = true
+    try {
+      await onSave(value.value, password.value)
+      dialog.close()
+      announce('contentSaved')
+      render()
+    } catch (error) {
+      feedback.textContent = labels[error.message] ? t(error.message) : t('unexpected_error')
+    } finally { password.value = ''; submit.disabled = false }
+  } } }, el('h2', {}, title),
+  el('dl', { class: 'payout-facts' },
+    el('div', {}, el('dt', {}, t('sourceEnglish')), el('dd', { dir: 'ltr' }, source.en || '—')),
+    el('div', {}, el('dt', {}, t('sourcePersian')), el('dd', { dir: 'rtl' }, source.fa || '—'))),
+  holes.length ? el('p', { class: 'muted' }, t('keepPlaceholders'), ' ', technical(holes.join(' '))) : null,
+  el('p', { class: 'muted' }, t('plainTextOnly')),
+  field('valueForLocale', value), field('password', password), feedback,
+  el('div', { class: 'tools' }, button('cancel', () => dialog.close()), submit))
+  dialog.replaceChildren(form)
+  dialog.showModal()
+}
+function contentStatus(body) {
+  const password = el('input', { required: '', type: 'password', dir: 'ltr', autocomplete: 'current-password' })
+  const submit = el('button', { class: body.status === 'published' ? 'primary' : 'danger' }, t('confirm'))
+  const feedback = el('p', { role: 'alert' })
+  const form = el('form', { on: { submit: async event => {
+    event.preventDefault()
+    submit.disabled = true
+    try {
+      await api('content/status', { ...body, password: password.value })
+      dialog.close(); announce('contentSaved'); render()
+    } catch (error) { feedback.textContent = labels[error.message] ? t(error.message) : t('unexpected_error') }
+    finally { password.value = ''; submit.disabled = false }
+  } } }, el('h2', {}, t(body.status === 'published' ? 'publishItem' : 'unpublishItem')),
+  el('p', { class: 'muted' }, t(body.status === 'published' ? 'publishHint' : 'unpublishHint')),
+  field('password', password), feedback, el('div', { class: 'tools' }, button('cancel', () => dialog.close()), submit))
+  dialog.replaceChildren(form)
+  dialog.showModal()
+}
+async function contentWorkspace(main) {
+  contentCatalog ??= await api('content/catalog')
+  const catalog = contentCatalog
+  const routes = catalog.routes.filter(r => r.areas.length || r.collections.some(c => c !== 'ui_messages'))
+  if (!routes.some(r => r.view === contentState.view)) contentState.view = routes[0]?.view
+  const route = routes.find(r => r.view === contentState.view)
+  const path = previewPath(route, contentState.locale)
+
+  const steps = el('ol', { class: 'wizard-steps' }, ['stepPage', 'stepLanguage', 'stepField', 'stepPublish'].map(k => el('li', {}, t(k))))
+  const routeSelect = el('select', { 'aria-label': t('stepPage'), on: { change: e => { contentState.view = e.target.value; contentState.offset = 0; contentState.surface = null; render() } } },
+    routes.map(r => el('option', { value: r.view }, `${r.path} — ${r.view}`)))
+  routeSelect.value = contentState.view
+  const localeSelect = el('select', { 'aria-label': t('stepLanguage'), on: { change: e => { contentState.locale = e.target.value; render() } } },
+    catalog.locales.map(l => el('option', { value: l }, l)))
+  localeSelect.value = contentState.locale
+  const sharedBox = el('input', { type: 'checkbox', on: { change: e => { contentState.shared = e.target.checked; contentState.offset = 0; render() } } })
+  sharedBox.checked = contentState.shared
+  const visual = el('a', { href: `${catalog.cms}/admin/visual/${catalog.site}${path}`, target: '_blank', rel: 'noopener noreferrer', class: 'button' }, t('visualMode'))
+  main.append(steps,
+    el('section', { class: 'panel detail' },
+      el('div', { class: 'filters' }, field('stepPage', routeSelect), field('stepLanguage', localeSelect), field('includeShared', sharedBox)),
+      catalog.writable ? null : el('p', { role: 'status', class: 'muted' }, t('contentReadOnly')),
+      el('div', { class: 'tools' }, visual)),
+    el('section', { class: 'panel content-preview' }, el('h2', {}, t('livePreview')), technical(catalog.site + path),
+      el('iframe', { src: catalog.site + path, title: t('livePreview'), sandbox: 'allow-scripts allow-same-origin', loading: 'lazy', referrerpolicy: 'no-referrer' })))
+
+  /* step 3a: interface copy */
+  const params = new URLSearchParams({ view: contentState.view, locale: contentState.locale, offset: String(contentState.offset), shared: contentState.shared ? '1' : '0', q: contentState.q })
+  const data = await api('content/fields?' + params)
+  const search = el('input', { value: contentState.q, maxlength: '80', placeholder: t('contentSearch'), 'aria-label': t('contentSearch') })
+  const editMessage = row => contentEditor({ title: t('editInterfaceCopy'), source: row, current: row.value ?? (contentState.locale === 'fa' ? row.fa : contentState.locale === 'en' ? row.en : ''), locale: contentState.locale,
+    onSave: (value, password) => api('content/save', { kind: 'message', key: row.key, locale: contentState.locale, value, password }) })
+  main.append(el('section', { class: 'panel table-box' }, el('h2', {}, t('interfaceCopy')),
+    el('form', { class: 'filters', on: { submit: e => { e.preventDefault(); contentState.q = search.value; contentState.offset = 0; render() } } }, search, el('button', { class: 'primary' }, t('apply'))),
+    data.fields.length ? el('div', { class: 'table-scroll', tabindex: '0' }, el('table', {},
+      el('thead', {}, el('tr', {}, ['sourceEnglish', 'valueForLocale', 'status', 'action'].map(k => el('th', { scope: 'col' }, t(k))))),
+      el('tbody', {}, data.fields.map(row => el('tr', {},
+        el('td', { dir: 'ltr' }, row.en),
+        el('td', { dir: contentState.locale === 'fa' || contentState.locale === 'ar' ? 'rtl' : 'ltr' }, row.value ?? el('span', { class: 'muted' }, t('noTranslation'))),
+        el('td', {}, badge(row.status)),
+        el('td', {}, catalog.writable && row.status !== 'not_seeded' ? el('div', { class: 'tools' },
+          button('editContent', () => editMessage(row)),
+          row.status === 'published' ? button('unpublishItem', () => contentStatus({ collection: 'ui_messages', key: row.key, status: 'draft' }))
+            : button('publishItem', () => contentStatus({ collection: 'ui_messages', key: row.key, status: 'published' }), 'primary')) : '—')))))) :
+      el('p', { class: 'empty' }, t('empty')),
+    el('nav', { class: 'pager' },
+      data.offset > 0 ? button('previous', () => { contentState.offset = Math.max(0, data.offset - data.pageSize); render() }) : null,
+      number(data.total),
+      data.offset + data.pageSize < data.total ? button('next', () => { contentState.offset = data.offset + data.pageSize; render() }) : null)))
+
+  /* step 3b: structured surfaces owned by this route */
+  const surfaces = route.collections.filter(c => catalog.surfaces.some(s => s.collection === c))
+  if (surfaces.length) {
+    main.append(el('section', { class: 'panel detail' }, el('h2', {}, t('structuredContent')),
+      el('div', { class: 'tools' }, surfaces.map(c => button(c === contentState.surface ? 'selectedSurface' : 'openSurface', () => { contentState.surface = c; render() }, c === contentState.surface ? 'primary' : '')).map((b, i) => { b.textContent = surfaces[i]; return b }))))
+    if (contentState.surface && surfaces.includes(contentState.surface)) {
+      const surface = await api('content/surface?' + new URLSearchParams({ collection: contentState.surface, locale: contentState.locale }))
+      const rows = surface.items.flatMap(item => [
+        ...surface.translatedFields.map(f => ({ item, field: f, value: item.values[f], en: item.english[f], shared: false })),
+        ...surface.sharedFields.map(f => ({ item, field: f, value: item.values[f], en: item.values[f], shared: true }))])
+      main.append(el('section', { class: 'panel table-box' }, el('h2', {}, technical(surface.collection)),
+        surface.readOnlyFields.length ? el('p', { class: 'muted' }, t('jsonInStudio'), ' ', technical(surface.readOnlyFields.join(', '))) : null,
+        rows.length ? el('div', { class: 'table-scroll', tabindex: '0' }, el('table', {},
+          el('thead', {}, el('tr', {}, ['identity', 'fieldName', 'valueForLocale', 'status', 'action'].map(k => el('th', { scope: 'col' }, t(k))))),
+          el('tbody', {}, rows.map(row => el('tr', {},
+            el('td', {}, technical(String(row.item.id))), el('td', {}, technical(row.field)),
+            el('td', {}, row.value ?? el('span', { class: 'muted' }, t('noTranslation'))),
+            el('td', {}, row.item.status ? badge(row.item.status) : '—'),
+            el('td', {}, catalog.writable ? el('div', { class: 'tools' },
+              button('editContent', () => contentEditor({ title: `${surface.collection} · ${row.field}`, source: { en: row.en ?? '', fa: '' }, current: row.value, locale: contentState.locale,
+                onSave: (value, password) => api('content/save', { kind: 'surface', collection: surface.collection, item: row.item.id, field: row.field, locale: contentState.locale, value, password }) })),
+              row.item.status && !surface.singleton ? (row.item.status === 'published'
+                ? button('unpublishItem', () => contentStatus({ collection: surface.collection, item: row.item.id, status: 'draft' }))
+                : button('publishItem', () => contentStatus({ collection: surface.collection, item: row.item.id, status: 'published' }), 'primary')) : null) : '—')))))) :
+          el('p', { class: 'empty' }, t('empty'))))
+    }
+  }
+}
+
 async function render() {
   const renderId = ++revision
   chrome()
@@ -586,6 +725,7 @@ async function render() {
   main.append(layout, el('p', { class: 'muted', role: 'status' }, t('loading')), contents)
   try {
     if (page === 'dashboard') await dashboard(contents)
+    else if (page === 'content') await contentWorkspace(contents)
     else if (page === 'system') {
       const data = await api('system')
       contents.append(table(null, [['backend', r => badge(r.backendReady ? 'ready' : 'unknown')], ['region', r => t(r.region)], ['mode', r => t(r.mode)],

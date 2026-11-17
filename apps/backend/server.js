@@ -187,6 +187,12 @@ const buildCsp = (allowEval) =>
    configured CMS origin the policy stays exactly as before. */
 let cspCmsAncestor = ''
 try { cspCmsAncestor = runtimeCmsUrl(process.env, cfg.prod) } catch { cspCmsAncestor = '' }
+/* CSP_EXTRA_FRAME_ANCESTORS: exact origins allowed to frame the site, e.g.
+   the Backstage owner console's read-only Content preview. https only in
+   production; http loopback only outside it. Paths/wildcards are dropped. */
+const extraAncestors = (process.env.CSP_EXTRA_FRAME_ANCESTORS || '').split(',').map(v => v.trim()).filter(v =>
+  /^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(v) || (!cfg.prod && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(v)))
+if (extraAncestors.length) cspCmsAncestor = [cspCmsAncestor, ...extraAncestors].filter(Boolean).join(' ')
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff')
   if (!cspCmsAncestor) res.setHeader('X-Frame-Options', 'SAMEORIGIN')
