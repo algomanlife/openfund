@@ -48,6 +48,7 @@ import PurchaseHistory from './features/purchase/PurchaseHistory'
 import CheckoutPage from './features/purchase/CheckoutPage'
 import Campaign from './features/campaign/Campaign'
 import WithdrawalsPage from './features/purchase/WithdrawalsPage'
+import InboxPage from './features/inbox/InboxPage'
 import { WalletProvider } from './wallet/WalletProvider'
 import { SessionProvider } from './session/useOpenfundSession'
 import AppFrame from './features/loading/AppFrame'
@@ -189,6 +190,7 @@ const routes = [
       { path: 'heatmap', element: <Suspense fallback={null}><HeatmapPage /></Suspense> },
       { path: 'portfolio', element: <ProductPortfolio /> },
       { path: 'journal', element: <ProductJournal /> },
+      { path: 'inbox', element: <InboxPage /> },
       ...(product === 'prop' ? [
         { path: 'certificates', element: <Suspense fallback={null}><CertificatesPage /></Suspense> },
         { path: 'purchases', element: <PurchaseHistory /> },
