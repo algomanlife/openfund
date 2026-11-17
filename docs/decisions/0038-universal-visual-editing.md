@@ -1,6 +1,6 @@
 # ADR 0038 — Universal visual editing on Directus 11.17.4
 
-- **Status:** Accepted for the source tree. Not applied to production Directus and not deployed.
+- **Status:** Accepted; merged to `main` (`b7fec1e`, `440ecb8`). Rehearsed on a disposable Directus 11.17.4 on 2026-11-17, where a site `frame-ancestors` defect was found and fixed ([rehearsal](../reviews/launch-completion/CMS_REHEARSAL.md)). Not applied to production Directus and not deployed.
 - **Date:** 2026-11-15
 
 ## Context

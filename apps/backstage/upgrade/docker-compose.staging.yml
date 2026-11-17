@@ -1,14 +1,17 @@
-# Image-level Directus upgrade rehearsal. NOT EXECUTED by the authors: Docker was not
-# available when this was written. Run it before any production migration.
+# Image-level Directus rehearsal stack (disposable). Executed on 2026-11-16/17 with
+# directus/directus:11.17.4 + postgres:17-alpine for the launch-completion rehearsal
+# (docs/reviews/launch-completion/CMS_REHEARSAL.md). Run it before any production change.
 #
 #   export STAGING_PG_PASSWORD=$(openssl rand -hex 16)
-#   export DIRECTUS_IMAGE=docker.io/directus/directus:11.9.1       # start on the current version
-#   docker compose -f docker-compose.staging.yml up -d database
-#   (seed with ../scripts/bootstrap-cms.sh, take a pg_dump, then stop the stack)
-#   export DIRECTUS_IMAGE=docker.io/directus/directus:12.6.1@sha256:e1561b5e526e8e7a2ac19b7bb6eab63611dd84a862a8c45b864118768a2baff4
-#   docker compose -f docker-compose.staging.yml up -d             # migrations run in the container
-#   node cms-check.mjs verify --url http://127.0.0.1:8055 --baseline inventory-before.json
+#   export DIRECTUS_IMAGE=docker.io/directus/directus:11.17.4
+#   docker compose -f docker-compose.staging.yml up -d
+#   (the bootstrap needs the application tables in the same database: publish the
+#    database port with a local override file and run `npm --prefix apps/backend run migrate`
+#    and `seed-plans` against it, then ../scripts/bootstrap-cms.sh and
+#    ../scripts/seed_interface_content.py — twice, to prove idempotency)
+#   node visual-editing-check.mjs   # with the site's CMS_PUBLIC_URL pointing here
 #
+# A Directus 12 image stays blocked on the owner licence decision (DIRECTUS_12_ASSESSMENT.md).
 # Binds to localhost only; throw-away secrets; never point at the production database.
 services:
   database:
