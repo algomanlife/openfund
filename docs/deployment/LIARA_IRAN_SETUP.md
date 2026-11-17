@@ -2,6 +2,8 @@
 
 # راهنمای راه‌اندازی دروازه ایران Openfund روی لیارا
 
+> **وضعیت: غیرفعال؛ هرگز مستقر نشده (ADR 0042).** دامنه‌های `iran.openfund.cloud`، `iran.openfi.cloud` و `openfi.live` اکنون از برنامه `openfund-iran` لیارا، یعنی اجرای منطقه‌ای مستقل ایران ([LIARA_IRAN_RUNTIME.md](LIARA_IRAN_RUNTIME.md))، سرویس می‌گیرند. این دروازه فقط برنامه‌های خودش (`openfund-iran-edge-staging` و `openfund-iran-edge`) را هدف می‌گیرد و Workflow آن هر برنامه اجرای منطقه‌ای را رد می‌کند. هرگز `LIARA_APP_NAME` را `openfund-iran` نگذارید.
+
 این راهنما برای مالک پروژه نوشته شده و همه کارهایی را که به حساب لیارا، Cloudflare، GitHub یا Render نیاز دارند، قدم‌به‌قدم توضیح می‌دهد. مرجع فنی (انگلیسی): [LIARA_IRAN.md](LIARA_IRAN.md) و [ADR 0031](../decisions/0031-iran-edge-on-liara.md).
 
 > **قانون امنیتی:** هیچ کلید، توکن یا رمزی را در Issue، Pull Request، لاگ، کامیت یا چت عمومی قرار ندهید. توکن لیارا فقط در **Environment Secret** گیت‌هاب ذخیره می‌شود. کلید IP فقط در بخش متغیرهای لیارا و Render قرار می‌گیرد.
@@ -22,13 +24,13 @@
 | آدرس | <https://console.liara.ir> | همان |
 | مسیر | منوی برنامه‌ها ← «ایجاد برنامه» | همان |
 | پلتفرم | **Docker** | **Docker** |
-| شناسه (`LIARA_APP_NAME`) | پیشنهاد: `openfund-iran-staging` | پیشنهاد: `openfund-iran` |
+| شناسه (`LIARA_APP_NAME`) | پیشنهاد: `openfund-iran-edge-staging` | پیشنهاد: `openfund-iran-edge` |
 | پلن | کوچک‌ترین پلن سخت‌افزاری | کوچک‌ترین پلن سخت‌افزاری، قابل افزایش |
 | دیسک، دیتابیس، شبکه خصوصی | لازم نیست | لازم نیست |
 | دامنه سفارشی | **ندارد** (فقط `liara.run`) | `iran.openfund.cloud` (مرحله ۸) |
 | محرمانه؟ | خیر | خیر |
 
-**بررسی موفقیت:** هر دو برنامه در فهرست دیده می‌شوند و آدرس‌های پیش‌فرض آن‌ها `https://openfund-iran-staging.liara.run` و `https://openfund-iran.liara.run` است.
+**بررسی موفقیت:** هر دو برنامه در فهرست دیده می‌شوند و آدرس‌های پیش‌فرض آن‌ها `https://openfund-iran-edge-staging.liara.run` و `https://openfund-iran-edge.liara.run` است.
 
 **در صورت خطا:** اگر شناسه تکراری بود، شناسه دیگری انتخاب کنید و در همه مراحل بعد همان را به کار ببرید.
 
@@ -73,8 +75,8 @@
 | Required reviewers | حساب خودتان | حساب خودتان | — |
 | Deployment branches | فقط `main` | فقط `main` | — |
 | Secret `LIARA_API_TOKEN` | توکن مرحله ۳ | توکن مرحله ۳ | **بله** |
-| Variable `LIARA_APP_NAME` | `openfund-iran-staging` | `openfund-iran` | خیر |
-| Variable `LIARA_PUBLIC_URL` | `https://openfund-iran-staging.liara.run` | فعلاً `https://openfund-iran.liara.run`، بعد از SSL: `https://iran.openfund.cloud` | خیر |
+| Variable `LIARA_APP_NAME` | `openfund-iran-edge-staging` | `openfund-iran-edge` | خیر |
+| Variable `LIARA_PUBLIC_URL` | `https://openfund-iran-edge-staging.liara.run` | فعلاً `https://openfund-iran-edge.liara.run`، بعد از SSL: `https://iran.openfund.cloud` | خیر |
 
 سپس در <https://github.com/algomanlife/openfund/settings/variables/actions> متغیر مخزن `OPENFUND_UPSTREAM_HOST` را برابر `openfund-our6.onrender.com` اضافه کنید (محرمانه نیست).
 
@@ -110,7 +112,7 @@
 - خط فرمان روی رایانه خودتان:
 
   ```bash
-  liara logs --app openfund-iran-staging --since "1 hour ago"
+  liara logs --app openfund-iran-edge-staging --since "1 hour ago"
   ```
 
 - خط `openfund-edge: proxying to https://...` یعنی شروع درست. لاگ دسترسی شامل IP، کوکی و پارامتر آدرس نیست.
@@ -119,7 +121,7 @@
 
 ## ۷. پذیرش نسخه آزمایشی (با اینترنت ایرانی)
 
-روی `https://openfund-iran-staging.liara.run` بررسی کنید. هر مورد را فقط پس از اجرای واقعی علامت بزنید:
+روی `https://openfund-iran-edge-staging.liara.run` بررسی کنید. هر مورد را فقط پس از اجرای واقعی علامت بزنید:
 
 - [ ] `/__edge/live` و `/__edge/ready` پاسخ `ok: true` می‌دهند
 - [ ] `/version` همان کامیت `https://openfund.cloud/version` را نشان می‌دهد
@@ -134,7 +136,7 @@
 
 ## ۸. اتصال `iran.openfund.cloud` به برنامه اصلی و تنظیم DNS
 
-**الف) لیارا:** برنامه `openfund-iran` ← «دامنه‌ها» ← «افزودن دامنه» ← `iran.openfund.cloud` ← «ایجاد دامنه». لیارا سه رکورد نشان می‌دهد. **مقادیر را دقیقاً از همان صفحه کپی کنید.**
+**الف) لیارا:** برنامه `openfund-iran-edge` ← «دامنه‌ها» ← «افزودن دامنه» ← `iran.openfund.cloud` ← «ایجاد دامنه». لیارا سه رکورد نشان می‌دهد. **مقادیر را دقیقاً از همان صفحه کپی کنید.**
 
 **ب) Cloudflare:** <https://dash.cloudflare.com> ← `openfund.cloud` ← «DNS» ← «Records» ← «Add record»:
 
@@ -179,7 +181,7 @@ Workflow فقط وقتی مستقر می‌کند که اجرای آزمایشی
 
 ## ۱۰. تغییرات تولیدی در Render (هر کدام با PR جداگانه و تأیید صریح شما)
 
-**الف) ورود با کیف پول:** `ALLOWED_DOMAINS` در `render.yaml` باید `iran.openfund.cloud` را داشته باشد. این تغییر در PR جداگانه [#117](https://github.com/algomanlife/openfund/pull/117) آماده است. آن را فقط پس از پذیرش آزمایشی ادغام کنید و سپس Blueprint را همگام کنید. برای آزمایش ورود روی نسخه آزمایشی، می‌توانید `openfund-iran-staging.liara.run` را موقتاً اضافه و بعد حذف کنید. تغییر فقط در داشبورد با همگام‌سازی بعدی Blueprint پاک می‌شود.
+**الف) ورود با کیف پول:** `ALLOWED_DOMAINS` در `render.yaml` باید `iran.openfund.cloud` را داشته باشد. این تغییر در PR جداگانه [#117](https://github.com/algomanlife/openfund/pull/117) آماده است. آن را فقط پس از پذیرش آزمایشی ادغام کنید و سپس Blueprint را همگام کنید. برای آزمایش ورود روی نسخه آزمایشی، می‌توانید `openfund-iran-edge-staging.liara.run` را موقتاً اضافه و بعد حذف کنید. تغییر فقط در داشبورد با همگام‌سازی بعدی Blueprint پاک می‌شود.
 
 ```yaml
       - key: ALLOWED_DOMAINS

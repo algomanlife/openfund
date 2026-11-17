@@ -86,7 +86,15 @@ The application CSP (HTML documents only) always allows `https://widgets.trading
 | `LIVE_SETTLEMENT_ADAPTER` | openfund | `none` (default, settlements stay `pending`) or `sandbox` (non-monetary, refused in production) |
 | `FOOTPRINT_DATABASE_URL` | openfund | **secret.** Optional dedicated PostgreSQL for footprint market data (`footprint_minutes`, `footprint_gaps`). Unset = those self-contained tables live in the main database. `npm run migrate` applies `apps/backend/footprint/schema.sql` to whichever database is used. |
 
-## Iran edge on Liara (not a Render service)
+## Iran regional runtime on Liara (not a Render service)
+
+The runtime apps `openfund-iran` (web) and `openfund-iran-worker` read the
+backend variables listed in [LIARA_IRAN_RUNTIME.md](LIARA_IRAN_RUNTIME.md#environment),
+with their own `DATABASE_URL` (never the Render database). Identifiers,
+roles and GitHub environments: [`stack.json`](../../infra/liara-iran-runtime/stack.json),
+checked by `npm run infra:check`.
+
+## Iran edge on Liara (dormant; not a Render service)
 
 The Liara edge reads only `OPENFUND_UPSTREAM_HOST` (Render origin host) and
 `EDGE_PORT`; both are public and none of the Render variables above are copied

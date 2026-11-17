@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased
+
+- Iran runtime deploy: a root `.liaraignore` keeps `liara deploy` from
+  dropping `apps/web-react/src/brand` (the root `.dockerignore` pattern
+  `brand` matched it under the Liara CLI's gitignore rules); `stack.json`
+  uses the live production names (`openfund-iran`, network `staging`) so the
+  create-only provisioner cannot create duplicates; the worker lists
+  `CMS_PUBLIC_URL`, without which it exits at boot.
+- Infrastructure source of truth (ADR 0042): `stack.json` now describes
+  GLOBAL, IRAN production, IRAN staging and the dormant edge with their
+  GitHub environments; `npm run infra:check` (CI) and `--live` detect drift.
+  Both Liara deploy workflows run a guard first: the edge can never target a
+  runtime app, the runtime deploys only the manifest's provisioned apps, the
+  web app before the worker, and production only an official release tag.
+  Audit: `docs/reviews/liara-iran-infrastructure/AUDIT.md`.
+
 ## Unreleased — v0.6.5
 
 Release notes: [docs/releases/openfund-0.6.5.md](docs/releases/openfund-0.6.5.md).

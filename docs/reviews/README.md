@@ -4,6 +4,7 @@ These documents record specific branches, dates and environments. Their test cou
 
 | Review | Scope |
 | --- | --- |
+| [Liara Iran infrastructure audit](liara-iran-infrastructure/AUDIT.md) | 2026-11-17 live Liara and GitHub inventory against the repository; naming source of truth, deploy guards, drift checks, owner actions |
 | [Community, motion and responsive navigation](community-motion-responsive-ui/DELIVERY.md) | Telegram-only community, Hyperliquid footer service, three-platform orbs, website and terminal off-canvas navigation; local candidate captures |
 | [Capacity optimization 2026-11-13](capacity-2026-11-13/REPORT.md) | Stream fan-out, session, equity-sampling and engine-loop optimizations measured against a fresh `main` baseline; equivalence, resilience and infrastructure recommendation |
 | [Capacity assessment 2026-11](capacity-2026-11/REPORT.md) | Isolated load, stress and recovery tests of `b018c25`; measured stable concurrency, bottlenecks, data integrity and ranked fixes |

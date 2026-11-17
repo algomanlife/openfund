@@ -11,6 +11,7 @@
     "test:backend": "npm --prefix apps/backend run test:all",
     "typecheck": "npm --prefix apps/web-react run typecheck",
     "validate:blueprint": "node infra/render/validate-blueprint.mjs",
+    "infra:check": "node scripts/liara/check-infra.mjs",
     "dev:web": "npm --prefix apps/web-react run dev",
     "dev:backend": "npm --prefix apps/backend run dev",
     "test:browser:audit": "node e2e/test-integration-audit.cjs",

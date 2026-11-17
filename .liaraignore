@@ -1,0 +1,17 @@
+# .liaraignore — upload filter for `liara deploy` of the Iran regional runtime
+# (infra/liara-iran-runtime/). The Liara CLI prefers this file over
+# .dockerignore and applies gitignore semantics, so the root .dockerignore's
+# bare `brand`, `docs` and `dist` patterns would also drop nested paths such
+# as apps/web-react/src/brand and break the web build. Keep this file in sync
+# with infra/liara-iran-runtime/Dockerfile.dockerignore.
+
+**/node_modules
+**/.git
+react
+dist/**/node_modules
+apps/open-trade/**
+apps/terminal/node_modules
+docs/assets/screenshots
+*.log
+.env
+.env.*

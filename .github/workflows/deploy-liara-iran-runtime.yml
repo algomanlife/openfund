@@ -5,9 +5,12 @@ name: Deploy Iran regional runtime (Liara)
 # restarts or reconfigures Render, and it never runs migrations against the
 # global database (the database region fence refuses that anyway).
 #
-# Manual only. Production needs: the `liara-iran-runtime` environment's
-# required reviewers, the typed confirmation, and a successful staging run of
-# this workflow for the same commit.
+# Manual only. Targets and app ids come from infra/liara-iran-runtime/stack.json
+# (ADR 0042); `check-infra.mjs --guard runtime` refuses any other app, an
+# unprovisioned target and a target whose live apps drift from the manifest.
+# Production needs: an official release tag at the commit, the
+# `liara-iran-runtime` environment's required reviewers (owner-configured),
+# the typed confirmation, and a successful staging run of the same commit.
 on:
   workflow_dispatch:
     inputs:
@@ -37,6 +40,7 @@ on:
       - apps/backend/region.js
       - apps/backend/regional-*.js
       - .github/workflows/deploy-liara-iran-runtime.yml
+      - .liaraignore
 permissions:
   contents: read
 concurrency:
@@ -50,6 +54,7 @@ jobs:
     outputs:
       commit: ${{ steps.ref.outputs.commit }}
       version: ${{ steps.release.outputs.version }}
+      official: ${{ steps.release.outputs.official }}
     services:
       postgres:
         image: postgres:17-alpine
@@ -89,20 +94,28 @@ jobs:
           node-version: 26
       - name: Provisioning planner tests
         run: node --test scripts/liara/test/provision.test.mjs
+      # On dispatch the deploy job runs the guard from the workflow revision.
+      - name: Infrastructure manifest checks
+        if: github.event_name == 'pull_request'
+        run: |
+          node --test scripts/liara/test/check-infra.test.mjs
+          node scripts/liara/check-infra.mjs
       - name: Release identity (same rule as Render's build)
         id: release
         env:
           EVENT: ${{ github.event_name }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          if [ "$EVENT" = pull_request ]; then echo "version=0.1.0" >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [ "$EVENT" = pull_request ]; then printf 'version=0.1.0\nofficial=false\n' >> "$GITHUB_OUTPUT"; exit 0; fi
           src=$(node scripts/liara/release-source.mjs "${{ steps.ref.outputs.commit }}")
           echo "release source: $src"
           echo "version=$(node -e 'console.log(JSON.parse(process.argv[1]).version)' "$src")" >> "$GITHUB_OUTPUT"
+          echo "official=$(node -e 'console.log(JSON.parse(process.argv[1]).official===true)' "$src")" >> "$GITHUB_OUTPUT"
       - name: Build the image
         run: |
           docker build -f infra/liara-iran-runtime/Dockerfile \
             --build-arg SOURCE_COMMIT=${{ steps.ref.outputs.commit }} --build-arg RELEASE_VERSION=${{ steps.release.outputs.version }} \
+            --build-arg RELEASE_OFFICIAL=${{ steps.release.outputs.official }} \
             -t openfund-iran-runtime:candidate .
       - name: Refuse to start without an explicit IRAN region
         run: |
@@ -136,13 +149,14 @@ jobs:
     permissions:
       contents: read
       actions: read
-    # Owner-configured environments with required reviewers.
+    # Owner-configured environments with required reviewers (names: stack.json).
     environment: ${{ inputs.target == 'production' && 'liara-iran-runtime' || 'liara-iran-runtime-staging' }}
     env:
       GH_TOKEN: ${{ github.token }}
       TARGET: ${{ inputs.target }}
       COMMIT: ${{ needs.validate.outputs.commit }}
       VERSION: ${{ needs.validate.outputs.version }}
+      OFFICIAL: ${{ needs.validate.outputs.official }}
       GLOBAL_URL: ${{ vars.OPENFUND_GLOBAL_URL }}
       STAGING_RUN: ${{ inputs.staging_run_id }}
       LIARA_API_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
@@ -163,7 +177,30 @@ jobs:
           [ -n "$WEB_APP" ] || missing="$missing var:LIARA_RUNTIME_WEB_APP"
           [ -n "$WORKER_APP" ] || missing="$missing var:LIARA_RUNTIME_WORKER_APP"
           [ -n "$PUBLIC_URL" ] || missing="$missing var:LIARA_RUNTIME_PUBLIC_URL"
+          [ "$TARGET" != production ] || [ -n "$GLOBAL_URL" ] || missing="$missing var:OPENFUND_GLOBAL_URL"
           [ -z "$missing" ] || { echo "::error::$TARGET environment is missing:$missing"; exit 1; }
+      - name: Production deploys only an official release
+        if: inputs.target == 'production'
+        run: |
+          [ "$OFFICIAL" = true ] || { echo "::error::$COMMIT is not an official release tag; production deploys only the approved release"; exit 1; }
+      # The guard and the manifest come from the workflow's own revision (main
+      # tip), not from the commit being deployed, so rollbacks to commits that
+      # predate them are still checked.
+      - name: Check out the deploy guard and manifest (workflow revision)
+        uses: actions/checkout@v4
+        with:
+          path: .guard
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /scripts/liara/
+            /infra/liara-iran-runtime/
+            /.github/workflows/
+            /docs/deployment/
+            /.liaraignore
+      - name: Keep the guard outside the uploaded directory
+        run: mv .guard "$RUNNER_TEMP/guard"
+      - name: Guard - the target apps are the manifest's, provisioned and not drifting (live, read-only)
+        run: node "$RUNNER_TEMP/guard/scripts/liara/check-infra.mjs" --guard runtime --target "$TARGET" --web "$WEB_APP" --worker "$WORKER_APP"
       - name: Production requires verified staging evidence for this commit
         if: inputs.target == 'production'
         run: |
@@ -179,12 +216,17 @@ jobs:
             if(!ok){console.error("::error::no verified staging status for commit "+process.env.COMMIT);process.exit(1)}'
       - name: Install the Liara CLI (pinned)
         run: npm install -g @liara/cli@9.6.7 && liara --version
-      - name: Deploy the worker, then the web app (Liara keeps the previous release live if a build fails)
+      - name: Use the current upload filter (also for rollbacks to older commits)
+        run: cp "$RUNNER_TEMP/guard/.liaraignore" .liaraignore
+      # The web app migrates (MIGRATE_ON_START=1), so it goes first: the worker
+      # never starts against an unmigrated database. Migrations are additive,
+      # so the previous worker keeps running on the newer schema meanwhile.
+      - name: Deploy the web app, then the worker (Liara keeps the previous release live if a build fails)
         run: |
-          for pair in "$WORKER_APP:liara.worker.json" "$WEB_APP:liara.web.json"; do
+          for pair in "$WEB_APP:liara.web.json" "$WORKER_APP:liara.worker.json"; do
             app="${pair%%:*}" cfg="${pair#*:}"
             liara deploy --app "$app" --api-token "$LIARA_API_TOKEN" --path . \
-              --liara-json "infra/liara-iran-runtime/$cfg" --build-arg "SOURCE_COMMIT=$COMMIT" --build-arg "RELEASE_VERSION=$VERSION" \
+              --liara-json "infra/liara-iran-runtime/$cfg" --build-arg "SOURCE_COMMIT=$COMMIT" --build-arg "RELEASE_VERSION=$VERSION" --build-arg "RELEASE_OFFICIAL=$OFFICIAL" \
               --message "openfund $COMMIT $TARGET (run $GITHUB_RUN_ID)" --no-app-logs
           done
       - name: Verify the deployed runtime
@@ -198,6 +240,8 @@ jobs:
             echo "retrying in 20 s ($i/8)"; sleep 20
           done
           [ "$ok" = 1 ]
+      - name: Both apps run exactly this commit and still match the manifest
+        run: node "$RUNNER_TEMP/guard/scripts/liara/check-infra.mjs" --guard runtime --target "$TARGET" --web "$WEB_APP" --worker "$WORKER_APP" --expect-commit "$COMMIT"
       - name: Summary
         if: always()
         run: |

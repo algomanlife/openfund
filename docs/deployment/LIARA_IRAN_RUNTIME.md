@@ -2,17 +2,30 @@
 
 The Iran runtime is the **same Openfund release** as Render, running independently on Liara with its own database ([ADR 0032](../decisions/0032-iran-sovereign-regional-runtime.md), [ADR 0033](../decisions/0033-regional-authority-and-synchronization.md)). It is different from the Iran edge ([LIARA_IRAN.md](LIARA_IRAN.md)), which is a proxy to Render.
 
-**Status:** configuration and tests only. Nothing has been provisioned or deployed. Every production step below needs explicit owner approval.
+**Status (2026-11-17):** production is provisioned and serves v0.6.5 (`a87804a`); staging is declared but not provisioned; regional sync is not configured. Evidence and open items: [infrastructure audit](../reviews/liara-iran-infrastructure/AUDIT.md). Every production step below needs explicit owner approval.
+
+## Naming and environments (single source of truth)
+
+[`infra/liara-iran-runtime/stack.json`](../../infra/liara-iran-runtime/stack.json) is the only place identifiers are defined ([ADR 0042](../decisions/0042-liara-infrastructure-source-of-truth.md)). Production names predate the convention and are kept, because renaming a Liara app, network or database recreates it.
+
+| Scope | Web / API | Worker | PostgreSQL | CMS | Network | GitHub environment | State |
+|---|---|---|---|---|---|---|---|
+| GLOBAL production (Render) | `openfund` | in `openfund` | `openfund-db` | `openfund-cms` | Render private | `production` | live |
+| IRAN production (Liara) | `openfund-iran` | `openfund-iran-worker` | `openfund-iran-db` | `openfund-iran-cms` (not provisioned; content comes from the GLOBAL CMS snapshot) | `staging` (a legacy name; it is the production network) | `liara-iran-runtime` | live |
+| IRAN staging (Liara) | `openfund-iran-staging` | `openfund-iran-staging-worker` | `openfund-iran-staging-db` | `openfund-iran-staging-cms` | `openfund-iran-staging-net` | `liara-iran-runtime-staging` | declared, not provisioned |
+| Legacy edge (dormant) | `openfund-iran-edge` / `openfund-iran-edge-staging` | — | — | — | — | `liara-iran` / `liara-iran-staging` | never deployed |
+
+Checks (`npm run infra:check`, also in CI) fail when a workflow uses another environment name, two scopes share an identifier, a worker is public or migrates, the web app is not deployed before the worker, the upload filter drifts, or these docs name something the manifest does not. `npm run infra:check -- --live` (with `LIARA_API_TOKEN` and `gh`) also compares the live account and GitHub environments: database hosts (never Render), worker exposure, domains, role variables, required reviewers, and with `--expect-commit` the deployed commit. Both deploy workflows run `check-infra.mjs --guard` before deploying: the runtime workflow accepts only the manifest's provisioned apps for the target, and the edge workflow refuses every runtime app.
 
 ## Topology
 
 | Unit | Liara resource | Roles / notes |
 |---|---|---|
-| Web + API + website | Docker app `openfund-iran-web` (staging `openfund-iran-staging`) | `OPENFUND_ROLES=http`, `MIGRATE_ON_START=1`. Serves `iran.openfund.cloud`, `iran.openfi.cloud`, `openfi.live`, and the signed peer endpoint `/sync/v1/*` |
+| Web + API + website | Docker app `openfund-iran` (staging `openfund-iran-staging`) | `OPENFUND_ROLES=http`, `MIGRATE_ON_START=1`. Serves `iran.openfund.cloud`, `iran.openfi.cloud`, `openfi.live`, and the signed peer endpoint `/sync/v1/*` |
 | Worker | Docker app `openfund-iran-worker` | `OPENFUND_ROLES=engine,market-data,sync`. No public routes; `/health` and `/ready` only |
 | CMS | Docker app `openfund-iran-cms` | Directus 11.17.4 image with a `directus-uploads` disk |
 | Database | Liara PostgreSQL 17.x `openfund-iran-db` | Private network only. Claimed `IRAN` on first migration |
-| Network | `openfund-iran-net` | Apps and the database. Apps reach each other by app id |
+| Network | `staging` (the private network's name in the production account) | Apps and the database. Apps reach each other by app id |
 
 The desired state is in [`infra/liara-iran-runtime/stack.json`](../../infra/liara-iran-runtime/stack.json). The image is [`infra/liara-iran-runtime/Dockerfile`](../../infra/liara-iran-runtime/Dockerfile): one image for web and worker. It refuses to start without `OPENFUND_REGION=IRAN`.
 
@@ -24,9 +37,9 @@ Plain values are in `stack.json`. Store the secrets listed below in the Liara ap
 |---|---|---|
 | `DATABASE_URL` | web, worker | Private connection string of `openfund-iran-db`. **Never the Render database:** the region fence refuses it anyway |
 | `ADMIN_API_TOKEN` | web | Operator API, including `/admin/runtime` and `/admin/regional`. Use a value different from Render's |
-| `ALLOWED_DOMAINS` | web | `iran.openfund.cloud,iran.openfi.cloud,openfi.live` (add the staging host on staging) |
+| `ALLOWED_DOMAINS` | web | `iran.openfund.cloud,iran.openfi.cloud,openfi.live` (staging: `openfund-iran-staging.liara.run`) |
 | `CORS_ORIGINS` | web | `https://iran.openfund.cloud,https://iran.openfi.cloud,https://openfi.live` |
-| `CMS_PUBLIC_URL` | web | Required in production by the runtime config. On the Iran runtime the browser reads content from the same-origin `/cms` path first, so this is only the direct fallback |
+| `CMS_PUBLIC_URL` | web, worker | Required in production by the runtime config; without it the worker also exits at boot. On the Iran runtime the browser reads content from the same-origin `/cms` path first, so this is only the direct fallback |
 | `CMS_SNAPSHOT_ORIGIN` | web | Optional. Where `/cms` fetches published content server-to-server and snapshots it (default `CMS_PUBLIC_URL`). Recommended: the centrally edited GLOBAL Directus (`https://openfund-cms.onrender.com` or its custom domain), or the Iran Directus if content is edited there |
 | `REGION_SYNC_KEYS` | web, worker (Iran) **and** Render `openfund` | JSON `{"<kid>":"<secret ≥32 chars>"}`. The same set on both sides. Rotate by adding a new kid, switching `REGION_SYNC_ACTIVE_KID` on both sides, then removing the old kid |
 | `REGION_SYNC_ACTIVE_KID` | web, worker, Render | The key id this side signs with |
@@ -34,7 +47,7 @@ Plain values are in `stack.json`. Store the secrets listed below in the Liara ap
 | `DB_CONNECTION_STRING`, `KEY`, `SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `PUBLIC_URL` | cms | As for Render's Directus |
 | `LIARA_API_TOKEN` | GitHub environments `liara-iran-runtime-staging` / `liara-iran-runtime` | CI deploy only |
 
-GitHub environment variables: `LIARA_RUNTIME_WEB_APP`, `LIARA_RUNTIME_WORKER_APP`, `LIARA_RUNTIME_PUBLIC_URL`.
+GitHub environment variables: `LIARA_RUNTIME_WEB_APP`, `LIARA_RUNTIME_WORKER_APP`, `LIARA_RUNTIME_PUBLIC_URL` (values must equal the manifest), and for production `OPENFUND_GLOBAL_URL` (the Render origin the release is compared with).
 
 On Render, sync stays off until `REGION_SYNC_*` are set **and** an operator enables it (`POST /admin/regional/sync/enable`). Render runs the `sync` role by default; the worker starts only when a peer URL is configured.
 
@@ -64,10 +77,14 @@ The workflow:
 
 1. Builds the image and boots it as IRAN against a disposable PostgreSQL, with no route to Render.
 2. Runs `scripts/liara/verify-runtime.mjs`.
-3. After the environment's reviewers approve, deploys the worker, then the web app.
-4. Verifies the live URL: the region must be `IRAN` (not proxied), the commit must match, and purchases must be refused.
+3. After the environment's reviewers approve, runs the deploy guard, then deploys the web app (which migrates) and then the worker. Production also requires an official release tag at the commit and `OPENFUND_GLOBAL_URL`.
+4. Verifies the live URL: the region must be `IRAN` (not proxied), the commit must match, and purchases must be refused. Then confirms that both apps' latest ready release is that commit.
 
 Production needs the same commit's successful staging run id.
+
+**First deployment:** deploy the web app first and confirm `/ready` before starting the worker. Only the web app migrates (`MIGRATE_ON_START=1`), and the worker needs the migrated schema.
+
+**Upload filter:** the Liara CLI uploads the repository with [`.liaraignore`](../../.liaraignore), which mirrors `infra/liara-iran-runtime/Dockerfile.dockerignore`. Without it the CLI falls back to the root `.dockerignore`, whose bare `brand` pattern also drops `apps/web-react/src/brand` and breaks the web build.
 
 **Rollback:** dispatch again with the previous verified commit. Liara keeps the running release if a build fails. Schema changes are additive, so the previous release runs on the newer schema.
 
@@ -85,7 +102,7 @@ No existing account changes region in this process. Moving an account is a separ
 
 ## Domains and TLS
 
-| Domain | Records (exact targets come from the Liara console of `openfund-iran-web`) | Where |
+| Domain | Records (exact targets come from the Liara console of `openfund-iran`) | Where |
 |---|---|---|
 | `iran.openfund.cloud` | CNAME to the Liara app target. TXT ownership. CNAME `_acme-challenge.iran` | Cloudflare `openfund.cloud`, **DNS-only (grey cloud)** |
 | `iran.openfi.cloud` | as above | Cloudflare `openfi.cloud`, DNS-only |
@@ -94,7 +111,7 @@ No existing account changes region in this process. Moving an account is a separ
 - Do not change the nameservers of `openfund.cloud` or `openfi.cloud`.
 - TLS is Let's Encrypt through DNS-01 on Liara. Renewal needs international connectivity, and a certificate lasts 90 days.
 - During a long outage, cold DNS resolution of these names is **not guaranteed**: their TLD servers are outside Iran. See [ADR 0033 §6](../decisions/0033-regional-authority-and-synchronization.md#6-dns-and-tls).
-- Moving `iran.openfund.cloud` from the edge app to `openfund-iran-web` is an owner action. The Persian notice on GLOBAL describes the edge, so update its copy at the same time. The IRAN runtime already hides it.
+- Moving `iran.openfund.cloud` from the edge app to `openfund-iran` is an owner action. The Persian notice on GLOBAL describes the edge, so update its copy at the same time. The IRAN runtime already hides it.
 
 ### Country routing (prepared, disabled)
 

@@ -225,7 +225,9 @@ jobs:
           npm run test:region
           # ADR 0033: two real regions, signed sync, fault injection, 120-day backlog, handoff
           npm run test:regional-sync
-          node --test ../../scripts/liara/test/provision.test.mjs
+          node --test ../../scripts/liara/test/provision.test.mjs ../../scripts/liara/test/check-infra.test.mjs
+          # ADR 0042: manifest, workflows and docs agree on every Liara/GitHub identifier
+          node ../../scripts/liara/check-infra.mjs
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
