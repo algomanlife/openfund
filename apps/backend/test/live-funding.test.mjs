@@ -142,7 +142,12 @@ test('close: net PnL split 70/10/20 and settled exactly once', { skip: !pool }, 
   assert.equal(shares.length, 1)
   await processSettlements(pool, settlementAdapter('sandbox'))
   const second = await processSettlements(pool, settlementAdapter('sandbox'))
-  const { rows: s } = await pool.query(`SELECT beneficiary_role, status, amount_usd, settlement_reference FROM settlement_records WHERE profit_share_id=$1 ORDER BY beneficiary_role`, [shares[0].id])
+  /* in CI a booted server's settlement worker shares this database and may
+     hold a record in 'processing' at this instant; assert the end state once
+     every claim has finished (bounded), which is still exactly-once */
+  const settled = async () => (await pool.query(`SELECT beneficiary_role, status, amount_usd, settlement_reference FROM settlement_records WHERE profit_share_id=$1 ORDER BY beneficiary_role`, [shares[0].id])).rows
+  let s = await settled()
+  for (let i = 0; i < 50 && s.some(x => x.status === 'processing'); i++) { await new Promise(r => setTimeout(r, 100)); s = await settled() }
   assert.deepEqual(s.map(x => [x.beneficiary_role, x.status, x.amount_usd]), [['coach', 'completed', '49.65'], ['trader', 'completed', '347.55']])
   assert.ok(s.every(x => x.settlement_reference.startsWith('sandbox-settlement:')))
   assert.equal(second.claimed, 0)

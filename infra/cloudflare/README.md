@@ -20,6 +20,16 @@ Account `ce7d296d88407cc57f0376f0277b672d` (Free plan zones).
 | openfi.cloud | ruleset `92e35ec37fa246cf9a99f6edee62a2b4` (dynamic redirect) | v2 | v5: `a7bf4b9ab19e4150b36b88278de6cf2c` `openfund_canonical_openfi_cloud` (301, enabled); `a1fd3b9a3f8a4693868234c45c920c17` `openfund_geo_iran` (302, **disabled**) |
 | openfund.cloud | ruleset `a1993c3d9af5437ba86d5698e3e849a9` (dynamic redirect, new) | none | `9e25c9b852904f1086d9f0dffd9805e0` `openfund_canonical_openfund_cloud` (301, enabled) |
 
+### Live drift (2026-11-17)
+
+- 16:21 UTC: DNS and TLS matched `policy.mjs`, but the three rules still carried the first (deny-list) expressions. Those 301'd fetch GETs such as `/trading/state` on `openfund.cloud`.
+- 16:33 UTC, owner-approved: the three rules (`a7bf4b9a…`, `a1fd3b9a…`, `9e25c9b8…`) were updated in place to the allow-list expressions. Canonical rules stayed enabled; the geo rule stayed **disabled**. Rulesets are now at `openfi.cloud` v7 and `openfund.cloud` v2.
+- 16:35 UTC: `check-live.mjs` on a fresh snapshot reports **no drift**. `verify-public.mjs` passes: API reads on aliases are served (401 unauthenticated), pages 301 with path and query.
+
+```bash
+node scripts/cloudflare/check-live.mjs --from-file <snapshot.json>   # or CLOUDFLARE_API_TOKEN=… (read-only)
+```
+
 Unchanged: IP geolocation (on), WebSockets (on), every other DNS record
 (`cms`, `backstage`, `iran.*` and ACME records stay DNS-only), no Workers,
 no page rules.

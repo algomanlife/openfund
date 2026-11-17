@@ -26,10 +26,20 @@ web process held no market prices, so every order there was refused as
      them would put a non-Iranian network in front of the Iran domain.
    - `www.openfi.live`: Liara's domain redirect (`set-redirect`, 301 to
      `https://openfi.live`) with a Let's Encrypt certificate.
-   Never redirected: methods other than GET/HEAD, signed sync, probes, the
-   JSON API prefixes, payments, CMS snapshot, admin, assets, WebSocket and
-   event streams. `cms.openfi.cloud` and `backstage.openfi.cloud` are
-   operational hosts, not aliases.
+   **Allow-list, shared by the edge and the origin**
+   (`apps/backend/redirect-policy.js`). Only a top-level browser document
+   navigation qualifies: GET/HEAD with `Sec-Fetch-Dest: document`, or with no
+   Sec-Fetch headers and an `Accept` that includes `text/html`. It must also
+   target a client page path: `/`, `/{locale}` and below, `/terminal`,
+   `/portfolio`, `/journal`, `/react` and the legacy section links.
+   Everything else is served where it arrives: every API read and write
+   (`/trading/state`, `/portfolio/overview`, …), event streams, WebSocket,
+   payment callbacks, signed sync, probes and assets. A test evaluates the
+   exact tree Cloudflare runs against every route the backend declares
+   (331). The test found that `/accounts` is both a legacy section link and
+   the authenticated `GET /accounts` API, so it is not a page path.
+   `cms.openfi.cloud` and `backstage.openfi.cloud` are operational hosts,
+   not aliases.
 2. **Geographic routing at Cloudflare's edge only:** a **302** from
    `openfi.cloud` to `openfi.live` for `ip.src.country eq "IR"`, top-level
    GET document navigation only. Navigation means `Sec-Fetch-Dest: document`;
@@ -52,8 +62,25 @@ web process held no market prices, so every order there was refused as
    the platform proxy is a published Cloudflare address
    (`apps/backend/geo-trust.js`). The header is removed before routing. A
    direct request to `onrender.com` with a forged header gets the fallback.
-   The country chooses a language only, never access or money. On Liara (no
-   Cloudflare) the fallback is `GEO_FALLBACK_LOCALE=fa`.
+   The country chooses a language only, never access or money.
+   On Liara (no Cloudflare), `GEO_COUNTRY_SOURCE=ip-database` looks up the
+   visitor's IPv4 address in a licensed IP-to-country table (`geo-ipdb.js`,
+   no new dependency). It reads the address at the `X-Forwarded-For`
+   position the platform writes (`GEO_CLIENT_HOP`) and never reads
+   `CF-IPCountry`. That hop must be **measured** on the real ingress with
+   `GET /runtime/ingress`, which needs a deploy. Until then IRAN keeps
+   `GEO_COUNTRY_SOURCE=cloudflare` (no trusted country there) and
+   `GEO_FALLBACK_LOCALE=fa`. Direct visitors to `openfi.live` from Russia,
+   China or Arab countries therefore get Persian until the measurement is
+   done, a database is licensed and both are configured.
+   **Ingress, measured 2026-11-17 with the rate limiter as a probe:**
+   - On `openfi.cloud` the last `X-Forwarded-For` hop is a Cloudflare edge
+     (two edges, two counters), and forged entries never changed it.
+   - On `onrender.com` direct and on `openfi.live`, forged entries never
+     changed the key.
+   - Whether that key is the visitor or a shared proxy could not be settled
+     from one network vantage point; `/runtime/ingress` settles it after
+     deploy.
 5. **TLS:** both Cloudflare zones use Full (strict), with the Render origin
    certificates verified for `openfi.cloud` and `openfund.cloud` first.
    Minimum TLS 1.2, Always Use HTTPS on.

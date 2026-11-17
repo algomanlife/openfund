@@ -12,9 +12,12 @@
 import https from 'node:https'
 import tls from 'node:tls'
 
-const get = (url, { method = 'GET', headers = {} } = {}) => new Promise((resolve, reject) => {
+/* a top-level browser navigation, and a fetch()/XHR read, as browsers send them */
+export const NAV = { 'sec-fetch-dest': 'document', 'sec-fetch-mode': 'navigate', accept: 'text/html,application/xhtml+xml,*/*;q=0.8' }
+export const FETCH = { 'sec-fetch-dest': 'empty', 'sec-fetch-mode': 'cors', accept: 'application/json' }
+const get = (url, { method = 'GET', headers = NAV } = {}) => new Promise((resolve, reject) => {
   const u = new URL(url)
-  const req = https.request({ host: u.hostname, path: u.pathname + u.search, method, headers: { 'user-agent': 'openfund-verify-public', accept: 'text/html', ...headers }, timeout: 20000 }, res => {
+  const req = https.request({ host: u.hostname, path: u.pathname + u.search, method, headers: { 'user-agent': 'openfund-verify-public', ...headers }, timeout: 20000 }, res => {
     res.resume(); res.on('end', () => resolve({ status: res.statusCode, location: res.headers.location ?? null }))
   })
   req.on('timeout', () => req.destroy(new Error('timeout'))); req.on('error', reject)
@@ -37,6 +40,13 @@ export const CASES = [
   { url: 'https://openfund.cloud/sync/v1/batches', statusNot: [301, 302, 307, 308] },
   { url: 'https://openfund.cloud/auth/nonce', statusNot: [301, 302, 307, 308] },
   { url: 'https://openfund.cloud/purchases/orders', method: 'POST', statusNot: [301, 302, 307, 308] },
+  /* authenticated API reads from a page still open on an alias are served there.
+     (www.* hosts are not asserted: Render itself answers every request on a
+     www custom domain with 301 to the apex, so no page can stay on them.) */
+  ...['/trading/state', '/trading/health', '/portfolio/overview', '/portfolio/trades', '/auth/me'].map(p =>
+    ({ url: `https://openfund.cloud${p}`, headers: FETCH, statusNot: [301, 302, 307, 308] })),
+  /* a document navigation to an API path is not a page: not redirected either */
+  { url: 'https://openfund.cloud/trading/state', statusNot: [301, 302, 307, 308] },
   { url: 'http://openfi.cloud/fa/home', status: 301, location: 'https://openfi.cloud/fa/home' },
   { url: 'https://openfi.live/fa/home', status: 200 },
   { url: 'https://cms.openfi.cloud/server/health', status: 200 },
@@ -47,6 +57,7 @@ export const IRAN_ALIAS_CASES = [
   { url: 'https://iran.openfund.cloud/en/home', status: 301, location: 'https://openfi.live/en/home' },
   { url: 'https://www.openfi.live/', status: 301, location: 'https://openfi.live/' },
   { url: 'https://iran.openfi.cloud/version', status: 200 },
+  { url: 'https://iran.openfi.cloud/trading/state', headers: FETCH, statusNot: [301, 302, 307, 308] },
 ]
 export const TLS_HOSTS = ['openfi.cloud', 'www.openfi.cloud', 'openfund.cloud', 'www.openfund.cloud', 'openfi.live', 'iran.openfi.cloud', 'iran.openfund.cloud', 'www.openfi.live', 'cms.openfi.cloud', 'backstage.openfi.cloud']
 
@@ -57,10 +68,10 @@ async function main() {
     let r
     try { r = await (c.url.startsWith('http:') ? new Promise((resolve, reject) => import('node:http').then(({ default: http }) => {
       const u = new URL(c.url); http.get({ host: u.hostname, path: u.pathname + u.search, headers: { accept: 'text/html' } }, res => { res.resume(); resolve({ status: res.statusCode, location: res.headers.location ?? null }) }).on('error', reject)
-    })) : get(c.url, { method: c.method })) } catch (e) { r = { status: `error ${e.message}` } }
+    })) : get(c.url, { method: c.method, headers: c.headers })) } catch (e) { r = { status: `error ${e.message}` } }
     const ok = (c.status ? r.status === c.status : !c.statusNot.includes(r.status)) && (!c.location || r.location === c.location)
     if (!ok) failed++
-    console.log(`${ok ? 'ok  ' : 'FAIL'} ${(c.method || 'GET').padEnd(4)} ${c.url} → ${r.status}${r.location ? ' ' + r.location : ''}`)
+    console.log(`${ok ? 'ok  ' : 'FAIL'} ${(c.method || 'GET').padEnd(4)} ${c.headers === FETCH ? 'fetch' : 'nav  '} ${c.url} → ${r.status}${r.location ? ' ' + r.location : ''}`)
   }
   for (const h of TLS_HOSTS) {
     const v = await certOk(h)
