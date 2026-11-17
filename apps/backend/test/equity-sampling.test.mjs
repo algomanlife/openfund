@@ -68,7 +68,13 @@ test('idle account: repeated state() reads keep the exact row an unconditional w
   for (let i = 0; i < 25; i++) outs.push((await engine.state(uid)).account.risk)
   const row2 = await riskRow(accountId)
   assert.deepEqual(values(row2), values(row1), 'stored risk values unchanged')
-  if (minuteOf(row1.updated_at) === minuteOf(Date.now() - 6000)) assert.equal(String(row2.updated_at), String(row1.updated_at), 'repeated no-op writes were skipped')
+  /* The engine skips a provably no-op write only while the database minute
+     has more than SAMPLE_MINUTE_MARGIN_MS (5 s, engine.js) left; in the final
+     seconds it writes again by design. Assert the skip only when every read
+     happened inside the skip window (1 s extra for database/Node clock skew). */
+  const minuteEnd = Math.floor(new Date(row1.updated_at).getTime() / 60000) * 60000 + 60000
+  if (minuteOf(row1.updated_at) === minuteOf(Date.now() - 6000) && Date.now() < minuteEnd - 6000)
+    assert.equal(String(row2.updated_at), String(row1.updated_at), 'repeated no-op writes were skipped')
   for (const r of outs) assert.deepEqual(JSON.parse(JSON.stringify(r)), JSON.parse(JSON.stringify(first.account.risk)), 'state() returns the same risk view')
   const s = await samples(accountId)
   assert.equal(new Set(s.map(x => minuteOf(x.sampled_at))).size, s.length, 'one sample per minute')
