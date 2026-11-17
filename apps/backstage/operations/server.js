@@ -31,7 +31,7 @@ const routes = {
   controlled: ['/admin/coupons/controlled', 'controlledTests', []],
   support: ['/admin/support/messages', 'messages', ['status', 'department', 'offset']],
   partners: ['/admin/partners/applications', 'applications', ['role', 'status']],
-  commissions: ['/admin/partners/commissions', 'commissions', []],
+  commissions: ['/admin/partners/commissions', 'ambassadors', []],
   finance: ['/admin/economy/position'],
   expenses: ['/admin/economy/expenses', 'expenses', []],
   reserves: ['/admin/economy/reserves', 'reserves', []],
@@ -65,6 +65,12 @@ const operations = {
     request: (record, { action, reason, verification }) => [
       `/admin/partners/applications/${record}/decision`,
       { action, note: textOf(reason, 2000), ...(verification && typeof verification === 'object' && !Array.isArray(verification) ? { verification } : {}) }],
+  },
+  commissions: {
+    identifier: uuid,
+    actions: ['payout'],
+    request: (record, body) => ['/admin/partners/commissions/payout',
+      { ambassadorUserId: record, amountUsd: moneyOf(body.amountUsd), payoutReference: textOf(body.payoutReference, 200) }],
   },
   users: {
     identifier: uuid,

@@ -164,7 +164,7 @@ export function couponAdminRoutes({ pool }) {
     const client = await pool.connect()
     try {
       await client.query('BEGIN')
-      await client.query(`SELECT set_config('openfund.coupon_actor', $1, true)`, [actor])
+      await client.query(`SELECT set_config('openfund.actor', $1, true)`, [actor])
       const { rows: [coupon] } = await client.query(
         `INSERT INTO coupons (code, name, description, kind, value, status, max_redemptions, per_user_limit, account_sizes, starts_at, expires_at, created_by)
          VALUES ($1,$2,$3,$4,$5,'inactive',$6,$7,$8,$9,$10,$11) RETURNING *`,
@@ -193,7 +193,7 @@ export function couponAdminRoutes({ pool }) {
     const client = await pool.connect()
     try {
       await client.query('BEGIN')
-      await client.query(`SELECT set_config('openfund.coupon_actor', $1, true)`, [actor])
+      await client.query(`SELECT set_config('openfund.actor', $1, true)`, [actor])
       const { rows: [existing] } = await client.query('SELECT * FROM coupons WHERE id=$1 FOR UPDATE', [req.params.id])
       if (!existing) throw fail(404, 'coupon_not_found')
       if (existing.internal) throw fail(409, 'internal_reserved')

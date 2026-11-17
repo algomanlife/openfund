@@ -117,6 +117,7 @@ test('C1 commercial coupon lifecycle: create → activate → update → disable
   assert.equal((await call('POST', `/admin/coupons/${id}`, { admin: true, body: { status: 'active' } })).status, 409, 'revocation is final')
   const auditRows = (await pool.query(`SELECT actor, action FROM coupon_audit WHERE coupon_id=$1 ORDER BY id`, [id])).rows
   assert.ok(auditRows.length >= 2, 'schema trigger recorded coupon changes')
+  assert.ok(auditRows.every(row => row.actor === 'admin:qa operator'), 'audit rows carry the named operator, not the database role')
 })
 
 test('S1 operator reply reaches the trader inbox and notifies; trader replies back; closed threads refuse', async () => {
