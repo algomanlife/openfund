@@ -1,6 +1,24 @@
 # Changelog
 
-## Unreleased — launch completion (candidate v0.6.0)
+## Unreleased — v0.6.5
+
+Release notes: [docs/releases/openfund-0.6.5.md](docs/releases/openfund-0.6.5.md).
+
+- Fix: Render dashboard deploys of untagged `main` failed once more than
+  250 commits separated it from the latest release; the candidate check now
+  uses GitHub's exact compare total.
+- Observability: audit-write and payment-recovery failures are counted and
+  logged; `/admin/operations/metrics` reports engine-loop lag and feed
+  staleness.
+- Notifications: `purchase_paid` when a paid purchase provisions its
+  challenge.
+- Tooling: purchase-test readiness probe, backup/restore drill, engine load
+  report, framing-policy boot test.
+- Dependencies: `ws` 8.23.0, `express-rate-limit` 8.7.4,
+  `markdownlint-cli2` 0.24.1.
+- Includes the launch-completion batch below.
+
+## Launch completion (shipped in v0.6.5; first described as candidate v0.6.0)
 
 Release notes: [docs/releases/openfund-0.6.0.md](docs/releases/openfund-0.6.0.md).
 

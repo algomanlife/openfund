@@ -80,7 +80,7 @@ The service authenticates a single provisioned owner, keeps its backend
 credential server-side and asks the owner to re-enter their password for
 privileged decisions.
 
-The launch-completion branch (in review, not deployed) adds commercial
+Release v0.6.5 (merged to `main`; production deployment awaits owner approval) adds commercial
 coupon administration, trader support replies with a trader Inbox and in-app
 notifications, partner review and commissions, finance records (expenses,
 reserves, obligations), a unified audit trail, a read-only live risk board,
@@ -139,10 +139,11 @@ production until `/version` reports it.
 | Status | Capabilities |
 | --- | --- |
 | **Production** | Prop simulation (Free Trial, Standard, One-phase, Instant); shared terminal; Perpetual read-only market data and wallet-scoped positions; dashboard, portfolio, journal, invoices; server challenge evaluation; CMS; transparency, revenue-model and live-market pages |
-| **Implemented, not deployed** (v0.6.5 candidate, [PR #122](https://github.com/algomanlife/openfund/pull/122)) | Trade Radar and Market Heatmap; certificate designs and verification page; terminal Persian terminology and footer; homepage and site-wide redesign; Applications and Roadmap pages |
-| **Implemented, not active** | Checkout and purchases (payments disabled until configured); Hybrid Governance v1.0 (no council seated); Ambassador and Coach programs; Iran regional runtime and synchronization ([ADR 0033](docs/decisions/0033-regional-authority-and-synchronization.md)) |
+| **Released in v0.6.5, deployment pending owner approval** ([PR #122](https://github.com/algomanlife/openfund/pull/122), [PR #132](https://github.com/algomanlife/openfund/pull/132)) | Trade Radar and Market Heatmap; certificate designs and verification page; terminal Persian terminology and footer; homepage and site-wide redesign; Applications and Roadmap pages; complete Backstage operations and Content workspace; trader Inbox and in-app notifications; post-deploy SIWE gate |
+| **Implemented, not active** | Hybrid Governance v1.0 (no council seated); Ambassador and Coach programs; Iran regional runtime and synchronization ([ADR 0033](docs/decisions/0033-regional-authority-and-synchronization.md)) |
 | **Beta** | Open Trade 0.0.2 — built and acceptance-tested for macOS, Windows and Linux; unsigned; publication awaiting owner approval |
-| **Blocked** | Gains transaction execution (needs supported contracts, simulation and security review); live DePay acceptance; public-domain wallet sign-in until the SIWE allowlist fix is deployed and verified |
+| **Awaiting owner acceptance** | Checkout and purchases: payments are enabled in production (`/purchases/plans`), and the owner's live DePay and manual purchase test is pending ([runbook §12–13](docs/deployment/LAUNCH_PARITY_RUNBOOK.md)); public-domain wallet sign-in is verified by the post-deploy SIWE gate when v0.6.5 is deployed |
+| **Blocked** | Gains transaction execution (needs supported contracts, simulation and security review) |
 | **Planned** | Mobile apps; protocol routing; advanced order workflows — see the [roadmap](ROADMAP.md) |
 
 Controlled challenge acceptance uses two owner-issued test entitlements in an
@@ -245,7 +246,7 @@ flowchart TB
 - **Content versus data.** Directus holds editorial content, the plan catalog
   and coupons; market data comes from Gains (and Hyperliquid for read-only
   analytics); prices, orders and payments are decided only by the backend.
-- More: [Architecture](docs/architecture/ARCHITECTURE.md) · [Regional runtime](docs/decisions/0033-regional-authority-and-synchronization.md) · [Trade Radar](docs/integrations/HYPERLIQUID_RADAR.md) · [Gains](docs/integrations/GAINS.md) · [Certificates](docs/decisions/0033-certificate-event-attestations.md)
+- More: [Architecture](docs/architecture/ARCHITECTURE.md) · [Regional runtime](docs/decisions/0033-regional-authority-and-synchronization.md) · [Trade Radar](docs/integrations/HYPERLIQUID_RADAR.md) · [Gains](docs/integrations/GAINS.md) · [Certificates](docs/decisions/0039-certificate-event-attestations.md)
 
 ## Technology stack
 

@@ -1,7 +1,7 @@
 # Feature status
 
-Backstage operations is **Completed in source (local acceptance; branch
-`agent/claude/launch-completion`, not merged or deployed)**. Beyond the
+Backstage operations is **Completed in source (merged to `main` via PR #132;
+shipped in release v0.6.5; production deployment awaits owner approval)**. Beyond the
 initial owner workspace it covers partner review and commissions, finance
 (expenses, reserves, obligations, treasury refresh), a unified audit trail,
 trader suspension, the commercial coupon wizard, support replies and
@@ -14,8 +14,8 @@ browser acceptances `e2e/test-backstage-operations.mjs` and
 [launch parity runbook](../deployment/LAUNCH_PARITY_RUNBOOK.md). See the
 [operations guide](../backstage/OPERATIONS_GUIDE.md).
 
-Trader Inbox and in-app notifications are **Completed in source (local
-acceptance, not deployed)**: `/{locale}/{prop|perpetual}/inbox` with payout,
+Trader Inbox and in-app notifications are **Completed in source (merged;
+release v0.6.5; not yet deployed)**, including `purchase_paid`: `/{locale}/{prop|perpetual}/inbox` with payout,
 support and challenge notifications and support conversations. No email or
 other external delivery is sent; an outbound provider is owner
 infrastructure.

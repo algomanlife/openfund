@@ -117,12 +117,12 @@ published installers. Review and release remain separate milestones.
 
 ## Backstage operations
 
-**In Progress (source complete, local acceptance; not merged or deployed):**
+**In Progress (source complete and merged; release v0.6.5; deployment and owner acceptance pending):**
 independent owner authentication, bilingual navigation, linked directories,
 protected decision workflows, partner and finance operations, unified audit,
 read-only risk board, global search, coupon administration, support replies,
-notifications and the Content workspace (branch
-`agent/claude/launch-completion`). Remaining acceptance is owner-gated:
+notifications, operational metrics and the Content workspace (PR #132 and
+release v0.6.5). Remaining acceptance is owner-gated:
 review and merge, production provisioning, the production CMS upgrade, the
 release publication and deployment, and security acceptance before enabling
 real settlement recording ([runbook](../deployment/LAUNCH_PARITY_RUNBOOK.md)).

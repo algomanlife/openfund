@@ -8,7 +8,8 @@
  *    replies call `notify` directly; every insert carries a dedupe key, so
  *    retries and replays cannot double-notify;
  *  - challenge relay: a read-only poller translates recorded
- *    `challenge_events` (passed / violation / expired / stage_passed) into
+ *    `challenge_events` (passed / violation / expired / stage_passed, and
+ *    account_provisioned of a paid purchase order → purchase_paid) into
  *    notifications. It reads the append-only event table and a cursor row;
  *    it never calls, samples or mutates the engine or evaluation state.
  *
@@ -26,6 +27,7 @@ const wrap = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
 export const NOTIFICATION_KINDS = [
   'payout_approved', 'payout_rejected', 'payout_paid', 'payout_simulated',
   'support_reply', 'challenge_passed', 'challenge_failed', 'challenge_expired', 'challenge_stage_passed',
+  'purchase_paid',
 ]
 
 /** Idempotent insert; `db` may be a pool or an open transaction client.
@@ -51,6 +53,8 @@ const EVENT_KINDS = {
   violation: 'challenge_failed',
   expired: 'challenge_expired',
   stage_passed: 'challenge_stage_passed',
+  /* recorded when a paid purchase order provisions its challenge account */
+  account_provisioned: 'purchase_paid',
 }
 
 /** One relay pass: translate new recorded challenge events into
@@ -64,11 +68,14 @@ export async function relayChallengeEvents(pool, { adapters = [] } = {}) {
        ON CONFLICT (relay) DO UPDATE SET relay=EXCLUDED.relay
        RETURNING last_event`)
     const { rows: events } = await client.query(
-      `SELECT e.id, e.challenge_id, e.kind, e.ts, c.user_id, c.stage, p.slug AS plan_slug
+      `SELECT e.id, e.challenge_id, e.kind, e.ts, c.user_id, c.stage, p.slug AS plan_slug,
+              o.id AS order_id, o.price_usd, o.payment_required
          FROM challenge_events e
          JOIN openfund_challenges c ON c.id = e.challenge_id
          JOIN challenge_plans p ON p.id = c.challenge_plan_id
-        WHERE e.id > $1 AND e.kind IN ('passed','violation','expired','stage_passed')
+         LEFT JOIN purchase_orders o ON o.id = c.purchase_order_id AND o.status = 'paid'
+        WHERE e.id > $1
+          AND (e.kind IN ('passed','violation','expired','stage_passed') OR (e.kind = 'account_provisioned' AND o.id IS NOT NULL))
           AND NOT coalesce(c.rules_snapshot ? 'controlledTest', false)
         ORDER BY e.id LIMIT 500`, [cursor.last_event])
     let last = cursor.last_event
@@ -76,7 +83,8 @@ export async function relayChallengeEvents(pool, { adapters = [] } = {}) {
       await notify(client, {
         userId: event.user_id,
         kind: EVENT_KINDS[event.kind],
-        payload: { challengeId: event.challenge_id, planSlug: event.plan_slug, stage: event.stage, at: event.ts },
+        payload: { challengeId: event.challenge_id, planSlug: event.plan_slug, stage: event.stage, at: event.ts,
+          ...(event.order_id ? { orderId: event.order_id, priceUsd: event.price_usd, paymentRequired: event.payment_required } : {}) },
         dedupeKey: `challenge_event:${event.id}`,
         adapters,
       })

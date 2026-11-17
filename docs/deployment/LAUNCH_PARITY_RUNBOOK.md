@@ -1,14 +1,16 @@
 # Launch parity runbook — owner actions
 
 Ordered actions that only the owner can perform to take the launch-completion
-release (candidate **v0.6.0**) live. Each step says what to set or click, how
+release **v0.6.5** live. Each step says what to set or click, how
 to check it, and what it unblocks. Agents prepared and verified everything
 they are allowed to; no step here was executed against production by an
 agent, and no production secret was created, requested or seen.
 
 Evidence: [launch parity checklist](LAUNCH_PARITY_CHECKLIST.md),
 [CMS rehearsal](../reviews/launch-completion/CMS_REHEARSAL.md),
-[release notes](../releases/openfund-0.6.0.md).
+[release notes](../releases/openfund-0.6.5.md),
+[security acceptance](../reviews/release-0.6.5/SECURITY_ACCEPTANCE.md),
+[load report](../reviews/release-0.6.5/LOAD_REPORT.md).
 
 ## 1. Review and merge
 
@@ -126,17 +128,26 @@ Repository → *Settings* → *Environments* → `production` (owner-only):
 
 ## 6. Publish the release
 
-After the merge, dispatch **Unified release** on `main`:
+After the release PR is merged, dispatch **Unified release** on `main` with
+the owner-approved version:
 
 ```bash
-gh workflow run release.yml --repo algomanlife/openfund --ref main -f publish=true
+gh workflow run release.yml --repo algomanlife/openfund --ref main -f publish=true -f release_version=0.6.5
 ```
 
-The allocator chooses **v0.6.0**. To use the earlier draft target 0.6.5
-instead (allowed inside the new 0.6.x line), add `-f release_version=0.6.5`.
+The allocator places this batch in the 0.6.x line (latest official v0.5.0 plus
+`feat:` commits); `requestedVersion()` accepts 0.6.5 inside that new line.
 The workflow runs the package, secret, CMS bootstrap and live CMS gates, then
-creates the tag, GitHub Release, archive, `SHA256SUMS` and manifest. A
-failed gate publishes nothing.
+creates the annotated tag `v0.6.5` at the exact `main` commit and a
+non-draft, non-prerelease GitHub Release with `openfund-v0.6.5.tar.gz`,
+`SHA256SUMS`, `release-manifest.json` (`official: true`), `verification.json`
+and `release-status.md`, and builds `ghcr.io/algomanlife/openfund:0.6.5`.
+A failed gate publishes nothing. Check:
+
+```bash
+gh release view v0.6.5 --repo algomanlife/openfund --json isDraft,isPrerelease,tagName,assets
+git ls-remote https://github.com/algomanlife/openfund refs/tags/v0.6.5
+```
 
 ## 7. Approve production
 
@@ -159,14 +170,21 @@ the release, CMS health, and the live SIWE gate on every
 `RELEASE_SIWE_DOMAINS` host (a forged domain must be rejected). Download
 `deployment-status` from the run; it must say `"status": "deployed"`.
 
+**Alternative (dashboard):** deploy the tagged commit from Render →
+`openfund` → *Manual Deploy → Deploy a specific commit* (the `v0.6.5` tag
+commit). `render-build.mjs` finds the official tag, verifies the published
+manifest digest and identity, and rebuilds the same payload. Untagged `main`
+commits also build again (the 250-commit compare limit that failed the
+earlier dashboard deploy is fixed), but they run as unofficial candidates.
+
 ## 9. Manual post-deploy check
 
 From a checkout of the release tag with `npm ci --prefix apps/backend`
 (the SIWE gate uses the backend's `viem`):
 
 ```bash
-gh release download v0.6.0 --repo algomanlife/openfund --pattern 'openfund-v0.6.0.tar.gz' --dir /tmp/of-check
-mkdir -p /tmp/of-check/payload && tar -xzf /tmp/of-check/openfund-v0.6.0.tar.gz -C /tmp/of-check/payload
+gh release download v0.6.5 --repo algomanlife/openfund --pattern 'openfund-v0.6.5.tar.gz' --dir /tmp/of-check
+mkdir -p /tmp/of-check/payload && tar -xzf /tmp/of-check/openfund-v0.6.5.tar.gz -C /tmp/of-check/payload
 RELEASE_CMS_URL=<cms origin> RELEASE_SIWE_DOMAINS=openfi.cloud,openfund.cloud \
   node scripts/release/verify.mjs /tmp/of-check/payload --live https://openfi.cloud
 ```
@@ -176,7 +194,7 @@ open the Inbox on the website with a wallet.
 
 ## 10. Enable real settlement recording (after security acceptance)
 
-Only after you accept the security review of payout settlement: set
+Only after you accept the [security acceptance](../reviews/release-0.6.5/SECURITY_ACCEPTANCE.md) of payout settlement: set
 `BACKSTAGE_REAL_SETTLEMENT=true` on `openfund-backstage` and redeploy it.
 This only allows Backstage to *record* a verified on-chain transfer you have
 already made; no funds move from Backstage.
@@ -189,3 +207,79 @@ already made; no funds move from Backstage.
   fallback meanwhile.
 - Set `VITE_WALLETCONNECT_PROJECT_ID` on `openfund` if you want mobile
   wallets, then redeploy the same release.
+
+## 12. DePay and payment configuration checklist
+
+Full steps: [owner setup](../payments/OWNER_SETUP.md). The widget is vendored
+and served same-origin, so no CSP change is needed by default.
+
+- [ ] `PURCHASE_PAYMENT_CHAINS` (receiver and token per chain),
+      `PURCHASE_RPC_URLS`, optional `PURCHASE_ROUTER_ADDRESSES` (DePay router per
+      chain); `PURCHASE_PAYMENT_DECIMALS` removed when using the chain list.
+- [ ] `DEPAY_VERIFY_PUBLIC_KEY` (DePay's public key from the integration),
+      `DEPAY_CONFIG_PRIVATE_KEY` (your key; its public half is stored at DePay).
+- [ ] `VITE_DEPAY_INTEGRATION_ID` set; `VITE_DEPAY_WIDGET` unset or `1`;
+      `VITE_DEPAY_WIDGET_URL`, `VITE_DEPAY_WIDGET_INTEGRITY`,
+      `CSP_EXTRA_SCRIPT_SRC`, `CSP_EXTRA_FRAME_SRC` **not** set.
+- [ ] app.depay.com integration: dynamic configuration
+      `https://openfi.cloud/purchases/depay/configuration`, callback
+      `https://openfi.cloud/purchases/depay/callback`, events
+      `https://openfi.cloud/purchases/depay/events` (the
+      `/api/payments/depay/{config,callback,events}` aliases also work),
+      **Include sent token information** on, domains restricted to the
+      serving domains.
+
+Then run the read-only probe (no money, no signatures):
+
+```bash
+node scripts/release/purchase-readiness.mjs https://openfi.cloud
+```
+
+Every line must be `PASS` (WalletConnect is reported but optional). Each
+`FAIL` names the missing variable.
+
+## 13. Owner purchase test (real, low value)
+
+1. Create a temporary coupon in Backstage → *Coupons* so the net price is
+   about 1–2 USD (or use the cheapest plan). Activate it.
+2. **DePay:** sign in on `https://openfi.cloud/en/checkout`, choose the plan,
+   apply the coupon, *Pay with DePay*, pay once. Expect the receipt, a new
+   challenge, and a *purchase paid* notification in the Inbox.
+3. **Manual EVM:** new order → *Pay manually* → send the exact amount of the
+   listed token **from your sign-in wallet** to the listed receiver on the
+   listed chain → submit the transaction hash. The order shows
+   *Verification Pending* until finality (12 blocks by default), then paid.
+4. **Manual Solana:** same, with the **order id as SPL Memo** and the
+   transaction signature submitted.
+5. Record order ids, transaction ids, `payments.route`, invoice numbers and
+   challenge ids in [ACTIVATION.md](../payments/ACTIVATION.md). Revoke the
+   coupon.
+
+## 14. Backup and rollback drill
+
+Before the release goes live, prove the production backup restores, using
+a read-only source URL and a new local scratch database:
+
+```bash
+node scripts/ops/backup-drill.mjs --source "$PROD_READONLY_DATABASE_URL" \
+  --scratch postgres://localhost:5432/openfund_restore_drill_$(date +%Y%m%d) --out ./drill
+```
+
+`ok: true` means the schema and every table's row count match. Keep the
+dump and its SHA-256 as the pre-deploy backup. Rollback of the application:
+*Deploy or roll back official release* with `version=v0.5.0` and
+`rollback=true` ([ROLLBACK.md](ROLLBACK.md)); the 0.6.5 migration is
+additive, so the previous release runs on the migrated database.
+
+## 15. Monitoring
+
+`GET /admin/operations/metrics` (admin token) returns engine-loop lag,
+market-feed staleness, failure counters and active alert names. Suggested
+log-based alerts on Render (match the service log):
+
+| Alert | Log match | Meaning |
+| --- | --- | --- |
+| Audit writes failing | `[obs] {"event":"audit_insert_failure"` | Audit rows are not being stored |
+| Payment recovery failing | `[obs] {"event":"payment_recovery_failure"` | A paid order may not be provisioning |
+| Payments disabled | `[payments] readiness: paymentsEnabled=false` | Settlement configuration incomplete |
+| Engine stalled | metrics `alerts` contains `engine_loop_lag` | Risk checks are late (see the load report) |

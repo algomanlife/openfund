@@ -1,4 +1,7 @@
-# Openfund v0.6.0 — release notes (candidate)
+# Openfund v0.6.0 — release notes (candidate, superseded)
+
+> Superseded: this candidate was never published. Its content ships in the
+> official [v0.6.5](openfund-0.6.5.md) release.
 
 Status: **unofficial candidate, not published, not deployed.** Built locally
 from branch `agent/claude/launch-completion` with

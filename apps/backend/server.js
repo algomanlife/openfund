@@ -36,6 +36,7 @@ import { chartWorkspaceRoutes } from './chart-workspaces.js'
 import { supportRoutes, supportAdminRoutes, supportInboxRoutes } from './support.js'
 import { notificationRoutes, startNotificationRelay } from './notifications.js'
 import { operationsAdminRoutes } from './admin-operations.js'
+import { recordFailure, recordSuccess } from './observability.js'
 import { rewardRoutes, rewardAdminRoutes } from './rewards.js'
 import { certificateRoutes, certificateAdminRoutes } from './certificates.js'
 import { createRadar, radarRoutes } from './radar.js'
@@ -244,9 +245,11 @@ const limit =
     next();
   };
 
+/* audit writes never fail the request, but a failed write is counted and
+   logged (observability.js) instead of disappearing silently */
 const audit = (action, userId = null, req = null, details = {}) =>
   pool.query('INSERT INTO audit_log (action, user_id, ip, details) VALUES ($1,$2,$3,$4)',
-    [action, userId, req?.ip || null, JSON.stringify(details)]).catch(() => {})
+    [action, userId, req?.ip || null, JSON.stringify(details)]).catch(error => recordFailure('audit_insert_failure', { action, error }))
 
 /* ---------- session helpers ---------- */
 const COOKIE = 'openfund_session'
@@ -997,9 +1000,12 @@ purchaseExpiryTimer?.unref()
 const recoveryEvery = Math.max(Number(process.env.PAYMENT_RECOVERY_INTERVAL_MS) || 60_000, 1000)
 const recoveryMinAge = Math.max(Number(process.env.PAYMENT_RECOVERY_MIN_AGE_S) || 45, 1)
 const paymentRecoveryTimer = hasRole(region, 'payment-recovery') ? setInterval(() => {
-  recoverPendingPayments({ pool, minAgeSeconds: recoveryMinAge, log: (order, err) => console.log('[payments] recovery', order, err) })
-    .then(r => { if (r.recovered) console.log('[payments] recovered ' + r.recovered + ' order(s)') })
-    .catch(e => console.error('[payments] recovery sweep failed', e.message))
+  recoverPendingPayments({ pool, minAgeSeconds: recoveryMinAge, log: (order, err) => {
+    console.log('[payments] recovery', order, err)
+    recordFailure('payment_recovery_failure', { action: 'reverify_order', error: { code: String(err || 'error').slice(0, 40) } })
+  } })
+    .then(r => { recordSuccess('payment_recovery'); if (r.recovered) console.log('[payments] recovered ' + r.recovered + ' order(s)') })
+    .catch(e => { recordFailure('payment_recovery_failure', { action: 'sweep', error: e }); console.error('[payments] recovery sweep failed', e.message) })
 }, recoveryEvery) : null
 paymentRecoveryTimer?.unref()
 /* treasury snapshots (60–120 min schedule) and live settlement retries */
