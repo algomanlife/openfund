@@ -12,9 +12,16 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { root } from './lib.mjs';
 
-const backendRequire = createRequire(path.join(root, 'apps/backend/package.json'));
-const { generatePrivateKey, privateKeyToAccount } = backendRequire('viem/accounts');
-const { createSiweMessage } = backendRequire('viem/siwe');
+/* viem is resolved from the backend install only when a sign-in actually
+   runs, so importing this module (e.g. for smokeDomains) needs no backend deps */
+let viem
+const loadViem = () => {
+  if (!viem) {
+    const backendRequire = createRequire(path.join(root, 'apps/backend/package.json'));
+    viem = { ...backendRequire('viem/accounts'), ...backendRequire('viem/siwe') };
+  }
+  return viem;
+};
 
 const CHAIN_ID = 42161; // the only chain the backend accepts (Arbitrum One)
 
@@ -23,6 +30,7 @@ async function json(response) {
 }
 
 async function signIn(baseUrl, domain, account, { expectRejected = false, originDomain = domain } = {}) {
+  const { createSiweMessage } = loadViem();
   const scheme = /^(localhost|127\.0\.0\.1|\[::1\])(:|$)/.test(originDomain) ? 'http' : 'https';
   /* The browser-controlled Origin header stays on an allowed domain; the
      rejection probe forges only the attacker-controlled SIWE message domain. */
@@ -77,6 +85,7 @@ export function smokeDomains(env = process.env) {
 
 export async function liveSiweSmoke({ baseUrl, domains, disallowedDomain = 'siwe-gate-disallowed.invalid' }) {
   if (!baseUrl) throw Error('SIWE gate: a backend base URL is required.');
+  const { generatePrivateKey, privateKeyToAccount } = loadViem();
   const results = [];
   for (const domain of domains) {
     results.push(await signIn(baseUrl, domain, privateKeyToAccount(generatePrivateKey())));

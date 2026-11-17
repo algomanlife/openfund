@@ -23,6 +23,7 @@
  * changes the rules this module evaluates.
  */
 import { Router } from 'express'
+import { rateLimit } from 'express-rate-limit'
 import { adminAuth } from './admin.js'
 import { mountControlledChallenges } from './controlled-challenges.js'
 import { cents } from './economy-math.js'
@@ -153,8 +154,9 @@ export function couponAdminRoutes({ pool }) {
     }
   }
 
+  const couponWriteLimit = rateLimit({ windowMs: 60_000, limit: 30, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'rate_limited' } })
   /* create a commercial coupon (controlled test coupons keep their own flow) */
-  router.post('/', wrap(async (req, res) => {
+  router.post('/', couponWriteLimit, wrap(async (req, res) => {
     const actor = actorOf(req), b = req.body || {}
     const code = normalizeCode(b.code)
     if (!CODE_RE.test(code)) throw fail(400, 'invalid_code')
@@ -184,7 +186,7 @@ export function couponAdminRoutes({ pool }) {
   /* update: name/description/eligibility/window/limits/status (activate, disable, revoke).
      The schema trigger locks kind/value after the first redemption and keeps
      revocation final; this endpoint relies on those guarantees. */
-  router.post('/:id', wrap(async (req, res) => {
+  router.post('/:id', couponWriteLimit, wrap(async (req, res) => {
     const actor = actorOf(req), b = req.body || {}
     if (!uuid.test(req.params.id)) throw fail(404, 'coupon_not_found')
     if (b.status !== undefined && !['active', 'inactive', 'revoked'].includes(b.status)) throw fail(400, 'invalid_status')

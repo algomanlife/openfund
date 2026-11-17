@@ -18,6 +18,7 @@
  * exists in this repository. Operators work the queue in Directus or here.
  */
 import { Router } from 'express'
+import { rateLimit } from 'express-rate-limit'
 import crypto from 'node:crypto'
 import { adminAuth, adminActor } from './admin.js'
 import { notify } from './notifications.js'
@@ -269,7 +270,8 @@ export function supportAdminRoutes({ pool }) {
      account) and read-cursor updates. Anonymous submissions (no user_id)
      accept replies too — they are answered by email outside this system,
      so the thread records the outbound text for the audit trail. */
-  router.post('/messages/:ref/thread', wrap(async (req, res) => {
+  const threadLimit = rateLimit({ windowMs: 60_000, limit: 45, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'rate_limited' } })
+  router.post('/messages/:ref/thread', threadLimit, wrap(async (req, res) => {
     if (!REF_RE.test(req.params.ref)) throw fail(404, 'message_not_found')
     const actor = adminActor(req)
     const { action = 'reply', message: raw, through } = req.body || {}

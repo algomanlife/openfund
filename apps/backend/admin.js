@@ -125,7 +125,8 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
   /* ---------- user status (operational decision; no financial writes) ----------
      active ⇄ suspended with a recorded reason and named actor. Suspension is
      enforced by requireAuth (sessions end) and the auth flow (sign-in refused). */
-  router.post('/users/:id/status', wrap(async (req, res) => {
+  const userStatusLimit = rateLimit({ windowMs: 60_000, limit: 30, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'rate_limited' } })
+  router.post('/users/:id/status', userStatusLimit, wrap(async (req, res) => {
     const actor = adminActor(req)
     if (!uuid.test(req.params.id)) throw fail(404, 'user_not_found')
     const { status, reason } = req.body || {}
