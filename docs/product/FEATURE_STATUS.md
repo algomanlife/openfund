@@ -1,9 +1,24 @@
 # Feature status
 
-Backstage operations is **In Progress**. The initial owner workspace
-uses authoritative backend directories and review actions. Controlled test
-operations require the PR #125 contract. See the
+Backstage operations is **Completed in source (local acceptance; branch
+`agent/claude/launch-completion`, not merged or deployed)**. Beyond the
+initial owner workspace it covers partner review and commissions, finance
+(expenses, reserves, obligations, treasury refresh), a unified audit trail,
+trader suspension, the commercial coupon wizard, support replies and
+departments, notification records, a read-only live risk board, global
+search and a Content workspace over Directus. Evidence: backend
+`test/backstage-operations.test.mjs`, Backstage server tests and the
+browser acceptances `e2e/test-backstage-operations.mjs` and
+`e2e/test-backstage-content.mjs` (the latter against a disposable Directus
+11.17.4). Production needs the owner steps in the
+[launch parity runbook](../deployment/LAUNCH_PARITY_RUNBOOK.md). See the
 [operations guide](../backstage/OPERATIONS_GUIDE.md).
+
+Trader Inbox and in-app notifications are **Completed in source (local
+acceptance, not deployed)**: `/{locale}/{prop|perpetual}/inbox` with payout,
+support and challenge notifications and support conversations. No email or
+other external delivery is sent; an outbound provider is owner
+infrastructure.
 
 Real payout evidence recording is **In Progress**. Backstage adds reward
 inspection and a disabled-by-default Arbitrum One DAI verification action.
@@ -282,7 +297,7 @@ and wallet. Public release/signing and existing license decisions remain Blocked
 | Navigation, purchase history and Applications | In Progress | Local review branch. Web Terminal available; verified desktop installers remain pending. [Website evidence](../reviews/final-refinement/website.md) |
 | Position protection controls | In Progress | Isolated Prop simulation acceptance. Production and device acceptance remain open. |
 | Interface content registry | In Progress | Source-derived editing map and published overrides. See the coverage limits in the content evidence. |
-| Universal visual CMS editing | Completed in source (merged to `main` via `b7fec1e`/`440ecb8`; isolated Directus 11.17.4 click-through recorded); not applied to the production CMS; not deployed | Studio opened the Value popover for a Persian label, a draft stayed off the public API, and publishing appeared on reload. Public pages have no `data-directus` attributes. `challenge_plans` anonymous writes return 403. Production schema has not been migrated. [Report](../backstage/UNIVERSAL_VISUAL_EDITING.md) |
+| Universal visual CMS editing | Completed in source (merged to `main` via `b7fec1e`/`440ecb8`); site framing defect fixed and the protocol re-verified 10/10 on a disposable Directus 11.17.4 (branch `agent/claude/launch-completion`, [rehearsal](../reviews/launch-completion/CMS_REHEARSAL.md)); not applied to the production CMS; not deployed | Studio opened the Value popover for a Persian label, a draft stayed off the public API, and publishing appeared on reload. Public pages have no `data-directus` attributes. `challenge_plans` anonymous writes return 403. Production schema has not been migrated. [Report](../backstage/UNIVERSAL_VISUAL_EDITING.md) |
 | Certificates | In Progress | Issuance tied to server records. Review and production rollout remain open. |
 
 ## v0.6.5 candidate — 2026-11-15

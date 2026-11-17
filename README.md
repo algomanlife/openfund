@@ -80,10 +80,13 @@ The service authenticates a single provisioned owner, keeps its backend
 credential server-side and asks the owner to re-enter their password for
 privileged decisions.
 
-Commercial coupon administration, trader support conversations, contact
-and callback workflows, dedicated risk monitoring, full finance and partner
-operations, persistent notifications and unified audit remain in development.
-See the [operator guide](docs/backstage/OPERATIONS_GUIDE.md) and
+The launch-completion branch (in review, not deployed) adds commercial
+coupon administration, trader support replies with a trader Inbox and in-app
+notifications, partner review and commissions, finance records (expenses,
+reserves, obligations), a unified audit trail, a read-only live risk board,
+global search and a Content workspace for editing website copy in Directus.
+External email delivery is not built. See the
+[operator guide](docs/backstage/OPERATIONS_GUIDE.md) and
 [feature status](docs/product/FEATURE_STATUS.md) for current coverage.
 
 | English overview | Persian overview |
@@ -96,6 +99,11 @@ Additional local captures show [challenge inspection](docs/assets/screenshots/ba
 [payout details](docs/assets/screenshots/backstage-operations/backstage-payout.png),
 [support intake](docs/assets/screenshots/backstage-operations/backstage-support-intake.png)
 and [financial position](docs/assets/screenshots/backstage-operations/backstage-financial-position.png).
+Launch-completion captures (local, not deployed) show the
+[coupon wizard result](docs/assets/screenshots/launch-completion/backstage-coupons.png),
+the [audit trail](docs/assets/screenshots/launch-completion/backstage-audit.png),
+the [Content workspace](docs/assets/screenshots/launch-completion/backstage-content-en.png)
+and the [trader Inbox](docs/assets/screenshots/launch-completion/trader-inbox-en.png).
 
 ## Product gallery
 

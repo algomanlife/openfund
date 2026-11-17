@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased — launch completion (candidate v0.6.0)
+
+Release notes: [docs/releases/openfund-0.6.0.md](docs/releases/openfund-0.6.0.md).
+
+- Release manifest runtime is derived from `render.yaml` and the backend
+  engine (it claimed Node 22 and Directus 11.9.1); `engine-strict=true`.
+- Post-deploy live SIWE gate and runtime verification (`/version` official
+  on the tag commit, frontend manifest, CMS health).
+- Backstage: partner review and commissions, finance (expenses, reserves,
+  obligations, treasury refresh), unified audit trail, trader suspension,
+  commercial coupon wizard, support replies and departments, notification
+  records, read-only live risk board, global search, and a Content workspace
+  over Directus with a live read-only preview.
+- Traders get an Inbox with in-app notifications and support conversations.
+- Visual editing fix: the site lets the configured CMS origin frame it.
+- Additive migration: `notifications`, `notification_relay_state`, support
+  thread columns. No financial table changed.
+
 ## Unreleased — release archive
 
 - Include the shared footprint runtime in release archives so the extracted

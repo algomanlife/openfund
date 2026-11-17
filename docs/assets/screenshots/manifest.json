@@ -7063,6 +7063,102 @@
       "capturedAt": "2026-11-15T10:13:59.172968+00:00",
       "state": "Local test runtime of the v0.6.5 candidate with live public market data and published CMS content; no personal wallet; README gallery JPEG",
       "sha256": "1ed721fb9d7b3ff9fa7848f2f56ac915f4aa76f7cf0b1340ea9e4ac31ef220ae"
+    },
+    {
+      "file": "launch-completion/backstage-coupons.png",
+      "route": "/#/coupons",
+      "viewport": {
+        "width": 1366,
+        "height": 900
+      },
+      "session": "disposable owner session",
+      "capturedAt": "2026-11-17T05:00:55.264990+00:00",
+      "state": "English Backstage coupons after the coupon wizard created and activated a disposable test coupon. Captured by e2e/test-backstage-operations.mjs against a local backend and disposable PostgreSQL.",
+      "sha256": "bc949992a6917917612288088738a33e277847a932c90fe8e07e9cb7a75b1b97"
+    },
+    {
+      "file": "launch-completion/backstage-coupons-fa.png",
+      "route": "/#/coupons",
+      "viewport": {
+        "width": 1366,
+        "height": 900
+      },
+      "session": "disposable owner session",
+      "capturedAt": "2026-11-17T05:00:56.466329+00:00",
+      "state": "Persian (RTL) Backstage coupons with the coupon code kept left-to-right. Same local acceptance run.",
+      "sha256": "35e86e65627e4d4ae67e66408d3b99bfee6ad8846d2cbe8b037eae81e5d0a6b4"
+    },
+    {
+      "file": "launch-completion/backstage-audit.png",
+      "route": "/#/audit?action=expense_recorded",
+      "viewport": {
+        "width": 1366,
+        "height": 900
+      },
+      "session": "disposable owner session",
+      "capturedAt": "2026-11-17T05:00:56.301095+00:00",
+      "state": "Unified audit trail filtered to the expense recorded during the local acceptance run.",
+      "sha256": "6401aaa5e5591a96f3abfa2c103a58b84b095662fad0e2659520decde473ea74"
+    },
+    {
+      "file": "launch-completion/backstage-content-en.png",
+      "route": "/#/content",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "disposable owner session",
+      "capturedAt": "2026-11-17T05:30:06.888032+00:00",
+      "state": "Content workspace wizard with the live read-only site preview (home, English). Captured by e2e/test-backstage-content.mjs against a disposable Directus 11.17.4 and a local site.",
+      "sha256": "847a553bf5e0326a43ebff2b562fb405d1a6a4240bbdbb5b27d158bd6cb116ed"
+    },
+    {
+      "file": "launch-completion/backstage-content-fa.png",
+      "route": "/#/content",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "disposable owner session",
+      "capturedAt": "2026-11-17T05:30:08.376783+00:00",
+      "state": "Persian (RTL) Content workspace. Same local acceptance run.",
+      "sha256": "9b0c3472eced18863242e19d6c96cb3bfec97342a24336caf0737cd470d1f76a"
+    },
+    {
+      "file": "launch-completion/studio-edit-popover.png",
+      "route": "Directus /admin/visual",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "session": "disposable Directus admin session",
+      "capturedAt": "2026-11-17T05:17:56.578207+00:00",
+      "state": "Directus 11.17.4 Studio visual editor framing the local site; the Value popover opened from the site edit message. Captured by apps/backstage/upgrade/visual-editing-check.mjs on a disposable instance.",
+      "sha256": "d5988f75c908bba31e2e0a6d852f11976c995036f3252786b0a9cc8292d9b3f6"
+    },
+    {
+      "file": "launch-completion/trader-inbox-en.png",
+      "route": "/en/prop/inbox",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "generated test wallet (no personal wallet)",
+      "capturedAt": "2026-11-17T05:38:34.091423+00:00",
+      "state": "English trader Inbox after an operator support reply: the notification and the conversation with an unread reply. Generated throw-away test wallet signed in with real SIWE on a local server and disposable PostgreSQL.",
+      "sha256": "cfde7f7d067307ce4097acb6f9228a118bb59381f9f49e71c728a2dd6d2ea6f2"
+    },
+    {
+      "file": "launch-completion/trader-inbox-fa.png",
+      "route": "/fa/prop/inbox",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "generated test wallet (no personal wallet)",
+      "capturedAt": "2026-11-17T05:38:35.342917+00:00",
+      "state": "Persian (RTL) trader Inbox after the reply was read. Same local check.",
+      "sha256": "4c1185ef4ba6936c5cc5e351f0e127838e0c3038d7b9bbd3b81ddf495bdf8b3c"
     }
   ],
   "finalIntegration": {

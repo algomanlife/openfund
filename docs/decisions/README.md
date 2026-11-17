@@ -45,3 +45,4 @@ Read newer decisions alongside historical ones; current implementation and expli
 - [0037 — Controlled challenge lineages](0037-controlled-challenge-lineages.md)
 - [0038 — Universal visual editing on Directus 11.17.4](0038-universal-visual-editing.md)
 - [0040 — Backstage operations boundary](0040-backstage-operations-boundary.md)
+- [0041 — Backstage content editing and in-app notifications](0041-backstage-content-and-notifications.md)
