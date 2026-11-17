@@ -148,6 +148,8 @@ test('equity sampling skips an account deleted after the state snapshot', async 
         async query(sql, args) {
           const result = await client.query(sql, args)
           if (sql === 'COMMIT') {
+            await client.query('DELETE FROM trading_ledger WHERE account_id=$1', [accountId])
+            await client.query('DELETE FROM trading_events WHERE account_id=$1', [accountId])
             const deleted = await client.query('DELETE FROM demo_accounts WHERE id=$1', [accountId])
             assert.equal(deleted.rowCount, 1)
           }
