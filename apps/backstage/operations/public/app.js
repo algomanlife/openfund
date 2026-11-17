@@ -253,7 +253,7 @@ const columns = {
       r.status === 'active' ? button('disable', () => operate('coupons', r.id, 'disable')) : null,
       r.status !== 'revoked' ? button('couponRevoke', () => operate('coupons', r.id, 'revoke', [], 'couponRevoke'), 'danger') : null,
       r.status !== 'revoked' ? button('couponUpdate', () => operate('coupons', r.id, 'update', couponFields(), 'couponUpdate')) : null)]],
-  support: [['reference', r => link('support', { id: r.reference }, technical(r.reference))], ['subject', r => r.subject], ['department', r => t(r.department)], ['status', status], ['date', r => date(r.createdAt)]],
+  support: [['reference', r => link('support', { id: r.reference }, technical(r.reference))], ['subject', r => r.subject], ['departmentColumn', r => t(r.department === 'support' ? 'supportDept' : r.department)], ['status', status], ['date', r => date(r.createdAt)]],
   partners: [['wallet', wallet], ['identity', r => link('partners', { id: r.id }, uid(r))], ['role', r => t(r.role)], ['status', status], ['date', r => date(r.submitted_at)]],
   commissions: [['wallet', wallet], ['code', r => technical(r.referral_code)], ['status', status],
     ['earned', r => usd(r.earned)], ['reversedUsd', r => usd(r.reversed)], ['paidOut', r => usd(r.paid)], ['pendingUsd', r => usd(r.pending)],
@@ -492,13 +492,16 @@ async function directory(main, section, filter) {
   const select = choices ? el('select', { name: 'status', 'aria-label': t('status') },
     el('option', { value: '' }, t('all')), choices.map(s => el('option', { value: s }, t(s)))) : null
   if (select) select.value = query.get('status') ?? ''
+  const department = section === 'support' ? el('select', { name: 'department', 'aria-label': t('department') },
+    el('option', { value: '' }, t('department')), ['support', 'legal', 'technical', 'community'].map(d => el('option', { value: d }, t(d === 'support' ? 'supportDept' : d)))) : null
+  if (department) department.value = query.get('department') ?? ''
   if (input || select) main.append(el('form', { class: 'filters', on: { submit: e => {
     e.preventDefault()
     const filters = Object.fromEntries([...new FormData(e.target)].filter(([, value]) => value))
     const next = route(section, filters)
     if (location.hash === next) render()
     else location.hash = next
-  } } }, input, scope, select, el('button', { class: 'primary' }, t(input ? 'apply' : 'refresh'))))
+  } } }, input, scope, select, department, el('button', { class: 'primary' }, t(input ? 'apply' : 'refresh'))))
   main.append(table(null, columns[section], data.rows))
   if (section === 'coupons') await controlledCoupons(main)
   if (data.total !== null) {
