@@ -1,4 +1,6 @@
-# Openfund v0.6.5-rc.1 — draft release notes
+# Openfund v0.6.5-rc.1 — draft release notes (superseded)
+
+> Superseded by the official [v0.6.5](openfund-0.6.5.md) release notes.
 
 Target release candidate. These notes record the Backstage payout work for
 review. The full Backstage milestone and release acceptance are still open.

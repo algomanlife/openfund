@@ -45,8 +45,10 @@ flowchart LR
   Render's `commitId` and polls until `live`.
 - **Verification:** `RELEASE_PUBLIC_URL` `/version` must be `matched` with the
   release commit and backend ID; `/react/release-manifest.json` must match
-  version, commit and frontend ID; `RELEASE_CMS_URL` must be healthy. The
-  result is uploaded as `deployment-status-<run>-<attempt>`.
+  version, commit and frontend ID; `RELEASE_CMS_URL` must be healthy; then
+  the live SIWE gate (`scripts/release/live-siwe-smoke.mjs`) signs in with a
+  generated wallet on each `RELEASE_SIWE_DOMAINS` host. The result is
+  uploaded as `deployment-status-<run>-<attempt>`.
 - **Ordering and retries:** the `openfund-production` concurrency group
   serializes deploys. A tag that is not the latest release is refused unless
   `rollback=true`. A retry against a service already serving the release
@@ -200,6 +202,7 @@ Configure the production environment with a required reviewer. The deployment sc
 | `RENDER_SERVICE_ID` | Production environment variable | Existing `openfund` service ID |
 | `RELEASE_PUBLIC_URL` | Production environment variable | Actual HTTPS frontend/API origin |
 | `RELEASE_CMS_URL` | Production environment variable | Existing CMS HTTPS health origin |
+| `RELEASE_SIWE_DOMAINS` | Production environment variable | Comma-separated serving hosts the post-deploy live SIWE gate signs in on (default: the `RELEASE_PUBLIC_URL` host); a forged domain must be rejected |
 | `DATABASE_URL`, `ALLOWED_DOMAINS` | Existing Render service | Managed DB and browser origin; no test-mode production |
 | `VITE_WALLETCONNECT_PROJECT_ID` | Existing public build variable in both environments | Optional remote-wallet support; injected wallets remain usable without it |
 
