@@ -69,3 +69,21 @@ test('English overrides retain Arabic source fallback and independent Arabic pub
   assert.equal(api.pickRecord('ar', record), 'إنهاء')
   assert.equal(record.ar, 'إنهاء')
 })
+test('pickFormat registers the template, lets editors reorder words and never lets them drop a value', () => {
+  const locales = buildSync({ entryPoints: ['src/i18n/locales.ts'], bundle: true, platform: 'node', format: 'cjs', write: false }).outputFiles[0].text
+  const mod = { exports: {} }; new Function('module', 'exports', 'require', locales)(mod, mod.exports, () => ({}))
+  const { pickFormat } = mod.exports
+  assert.equal(typeof pickFormat, 'function')
+  const fa = 'بیشتر نشان بده (${count} باقی‌مانده)', en = 'Show more (${count} remaining)'
+  assert.equal(pickFormat('en', fa, en, { count: 12 }), 'Show more (12 remaining)')
+  assert.equal(pickFormat('fa', fa, en, { count: '۱۲' }), 'بیشتر نشان بده (۱۲ باقی‌مانده)')
+  assert.equal(pickFormat('en', fa, en, {}), en, 'unknown placeholders stay visible instead of inventing a value')
+})
+test('a published pickFormat template keeps its placeholders or falls back', () => {
+  const key = interfaceKey('بیشتر (${count})', 'More (${count})')
+  installInterfaceContent([{ key, namespace: 'react', status: 'published', translations: [
+    { language_code: 'en', value: '${count} more to show' }, { language_code: 'fa', value: 'بیشتر' }] }])
+  assert.equal(interfaceOverride('en', 'بیشتر (${count})', 'More (${count})'), '${count} more to show')
+  assert.equal(interfaceOverride('fa', 'بیشتر (${count})', 'More (${count})'), undefined, 'dropping the placeholder is rejected')
+  installInterfaceContent([])
+})

@@ -3811,5 +3811,9 @@
   "Your payout request was rejected.": "您的出金申请已被拒绝。",
   "Your payout was paid and recorded.": "您的出金已支付并记录。",
   "New": "新",
-  "Close": "关闭"
+  "Close": "关闭",
+  "OPENFUND TREASURY": "OPENFUND 金库",
+  "Openfund Treasury": "Openfund 金库",
+  "Open ${base} in the terminal": "在终端中打开 ${base}",
+  "Show more (${count} remaining)": "显示更多（剩余 ${count}）"
 }

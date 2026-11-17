@@ -3811,5 +3811,9 @@
   "Your payout request was rejected.": "تم رفض طلب الدفع الخاص بك.",
   "Your payout was paid and recorded.": "تم دفع دفعتك وتسجيلها.",
   "New": "جديد",
-  "Close": "إغلاق"
+  "Close": "إغلاق",
+  "OPENFUND TREASURY": "خزينة OPENFUND",
+  "Openfund Treasury": "خزينة Openfund",
+  "Open ${base} in the terminal": "افتح ${base} في المنصة",
+  "Show more (${count} remaining)": "عرض المزيد (${count} متبقية)"
 }

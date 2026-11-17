@@ -43,6 +43,14 @@ export function pick(locale: AppLocale, fa: string, en: string): string {
   if (locale === 'en') return en
   return translateSource(locale, en)
 }
+/** Interpolated interface string. `fa` and `en` are literal templates with
+ * `${name}` placeholders, so the registry records one stable editable key and
+ * a published Directus value must keep exactly the same placeholders (the
+ * interfaceOverride guard). Values are inserted after the editorial lookup,
+ * so editors change wording and order, never the dynamic values. */
+export function pickFormat(locale: AppLocale, fa: string, en: string, values: Record<string, string | number>): string {
+  return pick(locale, fa, en).replace(/\$\{([^}]+)\}/g, (match, name: string) => Object.hasOwn(values, name) ? String(values[name]) : match)
+}
 /** `{fa, en}` record (CMS rows, labels) → string for `locale` */
 export function pickRecord(locale: AppLocale, value: { fa?: string; en?: string } | null | undefined): string {
   if (!value) return ''

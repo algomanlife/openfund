@@ -2,11 +2,11 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4320,
-    "mappedCalls": 2173,
-    "exceptions": 75,
+    "uniqueRecords": 4325,
+    "mappedCalls": 2178,
+    "exceptions": 49,
     "validationFindings": 0,
-    "reviewedExclusions": 27
+    "reviewedExclusions": 49
   },
   "editorial": {
     "locales": [
@@ -4500,6 +4500,26 @@
       ]
     },
     {
+      "key": "react.093cb32834b94c4c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "${base} را در ترمینال باز کن",
+      "en": "Open ${base} in the terminal",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 129,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.095783886fcb0b5c",
       "namespace": "react",
       "area": "Website",
@@ -5289,6 +5309,26 @@
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
           "line": 56,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.0c07b669fc51d4f7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خزانهٔ اوپن‌فاند",
+      "en": "OPENFUND TREASURY",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 115,
+          "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -41101,6 +41141,26 @@
       ]
     },
     {
+      "key": "react.6fa7980a7386dc5c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اوپن‌فاند · چالش‌های پراپ",
+      "en": "OPENFUND · PROP CHALLENGES",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/campaign/Campaign.tsx",
+          "line": 73,
+          "page": "campaign",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.6fa93399d4250749",
       "namespace": "react",
       "area": "Website",
@@ -48006,7 +48066,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/i18n/locales.ts",
-          "line": 78,
+          "line": 86,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50848,7 +50908,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/i18n/locales.ts",
-          "line": 82,
+          "line": 90,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -64991,6 +65051,26 @@
           "line": 36,
           "page": "economy",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b28968dc18df643c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بیشتر نشان بده (${count} باقی‌مانده)",
+      "en": "Show more (${count} remaining)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 152,
+          "page": "markets",
+          "route": "/:locale/markets",
           "method": "pick-pipeline"
         }
       ]
@@ -90382,6 +90462,26 @@
       ]
     },
     {
+      "key": "react.fb7ef92978414ef7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خزانهٔ اوپن‌فاند",
+      "en": "Openfund Treasury",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 30,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.fb8da0cd3375fa9f",
       "namespace": "react",
       "area": "Website",
@@ -91943,22 +92043,6 @@
       "expression": "label('segments', k)"
     },
     {
-      "component": "apps/web-react/src/features/applications/Applications.tsx",
-      "line": 51,
-      "page": "applications",
-      "route": "/:locale/apps",
-      "reason": "literal-jsx-review",
-      "text": "OPENFUND ·"
-    },
-    {
-      "component": "apps/web-react/src/features/campaign/Campaign.tsx",
-      "line": 73,
-      "page": "campaign",
-      "route": "/:locale/*",
-      "reason": "literal-jsx-review",
-      "text": "OPENFUND · PROP CHALLENGES"
-    },
-    {
       "component": "apps/web-react/src/features/community/TelegramCommunity.tsx",
       "line": 58,
       "page": "community",
@@ -91999,52 +92083,12 @@
       "expression": "pick(locale, provider.labels.fa, provider.labels.en)"
     },
     {
-      "component": "apps/web-react/src/features/company/Contact.tsx",
-      "line": 110,
-      "page": "company",
-      "route": "/:locale/*",
-      "reason": "literal-jsx-review",
-      "text": "Website"
-    },
-    {
       "component": "apps/web-react/src/features/economy/ui.tsx",
       "line": 46,
       "page": "economy",
       "route": "/:locale/*",
       "reason": "dynamic-pair",
       "expression": "t(english, english)"
-    },
-    {
-      "component": "apps/web-react/src/features/governance/CouncilWorkspace.tsx",
-      "line": 22,
-      "page": "governance",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "text(en, fa)"
-    },
-    {
-      "component": "apps/web-react/src/features/governance/GovernanceViews.tsx",
-      "line": 15,
-      "page": "governance",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "text(en, fa)"
-    },
-    {
-      "component": "apps/web-react/src/features/governance/NewProposal.tsx",
-      "line": 15,
-      "page": "governance",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "text(en, fa)"
-    },
-    {
-      "component": "apps/web-react/src/features/governance/ProposalPage.tsx",
-      "line": 26,
-      "page": "governance",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "text(en, fa)"
     },
     {
       "component": "apps/web-react/src/features/governance/ProposalPage.tsx",
@@ -92055,36 +92099,12 @@
       "expression": "t(en, fa)"
     },
     {
-      "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-      "line": 26,
-      "page": "inbox",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
       "component": "apps/web-react/src/features/information/InformationShell.tsx",
       "line": 70,
       "page": "information",
       "route": "/:locale/:page",
       "reason": "dynamic-pair",
       "expression": "pick(locale, key, en)"
-    },
-    {
-      "component": "apps/web-react/src/features/markets/Markets.tsx",
-      "line": 129,
-      "page": "markets",
-      "route": "/:locale/markets",
-      "reason": "dynamic-pair",
-      "expression": "text(`Open ${m.base} in the terminal`, `${m.base} را در ترمینال باز کن`)"
-    },
-    {
-      "component": "apps/web-react/src/features/markets/Markets.tsx",
-      "line": 152,
-      "page": "markets",
-      "route": "/:locale/markets",
-      "reason": "dynamic-pair",
-      "expression": "text(`Show more (${visible.length - shown.length} remaining)`, `بیشتر نشان بده (${number(visible.length - shown.length, locale)} باقی‌مانده)`)"
     },
     {
       "component": "apps/web-react/src/features/partners/Coach.tsx",
@@ -92096,59 +92116,11 @@
     },
     {
       "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-      "line": 121,
-      "page": "purchase",
-      "route": "/:locale/checkout; /:locale/:product/purchases",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
       "line": 122,
       "page": "purchase",
       "route": "/:locale/checkout; /:locale/:product/purchases",
       "reason": "dynamic-pair",
       "expression": "t(e[0], e[1])"
-    },
-    {
-      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
-      "line": 16,
-      "page": "purchase",
-      "route": "/:locale/checkout; /:locale/:product/purchases",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
-      "line": 91,
-      "page": "purchase",
-      "route": "/:locale/checkout; /:locale/:product/purchases",
-      "reason": "literal-jsx-review",
-      "text": "USD ·"
-    },
-    {
-      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
-      "line": 98,
-      "page": "purchase",
-      "route": "/:locale/checkout; /:locale/:product/purchases",
-      "reason": "literal-jsx-review",
-      "text": "USD ·"
-    },
-    {
-      "component": "apps/web-react/src/features/purchase/PayoutThread.tsx",
-      "line": 20,
-      "page": "purchase",
-      "route": "/:locale/checkout; /:locale/:product/purchases",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
-      "line": 35,
-      "page": "purchase",
-      "route": "/:locale/checkout; /:locale/:product/purchases",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
     },
     {
       "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
@@ -92400,27 +92372,11 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-      "line": 24,
-      "page": "terminal",
-      "route": "/:locale/:product/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
       "line": 45,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
       "expression": "t(fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 64,
-      "page": "terminal",
-      "route": "/:locale/:product/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
@@ -92455,80 +92411,24 @@
       "expression": "pick(locale, el.dataset.fa || \"\", el.dataset.en || \"\")"
     },
     {
-      "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-      "line": 30,
-      "page": "transparency",
-      "route": "/:locale/*",
-      "reason": "literal-jsx-review",
-      "text": "Openfund Treasury"
-    },
-    {
-      "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-      "line": 115,
-      "page": "transparency",
-      "route": "/:locale/*",
-      "reason": "literal-jsx-review",
-      "text": "04 / OPENFUND TREASURY"
-    },
-    {
       "component": "apps/web-react/src/i18n/locales.ts",
-      "line": 56,
+      "line": 64,
       "page": "global",
       "route": "/:locale/*",
       "reason": "dynamic-pair",
       "expression": "pick(locale, source?.fa ?? value.fa ?? value.en ?? '', source?.en ?? value.en ?? value.fa ?? '')"
-    },
-    {
-      "component": "apps/web-react/src/session/ProfilePanel.tsx",
-      "line": 47,
-      "page": "global",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/trading/TradingBridge.tsx",
-      "line": 38,
-      "page": "global",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(currentLocale(), fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/wallet/ChallengeWalletPanel.tsx",
-      "line": 20,
-      "page": "global",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-      "line": 60,
-      "page": "global",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/wallet/WalletPicker.tsx",
-      "line": 38,
-      "page": "global",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/wallet/errors.ts",
-      "line": 82,
-      "page": "global",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
     }
   ],
   "findings": [],
   "exclusions": [
+    {
+      "component": "apps/web-react/src/features/applications/Applications.tsx",
+      "line": 51,
+      "page": "applications",
+      "route": "/:locale/apps",
+      "reason": "language-neutral-brand-or-identifier",
+      "text": "OPENFUND ·"
+    },
     {
       "component": "apps/web-react/src/features/company/About.tsx",
       "line": 58,
@@ -92536,6 +92436,14 @@
       "route": "/:locale/*",
       "reason": "language-neutral-brand-or-identifier",
       "text": "OPENFUND /"
+    },
+    {
+      "component": "apps/web-react/src/features/company/Contact.tsx",
+      "line": 110,
+      "page": "company",
+      "route": "/:locale/*",
+      "reason": "aria-hidden-not-rendered-copy",
+      "text": "Website"
     },
     {
       "component": "apps/web-react/src/features/company/Contact.tsx",
@@ -92571,11 +92479,27 @@
     },
     {
       "component": "apps/web-react/src/features/governance/CouncilWorkspace.tsx",
+      "line": 22,
+      "page": "governance",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "text(en, fa)"
+    },
+    {
+      "component": "apps/web-react/src/features/governance/CouncilWorkspace.tsx",
       "line": 62,
       "page": "governance",
       "route": "/:locale/*",
       "reason": "language-neutral-brand-or-identifier",
       "text": "OFP"
+    },
+    {
+      "component": "apps/web-react/src/features/governance/GovernanceViews.tsx",
+      "line": 15,
+      "page": "governance",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "text(en, fa)"
     },
     {
       "component": "apps/web-react/src/features/governance/GovernanceViews.tsx",
@@ -92586,12 +92510,36 @@
       "text": "OFP"
     },
     {
+      "component": "apps/web-react/src/features/governance/NewProposal.tsx",
+      "line": 15,
+      "page": "governance",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "text(en, fa)"
+    },
+    {
+      "component": "apps/web-react/src/features/governance/ProposalPage.tsx",
+      "line": 26,
+      "page": "governance",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "text(en, fa)"
+    },
+    {
       "component": "apps/web-react/src/features/home/Home.tsx",
       "line": 82,
       "page": "home",
       "route": "/:locale/home",
       "reason": "language-neutral-brand-or-identifier",
       "text": "OPENFUND"
+    },
+    {
+      "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+      "line": 26,
+      "page": "inbox",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
     },
     {
       "component": "apps/web-react/src/features/information/InformationShell.tsx",
@@ -92642,6 +92590,54 @@
       "text": "?c=&lt;campaign&gt;"
     },
     {
+      "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+      "line": 121,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+      "line": 16,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+      "line": 91,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "language-neutral-brand-or-identifier",
+      "text": "USD ·"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+      "line": 98,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "language-neutral-brand-or-identifier",
+      "text": "USD ·"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/PayoutThread.tsx",
+      "line": 20,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
+      "line": 35,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
       "component": "apps/web-react/src/features/terminal/Analytics.tsx",
       "line": 98,
       "page": "terminal",
@@ -92683,11 +92679,27 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
+      "line": 24,
+      "page": "terminal",
+      "route": "/:locale/:product/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
       "line": 41,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
       "text": "openfund"
+    },
+    {
+      "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
+      "line": 64,
+      "page": "terminal",
+      "route": "/:locale/:product/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
@@ -92738,12 +92750,68 @@
       "text": "OPENFUND /"
     },
     {
+      "component": "apps/web-react/src/i18n/locales.ts",
+      "line": 52,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/session/ProfilePanel.tsx",
+      "line": 47,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
       "component": "apps/web-react/src/session/ProfilePanel.tsx",
       "line": 154,
       "page": "global",
       "route": "/:locale/*",
       "reason": "language-neutral-brand-or-identifier",
       "text": "Openfund"
+    },
+    {
+      "component": "apps/web-react/src/trading/TradingBridge.tsx",
+      "line": 38,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(currentLocale(), fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/wallet/ChallengeWalletPanel.tsx",
+      "line": 20,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
+      "line": 60,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/wallet/WalletPicker.tsx",
+      "line": 38,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/wallet/errors.ts",
+      "line": 82,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
     }
   ]
 }

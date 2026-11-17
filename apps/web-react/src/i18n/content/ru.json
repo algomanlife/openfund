@@ -3811,5 +3811,9 @@
   "Your payout request was rejected.": "Ваш запрос на выплату отклонён.",
   "Your payout was paid and recorded.": "Ваша выплата произведена и зафиксирована.",
   "New": "Новое",
-  "Close": "Закрыть"
+  "Close": "Закрыть",
+  "OPENFUND TREASURY": "КАЗНАЧЕЙСТВО OPENFUND",
+  "Openfund Treasury": "Казначейство Openfund",
+  "Open ${base} in the terminal": "Открыть ${base} в терминале",
+  "Show more (${count} remaining)": "Показать ещё (осталось ${count})"
 }

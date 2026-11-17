@@ -11,7 +11,7 @@ const module = { exports: {} }; new Function('module', 'exports', compiled)(modu
 const { interfaceKey, placeholders } = module.exports
 const files = dir => readdirSync(dir, { withFileTypes: true }).flatMap(f => f.isDirectory() ? files(join(dir, f.name)) : /\.tsx?$/.test(f.name) ? [join(dir, f.name)] : [])
 const rows = new Map(), exceptions = [], errors = [], exclusions = []
-const NEUTRAL = /^(?:OPENFUND(?: \/)?|openfund|Openfund(?: Prop| Perpetual)?|OF|OFP|Au|Ag|USD|UTC|· UTC|UTC ·|Arbitrum|Gains Network(?: ↗| · Arbitrum One)?|iran\.openfund\.cloud|@communitybuopenfund|\?c=&lt;campaign&gt;)$/
+const NEUTRAL = /^(?:OPENFUND(?: \/| ·)?|USD ·|openfund|Openfund(?: Prop| Perpetual)?|OF|OFP|Au|Ag|USD|UTC|· UTC|UTC ·|Arbitrum|Gains Network(?: ↗| · Arbitrum One)?|iran\.openfund\.cloud|@communitybuopenfund|\?c=&lt;campaign&gt;)$/
 const value = node => node && (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) ? node.text : undefined
 const routeHints = {
   terminal: '/:locale/:product/*', purchase: '/:locale/checkout; /:locale/:product/purchases', home: '/:locale/home',
@@ -36,17 +36,44 @@ for (const file of files(join(root, 'src')).filter(f => !f.includes('/i18n/conte
       editing: 'Directus ui_messages / translations', publication: 'Published-only; browser reload; bundled fallback on failure',
       validation: method === 'pick-pipeline' ? 'mapped' : 'requires-render-path-verification', locations: [{ ...loc, method }] })
   }
+  /* text inside an aria-hidden="true" element is not shown to people or
+     assistive technology (e.g. the contact form honeypot) */
+  const hiddenFromPeople = node => {
+    for (let n = node.parent; n; n = n.parent) {
+      const opening = ts.isJsxElement(n) ? n.openingElement : ts.isJsxSelfClosingElement(n) ? n : null
+      if (opening?.attributes.properties.some(a => ts.isJsxAttribute(a) && a.name.getText(source) === 'aria-hidden' &&
+        a.initializer && ts.isStringLiteral(a.initializer) && a.initializer.text === 'true')) return true
+    }
+    return false
+  }
+  /* `const t = (fa, en) => pick(locale, fa, en)` (and reversed-order
+     variants) defines the bilingual helper; its call sites are what the
+     registry records, so the definition itself is not copy */
+  const isWrapperDefinition = (a, b, node) => {
+    if (!a || !b || !ts.isIdentifier(a) || !ts.isIdentifier(b) || a.text === b.text) return false
+    for (let n = node.parent; n; n = n.parent) {
+      if (ts.isArrowFunction(n) || ts.isFunctionDeclaration(n) || ts.isFunctionExpression(n) || ts.isMethodDeclaration(n)) {
+        const params = new Set(n.parameters.map(p => p.name.getText(source)))
+        return params.has(a.text) && params.has(b.text)
+      }
+    }
+    return false
+  }
   function visit(node) {
     if (ts.isCallExpression(node)) {
       const name = ts.isIdentifier(node.expression) ? node.expression.text : ''
-      if (['pick', 't', 'tr', 'text', 'label', 'L'].includes(name)) {
+      if (['pick', 'pickFormat', 't', 'tr', 'text', 'label', 'L'].includes(name)) {
         const args = [...node.arguments]
-        const start = name === 'pick' ? 1 : 0
+        const start = name === 'pick' || name === 'pickFormat' ? 1 : 0
         const a = value(args[start]), b = value(args[start + 1])
         if (a !== undefined && b !== undefined) {
           const reverse = name === 'text' || (!/[\u0600-\u06ff]/.test(a) && /[\u0600-\u06ff]/.test(b))
           add(reverse ? b : a, reverse ? a : b, node, name === 'text' ? 'bilingual-record' : 'pick-pipeline')
-        } else if (args.length >= start + 2) exceptions.push({ ...location(node), reason: 'dynamic-pair', expression: node.getText(source).slice(0, 200) })
+        } else if (args.length >= start + 2) {
+          const entry = { ...location(node), reason: 'dynamic-pair', expression: node.getText(source).slice(0, 200) }
+          if (isWrapperDefinition(args[start], args[start + 1], node)) exclusions.push({ ...entry, reason: 'helper-wrapper-definition' })
+          else exceptions.push(entry)
+        }
       }
     }
     if (ts.isObjectLiteralExpression(node)) {
@@ -59,6 +86,7 @@ for (const file of files(join(root, 'src')).filter(f => !f.includes('/i18n/conte
     if (ts.isJsxText(node) && /[A-Za-z\u0600-\u06ff]{2}/.test(node.text)) {
       const entry = { ...location(node), reason: 'literal-jsx-review', text: node.text.trim() }
       if (NEUTRAL.test(entry.text)) exclusions.push({ ...entry, reason: 'language-neutral-brand-or-identifier' })
+      else if (hiddenFromPeople(node)) exclusions.push({ ...entry, reason: 'aria-hidden-not-rendered-copy' })
       else exceptions.push(entry)
     }
     ts.forEachChild(node, visit)
