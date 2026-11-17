@@ -224,3 +224,53 @@ test('configuration must be explicitly provisioned and production origins must u
     BACKSTAGE_BACKEND_TOKEN: randomBytes(24).toString('hex'),
   }), /HTTPS/)
 })
+
+test('system view shows both regions from public endpoints, never sending a credential to IRAN (ADR 0043)', async t => {
+  const iranCalls = []
+  const commit = 'a'.repeat(40)
+  const global = createServer((req, res) => {
+    res.setHeader('Content-Type', 'application/json')
+    if (req.url === '/runtime/status' || req.url === '/admin/runtime') return res.end(JSON.stringify({ region: 'GLOBAL', mode: 'GLOBAL_CONNECTED', epoch: 0 }))
+    if (req.url === '/ready') return res.end(JSON.stringify({ ok: true, engine: { running: true }, marketData: { freshMarks: 300, execution: 'available_for_fresh_markets' } }))
+    if (req.url === '/version') return res.end(JSON.stringify({ version: '0.6.5', commit }))
+    res.end('{}')
+  })
+  const iran = createServer((req, res) => {
+    iranCalls.push({ path: req.url, authorization: req.headers.authorization, cookie: req.headers.cookie, actor: req.headers['x-admin-actor'] })
+    res.setHeader('Content-Type', 'application/json')
+    if (req.url === '/runtime/status') return res.end(JSON.stringify({ region: 'IRAN', mode: 'GLOBAL_CONNECTED', epoch: 0, roles: ['http', 'market-data'] }))
+    if (req.url === '/ready') return res.writeHead(302, { Location: '/elsewhere' }).end()
+    if (req.url === '/version') return res.end(JSON.stringify({ version: '0.6.5', commit }))
+    res.end('{}')
+  })
+  const password = randomBytes(24).toString('base64url')
+  const secret = randomBytes(32).toString('hex')
+  const origin = 'https://backstage.example.test'
+  const server = createBackstage({ origin, backend: await open(global), iranBackend: await open(iran), cms: 'http://127.0.0.1:8055',
+    owner: 'owner-fixture', credential: secret, verifier: await createVerifier(password) })
+  const local = await open(server)
+  t.after(() => { server.close(); global.close(); iran.close() })
+  const call = (path, body, headers = {}) => new Promise((resolve, reject) => {
+    const req = request(local + path, { method: body ? 'POST' : 'GET',
+      headers: { Host: new URL(origin).host, ...(body && { Origin: origin, 'Content-Type': 'application/json' }), ...headers } }, async res => {
+      const parts = []; for await (const part of res) parts.push(part)
+      resolve({ status: res.statusCode, cookie: res.headers['set-cookie']?.[0], body: JSON.parse(Buffer.concat(parts)) })
+    })
+    req.on('error', reject); req.end(body ? JSON.stringify(body) : undefined)
+  })
+  const login = await call('/api/login', { username: 'owner-fixture', password })
+  const system = await call('/api/system', undefined, { Cookie: login.cookie.split(';')[0], 'X-CSRF-Token': login.body.csrf })
+  assert.equal(system.status, 200)
+  const [g, i] = system.body.regions
+  assert.deepEqual([g.name, g.region, g.ready, g.engine, g.freshMarks], ['GLOBAL', 'GLOBAL', true, true, 300])
+  assert.deepEqual([i.name, i.region, i.reachable, i.ready, i.commit], ['IRAN', 'IRAN', true, false, commit], 'a redirecting probe is not followed')
+  assert.deepEqual(iranCalls.map(c => c.path).sort(), ['/ready', '/runtime/status', '/version'])
+  assert.ok(iranCalls.every(c => c.authorization === undefined && c.cookie === undefined && c.actor === undefined), 'no credential reaches the other region')
+  assert.ok(!JSON.stringify(system.body).includes(secret))
+})
+
+test('BACKSTAGE_IRAN_ORIGIN must be https in production', () => {
+  const base = { BACKSTAGE_ORIGIN: 'https://b.example', BACKSTAGE_BACKEND_ORIGIN: 'https://o.example', BACKSTAGE_DIRECTUS_ORIGIN: 'https://c.example',
+    BACKSTAGE_OWNER: 'owner', BACKSTAGE_BACKEND_TOKEN: 'x'.repeat(32), NODE_ENV: 'production' }
+  assert.throws(() => loadConfig({ ...base, BACKSTAGE_IRAN_ORIGIN: 'ftp://openfi.live' }), /BACKSTAGE_IRAN_ORIGIN|incomplete/)
+})

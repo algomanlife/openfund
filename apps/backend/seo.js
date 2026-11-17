@@ -4,8 +4,8 @@
  * The indexable website routes are listed once here and mirrored by the
  * client-side head manager (apps/web-react/src/features/loading/seoHead.ts);
  * apps/web-react/test/public-content.test.mjs fails when the two disagree.
- * Each serving domain is self-canonical, so absolute URLs use the request
- * origin. The host is validated and responses vary by Host, so a forged Host
+ * Absolute URLs use the region's canonical origin (PUBLIC_ORIGIN, ADR 0043);
+ * without it, each serving domain is self-canonical (the request origin). The host is validated and responses vary by Host, so a forged Host
  * header cannot produce a document for another domain from a shared cache.
  * Authenticated product routes (terminal, portfolio, purchases) are excluded
  * and stay noindex.
@@ -40,7 +40,8 @@ export function sitemapXml(origin) {
     const locales = localesFor(route)
     for (const locale of locales) {
       const alternates = locales.map(l => `    <xhtml:link rel="alternate" hreflang="${l}" href="${escapeXml(`${origin}/${l}/${route}`)}"/>`)
-      alternates.push(`    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(`${origin}/fa/${route}`)}"/>`)
+      /* x-default: English, the fallback of the Geo-IP language policy (ADR 0043) */
+      alternates.push(`    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(`${origin}/${locales.includes('en') ? 'en' : locales[0]}/${route}`)}"/>`)
       urls.push(`  <url>\n    <loc>${escapeXml(`${origin}/${locale}/${route}`)}</loc>\n${alternates.join('\n')}\n  </url>`)
     }
   }
@@ -60,9 +61,10 @@ export function robotsTxt(origin) {
 }
 
 /** Express routes; registered before the static mount and the SPA fallback. */
-export function seoRoutes(app) {
+export function seoRoutes(app, { publicOrigin = null } = {}) {
   const send = (type, render) => (req, res) => {
-    const origin = siteOrigin(req.headers.host, req.protocol)
+    /* a region's canonical origin (PUBLIC_ORIGIN) wins over the request host */
+    const origin = publicOrigin || siteOrigin(req.headers.host, req.protocol)
     if (!origin) return res.set('Cache-Control', 'no-store').status(400).type('text/plain').send('invalid host')
     res.set('Cache-Control', 'public, max-age=3600').vary('Host').type(type).send(render(origin))
   }

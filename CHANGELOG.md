@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Canonical domains and Geo-IP language (ADR 0043): `openfi.cloud` (GLOBAL)
+  and `openfi.live` (IRAN) are canonical; aliases answer 301 with path and
+  query (Cloudflare rules for GLOBAL, applied; application redirect for the
+  `iran.*` hosts). First visits get a default language from the visitor's
+  Cloudflare country (IR fa, RU ru, CN zh-CN, Arab League ar, others en)
+  instead of Persian for everyone; the URL and a saved choice always win.
+  Cloudflare zones now use Full (strict), TLS 1.2+ and Always Use HTTPS. The
+  Iran web app runs market data so orders there are no longer refused as
+  stale; a two-engine race test proves exactly-once closes. Backstage shows
+  both regions. The IR geographic redirect exists disabled behind gates;
+  cross-region forwarding is proposed in ADR 0044.
 - Iran runtime deploy: a root `.liaraignore` keeps `liara deploy` from
   dropping `apps/web-react/src/brand` (the root `.dockerignore` pattern
   `brand` matched it under the Liara CLI's gitignore rules); `stack.json`

@@ -32,7 +32,7 @@ export function depayExternalBundle(env, production = true) {
   return { url: env.VITE_DEPAY_WIDGET_URL, integrity: env.VITE_DEPAY_WIDGET_INTEGRITY }
 }
 
-export function runtimeConfigScript(env, production = false) {
+export function runtimeConfigScript(env, production = false, { geoLocale = 'en' } = {}) {
   const cmsUrl = runtimeCmsUrl(env, production)
   const config = {
     cmsUrl,
@@ -50,6 +50,9 @@ export function runtimeConfigScript(env, production = false) {
     footprint: env.FOOTPRINT_ENABLED === '1',
     /* serving region (ADR 0032/0033): lets region-specific notices tell the truth */
     region: String(env.OPENFUND_REGION || 'GLOBAL').toUpperCase() === 'IRAN' ? 'IRAN' : 'GLOBAL',
+    /* first-visit default language from the trusted visitor country (ADR 0043);
+       the URL locale and a saved preference always win on the client */
+    geoLocale,
   }
   return `window.__OPENFUND_RUNTIME_CONFIG__=${JSON.stringify(config).replaceAll('<', '\\u003c')};\n`
 }

@@ -21,7 +21,7 @@ Checks (`npm run infra:check`, also in CI) fail when a workflow uses another env
 
 | Unit | Liara resource | Roles / notes |
 |---|---|---|
-| Web + API + website | Docker app `openfund-iran` (staging `openfund-iran-staging`) | `OPENFUND_ROLES=http`, `MIGRATE_ON_START=1`. Serves `iran.openfund.cloud`, `iran.openfi.cloud`, `openfi.live`, and the signed peer endpoint `/sync/v1/*` |
+| Web + API + website | Docker app `openfund-iran` (staging `openfund-iran-staging`) | `OPENFUND_ROLES=http,market-data`, `MIGRATE_ON_START=1`. Canonical `https://openfi.live`; `www.openfi.live` (Liara domain redirect), `iran.openfund.cloud` and `iran.openfi.cloud` (application redirect) answer 301 to it ([ADR 0043](../decisions/0043-canonical-domains-geo-routing-and-locale.md)). Serves the signed peer endpoint `/sync/v1/*`. It runs market data because it executes orders and closes; the worker's engine loop runs SL/TP and liquidation, serialized by database row locks |
 | Worker | Docker app `openfund-iran-worker` | `OPENFUND_ROLES=engine,market-data,sync`. No public routes; `/health` and `/ready` only |
 | CMS | Docker app `openfund-iran-cms` | Directus 11.17.4 image with a `directus-uploads` disk |
 | Database | Liara PostgreSQL 17.x `openfund-iran-db` | Private network only. Claimed `IRAN` on first migration |
@@ -40,10 +40,11 @@ Plain values are in `stack.json`. Store the secrets listed below in the Liara ap
 | `ALLOWED_DOMAINS` | web | `iran.openfund.cloud,iran.openfi.cloud,openfi.live` (staging: `openfund-iran-staging.liara.run`) |
 | `CORS_ORIGINS` | web | `https://iran.openfund.cloud,https://iran.openfi.cloud,https://openfi.live` |
 | `CMS_PUBLIC_URL` | web, worker | Required in production by the runtime config; without it the worker also exits at boot. On the Iran runtime the browser reads content from the same-origin `/cms` path first, so this is only the direct fallback |
+| `PUBLIC_ORIGIN`, `CANONICAL_ALIAS_HOSTS`, `GEO_FALLBACK_LOCALE` | web | Plain values in `stack.json`: canonical origin, alias hosts that 301 to it, and the default language without a trusted country (`fa`). See [ENVIRONMENT.md](ENVIRONMENT.md) |
 | `CMS_SNAPSHOT_ORIGIN` | web | Optional. Where `/cms` fetches published content server-to-server and snapshots it (default `CMS_PUBLIC_URL`). Recommended: the centrally edited GLOBAL Directus (`https://openfund-cms.onrender.com` or its custom domain), or the Iran Directus if content is edited there |
 | `REGION_SYNC_KEYS` | web, worker (Iran) **and** Render `openfund` | JSON `{"<kid>":"<secret ≥32 chars>"}`. The same set on both sides. Rotate by adding a new kid, switching `REGION_SYNC_ACTIVE_KID` on both sides, then removing the old kid |
 | `REGION_SYNC_ACTIVE_KID` | web, worker, Render | The key id this side signs with |
-| `REGION_SYNC_PEER_URL` | Iran: the Render origin (`https://openfund.cloud`). Render: `https://iran.openfund.cloud` | The worker pushes here. Both sides use HTTPS in production |
+| `REGION_SYNC_PEER_URL` | Iran: `https://openfi.cloud`. Render: `https://openfi.live` (the canonical origins; never an alias) | The worker pushes here. Both sides use HTTPS in production. `/sync/` is never redirected on any host |
 | `DB_CONNECTION_STRING`, `KEY`, `SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `PUBLIC_URL` | cms | As for Render's Directus |
 | `LIARA_API_TOKEN` | GitHub environments `liara-iran-runtime-staging` / `liara-iran-runtime` | CI deploy only |
 

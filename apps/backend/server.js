@@ -15,6 +15,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { releaseDiagnostics } from './release.js'
 import { runtimeConfigScript, runtimeCmsUrl } from './runtime-config.js'
+import { canonicalHostMiddleware, canonicalConfig, regionChoiceMiddleware } from './canonical-host.js'
+import { trustedCountryMiddleware } from './geo-trust.js'
+import { defaultLocale, fallbackLocale } from './geo-locale.js'
 import { staticCacheControl, NO_STORE } from './static-cache.js'
 import { seoRoutes } from './seo.js'
 import { fileURLToPath } from 'node:url'
@@ -97,6 +100,13 @@ const asyncRoute = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch
 const app = express()
 app.disable('x-powered-by')
 app.set('trust proxy', 1)
+/* ADR 0043: browser navigation on a region's alias host → 301 to its
+   canonical origin (machine paths and non-GET methods are never redirected) */
+app.use(canonicalHostMiddleware(process.env))
+/* ADR 0043: CF-IPCountry is trusted only from Cloudflare addresses, then removed */
+app.use(trustedCountryMiddleware())
+/* ADR 0043: `?region=global|iran` is remembered so geographic routing respects it */
+app.use(regionChoiceMiddleware({ secure: cfg.prod }))
 /* Iran edge (ADR 0031): a request carrying EDGE_CLIENT_IP_KEY may supply the
    visitor's IP; unset key = unchanged behaviour. Runs before every limiter. */
 app.use(edgeClientIpMiddleware(process.env))
@@ -874,19 +884,22 @@ app.get('/version', (req, res) => {
 });
 
 /* Public sitemap and robots policy for the indexable website routes. */
-seoRoutes(app)
+seoRoutes(app, { publicOrigin: canonicalConfig(process.env)?.origin ?? null })
 
 /* Public non-secret configuration is supplied at runtime, outside the
    immutable release payload. The HTML loads it before the React module.
    Both the clean root path and the legacy /react/ path serve it (cached
    legacy shells still request the old URL). */
-const publicRuntimeConfig = runtimeConfigScript(process.env, cfg.prod)
-app.get('/react/runtime-config.js', (req, res) => {
-  res.set('Cache-Control', 'no-store').type('application/javascript').send(publicRuntimeConfig)
-})
-app.get('/runtime-config.js', (req, res) => {
-  res.set('Cache-Control', 'no-store').type('application/javascript').send(publicRuntimeConfig)
-})
+/* geoLocale (ADR 0043) is the first-visit default from the trusted country,
+   so the document is per visitor: private, never stored by a shared cache. */
+const geoFallback = fallbackLocale(process.env)
+runtimeConfigScript(process.env, cfg.prod) /* validates the configuration at boot */
+const sendRuntimeConfig = (req, res) => {
+  res.set('Cache-Control', 'private, no-store').type('application/javascript')
+    .send(runtimeConfigScript(process.env, cfg.prod, { geoLocale: defaultLocale(req.trustedCountry, geoFallback) }))
+}
+app.get('/react/runtime-config.js', sendRuntimeConfig)
+app.get('/runtime-config.js', sendRuntimeConfig)
 
 /* health */
 app.get('/health', asyncRoute(async (req, res) => { try { await pool.query('SELECT 1'); res.json({ ok: true, ts: Date.now() }) } catch { res.status(503).json({ ok: false }) } }))

@@ -69,6 +69,12 @@ test('a worker configured as a public web application fails', () => {
   has(staticCheck(r, files), /must not run the http role/)
 })
 
+test('a web app without market data (orders always stale) fails', () => {
+  const s = clone()
+  s.environments.production.apps.find(a => a.role === 'web').env.OPENFUND_ROLES = 'http'
+  has(staticCheck(s, files), /must run market-data/)
+})
+
 test('deploying the worker before the migrating web app fails', () => {
   const swapped = files[RT].replace('"$WEB_APP:liara.web.json" "$WORKER_APP:liara.worker.json"', '"$WORKER_APP:liara.worker.json" "$WEB_APP:liara.web.json"')
   assert.notEqual(swapped, files[RT])

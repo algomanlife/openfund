@@ -179,12 +179,15 @@ export function loadConfig(env = process.env) {
     verifier: env.BACKSTAGE_PASSWORD_VERIFIER,
     credential: env.BACKSTAGE_BACKEND_TOKEN,
     contentToken: env.BACKSTAGE_DIRECTUS_TOKEN || null,
+    /* IRAN runtime origin for the read-only regional status (ADR 0043); its
+       public endpoints only, so no credential is ever sent to it */
+    iranBackend: env.BACKSTAGE_IRAN_ORIGIN ? origin(env.BACKSTAGE_IRAN_ORIGIN, 'BACKSTAGE_IRAN_ORIGIN') : null,
   }
   if (config.contentToken !== null && !/^[!-~]{16,512}$/.test(config.contentToken)) throw new Error('Invalid BACKSTAGE_DIRECTUS_TOKEN')
   if (!/^[A-Za-z0-9._@-]{2,50}$/.test(config.owner || '') ||
       !validVerifier(config.verifier) ||
       !/^[!-~]{24,256}$/.test(config.credential || '')) throw new Error('Backstage owner provisioning is incomplete')
-  if (env.NODE_ENV === 'production' && [config.origin, config.backend, config.cms].some(url => !url.startsWith('https:')))
+  if (env.NODE_ENV === 'production' && [config.origin, config.backend, config.cms, config.iranBackend].some(url => url && !url.startsWith('https:')))
     throw new Error('Backstage production origins must use HTTPS')
   return config
 }
@@ -230,6 +233,20 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
       attempts.count = 0
     } finally { hashing-- }
   }
+
+  /* Public regional status of another region (no Authorization, no cookies,
+     no redirects followed): /runtime/status, /ready and /version. */
+  async function publicProbe(base, path) {
+    const res = await fetch(new URL(path, base), { redirect: 'error', signal: AbortSignal.timeout(8_000), headers: { Accept: 'application/json' } })
+    if (!res.ok && res.status !== 503) { await res.body?.cancel(); throw fail(502, 'region_unreachable') }
+    return res.json()
+  }
+  const regionRow = (name, runtime, readiness, version) => ({
+    name, reachable: runtime.status === 'fulfilled', region: runtime.value?.region, mode: runtime.value?.mode, epoch: runtime.value?.epoch,
+    roles: runtime.value?.roles, ready: readiness.value?.ok === true, database: readiness.value?.database?.ok === true,
+    engine: readiness.value?.engine?.running === true, freshMarks: readiness.value?.marketData?.freshMarks ?? null,
+    execution: readiness.value?.marketData?.execution ?? null, version: version.value?.version, commit: version.value?.commit,
+  })
 
   async function backend(path, method = 'GET', body, correlationId) {
     const target = new URL(config.backend)
@@ -380,8 +397,11 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
             backend('/version', 'GET', undefined, correlationId),
           ])
           const r = runtime.value
+          const regions = [regionRow('GLOBAL', runtime, readiness, version)]
+          if (config.iranBackend) regions.push(regionRow('IRAN', ...await Promise.allSettled(
+            ['/runtime/status', '/ready', '/version'].map(p => publicProbe(config.iranBackend, p)))))
           return send(res, 200, { region: r?.region, mode: r?.mode, epoch: r?.epoch,
-            backendReady: readiness.value?.ok === true, version: version.value?.version, commit: version.value?.commit })
+            backendReady: readiness.value?.ok === true, version: version.value?.version, commit: version.value?.commit, regions })
         }
         const target = new URL(endpoint, config.backend)
         for (const name of filters || []) {
