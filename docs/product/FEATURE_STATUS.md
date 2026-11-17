@@ -1,5 +1,11 @@
 # Feature status
 
+Release stabilization is **In Progress**. The PostgreSQL 17 release gate
+recorded a deadlock between free-demo equity sampling and fixture cleanup.
+The fix locks the account before the regional ownership trigger runs. The
+website smoke test checks locale selection and persistence on Challenges
+in all five languages. Release-gate and deployment acceptance are pending.
+
 Backstage operations is **Completed in source (merged to `main` via PR #132;
 shipped in release v0.6.5; production deployment awaits owner approval)**. Beyond the
 initial owner workspace it covers partner review and commissions, finance

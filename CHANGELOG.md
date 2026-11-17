@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Equity sampling locks the account before ownership checks and skips a
+  concurrent deletion. The Challenges language selector keeps the route,
+  document locale and community portal in sync across repeated changes.
+
 - Release orchestration: an official release now deploys GLOBAL Backstage at
   the same commit as the Web/API and verifies it (`/health` reports the
   commit). The deploy refuses to start unless auto-deploy is off on both

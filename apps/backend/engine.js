@@ -474,9 +474,13 @@ export class Engine {
     return withSampleOrder(accountId, async () => {
       const last = this.#lastSample.get(accountId)
       if (idle && last && last.equity === equity && Date.now() + last.skew < last.minuteEnd - SAMPLE_MINUTE_MARGIN_MS) return { ...last.risk }
-      const {rows} = await c.query(`WITH r AS (INSERT INTO account_equity_risk
+      // Lock the FK parent before the risk/sample triggers lock ownership.
+      // A concurrent account deletion takes these locks in the same order.
+      const {rows} = await c.query(`WITH account AS MATERIALIZED (
+        SELECT id,balance FROM demo_accounts WHERE id=$1 FOR KEY SHARE
+      ), r AS (INSERT INTO account_equity_risk
       (account_id,day,day_start_equity,peak_equity,last_equity)
-      VALUES ($1,(now() AT TIME ZONE 'UTC')::date,$2,$2,$2)
+      SELECT id,(now() AT TIME ZONE 'UTC')::date,$2,$2,$2 FROM account WHERE true
       ON CONFLICT (account_id) DO UPDATE SET
         day = excluded.day,
         day_start_equity = CASE WHEN account_equity_risk.day=excluded.day THEN account_equity_risk.day_start_equity ELSE excluded.last_equity END,
@@ -485,9 +489,13 @@ export class Engine {
         daily_drawdown = CASE WHEN account_equity_risk.day=excluded.day THEN GREATEST(account_equity_risk.daily_drawdown,account_equity_risk.day_start_equity-excluded.last_equity,0) ELSE 0 END,
         last_equity=excluded.last_equity,updated_at=now()
       RETURNING *),
-      s AS (INSERT INTO account_equity_samples(account_id,sampled_at,equity,balance) SELECT id,date_trunc('minute',now()),$2,balance FROM demo_accounts WHERE id=$1 ON CONFLICT DO NOTHING)
+      s AS (INSERT INTO account_equity_samples(account_id,sampled_at,equity,balance) SELECT id,date_trunc('minute',now()),$2,balance FROM account WHERE true ON CONFLICT DO NOTHING)
       SELECT * FROM r`,[accountId,equity])
       const r = rows[0]
+      if (!r) {
+        this.#lastSample.delete(accountId)
+        return null
+      }
       const risk = { basis:'sampled_equity', timezone:'UTC', since:r.created_at, day:r.day,
         day_start_equity:r.day_start_equity, peak_equity:r.peak_equity,
         drawdown:Decimal.max(0,D(r.peak_equity).minus(equity)).toFixed(2),

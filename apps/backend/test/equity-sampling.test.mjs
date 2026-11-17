@@ -138,3 +138,29 @@ test('engine loop sampling writes the same risk row as state()', async () => {
   assert.equal(st.account.equity, '100197.50')
   assert.deepEqual(values(await riskRow(accountId)), row, 'state() at the same marks leaves the loop row unchanged')
 })
+
+test('equity sampling skips an account deleted after the state snapshot', async () => {
+  const { uid, accountId } = await demoUser(new Engine(pool, new FakeMarket()))
+  const engine = new Engine({
+    async connect() {
+      const client = await pool.connect()
+      return {
+        async query(sql, args) {
+          const result = await client.query(sql, args)
+          if (sql === 'COMMIT') {
+            await client.query('DELETE FROM trading_ledger WHERE account_id=$1', [accountId])
+            await client.query('DELETE FROM trading_events WHERE account_id=$1', [accountId])
+            const deleted = await client.query('DELETE FROM demo_accounts WHERE id=$1', [accountId])
+            assert.equal(deleted.rowCount, 1)
+          }
+          return result
+        },
+        release: () => client.release(),
+      }
+    },
+  }, new FakeMarket())
+  const state = await engine.state(uid)
+  assert.equal(state.account.risk, null)
+  assert.equal(await riskRow(accountId), undefined)
+  assert.deepEqual(await samples(accountId), [])
+})
