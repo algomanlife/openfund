@@ -183,7 +183,22 @@ test('settlement failures retry and are never paid twice', { skip: !pool }, asyn
   assert.ok(calls >= 2)
 })
 
+test('daily drawdown breach halts the allocation and blocks new orders', { skip: !pool }, async () => {
+  marks.set('BTC/USD', '100')
+  const o = await http('POST', '/live/orders', { market: 'BTC/USD', side: 'long', collateralUsd: '4000', leverage: 1, idempotencyKey: 'order-big-loss' }, { user: ctx.trader })
+  assert.equal(o.status, 200, JSON.stringify(o.data))
+  await finalizeTrade(pool, o.data.trade.id, { realizedPnlUsd: '-5600.00', tradingFeesUsd: '0', executionCostsUsd: '0' })
+  const { rows: [a] } = await pool.query(`SELECT status, halt_reason FROM capital_allocations WHERE trader_user_id=$1`, [ctx.trader])
+  assert.equal(a.status, 'halted')
+  const blocked = await http('POST', '/live/orders', { market: 'BTC/USD', side: 'long', collateralUsd: '10', leverage: 1, idempotencyKey: 'order-after-halt' }, { user: ctx.trader })
+  assert.equal(blocked.data.error, 'allocation_halted')
+})
+
+/* last on purpose: it books a profit on the shared allocation, which the
+   earlier equity and drawdown tests must not see, and it starts by
+   re-activating the allocation the drawdown test halted */
 test('concurrent settlement workers pay every record exactly once', { skip: !pool }, async () => {
+  await pool.query(`UPDATE capital_allocations SET status='active', halt_reason=NULL WHERE trader_user_id=$1`, [ctx.trader])
   marks.set('BTC/USD', '100')
   const o = await http('POST', '/live/orders', { market: 'BTC/USD', side: 'long', collateralUsd: '400', leverage: 2, idempotencyKey: 'order-long-race' }, { user: ctx.trader })
   marks.set('BTC/USD', '110')
@@ -205,15 +220,4 @@ test('concurrent settlement workers pay every record exactly once', { skip: !poo
   assert.equal(new Set(paid).size, paid.length, 'no worker paid a record twice')
   assert.ok(paid.every(id => rows.some(x => x.id === id)))
   assert.equal((await processSettlements(pool, slow)).claimed, 0, 'nothing is left to pay')
-})
-
-test('daily drawdown breach halts the allocation and blocks new orders', { skip: !pool }, async () => {
-  marks.set('BTC/USD', '100')
-  const o = await http('POST', '/live/orders', { market: 'BTC/USD', side: 'long', collateralUsd: '4000', leverage: 1, idempotencyKey: 'order-big-loss' }, { user: ctx.trader })
-  assert.equal(o.status, 200, JSON.stringify(o.data))
-  await finalizeTrade(pool, o.data.trade.id, { realizedPnlUsd: '-5600.00', tradingFeesUsd: '0', executionCostsUsd: '0' })
-  const { rows: [a] } = await pool.query(`SELECT status, halt_reason FROM capital_allocations WHERE trader_user_id=$1`, [ctx.trader])
-  assert.equal(a.status, 'halted')
-  const blocked = await http('POST', '/live/orders', { market: 'BTC/USD', side: 'long', collateralUsd: '10', leverage: 1, idempotencyKey: 'order-after-halt' }, { user: ctx.trader })
-  assert.equal(blocked.data.error, 'allocation_halted')
 })
