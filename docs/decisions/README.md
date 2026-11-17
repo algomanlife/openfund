@@ -46,3 +46,4 @@ Read newer decisions alongside historical ones; current implementation and expli
 - [0039 — Certificate event attestations](0039-certificate-event-attestations.md)
 - [0040 — Backstage operations boundary](0040-backstage-operations-boundary.md)
 - [0041 — Backstage content editing and in-app notifications](0041-backstage-content-and-notifications.md)
+- [0042 — One manifest for Liara infrastructure and deploy environments](0042-liara-infrastructure-source-of-truth.md)

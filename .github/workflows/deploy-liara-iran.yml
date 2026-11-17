@@ -3,10 +3,15 @@ name: Deploy Iran edge (Liara)
 # Independent of the Render production workflows: it never deploys, restarts or
 # reconfigures Render. The edge serves whatever release Render serves.
 #
-# Targets: `staging` (its own Liara app on a liara.run host, environment
-# liara-iran-staging) and `production` (iran.openfund.cloud, environment
-# liara-iran). Production only accepts an edge commit that a successful
-# staging run of this workflow already verified.
+# DORMANT (ADR 0042): the edge was never deployed, and the independent
+# regional runtime (ADR 0033, deploy-liara-iran-runtime.yml) now serves the
+# Iran domains from the app `openfund-iran`. App ids and environments come
+# from `legacyEdge` in infra/liara-iran-runtime/stack.json:
+# `staging` = app openfund-iran-edge-staging (environment liara-iran-staging),
+# `production` = app openfund-iran-edge (environment liara-iran).
+# `check-infra.mjs --guard edge` refuses every runtime app, so this workflow
+# can never overwrite the regional runtime. Production only accepts an edge
+# commit that a successful staging run of this workflow already verified.
 on:
   # Manual only: an exact, reviewed main commit; never a branch tip.
   workflow_dispatch:
@@ -43,6 +48,7 @@ on:
       - apps/backend/edge-client-ip.js
       - apps/backend/server.js
       - .github/workflows/deploy-liara-iran.yml
+      - infra/liara-iran-runtime/stack.json
 permissions:
   contents: read
 concurrency:
@@ -196,7 +202,7 @@ jobs:
     permissions:
       contents: read
       actions: read          # read the staging run's evidence for a production deploy
-    # Owner-configured environments with required reviewers (docs/deployment/LIARA_IRAN.md).
+    # Owner-configured environments with required reviewers (names: stack.json legacyEdge).
     environment: ${{ inputs.target == 'production' && 'liara-iran' || 'liara-iran-staging' }}
     env:
       GH_TOKEN: ${{ github.token }}
@@ -226,6 +232,24 @@ jobs:
           if [ -n "$EXPECT_APP_COMMIT" ] && [[ ! "$EXPECT_APP_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
             echo "::error::expect_app_commit must be a full 40-character SHA"; exit 1
           fi
+      # The guard and the manifest come from the workflow's own revision (main
+      # tip), not from the commit being deployed, so rollbacks to commits that
+      # predate them are still checked.
+      - name: Check out the deploy guard and manifest (workflow revision)
+        uses: actions/checkout@v4
+        with:
+          path: .guard
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /scripts/liara/
+            /infra/liara-iran-runtime/
+            /.github/workflows/
+            /docs/deployment/
+            /.liaraignore
+      - name: Keep the guard outside the uploaded directory
+        run: mv .guard "$RUNNER_TEMP/guard"
+      - name: Guard - never deploy the edge over the regional runtime (live, read-only)
+        run: node "$RUNNER_TEMP/guard/scripts/liara/check-infra.mjs" --guard edge --target "$TARGET" --app "$LIARA_APP"
       - name: Production requires verified staging evidence for this edge commit
         if: inputs.target == 'production'
         run: |

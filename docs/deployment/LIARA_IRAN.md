@@ -5,6 +5,16 @@ Technical reference for the `iran.openfund.cloud` edge
 setup guide is [LIARA_IRAN_SETUP.md](LIARA_IRAN_SETUP.md) (in Persian, as the
 owner requested).
 
+> **Status: dormant, never deployed (ADR 0042).** The independent regional
+> runtime ([LIARA_IRAN_RUNTIME.md](LIARA_IRAN_RUNTIME.md), ADR 0033) serves
+> `iran.openfund.cloud`, `iran.openfi.cloud` and `openfi.live` from the Liara
+> app `openfund-iran`. The edge keeps its own apps, `openfund-iran-edge-staging`
+> and `openfund-iran-edge`, declared under `legacyEdge` in
+> [`stack.json`](../../infra/liara-iran-runtime/stack.json). Its workflow
+> refuses every runtime app (`check-infra.mjs --guard edge`), so it can never
+> overwrite the runtime. Reviving the edge needs a new owner decision about the
+> domains.
+
 **What this is and is not.** The edge is a reverse proxy hosted in Iran in front
 of the one Openfund deployment on Render. It is **not** an independent Iranian
 deployment of Openfund:
@@ -36,7 +46,7 @@ deployment of Openfund:
 ```mermaid
 flowchart LR
   IR[Visitor in Iran] -->|https iran.openfund.cloud| LP[Liara TLS proxy]
-  LP --> EDGE[openfund-iran edge nginx<br/>assets cache, no state]
+  LP --> EDGE[openfund-iran-edge nginx<br/>assets cache, no state]
   EDGE -->|https, Host = Render host| RENDER[Render: openfund<br/>API + engine + SSE + React]
   INT[Other visitors] -->|https openfund.cloud via Cloudflare| RENDER
   RENDER --> DB[(Render PostgreSQL<br/>single authoritative store)]
@@ -157,8 +167,8 @@ Template: [`infra/liara-iran/liara.env.example`](../../infra/liara-iran/liara.en
 | `liara-iran-staging` | Environment | Settings → Environments | Required reviewer: the owner. Deployment branches: `main`. |
 | `liara-iran` | Environment | Settings → Environments | Same protection |
 | `LIARA_API_TOKEN` | Secret | Each environment | Liara API key (console.liara.ir/API) |
-| `LIARA_APP_NAME` | Variable | Each environment | Staging e.g. `openfund-iran-staging`; production e.g. `openfund-iran` |
-| `LIARA_PUBLIC_URL` | Variable | Each environment | Staging `https://openfund-iran-staging.liara.run`; production `https://iran.openfund.cloud` once SSL is active |
+| `LIARA_APP_NAME` | Variable | Each environment | Staging `openfund-iran-edge-staging`; production `openfund-iran-edge` (never a runtime app) |
+| `LIARA_PUBLIC_URL` | Variable | Each environment | Staging `https://openfund-iran-edge-staging.liara.run`; production `https://openfund-iran-edge.liara.run` (the Iran domains belong to the runtime) |
 | `OPENFUND_UPSTREAM_HOST` | Variable | Repository | Same as the Liara value. Also enables the live read-only check in PR runs. |
 
 ### Render (owner-approved; takes effect only after a reviewed release and Blueprint sync)

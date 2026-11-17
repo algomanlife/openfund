@@ -9,7 +9,9 @@
 #
 # Build context: the repository root.
 #   docker build -f infra/liara-iran-runtime/Dockerfile \
-#     --build-arg SOURCE_COMMIT=<40-hex> --build-arg RELEASE_VERSION=<x.y.z> .
+#     --build-arg SOURCE_COMMIT=<40-hex> --build-arg RELEASE_VERSION=<x.y.z> [--build-arg RELEASE_OFFICIAL=true] .
+# RELEASE_OFFICIAL=true only when scripts/liara/release-source.mjs found the
+# official vX.Y.Z tag at SOURCE_COMMIT (the deploy workflow passes its result).
 # The image carries the same release manifests Render's build writes
 # (scripts/release/manifest.mjs), so /version of both regions can be compared:
 # same commit + same frontend/backend ids = the same release.
@@ -24,11 +26,12 @@ RUN npm ci --prefix apps/web-react --include=dev --no-audit --no-fund \
 COPY . .
 ARG SOURCE_COMMIT
 ARG RELEASE_VERSION=0.1.0
+ARG RELEASE_OFFICIAL=false
 # The build has no .git: the commit is an explicit, validated argument.
 # Public build-time values are deliberately absent: runtime-config.js supplies them.
 RUN echo "$SOURCE_COMMIT" | grep -Eq '^[0-9a-f]{40}$' || { echo "SOURCE_COMMIT must be a 40-character commit" >&2; exit 1; } \
  && RELEASE_SOURCE_COMMIT="$SOURCE_COMMIT" RELEASE_VERSION="$RELEASE_VERSION" npm run build:web \
- && node --input-type=module -e "const { manifest } = await import('./scripts/release/manifest.mjs'); manifest({ version: process.env.RELEASE_VERSION, commit: process.env.SOURCE_COMMIT })"
+ && node --input-type=module -e "const { manifest } = await import('./scripts/release/manifest.mjs'); manifest({ version: process.env.RELEASE_VERSION, commit: process.env.SOURCE_COMMIT, official: process.env.RELEASE_OFFICIAL === 'true' })"
 
 FROM node:26-alpine
 ARG SOURCE_COMMIT
