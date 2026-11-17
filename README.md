@@ -245,7 +245,7 @@ flowchart TB
 - **Content versus data.** Directus holds editorial content, the plan catalog
   and coupons; market data comes from Gains (and Hyperliquid for read-only
   analytics); prices, orders and payments are decided only by the backend.
-- More: [Architecture](docs/architecture/ARCHITECTURE.md) · [Regional runtime](docs/decisions/0033-regional-authority-and-synchronization.md) · [Trade Radar](docs/integrations/HYPERLIQUID_RADAR.md) · [Gains](docs/integrations/GAINS.md) · [Certificates](docs/decisions/0033-certificate-event-attestations.md)
+- More: [Architecture](docs/architecture/ARCHITECTURE.md) · [Regional runtime](docs/decisions/0033-regional-authority-and-synchronization.md) · [Trade Radar](docs/integrations/HYPERLIQUID_RADAR.md) · [Gains](docs/integrations/GAINS.md) · [Certificates](docs/decisions/0039-certificate-event-attestations.md)
 
 ## Technology stack
 

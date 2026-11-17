@@ -1,4 +1,6 @@
-# ADR 0033: Certificates attest existing server events
+# ADR 0039: Certificates attest existing server events
+
+Renumbered from 0033 on 2026-11-17: 0033 was also used by the regional authority ADR, and 0039 was unused.
 
 Status: Proposed; implemented on the refinement branch, pending human review.
 

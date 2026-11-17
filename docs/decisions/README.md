@@ -38,11 +38,11 @@
 Read newer decisions alongside historical ones; current implementation and explicit superseding decisions take precedence. [System](../architecture/ARCHITECTURE.md) · [Documentation index](../README.md)
 
 - [0034 — Editorial and distribution authority](0034-editorial-and-distribution-authority.md)
-- [0033 — Certificate event attestations](0033-certificate-event-attestations.md)
 - [0035 — Design-system foundation and UI kit evaluation](0035-design-system-foundation-and-ui-kit-evaluation.md)
 
 - [0036 — Finalized funded settlement evidence](0036-finalized-funded-settlement.md)
 - [0037 — Controlled challenge lineages](0037-controlled-challenge-lineages.md)
 - [0038 — Universal visual editing on Directus 11.17.4](0038-universal-visual-editing.md)
+- [0039 — Certificate event attestations](0039-certificate-event-attestations.md)
 - [0040 — Backstage operations boundary](0040-backstage-operations-boundary.md)
 - [0041 — Backstage content editing and in-app notifications](0041-backstage-content-and-notifications.md)
