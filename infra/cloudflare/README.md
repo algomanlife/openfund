@@ -20,6 +20,16 @@ Account `ce7d296d88407cc57f0376f0277b672d` (Free plan zones).
 | openfi.cloud | ruleset `92e35ec37fa246cf9a99f6edee62a2b4` (dynamic redirect) | v2 | v5: `a7bf4b9ab19e4150b36b88278de6cf2c` `openfund_canonical_openfi_cloud` (301, enabled); `a1fd3b9a3f8a4693868234c45c920c17` `openfund_geo_iran` (302, **disabled**) |
 | openfund.cloud | ruleset `a1993c3d9af5437ba86d5698e3e849a9` (dynamic redirect, new) | none | `9e25c9b852904f1086d9f0dffd9805e0` `openfund_canonical_openfund_cloud` (301, enabled) |
 
+### Live drift (2026-11-17, after the allow-list correction)
+
+`check-live.mjs` on a connector snapshot (16:21 UTC):
+- DNS (including `www.openfund.cloud` → `openfund-our6.onrender.com`, proxied) and the TLS settings match `policy.mjs`.
+- The three Openfund rules still carry the **first** (deny-list) expressions. Those redirect fetch-style GETs such as `/trading/state` and `/portfolio/overview` on the aliases (verified: 301). The reviewed allow-list expressions replace them only with owner approval:
+
+```bash
+node scripts/cloudflare/check-live.mjs --from-file <snapshot.json>   # or CLOUDFLARE_API_TOKEN=… (read-only)
+```
+
 Unchanged: IP geolocation (on), WebSockets (on), every other DNS record
 (`cms`, `backstage`, `iran.*` and ACME records stay DNS-only), no Workers,
 no page rules.

@@ -9,19 +9,12 @@
      PUBLIC_ORIGIN           canonical origin, e.g. https://openfi.live
      CANONICAL_ALIAS_HOSTS   comma-separated hosts that redirect to it
 
-   Never redirected, so machine traffic and payloads are never bounced:
-   - any method other than GET and HEAD (orders, sign-in, payment callbacks,
-     webhooks and signed sync are POSTs and keep working on an alias);
-   - signed regional sync, health/readiness/version/status probes, ACME and
-     well-known files, the CMS snapshot API, the admin API and the JSON API
-     prefixes (auth, products, purchases, payments …);
-   - WebSocket upgrades and event streams (Accept: text/event-stream).
-   The canonical host itself is never redirected, so no loop is possible. */
-
-const MACHINE_PATHS = [/^\/sync\//, /^\/health$/, /^\/ready$/, /^\/version$/, /^\/runtime\//, /^\/runtime-config\.js$/,
-  /^\/\.well-known\//, /^\/cms\//, /^\/admin(\/|$)/,
-  /* API reads from a page still open on an alias keep working there */
-  /^\/(auth|products|purchases|invoices|api|notifications|support|rewards|referrals?|chart|governance|live|economy|certificates)\//]
+   Only browser DOCUMENT navigation to a WEBSITE PAGE path is redirected
+   (redirect-policy.js, shared with Cloudflare): API reads and writes, event
+   streams, WebSocket upgrades, payment callbacks, signed sync, probes and
+   assets are never page navigations, so they are always served where they
+   arrive. The canonical host itself is never a source, so no loop. */
+import { canonicalCondition, evaluate } from './redirect-policy.js'
 
 export function canonicalConfig(env = process.env) {
   const raw = env.PUBLIC_ORIGIN || ''
@@ -35,18 +28,13 @@ export function canonicalConfig(env = process.env) {
     throw Error('PUBLIC_ORIGIN must be a bare https origin, e.g. https://openfi.live')
   for (const h of aliases) if (!/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(h)) throw Error(`CANONICAL_ALIAS_HOSTS: invalid host ${h}`)
   if (aliases.includes(url.hostname)) throw Error('CANONICAL_ALIAS_HOSTS must not contain the canonical host')
-  return { origin: url.origin, host: url.hostname, aliases: new Set(aliases) }
+  return { origin: url.origin, host: url.hostname, aliases: new Set(aliases), condition: canonicalCondition(aliases) }
 }
 
 /** the redirect target for a request, or null when it must be served as is */
 export function canonicalRedirect(cfg, { method, host, path, url, headers = {} }) {
-  if (!cfg) return null
-  const h = String(host || '').toLowerCase().replace(/:\d+$/, '')
-  if (!cfg.aliases.has(h)) return null
-  if (method !== 'GET' && method !== 'HEAD') return null
-  if (MACHINE_PATHS.some(re => re.test(path))) return null
-  if (String(headers.upgrade || '').toLowerCase() === 'websocket') return null
-  if (String(headers.accept || '').includes('text/event-stream')) return null
+  if (!cfg || !cfg.aliases.size) return null
+  if (!evaluate(cfg.condition, { method, host, path, headers })) return null
   return cfg.origin + (url.startsWith('/') ? url : `/${url}`)
 }
 
