@@ -53,6 +53,17 @@ jobs:
           node-version: 26
       - name: Deploy exact approved SHA and verify runtime identity
         run: node scripts/release/deploy.mjs "$RELEASE_TAG"
+      # Live SIWE authentication gate (additive; existing identity and CMS
+      # gates in deploy.mjs are unchanged): a generated throw-away wallet
+      # completes nonce → EIP-4361 signature → verified session against the
+      # deployed service for each serving domain, and a domain outside
+      # ALLOWED_DOMAINS must be rejected with invalid_domain.
+      - name: Live SIWE authentication gate
+        env:
+          RELEASE_SIWE_DOMAINS: ${{ vars.RELEASE_SIWE_DOMAINS }}
+        run: |
+          npm --prefix apps/backend ci --omit=dev --ignore-scripts --no-audit --no-fund
+          node scripts/release/live-siwe-smoke.mjs "$RELEASE_PUBLIC_URL"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

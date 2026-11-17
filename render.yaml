@@ -79,6 +79,9 @@ services:
         value: 1mb
       - key: IP_TRUST_PROXY       # Render terminates TLS in front of the service. Explicit so Directus 12
         value: "true"             # (default false) keeps client-IP resolution identical to 11.x.
+      - key: CONTENT_SECURITY_POLICY_DIRECTIVES__CHILD_SRC
+        sync: false               # public: "'self' <site origins>" so the Studio visual editor can frame the site
+                                  # (docs/deployment/ENVIRONMENT.md); unset = visual editor cannot frame it
       - key: LICENSE_KEY          # Directus 12+ licence / Open Innovation Grant key (secret). Required before the
         sync: false               # image moves to 12.x (Core ignores field-level and row-level permission rules);
                                   # unset on 11.x. Never set together with LICENSE_TOKEN.
@@ -205,6 +208,9 @@ services:
         sync: false             # optional https origins allowed to serve scripts (DePay widget)
       - key: CSP_EXTRA_FRAME_SRC
         sync: false             # optional https origins allowed in frames (DePay widget)
+      - key: CSP_EXTRA_FRAME_ANCESTORS
+        sync: false             # optional exact https origins allowed to frame the site, e.g. the Backstage
+                                # Content preview (https://backstage.openfi.cloud); the CMS origin is added automatically
       - key: SIM_TEST_MODE
         value: ""               # internal test seam — never enabled in prod
       - key: FUNDED_PAYOUT_V1_FROM
@@ -260,5 +266,7 @@ services:
         sync: false
       - key: BACKSTAGE_BACKEND_TOKEN
         sync: false
+      - key: BACKSTAGE_DIRECTUS_TOKEN
+        sync: false             # optional secret: Directus static token of an editorial-only user; unset = Content workspace read-only
       - key: BACKSTAGE_REAL_SETTLEMENT
         value: "false"

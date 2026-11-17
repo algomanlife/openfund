@@ -43,3 +43,6 @@ __pycache__/
 **/.DS_Store
 coverage/
 *.tsbuildinfo
+
+# Disposable Directus staging rehearsal data (apps/backstage/upgrade/docker-compose.staging.yml)
+apps/backstage/upgrade/staging-data/

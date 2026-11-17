@@ -14,7 +14,7 @@ import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import { releaseDiagnostics } from './release.js'
-import { runtimeConfigScript } from './runtime-config.js'
+import { runtimeConfigScript, runtimeCmsUrl } from './runtime-config.js'
 import { staticCacheControl, NO_STORE } from './static-cache.js'
 import { seoRoutes } from './seo.js'
 import { fileURLToPath } from 'node:url'
@@ -33,7 +33,9 @@ import { backstageReads } from './backstage-reads.js'
 import { adminRoutes } from './admin.js'
 import { createPayoutClaimClient } from './payout-claims.js'
 import { chartWorkspaceRoutes } from './chart-workspaces.js'
-import { supportRoutes, supportAdminRoutes } from './support.js'
+import { supportRoutes, supportAdminRoutes, supportInboxRoutes } from './support.js'
+import { notificationRoutes, startNotificationRelay } from './notifications.js'
+import { operationsAdminRoutes } from './admin-operations.js'
 import { rewardRoutes, rewardAdminRoutes } from './rewards.js'
 import { certificateRoutes, certificateAdminRoutes } from './certificates.js'
 import { createRadar, radarRoutes } from './radar.js'
@@ -176,11 +178,24 @@ const CSP_TV_FRAME = ' https://www.tradingview-widget.com'
 const buildCsp = (allowEval) =>
   "default-src 'self'; script-src 'self' " + (cspExtraScript ? cspExtraScript + ' ' : '') + CSP_THEME_BOOT_HASH + (allowEval ? " 'unsafe-eval' " + CSP_LEGACY_HASHES + CSP_TV_SCRIPT : '') + "; style-src 'self' 'unsafe-inline'; " +
   "img-src 'self' data: blob: https:; connect-src 'self' https: wss:" + (cspExtraConnect ? ' ' + cspExtraConnect : '') + "; " +
-  "worker-src 'self' blob:; frame-src 'self'" + (cspExtraFrame ? ' ' + cspExtraFrame : '') + cspWalletFrames + (allowEval ? CSP_TV_FRAME : '') + "; frame-ancestors 'self'; " +
+  "worker-src 'self' blob:; frame-src 'self'" + (cspExtraFrame ? ' ' + cspExtraFrame : '') + cspWalletFrames + (allowEval ? CSP_TV_FRAME : '') + "; frame-ancestors 'self'" + (cspCmsAncestor ? ' ' + cspCmsAncestor : '') + "; " +
   "object-src 'none'; base-uri 'self'; form-action 'self'"
+/* Directus Studio visual editing (ADR 0038) frames the site from the
+   configured CMS origin. Only that one origin is added to frame-ancestors;
+   X-Frame-Options is omitted when it is set, because SAMEORIGIN would
+   override the CSP allowance in the browsers that honour both. Without a
+   configured CMS origin the policy stays exactly as before. */
+let cspCmsAncestor = ''
+try { cspCmsAncestor = runtimeCmsUrl(process.env, cfg.prod) } catch { cspCmsAncestor = '' }
+/* CSP_EXTRA_FRAME_ANCESTORS: exact origins allowed to frame the site, e.g.
+   the Backstage owner console's read-only Content preview. https only in
+   production; http loopback only outside it. Paths/wildcards are dropped. */
+const extraAncestors = (process.env.CSP_EXTRA_FRAME_ANCESTORS || '').split(',').map(v => v.trim()).filter(v =>
+  /^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(v) || (!cfg.prod && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(v)))
+if (extraAncestors.length) cspCmsAncestor = [cspCmsAncestor, ...extraAncestors].filter(Boolean).join(' ')
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff')
-  res.setHeader('X-Frame-Options', 'SAMEORIGIN')
+  if (!cspCmsAncestor) res.setHeader('X-Frame-Options', 'SAMEORIGIN')
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
   res.setHeader('Content-Security-Policy', buildCsp(false))
   if (cfg.prod) res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
@@ -808,6 +823,8 @@ app.use(radarRoutes({ radar, gainsMarkets: () => marketData.markets }))
 app.use(chartWorkspaceRoutes({ pool, requireAuth, limit }))
 /* Public Contact Us submissions (write-only; operators read via /admin/support or Directus) */
 app.use(supportRoutes({ pool, limit, optionalUser: async req => (await userFromSession(req))?.user_id ?? null }))
+app.use(supportInboxRoutes({ pool, requireAuth, limit }))
+app.use(notificationRoutes({ pool, requireAuth, limit }))
 /* Footprint (Hyperliquid order-flow analytics for the chart only). Read-only,
    isolated from the engine/accounts/payments; inert unless FOOTPRINT_ENABLED=1. */
 const footprint = createFootprintService({ mainPool: pool })
@@ -830,6 +847,7 @@ app.use('/admin/live', liveAdminRoutes({ pool, treasury, config: live }))
 app.use('/admin/coupons', couponAdminRoutes({ pool }))
 app.use('/admin/payments', paymentAdminRoutes({ pool, verifier: (...a) => defaultPaymentVerifier()(...a) }))
 app.use('/admin/support', supportAdminRoutes({ pool }))
+app.use('/admin/operations', operationsAdminRoutes({ pool, engine, marketData }))
 app.use('/admin/certificates', certificateAdminRoutes({ pool }))
 app.use('/admin/rewards', rewardAdminRoutes({ pool }))
 app.use('/admin/calendar', calendarAdminRoutes({ pool }))
@@ -960,6 +978,8 @@ try {
 console.log(`[region] ${region.region}, roles: ${region.roles.join(', ') || '(none)'}`)
 if (hasRole(region, 'market-data')) marketData.bootstrap().catch(e => console.error('[market-data] bootstrap failed', e.message))
 if (hasRole(region, 'engine')) engine.start(1000)
+/* challenge-event → notification relay: reads recorded events only */
+if (hasRole(region, 'engine')) startNotificationRelay(pool)
 if (hasRole(region, 'footprint')) footprint.start().catch(e => console.error('[footprint] start failed', e.message))
 /* pending purchase orders past their expiry are swept to 'expired'
    (verified late payments are still accepted inside the grace window —

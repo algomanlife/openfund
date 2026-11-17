@@ -2,8 +2,8 @@
 
 Implemented by: Cursor Agent
 
-This is a source change on the visual-editing branch. It is not merged, not
-deployed, and it has not been applied to a production Directus database.
+This source change is merged to `main`. It is not deployed, and it has not
+been applied to a production Directus database.
 Commits:
 
 - `b7fec1ed076008c6454024d0017fa08e21176605` — `feat(cms): [Cursor] implement universal visual content editing`

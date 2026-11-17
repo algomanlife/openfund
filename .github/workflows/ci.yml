@@ -310,6 +310,13 @@ jobs:
           TEST_BACKEND_URL: http://localhost:8080
           ADMIN_API_TOKEN: ci-admin-token-4f2a
         run: node e2e/test-backstage.mjs
+      - name: Backstage operations sections browser acceptance (fa/en)
+        if: needs.changes.outputs.run_backend_suite == 'true'
+        working-directory: .
+        env:
+          TEST_BACKEND_URL: http://localhost:8080
+          ADMIN_API_TOKEN: ci-admin-token-4f2a
+        run: node e2e/test-backstage-operations.mjs
       - name: Controlled challenge checkout and simulated payout browser acceptance
         if: needs.changes.outputs.run_backend_suite == 'true'
         working-directory: .

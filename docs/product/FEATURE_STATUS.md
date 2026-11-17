@@ -1,9 +1,24 @@
 # Feature status
 
-Backstage operations is **In Progress**. The initial owner workspace
-uses authoritative backend directories and review actions. Controlled test
-operations require the PR #125 contract. See the
+Backstage operations is **Completed in source (local acceptance; branch
+`agent/claude/launch-completion`, not merged or deployed)**. Beyond the
+initial owner workspace it covers partner review and commissions, finance
+(expenses, reserves, obligations, treasury refresh), a unified audit trail,
+trader suspension, the commercial coupon wizard, support replies and
+departments, notification records, a read-only live risk board, global
+search and a Content workspace over Directus. Evidence: backend
+`test/backstage-operations.test.mjs`, Backstage server tests and the
+browser acceptances `e2e/test-backstage-operations.mjs` and
+`e2e/test-backstage-content.mjs` (the latter against a disposable Directus
+11.17.4). Production needs the owner steps in the
+[launch parity runbook](../deployment/LAUNCH_PARITY_RUNBOOK.md). See the
 [operations guide](../backstage/OPERATIONS_GUIDE.md).
+
+Trader Inbox and in-app notifications are **Completed in source (local
+acceptance, not deployed)**: `/{locale}/{prop|perpetual}/inbox` with payout,
+support and challenge notifications and support conversations. No email or
+other external delivery is sent; an outbound provider is owner
+infrastructure.
 
 Real payout evidence recording is **In Progress**. Backstage adds reward
 inspection and a disabled-by-default Arbitrum One DAI verification action.
@@ -33,8 +48,8 @@ and device/browser verification. WalletConnect mobile access is separately
 unconfigured (`VITE_WALLETCONNECT_PROJECT_ID` absent); injected wallets are
 not dependent on it.
 
-2026-11-10 production-readiness branch (`codex/production-readiness`, **unmerged,
-not deployed**): Arbitrum-only wallet/SIWE/checkout, DePay request/callback/event
+2026-11-10 production-readiness branch (`codex/production-readiness`, since
+merged to `main`, **not deployed**): Arbitrum-only wallet/SIWE/checkout, DePay request/callback/event
 signature verification, coupon engine with a zero-payment flow, an explicit
 database-enforced order lifecycle, and the Economy › Governance / Ambassador (IB)
 restructuring. Statuses below marked "(branch)" describe that branch only.
@@ -132,7 +147,7 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | Terminal "News & Information" tab (TradingView Economic Calendar widget) | Completed (local; branch, not deployed) | Official web component and attribution; CSP allows `widgets.tradingview-widget.com` (script) and `www.tradingview-widget.com` (frame) on application documents; widget content not yet verified in a standard desktop browser |
 | Hybrid footprint chart (Gains candles + Hyperliquid order flow; chart style and overlay) | In Progress (merged in PR #90; the owner requested activation on 2026-11-12 and the Blueprint now sets `FOOTPRINT_ENABLED=1`; deployed acceptance is pending the approved Render deployment and is recorded in the activation pull request; history starts when the service first runs). **Blocked for historical backfill**: importer prepared and tested (`apps/backend/footprint/archive.js`); a first run needs owner AWS access to the requester-pays S3 archive | [Footprint](../integrations/FOOTPRINT.md), [ADR 0024](../decisions/0024-hybrid-footprint-chart.md); core, service, browser (`e2e/test-footprint.cjs`) and position-suite-under-footprint (`RISK_TEST_FOOTPRINT=1`) tests; load matrix 100–1,500 chart users + 2,000 visitors on one local process |
 | Seasonal header logos (Yalda, Christmas) | Completed (local; branch, not deployed) — designs approved by the owner 2026-11-11 | `apps/web-react/src/brand/seasonalLogo.ts`: Yalda 28 Azar–end of 1 Dey (Asia/Tehran, Jalali via Intl), Christmas 25–31 Dec (visitor's local date); header/navigation logo only, master mark unchanged; sources in `brand/logos/seasonal/`; `test/seasonal-logo.test.mjs` |
-| DePay checkout widget and dedicated checkout page | Completed (local; branch `agent/claude/depay-checkout-chart-ux`, not merged or deployed); real payment pending owner configuration | [ADR 0026](../decisions/0026-dedicated-checkout-vendored-depay-widget-and-chart-position-tool.md); `/:locale/checkout` (`CheckoutPage.tsx`) opens the official vendored `@depay/widgets` bundle via `DePayWidgets.Payment({ integration, payload: { orderId } })` without restricting networks or tokens; receipt endpoint; interrupted-purchase resume; `e2e/test-depay-checkout.cjs` 40/40, commerce K1–K3; the real widget mounts under the production CSP, DePay's configuration API answered 403 from localhost (owner domain/endpoint settings) |
+| DePay checkout widget and dedicated checkout page | Completed (local; merged to `main`, not deployed); real payment pending owner configuration | [ADR 0026](../decisions/0026-dedicated-checkout-vendored-depay-widget-and-chart-position-tool.md); `/:locale/checkout` (`CheckoutPage.tsx`) opens the official vendored `@depay/widgets` bundle via `DePayWidgets.Payment({ integration, payload: { orderId } })` without restricting networks or tokens; receipt endpoint; interrupted-purchase resume; `e2e/test-depay-checkout.cjs` 40/40, commerce K1–K3; the real widget mounts under the production CSP, DePay's configuration API answered 403 from localhost (owner domain/endpoint settings) |
 | Purchase history, payment history and invoices | Completed (local) | `GET /purchases/history`, `GET /invoices/:id` (dependency-free PDF, [invoice-pdf.js](../../apps/backend/invoice-pdf.js)), Prop route `#/{locale}/prop/purchases`; browser E2E [purchase flow](../../e2e/test-purchase-flow.cjs) |
 | Withdrawal requests and operator review | Completed (local, branch `agent/claude/launch-readiness`) | Reward requests are computed by the server on funded accounts only ([ADR 0029](../decisions/0029-reward-lifecycle-and-support-queue.md), `apps/backend/rewards.js`): realized net profit, frozen split/cycle/minimum/first-payout/consistency/profitable-day terms, fee refund on the fourth reward, one open request per account, profit reserved and re-credited on rejection; `/admin/withdrawals` review (approve/reject with reason/paid with payout reference). The previous free-amount request is removed. Payout EXECUTION remains manual by design; several payout parameters await owner decisions |
 | Paid challenge evaluation and rule enforcement | Completed (v0.3.1, local) | [Evaluation engine](../../apps/backend/evaluation.js) enforces the published Rulebook rules of record on every challenge account: closed-net-profit targets, daily loss vs max(opening balance, opening equity) at the 00:00 UTC+3 boundary, static and trailing (breakeven-locked) maximum loss, minimum trading days, time-limit expiry; breach settlement closes positions at the server mark, cancels pending orders and records immutable `challenge_events`; two-phase stage-1 pass auto-provisions stage 2; rules snapshot frozen at purchase. A pass also requires the post-settlement closed profit to meet the target; trading days count fill days ([engine audit](../audits/PROP_ENGINE_AUDIT.md), 2026-11-08: five defects fixed, trailing-lock intent open). 48-check lifecycle suite + 31-check engine suite + full lifecycle browser E2E |
@@ -148,15 +163,15 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | Advanced analytics and execution workflows | Planned | [Engineering roadmap](../roadmap/ENGINEERING.md); scope and acceptance gates before implementation |
 | Economy transparency report | Completed (local) | [Economy](../economy/README.md); `/economy/transparency` aggregates confirmed sales, refunds, challenge outcomes, payouts, verified expenses and financial position from operational records; synthetic fixtures removed |
 | Official Whitepaper v1.0 page | Completed (local, unreleased) | [Specification](../website/WHITEPAPER.md); `/{locale}/whitepaper` single page, 20 bilingual chapters, data-driven diagrams and charts, catalog-derived pricing, activated footer document link; Directus collections, permissions and an idempotent seed are implemented and validated offline but not yet applied to the production CMS, which therefore renders the repository edition |
-| Manual payment next to DePay (one order, server on-chain verification, EVM sender / Solana memo binding, Verification Pending state) | Completed (local; branch `agent/claude/checkout-campaign-chart-trading`, not deployed); real payment pending the owner | [Manual payment](../payments/MANUAL_PAYMENT.md), [ADR 0028](../decisions/0028-manual-payment-treasury-networks-campaign-chart-english-lotage.md); `test/manual-payments.test.mjs` 14/14 with simulated chain data; local browser probe of both locales |
-| Openfund Treasury wallets by network on the transparency page | Completed (local; branch `agent/claude/checkout-campaign-chart-trading`, not deployed) | `GET /economy/treasury/networks`; `test/treasury-networks.test.mjs`; live local read of all seven configured networks through public RPCs (production uses `PURCHASE_RPC_URLS`) |
-| Sales-campaign landing `/fa/campaign`, `/en/campaign` | Completed (local; branch `agent/claude/checkout-campaign-chart-trading`, not deployed) | [Campaign](../website/CAMPAIGN.md); `test/campaign-cta.test.mjs`; RTL/LTR, 1440/820/390 px, SEO and CTA checks in a local browser probe |
-| Vela chart UI English-only and LTR in every locale | Completed (local; branch `agent/claude/checkout-campaign-chart-trading`, not deployed) | [Vela](../integrations/VELA.md#chart-ui-language-english-only-ltr-always); no Persian text found in the chart layer of the fa terminal (browser probe); `test/terminal-risk.test.mjs` |
-| SL/TP created on the chart for positions without them | Completed (local; branch `agent/claude/checkout-campaign-chart-trading`, not deployed) | [Terminal](../trading/TERMINAL.md#creating-sltp-on-the-chart); `e2e/test-terminal-risk-workspace.cjs` 86/86 (LONG and SHORT: TP only, refused wrong side, SL, both) |
-| Lotage sizing (USD-quoted forex, XAU, XAG, WTI conventions) | Completed (local; branch `agent/claude/checkout-campaign-chart-trading`, not deployed); conventions need owner approval | [Lotage](../trading/LOTAGE.md); `test/position-sizing.test.mjs` |
-| Landing CTAs "Buy Challenge" (Home Prop card, connected-wallet card) | Completed (local; branch `agent/claude/checkout-campaign-chart-trading`, not deployed) | Both open `/:locale/checkout` client-side without a new connection or signature (browser probe) |
+| Manual payment next to DePay (one order, server on-chain verification, EVM sender / Solana memo binding, Verification Pending state) | Completed (local; merged to `main`, not deployed); real payment pending the owner | [Manual payment](../payments/MANUAL_PAYMENT.md), [ADR 0028](../decisions/0028-manual-payment-treasury-networks-campaign-chart-english-lotage.md); `test/manual-payments.test.mjs` 14/14 with simulated chain data; local browser probe of both locales |
+| Openfund Treasury wallets by network on the transparency page | Completed (local; merged to `main`, not deployed) | `GET /economy/treasury/networks`; `test/treasury-networks.test.mjs`; live local read of all seven configured networks through public RPCs (production uses `PURCHASE_RPC_URLS`) |
+| Sales-campaign landing `/fa/campaign`, `/en/campaign` | Completed (local; merged to `main`, not deployed) | [Campaign](../website/CAMPAIGN.md); `test/campaign-cta.test.mjs`; RTL/LTR, 1440/820/390 px, SEO and CTA checks in a local browser probe |
+| Vela chart UI English-only and LTR in every locale | Completed (local; merged to `main`, not deployed) | [Vela](../integrations/VELA.md#chart-ui-language-english-only-ltr-always); no Persian text found in the chart layer of the fa terminal (browser probe); `test/terminal-risk.test.mjs` |
+| SL/TP created on the chart for positions without them | Completed (local; merged to `main`, not deployed) | [Terminal](../trading/TERMINAL.md#creating-sltp-on-the-chart); `e2e/test-terminal-risk-workspace.cjs` 86/86 (LONG and SHORT: TP only, refused wrong side, SL, both) |
+| Lotage sizing (USD-quoted forex, XAU, XAG, WTI conventions) | Completed (local; merged to `main`, not deployed); conventions need owner approval | [Lotage](../trading/LOTAGE.md); `test/position-sizing.test.mjs` |
+| Landing CTAs "Buy Challenge" (Home Prop card, connected-wallet card) | Completed (local; merged to `main`, not deployed) | Both open `/:locale/checkout` client-side without a new connection or signature (browser probe) |
 | Openfund Treasury balance and allocatable capital | In Progress | [Treasury](../economy/TREASURY.md); scheduled on-chain snapshots with Chainlink pricing and stale fallback are implemented and tested; the public treasury address, assets/feeds and reserves await management configuration, so capital reports `Unknown` |
-| Render three-resource configuration | Completed | [Blueprint](../../render.yaml); openfund + openfund-db PostgreSQL 17 + openfund-cms Directus 11.9.1; same-origin `/react/` |
+| Render three-resource configuration | Completed | [Blueprint](../../render.yaml); openfund + openfund-db PostgreSQL 17 + openfund-cms Directus 11.17.4; same-origin `/react/` |
 | CI and local validation tooling | Completed | [Workflow](../../.github/workflows/ci.yml); web, backend/Postgres, browser, Blueprint, secrets and advisory reports |
 | Deployed Render acceptance and operational monitoring | In Progress | Configuration exists; authenticated validation, apply, deployed HTTPS sessions/CMS and recovery evidence are not established here |
 | Dormant Openfund Protocol source foundation | Completed within source scope | `packages/openfund-protocol/` Solidity source, provenance and compile/test foundation integrated; not an active venue |
@@ -282,7 +297,7 @@ and wallet. Public release/signing and existing license decisions remain Blocked
 | Navigation, purchase history and Applications | In Progress | Local review branch. Web Terminal available; verified desktop installers remain pending. [Website evidence](../reviews/final-refinement/website.md) |
 | Position protection controls | In Progress | Isolated Prop simulation acceptance. Production and device acceptance remain open. |
 | Interface content registry | In Progress | Source-derived editing map and published overrides. See the coverage limits in the content evidence. |
-| Universal visual CMS editing | In Progress (isolated Directus 11.17.4 click-through recorded; not applied to production; not deployed) | Studio opened the Value popover for a Persian label, a draft stayed off the public API, and publishing appeared on reload. Public pages have no `data-directus` attributes. `challenge_plans` anonymous writes return 403. Production schema has not been migrated. [Report](../backstage/UNIVERSAL_VISUAL_EDITING.md) |
+| Universal visual CMS editing | Completed in source (merged to `main` via `b7fec1e`/`440ecb8`); site framing defect fixed and the protocol re-verified 10/10 on a disposable Directus 11.17.4 (branch `agent/claude/launch-completion`, [rehearsal](../reviews/launch-completion/CMS_REHEARSAL.md)); not applied to the production CMS; not deployed | Studio opened the Value popover for a Persian label, a draft stayed off the public API, and publishing appeared on reload. Public pages have no `data-directus` attributes. `challenge_plans` anonymous writes return 403. Production schema has not been migrated. [Report](../backstage/UNIVERSAL_VISUAL_EDITING.md) |
 | Certificates | In Progress | Issuance tied to server records. Review and production rollout remain open. |
 
 ## v0.6.5 candidate — 2026-11-15

@@ -70,7 +70,7 @@ function CampaignPage({ lang }: { lang: Lang }) {
       {/* Hero */}
       <section className="cmp-hero container" aria-labelledby="cmp-title">
         <div className="cmp-hero-copy">
-          <span className="eyebrow cmp-reveal">OPENFUND · PROP CHALLENGES</span>
+          <span className="eyebrow cmp-reveal">{t('اوپن‌فاند · چالش‌های پراپ', 'OPENFUND · PROP CHALLENGES')}</span>
           <h1 id="cmp-title" className="cmp-reveal">{t('مهارت معاملاتی‌ات را با قوانین روشن بسنج.', 'Prove your trading with rules you can read first.')}</h1>
           <p className="cmp-lead cmp-reveal">{t('اوپن‌فاند یک پلتفرم چالش پراپ است: ارزیابی در محیط معاملاتی شبیه‌سازی‌شده روی دادهٔ زندهٔ بازار، با ترمینال اختصاصی، قوانین منتشرشده و پرداختی که سرور روی بلاک‌چین تأیید می‌کند.',
             'Openfund is a prop-challenge platform: an evaluation in a simulated trading environment on live market data, with a dedicated terminal, published rules and a payment the server verifies on-chain.')}</p>

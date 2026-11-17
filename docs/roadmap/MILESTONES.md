@@ -26,7 +26,7 @@ Reviewed against integrated source `d05b4b8`: PR #42 is merged but unreleased. O
 | T3 · Trading Core | Assigned challenge evaluation and commercial risk enforcement | Planned | Approved rules, account assignment, T1/T2 | Versioned rules, deterministic breach/pass decisions, replayable evidence and owned challenge lifecycle | [Product plan](PRODUCT.md) |
 | X1 · Product Experience | Product routes, isolated portfolios and private journals | Completed | F1, SIWE sessions, native Gains reads | Cross-product/wallet isolation, owned notes and exports, explicit missing data, shared terminal presentation | [Product contracts](../architecture/PRODUCT_TERMINALS.md) |
 | X2 · Product Experience | Published CMS content and multilingual public pages | Completed | Directus schema, permission policies | Published-only reads, language/theme/navigation behavior, static fallback; sample reporting labelled | [CMS coverage](../backstage/CONTENT_COVERAGE.md) |
-| X2b · Product Experience | Universal visual editing of existing editorial copy | In Progress (source only; not applied to production Directus; not deployed) | X2, Directus 11.17.4 visual editor, authorized Studio session | Click-to-edit for registered copy, five locale slots, drafts stay unpublished, public pages show no editor chrome; financial fields excluded | [Visual editing report](../backstage/UNIVERSAL_VISUAL_EDITING.md) |
+| X2b · Product Experience | Universal visual editing of existing editorial copy | In Progress (merged source; framing fix and 11.17.4 rehearsal on branch `agent/claude/launch-completion`; not applied to production Directus; not deployed) | X2, Directus 11.17.4 visual editor, authorized Studio session | Click-to-edit for registered copy, five locale slots, drafts stay unpublished, public pages show no editor chrome; financial fields excluded | [Visual editing report](../backstage/UNIVERSAL_VISUAL_EDITING.md) |
 | X3 · Product Experience | Real wallet/device and accessibility acceptance | In Progress | X1, injected/remote wallet configuration, external devices | Actual extension, hardware and WalletConnect rejection/reconnect/network tests; keyboard/RTL/mobile evidence | [Identity](../wallet/IDENTITY.md), [testing](../development/TESTING.md) |
 | X4a · Product Experience | Gated purchases, profile/history/invoices and withdrawal requests | Completed within implementation scope | Catalog, SIWE, additive schema | Server-priced/idempotent orders, atomic challenge records and owned history; requests are not payouts | [ADR 0009](../decisions/0009-challenge-purchases-and-payment-verification.md), PR #41, official v0.2.0 |
 | X4b · Product Experience | Live payment and DePay acceptance | Blocked | Approved receiver/token/network policy, real-chain and widget verification | Proven economic amount, network compatibility, finality/reorg and receipt reconciliation; retain disabled defaults | [ADR 0009](../decisions/0009-challenge-purchases-and-payment-verification.md) |
@@ -117,13 +117,15 @@ published installers. Review and release remain separate milestones.
 
 ## Backstage operations
 
-**In Progress:** independent owner authentication, bilingual navigation,
-linked administrative directories and protected decision workflows.
-Dependencies include the authoritative GLOBAL API, owner provisioning and
-PR #125 for test operations. Remaining milestones cover risk, financial
-operations, contact and support workflows, analytics and durable audit.
-Real payout evidence recording requires isolated browser acceptance and
-approval before enabling the Backstage control in production.
+**In Progress (source complete, local acceptance; not merged or deployed):**
+independent owner authentication, bilingual navigation, linked directories,
+protected decision workflows, partner and finance operations, unified audit,
+read-only risk board, global search, coupon administration, support replies,
+notifications and the Content workspace (branch
+`agent/claude/launch-completion`). Remaining acceptance is owner-gated:
+review and merge, production provisioning, the production CMS upgrade, the
+release publication and deployment, and security acceptance before enabling
+real settlement recording ([runbook](../deployment/LAUNCH_PARITY_RUNBOOK.md)).
 [Architecture](../backstage/OPERATIONS_ARCHITECTURE.md)
 
 ## Controlled challenge acceptance

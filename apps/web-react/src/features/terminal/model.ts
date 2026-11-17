@@ -15,6 +15,7 @@ export const primary = {
     ["purchases", "خریدها و فاکتورها", "Purchases & Invoices"],
     ["withdrawals", "درخواست برداشت", "Withdrawal Requests"],
     ["certificates", "سرتیفیکیت‌ها", "Certificates"],
+    ["inbox", "صندوق پیام", "Inbox"],
   ],
   perpetual: [
     ["dashboard", "داشبورد", "Dashboard"],
@@ -25,6 +26,7 @@ export const primary = {
     ["portfolio", "پورتفولیو", "Portfolio"],
     ["leaderboard", "لیدربورد", "Leaderboard"],
     ["rewards", "ریوارد", "Rewards"],
+    ["inbox", "صندوق پیام", "Inbox"],
   ],
 } as const;
 export const selectedAccount = () => new URLSearchParams(location.search).get('account');

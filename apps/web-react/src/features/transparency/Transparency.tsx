@@ -27,7 +27,7 @@ function Treasury({ tv, locale }: { tv: TreasuryView; locale: Locale }) {
   const s = tv.snapshot
   return <>
     <div className="econ-panel">
-      <div className="section-top"><div><h3>Openfund Treasury</h3><p className="econ-address" dir="ltr">{tv.address}</p></div>
+      <div className="section-top"><div><h3>{t('Openfund Treasury', 'خزانهٔ اوپن‌فاند')[locale]}</h3><p className="econ-address" dir="ltr">{tv.address}</p></div>
         <div className="econ-actions">{tv.status === 'ok' ? <Status kind="ok">{t('Fresh', 'به‌روز')[locale]}</Status> : <Status kind="warn">{tv.status === 'stale' ? t('Stale — last valid snapshot shown', 'منقضی — آخرین تصویر معتبر')[locale] : t('Awaiting first snapshot', 'در انتظار اولین تصویر')[locale]}</Status>}
           {tv.explorerUrl && <a className="text-link" href={tv.explorerUrl} target="_blank" rel="noopener noreferrer">{t('View on block explorer', 'مشاهده در کاوشگر بلاک')[locale]} ↗</a>}</div></div>
       <div className="econ-grid">
@@ -112,7 +112,7 @@ function Report({ r, locale }: { r: TransparencyReport; locale: Locale }) {
       <p className="econ-source">{t('Paid totals include historical operator records. Explorer links show finalized transfers.', 'جمع پرداخت‌ها شامل سوابق قدیمی ثبت‌شده توسط اپراتورهاست. پیوندهای کاوشگر انتقال‌های نهایی‌شده را نشان می‌دهند.')[locale]}</p>
     </section>
 
-    <section className="econ-section" id="treasury"><div className="section-top"><div><span className="eyebrow">04 / OPENFUND TREASURY</span><h2>{t('Read from the chain, not typed in.', 'خوانده‌شده از زنجیره، نه واردشده با دست.')[locale]}</h2></div></div>
+    <section className="econ-section" id="treasury"><div className="section-top"><div><span className="eyebrow">04 / {t('OPENFUND TREASURY', 'خزانهٔ اوپن‌فاند')[locale]}</span><h2>{t('Read from the chain, not typed in.', 'خوانده‌شده از زنجیره، نه واردشده با دست.')[locale]}</h2></div></div>
       {r.allocations && <div className="econ-grid">
         <Kpi label={t('Treasury allocation', 'تخصیص خزانه')[locale]} value={usd(r.allocations.treasuryUsd, locale)} />
         <Kpi label={t('Operations allocation', 'تخصیص عملیاتی')[locale]} value={usd(r.allocations.operationsUsd, locale)} />

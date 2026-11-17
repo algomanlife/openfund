@@ -2,11 +2,899 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4285,
-    "mappedCalls": 2138,
-    "exceptions": 74,
+    "uniqueRecords": 4325,
+    "mappedCalls": 2178,
+    "exceptions": 49,
     "validationFindings": 0,
-    "reviewedExclusions": 27
+    "reviewedExclusions": 49
+  },
+  "editorial": {
+    "locales": [
+      "fa",
+      "en",
+      "ar",
+      "ru",
+      "zh-CN"
+    ],
+    "forbidden": [
+      "challenge_plans",
+      "orders",
+      "payments",
+      "payment_events",
+      "wallets",
+      "positions",
+      "coupons",
+      "directus_users",
+      "gov_proposals",
+      "gov_votes",
+      "payouts",
+      "ledger_entries"
+    ],
+    "surfaces": [
+      {
+        "collection": "home_content",
+        "translationCollection": "home_content_translations",
+        "singleton": true,
+        "textFields": [
+          "headline",
+          "sub",
+          "note",
+          "prop_title",
+          "prop_description",
+          "prop_cta",
+          "perpetual_title",
+          "perpetual_description",
+          "perpetual_cta",
+          "seo_title",
+          "seo_description"
+        ],
+        "fileFields": [
+          "prop_image",
+          "perpetual_image"
+        ]
+      },
+      {
+        "collection": "faqs",
+        "translationCollection": "faq_translations",
+        "textFields": [
+          "question",
+          "answer"
+        ]
+      },
+      {
+        "collection": "faq_categories",
+        "translationCollection": "faq_category_translations",
+        "textFields": [
+          "label",
+          "description"
+        ]
+      },
+      {
+        "collection": "pages",
+        "translationCollection": "page_translations",
+        "textFields": [
+          "title",
+          "subtitle",
+          "description",
+          "seo_title",
+          "seo_description"
+        ]
+      },
+      {
+        "collection": "navigation_items",
+        "translationCollection": "navigation_item_translations",
+        "textFields": [
+          "label",
+          "description"
+        ]
+      },
+      {
+        "collection": "footer_links",
+        "translationCollection": "footer_link_translations",
+        "textFields": [
+          "label"
+        ]
+      },
+      {
+        "collection": "legal_documents",
+        "translationCollection": "legal_document_translations",
+        "textFields": [
+          "title"
+        ],
+        "jsonTextFields": [
+          "paragraphs"
+        ]
+      },
+      {
+        "collection": "trading_rules",
+        "translationCollection": "trading_rule_translations",
+        "textFields": [
+          "title",
+          "explanation_title",
+          "explanation_body"
+        ],
+        "jsonTextFields": [
+          "paragraphs",
+          "table"
+        ]
+      },
+      {
+        "collection": "learning_paths",
+        "translationCollection": "learning_path_translations",
+        "textFields": [
+          "eyebrow",
+          "title",
+          "summary"
+        ],
+        "jsonTextFields": [
+          "outcomes"
+        ]
+      },
+      {
+        "collection": "lessons",
+        "translationCollection": "lesson_translations",
+        "textFields": [
+          "title",
+          "summary"
+        ],
+        "jsonTextFields": [
+          "takeaways",
+          "blocks"
+        ]
+      },
+      {
+        "collection": "glossary_terms",
+        "translationCollection": "glossary_term_translations",
+        "textFields": [
+          "term",
+          "short",
+          "definition"
+        ]
+      },
+      {
+        "collection": "tools",
+        "translationCollection": "tool_translations",
+        "textFields": [
+          "name",
+          "tagline",
+          "about",
+          "method",
+          "limitations"
+        ],
+        "jsonTextFields": [
+          "assumptions"
+        ]
+      },
+      {
+        "collection": "referral_content",
+        "translationCollection": "referral_content_translations",
+        "singleton": true,
+        "textFields": [
+          "hero_eyebrow",
+          "hero_title",
+          "hero_accent",
+          "hero_intro",
+          "status_notice",
+          "dashboard_title",
+          "dashboard_intro",
+          "cta_title",
+          "cta_text",
+          "cta_primary",
+          "cta_secondary",
+          "seo_title",
+          "seo_description"
+        ],
+        "jsonTextFields": [
+          "benefits",
+          "stages",
+          "sections",
+          "faq",
+          "pending_decisions",
+          "dashboard_columns"
+        ]
+      },
+      {
+        "collection": "governance_milestones",
+        "translationCollection": "governance_milestone_translations",
+        "textFields": [
+          "title",
+          "body"
+        ]
+      },
+      {
+        "collection": "governance_content_blocks",
+        "translationCollection": "governance_content_block_translations",
+        "textFields": [
+          "body"
+        ]
+      },
+      {
+        "collection": "whitepaper_documents",
+        "translationCollection": "whitepaper_document_translations",
+        "textFields": [
+          "title",
+          "subtitle",
+          "abstract",
+          "revision_note",
+          "seo_title",
+          "seo_description"
+        ]
+      },
+      {
+        "collection": "whitepaper_chapters",
+        "translationCollection": "whitepaper_chapter_translations",
+        "textFields": [
+          "kicker",
+          "title",
+          "summary"
+        ],
+        "jsonTextFields": [
+          "blocks"
+        ]
+      },
+      {
+        "collection": "whitepaper_datasets",
+        "translationCollection": "whitepaper_dataset_translations",
+        "textFields": [
+          "title",
+          "caption",
+          "note"
+        ],
+        "jsonTextFields": [
+          "labels"
+        ]
+      },
+      {
+        "collection": "whitepaper_references",
+        "translationCollection": "whitepaper_reference_translations",
+        "textFields": [
+          "note"
+        ]
+      },
+      {
+        "collection": "terminal_sections",
+        "translationCollection": "terminal_section_translations",
+        "textFields": [
+          "title",
+          "body"
+        ],
+        "fileFields": [
+          "illustration"
+        ]
+      },
+      {
+        "collection": "site_settings",
+        "translationCollection": "site_settings",
+        "singleton": true,
+        "textFields": [],
+        "sharedTextFields": [
+          "maintenance_message"
+        ]
+      }
+    ],
+    "sharedAreas": [
+      "navigation",
+      "notice",
+      "community",
+      "global"
+    ],
+    "routes": [
+      {
+        "path": "/",
+        "view": "root-redirect",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      },
+      {
+        "path": "/:locale/home",
+        "view": "home",
+        "collections": [
+          "home_content",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "home"
+        ]
+      },
+      {
+        "path": "/:locale/challenges",
+        "view": "challenges",
+        "collections": [
+          "faqs",
+          "legal_documents",
+          "pages",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "global"
+        ]
+      },
+      {
+        "path": "/:locale/operations/payouts",
+        "view": "payout-operations",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "purchase"
+        ]
+      },
+      {
+        "path": "/:locale/checkout",
+        "view": "checkout",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "purchase"
+        ]
+      },
+      {
+        "path": "/:locale/campaign",
+        "view": "campaign",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "campaign"
+        ]
+      },
+      {
+        "path": "/:locale/markets",
+        "view": "markets",
+        "collections": [
+          "pages",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "markets"
+        ]
+      },
+      {
+        "path": "/:locale/rulebook",
+        "view": "rulebook",
+        "collections": [
+          "trading_rules",
+          "pages",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "rulebook"
+        ]
+      },
+      {
+        "path": "/:locale/transparency",
+        "view": "transparency",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "transparency"
+        ]
+      },
+      {
+        "path": "/:locale/governance",
+        "view": "governance",
+        "collections": [
+          "governance_milestones",
+          "governance_content_blocks",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "governance"
+        ]
+      },
+      {
+        "path": "/:locale/governance/new",
+        "view": "governance-new",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "governance"
+        ]
+      },
+      {
+        "path": "/:locale/governance/workspace",
+        "view": "governance-workspace",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "governance"
+        ]
+      },
+      {
+        "path": "/:locale/governance/proposals/:ofp",
+        "view": "governance-proposal",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "governance"
+        ]
+      },
+      {
+        "path": "/:locale/economy",
+        "view": "economy-redirect",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      },
+      {
+        "path": "/:locale/revenue-model",
+        "view": "revenue-model",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "economy"
+        ]
+      },
+      {
+        "path": "/:locale/live-market-access",
+        "view": "live-market-access",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "economy"
+        ]
+      },
+      {
+        "path": "/:locale/ambassador",
+        "view": "ambassador",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "partners"
+        ]
+      },
+      {
+        "path": "/:locale/coach",
+        "view": "coach",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "partners"
+        ]
+      },
+      {
+        "path": "/:locale/whitepaper",
+        "view": "whitepaper",
+        "collections": [
+          "whitepaper_documents",
+          "whitepaper_chapters",
+          "whitepaper_datasets",
+          "whitepaper_references",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "whitepaper"
+        ]
+      },
+      {
+        "path": "/:locale/certificate-verification",
+        "view": "certificate-verification",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "certificates"
+        ]
+      },
+      {
+        "path": "/:locale/apps",
+        "view": "applications",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "applications"
+        ]
+      },
+      {
+        "path": "/:locale/roadmap",
+        "view": "roadmap",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "roadmap"
+        ]
+      },
+      {
+        "path": "/:locale/about",
+        "view": "about",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "company"
+        ]
+      },
+      {
+        "path": "/:locale/contact",
+        "view": "contact",
+        "collections": [
+          "site_settings",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "company"
+        ]
+      },
+      {
+        "path": "/:locale/faq",
+        "view": "faq",
+        "collections": [
+          "faqs",
+          "faq_categories",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "faq"
+        ]
+      },
+      {
+        "path": "/:locale/faq/q/:key",
+        "view": "faq-question",
+        "collections": [
+          "faqs",
+          "faq_categories"
+        ],
+        "areas": [
+          "faq"
+        ]
+      },
+      {
+        "path": "/:locale/tools",
+        "view": "tools",
+        "collections": [
+          "tools",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "tools"
+        ]
+      },
+      {
+        "path": "/:locale/tools/:slug",
+        "view": "tool",
+        "collections": [
+          "tools"
+        ],
+        "areas": [
+          "tools"
+        ]
+      },
+      {
+        "path": "/:locale/learn",
+        "view": "learn",
+        "collections": [
+          "learning_paths",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "learn"
+        ]
+      },
+      {
+        "path": "/:locale/learn/paths/:slug",
+        "view": "learning-path",
+        "collections": [
+          "learning_paths",
+          "lessons"
+        ],
+        "areas": [
+          "learn"
+        ]
+      },
+      {
+        "path": "/:locale/learn/lessons/:slug",
+        "view": "lesson",
+        "collections": [
+          "lessons"
+        ],
+        "areas": [
+          "learn"
+        ]
+      },
+      {
+        "path": "/:locale/learn/glossary",
+        "view": "glossary",
+        "collections": [
+          "glossary_terms"
+        ],
+        "areas": [
+          "learn"
+        ]
+      },
+      {
+        "path": "/:locale/learn/glossary/:slug",
+        "view": "glossary-term",
+        "collections": [
+          "glossary_terms"
+        ],
+        "areas": [
+          "learn"
+        ]
+      },
+      {
+        "path": "/:locale/referral",
+        "view": "referral",
+        "collections": [
+          "referral_content",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "referral"
+        ]
+      },
+      {
+        "path": "/:locale/ref/:code",
+        "view": "referral-entry",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "referral"
+        ]
+      },
+      {
+        "path": "/:locale/${product}",
+        "view": "product-shell",
+        "collections": [
+          "terminal_sections",
+          "ui_messages"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "dashboard",
+        "view": "dashboard",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "trade",
+        "view": "trade",
+        "collections": [
+          "ui_messages",
+          "terminal_sections"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "chart",
+        "view": "chart",
+        "collections": [
+          "ui_messages",
+          "terminal_sections"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "radar",
+        "view": "radar",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "radar"
+        ]
+      },
+      {
+        "path": "heatmap",
+        "view": "heatmap",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "radar"
+        ]
+      },
+      {
+        "path": "portfolio",
+        "view": "portfolio",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "journal",
+        "view": "journal",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "inbox",
+        "view": "inbox",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "inbox"
+        ]
+      },
+      {
+        "path": "certificates",
+        "view": "certificates",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "certificates"
+        ]
+      },
+      {
+        "path": "purchases",
+        "view": "purchases",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "purchase"
+        ]
+      },
+      {
+        "path": "withdrawals",
+        "view": "withdrawals",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "purchase"
+        ]
+      },
+      {
+        "path": "leaderboard",
+        "view": "leaderboard",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "rewards",
+        "view": "rewards",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": [
+          "terminal"
+        ]
+      },
+      {
+        "path": "/terminal",
+        "view": "terminal-redirect",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      },
+      {
+        "path": "/portfolio",
+        "view": "portfolio-redirect",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      },
+      {
+        "path": "/journal",
+        "view": "journal-redirect",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      },
+      {
+        "path": "/${product}/:page",
+        "view": "legacy-product-redirect",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      },
+      {
+        "path": "/:section",
+        "view": "legacy-anchor",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      },
+      {
+        "path": "*",
+        "view": "fallback",
+        "collections": [
+          "ui_messages"
+        ],
+        "areas": []
+      }
+    ]
   },
   "records": [
     {
@@ -3612,6 +4500,26 @@
       ]
     },
     {
+      "key": "react.093cb32834b94c4c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "${base} را در ترمینال باز کن",
+      "en": "Open ${base} in the terminal",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 129,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.095783886fcb0b5c",
       "namespace": "react",
       "area": "Website",
@@ -4401,6 +5309,26 @@
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
           "line": 56,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.0c07b669fc51d4f7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خزانهٔ اوپن‌فاند",
+      "en": "OPENFUND TREASURY",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 115,
+          "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -9806,6 +10734,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.1ba8f912dab9b11a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شما",
+      "en": "You",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 155,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -16963,6 +17911,13 @@
           "method": "pick-pipeline"
         },
         {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 148,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
           "line": 63,
           "page": "navigation",
@@ -23060,6 +24015,26 @@
       ]
     },
     {
+      "key": "react.4063fd949f2cc228",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "علامت‌گذاری همه به‌عنوان خوانده‌شده",
+      "en": "Mark all as read",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 121,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.4067709826b93034",
       "namespace": "react",
       "area": "Website",
@@ -25256,6 +26231,26 @@
       ]
     },
     {
+      "key": "react.46bebb6e34463292",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "این گفت‌وگو بسته شده است.",
+      "en": "This conversation is closed.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 164,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.46e82ee4d433ce12",
       "namespace": "react",
       "area": "Website",
@@ -25530,6 +26525,26 @@
           "component": "apps/web-react/src/features/transparency/content.ts",
           "line": 7,
           "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.47af91edd97881fd",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پاسخ تازه",
+      "en": "New reply",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 141,
+          "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -27133,6 +28148,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.4baef52f7491d075",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تسویهٔ آزمایشی پرداخت انجام شد.",
+      "en": "The simulated payout settlement completed.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 42,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -30981,6 +32016,26 @@
       ]
     },
     {
+      "key": "react.566a30305d9d5ff4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "درخواست پرداخت شما رد شد.",
+      "en": "Your payout request was rejected.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 40,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.5683d5145c063f98",
       "namespace": "react",
       "area": "Global Content",
@@ -31519,6 +32574,13 @@
       "validation": "mapped",
       "locations": [
         {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 152,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/PayoutThread.tsx",
           "line": 57,
           "page": "purchase",
@@ -31868,6 +32930,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.58a82646313ff10c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هنوز پیامی به پشتیبانی نفرستاده‌اید.",
+      "en": "You have not contacted support yet.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 136,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -33443,6 +34525,26 @@
       ]
     },
     {
+      "key": "react.5cd427f913d0325b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مهلت چالش شما به پایان رسید.",
+      "en": "Your challenge expired.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 46,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.5cd8b951f84dc61f",
       "namespace": "react",
       "area": "Global Content",
@@ -34979,6 +36081,26 @@
       ]
     },
     {
+      "key": "react.60f8326f358242b5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در انتظار پاسخ شما",
+      "en": "Waiting for your reply",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 51,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.6101ccf69f150474",
       "namespace": "react",
       "area": "Website",
@@ -35622,6 +36744,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.63723a8f210a18c7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "چالش شما به دلیل نقض قانون پایان یافت.",
+      "en": "Your challenge ended after a rule breach.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 45,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -38919,6 +40061,13 @@
       "validation": "mapped",
       "locations": [
         {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 162,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
           "line": 106,
           "page": "purchase",
@@ -38989,6 +40138,33 @@
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
           "line": 123,
           "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.6ce2fde849a40c26",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اعلان‌ها",
+      "en": "Notifications",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 117,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 119,
+          "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -39959,6 +41135,26 @@
           "component": "apps/web-react/src/features/economy/RevenueModel.tsx",
           "line": 18,
           "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.6fa7980a7386dc5c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اوپن‌فاند · چالش‌های پراپ",
+      "en": "OPENFUND · PROP CHALLENGES",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/campaign/Campaign.tsx",
+          "line": 73,
+          "page": "campaign",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -40960,6 +42156,26 @@
       ]
     },
     {
+      "key": "react.738121a07ac125a2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اعلانی ندارید.",
+      "en": "You have no notifications.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 124,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.73856804f2fae180",
       "namespace": "react",
       "area": "Website",
@@ -41296,6 +42512,26 @@
           "line": 97,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.74d5be08c68133d0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برای دیدن اعلان‌ها و پیام‌های پشتیبانی وارد شوید.",
+      "en": "Sign in to see your notifications and support messages.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 108,
+          "page": "inbox",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -44027,6 +45263,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.7bf719419be8cebb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "صندوق پیام",
+      "en": "Inbox",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 106,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -46810,7 +48066,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/i18n/locales.ts",
-          "line": 78,
+          "line": 86,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -48744,6 +50000,26 @@
       ]
     },
     {
+      "key": "react.8a6d2333e8b97e41",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پیام‌ها و اعلان‌ها",
+      "en": "Messages and notifications",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 114,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.8a83a06291a86eb8",
       "namespace": "react",
       "area": "Website",
@@ -49047,6 +50323,26 @@
           "line": 511,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.8baea16c78364686",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت شما انجام و ثبت شد.",
+      "en": "Your payout was paid and recorded.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 41,
+          "page": "inbox",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -49612,7 +50908,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/i18n/locales.ts",
-          "line": 82,
+          "line": 90,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52183,6 +53479,26 @@
       ]
     },
     {
+      "key": "react.9466d3b5c8b54769",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "درخواست پرداخت شما تأیید شد.",
+      "en": "Your payout request was approved.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 39,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.9470de91ba56bd4f",
       "namespace": "react",
       "area": "Global Content",
@@ -53482,6 +54798,13 @@
       "validation": "mapped",
       "locations": [
         {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 115,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/PayoutThread.tsx",
           "line": 53,
           "page": "purchase",
@@ -54468,6 +55791,26 @@
           "line": 31,
           "page": "rulebook",
           "route": "/:locale/rulebook",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.9a9667f436faab22",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "یک مرحله از چالش را قبول شدید.",
+      "en": "You passed a challenge phase.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 47,
+          "page": "inbox",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -61922,6 +63265,26 @@
       ]
     },
     {
+      "key": "react.adf2d3326b8cea90",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پشتیبانی اوپن‌فاند",
+      "en": "Openfund support",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 155,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.adf345c81c7ca0ca",
       "namespace": "react",
       "area": "Website",
@@ -62574,6 +63937,33 @@
           "line": 163,
           "page": "terminal",
           "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.af697fd75d6d7e93",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جدید",
+      "en": "New",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 50,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 130,
+          "page": "inbox",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -63661,6 +65051,26 @@
           "line": 36,
           "page": "economy",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b28968dc18df643c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بیشتر نشان بده (${count} باقی‌مانده)",
+      "en": "Show more (${count} remaining)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 152,
+          "page": "markets",
+          "route": "/:locale/markets",
           "method": "pick-pipeline"
         }
       ]
@@ -65787,6 +67197,26 @@
       ]
     },
     {
+      "key": "react.b9267aa98a00f60f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گفت‌وگوی پشتیبانی",
+      "en": "Support conversation",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 145,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.b935957b7904dedb",
       "namespace": "react",
       "area": "Website",
@@ -66502,6 +67932,26 @@
           "component": "apps/web-react/src/features/governance/CouncilWorkspace.tsx",
           "line": 71,
           "page": "governance",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.bb8b3ab1d5d60f33",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "چالش شما با موفقیت قبول شد.",
+      "en": "You passed your challenge.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 44,
+          "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -69024,6 +70474,26 @@
       ]
     },
     {
+      "key": "react.c2d2ea8990d8d547",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در حال رسیدگی",
+      "en": "In progress",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 50,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.c2ded389b8973c55",
       "namespace": "react",
       "area": "Global Content",
@@ -71348,6 +72818,13 @@
           "method": "bilingual-record"
         },
         {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 109,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
           "line": 371,
           "page": "purchase",
@@ -72385,6 +73862,13 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 161,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
@@ -78539,6 +80023,26 @@
       ]
     },
     {
+      "key": "react.de051455fa84f421",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پشتیبانی به پیام شما پاسخ داد.",
+      "en": "Support replied to your message.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 43,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.de11c3d8a9f16dc8",
       "namespace": "react",
       "area": "Global Content",
@@ -80202,6 +81706,53 @@
           "page": "tools",
           "route": "/:locale/tools",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.e30e470d9e09a6a1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پیام‌های پشتیبانی",
+      "en": "Support messages",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 134,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 135,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.e3250bb44eb00666",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "حل‌شده",
+      "en": "Resolved",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 51,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -82926,6 +84477,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.eb1c7dad91c7a89b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بسته‌شده",
+      "en": "Closed",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 51,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -88891,6 +90462,26 @@
       ]
     },
     {
+      "key": "react.fb7ef92978414ef7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خزانهٔ اوپن‌فاند",
+      "en": "Openfund Treasury",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 30,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.fb8da0cd3375fa9f",
       "namespace": "react",
       "area": "Website",
@@ -90452,22 +92043,6 @@
       "expression": "label('segments', k)"
     },
     {
-      "component": "apps/web-react/src/features/applications/Applications.tsx",
-      "line": 51,
-      "page": "applications",
-      "route": "/:locale/apps",
-      "reason": "literal-jsx-review",
-      "text": "OPENFUND ·"
-    },
-    {
-      "component": "apps/web-react/src/features/campaign/Campaign.tsx",
-      "line": 73,
-      "page": "campaign",
-      "route": "/:locale/*",
-      "reason": "literal-jsx-review",
-      "text": "OPENFUND · PROP CHALLENGES"
-    },
-    {
       "component": "apps/web-react/src/features/community/TelegramCommunity.tsx",
       "line": 58,
       "page": "community",
@@ -90508,52 +92083,12 @@
       "expression": "pick(locale, provider.labels.fa, provider.labels.en)"
     },
     {
-      "component": "apps/web-react/src/features/company/Contact.tsx",
-      "line": 110,
-      "page": "company",
-      "route": "/:locale/*",
-      "reason": "literal-jsx-review",
-      "text": "Website"
-    },
-    {
       "component": "apps/web-react/src/features/economy/ui.tsx",
       "line": 46,
       "page": "economy",
       "route": "/:locale/*",
       "reason": "dynamic-pair",
       "expression": "t(english, english)"
-    },
-    {
-      "component": "apps/web-react/src/features/governance/CouncilWorkspace.tsx",
-      "line": 22,
-      "page": "governance",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "text(en, fa)"
-    },
-    {
-      "component": "apps/web-react/src/features/governance/GovernanceViews.tsx",
-      "line": 15,
-      "page": "governance",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "text(en, fa)"
-    },
-    {
-      "component": "apps/web-react/src/features/governance/NewProposal.tsx",
-      "line": 15,
-      "page": "governance",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "text(en, fa)"
-    },
-    {
-      "component": "apps/web-react/src/features/governance/ProposalPage.tsx",
-      "line": 26,
-      "page": "governance",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "text(en, fa)"
     },
     {
       "component": "apps/web-react/src/features/governance/ProposalPage.tsx",
@@ -90572,22 +92107,6 @@
       "expression": "pick(locale, key, en)"
     },
     {
-      "component": "apps/web-react/src/features/markets/Markets.tsx",
-      "line": 129,
-      "page": "markets",
-      "route": "/:locale/markets",
-      "reason": "dynamic-pair",
-      "expression": "text(`Open ${m.base} in the terminal`, `${m.base} را در ترمینال باز کن`)"
-    },
-    {
-      "component": "apps/web-react/src/features/markets/Markets.tsx",
-      "line": 152,
-      "page": "markets",
-      "route": "/:locale/markets",
-      "reason": "dynamic-pair",
-      "expression": "text(`Show more (${visible.length - shown.length} remaining)`, `بیشتر نشان بده (${number(visible.length - shown.length, locale)} باقی‌مانده)`)"
-    },
-    {
       "component": "apps/web-react/src/features/partners/Coach.tsx",
       "line": 37,
       "page": "partners",
@@ -90597,59 +92116,11 @@
     },
     {
       "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-      "line": 121,
-      "page": "purchase",
-      "route": "/:locale/checkout; /:locale/:product/purchases",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
       "line": 122,
       "page": "purchase",
       "route": "/:locale/checkout; /:locale/:product/purchases",
       "reason": "dynamic-pair",
       "expression": "t(e[0], e[1])"
-    },
-    {
-      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
-      "line": 16,
-      "page": "purchase",
-      "route": "/:locale/checkout; /:locale/:product/purchases",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
-      "line": 91,
-      "page": "purchase",
-      "route": "/:locale/checkout; /:locale/:product/purchases",
-      "reason": "literal-jsx-review",
-      "text": "USD ·"
-    },
-    {
-      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
-      "line": 98,
-      "page": "purchase",
-      "route": "/:locale/checkout; /:locale/:product/purchases",
-      "reason": "literal-jsx-review",
-      "text": "USD ·"
-    },
-    {
-      "component": "apps/web-react/src/features/purchase/PayoutThread.tsx",
-      "line": 20,
-      "page": "purchase",
-      "route": "/:locale/checkout; /:locale/:product/purchases",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
-      "line": 35,
-      "page": "purchase",
-      "route": "/:locale/checkout; /:locale/:product/purchases",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
     },
     {
       "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
@@ -90901,27 +92372,11 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-      "line": 24,
-      "page": "terminal",
-      "route": "/:locale/:product/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
       "line": 45,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
       "expression": "t(fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 64,
-      "page": "terminal",
-      "route": "/:locale/:product/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
@@ -90956,80 +92411,24 @@
       "expression": "pick(locale, el.dataset.fa || \"\", el.dataset.en || \"\")"
     },
     {
-      "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-      "line": 30,
-      "page": "transparency",
-      "route": "/:locale/*",
-      "reason": "literal-jsx-review",
-      "text": "Openfund Treasury"
-    },
-    {
-      "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-      "line": 115,
-      "page": "transparency",
-      "route": "/:locale/*",
-      "reason": "literal-jsx-review",
-      "text": "04 / OPENFUND TREASURY"
-    },
-    {
       "component": "apps/web-react/src/i18n/locales.ts",
-      "line": 56,
+      "line": 64,
       "page": "global",
       "route": "/:locale/*",
       "reason": "dynamic-pair",
       "expression": "pick(locale, source?.fa ?? value.fa ?? value.en ?? '', source?.en ?? value.en ?? value.fa ?? '')"
-    },
-    {
-      "component": "apps/web-react/src/session/ProfilePanel.tsx",
-      "line": 47,
-      "page": "global",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/trading/TradingBridge.tsx",
-      "line": 38,
-      "page": "global",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(currentLocale(), fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/wallet/ChallengeWalletPanel.tsx",
-      "line": 20,
-      "page": "global",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-      "line": 60,
-      "page": "global",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/wallet/WalletPicker.tsx",
-      "line": 38,
-      "page": "global",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/wallet/errors.ts",
-      "line": 82,
-      "page": "global",
-      "route": "/:locale/*",
-      "reason": "dynamic-pair",
-      "expression": "pick(locale, fa, en)"
     }
   ],
   "findings": [],
   "exclusions": [
+    {
+      "component": "apps/web-react/src/features/applications/Applications.tsx",
+      "line": 51,
+      "page": "applications",
+      "route": "/:locale/apps",
+      "reason": "language-neutral-brand-or-identifier",
+      "text": "OPENFUND ·"
+    },
     {
       "component": "apps/web-react/src/features/company/About.tsx",
       "line": 58,
@@ -91037,6 +92436,14 @@
       "route": "/:locale/*",
       "reason": "language-neutral-brand-or-identifier",
       "text": "OPENFUND /"
+    },
+    {
+      "component": "apps/web-react/src/features/company/Contact.tsx",
+      "line": 110,
+      "page": "company",
+      "route": "/:locale/*",
+      "reason": "aria-hidden-not-rendered-copy",
+      "text": "Website"
     },
     {
       "component": "apps/web-react/src/features/company/Contact.tsx",
@@ -91072,11 +92479,27 @@
     },
     {
       "component": "apps/web-react/src/features/governance/CouncilWorkspace.tsx",
+      "line": 22,
+      "page": "governance",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "text(en, fa)"
+    },
+    {
+      "component": "apps/web-react/src/features/governance/CouncilWorkspace.tsx",
       "line": 62,
       "page": "governance",
       "route": "/:locale/*",
       "reason": "language-neutral-brand-or-identifier",
       "text": "OFP"
+    },
+    {
+      "component": "apps/web-react/src/features/governance/GovernanceViews.tsx",
+      "line": 15,
+      "page": "governance",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "text(en, fa)"
     },
     {
       "component": "apps/web-react/src/features/governance/GovernanceViews.tsx",
@@ -91087,12 +92510,36 @@
       "text": "OFP"
     },
     {
+      "component": "apps/web-react/src/features/governance/NewProposal.tsx",
+      "line": 15,
+      "page": "governance",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "text(en, fa)"
+    },
+    {
+      "component": "apps/web-react/src/features/governance/ProposalPage.tsx",
+      "line": 26,
+      "page": "governance",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "text(en, fa)"
+    },
+    {
       "component": "apps/web-react/src/features/home/Home.tsx",
       "line": 82,
       "page": "home",
       "route": "/:locale/home",
       "reason": "language-neutral-brand-or-identifier",
       "text": "OPENFUND"
+    },
+    {
+      "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+      "line": 26,
+      "page": "inbox",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
     },
     {
       "component": "apps/web-react/src/features/information/InformationShell.tsx",
@@ -91143,6 +92590,54 @@
       "text": "?c=&lt;campaign&gt;"
     },
     {
+      "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+      "line": 121,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+      "line": 16,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+      "line": 91,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "language-neutral-brand-or-identifier",
+      "text": "USD ·"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
+      "line": 98,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "language-neutral-brand-or-identifier",
+      "text": "USD ·"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/PayoutThread.tsx",
+      "line": 20,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
+      "line": 35,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
       "component": "apps/web-react/src/features/terminal/Analytics.tsx",
       "line": 98,
       "page": "terminal",
@@ -91184,11 +92679,27 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
+      "line": 24,
+      "page": "terminal",
+      "route": "/:locale/:product/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
       "line": 41,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
       "text": "openfund"
+    },
+    {
+      "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
+      "line": 64,
+      "page": "terminal",
+      "route": "/:locale/:product/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
@@ -91239,12 +92750,68 @@
       "text": "OPENFUND /"
     },
     {
+      "component": "apps/web-react/src/i18n/locales.ts",
+      "line": 52,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/session/ProfilePanel.tsx",
+      "line": 47,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
       "component": "apps/web-react/src/session/ProfilePanel.tsx",
       "line": 154,
       "page": "global",
       "route": "/:locale/*",
       "reason": "language-neutral-brand-or-identifier",
       "text": "Openfund"
+    },
+    {
+      "component": "apps/web-react/src/trading/TradingBridge.tsx",
+      "line": 38,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(currentLocale(), fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/wallet/ChallengeWalletPanel.tsx",
+      "line": 20,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
+      "line": 60,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/wallet/WalletPicker.tsx",
+      "line": 38,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/wallet/errors.ts",
+      "line": 82,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
     }
   ]
 }

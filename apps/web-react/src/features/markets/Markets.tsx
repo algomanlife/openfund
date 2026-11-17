@@ -1,4 +1,4 @@
-import { intlLocale } from '../../i18n/locales'
+import { intlLocale, pickFormat } from '../../i18n/locales'
 import { useEffect, useMemo, useState, useId } from 'react'
 import { useNavigate } from 'react-router-dom'
 import InformationShell, { Hero, useInformationLocale } from '../information/InformationShell'
@@ -126,7 +126,7 @@ export default function Markets() {
             const label = `${m.base}${m.quote ? '/' + m.quote : ''} — ${CATEGORY_LABELS[(m.group || '') as CategoryKey]?.[locale] || m.group || ''}`
             return (
               <li key={m.symbol}>
-                <button className="mk-card" onClick={() => openInTerminal(m.symbol)} title={text(`Open ${m.base} in the terminal`, `${m.base} را در ترمینال باز کن`)[locale]} aria-label={label}>
+                <button className="mk-card" onClick={() => openInTerminal(m.symbol)} title={pickFormat(locale, '${base} را در ترمینال باز کن', 'Open ${base} in the terminal', { base: m.base })} aria-label={label}>
                   <span className="mk-card-head">
                     <MarketIcon base={m.base} group={m.group} size={26} />
                     <span dir="ltr" className="mk-symbol"><b>{m.base}</b>{m.quote ? <small>/{m.quote}</small> : null}</span>
@@ -149,7 +149,7 @@ export default function Markets() {
         </ul>
         {visible.length > shown.length && (
           <button className="button mk-more" onClick={() => setLimit(l => l + PAGE_STEP)}>
-            {text(`Show more (${visible.length - shown.length} remaining)`, `بیشتر نشان بده (${number(visible.length - shown.length, locale)} باقی‌مانده)`)[locale]}
+            {pickFormat(locale, 'بیشتر نشان بده (${count} باقی‌مانده)', 'Show more (${count} remaining)', { count: number(visible.length - shown.length, locale) })}
           </button>
         )}
       </>}

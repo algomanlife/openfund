@@ -72,7 +72,7 @@ for (const path of MODULES) {
 
 /* 2 — literal pairs at call sites: (Persian, English) in either order */
 const STR = String.raw`'((?:[^'\\\n]|\\.)*)'|"((?:[^"\\\n]|\\.)*)"|\x60((?:[^\x60\\]|\\.)*)\x60`
-const PAIR = new RegExp(String.raw`\b(?:pick|t|text|tr|label|L)\(\s*(?:\w+(?:\.\w+)?,\s*)?(?:${STR})\s*,\s*(?:${STR})\s*[,)]`, 'g')
+const PAIR = new RegExp(String.raw`\b(?:pick|pickFormat|t|text|tr|label|L)\(\s*(?:\w+(?:\.\w+)?,\s*)?(?:${STR})\s*,\s*(?:${STR})\s*[,)]`, 'g')
 const unescape = s => s.replace(/\\n/g, '\n').replace(/\\(['"\\\x60])/g, '$1')
 /* template literals keep `${expr}` placeholders; normalise to `${0}` style names */
 const normaliseTemplate = s => s.replace(/\$\{[^}]+\}/g, m => '${' + m.slice(2, -1).replace(/[^\w.]/g, '').slice(0, 24) + '}')

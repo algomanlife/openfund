@@ -83,6 +83,56 @@ the recorded profit, payout amount, trader share, approved recipient and
 available settlement evidence. A replicated or fenced account is read-only
 for real settlement recording.
 
+### Operations sections (launch completion)
+
+Every change below re-enters the owner password and runs only against the
+connected GLOBAL backend.
+
+- **Partner applications:** open an application to review its submission
+  and history; start a review, approve with verification evidence (audience
+  and content checks for ambassadors, track-record evidence for coaches),
+  reject, suspend or reinstate. **Partner commissions** lists earned,
+  reversed, paid and pending balances and records a completed commission
+  transfer by its reference.
+- **Finance:** *Financial position* shows the computed position and can
+  refresh the treasury snapshot. *Verified expenses* records an expense with
+  its evidence source and reference; a different operator identity must
+  verify it (four-eyes), then mark it paid or void it. *Capital reserves* and
+  *Obligations* record reserves and liabilities; obligations close as
+  settled or void. Paid IB distributions show an approve and record control
+  on the payout record; recording an IB payment follows
+  `BACKSTAGE_REAL_SETTLEMENT`.
+- **Audit trail:** the operational and financial audit logs in one list,
+  filtered by trail, action or actor.
+- **Traders:** suspend or reactivate a trader with a recorded reason. A
+  suspended trader's sessions end and sign-in is refused.
+- **Coupons:** *New coupon* creates an inactive commercial coupon (code,
+  percent or fixed value, limits, window, eligible plans, sizes, customers);
+  activate, disable, edit or revoke it permanently. Pricing locks after the
+  first redemption. Controlled test coupons keep their own section.
+- **Support inbox:** filter by department; open a message and use *Reply to
+  trader*. Replies reach the trader's Inbox and notifications; internal notes
+  stay private.
+- **Live risk board:** read-only open positions, exposure per market,
+  distance to the daily and total loss limits, market-feed freshness and
+  engine-loop lag. It never runs or changes the engine.
+- **Global search:** a wallet address, support reference, challenge, order
+  or payout id, or a transaction hash.
+- **Notifications:** what was delivered to whom and whether it was read.
+
+### Content workspace
+
+*Content → Content workspace* edits editorial copy in Directus without
+leaving Backstage: choose a page and a language, review the live read-only
+preview, pick interface copy or a structured surface field, edit it and
+save; then publish or move it back to draft. Only plain text is accepted,
+placeholders must match the English source, and financial collections,
+links, destinations and contact fields are never editable here.
+*Visual mode* opens the same page in the Directus Studio visual editor.
+Writes need `BACKSTAGE_DIRECTUS_TOKEN` (a user with the *Backstage Content
+Editor* role from `register_backstage_editor.py`); without it the workspace
+is read-only.
+
 ### Record a real payout transfer
 
 1. Open an approved commercial reward request. Inspect the account, amount,

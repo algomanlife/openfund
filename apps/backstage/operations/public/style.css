@@ -63,3 +63,7 @@ dialog form{display:grid;gap:15px}
 .payout-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1rem; margin: 0; justify-self: stretch; }
 .payout-facts dt { color: var(--muted); }
 .payout-facts dd { margin: 0.25rem 0 0; overflow-wrap: anywhere; }
+.wizard-steps { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; list-style: none; padding: 0; margin: 0 0 1rem; color: var(--muted); }
+.wizard-steps li { border-block-end: 2px solid var(--line, currentColor); padding-block: .25rem; }
+.content-preview iframe { display: block; width: 100%; height: min(70vh, 640px); border: 1px solid var(--line, #444); border-radius: .5rem; background: #fff; margin-block-start: .75rem; }
+a.button { display: inline-flex; align-items: center; text-decoration: none; }

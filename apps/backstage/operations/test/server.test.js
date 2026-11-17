@@ -101,6 +101,117 @@ test('login, privilege checks, step-up, expiration, revocation and throttling', 
   assert.equal((await call('/api/login', { username: settings.owner, password })).status, 429)
 })
 
+test('operations sections: reads, table-driven mutations, validation, step-up and region guard', async t => {
+  const calls = []
+  let region = 'GLOBAL'
+  const upstream = createServer(async (req, res) => {
+    const parts = []
+    for await (const part of req) parts.push(part)
+    calls.push({ path: req.url, method: req.method, headers: req.headers, body: Buffer.concat(parts).toString() })
+    res.setHeader('Content-Type', 'application/json')
+    if (req.url === '/runtime/status') res.end(JSON.stringify({ region, mode: 'GLOBAL_CONNECTED' }))
+    else res.end(JSON.stringify({ ok: true, entries: [], results: [], expenses: [], reserves: [], obligations: [], notifications: [], commissions: [], coupons: [], redemptions: [], orders: [], audit: [] }))
+  })
+  const password = randomBytes(24).toString('base64url')
+  const origin = 'https://backstage.example.test'
+  const settings = { origin, backend: await open(upstream), cms: 'http://127.0.0.1:8055',
+    owner: 'owner-fixture', credential: randomBytes(32).toString('hex'), verifier: await createVerifier(password), realSettlement: false }
+  const server = createBackstage(settings, { audit: () => {} })
+  const local = await open(server)
+  t.after(() => { server.close(); upstream.close() })
+  const call = (path, body, headers = {}) => new Promise((resolve, reject) => {
+    const req = request(local + path, {
+      method: body ? 'POST' : 'GET',
+      headers: { Host: new URL(origin).host, ...(body && { Origin: origin, 'Content-Type': 'application/json' }), ...headers },
+    }, async res => {
+      try {
+        const parts = []
+        for await (const part of res) parts.push(part)
+        resolve({ status: res.statusCode, cookie: res.headers['set-cookie']?.[0], body: JSON.parse(Buffer.concat(parts)) })
+      } catch (error) { reject(error) }
+    })
+    req.on('error', reject)
+    req.end(body ? JSON.stringify(body) : undefined)
+  })
+  const login = await call('/api/login', { username: settings.owner, password })
+  const headers = { Cookie: login.cookie.split(';')[0], 'X-CSRF-Token': login.body.csrf }
+
+  /* new read sections proxy to their backend endpoints with filters */
+  for (const [path, expected] of [
+    ['/api/audit?source=financial&action=expense', '/admin/operations/audit'],
+    ['/api/risk', '/admin/operations/risk'],
+    ['/api/search?q=0xabc', '/admin/operations/search'],
+    ['/api/notifications', '/admin/operations/notifications'],
+    ['/api/expenses', '/admin/economy/expenses'],
+    ['/api/reserves', '/admin/economy/reserves'],
+    ['/api/obligations', '/admin/economy/obligations'],
+    ['/api/commissions', '/admin/partners/commissions'],
+  ]) {
+    assert.equal((await call(path, undefined, headers)).status, 200, path)
+    assert.equal(new URL(calls.at(-1).path, settings.backend).pathname, expected, path)
+  }
+  assert.equal((await call('/api/audit')).status, 401, 'reads require a session')
+
+  /* partner decision: password confirm + region guard + payload shape */
+  const application = randomUUID()
+  const decision = { action: 'approve', reason: 'Verified identity evidence', password, verification: { identityReviewed: true } }
+  assert.equal((await call(`/api/partners/${application}`, decision, { Cookie: headers.Cookie })).status, 403, 'CSRF required')
+  assert.equal((await call(`/api/partners/${application}`, { ...decision, password: 'wrong credential!' }, headers)).status, 401)
+  assert.equal((await call(`/api/partners/${application}`, { ...decision, action: 'delete' }, headers)).status, 400)
+  assert.equal((await call(`/api/partners/not-a-uuid`, decision, headers)).status, 400)
+  region = 'IRAN'
+  assert.equal((await call(`/api/partners/${application}`, decision, headers)).body.error, 'wrong_region')
+  region = 'GLOBAL'
+  assert.equal((await call(`/api/partners/${application}`, decision, headers)).status, 200)
+  assert.equal(calls.at(-1).path, `/admin/partners/applications/${application}/decision`)
+  assert.deepEqual(JSON.parse(calls.at(-1).body), { action: 'approve', note: 'Verified identity evidence', verification: { identityReviewed: true } })
+
+  /* user suspension */
+  const trader = randomUUID()
+  assert.equal((await call(`/api/users/${trader}`, { action: 'suspend', reason: 'tos violation', password }, headers)).status, 200)
+  assert.deepEqual(JSON.parse(calls.at(-1).body), { status: 'suspended', reason: 'tos violation' })
+  assert.equal(calls.at(-1).path, `/admin/users/${trader}/status`)
+  assert.equal((await call(`/api/users/${trader}`, { action: 'suspend', password }, headers)).status, 400, 'reason required')
+
+  /* finance: expense creation + transition, treasury refresh, obligation close */
+  const expense = { action: 'create', password, category: 'cms', description: 'Directus hosting',
+    amount: '25.00', currency: 'USD', amountUsd: '25.00', incurredOn: '2026-11-01', source: 'invoice', invoiceReference: 'INV-9' }
+  assert.equal((await call('/api/expenses/new', expense, headers)).status, 200)
+  assert.equal(calls.at(-1).path, '/admin/economy/expenses')
+  assert.equal(JSON.parse(calls.at(-1).body).invoiceReference, 'INV-9')
+  const expenseId = randomUUID()
+  assert.equal((await call(`/api/expenses/${expenseId}`, { action: 'verify', password }, headers)).status, 200)
+  assert.equal(calls.at(-1).path, `/admin/economy/expenses/${expenseId}/verify`)
+  assert.equal((await call(`/api/expenses/${expenseId}`, { action: 'paid', password }, headers)).status, 400, 'payment reference required')
+  assert.equal((await call('/api/finance/treasury', { action: 'refresh', password }, headers)).status, 200)
+  assert.equal(calls.at(-1).path, '/admin/economy/treasury/refresh')
+  const obligation = randomUUID()
+  assert.equal((await call(`/api/obligations/${obligation}`, { action: 'settled', password }, headers)).status, 200)
+  assert.deepEqual(JSON.parse(calls.at(-1).body), { status: 'settled' })
+
+  /* coupons: create requires kind/value; status actions map to the backend update */
+  assert.equal((await call('/api/coupons/new', { action: 'create', password, code: 'LAUNCH25', kind: 'percent', value: '25' }, headers)).status, 200)
+  assert.equal(calls.at(-1).path, '/admin/coupons')
+  assert.equal((await call('/api/coupons/new', { action: 'create', password, code: 'X', kind: 'nope', value: '25' }, headers)).status, 400)
+  const coupon = randomUUID()
+  assert.equal((await call(`/api/coupons/${coupon}`, { action: 'activate', password }, headers)).status, 200)
+  assert.deepEqual(JSON.parse(calls.at(-1).body), { status: 'active' })
+
+  /* support thread reply flows to the thread endpoint, not the status update */
+  const reference = 'OF-261117-ABCDEF'
+  assert.equal((await call(`/api/support/${reference}`, { action: 'reply', reason: 'We are looking into it.', password }, headers)).status, 200)
+  assert.equal(calls.at(-1).path, `/admin/support/messages/${reference}/thread`)
+  assert.deepEqual(JSON.parse(calls.at(-1).body), { action: 'reply', message: 'We are looking into it.' })
+
+  /* IB settlement: approval needs a policy; payment needs a hash and real settlement */
+  const payout = randomUUID()
+  assert.equal((await call(`/api/payouts/${payout}`, { action: 'ib_approve', reason: 'due', password }, headers)).status, 400, 'policy version required')
+  assert.equal((await call(`/api/payouts/${payout}`, { action: 'ib_approve', reason: 'due', policyVersion: 'ib-2026-01', password }, headers)).status, 200)
+  assert.deepEqual(JSON.parse(calls.at(-1).body), { action: 'approve', policyVersion: 'ib-2026-01' })
+  assert.equal((await call(`/api/payouts/${payout}`, { action: 'ib_paid', reason: 'transfer done', payoutRef: '0x' + 'a'.repeat(64), password }, headers)).body.error,
+    'settlement_disabled', 'IB payment recording follows the real-settlement switch')
+})
+
 test('configuration must be explicitly provisioned and production origins must use HTTPS', async () => {
   assert.throws(() => loadConfig({}))
   assert.throws(() => loadConfig({

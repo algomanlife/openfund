@@ -111,12 +111,18 @@ function login() {
 
 const groups = [
   ['prop', ['users', 'challenges', 'reviews', 'payouts']],
-  ['business', ['payments', 'coupons', 'support', 'partners', 'finance', 'system']],
+  ['business', ['payments', 'coupons', 'support', 'partners', 'commissions']],
+  ['financeGroup', ['finance', 'expenses', 'reserves', 'obligations']],
+  ['operations', ['audit', 'risk', 'search', 'notifications', 'system']],
+  ['contentGroup', ['content']],
 ]
+/* some section keys collide with existing table labels */
+const sectionLabels = { audit: 'auditViewer', search: 'searchx' }
+const st = key => t(sectionLabels[key] ?? key)
 
 function nav(selected) {
   const menuLink = key => {
-    const item = link(key)
+    const item = link(key, {}, st(key))
     if (selected === key) item.setAttribute('aria-current', 'page')
     return item
   }
@@ -138,14 +144,16 @@ const table = (heading, columns, rows) => el('section', { class: 'panel table-bo
 function decide(section, row, action) {
   const reason = el('textarea', { required: '', maxlength: '500', rows: '3' })
   const password = el('input', { required: '', type: 'password', dir: 'ltr', autocomplete: 'current-password' })
-  const hash = action === 'settle' ? el('input', { required: '', maxlength: '66', pattern: '0x[0-9a-fA-F]{64}', dir: 'ltr', spellcheck: 'false' }) : null
+  const hash = ['settle', 'ib_paid'].includes(action) ? el('input', { required: '', maxlength: '66', pattern: '0x[0-9a-fA-F]{64}', dir: 'ltr', spellcheck: 'false' }) : null
+  const policy = action === 'ib_approve' ? el('input', { required: '', maxlength: '80', dir: 'ltr', spellcheck: 'false' }) : null
   const submit = el('button', { class: action === 'reject' ? 'danger' : 'primary' }, t('confirm'))
   const feedback = el('p', { role: 'alert' })
   const form = el('form', { on: { submit: async event => {
     event.preventDefault()
     submit.disabled = true
     try {
-      await api(section + '/' + row.id, { action, reason: reason.value, password: password.value, ...(hash && { payoutRef: hash.value }) })
+      await api(section + '/' + row.id, { action, reason: reason.value, password: password.value,
+        ...(hash && { payoutRef: hash.value }), ...(policy && { policyVersion: policy.value }) })
       dialog.close()
       render()
       announce('success')
@@ -155,7 +163,7 @@ function decide(section, row, action) {
       password.value = ''
       submit.disabled = false
     }
-  } } }, el('h2', {}, t(action)), uid(row), action === 'reverify' ? null : field(['reply', 'resolve_appeal'].includes(action) ? 'message' : 'reason', reason), hash ? field('transactionHash', hash) : null, field('password', password),
+  } } }, el('h2', {}, t(action)), uid(row), action === 'reverify' ? null : field(['reply', 'resolve_appeal'].includes(action) ? 'message' : 'reason', reason), hash ? field('transactionHash', hash) : null, policy ? field('policyVersion', policy) : null, field('password', password),
   feedback, el('div', { class: 'tools' }, button('cancel', () => dialog.close()), submit))
   dialog.replaceChildren(form)
   dialog.showModal()
@@ -163,6 +171,67 @@ function decide(section, row, action) {
 
 const decisionButtons = (section, row) => el('div', { class: 'tools' },
   button('approve', () => decide(section, row, 'approve')), button('reject', () => decide(section, row, 'reject')))
+
+/* generic owner mutation dialog: custom fields + password re-entry; every
+   privileged action re-enters the owner password (confirmOwner server-side) */
+function operate(section, record, action, fields = [], titleKey = action) {
+  const password = el('input', { required: '', type: 'password', dir: 'ltr', autocomplete: 'current-password' })
+  const submit = el('button', { class: 'primary' }, t('confirm'))
+  const feedback = el('p', { role: 'alert' })
+  const form = el('form', { on: { submit: async event => {
+    event.preventDefault()
+    submit.disabled = true
+    try {
+      const payload = { action, password: password.value }
+      for (const [key, input, read] of fields) {
+        const value = read ? read(input) : input.value
+        if (value !== undefined) payload[key] = value
+      }
+      await api(section + '/' + encodeURIComponent(record), payload)
+      dialog.close()
+      render()
+      announce('success')
+    } catch (error) {
+      feedback.textContent = labels[error.message] ? t(error.message) : t('unexpected_error')
+    } finally { password.value = ''; submit.disabled = false }
+  } } }, el('h2', {}, t(titleKey)),
+  fields.map(([key, input, , label]) => input.hasAttribute?.('hidden') ? null : field(label ?? key, input)), field('password', password), feedback,
+  el('div', { class: 'tools' }, button('cancel', () => dialog.close()), submit))
+  dialog.replaceChildren(form)
+  dialog.showModal()
+}
+const textInput = (attrs = {}) => el('input', { maxlength: '200', ...attrs })
+const areaInput = (attrs = {}) => el('textarea', { rows: '3', maxlength: '500', ...attrs })
+const selectInput = options => el('select', {}, options.map(option => {
+  const [value, label] = Array.isArray(option) ? option : [option, option]
+  return el('option', { value }, t(label))
+}))
+const checkboxInput = () => el('input', { type: 'checkbox' })
+const readChecked = input => input.checked === true
+const readList = input => input.value.trim() ? input.value.split(',').map(v => v.trim()).filter(Boolean) : null
+const readOptional = input => input.value.trim() || undefined
+
+const couponFields = () => [
+  ['name', textInput()],
+  ['maxRedemptions', textInput({ type: 'number', min: '1' }), readOptional],
+  ['perUserLimit', textInput({ type: 'number', min: '1' }), readOptional],
+  ['startsAt', textInput({ type: 'date', dir: 'ltr' }), readOptional],
+  ['expiresAt', textInput({ type: 'date', dir: 'ltr' }), readOptional],
+  ['accountSizes', textInput({ dir: 'ltr' }), input => input.value.trim() ? input.value.split(',').map(Number) : undefined],
+  ['challengePlanIds', textInput({ dir: 'ltr', maxlength: '2000' }), input => readList(input) ?? undefined],
+  ['allowedUserIds', textInput({ dir: 'ltr', maxlength: '2000' }), input => readList(input) ?? undefined],
+]
+const expenseWizard = () => operate('expenses', 'new', 'create', [
+  ['category', selectInput(['render_infrastructure', 'database', 'cms', 'market_data', 'operational_services', 'marketing', 'ambassador_commissions', 'salaries_administration', 'other'])],
+  ['description', areaInput({ required: '' })],
+  ['amount', textInput({ required: '', dir: 'ltr' }), undefined, 'amountOriginal'],
+  ['currency', textInput({ required: '', dir: 'ltr', value: 'USD', maxlength: '8' })],
+  ['amountUsd', textInput({ required: '', dir: 'ltr' }), undefined, 'amount'],
+  ['incurredOn', textInput({ required: '', type: 'date', dir: 'ltr' })],
+  ['source', selectInput(['provider_api', 'invoice', 'receipt', 'contract'])],
+  ['invoiceReference', textInput({ required: '', dir: 'ltr' })],
+  ['documentUrl', textInput({ dir: 'ltr', maxlength: '500' }), readOptional],
+], 'recordExpense')
 
 const challengeLink = r => link('challenges', { id: r.id }, uid(r))
 const challengeColumns = [['identity', challengeLink], ['plan', plan], ['stage', r => r.stage === 0 ? t('funded') : number(r.stage)],
@@ -178,15 +247,45 @@ const columns = {
     ['scope', r => t(r.test_mode ? 'test' : 'commercial')], ['payoutDetails', r => link('payouts', { id: r.id }, uid(r))], ['action', r => r.status === 'requested' ? decisionButtons('payouts', r) : r.test_mode && r.status === 'approved' ? button('simulate', () => decide('payouts', r, 'simulate')) : '—']],
   payments: [['identity', r => link('payments', { id: r.purchase_order_id }, technical(r.purchase_order_id))], ['transaction', r => technical(r.tx_hash)], ['status', status], ['date', r => date(r.created_at ?? r.last_attempt_at)],
     ['action', r => r.retryable && r.status !== 'confirmed' ? button('reverify', () => decide('payments', r, 'reverify')) : '—']],
-  coupons: [['code', r => technical(r.code)], ['status', status], ['discount', r => r.kind === 'percent' ? new Intl.NumberFormat(fmt(), { style: 'percent' }).format(Number(r.value) / 100) : usd(r.value)],
-    ['redeemed', r => number(r.uses_consumed)], ['expiry', r => date(r.expires_at)]],
-  support: [['reference', r => link('support', { id: r.reference }, technical(r.reference))], ['subject', r => r.subject], ['status', status], ['date', r => date(r.createdAt)]],
-  partners: [['wallet', wallet], ['role', r => t(r.role)], ['status', status], ['date', r => date(r.submitted_at)]],
+  coupons: [['code', r => link('coupons', { id: r.id }, technical(r.code))], ['status', status], ['discount', r => r.kind === 'percent' ? new Intl.NumberFormat(fmt(), { style: 'percent' }).format(Number(r.value) / 100) : usd(r.value)],
+    ['redeemed', r => number(r.uses_consumed)], ['expiry', r => date(r.expires_at)],
+    ['action', r => r.internal ? '—' : el('div', { class: 'tools' },
+      r.status === 'inactive' ? button('activate', () => operate('coupons', r.id, 'activate')) : null,
+      r.status === 'active' ? button('disable', () => operate('coupons', r.id, 'disable')) : null,
+      r.status !== 'revoked' ? button('couponRevoke', () => operate('coupons', r.id, 'revoke', [], 'couponRevoke'), 'danger') : null,
+      r.status !== 'revoked' ? button('couponUpdate', () => operate('coupons', r.id, 'update', couponFields(), 'couponUpdate')) : null)]],
+  support: [['reference', r => link('support', { id: r.reference }, technical(r.reference))], ['subject', r => r.subject], ['departmentColumn', r => t(r.department === 'support' ? 'supportDept' : r.department)], ['status', status], ['date', r => date(r.createdAt)]],
+  partners: [['wallet', wallet], ['identity', r => link('partners', { id: r.id }, uid(r))], ['role', r => t(r.role)], ['status', status], ['date', r => date(r.submitted_at)]],
+  commissions: [['wallet', wallet], ['code', r => technical(r.referral_code)], ['status', status],
+    ['earned', r => usd(r.earned)], ['reversedUsd', r => usd(r.reversed)], ['paidOut', r => usd(r.paid)], ['pendingUsd', r => usd(r.pending)],
+    ['action', r => button('recordPayout', () => operate('commissions', r.user_id, 'payout', [
+      ['amountUsd', textInput({ required: '', dir: 'ltr' }), undefined, 'amount'],
+      ['payoutReference', textInput({ required: '', dir: 'ltr' }), undefined, 'paymentReference'],
+    ], 'recordPayout'))]],
+  expenses: [['category', r => t(r.category)], ['description', r => r.description], ['amount', r => usd(r.amount_usd)],
+    ['status', status], ['paymentStatus', r => badge(r.payment_status ?? 'unpaid')], ['incurredOn', r => date(r.incurred_on)],
+    ['action', r => el('div', { class: 'tools' },
+      r.status === 'recorded' ? button('verify', () => operate('expenses', r.id, 'verify')) : null,
+      r.status === 'verified' && r.payment_status === 'unpaid' ? button('markPaid', () => operate('expenses', r.id, 'paid', [
+        ['paymentReference', textInput({ required: '', dir: 'ltr' })]], 'markPaid')) : null,
+      r.status !== 'void' ? button('void', () => operate('expenses', r.id, 'void')) : null)]],
+  reserves: [['kind', r => t({ operational: 'operationalReserve', risk: 'riskReserve', other: 'otherReserve' }[r.kind] ?? r.kind)],
+    ['amount', r => usd(r.amount_usd)], ['note', r => r.note], ['recordedBy', r => technical(r.set_by)], ['date', r => date(r.created_at)]],
+  obligations: [['kind', r => t(r.kind)], ['description', r => r.description], ['amount', r => usd(r.amount_usd)],
+    ['status', status], ['dueOn', r => r.due_on ? date(r.due_on) : '—'], ['reference', r => technical(r.reference)],
+    ['action', r => r.status === 'open' ? el('div', { class: 'tools' },
+      button('closeSettled', () => operate('obligations', r.id, 'settled', [], 'closeSettled')),
+      button('closeVoid', () => operate('obligations', r.id, 'void', [], 'closeVoid'))) : '—']],
+  audit: [['date', r => date(r.ts)], ['sourceColumn', r => t(r.source === 'financial' ? 'financial' : 'operationalSource')], ['action', r => technical(r.action)],
+    ['actor', r => technical(r.actor ?? r.subject ?? '—')], ['entity', r => technical(r.entity ? `${r.entity}:${r.entity_id}` : r.entity_id ?? '—')]],
+  notifications: [['date', r => date(r.created_at)], ['wallet', wallet], ['kind', r => badge(r.kind)],
+    ['readAt', r => r.read_at ? date(r.read_at) : t('unreadState')]],
 }
 const filterStatuses = {
   users: ['active', 'suspended'], challenges: ['created', 'started', 'passed', 'failed', 'expired', 'cancelled'],
   payouts: ['requested', 'approved', 'paid', 'rejected', 'cancelled'], payments: ['pending', 'confirmed', 'rejected'],
   support: ['new', 'in_progress', 'waiting_customer', 'resolved', 'closed'],
+  partners: ['submitted', 'under_review', 'approved', 'rejected', 'suspended'],
 }
 
 async function directory(main, section, filter) {
@@ -198,7 +297,10 @@ async function directory(main, section, filter) {
   if (id && section === 'users') {
     const { user, challenges, purchases, withdrawals } = data
     main.append(el('section', { class: 'panel detail' }, el('h2', {}, user.display_name ?? t('users')),
-      wallet(user), uid(user), status(user), el('span', {}, date(user.created_at))),
+      wallet(user), uid(user), status(user), el('span', {}, date(user.created_at)),
+      el('div', { class: 'tools' }, user.status === 'active'
+        ? button('suspendUser', () => operate('users', user.id, 'suspend', [['reason', areaInput({ required: '' })]], 'suspendUser'), 'danger')
+        : button('activateUser', () => operate('users', user.id, 'activate', [['reason', areaInput({ required: '' })]], 'activateUser')))),
     table('challenges', challengeColumns, challenges),
     table('transactions', [['identity', r => link('payments', { id: r.id }, uid(r))], ['status', status], ['amount', r => usd(r.price_usd)],
       ['transaction', r => technical(r.payment?.txHash)], ['date', r => date(r.created_at)]], purchases),
@@ -261,7 +363,16 @@ async function directory(main, section, filter) {
       record.writable && record.status === 'approved' && record.test_mode ? button('simulate', () => decide('payouts', record, 'simulate')) : null,
       record.writable && record.status === 'approved' && !record.test_mode ?
         data.realSettlement ? el('div', { class: 'detail' }, el('p', {}, t('settlementHint')), button('settle', () => decide('payouts', record, 'settle'), 'primary')) :
-          el('p', { class: 'muted' }, t('settlement_disabled')) : null))
+          el('p', { class: 'muted' }, t('settlement_disabled')) : null,
+      record.writable && record.status === 'paid' && !record.test_mode && record.payment_evidence?.finality === 'finalized' &&
+      Number(record.eligibility?.distribution?.ib ?? 0) > 0 ? el('div', { class: 'detail' },
+        record.ib_settlement ? el('dl', { class: 'payout-facts' },
+          el('div', {}, el('dt', {}, t('status')), el('dd', {}, badge(record.ib_settlement.status))),
+          el('div', {}, el('dt', {}, t('amount')), el('dd', {}, usd(record.ib_settlement.amount))),
+          el('div', {}, el('dt', {}, t('destination')), el('dd', {}, technical(record.ib_settlement.recipient)))) : null,
+        el('div', { class: 'tools' },
+          !record.ib_settlement ? button('ib_approve', () => decide('payouts', record, 'ib_approve')) : null,
+          record.ib_settlement && record.ib_settlement.status !== 'paid' ? button('ib_paid', () => decide('payouts', record, 'ib_paid')) : null)) : null))
     main.append(el('section', { class: 'panel detail' }, el('h2', {}, t('correspondence')),
       data.thread.messages.length ? data.thread.messages.map(m => el('article', { class: 'detail' },
         el('strong', {}, t(m.role)), el('span', { class: 'muted' }, date(m.at)), el('p', { class: 'message' }, m.message))) :
@@ -293,8 +404,82 @@ async function directory(main, section, filter) {
       item.internalNotes ? el('div', {}, el('h3', {}, t('internalNotes')), el('p', { class: 'message' }, item.internalNotes)) : null,
       el('div', { class: 'tools' }, (transitions[item.status] ?? []).map(state =>
         button(state, () => decide('support', { id: item.reference }, state))))),
+    el('section', { class: 'panel detail' }, el('h2', {}, t('correspondence')), el('p', { class: 'muted' }, t('supportHint')),
+      data.thread?.messages?.length ? data.thread.messages.map(m => el('article', { class: 'detail' },
+        el('strong', {}, t(m.role)), el('span', { class: 'muted' }, date(m.at)), el('p', { class: 'message' }, m.message))) :
+        el('p', { class: 'empty' }, t('empty')),
+      item.status !== 'closed' ? el('div', { class: 'tools' }, button('threadReply', () => decide('support', { id: item.reference }, 'reply'), 'primary')) : null),
     table('audit', [['date', r => date(r.ts)], ['status', r => badge(r.to_status)], ['username', r => technical(r.actor)]], data.events))
     return
+  }
+  if (id && section === 'partners') {
+    const { application, events } = data
+    const decision = (action, extra = []) => operate('partners', application.id, action, [
+      ['reason', areaInput({ required: '', maxlength: '2000' })], ...extra])
+    const approveFields = () => {
+      if (application.role === 'coach') {
+        const reviewed = checkboxInput(), evidence = textInput({ required: '' })
+        return [['trackRecordReviewed', reviewed, () => undefined], ['evidence', evidence, () => undefined],
+          ['verification', el('span', { hidden: '' }), () => ({ trackRecordReviewed: readChecked(reviewed), evidence: evidence.value }), 'verificationEvidence']]
+      }
+      const platform = selectInput(['instagram', 'youtube']), count = textInput({ type: 'number', min: '0', dir: 'ltr' })
+      const evidence = textInput({ required: '' }), second = checkboxInput(), markets = checkboxInput(), engagement = checkboxInput()
+      return [['platform', platform, () => undefined], ['followerCount', count, () => undefined], ['evidence', evidence, () => undefined],
+        ['secondPlatformActive', second, () => undefined], ['marketsContent', markets, () => undefined], ['engagementReviewed', engagement, () => undefined],
+        ['verification', el('span', { hidden: '' }), () => ({
+          audience: [{ platform: platform.value, count: Number(count.value), evidence: evidence.value }],
+          secondPlatformActive: readChecked(second), marketsContent: readChecked(markets), engagementReviewed: readChecked(engagement),
+        }), 'verificationEvidence']]
+    }
+    const actions = { submitted: ['review', 'approve', 'reject'], under_review: ['approve', 'reject'], approved: ['suspend'], suspended: ['reinstate'] }
+    main.append(el('section', { class: 'panel detail' }, el('h2', {}, t('applicationDetail')),
+      technical(application.wallet_address), uid(application), el('span', {}, t(application.role)), status(application),
+      el('span', {}, date(application.submitted_at)),
+      el('div', {}, el('h3', {}, t('contact')), technical(application.contact_email)),
+      el('div', {}, el('h3', {}, t('payload')), el('pre', { class: 'message', dir: 'ltr' }, JSON.stringify(application.payload ?? {}, null, 2))),
+      application.verification ? el('div', {}, el('h3', {}, t('verificationEvidence')), el('pre', { class: 'message', dir: 'ltr' }, JSON.stringify(application.verification, null, 2))) : null,
+      el('div', { class: 'tools' }, (actions[application.status] ?? []).map(action =>
+        button(action, () => decision(action, action === 'approve' ? approveFields() : []))))),
+    table('audit', [['date', r => date(r.ts)], ['status', r => badge(r.to_status)], ['username', r => technical(r.actor)], ['reason', r => r.note]], events))
+    return
+  }
+  if (id && section === 'coupons') {
+    main.append(
+      table('redemptions', [['wallet', wallet], ['status', status], ['amount', r => usd(r.net_price_usd)], ['date', r => date(r.created_at)]], data.redemptions ?? []),
+      table('couponOrders', [['identity', r => link('payments', { id: r.id }, uid(r))], ['wallet', wallet], ['status', status],
+        ['amount', r => usd(r.price_usd)], ['date', r => date(r.created_at)]], data.orders ?? []),
+      table('audit', [['date', r => date(r.created_at)], ['action', r => technical(r.action)], ['username', r => technical(r.actor)]], data.audit ?? []))
+    return
+  }
+  if (section === 'coupons') main.append(el('div', { class: 'tools' }, button('couponWizard', () => operate('coupons', 'new', 'create', [
+    ['code', textInput({ required: '', dir: 'ltr', maxlength: '40' })],
+    ['kind', selectInput(['percent', 'fixed'])],
+    ['value', textInput({ required: '', dir: 'ltr' })],
+    ...couponFields()], 'couponWizard'), 'primary')))
+  if (section === 'expenses') main.append(el('div', { class: 'tools' }, button('recordExpense', expenseWizard, 'primary')))
+  if (section === 'reserves') main.append(el('div', { class: 'tools' }, button('setReserve', () => operate('reserves', 'new', 'set', [
+    ['kind', selectInput([['operational', 'operationalReserve'], ['risk', 'riskReserve'], ['other', 'otherReserve']])],
+    ['amountUsd', textInput({ required: '', dir: 'ltr' }), undefined, 'amount'],
+    ['note', areaInput({ required: '' })]], 'setReserve'), 'primary')))
+  if (section === 'obligations') main.append(el('div', { class: 'tools' }, button('recordObligation', () => operate('obligations', 'new', 'create', [
+    ['kind', selectInput(['liability', 'payable', 'other'])],
+    ['description', areaInput({ required: '', maxlength: '300' })],
+    ['amountUsd', textInput({ required: '', dir: 'ltr' }), undefined, 'amount'],
+    ['dueOn', textInput({ type: 'date', dir: 'ltr' }), readOptional],
+    ['reference', textInput({ required: '', dir: 'ltr' })]], 'recordObligation'), 'primary')))
+  if (section === 'audit') {
+    const sourceSelect = el('select', { name: 'source', 'aria-label': t('sourceColumn') },
+      el('option', { value: '' }, t('all')), el('option', { value: 'operational' }, t('operationalSource')), el('option', { value: 'financial' }, t('financial')))
+    sourceSelect.value = query.get('source') ?? ''
+    const actionInput = el('input', { name: 'action', value: query.get('action') ?? '', maxlength: '80', placeholder: t('action'), 'aria-label': t('action'), dir: 'ltr' })
+    const actorInput = el('input', { name: 'actor', value: query.get('actor') ?? '', maxlength: '80', placeholder: t('actor'), 'aria-label': t('actor'), dir: 'ltr' })
+    main.append(el('form', { class: 'filters', on: { submit: e => {
+      e.preventDefault()
+      const filters = Object.fromEntries([...new FormData(e.target)].filter(([, value]) => value))
+      const next = route(section, filters)
+      if (location.hash === next) render()
+      else location.hash = next
+    } } }, sourceSelect, actionInput, actorInput, el('button', { class: 'primary' }, t('apply'))))
   }
   const input = section === 'users' ? el('input', {
     name: 'search', value: query.get('search') ?? '', maxlength: '80', placeholder: t('search'), 'aria-label': t('search'),
@@ -308,13 +493,16 @@ async function directory(main, section, filter) {
   const select = choices ? el('select', { name: 'status', 'aria-label': t('status') },
     el('option', { value: '' }, t('all')), choices.map(s => el('option', { value: s }, t(s)))) : null
   if (select) select.value = query.get('status') ?? ''
+  const department = section === 'support' ? el('select', { name: 'department', 'aria-label': t('department') },
+    el('option', { value: '' }, t('department')), ['support', 'legal', 'technical', 'community'].map(d => el('option', { value: d }, t(d === 'support' ? 'supportDept' : d)))) : null
+  if (department) department.value = query.get('department') ?? ''
   if (input || select) main.append(el('form', { class: 'filters', on: { submit: e => {
     e.preventDefault()
     const filters = Object.fromEntries([...new FormData(e.target)].filter(([, value]) => value))
     const next = route(section, filters)
     if (location.hash === next) render()
     else location.hash = next
-  } } }, input, scope, select, el('button', { class: 'primary' }, t(input ? 'apply' : 'refresh'))))
+  } } }, input, scope, select, department, el('button', { class: 'primary' }, t(input ? 'apply' : 'refresh'))))
   main.append(table(null, columns[section], data.rows))
   if (section === 'coupons') await controlledCoupons(main)
   if (data.total !== null) {
@@ -384,6 +572,144 @@ async function dashboard(main) {
   }))
 }
 
+/* ---------------- Content workspace (editorial copy in Directus) ---------------- */
+let contentCatalog
+const contentState = { view: 'home', locale: 'fa', q: '', offset: 0, shared: false, surface: null }
+function previewPath(route, locale) {
+  if (!route) return `/${locale}/home`
+  let path = route.path
+  if (path === '/' || path === '*' || path.startsWith('/:section') || path.includes('${product}/:page')) return `/${locale}/home`
+  if (path.includes('${product}')) return `/${locale}/prop/dashboard`
+  if (!path.startsWith('/')) return `/${locale}/prop/${path}`
+  path = path.replace(':locale', locale).split('/').filter(part => !part.startsWith(':')).join('/')
+  return path || `/${locale}/home`
+}
+function contentEditor({ title, source, current, locale, onSave }) {
+  const value = el('textarea', { rows: '6', maxlength: '20000', required: '', dir: locale === 'fa' || locale === 'ar' ? 'rtl' : 'ltr' })
+  value.value = current ?? ''
+  const password = el('input', { required: '', type: 'password', dir: 'ltr', autocomplete: 'current-password' })
+  const submit = el('button', { class: 'primary' }, t('saveContent'))
+  const feedback = el('p', { role: 'alert' })
+  const holes = (source.en.match(/\$\{[^}]+\}|\{\{[^}]+\}\}|\{[A-Za-z_][\w.]*\}/g) || [])
+  const form = el('form', { on: { submit: async event => {
+    event.preventDefault()
+    submit.disabled = true
+    try {
+      await onSave(value.value, password.value)
+      dialog.close()
+      announce('contentSaved')
+      render()
+    } catch (error) {
+      feedback.textContent = labels[error.message] ? t(error.message) : t('unexpected_error')
+    } finally { password.value = ''; submit.disabled = false }
+  } } }, el('h2', {}, title),
+  el('dl', { class: 'payout-facts' },
+    el('div', {}, el('dt', {}, t('sourceEnglish')), el('dd', { dir: 'ltr' }, source.en || '—')),
+    el('div', {}, el('dt', {}, t('sourcePersian')), el('dd', { dir: 'rtl' }, source.fa || '—'))),
+  holes.length ? el('p', { class: 'muted' }, t('keepPlaceholders'), ' ', technical(holes.join(' '))) : null,
+  el('p', { class: 'muted' }, t('plainTextOnly')),
+  field('valueForLocale', value), field('password', password), feedback,
+  el('div', { class: 'tools' }, button('cancel', () => dialog.close()), submit))
+  dialog.replaceChildren(form)
+  dialog.showModal()
+}
+function contentStatus(body) {
+  const password = el('input', { required: '', type: 'password', dir: 'ltr', autocomplete: 'current-password' })
+  const submit = el('button', { class: body.status === 'published' ? 'primary' : 'danger' }, t('confirm'))
+  const feedback = el('p', { role: 'alert' })
+  const form = el('form', { on: { submit: async event => {
+    event.preventDefault()
+    submit.disabled = true
+    try {
+      await api('content/status', { ...body, password: password.value })
+      dialog.close(); announce('contentSaved'); render()
+    } catch (error) { feedback.textContent = labels[error.message] ? t(error.message) : t('unexpected_error') }
+    finally { password.value = ''; submit.disabled = false }
+  } } }, el('h2', {}, t(body.status === 'published' ? 'publishItem' : 'unpublishItem')),
+  el('p', { class: 'muted' }, t(body.status === 'published' ? 'publishHint' : 'unpublishHint')),
+  field('password', password), feedback, el('div', { class: 'tools' }, button('cancel', () => dialog.close()), submit))
+  dialog.replaceChildren(form)
+  dialog.showModal()
+}
+async function contentWorkspace(main) {
+  contentCatalog ??= await api('content/catalog')
+  const catalog = contentCatalog
+  const routes = catalog.routes.filter(r => r.areas.length || r.collections.some(c => c !== 'ui_messages'))
+  if (!routes.some(r => r.view === contentState.view)) contentState.view = routes[0]?.view
+  const route = routes.find(r => r.view === contentState.view)
+  const path = previewPath(route, contentState.locale)
+
+  const steps = el('ol', { class: 'wizard-steps' }, ['stepPage', 'stepLanguage', 'stepField', 'stepPublish'].map(k => el('li', {}, t(k))))
+  const routeSelect = el('select', { 'aria-label': t('stepPage'), on: { change: e => { contentState.view = e.target.value; contentState.offset = 0; contentState.surface = null; render() } } },
+    routes.map(r => el('option', { value: r.view }, `${r.path} — ${r.view}`)))
+  routeSelect.value = contentState.view
+  const localeSelect = el('select', { 'aria-label': t('stepLanguage'), on: { change: e => { contentState.locale = e.target.value; render() } } },
+    catalog.locales.map(l => el('option', { value: l }, l)))
+  localeSelect.value = contentState.locale
+  const sharedBox = el('input', { type: 'checkbox', on: { change: e => { contentState.shared = e.target.checked; contentState.offset = 0; render() } } })
+  sharedBox.checked = contentState.shared
+  const visual = el('a', { href: `${catalog.cms}/admin/visual/${catalog.site}${path}`, target: '_blank', rel: 'noopener noreferrer', class: 'button' }, t('visualMode'))
+  main.append(steps,
+    el('section', { class: 'panel detail' },
+      el('div', { class: 'filters' }, field('stepPage', routeSelect), field('stepLanguage', localeSelect), field('includeShared', sharedBox)),
+      catalog.writable ? null : el('p', { role: 'status', class: 'muted' }, t('contentReadOnly')),
+      el('div', { class: 'tools' }, visual)),
+    el('section', { class: 'panel content-preview' }, el('h2', {}, t('livePreview')), technical(catalog.site + path),
+      el('iframe', { src: catalog.site + path, title: t('livePreview'), sandbox: 'allow-scripts allow-same-origin', loading: 'lazy', referrerpolicy: 'no-referrer' })))
+
+  /* step 3a: interface copy */
+  const params = new URLSearchParams({ view: contentState.view, locale: contentState.locale, offset: String(contentState.offset), shared: contentState.shared ? '1' : '0', q: contentState.q })
+  const data = await api('content/fields?' + params)
+  const search = el('input', { value: contentState.q, maxlength: '80', placeholder: t('contentSearch'), 'aria-label': t('contentSearch') })
+  const editMessage = row => contentEditor({ title: t('editInterfaceCopy'), source: row, current: row.value ?? (contentState.locale === 'fa' ? row.fa : contentState.locale === 'en' ? row.en : ''), locale: contentState.locale,
+    onSave: (value, password) => api('content/save', { kind: 'message', key: row.key, locale: contentState.locale, value, password }) })
+  main.append(el('section', { class: 'panel table-box' }, el('h2', {}, t('interfaceCopy')),
+    el('form', { class: 'filters', on: { submit: e => { e.preventDefault(); contentState.q = search.value; contentState.offset = 0; render() } } }, search, el('button', { class: 'primary' }, t('apply'))),
+    data.fields.length ? el('div', { class: 'table-scroll', tabindex: '0' }, el('table', {},
+      el('thead', {}, el('tr', {}, ['sourceEnglish', 'valueForLocale', 'status', 'action'].map(k => el('th', { scope: 'col' }, t(k))))),
+      el('tbody', {}, data.fields.map(row => el('tr', {},
+        el('td', { dir: 'ltr' }, row.en),
+        el('td', { dir: contentState.locale === 'fa' || contentState.locale === 'ar' ? 'rtl' : 'ltr' }, row.value ?? el('span', { class: 'muted' }, t('noTranslation'))),
+        el('td', {}, badge(row.status)),
+        el('td', {}, catalog.writable && row.status !== 'not_seeded' ? el('div', { class: 'tools' },
+          button('editContent', () => editMessage(row)),
+          row.status === 'published' ? button('unpublishItem', () => contentStatus({ collection: 'ui_messages', key: row.key, status: 'draft' }))
+            : button('publishItem', () => contentStatus({ collection: 'ui_messages', key: row.key, status: 'published' }), 'primary')) : '—')))))) :
+      el('p', { class: 'empty' }, t('empty')),
+    el('nav', { class: 'pager' },
+      data.offset > 0 ? button('previous', () => { contentState.offset = Math.max(0, data.offset - data.pageSize); render() }) : null,
+      number(data.total),
+      data.offset + data.pageSize < data.total ? button('next', () => { contentState.offset = data.offset + data.pageSize; render() }) : null)))
+
+  /* step 3b: structured surfaces owned by this route */
+  const surfaces = route.collections.filter(c => catalog.surfaces.some(s => s.collection === c))
+  if (surfaces.length) {
+    main.append(el('section', { class: 'panel detail' }, el('h2', {}, t('structuredContent')),
+      el('div', { class: 'tools' }, surfaces.map(c => button(c === contentState.surface ? 'selectedSurface' : 'openSurface', () => { contentState.surface = c; render() }, c === contentState.surface ? 'primary' : '')).map((b, i) => { b.textContent = surfaces[i]; return b }))))
+    if (contentState.surface && surfaces.includes(contentState.surface)) {
+      const surface = await api('content/surface?' + new URLSearchParams({ collection: contentState.surface, locale: contentState.locale }))
+      const rows = surface.items.flatMap(item => [
+        ...surface.translatedFields.map(f => ({ item, field: f, value: item.values[f], en: item.english[f], shared: false })),
+        ...surface.sharedFields.map(f => ({ item, field: f, value: item.values[f], en: item.values[f], shared: true }))])
+      main.append(el('section', { class: 'panel table-box' }, el('h2', {}, technical(surface.collection)),
+        surface.readOnlyFields.length ? el('p', { class: 'muted' }, t('jsonInStudio'), ' ', technical(surface.readOnlyFields.join(', '))) : null,
+        rows.length ? el('div', { class: 'table-scroll', tabindex: '0' }, el('table', {},
+          el('thead', {}, el('tr', {}, ['identity', 'fieldName', 'valueForLocale', 'status', 'action'].map(k => el('th', { scope: 'col' }, t(k))))),
+          el('tbody', {}, rows.map(row => el('tr', {},
+            el('td', {}, technical(String(row.item.id))), el('td', {}, technical(row.field)),
+            el('td', {}, row.value ?? el('span', { class: 'muted' }, t('noTranslation'))),
+            el('td', {}, row.item.status ? badge(row.item.status) : '—'),
+            el('td', {}, catalog.writable ? el('div', { class: 'tools' },
+              button('editContent', () => contentEditor({ title: `${surface.collection} · ${row.field}`, source: { en: row.en ?? '', fa: '' }, current: row.value, locale: contentState.locale,
+                onSave: (value, password) => api('content/save', { kind: 'surface', collection: surface.collection, item: row.item.id, field: row.field, locale: contentState.locale, value, password }) })),
+              row.item.status && !surface.singleton ? (row.item.status === 'published'
+                ? button('unpublishItem', () => contentStatus({ collection: surface.collection, item: row.item.id, status: 'draft' }))
+                : button('publishItem', () => contentStatus({ collection: surface.collection, item: row.item.id, status: 'published' }), 'primary')) : null) : '—')))))) :
+          el('p', { class: 'empty' }, t('empty'))))
+    }
+  }
+}
+
 async function render() {
   const renderId = ++revision
   chrome()
@@ -393,19 +719,61 @@ async function render() {
   const main = el('main', { id: 'main' })
   workspace.className = 'shell' + (showNav ? ' nav-open' : '') + (collapsed ? ' nav-collapsed' : '')
   workspace.replaceChildren(nav(page), main)
-  const layout = el('div', { class: 'page-title' }, el('div', {}, page === 'dashboard' ? null : el('p', { class: 'crumb' }, link('dashboard'), ' / ', t(page)),
-    el('h1', {}, t(page))), button('refresh', render))
+  const layout = el('div', { class: 'page-title' }, el('div', {}, page === 'dashboard' ? null : el('p', { class: 'crumb' }, link('dashboard'), ' / ', st(page)),
+    el('h1', {}, st(page))), button('refresh', render))
   const contents = el('div')
   main.append(layout, el('p', { class: 'muted', role: 'status' }, t('loading')), contents)
   try {
     if (page === 'dashboard') await dashboard(contents)
+    else if (page === 'content') await contentWorkspace(contents)
     else if (page === 'system') {
       const data = await api('system')
       contents.append(table(null, [['backend', r => badge(r.backendReady ? 'ready' : 'unknown')], ['region', r => t(r.region)], ['mode', r => t(r.mode)],
         ['epoch', r => number(r.epoch)], ['version', r => technical(r.version)], ['identity', r => technical(r.commit)]], [data]))
     } else if (page === 'finance') {
       const data = await api('finance')
-      contents.append(table(null, [['available', r => usd(r.status === 'verified' ? r.availableAllocatableUsd : null)], ['liabilities', r => usd(r.outstandingObligationsUsd)]], [data]))
+      contents.append(
+        el('div', { class: 'tools' }, button('treasuryRefresh', () => operate('finance', 'treasury', 'refresh', [], 'treasuryRefresh'), 'primary')),
+        table(null, [['positionStatus', r => badge(r.status ?? 'unknown')], ['available', r => usd(r.availableAllocatableUsd)],
+          ['liabilities', r => usd(r.outstandingObligationsUsd)], ['treasuryTotal', r => usd(r.treasury?.totalUsd)],
+          ['date', r => date(r.calculatedAt)]], [data]))
+      try {
+        const { policies, entries } = await api('allocations')
+        contents.append(table('allocations', [['date', r => date(r.created_at ?? r.effective_at)], ['treasuryTotal', r => usd(r.treasury_usd)],
+          ['available', r => usd(r.operations_usd)], ['reference', r => technical(r.purchase_order_id ?? r.version)]], [...(entries ?? []), ...(policies ?? [])].slice(0, 50)))
+      } catch { /* allocations are optional */ }
+    } else if (page === 'risk') {
+      const data = await api('risk')
+      contents.append(
+        table('engineLoop', [['lastPass', r => date(r.engineLoop?.lastPassAt)], ['lag', r => r.engineLoop?.lagMs == null ? '—' : number(Math.round(r.engineLoop.lagMs / 100) / 10) + 's'],
+          ['feedHealth', r => technical(`${number(r.feed?.fresh)} / ${number(r.feed?.markets)}`)]], [data]),
+        table('openPositions', [['wallet', wallet], ['plan', plan], ['identity', r => link('challenges', { id: r.challenge_id }, technical(r.challenge_id))],
+          ['openPositions', r => number(r.open_positions)], ['equity', r => usd(r.last_equity)],
+          ['dailyDistance', r => usd(r.daily_breach_distance_usd)], ['maxDistance', r => usd(r.max_breach_distance_usd)],
+          ['observed', r => date(r.observed_at)]], data.accounts ?? []),
+        table('notional', [['symbol', r => technical(r.market)], ['openPositions', r => number(r.positions)],
+          ['longShort', r => technical(`${number(r.long_positions)} / ${number(r.short_positions)}`)],
+          ['notional', r => usd(r.notional_usd)], ['margin', r => usd(r.margin_usd)]], data.exposure ?? []))
+    } else if (page === 'search') {
+      const params = new URLSearchParams(query)
+      const q = params.get('q') ?? ''
+      const box = el('input', { name: 'q', value: q, maxlength: '100', placeholder: t('searchHint'), 'aria-label': t('searchx'), dir: 'ltr' })
+      contents.append(el('form', { class: 'filters', on: { submit: e => {
+        e.preventDefault()
+        const next = route('search', box.value.trim() ? { q: box.value.trim() } : {})
+        if (location.hash === next) render()
+        else location.hash = next
+      } } }, box, el('button', { class: 'primary' }, t('apply'))), el('p', { class: 'muted' }, t('searchHint')))
+      if (q) {
+        const data = await api('search?' + new URLSearchParams({ q }))
+        const open = r => r.kind === 'user' ? link('users', { id: r.id }, t('users'))
+          : r.kind === 'challenge' ? link('challenges', { id: r.id }, t('challenges'))
+          : r.kind === 'support' ? link('support', { id: r.reference }, t('support'))
+          : r.kind === 'payout' ? link('payouts', { id: r.id }, t('payouts'))
+          : r.kind === 'payment' || r.kind === 'order' ? link('payments', { id: r.purchase_order_id ?? r.id }, t('payments')) : '—'
+        contents.append(table('result', [['result', open], ['identity', r => technical(r.id ?? r.reference)],
+          ['wallet', r => technical(r.wallet_address ?? r.tx_hash ?? r.payout_ref ?? '—')], ['status', status]], data.rows ?? []))
+      }
     } else await directory(contents, page, new URLSearchParams(query))
   } catch (error) {
     if (renderId === revision) contents.replaceChildren(el('p', { role: 'alert' }, labels[error.message] ? t(error.message) : t('unexpected_error')))

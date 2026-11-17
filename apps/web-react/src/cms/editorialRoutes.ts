@@ -54,6 +54,7 @@ export const EDITORIAL_ROUTES: readonly EditorialRoute[] = [
   { path: 'heatmap', view: 'heatmap', collections: react },
   { path: 'portfolio', view: 'portfolio', collections: react },
   { path: 'journal', view: 'journal', collections: react },
+  { path: 'inbox', view: 'inbox', collections: react },
   { path: 'certificates', view: 'certificates', collections: react },
   { path: 'purchases', view: 'purchases', collections: react },
   { path: 'withdrawals', view: 'withdrawals', collections: react },
