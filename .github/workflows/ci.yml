@@ -303,6 +303,10 @@ jobs:
           TEST_FRONTEND_URL: http://localhost:8080
           TEST_BACKEND_URL: http://localhost:8080
         run: npm run test:browser:purchase
+      - name: Purchase-test readiness probe against a local boot (throw-away DePay test keys, no money)
+        if: needs.changes.outputs.run_backend_suite == 'true'
+        working-directory: .
+        run: node e2e/test-purchase-readiness.mjs
       - name: Backstage owner browser acceptance
         if: needs.changes.outputs.run_backend_suite == 'true'
         working-directory: .
