@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Iran runtime deploy: a root `.liaraignore` keeps `liara deploy` from
+  dropping `apps/web-react/src/brand` (the root `.dockerignore` pattern
+  `brand` matched it under the Liara CLI's gitignore rules); `stack.json`
+  uses the live production names (`openfund-iran`, network `staging`) so the
+  create-only provisioner cannot create duplicates; the worker lists
+  `CMS_PUBLIC_URL`, without which it exits at boot.
+
 ## Unreleased — v0.6.5
 
 Release notes: [docs/releases/openfund-0.6.5.md](docs/releases/openfund-0.6.5.md).
