@@ -199,6 +199,7 @@ is condensed in a short-lived child process (`radar-board-worker.js`,
 | `BACKSTAGE_REAL_SETTLEMENT` | Defaults to `false`. Set to `true` on the owner service only after settlement security acceptance. Enables submitting an already-completed transfer hash for backend verification. |
 | `BACKSTAGE_ORIGIN` | Exact browser origin for Backstage. |
 | `BACKSTAGE_BACKEND_ORIGIN` | Exact origin of the authoritative GLOBAL backend. |
+| `RENDER_GIT_COMMIT` (Backstage) | Set by Render. Backstage reports it on `/health`, so the release deployment can verify that Backstage runs the released commit |
 | `BACKSTAGE_IRAN_ORIGIN` | Blueprint value `https://openfi.live`. The System view reads the IRAN runtime's public `/runtime/status`, `/ready` and `/version` beside GLOBAL's. No credential, cookie or actor header is sent, and redirects are not followed ([ADR 0043](../decisions/0043-canonical-domains-geo-routing-and-locale.md)). |
 | `BACKSTAGE_DIRECTUS_ORIGIN` | Exact origin of the existing Directus editor. |
 | `BACKSTAGE_OWNER` | Single explicitly provisioned owner identity, 2 to 50 ASCII characters. |

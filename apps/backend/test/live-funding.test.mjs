@@ -183,6 +183,30 @@ test('settlement failures retry and are never paid twice', { skip: !pool }, asyn
   assert.ok(calls >= 2)
 })
 
+test('concurrent settlement workers pay every record exactly once', { skip: !pool }, async () => {
+  marks.set('BTC/USD', '100')
+  const o = await http('POST', '/live/orders', { market: 'BTC/USD', side: 'long', collateralUsd: '400', leverage: 2, idempotencyKey: 'order-long-race' }, { user: ctx.trader })
+  marks.set('BTC/USD', '110')
+  const r = await finalizeTrade(pool, o.data.trade.id, { realizedPnlUsd: '80.00', tradingFeesUsd: '0.40', executionCostsUsd: '0.10', exitPrice: '110' })
+  const paid = []
+  const slow = { name: 'race', async pay(s) { paid.push(s.id); await new Promise(res => setTimeout(res, 20)); return { ok: true, txHash: '0x' + 'c'.repeat(64), reference: `race:${s.id}` } } }
+  /* three workers claim at the same time (plus, in CI, the booted server's own worker) */
+  await Promise.all([processSettlements(pool, slow), processSettlements(pool, slow), processSettlements(pool, slow)])
+  const settledRows = async () => (await pool.query(`SELECT id, status, attempts, settlement_reference FROM settlement_records WHERE profit_share_id=$1`, [r.share.id])).rows
+  let rows = await settledRows()
+  for (let i = 0; i < 50 && rows.some(x => x.status === 'processing'); i++) { await new Promise(res => setTimeout(res, 100)); rows = await settledRows() }
+  assert.ok(rows.length >= 1)
+  /* the database is the witness: a second payment needs a second claim (attempts 2) */
+  for (const row of rows) {
+    assert.equal(row.status, 'completed', JSON.stringify(row))
+    assert.equal(row.attempts, 1, `record ${row.id} was claimed ${row.attempts} times`)
+    assert.ok(row.settlement_reference, 'completed with the paying adapter reference')
+  }
+  assert.equal(new Set(paid).size, paid.length, 'no worker paid a record twice')
+  assert.ok(paid.every(id => rows.some(x => x.id === id)))
+  assert.equal((await processSettlements(pool, slow)).claimed, 0, 'nothing is left to pay')
+})
+
 test('daily drawdown breach halts the allocation and blocks new orders', { skip: !pool }, async () => {
   marks.set('BTC/USD', '100')
   const o = await http('POST', '/live/orders', { market: 'BTC/USD', side: 'long', collateralUsd: '4000', leverage: 1, idempotencyKey: 'order-big-loss' }, { user: ctx.trader })

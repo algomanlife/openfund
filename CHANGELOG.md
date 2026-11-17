@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Release orchestration: an official release now deploys GLOBAL Backstage at
+  the same commit as the Web/API and verifies it (`/health` reports the
+  commit). The deploy refuses to start unless auto-deploy is off on both
+  Render services. `scripts/release/regions-status.mjs` reports commit or
+  version skew across both regions. Root cause of the 2026-11-17 split:
+  dashboard auto-deploy built `cd057fa` before its release gates finished;
+  Backstage went live without a gate.
+- Live funding: a concurrency test proves that three settlement workers pay
+  each record exactly once (a deliberately broken claim is caught).
 - Canonical domains and Geo-IP language (ADR 0043): `openfi.cloud` (GLOBAL)
   and `openfi.live` (IRAN) are canonical; aliases answer 301 with path and
   query (Cloudflare rules for GLOBAL, applied; application redirect for the

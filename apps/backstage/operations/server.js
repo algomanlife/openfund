@@ -182,6 +182,8 @@ export function loadConfig(env = process.env) {
     /* IRAN runtime origin for the read-only regional status (ADR 0043); its
        public endpoints only, so no credential is ever sent to it */
     iranBackend: env.BACKSTAGE_IRAN_ORIGIN ? origin(env.BACKSTAGE_IRAN_ORIGIN, 'BACKSTAGE_IRAN_ORIGIN') : null,
+    /* Render sets RENDER_GIT_COMMIT for the deployed commit */
+    releaseCommit: /^[0-9a-f]{40}$/.test(env.RENDER_GIT_COMMIT || '') ? env.RENDER_GIT_COMMIT : null,
   }
   if (config.contentToken !== null && !/^[!-~]{16,512}$/.test(config.contentToken)) throw new Error('Invalid BACKSTAGE_DIRECTUS_TOKEN')
   if (!/^[A-Za-z0-9._@-]{2,50}$/.test(config.owner || '') ||
@@ -294,7 +296,9 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
     try {
       const url = new URL(req.url, config.origin)
       const path = url.pathname
-      if (req.method === 'GET' && path === '/health') return send(res, 200, { ok: true })
+      /* release identity (public, like the site's /version): the release
+         deployment refuses to finish until Backstage runs the released commit */
+      if (req.method === 'GET' && path === '/health') return send(res, 200, { ok: true, commit: config.releaseCommit })
       if (req.headers.host !== new URL(config.origin).host || url.origin !== config.origin) throw fail(404, 'not_found')
       if (req.method === 'GET' && Object.hasOwn(staticFiles, path)) {
         const [file, contentType] = staticFiles[path]
