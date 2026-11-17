@@ -296,9 +296,16 @@ async function realThemeClicks(browser) {
           for (let attempt = 0; ; attempt++) {
             try {
               await localePage.waitForLoadState('load');
-              await localePage.waitForFunction(locale => document.querySelector('.hero .telegram-community')?.getAttribute('aria-label')?.startsWith(locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on'), locale, { timeout: 60000 });
-              // The legacy locale script may still be loading right after the route change.
-              await localePage.waitForFunction(() => typeof window.ofTranslate === 'function');
+              await localePage.waitForFunction(locale => {
+                const portal = document.querySelector('.hero .telegram-community[data-locale-owned="react"]');
+                const label = locale === 'fa' ? 'جامعه معامله‌گران' : 'Traders talk on';
+                return location.pathname === `/${locale}/challenges`
+                  && document.documentElement.lang === locale
+                  && document.documentElement.dir === (locale === 'fa' ? 'rtl' : 'ltr')
+                  && localStorage.getItem('of-language') === locale
+                  && typeof window.ofTranslate === 'function'
+                  && portal?.getAttribute('aria-label')?.startsWith(label);
+              }, locale, { timeout: 60000 });
               const unchanged = await localePage.evaluate(() => {
                 const button = document.querySelector('.hero .telegram-community');
                 const before = button.getAttribute('aria-label');
@@ -319,6 +326,22 @@ async function realThemeClicks(browser) {
         const { unchanged, singular } = await probe();
         check(`${locale} React-owned attributes survive translator`, unchanged);
         check(`${locale} portal remains singular`, singular);
+      }
+      for (const locale of ['en', 'ar', 'ru', 'zh-CN', 'fa']) {
+        await localePage.locator('.of-language-select select').first().selectOption(locale);
+        const waitForLocale = () => localePage.waitForFunction(locale => {
+          const direction = ['fa', 'ar'].includes(locale) ? 'rtl' : 'ltr';
+          return location.pathname === `/${locale}/challenges`
+            && document.documentElement.lang === locale
+            && document.documentElement.dir === direction
+            && localStorage.getItem('of-language') === locale
+            && document.querySelector('.of-language-select select')?.value === locale
+            && !!document.querySelector('.hero .telegram-community[data-locale-owned="react"]');
+        }, locale);
+        await waitForLocale();
+        await localePage.reload();
+        await waitForLocale();
+        check(`${locale} selector, route, and persisted direction agree after reload`, true);
       }
     } finally { await localePage.close(); }
     if (capture) {
