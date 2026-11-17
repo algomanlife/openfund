@@ -2580,3 +2580,40 @@ END $$;
 DROP TRIGGER IF EXISTS withdrawal_test_mode_immutable ON withdrawal_requests;
 CREATE TRIGGER withdrawal_test_mode_immutable BEFORE INSERT OR UPDATE ON withdrawal_requests
   FOR EACH ROW EXECUTE FUNCTION protect_withdrawal_test_mode();
+
+-- ============================================================
+-- Trader-visible support threads and in-app notifications
+-- (additive, idempotent, non-financial; Backstage operations)
+-- ============================================================
+
+-- Support correspondence modeled on withdrawal_requests.thread_events:
+-- an append-only JSONB event list plus per-side read cursors.
+ALTER TABLE support_messages ADD COLUMN IF NOT EXISTS thread_events jsonb NOT NULL DEFAULT '[]'::jsonb;
+ALTER TABLE support_messages ADD COLUMN IF NOT EXISTS operator_read_count integer NOT NULL DEFAULT 0;
+ALTER TABLE support_messages ADD COLUMN IF NOT EXISTS trader_read_count integer NOT NULL DEFAULT 0;
+CREATE INDEX IF NOT EXISTS idx_support_messages_user ON support_messages (user_id, created_at DESC);
+
+-- In-app notifications: additive operational records (no financial writes).
+-- dedupe_key makes every emitter idempotent (ON CONFLICT DO NOTHING), so the
+-- challenge-event relay and operator decisions can never double-notify.
+CREATE TABLE IF NOT EXISTS notifications (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id     uuid NOT NULL REFERENCES openfund_users(id) ON DELETE CASCADE,
+  kind        text NOT NULL CHECK (kind IN (
+                'payout_approved', 'payout_rejected', 'payout_paid', 'payout_simulated',
+                'support_reply', 'challenge_passed', 'challenge_failed', 'challenge_expired', 'challenge_stage_passed')),
+  payload     jsonb NOT NULL DEFAULT '{}'::jsonb,
+  dedupe_key  text UNIQUE,
+  read_at     timestamptz,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications (user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_notifications_unread ON notifications (user_id) WHERE read_at IS NULL;
+
+-- Cursor of the challenge-event relay (single row; the relay reads
+-- challenge_events, it never touches engine or evaluation state).
+CREATE TABLE IF NOT EXISTS notification_relay_state (
+  relay       text PRIMARY KEY,
+  last_event  bigint NOT NULL DEFAULT 0,
+  updated_at  timestamptz NOT NULL DEFAULT now()
+);

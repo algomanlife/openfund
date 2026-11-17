@@ -29,6 +29,7 @@ import { governanceAdminRoutes } from './governance-routes.js'
 import { lockRewardReversalAccount, reverseRewardTx, onRewardPaidTx } from './rewards.js'
 import { financialAudit } from './financial-audit.js'
 import { mountPayoutThreads } from './payout-threads.js'
+import { notify } from './notifications.js'
 import { createPayoutClaimClient } from './payout-claims.js'
 import { DAI_PAYOUT_TOKEN, payoutHash, payoutVerifier } from './payout-settlement.js'
 
@@ -119,6 +120,24 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
     const activity = (await pool.query(
       `SELECT action, ts, ip, details FROM audit_log WHERE user_id=$1 ORDER BY id DESC LIMIT 50`, [req.params.id])).rows
     res.json({ user, challenges, purchases, withdrawals, activity })
+  }))
+
+  /* ---------- user status (operational decision; no financial writes) ----------
+     active ⇄ suspended with a recorded reason and named actor. Suspension is
+     enforced by requireAuth (sessions end) and the auth flow (sign-in refused). */
+  router.post('/users/:id/status', wrap(async (req, res) => {
+    const actor = adminActor(req)
+    if (!uuid.test(req.params.id)) throw fail(404, 'user_not_found')
+    const { status, reason } = req.body || {}
+    if (!['active', 'suspended'].includes(status)) throw fail(400, 'invalid_status')
+    if (typeof reason !== 'string' || !reason.trim() || reason.length > 500) throw fail(400, 'reason_required')
+    const { rows: [user] } = await pool.query('SELECT id, status FROM openfund_users WHERE id=$1', [req.params.id])
+    if (!user) throw fail(404, 'user_not_found')
+    if (user.status === status) return res.json({ ok: true, duplicate: true, status })
+    const { rows: [updated] } = await pool.query(
+      `UPDATE openfund_users SET status=$2, updated_at=now() WHERE id=$1 RETURNING id, status`, [req.params.id, status])
+    await audit(`user_${status}`, user.id, req, { actor, reason: reason.trim(), previous: user.status })
+    res.json({ ok: true, status: updated.status })
   }))
 
   /* ---------- challenges ---------- */
@@ -275,6 +294,13 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
       }
       if (spec.to === 'rejected') await reverseRewardTx(client, w, 'rejected_by_operator')
       const feeRefund = spec.to === 'paid' ? await onRewardPaidTx(client, { ...w, status: 'paid' }, actor) : null
+      /* in-app notification of the decision (idempotent; non-financial) */
+      const notificationKind = { approved: 'payout_approved', rejected: 'payout_rejected', paid: 'payout_paid', simulated_settled: 'payout_simulated' }[spec.to]
+      if (notificationKind) await notify(client, {
+        userId: w.user_id, kind: notificationKind,
+        payload: { withdrawalId: w.id, amountUsd: w.amount_usd, note: note ?? null },
+        dedupeKey: `withdrawal:${w.id}:${spec.to}`,
+      })
       await client.query('COMMIT')
       await audit(`withdrawal_${spec.to}`, w.user_id, req, {
         withdrawalId: req.params.id, amount: Number(w.amount_usd), action, note: note ?? null,

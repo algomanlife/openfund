@@ -20,6 +20,7 @@
 import { Router } from 'express'
 import crypto from 'node:crypto'
 import { adminAuth, adminActor } from './admin.js'
+import { notify } from './notifications.js'
 
 export const DEPARTMENTS = ['support', 'legal', 'technical', 'community']
 export const STATUSES = ['new', 'in_progress', 'waiting_customer', 'resolved', 'closed']
@@ -148,6 +149,85 @@ const PAGE = (v, def, max) => {
   if (!Number.isInteger(n) || n < 0 || n > max) throw fail(400, 'invalid_pagination')
   return n
 }
+
+/* ---------------- trader-visible reply threads (modeled on payout-threads) ----------------
+   thread_events is an append-only JSONB list on support_messages with
+   per-side read cursors. Operators write through the admin thread action;
+   traders read and reply through their own inbox. Internal notes stay
+   operator-only and are never part of the thread. */
+const THREAD_CAPACITY = 500
+export function readSupportThread(m, isOperator, before = Number.MAX_SAFE_INTEGER) {
+  const events = m.thread_events || []
+  const end = Math.min(before, events.length)
+  const start = Math.max(0, end - 30)
+  const read = isOperator ? m.operator_read_count : m.trader_read_count
+  const unread = events.slice(read).filter(e => e.role !== (isOperator ? 'operator' : 'trader')).length
+  return { reference: m.reference, status: m.status, unread, nextBefore: start || null, total: events.length,
+    messages: events.slice(start, end).map((e, i) => ({
+      sequence: start + i + 1, role: e.role, message: e.message, at: e.at,
+      ...(isOperator ? { actor: e.actor } : {}),
+    })) }
+}
+
+async function appendSupportThread(client, m, { role, actor, message }) {
+  const events = m.thread_events || []
+  if (m.status === 'closed') throw fail(409, 'message_closed')
+  if (events.length >= THREAD_CAPACITY) throw fail(409, 'thread_capacity_reached')
+  events.push({ role, actor, message, at: new Date().toISOString() })
+  await client.query(`UPDATE support_messages SET thread_events=$2, updated_at=now() WHERE id=$1`, [m.id, JSON.stringify(events)])
+  return events
+}
+
+/** Trader inbox (session auth): list own submissions, read a thread, reply.
+ * A trader only ever sees messages linked to their own account. */
+export function supportInboxRoutes({ pool, requireAuth, limit = () => (req, res, next) => next() }) {
+  const router = Router()
+  const owned = async (db, req, lock = false) => {
+    if (!REF_RE.test(req.params.ref)) throw fail(404, 'message_not_found')
+    const { rows: [m] } = await db.query(
+      `SELECT * FROM support_messages WHERE reference=$1 AND user_id=$2 ${lock ? 'FOR UPDATE' : ''}`,
+      [req.params.ref, req.user.user_id])
+    if (!m) throw fail(404, 'message_not_found')
+    return m
+  }
+  router.get('/support/inbox', requireAuth, limit(45), wrap(async (req, res) => {
+    const { rows } = await pool.query(
+      `SELECT reference, department, subject, status, created_at, updated_at,
+              (SELECT count(*)::int FROM jsonb_array_elements(thread_events) WITH ORDINALITY e(value, idx)
+                WHERE e.idx > trader_read_count AND e.value->>'role'='operator') AS unread
+         FROM support_messages WHERE user_id=$1 ORDER BY created_at DESC LIMIT 100`, [req.user.user_id])
+    res.set('Cache-Control', 'no-store').json({ messages: rows })
+  }))
+  router.get('/support/inbox/:ref/thread', requireAuth, limit(45), wrap(async (req, res) => {
+    const before = req.query.before == null ? Number.MAX_SAFE_INTEGER : Number(req.query.before)
+    if (!Number.isSafeInteger(before) || before < 0) throw fail(400, 'invalid_pagination')
+    const m = await owned(pool, req)
+    res.set('Cache-Control', 'no-store').json({ subject: m.subject, department: m.department, body: m.message,
+      createdAt: m.created_at, ...readSupportThread(m, false, before) })
+  }))
+  router.post('/support/inbox/:ref/thread', requireAuth, limit(45), wrap(async (req, res) => {
+    const { action = 'reply', message: raw, through } = req.body || {}
+    if (!['read', 'reply'].includes(action)) throw fail(400, 'invalid_action')
+    const message = typeof raw === 'string' ? clean(raw, { multiline: true }) : ''
+    if (action === 'reply' && (!message || message.length > 2000)) throw fail(400, 'invalid_message')
+    if (action === 'read' && (!Number.isSafeInteger(through) || through < 0)) throw fail(400, 'invalid_pagination')
+    const client = await pool.connect()
+    try {
+      await client.query('BEGIN')
+      const m = await owned(client, req, true)
+      if (action === 'read') {
+        const cursor = Math.max(m.trader_read_count, Math.min(through, (m.thread_events || []).length))
+        await client.query(`UPDATE support_messages SET trader_read_count=$2 WHERE id=$1`, [m.id, cursor])
+        m.trader_read_count = cursor
+      } else {
+        m.thread_events = await appendSupportThread(client, m, { role: 'trader', actor: `user:${req.user.user_id}`, message })
+      }
+      await client.query('COMMIT')
+      res.set('Cache-Control', 'no-store').json(readSupportThread(m, false))
+    } catch (e) { await client.query('ROLLBACK').catch(() => {}); throw e } finally { client.release() }
+  }))
+  return router
+}
 const view = r => ({
   reference: r.reference, fullName: r.full_name, email: r.email, department: r.department, subject: r.subject,
   message: r.message, orderRef: r.order_ref, challengeRef: r.challenge_ref, locale: r.locale, status: r.status,
@@ -181,7 +261,45 @@ export function supportAdminRoutes({ pool }) {
     const m = (await pool.query('SELECT * FROM support_messages WHERE reference=$1', [req.params.ref])).rows[0]
     if (!m) throw fail(404, 'message_not_found')
     const events = (await pool.query('SELECT actor, from_status, to_status, detail, ts FROM support_message_events WHERE message_id=$1 ORDER BY id', [m.id])).rows
-    res.set('Cache-Control', 'no-store').json({ message: view(m), events })
+    res.set('Cache-Control', 'no-store').json({ message: view(m), events, thread: readSupportThread(m, true) })
+  }))
+
+  /* operator side of the trader-visible thread: reply (delivered to the
+     trader's inbox + in-app notification when the message is linked to an
+     account) and read-cursor updates. Anonymous submissions (no user_id)
+     accept replies too — they are answered by email outside this system,
+     so the thread records the outbound text for the audit trail. */
+  router.post('/messages/:ref/thread', wrap(async (req, res) => {
+    if (!REF_RE.test(req.params.ref)) throw fail(404, 'message_not_found')
+    const actor = adminActor(req)
+    const { action = 'reply', message: raw, through } = req.body || {}
+    if (!['read', 'reply'].includes(action)) throw fail(400, 'invalid_action')
+    const message = typeof raw === 'string' ? clean(raw, { multiline: true }) : ''
+    if (action === 'reply' && (!message || message.length > 4000)) throw fail(400, 'invalid_message')
+    if (action === 'read' && (!Number.isSafeInteger(through) || through < 0)) throw fail(400, 'invalid_pagination')
+    const client = await pool.connect()
+    try {
+      await client.query('BEGIN')
+      const m = (await client.query('SELECT * FROM support_messages WHERE reference=$1 FOR UPDATE', [req.params.ref])).rows[0]
+      if (!m) throw fail(404, 'message_not_found')
+      if (action === 'read') {
+        const cursor = Math.max(m.operator_read_count, Math.min(through, (m.thread_events || []).length))
+        await client.query(`UPDATE support_messages SET operator_read_count=$2 WHERE id=$1`, [m.id, cursor])
+        m.operator_read_count = cursor
+      } else {
+        m.thread_events = await appendSupportThread(client, m, { role: 'operator', actor, message })
+        await client.query(
+          `INSERT INTO support_message_events (message_id, actor, from_status, to_status, detail) VALUES ($1,$2,$3,$3,$4)`,
+          [m.id, actor, m.status, JSON.stringify({ thread: 'reply' })])
+        if (m.user_id) await notify(client, {
+          userId: m.user_id, kind: 'support_reply',
+          payload: { reference: m.reference, subject: m.subject },
+          dedupeKey: `support_reply:${m.id}:${(m.thread_events || []).length}`,
+        })
+      }
+      await client.query('COMMIT')
+      res.set('Cache-Control', 'no-store').json(readSupportThread(m, true))
+    } catch (e) { await client.query('ROLLBACK').catch(() => {}); throw e } finally { client.release() }
   }))
   router.post('/messages/:ref', wrap(async (req, res) => {
     if (!REF_RE.test(req.params.ref)) throw fail(404, 'message_not_found')

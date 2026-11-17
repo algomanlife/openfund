@@ -264,6 +264,16 @@ export function economyAdminRoutes({ pool, treasury, onChange = () => {} }) {
   expenseTransition('void', `status='void', verified_by=$2, payment_reference=coalesce($3, payment_reference)`, `status <> 'void'`)
   expenseTransition('paid', `payment_status='paid', payment_reference=$3, verified_by=coalesce(verified_by,$2)`, `status='verified' AND payment_status='unpaid'`)
 
+  /* read-only lists for the operations UI (records already owned by this router) */
+  router.get('/reserves', wrap(async (req, res) => {
+    const { rows } = await pool.query(`SELECT DISTINCT ON (kind) kind, amount_usd, note, set_by, created_at FROM capital_reserves ORDER BY kind, id DESC`)
+    res.set('Cache-Control', 'no-store').json({ reserves: rows })
+  }))
+  router.get('/obligations', wrap(async (req, res) => {
+    const { rows } = await pool.query(`SELECT * FROM financial_obligations ORDER BY created_at DESC LIMIT 500`)
+    res.set('Cache-Control', 'no-store').json({ obligations: rows })
+  }))
+
   router.post('/reserves', wrap(async (req, res) => {
     const actor = adminActor(req), b = req.body || {}
     if (!['operational', 'risk', 'other'].includes(b.kind)) throw fail(400, 'invalid_kind')

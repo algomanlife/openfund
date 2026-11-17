@@ -91,11 +91,141 @@ export async function evaluateCoupon(q, { code, userId, planId, accountSize, lis
   return { coupon, pricing: applyCoupon(listPriceUsd, coupon) }
 }
 
-/* ---------------- operator read API (reporting; edits happen in Directus) ---------------- */
+/* ---------------- operator API: reporting + commercial coupon administration.
+   Directus Data Studio remains a valid editor; both writers share the same
+   schema triggers (code normalization, final revocation, price lock after
+   first redemption, internal-coupon bounds, append-only coupon_audit). ---------------- */
 export function couponAdminRoutes({ pool }) {
   const router = Router()
   router.use(adminAuth)
   mountControlledChallenges(router, pool)
+
+  const str = (v, max, required = false) => {
+    if (v == null || v === '') { if (required) throw fail(400, 'missing_field'); return null }
+    if (typeof v !== 'string' || v.length > max) throw fail(400, 'invalid_field')
+    return v.trim()
+  }
+  const whenAt = v => {
+    if (v == null || v === '') return null
+    const t = new Date(v)
+    if (Number.isNaN(t.getTime())) throw fail(400, 'invalid_date')
+    return t.toISOString()
+  }
+  const positiveInt = (v, name) => {
+    if (v == null || v === '') return null
+    const n = Number(v)
+    if (!Number.isInteger(n) || n <= 0) throw fail(400, name)
+    return n
+  }
+  const uuidList = v => {
+    if (v === undefined) return undefined
+    if (v === null) return []
+    if (!Array.isArray(v) || v.length > 50 || v.some(x => !uuid.test(String(x)))) throw fail(400, 'invalid_eligibility')
+    return v.map(String)
+  }
+  const numberList = v => {
+    if (v === undefined) return undefined
+    if (v === null) return null
+    if (!Array.isArray(v) || v.length > 50 || v.some(x => !Number.isFinite(Number(x)) || Number(x) <= 0)) throw fail(400, 'invalid_eligibility')
+    return JSON.stringify(v.map(Number))
+  }
+  const actorOf = req => {
+    const actor = String(req.headers['x-admin-actor'] || '').trim()
+    if (!/^[\w.@ -]{2,60}$/.test(actor)) throw fail(400, 'admin_actor_required')
+    return `admin:${actor}`
+  }
+  const validateValue = (kind, value) => {
+    if (!['percent', 'fixed'].includes(kind)) throw fail(400, 'invalid_kind')
+    const d = cents(value ?? NaN)
+    if (!d.isFinite() || d.lte(0) || (kind === 'percent' && d.gt(100))) throw fail(400, 'invalid_value')
+    return d.toFixed(2)
+  }
+  async function writeEligibility(client, couponId, { planIds, allowedUserIds }) {
+    if (planIds !== undefined) {
+      await client.query('DELETE FROM coupon_challenge_plans WHERE coupon_id=$1', [couponId])
+      for (const planId of planIds) await client.query(
+        'INSERT INTO coupon_challenge_plans (coupon_id, challenge_plan_id) VALUES ($1,$2) ON CONFLICT DO NOTHING', [couponId, planId])
+    }
+    if (allowedUserIds !== undefined) {
+      await client.query('DELETE FROM coupon_allowed_users WHERE coupon_id=$1', [couponId])
+      for (const userId of allowedUserIds) await client.query(
+        'INSERT INTO coupon_allowed_users (coupon_id, user_id) VALUES ($1,$2) ON CONFLICT DO NOTHING', [couponId, userId])
+    }
+  }
+
+  /* create a commercial coupon (controlled test coupons keep their own flow) */
+  router.post('/', wrap(async (req, res) => {
+    const actor = actorOf(req), b = req.body || {}
+    const code = normalizeCode(b.code)
+    if (!CODE_RE.test(code)) throw fail(400, 'invalid_code')
+    if (b.internal) throw fail(400, 'internal_reserved') /* internal test coupons: controlled-challenges flow only */
+    const value = validateValue(b.kind, b.value)
+    const planIds = uuidList(b.challengePlanIds), allowedUserIds = uuidList(b.allowedUserIds)
+    const client = await pool.connect()
+    try {
+      await client.query('BEGIN')
+      await client.query(`SELECT set_config('openfund.coupon_actor', $1, true)`, [actor])
+      const { rows: [coupon] } = await client.query(
+        `INSERT INTO coupons (code, name, description, kind, value, status, max_redemptions, per_user_limit, account_sizes, starts_at, expires_at, created_by)
+         VALUES ($1,$2,$3,$4,$5,'inactive',$6,$7,$8,$9,$10,$11) RETURNING *`,
+        [code, str(b.name, 200), str(b.description, 1000), b.kind, value, positiveInt(b.maxRedemptions, 'invalid_limit'),
+          positiveInt(b.perUserLimit, 'invalid_limit') ?? 1, numberList(b.accountSizes), whenAt(b.startsAt), whenAt(b.expiresAt), actor])
+      await writeEligibility(client, coupon.id, { planIds, allowedUserIds })
+      await client.query('COMMIT')
+      res.status(201).json({ coupon })
+    } catch (e) {
+      await client.query('ROLLBACK').catch(() => {})
+      if (e.code === '23505') throw fail(409, 'coupon_code_exists')
+      if (e.code === '23514' || e.code === '23503') throw fail(400, 'invalid_coupon')
+      throw e
+    } finally { client.release() }
+  }))
+
+  /* update: name/description/eligibility/window/limits/status (activate, disable, revoke).
+     The schema trigger locks kind/value after the first redemption and keeps
+     revocation final; this endpoint relies on those guarantees. */
+  router.post('/:id', wrap(async (req, res) => {
+    const actor = actorOf(req), b = req.body || {}
+    if (!uuid.test(req.params.id)) throw fail(404, 'coupon_not_found')
+    if (b.status !== undefined && !['active', 'inactive', 'revoked'].includes(b.status)) throw fail(400, 'invalid_status')
+    if (b.internal) throw fail(400, 'internal_reserved')
+    const planIds = uuidList(b.challengePlanIds), allowedUserIds = uuidList(b.allowedUserIds)
+    const client = await pool.connect()
+    try {
+      await client.query('BEGIN')
+      await client.query(`SELECT set_config('openfund.coupon_actor', $1, true)`, [actor])
+      const { rows: [existing] } = await client.query('SELECT * FROM coupons WHERE id=$1 FOR UPDATE', [req.params.id])
+      if (!existing) throw fail(404, 'coupon_not_found')
+      if (existing.internal) throw fail(409, 'internal_reserved')
+      if (existing.status === 'revoked') throw fail(409, 'coupon_revoked')
+      const value = b.kind !== undefined || b.value !== undefined
+        ? validateValue(b.kind ?? existing.kind, b.value ?? existing.value) : null
+      const { rows: [coupon] } = await client.query(
+        `UPDATE coupons SET
+            name=coalesce($2, name), description=coalesce($3, description),
+            kind=coalesce($4, kind), value=coalesce($5, value), status=coalesce($6, status),
+            max_redemptions=CASE WHEN $7::boolean THEN $8 ELSE max_redemptions END,
+            per_user_limit=coalesce($9, per_user_limit),
+            account_sizes=CASE WHEN $10::boolean THEN $11::jsonb ELSE account_sizes END,
+            starts_at=CASE WHEN $12::boolean THEN $13 ELSE starts_at END,
+            expires_at=CASE WHEN $14::boolean THEN $15 ELSE expires_at END,
+            updated_at=now()
+          WHERE id=$1 RETURNING *`,
+        [existing.id, str(b.name, 200), str(b.description, 1000), b.kind ?? null, value, b.status ?? null,
+          b.maxRedemptions !== undefined, positiveInt(b.maxRedemptions, 'invalid_limit'),
+          positiveInt(b.perUserLimit, 'invalid_limit'),
+          b.accountSizes !== undefined, numberList(b.accountSizes) ?? null,
+          b.startsAt !== undefined, whenAt(b.startsAt),
+          b.expiresAt !== undefined, whenAt(b.expiresAt)])
+      await writeEligibility(client, coupon.id, { planIds, allowedUserIds })
+      await client.query('COMMIT')
+      res.json({ coupon })
+    } catch (e) {
+      await client.query('ROLLBACK').catch(() => {})
+      if (e.code === '23514' || e.code === 'P0001') throw fail(409, 'coupon_locked')
+      throw e
+    } finally { client.release() }
+  }))
 
   router.get('/', wrap(async (req, res) => {
     const { rows } = await pool.query(
