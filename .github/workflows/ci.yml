@@ -307,6 +307,10 @@ jobs:
         if: needs.changes.outputs.run_backend_suite == 'true'
         working-directory: .
         run: node e2e/test-purchase-readiness.mjs
+      - name: Site framing policy (frame-ancestors / X-Frame-Options) against a local boot
+        if: needs.changes.outputs.run_backend_suite == 'true'
+        working-directory: .
+        run: node e2e/test-frame-ancestors.mjs
       - name: Backstage owner browser acceptance
         if: needs.changes.outputs.run_backend_suite == 'true'
         working-directory: .

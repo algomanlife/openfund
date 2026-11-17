@@ -10,6 +10,7 @@
 import { Router } from 'express'
 import { rateLimit } from 'express-rate-limit'
 import { adminAuth } from './admin.js'
+import { metricsSnapshot } from './observability.js'
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const walletRe = /^0x[0-9a-f]{40}$/i
@@ -108,6 +109,11 @@ export function operationsAdminRoutes({ pool, engine = null, marketData = null }
          FROM notifications n JOIN openfund_users u ON u.id = n.user_id
         WHERE ${where} ORDER BY n.created_at DESC LIMIT $1 OFFSET $2`, params)
     res.set('Cache-Control', 'no-store').json({ notifications: rows, total: null })
+  }))
+
+  /* ---------- operational metrics (engine lag, feed staleness, failure counters) ---------- */
+  router.get('/metrics', readLimit, wrap(async (req, res) => {
+    res.set('Cache-Control', 'no-store').json(metricsSnapshot({ engine, marketData }))
   }))
 
   /* ---------- live risk board (recorded state only; never runs the engine) ---------- */
