@@ -43,7 +43,7 @@ protocol.registerSchemesAsPrivileged([
   },
 ]);
 if (!app.requestSingleInstanceLock()) app.quit();
-const regions = { international: "https://openfi.cloud", iran: "https://iran.openfund.cloud" } as const;
+const regions = { international: "https://openfi.cloud", iran: "https://openfi.live" } as const; /* canonical regional origins (ADR 0043) */
 type Region = keyof typeof regions;
 let region: Region = "international";
 async function probe(url: string) {

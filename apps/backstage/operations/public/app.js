@@ -730,6 +730,12 @@ async function render() {
       const data = await api('system')
       contents.append(table(null, [['backend', r => badge(r.backendReady ? 'ready' : 'unknown')], ['region', r => t(r.region)], ['mode', r => t(r.mode)],
         ['epoch', r => number(r.epoch)], ['version', r => technical(r.version)], ['identity', r => technical(r.commit)]], [data]))
+      /* both operating regions side by side (ADR 0043): release identity must match */
+      if (data.regions?.length > 1) contents.append(table('regions', [['region', r => technical(r.name)],
+        ['backend', r => badge(!r.reachable ? 'unknown' : r.ready ? 'ready' : 'unknown')], ['mode', r => r.mode ? t(r.mode) : '—'],
+        ['engineRunning', r => badge(r.engine ? 'ready' : 'unknown')], ['marketData', r => technical(r.freshMarks == null ? '—' : `${number(r.freshMarks)} · ${r.execution ?? ''}`)],
+        ['version', r => technical(r.version)], ['identity', r => technical(r.commit)],
+        ['sameRelease', r => badge(r.commit && r.commit === data.regions[0].commit ? 'ready' : 'unknown')]], data.regions))
     } else if (page === 'finance') {
       const data = await api('finance')
       contents.append(

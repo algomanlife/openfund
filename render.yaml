@@ -112,6 +112,12 @@ services:
         # Blueprint sync must not reset this to the onrender host alone.
         # iran.openfund.cloud: the Iran edge on Liara (ADR 0031), a proxy to this
         # same service; it adds no backend and no database.
+      - key: PUBLIC_ORIGIN
+        value: "https://openfi.cloud"   # GLOBAL canonical website origin (ADR 0043): sitemap/robots
+      - key: CANONICAL_ALIAS_HOSTS
+        value: "openfund.cloud,www.openfund.cloud,www.openfi.cloud"
+        # Browser navigation on these hosts → 301 to PUBLIC_ORIGIN (Cloudflare's
+        # redirect rule does the same first). POST, API, sync and probes are served.
       - key: CORS_ORIGINS
         sync: false             # only needed for extra origins / custom domain
       - key: SESSION_TTL_HOURS
@@ -187,7 +193,7 @@ services:
       - key: REGION_SYNC_ACTIVE_KID
         sync: false             # key id this region signs with
       - key: REGION_SYNC_PEER_URL
-        sync: false             # https origin of the Iran runtime; unset = sync worker off. Capture also needs an operator enable
+        sync: false             # Iran canonical origin https://openfi.live (never an alias: sync is never redirected); unset = sync worker off. Capture also needs an operator enable
       - key: EDGE_CLIENT_IP_KEY
         sync: false             # secret shared only with the Iran edge (ADR 0031): lets it pass the visitor IP
                                 # for rate limits and audit logs; unset = edge visitors share the edge's IP
@@ -258,6 +264,8 @@ services:
         sync: false
       - key: BACKSTAGE_BACKEND_ORIGIN
         sync: false
+      - key: BACKSTAGE_IRAN_ORIGIN
+        value: "https://openfi.live"   # IRAN canonical origin: read-only regional status (public endpoints, no credential)
       - key: BACKSTAGE_DIRECTUS_ORIGIN
         sync: false
       - key: BACKSTAGE_OWNER

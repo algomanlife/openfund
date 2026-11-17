@@ -26,9 +26,12 @@ async function toggleLanguage(page) {
   page.on('pageerror', e => errs.push(e.message.slice(0, 160)))
 
   /* ============ HOME (fa) ============ */
+  /* ADR 0043: no saved preference and no trusted country (local origin) → English */
   await page.goto(`${BASE}/`, { waitUntil: 'load' })
   await page.waitForTimeout(1800)
-  R('home: root redirects to fa gateway', page.url().includes('/fa/home'), page.url())
+  R('home: root redirects to the English fallback gateway', page.url().includes('/en/home'), page.url())
+  await page.goto(`${BASE}/fa/home`, { waitUntil: 'load' })
+  await page.waitForTimeout(1800)
   const homeFa = await page.evaluate(() => ({
     h1: document.querySelector('.home-stage h1')?.textContent.trim(),
     panels: document.querySelectorAll('.home-panel').length,

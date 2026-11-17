@@ -47,9 +47,11 @@
           "config": "infra/liara-iran-runtime/liara.web.json",
           "env": {
             "OPENFUND_REGION": "IRAN",
-            "OPENFUND_ROLES": "http",
+            "OPENFUND_ROLES": "http,market-data",
             "MIGRATE_ON_START": "1",
-            "FOOTPRINT_ENABLED": "0"
+            "FOOTPRINT_ENABLED": "0",
+            "GEO_FALLBACK_LOCALE": "fa",
+            "PUBLIC_ORIGIN": "https://openfund-iran-staging.liara.run"
           },
           "secrets": [
             "DATABASE_URL",
@@ -141,9 +143,12 @@
           "config": "infra/liara-iran-runtime/liara.web.json",
           "env": {
             "OPENFUND_REGION": "IRAN",
-            "OPENFUND_ROLES": "http",
+            "OPENFUND_ROLES": "http,market-data",
             "MIGRATE_ON_START": "1",
-            "FOOTPRINT_ENABLED": "0"
+            "FOOTPRINT_ENABLED": "0",
+            "GEO_FALLBACK_LOCALE": "fa",
+            "PUBLIC_ORIGIN": "https://openfi.live",
+            "CANONICAL_ALIAS_HOSTS": "www.openfi.live,iran.openfund.cloud,iran.openfi.cloud"
           },
           "secrets": [
             "DATABASE_URL",
@@ -156,11 +161,13 @@
             "REGION_SYNC_PEER_URL"
           ],
           "domains": [
+            "openfi.live",
+            "www.openfi.live",
             "iran.openfund.cloud",
-            "iran.openfi.cloud",
-            "openfi.live"
+            "iran.openfi.cloud"
           ],
-          "public": true
+          "public": true,
+          "$comment": "Canonical https://openfi.live (ADR 0043); the other domains 301 to it. market-data runs here too: this process executes orders and needs fresh marks; the worker's engine loop runs SL/TP and liquidation (row locks serialize them, test/split-process-engine.test.mjs)."
         },
         {
           "id": "openfund-iran-worker",

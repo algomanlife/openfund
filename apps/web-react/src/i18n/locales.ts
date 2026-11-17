@@ -76,9 +76,19 @@ export function switchLocalePath(pathname: string, to: AppLocale): string {
   return `/${to}/home`
 }
 
-/** Persisted preference (existing `of-language` key) — any supported locale. */
+/** First-visit default chosen by the server from the visitor's trusted
+ * country (runtime-config.js `geoLocale`, ADR 0043); English when absent. */
+export function geoDefaultLocale(): AppLocale {
+  const config = typeof window !== 'undefined' ? (window as Window & { __OPENFUND_RUNTIME_CONFIG__?: { geoLocale?: string } }).__OPENFUND_RUNTIME_CONFIG__ : undefined
+  return normalizeLocale(config?.geoLocale, 'en')
+}
+
+/** Locale for a route without one. Priority (ADR 0043): a saved preference
+ * (existing `of-language` key, written whenever the visitor uses a locale),
+ * then the Geo-IP default, then English. A URL locale is handled by the
+ * router before this is consulted, and is never overridden. */
 export function storedLocale(): AppLocale {
-  try { return normalizeLocale(localStorage.getItem('of-language'), 'fa') } catch { return 'fa' }
+  try { return normalizeLocale(localStorage.getItem('of-language'), geoDefaultLocale()) } catch { return geoDefaultLocale() }
 }
 
 /** Visible notice when some text on the page has no translation (see reportMiss). */

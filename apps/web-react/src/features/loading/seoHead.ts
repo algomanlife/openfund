@@ -72,5 +72,6 @@ export function updateSeoHead(location: Location) {
   upsertProperty('og:locale', OG_LOCALE[current])
   document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach(l => l.remove())
   for (const locale of whitepaper ? (['fa', 'en'] as const) : LOCALES) upsertLink('alternate', origin + swapLocale(pathname, locale), locale)
-  upsertLink('alternate', origin + swapLocale(pathname, 'fa'), 'x-default')
+  /* x-default: English, the Geo-IP language fallback (ADR 0043) */
+  upsertLink('alternate', origin + swapLocale(pathname, 'en'), 'x-default')
 }

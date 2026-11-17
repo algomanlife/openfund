@@ -228,6 +228,8 @@ jobs:
           node --test ../../scripts/liara/test/provision.test.mjs ../../scripts/liara/test/check-infra.test.mjs
           # ADR 0042: manifest, workflows and docs agree on every Liara/GitHub identifier
           node ../../scripts/liara/check-infra.mjs
+          # ADR 0043: Cloudflare rules agree with the application's alias redirect
+          node --test ../../scripts/cloudflare/test/policy.test.mjs
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:

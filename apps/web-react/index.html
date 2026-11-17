@@ -6,8 +6,12 @@
   <meta name="color-scheme" content="dark light">
   <meta name="theme-color" content="#060808">
   <style>html{color-scheme:only dark}html[data-theme="light"]{color-scheme:only light}</style>
+  <!-- Runtime configuration first: it carries the Geo-IP default locale the
+       pre-paint script below needs (ADR 0043). -->
+  <script src="/runtime-config.js"></script>
   <script>var t;try{t=localStorage.getItem('of-theme-choice')}catch{}document.documentElement.dataset.theme=t==='light'||t==='dark'?t:window.matchMedia?.('(prefers-color-scheme: dark)').matches?'dark':'light'
-/* Pre-paint locale + direction (route wins over the stored preference) and
+/* Pre-paint locale + direction (route, then the stored preference, then the
+   Geo-IP default from runtime-config.js, then English; ADR 0043) and
    legacy URL normalization: the '#/...' route hash and the '/react' prefix
    are converted to clean history URLs BEFORE anything renders — a hash
    fragment never reaches the server, so old bookmarks can only be recovered
@@ -29,14 +33,15 @@ if(url!==location.pathname+location.search+location.hash)history.replaceState(nu
 var seg=path.split('/')[1]
 var supported=['fa','en','ar','ru','zh-CN']
 var lang=supported.indexOf(seg)>=0?seg:''
-if(!lang){try{var stored=localStorage.getItem('of-language');lang=supported.indexOf(stored)>=0?stored:'fa'}catch(e){lang='fa'}}
+var geo=(window.__OPENFUND_RUNTIME_CONFIG__||{}).geoLocale
+var fallback=supported.indexOf(geo)>=0?geo:'en'
+if(!lang){try{var stored=localStorage.getItem('of-language');lang=supported.indexOf(stored)>=0?stored:fallback}catch(e){lang=fallback}}
 document.documentElement.lang=lang
 document.documentElement.dir=lang==='fa'||lang==='ar'?'rtl':'ltr'
 }catch(e){}})()
 /* boot-loader backstop: hide it even if the app never boots, so the
    branded loader can never stay stuck (React removes it on readiness) */
 setTimeout(function(){var el=document.getElementById('of-boot-loader');if(el)el.remove()},20000)</script>
-  <script src="/runtime-config.js"></script>
   <link rel="icon" type="image/svg+xml" href="/assets/mark-mint.svg">
   <title>Openfund</title>
   <!-- Static fallback branding metadata; the app replaces title/description/OG

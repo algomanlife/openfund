@@ -87,6 +87,8 @@ export function staticCheck(stack, files) {
       if (a.env?.OPENFUND_REGION !== 'IRAN') bad(`${t}/${a.id}: OPENFUND_REGION must be IRAN`)
       for (const s of ['DATABASE_URL', 'CMS_PUBLIC_URL']) if (!a.secrets?.includes(s)) bad(`${t}/${a.id}: must list ${s} (required at boot in production)`)
       if (a.role === 'web' && (a.env?.MIGRATE_ON_START !== '1' || !roles.includes('http') || a.public !== true)) bad(`${t}/${a.id}: the web app must be public, run http and migrate (MIGRATE_ON_START=1)`)
+      /* the web process executes orders (submit/close) with its own in-memory marks */
+      if (a.role === 'web' && !roles.includes('market-data')) bad(`${t}/${a.id}: the web app executes orders, so it must run market-data (otherwise every order is refused as stale_price)`)
       if (a.role === 'worker') {
         if (a.public !== false || (a.domains ?? []).length) bad(`${t}/${a.id}: the worker must be private with no domains`)
         if (roles.includes('http')) bad(`${t}/${a.id}: the worker must not run the http role`)

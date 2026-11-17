@@ -201,7 +201,7 @@ test('SEO: indexable routes, sitemap and hreflang agree for every locale', async
   const expected = PUBLIC_SITE_ROUTES.reduce((n, r) => n + localesFor(r).length, 0)
   assert.equal((xml.match(/<url>/g) || []).length, expected)
   for (const locale of LOCALES) assert.ok(xml.includes(`hreflang="${locale}" href="https://example.test/${locale}/home"`))
-  assert.ok(xml.includes('hreflang="x-default" href="https://example.test/fa/home"'))
+  assert.ok(xml.includes('hreflang="x-default" href="https://example.test/en/home"'))
   assert.ok(!/\/prop\/|\/perpetual\//.test(xml))
   assert.match(robotsTxt('https://example.test'), /Sitemap: https:\/\/example\.test\/sitemap\.xml/)
   assert.equal(siteOrigin('evil.test\r\nx'), null)

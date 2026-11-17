@@ -84,7 +84,8 @@ function preferredLocale(): AppLocale {
 }
 
 /* '/' — the landing no longer lives at the root; the product gateway does.
-   The stored language preference decides fa/en, fa by default. */
+   The saved language preference decides, else the Geo-IP default, else
+   English (ADR 0043). */
 function RootRedirect() {
   return <Navigate to={`/${preferredLocale()}/home`} replace />
 }
