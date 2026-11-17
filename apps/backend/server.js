@@ -16,7 +16,8 @@ import path from 'node:path'
 import { releaseDiagnostics } from './release.js'
 import { runtimeConfigScript, runtimeCmsUrl } from './runtime-config.js'
 import { canonicalHostMiddleware, canonicalConfig, regionChoiceMiddleware } from './canonical-host.js'
-import { trustedCountryMiddleware } from './geo-trust.js'
+import { trustedCountryMiddleware, countryResolver, ingressReport } from './geo-trust.js'
+import { loadIpDatabase } from './geo-ipdb.js'
 import { defaultLocale, fallbackLocale } from './geo-locale.js'
 import { staticCacheControl, NO_STORE } from './static-cache.js'
 import { seoRoutes } from './seo.js'
@@ -103,8 +104,11 @@ app.set('trust proxy', 1)
 /* ADR 0043: browser navigation on a region's alias host → 301 to its
    canonical origin (machine paths and non-GET methods are never redirected) */
 app.use(canonicalHostMiddleware(process.env))
-/* ADR 0043: CF-IPCountry is trusted only from Cloudflare addresses, then removed */
-app.use(trustedCountryMiddleware())
+/* ADR 0043: the visitor country comes from one configured source (Cloudflare
+   hop on GLOBAL; IP database on IRAN once its ingress hop is measured). The
+   raw CF-IPCountry header is removed either way. */
+const geoCountry = countryResolver(process.env, { loadDb: async p => loadIpDatabase(p) })
+app.use(trustedCountryMiddleware(geoCountry))
 /* ADR 0043: `?region=global|iran` is remembered so geographic routing respects it */
 app.use(regionChoiceMiddleware({ secure: cfg.prod }))
 /* Iran edge (ADR 0031): a request carrying EDGE_CLIENT_IP_KEY may supply the
@@ -876,6 +880,10 @@ app.use('/admin', adminRoutes({ pool, audit, claimPayout: createPayoutClaimClien
 app.get('/runtime/status', asyncRoute(async (req, res) => {
   res.set('Cache-Control', 'no-store').json(await statusBody(runtime))
 }))
+
+/* Ingress diagnostics (ADR 0043): the caller's own forwarded hops, used once
+   per platform to measure GEO_CLIENT_HOP. Never cached. */
+app.get('/runtime/ingress', (req, res) => { res.set('Cache-Control', 'no-store').json(ingressReport(req, geoCountry)) })
 
 /* Public release identity contains build metadata only, never runtime secrets. */
 app.get('/version', (req, res) => {

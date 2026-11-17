@@ -16,6 +16,7 @@
    decision and no geographic routing depends on it: routing happens at
    Cloudflare's edge, which sees the real connection. */
 import net from 'node:net'
+import { lookupIpv4 } from './geo-ipdb.js'
 
 /* Cloudflare's published ranges, https://www.cloudflare.com/ips-v4 and
    https://www.cloudflare.com/ips-v6 (2026-11-17). A stale list only makes a
@@ -57,12 +58,59 @@ export function trustedCountry(headers, socketAddress) {
   return isCloudflareAddress(proxyPeer(headers, socketAddress)) ? value.trim().toUpperCase() : null
 }
 
+/** the X-Forwarded-For entry `hop` positions from the right (1 = the last,
+ *  appended by the platform proxy); entries further left are client-written */
+export function forwardedAddress(headers, socketAddress, hop = 1) {
+  const xff = headers['x-forwarded-for']
+  const list = (Array.isArray(xff) ? xff.join(',') : String(xff || '')).split(',').map(s => s.trim()).filter(Boolean)
+  if (!list.length) return hop === 1 ? socketAddress : null
+  return list.length >= hop ? list[list.length - hop] : null
+}
+
+/* Country source per region (ADR 0043):
+     GEO_COUNTRY_SOURCE=cloudflare (default)  CF-IPCountry from a Cloudflare hop (GLOBAL on Render)
+     GEO_COUNTRY_SOURCE=ip-database           IPv4 lookup of the platform-provided visitor
+       address (IRAN on Liara). Needs GEOIP_DB_PATH and GEO_CLIENT_HOP: the
+       X-Forwarded-For position, from the right, where the platform writes
+       the visitor's address. It must be measured on the real ingress
+       (GET /runtime/ingress) before it is set; there is no default. In this
+       mode CF-IPCountry is never read. */
+export function countryResolver(env = process.env, { loadDb } = {}) {
+  const source = env.GEO_COUNTRY_SOURCE || 'cloudflare'
+  if (source === 'cloudflare') return { source, resolve: (headers, socket) => trustedCountry(headers, socket), address: (headers, socket) => proxyPeer(headers, socket) }
+  if (source !== 'ip-database') throw Error('GEO_COUNTRY_SOURCE must be cloudflare or ip-database')
+  const hop = Number(env.GEO_CLIENT_HOP)
+  if (!Number.isInteger(hop) || hop < 1 || hop > 4) throw Error('GEO_CLIENT_HOP (1-4, measured with /runtime/ingress) is required with GEO_COUNTRY_SOURCE=ip-database')
+  if (!env.GEOIP_DB_PATH) throw Error('GEOIP_DB_PATH is required with GEO_COUNTRY_SOURCE=ip-database')
+  const db = (loadDb ?? (async () => null))(env.GEOIP_DB_PATH)
+  let table = null
+  const ready = Promise.resolve(db).then(t => { table = t })
+  return { source, hop, ready,
+    resolve: (headers, socket) => table ? lookupIpv4(table, forwardedAddress(headers, socket, hop)) : null,
+    address: (headers, socket) => forwardedAddress(headers, socket, hop) }
+}
+
 /** sets req.trustedCountry and removes the raw header before any route runs */
-export function trustedCountryMiddleware() {
+export function trustedCountryMiddleware(resolver = countryResolver({})) {
   return (req, res, next) => {
-    const country = trustedCountry(req.headers, req.socket?.remoteAddress)
+    const country = resolver.resolve(req.headers, req.socket?.remoteAddress)
     delete req.headers[COUNTRY_HEADER]
     Object.defineProperty(req, 'trustedCountry', { value: country, enumerable: true })
     next()
+  }
+}
+
+/** what this runtime sees of the caller (GET /runtime/ingress): the caller's
+ *  own address as the platform reports it, the hop count and whether the
+ *  last hop is Cloudflare. Used once per platform to measure GEO_CLIENT_HOP. */
+export function ingressReport(req, resolver) {
+  const xff = String(req.headers['x-forwarded-for'] ?? '')
+  const hops = xff ? xff.split(',').map(s => s.trim()).filter(Boolean) : []
+  return {
+    forwardedHops: hops.length,
+    hopsFromRight: hops.slice().reverse().slice(0, 4),
+    lastHopCloudflare: isCloudflareAddress(proxyPeer(req.headers, req.socket?.remoteAddress)),
+    countrySource: resolver.source,
+    country: req.trustedCountry ?? null,
   }
 }
