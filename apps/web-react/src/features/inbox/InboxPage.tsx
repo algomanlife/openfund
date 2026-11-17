@@ -45,6 +45,7 @@ export default function InboxPage() {
     challenge_failed: t('چالش شما به دلیل نقض قانون پایان یافت.', 'Your challenge ended after a rule breach.'),
     challenge_expired: t('مهلت چالش شما به پایان رسید.', 'Your challenge expired.'),
     challenge_stage_passed: t('یک مرحله از چالش را قبول شدید.', 'You passed a challenge phase.'),
+    purchase_paid: t('پرداخت شما تأیید شد و حساب چالش شما آماده است.', 'Your payment is confirmed and your challenge account is ready.'),
   }
   const statusLabel: Record<string, string> = {
     new: t('جدید', 'New'), in_progress: t('در حال رسیدگی', 'In progress'),

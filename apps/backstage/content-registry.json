@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4325,
-    "mappedCalls": 2178,
+    "uniqueRecords": 4326,
+    "mappedCalls": 2179,
     "exceptions": 49,
     "validationFindings": 0,
     "reviewedExclusions": 49
@@ -10750,7 +10750,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 155,
+          "line": 156,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -17912,7 +17912,7 @@
         },
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 148,
+          "line": 149,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24027,7 +24027,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 121,
+          "line": 122,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -26243,7 +26243,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 164,
+          "line": 165,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -26543,7 +26543,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 141,
+          "line": 142,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -31055,6 +31055,26 @@
       ]
     },
     {
+      "key": "react.5330a46e3cfe1424",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت شما تأیید شد و حساب چالش شما آماده است.",
+      "en": "Your payment is confirmed and your challenge account is ready.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
+          "line": 48,
+          "page": "inbox",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.53480fc03d4c40d6",
       "namespace": "react",
       "area": "Global Content",
@@ -32575,7 +32595,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 152,
+          "line": 153,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -32946,7 +32966,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 136,
+          "line": 137,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -36093,7 +36113,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 51,
+          "line": 52,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -40062,7 +40082,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 162,
+          "line": 163,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -40156,14 +40176,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 117,
+          "line": 118,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 119,
+          "line": 120,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -42168,7 +42188,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 124,
+          "line": 125,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -42529,7 +42549,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 108,
+          "line": 109,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -45279,7 +45299,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 106,
+          "line": 107,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50012,7 +50032,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 114,
+          "line": 115,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -54799,7 +54819,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 115,
+          "line": 116,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63277,7 +63297,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 155,
+          "line": 156,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63954,14 +63974,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 50,
+          "line": 51,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 130,
+          "line": 131,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67209,7 +67229,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 145,
+          "line": 146,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -70486,7 +70506,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 50,
+          "line": 51,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -72819,7 +72839,7 @@
         },
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 109,
+          "line": 110,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -73865,7 +73885,7 @@
         },
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 161,
+          "line": 162,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -81722,14 +81742,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 134,
+          "line": 135,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 135,
+          "line": 136,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -81749,7 +81769,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 51,
+          "line": 52,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -84493,7 +84513,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/inbox/InboxPage.tsx",
-          "line": 51,
+          "line": 52,
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"

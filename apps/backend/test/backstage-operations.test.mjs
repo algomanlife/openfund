@@ -205,3 +205,29 @@ test('R1 risk board returns recorded aggregates and engine/feed health, read-onl
   assert.ok('engineLoop' in board.data && 'feed' in board.data)
   assert.equal((await call('GET', '/admin/operations/risk')).status, 403)
 })
+
+test('N2 a paid purchase that provisions its challenge notifies purchase_paid once; unpaid orders do not', async () => {
+  await relayChallengeEvents(pool)
+  const order = async status => (await pool.query(
+    `INSERT INTO purchase_orders (user_id, challenge_plan_id, account_size_usd, price_usd, status) VALUES ($1,$2,10000,99,'pending') RETURNING id`,
+    [otherTrader.id, planId])).rows[0].id
+  const paidOrder = await order(), openOrder = await order()
+  await pool.query(`UPDATE purchase_orders SET status='paid', paid_at=now() WHERE id=$1`, [paidOrder])
+  const provision = async orderId => {
+    const { rows: [c] } = await pool.query(
+      `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, stage, account_size_usd, rules_snapshot, purchase_order_id)
+       VALUES ($1,$2,'created',1,10000,'{}'::jsonb,$3) RETURNING id`, [otherTrader.id, planId, orderId])
+    await pool.query(`INSERT INTO challenge_events (challenge_id, kind, detail) VALUES ($1,'account_provisioned','{}'::jsonb)`, [c.id])
+    return c.id
+  }
+  const paidChallenge = await provision(paidOrder)
+  await provision(openOrder)
+  await relayChallengeEvents(pool)
+  await relayChallengeEvents(pool)
+  const { rows } = await pool.query(`SELECT payload FROM notifications WHERE user_id=$1 AND kind='purchase_paid'`, [otherTrader.id])
+  assert.equal(rows.length, 1, 'exactly one notification, only for the paid order')
+  assert.equal(rows[0].payload.orderId, paidOrder)
+  assert.equal(rows[0].payload.challengeId, paidChallenge)
+  await pool.query(`DELETE FROM openfund_challenges WHERE user_id=$1`, [otherTrader.id])
+  await pool.query(`DELETE FROM purchase_orders WHERE user_id=$1`, [otherTrader.id])
+})

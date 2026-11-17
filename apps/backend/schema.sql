@@ -2607,6 +2607,12 @@ CREATE TABLE IF NOT EXISTS notifications (
   read_at     timestamptz,
   created_at  timestamptz NOT NULL DEFAULT now()
 );
+-- Kind list grows additively; the named constraint is replaced idempotently.
+ALTER TABLE notifications DROP CONSTRAINT IF EXISTS notifications_kind_check;
+ALTER TABLE notifications ADD CONSTRAINT notifications_kind_check CHECK (kind IN (
+  'payout_approved', 'payout_rejected', 'payout_paid', 'payout_simulated',
+  'support_reply', 'challenge_passed', 'challenge_failed', 'challenge_expired', 'challenge_stage_passed',
+  'purchase_paid'));
 CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications (user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_notifications_unread ON notifications (user_id) WHERE read_at IS NULL;
 

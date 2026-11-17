@@ -321,6 +321,7 @@ export const labels = {
   challenge_failed: ['Challenge failed', 'چالش مردود شد'],
   challenge_expired: ['Challenge expired', 'چالش منقضی شد'],
   challenge_stage_passed: ['Phase passed', 'مرحله قبول شد'],
+  purchase_paid: ['Purchase paid', 'خرید پرداخت شد'],
   invalid_request: ['Check the entered values.', 'مقادیر واردشده را بررسی کنید.'],
   rate_limited: ['Too many requests. Try again shortly.', 'تعداد درخواست‌ها زیاد است. کمی بعد تلاش کنید.'],
   payout_exceeds_pending_balance: ['Amount exceeds the pending balance.', 'مبلغ از ماندهٔ در انتظار بیشتر است.'],
