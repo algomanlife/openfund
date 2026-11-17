@@ -36,7 +36,7 @@ import './checkout-page.css'
 interface PlanInfo { slug: string, name: string, names?: { en: string | null, fa: string | null } | null, accountSizesUsd: number[], priceUsd: Record<string, number>, free: boolean,
   /* false when a rule of the plan cannot be enforced yet (server sales gate) */
   available?: boolean, unavailableReasons?: string[] }
-interface Quote { listPriceUsd: string, discountUsd: string, priceUsd: string, couponCode: string | null, paymentRequired: boolean }
+interface Quote { listPriceUsd: string, discountUsd: string, priceUsd: string, couponCode: string | null, paymentRequired: boolean, planSlug?: string, accountSize?: number }
 interface OrderView {
   id: string, status: string, lifecycle_state?: string, account_size_usd: string, price_usd: string, currency: string,
   list_price_usd?: string, discount_usd?: string, payment_required?: boolean, coupon_code?: string | null,
@@ -165,23 +165,59 @@ export default function CheckoutPage() {
   }, [plans, planSlug, size, orderParam])
   const selectionNotice = plans && params.get('plan') && !plans.some(p => p.slug === params.get('plan'))
 
-  /* ---- coupon → server quote ---- */
-  const [couponInput, setCouponInput] = useState('')
+  /* ---- coupon → server quote ----
+     The applied code lives in the URL (?coupon=) like the plan and size, so a
+     campaign link, a reload or a change of plan/size keeps it and the server
+     re-prices it. An order is never created while the typed code differs
+     from the code the current server quote priced (it used to be dropped
+     silently, creating a full-price order). */
+  const couponParam = params.get('coupon') || ''
+  const [couponInput, setCouponInput] = useState(couponParam)
   const [quote, setQuote] = useState<Quote | null>(null)
   const [couponError, setCouponError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const attemptKey = useRef(newKey())
-  const applyCoupon = async () => {
-    const code = couponInput.trim()
+  const quoteSeq = useRef(0)
+  const normCode = (v: string) => v.trim().toUpperCase()
+  const setCouponParam = (code: string | null) => {
+    const next = new URLSearchParams(params)
+    if (code) next.set('coupon', code); else next.delete('coupon')
+    if (next.toString() !== params.toString()) setParams(next, { replace: true })
+  }
+  const requestQuote = async (code: string) => {
+    const seq = ++quoteSeq.current
     setCouponError(null)
-    if (!code) { setQuote(null); return }
     setBusy(true)
     try {
       const r = await apiFetch('/purchases/quote', { method: 'POST', body: JSON.stringify({ planSlug, accountSize: size, couponCode: code }) })
+      if (seq !== quoteSeq.current) return
       if (!r.ok) { setQuote(null); setCouponError(errText(r.data?.error || 'coupon_invalid')); return }
-      setQuote(r.data as Quote); attemptKey.current = newKey()
-    } finally { setBusy(false) }
+      setQuote({ ...(r.data as Quote), planSlug, accountSize: size }); attemptKey.current = newKey()
+    } catch {
+      if (seq === quoteSeq.current) { setQuote(null); setCouponError(errText('coupon_invalid')) }
+    } finally { if (seq === quoteSeq.current) setBusy(false) }
   }
+  const applyCoupon = async () => {
+    const code = normCode(couponInput)
+    setCouponError(null)
+    if (!code) { setQuote(null); setCouponParam(null); return }
+    setCouponInput(code)
+    setCouponParam(code)
+    await requestQuote(code)
+  }
+  /* re-price the URL coupon after sign-in, a reload, or a plan/size change */
+  useEffect(() => {
+    const code = normCode(couponParam)
+    if (!code || !authenticated || !plan || !validSize || orderParam) return
+    if (quote && quote.couponCode === code && quote.planSlug === planSlug && quote.accountSize === size) return
+    if (couponError) return
+    if (couponInput !== code) setCouponInput(code)
+    if (couponParam !== code) setCouponParam(code)
+    void requestQuote(code)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [couponParam, authenticated, planSlug, size, validSize, orderParam])
+  const couponPending = !!normCode(couponInput) && !(quote && quote.couponCode === normCode(couponInput)
+    && quote.planSlug === planSlug && quote.accountSize === size)
   const listPrice = plan && validSize ? plan.priceUsd[String(size)] : null
   const zeroQuote = quote?.paymentRequired === false
 
@@ -191,7 +227,7 @@ export default function CheckoutPage() {
   const [email, setEmail] = useState(saved?.email || '')
   const [accepted, setAccepted] = useState(false)
   const emailOk = EMAIL.test(email.trim())
-  const ready = authenticated && !!plan && plan.available !== false && validSize && emailOk && accepted && (paymentsEnabled || zeroQuote)
+  const ready = authenticated && !!plan && plan.available !== false && validSize && emailOk && accepted && !couponPending && (paymentsEnabled || zeroQuote)
 
   /* ---- order, payment and status ---- */
   const [order, setOrder] = useState<OrderView | null>(null)
@@ -415,11 +451,12 @@ export default function CheckoutPage() {
                 <label htmlFor="of-coupon">{t('کد تخفیف (اختیاری)', 'Coupon code (optional)')}</label>
                 <div className="of-checkout-coupon-row">
                   <input id="of-coupon" dir="ltr" autoComplete="off" spellCheck={false} maxLength={40} value={couponInput}
-                    onChange={e => { setCouponInput(e.target.value); setQuote(null); setCouponError(null) }}
+                    onChange={e => { setCouponInput(e.target.value); setQuote(null); setCouponError(null); if (!e.target.value.trim()) setCouponParam(null) }}
                     onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); void applyCoupon() } }} />
                   <button className="of-profile-plainbtn" disabled={busy || !couponInput.trim()} onClick={() => { void applyCoupon() }}>{t('اعمال', 'Apply')}</button>
                 </div>
                 {couponError && <p className="of-profile-error" role="alert">{couponError}</p>}
+                {couponPending && !couponError && !busy && <p className="of-checkout-status" role="status">{t('برای ادامه، کد تخفیف را اعمال کنید یا آن را پاک کنید.', 'Apply the coupon code, or clear it, to continue.')}</p>}
                 {zeroQuote && <p className="of-checkout-status" role="status">{t('با این کد، چالش بدون پرداخت فعال می‌شود.', 'With this coupon the challenge is activated without payment.')}</p>}
               </div>
             )}
