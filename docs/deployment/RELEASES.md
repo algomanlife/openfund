@@ -200,13 +200,15 @@ Configure the production environment with a required reviewer. The deployment sc
 | `RELEASE_DIRECTUS_URL` | Repository Actions variable | Production CMS HTTPS URL checked before official publication; not embedded in the frontend build |
 | `RENDER_API_TOKEN` | Production environment secret | Render deployment API authorization |
 | `RENDER_SERVICE_ID` | Production environment variable | Existing `openfund` service ID |
+| `RENDER_BACKSTAGE_SERVICE_ID` | Production environment variable | Existing `openfund-backstage` service ID. The release deploys Backstage at the same commit; the deploy refuses to run without it |
+| `RELEASE_BACKSTAGE_URL` | Production environment variable | `https://backstage.openfi.cloud`; its `/health` reports the deployed commit |
 | `RELEASE_PUBLIC_URL` | Production environment variable | Actual HTTPS frontend/API origin |
 | `RELEASE_CMS_URL` | Production environment variable | Existing CMS HTTPS health origin |
 | `RELEASE_SIWE_DOMAINS` | Production environment variable | Comma-separated serving hosts the post-deploy live SIWE gate signs in on (default: the `RELEASE_PUBLIC_URL` host); a forged domain must be rejected |
 | `DATABASE_URL`, `ALLOWED_DOMAINS` | Existing Render service | Managed DB and browser origin; no test-mode production |
 | `VITE_WALLETCONNECT_PROJECT_ID` | Existing public build variable in both environments | Optional remote-wallet support; injected wallets remain usable without it |
 
-The Blueprint now disables direct commit auto-deploy and invokes `scripts/release/render-build.mjs`. Existing deployed service settings do not change merely because the YAML changed: apply/reconcile the Blueprint and explicitly verify live auto-deploy is off. The deployment script refuses services whose auto-deploy remains enabled. It deploys an exact published manifest SHA using Render's `commitId`, clears cache, polls status and validates runtime identity plus CMS health. Application or CMS failure is `failed_or_partial`, never fully deployed. CMS health is not a complete content/schema/session acceptance certificate.
+The Blueprint now disables direct commit auto-deploy and invokes `scripts/release/render-build.mjs`. Existing deployed service settings do not change merely because the YAML changed: apply/reconcile the Blueprint and explicitly verify live auto-deploy is off. The deployment script refuses to start unless auto-deploy is off on **both** the Web/API and the Backstage services. On 2026-11-17 both had auto-deploy enabled in the dashboard despite the Blueprint: merging #135 started a Web/API build within 9 seconds. The build's candidate check refused it, because `Release package gates` was still running (finished 23 minutes later). Backstage, which has no gate, went live at the unreleased commit. It deploys an exact published manifest SHA using Render's `commitId`, clears cache, polls status and validates runtime identity plus CMS health. Application or CMS failure is `failed_or_partial`, never fully deployed. CMS health is not a complete content/schema/session acceptance certificate.
 
 The build fails if Render's public build variables differ from official CI hashes. Since ADR 0013 the publication run chains the deployment; an authorized reviewer approves it in the `production` environment. Manual dispatch of **Deploy or roll back official release** remains for redeploys and rollback. The production environment is configured (v0.4.1 was deployed on 2026-11-07); the earlier 2026-11-03 "local only" statement is historical.
 
@@ -241,6 +243,35 @@ receiver injection. Check both manifests, `/version` matched identity,
 Payload verification establishes hashes; `/version` alone compares metadata and
 is not a content-integrity or owner-browser acceptance certificate. Owner Opera
 profile permission and official review/publication remain separate gates.
+
+## Coordinated two-region release (from v0.6.6)
+
+A merged pull request is not a deployment. One official release means one
+commit on every service:
+
+- GLOBAL Web/API (`openfund`);
+- GLOBAL Backstage (`openfund-backstage`);
+- IRAN web (`openfund-iran`);
+- IRAN worker (`openfund-iran-worker`).
+
+The order is validate, publish, GLOBAL, then IRAN. Each step verifies the
+exact commit before the next starts. The full checklist with commands is in
+[the v0.6.6 release plan](../reviews/release-0.6.6/PLAN.md).
+
+1. **Validate.** Every required check is green on the `main` commit. Render
+   auto-deploy is off on both Render services. The Cloudflare live state
+   matches `infra/cloudflare/policy.mjs`. Backups of both databases are taken.
+   Then run `node scripts/release/regions-status.mjs` (the baseline).
+2. **Publish.** Run `release.yml` with `publish=true`. The package gates run
+   on the exact commit, then the tag, release and manifest are created.
+3. **GLOBAL.** The chained deploy waits for `production` approval. It deploys
+   Web/API, verifies the manifest identity, deploys Backstage at the same
+   commit and verifies `/health`. Then the SIWE smoke test runs.
+4. **IRAN.** Run the runtime deploy with the same tag commit: guard, web
+   (migrates), worker, `verify-runtime.mjs --compare-with` GLOBAL, and
+   `check-infra.mjs --guard runtime --expect-commit`.
+5. **Accept.** `regions-status.mjs --expect-commit <sha>` reports no skew;
+   `verify-public.mjs` and `check-live.mjs` pass.
 
 ## Rollback
 

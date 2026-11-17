@@ -274,3 +274,16 @@ test('BACKSTAGE_IRAN_ORIGIN must be https in production', () => {
     BACKSTAGE_OWNER: 'owner', BACKSTAGE_BACKEND_TOKEN: 'x'.repeat(32), NODE_ENV: 'production' }
   assert.throws(() => loadConfig({ ...base, BACKSTAGE_IRAN_ORIGIN: 'ftp://openfi.live' }), /BACKSTAGE_IRAN_ORIGIN|incomplete/)
 })
+
+test('health reports the deployed commit (release identity) and nothing else', async t => {
+  const commit = 'b'.repeat(40)
+  const password = randomBytes(24).toString('base64url')
+  const server = createBackstage({ origin: 'https://backstage.example.test', backend: 'http://127.0.0.1:9', cms: 'http://127.0.0.1:8055', owner: 'owner-fixture',
+    credential: randomBytes(32).toString('hex'), verifier: await createVerifier(password), releaseCommit: commit })
+  const local = await open(server)
+  t.after(() => server.close())
+  const body = await new Promise((resolve, reject) => request(local + '/health', { headers: { Host: 'backstage.example.test' } }, async res => {
+    const parts = []; for await (const p of res) parts.push(p); resolve(JSON.parse(Buffer.concat(parts)))
+  }).on('error', reject).end())
+  assert.deepEqual(body, { ok: true, commit })
+})
