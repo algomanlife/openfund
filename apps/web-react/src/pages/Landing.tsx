@@ -215,7 +215,7 @@ export default function Landing() {
          the in-page toggle): the router reuses this component without
          remounting, so re-run the legacy translation pipeline to keep the
          DOM and the URL honest */
-      if (w().ofSetLanguage && document.documentElement.lang !== legacy) w().ofSetLanguage(legacy)
+      if (w().ofSetLanguage && document.documentElement.lang !== routeLocale) w().ofSetLanguage(legacy)
       else dispatchEvent(new CustomEvent('of-language'))
       return () => removeEventListener('of-i18n-miss', onMiss)
     }
@@ -361,14 +361,14 @@ export default function Landing() {
 
     initTheme()
     markCurrentPage()
-    /* language toggle: re-run the arrow/nav pass AND keep the route hash in
-       sync (silent replaceState — no router remount, no legacy re-boot) */
+    /* The selector already navigates through React Router. Only an in-place
+       legacy switch needs to update the URL after translating the markup. */
     const langHandler = () => setTimeout(() => {
       if (!pageRoot?.isConnected) return
       swapArrows()
       markCurrentPage()
       const lang = uiLocale()
-      if (routeLocale && lang !== routeLocale) {
+      if (lang !== w().ofUiLang && !location.pathname.startsWith(`/${lang}/`)) {
         navigate(`/${lang}/${isHome ? "home" : "challenges"}${location.search}`, { replace: true })
       }
     }, 60)
