@@ -503,14 +503,14 @@
       "official_source": "https://github.com/websockets/ws",
       "license": "MIT",
       "installed": {
-        "version": "8.22.2",
+        "version": "8.23.0",
         "lockfile": "apps/backend/package-lock.json",
         "package": "ws"
       },
       "latest_observed": {
-        "version": "8.22.2",
-        "date": "2026-11-10",
-        "reviewed": false
+        "version": "8.23.0",
+        "date": "2026-11-17",
+        "reviewed": true
       },
       "integration_path": [
         "apps/backend/market-data.js"
@@ -525,8 +525,8 @@
         "never_auto_merge": true
       },
       "compatibility": {
-        "status": "current-patch-behind",
-        "evidence": "market-data contract tests"
+        "status": "current",
+        "evidence": "market-data contract tests (node --test apps/backend/test/market-data-contract.test.mjs) and the backend suite on 8.23.0"
       },
       "last_upgrade": "see lockfile history",
       "tests": [
@@ -543,7 +543,7 @@
       "official_source": "https://github.com/wevm/viem",
       "license": "MIT",
       "installed": {
-      "version": "2.57.19",
+        "version": "2.57.19",
         "lockfile": "apps/backend/package-lock.json",
         "package": "viem"
       },
