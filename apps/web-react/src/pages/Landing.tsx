@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useParams, useSearchParams, useNavigate, Navigate, useLocation } from 'react-router-dom'
 import { bindNavigation, fitNavigation, renderNavigation, navigationClick, navigationKeyDown } from '../features/information/navigation'
@@ -8,6 +8,7 @@ import landingBody from './landing-body.html?raw'
 import { RainbowConnect } from '../wallet/RainbowConnect'
 import { legacyStylesheet } from '../config/legacyAssets'
 import ChallengeWalletPanel from '../wallet/ChallengeWalletPanel'
+import WalletShowcase from '../features/home/WalletShowcase'
 import IranAccessNotice from '../features/notice/IranAccessNotice'
 import BitpinTicker from '../features/ticker/BitpinTicker'
 import TelegramCommunity from '../features/community/TelegramCommunity'
@@ -258,6 +259,20 @@ export default function Landing() {
     card.replaceChildren(host)
     setWalletCardHost(host)
   }, [])
+  /* Animated wallet showcase (illustrative demo data) placed directly after
+     the Market Pulse section (#markets), before the next section */
+  const [showcaseHost, setShowcaseHost] = useState<HTMLElement | null>(null)
+  /* layout effect: inserted and rendered before paint, so nothing below shifts */
+  useLayoutEffect(() => {
+    const markets = document.getElementById('markets')
+    if (!markets) return
+    const host = document.createElement('div')
+    host.className = 'wallet-showcase-host'
+    host.dataset.localeOwned = 'react'
+    markets.after(host)
+    setShowcaseHost(host)
+    return () => { host.remove() }
+  }, [])
   /* Persian-only access notice directly below the shared header */
   const [noticeHost, setNoticeHost] = useState<HTMLElement | null>(null)
   useEffect(() => {
@@ -404,6 +419,7 @@ export default function Landing() {
         onLocaleChange={next => navigate(switchLocalePath(routerLocation.pathname, next) + routerLocation.search)} />
       <CheckoutHost />
       {walletCardHost && createPortal(<ChallengeWalletPanel locale={communityLocale} />, walletCardHost)}
+      {showcaseHost && createPortal(<WalletShowcase locale={communityLocale} />, showcaseHost)}
       {noticeHost && createPortal(<IranAccessNotice locale={communityLocale} />, noticeHost)}
       {communityLocale === 'fa' && <BitpinTicker />}
       <div dangerouslySetInnerHTML={{ __html: landingMarkup }} />

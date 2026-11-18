@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Challenges page: an animated row of sample wallet cards after Market Pulse.
+  It shows shortened addresses, identicons and demo returns, risk and
+  activity from a fixed seed, every card is labelled demo, and a disclaimer
+  says they are not Openfund traders or verified results. It uses a CSS-only
+  seamless loop with depth, edge falloff, a breathing mint glow and drifting
+  figures, runs only while visible and is static for reduced motion
+  ([design](docs/marketing/WALLET_SHOWCASE.md)).
+
 - Equity sampling locks the account before ownership checks and skips a
   concurrent deletion. The Challenges language selector keeps the route,
   document locale and community portal in sync across repeated changes.

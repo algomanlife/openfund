@@ -3816,5 +3816,10 @@
   "Openfund Treasury": "Казначейство Openfund",
   "Open ${base} in the terminal": "Открыть ${base} в терминале",
   "Show more (${count} remaining)": "Показать ещё (осталось ${count})",
-  "Your payment is confirmed and your challenge account is ready.": "Ваш платёж подтверждён, и ваш счёт испытания готов."
+  "Your payment is confirmed and your challenge account is ready.": "Ваш платёж подтверждён, и ваш счёт испытания готов.",
+  "Every wallet, its own trading path.": "У каждого кошелька — свой торговый путь.",
+  "Illustrative demo data. These addresses are not Openfund traders, accounts or verified results.": "Иллюстративные демонстрационные данные. Эти адреса не являются трейдерами, счетами или подтверждёнными результатами Openfund.",
+  "Risk": "Риск",
+  "Sample wallets · demo data": "Примеры кошельков · демо-данные",
+  "${count} demo trades": "Демо-сделок: ${count}"
 }

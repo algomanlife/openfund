@@ -3816,5 +3816,10 @@
   "Openfund Treasury": "Openfund 金库",
   "Open ${base} in the terminal": "在终端中打开 ${base}",
   "Show more (${count} remaining)": "显示更多（剩余 ${count}）",
-  "Your payment is confirmed and your challenge account is ready.": "您的付款已确认，挑战账户已准备就绪。"
+  "Your payment is confirmed and your challenge account is ready.": "您的付款已确认，挑战账户已准备就绪。",
+  "Every wallet, its own trading path.": "每个钱包，都有自己的交易路径。",
+  "Illustrative demo data. These addresses are not Openfund traders, accounts or verified results.": "示例演示数据。这些地址并非 Openfund 的交易者、账户或经核实的结果。",
+  "Risk": "风险",
+  "Sample wallets · demo data": "示例钱包 · 演示数据",
+  "${count} demo trades": "${count} 笔演示交易"
 }

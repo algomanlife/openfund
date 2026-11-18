@@ -48,6 +48,7 @@
     "test:browser:routing": "node e2e/test-clean-routing.cjs",
     "test:browser:polish": "node e2e/test-ui-polish.cjs",
     "test:browser:website": "node e2e/test-website-refresh.cjs",
+    "test:browser:wallet-showcase": "node e2e/test-wallet-showcase.cjs",
     "test:browser:wallet": "node e2e/test-wallet-connect.cjs",
     "test:browser:locale": "node e2e/test-locale-matrix.cjs",
     "test:browser:responsive": "node e2e/test-responsive-navigation.cjs",
