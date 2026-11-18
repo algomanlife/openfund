@@ -22,6 +22,12 @@ stateDiagram-v2
   payment_detected --> awaiting_payment
   payment_detected --> manual_review
   payment_detected --> expired
+  awaiting_payment --> partially_paid: verified amount below total (Openfund Pay)
+  payment_detected --> partially_paid
+  expired --> partially_paid: late partial payment inside grace
+  manual_review --> partially_paid
+  partially_paid --> paid: allocations reach the total
+  partially_paid --> manual_review: balance deadline passed
   manual_review --> paid
   manual_review --> awaiting_payment
   manual_review --> cancelled
@@ -39,6 +45,7 @@ stateDiagram-v2
 | --- | --- | --- |
 | `awaiting_payment` | Order exists; price frozen; nothing received | `pending` |
 | `payment_detected` | A transaction was reported; **not paid** until verified | `pending` (`expired` if it was) |
+| `partially_paid` | Verified allocations below the frozen total (Openfund Pay, ADR 0046). Never expires; after `PAYMENT_PARTIAL_BALANCE_HOURS` moves to `manual_review`. The customer completes the remaining balance with further transactions | `pending` |
 | `manual_review` | Needs an operator; still payable by a correct transaction | `pending` |
 | `paid` | Verified payment (or zero-payment coupon); transient inside the provisioning transaction | `paid` |
 | `provisioned` | Challenge account, ownership, invoice, coupon consumption and commission decision committed | `paid` |

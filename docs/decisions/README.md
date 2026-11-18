@@ -49,3 +49,4 @@ Read newer decisions alongside historical ones; current implementation and expli
 - [0042 — One manifest for Liara infrastructure and deploy environments](0042-liara-infrastructure-source-of-truth.md)
 - [0043 — Canonical domains, geographic routing and Geo-IP language](0043-canonical-domains-geo-routing-and-locale.md)
 - [0044 — Cross-region operation forwarding (proposed)](0044-cross-region-operation-forwarding.md)
+- [0046 — Openfund Pay: first-party payments, ledger, discovery and refunds](0046-openfund-pay.md)

@@ -2,6 +2,48 @@
 
 ## Unreleased
 
+- **Openfund Pay** — first-party, provider-independent checkout and payment
+  ledger ([ADR 0046](docs/decisions/0046-openfund-pay.md),
+  [guide](docs/payments/OPENFUND_PAY.md)). Not released or deployed.
+  - **Pay with Wallet** (primary): the server freezes a payment intent
+    (approved stablecoin, treasury, exact base units of the remaining
+    balance). The connected wallet signs one ERC-20 `transfer` on any
+    configured network, and the hash is recorded before verification.
+    Sign-in stays Arbitrum-only, and the signer must be the signed-in wallet.
+  - **Partial payments and overpayments:** a verified amount below the order
+    total is recorded as *Partially Paid — Remaining X*. Further transactions
+    (any method or network) complete it, and the challenge activates exactly
+    once. Any excess becomes a refund liability that is never counted as
+    revenue. Refunds are reviewed, approved, recorded and verified on-chain,
+    never sent automatically.
+  - **Treasury watcher:** finds transfers without a customer TXID, using a
+    leased per-chain cursor, a rescan window for reorgs and RPC failover.
+    Attribution happens only when unambiguous: by intent, by attempt, by
+    Solana memo, or when the sender is the SIWE wallet of exactly one open
+    order. Every other transfer waits in a Backstage review queue.
+  - **Status:** a server-authoritative status with 21 codes. A rejected
+    payment is no longer shown as "Verification Pending". After 15 minutes
+    the page explains the delay. After 20 minutes the case escalates to
+    review, and it is never auto-failed.
+  - **Manual transfer:** a mandatory red Persian/English sender warning that
+    must be acknowledged, and the TXID is now optional.
+  - **DePay:** off for new payments by default (DePay announces shutdown on
+    2026-12-31). A runtime switch in Backstage controls it. Callbacks,
+    events and recovery of existing DePay payments continue.
+  - **Backstage Payments workspace:** overview, investigation search, deposit
+    review (associate with written proof, refund case, close), refund
+    lifecycle, payment-method settings, watcher and alert metrics.
+  - **Fixes:** an 18-decimal stablecoin above about $100 overflowed
+    `payments.amount`. Treasury inflow totals counted a multi-transaction
+    order more than once. A partially paid order could expire.
+- Documentation: README and canonical status record the published v0.7.0
+  release and the 2026-11-18 real-payment findings
+  ([incident report](docs/payments/INCIDENT_2026-11-18.md)).
+
+## v0.7.0 — 2026-11-18
+
+Official release ([notes](docs/releases/openfund-0.7.0.md)). Contents:
+
 - Terminal Heatmap and Trade Radar:
   - **Heatmap tiles:** stay readable. Small markets are grouped into proportional "+N" tiles that open at readable size, and the order holds steady during live updates.
   - **Heatmap controls:** colour is a separate metric (24h change or funding) with a selectable range. Details appear only for a selection (bottom sheet on phones), with a hover tooltip and symbol search.

@@ -10,6 +10,14 @@ where they differ; the decision record is
 database tests. **Not yet accepted on a real network**: no mocked chain test is
 evidence of real payment acceptance. See [Activation](ACTIVATION.md).
 
+> **Openfund Pay (ADR 0046, unreleased).** The verifier now takes
+> `allowPartial`. A verified amount below the order total is returned as
+> evidence (`shortfallUnits`), and the ledger (`payment-ledger.js`) records a
+> partial payment instead of rejecting it. Excess becomes a refund liability.
+> The checks themselves are unchanged: token contract, receiver, sender
+> rule, finality, canonical block and decimals. `PURCHASE_RPC_URLS` values may
+> be an ordered list (failover). See [Openfund Pay](OPENFUND_PAY.md).
+
 ## Principles
 
 1. The backend on-chain verifier is the only authority. A DePay widget

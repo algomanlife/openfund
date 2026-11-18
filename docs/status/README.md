@@ -8,17 +8,17 @@ documentation are historical unless they match this page.
 
 ## Release
 
-- **Latest official release:** [v0.6.5](https://github.com/algomanlife/openfund/releases/tag/v0.6.5) — commit `a87804a69b27cafa3063807f33f1f7d9d93470dc`, published 2026-11-17.
-- **Next release:** version not yet allocated — pending owner decision; candidate `defe8f0ff6d5d2462d22fb003c13931e9fb5926e`. The release planner requires at least 0.7.0 after v0.6.5 because #135 is a feat change; a dispatch requesting 0.6.6 was refused before any tag was created (run 44237555538). ([evidence](https://github.com/algomanlife/openfund/actions/runs/44237555538))
+- **Latest official release:** [v0.7.0](https://github.com/algomanlife/openfund/releases/tag/v0.7.0) — commit `34ef7ec719d2bb0e5b20d10e6112a8ccc33261a0`, published 2026-11-18.
+- **Next release:** version not yet allocated — in development; candidate `null`. Openfund Pay payment rebuild (ADR 0046) is implemented on branch agent/claude/openfund-pay and awaits review; it is a feat change, so the release planner will allocate at least 0.8.0. Not released, not deployed. ([evidence](https://github.com/algomanlife/openfund/tree/agent/claude/openfund-pay))
 
 ## Services
 
 | Environment | Service | Role | Version | Commit | Official | Verified | Evidence | Note |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| GLOBAL — Render | `openfund` | Web/API | 0.6.5 | `a87804a` | yes | 2026-11-18 07:40 UTC | [evidence](https://openfi.cloud/version) | — |
+| GLOBAL — Render | `openfund` | Web/API | 0.7.0 | `34ef7ec` | yes | 2026-11-18 14:30 UTC | [evidence](https://openfi.cloud/version) | — |
 | GLOBAL — Render | `openfund-backstage` | Backstage | — | `cd057fa` | no | 2026-11-18 07:40 UTC | [evidence](https://dashboard.render.com/web/srv-dbsum1u7bikc73chqlfg) | Unreleased commit from a dashboard auto-deploy; its /health predates commit identity, so the commit comes from Render's deploy record. |
 | GLOBAL — Render | `openfund-cms` | Directus CMS | directus/directus:11.17.4 | — | — | 2026-11-18 07:40 UTC | [evidence](https://cms.openfi.cloud/server/health) | Independent image identity; health verified, image digest not re-verified on this date. |
-| IRAN — Liara | `openfund-iran` | Web/API | 0.6.5 | `a87804a` | no | 2026-11-18 07:40 UTC | [evidence](https://openfi.live/version) | Built without RELEASE_OFFICIAL (reports official: false). Runs OPENFUND_ROLES=http, so it holds no market data (execution suspended_no_authoritative_marks). |
+| IRAN — Liara | `openfund-iran` | Web/API | 0.6.5 | `a87804a` | no | 2026-11-18 14:30 UTC | [evidence](https://openfi.live/version) | Built without RELEASE_OFFICIAL (reports official: false). Runs OPENFUND_ROLES=http, so it holds no market data (execution suspended_no_authoritative_marks). |
 | IRAN — Liara | `openfund-iran-worker` | Worker | — | — | — | 2026-11-18 07:40 UTC | Liara API GET /v1/projects/openfund-iran-worker | Running (Liara status ACTIVE, defaultSubdomain false). Its commit is not independently attributable: the worker exposes no public route and Liara's release listing was unavailable through the API on this date. |
 
 Local / Test: Disposable PostgreSQL 17 databases and test servers on non-8080 ports; never authoritative for production state.
@@ -29,8 +29,10 @@ Each region is recorded separately. *Deployed* means the code runs there; *Enabl
 
 | Feature | Source | Release | Region | Deployed | Enabled | Verified | Accepted | Detail | Remaining blocker | Evidence |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Challenge purchases (DePay and manual transfer) | merged | v0.6.5 | GLOBAL | yes | yes | no | no | paymentsEnabled true; DePay on ethereum, arbitrum, base, polygon, optimism, solana, bsc; 7 manual-transfer chains. No genuine production purchase is recorded. | A real low-value owner purchase (docs/deployment/LAUNCH_PARITY_RUNBOOK.md section 13). | [evidence](https://openfi.cloud/purchases/plans) (2026-11-18) |
+| Challenge purchases (DePay and manual transfer) | merged | v0.7.0 | GLOBAL | yes | yes | no | no | paymentsEnabled true; DePay on ethereum, arbitrum, base, polygon, optimism, solana, bsc; 7 manual-transfer chains. Two genuine owner purchases with coupons on 2026-11-18 did NOT activate a challenge: DePay Arbitrum tx 0x8806874d…4444fe settled 10.638 USDC to the treasury for a 10.80 order (rejected insufficient_amount, shown as Verification Pending); the ~$10 manual transfer was not found on Arbitrum, Base, Optimism, Polygon, BNB Chain or Solana (Ethereum not scanned). Root cause report: docs/payments/INCIDENT_2026-11-18.md. | Openfund Pay (ADR 0046) released and deployed, the two 2026-11-18 cases reconciled by an operator, then the real-network acceptance checklist (docs/payments/ACTIVATION.md). | [evidence](https://openfi.cloud/purchases/plans) (2026-11-18) |
 |  |  |  | IRAN | yes | no | no | no | Purchases are refused in IRAN by policy (paymentsEnabled false, no plans offered). | Policy: not offered in IRAN. | [evidence](https://openfi.live/purchases/plans) (2026-11-18) |
+| Openfund Pay (direct wallet payment, partial/excess ledger, treasury watcher, refunds) | implemented | — | GLOBAL | no | no | no | no | Implemented on branch agent/claude/openfund-pay with deterministic tests (mocked chain data, real PostgreSQL). Not merged, released or deployed; no real-network test performed. | Review and merge, official release, deployment, owner-authorized real-network acceptance. | [evidence](https://github.com/algomanlife/openfund/tree/agent/claude/openfund-pay) (2026-11-18) |
+|  |  |  | IRAN | no | no | no | no | Purchases stay refused in IRAN by policy; the watcher runs only with the GLOBAL payment-recovery role. | Policy: not offered in IRAN. | [evidence](https://openfi.live/purchases/plans) (2026-11-18) |
 | Coupons and zero-payment purchases | merged | v0.6.5 | GLOBAL | yes | yes | no | no | Engine live with purchases. Backstage one-step creation and checkout coupon persistence are merged to main (#141), not released or deployed. | Next release deployed; then an owner checkout with a real coupon. | [evidence](https://github.com/algomanlife/openfund/pull/141) (2026-11-18) |
 |  |  |  | IRAN | yes | no | no | no | No purchases in IRAN. | Policy: not offered in IRAN. | [evidence](https://openfi.live/purchases/plans) (2026-11-18) |
 | Paper trading engine and market data | merged | v0.6.5 | GLOBAL | yes | yes | yes | no | Engine running; execution available_for_fresh_markets. | — | [evidence](https://openfi.cloud/ready) (2026-11-18) |

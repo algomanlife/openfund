@@ -108,7 +108,7 @@ function summary() {
     `**Current status** (verified ${status.updatedAt}; canonical: [docs/status](docs/status/README.md)):`, '',
     `- Latest official release: **${latest.tag}** (\`${latest.commit.slice(0, 7)}\`, ${latest.publishedAt}).`,
     `- GLOBAL (Render) Web/API runs ${web.version ? 'v' + web.version : 'an unversioned build'} \`${web.commit.slice(0, 7)}\`; IRAN (Liara) web runs ${iran.version ? 'v' + iran.version : 'an unversioned build'} \`${iran.commit.slice(0, 7)}\`${iran.official ? '' : ' (built as unofficial)'}.`,
-    `- Purchases: ${pay.global.enabled ? 'enabled' : 'disabled'} in GLOBAL, ${pay.iran.enabled ? 'enabled' : 'disabled'} in IRAN; a real owner purchase is ${pay.global.accepted ? 'accepted' : 'not yet recorded'}.`,
+    `- Purchases: ${pay.global.enabled ? 'enabled' : 'disabled'} in GLOBAL, ${pay.iran.enabled ? 'enabled' : 'disabled'} in IRAN; owner purchase acceptance ${pay.global.accepted ? 'accepted' : 'open (see the purchases row in docs/status)'}.`,
     `- Live execution: ${live.global.enabled ? 'enabled' : 'disabled'} (${String(live.global.blocker).replace(/\.$/, "")}).`,
     `- Desktop: ${desk.global.detail}`, '', END].join('\n')
 }
