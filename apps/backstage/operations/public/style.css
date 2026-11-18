@@ -67,3 +67,14 @@ dialog form{display:grid;gap:15px}
 .wizard-steps li { border-block-end: 2px solid var(--line, currentColor); padding-block: .25rem; }
 .content-preview iframe { display: block; width: 100%; height: min(70vh, 640px); border: 1px solid var(--line, #444); border-radius: .5rem; background: #fff; margin-block-start: .75rem; }
 a.button { display: inline-flex; align-items: center; text-decoration: none; }
+dialog form details{display:grid;gap:12px;border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+dialog form details[open]{gap:12px}
+dialog form details>summary{cursor:pointer;color:var(--muted);font-weight:600}
+dialog form details[open]>*:not(summary){margin-block-start:12px}
+.choices{display:flex;flex-wrap:wrap;gap:6px 14px;border:0;padding:0;margin:0}
+.choices legend{color:var(--muted);margin-block-end:6px;inline-size:100%}
+label.choice{display:inline-flex;align-items:center;gap:8px}
+.muted{color:var(--muted);margin:0;font-size:.9em}
+.result{border-inline-start:3px solid var(--accent);padding-inline-start:10px}
+.result[data-outcome=couponCreatedActivationFailed]{border-color:var(--danger)}
+.code-row{display:flex;align-items:end;gap:8px}.code-row>label{flex:1}

@@ -10,6 +10,13 @@
   figures, runs only while visible and is static for reduced motion
   ([design](docs/marketing/WALLET_SHOWCASE.md)).
 
+- Coupons: Backstage creates a coupon and activates it in one step, generates
+  codes, picks eligible models and sizes from the plan catalog, and reports
+  the exact outcome. A date-only expiry now lasts the whole UTC day. A 100%
+  coupon needs a usage cap before it can be active. Checkout keeps the coupon
+  in the URL (campaign links, reload, size changes) and no longer creates a
+  full-price order when a typed code was not applied.
+
 - Equity sampling locks the account before ownership checks and skips a
   concurrent deletion. The Challenges language selector keeps the route,
   document locale and community portal in sync across repeated changes.

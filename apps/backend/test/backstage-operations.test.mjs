@@ -120,6 +120,44 @@ test('C1 commercial coupon lifecycle: create → activate → update → disable
   assert.ok(auditRows.every(row => row.actor === 'admin:qa operator'), 'audit rows carry the named operator, not the database role')
 })
 
+test('C2 create-and-activate in one request, the 100% guard, date-only expiry and the plan picker', async () => {
+  const stamp = String(Date.now()).slice(-7)
+  /* activate on creation: two audited changes (created, then activated) */
+  const live = await call('POST', '/admin/coupons', { admin: true, body: { code: `LIVE-${stamp}`, kind: 'fixed', value: '15', activate: true, expiresAt: '2030-03-01' } })
+  assert.equal(live.status, 201)
+  assert.equal(live.data.activation, 'activated')
+  assert.equal(live.data.coupon.status, 'active')
+  /* a calendar-date expiry keeps the coupon valid for that whole UTC day */
+  assert.equal(new Date(live.data.coupon.expires_at).toISOString(), '2030-03-02T00:00:00.000Z')
+  const trail = (await pool.query(`SELECT after->>'status' AS status FROM coupon_audit WHERE coupon_id=$1 ORDER BY id`, [live.data.coupon.id])).rows.map(r => r.status)
+  assert.deepEqual(trail, ['inactive', 'active'])
+  /* not requested: created inactive, and the response says so */
+  const draft = await call('POST', '/admin/coupons', { admin: true, body: { code: `DRAFT-${stamp}`, kind: 'percent', value: 10 } })
+  assert.equal(draft.data.activation, 'not_requested')
+  assert.equal(draft.data.coupon.status, 'inactive')
+  /* a 100% coupon without a total cap is created but refused activation */
+  const free = await call('POST', '/admin/coupons', { admin: true, body: { code: `FULL-${stamp}`, kind: 'percent', value: 100, activate: true } })
+  assert.equal(free.status, 201)
+  assert.equal(free.data.activation, 'failed')
+  assert.equal(free.data.activationError, 'full_discount_needs_limit')
+  assert.equal(free.data.coupon.status, 'inactive')
+  assert.equal((await pool.query(`SELECT status FROM coupons WHERE id=$1`, [free.data.coupon.id])).rows[0].status, 'inactive')
+  const refused = await call('POST', `/admin/coupons/${free.data.coupon.id}`, { admin: true, body: { status: 'active' } })
+  assert.equal(refused.status, 409)
+  assert.equal(refused.data.error, 'full_discount_needs_limit')
+  const capped = await call('POST', `/admin/coupons/${free.data.coupon.id}`, { admin: true, body: { status: 'active', maxRedemptions: 3 } })
+  assert.equal(capped.status, 200)
+  assert.equal(capped.data.coupon.status, 'active')
+  /* a duplicate with activate stays a duplicate (nothing created) */
+  assert.equal((await call('POST', '/admin/coupons', { admin: true, body: { code: `LIVE-${stamp}`, kind: 'percent', value: 5, activate: true } })).status, 409)
+  /* plan picker: ids, names and sizes for eligibility, admin only */
+  assert.equal((await call('GET', '/admin/coupons/plans')).status, 403)
+  const plans = await call('GET', '/admin/coupons/plans', { admin: true })
+  assert.equal(plans.status, 200)
+  assert.ok(plans.data.plans.some(p => p.id === planId))
+  for (const p of plans.data.plans) assert.ok(Array.isArray(p.accountSizesUsd) && typeof p.name === 'string')
+})
+
 test('S1 operator reply reaches the trader inbox and notifies; trader replies back; closed threads refuse', async () => {
   const submitted = await call('POST', '/support/messages', { user: trader.id, body: {
     fullName: 'Ops Tester', email: `ops.${tag}@example.com`, department: 'support', subject: 'Payout question here',

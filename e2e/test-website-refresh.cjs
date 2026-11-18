@@ -339,7 +339,13 @@ async function realThemeClicks(browser) {
             && !!document.querySelector('.hero .telegram-community[data-locale-owned="react"]');
         }, locale);
         await waitForLocale();
-        await localePage.reload();
+        /* the legacy Landing may run its own scheduled reload at the same
+           moment; a collision aborts ours, but the page reloads either way and
+           the locale is asserted again below */
+        await localePage.reload().catch(async error => {
+          if (!/ERR_ABORTED|frame was detached|Execution context was destroyed/i.test(String(error && error.message))) throw error;
+          await localePage.waitForLoadState('load');
+        });
         await waitForLocale();
         check(`${locale} selector, route, and persisted direction agree after reload`, true);
       }
