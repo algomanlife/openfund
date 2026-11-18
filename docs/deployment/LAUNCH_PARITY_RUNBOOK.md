@@ -12,6 +12,21 @@ Evidence: [launch parity checklist](LAUNCH_PARITY_CHECKLIST.md),
 [security acceptance](../reviews/release-0.6.5/SECURITY_ACCEPTANCE.md),
 [load report](../reviews/release-0.6.5/LOAD_REPORT.md).
 
+## Progress (verified 2026-11-18)
+
+Current state comes from [status](../status/README.md). Steps proven by live
+evidence are marked done; the rest are not verified, so they are not claimed.
+
+| Step | State | Evidence |
+| :--- | :--- | :--- |
+| 1. Review and merge | Done | v0.6.5 merged (#132, #133) |
+| 5–6. Release configuration and publication | Done | [v0.6.5](https://github.com/algomanlife/openfund/releases/tag/v0.6.5), commit `a87804a` |
+| 7–8. Approve and deploy (Web/API) | Done | `https://openfi.cloud/version`: v0.6.5 `a87804a`, official |
+| 7–8. Backstage at the release commit | Not done | Backstage serves unreleased `cd057fa` (auto-deploy); the next release deploys both at one commit |
+| 12. DePay and payment configuration | Done | `/purchases/plans`: `paymentsEnabled: true`, seven DePay chains |
+| 13. Owner purchase test (real, low value) | **Open** | No genuine production purchase recorded |
+| 2–4, 9–11, 14–15 | Not verified here | Owner-side settings without public evidence |
+
 ## 1. Review and merge
 
 Review the pull request from `agent/claude/launch-completion`, confirm the

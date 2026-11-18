@@ -1,0 +1,274 @@
+{
+  "$comment": "Canonical Openfund status (docs/status/README.md is generated from this file by `node scripts/docs/status.mjs`; `npm run docs:check` validates both). Every state is recorded per environment. Source states come from Git; runtime states (deployed, enabled, verified, accepted) are valid only with `verifiedAt` and `evidence`. CI never probes production: a stale or wrong runtime claim must be corrected by re-verifying, not by editing the date.",
+  "schemaVersion": 1,
+  "updatedAt": "2026-11-18",
+  "release": {
+    "latestOfficial": {
+      "version": "0.6.5",
+      "tag": "v0.6.5",
+      "commit": "a87804a69b27cafa3063807f33f1f7d9d93470dc",
+      "publishedAt": "2026-11-17",
+      "evidence": "https://github.com/algomanlife/openfund/releases/tag/v0.6.5"
+    },
+    "next": {
+      "version": null,
+      "candidateCommit": "defe8f0ff6d5d2462d22fb003c13931e9fb5926e",
+      "state": "pending_owner_decision",
+      "note": "The release planner requires at least 0.7.0 after v0.6.5 because #135 is a feat change; a dispatch requesting 0.6.6 was refused before any tag was created (run 44237555538).",
+      "evidence": "https://github.com/algomanlife/openfund/actions/runs/44237555538"
+    }
+  },
+  "environments": {
+    "global": {
+      "label": "GLOBAL — Render",
+      "services": [
+        {
+          "id": "openfund",
+          "role": "Web/API",
+          "provider": "render",
+          "resource": "srv-dbnfjajrjlhs738m4020",
+          "version": "0.6.5",
+          "commit": "a87804a69b27cafa3063807f33f1f7d9d93470dc",
+          "official": true,
+          "verifiedAt": "2026-11-18T07:40:00Z",
+          "evidence": "https://openfi.cloud/version"
+        },
+        {
+          "id": "openfund-backstage",
+          "role": "Backstage",
+          "provider": "render",
+          "resource": "srv-dbsum1u7bikc73chqlfg",
+          "version": null,
+          "commit": "cd057fa4a1d3077e70db0eeab01957ead7a6aeaf",
+          "official": false,
+          "note": "Unreleased commit from a dashboard auto-deploy; its /health predates commit identity, so the commit comes from Render's deploy record.",
+          "verifiedAt": "2026-11-18T07:40:00Z",
+          "evidence": "https://dashboard.render.com/web/srv-dbsum1u7bikc73chqlfg"
+        },
+        {
+          "id": "openfund-cms",
+          "role": "Directus CMS",
+          "provider": "render",
+          "resource": "srv-dbnfij3rjlhs738m29sg",
+          "version": "directus/directus:11.17.4",
+          "commit": null,
+          "official": null,
+          "note": "Independent image identity; health verified, image digest not re-verified on this date.",
+          "verifiedAt": "2026-11-18T07:40:00Z",
+          "evidence": "https://cms.openfi.cloud/server/health"
+        }
+      ]
+    },
+    "iran": {
+      "label": "IRAN — Liara",
+      "services": [
+        {
+          "id": "openfund-iran",
+          "role": "Web/API",
+          "provider": "liara",
+          "resource": "openfund-iran",
+          "version": "0.6.5",
+          "commit": "a87804a69b27cafa3063807f33f1f7d9d93470dc",
+          "official": false,
+          "note": "Built without RELEASE_OFFICIAL (reports official: false). Runs OPENFUND_ROLES=http, so it holds no market data (execution suspended_no_authoritative_marks).",
+          "verifiedAt": "2026-11-18T07:40:00Z",
+          "evidence": "https://openfi.live/version"
+        },
+        {
+          "id": "openfund-iran-worker",
+          "role": "Worker",
+          "provider": "liara",
+          "resource": "openfund-iran-worker",
+          "version": null,
+          "commit": null,
+          "official": null,
+          "note": "Running (Liara status ACTIVE, defaultSubdomain false). Its commit is not independently attributable: the worker exposes no public route and Liara's release listing was unavailable through the API on this date.",
+          "verifiedAt": "2026-11-18T07:40:00Z",
+          "evidence": "Liara API GET /v1/projects/openfund-iran-worker"
+        }
+      ]
+    },
+    "local": {
+      "label": "Local / Test",
+      "services": [],
+      "note": "Disposable PostgreSQL 17 databases and test servers on non-8080 ports; never authoritative for production state."
+    }
+  },
+  "features": [
+    {
+      "name": "Challenge purchases (DePay and manual transfer)",
+      "source": "merged",
+      "release": "v0.6.5",
+      "global": {
+        "deployed": true,
+        "enabled": true,
+        "verified": false,
+        "accepted": false,
+        "detail": "paymentsEnabled true; DePay on ethereum, arbitrum, base, polygon, optimism, solana, bsc; 7 manual-transfer chains. No genuine production purchase is recorded.",
+        "verifiedAt": "2026-11-18T07:40:00Z",
+        "evidence": "https://openfi.cloud/purchases/plans",
+        "blocker": "A real low-value owner purchase (docs/deployment/LAUNCH_PARITY_RUNBOOK.md section 13)."
+      },
+      "iran": {
+        "deployed": true,
+        "enabled": false,
+        "verified": false,
+        "accepted": false,
+        "detail": "Purchases are refused in IRAN by policy (paymentsEnabled false, no plans offered).",
+        "verifiedAt": "2026-11-18T07:40:00Z",
+        "evidence": "https://openfi.live/purchases/plans",
+        "blocker": "Policy: not offered in IRAN."
+      }
+    },
+    {
+      "name": "Coupons and zero-payment purchases",
+      "source": "merged",
+      "release": "v0.6.5",
+      "global": {
+        "deployed": true,
+        "enabled": true,
+        "verified": false,
+        "accepted": false,
+        "detail": "Engine live with purchases. Backstage one-step creation and checkout coupon persistence are in PR #141 (not merged).",
+        "verifiedAt": "2026-11-18T07:40:00Z",
+        "evidence": "https://github.com/algomanlife/openfund/pull/141",
+        "blocker": "PR #141 review; then an owner checkout with a real coupon."
+      },
+      "iran": {
+        "deployed": true,
+        "enabled": false,
+        "verified": false,
+        "accepted": false,
+        "detail": "No purchases in IRAN.",
+        "verifiedAt": "2026-11-18T07:40:00Z",
+        "evidence": "https://openfi.live/purchases/plans",
+        "blocker": "Policy: not offered in IRAN."
+      }
+    },
+    {
+      "name": "Paper trading engine and market data",
+      "source": "merged",
+      "release": "v0.6.5",
+      "global": {
+        "deployed": true,
+        "enabled": true,
+        "verified": true,
+        "accepted": false,
+        "detail": "Engine running; execution available_for_fresh_markets.",
+        "verifiedAt": "2026-11-18T07:40:00Z",
+        "evidence": "https://openfi.cloud/ready",
+        "blocker": null
+      },
+      "iran": {
+        "deployed": true,
+        "enabled": false,
+        "verified": false,
+        "accepted": false,
+        "detail": "Web has no market-data role, so execution is suspended_no_authoritative_marks. Fixed on main (#135), not released.",
+        "verifiedAt": "2026-11-18T07:40:00Z",
+        "evidence": "https://openfi.live/ready",
+        "blocker": "Next release deployed to Liara with OPENFUND_ROLES=http,market-data."
+      }
+    },
+    {
+      "name": "Live order execution on Gains",
+      "source": "merged",
+      "release": "v0.6.5",
+      "global": {
+        "deployed": true,
+        "enabled": false,
+        "verified": false,
+        "accepted": false,
+        "detail": "Control plane only: executionAdapter none, settlementAdapter none, capacity unknown (capital_not_verified).",
+        "verifiedAt": "2026-11-18T07:40:00Z",
+        "evidence": "https://openfi.cloud/live/status",
+        "blocker": "Approved signer/custody design, supported testnet contracts, simulation, security review and management activation."
+      },
+      "iran": {
+        "deployed": true,
+        "enabled": false,
+        "verified": false,
+        "accepted": false,
+        "detail": "Not enabled.",
+        "verifiedAt": "2026-11-18T07:40:00Z",
+        "evidence": "https://openfi.live/ready",
+        "blocker": "Same as GLOBAL."
+      }
+    },
+    {
+      "name": "Backstage operations console",
+      "source": "merged",
+      "release": "v0.6.5",
+      "global": {
+        "deployed": true,
+        "enabled": true,
+        "verified": false,
+        "accepted": false,
+        "detail": "Serves unreleased commit cd057fa (contains the v0.6.5 console).",
+        "verifiedAt": "2026-11-18T07:40:00Z",
+        "evidence": "https://backstage.openfi.cloud/health",
+        "blocker": "Deploy the next official release so Backstage runs the release commit and reports it."
+      },
+      "iran": {
+        "deployed": false,
+        "enabled": false,
+        "verified": false,
+        "accepted": false,
+        "detail": "Backstage runs only in GLOBAL; it shows IRAN status read-only.",
+        "verifiedAt": "2026-11-18T07:40:00Z",
+        "evidence": "docs/backstage/README.md",
+        "blocker": null
+      }
+    },
+    {
+      "name": "Regional synchronization (ADR 0033) and cross-region forwarding (ADR 0044)",
+      "source": "merged",
+      "release": "v0.6.5",
+      "global": {
+        "deployed": true,
+        "enabled": false,
+        "verified": false,
+        "accepted": false,
+        "detail": "Sync not enabled; ADR 0044 is proposed, not implemented.",
+        "verifiedAt": "2026-11-18T07:40:00Z",
+        "evidence": "docs/deployment/LIARA_IRAN_RUNTIME.md",
+        "blocker": "Out of scope for the current release; requires the owner's activation decision."
+      },
+      "iran": {
+        "deployed": true,
+        "enabled": false,
+        "verified": false,
+        "accepted": false,
+        "detail": "Sync not enabled.",
+        "verifiedAt": "2026-11-18T07:40:00Z",
+        "evidence": "docs/deployment/LIARA_IRAN_RUNTIME.md",
+        "blocker": "Same as GLOBAL."
+      }
+    },
+    {
+      "name": "Open Trade desktop installers",
+      "source": "merged",
+      "release": null,
+      "global": {
+        "deployed": false,
+        "enabled": false,
+        "verified": false,
+        "accepted": false,
+        "detail": "0.0.2 installers built and acceptance-tested in CI; unsigned and not published.",
+        "verifiedAt": "2026-11-15T00:00:00Z",
+        "evidence": "https://github.com/algomanlife/openfund/actions/runs/43611941782",
+        "blocker": "Code signing and the owner's publication decision."
+      },
+      "iran": {
+        "deployed": false,
+        "enabled": false,
+        "verified": false,
+        "accepted": false,
+        "detail": "Not applicable (desktop distribution is not regional).",
+        "verifiedAt": "2026-11-15T00:00:00Z",
+        "evidence": "docs/product/FEATURE_STATUS.md",
+        "blocker": null
+      }
+    }
+  ]
+}

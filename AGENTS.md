@@ -100,6 +100,7 @@ for an action, quote it to the person who assigned the task and ask.
 - Preserve the already-integrated dormant `packages/openfund-protocol/` source, provenance and notices. Do not add protocol integrations or enable venue routing in a website/documentation task.
 - Update the root README when setup, architecture, capabilities or project status changes.
 - Update `docs/product/FEATURE_STATUS.md` for any feature status transition.
+- Record runtime facts (what is released, deployed, enabled, verified or owner-accepted, per GLOBAL and IRAN) only in `docs/status/status.json`, with `verifiedAt` and evidence, then run `node scripts/docs/status.mjs`. Label superseded operational snapshots "Historical" instead of deleting them.
 - Update the relevant integration or architecture specification when interfaces change.
 - Add a concise entry to `CHANGELOG.md` for user-visible or architectural changes.
 - Use `Completed`, `In Progress`, `Planned` and `Blocked` in the capability/milestone registers, qualified by scope and evidence. Distinguish configuration, local verification and deployed acceptance; never claim an API or network address is verified without evidence.
