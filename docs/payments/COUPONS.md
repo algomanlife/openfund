@@ -78,6 +78,14 @@ No coupon code is stored in the repository.
    becomes `consumed` when the order is paid. It becomes `released` when the
    order is cancelled or expires unpaid (database trigger).
 
+Checkout keeps the applied code in the URL (`?coupon=CODE`, next to `plan`
+and `size`). A campaign link can therefore prefill it, and a reload or a change
+of plan or size re-prices it on the server. While the typed code differs from
+the code the current server quote priced, every order button stays disabled
+and the page asks the buyer to apply or clear it. Before this, an edited or
+unapplied code was dropped silently and the order was created at full price.
+`e2e/test-coupon-checkout.cjs` covers this flow.
+
 Concurrency: requests on the same coupon serialize on the row lock, so
 neither parallel requests nor retries can exceed a limit. The same
 `idempotencyKey` returns the same order. Tests R1–R3 in
@@ -104,7 +112,28 @@ which have no payment window.
 
 ## Administration
 
-Coupons are administered in Directus. `register_commerce_tables.py` (step
+**Backstage → Business → Coupons** is the primary administration path. *Create
+coupon* asks for four things: the code (typed, or *Generate*), percentage or
+fixed USD, the value, and *Activate after creation* (on by default).
+*Advanced settings* hold the name, description, total and per-customer limits,
+start and expiry dates, eligible challenge models and account sizes (chosen
+from the live plan catalog), and allowed customers. The result says exactly
+what happened: *created and active*, *created as inactive (draft)*, *created
+but activation refused* (with the reason), or *not created* (with the
+validation error). Activation is a second, separately audited change in the
+same request, so the audit trail shows creation, then activation.
+
+- Dates are UTC. A date-only expiry keeps the coupon valid for the whole
+  chosen day (it expires at the next midnight UTC). Before this, a coupon
+  expiring "1 December" stopped working at the start of 1 December.
+- A non-internal 100% coupon can be active only with a total usage cap
+  (`full_discount_needs_limit`). Internal test coupons keep the controlled
+  flow below.
+- The list shows code, status, discount, redeemed and remaining uses, expiry,
+  creation date, and *Copy code*, *Activate*, *Disable*, *Revoke* and *Edit*.
+  A coupon's page shows its redemptions, orders and audit trail.
+
+Coupons can also be administered in Directus. `register_commerce_tables.py` (step
 7/8 of `bootstrap-cms.sh`) registers the commerce tables with labels, field
 notes, validation and relations, and creates the **Commerce Admin** role and
 policy.
@@ -126,9 +155,12 @@ the bootstrap verifies that anonymous reads are refused. Financial columns
 business rules live in the database triggers and the backend, so a Directus
 edit cannot bypass them.
 
-The backend also exposes read-only reporting at `/admin/coupons`,
+Backstage calls the backend's owner API at `/admin/coupons` (create, with
+optional `activate`), `/admin/coupons/:id` (update and status),
+`/admin/coupons/plans` (eligibility picker) and the read-only
 `/admin/coupons/:id/redemptions`, `/orders` and `/audit` (token
-`ADMIN_API_TOKEN`). Commercial coupon creation remains in Directus. The separate
+`ADMIN_API_TOKEN`). Both Backstage and Directus write the same tables under the
+same triggers. The separate
 [controlled challenge workflow](CONTROLLED_CHALLENGES.md) offers one
 operator-issued entitlement each for Instant and Two-Step acceptance.
 

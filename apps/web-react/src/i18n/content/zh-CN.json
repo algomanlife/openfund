@@ -3817,6 +3817,7 @@
   "Open ${base} in the terminal": "在终端中打开 ${base}",
   "Show more (${count} remaining)": "显示更多（剩余 ${count}）",
   "Your payment is confirmed and your challenge account is ready.": "您的付款已确认，挑战账户已准备就绪。",
+  "Apply the coupon code, or clear it, to continue.": "请应用优惠码或将其清除后继续。",
   "${count} smaller markets": "${count} 个较小市场",
   "All markets": "全部市场",
   "Colour": "颜色",
