@@ -457,7 +457,8 @@ test('D3 callback validation: unconfigured chain ignored; wrong receiver / wrong
   const gift = callbackBody(u, theirs)
   chain = { mode: 'ok' }
   assert.equal((await depayPost('/purchases/depay/callback', gift)).data.recorded, true)
-  await settle()
+  /* verification and provisioning finish after the 200: wait for the outcome, not a fixed delay */
+  await until(async () => (await orderRow(theirs.id)).lifecycle_state === 'provisioned')
   assert.equal((await orderRow(theirs.id)).lifecycle_state, 'provisioned')
   assert.equal((await pool.query('SELECT user_id FROM openfund_challenges WHERE purchase_order_id=$1', [theirs.id])).rows[0].user_id, stranger.id)
   assert.equal((await orderRow(o.id)).status, 'pending')
