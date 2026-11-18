@@ -18,7 +18,7 @@ export const labels = {
   payouts: ['Payout requests', 'درخواست‌های پرداخت'],
   payments: ['Payment attempts', 'تلاش‌های پرداخت'],
   paymentsGroup: ['Payments', 'پرداخت‌ها'],
-  paymentOverview: ['Payment overview', 'نمای کلی پرداخت‌ها'],
+  paymentOverview: ['Payments summary', 'خلاصهٔ پرداخت‌ها'],
   paymentSearch: ['Transaction investigation', 'بررسی تراکنش'],
   deposits: ['Deposits to review', 'واریزهای نیازمند بررسی'],
   refunds: ['Refund liabilities', 'بدهی‌های بازپرداخت'],
