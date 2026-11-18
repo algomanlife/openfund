@@ -12,6 +12,9 @@
 - Equity sampling locks the account before ownership checks and skips a
   concurrent deletion. The Challenges language selector keeps the route,
   document locale and community portal in sync across repeated changes.
+  A deterministic two-session PostgreSQL test reproduces the former deadlock
+  with the pre-fix statement and proves both interleavings of sampling and
+  account deletion now complete, with ownership fencing unchanged.
 
 - Release orchestration: an official release now deploys GLOBAL Backstage at
   the same commit as the Web/API and verifies it (`/health` reports the

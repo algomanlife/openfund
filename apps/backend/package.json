@@ -29,7 +29,7 @@
     "test:audit": "node --test test/audit.test.mjs",
     "test:unified": "node --test test/unified.test.mjs test/instruments.test.mjs test/unified-api.test.mjs",
     "test:referral": "node test/referral.test.mjs",
-    "test:engine": "node --test test/engine-rules.test.mjs test/engine-audit.test.mjs test/prop-leverage.test.mjs test/equity-sampling.test.mjs && node --test --test-concurrency=1 --test-timeout=120000 test/split-process-engine.test.mjs",
+    "test:engine": "node --test test/engine-rules.test.mjs test/engine-audit.test.mjs test/prop-leverage.test.mjs test/equity-sampling.test.mjs test/equity-sampling-locks.test.mjs && node --test --test-concurrency=1 --test-timeout=120000 test/split-process-engine.test.mjs",
     "test:governance": "node --test --test-concurrency=1 test/governance-rules.test.mjs test/governance.test.mjs test/governance-http.test.mjs",
     "test:economy": "node --test test/economy-math.test.mjs test/treasury.test.mjs test/treasury-networks.test.mjs test/live-funding.test.mjs test/partners.test.mjs test/revenue-allocation.test.mjs test/treasury-reconciliation.test.mjs",
     "test:payments": "node --test --test-concurrency=1 test/payment-verification.test.mjs test/manual-payments.test.mjs && node test/payments-admin.test.mjs",
