@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useParams, useSearchParams, useNavigate, Navigate, useLocation } from 'react-router-dom'
 import { bindNavigation, fitNavigation, renderNavigation, navigationClick, navigationKeyDown } from '../features/information/navigation'
@@ -8,6 +8,7 @@ import landingBody from './landing-body.html?raw'
 import { RainbowConnect } from '../wallet/RainbowConnect'
 import { legacyStylesheet } from '../config/legacyAssets'
 import ChallengeWalletPanel from '../wallet/ChallengeWalletPanel'
+import WalletShowcase from '../features/home/WalletShowcase'
 import AnnouncementBar from '../features/campaigns/AnnouncementBar'
 import PromoModal from '../features/campaigns/PromoModal'
 import BitpinTicker from '../features/ticker/BitpinTicker'
@@ -259,6 +260,20 @@ export default function Landing() {
     card.replaceChildren(host)
     setWalletCardHost(host)
   }, [])
+  /* Animated wallet showcase (illustrative demo data) placed directly after
+     the Market Pulse section (#markets), before the next section */
+  const [showcaseHost, setShowcaseHost] = useState<HTMLElement | null>(null)
+  /* layout effect: inserted and rendered before paint, so nothing below shifts */
+  useLayoutEffect(() => {
+    const markets = document.getElementById('markets')
+    if (!markets) return
+    const host = document.createElement('div')
+    host.className = 'wallet-showcase-host'
+    host.dataset.localeOwned = 'react'
+    markets.after(host)
+    setShowcaseHost(host)
+    return () => { host.remove() }
+  }, [])
   useEffect(() => {
     const pageRoot = document.getElementById('builder')
     /* Only the same mounted DOM may cancel its StrictMode cleanup. */
@@ -393,6 +408,7 @@ export default function Landing() {
         onLocaleChange={next => navigate(switchLocalePath(routerLocation.pathname, next) + routerLocation.search)} />
       <CheckoutHost />
       {walletCardHost && createPortal(<ChallengeWalletPanel locale={communityLocale} />, walletCardHost)}
+      {showcaseHost && createPortal(<WalletShowcase locale={communityLocale} />, showcaseHost)}
       {communityLocale === 'fa' && <BitpinTicker />}
       {/* Backstage-managed announcement bar above the header; promotional popup */}
       <AnnouncementBar locale={communityLocale} />

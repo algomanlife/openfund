@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4321,
-    "mappedCalls": 2174,
+    "uniqueRecords": 4327,
+    "mappedCalls": 2185,
     "exceptions": 49,
     "validationFindings": 0,
     "reviewedExclusions": 49
@@ -18558,8 +18558,15 @@
       "en": "Stocks",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
+      "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
+          "line": 67,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/markets/marketsData.ts",
           "line": 34,
@@ -25919,8 +25926,15 @@
       "en": "Crypto",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
+      "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
+          "line": 67,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/markets/marketsData.ts",
           "line": 32,
@@ -26466,8 +26480,15 @@
       "en": "Indices",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
+      "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
+          "line": 68,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/markets/marketsData.ts",
           "line": 35,
@@ -36902,6 +36923,33 @@
       ]
     },
     {
+      "key": "react.642ed912ee5f9576",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کیف پول‌های نمونه · دادهٔ نمایشی",
+      "en": "Sample wallets · demo data",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
+          "line": 127,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
+          "line": 132,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.6430f0702d1055cc",
       "namespace": "react",
       "area": "Global Content",
@@ -43133,8 +43181,15 @@
       "en": "Forex",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
+      "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
+          "line": 67,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/markets/marketsData.ts",
           "line": 33,
@@ -52533,8 +52588,15 @@
       "en": "Commodities",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
+      "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
+          "line": 68,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/markets/marketsData.ts",
           "line": 36,
@@ -60307,6 +60369,26 @@
       ]
     },
     {
+      "key": "react.a5e756f05d7c4976",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هر کیف پول، یک مسیر معاملاتی.",
+      "en": "Every wallet, its own trading path.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
+          "line": 128,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.a5f47ecad6a94834",
       "namespace": "react",
       "area": "Website",
@@ -61916,6 +61998,26 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.aaa3364bbf58902f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دادهٔ نمایشی و نمونه است؛ این نشانی‌ها معامله‌گران، حساب‌ها یا نتایج تأییدشدهٔ اوپن‌فاند نیستند.",
+      "en": "Illustrative demo data. These addresses are not Openfund traders, accounts or verified results.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
+          "line": 140,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -64983,6 +65085,26 @@
       ]
     },
     {
+      "key": "react.b261de7bd62c75cf",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازده روی مارجین",
+      "en": "Return on margin",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
+          "line": 82,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.b2702706dbd2d6fa",
       "namespace": "react",
       "area": "Website",
@@ -67546,6 +67668,26 @@
           "line": 113,
           "page": "global",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.ba38993ecd3edb96",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "${count} معاملهٔ آزمایشی",
+      "en": "${count} demo trades",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
+          "line": 89,
+          "page": "home",
+          "route": "/:locale/home",
           "method": "pick-pipeline"
         }
       ]
@@ -71192,6 +71334,20 @@
           "line": 67,
           "page": "global",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
+          "line": 86,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
+          "line": 87,
+          "page": "home",
+          "route": "/:locale/home",
           "method": "pick-pipeline"
         }
       ]
@@ -79430,6 +79586,26 @@
           "line": 35,
           "page": "terminal",
           "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.dc03e8544da2e9ba",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "حساب آزمایشی",
+      "en": "Demo account",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
+          "line": 78,
+          "page": "home",
+          "route": "/:locale/home",
           "method": "pick-pipeline"
         }
       ]

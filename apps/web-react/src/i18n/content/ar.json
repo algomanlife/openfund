@@ -3817,5 +3817,10 @@
   "Open ${base} in the terminal": "افتح ${base} في المنصة",
   "Show more (${count} remaining)": "عرض المزيد (${count} متبقية)",
   "Your payment is confirmed and your challenge account is ready.": "تم تأكيد دفعتك وحساب التحدي الخاص بك جاهز.",
-  "Apply the coupon code, or clear it, to continue.": "طبّق رمز القسيمة أو امسحه للمتابعة."
+  "Apply the coupon code, or clear it, to continue.": "طبّق رمز القسيمة أو امسحه للمتابعة.",
+  "Every wallet, its own trading path.": "لكل محفظة مسارها التداولي الخاص.",
+  "Illustrative demo data. These addresses are not Openfund traders, accounts or verified results.": "بيانات توضيحية تجريبية. هذه العناوين ليست متداولين أو حسابات أو نتائج موثّقة لدى Openfund.",
+  "Risk": "المخاطرة",
+  "Sample wallets · demo data": "محافظ نموذجية · بيانات تجريبية",
+  "${count} demo trades": "${count} صفقة تجريبية"
 }
