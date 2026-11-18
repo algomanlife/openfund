@@ -228,3 +228,8 @@ html[data-theme='light'] .of-checkout-coupon-row input { border-color: #0A120D22
 .of-purchase-scroll .of-status-pill { font-size: 12px; white-space: nowrap; }
 .of-receipt-unavailable { color: var(--body); font-size: 12px; }
 @media(max-width:600px) { .of-purchase-heading .of-purchase-cta { width: 100%; } }
+/* Openfund Pay history details */
+.of-purchase-coupon, .of-purchase-remaining, .of-purchase-excess { color: var(--muted, #9fb3a8); font-size: 11px }
+.of-purchase-remaining { color: #f5b84a }
+html[data-theme='light'] .of-purchase-remaining { color: #8a5a00 }
+.of-purchase-complete { margin-inline-start: 6px; white-space: nowrap }

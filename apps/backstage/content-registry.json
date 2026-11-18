@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4334,
-    "mappedCalls": 2193,
+    "uniqueRecords": 4400,
+    "mappedCalls": 2256,
     "exceptions": 49,
     "validationFindings": 0,
     "reviewedExclusions": 49
@@ -1832,7 +1832,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 480,
+          "line": 517,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -2099,7 +2099,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 615,
+          "line": 673,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -2183,6 +2183,26 @@
           "page": "tools",
           "route": "/:locale/tools",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.02aa197068a80ca6",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازپرداخت انجام شد",
+      "en": "Refund Completed",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 96,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -2283,6 +2303,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.03190872842e3270",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازپرداخت در جریان است",
+      "en": "Refund Pending",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 95,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -2539,7 +2579,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 324,
+          "line": 347,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -4245,7 +4285,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 467,
+          "line": 504,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -4265,7 +4305,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 427,
+          "line": 464,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -4572,7 +4612,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
-          "line": 23,
+          "line": 27,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
@@ -4652,7 +4692,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 556,
+          "line": 610,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -4743,6 +4783,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.0a1d24ceb01f9104",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مبلغ اضافه (قابل بازپرداخت)",
+      "en": "Excess (refundable)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 251,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -4926,7 +4986,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 644,
+          "line": 702,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -5690,6 +5750,26 @@
       ]
     },
     {
+      "key": "react.0d06603d3229eaf3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تراکنش‌ها",
+      "en": "Transactions",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 259,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.0d0dbd898261ec27",
       "namespace": "react",
       "area": "Website",
@@ -5896,14 +5976,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
-          "line": 47,
+          "line": 52,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 93,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
-          "line": 20,
+          "line": 24,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
@@ -6074,26 +6161,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.0e2f430f8db19625",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "ارز بومی شبکه (مثل ETH یا SOL) و توکن‌های دیگر پذیرفته نمی‌شوند. مبلغ کمتر از مبلغ سفارش تأیید نمی‌شود.",
-      "en": "Native coins (such as ETH or SOL) and other tokens are not accepted. A smaller amount than the order total is not confirmed.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 593,
-          "page": "purchase",
-          "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -6361,6 +6428,33 @@
       ]
     },
     {
+      "key": "react.0efad008393c89d8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت با کیف پول",
+      "en": "Pay with Wallet",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 545,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 598,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.0f11fa37a930b40f",
       "namespace": "react",
       "area": "Global Content",
@@ -6448,6 +6542,26 @@
       ]
     },
     {
+      "key": "react.0f3c8ba72b80f139",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "آماده‌سازی پرداخت",
+      "en": "Prepare payment",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 144,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.0f58a111a3e70f67",
       "namespace": "react",
       "area": "Global Content",
@@ -6524,6 +6638,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.0faf576aa4c1f734",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در انتظار امضای کیف پول…",
+      "en": "Awaiting wallet signature…",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 162,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -6931,6 +7065,33 @@
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.110df46b47bb34f1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت مبلغ باقی‌مانده",
+      "en": "Complete Remaining Payment",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 256,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 18,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -7930,7 +8091,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 657,
+          "line": 719,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -8341,6 +8502,26 @@
           "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.14701f512cb6b49d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تغییر شبکه را در کیف پول تأیید کن…",
+      "en": "Confirm the network switch in your wallet…",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 161,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -9054,7 +9235,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 645,
+          "line": 703,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -11621,7 +11802,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 323,
+          "line": 346,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -12262,7 +12443,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 326,
+          "line": 349,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -13009,7 +13190,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 641,
+          "line": 699,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -13216,7 +13397,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 459,
+          "line": 496,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -14931,7 +15112,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 325,
+          "line": 348,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -15498,7 +15679,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 596,
+          "line": 653,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -15606,6 +15787,26 @@
       ]
     },
     {
+      "key": "react.29cba5c6b9b7f830",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تراکنش ارسال شد",
+      "en": "Transaction Submitted",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 78,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.29cfb534a12b3948",
       "namespace": "react",
       "area": "Global Content",
@@ -15678,7 +15879,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 502,
+          "line": 539,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -15809,6 +16010,26 @@
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.2a36c0c5756e4013",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تراکنش تکراری",
+      "en": "Duplicate Transaction",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 89,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -16707,21 +16928,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 481,
+          "line": 518,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 537,
+          "line": 580,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 638,
+          "line": 696,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -18132,6 +18353,26 @@
       ]
     },
     {
+      "key": "react.2fe320d2680ff214",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "حذف از زنجیره",
+      "en": "Reorganized",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 265,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.2fe32f55fb36cc1f",
       "namespace": "react",
       "area": "Global Content",
@@ -18604,7 +18845,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 517,
+          "line": 559,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -18878,7 +19119,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 405,
+          "line": 442,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -19414,7 +19655,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 663,
+          "line": 725,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -19597,6 +19838,26 @@
           "line": 19,
           "page": "global",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.334757be34596a4e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کیف پول فرستنده نادرست است",
+      "en": "Wrong Sender",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 88,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -20145,6 +20406,26 @@
       ]
     },
     {
+      "key": "react.34951c5f6736671d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "روند پرداخت",
+      "en": "Payment timeline",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 281,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.34a681b93bd75401",
       "namespace": "react",
       "area": "Website",
@@ -20405,7 +20686,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 608,
+          "line": 666,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -20728,6 +21009,26 @@
           "line": 186,
           "page": "global",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.3653d1122ccea196",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "با «پرداخت با کیف پول»، کیف پول متصل شما فقط یک انتقال دقیق از استیبل‌کوین تأییدشده به خزانهٔ اوپن‌فاند را امضا می‌کند؛ نیازی به کپی آدرس نیست.",
+      "en": "With Pay with Wallet, your connected wallet signs one exact transfer of the approved stablecoin to the Openfund treasury — no address copying.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 565,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -21384,7 +21685,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 335,
+          "line": 358,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -21544,7 +21845,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 486,
+          "line": 523,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -21584,7 +21885,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 534,
+          "line": 577,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -23043,7 +23344,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 390,
+          "line": 427,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -23073,6 +23374,26 @@
           "line": 122,
           "page": "rulebook",
           "route": "/:locale/rulebook",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.3cf6bebb4c4075a1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کیف پول متصل نیست؛ دوباره وصل کن.",
+      "en": "Your wallet is not connected — reconnect it.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 140,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -23284,7 +23605,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 389,
+          "line": 426,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -26202,14 +26523,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 138,
+          "line": 145,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 143,
+          "line": 152,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -28767,6 +29088,66 @@
       ]
     },
     {
+      "key": "react.4c9aa1a338567e89",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کد تخفیف",
+      "en": "Coupon",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 583,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.4caaa8227397766e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در انتظار تأییدهای بلاک‌چین",
+      "en": "Awaiting Blockchain Confirmations",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 80,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.4cb35261fb372881",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازپرداخت خودکار نیست: پس از بررسی و تأیید، به همان کیف پولی که پرداخت از آن انجام شده ارسال می‌شود.",
+      "en": "Refunds are not automatic: after review and approval they are sent to the wallet the payment came from.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 277,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.4cbd94243f9be93a",
       "namespace": "react",
       "area": "Global Content",
@@ -29967,6 +30348,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.4fed7771db8d7661",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مانده قابل پرداخت",
+      "en": "Remaining due",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 584,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -31188,6 +31589,26 @@
       ]
     },
     {
+      "key": "react.52f8568d09f0a9f7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مبلغ اضافه",
+      "en": "Excess",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 16,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.531ab58e23c83c10",
       "namespace": "react",
       "area": "Global Content",
@@ -31203,6 +31624,26 @@
           "line": 30,
           "page": "global",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.531e7249cbccc417",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خزانهٔ اوپن‌فاند",
+      "en": "Openfund treasury",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 152,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -31367,7 +31808,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 483,
+          "line": 520,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -31801,7 +32242,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 536,
+          "line": 579,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -32008,7 +32449,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
-          "line": 44,
+          "line": 49,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -32396,6 +32837,26 @@
       ]
     },
     {
+      "key": "react.56f944cfbad2c199",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مبلغ دقیق انتقال",
+      "en": "Exact transfer amount",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 149,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.56fd43698b7f0007",
       "namespace": "react",
       "area": "Global Content",
@@ -32512,6 +32973,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.577dc5e9f51acdb5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "متوجه شدم و از همین کیف پول پرداخت می‌کنم.",
+      "en": "I understand and will pay from this wallet.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 188,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -32751,33 +33232,6 @@
           "line": 97,
           "page": "global",
           "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.580417f293ed9b96",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "پرداخت دستی",
-      "en": "Manual Payment",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 513,
-          "page": "purchase",
-          "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 550,
-          "page": "purchase",
-          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -33495,6 +33949,26 @@
       ]
     },
     {
+      "key": "react.595912b248154b68",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شبکهٔ نادرست",
+      "en": "Incorrect Network",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 86,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.595c1bf7e646d647",
       "namespace": "react",
       "area": "Website",
@@ -34022,7 +34496,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 574,
+          "line": 628,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 150,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -34985,6 +35466,26 @@
       ]
     },
     {
+      "key": "react.5d52189f1706425d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت رد شد",
+      "en": "Payment Rejected",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 90,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.5d5527051e6ab8f3",
       "namespace": "react",
       "area": "Global Content",
@@ -35508,6 +36009,33 @@
           "line": 27,
           "page": "global",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.5ed91840a6226860",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مبلغ سفارش",
+      "en": "Order total",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 582,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 248,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -36895,6 +37423,26 @@
       ]
     },
     {
+      "key": "react.631467f3805ca3d3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در حال بررسی تراکنش",
+      "en": "Payment Verification Pending",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 83,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.632a2a288f3468de",
       "namespace": "react",
       "area": "Global Content",
@@ -36990,6 +37538,26 @@
           "line": 45,
           "page": "inbox",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.63946ef012ebbcdc",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مهلت پرداخت مانده",
+      "en": "Pay the remaining balance by",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 252,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -37577,7 +38145,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
-          "line": 21,
+          "line": 25,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
@@ -38439,7 +39007,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 524,
+          "line": 567,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -39073,7 +39641,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 576,
+          "line": 632,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -39454,7 +40022,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 579,
+          "line": 635,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -41581,7 +42149,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 415,
+          "line": 452,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -42156,7 +42724,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 640,
+          "line": 698,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -42737,7 +43305,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
-          "line": 22,
+          "line": 26,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
@@ -43077,7 +43645,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 367,
+          "line": 404,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -43521,8 +44089,15 @@
       "en": "Pending",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
+      "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 265,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/referral/Referral.tsx",
           "line": 202,
@@ -43819,7 +44394,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 651,
+          "line": 712,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -44741,6 +45316,26 @@
       ]
     },
     {
+      "key": "react.7a0b9b0f2cf75113",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ارز بومی شبکه (مثل ETH یا SOL) و توکن‌های دیگر پذیرفته نمی‌شوند. اگر کمتر از مبلغ بفرستی، مبلغ دریافتی ثبت می‌شود و مانده را می‌توانی بعداً بپردازی؛ مبلغ اضافه قابل بازپرداخت است.",
+      "en": "Native coins (such as ETH or SOL) and other tokens are not accepted. If you send less, the received amount is recorded and you can pay the remaining balance later; any excess is refundable.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 649,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.7a10b63f688869c7",
       "namespace": "react",
       "area": "Website",
@@ -45581,7 +46176,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
-          "line": 21,
+          "line": 25,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
@@ -46088,7 +46683,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 641,
+          "line": 699,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -46314,13 +46909,6 @@
           "method": "pick-pipeline"
         },
         {
-          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 539,
-          "page": "purchase",
-          "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
-        },
-        {
           "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
           "line": 224,
           "page": "purchase",
@@ -46402,7 +46990,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 628,
+          "line": 686,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -46422,7 +47010,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 485,
+          "line": 522,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 584,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -47077,6 +47672,33 @@
       ]
     },
     {
+      "key": "react.8086366267e11f4e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "انتقال دستی",
+      "en": "Manual Transfer",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 550,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 599,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.80870c106ec66186",
       "namespace": "react",
       "area": "Global Content",
@@ -47558,7 +48180,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 643,
+          "line": 701,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 133,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -48256,6 +48885,26 @@
       ]
     },
     {
+      "key": "react.84e65830ef804694",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در انتظار امضای کیف پول",
+      "en": "Awaiting Wallet Signature",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 77,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.84f2db4ec937e338",
       "namespace": "react",
       "area": "Global Content",
@@ -48508,7 +49157,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 613,
+          "line": 671,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -50215,7 +50864,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
-          "line": 48,
+          "line": 53,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -50295,7 +50944,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 330,
+          "line": 353,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -50504,6 +51153,26 @@
       ]
     },
     {
+      "key": "react.8b43f1906f866f46",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازپرداخت انجام شد",
+      "en": "Refund completed",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 17,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8b61958ee0c3c6c8",
       "namespace": "react",
       "area": "Global Content",
@@ -50576,14 +51245,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 505,
+          "line": 542,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 548,
+          "line": 597,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -51032,6 +51701,26 @@
       ]
     },
     {
+      "key": "react.8ccd4f2d65725e03",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اعتبار درخواست تا",
+      "en": "Request valid until",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 155,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.8cd5ecec975fe7d8",
       "namespace": "react",
       "area": "Website",
@@ -51398,7 +52087,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
-          "line": 46,
+          "line": 51,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -51421,6 +52110,26 @@
           "line": 258,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.8e1b4ecee1e9c8c2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت جزئی",
+      "en": "Partially Paid",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 22,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
         }
       ]
@@ -51812,7 +52521,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 602,
+          "line": 659,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -51952,7 +52661,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 556,
+          "line": 610,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -53142,6 +53851,26 @@
       ]
     },
     {
+      "key": "react.929ca68b7d55a0eb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کیف پول واردشده:",
+      "en": "Signed-in wallet:",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 185,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.92a7a0b8fac748a2",
       "namespace": "react",
       "area": "Global Content",
@@ -53214,7 +53943,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 580,
+          "line": 636,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -53594,7 +54323,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 583,
+          "line": 639,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -53721,7 +54450,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 650,
+          "line": 711,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -54268,7 +54997,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
-          "line": 49,
+          "line": 54,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -54308,7 +55037,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 466,
+          "line": 503,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -54568,21 +55297,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 508,
+          "line": 555,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 549,
+          "line": 600,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 556,
+          "line": 610,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -54929,7 +55658,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 602,
+          "line": 659,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -56546,7 +57275,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 493,
+          "line": 530,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -56650,26 +57379,6 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.9c515464d483ea60",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "در پنجرهٔ DePay هر کیف پول، شبکه و توکنی را که DePay برای این پرداخت پیشنهاد می‌دهد می‌توانی انتخاب کنی؛ DePay در صورت نیاز توکن را تبدیل می‌کند.",
-      "en": "In the DePay window you can choose any wallet, network and token DePay offers for this payment; DePay converts the token when needed.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 523,
-          "page": "purchase",
-          "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -57020,7 +57729,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 493,
+          "line": 530,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -58397,7 +59106,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 329,
+          "line": 352,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -58464,7 +59173,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 655,
+          "line": 717,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -58879,7 +59588,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 641,
+          "line": 699,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 242,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -60300,7 +61016,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 573,
+          "line": 627,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 151,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -61385,7 +62108,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 540,
+          "line": 585,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -62196,7 +62919,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 604,
+          "line": 661,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -62544,7 +63267,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 622,
+          "line": 680,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -62664,7 +63387,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 572,
+          "line": 626,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -62684,7 +63407,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 426,
+          "line": 463,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -62724,7 +63447,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 583,
+          "line": 639,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -62828,6 +63551,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.abedf32aeec0a460",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازپرداخت‌ها",
+      "en": "Refunds",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 272,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -63059,7 +63802,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 421,
+          "line": 458,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -63161,7 +63904,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 456,
+          "line": 493,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -64110,6 +64853,26 @@
       ]
     },
     {
+      "key": "react.af3c76c6f4b2a12e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازپرداخت در جریان",
+      "en": "Refund pending",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 17,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.af542bc6ddd7534a",
       "namespace": "react",
       "area": "User Dashboard",
@@ -64492,7 +65255,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 558,
+          "line": 612,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -65319,7 +66082,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 635,
+          "line": 693,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -65511,6 +66274,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.b30d6f5fb6cdc017",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هشدار بسیار مهم",
+      "en": "Very important warning",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 180,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -67220,6 +68003,26 @@
       ]
     },
     {
+      "key": "react.b82b8057fc497f33",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تأییدشده",
+      "en": "Verified",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 265,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.b83749fe4291ed5a",
       "namespace": "react",
       "area": "Website",
@@ -67515,6 +68318,26 @@
       ]
     },
     {
+      "key": "react.b907eaf405821a44",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت",
+      "en": "Pay",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 164,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.b9097b4595f83765",
       "namespace": "react",
       "area": "Website",
@@ -67691,6 +68514,26 @@
           "page": "faq",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.b976eedd0c803d41",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گیرندهٔ نادرست",
+      "en": "Incorrect Receiver",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 87,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -68023,6 +68866,33 @@
       ]
     },
     {
+      "key": "react.ba60e7c1205b151f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مانده",
+      "en": "Remaining",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 250,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 16,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.ba696032b66b2ada",
       "namespace": "react",
       "area": "Global Content",
@@ -68079,6 +68949,26 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.ba77b44f2ee61b8b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "امضا در کیف پول رد شد. سفارش باز می‌ماند؛ هر وقت آماده بودی دوباره تلاش کن.",
+      "en": "The wallet signature was rejected. Your order stays open — try again whenever you are ready.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 125,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -69791,6 +70681,26 @@
       ]
     },
     {
+      "key": "react.bfe4dcd0b158a8f4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت را حتماً از همان کیف پولی انجام دهید که با آن وارد Openfund شده و امضا کرده‌اید.",
+      "en": "Make the payment from the same wallet you used to sign in to Openfund.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 181,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.bfe5162ba5c57b45",
       "namespace": "react",
       "area": "Website",
@@ -69863,7 +70773,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 460,
+          "line": 497,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -70424,7 +71334,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 627,
+          "line": 685,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -70855,6 +71765,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.c317e5d1edf90b2b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کل مبلغ دریافت شد",
+      "en": "Payment Fully Received",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 82,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -72164,6 +73094,26 @@
       ]
     },
     {
+      "key": "react.c6ed37ff0ce51da9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تراکنش ارسال و ثبت شد؛ سرور اوپن‌فاند آن را مستقیماً روی بلاک‌چین بررسی می‌کند.",
+      "en": "Transaction submitted and recorded — Openfund’s server is verifying it on-chain.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 168,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.c6fa38e0970a527c",
       "namespace": "react",
       "area": "Global Content",
@@ -72216,7 +73166,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 451,
+          "line": 488,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -72603,7 +73553,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
-          "line": 42,
+          "line": 47,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 76,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -72959,6 +73916,26 @@
       ]
     },
     {
+      "key": "react.c9b28c5c2fbe77d2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "موجودی کیف پول",
+      "en": "Wallet balance",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 153,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.c9b44302861a1ed0",
       "namespace": "react",
       "area": "Global Content",
@@ -73212,7 +74189,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 407,
+          "line": 444,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -74681,6 +75658,26 @@
       ]
     },
     {
+      "key": "react.ce53f6d9ba8334e7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تعداد تراکنش‌ها",
+      "en": "Transactions",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 707,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.ce5dfee83b8f7a7c",
       "namespace": "react",
       "area": "Global Content",
@@ -75080,7 +76077,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 484,
+          "line": 521,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -75227,7 +76224,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 431,
+          "line": 468,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -75357,6 +76354,26 @@
           "line": 27,
           "page": "partners",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.d014b3fd4a2a2da1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اگر از کیف پول واردشده پرداخت کنی و سفارش باز دیگری نداشته باشی، اوپن‌فاند تراکنش را خودکار پیدا می‌کند؛ ثبت شناسهٔ تراکنش اختیاری است و بررسی را سریع‌تر می‌کند.",
+      "en": "If you pay from your signed-in wallet and have no other open order, Openfund finds the transfer automatically; submitting the transaction ID is optional and speeds it up.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 651,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -75915,14 +76932,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
-          "line": 43,
+          "line": 48,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
-          "line": 18,
+          "line": 21,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
@@ -76022,7 +77039,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
-          "line": 45,
+          "line": 50,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 91,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -76045,6 +77069,26 @@
           "line": 80,
           "page": "economy",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.d1a67043a45a135b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "به",
+      "en": "to",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 274,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -76730,6 +77774,26 @@
       ]
     },
     {
+      "key": "react.d3c3d87cee0ea0a8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بررسی بیش از ۱۵ دقیقه طول کشیده است.",
+      "en": "Verification has taken more than 15 minutes.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 243,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.d3e310ebf201ded5",
       "namespace": "react",
       "area": "Website",
@@ -76882,7 +77946,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 400,
+          "line": 437,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -77322,7 +78386,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 390,
+          "line": 427,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -77426,6 +78490,40 @@
       ]
     },
     {
+      "key": "react.d5b3184eb29a39ae",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دریافت‌شده",
+      "en": "Received",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 708,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 249,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
+          "line": 16,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d5be03a4a5bcd3b4",
       "namespace": "react",
       "area": "Global Content",
@@ -77518,7 +78616,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
-          "line": 23,
+          "line": 27,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
@@ -77565,7 +78663,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 589,
+          "line": 645,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -77732,7 +78830,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 289,
+          "line": 312,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -78020,7 +79118,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 652,
+          "line": 713,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -78703,28 +79801,28 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 436,
+          "line": 473,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 482,
+          "line": 519,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 538,
+          "line": 581,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 639,
+          "line": 697,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -78801,6 +79899,26 @@
           "line": 65,
           "page": "economy",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.d92107a2e3dffc46",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سفارش منقضی شد",
+      "en": "Order Expired",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 94,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -79440,6 +80558,26 @@
       ]
     },
     {
+      "key": "react.dad6079971233721",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بخشی از مبلغ دریافت شد",
+      "en": "Payment Partially Received",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 81,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.db06f39cf13fea52",
       "namespace": "react",
       "area": "Global Content",
@@ -79680,7 +80818,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 498,
+          "line": 535,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -79704,6 +80842,26 @@
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.db7d40a66dd90a10",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تراکنش شناسایی شد",
+      "en": "Transaction Detected",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 79,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -79994,14 +81152,14 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 384,
+          "line": 421,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 388,
+          "line": 425,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -80225,6 +81383,26 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.dd075c429d5e42e6",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "توکن نادرست",
+      "en": "Incorrect Token",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 85,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -80570,6 +81748,26 @@
       ]
     },
     {
+      "key": "react.de3f2e3526d69639",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت تأیید شد · در انتظار فعال‌سازی چالش",
+      "en": "Challenge Activation Pending",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 92,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.de4e7729cbe72ec9",
       "namespace": "react",
       "area": "Global Content",
@@ -80645,6 +81843,26 @@
           "line": 85,
           "page": "partners",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.de7730bc2c57b6dc",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نیازمند بررسی پشتیبانی",
+      "en": "Payment Requires Review",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/checkoutStatus.ts",
+          "line": 84,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -81497,6 +82715,26 @@
       ]
     },
     {
+      "key": "react.e1265bd793474645",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت از کیف پول دیگر یا صرافی به‌صورت خودکار به سفارش شما متصل و تأیید نمی‌شود و نیازمند بررسی پشتیبانی خواهد بود.",
+      "en": "A payment from another wallet or from an exchange is not automatically matched to your order or confirmed, and will need a support review.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 183,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.e137f26fa37fcc23",
       "namespace": "react",
       "area": "Global Content",
@@ -81549,7 +82787,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 470,
+          "line": 507,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -82296,7 +83534,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 586,
+          "line": 642,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -82898,6 +84136,26 @@
       ]
     },
     {
+      "key": "react.e4c2bb255ff717cf",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "۳. شناسهٔ تراکنش (TXID، اختیاری)",
+      "en": "3. Transaction ID (TXID, optional)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 652,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.e4cc92a51918961b",
       "namespace": "react",
       "area": "Website",
@@ -83110,7 +84368,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 649,
+          "line": 710,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -83194,26 +84452,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.e58a14c005298254",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۳. شناسهٔ تراکنش (TXID)",
-      "en": "3. Transaction ID (TXID)",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 595,
-          "page": "purchase",
-          "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -83414,6 +84652,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.e6031deed5062d16",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ورود به اوپن‌فاند روی آربیتروم است؛ پرداخت می‌تواند روی هر شبکهٔ بالا باشد، اما باید از همان کیف پولی امضا شود که با آن وارد شده‌ای.",
+      "en": "Sign-in uses Arbitrum; the payment can use any network above, but it must be signed by the same wallet you signed in with.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 138,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -84231,7 +85489,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
-          "line": 22,
+          "line": 26,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
@@ -84418,7 +85676,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 525,
+          "line": 568,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -85028,6 +86286,26 @@
       ]
     },
     {
+      "key": "react.eb681d57360bc121",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کارمزد تقریبی شبکه",
+      "en": "Estimated network fee",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 154,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.eb6c0bf6897ad504",
       "namespace": "react",
       "area": "Website",
@@ -85347,7 +86625,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 646,
+          "line": 704,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -85909,6 +87187,26 @@
       ]
     },
     {
+      "key": "react.edd25f7edfc5b57e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "این پرداخت برای بررسی پشتیبانی ارجاع شد. بررسی خودکار روی بلاک‌چین ادامه دارد و به‌محض نتیجه، این صفحه به‌روز می‌شود. پرداخت ناموفق اعلام نشده است.",
+      "en": "This payment was escalated to support review. Automatic on-chain verification continues and this page updates as soon as there is a result. The payment has not been declared failed.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 244,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.edda2a23ab156ec9",
       "namespace": "react",
       "area": "User Dashboard",
@@ -85965,6 +87263,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.ee2b8da7b6e70a31",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت با کیف پول برای هیچ شبکه‌ای پیکربندی نشده است.",
+      "en": "Wallet payment is not configured for any network.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 130,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -86103,6 +87421,26 @@
       ]
     },
     {
+      "key": "react.ee7c901d23ca0e41",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کیف پول تراکنش را ارسال نکرد. اتصال کیف پول را بررسی کن و دوباره تلاش کن.",
+      "en": "The wallet did not send the transaction. Check the wallet connection and try again.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 126,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.ee7cb362d0bad586",
       "namespace": "react",
       "area": "Global Content",
@@ -86170,7 +87508,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 544,
+          "line": 592,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -87006,7 +88344,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 594,
+          "line": 650,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -87820,7 +89158,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 637,
+          "line": 695,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -87863,6 +89201,26 @@
           "line": 46,
           "page": "global",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.f356c2509f83c4ac",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مبلغ اضافه (بدهی بازپرداخت)",
+      "en": "Excess (refund liability)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 709,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -88428,7 +89786,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 572,
+          "line": 626,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -88855,7 +90213,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 390,
+          "line": 427,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -89330,6 +90688,26 @@
       ]
     },
     {
+      "key": "react.f8320b8252e88f5a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت با DePay برای سفارش‌های جدید در دسترس نیست.",
+      "en": "DePay is unavailable for new orders.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 566,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.f83ec4faa8acb360",
       "namespace": "react",
       "area": "Website",
@@ -89662,7 +91040,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 385,
+          "line": 422,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -89822,7 +91200,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 594,
+          "line": 650,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -89842,7 +91220,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 390,
+          "line": 427,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -89982,7 +91360,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 416,
+          "line": 453,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -90385,7 +91763,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
-          "line": 19,
+          "line": 23,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
@@ -90545,7 +91923,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 656,
+          "line": 718,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -90665,7 +92043,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 566,
+          "line": 620,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -91409,6 +92787,26 @@
       ]
     },
     {
+      "key": "react.fd098b63259b5017",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "موجودی این توکن در کیف پول کافی نیست. می‌توانی بخشی را بپردازی؛ مانده در سفارش باقی می‌ماند.",
+      "en": "Your token balance is below the amount. You may pay part of it; the remaining balance stays on the order.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 158,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.fd1997fb7a0f1a53",
       "namespace": "react",
       "area": "User Dashboard",
@@ -91987,6 +93385,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.fe63739c5f9dd258",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تغییر شبکه و پرداخت",
+      "en": "Switch network and pay",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/OpenfundPay.tsx",
+          "line": 163,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -92583,7 +94001,7 @@
     },
     {
       "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-      "line": 122,
+      "line": 127,
       "page": "purchase",
       "route": "/:locale/checkout; /:locale/:product/purchases",
       "reason": "dynamic-pair",
@@ -93058,7 +94476,7 @@
     },
     {
       "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-      "line": 121,
+      "line": 126,
       "page": "purchase",
       "route": "/:locale/checkout; /:locale/:product/purchases",
       "reason": "helper-wrapper-definition",

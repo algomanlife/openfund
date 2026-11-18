@@ -6,6 +6,7 @@ import { apiFetch, backendUrl, useSession } from '../../session/useOpenfundSessi
 import { closeDePayPayment, depayConfigured, depayOpenFor, openDePayPayment } from './depay'
 import { chainLabel, txExplorerUrl } from './chains'
 import { checkoutStatus, STATUS_TEXT, txIdValid, type StatusAttempt } from './checkoutStatus'
+import { ManualWarning, PaymentStatus, WalletPayment, type Ledger, type PaymentStatusView, type WalletChain } from './OpenfundPay'
 import './purchase.css'
 import './checkout-page.css'
 
@@ -13,8 +14,9 @@ import './checkout-page.css'
  * Dedicated challenge purchase page — /:locale/checkout
  *
  *   wallet → challenge model → account size → price/coupon → customer
- *   details → review → Pay with DePay | Manual Payment → server
- *   verification → receipt
+ *   details → review → Pay with Wallet (Openfund Pay, primary) | Manual
+ *   Transfer | DePay (only while enabled for new payments) → server
+ *   verification (partial payments, excess, refunds) → receipt
  *
  * Contract (backend /purchases/*, unchanged trust model):
  *  - prices come from the server catalog and the server quote; the order is
@@ -49,6 +51,8 @@ interface ManualChain {
 }
 interface PaymentInfo {
   chainId: number, receiver: string, token: string | null, amount: string, reference: string,
+  totalUsd?: string, receivedUsd?: string, remainingUsd?: string,
+  methods?: { wallet: boolean, manual: boolean, depay: boolean }, walletChains?: WalletChain[],
   manual?: { chains: ManualChain[], amount: string, memo: string }
 }
 interface Receipt {
@@ -66,6 +70,7 @@ interface Receipt {
   },
   invoice: { id: string, number: string, issuedAt: string } | null,
   challenge: { id: string, status: string } | null,
+  final?: boolean, ledger?: Ledger | null,
 }
 
 const ERR: Record<string, [string, string]> = {
@@ -132,6 +137,8 @@ export default function CheckoutPage() {
   const [paymentsEnabled, setPaymentsEnabled] = useState(false)
   const [settlementChains, setSettlementChains] = useState<string[]>([])
   const [manualAvailable, setManualAvailable] = useState(false)
+  const [methods, setMethods] = useState<{ wallet: boolean, manual: boolean, depay: boolean }>({ wallet: false, manual: false, depay: false })
+  const [walletChains, setWalletChains] = useState<WalletChain[]>([])
   const [loadError, setLoadError] = useState<string | null>(null)
   useEffect(() => {
     void apiFetch('/purchases/plans').then(r => {
@@ -139,7 +146,9 @@ export default function CheckoutPage() {
       setPlans((r.data?.plans || []).filter((p: PlanInfo) => !p.free && p.accountSizesUsd?.length))
       setPaymentsEnabled(!!r.data?.paymentsEnabled)
       setSettlementChains(((r.data?.payment?.chains || []) as { blockchain?: string | null, chainId?: number }[]).map(c => chainLabel(c.blockchain || c.chainId)))
-      setManualAvailable(((r.data?.payment?.manualChains || []) as unknown[]).length > 0)
+      setManualAvailable(((r.data?.payment?.manualChains || []) as unknown[]).length > 0 && r.data?.payment?.methods?.manual !== false)
+      setMethods(r.data?.payment?.methods || { wallet: false, manual: true, depay: true })
+      setWalletChains(r.data?.payment?.walletChains || [])
     }).catch(() => setLoadError(t('دریافت چلنج‌ها ناموفق بود.', 'Could not load the challenges.')))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -240,9 +249,19 @@ export default function CheckoutPage() {
   const [sentTx, setSentTx] = useState<{ id?: string, url?: string } | null>(null)
   const [widgetNote, setWidgetNote] = useState<string | null>(null)
   const [txHash, setTxHash] = useState('')
-  const useDePay = depayConfigured()
-  /* both methods share the order; the customer can switch before paying */
-  const [method, setMethod] = useState<'depay' | 'manual'>(useDePay ? 'depay' : 'manual')
+  /* DePay is retiring: offered only while the server enables it for new payments */
+  const useDePay = depayConfigured() && methods.depay
+  const useWallet = methods.wallet && walletChains.length > 0
+  /* every method shares the order; the customer can switch before paying */
+  const [method, setMethod] = useState<'wallet' | 'depay' | 'manual'>('wallet')
+  useEffect(() => { setMethod(m => (m === 'wallet' && !useWallet ? (useDePay ? 'depay' : 'manual') : m)) }, [useWallet, useDePay])
+  const [manualAck, setManualAck] = useState(false)
+  const [payView, setPayView] = useState<PaymentStatusView | null>(null)
+  const loadPaymentStatus = useCallback(async (id: string) => {
+    const r = await apiFetch(`/purchases/orders/${id}/payment-status`).catch(() => null)
+    if (r?.ok) { setPayView({ status: r.data.status, ledger: r.data.ledger, timeline: r.data.timeline || [] }); return r.data }
+    return null
+  }, [])
   const [manualChainId, setManualChainId] = useState<number | null>(null)
   const [latestAttempt, setLatestAttempt] = useState<StatusAttempt | null>(null)
 
@@ -260,6 +279,7 @@ export default function CheckoutPage() {
       const r = await apiFetch(`/purchases/orders/${orderParam}`).catch(() => null)
       if (!r?.ok) { setError(errText(r?.data?.error || 'order_not_found')); return }
       setOrder(r.data.order); setPayment(r.data.payment || null)
+      await loadPaymentStatus(orderParam)
       if (r.data.order.status !== 'pending') await loadReceipt(orderParam)
     })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -277,10 +297,13 @@ export default function CheckoutPage() {
       if (stop) return
       if (r?.ok && r.data?.order && (r.data.order.status === 'paid' || r.data.order.status === 'cancelled' || (r.data.order.status !== order.status))) {
         setOrder(r.data.order); setWaiting(null); setAttemptError(null)
+        await loadPaymentStatus(order.id)
         if (r.data.order.status === 'paid') { closeDePayPayment(); await loadReceipt(order.id); await session.reload?.() }
         return
       }
+      if (r?.ok && r.data?.payment) setPayment(r.data.payment)
       if (r?.ok && r.data?.order) setOrder(o => (o && o.lifecycle_state === r.data.order.lifecycle_state ? o : r.data.order))
+      await loadPaymentStatus(order.id)
       const a = await apiFetch(`/purchases/orders/${order.id}/attempts`).catch(() => null)
       if (stop || !a?.ok) return
       const latest = (a.data?.attempts || [])[0]
@@ -337,6 +360,12 @@ export default function CheckoutPage() {
   }
 
   const createManual = async () => { if (busy) return; setBusy(true); try { await createOrder() } finally { setBusy(false) } }
+  const startMethod = async (m: 'wallet') => {
+    if (busy) return
+    setMethod(m); closeDePayPayment()
+    if (order && order.status === 'pending') return
+    setBusy(true); try { await createOrder() } finally { setBusy(false) }
+  }
   const startManual = async () => {
     if (busy) return
     setMethod('manual'); closeDePayPayment()
@@ -351,7 +380,12 @@ export default function CheckoutPage() {
     try {
       /* the server re-checks everything on-chain; the id is only a pointer */
       const r = await apiFetch('/purchases/verify', { method: 'POST', body: JSON.stringify({ orderId: order.id, chainId: manualChain.chainId, txHash: txHash.trim() }) })
-      if (r.ok) { await loadReceipt(order.id); setOrder(o => o && { ...o, status: 'paid', lifecycle_state: 'provisioned' }); await session.reload?.(); return }
+      if (r.ok) {
+        await loadPaymentStatus(order.id)
+        /* a verified partial payment leaves the order open with its remaining balance */
+        if (r.data?.outcome === 'partially_paid') { setTxHash(''); const o = await apiFetch(`/purchases/orders/${order.id}`).catch(() => null); if (o?.ok) { setOrder(o.data.order); setPayment(o.data.payment) } return }
+        await loadReceipt(order.id); setOrder(o => o && { ...o, status: 'paid', lifecycle_state: 'provisioned' }); await session.reload?.(); return
+      }
       const code = r.data?.error || 'verify_failed'
       if (r.data?.retryable || RETRYABLE.has(code)) {
         setWaiting(errText(code)); setLatestAttempt({ status: 'pending', error_code: code })
@@ -361,6 +395,9 @@ export default function CheckoutPage() {
   }
   const copy = (v: string) => { void navigator.clipboard?.writeText(v).catch(() => {}) }
   const status = checkoutStatus(order, latestAttempt, !!receipt?.challenge)
+  const remainingUsd = payView?.ledger?.remainingUsd ?? payment?.remainingUsd ?? order?.price_usd ?? '0'
+  const partiallyPaid = order?.lifecycle_state === 'partially_paid' || (payView?.ledger && payView.ledger.receivedUsd !== '0' && payView.ledger.remainingUsd !== '0')
+  const methodsRef = useRef<HTMLDivElement | null>(null)
   const cancelOrder = async () => {
     if (!order) return
     const r = await apiFetch(`/purchases/orders/${order.id}/cancel`, { method: 'POST', body: '{}' })
@@ -503,24 +540,30 @@ export default function CheckoutPage() {
             )}
             {authenticated && paymentsEnabled && !zeroQuote && (
               <div className="of-co-methods" role="group" aria-label={t('روش پرداخت', 'Payment method')}>
-                {useDePay && (
-                  <button className="button of-co-pay" disabled={busy || !ready} onClick={() => { void payWithDePay() }}>
-                    {busy && method === 'depay' ? '…' : t('پرداخت با DePay', 'Pay with DePay')}
+                {useWallet && (
+                  <button className="button of-co-pay" disabled={busy || !ready} onClick={() => { void startMethod('wallet') }}>
+                    {busy && method === 'wallet' ? '…' : t('پرداخت با کیف پول', 'Pay with Wallet')}
                   </button>
                 )}
                 {manualAvailable && (
-                  <button className={useDePay ? 'button button-secondary' : 'button'} disabled={busy || !ready} onClick={() => { void startManual() }}>
-                    {busy && method === 'manual' ? '…' : t('پرداخت دستی', 'Manual Payment')}
+                  <button className={useWallet ? 'button button-secondary' : 'button'} disabled={busy || !ready} onClick={() => { void startManual() }}>
+                    {busy && method === 'manual' ? '…' : t('انتقال دستی', 'Manual Transfer')}
                   </button>
                 )}
-                {!useDePay && !manualAvailable && (
+                {useDePay && (
+                  <button className="button button-secondary" disabled={busy || !ready} onClick={() => { void payWithDePay() }}>
+                    {busy && method === 'depay' ? '…' : t('پرداخت با DePay', 'Pay with DePay')}
+                  </button>
+                )}
+                {!useDePay && !manualAvailable && !useWallet && (
                   <button className="button" disabled={busy || !ready} onClick={createManual}>{busy ? '…' : t('ساخت سفارش و دریافت آدرس پرداخت', 'Create order & get payment address')}</button>
                 )}
               </div>
             )}
             {authenticated && paymentsEnabled && !zeroQuote && (
               <p className="of-co-muted of-co-networks">
-                {useDePay && t('در پنجرهٔ DePay هر کیف پول، شبکه و توکنی را که DePay برای این پرداخت پیشنهاد می‌دهد می‌توانی انتخاب کنی؛ DePay در صورت نیاز توکن را تبدیل می‌کند.', 'In the DePay window you can choose any wallet, network and token DePay offers for this payment; DePay converts the token when needed.')}
+                {useWallet && t('با «پرداخت با کیف پول»، کیف پول متصل شما فقط یک انتقال دقیق از استیبل‌کوین تأییدشده به خزانهٔ اوپن‌فاند را امضا می‌کند؛ نیازی به کپی آدرس نیست.', 'With Pay with Wallet, your connected wallet signs one exact transfer of the approved stablecoin to the Openfund treasury — no address copying.')}
+                {!useDePay && depayConfigured() && <> {t('پرداخت با DePay برای سفارش‌های جدید در دسترس نیست.', 'DePay is unavailable for new orders.')}</>}
                 {manualAvailable && <> {t('در پرداخت دستی، توکن تسویه را خودت به آدرس خزانهٔ اوپن‌فاند می‌فرستی و شناسهٔ تراکنش را ثبت می‌کنی؛ سرور تراکنش را روی زنجیره بررسی می‌کند.', 'With Manual Payment you send the settlement token to the Openfund treasury yourself and submit the transaction ID; the server verifies it on-chain.')}</>}
                 {settlementChains.length > 0 && <> {t('شبکه‌های تسویهٔ پیکربندی‌شده:', 'Configured settlement networks:')} <span dir="ltr">{settlementChains.join(' · ')}</span></>}
               </p>
@@ -536,19 +579,30 @@ export default function CheckoutPage() {
               <div><span>{t('سفارش', 'Order')}</span><b dir="ltr">{order.id.slice(0, 8)}</b></div>
               <div><span>{t('چلنج', 'Challenge')}</span><b>{planName({ name: order.plan_name })}</b></div>
               <div><span>{t('اندازهٔ حساب', 'Account size')}</span><b dir="ltr">{money(order.account_size_usd)}</b></div>
-              <div className="of-co-total"><span>{t('مبلغ', 'Amount')}</span><b dir="ltr">{money(order.price_usd)}</b></div>
-              <div><span>{t('اعتبار سفارش تا', 'Order valid until')}</span><b>{dateTime(order.expires_at)}</b></div>
+              <div><span>{t('مبلغ سفارش', 'Order total')}</span><b dir="ltr">{money(order.price_usd)}</b></div>
+              {order.coupon_code && <div><span>{t('کد تخفیف', 'Coupon')}</span><b dir="ltr">{order.coupon_code} (−{money(order.discount_usd)})</b></div>}
+              <div className="of-co-total"><span>{partiallyPaid ? t('مانده قابل پرداخت', 'Remaining due') : t('مبلغ قابل پرداخت', 'Amount due')}</span><b dir="ltr">{money(remainingUsd)}</b></div>
+              {!partiallyPaid && <div><span>{t('اعتبار سفارش تا', 'Order valid until')}</span><b>{dateTime(order.expires_at)}</b></div>}
             </div>
-            {status && (
+            {payView?.status ? (
+              <PaymentStatus t={t} view={payView} money={money} dateTime={d => dateTime(d)}
+                onCompleteRemaining={() => methodsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })} />
+            ) : status && (
               <p className={`of-co-state of-co-state-${status}`} role="status" data-status={status}>
                 <span>{t('وضعیت', 'Status')}:</span> <b>{t(...STATUS_TEXT[status])}</b>
               </p>
             )}
-            {useDePay && manualChains.length > 0 && (
+            <div ref={methodsRef} />
+            {[useWallet, manualChains.length > 0, useDePay].filter(Boolean).length > 1 && (
               <div className="of-co-tabs" role="tablist" aria-label={t('روش پرداخت', 'Payment method')}>
-                <button type="button" role="tab" aria-selected={method === 'depay'} className={method === 'depay' ? 'active' : ''} onClick={() => setMethod('depay')}>{t('پرداخت با DePay', 'Pay with DePay')}</button>
-                <button type="button" role="tab" aria-selected={method === 'manual'} className={method === 'manual' ? 'active' : ''} onClick={() => { closeDePayPayment(); setMethod('manual') }}>{t('پرداخت دستی', 'Manual Payment')}</button>
+                {useWallet && <button type="button" role="tab" aria-selected={method === 'wallet'} className={method === 'wallet' ? 'active' : ''} onClick={() => { closeDePayPayment(); setMethod('wallet') }}>{t('پرداخت با کیف پول', 'Pay with Wallet')}</button>}
+                {manualChains.length > 0 && <button type="button" role="tab" aria-selected={method === 'manual'} className={method === 'manual' ? 'active' : ''} onClick={() => { closeDePayPayment(); setMethod('manual') }}>{t('انتقال دستی', 'Manual Transfer')}</button>}
+                {useDePay && <button type="button" role="tab" aria-selected={method === 'depay'} className={method === 'depay' ? 'active' : ''} onClick={() => setMethod('depay')}>{t('پرداخت با DePay', 'Pay with DePay')}</button>}
               </div>
+            )}
+            {useWallet && method === 'wallet' && (
+              <WalletPayment t={t} orderId={order.id} chains={walletChains} sessionWallet={session.user?.walletAddress} remainingUsd={remainingUsd}
+                disabled={remainingUsd === '0' || remainingUsd === '0.00'} onSubmitted={() => { void loadPaymentStatus(order.id) }} />
             )}
             {useDePay && method === 'depay' && (
               <>
@@ -561,7 +615,7 @@ export default function CheckoutPage() {
                 )}
               </>
             )}
-            {(!useDePay || method === 'manual') && manualChain && payment?.manual && (
+            {method === 'manual' && manualChain && payment?.manual && (
               <div className="of-co-manual">
                 <label className="of-co-field">{t('۱. شبکه و توکن تسویه', '1. Network and settlement token')}
                   <select value={manualChain.chainId} onChange={e => { setManualChainId(Number(e.target.value)); setTxHash('') }}>
@@ -573,6 +627,8 @@ export default function CheckoutPage() {
                   {manualChain.token && <div><span>{t('قرارداد توکن', 'Token contract')}</span><b dir="ltr" className="of-co-mono">{manualChain.tokenExplorerUrl ? <a href={manualChain.tokenExplorerUrl} target="_blank" rel="noreferrer">{manualChain.token.slice(0, 10)}…{manualChain.token.slice(-6)}</a> : manualChain.token}</b></div>}
                   <div><span>{t('شبکه', 'Network')}</span><b>{chainLabel(manualChain.blockchain || manualChain.chainId)}</b></div>
                 </div>
+                {manualChain.correlation === 'sender' && <ManualWarning t={t} wallet={session.user?.walletAddress} accepted={manualAck} onAccept={setManualAck} />}
+                {(manualChain.correlation !== 'sender' || manualAck) && <>
                 <p className="of-checkout-step">{t('۲. دقیقاً همین مبلغ از همین توکن را به آدرس خزانهٔ اوپن‌فاند در همین شبکه بفرست:', '2. Send exactly this amount of this token to the Openfund treasury address on this network:')}</p>
                 <div className="of-checkout-addr">
                   <code dir="ltr">{manualChain.receiver}</code>
@@ -590,9 +646,10 @@ export default function CheckoutPage() {
                     </div>
                   </>
                 )}
-                <p className="of-co-muted">{t('ارز بومی شبکه (مثل ETH یا SOL) و توکن‌های دیگر پذیرفته نمی‌شوند. مبلغ کمتر از مبلغ سفارش تأیید نمی‌شود.', 'Native coins (such as ETH or SOL) and other tokens are not accepted. A smaller amount than the order total is not confirmed.')}
+                <p className="of-co-muted">{t('ارز بومی شبکه (مثل ETH یا SOL) و توکن‌های دیگر پذیرفته نمی‌شوند. اگر کمتر از مبلغ بفرستی، مبلغ دریافتی ثبت می‌شود و مانده را می‌توانی بعداً بپردازی؛ مبلغ اضافه قابل بازپرداخت است.', 'Native coins (such as ETH or SOL) and other tokens are not accepted. If you send less, the received amount is recorded and you can pay the remaining balance later; any excess is refundable.')}
                   {manualChain.minConfirmations > 0 && <> {t('تأیید پس از', 'Confirmed after')} <bdi dir="ltr">{manualChain.minConfirmations}</bdi> {t('تأیید بلاک.', 'block confirmations.')}</>}</p>
-                <label className="of-co-field">{t('۳. شناسهٔ تراکنش (TXID)', '3. Transaction ID (TXID)')}
+                <p className="of-co-muted">{t('اگر از کیف پول واردشده پرداخت کنی و سفارش باز دیگری نداشته باشی، اوپن‌فاند تراکنش را خودکار پیدا می‌کند؛ ثبت شناسهٔ تراکنش اختیاری است و بررسی را سریع‌تر می‌کند.', 'If you pay from your signed-in wallet and have no other open order, Openfund finds the transfer automatically; submitting the transaction ID is optional and speeds it up.')}</p>
+                <label className="of-co-field">{t('۳. شناسهٔ تراکنش (TXID، اختیاری)', '3. Transaction ID (TXID, optional)')}
                   <input dir="ltr" className="of-checkout-tx" placeholder={manualChain.family === 'solana' ? t('امضای تراکنش سولانا', 'Solana transaction signature') : '0x…'} value={txHash}
                     onChange={e => setTxHash(e.target.value)} spellCheck={false} autoComplete="off"
                     aria-invalid={txHash.trim() !== '' && !txIdValid(manualChain.family, txHash)} />
@@ -602,16 +659,17 @@ export default function CheckoutPage() {
                   {busy ? '…' : status === 'verification_pending' || status === 'payment_failed' ? t('بررسی مجدد تراکنش', 'Check transaction again') : t('ثبت و بررسی تراکنش', 'Submit & verify transaction')}
                 </button>
                 <p className="of-co-muted">{t('شناسهٔ تراکنش به‌تنهایی مدرک پرداخت نیست: سرور اوپن‌فاند شبکه، توکن، گیرنده، مبلغ، تعداد تأیید و تطابق با سفارش را مستقیماً روی بلاک‌چین بررسی می‌کند. تراکنش در انتظار، خودکار دوباره بررسی می‌شود.', 'A transaction ID alone is not proof of payment: Openfund’s server checks the network, token, receiver, amount, confirmations and the match to this order directly on-chain. A pending transaction is re-checked automatically.')}</p>
+                </>}
               </div>
             )}
-            {!useDePay && !manualChain && (
+            {!useDePay && !useWallet && !manualChain && (
               <p className="of-co-note">{t('اطلاعات پرداخت دستی در دسترس نیست.', 'Manual payment details are not available.')}</p>
             )}
             {widgetNote && <p className="of-checkout-status" role="status">{widgetNote}</p>}
             {waiting && <p className="of-checkout-status" role="status">{waiting}</p>}
             {attemptError && <p className="of-profile-error" role="alert">{attemptError}</p>}
             <p className="of-co-muted">{t('این صفحه وضعیت پرداخت را از سرور می‌خواند؛ اگر صفحه را ببندی یا کیف پول قطع شود، پرداخت از دست نمی‌رود و با همین لینک می‌توانی برگردی.', 'This page reads the payment status from the server. If you close it or your wallet disconnects, the payment is not lost — come back with this link.')}</p>
-            {order.lifecycle_state === 'awaiting_payment' && widget !== 'sent' && (
+            {order.lifecycle_state === 'awaiting_payment' && widget !== 'sent' && !payView?.status?.checking && (
               <button className="of-profile-plainbtn" disabled={busy} onClick={() => { void cancelOrder() }}>{t('لغو سفارش', 'Cancel order')}</button>
             )}
           </div>
@@ -646,11 +704,15 @@ export default function CheckoutPage() {
                 <div><dt>{t('هش تراکنش', 'Transaction hash')}</dt><dd dir="ltr" className="of-co-mono">{txExplorerUrl(receipt.payment.blockchain || receipt.payment.chainId, receipt.payment.txHash)
                   ? <a href={txExplorerUrl(receipt.payment.blockchain || receipt.payment.chainId, receipt.payment.txHash)!} target="_blank" rel="noreferrer">{receipt.payment.txHash}</a> : receipt.payment.txHash}</dd></div>
               </>}
+              {receipt.ledger && receipt.ledger.transactions.length > 1 && <div><dt>{t('تعداد تراکنش‌ها', 'Transactions')}</dt><dd>{receipt.ledger.transactions.length}</dd></div>}
+              {receipt.ledger && <div><dt>{t('دریافت‌شده', 'Received')}</dt><dd dir="ltr">{money(receipt.ledger.receivedUsd)}</dd></div>}
+              {receipt.ledger && receipt.ledger.excessUsd !== '0' && <div><dt>{t('مبلغ اضافه (بدهی بازپرداخت)', 'Excess (refund liability)')}</dt><dd dir="ltr">{money(receipt.ledger.excessUsd)}</dd></div>}
               <div><dt>{t('تاریخ و زمان', 'Date / time')}</dt><dd>{dateTime(receipt.paidAt)}</dd></div>
               {receipt.invoice && <div><dt>{t('شمارهٔ فاکتور', 'Invoice')}</dt><dd dir="ltr">{receipt.invoice.number}</dd></div>}
               {receipt.challenge && <div><dt>{t('شناسهٔ چلنج', 'Challenge ID')}</dt><dd dir="ltr" className="of-co-mono">{receipt.challenge.id}</dd></div>}
               {receipt.customer?.email && <div><dt>{t('ایمیل', 'Email')}</dt><dd dir="ltr">{receipt.customer.email}</dd></div>}
             </dl>
+            {receipt.ledger && receipt.ledger.transactions.length > 0 && payView && <PaymentStatus t={t} view={{ ...payView, ledger: receipt.ledger }} money={money} dateTime={d => dateTime(d)} />}
             <div className="of-checkout-actions">
               <a className="button" href={`/${locale}/prop/dashboard`}>{t('رفتن به داشبورد', 'Go to Dashboard')}</a>
               {receipt.invoice && <a className="button" href={`${backendUrl()}/invoices/${receipt.invoice.id}`} target="_blank" rel="noreferrer">{t('دانلود فاکتور PDF', 'Download invoice PDF')}</a>}

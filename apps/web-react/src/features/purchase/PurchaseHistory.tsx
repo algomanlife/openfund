@@ -19,8 +19,13 @@ interface HistoryRow {
   created_at: string, paid_at: string | null, plan_slug: string, plan_name: string,
   payment: { txHash: string, chainId: number, verifiedAt: string } | null,
   invoice: { id: string, number: string, issuedAt: string } | null,
-  challenge_id: string | null
+  challenge_id: string | null,
+  /* Openfund Pay ledger totals (server-authoritative) */
+  coupon_code?: string | null, list_price_usd?: string, discount_usd?: string, payment_required?: boolean,
+  received_usd?: string, remaining_usd?: string, excess_usd?: string, transactions?: number,
+  refunds?: { status: string, usd: string }[]
 }
+const OPEN_REFUND = new Set(['refund_due', 'refund_review', 'refund_approved', 'refund_sent', 'refund_failed'])
 
 const txUrl = (chainId: number, txHash: string) => txExplorerUrl(chainId, txHash) || undefined
 
@@ -70,6 +75,7 @@ export default function PurchaseHistory() {
               <th scope="col">{c('plan')}</th>
               <th scope="col">{c('size')}</th>
               <th scope="col">{c('fee')}</th>
+              <th scope="col">{c('received')}</th>
               <th scope="col">{c('status')}</th>
               <th scope="col">{c('date')}</th>
               <th scope="col">{c('payment')}</th>
@@ -81,8 +87,17 @@ export default function PurchaseHistory() {
               <tr key={o.id}>
                 <td><Link to={`/${locale}/checkout?order=${o.id}`}><b>{pickRecord(locale, planBySlug(o.plan_slug)?.name) || o.plan_name}</b></Link></td>
                 <td dir="ltr">{fmtMoney(o.account_size_usd)}</td>
-                <td dir="ltr">{fmtMoney(o.price_usd)}</td>
-                <td><span className={`of-status-pill of-status-${o.status}`}>{pickRecord(locale, purchaseStatuses[o.lifecycle_state || ''] || purchaseStatuses[o.status]) || c('unknown')}</span></td>
+                <td dir="ltr">{fmtMoney(o.price_usd)}{o.coupon_code ? <small className="of-purchase-coupon"> ({o.coupon_code} −{fmtMoney(o.discount_usd || 0)})</small> : null}</td>
+                <td>
+                  <span dir="ltr">{o.payment_required === false ? '—' : fmtMoney(o.received_usd || 0)}</span>
+                  {o.remaining_usd && Number(o.remaining_usd) > 0 && Number(o.received_usd) > 0 && <small className="of-purchase-remaining"> · {c('remaining')} <bdi dir="ltr">{fmtMoney(o.remaining_usd)}</bdi></small>}
+                  {o.excess_usd && Number(o.excess_usd) > 0 && <small className="of-purchase-excess"> · {c('excess')} <bdi dir="ltr">{fmtMoney(o.excess_usd)}</bdi></small>}
+                  {(o.refunds || []).length > 0 && <small> · {(o.refunds || []).some(r => OPEN_REFUND.has(r.status)) ? c('refundPending') : c('refundCompleted')}</small>}
+                </td>
+                <td>
+                  <span className={`of-status-pill of-status-${o.status}`}>{pickRecord(locale, purchaseStatuses[o.lifecycle_state || ''] || purchaseStatuses[o.status]) || c('unknown')}</span>
+                  {o.lifecycle_state === 'partially_paid' && <Link className="button small of-purchase-complete" to={`/${locale}/checkout?order=${o.id}`}>{c('completeRemaining')}</Link>}
+                </td>
                 <td>{fmtDate(o.created_at)}</td>
                 <td dir="ltr" className="of-payment-cell">
                   {o.payment && txUrl(o.payment.chainId, o.payment.txHash) ? <a href={txUrl(o.payment.chainId, o.payment.txHash)} target="_blank" rel="noreferrer">{o.payment.txHash.slice(0, 10)}…</a> : <span>{c('unavailable')}</span>}
