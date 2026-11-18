@@ -395,6 +395,93 @@ jobs:
             output/playwright/heatmap-radar/
           retention-days: 3
 
+  campaigns:
+    name: Campaigns and announcements (Directus + browser)
+    needs: changes
+    if: needs.changes.outputs.run_gates == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: openfund_campaigns_ci
+          POSTGRES_USER: openfund_ci
+          POSTGRES_PASSWORD: openfund_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U openfund_ci -d openfund_campaigns_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://openfund_ci:openfund_ci@localhost:5432/openfund_campaigns_ci
+      DIRECTUS_URL: http://127.0.0.1:8055
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            apps/web-react/package-lock.json
+            apps/backend/package-lock.json
+      - name: Install, migrate and build the site
+        run: |
+          npm ci --include=dev
+          npm ci --include=dev --prefix apps/web-react
+          npm ci --prefix apps/backend
+          npm --prefix apps/backend run migrate
+          npm --prefix apps/backend run seed-plans
+          npm run build:web
+          npx --no-install playwright install --with-deps chromium
+      - name: Directus 11.17.4, bootstrap (twice) and the Backstage editor role
+        run: |
+          export DIRECTUS_ADMIN_EMAIL=campaigns-ci@example.com
+          export DIRECTUS_ADMIN_PASSWORD="$(openssl rand -hex 20)"
+          docker run --rm -d --name openfund-campaigns-cms --network host \
+            -e DB_CLIENT=pg -e DB_HOST=127.0.0.1 -e DB_PORT=5432 \
+            -e DB_DATABASE=openfund_campaigns_ci -e DB_USER=openfund_ci -e DB_PASSWORD=openfund_ci \
+            -e KEY="$(openssl rand -hex 16)" -e SECRET="$(openssl rand -hex 32)" \
+            -e ADMIN_EMAIL="$DIRECTUS_ADMIN_EMAIL" -e ADMIN_PASSWORD="$DIRECTUS_ADMIN_PASSWORD" \
+            -e CORS_ENABLED=true -e CORS_ORIGIN=true directus/directus:11.17.4
+          for i in $(seq 1 90); do curl -fsS "$DIRECTUS_URL/server/ping" >/dev/null && break; sleep 1; done
+          bash apps/backstage/scripts/bootstrap-cms.sh
+          bash apps/backstage/scripts/bootstrap-cms.sh
+          python3 apps/backstage/scripts/register_backstage_editor.py
+          # a per-run token for a user on the restricted editor role (never stored)
+          EDITOR_TOKEN="$(openssl rand -hex 24)"
+          echo "::add-mask::$EDITOR_TOKEN"
+          ADMIN=$(curl -fsS -X POST "$DIRECTUS_URL/auth/login" -H 'content-type: application/json' \
+            -d "{\"email\":\"$DIRECTUS_ADMIN_EMAIL\",\"password\":\"$DIRECTUS_ADMIN_PASSWORD\"}" | node -pe 'JSON.parse(require("fs").readFileSync(0)).data.access_token')
+          ROLE=$(curl -fsS "$DIRECTUS_URL/roles?fields=id,name&limit=-1" -H "Authorization: Bearer $ADMIN" \
+            | node -pe 'JSON.parse(require("fs").readFileSync(0)).data.find(r => r.name === "Backstage Content Editor").id')
+          curl -fsS -o /dev/null -X POST "$DIRECTUS_URL/users" -H "Authorization: Bearer $ADMIN" -H 'content-type: application/json' \
+            -d "{\"email\":\"backstage-editor@example.com\",\"role\":\"$ROLE\",\"token\":\"$EDITOR_TOKEN\",\"status\":\"active\"}"
+          echo "BACKSTAGE_DIRECTUS_TOKEN=$EDITOR_TOKEN" >> "$GITHUB_ENV"
+      - name: Boot the site against Directus
+        run: |
+          ADMIN_API_TOKEN="$(openssl rand -hex 24)"
+          echo "::add-mask::$ADMIN_API_TOKEN"
+          echo "ADMIN_API_TOKEN=$ADMIN_API_TOKEN" >> "$GITHUB_ENV"
+          cd apps/backend
+          PORT=8080 SIM_TEST_MODE=1 ADMIN_API_TOKEN="$ADMIN_API_TOKEN" CMS_PUBLIC_URL="$DIRECTUS_URL" CSP_EXTRA_CONNECT="$DIRECTUS_URL" \
+            ALLOWED_DOMAINS=localhost:8080 CORS_ORIGINS=http://localhost:8080 npm start > /tmp/openfund-campaigns.log 2>&1 &
+          for i in $(seq 1 40); do curl -fsS http://localhost:8080/health >/dev/null && break; sleep 1; done
+      - name: Campaign and announcement browser acceptance (fa/en, RTL/LTR, mobile)
+        env:
+          TEST_BACKEND_URL: http://localhost:8080
+          OUTPUT_DIR: output/playwright/campaigns
+        run: node e2e/test-campaigns.mjs || { tail -60 /tmp/openfund-campaigns.log; exit 1; }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: campaign-evidence
+          path: output/playwright/campaigns/
+          retention-days: 7
+      - name: Stop Directus
+        if: always()
+        run: docker stop openfund-campaigns-cms >/dev/null 2>&1 || true
+
   blueprint:
     name: Render Blueprint
     runs-on: ubuntu-latest

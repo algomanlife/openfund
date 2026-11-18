@@ -2623,3 +2623,19 @@ CREATE TABLE IF NOT EXISTS notification_relay_state (
   last_event  bigint NOT NULL DEFAULT 0,
   updated_at  timestamptz NOT NULL DEFAULT now()
 );
+
+-- ------------------------------------------------------------------
+-- Campaign and announcement counters (campaigns.js). Content lives in
+-- Directus (site_campaigns); this table holds anonymous daily counts only:
+-- no IP address, wallet, user id or user agent. Additive and idempotent.
+-- ------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS campaign_daily_stats (
+  campaign_id  text NOT NULL CHECK (campaign_id ~ '^[0-9a-fA-F-]{1,36}$'),
+  placement    text NOT NULL CHECK (placement IN ('modal', 'announcement_bar')),
+  day          date NOT NULL,
+  impressions  integer NOT NULL DEFAULT 0 CHECK (impressions >= 0),
+  clicks       integer NOT NULL DEFAULT 0 CHECK (clicks >= 0),
+  closes       integer NOT NULL DEFAULT 0 CHECK (closes >= 0),
+  updated_at   timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (campaign_id, placement, day)
+);
