@@ -12,6 +12,13 @@
  *    Unsigned requests are rejected before any processing; nothing is
  *    created, paid or changed.
  *
+ * Openfund Pay (ADR 0046): when /purchases/plans reports
+ * `payment.methods.depay === false` (DePay off for NEW payments), the DePay
+ * widget and configuration-route checks are informational and the
+ * configuration routes must answer 404 `depay_disabled`; the callback and
+ * events routes stay REQUIRED (legacy DePay payments must still reconcile),
+ * and at least one method must be enabled for new payments.
+ *
  * Usage: node scripts/release/purchase-readiness.mjs <base-url> [--json]
  * Exit 0 only when every check passes; the report names what is missing.
  */
@@ -39,10 +46,15 @@ export function parseRuntimeConfig(script) {
   return JSON.parse(json);
 }
 
+const CONFIG_ROUTES = new Set(DEPAY_ROUTES.filter(r => /config/.test(r)));
+
 export async function purchaseReadiness(baseUrl, { fetchImpl = fetch, widget = pinnedWidget() } = {}) {
   const base = new URL(baseUrl);
   const checks = [];
-  const add = (name, ok, detail, fix = null) => checks.push({ name, ok: Boolean(ok), detail, ...(ok || !fix ? {} : { fix }) });
+  /* DePay-for-new-payments state reported by the server (null = not reported: legacy server) */
+  let depayNew = null;
+  /* optional checks are reported but do not block readiness */
+  const add = (name, ok, detail, fix = null, optional = false) => checks.push({ name, ok: Boolean(ok), detail, ...(ok || !fix ? {} : { fix }), ...(optional ? { optional: true } : {}) });
   const get = route => fetchImpl(new URL(route, base), { cache: 'no-store', signal: AbortSignal.timeout(20000) });
 
   try {
@@ -52,14 +64,21 @@ export async function purchaseReadiness(baseUrl, { fetchImpl = fetch, widget = p
     const manual = plans.payment?.manualChains ?? [];
     add('manualChains', manual.length > 0, `${manual.length} manual chain(s): ${manual.map(c => c.blockchain ?? c.chainId).join(', ') || 'none'}`,
       'Manual payment needs at least one ready chain with a token (production); configure PURCHASE_PAYMENT_CHAINS.');
+    const methods = plans.payment?.methods;
+    if (methods && typeof methods === 'object') {
+      depayNew = methods.depay === true;
+      const on = ['wallet', 'manual', 'depay'].filter(m => methods[m] === true);
+      add('newPaymentMethods', on.length > 0, `enabled for new payments: ${on.join(', ') || 'none'}`,
+        'Enable at least one method (Backstage → Payment methods, or PAYMENT_WALLET_ENABLED / PAYMENT_MANUAL_ENABLED).');
+    }
   } catch (error) { add('purchases/plans', false, error.message, 'The service is unreachable or /purchases/plans failed.'); }
 
   let config = null;
   try {
     config = parseRuntimeConfig(await (await get('/runtime-config.js')).text());
-    add('depayWidget', config.depayWidget === true, `depayWidget=${config.depayWidget}`, 'Set VITE_DEPAY_INTEGRATION_ID (and leave VITE_DEPAY_WIDGET unset or 1).');
+    add('depayWidget', config.depayWidget === true, `depayWidget=${config.depayWidget}`, 'Set VITE_DEPAY_INTEGRATION_ID (and leave VITE_DEPAY_WIDGET unset or 1).', depayNew === false);
     add('depayIntegrationId', /^[A-Za-z0-9-]{8,64}$/.test(config.depayIntegrationId || ''), config.depayIntegrationId ? 'present' : 'missing',
-      'Set VITE_DEPAY_INTEGRATION_ID to the public integration id from app.depay.com.');
+      'Set VITE_DEPAY_INTEGRATION_ID to the public integration id from app.depay.com.', depayNew === false);
     add('walletConnectProjectId', Boolean(config.walletConnectProjectId), config.walletConnectProjectId ? 'present' : 'missing (optional: mobile wallets)');
   } catch (error) { add('runtime-config.js', false, error.message); }
 
@@ -69,7 +88,7 @@ export async function purchaseReadiness(baseUrl, { fetchImpl = fetch, widget = p
       const bytes = Buffer.from(await response.arrayBuffer());
       const actual = 'sha384-' + crypto.createHash('sha384').update(bytes).digest('base64');
       add('depayWidgetIntegrity', response.ok && actual === widget.integrity, response.ok ? (actual === widget.integrity ? `/${widget.file} matches ${widget.integrity}` : `served ${actual}, pinned ${widget.integrity}`) : `/${widget.file} returned ${response.status}`,
-        'Redeploy the release: the served vendored widget must match the pinned bundle.');
+        'Redeploy the release: the served vendored widget must match the pinned bundle.', depayNew === false);
     } catch (error) { add('depayWidgetIntegrity', false, error.message); }
   } else if (config) {
     add('depayWidgetIntegrity', Boolean(config.depayWidgetIntegrity), `external bundle ${config.depayWidgetUrl} with ${config.depayWidgetIntegrity ? 'SRI' : 'no SRI'}`);
@@ -79,13 +98,20 @@ export async function purchaseReadiness(baseUrl, { fetchImpl = fetch, widget = p
     try {
       const response = await fetchImpl(new URL(route, base), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}', signal: AbortSignal.timeout(20000) });
       const body = await response.json().catch(() => ({}));
+      if (depayNew === false && CONFIG_ROUTES.has(route)) {
+        /* DePay off for new payments: the configuration route must refuse */
+        add(`depay ${route}`, response.status === 404 && body.error === 'depay_disabled',
+          response.status === 404 && body.error === 'depay_disabled' ? 'disabled for new payments (depay_disabled)' : `unexpected ${response.status} ${body.error || ''}`.trim(),
+          'DePay is disabled for new payments: the configuration route must answer 404 depay_disabled.');
+        continue;
+      }
       add(`depay ${route}`, response.status === 401 && body.error === 'invalid_signature',
         response.status === 401 ? 'active; unsigned request refused' : response.status === 404 ? 'inactive (404)' : `unexpected ${response.status}`,
         'DePay routes are active only with paymentsEnabled, DEPAY_VERIFY_PUBLIC_KEY (and DEPAY_CONFIG_PRIVATE_KEY for the configuration route).');
     } catch (error) { add(`depay ${route}`, false, error.message); }
   }
 
-  const required = checks.filter(c => c.name !== 'walletConnectProjectId');
+  const required = checks.filter(c => c.name !== 'walletConnectProjectId' && !c.optional);
   return { url: base.origin, checkedAt: new Date().toISOString(), ready: required.every(c => c.ok), checks };
 }
 
