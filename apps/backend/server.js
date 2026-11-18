@@ -47,6 +47,7 @@ import { createRadar, radarRoutes } from './radar.js'
 import { calendarAdminRoutes } from './conduct.js'
 import { createFootprintService } from './footprint/service.js'
 import { couponAdminRoutes } from './coupons.js'
+import { campaignRoutes } from './campaigns.js'
 import { paymentAdminRoutes } from './payments-admin.js'
 import { governanceRoutes } from './governance-routes.js'
 import { partnerRoutes, partnerAdminRoutes, attributeAmbassador } from './partners.js'
@@ -192,7 +193,7 @@ const CSP_TV_SCRIPT = ' https://widgets.tradingview-widget.com'
 const CSP_TV_FRAME = ' https://www.tradingview-widget.com'
 const buildCsp = (allowEval) =>
   "default-src 'self'; script-src 'self' " + (cspExtraScript ? cspExtraScript + ' ' : '') + CSP_THEME_BOOT_HASH + (allowEval ? " 'unsafe-eval' " + CSP_LEGACY_HASHES + CSP_TV_SCRIPT : '') + "; style-src 'self' 'unsafe-inline'; " +
-  "img-src 'self' data: blob: https:; connect-src 'self' https: wss:" + (cspExtraConnect ? ' ' + cspExtraConnect : '') + "; " +
+  "img-src 'self' data: blob: https:" + (cspExtraConnect ? ' ' + cspExtraConnect : '') + "; connect-src 'self' https: wss:" + (cspExtraConnect ? ' ' + cspExtraConnect : '') + "; " +
   "worker-src 'self' blob:; frame-src 'self'" + (cspExtraFrame ? ' ' + cspExtraFrame : '') + cspWalletFrames + (allowEval ? CSP_TV_FRAME : '') + "; frame-ancestors 'self'" + (cspCmsAncestor ? ' ' + cspCmsAncestor : '') + "; " +
   "object-src 'none'; base-uri 'self'; form-action 'self'"
 /* Directus Studio visual editing (ADR 0038) frames the site from the
@@ -862,6 +863,7 @@ app.use('/admin/economy', economyAdminRoutes({ pool, treasury, onChange: () => e
 app.use('/admin/partners', partnerAdminRoutes({ pool }))
 app.use('/admin/live', liveAdminRoutes({ pool, treasury, config: live }))
 app.use('/admin/coupons', couponAdminRoutes({ pool }))
+app.use(campaignRoutes({ pool, limit }))
 app.use('/admin/payments', paymentAdminRoutes({ pool, verifier: (...a) => defaultPaymentVerifier()(...a) }))
 app.use('/admin/support', supportAdminRoutes({ pool }))
 app.use('/admin/operations', operationsAdminRoutes({ pool, engine, marketData }))

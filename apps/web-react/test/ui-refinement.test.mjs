@@ -96,74 +96,107 @@ test('one shared poller: remounts never duplicate the loop, unmount cancels, dat
   }
 })
 
-test('the Bitpin ticker is Persian-only; the Iran notice is shown in every locale; neither is mounted in the terminal', () => {
+test('the Bitpin ticker is Persian-only; the announcement bar sits above the header; neither is mounted in the terminal', () => {
   const shell = src('features/information/InformationShell.tsx')
-  assert.match(shell, /<IranAccessNotice locale=\{locale\} \/>/)
+  assert.match(shell, /<AnnouncementBar locale=\{locale\} \/>\s*<Chrome locale=\{locale\} part="header"/)
+  assert.match(shell, /<PromoModal locale=\{locale\} \/>/)
   assert.match(shell, /\{locale === 'fa' && <BitpinTicker \/>\}/)
   const landing = src('pages/Landing.tsx')
-  assert.match(landing, /createPortal\(<IranAccessNotice locale=\{communityLocale\} \/>/)
-  assert.doesNotMatch(landing, /communityLocale === 'fa' && createPortal\(<IranAccessNotice/)
+  assert.match(landing, /<AnnouncementBar locale=\{communityLocale\} \/>[\s\S]*<PromoModal locale=\{communityLocale\} \/>\s*<div dangerouslySetInnerHTML=\{\{ __html: landingMarkup \}\} \/>/)
   assert.match(landing, /\{communityLocale === 'fa' && <BitpinTicker \/>\}/)
+  assert.doesNotMatch(landing + shell, /IranAccessNotice/)
   for (const file of ['features/terminal/TerminalShell.tsx', 'features/terminal/TradingPages.tsx']) {
-    assert.doesNotMatch(src(file), /BitpinTicker|IranAccessNotice/)
+    assert.doesNotMatch(src(file), /BitpinTicker|AnnouncementBar|PromoModal/)
   }
   assert.match(src('features/ticker/ticker.css'), /prefers-reduced-motion: reduce/)
   assert.match(src('features/ticker/ticker.css'), /safe-area-inset-bottom/)
+  assert.match(src('features/campaigns/campaigns.css'), /prefers-reduced-motion: reduce/)
 })
 
-/* The notice follows the verified serving region (runtime config), never the
-   hostname, and never claims outage availability, independence of a proxy,
-   or trading without authoritative market data. */
-function renderNotice(locale, region) {
-  const React = require('react'), server = require('react-dom/server')
-  const saved = globalThis.window
-  globalThis.window = { __OPENFUND_RUNTIME_CONFIG__: region ? { region } : {} }
-  try {
-    const Notice = load('features/notice/IranAccessNotice.tsx').default
-    return new JSDOM(server.renderToStaticMarkup(React.createElement(Notice, { locale }))).window.document
-  } finally { if (saved === undefined) delete globalThis.window; else globalThis.window = saved }
+/* ---------------- campaigns: selection, eligibility, coupons, frequency ---------------- */
+const IRAN_BAR = { id: 7, placement: 'announcement_bar', style: 'mint', priority: 100, locales: ['fa'], regions: ['GLOBAL'], pages: ['all'],
+  cta_url: 'https://openfi.live/', frequency: 'session',
+  translations: [{ language_code: 'fa', headline: 'نسخهٔ ایرانی', cta_label: 'ورود به اوپن‌فاند ایران' }] }
+const PROMO = { id: 9, placement: 'modal', template: 'split', priority: 5, locales: ['fa', 'en'], regions: ['GLOBAL', 'IRAN'], pages: ['home'],
+  cta_url: '/en/checkout?plan=standard', coupon_code: 'OPENFUND20', delay_seconds: 12, frequency: 'interval', frequency_days: 7,
+  translations: [{ language_code: 'en', headline: '20% off', body: 'For a limited time', cta_label: 'Buy' }, { language_code: 'fa', headline: '۲۰٪ تخفیف', cta_label: 'خرید' }] }
+function memoryStorage() { const m = new Map(); return { getItem: k => m.get(k) ?? null, setItem: (k, v) => m.set(k, String(v)), removeItem: k => m.delete(k) } }
+async function withCampaigns({ items, region = 'GLOBAL', coupons = { OPENFUND20: { promotable: true, code: 'OPENFUND20', kind: 'percent', value: '20.00' } }, cmsDown = false }, fn) {
+  const keys = ['window', 'location', 'fetch', 'sessionStorage', 'localStorage']
+  const saved = Object.fromEntries(keys.map(k => [k, Object.getOwnPropertyDescriptor(globalThis, k)]))
+  const define = (k, v) => Object.defineProperty(globalThis, k, { value: v, configurable: true, writable: true })
+  define('window', { __OPENFUND_RUNTIME_CONFIG__: { region, cmsPublicUrl: 'https://cms.example.test' } })
+  define('location', new URL('https://openfi.cloud/fa/home'))
+  define('sessionStorage', memoryStorage()); define('localStorage', memoryStorage())
+  const calls = []
+  define('fetch', async (url) => {
+    const u = String(url); calls.push(u)
+    if (u.includes('/items/site_campaigns')) return cmsDown ? { ok: false, json: async () => ({}) } : { ok: true, json: async () => ({ data: items }) }
+    const m = /\/campaigns\/coupons\/([^/?]+)/.exec(u)
+    if (m) return { ok: true, json: async () => coupons[decodeURIComponent(m[1])] ?? { promotable: false } }
+    return { ok: false, json: async () => ({}) }
+  })
+  try { return await fn(load('features/campaigns/campaigns.ts'), calls) }
+  finally { for (const k of keys) { if (saved[k]) Object.defineProperty(globalThis, k, saved[k]); else delete globalThis[k] } }
 }
-const FORBIDDEN_CLAIMS = [/هنگام قطع اینترنت بین‌الملل در دسترس/, /همیشه در دسترس/, /دسترسی پایدار/, /بدون وقفه/, /منابع داخلی/, /عمق بازار/,
-  /دوباره متصل کنید/, /always available/i, /uninterrupted/i, /guarantee/i, /reconnect your wallet/i, /fully independent/i]
 
-test('the Iran notice lists all three Iran addresses as HTTPS links, in RTL and LTR', () => {
-  for (const [locale, dir] of [['fa', 'rtl'], ['en', 'ltr'], ['ar', 'rtl']]) {
-    const doc = renderNotice(locale)
-    const aside = doc.querySelector('aside.iran-access-notice')
-    assert.equal(aside.getAttribute('dir'), dir); assert.equal(aside.getAttribute('lang'), locale)
-    const links = [...doc.querySelectorAll('.iran-access-domains a')]
-    assert.deepEqual(links.map(a => a.getAttribute('href')), ['https://iran.openfund.cloud/', 'https://iran.openfi.cloud/', 'https://openfi.live/'])
-    assert.deepEqual(links.map(a => a.textContent), ['iran.openfund.cloud', 'iran.openfi.cloud', 'openfi.live'])
-    assert.ok(links.every(a => a.getAttribute('dir') === 'ltr'))
-    assert.equal(doc.querySelector('a.is-independent').textContent, 'openfi.live')
-    assert.equal(doc.querySelectorAll('aside').length, 1)
-  }
+test('locale eligibility: an fa-only bar shows in Persian and never falls back to English or another language', async () => {
+  await withCampaigns({ items: [IRAN_BAR] }, async c => {
+    const fa = await c.selectCampaign('announcement_bar', 'fa', 'home')
+    assert.equal(fa.headline, 'نسخهٔ ایرانی'); assert.equal(fa.ctaUrl, 'https://openfi.live/'); assert.equal(fa.external, true)
+    for (const locale of ['en', 'ar', 'ru', 'zh-CN']) assert.equal(await c.selectCampaign('announcement_bar', locale, 'home'), null, locale)
+  })
+  /* eligible for en but with no English copy: still nothing, never the Persian text */
+  await withCampaigns({ items: [{ ...IRAN_BAR, locales: ['fa', 'en'] }] }, async c => {
+    assert.equal(await c.selectCampaign('announcement_bar', 'en', 'home'), null)
+  })
 })
 
-test('GLOBAL (Render or the edge): a transition notice that claims no independence', () => {
-  const fa = renderNotice('fa').querySelector('aside'), en = renderNotice('en').querySelector('aside')
-  assert.equal(fa.getAttribute('data-region'), 'GLOBAL')
-  assert.equal(fa.querySelector('strong').textContent, 'دسترسی به اوپن‌فاند از داخل ایران')
-  assert.match(fa.textContent, /لیارا/); assert.match(fa.textContent, /داده‌های معتبر بازار/)
-  assert.match(en.textContent, /Liara/); assert.match(en.textContent, /authoritative market data/)
-  assert.doesNotMatch(fa.textContent, /زیرساخت ایران اوپن‌فاند روی لیارا ارائه/)
-  for (const claim of FORBIDDEN_CLAIMS) { assert.doesNotMatch(fa.textContent, claim); assert.doesNotMatch(en.textContent, claim) }
+test('region, page and schedule must match; the highest priority wins', async () => {
+  const later = { ...IRAN_BAR, id: 8, priority: 1, translations: [{ language_code: 'fa', headline: 'دیگر', cta_label: null }] }
+  await withCampaigns({ items: [later, IRAN_BAR], region: 'IRAN' }, async c => {
+    assert.equal((await c.selectCampaign('announcement_bar', 'fa', 'home'))?.id ?? null, null, 'GLOBAL-only bars are not shown on IRAN')
+  })
+  await withCampaigns({ items: [later, IRAN_BAR] }, async c => assert.equal((await c.selectCampaign('announcement_bar', 'fa', 'home')).id, '7'))
+  const future = { ...IRAN_BAR, starts_at: new Date(Date.now() + 3600e3).toISOString() }, past = { ...IRAN_BAR, ends_at: new Date(Date.now() - 1).toISOString() }
+  await withCampaigns({ items: [future, past] }, async c => assert.equal(await c.selectCampaign('announcement_bar', 'fa', 'home'), null))
+  await withCampaigns({ items: [PROMO] }, async c => assert.equal(await c.selectCampaign('modal', 'en', 'challenges'), null, 'home-only campaign'))
+  assert.equal(load('features/campaigns/campaigns.ts').campaignPage('/fa/checkout'), null)
+  for (const path of ['/en/prop/purchases', '/fa/profile', '/en/terminal', '/fa/prop/inbox']) assert.equal(load('features/campaigns/campaigns.ts').campaignPage(path), null, path)
 })
 
-test('IRAN runtime: says it is served by the Iran infrastructure and that purchases are international-only', () => {
-  const fa = renderNotice('fa', 'IRAN').querySelector('aside'), en = renderNotice('en', 'IRAN').querySelector('aside')
-  assert.equal(fa.getAttribute('data-region'), 'IRAN')
-  assert.match(fa.textContent, /زیرساخت ایران اوپن‌فاند روی لیارا/); assert.match(fa.textContent, /مسیر مستقل دیگری/)
-  assert.match(en.textContent, /Iran infrastructure on Liara/); assert.match(en.textContent, /purchases are currently available only/)
-  for (const claim of FORBIDDEN_CLAIMS) { assert.doesNotMatch(fa.textContent, claim); assert.doesNotMatch(en.textContent, claim) }
-  /* mode wording exists for isolation and recovery, and promises no trading */
-  const source = src('features/notice/IranAccessNotice.tsx')
-  assert.match(source, /معامله و ثبت پرداخت موقتاً متوقف است/); assert.match(source, /Trading is paused until this review is complete/)
-  assert.match(source, /fetch\('\/runtime\/status'/)
-  assert.match(src('config/iranAccess.ts'), /IRAN_ACCESS_NOTICE_APPROVED = true/)
+test('a coupon campaign shows only while the backend reports the coupon as promotable, and its checkout link carries the code', async () => {
+  await withCampaigns({ items: [PROMO] }, async c => {
+    const promo = await c.selectCampaign('modal', 'en', 'home')
+    assert.deepEqual(promo.coupon, { code: 'OPENFUND20', kind: 'percent', value: '20.00' })
+    assert.equal(promo.ctaUrl, '/en/checkout?plan=standard&coupon=OPENFUND20')
+    assert.equal(promo.delayMs, 12000)
+  })
+  await withCampaigns({ items: [PROMO], coupons: {} }, async c => assert.equal(await c.selectCampaign('modal', 'en', 'home'), null, 'expired or disabled coupon'))
 })
 
-/* ---------------- Challenges wallet panel ---------------- */
+test('unsafe destinations are dropped; frequency caps hold per campaign; the offline fallback is used only when no source answers', async () => {
+  const bad = ['javascript:alert(1)', '//evil.test/x', 'http://insecure.test/', 'https://user:pw@x.test/', 'data:text/html,x']
+  await withCampaigns({ items: bad.map((u, i) => ({ ...IRAN_BAR, id: 20 + i, cta_url: u })) }, async c => {
+    const bar = await c.selectCampaign('announcement_bar', 'fa', 'home')
+    assert.equal(bar.ctaUrl, null); assert.equal(bar.ctaLabel, null)
+  })
+  await withCampaigns({ items: [PROMO] }, async c => {
+    const first = await c.selectCampaign('modal', 'en', 'home')
+    c.markSeen(first)
+    assert.equal(await c.selectCampaign('modal', 'en', 'home'), null, 'not again in this session')
+    sessionStorage.removeItem('of-campaign:modal:9')
+    assert.equal(await c.selectCampaign('modal', 'en', 'home'), null, 'not again inside the 7-day interval')
+  })
+  await withCampaigns({ items: [], cmsDown: false }, async c => assert.equal(await c.selectCampaign('announcement_bar', 'fa', 'home'), null, 'editors removed it'))
+  await withCampaigns({ items: [], cmsDown: true }, async c => {
+    const fallback = await c.selectCampaign('announcement_bar', 'fa', 'home')
+    assert.equal(fallback.ctaUrl, 'https://openfi.live/')
+    assert.equal(await c.selectCampaign('announcement_bar', 'en', 'home'), null, 'fallback is Persian-only too')
+    assert.equal(await c.selectCampaign('modal', 'fa', 'home'), null, 'no popup without published content')
+  })
+})
+
 test('the wallet panel never treats a connected wallet as signed in and never asks a restoring session to connect', () => {
   const { walletPanelState } = load('wallet/walletPanelState.ts')
   assert.equal(walletPanelState('disconnected', false, 'anonymous'), 'disconnected')

@@ -8,7 +8,8 @@ import landingBody from './landing-body.html?raw'
 import { RainbowConnect } from '../wallet/RainbowConnect'
 import { legacyStylesheet } from '../config/legacyAssets'
 import ChallengeWalletPanel from '../wallet/ChallengeWalletPanel'
-import IranAccessNotice from '../features/notice/IranAccessNotice'
+import AnnouncementBar from '../features/campaigns/AnnouncementBar'
+import PromoModal from '../features/campaigns/PromoModal'
 import BitpinTicker from '../features/ticker/BitpinTicker'
 import TelegramCommunity from '../features/community/TelegramCommunity'
 import SiteNavDrawer from '../features/navigation/SiteNavDrawer'
@@ -258,18 +259,6 @@ export default function Landing() {
     card.replaceChildren(host)
     setWalletCardHost(host)
   }, [])
-  /* Persian-only access notice directly below the shared header */
-  const [noticeHost, setNoticeHost] = useState<HTMLElement | null>(null)
-  useEffect(() => {
-    const header = document.querySelector('header.openfund-header')
-    if (!header) return
-    const host = document.createElement('div')
-    host.dataset.localeOwned = 'react'
-    header.after(host)
-    setNoticeHost(host)
-    return () => { host.remove() }
-  }, [])
-
   useEffect(() => {
     const pageRoot = document.getElementById('builder')
     /* Only the same mounted DOM may cancel its StrictMode cleanup. */
@@ -404,8 +393,10 @@ export default function Landing() {
         onLocaleChange={next => navigate(switchLocalePath(routerLocation.pathname, next) + routerLocation.search)} />
       <CheckoutHost />
       {walletCardHost && createPortal(<ChallengeWalletPanel locale={communityLocale} />, walletCardHost)}
-      {noticeHost && createPortal(<IranAccessNotice locale={communityLocale} />, noticeHost)}
       {communityLocale === 'fa' && <BitpinTicker />}
+      {/* Backstage-managed announcement bar above the header; promotional popup */}
+      <AnnouncementBar locale={communityLocale} />
+      <PromoModal locale={communityLocale} />
       <div dangerouslySetInnerHTML={{ __html: landingMarkup }} />
     </>
   )

@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Marketing: promotional popups and announcement bars, managed in Backstage
+  (Marketing) and published without a deploy, on one Directus model with
+  separate behavior and anonymous counters ([ADR 0045](docs/decisions/0045-campaigns-and-announcements.md)).
+  Popups wait for visible time, cap at one per session, skip checkout and
+  trading pages, and are accessible modals. A campaign with a coupon appears
+  only while that coupon is valid, and its checkout link carries the code.
+  The long all-locale Iran notice is replaced by a short Persian-only bar
+  linking to https://openfi.live/.
+
 - Documentation: one canonical status source (`docs/status/status.json`,
   rendered to `docs/status/README.md` and the README summary) records the
   release and, separately for GLOBAL and IRAN, what is deployed, enabled,

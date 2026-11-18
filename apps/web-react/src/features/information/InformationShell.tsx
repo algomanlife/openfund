@@ -15,7 +15,8 @@ import { chooseTheme, currentTheme, decorateThemeToggle } from '../../theme'
 import LanguageSelect from '../../i18n/LanguageSelect'
 import UntranslatedNotice from '../../i18n/UntranslatedNotice'
 import { legacyStylesheet } from '../../config/legacyAssets'
-import IranAccessNotice from '../notice/IranAccessNotice'
+import AnnouncementBar from '../campaigns/AnnouncementBar'
+import PromoModal from '../campaigns/PromoModal'
 import BitpinTicker from '../ticker/BitpinTicker'
 import { dirOf, isLocale, normalizeLocale, pick, pickRecord, switchLocalePath, type AppLocale } from '../../i18n/locales'
 
@@ -187,9 +188,10 @@ export default function InformationShell({ page, description, footer = true, nav
     <link rel="stylesheet" href={legacyStylesheet('legacy/style.css')} precedence="openfund" />
     <link rel="stylesheet" href={legacyStylesheet('legacy/wallet.css')} precedence="openfund" />
     <a className="skip" href="#main">{pickRecord(locale, labels.skip)}</a>
+    {/* Backstage-managed announcement bar above the header; promotional popup */}
+    <AnnouncementBar locale={locale} />
     <Chrome locale={locale} part="header" nav={nav} />
-    {/* Iran access notice (every locale); live Bitpin prices stay Persian-only */}
-    <IranAccessNotice locale={locale} />
+    <PromoModal locale={locale} />
     <main id="main" className="info-main" tabIndex={-1} ref={setMainEl}>
       <UntranslatedNotice locale={locale} />
       {children}
