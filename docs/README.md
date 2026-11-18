@@ -9,6 +9,7 @@ instead of repeating it. Historical reviews keep their original wording.
 
 | Fact | Canonical source |
 | --- | --- |
+| Current release, per-environment deployment, activation and owner acceptance (GLOBAL / IRAN / local) | [Status](status/README.md), generated from [`status/status.json`](status/status.json) and validated by `npm run docs:check` |
 | Capability status (Completed / In Progress / Planned / Blocked) | [Feature Status](product/FEATURE_STATUS.md) |
 | Milestones, dependencies and acceptance criteria | [Milestones](roadmap/MILESTONES.md) (phase summary: [ROADMAP.md](../ROADMAP.md)) |
 | Deployed version and commit | `/version` on the running service and the [release runbook](deployment/RELEASES.md), never hand-edited docs |

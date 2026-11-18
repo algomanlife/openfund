@@ -1,8 +1,13 @@
 # Payment activation checklist
 
-Purchases stay **disabled in production** until every gate below is satisfied
-and management explicitly approves activation. Passing automated tests is
-necessary, not sufficient.
+**Current state (verified 2026-11-18, [status](../status/README.md)):** purchases are
+**enabled on GLOBAL**. `GET https://openfi.cloud/purchases/plans` reports
+`paymentsEnabled: true`, DePay on seven chains and manual transfer. The signed
+DePay routes are live: an unsigned `POST /api/payments/depay/config` is refused
+with 401 instead of the former 404. IRAN does not offer purchases. **No
+genuine production purchase is recorded yet**, so real-network acceptance and
+owner acceptance remain open. Passing automated tests is necessary, not
+sufficient.
 
 ## Acceptance status
 
@@ -16,7 +21,7 @@ necessary, not sufficient.
 | DePay server callback hint | Implemented; **awaiting real-network acceptance** (signature format is verified only against locally generated keys) |
 | Refund execution | Not automated by design; manual with recorded adjustment |
 
-## Production state (verified 2026-11-13)
+## Historical: production state (verified 2026-11-13, superseded)
 
 Read-only, commit `6587b75` live on both hosts. Same variable state as below
 (no settlement chain; `PURCHASE_PAYMENT_DECIMALS=18` is still set). New
@@ -27,7 +32,7 @@ answered the widget with 500 ("Unable to load payment configuration!"). The
 branch `agent/claude/depay-checkout-activation` serves that URL; the owner
 steps are in [Owner setup](OWNER_SETUP.md).
 
-## Production state (verified 2026-11-12)
+## Historical: production state (verified 2026-11-12, superseded)
 
 Read-only checks against `https://openfi.cloud` and `https://openfund.cloud`
 (both serving `4e1ca3d`, deployed manually 2026-11-12 06:14 UTC) and the

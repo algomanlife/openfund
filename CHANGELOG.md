@@ -10,6 +10,16 @@
   figures, runs only while visible and is static for reduced motion
   ([design](docs/marketing/WALLET_SHOWCASE.md)).
 
+- Documentation: one canonical status source (`docs/status/status.json`,
+  rendered to `docs/status/README.md` and the README summary) records the
+  release and, separately for GLOBAL and IRAN, what is deployed, enabled,
+  verified and owner-accepted, each with a timestamp and evidence.
+  `npm run docs:check` now fails when a released version is still labelled
+  Unreleased, a current document contradicts the recorded state, or an old
+  operational snapshot is not marked Historical. Stale statements were
+  corrected: GLOBAL purchases are enabled (no real purchase recorded yet),
+  v0.6.5 is deployed and IRAN runs on Liara.
+
 - Coupons: Backstage creates a coupon and activates it in one step, generates
   codes, picks eligible models and sizes from the plan catalog, and reports
   the exact outcome. A date-only expiry now lasts the whole UTC day. A 100%
@@ -58,7 +68,7 @@
   web app before the worker, and production only an official release tag.
   Audit: `docs/reviews/liara-iran-infrastructure/AUDIT.md`.
 
-## Unreleased — v0.6.5
+## v0.6.5 — 2026-11-17
 
 Release notes: [docs/releases/openfund-0.6.5.md](docs/releases/openfund-0.6.5.md).
 
@@ -94,18 +104,18 @@ Release notes: [docs/releases/openfund-0.6.0.md](docs/releases/openfund-0.6.0.md
 - Additive migration: `notifications`, `notification_relay_state`, support
   thread columns. No financial table changed.
 
-## Unreleased — release archive
+## Shipped in v0.6.5 — release archive
 
 - Include the shared footprint runtime in release archives so the extracted
   backend can start.
 
-## Unreleased — universal visual CMS editing
+## Shipped in v0.6.5 — universal visual CMS editing
 
 - Editors can open the existing Directus 11.17.4 visual editor, click registered editorial text, and save a draft or publish it without a frontend rebuild.
 - Arabic, Russian and Simplified Chinese (`zh-CN`) are selectable translation slots. They are not auto-published.
 - Public pages keep the current layout and fall back to bundled copy when Directus is unavailable. Financial, trading and payment fields are not editable this way.
 
-## Unreleased — Backstage operations
+## Shipped in v0.6.5 — Backstage operations
 
 - Add reward payout details and an opt-in owner control to verify and record
   finalized Arbitrum One DAI settlement evidence.
@@ -116,12 +126,12 @@ Release notes: [docs/releases/openfund-0.6.0.md](docs/releases/openfund-0.6.0.md
 - Use the trading engine's account-first lock order for reward requests and
   reversals to prevent contention from deadlocking a payout workflow.
 
-## Unreleased — controlled challenge acceptance
+## Shipped in v0.6.5 — controlled challenge acceptance
 
 - Add wallet-bound Instant and Two-Step test checkout with isolated rule
   snapshots, operator review and a dedicated simulated payout settlement.
 
-## Unreleased — funded financial controls and product roadmap
+## Shipped in v0.6.5 — funded financial controls and product roadmap
 
 - Add versioned 7-, 14-, 21-day and monthly UTC payout choices behind an owner-approved sales cutoff.
 - Verify manual funded rewards against finalized Arbitrum One DAI receipts before recording payment or issuing a new payout certificate.
@@ -129,7 +139,7 @@ Release notes: [docs/releases/openfund-0.6.0.md](docs/releases/openfund-0.6.0.md
 - Journal approved revenue allocations and reconcile finalized treasury transfers against on-chain balances.
 - Add a shared four-quarter product roadmap to the website and whitepaper seed and clarify the prop-firm product scope in the README.
 
-## Unreleased — v0.6.5 candidate (branch `agent/claude/v0.6.5-modernization`)
+## v0.6.5 candidate notes (shipped in v0.6.5; first prepared on branch `agent/claude/v0.6.5-modernization`)
 
 Implemented and locally verified; **not merged, not released, not deployed**.
 The release tooling would currently allocate 0.6.0 after v0.5.0; publishing as
@@ -170,13 +180,13 @@ v0.6.5 needs an owner decision (see the delivery record).
   versions and status categories; licence decision addendum for desktop
   distribution.
 
-## Unreleased — Open Trade desktop beta
+## Shipped in v0.6.5 — Open Trade desktop beta
 
 - Add an isolated Electron desktop companion, shared Vela chart integration and
   internal cross-platform packaging. Real-wallet acceptance, signing and public
   distribution remain pending; see `apps/open-trade/ACCEPTANCE.md`.
 
-## Unreleased
+## Earlier changes (shipped by v0.6.5)
 
 - Independent Iran regional runtime and regional synchronization (branch
   `infra/iran-regional-authority`, [ADR 0033](docs/decisions/0033-regional-authority-and-synchronization.md);
