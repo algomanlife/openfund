@@ -112,7 +112,8 @@ function login() {
 
 const groups = [
   ['prop', ['users', 'challenges', 'reviews', 'payouts']],
-  ['business', ['payments', 'coupons', 'support', 'partners', 'commissions']],
+  ['paymentsGroup', ['paymentOverview', 'paymentSearch', 'payments', 'deposits', 'refunds', 'paymentSettings']],
+  ['business', ['coupons', 'support', 'partners', 'commissions']],
   ['financeGroup', ['finance', 'expenses', 'reserves', 'obligations']],
   ['operations', ['audit', 'risk', 'search', 'notifications', 'system']],
   ['contentGroup', ['content']],
@@ -365,9 +366,38 @@ const columns = {
   notifications: [['date', r => date(r.created_at)], ['wallet', wallet], ['kind', r => badge(r.kind)],
     ['readAt', r => r.read_at ? date(r.read_at) : t('unreadState')]],
 }
+const refundAction = (r, action, extra = []) => button(action === 'reject' ? 'refundReject' : 'refund_' + action,
+  () => operate('refunds', r.id, action, [['note', areaInput({ required: '' }), undefined, 'reason'], ...extra], 'refund_' + action), action === 'reject' ? 'danger' : undefined)
+columns.deposits = [['date', r => date(r.first_seen_at)], ['network', r => technical(String(r.chain_id))], ['transaction', r => technical(r.tx_hash)],
+  ['sender', r => technical(r.from_address)], ['amount', r => technical(r.usd == null ? (r.amount ?? '—') : '$' + r.usd)],
+  ['matchStatus', r => badge(r.match_status)], ['status', r => badge(r.status === 'observed' ? 'txObserved' : r.status)], ['reason', r => r.review_note ?? r.verification_code ?? '—'],
+  ['action', r => el('div', { class: 'tools' },
+    r.purchase_order_id ? link('payments', { id: r.purchase_order_id }, t('order')) : null,
+    ['unmatched', 'ambiguous'].includes(r.match_status) ? button('associate', () => operate('deposits', r.id, 'associate', [
+      ['orderId', textInput({ required: '', dir: 'ltr', maxlength: '36' })], ['note', areaInput({ required: '', minlength: '10' }), undefined, 'reason'],
+      ['evidence', areaInput({ required: '', minlength: '10' })]], 'associate'), 'primary') : null,
+    r.purchase_order_id || r.detail?.candidateOrderId ? button('reverify', () => operate('deposits', r.id, 'reverify', [], 'reverify')) : null,
+    button('refundCase', () => operate('deposits', r.id, 'refundCase', [['reason', selectInput([['unmatched', 'unmatched'], ['late_payment', 'late_payment'], ['operator', 'operator']])],
+      ['note', areaInput({ required: '', minlength: '10' }), undefined, 'reason']], 'refundCase')),
+    button('closeInvestigation', () => operate('deposits', r.id, 'close', [['resolution', selectInput([['resolved', 'resolved'], ['ignored', 'ignored']])],
+      ['note', areaInput({ required: '', minlength: '10' }), undefined, 'reason']], 'closeInvestigation')))]]
+columns.refunds = [['date', r => date(r.created_at)], ['amount', r => technical('$' + r.usd)], ['reason', r => t(r.reason)], ['status', status],
+  ['destination', r => technical(r.destination)], ['network', r => technical(String(r.chain_id))], ['transaction', r => technical(r.original_tx_hash)],
+  ['refundTx', r => technical(r.refund_tx_hash ?? '—')],
+  ['action', r => el('div', { class: 'tools' },
+    ['refund_due', 'refund_failed'].includes(r.status) ? refundAction(r, 'review') : null,
+    r.status === 'refund_review' ? refundAction(r, 'approve', [['destination', textInput({ required: '', dir: 'ltr', maxlength: '100' }), undefined, 'confirmDestination'],
+      ['chainId', textInput({ required: '', dir: 'ltr', inputmode: 'numeric' }), undefined, 'network']]) : null,
+    r.status === 'refund_approved' ? refundAction(r, 'sent', [['chainId', textInput({ required: '', dir: 'ltr', value: String(r.chain_id) }), undefined, 'network'],
+      ['refundTxHash', textInput({ required: '', dir: 'ltr', maxlength: '100', spellcheck: 'false' }), undefined, 'transactionHash']]) : null,
+    r.status === 'refund_sent' ? refundAction(r, 'confirm') : null,
+    r.status === 'refund_sent' ? refundAction(r, 'failed') : null,
+    ['refund_due', 'refund_review', 'refund_approved'].includes(r.status) ? refundAction(r, 'reject') : null)]]
 const filterStatuses = {
   users: ['active', 'suspended'], challenges: ['created', 'started', 'passed', 'failed', 'expired', 'cancelled'],
   payouts: ['requested', 'approved', 'paid', 'rejected', 'cancelled'], payments: ['pending', 'confirmed', 'rejected'],
+  deposits: ['verified', 'rejected', 'reorged'],
+  refunds: ['refund_due', 'refund_review', 'refund_approved', 'refund_sent', 'refund_confirmed', 'refund_rejected', 'refund_failed'],
   support: ['new', 'in_progress', 'waiting_customer', 'resolved', 'closed'],
   partners: ['submitted', 'under_review', 'approved', 'rejected', 'suspended'],
 }
@@ -469,10 +499,19 @@ async function directory(main, section, filter) {
   }
 
   if (id && section === 'payments') {
-    main.append(table('transactions', [['identity', uid], ['wallet', wallet], ['status', status], ['amount', r => usd(r.price_usd)]],
+    const l = data.ledger
+    main.append(table('transactions', [['identity', uid], ['wallet', wallet], ['status', r => badge(r.lifecycle_state ?? r.status)], ['amount', r => usd(r.price_usd)]],
       data.order ? [data.order] : []),
+    l ? table('ledger', [['orderTotal', () => technical('$' + l.totalUsd)], ['received', () => technical('$' + l.receivedUsd)],
+      ['remainingBalance', () => technical('$' + l.remainingUsd)], ['excessAmount', () => technical('$' + l.excessUsd)]], [l]) : null,
+    table('chainTransactions', [['date', r => date(r.first_seen_at)], ['network', r => technical(String(r.chain_id))], ['transaction', r => technical(r.tx_hash)],
+      ['sender', r => technical(r.from_address)], ['amount', r => technical(r.usd == null ? '—' : '$' + r.usd)], ['status', status],
+      ['matchStatus', r => technical(`${r.match_status} · ${r.match_method ?? '—'}`)], ['source', r => technical(r.source)]], data.transactions ?? []),
     table('payments', columns.payments, data.attempts),
-    table('verified', [['transaction', r => technical(r.tx_hash)], ['status', status], ['date', r => date(r.verified_at)]], data.payments))
+    table('refunds', columns.refunds.filter(([k]) => k !== 'action'), l?.refunds?.map(r => ({ ...r, chain_id: r.chainId, refund_tx_hash: r.refundTxHash, created_at: r.createdAt })) ?? []),
+    table('verified', [['transaction', r => technical(r.tx_hash)], ['status', status], ['date', r => date(r.verified_at)]], data.payments),
+    table('timeline', [['date', r => date(r.created_at)], ['action', r => technical(r.kind ?? `${r.from_state ?? '∅'} → ${r.to_state}`)], ['actor', r => technical(r.actor)]],
+      [...(data.orderEvents ?? []), ...(data.events ?? [])].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))))
     return
   }
   if (id && section === 'support') {
@@ -821,6 +860,44 @@ async function render() {
         ['engineRunning', r => badge(r.engine ? 'ready' : 'unknown')], ['marketData', r => technical(r.freshMarks == null ? '—' : `${number(r.freshMarks)} · ${r.execution ?? ''}`)],
         ['version', r => technical(r.version)], ['identity', r => technical(r.commit)],
         ['sameRelease', r => badge(r.commit && r.commit === data.regions[0].commit ? 'ready' : 'unknown')]], data.regions))
+    } else if (page === 'paymentOverview') {
+      const d = await api('paymentOverview')
+      const metric = (key, value) => el('article', { class: 'panel metric' }, el('span', {}, t(key)), el('strong', {}, String(value ?? '—')))
+      contents.append(
+        el('div', { class: 'metrics' },
+          metric('paymentIntents', d.orders?.intents_total), metric('settledOrders', d.orders?.settled), metric('partiallyPaid', d.orders?.partially_paid),
+          metric('pendingTransactions', d.transactions?.pending), metric('unmatchedDeposits', d.transactions?.unmatched), metric('ambiguousDeposits', d.transactions?.ambiguous),
+          metric('rejectedPayments', d.rejectedAttempts), metric('overpayments', '$' + (d.refunds?.overpayment_usd ?? '0')), metric('refundLiabilities', '$' + (d.refunds?.open_usd ?? '0')),
+          metric('refundsAwaitingReview', d.refunds?.awaiting_review), metric('delayedPayments', d.attempts?.pending_over_20m), metric('provisioningFailures', d.attempts?.provisioning_failures)),
+        table('alerts', [['alert', r => badge(r)]], d.alerts ?? []),
+        table('watcher', [['network', r => technical(String(r.chainId))], ['lagBlocks', r => number(r.lagBlocks)], ['lastSuccess', r => r.secondsSinceSuccess == null ? '—' : number(r.secondsSinceSuccess) + 's'],
+          ['status', r => badge(r.failing ? 'failing' : 'ready')]], d.watcher ?? []),
+        table('paymentMethods', [['method', r => t(r.method)], ['status', r => badge(r.enabled ? 'active' : 'inactive')], ['source', r => t(r.source)]],
+          Object.entries(d.methods ?? {}).map(([method, v]) => ({ method, ...v }))))
+    } else if (page === 'paymentSettings') {
+      const d = await api('paymentSettings')
+      contents.append(el('p', { class: 'muted' }, t('paymentSettingsNote')),
+        table(null, [['method', r => t(r.method)], ['status', r => badge(r.enabled ? 'active' : 'inactive')], ['source', r => t(r.source)],
+          ['recordedBy', r => technical(r.updatedBy ?? '—')], ['date', r => r.updatedAt ? date(r.updatedAt) : '—'],
+          ['action', r => button(r.enabled ? 'disable' : 'activate', () => operate('paymentSettings', r.method, r.enabled ? 'disable' : 'enable',
+            [['reason', areaInput({ required: '' })]], r.enabled ? 'disable' : 'activate'), r.enabled ? 'danger' : 'primary')]],
+        Object.entries(d.methods ?? {}).map(([method, v]) => ({ method, ...v }))))
+    } else if (page === 'paymentSearch') {
+      const params = new URLSearchParams(query)
+      const inputs = ['orderId', 'wallet', 'txHash', 'chainId', 'method', 'status', 'from', 'to'].map(name =>
+        el('input', { name, value: params.get(name) ?? '', maxlength: '80', placeholder: t(name), 'aria-label': t(name), dir: 'ltr', type: ['from', 'to'].includes(name) ? 'date' : 'text' }))
+      contents.append(el('form', { class: 'filters', on: { submit: e => {
+        e.preventDefault()
+        const filters = Object.fromEntries([...new FormData(e.target)].filter(([, v]) => String(v).trim()))
+        const next = route('paymentSearch', filters)
+        if (location.hash === next) render(); else location.hash = next
+      } } }, inputs, el('button', { class: 'primary' }, t('apply'))))
+      if ([...params.keys()].length) {
+        const data = await api('paymentSearch?' + params)
+        contents.append(table('result', [['identity', r => link('payments', { id: r.id }, technical(r.id))], ['wallet', wallet], ['status', r => badge(r.lifecycle_state)],
+          ['amount', r => usd(r.price_usd)], ['received', r => technical('$' + r.received_usd)], ['excessAmount', r => technical('$' + r.excess_usd)],
+          ['chainTransactions', r => number(r.transactions)], ['date', r => date(r.created_at)]], data.rows ?? []))
+      }
     } else if (page === 'finance') {
       const data = await api('finance')
       contents.append(
