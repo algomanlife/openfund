@@ -2639,3 +2639,267 @@ CREATE TABLE IF NOT EXISTS campaign_daily_stats (
   updated_at   timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (campaign_id, placement, day)
 );
+
+-- ==================================================================
+-- Openfund Pay — first-party payment ledger (ADR 0046,
+-- docs/payments/OPENFUND_PAY.md). Additive and idempotent.
+--
+--  payment_settings          runtime on/off per payment method (audited)
+--  payment_intents           server-authoritative direct-wallet transfer
+--                            requests (frozen remaining amount, chain, token)
+--  payment_transactions      every inbound treasury transaction Openfund
+--                            knows about (customer-submitted, DePay-attested
+--                            or discovered by the watcher), matched or not
+--  payment_allocations       how much of one transaction settles one order
+--                            (kind order), is excess (kind excess) or is
+--                            returned without an order (kind refund);
+--                            append-only, never above the transaction value
+--  payment_refund_liabilities money owed back (excess, late, unmatched);
+--                            refunds are executed outside Openfund and only
+--                            recorded here after review and approval
+--  payment_events            append-only payment timeline
+--  payment_monitor_cursors   watcher progress + single-owner lease per chain
+--
+-- Settlement valuation: approved USD stablecoins at 1:1, measured in
+-- micro-USD (bigint, 6 decimals). Raw token units are kept separately.
+-- ==================================================================
+
+/* partially paid orders: a confirmed allocation below the order total */
+ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS partial_deadline_at timestamptz;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'purchase_orders_lifecycle_state_check'
+                   AND pg_get_constraintdef(oid) LIKE '%partially_paid%') THEN
+    ALTER TABLE purchase_orders DROP CONSTRAINT IF EXISTS purchase_orders_lifecycle_state_check;
+    ALTER TABLE purchase_orders ADD CONSTRAINT purchase_orders_lifecycle_state_check CHECK (lifecycle_state IN
+      ('awaiting_payment','payment_detected','partially_paid','manual_review','paid','provisioned','cancelled','expired','partially_refunded','refunded'));
+  END IF;
+END $$;
+CREATE OR REPLACE FUNCTION order_transition_allowed(f text, t text) RETURNS boolean LANGUAGE sql IMMUTABLE AS $$
+  SELECT (f || '>' || t) = ANY (ARRAY[
+    'awaiting_payment>payment_detected','awaiting_payment>manual_review','awaiting_payment>paid',
+    'awaiting_payment>cancelled','awaiting_payment>expired','awaiting_payment>partially_paid',
+    'payment_detected>awaiting_payment','payment_detected>manual_review','payment_detected>paid','payment_detected>expired',
+    'payment_detected>partially_paid',
+    'partially_paid>paid','partially_paid>manual_review',
+    'manual_review>awaiting_payment','manual_review>paid','manual_review>cancelled','manual_review>expired','manual_review>partially_paid',
+    'expired>payment_detected','expired>manual_review','expired>paid','expired>partially_paid',
+    'paid>provisioned',
+    'provisioned>partially_refunded','provisioned>refunded','partially_refunded>refunded'])
+$$;
+CREATE INDEX IF NOT EXISTS idx_purchase_orders_partial ON purchase_orders (partial_deadline_at) WHERE lifecycle_state = 'partially_paid';
+
+/* payments.amount holds token BASE UNITS: an 18-decimal stablecoin (e.g.
+   BNB Chain USDT) above ~$100 overflowed numeric(38,18). Widen once. */
+DO $$ BEGIN
+  IF (SELECT numeric_precision FROM information_schema.columns WHERE table_schema=current_schema() AND table_name='payments' AND column_name='amount') < 78 THEN
+    ALTER TABLE payments ALTER COLUMN amount TYPE numeric(78,18);
+  END IF;
+END $$;
+
+CREATE TABLE IF NOT EXISTS payment_settings (
+  method      text PRIMARY KEY CHECK (method IN ('wallet','manual','depay')),
+  enabled     boolean NOT NULL,
+  reason      text,
+  updated_by  text NOT NULL,
+  updated_at  timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS payment_intents (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  purchase_order_id  uuid NOT NULL REFERENCES purchase_orders(id),
+  user_id            uuid NOT NULL REFERENCES openfund_users(id),
+  method             text NOT NULL DEFAULT 'wallet' CHECK (method IN ('wallet','manual')),
+  chain_id           integer NOT NULL,
+  token_address      text NOT NULL,
+  token_decimals     integer NOT NULL CHECK (token_decimals BETWEEN 0 AND 36),
+  receiver           text NOT NULL,
+  amount_units       numeric(78,0) NOT NULL CHECK (amount_units > 0),
+  usd_micros         bigint NOT NULL CHECK (usd_micros > 0),
+  payer_address      text NOT NULL,
+  status             text NOT NULL DEFAULT 'open' CHECK (status IN ('open','submitted','superseded','expired')),
+  tx_hash            text,
+  submitted_at       timestamptz,
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  expires_at         timestamptz NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_payment_intents_order ON payment_intents (purchase_order_id, created_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_payment_intents_tx ON payment_intents (chain_id, tx_hash) WHERE tx_hash IS NOT NULL;
+
+CREATE TABLE IF NOT EXISTS payment_transactions (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  chain_id           integer NOT NULL,
+  tx_hash            text NOT NULL,
+  token_address      text,
+  token_decimals     integer,
+  from_address       text,
+  to_address         text,
+  amount_units       numeric(78,0),            -- verified (or, while observed, watcher-seen) units
+  usd_micros         bigint,                   -- settlement valuation (1:1 USD stablecoin)
+  block_number       bigint,
+  block_hash         text,
+  block_time         timestamptz,
+  confirmations      integer,
+  status             text NOT NULL DEFAULT 'observed'
+                     CHECK (status IN ('observed','pending','verified','rejected','reorged')),
+  verification_code  text,                     -- last verifier outcome code
+  source             text NOT NULL CHECK (source IN ('watcher','wallet','manual','depay','operator','recovery','legacy')),
+  match_status       text NOT NULL DEFAULT 'unmatched'
+                     CHECK (match_status IN ('unmatched','matched','ambiguous','ignored')),
+  match_method       text CHECK (match_method IN ('intent','attempt','depay_attested','sender_unique','memo','operator','customer')),
+  purchase_order_id  uuid REFERENCES purchase_orders(id),
+  matched_by         text,
+  matched_at         timestamptz,
+  review_status      text NOT NULL DEFAULT 'none' CHECK (review_status IN ('none','open','resolved')),
+  review_note        text,
+  detail             jsonb NOT NULL DEFAULT '{}'::jsonb,
+  first_seen_at      timestamptz NOT NULL DEFAULT now(),
+  verified_at        timestamptz,
+  updated_at         timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT payment_transactions_tx_unique UNIQUE (chain_id, tx_hash),
+  CONSTRAINT payment_transactions_match_check CHECK ((match_status = 'matched') = (purchase_order_id IS NOT NULL))
+);
+CREATE INDEX IF NOT EXISTS idx_payment_tx_order ON payment_transactions (purchase_order_id) WHERE purchase_order_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_payment_tx_queue ON payment_transactions (match_status, review_status);
+CREATE INDEX IF NOT EXISTS idx_payment_tx_from ON payment_transactions (from_address);
+/* the order of a transaction is set once; it never moves to another order */
+CREATE OR REPLACE FUNCTION payment_transaction_guard() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF OLD.purchase_order_id IS NOT NULL AND NEW.purchase_order_id IS DISTINCT FROM OLD.purchase_order_id THEN
+    RAISE EXCEPTION 'payment_transaction_order_immutable' USING ERRCODE = '23514';
+  END IF;
+  IF EXISTS (SELECT 1 FROM payment_allocations WHERE transaction_id = OLD.id)
+     AND (NEW.amount_units IS DISTINCT FROM OLD.amount_units OR NEW.usd_micros IS DISTINCT FROM OLD.usd_micros
+          OR NEW.token_address IS DISTINCT FROM OLD.token_address OR NEW.chain_id IS DISTINCT FROM OLD.chain_id) THEN
+    RAISE EXCEPTION 'payment_transaction_settled_immutable' USING ERRCODE = '23514';
+  END IF;
+  NEW.updated_at := now();
+  RETURN NEW;
+END $$;
+
+CREATE TABLE IF NOT EXISTS payment_allocations (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  transaction_id     uuid NOT NULL REFERENCES payment_transactions(id),
+  purchase_order_id  uuid REFERENCES purchase_orders(id),
+  kind               text NOT NULL CHECK (kind IN ('order','excess','refund')),
+  usd_micros         bigint NOT NULL CHECK (usd_micros > 0),
+  amount_units       numeric(78,0) NOT NULL CHECK (amount_units > 0),
+  payment_id         uuid REFERENCES payments(id),
+  created_by         text NOT NULL,
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT payment_allocations_once UNIQUE (transaction_id, kind),
+  CONSTRAINT payment_allocations_order_kind CHECK (kind = 'refund' OR purchase_order_id IS NOT NULL)
+);
+CREATE INDEX IF NOT EXISTS idx_payment_alloc_order ON payment_allocations (purchase_order_id, kind);
+/* an allocation belongs to the transaction's order and never exceeds the
+   transaction's verified value (double counting is a database error) */
+CREATE OR REPLACE FUNCTION payment_allocation_guard() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE tx payment_transactions%ROWTYPE; used_micros bigint; used_units numeric;
+BEGIN
+  SELECT * INTO tx FROM payment_transactions WHERE id = NEW.transaction_id FOR UPDATE;
+  IF tx.status <> 'verified' OR tx.usd_micros IS NULL THEN RAISE EXCEPTION 'allocation_unverified_transaction' USING ERRCODE = '23514'; END IF;
+  IF NEW.purchase_order_id IS NOT NULL AND NEW.purchase_order_id IS DISTINCT FROM tx.purchase_order_id THEN
+    RAISE EXCEPTION 'allocation_order_mismatch' USING ERRCODE = '23514';
+  END IF;
+  SELECT coalesce(sum(usd_micros),0), coalesce(sum(amount_units),0) INTO used_micros, used_units
+    FROM payment_allocations WHERE transaction_id = NEW.transaction_id;
+  IF used_micros + NEW.usd_micros > tx.usd_micros OR used_units + NEW.amount_units > tx.amount_units THEN
+    RAISE EXCEPTION 'allocation_exceeds_transaction' USING ERRCODE = '23514';
+  END IF;
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS payment_allocation_guard ON payment_allocations;
+CREATE TRIGGER payment_allocation_guard BEFORE INSERT ON payment_allocations FOR EACH ROW EXECUTE FUNCTION payment_allocation_guard();
+DROP TRIGGER IF EXISTS payment_allocations_append_only ON payment_allocations;
+CREATE TRIGGER payment_allocations_append_only BEFORE UPDATE OR DELETE ON payment_allocations FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+DROP TRIGGER IF EXISTS payment_transaction_guard ON payment_transactions;
+CREATE TRIGGER payment_transaction_guard BEFORE UPDATE ON payment_transactions FOR EACH ROW EXECUTE FUNCTION payment_transaction_guard();
+
+CREATE TABLE IF NOT EXISTS payment_refund_liabilities (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  allocation_id      uuid NOT NULL UNIQUE REFERENCES payment_allocations(id),
+  transaction_id     uuid NOT NULL REFERENCES payment_transactions(id),
+  purchase_order_id  uuid REFERENCES purchase_orders(id),
+  reason             text NOT NULL CHECK (reason IN ('overpayment','duplicate_payment','late_payment','order_cancelled','unmatched','operator')),
+  usd_micros         bigint NOT NULL CHECK (usd_micros > 0),
+  amount_units       numeric(78,0) NOT NULL CHECK (amount_units > 0),
+  chain_id           integer NOT NULL,
+  token_address      text,
+  destination        text NOT NULL,            -- the verified original payer
+  status             text NOT NULL DEFAULT 'refund_due' CHECK (status IN
+                     ('refund_due','refund_review','refund_approved','refund_sent','refund_confirmed','refund_rejected','refund_failed')),
+  reviewed_by        text,
+  approved_by        text,
+  sent_by            text,
+  confirmed_by       text,
+  refund_chain_id    integer,
+  refund_tx_hash     text,
+  decision_note      text,
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  updated_at         timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_refund_liabilities_status ON payment_refund_liabilities (status);
+CREATE INDEX IF NOT EXISTS idx_refund_liabilities_order ON payment_refund_liabilities (purchase_order_id);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_refund_liabilities_tx ON payment_refund_liabilities (refund_chain_id, refund_tx_hash) WHERE refund_tx_hash IS NOT NULL;
+CREATE OR REPLACE FUNCTION refund_transition_allowed(f text, t text) RETURNS boolean LANGUAGE sql IMMUTABLE AS $$
+  SELECT (f || '>' || t) = ANY (ARRAY[
+    'refund_due>refund_review','refund_due>refund_rejected',
+    'refund_review>refund_approved','refund_review>refund_rejected','refund_review>refund_due',
+    'refund_approved>refund_sent','refund_approved>refund_rejected',
+    'refund_sent>refund_confirmed','refund_sent>refund_failed',
+    'refund_failed>refund_review'])
+$$;
+CREATE OR REPLACE FUNCTION refund_liability_guard() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF NEW.usd_micros IS DISTINCT FROM OLD.usd_micros OR NEW.amount_units IS DISTINCT FROM OLD.amount_units
+     OR NEW.destination IS DISTINCT FROM OLD.destination OR NEW.allocation_id IS DISTINCT FROM OLD.allocation_id
+     OR NEW.chain_id IS DISTINCT FROM OLD.chain_id OR NEW.token_address IS DISTINCT FROM OLD.token_address THEN
+    RAISE EXCEPTION 'refund_liability_immutable' USING ERRCODE = '23514';
+  END IF;
+  IF OLD.refund_tx_hash IS NOT NULL AND NEW.refund_tx_hash IS DISTINCT FROM OLD.refund_tx_hash AND OLD.status <> 'refund_failed' THEN
+    RAISE EXCEPTION 'refund_tx_immutable' USING ERRCODE = '23514';
+  END IF;
+  IF NEW.status IS DISTINCT FROM OLD.status AND NOT refund_transition_allowed(OLD.status, NEW.status) THEN
+    RAISE EXCEPTION 'invalid_refund_transition % -> %', OLD.status, NEW.status USING ERRCODE = '23514';
+  END IF;
+  NEW.updated_at := now();
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS refund_liability_guard ON payment_refund_liabilities;
+CREATE TRIGGER refund_liability_guard BEFORE UPDATE ON payment_refund_liabilities FOR EACH ROW EXECUTE FUNCTION refund_liability_guard();
+DROP TRIGGER IF EXISTS refund_liability_no_delete ON payment_refund_liabilities;
+CREATE TRIGGER refund_liability_no_delete BEFORE DELETE ON payment_refund_liabilities FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+CREATE TABLE IF NOT EXISTS payment_events (
+  id                 bigserial PRIMARY KEY,
+  purchase_order_id  uuid,
+  transaction_id     uuid,
+  liability_id       uuid,
+  attempt_id         uuid,
+  kind               text NOT NULL,
+  actor              text NOT NULL DEFAULT 'system',
+  detail             jsonb NOT NULL DEFAULT '{}'::jsonb,
+  created_at         timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_payment_events_order ON payment_events (purchase_order_id, id);
+CREATE INDEX IF NOT EXISTS idx_payment_events_tx ON payment_events (transaction_id, id);
+/* the 15- and 20-minute status escalations are recorded once per attempt */
+CREATE UNIQUE INDEX IF NOT EXISTS uq_payment_events_escalation ON payment_events (attempt_id, kind)
+  WHERE kind IN ('status_delayed','escalated_review') AND attempt_id IS NOT NULL;
+DROP TRIGGER IF EXISTS payment_events_append_only ON payment_events;
+CREATE TRIGGER payment_events_append_only BEFORE UPDATE OR DELETE ON payment_events FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+CREATE TABLE IF NOT EXISTS payment_monitor_cursors (
+  chain_id         integer NOT NULL,
+  receiver         text NOT NULL,
+  token_address    text NOT NULL,
+  last_block       bigint,                    -- EVM: last fully scanned block
+  last_signature   text,                      -- Solana: newest processed signature
+  lease_owner      text,
+  lease_until      timestamptz,
+  last_success_at  timestamptz,
+  last_error       text,
+  last_error_at    timestamptz,
+  head_block       bigint,
+  updated_at       timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (chain_id, receiver, token_address)
+);

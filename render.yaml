@@ -180,6 +180,27 @@ services:
         sync: false             # optional dedicated Arbitrum One RPC for SIWE contract-wallet (EIP-1271) checks
       - key: PURCHASE_LATE_GRACE_MINUTES
         value: "60"             # minutes after order expiry a verified payment still pays
+      # ---- Openfund Pay (ADR 0046, docs/payments/OPENFUND_PAY.md) ----
+      - key: PAYMENT_DEPAY_NEW_PAYMENTS
+        value: "false"          # DePay retires 2026-12-31: off for NEW payments; legacy callbacks/recovery unaffected
+      - key: PAYMENT_WALLET_ENABLED
+        value: "true"           # direct wallet payment (default; Backstage can override at runtime)
+      - key: PAYMENT_MANUAL_ENABLED
+        value: "true"           # manual transfer (default; Backstage can override at runtime)
+      - key: PAYMENT_PARTIAL_BALANCE_HOURS
+        value: "72"             # partially paid order → operator review after this many hours
+      - key: PAYMENT_WATCHER_ENABLED
+        value: "true"           # treasury transfer discovery (payment-recovery role, GLOBAL only)
+      - key: PAYMENT_WATCHER_INTERVAL_MS
+        value: "30000"
+      - key: PAYMENT_WATCHER_REORG_BLOCKS
+        value: "64"             # blocks rescanned behind the cursor each run
+      - key: PAYMENT_WATCHER_MAX_RANGE
+        value: "2000"           # eth_getLogs block range per request
+      - key: PAYMENT_WATCHER_BACKFILL_BLOCKS
+        value: "20000"          # first start without watchFromBlock: scan this far back
+      - key: PAYMENT_WATCHER_LEASE_SECONDS
+        value: "120"
       - key: ADMIN_API_TOKEN
         sync: false             # service token for the /admin operational API
                                 # (user directory, withdrawal review) — unset = disabled

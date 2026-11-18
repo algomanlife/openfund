@@ -32,7 +32,8 @@ import { Engine } from './engine.js'
 import { Portfolio } from './portfolio.js'
 import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
-import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments, paymentReadinessReport, paymentChains, DEPAY_SIGNED_PATHS } from './purchases.js'
+import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments, paymentReadinessReport, paymentChains, chainReady, watcherSettle, DEPAY_SIGNED_PATHS } from './purchases.js'
+import { createPaymentWatcher, escalatePendingPayments, reviewOverduePartialOrders, watcherSettings } from './payment-watcher.js'
 import { backstageReads } from './backstage-reads.js'
 import { adminRoutes } from './admin.js'
 import { createPayoutClaimClient } from './payout-claims.js'
@@ -1011,7 +1012,11 @@ if (hasRole(region, 'footprint')) footprint.start().catch(e => console.error('[f
    (verified late payments are still accepted inside the grace window —
    see purchases.js confirmPurchase) */
 const purchaseExpiryTimer = hasRole(region, 'purchase-expiry') ? setInterval(() => {
-  pool.query(`UPDATE purchase_orders SET status='expired' WHERE status='pending' AND expires_at < now()`)
+  /* a partially paid order (any confirmed allocation) never expires: it has
+     its own balance deadline (payment-watcher.js reviewOverduePartialOrders) */
+  pool.query(`UPDATE purchase_orders o SET status='expired' WHERE o.status='pending' AND o.expires_at < now()
+                AND o.lifecycle_state NOT IN ('partially_paid','manual_review')
+                AND NOT EXISTS (SELECT 1 FROM payment_allocations a WHERE a.purchase_order_id=o.id)`)
     .then(r => { if (r.rowCount) console.log(`[purchases] ${r.rowCount} pending order(s) expired`) })
     .catch(() => {})
 }, 60_000) : null
@@ -1029,8 +1034,31 @@ const paymentRecoveryTimer = hasRole(region, 'payment-recovery') ? setInterval((
   } })
     .then(r => { recordSuccess('payment_recovery'); if (r.recovered) console.log('[payments] recovered ' + r.recovered + ' order(s)') })
     .catch(e => { recordFailure('payment_recovery_failure', { action: 'sweep', error: e }); console.error('[payments] recovery sweep failed', e.message) })
+  /* the 15/20-minute status promise and partial-balance deadlines */
+  escalatePendingPayments(pool)
+    .then(r => { if (r.escalated) console.log('[payments] ' + r.escalated + ' payment(s) escalated to review after 20 minutes') })
+    .catch(e => recordFailure('payment_escalation_failure', { action: 'escalate', error: e }))
+  reviewOverduePartialOrders(pool).catch(e => recordFailure('payment_escalation_failure', { action: 'partial_deadline', error: e }))
 }, recoveryEvery) : null
 paymentRecoveryTimer?.unref()
+/* Openfund Pay treasury watcher: discovers inbound settlement-token
+   transfers without a customer-submitted hash (ADR 0046). Leased per chain,
+   so a second instance never scans the same cursor concurrently. */
+const watcherConfig = watcherSettings()
+const paymentWatcher = hasRole(region, 'payment-recovery') && watcherConfig.enabled
+  ? createPaymentWatcher({ pool, chains: () => paymentChains().filter(chainReady), settle: watcherSettle({ pool }), settings: watcherConfig,
+      lateGraceMinutes: Number(process.env.PURCHASE_LATE_GRACE_MINUTES ?? 60) || 0,
+      log: (level, ...a) => { if (level === 'error') recordFailure('payment_watcher_failure', { action: 'scan', error: { code: String(a[1] || 'error') } }); else console.log('[payments] watcher', level, ...a) } })
+  : null
+let watcherRunning = false
+const paymentWatcherTimer = paymentWatcher ? setInterval(() => {
+  if (watcherRunning) return
+  watcherRunning = true
+  paymentWatcher.runOnce().then(r => { recordSuccess('payment_watcher'); const m = r.reduce((n, x) => n + (x.matched || 0), 0); if (m) console.log('[payments] watcher matched ' + m + ' transaction(s)') })
+    .catch(e => recordFailure('payment_watcher_failure', { action: 'run', error: e }))
+    .finally(() => { watcherRunning = false })
+}, Math.max(Number(process.env.PAYMENT_WATCHER_INTERVAL_MS) || 30_000, 1000)) : null
+paymentWatcherTimer?.unref()
 /* treasury snapshots (60–120 min schedule) and live settlement retries */
 if (hasRole(region, 'treasury')) treasury.start()
 const settlementTimer = hasRole(region, 'settlement') ? setInterval(() => {
@@ -1045,6 +1073,6 @@ nonceSweep.unref()
 let shuttingDown=false
 /* bounded graceful shutdown: idle keep-alive sockets close at once; if anything still holds the
    process after 10 s (a long-lived peer or proxy connection), every socket is closed and it exits */
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;server.closeIdleConnections?.();setTimeout(()=>{console.warn('[shutdown] forced after 10 s');server.closeAllConnections?.();process.exit(0)},10_000).unref();const enginePass=engine.stop();tradingStreams.close();marketData.stop();radar.close();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;server.closeIdleConnections?.();setTimeout(()=>{console.warn('[shutdown] forced after 10 s');server.closeAllConnections?.();process.exit(0)},10_000).unref();const enginePass=engine.stop();tradingStreams.close();marketData.stop();radar.close();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);clearInterval(paymentWatcherTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)

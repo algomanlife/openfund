@@ -35,6 +35,8 @@ export function metricsSnapshot({ engine = null, marketData = null, now = Date.n
   if (engine && (lagMs === null || lagMs > lagLimitMs)) alerts.push('engine_loop_lag')
   if (marketData && (feedAgeMs === null || feedAgeMs > staleLimitMs)) alerts.push('market_feed_stale')
   if (failures.payment_recovery_failure) alerts.push('payment_recovery_failures')
+  if (failures.payment_watcher_failure) alerts.push('payment_watcher_failures')
+  if (failures.payment_escalation_failure) alerts.push('payment_escalation_failures')
   if (failures.audit_insert_failure) alerts.push('audit_insert_failures')
   return { generatedAt: new Date(now).toISOString(), uptimeSeconds: Math.round(process.uptime()),
     engineLoop: { lastPassAt: lastPassAt ? new Date(lastPassAt).toISOString() : null, lagMs, limitMs: lagLimitMs },

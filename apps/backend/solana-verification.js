@@ -55,7 +55,7 @@ export function analyzeSolanaPayment(tx, expect) {
     throw paymentError(400, anyToReceiver ? 'wrong_token' : 'wrong_receiver')
   }
   const min = BigInt(expect.minAmountUnits)
-  if (received < min) throw paymentError(400, 'insufficient_amount', { received: received.toString() })
+  if (received < min && !expect.allowPartial) throw paymentError(400, 'insufficient_amount', { received: received.toString() })
   return {
     txHash: expect.signature, chainId: SOLANA_CHAIN_ID, blockNumber: Number(tx.slot), blockHash: null,
     fromAddress: feePayer, toAddress: expect.receiver, amount: received.toString(), tokenAddress: expect.token,
@@ -68,16 +68,20 @@ export function analyzeSolanaPayment(tx, expect) {
 /** `rpc(method, params)` is injectable for tests; production posts JSON-RPC to rpcUrl */
 export function createSolanaVerifier({ rpcUrl, rpc: injected } = {}) {
   const rpc = injected || (async (method, params) => {
-    if (!rpcUrl) throw paymentError(503, 'payment_misconfigured', { retryable: false, detail: 'rpc_url_missing' })
-    let res
-    try {
-      res = await fetch(rpcUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(8000),
-        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) })
-    } catch { throw paymentError(503, 'rpc_unavailable', { retryable: true }) }
-    if (!res.ok) throw paymentError(503, 'rpc_unavailable', { retryable: true })
-    const body = await res.json().catch(() => null)
-    if (!body || body.error) throw paymentError(503, 'rpc_unavailable', { retryable: true, detail: String(body?.error?.message || '').slice(0, 120) })
-    return body.result
+    /* one dedicated endpoint or an ordered failover list */
+    const urls = (Array.isArray(rpcUrl) ? rpcUrl : [rpcUrl]).filter(Boolean)
+    if (!urls.length) throw paymentError(503, 'payment_misconfigured', { retryable: false, detail: 'rpc_url_missing' })
+    let last = null
+    for (const url of urls) {
+      try {
+        const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(8000),
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) })
+        const body = res.ok ? await res.json().catch(() => null) : null
+        if (body && !body.error) return body.result
+        last = String(body?.error?.message || res.status).slice(0, 120)
+      } catch { last = 'network' }
+    }
+    throw paymentError(503, 'rpc_unavailable', { retryable: true, detail: last })
   })
   const decimalsCache = new Map()
 

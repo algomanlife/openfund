@@ -216,8 +216,12 @@ test('P2 the manual route validates input, never provisions on its own and repor
     assert.equal(paid.status, 200); assert.ok(paid.data.challengeId)
     const again = await srv.post('/purchases/verify', { orderId: o.id, chainId: 42161, txHash: tx.toUpperCase().replace('0X', '0x') })
     assert.equal(again.data.replayed, true); assert.equal(again.data.challengeId, paid.data.challengeId)
-    /* another transaction for a paid order is not silently "accepted" */
-    assert.equal((await srv.post('/purchases/verify', { orderId: o.id, chainId: 42161, txHash: hash() })).data.error, 'order_already_paid')
+    /* another verified transaction for a paid order never provisions again:
+       Openfund Pay (ADR 0046) records it as a duplicate payment owed back
+       (refund liability) instead of dropping the evidence */
+    const dup = await srv.post('/purchases/verify', { orderId: o.id, chainId: 42161, txHash: hash() })
+    assert.equal(dup.data.outcome, 'excess_only'); assert.equal(dup.data.excessUsd, '49')
+    assert.equal((await pool.query(`SELECT count(*)::int n FROM payment_refund_liabilities WHERE purchase_order_id=$1 AND reason='duplicate_payment'`, [o.id])).rows[0].n, 1)
     assert.deepEqual([await count('payments', o.id), await count('invoices', o.id), await count('openfund_challenges', o.id)], [1, 1, 1])
     const receipt = await srv.get(`/purchases/orders/${o.id}/receipt`)
     assert.equal(receipt.data.receipt.payment.txHash, tx); assert.equal(receipt.data.receipt.payment.settlement.amount, '49')
