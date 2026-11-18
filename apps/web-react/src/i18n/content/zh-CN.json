@@ -3822,5 +3822,15 @@
   "Illustrative demo data. These addresses are not Openfund traders, accounts or verified results.": "示例演示数据。这些地址并非 Openfund 的交易者、账户或经核实的结果。",
   "Risk": "风险",
   "Sample wallets · demo data": "示例钱包 · 演示数据",
-  "${count} demo trades": "${count} 笔演示交易"
+  "${count} demo trades": "${count} 笔演示交易",
+  "${count} smaller markets": "${count} 个较小市场",
+  "All markets": "全部市场",
+  "Colour": "颜色",
+  "Colour range": "颜色范围",
+  "Copy address": "复制地址",
+  "Each tile is a Hyperliquid perpetual market: area follows the size metric, colour the colour metric. It does not show market capitalisation or liquidations.": "每个方块是一个 Hyperliquid 永续合约市场：面积对应尺寸指标，颜色对应颜色指标。不显示市值或清算。",
+  "No match": "无匹配",
+  "Path": "路径",
+  "Showing ${shown} of ${total}": "显示 ${shown} / ${total}",
+  "Smaller markets": "较小市场"
 }

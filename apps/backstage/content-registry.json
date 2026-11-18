@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4327,
-    "mappedCalls": 2185,
+    "uniqueRecords": 4334,
+    "mappedCalls": 2193,
     "exceptions": 49,
     "validationFindings": 0,
     "reviewedExclusions": 49
@@ -1545,7 +1545,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 175,
+          "line": 237,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -2439,7 +2439,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 267,
+          "line": 329,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -3114,7 +3114,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 140,
+          "line": 201,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -3956,14 +3956,14 @@
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 47,
+          "line": 92,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 77,
+          "line": 122,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -4879,7 +4879,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 82,
+          "line": 183,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 184,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -5862,7 +5869,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 20,
+          "line": 65,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -5976,14 +5983,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 41,
+          "line": 86,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 143,
+          "line": 204,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -6110,21 +6117,35 @@
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 75,
+          "line": 120,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 144,
+          "line": 205,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 210,
+          "line": 209,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 272,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 275,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -6906,7 +6927,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 269,
+          "line": 331,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -7560,7 +7581,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 210,
+          "line": 272,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 277,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -9750,6 +9778,26 @@
       ]
     },
     {
+      "key": "react.18fb3920398a284a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هر کاشی یک بازار دائمی Hyperliquid است؛ اندازه بر اساس شاخص انتخاب‌شده و رنگ بر اساس شاخص رنگ. این نقشه ارزش بازار یا لیکوییدیشن را نشان نمی‌دهد.",
+      "en": "Each tile is a Hyperliquid perpetual market: area follows the size metric, colour the colour metric. It does not show market capitalisation or liquidations.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 175,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.18fd716d042ab593",
       "namespace": "react",
       "area": "Website",
@@ -11740,7 +11788,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 165,
+          "line": 227,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -12421,7 +12469,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 54,
+          "line": 72,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -14283,7 +14331,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 169,
+          "line": 231,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -14591,26 +14639,6 @@
       ]
     },
     {
-      "key": "react.26d9dc63d0e302f7",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "روی یک کاشی بروید، لمس کنید یا با Tab انتخاب کنید.",
-      "en": "Hover, tap or Tab to a tile.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 106,
-          "page": "radar",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.26eb94a7887e99a1",
       "namespace": "react",
       "area": "Website",
@@ -14763,7 +14791,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 253,
+          "line": 315,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -14967,6 +14995,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.27cfb13ad13a0ea2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "${count} بازار کوچک‌تر",
+      "en": "${count} smaller markets",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 233,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -16619,7 +16667,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 20,
+          "line": 65,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -17517,7 +17565,14 @@
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 228,
+          "line": 290,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 292,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -17617,14 +17672,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 44,
+          "line": 89,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 227,
+          "line": 289,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -17939,8 +17994,15 @@
           "method": "pick-pipeline"
         },
         {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 260,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 254,
+          "line": 316,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -19091,7 +19153,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 210,
+          "line": 272,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 277,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -19645,7 +19714,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 175,
+          "line": 237,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -19796,6 +19865,33 @@
           "line": 67,
           "page": "rulebook",
           "route": "/:locale/rulebook",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.33c067b491f678e0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تغییر ۲۴ ساعته",
+      "en": "24h change",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 139,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 192,
+          "page": "radar",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -20215,7 +20311,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 20,
+          "line": 65,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20909,7 +21005,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 144,
+          "line": 205,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20923,7 +21019,21 @@
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 269,
+          "line": 272,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 276,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 331,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21200,7 +21310,14 @@
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 210,
+          "line": 272,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 276,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22196,6 +22313,33 @@
       ]
     },
     {
+      "key": "react.3ab887c281c4a5ee",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازهٔ رنگ",
+      "en": "Colour range",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 193,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 194,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.3abf1f27f2b7f8f7",
       "namespace": "react",
       "area": "Global Content",
@@ -22865,14 +23009,21 @@
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 144,
+          "line": 205,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 269,
+          "line": 210,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 331,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -23233,7 +23384,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 112,
+          "line": 139,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 192,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 266,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -23633,7 +23798,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 264,
+          "line": 326,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27658,7 +27823,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 54,
+          "line": 72,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27838,7 +28003,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 142,
+          "line": 203,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -29614,7 +29779,7 @@
     {
       "key": "react.4f8073d28f8da46e",
       "namespace": "react",
-      "area": "User Dashboard",
+      "area": "Website",
       "owner": "Content editor",
       "fa": "فیلترها",
       "en": "Filters",
@@ -29622,6 +29787,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 181,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/terminal/JournalAnalytics.tsx",
           "line": 149,
@@ -29664,7 +29836,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 175,
+          "line": 237,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -29891,7 +30063,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 175,
+          "line": 237,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -29931,7 +30103,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 258,
+          "line": 320,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -30085,7 +30257,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 91,
+          "line": 223,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -30172,7 +30344,7 @@
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 259,
+          "line": 321,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -30353,7 +30525,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 115,
+          "line": 269,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -31916,7 +32088,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 93,
+          "line": 225,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35560,7 +35732,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 228,
+          "line": 290,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 293,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -37485,7 +37664,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 109,
+          "line": 252,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 263,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -37979,7 +38165,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 170,
+          "line": 232,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -38233,7 +38419,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 175,
+          "line": 237,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -39134,7 +39320,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 265,
+          "line": 327,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -39602,7 +39788,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 255,
+          "line": 317,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -40003,7 +40189,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 266,
+          "line": 328,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -40258,7 +40444,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 103,
+          "line": 148,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -41034,21 +41220,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 67,
+          "line": 138,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 81,
+          "line": 189,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 111,
+          "line": 265,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -41148,7 +41334,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 97,
+          "line": 142,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -41350,6 +41536,33 @@
           "component": "apps/web-react/src/features/economy/LiveMarketAccess.tsx",
           "line": 135,
           "page": "economy",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.700fd02113e802bf",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "رنگ",
+      "en": "Colour",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 190,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 191,
+          "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -42884,7 +43097,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 125,
+          "line": 186,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -43726,7 +43939,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 171,
+          "line": 233,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -45181,7 +45394,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 54,
+          "line": 72,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -45735,7 +45948,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 263,
+          "line": 325,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -46249,7 +46462,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 90,
+          "line": 222,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -46529,7 +46742,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 91,
+          "line": 136,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -47225,7 +47438,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 73,
+          "line": 118,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -47581,7 +47794,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 58,
+          "line": 103,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -47701,14 +47914,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 228,
+          "line": 290,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 257,
+          "line": 294,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 319,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -49845,35 +50065,49 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 71,
+          "line": 116,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 144,
+          "line": 205,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 175,
+          "line": 208,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 210,
+          "line": 237,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 269,
+          "line": 272,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 275,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 331,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -49934,7 +50168,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 228,
+          "line": 290,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 293,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50241,21 +50482,21 @@
         },
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 91,
+          "line": 223,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 102,
+          "line": 147,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 255,
+          "line": 317,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50462,7 +50703,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 104,
+          "line": 149,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50803,7 +51044,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 97,
+          "line": 142,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50960,6 +51201,26 @@
           "line": 191,
           "page": "terminal",
           "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.8d5c6deba2b25369",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مسیر",
+      "en": "Path",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 214,
+          "page": "radar",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -53860,7 +54121,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 79,
+          "line": 187,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 188,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -54143,26 +54411,6 @@
           "line": 630,
           "page": "terminal",
           "route": "/:locale/:product/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.966841706d9bec96",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "Hyperliquid فقط تغییر ۲۴ ساعته را در یک درخواست ارائه می‌دهد.",
-      "en": "Hyperliquid serves only the 24h change in one request.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 85,
-          "page": "radar",
-          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -56146,26 +56394,6 @@
       ]
     },
     {
-      "key": "react.9b4b3e95b20267f9",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "هر کاشی یک بازار دائمی Hyperliquid است؛ اندازه بر اساس شاخص انتخاب‌شده و رنگ بر اساس تغییر قیمت ۲۴ ساعته. این نقشه ارزش بازار یا لیکوییدیشن را نشان نمی‌دهد.",
-      "en": "Each tile is a Hyperliquid perpetual market: area follows the selected metric, colour the 24h price change. It does not show market capitalisation or liquidations.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 73,
-          "page": "radar",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.9b582a7009fbf448",
       "namespace": "react",
       "area": "Global Content",
@@ -57364,7 +57592,7 @@
     {
       "key": "react.9ef9e3bf6ea0f9f5",
       "namespace": "react",
-      "area": "User Dashboard",
+      "area": "Website",
       "owner": "Content editor",
       "fa": "جست‌وجوی نماد",
       "en": "Search symbol",
@@ -57372,6 +57600,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 197,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
           "line": 154,
@@ -58604,7 +58839,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 138,
+          "line": 199,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -58984,7 +59219,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 140,
+          "line": 201,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -59124,7 +59359,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 262,
+          "line": 324,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -59206,6 +59441,33 @@
           "component": "apps/web-react/src/features/partners/Coach.tsx",
           "line": 111,
           "page": "partners",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.a2ff42bbe0862103",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "همهٔ بازارها",
+      "en": "All markets",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 70,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 186,
+          "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -59598,7 +59860,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 84,
+          "line": 185,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -60915,7 +61177,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 78,
+          "line": 123,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61465,21 +61727,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 67,
+          "line": 138,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 81,
+          "line": 189,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 110,
+          "line": 264,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61726,7 +61988,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 138,
+          "line": 199,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -64630,14 +64892,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 43,
+          "line": 88,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 203,
+          "line": 265,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -66913,6 +67175,13 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 159,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -66983,7 +67252,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 53,
+          "line": 71,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67598,14 +67867,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 144,
+          "line": 205,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 269,
+          "line": 208,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 331,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67819,7 +68095,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 53,
+          "line": 71,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -68901,26 +69177,6 @@
       ]
     },
     {
-      "key": "react.bde6b3e2b6499196",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "بازه: ۲۴ ساعت",
-      "en": "Window: 24h",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 85,
-          "page": "radar",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.bdeac24d6e69365f",
       "namespace": "react",
       "area": "Global Content",
@@ -69127,7 +69383,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 186,
+          "line": 248,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -69707,7 +69963,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 272,
+          "line": 334,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -70081,7 +70337,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 116,
+          "line": 270,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -70869,14 +71125,14 @@
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 72,
+          "line": 117,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 77,
+          "line": 122,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -71900,7 +72156,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 175,
+          "line": 237,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -72030,6 +72286,26 @@
           "line": 76,
           "page": "rulebook",
           "route": "/:locale/rulebook",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.c7699281b73ac665",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "موردی پیدا نشد",
+      "en": "No match",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 201,
+          "page": "radar",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -72487,7 +72763,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 228,
+          "line": 290,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 294,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -73299,14 +73582,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 42,
+          "line": 87,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 174,
+          "line": 236,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -73834,7 +74117,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 210,
+          "line": 272,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 276,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -73921,7 +74211,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 175,
+          "line": 237,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76572,7 +76862,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 180,
+          "line": 242,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77039,21 +77329,35 @@
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 80,
+          "line": 125,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 144,
+          "line": 205,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 210,
+          "line": 211,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 272,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 274,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77114,7 +77418,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 88,
+          "line": 215,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77341,7 +77645,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 269,
+          "line": 331,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77756,7 +78060,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 97,
+          "line": 142,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -78728,7 +79032,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 168,
+          "line": 230,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -79705,6 +80009,26 @@
       ]
     },
     {
+      "key": "react.dc9ad7b042e9074e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازارهای کوچک‌تر",
+      "en": "Smaller markets",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
+          "line": 172,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.dca0437639bd9d04",
       "namespace": "react",
       "area": "Website",
@@ -79817,7 +80141,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 140,
+          "line": 201,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82239,7 +82563,7 @@
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 260,
+          "line": 322,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82447,6 +82771,26 @@
       ]
     },
     {
+      "key": "react.e47e3f64c206dc58",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کپی نشانی",
+      "en": "Copy address",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 159,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.e487c52e22c76218",
       "namespace": "react",
       "area": "Website",
@@ -82606,7 +82950,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 52,
+          "line": 97,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -84141,14 +84485,14 @@
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 47,
+          "line": 92,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 77,
+          "line": 122,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -85677,7 +86021,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 97,
+          "line": 142,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -85942,7 +86286,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 20,
+          "line": 65,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -86142,7 +86486,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
-          "line": 225,
+          "line": 287,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -87236,7 +87580,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 120,
+          "line": 274,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -91217,14 +91561,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 84,
+          "line": 185,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/radar/HeatmapPage.tsx",
-          "line": 113,
+          "line": 267,
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -91476,6 +91820,26 @@
           "page": "roadmap",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.fe20e37a39fbb02c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نمایش ${shown} از ${total}",
+      "en": "Showing ${shown} of ${total}",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/radar/RadarPage.tsx",
+          "line": 213,
+          "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },

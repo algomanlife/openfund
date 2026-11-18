@@ -3822,5 +3822,15 @@
   "Illustrative demo data. These addresses are not Openfund traders, accounts or verified results.": "Иллюстративные демонстрационные данные. Эти адреса не являются трейдерами, счетами или подтверждёнными результатами Openfund.",
   "Risk": "Риск",
   "Sample wallets · demo data": "Примеры кошельков · демо-данные",
-  "${count} demo trades": "Демо-сделок: ${count}"
+  "${count} demo trades": "Демо-сделок: ${count}",
+  "${count} smaller markets": "Меньших рынков: ${count}",
+  "All markets": "Все рынки",
+  "Colour": "Цвет",
+  "Colour range": "Диапазон цвета",
+  "Copy address": "Копировать адрес",
+  "Each tile is a Hyperliquid perpetual market: area follows the size metric, colour the colour metric. It does not show market capitalisation or liquidations.": "Каждая плитка — бессрочный рынок Hyperliquid: площадь отражает метрику размера, цвет — метрику цвета. Карта не показывает рыночную капитализацию или ликвидации.",
+  "No match": "Нет совпадений",
+  "Path": "Путь",
+  "Showing ${shown} of ${total}": "Показано ${shown} из ${total}",
+  "Smaller markets": "Меньшие рынки"
 }

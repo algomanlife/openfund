@@ -3822,5 +3822,15 @@
   "Illustrative demo data. These addresses are not Openfund traders, accounts or verified results.": "بيانات توضيحية تجريبية. هذه العناوين ليست متداولين أو حسابات أو نتائج موثّقة لدى Openfund.",
   "Risk": "المخاطرة",
   "Sample wallets · demo data": "محافظ نموذجية · بيانات تجريبية",
-  "${count} demo trades": "${count} صفقة تجريبية"
+  "${count} demo trades": "${count} صفقة تجريبية",
+  "${count} smaller markets": "${count} سوقًا أصغر",
+  "All markets": "كل الأسواق",
+  "Colour": "اللون",
+  "Colour range": "نطاق اللون",
+  "Copy address": "نسخ العنوان",
+  "Each tile is a Hyperliquid perpetual market: area follows the size metric, colour the colour metric. It does not show market capitalisation or liquidations.": "كل مربع سوق عقود دائمة على Hyperliquid: المساحة تتبع مقياس الحجم واللون يتبع مقياس اللون. لا تعرض الخريطة القيمة السوقية أو التصفيات.",
+  "No match": "لا نتائج",
+  "Path": "المسار",
+  "Showing ${shown} of ${total}": "عرض ${shown} من ${total}",
+  "Smaller markets": "أسواق أصغر"
 }
