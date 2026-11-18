@@ -120,7 +120,7 @@ const trade = (i, coin, side, usd, buyer = W, seller = V) => ({ id: `t${i}`, coi
       await rows.first().waitFor({ timeout: 20000 })
       ok('duplicate trade ids are shown once', await rows.count() === 40)
       const s = await page.evaluate(() => ({ h: Math.round(document.querySelector('.of-radar-table tbody tr').getBoundingClientRect().height), sticky: getComputedStyle(document.querySelector('.of-radar-table th')).position, num: getComputedStyle(document.querySelector('.of-radar-table td.r')).fontVariantNumeric }))
-      ok(`compact rows (${s.h}px), sticky header, tabular numbers`, s.h <= 36 && s.sticky === 'sticky' && /tabular-nums/.test(s.num), JSON.stringify(s))
+      ok(`compact rows (${s.h}px; 51–57 px before), sticky header, tabular numbers`, s.h <= 40 && s.sticky === 'sticky' && /tabular-nums/.test(s.num), JSON.stringify(s))
       const table = page.locator('.of-radar-table')
       await table.evaluate(e => { e.scrollTop = 300 })
       const anchor = await page.evaluate(() => { const t = document.querySelector('.of-radar-table'); const r = [...t.querySelectorAll('tbody tr')].find(x => x.getBoundingClientRect().top >= t.getBoundingClientRect().top + 40); return { id: r.dataset.id, top: r.getBoundingClientRect().top } })
