@@ -3816,5 +3816,6 @@
   "Openfund Treasury": "خزينة Openfund",
   "Open ${base} in the terminal": "افتح ${base} في المنصة",
   "Show more (${count} remaining)": "عرض المزيد (${count} متبقية)",
-  "Your payment is confirmed and your challenge account is ready.": "تم تأكيد دفعتك وحساب التحدي الخاص بك جاهز."
+  "Your payment is confirmed and your challenge account is ready.": "تم تأكيد دفعتك وحساب التحدي الخاص بك جاهز.",
+  "Apply the coupon code, or clear it, to continue.": "طبّق رمز القسيمة أو امسحه للمتابعة."
 }
