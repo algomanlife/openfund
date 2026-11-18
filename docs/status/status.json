@@ -129,10 +129,10 @@
         "enabled": true,
         "verified": false,
         "accepted": false,
-        "detail": "Engine live with purchases. Backstage one-step creation and checkout coupon persistence are in PR #141 (not merged).",
+        "detail": "Engine live with purchases. Backstage one-step creation and checkout coupon persistence are merged to main (#141), not released or deployed.",
         "verifiedAt": "2026-11-18T07:40:00Z",
         "evidence": "https://github.com/algomanlife/openfund/pull/141",
-        "blocker": "PR #141 review; then an owner checkout with a real coupon."
+        "blocker": "Next release deployed; then an owner checkout with a real coupon."
       },
       "iran": {
         "deployed": true,
