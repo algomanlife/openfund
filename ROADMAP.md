@@ -44,7 +44,7 @@ Do not advance a milestone because a folder, UI placeholder or dependency exists
 
 The [unified dashboard and trial lifecycle](docs/trading/UNIFIED_ACCOUNTS.md), [journal definitions](docs/trading/JOURNAL_METRICS.md) and [Gains depth integration](docs/integrations/GAINS_DEPTH.md) extend phases 2, 3 and 5. Local acceptance and remaining release gates are tracked in the [delivery report](docs/reviews/unified-trading/DELIVERY.md); commercial activation and real execution are unchanged.
 
-## Fresh delivery snapshot — 2026-11-03
+## Historical snapshot — 2026-11-03 (superseded; current state: [status](docs/status/README.md))
 
 | Capability | Status | Evidence / remaining acceptance |
 | --- | --- | --- |

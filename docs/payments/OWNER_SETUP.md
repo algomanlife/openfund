@@ -1,10 +1,14 @@
 # DePay checkout — owner setup runbook
 
-Status: **code ready on branch `agent/claude/depay-checkout-activation`; production
-purchases stay off until the owner completes the steps below.** No real payment
-has been made. Every value marked *owner* cannot come from the repository.
+Status (verified 2026-11-18, [status](../status/README.md)): the code shipped in
+v0.6.5 and the owner configuration is in place. GLOBAL purchases are
+**enabled**, and the signed DePay routes answer. **No real payment is
+recorded yet**; step 13 of the [launch runbook](../deployment/LAUNCH_PARITY_RUNBOOK.md)
+is the owner's real low-value purchase. The sections below record how the
+blockers were found and fixed (2026-11-13) and stay valid as the setup
+reference. Every value marked *owner* cannot come from the repository.
 
-## What blocked purchases (evidence, 2026-11-13)
+## Historical: what blocked purchases (evidence, 2026-11-13)
 
 | # | Blocker | Evidence | Fixed by |
 | --- | --- | --- | --- |
