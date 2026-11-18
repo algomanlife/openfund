@@ -77,7 +77,12 @@ const translateX = page => page.evaluate(() => new DOMMatrixReadOnly(getComputed
       await page.waitForFunction(() => document.querySelector('.ws-section').classList.contains('ws-running'))
       const a = await translateX(page); await page.waitForTimeout(1200); const b = await translateX(page); await page.waitForTimeout(1200); const c = await translateX(page)
       ok('cards move continuously in one direction', b < a && c < b, `${a.toFixed(1)} → ${b.toFixed(1)} → ${c.toFixed(1)}`)
-      ok('speed is steady (linear)', Math.abs((a - b) - (b - c)) < Math.max(4, Math.abs(a - b) * 0.25), `${(a - b).toFixed(1)} vs ${(b - c).toFixed(1)} px per 1.2 s`)
+      /* steadiness is a property of the animation, not of a busy runner's timer */
+      const loopAnim = await page.evaluate(() => {
+        const a = document.querySelector('.ws-track').getAnimations().find(x => x.animationName === 'ws-loop')
+        return a && { state: a.playState, easing: a.effect.getKeyframes()[0].easing, iterations: a.effect.getTiming().iterations }
+      })
+      ok('speed is steady: one linear, infinite, running loop animation', loopAnim && loopAnim.state === 'running' && loopAnim.easing === 'linear' && loopAnim.iterations === Infinity, JSON.stringify(loopAnim))
       const loop = await page.evaluate(() => {
         const lists = document.querySelectorAll('.ws-list'), track = document.querySelector('.ws-track')
         const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap)
