@@ -43,7 +43,7 @@ async function fixture(context) {
       await page.setViewportSize({width,height}); await page.goto(BASE+'/fa/home');
       await page.locator('.technical-feature').last().waitFor(); await page.evaluate(()=>document.fonts.ready);
       // Usable height excludes the header and, on Persian pages, the access notice and fixed price strip.
-      await page.waitForFunction(() => Math.abs(parseFloat(getComputedStyle(document.querySelector('.home-gateway')).minHeight) - (innerHeight - document.querySelector('header').getBoundingClientRect().height - (document.querySelector('.iran-access-notice')?.getBoundingClientRect().height || 0) - (document.querySelector('.bitpin-ticker')?.getBoundingClientRect().height || 0))) <= 1 && getComputedStyle(document.querySelector('.home-stage')).display === 'flex');
+      await page.waitForFunction(() => Math.abs(parseFloat(getComputedStyle(document.querySelector('.home-gateway')).minHeight) - (innerHeight - document.querySelector('header').getBoundingClientRect().height - (document.querySelector('.of-announcement')?.getBoundingClientRect().height || 0) - (document.querySelector('.bitpin-ticker')?.getBoundingClientRect().height || 0))) <= 1 && getComputedStyle(document.querySelector('.home-stage')).display === 'flex');
       const geometry = await page.evaluate(() => {
         const visible = [...document.querySelectorAll('.home-gateway h1,.home-panel h2,.home-product-note,.home-panel .button,.home-community .telegram-community,.technical-heading,.technical-feature,.made-by-humans,header a,header button')].filter(e=>e.getBoundingClientRect().width);
         const gateway = document.querySelector('.home-gateway').getBoundingClientRect();

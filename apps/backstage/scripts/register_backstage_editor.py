@@ -60,6 +60,16 @@ def wanted_permissions():
             wanted.append((coll, 'update', parent_fields))
         if text and tr != coll:
             wanted += [(tr, 'read', ['*']), (tr, 'create', ['*']), (tr, 'update', text)]
+    # Marketing (Backstage campaigns API): popups and announcement bars. The
+    # Backstage server validates every value before writing (enums, plain
+    # text, https-or-same-site destinations, promotable coupons, image
+    # signatures); still no deletes and no financial collection.
+    wanted += [
+        ('site_campaigns', 'read', ['*']), ('site_campaigns', 'create', ['*']), ('site_campaigns', 'update', ['*']),
+        ('site_campaign_translations', 'read', ['*']), ('site_campaign_translations', 'create', ['*']),
+        ('site_campaign_translations', 'update', ['headline', 'body', 'cta_label', 'image_alt']),
+        ('directus_files', 'create', ['*']), ('directus_files', 'read', ['*']), ('directus_folders', 'read', ['id', 'name']),
+    ]
     return wanted
 
 

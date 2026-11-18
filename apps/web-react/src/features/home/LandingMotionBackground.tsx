@@ -8,20 +8,22 @@ export default function LandingMotionBackground() {
     const page = element?.closest<HTMLElement>('.home-gateway')
     if (!element || !page) return
     const header = page.closest('.information-page')?.querySelector('header')
-    /* Persian pages add the access notice under the header and the fixed
-       price strip at the bottom; the one-screen gateway subtracts both. */
-    const notice = page.closest('.information-page')?.querySelector<HTMLElement>('.iran-access-notice')
+    /* The announcement bar (above the header, loaded after the page and
+       closable) and the fixed Persian price strip at the bottom; the
+       one-screen gateway subtracts both. The bar announces its changes. */
+    const announcement = () => page.closest('.information-page')?.querySelector<HTMLElement>('.of-announcement') ?? null
     const strip = document.querySelector<HTMLElement>('.bitpin-ticker')
     const sizeHeader = () => {
       if (header) page.style.setProperty('--landing-header-height', `${header.getBoundingClientRect().height}px`)
-      const extra = (notice?.getBoundingClientRect().height || 0) + (strip?.getBoundingClientRect().height || 0)
+      const extra = (announcement()?.getBoundingClientRect().height || 0) + (strip?.getBoundingClientRect().height || 0)
       page.style.setProperty('--landing-chrome-extra', `${extra}px`)
     }
     const resize = new ResizeObserver(sizeHeader)
     if (header) resize.observe(header)
-    if (notice) resize.observe(notice)
     if (strip) resize.observe(strip)
-    sizeHeader()
+    const onAnnouncement = () => { const bar = announcement(); if (bar) resize.observe(bar); sizeHeader() }
+    addEventListener('of-announcement', onAnnouncement)
+    onAnnouncement()
     const preference = matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)')
     let frame = 0
     let x = 0, y = 0
@@ -50,6 +52,7 @@ export default function LandingMotionBackground() {
     return () => {
       reset()
       resize.disconnect()
+      removeEventListener('of-announcement', onAnnouncement)
       page.removeEventListener('pointermove', move)
       page.removeEventListener('pointerleave', reset)
       preference.removeEventListener('change', reset)

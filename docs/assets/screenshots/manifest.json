@@ -7161,6 +7161,126 @@
       "sha256": "4c1185ef4ba6936c5cc5e351f0e127838e0c3038d7b9bbd3b81ddf495bdf8b3c"
     },
     {
+      "file": "campaigns/announcement-fa-desktop.png",
+      "route": "/fa/home",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "session": "no wallet; disposable local Directus and database",
+      "capturedAt": "2026-11-18T05:17:18.411179+00:00",
+      "state": "Persian Iran-access announcement bar above the header (published seed, Backstage-edited copy). Local Directus 11.17.4.",
+      "sha256": "8e9c1b54f9d7c0c0ebfa3006fd3acb1002470f55b71e5cc989e2282fdef042e6"
+    },
+    {
+      "file": "campaigns/announcement-fa-mobile.png",
+      "route": "/fa/home",
+      "viewport": {
+        "width": 375,
+        "height": 820
+      },
+      "session": "no wallet; disposable local Directus and database",
+      "capturedAt": "2026-11-18T05:17:18.411179+00:00",
+      "state": "Same bar at 375 px: wraps above the intact header, 36 px close target, no horizontal overflow.",
+      "sha256": "411a477e16dfdd7e75bb6f644700b4331af06968db73be942da81f82f8517cea"
+    },
+    {
+      "file": "campaigns/announcement-hidden-en-desktop.png",
+      "route": "/zh-CN/home",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "session": "no wallet; disposable local Directus and database",
+      "capturedAt": "2026-11-18T05:17:18.411179+00:00",
+      "state": "A non-Persian locale: the Persian-only bar is not shown (no language fallback).",
+      "sha256": "1bfe53f2504ab12d3b6ab0ede9c3f82250ec45a23fda53f5b11bab77274765bd"
+    },
+    {
+      "file": "campaigns/popup-en-desktop.png",
+      "route": "/en/home",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "session": "no wallet; disposable local Directus and database",
+      "capturedAt": "2026-11-18T05:17:18.411179+00:00",
+      "state": "English split popup after its delay: product screenshot, coupon reference and checkout button. Coupon is a local test coupon.",
+      "sha256": "93ba03a3da617e39828ec53e633c6148d077c035ad41f8d2c8532c03c6c46f58"
+    },
+    {
+      "file": "campaigns/popup-en-mobile.png",
+      "route": "/en/home",
+      "viewport": {
+        "width": 390,
+        "height": 860
+      },
+      "session": "no wallet; disposable local Directus and database",
+      "capturedAt": "2026-11-18T05:17:18.411179+00:00",
+      "state": "Popup at 390 px: stacked layout, reachable close button, no overflow.",
+      "sha256": "7083cbdc94c75c6c74e3370e27c2fef5abed3d582185997292c129d34fd204ea"
+    },
+    {
+      "file": "campaigns/popup-fa-desktop.png",
+      "route": "/fa/home",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "session": "no wallet; disposable local Directus and database",
+      "capturedAt": "2026-11-18T05:17:18.411179+00:00",
+      "state": "Persian (RTL) popup: image mirrored to the left, coupon chip, Persian button.",
+      "sha256": "198de771116a89caf48f246b2006b6d48b21dab3bf55ab5e88c1b950376c12c7"
+    },
+    {
+      "file": "campaigns/popup-fa-tablet.png",
+      "route": "/fa/home",
+      "viewport": {
+        "width": 768,
+        "height": 860
+      },
+      "session": "no wallet; disposable local Directus and database",
+      "capturedAt": "2026-11-18T05:17:18.411179+00:00",
+      "state": "Persian popup at tablet width.",
+      "sha256": "edef8fcb6891a563c80401e4bd53adb02ea17a951166590759f326aea5c71768"
+    },
+    {
+      "file": "campaigns/backstage-campaign-create.png",
+      "route": "Backstage → Marketing → Promotional campaigns",
+      "viewport": {
+        "width": 1360,
+        "height": 900
+      },
+      "session": "no wallet; disposable local Directus and database",
+      "capturedAt": "2026-11-18T05:17:18.411179+00:00",
+      "state": "Campaign editor with per-language copy and the live preview (Persian).",
+      "sha256": "73dca6d0697d720ab8c6d7f4d1c18e46cd2568b6048286932eaa6e2cfc26f345"
+    },
+    {
+      "file": "campaigns/backstage-campaign-list.png",
+      "route": "Backstage → Marketing → Promotional campaigns",
+      "viewport": {
+        "width": 1360,
+        "height": 900
+      },
+      "session": "no wallet; disposable local Directus and database",
+      "capturedAt": "2026-11-18T05:17:18.411179+00:00",
+      "state": "Campaign list with status, live state, impressions, clicks, closes, CTR and coupon validity.",
+      "sha256": "b87c5f9223d78fc0c7aa9e9e23e45817a20c01c9aca25abffc44b97a8566ac1c"
+    },
+    {
+      "file": "campaigns/backstage-announcement-edit.png",
+      "route": "Backstage → Marketing → Announcement banners",
+      "viewport": {
+        "width": 1360,
+        "height": 900
+      },
+      "session": "no wallet; disposable local Directus and database",
+      "capturedAt": "2026-11-18T05:17:18.411179+00:00",
+      "state": "Editing the Persian bar with the RTL preview.",
+      "sha256": "a7ecbb19b1d5c0a0f589e7f05b2acb2eb1d694b1c5d51626023d7b4cb6e95ac7"
+    },
+    {
       "file": "wallet-showcase/showcase-en-dark-desktop.png",
       "route": "/en/challenges",
       "viewport": {

@@ -475,6 +475,74 @@ def main():
     ensure_relation('footer_link_translations', 'footer_link_id', 'footer_links', one_field='translations')
     ensure_alias('footer_links', 'translations', None)
 
+    # ---------------- promotional campaigns and announcement bars ----------
+    # One collection, two placements (modal, announcement_bar), managed from
+    # Backstage → Marketing (apps/backstage/operations/campaigns.js). Locale
+    # ELIGIBILITY is the explicit `locales` list; a campaign never falls back
+    # to another language's copy. Copy and images only: prices and coupon
+    # validity stay in the backend (the coupon code is a reference).
+    def choice(*pairs): return {'choices': [{'text': t, 'value': v} for v, t in pairs]}
+    ensure_collection('site_campaigns', {'sort_field': 'priority', 'icon': 'campaign',
+        'note': 'کمپین‌ها و اعلان‌های سایت — مدیریت از بک‌استیج (Marketing). محتوا فقط؛ قیمت و اعتبار کد تخفیف در سرور.'})
+    ensure_field('site_campaigns', 'status', 'string', meta={'interface': 'select-dropdown', 'options': choice(
+        ('draft', 'Draft'), ('published', 'Published'), ('archived', 'Archived')), 'special': ['status']},
+        schema={'default_value': 'draft', 'has_auto_increment': False})
+    ensure_field('site_campaigns', 'active', 'boolean', meta={'interface': 'boolean'}, schema={'default_value': True})
+    ensure_field('site_campaigns', 'internal_name', 'string', meta={'interface': 'input', 'required': True}, schema={'is_nullable': False})
+    ensure_field('site_campaigns', 'placement', 'string', meta={'interface': 'select-dropdown', 'options': choice(
+        ('modal', 'Promotional popup'), ('announcement_bar', 'Announcement bar')), 'required': True}, schema={'default_value': 'modal'})
+    ensure_field('site_campaigns', 'template', 'string', meta={'interface': 'select-dropdown', 'options': choice(
+        ('image', 'Image campaign'), ('split', 'Split campaign'))}, schema={'default_value': 'split'})
+    ensure_field('site_campaigns', 'style', 'string', meta={'interface': 'select-dropdown', 'options': choice(
+        ('mint', 'Mint'), ('neutral', 'Neutral'), ('notice', 'Notice'))}, schema={'default_value': 'mint'})
+    ensure_field('site_campaigns', 'priority', 'integer', meta={'interface': 'input'}, schema={'default_value': 0})
+    ensure_field('site_campaigns', 'starts_at', 'timestamp', meta={'interface': 'datetime'}, schema={})
+    ensure_field('site_campaigns', 'ends_at', 'timestamp', meta={'interface': 'datetime'}, schema={})
+    ensure_field('site_campaigns', 'locales', 'json', meta={'interface': 'select-multiple-checkbox', 'special': ['cast-json'],
+        'options': choice(('fa', 'فارسی'), ('en', 'English'), ('ar', 'العربية'), ('ru', 'Русский'), ('zh-CN', '简体中文'))}, schema={})
+    ensure_field('site_campaigns', 'regions', 'json', meta={'interface': 'select-multiple-checkbox', 'special': ['cast-json'],
+        'options': choice(('GLOBAL', 'GLOBAL'), ('IRAN', 'IRAN'))}, schema={})
+    ensure_field('site_campaigns', 'pages', 'json', meta={'interface': 'select-multiple-checkbox', 'special': ['cast-json'],
+        'options': choice(('all', 'All public pages'), ('home', 'Home'), ('challenges', 'Challenges'), ('information', 'Information pages'))}, schema={})
+    ensure_field('site_campaigns', 'image_desktop', 'uuid', meta={'interface': 'file-image', 'special': ['file']}, schema={})
+    ensure_field('site_campaigns', 'image_mobile', 'uuid', meta={'interface': 'file-image', 'special': ['file']}, schema={})
+    ensure_field('site_campaigns', 'cta_url', 'string', meta={'interface': 'input', 'note': 'https:// or a site path such as /fa/checkout'}, schema={})
+    ensure_field('site_campaigns', 'coupon_code', 'string', meta={'interface': 'input', 'note': 'Reference only; validity comes from the backend'}, schema={})
+    ensure_field('site_campaigns', 'delay_seconds', 'integer', meta={'interface': 'input'}, schema={'default_value': 12})
+    ensure_field('site_campaigns', 'frequency', 'string', meta={'interface': 'select-dropdown', 'options': choice(
+        ('session', 'Once per session'), ('interval', 'Once per interval'))}, schema={'default_value': 'session'})
+    ensure_field('site_campaigns', 'frequency_days', 'integer', meta={'interface': 'input'}, schema={'default_value': 7})
+    ensure_collection('site_campaign_translations')
+    ensure_field('site_campaign_translations', 'site_campaign_id', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True}, schema={'is_nullable': False})
+    ensure_field('site_campaign_translations', 'language_code', 'string', meta=dict(LANG_META), schema={'is_nullable': False})
+    for f, required in (('headline', True), ('body', False), ('cta_label', False), ('image_alt', False)):
+        ensure_field('site_campaign_translations', f, 'text', meta={'interface': 'input', 'required': required},
+                     schema={'is_nullable': not required})
+    ensure_relation('site_campaign_translations', 'site_campaign_id', 'site_campaigns', one_field='translations')
+    ensure_alias('site_campaigns', 'translations', None)
+    ensure_relation('site_campaigns', 'image_desktop', 'directus_files')
+    ensure_relation('site_campaigns', 'image_mobile', 'directus_files')
+
+    # Campaign images live in one Directus folder; only files in that folder
+    # are publicly readable (the site and the IRAN /cms snapshot load them).
+    media = req('GET', f"{base}/folders?filter[name][_eq]=campaign-media&fields=id&limit=1", token)['data']
+    campaign_media_folder = media[0]['id'] if media else req('POST', f'{base}/folders', token, {'name': 'campaign-media'})['data']['id']
+    print(f'folder campaign-media: {"exists" if media else "created"}')
+
+    # The Persian Iran-access announcement (replaces the long all-locale
+    # notice). Created only when absent: an editor's later changes are kept.
+    iran_bar = req('GET', f"{base}/items/site_campaigns?filter[internal_name][_eq]=iran-access-fa&fields=id&limit=1", token)['data']
+    if not iran_bar:
+        req('POST', f'{base}/items/site_campaigns', token, {
+            'internal_name': 'iran-access-fa', 'status': 'published', 'active': True, 'placement': 'announcement_bar',
+            'style': 'mint', 'priority': 100, 'locales': ['fa'], 'regions': ['GLOBAL'], 'pages': ['all'],
+            'cta_url': 'https://openfi.live/', 'frequency': 'session',
+            'translations': [{'language_code': 'fa', 'headline': 'از داخل ایران وصل می‌شوید؟ نسخهٔ ایرانی اوپن‌فاند روی زیرساخت داخلی در دسترس است.',
+                              'cta_label': 'ورود به اوپن‌فاند ایران'}],
+        })
+        print('seed: site_campaigns iran-access-fa (announcement bar, fa only)')
+
     # ---------------- website expansion: FAQ categories ---------------------
     # The site-wide FAQ is grouped by topic. Categories are their own collection
     # so editors can rename, reorder or retire a topic without touching code.
@@ -901,6 +969,9 @@ def main():
         ('whitepaper_dataset_translations', None),
         ('whitepaper_references', {'status': {'_eq': 'published'}}),
         ('whitepaper_reference_translations', None),
+        ('site_campaigns', {'_and': [{'status': {'_eq': 'published'}}, {'active': {'_eq': True}}]}),
+        ('site_campaign_translations', None),
+        ('directus_files', {'folder': {'_eq': campaign_media_folder}}),
     ]
     translation_parents = {
         'ui_message_translations': ('ui_message_id', 'published'),
@@ -923,6 +994,7 @@ def main():
         'whitepaper_chapter_translations': ('whitepaper_chapter_id', 'published'),
         'whitepaper_dataset_translations': ('whitepaper_dataset_id', 'published'),
         'whitepaper_reference_translations': ('whitepaper_reference_id', 'published'),
+        'site_campaign_translations': ('site_campaign_id', 'published'),
     }
     for coll, cond in wanted:
         if coll in translation_parents:

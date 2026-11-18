@@ -46,11 +46,9 @@ const ok = (name, pass, detail = '') => { results.push({ name, pass, detail }); 
     ok(`${p} loads without international network`, res.status() === 200 && text.length > 200, `${text.length} chars, status ${res.status()}`)
     if (p.startsWith('/fa/')) ok(`${p} is right-to-left`, dir === 'rtl', dir)
     if (EXPECT_CONTENT && /\/home$/.test(p)) ok(`${p} shows CMS content, not the failure state`, !CMS_FAILURE.test(text), text.slice(0, 80).replace(/\s+/g, ' '))
-    if (/\/home$/.test(p)) {
-      const links = await page.locator('.iran-access-domains a').evaluateAll(as => as.map(a => a.href))
-      ok(`${p} notice links the three Iran addresses once`, (await page.locator('.iran-access-notice').count()) === 1 && links.join() === 'https://iran.openfund.cloud/,https://iran.openfi.cloud/,https://openfi.live/', links.join(' '))
-    }
-    if (p === '/fa/home') ok('notice states the Iran runtime (region IRAN)', (await page.locator('.iran-access-notice[data-region="IRAN"]').count()) === 1)
+    /* the Iran-access announcement targets GLOBAL visitors; the Iran
+       runtime never shows a bar that sends users to itself */
+    if (/\/home$/.test(p)) ok(`${p} shows no Iran-access bar on the Iran runtime`, (await page.locator('aside.of-announcement a[href="https://openfi.live/"]').count()) === 0)
     await page.screenshot({ path: `${OUT}/${p.replaceAll('/', '_')}.png` })
   }
   ok('no uncaught page errors', errors.length === 0, errors.slice(0, 3).join(' | '))
