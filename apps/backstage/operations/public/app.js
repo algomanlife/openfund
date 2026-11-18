@@ -1,4 +1,5 @@
 import { labels } from './strings.js'
+import { createMarketing } from './marketing.js'
 
 let locale = localStorage.getItem('backstage-language') === 'fa' ? 'fa' : 'en'
 let theme = localStorage.getItem('backstage-theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
@@ -115,6 +116,7 @@ const groups = [
   ['financeGroup', ['finance', 'expenses', 'reserves', 'obligations']],
   ['operations', ['audit', 'risk', 'search', 'notifications', 'system']],
   ['contentGroup', ['content']],
+  ['marketing', ['campaigns', 'announcements']],
 ]
 /* some section keys collide with existing table labels */
 const sectionLabels = { audit: 'auditViewer', search: 'searchx' }
@@ -710,6 +712,10 @@ async function contentWorkspace(main) {
   }
 }
 
+let marketingModule
+const marketing = () => (marketingModule ??= createMarketing({ el, t, labels, button, field, badge, technical, number, date, dialog, announce,
+  render: () => render(), csrf: () => session?.csrf ?? '' }))
+
 async function render() {
   const renderId = ++revision
   chrome()
@@ -726,6 +732,7 @@ async function render() {
   try {
     if (page === 'dashboard') await dashboard(contents)
     else if (page === 'content') await contentWorkspace(contents)
+    else if (page === 'campaigns' || page === 'announcements') await marketing().workspace(contents, page === 'campaigns' ? 'modal' : 'announcement_bar')
     else if (page === 'system') {
       const data = await api('system')
       contents.append(table(null, [['backend', r => badge(r.backendReady ? 'ready' : 'unknown')], ['region', r => t(r.region)], ['mode', r => t(r.mode)],

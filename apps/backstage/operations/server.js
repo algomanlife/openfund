@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { validVerifier, verifyPassword } from './password.js'
 import { createContentApi } from './content.js'
+import { createCampaignsApi } from './campaigns.js'
 
 const uuid = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i
 const payoutHash = /^0x[a-f0-9]{64}$/i
@@ -17,6 +18,7 @@ const staticFiles = {
   '/': ['public/index.html', 'text/html; charset=utf-8'],
   '/app.js': ['public/app.js', 'application/javascript; charset=utf-8'],
   '/strings.js': ['public/strings.js', 'application/javascript; charset=utf-8'],
+  '/marketing.js': ['public/marketing.js', 'application/javascript; charset=utf-8'],
   '/style.css': ['public/style.css', 'text/css; charset=utf-8'],
   '/mark.svg': ['../../../brand/logos/mark-mint.svg', 'image/svg+xml'],
   '/persian.woff2': ['../../web-react/public/assets/openfund-persian-500-v4.woff2', 'font/woff2'],
@@ -217,6 +219,8 @@ async function json(req, limit = 8192) {
 
 export function createBackstage(config, { now = Date.now, audit = event => console.log(JSON.stringify(event)), contentFetch } = {}) {
   const content = createContentApi({ cms: config.cms, token: config.contentToken, ...(contentFetch ? { fetchImpl: contentFetch } : {}) })
+  /* `backend` is a hoisted function declaration below */
+  const campaigns = createCampaignsApi({ cms: config.cms, token: config.contentToken, backend: (...a) => backend(...a), ...(contentFetch ? { fetchImpl: contentFetch } : {}) })
   const secure = config.origin.startsWith('https:')
   const cookieName = secure ? '__Host-openfund-backstage' : 'openfund-backstage-local'
   const duration = 8 * 60 * 60_000
@@ -291,7 +295,7 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
     res.setHeader('Referrer-Policy', 'no-referrer')
     res.setHeader('X-Robots-Tag', 'noindex, nofollow')
     /* frame-src: the read-only site preview in the Content workspace only */
-    res.setHeader('Content-Security-Policy', `default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src 'self'; frame-src ${config.backend}; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`)
+    res.setHeader('Content-Security-Policy', `default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' blob: data:; connect-src 'self'; frame-src ${config.backend}; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`)
     if (secure) res.setHeader('Strict-Transport-Security', 'max-age=31536000')
     try {
       const url = new URL(req.url, config.origin)
@@ -337,6 +341,43 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
         res.setHeader('Set-Cookie', cookie('', 0))
         log('sign_out', 'success')
         return send(res, 200, { ok: true })
+      }
+
+      /* Marketing: promotional popups and announcement bars (campaigns.js).
+         Reads need the owner session; writes also need CSRF (checked above)
+         and password re-entry in the GLOBAL region, like every content write. */
+      if (path.startsWith('/api/campaigns/')) {
+        const action = path.slice('/api/campaigns/'.length)
+        if (req.method === 'GET') {
+          const q = url.searchParams
+          if (action === 'list') return send(res, 200, { rows: await campaigns.list(q.get('placement')) })
+          if (action === 'stats') return send(res, 200, await campaigns.stats(correlationId))
+          if (action === 'coupon') return send(res, 200, { promotable: await campaigns.couponStatus(String(q.get('code') || '').trim().toUpperCase().slice(0, 40), correlationId) })
+          if (action.startsWith('asset/')) {
+            const image = await campaigns.asset(action.slice('asset/'.length), q.get('w'))
+            res.writeHead(200, { 'Content-Type': image.type, 'Cache-Control': 'private, max-age=300' })
+            return res.end(image.body)
+          }
+          throw fail(404, 'not_found')
+        }
+        if (action === 'upload') {
+          const body = await json(req, 4.5 * 1024 * 1024)
+          const file = await campaigns.upload(body)
+          log('campaigns.upload', 'success', file.id)
+          return send(res, 200, file)
+        }
+        if (!['save', 'state'].includes(action)) throw fail(404, 'not_found')
+        const body = await json(req, 65536)
+        const write = action === 'save' ? await campaigns.prepareSave(body, correlationId) : await campaigns.prepareState(body, correlationId)
+        try {
+          await confirmOwner(current, body.password, correlationId)
+          const id = await write.apply()
+          log('campaigns.' + action, 'success', String(id))
+          return send(res, 200, { ok: true, id })
+        } catch (error) {
+          log('campaigns.' + action, 'denied', String(write.target))
+          throw error
+        }
       }
 
       if (path.startsWith('/api/content/')) {
@@ -496,7 +537,7 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
         throw error
       }
     } catch (error) {
-      if (!res.headersSent) send(res, error.status || 500, { error: error.status ? error.message : 'unexpected_error' })
+      if (!res.headersSent) send(res, error.status || 500, { error: error.status ? error.message : 'unexpected_error', ...(error.status && Array.isArray(error.details) ? { details: error.details } : {}) })
     }
   })
   server.requestTimeout = 20_000

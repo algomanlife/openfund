@@ -27,7 +27,7 @@ import { Router } from 'express'
 export const CMS_COLLECTIONS = new Set([
   'challenge_plans', 'faq_categories', 'faqs', 'footer_links', 'glossary_terms', 'governance_content_blocks',
   'governance_milestones', 'home_content', 'learning_paths', 'legal_documents', 'navigation_items', 'pages',
-  'referral_content', 'site_settings', 'terminal_sections', 'tools', 'trading_rules', 'ui_messages',
+  'referral_content', 'site_campaigns', 'site_settings', 'terminal_sections', 'tools', 'trading_rules', 'ui_messages',
   'whitepaper_chapters', 'whitepaper_datasets', 'whitepaper_documents', 'whitepaper_references',
 ])
 const PARAM = /^(fields|sort|limit|offset|search|filter(\[[\w-]+\])+|deep(\[[\w-]+\])+)$/

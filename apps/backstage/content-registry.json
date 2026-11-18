@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4326,
-    "mappedCalls": 2179,
+    "uniqueRecords": 4320,
+    "mappedCalls": 2173,
     "exceptions": 49,
     "validationFindings": 0,
     "reviewedExclusions": 49
@@ -2283,26 +2283,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.02ff96c86e743aac",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "این صفحه از زیرساخت ایران اوپن‌فاند روی لیارا ارائه می‌شود و از هر سه نشانی زیر در دسترس است. دامنهٔ openfi.live مسیر مستقل دیگری برای دسترسی به نسخهٔ ایران است. وضعیت خدمات و امکانات معاملاتی به شرایط اتصال و دسترسی به داده‌های معتبر بازار بستگی دارد. خرید چالش جدید فعلاً فقط در نشانی بین‌المللی اوپن‌فاند انجام می‌شود.",
-      "en": "This page is served by Openfund's Iran infrastructure on Liara and is available at all three addresses below. openfi.live is a separately managed route to the Iran version. Service and trading features depend on connectivity and on access to authoritative market data. New challenge purchases are currently available only on Openfund's international address.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/notice/IranAccessNotice.tsx",
-          "line": 35,
-          "page": "notice",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -14773,7 +14753,7 @@
     {
       "key": "react.274dcda38c4c5c31",
       "namespace": "react",
-      "area": "Website",
+      "area": "Trading Terminal",
       "owner": "Content editor",
       "fa": "بیشتر",
       "en": "More",
@@ -14781,13 +14761,6 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "mapped",
       "locations": [
-        {
-          "component": "apps/web-react/src/features/notice/IranAccessNotice.tsx",
-          "line": 50,
-          "page": "notice",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
           "line": 126,
@@ -17896,6 +17869,20 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/campaigns/AnnouncementBar.tsx",
+          "line": 40,
+          "page": "campaigns",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/campaigns/PromoModal.tsx",
+          "line": 103,
+          "page": "campaigns",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/economy/LiveMarketAccess.tsx",
           "line": 89,
@@ -37578,26 +37565,6 @@
       ]
     },
     {
-      "key": "react.660120235066e035",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "برای دسترسی از داخل ایران می‌توانید از نشانی‌های زیر استفاده کنید. این نشانی‌ها روی زیرساخت لیارا میزبانی می‌شوند و openfi.live دامنهٔ جداگانهٔ اوپن‌فاند برای ایران است. وضعیت خدمات و امکانات معاملاتی به شرایط اتصال و دسترسی به داده‌های معتبر بازار بستگی دارد. در هر نشانی باید جداگانه با کیف پول وارد شوید.",
-      "en": "From inside Iran you can use the addresses below. They are hosted on Liara infrastructure, and openfi.live is Openfund's separately managed domain for Iran. Service and trading features depend on connectivity and on access to authoritative market data. Sign in with your wallet separately on each address.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/notice/IranAccessNotice.tsx",
-          "line": 38,
-          "page": "notice",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.66034e6b2db10ca7",
       "namespace": "react",
       "area": "Global Content",
@@ -37674,26 +37641,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.66219d704163aa00",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "نشانی‌های دسترسی از ایران",
-      "en": "Access addresses from Iran",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/notice/IranAccessNotice.tsx",
-          "line": 49,
-          "page": "notice",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -47734,26 +47681,6 @@
       ]
     },
     {
-      "key": "react.83a5871178f9db4b",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "دسترسی به اوپن‌فاند از داخل ایران",
-      "en": "Accessing Openfund from Iran",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/notice/IranAccessNotice.tsx",
-          "line": 33,
-          "page": "notice",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.83c01871e9e65a6d",
       "namespace": "react",
       "area": "Global Content",
@@ -48086,7 +48013,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/i18n/locales.ts",
-          "line": 86,
+          "line": 96,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50928,7 +50855,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/i18n/locales.ts",
-          "line": 90,
+          "line": 100,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -51453,26 +51380,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.8ea0913571b6e78b",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اتصال بین‌المللی در حال حاضر برقرار نیست: معامله و ثبت پرداخت موقتاً متوقف است. اطلاعات حساب و درخواست برداشت در دسترس می‌ماند.",
-      "en": "International connectivity is currently unavailable: trading and payout recording are paused. Account information and withdrawal requests remain available.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/notice/IranAccessNotice.tsx",
-          "line": 43,
-          "page": "notice",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -66748,6 +66655,26 @@
       ]
     },
     {
+      "key": "react.b7e267ce356268c4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کد تخفیف",
+      "en": "Coupon code",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/campaigns/PromoModal.tsx",
+          "line": 111,
+          "page": "campaigns",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.b800df10d5b87614",
       "namespace": "react",
       "area": "Global Content",
@@ -68668,26 +68595,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.bcdb0f292c6360d7",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اتصال بین‌المللی در حال بازیابی است و داده‌ها تطبیق داده می‌شوند. معامله تا پایان این بررسی متوقف است.",
-      "en": "International connectivity is being restored and data is being reconciled. Trading is paused until this review is complete.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/notice/IranAccessNotice.tsx",
-          "line": 46,
-          "page": "notice",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -77577,26 +77484,6 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.d707fbc9f887a6b1",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "کمتر",
-      "en": "Less",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/notice/IranAccessNotice.tsx",
-          "line": 50,
-          "page": "notice",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -92120,7 +92007,7 @@
     },
     {
       "component": "apps/web-react/src/features/information/InformationShell.tsx",
-      "line": 70,
+      "line": 71,
       "page": "information",
       "route": "/:locale/:page",
       "reason": "dynamic-pair",
@@ -92563,7 +92450,7 @@
     },
     {
       "component": "apps/web-react/src/features/information/InformationShell.tsx",
-      "line": 207,
+      "line": 209,
       "page": "information",
       "route": "/:locale/:page",
       "reason": "language-neutral-brand-or-identifier",

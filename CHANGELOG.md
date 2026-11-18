@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Marketing: promotional popups and announcement bars, managed in Backstage
+  (Marketing) and published without a deploy, on one Directus model with
+  separate behavior and anonymous counters ([ADR 0045](docs/decisions/0045-campaigns-and-announcements.md)).
+  Popups wait for visible time, cap at one per session, skip checkout and
+  trading pages, and are accessible modals. A campaign with a coupon appears
+  only while that coupon is valid, and its checkout link carries the code.
+  The long all-locale Iran notice is replaced by a short Persian-only bar
+  linking to https://openfi.live/.
+
 - Equity sampling locks the account before ownership checks and skips a
   concurrent deletion. The Challenges language selector keeps the route,
   document locale and community portal in sync across repeated changes.
