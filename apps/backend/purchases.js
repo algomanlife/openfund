@@ -1241,7 +1241,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
               o.payment_required, o.payment_method, o.currency, o.created_at, o.paid_at,
               p.slug AS plan_slug, p.name AS plan_name,
               (SELECT json_build_object('txHash', pm.tx_hash, 'chainId', pm.chain_id, 'verifiedAt', pm.verified_at)
-                 FROM payments pm WHERE pm.purchase_order_id=o.id LIMIT 1) AS payment,
+                 FROM payments pm WHERE pm.purchase_order_id=o.id ORDER BY pm.verified_at DESC LIMIT 1) AS payment,
               (SELECT json_build_object('id', i.id, 'number', i.number, 'issuedAt', i.issued_at)
                  FROM invoices i WHERE i.purchase_order_id=o.id LIMIT 1) AS invoice,
               (SELECT c.id FROM openfund_challenges c WHERE c.purchase_order_id=o.id LIMIT 1) AS challenge_id,

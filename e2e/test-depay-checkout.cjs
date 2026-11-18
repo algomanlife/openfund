@@ -71,6 +71,8 @@ async function main() {
     PURCHASE_RPC_URL: rpcUrl, PURCHASE_ROUTER_ADDRESSES: ROUTER, PURCHASE_PAYMENT_MIN_CONFIRMATIONS: '2',
     VITE_DEPAY_WIDGET: '1', VITE_DEPAY_WIDGET_URL: WIDGET_URL, VITE_DEPAY_WIDGET_INTEGRITY: sri, VITE_DEPAY_INTEGRATION_ID: INTEGRATION,
     CSP_EXTRA_SCRIPT_SRC: 'https://integrate.depay.com',
+    /* DePay is off for NEW payments by default since Openfund Pay (ADR 0046) */
+    PAYMENT_DEPAY_NEW_PAYMENTS: 'true',
     DEPAY_VERIFY_PUBLIC_KEY: oneLine(pemOf(depay.publicKey, 'spki')), DEPAY_CONFIG_PRIVATE_KEY: oneLine(pemOf(ours.privateKey, 'pkcs8')),
     PAYMENT_RECOVERY_INTERVAL_MS: '1000', PAYMENT_RECOVERY_MIN_AGE_S: '1',
   }
@@ -195,22 +197,23 @@ async function run({ BASE, chain }) {
     check('configuration is refused for an unknown order', (await dePayAskConfiguration(BASE, crypto.randomUUID())).status === 404)
     check('configuration is refused for a malformed order id', (await dePayAskConfiguration(BASE, 'nope')).status === 400)
 
-    /* ===== 3. payment failure: underpayment is rejected, nothing is provisioned ===== */
+    /* ===== 3. underpayment: recorded as a PARTIAL payment (Openfund Pay, ADR 0046), nothing is provisioned ===== */
     const shortTx = chain.addTx({ from: payer, to: ROUTER, logs: [chain.transferLog(TOKEN, payer, ROUTER, usdc(70)), chain.transferLog(TOKEN, ROUTER, RECEIVER, usdc(70))] })
     chain.mine(3)
     check('a forged callback (wrong signature) is rejected', (await dePayDeliverCallback(BASE, callbackBody(shortTx, payer), { badSignature: true })).status === 401)
     const cbShort = await dePayDeliverCallback(BASE, callbackBody(shortTx, payer))
     check('the signed callback is acknowledged with 200 at once', cbShort.status === 200 && cbShort.data?.recorded === true)
-    await page.getByRole('alert').filter({ hasText: 'below the order price' }).waitFor({ timeout: 15000 })
-    check('the checkout shows the payment failure (underpayment) in plain words', true)
+    await page.getByText('Payment Partially Received', { exact: true }).waitFor({ timeout: 15000 })
+    check('the checkout shows the partial payment and the exact remaining balance', /Remaining\s*\$10/.test(await page.locator('.of-pay-status').first().textContent()))
     check('with DePay the customer never sees an address or a transaction-hash field', (await page.locator('.of-checkout-tx').count()) === 0 && (await page.locator('.of-checkout-addr').count()) === 0)
     await shot('2-underpayment')
     check('no challenge was created for the underpayment', (await challengesOf()).length === before)
     const attempts = (await call(`/purchases/orders/${order.id}/attempts`)).data.attempts
-    check('the attempt is recorded as rejected / underpayment', attempts[0]?.status === 'rejected' && attempts[0]?.classification === 'underpayment')
+    check('the attempt is recorded as a confirmed partial payment', attempts[0]?.status === 'confirmed' && attempts[0]?.classification === 'partial')
 
     /* ===== 4. correct payment while the chain RPC is down + page refresh ===== */
-    const goodTx = chain.addTx({ from: payer, to: ROUTER, logs: [chain.transferLog(TOKEN, payer, ROUTER, usdc(80)), chain.transferLog(TOKEN, ROUTER, RECEIVER, usdc(80))] })
+    /* the remaining balance (80 − 70) completes the order */
+    const goodTx = chain.addTx({ from: payer, to: ROUTER, logs: [chain.transferLog(TOKEN, payer, ROUTER, usdc(10)), chain.transferLog(TOKEN, ROUTER, RECEIVER, usdc(10))] })
     chain.mine(3)
     chain.state.down = true
     const cbGood = await dePayDeliverCallback(BASE, callbackBody(goodTx, payer))

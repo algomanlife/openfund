@@ -97,7 +97,7 @@ const admin = async (endpoint, body) => {
     await page.locator('.of-co-accept input').check()
     await page.locator('#of-coupon').fill('NOT-APPLIED-' + tag)
     await page.getByText('Apply the coupon code, or clear it, to continue.').waitFor()
-    /* every order/payment action in the checkout card (DePay, Manual Payment, activation) */
+    /* every order/payment action in the checkout card (Pay with Wallet, Manual Transfer, DePay, activation) */
     const actionButtons = page.locator('main button.button')
     const [present, enabled] = await actionButtons.evaluateAll(list => [list.length, list.filter(b => !b.disabled).length])
     check(`an unapplied code disables every order button (${present} found)`, present > 0 && enabled === 0, `${enabled}/${present}`)

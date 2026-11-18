@@ -169,7 +169,11 @@ async function run() {
     await shot(page, 'checkout-open');
 
     /* ---------- 3. create the server-priced order ---------- */
-    await page.getByRole('button', { name: 'Manual Payment' }).click();
+    await page.getByRole('button', { name: 'Manual Transfer' }).click();
+    /* EVM manual transfer: the mandatory red sender warning gates the address */
+    await page.locator('.of-pay-warning').waitFor({ timeout: 10000 });
+    check('the red sender warning is shown before the treasury address', await page.locator('.of-checkout-addr code').count() === 0);
+    await page.locator('.of-pay-ack input').check();
     await page.locator('.of-checkout-addr code').waitFor({ timeout: 10000 });
     const receiver = await page.locator('.of-checkout-addr code').textContent();
     check('payment instructions carry the receiver address', /^0x[0-9a-f]{40}$/i.test((receiver || '').trim()));
@@ -196,7 +200,7 @@ async function run() {
        (client-side hash navigation — full gotos race the SSE long-poll load event) */
     await navigateHash(page, '/en/prop/purchases');
     await page.locator('.of-purchase-table tbody tr').first().waitFor({ timeout: 10000 });
-    const invoiceCell = await page.locator('.of-purchase-table tbody tr td:nth-child(7)').first().textContent();
+    const invoiceCell = await page.locator('.of-purchase-table tbody tr td:nth-child(8)').first().textContent();
     check('purchase history row rendered', /Download PDF|دانلود/.test(invoiceCell || ''));
     const hist2 = await call(page, '/purchases/history');
     const paid = (hist2.data?.orders || []).find(o => o.id === pending.id);
