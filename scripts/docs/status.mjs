@@ -53,6 +53,7 @@ for (const f of status.features ?? []) {
 if (errors.length) { console.error(errors.map(e => '✖ ' + e).join('\n')); process.exit(1) }
 
 /* ---------- Git tags (when the checkout has them; CI shallow clones may not) ---------- */
+const escapeRegExp = text => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const semver = v => v.replace(/^v/, '').split('.').map(Number)
 const newer = (a, b) => { const x = semver(a), y = semver(b); for (let i = 0; i < 3; i++) if (x[i] !== y[i]) return x[i] > y[i]; return false }
 let tags = []
@@ -66,7 +67,7 @@ if (tags.length && latest) {
 /* ---------- generated outputs ---------- */
 const yes = v => v ? 'yes' : 'no'
 const short = c => c ? '`' + c.slice(0, 7) + '`' : '—'
-const cell = v => String(v ?? '—').replace(/\|/g, '\\|').replace(/\n/g, ' ')
+const cell = v => String(v ?? '—').replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/\n/g, ' ')
 const link = e => /^https:/.test(e) ? `[evidence](${e})` : e.startsWith('Liara API') ? e : `[evidence](../../${e})`
 function page() {
   const lines = ['# Openfund status', '',
@@ -146,7 +147,7 @@ const rules = [
   /* each rule: the line names the subject AND asserts the contradicted state */
   iranDeployed && [/\b(IRAN|Iran|Liara)\b/, /\bnot deployed\b/i, 'states that IRAN/Liara is not deployed, but the IRAN runtime is live'],
   purchases?.global.enabled && [/\b(sales|purchases?|payments?|checkout)\b/i, /\bdisabled in production\b/i, 'states that purchases are disabled in production, but GLOBAL purchases are enabled'],
-  web?.version === latest.version && [new RegExp(`\\bv${latest.version.replace(/\./g, '\\.')}\\b`), /\b(deployment awaits|awaits (production )?deploy|pending production deploy|not yet deployed)/i, `states that ${latest.tag} awaits deployment, but GLOBAL runs it`],
+  web?.version === latest.version && [new RegExp(`\\bv${escapeRegExp(latest.version)}\\b`), /\b(deployment awaits|awaits (production )?deploy|pending production deploy|not yet deployed)/i, `states that ${latest.tag} awaits deployment, but GLOBAL runs it`],
 ].filter(Boolean)
 const updated = new Date(status.updatedAt + 'T00:00:00Z').getTime()
 for (const path of CURRENT) {
@@ -167,7 +168,7 @@ for (const path of CURRENT) {
 /* ---------- CHANGELOG ---------- */
 const changelog = read('CHANGELOG.md')
 const headings = changelog.split('\n').filter(l => /^## /.test(l))
-if (!headings.some(h => new RegExp(`^## v${latest.version.replace(/\./g, '\\.')}( —|$)`).test(h)))
+if (!headings.some(h => new RegExp(`^## v${escapeRegExp(latest.version)}( —|$)`).test(h)))
   fail(`CHANGELOG.md: no "## v${latest.version}" heading for the latest official release`)
 for (const h of headings) {
   const v = /^## Unreleased\b.*\bv(\d+\.\d+\.\d+)\b/.exec(h)
