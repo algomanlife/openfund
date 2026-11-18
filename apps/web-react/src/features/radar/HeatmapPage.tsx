@@ -141,23 +141,32 @@ export default function HeatmapPage() {
   const openChart = (symbol: string) => { chartLink(symbol); navigate(route(locale, product, 'chart')) }
 
   /* symbol search: opens the level where the market is and selects it */
+  /* symbol search: select the market, then walk the DISPLAYED layout until
+     its tile is visible: open its group, then the "+N" tile holding it, one
+     level per render. Following what is on screen (not a prediction) stays
+     correct when opening the details narrows the map and re-lays it out. */
+  const [seek, setSeek] = useState<string | null>(null)
+  useEffect(() => {
+    if (!seek || !size.w || !layout.length) return
+    if (layout.some(g => g.tiles.some(t => t.e.m?.coin === seek))) {
+      setSeek(null)
+      requestAnimationFrame(() => document.querySelector<HTMLButtonElement>(`.of-hm-tile[data-coin="${CSS.escape(seek)}"]`)?.focus())
+      return
+    }
+    const m = markets.find(x => x.coin === seek)
+    if (!m) { setSeek(null); return }
+    const g = groupOf(m)
+    if (path[0] !== g) { setPath([g]); return }
+    const holder = layout.find(l => l.group === g)?.tiles.some(t => !t.e.m && t.e.others?.some(x => x.coin === seek))
+    if (holder) setPath(p => [...p, OTHERS]); else setSeek(null)
+  }, [seek, size, layout, markets, path, groupOf])
   const find = (raw: string) => {
     const coin = raw.trim().toUpperCase()
     const m = markets.find(x => x.coin.toUpperCase() === coin)
     if (!m) { setNotFound(Boolean(coin)); return }
     setNotFound(false)
-    const g = groupOf(m), full = { x: 0, y: 0, w: size.w, h: size.h }
-    const next = [g]
-    let items = levels.get(g) || []
-    const inner = { x: 0, y: 0, w: Math.max(0, full.w - GAP), h: Math.max(0, full.h - HEADER - GAP / 2) }
-    for (let depth = 0; depth < 8; depth++) {
-      const { entries, others } = split(items, inner, depth, scopeOf(g, depth))
-      if (entries.some(e => e.m?.coin === m.coin) || !others.length) break
-      next.push(OTHERS); items = others
-    }
-    setPath(next)
     setSelected(m.coin)
-    requestAnimationFrame(() => document.querySelector<HTMLButtonElement>(`.of-hm-tile[data-coin="${CSS.escape(m.coin)}"]`)?.focus())
+    setSeek(m.coin)
   }
 
   const crumbs = path.map((step, i) => step === OTHERS ? t('بازارهای کوچک‌تر', 'Smaller markets') : step).map((label, i) => ({ label, depth: i + 1 }))

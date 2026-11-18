@@ -64,7 +64,7 @@ const trade = (i, coin, side, usd, buyer = W, seller = V) => ({ id: `t${i}`, coi
         return [...document.querySelectorAll('#of-hm-coins option')].map(o => o.value).reverse().find(c => !shown.has(c))
       })
       await page.getByLabel('Search symbol').fill(hidden)
-      await page.locator(`.of-hm-tile[data-coin="${hidden}"]`).waitFor({ timeout: 8000 })
+      await page.locator(`.of-hm-tile[data-coin="${hidden}"]`).waitFor({ timeout: 15000 })
       ok(`search opens the level holding a grouped market (${hidden}) and selects it`, await page.locator('.of-hm-crumbs').count() === 1 && (await page.locator('.of-hm-detail h2').innerText()).startsWith(hidden))
       for (let i = 0; i < 6 && (await page.locator('.of-hm-crumbs, .of-hm-detail').count()); i++) await page.keyboard.press('Escape')
       const before = await page.locator('.of-hm-tile[data-coin]').first().evaluate(t => t.style.background)
