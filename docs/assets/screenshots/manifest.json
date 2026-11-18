@@ -7281,6 +7281,102 @@
       "sha256": "a7ecbb19b1d5c0a0f589e7f05b2acb2eb1d694b1c5d51626023d7b4cb6e95ac7"
     },
     {
+      "file": "wallet-showcase/showcase-en-dark-desktop.png",
+      "route": "/en/challenges",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "no wallet; local build",
+      "capturedAt": "2026-11-18T05:42:05.024530+00:00",
+      "state": "English, dark: demo wallet cards right after Market Pulse; illustrative data, labelled. Generated seed data; not Openfund traders or results.",
+      "sha256": "1752d63f56967579e9b069b217c8aa24c807f41ff9de11223b32d858426f2c51"
+    },
+    {
+      "file": "wallet-showcase/showcase-fa-dark-desktop.png",
+      "route": "/fa/challenges",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "no wallet; local build",
+      "capturedAt": "2026-11-18T05:42:05.024530+00:00",
+      "state": "Persian (RTL), dark. Generated seed data; not Openfund traders or results.",
+      "sha256": "b280e722e121e954e4dd9c48a31873a20c23c7c2805a7b0e666d8b71a8e2d1f2"
+    },
+    {
+      "file": "wallet-showcase/showcase-fa-light-desktop.png",
+      "route": "/fa/challenges",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "no wallet; local build",
+      "capturedAt": "2026-11-18T05:42:05.024530+00:00",
+      "state": "Persian (RTL), light: contrast-controlled palette. Generated seed data; not Openfund traders or results.",
+      "sha256": "0acb90e24abfde91d44e83123e29f99e36a747a16456f598f971fbde18cf0c74"
+    },
+    {
+      "file": "wallet-showcase/showcase-en-light-desktop.png",
+      "route": "/en/challenges",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "no wallet; local build",
+      "capturedAt": "2026-11-18T05:42:05.024530+00:00",
+      "state": "English, light. Generated seed data; not Openfund traders or results.",
+      "sha256": "41f2acd7ad1dac2cf649863bcb52b88000737213105d7e55dc89b0999309d674"
+    },
+    {
+      "file": "wallet-showcase/showcase-fa-dark-375.png",
+      "route": "/fa/challenges",
+      "viewport": {
+        "width": 375,
+        "height": 800
+      },
+      "session": "no wallet; local build",
+      "capturedAt": "2026-11-18T05:42:05.024530+00:00",
+      "state": "Persian at 375 px: 222 px cards, no overflow. Generated seed data; not Openfund traders or results.",
+      "sha256": "1a845e7ea651df068beb1f7e1c18e2c33f2a8e030d8be18226d80ad8cdf35755"
+    },
+    {
+      "file": "wallet-showcase/showcase-en-light-390.png",
+      "route": "/en/challenges",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "no wallet; local build",
+      "capturedAt": "2026-11-18T05:42:05.024530+00:00",
+      "state": "English at 390 px, light. Generated seed data; not Openfund traders or results.",
+      "sha256": "97a0ec6037cd6b61d32a14f224479be760f1f57ed9d770ba31a2d2b773e24c9b"
+    },
+    {
+      "file": "wallet-showcase/showcase-fa-dark-768.png",
+      "route": "/fa/challenges",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "session": "no wallet; local build",
+      "capturedAt": "2026-11-18T05:42:05.024530+00:00",
+      "state": "Persian at tablet width. Generated seed data; not Openfund traders or results.",
+      "sha256": "43a9e91c33e6614ad4237bf42de19bb4d1572c3e109b6aa77bd507fa48716ba1"
+    },
+    {
+      "file": "wallet-showcase/showcase-motion-en-dark.webm",
+      "route": "/en/challenges",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "session": "no wallet; local build",
+      "capturedAt": "2026-11-18T05:42:05.024530+00:00",
+      "state": "7-second recording of the real loop (Playwright video), dark theme.",
+      "sha256": "fc3484b305e75ef52489150f699801c5a3f8479890b07bb0f2d4499e4a63f4fd"
+    },
+    {
       "file": "heatmap-radar/before/heatmap-en-1440.png",
       "route": "/en/prop/heatmap",
       "viewport": {

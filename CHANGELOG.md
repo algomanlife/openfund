@@ -7,6 +7,14 @@
   - **Heatmap controls:** colour is a separate metric (24h change or funding) with a selectable range. Details appear only for a selection (bottom sheet on phones), with a hover tooltip and symbol search.
   - **Trade Radar:** compact table, a fading highlight for new trades, a stable scroll position, wallet copy, and labelled cards on phones.
 
+- Challenges page: an animated row of sample wallet cards after Market Pulse.
+  It shows shortened addresses, identicons and demo returns, risk and
+  activity from a fixed seed, every card is labelled demo, and a disclaimer
+  says they are not Openfund traders or verified results. It uses a CSS-only
+  seamless loop with depth, edge falloff, a breathing mint glow and drifting
+  figures, runs only while visible and is static for reduced motion
+  ([design](docs/marketing/WALLET_SHOWCASE.md)).
+
 - Marketing: promotional popups and announcement bars, managed in Backstage
   (Marketing) and published without a deploy, on one Directus model with
   separate behavior and anonymous counters ([ADR 0045](docs/decisions/0045-campaigns-and-announcements.md)).
