@@ -329,6 +329,14 @@ jobs:
           TEST_BACKEND_URL: http://localhost:8080
           ADMIN_API_TOKEN: ci-admin-token-4f2a
         run: node e2e/test-backstage-operations.mjs
+      - name: Coupon campaign link, re-pricing and zero-payment checkout browser acceptance (fa/en)
+        if: needs.changes.outputs.run_backend_suite == 'true'
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080
+          ADMIN_API_TOKEN: ci-admin-token-4f2a
+          OUTPUT_DIR: output/playwright/coupon-checkout
+        run: node e2e/test-coupon-checkout.cjs
       - name: Controlled challenge checkout and simulated payout browser acceptance
         if: needs.changes.outputs.run_backend_suite == 'true'
         working-directory: .

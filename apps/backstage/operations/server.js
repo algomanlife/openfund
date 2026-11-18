@@ -31,6 +31,7 @@ const routes = {
   payouts: ['/admin/withdrawals?kind=reward', 'withdrawals', ['status', 'offset', 'scope']],
   payments: ['/admin/payments/attempts', 'attempts', ['status', 'review']],
   coupons: ['/admin/coupons', 'coupons', []],
+  couponPlans: ['/admin/coupons/plans', 'plans', []],
   controlled: ['/admin/coupons/controlled', 'controlledTests', []],
   support: ['/admin/support/messages', 'messages', ['status', 'department', 'offset']],
   partners: ['/admin/partners/applications', 'applications', ['role', 'status']],
@@ -154,7 +155,8 @@ const operations = {
       if (body.action === 'create') {
         if (record !== 'new') throw fail(404, 'not_found')
         if (!['percent', 'fixed'].includes(body.kind)) throw fail(400, 'invalid_request')
-        return ['/admin/coupons', { ...fields, code: textOf(body.code, 40), kind: body.kind, value: moneyOf(body.value) }]
+        if (body.activate !== undefined && typeof body.activate !== 'boolean') throw fail(400, 'invalid_request')
+        return ['/admin/coupons', { ...fields, code: textOf(body.code, 40), kind: body.kind, value: moneyOf(body.value), activate: body.activate === true }]
       }
       if (!uuid.test(record)) throw fail(404, 'not_found')
       const status = { activate: 'active', disable: 'inactive', revoke: 'revoked' }[body.action]

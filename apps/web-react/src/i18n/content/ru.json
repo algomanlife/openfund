@@ -3816,5 +3816,6 @@
   "Openfund Treasury": "Казначейство Openfund",
   "Open ${base} in the terminal": "Открыть ${base} в терминале",
   "Show more (${count} remaining)": "Показать ещё (осталось ${count})",
-  "Your payment is confirmed and your challenge account is ready.": "Ваш платёж подтверждён, и ваш счёт испытания готов."
+  "Your payment is confirmed and your challenge account is ready.": "Ваш платёж подтверждён, и ваш счёт испытания готов.",
+  "Apply the coupon code, or clear it, to continue.": "Примените код купона или очистите поле, чтобы продолжить."
 }

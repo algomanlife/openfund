@@ -106,11 +106,30 @@ export function couponAdminRoutes({ pool }) {
     if (typeof v !== 'string' || v.length > max) throw fail(400, 'invalid_field')
     return v.trim()
   }
+  const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/
   const whenAt = v => {
     if (v == null || v === '') return null
     const t = new Date(v)
     if (Number.isNaN(t.getTime())) throw fail(400, 'invalid_date')
     return t.toISOString()
+  }
+  /* An expiry given as a calendar date (the Backstage date picker) keeps the
+     coupon valid for that whole UTC day: it expires at the next midnight UTC.
+     Before, '2026-12-01' expired at the START of 1 December. */
+  const expiryAt = v => {
+    if (typeof v === 'string' && DATE_ONLY.test(v)) {
+      const t = new Date(v + 'T00:00:00Z')
+      if (Number.isNaN(t.getTime())) throw fail(400, 'invalid_date')
+      return new Date(t.getTime() + 86_400_000).toISOString()
+    }
+    return whenAt(v)
+  }
+  /* A 100 % coupon gives a challenge away, so a non-internal one may only be
+     active with a finite total limit (internal test coupons have their own
+     controlled flow). */
+  const assertActivatable = coupon => {
+    if (coupon.status === 'active' && coupon.kind === 'percent' && Number(coupon.value) >= 100 && coupon.max_redemptions == null)
+      throw fail(409, 'full_discount_needs_limit')
   }
   const positiveInt = (v, name) => {
     if (v == null || v === '') return null
@@ -154,6 +173,14 @@ export function couponAdminRoutes({ pool }) {
     }
   }
 
+  /* challenge plans for the eligibility picker (ids, names, sizes) */
+  router.get('/plans', wrap(async (req, res) => {
+    const { rows } = await pool.query(`SELECT id, slug, name, status, configuration FROM challenge_plans ORDER BY created_at`)
+    res.json({ plans: rows.filter(p => !p.configuration?.free).map(p => ({
+      id: p.id, slug: p.slug, name: p.name, status: p.status,
+      accountSizesUsd: Array.isArray(p.configuration?.accountSizesUsd) ? p.configuration.accountSizesUsd : [] })) })
+  }))
+
   const couponWriteLimit = rateLimit({ windowMs: 60_000, limit: 30, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'rate_limited' } })
   /* create a commercial coupon (controlled test coupons keep their own flow) */
   router.post('/', couponWriteLimit, wrap(async (req, res) => {
@@ -171,10 +198,25 @@ export function couponAdminRoutes({ pool }) {
         `INSERT INTO coupons (code, name, description, kind, value, status, max_redemptions, per_user_limit, account_sizes, starts_at, expires_at, created_by)
          VALUES ($1,$2,$3,$4,$5,'inactive',$6,$7,$8,$9,$10,$11) RETURNING *`,
         [code, str(b.name, 200), str(b.description, 1000), b.kind, value, positiveInt(b.maxRedemptions, 'invalid_limit'),
-          positiveInt(b.perUserLimit, 'invalid_limit') ?? 1, numberList(b.accountSizes), whenAt(b.startsAt), whenAt(b.expiresAt), actor])
+          positiveInt(b.perUserLimit, 'invalid_limit') ?? 1, numberList(b.accountSizes), whenAt(b.startsAt), expiryAt(b.expiresAt), actor])
       await writeEligibility(client, coupon.id, { planIds, allowedUserIds })
+      /* optional activation in the same request, as its own audited change;
+         a refusal keeps the coupon, inactive, and says why */
+      let result = coupon, activation = 'not_requested', activationError = null
+      if (b.activate === true) {
+        await client.query('SAVEPOINT activate')
+        try {
+          assertActivatable({ ...coupon, status: 'active' })
+          result = (await client.query(`UPDATE coupons SET status='active', updated_at=now() WHERE id=$1 RETURNING *`, [coupon.id])).rows[0]
+          await client.query('RELEASE SAVEPOINT activate')
+          activation = 'activated'
+        } catch (e) {
+          await client.query('ROLLBACK TO SAVEPOINT activate')
+          activation = 'failed'; activationError = e.status ? e.message : 'activation_failed'
+        }
+      }
       await client.query('COMMIT')
-      res.status(201).json({ coupon })
+      res.status(201).json({ coupon: result, activation, activationError })
     } catch (e) {
       await client.query('ROLLBACK').catch(() => {})
       if (e.code === '23505') throw fail(409, 'coupon_code_exists')
@@ -218,12 +260,14 @@ export function couponAdminRoutes({ pool }) {
           positiveInt(b.perUserLimit, 'invalid_limit'),
           b.accountSizes !== undefined, numberList(b.accountSizes) ?? null,
           b.startsAt !== undefined, whenAt(b.startsAt),
-          b.expiresAt !== undefined, whenAt(b.expiresAt)])
+          b.expiresAt !== undefined, expiryAt(b.expiresAt)])
+      assertActivatable(coupon)
       await writeEligibility(client, coupon.id, { planIds, allowedUserIds })
       await client.query('COMMIT')
       res.json({ coupon })
     } catch (e) {
       await client.query('ROLLBACK').catch(() => {})
+      if (e.status) throw e
       if (e.code === '23514' || e.code === 'P0001') throw fail(409, 'coupon_locked')
       throw e
     } finally { client.release() }
@@ -231,7 +275,7 @@ export function couponAdminRoutes({ pool }) {
 
   router.get('/', wrap(async (req, res) => {
     const { rows } = await pool.query(
-      `SELECT id, code, name, kind, value, status, internal, max_redemptions, per_user_limit, starts_at, expires_at,
+      `SELECT id, code, name, description, kind, value, status, internal, max_redemptions, per_user_limit, starts_at, expires_at,
               uses_reserved, uses_consumed, created_by, user_created, user_updated, created_at, updated_at
          FROM coupons ORDER BY created_at DESC LIMIT 500`)
     res.json({ coupons: rows })

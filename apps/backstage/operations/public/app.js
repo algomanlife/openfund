@@ -223,6 +223,87 @@ const couponFields = () => [
   ['challengePlanIds', textInput({ dir: 'ltr', maxlength: '2000' }), input => readList(input) ?? undefined],
   ['allowedUserIds', textInput({ dir: 'ltr', maxlength: '2000' }), input => readList(input) ?? undefined],
 ]
+/* Coupon creation: four quick fields, everything else under "Advanced".
+   The backend stays the only authority (code rules, duplicates, limits);
+   the result names exactly what happened, including a refused activation. */
+const COUPON_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+const generateCode = () => {
+  const bytes = crypto.getRandomValues(new Uint8Array(8))
+  return 'OF' + Array.from(bytes, b => COUPON_ALPHABET[b % COUPON_ALPHABET.length]).join('')
+}
+async function couponWizard() {
+  const code = textInput({ required: '', dir: 'ltr', maxlength: '40', pattern: '[A-Za-z0-9][A-Za-z0-9_-]{2,39}', autocomplete: 'off', spellcheck: 'false' })
+  const kind = selectInput([['percent', 'percentOff'], ['fixed', 'fixedUsdOff']])
+  kind.setAttribute('aria-label', t('kind'))
+  const value = textInput({ required: '', dir: 'ltr', inputmode: 'decimal' })
+  const activate = el('input', { type: 'checkbox' }); activate.checked = true
+  const name = textInput(), description = areaInput({ maxlength: '1000' })
+  const maxRedemptions = textInput({ type: 'number', min: '1', dir: 'ltr' }), perUserLimit = textInput({ type: 'number', min: '1', dir: 'ltr', placeholder: '1' })
+  const startsAt = textInput({ type: 'date', dir: 'ltr' }), expiresAt = textInput({ type: 'date', dir: 'ltr' })
+  const allowedUserIds = textInput({ dir: 'ltr', maxlength: '2000' })
+  const planBoxes = el('fieldset', { class: 'choices' }, el('legend', {}, t('eligiblePlans')))
+  const sizeBoxes = el('fieldset', { class: 'choices' }, el('legend', {}, t('eligibleSizes')))
+  let plans = []
+  try { plans = (await api('couponPlans')).rows ?? [] } catch { planBoxes.append(el('p', {}, t('unexpected_error'))) }
+  const checked = box => Array.from(box.querySelectorAll('input:checked'), input => input.value)
+  const drawSizes = () => {
+    const chosen = checked(planBoxes), keep = new Set(checked(sizeBoxes))
+    const sizes = [...new Set(plans.filter(p => !chosen.length || chosen.includes(p.id)).flatMap(p => p.accountSizesUsd))].sort((a, b) => a - b)
+    sizeBoxes.replaceChildren(el('legend', {}, t('eligibleSizes')), ...sizes.map(size => {
+      const input = el('input', { type: 'checkbox', value: String(size) }); input.checked = keep.has(String(size))
+      return el('label', { class: 'choice' }, input, el('span', { dir: 'ltr' }, usd(size)))
+    }))
+  }
+  for (const plan of plans) {
+    const input = el('input', { type: 'checkbox', value: plan.id, on: { change: drawSizes } })
+    planBoxes.append(el('label', { class: 'choice' }, input, el('span', {}, plan.name), plan.status === 'active' ? null : badge(plan.status)))
+  }
+  drawSizes()
+  const hint = el('p', { class: 'muted' })
+  const syncHint = () => { hint.textContent = kind.value === 'percent' ? t('percentHint') : t('fixedHint') }
+  kind.addEventListener('change', syncHint); syncHint()
+  const password = el('input', { required: '', type: 'password', dir: 'ltr', autocomplete: 'current-password' })
+  const submit = el('button', { class: 'primary' }, t('createCoupon'))
+  const feedback = el('p', { role: 'alert' })
+  const form = el('form', { on: { submit: async event => {
+    event.preventDefault()
+    submit.disabled = true
+    feedback.textContent = ''
+    try {
+      const plansChosen = checked(planBoxes), sizesChosen = checked(sizeBoxes).map(Number)
+      const payload = { action: 'create', password: password.value, code: code.value.trim().toUpperCase(), kind: kind.value, value: value.value.trim(), activate: activate.checked }
+      for (const [key, input] of [['name', name], ['description', description], ['maxRedemptions', maxRedemptions], ['perUserLimit', perUserLimit], ['startsAt', startsAt], ['expiresAt', expiresAt]])
+        if (input.value.trim()) payload[key] = input.value.trim()
+      if (plansChosen.length) payload.challengePlanIds = plansChosen
+      if (sizesChosen.length) payload.accountSizes = sizesChosen
+      const users = readList(allowedUserIds); if (users) payload.allowedUserIds = users
+      const result = await api('coupons/new', payload)
+      const outcome = result.activation === 'activated' ? 'couponCreatedActive'
+        : result.activation === 'failed' ? 'couponCreatedActivationFailed' : 'couponCreatedInactive'
+      const reason = result.activationError ? ' — ' + (labels[result.activationError] ? t(result.activationError) : result.activationError) : ''
+      form.replaceChildren(el('h2', {}, t('couponWizard')),
+        el('p', { role: 'status', class: 'result', 'data-outcome': outcome }, t(outcome), ' ', technical(result.coupon?.code), reason),
+        el('div', { class: 'tools' }, button('copyCode', () => navigator.clipboard?.writeText(result.coupon?.code ?? '')), button('close', () => dialog.close(), 'primary')))
+      render()
+    } catch (error) {
+      feedback.textContent = t('couponValidationFailed') + ': ' + (labels[error.message] ? t(error.message) : t('unexpected_error'))
+    } finally { password.value = ''; submit.disabled = false }
+  } } },
+  el('h2', {}, t('couponWizard')),
+  el('div', { class: 'code-row' }, field('code', code), button('generateCode', () => { code.value = generateCode(); code.focus() })),
+  field('kind', kind), field('value', value), hint,
+  el('label', { class: 'choice' }, activate, el('span', {}, t('activateAfterCreate'))),
+  el('details', {}, el('summary', {}, t('advancedSettings')),
+    field('name', name), field('description', description), field('maxRedemptions', maxRedemptions), field('perUserLimit', perUserLimit),
+    field('startsAt', startsAt), field('expiresAt', expiresAt), el('p', { class: 'muted' }, t('couponDatesUtc')),
+    planBoxes, sizeBoxes, field('allowedUserIds', allowedUserIds)),
+  field('password', password), feedback,
+  el('div', { class: 'tools' }, button('cancel', () => dialog.close()), submit))
+  dialog.replaceChildren(form)
+  dialog.showModal()
+  code.focus()
+}
+const remainingUses = r => r.max_redemptions == null ? t('unlimited') : number(Math.max(0, Number(r.max_redemptions) - Number(r.uses_consumed ?? 0) - Number(r.uses_reserved ?? 0)))
 const expenseWizard = () => operate('expenses', 'new', 'create', [
   ['category', selectInput(['render_infrastructure', 'database', 'cms', 'market_data', 'operational_services', 'marketing', 'ambassador_commissions', 'salaries_administration', 'other'])],
   ['description', areaInput({ required: '' })],
@@ -250,8 +331,9 @@ const columns = {
   payments: [['identity', r => link('payments', { id: r.purchase_order_id }, technical(r.purchase_order_id))], ['transaction', r => technical(r.tx_hash)], ['status', status], ['date', r => date(r.created_at ?? r.last_attempt_at)],
     ['action', r => r.retryable && r.status !== 'confirmed' ? button('reverify', () => decide('payments', r, 'reverify')) : '—']],
   coupons: [['code', r => link('coupons', { id: r.id }, technical(r.code))], ['status', status], ['discount', r => r.kind === 'percent' ? new Intl.NumberFormat(fmt(), { style: 'percent' }).format(Number(r.value) / 100) : usd(r.value)],
-    ['redeemed', r => number(r.uses_consumed)], ['expiry', r => date(r.expires_at)],
+    ['redeemed', r => number(r.uses_consumed)], ['remaining', remainingUses], ['expiry', r => date(r.expires_at)], ['created', r => date(r.created_at)],
     ['action', r => r.internal ? '—' : el('div', { class: 'tools' },
+      button('copyCode', () => navigator.clipboard?.writeText(r.code)),
       r.status === 'inactive' ? button('activate', () => operate('coupons', r.id, 'activate')) : null,
       r.status === 'active' ? button('disable', () => operate('coupons', r.id, 'disable')) : null,
       r.status !== 'revoked' ? button('couponRevoke', () => operate('coupons', r.id, 'revoke', [], 'couponRevoke'), 'danger') : null,
@@ -453,11 +535,7 @@ async function directory(main, section, filter) {
       table('audit', [['date', r => date(r.created_at)], ['action', r => technical(r.action)], ['username', r => technical(r.actor)]], data.audit ?? []))
     return
   }
-  if (section === 'coupons') main.append(el('div', { class: 'tools' }, button('couponWizard', () => operate('coupons', 'new', 'create', [
-    ['code', textInput({ required: '', dir: 'ltr', maxlength: '40' })],
-    ['kind', selectInput(['percent', 'fixed'])],
-    ['value', textInput({ required: '', dir: 'ltr' })],
-    ...couponFields()], 'couponWizard'), 'primary')))
+  if (section === 'coupons') main.append(el('div', { class: 'tools' }, button('createCoupon', () => { void couponWizard() }, 'primary')))
   if (section === 'expenses') main.append(el('div', { class: 'tools' }, button('recordExpense', expenseWizard, 'primary')))
   if (section === 'reserves') main.append(el('div', { class: 'tools' }, button('setReserve', () => operate('reserves', 'new', 'set', [
     ['kind', selectInput([['operational', 'operationalReserve'], ['risk', 'riskReserve'], ['other', 'otherReserve']])],
