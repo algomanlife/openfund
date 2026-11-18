@@ -26,6 +26,18 @@ trading evaluations, funded programs, trader rewards and financial transparency.
 
 **Contents** · [Overview](#project-overview) · [Products](#product-ecosystem) · [Backstage](#openfund-backstage--business-operations-console) · [Gallery](#product-gallery) · [Feature status](#feature-status) · [Business model](#business-model) · [Architecture](#technical-architecture) · [Technology](#technology-stack) · [Development](#development-workflow) · [Releases](#versioning-and-releases) · [License](#license) · [Contributing](#contributing-and-security)
 
+<!-- status:summary -->
+
+**Current status** (verified 2026-11-18; canonical: [docs/status](docs/status/README.md)):
+
+- Latest official release: **v0.6.5** (`a87804a`, 2026-11-17).
+- GLOBAL (Render) Web/API runs v0.6.5 `a87804a`; IRAN (Liara) web runs v0.6.5 `a87804a` (built as unofficial).
+- Purchases: enabled in GLOBAL, disabled in IRAN; a real owner purchase is not yet recorded.
+- Live execution: disabled (Approved signer/custody design, supported testnet contracts, simulation, security review and management activation).
+- Desktop: 0.0.2 installers built and acceptance-tested in CI; unsigned and not published.
+
+<!-- /status:summary -->
+
 ## Project overview
 
 Openfund develops challenge and funded programs alongside the Web Terminal,
@@ -80,7 +92,8 @@ The service authenticates a single provisioned owner, keeps its backend
 credential server-side and asks the owner to re-enter their password for
 privileged decisions.
 
-Release v0.6.5 (merged to `main`; production deployment awaits owner approval) adds commercial
+Release v0.6.5 (official since 2026-11-17; deployed on GLOBAL Web/API and the IRAN web app, see
+[current status](docs/status/README.md)) adds commercial
 coupon administration, trader support replies with a trader Inbox and in-app
 notifications, partner review and commissions, finance records (expenses,
 reserves, obligations), a unified audit trail, a read-only live risk board,
@@ -218,7 +231,7 @@ flowchart TB
     CMS["Directus 11.17.4"]
     DB[("PostgreSQL 17")]
   end
-  subgraph Iran["IRAN — Liara, prepared, not deployed"]
+  subgraph Iran["IRAN — Liara (v0.6.5 deployed; sync off)"]
     APIIR["Same release<br/>regional runtime"]
     DBIR[("PostgreSQL")]
   end
@@ -242,7 +255,8 @@ flowchart TB
   GET-only and isolated from it.
 - **Regions.** Every trading account has exactly one home region enforced by
   the database; the other region holds a read model through signed
-  synchronization. Liara is prepared and documented but not deployed.
+  synchronization. The Liara runtime is deployed (v0.6.5); synchronization
+  between the regions is not enabled yet.
 - **Content versus data.** Directus holds editorial content, the plan catalog
   and coupons; market data comes from Gains (and Hyperliquid for read-only
   analytics); prices, orders and payments are decided only by the backend.
@@ -274,7 +288,7 @@ Design system: shared tokens and primitives in
 | --- | --- |
 | **GitHub** | Canonical repository; protected `main` with required checks; releases and tags |
 | **Render** | `openfund` (Node web service, API + SPA), `openfund-cms` (Directus image with a persistent media disk), `openfund-db` (PostgreSQL 17), all in Frankfurt. Commit auto-deploy is off |
-| **IRAN region** | Liara runtime image and desired-state manifest (`infra/liara-iran-runtime`, ADR 0033): same release, own database, signed synchronization. Prepared and CI-built; **not deployed** |
+| **IRAN region** | Liara runtime image and desired-state manifest (`infra/liara-iran-runtime`, ADR 0033): same release, own database, signed synchronization. Deployed on Liara (web and worker, v0.6.5); synchronization **not enabled** |
 | **Domains** | `openfi.cloud` and `openfund.cloud` serve the same service |
 | **Deployment** | A maintainer publishes a release; the release workflow deploys the exact tagged commit after environment approval and checks `/version` on both domains |
 | **Build** | `node scripts/release/render-build.mjs` builds the frontend; migrations run at start-up and are additive and idempotent |

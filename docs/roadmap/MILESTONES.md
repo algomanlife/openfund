@@ -1,5 +1,10 @@
 # Milestones and acceptance gates
 
+Current per-environment state: [status](../status/README.md). This register
+tracks scope and acceptance; the notes immediately below are historical.
+
+## Historical notes (2026-11-08 to 2026-11-11, superseded)
+
 2026-11-11 P0 SIWE custom-domain fix: **In Progress / source only**. The
 Blueprint and CI regression now cover both public origins; production
 acceptance still requires an approved deploy and a real wallet to sign in,
@@ -15,6 +20,8 @@ override and requires a per-site exception when it ignores the site's palette.
 P0 audit correction: the earlier mutable 8080 preview lost its frontend manifest and was unversioned. Clean-context real clicks verify white light canvases, not the owner Opera profile (permission unavailable). Final candidate hashes, pipeline outcomes and canonical extracted-archive captures are tracked in [P0 evidence](../../docs/assets/screenshots/manifest.json). Historical captures and prior matched-runtime claims do not identify the final build. Official v0.2.0 and integrated base `d05b4b8` remain unchanged; owner acceptance is open.
 
 Reviewed against integrated source `d05b4b8`: PR #42 is merged but unreleased. Official v0.2.0 remains `561e7f3` and includes PR #40/#41. The current community controls are locally captured and UNRELEASED; local white-theme refinement acceptance is verified with exact white canvases, text contrast >=4.5 and authenticated generated-session evidence; official review and deployment remain open. [Current evidence](../reviews/community-theme/DELIVERY.md) records genuine captures and checks; local port 8080 and deployed acceptance are separate. The requested v0.2.1 is unallocated and must be coordinated with the existing `feat:` minor-bump policy. No completion dates are promised. **Completed**, **In Progress**, **Planned** and **Blocked** describe only each row's scope, not official delivery.
+
+## Milestone register
 
 | ID / phase | Description | Status | Dependencies | Acceptance criteria | Evidence / specification |
 | --- | --- | --- | --- | --- | --- |
@@ -79,7 +86,7 @@ reduced motion, locale/product navigation, existing wallet controls, CI and revi
 Proposed Perpetual concepts do not establish routing or zero-spread execution.
 [Scope and evidence](../reviews/landing-motion/DELIVERY.md).
 
-## Fresh delivery snapshot — 2026-11-03
+## Historical snapshot — 2026-11-03 (superseded; current state: [status](../status/README.md))
 
 | Capability | Status | Evidence / remaining acceptance |
 | --- | --- | --- |

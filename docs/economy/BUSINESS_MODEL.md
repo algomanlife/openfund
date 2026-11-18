@@ -25,7 +25,7 @@ challenge evaluation, and read-only Perpetual account review on Gains Network
 
 | Stream | Category | Notes |
 | --- | --- | --- |
-| Prop challenge sales (evaluation fees) | Implemented, **disabled in production** | Server-priced orders, coupons, multi-chain DePay checkout with on-chain verification ([lifecycle](../payments/ORDER_LIFECYCLE.md)). `paymentsEnabled: false` until the owner configures the receiver, token, RPC and DePay keys |
+| Prop challenge sales (evaluation fees) | Implemented; **enabled on GLOBAL** (verified 2026-11-18), not offered in IRAN; no genuine production purchase recorded yet | Server-priced orders, coupons, multi-chain DePay checkout with on-chain verification ([lifecycle](../payments/ORDER_LIFECYCLE.md)). GLOBAL reports `paymentsEnabled: true` with DePay on seven chains and manual transfer ([status](../status/README.md)) |
 | Openfund share of distributable live-trading profit | Implemented control plane, **not active** | Requires Live Market Access, verified capital and a real execution adapter (none enabled) |
 | Anything else (subscriptions, data, protocol fees) | Proposed or not planned | Not implemented |
 
