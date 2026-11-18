@@ -7159,6 +7159,186 @@
       "capturedAt": "2026-11-17T05:38:35.342917+00:00",
       "state": "Persian (RTL) trader Inbox after the reply was read. Same local check.",
       "sha256": "4c1185ef4ba6936c5cc5e351f0e127838e0c3038d7b9bbd3b81ddf495bdf8b3c"
+    },
+    {
+      "file": "heatmap-radar/before/heatmap-en-1440.png",
+      "route": "/en/prop/heatmap",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "BEFORE: 179 tiles, 171 too small to label; BTC takes about half the map; empty side panel.",
+      "sha256": "f2daed7195b0cbe481b57e08059ac470f13326684ebb364ca48e5ec92485b8f3"
+    },
+    {
+      "file": "heatmap-radar/before/heatmap-en-390.png",
+      "route": "/en/prop/heatmap",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "BEFORE: mobile heatmap.",
+      "sha256": "2a586866ef7f7c6a822e807baf77b0a654d5fcae98151c578b7588f7a3de3e3a"
+    },
+    {
+      "file": "heatmap-radar/before/radar-en-390.png",
+      "route": "/en/prop/radar",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "BEFORE: mobile radar, 57 px rows.",
+      "sha256": "95423d17aa4a58499732b265e087c6fad31b36fdbcbd0354aa0a844154824e00"
+    },
+    {
+      "file": "heatmap-radar/before/radar-fa-1440.png",
+      "route": "/fa/prop/radar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "BEFORE: Persian radar.",
+      "sha256": "87341b196ff25aa29c897f0ee2f694ebd0d62d73b7899b3dd4edb150489170ea"
+    },
+    {
+      "file": "heatmap-radar/heatmap-en-1440.png",
+      "route": "/en/prop/heatmap",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "AFTER: readable tiles; small markets in proportional \"+N\" tiles; no empty panel.",
+      "sha256": "f7d6e319eaf7d581ca9cd96cd571426fdf60c6af5121d9706d500a0be5f8987c"
+    },
+    {
+      "file": "heatmap-radar/heatmap-en-1440-selected.png",
+      "route": "/en/prop/heatmap",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "AFTER: tooltip and contextual details for a selected market.",
+      "sha256": "c55ebe8ec492879ee86555d28ec355602f01959855f0e65a45671f4df5d1d60f"
+    },
+    {
+      "file": "heatmap-radar/heatmap-en-1440-drilldown.png",
+      "route": "/en/prop/heatmap",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "AFTER: a \"+N\" tile opened at readable size, with breadcrumb.",
+      "sha256": "e0eb0deaf5229f37c7f370657febffcb9a76c380100a5791b12fc78eb3290574"
+    },
+    {
+      "file": "heatmap-radar/heatmap-en-768.png",
+      "route": "/en/prop/heatmap",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "AFTER: tablet.",
+      "sha256": "e6cf14d796886c082f120feee245bdaa32c466d75ead72653b5f7a914873bb08"
+    },
+    {
+      "file": "heatmap-radar/heatmap-en-390.png",
+      "route": "/en/prop/heatmap",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "AFTER: phone, filters folded.",
+      "sha256": "c5ef4b4e2abc6f0f09d38aa8a22af7299d15d94b97ba44a1593cd58d64d042c4"
+    },
+    {
+      "file": "heatmap-radar/heatmap-en-390-sheet.png",
+      "route": "/en/prop/heatmap",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "AFTER: phone bottom sheet with market details.",
+      "sha256": "bb3a71ef3a2cc9790887dbd4b504fde77781dd987afa81d18cefb214f2555f9c"
+    },
+    {
+      "file": "heatmap-radar/heatmap-fa-1440-light.png",
+      "route": "/fa/prop/heatmap",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "AFTER: Persian, light theme.",
+      "sha256": "e22de80304b33e98ece2ba1b59af468f8c3f55b26afcc4e35e37947f928d8271"
+    },
+    {
+      "file": "heatmap-radar/radar-en-1440.png",
+      "route": "/en/prop/radar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "AFTER: compact 35 px rows, sticky header; tape data intercepted for a deterministic capture (not live trades).",
+      "sha256": "aa39828c4af0b629d6df1604f7ab4de65c69a7ecb0a37dba36f8aed1dead64b6"
+    },
+    {
+      "file": "heatmap-radar/radar-en-768.png",
+      "route": "/en/prop/radar",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "AFTER: tablet table.",
+      "sha256": "645ec59316ce4ea8f21919790b1fce1b1f91e7ad9115363dc9166c7f30d5ef52"
+    },
+    {
+      "file": "heatmap-radar/radar-en-390.png",
+      "route": "/en/prop/radar",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "AFTER: phone cards with labels.",
+      "sha256": "3cfd86b512e2ec352168dce3047c8a6049f4072d2f47647129f67a3dd64402a7"
+    },
+    {
+      "file": "heatmap-radar/radar-fa-390.png",
+      "route": "/fa/prop/radar",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "no wallet; local build; Hyperliquid public data via the backend cache",
+      "capturedAt": "2026-11-18T10:02:58.774097+00:00",
+      "state": "AFTER: Persian phone cards, labels at the start, values LTR.",
+      "sha256": "d97497e8917ba59b4b32654d7ae0010c002b4f5a4cc0379e7ebf0c37603a68d4"
     }
   ],
   "finalIntegration": {

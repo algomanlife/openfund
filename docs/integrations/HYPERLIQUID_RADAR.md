@@ -54,6 +54,23 @@ GET routes pass the region guard in both regions. If the Iran runtime cannot
 reach Hyperliquid, the endpoints answer 503 and the tabs show the outage state;
 no other function depends on them.
 
+## Interface (2026-11-18 overhaul)
+
+Data, polling and sources are unchanged; only presentation changed.
+
+- **Heatmap size and colour are separate.** Tile area is the size metric (24h notional volume or open interest). Colour is a selectable real value (24h change or hourly funding) on a symmetric ±range the user chooses.
+- **Readable tiles.** Markets too small to label are grouped into one "+N" tile per level, worth exactly their summed metric, so area stays proportional. Opening it shows those markets at readable size (breadcrumb; Escape steps back). Tiles show symbol and change, or symbol only when compact; values are always in the tooltip, the details and the accessible name. The layout logic is in `treemap.ts` (`collapseSmall`, `stableOrder`, `colourWeight`) with unit tests.
+- **Stable layout.** Live refreshes keep tile order unless a market clearly overtakes another (20 % hysteresis).
+- **Contextual details.** Nothing is shown until a selection: a side panel on desktop, a bottom sheet on phones (closes on Escape or a tap outside). Hover shows a tooltip; symbol search opens the level holding a grouped market and selects it.
+- **Trade Radar.**
+  - Compact rows with a sticky header and tabular numbers.
+  - Duplicate trade ids are shown once.
+  - New trades get a highlight that fades after 2.4 s.
+  - The reader's scroll position holds while trades arrive above it.
+  - Rendering is capped at 200 rows, with a count.
+  - Wallets can be copied.
+  - Phones get labelled cards; RTL puts labels at the start and keeps numbers LTR.
+
 ## Tests
 
 `apps/backend/test/radar.test.mjs` (transforms, shared requests, stale fallback,

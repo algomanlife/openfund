@@ -3816,5 +3816,15 @@
   "Openfund Treasury": "خزينة Openfund",
   "Open ${base} in the terminal": "افتح ${base} في المنصة",
   "Show more (${count} remaining)": "عرض المزيد (${count} متبقية)",
-  "Your payment is confirmed and your challenge account is ready.": "تم تأكيد دفعتك وحساب التحدي الخاص بك جاهز."
+  "Your payment is confirmed and your challenge account is ready.": "تم تأكيد دفعتك وحساب التحدي الخاص بك جاهز.",
+  "${count} smaller markets": "${count} سوقًا أصغر",
+  "All markets": "كل الأسواق",
+  "Colour": "اللون",
+  "Colour range": "نطاق اللون",
+  "Copy address": "نسخ العنوان",
+  "Each tile is a Hyperliquid perpetual market: area follows the size metric, colour the colour metric. It does not show market capitalisation or liquidations.": "كل مربع سوق عقود دائمة على Hyperliquid: المساحة تتبع مقياس الحجم واللون يتبع مقياس اللون. لا تعرض الخريطة القيمة السوقية أو التصفيات.",
+  "No match": "لا نتائج",
+  "Path": "المسار",
+  "Showing ${shown} of ${total}": "عرض ${shown} من ${total}",
+  "Smaller markets": "أسواق أصغر"
 }

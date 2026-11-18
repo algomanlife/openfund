@@ -3816,5 +3816,15 @@
   "Openfund Treasury": "Казначейство Openfund",
   "Open ${base} in the terminal": "Открыть ${base} в терминале",
   "Show more (${count} remaining)": "Показать ещё (осталось ${count})",
-  "Your payment is confirmed and your challenge account is ready.": "Ваш платёж подтверждён, и ваш счёт испытания готов."
+  "Your payment is confirmed and your challenge account is ready.": "Ваш платёж подтверждён, и ваш счёт испытания готов.",
+  "${count} smaller markets": "Меньших рынков: ${count}",
+  "All markets": "Все рынки",
+  "Colour": "Цвет",
+  "Colour range": "Диапазон цвета",
+  "Copy address": "Копировать адрес",
+  "Each tile is a Hyperliquid perpetual market: area follows the size metric, colour the colour metric. It does not show market capitalisation or liquidations.": "Каждая плитка — бессрочный рынок Hyperliquid: площадь отражает метрику размера, цвет — метрику цвета. Карта не показывает рыночную капитализацию или ликвидации.",
+  "No match": "Нет совпадений",
+  "Path": "Путь",
+  "Showing ${shown} of ${total}": "Показано ${shown} из ${total}",
+  "Smaller markets": "Меньшие рынки"
 }

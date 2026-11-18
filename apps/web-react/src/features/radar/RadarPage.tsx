@@ -1,6 +1,6 @@
 /* Trade Radar — public Hyperliquid whale activity, read-only.
    Logic adapted from drkxbt/whales (MIT); presentation is Openfund-native. */
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTerminal } from '../terminal/TerminalContext'
 import { route } from '../terminal/model'
@@ -10,7 +10,52 @@ import './radar.css'
 
 type Tab = 'tape' | 'positioning' | 'positions' | 'leaderboard'
 const THRESHOLDS = [10_000, 50_000, 100_000, 500_000, 1_000_000]
-const LARGE = 500_000
+const LARGE = 500_000, MAX_ROWS = 200, NEW_MS = 2400
+
+/** Ids that arrived after the first load, for a short highlight. */
+function useNewIds<T>(rows: T[], id: (r: T) => string) {
+  const seen = useRef<Set<string> | null>(null), [fresh, setFresh] = useState<Map<string, number>>(new Map())
+  useEffect(() => {
+    if (!rows.length) return
+    if (!seen.current) { seen.current = new Set(rows.map(id)); return }
+    const now = Date.now(), added = rows.map(id).filter(k => !seen.current!.has(k))
+    added.forEach(k => seen.current!.add(k))
+    if (added.length) setFresh(prev => { const next = new Map(prev); added.forEach(k => next.set(k, now)); return next })
+  }, [rows, id])
+  useEffect(() => {
+    if (!fresh.size) return
+    const timer = window.setTimeout(() => setFresh(prev => { const next = new Map(prev); for (const [k, at] of next) if (Date.now() - at >= NEW_MS) next.delete(k); return next }), NEW_MS)
+    return () => window.clearTimeout(timer)
+  }, [fresh])
+  return fresh
+}
+
+/** Keeps the reader's place when rows arrive above it: remembers the first
+ *  visible row (by data-id) and its offset, and restores that offset after
+ *  each update. Inactive at the top, where new rows should be seen. */
+function useAnchoredScroll(ref: React.RefObject<HTMLDivElement | null>, deps: unknown) {
+  const anchor = useRef<{ id: string; offset: number } | null>(null), bound = useRef<HTMLDivElement | null>(null)
+  const capture = (el: HTMLDivElement) => {
+    if (el.scrollTop <= 4) { anchor.current = null; return }
+    const top = el.getBoundingClientRect().top
+    const row = [...el.querySelectorAll<HTMLElement>('tbody tr[data-id]')].find(r => r.getBoundingClientRect().bottom > top + 1)
+    anchor.current = row ? { id: row.dataset.id!, offset: row.getBoundingClientRect().top - top } : null
+  }
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (bound.current !== el) { /* the table mounts only once rows exist */
+      bound.current = el
+      el.addEventListener('scroll', () => capture(el), { passive: true })
+    }
+    const a = anchor.current
+    if (a && el.scrollTop > 4) {
+      const row = el.querySelector<HTMLElement>(`tbody tr[data-id="${CSS.escape(a.id)}"]`)
+      if (row) el.scrollTop += row.getBoundingClientRect().top - el.getBoundingClientRect().top - a.offset
+    }
+    capture(el)
+  }, [deps, ref])
+}
 
 export function Freshness({ state, fetchedAt, updated, stale, error }: { state?: string; fetchedAt: number; updated?: number | null; stale?: boolean; error?: boolean }) {
   const { t } = useTerminal(), now = useNow()
@@ -105,8 +150,17 @@ function Empty({ loading, error, children }: { loading: boolean; error: boolean;
 }
 
 function WalletButton({ wallet, name, onWallet }: { wallet: string; name?: string; onWallet: (w: string) => void }) {
-  return <button type="button" className="of-radar-walletbtn" onClick={() => onWallet(wallet)}><bdi dir="ltr">{name || shortWallet(wallet)}</bdi></button>
+  const { t } = useTerminal(), [copied, setCopied] = useState(false)
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(wallet); setCopied(true); window.setTimeout(() => setCopied(false), 1500) } catch { /* clipboard unavailable */ }
+  }
+  return <span className="of-radar-wallet-cell">
+    <button type="button" className="of-radar-walletbtn" onClick={() => onWallet(wallet)} title={wallet}><bdi dir="ltr">{name || shortWallet(wallet)}</bdi></button>
+    <button type="button" className="of-radar-copy" onClick={() => void copy()} aria-label={copied ? t('کپی شد', 'Copied') : t('کپی نشانی', 'Copy address')} title={wallet}>{copied ? '✓' : '⧉'}</button>
+  </span>
 }
+
+const tradeId = (tr: Trade) => tr.id
 
 function Tape({ coin, min, side, wallet, onWallet, sideLabel }: { coin: string; min: number; side: string; wallet: string; onWallet: (w: string) => void; sideLabel: (s: string) => string }) {
   const { t } = useTerminal()
@@ -114,7 +168,14 @@ function Tape({ coin, min, side, wallet, onWallet, sideLabel }: { coin: string; 
   const tape = usePoll<{ state: string; coins: string[]; lastMessageAt: number | null; trades: Trade[] }>(`/tape?${q}`, 3000)
   const [notify, setNotify] = useState(false)
   const notified = useRef(new Set<string>()), lastNotice = useRef(0)
-  const rows = (tape.data?.trades || []).filter(tr => (!side || (side === 'long') === (tr.side === 'buy')) && (!wallet || tr.buyer.includes(wallet) || tr.seller.includes(wallet)))
+  const rows = useMemo(() => {
+    const unique = new Map<string, Trade>()
+    for (const tr of tape.data?.trades || []) if (!unique.has(tr.id)) unique.set(tr.id, tr)
+    return [...unique.values()].filter(tr => (!side || (side === 'long') === (tr.side === 'buy')) && (!wallet || tr.buyer.includes(wallet) || tr.seller.includes(wallet)))
+  }, [tape.data, side, wallet])
+  const fresh = useNewIds(rows, tradeId)
+  const scroller = useRef<HTMLDivElement>(null)
+  useAnchoredScroll(scroller, rows)
   useEffect(() => {
     if (!notify || typeof Notification === 'undefined' || Notification.permission !== 'granted') return
     const fresh = rows.filter(r => !notified.current.has(r.id) && Date.now() - r.time < 60_000)
@@ -140,15 +201,16 @@ function Tape({ coin, min, side, wallet, onWallet, sideLabel }: { coin: string; 
         {Notification.permission === 'denied' ? t('اعلان مرورگر مسدود است', 'Browser notifications blocked') : notify ? t('اعلان‌ها روشن', 'Alerts on') : t('اعلان مرورگر', 'Browser alerts')}</button>}
     </div>
     {!rows.length ? <Empty loading={tape.loading} error={tape.error}>{tape.data?.state === 'live' ? t('هنوز معامله‌ای با این فیلترها ثبت نشده. معاملات جدید خودکار اضافه می‌شوند.', 'No trades match yet. New trades appear automatically.') : undefined}</Empty> :
-      <div className="of-radar-table" tabIndex={0} role="region" aria-label={t('معاملات زنده', 'Live tape')}><table>
+      <div className="of-radar-table" ref={scroller} tabIndex={0} role="region" aria-label={t('معاملات زنده', 'Live tape')}><table className="is-cards">
         <thead><tr><th>{t('زمان', 'Time')}</th><th>{t('نماد', 'Symbol')}</th><th>{t('جهت', 'Side')}</th><th className="r">{t('ارزش', 'Value')}</th><th className="r">{t('قیمت', 'Price')}</th><th>{t('کیف پول', 'Wallet')}</th></tr></thead>
-        <tbody>{rows.map(tr => { const taker = tr.side === 'buy' ? tr.buyer : tr.seller
-          return <tr key={tr.id} className={tr.usd >= LARGE ? 'is-large' : ''}>
-            <td dir="ltr">{clock(tr.time)}</td><td><b>{tr.coin}</b></td>
-            <td><span className={`of-radar-side ${tr.side === 'buy' ? 'is-up' : 'is-down'}`}>{sideLabel(tr.side)}</span></td>
-            <td className="r" dir="ltr"><b>{usd(tr.usd)}</b></td><td className="r" dir="ltr">{price(tr.price)}</td>
-            <td>{taker ? <WalletButton wallet={taker} onWallet={onWallet} /> : '—'}</td></tr> })}</tbody>
+        <tbody>{rows.slice(0, MAX_ROWS).map(tr => { const taker = tr.side === 'buy' ? tr.buyer : tr.seller
+          return <tr key={tr.id} data-id={tr.id} className={`${tr.usd >= LARGE ? 'is-large' : ''}${fresh.has(tr.id) ? ' is-new' : ''}`}>
+            <td dir="ltr" data-label={t('زمان', 'Time')}>{clock(tr.time)}</td><td data-label={t('نماد', 'Symbol')}><b>{tr.coin}</b></td>
+            <td data-label={t('جهت', 'Side')}><span className={`of-radar-side ${tr.side === 'buy' ? 'is-up' : 'is-down'}`}>{sideLabel(tr.side)}</span></td>
+            <td className="r" dir="ltr" data-label={t('ارزش', 'Value')}><b>{usd(tr.usd)}</b></td><td className="r" dir="ltr" data-label={t('قیمت', 'Price')}>{price(tr.price)}</td>
+            <td data-label={t('کیف پول', 'Wallet')}>{taker ? <WalletButton wallet={taker} onWallet={onWallet} /> : '—'}</td></tr> })}</tbody>
       </table></div>}
+    {rows.length > MAX_ROWS && <p className="of-radar-note">{t('نمایش ${shown} از ${total}', 'Showing ${shown} of ${total}').replace('${shown}', String(MAX_ROWS)).replace('${total}', String(rows.length))}</p>}
   </>
 }
 
@@ -206,13 +268,13 @@ function Positions({ window, coin, side, wallet, onWallet, sideLabel }: { window
 
 function PositionTable({ rows, onWallet, sideLabel, showWallet }: { rows: Position[]; onWallet?: (w: string) => void; sideLabel: (s: string) => string; showWallet?: boolean }) {
   const { t } = useTerminal()
-  return <table>
+  return <table className="is-cards">
     <thead><tr>{showWallet && <th>{t('کیف پول', 'Wallet')}</th>}<th>{t('نماد', 'Symbol')}</th><th>{t('جهت', 'Side')}</th><th className="r">{t('ارزش', 'Value')}</th><th className="r">{t('نقطه ورود', 'Entry')}</th><th className="r">{t('اهرم', 'Leverage')}</th><th className="r">{t('قیمت لیکوییدیشن', 'Liq. price')}</th><th className="r">{t('سود باز', 'Unrealized PnL')}</th></tr></thead>
     <tbody>{rows.map(p => <tr key={`${p.wallet}:${p.coin}`}>
-      {showWallet && <td>{onWallet ? <WalletButton wallet={p.wallet} name={p.name} onWallet={onWallet} /> : shortWallet(p.wallet)}</td>}
-      <td><b>{p.coin}</b></td><td><span className={`of-radar-side ${p.side === 'long' ? 'is-up' : 'is-down'}`}>{sideLabel(p.side)}</span></td>
-      <td className="r" dir="ltr">{usd(p.value)}</td><td className="r" dir="ltr">{price(p.entry)}</td><td className="r" dir="ltr">{lev(p.leverage)}</td>
-      <td className="r" dir="ltr">{price(p.liquidation)}</td><td className={`r ${tone(p.upnl)}`} dir="ltr">{signedUsd(p.upnl)}</td></tr>)}</tbody>
+      {showWallet && <td data-label={t('کیف پول', 'Wallet')}>{onWallet ? <WalletButton wallet={p.wallet} name={p.name} onWallet={onWallet} /> : shortWallet(p.wallet)}</td>}
+      <td data-label={t('نماد', 'Symbol')}><b>{p.coin}</b></td><td data-label={t('جهت', 'Side')}><span className={`of-radar-side ${p.side === 'long' ? 'is-up' : 'is-down'}`}>{sideLabel(p.side)}</span></td>
+      <td className="r" dir="ltr" data-label={t('ارزش', 'Value')}>{usd(p.value)}</td><td className="r" dir="ltr" data-label={t('نقطه ورود', 'Entry')}>{price(p.entry)}</td><td className="r" dir="ltr" data-label={t('اهرم', 'Leverage')}>{lev(p.leverage)}</td>
+      <td className="r" dir="ltr" data-label={t('قیمت لیکوییدیشن', 'Liq. price')}>{price(p.liquidation)}</td><td className={`r ${tone(p.upnl)}`} dir="ltr" data-label={t('سود باز', 'Unrealized PnL')}>{signedUsd(p.upnl)}</td></tr>)}</tbody>
   </table>
 }
 
@@ -224,12 +286,12 @@ function Leaderboard({ window, wallet, onWallet }: { window: Window; wallet: str
     <div className="of-radar-bar"><Freshness fetchedAt={data.fetchedAt} updated={data.data?.updated} stale={data.data?.stale} error={data.error} />
       <span className="of-radar-note">{t('حساب‌هایی با حجم معاملات ماهانهٔ حداقل ۱۰۰ هزار دلار', 'Accounts with at least $100K monthly volume')}</span></div>
     {!rows.length ? <Empty loading={data.loading} error={data.error} /> :
-      <div className="of-radar-table" tabIndex={0} role="region" aria-label={t('لیدربورد', 'Leaderboard')}><table>
+      <div className="of-radar-table" tabIndex={0} role="region" aria-label={t('لیدربورد', 'Leaderboard')}><table className="is-cards">
         <thead><tr><th className="r">#</th><th>{t('معامله‌گر', 'Trader')}</th><th className="r">{t('سود و زیان', 'PnL')}</th><th className="r">{t('بازده', 'ROI')}</th><th className="r">{t('حجم', 'Volume')}</th><th className="r">{t('ارزش حساب', 'Account value')}</th></tr></thead>
         <tbody>{rows.map(r => <tr key={r.wallet}>
-          <td className="r" dir="ltr">{r.rank}</td><td><WalletButton wallet={r.wallet} name={r.name} onWallet={onWallet} /></td>
-          <td className={`r ${tone(r.pnl)}`} dir="ltr">{signedUsd(r.pnl)}</td><td className={`r ${tone(r.roi)}`} dir="ltr">{pct(r.roi, 1)}</td>
-          <td className="r" dir="ltr">{usd(r.volume)}</td><td className="r" dir="ltr">{usd(r.accountValue)}</td></tr>)}</tbody>
+          <td className="r" dir="ltr" data-label="#">{r.rank}</td><td data-label={t('معامله‌گر', 'Trader')}><WalletButton wallet={r.wallet} name={r.name} onWallet={onWallet} /></td>
+          <td className={`r ${tone(r.pnl)}`} dir="ltr" data-label={t('سود و زیان', 'PnL')}>{signedUsd(r.pnl)}</td><td className={`r ${tone(r.roi)}`} dir="ltr" data-label={t('بازده', 'ROI')}>{pct(r.roi, 1)}</td>
+          <td className="r" dir="ltr" data-label={t('حجم', 'Volume')}>{usd(r.volume)}</td><td className="r" dir="ltr" data-label={t('ارزش حساب', 'Account value')}>{usd(r.accountValue)}</td></tr>)}</tbody>
       </table></div>}
   </>
 }
