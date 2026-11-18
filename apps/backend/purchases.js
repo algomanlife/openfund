@@ -1022,7 +1022,11 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
      exactly that ERC-20 transfer. Payment chain ≠ authentication chain:
      sign-in stays Arbitrum-only, payment may use any configured chain, but
      the SIGNER must stay the authenticated wallet (the verifier enforces it). */
-  router.post('/purchases/orders/:id/intents', requireAuth, limit(20), wrap(async (req, res) => {
+  /* per-client ceilings (express-rate-limit, like the receipt/verify routes)
+     on top of the per-path limit(); the status route is polled every 3 s */
+  const intentLimiter = rateLimit({ windowMs: 60_000, limit: 30, standardHeaders: 'draft-7', legacyHeaders: false, message: { error: 'rate_limited' } })
+  const statusLimiter = rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false, message: { error: 'rate_limited' } })
+  router.post('/purchases/orders/:id/intents', intentLimiter, requireAuth, limit(20), wrap(async (req, res) => {
     if (!uuid.test(req.params.id)) throw fail(404, 'order_not_found')
     if (!(await paymentMethodSettings(pool)).wallet.enabled) throw fail(403, 'method_disabled')
     const chainId = Number(req.body?.chainId)
@@ -1066,7 +1070,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
      (intent + attempt) before anything else, then verify in the background.
      Closing the browser after this call loses nothing: the recovery sweep
      and the watcher continue from these records. */
-  router.post('/purchases/intents/:id/submit', requireAuth, limit(20), wrap(async (req, res) => {
+  router.post('/purchases/intents/:id/submit', intentLimiter, requireAuth, limit(20), wrap(async (req, res) => {
     if (!uuid.test(req.params.id)) throw fail(404, 'intent_not_found')
     const intent = (await pool.query(`SELECT * FROM payment_intents WHERE id=$1 AND user_id=$2`, [req.params.id, req.user.user_id])).rows[0]
     if (!intent) throw fail(404, 'intent_not_found')
@@ -1100,7 +1104,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
 
   /* 4b4 — customer payment status: one authoritative view of the order,
      its ledger, attempts, refunds and timeline (checkout polling) */
-  router.get('/purchases/orders/:id/payment-status', requireAuth, wrap(async (req, res) => {
+  router.get('/purchases/orders/:id/payment-status', statusLimiter, requireAuth, wrap(async (req, res) => {
     if (!uuid.test(req.params.id)) throw fail(404, 'order_not_found')
     const order = await orderView(req.params.id, req.user.user_id)
     if (!order) throw fail(404, 'order_not_found')
