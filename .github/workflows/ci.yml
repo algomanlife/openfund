@@ -7,6 +7,8 @@ name: CI
 #   blueprint — render.yaml structural validation (network-free)
 #   secrets   — gitleaks scan of commits
 #   audit     — dependency vulnerability report (non-blocking, critical level)
+#   audit-production — blocking: high/critical advisories in backend and
+#               Backstage production dependencies
 #   changes   — classifies the pull request (docs | affected | full) so heavy
 #               jobs are skipped only when no code, build or test input changed
 #               (scripts/ci/changes.mjs; docs/development/CI.md)
@@ -555,6 +557,25 @@ jobs:
         run: npm --prefix apps/web-react audit --audit-level=critical || echo "::warning::critical advisories in apps/web-react — see log"
       - name: backend audit
         run: npm --prefix apps/backend audit --audit-level=critical || echo "::warning::critical advisories in apps/backend — see log"
+
+  # Blocking gate for the server-side PRODUCTION dependency trees (security
+  # audit 2026-11): a high or critical advisory in a runtime dependency of
+  # the backend or Backstage fails CI. Dev dependencies and the browser and
+  # desktop bundles stay in the report-only job above until their open
+  # findings (docs/security/SECURITY-REMEDIATION-PLAN.md) are resolved.
+  audit-production:
+    name: Production dependency gate (server)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+      - name: backend production dependencies
+        run: npm --prefix apps/backend audit --omit=dev --audit-level=high --registry=https://registry.npmjs.org
+      - name: backstage production dependencies
+        run: npm --prefix apps/backstage audit --omit=dev --audit-level=high --registry=https://registry.npmjs.org
 
   desktop-contract:
     name: Desktop IPC policy
