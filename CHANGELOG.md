@@ -29,6 +29,11 @@
     document, records three open High findings (Directus advisories, the
     database credential Directus shares with the API, and the IRAN edge base
     image) and a **NOT READY** decision for real customer funds.
+- **CI supply chain (security audit 2026-11, OF-2026-11-07)** — GitHub
+  Actions are pinned to commit SHAs (the commits their current tags point
+  to), checkouts no longer persist the job token except in the two
+  workflows that push proposal branches, and the image publish step reads
+  step outputs from `env`. No workflow behaviour changes.
 
 - **Openfund Pay** — first-party, provider-independent checkout and payment
   ledger ([ADR 0046](docs/decisions/0046-openfund-pay.md),
