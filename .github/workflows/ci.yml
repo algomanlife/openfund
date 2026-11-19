@@ -546,39 +546,62 @@ jobs:
           npm ci --ignore-scripts
           npm ci --prefix apps/backend
           npm ci --include=dev --prefix apps/web-react
-      - name: Render-like owner role, migrations and the role policy (applied twice)
+      - name: Render-like owner role and migrations
         env:
           PGPASSWORD: postgres_ci
-          CMS_DB_PASSWORD: openfund_directus_ci
-          RUNTIME_DB_PASSWORD: openfund_runtime_ci
         run: |
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -c "CREATE ROLE of_owner_ci LOGIN PASSWORD 'of_owner_ci' CREATEROLE" -c "CREATE DATABASE openfund_roles_ci OWNER of_owner_ci"
           DATABASE_URL="$OWNER_DATABASE_URL" npm --prefix apps/backend run migrate
           DATABASE_URL="$OWNER_DATABASE_URL" npm --prefix apps/backend run seed-plans
-          node scripts/ops/db-roles.mjs plan > /dev/null
-          node scripts/ops/db-roles.mjs apply
-          node scripts/ops/db-roles.mjs apply
-      - name: Directus 11.17.4 on the openfund_directus role with the render.yaml settings, CMS bootstrap and editor role
+      - name: First CMS bootstrap on the owner credential (what production already has)
+        # Attaching Directus relation metadata to backend foreign keys makes
+        # Directus 11 rewrite the constraint, which needs table ownership. A
+        # new database therefore gets its first bootstrap with the owner
+        # credential; every later bootstrap runs on the Directus role
+        # (docs/security/DATABASE_ROLES.md).
         run: |
-          # the literal openfund-cms environment from render.yaml (OF-2026-11-11 controls included)
-          node scripts/ops/directus-env.mjs > "$RUNNER_TEMP/directus.env"
           DIRECTUS_ADMIN_EMAIL=roles-ci@example.com
           DIRECTUS_ADMIN_PASSWORD="$(openssl rand -hex 20)"
           export DIRECTUS_ADMIN_EMAIL DIRECTUS_ADMIN_PASSWORD
           echo "::add-mask::$DIRECTUS_ADMIN_PASSWORD"
-          echo "DIRECTUS_ADMIN_EMAIL=$DIRECTUS_ADMIN_EMAIL" >> "$GITHUB_ENV"
-          echo "DIRECTUS_ADMIN_PASSWORD=$DIRECTUS_ADMIN_PASSWORD" >> "$GITHUB_ENV"
+          DIRECTUS_KEY="$(openssl rand -hex 16)"
+          DIRECTUS_SECRET="$(openssl rand -hex 32)"
+          echo "::add-mask::$DIRECTUS_SECRET"
+          {
+            echo "DIRECTUS_ADMIN_EMAIL=$DIRECTUS_ADMIN_EMAIL"
+            echo "DIRECTUS_ADMIN_PASSWORD=$DIRECTUS_ADMIN_PASSWORD"
+            echo "DIRECTUS_KEY=$DIRECTUS_KEY"
+            echo "DIRECTUS_SECRET=$DIRECTUS_SECRET"
+          } >> "$GITHUB_ENV"
+          docker run --rm -d --name openfund-roles-cms --network host \
+            -e DB_CLIENT=pg -e DB_HOST=127.0.0.1 -e DB_PORT=5432 -e DB_DATABASE=openfund_roles_ci \
+            -e DB_USER=of_owner_ci -e DB_PASSWORD=of_owner_ci \
+            -e KEY="$DIRECTUS_KEY" -e SECRET="$DIRECTUS_SECRET" \
+            -e ADMIN_EMAIL="$DIRECTUS_ADMIN_EMAIL" -e ADMIN_PASSWORD="$DIRECTUS_ADMIN_PASSWORD" \
+            -e WEBSOCKETS_ENABLED=false directus/directus:11.17.4
+          for _ in $(seq 1 90); do curl -fsS "$DIRECTUS_URL/server/ping" >/dev/null && break; sleep 1; done
+          bash apps/backstage/scripts/bootstrap-cms.sh
+          docker stop openfund-roles-cms
+      - name: Role policy (applied twice)
+        env:
+          CMS_DB_PASSWORD: openfund_directus_ci
+          RUNTIME_DB_PASSWORD: openfund_runtime_ci
+        run: |
+          node scripts/ops/db-roles.mjs plan > /dev/null
+          node scripts/ops/db-roles.mjs apply
+          node scripts/ops/db-roles.mjs apply
+      - name: Directus 11.17.4 on the openfund_directus role with the render.yaml settings, CMS bootstrap again and editor role
+        run: |
+          # the literal openfund-cms environment from render.yaml (OF-2026-11-11 controls included)
+          node scripts/ops/directus-env.mjs > "$RUNNER_TEMP/directus.env"
           docker run --rm -d --name openfund-roles-cms --network host --env-file "$RUNNER_TEMP/directus.env" \
             -e PORT=8055 -e DB_HOST=127.0.0.1 -e DB_PORT=5432 -e DB_DATABASE=openfund_roles_ci \
             -e DB_USER=openfund_directus -e DB_PASSWORD=openfund_directus_ci \
-            -e KEY="$(openssl rand -hex 16)" -e SECRET="$(openssl rand -hex 32)" \
-            -e ADMIN_EMAIL="$DIRECTUS_ADMIN_EMAIL" -e ADMIN_PASSWORD="$DIRECTUS_ADMIN_PASSWORD" \
+            -e KEY="$DIRECTUS_KEY" -e SECRET="$DIRECTUS_SECRET" \
             directus/directus:11.17.4
           for _ in $(seq 1 90); do curl -fsS "$DIRECTUS_URL/server/ping" >/dev/null && break; sleep 1; done
           bash apps/backstage/scripts/bootstrap-cms.sh
           python3 apps/backstage/scripts/register_backstage_editor.py
-          # Directus created its system and editorial tables as its own role:
-          # transfer nothing, verify ownership and grants again
           node scripts/ops/db-roles.mjs apply
       - name: CMS bootstrap regression across a Directus restart
         env:

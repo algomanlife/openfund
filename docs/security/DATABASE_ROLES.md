@@ -101,9 +101,10 @@ changes coupon-domain SQL, which is outside this remediation's scope.
 
 [`scripts/ops/test/db-roles.test.mjs`](../../scripts/ops/test/db-roles.test.mjs)
 runs in the CI job `Database role isolation`. That job uses a non-superuser
-`CREATEROLE` owner, as on Render, plus Directus 11.17.4 connected as
-`openfund_directus`, the full CMS bootstrap and the Backstage editor role. The
-suite covers:
+`CREATEROLE` owner, as on Render. It follows the production sequence: the
+first bootstrap on the owner credential, then `apply` twice, then Directus
+11.17.4 restarted as `openfund_directus` with the CMS bootstrap run again and
+the Backstage editor role. The suite covers:
 
 - the original finding: a Directus admin `PATCH` of a challenge to `passed`,
   a balance change and a delete are refused, and the rows are unchanged;
@@ -162,6 +163,22 @@ the API's `MIGRATION_DATABASE_URL` to the owner credential and
 runtime-role server. The application logged no privilege errors. The only
 failures were test-harness DDL: fault-injection triggers, `TRUNCATE` fixtures
 and schema re-application, which need the owner role.
+
+## New environments and backend schema changes
+
+Directus 11 rewrites a foreign key whenever relation metadata is attached
+to it, even for a metadata-only `PATCH`. That needs table ownership.
+`register_commerce_tables.py` attaches metadata to the coupon foreign keys,
+so a **brand-new database** gets its first `bootstrap-cms.sh` run with
+Directus on the owner credential. Then run `db-roles.mjs apply`, and switch
+Directus to `openfund_directus`. Production was bootstrapped this way
+already. Every later bootstrap is idempotent and runs on the Directus role,
+which CI verifies by bootstrapping again after the switch.
+
+The same rule applies when a future change gives Directus relation metadata
+or columns on a backend table: run that step once on the owner credential,
+then run `apply` again. Backend schema changes belong in
+`apps/backend/schema.sql`, which the owner runs.
 
 ## Rotation and rollback
 
