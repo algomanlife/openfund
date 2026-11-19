@@ -5,7 +5,9 @@
 #   openfund-db    Render Postgres 17  — the single persistent store (app tables
 #                                     + Directus CMS tables; one database on
 #                                     purpose: Directus is the editing surface
-#                                     for catalog tables such as challenge_plans)
+#                                     for catalog tables such as challenge_plans).
+#                                     Directus connects as its own least-privilege
+#                                     role (openfund_directus, OF-2026-11-12)
 #   openfund-cms   Directus 11.17.4 (official Docker image) — editorial content,
 #                                     plan catalog editing, media (persistent disk)
 #   openfund       Node web service   — backend API (SIWE auth, demo trading
@@ -54,9 +56,10 @@ services:
       - key: DB_CLIENT
         value: pg
       - key: DB_CONNECTION_STRING
-        fromDatabase:
-          name: openfund-db
-          property: connectionString
+        sync: false             # secret (OF-2026-11-12): the openfund_directus role's INTERNAL connection
+                                # string, never the openfund-db owner credential. The role and its grants come
+                                # from `node scripts/ops/db-roles.mjs apply` (docs/security/DATABASE_ROLES.md).
+                                # Set this value BEFORE syncing a Blueprint that contains this line.
       - key: KEY
         generateValue: true     # random, generated once at first apply
       - key: SECRET
@@ -77,6 +80,17 @@ services:
         value: GET,HEAD,OPTIONS
       - key: MAX_PAYLOAD_SIZE
         value: 1mb
+      # ---- OF-2026-11-11 compensating controls while on 11.x (verified by
+      # scripts/ops/test/directus-hardening.test.mjs; keep until the 12.x upgrade) ----
+      - key: CACHE_ENABLED
+        value: "false"          # GHSA-c6w9-5g5j-jh2p needs the response cache; keep it off
+      - key: IMPORT_IP_DENY_LIST
+        value: "0.0.0.0,0.0.0.0/8,127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,169.254.0.0/16,100.64.0.0/10,::,::1,fc00::/7,fe80::/10"
+                                # GHSA-j5h6-vqc3-phqh: the default list does not deny the literal 0.0.0.0 / :: (reaches
+                                # localhost); explicit ranges also deny the private network (database, other services)
+      - key: FILES_MIME_TYPE_ALLOW_LIST
+        value: "image/png,image/jpeg,image/webp,image/gif,image/avif,application/pdf"
+                                # no HTML or SVG on the CMS origin (stored XSS) and no imported HTML responses
       - key: IP_TRUST_PROXY       # Render terminates TLS in front of the service. Explicit so Directus 12
         value: "true"             # (default false) keeps client-IP resolution identical to 11.x.
       - key: CONTENT_SECURITY_POLICY_DIRECTIVES__CHILD_SRC

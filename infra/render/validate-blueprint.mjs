@@ -125,8 +125,25 @@ has(s => s.runtime === 'node', 'Node API/web service')
 has(s => (s.envVars || []).some(v => v.key === 'DATABASE_URL' && v.fromDatabase), 'API consumes managed DATABASE_URL')
 const cms = services.find(s => s.name === 'openfund-cms')
 if (cms?.envVars?.some(v => v.key === 'DB_CLIENT' && v.value === 'pg') &&
-    cms?.envVars?.some(v => v.key === 'DB_CONNECTION_STRING' && v.fromDatabase?.name === 'openfund-db')) ok('graph: Directus uses PostgreSQL configuration')
-else fail('graph: Directus requires DB_CLIENT=pg and managed DB_CONNECTION_STRING')
+    cms?.envVars?.some(v => v.key === 'DB_CONNECTION_STRING' && v.sync === false && !v.fromDatabase && !('value' in v))) ok('graph: Directus uses PostgreSQL through its own role secret')
+else fail('graph: Directus requires DB_CLIENT=pg and a sync:false DB_CONNECTION_STRING for the openfund_directus role (never the owner fromDatabase credential, OF-2026-11-12)')
+/* OF-2026-11-11: compensating controls while Directus stays on 11.x */
+{
+  const env = Object.fromEntries((cms?.envVars || []).filter(v => 'value' in v).map(v => [v.key, String(v.value)]))
+  const major = Number((/directus:(\d+)\./.exec(cms?.image?.url || '') || [])[1])
+  if (major === 11) {
+    const deny = (env.IMPORT_IP_DENY_LIST || '').split(',')
+    const mime = (env.FILES_MIME_TYPE_ALLOW_LIST || '').split(',')
+    if (env.CACHE_ENABLED === 'false') ok('Directus 11: response cache off (GHSA-c6w9-5g5j-jh2p)')
+    else fail('Directus 11 requires CACHE_ENABLED=false (GHSA-c6w9-5g5j-jh2p)')
+    if (['0.0.0.0', '0.0.0.0/8', '127.0.0.0/8', '::', '::1', '169.254.0.0/16', '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'].every(r => deny.includes(r))) ok('Directus 11: file import deny list covers 0.0.0.0, loopback, link-local and private ranges (GHSA-j5h6-vqc3-phqh)')
+    else fail('Directus 11 requires an explicit IMPORT_IP_DENY_LIST including 0.0.0.0, 0.0.0.0/8, ::, loopback, link-local and private ranges (GHSA-j5h6-vqc3-phqh)')
+    if (mime.length && !mime.some(m => /html|svg|xml|javascript|\*/.test(m))) ok('Directus 11: upload MIME allow list excludes HTML, SVG and scripts')
+    else fail('Directus requires FILES_MIME_TYPE_ALLOW_LIST without HTML, SVG, XML, scripts or wildcards')
+    if (env.WEBSOCKETS_ENABLED === 'false') ok('Directus: WebSockets disabled')
+    else fail('Directus requires WEBSOCKETS_ENABLED=false')
+  }
+}
 const api = services.find(s => s.name === 'openfund')
 if (api?.numInstances !== 1) fail('graph: engine/SSE service requires numInstances: 1')
 if (api?.buildCommand?.trim() !== 'node scripts/release/render-build.mjs') fail('graph: API must use the verified official release build')

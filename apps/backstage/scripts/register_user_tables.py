@@ -35,8 +35,9 @@ COLLECTIONS = [
         'wallet_address': {'interface': 'input', 'readonly': True, 'width': 'half'},
         'wallet_chain': {'interface': 'input', 'readonly': True, 'width': 'half', 'special': ['cast-timestamp'] if False else []},
         'status': {'interface': 'select-dropdown', 'options': {'choices': [
-            {'text': 'Active', 'value': 'active'}, {'text': 'Suspended', 'value': 'suspended'}]}, 'width': 'half'},
-        'display_name': {'interface': 'input', 'width': 'half'},
+            {'text': 'Active', 'value': 'active'}, {'text': 'Suspended', 'value': 'suspended'}]}, 'readonly': True, 'width': 'half',
+            'note': 'Suspend or reinstate in Backstage Operations (backend admin API, reason and actor recorded).'},
+        'display_name': {'interface': 'input', 'readonly': True, 'width': 'half'},
         'last_login_at': {'interface': 'datetime', 'readonly': True, 'width': 'half'},
         'created_at': {'interface': 'datetime', 'readonly': True, 'width': 'half'},
         'updated_at': {'interface': 'datetime', 'readonly': True, 'hidden': True},
@@ -47,7 +48,7 @@ COLLECTIONS = [
         'status': {'interface': 'select-dropdown', 'options': {'choices': [
             {'text': 'Created', 'value': 'created'}, {'text': 'Started', 'value': 'started'},
             {'text': 'Passed', 'value': 'passed'}, {'text': 'Failed', 'value': 'failed'},
-            {'text': 'Expired', 'value': 'expired'}, {'text': 'Cancelled', 'value': 'cancelled'}]}, 'width': 'half'},
+            {'text': 'Expired', 'value': 'expired'}, {'text': 'Cancelled', 'value': 'cancelled'}]}, 'readonly': True, 'width': 'half'},
         'created_at': {'interface': 'datetime', 'readonly': True, 'width': 'half'},
         'started_at': {'interface': 'datetime', 'readonly': True, 'width': 'half'},
         'completed_at': {'interface': 'datetime', 'readonly': True, 'width': 'half'},
@@ -77,7 +78,7 @@ COLLECTIONS = [
         'used_margin': {'interface': 'input', 'readonly': True, 'hidden': True},
         'realized_pnl': {'interface': 'input', 'readonly': True, 'width': 'half'},
         'status': {'interface': 'select-dropdown', 'options': {'choices': [
-            {'text': 'Active', 'value': 'active'}, {'text': 'Suspended', 'value': 'suspended'}, {'text': 'Closed', 'value': 'closed'}]}, 'width': 'half'},
+            {'text': 'Active', 'value': 'active'}, {'text': 'Suspended', 'value': 'suspended'}, {'text': 'Closed', 'value': 'closed'}]}, 'readonly': True, 'width': 'half'},
         'created_at': {'interface': 'datetime', 'readonly': True, 'width': 'half'},
     }),
     ('trading_positions', 'candlestick_chart', 'Trading positions — written by the engine (read-only here).', True, {
@@ -91,7 +92,7 @@ COLLECTIONS = [
         'margin': {'interface': 'input', 'readonly': True, 'width': 'half'},
         'leverage': {'interface': 'input', 'readonly': True, 'width': 'half'},
         'status': {'interface': 'select-dropdown', 'options': {'choices': [
-            {'text': 'Open', 'value': 'open'}, {'text': 'Closed', 'value': 'closed'}, {'text': 'Liquidated', 'value': 'liquidated'}]}, 'width': 'half'},
+            {'text': 'Open', 'value': 'open'}, {'text': 'Closed', 'value': 'closed'}, {'text': 'Liquidated', 'value': 'liquidated'}]}, 'readonly': True, 'width': 'half'},
         'exit_reason': {'interface': 'input', 'readonly': True, 'width': 'half'},
         'realized_pnl': {'interface': 'input', 'readonly': True, 'width': 'half'},
         'opened_at': {'interface': 'datetime', 'readonly': True, 'width': 'half'},

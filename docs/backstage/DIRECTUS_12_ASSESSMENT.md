@@ -3,6 +3,31 @@
 **Status: upgrade to Directus 12 is BLOCKED on a licensing decision. Nothing was upgraded in production, and no production credential, backup or database was touched.**
 This page records what was verified from official sources, what a staged rehearsal showed, and what the owner must decide. Evidence was produced on 2026-11-10 against an isolated local PostgreSQL 17 cluster; see [staging evidence](../reviews/directus-12-staging/README.md).
 
+## Re-verification and compensating controls (2026-11-19)
+
+These checks were added for security finding OF-2026-11-11.
+
+- **Latest release:** npm `latest` is **12.7.0**. The 11.x line still ends at 11.17.4, the version Openfund pins. Index digest for 12.7.0: `sha256:f197911d949a37d882f781b0381955b851c86625435014cd67bdaf3eabcff2a7`.
+- **Licence:** a fresh, unlicensed 12.7.0 instance reports `GET /license` → `Core`, with `collections.limit` 25, `custom_permission_rules_enabled` false, 3 seats and 5 flows. These are the same Core limits measured on 12.6.1, so **the upgrade stays blocked on a licence decision**. No licence or grant is available to this repository, and none was assumed.
+- **Advisories affecting 11.17.4** (GitHub Advisory Database, `affects=directus@11.17.4`):
+  - GHSA-c6w9-5g5j-jh2p (High, response cache), fixed only in 12.0.0;
+  - GHSA-j5h6-vqc3-phqh (High, file-import SSRF via `0.0.0.0`), fixed only in 12.0.0;
+  - GHSA-7h45-q5jx-7r87 (Medium, share update reassigns `user_created` and `role`), published 2026-11-16.
+- **SSRF reproduced:** on 11.17.4 with the default `IMPORT_IP_DENY_LIST`, an administrator's `POST /files/import` of `http://0.0.0.0:8055/server/ping` returned 200 and stored the internal response, while `127.0.0.1` was refused.
+- **Compensating controls**, now declared in `render.yaml`, enforced by `infra/render/validate-blueprint.mjs` and verified at runtime by `scripts/ops/test/directus-hardening.test.mjs`. CI boots Directus with the literal `render.yaml` environment for these checks:
+
+  | Control | Setting | Runtime check |
+  | :--- | :--- | :--- |
+  | Response cache off | `CACHE_ENABLED=false` | no cache status header, no positive `max-age` |
+  | File import deny list | explicit `IMPORT_IP_DENY_LIST`: `0.0.0.0`, `0.0.0.0/8`, `::`, loopback, link-local, RFC 1918, CGNAT, ULA | imports of `0.0.0.0`, `0.0.0.1`, `[::]`, `127.0.0.1`, `localhost`, `169.254.169.254` and private ranges refused; a public URL still imports |
+  | Upload types | `FILES_MIME_TYPE_ALLOW_LIST`: PNG, JPEG, WebP, GIF, AVIF and PDF | HTML and SVG refused; PNG accepted |
+  | Shares | no non-admin policy grants `directus_shares` create or update | permission inventory check |
+  | WebSockets off | `WEBSOCKETS_ENABLED=false` | upgrade refused |
+  | Database role | Directus has its own least-privilege role ([database roles](../security/DATABASE_ROLES.md)) | `scripts/ops/test/db-roles.test.mjs` |
+
+  A negative control confirms the checks detect the vulnerable configuration: with the default deny list and WebSockets enabled, the SSRF and WebSocket checks fail.
+- **What stays open:** the controls reduce exposure, but the advisories remain present in 11.17.4. OF-2026-11-11 stays **open (High), blocked by licence**, until Directus 12 runs with an entitlement that covers 43+ collections and custom permission rules. The 12.x staging rehearsal below remains the upgrade procedure.
+
 ## Verified facts
 
 | Question | Answer | Source |
