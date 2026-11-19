@@ -51,8 +51,10 @@ jobs:
       IMAGE: ghcr.io/${{ github.repository }}
       PUSH: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
       - name: Resolve release tag
@@ -102,9 +104,14 @@ jobs:
       - name: Publish immutable tags
         id: push
         if: env.PUSH == 'true'
+        env:
+          # step outputs reach the script through the environment, never by
+          # template expansion into the shell source (zizmor template-injection)
+          PAYLOAD_VERSION: ${{ steps.payload.outputs.version }}
+          PAYLOAD_COMMIT: ${{ steps.payload.outputs.commit }}
         run: |
-          version=${{ steps.payload.outputs.version }}
-          echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          version="$PAYLOAD_VERSION"
+          printf '%s' "$GH_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
           # Version tags are immutable: never replace an existing image.
           if docker manifest inspect "$IMAGE:$version" >/dev/null 2>&1; then
             echo "::error::$IMAGE:$version already exists; published images are never overwritten."
@@ -117,10 +124,10 @@ jobs:
           digest=$(docker inspect --format '{{index .RepoDigests 0}}' "$IMAGE:$version" | cut -d@ -f2)
           echo "digest=$digest" >> "$GITHUB_OUTPUT"
           echo "### $IMAGE:$version" >> "$GITHUB_STEP_SUMMARY"
-          echo "Digest: \`$digest\` · commit \`${{ steps.payload.outputs.commit }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "Digest: \`$digest\` · commit \`$PAYLOAD_COMMIT\`" >> "$GITHUB_STEP_SUMMARY"
       - name: Attest build provenance
         if: env.PUSH == 'true'
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
         with:
           subject-name: ${{ env.IMAGE }}
           subject-digest: ${{ steps.push.outputs.digest }}

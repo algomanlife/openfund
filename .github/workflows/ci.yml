@@ -48,8 +48,10 @@ jobs:
       run_backend_suite: ${{ steps.classify.outputs.run_backend_suite }}
       run_presentation_matrices: ${{ steps.classify.outputs.run_presentation_matrices }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
       - name: Changed files (pull requests only; everything else is full)
@@ -73,8 +75,10 @@ jobs:
       run:
         working-directory: apps/web-react
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
           cache: npm
@@ -129,7 +133,7 @@ jobs:
         run: npm run test:release
       - name: Production build
         run: npm run build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: web-build
           path: react/
@@ -165,8 +169,10 @@ jobs:
       ALLOWED_DOMAINS: localhost:5173,localhost:8080,openfund-our6.onrender.com,openfi.cloud,openfund.cloud
       CORS_ORIGINS: http://localhost:5173,http://localhost:8080,https://openfi.cloud,https://openfund.cloud
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
           cache: npm
@@ -231,7 +237,7 @@ jobs:
           # ADR 0043: Cloudflare rules agree with the application's alias redirect
           node --test ../../scripts/cloudflare/test/policy.test.mjs ../../scripts/cloudflare/test/check-live.test.mjs
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
@@ -382,7 +388,7 @@ jobs:
         env:
           TEST_FRONTEND_URL: http://localhost:8080
         run: npm run test:browser:charts
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
           name: browser-audit
@@ -423,8 +429,10 @@ jobs:
       DATABASE_URL: postgres://openfund_ci:openfund_ci@localhost:5432/openfund_campaigns_ci
       DIRECTUS_URL: http://127.0.0.1:8055
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
           cache: npm
@@ -479,7 +487,7 @@ jobs:
           TEST_BACKEND_URL: http://localhost:8080
           OUTPUT_DIR: output/playwright/campaigns
         run: node e2e/test-campaigns.mjs || { tail -60 /tmp/openfund-campaigns.log; exit 1; }
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
           name: campaign-evidence
@@ -494,8 +502,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
           cache: npm
@@ -528,8 +538,9 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          persist-credentials: false
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9 (third-party: pinned to a commit; Dependabot proposes updates)
         env:
@@ -545,8 +556,10 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true # report-only gate; triage in the job log
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
       - name: repository tooling audit
@@ -560,8 +573,10 @@ jobs:
     name: Desktop IPC policy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
       - run: node --test apps/open-trade/tests/policy.test.mjs

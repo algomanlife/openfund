@@ -34,8 +34,10 @@ jobs:
       run_backend_suite: ${{ steps.classify.outputs.run_backend_suite }}
       run_presentation_matrices: ${{ steps.classify.outputs.run_presentation_matrices }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
       - name: Changed files (pull requests only; main and dispatches are always full)
@@ -77,10 +79,11 @@ jobs:
       CMS_PUBLIC_URL: http://127.0.0.1:8055
       CSP_EXTRA_CONNECT: http://127.0.0.1:8055
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          persist-credentials: false
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
           cache: npm
@@ -89,7 +92,7 @@ jobs:
             apps/web-react/package-lock.json
             apps/backend/package-lock.json
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
@@ -131,7 +134,7 @@ jobs:
           RELEASE_CANDIDATE: ${{ github.event_name != 'workflow_dispatch' || !inputs.publish }}
         run: |
           if [ "$RELEASE_CANDIDATE" = true ]; then npm run release:build -- --candidate; else npm run release:build; fi
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: official-release-candidate
           path: |
@@ -140,7 +143,7 @@ jobs:
             output/releases/v*/release-manifest.json
             output/releases/v*/verification.json
           retention-days: 30
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
           name: release-verification-evidence
@@ -158,8 +161,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          persist-credentials: false
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9 (third-party: pinned to a commit; Dependabot proposes updates)
         if: github.event_name != 'workflow_dispatch'
@@ -194,8 +198,10 @@ jobs:
     env:
       DATABASE_URL: postgres://openfund_ci:openfund_ci@localhost:5432/openfund_cms_ci
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
       - name: Clean installs and additive application schema
@@ -232,8 +238,10 @@ jobs:
     env:
       CMS_PUBLIC_URL: ${{ vars.RELEASE_DIRECTUS_URL }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
       - name: Verify live public bilingual CMS reads
@@ -247,13 +255,14 @@ jobs:
     outputs:
       tag: ${{ steps.published.outputs.tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          persist-credentials: false
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: official-release-candidate
           path: output/releases

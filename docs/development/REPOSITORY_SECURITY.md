@@ -109,7 +109,10 @@ the maintainer to `.github/CODEOWNERS`; enable *Prevent self-review* on the
 | `package-image.yml` interpolated the `version` dispatch input directly into a shell script | Low (needs write access) | Fixed: passed via `env` and validated as `vX.Y.Z` |
 | `release.yml` *Release secret scan* job had no timeout | Low | Fixed: 15 minutes |
 | `ci.yml` *Render Blueprint* job would download the Render CLI from `releases/latest` without a checksum. The step only runs when `RENDER_API_TOKEN` is visible to the job, and that secret exists only in the `production` environment, so today it always skips | Informational | Left unchanged; pin a version and checksum before ever exposing the token to that job |
-| GitHub-owned actions (`actions/*`) use major-version tags | Low | Accepted: GitHub-owned; Dependabot keeps them current. Pin to commits if *Allowed actions* is restricted further |
+| GitHub-owned actions (`actions/*`) used major-version tags (security audit 2026-11, OF-2026-11-07) | Low | Fixed: every `actions/*` reference is pinned to the commit its current release tag points to, with the version in a comment; Dependabot proposes updates |
+| `actions/checkout` persisted the job token in `.git/config` for later steps and artifacts (zizmor `artipacked`) | Low | Fixed: `persist-credentials: false` everywhere except `upstream-watch.yml` and `upstream-update-candidate.yml`, which push their own proposal branches |
+| `package-image.yml` expanded step outputs, the token and `github.actor` into the publish script (zizmor `template-injection`) | Low (values are not attacker-controlled) | Fixed: passed through `env` |
+| `release.yml` calls `deploy-release.yml` with `secrets: inherit` (zizmor `secrets-inherit`) | Informational | Accepted: same-repository callee running in the protected `production` environment, whose Render token is an environment secret; narrowing it needs a verified deploy run |
 | `upstream-watch.yml` force-pushes (`--force-with-lease`) only its own `upstream-watch/proposal` branch | Informational | Accepted |
 
 ## Secret exposure review (2026-11-11)
