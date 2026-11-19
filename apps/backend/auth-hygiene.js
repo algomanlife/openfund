@@ -2,7 +2,7 @@
  * Openfund — authentication hygiene helpers (security audit 2026-11).
  *
  *  - internalTokenGuard(): the optional INTERNAL_API_TOKEN check for the
- *    test-only `/internal` seams. Both sides are hashed before the
+ *    test-only `/internal` seams. Lengths are checked before the
  *    constant-time comparison, so a supplied token of a different length is
  *    a plain 401 instead of a RangeError (500). The token is read from
  *    `X-Internal-Token` or `Authorization: Bearer`, the two forms the test
@@ -15,7 +15,12 @@
  */
 import crypto from 'node:crypto'
 
-const digest = v => crypto.createHash('sha256').update(String(v)).digest()
+/* constant-time for equal lengths; a length mismatch is a plain refusal
+   (same rule as adminAuth in admin.js) instead of a RangeError */
+const sameSecret = (given, expected) => {
+  const a = Buffer.from(String(given)), b = Buffer.from(String(expected))
+  return a.length === b.length && crypto.timingSafeEqual(a, b)
+}
 
 /** Express middleware; `env` is injectable for tests. */
 export function internalTokenGuard(env = process.env) {
@@ -24,7 +29,7 @@ export function internalTokenGuard(env = process.env) {
     if (!token) return next()
     const header = req.headers['x-internal-token']
       ?? String(req.headers.authorization || '').replace(/^Bearer\s+/i, '')
-    if (!header || !crypto.timingSafeEqual(digest(header), digest(token)))
+    if (!header || !sameSecret(header, token))
       return res.status(401).json({ error: 'internal_unauthorized' })
     next()
   }
