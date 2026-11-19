@@ -67,6 +67,31 @@ export function forwardedAddress(headers, socketAddress, hop = 1) {
   return list.length >= hop ? list[list.length - hop] : null
 }
 
+/* OF-2026-11-08/-19: the visitor address behind Cloudflare. With
+   `trust proxy 1`, req.ip is the address that connected to Render's proxy,
+   which is a Cloudflare edge for every request through the GLOBAL domains. All
+   visitors on one edge then shared one rate-limit bucket and one audit IP.
+   CF-Connecting-IP is used only when that connecting address is inside
+   Cloudflare's published ranges (the same proof trustedCountry uses); on a
+   direct request to the Render host it is a client-written header and is
+   ignored. */
+export const CLIENT_IP_HEADER = 'cf-connecting-ip'
+export function cloudflareClientIp(headers, socketAddress) {
+  const value = headers[CLIENT_IP_HEADER]
+  if (typeof value !== 'string') return null
+  const candidate = value.trim()
+  if (!net.isIP(candidate)) return null
+  return isCloudflareAddress(proxyPeer(headers, socketAddress)) ? candidate : null
+}
+export function cloudflareClientIpMiddleware() {
+  return (req, res, next) => {
+    const ip = cloudflareClientIp(req.headers, req.socket?.remoteAddress)
+    delete req.headers[CLIENT_IP_HEADER]
+    if (ip) Object.defineProperty(req, 'ip', { value: ip, configurable: true, enumerable: true, writable: false })
+    next()
+  }
+}
+
 /* Country source per region (ADR 0043):
      GEO_COUNTRY_SOURCE=cloudflare (default)  CF-IPCountry from a Cloudflare hop (GLOBAL on Render)
      GEO_COUNTRY_SOURCE=ip-database           IPv4 lookup of the platform-provided visitor
