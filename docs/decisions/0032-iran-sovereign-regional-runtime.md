@@ -19,7 +19,7 @@ functions running through an international isolation of at least 120 days.
 | `openfund` web service | Render, Frankfurt, 1 instance | One Node process: API, SIWE sessions, SSE, React app (same origin), and all jobs below |
 | `openfund-db` | Render Postgres 17 | The only authoritative store: app tables, Directus tables, Footprint tables |
 | `openfund-cms` | Render, Directus 11.17.4 image | Separate service. Media on a 5 GB Render disk |
-| Iran edge | Liara Docker (nginx 1.28) | `iran.openfund.cloud` → Render. Stateless. Built in the `germany` build location |
+| Iran edge | Liara Docker (nginx unprivileged, mainline slim; base pinned by digest in `infra/liara-iran/Dockerfile`) | `iran.openfund.cloud` → Render. Stateless. Built in the `germany` build location |
 | Start-up jobs (before this PR) | inside `server.js` | Engine loop (1 s), purchase expiry (60 s), payment recovery (60 s), live-settlement retries (60 s), treasury snapshots (60–120 min), Footprint ingestion, Gains market data |
 
 ### 1.2 Dependency map: what fails without international connectivity

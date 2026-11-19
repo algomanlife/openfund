@@ -26,6 +26,10 @@ services:
       CORS_ENABLED: "true"
       CORS_ORIGIN: "true"
       CORS_METHODS: GET,HEAD,OPTIONS
+      # OF-2026-11-11 compensating controls (same values as render.yaml)
+      CACHE_ENABLED: "false"
+      IMPORT_IP_DENY_LIST: "0.0.0.0,0.0.0.0/8,127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,169.254.0.0/16,100.64.0.0/10,::,::1,fc00::/7,fe80::/10"
+      FILES_MIME_TYPE_ALLOW_LIST: "image/png,image/jpeg,image/webp,image/gif,image/avif,application/pdf"
     depends_on:
       database:
         condition: service_healthy

@@ -80,6 +80,17 @@ services:
         value: GET,HEAD,OPTIONS
       - key: MAX_PAYLOAD_SIZE
         value: 1mb
+      # ---- OF-2026-11-11 compensating controls while on 11.x (verified by
+      # scripts/ops/test/directus-hardening.test.mjs; keep until the 12.x upgrade) ----
+      - key: CACHE_ENABLED
+        value: "false"          # GHSA-c6w9-5g5j-jh2p needs the response cache; keep it off
+      - key: IMPORT_IP_DENY_LIST
+        value: "0.0.0.0,0.0.0.0/8,127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,169.254.0.0/16,100.64.0.0/10,::,::1,fc00::/7,fe80::/10"
+                                # GHSA-j5h6-vqc3-phqh: the default list does not deny the literal 0.0.0.0 / :: (reaches
+                                # localhost); explicit ranges also deny the private network (database, other services)
+      - key: FILES_MIME_TYPE_ALLOW_LIST
+        value: "image/png,image/jpeg,image/webp,image/gif,image/avif,application/pdf"
+                                # no HTML or SVG on the CMS origin (stored XSS) and no imported HTML responses
       - key: IP_TRUST_PROXY       # Render terminates TLS in front of the service. Explicit so Directus 12
         value: "true"             # (default false) keeps client-IP resolution identical to 11.x.
       - key: CONTENT_SECURITY_POLICY_DIRECTIVES__CHILD_SRC
