@@ -28,17 +28,17 @@ environment was changed or tested.**
 - Starting point: `main` at `3a57a3cb` (#147 merged at 2026-11-19 16:13 UTC;
   #148 merged at 15:31 UTC as `ac74a975`). CI, CodeQL and the release
   package were green.
-- Remediation pull requests:
-  - [#149](https://github.com/algomanlife/openfund/pull/149): database roles
-    (merged as `31fb3847`)
-  - [#150](https://github.com/algomanlife/openfund/pull/150): edge image
-  - [#151](https://github.com/algomanlife/openfund/pull/151): Directus controls
-  - [#152](https://github.com/algomanlife/openfund/pull/152): dependencies
-  - [#153](https://github.com/algomanlife/openfund/pull/153): client IP and
-    rate limits
-  - [#154](https://github.com/algomanlife/openfund/pull/154): security
-    automation
-  - this documentation change
+- Remediation pull requests, each merged with all required checks green:
+
+  | PR | Scope | Merge commit |
+  | --- | --- | --- |
+  | [#149](https://github.com/algomanlife/openfund/pull/149) | Database roles | `31fb3847` |
+  | [#151](https://github.com/algomanlife/openfund/pull/151) | Directus controls | `93ebaec5` |
+  | [#150](https://github.com/algomanlife/openfund/pull/150) | Edge image | `38900196` |
+  | [#152](https://github.com/algomanlife/openfund/pull/152) | Dependencies | `c7aede77` |
+  | [#153](https://github.com/algomanlife/openfund/pull/153) | Client IP and rate limits | `1784a9dc` |
+  | [#154](https://github.com/algomanlife/openfund/pull/154) | Security automation | `62dde9ca` |
+  | [#155](https://github.com/algomanlife/openfund/pull/155) | This report | — |
 
 ## Findings
 
@@ -202,12 +202,25 @@ Report-only: OSV-Scanner and the full Semgrep scan.
   added in #153 for a test fixture, now generated per run. No rule is
   disabled.
 
+## Test reliability found during the merges
+
+Two browser suites in the `Backend` CI job failed intermittently. Both also
+failed on `main` (for example at `1784a9dc`), independently of these
+changes. The assertions were not weakened. The failed jobs were rerun and
+passed, and the root causes are recorded here:
+
+| Suite | Failure | Root cause | Follow-up |
+| --- | --- | --- | --- |
+| `e2e/test-heatmap-radar.cjs` | Waiting for a searched tile timed out | The test picks its market from **live** Hyperliquid data, polled every 30 s. The search walk ends when that market drops out of the filtered list or the layout changes | Serve a fixed `/markets` fixture to the test |
+| `e2e/test-controlled-challenges.cjs` | `holding_window_closing` (400) when opening a trade | The test uses the **wall clock**. Funded rules correctly refuse new trades in the window before the daily close (22:00 UTC in winter), and the job ran at about 21:50 UTC. The same suite will also hit the weekend rule from the Friday close | Give the test server a controllable clock (test-mode seam), as the unit suites already do |
+
 ## Outstanding blockers
 
 | Item | Why it is blocked | Done so far | Owner action | Risk if left |
 | --- | --- | --- | --- | --- |
 | OF-2026-11-12 in production | Changes production database grants and Render secrets | Code, CI proof and runbook | Run the [database roles](DATABASE_ROLES.md) deployment steps | A Directus admin session can still write financial rows in production |
 | OF-2026-11-11 | Directus 12 requires a licence for Openfund's model | Controls verified; upgrade procedure ready | Obtain a licence or eligible grant, or accept 11.x in writing | Two High advisories stay present in 11.17.4 (exposure reduced) |
+| Test reliability | Two browser suites depend on live data and the wall clock | Root causes identified; reruns green | Approve the fixture and clock follow-ups | Intermittent red CI on `main` (Friday close to Sunday open for the controlled-challenge suite) |
 | Release and deployment | Releases and production deploys are owner actions | All fixes in `main` with green CI | Run the Unified release, then the production deploy with approval | None of these fixes protects production yet |
 | IRAN edge | Never deployed (ADR 0042) | Image and gate ready | Dispatch staging, then production | — |
 | Backup drill | Needs a production read-only URL | Script exists | Run `backup-drill.mjs` before the database role change | Unverified restore path |
