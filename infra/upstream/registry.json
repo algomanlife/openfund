@@ -543,7 +543,7 @@
       "official_source": "https://github.com/wevm/viem",
       "license": "MIT",
       "installed": {
-        "version": "2.57.19",
+        "version": "2.57.20",
         "lockfile": "apps/backend/package-lock.json",
         "package": "viem"
       },
