@@ -33,9 +33,13 @@ jobs:
       PROVIDER: ${{ inputs.provider }}
       TO: ${{ inputs.to }}
     steps:
+      # Credentials persist on purpose: this job pushes a candidate branch with
+      # GITHUB_TOKEN. The workflow uploads no artifacts (reviewed exception,
+      # OF-2026-11-07 follow-up).
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
+          persist-credentials: true # zizmor: ignore[artipacked]
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
@@ -48,8 +52,8 @@ jobs:
         id: apply
         run: |
           set +e
-          to_arg=""; [ -n "$TO" ] && to_arg="--to $TO"
-          node scripts/upstream/update-vendor.mjs --provider "$PROVIDER" $to_arg --apply --report report.txt
+          to_args=(); [ -n "$TO" ] && to_args=(--to "$TO")
+          node scripts/upstream/update-vendor.mjs --provider "$PROVIDER" "${to_args[@]}" --apply --report report.txt
           code=$?
           echo "code=$code" >> "$GITHUB_OUTPUT"
           cat report.txt >> "$GITHUB_STEP_SUMMARY"

@@ -282,10 +282,12 @@ flowchart TB
   and coupons; market data comes from Gains (and Hyperliquid for read-only
   analytics); prices, orders and payments are decided only by the backend.
   Directus's public and editor roles have no access to financial or identity
-  collections. Directus currently connects with the same database credential
-  as the API, so a Directus administrator can still write financial tables
-  directly. This is an open finding (OF-2026-11-12) with a separate
-  database role planned ([remediation plan](docs/security/SECURITY-REMEDIATION-PLAN.md)).
+  collections. Directus gets its own least-privilege PostgreSQL role
+  (`openfund_directus`, [database roles](docs/security/DATABASE_ROLES.md)): it
+  can read but never write challenge, trading, payment and other financial
+  tables. The role is merged but **not yet deployed**; until the owner
+  switches the production CMS credential, finding OF-2026-11-12 stays live in
+  production.
 - More: [Architecture](docs/architecture/ARCHITECTURE.md) · [Regional runtime](docs/decisions/0033-regional-authority-and-synchronization.md) · [Trade Radar](docs/integrations/HYPERLIQUID_RADAR.md) · [Gains](docs/integrations/GAINS.md) · [Certificates](docs/decisions/0039-certificate-event-attestations.md)
 
 ## Technology stack
@@ -382,7 +384,10 @@ The first [security self-assessment](docs/security/SECURITY-AUDIT-2026-11.md)
 independent audit. Its [penetration-test methodology and results](docs/security/PENETRATION-TEST-2026-11.md),
 [test matrix](docs/security/SECURITY-TEST-MATRIX.md) and
 [remediation plan](docs/security/SECURITY-REMEDIATION-PLAN.md) record what was
-tested, what was fixed and what remains open. No production system was tested.
+tested, what was fixed and what remains open. The
+[remediation report](docs/security/SECURITY-REMEDIATION-2026-11.md) gives each
+finding's state (fixed in code, merged, released, deployed). No production
+system was tested or changed.
 
 | Control | Implementation |
 | --- | --- |
@@ -392,10 +397,16 @@ tested, what was fixed and what remains open. No production system was tested.
 | Payments | The chain verifier decides; provider callbacks are signed hints only; each transaction is single-use; partial payments and excess are recorded as ledger evidence or refund liabilities |
 | Trading and evaluation | Server-authoritative engine with decimal arithmetic, frozen rule snapshots and fresh-mark requirements; stale marks never decide a pass or fail |
 | Browser | Strict CSP with hashed inline scripts, `frame-ancestors`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, HSTS in production |
-| Supply chain | gitleaks on every pull request; a blocking audit of server production dependencies; Dependabot; dependency review; CodeQL |
+| Database | Separate owner/migration, runtime, Directus and read-only PostgreSQL roles with a version-controlled, table-by-table policy and a drift check ([database roles](docs/security/DATABASE_ROLES.md)) |
+| CMS | Directus 11.17.4 with verified compensating controls (cache off, SSRF deny list, image/PDF-only uploads, WebSockets off); the 12.x upgrade waits for a licence |
+| Rate limits | Per visitor IP (Cloudflare-verified `CF-Connecting-IP`; the Iran edge's keyed client IP); one API process by design |
+| Supply chain | gitleaks; blocking production-dependency audit; Dependabot; dependency review; CodeQL; plus [security automation](docs/security/SECURITY-AUTOMATION.md): actionlint, zizmor, Semgrep (new findings), Trivy (lockfiles, configuration, edge image), ZAP baseline, OSV-Scanner and a CycloneDX SBOM on every release |
 
-Open items that block accepting real customer funds are listed in the
-[assessment](docs/security/SECURITY-AUDIT-2026-11.md#readiness-decision).
+Open security risks: OF-2026-11-11 (Directus advisories, High, mitigated and
+blocked by a licence decision), and OF-2026-11-12 and OF-2026-11-20, which
+are fixed in `main` but not deployed. Nothing from the November remediation
+is released or deployed yet. Payment acceptance is assessed separately. See
+the [remediation report](docs/security/SECURITY-REMEDIATION-2026-11.md#outstanding-blockers).
 Report vulnerabilities privately: [SECURITY.md](SECURITY.md).
 
 ## Roadmap

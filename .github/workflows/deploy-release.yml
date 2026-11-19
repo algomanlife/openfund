@@ -13,6 +13,10 @@ on:
         required: false
         default: false
         type: boolean
+    secrets:
+      RENDER_API_TOKEN:
+        description: Render API token (passed explicitly by the Unified release workflow)
+        required: true
   # Manual path: redeploy the latest release or roll back to an older one.
   workflow_dispatch:
     inputs:

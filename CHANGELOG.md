@@ -2,6 +2,31 @@
 
 ## Unreleased
 
+- **Security remediation (November 2026 follow-up)** — the
+  [remediation report](docs/security/SECURITY-REMEDIATION-2026-11.md). Merged,
+  not released or deployed.
+  - Directus gets its own least-privilege PostgreSQL role, with a
+    table-by-table policy, `scripts/ops/db-roles.mjs plan|apply|verify`, a
+    migration guard against foreign-owned backend tables, an optional DML-only
+    runtime role (`MIGRATION_DATABASE_URL`) and a dedicated `openfund-cms`
+    connection secret (OF-2026-11-12, #149). Data Studio shows challenge,
+    account, position and user status as read-only; user suspension stays in
+    Backstage Operations.
+  - Directus 11.17.4 runs with verified compensating controls: response cache
+    off, an explicit file-import deny list including `0.0.0.0`, and image/PDF-
+    only uploads (OF-2026-11-11, #151). The 12.x upgrade still waits for a
+    licence.
+  - The IRAN edge image moves to nginx 1.31.7 mainline slim, pinned by digest,
+    with 0 Critical/High in the built image and a blocking Trivy gate
+    (OF-2026-11-20, #150).
+  - `uuid` (web) and `minimatch` (desktop build) advisories are fixed, and CI
+    now enforces the dormant protocol package's activation block (#152).
+  - Rate limits and audit logs use the visitor IP behind Cloudflare instead of
+    the Cloudflare edge address; the Blueprint forbids API autoscaling (#153).
+  - New `Security scans` workflow (actionlint, zizmor, Semgrep, Trivy, ZAP
+    baseline, OSV-Scanner, SBOM) and a CycloneDX SBOM attached to every
+    release (#154).
+
 - **Security assessment (November 2026)** — the first published
   [security self-assessment](docs/security/SECURITY-AUDIT-2026-11.md), with a
   [test matrix](docs/security/SECURITY-TEST-MATRIX.md) and a
