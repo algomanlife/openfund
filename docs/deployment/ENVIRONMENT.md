@@ -9,7 +9,8 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | Variable | Owner | Scope | Class | Value / source |
 | :--- | :--- | :--- | :--- | :--- |
 | `DATABASE_URL` | openfund (API) | R | SEC | `fromDatabase: openfund-db / connectionString` (internal) |
-| `DB_CLIENT` / `DB_CONNECTION_STRING` | openfund-cms | R | PUB / SEC | `pg` + `fromDatabase: openfund-db / connectionString`; Directus does not consume the API's `DATABASE_URL` variable |
+| `MIGRATION_DATABASE_URL` | openfund (API) | R | SEC | Not in `render.yaml`. Only for the optional runtime-role split: the owner/migration connection used by `migrate.js`, while `DATABASE_URL` points at the DML-only `openfund_runtime` role ([database roles](../security/DATABASE_ROLES.md)). Unset = `migrate.js` uses `DATABASE_URL` |
+| `DB_CLIENT` / `DB_CONNECTION_STRING` | openfund-cms | R | PUB / SEC | `pg` + a `sync: false` secret: the internal connection string of the least-privilege `openfund_directus` role, never the `openfund-db` owner credential ([database roles](../security/DATABASE_ROLES.md), OF-2026-11-12). Directus does not consume the API's `DATABASE_URL` variable |
 | `PORT` | both web services | R | PUB | set by Render (Directus and Express both honor it) |
 | `NODE_VERSION` | openfund | B | PUB | `22` (matches `apps/backend` engines) |
 | `NODE_ENV` | openfund | R | PUB | `production` (enables Secure cookies) |
