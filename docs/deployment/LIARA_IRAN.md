@@ -199,7 +199,9 @@ without country routing and without user-facing links.
    - `confirm`: `DEPLOY-IRAN-EDGE`
 
    The run proceeds as follows:
-   1. `validate` builds and contract-tests the image.
+   1. `validate` builds the image, fails on any fixable Critical or High
+      Trivy finding in the built image (OF-2026-11-20), uploads the scan and a
+      CycloneDX SBOM as `openfund-edge-scan-<run>`, and contract-tests it.
    2. `edge-auth` runs the real backend behind the image and tests wallet
       sign-in, cookies, CSRF and client IP.
    3. `deploy` waits for the `liara-iran-staging` reviewer, deploys with Liara

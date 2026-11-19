@@ -9,7 +9,8 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | Variable | Owner | Scope | Class | Value / source |
 | :--- | :--- | :--- | :--- | :--- |
 | `DATABASE_URL` | openfund (API) | R | SEC | `fromDatabase: openfund-db / connectionString` (internal) |
-| `DB_CLIENT` / `DB_CONNECTION_STRING` | openfund-cms | R | PUB / SEC | `pg` + `fromDatabase: openfund-db / connectionString`; Directus does not consume the API's `DATABASE_URL` variable |
+| `MIGRATION_DATABASE_URL` | openfund (API) | R | SEC | Not in `render.yaml`. Only for the optional runtime-role split: the owner/migration connection used by `migrate.js`, while `DATABASE_URL` points at the DML-only `openfund_runtime` role ([database roles](../security/DATABASE_ROLES.md)). Unset = `migrate.js` uses `DATABASE_URL` |
+| `DB_CLIENT` / `DB_CONNECTION_STRING` | openfund-cms | R | PUB / SEC | `pg` + a `sync: false` secret: the internal connection string of the least-privilege `openfund_directus` role, never the `openfund-db` owner credential ([database roles](../security/DATABASE_ROLES.md), OF-2026-11-12). Directus does not consume the API's `DATABASE_URL` variable |
 | `PORT` | both web services | R | PUB | set by Render (Directus and Express both honor it) |
 | `NODE_VERSION` | openfund | B | PUB | `22` (matches `apps/backend` engines) |
 | `NODE_ENV` | openfund | R | PUB | `production` (enables Secure cookies) |
@@ -17,6 +18,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `VITE_DIRECTUS_HOST` | openfund | R | PUB | `fromService: openfund-cms / envVarKey: RENDER_EXTERNAL_HOSTNAME`; runtime fallback when `CMS_PUBLIC_URL` is unset |
 | `KEY`, `SECRET` | openfund-cms | R | SEC | `generateValue: true` (created once at first apply) |
 | `WEBSOCKETS_ENABLED`, `CORS_ENABLED`, `CORS_ORIGIN`, `CORS_METHODS`, `MAX_PAYLOAD_SIZE` | openfund-cms | R | PUB | Directus hardening (public read-only API) |
+| `CACHE_ENABLED`, `IMPORT_IP_DENY_LIST`, `FILES_MIME_TYPE_ALLOW_LIST` | openfund-cms | R | PUB | OF-2026-11-11 compensating controls while Directus is on 11.x: response cache off, an explicit file-import deny list (including `0.0.0.0`, `::`, loopback, link-local and private ranges) and an image/PDF-only upload list. The Blueprint validator enforces them; `scripts/ops/test/directus-hardening.test.mjs` verifies them at runtime ([assessment](../backstage/DIRECTUS_12_ASSESSMENT.md)) |
 | `IP_TRUST_PROXY` | openfund-cms | R | PUB | `true`: Render terminates TLS in front of Directus; explicit so Directus 12 (default `false`) keeps client-IP resolution identical to 11.x |
 | `LICENSE_KEY` | openfund-cms | R | **SECRET** | Directus 12+ licence or Open Innovation Grant key. Unset on 11.x. Required before the image moves to 12.x: the unlicensed Core tier ignores field-level and row-level permission rules, which breaks public content reads and the Commerce Admin coupon workflow. `PUBLIC_URL` must be an absolute URL. Never set together with `LICENSE_TOKEN`. See [Directus 12 assessment](../backstage/DIRECTUS_12_ASSESSMENT.md) |
 | `SESSION_TTL_HOURS` | openfund | R | PUB | default `168` (7 days) |

@@ -91,6 +91,24 @@ jobs:
           node-version: 26
       - name: Build the edge image
         run: docker build infra/liara-iran -t openfund-edge:candidate
+      - name: Image vulnerability gate (Trivy, fixable Critical and High) and CycloneDX SBOM
+        # OF-2026-11-20: the built image, not the Dockerfile. Blocking: a fixable
+        # Critical or High finding fails the job before anything can deploy.
+        # Trivy runs from its official image pinned by digest (v0.76.2).
+        run: |
+          mkdir -p /tmp/edge-scan
+          trivy() { docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /tmp/edge-scan:/out \
+            aquasec/trivy@sha256:8f6bb947dbc528902e11f2f5be52f7b519f6a39d5d148f41166f2040499768fb "$@"; }
+          trivy image --scanners vuln --severity CRITICAL,HIGH,MEDIUM --format table --output /out/trivy.txt openfund-edge:candidate
+          trivy image --scanners vuln --severity CRITICAL,HIGH --ignore-unfixed --exit-code 1 --format table openfund-edge:candidate
+          trivy image --format cyclonedx --output /out/openfund-edge.cdx.json openfund-edge:candidate
+          docker image inspect openfund-edge:candidate --format '{{.Id}} {{.Os}}/{{.Architecture}}' | tee /tmp/edge-scan/image-id.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: openfund-edge-scan-${{ github.run_id }}
+          path: /tmp/edge-scan/
+          retention-days: 30
       - name: Refuse to start on unsafe configuration
         run: |
           expect_refusal() {
