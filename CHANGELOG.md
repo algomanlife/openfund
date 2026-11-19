@@ -13,6 +13,22 @@
   - A malformed chart-workspace scope returns 400 instead of 500.
   - CI gains a blocking production-dependency gate for the backend and
     Backstage (`audit-production`).
+  - **Payments:** a DePay-attested payment signed by a wallet other than the
+    order owner's is held for operator review instead of provisioning
+    automatically. `DEPAY_ATTESTED_ANY_PAYER=true` restores the previous
+    behaviour (OF-2026-11-05).
+  - Malformed ids, NUL bytes and negative paging values return 4xx instead
+    of 500. A `Permissions-Policy` header is set. Exception text in the
+    terminal chart overlay is escaped. Referral codes are drawn without
+    modulo bias.
+  - The web app overrides `ws` 8.x to 8.23.0 (wallet SDK transitive
+    advisory).
+  - New security suites: `test:pentest` (15 HTTP penetration checks),
+    financial invariants in `test:security`, and `test:browser:security`.
+  - The report, now with a [penetration test](docs/security/PENETRATION-TEST-2026-11.md)
+    document, records three open High findings (Directus advisories, the
+    database credential Directus shares with the API, and the IRAN edge base
+    image) and a **NOT READY** decision for real customer funds.
 
 - **Openfund Pay** — first-party, provider-independent checkout and payment
   ledger ([ADR 0046](docs/decisions/0046-openfund-pay.md),

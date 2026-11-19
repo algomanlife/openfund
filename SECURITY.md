@@ -47,6 +47,7 @@ live, see [Feature Status](docs/product/FEATURE_STATUS.md).
 - [November 2026 self-assessment](docs/security/SECURITY-AUDIT-2026-11.md):
   the first published assessment, written by the project's coding agent. It
   is not an independent audit. See also the
+  [penetration test](docs/security/PENETRATION-TEST-2026-11.md), the
   [test matrix](docs/security/SECURITY-TEST-MATRIX.md) and the
   [remediation plan](docs/security/SECURITY-REMEDIATION-PLAN.md).
 

@@ -1,62 +1,101 @@
 # Security test matrix — November 2026
 
-These results come from the [November 2026 assessment](SECURITY-AUDIT-2026-11.md).
-Every row records a command that was actually run on 2026-11-19. They ran
-against a disposable PostgreSQL database and a local backend on a test port
-(`SIM_TEST_MODE=1`, generated test admin token). No deployed environment was
-contacted.
+These results come from the [November 2026 assessment](SECURITY-AUDIT-2026-11.md) and the
+[penetration test](PENETRATION-TEST-2026-11.md). Every row records a command
+that was actually run on 2026-11-19, against disposable local runtimes only.
 
 Result values: PASS, FAIL, NOT RUN, BLOCKED, NOT APPLICABLE.
 
-## Security regression tests added in this pass
+## Full backend suite on a fresh database
 
-| Test | Covers | Result |
-| --- | --- | --- |
-| `apps/backend/test/auth-hygiene.test.mjs`: internal token guard | A token of the wrong length or a missing token gives 401, never 500. Both header forms work | PASS |
-| `apps/backend/test/auth-hygiene.test.mjs`: unset token | Keeps the documented test-mode behaviour | PASS |
-| `apps/backend/test/auth-hygiene.test.mjs`: expiry sweep (PostgreSQL) | Expired nonces and sessions are deleted, live rows are kept | PASS |
-| `apps/backend/test/chart-workspaces.test.mjs`: malformed scope | Gives 400 `invalid_scope`, not 500. It failed on the unpatched code (500) | PASS |
+`npm run test:all` (in `apps/backend`) ran on a newly created test database
+against the test server (`SIM_TEST_MODE=1`, test admin token, CI placeholder
+receiver). Exit code 0.
 
-## Existing suites re-run on the remediation branch
+| Suite | Result |
+| --- | --- |
+| static, SEO, geo, stream, edge IP, auth hygiene, invariants (`node --test` group) | PASS (54) |
+| SIWE | PASS (24/24) |
+| trading | PASS (55) |
+| portfolio | PASS (31) |
+| products | PASS (58) |
+| Gains portfolio | PASS (5) |
+| audit | PASS (11) |
+| unified | PASS (26) |
+| referral | PASS (18) |
+| evaluation | PASS (48) |
+| engine (rules, audit, leverage, equity sampling, split process) | PASS (45 + 5) |
+| admin | PASS (26) |
+| purchases | PASS (53, 0 skipped) |
+| economy | PASS (45) |
+| governance | PASS (82) |
+| payments (verification, manual, Openfund Pay, payments admin) | PASS (93 + 14) |
+| commerce | PASS (34) |
+| chart workspaces | PASS (7) |
+| footprint | PASS (25) |
+| support | PASS (9) |
+| Backstage operations | PASS (12) |
+| rewards and payout settlement | PASS (19) |
+| conduct | PASS (27) |
+| certificates | PASS (11) |
+| CMS snapshot | PASS (6) |
+| radar | PASS (9) |
+| campaigns | PASS (4) |
+| **penetration suite** | PASS (15) |
 
-| Command (in `apps/backend`) | Area | Result |
-| --- | --- | --- |
-| `node test/siwe.test.mjs` | SIWE nonce, domain, chain, replay, sessions, ownership | PASS (24/24) |
-| `node test/admin.test.mjs` | Admin token gating, operator actions | PASS (26/26) |
-| `npm run test:payments` | Chain verification, manual payments, Openfund Pay ledger, payments admin | PASS (92 + payments-admin) |
-| `npm run test:purchases` | Order pricing, coupons, idempotency | PASS (32). One HTTP lifecycle case skipped because no payment receiver was configured on the test server |
-| `npm run test:commerce` | Commerce flows | PASS (34) |
-| `npm run test:rewards` | Withdrawals, payout settlement evidence | PASS (19) |
-| `npm run test:referral` | Referral attribution, self-referral | PASS (18) |
-| `npm run test:static` | Static cache, SEO, geo | PASS (25) |
-| `npm run test:edge` | Edge client IP key | PASS (5) |
-| `npm run test:stream` | Trading stream session revocation | PASS (13) |
-| `npm run test:chart-workspaces` | Wallet isolation of chart state | PASS (7) |
+Note: the controlled-challenge commerce test issues the one controlled coupon
+per profile that a database allows, so it passes only on a fresh database.
+Running it again on a reused database fails with
+`controlled_profile_already_issued`, both on `main` and on this branch.
 
-## Scanners
+`openfund-pay.test.mjs` P14/P15 failed once in about five runs on timing,
+and passed on the reruns and in the fresh-database run.
+
+## Security tests added
+
+| Test | Covers | Before fix | After fix |
+| --- | --- | --- | --- |
+| `test/auth-hygiene.test.mjs` | Token guard (wrong length is 401), expired auth rows swept | RangeError and 500 reproduced | PASS |
+| `test/chart-workspaces.test.mjs` malformed scope | 400, not 500 | FAIL (500) | PASS |
+| `test/security-pentest.test.mjs` PT-01 to PT-15 | See the [penetration test](PENETRATION-TEST-2026-11.md) | PT-08 FAIL (500s) | PASS |
+| `test/financial-invariants.test.mjs` | Evaluation and valuation invariants, 4,000 cases per property; seeds 1, 2, 3 and 20261119 with 20,000 cases also run | — | PASS |
+| `openfund-pay.test.mjs` P23b, `commerce.test.mjs` D3 | Attested payment from a non-owner wallet is held; operator settles; owner opt-in | Auto-provisioned | PASS |
+| `e2e/test-security-browser.cjs` B1 to B5 | Cookie and storage isolation, wallet switch, logout, CORS, framing | — | PASS (12/12) |
+
+## Other suites
 
 | Command | Result |
 | --- | --- |
-| `gitleaks git --config gitleaks.toml --redact` (full history) | PASS: no leaks in 563 commits |
-| `npm audit --package-lock-only`, `apps/backend` | PASS: 0 advisories |
-| `npm audit --package-lock-only`, `apps/backstage` | PASS: 0 advisories |
-| `npm audit --omit=dev --audit-level=high`, backend and Backstage (the new CI gate) | PASS |
-| `npm audit --package-lock-only`, `apps/web-react` | FAIL: 16 high and 12 moderate (OF-2026-11-04, open) |
-| `npm audit --package-lock-only`, `apps/open-trade` | FAIL: 6 moderate, build tooling (OF-2026-11-06, open) |
-| GitHub Dependabot alerts, `packages/openfund-protocol` | FAIL: 11 critical (development) plus high, including OpenZeppelin runtime (OF-2026-11-09, open) |
-| `actionlint` (all workflows) | PASS: shellcheck style warnings only |
+| `npm run typecheck` | PASS |
+| `npm run test:web` | PASS |
+| `npm run build:web` | PASS |
+| `npm --prefix apps/backstage test` | PASS (16) |
 | `npm run docs:check` | PASS |
-| `npm run validate:blueprint` | PASS: 3 services, 1 database |
+| `npm run validate:blueprint` | PASS |
+
+## Scanners
+
+| Tool and version | Scope | Result |
+| --- | --- | --- |
+| CodeQL (GitHub default setup) | Repository | 67 open alerts triaged; 2 fixed (OF-2026-11-13, -14), the rest false positives, vendored code or accepted (OF-2026-11-19) |
+| Semgrep 1.185.0 | First-party code, 6 rule packs | 221 results; no true positive in first-party code |
+| OSV-Scanner 2.7.1 | All lockfiles | See the dependency summary in the report |
+| Trivy 0.76.2 fs, config and image | Lockfiles, Dockerfiles, base images, Directus image | Dockerfiles: 0 misconfigurations. Images: OF-2026-11-20 |
+| gitleaks 8.30.1 | History (563 commits) and working tree | History clean; 49 working-tree false positives |
+| actionlint 1.7.12 | Workflows | No errors |
+| zizmor 1.32.0 | Workflows | 106 findings before #148; 3 after (accepted) |
+| OWASP ZAP 2.16.1 baseline | Test server | 0 FAIL, 8 WARN, 59 PASS |
+| OWASP ZAP 2.16.1 full (active) | Test server | See below |
+| Syft 1.57.1 | Repository SBOM (CycloneDX) | Generated, kept privately |
+| npm audit | Four apps | Backend and Backstage production: 0. Web: OF-2026-11-04. Desktop: OF-2026-11-06 |
 
 ## Not run
 
 | Check | Status | Reason |
 | --- | --- | --- |
-| Full `npm run test:backend` (`test:all`) | NOT RUN | Only the suites in the security scope ran. CI runs the full suite on the pull request |
-| Engine, evaluation, governance, region and regional-sync suites | NOT RUN | Outside the code changed in this pass. CI runs them |
-| Frontend typecheck, unit tests and build | NOT RUN locally | No frontend code changed. CI runs them |
-| Browser end-to-end journeys | NOT RUN | No UI changed |
-| CodeQL, Semgrep, Trivy, OSV-Scanner, OWASP ZAP, SBOM | NOT RUN | Not installed. See the remediation plan |
-| Container image scanning | NOT RUN | No scanner available |
-| Load, fuzz and concurrency stress testing | NOT RUN | Out of scope for this pass |
-| Any test against a deployed environment | NOT APPLICABLE | Not authorized, and not attempted |
+| Any test against a deployed environment | NOT APPLICABLE | Not authorized |
+| Region and regional-sync suites (`test:region`, `test:regional-sync`) | NOT RUN locally | They need two region databases; CI runs them on the pull request |
+| Browser journeys besides the security check | NOT RUN locally | CI runs them on the pull request |
+| Liara edge workflow | NOT RUN | Dispatch-only; needed for OF-2026-11-20 |
+| Real-network payment acceptance | NOT APPLICABLE | No real transactions were authorized |
+| Load and stress testing | NOT RUN | Excluded by the rules of engagement |

@@ -4,7 +4,7 @@ The [root security policy](../../SECURITY.md) defines private vulnerability repo
 
 ## Assessments
 
-The [November 2026 self-assessment](SECURITY-AUDIT-2026-11.md) lists what was reviewed and tested, the findings and their status. Open items are in the [remediation plan](SECURITY-REMEDIATION-PLAN.md), and the commands that were run are in the [test matrix](SECURITY-TEST-MATRIX.md).
+The [November 2026 self-assessment](SECURITY-AUDIT-2026-11.md) and its [penetration test](PENETRATION-TEST-2026-11.md) list what was reviewed and tested, the findings and their status. Open items are in the [remediation plan](SECURITY-REMEDIATION-PLAN.md), and the commands that were run are in the [test matrix](SECURITY-TEST-MATRIX.md).
 
 ## Current controls
 

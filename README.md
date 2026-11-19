@@ -24,7 +24,7 @@ trading evaluations, funded programs, trader rewards and financial transparency.
 
 ---
 
-**Contents** · [Overview](#project-overview) · [Products](#product-ecosystem) · [Backstage](#openfund-backstage--business-operations-console) · [Gallery](#product-gallery) · [Feature status](#feature-status) · [Business model](#business-model) · [Architecture](#technical-architecture) · [Technology](#technology-stack) · [Development](#development-workflow) · [Releases](#versioning-and-releases) · [License](#license) · [Contributing](#contributing-and-security)
+**Contents** · [Overview](#project-overview) · [Products](#product-ecosystem) · [Backstage](#openfund-backstage--business-operations-console) · [Gallery](#product-gallery) · [Feature status](#feature-status) · [Business model](#business-model) · [Architecture](#technical-architecture) · [Technology](#technology-stack) · [Development](#development-workflow) · [Releases](#versioning-and-releases) · [Security](#security) · [License](#license) · [Contributing](#contributing-and-security)
 
 <!-- status:summary -->
 
@@ -50,6 +50,9 @@ trading evaluations, funded programs, trader rewards and financial transparency.
 | Acceptance | **Not accepted**: 2026-11-18 real purchases failed ([incident](docs/payments/INCIDENT_2026-11-18.md)) | Deterministic tests only; real-network checklist in [ACTIVATION](docs/payments/ACTIVATION.md) |
 
 Sign-in stays Arbitrum-only (SIWE, chain 42161); payment networks are independent.
+A DePay-attested payment settles automatically only when the order owner's
+wallet signed it; any other payer waits for operator review unless the owner
+sets `DEPAY_ATTESTED_ANY_PAYER=true` ([security assessment](docs/security/SECURITY-AUDIT-2026-11.md), OF-2026-11-05).
 
 ## Project overview
 
@@ -194,10 +197,14 @@ never the browser, prices every order. Current published catalog
 | One-phase | Single target, one rule set | 5k – 100k | $74 – $666 |
 | Instant | Funded from day one | 5k – 200k | $60 – $888 |
 
-**Purchase lifecycle.** Order (server price, optional coupon) → payment through
-DePay on any configured network → on-chain verification → atomic provisioning
-of exactly one challenge account and one invoice. Every state change is
-recorded. See [Order lifecycle](docs/payments/ORDER_LIFECYCLE.md).
+**Purchase lifecycle.** Order (server price, optional coupon) → payment
+(v0.7.0: DePay or a manual transfer with a TXID; Openfund Pay, not yet
+released, adds a direct wallet payment) → on-chain verification of token,
+receiver, sender, amount and finality → atomic provisioning of exactly one
+challenge account and one invoice. No client message, callback or event marks
+an order paid on its own. Every state change is recorded. See
+[Order lifecycle](docs/payments/ORDER_LIFECYCLE.md) and
+[Payment verification](docs/payments/VERIFICATION.md).
 
 **Revenue recognition principles.** Net collected revenue is gross sales minus
 coupon discounts minus refunds, recognised from the verified settlement amount
@@ -274,6 +281,11 @@ flowchart TB
 - **Content versus data.** Directus holds editorial content, the plan catalog
   and coupons; market data comes from Gains (and Hyperliquid for read-only
   analytics); prices, orders and payments are decided only by the backend.
+  Directus's public and editor roles have no access to financial or identity
+  collections. Directus currently connects with the same database credential
+  as the API, so a Directus administrator can still write financial tables
+  directly. This is an open finding (OF-2026-11-12) with a separate
+  database role planned ([remediation plan](docs/security/SECURITY-REMEDIATION-PLAN.md)).
 - More: [Architecture](docs/architecture/ARCHITECTURE.md) · [Regional runtime](docs/decisions/0033-regional-authority-and-synchronization.md) · [Trade Radar](docs/integrations/HYPERLIQUID_RADAR.md) · [Gains](docs/integrations/GAINS.md) · [Certificates](docs/decisions/0039-certificate-event-attestations.md)
 
 ## Technology stack
@@ -289,7 +301,7 @@ Versions verified against the lockfiles and CI configuration.
 | Data | PostgreSQL 17; Directus 11.17.4 |
 | Desktop | Electron 45.3, electron-builder (DMG, NSIS, AppImage, deb) |
 | Payments | DePay (signed configuration, callbacks, events); on-chain verification |
-| Quality | Node test runner, Playwright browser suites, CodeQL, gitleaks, dependency review |
+| Quality | Node test runner, Playwright browser suites, CodeQL, gitleaks, dependency review, a blocking production-dependency audit, and security regression suites (HTTP penetration checks, financial invariants, browser session isolation) |
 | Delivery | GitHub Actions; Render Blueprint (`render.yaml`); Liara runtime image (`infra/liara-iran-runtime`) |
 
 Design system: shared tokens and primitives in
@@ -334,7 +346,18 @@ in a second terminal. Desktop: `npm ci --prefix apps/open-trade && npm run dev -
 **Tests.** `npm run typecheck`, `npm run test:web`, `npm run test:release`,
 `npm run validate:blueprint`, `npm run docs:check`; backend suites need a
 disposable database: `TEST_BACKEND_URL=… DATABASE_URL=postgres://…/openfund_test npm run test:backend`.
-Never point tests at a database you care about.
+The backend server under test runs with `SIM_TEST_MODE=1`, a test
+`ADMIN_API_TOKEN` and the CI placeholder `PURCHASE_PAYMENT_RECEIVER` (see
+`ci.yml`). Never point tests at a database you care about.
+
+Security suites (all against local test runtimes only):
+
+```bash
+npm --prefix apps/backend run test:security   # auth hygiene + financial invariants (no server)
+npm --prefix apps/backend run test:pentest    # HTTP penetration checks against TEST_BACKEND_URL
+BASE_URL=http://localhost:8080 npm run test:browser:security   # browser session isolation
+```
+
 [Testing guide](docs/development/TESTING.md) · [Local development](docs/development/LOCAL_DEVELOPMENT.md) · [Engineering reference](docs/development/ENGINEERING_REFERENCE.md)
 
 ## Versioning and releases
@@ -351,6 +374,29 @@ tagged commit; merging does not deploy either.
 ```bash
 curl -s https://openfi.cloud/version
 ```
+
+## Security
+
+The first [security self-assessment](docs/security/SECURITY-AUDIT-2026-11.md)
+(November 2026) was written by the project's coding agent. It is **not** an
+independent audit. Its [penetration-test methodology and results](docs/security/PENETRATION-TEST-2026-11.md),
+[test matrix](docs/security/SECURITY-TEST-MATRIX.md) and
+[remediation plan](docs/security/SECURITY-REMEDIATION-PLAN.md) record what was
+tested, what was fixed and what remains open. No production system was tested.
+
+| Control | Implementation |
+| --- | --- |
+| Wallet sign-in | SIWE (EIP-4361) on Arbitrum One only: domain and URI binding, a single-use nonce bound to the address, a time window, ECDSA recovery and an EIP-1271 fallback |
+| Sessions | Random 256-bit id stored hashed; HttpOnly, `SameSite=Lax`, `Secure` in production; checked on every request; expired rows swept hourly |
+| Authorization | Every account, order, position and withdrawal is scoped to the session's user on the server; the admin API is disabled until a token is configured and needs a named operator for decisions |
+| Payments | The chain verifier decides; provider callbacks are signed hints only; each transaction is single-use; partial payments and excess are recorded as ledger evidence or refund liabilities |
+| Trading and evaluation | Server-authoritative engine with decimal arithmetic, frozen rule snapshots and fresh-mark requirements; stale marks never decide a pass or fail |
+| Browser | Strict CSP with hashed inline scripts, `frame-ancestors`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, HSTS in production |
+| Supply chain | gitleaks on every pull request; a blocking audit of server production dependencies; Dependabot; dependency review; CodeQL |
+
+Open items that block accepting real customer funds are listed in the
+[assessment](docs/security/SECURITY-AUDIT-2026-11.md#readiness-decision).
+Report vulnerabilities privately: [SECURITY.md](SECURITY.md).
 
 ## Roadmap
 
