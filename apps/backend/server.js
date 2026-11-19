@@ -675,7 +675,7 @@ app.get('/challenges', tradingAuth, asyncRoute(async (req, res) => {
   res.json({ challenges: views })
 }))
 
-app.get('/challenges/:id', tradingAuth, uuidParam, objectRouteLimit, asyncRoute(async (req, res) => {
+app.get('/challenges/:id', objectRouteLimit, tradingAuth, uuidParam, asyncRoute(async (req, res) => {
   const c = await engine.challenges.byId(req.params.id, req.user.user_id)
   if (!c) return res.status(404).json({ error: 'challenge_not_found' })
   const state = c.demo_account_id ? await engine.state(req.user.user_id, c.demo_account_id) : null
@@ -684,7 +684,7 @@ app.get('/challenges/:id', tradingAuth, uuidParam, objectRouteLimit, asyncRoute(
 
 /* created → started: provisions the trading account on first start,
    freezes the rules snapshot, sets the time limit (if any). Idempotent. */
-app.post('/challenges/:id/start', tradingAuth, uuidParam, objectRouteLimit, limit(30), asyncRoute(async (req, res) => {
+app.post('/challenges/:id/start', objectRouteLimit, tradingAuth, uuidParam, limit(30), asyncRoute(async (req, res) => {
   const started = await engine.challenges.start(req.user.user_id, req.params.id)
   await audit('challenge_started', req.user.user_id, req, { challengeId: req.params.id, stage: started.stage })
   res.json({ ok: true, challenge: {
@@ -714,7 +714,7 @@ app.post('/trading/order', tradingAuth, limit(30), async (req, res) => {
   }
 })
 
-app.post('/trading/positions/:id/close', tradingAuth, uuidParam, objectRouteLimit, async (req, res) => {
+app.post('/trading/positions/:id/close', objectRouteLimit, tradingAuth, uuidParam, async (req, res) => {
   try {
     const out = await engine.closePosition(req.user.user_id, req.params.id, { fraction:req.body?.fraction ?? 1, idempotencyKey:req.headers['idempotency-key'] || null })
     res.json(out)
@@ -724,7 +724,7 @@ app.post('/trading/positions/:id/close', tradingAuth, uuidParam, objectRouteLimi
   }
 })
 
-app.post('/trading/positions/:id/protection', tradingAuth, uuidParam, objectRouteLimit, async (req, res) => {
+app.post('/trading/positions/:id/protection', objectRouteLimit, tradingAuth, uuidParam, async (req, res) => {
   try {
     const { sl, tp } = req.body || {}
     res.json(await engine.updateProtection(req.user.user_id, req.params.id, { sl, tp }))
@@ -734,7 +734,7 @@ app.post('/trading/positions/:id/protection', tradingAuth, uuidParam, objectRout
   }
 })
 
-app.post('/trading/orders/:id/cancel', tradingAuth, uuidParam, objectRouteLimit, async (req, res) => {
+app.post('/trading/orders/:id/cancel', objectRouteLimit, tradingAuth, uuidParam, async (req, res) => {
   try {
     res.json(await engine.cancelOrder(req.user.user_id, req.params.id))
   } catch (e) {
@@ -827,7 +827,7 @@ app.get('/portfolio/trades', tradingAuth, asyncRoute(async (req, res) => {
   }))
 }))
 
-app.get('/portfolio/trades/:id', tradingAuth, uuidParam, objectRouteLimit, asyncRoute(async (req, res) => {
+app.get('/portfolio/trades/:id', objectRouteLimit, tradingAuth, uuidParam, asyncRoute(async (req, res) => {
   const d = await portfolio.details(req.user.user_id, req.params.id)
   if (!d) return res.status(404).json({ error: 'not_found' })
   res.json(d)
