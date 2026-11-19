@@ -13,7 +13,6 @@ Critical, P1 High, P2 Medium, P3 Low.
 | OF-2026-11-20 | P1 | Move `infra/liara-iran/Dockerfile` from `nginx-unprivileged:1.28.0-alpine` to a maintained, digest-pinned `1.30.x-alpine`. Run the Liara edge workflow (wallet sign-in, cookies, CSRF, client IP through the edge) before deploying | nginx 1.28 → 1.30 line change; edge templates must still pass `nginx -t` and the edge tests | Dispatch the edge workflow on the change |
 | OF-2026-11-04 | P2 | Clear `zod`, `uuid` and `decode-uri-component` in `apps/web-react`. This happens when RainbowKit supports wagmi 3, or by replacing RainbowKit | A wallet-connector migration needs the full browser wallet suite (`test:browser:wallet`, `test:browser:purchase`) | — |
 | OF-2026-11-09 | P2 | Before any protocol activation: upgrade the OpenZeppelin contracts and the development tooling in `packages/openfund-protocol`, then audit and test the contracts | The package is dormant; AGENTS.md keeps its source and provenance unchanged | Activation gate |
-| OF-2026-11-05 | P2 (follow-up) | Decide whether gift and second-wallet DePay payments should settle automatically (`DEPAY_ATTESTED_ANY_PAYER`). Default: held for review | Product decision. DePay reports it is retiring | Decide |
 | OF-2026-11-06 | P3 | Upgrade `electron-builder` in `apps/open-trade` | Major version of the desktop build tooling; installers must pass acceptance again | — |
 | OF-2026-11-08 / -19 | Info | Shared (database or Redis) rate limiting before running more than one API instance; per-route limits on authenticated reads | Single-instance limit, already documented | — |
 
@@ -44,5 +43,5 @@ has been triaged into rules or baselines.
 
 ## Fixed on the remediation branches (pending merge)
 
-OF-2026-11-01, -02, -03, -05 (mitigated), -07 (#148), -10, -13, -14, -15,
+OF-2026-11-01, -02, -03, -05 (mitigated; the owner decided on 2026-11-19 to keep the hold, so `DEPAY_ATTESTED_ANY_PAYER` stays `false`), -07 (#148), -10, -13, -14, -15,
 -17, and part of -04 (`ws`).
