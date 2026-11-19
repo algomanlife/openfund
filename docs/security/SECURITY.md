@@ -14,7 +14,7 @@ Prop simulated mutations use Decimal arithmetic, account locks, database transac
 
 ## Operational limits
 
-The current in-process rate limiter and engine imply one API instance. Do not claim distributed abuse protection or horizontally coordinated execution. Privileged CMS credentials and database secrets stay server-side; all VITE build variables are public. Keep `SIM_TEST_MODE` disabled in production and avoid sensitive data in logs/exports.
+The current in-process rate limiter and engine imply one API instance (`numInstances: 1` and no autoscaling, both enforced by the Blueprint validator). Behind Cloudflare, limits and audit rows key on `CF-Connecting-IP`, trusted only from Cloudflare's published ranges. Do not claim distributed abuse protection or horizontally coordinated execution. Privileged CMS credentials and database secrets stay server-side; all VITE build variables are public. Keep `SIM_TEST_MODE` disabled in production and avoid sensitive data in logs/exports.
 
 CI runs gitleaks and dependency advisory reports. Reported vulnerabilities require triage; report-only audit jobs do not establish a clean dependency set. Before a public release, complete deployed TLS/session/CMS access checks, backup/restore, retention/incident decisions, actual wallet/device acceptance and threat review. See [I2/I3 milestones](../roadmap/MILESTONES.md).
 
