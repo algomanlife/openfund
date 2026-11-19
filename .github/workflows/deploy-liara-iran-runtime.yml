@@ -79,8 +79,9 @@ jobs:
           [ "$INPUT_CONFIRM" = DEPLOY-IRAN-RUNTIME ] || { echo "::error::Confirmation text does not match"; exit 1; }
           [[ "$INPUT_COMMIT" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::commit must be a full 40-character SHA"; exit 1; }
           echo "commit=$INPUT_COMMIT" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          persist-credentials: false
           ref: ${{ steps.ref.outputs.commit }}
           fetch-depth: 0
       - name: Require a reviewed main commit
@@ -89,7 +90,7 @@ jobs:
           git fetch --quiet origin main
           git merge-base --is-ancestor "${{ steps.ref.outputs.commit }}" origin/main \
             || { echo "::error::Commit is not on main; only reviewed main commits deploy"; exit 1; }
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
       - name: Provisioning planner tests
@@ -164,10 +165,11 @@ jobs:
       WORKER_APP: ${{ vars.LIARA_RUNTIME_WORKER_APP }}
       PUBLIC_URL: ${{ vars.LIARA_RUNTIME_PUBLIC_URL }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          persist-credentials: false
           ref: ${{ env.COMMIT }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26
       - name: Check required configuration (names only)
@@ -187,8 +189,9 @@ jobs:
       # tip), not from the commit being deployed, so rollbacks to commits that
       # predate them are still checked.
       - name: Check out the deploy guard and manifest (workflow revision)
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          persist-credentials: false
           path: .guard
           sparse-checkout-cone-mode: false
           sparse-checkout: |
@@ -252,7 +255,7 @@ jobs:
             echo "- Rollback: dispatch again with the previous verified commit."
             [ "$TARGET" != staging ] || echo "- For production, dispatch with target=production and staging_run_id=$GITHUB_RUN_ID"
           } >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
           name: liara-runtime-status-${{ github.run_id }}-${{ github.run_attempt }}
