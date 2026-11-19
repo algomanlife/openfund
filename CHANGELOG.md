@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- **Security assessment (November 2026)** — the first published
+  [security self-assessment](docs/security/SECURITY-AUDIT-2026-11.md), with a
+  [test matrix](docs/security/SECURITY-TEST-MATRIX.md) and a
+  [remediation plan](docs/security/SECURITY-REMEDIATION-PLAN.md). Not
+  released or deployed.
+  - The backend deletes expired SIWE nonces and sessions every hour.
+  - The test-only internal-seam token check returns 401, not 500, for a
+    token of any length, and accepts `Authorization: Bearer`.
+  - A malformed chart-workspace scope returns 400 instead of 500.
+  - CI gains a blocking production-dependency gate for the backend and
+    Backstage (`audit-production`).
+
 - **Openfund Pay** — first-party, provider-independent checkout and payment
   ledger ([ADR 0046](docs/decisions/0046-openfund-pay.md),
   [guide](docs/payments/OPENFUND_PAY.md)). Not released or deployed.

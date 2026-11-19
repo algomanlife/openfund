@@ -2,9 +2,13 @@
 
 The [root security policy](../../SECURITY.md) defines private vulnerability reporting. This repository is not a security audit or regulatory approval.
 
+## Assessments
+
+The [November 2026 self-assessment](SECURITY-AUDIT-2026-11.md) lists what was reviewed and tested, the findings and their status. Open items are in the [remediation plan](SECURITY-REMEDIATION-PLAN.md), and the commands that were run are in the [test matrix](SECURITY-TEST-MATRIX.md).
+
 ## Current controls
 
-SIWE validates message domain, URI, time, chain, nonce and signature; atomic nonce consumption prevents replay races. Opaque session IDs are hashed at rest and use HttpOnly/SameSite cookies, Secure in production. Logout, expiry and suspension are backend-enforced. Product APIs derive wallet/account ownership from sessions; SSE revalidates access.
+SIWE validates message domain, URI, time, chain, nonce and signature; atomic nonce consumption prevents replay races. Opaque session IDs are hashed at rest and use HttpOnly/SameSite cookies, Secure in production. Expired nonces and sessions are deleted by an hourly sweep. Logout, expiry and suspension are backend-enforced. Product APIs derive wallet/account ownership from sessions; SSE revalidates access.
 
 Prop simulated mutations use Decimal arithmetic, account locks, database transactions and owned idempotency. Missing execution marks fail closed. Journals validate scope and optimistic versions; metadata import cannot write financial records. CSV export escapes formula-like values. Directus public content permissions must not expose private user/session/trading tables.
 

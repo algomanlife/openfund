@@ -402,6 +402,7 @@ to submit your work ([CONTRIBUTING.md](CONTRIBUTING.md)).
 | | |
 | --- | --- |
 | Security vulnerabilities | Report **privately** via [SECURITY.md](SECURITY.md) — never in a public issue |
+| Security assessment | [November 2026 self-assessment](docs/security/SECURITY-AUDIT-2026-11.md) (not an independent audit) |
 | Questions | [SUPPORT.md](SUPPORT.md) |
 | Conduct | [Code of conduct](CODE_OF_CONDUCT.md) |
 | Review and release authority | [Repository governance](docs/development/REPOSITORY_GOVERNANCE.md) |

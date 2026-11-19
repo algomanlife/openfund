@@ -42,6 +42,14 @@ Only the latest official release (see
 receive security fixes. For which capabilities are simulated, read-only or
 live, see [Feature Status](docs/product/FEATURE_STATUS.md).
 
+## Security assessments
+
+- [November 2026 self-assessment](docs/security/SECURITY-AUDIT-2026-11.md):
+  the first published assessment, written by the project's coding agent. It
+  is not an independent audit. See also the
+  [test matrix](docs/security/SECURITY-TEST-MATRIX.md) and the
+  [remediation plan](docs/security/SECURITY-REMEDIATION-PLAN.md).
+
 ## Security model (summary)
 
 - **Authentication**: Sign-In with Ethereum (EIP-4361) with single-use nonces,

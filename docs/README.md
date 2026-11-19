@@ -72,7 +72,7 @@ instead of repeating it. Historical reviews keep their original wording.
 
 ## Security
 
-[Reporting policy](../SECURITY.md) · [Architecture and release gates](security/SECURITY.md)
+[Reporting policy](../SECURITY.md) · [Architecture and release gates](security/SECURITY.md) · [November 2026 assessment](security/SECURITY-AUDIT-2026-11.md) · [Security test matrix](security/SECURITY-TEST-MATRIX.md) · [Remediation plan](security/SECURITY-REMEDIATION-PLAN.md)
 
 ## Legal
 
