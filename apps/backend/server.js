@@ -16,7 +16,7 @@ import path from 'node:path'
 import { releaseDiagnostics } from './release.js'
 import { runtimeConfigScript, runtimeCmsUrl } from './runtime-config.js'
 import { canonicalHostMiddleware, canonicalConfig, regionChoiceMiddleware } from './canonical-host.js'
-import { trustedCountryMiddleware, countryResolver, ingressReport } from './geo-trust.js'
+import { trustedCountryMiddleware, countryResolver, ingressReport, cloudflareClientIpMiddleware } from './geo-trust.js'
 import { loadIpDatabase } from './geo-ipdb.js'
 import { defaultLocale, fallbackLocale } from './geo-locale.js'
 import { staticCacheControl, NO_STORE } from './static-cache.js'
@@ -115,6 +115,9 @@ const geoCountry = countryResolver(process.env, { loadDb: async p => loadIpDatab
 app.use(trustedCountryMiddleware(geoCountry))
 /* ADR 0043: `?region=global|iran` is remembered so geographic routing respects it */
 app.use(regionChoiceMiddleware({ secure: cfg.prod }))
+/* GLOBAL behind Cloudflare: the visitor IP from CF-Connecting-IP, only when the
+   connecting hop is a Cloudflare address (OF-2026-11-08/-19); before every limiter */
+app.use(cloudflareClientIpMiddleware())
 /* Iran edge (ADR 0031): a request carrying EDGE_CLIENT_IP_KEY may supply the
    visitor's IP; unset key = unchanged behaviour. Runs before every limiter. */
 app.use(edgeClientIpMiddleware(process.env))
