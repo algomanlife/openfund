@@ -5,12 +5,13 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import express from 'express'
 import http from 'node:http'
+import { randomBytes } from 'node:crypto'
 import { cloudflareClientIp, cloudflareClientIpMiddleware } from '../geo-trust.js'
 import { edgeClientIpMiddleware } from '../edge-client-ip.js'
 
 const CF_EDGE = '173.245.48.10'          /* inside a published Cloudflare range */
 const NOT_CF = '198.51.100.7'            /* TEST-NET-2, not Cloudflare */
-const EDGE_KEY = 'edge_test_key_0123456789abcdefghijklmnop'
+const EDGE_KEY = 'edge_' + randomBytes(24).toString('hex')   /* disposable, per run */
 
 test('CF-Connecting-IP is trusted only when the connecting hop is a Cloudflare address', () => {
   assert.equal(cloudflareClientIp({ 'x-forwarded-for': `203.0.113.9, ${CF_EDGE}`, 'cf-connecting-ip': '203.0.113.9' }, '10.0.0.2'), '203.0.113.9')

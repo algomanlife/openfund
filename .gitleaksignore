@@ -61,3 +61,7 @@ f6f956b452b657bd5ae004cf01a0b81592c5dc30:vendor/vela/src/locales/de.json:generic
 f6f956b452b657bd5ae004cf01a0b81592c5dc30:vendor/vela/src/locales/it.json:generic-api-key:2123
 f6f956b452b657bd5ae004cf01a0b81592c5dc30:vendor/vela/src/locales/pl.json:generic-api-key:2123
 f6f956b452b657bd5ae004cf01a0b81592c5dc30:vendor/vela/src/locales/pt-BR.json:generic-api-key:2123
+# 6bbe0f4 client-ip.test.mjs:13 matched generic-api-key on EDGE_KEY, a made-up
+# test fixture for the Iran edge client-IP header (never a deployed key); the
+# test now generates it per run.
+6bbe0f447fec4620cd88993771353ab5a6ba87ad:apps/backend/test/client-ip.test.mjs:generic-api-key:13
