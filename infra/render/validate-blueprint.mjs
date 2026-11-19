@@ -146,6 +146,10 @@ else fail('graph: Directus requires DB_CLIENT=pg and a sync:false DB_CONNECTION_
 }
 const api = services.find(s => s.name === 'openfund')
 if (api?.numInstances !== 1) fail('graph: engine/SSE service requires numInstances: 1')
+/* OF-2026-11-08: the engine loop, the SSE hub and the per-process rate
+   limiter assume exactly one API process; autoscaling would split them */
+if (api?.scaling) fail('graph: the API service must not declare autoscaling (single engine/SSE/rate-limiter process)')
+else ok('graph: API autoscaling not configured (single process)')
 if (api?.buildCommand?.trim() !== 'node scripts/release/render-build.mjs') fail('graph: API must use the verified official release build')
 if (api?.autoDeployTrigger !== 'off') fail('graph: production requires approved exact-release deployment')
 const domains = api?.envVars?.find(v => v.key === 'ALLOWED_DOMAINS')

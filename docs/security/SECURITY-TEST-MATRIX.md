@@ -89,6 +89,31 @@ and passed on the reruns and in the fresh-database run.
 | Syft 1.57.1 | Repository SBOM (CycloneDX) | Generated, kept privately |
 | npm audit | Four apps | Backend and Backstage production: 0. Web: OF-2026-11-04. Desktop: OF-2026-11-06 |
 
+## Follow-up remediation checks (2026-11-19)
+
+Run for the [remediation report](SECURITY-REMEDIATION-2026-11.md) on
+disposable local runtimes (Docker PostgreSQL 17 with a non-superuser
+`CREATEROLE` owner, Directus 11.17.4) and in each pull request's CI.
+
+| Check | Command or job | Result |
+| --- | --- | --- |
+| Original OF-2026-11-12 finding before the fix | `db-roles.test.mjs` HTTP test on the shared credential | FAIL as expected (admin could pass a challenge) |
+| Directus role isolation | `node --test scripts/ops/test/db-roles.test.mjs`; CI `CMS security` | PASS (12/12) |
+| Role policy apply twice and drift check | `node scripts/ops/db-roles.mjs apply` / `verify` | PASS (`ok: true`) |
+| CMS bootstrap across a restart on the Directus role | `scripts/release/test-cms-bootstrap.mjs before`/`after` | PASS |
+| Backend on the runtime role | `npm run test:all` suites with the server on `openfund_runtime` | Server: 0 privilege errors. Harness DDL tests (governance fixtures, `unified` schema, 3 fault-injection triggers) need the owner role |
+| Directus SSRF before the controls | `POST /files/import` `http://0.0.0.0:8055` | Reproduced (200) |
+| Directus 11.x controls | `node --test scripts/ops/test/directus-hardening.test.mjs` | PASS (7/7). Negative control on the default configuration: FAIL as expected |
+| Directus 12.7.0 licence entitlements | `GET /license` on a fresh instance | Core: 25 collections, no custom permission rules |
+| Edge image | `trivy image` on the built image | 0 Critical, 0 High, 0 Medium |
+| Edge contract and wallet auth through the edge | CI `Build and contract-test the edge image`, `Wallet sign-in, cookies, CSRF and client IP through the edge` | PASS |
+| Web after the `uuid` override | `typecheck`, `test:web` (299), `build:web`, `test-wallet-connect.cjs` (32/32), `test-security-browser.cjs` (12/12) | PASS |
+| Desktop after the `minimatch` override | `npm test` (4/4), `build`, `electron-builder --dir`, `test:desktop`; CI Linux, Windows and macOS | PASS |
+| Protocol activation block | `node --test scripts/ci/protocol-dormant.test.mjs` | PASS (4/4); a mutation fails it |
+| Client IP behind Cloudflare | `client-ip.test.mjs`, `geo.test.mjs`, `edge-client-ip.test.mjs` | PASS (27/27). Before the fix, a second visitor on one edge got 429 |
+| Auth and pentest on the rate-limit branch | SIWE 44/44, `test:security` 11/11, `test:pentest` 15/15, `test:admin` 26/26 | PASS |
+| Security automation gates | `security.yml` jobs run locally from the pinned images | Clean on `main`; each blocking gate fails on a seeded violation ([security automation](SECURITY-AUTOMATION.md)) |
+
 ## Not run
 
 | Check | Status | Reason |
@@ -96,6 +121,6 @@ and passed on the reruns and in the fresh-database run.
 | Any test against a deployed environment | NOT APPLICABLE | Not authorized |
 | Region and regional-sync suites (`test:region`, `test:regional-sync`) | NOT RUN locally | They need two region databases; CI runs them on the pull request |
 | Browser journeys besides the security check | NOT RUN locally | CI runs them on the pull request |
-| Liara edge workflow | NOT RUN | Dispatch-only; needed for OF-2026-11-20 |
+| Liara edge deployment | NOT RUN | The pull-request jobs (build, scan, contract, edge auth) passed on #150; deployment is dispatch-only and not authorized |
 | Real-network payment acceptance | NOT APPLICABLE | No real transactions were authorized |
 | Load and stress testing | NOT RUN | Excluded by the rules of engagement |

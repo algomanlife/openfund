@@ -11,7 +11,7 @@ certification or a regulatory approval.
 | Base commit | `293b3868` (`main`, after pull request 146) |
 | Remediation pull requests | [#147](https://github.com/algomanlife/openfund/pull/147) (application, payments, tests, documentation) and [#148](https://github.com/algomanlife/openfund/pull/148) (GitHub Actions supply chain) |
 | Released and deployed versions | Not tested. The latest official release is v0.7.0. No deployed host was contacted |
-| Report status | For owner review. The fixes ship only after review, merge and release |
+| Report status | #147 and #148 merged on 2026-11-19. Remaining work is tracked in the [remediation report](SECURITY-REMEDIATION-2026-11.md). Nothing is released or deployed yet |
 
 ## Kinds of testing
 
@@ -50,25 +50,26 @@ certification or a regulatory approval.
 ## Findings
 
 Severity follows the brief: Critical (P0), High (P1), Medium (P2), Low (P3),
-Informational. "Fixed" means fixed on a remediation branch with a regression
-test. It is not live until merged, released and deployed.
+Informational. "Fixed" means fixed in `main` with a regression test. It is
+not live until released and deployed. The status columns were updated on
+2026-11-19 by the [remediation report](SECURITY-REMEDIATION-2026-11.md).
 
-| Severity | Found | Fixed or mitigated (branch) | Open | Accepted |
+| Severity | Found | Fixed or mitigated (in `main`) | Open | Accepted |
 | --- | --- | --- | --- | --- |
 | Critical | 0 | 0 | 0 | 0 |
-| High | 3 | 0 | 3 | 0 |
-| Medium | 3 | 1 | 2 | 0 |
-| Low | 11 | 9 | 1 | 1 |
+| High | 3 | 2 (OF-2026-11-12, -20; not deployed) | 1 (OF-2026-11-11, mitigated, blocked by licence) | 0 |
+| Medium | 3 | 1 (OF-2026-11-05) | 2 (OF-2026-11-04 partly fixed; OF-2026-11-09 blocked from activation) | 0 |
+| Low | 11 | 10 | 0 | 1 |
 | Informational | 4 | 0 | 0 | 4 |
 
 | ID | Severity | Component | Finding | Status | Fix reference | Verification |
 | --- | --- | --- | --- | --- | --- | --- |
-| OF-2026-11-11 | High | Directus | Directus 11.17.4 is affected by two high advisories (GHSA-c6w9-5g5j-jh2p, GHSA-j5h6-vqc3-phqh) that are fixed only in 12.x. The 12.x upgrade is blocked on a licensing decision ([assessment](../backstage/DIRECTUS_12_ASSESSMENT.md)) | Open: owner decision | Remediation plan | OSV advisory data. The cache advisory needs `CACHE_ENABLED`, which `render.yaml` does not set (configuration only, not runtime-verified). The SSRF advisory needs an authenticated user who can import files |
-| OF-2026-11-12 | High | Directus / database | Directus and the API share one database credential (`render.yaml`), so any Directus administrator, or anyone who takes over a Directus admin session, can write financial tables directly and skip the engine and the audit trail | Open: infrastructure change | Remediation plan (separate database role) | Reproduced on the isolated stack: an admin `PATCH` set a challenge to `passed` (HTTP 200) |
-| OF-2026-11-20 | High | IRAN edge container | `infra/liara-iran/Dockerfile` pins `nginx-unprivileged:1.28.0-alpine` (January 2026; the 1.28 line is no longer updated). Trivy reports 3 critical (OpenSSL `libssl3`/`libcrypto3`, brotli) and 56 high | Open: needs an edge test run | Remediation plan | Trivy image scan. `1.30.6-alpine` reduces this to 4 critical and 15 high |
+| OF-2026-11-11 | High | Directus | Directus 11.17.4 is affected by two high advisories (GHSA-c6w9-5g5j-jh2p, GHSA-j5h6-vqc3-phqh) that are fixed only in 12.x. The 12.x upgrade is blocked on a licensing decision ([assessment](../backstage/DIRECTUS_12_ASSESSMENT.md)) | Open (High): mitigated, blocked by licence | #151 (verified 11.x controls) | OSV advisory data. The cache advisory needs `CACHE_ENABLED`, which `render.yaml` does not set (configuration only, not runtime-verified). The SSRF advisory needs an authenticated user who can import files |
+| OF-2026-11-12 | High | Directus / database | Directus and the API share one database credential (`render.yaml`), so any Directus administrator, or anyone who takes over a Directus admin session, can write financial tables directly and skip the engine and the audit trail | Fixed in code, not deployed | #149 ([database roles](DATABASE_ROLES.md)) | Reproduced on the isolated stack: an admin `PATCH` set a challenge to `passed` (HTTP 200) |
+| OF-2026-11-20 | High | IRAN edge container | `infra/liara-iran/Dockerfile` pins `nginx-unprivileged:1.28.0-alpine` (January 2026; the 1.28 line is no longer updated). Trivy reports 3 critical (OpenSSL `libssl3`/`libcrypto3`, brotli) and 56 high | Fixed in code, not deployed | #150 | Trivy image scan. `1.30.6-alpine` reduces this to 4 critical and 15 high |
 | OF-2026-11-05 | Medium | Payments | A provider-attested payment did not need to be signed by the order owner's wallet, so the order binding rested on provider checks that are not publicly documented | Mitigated: fail-closed; the owner decided on 2026-11-19 to keep the hold | #147 (`purchases.js`, `DEPAY_ATTESTED_ANY_PAYER`) | P23b, D3 and the payment suites |
-| OF-2026-11-04 | Medium | Web wallet SDK | Transitive advisories through wagmi 2 and RainbowKit 2 | Partly fixed (`ws`). `zod`, `uuid` and `decode-uri-component` stay open | #147 (`overrides`) | npm audit, typecheck, `test:web`, build |
-| OF-2026-11-09 | Medium | Dormant protocol package | Dependabot and OSV report critical development-tool advisories and high OpenZeppelin runtime advisories in `packages/openfund-protocol` | Open: activation gate | Remediation plan | OSV, Dependabot |
+| OF-2026-11-04 | Medium | Web wallet SDK | Transitive advisories through wagmi 2 and RainbowKit 2 | Partly fixed (`ws`, `uuid`). `zod` and `decode-uri-component` stay open: no compatible fix, not in the shipped first-party bundle | #147, #152 (`overrides`) | npm audit, typecheck, `test:web`, build |
+| OF-2026-11-09 | Medium | Dormant protocol package | Dependabot and OSV report critical development-tool advisories and high OpenZeppelin runtime advisories in `packages/openfund-protocol` | Open: activation block enforced by CI | #152 (`protocol-dormant.test.mjs`) | OSV, Dependabot |
 | OF-2026-11-01 | Low | Auth | Expired nonces and sessions were never deleted | Fixed | #147 `auth-hygiene.js` | `test:security` |
 | OF-2026-11-02 | Low | Test seams | The internal token check threw a RangeError (500) on a token of a different length | Fixed | #147 | `test:security`, PT-10 |
 | OF-2026-11-03 | Low | Chart workspaces | A malformed percent sequence gave a 500 | Fixed | #147 | `test:chart-workspaces` (failed before the fix) |
@@ -78,8 +79,8 @@ test. It is not live until merged, released and deployed.
 | OF-2026-11-15 | Low | HTTP headers | No `Permissions-Policy` header (ZAP) | Fixed | #147 | PT-09, ZAP |
 | OF-2026-11-07 | Low | CI | GitHub-owned actions were pinned by tag; checkout credentials persisted; one template expansion in a shell script (zizmor) | Fixed | #148 | zizmor re-run |
 | OF-2026-11-17 | Low | Test seams | CodeQL flagged a SHA-256 digest of the internal token as a weak password hash | Fixed | #147 | CodeQL check on the pull request |
-| OF-2026-11-06 | Low | Desktop build | A `minimatch` advisory through `electron-builder`; build time only | Open | Major upgrade needed | npm audit |
-| OF-2026-11-19 | Low | API | CodeQL `missing-rate-limiting` (44 alerts): authenticated reads without a per-route limit; the custom in-memory limiter is not recognized | Accepted with OF-2026-11-08 | — | Triage |
+| OF-2026-11-06 | Low | Desktop build | A `minimatch` advisory through `electron-builder`; build time only | Fixed (build time) | #152 (`minimatch` override) | npm audit |
+| OF-2026-11-19 | Low | API | CodeQL `missing-rate-limiting` (44 alerts): authenticated reads without a per-route limit; the custom in-memory limiter is not recognized | Accepted; limits now keyed on the visitor IP behind Cloudflare | #153 | Triage |
 | OF-2026-11-08 | Info | Backend | The rate limiter is in memory and per process | Accepted, documented | [Security architecture](SECURITY.md) | — |
 | OF-2026-11-16 | Info | HTTP headers | CSP has `unsafe-eval` (Pine/Vela engine on HTML pages only) and `style-src 'unsafe-inline'` | Accepted, documented in `server.js` | — | ZAP |
 | OF-2026-11-18 | Info | Vendored code | `vendor/gains-sdk` and `vendor/vela` lockfiles carry advisories (7 critical in `gains-sdk`). These lockfiles are never installed or built; the app resolves its own dependencies | Accepted | — | OSV |
@@ -162,7 +163,9 @@ Results from 2026-11-19, after the remediation:
 3. The payment path is not owner-accepted: the 2026-11-18 real purchases
    failed ([incident](../payments/INCIDENT_2026-11-18.md)), and no
    real-network or production verification was part of this assessment.
-4. Every fix in this assessment is on unmerged branches.
+4. The fixes are merged into `main` (#147, #148 and the follow-up series in
+   the [remediation report](SECURITY-REMEDIATION-2026-11.md)), but none is
+   released or deployed.
 
 The assessment itself is complete for the scope above. Every component has
 a coverage status, every confirmed High finding has a disposition, and the

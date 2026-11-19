@@ -31,7 +31,12 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      # Credentials persist on purpose: this job pushes a proposal branch with
+      # GITHUB_TOKEN. Uploaded artifacts are named report files, never .git
+      # (reviewed exception, OF-2026-11-07 follow-up).
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: true # zizmor: ignore[artipacked]
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 26

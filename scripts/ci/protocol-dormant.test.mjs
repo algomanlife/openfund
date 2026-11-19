@@ -23,11 +23,32 @@ const walk = (dir, filter, out = []) => {
   return out;
 };
 
-test('no workflow installs, builds, tests or deploys the protocol package', () => {
-  for (const wf of fs.readdirSync(path.join(root, '.github/workflows'))) {
-    const text = read(`.github/workflows/${wf}`);
-    assert.doesNotMatch(text, /openfund-protocol|hardhat/i, `${wf} references the dormant protocol package`);
+/* A workflow may read the package (dependency scans, SBOMs: security.yml) but
+   never install, build, test, run or deploy it. Hardhat, the package's
+   toolchain, must not appear in any workflow. */
+export function executesProtocol(text) {
+  if (/hardhat/i.test(text)) return 'mentions hardhat';
+  for (const line of text.split('\n')) {
+    if (/^\s*#/.test(line) || !/openfund-protocol/.test(line)) continue;
+    if (/\b(npm|npx|pnpm|yarn|node|bun|forge|truffle|solc)\b|working-directory|\bcd\s|--prefix|install|deploy|compile|\bbuild\b|\btest\b|\brun\b/i.test(line)) return line.trim();
   }
+  return null;
+}
+
+test('no workflow installs, builds, tests, runs or deploys the protocol package', () => {
+  for (const wf of fs.readdirSync(path.join(root, '.github/workflows'))) {
+    const hit = executesProtocol(read(`.github/workflows/${wf}`));
+    assert.equal(hit, null, `${wf} executes the dormant protocol package: ${hit}`);
+  }
+});
+
+test('the workflow guard tells read-only scanning apart from execution', () => {
+  assert.equal(executesProtocol('for target in apps/backend packages/openfund-protocol; do'), null);
+  assert.equal(executesProtocol('# dormant (packages/openfund-protocol) lockfiles'), null);
+  assert.ok(executesProtocol('run: npm ci --prefix packages/openfund-protocol'));
+  assert.ok(executesProtocol('working-directory: packages/openfund-protocol'));
+  assert.ok(executesProtocol('cd packages/openfund-protocol && npx hardhat test'));
+  assert.ok(executesProtocol('run: npx hardhat compile'));
 });
 
 test('no application or script source imports the protocol package or its contracts', () => {

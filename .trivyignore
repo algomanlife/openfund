@@ -1,0 +1,11 @@
+# Reviewed, dated exceptions for the blocking Trivy gate (security.yml).
+# Each entry names the finding, why it is not fixed and when it is re-reviewed.
+
+# OF-2026-11-04: decode-uri-component <=0.5.0 through query-string@7 in the
+# WalletConnect stack under wagmi 2 / RainbowKit 2. The fix (0.5.1) is
+# ESM-only and query-string@7 loads it with require(); the code is not in
+# the shipped first-party bundle. Re-review when RainbowKit supports wagmi 3.
+# (Advisory data shifts: the 2026-11-19 DB rates the same root issue MEDIUM as
+# CVE-2026-45822, below this gate. The entry keeps a re-raise from failing CI
+# over an already accepted, documented risk.)
+CVE-2026-118664 exp:2027-02-28
