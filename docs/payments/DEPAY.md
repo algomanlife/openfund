@@ -178,6 +178,8 @@ wallet contract or an ERC-4337 EntryPoint (`tx.to` is then neither the token
 nor the router). Only Transfer logs of the settlement token to the receiver
 sent by an approved router or by the payer DePay reported count
 (`route: contract_wallet`). Customer-submitted hashes keep the strict rule.
+Unless `DEPAY_ATTESTED_ANY_PAYER=true`, such a payment is held for operator
+review (see the payer binding rule below).
 | Receipt (customer) | `GET /purchases/orders/:id/receipt` | Openfund session; owner only. Built from the order, the verified `payments` row, the invoice and the challenge; DePay's `sent_token`/`sent_amount` are labelled as reported |
 
 ### Dynamic configuration
@@ -209,7 +211,16 @@ malformed orders are refused (404/409).
    Openfund's signed configuration. It must be an open, payment-required order
    created in the last 24 hours. A wallet address is never used to find an
    order, so a payment from an unrelated wallet cannot attach to another
-   customer's order, and the payer may use any wallet on any configured chain.
+   customer's order.
+   **Payer binding (security audit 2026-11, OF-2026-11-05):** DePay does not
+   publicly document how it binds a reported transaction to the payment it
+   configured. By default an attested payment settles automatically only when
+   its on-chain signer is the order owner's sign-in wallet. A payment signed
+   by any other wallet (a gift, a second wallet, a Solana or smart-contract
+   wallet) is verified and recorded with classification `payer_review` and an
+   open review, and is never provisioned until an operator associates it with
+   documented proof. Setting `DEPAY_ATTESTED_ANY_PAYER=true` restores
+   automatic settlement for any payer, as an explicit owner decision.
 4. A retryable `payment_attempts` row is registered (unique per order, chain
    and transaction), the order moves to `payment_detected`, and the delivery
    is stored once in `depay_events` (deduplicated by body hash).

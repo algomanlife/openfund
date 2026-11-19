@@ -432,8 +432,10 @@ export async function verifyAndConfirm({ pool, verifier, order, userId, walletAd
        and those are not documented. An attested payment signed by a wallet
        other than the order owner's is therefore NOT provisioned
        automatically: the verified evidence stays on the attempt for operator
-       review, and an operator association (documented proof) settles it. */
-    if (attested && !operator) {
+       review, and an operator association (documented proof) settles it.
+       DEPAY_ATTESTED_ANY_PAYER=true restores provider-trusted settlement
+       (gift / any-wallet payments) as an explicit, documented owner decision. */
+    if (attested && !operator && process.env.DEPAY_ATTESTED_ANY_PAYER !== 'true') {
       const owner = walletAddress || (await pool.query('SELECT wallet_address FROM openfund_users WHERE id=$1', [userId])).rows[0]?.wallet_address
       if (!owner || String(verdict.fromAddress || '').toLowerCase() !== String(owner).toLowerCase())
         throw Object.assign(fail(409, 'attested_payer_unbound'), { isPaymentError: true, retryable: false, detail: { payer: verdict.fromAddress, route: verdict.route } })
