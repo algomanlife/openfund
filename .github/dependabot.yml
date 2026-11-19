@@ -49,3 +49,14 @@ updates:
       - dependency-name: '*'
         update-types: ['version-update:semver-major']
     commit-message: { prefix: 'ci(deps)' }
+  # OF-2026-11-20: the Iran edge base image is pinned by digest; weekly
+  # proposals keep the digest current (the edge workflow's Trivy gate and
+  # contract tests must pass before anything deploys).
+  - package-ecosystem: docker
+    directory: /infra/liara-iran
+    schedule: { interval: weekly, day: monday }
+    open-pull-requests-limit: 1
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+    commit-message: { prefix: 'chore(deps)' }
