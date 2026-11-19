@@ -116,8 +116,11 @@ async function transparencyReport(pool, treasury) {
 
   const tv = await treasury.view()
   const position = await computeFinancialPosition(pool, tv)
-  const flowsIn = tv.address ? (await q(`SELECT count(*)::int AS n, coalesce(sum(o.price_usd),0) AS usd FROM payments p JOIN purchase_orders o ON o.id=p.purchase_order_id
-                                            WHERE p.status='confirmed' AND lower(coalesce(p.to_address,''))=$1`, [tv.address]))[0] : null
+  /* one row per PAID order (an Openfund Pay order may be settled by several
+     transactions; excess value is a refund liability, never revenue) */
+  const flowsIn = tv.address ? (await q(`SELECT count(*)::int AS n, coalesce(sum(o.price_usd),0) AS usd FROM purchase_orders o
+                                            WHERE o.status='paid' AND EXISTS (SELECT 1 FROM payments p WHERE p.purchase_order_id=o.id AND p.status='confirmed'
+                                              AND lower(coalesce(p.to_address,''))=$1)`, [tv.address]))[0] : null
   const [flowsOut] = await q(`SELECT
       (SELECT coalesce(sum(amount_usd),0) FROM withdrawal_requests WHERE status='paid') AS trader_rewards,
       (SELECT coalesce(-sum(amount_usd),0) FROM referral_commissions WHERE entry_type='payout') AS ambassador_commissions,

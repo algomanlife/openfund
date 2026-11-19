@@ -1,5 +1,23 @@
 # DePay integration (multi-chain payments)
 
+> **Retiring provider (2026-11-18).** DePay's site states that its services
+> will be permanently discontinued on **December 31, 2026** (banner on
+> depay.com, read 2026-11-18; no announcement date found). Openfund Pay
+> ([ADR 0046](../decisions/0046-openfund-pay.md)) replaces it for new
+> payments:
+>
+> - DePay is **off for new payments** by default
+>   (`PAYMENT_DEPAY_NEW_PAYMENTS=false`, or Backstage → Payment methods).
+>   The dynamic-configuration endpoint then answers `404 depay_disabled`.
+> - Signed callbacks, events, attempts, `depay_events` and the recovery sweep
+>   are **unchanged**, so DePay payments already made still verify and
+>   reconcile.
+> - A short DePay settlement is now a **partial payment** (remaining balance
+>   payable by wallet) instead of a dead-end rejection. See the
+>   [incident report](INCIDENT_2026-11-18.md).
+> - No DePay route or history is removed. Remove routes only after
+>   2026-12-31 and after confirming no attempt is still pending.
+
 Status: **IMPLEMENTED — REQUIRES OWNER CONFIGURATION AND LIVE VERIFICATION.**
 The step-by-step owner procedure, verified token and router addresses and the
 2026-11-13 root-cause evidence are in [Owner setup](OWNER_SETUP.md).

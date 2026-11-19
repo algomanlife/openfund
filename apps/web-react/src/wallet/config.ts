@@ -1,7 +1,7 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 import { createConfig, http } from 'wagmi'
 import { injected } from 'wagmi/connectors'
-import { arbitrum } from 'wagmi/chains'
+import { arbitrum, base, optimism, mainnet, polygon, bsc, avalanche, gnosis } from 'wagmi/chains'
 import { publicRuntimeConfig } from '../config/runtime'
 
 /**
@@ -19,7 +19,13 @@ import { publicRuntimeConfig } from '../config/runtime'
  *   WITHOUT one, RainbowKit throws at boot ("No projectId found"), so we
  *   fall back to an injected-wallets-only wagmi config (MetaMask / Rabby
  *   still work; WalletConnect is simply not offered until configured).
- * - Connection only: no transactions, no token approvals.
+ * - Openfund Pay (ADR 0046): the checkout may ask the wallet to sign ONE
+ *   ERC-20 `transfer` that the server prepared (token, treasury, exact
+ *   amount). Payment networks are registered below so wagmi can switch to
+ *   and send on them; SIGN-IN stays Arbitrum-only (WALLET_CHAINS, the SIWE
+ *   chain and the server's AUTH_CHAINS are unchanged) and switching the
+ *   payment network never changes the authenticated wallet. No approvals,
+ *   no swaps, no other contract calls.
  */
 export const WALLETCONNECT_PROJECT_ID =
   (import.meta.env?.PROD ? publicRuntimeConfig().walletConnectProjectId : import.meta.env?.VITE_WALLETCONNECT_PROJECT_ID as string | undefined)?.trim() || ''
@@ -28,15 +34,20 @@ export const walletConnectEnabled = WALLETCONNECT_PROJECT_ID.length > 0
 
 export const WALLET_CHAINS = [arbitrum] as const
 
+/* networks a server-configured settlement chain may use for a direct wallet
+   payment; Arbitrum stays first (the default and the only sign-in chain).
+   Which of them are actually offered comes from the server configuration. */
+export const PAYMENT_CHAINS = [arbitrum, base, optimism, mainnet, polygon, bsc, avalanche, gnosis] as const
+
 export const wagmiConfig = walletConnectEnabled
   ? getDefaultConfig({
       appName: 'Openfund',
       projectId: WALLETCONNECT_PROJECT_ID,
-      chains: WALLET_CHAINS,
+      chains: PAYMENT_CHAINS,
       ssr: false
     })
   : createConfig({
-      chains: WALLET_CHAINS,
-      transports: { [arbitrum.id]: http() },
+      chains: PAYMENT_CHAINS,
+      transports: Object.fromEntries(PAYMENT_CHAINS.map(c => [c.id, http()])) as Record<(typeof PAYMENT_CHAINS)[number]['id'], ReturnType<typeof http>>,
       connectors: [injected({ shimDisconnect: true })]
     })

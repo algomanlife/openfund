@@ -13,9 +13,13 @@ export const purchaseCopy = {
   status: text('Status', 'وضعیت'), date: text('Date', 'تاریخ'), payment: text('Payment', 'پرداخت'),
   invoice: text('Invoice', 'فاکتور'), pdf: text('Download PDF', 'دانلود PDF'),
   unavailable: text('Not available', 'در دسترس نیست'), unknown: text('Unknown', 'نامشخص'),
+  received: text('Received', 'دریافت‌شده'), remaining: text('Remaining', 'مانده'), excess: text('Excess', 'مبلغ اضافه'),
+  refundPending: text('Refund pending', 'بازپرداخت در جریان'), refundCompleted: text('Refund completed', 'بازپرداخت انجام شد'),
+  completeRemaining: text('Complete Remaining Payment', 'پرداخت مبلغ باقی‌مانده'),
 }
 export const purchaseStatuses: Record<string, Localized> = {
   payment_detected: text('Verification Pending', 'در حال بررسی تراکنش'),
+  partially_paid: text('Partially Paid', 'پرداخت جزئی'),
   manual_review: text('Under review', 'در حال بررسی'),
   provisioned: text('Challenge Activated', 'چالش فعال شد'),
   pending: text('Awaiting payment', 'در انتظار پرداخت'), paid: text('Paid', 'پرداخت‌شده'),

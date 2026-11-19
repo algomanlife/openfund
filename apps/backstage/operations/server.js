@@ -30,6 +30,12 @@ const routes = {
   reviews: ['/admin/rewards/reviews', 'reviews', []],
   payouts: ['/admin/withdrawals?kind=reward', 'withdrawals', ['status', 'offset', 'scope']],
   payments: ['/admin/payments/attempts', 'attempts', ['status', 'review']],
+  /* Openfund Pay operations (ADR 0046) */
+  paymentOverview: ['/admin/payments/overview'],
+  paymentSearch: ['/admin/payments/search', 'orders', ['orderId', 'wallet', 'txHash', 'chainId', 'method', 'status', 'from', 'to']],
+  deposits: ['/admin/payments/transactions?review=open', 'transactions', ['status', 'match']],
+  refunds: ['/admin/payments/refunds', 'refunds', ['status']],
+  paymentSettings: ['/admin/payments/settings'],
   coupons: ['/admin/coupons', 'coupons', []],
   couponPlans: ['/admin/coupons/plans', 'plans', []],
   controlled: ['/admin/coupons/controlled', 'controlledTests', []],
@@ -62,7 +68,46 @@ const moneyOf = value => {
   if (!Number.isFinite(n) || n <= 0 || n > 1e12) throw fail(400, 'invalid_request')
   return String(value)
 }
+const txHashOf = value => {
+  const v = textOf(value, 100)
+  if (!/^(0x[0-9a-fA-F]{64}|[1-9A-HJ-NP-Za-km-z]{64,90})$/.test(v)) throw fail(400, 'invalid_payout_hash')
+  return v
+}
 const operations = {
+  /* unattributed deposits: every action is owner-gated and audited by the
+     backend; association needs written proof, nothing is force-confirmed */
+  deposits: {
+    identifier: uuid,
+    actions: ['associate', 'close', 'refundCase', 'reverify'],
+    request: (record, body) => {
+      const root = `/admin/payments/transactions/${record}`
+      if (body.action === 'associate') {
+        if (!uuid.test(String(body.orderId || ''))) throw fail(400, 'invalid_request')
+        return [root + '/associate', { orderId: body.orderId, note: textOf(body.note, 1000), evidence: textOf(body.evidence, 1000) }]
+      }
+      if (body.action === 'close') return [root + '/close', { note: textOf(body.note, 1000), resolution: body.resolution === 'ignored' ? 'ignored' : 'resolved' }]
+      if (body.action === 'refundCase') return [root + '/refund-case', { note: textOf(body.note, 1000), reason: ['late_payment', 'unmatched', 'operator'].includes(body.reason) ? body.reason : 'operator' }]
+      return [root + '/reverify', {}]
+    },
+  },
+  /* refund liabilities: Openfund never sends money; the owner records each
+     reviewed step of a refund executed from the treasury */
+  refunds: {
+    identifier: uuid,
+    actions: ['review', 'approve', 'reject', 'sent', 'failed', 'confirm'],
+    request: (record, body) => {
+      const root = `/admin/payments/refunds/${record}/${body.action}`
+      const note = textOf(body.note, 1000)
+      if (body.action === 'approve') return [root, { note, destination: textOf(body.destination, 100), chainId: Number(body.chainId) }]
+      if (body.action === 'sent') return [root, { note, chainId: Number(body.chainId), refundTxHash: txHashOf(body.refundTxHash) }]
+      return [root, { note }]
+    },
+  },
+  paymentSettings: {
+    identifier: value => ['wallet', 'manual', 'depay'].includes(value),
+    actions: ['enable', 'disable'],
+    request: (record, body) => ['/admin/payments/settings', { method: record, enabled: body.action === 'enable', reason: textOf(body.reason, 500) }],
+  },
   partners: {
     identifier: uuid,
     actions: ['review', 'approve', 'reject', 'suspend', 'reinstate'],

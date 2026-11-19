@@ -49,6 +49,10 @@ const openfundKeys = crypto.generateKeyPairSync('rsa', { modulusLength: 2048 })
 const depayKeys = crypto.generateKeyPairSync('rsa', { modulusLength: 2048 })
 process.env.DEPAY_CONFIG_PRIVATE_KEY = pemOf(openfundKeys.privateKey)
 process.env.DEPAY_VERIFY_PUBLIC_KEY = pemOf(depayKeys.publicKey)
+/* these suites exercise the legacy DePay checkout, which is OFF for new
+   payments by default since Openfund Pay (ADR 0046): enable it explicitly.
+   The disabled default is covered in openfund-pay.test.mjs (P23). */
+process.env.PAYMENT_DEPAY_NEW_PAYMENTS = 'true'
 const depaySign = (raw, key = depayKeys.privateKey) => crypto.sign('sha256', Buffer.from(raw),
   { key, padding: crypto.constants.RSA_PKCS1_PSS_PADDING, saltLength: 64 }).toString('base64url')
 

@@ -4,10 +4,21 @@
 **enabled on GLOBAL**. `GET https://openfi.cloud/purchases/plans` reports
 `paymentsEnabled: true`, DePay on seven chains and manual transfer. The signed
 DePay routes are live: an unsigned `POST /api/payments/depay/config` is refused
-with 401 instead of the former 404. IRAN does not offer purchases. **No
-genuine production purchase is recorded yet**, so real-network acceptance and
-owner acceptance remain open. Passing automated tests is necessary, not
-sufficient.
+with 401 instead of the former 404. IRAN does not offer purchases. GLOBAL runs v0.7.0 (`34ef7ec`).
+
+**Two genuine owner purchases with coupons were made on 2026-11-18 and
+neither activated a challenge.** The DePay payment settled 10.638 USDC for a
+10.80 order and was rejected as `insufficient_amount`, and the page showed
+"Verification Pending". The ~$10 manual transfer was not found on the scanned
+networks. Root causes and reconciliation steps:
+[incident report](INCIDENT_2026-11-18.md). Purchases are therefore **not
+accepted**.
+
+The fix is [Openfund Pay](OPENFUND_PAY.md) (ADR 0046): direct wallet
+payment, partial payments, refund liabilities, a treasury watcher and the
+corrected status. It is implemented with deterministic tests, but it is
+**not released or deployed**, and no real-network test has been made with
+it. Passing automated tests is necessary, not sufficient.
 
 ## Acceptance status
 
@@ -19,7 +30,31 @@ sufficient.
 | DePay checkout (Buy Challenge → widget → signed callback → verification → challenge) | Implemented; browser-tested end to end with a **stub widget, mock chain and locally signed callbacks** ([acceptance test](../../e2e/test-depay-checkout.cjs)); **awaiting real-network acceptance** |
 | DePay router path (`PURCHASE_ROUTER_ADDRESSES`) | Implemented; **awaiting real-network acceptance** |
 | DePay server callback hint | Implemented; **awaiting real-network acceptance** (signature format is verified only against locally generated keys) |
-| Refund execution | Not automated by design; manual with recorded adjustment |
+| Refund execution | Not automated by design. Openfund Pay records the refund-liability lifecycle with on-chain confirmation of the outgoing transfer (unreleased) |
+| Openfund Pay: partial payments, excess, watcher, wallet payment | Implemented; `openfund-pay.test.mjs` 32/32 with mocked chain data and real PostgreSQL; **not released, not deployed, awaiting real-network acceptance** |
+
+## Openfund Pay — real-network acceptance checklist
+
+Every step needs **explicit owner authorization**. Each is a low-value, real
+transaction on a configured mainnet. Record the evidence for each step: the
+transaction hash, order id, screenshot and Backstage record. Nothing below
+has been done.
+
+| # | Test | Expected result | Evidence | Status |
+|---|---|---|---|---|
+| 1 | Direct wallet payment (Pay with Wallet, Arbitrum USDC) | Challenge activated once; invoice issued | tx, order, receipt | Not started |
+| 2 | Manual transfer from the signed-in wallet, with TXID | Same as 1 | tx, order | Not started |
+| 3 | Manual transfer without a TXID | Watcher attributes it (sender has exactly one open order) | tx, `payment_events` | Not started |
+| 4 | Partial payment (send less) | *Partially Paid — Remaining X*; no challenge yet | tx, status page | Not started |
+| 5 | Completion with a second transaction | Activated once; receipt lists both transactions | tx ×2, receipt | Not started |
+| 6 | Overpayment | Excess shown; refund liability in Backstage; invoice = order price | tx, liability | Not started |
+| 7 | Receipt and PDF invoice | Figures equal the ledger | PDF | Not started |
+| 8 | Challenge activation | Account visible and startable | dashboard | Not started |
+| 9 | Browser reload mid-payment and wallet reconnect | Same order resumes; the hash was already recorded | screenshots | Not started |
+| 10 | Backstage investigation and refund lifecycle (refund of test 6) | Search finds it; refund recorded, verified on-chain and completed | Backstage | Not started |
+
+Also reconcile the two 2026-11-18 cases (incident report) before calling
+purchases accepted.
 
 ## Historical: production state (verified 2026-11-13, superseded)
 

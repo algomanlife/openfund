@@ -40,6 +40,9 @@ const testPayments = {
   DEPAY_VERIFY_PUBLIC_KEY: verify.publicKey,
   DEPAY_CONFIG_PRIVATE_KEY: config.privateKey,
   VITE_DEPAY_INTEGRATION_ID: 'readiness-test-0001',
+  /* the legacy DePay path is probed explicitly enabled; the default (off for
+     new payments, ADR 0046) is probed in the third boot below */
+  PAYMENT_DEPAY_NEW_PAYMENTS: 'true',
 };
 
 let server = await boot(testPayments);
@@ -59,5 +62,15 @@ try {
   assert.ok(report.checks.find(c => c.name === 'paymentsEnabled').ok, 'settlement chain is still ready');
   assert.ok(report.checks.filter(c => c.name.startsWith('depay /')).every(c => !c.ok && /inactive/.test(c.detail) && c.fix), 'inactive DePay routes are named with a fix');
   console.log('PASS - missing DePay keys are reported precisely');
+} finally { await stop(server); }
+const { PAYMENT_DEPAY_NEW_PAYMENTS, ...depayOff } = testPayments;
+server = await boot(depayOff);
+try {
+  const report = await purchaseReadiness(base);
+  const failing = report.checks.filter(c => !c.ok && !c.optional && c.name !== 'walletConnectProjectId').map(c => `${c.name}: ${c.detail}`);
+  assert.equal(report.ready, true, failing.join('; '));
+  assert.ok(report.checks.filter(c => c.name.startsWith('depay /') && /config/.test(c.name)).every(c => c.ok && /depay_disabled/.test(c.detail)), 'configuration refuses new DePay payments');
+  assert.ok(report.checks.filter(c => c.name.startsWith('depay /') && !/config/.test(c.name)).every(c => c.ok), 'callbacks and events stay active for legacy DePay payments');
+  console.log('PASS - DePay off for new payments keeps legacy callbacks active and is reported precisely');
 } finally { await stop(server); }
 console.log('Purchase readiness boot test passed.');

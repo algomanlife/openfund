@@ -52,7 +52,7 @@ instead of repeating it. Historical reviews keep their original wording.
 
 ## Payments
 
-[Payment verification and recovery](payments/VERIFICATION.md) · [Payment activation checklist](payments/ACTIVATION.md) · [SIWE and DePay domain check](payments/DOMAIN_READINESS.md) · [DePay (multi-chain) and dashboard report](payments/DEPAY.md) · [DePay owner setup](payments/OWNER_SETUP.md) · [Coupons and zero-payment purchases](payments/COUPONS.md) · [Controlled challenge acceptance](payments/CONTROLLED_CHALLENGES.md) · [Order lifecycle](payments/ORDER_LIFECYCLE.md)
+[Payment verification and recovery](payments/VERIFICATION.md) · [Payment activation checklist](payments/ACTIVATION.md) · [SIWE and DePay domain check](payments/DOMAIN_READINESS.md) · [DePay (multi-chain) and dashboard report](payments/DEPAY.md) · [DePay owner setup](payments/OWNER_SETUP.md) · [Coupons and zero-payment purchases](payments/COUPONS.md) · [Controlled challenge acceptance](payments/CONTROLLED_CHALLENGES.md) · [Order lifecycle](payments/ORDER_LIFECYCLE.md) · [Openfund Pay](payments/OPENFUND_PAY.md) · [Payment incident 2026-11-18](payments/INCIDENT_2026-11-18.md)
 
 ## Protocol (dormant)
 

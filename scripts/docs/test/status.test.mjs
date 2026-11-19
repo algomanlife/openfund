@@ -37,10 +37,10 @@ test('the repository passes', () => {
 })
 
 test('a released version still labelled Unreleased in the CHANGELOG fails', () => {
-  const { code, out } = fixture(edit => edit('CHANGELOG.md', t => t.replace(/^## v0\.6\.5 — 2026-11-17$/m, '## Unreleased — v0.6.5')))
+  const { code, out } = fixture(edit => edit('CHANGELOG.md', t => t.replace(/^## v0\.7\.0 — 2026-11-18$/m, '## Unreleased — v0.7.0')))
   assert.equal(code, 1)
-  assert.match(out, /labels released v0\.6\.5 as Unreleased/)
-  assert.match(out, /no "## v0\.6\.5" heading/)
+  assert.match(out, /labels released v0\.7\.0 as Unreleased/)
+  assert.match(out, /no "## v0\.7\.0" heading/)
 })
 
 test('a current document that contradicts the recorded runtime state fails', () => {
@@ -83,7 +83,7 @@ test('one shared state for both regions is refused', () => {
 })
 
 test('a hand-edited README status block or generated page fails', () => {
-  const { code, out } = fixture(edit => edit('README.md', t => t.replace(/Latest official release: \*\*v0\.6\.5\*\*/, 'Latest official release: **v0.6.4**')))
+  const { code, out } = fixture(edit => edit('README.md', t => t.replace(/Latest official release: \*\*v0\.7\.0\*\*/, 'Latest official release: **v0.6.9**')))
   assert.equal(code, 1)
   assert.match(out, /README\.md: out of date with docs\/status\/status\.json/)
 })
@@ -92,8 +92,8 @@ test('a newer tag than the recorded latest release fails when tags are available
   const { code, out } = fixture((edit, root) => {
     execFileSync('git', ['init', '-q'], { cwd: root })
     execFileSync('git', ['-c', 'user.email=t@example.test', '-c', 'user.name=t', 'commit', '-q', '--allow-empty', '-m', 'x'], { cwd: root })
-    for (const tag of ['v0.6.5', 'v0.7.0']) execFileSync('git', ['tag', tag], { cwd: root })
+    for (const tag of ['v0.7.0', 'v0.8.0']) execFileSync('git', ['tag', tag], { cwd: root })
   })
   assert.equal(code, 1)
-  assert.match(out, /latestOfficial is v0\.6\.5 but v0\.7\.0 exists/)
+  assert.match(out, /latestOfficial is v0\.7\.0 but v0\.8\.0 exists/)
 })

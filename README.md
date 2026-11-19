@@ -30,13 +30,26 @@ trading evaluations, funded programs, trader rewards and financial transparency.
 
 **Current status** (verified 2026-11-18; canonical: [docs/status](docs/status/README.md)):
 
-- Latest official release: **v0.6.5** (`a87804a`, 2026-11-17).
-- GLOBAL (Render) Web/API runs v0.6.5 `a87804a`; IRAN (Liara) web runs v0.6.5 `a87804a` (built as unofficial).
-- Purchases: enabled in GLOBAL, disabled in IRAN; a real owner purchase is not yet recorded.
+- Latest official release: **v0.7.0** (`34ef7ec`, 2026-11-18).
+- GLOBAL (Render) Web/API runs v0.7.0 `34ef7ec`; IRAN (Liara) web runs v0.6.5 `a87804a` (built as unofficial).
+- Purchases: enabled in GLOBAL, disabled in IRAN; owner purchase acceptance open (see the purchases row in docs/status).
 - Live execution: disabled (Approved signer/custody design, supported testnet contracts, simulation, security review and management activation).
 - Desktop: 0.0.2 installers built and acceptance-tested in CI; unsigned and not published.
 
 <!-- /status:summary -->
+
+### Payments (current architecture and acceptance)
+
+| Layer | v0.7.0 (released, GLOBAL) | Openfund Pay (implemented, **not released**) |
+|---|---|---|
+| Methods | DePay (multi-chain, converts tokens) and manual transfer with a TXID | **Pay with Wallet** (one server-prepared ERC-20 transfer, any configured network), manual transfer (TXID optional, red sender warning); DePay off for new payments (provider shuts down 2026-12-31) |
+| Verification | On-chain: token, receiver, sender, amount, finality, reorg | Same verifier; a short amount is evidence, not a rejection |
+| Accounting | One payment per order; underpayment rejected | Ledger: partial payments, multi-transaction orders, excess → refund liability, exactly-once activation |
+| Discovery | Only a submitted hash or a DePay callback | Treasury watcher (cursor, reorg window, RPC failover); automatic attribution only when unambiguous |
+| Operations | Attempt review and reverify | Backstage Payments: overview, investigation, deposit review, refund lifecycle, method switches, alerts |
+| Acceptance | **Not accepted**: 2026-11-18 real purchases failed ([incident](docs/payments/INCIDENT_2026-11-18.md)) | Deterministic tests only; real-network checklist in [ACTIVATION](docs/payments/ACTIVATION.md) |
+
+Sign-in stays Arbitrum-only (SIWE, chain 42161); payment networks are independent.
 
 ## Project overview
 
@@ -92,8 +105,8 @@ The service authenticates a single provisioned owner, keeps its backend
 credential server-side and asks the owner to re-enter their password for
 privileged decisions.
 
-Release v0.6.5 (official since 2026-11-17; deployed on GLOBAL Web/API and the IRAN web app, see
-[current status](docs/status/README.md)) adds commercial
+Since release v0.6.5 (official 2026-11-17; v0.7.0, official 2026-11-18, is the
+latest — see [current status](docs/status/README.md)), Backstage includes commercial
 coupon administration, trader support replies with a trader Inbox and in-app
 notifications, partner review and commissions, finance records (expenses,
 reserves, obligations), a unified audit trail, a read-only live risk board,
@@ -152,10 +165,11 @@ production until `/version` reports it.
 | Status | Capabilities |
 | --- | --- |
 | **Production** | Prop simulation (Free Trial, Standard, One-phase, Instant); shared terminal; Perpetual read-only market data and wallet-scoped positions; dashboard, portfolio, journal, invoices; server challenge evaluation; CMS; transparency, revenue-model and live-market pages |
-| **Released in v0.6.5, deployment pending owner approval** ([PR #122](https://github.com/algomanlife/openfund/pull/122), [PR #132](https://github.com/algomanlife/openfund/pull/132)) | Trade Radar and Market Heatmap; certificate designs and verification page; terminal Persian terminology and footer; homepage and site-wide redesign; Applications and Roadmap pages; complete Backstage operations and Content workspace; trader Inbox and in-app notifications; post-deploy SIWE gate |
+| **Released (v0.6.5 and v0.7.0); v0.7.0 deployed on GLOBAL Web/API, IRAN still on v0.6.5** ([PR #122](https://github.com/algomanlife/openfund/pull/122), [PR #132](https://github.com/algomanlife/openfund/pull/132), [v0.7.0](docs/releases/openfund-0.7.0.md)) | Trade Radar and Market Heatmap; certificate designs and verification page; terminal Persian terminology and footer; homepage and site-wide redesign; Applications and Roadmap pages; complete Backstage operations and Content workspace; trader Inbox and in-app notifications; post-deploy SIWE gate |
 | **Implemented, not active** | Hybrid Governance v1.0 (no council seated); Ambassador and Coach programs; Iran regional runtime and synchronization ([ADR 0033](docs/decisions/0033-regional-authority-and-synchronization.md)) |
 | **Beta** | Open Trade 0.0.2 — built and acceptance-tested for macOS, Windows and Linux; unsigned; publication awaiting owner approval |
-| **Awaiting owner acceptance** | Checkout and purchases: payments are enabled in production (`/purchases/plans`), and the owner's live DePay and manual purchase test is pending ([runbook §12–13](docs/deployment/LAUNCH_PARITY_RUNBOOK.md)); public-domain wallet sign-in is verified by the post-deploy SIWE gate when v0.6.5 is deployed |
+| **Not accepted (real-payment defects)** | Checkout and purchases: payments are enabled in production. The owner's two real purchases on 2026-11-18 (DePay, manual) did not activate a challenge ([incident report](docs/payments/INCIDENT_2026-11-18.md)) |
+| **Implemented, not released** | Openfund Pay — direct wallet payment, partial payments, refund liabilities, treasury watcher, Backstage payment operations ([ADR 0046](docs/decisions/0046-openfund-pay.md), [guide](docs/payments/OPENFUND_PAY.md)); real-network acceptance pending owner authorization |
 | **Blocked** | Gains transaction execution (needs supported contracts, simulation and security review) |
 | **Planned** | Mobile apps; protocol routing; advanced order workflows — see the [roadmap](ROADMAP.md) |
 

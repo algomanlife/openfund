@@ -24,7 +24,7 @@ evidence are marked done; the rest are not verified, so they are not claimed.
 | 7–8. Approve and deploy (Web/API) | Done | `https://openfi.cloud/version`: v0.6.5 `a87804a`, official |
 | 7–8. Backstage at the release commit | Not done | Backstage serves unreleased `cd057fa` (auto-deploy); the next release deploys both at one commit |
 | 12. DePay and payment configuration | Done | `/purchases/plans`: `paymentsEnabled: true`, seven DePay chains |
-| 13. Owner purchase test (real, low value) | **Open** | No genuine production purchase recorded |
+| 13. Owner purchase test (real, low value) | **Open** | Two genuine purchases on 2026-11-18 (DePay, manual) did not activate; see [incident report](../payments/INCIDENT_2026-11-18.md). Re-test with Openfund Pay after its release ([checklist](../payments/ACTIVATION.md)) |
 | 2–4, 9–11, 14–15 | Not verified here | Owner-side settings without public evidence |
 
 ## 1. Review and merge

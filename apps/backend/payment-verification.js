@@ -29,7 +29,7 @@
  *  - A transaction hash is single-use across the system (payments UNIQUE
  *    chain_id+tx_hash) and must be mined after the order was created.
  */
-import { createPublicClient, http, erc20Abi, TransactionReceiptNotFoundError } from 'viem'
+import { createPublicClient, http, fallback, erc20Abi, TransactionReceiptNotFoundError } from 'viem'
 import { sepolia, arbitrum, mainnet, base, optimism, polygon, bsc, avalanche, gnosis, worldchain } from 'viem/chains'
 
 export const TRANSFER_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
@@ -119,7 +119,7 @@ export function analyzePayment({ tx, receipt }, expect) {
     if (!expect.allowNative) throw paymentError(400, 'native_payment_unsupported')
     if (lc(tx.to) !== receiver) throw paymentError(400, 'wrong_receiver')
     const amount = BigInt(tx.value || 0n)
-    if (amount < min) throw paymentError(400, 'insufficient_amount', { received: amount.toString() })
+    if (amount === 0n || (amount < min && !expect.allowPartial)) throw paymentError(400, 'insufficient_amount', { received: amount.toString() })
     return evidence({ tx, receipt, expect, amount, toAddress: receiver, route: 'native' })
   }
 
@@ -158,7 +158,10 @@ export function analyzePayment({ tx, receipt }, expect) {
        an unrelated third-party transfer must never satisfy the order */
     throw paymentError(400, tokenToReceiver ? 'transfer_not_from_payer' : anyToReceiver ? 'wrong_token' : 'wrong_receiver')
   }
-  if (received < min) throw paymentError(400, 'insufficient_amount', { received: received.toString() })
+  /* Openfund Pay (expect.allowPartial): a verified amount below the order
+     total is EVIDENCE, not a rejection — the ledger records it as a partial
+     payment and the customer completes the remaining balance */
+  if (received < min && !expect.allowPartial) throw paymentError(400, 'insufficient_amount', { received: received.toString() })
   return evidence({ tx, receipt, expect, amount: received, toAddress: receiver, route: direct ? 'direct' : contractWallet ? 'contract_wallet' : 'router' })
 }
 
@@ -176,10 +179,19 @@ function evidence({ tx, receipt, expect, amount, toAddress, route }) {
     route,
     contract: lc(tx.to),
     overpaymentUnits: amount > min ? (amount - min).toString() : '0',
+    shortfallUnits: amount < min ? (min - amount).toString() : '0',
   }
 }
 
 /* ---------------------------------------------------------------- RPC --- */
+
+/** one dedicated endpoint, or an ordered list with automatic failover
+ *  (PURCHASE_RPC_URLS values may be a string or an array of strings) */
+export function rpcTransport(url) {
+  const urls = (Array.isArray(url) ? url : [url]).filter(u => typeof u === 'string' && u)
+  if (urls.length <= 1) return http(urls[0], { timeout: 8000, retryCount: 1 })
+  return fallback(urls.map(u => http(u, { timeout: 8000, retryCount: 0 })), { rank: false, retryCount: 1 })
+}
 
 const isNotFound = e =>
   e instanceof TransactionReceiptNotFoundError || e?.name === 'TransactionReceiptNotFoundError' ||
@@ -203,7 +215,7 @@ export function createRpcVerifier({ rpcUrl, rpcUrls = {}, clientFactory } = {}) 
     if (!url && !clientFactory) throw paymentError(503, 'payment_misconfigured', { retryable: false, detail: 'rpc_url_missing' })
     const client = clientFactory
       ? clientFactory(chain)
-      : createPublicClient({ chain, transport: http(url, { timeout: 8000, retryCount: 1 }) })
+      : createPublicClient({ chain, transport: rpcTransport(url) })
     clients.set(chainId, client)
     return client
   }
@@ -244,7 +256,8 @@ export function createRpcVerifier({ rpcUrl, rpcUrls = {}, clientFactory } = {}) 
     const decimals = expect.token
       ? await resolveDecimals(client, expect.chainId, expect.token, expect.tokenDecimals)
       : 18
-    const minAmountUnits = toUnits(expect.priceUsd, decimals)
+    /* refund confirmation passes the liability's exact base units */
+    const minAmountUnits = expect.minUnitsOverride != null ? String(BigInt(expect.minUnitsOverride)) : toUnits(expect.priceUsd, decimals)
 
     const receipt = await rpc(() => client.getTransactionReceipt({ hash: txHash }))
     const tx = await rpc(() => client.getTransaction({ hash: txHash }))

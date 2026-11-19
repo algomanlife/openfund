@@ -9,6 +9,23 @@ The checkout (`/:locale/checkout`) offers two methods on the **same order**:
 same `verifyAndConfirm` → `confirmPurchase` path, so an order is provisioned,
 receipted and invoiced exactly once whichever way it is paid.
 
+> **Openfund Pay update (ADR 0046, unreleased).** Manual Transfer is now the
+> secondary method, after Pay with Wallet.
+>
+> - For EVM it shows the mandatory red warning (Persian and English) before
+>   the treasury address, together with the signed-in wallet, and the
+>   customer must acknowledge it.
+> - The TXID is **optional**: the treasury watcher records the transfer
+>   anyway. It attributes the transfer automatically only when the sender is
+>   the signed-in wallet of exactly one open order; otherwise the transfer
+>   waits for an operator.
+> - Paying less records a partial payment; the remaining balance can be paid
+>   later.
+> - Paying more creates a refund liability.
+> - Solana keeps the order Memo rule.
+>
+> See [Openfund Pay](OPENFUND_PAY.md).
+
 ## What the customer does
 
 1. Choose the challenge and size; the server fixes the price on the order.

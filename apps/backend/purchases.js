@@ -34,6 +34,8 @@ import { recognizeCommissionTx, attributeAtFirstOrder } from './partners.js'
 import { createRpcVerifier, DEPAY_BLOCKCHAINS, SOLANA_CHAIN_ID, blockchainOf, isEvmChain, normalizeTxId, explorerAddressUrlFor, explorerTokenUrlFor, chainNameOf } from './payment-verification.js'
 import { createSolanaVerifier } from './solana-verification.js'
 import { evaluateCoupon, applyCoupon, isCouponCode, normalizeCode } from './coupons.js'
+import { derivePaymentStatus } from './payment-status.js'
+import { settleVerifiedPayment, orderLedger, paymentMethodSettings, usdToMicros, microsToUnits, formatMicros, formatUsd, formatUnits, orderTotals } from './payment-ledger.js'
 
 /* Wallet AUTHENTICATION is Arbitrum One only (server.js AUTH_CHAINS). PAYMENT
    is independent of the auth chain: every chain configured below is offered
@@ -83,6 +85,10 @@ export function paymentChains() {
         routers: (Array.isArray(c.routers) ? c.routers : csv(c.routers)).map(r => String(r).toLowerCase()),
         minConfirmations: c.minConfirmations == null ? minConfirmationsDefault() : Number(c.minConfirmations) || 0,
         rpcUrl: rpcs[chainId] || rpcs[blockchainOf(chainId)] || null,
+        /* Openfund Pay watcher (public values): first block to scan on first
+           start (EVM), and the treasury's SPL token account (Solana) */
+        watchFromBlock: Number.isSafeInteger(Number(c.watchFromBlock)) && Number(c.watchFromBlock) > 0 ? Number(c.watchFromBlock) : null,
+        receiverTokenAccount: solana && typeof c.receiverTokenAccount === 'string' && /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(c.receiverTokenAccount) ? c.receiverTokenAccount : null,
       })
     }
     return out
@@ -175,6 +181,13 @@ const fail = (status, error) => {
   return e
 }
 const wrap = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
+/* customer timeline detail: amounts, chain and transaction only — never operator notes */
+const publicEventDetail = d => {
+  if (!d || typeof d !== 'object') return {}
+  const out = {}
+  for (const k of ['usd', 'chainId', 'txHash', 'received', 'remaining', 'reason', 'confirmations', 'code']) if (d[k] != null) out[k] = d[k]
+  return out
+}
 
 /* ---------- provisioning: one transaction, exactly once ---------- */
 export async function confirmPurchase(pool, args) {
@@ -245,6 +258,22 @@ export async function confirmPurchaseTx(client, { orderId, userId, evidence, sou
         JSON.stringify({ ...evidence, source })])).rows[0]
     }
 
+    const provisioned = await provisionOrderTx(client, { order, userId, paymentId: payment?.id ?? null, payerAddress: evidence?.fromAddress ?? null, source })
+    return { replayed: false, orderId, paymentId: payment?.id ?? null, ...provisioned }
+  }
+}
+
+
+/**
+ * Provisioning step shared by every settlement path (legacy single
+ * payment, zero-payment coupon, and the Openfund Pay ledger once an order's
+ * allocations reach its total). Caller owns the transaction and holds the
+ * order row lock. Moves the order to paid → provisioned (lifecycle trigger),
+ * then writes the challenge, the invoice and the commission decision.
+ */
+export async function provisionOrderTx(client, { order, userId = order.user_id, paymentId = null, payerAddress = null, source }) {
+    const orderId = order.id
+    const zeroPayment = order.payment_required === false
     const { rows: [paid] } = await client.query(
       `UPDATE purchase_orders SET status='paid', paid_at=now() WHERE id=$1 AND status IN ('pending','expired') RETURNING paid_at`,
       [orderId])
@@ -294,7 +323,7 @@ export async function confirmPurchaseTx(client, { orderId, userId, evidence, sou
       try {
         /* a zero-payment order has no confirmed payment, so it earns no
            commission (recognizeCommissionTx records 'zero_amount') */
-        await recognizeCommissionTx(client, { orderId, userId, paymentId: payment?.id ?? null, payerAddress: evidence?.fromAddress ?? null })
+        await recognizeCommissionTx(client, { orderId, userId, paymentId, payerAddress })
         await client.query('RELEASE SAVEPOINT ambassador_commission')
       } catch (e) {
         await client.query('ROLLBACK TO SAVEPOINT ambassador_commission')
@@ -307,8 +336,7 @@ export async function confirmPurchaseTx(client, { orderId, userId, evidence, sou
       `INSERT INTO trading_events (account_id, kind, detail) SELECT id,'challenge_provisioned',$2 FROM demo_accounts WHERE user_id=$1 AND account_type='free_demo'`,
       [userId, JSON.stringify({ challengeId: challenge.id, orderId, source })]).catch(() => {})
 
-    return { replayed: false, orderId, paymentId: payment?.id ?? null, invoiceId: invoice.id, invoiceNumber: invoice.number, challengeId: challenge.id, zeroPayment }
-  }
+    return { invoiceId: invoice.id, invoiceNumber: invoice.number, challengeId: challenge.id, zeroPayment }
 }
 
 /* ---------- payment attempts, classification and recovery ---------- */
@@ -318,7 +346,8 @@ const CLASSIFY = {
   insufficient_amount: 'underpayment', wrong_token: 'wrong_token', wrong_receiver: 'wrong_receiver',
   wrong_sender: 'wrong_sender', tx_not_successful: 'reverted', order_expired: 'late',
   tx_already_used: 'duplicate', native_payment_unsupported: 'wrong_token', unapproved_contract: 'wrong_receiver',
-  unsupported_chain: 'wrong_token', tx_too_old: 'other',
+  unsupported_chain: 'wrong_token', tx_too_old: 'other', transfer_not_from_payer: 'wrong_sender',
+  coupon_unavailable: 'late', dust: 'other',
 }
 /* outcomes a human must look at (money may have moved, or may need returning) */
 const NEEDS_REVIEW = new Set(['underpayment', 'wrong_token', 'wrong_receiver', 'late', 'duplicate', 'overpayment'])
@@ -369,7 +398,7 @@ async function finishAttempt(pool, id, { status, code = null, retryable = false,
  *  - reported: DePay's reported source token/amount/sender — recorded for
  *    settlement accounting, never trusted for the verdict.
  */
-export async function verifyAndConfirm({ pool, verifier, order, userId, walletAddress, txHash, source, chainId = null, attested = false, reported = null }) {
+export async function verifyAndConfirm({ pool, verifier, order, userId, walletAddress, txHash, source, chainId = null, attested = false, reported = null, matchMethod = null, operator = null }) {
   const c = chainConfig(chainId ?? cfg().chainId)
   if (!c) throw Object.assign(fail(400, 'unsupported_chain'), { isPaymentError: true })
   const txId = normalizeTxId(c.chainId, txHash)
@@ -378,36 +407,59 @@ export async function verifyAndConfirm({ pool, verifier, order, userId, walletAd
   /* A customer-submitted Solana payment (manual checkout) can not be bound to
      the customer's EVM sign-in wallet; it is bound to the order by the order
      id in an SPL Memo instead (solana-verification.js). EVM manual payments
-     keep the strict rule: signed by the customer's own wallet. */
-  const manualSolana = c.solana && !attested
+     keep the strict rule: signed by the customer's own wallet. An operator
+     association (documented proof, Backstage owner gate) lifts the sender
+     rule but never the token/receiver/finality checks. */
+  const vouched = attested || !!operator
+  const manualSolana = c.solana && !vouched
   try {
     const verdict = await verifier(txId, {
       chainId: c.chainId, receiver: c.receiver, token: c.token, tokenDecimals: c.tokenDecimals,
       priceUsd: String(order.price_usd), routers: c.routers, allowNative: !isProd() && !c.token && !c.solana,
-      from: walletAddress, requireSender: !attested && !manualSolana, memo: manualSolana ? String(order.id) : null,
+      from: walletAddress, requireSender: !vouched && !manualSolana, memo: manualSolana ? String(order.id) : null,
       /* the paying account DePay reported in its signed delivery (may be a
          smart-contract wallet); only used for attested payments */
       attestedSender: attested && !c.solana ? reported?.sender || null : null,
       notBefore: new Date(order.created_at).getTime() - 5 * 60_000,
       minConfirmations: c.minConfirmations,
+      /* Openfund Pay: a verified amount below the order total is recorded as
+         a partial payment (payment-ledger.js), never silently rejected */
+      allowPartial: true,
     })
-    const evidence = { ...verdict, blockchain: c.blockchain, reported: reported || undefined }
+    /* decimals of record: the verifier's on-chain reading, else the
+       configured settlement token's (native test coins: 18) */
+    const tokenDecimals = verdict.tokenDecimals ?? c.tokenDecimals ?? (verdict.tokenAddress ? null : 18)
+    if (tokenDecimals == null) throw Object.assign(new Error('payment_misconfigured'), { status: 503, retryable: false, detail: 'token_decimals_unknown' })
+    const evidence = { ...verdict, tokenDecimals, blockchain: c.blockchain, reported: reported || undefined }
     let result
-    try { result = await confirmPurchase(pool, { orderId: order.id, userId, evidence, source }) } catch (e) {
-      /* The payment is proven on-chain but provisioning failed for an
-         unexpected (non-business) reason, e.g. a database timeout. Nothing
+    try {
+      result = await settleVerifiedPayment(pool, {
+        orderId: order.id, userId, evidence, source,
+        matchMethod: matchMethod || (operator ? 'operator' : attested ? 'depay_attested' : manualSolana ? 'memo' : 'customer'),
+        actor: operator || null, lateGraceMinutes: cfg().lateGraceMinutes,
+        provision: (client, args) => provisionOrderTx(client, { ...args, userId }),
+      })
+    } catch (e) {
+      /* The payment is proven on-chain but recording/provisioning failed for
+         an unexpected (non-business) reason, e.g. a database timeout. Nothing
          was committed, so the attempt stays retryable: the recovery sweep
          re-runs it and the customer never pays twice. */
       if (e.status) throw e
       /* two orders raced for the same transaction: the UNIQUE (chain_id,
-         tx_hash) index let exactly one of them commit */
-      if (e.code === '23505' && /payments/.test(String(e.constraint || e.table || e.detail || ''))) throw fail(409, 'tx_already_used')
+         tx_hash) indexes let exactly one of them commit */
+      if (e.code === '23505' && /payment/.test(String(e.constraint || e.table || e.detail || ''))) throw fail(409, 'tx_already_used')
       throw Object.assign(new Error('provisioning_retry'), { status: 503, retryable: true, detail: String(e?.message || e).slice(0, 200) })
     }
-    const over = evidence.overpaymentUnits && evidence.overpaymentUnits !== '0'
+    /* evidence recorded for review (late, coupon exhausted, dust): the
+       transaction is in the ledger; report it as a reviewable rejection */
+    if (['order_expired', 'coupon_unavailable', 'dust'].includes(result.outcome))
+      throw Object.assign(fail(409, result.outcome), { ledger: result })
+    const over = result.excessUsd && result.excessUsd !== '0'
     await finishAttempt(pool, attemptId, {
-      status: 'confirmed', classification: over ? 'overpayment' : null,
-      detail: { route: evidence.route, amount: evidence.amount, confirmations: evidence.confirmations, overpaymentUnits: evidence.overpaymentUnits, source },
+      status: 'confirmed',
+      classification: result.outcome === 'excess_only' ? 'duplicate' : over ? 'overpayment' : result.outcome === 'partially_paid' ? 'partial' : null,
+      detail: { route: evidence.route, amount: evidence.amount, confirmations: evidence.confirmations, outcome: result.outcome,
+        receivedUsd: result.receivedUsd, remainingUsd: result.remainingUsd, excessUsd: result.excessUsd, source },
     })
     return result
   } catch (e) {
@@ -601,7 +653,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
   const orderView = async (id, userId) => {
     const { rows } = await pool.query(
       `SELECT o.id, o.status, o.lifecycle_state, o.account_size_usd, o.list_price_usd, o.discount_usd, o.price_usd,
-              o.payment_required, o.payment_method, o.currency, o.created_at, o.expires_at, o.paid_at,
+              o.payment_required, o.payment_method, o.currency, o.created_at, o.expires_at, o.paid_at, o.partial_deadline_at,
               p.slug AS plan_slug, p.name AS plan_name, c.code AS coupon_code
          FROM purchase_orders o JOIN challenge_plans p ON p.id=o.challenge_plan_id
          LEFT JOIN coupons c ON c.id=o.coupon_id
@@ -626,20 +678,39 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
      converted to USD); only a non-production EVM test chain without a token
      settles in its native coin, exactly as the verifier allows */
   const manualChains = () => cfg().readyChains.filter(c => c.token || (!isProd() && !c.solana)).map(manualChain)
-  const paymentInstructions = order => {
+  /* chains a connected EVM wallet can pay on directly (Openfund Pay): an
+     approved token with CONFIGURED decimals (the transfer amount is built
+     from them) on an EVM chain */
+  const walletChains = () => cfg().readyChains.filter(c => !c.solana && c.token && Number.isInteger(c.tokenDecimals)).map(c => ({
+    chainId: c.chainId, blockchain: c.blockchain, network: chainNameOf(c.chainId), token: c.token, tokenSymbol: c.tokenSymbol,
+    tokenDecimals: c.tokenDecimals, receiver: c.receiver, minConfirmations: c.minConfirmations,
+  }))
+  const methodsView = async () => {
+    const m = await paymentMethodSettings(pool)
+    return { wallet: m.wallet.enabled && walletChains().length > 0, manual: m.manual.enabled && manualChains().length > 0, depay: m.depay.enabled }
+  }
+  const paymentInstructions = async order => {
     const c = cfg()
     if (!c.receiver || !order || order.payment_required === false) return null
+    const totals = await orderTotals(pool, order.id)
+    const price = usdToMicros(order.price_usd)
+    const remaining = formatUsd(totals.received >= price ? 0n : price - totals.received)
     return {
       chainId: c.chainId,
       receiver: c.receiver,
       token: c.token,
-      amount: String(order.price_usd),
+      amount: remaining,
+      totalUsd: String(order.price_usd),
+      receivedUsd: formatUsd(totals.received),
+      remainingUsd: remaining,
+      methods: await methodsView(),
+      walletChains: walletChains(),
       reference: order.id,
       /* every settlement chain DePay may offer (payment is NOT tied to the
          Arbitrum authentication chain) */
       chains: c.readyChains.map(publicChain),
       /* the same chains as manual-transfer instructions */
-      manual: { chains: manualChains(), amount: String(order.price_usd), memo: order.id },
+      manual: { chains: manualChains(), amount: remaining, memo: order.id },
     }
   }
 
@@ -672,7 +743,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
       plans,
       paymentsEnabled: paymentEnabled(),
       payment: paymentEnabled()
-        ? { ...publicChain(c), chains: c.readyChains.map(publicChain), manualChains: manualChains() }
+        ? { ...publicChain(c), chains: c.readyChains.map(publicChain), manualChains: manualChains(), walletChains: walletChains(), methods: await methodsView() }
         : null,
     })
   }))
@@ -745,7 +816,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
       const view = await orderView(existing.id, req.user.user_id)
       const result = view.lifecycle_state === 'provisioned' && view.payment_required === false
         ? await confirmPurchase(pool, { orderId: view.id, userId: req.user.user_id, evidence: null, source: 'zero_payment' }) : undefined
-      return { order: view, payment: paymentInstructions(view), ...(result ? { result } : {}) }
+      return { order: view, payment: await paymentInstructions(view), ...(result ? { result } : {}) }
     }
     const prior = await replay()
     if (prior) return res.json(prior)
@@ -801,7 +872,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
     await audit('purchase_order_created', req.user.user_id, req, { orderId, ...created })
     if (result) await audit('purchase_zero_payment_provisioned', req.user.user_id, req, { orderId, challengeId: result.challengeId, coupon: created.coupon })
     const view = await orderView(orderId, req.user.user_id)
-    res.json({ order: view, payment: paymentInstructions(view), ...(result ? { result } : {}) })
+    res.json({ order: view, payment: await paymentInstructions(view), ...(result ? { result } : {}) })
   }))
 
   /* 2c — explicit lifecycle history of one order (customer-scoped) */
@@ -818,7 +889,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
     if (!uuid.test(req.params.id)) throw fail(404, 'order_not_found')
     const order = await orderView(req.params.id, req.user.user_id)
     if (!order) throw fail(404, 'order_not_found')
-    res.json({ order, payment: order.status === 'pending' ? paymentInstructions(order) : null })
+    res.json({ order, payment: order.status === 'pending' ? await paymentInstructions(order) : null })
   }))
 
   /* 3b — purchase receipt, built only from verified records: the order of
@@ -845,7 +916,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
          JOIN challenge_plans p ON p.id=o.challenge_plan_id
          JOIN openfund_users u ON u.id=o.user_id
          LEFT JOIN coupons c ON c.id=o.coupon_id
-         LEFT JOIN payments pm ON pm.purchase_order_id=o.id AND pm.status='confirmed'
+         LEFT JOIN LATERAL (SELECT * FROM payments x WHERE x.purchase_order_id=o.id AND x.status='confirmed' ORDER BY x.verified_at DESC LIMIT 1) pm ON true
          LEFT JOIN invoices i ON i.purchase_order_id=o.id
          LEFT JOIN openfund_challenges ch ON ch.purchase_order_id=o.id
         WHERE o.id=$1 AND o.user_id=$2`, [req.params.id, req.user.user_id])
@@ -876,6 +947,11 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
       } : null,
       invoice: r.invoice_id ? { id: r.invoice_id, number: r.invoice_number, issuedAt: r.invoice_issued_at } : null,
       challenge: r.challenge_id ? { id: r.challenge_id, status: r.challenge_status } : null,
+      /* Openfund Pay ledger: every verified transaction, what it settled,
+         excess, refund liabilities. An unpaid order's receipt is a payment
+         acknowledgment, never an invoice (`final` = false). */
+      final: r.status === 'paid' && !!r.invoice_id,
+      ledger: await orderLedger(pool, r.id),
     } })
   }))
 
@@ -899,13 +975,11 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
     const order = await orderView(orderId, req.user.user_id)
     if (!order) throw fail(404, 'order_not_found')
     if (order.payment_required === false) throw fail(409, 'zero_payment_order')
-    if (order.status === 'paid') {
-      /* idempotent only for the transaction that actually paid the order */
-      const paidBy = (await pool.query('SELECT chain_id, tx_hash FROM payments WHERE purchase_order_id=$1 AND status=$2', [orderId, 'confirmed'])).rows[0]
-      if (!paidBy || paidBy.chain_id !== chainId || paidBy.tx_hash !== normalizeTxId(chainId, txHash)) throw fail(409, 'order_already_paid')
-      return res.json(await confirmPurchase(pool, { orderId, userId: req.user.user_id, evidence: { txHash: paidBy.tx_hash, chainId }, source: 'replay' }))
-    }
-    if (order.status !== 'pending' && order.status !== 'expired') throw fail(409, 'order_not_pending')
+    /* A paid or cancelled order still accepts the customer's OWN further
+       transfer as evidence: the ledger replays a transaction that already
+       settled it, and records any other verified transfer as a refund
+       liability (duplicate payment) — never as a second challenge. */
+    if (!['pending', 'expired', 'paid', 'cancelled'].includes(order.status)) throw fail(409, 'order_not_pending')
     /* NOTE: expiry is NOT rejected here — the on-chain evidence is
        verified first, then confirmPurchase applies the late-payment
        grace policy (money received inside the window is never dropped) */
@@ -915,7 +989,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
         pool, verifier: chainVerifier(), order: { id: orderId, price_usd: raw.price_usd, created_at: raw.created_at },
         userId: req.user.user_id, walletAddress: req.user.wallet_address, txHash, source: 'onchain', chainId,
       })
-      await audit('purchase_verified', req.user.user_id, req, { orderId, txHash, chainId, via: 'manual', challengeId: result.challengeId })
+      await audit('purchase_verified', req.user.user_id, req, { orderId, txHash, chainId, via: 'manual', outcome: result.outcome, challengeId: result.challengeId ?? null })
       res.json(result)
     } catch (e) {
       if (e.retryable) {
@@ -941,10 +1015,126 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
     res.json({ attempts: rows })
   }))
 
+  /* 4b2 — Openfund Pay: server-authoritative direct-wallet payment intent.
+     The server freezes WHAT to transfer (approved token contract, treasury
+     receiver, exact base units of the order's remaining balance) on the
+     chain the customer picked; the browser only asks the wallet to sign
+     exactly that ERC-20 transfer. Payment chain ≠ authentication chain:
+     sign-in stays Arbitrum-only, payment may use any configured chain, but
+     the SIGNER must stay the authenticated wallet (the verifier enforces it). */
+  /* per-client ceilings (express-rate-limit, like the receipt/verify routes)
+     on top of the per-path limit(); the status route is polled every 3 s */
+  const intentLimiter = rateLimit({ windowMs: 60_000, limit: 30, standardHeaders: 'draft-7', legacyHeaders: false, message: { error: 'rate_limited' } })
+  const statusLimiter = rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false, message: { error: 'rate_limited' } })
+  router.post('/purchases/orders/:id/intents', intentLimiter, requireAuth, limit(20), wrap(async (req, res) => {
+    if (!uuid.test(req.params.id)) throw fail(404, 'order_not_found')
+    if (!(await paymentMethodSettings(pool)).wallet.enabled) throw fail(403, 'method_disabled')
+    const chainId = Number(req.body?.chainId)
+    const chain = walletChains().find(c => c.chainId === chainId)
+    if (!chain) throw fail(400, 'unsupported_chain')
+    const payer = String(req.body?.payerAddress || '').toLowerCase()
+    if (payer && payer !== String(req.user.wallet_address).toLowerCase()) throw fail(409, 'wallet_mismatch')
+    const client = await pool.connect()
+    try {
+      await client.query('BEGIN')
+      const order = (await client.query('SELECT * FROM purchase_orders WHERE id=$1 AND user_id=$2 FOR UPDATE', [req.params.id, req.user.user_id])).rows[0]
+      if (!order) throw fail(404, 'order_not_found')
+      if (!order.payment_required) throw fail(409, 'zero_payment_order')
+      const partial = order.lifecycle_state === 'partially_paid'
+      if (order.status !== 'pending' || (!partial && new Date(order.expires_at) < new Date())) throw fail(409, 'order_not_payable')
+      const totals = await orderTotals(client, order.id)
+      const price = usdToMicros(order.price_usd)
+      if (totals.received >= price) throw fail(409, 'order_already_paid')
+      const micros = price - totals.received
+      const units = microsToUnits(micros, chain.tokenDecimals)
+      await client.query(`UPDATE payment_intents SET status='superseded' WHERE purchase_order_id=$1 AND status='open'`, [order.id])
+      const ttl = new Date(Math.min(Date.now() + 30 * 60_000, partial ? Infinity : new Date(order.expires_at).getTime() + cfg().lateGraceMinutes * 60_000))
+      const intent = (await client.query(
+        `INSERT INTO payment_intents (purchase_order_id, user_id, method, chain_id, token_address, token_decimals, receiver, amount_units, usd_micros, payer_address, expires_at)
+         VALUES ($1,$2,'wallet',$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id, created_at, expires_at`,
+        [order.id, req.user.user_id, chain.chainId, chain.token, chain.tokenDecimals, chain.receiver, units.toString(), micros.toString(),
+          String(req.user.wallet_address).toLowerCase(), ttl])).rows[0]
+      await client.query(`INSERT INTO payment_events (purchase_order_id, kind, actor, detail) VALUES ($1,'intent_created',$2,$3)`,
+        [order.id, `user:${req.user.user_id}`, JSON.stringify({ intentId: intent.id, chainId, usd: formatMicros(micros) })])
+      await client.query('COMMIT')
+      res.json({ intent: {
+        id: intent.id, orderId: order.id, chainId: chain.chainId, network: chain.network, token: chain.token, tokenSymbol: chain.tokenSymbol,
+        tokenDecimals: chain.tokenDecimals, receiver: chain.receiver, amountUnits: units.toString(), amount: formatUnits(units, chain.tokenDecimals),
+        amountUsd: formatMicros(micros), payer: String(req.user.wallet_address).toLowerCase(), minConfirmations: chain.minConfirmations,
+        createdAt: intent.created_at, expiresAt: intent.expires_at,
+      } })
+    } catch (e) { await client.query('ROLLBACK').catch(() => {}); throw e } finally { client.release() }
+  }))
+
+  /* 4b3 — the wallet returned a transaction hash: persist it IMMEDIATELY
+     (intent + attempt) before anything else, then verify in the background.
+     Closing the browser after this call loses nothing: the recovery sweep
+     and the watcher continue from these records. */
+  router.post('/purchases/intents/:id/submit', intentLimiter, requireAuth, limit(20), wrap(async (req, res) => {
+    if (!uuid.test(req.params.id)) throw fail(404, 'intent_not_found')
+    const intent = (await pool.query(`SELECT * FROM payment_intents WHERE id=$1 AND user_id=$2`, [req.params.id, req.user.user_id])).rows[0]
+    if (!intent) throw fail(404, 'intent_not_found')
+    const txId = normalizeTxId(intent.chain_id, req.body?.txHash)
+    if (!txId) throw fail(400, 'invalid_request')
+    if (intent.status === 'submitted' && intent.tx_hash !== txId) throw fail(409, 'intent_already_submitted')
+    if (intent.status !== 'submitted') {
+      try {
+        const { rowCount } = await pool.query(
+          `UPDATE payment_intents SET status='submitted', tx_hash=$2, submitted_at=now() WHERE id=$1 AND status IN ('open','superseded','expired')`, [intent.id, txId])
+        if (!rowCount) throw fail(409, 'intent_already_submitted')
+      } catch (e) {
+        if (e.code === '23505') throw fail(409, 'tx_already_used')
+        throw e
+      }
+    }
+    await startAttempt(pool, { orderId: intent.purchase_order_id, userId: req.user.user_id, chainId: intent.chain_id, txHash: txId })
+    await markPaymentDetected(pool, intent.purchase_order_id, `wallet:${intent.chain_id}:${txId}`).catch(() => {})
+    await pool.query(`INSERT INTO payment_events (purchase_order_id, kind, actor, detail) VALUES ($1,'transaction_submitted',$2,$3)`,
+      [intent.purchase_order_id, `user:${req.user.user_id}`, JSON.stringify({ intentId: intent.id, chainId: intent.chain_id, txHash: txId })])
+    await audit('purchase_wallet_payment_submitted', req.user.user_id, req, { orderId: intent.purchase_order_id, chainId: intent.chain_id, txHash: txId })
+    res.status(202).json({ ok: true, orderId: intent.purchase_order_id, txHash: txId })
+    setImmediate(async () => {
+      try {
+        const order = (await pool.query('SELECT id, price_usd, created_at FROM purchase_orders WHERE id=$1', [intent.purchase_order_id])).rows[0]
+        await verifyAndConfirm({ pool, verifier: chainVerifier(), order, userId: req.user.user_id, walletAddress: req.user.wallet_address,
+          txHash: txId, source: 'wallet', chainId: intent.chain_id, matchMethod: 'intent' })
+      } catch { /* recorded on the attempt; the recovery sweep retries retryable conditions */ }
+    })
+  }))
+
+  /* 4b4 — customer payment status: one authoritative view of the order,
+     its ledger, attempts, refunds and timeline (checkout polling) */
+  router.get('/purchases/orders/:id/payment-status', statusLimiter, requireAuth, wrap(async (req, res) => {
+    if (!uuid.test(req.params.id)) throw fail(404, 'order_not_found')
+    const order = await orderView(req.params.id, req.user.user_id)
+    if (!order) throw fail(404, 'order_not_found')
+    const [ledger, attempts, intent, events, challenge] = await Promise.all([
+      orderLedger(pool, order.id),
+      pool.query(`SELECT tx_hash, chain_id, status, error_code, retryable, classification, attempts, first_seen_at, last_attempt_at
+                    FROM payment_attempts WHERE purchase_order_id=$1 ORDER BY last_attempt_at DESC LIMIT 20`, [order.id]).then(r => r.rows),
+      pool.query(`SELECT id, status, chain_id, tx_hash, created_at, expires_at FROM payment_intents WHERE purchase_order_id=$1 ORDER BY created_at DESC LIMIT 1`, [order.id]).then(r => r.rows[0] || null),
+      pool.query(`SELECT kind, detail, created_at FROM payment_events WHERE purchase_order_id=$1 ORDER BY id LIMIT 200`, [order.id]).then(r => r.rows),
+      pool.query(`SELECT id, status FROM openfund_challenges WHERE purchase_order_id=$1`, [order.id]).then(r => r.rows[0] || null),
+    ])
+    const status = derivePaymentStatus({ order, totals: ledger, attempts, intent, refunds: ledger?.refunds || [], hasChallenge: !!challenge })
+    res.json({ order, status, ledger, attempts, intent, challenge,
+      timeline: [
+        ...(await pool.query(`SELECT to_state AS kind, created_at FROM purchase_order_events WHERE purchase_order_id=$1 ORDER BY id`, [order.id])).rows.map(e => ({ kind: `order_${e.kind}`, at: e.created_at })),
+        ...events.map(e => ({ kind: e.kind, at: e.created_at, detail: publicEventDetail(e.detail) })),
+      ].sort((a, b) => new Date(a.at) - new Date(b.at)) })
+  }))
+
   /* 4c — DePay dynamic configuration (called by DePay when the widget opens) */
   router.post(DEPAY_PATHS.configuration, wrap(async (req, res) => {
     const key = pem(process.env.DEPAY_CONFIG_PRIVATE_KEY)
     const verifyKey = depayVerifyKey()
+    /* DePay is retiring: NEW DePay payments need the runtime flag
+       (payment_settings / PAYMENT_DEPAY_NEW_PAYMENTS). Callbacks, events and
+       recovery of already-made DePay payments never depend on it. */
+    if (!(await paymentMethodSettings(pool)).depay.enabled) {
+      console.warn('[depay] configuration request refused: DePay is disabled for new payments')
+      throw fail(404, 'depay_disabled')
+    }
     if (!key || !verifyKey || !paymentEnabled()) {
       console.warn('[depay] configuration request refused: endpoint inactive (see the [payments] readiness report at startup)')
       throw fail(404, 'not_found')
@@ -1051,13 +1241,24 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
               o.payment_required, o.payment_method, o.currency, o.created_at, o.paid_at,
               p.slug AS plan_slug, p.name AS plan_name,
               (SELECT json_build_object('txHash', pm.tx_hash, 'chainId', pm.chain_id, 'verifiedAt', pm.verified_at)
-                 FROM payments pm WHERE pm.purchase_order_id=o.id LIMIT 1) AS payment,
+                 FROM payments pm WHERE pm.purchase_order_id=o.id ORDER BY pm.verified_at DESC LIMIT 1) AS payment,
               (SELECT json_build_object('id', i.id, 'number', i.number, 'issuedAt', i.issued_at)
                  FROM invoices i WHERE i.purchase_order_id=o.id LIMIT 1) AS invoice,
-              (SELECT c.id FROM openfund_challenges c WHERE c.purchase_order_id=o.id LIMIT 1) AS challenge_id
+              (SELECT c.id FROM openfund_challenges c WHERE c.purchase_order_id=o.id LIMIT 1) AS challenge_id,
+              cp.code AS coupon_code,
+              (SELECT coalesce(sum(a.usd_micros) FILTER (WHERE a.kind='order'),0)::text FROM payment_allocations a WHERE a.purchase_order_id=o.id) AS received_micros,
+              (SELECT coalesce(sum(a.usd_micros) FILTER (WHERE a.kind='excess'),0)::text FROM payment_allocations a WHERE a.purchase_order_id=o.id) AS excess_micros,
+              (SELECT count(*)::int FROM payment_transactions t WHERE t.purchase_order_id=o.id) AS transactions,
+              (SELECT json_agg(json_build_object('status', l.status, 'usdMicros', l.usd_micros::text) ORDER BY l.created_at)
+                 FROM payment_refund_liabilities l WHERE l.purchase_order_id=o.id) AS refunds
          FROM purchase_orders o JOIN challenge_plans p ON p.id=o.challenge_plan_id
+         LEFT JOIN coupons cp ON cp.id=o.coupon_id
         WHERE o.user_id=$1 ORDER BY o.created_at DESC LIMIT 100`, [req.user.user_id])).rows
-    res.json({ orders })
+    res.json({ orders: orders.map(({ received_micros, excess_micros, refunds, ...o }) => {
+      const price = usdToMicros(o.price_usd), received = BigInt(received_micros || 0)
+      return { ...o, received_usd: formatMicros(received), remaining_usd: o.payment_required && o.status !== 'paid' ? formatMicros(received >= price ? 0n : price - received) : '0',
+        excess_usd: formatMicros(excess_micros || 0), refunds: (refunds || []).map(r => ({ status: r.status, usd: formatMicros(r.usdMicros) })) }
+    }) })
   }))
 
   /* 7 — invoice (PDF download or JSON) */
@@ -1105,4 +1306,21 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
      reward requests are computed and rule-checked by the server */
 
   return router
+}
+
+/**
+ * Watcher → verifier → ledger bridge (payment-watcher.js `settle`). The
+ * watcher only decided WHICH order a transaction is attributed to; the chain
+ * verifier still proves token, receiver, sender rule, amount and finality.
+ */
+export function watcherSettle({ pool, verifier = null }) {
+  return async ({ chain, tx, orderId, matchMethod, attested }) => {
+    const o = (await pool.query(
+      `SELECT o.id, o.price_usd, o.created_at, o.user_id, u.wallet_address FROM purchase_orders o JOIN openfund_users u ON u.id=o.user_id WHERE o.id=$1`, [orderId])).rows[0]
+    if (!o) throw fail(404, 'order_not_found')
+    const reported = attested ? (await pool.query(
+      `SELECT reported FROM payment_attempts WHERE purchase_order_id=$1 AND chain_id=$2 AND tx_hash=$3 AND attested LIMIT 1`, [orderId, chain.chainId, tx.tx_hash])).rows[0]?.reported ?? null : null
+    return verifyAndConfirm({ pool, verifier: verifier || defaultPaymentVerifier(), order: o, userId: o.user_id, walletAddress: o.wallet_address,
+      txHash: tx.tx_hash, source: 'watcher', chainId: chain.chainId, attested, reported, matchMethod })
+  }
 }

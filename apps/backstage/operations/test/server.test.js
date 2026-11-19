@@ -210,6 +210,38 @@ test('operations sections: reads, table-driven mutations, validation, step-up an
   assert.deepEqual(JSON.parse(calls.at(-1).body), { action: 'approve', policyVersion: 'ib-2026-01' })
   assert.equal((await call(`/api/payouts/${payout}`, { action: 'ib_paid', reason: 'transfer done', payoutRef: '0x' + 'a'.repeat(64), password }, headers)).body.error,
     'settlement_disabled', 'IB payment recording follows the real-settlement switch')
+
+  /* Openfund Pay operations: reads, owner-gated deposit/refund/settings mutations */
+  for (const [path, expected] of [
+    ['/api/paymentOverview', '/admin/payments/overview'],
+    ['/api/paymentSearch?wallet=0xabc&status=partially_paid', '/admin/payments/search'],
+    ['/api/deposits?status=verified', '/admin/payments/transactions'],
+    ['/api/refunds?status=refund_due', '/admin/payments/refunds'],
+    ['/api/paymentSettings', '/admin/payments/settings'],
+  ]) {
+    assert.equal((await call(path, undefined, headers)).status, 200, path)
+    assert.equal(new URL(calls.at(-1).path, settings.backend).pathname, expected, path)
+  }
+  assert.equal(new URL(calls.at(-3).path, settings.backend).searchParams.get('review'), 'open', 'the deposit queue lists open reviews')
+  const deposit = randomUUID(), order = randomUUID()
+  const associate = { action: 'associate', orderId: order, note: 'customer proved ownership', evidence: 'support ticket OF-261118-ABCDEF', password }
+  assert.equal((await call(`/api/deposits/${deposit}`, { ...associate, password: 'wrong credential!' }, headers)).status, 401, 'association needs the owner password')
+  assert.equal((await call(`/api/deposits/${deposit}`, { ...associate, orderId: 'nope' }, headers)).status, 400)
+  assert.equal((await call(`/api/deposits/${deposit}`, { ...associate, evidence: '' }, headers)).status, 400, 'evidence required')
+  assert.equal((await call(`/api/deposits/${deposit}`, associate, headers)).status, 200)
+  assert.equal(calls.at(-1).path, `/admin/payments/transactions/${deposit}/associate`)
+  assert.deepEqual(JSON.parse(calls.at(-1).body), { orderId: order, note: 'customer proved ownership', evidence: 'support ticket OF-261118-ABCDEF' })
+  assert.equal((await call(`/api/deposits/${deposit}`, { action: 'forceConfirm', password }, headers)).status, 400, 'no force-confirm action exists')
+  const refund = randomUUID()
+  assert.equal((await call(`/api/refunds/${refund}`, { action: 'sent', note: 'sent', chainId: 42161, refundTxHash: 'nope', password }, headers)).status, 400)
+  assert.equal((await call(`/api/refunds/${refund}`, { action: 'sent', note: 'sent from Safe', chainId: 42161, refundTxHash: '0x' + 'b'.repeat(64), password }, headers)).status, 200)
+  assert.equal(calls.at(-1).path, `/admin/payments/refunds/${refund}/sent`)
+  assert.equal((await call('/api/paymentSettings/depay', { action: 'disable', reason: 'provider retiring', password }, headers)).status, 200)
+  assert.deepEqual(JSON.parse(calls.at(-1).body), { method: 'depay', enabled: false, reason: 'provider retiring' })
+  assert.equal((await call('/api/paymentSettings/bank', { action: 'enable', reason: 'x', password }, headers)).status, 400)
+  region = 'IRAN'
+  assert.equal((await call(`/api/refunds/${refund}`, { action: 'review', note: 'checking', password }, headers)).body.error, 'wrong_region')
+  region = 'GLOBAL'
 })
 
 test('configuration must be explicitly provisioned and production origins must use HTTPS', async () => {

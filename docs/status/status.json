@@ -4,18 +4,18 @@
   "updatedAt": "2026-11-18",
   "release": {
     "latestOfficial": {
-      "version": "0.6.5",
-      "tag": "v0.6.5",
-      "commit": "a87804a69b27cafa3063807f33f1f7d9d93470dc",
-      "publishedAt": "2026-11-17",
-      "evidence": "https://github.com/algomanlife/openfund/releases/tag/v0.6.5"
+      "version": "0.7.0",
+      "tag": "v0.7.0",
+      "commit": "34ef7ec719d2bb0e5b20d10e6112a8ccc33261a0",
+      "publishedAt": "2026-11-18",
+      "evidence": "https://github.com/algomanlife/openfund/releases/tag/v0.7.0"
     },
     "next": {
       "version": null,
-      "candidateCommit": "defe8f0ff6d5d2462d22fb003c13931e9fb5926e",
-      "state": "pending_owner_decision",
-      "note": "The release planner requires at least 0.7.0 after v0.6.5 because #135 is a feat change; a dispatch requesting 0.6.6 was refused before any tag was created (run 44237555538).",
-      "evidence": "https://github.com/algomanlife/openfund/actions/runs/44237555538"
+      "candidateCommit": null,
+      "state": "in_development",
+      "note": "Openfund Pay payment rebuild (ADR 0046) is implemented on branch agent/claude/openfund-pay and awaits review; it is a feat change, so the release planner will allocate at least 0.8.0. Not released, not deployed.",
+      "evidence": "https://github.com/algomanlife/openfund/tree/agent/claude/openfund-pay"
     }
   },
   "environments": {
@@ -27,10 +27,10 @@
           "role": "Web/API",
           "provider": "render",
           "resource": "srv-dbnfjajrjlhs738m4020",
-          "version": "0.6.5",
-          "commit": "a87804a69b27cafa3063807f33f1f7d9d93470dc",
+          "version": "0.7.0",
+          "commit": "34ef7ec719d2bb0e5b20d10e6112a8ccc33261a0",
           "official": true,
-          "verifiedAt": "2026-11-18T07:40:00Z",
+          "verifiedAt": "2026-11-18T14:30:00Z",
           "evidence": "https://openfi.cloud/version"
         },
         {
@@ -71,7 +71,7 @@
           "commit": "a87804a69b27cafa3063807f33f1f7d9d93470dc",
           "official": false,
           "note": "Built without RELEASE_OFFICIAL (reports official: false). Runs OPENFUND_ROLES=http, so it holds no market data (execution suspended_no_authoritative_marks).",
-          "verifiedAt": "2026-11-18T07:40:00Z",
+          "verifiedAt": "2026-11-18T14:30:00Z",
           "evidence": "https://openfi.live/version"
         },
         {
@@ -98,16 +98,16 @@
     {
       "name": "Challenge purchases (DePay and manual transfer)",
       "source": "merged",
-      "release": "v0.6.5",
+      "release": "v0.7.0",
       "global": {
         "deployed": true,
         "enabled": true,
         "verified": false,
         "accepted": false,
-        "detail": "paymentsEnabled true; DePay on ethereum, arbitrum, base, polygon, optimism, solana, bsc; 7 manual-transfer chains. No genuine production purchase is recorded.",
-        "verifiedAt": "2026-11-18T07:40:00Z",
+        "detail": "paymentsEnabled true; DePay on ethereum, arbitrum, base, polygon, optimism, solana, bsc; 7 manual-transfer chains. Two genuine owner purchases with coupons on 2026-11-18 did NOT activate a challenge: DePay Arbitrum tx 0x8806874d…4444fe settled 10.638 USDC to the treasury for a 10.80 order (rejected insufficient_amount, shown as Verification Pending); the ~$10 manual transfer was not found on Arbitrum, Base, Optimism, Polygon, BNB Chain or Solana (Ethereum not scanned). Root cause report: docs/payments/INCIDENT_2026-11-18.md.",
+        "verifiedAt": "2026-11-18T14:30:00Z",
         "evidence": "https://openfi.cloud/purchases/plans",
-        "blocker": "A real low-value owner purchase (docs/deployment/LAUNCH_PARITY_RUNBOOK.md section 13)."
+        "blocker": "Openfund Pay (ADR 0046) released and deployed, the two 2026-11-18 cases reconciled by an operator, then the real-network acceptance checklist (docs/payments/ACTIVATION.md)."
       },
       "iran": {
         "deployed": true,
@@ -115,7 +115,32 @@
         "verified": false,
         "accepted": false,
         "detail": "Purchases are refused in IRAN by policy (paymentsEnabled false, no plans offered).",
-        "verifiedAt": "2026-11-18T07:40:00Z",
+        "verifiedAt": "2026-11-18T14:30:00Z",
+        "evidence": "https://openfi.live/purchases/plans",
+        "blocker": "Policy: not offered in IRAN."
+      }
+    },
+    {
+      "name": "Openfund Pay (direct wallet payment, partial/excess ledger, treasury watcher, refunds)",
+      "source": "implemented",
+      "release": null,
+      "global": {
+        "deployed": false,
+        "enabled": false,
+        "verified": false,
+        "accepted": false,
+        "detail": "Implemented on branch agent/claude/openfund-pay with deterministic tests (mocked chain data, real PostgreSQL). Not merged, released or deployed; no real-network test performed.",
+        "verifiedAt": "2026-11-18T14:30:00Z",
+        "evidence": "https://github.com/algomanlife/openfund/tree/agent/claude/openfund-pay",
+        "blocker": "Review and merge, official release, deployment, owner-authorized real-network acceptance."
+      },
+      "iran": {
+        "deployed": false,
+        "enabled": false,
+        "verified": false,
+        "accepted": false,
+        "detail": "Purchases stay refused in IRAN by policy; the watcher runs only with the GLOBAL payment-recovery role.",
+        "verifiedAt": "2026-11-18T14:30:00Z",
         "evidence": "https://openfi.live/purchases/plans",
         "blocker": "Policy: not offered in IRAN."
       }
