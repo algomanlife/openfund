@@ -119,7 +119,7 @@ export function checkAmbassadorVerification(v = {}) {
 
 async function uniqueCode(db, prefix) {
   for (let i = 0; i < 8; i++) {
-    const code = prefix + Array.from(crypto.randomBytes(9)).map(b => CODE_ALPHABET[b % CODE_ALPHABET.length]).join('')
+    const code = prefix + Array.from({ length: 9 }, () => CODE_ALPHABET[crypto.randomInt(CODE_ALPHABET.length)]).join('') /* unbiased */
     const { rows } = await db.query(
       `SELECT 1 FROM referral_codes WHERE code=$1 UNION ALL SELECT 1 FROM ambassador_profiles WHERE referral_code=$1
        UNION ALL SELECT 1 FROM coach_profiles WHERE coach_code=$1`, [code])

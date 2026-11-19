@@ -62,6 +62,8 @@ import { syncConfig, SyncWorker, syncPeerRoutes, signedHeaders, PROTOCOL_VERSION
 import { regionalAdminRoutes, remoteAccountRoutes } from './regional-admin.js'
 import { cmsSnapshotRoutes, cmsSnapshotOrigin } from './cms-snapshot.js'
 import { adminAuth, adminActor } from './admin.js'
+import { rateLimit } from 'express-rate-limit'
+import { internalTokenGuard, sweepExpiredAuth } from './auth-hygiene.js'
 
 const cfg = {
   port: Number(process.env.PORT || 8080),
@@ -214,6 +216,9 @@ app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff')
   if (!cspCmsAncestor) res.setHeader('X-Frame-Options', 'SAMEORIGIN')
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+  /* browser features the site never uses are switched off for it and every
+     frame it embeds (security audit 2026-11; wallets need none of them) */
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), browsing-topics=()')
   res.setHeader('Content-Security-Policy', buildCsp(false))
   if (cfg.prod) res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
   next()
@@ -616,6 +621,12 @@ app.post('/auth/logout', asyncRoute(async (req, res) => {
 
 /* =================  TRADING (auth-guarded, server-authoritative)  ================ */
 
+/* position/order ids are uuids: anything else is not found, never a cast error */
+/* per-client ceiling for object-scoped trading/portfolio routes (each call
+   reads or locks rows): generous for a human trader, bounded for scripts.
+   express-rate-limit keyed by the same req.ip as limit(); widened in test mode */
+const objectRouteLimit = rateLimit({ windowMs: 60_000, limit: 240 * limitScale, standardHeaders: 'draft-7', legacyHeaders: false, message: { error: 'rate_limited' } })
+const uuidParam = (req, res, next) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(req.params.id) ? next() : res.status(404).json({ error: 'not_found' })
 const tradingAuth = async (req, res, next) => {
   try {
     const user = await userFromSession(req)
@@ -624,6 +635,8 @@ const tradingAuth = async (req, res, next) => {
     if(req.path.startsWith('/trading')) {
       const accountRef=req.query.account || req.body?.accountId || req.body?.account_id;
       if(req.body?.product && req.body.product!=='prop')return res.status(403).json({error:'wrong_product_context'});
+      /* a malformed account reference is not found (never a uuid cast error / 500) */
+      if(accountRef && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(accountRef))) return res.status(404).json({error:'account_not_found'})
       if(accountRef && (await engine.getAccount(user.user_id))?.id!==accountRef){
         /* account references resolve in two shapes: the demo trading
            account id, or the openfund_challenges id the UI carries in
@@ -662,7 +675,7 @@ app.get('/challenges', tradingAuth, asyncRoute(async (req, res) => {
   res.json({ challenges: views })
 }))
 
-app.get('/challenges/:id', tradingAuth, asyncRoute(async (req, res) => {
+app.get('/challenges/:id', objectRouteLimit, tradingAuth, uuidParam, asyncRoute(async (req, res) => {
   const c = await engine.challenges.byId(req.params.id, req.user.user_id)
   if (!c) return res.status(404).json({ error: 'challenge_not_found' })
   const state = c.demo_account_id ? await engine.state(req.user.user_id, c.demo_account_id) : null
@@ -671,7 +684,7 @@ app.get('/challenges/:id', tradingAuth, asyncRoute(async (req, res) => {
 
 /* created → started: provisions the trading account on first start,
    freezes the rules snapshot, sets the time limit (if any). Idempotent. */
-app.post('/challenges/:id/start', tradingAuth, limit(30), asyncRoute(async (req, res) => {
+app.post('/challenges/:id/start', objectRouteLimit, tradingAuth, uuidParam, limit(30), asyncRoute(async (req, res) => {
   const started = await engine.challenges.start(req.user.user_id, req.params.id)
   await audit('challenge_started', req.user.user_id, req, { challengeId: req.params.id, stage: started.stage })
   res.json({ ok: true, challenge: {
@@ -701,7 +714,7 @@ app.post('/trading/order', tradingAuth, limit(30), async (req, res) => {
   }
 })
 
-app.post('/trading/positions/:id/close', tradingAuth, async (req, res) => {
+app.post('/trading/positions/:id/close', objectRouteLimit, tradingAuth, uuidParam, async (req, res) => {
   try {
     const out = await engine.closePosition(req.user.user_id, req.params.id, { fraction:req.body?.fraction ?? 1, idempotencyKey:req.headers['idempotency-key'] || null })
     res.json(out)
@@ -711,7 +724,7 @@ app.post('/trading/positions/:id/close', tradingAuth, async (req, res) => {
   }
 })
 
-app.post('/trading/positions/:id/protection', tradingAuth, async (req, res) => {
+app.post('/trading/positions/:id/protection', objectRouteLimit, tradingAuth, uuidParam, async (req, res) => {
   try {
     const { sl, tp } = req.body || {}
     res.json(await engine.updateProtection(req.user.user_id, req.params.id, { sl, tp }))
@@ -721,7 +734,7 @@ app.post('/trading/positions/:id/protection', tradingAuth, async (req, res) => {
   }
 })
 
-app.post('/trading/orders/:id/cancel', tradingAuth, async (req, res) => {
+app.post('/trading/orders/:id/cancel', objectRouteLimit, tradingAuth, uuidParam, async (req, res) => {
   try {
     res.json(await engine.cancelOrder(req.user.user_id, req.params.id))
   } catch (e) {
@@ -751,13 +764,8 @@ app.get("/trading/stream", tradingAuth, async (req, res) => {
 /* test-only price injection seam — enabled ONLY with SIM_TEST_MODE=1
    (never active in production): lets engine tests drive deterministic marks.
    INTERNAL_API_TOKEN (optional) adds defense-in-depth auth to the seam
-   even in test deployments (constant-time compare). */
-const internalAuth = (req, res, next) => {
-  const token = process.env.INTERNAL_API_TOKEN
-  if (token && !crypto.timingSafeEqual(Buffer.from(String(req.headers['x-internal-token'] || '')), Buffer.from(token)))
-    return res.status(401).json({ error: 'internal_unauthorized' })
-  next()
-}
+   even in test deployments (constant-time compare; see auth-hygiene.js). */
+const internalAuth = internalTokenGuard()
 if (testMode) {
   /* test-mode calendar fixture: sales of news-dependent plans need verified
      calendar coverage (conduct.js). SIM_TEST_MODE + test database only;
@@ -809,8 +817,8 @@ app.get('/portfolio/buckets', tradingAuth, asyncRoute(async (req, res) => {
 app.get('/portfolio/trades', tradingAuth, asyncRoute(async (req, res) => {
   const q = req.query
   res.json(await portfolio.history(req.user.user_id, {
-    limit: Math.min(Number(q.limit) || 25, 100),
-    offset: Math.max(Number(q.offset) || 0, 0),
+    limit: Math.min(Math.max(Math.trunc(Number(q.limit)) || 25, 1), 100),
+    offset: Math.min(Math.max(Math.trunc(Number(q.offset)) || 0, 0), 1_000_000),
     side: ['long', 'short'].includes(q.side) ? q.side : null,
     market: q.market || null,
     status: ['open', 'closed', 'liquidated'].includes(q.status) ? q.status : null,
@@ -819,7 +827,7 @@ app.get('/portfolio/trades', tradingAuth, asyncRoute(async (req, res) => {
   }))
 }))
 
-app.get('/portfolio/trades/:id', tradingAuth, asyncRoute(async (req, res) => {
+app.get('/portfolio/trades/:id', objectRouteLimit, tradingAuth, uuidParam, asyncRoute(async (req, res) => {
   const d = await portfolio.details(req.user.user_id, req.params.id)
   if (!d) return res.status(404).json({ error: 'not_found' })
   res.json(d)
@@ -982,6 +990,13 @@ app.use((err, req, res, next) => {
   if (err.message === "account_not_writable_in_region") err.status = 409;
   if (err.code === "23514" && err.message === "account_permanently_disabled")
     err.status = 403;
+  /* PostgreSQL class 22 (data exception: a malformed uuid, timestamp, byte
+     sequence or numeric value from the request) is a client error, never a
+     500; the message is replaced, so nothing about the query leaks */
+  if (typeof err.code === "string" && err.code.startsWith("22") && !err.status) {
+    console.warn("[request] data exception", err.code, req.method, req.path);
+    err.status = 400; err.message = "invalid_request";
+  }
   if (!err.status) console.error(err);
   res
     .status(err.status || 500)
@@ -1068,7 +1083,11 @@ const settlementTimer = hasRole(region, 'settlement') ? setInterval(() => {
 settlementTimer?.unref()
 if (hasRole(region, 'sync') && sync.peerUrl) { syncWorker.start(); console.log(`[sync] delivering to ${sync.peerRegion}`) }
 /* replay-protection nonces older than a day can never validate again (±5 min window) */
-const nonceSweep = setInterval(() => pool.query(`DELETE FROM region_sync_nonces WHERE seen_at < now() - interval '1 day'`).catch(() => {}), 3_600_000)
+/* expired SIWE nonces and sessions can never validate again either (auth-hygiene.js) */
+const nonceSweep = setInterval(() => {
+  pool.query(`DELETE FROM region_sync_nonces WHERE seen_at < now() - interval '1 day'`).catch(() => {})
+  sweepExpiredAuth(pool).catch(e => console.error('[auth-sweep]', e.message))
+}, 3_600_000)
 nonceSweep.unref()
 let shuttingDown=false
 /* bounded graceful shutdown: idle keep-alive sockets close at once; if anything still holds the

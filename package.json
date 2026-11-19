@@ -2,7 +2,7 @@
   "name": "openfund",
   "version": "0.1.0",
   "private": true,
-  "description": "Openfund monorepo \u2014 root orchestration only. Applications install their own dependencies (apps/web-react, apps/backend) with per-app lockfiles; this package adds no runtime dependencies.",
+  "description": "Openfund monorepo — root orchestration only. Applications install their own dependencies (apps/web-react, apps/backend) with per-app lockfiles; this package adds no runtime dependencies.",
   "scripts": {
     "build:web": "npm --prefix apps/web-react run build",
     "build:web:publish": "npm --prefix apps/web-react run build -- --mode publish",
@@ -58,7 +58,8 @@
     "check:upstream": "node scripts/upstream/verify.mjs",
     "check:gains-live": "node scripts/upstream/gains-live-check.mjs",
     "update:vendor": "node scripts/upstream/update-vendor.mjs",
-    "watch:upstream": "node scripts/upstream/check-releases.mjs"
+    "watch:upstream": "node scripts/upstream/check-releases.mjs",
+    "test:browser:security": "node e2e/test-security-browser.cjs"
   },
   "devDependencies": {
     "js-yaml": "^4.1.0",

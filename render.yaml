@@ -181,6 +181,8 @@ services:
       - key: PURCHASE_LATE_GRACE_MINUTES
         value: "60"             # minutes after order expiry a verified payment still pays
       # ---- Openfund Pay (ADR 0046, docs/payments/OPENFUND_PAY.md) ----
+      - key: DEPAY_ATTESTED_ANY_PAYER
+        value: "false"          # OF-2026-11-05: attested payments from non-owner wallets wait for operator review
       - key: PAYMENT_DEPAY_NEW_PAYMENTS
         value: "false"          # DePay retires 2026-12-31: off for NEW payments; legacy callbacks/recovery unaffected
       - key: PAYMENT_WALLET_ENABLED

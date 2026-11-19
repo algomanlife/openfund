@@ -327,6 +327,8 @@ export class Portfolio {
   }
 
   async details(userId, positionId, accountId = null) {
+    /* a malformed id is simply not found (never a database type error / 500) */
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(positionId))) return null
     const scope = accountId
       ? "p.account_id = $3"
       : "p.account_id IN (SELECT id FROM demo_accounts WHERE user_id=$2 AND account_type='free_demo')";

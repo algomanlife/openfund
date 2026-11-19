@@ -48,5 +48,8 @@
     "typescript": "~7.0.2",
     "typescript-js-api": "npm:typescript@6.0.3",
     "vite": "^8.3.8"
+  },
+  "overrides": {
+    "ws@>=8.0.0 <8.21.0": "^8.23.0"
   }
 }

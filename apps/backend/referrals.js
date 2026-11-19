@@ -39,9 +39,7 @@ async function ensureCode(pool, userId) {
   const existing = await pool.query('SELECT code, created_at FROM referral_codes WHERE user_id = $1', [userId])
   if (existing.rows[0]) return existing.rows[0]
   for (let attempt = 0; attempt < 5; attempt++) {
-    const code = Array.from(crypto.randomBytes(8))
-      .map(byte => CODE_ALPHABET[byte % CODE_ALPHABET.length])
-      .join('')
+    const code = Array.from({ length: 8 }, () => CODE_ALPHABET[crypto.randomInt(CODE_ALPHABET.length)]).join('') /* unbiased */
     try {
       const inserted = await pool.query(
         'INSERT INTO referral_codes (user_id, code) VALUES ($1, $2) RETURNING code, created_at',

@@ -8,7 +8,7 @@ not changed here (see [Required checks](#required-checks)).
 
 | Workflow | Trigger | Purpose | Measured duration (typical) |
 | --- | --- | --- | --- |
-| `ci.yml` | pull request, push to `main`, manual, nightly | Docs contract, typecheck, unit tests, production build (`Web`); migrations, backend suites, core browser journeys (`Backend`); Blueprint validation; secret scan; dependency audit report | Web ≈ 1.6 min, Backend ≈ 21 min (before sharding), Blueprint and Secret scan < 1 min |
+| `ci.yml` | pull request, push to `main`, manual, nightly | Docs contract, typecheck, unit tests, production build (`Web`); migrations, backend suites, core browser journeys (`Backend`); Blueprint validation; secret scan; dependency audit report; blocking production dependency gate for the backend and Backstage (`audit-production`) | Web ≈ 1.6 min, Backend ≈ 21 min (before sharding), Blueprint and Secret scan < 1 min |
 | `release.yml` | pull request, push to `main`, manual dispatch | `Release package gates` (every gate plus candidate packaging), `Release secret scan`, Directus bootstrap; dispatch with `publish=true` publishes, deploys and builds the image | ≈ 42 min before sharding (median of successful runs) |
 | `deploy-release.yml`, `deploy-candidate.yml` | called by `release.yml` / manual | Deploy a verified release or gated candidate to Render and verify live identity | not part of PR validation |
 | `package-image.yml` | called by `release.yml` / manual | Versioned GHCR image from the verified archive | not part of PR validation |

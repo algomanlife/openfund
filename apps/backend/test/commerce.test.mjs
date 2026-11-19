@@ -66,7 +66,7 @@ const verifier = async (txHash, expect) => {
   if (chain.mode === 'insufficient') throw Object.assign(new Error('insufficient_amount'), { status: 409 })
   /* like the real verifiers, report the transaction's actual payer (an
      attested DePay payment may come from any wallet) */
-  return { txHash, chainId: expect.chainId, blockNumber: 10, fromAddress: expect.from || '0x' + 'fa'.repeat(20), toAddress: expect.receiver,
+  return { txHash, chainId: expect.chainId, blockNumber: 10, fromAddress: expect.from || expect.attestedSender || '0x' + 'fa'.repeat(20), toAddress: expect.receiver,
     amount: String(Math.round(Number(expect.priceUsd) * 1e6)), tokenAddress: expect.token,
     blockTimestamp: new Date().toISOString(), overpaymentUnits: '0', route: 'direct', confirmations: 20 }
 }
@@ -458,14 +458,23 @@ test('D3 callback validation: unconfigured chain ignored; wrong receiver / wrong
      payment for someone else's order credits THAT order, never the payer's */
   const stranger = await newUser()
   const theirs = (await order(stranger)).data.order
-  const gift = callbackBody(u, theirs)
   chain = { mode: 'ok' }
+  /* OF-2026-11-05: by default a payment signed by another wallet is held for review */
+  const held = callbackBody(u, theirs)
+  assert.equal((await depayPost('/purchases/depay/callback', held)).data.recorded, true)
+  await until(async () => (await pool.query(`SELECT classification FROM payment_attempts WHERE tx_hash=$1`, [held.transaction])).rows[0]?.classification === 'payer_review')
+  assert.notEqual((await orderRow(theirs.id)).lifecycle_state, 'provisioned')
+  /* the owner's explicit opt-in restores gift payments */
+  const gift = callbackBody(u, theirs)
+  process.env.DEPAY_ATTESTED_ANY_PAYER = 'true'
+  try {
   assert.equal((await depayPost('/purchases/depay/callback', gift)).data.recorded, true)
   /* verification and provisioning finish after the 200: wait for the outcome, not a fixed delay */
   await until(async () => (await orderRow(theirs.id)).lifecycle_state === 'provisioned')
   assert.equal((await orderRow(theirs.id)).lifecycle_state, 'provisioned')
   assert.equal((await pool.query('SELECT user_id FROM openfund_challenges WHERE purchase_order_id=$1', [theirs.id])).rows[0].user_id, stranger.id)
   assert.equal((await orderRow(o.id)).status, 'pending')
+  } finally { delete process.env.DEPAY_ATTESTED_ANY_PAYER }
 })
 
 test('D4 events: attempt/processing only mark detection, failed is recorded, succeeded verifies; out-of-order safe', async () => {
@@ -606,6 +615,10 @@ const MULTI = [
 const solSig = () => { const A = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'; return Array.from(crypto.randomBytes(88), b => A[b % A.length]).join('') }
 const seen = []
 const recordingVerifier = async (txId, expect) => { seen.push({ txId, expect }); return verifier(txId, expect) }
+/* OF-2026-11-05: DePay-attested payments from a wallet other than the order
+   owner's settle only when the owner opted in (DEPAY_ATTESTED_ANY_PAYER) */
+const anyPayer = async fn => { const prev = process.env.DEPAY_ATTESTED_ANY_PAYER; process.env.DEPAY_ATTESTED_ANY_PAYER = 'true'
+  try { return await fn() } finally { if (prev === undefined) delete process.env.DEPAY_ATTESTED_ANY_PAYER; else process.env.DEPAY_ATTESTED_ANY_PAYER = prev } }
 
 test('M1 dynamic configuration offers every configured settlement chain, each with its own token and receiver', async () => withChains(MULTI, async () => {
   const u = await newUser()
@@ -623,7 +636,7 @@ test('M1 dynamic configuration offers every configured settlement chain, each wi
   assert.deepEqual(plans.data.payment.chains.map(c => c.blockchain), ['arbitrum', 'base', 'solana'])
 }))
 
-test('M2 a Base payment (non-Arbitrum EVM) from ANY wallet, attested by DePay, is verified on Base and settles the order', async () => withChains(MULTI, async () => {
+test('M2 a Base payment (non-Arbitrum EVM) from ANY wallet, attested by DePay, is verified on Base and settles the order', async () => anyPayer(() => withChains(MULTI, async () => {
   const u = await newUser()
   const o = (await order(u)).data.order
   const otherWallet = rndAddr()
@@ -650,7 +663,7 @@ test('M2 a Base payment (non-Arbitrum EVM) from ANY wallet, attested by DePay, i
   const pay = (await pool.query('SELECT chain_id, blockchain, token_address, source_token, source_amount FROM payments WHERE purchase_order_id=$1', [o.id])).rows[0]
   assert.deepEqual(pay, { chain_id: 8453, blockchain: 'base', token_address: BASE_USDC, source_token: '0x' + 'ee'.repeat(20), source_amount: '0.031' },
     'settlement (verified) and source (reported) are recorded separately')
-}))
+})))
 
 test('M3 a manual hash submission still requires the customer wallet; unsupported chains are refused; Solana manual entry is bound by the order memo', async () => withChains(MULTI, async () => {
   const u = await newUser()
@@ -670,7 +683,7 @@ test('M3 a manual hash submission still requires the customer wallet; unsupporte
   assert.equal((await depayPost('/purchases/depay/callback', { ...callbackBody(u, o3), blockchain: 'polygon' })).data.recorded, false)
 }))
 
-test('M4 Solana: signatures stay case-sensitive, verification is non-EVM, and the same id on two chains never collides', async () => withChains(MULTI, async () => {
+test('M4 Solana: signatures stay case-sensitive, verification is non-EVM, and the same id on two chains never collides', async () => anyPayer(() => withChains(MULTI, async () => {
   const u = await newUser()
   const o = (await order(u)).data.order
   const sig = solSig()
@@ -682,7 +695,7 @@ test('M4 Solana: signatures stay case-sensitive, verification is non-EVM, and th
   /* invalid Solana signature format */
   const o2 = (await order(u)).data.order
   assert.equal((await depayPost('/purchases/depay/callback', { ...body, payload: { orderId: o2.id }, transaction: '0x' + 'ab'.repeat(32) })).data.recorded, false)
-}))
+})))
 
 test('M5 Solana verifier: settlement mint delta to the receiver, failures and wrong mint/receiver are classified', async () => {
   const { analyzeSolanaPayment, createSolanaVerifier } = await import('../solana-verification.js')
@@ -709,7 +722,7 @@ test('M6 wallet authentication stays Arbitrum-only while payments are multi-chai
   assert.doesNotMatch(src, /AUTH_CHAINS = \[[^\]]*(base|mainnet|polygon)/)
 })
 
-test('A1 the /api/payments/depay/* URLs configured at DePay run the same signed handlers (production 404 regression)', async () => {
+test('A1 the /api/payments/depay/* URLs configured at DePay run the same signed handlers (production 404 regression)', async () => anyPayer(async () => {
   chain = { mode: 'ok' }
   const u = await newUser()
   const o = (await order(u)).data.order
@@ -736,7 +749,7 @@ test('A1 the /api/payments/depay/* URLs configured at DePay run the same signed 
   assert.equal(lastExpect.attestedSender, payer.toLowerCase())
   for (const [t, n] of [['payments', 1], ['openfund_challenges', 1], ['invoices', 1]])
     assert.equal((await pool.query(`SELECT count(*)::int n FROM ${t} WHERE purchase_order_id=$1`, [o.id])).rows[0].n, n, t)
-})
+}))
 
 test('A2 readiness report names what blocks payments without exposing secret values', () => {
   const r = paymentReadinessReport()

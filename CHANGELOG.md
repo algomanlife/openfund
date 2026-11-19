@@ -2,6 +2,33 @@
 
 ## Unreleased
 
+- **Security assessment (November 2026)** — the first published
+  [security self-assessment](docs/security/SECURITY-AUDIT-2026-11.md), with a
+  [test matrix](docs/security/SECURITY-TEST-MATRIX.md) and a
+  [remediation plan](docs/security/SECURITY-REMEDIATION-PLAN.md). Not
+  released or deployed.
+  - The backend deletes expired SIWE nonces and sessions every hour.
+  - The test-only internal-seam token check returns 401, not 500, for a
+    token of any length, and accepts `Authorization: Bearer`.
+  - A malformed chart-workspace scope returns 400 instead of 500.
+  - CI gains a blocking production-dependency gate for the backend and
+    Backstage (`audit-production`).
+  - **Payments:** a DePay-attested payment signed by a wallet other than the
+    order owner's is held for operator review instead of provisioning
+    automatically. `DEPAY_ATTESTED_ANY_PAYER=true` restores the previous
+    behaviour (OF-2026-11-05).
+  - Malformed ids, NUL bytes and negative paging values return 4xx instead
+    of 500. A `Permissions-Policy` header is set. Exception text in the
+    terminal chart overlay is escaped. Referral codes are drawn without
+    modulo bias.
+  - The web app overrides `ws` 8.x to 8.23.0 (wallet SDK transitive
+    advisory).
+  - New security suites: `test:pentest` (15 HTTP penetration checks),
+    financial invariants in `test:security`, and `test:browser:security`.
+  - The report, now with a [penetration test](docs/security/PENETRATION-TEST-2026-11.md)
+    document, records three open High findings (Directus advisories, the
+    database credential Directus shares with the API, and the IRAN edge base
+    image) and a **NOT READY** decision for real customer funds.
 - **CI supply chain (security audit 2026-11, OF-2026-11-07)** — GitHub
   Actions are pinned to commit SHAs (the commits their current tags point
   to), checkouts no longer persist the job token except in the two

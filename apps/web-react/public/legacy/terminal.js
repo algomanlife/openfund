@@ -577,7 +577,7 @@ function initChart(){
       symbol: S.marketId, timeframe: S.tf, theme: curTheme, locale: CHART_LOCALE
     });
   } catch(e){
-    chartOverlay(`<b>${ct('chart.unavailable')}</b><br>${String(e.message || e)}`);
+    chartOverlay(`<b>${ct('chart.unavailable')}</b><br>${esc(String(e.message || e))}`);  /* exception text is data, never markup */
     return;
   }
   const c = () => vc.chart;
@@ -2857,7 +2857,7 @@ function boot(){
     /* refresh 24h stats periodically */
     setInterval(() => { if (S.marketId) loadStats24(); }, 60000);
   }).catch(err => {
-    chartOverlay(`<b>${t('boot.failed')}</b><br>${String(err && err.message || err)}<br><button class="ghost-btn" onclick="location.reload()">${t('boot.retry')}</button>`);
+    chartOverlay(`<b>${t('boot.failed')}</b><br>${esc(String(err && err.message || err))}<br><button class="ghost-btn" onclick="location.reload()">${t('boot.retry')}</button>`);
     $('sb-tick').innerHTML = `<i class="dot dot-info"></i> ${t('sb.reconnecting')}`;
     setTimeout(() => boot(), 8000);
   });
