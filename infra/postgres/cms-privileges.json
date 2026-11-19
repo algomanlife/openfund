@@ -1,0 +1,750 @@
+{
+ "$comment": "OF-2026-11-12: table-by-table PostgreSQL privileges of the Directus CMS role on backend-owned tables. Applied by scripts/ops/db-roles.mjs. Every table created by apps/backend/schema.sql or apps/backend/footprint/schema.sql must appear here; anything absent is refused by the check. Protected tables may be at most readable.",
+ "roles": {
+  "owner": {
+   "default": "openfund_app",
+   "purpose": "Database owner and migration role: runs migrate.js, owns every backend table, function and sequence. Never given to Directus."
+  },
+  "runtime": {
+   "default": "openfund_runtime",
+   "purpose": "Backend API runtime: DML on backend tables, no DDL, no ownership. Optional until DATABASE_URL is switched (see docs/security/DATABASE_ROLES.md)."
+  },
+  "cms": {
+   "default": "openfund_directus",
+   "purpose": "Directus: owns directus_* and the editorial collections it creates; on backend tables only the grants below."
+  },
+  "readonly": {
+   "default": "openfund_readonly",
+   "purpose": "Operations and reporting: SELECT only, NOLOGIN group role."
+  }
+ },
+ "tables": {
+  "account_equity_risk": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "account_equity_samples": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "account_ownership": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "account_ownership_events": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "ambassador_attributions": {
+   "domain": "rewards",
+   "protected": true,
+   "cms": "none"
+  },
+  "ambassador_profiles": {
+   "domain": "rewards",
+   "protected": true,
+   "cms": "none"
+  },
+  "audit_log": {
+   "domain": "security",
+   "protected": true,
+   "cms": {
+    "select": "*"
+   },
+   "reason": "Shown read-only in Directus Data Studio (register_user_tables.py / register_commerce_tables.py / register_support_tables.py)."
+  },
+  "auth_nonces": {
+   "domain": "security",
+   "protected": true,
+   "cms": "none"
+  },
+  "auth_sessions": {
+   "domain": "security",
+   "protected": true,
+   "cms": "none"
+  },
+  "campaign_daily_stats": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none"
+  },
+  "capital_allocations": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "capital_reserves": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "certificate_events": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "certificate_identities": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "certificates": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "challenge_equity_days": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "challenge_events": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "challenge_plans": {
+   "domain": "catalog",
+   "protected": false,
+   "cms": {
+    "select": "*",
+    "insert": "*",
+    "update": [
+     "name",
+     "status",
+     "configuration",
+     "slug"
+    ]
+   },
+   "reason": "Plan catalog: Directus is its editing surface (seed_production_content.mjs inserts and updates plans). No delete: orders reference plans."
+  },
+  "challenge_reviews": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "challenge_strikes": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "challenge_trailing": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "chart_workspaces": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none"
+  },
+  "cms_snapshot": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none"
+  },
+  "coach_profiles": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none"
+  },
+  "controlled_challenge_coupons": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "coupon_allowed_users": {
+   "domain": "commerce",
+   "protected": false,
+   "cms": {
+    "select": "*",
+    "insert": "*",
+    "update": "*",
+    "delete": true
+   },
+   "reason": "Coupon allowed-customer junction, edited with the coupon."
+  },
+  "coupon_audit": {
+   "domain": "commerce",
+   "protected": false,
+   "cms": {
+    "select": "*",
+    "insert": "*"
+   },
+   "reason": "Read for the audit view. INSERT is needed because the coupon audit triggers run with the writer privileges; the table is append-only (no UPDATE or DELETE)."
+  },
+  "coupon_challenge_plans": {
+   "domain": "commerce",
+   "protected": false,
+   "cms": {
+    "select": "*",
+    "insert": "*",
+    "update": "*",
+    "delete": true
+   },
+   "reason": "Coupon eligibility junction, edited with the coupon."
+  },
+  "coupon_redemptions": {
+   "domain": "financial",
+   "protected": true,
+   "cms": {
+    "select": "*"
+   },
+   "reason": "Shown read-only in Directus Data Studio (register_user_tables.py / register_commerce_tables.py / register_support_tables.py)."
+  },
+  "coupons": {
+   "domain": "commerce",
+   "protected": false,
+   "cms": {
+    "select": "*",
+    "insert": [
+     "id",
+     "code",
+     "name",
+     "description",
+     "kind",
+     "value",
+     "status",
+     "internal",
+     "starts_at",
+     "expires_at",
+     "max_redemptions",
+     "per_user_limit",
+     "products",
+     "account_sizes",
+     "user_created",
+     "user_updated",
+     "created_at",
+     "updated_at"
+    ],
+    "update": [
+     "code",
+     "name",
+     "description",
+     "kind",
+     "value",
+     "status",
+     "internal",
+     "starts_at",
+     "expires_at",
+     "max_redemptions",
+     "per_user_limit",
+     "products",
+     "account_sizes",
+     "user_created",
+     "user_updated",
+     "created_at",
+     "updated_at"
+    ]
+   },
+   "reason": "Commerce Admin coupon administration (register_commerce_tables.py). Usage counters stay trigger-maintained; no delete (revocation is a status)."
+  },
+  "demo_accounts": {
+   "domain": "trading",
+   "protected": true,
+   "cms": {
+    "select": "*"
+   },
+   "reason": "Shown read-only in Directus Data Studio (register_user_tables.py / register_commerce_tables.py / register_support_tables.py)."
+  },
+  "depay_events": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "economic_calendar_coverage": {
+   "domain": "market-data",
+   "protected": false,
+   "cms": "none"
+  },
+  "economic_events": {
+   "domain": "market-data",
+   "protected": false,
+   "cms": "none"
+  },
+  "fee_refunds": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "financial_audit_log": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "financial_obligations": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "footprint_gaps": {
+   "domain": "market-data",
+   "protected": false,
+   "cms": "none"
+  },
+  "footprint_minutes": {
+   "domain": "market-data",
+   "protected": false,
+   "cms": "none"
+  },
+  "gov_audit_events": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_comments": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_conflicts": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_decision_amendments": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_decisions": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_election_candidates": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_election_voters": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_election_votes": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_elections": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_eligibility": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_implementation_log": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_memberships": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_proposal_history": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_proposal_revisions": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_proposals": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_roles": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_seats": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_terms": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_vote_challenges": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_votes": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "gov_voting_sessions": {
+   "domain": "governance",
+   "protected": true,
+   "cms": "none"
+  },
+  "ib_settlement_policies": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "invoices": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "journal_entries": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none"
+  },
+  "journal_preferences": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none"
+  },
+  "live_funding_approvals": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "live_trade_events": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "live_trades": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "notification_relay_state": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none"
+  },
+  "notifications": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none"
+  },
+  "openfund_challenges": {
+   "domain": "trading",
+   "protected": true,
+   "cms": {
+    "select": "*"
+   },
+   "reason": "Shown read-only in Directus Data Studio (register_user_tables.py / register_commerce_tables.py / register_support_tables.py)."
+  },
+  "openfund_users": {
+   "domain": "identity",
+   "protected": false,
+   "cms": {
+    "select": "*"
+   },
+   "reason": "Shown read-only in Data Studio and used by coupon allowed-customer relations. Suspension goes through the backend admin API (Backstage Operations), which records a reason and actor; a direct write would also have to append to the signed regional sync outbox."
+  },
+  "partner_application_events": {
+   "domain": "rewards",
+   "protected": true,
+   "cms": "none"
+  },
+  "partner_applications": {
+   "domain": "rewards",
+   "protected": true,
+   "cms": "none"
+  },
+  "payment_adjustments": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "payment_allocations": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "payment_attempts": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "payment_events": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "payment_intents": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "payment_monitor_cursors": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "payment_refund_liabilities": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "payment_settings": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "payment_transactions": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "payments": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "payout_transaction_claims": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "position_close_requests": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "profit_share_allocations": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "purchase_order_events": {
+   "domain": "financial",
+   "protected": true,
+   "cms": {
+    "select": "*"
+   },
+   "reason": "Shown read-only in Directus Data Studio (register_user_tables.py / register_commerce_tables.py / register_support_tables.py)."
+  },
+  "purchase_orders": {
+   "domain": "financial",
+   "protected": true,
+   "cms": {
+    "select": "*"
+   },
+   "reason": "Shown read-only in Directus Data Studio (register_user_tables.py / register_commerce_tables.py / register_support_tables.py)."
+  },
+  "referral_attributions": {
+   "domain": "rewards",
+   "protected": true,
+   "cms": "none"
+  },
+  "referral_codes": {
+   "domain": "rewards",
+   "protected": true,
+   "cms": "none"
+  },
+  "referral_commissions": {
+   "domain": "rewards",
+   "protected": true,
+   "cms": "none"
+  },
+  "referral_visits": {
+   "domain": "rewards",
+   "protected": true,
+   "cms": "none"
+  },
+  "region_discrepancies": {
+   "domain": "regional",
+   "protected": true,
+   "cms": "none"
+  },
+  "region_handoff_offers": {
+   "domain": "regional",
+   "protected": true,
+   "cms": "none"
+  },
+  "region_inbox": {
+   "domain": "regional",
+   "protected": true,
+   "cms": "none"
+  },
+  "region_outbox": {
+   "domain": "regional",
+   "protected": true,
+   "cms": "none"
+  },
+  "region_peer_status": {
+   "domain": "regional",
+   "protected": true,
+   "cms": "none"
+  },
+  "region_reconciliation_runs": {
+   "domain": "regional",
+   "protected": true,
+   "cms": "none"
+  },
+  "region_remote_entries": {
+   "domain": "regional",
+   "protected": true,
+   "cms": "none"
+  },
+  "region_remote_rows": {
+   "domain": "regional",
+   "protected": true,
+   "cms": "none"
+  },
+  "region_stream_checkpoints": {
+   "domain": "regional",
+   "protected": true,
+   "cms": "none"
+  },
+  "region_stream_heads": {
+   "domain": "regional",
+   "protected": true,
+   "cms": "none"
+  },
+  "region_sync_nonces": {
+   "domain": "regional",
+   "protected": true,
+   "cms": "none"
+  },
+  "region_sync_settings": {
+   "domain": "regional",
+   "protected": true,
+   "cms": "none"
+  },
+  "revenue_allocation_journal": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "revenue_allocation_policies": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "runtime_mode": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "runtime_mode_events": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
+  "runtime_region": {
+   "domain": "regional",
+   "protected": true,
+   "cms": "none"
+  },
+  "settlement_records": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "support_message_events": {
+   "domain": "support",
+   "protected": false,
+   "cms": {
+    "select": "*"
+   },
+   "reason": "Shown read-only in Directus Data Studio (register_user_tables.py / register_commerce_tables.py / register_support_tables.py)."
+  },
+  "support_messages": {
+   "domain": "support",
+   "protected": false,
+   "cms": {
+    "select": "*",
+    "update": [
+     "status",
+     "assigned_to",
+     "internal_notes"
+    ]
+   },
+   "reason": "Support Agent queue: operator fields only; content immutability is also enforced by trigger."
+  },
+  "trade_notes": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none"
+  },
+  "trader_coach_links": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none"
+  },
+  "trading_events": {
+   "domain": "trading",
+   "protected": true,
+   "cms": {
+    "select": "*"
+   },
+   "reason": "Shown read-only in Directus Data Studio (register_user_tables.py / register_commerce_tables.py / register_support_tables.py)."
+  },
+  "trading_ledger": {
+   "domain": "trading",
+   "protected": true,
+   "cms": {
+    "select": "*"
+   },
+   "reason": "Shown read-only in Directus Data Studio (register_user_tables.py / register_commerce_tables.py / register_support_tables.py)."
+  },
+  "trading_orders": {
+   "domain": "trading",
+   "protected": true,
+   "cms": {
+    "select": "*"
+   },
+   "reason": "Shown read-only in Directus Data Studio (register_user_tables.py / register_commerce_tables.py / register_support_tables.py)."
+  },
+  "trading_positions": {
+   "domain": "trading",
+   "protected": true,
+   "cms": {
+    "select": "*"
+   },
+   "reason": "Shown read-only in Directus Data Studio (register_user_tables.py / register_commerce_tables.py / register_support_tables.py)."
+  },
+  "treasury_snapshots": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "treasury_token_movements": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "treasury_transfer_cursors": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "verified_expenses": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  },
+  "withdrawal_requests": {
+   "domain": "financial",
+   "protected": true,
+   "cms": "none"
+  }
+ }
+}

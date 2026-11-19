@@ -5,7 +5,9 @@
 #   openfund-db    Render Postgres 17  — the single persistent store (app tables
 #                                     + Directus CMS tables; one database on
 #                                     purpose: Directus is the editing surface
-#                                     for catalog tables such as challenge_plans)
+#                                     for catalog tables such as challenge_plans).
+#                                     Directus connects as its own least-privilege
+#                                     role (openfund_directus, OF-2026-11-12)
 #   openfund-cms   Directus 11.17.4 (official Docker image) — editorial content,
 #                                     plan catalog editing, media (persistent disk)
 #   openfund       Node web service   — backend API (SIWE auth, demo trading
@@ -54,9 +56,10 @@ services:
       - key: DB_CLIENT
         value: pg
       - key: DB_CONNECTION_STRING
-        fromDatabase:
-          name: openfund-db
-          property: connectionString
+        sync: false             # secret (OF-2026-11-12): the openfund_directus role's INTERNAL connection
+                                # string, never the openfund-db owner credential. The role and its grants come
+                                # from `node scripts/ops/db-roles.mjs apply` (docs/security/DATABASE_ROLES.md).
+                                # Set this value BEFORE syncing a Blueprint that contains this line.
       - key: KEY
         generateValue: true     # random, generated once at first apply
       - key: SECRET

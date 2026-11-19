@@ -4,6 +4,8 @@ name: CI
 # Jobs:
 #   web       — documentation, typecheck, unit tests, production frontend build
 #   backend   — Postgres service container, migrations, full backend suite
+#   database-roles — OF-2026-11-12: Directus on its own PostgreSQL role, the
+#               privilege policy, CMS bootstrap and the isolation regression suite
 #   blueprint — render.yaml structural validation (network-free)
 #   secrets   — gitleaks scan of commits
 #   audit     — dependency vulnerability report (non-blocking, critical level)
@@ -498,6 +500,102 @@ jobs:
       - name: Stop Directus
         if: always()
         run: docker stop openfund-campaigns-cms >/dev/null 2>&1 || true
+
+  database-roles:
+    name: Database role isolation (OF-2026-11-12, Directus + PostgreSQL)
+    needs: changes
+    if: needs.changes.outputs.run_gates == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # A non-superuser owner with CREATEROLE, as on Render Postgres. Every
+      # value below is a disposable CI value, never a deployed credential.
+      OWNER_DATABASE_URL: postgres://of_owner_ci:of_owner_ci@localhost:5432/openfund_roles_ci
+      CMS_DATABASE_URL: postgres://openfund_directus:openfund_directus_ci@localhost:5432/openfund_roles_ci
+      RUNTIME_DATABASE_URL: postgres://openfund_runtime:openfund_runtime_ci@localhost:5432/openfund_roles_ci
+      DIRECTUS_URL: http://127.0.0.1:8055
+      DB_ROLES_REQUIRE_DATABASE: '1'
+      DB_ROLES_REQUIRE_DIRECTUS: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: |
+            apps/web-react/package-lock.json
+            apps/backend/package-lock.json
+      - name: Install
+        run: |
+          npm ci --prefix apps/backend
+          npm ci --include=dev --prefix apps/web-react
+      - name: Render-like owner role, migrations and the role policy (applied twice)
+        env:
+          PGPASSWORD: postgres_ci
+          CMS_DB_PASSWORD: openfund_directus_ci
+          RUNTIME_DB_PASSWORD: openfund_runtime_ci
+        run: |
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -c "CREATE ROLE of_owner_ci LOGIN PASSWORD 'of_owner_ci' CREATEROLE" -c "CREATE DATABASE openfund_roles_ci OWNER of_owner_ci"
+          DATABASE_URL="$OWNER_DATABASE_URL" npm --prefix apps/backend run migrate
+          DATABASE_URL="$OWNER_DATABASE_URL" npm --prefix apps/backend run seed-plans
+          node scripts/ops/db-roles.mjs plan > /dev/null
+          node scripts/ops/db-roles.mjs apply
+          node scripts/ops/db-roles.mjs apply
+      - name: Directus 11.17.4 on the openfund_directus role, CMS bootstrap and editor role
+        run: |
+          DIRECTUS_ADMIN_EMAIL=roles-ci@example.com
+          DIRECTUS_ADMIN_PASSWORD="$(openssl rand -hex 20)"
+          export DIRECTUS_ADMIN_EMAIL DIRECTUS_ADMIN_PASSWORD
+          echo "::add-mask::$DIRECTUS_ADMIN_PASSWORD"
+          echo "DIRECTUS_ADMIN_EMAIL=$DIRECTUS_ADMIN_EMAIL" >> "$GITHUB_ENV"
+          echo "DIRECTUS_ADMIN_PASSWORD=$DIRECTUS_ADMIN_PASSWORD" >> "$GITHUB_ENV"
+          docker run --rm -d --name openfund-roles-cms --network host \
+            -e DB_CLIENT=pg -e DB_HOST=127.0.0.1 -e DB_PORT=5432 -e DB_DATABASE=openfund_roles_ci \
+            -e DB_USER=openfund_directus -e DB_PASSWORD=openfund_directus_ci \
+            -e KEY="$(openssl rand -hex 16)" -e SECRET="$(openssl rand -hex 32)" \
+            -e ADMIN_EMAIL="$DIRECTUS_ADMIN_EMAIL" -e ADMIN_PASSWORD="$DIRECTUS_ADMIN_PASSWORD" \
+            -e WEBSOCKETS_ENABLED=false -e CORS_ENABLED=true -e CORS_ORIGIN=true directus/directus:11.17.4
+          for _ in $(seq 1 90); do curl -fsS "$DIRECTUS_URL/server/ping" >/dev/null && break; sleep 1; done
+          bash apps/backstage/scripts/bootstrap-cms.sh
+          python3 apps/backstage/scripts/register_backstage_editor.py
+          # Directus created its system and editorial tables as its own role:
+          # transfer nothing, verify ownership and grants again
+          node scripts/ops/db-roles.mjs apply
+      - name: CMS bootstrap regression across a Directus restart
+        env:
+          DATABASE_URL: ${{ env.OWNER_DATABASE_URL }}
+        run: |
+          node scripts/release/test-cms-bootstrap.mjs before
+          docker restart openfund-roles-cms
+          for _ in $(seq 1 90); do curl -fsS "$DIRECTUS_URL/server/ping" >/dev/null && break; sleep 1; done
+          bash apps/backstage/scripts/bootstrap-cms.sh
+          node scripts/release/test-cms-bootstrap.mjs after
+      - name: Privilege isolation regression suite
+        run: node --test --test-concurrency=1 scripts/ops/test/db-roles.test.mjs
+      - name: Read-only drift check
+        run: node scripts/ops/db-roles.mjs verify
+      - name: Directus logs
+        if: failure()
+        run: docker logs openfund-roles-cms --tail 80 2>&1 || true
+      - name: Stop Directus
+        if: always()
+        run: docker stop openfund-roles-cms >/dev/null 2>&1 || true
 
   blueprint:
     name: Render Blueprint
