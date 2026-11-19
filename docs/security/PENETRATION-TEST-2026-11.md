@@ -89,7 +89,7 @@ commit), Actions hardening branch `agent/claude/actions-hardening`.
 | gitleaks 8.30.1 | Full history (563 commits) and working tree | History: no leaks. Working tree: 49 hits | All 49 are public contract addresses and locale strings in vendored and dormant code |
 | actionlint 1.7.12 / zizmor 1.32.0 | Workflows | zizmor: 74 unpinned uses, 30 credential persistence, 1 template injection, 1 `secrets: inherit` | Fixed in the Actions hardening pull request, except `secrets: inherit` (accepted) and the two workflows that push |
 | ZAP 2.16.1 baseline | SPA and API on the test server | 0 FAIL, 8 WARN, 59 PASS | Missing `Permissions-Policy` (fixed); CSP `unsafe-eval` and `style-src 'unsafe-inline'` (needed by the chart engine; accepted, OF-2026-11-16); the rest informational |
-| ZAP 2.16.1 full (active) | Same | See the report | See the report |
+| ZAP 2.16.1 full (active, 30-minute limit) | Same | 0 FAIL, 5 WARN, 135 PASS | `Bypassing 403` (`X-Original-URL: /admin`) is a false positive: the same SPA index, byte for byte, as `GET /`; the admin API stays 403. The rest are CSP (accepted), bundle timestamps, cross-origin isolation headers (informational) and the version notice |
 
 ## Evidence
 

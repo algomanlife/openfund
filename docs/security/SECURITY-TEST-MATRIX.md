@@ -85,7 +85,7 @@ and passed on the reruns and in the fresh-database run.
 | actionlint 1.7.12 | Workflows | No errors |
 | zizmor 1.32.0 | Workflows | 106 findings before #148; 3 after (accepted) |
 | OWASP ZAP 2.16.1 baseline | Test server | 0 FAIL, 8 WARN, 59 PASS |
-| OWASP ZAP 2.16.1 full (active) | Test server | See below |
+| OWASP ZAP 2.16.1 full (active, 30-minute limit) | Test server | 0 FAIL, 5 WARN, 135 PASS. The `Bypassing 403` warning (`X-Original-URL: /admin`) is a false positive: the response is byte-identical to `GET /` (the SPA index), Express ignores the header, and `/admin/*` stays 403. The other warnings are CSP (accepted, OF-2026-11-16), timestamps in bundles, Spectre-isolation headers (informational) and the ZAP version notice |
 | Syft 1.57.1 | Repository SBOM (CycloneDX) | Generated, kept privately |
 | npm audit | Four apps | Backend and Backstage production: 0. Web: OF-2026-11-04. Desktop: OF-2026-11-06 |
 
