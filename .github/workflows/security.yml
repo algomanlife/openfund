@@ -1,0 +1,228 @@
+name: Security scans
+
+# Repeatable security controls (docs/security/SECURITY-AUTOMATION.md).
+# Every scanner runs from an image pinned by digest; no job receives a
+# repository secret, and pull-request code never runs with privileged tokens.
+#
+# Blocking on pull requests:
+#   workflow-lint   actionlint (all findings) and zizmor (medium and higher)
+#   semgrep         new ERROR findings compared with the pull request base
+#   trivy           fixable Critical/High in shipping lockfiles; Critical/High
+#                   misconfigurations in infra/ and infrastructure/
+#   zap-baseline    regressions of the promoted header and leak rules
+#                   (.zap/rules.tsv) on a local candidate, never production
+# Report-only (documented rollout, docs/security/SECURITY-AUTOMATION.md):
+#   osv             all lockfiles, including dormant and vendored ones
+#   sbom            CycloneDX inventory of the repository
+#
+# CodeQL keeps its existing default setup; gitleaks keeps running in ci.yml.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '41 4 * * 1' # weekly, Monday: catches newly published advisories
+  workflow_dispatch:
+
+concurrency:
+  group: security-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  ACTIONLINT_IMAGE: rhysd/actionlint:1.7.12@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667
+  ZIZMOR_IMAGE: ghcr.io/zizmorcore/zizmor:1.32.0@sha256:3014cc8f68f663935f69b3c3e0e41f5ce102b268d97db13db0f62208747f860d
+  SEMGREP_IMAGE: semgrep/semgrep:1.185.0@sha256:67518c174185a2043fdbed16c70631b79209499b3671178e7194379b48295a0d
+  OSV_IMAGE: ghcr.io/google/osv-scanner:v2.7.1@sha256:a70ffffc2bfd33482953e5d6b64c6fcdb30239717a07b0f0d3ab2859ce3e4cde
+  TRIVY_IMAGE: aquasec/trivy:0.76.2@sha256:8f6bb947dbc528902e11f2f5be52f7b519f6a39d5d148f41166f2040499768fb
+  ZAP_IMAGE: zaproxy/zap-stable:2.17.0@sha256:9624669db72f54d86c4b46a7064518bd9bf79d8c61a4c31befa9923489f328af
+  SYFT_IMAGE: anchore/syft:v1.57.1@sha256:03215d0e98b661d0ecbc8575dbc14d65be1743b5de5df6410aecb7e80f95b060
+
+jobs:
+  workflow-lint:
+    name: Workflow lint (actionlint, zizmor)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - name: actionlint (blocking; .github/actionlint.yaml holds the reviewed exceptions)
+        run: docker run --rm -v "$PWD:/repo" -w /repo "$ACTIONLINT_IMAGE" -color
+      - name: zizmor offline audit (blocking at medium; inline ignores are reviewed exceptions)
+        run: docker run --rm -v "$PWD:/repo:ro" -w /repo "$ZIZMOR_IMAGE" --offline --min-severity medium .github/workflows/
+
+  semgrep:
+    name: Semgrep (first-party source)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: New ERROR findings against the pull request base (blocking)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          # .semgrepignore limits the scan to first-party source. The 14
+          # existing ERROR findings were triaged as false positives
+          # (docs/security/SECURITY-AUTOMATION.md); only new ones fail.
+          docker run --rm -e SEMGREP_SEND_METRICS=off -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0=/src -v "$PWD:/src" -w /src "$SEMGREP_IMAGE" \
+            semgrep scan --metrics off --config p/javascript --config p/nodejsscan --config p/github-actions \
+            --baseline-commit "$BASE_SHA" --severity ERROR --error --json --output /src/semgrep-new.json
+      - name: Full scan report (push, schedule, dispatch; report-only)
+        if: github.event_name != 'pull_request'
+        run: |
+          docker run --rm -e SEMGREP_SEND_METRICS=off -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0=/src -v "$PWD:/src" -w /src "$SEMGREP_IMAGE" \
+            semgrep scan --metrics off --config p/javascript --config p/nodejsscan --config p/github-actions \
+            --json --output /src/semgrep-full.json
+          node -e 'const r=require("./semgrep-full.json").results;const c={};for(const x of r)c[x.extra.severity]=(c[x.extra.severity]||0)+1;console.log(JSON.stringify(c))' | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: semgrep-${{ github.run_id }}
+          path: semgrep-*.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+  trivy:
+    name: Trivy (shipping dependencies and infrastructure configuration)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - name: Fixable Critical/High in shipping lockfiles (blocking; .trivyignore lists dated exceptions)
+        run: |
+          mkdir -p "$RUNNER_TEMP/trivy-cache"
+          for lock in apps/backend/package-lock.json apps/backstage/package-lock.json apps/web-react/package-lock.json; do
+            echo "== $lock"
+            docker run --rm -v "$PWD:/repo:ro" -v "$RUNNER_TEMP/trivy-cache:/root/.cache/trivy" -w /repo "$TRIVY_IMAGE" fs --quiet --scanners vuln --severity CRITICAL,HIGH \
+              --ignore-unfixed --ignorefile .trivyignore --exit-code 1 --format table "$lock"
+          done
+      - name: Critical/High misconfigurations in container and deployment files (blocking)
+        run: |
+          for target in infra infrastructure; do
+            echo "== $target"
+            docker run --rm -v "$PWD:/repo:ro" -v "$RUNNER_TEMP/trivy-cache:/root/.cache/trivy" -w /repo "$TRIVY_IMAGE" config --quiet --severity CRITICAL,HIGH --exit-code 1 "$target"
+          done
+
+  osv:
+    name: OSV-Scanner (all lockfiles, report-only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - name: Scan every lockfile
+        # Report-only during rollout: dormant (packages/openfund-protocol) and
+        # never-installed vendored lockfiles carry known advisories
+        # (OF-2026-11-09, OF-2026-11-18). Exit code 1 means "vulnerabilities
+        # reported"; any other non-zero code is a scanner failure and fails.
+        run: |
+          set +e
+          docker run --rm -v "$PWD:/repo:ro" -v "$RUNNER_TEMP:/out" -w /repo "$OSV_IMAGE" scan source --recursive --format json --output /out/osv.json .
+          rc=$?
+          set -e
+          [ "$rc" -le 1 ] || { echo "::error::osv-scanner failed with exit code $rc"; exit "$rc"; }
+          node scripts/ci/osv-summary.mjs "$RUNNER_TEMP/osv.json" | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: osv-${{ github.run_id }}
+          path: ${{ runner.temp }}/osv.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+  zap-baseline:
+    name: OWASP ZAP baseline (local candidate)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: openfund_zap_ci
+          POSTGRES_USER: openfund_ci
+          POSTGRES_PASSWORD: openfund_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U openfund_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://openfund_ci:openfund_ci@localhost:5432/openfund_zap_ci
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: |
+            apps/web-react/package-lock.json
+            apps/backend/package-lock.json
+      - name: Build and start the candidate (production mode, no test seams)
+        run: |
+          npm ci --include=dev --prefix apps/web-react
+          npm ci --prefix apps/backend
+          npm run build:web
+          npm --prefix apps/backend run migrate
+          npm --prefix apps/backend run seed-plans
+          PORT=8080 ALLOWED_DOMAINS=localhost:8080 nohup node apps/backend/server.js > "$RUNNER_TEMP/server.log" 2>&1 &
+          for _ in $(seq 1 40); do curl -fsS http://localhost:8080/health >/dev/null && break; sleep 1; done
+          curl -fsS http://localhost:8080/health
+      - name: ZAP baseline (passive; promoted rules in .zap/rules.tsv fail the job)
+        run: |
+          mkdir -p "$RUNNER_TEMP/zap" && chmod 777 "$RUNNER_TEMP/zap"
+          cp .zap/rules.tsv "$RUNNER_TEMP/zap/rules.tsv"
+          set +e
+          docker run --rm --network host -v "$RUNNER_TEMP/zap:/zap/wrk:rw" "$ZAP_IMAGE" \
+            zap-baseline.py -t http://localhost:8080/ -m 2 -c rules.tsv -J zap.json -r zap.html
+          rc=$?
+          set -e
+          # 0 = pass, 2 = warnings only (reported in the artifact), 1 = a FAIL rule
+          # matched, 3 = scanner error
+          if [ "$rc" -eq 1 ] || [ "$rc" -gt 2 ]; then echo "::error::ZAP baseline exit code $rc"; exit 1; fi
+      - name: Server log
+        if: failure()
+        run: tail -60 "$RUNNER_TEMP/server.log" || true
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: zap-baseline-${{ github.run_id }}
+          path: ${{ runner.temp }}/zap/
+          retention-days: 30
+
+  sbom:
+    name: CycloneDX SBOM (repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - name: Syft (lockfiles; vendored and dormant code labelled by path)
+        run: |
+          mkdir -p "$RUNNER_TEMP/sbom"
+          for target in apps/backend apps/backstage apps/web-react apps/open-trade packages/openfund-protocol; do
+            name=$(echo "$target" | tr '/' '-')
+            docker run --rm -v "$PWD:/repo:ro" -v "$RUNNER_TEMP/sbom:/out" "$SYFT_IMAGE" \
+              scan "dir:/repo/$target" --source-name "openfund/$target" --source-version "$GITHUB_SHA" -o "cyclonedx-json=/out/$name.cdx.json"
+          done
+          ls -l "$RUNNER_TEMP/sbom"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: sbom-${{ github.run_id }}
+          path: ${{ runner.temp }}/sbom/
+          retention-days: 90
