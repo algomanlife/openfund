@@ -9,6 +9,7 @@ that assessment: P0 Critical, P1 High, P2 Medium, P3 Low.
 | ID | Priority | Item | Dependency or risk | Status |
 | --- | --- | --- | --- | --- |
 | OF-2026-11-05 | P2 | Confirm the payment-attestation trust boundary (details held privately) and, if needed, bind attested payments more tightly to the order | Needs the payment provider's documented guarantees. A change touches payment acceptance, so it needs owner review and payment-suite coverage | Planned |
+| OF-2026-11-09 | P2 | Clear the advisories in the dormant `packages/openfund-protocol` lockfile, including the pinned OpenZeppelin contracts | Must happen before any protocol contract is deployed or enabled. Upgrading vendored protocol code needs its own reviewed task that preserves provenance | Planned |
 | OF-2026-11-04 | P2 | Upgrade the wallet SDK stack in `apps/web-react` (wagmi and RainbowKit majors) to clear the transitive advisories | Major upgrade: wallet connection, SIWE and checkout journeys must be re-verified in the browser | Planned |
 | OF-2026-11-06 | P3 | Upgrade `electron-builder` in `apps/open-trade` | Major upgrade of desktop build tooling | Planned |
 | OF-2026-11-07 | P3 | Pin first-party GitHub Actions to commit SHAs, with Dependabot updates | Touches every workflow. Do it in its own pull request | Planned |

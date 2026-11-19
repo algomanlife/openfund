@@ -77,7 +77,7 @@ the [remediation plan](SECURITY-REMEDIATION-PLAN.md).
 | --- | --- | --- | --- |
 | Critical | 0 | 0 | 0 |
 | High | 0 | 0 | 0 |
-| Medium | 2 | 0 | 2 |
+| Medium | 3 | 0 | 3 |
 | Low | 5 | 3 | 2 |
 | Informational | 1 | 0 | 1 |
 
@@ -91,6 +91,7 @@ branch is merged and released.
 | OF-2026-11-03 | Low | Chart workspaces | A malformed percent sequence in the workspace scope caused an unhandled `URIError` (500) | Fixed | `apps/backend/chart-workspaces.js` | `test/chart-workspaces.test.mjs`. It failed before the fix and passes after |
 | OF-2026-11-04 | Medium | Web frontend dependencies | Transitive advisories (`ws`, `zod`, `decode-uri-component`, `uuid`) reach the build through the current wallet SDK major versions | Open | Needs a major wallet-SDK upgrade | Not started |
 | OF-2026-11-05 | Medium | Payment verification | One payment-attestation trust boundary depends on behaviour of an external provider that this pass could not verify. The details are held privately | Open: under review | Private finding | Not started |
+| OF-2026-11-09 | Medium | Dormant protocol package | GitHub Dependabot reports open advisories in `packages/openfund-protocol/package-lock.json`: 11 critical, all in development tooling, and high-severity runtime advisories in the pinned OpenZeppelin contracts. The package is dormant and not built or deployed, and AGENTS.md keeps its source and provenance unchanged | Open | Must be resolved before any protocol contract is deployed or enabled | Not started |
 | OF-2026-11-06 | Low | Desktop build tooling | A `minimatch` advisory reaches `apps/open-trade` through `electron-builder`. It affects build time only | Open | Major `electron-builder` upgrade | Not started |
 | OF-2026-11-07 | Low | CI/CD | Most first-party GitHub Actions (`checkout`, `setup-node`, `upload-artifact`, `cache`) are pinned by version tag, not by commit SHA. The gitleaks and dependency-review actions are already pinned by SHA | Open | Remediation plan | Not started |
 | OF-2026-11-08 | Info | Backend | The request rate limiter is in memory and per process, so it is not shared across instances. This was already documented | Accepted, documented | [Security architecture](SECURITY.md) | Not applicable |
@@ -131,7 +132,7 @@ These are recorded so that a later reviewer knows they were examined.
 
 ## Dependency summary
 
-`npm audit --package-lock-only` on 2026-11-19:
+`npm audit --package-lock-only` on 2026-11-19, plus GitHub Dependabot alerts for the dormant protocol package, which the npm audit pass did not cover:
 
 | App | Critical | High | Moderate | Notes |
 | --- | --- | --- | --- | --- |
@@ -139,6 +140,7 @@ These are recorded so that a later reviewer knows they were examined.
 | `apps/backstage` | 0 | 0 | 0 | Clean |
 | `apps/web-react` | 0 | 16 | 12 | All reach the build through the current wallet SDK majors. The fix needs a major upgrade (OF-2026-11-04) |
 | `apps/open-trade` | 0 | 0 | 6 | Build tooling only (OF-2026-11-06) |
+| `packages/openfund-protocol` | 11 | many | many | Counted from GitHub Dependabot alerts, not npm audit. The criticals are development dependencies, and the highs include the pinned OpenZeppelin contracts. The package is dormant (OF-2026-11-09) |
 
 No dependency was upgraded in this pass. Major upgrades need their own
 compatibility testing.

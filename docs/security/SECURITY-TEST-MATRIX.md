@@ -43,6 +43,7 @@ Result values: PASS, FAIL, NOT RUN, BLOCKED, NOT APPLICABLE.
 | `npm audit --omit=dev --audit-level=high`, backend and Backstage (the new CI gate) | PASS |
 | `npm audit --package-lock-only`, `apps/web-react` | FAIL: 16 high and 12 moderate (OF-2026-11-04, open) |
 | `npm audit --package-lock-only`, `apps/open-trade` | FAIL: 6 moderate, build tooling (OF-2026-11-06, open) |
+| GitHub Dependabot alerts, `packages/openfund-protocol` | FAIL: 11 critical (development) plus high, including OpenZeppelin runtime (OF-2026-11-09, open) |
 | `actionlint` (all workflows) | PASS: shellcheck style warnings only |
 | `npm run docs:check` | PASS |
 | `npm run validate:blueprint` | PASS: 3 services, 1 database |
