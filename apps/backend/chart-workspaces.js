@@ -38,7 +38,10 @@ export function chartWorkspaceRoutes({ pool, requireAuth, limit = () => (req, re
   }
   const params = req => {
     const { workspace } = req.params
-    const scope = req.params.scope === undefined ? undefined : decodeURIComponent(req.params.scope)
+    /* a malformed percent sequence is a client error (400), never a 500 */
+    let scope
+    try { scope = req.params.scope === undefined ? undefined : decodeURIComponent(req.params.scope) }
+    catch { throw fail(400, 'invalid_scope') }
     if (!WORKSPACE_RE.test(workspace || '')) throw fail(400, 'invalid_workspace')
     if (scope !== undefined && !SCOPE_RE.test(scope)) throw fail(400, 'invalid_scope')
     return { workspace, scope }

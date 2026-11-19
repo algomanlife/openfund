@@ -111,3 +111,9 @@ test('W6 a document bound to wallet A can never write into wallet B\'s workspace
   assert.ok(!JSON.stringify(b.data).includes('A-leak'))
   assert.equal((await call('PUT', W + '/XRP%2FUSD', { user: walletB, claimed: walletB, body: { data: drawingsDoc('B-own'), baseRevision: 0 } })).status, 200)
 })
+
+test('a malformed percent sequence in the scope is a 400, never a 500 (security audit 2026-11)', async () => {
+  const r = await call('PUT', W + '/BTC%25E0%25A4%25A', { user: walletA, claimed: walletA, body: { data: drawingsDoc('x'), baseRevision: 0 } })
+  assert.equal(r.status, 400)
+  assert.equal(r.data?.error, 'invalid_scope')
+})

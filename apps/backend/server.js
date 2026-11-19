@@ -62,6 +62,7 @@ import { syncConfig, SyncWorker, syncPeerRoutes, signedHeaders, PROTOCOL_VERSION
 import { regionalAdminRoutes, remoteAccountRoutes } from './regional-admin.js'
 import { cmsSnapshotRoutes, cmsSnapshotOrigin } from './cms-snapshot.js'
 import { adminAuth, adminActor } from './admin.js'
+import { internalTokenGuard, sweepExpiredAuth } from './auth-hygiene.js'
 
 const cfg = {
   port: Number(process.env.PORT || 8080),
@@ -751,13 +752,8 @@ app.get("/trading/stream", tradingAuth, async (req, res) => {
 /* test-only price injection seam — enabled ONLY with SIM_TEST_MODE=1
    (never active in production): lets engine tests drive deterministic marks.
    INTERNAL_API_TOKEN (optional) adds defense-in-depth auth to the seam
-   even in test deployments (constant-time compare). */
-const internalAuth = (req, res, next) => {
-  const token = process.env.INTERNAL_API_TOKEN
-  if (token && !crypto.timingSafeEqual(Buffer.from(String(req.headers['x-internal-token'] || '')), Buffer.from(token)))
-    return res.status(401).json({ error: 'internal_unauthorized' })
-  next()
-}
+   even in test deployments (constant-time compare; see auth-hygiene.js). */
+const internalAuth = internalTokenGuard()
 if (testMode) {
   /* test-mode calendar fixture: sales of news-dependent plans need verified
      calendar coverage (conduct.js). SIM_TEST_MODE + test database only;
@@ -1068,7 +1064,11 @@ const settlementTimer = hasRole(region, 'settlement') ? setInterval(() => {
 settlementTimer?.unref()
 if (hasRole(region, 'sync') && sync.peerUrl) { syncWorker.start(); console.log(`[sync] delivering to ${sync.peerRegion}`) }
 /* replay-protection nonces older than a day can never validate again (±5 min window) */
-const nonceSweep = setInterval(() => pool.query(`DELETE FROM region_sync_nonces WHERE seen_at < now() - interval '1 day'`).catch(() => {}), 3_600_000)
+/* expired SIWE nonces and sessions can never validate again either (auth-hygiene.js) */
+const nonceSweep = setInterval(() => {
+  pool.query(`DELETE FROM region_sync_nonces WHERE seen_at < now() - interval '1 day'`).catch(() => {})
+  sweepExpiredAuth(pool).catch(e => console.error('[auth-sweep]', e.message))
+}, 3_600_000)
 nonceSweep.unref()
 let shuttingDown=false
 /* bounded graceful shutdown: idle keep-alive sockets close at once; if anything still holds the
