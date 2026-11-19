@@ -348,9 +348,10 @@ const CLASSIFY = {
   tx_already_used: 'duplicate', native_payment_unsupported: 'wrong_token', unapproved_contract: 'wrong_receiver',
   unsupported_chain: 'wrong_token', tx_too_old: 'other', transfer_not_from_payer: 'wrong_sender',
   coupon_unavailable: 'late', dust: 'other',
+  attested_payer_unbound: 'payer_review',
 }
 /* outcomes a human must look at (money may have moved, or may need returning) */
-const NEEDS_REVIEW = new Set(['underpayment', 'wrong_token', 'wrong_receiver', 'late', 'duplicate', 'overpayment'])
+const NEEDS_REVIEW = new Set(['underpayment', 'wrong_token', 'wrong_receiver', 'late', 'duplicate', 'overpayment', 'payer_review'])
 
 /* one verifier per network family, each with the chain's dedicated RPC */
 let defaultVerifier = null
@@ -426,6 +427,17 @@ export async function verifyAndConfirm({ pool, verifier, order, userId, walletAd
          a partial payment (payment-ledger.js), never silently rejected */
       allowPartial: true,
     })
+    /* OF-2026-11-05 (security audit 2026-11): a provider attestation binds a
+       transaction to an order only as far as the provider's own checks go,
+       and those are not documented. An attested payment signed by a wallet
+       other than the order owner's is therefore NOT provisioned
+       automatically: the verified evidence stays on the attempt for operator
+       review, and an operator association (documented proof) settles it. */
+    if (attested && !operator) {
+      const owner = walletAddress || (await pool.query('SELECT wallet_address FROM openfund_users WHERE id=$1', [userId])).rows[0]?.wallet_address
+      if (!owner || String(verdict.fromAddress || '').toLowerCase() !== String(owner).toLowerCase())
+        throw Object.assign(fail(409, 'attested_payer_unbound'), { isPaymentError: true, retryable: false, detail: { payer: verdict.fromAddress, route: verdict.route } })
+    }
     /* decimals of record: the verifier's on-chain reading, else the
        configured settlement token's (native test coins: 18) */
     const tokenDecimals = verdict.tokenDecimals ?? c.tokenDecimals ?? (verdict.tokenAddress ? null : 18)

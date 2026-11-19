@@ -411,10 +411,24 @@ test('P23 DePay disabled: no new configuration, legacy attested recovery still s
   srv.as(c)
   const cfg = await srv.call('POST', '/purchases/depay/configuration', { orderId: o.id })
   assert.equal(cfg.status, 404); assert.equal(cfg.data.error, 'depay_disabled')
-  /* a historical DePay-attested payment from another wallet still verifies (attested) */
-  const tx = BASE.transfer({ from: addr(), units: 10_638_000n })
+  /* a historical DePay-attested payment from the owner's wallet still settles */
+  const tx = BASE.transfer({ from: c.wallet, units: 10_638_000n })
   const r = await pay(c, o, tx, 8453, { attested: true, source: 'depay_callback' })
   assert.equal(r.outcome, 'partially_paid'); assert.equal(r.remainingUsd, '0.162')
+})
+
+test('P23b OF-2026-11-05: an attested payment from another wallet is held for operator review, never auto-provisioned', async () => {
+  const c = await customer(), o = await order(c)
+  const other = BASE.transfer({ from: addr(), units: 12_000_000n })
+  /* the callback path passes no walletAddress: the owner is looked up server-side */
+  const err = await code(verifyAndConfirm({ pool, verifier, order: o, userId: c.userId, txHash: other, source: 'depay_callback', chainId: 8453, attested: true }))
+  assert.equal(err, 'attested_payer_unbound')
+  assert.equal(await challenges(o.id), 0)
+  const a = await one(`SELECT status, classification, review_status FROM payment_attempts WHERE purchase_order_id=$1 AND tx_hash=$2`, [o.id, other])
+  assert.deepEqual([a.status, a.classification, a.review_status], ['rejected', 'payer_review', 'open'])
+  /* an operator association with documented proof settles the same verified transaction */
+  const ok = await verifyAndConfirm({ pool, verifier, order: o, userId: c.userId, txHash: other, source: 'operator', chainId: 8453, attested: true, operator: 'admin:ops.reviewer' })
+  assert.equal(ok.outcome, 'provisioned'); assert.equal(await challenges(o.id), 1)
 })
 
 test('P24/P30 refund lifecycle: authorization, destination check, single refund, audit trail', async () => {
@@ -442,7 +456,7 @@ test('P24/P30 refund lifecycle: authorization, destination check, single refund,
 
 test('P28 multiple payment methods on one order (DePay-attested partial + direct wallet) reconcile without double charge', async () => {
   const c = await customer(), o = await order(c)
-  await pay(c, o, BASE.transfer({ from: addr(), units: 5_000_000n }), 8453, { attested: true, source: 'depay_callback' })
+  await pay(c, o, BASE.transfer({ from: c.wallet, units: 5_000_000n }), 8453, { attested: true, source: 'depay_callback' })
   const r = await pay(c, o, ARB.transfer({ from: c.wallet, units: 5_800_000n }), 42161).catch(e => e.message)
   assert.equal(r, 'tx_not_final'); ARB.mine(3)
   const tx = (await one(`SELECT tx_hash FROM payment_attempts WHERE purchase_order_id=$1 AND chain_id=42161`, [o.id])).tx_hash
