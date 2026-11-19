@@ -1,0 +1,15 @@
+# Semgrep scope (security.yml): first-party source only.
+node_modules/
+vendor/
+third_party/
+dist/
+react/
+packages/openfund-protocol/
+apps/web-react/public/legacy/
+apps/web-react/public/vendor/
+apps/*/dist/
+apps/open-trade/release/
+indicators/
+docs/
+output/
+**/*.min.js

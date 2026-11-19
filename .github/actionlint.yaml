@@ -1,0 +1,10 @@
+# actionlint configuration (runs blocking in .github/workflows/security.yml).
+paths:
+  # SC2016: these summaries pass JavaScript template literals to `node -e`
+  # inside single quotes on purpose; the shell must not expand them.
+  .github/workflows/deploy-liara-iran.yml:
+    ignore:
+      - 'SC2016'
+  .github/workflows/deploy-liara-iran-runtime.yml:
+    ignore:
+      - 'SC2016'
