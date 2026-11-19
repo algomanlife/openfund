@@ -33,7 +33,7 @@ longer match Render's.
 ## Decision
 
 1. **Phase one is a same-origin edge, not a second backend.** A Liara Docker
-   app (`infra/liara-iran`, nginx 1.28 unprivileged) reverse-proxies every
+   app (`infra/liara-iran`, unprivileged nginx; 1.28 at the time of this decision, 1.31 mainline slim since OF-2026-11-20) reverse-proxies every
    request to the Render origin. The proxy contains no Openfund code, database,
    payment handler or secret. HTML, CSP, `/runtime-config.js`, the API, SSE and
    `/version` come from Render, so the edge always serves exactly the release
