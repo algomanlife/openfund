@@ -502,7 +502,7 @@ jobs:
         run: docker stop openfund-campaigns-cms >/dev/null 2>&1 || true
 
   database-roles:
-    name: Database role isolation (OF-2026-11-12, Directus + PostgreSQL)
+    name: CMS security (OF-2026-11-12 roles, OF-2026-11-11 Directus controls)
     needs: changes
     if: needs.changes.outputs.run_gates == 'true'
     runs-on: ubuntu-latest
@@ -543,6 +543,7 @@ jobs:
             apps/backend/package-lock.json
       - name: Install
         run: |
+          npm ci --ignore-scripts
           npm ci --prefix apps/backend
           npm ci --include=dev --prefix apps/web-react
       - name: Render-like owner role and migrations
@@ -589,13 +590,15 @@ jobs:
           node scripts/ops/db-roles.mjs plan > /dev/null
           node scripts/ops/db-roles.mjs apply
           node scripts/ops/db-roles.mjs apply
-      - name: Directus 11.17.4 on the openfund_directus role, CMS bootstrap again and editor role
+      - name: Directus 11.17.4 on the openfund_directus role with the render.yaml settings, CMS bootstrap again and editor role
         run: |
-          docker run --rm -d --name openfund-roles-cms --network host \
-            -e DB_CLIENT=pg -e DB_HOST=127.0.0.1 -e DB_PORT=5432 -e DB_DATABASE=openfund_roles_ci \
+          # the literal openfund-cms environment from render.yaml (OF-2026-11-11 controls included)
+          node scripts/ops/directus-env.mjs > "$RUNNER_TEMP/directus.env"
+          docker run --rm -d --name openfund-roles-cms --network host --env-file "$RUNNER_TEMP/directus.env" \
+            -e PORT=8055 -e DB_HOST=127.0.0.1 -e DB_PORT=5432 -e DB_DATABASE=openfund_roles_ci \
             -e DB_USER=openfund_directus -e DB_PASSWORD=openfund_directus_ci \
             -e KEY="$DIRECTUS_KEY" -e SECRET="$DIRECTUS_SECRET" \
-            -e WEBSOCKETS_ENABLED=false -e CORS_ENABLED=true -e CORS_ORIGIN=true directus/directus:11.17.4
+            directus/directus:11.17.4
           for _ in $(seq 1 90); do curl -fsS "$DIRECTUS_URL/server/ping" >/dev/null && break; sleep 1; done
           bash apps/backstage/scripts/bootstrap-cms.sh
           python3 apps/backstage/scripts/register_backstage_editor.py
@@ -611,6 +614,10 @@ jobs:
           node scripts/release/test-cms-bootstrap.mjs after
       - name: Privilege isolation regression suite
         run: node --test --test-concurrency=1 scripts/ops/test/db-roles.test.mjs
+      - name: Directus 11.x compensating controls (OF-2026-11-11)
+        env:
+          DIRECTUS_HARDENING_REQUIRE: '1'
+        run: node --test --test-concurrency=1 scripts/ops/test/directus-hardening.test.mjs
       - name: Read-only drift check
         run: node scripts/ops/db-roles.mjs verify
       - name: Directus logs
