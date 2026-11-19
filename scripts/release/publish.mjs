@@ -7,6 +7,9 @@ if(process.env.GITHUB_REF!=='refs/heads/main'||!repo||process.env.GITHUB_SHA!==s
 const dir=path.join(root,'output/releases',tag),m=json(path.join(dir,'release-manifest.json'));
 if(!m.official||m.commit!==sha||m.verification.status!=='passed'||json(path.join(dir,'verification.json')).status!=='passed')throw Error('Release gates did not pass for this source.');
 const archive=`openfund-${tag}.tar.gz`;
+/* CycloneDX SBOM of the verified archive (release.yml); required and checked */
+const { checkSbom } = await import('./sbom-check.mjs');
+checkSbom(json(path.join(dir,'sbom.cdx.json')),tag);
 if(fs.readFileSync(path.join(dir,'SHA256SUMS'),'utf8').trim()!==`${sha256(fs.readFileSync(path.join(dir,archive)))}  ${archive}`)throw Error('Release archive verification failed.');
 const remote=execFileSync('git',['ls-remote','origin',`refs/tags/${tag}`,`refs/tags/${tag}^{}`],{encoding:'utf8'}).trim();
 if(remote){
@@ -22,6 +25,6 @@ if(release && !release.isDraft){console.log(`Release already published; immutabl
 if(!release)await run('gh',['release','create',tag,'--repo',repo,'--verify-tag','--draft','--title',`Openfund ${tag}`,'--generate-notes']);
 const notesFile=path.join(dir,'release-status.md');
 fs.writeFileSync(notesFile,`Source: ${sha}\nVersion: ${tag}\nVerification: passed (see verification.json).\nDeployment: NOT DEPLOYED at publication. The chained deploy job waits for production approval, then verifies the live manifest.\nPerpetual execution remains disabled.\n`);
-for(const file of [archive,'SHA256SUMS','release-manifest.json','verification.json','release-status.md'])await run('gh',['release','upload',tag,path.join(dir,file),'--repo',repo,'--clobber']);
+for(const file of [archive,'SHA256SUMS','release-manifest.json','verification.json','sbom.cdx.json','release-status.md'])await run('gh',['release','upload',tag,path.join(dir,file),'--repo',repo,'--clobber']);
 await run('gh',['release','edit',tag,'--repo',repo,'--draft=false']);
 console.log(`Published ${tag} from ${sha}; deployment not_deployed.`);

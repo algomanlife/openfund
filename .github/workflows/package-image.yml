@@ -80,7 +80,7 @@ jobs:
             --build-arg OPENFUND_VERSION=${{ steps.payload.outputs.version }} \
             --build-arg OPENFUND_COMMIT=${{ steps.payload.outputs.commit }} \
             --build-arg OPENFUND_ARCHIVE_SHA256=${{ steps.payload.outputs.archiveSha256 }} \
-            --build-arg OPENFUND_CREATED=$(date -u +%Y-%m-%dT%H:%M:%SZ) \
+            --build-arg OPENFUND_CREATED="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
             -t openfund:candidate
       - name: Smoke-test the container (migrate, health, release identity)
         run: |
@@ -88,7 +88,7 @@ jobs:
             -e DATABASE_URL=postgres://openfund_ci:openfund_ci@127.0.0.1:5432/openfund_image_ci \
             -e PORT=8080 -e CMS_PUBLIC_URL=https://cms.example.com -e ALLOWED_DOMAINS=127.0.0.1:8080 \
             openfund:candidate
-          for i in $(seq 1 60); do curl -fsS http://127.0.0.1:8080/health >/dev/null && break; sleep 1; done
+          for _ in $(seq 1 60); do curl -fsS http://127.0.0.1:8080/health >/dev/null && break; sleep 1; done
           curl -fsS http://127.0.0.1:8080/health
           identity=$(curl -fsS http://127.0.0.1:8080/version)
           echo "$identity" | node -e '
