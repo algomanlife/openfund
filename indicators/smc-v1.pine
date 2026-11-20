@@ -632,7 +632,12 @@ deleteFairValueGaps() =>
 // @function            draw fair value gaps
 // @returns             fairValueGap ID
 drawFairValueGaps() => 
-    [lastClose, lastOpen, lastTime, currentHigh, currentLow, currentTime, last2High, last2Low] = request.security(syminfo.tickerid, fairValueGapsTimeframeInput, [close[1], open[1], time[1], high[0], low[0], time[0], high[2], low[2]],lookahead = barmerge.lookahead_on)
+    // lookahead_off: each value belongs to the last COMPLETED bar of the gap
+    // timeframe. With lookahead_on, high[0]/low[0] of a higher timeframe were
+    // that bar's final values, unknown when its first chart bar printed, so a
+    // historical gap was confirmed with future data. On the chart's own
+    // timeframe (the default '') both modes return identical values.
+    [lastClose, lastOpen, lastTime, currentHigh, currentLow, currentTime, last2High, last2Low] = request.security(syminfo.tickerid, fairValueGapsTimeframeInput, [close[1], open[1], time[1], high[0], low[0], time[0], high[2], low[2]], lookahead = barmerge.lookahead_off)
 
     barDeltaPercent     = (lastClose - lastOpen) / (lastOpen * 100)
     newTimeframe        = timeframe.change(fairValueGapsTimeframeInput)
