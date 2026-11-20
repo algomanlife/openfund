@@ -3897,5 +3897,18 @@
   "With Pay with Wallet, your connected wallet signs one exact transfer of the approved stablecoin to the Openfund treasury — no address copying.": "При «Оплате кошельком» подключённый кошелёк подписывает один точный перевод одобренного стейблкоина в казну Openfund — без копирования адреса.",
   "Wrong Sender": "Неверный отправитель",
   "Your token balance is below the amount. You may pay part of it; the remaining balance stays on the order.": "Баланс токена меньше суммы. Можно оплатить часть; остаток сохранится в заказе.",
-  "Your wallet is not connected — reconnect it.": "Кошелёк не подключён — подключите его снова."
+  "Your wallet is not connected — reconnect it.": "Кошелёк не подключён — подключите его снова.",
+  "Connection failed; showing last verified data (outdated)": "Сбой подключения; показаны последние проверенные данные (устаревшие)",
+  "Gains account records": "Записи аккаунта Gains",
+  "Last fetched": "Последнее получение",
+  "Loading records from Gains…": "Загрузка записей из Gains…",
+  "Openfund Perpetual — Gains account view": "Openfund Perpetual — просмотр аккаунта Gains",
+  "Openfund Prop — Simulated evaluation": "Openfund Prop — симулированная оценка",
+  "Practice and challenge accounts; no real transactions are placed.": "Учебные и челлендж-аккаунты; реальные транзакции не совершаются.",
+  "Provider unavailable": "Поставщик недоступен",
+  "Read-only · Arbitrum One · Order execution is disabled.": "Только чтение · Arbitrum One · Исполнение ордеров отключено.",
+  "Sign in to view your Gains account.": "Войдите, чтобы просмотреть свой аккаунт Gains.",
+  "Source data is stale": "Данные источника устарели",
+  "Source timestamps are inconsistent": "Временные метки источника не согласованы",
+  "Up to date": "Актуально"
 }

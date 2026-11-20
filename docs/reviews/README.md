@@ -4,6 +4,7 @@ These documents record specific branches, dates and environments. Their test cou
 
 | Review | Scope |
 | --- | --- |
+| [Gains Perpetual integration readiness](gains-integration/READINESS.md) | 2026-11-20 gap analysis, Gains ToS and compliance assessment, threat model, test evidence, blockers with owners; read-only integration ready for review, live trading not authorized |
 | [Responsive launch matrix](responsive-matrix/DELIVERY.md) | 2026-11-20 widths × locales × themes matrix over the built app; overflow, clipped controls, drawer side, console and axe; root-cause fixes with before/after captures |
 | [Journey acceptance 2026-11-20](journey-acceptance-2026-11/REPORT.md) | Workstream H: browser acceptance inventory of onboarding, Prop evaluation, terminal, Backstage and checkout journeys; new suites, results and external blockers |
 | [Liara Iran infrastructure audit](liara-iran-infrastructure/AUDIT.md) | 2026-11-17 live Liara and GitHub inventory against the repository; naming source of truth, deploy guards, drift checks, owner actions |

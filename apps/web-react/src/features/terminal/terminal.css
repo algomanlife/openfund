@@ -269,6 +269,74 @@
   margin: 20px 0;
   color: var(--of-muted);
 }
+/* Product identity (Prop simulated evaluation vs Perpetual Gains account view) */
+.of-terminal .of-product-identity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border: 1px solid var(--of-line);
+  border-inline-start: 3px solid var(--of-mint);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--of-muted);
+}
+.of-terminal .of-product-identity b {
+  color: var(--of-text);
+  font-size: 13px;
+}
+.of-terminal .of-product-identity[data-product="perpetual"] {
+  border-inline-start-color: var(--of-muted);
+}
+/* Gains source, network, read-only and freshness status */
+.of-terminal .of-source-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  align-items: center;
+  margin: 12px 0;
+  font-size: 12px;
+  color: var(--of-muted);
+  overflow-wrap: anywhere;
+}
+.of-terminal .of-readonly-badge {
+  border: 1px solid var(--of-line);
+  border-radius: 999px;
+  padding: 2px 9px;
+  color: var(--of-text);
+}
+.of-terminal .of-source-bar [role="status"],
+.of-terminal .of-source-bar [role="alert"] {
+  padding-inline-start: 14px;
+  position: relative;
+}
+.of-terminal .of-source-bar [role="status"]::before,
+.of-terminal .of-source-bar [role="alert"]::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  border-radius: 50%;
+  background: var(--of-muted);
+}
+.of-terminal .of-source-bar[data-severity="ok"] [role="status"]::before { background: var(--of-mint); }
+.of-terminal .of-source-bar[data-severity="warn"] { color: var(--of-text); }
+.of-terminal .of-source-bar[data-severity="warn"] [role]::before { background: #d8a84a; }
+.of-terminal .of-source-bar[data-severity="error"] [role]::before { background: var(--of-negative); }
+.of-terminal .of-source-bar[data-severity="error"] [role] { color: var(--of-negative); }
+/* WCAG 2.5.8: transaction and journal links in Gains history rows are ≥24px targets */
+.of-terminal #gains-records td a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  min-width: 24px;
+  margin-inline-end: 8px;
+}
 .of-terminal .of-error {
   color: var(--of-negative) !important;
   border: 1px solid color-mix(in srgb, var(--of-negative) 27%, transparent);

@@ -3897,5 +3897,18 @@
   "With Pay with Wallet, your connected wallet signs one exact transfer of the approved stablecoin to the Openfund treasury — no address copying.": "مع «الدفع بالمحفظة» توقّع محفظتك المتصلة تحويلًا دقيقًا واحدًا من العملة المستقرة المعتمدة إلى خزينة Openfund — دون نسخ أي عنوان.",
   "Wrong Sender": "مرسل غير صحيح",
   "Your token balance is below the amount. You may pay part of it; the remaining balance stays on the order.": "رصيدك من هذا الرمز أقل من المبلغ. يمكنك دفع جزء منه؛ ويبقى الرصيد المتبقي على الطلب.",
-  "Your wallet is not connected — reconnect it.": "محفظتك غير متصلة — أعد توصيلها."
+  "Your wallet is not connected — reconnect it.": "محفظتك غير متصلة — أعد توصيلها.",
+  "Connection failed; showing last verified data (outdated)": "فشل الاتصال؛ تُعرض آخر بيانات مُتحقَّق منها (قديمة)",
+  "Gains account records": "سجلات حساب Gains",
+  "Last fetched": "آخر جلب",
+  "Loading records from Gains…": "جارٍ تحميل السجلات من Gains…",
+  "Openfund Perpetual — Gains account view": "Openfund Perpetual — عرض حساب Gains",
+  "Openfund Prop — Simulated evaluation": "Openfund Prop — تقييم محاكى",
+  "Practice and challenge accounts; no real transactions are placed.": "حسابات تدريب وتحدٍّ؛ لا تُنفَّذ أي معاملات حقيقية.",
+  "Provider unavailable": "المزوّد غير متاح",
+  "Read-only · Arbitrum One · Order execution is disabled.": "للقراءة فقط · Arbitrum One · تنفيذ الأوامر معطّل.",
+  "Sign in to view your Gains account.": "سجّل الدخول لعرض حساب Gains الخاص بك.",
+  "Source data is stale": "بيانات المصدر قديمة",
+  "Source timestamps are inconsistent": "الطوابع الزمنية للمصدر غير متّسقة",
+  "Up to date": "محدَّث"
 }

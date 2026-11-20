@@ -276,6 +276,18 @@ jobs:
           TEST_FRONTEND_URL: http://localhost:8080
           TEST_BACKEND_URL: http://localhost:8080
         run: npm run test:browser:risk
+      - name: Perpetual Gains read-only readiness (one session, wallet change, freshness states, five locales)
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080
+          TEST_BACKEND_URL: http://localhost:8080
+        run: npm run test:browser:perpetual
+      - name: Perpetual UI lifecycle in an isolated simulation (test-only adapter, no transactions)
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080
+          TEST_BACKEND_URL: http://localhost:8080
+        run: npm run test:browser:perpetual-simulation
       - name: Certificate issuance, exports and public verification
         working-directory: .
         env:

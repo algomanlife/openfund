@@ -7,11 +7,11 @@ import { AccessGate } from "./TerminalShell";
 import { useTerminal } from "./TerminalContext";
 import { GainsSummary } from "./GainsPortfolio";
 import { useResource, money, route } from "./model";
-export function Metric({ label, value }: { label: string; value: unknown }) {
+export function Metric({ label, value, format = money }: { label: string; value: unknown; format?: (v: unknown) => string }) {
   return (
     <div className="of-metric">
       <span>{label}</span>
-      <b dir="ltr">{money(value)}</b>
+      <b dir="ltr">{format(value)}</b>
     </div>
   );
 }
@@ -75,7 +75,7 @@ export function ProductDashboard() {
         </div>
         <JournalAnalytics reports />
       </> : <>
-        <GainsSummary />
+        <GainsSummary source />
         <div className="of-dashboard-grid">
           <section className="of-panel"><h2>{t("کیف پول", "Wallet")}</h2><p dir="ltr">{context?.wallet || session.user?.walletAddress}</p><p>Gains Network · Arbitrum One</p></section>
           <section className="of-panel" role="status"><h2>{t("وضعیت معاملات", "Trading status")}</h2><p>{t("اطلاعات حساب از Gains دریافت می‌شود؛ اجرای سفارش در اوپن‌فاند فعال نیست.", "Account records come from Gains; order execution in Openfund is not enabled.")}</p><p>{t("موجودی و سود خالص تأییدنشده نمایش داده نمی‌شوند.", "Unsupported balances and net PnL remain unavailable.")}</p></section>

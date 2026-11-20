@@ -3897,5 +3897,18 @@
   "With Pay with Wallet, your connected wallet signs one exact transfer of the approved stablecoin to the Openfund treasury — no address copying.": "使用“钱包支付”时，您连接的钱包只需签署一笔经批准稳定币到 Openfund 金库的精确转账——无需复制地址。",
   "Wrong Sender": "发送方不正确",
   "Your token balance is below the amount. You may pay part of it; the remaining balance stays on the order.": "您的代币余额低于该金额。您可以先支付一部分，剩余金额会保留在订单中。",
-  "Your wallet is not connected — reconnect it.": "您的钱包未连接——请重新连接。"
+  "Your wallet is not connected — reconnect it.": "您的钱包未连接——请重新连接。",
+  "Connection failed; showing last verified data (outdated)": "连接失败；显示最近一次已验证的数据（已过时）",
+  "Gains account records": "Gains 账户记录",
+  "Last fetched": "最近获取",
+  "Loading records from Gains…": "正在从 Gains 加载记录…",
+  "Openfund Perpetual — Gains account view": "Openfund Perpetual — Gains 账户视图",
+  "Openfund Prop — Simulated evaluation": "Openfund Prop — 模拟评估",
+  "Practice and challenge accounts; no real transactions are placed.": "练习和挑战账户；不会进行任何真实交易。",
+  "Provider unavailable": "数据提供方不可用",
+  "Read-only · Arbitrum One · Order execution is disabled.": "只读 · Arbitrum One · 订单执行已禁用。",
+  "Sign in to view your Gains account.": "登录以查看您的 Gains 账户。",
+  "Source data is stale": "来源数据已过时",
+  "Source timestamps are inconsistent": "来源时间戳不一致",
+  "Up to date": "已是最新"
 }

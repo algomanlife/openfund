@@ -59,9 +59,12 @@
     "test:upstream": "node --test scripts/upstream/test/*.test.mjs && node --test apps/backend/test/market-data-contract.test.mjs",
     "check:upstream": "node scripts/upstream/verify.mjs",
     "check:gains-live": "node scripts/upstream/gains-live-check.mjs",
+    "check:gains-account-live": "node scripts/upstream/gains-account-live-check.mjs",
     "update:vendor": "node scripts/upstream/update-vendor.mjs",
     "watch:upstream": "node scripts/upstream/check-releases.mjs",
     "test:browser:security": "node e2e/test-security-browser.cjs",
+    "test:browser:perpetual": "node e2e/test-perpetual-readiness.cjs",
+    "test:browser:perpetual-simulation": "node e2e/test-perpetual-simulation.cjs",
     "test:browser:journeys": "node e2e/test-journey-acceptance.cjs",
     "test:browser:typography": "node e2e/test-typography.mjs"
   },

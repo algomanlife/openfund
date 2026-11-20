@@ -45,7 +45,7 @@ One normalized wallet address maps to one `openfund_users` identity. Successful 
 
 ## Isolation and failure handling
 
-The server derives ownership for every private product request. Prop account IDs and Perpetual wallet references cannot be swapped through client parameters. Async frontend reads are cancelled/hidden when scope changes. Verify/logout ordering prevents late responses from restoring a previous wallet session. Disconnect revokes the backend session and clears private UI state.
+The server derives ownership for every private product request. Prop account IDs and Perpetual wallet references cannot be swapped through client parameters. Async frontend reads are cancelled/hidden when scope changes. Verify/logout ordering prevents late responses from restoring a previous wallet session. Disconnect revokes the backend session and clears private UI state. `e2e/test-perpetual-readiness.cjs` covers these transitions in a browser: product switching keeps one session, refresh restores it, and wallet change or disconnect clears Gains records and the session for both products.
 
 Mutation origins, allowed SIWE domains and CORS must match the intended deployment. Same-origin API and `/react/` hosting keep session cookies first-party. Keep `SIM_TEST_MODE` disabled in production.
 

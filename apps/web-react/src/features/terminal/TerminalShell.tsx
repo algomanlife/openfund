@@ -235,6 +235,16 @@ export default function TerminalShell({ product }: { product: Product }) {
           </div>}</ReleaseStatus>
         </header>
         <main id="terminal-main" tabIndex={-1} className="of-terminal-main">
+          {page !== "trade" && page !== "chart" && (
+            <p className="of-product-identity" data-product={product}>
+              <b>{product === "prop"
+                ? t("اوپن‌فاند پراپ — ارزیابی شبیه‌سازی‌شده", "Openfund Prop — Simulated evaluation")
+                : t("اوپن‌فاند پرپچوال — نمای حساب Gains", "Openfund Perpetual — Gains account view")}</b>
+              <span>{product === "prop"
+                ? t("حساب‌های تمرینی و چالش؛ هیچ تراکنش واقعی ثبت نمی‌شود.", "Practice and challenge accounts; no real transactions are placed.")
+                : t("فقط خواندنی · Arbitrum One · اجرای سفارش غیرفعال است.", "Read-only · Arbitrum One · Order execution is disabled.")}</span>
+            </p>
+          )}
           {page !== "trade" && page !== "chart" && page !== "purchases" && page !== "certificates" && <Editorial page={page} />}
           {page !== "trade" && page !== "chart" && context.error && (
             <div role="alert" className="of-error">

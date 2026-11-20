@@ -156,6 +156,11 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
           positions: true,
           history: true,
           journal: true,
+          /* Perpetual is a read-only Gains account view; live execution needs
+             separate eligibility, legal and security approval (GAINS.md) */
+          ...(s.product === "perpetual"
+            ? { readOnly: true, canTrade: false, network: { chainId: 42161, name: "Arbitrum One" } }
+            : {}),
         },
         state: s.product === "prop" && (s.account?.account_type !== "challenge" || s.tradingAccountId)
           ? await engine.state(s.userId, s.account?.account_type === 'challenge' ? s.tradingAccountId : null)

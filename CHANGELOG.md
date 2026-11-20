@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- **Perpetual Gains read-only readiness** ([ADR 0047](docs/decisions/0047-perpetual-gains-read-only-readiness.md)).
+  - The Gains account snapshot now states its network, its read-only capabilities, the source of each field and its freshness (`fresh`, `stale` or `inconsistent`). A cached read keeps its original fetch time.
+  - Malformed provider data returns `502 gains_schema_changed` instead of a 500. Timeouts are reported separately as `504 gains_timeout`.
+  - Unset TP/SL is shown as unavailable instead of `0`. Pending orders show their Gains order type. Transaction links are built only from valid hashes.
+  - Terminal pages name the product: "Openfund Prop — Simulated evaluation" or "Openfund Perpetual — Gains account view". Perpetual pages show the source, the network, a read-only badge and the feed state, and label a kept snapshot as outdated.
+  - The Perpetual trade workspace no longer calls itself a practice account.
+  - New tests: deterministic backend scenarios and a browser acceptance suite (`npm run test:browser:perpetual`).
+  - Live execution remains disabled. The Prop backend, engine and ledger are unchanged. **This is not the requested Gains trading product.** The draft [execution RFC](docs/architecture/PERPETUAL_EXECUTION_RFC.md) states what that product requires.
+  - The responsive matrix no longer depends on third parties. Gains REST/WS data comes from documented fixtures (`e2e/helpers/market-fixtures.cjs`), and other external origins are blocked. Live account endpoints are checked separately and non-blocking (`npm run check:gains-account-live`, Upstream watch).
+  - Isolated Perpetual UI simulation (test-only, Playwright-injected, visible banner, no writes), product-isolation import-graph tests, and axe scans of signed-in Perpetual pages. History-row links now meet the 24 px target size.
+  - [Gains integration readiness report](docs/reviews/gains-integration/READINESS.md): gap analysis, Terms of Service and compliance assessment, threat model, test evidence, blockers with owners. Verdict: the read-only integration is ready for review; live trading is not authorized.
+  - Release status reconciled: v0.8.0 is recorded as the latest official release, and GLOBAL Web/API is verified on 0.8.0 (`/version`, 2026-11-20). The status self-tests now follow the recorded release instead of hard-coding v0.7.0.
+
+
+## v0.8.0 — 2026-11-20
+
 - **Responsive launch matrix (workstreams D/E/F)** — new
   `e2e/test-responsive-matrix.cjs` covers the built web app at ten widths
   (320-1920 px), five locales (fa and ar RTL; en, ru and zh-CN LTR), both
