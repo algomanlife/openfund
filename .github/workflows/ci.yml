@@ -396,6 +396,16 @@ jobs:
             sleep 1
           done
           node e2e/test-controlled-challenges.cjs || { cat /tmp/openfund-controlled-browser.log; exit 1; }
+      - name: Journey acceptance (session expiry, loss breaches, trading days, inbox, localized checkout)
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080
+        run: npm run test:browser:journeys
+      - name: Browser session security (cookie isolation, wallet switch, logout, hostile origin)
+        working-directory: .
+        env:
+          BASE_URL: http://localhost:8080
+        run: npm run test:browser:security
       - name: DePay checkout browser acceptance (stub widget, mock chain, signed callbacks)
         working-directory: .
         run: npm run test:browser:depay

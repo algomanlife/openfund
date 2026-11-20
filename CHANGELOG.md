@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- **Journey acceptance (workstream H).** New browser suite
+  `npm run test:browser:journeys` covers expired sessions, the SIWE
+  chain id, daily- and maximum-loss failures, the minimum-trading-days gate,
+  inbox notifications, and localized responsive checkout with order recovery.
+  It runs in CI and in the release gates. The existing browser security suite
+  now runs in CI. Fix: deep routes returned 404 when the server ran from a
+  checkout under a dot directory. See the
+  [report](docs/reviews/journey-acceptance-2026-11/REPORT.md).
+
 - **Deterministic CI for two flaky browser suites** — the Market Heatmap and
   Trade Radar suite now runs on fixed `/radar/*` fixtures and a fixed page
   clock, with empty and unavailable states covered. The real Hyperliquid
