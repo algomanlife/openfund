@@ -118,3 +118,13 @@ test('release assets download through the API endpoint with bounded retries', as
   assert.equal(notFound, 1, 'a 404 is not retried');
   await assert.rejects(releaseAssetBytes('o/r', 1, { attempts: 2, fetchImpl: async () => new Response('', { status: 504 }), delayMs: 1 }), /Cannot read release asset 1/);
 });
+
+test('the release tag push is authenticated without persisted checkout credentials', () => {
+  /* release.yml checks out with persist-credentials: false; v0.8.0's first
+     publish failed with "could not read Username" on the tag push. */
+  const publish = fs.readFileSync(path.join(root, 'scripts/release/publish.mjs'), 'utf8')
+  assert.match(publish, /run\('git',\['push','origin',`refs\/tags\/\$\{tag\}`\],\{env:\{[^}]*GIT_CONFIG_KEY_0:'http\.https:\/\/github\.com\/\.extraheader'/)
+  assert.match(publish, /GH_TOKEN is required to push the release tag/)
+  const workflow = fs.readFileSync(path.join(root, '.github/workflows/release.yml'), 'utf8')
+  assert.match(workflow, /persist-credentials: false/, 'checkout credentials stay unpersisted')
+})
