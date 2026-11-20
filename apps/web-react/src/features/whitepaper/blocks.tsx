@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import TableScroll from '../information/TableScroll'
 import { text as t, type Locale } from '../information/content'
 import type { WpBlock, WpMilestoneStatus, WpReference, WpStatus, Whitepaper } from '../../cms/whitepaper/types'
 import { challengePlans, type ChallengePlan } from '../../data/challengePlans'
@@ -38,7 +39,7 @@ function Pricing({ caption, locale }: { caption: string; locale: Locale }) {
   }, [])
   const sizes = [...new Set(plans.flatMap(p => p.accountSizesUsd))].sort((a, b) => a - b)
   const money = (v: number) => new Intl.NumberFormat(locale === 'fa' ? 'fa-IR' : 'en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v)
-  return <div className="wp-table info-table-wrap">
+  return <TableScroll className="wp-table" label={caption}>
     <table>
       <caption>{caption}</caption>
       <thead><tr><th scope="col">{t('Account size', 'اندازهٔ حساب')[locale]}</th>{plans.map(p => <th key={p.slug} scope="col">{p.name[locale]}</th>)}</tr></thead>
@@ -48,7 +49,7 @@ function Pricing({ caption, locale }: { caption: string; locale: Locale }) {
       </tr>)}</tbody>
     </table>
     <p className="wp-table-note">{source === 'cms' ? t('Source: live challenge catalog (Directus).', 'منبع: کاتالوگ فعلی چلنج (Directus).')[locale] : t('Source: repository challenge catalog.', 'منبع: کاتالوگ چلنج در مخزن.')[locale]} {t('Purchase activation depends on production payment configuration.', 'فعال بودن خرید به پیکربندی پرداخت در محیط اصلی بستگی دارد.')[locale]}</p>
-  </div>
+  </TableScroll>
 }
 
 function References({ keys, refs, locale, full }: { keys: string[]; refs: Map<string, WpReference>; locale: Locale; full: boolean }) {
@@ -93,11 +94,11 @@ export default function Block({ block, locale, paper, bibliography = false }: { 
       {item.note && <dd className="wp-stat-note">{item.note[locale]}</dd>}
     </div>)}</dl>
     case 'definitions': return <dl className="wp-definitions">{block.items.map((item, i) => <div key={i}><dt>{item.term[locale]}</dt><dd>{item.text[locale]}</dd></div>)}</dl>
-    case 'table': return <div className="wp-table info-table-wrap"><table>
+    case 'table': return <TableScroll className="wp-table" label={block.caption[locale]}><table>
       <caption>{block.caption[locale]}</caption>
       <thead><tr>{block.head.map((cell, i) => <th key={i} scope="col">{cell[locale]}</th>)}</tr></thead>
       <tbody>{block.rows.map((row, i) => <tr key={i}>{row.map((cell, j) => j === 0 ? <th key={j} scope="row">{cell[locale]}</th> : <td key={j}>{cell[locale]}</td>)}</tr>)}</tbody>
-    </table></div>
+    </table></TableScroll>
     case 'flow': return <figure className="wp-flow">
       <figcaption>{block.label[locale]}</figcaption>
       <ol>{block.steps.map((step, i) => <li key={i}>

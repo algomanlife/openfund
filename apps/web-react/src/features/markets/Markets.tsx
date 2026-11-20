@@ -123,10 +123,10 @@ export default function Markets() {
             const p = priceFor(prices, m.symbol)
             const stale = p ? isStale(p) : false
             const freshTick = p ? Date.now() - (p.tickAt || 0) < 1800 : false
-            const label = `${m.base}${m.quote ? '/' + m.quote : ''} — ${CATEGORY_LABELS[(m.group || '') as CategoryKey]?.[locale] || m.group || ''}`
             return (
               <li key={m.symbol}>
-                <button className="mk-card" onClick={() => openInTerminal(m.symbol)} title={pickFormat(locale, '${base} را در ترمینال باز کن', 'Open ${base} in the terminal', { base: m.base })} aria-label={label}>
+                <button className="mk-card" onClick={() => openInTerminal(m.symbol)} title={pickFormat(locale, '${base} را در ترمینال باز کن', 'Open ${base} in the terminal', { base: m.base })}>
+                  {/* the card's visible text (symbol, status, category, leverage, price) is its accessible name (WCAG 2.5.3) */}
                   <span className="mk-card-head">
                     <MarketIcon base={m.base} group={m.group} size={26} />
                     <span dir="ltr" className="mk-symbol"><b>{m.base}</b>{m.quote ? <small>/{m.quote}</small> : null}</span>

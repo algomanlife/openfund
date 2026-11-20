@@ -67,6 +67,8 @@ html[data-theme=light] {
 }
 
 /* --- accessibility baseline ------------------------------------------------ */
+/* legacy/style.css colours every <th> #92a1a5, a dark-theme grey (2.7:1 on white) */
+html[data-theme=light] :where(th) { color: var(--ds-text-muted); }
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible { outline: 2px solid var(--ds-focus); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) {
   :where(*, *::before, *::after) { scroll-behavior: auto !important; }
@@ -78,6 +80,8 @@ html[data-theme=light] {
 html :is(.market-disclaimer, .mk-source, .mk-source a, .mk-source span, .mk-stream) { font-size: max(var(--ds-text-xs), 1em) !important; line-height: 1.7; }
 html :is(.mk-status, .mk-cat, .pair-status, .hero-micro > span, .builder-facts > span, .stage-fact > span, .step-demo > span) { font-size: max(var(--ds-text-min), 1em) !important; }
 html :is(span.eyebrow, div.eyebrow, .eyebrow) { font-size: max(var(--ds-text-min), .75rem); }
+/* the landing statement's caption was 6-8px in a 3.5:1 grey */
+html .intro-band > span { font-size: max(var(--ds-text-min), 1em) !important; color: var(--ds-text-muted); }
 
 /* --- shared primitives (opt-in classes for new components) ----------------- */
 .ds-card { border: 1px solid var(--ds-line); border-radius: var(--ds-radius-lg); background: var(--ds-surface); box-shadow: var(--ds-shadow-1); }
@@ -102,7 +106,9 @@ html :is(span.eyebrow, div.eyebrow, .eyebrow) { font-size: max(var(--ds-text-min
 
 /* Market widget on Challenges: category/view tabs and refresh were 21-23px
    tall with 9-10px labels. Readable labels and >=32px targets (44px on touch). */
-html :is(.market-tabs, .market-views) button { min-block-size: 32px; min-inline-size: 32px; padding-inline: 10px; font-size: max(var(--ds-text-min), 1em) !important; }
+/* min-inline-size replaces the flex default min-width:auto, so the buttons
+   must not shrink: the strips scroll instead of cutting their labels (320-430px) */
+html :is(.market-tabs, .market-views) button { flex-shrink: 0; min-block-size: 32px; min-inline-size: 32px; padding-inline: 10px; font-size: max(var(--ds-text-min), 1em) !important; }
 html .market-frame .refresh, html .refresh { min-block-size: 32px; min-inline-size: 32px; }
 html :is(.feature-note, .sample-note) { font-size: var(--ds-text-xs) !important; line-height: 1.8; }
 html :is(.market-frame, .market-head, .market-footer, .challenge-detail) a { font-size: max(var(--ds-text-min), 1em); }

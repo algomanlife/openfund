@@ -16,7 +16,9 @@ export function useRemote<T>(path: string | null, deps: unknown[] = []): [Remote
     setState({ status: 'loading' })
     void apiFetch(path).then(r => {
       if (!active) return
-      setState(r.ok ? { status: 'ready', data: r.data as T } : { status: 'error', code: r.data?.error, httpStatus: r.status })
+      /* a 2xx without a JSON body (an HTML fallback from a proxy or a static
+         host) is unavailable data, not an empty report */
+      setState(r.ok && r.data != null ? { status: 'ready', data: r.data as T } : { status: 'error', code: r.data?.error, httpStatus: r.status })
     }).catch(() => { if (active) setState({ status: 'error' }) })
     return () => { active = false }
     // eslint-disable-next-line react-hooks/exhaustive-deps

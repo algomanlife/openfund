@@ -25,7 +25,8 @@ export default function BitpinTicker() {
       <i aria-hidden="true" className="bitpin-ticker-dot" />
       <span className="bitpin-ticker-status" role="status">{statusText}</span>
     </div>
-    <div className="bitpin-ticker-viewport">
+    {/* focusable: keyboard scrolling under reduced motion, pause on focus otherwise */}
+    <div className="bitpin-ticker-viewport" tabIndex={0}>
       {quotes.length > 0 && <div className="bitpin-ticker-track" style={{ ['--ticker-items' as string]: quotes.length }}>
         <ul className="bitpin-ticker-list">{items(false)}</ul>
         {/* second copy only for the seamless loop; hidden from assistive tech */}

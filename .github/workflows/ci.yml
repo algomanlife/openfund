@@ -6,6 +6,9 @@ name: CI
 #   backend   — Postgres service container, migrations, full backend suite
 #   database-roles — OF-2026-11-12: Directus on its own PostgreSQL role, the
 #               privilege policy, CMS bootstrap and the isolation regression suite
+#   responsive-matrix — built web app across 10 widths x 5 locales x 2 themes:
+#               overflow, clipped controls, drawer side/closing, console errors
+#               and axe (e2e/test-responsive-matrix.cjs, three shards)
 #   blueprint — render.yaml structural validation (network-free)
 #   secrets   — gitleaks scan of commits
 #   audit     — dependency vulnerability report (non-blocking, critical level)
@@ -411,6 +414,56 @@ jobs:
             output/playwright/wallet-showcase/
             output/playwright/heatmap-radar/
           retention-days: 3
+
+  responsive-matrix:
+    name: Responsive matrix (shard ${{ matrix.shard }}/3)
+    needs: changes
+    # Skipped (and reported as passing) only when no web or CMS input changed
+    # under the affected tier, or for documentation-only pull requests.
+    if: needs.changes.outputs.run_presentation_matrices == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            apps/web-react/package-lock.json
+      - name: Install (lockfile integrity)
+        run: |
+          npm ci
+          npm --prefix apps/web-react ci
+      # The suite serves react/ itself (stub runtime-config.js, 503 backend and CMS)
+      - name: Build the web application
+        run: npm run build:web
+      - name: Cache Playwright browsers
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Widths, locales, themes, drawer, console and axe matrix
+        env:
+          MATRIX_SHARD: ${{ matrix.shard }}/3
+          MATRIX_CAPTURE: '1'
+          MATRIX_OUTPUT: output/playwright/responsive-matrix
+        run: npm run test:browser:responsive-matrix
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: responsive-matrix-${{ matrix.shard }}
+          path: output/playwright/responsive-matrix/
+          retention-days: 7
 
   campaigns:
     name: Campaigns and announcements (Directus + browser)

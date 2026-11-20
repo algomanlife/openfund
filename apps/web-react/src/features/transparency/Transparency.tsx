@@ -6,6 +6,7 @@ import { Bars, Kpi, Source, StateBlock, Status, backendText, day, int, pct, usd,
 import type { TransparencyReport, TreasuryView } from '../economy/types'
 import { infrastructure, transparencyIntro } from './content'
 import TreasuryWallets from './TreasuryWallets'
+import TableScroll from '../information/TableScroll'
 
 const CATEGORY: Record<string, Localized> = {
   render_infrastructure: t('Technical infrastructure', 'زیرساخت فنی'), database: t('Database', 'پایگاه داده'), cms: t('CMS', 'سیستم مدیریت محتوا'),
@@ -36,8 +37,8 @@ function Treasury({ tv, locale }: { tv: TreasuryView; locale: Locale }) {
         <Kpi label={t('Last snapshot', 'آخرین تصویر')[locale]} value={s ? when(s.takenAt, locale) : '—'} note={s ? `block ${s.blockNumber}` : undefined} />
         <Kpi label={t('Refresh interval', 'بازهٔ به‌روزرسانی')[locale]} value={`${int(tv.refreshMinutes, locale)} ${t('min', 'دقیقه')[locale]}`} note={tv.lastAttempt ? `${t('Last attempt', 'آخرین تلاش')[locale]}: ${when(tv.lastAttempt.at, locale)} · ${tv.lastAttempt.status}` : undefined} />
       </div>
-      {s && <div className="info-table-wrap"><table><caption>{t('Balances by asset', 'موجودی به تفکیک دارایی')[locale]}</caption><thead><tr>{[t('Asset', 'دارایی'), t('Balance', 'موجودی'), t('Price (USD)', 'قیمت (دلار)'), t('Value (USD)', 'ارزش (دلار)'), t('Price source', 'منبع قیمت')].map((h, i) => <th key={i} scope="col">{h[locale]}</th>)}</tr></thead>
-        <tbody>{s.assets.map(a => <tr key={a.symbol + a.address}><th scope="row">{a.symbol}</th><td dir="ltr">{a.balance}</td><td>{a.priceUsd ? usd(a.priceUsd, locale, 4) : '—'}</td><td>{a.valueUsd ? usd(a.valueUsd, locale) : <Status kind="warn">{a.priceError}</Status>}</td><td dir="ltr" style={{ overflowWrap: 'anywhere' }}>{a.priceSource || '—'}{a.priceUpdatedAt ? ` · ${when(a.priceUpdatedAt, locale)}` : ''}</td></tr>)}</tbody></table></div>}
+      {s && <TableScroll label={t('Balances by asset', 'موجودی به تفکیک دارایی')[locale]}><table><caption>{t('Balances by asset', 'موجودی به تفکیک دارایی')[locale]}</caption><thead><tr>{[t('Asset', 'دارایی'), t('Balance', 'موجودی'), t('Price (USD)', 'قیمت (دلار)'), t('Value (USD)', 'ارزش (دلار)'), t('Price source', 'منبع قیمت')].map((h, i) => <th key={i} scope="col">{h[locale]}</th>)}</tr></thead>
+        <tbody>{s.assets.map(a => <tr key={a.symbol + a.address}><th scope="row">{a.symbol}</th><td dir="ltr">{a.balance}</td><td>{a.priceUsd ? usd(a.priceUsd, locale, 4) : '—'}</td><td>{a.valueUsd ? usd(a.valueUsd, locale) : <Status kind="warn">{a.priceError}</Status>}</td><td dir="ltr" style={{ overflowWrap: 'anywhere' }}>{a.priceSource || '—'}{a.priceUpdatedAt ? ` · ${when(a.priceUpdatedAt, locale)}` : ''}</td></tr>)}</tbody></table></TableScroll>}
       <Source locale={locale}>{t('On-chain balanceOf / getBalance at the snapshot block; USD via configured Chainlink aggregators only', 'balanceOf / getBalance روی زنجیره در بلاک تصویر؛ ارزش دلاری فقط از Chainlink پیکربندی‌شده')[locale]}</Source>
     </div>
     {!!tv.reconciliation?.length && <div className="econ-panel">
