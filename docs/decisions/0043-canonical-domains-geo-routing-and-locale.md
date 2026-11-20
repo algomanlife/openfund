@@ -77,7 +77,7 @@ web process held no market prices, so every order there was refused as
    direct request to `onrender.com` with a forged header gets the fallback.
    The country chooses a language only, never access or money.
    On Liara (no Cloudflare), `GEO_COUNTRY_SOURCE=ip-database` looks up the
-   visitor's IPv4 address in a licensed IP-to-country table (`geo-ipdb.js`,
+   visitor's IPv4 or IPv6 address in a licensed IP-to-country table (`geo-ipdb.js`,
    no new dependency). It reads the address at the `X-Forwarded-For`
    position the platform writes (`GEO_CLIENT_HOP`) and never reads
    `CF-IPCountry`. That hop must be **measured** on the real ingress with
@@ -121,6 +121,26 @@ The Cloudflare rule `openfund_geo_iran` stays disabled until all hold:
    tested on two regions and approved. Without them, a routed GLOBAL user
    meets a separate Iran account.
 5. Explicit owner approval to enable it.
+
+### Readiness check
+
+`node scripts/ops/geo-redirect-readiness.mjs [--json]` evaluates gates 1–4
+read-only from the public `/version`, `/runtime-config.js`,
+`/runtime/ingress` and `/ready` of both regions, the Iran alias cases of
+`verify-public.mjs`, the worker's default subdomain and the status of
+ADR 0044 in this repository. Gate 5 is always reported as
+owner-approval-required, so the script can never declare the redirect ready
+and is not wired to enable anything. It prints no caller address or country.
+`apps/backend/test/regional-routing.test.mjs` is the regression matrix for
+the eight website hosts.
+
+Result on 2026-11-20 (verified state: [status](../status/README.md)):
+**not ready**. Gate 1 fails (GLOBAL 0.7.0 `34ef7ec` official, IRAN 0.6.5
+`a87804a` unofficial; IRAN has no `geoLocale` and no `/runtime/ingress`;
+`iran.openfi.cloud` and `iran.openfund.cloud` answer 200 instead of 301).
+Gate 2 fails (`suspended_no_authoritative_marks`). Gate 3 passes (the
+worker's default subdomain answers Liara's 404). Gate 4 fails (ADR 0044 is
+proposed, not implemented). Gate 5 needs the owner.
 
 ## Consequences
 

@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- **Regional routing gates (ADR 0043, workstream B).** A read-only
+  `scripts/ops/geo-redirect-readiness.mjs` reads `/version`,
+  `/runtime-config.js`, `/runtime/ingress` and `/ready` of both regions and
+  reports each gate for the IRAN geographic redirect as pass, fail or
+  owner-approval-required; it never reports "ready" and changes nothing. A
+  new host-matrix test covers all eight website hosts: canonical 301s with
+  path and query, machine paths never redirected, the reversible region
+  cookie, no redirect loops, and only a trusted IR country qualifying. The
+  Liara IP database lookup now covers IPv6. The redirect stays disabled.
+
 - **Deterministic CI for two flaky browser suites** — the Market Heatmap and
   Trade Radar suite now runs on fixed `/radar/*` fixtures and a fixed page
   clock, with empty and unavailable states covered. The real Hyperliquid
