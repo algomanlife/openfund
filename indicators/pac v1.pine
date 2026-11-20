@@ -1514,6 +1514,29 @@ handleTimeframeInfo (timeframeInfo timeframeInfoF, bullishOrderBlocksListF, bear
         timeframeInfoF.bearishOrderBlocksList := bearishOrderBlocksListF
 
 
+// The state-changing part of handleOrderBlocksFinal, without the drawings.
+trimTimeframeOrderBlocks () =>
+    for i = 0 to timeframeInfos.size() - 1
+        curTimeframe = timeframeInfos.get(i)
+        if na(curTimeframe)
+            continue
+        if not curTimeframe.isEnabled
+            continue
+        if na(curTimeframe.bullishOrderBlocksList)
+            continue
+        if curTimeframe.bullishOrderBlocksList.size() > 0
+            while curTimeframe.bullishOrderBlocksList.size() > bullishOrderBlocks
+                curTimeframe.bullishOrderBlocksList.pop()
+            for j = 0 to math.min(curTimeframe.bullishOrderBlocksList.size() - 1, bullishOrderBlocks - 1)
+                stamped = curTimeframe.bullishOrderBlocksList.get(j)
+                stamped.timeframeStr := curTimeframe.timeframeStr
+        if not na(curTimeframe.bearishOrderBlocksList) and curTimeframe.bearishOrderBlocksList.size() > 0
+            while curTimeframe.bearishOrderBlocksList.size() > bearishOrderBlocks
+                curTimeframe.bearishOrderBlocksList.pop()
+            for j = 0 to math.min(curTimeframe.bearishOrderBlocksList.size() - 1, bearishOrderBlocks - 1)
+                stamped = curTimeframe.bearishOrderBlocksList.get(j)
+                stamped.timeframeStr := curTimeframe.timeframeStr
+
 handleOrderBlocksFinal () =>
     if DEBUG
         log.info("Bullish OB Count " + str.tostring(bullishOrderBlocksList.size()))
@@ -1591,7 +1614,16 @@ if barstate.isconfirmed
     if tfe(currentTF, "1")
 
         handleTimeframeInfo(timeframeInfos.get(2), bullishOrderBlocksListTimeframe3, bearishOrderBlocksListTimeframe3)
-    handleOrderBlocksFinal()
+    // handleOrderBlocksFinal deletes every order-block drawing and rebuilds it,
+    // so only the last confirmed bar's drawings are ever visible. Its list
+    // trimming and timeframe stamping, however, mutate the stored blocks (which
+    // the requests share), so that part runs on every confirmed bar; the
+    // rebuild runs on the last confirmed historical bar and on every confirmed
+    // real-time bar.
+    if barstate.islastconfirmedhistory or barstate.islast or barstate.isrealtime
+        handleOrderBlocksFinal()
+    else
+        trimTimeframeOrderBlocks()
 
 //-----------------------------------------------------------------------------}
 //Price Action Concepts
