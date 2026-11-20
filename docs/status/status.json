@@ -1,7 +1,7 @@
 {
   "$comment": "Canonical Openfund status (docs/status/README.md is generated from this file by `node scripts/docs/status.mjs`; `npm run docs:check` validates both). Every state is recorded per environment. Source states come from Git; runtime states (deployed, enabled, verified, accepted) are valid only with `verifiedAt` and `evidence`. CI never probes production: a stale or wrong runtime claim must be corrected by re-verifying, not by editing the date.",
   "schemaVersion": 1,
-  "updatedAt": "2026-11-18",
+  "updatedAt": "2026-11-20",
   "release": {
     "latestOfficial": {
       "version": "0.7.0",
@@ -30,7 +30,7 @@
           "version": "0.7.0",
           "commit": "34ef7ec719d2bb0e5b20d10e6112a8ccc33261a0",
           "official": true,
-          "verifiedAt": "2026-11-18T14:30:00Z",
+          "verifiedAt": "2026-11-20T10:24:00Z",
           "evidence": "https://openfi.cloud/version"
         },
         {
@@ -71,7 +71,7 @@
           "commit": "a87804a69b27cafa3063807f33f1f7d9d93470dc",
           "official": false,
           "note": "Built without RELEASE_OFFICIAL (reports official: false). Runs OPENFUND_ROLES=http, so it holds no market data (execution suspended_no_authoritative_marks).",
-          "verifiedAt": "2026-11-18T14:30:00Z",
+          "verifiedAt": "2026-11-20T10:24:00Z",
           "evidence": "https://openfi.live/version"
         },
         {
@@ -293,6 +293,31 @@
         "verifiedAt": "2026-11-15T00:00:00Z",
         "evidence": "docs/product/FEATURE_STATUS.md",
         "blocker": null
+      }
+    },
+    {
+      "name": "Canonical domains and IRAN geographic redirect (ADR 0043)",
+      "source": "merged",
+      "release": "v0.7.0",
+      "global": {
+        "deployed": true,
+        "enabled": true,
+        "verified": true,
+        "accepted": false,
+        "detail": "Canonical https://openfi.cloud; openfund.cloud, www.openfund.cloud and www.openfi.cloud answer 301 with path and query (verify-public.mjs). /runtime/ingress served, last hop Cloudflare, geoLocale in runtime-config. The geographic rule openfund_geo_iran exists disabled; geo-redirect-readiness.mjs reports not ready (gates 1, 2, 4 fail; gate 3 passes; gate 5 owner).",
+        "verifiedAt": "2026-11-20T10:24:00Z",
+        "evidence": "https://openfi.cloud/runtime/ingress",
+        "blocker": "Geographic redirect: ADR 0043 §Gates and explicit owner approval."
+      },
+      "iran": {
+        "deployed": false,
+        "enabled": false,
+        "verified": false,
+        "accepted": false,
+        "detail": "openfi.live runs 0.6.5 a87804a (unofficial), without the ADR 0043 application part: no geoLocale in runtime-config, /runtime/ingress 404, iran.openfi.cloud and iran.openfund.cloud answer 200 instead of 301. www.openfi.live answers 301 (Liara domain redirect). The worker's default subdomain answers Liara's 404. Direct visitors get Persian until the Geo-IP database is licensed and configured.",
+        "verifiedAt": "2026-11-20T10:24:00Z",
+        "evidence": "https://openfi.live/version",
+        "blocker": "Deploy the official release to Liara; measure GEO_CLIENT_HOP; license and configure the IP database."
       }
     }
   ]

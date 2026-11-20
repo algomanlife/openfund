@@ -116,11 +116,38 @@ No existing account changes region in this process. Moving an account is a separ
 
 ### Country routing (prepared, disabled)
 
-Cloudflare, zone `openfund.cloud`. A Single Redirect rule that applies only to top-level document navigations:
+The rule is defined in [ADR 0043](../decisions/0043-canonical-domains-geo-routing-and-locale.md) and
+[`infra/cloudflare/policy.mjs`](../../infra/cloudflare/policy.mjs): `openfund_geo_iran` on the
+`openfi.cloud` zone, 302 to `https://openfi.live` for top-level document navigations from a trusted
+`IR` connection, skipping sessions and an explicit `of-region=global` choice. It exists **disabled**.
+Check the gates with the read-only `node scripts/ops/geo-redirect-readiness.mjs`; enabling it needs
+explicit owner approval. API, payment callbacks, sync, streams, probes and assets are never redirected.
 
-- Expression: `(ip.src.country eq "IR" and http.request.method eq "GET" and any(http.request.headers["sec-fetch-dest"][*] eq "document") and not starts_with(http.request.uri.path, "/admin") and not starts_with(http.request.uri.path, "/sync/"))`
-- Target: dynamic `concat("https://iran.openfund.cloud", http.request.uri.path)` with the query string kept, status 302.
-- **Activate only with owner approval** and after the production smoke test. API, DePay and sync traffic is never redirected.
+### Geo-IP database (direct `openfi.live` visitors)
+
+Liara is not behind Cloudflare, so the first-visit language on `openfi.live` comes from an
+IP-to-country table (`GEO_COUNTRY_SOURCE=ip-database`, `apps/backend/geo-ipdb.js`). Until it is
+configured, every direct visitor without a saved choice gets `GEO_FALLBACK_LOCALE=fa`.
+
+- **Dataset and licence.** Use only a dataset the owner has licensed. The default candidate is DB-IP
+  "IP to Country Lite" (CSV `start,end,country`, IPv4 and IPv6, monthly, CC BY 4.0). CC BY requires
+  visible attribution ("IP geolocation by DB-IP" with a link to https://db-ip.com) on the site that
+  uses it; add that attribution through the content registry before enabling the source. A commercial
+  dataset with the same CSV shape works unchanged. Do not commit the dataset to Git.
+- **Lookup.** IPv4 and IPv6 ranges are both loaded; an address the table does not list (private,
+  reserved, unlisted) is unknown and gets the fallback. `loadIpDatabase` refuses a file with fewer
+  than 1000 IPv4 ranges.
+- **Spoofing.** Only the `X-Forwarded-For` entry at `GEO_CLIENT_HOP` (counted from the right, written by
+  Liara's proxy) is read; entries a client prepends and any `CF-IPCountry` header are ignored
+  (`apps/backend/test/geo.test.mjs`, `test/regional-routing.test.mjs`).
+- **Enable (owner-approved deploy).** 1. Deploy a release that serves `GET /runtime/ingress` on
+  `openfi.live` and read `forwardedHops` from two different networks to measure `GEO_CLIENT_HOP`.
+  2. Place the licensed `.csv.gz` on the web app's disk and set `GEOIP_DB_PATH`, `GEO_CLIENT_HOP` and
+  `GEO_COUNTRY_SOURCE=ip-database` in `stack.json` and the Liara app. 3. Confirm `/runtime/ingress`
+  reports `countrySource: ip-database` and that `/runtime-config.js` returns a country-derived
+  `geoLocale`.
+- **Update.** Replace the file monthly with the new release of the same dataset, keep the previous
+  file for rollback, and restart the web app; a truncated file is refused at boot.
 
 ## Backups and restore
 

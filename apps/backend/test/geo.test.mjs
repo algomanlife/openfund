@@ -182,19 +182,20 @@ test('sitemap x-default is English (the language fallback)', () => {
 })
 
 /* ---- IRAN (Liara): country from an IP database, never from a header ---- */
-import { parseIpv4Csv, lookupIpv4 } from '../geo-ipdb.js'
+import { parseIpCsv, lookupIpv4 } from '../geo-ipdb.js'
 import { countryResolver, forwardedAddress, ingressReport } from '../geo-trust.js'
 
-const FIXTURE_DB = parseIpv4Csv([
+const FIXTURE_DB = parseIpCsv([
   '2.144.0.0,2.147.255.255,IR', '5.8.0.0,5.8.255.255,RU', '1.0.1.0,1.0.3.255,CN', '2.88.0.0,2.91.255.255,SA',
   '5.30.0.0,5.31.255.255,AE', '41.32.0.0,41.47.255.255,EG', '3.0.0.0,3.255.255.255,US', '2001:db8::,2001:db8::ffff,DE', 'garbage',
 ].join('\n'))
 
-test('IP database: IPv4 ranges by bisection; IPv6 and unlisted are unknown', () => {
+test('IP database: IPv4 ranges by bisection; lookupIpv4 ignores IPv6 and unlisted', () => {
   const cases = { '2.144.1.1': 'IR', '5.8.9.9': 'RU', '1.0.2.3': 'CN', '2.90.0.1': 'SA', '5.31.0.0': 'AE', '41.40.0.1': 'EG', '3.4.5.6': 'US', '::ffff:2.145.0.1': 'IR' }
   for (const [ip, country] of Object.entries(cases)) assert.equal(lookupIpv4(FIXTURE_DB, ip), country, ip)
   for (const ip of ['10.0.0.1', '9.9.9.9', '2001:db8::1', 'nonsense', '', null]) assert.equal(lookupIpv4(FIXTURE_DB, ip), null, String(ip))
-  assert.equal(FIXTURE_DB.size, 7, 'IPv6 and malformed rows are skipped')
+  assert.equal(FIXTURE_DB.size, 7, 'IPv4 table: IPv6 and malformed rows are not in it')
+  assert.equal(FIXTURE_DB.v6.size, 1, 'IPv6 rows have their own table')
 })
 
 test('country source: cloudflare by default; ip-database needs a measured hop and a database', () => {
@@ -215,7 +216,8 @@ test('ip-database mode: the platform-written hop decides; forged headers and CF-
   assert.equal(r.resolve({ 'x-forwarded-for': '10.42.0.7' }, '10.42.0.7'), null, 'too few hops → unknown, never the forged entry')
   assert.equal(defaultLocale(r.resolve({ 'x-forwarded-for': '1.0.2.3, 10.42.0.7' }, ''), 'fa'), 'zh-CN')
   assert.equal(defaultLocale(r.resolve({ 'x-forwarded-for': '3.4.5.6, 10.42.0.7' }, ''), 'fa'), 'en')
-  assert.equal(defaultLocale(r.resolve({ 'x-forwarded-for': '2001:db8::1, 10.42.0.7' }, ''), 'fa'), 'fa', 'IPv6 → regional fallback')
+  assert.equal(defaultLocale(r.resolve({ 'x-forwarded-for': '2001:db8::1, 10.42.0.7' }, ''), 'fa'), 'en', 'IPv6 visitor: looked up (DE), not the regional fallback')
+  assert.equal(defaultLocale(r.resolve({ 'x-forwarded-for': '2001:db9::1, 10.42.0.7' }, ''), 'fa'), 'fa', 'unlisted IPv6 → regional fallback')
   assert.equal(forwardedAddress({ 'x-forwarded-for': 'a, b, c' }, 's', 1), 'c')
   assert.equal(forwardedAddress({}, 's', 1), 's')
   assert.equal(forwardedAddress({}, 's', 2), null)

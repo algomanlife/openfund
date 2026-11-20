@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- **Regional routing gates (ADR 0043, workstream B).** A read-only
+  `scripts/ops/geo-redirect-readiness.mjs` reads `/version`,
+  `/runtime-config.js`, `/runtime/ingress` and `/ready` of both regions and
+  reports each gate for the IRAN geographic redirect as pass, fail or
+  owner-approval-required; it never reports "ready" and changes nothing. A
+  new host-matrix test covers all eight website hosts: canonical 301s with
+  path and query, machine paths never redirected, the reversible region
+  cookie, no redirect loops, and only a trusted IR country qualifying. The
+  Liara IP database lookup now covers IPv6. The redirect stays disabled.
+
 - **Dastkhat is the Persian UI font** (branch `agent/claude/dastkhat-typography`;
   not merged, released or deployed). Dastkhat and Dastkhat Arabic (SIL OFL
   1.1, by Dastyar) are self-hosted as unmodified variable WOFF2 files, pinned

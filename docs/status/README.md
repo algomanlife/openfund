@@ -2,7 +2,7 @@
 
 <!-- Generated from docs/status/status.json by `node scripts/docs/status.mjs`; edit the JSON, not this page. -->
 
-Canonical, per-environment status. Last updated **2026-11-18**. Source states come from Git; every
+Canonical, per-environment status. Last updated **2026-11-20**. Source states come from Git; every
 runtime state names the time it was verified and its evidence. Older snapshots elsewhere in the
 documentation are historical unless they match this page.
 
@@ -15,10 +15,10 @@ documentation are historical unless they match this page.
 
 | Environment | Service | Role | Version | Commit | Official | Verified | Evidence | Note |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| GLOBAL — Render | `openfund` | Web/API | 0.7.0 | `34ef7ec` | yes | 2026-11-18 14:30 UTC | [evidence](https://openfi.cloud/version) | — |
+| GLOBAL — Render | `openfund` | Web/API | 0.7.0 | `34ef7ec` | yes | 2026-11-20 10:24 UTC | [evidence](https://openfi.cloud/version) | — |
 | GLOBAL — Render | `openfund-backstage` | Backstage | — | `cd057fa` | no | 2026-11-18 07:40 UTC | [evidence](https://dashboard.render.com/web/srv-dbsum1u7bikc73chqlfg) | Unreleased commit from a dashboard auto-deploy; its /health predates commit identity, so the commit comes from Render's deploy record. |
 | GLOBAL — Render | `openfund-cms` | Directus CMS | directus/directus:11.17.4 | — | — | 2026-11-18 07:40 UTC | [evidence](https://cms.openfi.cloud/server/health) | Independent image identity; health verified, image digest not re-verified on this date. |
-| IRAN — Liara | `openfund-iran` | Web/API | 0.6.5 | `a87804a` | no | 2026-11-18 14:30 UTC | [evidence](https://openfi.live/version) | Built without RELEASE_OFFICIAL (reports official: false). Runs OPENFUND_ROLES=http, so it holds no market data (execution suspended_no_authoritative_marks). |
+| IRAN — Liara | `openfund-iran` | Web/API | 0.6.5 | `a87804a` | no | 2026-11-20 10:24 UTC | [evidence](https://openfi.live/version) | Built without RELEASE_OFFICIAL (reports official: false). Runs OPENFUND_ROLES=http, so it holds no market data (execution suspended_no_authoritative_marks). |
 | IRAN — Liara | `openfund-iran-worker` | Worker | — | — | — | 2026-11-18 07:40 UTC | Liara API GET /v1/projects/openfund-iran-worker | Running (Liara status ACTIVE, defaultSubdomain false). Its commit is not independently attributable: the worker exposes no public route and Liara's release listing was unavailable through the API on this date. |
 
 Local / Test: Disposable PostgreSQL 17 databases and test servers on non-8080 ports; never authoritative for production state.
@@ -45,6 +45,8 @@ Each region is recorded separately. *Deployed* means the code runs there; *Enabl
 |  |  |  | IRAN | yes | no | no | no | Sync not enabled. | Same as GLOBAL. | [evidence](../../docs/deployment/LIARA_IRAN_RUNTIME.md) (2026-11-18) |
 | Open Trade desktop installers | merged | — | GLOBAL | no | no | no | no | 0.0.2 installers built and acceptance-tested in CI; unsigned and not published. | Code signing and the owner's publication decision. | [evidence](https://github.com/algomanlife/openfund/actions/runs/43611941782) (2026-11-15) |
 |  |  |  | IRAN | no | no | no | no | Not applicable (desktop distribution is not regional). | — | [evidence](../../docs/product/FEATURE_STATUS.md) (2026-11-15) |
+| Canonical domains and IRAN geographic redirect (ADR 0043) | merged | v0.7.0 | GLOBAL | yes | yes | yes | no | Canonical https://openfi.cloud; openfund.cloud, www.openfund.cloud and www.openfi.cloud answer 301 with path and query (verify-public.mjs). /runtime/ingress served, last hop Cloudflare, geoLocale in runtime-config. The geographic rule openfund_geo_iran exists disabled; geo-redirect-readiness.mjs reports not ready (gates 1, 2, 4 fail; gate 3 passes; gate 5 owner). | Geographic redirect: ADR 0043 §Gates and explicit owner approval. | [evidence](https://openfi.cloud/runtime/ingress) (2026-11-20) |
+|  |  |  | IRAN | no | no | no | no | openfi.live runs 0.6.5 a87804a (unofficial), without the ADR 0043 application part: no geoLocale in runtime-config, /runtime/ingress 404, iran.openfi.cloud and iran.openfund.cloud answer 200 instead of 301. www.openfi.live answers 301 (Liara domain redirect). The worker's default subdomain answers Liara's 404. Direct visitors get Persian until the Geo-IP database is licensed and configured. | Deploy the official release to Liara; measure GEO_CLIENT_HOP; license and configure the IP database. | [evidence](https://openfi.live/version) (2026-11-20) |
 
 ## Awaiting owner acceptance
 
@@ -52,6 +54,7 @@ Each region is recorded separately. *Deployed* means the code runs there; *Enabl
 - Coupons and zero-payment purchases (GLOBAL)
 - Paper trading engine and market data (GLOBAL)
 - Backstage operations console (GLOBAL)
+- Canonical domains and IRAN geographic redirect (ADR 0043) (GLOBAL)
 
 ## Updating this page
 

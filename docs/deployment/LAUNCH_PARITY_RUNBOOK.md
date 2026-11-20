@@ -298,3 +298,29 @@ log-based alerts on Render (match the service log):
 | Payment recovery failing | `[obs] {"event":"payment_recovery_failure"` | A paid order may not be provisioning |
 | Payments disabled | `[payments] readiness: paymentsEnabled=false` | Settlement configuration incomplete |
 | Engine stalled | metrics `alerts` contains `engine_loop_lag` | Risk checks are late (see the load report) |
+
+## 16. Geographic redirect gates (IRAN, ADR 0043)
+
+The Cloudflare rule `openfund_geo_iran` stays disabled until every gate in
+[ADR 0043 §Gates](../decisions/0043-canonical-domains-geo-routing-and-locale.md#gates-for-enabling-the-geographic-redirect)
+passes and the owner approves. Check them read-only:
+
+```bash
+node scripts/ops/geo-redirect-readiness.mjs
+```
+
+It exits 1 while any gate fails, and 0 only when owner approval is the last
+remaining step. It never enables anything.
+
+| Gate | State (2026-11-20) | Unblocks it |
+| :--- | :--- | :--- |
+| 1. Same ADR 0043 release on both regions; Iran alias 301s | Fail: GLOBAL 0.7.0 `34ef7ec`, IRAN 0.6.5 `a87804a` (unofficial); `iran.*` aliases answer 200 | Deploy the official release to Liara |
+| 2. Iran web fresh marks | Fail: `suspended_no_authoritative_marks` | Same deploy with `OPENFUND_ROLES=http,market-data` |
+| 3. Worker default subdomain disabled | Pass | — |
+| 4. ADR 0044 forwarding | Fail: proposed, not implemented | Implementation, two-region test, owner acceptance |
+| 5. Owner approval | Owner | Explicit decision |
+
+Direct `openfi.live` visitors get a country-derived language only after the
+Geo-IP database is licensed and configured
+([LIARA_IRAN_RUNTIME.md](LIARA_IRAN_RUNTIME.md#geo-ip-database-direct-openfilive-visitors)).
+
