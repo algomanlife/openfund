@@ -351,9 +351,13 @@ var draw d = draw.new(array.new<line>(), array.new<line>())
 bar b = bar.new()
 atr   = ta.atr(200)
 
+// Function-form line accessors return na for an na line. PineTS evaluates
+// this whole script inside the higher-timeframe order-block requests, where
+// drawings are not created; method calls on those na lines threw and stopped
+// the indicator whenever Trendline Liquidity was enabled.
 method slope(line ln) =>
-    x = ln.get_x2() - ln.get_x1()
-    y = ln.get_y2() - ln.get_y1()
+    x = line.get_x2(ln) - line.get_x1(ln)
+    y = line.get_y2(ln) - line.get_y1(ln)
     y / x
 
 vol() =>
@@ -400,22 +404,22 @@ if phhh and activateLiq
                 ln = d.upln.get(1)
                 for i = 0 to (b.n - before.n)
                     slope = ln.slope()
-                    ln.set_x2(b.n[i])
-                    ln.set_y2(ln.get_y2() - slope)
-                    if low[i] > ln.get_y2()
+                    line.set_x2(ln, b.n[i])
+                    line.set_y2(ln, line.get_y2(ln) - slope)
+                    if low[i] > line.get_y2(ln)
                         remove := true
                         break
 
                 if remove
-                    d.upln.get(0).delete()
-                    d.upln.get(1).delete()
+                    line.delete(d.upln.get(0))
+                    line.delete(d.upln.get(1))
                     d.upln       .clear()
                     upbin        .clear()
                     broken := true
 
                 else
-                    d.upln.get(0).delete()
-                    d.upln.get(1).delete()
+                    line.delete(d.upln.get(0))
+                    line.delete(d.upln.get(1))
                     d.upln       .clear ()
 
                     d.upln.unshift(line.new(x1 = before.n, x2 = current.n, y1 = before.src                , y2 = current.src                , color = cdn))
@@ -431,7 +435,7 @@ if d.upln.size() > 1
     btm = d.upln.get(0)
     top = d.upln.get(1)
     
-    if b.l > top.get_y2()
+    if b.l > line.get_y2(top)
         d.upln.clear()
         broken := true
         upbin.clear()
@@ -442,11 +446,11 @@ if d.upln.size() > 1
         slup = top.slope()
         sldn = btm.slope()
 
-        top.set_x2(b.n)
-        top.set_y2(top.get_y2() + slup)
+        line.set_x2(top, b.n)
+        line.set_y2(top, line.get_y2(top) + slup)
 
-        btm.set_x2(b.n)
-        btm.set_y2(btm.get_y2() + sldn)
+        line.set_x2(btm, b.n)
+        line.set_y2(btm, line.get_y2(btm) + sldn)
  
 
 
@@ -487,22 +491,22 @@ if plll and activateLiq
 
                 for i = 0 to (b.n - before.n)
                     slope = ln.slope()
-                    ln.set_x2(b.n[i])
-                    ln.set_y2(ln.get_y2() - slope)
-                    if high[i] < ln.get_y2()
+                    line.set_x2(ln, b.n[i])
+                    line.set_y2(ln, line.get_y2(ln) - slope)
+                    if high[i] < line.get_y2(ln)
                         remove := true
                         break
 
                 if remove
-                    d.dnln.get(0).delete()
-                    d.dnln.get(1).delete()
+                    line.delete(d.dnln.get(0))
+                    line.delete(d.dnln.get(1))
                     d.dnln       .clear ()
                     dnbin        .clear ()
                     broken := true
 
                 else
-                    d.dnln.get(0).delete()
-                    d.dnln.get(1).delete()
+                    line.delete(d.dnln.get(0))
+                    line.delete(d.dnln.get(1))
                     d.dnln       .clear ()
 
                     d.dnln.unshift(line.new(x1 = before.n, x2 = current.n, y1 = before.src, y2 = current.src, color = cup))
@@ -517,7 +521,7 @@ if d.dnln.size() > 1
     btm = d.dnln.get(0)
     top = d.dnln.get(1)
     
-    if b.h < btm.get_y2()
+    if b.h < line.get_y2(btm)
         d.dnln.clear()
         broken := true
         dnbin.clear()
@@ -528,11 +532,11 @@ if d.dnln.size() > 1
         slup = top.slope()
         sldn = btm.slope()
 
-        top.set_x2(b.n)
-        top.set_y2(top.get_y2() + slup)
+        line.set_x2(top, b.n)
+        line.set_y2(top, line.get_y2(top) + slup)
 
-        btm.set_x2(b.n)
-        btm.set_y2(btm.get_y2() + sldn)
+        line.set_x2(btm, b.n)
+        line.set_y2(btm, line.get_y2(btm) + sldn)
 
 plotshape(pldn and shs ? b.h[1] : na, "Breaking Down", shape.triangledown, location = location.abovebar, color = cdn  , offset = -1, size = size.tiny)
 plotshape(plup and shs ? b.l[1] : na, "Breaking Up"  , shape.triangleup  , location = location.belowbar, color = cup, offset = -1, size = size.tiny)
@@ -661,7 +665,10 @@ pmhl_css = input(#2157f3, ''
 cmean_range = ta.cum(high - low) / n
 
 //HL Output function
-hl() => [high, low]
+// Previous completed period's high/low. Requested with lookahead_on, so the
+// [1] offset is required: [high, low] returns the still-forming period's
+// FINAL extremes on historical bars and its running extremes in real time.
+hl() => [high[1], low[1]]
 
 //Get ohlc values function
 get_ohlc()=> [close[1], open[1], high, low, high[2], low[2]]
@@ -705,6 +712,9 @@ get_line_style(style) =>
         '····' => line.style_dotted
 
 //Set line/labels function for previous high/lows
+// h/l: the previous COMPLETED period's high/low, known when the period opens,
+// so the levels do not change while the current period develops (historically
+// or live).
 phl(h, l, tf, css)=>
     var line high_line = line.new(na,na,na,na
       , xloc = xloc.bar_time
@@ -732,11 +742,30 @@ phl(h, l, tf, css)=>
       , size = size.small
       , style = label.style_label_left)
 
-    hy = ta.valuewhen(h != h[1], h, 1)
-    hx = ta.valuewhen(h == high, time, 1)
-
-    ly = ta.valuewhen(l != l[1], l, 1)
-    lx = ta.valuewhen(l == low, time, 1)
+    // Time of the chart bar that set the previous period's extreme: track the
+    // running high/low of each period and keep the finished period's times.
+    var float runHigh = na
+    var int runHighTime = na
+    var float runLow = na
+    var int runLowTime = na
+    var int hx = na
+    var int lx = na
+    if timeframe.change(tf) or na(runHighTime)
+        hx := runHighTime
+        lx := runLowTime
+        runHigh := high
+        runHighTime := time
+        runLow := low
+        runLowTime := time
+    else
+        if high >= runHigh
+            runHigh := high
+            runHighTime := time
+        if low <= runLow
+            runLow := low
+            runLowTime := time
+    hy = h
+    ly = l
 
     if barstate.islast
         ext = time + (time - time[1])*20
@@ -1645,15 +1674,16 @@ bearish_fvg_cnd = false
 //Previous day/week high/lows
 //-----------------------------------------------------------------------------{
 //Daily high/low
-[pdh, pdl] = request.security(syminfo.tickerid, 'D', hl()
+// A disabled level requests the chart's own series (no secondary fetch).
+[pdh, pdl] = request.security(syminfo.tickerid, show_pdhl ? 'D' : timeframe.period, hl()
   , lookahead = barmerge.lookahead_on)
 
 //Weekly high/low
-[pwh, pwl] = request.security(syminfo.tickerid, 'W', hl()
+[pwh, pwl] = request.security(syminfo.tickerid, show_pwhl ? 'W' : timeframe.period, hl()
   , lookahead = barmerge.lookahead_on)
 
 //Monthly high/low
-[pmh, pml] = request.security(syminfo.tickerid, 'M', hl()
+[pmh, pml] = request.security(syminfo.tickerid, show_pmhl ? 'M' : timeframe.period, hl()
   , lookahead = barmerge.lookahead_on)
 
 //Display Daily
@@ -1807,7 +1837,7 @@ alertcondition(bullish_fvg_cnd, 'Bullish FVG', 'Bullish FVG formed')
 alertcondition(bearish_fvg_cnd, 'Bearish FVG', 'Bearish FVG formed')
 
 //-----------------------------------------------------------------------------}
-tb = table.new(position.top_right, 5, 5, bgcolor = #1e222d  , border_color = #373a46  , border_width = 1  , frame_color = #373a46  , frame_width = 1)
+var tb = table.new(position.top_right, 5, 5, bgcolor = #1e222d  , border_color = #373a46  , border_width = 1  , frame_color = #373a46  , frame_width = 1)
 
 
 
@@ -1821,8 +1851,9 @@ squeezegreenbg = #1a3a3e
 dashboardRedBackground = #49343e
 squeezeredbg = #482632
 
-swingBOS1 = request.security(syminfo.ticker, scannerTimeframe, swingBOS)
-internalBOS1 = request.security(syminfo.ticker, scannerTimeframe, internalBOS)
+// One tuple request serves both scanner rows; a disabled scanner requests
+// the chart's own series instead of a secondary timeframe.
+[swingBOS1, internalBOS1] = request.security(syminfo.ticker, structureScannerOn ? scannerTimeframe : timeframe.period, [swingBOS, internalBOS])
 
 string swingText = swingBOS1 == 1 or swingBOS1 == -1 ? "CHoCH" : "BOS (" + str.tostring(math.abs(swingBOS1)-1) + ")"
 string internalText = internalBOS1 == 1 or internalBOS1 == -1 ? "CHoCH" : "BOS (" + str.tostring(math.abs(internalBOS1)-1) + ")"
