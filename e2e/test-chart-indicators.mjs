@@ -81,12 +81,20 @@ try {
     const getFrame = () => page.frames().find(f => f.parentFrame());
     let child = getFrame();
     await waitIndicators(child);
-    assert.deepEqual(await child.evaluate(() => window.__openfundChart.chart.indicators().filter(h => h.source).map(h => h.inputs.length)), [79,49,52]);
+    assert.deepEqual(await child.evaluate(() => window.__openfundChart.chart.indicators().filter(h => h.source).map(h => h.inputs.length)), [76,49,52]);
+    // The retired SMRT Algo dashboard: no inputs, no table, no secondary requests.
+    const openAlgoState = await child.evaluate(async () => {
+      const handle = window.__openfundChart.chart.indicators().filter(h => h.source)[0];
+      return { keys: handle.inputs.map(input => input.key), tables: (await handle.context(['tables']))?.tables?.length ?? 0 };
+    });
+    assert(!openAlgoState.keys.some(key => /dashboard/i.test(key)), openAlgoState.keys.join());
+    assert.equal(await frame.getByText('SMRT Algo').count(), 0);
     record(`${product}: all three original scripts calculated with complete input schemas`);
 
     await frame.getByText('Open Algo V5', { exact: true }).filter({ visible: true }).dblclick();
     const settings = frame.getByRole('dialog');
     await settings.waitFor();
+    assert.equal(await settings.getByText(/dashboard/i).count(), 0, 'no dashboard settings');
     // A real Pine input edit through the existing settings dialog.
     // Numeric Pine inputs are spinbuttons: a native number input on Vela 0.9,
     // Zag's text-based number input with role="spinbutton" on Vela 0.10+.
@@ -145,6 +153,32 @@ try {
     await checkBranding(frame);
     if (live) await page.screenshot({ path: path.join(output, `${product}-active.png`) });
     record(`${product}: source indicators, edited settings and branding survive reload`);
+
+    // A workspace saved before the dashboard was removed still restores.
+    await child.evaluate(() => {
+      const key = 'of-chart-v2-' + (window.__ofTerminalConfig?.product || 'classic');
+      const store = window.OpenfundChartWorkspace;
+      const state = JSON.parse(store ? store.getLocal(key) : localStorage.getItem(key));
+      let injected = 0;
+      for (const chart of state.charts) {
+        chart.indicators.manifest = chart.indicators.manifest.map(entry => {
+          if ((typeof entry === 'object' ? entry.name : entry) !== 'Open Algo V5') return entry;
+          injected++;
+          const base = typeof entry === 'object' ? entry : { name: entry };
+          return { ...base, inputs: { ...(base.inputs || {}), enableDashboard: true, locationDashboard: 'Top left', sizeDashboard: 'Normal' } };
+        });
+      }
+      if (!injected) throw new Error('no saved Open Algo instance to age');
+      if (store) store.setLocal(key, JSON.stringify(state)); else localStorage.setItem(key, JSON.stringify(state));
+    });
+    await page.reload();
+    await frame.locator('.vela-widget-indicators').waitFor();
+    child = getFrame();
+    await waitIndicators(child);
+    const restored = await child.evaluate(() => window.__openfundChart.chart.indicators().filter(h => h.source)[0].inputValues());
+    assert.equal(restored.sigsensiviti, 6);
+    assert(!('enableDashboard' in restored) && !('locationDashboard' in restored) && !('sizeDashboard' in restored));
+    record(`${product}: legacy saved dashboard settings are dropped and the instance restores`);
 
     await frame.locator('.vela-widget-indicators').click();
     await frame.locator('[data-instance]').filter({ hasText: 'Price Action Concepts' }).locator('.vela-ip-trash').click();

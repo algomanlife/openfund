@@ -69,29 +69,31 @@ test('saved Open Algo instances with retired dashboard inputs still load and are
   const clean = await runModel({ script: openAlgo.script, libraries, bars, inputs: { riskmanage: true } });
   assert.deepEqual(canonical(withStale.model), canonical(clean.model));
 
-  const saved = { charts: [{ indicators: [
+  // Vela's persisted ledger: charts[].indicators = { manifest, natives }.
+  const saved = { charts: [{ indicators: { natives: ['volume'], manifest: [
     'Price Action Concepts',
     { name: 'Open Algo V5', inputs: { ...stale, riskmanage: true } },
     { name: 'Open Algo V5', inputs: { ...stale }, hidden: true },
     { name: 'Smart Money Concepts', inputs: { enableDashboard: true } },
-  ] }] };
+  ] } }, { indicators: [{ name: 'Open Algo V5', inputs: { sizeDashboard: 'Tiny' } }] }] };
   const { state, changed } = migrateWorkspaceState(structuredClone(saved));
   assert(changed);
-  assert.deepEqual(state.charts[0].indicators, [
+  assert.deepEqual(state.charts[0].indicators, { natives: ['volume'], manifest: [
     'Price Action Concepts',
     { name: 'Open Algo V5', inputs: { riskmanage: true } },
     { name: 'Open Algo V5', hidden: true },
     // Another indicator's identically named input is not touched.
     { name: 'Smart Money Concepts', inputs: { enableDashboard: true } },
-  ]);
-  assert.equal(migrateWorkspaceState({ charts: [{ indicators: ['Open Algo V5'] }] }).changed, false);
+  ] });
+  assert.deepEqual(state.charts[1].indicators, [{ name: 'Open Algo V5' }]);
+  assert.equal(migrateWorkspaceState({ charts: [{ indicators: { manifest: ['Open Algo V5'], natives: [] } }] }).changed, false);
   assert.equal(migrateWorkspaceState(null).changed, false);
 
   // The bridge applies the migration to the stored document it hands Vela.
   const window = { OpenfundGains: {}, VelaWorkspace: { VelaWorkspace: function VelaWorkspace() {}, migrateWorkspaceState } };
   vm.runInNewContext(readFileSync(new URL('../src/vela-bridge.js', import.meta.url), 'utf8'), { window, JSON });
   const migrated = JSON.parse(window.OpenfundCharts.migrateStored(JSON.stringify(saved)));
-  assert.deepEqual(migrated.charts[0].indicators[1], { name: 'Open Algo V5', inputs: { riskmanage: true } });
+  assert.deepEqual(migrated.charts[0].indicators.manifest[1], { name: 'Open Algo V5', inputs: { riskmanage: true } });
   const current = JSON.stringify({ charts: [{ indicators: ['Open Algo V5'] }] });
   assert.equal(window.OpenfundCharts.migrateStored(current), current);
   assert.equal(window.OpenfundCharts.migrateStored('{not json'), '{not json');
