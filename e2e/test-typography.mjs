@@ -85,10 +85,23 @@ try {
         if (hit) return hit;
       }
       return null })()`
-    const { result } = await cdp.send('Runtime.evaluate', { expression })
-    assert.ok(result.objectId, `no visible element with matching text for ${selector}`)
-    const { nodeId } = await cdp.send('DOM.requestNode', { objectId: result.objectId })
-    const { fonts } = await cdp.send('CSS.getPlatformFontsForNode', { nodeId })
+    /* A re-render between resolving the element and asking for its platform
+       fonts invalidates the DevTools node id ("Could not find node with given
+       id"). Resolve the element again in that case; any other error, or a
+       DOM that keeps changing, still fails the test. */
+    let fonts
+    for (let attempt = 1; ; attempt++) {
+      if (attempt > 1) await cdp.send('DOM.getDocument', { depth: 0 })
+      const { result } = await cdp.send('Runtime.evaluate', { expression })
+      assert.ok(result.objectId, `no visible element with matching text for ${selector}`)
+      try {
+        const { nodeId } = await cdp.send('DOM.requestNode', { objectId: result.objectId })
+        ;({ fonts } = await cdp.send('CSS.getPlatformFontsForNode', { nodeId }))
+        break
+      } catch (error) {
+        if (attempt >= 5 || !/Could not find node/.test(String(error?.message))) throw error
+      }
+    }
     const { result: family } = await cdp.send('Runtime.evaluate', { expression: `getComputedStyle(${expression}).fontFamily`, returnByValue: true })
     return { fonts: fonts.map(font => font.familyName), family: family.value }
   }
