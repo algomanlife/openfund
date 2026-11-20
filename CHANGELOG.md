@@ -29,6 +29,22 @@
     scroll regions.
   - Fixed light-theme contrast for table headers, empty and error states, the
     landing caption and the whitepaper chapter and contents numbers.
+- **Deterministic CI for two flaky browser suites** — the Market Heatmap and
+  Trade Radar suite now runs on fixed `/radar/*` fixtures and a fixed page
+  clock, with empty and unavailable states covered. The real Hyperliquid
+  feed check is a separate, non-blocking step. The controlled-challenge suite
+  uses a test-mode conduct clock (`POST /internal/test-clock`,
+  `SIM_TEST_CLOCK`; only with `SIM_TEST_MODE=1` and a test database) and
+  asserts the daily close window, the weekend and the summer/winter close
+  hour. Production keeps the real clock and unchanged rules.
+
+- **Geo-IP first-visit language now applies to returning visitors (ADR 0043
+  amendment).** The site, terminal and landing shells saved every displayed
+  locale as the visitor's preference, so a stale value (including the pre-0.7
+  Persian default) always beat the country default. Only the language
+  selector now records an explicit choice (`of-language-choice`); the static
+  document default is English/LTR. A new test runs the real pre-paint script
+  across the country matrix and storage cases. Not released or deployed.
 
 - **Security remediation (November 2026 follow-up)** — the
   [remediation report](docs/security/SECURITY-REMEDIATION-2026-11.md). Merged,

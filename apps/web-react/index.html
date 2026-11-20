@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -10,7 +10,8 @@
        pre-paint script below needs (ADR 0043). -->
   <script src="/runtime-config.js"></script>
   <script>var t;try{t=localStorage.getItem('of-theme-choice')}catch{}document.documentElement.dataset.theme=t==='light'||t==='dark'?t:window.matchMedia?.('(prefers-color-scheme: dark)').matches?'dark':'light'
-/* Pre-paint locale + direction (route, then the stored preference, then the
+/* Pre-paint locale + direction (route, then the explicit saved choice
+   'of-language-choice' — never the render-tracking 'of-language' — then the
    Geo-IP default from runtime-config.js, then English; ADR 0043) and
    legacy URL normalization: the '#/...' route hash and the '/react' prefix
    are converted to clean history URLs BEFORE anything renders — a hash
@@ -35,7 +36,7 @@ var supported=['fa','en','ar','ru','zh-CN']
 var lang=supported.indexOf(seg)>=0?seg:''
 var geo=(window.__OPENFUND_RUNTIME_CONFIG__||{}).geoLocale
 var fallback=supported.indexOf(geo)>=0?geo:'en'
-if(!lang){try{var stored=localStorage.getItem('of-language');lang=supported.indexOf(stored)>=0?stored:fallback}catch(e){lang=fallback}}
+if(!lang){try{var stored=localStorage.getItem('of-language-choice');lang=supported.indexOf(stored)>=0?stored:fallback}catch(e){lang=fallback}}
 document.documentElement.lang=lang
 document.documentElement.dir=lang==='fa'||lang==='ar'?'rtl':'ltr'
 }catch(e){}})()

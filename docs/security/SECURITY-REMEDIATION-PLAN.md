@@ -16,7 +16,7 @@ Critical, P1 High, P2 Medium, P3 Low.
 | OF-2026-11-20 | P1 | Deploy the hardened edge (#150) when the IRAN edge is activated: staging first, then production | Dispatch the edge workflow |
 | OF-2026-11-04 | P2 | `zod` and `decode-uri-component` clear when RainbowKit supports wagmi 3, or after a connector migration with the full wallet browser suite | — |
 | OF-2026-11-09 | P2 | Before any protocol activation: compilable contracts, an OpenZeppelin upgrade, an audit and an owner decision. CI blocks activation meanwhile (#152) | Activation decision |
-| CI reliability | P2 | Make `test-heatmap-radar.cjs` use a fixed market fixture and give `test-controlled-challenges.cjs` a controllable clock ([remediation report](SECURITY-REMEDIATION-2026-11.md#test-reliability-found-during-the-merges)) | — |
+| CI reliability | P2 | Fixed in code, pending review: fixed radar fixtures and a test-mode conduct clock on `agent/claude/deterministic-ci` ([remediation report](SECURITY-REMEDIATION-2026-11.md#test-reliability-found-during-the-merges)) | Review and merge |
 | All | — | Release the merged fixes and deploy them with `/version` evidence | Run the Unified release and the production deploy |
 
 ## Security testing now in the repository
