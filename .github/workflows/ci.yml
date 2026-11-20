@@ -243,7 +243,7 @@ jobs:
           # ADR 0042: manifest, workflows and docs agree on every Liara/GitHub identifier
           node ../../scripts/liara/check-infra.mjs
           # ADR 0043: Cloudflare rules agree with the application's alias redirect
-          node --test ../../scripts/cloudflare/test/policy.test.mjs ../../scripts/cloudflare/test/check-live.test.mjs
+          node --test ../../scripts/cloudflare/test/policy.test.mjs ../../scripts/cloudflare/test/check-live.test.mjs ../../scripts/ops/test/geo-redirect-readiness.test.mjs
       - name: Cache Playwright browsers
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
@@ -407,6 +407,16 @@ jobs:
             sleep 1
           done
           node e2e/test-controlled-challenges.cjs || { cat /tmp/openfund-controlled-browser.log; exit 1; }
+      - name: Journey acceptance (session expiry, loss breaches, trading days, inbox, localized checkout)
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080
+        run: npm run test:browser:journeys
+      - name: Browser session security (cookie isolation, wallet switch, logout, hostile origin)
+        working-directory: .
+        env:
+          BASE_URL: http://localhost:8080
+        run: npm run test:browser:security
       - name: DePay checkout browser acceptance (stub widget, mock chain, signed callbacks)
         working-directory: .
         run: npm run test:browser:depay

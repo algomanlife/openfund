@@ -28,7 +28,7 @@ trading evaluations, funded programs, trader rewards and financial transparency.
 
 <!-- status:summary -->
 
-**Current status** (verified 2026-11-18; canonical: [docs/status](docs/status/README.md)):
+**Current status** (verified 2026-11-20; canonical: [docs/status](docs/status/README.md)):
 
 - Latest official release: **v0.7.0** (`34ef7ec`, 2026-11-18).
 - GLOBAL (Render) Web/API runs v0.7.0 `34ef7ec`; IRAN (Liara) web runs v0.6.5 `a87804a` (built as unofficial).

@@ -16,7 +16,7 @@
    decision and no geographic routing depends on it: routing happens at
    Cloudflare's edge, which sees the real connection. */
 import net from 'node:net'
-import { lookupIpv4 } from './geo-ipdb.js'
+import { lookupIp } from './geo-ipdb.js'
 
 /* Cloudflare's published ranges, https://www.cloudflare.com/ips-v4 and
    https://www.cloudflare.com/ips-v6 (2026-11-17). A stale list only makes a
@@ -94,7 +94,7 @@ export function cloudflareClientIpMiddleware() {
 
 /* Country source per region (ADR 0043):
      GEO_COUNTRY_SOURCE=cloudflare (default)  CF-IPCountry from a Cloudflare hop (GLOBAL on Render)
-     GEO_COUNTRY_SOURCE=ip-database           IPv4 lookup of the platform-provided visitor
+     GEO_COUNTRY_SOURCE=ip-database           IPv4/IPv6 lookup of the platform-provided visitor
        address (IRAN on Liara). Needs GEOIP_DB_PATH and GEO_CLIENT_HOP: the
        X-Forwarded-For position, from the right, where the platform writes
        the visitor's address. It must be measured on the real ingress
@@ -111,7 +111,7 @@ export function countryResolver(env = process.env, { loadDb } = {}) {
   let table = null
   const ready = Promise.resolve(db).then(t => { table = t })
   return { source, hop, ready,
-    resolve: (headers, socket) => table ? lookupIpv4(table, forwardedAddress(headers, socket, hop)) : null,
+    resolve: (headers, socket) => table ? lookupIp(table, forwardedAddress(headers, socket, hop)) : null,
     address: (headers, socket) => forwardedAddress(headers, socket, hop) }
 }
 

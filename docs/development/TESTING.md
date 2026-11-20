@@ -66,6 +66,16 @@ TEST_FRONTEND_URL=http://localhost:8294/react TEST_BACKEND_URL=http://localhost:
 
 The audit suite uses generated EIP-1193 signers and controlled CMS/Gains protocol fixtures with the real local API/database. `TEST_FRONTEND_URL` and `TEST_BACKEND_URL` support an isolated host/port. It tests real SIWE signatures, not actual extensions, remote WalletConnect, hardware wallets or chain execution. `npm run test:browser:live` requires the separately configured local CMS and live Gains availability; inspect its setup before running.
 
+`npm run test:browser:journeys` (`e2e/test-journey-acceptance.cjs`) is the
+launch journey suite. It covers expired sessions, the SIWE chain id,
+daily- and maximum-loss failures, the minimum-trading-days gate, inbox
+notifications, and localized responsive checkout with order recovery. It
+needs `TEST_FRONTEND_URL` and a `DATABASE_URL` that ends in `_test` or `_ci`,
+on the same database as a `SIM_TEST_MODE=1` server. It pins and then releases
+the test conduct clock. `npm run test:browser:security` takes `BASE_URL` and
+needs `localhost:5173` in `ALLOWED_DOMAINS`. CI runs both; see the
+[journey acceptance report](../reviews/journey-acceptance-2026-11/REPORT.md).
+
 Genuine documentation screenshots use no market/CMS/financial protocol fixtures. Public pages are anonymous; authenticated captures use a disclosed disposable signer and real local account/session records, without seeded trades or performance history. [Screenshot provenance](../assets/screenshots/README.md) records route, viewport, build, services and limitations. Browser snapshots and raw logs live under ignored `output/playwright/` and `output/validation/`.
 
 ## Responsive matrix
