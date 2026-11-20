@@ -1003,7 +1003,10 @@ app.use((req, res, next) => {
   if ((req.method !== 'GET' && req.method !== 'HEAD') || !/text\/html/.test(req.headers.accept || '')) return next()
   res.set('Cache-Control', 'no-cache, must-revalidate')
   res.setHeader('Content-Security-Policy', buildCsp(true))
-  res.sendFile(path.join(reactDir, 'index.html'))
+  /* `root` keeps the dot-file guard on the served name only: an absolute path
+     inside a dot-directory (for example a `.claude/worktrees/…` checkout)
+     was refused with 404 for every deep route */
+  res.sendFile('index.html', { root: reactDir })
 })
 
 /* 404 + error safety (no stack leaks) */

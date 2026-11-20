@@ -40,7 +40,7 @@ async function walletButton(page, name) {
 async function connect(page) {
   for (let attempt = 0; attempt < 5; attempt++) {
     try { await page.getByRole('button', { name: NAME, includeHidden: true }).first().waitFor({ state: 'attached', timeout: 6000 }); return } catch { /* not connected yet */ }
-    const btn = page.locator('.rk-chip-connect')
+    const btn = page.locator('.rk-chip-connect').first()
     if (await btn.count()) await btn.click({ timeout: 3000 })
     if (await page.locator('[data-wallet-picker]').count()) await page.locator('[data-wallet-picker] [data-wallet-id]').first().click()
   }

@@ -28,6 +28,38 @@ support and challenge notifications and support conversations. No email or
 other external delivery is sent; an outbound provider is owner
 infrastructure.
 
+## Launch scope and journey acceptance — 2026-11-20
+
+Launch classification (workstream H). The evidence is the browser suites listed
+in the [journey acceptance report](../reviews/journey-acceptance-2026-11/REPORT.md).
+They run locally against a disposable database with generated test wallets.
+"Required check" means CI (`Backend (API + engine)`) or `Release package gates`
+runs the suite. None of this is deployed acceptance. Real-money and real-wallet
+acceptance stay **Blocked** on owner authorization.
+
+| Capability | Status | Launch scope | Acceptance evidence |
+| --- | --- | --- | --- |
+| Prop evaluation (purchase via test seam, start, trade, pass, daily/maximum-loss fail, minimum trading days, notifications) | Completed (local; simulated accounts) | Launch-essential | `test-challenge-lifecycle` (pass), `test-journey-acceptance` J2–J5 (fail paths, trading days, inbox), `test-controlled-challenges` (two-step); required checks |
+| Funded-demo progression (final-pass review → funded demo → simulated payout) | Completed (local; simulated settlement only) | Launch-essential | `test-controlled-challenges`, `test-backstage`, `test-payout-operations`; real payout settlement Blocked |
+| Perpetual (product shell, wallet-scoped terminal, Gains portfolio reads) | In Progress (read-only; no execution) | Post-launch | `test-terminal-completion`, `test-terminal-layout`; on-chain execution Blocked |
+| Live execution (Gains / Perpetual on-chain orders) | Blocked (disabled by default) | Post-launch | No suite by design; needs supported testnet contracts, simulation and security review |
+| Advanced orders (market/limit/stop, SL/TP, partial close on the practice engine) | Completed (local; simulation) | Launch-essential | `test-terminal-risk-workspace`, `test-terminal-completion`; lot sizing Blocked on an approved contract specification |
+| Market Heatmap | Completed (local; fixed fixtures) | Post-launch | `test-heatmap-radar` (required); live feed `test-heatmap-radar-live` (non-blocking) |
+| Trade Radar | Completed (local; fixed fixtures) | Post-launch | `test-heatmap-radar` (required); live feed non-blocking |
+| Footprint chart | In Progress (deployed acceptance pending) | Post-launch | `test-footprint` (flag-off path in CI); live order-flow acceptance pending |
+| Notifications (in-app inbox) | Completed (deployed in v0.6.5; no external delivery) | Launch-essential | `test-journey-acceptance` J4, `test-backstage-operations` (support reply); required checks |
+| Brand Ambassador program | Completed (local) | Post-launch | Backend partner tests, `test-backstage-operations` (application review); no browser trader journey |
+| Verified Trading Coach program | Completed (local) | Post-launch | Backend partner tests; no browser journey |
+| Hybrid Governance | Completed in source (local); not active | Post-launch | Backend governance tests; public page rendered by `test-locale-matrix`; no council seated |
+| Open Trade desktop (Electron) | In Progress | Post-launch | [Acceptance record](../../apps/open-trade/ACCEPTANCE.md); signing and public release Blocked |
+| Openfund Protocol | Completed within source scope (dormant) | Post-launch | `packages/openfund-protocol/` compile/test foundation; venue routing Planned |
+
+Launch-essential journeys also covered by required checks: SIWE on Arbitrum
+One (42161), session restore, wallet switch, logout, expired session, checkout
+in fa/ar/en at phone and desktop widths, and order recovery
+(`test-wallet-connect`, `test-security-browser`, `test-journey-acceptance`,
+`test-depay-checkout`).
+
 Real payout evidence recording is **In Progress**. Backstage adds reward
 inspection and a disabled-by-default Arbitrum One DAI verification action.
 Production activation requires security acceptance.
