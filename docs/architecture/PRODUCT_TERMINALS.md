@@ -92,10 +92,8 @@ keeps the market's own leverage limit and no sizing control.
 
 ## Locale availability
 
-The English browser experience exposes Prop only. EN Perpetual routes redirect to
-EN Prop Dashboard before mounting any product page and discard product-specific
-queries. Persian retains both products and the existing switcher. FA Home alone
-omits central website navigation, preserving wallet, terminal, language and theme
-actions. EN Home reuses the existing Prop landing. Locale is not residency evidence;
-backend ownership and product isolation remain unchanged. [Eligibility audit and
-UI batch](../reviews/ui-polish/DELIVERY.md).
+Both products are available in every supported locale (fa, en, ar, ru, zh-CN). Language never hides a product (`ProductGate` in `main.tsx`). Locale is not residency evidence. Backend ownership and product isolation are unchanged. The earlier EN Prop-only redirect is historical ([UI batch](../reviews/ui-polish/DELIVERY.md)) and no longer matches the code.
+
+## Adapter ownership
+
+[ADR 0047](../decisions/0047-perpetual-gains-read-only-readiness.md) defines the layers. The Prop adapter is the practice engine and its PostgreSQL ledger. The Perpetual adapter is `gains-portfolio.js`, read-only and session-wallet scoped. The terminal builds one adapter object per product and never shares a mutable provider between them. Switching products keeps the single SIWE session. A wallet change or disconnect revokes it for both products and discards in-flight reads for the previous wallet.

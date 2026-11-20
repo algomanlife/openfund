@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- **Perpetual Gains read-only readiness** ([ADR 0047](docs/decisions/0047-perpetual-gains-read-only-readiness.md)).
+  - The Gains account snapshot now states its network, its read-only capabilities, the source of each field and its freshness (`fresh`, `stale` or `inconsistent`). A cached read keeps its original fetch time.
+  - Malformed provider data returns `502 gains_schema_changed` instead of a 500. Timeouts are reported separately as `504 gains_timeout`.
+  - Unset TP/SL is shown as unavailable instead of `0`. Pending orders show their Gains order type. Transaction links are built only from valid hashes.
+  - Terminal pages name the product: "Openfund Prop — Simulated evaluation" or "Openfund Perpetual — Gains account view". Perpetual pages show the source, the network, a read-only badge and the feed state, and label a kept snapshot as outdated.
+  - The Perpetual trade workspace no longer calls itself a practice account.
+  - New tests: deterministic backend scenarios and a browser acceptance suite (`npm run test:browser:perpetual`).
+  - Live execution remains disabled. The Prop backend, engine and ledger are unchanged.
+
 - **Responsive launch matrix (workstreams D/E/F)** — new
   `e2e/test-responsive-matrix.cjs` covers the built web app at ten widths
   (320-1920 px), five locales (fa and ar RTL; en, ru and zh-CN LTR), both
