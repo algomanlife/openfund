@@ -45,7 +45,8 @@ import { recordFailure, recordSuccess } from './observability.js'
 import { rewardRoutes, rewardAdminRoutes } from './rewards.js'
 import { certificateRoutes, certificateAdminRoutes } from './certificates.js'
 import { createRadar, radarRoutes } from './radar.js'
-import { calendarAdminRoutes } from './conduct.js'
+import { calendarAdminRoutes, ConductService } from './conduct.js'
+import { createTestClock } from './test-clock.js'
 import { createFootprintService } from './footprint/service.js'
 import { couponAdminRoutes } from './coupons.js'
 import { campaignRoutes } from './campaigns.js'
@@ -97,7 +98,14 @@ runtime.probes = { peer: () => sync.peerUrl ? syncWorker.hello() : Promise.resol
    pending orders, risk sweeps): the loop is serial, so 3 covers its deepest
    nesting; it keeps risk processing out of the API pool's queue */
 const loopPool = new pg.Pool({ connectionString: cfg.dbUrl, max: 3 })
-const engine = new Engine(pool, marketData, { loopPool })
+/* Conduct clock. Production keeps ConductService's default real clock, so the
+   daily close, weekend and news restrictions are unchanged. Only test mode
+   (SIM_TEST_MODE + test database) gets a pinnable clock, so browser suites
+   can cover the close window and the weekend without depending on the time
+   they run (see test-clock.js and POST /internal/test-clock below). */
+const testClock = testMode ? createTestClock({ initial: process.env.SIM_TEST_CLOCK || null }) : null
+const conduct = testClock ? new ConductService(pool, { now: testClock.now }) : undefined
+const engine = new Engine(pool, marketData, { loopPool, conduct })
 const portfolio = new Portfolio(pool, marketData)
 /* checkStreamSessions is a hoisted function declaration (session helpers below) */
 const tradingStreams = createTradingStreamHub({ engine, checkSessions: (hashes, userId) => checkStreamSessions(hashes, userId) })
@@ -777,6 +785,20 @@ if (testMode) {
               SELECT 'sim-test-mode', now() - interval '1 day', now() + interval '60 days', 0, 'sim-test-mode'
                WHERE NOT EXISTS (SELECT 1 FROM economic_calendar_coverage WHERE source='sim-test-mode' AND covers_to > now() + interval '30 days')`)
     .catch(e => console.error('[test-mode] calendar fixture failed', e.message))
+  /* the same empty test-mode coverage, around the pinned conduct clock */
+  const coverPinned = at => pool.query(`INSERT INTO economic_calendar_coverage (source, covers_from, covers_to, event_count, actor)
+              SELECT 'sim-test-mode', $1::timestamptz - interval '1 day', $1::timestamptz + interval '60 days', 0, 'sim-test-mode'
+               WHERE NOT EXISTS (SELECT 1 FROM economic_calendar_coverage WHERE covers_from <= $1::timestamptz - interval '2 hours'
+                                    AND covers_to >= $1::timestamptz + interval '8 days')`, [new Date(at).toISOString()])
+  if (testClock.state().pinned) coverPinned(testClock.now()).catch(e => console.error('[test-mode] clock coverage failed', e.message))
+  /* test-only conduct clock seam: { at: ISO | epoch ms } pins the conduct
+     clock (frozen), { at: null } returns it to its start-up state */
+  app.post('/internal/test-clock', internalAuth, asyncRoute(async (req, res) => {
+    let state
+    try { state = testClock.set(req.body?.at ?? null) } catch { return res.status(400).json({ error: 'invalid_instant' }) }
+    if (state.pinned) await coverPinned(testClock.now())
+    res.json(state)
+  }))
   app.post('/internal/inject-price', internalAuth, (req, res) => {
     const { symbol, price, metadata } = req.body || {}
     if (typeof symbol !== 'string' || price == null) return res.status(400).json({ error: 'invalid' })
@@ -844,7 +866,7 @@ app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) 
 
 app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
 app.use(referralRoutes({ pool, requireAuth, audit }))
-app.use(purchaseRoutes({ pool, requireAuth, audit, limit }))
+app.use(purchaseRoutes({ pool, requireAuth, audit, limit, conduct }))
 app.use(rewardRoutes({ pool, requireAuth, audit, limit, md: marketData }))
 app.use(certificateRoutes({ pool, requireAuth }))
 /* Trade Radar + heatmap: read-only public Hyperliquid data, one shared cache and socket */
@@ -881,7 +903,7 @@ app.use('/admin/support', supportAdminRoutes({ pool }))
 app.use('/admin/operations', operationsAdminRoutes({ pool, engine, marketData }))
 app.use('/admin/certificates', certificateAdminRoutes({ pool }))
 app.use('/admin/rewards', rewardAdminRoutes({ pool }))
-app.use('/admin/calendar', calendarAdminRoutes({ pool }))
+app.use('/admin/calendar', calendarAdminRoutes({ pool, conduct }))
 app.use('/admin/runtime', runtimeAdminRoutes({ Router: express.Router, runtime, adminAuth, adminActor, audit }))
 app.use('/admin/regional', regionalAdminRoutes({ Router: express.Router, pool, runtime, adminAuth, adminActor, syncWorker, audit, health: regionalHealth }))
 app.use(remoteAccountRoutes({ Router: express.Router, pool, requireAuth }))
