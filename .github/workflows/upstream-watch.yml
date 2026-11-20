@@ -58,6 +58,10 @@ jobs:
         continue-on-error: true
         run: |
           { echo; echo "== npm run check:gains-live"; npm run check:gains-live 2>&1 | tail -5; } | tee -a tests.txt
+      - name: Optional live Gains account-endpoint check (Perpetual read model)
+        continue-on-error: true
+        run: |
+          { echo; echo "== npm run check:gains-account-live"; npm run check:gains-account-live 2>&1 | tail -3; } | tee -a tests.txt
       - name: Read-only update reports for vendored sources
         continue-on-error: true
         run: |

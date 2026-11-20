@@ -14,7 +14,11 @@
  * LTR), Escape, outside click and route-change closing.
  *
  * It starts its own static host (e2e/helpers/static-site.cjs) with a stub
- * /runtime-config.js and a 503 backend, so it needs only `npm run build:web`:
+ * /runtime-config.js and a 503 backend, so it needs only `npm run build:web`.
+ * The browser is offline apart from that host: Gains REST/WS is served from
+ * documented fixtures (e2e/helpers/market-fixtures.cjs) and every other
+ * external origin is aborted, so a third-party outage cannot fail a layout
+ * check. Live upstream availability is tested separately (Upstream guard).
  *   node e2e/test-responsive-matrix.cjs
  * Options (environment):
  *   TEST_FRONTEND_URL  test an already running frontend instead
@@ -27,6 +31,7 @@ const { chromium } = require('playwright');
 const fs = require('node:fs');
 const path = require('node:path');
 const { startStaticSite } = require('./helpers/static-site.cjs');
+const { installMarketFixtures } = require('./helpers/market-fixtures.cjs');
 
 const list = (name, fallback) => (process.env[name] ? process.env[name].split(',').map(s => s.trim()).filter(Boolean) : fallback);
 const WIDTHS = list('MATRIX_WIDTHS', ['320', '360', '375', '390', '430', '768', '1024', '1280', '1440', '1920']).map(Number);
@@ -40,7 +45,8 @@ const OUT = path.resolve(process.env.MATRIX_OUTPUT || 'output/playwright/respons
 const CAPTURE = process.env.MATRIX_CAPTURE === '1';
 /* axe runs at one phone and one desktop width per route/locale/theme */
 const AXE_WIDTHS = new Set([375, 1280].filter(w => WIDTHS.includes(w)));
-/* the curated screenshot set (genuine captures, no data injection) */
+/* the curated screenshot set (genuine captures of the built app; market data
+   comes from the illustrative fixtures in helpers/market-fixtures.cjs) */
 const SHOTS = new Set([
   'home fa dark 375', 'home en light 375', 'home ar dark 768', 'home zh-CN light 1440',
   'challenges fa light 390', 'challenges ru dark 320', 'markets en dark 360', 'markets fa light 1024',
@@ -60,6 +66,7 @@ const [shardIndex, shardCount] = (process.env.MATRIX_SHARD || '1/1').split('/').
 const COMBOS = LOCALES.flatMap(locale => THEMES.map(theme => ({ locale, theme }))).filter((_, i) => i % shardCount === shardIndex - 1);
 
 const failures = [];
+const blockedOrigins = new Set();
 let passed = 0;
 function check(tag, name, ok, detail = '') {
   if (ok) passed++;
@@ -287,6 +294,7 @@ async function run(browser, base) {
   if (CAPTURE) fs.mkdirSync(OUT, { recursive: true });
   for (const { locale, theme } of COMBOS) {
     const context = await browser.newContext({ viewport: { width: WIDTHS[0], height: 800 }, colorScheme: theme, locale: 'en-US', reducedMotion: 'reduce' });
+    const fixtures = await installMarketFixtures(context, { allow: [base] });
     await context.addInitScript(([t, l]) => { try { localStorage.setItem('of-theme-choice', t); localStorage.setItem('of-language-choice', l); } catch {} }, [theme, locale]);
     const page = await context.newPage();
     const errors = [];
@@ -332,6 +340,7 @@ async function run(browser, base) {
         await drawerNavigation(page, base, `${routeTag} 375 navigation`, locale, route);
       }
     }
+    for (const origin of fixtures.blocked) blockedOrigins.add(origin);
     await context.close();
   }
 }
@@ -348,6 +357,7 @@ async function run(browser, base) {
     widths: WIDTHS, combos: COMBOS, routes: ROUTES, passed, failed: failures.length, seconds: Math.round((Date.now() - started) / 1000), failures };
   fs.writeFileSync(path.join(OUT, `report${shardCount > 1 ? `-${shardIndex}` : ''}.json`), JSON.stringify(report, null, 2));
   console.log(`responsive matrix (shard ${shardIndex}/${shardCount}): ${passed} checks passed, ${failures.length} failed in ${report.seconds}s`);
+  console.log(`external origins blocked (offline fixtures): ${[...blockedOrigins].sort().join(', ') || 'none'}`);
   if (failures.length) {
     /* group identical findings so the log stays readable */
     const groups = new Map();
