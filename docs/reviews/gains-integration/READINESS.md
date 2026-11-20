@@ -132,7 +132,7 @@ All results are local runs on this branch against an isolated server (port 18180
 | Dependency scan (OSV, three lockfiles) | **FAIL (pre-existing, accepted risk)** | 4 advisories, all OF-2026-11-04 (wallet SDK transitive); lockfiles unchanged |
 | Static analysis (Semgrep `p/javascript`, `p/nodejsscan`, `p/github-actions`) | **PASS** for new code | Pre-existing warnings only (`products.js`, `ci.yml` lines 567–664) |
 | Secret scan (gitleaks, every commit) | **PASS** | |
-| CodeQL | **NOT TESTED locally** | Repository default setup on the PR |
+| CodeQL (PR default setup) | **FAIL → fixed** | One new high-severity alert, `js/incomplete-sanitization` in the status self-test helper (regex escape covered only dots). Replaced by a full metacharacter escape plus a SemVer guard. No alert in product code |
 | Provider contract (live, non-blocking) `check:gains-account-live` | **PASS** | Fresh; collaterals DAI/WETH/USDC/GNS |
 | Fault injection | **PASS** for provider faults (scenarios and browser) | RPC faults **NOT TESTED** (no RPC use exists) |
 | Browser security suite (`test:browser:security`) | **NOT TESTED locally** | Runs in CI |
@@ -144,6 +144,7 @@ All results are local runs on this branch against an isolated server (port 18180
 | Check | Root cause | Fix |
 | --- | --- | --- |
 | Responsive matrix (3 shards) | The static-host matrix still let the browser call live `api.gains.trade`. One response without CORS headers was logged as a critical console error | `e2e/helpers/market-fixtures.cjs` serves documented Gains fixtures and aborts other external origins. Live availability is checked separately and non-blocking (Upstream watch: `check:gains-live`, `check:gains-account-live`) |
+| Backend job, "Dastkhat typography" step (second CI run) | Chrome reported no platform font yet for the Persian site header, which this branch does not change. Passed 3/3 locally on this branch | Not a code defect; rerun with the next push. Every Perpetual browser step in the same job passed |
 | Release package gates | `status.json` recorded v0.7.0 after v0.8.0 was published. The status self-tests hard-coded v0.7.0 | v0.8.0 recorded from the Release, tag and manifest evidence. GLOBAL Web/API verified separately via `/version`. Self-tests follow the recorded release |
 
 ## 8. Operational readiness (for a future execution release)

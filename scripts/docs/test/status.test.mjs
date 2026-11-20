@@ -30,7 +30,10 @@ function fixture(mutate) {
 }
 /* the cases follow the recorded latest release, so a release update cannot break them */
 const LATEST = JSON.parse(readFileSync(join(repo, 'docs/status/status.json'), 'utf8')).release.latestOfficial.version
-const esc = v => v.replace(/\./g, '\\.')
+/* full regex escape (every metacharacter, including backslash), and the
+   recorded version must be plain SemVer before it is used in a pattern */
+assert.match(LATEST, /^\d+\.\d+\.\d+$/, 'status.json latestOfficial.version is plain SemVer')
+const esc = v => v.replace(/[\\^$.*+?()[\]{}|\/-]/g, '\\$&')
 const NEXT = LATEST.replace(/^(\d+)\.(\d+)\.\d+$/, (_, major, minor) => `${major}.${Number(minor) + 1}.0`)
 const json = (path, fn) => text => { const v = JSON.parse(text); fn(v); return JSON.stringify(v, null, 2) + '\n' }
 
