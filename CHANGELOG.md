@@ -20,8 +20,7 @@
   cookie, no redirect loops, and only a trusted IR country qualifying. The
   Liara IP database lookup now covers IPv6. The redirect stays disabled.
 
-- **Dastkhat is the Persian UI font** (branch `agent/claude/dastkhat-typography`;
-  not merged, released or deployed). Dastkhat and Dastkhat Arabic (SIL OFL
+- **Dastkhat is the Persian UI font** (#161; merged, not yet released). Dastkhat and Dastkhat Arabic (SIL OFL
   1.1, by Dastyar) are self-hosted as unmodified variable WOFF2 files, pinned
   at upstream commit `ac5b01542f36` (font version 1.210) with the OFL text,
   upstream notices and SHA-256 hashes in
