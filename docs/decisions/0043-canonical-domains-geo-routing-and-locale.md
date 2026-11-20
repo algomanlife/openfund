@@ -53,11 +53,24 @@ web process held no market prices, so every order there was refused as
    (`apps/backend/geo-locale.js`): IR→`fa`, RU→`ru`, CN→`zh-CN`, the 22 Arab
    League members→`ar`, others→`en`, unknown→`en`. Priority:
    1. a locale in the URL;
-   2. the saved preference (`of-language`);
+   2. the visitor's explicit choice (`of-language-choice`, written only by
+      the language selector; see the amendment below);
    3. the Geo-IP default (`runtime-config.js` `geoLocale`, private,
       `no-store`);
    4. English.
-   The pre-paint script applies it before first paint.
+   The pre-paint script applies it before first paint; the static
+   `<html>` default is `lang="en" dir="ltr"`, the English fallback.
+
+   *Amendment (2026-11-20).* Priority 2 originally read the `of-language`
+   key. Every shell wrote that key on each render, so any locale a visitor
+   had merely displayed — the Geo-IP default, a shared `/fa/…` link, or the
+   Persian default of releases before 0.7 — became a permanent "preference"
+   that outranked Geo-IP. Returning visitors therefore never saw their
+   country default. The explicit choice now lives in its own key;
+   `of-language` remains a render-tracking value for the classic scripts and
+   never decides a locale-less visit. Visitors who chose a language before
+   this change are treated as first-time visitors once and keep any choice
+   they make afterwards.
 4. **Trusted country:** `CF-IPCountry` counts only when the hop that reached
    the platform proxy is a published Cloudflare address
    (`apps/backend/geo-trust.js`). The header is removed before routing. A
