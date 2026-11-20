@@ -132,6 +132,7 @@ to it. GitHub needs `LIARA_API_TOKEN` (secret), `LIARA_APP_NAME`,
 | `CORS_ORIGINS` | apps/backend | localhost dev origins |
 | `SESSION_TTL_HOURS` | apps/backend | 168 |
 | `SIM_TEST_MODE` | apps/backend | unset in production — internal price-injection seam for E2E only |
+| `SIM_TEST_CLOCK` | apps/backend | unset; test mode only (`SIM_TEST_MODE=1` and a test database). An ISO instant that pins the conduct clock (daily close window, weekend and news rules) at start-up. Ignored otherwise; production always uses the real clock |
 | `SIM_MAINT_PCT` | apps/backend engine | 10 (maintenance/liquidation level) |
 | `PORTFOLIO_TZ` | apps/backend | `UTC` (PnL calendar policy) |
 | `FOOTPRINT_HL_INFO_URL`, `FOOTPRINT_HL_WS_URL` | apps/backend | official `https://api.hyperliquid.xyz/info` and `wss://api.hyperliquid.xyz/ws`; overrides exist only for replay/isolated tests and are never set in production |
