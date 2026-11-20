@@ -31,6 +31,31 @@ export function createLibraryResolver(sources) {
   };
 }
 
+// Inputs removed from catalog indicators. Saved workspaces may still carry
+// them; the bridge strips them on read so they never reach the Pine runtime.
+export const RETIRED_INPUTS = Object.freeze({
+  'Open Algo V5': Object.freeze(['enableDashboard', 'locationDashboard', 'sizeDashboard']),
+});
+
+/** Remove retired input keys from a persisted Vela workspace document. */
+export function migrateWorkspaceState(state, retired = RETIRED_INPUTS) {
+  if (!state || !Array.isArray(state.charts)) return { state, changed: false };
+  let changed = false;
+  for (const chart of state.charts) {
+    if (!Array.isArray(chart?.indicators)) continue;
+    chart.indicators = chart.indicators.map(entry => {
+      const keys = entry && typeof entry === 'object' ? retired[entry.name] : undefined;
+      if (!keys || !entry.inputs) return entry;
+      const inputs = Object.fromEntries(Object.entries(entry.inputs).filter(([key]) => !keys.includes(key)));
+      if (Object.keys(inputs).length === Object.keys(entry.inputs).length) return entry;
+      changed = true;
+      const { inputs: _removed, ...rest } = entry;
+      return Object.keys(inputs).length ? { ...rest, inputs } : rest;
+    });
+  }
+  return { state, changed };
+}
+
 export function createCatalog(openAlgo, pac, smc) {
   return [
     { name: 'Open Algo V5', script: localizeOpenAlgo(openAlgo) },

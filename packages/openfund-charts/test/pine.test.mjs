@@ -64,7 +64,7 @@ test('local import resolution preserves every input and all calculated model out
   const oldEngine = new PineEngine({ importResolver: oldResolver }), engine = new PineEngine({ importResolver: resolver });
   const before = await oldEngine.prepare(original, 'same'), after = await engine.prepare(catalog[0].script, 'same');
   assert.deepEqual(after.inputs, before.inputs);
-  assert.equal(after.inputs.length, 79);
+  assert.equal(after.inputs.length, 76);
   // Runtime drawing IDs use a process-wide counter; compare every value/style/coordinate.
   const comparable = model => JSON.parse(JSON.stringify(model, (key, value) => key === 'id' ? undefined : value));
   assert.deepEqual(comparable(await execute(engine, after)), comparable(await execute(oldEngine, before)));
@@ -73,7 +73,7 @@ test('local import resolution preserves every input and all calculated model out
 
 test('all original scripts produce model geometry and preserve their input counts', async () => {
   installPineCompatibility(Indicator);
-  const counts = [79, 49, 52];
+  const counts = [76, 49, 52];
   for (const [index, entry] of catalog.entries()) {
     const engine = preserveUnknownVolume(new PineEngine({ importResolver: resolver }));
     const prepared = await engine.prepare(entry.script, `indicator-${index}`);
