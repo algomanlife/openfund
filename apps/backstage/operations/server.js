@@ -21,7 +21,10 @@ const staticFiles = {
   '/marketing.js': ['public/marketing.js', 'application/javascript; charset=utf-8'],
   '/style.css': ['public/style.css', 'text/css; charset=utf-8'],
   '/mark.svg': ['../../../brand/logos/mark-mint.svg', 'image/svg+xml'],
-  '/persian.woff2': ['../../web-react/public/assets/openfund-persian-500-v4.woff2', 'font/woff2'],
+  /* Dastkhat (SIL OFL 1.1): the same pinned files the site serves, at the same
+     same-origin path, so the console needs no extra CSP source. */
+  '/assets/fonts/dastkhat/Dastkhat-Variable.woff2': ['../../web-react/public/assets/fonts/dastkhat/Dastkhat-Variable.woff2', 'font/woff2'],
+  '/assets/fonts/dastkhat/OFL.txt': ['../../web-react/public/assets/fonts/dastkhat/OFL.txt', 'text/plain; charset=utf-8'],
 }
 
 const routes = {

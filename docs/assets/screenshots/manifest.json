@@ -7557,6 +7557,54 @@
       "sha256": "d97497e8917ba59b4b32654d7ae0010c002b4f5a4cc0379e7ebf0c37603a68d4"
     },
     {
+      "file": "typography/typography-site-fa.png",
+      "route": "/fa/challenges",
+      "viewport": {
+        "width": 1366,
+        "height": 900
+      },
+      "session": "local build (branch agent/claude/dastkhat-typography) served by apps/backend with the production CSP, disposable PostgreSQL; no Directus and no wallet; e2e/test-typography.mjs",
+      "capturedAt": "2026-11-20T05:48:16.239494+00:00",
+      "state": "Persian Challenges page header, hero and buttons rendered in Dastkhat (Chrome platform fonts); Latin digits stay Latin.",
+      "sha256": "aeedd27e7a6df415f2e9da3626d874983993e8dcd312fe0a31c0b2355c9bb8fd"
+    },
+    {
+      "file": "typography/typography-site-ar.png",
+      "route": "/ar/challenges",
+      "viewport": {
+        "width": 1366,
+        "height": 900
+      },
+      "session": "local build (branch agent/claude/dastkhat-typography) served by apps/backend with the production CSP, disposable PostgreSQL; no Directus and no wallet; e2e/test-typography.mjs",
+      "capturedAt": "2026-11-20T05:48:16.238248+00:00",
+      "state": "Arabic Challenges page: Arabic letters in Dastkhat Arabic, digits and Latin in Ubuntu.",
+      "sha256": "feb4007965bf2899f04b3cb71dadc65be4897c170b11a4b527ffcc5a3acb6696"
+    },
+    {
+      "file": "typography/typography-terminal-fa.png",
+      "route": "/fa/prop/trade",
+      "viewport": {
+        "width": 1366,
+        "height": 900
+      },
+      "session": "local build (branch agent/claude/dastkhat-typography) served by apps/backend with the production CSP, disposable PostgreSQL; no Directus and no wallet; e2e/test-typography.mjs",
+      "capturedAt": "2026-11-20T05:48:16.241386+00:00",
+      "state": "Persian terminal iframe: labels and buttons in Dastkhat, prices and sizes tabular LTR Latin digits. Gains connection still loading.",
+      "sha256": "8d33611f7eb29812915fefb1bb2733e85e18a96dbdcc4047cc8a88ed180c3bbc"
+    },
+    {
+      "file": "typography/typography-backstage-fa.png",
+      "route": "/",
+      "viewport": {
+        "width": 1366,
+        "height": 900
+      },
+      "session": "local build (branch agent/claude/dastkhat-typography) served by apps/backend with the production CSP, disposable PostgreSQL; no Directus and no wallet; e2e/test-typography.mjs",
+      "capturedAt": "2026-11-20T05:48:16.236958+00:00",
+      "state": "Persian Backstage sign-in screen served by the Backstage server (font-src 'self') in Dastkhat; no sign-in performed.",
+      "sha256": "1ca0863c0ff3147e897216e80abf44347a9774904a8115b1538b580df7939123"
+    },
+    {
       "file": "responsive-matrix/2026-11-20/before/challenges-ru-dark-320.png",
       "route": "/ru/challenges",
       "viewport": {

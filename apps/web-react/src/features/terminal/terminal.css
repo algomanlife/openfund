@@ -1,8 +1,5 @@
-@font-face {
-  font-family: Irancell;
-  src: url("../../../public/assets/irancell-400.ttf") format("truetype");
-  font-display: swap;
-}
+/* Fonts: Dastkhat / Dastkhat Arabic @font-face and the --ds-font-* stacks
+   come from styles/design-system.css. */
 .of-terminal {
   --of-bg: #060808;
   --of-panel: #0d1511;
@@ -17,7 +14,7 @@
   min-height: 100dvh;
   background: var(--of-bg);
   color: var(--of-text);
-  font-family: Ubuntu, Irancell, system-ui, sans-serif;
+  font-family: var(--ds-font-latin);
   line-height: 1.65;
 }
 [data-theme="light"] .of-terminal {
@@ -833,7 +830,7 @@ html[data-theme="light"] body:has(.of-terminal) {
 .of-terminal-compact .rk-wrap { flex-wrap: nowrap !important; gap: 5px !important; }
 .of-terminal-compact .rk-chip-bal { display: none; }
 .of-terminal-compact[dir="rtl"] #terminal-navigation a,
-.of-terminal-compact[dir="rtl"] .of-terminal-more { direction: rtl; font-family: Irancell, sans-serif; }
+.of-terminal-compact[dir="rtl"] .of-terminal-more { direction: rtl; font-family: var(--ds-font-persian); }
 .of-terminal-compact[dir="rtl"] #terminal-navigation > a { font-size: 12px; }
 @media (max-width: 1100px) {
   .of-terminal-compact .of-terminal-top { gap: 8px; }
@@ -1006,10 +1003,9 @@ html[data-theme="light"] .of-terminal :is(.of-negative,.negative) { color:#b33f3
 .of-challenge-events li{padding:3px 0;border-top:1px solid var(--line,#FFFFFF1E);font-size:.9em}
 .of-challenge-panel .of-dashboard-values div{display:flex;justify-content:space-between;gap:12px;padding:4px 0;border-bottom:1px solid var(--line,#FFFFFF1E)}
 
-/* Arabic shell: Latin digits from Ubuntu, Arabic letters from Vazirmatn. */
-@font-face { font-family: Vazirmatn; src: url("../../../public/assets/Vazirmatn.ttf") format("truetype"); font-weight: 100 900; font-display: swap; }
-.of-terminal:lang(ar) { font-family: Ubuntu, Vazirmatn, Tahoma, sans-serif; }
-.of-terminal-compact[dir="rtl"]:lang(ar) .of-terminal-more { font-family: Ubuntu, Vazirmatn, sans-serif; }
+/* Arabic shell: Latin digits from Ubuntu, Arabic letters from Dastkhat Arabic. */
+.of-terminal:lang(ar) { font-family: var(--ds-font-arabic); }
+.of-terminal-compact[dir="rtl"]:lang(ar) .of-terminal-more { font-family: var(--ds-font-arabic); }
 
 /* ---- Compact terminal navigation (off-canvas) ----------------------------
    Desktop keeps the inline tabs + More menu. Once those no longer fit

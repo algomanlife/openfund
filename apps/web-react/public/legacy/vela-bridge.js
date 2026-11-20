@@ -34,12 +34,12 @@ const THEMES = {
   dark: {
     background: '#060808', textColor: '#A9B3A9', gridColor: '#FFFFFF0A',
     borderColor: '#FFFFFF18', upColor: '#82E7BD', downColor: '#E89483',
-    fontFamily: "Ubuntu, 'Irancell', system-ui, sans-serif"
+    fontFamily: "Ubuntu, 'Dastkhat', system-ui, sans-serif"
   },
   light: {
     background: '#FFFFFF', textColor: '#3F4C44', gridColor: '#0A120D12',
     borderColor: '#0A120D22', upColor: '#12965D', downColor: '#C0453E',
-    fontFamily: "Ubuntu, 'Irancell', system-ui, sans-serif"
+    fontFamily: "Ubuntu, 'Dastkhat', system-ui, sans-serif"
   }
 };
 

@@ -1,7 +1,7 @@
-@font-face{font-family:Openfund Persian;src:url('/persian.woff2') format('woff2');font-display:swap}
-:root{color-scheme:dark;--bg:#0b1411;--panel:#121f19;--nav:#0f1a15;--line:#2a3a31;--text:#edf6ef;--muted:#a9bdb0;--accent:#9fe5af;--on-accent:#142c1c;--danger:#f4a399;font-family:Inter,system-ui,sans-serif}
+@font-face{font-family:'Dastkhat';src:url('/assets/fonts/dastkhat/Dastkhat-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+:root{--ds-font-persian:'Dastkhat','Ubuntu',Tahoma,system-ui,sans-serif;--ds-font-arabic:'Ubuntu','Dastkhat Arabic','Dastkhat',Tahoma,system-ui,sans-serif;--ds-font-latin:'Ubuntu','Dastkhat',system-ui,sans-serif;--ds-font-cjk:'Ubuntu',system-ui,'PingFang SC','Microsoft YaHei','Noto Sans SC','Dastkhat',sans-serif;--ds-font-numeric:'Ubuntu','Dastkhat',system-ui,sans-serif;color-scheme:dark;--bg:#0b1411;--panel:#121f19;--nav:#0f1a15;--line:#2a3a31;--text:#edf6ef;--muted:#a9bdb0;--accent:#9fe5af;--on-accent:#142c1c;--danger:#f4a399;font-family:Inter,system-ui,sans-serif}
 :root[data-theme=light]{color-scheme:light;--bg:#f4f8f4;--panel:#fff;--nav:#eaf2ec;--line:#c2d3c7;--text:#10261a;--muted:#425b4c;--accent:#14592f;--on-accent:#fff;--danger:#a02323}
-:root[lang=fa]{font-family:"Openfund Persian",system-ui,sans-serif}
+:root[lang=fa]{font-family:var(--ds-font-persian)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text)}
 header{position:sticky;inset-block-start:0;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:13px 24px;background:var(--nav);border-block-end:1px solid var(--line)}
