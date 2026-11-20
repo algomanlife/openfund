@@ -28,7 +28,7 @@ instead of repeating it. Historical reviews keep their original wording.
 
 ## Architecture
 
-[System](architecture/ARCHITECTURE.md) · [Flows](architecture/FLOWS.md) · [Technology Stack](architecture/TECH_STACK.md) · [Product API and Terminal Contracts](architecture/PRODUCT_TERMINALS.md) · [Simulation implementation](architecture/DEMO_TRADING.md)
+[System](architecture/ARCHITECTURE.md) · [Flows](architecture/FLOWS.md) · [Technology Stack](architecture/TECH_STACK.md) · [Product API and Terminal Contracts](architecture/PRODUCT_TERMINALS.md) · [Perpetual execution RFC (draft)](architecture/PERPETUAL_EXECUTION_RFC.md) · [Simulation implementation](architecture/DEMO_TRADING.md)
 
 ## Website
 

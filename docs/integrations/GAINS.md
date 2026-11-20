@@ -65,7 +65,7 @@ These conditions must hold before any live-trading proposal. None of them is imp
 
 No order submission, token approval, collateral transfer, delegated signer, private-key handling or transaction building exists in the repository. The production adapter is `readOnly: true, canTrade: false`, and no feature flag changes that. Future work must verify official network support, addresses/ABIs, collateral/fee policy, transaction simulation, user approval, receipts, reverts and indexed-state reconciliation. Testnet availability must be established separately; a wallet supporting a chain does not prove Gains contracts exist there.
 
-A future live-execution proposal must close every item below. Each is open today:
+The [Perpetual execution RFC](../architecture/PERPETUAL_EXECUTION_RFC.md) compares the official integration options and states the requirements for independent review. A future live-execution proposal must close every item below. Each is open today:
 
 | Required item | Owner | Status |
 | --- | --- | --- |

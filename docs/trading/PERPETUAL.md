@@ -20,6 +20,8 @@ Market prices, candle availability, open interest and metadata depend on upstrea
 
 ## Execution gate
 
+The owner's intended product is Perpetual trading on Gains (Arbitrum One), with Gains as the authority for positions. It is **not implemented**; only the read-only view exists. The [execution RFC](../architecture/PERPETUAL_EXECUTION_RFC.md) defines the options, gaps and reviews required.
+
 Perpetual execution is blocked pending an approved network/contract model, transaction simulation, fee/collateral validation, explicit wallet confirmation, receipt handling and indexed-state reconciliation. Gains documents an Arbitrum Sepolia testnet for its beta Trading API; Openfund has not verified or used it. Deterministic local fixtures are the test environment. The [eligibility and compliance gate](../integrations/GAINS.md#eligibility-and-compliance-gate) and the approval table in the [execution gate](../integrations/GAINS.md#execution-gate) list what a future live-execution review must close. Vendoring the Gains SDK is not an executed integration.
 
 No Hyperliquid or dYdX adapter is implemented by this work. Their aggregation belongs to the [future Protocol product](../roadmap/PROTOCOL.md).
