@@ -66,7 +66,8 @@ export function pickRecord(locale: AppLocale, value: { fa?: string; en?: string 
 
 /** Current UI locale as published by the shells on `window.ofLang`. */
 export function currentLocale(): AppLocale {
-  return normalizeLocale(typeof window !== 'undefined' ? (window as Window & { ofLang?: string }).ofLang : undefined, 'fa')
+  const published = typeof window !== 'undefined' ? (window as Window & { ofLang?: string }).ofLang : undefined
+  return isLocale(published) ? published : storedLocale()
 }
 
 /** Same page in another locale: replaces the leading `/:locale/` segment. */
@@ -83,12 +84,27 @@ export function geoDefaultLocale(): AppLocale {
   return normalizeLocale(config?.geoLocale, 'en')
 }
 
-/** Locale for a route without one. Priority (ADR 0043): a saved preference
- * (existing `of-language` key, written whenever the visitor uses a locale),
- * then the Geo-IP default, then English. A URL locale is handled by the
- * router before this is consulted, and is never overridden. */
+/** Storage key of the visitor's EXPLICIT language choice (ADR 0043). It is
+ * written only when the visitor picks a language in a LanguageSelect —
+ * never because a page rendered in some locale. The older `of-language` key
+ * is still written on every render for the classic scripts, but it records
+ * the last displayed locale (a Geo-IP default, a shared /fa/ link, the
+ * pre-0.7 Persian default), so it must never decide a first visit. */
+export const LANGUAGE_CHOICE_KEY = 'of-language-choice'
+
+/** Persist an explicit language choice; storage is optional. */
+export function saveLocaleChoice(locale: AppLocale): void {
+  try {
+    localStorage.setItem(LANGUAGE_CHOICE_KEY, locale)
+    localStorage.setItem('of-language', locale)
+  } catch { /* Storage unavailable: the URL locale still applies. */ }
+}
+
+/** Locale for a route without one. Priority (ADR 0043): the URL locale (the
+ * router handles it before this is consulted and it is never overridden),
+ * then an explicit saved choice, then the Geo-IP default, then English. */
 export function storedLocale(): AppLocale {
-  try { return normalizeLocale(localStorage.getItem('of-language'), geoDefaultLocale()) } catch { return geoDefaultLocale() }
+  try { return normalizeLocale(localStorage.getItem(LANGUAGE_CHOICE_KEY), geoDefaultLocale()) } catch { return geoDefaultLocale() }
 }
 
 /** Visible notice when some text on the page has no translation (see reportMiss). */
