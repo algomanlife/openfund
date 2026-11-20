@@ -17,7 +17,13 @@ if(remote){
  if(target!==sha)throw Error('Existing immutable tag points to a different commit.');
 }else{
  await run('git',['-c','user.name=Openfund Release','-c','user.email=release@users.noreply.github.com','tag','-a',tag,sha,'-m',`Openfund ${tag} · ${sha}`]);
- await run('git',['push','origin',`refs/tags/${tag}`]);
+ /* Checkout does not persist credentials (actions hardening), so authenticate
+    only this push with the job token, passed through git's environment
+    config (never argv, never written to .git/config). */
+ const token=process.env.GH_TOKEN||process.env.GITHUB_TOKEN;
+ if(!token)throw Error('GH_TOKEN is required to push the release tag.');
+ const basic=Buffer.from(`x-access-token:${token}`).toString('base64');
+ await run('git',['push','origin',`refs/tags/${tag}`],{env:{...process.env,GIT_CONFIG_COUNT:'1',GIT_CONFIG_KEY_0:'http.https://github.com/.extraheader',GIT_CONFIG_VALUE_0:`AUTHORIZATION: basic ${basic}`}});
 }
 let release;
 try{release=JSON.parse(execFileSync('gh',['release','view',tag,'--repo',repo,'--json','isDraft,url'],{encoding:'utf8',stdio:['ignore','pipe','ignore']}));}catch{}
