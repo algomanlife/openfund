@@ -7555,6 +7555,270 @@
       "capturedAt": "2026-11-18T10:02:58.774097+00:00",
       "state": "AFTER: Persian phone cards, labels at the start, values LTR.",
       "sha256": "d97497e8917ba59b4b32654d7ae0010c002b4f5a4cc0379e7ebf0c37603a68d4"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/before/challenges-ru-dark-320.png",
+      "route": "/ru/challenges",
+      "viewport": {
+        "width": 320,
+        "height": 800
+      },
+      "session": "no wallet; dark theme; reduced motion; static react/ build before the fixes (origin/main 3dd5a45e); Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:40:27.431680+00:00",
+      "state": "BEFORE: Russian challenges market tabs at 320 px: BEFORE labels cut inside 32 px buttons; AFTER buttons keep their width and the strip scrolls.",
+      "sha256": "07e8ec6c7418893018dd14e5cf4586743098091a75624f09a58e14c4637ff8fa"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/before/markets-en-dark-360.png",
+      "route": "/en/markets",
+      "viewport": {
+        "width": 360,
+        "height": 800
+      },
+      "session": "no wallet; dark theme; reduced motion; static react/ build before the fixes (origin/main 3dd5a45e); Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:38:18.677604+00:00",
+      "state": "BEFORE: English markets at 360 px: BEFORE the \"All\" filter label overflows its button; AFTER it fits.",
+      "sha256": "6485254fec03d4549e54cf18ae42722601939e376ce8c7c5580006d076db828e"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/before/transparency-fa-dark-375.png",
+      "route": "/fa/transparency",
+      "viewport": {
+        "width": 375,
+        "height": 800
+      },
+      "session": "no wallet; dark theme; reduced motion; static react/ build before the fixes (origin/main 3dd5a45e); Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:34:06.997295+00:00",
+      "state": "BEFORE: Persian transparency with the backend answering 503 at 375 px: the published unavailable state in both runs (layout reference).",
+      "sha256": "6e0d8d5ddce12ffe8f9575414348acb2fb3e66d02f349eb0b2246d715224e3f8"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/before/transparency-en-light-1280.png",
+      "route": "/en/transparency",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "no wallet; light theme; reduced motion; static react/ build before the fixes (origin/main 3dd5a45e); Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:39:45.357771+00:00",
+      "state": "BEFORE: English transparency, light theme, backend down: AFTER the error state uses the light negative token (contrast).",
+      "sha256": "b481b8fcd2aa7bca13b25ceaf827a023363be0f12acae0436ea9f01eb66ec629"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/before/whitepaper-ar-light-375.png",
+      "route": "/ar/whitepaper",
+      "viewport": {
+        "width": 375,
+        "height": 800
+      },
+      "session": "no wallet; light theme; reduced motion; static react/ build before the fixes (origin/main 3dd5a45e); Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:37:33.496925+00:00",
+      "state": "BEFORE: Arabic whitepaper, light theme, 375 px: chapter numbers at readable contrast in AFTER.",
+      "sha256": "5d96614e04852ab8f4f58cb2c5bc968dd067f511cc5dab73a85f8dbcd4f6523e"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/before/challenges-fa-light-390.png",
+      "route": "/fa/challenges",
+      "viewport": {
+        "width": 390,
+        "height": 800
+      },
+      "session": "no wallet; light theme; reduced motion; static react/ build before the fixes (origin/main 3dd5a45e); Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:34:50.820088+00:00",
+      "state": "BEFORE: Persian challenges market widget, light theme, 390 px: BEFORE filter labels cut; AFTER the strip scrolls with whole labels.",
+      "sha256": "76ade2b2ca7e8ef0e9a5cbd70be8aefda8c8a540268e899400eecaf7bc7ccef3"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/before/markets-fa-dark-375-drawer.png",
+      "route": "/fa/markets",
+      "viewport": {
+        "width": 375,
+        "height": 800
+      },
+      "session": "no wallet; dark theme; reduced motion; static react/ build before the fixes (origin/main 3dd5a45e); Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:33:52.156920+00:00",
+      "state": "BEFORE: Persian markets drawer at 375 px: opens on the right edge (RTL).",
+      "sha256": "f0efa985623a6c799c9fdabd5b65efdad14d3086014834ea2c93a82f29f6506f"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/before/markets-en-light-375-drawer.png",
+      "route": "/en/markets",
+      "viewport": {
+        "width": 375,
+        "height": 800
+      },
+      "session": "no wallet; light theme; reduced motion; static react/ build before the fixes (origin/main 3dd5a45e); Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:39:29.155868+00:00",
+      "state": "BEFORE: English markets drawer, light theme, 375 px: opens on the left edge (LTR).",
+      "sha256": "e6c163c1bfb68efc9d351fb9d6fe075841c83e9394e1b2ac260c00dbeafeaf05"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/before/prop-trade-ar-dark-390-drawer.png",
+      "route": "/ar/prop/trade",
+      "viewport": {
+        "width": 390,
+        "height": 800
+      },
+      "session": "no wallet; dark theme; reduced motion; static react/ build before the fixes (origin/main 3dd5a45e); Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:36:41.795366+00:00",
+      "state": "BEFORE: Arabic terminal drawer at 390 px: right edge (RTL); chart workspace stays mounted.",
+      "sha256": "fb8dccb815948fce6753adb177c3e5ce6be3daba938c63068d067c030f35f102"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/before/prop-trade-en-dark-390-drawer.png",
+      "route": "/en/prop/trade",
+      "viewport": {
+        "width": 390,
+        "height": 800
+      },
+      "session": "no wallet; dark theme; reduced motion; static react/ build before the fixes (origin/main 3dd5a45e); Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:38:56.566059+00:00",
+      "state": "BEFORE: English terminal drawer at 390 px: left edge (LTR).",
+      "sha256": "62d51ebfb6f15793f7b17ffbab4b6edf68781af10d33075f2930c097f644edbe"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/before/prop-trade-fa-dark-390.png",
+      "route": "/fa/prop/trade",
+      "viewport": {
+        "width": 390,
+        "height": 800
+      },
+      "session": "no wallet; dark theme; reduced motion; static react/ build before the fixes (origin/main 3dd5a45e); Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:34:26.748245+00:00",
+      "state": "BEFORE: Persian trading terminal at 390 px: compact header, wordmark visually hidden but still the brand link name.",
+      "sha256": "883116d9d0c18c4e9d4299c71096e0d1daee9cf55a01891b808f8c7b4a8026c6"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/after/challenges-ru-dark-320.png",
+      "route": "/ru/challenges",
+      "viewport": {
+        "width": 320,
+        "height": 800
+      },
+      "session": "no wallet; dark theme; reduced motion; static react/ build with the fixes; Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:38:15.560543+00:00",
+      "state": "AFTER: Russian challenges market tabs at 320 px: BEFORE labels cut inside 32 px buttons; AFTER buttons keep their width and the strip scrolls.",
+      "sha256": "b1ea6f0c6d6911a0f418e688a88e543e0275fe98b28403b654b40052ccb69c88"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/after/markets-en-dark-360.png",
+      "route": "/en/markets",
+      "viewport": {
+        "width": 360,
+        "height": 800
+      },
+      "session": "no wallet; dark theme; reduced motion; static react/ build with the fixes; Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:36:09.228565+00:00",
+      "state": "AFTER: English markets at 360 px: BEFORE the \"All\" filter label overflows its button; AFTER it fits.",
+      "sha256": "8e5eb2b8cb49b8c8df9572330dfce35c7b986717db9c401ca818f603dd11b7b1"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/after/transparency-fa-dark-375.png",
+      "route": "/fa/transparency",
+      "viewport": {
+        "width": 375,
+        "height": 800
+      },
+      "session": "no wallet; dark theme; reduced motion; static react/ build with the fixes; Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:34:15.839762+00:00",
+      "state": "AFTER: Persian transparency with the backend answering 503 at 375 px: the published unavailable state in both runs (layout reference).",
+      "sha256": "6e0d8d5ddce12ffe8f9575414348acb2fb3e66d02f349eb0b2246d715224e3f8"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/after/transparency-en-light-1280.png",
+      "route": "/en/transparency",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "session": "no wallet; light theme; reduced motion; static react/ build with the fixes; Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:36:31.305679+00:00",
+      "state": "AFTER: English transparency, light theme, backend down: AFTER the error state uses the light negative token (contrast).",
+      "sha256": "06197def881fca3786b7d18cb4714c2b5e46a66c08320c2f1510cbb62bea295f"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/after/whitepaper-ar-light-375.png",
+      "route": "/ar/whitepaper",
+      "viewport": {
+        "width": 375,
+        "height": 800
+      },
+      "session": "no wallet; light theme; reduced motion; static react/ build with the fixes; Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:36:35.725442+00:00",
+      "state": "AFTER: Arabic whitepaper, light theme, 375 px: chapter numbers at readable contrast in AFTER.",
+      "sha256": "59884485dba834a809fca53282d91f307234d7ea93cacfd7d2d84808534e688d"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/after/challenges-fa-light-390.png",
+      "route": "/fa/challenges",
+      "viewport": {
+        "width": 390,
+        "height": 800
+      },
+      "session": "no wallet; light theme; reduced motion; static react/ build with the fixes; Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:33:47.937173+00:00",
+      "state": "AFTER: Persian challenges market widget, light theme, 390 px: BEFORE filter labels cut; AFTER the strip scrolls with whole labels.",
+      "sha256": "ec341bbc72efffbf6e37811607786b4756ad038f8b81f33c701483aaf7c190f0"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/after/markets-fa-dark-375-drawer.png",
+      "route": "/fa/markets",
+      "viewport": {
+        "width": 375,
+        "height": 800
+      },
+      "session": "no wallet; dark theme; reduced motion; static react/ build with the fixes; Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:33:56.771135+00:00",
+      "state": "AFTER: Persian markets drawer at 375 px: opens on the right edge (RTL).",
+      "sha256": "ee18a56269fbab4c2314887c1f3f45673ee15a5adb9e05d3c60dcbfeb12f0802"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/after/markets-en-light-375-drawer.png",
+      "route": "/en/markets",
+      "viewport": {
+        "width": 375,
+        "height": 800
+      },
+      "session": "no wallet; light theme; reduced motion; static react/ build with the fixes; Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:36:10.814632+00:00",
+      "state": "AFTER: English markets drawer, light theme, 375 px: opens on the left edge (LTR).",
+      "sha256": "4122c046a2f3b34f4c431b00c41838016491cb0a18fe5cdbaeba14667a40065b"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/after/prop-trade-ar-dark-390-drawer.png",
+      "route": "/ar/prop/trade",
+      "viewport": {
+        "width": 390,
+        "height": 800
+      },
+      "session": "no wallet; dark theme; reduced motion; static react/ build with the fixes; Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:34:52.206175+00:00",
+      "state": "AFTER: Arabic terminal drawer at 390 px: right edge (RTL); chart workspace stays mounted.",
+      "sha256": "92c48a943dfdbc15657898e226fad92d3e8a8efe6703609addfe86f5cb40eeb3"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/after/prop-trade-en-dark-390-drawer.png",
+      "route": "/en/prop/trade",
+      "viewport": {
+        "width": 390,
+        "height": 800
+      },
+      "session": "no wallet; dark theme; reduced motion; static react/ build with the fixes; Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:37:07.198837+00:00",
+      "state": "AFTER: English terminal drawer at 390 px: left edge (LTR).",
+      "sha256": "39ce8ebd5097052beae1da35ccf260824392c2f9c544f3e8fa6606fd3062ed24"
+    },
+    {
+      "file": "responsive-matrix/2026-11-20/after/prop-trade-fa-dark-390.png",
+      "route": "/fa/prop/trade",
+      "viewport": {
+        "width": 390,
+        "height": 800
+      },
+      "session": "no wallet; dark theme; reduced motion; static react/ build with the fixes; Openfund backend and CMS answer 503; the browser own public market-data requests (Gains) were not blocked, so live prices appear only where they loaded in time",
+      "capturedAt": "2026-11-20T06:34:53.050316+00:00",
+      "state": "AFTER: Persian trading terminal at 390 px: compact header, wordmark visually hidden but still the brand link name.",
+      "sha256": "28dc30ddc0faf21a65c704e54225b63a626b303f95163ef9fdc068c2313d6553"
     }
   ],
   "finalIntegration": {

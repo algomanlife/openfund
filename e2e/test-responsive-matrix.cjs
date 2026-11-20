@@ -49,6 +49,8 @@ const SHOTS = new Set([
   'prop/trade fa dark 390', 'prop/trade en light 1280', 'prop/dashboard ar dark 375', 'prop/heatmap en dark 768',
   'prop/radar fa light 1440', 'perpetual/trade ru dark 1024',
 ]);
+/* captures scroll to the area each check is about (the viewport otherwise shows the hero) */
+const SHOT_FOCUS = { challenges: '.market-tabs', markets: '.mk-toolbar, .market-tabs, [role=tablist]', whitepaper: '.wp-chapter-num', transparency: '.econ-state' };
 const DRAWER_SHOTS = new Set(['markets fa dark 375', 'markets en light 375', 'prop/trade ar dark 390', 'prop/trade en dark 390']);
 /* drawer behaviour is exercised at every width on one public page with the site
    navigation (/home is the nav-less product gateway) and on the trading terminal */
@@ -297,12 +299,20 @@ async function run(browser, base) {
         await audit(page, tag, locale);
         if (AXE_WIDTHS.has(width)) await axe(page, tag);
         const key = `${route} ${locale} ${theme} ${width}`;
-        if (CAPTURE && SHOTS.has(key)) await page.screenshot({ path: path.join(OUT, `${key.replace(/[ /]/g, '-')}.png`) });
+        if (CAPTURE && SHOTS.has(key)) {
+          const focus = SHOT_FOCUS[route];
+          if (focus) await page.evaluate(sel => document.querySelector(sel)?.scrollIntoView({ block: 'center' }), focus);
+          await settle(page, 200);
+          await page.screenshot({ path: path.join(OUT, `${key.replace(/[ /]/g, '-')}.png`) });
+          await page.evaluate(() => scrollTo(0, 0));
+        }
         if (DRAWER_ROUTES.has(route)) {
           const exercised = await drawer(page, tag, locale, CAPTURE && DRAWER_SHOTS.has(key) ? path.join(OUT, `${key.replace(/[ /]/g, '-')}-drawer.png`) : null);
           if (width <= 430) check(tag, 'phone width exposes the menu trigger', exercised);
         }
       }
+      /* added locales: a visible fallback notice means some copy on the page fell back to English */
+      if (!['fa', 'en'].includes(locale)) check(routeTag, 'no untranslated-copy notice', await page.locator('[data-untranslated-notice]').count() === 0);
       check(routeTag, 'no critical console errors', !errors.length, [...new Set(errors)].slice(0, 4).join(' || '));
       /* route change closes the drawer (phone width) */
       if (DRAWER_ROUTES.has(route)) {
