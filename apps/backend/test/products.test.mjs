@@ -60,6 +60,14 @@ ok(
     perp.capabilities.execution === "unavailable",
 );
 ok(
+  "perpetual declares a read-only Arbitrum One view; prop capabilities unchanged",
+  perp.capabilities.readOnly === true &&
+    perp.capabilities.canTrade === false &&
+    perp.capabilities.network?.chainId === 42161 &&
+    !("readOnly" in prop.capabilities) &&
+    !("canTrade" in prop.capabilities),
+);
+ok(
   "perpetual has no simulated state",
   perp.state === null && perp.accounts[0].currency === null,
 );

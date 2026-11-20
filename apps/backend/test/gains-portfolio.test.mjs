@@ -19,7 +19,8 @@ const position = (user = wallet, type = "0") => ({
     sl: "0",
   },
 });
-const read = async (url) =>
+const read = async (url) => ({ fetchedAt: Date.now(), body: await raw(url) });
+const raw = async (url) =>
   url.includes("/stats?")
     ? { totalTrades: 0 }
     : url.includes("/trading-variables")
@@ -81,7 +82,7 @@ test("invalid cursor rejected", async () => {
   );
 });
 test("upstream schema failure is explicit, not an empty portfolio", async () => {
-  await assert.rejects(() => gainsPortfolio(wallet, {}, async () => ({})), {
+  await assert.rejects(() => gainsPortfolio(wallet, {}, async () => ({ body: {}, fetchedAt: Date.now() })), {
     status: 502,
   });
 });
