@@ -127,7 +127,8 @@ export default function WalletShowcase({ locale }: { locale: AppLocale }) {
         <span className="ws-eyebrow">{pick(locale, 'کیف پول‌های نمونه · دادهٔ نمایشی', 'Sample wallets · demo data')}</span>
         <h2 id="ws-title">{pick(locale, 'هر کیف پول، یک مسیر معاملاتی.', 'Every wallet, its own trading path.')}</h2>
       </div>
-      <div className="ws-viewport">
+      {/* focusable so keyboard users can scroll it (reduced motion) and pause it (focus-within) */}
+      <div className="ws-viewport" tabIndex={0}>
         <div className="ws-track" dir="ltr" style={{ '--ws-count': WALLETS.length } as CSSProperties}>
           <ul className="ws-list" aria-label={pick(locale, 'کیف پول‌های نمونه · دادهٔ نمایشی', 'Sample wallets · demo data')}>
             {WALLETS.map(w => <li key={w.address} dir={dirOf(locale)}><Card wallet={w} locale={locale} /></li>)}

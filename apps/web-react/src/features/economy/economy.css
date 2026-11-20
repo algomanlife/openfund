@@ -24,6 +24,7 @@
 .information-page .econ-source>span{color:var(--body)}
 .information-page .econ-state{border:1px dashed var(--line);border-radius:12px;padding:22px;color:var(--muted);font-size:13px;line-height:1.9}
 .information-page .econ-state.error{border-color:#e8948366;color:#e89483}
+html[data-theme=light] .information-page .econ-state.error{border-color:color-mix(in srgb,var(--ds-negative) 45%,transparent);color:var(--ds-negative)}
 .information-page .econ-empty{color:var(--muted);font-size:12px;padding-block:14px}
 .information-page .econ-bars{margin:0}
 .information-page .econ-bars-plot{display:flex;align-items:flex-end;gap:6px;height:150px;border-bottom:1px solid var(--line);padding-top:10px}

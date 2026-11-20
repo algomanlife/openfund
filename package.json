@@ -55,6 +55,7 @@
     "test:browser:wallet": "node e2e/test-wallet-connect.cjs",
     "test:browser:locale": "node e2e/test-locale-matrix.cjs",
     "test:browser:responsive": "node e2e/test-responsive-navigation.cjs",
+    "test:browser:responsive-matrix": "node e2e/test-responsive-matrix.cjs",
     "test:upstream": "node --test scripts/upstream/test/*.test.mjs && node --test apps/backend/test/market-data-contract.test.mjs",
     "check:upstream": "node scripts/upstream/verify.mjs",
     "check:gains-live": "node scripts/upstream/gains-live-check.mjs",
@@ -65,6 +66,7 @@
     "test:browser:typography": "node e2e/test-typography.mjs"
   },
   "devDependencies": {
+    "axe-core": "4.14.0",
     "js-yaml": "^4.1.0",
     "jsdom": "27.4.0",
     "markdownlint-cli2": "0.24.1",

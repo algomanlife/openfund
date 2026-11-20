@@ -2,6 +2,33 @@
 
 ## Unreleased
 
+- **Responsive launch matrix (workstreams D/E/F)** — new
+  `e2e/test-responsive-matrix.cjs` covers the built web app at ten widths
+  (320-1920 px), five locales (fa and ar RTL; en, ru and zh-CN LTR), both
+  themes, the eight public routes and the terminal routes. It checks overflow,
+  clipped controls, drawer side and closing, console errors and axe
+  serious/critical violations. It runs in CI as the three-shard
+  `Responsive matrix` job. Fixes for what it found:
+  - `/transparency` no longer crashes with a route error when the backend
+    returns a 2xx without JSON; the shared `useRemote` hook shows the
+    unavailable state.
+  - Whitepaper chart-data tables no longer widen phones to 680 px: unwrapped
+    tables on information pages opt out of the legacy `min-width:680px` table
+    rule. Whitepaper and transparency data tables use the new shared
+    `TableScroll` region, which is focusable for keyboard scrolling.
+  - Challenge and market filter tabs no longer cut their labels at 320-768 px:
+    the shared strip rule stops buttons shrinking below their text.
+  - Market cards wrap their head row instead of overflowing at 320 px (Russian).
+  - The terminal's compact wordmark and menu label are visually hidden instead
+    of `display:none`, so the brand link and the menu button keep accessible
+    names.
+  - Accessible names now match visible text (WCAG 2.5.3): the public header
+    brand, the GitHub row and the market cards.
+  - Fixed the challenge size group role, the unavailable-catalog notice inside
+    `<dl>`, and keyboard focus for the ticker, wallet showcase and market list
+    scroll regions.
+  - Fixed light-theme contrast for table headers, empty and error states, the
+    landing caption and the whitepaper chapter and contents numbers.
 - **Journey acceptance (workstream H).** New browser suite
   `npm run test:browser:journeys` covers expired sessions, the SIWE
   chain id, daily- and maximum-loss failures, the minimum-trading-days gate,

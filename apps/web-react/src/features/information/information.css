@@ -42,6 +42,10 @@
 .information-page .formula-block p{font-size:12px}
 .information-page .info-table-wrap{max-width:100%;overflow:auto;margin-top:24px;scrollbar-width:thin;scrollbar-color:#34483f transparent;border:1px solid var(--line);border-radius:7px;padding-inline:18px}
 .information-page .info-table-wrap table{text-align:start;white-space:normal;min-width:520px}
+/* legacy/style.css gives every table min-width:680px + nowrap below 700px (for
+   tables inside a scroller). A table that is not in .info-table-wrap (chart
+   data disclosures, short key/value tables) must fit its column instead. */
+.information-page table:not(.info-table-wrap > table){min-width:0;white-space:normal;overflow-wrap:anywhere}
 .information-page .info-table-wrap th,.information-page .info-table-wrap td{text-align:start;padding:15px 14px;vertical-align:top;border-color:var(--line);line-height:1.9;font-size:12px;color:var(--body)}
 .information-page .info-table-wrap thead th{color:var(--muted);font-size:11px;white-space:nowrap}
 .information-page .info-table-wrap tbody th{font-weight:500;color:var(--white);min-width:130px}

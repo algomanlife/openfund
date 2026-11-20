@@ -835,7 +835,7 @@ html[data-theme="light"] body:has(.of-terminal) {
 @media (max-width: 1100px) {
   .of-terminal-compact .of-terminal-top { gap: 8px; }
   .of-terminal-compact #terminal-navigation > a { padding-inline: 7px; }
-  .of-terminal-compact .of-brand b { display: none; }
+  .of-terminal-compact .of-brand b { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .of-terminal-compact .of-product-switch select { width: 142px; }
 }
 @media (max-width: 800px) {
@@ -912,7 +912,7 @@ html[data-theme="light"] body:has(.of-terminal) {
 .of-terminal-compact .of-calendar-grid>button{min-height:58px}
 .of-dashboard-content .of-analytics-toolbar{padding:10px 0;border-block:1px solid var(--of-line);gap:8px;font-size:11px}
 .of-terminal-compact .of-quick-links{margin:0;font-size:12px}
-@media(max-width:1500px){.of-terminal-compact .of-brand b{display:none}}
+@media(max-width:1500px){.of-terminal-compact .of-brand b{position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;}}
 @media(max-width:1150px){
   .of-terminal-compact .of-header-account{display:none}
   .of-dashboard-workspace{grid-template-columns:220px minmax(0,1fr)}
@@ -961,7 +961,7 @@ html[data-theme="light"] body:has(.of-terminal) {
     grid-template-rows:32px 32px; gap:4px 6px; align-items:center;
   }
   .of-terminal-compact .of-brand { display:flex; grid-area:1/1; justify-self:start; }
-  .of-terminal-compact .of-brand b { display:none; }
+  .of-terminal-compact .of-brand b { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .of-terminal-compact .of-product-switch { grid-area:2/1; }
   .of-terminal-compact .of-header-account { grid-area:2/2; }
   .of-terminal-compact #terminal-navigation { grid-area:2/4; justify-self:end; align-self:stretch; overflow:visible; }
@@ -1031,8 +1031,13 @@ html[data-theme="light"] .of-terminal :is(.of-negative,.negative) { color:#b33f3
   .of-terminal-compact .of-terminal-menu-trigger { grid-area: 2/4; justify-self: end; height: 32px; min-width: 44px; }
 }
 @media (max-width: 380px) {
-  .of-terminal-compact .of-terminal-menu-label { display: none; }
+  .of-terminal-compact .of-terminal-menu-label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }
+
+/* The compact header hides the wordmark and the menu label visually only
+   (the declarations of .ds-sr-only): they stay the brand link's and the menu
+   button's accessible names (WCAG 2.5.3, 4.1.2). */
+.of-terminal-compact .of-brand { position: relative; }
 
 /* ---------- Edge Score radar: proportionate and readable ---------- */
 .of-analytics-grid svg.of-edge-radar,

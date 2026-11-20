@@ -78,6 +78,58 @@ needs `localhost:5173` in `ALLOWED_DOMAINS`. CI runs both; see the
 
 Genuine documentation screenshots use no market/CMS/financial protocol fixtures. Public pages are anonymous; authenticated captures use a disclosed disposable signer and real local account/session records, without seeded trades or performance history. [Screenshot provenance](../assets/screenshots/README.md) records route, viewport, build, services and limitations. Browser snapshots and raw logs live under ignored `output/playwright/` and `output/validation/`.
 
+## Responsive matrix
+
+`e2e/test-responsive-matrix.cjs` runs over the built web application. It starts
+its own static host (`e2e/helpers/static-site.cjs`) with a stub
+`/runtime-config.js` and returns 503 for every backend and CMS request. It needs
+no database, backend or Directus.
+
+```bash
+npm ci && npm --prefix apps/web-react ci
+npx playwright install chromium
+npm run build:web
+npm run test:browser:responsive-matrix
+```
+
+The suite loads every public route (`home`, `challenges`, `markets`, `rulebook`,
+`transparency`, `whitepaper`, `roadmap`, `checkout`) and every terminal route
+(`prop/dashboard|trade|chart|radar|heatmap|portfolio|journal`, `perpetual/trade`).
+Each route runs in all five locales (`fa` and `ar` RTL; `en`, `ru` and `zh-CN`
+LTR) and in both themes, and is resized through 320, 360, 375, 390, 430, 768,
+1024, 1280, 1440 and 1920 px. At each width it asserts:
+
+- no document-level horizontal overflow, including with every `<details>` open;
+- no visible control clipped by the viewport or by an ancestor that hides
+  overflow (controls inside scroll containers count as reachable), and no label
+  wider than its control;
+- the document `dir` and `lang` match the locale.
+
+Each route, locale and theme also gets three further checks. Uncaught
+exceptions and route errors count as critical console errors; failed resource
+loads from the absent backend are expected. axe-core (WCAG 2.0, 2.1 and 2.2
+A/AA rules) runs at 375 and 1280 px and must find no serious or critical
+violations. On `/markets` and `/prop/trade` the off-canvas drawer is exercised
+at every width where its trigger is visible. Every phone width must expose a
+trigger. The drawer must open on the inline-start edge (right for RTL, left for
+LTR), take focus, and close on Escape (returning focus), on an outside click and
+after navigation.
+
+Options: `MATRIX_SHARD=i/n` (CI runs three shards), `MATRIX_LOCALES`,
+`MATRIX_THEMES`, `MATRIX_WIDTHS` and `MATRIX_ROUTES` (comma lists), `MATRIX_ROOT`
+(another build directory), `TEST_FRONTEND_URL` (an already running frontend
+instead of the static host), `MATRIX_CAPTURE=1` and `MATRIX_OUTPUT=<dir>`.
+Font metrics differ between macOS and the Linux CI runners, which changes
+spacing-dependent results such as axe `target-size`. To reproduce CI, run the
+suite in the Playwright image that matches the installed version:
+
+```bash
+docker run --rm -v "$PWD":/work -w /work --ipc=host mcr.microsoft.com/playwright:v1.65.1-noble node e2e/test-responsive-matrix.cjs
+```
+
+Every run writes `report.json` (or `report-<i>.json` per shard) with each failed
+check to the output directory.
+
 ## Release gate coverage
 
 `release:build` invokes `test:backend` and its recorded browser gate list. At v0.2.0/main `561e7f3`, that list did not include explicit purchase-browser acceptance and did not configure a receiver. CI separately sets the test receiver and invokes `test:browser:purchase`. The website worktree adds the focused website suite; it does not establish live-chain payment or wallet-device acceptance. Inspect `scripts/release/build.mjs`, `.github/workflows/ci.yml` and the actual `verification.json` stage/skip results for the tested revision. Never equate a successful package with production payments, deployed CMS or current local startup.

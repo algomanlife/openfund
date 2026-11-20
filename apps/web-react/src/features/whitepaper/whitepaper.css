@@ -44,7 +44,7 @@ html[lang=en] .information-page .wp-hero h1{letter-spacing:-2px}
 .information-page .wp-toc-list a:hover{color:var(--white)}
 .information-page .wp-toc-list a[aria-current]{color:var(--mint);border-inline-start-color:var(--mint)}
 .information-page .wp-toc-list a:focus-visible,.information-page .wp-copy:focus-visible,.information-page .wp-toc-mobile summary:focus-visible,.information-page .wp-chapter h2:focus-visible{outline:2px solid var(--mint);outline-offset:2px;border-radius:4px}
-.information-page .wp-toc-num{font-size:10px;font-variant-numeric:tabular-nums;opacity:.7}
+.information-page .wp-toc-num{font-size:max(var(--ds-text-min),10px);font-variant-numeric:tabular-nums}
 .information-page .wp-toc-mobile{display:none}
 
 /* ---- chapters ---- */
@@ -52,7 +52,7 @@ html[lang=en] .information-page .wp-hero h1{letter-spacing:-2px}
 .information-page .wp-chapter{padding-top:72px;scroll-margin-top:calc(var(--wp-head) - 40px)}
 .information-page .wp-chapter+.wp-chapter{border-top:1px solid var(--line);margin-top:24px}
 .information-page .wp-chapter-head{position:relative;margin-bottom:28px}
-.information-page .wp-chapter-num{display:block;font-size:56px;line-height:1;font-weight:300;color:var(--mint);opacity:.35;font-variant-numeric:tabular-nums;margin-bottom:8px}
+.information-page .wp-chapter-num{display:block;font-size:56px;line-height:1;font-weight:300;color:color-mix(in srgb,var(--mint) 62%,var(--bg));font-variant-numeric:tabular-nums;margin-bottom:8px}
 .information-page .wp-chapter h2{font-size:36px;line-height:1.55;font-weight:500;letter-spacing:-.5px;margin:10px 0 8px}
 .information-page .wp-summary{font-size:14px;color:var(--muted);line-height:1.9}
 .information-page .wp-copy{position:absolute;inset-block-start:4px;inset-inline-end:0;display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--line);border-radius:99px;padding:4px 12px;font:inherit;font-size:11px;color:var(--muted);cursor:pointer;transition:color .2s,border-color .2s}
@@ -197,11 +197,11 @@ html[dir=rtl] .information-page .wp-flow li:not(:last-child)::after{content:'←
 .information-page .wp-refs{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px;margin:4px 0 12px;font-size:11.5px}
 .information-page .wp-refs-label{color:var(--muted)}
 .information-page .wp-refs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
-.information-page .wp-refs li{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:99px;padding:2px 4px 2px 10px}
-html[dir=rtl] .information-page .wp-refs li{padding:2px 10px 2px 4px}
+.information-page .wp-refs li{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:99px;padding-block:2px;padding-inline:10px 4px}
 .information-page .wp-refs a{color:var(--body);text-decoration:none}
 .information-page .wp-refs a:hover{color:var(--mint)}
-.information-page .wp-ref-jump{font-size:10px;padding:0 5px}
+/* WCAG 2.5.8: a 24x24 hit area; the negative margins keep the chip's previous footprint */
+.information-page .wp-ref-jump{display:inline-grid;place-items:center;min-inline-size:24px;min-block-size:24px;margin-block:-4px;margin-inline:-3px;font-size:10px;padding:0 5px}
 .information-page .wp-reflist ol{margin:0;padding-inline-start:26px;display:grid;gap:14px}
 .information-page .wp-reflist li{scroll-margin-top:var(--wp-head);font-size:13px;line-height:1.8;color:var(--body)}
 .information-page .wp-reflist li::marker{color:var(--mint);font-variant-numeric:tabular-nums}
@@ -274,3 +274,5 @@ html[dir=rtl] .information-page .wp-refs li{padding:2px 10px 2px 4px}
   .information-page .wp-chart-data[open] summary,.information-page .wp-chart-data summary{display:none}
   .information-page .wp-reflist a::after{content:' — ' attr(href);font-weight:400;font-size:10px}
 }
+/* light mint is already dark enough at full strength; the dark-theme mix above would wash it out */
+html[data-theme=light] .information-page .wp-chapter-num{color:var(--mint)}
