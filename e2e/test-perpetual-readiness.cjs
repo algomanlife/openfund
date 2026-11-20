@@ -24,6 +24,28 @@ const { connect, signIn } = require("./helpers/wallet-ui.cjs");
 const BASE = (process.env.TEST_FRONTEND_URL || process.env.TEST_BACKEND_URL || "http://localhost:8080").replace(/\/$/, "");
 const OUT = path.resolve(__dirname, "../output/playwright/perpetual-readiness");
 fs.mkdirSync(OUT, { recursive: true });
+/* WCAG 2.x A/AA axe scan, same rule set as the responsive matrix.
+   KNOWN lists violations that pre-date this suite in components shared with
+   Prop (reported in docs/reviews/gains-integration/READINESS.md with an
+   owner). They are printed on every run, never silently passed; any other
+   serious/critical violation fails. */
+const KNOWN = [
+  { rule: "label-content-name-mismatch", node: /rk-account-summary/, why: "shared wallet header button" },
+  { rule: "label-content-name-mismatch", node: /aria-label="\d{4}-\d{2}-\d{2}: /, why: "shared PnL calendar day buttons" },
+  { rule: "color-contrast", node: /aria-pressed="true">All</, why: "shared journal range button, light theme 4.25:1" },
+];
+async function axeViolations(page) {
+  /* evaluated through DevTools: the app's strict script-src CSP stays enforced for the page itself */
+  if (!(await page.evaluate(() => !!window.axe))) await page.evaluate(fs.readFileSync(require.resolve("axe-core/axe.min.js"), "utf8"));
+  const nodes = await page.evaluate(async () => {
+    const r = await window.axe.run(document, { resultTypes: ["violations"], runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] } });
+    return r.violations.filter(v => (v.impact === "serious" || v.impact === "critical") && !v.tags.includes("experimental"))
+      .flatMap(v => v.nodes.map(n => ({ rule: v.id, target: n.target.join(" "), html: n.html.slice(0, 200) })));
+  });
+  const known = nodes.filter(n => KNOWN.some(k => k.rule === n.rule && (k.node.test(n.target) || k.node.test(n.html))));
+  if (known.length) console.log(`KNOWN - ${[...new Set(known.map(n => n.rule + ": " + KNOWN.find(k => k.rule === n.rule && (k.node.test(n.target) || k.node.test(n.html))).why))].join("; ")}`);
+  return nodes.filter(n => !known.includes(n)).map(n => `${n.rule}: ${n.target}`);
+}
 const results = [];
 const check = (name, ok, detail = "") => {
   results.push({ name, ok });
@@ -144,6 +166,8 @@ const snapshot = (wallet, status = "fresh", positions = 1) => ({
       (await page.locator(".of-source-bar").innerText()).includes("Arbitrum One · 42161") && (await page.locator(".of-readonly-badge").count()) > 0);
     check("wallet address renders LTR", (await page.locator(".of-dashboard-grid p[dir=ltr]").first().getAttribute("dir")) === "ltr");
     await page.screenshot({ path: path.join(OUT, "fa-perpetual-dashboard-desktop.png") });
+    const axeDashboard = await axeViolations(page);
+    check("axe: signed-in Perpetual dashboard has no serious/critical violations", !axeDashboard.length, axeDashboard.join(", "));
 
     /* ---------- portfolio: native records, order type, partial closes ---------- */
     await page.goto(`${BASE}/fa/perpetual/portfolio`, { waitUntil: "domcontentloaded" });
@@ -156,6 +180,8 @@ const snapshot = (wallet, status = "fresh", positions = 1) => ({
     await page.getByRole("tab", { name: "تاریخچه" }).click();
     check("partial-close events stay separate native events", (await page.locator("#gains-records tbody tr").count()) === 2 && (await page.locator("#gains-records tbody").innerText()).includes("PositionSizeDecrease"));
     await page.screenshot({ path: path.join(OUT, "fa-perpetual-portfolio-desktop.png") });
+    const axePortfolio = await axeViolations(page);
+    check("axe: Perpetual portfolio with records has no serious/critical violations", !axePortfolio.length, axePortfolio.join(", "));
 
     /* ---------- stale, outdated (retained) and unavailable states ---------- */
     gainsMode = "stale";

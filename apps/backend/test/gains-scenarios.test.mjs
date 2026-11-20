@@ -6,6 +6,10 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { gainsPortfolio, createGainsReader, GAINS_STALE_MS } from "../gains-portfolio.js";
 import { WALLET, NOW, mockReader, failingReader } from "./fixtures/gains-scenarios.mjs";
+import { readFileSync } from "node:fs";
+
+const source = (file) => readFileSync(new URL("../" + file, import.meta.url), "utf8");
+const imports = (file) => [...source(file).matchAll(/^\s*import\s[^;]*?from\s+["']([^"']+)["']/gm)].map((m) => m[1]);
 
 const run = (name, opts = {}) =>
   gainsPortfolio(WALLET, opts.query || {}, mockReader(name, opts), { now: () => NOW });
@@ -134,4 +138,23 @@ test("no request leaves the read-only allowlist", async () => {
     assert.ok(["backend-arbitrum.gains.trade", "backend-global.gains.trade"].includes(u.host));
     assert.ok(!u.search.includes("0x") || u.pathname.includes(WALLET));
   }
+});
+
+test("product isolation: the Gains adapter cannot reach Prop financial state, and Prop cannot read Gains", () => {
+  /* the adapter's only dependency is decimal.js: no engine, ledger, database or evaluation */
+  assert.deepEqual(imports("gains-portfolio.js"), ["decimal.js"]);
+  const code = source("gains-portfolio.js").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+  assert.doesNotMatch(code, /\b(pool|engine|ledger|evaluation|INSERT|UPDATE)\b/);
+  for (const file of ["engine.js", "evaluation.js", "portfolio.js", "payment-ledger.js", "trading-math.js"])
+    assert.ok(!imports(file).some((m) => m.includes("gains-portfolio")), `${file} must not import the Gains adapter`);
+  /* products.js is the only consumer, and only behind the perpetual scope */
+  assert.match(source("products.js"), /if \(req\.scope\.product !== "perpetual"\) throw fail\(404, "not_found"\);\s*res\.json\(\s*await gainsPortfolio\(req\.user\.wallet_address/);
+});
+
+test("every Gains record carries an explicit source and network identifier", async () => {
+  const s = await run("partialClose");
+  assert.equal(s.source, "gains:arbitrum");
+  assert.equal(s.network.chainId, 42161);
+  for (const p of [...s.positions, ...s.orders]) assert.match(p.id, /^42161:0x[0-9a-f]{40}:\d+$/);
+  for (const e of s.history) assert.match(e.key, /^42161:/);
 });
