@@ -9,11 +9,12 @@
 An open-development prop trading firm and trading technology platform for
 trading evaluations, funded programs, trader rewards and financial transparency.
 
-[**openfi.cloud**](https://openfi.cloud) · [**openfund.cloud**](https://openfund.cloud) · [Documentation](docs/README.md) · [Roadmap](ROADMAP.md) · [Changelog](CHANGELOG.md)
+[**openfi.cloud**](https://openfi.cloud) (global) · [**openfi.live**](https://openfi.live) (Iran) · [Documentation](docs/README.md) · [Roadmap](ROADMAP.md) · [Changelog](CHANGELOG.md)
 
 [![Latest release](https://img.shields.io/github/v/release/algomanlife/openfund?label=release&color=82e7bd&labelColor=060808)](https://github.com/algomanlife/openfund/releases/latest)
 [![Deployed version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fopenfi.cloud%2Fversion&query=%24.version&label=deployed&color=82e7bd&labelColor=060808)](https://openfi.cloud/version)
 [![CI](https://github.com/algomanlife/openfund/actions/workflows/ci.yml/badge.svg)](https://github.com/algomanlife/openfund/actions/workflows/ci.yml)
+[![Security scans](https://github.com/algomanlife/openfund/actions/workflows/security.yml/badge.svg)](https://github.com/algomanlife/openfund/actions/workflows/security.yml)
 ![License: decision pending](https://img.shields.io/badge/license-decision%20pending-C6FF52?labelColor=060808)
 
 <br />
@@ -24,7 +25,7 @@ trading evaluations, funded programs, trader rewards and financial transparency.
 
 ---
 
-**Contents** · [Overview](#project-overview) · [Products](#product-ecosystem) · [Backstage](#openfund-backstage--business-operations-console) · [Gallery](#product-gallery) · [Feature status](#feature-status) · [Business model](#business-model) · [Architecture](#technical-architecture) · [Technology](#technology-stack) · [Development](#development-workflow) · [Releases](#versioning-and-releases) · [Security](#security) · [License](#license) · [Contributing](#contributing-and-security)
+**Contents** · [Overview](#project-overview) · [Products](#product-ecosystem) · [Backstage](#openfund-backstage--business-operations-console) · [Gallery](#product-gallery) · [Feature status](#feature-status) · [Languages and regions](#languages-and-regions) · [Business model](#business-model) · [Architecture](#technical-architecture) · [Technology](#technology-stack) · [Development](#development-workflow) · [Releases](#versioning-and-releases) · [Security](#security) · [License](#license) · [Docs map](#documentation-map) · [Contributing](#contributing-and-security)
 
 <!-- status:summary -->
 
@@ -169,6 +170,7 @@ production until `/version` reports it.
 | --- | --- |
 | **Production** | Prop simulation (Free Trial, Standard, One-phase, Instant); shared terminal; Perpetual read-only market data and wallet-scoped positions; dashboard, portfolio, journal, invoices; server challenge evaluation; CMS; transparency, revenue-model and live-market pages |
 | **Released (v0.6.5 and v0.7.0); v0.7.0 deployed on GLOBAL Web/API, IRAN still on v0.6.5** ([PR #122](https://github.com/algomanlife/openfund/pull/122), [PR #132](https://github.com/algomanlife/openfund/pull/132), [v0.7.0](docs/releases/openfund-0.7.0.md)) | Trade Radar and Market Heatmap; certificate designs and verification page; terminal Persian terminology and footer; homepage and site-wide redesign; Applications and Roadmap pages; complete Backstage operations and Content workspace; trader Inbox and in-app notifications; post-deploy SIWE gate |
+| **Merged after v0.7.0, not yet released** | Geo-IP first-visit language for returning visitors ([#159](https://github.com/algomanlife/openfund/pull/159)); Dastkhat Persian typography across site, terminal, Backstage and Open Trade ([#161](https://github.com/algomanlife/openfund/pull/161)); deterministic Heatmap/Radar and Controlled Challenge tests with a test-mode clock ([#160](https://github.com/algomanlife/openfund/pull/160)); regional routing host-matrix tests, IPv6 Geo-IP lookup and a read-only redirect-readiness check ([#163](https://github.com/algomanlife/openfund/pull/163)); browser journey acceptance suite in CI and release gates ([#164](https://github.com/algomanlife/openfund/pull/164), [report](docs/reviews/journey-acceptance-2026-11/REPORT.md)) |
 | **Implemented, not active** | Hybrid Governance v1.0 (no council seated); Ambassador and Coach programs; Iran regional runtime and synchronization ([ADR 0033](docs/decisions/0033-regional-authority-and-synchronization.md)) |
 | **Beta** | Open Trade 0.0.2 — built and acceptance-tested for macOS, Windows and Linux; unsigned; publication awaiting owner approval |
 | **Not accepted (real-payment defects)** | Checkout and purchases: payments are enabled in production. The owner's two real purchases on 2026-11-18 (DePay, manual) did not activate a challenge ([incident report](docs/payments/INCIDENT_2026-11-18.md)) |
@@ -178,6 +180,47 @@ production until `/version` reports it.
 
 Controlled challenge acceptance uses two owner-issued test entitlements in an
 isolated runtime. See the [operator procedures](docs/payments/CONTROLLED_CHALLENGES.md).
+
+## Languages and regions
+
+Openfund ships five interface languages: Persian (`fa`, RTL), Arabic (`ar`,
+RTL), English (`en`), Russian (`ru`) and Simplified Chinese (`zh-CN`). Every
+page lives under an explicit locale path (`/fa/home`, `/zh-CN/markets`, …),
+and the server publishes `hreflang` alternates and a sitemap for them.
+
+**Which language a visitor sees** ([ADR 0043](docs/decisions/0043-canonical-domains-geo-routing-and-locale.md)):
+
+1. A locale in the URL always wins.
+2. Otherwise, a language the visitor explicitly picked in the language menu.
+3. Otherwise, a first-visit default from the visitor's trusted country.
+4. Otherwise, English.
+
+| Visitor country | Default |
+| --- | --- |
+| Iran | Persian |
+| The 22 Arab League members | Arabic |
+| Russia | Russian |
+| China | Simplified Chinese |
+| Any other or unknown country | English |
+
+The country comes only from a verified source — Cloudflare's `CF-IPCountry`
+from a published Cloudflare address on GLOBAL, or a licensed local IP database
+on the Iran runtime — and never decides authorization, payments or account
+access. The pre-paint script sets `lang` and `dir` before the first frame, so
+there is no flash of another language.
+
+**Typography.** Persian UI text uses [Dastkhat](https://github.com/dastyar-io/dastkhat-font)
+and Arabic uses Dastkhat Arabic (SIL OFL 1.1, self-hosted, pinned by commit and
+SHA-256); Latin and Cyrillic use Ubuntu, Chinese uses system CJK fonts.
+Prices, sizes, addresses and hashes render as isolated LTR tabular numbers.
+See the [design system](docs/design/DESIGN_SYSTEM.md).
+
+**Regions.** `openfi.cloud` (alias `openfund.cloud`) is the GLOBAL site on
+Render; `openfi.live` is the Iran site on Liara. Choosing a language never
+changes the region. An automatic redirect of Iranian visitors to `openfi.live`
+exists as a disabled rule and stays off until every gate in ADR 0043 passes
+and the owner approves; `node scripts/ops/geo-redirect-readiness.mjs` reports
+the gates read-only.
 
 ## Business model
 
@@ -317,7 +360,7 @@ Design system: shared tokens and primitives in
 | **GitHub** | Canonical repository; protected `main` with required checks; releases and tags |
 | **Render** | `openfund` (Node web service, API + SPA), `openfund-cms` (Directus image with a persistent media disk), `openfund-db` (PostgreSQL 17), all in Frankfurt. Commit auto-deploy is off |
 | **IRAN region** | Liara runtime image and desired-state manifest (`infra/liara-iran-runtime`, ADR 0033): same release, own database, signed synchronization. Deployed on Liara (web and worker, v0.6.5); synchronization **not enabled** |
-| **Domains** | `openfi.cloud` and `openfund.cloud` serve the same service |
+| **Domains** | GLOBAL: `openfi.cloud` (canonical) and `openfund.cloud`, with `www.` aliases. IRAN: `openfi.live` (canonical) with `www.openfi.live`, `iran.openfi.cloud` and `iran.openfund.cloud` aliases ([ADR 0043](docs/decisions/0043-canonical-domains-geo-routing-and-locale.md)) |
 | **Deployment** | A maintainer publishes a release; the release workflow deploys the exact tagged commit after environment approval and checks `/version` on both domains |
 | **Build** | `node scripts/release/render-build.mjs` builds the frontend; migrations run at start-up and are additive and idempotent |
 | **Health** | `/health` (API), `/server/ping` (CMS), `/version` (exact version and commit) |
@@ -417,6 +460,19 @@ to milestones with acceptance criteria in the
 mirrors it. The owner's product roadmap will be added there; no dates or
 completion percentages are published before then.
 
+## Documentation map
+
+| Topic | Start here |
+| --- | --- |
+| Architecture | [Architecture](docs/architecture/ARCHITECTURE.md) · [Tech stack](docs/architecture/TECH_STACK.md) · [Decisions (ADRs)](docs/decisions/) |
+| Product status | [Feature status](docs/product/FEATURE_STATUS.md) · [Current runtime status](docs/status/README.md) · [Milestones](docs/roadmap/MILESTONES.md) · [Roadmap](ROADMAP.md) |
+| Trading | [Trading docs](docs/trading/) · [Controlled challenges](docs/payments/CONTROLLED_CHALLENGES.md) |
+| Development | [Testing](docs/development/TESTING.md) · [CI](docs/development/CI.md) · [Pull requests](docs/development/PULL_REQUESTS.md) |
+| Deployment | [Releases](docs/deployment/RELEASES.md) · [Render](docs/deployment/RENDER.md) · [Iran runtime](docs/deployment/LIARA_IRAN_RUNTIME.md) · [Launch parity](docs/deployment/LAUNCH_PARITY_RUNBOOK.md) · [Environment](docs/deployment/ENVIRONMENT.md) |
+| Security | [Remediation report](docs/security/SECURITY-REMEDIATION-2026-11.md) · [Self-assessment](docs/security/SECURITY-AUDIT-2026-11.md) · [SECURITY.md](SECURITY.md) |
+| Design | [Design system](docs/design/DESIGN_SYSTEM.md) · [Screenshot manifest](docs/assets/screenshots/manifest.json) |
+| Community | [Contributing](CONTRIBUTING.md) · [Support](SUPPORT.md) · [Changelog](CHANGELOG.md) · [Docs index](docs/README.md) |
+
 ## License
 
 **No first-party license has been chosen yet.** Openfund's own code is
@@ -437,7 +493,8 @@ Third-party components keep their own terms (full list in
 | MetaMask SDK | ConsenSys licence | Notice shipped; commercial-use terms under review |
 | Directus | BSL 1.1 (11.17.4) | Separate service, not redistributed |
 | Openfund Protocol (dormant) | GPL-2.0 | Not built or shipped |
-| Irancell-derived fonts, Pine indicators | **Unresolved** | Provenance needed before any license decision |
+| Dastkhat, Dastkhat Arabic | SIL OFL 1.1 | Persian/Arabic UI fonts, self-hosted unmodified ([source](apps/web-react/public/assets/fonts/dastkhat/SOURCE.json)) |
+| Irancell-derived fonts (legacy, being retired), Pine indicators | **Unresolved** | Provenance needed before any license decision |
 
 [Licensing report](docs/legal/LICENSING.md) · [Dependency licenses](docs/legal/DEPENDENCY_LICENSES.md)
 
@@ -469,6 +526,6 @@ to submit your work ([CONTRIBUTING.md](CONTRIBUTING.md)).
 
 <img src="docs/assets/brand/mark.svg" alt="Openfund mark" width="32" />
 
-[openfi.cloud](https://openfi.cloud) · [openfund.cloud](https://openfund.cloud) · [Releases](https://github.com/algomanlife/openfund/releases) · [Changelog](CHANGELOG.md)
+[openfi.cloud](https://openfi.cloud) · [openfi.live](https://openfi.live) · [Releases](https://github.com/algomanlife/openfund/releases) · [Changelog](CHANGELOG.md)
 
 </div>
