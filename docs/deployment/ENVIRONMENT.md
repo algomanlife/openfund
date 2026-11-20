@@ -184,8 +184,8 @@ React, Vite, WalletConnect and electron-builder are separately locked under
 
 The web application directly depends on `qrcode` 1.5.4 (MIT) to encode the
 current site's localized certificate verification URL. Encoding and exports
-run locally in the browser; no QR service receives holder data. The existing
-Openfund Persian font and approved emblem are reused. PNG and landscape PDF
+run locally in the browser; no QR service receives holder data. The Persian
+text uses the self-hosted Dastkhat font and the approved emblem is reused. PNG and landscape PDF
 exports embed the same 2400 × 1600 canvas. No additional environment variable,
 service, backend renderer or production credential is introduced.
 

@@ -10,7 +10,7 @@
   background: #070c0acc; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   border-top: 1px solid var(--line, #ffffff18);
   color: var(--body, #b5bebb);
-  font: 400 12px/1 'Irancell', Tahoma, sans-serif;
+  font: 400 12px/1 var(--ds-font-persian);
 }
 html.has-bitpin-ticker body { padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
 
