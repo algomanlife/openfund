@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- **Deterministic CI for two flaky browser suites** — the Market Heatmap and
+  Trade Radar suite now runs on fixed `/radar/*` fixtures and a fixed page
+  clock, with empty and unavailable states covered. The real Hyperliquid
+  feed check is a separate, non-blocking step. The controlled-challenge suite
+  uses a test-mode conduct clock (`POST /internal/test-clock`,
+  `SIM_TEST_CLOCK`; only with `SIM_TEST_MODE=1` and a test database) and
+  asserts the daily close window, the weekend and the summer/winter close
+  hour. Production keeps the real clock and unchanged rules.
+
 - **Security remediation (November 2026 follow-up)** — the
   [remediation report](docs/security/SECURITY-REMEDIATION-2026-11.md). Merged,
   not released or deployed.

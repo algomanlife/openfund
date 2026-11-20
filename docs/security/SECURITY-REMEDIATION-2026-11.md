@@ -209,10 +209,18 @@ failed on `main` (for example at `1784a9dc`), independently of these
 changes. The assertions were not weakened. The failed jobs were rerun and
 passed, and the root causes are recorded here:
 
-| Suite | Failure | Root cause | Follow-up |
+| Suite | Failure | Root cause | Current status |
 | --- | --- | --- | --- |
-| `e2e/test-heatmap-radar.cjs` | Waiting for a searched tile timed out | The test picks its market from **live** Hyperliquid data, polled every 30 s. The search walk ends when that market drops out of the filtered list or the layout changes | Serve a fixed `/markets` fixture to the test |
-| `e2e/test-controlled-challenges.cjs` | `holding_window_closing` (400) when opening a trade | The test uses the **wall clock**. Funded rules correctly refuse new trades in the window before the daily close (22:00 UTC in winter), and the job ran at about 21:50 UTC. The same suite will also hit the weekend rule from the Friday close | Give the test server a controllable clock (test-mode seam), as the unit suites already do |
+| `e2e/test-heatmap-radar.cjs` | Waiting for a searched tile timed out | The test picks its market from **live** Hyperliquid data, polled every 30 s. The search walk ends when that market drops out of the filtered list or the layout changes | **Fixed in code, pending review** (branch `agent/claude/deterministic-ci`). Every `/radar/*` response comes from fixed fixtures, and the page clock starts at a fixed instant. The search target is the fixture's smallest market, and empty and unavailable states are now asserted. The real feed moved to `e2e/test-heatmap-radar-live.cjs`, a non-blocking CI step |
+| `e2e/test-controlled-challenges.cjs` | `holding_window_closing` (400) when opening a trade | The test uses the **wall clock**. Funded rules correctly refuse new trades in the window before the daily close (22:00 UTC in winter), and the job ran at about 21:50 UTC. The same suite will also hit the weekend rule from the Friday close | **Fixed in code, pending review** (same branch). A test-mode conduct clock (`apps/backend/test-clock.js`, `POST /internal/test-clock`, `SIM_TEST_CLOCK`) is built only with `SIM_TEST_MODE=1` and a test database. Production keeps `Date.now`, and its rules are unchanged. The suite runs its lifecycle at a fixed open-market time and asserts 21 boundary cases: open, pre-close window, exact close, closed, weekend, reopen and the summer/winter close-hour change. CI starts that server inside the close window |
+
+Local verification for the fix ran on Node 26.13.0 and PostgreSQL with a
+fresh disposable database per run. Both suites passed twice at each of five
+server clocks: inside the winter pre-close window, at the exact Friday close,
+on Saturday, inside the summer pre-close window, and on the unpinned real
+clock. The previous controlled suite, run against the same pinned server,
+failed with the original `holding_window_closing` error. Other suites with
+similar time or live-data dependence are listed in the pull request.
 
 ## Outstanding blockers
 
@@ -220,7 +228,7 @@ passed, and the root causes are recorded here:
 | --- | --- | --- | --- | --- |
 | OF-2026-11-12 in production | Changes production database grants and Render secrets | Code, CI proof and runbook | Run the [database roles](DATABASE_ROLES.md) deployment steps | A Directus admin session can still write financial rows in production |
 | OF-2026-11-11 | Directus 12 requires a licence for Openfund's model | Controls verified; upgrade procedure ready | Obtain a licence or eligible grant, or accept 11.x in writing | Two High advisories stay present in 11.17.4 (exposure reduced) |
-| Test reliability | Two browser suites depend on live data and the wall clock | Root causes identified; reruns green | Approve the fixture and clock follow-ups | Intermittent red CI on `main` (Friday close to Sunday open for the controlled-challenge suite) |
+| Test reliability | Fix awaits review and merge | Fixtures, a test-mode clock and boundary cases on `agent/claude/deterministic-ci`, verified locally | Review and merge the pull request | Until merged, intermittent red CI on `main` (close window and Friday close to Sunday open for the controlled-challenge suite) |
 | Release and deployment | Releases and production deploys are owner actions | All fixes in `main` with green CI | Run the Unified release, then the production deploy with approval | None of these fixes protects production yet |
 | IRAN edge | Never deployed (ADR 0042) | Image and gate ready | Dispatch staging, then production | — |
 | Backup drill | Needs a production read-only URL | Script exists | Run `backup-drill.mjs` before the database role change | Unverified restore path |
