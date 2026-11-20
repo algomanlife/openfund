@@ -109,6 +109,14 @@ Options: `MATRIX_SHARD=i/n` (CI runs three shards), `MATRIX_LOCALES`,
 `MATRIX_THEMES`, `MATRIX_WIDTHS` and `MATRIX_ROUTES` (comma lists), `MATRIX_ROOT`
 (another build directory), `TEST_FRONTEND_URL` (an already running frontend
 instead of the static host), `MATRIX_CAPTURE=1` and `MATRIX_OUTPUT=<dir>`.
+Font metrics differ between macOS and the Linux CI runners, which changes
+spacing-dependent results such as axe `target-size`. To reproduce CI, run the
+suite in the Playwright image that matches the installed version:
+
+```bash
+docker run --rm -v "$PWD":/work -w /work --ipc=host mcr.microsoft.com/playwright:v1.65.1-noble node e2e/test-responsive-matrix.cjs
+```
+
 Every run writes `report.json` (or `report-<i>.json` per shard) with each failed
 check to the output directory.
 

@@ -72,8 +72,18 @@ const BENIGN = [/Failed to load resource/i, /net::ERR_/i, /status of 50\d/i, /st
   /WebSocket/i, /Load failed/i, /AbortError/i, /\b503\b/, /\/api\//, /ResizeObserver loop/i];
 const critical = text => !BENIGN.some(re => re.test(text));
 
+/* A navigation can replace the document while a script runs (the legacy landing
+   may reload itself shortly after a route change): retry once on the new one. */
+async function evaluateSettled(page, fn, arg) {
+  try { return await page.evaluate(fn, arg); } catch (error) {
+    if (!/Execution context was destroyed|navigat/i.test(String(error && error.message))) throw error;
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+    return page.evaluate(fn, arg);
+  }
+}
+
 async function settle(page, ms = 250) {
-  await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
+  await evaluateSettled(page, () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
   await page.waitForTimeout(ms);
 }
 
@@ -267,9 +277,10 @@ async function drawerNavigation(page, base, tag, locale, route) {
   if (!target) { await page.keyboard.press('Escape'); return; }
   await page.locator(`.of-offcanvas-body a[href="${target}"]`).first().click();
   await page.waitForURL(u => new URL(u).pathname !== `/${locale}/${route}`, { timeout: 8000 }).catch(() => {});
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
   await settle(page, 600);
   check(tag, 'navigation closes the drawer', await page.locator('.of-offcanvas[data-state="open"]').count() === 0, target);
-  check(tag, 'scroll restored after navigation', await page.evaluate(() => getComputedStyle(document.documentElement).overflow !== 'hidden'));
+  check(tag, 'scroll restored after navigation', await evaluateSettled(page, () => getComputedStyle(document.documentElement).overflow !== 'hidden'));
 }
 
 async function run(browser, base) {

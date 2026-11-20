@@ -46,6 +46,7 @@ locale.
 
 | Finding | Root cause | Fix (shared layer) |
 | --- | --- | --- |
+| Whitepaper reference-jump links below the 24 px target size (WCAG 2.5.8), found only on Linux CI | 18 × 19 px links; on macOS font metrics they passed axe's spacing exception, on Linux they did not | 24 × 24 px hit area with offsetting negative margins; the chip padding uses logical properties instead of an RTL override |
 | `GitHub` icon label reported as untranslated in ar/ru/zh-CN (introduced and caught on this branch) | A brand name was missing from the language-neutral list | `GitHub` joins `TradingView`, `Bitpin` and the other brand names |
 | Filter tab labels cut at 320-768 px (challenges and markets, every locale) | The design-system rule `min-inline-size: 32px` replaces flex's `min-width: auto`, so the strip's buttons shrank below their text | `flex-shrink: 0` on the shared `.market-tabs` / `.market-views` button rule; the strip scrolls |
 | Whitepaper chart-data tables widen phones to 680 px when opened | legacy `style.css` gives every `table` `min-width: 680px` and `nowrap` below 700 px, a rule meant for tables in a scroller | Information pages reset tables that are not inside `.info-table-wrap` |
