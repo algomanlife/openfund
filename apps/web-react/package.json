@@ -20,7 +20,7 @@
     "test:website": "node --test test/website-expansion.test.mjs test/seasonal-logo.test.mjs test/roadmap.test.mjs",
     "test:whitepaper": "node --test test/whitepaper.test.mjs",
     "test:terminal": "node --test test/terminal-completion.test.mjs test/terminal-risk.test.mjs test/position-sizing.test.mjs test/chart-protection.test.mjs test/terminal-copy.test.mjs test/radar.test.mjs test/heatmap-layout.test.mjs",
-    "test:i18n": "node scripts/i18n-sources.mjs --check",
+    "test:i18n": "node scripts/i18n-sources.mjs --check && node --test test/geo-locale-boot.test.mjs",
     "test:governance": "node --test test/governance.test.mjs",
     "test:chart": "node --test test/chart-quick-trade.test.mjs",
     "test:content": "node --test test/public-content.test.mjs test/community.test.mjs test/ui-refinement.test.mjs test/refinement-navigation.test.mjs",

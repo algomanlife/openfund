@@ -18,6 +18,14 @@
   Checked by `apps/web-react/test/typography.test.mjs` and the browser test
   `e2e/test-typography.mjs` (rendered font, font requests, CSP).
 
+- **Geo-IP first-visit language now applies to returning visitors (ADR 0043
+  amendment).** The site, terminal and landing shells saved every displayed
+  locale as the visitor's preference, so a stale value (including the pre-0.7
+  Persian default) always beat the country default. Only the language
+  selector now records an explicit choice (`of-language-choice`); the static
+  document default is English/LTR. A new test runs the real pre-paint script
+  across the country matrix and storage cases. Not released or deployed.
+
 - **Security remediation (November 2026 follow-up)** — the
   [remediation report](docs/security/SECURITY-REMEDIATION-2026-11.md). Merged,
   not released or deployed.
