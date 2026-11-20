@@ -208,7 +208,7 @@ html[dir="rtl"] .field, html[dir="rtl"] .risk-box > .kv,
 html[dir="rtl"] .order-details, html[dir="rtl"] .sizing-tools .kv { direction: rtl; text-align: right; }
 html[dir="rtl"] .risk-box > .kv { align-items: stretch; }
 html[dir="rtl"] .kv b { font-family: Ubuntu, system-ui, sans-serif; font-size: 13px; line-height: 18px; }
-html[dir="rtl"] .field em { font-family: Irancell, sans-serif; }
+html[dir="rtl"] .field em { font-family: var(--ds-font-persian); }
 html[dir="rtl"] .field-err { direction: rtl; text-align: right; }
 html[dir="rtl"] .panel-tabs, html[dir="rtl"] .book-controls { direction: rtl; }
 @media (min-width: 1600px) {
@@ -311,7 +311,7 @@ html[dir="rtl"] .bt-table td:has(> .act-btn), html[dir="rtl"] .bt-table .empty-t
 /* Persian numbers use the same Latin-digit face as English everywhere. */
 html[dir="rtl"] :is(.num, .stat dd, .bt-table td, .tr-row, .bk-row span, .book-mid, .acct-row b,
   .field input, .out, .lev-val, .lev-presets button, .pct-btns button, .cnt, .review-grid b) {
-  font-family: Ubuntu, Irancell, system-ui, sans-serif;
+  font-family: var(--ds-font-latin);
 }
 html[dir="rtl"] .bt-table td { font-size: 13px; line-height: 1.5; }
 html[dir="rtl"] .acct-row > span { align-items: center; line-height: 16px; }
@@ -380,7 +380,7 @@ html[dir="rtl"] .pos-detail-grid { direction: rtl; }
 .pos-detail-grid dd, .pos-detail-grid dd.num { white-space: normal; direction: inherit; unicode-bidi: normal; }
 html[dir="ltr"] .pos-detail-grid dd { text-align: right; }
 html[dir="rtl"] .pos-detail-grid dd { text-align: left; }
-html[dir="rtl"] .pos-detail-grid dd { font-family: Ubuntu, Irancell, system-ui, sans-serif; }
+html[dir="rtl"] .pos-detail-grid dd { font-family: var(--ds-font-latin); }
 @media (max-width: 540px) {
   .pos-detail-grid { grid-template-columns: minmax(0, 1fr); }
   .dlg:has(.pos-detail-grid) { padding: 16px 14px; }
@@ -428,11 +428,11 @@ html[dir="rtl"] #bt-positions th:last-child, html[dir="rtl"] .bt-table #tb-posit
 #st-last.is-stale { text-decoration: underline dotted; text-underline-offset: 3px; }
 .book-panel.is-stale { border-style: dashed; }
 
-/* Arabic terminal: Latin digits from Ubuntu, Arabic letters from the bundled
-   Vazirmatn (Persian keeps its existing Irancell face). */
-@font-face { font-family: 'Vazirmatn'; src: url('assets/Vazirmatn.ttf') format('truetype'); font-weight: 100 900; font-display: swap; }
-html[lang="ar"] body, html[lang="ar"] :is(button, input, select, summary, .field em) { font-family: Ubuntu, Vazirmatn, Tahoma, sans-serif; }
-html:is([lang="ru"], [lang="zh-CN"]) body { font-family: Ubuntu, system-ui, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif; }
+/* Arabic terminal: Latin digits from Ubuntu, Arabic letters from Dastkhat
+   Arabic (Persian uses Dastkhat). @font-face and --ds-font-* come from
+   legacy/terminal.css, which this iframe document loads. */
+html[lang="ar"] body, html[lang="ar"] :is(button, input, select, summary, .field em) { font-family: var(--ds-font-arabic); }
+html:is([lang="ru"], [lang="zh-CN"]) body { font-family: var(--ds-font-cjk); }
 
 /* ============================================================
    Chart tab: the same workspace document with only the chart shown.
@@ -587,7 +587,7 @@ html[dir="rtl"] .sltp-field input { text-align: left; }
 .pos-rr-legend { position: absolute; z-index: 4; top: 0; bottom: 0; right: var(--of-price-axis-w, 68px); width: 0; pointer-events: none; }
 /* the price axis is on the right in LTR and RTL alike: physical offsets */
 .pos-rr-chip, .pos-rr-restore { position: absolute; right: 4px; pointer-events: auto; white-space: nowrap;
-  font: 500 10px/1.4 Ubuntu, Irancell, system-ui, sans-serif; font-variant-numeric: tabular-nums; color: var(--body, var(--white)); }
+  font: 500 10px/1.4 var(--ds-font-latin); font-variant-numeric: tabular-nums; color: var(--body, var(--white)); }
 .pos-rr-chip { display: flex; align-items: center; gap: 5px; padding: 1px 2px 1px 5px; border: 1px solid var(--line-strong); border-radius: 4px;
   background: color-mix(in srgb, var(--surface-2) 74%, transparent); box-shadow: 0 1px 3px rgb(0 0 0 / .14); opacity: .9; transition: top .12s ease-out, opacity .12s; }
 .pos-rr-chip:hover, .pos-rr-chip:focus-within, .pos-rr-chip.open { opacity: 1; z-index: 2; background: color-mix(in srgb, var(--surface-2) 94%, transparent); }
@@ -620,7 +620,7 @@ html[dir="rtl"] .pos-rr-chip { padding: 1px 5px 1px 2px; }
 /* technical values in the new dialogs and legend use the same Latin-digit
    face as every other number in RTL (ids, prices, ratios) */
 html[dir="rtl"] :is(.sltp-id, .sltp-meta bdi, .sltp-hint bdi, .pos-rr-chip bdi, .review-list dd bdi) {
-  font-family: Ubuntu, Irancell, system-ui, sans-serif;
+  font-family: var(--ds-font-latin);
 }
 
 /* ---------- Prop ticket: leverage ceiling, sizing modes, equivalents ---------- */

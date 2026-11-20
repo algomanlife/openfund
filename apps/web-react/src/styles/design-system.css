@@ -8,6 +8,10 @@
    new components can use one vocabulary in both shells and both themes.
    Documented in docs/design/DESIGN_SYSTEM.md.
    ========================================================================== */
+/* Dastkhat variable fonts, self-hosted at one same-origin URL so the site,
+   the terminal iframe, the legacy pages and Backstage share one cached file. */
+@font-face { font-family: 'Dastkhat'; src: url('/assets/fonts/dastkhat/Dastkhat-Variable.woff2') format('woff2'); font-weight: 100 900; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Dastkhat Arabic'; src: url('/assets/fonts/dastkhat/DastkhatArabic-Variable.woff2') format('woff2'); font-weight: 100 900; font-style: normal; font-display: swap; }
 :root {
   /* brand + semantic colour (dark defaults; light overrides below) */
   --ds-brand: #82e7bd;            /* Openfund mint */
@@ -24,10 +28,23 @@
   --ds-line: var(--of-line, var(--line, #ffffff1c));
   --ds-focus: var(--ds-brand);
 
-  /* type scale (fluid where it matters) */
-  --ds-font-sans: 'Irancell', 'Ubuntu', Tahoma, system-ui, sans-serif;
-  --ds-font-latin: 'Ubuntu', system-ui, sans-serif;
+  /* font families. The --ds-font-* stacks are copied verbatim into
+     legacy/style.css, legacy/terminal.css and the Backstage console (separate
+     documents); test/typography.test.mjs fails if any copy drifts. Dastkhat
+     (SIL OFL 1.1, public/assets/fonts/dastkhat/SOURCE.json) is the Persian UI
+     face; Ubuntu keeps Latin/Cyrillic and system fonts keep CJK. */
+  --ds-font-persian: 'Dastkhat', 'Ubuntu', Tahoma, system-ui, sans-serif;
+  --ds-font-arabic: 'Ubuntu', 'Dastkhat Arabic', 'Dastkhat', Tahoma, system-ui, sans-serif;
+  --ds-font-latin: 'Ubuntu', 'Dastkhat', system-ui, sans-serif;
+  --ds-font-cjk: 'Ubuntu', system-ui, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', 'Dastkhat', sans-serif;
+  --ds-font-sans: var(--ds-font-persian);
+  /* technical numbers (prices, sizes, addresses, hashes): Latin digits,
+     tabular, always isolated LTR via .ds-num. Display only: never a reason to
+     change how a number is serialized. */
+  --ds-font-numeric: 'Ubuntu', 'Dastkhat', system-ui, sans-serif;
   --ds-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* type scale (fluid where it matters) */
   --ds-text-min: 11px;            /* readable floor for real copy */
   --ds-text-xs: 12px;
   --ds-text-sm: 14px;
@@ -83,7 +100,7 @@ html :is(span.eyebrow, div.eyebrow, .eyebrow) { font-size: max(var(--ds-text-min
 .ds-card { border: 1px solid var(--ds-line); border-radius: var(--ds-radius-lg); background: var(--ds-surface); box-shadow: var(--ds-shadow-1); }
 .ds-glass { background: var(--ds-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
 .ds-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px; border-radius: var(--ds-radius-pill); border: 1px solid var(--ds-line); font-size: var(--ds-text-xs); color: var(--ds-text-muted); }
-.ds-num { font-variant-numeric: tabular-nums; direction: ltr; unicode-bidi: isolate; }
+.ds-num { font-family: var(--ds-font-numeric); font-variant-numeric: tabular-nums; direction: ltr; unicode-bidi: isolate; }
 .ds-sr-only { position: fixed !important; inset-block-start: 0; inset-inline-start: 0; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .ds-sr-only { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 

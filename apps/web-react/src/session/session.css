@@ -7,7 +7,7 @@
   height: 38px; padding: 0 14px;
   background: transparent; color: #d4ddd7;
   border: 1px solid #ffffff25; border-radius: 6px;
-  font: 500 12.5px/1 Ubuntu, 'Irancell', system-ui, sans-serif;
+  font: 500 12.5px/1 var(--ds-font-latin);
   cursor: pointer; white-space: nowrap; box-sizing: border-box;
   transition: border-color .18s, color .18s, background .18s;
 }
@@ -48,13 +48,13 @@ html[data-theme='light'] .rk-chip-bal { color: #6b7a70 }
   background: #0c1710; color: #f1f3ef;
   border: 1px solid #82e7bd44; border-radius: 14px;
   padding: 22px 24px;
-  font-family: Ubuntu, 'Irancell', Tahoma, sans-serif;
+  font-family: var(--ds-font-latin);
   margin: auto;
 }
-/* Irancell draws ASCII digits as Persian numerals: use it first only for Persian,
-   so amounts and coupon codes keep Latin digits in every other locale. */
-:lang(fa) .of-profile { font-family: 'Irancell', Tahoma, sans-serif }
-:lang(ar) .of-profile { font-family: Ubuntu, Vazirmatn, Tahoma, sans-serif }
+/* Persian leads with Dastkhat (Latin digits stay Latin, tabular); Arabic keeps
+   Ubuntu first so amounts and coupon codes keep Ubuntu digits. */
+:lang(fa) .of-profile { font-family: var(--ds-font-persian) }
+:lang(ar) .of-profile { font-family: var(--ds-font-arabic) }
 .of-profile-close { color: #a3b8a9; font-size: 24px; float: inline-end; background: none; border: 0; cursor: pointer }
 .of-profile-close:hover { color: #fff }
 .of-profile h2 { font-size: 19px; font-weight: 600; margin: 4px 0 14px }
@@ -107,10 +107,10 @@ html[data-theme='light'] .rk-chip-bal { color: #6b7a70 }
   width:248px; max-width:calc(100vw - 24px); padding:12px; box-sizing:border-box;
   background:#0d1511; color:#e6eee9; border:1px solid #ffffff25; border-radius:8px;
   box-shadow:0 12px 32px #0004; text-align:start; white-space:normal;
-  font:500 12.5px/1.5 Ubuntu, 'Irancell', system-ui, sans-serif;
+  font:500 12.5px/1.5 var(--ds-font-latin);
 }
-.rk-account-controls:lang(fa) { font-family:'Irancell', Ubuntu, Tahoma, sans-serif; }
-.rk-account-controls:lang(ar) { font-family:Ubuntu, 'Vazirmatn', Tahoma, sans-serif; }
+.rk-account-controls:lang(fa) { font-family:var(--ds-font-persian); }
+.rk-account-controls:lang(ar) { font-family:var(--ds-font-arabic); }
 .rk-menu-section { display:flex; flex-direction:column; gap:6px; min-width:0; }
 .rk-menu-section + .rk-menu-section { padding-top:12px; border-top:1px solid #ffffff17; }
 .rk-menu-heading { font-size:10.5px; font-weight:600; letter-spacing:.02em; color:#8fa69a; }
