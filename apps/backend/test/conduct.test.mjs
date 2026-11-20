@@ -11,6 +11,8 @@ import test, { before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import express from 'express'
 import pg from 'pg'
+import { execFileSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { Engine } from '../engine.js'
 import { ChallengeService, normalizeRules } from '../evaluation.js'
@@ -19,7 +21,24 @@ import { propMaxLeverage } from '../prop-leverage.js'
 import { PLAN_SEEDS } from '../plan-catalog.js'
 
 if (!/test|audit|_ci/.test(process.env.DATABASE_URL || '')) throw new Error('Use an isolated test DATABASE_URL')
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL })
+/* This suite backdates idle v3 challenges and evaluates them on a pinned
+   clock. CI and the release gates also boot server.js on the same database,
+   and its engine loop re-checks every idle v3 challenge each minute on the
+   REAL clock, so it could fail an account (inactivity, profitable days)
+   before the pinned evaluation ran: an intermittent C6 failure. The suite
+   therefore runs in its own disposable database, migrated from scratch and
+   dropped afterwards; no other engine can see its accounts. */
+const baseUrl = new URL(process.env.DATABASE_URL)
+const isolatedDb = `${baseUrl.pathname.slice(1)}_conduct_${process.pid}_${Date.now()}`.replace(/[^a-z0-9_]/gi, '_').toLowerCase()
+const admin = new pg.Client({ connectionString: process.env.DATABASE_URL })
+await admin.connect()
+await admin.query(`CREATE DATABASE "${isolatedDb}"`)
+await admin.end()
+const isolatedUrl = new URL(baseUrl); isolatedUrl.pathname = `/${isolatedDb}`
+execFileSync(process.execPath, [fileURLToPath(new URL('../migrate.js', import.meta.url))], {
+  env: { ...process.env, DATABASE_URL: isolatedUrl.href, FOOTPRINT_DATABASE_URL: isolatedUrl.href }, stdio: ['ignore', 'ignore', 'inherit'],
+})
+const pool = new pg.Pool({ connectionString: isolatedUrl.href })
 const TOKEN = 'conduct-test-token-0123456789'
 const T = s => Date.parse(s)
 const DAY = 86_400_000
@@ -80,7 +99,12 @@ before(async () => {
     plans[seed.slug] = (await pool.query(`INSERT INTO challenge_plans (slug, name, configuration) VALUES ($1,$2,$3) RETURNING *`, [`${seed.slug}-ct-${Date.now()}`, seed.name, JSON.stringify(seed.configuration)])).rows[0]
   }
 })
-after(async () => { await pool.query(`DELETE FROM economic_calendar_coverage WHERE source=$1`, [SOURCE]); await pool.query(`DELETE FROM economic_events WHERE source=$1`, [SOURCE]); await pool.end() })
+after(async () => {
+  await pool.end()
+  const drop = new pg.Client({ connectionString: process.env.DATABASE_URL })
+  await drop.connect()
+  try { await drop.query(`DROP DATABASE IF EXISTS "${isolatedDb}" WITH (FORCE)`) } finally { await drop.end() }
+})
 
 test('C1 plans whose rules need news data are not sold without verified calendar coverage', async () => {
   clock.now = T('2031-03-03T12:00:00Z') /* a period no import covers */
