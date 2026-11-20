@@ -2,7 +2,7 @@
    can never report "ready". A fake transport replaces the network. */
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { observe, evaluateGates, formatReport, parseRuntimeConfig, PASS, FAIL, OWNER } from '../geo-redirect-readiness.mjs'
+import { observe, evaluateGates, formatReport, parseRuntimeConfig, GATE } from '../geo-redirect-readiness.mjs'
 
 const GLOBAL = 'https://openfi.cloud', IRAN = 'https://openfi.live'
 const version = (v, commit, official) => JSON.stringify({ status: 'matched', version: v, commit, manifest: { official } })
@@ -34,7 +34,7 @@ const fake = routes => async (url, opts) => routes(url, opts)
 test('today: GLOBAL 0.7.0, IRAN 0.6.5 unofficial → not ready, gates 1, 2 and 4 fail', async () => {
   const report = evaluateGates(await observe({ get: fake(today) }))
   assert.equal(report.verdict, 'not_ready')
-  assert.deepEqual(report.gates.map(g => g.result), [FAIL, FAIL, PASS, FAIL, OWNER])
+  assert.deepEqual(report.gates.map(g => g.result), [GATE.fail, GATE.fail, GATE.pass, GATE.fail, GATE.owner])
   const text = formatReport(report)
   assert.match(text, /NOT READY/)
   assert.match(text, /IRAN 0\.6\.5 a87804a/)
@@ -55,20 +55,20 @@ test('all verifiable gates pass → still only awaiting the owner; never "ready"
   }
   const observed = await observe({ get: fake(good) })
   /* ADR 0044 still says Proposed in the repository: gate 4 fails on its own */
-  assert.equal(evaluateGates(observed).gates[3].result, FAIL)
+  assert.equal(evaluateGates(observed).gates[3].result, GATE.fail)
   const report = evaluateGates({ ...observed, adr0044Status: 'Accepted; implemented (#200)' })
-  assert.deepEqual(report.gates.map(g => g.result), [PASS, PASS, PASS, OWNER, OWNER])
+  assert.deepEqual(report.gates.map(g => g.result), [GATE.pass, GATE.pass, GATE.pass, GATE.owner, GATE.owner])
   assert.equal(report.verdict, 'awaiting_owner_approval')
   assert.ok(report.advisory.every(a => a.ok))
 })
 
 test('a worker that answers on its default subdomain fails gate 3; unreachable endpoints fail, never pass', async () => {
   const exposed = url => (url.includes('worker') ? ok('{"ok":true,"ts":1}') : today(url))
-  assert.equal(evaluateGates(await observe({ get: fake(exposed) })).gates[2].result, FAIL)
+  assert.equal(evaluateGates(await observe({ get: fake(exposed) })).gates[2].result, GATE.fail)
   const down = () => ({ status: null, error: 'ECONNREFUSED', body: '' })
   const report = evaluateGates(await observe({ get: fake(down) }))
   assert.equal(report.verdict, 'not_ready')
-  assert.deepEqual(report.gates.map(g => g.result), [FAIL, FAIL, PASS, FAIL, OWNER], 'gate 3 passes only because nothing answers as Openfund')
+  assert.deepEqual(report.gates.map(g => g.result), [GATE.fail, GATE.fail, GATE.pass, GATE.fail, GATE.owner], 'gate 3 passes only because nothing answers as Openfund')
 })
 
 test('the script only reads: every request is a GET to a public URL', async () => {

@@ -24,7 +24,7 @@ import { IRAN_ALIAS_CASES, NAV } from '../cloudflare/verify-public.mjs'
 import { CANONICAL } from '../../infra/cloudflare/policy.mjs'
 
 const root = new URL('../../', import.meta.url)
-export const PASS = 'pass', FAIL = 'fail', OWNER = 'owner-approval-required'
+export const GATE = Object.freeze({ pass: 'pass', fail: 'fail', owner: 'owner-approval-required' })
 
 /* ---------- observation (network, read-only GET/HEAD) ---------- */
 
@@ -105,29 +105,29 @@ export function evaluateGates(o) {
   const proposed = /^proposed|not implemented/i.test(o.adr0044Status)
 
   const gates = [
-    { id: 1, name: 'ADR 0043 release on both regions; Iran alias redirects verified', checks: g1, result: g1.every(c => c.ok) ? PASS : FAIL },
-    { id: 2, name: 'Iran web reports fresh marks', checks: g2, result: g2.every(c => c.ok) ? PASS : FAIL },
-    { id: 3, name: "Worker's default subdomain disabled", checks: g3, result: g3.every(c => c.ok) ? PASS : FAIL },
+    { id: 1, name: 'ADR 0043 release on both regions; Iran alias redirects verified', checks: g1, result: g1.every(c => c.ok) ? GATE.pass : GATE.fail },
+    { id: 2, name: 'Iran web reports fresh marks', checks: g2, result: g2.every(c => c.ok) ? GATE.pass : GATE.fail },
+    { id: 3, name: "Worker's default subdomain disabled", checks: g3, result: g3.every(c => c.ok) ? GATE.pass : GATE.fail },
     { id: 4, name: 'Cross-region identity and operation forwarding (ADR 0044) implemented, tested on two regions, approved',
       checks: checks([!proposed, `ADR 0044 status: ${o.adr0044Status}`]),
       /* implementation is visible in the repository; two-region acceptance is the owner's */
-      result: proposed ? FAIL : OWNER },
-    { id: 5, name: 'Explicit owner approval to enable openfund_geo_iran', checks: checks([false, 'recorded outside this script; never inferred']), result: OWNER },
+      result: proposed ? GATE.fail : GATE.owner },
+    { id: 5, name: 'Explicit owner approval to enable openfund_geo_iran', checks: checks([false, 'recorded outside this script; never inferred']), result: GATE.owner },
   ]
   const advisory = [
     { ok: g.ingress.lastHopCloudflare === true, text: `GLOBAL last ingress hop is Cloudflare: ${g.ingress.http === 200 ? g.ingress.lastHopCloudflare : g.ingress.http}` },
     { ok: i.ingress.countrySource === 'ip-database', text: `IRAN country source: ${i.ingress.countrySource ?? `unknown (/runtime/ingress ${i.ingress.http})`} — direct openfi.live visitors get a country locale only with ip-database` },
   ]
-  const verdict = gates.some(x => x.result === FAIL) ? 'not_ready' : 'awaiting_owner_approval'
+  const verdict = gates.some(x => x.result === GATE.fail) ? 'not_ready' : 'awaiting_owner_approval'
   return { observedAt: o.observedAt, verdict, gates, advisory }
 }
 
 export function formatReport(report) {
-  const mark = { [PASS]: 'PASS ', [FAIL]: 'FAIL ', [OWNER]: 'OWNER' }
+  const mark = { [GATE.pass]: 'PASS ', [GATE.fail]: 'FAIL ', [GATE.owner]: 'OWNER' }
   const lines = [`Geographic redirect readiness (ADR 0043 §Gates) — observed ${report.observedAt}`, '']
   for (const g of report.gates) {
     lines.push(`[${mark[g.result]}] Gate ${g.id}: ${g.name}`)
-    for (const c of g.checks) lines.push(`         ${g.result === OWNER && !c.ok ? '·' : c.ok ? '✓' : '✗'} ${c.text}`)
+    for (const c of g.checks) lines.push(`         ${g.result === GATE.owner && !c.ok ? '·' : c.ok ? '✓' : '✗'} ${c.text}`)
   }
   lines.push('', 'Advisory (not gates):')
   for (const a of report.advisory) lines.push(`         ${a.ok ? '✓' : '✗'} ${a.text}`)
