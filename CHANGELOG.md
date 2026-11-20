@@ -9,7 +9,12 @@
   - Terminal pages name the product: "Openfund Prop — Simulated evaluation" or "Openfund Perpetual — Gains account view". Perpetual pages show the source, the network, a read-only badge and the feed state, and label a kept snapshot as outdated.
   - The Perpetual trade workspace no longer calls itself a practice account.
   - New tests: deterministic backend scenarios and a browser acceptance suite (`npm run test:browser:perpetual`).
-  - Live execution remains disabled. The Prop backend, engine and ledger are unchanged.
+  - Live execution remains disabled. The Prop backend, engine and ledger are unchanged. **This is not the requested Gains trading product.** The draft [execution RFC](docs/architecture/PERPETUAL_EXECUTION_RFC.md) states what that product requires.
+  - The responsive matrix no longer depends on third parties. Gains REST/WS data comes from documented fixtures (`e2e/helpers/market-fixtures.cjs`), and other external origins are blocked. Live account endpoints are checked separately and non-blocking (`npm run check:gains-account-live`, Upstream watch).
+  - Release status reconciled: v0.8.0 is recorded as the latest official release, and GLOBAL Web/API is verified on 0.8.0 (`/version`, 2026-11-20). The status self-tests now follow the recorded release instead of hard-coding v0.7.0.
+
+
+## v0.8.0 — 2026-11-20
 
 - **Responsive launch matrix (workstreams D/E/F)** — new
   `e2e/test-responsive-matrix.cjs` covers the built web app at ten widths

@@ -4,18 +4,18 @@
   "updatedAt": "2026-11-20",
   "release": {
     "latestOfficial": {
-      "version": "0.7.0",
-      "tag": "v0.7.0",
-      "commit": "34ef7ec719d2bb0e5b20d10e6112a8ccc33261a0",
-      "publishedAt": "2026-11-18",
-      "evidence": "https://github.com/algomanlife/openfund/releases/tag/v0.7.0"
+      "version": "0.8.0",
+      "tag": "v0.8.0",
+      "commit": "0320cf70fa42f0309764f26fc86604f90f2c498e",
+      "publishedAt": "2026-11-20",
+      "evidence": "https://github.com/algomanlife/openfund/releases/tag/v0.8.0"
     },
     "next": {
       "version": null,
       "candidateCommit": null,
       "state": "in_development",
-      "note": "Openfund Pay payment rebuild (ADR 0046) is implemented on branch agent/claude/openfund-pay and awaits review; it is a feat change, so the release planner will allocate at least 0.8.0. Not released, not deployed.",
-      "evidence": "https://github.com/algomanlife/openfund/tree/agent/claude/openfund-pay"
+      "note": "v0.8.0 includes Openfund Pay (ADR 0046, merged in #146). Nothing is allocated to the next version yet.",
+      "evidence": "https://github.com/algomanlife/openfund/compare/v0.8.0...main"
     }
   },
   "environments": {
@@ -27,10 +27,10 @@
           "role": "Web/API",
           "provider": "render",
           "resource": "srv-dbnfjajrjlhs738m4020",
-          "version": "0.7.0",
-          "commit": "34ef7ec719d2bb0e5b20d10e6112a8ccc33261a0",
+          "version": "0.8.0",
+          "commit": "0320cf70fa42f0309764f26fc86604f90f2c498e",
           "official": true,
-          "verifiedAt": "2026-11-20T10:24:00Z",
+          "verifiedAt": "2026-11-20T18:14:00Z",
           "evidence": "https://openfi.cloud/version"
         },
         {

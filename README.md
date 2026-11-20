@@ -31,8 +31,8 @@ trading evaluations, funded programs, trader rewards and financial transparency.
 
 **Current status** (verified 2026-11-20; canonical: [docs/status](docs/status/README.md)):
 
-- Latest official release: **v0.7.0** (`34ef7ec`, 2026-11-18).
-- GLOBAL (Render) Web/API runs v0.7.0 `34ef7ec`; IRAN (Liara) web runs v0.6.5 `a87804a` (built as unofficial).
+- Latest official release: **v0.8.0** (`0320cf7`, 2026-11-20).
+- GLOBAL (Render) Web/API runs v0.8.0 `0320cf7`; IRAN (Liara) web runs v0.6.5 `a87804a` (built as unofficial).
 - Purchases: enabled in GLOBAL, disabled in IRAN; owner purchase acceptance open (see the purchases row in docs/status).
 - Live execution: disabled (Approved signer/custody design, supported testnet contracts, simulation, security review and management activation).
 - Desktop: 0.0.2 installers built and acceptance-tested in CI; unsigned and not published.

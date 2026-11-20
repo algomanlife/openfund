@@ -8,14 +8,14 @@ documentation are historical unless they match this page.
 
 ## Release
 
-- **Latest official release:** [v0.7.0](https://github.com/algomanlife/openfund/releases/tag/v0.7.0) — commit `34ef7ec719d2bb0e5b20d10e6112a8ccc33261a0`, published 2026-11-18.
-- **Next release:** version not yet allocated — in development; candidate `null`. Openfund Pay payment rebuild (ADR 0046) is implemented on branch agent/claude/openfund-pay and awaits review; it is a feat change, so the release planner will allocate at least 0.8.0. Not released, not deployed. ([evidence](https://github.com/algomanlife/openfund/tree/agent/claude/openfund-pay))
+- **Latest official release:** [v0.8.0](https://github.com/algomanlife/openfund/releases/tag/v0.8.0) — commit `0320cf70fa42f0309764f26fc86604f90f2c498e`, published 2026-11-20.
+- **Next release:** version not yet allocated — in development; candidate `null`. v0.8.0 includes Openfund Pay (ADR 0046, merged in #146). Nothing is allocated to the next version yet. ([evidence](https://github.com/algomanlife/openfund/compare/v0.8.0...main))
 
 ## Services
 
 | Environment | Service | Role | Version | Commit | Official | Verified | Evidence | Note |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| GLOBAL — Render | `openfund` | Web/API | 0.7.0 | `34ef7ec` | yes | 2026-11-20 10:24 UTC | [evidence](https://openfi.cloud/version) | — |
+| GLOBAL — Render | `openfund` | Web/API | 0.8.0 | `0320cf7` | yes | 2026-11-20 18:14 UTC | [evidence](https://openfi.cloud/version) | — |
 | GLOBAL — Render | `openfund-backstage` | Backstage | — | `cd057fa` | no | 2026-11-18 07:40 UTC | [evidence](https://dashboard.render.com/web/srv-dbsum1u7bikc73chqlfg) | Unreleased commit from a dashboard auto-deploy; its /health predates commit identity, so the commit comes from Render's deploy record. |
 | GLOBAL — Render | `openfund-cms` | Directus CMS | directus/directus:11.17.4 | — | — | 2026-11-18 07:40 UTC | [evidence](https://cms.openfi.cloud/server/health) | Independent image identity; health verified, image digest not re-verified on this date. |
 | IRAN — Liara | `openfund-iran` | Web/API | 0.6.5 | `a87804a` | no | 2026-11-20 10:24 UTC | [evidence](https://openfi.live/version) | Built without RELEASE_OFFICIAL (reports official: false). Runs OPENFUND_ROLES=http, so it holds no market data (execution suspended_no_authoritative_marks). |

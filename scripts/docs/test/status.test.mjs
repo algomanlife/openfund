@@ -28,6 +28,10 @@ function fixture(mutate) {
   rmSync(root, { recursive: true, force: true })
   return { code: run.status, out: run.stdout + run.stderr }
 }
+/* the cases follow the recorded latest release, so a release update cannot break them */
+const LATEST = JSON.parse(readFileSync(join(repo, 'docs/status/status.json'), 'utf8')).release.latestOfficial.version
+const esc = v => v.replace(/\./g, '\\.')
+const NEXT = LATEST.replace(/^(\d+)\.(\d+)\.\d+$/, (_, major, minor) => `${major}.${Number(minor) + 1}.0`)
 const json = (path, fn) => text => { const v = JSON.parse(text); fn(v); return JSON.stringify(v, null, 2) + '\n' }
 
 test('the repository passes', () => {
@@ -37,10 +41,11 @@ test('the repository passes', () => {
 })
 
 test('a released version still labelled Unreleased in the CHANGELOG fails', () => {
-  const { code, out } = fixture(edit => edit('CHANGELOG.md', t => t.replace(/^## v0\.7\.0 — 2026-11-18$/m, '## Unreleased — v0.7.0')))
+  const heading = new RegExp(`^## v${esc(LATEST)} — \\d{4}-\\d{2}-\\d{2}$`, 'm')
+  const { code, out } = fixture(edit => edit('CHANGELOG.md', t => { assert.match(t, heading); return t.replace(heading, `## Unreleased — v${LATEST}`) }))
   assert.equal(code, 1)
-  assert.match(out, /labels released v0\.7\.0 as Unreleased/)
-  assert.match(out, /no "## v0\.7\.0" heading/)
+  assert.match(out, new RegExp(`labels released v${esc(LATEST)} as Unreleased`))
+  assert.match(out, new RegExp(`no "## v${esc(LATEST)}" heading`))
 })
 
 test('a current document that contradicts the recorded runtime state fails', () => {
@@ -83,7 +88,8 @@ test('one shared state for both regions is refused', () => {
 })
 
 test('a hand-edited README status block or generated page fails', () => {
-  const { code, out } = fixture(edit => edit('README.md', t => t.replace(/Latest official release: \*\*v0\.7\.0\*\*/, 'Latest official release: **v0.6.9**')))
+  const block = `Latest official release: **v${LATEST}**`
+  const { code, out } = fixture(edit => edit('README.md', t => { assert.ok(t.includes(block), block); return t.replace(block, 'Latest official release: **v0.0.1**') }))
   assert.equal(code, 1)
   assert.match(out, /README\.md: out of date with docs\/status\/status\.json/)
 })
@@ -92,8 +98,8 @@ test('a newer tag than the recorded latest release fails when tags are available
   const { code, out } = fixture((edit, root) => {
     execFileSync('git', ['init', '-q'], { cwd: root })
     execFileSync('git', ['-c', 'user.email=t@example.test', '-c', 'user.name=t', 'commit', '-q', '--allow-empty', '-m', 'x'], { cwd: root })
-    for (const tag of ['v0.7.0', 'v0.8.0']) execFileSync('git', ['tag', tag], { cwd: root })
+    for (const tag of [`v${LATEST}`, `v${NEXT}`]) execFileSync('git', ['tag', tag], { cwd: root })
   })
   assert.equal(code, 1)
-  assert.match(out, /latestOfficial is v0\.7\.0 but v0\.8\.0 exists/)
+  assert.match(out, new RegExp(`latestOfficial is v${esc(LATEST)} but v${esc(NEXT)} exists`))
 })
