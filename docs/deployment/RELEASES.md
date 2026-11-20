@@ -10,6 +10,10 @@ execution time; this paragraph is a dated record, not live status.
 
 Re-verified read-only on 2026-11-10: `https://openfund.cloud/version` and `https://openfi.cloud/version` both report `matched`, version 0.4.4, commit `c1cb7073e4f1eb16c2b204ec9b0b1158b1dde4b1`; the GitHub Release `v0.4.4` is the latest. `main` was at `1d95def` (six pull requests after v0.4.4, none deployed).
 
+## Perpetual execution and release acceptance
+
+A release never activates Perpetual trading. Passing CI or publishing a release authorizes no execution capability. Activation needs the approvals in the [Gains readiness report](../reviews/gains-integration/READINESS.md#10-production-blockers-and-required-approvals), a written owner decision and an ADR.
+
 ## Release-to-production pipeline
 
 ```mermaid

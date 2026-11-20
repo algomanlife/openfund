@@ -124,3 +124,18 @@ disposable local runtimes (Docker PostgreSQL 17 with a non-superuser
 | Liara edge deployment | NOT RUN | The pull-request jobs (build, scan, contract, edge auth) passed on #150; deployment is dispatch-only and not authorized |
 | Real-network payment acceptance | NOT APPLICABLE | No real transactions were authorized |
 | Load and stress testing | NOT RUN | Excluded by the rules of engagement |
+
+## Perpetual Gains readiness (2026-11-20, branch `agent/claude/gains-readiness`)
+
+Local runs against an isolated server and a disposable database. Full table and threat model: [Gains integration readiness](../reviews/gains-integration/READINESS.md#6-test-evidence-pass--fail--blocked--not-tested).
+
+| Check | Result |
+| --- | --- |
+| Gains adapter scenarios, product-isolation import graph, record provenance (24 tests) | PASS |
+| Wallet/session across products, wallet change, disconnect, refresh (browser) | PASS |
+| Perpetual write attempts in the simulation suite (chain, Gains write API, Openfund trading) | PASS (none made) |
+| axe on signed-in Perpetual pages | PASS (3 known pre-existing shared-component findings) |
+| OSV dependency scan | FAIL (pre-existing OF-2026-11-04 only; lockfiles unchanged) |
+| Semgrep on new code | PASS |
+| CodeQL | NOT RUN locally (default setup on the PR) |
+| Execution path security (signing, allowances, contract pinning) | NOT APPLICABLE (not built) |

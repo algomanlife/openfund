@@ -3,6 +3,7 @@
 - **Status:** Draft for independent review. Nothing in this RFC is implemented or authorized.
 - **Date:** 2026-11-20
 - **Scope:** requirements and architecture options only. This RFC does not implement or activate leveraged order submission, token approvals, collateral transfers or delegated signing.
+- **Readiness report:** [Gains integration readiness](../reviews/gains-integration/READINESS.md) (ToS, compliance, threat model, evidence, verdict).
 - **Related:** [ADR 0047](../decisions/0047-perpetual-gains-read-only-readiness.md) (read-only boundary), [Gains integration](../integrations/GAINS.md), [Perpetual](../trading/PERPETUAL.md), [Wallet identity](../wallet/IDENTITY.md).
 
 ## 1. Product intent
@@ -34,6 +35,7 @@ The Gains facts below come from official documentation read on 2026-11-20. Gains
 | Liquidation price guide (SDK) | https://docs.gains.trade/developer/integrators/guides/calculating-liquidation-price |
 | Contract addresses (Arbitrum mainnet) | https://docs.gains.trade/what-is-gains-network/contract-addresses/arbitrum-mainnet |
 | Eligibility and restricted regions | https://docs.gains.trade/help/eligibility-and-restricted-regions |
+| Terms of Service (last updated 2023-11-01) | https://gains.trade/terms-of-service |
 
 Contract addresses and ABIs are deliberately not copied into this RFC. An implementation must take them from the official source at build time, and the security review must verify them.
 
@@ -132,7 +134,7 @@ Counsel must review the wording. It must not be machine-translated into any loca
 
 ## 10. Eligibility requirements
 
-- A **minimum age** set by legal review: at least the age of majority in the user's jurisdiction. Gains' eligibility page states no age.
+- A **minimum age**: the [Gains Terms of Service](https://gains.trade/terms-of-service) (last updated 2023-11-01) require users "older than eighteen years of age" and "of sound mind". Openfund's gate must also respect the local age of majority, which counsel decides.
 - **Gains restrictions:** the terms exclude the US and its territories, US persons, sanctioned persons, and VPN use to hide a US location. Some asset categories have further regional checks.
 - **Sanctions** screening policy defined by legal review.
 - **An IP address, locale or wallet connection is not proof of eligibility.** No workaround for restrictions.

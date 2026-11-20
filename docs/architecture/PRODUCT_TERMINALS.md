@@ -97,3 +97,5 @@ Both products are available in every supported locale (fa, en, ar, ru, zh-CN). L
 ## Adapter ownership
 
 [ADR 0047](../decisions/0047-perpetual-gains-read-only-readiness.md) defines the layers. The Prop adapter is the practice engine and its PostgreSQL ledger. The Perpetual adapter is `gains-portfolio.js`, read-only and session-wallet scoped. The terminal builds one adapter object per product and never shares a mutable provider between them. Switching products keeps the single SIWE session. A wallet change or disconnect revokes it for both products and discards in-flight reads for the previous wallet.
+
+The Perpetual trading iframe reads `parent.__ofReadOnlyProductAdapter`, which is always the read-only Gains adapter in the application. Only the browser test harness replaces it, to present the order lifecycle against a labelled in-memory simulator (`e2e/fixtures/perpetual-simulation.cjs`). No production code path constructs a tradable Perpetual adapter.

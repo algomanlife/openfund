@@ -11,6 +11,8 @@
   - New tests: deterministic backend scenarios and a browser acceptance suite (`npm run test:browser:perpetual`).
   - Live execution remains disabled. The Prop backend, engine and ledger are unchanged. **This is not the requested Gains trading product.** The draft [execution RFC](docs/architecture/PERPETUAL_EXECUTION_RFC.md) states what that product requires.
   - The responsive matrix no longer depends on third parties. Gains REST/WS data comes from documented fixtures (`e2e/helpers/market-fixtures.cjs`), and other external origins are blocked. Live account endpoints are checked separately and non-blocking (`npm run check:gains-account-live`, Upstream watch).
+  - Isolated Perpetual UI simulation (test-only, Playwright-injected, visible banner, no writes), product-isolation import-graph tests, and axe scans of signed-in Perpetual pages. History-row links now meet the 24 px target size.
+  - [Gains integration readiness report](docs/reviews/gains-integration/READINESS.md): gap analysis, Terms of Service and compliance assessment, threat model, test evidence, blockers with owners. Verdict: the read-only integration is ready for review; live trading is not authorized.
   - Release status reconciled: v0.8.0 is recorded as the latest official release, and GLOBAL Web/API is verified on 0.8.0 (`/version`, 2026-11-20). The status self-tests now follow the recorded release instead of hard-coding v0.7.0.
 
 
