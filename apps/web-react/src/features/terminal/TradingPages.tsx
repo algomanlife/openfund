@@ -375,8 +375,8 @@ export function SharedTradingTerminal() {
       "book.note": {fa:"نقدینگی شبیه سازی شده؛ این یک دفتر سفارش غیر متمرکز مجازی است\nداده های از بروکر های Gains و hyperliquid تجمیع میشود.",en:"Gains virtual execution liquidity; no resting orders."},
       "trades.note": {fa:"معاملات اجراشدهٔ Gains · اندازه به USD",en:"Gains executed trades · size in USD"},
       "ac.modeVal": {
-        fa: product === "prop" ? "حساب تمرینی" : "پرپچوال",
-        en: product === "prop" ? "Practice account" : "Perpetual",
+        fa: product === "prop" ? "حساب تمرینی" : "نمای حساب Gains · فقط خواندنی",
+        en: product === "prop" ? "Practice account" : "Gains account view · read-only",
       },
       "rk.maxloss": { fa: "برآورد سود و زیان در SL", en: "Est. PnL at SL" },
       demoBanner: { fa: "", en: "" },
@@ -390,7 +390,9 @@ export function SharedTradingTerminal() {
       },
       "bt.hint": { fa: "", en: "" },
       "dlg.confirmOrder": { fa: "تأیید سفارش", en: "Confirm order" },
-      "rv.exec": { fa: "حساب تمرینی", en: "Practice account" },
+      "rv.exec": product === "prop"
+        ? { fa: "حساب تمرینی", en: "Practice account" }
+        : { fa: "اجرا غیرفعال (فقط خواندنی)", en: "Execution disabled (read-only)" },
       "notif.empty": { fa: "اعلانی وجود ندارد.", en: "No notifications." },
       "toast.position": { fa: "پوزیشن باز شد.", en: "Position opened." },
       "toast.order": { fa: "سفارش ثبت شد.", en: "Order submitted." },

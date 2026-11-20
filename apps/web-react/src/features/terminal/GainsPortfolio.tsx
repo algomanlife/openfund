@@ -6,14 +6,52 @@ import { useSession } from "../../session/useOpenfundSession";
 import { useTerminal } from "./TerminalContext";
 import { useResource, download, csvCell, route, routeQuery } from "./model";
 import { Metric } from "./Dashboard";
+import { arbiscanTx, feedSeverity, gainsFeedState, snapshotTime, type GainsResourceView } from "./gainsView";
 // Native collateral can be fractional crypto; never round it to a false 0.00.
 const nativeAmount = (value: unknown) =>
   value == null || !Number.isFinite(Number(value))
     ? "—"
     : Number(value).toLocaleString("en-US", { maximumFractionDigits: 10 });
+/* counts are integers; an absent value stays "—" rather than 0 */
+const count = (v: unknown) =>
+  v == null || !Number.isFinite(Number(v)) ? "—" : String(Number(v));
+/** Provider, network, read-only and freshness status for one Gains snapshot.
+ * A snapshot kept after a failed refresh is labelled outdated with its time. */
+export function GainsSourceBar({ resource }: { resource: GainsResourceView }) {
+  const { locale, t } = useTerminal(),
+    session = useSession(),
+    state = gainsFeedState(session.status === "authenticated", resource),
+    severity = feedSeverity(state),
+    at = snapshotTime(resource.data);
+  const label =
+    state === "live" ? t("به‌روز", "Up to date")
+    : state === "stale" ? t("دادهٔ منبع قدیمی است", "Source data is stale")
+    : state === "inconsistent" ? t("زمان‌های منبع ناسازگار است", "Source timestamps are inconsistent")
+    : state === "outdated" ? t("اتصال ناموفق؛ آخرین دادهٔ تأییدشده (قدیمی)", "Connection failed; showing last verified data (outdated)")
+    : state === "unavailable" ? t("ارائه‌دهنده در دسترس نیست", "Provider unavailable")
+    : state === "loading" ? t("در حال دریافت اطلاعات از Gains…", "Loading records from Gains…")
+    : t("برای مشاهدهٔ حساب Gains وارد شوید.", "Sign in to view your Gains account.");
+  return (
+    <div className="of-source-bar" data-feed={state} data-severity={severity}>
+      <span>{t("منبع", "Source")}: <bdi dir="ltr">Gains Network</bdi></span>
+      <span>{t("شبکه", "Network")}: <bdi dir="ltr">Arbitrum One · 42161</bdi></span>
+      <span className="of-readonly-badge">{t("فقط خواندنی", "Read-only")}</span>
+      <span role={severity === "error" || state === "outdated" ? "alert" : "status"}>
+        {label}
+        {at && (
+          <>
+            {" · "}
+            {t("آخرین دریافت", "Last fetched")}{" "}
+            <time dateTime={at}>{new Date(at).toLocaleString(intlLocale(locale))}</time>
+          </>
+        )}
+      </span>
+    </div>
+  );
+}
 /** Native Gains records retain their event/collateral semantics. We never
  * transform partial-close events into invented round trips or DAI balances. */
-export function GainsSummary() {
+export function GainsSummary({ source = false }: { source?: boolean }) {
   const { t } = useTerminal(),
     session = useSession(),
     data = useResource(
@@ -21,7 +59,7 @@ export function GainsSummary() {
       session.status === "authenticated" ? "/gains" : null,
       0, true,
     );
-  if (data.error)
+  if (data.error && !data.data)
     return (
       <p role="alert">
         {t(
@@ -31,17 +69,22 @@ export function GainsSummary() {
       </p>
     );
   return (
+    <>
+    {source && <GainsSourceBar resource={data} />}
     <div className="of-metrics">
       <Metric
         label={t("پوزیشن باز", "Open positions")}
+        format={count}
         value={data.data?.positions.length}
       />
       <Metric
         label={t("سفارش باز", "Open orders")}
+        format={count}
         value={data.data?.orders.length}
       />
       <Metric
         label={t("تعداد معاملات", "Total trades")}
+        format={count}
         value={data.data?.stats?.totalTrades}
       />
       <Metric
@@ -49,6 +92,7 @@ export function GainsSummary() {
         value={data.data?.stats?.winRate}
       />
     </div>
+    </>
   );
 }
 export default function GainsPortfolio() {
@@ -101,6 +145,7 @@ export default function GainsPortfolio() {
           ]
         : [
             "id",
+            ...(tab === "orders" ? ["orderType"] : []),
             "market",
             "side",
             "margin",
@@ -122,8 +167,8 @@ export default function GainsPortfolio() {
   return (
     <>
       <div className="of-account-bar">
-        <bdi>{context?.wallet}</bdi>
-        <span>Arbitrum</span>
+        <bdi dir="ltr">{context?.wallet}</bdi>
+        <span dir="ltr">Arbitrum One</span>
         <button onClick={() => setRevision((x) => x + 1)}>
           {t("به‌روزرسانی", "Refresh")}
         </button>
@@ -131,8 +176,9 @@ export default function GainsPortfolio() {
           {t("ژورنال معاملات", "Trade Journal")}
         </Link>
       </div>
+      <GainsSourceBar resource={data} />
       <GainsSummary />
-      <div className="of-tabs" role="tablist">
+      <div className="of-tabs" role="tablist" aria-label={t("رکوردهای حساب Gains", "Gains account records")}>
         {[
           ["positions", "پوزیشن‌ها", "Positions"],
           ["orders", "سفارش‌ها", "Orders"],
@@ -141,8 +187,10 @@ export default function GainsPortfolio() {
         ].map(([id, fa, en]) => (
           <button
             key={id}
+            id={`gains-tab-${id}`}
             role="tab"
             aria-selected={tab === id}
+            aria-controls="gains-records"
             onClick={() => setTab(id)}
           >
             {t(fa, en)}
@@ -194,7 +242,7 @@ export default function GainsPortfolio() {
           )}
         </p>
       )}
-      <div className="of-table-scroll">
+      <div className="of-table-scroll" id="gains-records" role="tabpanel" aria-labelledby={`gains-tab-${tab}`}>
         <table>
           <thead>
             <tr>
@@ -210,6 +258,7 @@ export default function GainsPortfolio() {
                     "تراکنش|Transaction",
                   ]
                 : [
+                    ...(tab === "orders" ? ["نوع سفارش|Order type"] : []),
                     "نماد|Symbol",
                     "جهت|Side",
                     "وثیقه|Collateral",
@@ -251,22 +300,32 @@ export default function GainsPortfolio() {
                       </td>
                       <td>{r.currency || "—"}</td>
                       <td>
-                        <a
-                          href={`https://arbiscan.io/tx/${r.tx}`}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {r.tx.slice(0, 10)}… ↗
-                        </a>
-                        <Link
+                        {arbiscanTx(r.tx) ? (
+                          <a
+                            href={arbiscanTx(r.tx)!}
+                            target="_blank"
+                            rel="noreferrer noopener"
+                            dir="ltr"
+                          >
+                            {r.tx.slice(0, 10)}… ↗
+                          </a>
+                        ) : "—"}
+                        {r.tx && <Link
                           to={routeQuery(route(locale, "perpetual", "journal"), { transaction: r.tx })}
                         >
                           {t("یادداشت", "Journal")}
-                        </Link>
+                        </Link>}
                       </td>
                     </>
                   ) : (
                     <>
+                      {tab === "orders" && (
+                        <td>
+                          {r.orderType === "limit" ? t("لیمیت", "Limit")
+                            : r.orderType === "stop" ? t("استاپ", "Stop")
+                            : "—"}
+                        </td>
+                      )}
                       <td>{r.market}</td>
                       <td>{r.side}</td>
                       <td dir="ltr">{nativeAmount(r.margin)}</td>
@@ -274,10 +333,10 @@ export default function GainsPortfolio() {
                       <td>{r.leverage}×</td>
                       <td dir="ltr">{nativeAmount(r.entry)}</td>
                       <td dir="ltr">
-                        {Number(r.sl) ? nativeAmount(r.sl) : "—"}
+                        {r.sl != null && Number(r.sl) ? nativeAmount(r.sl) : "—"}
                       </td>
                       <td dir="ltr">
-                        {Number(r.tp) ? nativeAmount(r.tp) : "—"}
+                        {r.tp != null && Number(r.tp) ? nativeAmount(r.tp) : "—"}
                       </td>
                     </>
                   )}

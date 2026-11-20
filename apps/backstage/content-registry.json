@@ -2,9 +2,9 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4400,
-    "mappedCalls": 2256,
-    "exceptions": 49,
+    "uniqueRecords": 4417,
+    "mappedCalls": 2272,
+    "exceptions": 51,
     "validationFindings": 0,
     "reviewedExclusions": 49
   },
@@ -1525,7 +1525,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 18,
+          "line": 19,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -1645,7 +1645,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 76,
+          "line": 77,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -1785,7 +1785,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 36,
+          "line": 76,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -2247,6 +2247,26 @@
       ]
     },
     {
+      "key": "react.02c004eb6ead87c7",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "فقط خواندنی · Arbitrum One · اجرای سفارش غیرفعال است.",
+      "en": "Read-only · Arbitrum One · Order execution is disabled.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
+          "line": 245,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.02edc8e03291bc2e",
       "namespace": "react",
       "area": "Global Content",
@@ -2339,7 +2359,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 147,
+          "line": 148,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -2853,7 +2873,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 94,
+          "line": 95,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -3514,7 +3534,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 112,
+          "line": 113,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -3754,7 +3774,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 88,
+          "line": 89,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -4225,7 +4245,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 133,
+          "line": 134,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -4246,6 +4266,26 @@
         {
           "component": "apps/web-react/src/features/terminal/Journal.tsx",
           "line": 638,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.087891b721ba2b71",
+      "namespace": "react",
+      "area": "User Dashboard",
+      "owner": "Content editor",
+      "fa": "لیمیت",
+      "en": "Limit",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+          "line": 324,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -4532,7 +4572,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 129,
+          "line": 128,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "pick-pipeline"
@@ -4739,7 +4779,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 49,
+          "line": 50,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -5374,7 +5414,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 115,
+          "line": 116,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -5394,7 +5434,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 14,
+          "line": 15,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -6117,7 +6157,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 133,
+          "line": 134,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -6300,7 +6340,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 44,
+          "line": 86,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -6400,7 +6440,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 82,
+          "line": 126,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -7021,7 +7061,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 57,
+          "line": 58,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8458,7 +8498,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 166,
+          "line": 167,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8619,14 +8659,14 @@
         },
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 15,
+          "line": 16,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 20,
+          "line": 21,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8766,7 +8806,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 53,
+          "line": 54,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -9315,7 +9355,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 50,
+          "line": 51,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -9671,7 +9711,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 147,
+          "line": 148,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -9931,7 +9971,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 124,
+          "line": 125,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -10051,7 +10091,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 151,
+          "line": 152,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -10331,7 +10371,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 48,
+          "line": 91,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -10939,7 +10979,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 395,
+          "line": 397,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -12518,6 +12558,26 @@
       ]
     },
     {
+      "key": "react.205c63172d5c44c3",
+      "namespace": "react",
+      "area": "User Dashboard",
+      "owner": "Content editor",
+      "fa": "رکوردهای حساب Gains",
+      "en": "Gains account records",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+          "line": 181,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.205d973fb9723bb3",
       "namespace": "react",
       "area": "Global Content",
@@ -12670,7 +12730,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 31,
+          "line": 32,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -13250,7 +13310,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 168,
+          "line": 169,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -13597,7 +13657,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 78,
+          "line": 79,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -13641,6 +13701,26 @@
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.236d2256740d78f0",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "حساب‌های تمرینی و چالش؛ هیچ تراکنش واقعی ثبت نمی‌شود.",
+      "en": "Practice and challenge accounts; no real transactions are placed.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
+          "line": 244,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -15639,7 +15719,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 84,
+          "line": 85,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15899,7 +15979,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 25,
+          "line": 26,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15919,7 +15999,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 13,
+          "line": 14,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15939,7 +16019,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 84,
+          "line": 86,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -16127,7 +16207,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 137,
+          "line": 138,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -16654,7 +16734,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 69,
+          "line": 70,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -17330,7 +17410,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 122,
+          "line": 123,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -17490,7 +17570,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 73,
+          "line": 74,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -19469,6 +19549,26 @@
       ]
     },
     {
+      "key": "react.326a99221a9ddb32",
+      "namespace": "react",
+      "area": "User Dashboard",
+      "owner": "Content editor",
+      "fa": "فقط خواندنی",
+      "en": "Read-only",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+          "line": 38,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.3272ddd12e420e27",
       "namespace": "react",
       "area": "Global Content",
@@ -20035,7 +20135,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 130,
+          "line": 131,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20378,7 +20478,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 37,
+          "line": 38,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20512,7 +20612,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 11,
+          "line": 12,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20599,7 +20699,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 47,
+          "line": 48,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21354,7 +21454,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 108,
+          "line": 109,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22085,7 +22185,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 92,
+          "line": 93,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -23236,7 +23336,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 163,
+          "line": 211,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -23511,7 +23611,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 99,
+          "line": 100,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -23625,7 +23725,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 110,
+          "line": 111,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24059,7 +24159,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 50,
+          "line": 51,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24280,7 +24380,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 130,
+          "line": 131,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24554,7 +24654,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 49,
+          "line": 50,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24574,7 +24674,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 138,
+          "line": 139,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -25048,7 +25148,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 39,
+          "line": 40,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -25976,7 +26076,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 87,
+          "line": 89,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -26156,7 +26256,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 73,
+          "line": 74,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -26483,7 +26583,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 101,
+          "line": 102,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -26710,7 +26810,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 53,
+          "line": 55,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27304,7 +27404,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 88,
+          "line": 90,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27564,7 +27664,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 89,
+          "line": 91,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27744,7 +27844,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 133,
+          "line": 134,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27964,7 +28064,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 101,
+          "line": 102,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -28958,7 +29058,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 54,
+          "line": 56,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -28985,7 +29085,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 303,
+          "line": 362,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -29039,14 +29139,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 128,
+          "line": 173,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 365,
+          "line": 424,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -29414,7 +29514,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 171,
+          "line": 219,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -29709,6 +29809,26 @@
       ]
     },
     {
+      "key": "react.4e3f8963a5d17c0d",
+      "namespace": "react",
+      "area": "User Dashboard",
+      "owner": "Content editor",
+      "fa": "به‌روز",
+      "en": "Up to date",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+          "line": 27,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.4e460ef61fa9471c",
       "namespace": "react",
       "area": "Website",
@@ -29761,7 +29881,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 67,
+          "line": 68,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -30384,7 +30504,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 103,
+          "line": 104,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -30598,7 +30718,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 21,
+          "line": 22,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -31188,6 +31308,26 @@
       ]
     },
     {
+      "key": "react.51fd181e819e9630",
+      "namespace": "react",
+      "area": "User Dashboard",
+      "owner": "Content editor",
+      "fa": "استاپ",
+      "en": "Stop",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+          "line": 325,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.520cdf0b45ed2c6d",
       "namespace": "react",
       "area": "Website",
@@ -31461,7 +31601,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 139,
+          "line": 140,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -31681,7 +31821,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 76,
+          "line": 78,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -32729,7 +32869,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 138,
+          "line": 139,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -33069,7 +33209,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 68,
+          "line": 69,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -33841,7 +33981,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 53,
+          "line": 54,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -34509,8 +34649,15 @@
           "method": "pick-pipeline"
         },
         {
+          "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+          "line": 37,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 34,
+          "line": 35,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -34871,7 +35018,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 123,
+          "line": 124,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -34951,7 +35098,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 115,
+          "line": 116,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35438,7 +35585,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 107,
+          "line": 108,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35732,7 +35879,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 393,
+          "line": 394,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -37689,7 +37836,7 @@
         },
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 132,
+          "line": 133,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -38152,7 +38299,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 150,
+          "line": 151,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -39601,7 +39748,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 109,
+          "line": 110,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -40116,7 +40263,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 19,
+          "line": 20,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -40643,7 +40790,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 132,
+          "line": 133,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -40663,7 +40810,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 290,
+          "line": 349,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -40925,7 +41072,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 123,
+          "line": 124,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -41439,7 +41586,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 39,
+          "line": 40,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -41466,7 +41613,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 134,
+          "line": 135,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -42189,7 +42336,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 264,
+          "line": 316,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -44053,7 +44200,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 87,
+          "line": 88,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -44073,7 +44220,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 369,
+          "line": 428,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -44174,7 +44321,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 27,
+          "line": 65,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -44314,7 +44461,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 60,
+          "line": 62,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -44554,7 +44701,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 138,
+          "line": 139,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -44638,6 +44785,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.78769f57156b61f1",
+      "namespace": "react",
+      "area": "User Dashboard",
+      "owner": "Content editor",
+      "fa": "آخرین دریافت",
+      "en": "Last fetched",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+          "line": 44,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -46089,7 +46256,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 73,
+          "line": 74,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -46216,7 +46383,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 147,
+          "line": 148,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -46323,7 +46490,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 412,
+          "line": 414,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -47504,7 +47671,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 44,
+          "line": 45,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -47838,7 +48005,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 243,
+          "line": 253,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -48140,7 +48307,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 117,
+          "line": 118,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -48322,7 +48489,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 39,
+          "line": 40,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -48483,7 +48650,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 67,
+          "line": 68,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -48717,7 +48884,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 50,
+          "line": 51,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -48957,7 +49124,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/i18n/locales.ts",
-          "line": 96,
+          "line": 112,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -49057,7 +49224,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 16,
+          "line": 17,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -49264,7 +49431,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 41,
+          "line": 42,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50185,7 +50352,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 39,
+          "line": 40,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 40,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50593,14 +50767,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 54,
+          "line": 55,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 109,
+          "line": 110,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -51205,7 +51379,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 82,
+          "line": 84,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -51860,7 +52034,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/i18n/locales.ts",
-          "line": 100,
+          "line": 116,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52027,7 +52201,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 118,
+          "line": 119,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -52641,7 +52815,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 13,
+          "line": 14,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -53115,7 +53289,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 87,
+          "line": 88,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -53315,7 +53489,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 62,
+          "line": 63,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -54123,7 +54297,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 241,
+          "line": 251,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -54243,7 +54417,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 126,
+          "line": 127,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -54390,7 +54564,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 162,
+          "line": 163,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -55478,7 +55652,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 65,
+          "line": 66,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -55992,7 +56166,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 35,
+          "line": 36,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -56387,7 +56561,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 104,
+          "line": 105,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -56654,7 +56828,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 102,
+          "line": 103,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -57395,7 +57569,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 70,
+          "line": 71,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -57903,7 +58077,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 39,
+          "line": 40,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -58318,7 +58492,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 154,
+          "line": 202,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -59233,7 +59407,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 83,
+          "line": 85,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -59655,7 +59829,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 31,
+          "line": 32,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -59675,7 +59849,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 58,
+          "line": 59,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -60876,7 +61050,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 78,
+          "line": 80,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61266,7 +61440,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 130,
+          "line": 131,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61506,7 +61680,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 101,
+          "line": 102,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61880,7 +62054,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 65,
+          "line": 66,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61980,7 +62154,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 131,
+          "line": 176,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -62001,7 +62175,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 289,
+          "line": 299,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -62999,7 +63173,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 140,
+          "line": 141,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -63146,7 +63320,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 313,
+          "line": 372,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -63307,7 +63481,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 31,
+          "line": 32,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63822,7 +63996,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 58,
+          "line": 59,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63884,7 +64058,7 @@
         },
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 12,
+          "line": 13,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -64538,7 +64712,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 79,
+          "line": 81,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65415,7 +65589,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 89,
+          "line": 90,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -66102,7 +66276,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 168,
+          "line": 169,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -66677,7 +66851,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 85,
+          "line": 87,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67394,6 +67568,26 @@
       ]
     },
     {
+      "key": "react.b6503ee1c26e19dd",
+      "namespace": "react",
+      "area": "User Dashboard",
+      "owner": "Content editor",
+      "fa": "در حال دریافت اطلاعات از Gains…",
+      "en": "Loading records from Gains…",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+          "line": 32,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.b65f9471fe16e117",
       "namespace": "react",
       "area": "Website",
@@ -68038,6 +68232,26 @@
           "line": 127,
           "page": "rulebook",
           "route": "/:locale/rulebook",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b83cce43d76e319d",
+      "namespace": "react",
+      "area": "User Dashboard",
+      "owner": "Content editor",
+      "fa": "برای مشاهدهٔ حساب Gains وارد شوید.",
+      "en": "Sign in to view your Gains account.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+          "line": 33,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -68858,7 +69072,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 13,
+          "line": 14,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -69265,7 +69479,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 65,
+          "line": 66,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -69325,7 +69539,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 138,
+          "line": 139,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -69465,7 +69679,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 186,
+          "line": 234,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -69545,7 +69759,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 104,
+          "line": 105,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -69565,7 +69779,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 69,
+          "line": 70,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -69739,7 +69953,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 398,
+          "line": 400,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -70173,7 +70387,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 349,
+          "line": 408,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -70453,7 +70667,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 37,
+          "line": 38,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -70533,7 +70747,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 93,
+          "line": 94,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -70733,7 +70947,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 148,
+          "line": 149,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -70793,7 +71007,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 69,
+          "line": 70,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -70913,14 +71127,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 353,
+          "line": 412,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 355,
+          "line": 414,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -72317,7 +72531,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 143,
+          "line": 144,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -74155,7 +74369,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 23,
+          "line": 24,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -74357,7 +74571,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 80,
+          "line": 82,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -74479,7 +74693,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 37,
+          "line": 38,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -75610,7 +75824,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 191,
+          "line": 239,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -75950,7 +76164,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 86,
+          "line": 87,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76157,7 +76371,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 394,
+          "line": 396,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -76438,7 +76652,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 32,
+          "line": 33,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77106,7 +77320,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 141,
+          "line": 142,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77826,7 +78040,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 65,
+          "line": 66,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -78266,7 +78480,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 36,
+          "line": 37,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -79660,7 +79874,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 396,
+          "line": 398,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -79700,7 +79914,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 86,
+          "line": 88,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -79836,7 +80050,7 @@
         },
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 44,
+          "line": 45,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -80130,7 +80344,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 315,
+          "line": 325,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -80310,7 +80524,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 389,
+          "line": 448,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -80878,7 +81092,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 169,
+          "line": 170,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -81202,6 +81416,26 @@
           "line": 56,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.dcc789c3afcb560f",
+      "namespace": "react",
+      "area": "User Dashboard",
+      "owner": "Content editor",
+      "fa": "ارائه‌دهنده در دسترس نیست",
+      "en": "Provider unavailable",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+          "line": 31,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -81540,9 +81774,16 @@
         },
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 49,
+          "line": 51,
           "page": "economy",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+          "line": 36,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -81940,7 +82181,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 48,
+          "line": 49,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82040,7 +82281,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 162,
+          "line": 163,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82455,6 +82696,26 @@
       ]
     },
     {
+      "key": "react.e074889191922727",
+      "namespace": "react",
+      "area": "User Dashboard",
+      "owner": "Content editor",
+      "fa": "دادهٔ منبع قدیمی است",
+      "en": "Source data is stale",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+          "line": 28,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.e07836cacbb6c95e",
       "namespace": "react",
       "area": "Global Content",
@@ -82487,7 +82748,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 35,
+          "line": 36,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82567,7 +82828,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 86,
+          "line": 87,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82767,7 +83028,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 73,
+          "line": 74,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82807,7 +83068,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 393,
+          "line": 452,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -83035,6 +83296,26 @@
       ]
     },
     {
+      "key": "react.e23ebfc57b850d71",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "اجرا غیرفعال (فقط خواندنی)",
+      "en": "Execution disabled (read-only)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
+          "line": 395,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.e257199ce75c55f2",
       "namespace": "react",
       "area": "Global Content",
@@ -83127,7 +83408,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 13,
+          "line": 14,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -83774,7 +84055,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 302,
+          "line": 312,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -83861,7 +84142,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 385,
+          "line": 444,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -84308,7 +84589,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 125,
+          "line": 126,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -84476,6 +84757,26 @@
       ]
     },
     {
+      "key": "react.e5908a2121e85c41",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "اوپن‌فاند پرپچوال — نمای حساب Gains",
+      "en": "Openfund Perpetual — Gains account view",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
+          "line": 242,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.e591afb2130fe890",
       "namespace": "react",
       "area": "Website",
@@ -84588,7 +84889,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 81,
+          "line": 83,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -84968,7 +85269,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 18,
+          "line": 19,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -85269,7 +85570,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 11,
+          "line": 12,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -85496,7 +85797,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 87,
+          "line": 88,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -85596,7 +85897,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 39,
+          "line": 40,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -85656,7 +85957,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 77,
+          "line": 78,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -85851,7 +86152,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 11,
+          "line": 12,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -86058,7 +86359,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 130,
+          "line": 131,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -86538,7 +86839,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 138,
+          "line": 139,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -86609,6 +86910,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.ec803965a6c441db",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "اوپن‌فاند پراپ — ارزیابی شبیه‌سازی‌شده",
+      "en": "Openfund Prop — Simulated evaluation",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
+          "line": 241,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -86852,7 +87173,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 181,
+          "line": 229,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -87239,7 +87560,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/i18n/LanguageSelect.tsx",
-          "line": 9,
+          "line": 11,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -88164,7 +88485,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 12,
+          "line": 13,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -88878,7 +89199,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 40,
+          "line": 81,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -88998,7 +89319,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 77,
+          "line": 79,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -89042,6 +89363,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.f2d13ce64e6a69ba",
+      "namespace": "react",
+      "area": "User Dashboard",
+      "owner": "Content editor",
+      "fa": "زمان‌های منبع ناسازگار است",
+      "en": "Source timestamps are inconsistent",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+          "line": 29,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -89178,7 +89519,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 397,
+          "line": 399,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -89606,7 +89947,7 @@
         },
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 47,
+          "line": 48,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -89706,7 +90047,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 17,
+          "line": 18,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -90153,7 +90494,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 99,
+          "line": 100,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -90468,6 +90809,26 @@
       ]
     },
     {
+      "key": "react.f73185d057ec465e",
+      "namespace": "react",
+      "area": "User Dashboard",
+      "owner": "Content editor",
+      "fa": "اتصال ناموفق؛ آخرین دادهٔ تأییدشده (قدیمی)",
+      "en": "Connection failed; showing last verified data (outdated)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+          "line": 30,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.f74c39496bcb2d61",
       "namespace": "react",
       "area": "Website",
@@ -90580,7 +90941,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 16,
+          "line": 17,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -90740,7 +91101,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 12,
+          "line": 13,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -91120,7 +91481,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 12,
+          "line": 13,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -91702,7 +92063,7 @@
         },
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
-          "line": 18,
+          "line": 19,
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -91843,7 +92204,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 134,
+          "line": 135,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -91963,7 +92324,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-          "line": 418,
+          "line": 477,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -92299,7 +92660,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 30,
+          "line": 31,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -92539,7 +92900,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 84,
+          "line": 85,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -92679,7 +93040,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 24,
+          "line": 25,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -92759,7 +93120,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 68,
+          "line": 69,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -93421,7 +93782,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/economy/ui.tsx",
-          "line": 92,
+          "line": 94,
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -93969,7 +94330,7 @@
     },
     {
       "component": "apps/web-react/src/features/economy/ui.tsx",
-      "line": 46,
+      "line": 48,
       "page": "economy",
       "route": "/:locale/*",
       "reason": "dynamic-pair",
@@ -94177,7 +94538,23 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-      "line": 148,
+      "line": 37,
+      "page": "terminal",
+      "route": "/:locale/:product/*",
+      "reason": "literal-jsx-review",
+      "text": "Arbitrum One · 42161"
+    },
+    {
+      "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+      "line": 171,
+      "page": "terminal",
+      "route": "/:locale/:product/*",
+      "reason": "literal-jsx-review",
+      "text": "Arbitrum One"
+    },
+    {
+      "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
+      "line": 196,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -94281,7 +94658,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 288,
+      "line": 298,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -94540,11 +94917,11 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
-      "line": 126,
+      "line": 36,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
-      "text": "Arbitrum"
+      "text": "Gains Network"
     },
     {
       "component": "apps/web-react/src/features/terminal/Journal.tsx",
@@ -94612,7 +94989,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 284,
+      "line": 294,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
