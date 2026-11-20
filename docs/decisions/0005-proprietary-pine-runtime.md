@@ -1,6 +1,6 @@
 # ADR 0005: Original Pine source execution in the shared terminal
 
-**Status:** Accepted for local implementation; release acceptance remains open.
+**Status:** Accepted for local implementation; release acceptance remains open. Amended by [ADR 0048](0048-pine-indicator-optimization-and-provenance.md): the indicator sources are now edited (dashboard removal, optimization, lookahead corrections).
 
 ## Context
 

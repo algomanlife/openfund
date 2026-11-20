@@ -51,3 +51,4 @@ Read newer decisions alongside historical ones; current implementation and expli
 - [0044 — Cross-region operation forwarding (proposed)](0044-cross-region-operation-forwarding.md)
 - [0046 — Openfund Pay: first-party payments, ledger, discovery and refunds](0046-openfund-pay.md)
 - [0047 — Perpetual Gains read-only readiness: adapter boundary, freshness and execution gate](0047-perpetual-gains-read-only-readiness.md)
+- [0048 — Pine indicator optimization, lookahead corrections and provenance](0048-pine-indicator-optimization-and-provenance.md)

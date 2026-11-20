@@ -1,0 +1,444 @@
+{
+  "generatedAt": "2026-11-20T22:51:18.151Z",
+  "ref": "HEAD",
+  "environment": {
+    "node": "v26.13.0",
+    "platform": "darwin arm64",
+    "cpu": "Apple M4",
+    "cores": 10,
+    "gcExposed": true
+  },
+  "method": {
+    "fixture": "syntheticBars(seed=7), 1m, regimes up/down/volatile/flat",
+    "runs": 3,
+    "ticks": 20,
+    "sizes": [
+      500,
+      2000,
+      5000,
+      10000
+    ],
+    "liveSizes": [
+      2000
+    ]
+  },
+  "indicators": {
+    "Open Algo V5": {
+      "static": [
+        {
+          "bars": 500,
+          "inputs": 76,
+          "prepareMs": 50.677042,
+          "initMs": 114.55966699999999,
+          "initSamplesMs": [
+            240.984833,
+            114.55966699999999,
+            112.71020799999997
+          ],
+          "cpuMs": 152.483,
+          "peakHeapDeltaMB": 47.749427795410156,
+          "secondaryRequests": 0,
+          "secondaryTimeframes": [],
+          "drawings": {
+            "series": 15,
+            "lines": 0,
+            "boxes": 0,
+            "labels": 6,
+            "fills": 6,
+            "tables": 0,
+            "linefills": 0
+          }
+        },
+        {
+          "bars": 2000,
+          "inputs": 76,
+          "prepareMs": 45.26279199999999,
+          "initMs": 369.57741699999997,
+          "initSamplesMs": [
+            487.715542,
+            369.57741699999997,
+            367.2683749999999
+          ],
+          "cpuMs": 468.172,
+          "peakHeapDeltaMB": 51.67070007324219,
+          "secondaryRequests": 0,
+          "secondaryTimeframes": [],
+          "drawings": {
+            "series": 15,
+            "lines": 0,
+            "boxes": 0,
+            "labels": 25,
+            "fills": 6,
+            "tables": 0,
+            "linefills": 0
+          }
+        },
+        {
+          "bars": 5000,
+          "inputs": 76,
+          "prepareMs": 45.923917000000074,
+          "initMs": 871.3402499999997,
+          "initSamplesMs": [
+            978.899791,
+            849.3080829999999,
+            871.3402499999997
+          ],
+          "cpuMs": 1221.007,
+          "peakHeapDeltaMB": 81.5287857055664,
+          "secondaryRequests": 0,
+          "secondaryTimeframes": [],
+          "drawings": {
+            "series": 15,
+            "lines": 0,
+            "boxes": 0,
+            "labels": 50,
+            "fills": 6,
+            "tables": 0,
+            "linefills": 0
+          }
+        },
+        {
+          "bars": 10000,
+          "inputs": 76,
+          "prepareMs": 46.6180830000003,
+          "initMs": 1687.9051250000002,
+          "initSamplesMs": [
+            1687.9051250000002,
+            1592.6027919999997,
+            1742.3872919999994
+          ],
+          "cpuMs": 2173.621,
+          "peakHeapDeltaMB": 152.84021759033203,
+          "secondaryRequests": 0,
+          "secondaryTimeframes": [],
+          "drawings": {
+            "series": 15,
+            "lines": 0,
+            "boxes": 0,
+            "labels": 50,
+            "fills": 6,
+            "tables": 0,
+            "linefills": 0
+          }
+        }
+      ],
+      "live": [
+        {
+          "bars": 2000,
+          "initialMs": 426.93858399999954,
+          "events": 41,
+          "tick": {
+            "p50": 1011.0175419999996,
+            "p95": 1012.5552909999988,
+            "p99": 1012.5552909999988,
+            "max": 1012.5552909999988
+          },
+          "tickCpuMs": {
+            "p50": 3.938,
+            "p95": 78.784,
+            "p99": 78.784,
+            "max": 78.784
+          },
+          "candle": {
+            "p50": 10.30620799999997,
+            "p95": 11.662041999999929,
+            "p99": 11.662041999999929,
+            "max": 11.662041999999929
+          },
+          "heapGrowthAfterUpdatesMB": 2.2791213989257812
+        }
+      ]
+    },
+    "Price Action Concepts": {
+      "static": [
+        {
+          "bars": 500,
+          "inputs": 49,
+          "prepareMs": 59.88045800000327,
+          "initMs": 138.33270899999843,
+          "initSamplesMs": [
+            318.5530409999992,
+            138.33270899999843,
+            133.1324999999997
+          ],
+          "cpuMs": 180.629,
+          "peakHeapDeltaMB": 44.994773864746094,
+          "secondaryRequests": 3,
+          "secondaryTimeframes": [
+            "240",
+            "15",
+            "D"
+          ],
+          "drawings": {
+            "series": 2,
+            "lines": 30,
+            "boxes": 12,
+            "labels": 22,
+            "fills": 0,
+            "tables": 2,
+            "linefills": 1
+          }
+        },
+        {
+          "bars": 2000,
+          "inputs": 49,
+          "prepareMs": 42.04145799999969,
+          "initMs": 539.9267500000024,
+          "initSamplesMs": [
+            721.3172090000007,
+            539.9267500000024,
+            529.4286250000041
+          ],
+          "cpuMs": 682.606,
+          "peakHeapDeltaMB": 68.08756256103516,
+          "secondaryRequests": 3,
+          "secondaryTimeframes": [
+            "240",
+            "15",
+            "D"
+          ],
+          "drawings": {
+            "series": 2,
+            "lines": 102,
+            "boxes": 18,
+            "labels": 89,
+            "fills": 0,
+            "tables": 2,
+            "linefills": 2
+          }
+        },
+        {
+          "bars": 5000,
+          "inputs": 49,
+          "prepareMs": 42.41833300000144,
+          "initMs": 1288.1946669999961,
+          "initSamplesMs": [
+            1466.0853750000024,
+            1288.1946669999961,
+            1269.1884160000045
+          ],
+          "cpuMs": 1655.478,
+          "peakHeapDeltaMB": 123.84823608398438,
+          "secondaryRequests": 3,
+          "secondaryTimeframes": [
+            "240",
+            "15",
+            "D"
+          ],
+          "drawings": {
+            "series": 2,
+            "lines": 244,
+            "boxes": 18,
+            "labels": 231,
+            "fills": 0,
+            "tables": 2,
+            "linefills": 2
+          }
+        },
+        {
+          "bars": 10000,
+          "inputs": 49,
+          "prepareMs": 41.96858300000167,
+          "initMs": 2587.848791999997,
+          "initSamplesMs": [
+            2801.8848339999968,
+            2513.877042,
+            2587.848791999997
+          ],
+          "cpuMs": 3036.973,
+          "peakHeapDeltaMB": 206.16938018798828,
+          "secondaryRequests": 3,
+          "secondaryTimeframes": [
+            "240",
+            "15",
+            "D"
+          ],
+          "drawings": {
+            "series": 2,
+            "lines": 473,
+            "boxes": 18,
+            "labels": 460,
+            "fills": 0,
+            "tables": 2,
+            "linefills": 2
+          }
+        }
+      ],
+      "live": [
+        {
+          "bars": 2000,
+          "initialMs": 657.8121249999967,
+          "events": 41,
+          "tick": {
+            "p50": 1020.270540999998,
+            "p95": 1023.7400420000049,
+            "p99": 1023.7400420000049,
+            "max": 1023.7400420000049
+          },
+          "tickCpuMs": {
+            "p50": 14.494,
+            "p95": 100.98,
+            "p99": 100.98,
+            "max": 100.98
+          },
+          "candle": {
+            "p50": 19.677458999998635,
+            "p95": 21.47966699999961,
+            "p99": 21.47966699999961,
+            "max": 21.47966699999961
+          },
+          "heapGrowthAfterUpdatesMB": -16.860313415527344
+        }
+      ]
+    },
+    "Smart Money Concepts": {
+      "static": [
+        {
+          "bars": 500,
+          "inputs": 52,
+          "prepareMs": 31.71808299999975,
+          "initMs": 54.2982500000071,
+          "initSamplesMs": [
+            147.69720799999777,
+            54.2982500000071,
+            53.44995799999742
+          ],
+          "cpuMs": 70.316,
+          "peakHeapDeltaMB": 31.33643341064453,
+          "secondaryRequests": 0,
+          "secondaryTimeframes": [],
+          "drawings": {
+            "series": 1,
+            "lines": 9,
+            "boxes": 4,
+            "labels": 9,
+            "fills": 0,
+            "tables": 0,
+            "linefills": 0
+          }
+        },
+        {
+          "bars": 2000,
+          "inputs": 52,
+          "prepareMs": 23.867791999990004,
+          "initMs": 228.44083300000057,
+          "initSamplesMs": [
+            315.73095899999316,
+            219.56274999999732,
+            228.44083300000057
+          ],
+          "cpuMs": 304.53,
+          "peakHeapDeltaMB": 51.758262634277344,
+          "secondaryRequests": 0,
+          "secondaryTimeframes": [],
+          "drawings": {
+            "series": 1,
+            "lines": 96,
+            "boxes": 5,
+            "labels": 96,
+            "fills": 0,
+            "tables": 0,
+            "linefills": 0
+          }
+        },
+        {
+          "bars": 5000,
+          "inputs": 52,
+          "prepareMs": 24.411000000007334,
+          "initMs": 645.4440000000031,
+          "initSamplesMs": [
+            722.2320840000029,
+            645.4440000000031,
+            638.3107499999896
+          ],
+          "cpuMs": 851.086,
+          "peakHeapDeltaMB": 85.01899719238281,
+          "secondaryRequests": 0,
+          "secondaryTimeframes": [],
+          "drawings": {
+            "series": 1,
+            "lines": 285,
+            "boxes": 5,
+            "labels": 285,
+            "fills": 0,
+            "tables": 0,
+            "linefills": 0
+          }
+        },
+        {
+          "bars": 10000,
+          "inputs": 52,
+          "prepareMs": 23.532334000003175,
+          "initMs": 1492.26454199999,
+          "initSamplesMs": [
+            1525.1310410000006,
+            1452.044000000009,
+            1492.26454199999
+          ],
+          "cpuMs": 1834.666,
+          "peakHeapDeltaMB": 144.2948760986328,
+          "secondaryRequests": 0,
+          "secondaryTimeframes": [],
+          "drawings": {
+            "series": 1,
+            "lines": 500,
+            "boxes": 5,
+            "labels": 500,
+            "fills": 0,
+            "tables": 0,
+            "linefills": 0
+          }
+        }
+      ],
+      "live": [
+        {
+          "bars": 2000,
+          "initialMs": 304.7045829999988,
+          "events": 41,
+          "tick": {
+            "p50": 1010.7334589999955,
+            "p95": 1021.2632920000033,
+            "p99": 1021.2632920000033,
+            "max": 1021.2632920000033
+          },
+          "tickCpuMs": {
+            "p50": 3.708,
+            "p95": 44.533,
+            "p99": 44.533,
+            "max": 44.533
+          },
+          "candle": {
+            "p50": 10.042249999998603,
+            "p95": 12.385832999993,
+            "p99": 12.385832999993,
+            "max": 12.385832999993
+          },
+          "heapGrowthAfterUpdatesMB": -35.00909423828125
+        }
+      ]
+    }
+  },
+  "together": [
+    {
+      "bars": 500,
+      "wallMs": 589.2055419999961,
+      "cpuMs": 846.627,
+      "peakHeapDeltaMB": 54.262733459472656,
+      "secondaryRequests": 3
+    },
+    {
+      "bars": 2000,
+      "wallMs": 1451.9702909999905,
+      "cpuMs": 1822.586,
+      "peakHeapDeltaMB": 105.94076538085938,
+      "secondaryRequests": 3
+    },
+    {
+      "bars": 5000,
+      "wallMs": 3194.15666600001,
+      "cpuMs": 3857.986,
+      "peakHeapDeltaMB": 143.23655700683594,
+      "secondaryRequests": 3
+    }
+  ]
+}

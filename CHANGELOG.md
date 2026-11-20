@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **Openfund Pine indicators: optimization, dashboard removal and lookahead fixes** ([ADR 0048](docs/decisions/0048-pine-indicator-optimization-and-provenance.md), [report](docs/reviews/pine-optimization/README.md)).
+  - Open Algo V5: the SMRT Algo dashboard, its three settings and its five higher-timeframe requests are removed (76 inputs). Saved workspaces with the old settings load normally; the keys are dropped. Disabled overlays no longer compute. Initial calculation is 63–67% faster, with identical chart output.
+  - Price Action Concepts: previous day/week/month levels now use the last completed period and stay fixed while the current one develops. Trendline Liquidity no longer stops the indicator when the multi-timeframe order blocks are on. Order-block drawings are rebuilt only when visible, and default secondary requests fall from 7 to 3. Initial calculation is 48–72% faster.
+  - Smart Money Concepts: higher-timeframe fair value gaps are confirmed when their third candle closes, instead of reading that candle's final high/low early. Initial calculation is 7–15% faster.
+  - New deterministic benchmark (`npm run bench:charts`), differential and live harnesses, and 29 configuration snapshots in `npm run test:charts`.
+  - Indicator licensing is unchanged and still unresolved ([details](docs/legal/LICENSING.md#pine-indicator-sources)).
+
 - **Perpetual Gains read-only readiness** ([ADR 0047](docs/decisions/0047-perpetual-gains-read-only-readiness.md)).
   - The Gains account snapshot now states its network, its read-only capabilities, the source of each field and its freshness (`fresh`, `stale` or `inconsistent`). A cached read keeps its original fetch time.
   - Malformed provider data returns `502 gains_schema_changed` instead of a 500. Timeouts are reported separately as `504 gains_timeout`.

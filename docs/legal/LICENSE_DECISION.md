@@ -56,8 +56,10 @@ These apply to every option, including A.
    the fonts (a visual change that needs separate design approval). Relicensing
    cannot cover them.
 2. **Pine indicators.** `indicators/smc-v1.pine` states CC BY-NC-SA 4.0
-   (non-commercial), and `indicators/README.md` calls the sources proprietary.
-   Authorship and the right license are unconfirmed
+   (non-commercial). The owner states the indicators are owner-controlled and
+   should be open source (Apache-2.0 proposed), but the repository holds
+   evidence of third-party origin for several files and no authorship records.
+   The exact Apache-2.0 change is prepared, not applied
    ([LICENSING.md item 3](LICENSING.md#pine-indicator-sources)).
 3. **AGPL scope** of the shipped chart bundle and the form of the section 13
    source offer ([PineTS](PINETS.md)).

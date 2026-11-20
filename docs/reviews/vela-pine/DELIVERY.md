@@ -4,7 +4,7 @@ Baseline: `08cb68afab48c596a953bfd93ee1e29c81cd37ab` (latest `origin/main` fetch
 
 ## Implemented scope
 
-- Preserve the five user-supplied Pine files byte-for-byte. Open Algo V5, Price Action Concepts and Smart Money Concepts execute their original algorithms through the official Pine worker addon.
+- Preserve the five user-supplied Pine files byte-for-byte (historical: superseded by [ADR 0048](../../decisions/0048-pine-indicator-optimization-and-provenance.md), which edits the indicator sources). Open Algo V5, Price Action Concepts and Smart Money Concepts execute their original algorithms through the official Pine worker addon.
 - Pin Vela 0.9.3, addon 0.3.2 and PineTS 0.13.1. Use the existing Vela core, scene renderer and settings UI, without introducing a second product-specific engine.
 - Resolve the two exact Open Algo import IDs locally: `LAF -> openfund/Overlayslibrary/1`, `kernels -> openfund/sdk/1`. The sole accessed imported symbol is `getSmartTrail(10,4,8)`; the kernels alias is unused. All exports/signatures/state dependencies are inventoried in [Pine architecture](../../trading/PINE_SCRIPT.md).
 - Register exactly three source entries in the requested order before all 77 built-ins; retain native order and index mapping. Libraries are not selectable. Inputs total 79, 49 and 52.
