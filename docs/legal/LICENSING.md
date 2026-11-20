@@ -46,7 +46,8 @@ manifest or embedded font metadata, not inferred from neighbours.
 | Openfund Protocol import (`packages/openfund-protocol`) | mux-protocol | GPL-2.0 (files mostly or-later; 4 `UNLICENSED`) | Renamed | GPL only if distributed | Dormant, not shipped |
 | npm production dependencies (web, backend) | npm | MIT / ISC / BSD / Apache-2.0 (exceptions listed) | None | Keep license comments | CI-checked ([dependency licenses](DEPENDENCY_LICENSES.md)) |
 | Directus 11.17.4 | Docker image | BSL 1.1 (12.x: MSCL-1.0-GPL) | None | Service terms; not distributed here | Separate service |
-| Vazirmatn font | Vazirmatn Project | SIL OFL 1.1 | None | Ship license | Met (`Vazirmatn-LICENSE.txt`) |
+| Dastkhat and Dastkhat Arabic variable fonts (`assets/fonts/dastkhat/`) | Dastyar (Dastkhat Project Authors), derived from Vazirmatn | SIL OFL 1.1, no Reserved Font Name | None (unmodified WOFF2 copies) | Ship OFL text and upstream notices; do not sell the fonts alone | Met (`assets/fonts/dastkhat/OFL.txt`, `THIRD-PARTY-NOTICES.txt`; pinned commit `ac5b01542f36`, SHA-256 in `SOURCE.json`) |
+| Vazirmatn font | Vazirmatn Project | SIL OFL 1.1 | None | Ship license | Met (`Vazirmatn-LICENSE.txt`); no longer a UI default |
 | Ubuntu font (`ubuntu-400/700.ttf`) | Canonical | Ubuntu Font Licence 1.0 | None | Ship licence with the fonts | **Fixed in this change**: `assets/Ubuntu-LICENSE.txt` added (text taken from the brandbook archive, where it already shipped) |
 | Irancell fonts (`irancell-*.ttf`) and renamed copies (`openfund-1…5.ttf`, `openfund-persian-*-v4.woff2`, `brand/typography/`) | Irancell (MTN Irancell) per embedded metadata | **"All rights reserved"**; no license recorded | Renamed; woff2 files re-named "Openfund Persian" | Unknown without a license | **Blocker: provenance missing** |
 | Pine indicators (`indicators/`) | Undocumented | CC BY-NC-SA 4.0 stated in one file; "proprietary" in README | — | NC forbids commercial use | **Blocker: provenance missing** |
@@ -96,7 +97,10 @@ manifest or embedded font metadata, not inferred from neighbours.
 6. **Irancell fonts.** Ten served font files and the brand typography folder
    are Irancell fonts or renamed derivatives that state "All rights reserved"
    (section 1a). Obtain the rights holder's license or replace them; any
-   replacement is a visual change that needs design approval.
+   replacement is a visual change that needs design approval. Dastkhat
+   (SIL OFL 1.1) now replaces them as the Persian UI default on the site, the
+   terminal, Backstage, certificates and Open Trade; the Irancell files are
+   still in the repository and in `dist/` until their removal is approved.
 7. **Copyright ownership.** Commits come from three human GitHub identities and
    from AI agents working for the owner; confirm the owning entity and that
    each human author's work is assigned or licensed to it.

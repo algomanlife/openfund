@@ -12,6 +12,22 @@
   cookie, no redirect loops, and only a trusted IR country qualifying. The
   Liara IP database lookup now covers IPv6. The redirect stays disabled.
 
+- **Dastkhat is the Persian UI font** (branch `agent/claude/dastkhat-typography`;
+  not merged, released or deployed). Dastkhat and Dastkhat Arabic (SIL OFL
+  1.1, by Dastyar) are self-hosted as unmodified variable WOFF2 files, pinned
+  at upstream commit `ac5b01542f36` (font version 1.210) with the OFL text,
+  upstream notices and SHA-256 hashes in
+  `apps/web-react/public/assets/fonts/dastkhat/`. New design-system tokens
+  (`--ds-font-persian`, `-arabic`, `-latin`, `-cjk`, `-numeric`) replace the
+  Irancell, Openfund Persian, Vazirmatn and Tahoma-first defaults on the site,
+  the legacy pages, the terminal iframe, Backstage, certificate exports, the
+  share card, the chart theme and the Open Trade desktop package. Arabic uses
+  Dastkhat Arabic for letters with Ubuntu digits. Latin, Cyrillic and CJK
+  fallbacks are unchanged. Technical numbers stay isolated LTR with tabular
+  Latin digits; the font no longer turns ASCII digits into Persian digits.
+  Checked by `apps/web-react/test/typography.test.mjs` and the browser test
+  `e2e/test-typography.mjs` (rendered font, font requests, CSP).
+
 - **Deterministic CI for two flaky browser suites** — the Market Heatmap and
   Trade Radar suite now runs on fixed `/radar/*` fixtures and a fixed page
   clock, with empty and unavailable states covered. The real Hyperliquid

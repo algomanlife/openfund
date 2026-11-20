@@ -60,7 +60,7 @@ Notes:
 | :--- | :--- | :--- |
 | Vanilla JS modules (`locale.js`, `app.js`, `features.js`, `market.js`, `motion.js`, `terminal.js`, `terminal-data.js`) | Landing + terminal behaviour | Active (both classic and React pages) |
 | Custom CSS (`style.css`, `terminal.css`, `wallet.css`) | Mint `#82e7bd`, bg `#060808`; public light theme uses root inversion with asset counter-filters; terminal/Vela use native palettes | Active |
-| Fonts | Irancell (fa, weights 400–900), Ubuntu (en), Openfund Persian (woff2 wordmark) | Active |
+| Fonts | Dastkhat variable WOFF2 (fa UI, weights 100–900), Dastkhat Arabic (ar letters), Ubuntu (Latin/Cyrillic), system CJK; tokens `--ds-font-*` | Active (in source on branch `agent/claude/dastkhat-typography`; not released). The tracked `dist/` stylesheets still name Irancell |
 
 ## Tooling & operations
 

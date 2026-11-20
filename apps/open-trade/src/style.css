@@ -7,15 +7,19 @@
   src: url("/assets/ubuntu-700.ttf");
   font-weight: 700;
 }
+/* Dastkhat (SIL OFL 1.1): pinned in apps/web-react/public/assets/fonts/dastkhat
+   and copied by scripts/prepare.mjs; served from the app's own origin. */
 @font-face {
-  font-family: Vazirmatn;
-  src: url("/assets/Vazirmatn.ttf");
+  font-family: Dastkhat;
+  src: url("/assets/fonts/dastkhat/Dastkhat-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
 }
 * {
   box-sizing: border-box;
 }
 html {
-  font-family: Ubuntu, Vazirmatn, system-ui;
+  font-family: Ubuntu, Dastkhat, system-ui, sans-serif;
   font-size: 12px;
   color-scheme: dark;
   --bg: #0b0b0d;
@@ -886,7 +890,7 @@ html[data-theme="light"] .chart-cell {
   background: #fafafa;
 }
 [dir="rtl"] .app {
-  font-family: Vazirmatn, Ubuntu, system-ui;
+  font-family: Dastkhat, Ubuntu, Tahoma, system-ui, sans-serif;
 }
 .chart-host [class*="dialog"],
 .chart-host [class*="popover"] {
