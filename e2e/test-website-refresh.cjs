@@ -216,10 +216,14 @@ async function realThemeClicks(browser) {
     await page.evaluate(() => document.fonts.ready);
     check('Persian Home has no footer', await page.locator('footer').count() === 0);
     check('Persian Home has no Instagram promo', await page.locator('.instagram-community').count() === 0);
-    check('Persian Home desktop single community action', await page.locator('.home-community .community-button').evaluateAll(buttons => {
-      const boxes = buttons.map(button => button.getBoundingClientRect());
-      return boxes.length === 1 && boxes.every(box => Math.abs(box.top - boxes[0].top) <= 1 && Math.abs(box.height - 44) <= 1 && box.width < 300);
+    /* TEMPORARY diagnostics (PR #161): the assertion is unchanged; the message
+       records the measured boxes so a Linux-only failure can be diagnosed. */
+    const communityBoxes = await page.locator('.home-community .community-button').evaluateAll(buttons => buttons.map(button => {
+      const box = button.getBoundingClientRect(), style = getComputedStyle(button);
+      return { top: box.top, height: box.height, width: box.width, text: button.innerText, font: style.font, display: style.display };
     }));
+    check(`Persian Home desktop single community action ${JSON.stringify(communityBoxes)}`,
+      communityBoxes.length === 1 && communityBoxes.every(box => Math.abs(box.top - communityBoxes[0].top) <= 1 && Math.abs(box.height - 44) <= 1 && box.width < 300));
     check('Persian Home has no Discord action', await page.locator('.discord-community').count() === 0);
     check('Persian Home hero community including unavailable CMS', await page.locator('.telegram-community').count() === 1 && await page.locator('.home-community .telegram-community').count() === 1);
     await shot(page, 'home-fa', '/fa/home');

@@ -24,14 +24,14 @@ Component inventory, token mapping, visual QA screenshots, responsive acceptance
 
 ## Trading workspace tokens
 
-The compact terminal reuses the existing Obsidian `#060808`, dark-green surfaces `#0A100D` / `#0E1712`, mint `#82E7BD`, negative `#E89483`, Ubuntu and Irancell assets from the established terminal stylesheet. Its scoped layout adds `--terminal-control` (32px, 30px at compact height), `--terminal-space` (10px), `--terminal-label` (11.5px), `--terminal-text` (12px) and a divider alias to the existing line token. Numeric typography is tabular. These are terminal presentation settings, not a new brand system.
+The compact terminal reuses the existing Obsidian `#060808`, dark-green surfaces `#0A100D` / `#0E1712`, mint `#82E7BD`, negative `#E89483`, Ubuntu and Dastkhat assets from the established terminal stylesheet. Its scoped layout adds `--terminal-control` (32px, 30px at compact height), `--terminal-space` (10px), `--terminal-label` (11.5px), `--terminal-text` (12px) and a divider alias to the existing line token. Numeric typography is tabular. These are terminal presentation settings, not a new brand system.
 
 Use 1px structural boundaries and small 3px control corners; avoid card wrappers and decorative shadows in the trading workspace. Layout geometry stays LTR while Persian text is scoped locally. [Rendered acceptance](../reviews/terminal-ui/DELIVERY.md) records both products, languages, desktop sizes and responsive limits.
 
 ## Public website implementation
 
 The source public system uses mint #82E7BD, obsidian #060808, green surfaces,
-Ubuntu/Irancell, rounded platform cards and subtle dividers in
+Ubuntu/Dastkhat, rounded platform cards and subtle dividers in
 `apps/web-react/public/legacy/style.css`. The shared footer comes from
 `pages/landing-body.html`; public information pages reuse it. Document language
 and direction plus `data-theme` control localization and theme. Public responsive
@@ -90,5 +90,35 @@ Rules:
   Persian face only for the Arabic range so Latin digits stay Latin.
 - React components that render inside legacy pages and own their text must set
   `data-locale-owned`, or the legacy static translator re-applies stale text.
+
+## Typography and font tokens
+
+Dastkhat (SIL OFL 1.1, by Dastyar, derived from Vazirmatn) is the Persian UI
+face. It is self-hosted as one variable WOFF2 (`wght` 100–900) at
+`/assets/fonts/dastkhat/Dastkhat-Variable.woff2`, so the site, the terminal
+iframe, the legacy pages, Backstage and Open Trade share one same-origin file
+and need no new CSP source. The upstream revision, file hashes and licence
+texts are in `apps/web-react/public/assets/fonts/dastkhat/`.
+
+| Token | Stack | Use |
+| --- | --- | --- |
+| `--ds-font-persian` | Dastkhat, Ubuntu, Tahoma, system-ui | Persian interface copy (`--ds-font-sans` points here) |
+| `--ds-font-arabic` | Ubuntu, Dastkhat Arabic, Dastkhat, Tahoma, system-ui | Arabic: Ubuntu digits and Latin, Dastkhat Arabic letters, Dastkhat for Persian-only fallback copy |
+| `--ds-font-latin` | Ubuntu, Dastkhat, system-ui | English and Latin-first shells; Persian glyphs inside them still use Dastkhat |
+| `--ds-font-cjk` | Ubuntu, system-ui, PingFang SC, Microsoft YaHei, Noto Sans SC, Dastkhat | Russian and Simplified Chinese |
+| `--ds-font-numeric` | Ubuntu, Dastkhat, system-ui | `.ds-num` technical numbers (tabular, isolated LTR) |
+
+Dastkhat's default build draws Latin digits `0-9` as Latin, tabular digits;
+the FaNum build is not used, so prices, sizes, addresses and hashes never turn
+into Persian digits through the font, and number serialization is unchanged.
+Persian digits appear only where the copy itself contains them. Dastkhat has
+no Cyrillic, CJK or arrow glyphs; those fall back to Ubuntu and system fonts.
+
+The legacy stylesheets, the terminal iframe and the Backstage console are
+separate documents, so they carry verbatim copies of these tokens.
+`apps/web-react/test/typography.test.mjs` fails if a copy drifts, if a replaced
+face (Irancell, Openfund Persian, Vazirmatn) returns as a default, or if a
+pinned file changes. `e2e/test-typography.mjs` measures the rendered font in a
+browser.
 
 Third-party UI kits were evaluated in [ADR 0035](../decisions/0035-design-system-foundation-and-ui-kit-evaluation.md).

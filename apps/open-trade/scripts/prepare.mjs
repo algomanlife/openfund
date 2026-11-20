@@ -8,12 +8,12 @@ for (const name of [
   "mark-mint.svg",
   "ubuntu-400.ttf",
   "ubuntu-700.ttf",
-  "Vazirmatn.ttf",
   "Ubuntu-LICENSE.txt",
-  "Vazirmatn-LICENSE.txt",
 ])
   await copyFile(web + "assets/" + name, "public/assets/" + name);
 await cp(web + "assets/notices", "public/assets/notices", { recursive: true });
+/* Dastkhat variable font with its OFL text, notices and pinned SOURCE.json. */
+await cp(web + "assets/fonts/dastkhat", "public/assets/fonts/dastkhat", { recursive: true });
 for (const [from, to] of [
   ["../../packages/openfund-charts/src/vela-bridge.js", "vela-bridge.js"],
   [

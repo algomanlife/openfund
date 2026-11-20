@@ -79,7 +79,8 @@ or read by the unsigned workflow. Do not put signing secrets on PR jobs.
 Vela notices and PineTS licenses ship with the application, with a visible Vela
 and source link. The existing indicator provenance and first-party/AGPL combined
 work questions in [licensing](../../docs/legal/LICENSING.md) remain distribution
-blockers. WalletConnect's Community License is also included. Ubuntu and Vazirmatn
+blockers. WalletConnect's Community License is also included. Ubuntu and Dastkhat (the
+Persian UI font, SIL OFL 1.1, pinned in `assets/fonts/dastkhat/SOURCE.json`)
 are used with their license texts; unlicensed Irancell font files are excluded.
 
 ## Tests

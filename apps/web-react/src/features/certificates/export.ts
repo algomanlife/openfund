@@ -5,11 +5,11 @@ export const verificationUrl = (serial: string, locale: AppLocale) => new URL(`/
 let certificateFont: Promise<void> | undefined
 const loadImage = (src: string) => new Promise<HTMLImageElement>((resolve, reject) => { const image = new Image(); image.onload = () => resolve(image); image.onerror = reject; image.src = src })
 let markImage: Promise<HTMLImageElement> | undefined
-/* The Persian face only covers the Arabic script; Latin text and every digit
+/* The Persian face (Dastkhat, variable) is limited to the Arabic script; Latin text and every digit
    in an LTR string (amounts, serials, dates) fall through to Ubuntu, as on the site. */
 const ARABIC_RANGE = 'U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+200C-200F, U+066B-066C'
 const loadFont = () => certificateFont ??= Promise.all([
-  ...[500, 700].map(weight => new FontFace('OpenfundCertificateFa', `url(${import.meta.env.BASE_URL}assets/openfund-persian-${weight}-v4.woff2)`, { weight: String(weight), unicodeRange: ARABIC_RANGE }).load()),
+  new FontFace('OpenfundCertificateFa', `url(${import.meta.env.BASE_URL}assets/fonts/dastkhat/Dastkhat-Variable.woff2)`, { weight: '100 900', unicodeRange: ARABIC_RANGE }).load(),
   ...[400, 700].map(weight => new FontFace('OpenfundCertificateLatin', `url(${import.meta.env.BASE_URL}assets/ubuntu-${weight}.ttf)`, { weight: String(weight) }).load()),
 ]).then(fonts => { fonts.forEach(font => document.fonts.add(font)) }).catch(error => { certificateFont = undefined; throw error })
 

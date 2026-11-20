@@ -23,6 +23,7 @@ The process for changing any of these is in [Dependency governance](../developme
 | Backend runtime dependencies (express, pg, ws, decimal.js) | see apps/backend/package.json and package-lock.json | MIT/ISC family | yes | apps/backend |
 | Repository tooling (Playwright, markdownlint, mermaid, jsdom, js-yaml) | see package.json (playwright is range-pinned; CI caches browsers per lockfile) | MIT/Apache-2.0 family | no | package.json |
 | Open Trade desktop runtime and packager | Electron 45.3.2; electron-builder 26.18.0; WalletConnect ethereum-provider 2.26.0 | Electron MIT | yes | apps/open-trade/ |
+| Dastkhat font (Persian UI face) and Dastkhat Arabic | 1.210 | SIL OFL 1.1, no Reserved Font Name | yes | apps/web-react/public/assets/fonts/dastkhat |
 
 ## Details
 
@@ -199,3 +200,17 @@ The process for changing any of these is in [Dependency governance](../developme
 - **Tests:** npm test --prefix apps/open-trade; npm run test:desktop --prefix apps/open-trade
 - **Update procedure:** Review upstream release/security notes, update exact pins and lockfile, rerun Electron acceptance and three-platform package workflow.
 - **Risks:** Real WalletConnect device sign-in remains pending project configuration. Unsigned internal beta only; existing indicator provenance and AGPL combined-work questions remain public-distribution blockers.
+
+### Dastkhat font (Persian UI face) and Dastkhat Arabic
+
+- **Upstream:** https://github.com/dastyar-io/dastkhat-font
+- **License:** SIL OFL 1.1, no Reserved Font Name (derived from Vazirmatn, OFL 1.1; Latin glyphs from Roboto, Apache-2.0, per the upstream notice)
+- **Pinned version:** 1.210
+- **Source commit:** ac5b01542f36a57cd870a9d32a9b84357263fecb (main, 2026-11-18). Dastkhat-Variable.woff2 is byte-identical to tag v1.210; Dastkhat Arabic first appears after the tag
+- **Where:** apps/web-react/public/assets/fonts/dastkhat (WOFF2, OFL.txt, THIRD-PARTY-NOTICES.txt, SOURCE.json); apps/open-trade/scripts/prepare.mjs (copied into the desktop package); apps/backstage/operations/server.js (served same-origin)
+- **Vendoring method:** Unmodified copies of Webfonts/fonts/Dastkhat-Variable.woff2 and DastkhatArabic-Variable.woff2 plus the licence files, with SHA-256 hashes in SOURCE.json.
+- **Local Openfund modifications:** None. The files are not subset, renamed or rebuilt.
+- **Used by the running application:** yes
+- **Tests:** npm run test:web (apps/web-react/test/typography.test.mjs); npm run test:browser:typography
+- **Update procedure:** Pick a reviewed upstream tag or commit, copy the WOFF2 and licence files unmodified, update SOURCE.json (commit, hashes), THIRD_PARTY_NOTICES.md and docs/legal/LICENSING.md, then run the typography unit and browser tests and refresh the typography screenshots.
+- **Risks:** Glyph metrics may change between versions and shift RTL layouts. The OFL forbids selling the fonts on their own and requires the licence text to ship with them.

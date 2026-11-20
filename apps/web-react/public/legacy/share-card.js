@@ -14,7 +14,7 @@
     bg: '#060808', surface: '#0A100D', line: 'rgba(255,255,255,0.10)', mint: '#82E7BD',
     white: '#F7F8F4', body: '#CBD4CE', muted: '#98A8A0', pos: '#82E7BD', neg: '#E89483'
   };
-  var FONT = "Ubuntu, Irancell, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif";
+  var FONT = "Ubuntu, Dastkhat, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif";
   var dialog = null, canvas = null, ctx = null, getModel = null, model = null, logo = null, logoReady = false;
   var labels = {};
 
