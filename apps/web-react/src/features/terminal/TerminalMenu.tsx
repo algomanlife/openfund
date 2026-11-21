@@ -2,7 +2,9 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import OffCanvas from '../navigation/OffCanvas'
 import { primary, route, type Locale, type Product } from './model'
-import { dirOf, pick } from '../../i18n/locales'
+import { dirOf, pick, pickFormat } from '../../i18n/locales'
+import { BRAND_WORDMARK } from '../../brand/wordmark'
+import { BrandWordmark } from '../../brand/BrandWordmark'
 
 /**
  * Terminal compact navigation: the menu trigger and its off-canvas drawer.
@@ -37,8 +39,8 @@ function TerminalMenu({ locale, product, page, accountsHref, accountsSection, pa
     <OffCanvas open={open} onClose={close} dir={dirOf(locale)} className="of-terminal-drawer"
       label={t('ناوبری ترمینال', 'Terminal navigation')} closeLabel={t('بستن', 'Close')}
       returnFocus={() => trigger.current}
-      header={<Link to={`/${locale}/home`} onClick={close} aria-label={t('خانه اوپن‌فاند', 'Openfund home')}>
-        <img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="24" height="27" alt="" /><b dir="ltr">openfund</b>
+      header={<Link to={`/${locale}/home`} onClick={close} aria-label={pickFormat(locale, 'خانه ${brand}', '${brand} home', { brand: BRAND_WORDMARK })}>
+        <img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="24" height="27" alt="" /><BrandWordmark as="b" />
       </Link>}>
       <nav id="terminal-navigation-drawer" className="of-drawer-nav" aria-label={t('ناوبری ترمینال', 'Terminal navigation')}>
         <ul>

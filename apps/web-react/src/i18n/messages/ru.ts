@@ -39,6 +39,7 @@ export const ru: Record<string, string> = {
   'Enter Terminal': 'Открыть терминал',
   'Main navigation': 'Основная навигация',
   'Openfund home': 'Главная страница Openfund',
+  '${brand} home': 'Главная страница ${brand}',
   'Toggle light / dark mode': 'Переключить светлую / тёмную тему',
   'Light / dark mode': 'Светлая / тёмная тема',
   'Open menu': 'Открыть меню',

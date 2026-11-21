@@ -1,11 +1,14 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
-import portfolioBody from './portfolio-body.html?raw'
+import portfolioTemplate from './portfolio-body.html?raw'
+import { withBrandWordmark } from '../brand/wordmark'
 import { useSession, backendUrl } from '../session/useOpenfundSession'
 import { RainbowConnect } from '../wallet/RainbowConnect'
 import { fetchCmsTranslations } from '../cms/client'
 import { chooseTheme, currentTheme } from '../theme'
 import './portfolio.css'
+
+const portfolioBody = withBrandWordmark(portfolioTemplate)
 
 /**
  * Openfund Portfolio — native analytics hub powered by

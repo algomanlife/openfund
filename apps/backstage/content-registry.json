@@ -6,7 +6,7 @@
     "mappedCalls": 2272,
     "exceptions": 51,
     "validationFindings": 0,
-    "reviewedExclusions": 50
+    "reviewedExclusions": 47
   },
   "editorial": {
     "locales": [
@@ -1465,7 +1465,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 361,
+          "line": 364,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -2259,7 +2259,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 245,
+          "line": 246,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -2299,7 +2299,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 458,
+          "line": 461,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -3154,7 +3154,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 376,
+          "line": 377,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -3434,7 +3434,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 548,
+          "line": 551,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -5006,7 +5006,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 561,
+          "line": 564,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -5307,7 +5307,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 380,
+          "line": 383,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -6280,7 +6280,7 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 456,
+          "line": 459,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -6303,6 +6303,33 @@
           "line": 36,
           "page": "partners",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.0e7198089b034e48",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خانه ${brand}",
+      "en": "${brand} home",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
+          "line": 67,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
+          "line": 42,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -6674,7 +6701,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 383,
+          "line": 384,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -6714,7 +6741,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 504,
+          "line": 507,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -7442,7 +7469,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 539,
+          "line": 542,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8151,7 +8178,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 492,
+          "line": 495,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -9395,21 +9422,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 38,
+          "line": 40,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 43,
+          "line": 45,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 112,
+          "line": 113,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -10699,7 +10726,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 376,
+          "line": 379,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -10979,7 +11006,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 397,
+          "line": 398,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -11447,7 +11474,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 392,
+          "line": 393,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -13717,7 +13744,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 244,
+          "line": 245,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -15072,7 +15099,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 126,
+          "line": 127,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -16287,7 +16314,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 450,
+          "line": 453,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -16781,7 +16808,7 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 563,
+          "line": 566,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -17103,7 +17130,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 497,
+          "line": 500,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -17190,7 +17217,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 387,
+          "line": 390,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -18282,7 +18309,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 63,
+          "line": 65,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -18324,7 +18351,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 38,
+          "line": 40,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -18585,7 +18612,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 451,
+          "line": 454,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -18805,7 +18832,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 447,
+          "line": 450,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -18945,7 +18972,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -19059,7 +19086,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 319,
+          "line": 322,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20424,21 +20451,21 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 438,
+          "line": 441,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 465,
+          "line": 468,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 520,
+          "line": 523,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20458,7 +20485,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 168,
+          "line": 171,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20766,7 +20793,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 482,
+          "line": 485,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21146,7 +21173,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 409,
+          "line": 412,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21246,7 +21273,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 375,
+          "line": 378,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21725,7 +21752,7 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 545,
+          "line": 548,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22585,7 +22612,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 449,
+          "line": 452,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22605,7 +22632,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 382,
+          "line": 385,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24427,7 +24454,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 445,
+          "line": 448,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -26516,7 +26543,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -26603,7 +26630,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 221,
+          "line": 222,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -27070,7 +27097,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 68,
+          "line": 106,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -27684,7 +27711,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 396,
+          "line": 399,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -28464,14 +28491,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 523,
+          "line": 526,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 559,
+          "line": 562,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -28538,7 +28565,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 162,
+          "line": 163,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -29995,21 +30022,21 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 439,
+          "line": 442,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 465,
+          "line": 468,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 520,
+          "line": 523,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -31286,21 +31313,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 47,
+          "line": 49,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 122,
+          "line": 123,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 132,
+          "line": 133,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -31347,21 +31374,21 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 174,
+          "line": 177,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 360,
+          "line": 363,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 434,
+          "line": 437,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -32348,7 +32375,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 382,
+          "line": 385,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35165,7 +35192,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 378,
+          "line": 381,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35205,7 +35232,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 377,
+          "line": 380,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35879,7 +35906,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 394,
+          "line": 395,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -36200,7 +36227,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 427,
+          "line": 430,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -36708,7 +36735,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 82,
+          "line": 84,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -37282,7 +37309,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 318,
+          "line": 321,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -37829,14 +37856,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 127,
-          "page": "home",
-          "route": "/:locale/home",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 133,
+          "line": 192,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -39014,7 +39034,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 210,
+          "line": 211,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -40363,7 +40383,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 496,
+          "line": 499,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -40918,7 +40938,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 387,
+          "line": 388,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -43131,7 +43151,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 375,
+          "line": 376,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -43919,7 +43939,7 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 459,
+          "line": 462,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -44133,7 +44153,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -46510,7 +46530,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 414,
+          "line": 415,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -48025,7 +48045,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 253,
+          "line": 254,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -48523,7 +48543,7 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 494,
+          "line": 497,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -49806,33 +49826,6 @@
       ]
     },
     {
-      "key": "react.872184353df07e91",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "خانه اوپن‌فاند",
-      "en": "Openfund home",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 65,
-          "page": "navigation",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 40,
-          "page": "terminal",
-          "route": "/:locale/:product/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.872439d7346e059d",
       "namespace": "react",
       "area": "Global Content",
@@ -50466,7 +50459,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 203,
+          "line": 204,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -50888,7 +50881,7 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 550,
+          "line": 553,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50971,7 +50964,7 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 456,
+          "line": 459,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -51773,21 +51766,21 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 444,
+          "line": 447,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 457,
+          "line": 460,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 542,
+          "line": 545,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -52955,14 +52948,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 458,
+          "line": 461,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 544,
+          "line": 547,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -53776,7 +53769,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 68,
+          "line": 106,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -53923,14 +53916,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 176,
+          "line": 177,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 178,
+          "line": 179,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -54337,7 +54330,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 251,
+          "line": 252,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -54557,14 +54550,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 459,
+          "line": 462,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 551,
+          "line": 554,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -54684,7 +54677,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 374,
+          "line": 375,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -56601,7 +56594,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 358,
+          "line": 361,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -57709,7 +57702,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 148,
+          "line": 149,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -57869,14 +57862,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 45,
+          "line": 47,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 116,
+          "line": 117,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -58177,7 +58170,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 372,
+          "line": 373,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -59253,14 +59246,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 457,
+          "line": 460,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 547,
+          "line": 550,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -59702,7 +59695,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 394,
+          "line": 397,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -59762,7 +59755,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 506,
+          "line": 509,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -60349,7 +60342,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 73,
+          "line": 75,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61600,7 +61593,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 128,
+          "line": 210,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -61974,7 +61967,7 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 405,
+          "line": 408,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62235,14 +62228,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 299,
+          "line": 300,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 514,
+          "line": 517,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62985,7 +62978,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 475,
+          "line": 478,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63213,7 +63206,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 141,
+          "line": 223,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -63333,7 +63326,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 396,
+          "line": 399,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63381,7 +63374,7 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 484,
+          "line": 487,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63661,7 +63654,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 553,
+          "line": 556,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65079,7 +65072,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 373,
+          "line": 374,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -65126,28 +65119,28 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 46,
+          "line": 48,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 120,
+          "line": 121,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 131,
+          "line": 132,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 362,
+          "line": 365,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65976,7 +65969,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 499,
+          "line": 502,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -66356,7 +66349,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 82,
+          "line": 120,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -69078,7 +69071,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 89,
+          "line": 127,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -70013,7 +70006,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 400,
+          "line": 401,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -70507,7 +70500,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 543,
+          "line": 546,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -72095,7 +72088,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 282,
+          "line": 283,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -72337,21 +72330,21 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 350,
+          "line": 353,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 437,
+          "line": 440,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 442,
+          "line": 445,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -72778,14 +72771,14 @@
         },
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 86,
+          "line": 124,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 87,
+          "line": 125,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -74061,7 +74054,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 505,
+          "line": 508,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -74564,14 +74557,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 456,
+          "line": 459,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 541,
+          "line": 544,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -75362,7 +75355,7 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 457,
+          "line": 460,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -75663,14 +75656,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 418,
+          "line": 421,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 478,
+          "line": 481,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76391,7 +76384,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 396,
+          "line": 397,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -76438,7 +76431,7 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 443,
+          "line": 446,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77500,7 +77493,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 546,
+          "line": 549,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -78120,7 +78113,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 498,
+          "line": 501,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -79460,7 +79453,7 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 495,
+          "line": 498,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -79480,7 +79473,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 175,
+          "line": 178,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -79607,7 +79600,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 359,
+          "line": 362,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -79914,7 +79907,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 398,
+          "line": 399,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -80384,7 +80377,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 325,
+          "line": 326,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -80945,14 +80938,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 202,
+          "line": 203,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 203,
+          "line": 204,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -81299,7 +81292,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 35,
+          "line": 37,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -81319,7 +81312,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 78,
+          "line": 116,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -83268,7 +83261,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 526,
+          "line": 529,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -83348,7 +83341,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 395,
+          "line": 396,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -83568,7 +83561,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 549,
+          "line": 552,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -84095,7 +84088,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 312,
+          "line": 313,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -84809,7 +84802,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 242,
+          "line": 243,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -85877,7 +85870,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 540,
+          "line": 543,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -86986,7 +86979,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 241,
+          "line": 242,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -87727,7 +87720,7 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 173,
+          "line": 176,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -87938,7 +87931,7 @@
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 459,
+          "line": 462,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -88605,7 +88598,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 147,
+          "line": 148,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -89579,7 +89572,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 399,
+          "line": 400,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -90347,14 +90340,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 63,
+          "line": 65,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 75,
+          "line": 77,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -90841,7 +90834,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 381,
+          "line": 382,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -93360,7 +93353,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
-          "line": 515,
+          "line": 518,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -94406,7 +94399,7 @@
     },
     {
       "component": "apps/web-react/src/features/information/InformationShell.tsx",
-      "line": 71,
+      "line": 73,
       "page": "information",
       "route": "/:locale/:page",
       "reason": "dynamic-pair",
@@ -94694,7 +94687,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-      "line": 45,
+      "line": 47,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -94702,7 +94695,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 116,
+      "line": 117,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -94710,7 +94703,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 130,
+      "line": 131,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -94718,7 +94711,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 298,
+      "line": 299,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -94873,7 +94866,7 @@
     },
     {
       "component": "apps/web-react/src/features/information/InformationShell.tsx",
-      "line": 209,
+      "line": 211,
       "page": "information",
       "route": "/:locale/:page",
       "reason": "language-neutral-brand-or-identifier",
@@ -94902,14 +94895,6 @@
       "route": "/:locale/markets",
       "reason": "language-neutral-brand-or-identifier",
       "text": "Gains Network ↗"
-    },
-    {
-      "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-      "line": 66,
-      "page": "navigation",
-      "route": "/:locale/*",
-      "reason": "language-neutral-brand-or-identifier",
-      "text": "openfund"
     },
     {
       "component": "apps/web-react/src/features/partners/Ambassador.tsx",
@@ -95009,23 +94994,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-      "line": 24,
-      "page": "terminal",
-      "route": "/:locale/:product/*",
-      "reason": "helper-wrapper-definition",
-      "expression": "pick(locale, fa, en)"
-    },
-    {
-      "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-      "line": 41,
-      "page": "terminal",
-      "route": "/:locale/:product/*",
-      "reason": "language-neutral-brand-or-identifier",
-      "text": "openfund"
-    },
-    {
-      "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 64,
+      "line": 26,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "helper-wrapper-definition",
@@ -95033,19 +95002,11 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 173,
+      "line": 65,
       "page": "terminal",
       "route": "/:locale/:product/*",
-      "reason": "language-neutral-brand-or-identifier",
-      "text": "openfund"
-    },
-    {
-      "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 194,
-      "page": "terminal",
-      "route": "/:locale/:product/*",
-      "reason": "language-neutral-brand-or-identifier",
-      "text": "Openfund Prop"
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
@@ -95053,11 +95014,19 @@
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
+      "text": "Openfund Prop"
+    },
+    {
+      "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
+      "line": 196,
+      "page": "terminal",
+      "route": "/:locale/:product/*",
+      "reason": "language-neutral-brand-or-identifier",
       "text": "Openfund Perpetual"
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 294,
+      "line": 295,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
