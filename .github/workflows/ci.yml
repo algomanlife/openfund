@@ -326,6 +326,12 @@ jobs:
           TEST_FRONTEND_URL: http://localhost:8080
           OUTPUT_DIR: output/playwright/wallet-showcase
         run: npm run test:browser:wallet-showcase
+      - name: Applications page motion, step tabs, real captures, RTL/LTR and reduced motion
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080
+          OUTPUT_DIR: output/playwright/applications
+        run: npm run test:browser:applications
       - name: Market Heatmap and Trade Radar (fixed fixtures and clock; tiles, details, tape, empty states, eight widths)
         working-directory: .
         env:
@@ -475,6 +481,7 @@ jobs:
             output/playwright/terminal-layout-authenticated/
             output/playwright/terminal-completion/
             output/playwright/wallet-showcase/
+            output/playwright/applications/
             output/playwright/heatmap-radar/
             output/playwright/contact/
           retention-days: 3

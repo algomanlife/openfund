@@ -3911,5 +3911,8 @@
   "Source data is stale": "来源数据已过时",
   "Source timestamps are inconsistent": "来源时间戳不一致",
   "Up to date": "已是最新",
-  "Required fields": "必填字段"
+  "Required fields": "必填字段",
+  "Workspace settings": "工作区设置",
+  "Real capture of the Web Terminal with live Gains market data. No wallet connected.": "网页终端的真实截图，使用 Gains 实时行情数据，未连接钱包。",
+  "SHA-256 from the CI build record": "来自 CI 构建记录的 SHA-256"
 }

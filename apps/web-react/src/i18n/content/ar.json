@@ -3911,5 +3911,8 @@
   "Source data is stale": "بيانات المصدر قديمة",
   "Source timestamps are inconsistent": "الطوابع الزمنية للمصدر غير متّسقة",
   "Up to date": "محدَّث",
-  "Required fields": "الحقول المطلوبة"
+  "Required fields": "الحقول المطلوبة",
+  "Workspace settings": "إعدادات مساحة العمل",
+  "Real capture of the Web Terminal with live Gains market data. No wallet connected.": "لقطة حقيقية من محطة التداول عبر الويب ببيانات سوق Gains مباشرة. لا توجد محفظة متصلة.",
+  "SHA-256 from the CI build record": "SHA-256 من سجل البناء في CI"
 }
