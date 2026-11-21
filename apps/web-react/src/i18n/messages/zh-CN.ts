@@ -39,6 +39,7 @@ export const zhCN: Record<string, string> = {
   'Enter Terminal': '进入终端',
   'Main navigation': '主导航',
   'Openfund home': 'Openfund 首页',
+  '${brand} home': '${brand} 首页',
   'Toggle light / dark mode': '切换浅色 / 深色模式',
   'Light / dark mode': '浅色 / 深色模式',
   'Open menu': '打开菜单',

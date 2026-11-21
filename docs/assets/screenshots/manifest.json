@@ -8587,6 +8587,135 @@
       }
     ]
   },
+  "wordmarkOpenFi": {
+    "branch": "agent/claude/wordmark-openfi",
+    "baseCommit": "2137b4d3e1d244bb304c87e25f3f93137be6b583",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-21T15:58:38+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8297, disposable database openfund_scratch on a throwaway PostgreSQL cluster (port 55432)",
+    "cms": "Directus not running; header and footer use the bundled fallback",
+    "marketData": "Live Gains through the local backend; no intercepted requests",
+    "wallet": "Anonymous; no wallet connected",
+    "screenshots": [
+      {
+        "file": "wordmark-openfi/footer-1440-en.png",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Shared site footer brand: logo mark with the OpenFi wordmark (English, light theme)."
+      },
+      {
+        "file": "wordmark-openfi/home-header-1440-en-dark.png",
+        "route": "/en/home",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Site header at 1440 px, English (LTR), dark theme: OpenFi wordmark beside the unchanged logo mark; caption justified to the word width where shown. Header crop (top 140 px)."
+      },
+      {
+        "file": "wordmark-openfi/home-header-1440-en-light.png",
+        "route": "/en/home",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Site header at 1440 px, English (LTR), light theme: OpenFi wordmark beside the unchanged logo mark; caption justified to the word width where shown. Header crop (top 140 px)."
+      },
+      {
+        "file": "wordmark-openfi/home-header-1440-fa-dark.png",
+        "route": "/fa/home",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Site header at 1440 px, Persian (RTL), dark theme: OpenFi wordmark beside the unchanged logo mark; caption justified to the word width where shown. Header crop (top 140 px)."
+      },
+      {
+        "file": "wordmark-openfi/home-header-1440-fa-light.png",
+        "route": "/fa/home",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Site header at 1440 px, Persian (RTL), light theme: OpenFi wordmark beside the unchanged logo mark; caption justified to the word width where shown. Header crop (top 140 px)."
+      },
+      {
+        "file": "wordmark-openfi/home-header-390-en-dark.png",
+        "route": "/en/home",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Site header at 390 px, English (LTR), dark theme: OpenFi wordmark beside the unchanged logo mark; caption justified to the word width where shown. Header crop (top 140 px)."
+      },
+      {
+        "file": "wordmark-openfi/home-header-390-en-light.png",
+        "route": "/en/home",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Site header at 390 px, English (LTR), light theme: OpenFi wordmark beside the unchanged logo mark; caption justified to the word width where shown. Header crop (top 140 px)."
+      },
+      {
+        "file": "wordmark-openfi/home-header-390-fa-dark.png",
+        "route": "/fa/home",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Site header at 390 px, Persian (RTL), dark theme: OpenFi wordmark beside the unchanged logo mark; caption justified to the word width where shown. Header crop (top 140 px)."
+      },
+      {
+        "file": "wordmark-openfi/home-header-390-fa-light.png",
+        "route": "/fa/home",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Site header at 390 px, Persian (RTL), light theme: OpenFi wordmark beside the unchanged logo mark; caption justified to the word width where shown. Header crop (top 140 px)."
+      },
+      {
+        "file": "wordmark-openfi/home-header-768-en-dark.png",
+        "route": "/en/home",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Site header at 768 px, English (LTR), dark theme: OpenFi wordmark beside the unchanged logo mark; caption justified to the word width where shown. Header crop (top 140 px)."
+      },
+      {
+        "file": "wordmark-openfi/home-header-768-en-light.png",
+        "route": "/en/home",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Site header at 768 px, English (LTR), light theme: OpenFi wordmark beside the unchanged logo mark; caption justified to the word width where shown. Header crop (top 140 px)."
+      },
+      {
+        "file": "wordmark-openfi/home-header-768-fa-dark.png",
+        "route": "/fa/home",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Site header at 768 px, Persian (RTL), dark theme: OpenFi wordmark beside the unchanged logo mark; caption justified to the word width where shown. Header crop (top 140 px)."
+      },
+      {
+        "file": "wordmark-openfi/home-header-768-fa-light.png",
+        "route": "/fa/home",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Site header at 768 px, Persian (RTL), light theme: OpenFi wordmark beside the unchanged logo mark; caption justified to the word width where shown. Header crop (top 140 px)."
+      }
+    ]
+  },
   "walletShowcaseBeam": {
     "branch": "agent/claude/wallet-carousel",
     "baseCommit": "2137b4d3e1d244bb304c87e25f3f93137be6b583",
