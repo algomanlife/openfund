@@ -52,6 +52,81 @@ const native = (v: unknown) =>
     : Number(v).toLocaleString("en-US", { maximumFractionDigits: 10 });
 type Product = "prop" | "perpetual";
 const PERPETUAL_POLL_MS = 30_000;
+/** Coalescing window for Gains price ticks (≈4 UI updates per second). */
+const PRICE_FLUSH_MS = 250;
+/** Stable empty list: a fresh [] per render re-synced every chart overlay. */
+const NO_POSITIONS: any[] = [];
+/** Below this drag height the trading panel snaps closed. */
+const PANEL_SNAP = 72;
+const PANEL_MIN = 105;
+const PANEL_MAX = 900;
+/* 0.0.4 opens Quick Trade in the top-right corner; earlier saved positions
+   (bottom-left default) are not carried over. */
+const TICKET_POSITION_KEY = "ot-ticket-position-v2";
+const panelDragState: { current: { y: number; height: number; moved: boolean } | null } = { current: null };
+/**
+ * Drag-to-open/close for the bottom trading panel. The panel is resized by
+ * writing its style directly while the pointer moves (no React render per
+ * mouse move); the final open state and height are committed on release.
+ * Dragging a collapsed panel upwards opens it, dragging it below PANEL_SNAP
+ * closes it, and a double-click toggles it.
+ */
+function panelDrag(
+  open: boolean,
+  height: number,
+  setOpen: (v: boolean) => void,
+  setHeight: (v: number) => void,
+) {
+  /* The drag origin lives at module level: the workspace re-renders during a
+     drag (price flushes), which replaces these handlers mid-gesture. */
+  const drag = panelDragState;
+  const apply = (el: HTMLElement, h: number) => {
+    const expanded = h >= PANEL_SNAP;
+    el.classList.toggle("expanded", expanded);
+    el.classList.toggle("collapsed", !expanded);
+    el.style.height = expanded ? Math.min(PANEL_MAX, h) + "px" : "";
+  };
+  return {
+    role: "separator",
+    "aria-orientation": "horizontal" as const,
+    tabIndex: 0,
+    onPointerDown(event: React.PointerEvent<HTMLElement>) {
+      if (event.button !== 0) return;
+      const panel = event.currentTarget.parentElement!;
+      drag.current = { y: event.clientY, height: open ? panel.offsetHeight : 0, moved: false };
+      panel.classList.add("dragging");
+      event.currentTarget.setPointerCapture(event.pointerId);
+    },
+    onPointerMove(event: React.PointerEvent<HTMLElement>) {
+      const s = drag.current;
+      if (!s) return;
+      const h = s.height + s.y - event.clientY;
+      if (Math.abs(s.y - event.clientY) > 3) s.moved = true;
+      if (s.moved) apply(event.currentTarget.parentElement!, h);
+    },
+    onLostPointerCapture(event: React.PointerEvent<HTMLElement>) {
+      const panel = event.currentTarget.parentElement!;
+      panel.classList.remove("dragging");
+      const s = drag.current;
+      drag.current = null;
+      if (!s || !s.moved) return;
+      const h = s.height + s.y - event.clientY;
+      const next = h >= PANEL_SNAP;
+      const finalHeight = Math.max(PANEL_MIN, Math.min(PANEL_MAX, h));
+      apply(panel, next ? finalHeight : 0);
+      if (next) setHeight(finalHeight);
+      setOpen(next);
+    },
+    onDoubleClick() {
+      setOpen(!open);
+    },
+    onKeyDown(event: React.KeyboardEvent<HTMLElement>) {
+      if (event.key === "ArrowUp") { event.preventDefault(); if (!open) setOpen(true); else setHeight(Math.min(PANEL_MAX, height + 24)); }
+      if (event.key === "ArrowDown") { event.preventDefault(); if (height - 24 < PANEL_MIN) setOpen(false); else setHeight(height - 24); }
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setOpen(!open); }
+    },
+  };
+}
 async function request(
   path: string,
   body?: unknown,
@@ -221,16 +296,15 @@ function App() {
     [ticketDock, setTicketDock] = useState(read("ot-ticket-dock", false)),
     [accountMenu, setAccountMenu] = useState(false),
     [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
-  const [ticketPosition, setTicketPosition] = useState(read<{x: number; y: number} | null>("ot-ticket-position", null));
+  const [ticketPosition, setTicketPosition] = useState(read<{x: number; y: number} | null>(TICKET_POSITION_KEY, null));
   const [chartSplit, setChartSplit] = useState(read("ot-chart-split", 66));
   useEffect(() => localStorage.setItem("ot-chart-split", JSON.stringify(chartSplit)), [chartSplit]);
   const [panelHeight, setPanelHeight] = useState(read("ot-panel-height", 180));
   const ticketElement = useRef<HTMLElement>(null);
   const drag = useRef<{x: number; y: number; left: number; top: number} | null>(null);
-  const resizeStart = useRef<{y: number; height: number} | null>(null);
   useEffect(() => {
     for (const [key, value] of Object.entries({
-      "ot-ticket-position": ticketPosition, "ot-panel-height": panelHeight,
+      [TICKET_POSITION_KEY]: ticketPosition, "ot-panel-height": panelHeight,
       "ot-tab": tab, "ot-positions-open": positionsOpen, "ot-ticket-dock": ticketDock,
     })) localStorage.setItem(key, JSON.stringify(value));
   }, [ticketPosition, panelHeight, tab, positionsOpen, ticketDock]);
@@ -260,6 +334,7 @@ function App() {
     const timer = setInterval(measure, 30_000);
     return () => { active = false; clearInterval(timer); };
   }, [account, explore]);
+  const chartActions = useRef<ChartActions>(null as unknown as ChartActions);
   const scope = useRef(""),
     provider = useRef<any>(null),
     operation = useRef(false),
@@ -319,7 +394,14 @@ function App() {
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem("ot-theme", JSON.stringify(theme));
-  }, [theme]);
+    if (config.platform) void bridge.chromeTheme?.(theme).catch(() => {});
+  }, [theme, config.platform]);
+  /* Glass chrome: "native" when the window has an OS material behind it. */
+  useEffect(() => {
+    const root = document.documentElement;
+    if (config.platform) root.dataset.platform = config.platform;
+    root.dataset.glass = config.glass === "native" ? "native" : "css";
+  }, [config.platform, config.glass]);
   useEffect(() => {
     for (const p of ["prop", "perpetual"] as const)
       localStorage.setItem("ot-workspace-" + p, JSON.stringify(workspaces[p]));
@@ -411,12 +493,26 @@ function App() {
           ),
         ),
       );
-    const p = window.OpenfundGains.subscribePrices((v: any) =>
-      setPrices((old) => ({ ...old, [v.market]: v })),
-    );
+    /* Gains pushes every market's tick individually. Re-rendering the whole
+       workspace per tick made the app lag, so ticks are coalesced and
+       committed at most PRICE_FLUSH_MS apart (the chart canvases stream their
+       own data and are not affected). */
+    let queued: Record<string, any> = {},
+      flush: ReturnType<typeof setTimeout> | undefined;
+    const p = window.OpenfundGains.subscribePrices((v: any) => {
+      queued[v.market] = v;
+      if (flush) return;
+      flush = setTimeout(() => {
+        flush = undefined;
+        const batch = queued;
+        queued = {};
+        if (!stopped) setPrices((old) => ({ ...old, ...batch }));
+      }, PRICE_FLUSH_MS);
+    });
     const s = window.OpenfundGains.subscribeStatus(setFeed);
     return () => {
       stopped = true;
+      clearTimeout(flush);
       p();
       s();
     };
@@ -869,6 +965,18 @@ function App() {
     }
     await mutate("/trading/order", preview.body);
   }
+  /* Charts are memoised; their callbacks read the latest App closures from
+     this ref so a price flush never re-renders (or re-syncs) a chart. */
+  chartActions.current = {
+    activate: (i: number) => setActive(i),
+    market: (i: number, patch: any) => updateChart(i, patch),
+    max: (i: number) => {
+      setActive(i);
+      setMax((m) => (m === i ? null : i));
+    },
+    risk: (p: any, edit: any) => void mutate(`/trading/positions/${p.id}/protection`, edit),
+    error: setNotice,
+  };
   const lot = window.OpenfundPositionSizing.lotSpec(meta, selected.symbol);
   const terminal = !!account || explore;
   const walletAddress = String(user?.walletAddress || "");
@@ -975,6 +1083,7 @@ function App() {
     <div className="app">
       <header className="titlebar">
         <div className="window-title">
+          <img className="title-mark" src="./assets/mark-mint.svg" alt="" />
           Open Trade <span>{config.version}{channelLabel ? " " + channelLabel : ""}</span>
         </div>
         <div className="titlebar-actions">
@@ -1292,22 +1401,19 @@ function App() {
                 <Chart
                   key={i}
                   index={i}
-                  config={c}
+                  symbol={c.symbol}
+                  timeframe={c.timeframe}
                   active={active === i}
                   hidden={max !== null && max !== i}
                   theme={theme}
                   t={t}
+                  locale={locale}
+                  localeReady={localeReady}
                   wallet={user?.id || "guest"}
                   account={account?.id}
-                  positions={state?.positions || []}
+                  positions={state?.positions || NO_POSITIONS}
                   ready={ready}
-                  onActivate={() => setActive(i)}
-                  onMarket={(p: any) => updateChart(i, p)}
-                  onMax={() => { setActive(i); setMax(max === i ? null : i); }}
-                  onRisk={(p: any, edit: any) =>
-                    void mutate(`/trading/positions/${p.id}/protection`, edit)
-                  }
-                  onError={setNotice}
+                  actions={chartActions}
                 />
               ))}
             </div>
@@ -1324,6 +1430,7 @@ function App() {
                 }}
                 open={positionsOpen}
                 onToggle={() => setPositionsOpen(!positionsOpen)}
+                onOpen={setPositionsOpen}
                 height={panelHeight}
                 onResize={setPanelHeight}
                 onTx={(tx: string) => void bridge.external("tx:" + tx)}
@@ -1336,18 +1443,10 @@ function App() {
                 }
                 style={positionsOpen ? { height: panelHeight } : undefined}
               >
-                {positionsOpen && <div className="positions-divider" role="separator" aria-label={t("Resize trading panel", "تغییر اندازهٔ پنل معاملات")}
-                  onPointerDown={(event) => {
-                    if (event.button !== 0) return;
-                    resizeStart.current = { y: event.clientY, height: event.currentTarget.parentElement!.offsetHeight };
-                    event.currentTarget.setPointerCapture(event.pointerId);
-                  }}
-                  onPointerMove={(event) => {
-                    const start = resizeStart.current;
-                    if (start) setPanelHeight(Math.max(105, Math.min(900, start.height + start.y - event.clientY)));
-                  }}
-                  onLostPointerCapture={() => { resizeStart.current = null; }}
-                />}
+                <div className="positions-divider" aria-label={t("Resize trading panel", "تغییر اندازهٔ پنل معاملات")}
+                  title={t("Drag to open, resize or close", "برای باز کردن، تغییر اندازه یا بستن بکشید")}
+                  {...panelDrag(positionsOpen, panelHeight, setPositionsOpen, setPanelHeight)}
+                ><span className="grip" aria-hidden="true" /></div>
                 <nav>
                   <button
                     aria-label={t("Expand or collapse positions", "باز یا بسته کردن موقعیت‌ها")}
@@ -1496,7 +1595,7 @@ function App() {
             {!focus && ticket && (product === "prop" || !account) && (
               <aside
                 ref={ticketElement}
-                style={!ticketDock && ticketPosition && Number.isFinite(ticketPosition.x) && Number.isFinite(ticketPosition.y) ? { left: ticketPosition.x, top: ticketPosition.y, bottom: "auto" } : undefined}
+                style={!ticketDock && ticketPosition && Number.isFinite(ticketPosition.x) && Number.isFinite(ticketPosition.y) ? { left: ticketPosition.x, top: ticketPosition.y, right: "auto", bottom: "auto" } : undefined}
                 aria-label={t("Quick Trade", "معامله سریع")}
                 className={
                   "ticket glass " + (ticketDock ? "docked" : "floating")
@@ -1513,12 +1612,16 @@ function App() {
                     const start = drag.current, element = ticketElement.current;
                     const workspace = element?.offsetParent;
                     if (!start || !element || !workspace) return;
-                    setTicketPosition({
-                      x: Math.max(0, Math.min(start.left + event.clientX - start.x, workspace.clientWidth - element.offsetWidth)),
-                      y: Math.max(0, Math.min(start.top + event.clientY - start.y, workspace.clientHeight - element.offsetHeight)),
-                    });
+                    /* moved directly; React state is committed once, on release */
+                    const x = Math.max(0, Math.min(start.left + event.clientX - start.x, workspace.clientWidth - element.offsetWidth));
+                    const y = Math.max(0, Math.min(start.top + event.clientY - start.y, workspace.clientHeight - element.offsetHeight));
+                    Object.assign(element.style, { left: x + "px", top: y + "px", right: "auto", bottom: "auto" });
                   }}
-                  onLostPointerCapture={() => { drag.current = null; }}
+                  onLostPointerCapture={() => {
+                    const element = ticketElement.current;
+                    if (drag.current && element) setTicketPosition({ x: element.offsetLeft, y: element.offsetTop });
+                    drag.current = null;
+                  }}
                 >
                   <strong>{selected.symbol}</strong>
                   <span className="order-type">{t("MARKET", "بازار")} ⇄</span>
@@ -1916,12 +2019,11 @@ const sideLabel = (t: Translate, side: unknown) =>
 /** Read-only Gains account records for the signed-in wallet. Mirrors the web
  * terminal's GainsPortfolio presentation rules (shared gainsView.ts): the
  * backend snapshot is the only source; nothing is computed or inferred here. */
-function GainsPanel({ t, locale, resource, state, tab, onTab, open, onToggle, height, onResize, onTx }: any) {
+function GainsPanel({ t, locale, resource, state, tab, onTab, open, onToggle, onOpen, height, onResize, onTx }: any) {
   const data = resource.data,
     rows = data?.[tab] || [],
     at = snapshotTime(data),
     severity = feedSeverity(state);
-  const resizeStart = useRef<{ y: number; height: number } | null>(null);
   const status =
     state === "live" ? t("Up to date", "به‌روز")
     : state === "stale" ? t("Source data is stale", "دادهٔ منبع قدیمی است")
@@ -1941,25 +2043,14 @@ function GainsPanel({ t, locale, resource, state, tab, onTab, open, onToggle, he
       style={open ? { height } : undefined}
       aria-label={t("Gains account records", "رکوردهای حساب Gains")}
     >
-      {open && (
-        <div
-          className="positions-divider"
-          role="separator"
-          aria-label={t("Resize trading panel", "تغییر اندازهٔ پنل معاملات")}
-          onPointerDown={(event) => {
-            if (event.button !== 0) return;
-            resizeStart.current = { y: event.clientY, height: event.currentTarget.parentElement!.offsetHeight };
-            event.currentTarget.setPointerCapture(event.pointerId);
-          }}
-          onPointerMove={(event) => {
-            const start = resizeStart.current;
-            if (start) onResize(Math.max(105, Math.min(900, start.height + start.y - event.clientY)));
-          }}
-          onLostPointerCapture={() => {
-            resizeStart.current = null;
-          }}
-        />
-      )}
+      <div
+        className="positions-divider"
+        aria-label={t("Resize trading panel", "تغییر اندازهٔ پنل معاملات")}
+        title={t("Drag to open, resize or close", "برای باز کردن، تغییر اندازه یا بستن بکشید")}
+        {...panelDrag(open, height, onOpen, onResize)}
+      >
+        <span className="grip" aria-hidden="true" />
+      </div>
       <nav role="tablist" aria-label={t("Gains account records", "رکوردهای حساب Gains")}>
         <button aria-label={t("Expand or collapse positions", "باز یا بسته کردن موقعیت‌ها")} onClick={onToggle}>
           {open ? "⌄" : "⌃"}
@@ -2076,9 +2167,48 @@ function GainsPanel({ t, locale, resource, state, tab, onTab, open, onToggle, he
     </section>
   );
 }
-function Chart({
+type ChartActions = {
+  activate: (index: number) => void;
+  market: (index: number, patch: any) => void;
+  max: (index: number) => void;
+  risk: (position: any, edit: any) => void;
+  error: (message: string) => void;
+};
+type ChartProps = {
+  index: number;
+  symbol: string;
+  timeframe: string;
+  active: boolean;
+  hidden: boolean;
+  theme: string;
+  t: Translate;
+  locale: AppLocale;
+  localeReady: number;
+  wallet: string;
+  account?: string;
+  positions: any[];
+  ready: boolean;
+  actions: React.RefObject<ChartActions>;
+};
+/** Overlay-relevant fields only: snapshots that do not move a level keep the
+ * drawn position boxes untouched. */
+const positionSignature = (positions: any[], symbol: string) =>
+  JSON.stringify(
+    positions
+      .filter((p) => p.market === symbol)
+      .map((p) => [p.id, p.side, p.entry_price, p.sl_price, p.tp_price, p.opened_at]),
+  );
+/* Re-render a chart only when something it draws changes: never for a price
+   flush, a clock tick or a panel drag elsewhere in the workspace. */
+const Chart = React.memo(ChartView, (a, b) =>
+  a.index === b.index && a.symbol === b.symbol && a.timeframe === b.timeframe &&
+  a.active === b.active && a.hidden === b.hidden && a.theme === b.theme &&
+  a.locale === b.locale && a.localeReady === b.localeReady && a.wallet === b.wallet &&
+  a.account === b.account && a.positions === b.positions && a.ready === b.ready);
+function ChartView({
   index,
-  config,
+  symbol,
+  timeframe,
   active,
   hidden,
   theme,
@@ -2087,18 +2217,15 @@ function Chart({
   account,
   positions,
   ready,
-  onActivate,
-  onMarket,
-  onMax,
-  onRisk,
-  onError,
-}: any) {
+  actions,
+}: ChartProps) {
+  const config = { symbol, timeframe };
   const host = useRef<HTMLDivElement>(null),
     controller = useRef<any>(null),
     managed = useRef(new Map<string, string>()),
     syncing = useRef(false),
     latest = useRef<any>({});
-  latest.current = { positions, ready, onRisk, onMarket, onError };
+  latest.current = { positions, ready };
   const [failure, setFailure] = useState(""),
     [loaded, setLoaded] = useState(0);
   const applyTheme = (c: any, value: string) => {
@@ -2171,7 +2298,7 @@ function Chart({
       c.on("market:changed", (e: any) => {
         const m = e?.market || c.chart.market;
         if (m?.symbol)
-          latest.current.onMarket({
+          actions.current.market(index, {
             symbol: m.symbol.replace(/^gains:/, ""),
             timeframe: m.timeframe,
           });
@@ -2199,9 +2326,9 @@ function Chart({
           8,
           { allowCreate: true },
         );
-        if (edit.error) latest.current.onError(edit.error);
+        if (edit.error) actions.current.error(edit.error);
         else if (edit.changed)
-          latest.current.onRisk(p, { sl: edit.sl, tp: edit.tp });
+          actions.current.risk(p, { sl: edit.sl, tp: edit.tp });
       });
     } catch (e) {
       setFailure(String(e));
@@ -2226,7 +2353,8 @@ function Chart({
       Promise.resolve(c.chart.ready())
         .then(() => c.setMarket(config))
         .catch((e) => setFailure(String(e)));
-  }, [config.symbol, config.timeframe]);
+  }, [symbol, timeframe]);
+  const overlay = positionSignature(positions, symbol);
   useEffect(() => {
     const c = controller.current;
     if (!c?.chart?.drawings) return;
@@ -2284,25 +2412,33 @@ function Chart({
     } finally {
       syncing.current = false;
     }
-  }, [positions, ready, config.symbol, account]);
+    /* keyed on the overlay signature, not on each snapshot's new array */
+  }, [overlay, ready, symbol, account, loaded > 0]);
   return (
     <section
       className={"chart-cell " + (active ? "active" : "")}
       data-loaded-bars={loaded}
       hidden={hidden}
-      onPointerDown={onActivate}
+      onPointerDown={() => actions.current.activate(index)}
       dir="ltr"
     >
       <div className="chart-title">
         <input
           aria-label={format(t, "Chart ${number} symbol", "نماد نمودار ${number}", { number: index + 1 })}
-          value={config.symbol}
-          onChange={(e) => onMarket({ symbol: e.target.value })}
+          value={symbol}
+          onChange={(e) => actions.current.market(index, { symbol: e.target.value })}
         />
         <span>{index + 1}</span>
-        <button aria-label={t("Maximize chart", "بزرگ‌نمایی نمودار")} onClick={onMax}>
+        <button aria-label={t("Maximize chart", "بزرگ‌نمایی نمودار")} onClick={() => actions.current.max(index)}>
           ⛶
         </button>
+      </div>
+      {/* Openfund chart mark: the same corner, glyph and hover reveal as the
+          web terminal (legacy/terminal.css .chart-brand). */}
+      <div className="chart-brand" aria-hidden="true">
+        <span className="brand-o">O</span>
+        <span className="brand-rest">penfund</span>
+        <small>Chart by Openfund Data</small>
       </div>
       {(failure || !loaded) && (
         <div className="chart-loading" role="status">

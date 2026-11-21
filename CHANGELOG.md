@@ -10,6 +10,12 @@
 
 - Refresh the project README with v0.8.0 payment release scope, merged desktop 0.0.3 and indicator work, dated 2026-11-20 gallery captures, current Dastkhat typography and explicit licensing boundaries. Correct stale source states in the canonical register while preserving dated operational observations. Record retained legacy font files; no license grant or binary removal.
 
+- **Open Trade 0.0.4 (desktop, internal unsigned build)** ([release notes](docs/releases/open-trade-0.0.4.md)).
+  - Faster workspace: coalesced price ticks, memoised charts, overlays re-drawn only when a level moves, and pointer drags that no longer re-render the app.
+  - Quick Trade opens top-right; the trading panel opens, resizes and closes by dragging its grip.
+  - Liquid-glass title bar, side rail, watchlist and trading panel over macOS vibrancy / Windows 11 acrylic; in-app title bar with native window controls on Windows and Linux.
+  - Openfund chart mark on every chart, a new app icon, and branded macOS DMG and Windows installer pages.
+
 - **Open Trade 0.0.3 (desktop, internal unsigned builds; not published)** ([release notes](docs/releases/open-trade-0.0.3.md), [owner setup](docs/releases/OPEN_TRADE_0.0.3_OWNER_SETUP.md), [delivery](docs/reviews/open-trade-0.0.3/DELIVERY.md)).
   - Prop and read-only Perpetual (Gains) accounts in one wallet session, with product switching that stops the other product's stream and keeps per-product chart layouts.
   - Five-locale desktop UI using the web dictionaries; desktop-only ar/ru/zh-CN strings are drafts pending review.

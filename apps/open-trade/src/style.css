@@ -983,3 +983,261 @@ button.link { background: none; border: 0; padding: 0; color: #82e7bd; cursor: p
 .untranslated { position: fixed; inset-inline-end: 12px; inset-block-end: 28px; font-size: 10px; opacity: .8; pointer-events: none; }
 :focus-visible { outline: 2px solid #82e7bd; outline-offset: 2px; }
 [dir="rtl"] .region-selector { text-align: start; }
+
+/* ---- 0.0.4: liquid-glass chrome, top-right Quick Trade, chart mark ----
+   Everything except the charts is glass. With a native window material
+   (data-glass="native": macOS vibrancy, Windows 11 acrylic) the chrome is a
+   translucent tint over the OS blur, so no CSS blur runs over live charts.
+   Without one (data-glass="css") the same tint sits on the solid window. */
+html {
+  --glass-tint: rgba(22, 22, 28, 0.5);
+  --glass-strong: rgba(24, 24, 30, 0.66);
+  --glass-edge: rgba(255, 255, 255, 0.09);
+  --glass-hi: rgba(255, 255, 255, 0.07);
+  --glass-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0) 60%);
+  --chart-bg: #111113;
+}
+html[data-theme="light"] {
+  --glass-tint: rgba(246, 246, 250, 0.55);
+  --glass-strong: rgba(250, 250, 252, 0.7);
+  --glass-edge: rgba(0, 0, 0, 0.08);
+  --glass-hi: rgba(255, 255, 255, 0.75);
+  --glass-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 65%);
+  --chart-bg: #fafafa;
+}
+html[data-glass="native"],
+html[data-glass="native"] body {
+  background: transparent;
+}
+html[data-glass="css"] {
+  --glass-tint: rgba(22, 22, 28, 0.9);
+  --glass-strong: rgba(24, 24, 30, 0.94);
+}
+html[data-glass="css"][data-theme="light"] {
+  --glass-tint: rgba(240, 240, 244, 0.92);
+  --glass-strong: rgba(248, 248, 250, 0.95);
+}
+.app,
+.terminal,
+.workspace,
+.charts,
+.startup {
+  background: transparent;
+}
+/* Shared liquid-glass surface: tint, top sheen, hairline edge, inner light. */
+.titlebar,
+.app-rail,
+.workspace-bar,
+.watch,
+.positions,
+footer,
+.ticket.docked {
+  background: var(--glass-sheen), var(--glass-tint);
+  box-shadow: inset 0 1px 0 var(--glass-hi);
+}
+.titlebar {
+  border-bottom: 1px solid var(--glass-edge);
+}
+html[data-theme="light"] .titlebar {
+  background: var(--glass-sheen), var(--glass-tint);
+}
+.title-mark {
+  width: 13px;
+  height: 15px;
+  vertical-align: -3px;
+  margin-inline-end: 7px;
+}
+html:is([data-platform="win32"], [data-platform="linux"]) .titlebar {
+  padding: 0 150px 0 12px;
+}
+.terminal {
+  padding: 0;
+  gap: 0;
+}
+.app-rail {
+  border-inline-end: 1px solid var(--glass-edge);
+}
+.app-rail img {
+  filter: none;
+}
+.app-rail .selected {
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: inset 0 1px 0 var(--glass-hi);
+}
+.workspace {
+  border-radius: 0;
+}
+.workspace-bar {
+  border-bottom: 1px solid var(--glass-edge);
+}
+.watch {
+  border-right: 1px solid var(--glass-edge);
+  backdrop-filter: none;
+}
+.charts {
+  gap: 2px;
+  padding: 2px;
+}
+.chart-cell {
+  background: var(--chart-bg);
+  border-radius: 6px;
+}
+html[data-theme="light"] .chart-cell {
+  background: var(--chart-bg);
+}
+footer {
+  border-top: 1px solid var(--glass-edge);
+}
+.startup {
+  background: radial-gradient(ellipse at center, rgba(130, 231, 189, 0.05), transparent 65%);
+}
+
+/* Floating glass (Quick Trade, dialogs, notices): a lighter blur than 0.0.3
+   (30px → 18px) because it repaints whenever the chart under it moves. */
+.glass {
+  background: var(--glass-sheen), var(--glass-strong);
+  border: 1px solid var(--glass-edge);
+  backdrop-filter: blur(18px) saturate(160%);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 var(--glass-hi),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.04);
+}
+html[data-theme="light"] .glass {
+  background: var(--glass-sheen), var(--glass-strong);
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.12), inset 0 1px 0 var(--glass-hi);
+}
+.settings.glass,
+.account-dialog.glass {
+  background: var(--glass-sheen), var(--glass-strong);
+}
+.chart-host [class*="dialog"],
+.chart-host [class*="popover"] {
+  backdrop-filter: blur(14px);
+}
+
+/* Quick Trade opens in the top-right corner of the chart area, clear of the
+   chart's own toolbar and price scale; it can still be dragged anywhere. */
+.ticket.floating,
+.positions-open .ticket.floating {
+  left: auto;
+  bottom: auto;
+  top: 74px;
+  right: 72px;
+  border-radius: 14px;
+}
+@media (max-width: 1100px) {
+  .ticket.floating {
+    left: auto;
+    right: 64px;
+  }
+}
+.ticket.floating.glass {
+  will-change: transform;
+}
+
+/* Trading panel: drag the grip to open, resize or close it. */
+.positions {
+  height: 34px;
+  min-height: 34px;
+  border-top: 1px solid var(--glass-edge);
+}
+.positions.expanded {
+  max-height: 70%;
+}
+.positions.dragging {
+  user-select: none;
+}
+.positions-divider {
+  position: absolute;
+  z-index: 4;
+  inset: 0 0 auto 0;
+  height: 7px;
+  background: transparent;
+  cursor: ns-resize;
+  display: grid;
+  place-items: center;
+}
+.positions-divider .grip {
+  width: 38px;
+  height: 3px;
+  margin-top: 1px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.16);
+  transition: background 0.15s, width 0.15s;
+}
+.positions-divider:hover .grip,
+.positions.dragging .positions-divider .grip {
+  width: 56px;
+  background: #82e7bd;
+}
+html[data-theme="light"] .positions-divider .grip {
+  background: rgba(0, 0, 0, 0.18);
+}
+.positions nav {
+  border-bottom-color: var(--glass-edge);
+}
+
+/* Openfund chart mark — same corner, glyph and hover as the web terminal. */
+.chart-brand {
+  position: absolute;
+  bottom: 46px;
+  left: 56px;
+  z-index: 6;
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  color: #f1f3ef;
+  user-select: none;
+  direction: ltr;
+  cursor: default;
+  font-family: Ubuntu, system-ui, sans-serif;
+  line-height: 1;
+  padding: 6px 8px 6px 2px;
+  margin: -6px 0 0 -2px;
+}
+.chart-brand .brand-o {
+  font-size: 24px;
+  font-weight: 700;
+  color: #82e7bd;
+  transition: text-shadow 0.3s;
+  line-height: 1;
+}
+.chart-brand:hover .brand-o {
+  text-shadow: 0 0 12px #82e7bd88;
+}
+.chart-brand .brand-rest {
+  font-size: 17px;
+  font-weight: 700;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  white-space: nowrap;
+  letter-spacing: -0.4px;
+  transition: max-width 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+}
+.chart-brand:hover .brand-rest {
+  max-width: 100px;
+  opacity: 1;
+}
+.chart-brand small {
+  font-size: 8.5px;
+  color: #b7c8bd;
+  margin-left: 10px;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.3s, transform 0.3s;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.chart-brand:hover small {
+  opacity: 1;
+  transform: none;
+}
+html[data-theme="light"] .chart-brand {
+  color: #28282e;
+}
+html[data-theme="light"] .chart-brand small {
+  color: #5f6f66;
+}

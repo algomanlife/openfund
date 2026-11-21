@@ -6,3 +6,8 @@ artifacts/
 build/icon.png
 build/icon.ico
 build/icon.icns
+build/background.png
+build/background@2x.png
+build/installerSidebar.bmp
+build/uninstallerSidebar.bmp
+build/installerHeader.bmp

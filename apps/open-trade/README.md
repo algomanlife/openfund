@@ -1,6 +1,6 @@
 # Open Trade desktop beta
 
-Open Trade (version in `package.json`, currently 0.0.3) is the Openfund Electron desktop workspace. It uses the
+Open Trade (version in `package.json`, currently 0.0.4) is the Openfund Electron desktop workspace. It uses the
 existing Vela workspace, Gains market adapter, SIWE sessions and authoritative
 Prop account APIs. It does not contain a backend, account database or P&L engine.
 Public distribution is not approved. See [acceptance](ACCEPTANCE.md).
@@ -104,11 +104,29 @@ explicitly enable it with `OPEN_TRADE_IRAN_APPROVED=1` after confirming shared
 accounts and trading state. WalletConnect uses
 `OPEN_TRADE_WALLETCONNECT_PROJECT_ID` from launch or build configuration.
 
-Drag the Quick Trade header to move it, or drag the divider above Positions to
-resize the bottom panel. The three-chart layout has a resizable left chart and
+Quick Trade opens in the top-right corner of the chart area; drag its header
+to move it. Drag the grip above Positions up to open the bottom panel, resize
+it, or drag it down to close it (double-click or Enter/Space on the grip
+toggles it). The three-chart layout has a resizable left chart and
 two stacked right charts. Use Capture in the workspace toolbar to preview,
 save, or copy a chart PNG. The preview includes unrealized P&L only when the
 account snapshot reports a fresh valuation and has a matching position.
+
+### Version 0.0.4
+
+- Smoother workspace: Gains price ticks are coalesced (250 ms), charts are
+  memoised and their position overlays re-sync only when a level changes;
+  Quick Trade and the trading panel move without re-rendering the workspace
+  on every pointer event.
+- Liquid-glass chrome: title bar, side rail, watchlist, workspace bar,
+  trading panel and footer are glass over the native window material (macOS
+  vibrancy, Windows 11 acrylic; Linux and older Windows use an opaque tint).
+  Windows and Linux draw the title bar in-app with native minimise, maximise
+  and close controls. Charts stay opaque.
+- Openfund chart mark in each chart's bottom-left corner (same glyph and hover
+  as the web terminal).
+- New app icon and branded installers (macOS DMG window, Windows installer
+  welcome/finish pages) rendered from `branding/*.svg` by `scripts/prepare.mjs`.
 
 ### Version 0.0.3
 

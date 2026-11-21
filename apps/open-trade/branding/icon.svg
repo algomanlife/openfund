@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Open Trade app icon (0.0.4): half of the Openfund "O"; the other half is
+       drawn with the petal lines of the Openfund lotus. Classic, flat, minimal. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b1f1d"/>
+      <stop offset="1" stop-color="#0a0c0b"/>
+    </linearGradient>
+    <linearGradient id="mint" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a8f3d1"/>
+      <stop offset="1" stop-color="#5ad49c"/>
+    </linearGradient>
+  </defs>
+  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#bg)"/>
+  <rect x="101.5" y="101.5" width="821" height="821" rx="185" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="3"/>
+  <path d="M512.0 762.0 A250 250 0 0 1 512.0 262.0" fill="none" stroke="url(#mint)" stroke-width="96"/>
+  <g fill="none" stroke="url(#mint)" stroke-width="22" stroke-linecap="round">
+    <path d="M512 262 C830 372 830 652 512 762"/>
+    <path d="M512 262 C734 372 734 652 512 762"/>
+    <path d="M512 262 C638 372 638 652 512 762"/>
+  </g>
+</svg>
