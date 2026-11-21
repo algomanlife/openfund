@@ -69,6 +69,22 @@ authorization.
 - **One professional terminal.** Prop and Perpetual share a single terminal:
   Vela charts with Pine indicators, order panel with risk preview, positions,
   portfolio and a trade journal.
+- **Openfund chart indicators.** Three Pine Script v5 indicators lead the
+  Vela indicator catalog, each independently selectable. They run in a Web
+  Worker on Vela 0.10.6 with the official PineTS addon (vela-pinets 0.3.4,
+  PineTS 0.13.1).
+  - *Open Algo V5:* Buy/Sell signals, Smart Trail, TP/SL levels and optional
+    overlays.
+  - *Price Action Concepts:* structure, BOS/CHoCH, multi-timeframe order
+    blocks, liquidity and previous-period levels.
+  - *Smart Money Concepts:* structure, order blocks, equal highs/lows, fair
+    value gaps and levels.
+
+  Settings persist per product and wallet. Indicators are observational: they
+  never place orders or affect accounts. Gains candles carry no volume, so
+  volume-based values show as unavailable.
+  [Sources and behaviour](indicators/README.md) ·
+  [Performance and accuracy](docs/reviews/pine-optimization/README.md)
 - **Read-only market intelligence.** Trade Radar follows public Hyperliquid
   whale activity; the Market Heatmap maps perpetual markets by volume or open
   interest. Neither touches orders or accounts.
@@ -388,7 +404,8 @@ PORT=8180 npm run dev:backend     # http://localhost:8180
 For hot reload, run `VITE_BACKEND_URL=http://localhost:8180 npm run dev:web`
 in a second terminal. Desktop: `npm ci --prefix apps/open-trade && npm run dev --prefix apps/open-trade`.
 
-**Tests.** `npm run typecheck`, `npm run test:web`, `npm run test:release`,
+**Tests.** `npm run typecheck`, `npm run test:web`, `npm run test:charts`
+(Pine indicators), `npm run test:release`,
 `npm run validate:blueprint`, `npm run docs:check`; backend suites need a
 disposable database: `TEST_BACKEND_URL=… DATABASE_URL=postgres://…/openfund_test npm run test:backend`.
 The backend server under test runs with `SIM_TEST_MODE=1`, a test
@@ -494,7 +511,8 @@ Third-party components keep their own terms (full list in
 | Directus | BSL 1.1 (11.17.4) | Separate service, not redistributed |
 | Openfund Protocol (dormant) | GPL-2.0 | Not built or shipped |
 | Dastkhat, Dastkhat Arabic | SIL OFL 1.1 | Persian/Arabic UI fonts, self-hosted unmodified ([source](apps/web-react/public/assets/fonts/dastkhat/SOURCE.json)) |
-| Irancell-derived fonts (legacy, being retired), Pine indicators | **Unresolved** | Provenance needed before any license decision |
+| Irancell-derived fonts (legacy, being retired) | **Unresolved** | Provenance needed before any license decision |
+| Pine indicators (`indicators/`) | **Unresolved**: one file states CC BY-NC-SA 4.0, the others none | The owner intends to open-source them (Apache-2.0 proposed); evidence of third-party origin must be resolved first ([details](docs/legal/LICENSING.md#pine-indicator-sources)). Separate from the PineTS and Vela terms above |
 
 [Licensing report](docs/legal/LICENSING.md) · [Dependency licenses](docs/legal/DEPENDENCY_LICENSES.md)
 

@@ -2,11 +2,11 @@
 
 ## Components and versions
 
-The existing **Vela 0.9.3** source remains the chart foundation. The application installs **@luxalgo/vela-pinets 0.3.2** and **pinets 0.13.1**, pinned in the web lockfile. Vela defines the public `ScriptingEngine` port; the official addon implements parsing/execution and conversion to Vela's scene model. Browser computation runs in the addon's hosted worker. No Pine runtime is imported into the Apache-licensed Vela core.
+The vendored **Vela 0.10.6** source remains the chart foundation. The application installs **@luxalgo/vela-pinets 0.3.4** and **pinets 0.13.1**, pinned in the web lockfile. The indicators are Pine Script **v5**; a v6 migration was not attempted because v6 support in this runtime has not been verified for every construct they use. Vela defines the public `ScriptingEngine` port; the official addon implements parsing/execution and conversion to Vela's scene model. Browser computation runs in the addon's hosted worker. No Pine runtime is imported into the Apache-licensed Vela core.
 
 ```mermaid
 flowchart LR
-  Source[Preserved Pine files] --> Catalog[Ordered source manifest]
+  Source[Openfund Pine files] --> Catalog[Ordered source manifest]
   Source --> Resolver[Allowlisted library sources]
   Catalog --> Prepare[Worker prepare and input scan]
   Resolver --> Prepare
@@ -19,7 +19,7 @@ flowchart LR
 
 ## Dependency resolution
 
-[pine-sources.mjs](../../packages/openfund-charts/src/pine-sources.mjs) preserves source files and transforms only the two exact Open Algo import declarations:
+[pine-sources.mjs](../../packages/openfund-charts/src/pine-sources.mjs) transforms only the two exact Open Algo import declarations, and lists retired inputs that the bridge strips from saved workspaces:
 
 | Original ID | Local resolver ID | Supplied source | Referenced API |
 | --- | --- | --- | --- |
@@ -55,7 +55,7 @@ Smart Trail receives `(10,4,8)` unchanged. It returns a smoothed trail, a smooth
 
 The pinned runtime's request-slicing optimization truncates the secondary program before PAC's nested `getTFData -> reqSeq -> request.security` invocation. With actual secondary candles, the requested expression is absent from the secondary parameter store, causing `Cannot read properties of undefined`.
 
-[pine-compatibility.mjs](../../packages/openfund-charts/src/pine-compatibility.mjs) disables the optimization only for this recognized PAC source. PineTS then uses its existing full-script secondary execution path. No indicator statement, input, return, historical operation or mathematical formula is changed. The build extracts the pinned addon's worker, inserts this compatibility function before message handling and emits a hosted worker. Structural guards fail if the upstream worker layout changes. Upgrade this integration deliberately; do not blindly change versions.
+[pine-compatibility.mjs](../../packages/openfund-charts/src/pine-compatibility.mjs) disables the optimization only for this recognized PAC source. Re-verified 2026-11-21: without it PAC still fails on PineTS 0.13.1. PineTS also evaluates the whole PAC script inside those secondary requests, where drawings are not created; PAC therefore uses function-form `line.*` calls, which tolerate `na`. PineTS then uses its existing full-script secondary execution path. No indicator statement, input, return, historical operation or mathematical formula is changed. The build extracts the pinned addon's worker, inserts this compatibility function before message handling and emits a hosted worker. Structural guards fail if the upstream worker layout changes. Upgrade this integration deliberately; do not blindly change versions.
 
 ## Data, historical and live execution
 
@@ -69,15 +69,29 @@ The provider fetches genuine base candles for additional intraday multiples and 
 | --- | --- |
 | Pine v5, functions/methods, tuples, series/history | All three original scripts execute; differential Open Algo and Smart Trail output tests |
 | `var`, `varip`, arrays, UDTs | Exercised by original scripts and browser live execution; universal semantic parity is not claimed |
-| Inputs, defaults, groups/options, edits | 79/49/52 schemas; existing Vela settings and persistence |
+| Inputs, defaults, groups/options, edits | 76/49/52 schemas; existing Vela settings and persistence; retired Open Algo dashboard keys are stripped on load |
 | Plots, fills, candles/colors, lines, labels, boxes, tables | Original script scenes render through official adapters; optional combinations need broader acceptance |
 | Overlay/subpane | Official engine/renderer contract retained; supplied studies are overlays |
-| `request.security`, `security_lower_tf` | Provider-backed; PAC requires full secondary execution; available history and supported resolutions constrain results |
+| `request.security`, `security_lower_tf` | Provider-backed; PAC requires full secondary execution; available history and supported resolutions constrain results. `lookahead_on` returns a forming higher-timeframe bar's final values on history (verified), so only `[1]`-offset expressions use it |
 | Incremental live updates | Official worker sessions, market-change recalculation and browser tests; prolonged/live reconnect soak is not certified |
 | Matrices | Runtime contains matrix APIs, but these scripts do not require them; not independently validated |
 | Genuine volume and volume-based order-block metrics | Unavailable from current Gains candles; preserved as `na` |
 | Financial/earnings/economic/depth requests | No provider integration or support claim |
-| Full Pine language / reference-platform equivalence | Not certified; no independent authoritative output dataset supplied |
+| Full Pine language / reference-platform equivalence | Not certified; no independent authoritative output dataset supplied. Optimizations are checked differentially against main, which is not an independent reference |
+
+## Lookahead audit (November 2026)
+
+| Request | Before | After |
+| --- | --- | --- |
+| Open Algo dashboard, five `request.security(..., lookahead_on)` + `security_lower_tf` | Fed only the dashboard | Removed |
+| PAC previous day/week/month `hl()` | `[high, low]`, `lookahead_on`: forming period's final (history) or running (live) extremes, recovered as "previous" with `valuewhen(..., 1)` | `[high[1], low[1]]`, `lookahead_on`: last completed period; anchored at the chart bar that set it |
+| PAC order blocks `reqSeq` | `lookahead_off` | Unchanged |
+| PAC structure scanner | Two `lookahead_off` requests | One tuple request; chart series when disabled |
+| SMC fair value gaps | `lookahead_on` with `high[0]`/`low[0]` | `lookahead_off`: last completed candle; unchanged on the chart timeframe |
+| SMC daily/weekly/monthly levels | `[high[1], low[1], time[1], time]`, `lookahead_on` | Unchanged: correct idiom, values verified against aggregation |
+| Pivots (`ta.pivothigh/low`) in all three | Confirmed `n` bars late and drawn back at the pivot bar | Unchanged: a documented, intended structural delay, not future data |
+
+Evidence and tests: [performance and accuracy report](../reviews/pine-optimization/README.md).
 
 ## Build, licenses and references
 

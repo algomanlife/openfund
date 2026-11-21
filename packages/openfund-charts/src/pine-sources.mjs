@@ -31,6 +31,38 @@ export function createLibraryResolver(sources) {
   };
 }
 
+// Inputs removed from catalog indicators. Saved workspaces may still carry
+// them; the bridge strips them on read so they never reach the Pine runtime.
+export const RETIRED_INPUTS = Object.freeze({
+  'Open Algo V5': Object.freeze(['enableDashboard', 'locationDashboard', 'sizeDashboard']),
+});
+
+/**
+ * Remove retired input keys from a persisted Vela workspace document. Each
+ * chart stores `indicators: { manifest: [...], natives: [...] }`, where a
+ * manifest entry is a name or `{ name, inputs?, props?, hidden? }`; a bare
+ * array of entries is accepted as well.
+ */
+export function migrateWorkspaceState(state, retired = RETIRED_INPUTS) {
+  if (!state || !Array.isArray(state.charts)) return { state, changed: false };
+  let changed = false;
+  const migrate = entries => entries.map(entry => {
+    const keys = entry && typeof entry === 'object' ? retired[entry.name] : undefined;
+    if (!keys || !entry.inputs) return entry;
+    const inputs = Object.fromEntries(Object.entries(entry.inputs).filter(([key]) => !keys.includes(key)));
+    if (Object.keys(inputs).length === Object.keys(entry.inputs).length) return entry;
+    changed = true;
+    const { inputs: _removed, ...rest } = entry;
+    return Object.keys(inputs).length ? { ...rest, inputs } : rest;
+  });
+  for (const chart of state.charts) {
+    const ledger = chart?.indicators;
+    if (Array.isArray(ledger)) chart.indicators = migrate(ledger);
+    else if (Array.isArray(ledger?.manifest)) ledger.manifest = migrate(ledger.manifest);
+  }
+  return { state, changed };
+}
+
 export function createCatalog(openAlgo, pac, smc) {
   return [
     { name: 'Open Algo V5', script: localizeOpenAlgo(openAlgo) },

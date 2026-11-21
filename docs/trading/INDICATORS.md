@@ -6,7 +6,7 @@ Both Prop and Perpetual use the same catalog, engine factory and renderer. Finan
 
 The Indicators dialog lists **Open Algo V5**, **Price Action Concepts**, then **Smart Money Concepts** at the start of its Openfund catalog. All 77 built-ins follow in their existing alphabetical order. Active instances appear in a separate on-chart card. Library files are never registered as indicators. Search uses the displayed catalog names; clicking a row adds an instance, and the trash button removes it. Multiple instances are intentionally supported; the catalog itself contains no duplicates.
 
-The three proprietary entries start disabled. Their preserved sources declare 79, 49 and 52 inputs respectively. Double-click an indicator's chart legend title to open settings, or hover its title and use the gear. Vela's settings UI receives the runtime input schema, including source options, groups, bounds and defaults. Original source titles/shorttitles and drawing styles are retained; the picker uses the requested product names.
+The three Openfund entries start disabled. Their sources declare 76, 49 and 52 inputs respectively (Open Algo's three dashboard inputs were removed; saved values for them are dropped when a workspace loads). Double-click an indicator's chart legend title to open settings, or hover its title and use the gear. Vela's settings UI receives the runtime input schema, including source options, groups, bounds and defaults. Original source titles/shorttitles and drawing styles are retained; the picker uses the requested product names.
 
 ## Rendering and lifecycle
 

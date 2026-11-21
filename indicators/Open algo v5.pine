@@ -1,5 +1,6 @@
 //@version=5
-//I made it better yay
+// Open Algo V5 (Openfund). Change history and behaviour notes:
+// indicators/README.md.
 indicator("Open Algo V5", overlay = true)
 
 // ============================[INPUTS]============================ //
@@ -81,43 +82,37 @@ supertrend(_src, factor, atrLen) =>
 		direction := close < lowerBand ? 1 : -1
 	superTrend := direction == -1 ? lowerBand : upperBand
 	[superTrend, direction]
-lr_slope(_src, _len) =>
-    x = 0.0, y = 0.0, x2 = 0.0, xy = 0.0
-    for i = 0 to _len - 1
-        val = _src[i]
+// Linear-regression channel for the Trend Lines overlay. The lines are
+// redrawn on the last bar only (earlier copies were deleted on the next bar),
+// so the O(period) regression runs once per update instead of on every bar.
+// It reads close/high/low directly: those built-in series keep their full
+// history even though this block only executes on the last bar.
+period = 150
+float s1 = na
+float i1 = na
+float upDev = na
+float dnDev = na
+if autoTL and barstate.islast
+    sumX = 0.0, sumY = 0.0, sumX2 = 0.0, sumXY = 0.0
+    for i = 0 to period - 1
+        val = close[i]
         per = i + 1
-        x += per
-        y += val
-        x2 += per * per
-        xy += val * per
-    _slp = (_len * xy - x * y) / (_len * x2 - x * x)
-    _avg = y / _len
-    _int = _avg - _slp * x / _len + _slp
-    [_slp, _avg, _int]
-lr_dev(_src, _len, _slp, _avg, _int) =>
-    upDev = 0.0, dnDev = 0.0
-    val = _int
-    for j = 0 to _len - 1
-        price = high[j] - val
-        if price > upDev
-            upDev := price
-        price := val - low[j]
-        if price > dnDev
-            dnDev := price
-        price := _src[j]
-        val += _slp
-    [upDev, dnDev]
+        sumX += per
+        sumY += val
+        sumX2 += per * per
+        sumXY += val * per
+    s1 := (period * sumXY - sumX * sumY) / (period * sumX2 - sumX * sumX)
+    i1 := sumY / period - s1 * sumX / period + s1
+    upDev := 0.0
+    dnDev := 0.0
+    val = i1
+    for j = 0 to period - 1
+        if high[j] - val > upDev
+            upDev := high[j] - val
+        if val - low[j] > dnDev
+            dnDev := val - low[j]
+        val += s1
 
-barsL       = 10
-barsR       = 10
-pivotHigh = fixnan(ta.pivothigh(barsL, barsR)[1])
-pivotLow = fixnan(ta.pivotlow(barsL, barsR)[1])
-source = close, period = 150
-[s1, a1, i1] = lr_slope(source, period)
-[upDev, dnDev] = lr_dev(source, period, s1, a1, i1)
-
-y1 = low - (ta.atr(30) * 2), y1B = low - ta.atr(30)
-y2 = high + (ta.atr(30) * 2), y2B = high + ta.atr(30)
 x1 = bar_index - period + 1, _y1 = i1 + s1 * (period - 1), x2 = bar_index, _y2 = i1
 
 
@@ -146,8 +141,6 @@ emaLength = 200
 emaSource = close
 ema = ta.ema(emaSource, emaLength)
 
-sma1 = ta.sma(close, 8)
-sma2 = ta.sma(close, 9)
 sma3 = ta.sma(close, 13)
 [supertrend, direction] = supertrend(open, sigsensiviti, factor)
 
@@ -316,20 +309,7 @@ if shortTp2Breakout
 if shortTp3Breakout
     shortTp3Broken := true
 
-// Define candle color for TP breakouts (green for first TP1, TP2, or TP3 breakout)
-candleColor1 = longTp1Breakout or longTp2Breakout or longTp3Breakout or shortTp1Breakout or shortTp2Breakout or shortTp3Breakout ? color.rgb(0, 255, 8) : na
-
-// Determine Candle Color Based on Last Signal
-var color candleColor = na
-var bool hasSignal = false
-if bull or Sbull
-    candleColor := bullishColor
-    hasSignal := true
-else if bear or Sbear
-    candleColor := bearishColor
-    hasSignal := true
 // Calculate SL based on TP1
-slMultiplier = 1.0
 float slDist = -750 * tpstrength
 if valid_Sbull or valid_Sbear
     float slDist = -1000 * tpstrength * 1.5
@@ -382,10 +362,13 @@ if shortTp3Breakout and useTP3
     label.new(bar_index, low - (low * 0.009), f_tp_label(3), color=color.new(color.white, 100), textcolor=color.white, style=label.style_label_up, size=size.normal, yloc=yloc.belowbar)
 
 
-// Function to create labels
+// TP/SL labels and lines are replaced on every bar (the previous bar's copy
+// is deleted), so only the last bar's objects are ever visible. Creating them
+// on the last bar only removes ~10 allocations per historical bar. Inputs to
+// the drawings (entry, TP/SL levels, bar counts) are still computed every bar.
 labelTpSl(cond, y, txt, bgColor, txtColor) =>
     var label labelTpSl = na
-    if riskmanage_bool and cond
+    if riskmanage_bool and cond and barstate.islast
         labelTpSl := label.new(bar_index + 1, y, txt, xloc=xloc.bar_index, yloc=yloc.price, color=bgColor, style=label.style_label_left, textcolor=txtColor, size=size.small)
     label.delete(labelTpSl[1])
 
@@ -393,7 +376,7 @@ labelTpSl(cond, y, txt, bgColor, txtColor) =>
 lineTpSl(cond, y, color, style) =>
     count = signal_type == 1 ? ta.barssince(valid_bull) : signal_type == 2 ? ta.barssince(valid_Sbull) : signal_type == 3 ? ta.barssince(valid_bear) : signal_type == 4 ? ta.barssince(valid_Sbear) : 0
     var line lineTpSl = na
-    if riskmanage_bool and cond
+    if riskmanage_bool and cond and barstate.islast
         lineTpSl := line.new(bar_index - count, y, bar_index + 1, y, xloc=xloc.bar_index, extend=extend.none, color=color, style=style)
     line.delete(lineTpSl[1])
 
@@ -420,78 +403,6 @@ lineTpSl(is_signal, stop_y, slColor, line.style_solid)
 lineTpSl(is_signal and useTP1 and multTP1 != 0, tp1_y, tp1Color, line.style_solid)
 lineTpSl(is_signal and useTP2 and multTP2 != 0, tp2_y, tp2Color, line.style_solid)
 lineTpSl(is_signal and useTP3 and multTP3 != 0, tp3_y, tp3Color, line.style_solid)
-
-
-// Inputs for Dashboard
-enableDashboard = input.bool(true, "Dashboard", group="DASHBOARD SETTINGS")
-locationDashboard = input.string("Bottom right", "Location", ["Top right", "Top left", "Middle right", "Middle left", "Bottom right", "Bottom left"], group="DASHBOARD SETTINGS")
-sizeDashboard = input.string("Small", "Size", ["Tiny", "Small", "Normal"], group="DASHBOARD SETTINGS")
-colorBackground = #2e2e2e
-colorFrame = #000000
-colorBorder = #2e2e2e
-
-// EMA-based Trend Calculation
-ema3 = ta.ema(close, 200)
-emaBull = close > ema3
-
-// Function to Fetch Trend Data for a Given Timeframe
-securityNoRep(sym, res, src) =>
-    bool bull3 = na
-    bull3 := str.tonumber(res) == timeframe.multiplier ? src : bull3
-    bull3 := str.tonumber(res) > timeframe.multiplier ? request.security(sym, res, src, barmerge.gaps_off, barmerge.lookahead_on) : bull3
-    bull_array = request.security_lower_tf(syminfo.tickerid, str.tostring(timeframe.multiplier), src)
-    if array.size(bull_array) > 1
-        bull3 := array.pop(bull_array)
-    array.clear(bull_array)
-    bull3
-
-// Trend Calculations for Different Timeframes
-TF60Bull = securityNoRep(syminfo.tickerid, "60", emaBull)
-TF120Bull = securityNoRep(syminfo.tickerid, "120", emaBull)
-TF240Bull = securityNoRep(syminfo.tickerid, "240", emaBull)
-TF720Bull = securityNoRep(syminfo.tickerid, "480", emaBull)
-TFDBull = securityNoRep(syminfo.tickerid, "1440", emaBull)
-
-// Determine Current Position Based on the Last Signal
-var string currentPosition = na
-var color positionBgColor = na
-if bull or Sbull
-    currentPosition := "Buy"
-    positionBgColor := color.green
-else if bear or Sbear
-    currentPosition := "Sell"
-    positionBgColor := color.red
-
-// Dashboard Setup
-var dashboard_loc = locationDashboard == "Top right" ? position.top_right : locationDashboard == "Top left" ? position.top_left : locationDashboard == "Middle right" ? position.middle_right : locationDashboard == "Middle left" ? position.middle_left : locationDashboard == "Bottom right" ? position.bottom_right : position.bottom_left
-var dashboard_size = sizeDashboard == "Tiny" ? size.tiny : sizeDashboard == "Small" ? size.small : size.normal
-var dashboard = table.new(dashboard_loc, 2, 18, colorBackground, colorFrame, 1, colorBorder, 1)
-
-// Helper Functions for Dashboard Cells
-dashboard_cell(column, row, txt, text_color) => table.cell(dashboard, column, row, txt, 0, 0, text_color, text_size=dashboard_size)
-dashboard_cell_bg(column, row, col) => table.cell_set_bgcolor(dashboard, column, row, col)
-
-// Populate Dashboard
-if barstate.islast and enableDashboard
-    dashboard_cell(0, 0, "SMRT Algo", color.white)
-    dashboard_cell(1, 0, "Pro", color.white)
-    table.merge_cells(dashboard, 0, 0, 0, 0)
-    dashboard_cell(0, 1, "Current Position", color.white)
-    dashboard_cell(1, 1, currentPosition == na ? "No Signal" : currentPosition, color.black), dashboard_cell_bg(1, 1, positionBgColor == na ? color.gray : positionBgColor)
-    dashboard_cell(0, 2, "Current Trend", color.white)
-    dashboard_cell(1, 2, emaBull ? "Bullish" : "Bearish", color.black), dashboard_cell_bg(1, 2, emaBull ? color.green : color.red)
-    dashboard_cell(0, 7, "1 Hour", color.white)
-    dashboard_cell(0, 8, "2 Hour", color.white)
-    dashboard_cell(0, 9, "4 Hour", color.white)
-    dashboard_cell(0, 10, "8 Hour", color.white)
-    dashboard_cell(0, 11, "Daily", color.white)
-    dashboard_cell(1, 7, TF60Bull ? "Bullish" : "Bearish", color.black), dashboard_cell_bg(1, 7, TF60Bull ? color.green : color.red)
-    dashboard_cell(1, 8, TF120Bull ? "Bullish" : "Bearish", color.black), dashboard_cell_bg(1, 8, TF120Bull ? color.green : color.red)
-    dashboard_cell(1, 9, TF240Bull ? "Bullish" : "Bearish", color.black), dashboard_cell_bg(1, 9, TF240Bull ? color.green : color.red)
-    dashboard_cell(1, 10, TF720Bull ? "Bullish" : "Bearish", color.black), dashboard_cell_bg(1, 10, TF720Bull ? color.green : color.red)
-    dashboard_cell(1, 11, TFDBull ? "Bullish" : "Bearish", color.black), dashboard_cell_bg(1, 11, TFDBull ? color.green : color.red)
-
-
 
 
 upperTL1        = input.color(color.new(#787b86, 5), "Top Line", group="Trend Lines")
@@ -558,7 +469,7 @@ fill(plotMain, plotFiller, color=fillColor, editable=false)
 
 
 
-// ورودی‌های دیگر که مخفی شده‌اند (با استفاده از display.none)
+// Reversal band inputs (hidden from the status line with display.none)
 length1 = input.int(80, minval=1, title="Length 1", display=display.none, group = 'reversal Bands')
 length2 = input.int(80, minval=1, title="Length 2", display=display.none, group = 'reversal Bands')
 length3 = input.int(80, minval=1, title="Length 3", display=display.none, group = 'reversal Bands')
@@ -575,36 +486,39 @@ atrlength1 = input.int(2000, title="ATR Length 1", display=display.none, group =
 atrlength2 = input.int(2000, title="ATR Length 2", display=display.none, group = 'reversal Bands')
 atrlength3 = input.int(2000, title="ATR Length 3", display=display.none, group = 'reversal Bands')
 
-// تابع محاسبه MA
+// Moving average: SMA, or EMA when exp is set
 esma(source, length)=>
     s = ta.sma(source, length)
     e = ta.ema(source, length)
     exp ? e : s
 
-// محاسبه Keltner Channel اول
-ma1 = esma(src1, length1)
-rangema1 = BandsStyle == "True Range" ? ta.tr(true) : BandsStyle == "Average True Range" ? ta.atr(atrlength1) : ta.rma(high - low, length1)
-upper1 = ma1 + rangema1 * mult1
-lower1 = ma1 - rangema1 * mult1
+// Three Keltner-style reversal bands. Only plotted when Reversal Bands is
+// on; the input is constant for a run, so gating keeps the MA/ATR state
+// consistent while skipping three long-window calculations when off.
+float upper1 = na
+float lower1 = na
+float upper2 = na
+float lower2 = na
+float upper3 = na
+float lower3 = na
+if reversalBandsEnabled
+    ma1 = esma(src1, length1)
+    rangema1 = BandsStyle == "True Range" ? ta.tr(true) : BandsStyle == "Average True Range" ? ta.atr(atrlength1) : ta.rma(high - low, length1)
+    upper1 := ma1 + rangema1 * mult1
+    lower1 := ma1 - rangema1 * mult1
+    ma2 = esma(src1, length2)
+    rangema2 = BandsStyle == "True Range" ? ta.tr(true) : BandsStyle == "Average True Range" ? ta.atr(atrlength2) : ta.rma(high - low, length2)
+    upper2 := ma2 + rangema2 * mult2
+    lower2 := ma2 - rangema2 * mult2
+    ma3 = esma(src1, length3)
+    rangema3 = BandsStyle == "True Range" ? ta.tr(true) : BandsStyle == "Average True Range" ? ta.atr(atrlength3) : ta.rma(high - low, length3)
+    upper3 := ma3 + rangema3 * mult3
+    lower3 := ma3 - rangema3 * mult3
 
-// محاسبه Keltner Channel دوم
-ma2 = esma(src1, length2)
-rangema2 = BandsStyle == "True Range" ? ta.tr(true) : BandsStyle == "Average True Range" ? ta.atr(atrlength2) : ta.rma(high - low, length2)
-upper2 = ma2 + rangema2 * mult2
-lower2 = ma2 - rangema2 * mult2
-
-// محاسبه Keltner Channel سوم
-ma3 = esma(src1, length3)
-rangema3 = BandsStyle == "True Range" ? ta.tr(true) : BandsStyle == "Average True Range" ? ta.atr(atrlength3) : ta.rma(high - low, length3)
-upper3 = ma3 + rangema3 * mult3
-lower3 = ma3 - rangema3 * mult3
-
-
-
-// اگر گزینه Reversal Bands غیرفعال باشد، خطوط کلتنر چنل را مخفی می‌کنیم
+// The Keltner-style bands are hidden while Reversal Bands is off
 plotKeltnerChannels = reversalBandsEnabled ? true : false
 
-// رسم Keltner Channels فقط زمانی که Reversal Bands فعال است
+// Plot the bands only while Reversal Bands is on
 u1 = plot(plotKeltnerChannels ? upper1 : na, color=#787b86, title="Upper Band 1", transp=70)
 l1 = plot(plotKeltnerChannels ? lower1 : na, color=#787b86, title="Lower Band 1", transp=70)
 
@@ -614,13 +528,13 @@ l2 = plot(plotKeltnerChannels ? lower2 : na, color=#787b86, title="Lower Band 2"
 u3 = plot(plotKeltnerChannels ? upper3 : na, color=#787b86, title="Upper Band 3", transp=70)
 l3 = plot(plotKeltnerChannels ? lower3 : na, color=#787b86, title="Lower Band 3", transp=70)
 
-// محاسبه رنگ ابر بر اساس فعال بودن Reversal Bands
+// Band fill colours, only while Reversal Bands is on
 colorUpper1 = reversalBandsEnabled ? color.new(#787b86, 85) : na
 colorUpper2 = reversalBandsEnabled ? color.new(#787b86, 75) : na
 colorLower1 = reversalBandsEnabled ? color.new(#787b86, 85) : na
 colorLower2 = reversalBandsEnabled ? color.new(#787b86, 75) : na
 
-// پر کردن فضای بین باندها (فقط زمانی که Reversal Bands فعال است)
+// Fill between the bands (only while Reversal Bands is on)
 fill(u1, u2, color=colorUpper1)
 fill(u2, u3, color=colorUpper2)
 fill(l1, l2, color=colorLower1)
@@ -645,12 +559,13 @@ ChannelW      = 10
 label_loc     = 55
 ph            = ta.pivothigh(rb, rb)
 pl            = ta.pivotlow (rb, rb)
-sr_levels     = array.new_float(21, na)
+// Scratch arrays are allocated once; the pivot scan resets them before use.
+var sr_levels = array.new_float(21, na)
 prdhighest    = ta.highest(prd)
 prdlowest     = ta.lowest(prd)
 cwidth        = percWidth(prd, ChannelW)
 zonePerc      = percWidth(300, zoneWidth)
-aas           = array.new_bool(41, true)
+var aas      = array.new_bool(41, true)
 u11            = 0.0, u11 := nz(u11[1])
 d1            = 0.0, d1 := nz(d1[1])
 highestph     = 0.0, highestph := highestph[1]
@@ -661,7 +576,10 @@ var sr_linesH = array.new_line(21, na)
 var sr_linesL = array.new_line(21, na)
 var sr_linesF = array.new_linefill(21, na)
 var sr_labels = array.new_label(21, na)
-if ph or pl
+// The O(prd^2) pivot scan feeds only the S/R drawing, so it runs only when
+// S/R is enabled (an input: constant for the whole run, so state stays consistent).
+if enableSR and (ph or pl)
+    array.fill(aas, true)
     for x = 0 to array.size(sr_levels) - 1
         array.set(sr_levels, x, na)
     highestph := prdlowest
@@ -720,7 +638,9 @@ var line lowest_fill1  = na, line.delete(lowest_fill1)
 var line lowest_fill2  = na, line.delete(lowest_fill2)
 hi_col = close >= highestph ? colorSup : colorRes
 lo_col = close >= lowestpl  ? colorSup : colorRes
-if enableSR
+// Zones are deleted and redrawn every bar, so only the last bar's copy is
+// ever visible: draw them on the last bar only.
+if enableSR and barstate.islast
 
     if useHLZones
         highest_fill1 := line.new(bar_index - 311, highestph + zonePerc, bar_index, highestph + zonePerc, xloc.bar_index, expandSR ? extend.both : extend.right, na)
@@ -729,55 +649,21 @@ if enableSR
         lowest_fill2  := line.new(bar_index - 311, lowestpl - zonePerc , bar_index, lowestpl - zonePerc , xloc.bar_index, expandSR ? extend.both : extend.right, na)
         linefill.new(highest_fill1, highest_fill2, color.new(hi_col, 80))
         linefill.new(lowest_fill1 , lowest_fill2 , color.new(lo_col, 80))
-if ph or pl
+if enableSR and (ph or pl)
     for x = 0 to array.size(sr_lines) - 1
         array.set(sr_levs, x, array.get(sr_levels, x))
-for x = 0 to array.size(sr_lines) - 1
-    line.delete(array.get(sr_lines, x))
-    line.delete(array.get(sr_linesH, x))
-    line.delete(array.get(sr_linesL, x))
-    linefill.delete(array.get(sr_linesF, x))
-    if array.get(sr_levs, x) and enableSR
-        line_col = close >= array.get(sr_levs, x) ? colorSup : colorRes
-        if useZones
-            array.set(sr_linesH, x, line.new(bar_index - 355, array.get(sr_levs, x) + zonePerc, bar_index, array.get(sr_levs, x) + zonePerc, xloc.bar_index, expandSR ? extend.both : extend.right, na))
-            array.set(sr_linesL, x, line.new(bar_index - 355, array.get(sr_levs, x) - zonePerc, bar_index, array.get(sr_levs, x) - zonePerc, xloc.bar_index, expandSR ? extend.both : extend.right, na))
-            array.set(sr_linesF, x, linefill.new(array.get(sr_linesH, x), array.get(sr_linesL, x), color.new(line_col, 80)))
-
-// Function Definitions
-simple_filter(float source, int length, bool duel_filter) =>
-    switch duel_filter
-        false => ta.wma(source, length)
-        true => ta.wma(ta.sma(source, length), length)
-
-sr_ma(float source = close, int output_smoothing = 3, int trigger_smoothing = 1, int atr_length = 50, float multiplier = 1, string range_switch = "Body", bool duel_filter = false) =>
-    candle_top = range_switch != "Body" ? high : math.max(open, close)
-    candle_bottom = range_switch != "Body" ? low : math.min(open, close)
-
-    smooth_top = ta.sma(candle_top, trigger_smoothing)
-    smooth_bottom = ta.sma(candle_bottom, trigger_smoothing)
-
-    tr = candle_top - candle_bottom
-    atr = ta.sma(tr, atr_length)
-
-    var float sr_ma = na
-    var float current_range = na
-    var float top_range = na
-    var float bottom_range = na
-
-    flag = smooth_top > top_range or smooth_bottom < bottom_range or na(current_range)
-
-    if flag
-        sr_ma := source
-        current_range := atr * multiplier
-        top_range := sr_ma + current_range
-        bottom_range := sr_ma - current_range
-        
-    out = simple_filter(sr_ma, output_smoothing, duel_filter)
-    smooth_top_range = simple_filter(top_range, output_smoothing, duel_filter)
-    smooth_bottom_range = simple_filter(bottom_range, output_smoothing, duel_filter)
-
-    [out, smooth_top_range, smooth_bottom_range]
+if enableSR and barstate.islast
+    for x = 0 to array.size(sr_lines) - 1
+        line.delete(array.get(sr_lines, x))
+        line.delete(array.get(sr_linesH, x))
+        line.delete(array.get(sr_linesL, x))
+        linefill.delete(array.get(sr_linesF, x))
+        if array.get(sr_levs, x)
+            line_col = close >= array.get(sr_levs, x) ? colorSup : colorRes
+            if useZones
+                array.set(sr_linesH, x, line.new(bar_index - 355, array.get(sr_levs, x) + zonePerc, bar_index, array.get(sr_levs, x) + zonePerc, xloc.bar_index, expandSR ? extend.both : extend.right, na))
+                array.set(sr_linesL, x, line.new(bar_index - 355, array.get(sr_levs, x) - zonePerc, bar_index, array.get(sr_levs, x) - zonePerc, xloc.bar_index, expandSR ? extend.both : extend.right, na))
+                array.set(sr_linesF, x, linefill.new(array.get(sr_linesH, x), array.get(sr_linesL, x), color.new(line_col, 80)))
 
 ///////////////////////////////////////////////////
 //////// Zonas de Supply/Demand
@@ -906,8 +792,12 @@ BoxExtendEndPointF(box_array) =>
         box.set_right(array.get(box_array, i), bar_index + 90)
 
 //      CALCULATE SWING HIGHS & SWING LOWS
-SwingHigh = ta.pivothigh(high, SwingLength, SwingLength)
-SwingLow = ta.pivotlow(low, SwingLength, SwingLength)
+// Swing pivots feed only the Supply/Demand zones (input-constant gate).
+float SwingHigh = na
+float SwingLow = na
+if POIswitch
+    SwingHigh := ta.pivothigh(high, SwingLength, SwingLength)
+    SwingLow := ta.pivotlow(low, SwingLength, SwingLength)
 
 //      ARRAYS FOR SWING H/L & BN 
 var SwingHighValHues = array.new_float(5,0.00)
@@ -930,49 +820,54 @@ var BOSDemand = array.new_box(5, na)
 //
 //END CALCULATIONS
 //
-//      NEW SWING HIGH
-if not na(SwingHigh)
+if POIswitch
+    //      NEW SWING HIGH
+    if not na(SwingHigh)
 
-    //MANAGE SWING HIGH VALUES
-    ArrayAddPopF(SwingHighValHues, SwingHigh)
-    ArrayAddPopF(SwingHighBNS, bar_index[SwingLength])
-    SupplyDemandF(SwingHighValHues, SwingHighBNS, SupplyBoxCurrent, SupplyPOICurrent, 1, POIATR)
+        //MANAGE SWING HIGH VALUES
+        ArrayAddPopF(SwingHighValHues, SwingHigh)
+        ArrayAddPopF(SwingHighBNS, bar_index[SwingLength])
+        SupplyDemandF(SwingHighValHues, SwingHighBNS, SupplyBoxCurrent, SupplyPOICurrent, 1, POIATR)
 
-//   NEW SWING LOW
-else if not na(SwingLow)
+    //   NEW SWING LOW
+    else if not na(SwingLow)
 
-    //MANAGE SWING LOW VALUES
-    ArrayAddPopF(SwingLowValues, SwingLow)
-    ArrayAddPopF(SwingLowBNS, bar_index[SwingLength])
-    SupplyDemandF(SwingLowValues, SwingLowBNS, DemandBoxCurrent, DemandPOICurrent, -1, POIATR)
+        //MANAGE SWING LOW VALUES
+        ArrayAddPopF(SwingLowValues, SwingLow)
+        ArrayAddPopF(SwingLowBNS, bar_index[SwingLength])
+        SupplyDemandF(SwingLowValues, SwingLowBNS, DemandBoxCurrent, DemandPOICurrent, -1, POIATR)
 
-BosSdF(SupplyBoxCurrent, BOSSupply, SupplyPOICurrent, 1)
-BosSdF(DemandBoxCurrent, BOSDemand, DemandPOICurrent, -1)
+    BosSdF(SupplyBoxCurrent, BOSSupply, SupplyPOICurrent, 1)
+    BosSdF(DemandBoxCurrent, BOSDemand, DemandPOICurrent, -1)
 
-BoxExtendEndPointF(SupplyBoxCurrent)
-BoxExtendEndPointF(DemandBoxCurrent)
+    BoxExtendEndPointF(SupplyBoxCurrent)
+    BoxExtendEndPointF(DemandBoxCurrent)
 
 
 
-// ورودی‌ها
+// Inputs
 initial_stop = input.float(0.1, "Initial Stop", group='Trailing Stop Loss')
 risk_increment = input.float(0.01, "Risk Increment", group='Trailing Stop Loss')
 max_risk = input.float(0.03, "Max Risk", group='Trailing Stop Loss')
 zone_width = input.float(0.3, "Zone Width", group='Trailing Stop Loss')
-  // ورودی برای روشن و خاموش کردن Trailing Stop
+  // (the Trailing Stop toggle is trailing_stop_enabled, under INDICATORS)
 
-// محاسبات ATR
-atrs = ta.atr(100) * zone_width
+// ATR zone width
+float atrs = na
+float sarone = na
+float sarzone = na
+if trailing_stop_enabled
+    atrs := ta.atr(100) * zone_width
 
-// محاسبات SAR در حالت عادی
-sarone = ta.sar(initial_stop, risk_increment, max_risk)
-sarzone = close > sarone ? sarone + atrs : sarone - atrs
+// Parabolic SAR and its ATR-offset zone
+    sarone := ta.sar(initial_stop, risk_increment, max_risk)
+    sarzone := close > sarone ? sarone + atrs : sarone - atrs
 
-// زمانی که trailing stop خاموش است، SAR را رسم نکن
+// Do not plot the SAR while the trailing stop is off
 sarone_plot = trailing_stop_enabled ? sarone : na
 sarzone_plot = trailing_stop_enabled ? sarzone : na
 
-// رسم نمودار SAR
+// SAR plots
 p1 = plot(sarone_plot, "trail", color=color.new(close > sarone ? #00ff0a : #ff0014, transp=75), style=plot.style_circles)
 p3 = plot(sarzone_plot, "Zone Line", color=color.new(close > sarone ? #00ff0a : #ff0014, transp=75), style=plot.style_circles)
 
@@ -997,8 +892,12 @@ lineStyle(x) =>
 // Calculations
 
 //Finding high and low pivots
-pivHi = ta.pivothigh(high, swingSize, swingSize)
-pivLo = ta.pivotlow(low, swingSize, swingSize)
+// Market Structure state is read only by its own labels/lines below.
+float pivHi = na
+float pivLo = na
+if marketStructure
+    pivHi := ta.pivothigh(high, swingSize, swingSize)
+    pivLo := ta.pivotlow(low, swingSize, swingSize)
 
 //Tracking the previous swing levels to determine hh lh hl ll
 var float prevHigh = na
@@ -1080,31 +979,7 @@ if marketStructure
         line.new(prevLowIndex, prevLow, bar_index, prevLow, color=bosColor, style=lineStyle(bosStyle), width=bosWidth)
         label.new(math.floor(bar_index - (bar_index - prevLowIndex) / 2), prevLow, prevBreakoutDir == 1 ? 'CHoCH' : 'BOS', color=CLEAR, textcolor=bosColor, style=label.style_label_up, size=size.tiny)
         prevBreakoutDir := -1
-// Chart Features
-
-smoothrng(x, t, m) =>
-    wper  = t * 2 - 1
-    avrng = ta.ema(math.abs(x - x[1]), t)
-    smoothrng = ta.ema(avrng, wper) * m
-    smoothrng
-smrng     = smoothrng(close, 200, 200)
-
-rngfilt(x, r) =>
-    rngfilt = x
-    rngfilt := x > nz(rngfilt[1]) ? x - r < nz(rngfilt[1]) ? nz(rngfilt[1]) : x - r : x + r > nz(rngfilt[1]) ? nz(rngfilt[1]) : x + r
-    rngfilt
-filt = rngfilt(close, smrng)
-
-// ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ 
-
-upward = 0.0
-upward := filt > filt[1] ? nz(upward[1]) + 1 : filt < filt[1] ? 0 : nz(upward[1])
-downward = 0.0
-downward := filt < filt[1] ? nz(downward[1]) + 1 : filt > filt[1] ? 0 : nz(downward[1])
-
-
-
-// Chart Features
+// Retest Zone (Trend Tracer) range filters
 
 x11 = 22
 x21 = 12
@@ -1119,22 +994,19 @@ smoothrngX1(x, t, m) =>
     avrng = ta.ema(math.abs(x - x[1]), t)
     smoothrngX1 = ta.ema(avrng, wper) * m
     smoothrngX1
-smrngx1x     = smoothrngX1(close, x11, x21)
-smrngx1x2     = smoothrngX1(close, x3, x4)
 
 rngfiltx1x1(x, r) =>
     rngfiltx1x1 = x
     rngfiltx1x1 := x > nz(rngfiltx1x1[1]) ? x - r < nz(rngfiltx1x1[1]) ? nz(rngfiltx1x1[1]) : x - r : x + r > nz(rngfiltx1x1[1]) ? nz(rngfiltx1x1[1]) : x + r
     rngfiltx1x1
-filtx1 = rngfiltx1x1(close, smrngx1x)
-filtx12 = rngfiltx1x1(close, smrngx1x2)
+float filtx1 = na
+float filtx12 = na
+if CirrusCloud
+    filtx1 := rngfiltx1x1(close, smoothrngX1(close, x11, x21))
+    filtx12 := rngfiltx1x1(close, smoothrngX1(close, x3, x4))
 
 // ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ 
 
-upwardx1 = 0.0
-upwardx1 := filtx1 > filtx1[1] ? nz(upwardx1[1]) + 1 : filtx1 < filtx1[1] ? 0 : nz(upwardx1[1])
-downwardx1 = 0.0
-downwardx1 := filtx1 < filtx1[1] ? nz(downwardx1[1]) + 1 : filtx1 > filtx1[1] ? 0 : nz(downwardx1[1])
 
 
 filtx1colorx1 = color.rgb(0, 187, 212, 100)
@@ -1144,33 +1016,28 @@ xxx2 = plot(CirrusCloud ? filtx12 : na, color=filtx1colorx1, linewidth=1, title=
 fill(xxx1, xxx2, color= filtx1 > filtx12 ? color.new(#9d0040, 50) : color.new(#00cce2, 50))
 
 
-// Other initializations
-avg_volume = ta.sma(volume, 20)
-very_weak_multiplier = 0.5
-weak_multiplier = 1
-strong_multiplier = 1.5
 
-// ورودی برای روشن یا خاموش کردن سیگنال‌های Diamond
+// Reversal diamonds are toggled by the Reversals input
 
 
-// ثابت کردن تنظیمات
-rsiPeriod = 14  // دوره ثابت برای RSI
-rsiLevelLow = 30  // سطح ۳۰ برای بررسی
-rsiLevelHigh = 70  // سطح ۷۰ برای بررسی
+// Fixed RSI settings
+rsiPeriod = 14  // RSI period
+rsiLevelLow = 30  // oversold level
+rsiLevelHigh = 70  // overbought level
 
-// محاسبه RSI
-rsi = ta.rsi(close, rsiPeriod)
+// RSI (only computed while Reversals is on)
+rsi = reversal ? ta.rsi(close, rsiPeriod) : na
 
-// بررسی اینکه آیا قیمت زیر خط 30 است
+// RSI below 30
 isBelow30 = rsi < rsiLevelLow
 
-// بررسی اینکه آیا قیمت بالای خط 70 است
+// RSI above 70
 isAbove70 = rsi > rsiLevelHigh
 
-// رسم علامت Diamond (الماس) زیر کندل‌ها زمانی که RSI زیر 30 باشد
+// Diamond below the candle while RSI is below 30
 plotshape(reversal and isBelow30, style=shape.diamond, location=location.belowbar, color=#00e5ff, size=size.tiny, title="Up Reversal", transp=70)
 
-// رسم علامت Diamond (الماس) بالای کندل‌ها زمانی که RSI بالای 70 باشد
+// Diamond above the candle while RSI is above 70
 plotshape(reversal and isAbove70, style=shape.diamond, location=location.abovebar, color=#ff0066, size=size.tiny, title="Down Reversal", transp=70)
 
 
@@ -1180,48 +1047,8 @@ plotshape(reversal and isAbove70, style=shape.diamond, location=location.aboveba
 
 // Trend Cloud
 tclength = 600
-hullma = ta.wma(2*ta.wma(close, tclength/2)-ta.wma(close, tclength), math.floor(math.sqrt(tclength)))
+hullma = LongTrendAverage ? ta.wma(2*ta.wma(close, tclength/2)-ta.wma(close, tclength), math.floor(math.sqrt(tclength))) : na
 plot(LongTrendAverage ? hullma : na, 'Trend Cloud', linewidth=4, color=close[8] > hullma ? color.new(#00b9cd, 10) : color.new(#ad0045, 10))
-
-// Chart Features
-
-x15 = 22
-x25 = 9
-
-x35 = 15
-x45 = 5
-
-
-
-smoothrngX15(x5, t5, m5) =>
-    wper  = t5 * 2 - 1
-    avrng = ta.ema(math.abs(x5 - x5[1]), t5)
-    smoothrngX15 = ta.ema(avrng, wper) * m5
-    smoothrngX15
-smrngx1x5     = smoothrngX1(close, x15, x25)
-smrngx1x25     = smoothrngX1(close, x35, x45)
-
-rngfiltx1x15(x5, r5) =>
-    rngfiltx1x15 = x5
-    rngfiltx1x15 := x5 > nz(rngfiltx1x15[1]) ? x5 - r5 < nz(rngfiltx1x15[1]) ? nz(rngfiltx1x15[1]) : x5 - r5 : x5 + r5 > nz(rngfiltx1x15[1]) ? nz(rngfiltx1x15[1]) : x5 + r5
-    rngfiltx1x15
-filtx15 = rngfiltx1x15(close, smrngx1x5)
-filtx125 = rngfiltx1x15(close, smrngx1x25)
-
-// ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ 
-
-upwardx15 = 0.0
-upwardx15 := filtx15 > filtx15[1] ? nz(upwardx15[1]) + 1 : filtx15 < filtx15[1] ? 0 : nz(upwardx15[1])
-downwardx15 = 0.0
-downwardx15 := filtx15 < filtx15[1] ? nz(downwardx15[1]) + 1 : filtx15 > filtx15[1] ? 0 : nz(downwardx15[1])
-
-// Other initializations
-avg_volume5 = ta.sma(volume, 20)
-very_weak_multiplier5 = 0.5
-weak_multiplier5 = 1
-strong_multiplier5 = 1.5
-
-
 
 length = input(50)
 highlightMovements = true
@@ -1231,7 +1058,7 @@ src2 = close
 lag = math.floor((length - 1) / 2)
 
 
-zlema = ta.ema(src2 + (src2 - src2[lag]), length)
+zlema = powers_ema ? ta.ema(src2 + (src2 - src2[lag]), length) : na
 
 
 zlemaColor = highlightMovements ? (zlema > zlema[1] ? #00e5ff : #ff0066) : color.red
@@ -1241,11 +1068,11 @@ zlemaPlot = powers_ema ? zlema : na
 
 
 plot(zlemaPlot, title="ZLEMA", linewidth=2, color=zlemaColor, transp=0)
-upperTL = autoTL ? line.new(x1, _y1 + upDev, x2, _y2 + upDev, xloc.bar_index, expandTrend ? extend.both : extend.none, width=lineWidth1, style = lineStyle1, color=upperTL1) : na
+upperTL = autoTL and barstate.islast ? line.new(x1, _y1 + upDev, x2, _y2 + upDev, xloc.bar_index, expandTrend ? extend.both : extend.none, width=lineWidth1, style = lineStyle1, color=upperTL1) : na
 line.delete(upperTL[1])
-middleTL = autoTL ? line.new(x1, _y1, x2, _y2, xloc.bar_index, expandTrend ? extend.both : extend.none, width=lineWidth1, style = lineStyle1, color=middleTL2) : na
+middleTL = autoTL and barstate.islast ? line.new(x1, _y1, x2, _y2, xloc.bar_index, expandTrend ? extend.both : extend.none, width=lineWidth1, style = lineStyle1, color=middleTL2) : na
 line.delete(middleTL[1])
-lowerTL = autoTL ? line.new(x1, _y1 - dnDev, x2, _y2 - dnDev, xloc.bar_index, expandTrend ? extend.both : extend.none, width=lineWidth1, style = lineStyle1, color=lowerTL3) : na
+lowerTL = autoTL and barstate.islast ? line.new(x1, _y1 - dnDev, x2, _y2 - dnDev, xloc.bar_index, expandTrend ? extend.both : extend.none, width=lineWidth1, style = lineStyle1, color=lowerTL3) : na
 line.delete(lowerTL[1])
 // ==========================================================================================
 

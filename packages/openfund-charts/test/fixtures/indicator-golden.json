@@ -1,0 +1,418 @@
+{
+  "bars": 1500,
+  "fixture": "syntheticBars(seed=7)",
+  "indicators": {
+    "Open Algo V5": {
+      "defaults": {
+        "digest": "eb69c29faa5b6e0f",
+        "counts": {
+          "series": 15,
+          "lines": 0,
+          "labels": 21,
+          "boxes": 0,
+          "linefills": 0,
+          "fills": 6,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "tpsl": {
+        "digest": "e16fcffbb6366c90",
+        "counts": {
+          "series": 15,
+          "lines": 5,
+          "labels": 26,
+          "boxes": 0,
+          "linefills": 0,
+          "fills": 6,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "strongOnly": {
+        "digest": "9e05c805c531557c",
+        "counts": {
+          "series": 15,
+          "lines": 0,
+          "labels": 5,
+          "boxes": 0,
+          "linefills": 0,
+          "fills": 6,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "trailingStop": {
+        "digest": "68292741de28a595",
+        "counts": {
+          "series": 15,
+          "lines": 0,
+          "labels": 21,
+          "boxes": 0,
+          "linefills": 0,
+          "fills": 6,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "supplyDemand": {
+        "digest": "fe9af28c9fdd6f03",
+        "counts": {
+          "series": 15,
+          "lines": 0,
+          "labels": 21,
+          "boxes": 36,
+          "linefills": 0,
+          "fills": 6,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "powerMA": {
+        "digest": "0731ecf22ac83ae5",
+        "counts": {
+          "series": 15,
+          "lines": 0,
+          "labels": 21,
+          "boxes": 0,
+          "linefills": 0,
+          "fills": 6,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "marketStructure": {
+        "digest": "f9f509ea20321553",
+        "counts": {
+          "series": 15,
+          "lines": 3,
+          "labels": 34,
+          "boxes": 0,
+          "linefills": 0,
+          "fills": 6,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "supportResistance": {
+        "digest": "6477cfbfe12ef13c",
+        "counts": {
+          "series": 15,
+          "lines": 12,
+          "labels": 21,
+          "boxes": 0,
+          "linefills": 6,
+          "fills": 6,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "reversals": {
+        "digest": "257ee1fc10817552",
+        "counts": {
+          "series": 15,
+          "lines": 0,
+          "labels": 374,
+          "boxes": 0,
+          "linefills": 0,
+          "fills": 6,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "trendLines": {
+        "digest": "74f3514735448277",
+        "counts": {
+          "series": 15,
+          "lines": 3,
+          "labels": 21,
+          "boxes": 0,
+          "linefills": 0,
+          "fills": 6,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "ribbonRetest": {
+        "digest": "4beab124456a2cef",
+        "counts": {
+          "series": 15,
+          "lines": 0,
+          "labels": 21,
+          "boxes": 0,
+          "linefills": 0,
+          "fills": 6,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "smartTrailOff": {
+        "digest": "8973e8dfaf6122a6",
+        "counts": {
+          "series": 15,
+          "lines": 0,
+          "labels": 21,
+          "boxes": 0,
+          "linefills": 0,
+          "fills": 6,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "everything": {
+        "digest": "09af3f349220b2f0",
+        "counts": {
+          "series": 15,
+          "lines": 23,
+          "labels": 392,
+          "boxes": 36,
+          "linefills": 6,
+          "fills": 6,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      }
+    },
+    "Price Action Concepts": {
+      "defaults": {
+        "digest": "29ce188ebf9f938e",
+        "counts": {
+          "series": 2,
+          "lines": 73,
+          "labels": 64,
+          "boxes": 10,
+          "linefills": 2,
+          "fills": 0,
+          "tables": 2,
+          "shapes": 0
+        },
+        "secondaryRequests": 3
+      },
+      "present": {
+        "digest": "7b93d2cc4be0e4c1",
+        "counts": {
+          "series": 2,
+          "lines": 12,
+          "labels": 3,
+          "boxes": 10,
+          "linefills": 2,
+          "fills": 0,
+          "tables": 2,
+          "shapes": 0
+        },
+        "secondaryRequests": 3
+      },
+      "swings": {
+        "digest": "db493672cff0f9eb",
+        "counts": {
+          "series": 2,
+          "lines": 76,
+          "labels": 76,
+          "boxes": 14,
+          "linefills": 2,
+          "fills": 0,
+          "tables": 2,
+          "shapes": 0
+        },
+        "secondaryRequests": 3
+      },
+      "liquiditySweeps": {
+        "digest": "2bfa9cab43b64dcf",
+        "counts": {
+          "series": 2,
+          "lines": 73,
+          "labels": 64,
+          "boxes": 10,
+          "linefills": 2,
+          "fills": 0,
+          "tables": 2,
+          "shapes": 0
+        },
+        "secondaryRequests": 3
+      },
+      "trendlineLiquidity": {
+        "digest": "7cc32be9cda8967f",
+        "counts": {
+          "series": 2,
+          "lines": 126,
+          "labels": 64,
+          "boxes": 10,
+          "linefills": 28,
+          "fills": 0,
+          "tables": 2,
+          "shapes": 0
+        },
+        "secondaryRequests": 3
+      },
+      "trendlineLiquidityChartOnly": {
+        "digest": "585d0298eb8f8b65",
+        "counts": {
+          "series": 2,
+          "lines": 125,
+          "labels": 64,
+          "boxes": 8,
+          "linefills": 28,
+          "fills": 0,
+          "tables": 2,
+          "shapes": 0
+        },
+        "secondaryRequests": 1
+      },
+      "equalHL": {
+        "digest": "e41437bedbb0e71e",
+        "counts": {
+          "series": 2,
+          "lines": 120,
+          "labels": 111,
+          "boxes": 10,
+          "linefills": 2,
+          "fills": 0,
+          "tables": 2,
+          "shapes": 0
+        },
+        "secondaryRequests": 3
+      },
+      "levels": {
+        "digest": "f68ed07fd578dc08",
+        "counts": {
+          "series": 2,
+          "lines": 75,
+          "labels": 66,
+          "boxes": 10,
+          "linefills": 2,
+          "fills": 0,
+          "tables": 2,
+          "shapes": 0
+        },
+        "secondaryRequests": 6
+      },
+      "scannerOff": {
+        "digest": "3ad12c7987faaceb",
+        "counts": {
+          "series": 2,
+          "lines": 68,
+          "labels": 64,
+          "boxes": 0,
+          "linefills": 2,
+          "fills": 0,
+          "tables": 2,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      }
+    },
+    "Smart Money Concepts": {
+      "defaults": {
+        "digest": "6fc7532c7946e0c6",
+        "counts": {
+          "series": 1,
+          "lines": 61,
+          "labels": 61,
+          "boxes": 5,
+          "linefills": 0,
+          "fills": 0,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "present": {
+        "digest": "8b04ea2efccb5650",
+        "counts": {
+          "series": 1,
+          "lines": 7,
+          "labels": 7,
+          "boxes": 5,
+          "linefills": 0,
+          "fills": 0,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "swings": {
+        "digest": "3b18f2a121dbbe0d",
+        "counts": {
+          "series": 1,
+          "lines": 61,
+          "labels": 68,
+          "boxes": 7,
+          "linefills": 0,
+          "fills": 0,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "gaps": {
+        "digest": "f5446eb795d46fa3",
+        "counts": {
+          "series": 1,
+          "lines": 61,
+          "labels": 61,
+          "boxes": 123,
+          "linefills": 0,
+          "fills": 0,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      },
+      "gapsHigherTimeframe": {
+        "digest": "b4583100a4cc534f",
+        "counts": {
+          "series": 1,
+          "lines": 61,
+          "labels": 61,
+          "boxes": 56,
+          "linefills": 0,
+          "fills": 0,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 1
+      },
+      "levels": {
+        "digest": "671d7f816802cea8",
+        "counts": {
+          "series": 1,
+          "lines": 63,
+          "labels": 63,
+          "boxes": 5,
+          "linefills": 0,
+          "fills": 0,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 3
+      },
+      "zones": {
+        "digest": "81804819ec6f08cc",
+        "counts": {
+          "series": 1,
+          "lines": 61,
+          "labels": 64,
+          "boxes": 8,
+          "linefills": 0,
+          "fills": 0,
+          "tables": 0,
+          "shapes": 0
+        },
+        "secondaryRequests": 0
+      }
+    }
+  }
+}

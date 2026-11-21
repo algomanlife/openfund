@@ -251,9 +251,17 @@ decision: [ADR 0017](../decisions/0017-hybrid-governance.md).
 | Whitepaper governance chapter | In Progress | Bilingual chapter prepared; the Whitepaper app is on the unmerged `feat/openfund-whitepaper-v1`, whose existing governance chapter must be replaced when it merges |
 | On-chain or token governance | Not planned | Not a capability and not a commitment |
 
-## Proprietary chart indicators
+## Openfund chart indicators
 
-**In Progress:** Open Algo V5, Price Action Concepts and Smart Money Concepts execute original source through the shared worker; two local libraries resolve without external fetches. The ordered catalog, settings persistence, interval/symbol/menu repairs and permitted branding changes have local regression coverage. Genuine volume-dependent outputs, full optional-setting/reference conformance and deployed acceptance remain open. [Architecture](../trading/PINE_SCRIPT.md) · [Evidence](../reviews/vela-pine/DELIVERY.md).
+**In Progress:** Open Algo V5, Price Action Concepts and Smart Money Concepts execute their Pine source through the shared worker; two local libraries resolve without external fetches. **Completed (local; branch, not deployed):**
+
+- The Open Algo SMRT Algo dashboard is removed, and saved settings are migrated.
+- Measured optimization: Open Algo initial calculation −63 to −67%, PAC −48 to −72%, SMC −7 to −15%.
+- Secondary requests: Open Algo 5 → 0, PAC 7 → 3.
+- Lookahead corrections in PAC previous-period levels and SMC higher-timeframe gaps.
+- PAC Trendline Liquidity crash fixed.
+
+[Report](../reviews/pine-optimization/README.md), [ADR 0048](../decisions/0048-pine-indicator-optimization-and-provenance.md). The indicator licence is unresolved. The ordered catalog, settings persistence, interval/symbol/menu repairs and permitted branding changes have local regression coverage. Genuine volume-dependent outputs, full optional-setting/reference conformance and deployed acceptance remain open. [Architecture](../trading/PINE_SCRIPT.md) · [Evidence](../reviews/vela-pine/DELIVERY.md).
 
 ## Evidence policy
 

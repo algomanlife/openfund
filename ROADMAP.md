@@ -36,9 +36,9 @@ least $500,000 in verified free capital after relevant reserves and obligations.
 
 Do not advance a milestone because a folder, UI placeholder or dependency exists. Deployment requires deployed evidence; commercial services require verified product and legal facts; protocol routing requires validated execution paths.
 
-## Proprietary chart indicators
+## Openfund chart indicators
 
-**In Progress:** original Pine execution, local-library resolution, ordered catalog, persistent settings and chart interaction repairs are implemented. Local validation is recorded in [delivery evidence](docs/reviews/vela-pine/DELIVERY.md). Independent reference-platform conformance, genuine volume-dependent outputs, full optional-setting coverage and deployed acceptance remain open. No financial execution milestone changes.
+**In Progress:** original Pine execution, local-library resolution, ordered catalog, persistent settings and chart interaction repairs are implemented. Local validation is recorded in [delivery evidence](docs/reviews/vela-pine/DELIVERY.md). Independent reference-platform conformance, genuine volume-dependent outputs, full optional-setting coverage and deployed acceptance remain open. No financial execution milestone changes. The November 2026 optimization pass is implemented on a branch, not deployed ([report](docs/reviews/pine-optimization/README.md)); the indicator licence decision is outstanding.
 
 ## Unified account integration
 

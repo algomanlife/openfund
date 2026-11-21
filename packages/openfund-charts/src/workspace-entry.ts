@@ -1,6 +1,6 @@
 export { VelaWorkspace } from '../../../vendor/vela/src/workspace/VelaWorkspace';
 import { PineWorkerEngine } from '@luxalgo/vela-pinets';
-import { createCatalog, createLibraryResolver } from './pine-sources.mjs';
+import { createCatalog, createLibraryResolver, migrateWorkspaceState } from './pine-sources.mjs';
 import { preserveUnknownVolume } from './pine-data.mjs';
 import { registerRendererDefaults } from '../../../vendor/vela/src/plugin';
 /* Openfund host-managed drawing types (live position box, compact BUY/SELL markers) */
@@ -23,6 +23,9 @@ registerRendererDefaults({ attribution: false });
    chart chrome can be selected. The host always mounts with locale 'en'. */
 
 export const indicators = createCatalog(openAlgo, pac, smc);
+/* Saved workspaces from before an input was retired (e.g. the removed Open
+   Algo dashboard) are migrated by the bridge before Vela restores them. */
+export { migrateWorkspaceState };
 export const createPineEngine = () => preserveUnknownVolume(new PineWorkerEngine({
   importResolver,
   workerUrl: new URL('assets/openfund-pine-worker.min.js', document.baseURI).href,

@@ -6,7 +6,7 @@
    powered by the Gains provider.
 
    Bundle: dist/assets/vela-workspace.global.min.js
-           (esbuild IIFE of @luxalgo/vela/workspace@0.9.3)
+           (esbuild IIFE of the vendored @luxalgo/vela 0.10.6 workspace)
    Contract (packages/openfund-charts):
      OpenfundCharts.mount(container, opts) → controller
      controller.setSymbol(symbol)      in-place market switch
@@ -42,6 +42,17 @@ const THEMES = {
     fontFamily: "Ubuntu, 'Dastkhat', system-ui, sans-serif"
   }
 };
+
+/* Retired indicator inputs (the removed Open Algo dashboard) are stripped
+   from saved workspaces before Vela restores them; unparseable or current
+   documents are returned unchanged. */
+function migrateStored(raw){
+  if (typeof raw !== 'string' || typeof WLib.migrateWorkspaceState !== 'function') return raw;
+  try {
+    const result = WLib.migrateWorkspaceState(JSON.parse(raw));
+    return result.changed ? JSON.stringify(result.state) : raw;
+  } catch(e){ return raw; }
+}
 
 function mount(container, opts){
   opts = opts || {};
@@ -82,7 +93,9 @@ function mount(container, opts){
       get(){
         const k = opts.storageKey || ('of-chart-v2-' + (global.__ofTerminalConfig?.product || 'classic'));
         const W = global.OpenfundChartWorkspace;
-        try { return W ? W.getLocal(k) : localStorage.getItem(k); } catch(e){ return null; }
+        let raw;
+        try { raw = W ? W.getLocal(k) : localStorage.getItem(k); } catch(e){ return null; }
+        return migrateStored(raw);
       },
       set(_key, value){
         try {
@@ -157,5 +170,5 @@ function mount(container, opts){
   return controller;
 }
 
-global.OpenfundCharts = { mount, THEMES, TIMEFRAMES };
+global.OpenfundCharts = { mount, migrateStored, THEMES, TIMEFRAMES };
 })(window);
