@@ -2,7 +2,7 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4417,
+    "uniqueRecords": 4418,
     "mappedCalls": 2272,
     "exceptions": 51,
     "validationFindings": 0,
@@ -1912,7 +1912,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 121,
+          "line": 122,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -3094,7 +3094,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 89,
+          "line": 90,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -4532,7 +4532,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 129,
+          "line": 130,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -5929,7 +5929,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 119,
+          "line": 120,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -6347,7 +6347,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 74,
+          "line": 75,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -6888,7 +6888,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 131,
+          "line": 132,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -7175,7 +7175,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 95,
+          "line": 96,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -10906,7 +10906,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 69,
+          "line": 70,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -11561,7 +11561,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 124,
+          "line": 125,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -11709,7 +11709,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 132,
+          "line": 133,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -11956,7 +11956,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 66,
+          "line": 67,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -11976,7 +11976,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 70,
+          "line": 71,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -12877,7 +12877,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 127,
+          "line": 128,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -13404,7 +13404,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 99,
+          "line": 100,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -15179,7 +15179,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 112,
+          "line": 113,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -19313,7 +19313,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 109,
+          "line": 110,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -19682,7 +19682,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 98,
+          "line": 99,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -30197,7 +30197,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 125,
+          "line": 126,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -32335,7 +32335,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 106,
+          "line": 107,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -33004,6 +33004,26 @@
       ]
     },
     {
+      "key": "react.56e3b0e41d405d62",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فیلدهای الزامی",
+      "en": "Required fields",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/company/contactContent.ts",
+          "line": 62,
+          "page": "company",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.56f944cfbad2c199",
       "namespace": "react",
       "area": "Website",
@@ -33076,7 +33096,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 126,
+          "line": 127,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -33176,7 +33196,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 72,
+          "line": 73,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -33256,7 +33276,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 94,
+          "line": 95,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -35025,7 +35045,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 90,
+          "line": 91,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -39021,7 +39041,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 111,
+          "line": 112,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -41226,7 +41246,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 82,
+          "line": 83,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -42811,7 +42831,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 115,
+          "line": 116,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -45562,7 +45582,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 92,
+          "line": 93,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -46937,7 +46957,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 68,
+          "line": 69,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -48092,7 +48112,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 83,
+          "line": 84,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -50620,7 +50640,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 75,
+          "line": 76,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52261,7 +52281,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 77,
+          "line": 78,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53883,7 +53903,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 93,
+          "line": 94,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53970,7 +53990,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 79,
+          "line": 80,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53990,7 +54010,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 76,
+          "line": 77,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54037,7 +54057,7 @@
         },
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 133,
+          "line": 134,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54297,7 +54317,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 114,
+          "line": 115,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -57936,7 +57956,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 123,
+          "line": 124,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -59989,7 +60009,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 73,
+          "line": 74,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -61378,7 +61398,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 108,
+          "line": 109,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -66423,7 +66443,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 128,
+          "line": 129,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -71234,7 +71254,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 110,
+          "line": 111,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -71461,7 +71481,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 78,
+          "line": 79,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -73707,7 +73727,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 65,
+          "line": 66,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -75108,7 +75128,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 67,
+          "line": 68,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -75442,7 +75462,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 71,
+          "line": 72,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -77006,7 +77026,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 113,
+          "line": 114,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -77173,7 +77193,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 100,
+          "line": 101,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -79272,7 +79292,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 91,
+          "line": 92,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -79834,7 +79854,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 84,
+          "line": 85,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80444,7 +80464,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 81,
+          "line": 82,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -81339,7 +81359,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 96,
+          "line": 97,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -82868,7 +82888,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 120,
+          "line": 121,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -88305,7 +88325,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 105,
+          "line": 106,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -88425,7 +88445,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 130,
+          "line": 131,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -91281,7 +91301,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 80,
+          "line": 81,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -91341,7 +91361,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 104,
+          "line": 105,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -92264,7 +92284,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 97,
+          "line": 98,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -92640,7 +92660,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
-          "line": 107,
+          "line": 108,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -94701,7 +94721,7 @@
     },
     {
       "component": "apps/web-react/src/features/company/Contact.tsx",
-      "line": 110,
+      "line": 191,
       "page": "company",
       "route": "/:locale/*",
       "reason": "aria-hidden-not-rendered-copy",
@@ -94709,7 +94729,7 @@
     },
     {
       "component": "apps/web-react/src/features/company/Contact.tsx",
-      "line": 163,
+      "line": 252,
       "page": "company",
       "route": "/:locale/*",
       "reason": "language-neutral-brand-or-identifier",
@@ -94717,7 +94737,7 @@
     },
     {
       "component": "apps/web-react/src/features/company/Contact.tsx",
-      "line": 189,
+      "line": 287,
       "page": "company",
       "route": "/:locale/*",
       "reason": "language-neutral-brand-or-identifier",
