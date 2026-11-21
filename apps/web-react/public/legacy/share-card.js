@@ -118,11 +118,14 @@
     corners();
     var m = model, cx = W / 2, pnlColor = m.pnl == null ? C.white : m.pnl >= 0 ? C.pos : C.neg;
 
-    /* brand: Openfund mark + wordmark */
-    var wf = font(700, 52), ww = measure('openfund', wf), lw = 52, lh = 58, gap = 20;
+    /* brand: logo mark + wordmark. The wordmark comes from the React source of
+       truth (src/brand/wordmark.ts) through the workspace document's
+       data-brand-wordmark attribute; without it only the mark is drawn. */
+    var word = document.documentElement.getAttribute('data-brand-wordmark') || '';
+    var wf = font(700, 52), ww = word ? measure(word, wf) : 0, lw = 52, lh = 58, gap = word ? 20 : 0;
     var bx = cx - (lw + gap + ww) / 2;
     if (logoReady) ctx.drawImage(logo, bx, 222, lw, lh); else roundRect(bx, 222, lw, lh, 10, C.mint);
-    text('openfund', bx + lw + gap, 270, wf, C.white, 'left');
+    if (word) text(word, bx + lw + gap, 270, wf, C.white, 'left');
     text(m.productLabel, cx, 330, font(700, 22), C.muted);
 
     /* result */

@@ -30,6 +30,7 @@ import { TerminalContext, useTerminal } from "./TerminalContext";
 import { chooseTheme, currentTheme, DAY_NIGHT_MARKUP } from "../../theme";
 import LanguageSelect from "../../i18n/LanguageSelect";
 import TerminalMenu from "./TerminalMenu";
+import { BrandWordmark } from "../../brand/BrandWordmark";
 import { dirOf, normalizeLocale, pick, pickRecord, switchLocalePath } from "../../i18n/locales";
 export default function TerminalShell({ product }: { product: Product }) {
   const params = useParams(),
@@ -170,7 +171,7 @@ export default function TerminalShell({ product }: { product: Product }) {
                 width="28"
                 height="32"
               />
-              <b dir="ltr">openfund</b>
+              <BrandWordmark as="b" />
             </Link>
             {<label className="of-product-switch">
               <span className="sr-only">{t("محصول", "Product")}</span>

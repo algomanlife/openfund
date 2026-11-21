@@ -5,6 +5,7 @@ import { bindNavigation, fitNavigation, renderNavigation, navigationClick, navig
 import '../features/information/information.css'
 import '../features/home/platform-orbs.css'
 import landingBody from './landing-body.html?raw'
+import { withBrandWordmark } from '../brand/wordmark'
 import { RainbowConnect } from '../wallet/RainbowConnect'
 import { legacyStylesheet } from '../config/legacyAssets'
 import ChallengeWalletPanel from '../wallet/ChallengeWalletPanel'
@@ -63,7 +64,7 @@ const STYLES = [
 /* history routing resolves relative URLs against the current route path
    ('/fa/challenges' + 'assets/…' breaks) — prefix the legacy markup's
    relative asset URLs with the build base. */
-const landingMarkup = landingBody
+const landingMarkup = withBrandWordmark(landingBody)
   .replaceAll('src="assets/', `src="${import.meta.env.BASE_URL}assets/`)
 
 const w = () => window as any
