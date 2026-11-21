@@ -1,5 +1,25 @@
 # First-party license decision (owner approval required)
 
+## Current decision state — 2026-11-21
+
+No first-party license has been selected in this update. The option comparison
+below was prepared on 2026-11-12; it does not grant a license.
+
+The UI-font replacement is complete in source: Dastkhat/Dastkhat Arabic are
+the defaults. The earlier request to choose whether to replace the active
+Irancell face is superseded. Retained legacy binaries still need a reference,
+packaging and rights review; see the
+[current inventory](LICENSING.md#current-source-clarification--2026-11-21).
+The old paragraph describing Irancell as the active font is historical.
+
+The indicator optimization and Open Trade 0.0.3 candidate do not resolve
+indicator provenance, first-party ownership or AGPL scope. To record a final
+choice, the owner must specify the first-party license and copyright holder,
+then define its scope separately from upstream software, fonts, indicators
+and brand assets. No root license text is installed by this update.
+
+## Historical proposal — 2026-11-12
+
 Decision document, not legal advice. Prepared 2026-11-12 from `main`
 `38e17f4`. Facts come from the [licensing report](LICENSING.md), the
 [PineTS report](PINETS.md) and the files cited there.

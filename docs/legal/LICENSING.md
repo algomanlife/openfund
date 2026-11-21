@@ -1,5 +1,40 @@
 # Licensing audit and compatibility report
 
+## Current source clarification — 2026-11-21
+
+This update checks repository source at `adbdeabd64b2ba69379411db607be12d35339426`.
+It does not repeat the historical bundle or production audit below.
+
+- **First-party terms:** no root `LICENSE` is published and no license choice
+  is recorded by this update. The owner's choice and copyright holder remain
+  necessary. Third-party rights and obligations are unaffected.
+- **Active UI typography:** Dastkhat and Dastkhat Arabic replace Irancell as
+  the UI defaults. The unmodified font files, OFL and upstream notices are
+  recorded in [SOURCE.json](../../apps/web-react/public/assets/fonts/dastkhat/SOURCE.json).
+- **Legacy font copies remain:** 50 standalone font files matching
+  `irancell-*.ttf`, `openfund-1.ttf` through `openfund-5.ttf`, or
+  `openfund-persian-*-v4.woff2` are still tracked: 15 in
+  `apps/web-react/public/assets/`, 15 in `dist/assets/`, 10 in
+  `brand/typography/` and 10 in the investor-pack typography directory.
+  This count excludes archives. Their presence does not establish current CSS
+  use, but public asset copies may still be packaged or served. No permission
+  is recorded. Removal needs a reference and packaging check; changing the UI
+  font does not clear rights to retained copies.
+- **Indicators:** the optimization merge (#170) did not relicense them.
+  Preserve the existing CC BY-NC-SA notice and file-specific provenance
+  questions. The runtime's AGPL license is a separate scope.
+- **Desktop:** #171 adds a 0.0.3 candidate and signing pipeline. CI build,
+  acceptance, packaging and integrity steps passed on four targets; macOS x64
+  artifact upload failed with a GitHub timeout
+  ([run](https://github.com/algomanlife/openfund/actions/runs/44880940066)).
+  There is no signed/public 0.0.3 release in the reviewed release collection.
+
+The historical findings below remain evidence of the earlier inventory.
+Statements about files being used or served then are not a fresh runtime audit.
+Do not remove upstream attribution or claim all retained assets are cleared.
+
+## Historical audit context
+
 Engineering inventory, not legal advice. Audited 2026-11-10; re-verified
 2026-11-11 against `main` `67cc812` (deployed as v0.4.4): `npm run
 legal:licenses` passes, the built application contains all eight notice files,
@@ -110,13 +145,11 @@ manifest or embedded font metadata, not inferred from neighbours.
    licence is not affected by this item.
 4. `@metamask/eth-json-rpc-provider` declares no license.
 5. Compatibility of whatever first-party license is chosen with items 1–3.
-6. **Irancell fonts.** Ten served font files and the brand typography folder
-   are Irancell fonts or renamed derivatives that state "All rights reserved"
-   (section 1a). Obtain the rights holder's license or replace them; any
-   replacement is a visual change that needs design approval. Dastkhat
-   (SIL OFL 1.1) now replaces them as the Persian UI default on the site, the
-   terminal, Backstage, certificates and Open Trade; the Irancell files are
-   still in the repository and in `dist/` until their removal is approved.
+6. **Legacy Irancell assets.** Dastkhat has replaced the UI defaults.
+   The remaining tracked copies and locations are counted in the current
+   clarification above. No redistribution permission is recorded; reference
+   and packaging checks are needed before removal. Historical use is not
+   evidence that the current CSS still selects them.
 7. **Copyright ownership.** Commits come from three human GitHub identities and
    from AI agents working for the owner; confirm the owning entity and that
    each human author's work is assigned or licensed to it.

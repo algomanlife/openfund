@@ -1,5 +1,27 @@
 # Open Trade 0.0.3 — delivery report
 
+## CI follow-up — 2026-11-21
+
+The original container report below is historical. After #171 merged, main
+`adbdeabd64b2ba69379411db607be12d35339426` ran
+[desktop CI](https://github.com/algomanlife/openfund/actions/runs/44880940066):
+
+| Check | Result |
+| --- | --- |
+| Gains read contract | Passed |
+| Unit, types, security, i18n job | Passed; this is not translator approval or real-wallet acceptance |
+| Build, UI acceptance, internal unsigned packaging and integrity checks | Passed on macOS arm64, macOS x64, Windows x64 and Linux x64 |
+| Installer artifact upload | Passed on three targets; macOS x64 failed after five GitHub CreateArtifact request timeouts |
+| Signing and draft release jobs | Skipped |
+
+The workflow's overall conclusion is failure because of that upload step.
+This evidence supersedes the original report's unbuilt/CI-not-run statements
+for these checks only. It does not verify real WalletConnect pairing, signed
+distribution, performance budgets, owner acceptance or publication.
+
+## Historical implementation report
+
+
 Branch `agent/claude/open-trade-v0.0.3` from `main` `50d8d43`. Source and CI
 changes only; nothing was built into installers, signed, released, tagged or
 deployed.
