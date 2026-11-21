@@ -26,7 +26,9 @@ let readme = read('README.md')
 const status = JSON.parse(read('docs/status/status.json'))
 
 /* ---------- generated blocks owned by this script ---------- */
-const cell = s => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ').trim()
+const cell = s => String(s).replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/\n/g, ' ').trim()
+/* strip tags until stable, so nested or split tags cannot survive one pass */
+const stripTags = (s, by = '') => { let prev; do { prev = s; s = s.replace(/<[^<>]*>/g, by) } while (s !== prev); return s.replace(/[<>]/g, by) }
 function galleryBlock() {
   const g = JSON.parse(read('docs/assets/gallery/gallery.json'))
   const lines = ['<!-- gallery -->', '']
@@ -84,7 +86,7 @@ const sectionOf = n => bounds.find(b => n >= b.start && n <= b.end)?.name ?? '(t
 for (const b of bounds) if (b.end - b.start + 1 > BUDGET.sectionLines) fail(`README.md: section "${b.name}" has ${b.end - b.start + 1} lines (budget ${BUDGET.sectionLines}); move detail into docs/`)
 
 /* ---------- budgets ---------- */
-const words = readme.replace(/<!--[\s\S]*?-->/g, ' ').replace(/!\[[^\]]*\]\([^)]*\)/g, ' ').replace(/<[^>]+>/g, ' ').replace(/\]\([^)]*\)/g, ']')
+const words = stripTags(readme, ' ').replace(/<!--[\s\S]*?-->/g, ' ').replace(/!\[[^\]]*\]\([^)]*\)/g, ' ').replace(/\]\([^)]*\)/g, ']')
   .replace(/https?:\/\/\S+/g, ' ').replace(/[|`*_#>[\]-]/g, ' ').split(/\s+/).filter(w => /[\p{L}\p{N}]/u.test(w)).length
 if (lines.length > BUDGET.lines) fail(`README.md: ${lines.length} lines (budget ${BUDGET.lines})`)
 if (words > BUDGET.words) fail(`README.md: ${words} words (budget ${BUDGET.words})`)
@@ -122,7 +124,7 @@ for (const [section, targets] of Object.entries(REQUIRED_LINKS)) {
 }
 
 /* ---------- local links and images resolve ---------- */
-const slug = s => s.toLowerCase().replace(/<[^>]*>/g, '').replace(/[^\p{L}\p{N}_\-\s]/gu, '').replace(/ /g, '-')
+const slug = s => stripTags(s.toLowerCase()).replace(/[^\p{L}\p{N}_\-\s]/gu, '').replace(/ /g, '-')
 const anchorsOf = file => new Set(fs.readFileSync(file, 'utf8').replace(/```[\s\S]*?```/g, '').split('\n').map(l => /^#{1,6}\s+(.+?)\s*#*$/.exec(l)?.[1]).filter(Boolean).map(slug))
 const targets = [...readme.matchAll(/!?\[[^\]\n]*\]\(([^)\s]+)\)/g)].map(m => m[1]).concat([...readme.matchAll(/<(?:img|a)\b[^>]*?(?:src|href)="([^"]+)"/g)].map(m => m[1]))
 for (const t of targets) {

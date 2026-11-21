@@ -92,7 +92,7 @@ const rebase = (md, toDir) => md.replace(/\]\(([^)\s]+)\)/g, (all, target) => {
   const abs = path.posix.normalize(path.posix.join('docs/development', target))
   return `](${path.posix.relative(toDir, abs) || '.'})`
 })
-const cell = s => String(s ?? '—').replace(/\|/g, '\\|').replace(/\n/g, ' ')
+const cell = s => String(s ?? '—').replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/\n/g, ' ')
 function page() {
   const rows = results.map(r => `| ${cell(r.item)} | ${r.kind} | ${r.status} | ${r.retiredSince ?? '—'} | ${cell(r.replacement)} | ${r.remainingLabel} |`)
   return ['# Retired and no longer used', '',
