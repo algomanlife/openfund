@@ -22,12 +22,15 @@ test('the wordmark constant is OpenFi and replaces every template token', () => 
 })
 
 test('legacy templates use the token, never a hard-coded wordmark', () => {
-  const expected = { 'landing-body.html': 7, 'portfolio-body.html': 2, 'terminal-body.html': 2 }
+  const expected = { 'landing-body.html': 5, 'portfolio-body.html': 1, 'terminal-body.html': 1 }
   for (const [file, count] of Object.entries(expected)) {
     const html = read(`../src/pages/${file}`)
     assert.doesNotMatch(html, />openfund</i, file)
     assert.doesNotMatch(html, /brand-word(?:mark)?[^>]*>openfund/i, file)
     assert.equal(html.split(BRAND_WORDMARK_TOKEN).length - 1, count, file)
+    /* the visible caption is aria-hidden, so the link's name is the wordmark itself;
+       an aria-label would not match the visible text (axe label-content-name-mismatch) */
+    assert.doesNotMatch(html, /class="brand"[^>]*aria-label/, file)
   }
 })
 
