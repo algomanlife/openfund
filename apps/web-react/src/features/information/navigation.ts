@@ -2,13 +2,15 @@ import brandbookUrl from '../../../../../brand/brandbook/Openfund-brandbook.zip?
 import type { CmsNavItem, CmsFooterLink } from '../../cms/client'
 import { labels, text } from './content'
 import { pickRecord, type AppLocale } from '../../i18n/locales'
+import '../navigation/mega-menu.css'
+import { MEGA_BANNERS, MEGA_DESCRIPTIONS, MEGA_ICONS, RESOURCE_SECTIONS, megaBannerArt, megaIconNode, type MegaBannerKind } from '../navigation/megaMenu'
 type Locale = AppLocale
 
 const primary = ['challenges', 'markets', 'rulebook'] as const
 /** Economy dropdown: governance, the consolidated Ambassador (IB) page and
  *  Referral & Rewards (formerly "Growth Partner" under Resources; same /referral page). */
 const economy = ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'] as const
-const resources = ['faq', 'learn', 'tools', 'apps', 'roadmap', 'certificate-verification', 'about', 'contact'] as const
+const resources = ['faq', 'learn', 'tools', 'apps', 'roadmap', 'developers', 'certificate-verification', 'about', 'contact'] as const
 /** Website-owned labels that win over a stale CMS navigation/footer label. */
 const FIXED_LABELS = new Set(['referral'])
 /** footer "Openfund documents" entries */
@@ -26,28 +28,42 @@ export function navigationHref(route: string, locale: Locale): string {
   return `/${locale}/${route}`
 }
 
-export interface NavigationLink { route: string; href: string; label: string; current: boolean; activeSection: boolean }
-export interface NavigationGroup { id: string; label: string; links: NavigationLink[]; current: boolean }
+export interface NavigationLink { route: string; href: string; label: string; current: boolean; activeSection: boolean; description: string; icon: string }
+export interface NavigationSection { id: string; label: string; links: NavigationLink[] }
+export interface NavigationBanner { kind: MegaBannerKind; href: string; title: string; body: string; cta: string }
+export interface NavigationGroup { id: string; label: string; links: NavigationLink[]; current: boolean; sections: NavigationSection[]; banner: NavigationBanner | null }
 export interface NavigationModel { primary: NavigationLink[]; groups: NavigationGroup[] }
 
 /** One source for the website's primary destinations and dropdown groups:
  *  the desktop header and the off-canvas drawer render the same model. */
 export function navigationModel(locale: Locale, pathname: string, navItems: CmsNavItem[] | null): NavigationModel {
   const cmsLabels = new Map(navItems?.map(item => [item.route as string, item.label]))
+  const cmsItems = new Map(navItems?.map(item => [item.route as string, item]))
   const link = (route: string, cmsLabel?: { fa: string; en: string }): NavigationLink => {
     const label = (!FIXED_LABELS.has(route) && (cmsLabel || cmsLabels.get(route))) || navigationLabels[route as keyof typeof navigationLabels]
     const section = route === 'glossary' ? 'learn/glossary' : route
     const current = pathname === `/${locale}/${section}`
-    return { route, href: navigationHref(route, locale), label: pickRecord(locale, label), current, activeSection: !current && pathname.startsWith(`/${locale}/${section}/`) }
+    const cms = cmsItems.get(route)
+    const description = cms?.description || MEGA_DESCRIPTIONS[route]
+    const icon = cms?.icon && MEGA_ICONS[cms.icon] ? cms.icon : route
+    return { route, href: navigationHref(route, locale), label: pickRecord(locale, label), current, activeSection: !current && pathname.startsWith(`/${locale}/${section}/`),
+      description: description ? pickRecord(locale, description) : '', icon }
   }
-  const group = (id: string, label: { fa: string; en: string }, links: NavigationLink[]): NavigationGroup =>
-    ({ id, label: pickRecord(locale, label), links, current: links.some(item => item.current) })
+  const banner = (id: string): NavigationBanner | null => {
+    const b = MEGA_BANNERS[id]
+    return b ? { kind: b.kind, href: navigationHref(b.route, locale) + (b.hash || ''), title: pickRecord(locale, b.title), body: pickRecord(locale, b.body), cta: pickRecord(locale, b.cta) } : null
+  }
+  const group = (id: string, label: { fa: string; en: string }, links: NavigationLink[], sections?: NavigationSection[]): NavigationGroup =>
+    ({ id, label: pickRecord(locale, label), links, current: links.some(item => item.current), sections: sections || [{ id, label: '', links }], banner: banner(id) })
+  const resourceLinks = resources.flatMap(route => route === 'learn' ? [link(route), link('glossary')] : [link(route)])
+  const byRoute = new Map(resourceLinks.map(item => [item.route, item]))
+  const resourceSections = RESOURCE_SECTIONS.map(section => ({ id: section.id, label: pickRecord(locale, section.label), links: section.routes.flatMap(route => byRoute.get(route) || []) }))
   return {
     primary: primary.map(route => link(route)),
     groups: [
       group('website-economy', labels.economy, economy.map(route => link(route))),
       /* the economy group alone marks its trigger active (existing behaviour) */
-      { ...group('website-resources', labels.resources, resources.flatMap(route => route === 'learn' ? [link(route), link('glossary')] : [link(route)])), current: false },
+      { ...group('website-resources', labels.resources, resourceLinks, resourceSections), current: false },
     ],
   }
 }
@@ -55,7 +71,7 @@ export function navigationModel(locale: Locale, pathname: string, navItems: CmsN
 /** Shared navigation only; the legacy page keeps its body and runtime. */
 export function renderNavigation(root: ParentNode, locale: Locale, pathname: string, navItems: CmsNavItem[] | null, footerLinks: CmsFooterLink[] | null) {
   const cmsLabels = new Map(navItems?.map(item => [item.route as string, item.label]))
-  const anchor = (item: NavigationLink) => {
+  const anchor = (item: Pick<NavigationLink, 'route' | 'href' | 'label' | 'current' | 'activeSection'>) => {
     const a = document.createElement('a')
     a.href = item.href
     a.textContent = item.label
@@ -68,6 +84,29 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
     const section = route === 'glossary' ? 'learn/glossary' : route
     const current = pathname === `/${locale}/${section}`
     return anchor({ route, href: navigationHref(route, locale), label: pickRecord(locale, label), current, activeSection: !current && pathname.startsWith(`/${locale}/${section}/`) })
+  }
+  const tile = (item: NavigationLink) => {
+    const a = anchor(item)
+    a.className = 'mega-tile'
+    a.replaceChildren()
+    const icon = document.createElement('span'); icon.className = 'mega-icon'; icon.append(megaIconNode(item.icon))
+    const textBox = document.createElement('span'); textBox.className = 'mega-text'
+    const title = document.createElement('b'); title.textContent = item.label
+    textBox.append(title)
+    if (item.description) { const d = document.createElement('small'); d.textContent = item.description; textBox.append(d) }
+    a.append(icon, textBox)
+    return a
+  }
+  const bannerCard = (b: NavigationBanner) => {
+    const a = document.createElement('a')
+    a.className = `mega-banner is-${b.kind}`; a.href = b.href
+    const copy = document.createElement('span'); copy.className = 'mega-banner-copy'
+    const title = document.createElement('b'); title.textContent = b.title
+    const p = document.createElement('small'); p.textContent = b.body
+    const cta = document.createElement('em'); cta.textContent = b.cta
+    copy.append(title, p, cta)
+    a.append(megaBannerArt(b.kind), copy)
+    return a
   }
   /* one dropdown group (same markup/behaviour as the Resources menu) */
   const dropdownGroup = (item: NavigationGroup) => {
@@ -83,11 +122,29 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
     const chevron = document.createElement('span')
     chevron.className = 'chevron'; chevron.setAttribute('aria-hidden', 'true'); chevron.textContent = '⌄'
     trigger.append(chevron)
+    /* mega panel: icon tiles (with sub-groups) and a featured banner */
     const dropdown = document.createElement('div')
-    dropdown.className = 'nav-dropdown'; dropdown.id = item.id
+    dropdown.className = 'nav-dropdown nav-mega'; dropdown.id = item.id
     const heading = document.createElement('span')
+    heading.className = 'mega-heading'
     heading.textContent = item.label
-    dropdown.append(heading, ...item.links.map(anchor))
+    const body = document.createElement('div')
+    body.className = 'mega-body'
+    const sections = document.createElement('div')
+    sections.className = 'mega-sections'
+    for (const section of item.sections) {
+      const block = document.createElement('section')
+      block.className = 'mega-section'
+      if (section.label) { const h = document.createElement('h3'); h.textContent = section.label; block.append(h) }
+      const tiles = document.createElement('div')
+      tiles.className = 'mega-tiles'
+      tiles.append(...section.links.map(tile))
+      block.append(tiles)
+      sections.append(block)
+    }
+    body.append(sections)
+    if (item.banner) body.append(bannerCard(item.banner))
+    dropdown.append(heading, body)
     group.append(trigger, dropdown)
     return group
   }
@@ -126,11 +183,34 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
   root.querySelector('.nav-cta')?.setAttribute('href', `/${locale}/prop/trade`)
 }
 
+/* a soft scrim under the open mega panel (desktop) */
+function syncScrim(root: ParentNode) {
+  document.documentElement.classList.toggle('mega-open', !!root.querySelector('.nav-account.resources-open .nav-mega'))
+}
+/* centre the wide panel in the viewport from measured geometry: its containing
+   block differs between shells, so a CSS percentage would not be centred */
+function placePanel(group: Element) {
+  const panel = group.querySelector<HTMLElement>('.nav-mega')
+  if (!panel || group.closest('.openfund-header')?.classList.contains('nav-overflow')) return
+  const width = Math.min(1040, document.documentElement.clientWidth - 32)
+  const base = (panel.offsetParent as HTMLElement | null)?.getBoundingClientRect().left || 0
+  panel.style.width = `${width}px`
+  panel.style.left = `${(document.documentElement.clientWidth - width) / 2 - base}px`
+  panel.style.right = 'auto'
+}
+function openGroup(root: ParentNode, group: Element) {
+  root.querySelectorAll('.nav-account.resources-open').forEach(other => { if (other !== group) { other.classList.remove('resources-open'); other.querySelector('.resources-toggle')?.setAttribute('aria-expanded', 'false') } })
+  placePanel(group)
+  group.classList.add('resources-open')
+  group.querySelector('.resources-toggle')?.setAttribute('aria-expanded', 'true')
+  syncScrim(root)
+}
 function closeDisclosures(root: ParentNode) {
   root.querySelectorAll('.resources-toggle[aria-expanded="true"]').forEach(button => {
     button.setAttribute('aria-expanded', 'false')
     button.parentElement?.classList.remove('resources-open')
   })
+  syncScrim(root)
 }
 
 export function navigationClick(event: MouseEvent, root: ParentNode): boolean {
@@ -138,10 +218,7 @@ export function navigationClick(event: MouseEvent, root: ParentNode): boolean {
   const open = trigger?.getAttribute('aria-expanded') === 'false'
   closeDisclosures(root)
   if (!trigger) return false
-  if (open) {
-    trigger.setAttribute('aria-expanded', 'true')
-    trigger.parentElement?.classList.add('resources-open')
-  }
+  if (open && trigger.parentElement) openGroup(root, trigger.parentElement)
   return true
 }
 
@@ -153,14 +230,12 @@ export function navigationKeyDown(event: KeyboardEvent, root: ParentNode): boole
   const links = Array.from(group.querySelectorAll<HTMLAnchorElement>('.nav-dropdown a'))
   if (event.key === 'Escape') {
     event.preventDefault(); event.stopPropagation()
-    trigger.setAttribute('aria-expanded', 'false'); group.classList.remove('resources-open'); trigger.focus()
+    trigger.setAttribute('aria-expanded', 'false'); group.classList.remove('resources-open'); syncScrim(root); trigger.focus()
     return true
   }
   if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
     event.preventDefault()
-    closeDisclosures(root)
-    group.classList.add('resources-open')
-    trigger.setAttribute('aria-expanded', 'true')
+    openGroup(root, group)
     const index = links.indexOf(target as HTMLAnchorElement)
     const next = event.key === 'Home' ? 0 : event.key === 'End' ? links.length - 1 : event.key === 'ArrowDown' ? (index + 1) % links.length : (index <= 0 ? links.length : index) - 1
     links[next]?.focus()
@@ -178,11 +253,39 @@ export function bindNavigation(root: ParentNode) {
     const group = (focus.target as Element)?.closest('.nav-account')
     if (group && !group.contains(focus.relatedTarget as Node | null)) closeDisclosures(root)
   }
+  /* hover-open with a short intent delay on fine pointers; touch keeps click/tap */
+  const fine = typeof matchMedia === 'function' ? matchMedia('(hover: hover) and (pointer: fine)') : null
+  let openTimer = 0, closeTimer = 0
+  const over = (event: Event) => {
+    if (!fine?.matches) return
+    const group = (event.target as Element)?.closest?.('.openfund-header:not(.nav-overflow) .nav-account')
+    window.clearTimeout(closeTimer)
+    if (!group || group.classList.contains('resources-open')) return
+    window.clearTimeout(openTimer)
+    openTimer = window.setTimeout(() => openGroup(root, group), 140)
+  }
+  const out = (event: Event) => {
+    if (!fine?.matches) return
+    const pointer = event as PointerEvent
+    const group = (pointer.target as Element)?.closest?.('.nav-account')
+    if (!group || group.contains(pointer.relatedTarget as Node | null)) return
+    window.clearTimeout(openTimer)
+    closeTimer = window.setTimeout(() => { if (!group.matches(':focus-within')) closeDisclosures(root) }, 240)
+  }
+  const resize = () => closeDisclosures(root)
+  addEventListener('resize', resize)
   document.addEventListener('pointerdown', outside)
   root.addEventListener('focusout', leave)
+  root.addEventListener('pointerover', over)
+  root.addEventListener('pointerout', out)
   return () => {
     document.removeEventListener('pointerdown', outside)
     root.removeEventListener('focusout', leave)
+    root.removeEventListener('pointerover', over)
+    root.removeEventListener('pointerout', out)
+    removeEventListener('resize', resize)
+    window.clearTimeout(openTimer); window.clearTimeout(closeTimer)
+    document.documentElement.classList.remove('mega-open')
   }
 }
 

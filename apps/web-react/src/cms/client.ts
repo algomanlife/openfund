@@ -410,12 +410,14 @@ async function fetchCmsFooterLinksRaw(): Promise<CmsFooterLink[] | null> {
 
 /* ---------------- navigation (public_header, whitelist) ---------------- */
 export type NavRoute = 'challenges' | 'markets' | 'rulebook' | 'transparency' | 'faq' | 'referral' | 'tools' | 'learn' | 'governance'
-export interface CmsNavItem { route: NavRoute; label: { fa: string; en: string } }
-const NAV_ROUTES = new Set(['challenges', 'markets', 'rulebook', 'transparency', 'faq', 'referral', 'tools', 'learn', 'governance'])
+  | 'ambassador' | 'revenue-model' | 'live-market-access' | 'glossary' | 'apps' | 'roadmap' | 'developers' | 'certificate-verification' | 'about' | 'contact'
+export interface CmsNavItem { route: NavRoute; label: { fa: string; en: string }; description?: { fa: string; en: string }; icon?: string }
+const NAV_ROUTES = new Set(['challenges', 'markets', 'rulebook', 'transparency', 'faq', 'referral', 'tools', 'learn', 'governance',
+  'ambassador', 'revenue-model', 'live-market-access', 'glossary', 'apps', 'roadmap', 'developers', 'certificate-verification', 'about', 'contact'])
 
 async function fetchCmsNavigationRaw(): Promise<CmsNavItem[] | null> {
-  interface Raw extends TranslatedRow { route: string; visible: boolean }
-  const data = await getJson<Raw[]>('/items/navigation_items?fields=route,visible,translations.language_code,translations.label&filter[status][_eq]=published&filter[location][_eq]=public_header&filter[visible][_eq]=true&sort=sort&limit=-1')
+  interface Raw extends TranslatedRow { route: string; visible: boolean; icon?: string | null }
+  const data = await getJson<Raw[]>('/items/navigation_items?fields=route,visible,icon,translations.language_code,translations.label,translations.description&filter[status][_eq]=published&filter[location][_eq]=public_header&filter[visible][_eq]=true&sort=sort&limit=-1')
   if (!data) return null
   const out: CmsNavItem[] = []
   for (const row of data) {
@@ -423,7 +425,8 @@ async function fetchCmsNavigationRaw(): Promise<CmsNavItem[] | null> {
     if (!NAV_ROUTES.has(route)) continue
     const l = localized(row)
     if (!l.fa.label || !l.en.label) continue
-    out.push({ route: route as NavRoute, label: { fa: l.fa.label, en: l.en.label } })
+    const description = l.fa.description && l.en.description ? { fa: String(l.fa.description), en: String(l.en.description) } : undefined
+    out.push({ route: route as NavRoute, label: { fa: l.fa.label, en: l.en.label }, description, icon: typeof row.icon === 'string' && /^[a-z-]{1,40}$/.test(row.icon) ? row.icon : undefined })
   }
   return out.length ? out : null
 }

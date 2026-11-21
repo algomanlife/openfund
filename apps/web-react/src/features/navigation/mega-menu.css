@@ -1,0 +1,85 @@
+/* Mega menu (desktop header panel, drawer tiles, terminal menu tiles).
+   Tokens: --mint, --white, --body, --muted, --line, --surface. */
+.mega-icon{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:10px;color:var(--mint,#82e7bd);
+  background:color-mix(in srgb,var(--mint,#82e7bd) 9%,transparent);border:1px solid color-mix(in srgb,var(--mint,#82e7bd) 22%,transparent)}
+.mega-icon-svg{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+/* tiles carry the design-system face, so drawers that do not set one never fall back to serif */
+.mega-tile{font-family:var(--ds-font-sans,'Ubuntu',system-ui,sans-serif);display:flex;align-items:center;gap:12px;min-height:44px;padding:10px 12px;border-radius:12px;color:var(--white,#eef5f1);text-decoration:none;
+  border:1px solid transparent;transition:background .2s,border-color .2s,transform .2s}
+.mega-tile:hover,.mega-tile:focus-visible{background:color-mix(in srgb,var(--mint,#82e7bd) 7%,transparent);border-color:color-mix(in srgb,var(--mint,#82e7bd) 28%,transparent)}
+.mega-tile:focus-visible{outline:2px solid var(--mint,#82e7bd);outline-offset:1px}
+.mega-tile[aria-current=page] b{color:var(--mint,#82e7bd)}
+.mega-text{display:grid;gap:2px;min-width:0}
+.mega-text b{font-size:14px;font-weight:500;line-height:1.4}
+.mega-text small{font-size:12px;color:var(--muted,#8a9a92);line-height:1.5}
+
+/* ---- desktop panel (header not in compact mode) ---- */
+.openfund-header .nav{position:relative}
+.openfund-header:not(.nav-overflow) .nav-account{position:static}
+.openfund-header:not(.nav-overflow) .nav-mega{position:absolute;top:calc(100% + 6px);left:0;right:auto;width:min(1040px,calc(100vw - 32px));padding:22px;
+  border-radius:18px;border:1px solid color-mix(in srgb,var(--mint,#82e7bd) 22%,transparent);
+  background:color-mix(in srgb,var(--surface,#0b1510) 86%,transparent);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);
+  box-shadow:0 30px 80px -30px #000c,0 0 0 1px #ffffff08 inset;text-align:start;z-index:60;
+  opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .22s ease,transform .26s cubic-bezier(.2,.8,.2,1),visibility .22s}
+/* the panel opens only through the group's state (hover intent, click, keys), never on raw :hover */
+.openfund-header:not(.nav-overflow) .nav-account:hover .nav-mega,.openfund-header:not(.nav-overflow) .nav-account:focus-within .nav-mega{opacity:0;visibility:hidden;transform:translateY(-8px)}
+.openfund-header:not(.nav-overflow) .nav-account.resources-open .nav-mega{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+.openfund-header .nav-mega:before{top:-12px;height:13px}
+.openfund-header .nav-mega>.mega-heading{display:none}
+.mega-body{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:20px;align-items:stretch}
+.mega-sections{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px 18px}
+.mega-section h3{margin:4px 12px 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted,#8a9a92);font-weight:600}
+[dir=rtl] .mega-section h3{letter-spacing:0;text-transform:none;font-size:12px}
+.mega-tiles{display:grid;gap:2px;list-style:none;margin:0;padding:0}
+.openfund-header .nav-mega a.mega-tile{flex-direction:row;padding:10px 12px;font-size:14px}
+.openfund-header .nav-mega .mega-text small{font-size:12px}
+.mega-banner{position:relative;display:grid;align-content:space-between;gap:12px;padding:16px;border-radius:14px;overflow:hidden;text-decoration:none;color:var(--white,#eef5f1);
+  border:1px solid color-mix(in srgb,var(--mint,#82e7bd) 30%,transparent);
+  background:radial-gradient(120% 90% at 80% 0%,color-mix(in srgb,var(--mint,#82e7bd) 18%,transparent),transparent 60%),color-mix(in srgb,var(--surface,#0b1510) 70%,#000)}
+.mega-banner:hover,.mega-banner:focus-visible{border-color:var(--mint,#82e7bd)}
+.mega-banner:focus-visible{outline:2px solid var(--mint,#82e7bd);outline-offset:2px}
+.openfund-header .nav-mega a.mega-banner{display:grid;padding:16px}
+.mega-banner-copy{display:grid;gap:6px}
+.mega-banner-copy b{font-size:15px}
+.mega-banner-copy small{font-size:12.5px;color:var(--body,#c9d6cf);line-height:1.6}
+.mega-banner-copy em{font-style:normal;font-size:13px;color:var(--mint,#82e7bd)}
+.mega-banner-copy em::after{content:' →'}
+[dir=rtl] .mega-banner-copy em::after{content:' ←'}
+.mega-banner-art{width:100%;height:auto;max-height:110px}
+.mega-art-arc{fill:none;stroke:color-mix(in srgb,var(--mint,#82e7bd) 30%,transparent);stroke-dasharray:3 5}
+.mega-art-seat{fill:color-mix(in srgb,var(--mint,#82e7bd) 25%,transparent);stroke:var(--mint,#82e7bd);stroke-width:1.2}
+.mega-art-seat.s2,.mega-art-seat.s7{fill:color-mix(in srgb,#e89483 30%,transparent);stroke:#e89483}
+.mega-art-seat.s4{fill:color-mix(in srgb,var(--muted,#8a9a92) 30%,transparent);stroke:var(--muted,#8a9a92)}
+.mega-art-rostrum,.mega-art-window{fill:color-mix(in srgb,var(--mint,#82e7bd) 8%,transparent);stroke:color-mix(in srgb,var(--mint,#82e7bd) 55%,transparent)}
+.mega-art-line,.mega-art-chart,.mega-art-down{fill:none;stroke:var(--mint,#82e7bd);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.mega-art-line{opacity:.4}
+.openfund-header .nav-account.resources-open .mega-art-seat{animation:mega-seat 2.4s ease-in-out infinite;animation-delay:calc(var(--d,0) * 1s)}
+.mega-art-seat.s1{--d:.15}.mega-art-seat.s3{--d:.3}.mega-art-seat.s5{--d:.45}.mega-art-seat.s6{--d:.6}.mega-art-seat.s8{--d:.75}.mega-art-seat.s9{--d:.9}
+@keyframes mega-seat{0%,100%{opacity:.55}50%{opacity:1}}
+/* page scrim behind the open panel */
+html.mega-open::after{content:'';position:fixed;inset:0;z-index:45;background:#0006;pointer-events:none;animation:mega-scrim .2s ease both}
+html[data-theme=light].mega-open::after{background:#0b2a1d1f}
+@keyframes mega-scrim{from{opacity:0}}
+html[data-theme=light] .openfund-header:not(.nav-overflow) .nav-mega{background:#fffffff2;border-color:#0b2a1d1f;box-shadow:0 30px 80px -30px #0b2a1d40}
+html[data-theme=light] .mega-banner{background:radial-gradient(120% 90% at 80% 0%,#13664a1c,transparent 60%),#f4f8f6;color:#0f1714}
+html[data-theme=light] .mega-tile,html[data-theme=light] .openfund-header .nav-mega a.mega-tile{color:#0f1714}
+@media (max-width:1180px){.mega-body{grid-template-columns:minmax(0,1fr)}.mega-banner{grid-template-columns:120px minmax(0,1fr);align-items:center}.mega-banner-art{max-height:70px}}
+
+/* ---- drawer (compact header, tablets and phones) ---- */
+.of-drawer-mega h3{margin:0}
+.of-drawer-accordion{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:44px;padding:6px 4px;background:none;border:0;color:inherit;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.of-drawer-accordion:focus-visible{outline:2px solid var(--mint,#82e7bd);outline-offset:2px;border-radius:8px}
+.of-drawer-chevron{transition:transform .2s}
+.of-drawer-accordion[aria-expanded=true] .of-drawer-chevron{transform:rotate(180deg)}
+.of-drawer-subgroup h4{margin:10px 4px 4px;font-size:11px;color:var(--muted,#8a9a92);font-weight:600}
+.mega-tiles.is-drawer{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.mega-tiles.is-drawer .mega-tile{flex-direction:column;align-items:flex-start;gap:8px;padding:10px;min-height:76px;border-color:var(--line,#ffffff1a)}
+.mega-tiles.is-drawer .mega-text b{font-size:13px}
+.mega-banner.is-compact{display:flex;align-items:center;gap:12px;margin-top:10px;padding:12px;min-height:44px}
+.mega-banner.is-compact .mega-banner-copy small{font-size:12px}
+@media (min-width:768px){.mega-tiles.is-drawer .mega-tile{flex-direction:row;align-items:center;min-height:56px}}
+@media (prefers-reduced-motion:reduce){
+  .openfund-header .nav-mega,.mega-tile,.of-drawer-chevron{transition:none}
+  .openfund-header .nav-account.resources-open .mega-art-seat,html.mega-open::after{animation:none}
+}
+.mega-tile:lang(en),[lang=en] .mega-tile{font-family:var(--ds-font-latin,'Ubuntu',system-ui,sans-serif)}

@@ -94,7 +94,10 @@ async function interactions(page) {
     await page.locator('.menu').click();
     check(await page.locator('.menu').getAttribute('aria-expanded')==='true', 'mobile open '+route);
     // compact navigation lives in the off-canvas drawer
-    const target=page.locator('.of-offcanvas a.of-drawer-link[href$="/tools"]');
+    /* group links are tiles inside an accordion: expand Resources first, as a visitor would */
+    const resourcesGroup=page.locator('.of-offcanvas .of-drawer-accordion[aria-controls="website-resources-drawer"]');
+    if(await resourcesGroup.getAttribute('aria-expanded')!=='true') await resourcesGroup.click();
+    const target=page.locator('.of-offcanvas a.mega-tile[href$="/tools"]');
     check(await target.isVisible(),'mobile resources visible '+width+' '+route);
     await target.click();
     await page.waitForURL(base+other+'/tools');
@@ -187,7 +190,7 @@ async function ancillary(page) {
 
 async function auditRoutes(page) {
   const library = loadLibrary();
-  const routes = ['home','challenges','markets','rulebook','transparency','revenue-model','live-market-access','ambassador','coach','faq','learn','learn/glossary','tools','referral','about','contact','apps','roadmap','certificate-verification',
+  const routes = ['home','challenges','markets','rulebook','transparency','revenue-model','live-market-access','ambassador','coach','faq','learn','learn/glossary','tools','referral','about','contact','apps','roadmap','developers','certificate-verification',
     ...library.faqItems.map(item=>'faq/q/'+item.key),
     ...library.paths.flatMap(p=>['learn/paths/'+p.slug,...p.lessons.map(l=>'learn/lessons/'+l.slug)]),
     ...library.glossary.map(t=>'learn/glossary/'+t.slug),...library.tools.map(t=>'tools/'+t.slug)];
@@ -205,7 +208,7 @@ async function auditRoutes(page) {
     for(const href of links) {
       if(href==='#') { if(await page.locator('header a[href="#"],footer a[href="#"]').count()) throw new Error('Chrome placeholder on '+route); continue; }
       if(href.startsWith('/') && !/^\/(assets|downloads)\//.test(href)) {
-        const target=href.split('?')[0];
+        const target=href.split(/[?#]/)[0]; /* an anchor on a known page is that page */
         if(!allowed.has(target) && !/^\/(en|fa)\/(prop|perpetual)\/(trade|dashboard)$/.test(target) && target!=='/terminal' && !/^\/(en|fa)\/whitepaper(\/|$)/.test(target) && !/^\/(en|fa)\/governance(\/|$)/.test(target) && !/^\/(en|fa)\/checkout$/.test(target)) throw new Error('Unknown route '+href+' on '+route);
       } else if(href.startsWith('#') && href!=='#' && !href.startsWith('#/') && !await page.evaluate(id=>!!document.getElementById(id),decodeURIComponent(href.slice(1)))) throw new Error('Missing anchor '+href+' on '+route);
     }

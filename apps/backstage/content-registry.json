@@ -2,7 +2,7 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4417,
+    "uniqueRecords": 4444,
     "mappedCalls": 2272,
     "exceptions": 51,
     "validationFindings": 0,
@@ -2773,7 +2773,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 43,
+          "line": 44,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -6320,14 +6320,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 67,
+          "line": 73,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 42,
+          "line": 44,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -8672,7 +8672,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 48,
+          "line": 49,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -9422,14 +9422,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 40,
+          "line": 42,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 45,
+          "line": 47,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -11395,6 +11395,26 @@
       ]
     },
     {
+      "key": "react.1cb281da04694354",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مدل چلنج و اندازهٔ حساب را انتخاب کن.",
+      "en": "Choose a challenge model and account size.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 48,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.1cb2921b3e92e429",
       "namespace": "react",
       "area": "Website",
@@ -11523,6 +11543,26 @@
           "component": "apps/web-react/src/features/governance/governanceModel.ts",
           "line": 71,
           "page": "governance",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.1d2494bc8b9281e0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "درآمد از کجا می‌آید و کجا می‌رود.",
+      "en": "Where revenue comes from and where it goes.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 54,
+          "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -18309,7 +18349,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 65,
+          "line": 71,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -18351,7 +18391,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 40,
+          "line": 42,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -18972,7 +19012,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -24514,7 +24554,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 49,
+          "line": 50,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -25756,7 +25796,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 46,
+          "line": 47,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -26543,7 +26583,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -27097,7 +27137,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 68,
+          "line": 106,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -28558,7 +28598,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 51,
+          "line": 52,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -29498,6 +29538,26 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.4d1f8303e9a716a1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بتای دسکتاپ را برای macOS، ویندوز و لینوکس دانلود کن.",
+      "en": "Download the desktop beta for macOS, Windows and Linux.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 88,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -31161,6 +31221,26 @@
       ]
     },
     {
+      "key": "react.5162e5e4e5728376",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تازه‌ترین پیشنهادهای شورا",
+      "en": "Latest council proposals",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 81,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.5197fe2e10f69ad0",
       "namespace": "react",
       "area": "User Dashboard",
@@ -31313,7 +31393,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 49,
+          "line": 51,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -33340,6 +33420,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.57c445d05d301906",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "رفتن به حاکمیت",
+      "en": "Open governance",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 83,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -36735,7 +36835,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 84,
+          "line": 106,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -36982,7 +37082,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 42,
+          "line": 43,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -37856,14 +37956,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 127,
-          "page": "home",
-          "route": "/:locale/home",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 133,
+          "line": 192,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -42739,6 +42832,26 @@
       ]
     },
     {
+      "key": "react.716dc12da7a55523",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قیمت زندهٔ بازارهایی که می‌توانی معامله کنی.",
+      "en": "Live prices for the markets you can trade.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 49,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.717c24e0e66ba96c",
       "namespace": "react",
       "area": "Website",
@@ -43767,6 +43880,26 @@
       ]
     },
     {
+      "key": "react.757de1520f2728b2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تماس با پشتیبانی، واحد حقوقی و فنی.",
+      "en": "Reach support, legal and technical teams.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 66,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.75803c51d7f25c59",
       "namespace": "react",
       "area": "Global Content",
@@ -44160,7 +44293,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -49438,7 +49571,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 47,
+          "line": 48,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -49767,6 +49900,26 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 214,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.8703d7fa8504f62e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اصالت یک گواهی را بررسی کن.",
+      "en": "Check that a certificate is genuine.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 64,
+          "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -50513,7 +50666,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 44,
+          "line": 45,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -51146,6 +51299,26 @@
       ]
     },
     {
+      "key": "react.8a96e594a004d088",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برنامهٔ معرفی‌کنندهٔ معامله‌گر.",
+      "en": "The introducing-broker program.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 52,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8a9b20a099eec21a",
       "namespace": "react",
       "area": "Global Content",
@@ -51403,6 +51576,26 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.8b8b6e9a9b5e2bf8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "روی اوپن‌فاند بساز و در آن مشارکت کن.",
+      "en": "Build on and contribute to Openfund.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 63,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -51734,6 +51927,26 @@
       ]
     },
     {
+      "key": "react.8c7df0b0b17833f6",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مستندات توسعه‌دهندگان",
+      "en": "Developer docs",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/information/content.ts",
+          "line": 42,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8c840de66781b69c",
       "namespace": "react",
       "area": "Global Content",
@@ -51971,6 +52184,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.8cfd3e31d509fded",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مسیر از حساب فاندشده تا بازار واقعی.",
+      "en": "The path from a funded account to live markets.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 55,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -52617,6 +52850,26 @@
           "component": "apps/web-react/src/features/company/aboutContent.ts",
           "line": 179,
           "page": "company",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.8e93d833fa993021",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مسیرهای یادگیری و درس‌ها.",
+      "en": "Learning paths and lessons.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 58,
+          "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -53776,7 +54029,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 68,
+          "line": 106,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -53913,14 +54166,21 @@
     {
       "key": "react.921ab26f2f725555",
       "namespace": "react",
-      "area": "Trading Terminal",
+      "area": "Website",
       "owner": "Content editor",
       "fa": "محصول",
       "en": "Product",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 72,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
           "line": 177,
@@ -57849,7 +58109,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 47,
+          "line": 49,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -58197,7 +58457,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 45,
+          "line": 46,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -59036,6 +59296,13 @@
           "line": 12,
           "page": "applications",
           "route": "/:locale/apps",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 87,
+          "page": "navigation",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -60329,7 +60596,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 75,
+          "line": 81,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -60970,7 +61237,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 50,
+          "line": 51,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -61580,7 +61847,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 128,
+          "line": 210,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -63193,7 +63460,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 141,
+          "line": 223,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -65106,7 +65373,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 48,
+          "line": 50,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -65797,6 +66064,26 @@
       ]
     },
     {
+      "key": "react.b0dddbb594089981",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ده کرسی و حد نصاب هفت: ببین شورا دربارهٔ چه تصمیم می‌گیرد.",
+      "en": "Ten seats and a quorum of seven: see what the council is deciding.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 82,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.b0e53c3eadee4f22",
       "namespace": "react",
       "area": "Global Content",
@@ -66336,7 +66623,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 82,
+          "line": 120,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -66733,6 +67020,26 @@
           "component": "apps/web-react/src/features/referral/Referral.tsx",
           "line": 164,
           "page": "referral",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.b3c4afbabc512b4e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شرکت",
+      "en": "Company",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 73,
+          "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -67798,6 +68105,26 @@
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b6fc66db7a3e4919",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "چه چیزی منتشر شده و قدم بعدی چیست.",
+      "en": "What has shipped and what comes next.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 62,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -69058,7 +69385,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 89,
+          "line": 127,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -71035,6 +71362,26 @@
       ]
     },
     {
+      "key": "react.c0455be23113d93c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ما که هستیم و چگونه کار می‌کنیم.",
+      "en": "Who we are and how we work.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 65,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.c04dd7c0ba5b5044",
       "namespace": "react",
       "area": "Global Content",
@@ -72758,14 +73105,14 @@
         },
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 86,
+          "line": 124,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 87,
+          "line": 125,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -73161,6 +73508,26 @@
       ]
     },
     {
+      "key": "react.c62f26bbed424731",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "همهٔ قوانین، پیش از شروع.",
+      "en": "Every rule, before you start.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 50,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.c647a7172c9164d9",
       "namespace": "react",
       "area": "Global Content",
@@ -73260,7 +73627,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 15,
+          "line": 17,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -74232,6 +74599,26 @@
           "line": 84,
           "page": "tools",
           "route": "/:locale/tools",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.c9c49fe155206063",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ترمینال وب و اپ دسکتاپ.",
+      "en": "Web terminal and desktop app.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 61,
+          "page": "navigation",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -77488,6 +77875,26 @@
       ]
     },
     {
+      "key": "react.d249d826b2468db8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "لینک دعوت و پاداش‌ها.",
+      "en": "Referral links and rewards.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 56,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d2676c6d4541af7f",
       "namespace": "react",
       "area": "Website",
@@ -78684,6 +79091,26 @@
       ]
     },
     {
+      "key": "react.d5a9c0b936633387",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ارقام منتشرشده و نحوهٔ اندازه‌گیری آن‌ها.",
+      "en": "Published figures and how they are measured.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 53,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d5abb606b29e3f6e",
       "namespace": "react",
       "area": "Website",
@@ -79320,6 +79747,26 @@
       ]
     },
     {
+      "key": "react.d721f7c1c26627bd",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ماشین‌حساب‌های اندازه، ریسک و تحلیل.",
+      "en": "Calculators for size, risk and analysis.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 60,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d72cfaf3370ab5e5",
       "namespace": "react",
       "area": "Website",
@@ -79711,6 +80158,26 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.d7d585e9a427c787",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پاسخ کوتاه به پرسش‌های رایج.",
+      "en": "Short answers to common questions.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 57,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -80732,6 +81199,26 @@
       ]
     },
     {
+      "key": "react.daa122a319505101",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "یادگیری",
+      "en": "Learn",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 71,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.dab6c2af07d27b41",
       "namespace": "react",
       "area": "Website",
@@ -81259,7 +81746,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 37,
+          "line": 39,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -81279,7 +81766,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 78,
+          "line": 116,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -81713,7 +82200,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 19,
+          "line": 21,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -85171,6 +85658,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathD.ts",
           "line": 355,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.e6f1d466a9252ba0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شورای جامعه چگونه تصمیم می‌گیرد.",
+      "en": "How the community council decides.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 51,
+          "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -88967,6 +89474,26 @@
       ]
     },
     {
+      "key": "react.f13a0607c1614cfd",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دانلودهای دسکتاپ",
+      "en": "Desktop downloads",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 89,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.f13ad7c00540da2c",
       "namespace": "react",
       "area": "Global Content",
@@ -90287,14 +90814,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 65,
+          "line": 71,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 77,
+          "line": 83,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -92040,6 +92567,26 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.fa8a02eef37372ba",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اصطلاحات معامله‌گری، به زبان ساده.",
+      "en": "Trading terms, explained.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 59,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -94634,7 +95181,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-      "line": 47,
+      "line": 49,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -94933,7 +95480,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-      "line": 26,
+      "line": 28,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "helper-wrapper-definition",
