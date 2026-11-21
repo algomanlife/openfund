@@ -14,6 +14,8 @@ import yaml from 'js-yaml'
 
 const problems = []
 const read = f => fs.readFileSync(f, 'utf8')
+/* strip tags until stable, then any stray angle bracket (heading icons are <img> tags) */
+const stripTags = s => { let prev; do { prev = s; s = s.replace(/<[^<>]*>/g, '') } while (s !== prev); return s.replace(/[<>]/g, '') }
 
 export const REQUIRED_FILES = [
   'README.md', 'CONTRIBUTING.md', 'SECURITY.md', 'CHANGELOG.md', 'THIRD_PARTY_NOTICES.md', 'AGENTS.md',
@@ -47,7 +49,7 @@ export const ENGINEERING_SECTIONS = [
 for (const f of REQUIRED_FILES) if (!fs.existsSync(f)) problems.push(`missing required document: ${f}`)
 
 if (fs.existsSync('README.md')) {
-  const headings = new Set([...read('README.md').matchAll(/^##\s+(?:\d+\.\s+)?(.+?)\s*$/gm)].map(m => m[1].replace(/<[^>]*>/g, '').trim().toLowerCase()))
+  const headings = new Set([...read('README.md').matchAll(/^##\s+(?:\d+\.\s+)?(.+?)\s*$/gm)].map(m => stripTags(m[1]).trim().toLowerCase()))
   for (const s of README_SECTIONS) if (!headings.has(s.toLowerCase())) problems.push(`README.md: missing section "## ${s}"`)
 }
 const sectionsOf = f => new Set([...read(f).matchAll(/^##\s+(?:\d+\.\s+)?(.+?)\s*$/gm)].map(m => m[1].trim().toLowerCase()))

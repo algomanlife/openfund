@@ -217,7 +217,8 @@ const shield = s => encodeURIComponent(String(s).replace(/-/g, '--').replace(/_/
 const AREA_ICONS = [[/product|business/i, 'apps'], [/architecture/i, 'topology'], [/website/i, 'browser'], [/trading/i, 'candles'], [/governance|economy|partner/i, 'coins'],
   [/wallet|identity/i, 'wallet'], [/payment/i, 'bolt'], [/protocol/i, 'package'], [/integration/i, 'link'], [/deploy/i, 'server'], [/develop/i, 'terminal'],
   [/security/i, 'shield'], [/legal/i, 'scale'], [/roadmap/i, 'route'], [/decision/i, 'notebook'], [/brand|evidence/i, 'brush'], [/histor/i, 'archive']]
-const slug = s => s.toLowerCase().replace(/<[^>]*>/g, '').replace(/[^\p{L}\p{N}_\-\s]/gu, '').replace(/ /g, '-')
+const stripTags = s => { let prev; do { prev = s; s = s.replace(/<[^<>]*>/g, '') } while (s !== prev); return s.replace(/[<>]/g, '') }
+const slug = s => stripTags(s.toLowerCase()).replace(/[^\p{L}\p{N}_\-\s]/gu, '').replace(/ /g, '-')
 export function docsAreas() {
   const text = read('docs/README.md')
   const areas = []
