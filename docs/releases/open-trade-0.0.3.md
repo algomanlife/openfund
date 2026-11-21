@@ -3,8 +3,14 @@
 Open Trade's version is independent of the Openfund platform version. Tag when
 published: `open-trade-v0.0.3` (desktop tags never reuse platform tags).
 
-**Status: release candidate in source.** No 0.0.3 installer has been built,
-signed, notarized or installed yet. The website download manifest still lists
+**Status: candidate with internal unsigned CI builds; not published.**
+On main `adbdeabd`, build, desktop UI acceptance, packaging and checksum
+verification passed for macOS arm64/x64, Windows x64 and Linux x64.
+The macOS x64 installer upload failed after five GitHub request timeouts;
+the other targets uploaded successfully.
+[CI evidence](https://github.com/algomanlife/openfund/actions/runs/44880940066).
+Signing jobs were skipped. Signed/notarized distribution, real-wallet acceptance
+and clean-machine installation/upgrade acceptance remain pending. The website download manifest still lists
 only the verified 0.0.2 builds; add 0.0.3 entries with
 `scripts/release/open-trade-releases.mjs` after the owner publishes the release.
 Blockers: [delivery report](../reviews/open-trade-0.0.3/DELIVERY.md#remaining-blockers).

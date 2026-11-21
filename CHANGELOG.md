@@ -4,7 +4,7 @@
 
 - Refresh the project README with v0.8.0 payment release scope, merged desktop 0.0.3 and indicator work, dated 2026-11-20 gallery captures, current Dastkhat typography and explicit licensing boundaries. Correct stale source states in the canonical register while preserving dated operational observations. Record retained legacy font files; no license grant or binary removal.
 
-- **Open Trade 0.0.3 (desktop, candidate — not built or published)** ([release notes](docs/releases/open-trade-0.0.3.md), [owner setup](docs/releases/OPEN_TRADE_0.0.3_OWNER_SETUP.md), [delivery](docs/reviews/open-trade-0.0.3/DELIVERY.md)).
+- **Open Trade 0.0.3 (desktop, internal unsigned builds; not published)** ([release notes](docs/releases/open-trade-0.0.3.md), [owner setup](docs/releases/OPEN_TRADE_0.0.3_OWNER_SETUP.md), [delivery](docs/reviews/open-trade-0.0.3/DELIVERY.md)).
   - Prop and read-only Perpetual (Gains) accounts in one wallet session, with product switching that stops the other product's stream and keeps per-product chart layouts.
   - Five-locale desktop UI using the web dictionaries; desktop-only ar/ru/zh-CN strings are drafts pending review.
   - Wallet sign-in errors localized; failed sign-ins disconnect the pairing; address change or wallet disconnect signs out.
