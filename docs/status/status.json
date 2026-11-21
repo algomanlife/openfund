@@ -1,7 +1,7 @@
 {
   "$comment": "Canonical Openfund status (docs/status/README.md is generated from this file by `node scripts/docs/status.mjs`; `npm run docs:check` validates both). Every state is recorded per environment. Source states come from Git; runtime states (deployed, enabled, verified, accepted) are valid only with `verifiedAt` and `evidence`. CI never probes production: a stale or wrong runtime claim must be corrected by re-verifying, not by editing the date.",
   "schemaVersion": 1,
-  "updatedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
   "release": {
     "latestOfficial": {
       "version": "0.8.0",
@@ -14,7 +14,7 @@
       "version": null,
       "candidateCommit": null,
       "state": "in_development",
-      "note": "v0.8.0 includes Openfund Pay (ADR 0046, merged in #146). Nothing is allocated to the next version yet.",
+      "note": "v0.8.0 includes Openfund Pay (#146). Main also contains Gains read-only readiness (#169), Pine optimization (#170) and Open Trade 0.0.3 candidate (#171); these later changes are not an official platform or desktop release.",
       "evidence": "https://github.com/algomanlife/openfund/compare/v0.8.0...main"
     }
   },
@@ -122,17 +122,17 @@
     },
     {
       "name": "Openfund Pay (direct wallet payment, partial/excess ledger, treasury watcher, refunds)",
-      "source": "implemented",
-      "release": null,
+      "source": "merged",
+      "release": "v0.8.0",
       "global": {
         "deployed": false,
         "enabled": false,
         "verified": false,
         "accepted": false,
-        "detail": "Implemented on branch agent/claude/openfund-pay with deterministic tests (mocked chain data, real PostgreSQL). Not merged, released or deployed; no real-network test performed.",
+        "detail": "Historical operational check (2026-11-18), before merge/release; the flags in this row have not been re-verified. Source is now merged (#146) and included in v0.8.0. The GLOBAL Web/API service row records v0.8.0 on 2026-11-20, but payment method activation and real-network acceptance require a fresh check.",
         "verifiedAt": "2026-11-18T14:30:00Z",
         "evidence": "https://github.com/algomanlife/openfund/tree/agent/claude/openfund-pay",
-        "blocker": "Review and merge, official release, deployment, owner-authorized real-network acceptance."
+        "blocker": "Re-verify active methods and watcher, reconcile the two 2026-11-18 cases, and complete docs/payments/ACTIVATION.md."
       },
       "iran": {
         "deployed": false,
@@ -279,10 +279,10 @@
         "enabled": false,
         "verified": false,
         "accepted": false,
-        "detail": "0.0.2 installers built and acceptance-tested in CI; unsigned and not published.",
-        "verifiedAt": "2026-11-15T00:00:00Z",
-        "evidence": "https://github.com/algomanlife/openfund/actions/runs/43611941782",
-        "blocker": "Code signing and the owner's publication decision."
+        "detail": "0.0.3 candidate merged (#171); internal unsigned builds, UI acceptance and integrity checks passed on all four CI targets. macOS x64 installer upload failed with a GitHub timeout; signed/public release and real-wallet acceptance remain pending.",
+        "verifiedAt": "2026-11-21T07:43:00Z",
+        "evidence": "https://github.com/algomanlife/openfund/actions/runs/44880940066",
+        "blocker": "Recover macOS x64 artifact upload; configure signing and Reown; reviewed translations, real-wallet and clean-machine acceptance; owner publication decision."
       },
       "iran": {
         "deployed": false,
