@@ -178,7 +178,7 @@ export const foundationChapters: WpChapter[] = [
         [t('Gains Network SDK (vendored)', 'SDK گینز (درون‌سازی‌شده)'), t('MIT', 'MIT'), t('Reference only; does not enable execution', 'فقط مرجع؛ اجرا را فعال نمی‌کند')],
         [t('LuxAlgo trade journal core', 'هستهٔ ژورنال معاملاتی LuxAlgo'), t('MIT', 'MIT'), t('Journal analytics', 'تحلیل ژورنال')],
         [t('Openfund Protocol (from MUX Protocol)', 'پروتکل اوپن‌فاند (برگرفته از MUX Protocol)'), t('GPL-2.0 (component scope)', 'GPL-2.0 (در محدودهٔ همان جزء)'), t('Dormant source foundation', 'زیربنای کد غیرفعال')],
-        [t('Vazirmatn font', 'قلم وزیرمتن'), t('OFL (bundled licence file)', 'OFL (فایل مجوز همراه)'), t('Persian typography', 'تایپوگرافی فارسی')],
+        [t('Dastkhat font (based on Vazirmatn)', 'قلم دستخط (برگرفته از وزیرمتن)'), t('SIL OFL 1.1 (bundled licence file)', 'SIL OFL 1.1 (فایل مجوز همراه)'), t('Persian and Arabic typography', 'تایپوگرافی فارسی و عربی')],
       ] },
       { type: 'h3', text: t('How the community participates', 'جامعه چگونه مشارکت می‌کند') },
       { type: 'list', items: [

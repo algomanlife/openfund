@@ -9,8 +9,8 @@ let markImage: Promise<HTMLImageElement> | undefined
    in an LTR string (amounts, serials, dates) fall through to Ubuntu, as on the site. */
 const ARABIC_RANGE = 'U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+200C-200F, U+066B-066C'
 const loadFont = () => certificateFont ??= Promise.all([
-  new FontFace('OpenfundCertificateFa', `url(${import.meta.env.BASE_URL}assets/fonts/dastkhat/Dastkhat-Variable.woff2)`, { weight: '100 900', unicodeRange: ARABIC_RANGE }).load(),
-  ...[400, 700].map(weight => new FontFace('OpenfundCertificateLatin', `url(${import.meta.env.BASE_URL}assets/ubuntu-${weight}.ttf)`, { weight: String(weight) }).load()),
+  new FontFace('Dastkhat Certificate', `url(${import.meta.env.BASE_URL}assets/fonts/dastkhat/Dastkhat-Variable.woff2)`, { weight: '100 900', unicodeRange: ARABIC_RANGE }).load(),
+  ...[400, 700].map(weight => new FontFace('Ubuntu Certificate', `url(${import.meta.env.BASE_URL}assets/ubuntu-${weight}.ttf)`, { weight: String(weight) }).load()),
 ]).then(fonts => { fonts.forEach(font => document.fonts.add(font)) }).catch(error => { certificateFont = undefined; throw error })
 
 export const CERTIFICATE_SIZE = 2000
@@ -72,7 +72,7 @@ export async function paintCertificate(canvas: HTMLCanvasElement, certificate: C
   const ctx = canvas.getContext('2d')!
   const rtl = locale === 'fa' || locale === 'ar'
   const t = (key: keyof typeof copy) => pickRecord(locale, copy[key])
-  const font = (size: number, weight = 500) => `${weight} ${size}px OpenfundCertificateFa, OpenfundCertificateLatin, system-ui, sans-serif`
+  const font = (size: number, weight = 500) => `${weight} ${size}px 'Dastkhat Certificate', 'Ubuntu Certificate', system-ui, sans-serif`
   ctx.direction = rtl ? 'rtl' : 'ltr'
 
   // background: vertical wash, glow behind the emblem, faint engineering grid

@@ -41997,6 +41997,26 @@
       ]
     },
     {
+      "key": "react.6f5266a0ae30da7c",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "SIL OFL 1.1 (فایل مجوز همراه)",
+      "en": "SIL OFL 1.1 (bundled licence file)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
+          "line": 181,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.6f52be4745164cc5",
       "namespace": "react",
       "area": "Global Content",
@@ -51930,6 +51950,26 @@
           "line": 249,
           "page": "terminal",
           "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.8ce25e8861aca1a4",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "قلم دستخط (برگرفته از وزیرمتن)",
+      "en": "Dastkhat font (based on Vazirmatn)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
+          "line": 181,
+          "page": "global",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -62666,26 +62706,6 @@
       ]
     },
     {
-      "key": "react.a90eeef9bfbbd2d1",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "قلم وزیرمتن",
-      "en": "Vazirmatn font",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
-          "line": 181,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.a91dbe5f9e0dd1ed",
       "namespace": "react",
       "area": "Global Content",
@@ -63425,6 +63445,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.ab47d6f85fe6b8c4",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "تایپوگرافی فارسی و عربی",
+      "en": "Persian and Arabic typography",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
+          "line": 181,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -70021,26 +70061,6 @@
       ]
     },
     {
-      "key": "react.bc9a34c85959c03c",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "OFL (فایل مجوز همراه)",
-      "en": "OFL (bundled licence file)",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
-          "line": 181,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.bc9b7dbb0f0bf1f3",
       "namespace": "react",
       "area": "Global Content",
@@ -75323,26 +75343,6 @@
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
           "line": 457,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.ccff06db52732131",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "تایپوگرافی فارسی",
-      "en": "Persian typography",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
-          "line": 181,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"

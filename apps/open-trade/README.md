@@ -85,7 +85,7 @@ and source link. The existing indicator provenance and first-party/AGPL combined
 work questions in [licensing](../../docs/legal/LICENSING.md) remain distribution
 blockers. WalletConnect's Community License is also included. Ubuntu and Dastkhat (the
 Persian UI font, SIL OFL 1.1, pinned in `assets/fonts/dastkhat/SOURCE.json`)
-are used with their license texts; unlicensed Irancell font files are excluded.
+are the only two faces and ship with their license texts (the retired Irancell files were removed from the repository on 2026-11-21).
 
 ## Tests
 

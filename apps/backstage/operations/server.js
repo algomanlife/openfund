@@ -24,6 +24,9 @@ const staticFiles = {
   /* Dastkhat (SIL OFL 1.1): the same pinned files the site serves, at the same
      same-origin path, so the console needs no extra CSP source. */
   '/assets/fonts/dastkhat/Dastkhat-Variable.woff2': ['../../web-react/public/assets/fonts/dastkhat/Dastkhat-Variable.woff2', 'font/woff2'],
+  '/assets/fonts/dastkhat/DastkhatArabic-Variable.woff2': ['../../web-react/public/assets/fonts/dastkhat/DastkhatArabic-Variable.woff2', 'font/woff2'],
+  '/assets/fonts/dastkhat/DastkhatFaNum-Variable.woff2': ['../../web-react/public/assets/fonts/dastkhat/DastkhatFaNum-Variable.woff2', 'font/woff2'],
+  '/assets/fonts/dastkhat/dastkhat.css': ['../../web-react/public/assets/fonts/dastkhat/dastkhat.css', 'text/css; charset=utf-8'],
   '/assets/fonts/dastkhat/OFL.txt': ['../../web-react/public/assets/fonts/dastkhat/OFL.txt', 'text/plain; charset=utf-8'],
 }
 

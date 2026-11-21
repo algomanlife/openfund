@@ -1,0 +1,58 @@
+{
+  "name": "Dastkhat",
+  "upstream": "https://github.com/dastyar-io/dastkhat-font",
+  "license": "OFL-1.1",
+  "reservedFontNames": [],
+  "commit": "ac5b01542f36a57cd870a9d32a9b84357263fecb",
+  "commitDate": "2026-11-18T11:06:14Z",
+  "fontVersion": "1.210",
+  "note": "Dastkhat-Variable.woff2 and DastkhatFaNum-Variable.woff2 are byte-identical to the same paths at tag v1.210 (git blobs 6b2b7a82f78d404c85601199283dd1053563afb6 and af3afa14070bbb68af4d585c62c0d60edb5f5a57). Dastkhat Arabic was added after v1.210, so the pin is the first main commit that contains all three cuts. Files are copied unmodified from Webfonts/fonts/, OFL.txt, FONTLOG.txt and License/THIRD-PARTY-NOTICES.txt. dastkhat.css is Openfund's own @font-face file (not upstream) and is the only place a Persian/Arabic @font-face is declared.",
+  "files": {
+    "Dastkhat-Variable.woff2": {
+      "path": "Webfonts/fonts/Dastkhat-Variable.woff2",
+      "family": "Dastkhat",
+      "axes": {
+        "wght": [
+          100,
+          900
+        ]
+      },
+      "sha256": "30fe3de46a1f6615918844f7d81acbf78f78da7fd6a4287566f6382e1124b458"
+    },
+    "DastkhatArabic-Variable.woff2": {
+      "path": "Webfonts/fonts/DastkhatArabic-Variable.woff2",
+      "family": "Dastkhat Arabic",
+      "axes": {
+        "wght": [
+          100,
+          900
+        ]
+      },
+      "sha256": "d5b141cc6d9b0f147ee835bad3a2a50a57658e87a6fa468ae44c2931ff29e1ea"
+    },
+    "DastkhatFaNum-Variable.woff2": {
+      "path": "Webfonts/fonts/DastkhatFaNum-Variable.woff2",
+      "family": "Dastkhat FaNum",
+      "axes": {
+        "wght": [
+          100,
+          900
+        ]
+      },
+      "sha256": "64d56947d92ce3a8150fbb99ffe4af14243990997c0f823683e8d0fbb4dcb4d5"
+    },
+    "OFL.txt": {
+      "path": "OFL.txt",
+      "sha256": "9bf954cbb2f2786ee9bf61e3fc13cc793e09410473b8a0fe66dfbd686146d10f"
+    },
+    "THIRD-PARTY-NOTICES.txt": {
+      "path": "License/THIRD-PARTY-NOTICES.txt",
+      "sha256": "6db4da336f57f6c49aa4d62ab55f07131863b347b7a3ec2fe17c98787b09d89a"
+    },
+    "FONTLOG.txt": {
+      "path": "FONTLOG.txt",
+      "sha256": "e422f18659a36f5511bf58a16ed766177ac4123908299f02eef3d7c77536334d"
+    }
+  },
+  "tag": "v1.210"
+}

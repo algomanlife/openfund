@@ -20,7 +20,7 @@ test('Vite content-hashed build output is immutable', () => {
 
 test('unhashed files always revalidate so they cannot drift from the bundle', () => {
   for (const f of ['/srv/react/legacy/terminal.css', '/srv/react/legacy/terminal.js', '/srv/react/translations.json',
-    '/srv/react/assets/vela-workspace.global.min.js', '/srv/react/assets/irancell-400.ttf', '/srv/react/assets/mark-mint.svg',
+    '/srv/react/assets/vela-workspace.global.min.js', '/srv/react/assets/ubuntu-400.ttf', '/srv/react/assets/mark-mint.svg',
     '/srv/react/assets/instagram-logo-white.svg', '/srv/react/runtime-config.js']) {
     assert.equal(isHashedAsset(f), false, f)
     assert.equal(staticCacheControl(f), REVALIDATE, f)

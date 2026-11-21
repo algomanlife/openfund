@@ -1,8 +1,4 @@
-@font-face{font-family:'Irancell';src:url(../assets/irancell-400.ttf) format('truetype');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'Irancell';src:url(../assets/irancell-500.ttf) format('truetype');font-weight:500;font-style:normal;font-display:swap}
-@font-face{font-family:'Irancell';src:url(../assets/irancell-600.ttf) format('truetype');font-weight:600;font-style:normal;font-display:swap}
-@font-face{font-family:'Irancell';src:url(../assets/irancell-700.ttf) format('truetype');font-weight:700;font-style:normal;font-display:swap}
-@font-face{font-family:'Irancell';src:url(../assets/irancell-900.ttf) format('truetype');font-weight:900;font-style:normal;font-display:swap}
+@import url(../assets/fonts/dastkhat/dastkhat.css);
 /* ============================================================
    OPENFUND TERMINAL — design tokens & layout
    Brandbook: Obsidian #060808 · Signal Lime #82E7BD ·
@@ -463,7 +459,7 @@ input[type=range]{width:100%;margin:8px 0 6px;accent-color:var(--mint);cursor:po
 }
 
 /* ============ language + Persian typography ============ */
-html[lang="fa"] body{font-family:'Irancell',Tahoma,sans-serif;font-size:14px;line-height:1.8}
+html[lang="fa"] body{font-family:'Dastkhat',Tahoma,sans-serif;font-size:14px;line-height:1.8}
 html[lang="fa"] .stat dt,html[lang="fa"] .dd-head,html[lang="fa"] .book-cols,html[lang="fa"] .bt-table th,html[lang="fa"] .lev-head span,html[lang="fa"] .field>span,html[lang="fa"] .field .lbl-row>span:first-child,html[lang="fa"] .kv span,html[lang="fa"] .acct-row span{letter-spacing:0}
 .language-toggle{
   background:none;border:1px solid var(--line-strong);color:var(--body);border-radius:4px;
@@ -555,7 +551,7 @@ html[data-theme="light"] :is(.topnav,.dlg,.notif-panel,.market-dropdown){backgro
   /* sits exactly where Vela's attribution mark lived: top-left plot corner */
   position:absolute;bottom:46px;left:56px;z-index:6;display:flex;align-items:baseline;gap:1px;
   color:#F1F3EF;user-select:none;direction:ltr;cursor:default;
-  font-family:Ubuntu,'Irancell',system-ui,sans-serif;line-height:1;
+  font-family:Ubuntu,'Dastkhat',system-ui,sans-serif;line-height:1;
   padding:6px 8px 6px 2px;margin:-6px 0 0 -2px;
 }
 .chart-brand .brand-o{font-size:24px;font-weight:700;color:#82E7BD;transition:text-shadow .3s;line-height:1}
@@ -573,7 +569,7 @@ html[data-theme="light"] :is(.topnav,.dlg,.notif-panel,.market-dropdown){backgro
 .vela-bb-credit{
   position:absolute;left:56px;bottom:8px;z-index:7;
   font-size:8.5px;color:#9FB4A8;text-decoration:none;letter-spacing:.3px;
-  opacity:.85;transition:color .2s;font-family:Ubuntu,'Irancell',system-ui,sans-serif;
+  opacity:.85;transition:color .2s;font-family:Ubuntu,'Dastkhat',system-ui,sans-serif;
 }
 .vela-bb-credit:hover{color:#82E7BD}
 
@@ -589,7 +585,7 @@ html[data-theme="light"] :is(.topnav,.dlg,.notif-panel,.market-dropdown){backgro
   background:#F1F3EF;color:#09100c;border:1px solid #F1F3EF;border-radius:6px;
   padding:10px 14px;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;
   transition:background .18s,transform .18s,box-shadow .3s;
-  font-family:Ubuntu,'Irancell',system-ui,sans-serif;
+  font-family:Ubuntu,'Dastkhat',system-ui,sans-serif;
 }
 .rk-btn:hover{background:#fff;transform:translateY(-2px);box-shadow:0 14px 30px -16px #82e7bd55}
 .rk-btn.rk-net{background:transparent;color:#d4e3d8;border-color:#82e7bd55;padding:6px 10px;font-size:11px;font-weight:500}

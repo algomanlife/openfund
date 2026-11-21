@@ -93,12 +93,24 @@ Rules:
 
 ## Typography and font tokens
 
-Dastkhat (SIL OFL 1.1, by Dastyar, derived from Vazirmatn) is the Persian UI
-face. It is self-hosted as one variable WOFF2 (`wght` 100–900) at
-`/assets/fonts/dastkhat/Dastkhat-Variable.woff2`, so the site, the terminal
-iframe, the legacy pages, Backstage and Open Trade share one same-origin file
-and need no new CSP source. The upstream revision, file hashes and licence
-texts are in `apps/web-react/public/assets/fonts/dastkhat/`.
+**Policy: exactly two faces.** Ubuntu is the general/Latin face (Latin,
+Cyrillic, digits); **Dastkhat** is the only Persian/Arabic face. No other face
+may be declared anywhere in the project (owner decision, 2026-11-21);
+`scripts/docs/check-fonts.mjs` fails CI otherwise. Retired faces (Irancell,
+its renamed copies, standalone Vazirmatn) are listed in the
+[retired registry](../development/RETIRED.md).
+
+Dastkhat v1.210 (SIL OFL 1.1, by Dastyar, based on Vazirmatn by Saber
+Rastikerdar) is self-hosted as variable WOFF2 files (`wght` 100–900) in
+`apps/web-react/public/assets/fonts/dastkhat/`, with provenance, hashes,
+`OFL.txt` and `FONTLOG.txt` beside them. **One stylesheet,
+[`dastkhat.css`](../../apps/web-react/public/assets/fonts/dastkhat/dastkhat.css),
+declares the only Persian/Arabic `@font-face` set** — `'Dastkhat'`,
+`'Dastkhat Arabic'` and `'Dastkhat FaNum'` — and every surface loads it from
+its own origin: legacy pages and the terminal iframe (`@import`), the React app
+and Open Trade (`<link>` in `index.html`), Backstage (`@import`, same-origin
+route) and the `dist/` snapshot (`@import`). The certificate canvas registers
+the same file as the `FontFace` `'Dastkhat Certificate'`.
 
 | Token | Stack | Use |
 | --- | --- | --- |
@@ -108,17 +120,22 @@ texts are in `apps/web-react/public/assets/fonts/dastkhat/`.
 | `--ds-font-cjk` | Ubuntu, system-ui, PingFang SC, Microsoft YaHei, Noto Sans SC, Dastkhat | Russian and Simplified Chinese |
 | `--ds-font-numeric` | Ubuntu, Dastkhat, system-ui | `.ds-num` technical numbers (tabular, isolated LTR) |
 
-Dastkhat's default build draws Latin digits `0-9` as Latin, tabular digits;
-the FaNum build is not used, so prices, sizes, addresses and hashes never turn
-into Persian digits through the font, and number serialization is unchanged.
+Dastkhat's default build draws Latin digits `0-9` as Latin, tabular digits.
+`'Dastkhat FaNum'` (Latin digits drawn as Persian-Indic) is declared but is
+**not used by any surface today**: prices, sizes, addresses and hashes never
+turn into Persian digits through the font, and number serialization is
+unchanged. A surface that must show Persian-Indic digits from Latin input may
+opt in with `font-family: 'Dastkhat FaNum', var(--ds-font-persian)` and must be
+listed here when it does (current list: none).
 Persian digits appear only where the copy itself contains them. Dastkhat has
 no Cyrillic, CJK or arrow glyphs; those fall back to Ubuntu and system fonts.
 
 The legacy stylesheets, the terminal iframe and the Backstage console are
 separate documents, so they carry verbatim copies of these tokens.
-`apps/web-react/test/typography.test.mjs` fails if a copy drifts, if a replaced
-face (Irancell, Openfund Persian, Vazirmatn) returns as a default, or if a
-pinned file changes. `e2e/test-typography.mjs` measures the rendered font in a
+`apps/web-react/test/typography.test.mjs` fails if a copy drifts, if any owned
+stylesheet declares a Persian/Arabic `@font-face` outside `dastkhat.css`, or if
+a pinned file changes; `scripts/docs/check-fonts.mjs` (part of `docs:check`)
+fails if a retired face is referenced anywhere in code, assets or `dist/`. `e2e/test-typography.mjs` measures the rendered font in a
 browser.
 
 Third-party UI kits were evaluated in [ADR 0035](../decisions/0035-design-system-foundation-and-ui-kit-evaluation.md).

@@ -64,24 +64,17 @@
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-400-CDG8lxPg.ttf",
-   "type": "font",
+   "path": "/assets/fonts/dastkhat/dastkhat.css",
+   "type": "stylesheet",
    "status": 200,
-   "bytes": 80760,
-   "cache": "public, max-age=31536000, immutable"
-  },
-  {
-   "path": "/assets/irancell-600.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 76336,
+   "bytes": 1354,
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-500.ttf",
+   "path": "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
    "type": "font",
    "status": 200,
-   "bytes": 80764,
+   "bytes": 151708,
    "cache": "no-cache"
   },
   {
@@ -89,13 +82,6 @@
    "type": "font",
    "status": 200,
    "bytes": 351884,
-   "cache": "no-cache"
-  },
-  {
-   "path": "/assets/irancell-400.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80760,
    "cache": "no-cache"
   },
   {
@@ -411,11 +397,18 @@
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "path": "/assets/fonts/dastkhat/dastkhat.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 1354,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
    "type": "font",
    "status": 200,
-   "bytes": 80760,
-   "cache": "public, max-age=31536000, immutable"
+   "bytes": 151708,
+   "cache": "no-cache"
   },
   {
    "path": "/legacy/style.css?v=b018c25f35ee",
@@ -451,27 +444,6 @@
    "status": 200,
    "bytes": 893,
    "cache": ""
-  },
-  {
-   "path": "/assets/irancell-600.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 76336,
-   "cache": "no-cache"
-  },
-  {
-   "path": "/assets/irancell-400.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80760,
-   "cache": "no-cache"
-  },
-  {
-   "path": "/assets/irancell-500.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80764,
-   "cache": "no-cache"
   },
   {
    "path": "/assets/ubuntu-700.ttf",
@@ -700,11 +672,18 @@
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "path": "/assets/fonts/dastkhat/dastkhat.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 1354,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
    "type": "font",
    "status": 200,
-   "bytes": 80760,
-   "cache": "public, max-age=31536000, immutable"
+   "bytes": 151708,
+   "cache": "no-cache"
   },
   {
    "path": "/assets/telegram-logo.svg",
@@ -726,13 +705,6 @@
    "status": 200,
    "bytes": 893,
    "cache": ""
-  },
-  {
-   "path": "/assets/irancell-400.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80760,
-   "cache": "no-cache"
   },
   {
    "path": "/assets/ubuntu-700.ttf",
@@ -961,24 +933,17 @@
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-400-CDG8lxPg.ttf",
-   "type": "font",
+   "path": "/assets/fonts/dastkhat/dastkhat.css",
+   "type": "stylesheet",
    "status": 200,
-   "bytes": 80760,
-   "cache": "public, max-age=31536000, immutable"
-  },
-  {
-   "path": "/assets/irancell-500.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80764,
+   "bytes": 1354,
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-600.ttf",
+   "path": "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
    "type": "font",
    "status": 200,
-   "bytes": 76336,
+   "bytes": 151708,
    "cache": "no-cache"
   },
   {
@@ -993,13 +958,6 @@
    "type": "font",
    "status": 200,
    "bytes": 351884,
-   "cache": "no-cache"
-  },
-  {
-   "path": "/assets/irancell-400.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80760,
    "cache": "no-cache"
   },
   {
@@ -1201,11 +1159,18 @@
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "path": "/assets/fonts/dastkhat/dastkhat.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 1354,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
    "type": "font",
    "status": 200,
-   "bytes": 80760,
-   "cache": "public, max-age=31536000, immutable"
+   "bytes": 151708,
+   "cache": "no-cache"
   },
   {
    "path": "/assets/ubuntu-700.ttf",
@@ -1233,13 +1198,6 @@
    "type": "script",
    "status": 200,
    "bytes": 14474,
-   "cache": "no-cache"
-  },
-  {
-   "path": "/assets/irancell-400.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80760,
    "cache": "no-cache"
   },
   {
@@ -1413,25 +1371,18 @@
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-600.ttf",
-   "type": "font",
+   "path": "/assets/fonts/dastkhat/dastkhat.css",
+   "type": "stylesheet",
    "status": 200,
-   "bytes": 76336,
+   "bytes": 1354,
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-500.ttf",
+   "path": "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
    "type": "font",
    "status": 200,
-   "bytes": 80764,
+   "bytes": 151708,
    "cache": "no-cache"
-  },
-  {
-   "path": "/assets/irancell-400-CDG8lxPg.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80760,
-   "cache": "public, max-age=31536000, immutable"
   },
   {
    "path": "/assets/ubuntu-400.ttf",
@@ -1473,13 +1424,6 @@
    "type": "font",
    "status": 200,
    "bytes": 331612,
-   "cache": "no-cache"
-  },
-  {
-   "path": "/assets/irancell-400.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80760,
    "cache": "no-cache"
   },
   {
@@ -1639,24 +1583,17 @@
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-400-CDG8lxPg.ttf",
-   "type": "font",
+   "path": "/assets/fonts/dastkhat/dastkhat.css",
+   "type": "stylesheet",
    "status": 200,
-   "bytes": 80760,
-   "cache": "public, max-age=31536000, immutable"
-  },
-  {
-   "path": "/assets/irancell-600.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 76336,
+   "bytes": 1354,
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-500.ttf",
+   "path": "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
    "type": "font",
    "status": 200,
-   "bytes": 80764,
+   "bytes": 151708,
    "cache": "no-cache"
   },
   {
@@ -1688,13 +1625,6 @@
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-400.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80760,
-   "cache": "no-cache"
-  },
-  {
    "path": "/assets/assets-Q6ZU7ZJ5-D-Bo-EQf.js",
    "type": "script",
    "status": 200,
@@ -1714,13 +1644,6 @@
    "status": 200,
    "bytes": 4003,
    "cache": "public, max-age=60"
-  },
-  {
-   "path": "/assets/irancell-700.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 75632,
-   "cache": "no-cache"
   },
   {
    "path": "/assets/rolldown-runtime-Bjp52BOI.js",
@@ -1879,24 +1802,17 @@
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-400-CDG8lxPg.ttf",
-   "type": "font",
+   "path": "/assets/fonts/dastkhat/dastkhat.css",
+   "type": "stylesheet",
    "status": 200,
-   "bytes": 80760,
-   "cache": "public, max-age=31536000, immutable"
-  },
-  {
-   "path": "/assets/irancell-500.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80764,
+   "bytes": 1354,
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-600.ttf",
+   "path": "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
    "type": "font",
    "status": 200,
-   "bytes": 76336,
+   "bytes": 151708,
    "cache": "no-cache"
   },
   {
@@ -1918,13 +1834,6 @@
    "type": "image",
    "status": 200,
    "bytes": 1310,
-   "cache": "no-cache"
-  },
-  {
-   "path": "/assets/irancell-400.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80760,
    "cache": "no-cache"
   },
   {
@@ -2112,11 +2021,18 @@
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "path": "/assets/fonts/dastkhat/dastkhat.css",
+   "type": "stylesheet",
+   "status": 200,
+   "bytes": 1354,
+   "cache": "no-cache"
+  },
+  {
+   "path": "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
    "type": "font",
    "status": 200,
-   "bytes": 80760,
-   "cache": "public, max-age=31536000, immutable"
+   "bytes": 151708,
+   "cache": "no-cache"
   },
   {
    "path": "/assets/ubuntu-700.ttf",
@@ -2137,13 +2053,6 @@
    "type": "image",
    "status": 200,
    "bytes": 1310,
-   "cache": "no-cache"
-  },
-  {
-   "path": "/assets/irancell-400.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80760,
    "cache": "no-cache"
   },
   {
@@ -2317,24 +2226,17 @@
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-400-CDG8lxPg.ttf",
-   "type": "font",
+   "path": "/assets/fonts/dastkhat/dastkhat.css",
+   "type": "stylesheet",
    "status": 200,
-   "bytes": 80760,
-   "cache": "public, max-age=31536000, immutable"
-  },
-  {
-   "path": "/assets/irancell-500.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80764,
+   "bytes": 1354,
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-600.ttf",
+   "path": "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
    "type": "font",
    "status": 200,
-   "bytes": 76336,
+   "bytes": 151708,
    "cache": "no-cache"
   },
   {
@@ -2391,13 +2293,6 @@
    "type": "font",
    "status": 200,
    "bytes": 331612,
-   "cache": "no-cache"
-  },
-  {
-   "path": "/assets/irancell-400.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80760,
    "cache": "no-cache"
   },
   {
@@ -2599,18 +2494,18 @@
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-500.ttf",
-   "type": "font",
+   "path": "/assets/fonts/dastkhat/dastkhat.css",
+   "type": "stylesheet",
    "status": 200,
-   "bytes": 80764,
+   "bytes": 1354,
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "path": "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
    "type": "font",
    "status": 200,
-   "bytes": 80760,
-   "cache": "public, max-age=31536000, immutable"
+   "bytes": 151708,
+   "cache": "no-cache"
   },
   {
    "path": "/assets/discord-logo.svg",
@@ -2624,13 +2519,6 @@
    "type": "image",
    "status": 200,
    "bytes": 2051,
-   "cache": "no-cache"
-  },
-  {
-   "path": "/assets/irancell-400.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80760,
    "cache": "no-cache"
   },
   {
@@ -2804,24 +2692,17 @@
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-500.ttf",
-   "type": "font",
+   "path": "/assets/fonts/dastkhat/dastkhat.css",
+   "type": "stylesheet",
    "status": 200,
-   "bytes": 80764,
+   "bytes": 1354,
    "cache": "no-cache"
   },
   {
-   "path": "/assets/irancell-400-CDG8lxPg.ttf",
+   "path": "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
    "type": "font",
    "status": 200,
-   "bytes": 80760,
-   "cache": "public, max-age=31536000, immutable"
-  },
-  {
-   "path": "/assets/irancell-600.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 76336,
+   "bytes": 151708,
    "cache": "no-cache"
   },
   {
@@ -2843,13 +2724,6 @@
    "type": "image",
    "status": 200,
    "bytes": 1310,
-   "cache": "no-cache"
-  },
-  {
-   "path": "/assets/irancell-400.ttf",
-   "type": "font",
-   "status": 200,
-   "bytes": 80760,
    "cache": "no-cache"
   },
   {

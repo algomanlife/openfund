@@ -1,0 +1,166 @@
+FONTLOG for Dastkhat
+====================
+
+This file provides detailed information on the Dastkhat font software,
+for the Dastkhat release package.
+
+
+Basic Font Information
+----------------------
+
+Dastkhat (دستخط) is a Persian and Latin user-interface typeface published
+by Dastyar (https://dastyar.io). It is designed for product interfaces,
+e-commerce pages and dense Persian text on screens.
+
+- Scripts: Arabic script (Persian, Arabic, Urdu basic coverage), Latin
+- Weights: 9 (Thin 100 to Black 900) plus a variable font (wght 100-900)
+- Dot styles: five families
+    Dastkhat          square dots (default)
+    Dastkhat Diamond  square dots rotated 45 degrees
+    Dastkhat Bar      merged dots: two dots become a bar,
+                      three dots become a bar and a square
+    Dastkhat Dots     circular dots
+    Dastkhat BarDots  merged circular dots: two dots become a capsule,
+                      three dots become a capsule and a circle
+    Dastkhat Mono     monospaced, square dots (Main build only)
+- Builds per family:
+    Main   full Persian + Latin
+    FaNum  Latin digits 0-9 display as Persian digits ۰-۹
+    NoEn   Latin letters removed, so English text uses a fallback font
+- Dastkhat Arabic: the Arabic and Latin cut of the main Dastkhat family, with
+  its own Main, ArNum and NoEn builds (see the changelog)
+- Formats: TTF (static + variable), WOFF2
+
+Dastkhat is a derivative of Vazirmatn by Saber Rastikerdar (SIL OFL 1.1). Vazirmatn's Latin glyphs derive from Roboto
+(Apache License 2.0).
+
+
+License
+-------
+
+Dastkhat is free and open source, licensed under the SIL Open Font License,
+Version 1.1 (OFL.txt). Free for personal and commercial use. The font may
+be modified and redistributed under the same license, but not sold by itself.
+
+
+ChangeLog
+---------
+
+2026-11-18 (Dastyar) Dastkhat Mono (new family, not yet versioned)
+- Dastkhat Mono, a monospaced family for code, terminals and tables, with the
+  same nine weights and variable axis (wght 100-900) as the others. Main build
+  only: a code font keeps its Latin letters and digits, so there is no FaNum or
+  NoEn build.
+- Derived from Dastkhat by sources/make_mono.py. Latin, Greek and Cyrillic
+  letters, Latin, Persian and Arabic-Indic digits, punctuation, symbols, the
+  currency signs and the space all take one cell of 1280 units (0.625 em);
+  ligatures such as fi take as many cells as they have letters. Glyphs wider
+  than the cell are narrowed to fit (98 in Regular, 192 in Black), narrower ones
+  are centred, and Latin kerning is removed.
+- Persian and Arabic letters keep their proportional widths and shaping: they
+  join, and a letter forced into a fixed cell would break the join.
+- The zero carries a square dot, the family's own dot, so 0 and O differ.
+- sources/release_fonts.py skips families whose variable font was not compiled,
+  so a single family can be built on its own.
+
+2026-11-18 (Dastyar) Dastkhat Arabic
+- New family Dastkhat Arabic, an Arabic-only cut of the main (square-dot)
+  Dastkhat. It is derived from the compiled Dastkhat variable font by the new
+  script sources/release_arabic.py, so the Arabic letters, Latin, spacing,
+  kerning and features are identical to Dastkhat.
+- Removed the Persian-only code points: پ U+067E, چ U+0686, ژ U+0698,
+  گ U+06AF, ک U+06A9, ی U+06CC, the Persian digits ۰-۹ U+06F0-06F9 and the
+  private-use toman signs U+E000-E002. The Arabic kaf ك and yeh ي stay.
+- Three builds, each as TTF (9 weights), variable and WOFF2:
+    DastkhatArabic         Arabic + Latin
+    DastkhatArabicArNum    Latin digits 0-9 display as Arabic-Indic digits ٠-٩
+    DastkhatArabicNoEn     Latin letters removed
+- New Webfonts/dastkhat-arabic.css and Webfonts/webfont-test-arabic.html.
+  sources/build_all.sh now builds the Arabic family too.
+
+2026-11-17 (Dastyar) Dastkhat v1.210
+- Two new round-dot families, in Main, FaNum and NoEn builds:
+    Dastkhat Dots     every square dot becomes a circle
+    Dastkhat BarDots  every merged bar becomes the capsule those circles would
+                      form, and a lone dot a circle
+  The circle is 12.8% wider than the square it replaces, so the two cover the
+  same area: a circle of the square's own width carries only 79% of its area and
+  reads as a lighter, smaller dot. Where a glyph is too tight for that, the
+  growth is held back just enough that rounding never brings two shapes closer
+  than the squares and bars were; this affects 8 of the 211 dotted glyphs, all
+  of them Pashto and Kurdish letters in the Black master.
+  The families are derived from the square and bar masters, so they keep the
+  metrics, spacing, kerning and features of the families they come from: only
+  the 211 dot-bearing glyphs differ, and the glyph set, glyph order, cmap and
+  advance widths are identical.
+- New source script sources/round_dots.py: it finds the dots by comparing the
+  square masters with the diamond ones (the square contours the diamond masters
+  do not also draw are the dots), then rewrites them as circles and capsules,
+  and writes the two UFO families with their designspace.
+- Added toman and rial currency signs to all five families and all weights:
+    tomansign       U+E000  «ت» whose two dots stretch into two bars (=)
+    rialsign        U+E001  «ا» and «ل» as two stems, crossed by «ر»
+    tomansign.word  U+E002  «ن» stacked over «توما», the counterpart of ﷼
+  The toman has no Unicode code point (the UTC rejected proposal L2/17-060 in
+  2017), so the new signs sit in the Private Use Area. The standard rial sign
+  ﷼ U+FDFC is unchanged.
+- Two opt-in OpenType features: ss02 turns the typed words «تومان» and «ریال»
+  into the compact signs, ss03 into the stacked toman sign and ﷼.
+  Default text is unaffected.
+- New source script sources/add_currency_signs.py: it builds the signs from the
+  letters of the master it writes into, so proportion and dot style always
+  follow the family. The stacked sign takes its letters from a heavier
+  interpolation before scaling them down, so its strokes match the text; in
+  Black it comes out somewhat lighter, since that would need extrapolating
+  far past the Black master.
+- Kaf and gaf: the upper bar of ک گ was drawn at about 80% of the weight of
+  every other stroke in the glyph, so it read as a thin spot next to the bowl.
+  The bar's upper edge was raised to bring it to the nominal stroke weight,
+  in all three masters of all five families, across every kaf-family form
+  (ک گ ګ ڬ ݢ ݣ and their initial, medial, final and presentation forms).
+  The lower edge, the diagonal arm and the bowl are untouched; gaf's sarkesh
+  and the dots of ݢ ݣ moved up with the bar, keeping their original gap.
+
+2026-11-10 (Dastyar) Dastkhat v1.201
+- Relicensed under the SIL Open Font License 1.1 (previously a commercial EULA;
+  no paid licenses were ever sold)
+- Editable UFO + designspace sources added in sources/ufo, and a full rebuild
+  script (sources/build_all.sh)
+- Added Latin combining marks U+0302 0304 0306 0307 0308 030A 030B 030C 0326
+  0327 0328, codepoints for U+1E80-1E85 and U+1EF2-1EF3, and a first-draft
+  capital sharp S (U+1E9E)
+- Drawn .notdef, Latin anchors on the dotted circle (U+25CC)
+- Tabular figures now keep one width in every weight
+- Variable fonts: named instances, STAT table, smart-dropout prep program,
+  USE_TYPO_METRICS set; static fonts: corrected fsSelection and name table
+
+2026-11-08 (Dastyar) Dastkhat v1.200
+- Published by Dastyar
+- New FaNum and NoEn builds for every dot style
+- Release package: specimen, demos, web fonts, help guides
+
+2026-11-08 (Dastyar) Dastkhat v1.100
+- Dots redrawn as rigid geometric shapes, no longer stretched with the letter body
+- Square dots become the default
+- New families: Dastkhat Diamond (45 degree dots) and Dastkhat Bar (merged dots)
+- Minimum gap between neighbouring dots enforced at every weight
+
+2026-11-02 (Dastyar) Dastkhat v1.000
+- Forked from Vazirmatn v33.003 (variable, wght 100-900)
+- Persian letter body raised (teeth and bowls taller), baseline stroke kept
+- Persian letters 4% wider, Persian digits 7% wider
+- Latin set scaled to 93%
+- Kerning, mark attachment anchors and weight curve adjusted to match
+- Renamed throughout
+
+
+Acknowledgements
+----------------
+
+N: Saber Rastikerdar
+W: https://github.com/rastikerdar/vazirmatn
+D: Original designer of Vazirmatn, the base of Dastkhat
+
+N: Dastyar
+W: https://dastyar.io
+D: Dastkhat modifications, dot styles, release
