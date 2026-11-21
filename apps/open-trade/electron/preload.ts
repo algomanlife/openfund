@@ -15,6 +15,7 @@ contextBridge.exposeInMainWorld(
     saveChart: (png: string) => call("save-chart", png),
     external: (target: string) => call("external", target),
     checkUpdates: () => call("check-updates"),
+    chromeTheme: (theme: string) => call("chrome-theme", theme),
     onState: (fn: (v: unknown) => void) => {
       const handler = (_e: unknown, v: unknown) => fn(v);
       ipcRenderer.on("state", handler);

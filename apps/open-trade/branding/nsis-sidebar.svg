@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="164" height="314" viewBox="0 0 164 314">
+  <!-- Windows installer welcome/finish sidebar (NSIS, 164×314, saved as BMP). -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#1b2622"/>
+      <stop offset="0.6" stop-color="#0b110f"/>
+      <stop offset="1" stop-color="#040706"/>
+    </linearGradient>
+    <radialGradient id="aurora" cx="0.5" cy="1.05" r="0.8">
+      <stop offset="0" stop-color="#82e7bd" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#82e7bd" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="markFill" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#eafff4"/>
+      <stop offset="1" stop-color="#4ccf95"/>
+    </linearGradient>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#82e7bd" stop-opacity="0"/>
+      <stop offset="1" stop-color="#c6ff52"/>
+    </linearGradient>
+    <symbol id="mark" viewBox="0 0 581 644"><path fill-rule="evenodd" d="{{MARK_PATH}}"/></symbol>
+  </defs>
+  <rect width="164" height="314" fill="url(#bg)"/>
+  <rect width="164" height="314" fill="url(#aurora)"/>
+  <path d="M10 296 L40 284 L58 289 L80 270 L102 276 L124 256 L154 236" fill="none" stroke="url(#line)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="154" cy="236" r="3" fill="#efffd6"/>
+  <use href="#mark" x="52" y="34" width="60" height="66" fill="url(#markFill)"/>
+  <text x="82" y="130" text-anchor="middle" font-family="Ubuntu" font-weight="700" font-size="19" fill="#f1f3ef" letter-spacing="-0.4">Open Trade</text>
+  <text x="82" y="146" text-anchor="middle" font-family="Ubuntu" font-size="8" fill="#9fb4a8" letter-spacing="1.4">BY OPENFUND</text>
+  <text x="82" y="174" text-anchor="middle" font-family="Ubuntu" font-size="9" fill="#c9d6cf">Desktop trading</text>
+  <text x="82" y="186" text-anchor="middle" font-family="Ubuntu" font-size="9" fill="#c9d6cf">workspace</text>
+  <text x="82" y="212" text-anchor="middle" font-family="Ubuntu" font-weight="700" font-size="9" fill="#82e7bd">openfi.cloud</text>
+  <text x="82" y="225" text-anchor="middle" font-family="Ubuntu" font-size="7.5" fill="#9fb4a8">github.com/algomanlife/openfund</text>
+  <text x="82" y="306" text-anchor="middle" font-family="Ubuntu" font-size="7" fill="#6f857a">v{{VERSION}} · internal beta</text>
+</svg>
