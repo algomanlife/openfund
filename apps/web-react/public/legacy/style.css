@@ -325,3 +325,10 @@ footer .document-links h3 { color: var(--white); }
 @media(max-width:1199px) { .footer-credits .credits-row { --credit-cols: 4; } }
 @media(max-width:700px) { .desktop-btns { grid-template-columns: repeat(2,minmax(0,1fr)); } .desktop-btns .desktop-btn:last-child { grid-column: 1/-1; } .footer-credits .credits-row { width: 100%; --credit-cols: 4; } }
 @media(max-width:520px) { .footer-credits .credits-row { --credit-cols: 2; --credit-last-span: 1 / -1; } }
+
+/* OpenFi wordmark (src/brand/wordmark.ts): never case-transformed; tracking in
+   em so it scales with every breakpoint's font size; the caption is justified
+   to exactly the width of the shorter word instead of overhanging it. */
+.brand-wordmark{text-transform:none;font-variant-caps:normal}
+.brand>.brand-wordmark{display:inline-flex;flex-direction:column;letter-spacing:-.03em}
+.brand>.brand-wordmark>.brand-caption{width:0;min-width:100%;font-size:.2em;line-height:1;letter-spacing:.045em;white-space:nowrap;text-align:justify;text-align-last:justify}

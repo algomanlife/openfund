@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import terminalBody from './terminal-body.html?raw'
+import terminalTemplate from './terminal-body.html?raw'
+import { withBrandWordmark } from '../brand/wordmark'
 import { RainbowConnect } from '../wallet/RainbowConnect'
 import { fetchCmsTranslations } from '../cms/client'
 import { TradingBridge } from '../trading/TradingBridge'
+
+const terminalBody = withBrandWordmark(terminalTemplate)
 
 /**
  * Phase 2a: the trading terminal runs inside the React shell with its proven
