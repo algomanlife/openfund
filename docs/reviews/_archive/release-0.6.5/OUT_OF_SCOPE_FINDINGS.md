@@ -2,7 +2,7 @@
 
 Items found while preparing v0.6.5 that are outside the release's write
 scope or need an owner decision. Earlier items are in the
-[launch-completion register](../launch-completion/OUT_OF_SCOPE_FINDINGS.md).
+[launch-completion register](../../launch-completion/OUT_OF_SCOPE_FINDINGS.md).
 
 | # | Area | Location | Status | Finding | Proposed resolution |
 | - | ---- | -------- | ------ | ------- | ------------------- |

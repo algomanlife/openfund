@@ -11,10 +11,10 @@
       "evidence": "https://github.com/algomanlife/openfund/releases/tag/v0.8.0"
     },
     "next": {
-      "version": null,
+      "version": "0.9.0",
       "candidateCommit": null,
-      "state": "in_development",
-      "note": "v0.8.0 includes Openfund Pay (#146). Main also contains Gains read-only readiness (#169), Pine optimization (#170) and Open Trade 0.0.3 candidate (#171); these later changes are not an official platform or desktop release.",
+      "state": "release_candidate",
+      "note": "v0.9.0 is prepared on agent/claude/dastkhat-readme-demess: Dastkhat as the only Persian face, retired Irancell/Vazirmatn files removed, README restructure and permanent structure/retired/font gates. Main also contains Gains read-only readiness (#169), Pine optimization (#170) and the Open Trade 0.0.3 candidate (#171). Not an official release until the owner publishes the tag.",
       "evidence": "https://github.com/algomanlife/openfund/compare/v0.8.0...main"
     }
   },

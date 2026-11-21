@@ -260,7 +260,7 @@ commit on every service:
 
 The order is validate, publish, GLOBAL, then IRAN. Each step verifies the
 exact commit before the next starts. The full checklist with commands is in
-[the v0.6.6 release plan](../reviews/release-0.6.6/PLAN.md).
+[the v0.6.6 release plan](../reviews/_archive/release-0.6.6/PLAN.md).
 
 1. **Validate.** Every required check is green on the `main` commit. Render
    auto-deploy is off on both Render services. The Cloudflare live state
@@ -342,7 +342,7 @@ Reviewed merge to main → Unified release (publish=true) → gates → tag + Gi
   release needs `rollback=true`; a retry on an already-live release does not
   redeploy.
 
-[Release runbook](../deployment/RELEASES.md) · [Rollback](../deployment/ROLLBACK.md)
+[Release runbook](RELEASES.md) · [Rollback](ROLLBACK.md)
 
 ## Operator quick reference
 

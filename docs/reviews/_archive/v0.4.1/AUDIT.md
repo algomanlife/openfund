@@ -75,8 +75,8 @@ documents retained `light`. The existing auto-dark browser suite, extended to
 assert the iframe's own theme toggle state, passed **37 scenarios** across
 routes, OS preferences and native auto-dark. Captures:
 
-- [Dark terminal](../../assets/screenshots/v0.4.1/prop-fa-dark.png)
-- [Light terminal](../../assets/screenshots/v0.4.1/prop-fa-light.png)
+- [Dark terminal](../../../assets/screenshots/v0.4.1/prop-fa-dark.png)
+- [Light terminal](../../../assets/screenshots/v0.4.1/prop-fa-light.png)
 
 The local backend was unavailable and production CMS `ui_messages` returned
 403 during this browser session, so these captures do not prove version,

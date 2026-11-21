@@ -20,15 +20,19 @@ instead of repeating it. Historical reviews keep their original wording.
 | Release and rollback procedure | [Releases](deployment/RELEASES.md), [Rollback](deployment/ROLLBACK.md) |
 | Frontend source versus generated output | [Engineering reference](development/ENGINEERING_REFERENCE.md#frontend-applications) |
 | Agent and contributor rules | [AGENTS.md](../AGENTS.md), [CONTRIBUTING.md](../CONTRIBUTING.md) |
+| README shape (sections, budgets, generated blocks) | [README structure contract](development/README_STRUCTURE.md) (CI-enforced) |
+| Retired, legacy-only and dormant items | [Retired registry](development/RETIRED.md), generated from [`RETIRED.json`](development/RETIRED.json) |
+| Typography (Ubuntu + Dastkhat only) | [Design system › typography](design/DESIGN_SYSTEM.md#typography-and-font-tokens) (CI font gate) |
+| README gallery | [`assets/gallery/gallery.json`](assets/gallery/gallery.json) |
 | Architectural decisions | [ADRs](decisions/README.md) |
 
 ## Product and Business
 
-[Overview](product/OVERVIEW.md) · [Vision](product/VISION.md) · [Mission](product/MISSION.md) · [Strategy](product/STRATEGY.md) · [Ecosystem](product/ECOSYSTEM.md) · [Capabilities](product/CAPABILITIES.md) · [Feature Status](product/FEATURE_STATUS.md)
+[Platform tour](product/PLATFORM_TOUR.md) · [Overview](product/OVERVIEW.md) · [Vision](product/VISION.md) · [Mission](product/MISSION.md) · [Strategy](product/STRATEGY.md) · [Ecosystem](product/ECOSYSTEM.md) · [Capabilities](product/CAPABILITIES.md) · [Feature Status](product/FEATURE_STATUS.md)
 
 ## Architecture
 
-[System](architecture/ARCHITECTURE.md) · [Flows](architecture/FLOWS.md) · [Technology Stack](architecture/TECH_STACK.md) · [Product API and Terminal Contracts](architecture/PRODUCT_TERMINALS.md) · [Perpetual execution RFC (draft)](architecture/PERPETUAL_EXECUTION_RFC.md) · [Simulation implementation](architecture/DEMO_TRADING.md)
+[System](architecture/ARCHITECTURE.md) · [Platform reference: infrastructure, repository map, tests, security controls](architecture/PLATFORM_REFERENCE.md) · [Flows](architecture/FLOWS.md) · [Technology Stack](architecture/TECH_STACK.md) · [Product API and Terminal Contracts](architecture/PRODUCT_TERMINALS.md) · [Perpetual execution RFC (draft)](architecture/PERPETUAL_EXECUTION_RFC.md) · [Simulation implementation](architecture/DEMO_TRADING.md)
 
 ## Website
 
@@ -48,7 +52,7 @@ instead of repeating it. Historical reviews keep their original wording.
 
 ## Economy and partner programs
 
-[Economy overview](economy/README.md) · [Business model and operations overview](economy/BUSINESS_MODEL.md) · [Treasury and data sources](economy/TREASURY.md) · [Funded settlement](economy/FUNDED_SETTLEMENT.md) · [Ambassador (IB): Ambassador and Coach](economy/PARTNER_PROGRAMS.md) · [Live Market Access](economy/LIVE_MARKET_ACCESS.md)
+[Economy overview](economy/README.md) · [Business model and operations overview](economy/BUSINESS_MODEL.md) · [Business model in detail](economy/BUSINESS_DETAIL.md) · [Treasury and data sources](economy/TREASURY.md) · [Funded settlement](economy/FUNDED_SETTLEMENT.md) · [Ambassador (IB): Ambassador and Coach](economy/PARTNER_PROGRAMS.md) · [Live Market Access](economy/LIVE_MARKET_ACCESS.md)
 
 ## Payments
 
@@ -95,6 +99,7 @@ instead of repeating it. Historical reviews keep their original wording.
 Dated delivery reports, audits, migration snapshots, capacity results and
 captures are kept for audit and rollback evidence; they describe the state at
 their date, not current behavior. Start from the
-[reviews and audit index](reviews/README.md). Earlier release audits (for
+[reviews and audit index](reviews/README.md); superseded snapshots are in the
+[archive](reviews/_archive/README.md). Earlier release audits (for
 example the [2026-11-03 website audit](reviews/website-refresh/AUDIT.md)) are
 listed there.

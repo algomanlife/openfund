@@ -37,6 +37,6 @@ file (`font-weight: 100 900`), so static cuts would be unused weight.
 ## Retired
 
 Irancell (`irancell-*.ttf`), its renamed copies (`openfund-1…5.ttf`,
-`openfund-persian-*-v4.woff2`, family "Openfund Persian") and the standalone
+`openfund-persian-*-v4.woff2`, the renamed Openfund Persian family) and the standalone
 Vazirmatn copy were removed on 2026-11-21. See
 [Retired and no longer used](../../docs/development/RETIRED.md).

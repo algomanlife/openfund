@@ -18,7 +18,7 @@ Categories: **Completed and verified** · **Implemented, not fully verified** ·
 | 4 | Responsive | Completed and verified (local) | 480-load audit (9 widths fa/en, 2 widths ar/ru/zh-CN, 20 pages); re-audit 0 overflowing loads at 320/768/1024/1920 | Real-device testing not done |
 | 5 | Design system adoption | Completed (scope below) | `--ds-*` tokens used by homepage, site layer, certificates, radar, roadmap, applications | Legacy page CSS still holds page-specific rules |
 | 6 | Applications page | Completed and verified | Real Open Trade 0.0.2 captures, two motion sequences, comparison, per-OS cards with version, arch, format, size, SHA-256 | Download buttons need a published release |
-| 7 | Desktop 0.0.2 artifacts | **Blocked by an owner decision** | All five files downloaded from CI run 43611941782, SHA-256 matches, metadata 0.0.2, macOS arm64 launched; pack in [release notes](../../releases/open-trade-0.0.2.md) | Approve the pre-release; clear the indicator-licence item; signing |
+| 7 | Desktop 0.0.2 artifacts | **Blocked by an owner decision** | All five files downloaded from CI run 43611941782, SHA-256 matches, metadata 0.0.2, macOS arm64 launched; pack in [release notes](../../../releases/open-trade-0.0.2.md) | Approve the pre-release; clear the indicator-licence item; signing |
 | 8 | Trade Radar | Completed and verified (local, live data) | Unit tests; 300-viewer load test (warm p95 122 ms, RSS ~77 MB settled); outage shows "Data unavailable" | Not deployed |
 | 9 | Market Heatmap | Completed and verified (local, live data) | Treemap tests; deep-link to the chart; outage state | 24h window only (data limit) |
 | 10 | Terminal copy and footer | Completed and verified | `test/terminal-copy.test.mjs`; live iframe check | VOB copy names Hyperliquid while the panel reads Gains only — owner review |
@@ -26,7 +26,7 @@ Categories: **Completed and verified** · **Implemented, not fully verified** ·
 | 12 | Roadmap | Completed (structure) | Mirrors ROADMAP.md (test-enforced) | **Owner roadmap content** |
 | 13 | README | Completed | Redesigned; required sections kept; `docs:check` green | — |
 | 14 | Technical documentation | Completed for changed areas | Radar spec, release pack, design system, ADR 0035, environment, feature status, changelog | Older documents not rewritten |
-| 15 | Licensing | **Blocked by an owner decision** | Audit and addendum in [licence decision](../../legal/LICENSE_DECISION.md) | Choose a licence; Irancell fonts; Pine indicators; AGPL source offer |
+| 15 | Licensing | **Blocked by an owner decision** | Audit and addendum in [licence decision](../../../legal/LICENSE_DECISION.md) | Choose a licence; Irancell fonts; Pine indicators; AGPL source offer |
 | 16 | Two-region compatibility | Completed and verified | Region and regional-sync suites pass; radar GETs pass the region guard and degrade to 503 | Liara not deployed (by design) |
 
 ## Owner decisions

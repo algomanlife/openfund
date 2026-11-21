@@ -10,6 +10,10 @@ apart:
 - **Proposed**: future functionality, not available.
 - **Pending decision**: a business or governance decision has not been taken.
 
+Pricing tables, the purchase and funded-account lifecycles, reward splits,
+treasury allocation and partner programs are in
+[business model in detail](BUSINESS_DETAIL.md).
+
 It contains no revenue figures, market share, forecasts or legal-entity
 details. None have been published, and none may be invented.
 

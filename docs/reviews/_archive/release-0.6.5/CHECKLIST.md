@@ -3,7 +3,7 @@
 Every task of the release mission with its status and evidence
 (branch `agent/claude/release-0.6.5`, 2026-11-17). `Blocked (owner)` means
 only an owner action remains; the exact step is in the
-[runbook](../../deployment/LAUNCH_PARITY_RUNBOOK.md).
+[runbook](../../../deployment/LAUNCH_PARITY_RUNBOOK.md).
 
 ## Build and deploy root cause
 

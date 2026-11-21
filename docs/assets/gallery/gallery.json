@@ -1,0 +1,48 @@
+{
+  "$comment": "The README's one curated gallery. Edit this list, then run `node scripts/docs/check-readme.mjs --write`. Paths are relative to the repository root; provenance for every image is in docs/assets/screenshots/manifest.json. Persian captures are taken only from builds that render Dastkhat. Capture requirements: CAPTURE_REQUIREMENTS.md.",
+  "schemaVersion": 1,
+  "rows": [
+    {
+      "surface": "Website",
+      "items": [
+        { "label": "Persian (Dastkhat)", "path": "docs/assets/screenshots/typography/typography-site-fa.png", "alt": "Persian challenges page rendered in Dastkhat (local build, recorded 2026-11-20)" },
+        { "label": "Arabic (Dastkhat Arabic)", "path": "docs/assets/screenshots/typography/typography-site-ar.png", "alt": "Arabic challenges page: Arabic letters in Dastkhat Arabic, digits and Latin in Ubuntu (local build, recorded 2026-11-20)" }
+      ]
+    },
+    {
+      "surface": "Web Terminal",
+      "items": [
+        { "label": "English", "path": "docs/assets/screenshots/refinement-terminal-prop-en-dark.png", "alt": "English Prop trading workspace (anonymous, recorded 2026-11-03)" },
+        { "label": "Persian", "path": "docs/assets/screenshots/typography/typography-terminal-fa.png", "alt": "Persian terminal in Dastkhat while the market connection loads (local build, recorded 2026-11-20)" }
+      ]
+    },
+    {
+      "surface": "Market intelligence",
+      "items": [
+        { "label": "Market Heatmap", "path": "docs/assets/screenshots/heatmap-radar/heatmap-en-1440.png", "alt": "Perpetual-market Heatmap with proportional +N tiles (recorded 2026-11-18)" },
+        { "label": "Trade Radar", "path": "docs/assets/screenshots/heatmap-radar/radar-en-1440.png", "alt": "Trade Radar table using deterministic intercepted tape for UI evidence, not live trades (recorded 2026-11-18)" }
+      ]
+    },
+    {
+      "surface": "Backstage",
+      "items": [
+        { "label": "English overview", "path": "docs/assets/screenshots/backstage-operations/backstage-overview-en.png", "alt": "Backstage English overview from the local browser acceptance run (recorded 2026-11-16)" },
+        { "label": "Persian sign-in", "path": "docs/assets/screenshots/typography/typography-backstage-fa.png", "alt": "Backstage Persian sign-in in Dastkhat, before authentication (recorded 2026-11-20)" }
+      ]
+    },
+    {
+      "surface": "Desktop and order flow",
+      "items": [
+        { "label": "Open Trade — four charts", "path": "docs/assets/screenshots/open-trade-0.0.2/four-charts.png", "alt": "Open Trade 0.0.2 with four independent Vela charts (macOS, recorded 2026-11-15)" },
+        { "label": "Hybrid Footprint", "path": "docs/assets/screenshots/footprint/style-bidAskLadder-1440.png", "alt": "Footprint Bid/Ask Ladder beside unchanged Gains candles (repository capture)" }
+      ]
+    },
+    {
+      "surface": "Mobile",
+      "items": [
+        { "label": "Persian terminal", "path": "docs/assets/screenshots/responsive-matrix/2026-11-20/after/prop-trade-fa-dark-390.png", "alt": "Persian mobile terminal at 390 px, backend unavailable (recorded 2026-11-20)", "width": 260 },
+        { "label": "English navigation", "path": "docs/assets/screenshots/responsive-matrix/2026-11-20/after/markets-en-light-375-drawer.png", "alt": "English mobile navigation drawer in light theme (recorded 2026-11-20)", "width": 260 }
+      ]
+    }
+  ]
+}

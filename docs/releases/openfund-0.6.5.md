@@ -47,7 +47,7 @@ updates and the release hardening below.
   deployment is ready for the owner's DePay and manual purchase test.
 - `scripts/ops/backup-drill.mjs`: dump, checksum, restore into a scratch
   database and compare schema and row counts.
-- `scripts/ops/engine-load.mjs` and the [load report](../reviews/release-0.6.5/LOAD_REPORT.md).
+- `scripts/ops/engine-load.mjs` and the [load report](../reviews/_archive/release-0.6.5/LOAD_REPORT.md).
 
 ## Dependencies
 
@@ -69,7 +69,7 @@ variable `RELEASE_SIWE_DOMAINS`. See [ENVIRONMENT.md](../deployment/ENVIRONMENT.
 
 ## Security
 
-[Security acceptance](../reviews/release-0.6.5/SECURITY_ACCEPTANCE.md) of the
+[Security acceptance](../reviews/_archive/release-0.6.5/SECURITY_ACCEPTANCE.md) of the
 new admin surface and the framing change. Real settlement recording stays
 off (`BACKSTAGE_REAL_SETTLEMENT=false`) until the owner accepts it.
 
@@ -78,4 +78,4 @@ off (`BACKSTAGE_REAL_SETTLEMENT=false`) until the owner accepts it.
 Production deployment approval, the production CMS upgrade and content
 publication, secrets, the DePay and manual purchase test, real-settlement
 activation, native review of ar/ru/zh-CN, and the public-copy decision in
-[the release findings](../reviews/release-0.6.5/OUT_OF_SCOPE_FINDINGS.md).
+[the release findings](../reviews/_archive/release-0.6.5/OUT_OF_SCOPE_FINDINGS.md).

@@ -78,7 +78,7 @@ function page() {
     '## Release', '',
     `- **Latest official release:** [${latest.tag}](${latest.evidence}) — commit \`${latest.commit}\`, published ${latest.publishedAt}.`]
   const next = status.release.next
-  if (next) lines.push(`- **Next release:** ${next.version ? 'v' + next.version : 'version not yet allocated'} — ${cell(next.state).replace(/_/g, ' ')}; candidate \`${next.candidateCommit}\`. ${next.note} ([evidence](${next.evidence}))`)
+  if (next) lines.push(`- **Next release:** ${next.version ? 'v' + next.version : 'version not yet allocated'} — ${cell(next.state).replace(/_/g, ' ')}; ${next.candidateCommit ? 'candidate \`' + next.candidateCommit + '\`' : 'candidate commit not yet tagged'}. ${next.note} ([evidence](${next.evidence}))`)
   lines.push('', '## Services', '', '| Environment | Service | Role | Version | Commit | Official | Verified | Evidence | Note |', '| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |')
   for (const env of Object.values(status.environments)) for (const s of env.services)
     lines.push(`| ${env.label} | \`${s.id}\` | ${s.role} | ${cell(s.version)} | ${short(s.commit)} | ${s.official === null ? '—' : yes(s.official)} | ${s.verifiedAt.slice(0, 16).replace('T', ' ')} UTC | ${link(s.evidence)} | ${cell(s.note)} |`)
