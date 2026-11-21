@@ -2,11 +2,11 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4417,
-    "mappedCalls": 2272,
+    "uniqueRecords": 4423,
+    "mappedCalls": 2278,
     "exceptions": 51,
     "validationFindings": 0,
-    "reviewedExclusions": 46
+    "reviewedExclusions": 47
   },
   "editorial": {
     "locales": [
@@ -5634,7 +5634,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 71,
+          "line": 72,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -10946,7 +10946,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 102,
+          "line": 103,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -13357,7 +13357,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 63,
+          "line": 64,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -13624,7 +13624,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 41,
+          "line": 42,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -15866,7 +15866,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 19,
+          "line": 20,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -16895,7 +16895,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 43,
+          "line": 44,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -17319,6 +17319,26 @@
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-future.ts",
           "line": 120,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.2db4640729ddcd5b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تصویر نمونه",
+      "en": "Illustration",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/governance/CouncilChamber.tsx",
+          "line": 99,
+          "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -18928,8 +18948,15 @@
       "en": "Reject",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
+      "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/governance/CouncilChamber.tsx",
+          "line": 110,
+          "page": "governance",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/governance/governanceModel.ts",
           "line": 75,
@@ -18972,7 +18999,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -19722,7 +19749,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 84,
+          "line": 85,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -20122,7 +20149,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 104,
+          "line": 105,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -22592,7 +22619,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 68,
+          "line": 69,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -23132,6 +23159,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/governance/CouncilChamber.tsx",
+          "line": 105,
+          "page": "governance",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/governance/ProposalPage.tsx",
           "line": 65,
@@ -26543,7 +26577,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -27037,7 +27071,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 48,
+          "line": 49,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -27097,7 +27131,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 68,
+          "line": 106,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -28027,8 +28061,15 @@
       "en": "Approve",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
+      "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/governance/CouncilChamber.tsx",
+          "line": 109,
+          "page": "governance",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/governance/governanceModel.ts",
           "line": 74,
@@ -30613,6 +30654,26 @@
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
           "line": 237,
           "page": "radar",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.501c496a7da39550",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "حد نصاب",
+      "en": "Quorum",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/governance/CouncilChamber.tsx",
+          "line": 114,
+          "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -34336,7 +34397,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 47,
+          "line": 48,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -37856,14 +37917,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 127,
-          "page": "home",
-          "route": "/:locale/home",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 133,
+          "line": 192,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -39349,6 +39403,26 @@
       ]
     },
     {
+      "key": "react.68636fc1505d876b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تغییر برنامهٔ رویدادهای جامعه",
+      "en": "Change the community event schedule",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/governance/CouncilChamber.tsx",
+          "line": 27,
+          "page": "governance",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.6875099581dfcecd",
       "namespace": "react",
       "area": "Global Content",
@@ -40757,7 +40831,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 91,
+          "line": 92,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -44105,6 +44179,13 @@
       "validation": "mapped",
       "locations": [
         {
+          "component": "apps/web-react/src/features/governance/CouncilChamber.tsx",
+          "line": 105,
+          "page": "governance",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/governance/ProposalPage.tsx",
           "line": 65,
           "page": "governance",
@@ -44160,7 +44241,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -44488,7 +44569,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 117,
+          "line": 118,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -45128,7 +45209,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 18,
+          "line": 19,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -45522,7 +45603,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 19,
+          "line": 20,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -46283,7 +46364,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 58,
+          "line": 59,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -49940,6 +50021,26 @@
       ]
     },
     {
+      "key": "react.874feacac98c43e8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تصویر نمونه: شورای ده‌نفره دربارهٔ یک پیشنهاد نمونه رأی می‌دهد. حد نصاب ۷ عضو شرکت‌کننده است و تصویب ۶ رأی موافق لازم دارد؛ رأی ممتنع مشارکت به حساب می‌آید. نتیجه‌ها نمونه‌اند و تصمیم واقعی نیستند.",
+      "en": "Illustration: a ten-seat council votes on an example proposal. Quorum is 7 participating members and approval needs 6 votes; abstaining counts as participation. The outcomes shown are examples, not real decisions.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/governance/CouncilChamber.tsx",
+          "line": 82,
+          "page": "governance",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.8760ca2b227c6f41",
       "namespace": "react",
       "area": "Global Content",
@@ -50506,7 +50607,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 54,
+          "line": 55,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53082,7 +53183,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 19,
+          "line": 20,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53776,7 +53877,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 68,
+          "line": 106,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -55131,7 +55232,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 116,
+          "line": 117,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -57162,7 +57263,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 111,
+          "line": 112,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -58793,7 +58894,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 67,
+          "line": 68,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -59702,7 +59803,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 103,
+          "line": 104,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -61580,7 +61681,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 128,
+          "line": 210,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -61600,7 +61701,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 36,
+          "line": 37,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -63193,7 +63294,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 141,
+          "line": 223,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -63928,7 +64029,7 @@
         },
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 19,
+          "line": 20,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -65916,7 +66017,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 81,
+          "line": 82,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -66336,7 +66437,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 82,
+          "line": 120,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -66771,7 +66872,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 90,
+          "line": 91,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -69058,7 +69159,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 89,
+          "line": 127,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -70987,7 +71088,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 44,
+          "line": 45,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -71775,7 +71876,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 18,
+          "line": 19,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -72351,7 +72452,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 41,
+          "line": 42,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -72758,14 +72859,14 @@
         },
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 86,
+          "line": 124,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 87,
+          "line": 125,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -74571,7 +74672,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 77,
+          "line": 78,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -75382,7 +75483,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 18,
+          "line": 19,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -79225,7 +79326,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 93,
+          "line": 94,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80644,7 +80745,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 72,
+          "line": 73,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -81279,7 +81380,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 78,
+          "line": 116,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -82541,7 +82642,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 92,
+          "line": 93,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -83895,7 +83996,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 57,
+          "line": 58,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -83915,7 +84016,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 78,
+          "line": 79,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -86407,6 +86508,26 @@
       ]
     },
     {
+      "key": "react.ead00a507f4c1318",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "افزودن واژه‌نامهٔ فارسی به بخش آموزش",
+      "en": "Add a Persian glossary to the Learn hub",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/governance/CouncilChamber.tsx",
+          "line": 26,
+          "page": "governance",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.eaf402bef23198cc",
       "namespace": "react",
       "area": "Global Content",
@@ -87822,7 +87943,7 @@
         },
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 79,
+          "line": 80,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -90243,8 +90364,15 @@
       "en": "Abstain",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
+      "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/governance/CouncilChamber.tsx",
+          "line": 111,
+          "page": "governance",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/governance/governanceModel.ts",
           "line": 76,
@@ -92514,6 +92642,26 @@
       ]
     },
     {
+      "key": "react.fb3534bf29b4a0ff",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "انتشار راهنمای مدیریت گفتگوها",
+      "en": "Publish moderation guidelines",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/governance/CouncilChamber.tsx",
+          "line": 28,
+          "page": "governance",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.fb3d8d3f2c500407",
       "namespace": "react",
       "area": "Global Content",
@@ -93889,7 +94037,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/governance/Governance.tsx",
-          "line": 110,
+          "line": 111,
           "page": "governance",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -94740,6 +94888,14 @@
       "text": "Openfund"
     },
     {
+      "component": "apps/web-react/src/features/governance/CouncilChamber.tsx",
+      "line": 79,
+      "page": "governance",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "text(en, fa)"
+    },
+    {
       "component": "apps/web-react/src/features/governance/CouncilWorkspace.tsx",
       "line": 22,
       "page": "governance",
@@ -94805,7 +94961,7 @@
     },
     {
       "component": "apps/web-react/src/features/information/InformationShell.tsx",
-      "line": 211,
+      "line": 212,
       "page": "information",
       "route": "/:locale/:page",
       "reason": "language-neutral-brand-or-identifier",

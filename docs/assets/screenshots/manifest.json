@@ -8799,5 +8799,62 @@
         "state": "English, prefers-reduced-motion: static scrollable row, no beam, no data layer, no duplicate list. Section crop; all wallet data is generated illustrative demo data."
       }
     ]
+  },
+  "governanceChamber": {
+    "branch": "agent/claude/governance-chamber",
+    "baseCommit": "dc0899aaa804319e9f1ce53dcd15ed25a4de63a4",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-21T18:49:03+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8301, disposable database; viewport crops of the hero",
+    "cms": "Directus not running",
+    "marketData": "Not used",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "governance-chamber/gov-1440-en-dark.jpg",
+        "route": "/en/governance",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: chamber beside the hero text (right in LTR), Approved stamp. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
+      },
+      {
+        "file": "governance-chamber/gov-1440-fa-light.jpg",
+        "route": "/fa/governance",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian (RTL), light: chamber on the left. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
+      },
+      {
+        "file": "governance-chamber/gov-390-fa-dark.jpg",
+        "route": "/fa/governance",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian, dark, 390 px: chamber below the text. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
+      },
+      {
+        "file": "governance-chamber/gov-768-en-light.jpg",
+        "route": "/en/governance",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "English, light, 768 px. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
+      },
+      {
+        "file": "governance-chamber/gov-1440-en-dark-rm.jpg",
+        "route": "/en/governance",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark, reduced motion: static result frame. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
+      }
+    ]
   }
 }
