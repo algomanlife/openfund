@@ -19,7 +19,7 @@ scenario/funding selectors that recompute the entire workbook.
 | File | Audience | Purpose |
 |---|---|---|
 | `EN/Openfund_Prop_Pitch_Deck_EN.pptx` (+ `.pdf`) | Pre-seed investors, accelerators | 15-slide narrative: thesis, problem, solution, MVP status, hybrid model, market, competition, differentiation, revenue model, GTM, financial outlook, Canada, funding, roadmap. Fully editable PPTX with native charts; no team slide (founder confidentiality). |
-| `FA/Openfund_Prop_Pitch_Deck_FA.pptx` (+ `.pdf`) | Persian-speaking investors | Same facts and figures, fully adapted with RTL layout, right-to-left flow diagrams, Vazirmatn typography and authentic Persian business language. |
+| `FA/Openfund_Prop_Pitch_Deck_FA.pptx` (+ `.pdf`) | Persian-speaking investors | Same facts and figures, fully adapted with RTL layout, right-to-left flow diagrams, Dastkhat typography and authentic Persian business language. |
 
 ### 02_Business_Plan/ — Full business plan (confidential)
 | File | Audience | Purpose |
@@ -58,7 +58,7 @@ scenario/funding selectors that recompute the entire workbook.
 ### 08_Brand_Assets/ — Brand system (internal)
 | Contents | Purpose |
 |---|---|
-| `logos/` (approved SVG marks) · `typography/` (Ubuntu + Vazirmatn + Openfund fonts) · `Openfund-brandbook.zip` (source brandbook) · `screenshots/` (authentic product screenshots used in deliverables) | All deliverables apply Brandbook Direction A: Obsidian `#080B0A`, Signal Lime `#C6FF52`, Terminal White `#F4F5EF`. |
+| `logos/` (approved SVG marks) · `Openfund-brandbook.zip` (source brandbook) · `screenshots/` (authentic product screenshots used in deliverables) | All deliverables apply Brandbook Direction A: Obsidian `#080B0A`, Signal Lime `#C6FF52`, Terminal White `#F4F5EF`. |
 
 ### 09_Quality_Assurance/ — QC report (internal)
 | File | Purpose |
@@ -72,7 +72,7 @@ scenario/funding selectors that recompute the entire workbook.
 - **Change a financial assumption**: open the Excel model → `Assumptions & Controls` → edit any blue cell (or the scenario/funding selectors in C4/C5) → the whole workbook recomputes. Downstream documents quote the Base scenario; regenerate or re-verify figures after material changes.
 - **Switch scenarios**: `Assumptions & Controls!C4` (Conservative / Base / Optimistic) and `C5` (50/75/100K funding). The Funding Requirements sheet recomputes sufficiency verdicts.
 - **Publish the public page**: upload the `06_Public_Documentation/<LANG>` folder as-is (fonts load from Google Fonts; the mark is in `assets/`).
-- **Persian documents**: right-to-left layout and Vazirmatn typography are embedded in the DOCX/PPTX; figures are identical to the English editions by construction.
+- **Persian documents**: right-to-left layout and Dastkhat typography (named in the DOCX/PPTX, embedded in the FA PDFs; re-pointed from Vazirmatn and re-exported 2026-11-21) are used; figures are identical to the English editions by construction.
 
 ## Scope discipline (by instruction)
 

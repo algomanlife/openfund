@@ -44,7 +44,7 @@ Y5 active funded accounts 1,025 · cash EOY Y5 $217,412.
 | Business plan length | EN ≈23 pages, FA ≈25 pages (27 required sections + appendices) |
 | Executive summary length | 3 pages per language (target 2–3) |
 | Revenue model doc | 5 pages per language, 13 required analytical areas covered |
-| Persian RTL | Proper `bidirectional` paragraphs, RTL tables, Vazirmatn typography; rendered and visually verified |
+| Persian RTL | Proper `bidirectional` paragraphs, RTL tables, Vazirmatn typography at QC time (re-pointed to Dastkhat, a metric-compatible Vazirmatn derivative, and FA PDFs re-exported on 2026-11-21); rendered and visually verified |
 | PDF export | LibreOffice conversion verified for all 12 document files |
 | Placeholder scan | None (xxxx/lorem/ipsum/TODO) |
 | No `\n` in paragraphs, dual table widths | Enforced via builder |
@@ -54,7 +54,7 @@ Y5 active funded accounts 1,025 · cash EOY Y5 $217,412.
 | Check | Result |
 |---|---|
 | Responsive + accessible | Fluid type, sticky nav, single-column mobile, contrast-checked palette |
-| RTL Persian version | `dir="rtl"`, Vazirmatn, mirrored callouts/tables |
+| RTL Persian version | `dir="rtl"`, Dastkhat (Vazirmatn at QC time), mirrored callouts/tables |
 | Confidentiality boundary | **PASS — automated scan: no confidential financial-forecast terms, no investor terms, no funding figures, no LTV/CAC, no EBITDA, no use-of-funds content in public pages** |
 | Accuracy | Only repository-verifiable claims; purchase-activation status disclosed; SUV status accurate |
 

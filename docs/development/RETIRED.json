@@ -1,0 +1,138 @@
+{
+  "$comment": "Machine-readable registry of retired, legacy-only and dormant items. Edit this file, then run `node scripts/docs/check-retired.mjs --write` to regenerate RETIRED.md and the README block. `npm run docs:check` fails if a `retired` item still has an active reference, if a retired component is listed in the active license table, or if a generated output is stale. Contract: docs/development/README_STRUCTURE.md.",
+  "schemaVersion": 1,
+  "updatedAt": "2026-11-21",
+  "statuses": {
+    "retired": "Removed. Zero active references allowed; history may still name it.",
+    "legacy-only pending removal": "Still shipped for compatibility; no new work; replacement named; remaining references are counted, not gated.",
+    "dormant": "Kept in the tree but not built, shipped or operated. Not retired."
+  },
+  "historical": {
+    "$comment": "Paths whose text may name retired items: dated evidence, release history and the records of the removal itself.",
+    "paths": [
+      "^CHANGELOG\\.md$",
+      "^docs/reviews/",
+      "^docs/releases/",
+      "^docs/decisions/",
+      "^docs/legal/(LICENSING|LICENSE_DECISION)\\.md$",
+      "^docs/development/RETIRED\\.(json|md)$",
+      "^docs/development/README_STRUCTURE\\.md$",
+      "^scripts/docs/(check-fonts|check-retired|check-readme)\\.mjs$",
+      "^scripts/docs/test/",
+      "^apps/web-react/test/typography\\.test\\.mjs$"
+    ]
+  },
+  "items": [
+    {
+      "id": "irancell-fonts",
+      "item": "Irancell font files (`irancell-*.ttf`) and their byte-identical copies `openfund-1.ttf`–`openfund-5.ttf`",
+      "kind": "font",
+      "status": "retired",
+      "retiredSince": "2026-11-21",
+      "replacement": "Dastkhat v1.210 — [typography policy](../design/DESIGN_SYSTEM.md#typography-and-font-tokens)",
+      "note": "\"All rights reserved\" with no recorded license; removed from public assets, `dist/`, `brand/typography/` and the investor pack, which resolved the provenance blocker.",
+      "gate": {
+        "files": ["(^|/)irancell-\\d+[\\w-]*\\.ttf$", "(^|/)openfund-[1-5]\\.ttf$"],
+        "text": ["irancell-\\d+[\\w-]*\\.ttf", "openfund-[1-5]\\.ttf", "font-family\\s*:[^;{}]*\\bIrancell\\b", "['\"]Irancell['\"]"],
+        "notice": "\\bIrancell\\b",
+        "scope": "active"
+      }
+    },
+    {
+      "id": "openfund-persian",
+      "item": "Renamed Irancell derivatives \"Openfund Persian\" (`openfund-persian-*-v4.woff2`), Backstage `/persian.woff2`, certificate face `OpenfundCertificateFa`",
+      "kind": "font",
+      "status": "retired",
+      "retiredSince": "2026-11-21",
+      "replacement": "Dastkhat v1.210 (`/assets/fonts/dastkhat/`); certificate face `Dastkhat Certificate`",
+      "note": "Same unlicensed glyphs as Irancell under a new family name.",
+      "gate": {
+        "files": ["(^|/)openfund-persian-[\\w-]+\\.woff2?$"],
+        "text": ["openfund-persian-[\\w-]+\\.woff2?", "/persian\\.woff2", "OpenfundCertificateFa", "['\"]Openfund Persian['\"]"],
+        "notice": "Openfund Persian|openfund-persian",
+        "scope": "active"
+      }
+    },
+    {
+      "id": "vazirmatn-standalone",
+      "item": "Standalone Vazirmatn copies (`Vazirmatn.ttf`, `Vazirmatn-LICENSE.txt`, Google Fonts `family=Vazirmatn`, `typeface=\"Vazirmatn\"`)",
+      "kind": "font",
+      "status": "retired",
+      "retiredSince": "2026-11-21",
+      "replacement": "Dastkhat v1.210, which is based on Vazirmatn (SIL OFL 1.1) and credits it",
+      "note": "Prose attribution \"based on Vazirmatn\" is required by the OFL and is not a reference to the retired copy.",
+      "gate": {
+        "files": ["(^|/)Vazirmatn[\\w-]*\\.(ttf|otf|woff2?)$", "(^|/)Vazirmatn-LICENSE\\.txt$"],
+        "text": ["Vazirmatn[\\w-]*\\.(ttf|otf|woff2?)", "Vazirmatn-LICENSE\\.txt", "family=Vazirmatn", "typeface=\"Vazirmatn\"", "font-family\\s*:[^;{}]*\\bVazirmatn\\b", "['\"]Vazirmatn['\"]"],
+        "notice": "^Vazirmatn",
+        "scope": "active"
+      }
+    },
+    {
+      "id": "superseded-releases",
+      "item": "Superseded platform releases v0.6.5 and v0.7.0 as the README's current release",
+      "kind": "release",
+      "status": "retired",
+      "retiredSince": "2026-11-20",
+      "replacement": "The latest official release recorded in [docs/status/status.json](../status/status.json)",
+      "note": "Runtime facts (for example a region still running v0.6.5) stay in the generated status block; release notes keep their history.",
+      "gate": {
+        "files": [],
+        "text": ["\\bv0\\.6\\.5\\b", "\\bv0\\.7\\.0\\b"],
+        "scope": "readme"
+      }
+    },
+    {
+      "id": "dated-readme-galleries",
+      "item": "Dated README galleries (\"Recent … captures — YYYY-MM-DD\", \"Full product gallery — recorded v0.6.5\", the v0.4.4 capture set in `docs/assets/screenshots/readme/`)",
+      "kind": "documentation",
+      "status": "retired",
+      "retiredSince": "2026-11-21",
+      "replacement": "One curated gallery generated from [docs/assets/gallery/gallery.json](../assets/gallery/gallery.json); the old sets are in [docs/reviews/_archive/readme-galleries/](../reviews/_archive/readme-galleries/README.md)",
+      "gate": {
+        "files": ["^docs/assets/screenshots/readme/"],
+        "text": ["^#{2,6} .*\\b\\d{4}-\\d{2}-\\d{2}\\b", "screenshots/readme/"],
+        "scope": "readme"
+      }
+    },
+    {
+      "id": "superseded-review-snapshots",
+      "item": "Superseded release review snapshots (`docs/reviews/v0.4.1`, `v0.6.5`, `release-0.6.5`, `release-0.6.6`)",
+      "kind": "documentation",
+      "status": "retired",
+      "retiredSince": "2026-11-21",
+      "replacement": "Kept as history under [docs/reviews/_archive/](../reviews/_archive/README.md); current state lives in [docs/status](../status/README.md)",
+      "gate": {
+        "files": ["^docs/reviews/(v0\\.4\\.1|v0\\.6\\.5|release-0\\.6\\.[56])/"],
+        "text": [],
+        "scope": "active"
+      }
+    },
+    {
+      "id": "vanilla-legacy-layer",
+      "item": "Vanilla JS/CSS legacy layer (`apps/web-react/public/legacy/`) and the tracked `dist/` snapshot",
+      "kind": "code",
+      "status": "legacy-only pending removal",
+      "retiredSince": "2026-11-21",
+      "replacement": "React application (`apps/web-react/src/`); `dist/` stays source-critical until AGENTS.md says otherwise",
+      "gate": {
+        "files": ["^apps/web-react/public/legacy/", "^dist/"],
+        "text": [],
+        "scope": "active"
+      }
+    },
+    {
+      "id": "openfund-protocol",
+      "item": "Openfund Protocol (dormant import of mux-protocol, `packages/openfund-protocol/`)",
+      "kind": "code",
+      "status": "dormant",
+      "retiredSince": null,
+      "replacement": "None — not retired; not built, shipped or operated ([provenance](../../packages/openfund-protocol/PROVENANCE.md))",
+      "gate": {
+        "files": ["^packages/openfund-protocol/"],
+        "text": [],
+        "scope": "active"
+      }
+    }
+  ]
+}

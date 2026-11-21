@@ -9,8 +9,8 @@ agent, and no production secret was created, requested or seen.
 Evidence: [launch parity checklist](LAUNCH_PARITY_CHECKLIST.md),
 [CMS rehearsal](../reviews/launch-completion/CMS_REHEARSAL.md),
 [release notes](../releases/openfund-0.6.5.md),
-[security acceptance](../reviews/release-0.6.5/SECURITY_ACCEPTANCE.md),
-[load report](../reviews/release-0.6.5/LOAD_REPORT.md).
+[security acceptance](../reviews/_archive/release-0.6.5/SECURITY_ACCEPTANCE.md),
+[load report](../reviews/_archive/release-0.6.5/LOAD_REPORT.md).
 
 ## Progress (verified 2026-11-18)
 
@@ -209,7 +209,7 @@ open the Inbox on the website with a wallet.
 
 ## 10. Enable real settlement recording (after security acceptance)
 
-Only after you accept the [security acceptance](../reviews/release-0.6.5/SECURITY_ACCEPTANCE.md) of payout settlement: set
+Only after you accept the [security acceptance](../reviews/_archive/release-0.6.5/SECURITY_ACCEPTANCE.md) of payout settlement: set
 `BACKSTAGE_REAL_SETTLEMENT=true` on `openfund-backstage` and redeploy it.
 This only allows Backstage to *record* a verified on-chain transfer you have
 already made; no funds move from Backstage.

@@ -5,12 +5,13 @@
 No first-party license has been selected in this update. The option comparison
 below was prepared on 2026-11-12; it does not grant a license.
 
-The UI-font replacement is complete in source: Dastkhat/Dastkhat Arabic are
-the defaults. The earlier request to choose whether to replace the active
-Irancell face is superseded. Retained legacy binaries still need a reference,
-packaging and rights review; see the
-[current inventory](LICENSING.md#current-source-clarification--2026-11-21).
-The old paragraph describing Irancell as the active font is historical.
+The UI-font replacement is complete and **blocker 1 (Irancell fonts) is
+RESOLVED by removal (2026-11-21)**: Dastkhat v1.210 (OFL 1.1) is the only
+Persian/Arabic face, and every Irancell, renamed-Irancell and standalone
+Vazirmatn file was deleted from the tree; see the
+[current inventory](LICENSING.md#current-source-clarification--2026-11-21) and
+the [retired registry](../development/RETIRED.md). Text below that describes
+Irancell as active or unresolved is historical.
 
 The indicator optimization and Open Trade 0.0.3 candidate do not resolve
 indicator provenance, first-party ownership or AGPL scope. To record a final
@@ -41,7 +42,7 @@ is chosen.
 | First-party docs and brand | `docs/`, `brand/` logos and brandbook | Yes, possibly under a different license (for example CC BY 4.0 for docs, trademark terms for the logo) |
 | Vendored upstream | `vendor/vela` (Apache-2.0), `vendor/gains-sdk` (MIT), `third_party/luxalgo-trade-journal` (MIT), `packages/openfund-protocol` (GPL-2.0 import) | No: upstream terms, kept unmodified |
 | npm dependencies | PineTS and Vela-pinets (AGPL-3.0-only), MetaMask SDK (ConsenSys proprietary), MIT/ISC/BSD/Apache packages | No |
-| Unresolved provenance | Irancell-derived fonts, `indicators/*.pine`, generated team portraits | No: must be resolved first (section 3) |
+| Unresolved provenance | `indicators/*.pine`, generated team portraits (Irancell-derived fonts: resolved by removal 2026-11-21) | No: must be resolved first (section 3) |
 
 ## 2. Options
 
@@ -66,7 +67,7 @@ behavior allowed) removes the AGPL constraint for every option.
 
 These apply to every option, including A.
 
-1. **Irancell fonts.** `openfund-1.ttf`–`openfund-5.ttf` are byte-identical
+1. **Irancell fonts — RESOLVED by removal (2026-11-21); historical text follows.** `openfund-1.ttf`–`openfund-5.ttf` are byte-identical
    copies of `irancell-400/500/600/700/900.ttf`, and the five
    `openfund-persian-*-v4.woff2` files are renamed derivatives. All of them
    carry "Copyright © 2017 by Irancell. All rights reserved." and an Irancell
@@ -117,7 +118,7 @@ blockers 1 and 2 first.
 | --- | --- | --- |
 | 1 | Option A, B, C or D (or PineTS replacement) | Owner, with counsel on the AGPL question |
 | 2 | Copyright holder name for notices (legal entity) | Owner |
-| 3 | Irancell fonts: license evidence or replacement | Owner (and designer if replaced) |
+| 3 | ~~Irancell fonts: license evidence or replacement~~ — resolved by removal 2026-11-21 | — |
 | 4 | Indicator sources: author and license | Owner |
 | 5 | MetaMask SDK: keep or drop the connector | Owner (product) |
 | 6 | DCO or CLA for contributions | Owner |
@@ -158,6 +159,6 @@ notice files under `assets/notices/` stay unchanged in every option.
   unresolved. Details: [Open Trade 0.0.2 release](../releases/open-trade-0.0.2.md).
 - **Unchanged recommendation.** Option B (AGPL-3.0-or-later for first-party
   code) remains the only option without a licence conflict in the shipped
-  chart bundle; option C needs counsel on the AGPL boundary. Blockers 1
-  (Irancell fonts — web only) and 2 (indicators — web and desktop) still have
-  to be cleared by the owner first. This document does not select a licence.
+  chart bundle; option C needs counsel on the AGPL boundary. Blocker 1
+  (Irancell fonts) is resolved by removal (2026-11-21); blocker 2 (indicators —
+  web and desktop) still has to be cleared by the owner first. This document does not select a licence.

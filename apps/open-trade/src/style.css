@@ -7,20 +7,9 @@
   src: url("/assets/ubuntu-700.ttf");
   font-weight: 700;
 }
-/* Dastkhat (SIL OFL 1.1): pinned in apps/web-react/public/assets/fonts/dastkhat
-   and copied by scripts/prepare.mjs; served from the app's own origin. */
-@font-face {
-  font-family: Dastkhat;
-  src: url("/assets/fonts/dastkhat/Dastkhat-Variable.woff2") format("woff2");
-  font-weight: 100 900;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Dastkhat Arabic";
-  src: url("/assets/fonts/dastkhat/DastkhatArabic-Variable.woff2") format("woff2");
-  font-weight: 100 900;
-  font-display: swap;
-}
+/* Dastkhat (SIL OFL 1.1): the one @font-face set is
+   apps/web-react/public/assets/fonts/dastkhat/dastkhat.css, copied by
+   scripts/prepare.mjs and linked from index.html (same app origin). */
 * {
   box-sizing: border-box;
 }

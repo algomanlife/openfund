@@ -4,6 +4,7 @@ These documents record specific branches, dates and environments. Their test cou
 
 | Review | Scope |
 | --- | --- |
+| [Archive](_archive/README.md) | Superseded release snapshots (v0.4.1, v0.6.5, release 0.6.5/0.6.6) and the former README galleries, kept as history |
 | [Gains Perpetual integration readiness](gains-integration/READINESS.md) | 2026-11-20 gap analysis, Gains ToS and compliance assessment, threat model, test evidence, blockers with owners; read-only integration ready for review, live trading not authorized |
 | [Responsive launch matrix](responsive-matrix/DELIVERY.md) | 2026-11-20 widths × locales × themes matrix over the built app; overflow, clipped controls, drawer side, console and axe; root-cause fixes with before/after captures |
 | [Journey acceptance 2026-11-20](journey-acceptance-2026-11/REPORT.md) | Workstream H: browser acceptance inventory of onboarding, Prop evaluation, terminal, Backstage and checkout journeys; new suites, results and external blockers |
@@ -26,7 +27,7 @@ These documents record specific branches, dates and environments. Their test cou
 | [Directus 12 staging](directus-12-staging/README.md) | Clean-install and upgrade evidence behind the Directus 12 assessment |
 | [Upstream isolation](upstream-isolation/README.md) | Vela upgrade and chart regression evidence |
 | [Vela and Pine](vela-pine/DELIVERY.md) | Vela charting and Pine runtime implementation evidence |
-| [v0.4.1 stabilization audit](v0.4.1/AUDIT.md) | Stabilization findings for the v0.4.1 batch |
+| [v0.4.1 stabilization audit](_archive/v0.4.1/AUDIT.md) | Stabilization findings for the v0.4.1 batch |
 | [Final integration](final-integration/DELIVERY.md) | Integration recovery and release acceptance |
 | [Unified trading](unified-trading/DELIVERY.md), [audit](unified-trading/AUDIT.md), [coordination](unified-trading/COORDINATION.md) | Unified Prop/Perpetual trading delivery |
 | [Website navigation](website-navigation/DELIVERY.md) | Navigation and routing repair |

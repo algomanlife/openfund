@@ -95,7 +95,7 @@ jobs:
       - name: Install repository documentation tooling
         working-directory: .
         run: npm ci
-      - name: Documentation language, links, images, Markdown and Mermaid
+      - name: Documentation gates (README structure, retired registry, fonts) plus language, links, images, Markdown and Mermaid
         working-directory: .
         run: npm run docs:check
       - name: Backstage build and access control

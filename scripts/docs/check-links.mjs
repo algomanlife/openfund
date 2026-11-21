@@ -34,8 +34,8 @@ for(const file of markdown) {
   for(const m of text.matchAll(/<(img|a|source)\b[^>]*?\b(?:src|href)=["']([^"']+)["']/g))check(file,m[2],m[1]!=='a')
 }
 // Validate image manifests and approved logo fidelity, beyond Markdown references.
-const manifest='docs/assets/screenshots/manifest.json'
-if(fs.existsSync(manifest)) {
+for(const manifest of ['docs/assets/screenshots/manifest.json','docs/reviews/_archive/readme-galleries/screenshots/manifest.json']) {
+  if(!fs.existsSync(manifest))continue
   const data=JSON.parse(fs.readFileSync(manifest,'utf8'))
   for(const item of data.screenshots)check(manifest,item.file,true)
 }

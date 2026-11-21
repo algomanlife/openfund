@@ -5,7 +5,7 @@
 > a disposable Directus instance exposed a direct draft-translation read
 > until the v0.4.1 permission correction. The rows and checks below do not
 > establish current page/field coverage or translation completeness. The
-> [v0.4.1 audit](../reviews/v0.4.1/AUDIT.md) records the current evidence and
+> [v0.4.1 audit](../reviews/_archive/v0.4.1/AUDIT.md) records the current evidence and
 > open measurement work. No current coverage percentage is asserted.
 
 Every in-scope public content element, its React component, its Directus collection/field,

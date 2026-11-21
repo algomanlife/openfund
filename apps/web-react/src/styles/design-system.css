@@ -8,10 +8,9 @@
    new components can use one vocabulary in both shells and both themes.
    Documented in docs/design/DESIGN_SYSTEM.md.
    ========================================================================== */
-/* Dastkhat variable fonts, self-hosted at one same-origin URL so the site,
-   the terminal iframe, the legacy pages and Backstage share one cached file. */
-@font-face { font-family: 'Dastkhat'; src: url('/assets/fonts/dastkhat/Dastkhat-Variable.woff2') format('woff2'); font-weight: 100 900; font-style: normal; font-display: swap; }
-@font-face { font-family: 'Dastkhat Arabic'; src: url('/assets/fonts/dastkhat/DastkhatArabic-Variable.woff2') format('woff2'); font-weight: 100 900; font-style: normal; font-display: swap; }
+/* Dastkhat @font-face rules live in ONE file, public/assets/fonts/dastkhat/dastkhat.css,
+   linked from index.html so the site, the terminal iframe, the legacy pages,
+   Backstage and Open Trade share one definition and one cached file. */
 :root {
   /* brand + semantic colour (dark defaults; light overrides below) */
   --ds-brand: #82e7bd;            /* Openfund mint */

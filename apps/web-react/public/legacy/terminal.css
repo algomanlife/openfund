@@ -1,4 +1,4 @@
-/* Dastkhat (SIL OFL 1.1, assets/fonts/dastkhat/SOURCE.json). --ds-font-* match src/styles/design-system.css; test/typography.test.mjs checks the copies. */@font-face{font-family:'Dastkhat';src:url(../assets/fonts/dastkhat/Dastkhat-Variable.woff2) format('woff2');font-weight:100 900;font-style:normal;font-display:swap}@font-face{font-family:'Dastkhat Arabic';src:url(../assets/fonts/dastkhat/DastkhatArabic-Variable.woff2) format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@import url(../assets/fonts/dastkhat/dastkhat.css);/* Dastkhat (SIL OFL 1.1): the one @font-face set lives in assets/fonts/dastkhat/dastkhat.css. --ds-font-* match src/styles/design-system.css; test/typography.test.mjs checks the copies. */
 /* ============================================================
    OPENFUND TERMINAL — design tokens & layout
    Brandbook: Obsidian #060808 · Signal Lime #82E7BD ·

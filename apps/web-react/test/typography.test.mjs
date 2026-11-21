@@ -96,28 +96,38 @@ test('separate documents carry identical copies of the font tokens', () => {
   }
 })
 
-test('every Dastkhat @font-face is a same-origin variable WOFF2 at the pinned path', () => {
+test('the one Dastkhat @font-face set lives in dastkhat.css as same-origin variable WOFF2', () => {
   const files = new Set(Object.keys(source.files).filter(name => name.endsWith('.woff2')))
-  let count = 0
-  for (const file of OWNED_STYLES) {
-    for (const face of facesOf(read(file)).filter(face => /Dastkhat/.test(face))) {
-      count += 1
-      const url = face.match(/url\(\s*['"]?([^'")]+)['"]?\s*\)/)[1]
-      assert.doesNotMatch(url, /^(https?:)?\/\//, `${file}: fonts are self-hosted`)
-      assert.match(url, /(^|\/|\.\.\/)assets\/fonts\/dastkhat\/[A-Za-z-]+\.woff2$/, `${file}: ${url}`)
-      assert.ok(files.has(path.basename(url)), `${file}: ${url} is a pinned file`)
-      assert.match(face, /format\(['"]woff2['"]\)/, file)
-      assert.match(face, /font-weight:\s*100 900/, `${file}: variable weight range`)
-      assert.match(face, /font-display:\s*swap/, file)
-    }
+  const faces = facesOf(read(`${FONT_DIR}/dastkhat.css`))
+  assert.deepEqual(faces.map(face => face.match(/font-family:\s*'([^']+)'/)[1]), ['Dastkhat', 'Dastkhat Arabic', 'Dastkhat FaNum'])
+  for (const face of faces) {
+    const url = face.match(/url\(\s*['"]?([^'")]+)['"]?\s*\)/)[1]
+    assert.doesNotMatch(url, /^(https?:)?\/\/|\//, `${url}: relative to dastkhat.css, self-hosted`)
+    assert.ok(files.has(url), `${url} is a pinned file`)
+    assert.match(face, /format\(['"]woff2['"]\)/)
+    assert.match(face, /font-weight:\s*100 900/, `${url}: variable weight range`)
+    assert.match(face, /font-display:\s*swap/)
   }
-  assert.ok(count >= 6, `expected Dastkhat faces in the owned stylesheets, found ${count}`)
+  /* no other owned stylesheet declares a Persian/Arabic face */
+  for (const file of OWNED_STYLES)
+    assert.deepEqual(facesOf(read(file)).filter(face => !/font-family:\s*['"]?Ubuntu['"]?\s*;/.test(face)), [], `${file}: only Ubuntu @font-face outside dastkhat.css`)
+})
+
+test('every surface loads the shared dastkhat.css', () => {
+  assert.match(read('apps/web-react/public/legacy/style.css'), /^@import url\(\.\.\/assets\/fonts\/dastkhat\/dastkhat\.css\);/)
+  assert.match(read('apps/web-react/public/legacy/terminal.css'), /^@import url\(\.\.\/assets\/fonts\/dastkhat\/dastkhat\.css\);/)
+  assert.match(read('apps/backstage/operations/public/style.css'), /^@import url\('\/assets\/fonts\/dastkhat\/dastkhat\.css'\);/)
+  assert.match(read('apps/web-react/index.html'), /<link rel="stylesheet" href="\/assets\/fonts\/dastkhat\/dastkhat\.css">/)
+  assert.match(read('apps/open-trade/index.html'), /<link rel="stylesheet" href="\.\/assets\/fonts\/dastkhat\/dastkhat\.css">/)
+  const backstage = read('apps/backstage/operations/server.js')
+  for (const name of ['dastkhat.css', 'Dastkhat-Variable.woff2', 'DastkhatArabic-Variable.woff2', 'DastkhatFaNum-Variable.woff2'])
+    assert.ok(backstage.includes(`'/assets/fonts/dastkhat/${name}': ['../../web-react/public/assets/fonts/dastkhat/${name}'`), `Backstage serves ${name}`)
 })
 
 test('the replaced Persian faces are no longer UI defaults', () => {
   for (const file of [...OWNED_STYLES, ...OWNED_SCRIPTS]) {
     const text = read(file)
-    assert.doesNotMatch(text, /Irancell|irancell-\d00|openfund-persian-\d00|Openfund Persian|persian\.woff2/, file)
+    assert.doesNotMatch(text, /Irancell|irancell-\d00|openfund-persian-\d00|Openfund Persian|persian\.woff2|OpenfundCertificateFa/, file)
     assert.doesNotMatch(text, /font-family:\s*['"]?Vazirmatn|Vazirmatn\.ttf/, file)
   }
   for (const file of OWNED_STYLES)
@@ -128,7 +138,9 @@ test('canvas surfaces name Dastkhat for Persian glyphs', () => {
   assert.match(read('apps/web-react/public/legacy/share-card.js'), /var FONT = "Ubuntu, Dastkhat,/)
   assert.match(read('packages/openfund-charts/src/vela-bridge.js'), /fontFamily: "Ubuntu, 'Dastkhat', system-ui, sans-serif"/)
   assert.equal(read('apps/web-react/public/legacy/vela-bridge.js'), read('packages/openfund-charts/src/vela-bridge.js'))
-  assert.match(read('apps/web-react/src/features/certificates/export.ts'), /assets\/fonts\/dastkhat\/Dastkhat-Variable\.woff2/)
+  const certificate = read('apps/web-react/src/features/certificates/export.ts')
+  assert.match(certificate, /new FontFace\('Dastkhat Certificate', `url\(\$\{import\.meta\.env\.BASE_URL\}assets\/fonts\/dastkhat\/Dastkhat-Variable\.woff2\)`/)
+  assert.match(certificate, /px 'Dastkhat Certificate', 'Ubuntu Certificate',/)
 })
 
 test('Backstage and Open Trade reach the same files from their own origin', () => {

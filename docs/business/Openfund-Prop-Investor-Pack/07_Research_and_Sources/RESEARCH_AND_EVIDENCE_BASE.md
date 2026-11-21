@@ -56,7 +56,7 @@ Source: `github.com/algomanlife/openfund` @ `main`, capability register reviewed
 ### 1.2 Brand system [REPO — Brandbook "Direction A", recommended]
 
 - Palette: Obsidian `#080B0A` (primary dark), Signal Lime `#C6FF52` (accent), Terminal White `#F4F5EF`; dark surfaces `#101711`, `#171B19`.
-- Typography: Ubuntu (Latin, bundled TTFs) + Vazirmatn (Persian, bundled WOFF2). Openfund custom TTFs also bundled.
+- Typography: Ubuntu (Latin, bundled TTFs) + Dastkhat v1.210 (Persian, SIL OFL 1.1, based on Vazirmatn; bundled variable WOFF2). The earlier standalone Vazirmatn and Irancell-derived font files were retired on 2026-11-21.
 - Mark: approved SVGs (green/white/black), ViewBox 581×644, clear space ≥ ¼ symbol width, min height 32px, never redraw/alter.
 - Voice: clear, measured, no hype; "Rooted in Vision. Open to Possibility." (recommended master tagline, pending approval).
 - Brandbook status: strategic and visual proposal, pending approval — the package labels it accordingly.

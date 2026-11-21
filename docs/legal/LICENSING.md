@@ -8,18 +8,22 @@ It does not repeat the historical bundle or production audit below.
 - **First-party terms:** no root `LICENSE` is published and no license choice
   is recorded by this update. The owner's choice and copyright holder remain
   necessary. Third-party rights and obligations are unaffected.
-- **Active UI typography:** Dastkhat and Dastkhat Arabic replace Irancell as
-  the UI defaults. The unmodified font files, OFL and upstream notices are
-  recorded in [SOURCE.json](../../apps/web-react/public/assets/fonts/dastkhat/SOURCE.json).
-- **Legacy font copies remain:** 50 standalone font files matching
-  `irancell-*.ttf`, `openfund-1.ttf` through `openfund-5.ttf`, or
-  `openfund-persian-*-v4.woff2` are still tracked: 15 in
+- **Active UI typography:** Dastkhat v1.210 (Dastkhat, Dastkhat Arabic,
+  Dastkhat FaNum; SIL OFL 1.1, based on Vazirmatn) is the only Persian/Arabic
+  face and Ubuntu the only other face. The unmodified font files, OFL, FONTLOG
+  and upstream notices are recorded in
+  [SOURCE.json](../../apps/web-react/public/assets/fonts/dastkhat/SOURCE.json).
+- **Irancell provenance blocker: RESOLVED by removal (2026-11-21).** All 50
+  standalone files matching `irancell-*.ttf`, `openfund-1.ttf` through
+  `openfund-5.ttf` or `openfund-persian-*-v4.woff2` (15 in
   `apps/web-react/public/assets/`, 15 in `dist/assets/`, 10 in
-  `brand/typography/` and 10 in the investor-pack typography directory.
-  This count excludes archives. Their presence does not establish current CSS
-  use, but public asset copies may still be packaged or served. No permission
-  is recorded. Removal needs a reference and packaging check; changing the UI
-  font does not clear rights to retained copies.
+  `brand/typography/`, 10 in the investor-pack typography directory) and the
+  standalone `Vazirmatn.ttf`/`Vazirmatn-LICENSE.txt` copies were deleted after
+  a reference and packaging check; CI's font gate
+  (`scripts/docs/check-fonts.mjs`) keeps them out. Git history still contains
+  the old blobs; no redistribution permission is claimed for them. Investor
+  documents and the brandbook were regenerated with Dastkhat; see the
+  [retired registry](../development/RETIRED.md).
 - **Indicators:** the optimization merge (#170) did not relicense them.
   Preserve the existing CC BY-NC-SA notice and file-specific provenance
   questions. The runtime's AGPL license is a separate scope.
@@ -81,10 +85,9 @@ manifest or embedded font metadata, not inferred from neighbours.
 | Openfund Protocol import (`packages/openfund-protocol`) | mux-protocol | GPL-2.0 (files mostly or-later; 4 `UNLICENSED`) | Renamed | GPL only if distributed | Dormant, not shipped |
 | npm production dependencies (web, backend) | npm | MIT / ISC / BSD / Apache-2.0 (exceptions listed) | None | Keep license comments | CI-checked ([dependency licenses](DEPENDENCY_LICENSES.md)) |
 | Directus 11.17.4 | Docker image | BSL 1.1 (12.x: MSCL-1.0-GPL) | None | Service terms; not distributed here | Separate service |
-| Dastkhat and Dastkhat Arabic variable fonts (`assets/fonts/dastkhat/`) | Dastyar (Dastkhat Project Authors), derived from Vazirmatn | SIL OFL 1.1, no Reserved Font Name | None (unmodified WOFF2 copies) | Ship OFL text and upstream notices; do not sell the fonts alone | Met (`assets/fonts/dastkhat/OFL.txt`, `THIRD-PARTY-NOTICES.txt`; pinned commit `ac5b01542f36`, SHA-256 in `SOURCE.json`) |
-| Vazirmatn font | Vazirmatn Project | SIL OFL 1.1 | None | Ship license | Met (`Vazirmatn-LICENSE.txt`); no longer a UI default |
+| Dastkhat, Dastkhat Arabic and Dastkhat FaNum variable fonts (`assets/fonts/dastkhat/`) | Dastyar (Dastkhat Project Authors), based on Vazirmatn by Saber Rastikerdar | SIL OFL 1.1, no Reserved Font Name | None (unmodified WOFF2 copies) | Ship OFL text and upstream notices; do not sell the fonts alone | Met (`assets/fonts/dastkhat/OFL.txt`, `FONTLOG.txt`, `THIRD-PARTY-NOTICES.txt`; v1.210, pinned commit `ac5b01542f36`, SHA-256 in `SOURCE.json`) |
 | Ubuntu font (`ubuntu-400/700.ttf`) | Canonical | Ubuntu Font Licence 1.0 | None | Ship licence with the fonts | **Fixed in this change**: `assets/Ubuntu-LICENSE.txt` added (text taken from the brandbook archive, where it already shipped) |
-| Irancell fonts (`irancell-*.ttf`) and renamed copies (`openfund-1…5.ttf`, `openfund-persian-*-v4.woff2`, `brand/typography/`) | Irancell (MTN Irancell) per embedded metadata | **"All rights reserved"**; no license recorded | Renamed; woff2 files re-named "Openfund Persian" | Unknown without a license | **Blocker: provenance missing** |
+| Irancell fonts (`irancell-*.ttf`) and renamed copies (`openfund-1…5.ttf`, `openfund-persian-*-v4.woff2`) | Irancell (MTN Irancell) per embedded metadata | "All rights reserved"; no license recorded | — | — | **Resolved by removal (2026-11-21)**: no copies remain in the tree; see [retired registry](../development/RETIRED.md) |
 | Pine indicators (`indicators/`) | Owner asserts authorship; repository evidence of third-party origin for several files ([item 3](#pine-indicator-sources)) | CC BY-NC-SA 4.0 stated in `smc-v1.pine`; none in the others | Optimized November 2026 ([ADR 0048](../decisions/0048-pine-indicator-optimization-and-provenance.md)) | NC forbids commercial use | **Blocker: provenance missing** |
 | Service logos (Gains, Vela, TradingView, DePay, Render, Liara, Bitpin, Hyperliquid, GMX, MetaMask, Rabby, social glyphs) | Brand owners / Simple Icons | Brand terms / CC0 | Per [Public-brand-assets.txt](../../apps/web-react/public/assets/notices/Public-brand-assets.txt) | Brand guidelines | Documented; `dist/` copy of the notice re-synced in this change |
 | Day/night toggle design | Hamzeh Ghoreyshi | MIT | Adapted | Keep notice | Met |
@@ -145,11 +148,9 @@ manifest or embedded font metadata, not inferred from neighbours.
    licence is not affected by this item.
 4. `@metamask/eth-json-rpc-provider` declares no license.
 5. Compatibility of whatever first-party license is chosen with items 1–3.
-6. **Legacy Irancell assets.** Dastkhat has replaced the UI defaults.
-   The remaining tracked copies and locations are counted in the current
-   clarification above. No redistribution permission is recorded; reference
-   and packaging checks are needed before removal. Historical use is not
-   evidence that the current CSS still selects them.
+6. **Legacy Irancell assets — resolved by removal (2026-11-21).** Every
+   tracked copy was deleted; see the current clarification above and the
+   [retired registry](../development/RETIRED.md).
 7. **Copyright ownership.** Commits come from three human GitHub identities and
    from AI agents working for the owner; confirm the owning entity and that
    each human author's work is assigned or licensed to it.

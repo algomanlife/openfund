@@ -27,12 +27,10 @@ export const REQUIRED_FILES = [
   'docs/legal/LICENSING.md', 'docs/security/SECURITY.md', 'docs/development/ENGINEERING_REFERENCE.md',
 ]
 
-/* README sections: the business-and-technical project homepage */
-export const README_SECTIONS = [
-  'Project overview', 'Product ecosystem', 'Product gallery', 'Business model', 'Economy and governance',
-  'Technical architecture', 'Technology stack', 'Infrastructure', 'Development workflow',
-  'Versioning and releases', 'License', 'Contributing and security',
-]
+/* README sections: the single contract shared with check-readme.mjs
+   (docs/development/README_STRUCTURE.md); check-readme enforces order and budgets */
+export { README_SECTIONS } from './lib/readme-contract.mjs'
+import { README_SECTIONS } from './lib/readme-contract.mjs'
 
 /* engineering sections moved from the README into the engineering reference */
 export const ENGINEERING_REFERENCE = 'docs/development/ENGINEERING_REFERENCE.md'
