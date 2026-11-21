@@ -1,0 +1,128 @@
+{
+  "generatedAt": "2026-11-21T10:32:54.371Z",
+  "results": [
+    {
+      "id": "legacy-site-fa",
+      "ok": true,
+      "loadedFaces": [
+        "Dastkhat",
+        "Dastkhat Arabic",
+        "Ubuntu"
+      ],
+      "fontRequests": [
+        "/assets/fonts/dastkhat/dastkhat.css",
+        "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
+        "/assets/ubuntu-400.ttf",
+        "/assets/fonts/dastkhat/DastkhatArabic-Variable.woff2"
+      ],
+      "retiredRequests": [],
+      "missingFaces": [],
+      "fontFailures": [],
+      "cspViolations": [],
+      "screenshot": "legacy-site-fa.png"
+    },
+    {
+      "id": "terminal-iframe-fa",
+      "ok": true,
+      "loadedFaces": [
+        "Dastkhat"
+      ],
+      "fontRequests": [
+        "/assets/fonts/dastkhat/dastkhat.css",
+        "/assets/fonts/dastkhat/Dastkhat-Variable.woff2"
+      ],
+      "retiredRequests": [],
+      "missingFaces": [],
+      "fontFailures": [],
+      "cspViolations": [],
+      "screenshot": "terminal-iframe-fa.png"
+    },
+    {
+      "id": "react-shell-fa",
+      "ok": true,
+      "loadedFaces": [
+        "Dastkhat"
+      ],
+      "fontRequests": [
+        "/assets/fonts/dastkhat/dastkhat.css",
+        "/assets/fonts/dastkhat/Dastkhat-Variable.woff2"
+      ],
+      "retiredRequests": [],
+      "missingFaces": [],
+      "fontFailures": [],
+      "cspViolations": [],
+      "screenshot": "react-shell-fa.png"
+    },
+    {
+      "id": "certificate-canvas-fa",
+      "ok": true,
+      "loadedFaces": [
+        "Dastkhat Certificate",
+        "Ubuntu Certificate"
+      ],
+      "fontRequests": [
+        "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
+        "/assets/ubuntu-400.ttf",
+        "/assets/ubuntu-700.ttf"
+      ],
+      "retiredRequests": [],
+      "missingFaces": [],
+      "fontFailures": [],
+      "cspViolations": [],
+      "screenshot": "certificate-canvas-fa.png"
+    },
+    {
+      "id": "dist-landing-fa",
+      "ok": true,
+      "loadedFaces": [
+        "Dastkhat",
+        "Ubuntu"
+      ],
+      "fontRequests": [
+        "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
+        "/assets/fonts/dastkhat/dastkhat.css",
+        "/assets/ubuntu-700.ttf"
+      ],
+      "retiredRequests": [],
+      "missingFaces": [],
+      "fontFailures": [],
+      "cspViolations": [],
+      "screenshot": "dist-landing-fa.png"
+    },
+    {
+      "id": "dist-terminal-fa",
+      "ok": true,
+      "loadedFaces": [
+        "Dastkhat",
+        "Ubuntu"
+      ],
+      "fontRequests": [
+        "/assets/fonts/dastkhat/Dastkhat-Variable.woff2",
+        "/assets/fonts/dastkhat/dastkhat.css",
+        "/assets/ubuntu-700.ttf",
+        "/assets/ubuntu-400.ttf"
+      ],
+      "retiredRequests": [],
+      "missingFaces": [],
+      "fontFailures": [],
+      "cspViolations": [],
+      "screenshot": "dist-terminal-fa.png"
+    },
+    {
+      "id": "backstage-fa",
+      "ok": true,
+      "loadedFaces": [
+        "Dastkhat"
+      ],
+      "fontRequests": [
+        "/assets/fonts/dastkhat/dastkhat.css",
+        "/assets/fonts/dastkhat/Dastkhat-Variable.woff2"
+      ],
+      "retiredRequests": [],
+      "missingFaces": [],
+      "fontFailures": [],
+      "cspViolations": [],
+      "screenshot": "backstage-fa.png"
+    }
+  ]
+}
