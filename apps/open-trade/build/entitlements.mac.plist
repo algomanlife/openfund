@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Hardened-runtime entitlements for Open Trade (Developer ID, not App Store).
+     Electron's V8 JIT needs allow-jit. Nothing else is requested: no camera,
+     microphone, location, unsigned memory, library-validation bypass or
+     DYLD environment variables. Outgoing network is not an entitlement
+     outside the App Sandbox. -->
+<plist version="1.0">
+<dict>
+  <key>com.apple.security.cs.allow-jit</key>
+  <true/>
+</dict>
+</plist>

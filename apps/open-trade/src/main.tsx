@@ -3,6 +3,33 @@ import { createRoot } from "react-dom/client";
 import { createSiweMessage } from "viem/siwe";
 import { getAddress, stringToHex } from "viem";
 import { acceptSnapshot, retryDelay } from "../electron/policy.mjs";
+import {
+  canSimulateTrade,
+  perpetualAccount,
+  perpetualSnapshotFor,
+  propAccounts,
+  restoreSelection,
+  walletErrorCode,
+} from "./desktop-model.mjs";
+import {
+  LOCALES,
+  LOCALE_KEY,
+  LOCALE_NAMES,
+  applyLocale,
+  format,
+  initialLocale,
+  intlLocale,
+  translator,
+  untranslated,
+  type AppLocale,
+  type Translate,
+} from "./i18n";
+import {
+  arbiscanTx,
+  feedSeverity,
+  gainsFeedState,
+  snapshotTime,
+} from "../../web-react/src/features/terminal/gainsView";
 import "./style.css";
 declare global {
   interface Window {
@@ -15,9 +42,16 @@ declare global {
 }
 const bridge = window.desktop;
 const money = (v: unknown) =>
-  v == null
+  v == null || !Number.isFinite(Number(v))
     ? "—"
     : Number(v).toLocaleString("en-US", { maximumFractionDigits: 2 });
+/* Native Gains collateral can be fractional crypto; never round to a false 0.00. */
+const native = (v: unknown) =>
+  v == null || !Number.isFinite(Number(v))
+    ? "—"
+    : Number(v).toLocaleString("en-US", { maximumFractionDigits: 10 });
+type Product = "prop" | "perpetual";
+const PERPETUAL_POLL_MS = 30_000;
 async function request(
   path: string,
   body?: unknown,
@@ -45,6 +79,18 @@ const defaults = [
   { symbol: "XAU/USD", timeframe: "60" },
   { symbol: "EUR/USD", timeframe: "60" },
 ];
+/** Stored layout → a safe four-chart workspace (bad storage never breaks startup). */
+function workspace(value: any): { charts: any[]; layout: number } {
+  const charts = defaults.map((d, i) => {
+    const c = Array.isArray(value?.charts) ? value.charts[i] : null;
+    return c && typeof c.symbol === "string" && c.symbol.length <= 40 &&
+      typeof c.timeframe === "string" && c.timeframe.length <= 8
+      ? { symbol: c.symbol, timeframe: c.timeframe }
+      : d;
+  });
+  const layout = [1, 2, 3, 4].includes(Number(value?.layout)) ? Number(value.layout) : 1;
+  return { charts, layout };
+}
 class Boundary extends React.Component<
   React.PropsWithChildren,
   { failed: boolean }
@@ -54,11 +100,18 @@ class Boundary extends React.Component<
     return { failed: true };
   }
   render() {
+    const t = translator(
+      initialLocale(read<string | null>(LOCALE_KEY, null), navigator.languages),
+    );
     return this.state.failed ? (
-      <main className="startup">
+      <main className="startup" role="alert">
+        <img className="emblem" src="./assets/mark-mint.svg" alt="Openfund" />
         <h1>Open Trade</h1>
         <p>
-          The workspace could not render. Restart the application to recover.
+          {t(
+            "The workspace could not render. Restart the application to recover.",
+            "فضای کاری نمایش داده نشد. برای بازیابی، برنامه را دوباره اجرا کنید.",
+          )}
         </p>
       </main>
     ) : (
@@ -68,8 +121,55 @@ class Boundary extends React.Component<
 }
 function App() {
   const [theme, setTheme] = useState(read("ot-theme", "dark"));
-  const t = (english: string, _translation: string) => english;
-  const [config, setConfig] = useState<any>({ origin: "", projectId: "" }),
+  const [locale, setLocale] = useState<AppLocale>(() =>
+    initialLocale(read<string | null>(LOCALE_KEY, null), navigator.languages),
+  );
+  const [localeReady, setLocaleReady] = useState(0);
+  const t: Translate = translator(locale);
+  useEffect(() => {
+    let current = true;
+    void applyLocale(locale).then(() => current && setLocaleReady((n) => n + 1));
+    return () => {
+      current = false;
+    };
+  }, [locale]);
+  const [product, setProduct] = useState<Product>(() =>
+    read<string>("ot-product", "prop") === "perpetual" ? "perpetual" : "prop",
+  );
+  const [gains, setGains] = useState<{ data: any; loading: boolean; error: string | null }>({
+    data: null,
+    loading: false,
+    error: null,
+  });
+  const [gainsTab, setGainsTab] = useState<"positions" | "orders" | "history">("positions");
+  const [update, setUpdate] = useState<{ version: string; tag: string } | null>(null);
+  /* Strings without a reviewed translation are reported by the shared web
+     lookup; the visible note is the same contract as the web terminal. */
+  const [missing, setMissing] = useState<string[]>([]);
+  useEffect(() => {
+    const sync = () => setMissing(untranslated(locale));
+    sync();
+    addEventListener("of-i18n-miss", sync);
+    return () => removeEventListener("of-i18n-miss", sync);
+  }, [locale, localeReady]);
+  /** Official-release notification only: nothing is downloaded or installed. */
+  async function checkUpdates(manual = false) {
+    try {
+      const found = await bridge.checkUpdates();
+      const deferred = read<string | null>("ot-update-deferred", null);
+      if (found && (manual || found.version !== deferred)) setUpdate(found);
+      else if (manual)
+        setNotice(found ? "" : t("You have the latest official release.", "آخرین نسخهٔ رسمی نصب است."));
+    } catch {
+      if (manual)
+        setNotice(t("Release information is unavailable. Try again later.", "اطلاعات انتشار در دسترس نیست. بعداً دوباره تلاش کنید."));
+    }
+  }
+  useEffect(() => {
+    const timer = setTimeout(() => void checkUpdates(), 15_000);
+    return () => clearTimeout(timer);
+  }, []);
+  const [config, setConfig] = useState<any>({ origin: "", projectId: "", projectIdStatus: "missing" }),
     [settings, setSettings] = useState(false),
     [network, setNetwork] = useState("initializing"),
     [user, setUser] = useState<any>(null),
@@ -80,9 +180,27 @@ function App() {
     [notice, setNotice] = useState(""),
     [busy, setBusy] = useState(false),
     [explore, setExplore] = useState(false);
-  const [charts, setCharts] = useState(read("ot-charts", defaults)),
-    [layout, setLayout] = useState<number>(read("ot-layout", 1)),
-    [active, setActive] = useState(0),
+  /* Chart layouts are remembered per product (Prop and Perpetual keep their
+     own symbols and layout); the 0.0.2 single layout migrates into Prop. */
+  const productRef = useRef<Product>(product);
+  productRef.current = product;
+  const [workspaces, setWorkspaces] = useState<Record<Product, { charts: any[]; layout: number }>>(() => ({
+    prop: workspace(read("ot-workspace-prop", { charts: read("ot-charts", defaults), layout: read("ot-layout", 1) })),
+    perpetual: workspace(read("ot-workspace-perpetual", { charts: defaults, layout: 1 })),
+  }));
+  const charts = workspaces[product].charts,
+    layout = workspaces[product].layout;
+  const setCharts = (next: (old: any[]) => any[]) =>
+    setWorkspaces((w) => {
+      const p = productRef.current;
+      return { ...w, [p]: { ...w[p], charts: next(w[p].charts) } };
+    });
+  const setLayout = (n: number) =>
+    setWorkspaces((w) => {
+      const p = productRef.current;
+      return { ...w, [p]: { ...w[p], layout: n } };
+    });
+  const [active, setActive] = useState(0),
     [max, setMax] = useState<number | null>(null),
     [focus, setFocus] = useState(false),
     [watch, setWatch] = useState(false),
@@ -155,7 +273,7 @@ function App() {
     try {
       await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
       const chart = document.querySelector(".chart-cell.active:not([hidden])");
-      if (!chart) throw new Error("Select a visible chart first.");
+      if (!chart) throw new Error(t("Select a visible chart first.", "ابتدا یک نمودار قابل مشاهده را انتخاب کنید."));
       const r = chart.getBoundingClientRect();
       const x = Math.max(0, Math.ceil(r.left)), y = Math.max(0, Math.ceil(r.top));
       const data = await bridge.captureChart({
@@ -173,12 +291,14 @@ function App() {
       ctx.fillRect(0, 0, canvas.width, 80);
       ctx.fillStyle = "#eef0f4";
       ctx.font = "bold 24px system-ui";
-      ctx.fillText("Open Trade", 20, 33);
+      ctx.fillText("Open Trade · Openfund", 20, 33);
       ctx.font = "17px system-ui";
       const position = state?.positions?.find((p: any) => p.market === selected.symbol);
       const pnl = position?.unrealized_pnl;
-      const detail = pnl != null && Number.isFinite(Number(pnl)) && state?.account?.valuation_status === "fresh"
-        ? " · " + (state.account.type === "free_demo" ? "Demo" : state.account.type === "challenge" ? "Evaluation" : "Trading account") + " · Unrealized P&L " + money(pnl) + " USD"
+      /* unrealized P&L only from a fresh Prop valuation with a matching
+         position; Perpetual captures never carry account figures */
+      const detail = product === "prop" && pnl != null && Number.isFinite(Number(pnl)) && state?.account?.valuation_status === "fresh"
+        ? " · " + (state.account.type === "free_demo" ? t("Demo", "دمو") : state.account.type === "challenge" ? t("Evaluation", "ارزیابی") : t("Trading account", "حساب معاملاتی")) + " · " + t("Unrealized P&L", "سود/زیان باز") + " " + money(pnl) + " USD"
         : "";
       ctx.fillText(selected.symbol + " · " + selected.timeframe + detail, 20, 61);
       ctx.drawImage(image, 0, 80);
@@ -188,8 +308,7 @@ function App() {
   }
   const fresh = feed === "live" && price && clock - price.updatedAt < 45000;
   const ready =
-    !!account &&
-    !account.readOnly &&
+    canSimulateTrade(product, account) &&
     state?.account?.status === "active" &&
     state?.account?.valuation_status === "fresh" &&
     connection === "ready" &&
@@ -202,28 +321,55 @@ function App() {
     localStorage.setItem("ot-theme", JSON.stringify(theme));
   }, [theme]);
   useEffect(() => {
-    localStorage.setItem("ot-charts", JSON.stringify(charts));
+    for (const p of ["prop", "perpetual"] as const)
+      localStorage.setItem("ot-workspace-" + p, JSON.stringify(workspaces[p]));
     setPreview(null);
-  }, [charts]);
+  }, [workspaces]);
   useEffect(() => {
-    localStorage.setItem("ot-layout", JSON.stringify(layout));
-  }, [layout]);
+    localStorage.setItem("ot-product", JSON.stringify(product));
+    setActive(0);
+    setMax(null);
+  }, [product]);
   useEffect(() => {
     const id = setInterval(() => setClock(Date.now()), 2000);
     return () => clearInterval(id);
   }, []);
-  async function loadAccounts() {
+  /** Loads the signed-in wallet's real directory and restores the last
+   * product/account selection only when it still belongs to that wallet. */
+  async function loadAccounts(wallet: string) {
     const result = await request("/accounts");
     if (!result.ok)
-      throw new Error(result.error || "Account directory unavailable");
-    setAccounts(result.data.accounts);
+      throw new Error(result.error || t("Account directory unavailable", "فهرست حساب‌ها در دسترس نیست"));
+    const list = Array.isArray(result.data?.accounts) ? result.data.accounts : [];
+    setAccounts(list);
+    const restored = restoreSelection(read("ot-selection", null), list, wallet);
+    if (restored) {
+      setProduct(restored.product as Product);
+      setAccount(restored.account);
+    }
   }
   async function restore() {
     const result = await request("/auth/me");
     if (result.ok) {
       setUser(result.data.user);
-      await loadAccounts();
+      await loadAccounts(result.data.user?.walletAddress);
     } else if (result.status === 401) setUser(null);
+  }
+  /** Product switch without signing in again: stops the other product's
+   * stream/polling (effects keyed on product and account) and clears its data. */
+  function selectProduct(next: Product, nextAccount: any) {
+    if (pending || busy) return;
+    setState(null);
+    setGains({ data: null, loading: false, error: null });
+    setPreview(null);
+    setProduct(next);
+    setAccount(nextAccount);
+    const wallet = String(user?.walletAddress || "").toLowerCase();
+    if (nextAccount)
+      localStorage.setItem(
+        "ot-selection",
+        JSON.stringify({ wallet, product: next, id: nextAccount.id }),
+      );
   }
   useEffect(() => {
     let disposed = false,
@@ -341,7 +487,7 @@ function App() {
     }
   }
   useEffect(() => {
-    const id = account?.id || "";
+    const id = product === "prop" ? account?.id || "" : "";
     scope.current = id;
     setState(null);
     setConnection("loading");
@@ -367,55 +513,121 @@ function App() {
       off();
       void bridge.stream(null);
     };
-  }, [account?.id]);
+  }, [account?.id, product]);
+  /* Perpetual: poll the wallet's read-only Gains snapshot through the existing
+     backend boundary while Perpetual is active; a failed refresh keeps the
+     last verified snapshot labelled outdated (gainsFeedState). */
+  useEffect(() => {
+    const wallet = String(user?.walletAddress || "").toLowerCase();
+    if (product !== "perpetual" || !account || !wallet) return;
+    let stopped = false,
+      timer: ReturnType<typeof setTimeout> | undefined,
+      failures = 0;
+    setGains({ data: null, loading: true, error: null });
+    const load = async () => {
+      setGains((g) => ({ ...g, loading: true }));
+      let error: string | null = null,
+        data: any = null;
+      try {
+        const result = await request("/products/perpetual/gains");
+        if (stopped) return;
+        if (result.status === 401) {
+          setAccount(null);
+          setUser(null);
+          return;
+        }
+        data = result.ok ? perpetualSnapshotFor(result.data, wallet) : null;
+        if (!data) error = result.error || "unavailable";
+      } catch {
+        error = "unavailable";
+      }
+      if (stopped) return;
+      failures = error ? failures + 1 : 0;
+      setGains((g) => ({ data: data || g.data, loading: false, error }));
+      timer = setTimeout(load, error ? retryDelay(failures) : PERPETUAL_POLL_MS);
+    };
+    void load();
+    return () => {
+      stopped = true;
+      clearTimeout(timer);
+    };
+  }, [product, account?.id, user?.walletAddress]);
+  /** Removes the wallet listeners registered by the last successful sign-in. */
+  const walletListeners = useRef<(() => void) | null>(null);
   async function logout() {
     generation.current++;
     setAccount(null);
     setUser(null);
     setAccounts([]);
     setExplore(false);
-    await request("/auth/logout", {});
+    setState(null);
+    setGains({ data: null, loading: false, error: null });
+    walletListeners.current?.();
+    walletListeners.current = null;
+    await request("/auth/logout", {}).catch(() => {});
     try {
       await provider.current?.disconnect();
     } catch {}
     provider.current = null;
   }
+  /** Localized, actionable message for a wallet or sign-in failure. */
+  function walletMessage(error: unknown) {
+    switch (walletErrorCode(error)) {
+      case "rejected":
+        return t("The request was declined in your wallet. Nothing was signed.", "درخواست در کیف پول رد شد. چیزی امضا نشد.");
+      case "expired":
+        return t("The wallet request expired. Start the connection again.", "مهلت درخواست کیف پول تمام شد. اتصال را دوباره شروع کنید.");
+      case "project":
+        return t("Wallet connection is unavailable in this build. Contact Openfund support.", "اتصال کیف پول در این نسخه در دسترس نیست. با پشتیبانی اوپن‌فاند تماس بگیرید.");
+      case "relay":
+        return t("The wallet connection service is unreachable. Check your connection and try again.", "سرویس اتصال کیف پول در دسترس نیست. اتصال اینترنت را بررسی و دوباره تلاش کنید.");
+      case "chain":
+        return t("Switch your wallet to Arbitrum One (42161) and try again.", "شبکه کیف پول را روی Arbitrum One (42161) بگذارید و دوباره تلاش کنید.");
+      case "mismatch":
+        return t("The signed-in wallet does not match the connected wallet. Sign in again.", "کیف پول واردشده با کیف پول متصل یکسان نیست. دوباره وارد شوید.");
+      default:
+        return t("Wallet sign-in failed. Try again.", "ورود با کیف پول ناموفق بود. دوباره تلاش کنید.");
+    }
+  }
+  function chooseLocale(next: AppLocale) {
+    localStorage.setItem(LOCALE_KEY, JSON.stringify(next));
+    setLocale(next);
+  }
   async function login() {
     setBusy(true);
     setNotice("");
     const gen = ++generation.current;
+    let wallet: any = null;
     try {
-      if (!config.projectId)
-        throw new Error(
-          t(
-            "Wallet connection is unavailable in this build. Contact Openfund support.",
-            "شناسه پروژه WalletConnect را در تنظیمات وارد کنید.",
-          ),
-        );
+      if (config.projectIdStatus !== "configured")
+        throw new Error("project id " + config.projectIdStatus);
       const { EthereumProvider } = await import(
         "@walletconnect/ethereum-provider"
       );
-      const wallet = await EthereumProvider.init({
+      wallet = await EthereumProvider.init({
         projectId: config.projectId,
         chains: [42161],
         showQrModal: true,
         methods: ["personal_sign"],
         events: ["accountsChanged", "chainChanged"],
         metadata: {
-          name: "Open Trade",
-          description: "Openfund desktop wallet sign-in",
-          url: config.origin,
-          icons: [],
+          name: "Open Trade by Openfund",
+          description: t("Openfund desktop wallet sign-in", "ورود با کیف پول به نسخه دسکتاپ اوپن‌فاند"),
+          url: config.metadataUrl || config.origin,
+          icons: config.metadataUrl ? [config.metadataUrl + "/assets/mark-mint.svg"] : [],
         },
       });
       provider.current = wallet;
       await wallet.connect();
       if (gen !== generation.current) return;
-      if (wallet.chainId !== 42161)
+      if (Number(wallet.chainId) !== 42161)
         throw new Error("Arbitrum One is required.");
       const address = getAddress(wallet.accounts[0]);
       const nonce = await request("/auth/nonce", { address });
-      if (!nonce.ok) throw new Error(nonce.error);
+      if (gen !== generation.current) return;
+      if (!nonce.ok)
+        throw Object.assign(new Error("backend"), { backend: nonce.error || nonce.status });
+      /* EIP-4361: domain and URI are the configured Openfund backend that verifies it */
       const base = new URL(config.origin),
         message = createSiweMessage({
           address,
@@ -435,31 +647,56 @@ function App() {
       });
       if (gen !== generation.current) return;
       const result = await request("/auth/verify", { message, signature });
+      if (gen !== generation.current) return;
       if (!result.ok)
-        throw new Error(result.error || "Authentication rejected");
+        throw Object.assign(new Error("backend"), { backend: result.error || result.status });
       const verified = await request("/auth/me");
       if (
         !verified.ok ||
         verified.data.user?.walletAddress?.toLowerCase() !==
           address.toLowerCase()
-      )
+      ) {
+        await request("/auth/logout", {}).catch(() => {});
         throw new Error("Verified wallet session mismatch");
+      }
       setUser(verified.data.user);
-      await loadAccounts();
-      wallet.on("accountsChanged", () => {
+      await loadAccounts(address);
+      /* Pairing is not authentication: a different address, or the wallet
+         ending the pairing, ends the Openfund desktop session as well. */
+      const onAccounts = (list: string[]) => {
+        if (!list?.[0] || list[0].toLowerCase() !== address.toLowerCase()) {
+          setNotice(t("Your wallet switched accounts. Sign in again to continue.", "حساب کیف پول تغییر کرد. برای ادامه دوباره وارد شوید."));
+          void logout();
+        }
+      };
+      const onDisconnect = () => {
+        setNotice(t("The wallet ended the connection. Sign in again to continue.", "کیف پول اتصال را قطع کرد. برای ادامه دوباره وارد شوید."));
         void logout();
-      });
-      wallet.on("chainChanged", () => {
-        void logout();
-      });
-      wallet.on("disconnect", () => {
-        generation.current++;
-        setUser(null);
-        setAccount(null);
-        void request("/auth/logout", {});
-      });
-    } catch (e) {
-      setNotice(e instanceof Error ? e.message : "Wallet connection failed");
+      };
+      walletListeners.current?.();
+      wallet.on("accountsChanged", onAccounts);
+      wallet.on("disconnect", onDisconnect);
+      walletListeners.current = () => {
+        wallet.removeListener?.("accountsChanged", onAccounts);
+        wallet.removeListener?.("disconnect", onDisconnect);
+      };
+    } catch (e: any) {
+      if (gen === generation.current) {
+        if (e?.backend !== undefined)
+          setNotice(
+            e.backend === 0
+              ? t("The Openfund service is unavailable. Retrying automatically.", "سرویس اوپن‌فاند در دسترس نیست. اتصال خودکار تکرار می‌شود.")
+              : format(t, "Openfund rejected the sign-in (${reason}).", "اوپن‌فاند ورود را نپذیرفت (${reason}).", { reason: String(e.backend) }),
+          );
+        else setNotice(walletMessage(e));
+      }
+      /* never keep a half-established pairing after a failed sign-in */
+      if (wallet && !user) {
+        try {
+          await wallet.disconnect();
+        } catch {}
+        if (provider.current === wallet) provider.current = null;
+      }
     } finally {
       setBusy(false);
     }
@@ -634,29 +871,139 @@ function App() {
   }
   const lot = window.OpenfundPositionSizing.lotSpec(meta, selected.symbol);
   const terminal = !!account || explore;
+  const walletAddress = String(user?.walletAddress || "");
+  const shortWallet = walletAddress
+    ? walletAddress.slice(0, 6) + "…" + walletAddress.slice(-4)
+    : "";
+  const channelLabel =
+    config.channel === "stable" ? "" : config.channel === "beta" ? "BETA" : t("INTERNAL", "داخلی");
+  const productLabel = (p: Product) =>
+    p === "prop"
+      ? t("PROP — Simulated Trading", "پراپ — معاملهٔ شبیه‌سازی‌شده")
+      : t("PERPETUAL — Gains Account", "پرپچوال — حساب Gains");
+  const gainsState = gainsFeedState(!!user, gains);
+  /** Both products for the signed-in wallet, strictly separated. */
+  const directory = (after?: () => void) => {
+    const prop = propAccounts(accounts),
+      perpetual = perpetualAccount(accounts, walletAddress);
+    const locked = busy || !!pending || network !== "online";
+    return (
+      <div className="product-directory">
+        <p className="wallet-line">
+          <span>{t("Connected wallet", "کیف پول متصل")}</span>
+          <bdi dir="ltr" title={walletAddress}>{shortWallet}</bdi>
+          <span className="muted">Arbitrum One · 42161</span>
+        </p>
+        <section aria-label={productLabel("prop")} className="product-section">
+          <h3>{productLabel("prop")}</h3>
+          {prop.length ? (
+            <div className="accounts">
+              {prop.map((a: any) => (
+                <button
+                  key={a.id}
+                  disabled={locked}
+                  aria-pressed={product === "prop" && account?.id === a.id}
+                  className={product === "prop" && account?.id === a.id ? "selected" : ""}
+                  onClick={() => {
+                    selectProduct("prop", a);
+                    after?.();
+                  }}
+                >
+                  <span>
+                    {a.name}
+                    <small>
+                      {a.type} · {a.status}
+                      {a.readOnly ? " · " + t("Read-only", "فقط خواندنی") : ""}
+                    </small>
+                  </span>
+                  <strong dir="ltr">
+                    {money(a.equity)} {a.currency || ""}
+                  </strong>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="muted">
+              {t(
+                "This wallet has no Prop accounts yet. Start a challenge or free demo on the Openfund website.",
+                "این کیف پول هنوز حساب پراپ ندارد. چالش یا حساب دموی رایگان را از وب‌سایت اوپن‌فاند شروع کنید.",
+              )}
+            </p>
+          )}
+        </section>
+        <section aria-label={productLabel("perpetual")} className="product-section">
+          <h3>{productLabel("perpetual")}</h3>
+          {perpetual ? (
+            <div className="accounts">
+              <button
+                disabled={locked}
+                aria-pressed={product === "perpetual" && !!account}
+                className={product === "perpetual" && account ? "selected" : ""}
+                onClick={() => {
+                  selectProduct("perpetual", perpetual);
+                  after?.();
+                }}
+              >
+                <span>
+                  Gains Network
+                  <small>
+                    {t("Read-only", "فقط خواندنی")} · Arbitrum One
+                  </small>
+                </span>
+                <strong>{t("View", "مشاهده")}</strong>
+              </button>
+            </div>
+          ) : (
+            <p className="muted">
+              {t("Perpetual account information is unavailable.", "اطلاعات حساب پرپچوال در دسترس نیست.")}
+            </p>
+          )}
+          <small className="muted">
+            {t(
+              "Official Gains records for this wallet. Orders, approvals and collateral transfers are not available in Open Trade.",
+              "سوابق رسمی Gains برای این کیف پول. ثبت سفارش، تأیید و انتقال وثیقه در Open Trade در دسترس نیست.",
+            )}
+          </small>
+        </section>
+        <button disabled={busy || !!pending} onClick={() => void logout()}>
+          {t("Disconnect wallet", "قطع اتصال کیف پول")}
+        </button>
+      </div>
+    );
+  };
   return (
     <div className="app">
       <header className="titlebar">
         <div className="window-title">
-          Open Trade <span>{config.version || "0.0.2"} BETA</span>
+          Open Trade <span>{config.version}{channelLabel ? " " + channelLabel : ""}</span>
         </div>
         <div className="titlebar-actions">
           {terminal && (
             <>
+              {account && (
+                <span className={"product-badge " + product} aria-live="polite">
+                  {product === "prop" ? t("PROP", "پراپ") : t("PERPETUAL", "پرپچوال")}
+                </span>
+              )}
               <button
-                aria-label="Select account"
+                aria-label={t("Select account", "انتخاب حساب")}
                 onClick={() => setAccountMenu(true)}
               >
-                {account?.name || t("Connect account", "اتصال حساب")} ▾
+                {account
+                  ? product === "perpetual"
+                    ? "Gains · " + shortWallet
+                    : account.name
+                  : t("Connect account", "اتصال حساب")}{" "}
+                ▾
               </button>
-              <span className="connection-dot" title={network}>
+              <span className="connection-dot" title={network} aria-label={network}>
                 ●
               </span>
             </>
           )}
           <button
-            aria-label="Settings"
-            title="Settings · ⌘,"
+            aria-label={t("Settings", "تنظیمات")}
+            title={t("Settings", "تنظیمات") + " · ⌘,"}
             onClick={() => setSettings(true)}
           >
             ⚙
@@ -669,8 +1016,8 @@ function App() {
           <div className="orbit o2" />
           <div className="orbit o3" />
           <section className={"launch glass scene-" + (busy ? "wallet" : network === "online" ? "online" : "offline")}>
-            <label className="region-selector">Server region
-              <select aria-label="Server region" value={config.region || "international"} disabled={busy || !!pending}
+            <label className="region-selector">{t("Server region", "منطقهٔ سرور")}
+              <select aria-label={t("Server region", "منطقهٔ سرور")} value={config.region || "international"} disabled={busy || !!pending}
                 onChange={async (event) => {
                   try {
                     await bridge.selectRegion(event.target.value);
@@ -679,14 +1026,22 @@ function App() {
                     setNetwork(await bridge.connectivity());
                   } catch (error) { setNotice(String(error)); }
                 }}>
-                <option value="international">International</option>
-                <option value="iran" disabled={!regions?.iranEnabled || regions.iran === null}>Iran</option>
+                <option value="international">{t("International", "بین‌المللی")}</option>
+                <option value="iran" disabled={!regions?.iranEnabled || regions.iran === null}>{t("Iran", "ایران")}</option>
               </select>
             </label>
-            <p className="region-status" aria-label="API latency">{(["international", "iran"] as const).map((key) => (
-              <span key={key}>{key === "iran" ? "Iran" : "International"} · {regions ? regions[key] === null ? "Unavailable" : regions[key] + " ms RTT" : "Checking"}</span>
+            <p className="region-status" aria-label={t("API latency", "تأخیر سرور")}>{(["international", "iran"] as const).map((key) => (
+              <span key={key}>{key === "iran" ? t("Iran", "ایران") : t("International", "بین‌المللی")} · <bdi>{regions ? regions[key] === null ? t("Unavailable", "ناموجود") : regions[key] + " ms" : t("Checking", "در حال بررسی")}</bdi></span>
             ))}</p>
-            <img className="emblem" src="./assets/mark-mint.svg" />
+            {regions && !regions.iranEnabled && (
+              <p className="region-note muted">
+                {t(
+                  "The Iran region is not enabled for this build. Accounts stay on the international service.",
+                  "منطقهٔ ایران برای این نسخه فعال نیست. حساب‌ها روی سرویس بین‌المللی می‌مانند.",
+                )}
+              </p>
+            )}
+            <img className="emblem" src="./assets/mark-mint.svg" alt="Openfund" />
             <p className="eyebrow">OPEN TRADE / OPENFUND</p>
             <h1>
               {user
@@ -718,42 +1073,37 @@ function App() {
                       )}
             </p>
             {user ? (
-              <div className="accounts">
-                {accounts
-                  .filter((a) => a.product === "prop")
-                  .map((a) => (
-                    <button
-                      key={a.id}
-                      disabled={network !== "online"}
-                      onClick={() => setAccount(a)}
-                    >
-                      <span>
-                        {a.name}
-                        <small>
-                          {a.type} · {a.status}
-                        </small>
-                      </span>
-                      <strong>
-                        {money(a.equity)} {a.currency || ""}
-                      </strong>
-                    </button>
-                  ))}
-                <button onClick={() => void logout()}>
-                  {t("Disconnect wallet", "قطع اتصال کیف پول")}
-                </button>
-              </div>
+              directory()
             ) : (
-              <button
-                className="primary"
-                disabled={busy || network !== "online"}
-                onClick={() => void login()}
-              >
-                {busy
-                  ? t("Waiting for wallet…", "در انتظار کیف پول…")
-                  : t("Connect wallet", "اتصال کیف پول")}{" "}
-                ↗
-              </button>
+              <>
+                <button
+                  className="primary"
+                  disabled={busy || network !== "online" || config.projectIdStatus !== "configured"}
+                  onClick={() => void login()}
+                >
+                  {busy
+                    ? t("Waiting for wallet…", "در انتظار کیف پول…")
+                    : t("Connect wallet", "اتصال کیف پول")}{" "}
+                  ↗
+                </button>
+                {config.projectIdStatus !== "configured" && (
+                  <p className="muted" role="status">
+                    {t(
+                      "Wallet connection is unavailable in this build. Contact Openfund support.",
+                      "اتصال کیف پول در این نسخه در دسترس نیست. با پشتیبانی اوپن‌فاند تماس بگیرید.",
+                    )}
+                  </p>
+                )}
+              </>
             )}
+            <label className="language-selector">
+              {t("Language", "زبان")}
+              <select aria-label={t("Language", "زبان")} value={locale} onChange={(e) => chooseLocale(e.target.value as AppLocale)}>
+                {LOCALES.map((l) => (
+                  <option key={l} value={l} lang={l}>{LOCALE_NAMES[l]}</option>
+                ))}
+              </select>
+            </label>
             <div className="launch-actions">
               <button
                 onClick={() => {
@@ -791,51 +1141,51 @@ function App() {
             (ticketDock ? "ticket-docked" : "")
           }
         >
-          <nav className="app-rail" aria-label="Workspace panels">
-            <img src="./assets/mark-mint.svg" />
-            <span className="beta-label">BETA</span>
+          <nav className="app-rail" aria-label={t("Workspace panels", "پنل‌های فضای کاری")}>
+            <img src="./assets/mark-mint.svg" alt="Openfund" />
+            {channelLabel && <span className="beta-label">{channelLabel}</span>}
             <button
-              aria-label="Toggle watchlist"
-              title="Watchlist · Alt+W"
+              aria-label={t("Toggle watchlist", "نمایش دیده‌بان")}
+              title={t("Watchlist", "دیده‌بان") + " · Alt+W"}
               className={watch ? "selected" : ""}
               onClick={() => setWatch(!watch)}
             >
               ☷
             </button>
             <button
-              aria-label="Toggle quick trade"
-              title="Quick Trade · Alt+T"
+              aria-label={t("Toggle quick trade", "نمایش معامله سریع")}
+              title={t("Quick Trade", "معامله سریع") + " · Alt+T"}
               className={ticket ? "selected" : ""}
               onClick={() => setTicket(!ticket)}
             >
               ⇄
             </button>
             <button
-              aria-label="Toggle positions"
-              title="Positions · Alt+P"
+              aria-label={t("Toggle positions", "نمایش موقعیت‌ها")}
+              title={t("Positions", "موقعیت‌ها") + " · Alt+P"}
               className={positionsOpen ? "selected" : ""}
               onClick={() => setPositionsOpen(!positionsOpen)}
             >
               ▤
             </button>
             <button
-              aria-label="Focus mode"
-              title="Focus · ⌘⇧F"
+              aria-label={t("Focus mode", "حالت تمرکز")}
+              title={t("Focus mode", "حالت تمرکز") + " · ⌘⇧F"}
               onClick={() => setFocus(!focus)}
             >
               ⛶
             </button>
             <div className="rail-space" />
             <button
-              aria-label="Select account"
-              title="Account"
+              aria-label={t("Select account", "انتخاب حساب")}
+              title={t("Account", "حساب")}
               onClick={() => setAccountMenu(true)}
             >
               ◎
             </button>
             <button
-              aria-label="Settings"
-              title="Settings · ⌘,"
+              aria-label={t("Settings", "تنظیمات")}
+              title={t("Settings", "تنظیمات") + " · ⌘,"}
               onClick={() => setSettings(true)}
             >
               ⚙
@@ -845,10 +1195,10 @@ function App() {
             <aside className="watch glass">
               <div className="panel-title">
                 {t("Watchlist", "دیده‌بان")}
-                <button onClick={() => setWatch(false)}>×</button>
+                <button aria-label={t("Close", "بستن")} onClick={() => setWatch(false)}>×</button>
               </div>
               <input
-                aria-label="Search markets"
+                aria-label={t("Search markets", "جستجوی بازار")}
                 placeholder={t("Search markets", "جستجوی بازار")}
                 onChange={(e) => {
                   document
@@ -874,7 +1224,7 @@ function App() {
                     {m.symbol}
                     <small>{m.group}</small>
                   </span>
-                  <b>{money(prices[m.symbol]?.mark)}</b>
+                  <b dir="ltr">{money(prices[m.symbol]?.mark)}</b>
                 </button>
               ))}
             </aside>
@@ -891,8 +1241,8 @@ function App() {
                 <span className="workspace-name">{selected.symbol}</span>
                 {[1, 2, 3, 4].map((n) => (
                   <button
-                    aria-label={`${n} chart layout`}
-                    title={`${n} chart${n === 1 ? "" : "s"} · ⌘${n}`}
+                    aria-label={format(t, "${count} chart layout", "چیدمان ${count} نمودار", { count: n })}
+                    title={format(t, "${count} chart layout", "چیدمان ${count} نمودار", { count: n }) + " · ⌘" + n}
                     className={layout === n ? "selected" : ""}
                     onClick={() => {
                       setLayout(n);
@@ -912,17 +1262,17 @@ function App() {
                 )}
               </span>
               <div>
-                <button aria-label="Watchlist" onClick={() => setWatch(!watch)}>
+                <button aria-label={t("Watchlist", "دیده‌بان")} onClick={() => setWatch(!watch)}>
                   {t("Watchlist", "دیده‌بان")}
                 </button>
                 <button
-                  aria-label="Quick Trade"
+                  aria-label={t("Quick Trade", "معامله سریع")}
                   onClick={() => setTicket(!ticket)}
                 >
                   {t("Quick Trade", "معامله سریع")}
                 </button>
               </div>
-              <button onClick={() => void captureChart()} aria-label="Capture chart">Capture</button>
+              <button onClick={() => void captureChart()} aria-label={t("Capture chart", "ثبت تصویر نمودار")}>{t("Capture", "تصویر")}</button>
             </nav>
             <div
               className={
@@ -930,7 +1280,7 @@ function App() {
               }
               style={layout === 3 && max === null ? { "--chart-split": chartSplit + "%" } as React.CSSProperties : undefined}
             >
-              {layout === 3 && max === null && <div className="chart-splitter" role="separator" aria-label="Resize chart columns"
+              {layout === 3 && max === null && <div className="chart-splitter" role="separator" aria-label={t("Resize chart columns", "تغییر اندازهٔ ستون نمودارها")}
                 onPointerDown={(event) => { if (event.button === 0) event.currentTarget.setPointerCapture(event.pointerId); }}
                 onPointerMove={(event) => {
                   if (!event.currentTarget.hasPointerCapture(event.pointerId)) return;
@@ -946,6 +1296,7 @@ function App() {
                   active={active === i}
                   hidden={max !== null && max !== i}
                   theme={theme}
+                  t={t}
                   wallet={user?.id || "guest"}
                   account={account?.id}
                   positions={state?.positions || []}
@@ -960,14 +1311,32 @@ function App() {
                 />
               ))}
             </div>
-            {!focus && (
+            {!focus && product === "perpetual" && account && (
+              <GainsPanel
+                t={t}
+                locale={locale}
+                resource={gains}
+                state={gainsState}
+                tab={gainsTab}
+                onTab={(x: any) => {
+                  setGainsTab(x);
+                  setPositionsOpen(true);
+                }}
+                open={positionsOpen}
+                onToggle={() => setPositionsOpen(!positionsOpen)}
+                height={panelHeight}
+                onResize={setPanelHeight}
+                onTx={(tx: string) => void bridge.external("tx:" + tx)}
+              />
+            )}
+            {!focus && (product === "prop" || !account) && (
               <section
                 className={
                   "positions " + (positionsOpen ? "expanded" : "collapsed")
                 }
                 style={positionsOpen ? { height: panelHeight } : undefined}
               >
-                {positionsOpen && <div className="positions-divider" role="separator" aria-label="Resize trading panel"
+                {positionsOpen && <div className="positions-divider" role="separator" aria-label={t("Resize trading panel", "تغییر اندازهٔ پنل معاملات")}
                   onPointerDown={(event) => {
                     if (event.button !== 0) return;
                     resizeStart.current = { y: event.clientY, height: event.currentTarget.parentElement!.offsetHeight };
@@ -981,7 +1350,7 @@ function App() {
                 />}
                 <nav>
                   <button
-                    aria-label="Expand or collapse positions"
+                    aria-label={t("Expand or collapse positions", "باز یا بسته کردن موقعیت‌ها")}
                     onClick={() => setPositionsOpen(!positionsOpen)}
                   >
                     {positionsOpen ? "⌄" : "⌃"}
@@ -1006,6 +1375,7 @@ function App() {
                     {t("Orders", "سفارش‌ها")} ({state?.orders?.length || 0})
                   </button>
                   <button
+                    className={tab === "activity" ? "selected" : ""}
                     onClick={() => {
                       setTab("activity");
                       setPositionsOpen(true);
@@ -1015,7 +1385,7 @@ function App() {
                   </button>
                   <span className="position-status muted">
                     {account
-                      ? connection
+                      ? connectionLabel(t, connection)
                       : t(
                           "Sign in to load your account",
                           "برای مشاهده حساب وارد شوید",
@@ -1025,19 +1395,19 @@ function App() {
                 <div className="account-stats">
                   <span>
                     {t("Balance", "موجودی")}{" "}
-                    <b>{money(state?.account?.balance)}</b>
+                    <b dir="ltr">{money(state?.account?.balance)}</b>
                   </span>
                   <span>
                     {t("Equity", "ارزش حساب")}{" "}
-                    <b>{money(state?.account?.equity)}</b>
+                    <b dir="ltr">{money(state?.account?.equity)}</b>
                   </span>
                   <span>
                     {t("Available", "آزاد")}{" "}
-                    <b>{money(state?.account?.free_margin)}</b>
+                    <b dir="ltr">{money(state?.account?.free_margin)}</b>
                   </span>
                   <span>
                     {t("Margin", "مارجین")}{" "}
-                    <b>{money(state?.account?.used_margin)}</b>
+                    <b dir="ltr">{money(state?.account?.used_margin)}</b>
                   </span>
                 </div>
                 <div className="table-scroll">
@@ -1045,12 +1415,12 @@ function App() {
                     <thead>
                       <tr>
                         {[
-                          "Market",
-                          "Side",
-                          "Entry / Target",
+                          t("Market", "بازار"),
+                          t("Side", "جهت"),
+                          t("Entry / Target", "ورود / هدف"),
                           "P&L",
-                          "SL",
-                          "TP",
+                          t("Stop loss", "حد ضرر"),
+                          t("Take profit", "حد سود"),
                           "",
                         ].map((x, i) => (
                           <th key={i}>{x}</th>
@@ -1063,11 +1433,11 @@ function App() {
                       ).map((p: any) => (
                         <tr key={p.id}>
                           <td>{p.market}</td>
-                          <td>{p.side}</td>
-                          <td>{money(p.entry_price ?? p.target_price)}</td>
-                          <td>{money(p.unrealized_pnl ?? p.realized_pnl)}</td>
-                          <td>{money(p.sl_price)}</td>
-                          <td>{money(p.tp_price)}</td>
+                          <td>{sideLabel(t, p.side)}</td>
+                          <td dir="ltr">{money(p.entry_price ?? p.target_price)}</td>
+                          <td dir="ltr">{money(p.unrealized_pnl ?? p.realized_pnl)}</td>
+                          <td dir="ltr">{money(p.sl_price)}</td>
+                          <td dir="ltr">{money(p.tp_price)}</td>
                           <td>
                             {tab !== "activity" && (
                               <button
@@ -1108,11 +1478,26 @@ function App() {
               </section>
             )}
 
-            {!focus && ticket && (
+            {!focus && ticket && product === "perpetual" && account && (
+              <aside className="ticket glass floating readonly-ticket" aria-label={t("Read-only", "فقط خواندنی")}>
+                <div className="ticket-head">
+                  <strong>Gains Network</strong>
+                  <span className="order-type">{t("Read-only", "فقط خواندنی")}</span>
+                  <button aria-label={t("Hide order ticket", "پنهان کردن برگه سفارش")} onClick={() => setTicket(false)}>⌄</button>
+                </div>
+                <p className="muted">
+                  {t(
+                    "Perpetual is a read-only view of your official Gains account. Open Trade does not place, change or close Gains trades.",
+                    "پرپچوال نمای فقط‌خواندنی حساب رسمی Gains شماست. Open Trade معامله Gains را ثبت، ویرایش یا بسته نمی‌کند.",
+                  )}
+                </p>
+              </aside>
+            )}
+            {!focus && ticket && (product === "prop" || !account) && (
               <aside
                 ref={ticketElement}
                 style={!ticketDock && ticketPosition && Number.isFinite(ticketPosition.x) && Number.isFinite(ticketPosition.y) ? { left: ticketPosition.x, top: ticketPosition.y, bottom: "auto" } : undefined}
-                aria-label="Quick Trade ticket"
+                aria-label={t("Quick Trade", "معامله سریع")}
                 className={
                   "ticket glass " + (ticketDock ? "docked" : "floating")
                 }
@@ -1142,13 +1527,13 @@ function App() {
                       "Dock / float order ticket",
                       "اتصال / شناورسازی سفارش",
                     )}
-                    aria-label="Dock order ticket"
+                    aria-label={t("Dock / float order ticket", "اتصال / شناورسازی سفارش")}
                     onClick={() => setTicketDock(!ticketDock)}
                   >
                     ◧
                   </button>
                   <button
-                    aria-label="Hide order ticket"
+                    aria-label={t("Hide order ticket", "پنهان کردن برگه سفارش")}
                     onClick={() => setTicket(false)}
                   >
                     ⌄
@@ -1158,7 +1543,7 @@ function App() {
                   <label>
                     {t("Leverage", "اهرم")}
                     <input
-                      aria-label="Leverage"
+                      aria-label={t("Leverage", "اهرم")}
                       value={leverage}
                       type="number"
                       min="1"
@@ -1169,9 +1554,9 @@ function App() {
                     />
                   </label>
                   <label>
-                    SL
+                    {t("SL", "حد ضرر")}
                     <input
-                      aria-label="Stop loss"
+                      aria-label={t("Stop loss", "حد ضرر")}
                       value={sl}
                       type="number"
                       min="0"
@@ -1183,9 +1568,9 @@ function App() {
                     />
                   </label>
                   <label>
-                    TP
+                    {t("TP", "حد سود")}
                     <input
-                      aria-label="Take profit"
+                      aria-label={t("Take profit", "حد سود")}
                       value={tp}
                       type="number"
                       min="0"
@@ -1198,7 +1583,7 @@ function App() {
                   </label>
                 </div>
                 <div className="ticket-quotes">
-                  <span className="negative">{money(price?.mark)}</span>
+                  <span className="negative" dir="ltr">{money(price?.mark)}</span>
                   <span>
                     {t("Available", "آزاد")}:{" "}
                     {money(state?.account?.free_margin)}
@@ -1219,7 +1604,7 @@ function App() {
                   </button>
                   <div className="size-control">
                     <input
-                      aria-label="Order size"
+                      aria-label={t("Order size", "اندازه سفارش")}
                       value={margin}
                       type="number"
                       min="0"
@@ -1229,7 +1614,7 @@ function App() {
                       }}
                     />
                     <select
-                      aria-label="Sizing mode"
+                      aria-label={t("Sizing mode", "روش اندازه‌گذاری")}
                       value={mode}
                       onChange={(e) => {
                         setMode(e.target.value);
@@ -1267,7 +1652,7 @@ function App() {
                 {preview && (
                   <div className="preview">
                     <strong>
-                      {t("Review order", "بررسی سفارش")} · {preview.body.side}
+                      {t("Review order", "بررسی سفارش")} · {sideLabel(t, preview.body.side)}
                     </strong>
                     <p>
                       {t("Quantity", "تعداد")}: {preview.data.quantity} ·{" "}
@@ -1287,7 +1672,9 @@ function App() {
                     <strong>
                       {t("Unconfirmed operation", "عملیات تأییدنشده")}
                     </strong>
-                    <p>{pending.key}</p>
+                    <p>
+                      {t("Operation ID", "شناسه عملیات")}: <bdi dir="ltr">{pending.key}</bdi>
+                    </p>
                     <button onClick={() => void reconcile()}>
                       {t("Reconcile operation", "تطبیق عملیات")}
                     </button>
@@ -1301,12 +1688,39 @@ function App() {
       {notice && (
         <div role="status" className="notice glass">
           {notice}
-          <button onClick={() => setNotice("")}>×</button>
+          <button aria-label={t("Close", "بستن")} onClick={() => setNotice("")}>×</button>
+        </div>
+      )}
+      {update && (
+        <div role="status" className="notice glass update-notice">
+          {format(t, "Open Trade ${version} is available.", "نسخهٔ ${version} اوپن ترید منتشر شده است.", { version: update.version })}{" "}
+          <button onClick={() => void bridge.external("release:" + update.tag)}>
+            {t("View release", "مشاهدهٔ انتشار")}
+          </button>
+          <button
+            onClick={() => {
+              localStorage.setItem("ot-update-deferred", JSON.stringify(update.version));
+              setUpdate(null);
+            }}
+          >
+            {t("Later", "بعداً")}
+          </button>
+        </div>
+      )}
+      {missing.length > 0 && (
+        <div className="untranslated muted" role="note">
+          {t(
+            "Some text is not yet translated and is shown in English.",
+            "بخشی از متن هنوز ترجمه نشده و به انگلیسی نمایش داده می‌شود.",
+          )}
         </div>
       )}
       <footer>
-        <span>Open Trade · {t("Internal beta", "بتای داخلی")}</span>
         <span>
+          Open Trade <bdi dir="ltr">{config.version}</bdi> ·{" "}
+          {config.signed ? t("Signed build", "نسخهٔ امضاشده") : t("Unsigned internal build", "نسخهٔ داخلی بدون امضا")}
+        </span>
+        <span dir="ltr">
           {config.origin || t("Backend not configured", "سرویس تنظیم نشده")}
         </span>
         <span>
@@ -1369,42 +1783,19 @@ function App() {
           <section
             role="dialog"
             aria-modal="true"
-            aria-label="Accounts"
+            aria-label={t("Accounts", "حساب‌ها")}
             className="account-dialog glass"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="panel-title">
-              <h2>{t("Trading account", "حساب معاملاتی")}</h2>
-              <button onClick={() => setAccountMenu(false)}>×</button>
+              <h2>{t("Accounts", "حساب‌ها")}</h2>
+              <button aria-label={t("Close", "بستن")} onClick={() => setAccountMenu(false)}>×</button>
             </div>
             {user ? (
-              <div className="accounts">
-                {accounts
-                  .filter((a) => a.product === "prop")
-                  .map((a) => (
-                    <button
-                      key={a.id}
-                      disabled={busy || !!pending}
-                      onClick={() => {
-                        setAccount(a);
-                        setAccountMenu(false);
-                        setPositionsOpen(true);
-                      }}
-                    >
-                      <span>
-                        {a.name}
-                        <small>{a.status}</small>
-                      </span>
-                      <strong>{money(a.equity)}</strong>
-                    </button>
-                  ))}
-                <button
-                  disabled={busy || !!pending}
-                  onClick={() => void logout()}
-                >
-                  {t("Disconnect wallet", "قطع اتصال کیف پول")}
-                </button>
-              </div>
+              directory(() => {
+                setAccountMenu(false);
+                setPositionsOpen(true);
+              })
             ) : (
               <>
                 <p className="muted">
@@ -1415,7 +1806,7 @@ function App() {
                 </p>
                 <button
                   className="primary"
-                  disabled={busy || network !== "online"}
+                  disabled={busy || network !== "online" || config.projectIdStatus !== "configured"}
                   onClick={() => void login()}
                 >
                   {busy
@@ -1429,11 +1820,11 @@ function App() {
         </div>
       )}
       {chartImage && <div className="modal-backdrop">
-        <section className="settings glass chart-preview" role="dialog" aria-modal="true" aria-label="Chart capture preview">
-          <div className="panel-title"><h2>Chart capture preview</h2><button aria-label="Close preview" onClick={() => setChartImage("")}>×</button></div>
-          <img src={chartImage} alt="Captured chart" />
-          <button onClick={() => void bridge.saveChart(chartImage).catch((error: unknown) => setNotice(String(error)))}>Save PNG</button>
-          <button onClick={() => void bridge.copyChart(chartImage).then(() => setNotice("Chart copied to clipboard.")).catch((error: unknown) => setNotice(String(error)))}>Copy image</button>
+        <section className="settings glass chart-preview" role="dialog" aria-modal="true" aria-label={t("Chart capture preview", "پیش‌نمایش تصویر نمودار")}>
+          <div className="panel-title"><h2>{t("Chart capture preview", "پیش‌نمایش تصویر نمودار")}</h2><button aria-label={t("Close", "بستن")} onClick={() => setChartImage("")}>×</button></div>
+          <img src={chartImage} alt={t("Captured chart", "تصویر نمودار")} />
+          <button onClick={() => void bridge.saveChart(chartImage).catch((error: unknown) => setNotice(String(error)))}>{t("Save PNG", "ذخیره PNG")}</button>
+          <button onClick={() => void bridge.copyChart(chartImage).then(() => setNotice(t("Chart copied to clipboard.", "نمودار در کلیپ‌بورد کپی شد."))).catch((error: unknown) => setNotice(String(error)))}>{t("Copy image", "کپی تصویر")}</button>
         </section>
       </div>}
       {settings && (
@@ -1441,24 +1832,31 @@ function App() {
           <section
             role="dialog"
             aria-modal="true"
-            aria-label="Settings"
+            aria-label={t("Settings", "تنظیمات")}
             className="settings glass"
           >
             <div className="panel-title">
               <h2>{t("Settings", "تنظیمات")}</h2>
-              <button onClick={() => setSettings(false)}>×</button>
+              <button aria-label={t("Close", "بستن")} onClick={() => setSettings(false)}>×</button>
             </div>
             <label>
+              {t("Language", "زبان")}
+              <select aria-label={t("Language", "زبان")} value={locale} onChange={(e) => chooseLocale(e.target.value as AppLocale)}>
+                {LOCALES.map((l) => (
+                  <option key={l} value={l} lang={l}>{LOCALE_NAMES[l]}</option>
+                ))}
+              </select>
+            </label>
+            <label>
               {t("Appearance", "ظاهر")}
-              <select value={theme} onChange={(e) => setTheme(e.target.value)}>
-                <option value="dark">Dark</option>
-                <option value="light">Light</option>
+              <select aria-label={t("Appearance", "ظاهر")} value={theme} onChange={(e) => setTheme(e.target.value)}>
+                <option value="dark">{t("Dark", "تیره")}</option>
+                <option value="light">{t("Light", "روشن")}</option>
               </select>
             </label>
             <div className="workspace-settings">
-              <h3>Workspace</h3>
-              <button onClick={() => { setLayout(1); setActive(0); setMax(null); setTicketPosition(null); setPanelHeight(180); setChartSplit(66); setTicketDock(false); }}>Reset workspace layout</button>
-              <p className="muted">Open Trade {config.version}</p>
+              <h3>{t("Workspace", "فضای کاری")}</h3>
+              <button onClick={() => { setLayout(1); setActive(0); setMax(null); setTicketPosition(null); setPanelHeight(180); setChartSplit(66); setTicketDock(false); }}>{t("Reset workspace layout", "بازنشانی چیدمان")}</button>
             </div>
             <p className="muted">
               {config.secureStorage
@@ -1471,16 +1869,211 @@ function App() {
                     "ذخیره رمزگذاری‌شده در دسترس نیست؛ نشست فقط در حافظه نگهداری می‌شود.",
                   )}
             </p>
-            <p className="muted">
-              {t(
-                "Automatic updates are disabled for unsigned beta builds.",
-                "به‌روزرسانی خودکار برای نسخه بتای بدون امضا غیرفعال است.",
-              )}
-            </p>
+            <section className="about" aria-label={t("About Open Trade", "درباره اوپن ترید")}>
+              <h3>{t("About Open Trade", "درباره اوپن ترید")}</h3>
+              <dl>
+                <dt>{t("Version", "نسخه")}</dt>
+                <dd dir="ltr">{config.version}{config.channel ? " · " + config.channel : ""}</dd>
+                <dt>{t("Build", "بیلد")}</dt>
+                <dd dir="ltr">{config.sha ? String(config.sha).slice(0, 12) : "—"}</dd>
+                <dt>{t("Signature", "امضا")}</dt>
+                <dd>{config.signed ? t("Signed build", "نسخهٔ امضاشده") : t("Unsigned internal build", "نسخهٔ داخلی بدون امضا")}</dd>
+                <dt>{t("Server", "سرور")}</dt>
+                <dd dir="ltr">{config.origin || "—"}</dd>
+              </dl>
+              <p className="muted">
+                {t(
+                  "Open Trade never installs updates by itself. When a newer official release is published, you are notified and can open its release page.",
+                  "اوپن ترید هرگز به‌روزرسانی را خودکار نصب نمی‌کند. با انتشار نسخهٔ رسمی جدید به شما اطلاع داده می‌شود و می‌توانید صفحهٔ انتشار را باز کنید.",
+                )}
+              </p>
+              <button onClick={() => void checkUpdates(true)}>
+                {t("Check for updates", "بررسی به‌روزرسانی")}
+              </button>
+            </section>
           </section>
         </div>
       )}
     </div>
+  );
+}
+function connectionLabel(t: Translate, status: string) {
+  switch (status) {
+    case "ready":
+      return t("Live account", "حساب زنده");
+    case "loading":
+      return t("Loading account…", "در حال بارگذاری حساب…");
+    case "disconnected":
+      return t("Reconnecting to account…", "در حال اتصال مجدد به حساب…");
+    case "expired":
+      return t("Session expired. Sign in again.", "نشست منقضی شد. دوباره وارد شوید.");
+    default:
+      return status;
+  }
+}
+const sideLabel = (t: Translate, side: unknown) =>
+  side === "long" ? t("Long", "خرید") : side === "short" ? t("Short", "فروش") : String(side ?? "—");
+/** Read-only Gains account records for the signed-in wallet. Mirrors the web
+ * terminal's GainsPortfolio presentation rules (shared gainsView.ts): the
+ * backend snapshot is the only source; nothing is computed or inferred here. */
+function GainsPanel({ t, locale, resource, state, tab, onTab, open, onToggle, height, onResize, onTx }: any) {
+  const data = resource.data,
+    rows = data?.[tab] || [],
+    at = snapshotTime(data),
+    severity = feedSeverity(state);
+  const resizeStart = useRef<{ y: number; height: number } | null>(null);
+  const status =
+    state === "live" ? t("Up to date", "به‌روز")
+    : state === "stale" ? t("Source data is stale", "دادهٔ منبع قدیمی است")
+    : state === "inconsistent" ? t("Source timestamps are inconsistent", "زمان‌های منبع ناسازگار است")
+    : state === "outdated" ? t("Connection failed; showing last verified data (outdated)", "اتصال ناموفق؛ آخرین دادهٔ تأییدشده (قدیمی)")
+    : state === "unavailable" ? t("Provider unavailable", "ارائه‌دهنده در دسترس نیست")
+    : state === "loading" ? t("Loading records from Gains…", "در حال دریافت اطلاعات از Gains…")
+    : t("Sign in to view your Gains account.", "برای مشاهدهٔ حساب Gains وارد شوید.");
+  const tabs: [string, string, string, number | undefined][] = [
+    ["positions", "Open positions", "پوزیشن باز", data?.positions?.length],
+    ["orders", "Open orders", "سفارش باز", data?.orders?.length],
+    ["history", "Trade history", "تاریخچهٔ معاملات", data?.history?.length],
+  ];
+  return (
+    <section
+      className={"positions gains-panel " + (open ? "expanded" : "collapsed")}
+      style={open ? { height } : undefined}
+      aria-label={t("Gains account records", "رکوردهای حساب Gains")}
+    >
+      {open && (
+        <div
+          className="positions-divider"
+          role="separator"
+          aria-label={t("Resize trading panel", "تغییر اندازهٔ پنل معاملات")}
+          onPointerDown={(event) => {
+            if (event.button !== 0) return;
+            resizeStart.current = { y: event.clientY, height: event.currentTarget.parentElement!.offsetHeight };
+            event.currentTarget.setPointerCapture(event.pointerId);
+          }}
+          onPointerMove={(event) => {
+            const start = resizeStart.current;
+            if (start) onResize(Math.max(105, Math.min(900, start.height + start.y - event.clientY)));
+          }}
+          onLostPointerCapture={() => {
+            resizeStart.current = null;
+          }}
+        />
+      )}
+      <nav role="tablist" aria-label={t("Gains account records", "رکوردهای حساب Gains")}>
+        <button aria-label={t("Expand or collapse positions", "باز یا بسته کردن موقعیت‌ها")} onClick={onToggle}>
+          {open ? "⌄" : "⌃"}
+        </button>
+        {tabs.map(([key, en, fa, n]) => (
+          <button key={key} role="tab" aria-selected={tab === key} className={tab === key ? "selected" : ""} onClick={() => onTab(key)}>
+            {t(en, fa)} ({n ?? "—"})
+          </button>
+        ))}
+        <span className={"position-status gains-status " + severity} role={severity === "error" ? "alert" : "status"}>
+          {status}
+        </span>
+      </nav>
+      <div className="account-stats gains-source">
+        <span>{t("Source", "منبع")}: <bdi dir="ltr">Gains Network</bdi></span>
+        <span>{t("Network", "شبکه")}: <bdi dir="ltr">Arbitrum One · 42161</bdi></span>
+        <span className="readonly-badge">{t("Read-only", "فقط خواندنی")}</span>
+        {at && (
+          <span>
+            {t("Last fetched", "آخرین دریافت")}{" "}
+            <bdi dir="ltr">{new Date(at).toLocaleString(intlLocale(locale))}</bdi>
+          </span>
+        )}
+      </div>
+      <div className="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              {(tab === "history"
+                ? [
+                    ["Time", "زمان"],
+                    ["Symbol", "نماد"],
+                    ["Event", "رویداد"],
+                    ["Side", "جهت"],
+                    ["Price", "قیمت"],
+                    ["PnL", "سود/زیان"],
+                    ["Collateral currency", "ارز وثیقه"],
+                    ["Transaction", "تراکنش"],
+                  ]
+                : [
+                    ...(tab === "orders" ? [["Order type", "نوع سفارش"]] : []),
+                    ["Symbol", "نماد"],
+                    ["Side", "جهت"],
+                    ["Collateral", "وثیقه"],
+                    ["Collateral currency", "ارز وثیقه"],
+                    ["Leverage", "اهرم"],
+                    ["Entry Price", "نقطه ورود"],
+                    ["Stop loss", "حد ضرر"],
+                    ["Take profit", "حد سود"],
+                  ]
+              ).map(([en, fa]) => (
+                <th key={en}>{t(en, fa)}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r: any) => {
+              const tx = arbiscanTx(r.tx);
+              return tab === "history" ? (
+                <tr key={r.key}>
+                  <td dir="ltr">{new Date(r.date).toLocaleString(intlLocale(locale))}</td>
+                  <td dir="ltr">{r.market ?? "—"}</td>
+                  <td dir="ltr">{r.action}</td>
+                  <td>{sideLabel(t, r.side)}</td>
+                  <td dir="ltr">{native(r.price)}</td>
+                  <td dir="ltr">{String(r.action).startsWith("TradeClosed") ? native(r.pnl) : "—"}</td>
+                  <td dir="ltr">{r.currency ?? "—"}</td>
+                  <td>
+                    {tx ? (
+                      <button className="link" onClick={() => onTx(r.tx)} title={tx}>
+                        Arbiscan ↗
+                      </button>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                </tr>
+              ) : (
+                <tr key={r.id}>
+                  {tab === "orders" && (
+                    <td>{r.orderType === "limit" ? t("Limit", "لیمیت") : r.orderType === "stop" ? t("Stop", "استاپ") : r.orderType}</td>
+                  )}
+                  <td dir="ltr">{r.market}</td>
+                  <td>{sideLabel(t, r.side)}</td>
+                  <td dir="ltr">{native(r.margin)}</td>
+                  <td dir="ltr">{r.currency}</td>
+                  <td dir="ltr">{native(r.leverage)}×</td>
+                  <td dir="ltr">{native(r.entry)}</td>
+                  <td dir="ltr">{r.sl != null && Number(r.sl) ? native(r.sl) : "—"}</td>
+                  <td dir="ltr">{r.tp != null && Number(r.tp) ? native(r.tp) : "—"}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        {!rows.length && (
+          <p className="empty muted">
+            {resource.error && !data
+              ? t("Account records could not be retrieved. Please retry.", "دریافت اطلاعات ناموفق بود. دوباره تلاش کنید.")
+              : resource.loading && !data
+                ? t("Loading account records…", "در حال دریافت اطلاعات…")
+                : t("No records to display.", "رکوردی برای نمایش وجود ندارد.")}
+          </p>
+        )}
+        {tab === "history" && data?.pagination?.hasMore === true && (
+          <p className="muted">
+            {t(
+              "Showing the latest 100 Gains events. Open the Openfund web terminal for the full history.",
+              "۱۰۰ رویداد اخیر Gains نمایش داده می‌شود. برای تاریخچهٔ کامل ترمینال وب اوپن‌فاند را باز کنید.",
+            )}
+          </p>
+        )}
+      </div>
+    </section>
   );
 }
 function Chart({
@@ -1489,6 +2082,7 @@ function Chart({
   active,
   hidden,
   theme,
+  t,
   wallet,
   account,
   positions,
@@ -1548,7 +2142,7 @@ function Chart({
       });
       c.on("load:end", (e: any) => setLoaded(e.bars || 0));
       c.on("error", (e: any) =>
-        setFailure(e.message || "Chart data unavailable"),
+        setFailure(e.message || "chart-unavailable"),
       );
       Promise.resolve(c.chart.ready()).then(() => {
         if (disposed) return;
@@ -1701,18 +2295,20 @@ function Chart({
     >
       <div className="chart-title">
         <input
-          aria-label={`Chart ${index + 1} symbol`}
+          aria-label={format(t, "Chart ${number} symbol", "نماد نمودار ${number}", { number: index + 1 })}
           value={config.symbol}
           onChange={(e) => onMarket({ symbol: e.target.value })}
         />
         <span>{index + 1}</span>
-        <button aria-label="Maximize chart" onClick={onMax}>
+        <button aria-label={t("Maximize chart", "بزرگ‌نمایی نمودار")} onClick={onMax}>
           ⛶
         </button>
       </div>
       {(failure || !loaded) && (
         <div className="chart-loading" role="status">
-          {failure || "Loading market history…"}
+          {failure === "chart-unavailable"
+            ? t("Chart data unavailable", "دادهٔ نمودار در دسترس نیست")
+            : failure || t("Loading market history…", "در حال بارگذاری سابقهٔ بازار…")}
         </div>
       )}
       <div ref={host} className="chart-host" />

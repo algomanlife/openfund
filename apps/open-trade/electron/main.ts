@@ -16,7 +16,13 @@ import { readFile, writeFile, mkdir, unlink } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import {
-  backendOrigin,
+  REGIONS,
+  MAX_RESPONSE_BYTES,
+  externalLink,
+  newerRelease,
+  parseBody,
+  projectIdStatus,
+  resolveBackend,
   validateRequest,
   retryDelay,
   trustedFrame,
@@ -43,7 +49,7 @@ protocol.registerSchemesAsPrivileged([
   },
 ]);
 if (!app.requestSingleInstanceLock()) app.quit();
-const regions = { international: "https://openfi.cloud", iran: "https://openfi.live" } as const; /* canonical regional origins (ADR 0043) */
+const regions = REGIONS; /* canonical regional origins (ADR 0043) */
 type Region = keyof typeof regions;
 let region: Region = "international";
 async function probe(url: string) {
@@ -60,6 +66,38 @@ let win: BrowserWindow | null = null,
   origin = "",
   projectId = "",
   stop: AbortController | null = null;
+/* Single authoritative desktop version: package.json → app.getVersion();
+   build.json (written by scripts/prepare.mjs) adds commit, channel, signing. */
+let build: { version: string; sha: string; channel: string; signed: boolean } = {
+  version: "",
+  sha: "",
+  channel: "development",
+  signed: false,
+};
+const iranApproved = () => process.env.OPEN_TRADE_IRAN_APPROVED === "1";
+/** Reads a response body with a hard byte limit instead of buffering it whole. */
+async function readLimited(response: Response, max = MAX_RESPONSE_BYTES) {
+  if (!response.body) return "";
+  const declared = Number(response.headers.get("content-length"));
+  if (Number.isFinite(declared) && declared > max) {
+    void response.body.cancel();
+    return null;
+  }
+  const reader = response.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > max) {
+      void reader.cancel();
+      return null;
+    }
+    chunks.push(value);
+  }
+  return Buffer.concat(chunks).toString("utf8");
+}
 let authGeneration = 0;
 let bounds = { width: 1440, height: 960 };
 const configPath = () => path.join(app.getPath("userData"), "settings.json");
@@ -132,10 +170,12 @@ async function api(r: any) {
   }
   if (response.status === 401 || (r.path === "/auth/logout" && response.ok))
     await clearToken();
-  const data = await response
-    .json()
-    .catch(() => ({ error: "Invalid server response" }));
-  return { ok: response.ok, status: response.status, data, error: data.error };
+  const text = await readLimited(response).catch(() => "");
+  if (generation !== authGeneration)
+    return { ok: false, status: 409, error: "Session changed; response discarded" };
+  const parsed = parseBody(text);
+  const data: any = parsed.ok ? parsed.value : { error: parsed.error };
+  return { ok: response.ok && parsed.ok, status: response.status, data, error: data.error };
 }
 async function connectStream(account: string | null) {
   stop?.abort();
@@ -229,21 +269,46 @@ app.whenReady().then(async () => {
     const bundled = JSON.parse(
       await readFile(path.join(__dirname, "config.json"), "utf8"),
     );
-    origin = bundled.origin ? backendOrigin(bundled.origin) : regions.international;
+    origin = bundled.origin
+      ? resolveBackend(bundled.origin, { packaged: app.isPackaged })
+      : regions.international;
     projectId = bundled.projectId || "";
+  } catch {
+    origin = regions.international;
+  }
+  try {
+    const b = JSON.parse(
+      await readFile(path.join(__dirname, "renderer", "build.json"), "utf8"),
+    );
+    build = {
+      version: String(b.version || ""),
+      sha: /^[0-9a-f]{40}$/.test(b.sha) ? b.sha : "",
+      channel: ["internal", "beta", "stable"].includes(b.channel) ? b.channel : "development",
+      signed: b.signed === true,
+    };
   } catch {}
+  build.version = app.getVersion();
   try {
     const saved = JSON.parse(await readFile(configPath(), "utf8"));
     region = saved.region === "iran" ? "iran" : "international";
-    if (region === "iran" && process.env.OPEN_TRADE_IRAN_APPROVED !== "1") region = "international";
+    if (region === "iran" && !iranApproved()) region = "international";
     origin = regions[region];
     bounds = {
       width: Math.max(960, Math.min(3000, Number(saved.width) || 1440)),
       height: Math.max(640, Math.min(2000, Number(saved.height) || 960)),
     };
   } catch {}
-  if (process.env.OPEN_TRADE_BACKEND)
-    origin = backendOrigin(process.env.OPEN_TRADE_BACKEND);
+  /* A packaged build refuses any non-canonical backend (no arbitrary
+     production endpoint through the environment or the renderer). */
+  if (process.env.OPEN_TRADE_BACKEND) {
+    try {
+      origin = resolveBackend(process.env.OPEN_TRADE_BACKEND, { packaged: app.isPackaged });
+    } catch (error) {
+      dialog.showErrorBox("Open Trade", String((error as Error).message));
+      app.exit(1);
+      return;
+    }
+  }
   if (process.env.OPEN_TRADE_WALLETCONNECT_PROJECT_ID)
     projectId = process.env.OPEN_TRADE_WALLETCONNECT_PROJECT_ID;
   try {
@@ -287,7 +352,7 @@ app.whenReady().then(async () => {
     minWidth: 960,
     minHeight: 640,
     backgroundColor: "#101012",
-    title: "Open Trade",
+    title: `Open Trade ${build.version}`,
     titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "default",
     trafficLightPosition: { x: 12, y: 12 },
     show: false,
@@ -315,15 +380,49 @@ app.whenReady().then(async () => {
   handle("config", () => ({
     origin,
     projectId,
+    projectIdStatus: projectIdStatus(projectId),
+    /* WalletConnect metadata identifies the public Openfund application; the
+       Reown project allowlist must contain this origin (owner setup doc). */
+    metadataUrl: regions.international,
     region,
     secureStorage: encrypted(),
-    version: app.getVersion(),
+    version: build.version,
+    sha: build.sha,
+    channel: build.channel,
+    signed: build.signed,
+    electron: process.versions.electron,
   }));
+  let releaseCheck: { at: number; value: Promise<unknown> } | null = null;
+  handle("check-updates", () => {
+    if (!releaseCheck || Date.now() - releaseCheck.at > 30 * 60_000) {
+      releaseCheck = {
+        at: Date.now(),
+        value: (async () => {
+          const response = await fetch(
+            "https://api.github.com/repos/algomanlife/openfund/releases?per_page=30",
+            {
+              headers: { Accept: "application/vnd.github+json", "User-Agent": "OpenTrade/" + build.version },
+              redirect: "error",
+              signal: AbortSignal.timeout(10000),
+            },
+          );
+          if (!response.ok) throw new Error("Release information unavailable");
+          const text = await readLimited(response, 2_000_000);
+          if (text === null) throw new Error("Release information unavailable");
+          return newerRelease(JSON.parse(text), build.version, build.channel === "internal" ? "beta" : build.channel);
+        })(),
+      };
+      releaseCheck.value.catch(() => {
+        releaseCheck = null;
+      });
+    }
+    return releaseCheck.value;
+  });
   let measurements: ReturnType<typeof measureRegions> | undefined;
   let measuredAt = 0;
   async function measureRegions() {
     const [international, iran] = await Promise.all([probe(regions.international), probe(regions.iran)]);
-    return { international, iran, iranEnabled: process.env.OPEN_TRADE_IRAN_APPROVED === "1" };
+    return { international, iran, iranEnabled: iranApproved() };
   }
   handle("regions", () => {
     if (!measurements || Date.now() - measuredAt >= 30_000) {
@@ -334,7 +433,7 @@ app.whenReady().then(async () => {
   });
   handle("select-region", async (value: unknown) => {
     if (value !== "international" && value !== "iran") throw new Error("Unknown server region");
-    if (value === "iran" && process.env.OPEN_TRADE_IRAN_APPROVED !== "1") throw new Error("Iran server is not enabled for trading");
+    if (value === "iran" && !iranApproved()) throw new Error("Iran server is not enabled for trading");
     if (region === value && origin === regions[value]) return;
     await clearToken();
     region = value;
@@ -389,21 +488,14 @@ app.whenReady().then(async () => {
       return true;
     });
   }
-  handle("external", (target) => {
-    const links: Record<string, string> = {
-      vela: "https://github.com/LuxAlgo/Vela",
-      source:
-        "https://github.com/algomanlife/openfund/tree/feature/open-trade-desktop",
-    };
-    if (!links[target]) throw new Error("Unsupported link");
-    return shell.openExternal(links[target]);
-  });
+  handle("external", (target) =>
+    shell.openExternal(externalLink(target, { sha: build.sha })),
+  );
   win.on("close", () => {
     if (win && !win.isMaximized()) bounds = win.getBounds();
     void writeFile(
       configPath(),
       JSON.stringify({
-        origin,
         region,
         width: bounds.width,
         height: bounds.height,

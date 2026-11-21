@@ -18,7 +18,7 @@ export function releaseEntries(builds, tag, releasedAt) {
     platform: f.platform, version: `${builds.version}-${builds.channel}`, channel: builds.channel, architecture: f.architecture,
     format: f.format, bytes: f.bytes, releasedAt, tag, file: f.file, sha256: f.sha256,
     downloadUrl: `${BASE}/releases/download/${tag}/${f.file}`, notesUrl: `${BASE}/releases/tag/${tag}`,
-    guideUrl: `${BASE}/blob/main/docs/releases/open-trade-0.0.2.md`, verified: true, signed: builds.signed === true,
+    guideUrl: `${BASE}/blob/main/docs/releases/open-trade-${builds.version}.md`, verified: true, signed: builds.signed === true,
   }))
 }
 

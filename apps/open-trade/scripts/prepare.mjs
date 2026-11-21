@@ -1,4 +1,4 @@
-import { cp, mkdir, copyFile, writeFile } from "node:fs/promises";
+import { cp, mkdir, copyFile, readFile, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 await mkdir("public/assets", { recursive: true });
 const web = "../web-react/public/";
@@ -28,13 +28,20 @@ let sha = "uncommitted";
 try {
   sha = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
 } catch {}
+/* package.json is the single authoritative desktop version. The channel is
+   chosen by scripts/package.mjs; only beta/stable builds (which refuse to
+   package without signing credentials) are marked signed. */
+const { version } = JSON.parse(await readFile("package.json", "utf8"));
+const channel = ["internal", "beta", "stable"].includes(process.env.OPEN_TRADE_CHANNEL)
+  ? process.env.OPEN_TRADE_CHANNEL
+  : "internal";
 await writeFile(
   "public/build.json",
-  JSON.stringify({ version: "0.0.2", sha, channel: "beta", signed: false }),
+  /* Linux packages have no OS-verified signature (SHA-256 only). */
+  JSON.stringify({ version, sha, channel, signed: channel !== "internal" && process.platform !== "linux" }),
 );
 
 import { Resvg } from "@resvg/resvg-js";
-import { readFile } from "node:fs/promises";
 await mkdir("build", { recursive: true });
 const svg = await readFile(web + "assets/mark-mint.svg", "utf8");
 await writeFile(

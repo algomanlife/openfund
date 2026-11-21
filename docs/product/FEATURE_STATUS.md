@@ -52,7 +52,7 @@ acceptance stay **Blocked** on owner authorization.
 | Brand Ambassador program | Completed (local) | Post-launch | Backend partner tests, `test-backstage-operations` (application review); no browser trader journey |
 | Verified Trading Coach program | Completed (local) | Post-launch | Backend partner tests; no browser journey |
 | Hybrid Governance | Completed in source (local); not active | Post-launch | Backend governance tests; public page rendered by `test-locale-matrix`; no council seated |
-| Open Trade desktop (Electron) | In Progress | Post-launch | [Acceptance record](../../apps/open-trade/ACCEPTANCE.md); signing and public release Blocked |
+| Open Trade desktop (Electron) | In Progress | Post-launch | 0.0.3 source candidate (branch `agent/claude/open-trade-v0.0.3`, unmerged, not built): Prop + read-only Perpetual selector, five locales, signing pipeline. [Acceptance record](../../apps/open-trade/ACCEPTANCE.md); signing, real-wallet acceptance and public release Blocked ([owner setup](../releases/OPEN_TRADE_0.0.3_OWNER_SETUP.md)) |
 | Openfund Protocol | Completed within source scope (dormant) | Post-launch | `packages/openfund-protocol/` compile/test foundation; venue routing Planned |
 
 Launch-essential journeys also covered by required checks: SIWE on Arbitrum

@@ -181,6 +181,13 @@ be changed in Settings. They are not backend secrets or Render variables. Electr
 React, Vite, WalletConnect and electron-builder are separately locked under
 `apps/open-trade`. No new backend runtime dependency or service is added.
 
+Open Trade 0.0.3: packaged builds accept only `https://openfi.cloud` and
+`https://openfi.live` for `OPEN_TRADE_BACKEND`. `OPEN_TRADE_CHANNEL`
+(`internal` default, `beta`, `stable`) selects unsigned or signed packaging.
+Signing credentials and their names are listed in the
+[owner setup](../releases/OPEN_TRADE_0.0.3_OWNER_SETUP.md); they are GitHub
+environment secrets only, never Render variables.
+
 ## Certificate rendering dependency
 
 The web application directly depends on `qrcode` 1.5.4 (MIT) to encode the

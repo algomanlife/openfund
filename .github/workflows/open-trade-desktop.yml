@@ -1,22 +1,49 @@
 name: Open Trade desktop
+# Stages (each a separate job or step so a failure names its stage):
+#   1-4  checks: unit, type check, Electron security policy, i18n, packaging plan
+#   7    gains-contract: backend Gains read-contract tests (fixtures, no live API)
+#   3,5  desktop: build + real-OS Electron UI acceptance (Vela charts use live
+#        Gains public market data; failures there are reported as diagnostics)
+#   10   desktop: internal unsigned package + SHA-256 + integrity verification
+#   11   signed: owner-dispatched signing/notarization + signature verification
+#   12   release-draft: owner-dispatched DRAFT GitHub Release (never published here)
+#   6,8  isolated Prop lifecycle + generated-signature wallet simulation run
+#        only against a loopback test backend (TEST_BACKEND_URL), see README.
+#   9    real-device wallet acceptance is manual (ACCEPTANCE.md).
+# Signing credentials are only exposed to workflow_dispatch jobs bound to
+# protected environments; pull requests never receive them or publish.
 on:
   workflow_dispatch:
+    inputs:
+      channel:
+        description: "internal (unsigned), beta or stable (signed; needs the open-trade-signing environment)"
+        type: choice
+        options: [internal, beta, stable]
+        default: internal
+      draft_release:
+        description: "Create a DRAFT GitHub Release open-trade-v<version> from signed artifacts"
+        type: boolean
+        default: false
   pull_request:
     paths:
       - apps/open-trade/**
       - packages/openfund-charts/**
       - packages/openfund-gains-adapter/**
       - apps/web-react/public/legacy/position-*.js
+      - apps/web-react/src/i18n/**
+      - apps/web-react/src/features/terminal/gainsView.ts
       - apps/web-react/package*.json
+      - apps/backend/gains-portfolio.js
       - vendor/vela/**
       - indicators/**
       - scripts/build-charts.mjs
       - .github/workflows/open-trade-desktop.yml
   push:
-    branches: [feature/open-trade-desktop, feature/open-trade-v0.0.2]
+    branches: [main]
     paths:
       - apps/open-trade/**
       - packages/openfund-charts/**
+      - apps/web-react/src/i18n/**
       - .github/workflows/open-trade-desktop.yml
 permissions:
   contents: read
@@ -24,17 +51,63 @@ concurrency:
   group: open-trade-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 jobs:
+  checks:
+    name: Unit, types, security, i18n
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: apps/open-trade/package-lock.json
+      - run: npm ci --prefix apps/open-trade --no-audit --no-fund --ignore-scripts
+      - name: Type check
+        run: npm run typecheck --prefix apps/open-trade
+      - name: Unit tests (model, release plan)
+        run: node --test tests/desktop-model.test.mjs tests/release-plan.test.mjs
+        working-directory: apps/open-trade
+      - name: Electron security policy
+        run: npm run test:security --prefix apps/open-trade
+      - name: Translation completeness
+        run: npm run test:i18n --prefix apps/open-trade
+
+  gains-contract:
+    name: Gains read contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: apps/backend/package-lock.json
+      - run: npm ci --prefix apps/backend --no-audit --no-fund --ignore-scripts
+      - run: node --test apps/backend/test/gains-portfolio.test.mjs
+
   desktop:
-    name: Desktop ${{ matrix.os }}
+    name: Desktop ${{ matrix.name }}
+    needs: checks
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, windows-latest, macos-latest]
+        include:
+          - { name: macOS arm64, os: macos-15, builder: --arm64 }
+          - { name: macOS x64, os: macos-15-intel, builder: --x64 }
+          - { name: Windows x64, os: windows-2025, builder: --x64 }
+          - { name: Linux x64, os: ubuntu-22.04, builder: --x64 }
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 35
+    timeout-minutes: 40
     env:
       OPEN_TRADE_BACKEND: https://openfi.cloud
       OPEN_TRADE_WALLETCONNECT_PROJECT_ID: ${{ vars.OPEN_TRADE_WALLETCONNECT_PROJECT_ID }}
+      OPEN_TRADE_CHANNEL: internal
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -50,27 +123,34 @@ jobs:
       - run: npm ci --prefix apps/web-react --no-audit --no-fund
       - run: npm ci --prefix apps/open-trade --no-audit --no-fund
       - run: npm run build:charts --prefix apps/web-react
-      - run: npm run typecheck --prefix apps/open-trade
-      - run: npm test --prefix apps/open-trade
-      - run: npm run build --prefix apps/open-trade
-      - name: Electron acceptance (Linux)
+      - name: Build verification
+        run: npm run build --prefix apps/open-trade
+      - name: Desktop UI acceptance (Linux)
         if: runner.os == 'Linux'
         run: xvfb-run -a npm run test:desktop --prefix apps/open-trade
-      - name: Electron acceptance (Windows and macOS)
+      - name: Desktop UI acceptance (Windows and macOS)
         if: runner.os != 'Linux'
         run: npm run test:desktop --prefix apps/open-trade
-      - name: Package internal unsigned beta
+      - name: Package internal unsigned build
         if: github.event_name != 'pull_request'
         working-directory: apps/open-trade
-        run: npx electron-builder --publish never
-      - name: Checksums
+        env:
+          BUILDER_ARCH: ${{ matrix.builder }}
+        run: node scripts/package.mjs "$BUILDER_ARCH"
+      - name: Checksums and integrity
         if: github.event_name != 'pull_request'
         working-directory: apps/open-trade
-        run: node scripts/checksums.mjs
+        run: |
+          node scripts/checksums.mjs
+          node scripts/verify-signatures.mjs
+      - name: Artifact name
+        id: meta
+        shell: bash
+        run: echo "version=$(node -p "require('./apps/open-trade/package.json').version")" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: github.event_name != 'pull_request'
         with:
-          name: Open-Trade-0.0.2-beta-unsigned-${{ runner.os }}
+          name: Open-Trade-${{ steps.meta.outputs.version }}-internal-unsigned-${{ runner.os }}-${{ runner.arch }}
           path: |
             apps/open-trade/release/*.exe
             apps/open-trade/release/*.dmg
@@ -81,8 +161,118 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
-          name: Open-Trade-diagnostics-${{ runner.os }}
+          name: Open-Trade-diagnostics-${{ runner.os }}-${{ runner.arch }}
           path: |
             apps/open-trade/artifacts/
             apps/open-trade/release/builder-*.yml
           if-no-files-found: warn
+
+  signed:
+    name: Signed ${{ inputs.channel }} ${{ matrix.name }}
+    if: github.event_name == 'workflow_dispatch' && inputs.channel != 'internal' && github.ref == 'refs/heads/main'
+    needs: desktop
+    environment: open-trade-signing
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: macOS arm64, os: macos-15, builder: --arm64 }
+          - { name: macOS x64, os: macos-15-intel, builder: --x64 }
+          - { name: Windows x64, os: windows-2025, builder: --x64 }
+          - { name: Linux x64, os: ubuntu-22.04, builder: --x64 }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    env:
+      OPEN_TRADE_BACKEND: https://openfi.cloud
+      OPEN_TRADE_WALLETCONNECT_PROJECT_ID: ${{ vars.OPEN_TRADE_WALLETCONNECT_PROJECT_ID }}
+      OPEN_TRADE_CHANNEL: ${{ inputs.channel }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26
+      - run: npm ci --prefix apps/web-react --no-audit --no-fund
+      - run: npm ci --prefix apps/open-trade --no-audit --no-fund
+      - run: npm run build:charts --prefix apps/web-react
+      - run: npm run build --prefix apps/open-trade
+      - name: Install Artifact Signing module (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Install-Module -Name TrustedSigning -Force -Repository PSGallery -Scope CurrentUser # owner: pin -RequiredVersion after first verified run
+      - name: Sign and package
+        working-directory: apps/open-trade
+        env:
+          # the Developer ID identity is exposed only on macOS runners so it
+          # can never be picked up for Windows Authenticode signing
+          CSC_LINK: ${{ runner.os == 'macOS' && secrets.OPEN_TRADE_MAC_CSC_LINK || '' }}
+          CSC_KEY_PASSWORD: ${{ runner.os == 'macOS' && secrets.OPEN_TRADE_MAC_CSC_KEY_PASSWORD || '' }}
+          WIN_CSC_LINK: ${{ runner.os == 'Windows' && secrets.OPEN_TRADE_WIN_CSC_LINK || '' }}
+          WIN_CSC_KEY_PASSWORD: ${{ runner.os == 'Windows' && secrets.OPEN_TRADE_WIN_CSC_KEY_PASSWORD || '' }}
+          APPLE_API_KEY: ${{ secrets.OPEN_TRADE_APPLE_API_KEY }}
+          APPLE_API_KEY_ID: ${{ secrets.OPEN_TRADE_APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.OPEN_TRADE_APPLE_API_ISSUER }}
+          AZURE_TENANT_ID: ${{ secrets.OPEN_TRADE_AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.OPEN_TRADE_AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.OPEN_TRADE_AZURE_CLIENT_SECRET }}
+          OPEN_TRADE_WIN_SIGN_ENDPOINT: ${{ vars.OPEN_TRADE_WIN_SIGN_ENDPOINT }}
+          OPEN_TRADE_WIN_SIGN_ACCOUNT: ${{ vars.OPEN_TRADE_WIN_SIGN_ACCOUNT }}
+          OPEN_TRADE_WIN_SIGN_PROFILE: ${{ vars.OPEN_TRADE_WIN_SIGN_PROFILE }}
+          OPEN_TRADE_WIN_PUBLISHER: ${{ vars.OPEN_TRADE_WIN_PUBLISHER }}
+          BUILDER_ARCH: ${{ matrix.builder }}
+        run: node scripts/package.mjs "$BUILDER_ARCH"
+      - name: Signature and notarization verification
+        working-directory: apps/open-trade
+        run: |
+          node scripts/checksums.mjs
+          node scripts/verify-signatures.mjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: Open-Trade-${{ inputs.channel }}-${{ runner.os }}-${{ runner.arch }}
+          path: |
+            apps/open-trade/release/*.exe
+            apps/open-trade/release/*.dmg
+            apps/open-trade/release/*.AppImage
+            apps/open-trade/release/*.deb
+            apps/open-trade/release/SHA256SUMS.txt
+            apps/open-trade/artifacts/signatures-*.json
+          if-no-files-found: error
+
+  release-draft:
+    name: Draft GitHub Release (owner publishes)
+    if: github.event_name == 'workflow_dispatch' && inputs.draft_release && inputs.channel != 'internal' && github.ref == 'refs/heads/main'
+    needs: signed
+    environment: open-trade-release
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - name: Download signed artifacts of this run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHANNEL: ${{ inputs.channel }}
+        run: gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --pattern "Open-Trade-${CHANNEL}-*" --dir dist-release
+      - name: Combined SHA-256 manifest
+        run: |
+          cd dist-release
+          find . -type f \( -name '*.dmg' -o -name '*.exe' -o -name '*.AppImage' -o -name '*.deb' \) -exec sha256sum {} + | sed 's#  \./[^/]*/#  #' | sort -k2 > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+      - name: Create DRAFT release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHANNEL: ${{ inputs.channel }}
+        run: |
+          version=$(node -p "require('./apps/open-trade/package.json').version")
+          tag="open-trade-v${version}"
+          prerelease=false
+          if [ "$CHANNEL" = beta ]; then prerelease=true; fi
+          mapfile -t assets < <(find dist-release -type f \( -name '*.dmg' -o -name '*.exe' -o -name '*.AppImage' -o -name '*.deb' -o -name 'signatures-*.json' \))
+          gh release create "$tag" --draft --prerelease="$prerelease" \
+            --target "$GITHUB_SHA" --title "Open Trade ${version}" \
+            --notes-file "docs/releases/open-trade-${version}.md" \
+            "${assets[@]}" dist-release/SHA256SUMS.txt
