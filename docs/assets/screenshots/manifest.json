@@ -8799,5 +8799,53 @@
         "state": "English, prefers-reduced-motion: static scrollable row, no beam, no data layer, no duplicate list. Section crop; all wallet data is generated illustrative demo data."
       }
     ]
+  },
+  "developerDocs": {
+    "branch": "agent/claude/developer-docs",
+    "baseCommit": "dc0899aaa804319e9f1ce53dcd15ed25a4de63a4",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-21T18:58:29+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8302, disposable database; captured by e2e/test-developers.cjs",
+    "cms": "Directus not running; bundled fallback from docs/developer-portal",
+    "marketData": "Not used",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "developer-docs/developers-en-1440-dark.jpg",
+        "route": "/en/developers",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: hero and first sections with the sticky index. Bundled fallback (Directus not running). JPEG."
+      },
+      {
+        "file": "developer-docs/developers-fa-1440-light.jpg",
+        "route": "/fa/developers",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian (RTL), light: Persian text, index on the right. Bundled fallback (Directus not running). JPEG."
+      },
+      {
+        "file": "developer-docs/developers-ar-390-dark.jpg",
+        "route": "/ar/developers",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Arabic, 390 px: English text with the note, collapsible index. Bundled fallback (Directus not running). JPEG."
+      },
+      {
+        "file": "developer-docs/developers-zh-CN-768-light.jpg",
+        "route": "/zh-CN/developers",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Chinese, 768 px, light: English text with the note. Bundled fallback (Directus not running). JPEG."
+      }
+    ]
   }
 }

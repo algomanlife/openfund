@@ -136,3 +136,24 @@ test('docs-impact honours a declared exemption and bot authors', () => {
   assert.equal(impact(['apps/backend/src/x.mjs'], { body: 'Docs-impact: none' }).ok, false)
   assert.equal(impact(['apps/backend/src/x.mjs'], { author: 'dependabot[bot]' }).ok, true)
 })
+
+/* ---------- developer-docs merge rule ---------- */
+test('developer-docs rule: developer-facing changes need docs/developer-portal/', () => {
+  for (const f of ['apps/web-react/src/main.tsx', 'apps/backend/purchases.js', 'apps/backend/schema.sql', 'render.yaml', '.env.example', 'apps/backend/package.json', '.github/workflows/ci.yml', 'scripts/release/build.mjs', 'apps/open-trade/src/main.tsx']) {
+    const r = impact([f, 'CHANGELOG.md'])
+    assert.equal(r.ok, false, f)
+    assert.match(r.problems.join(' '), /developer-portal/, f)
+    assert.equal(impact([f, 'CHANGELOG.md', 'docs/developer-portal/sections.json']).ok, true, f)
+  }
+})
+test('developer-docs rule ignores tests, lockfiles and unrelated product code', () => {
+  assert.equal(impact(['apps/backend/test/purchases.test.mjs', 'apps/backend/package-lock.json', 'apps/web-react/src/features/x.tsx', 'CHANGELOG.md']).ok, true)
+  assert.equal(impact(['apps/open-trade/README.md', 'CHANGELOG.md']).ok, true)
+})
+test('developer-docs rule: only its own declaration exempts it', () => {
+  assert.equal(impact(['apps/backend/purchases.js', 'CHANGELOG.md'], { body: 'Developer-docs: none — internal helper, no API or behavior change' }).ok, true)
+  assert.equal(impact(['apps/backend/purchases.js'], { body: 'Docs-impact: none — internal refactor, no behavior change' }).ok, false)
+  assert.equal(impact(['apps/backend/purchases.js'], { body: 'Docs-impact: none — internal refactor, no behavior change\nDeveloper-docs: none — internal refactor, no behavior change' }).ok, true)
+  assert.equal(impact(['apps/backend/purchases.js', 'CHANGELOG.md'], { body: 'Developer-docs: none' }).ok, false)
+  assert.equal(impact(['apps/backend/purchases.js'], { author: 'dependabot[bot]' }).ok, true)
+})

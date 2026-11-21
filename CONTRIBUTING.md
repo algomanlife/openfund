@@ -143,6 +143,16 @@ in the [changelog](CHANGELOG.md) entry for the change.
   [README structure contract](docs/development/README_STRUCTURE.md#the-merge-rule).
 - Distinguish simulated execution, read-only integration, configuration, local verification and deployment. Never infer investors, partnerships, revenue, adoption, approvals or production readiness.
 
+## Developer docs
+
+When a pull request changes routes, the backend API or `schema.sql`,
+`render.yaml` or environment variables, package scripts, CI workflows, the
+release process or `apps/open-trade`, it also updates
+[`docs/developer-portal/`](docs/developer-portal/README.md), which feeds the
+public Developer documentation page. CI enforces this; a change with no
+developer-facing effect declares `Developer-docs: none — <reason>` in its
+description. See [AGENTS.md](AGENTS.md#developer-docs-merge-rule).
+
 ## Architecture contract
 
 Preserve the three Render resources (`openfund`, `openfund-db`, `openfund-cms`) and same-origin React hosting (site root; `/react/` is a compatibility redirect). Keep the shared terminal presentation and product financial state isolated. PostgreSQL/Decimal own Prop simulation; Gains owns Perpetual read records; Directus owns published content/catalog administration. `dist/` remains source-critical. The integrated Protocol source is dormant; operational venue routing remains planned.
@@ -156,6 +166,7 @@ Follow [Local Development](docs/development/LOCAL_DEVELOPMENT.md) and [Testing](
 - [ ] Scope and resulting behavior described for a new reviewer
 - [ ] Relevant product/status/roadmap/contracts updated
 - [ ] README data (`docs/readme/*.json`) updated and `npm run docs:write` run, or `Docs-impact: none — <reason>` declared
+- [ ] `docs/developer-portal/` updated for developer-facing changes, or `Developer-docs: none — <reason>` declared
 - [ ] Screenshots and provenance refreshed where needed
 - [ ] Required checks run, with failures and external limits recorded
 - [ ] Render architecture, app localization and financial isolation preserved

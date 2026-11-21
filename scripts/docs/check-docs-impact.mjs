@@ -32,10 +32,34 @@ export const RULES = [
 
 export const EXEMPT = /^\s*Docs-impact:\s*none\s*[—–-]+\s*\S.{5,}$/im
 
+/* Developer-docs merge rule (AGENTS.md "Developer docs (merge rule)"): a change
+ * to routes, the backend API, schema.sql, render.yaml or environment
+ * variables, package scripts, CI workflows, the release process or
+ * apps/open-trade also updates docs/developer-portal/, unless the description
+ * says  Developer-docs: none — <reason>. Docs-impact: none does not exempt it. */
+export const DEV_DOCS_EXEMPT = /^\s*Developer-docs:\s*none\s*[—–-]+\s*\S.{5,}$/im
+export const DEV_DOCS_RULE = {
+  name: 'developer-facing surface',
+  when: f => !TESTS(f) && !LOCK(f) && (
+    f === 'apps/web-react/src/main.tsx' || f === 'apps/web-react/src/cms/editorialRoutes.ts'
+    || /^apps\/backend\/[^/]+\.(m?js|sql)$/.test(f)
+    || f === 'render.yaml' || /(^|\/)\.env\.example$/.test(f) || f === 'docs/deployment/ENVIRONMENT.md'
+    || /(^|\/)package\.json$/.test(f)
+    || /^\.github\/workflows\//.test(f)
+    || /^scripts\/release\//.test(f) || f === 'docs/deployment/RELEASES.md'
+    || (/^apps\/open-trade\//.test(f) && !/\/README\.md$/.test(f))),
+  needs: f => /^docs\/developer-portal\//.test(f),
+  why: 'update docs/developer-portal/ (the /developers page) in the same pull request, or declare Developer-docs: none — <reason> in the description',
+}
+
 export function check(files, { body = '', author = '' } = {}) {
   if (/\[bot\]$/i.test(author)) return { ok: true, problems: [], exempt: 'bot' }
-  if (EXEMPT.test(body)) return { ok: true, problems: [], exempt: 'declared' }
   const problems = []
+  if (!DEV_DOCS_EXEMPT.test(body)) {
+    const hits = files.filter(DEV_DOCS_RULE.when)
+    if (hits.length && !files.some(DEV_DOCS_RULE.needs)) problems.push(`${DEV_DOCS_RULE.name} changed (${hits.slice(0, 3).join(', ')}${hits.length > 3 ? `, +${hits.length - 3} more` : ''}) but docs/developer-portal/ was not updated: ${DEV_DOCS_RULE.why}.`)
+  }
+  if (EXEMPT.test(body)) return { ok: problems.length === 0, problems, exempt: problems.length ? undefined : 'declared' }
   for (const rule of RULES) {
     const hits = files.filter(rule.when)
     if (hits.length && !files.some(rule.needs)) problems.push(`${rule.name} changed (${hits.slice(0, 3).join(', ')}${hits.length > 3 ? `, +${hits.length - 3} more` : ''}) but no record was updated: ${rule.why}.`)

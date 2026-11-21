@@ -698,6 +698,38 @@ def main():
     ensure_relation('tool_translations', 'tool_id', 'tools', one_field='translations')
     ensure_alias('tools', 'translations', None)
 
+    # ---------------- Developer documentation (/:locale/developers) ----------
+    # Source of truth: docs/developer-portal/sections.json (English) and the
+    # Persian file in the web app; seed_developer_docs.mjs creates missing rows
+    # only. Public read is limited to published rows. Never put admin
+    # endpoints, infrastructure details or secrets in this collection.
+    ensure_collection('developer_docs', {'sort_field': 'sort', 'icon': 'code', 'note': 'Developer documentation sections (public page /:locale/developers)'})
+    ensure_field('developer_docs', 'slug', 'string',
+        meta={'interface': 'input', 'unique': True, 'readonly': True}, schema={'is_unique': True, 'is_nullable': False, 'max_length': 64})
+    ensure_field('developer_docs', 'section', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Getting started', 'value': 'getting-started'}, {'text': 'Architecture', 'value': 'architecture'},
+            {'text': 'Operations', 'value': 'operations'}, {'text': 'Quality', 'value': 'quality'},
+            {'text': 'Contributing', 'value': 'contributing'}, {'text': 'Changelog', 'value': 'changelog'},
+        ]}, 'required': True}, schema={'default_value': 'getting-started'})
+    ensure_field('developer_docs', 'sort', 'integer', meta={'interface': 'input'}, schema={'default_value': 0})
+    ensure_field('developer_docs', 'status', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Published', 'value': 'published'}, {'text': 'Draft', 'value': 'draft'}, {'text': 'Archived', 'value': 'archived'},
+        ]}, 'special': ['status']}, schema=STATUS_SCHEMA)
+    ensure_field('developer_docs', 'source_path', 'string',
+        meta={'interface': 'input', 'note': 'Repository file this section summarizes (for example docs/development/TESTING.md)'}, schema={'max_length': 255})
+    ensure_field('developer_docs', 'last_verified_commit', 'string', meta={'interface': 'input'}, schema={'max_length': 40})
+    ensure_field('developer_docs', 'last_verified_at', 'date', meta={'interface': 'datetime'}, schema={})
+    ensure_collection('developer_doc_translations')
+    ensure_field('developer_doc_translations', 'developer_doc_id', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True}, schema={'is_nullable': False})
+    ensure_field('developer_doc_translations', 'language_code', 'string', meta=dict(LANG_META), schema={'is_nullable': False})
+    ensure_field('developer_doc_translations', 'title', 'string', meta={'interface': 'input', 'required': True}, schema={'max_length': 200})
+    ensure_field('developer_doc_translations', 'body', 'text', meta={'interface': 'input-rich-text-md', 'note': 'Markdown'}, schema={})
+    ensure_relation('developer_doc_translations', 'developer_doc_id', 'developer_docs', one_field='translations')
+    ensure_alias('developer_docs', 'translations', None)
+
     # ---------------- website expansion: Growth Partner ---------------------
     # A singleton so the program can be flipped from pre-launch to live by an
     # editor; the copy is translated per locale like home_content.
@@ -957,6 +989,8 @@ def main():
         ('glossary_term_translations', None),
         ('tools', {'status': {'_eq': 'published'}}),
         ('tool_translations', None),
+        ('developer_docs', {'status': {'_eq': 'published'}}),
+        ('developer_doc_translations', None),
         ('referral_content', {'status': {'_eq': 'published'}}),
         ('referral_content_translations', None),
         ('governance_milestones', {'status': {'_eq': 'published'}}),
@@ -989,6 +1023,7 @@ def main():
         'lesson_translations': ('lesson_id', 'published'),
         'glossary_term_translations': ('glossary_term_id', 'published'),
         'tool_translations': ('tool_id', 'published'),
+        'developer_doc_translations': ('developer_doc_id', 'published'),
         'referral_content_translations': ('referral_content_id', 'published'),
         'governance_milestone_translations': ('governance_milestone_id', 'published'),
         'governance_content_block_translations': ('governance_content_block_id', 'published'),

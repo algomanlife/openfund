@@ -34,6 +34,7 @@ export const EDITORIAL_SURFACES: readonly Surface[] = [
   { collection: 'lessons', translationCollection: 'lesson_translations', textFields: ['title', 'summary'], jsonTextFields: ['takeaways', 'blocks'] },
   { collection: 'glossary_terms', translationCollection: 'glossary_term_translations', textFields: ['term', 'short', 'definition'] },
   { collection: 'tools', translationCollection: 'tool_translations', textFields: ['name', 'tagline', 'about', 'method', 'limitations'], jsonTextFields: ['assumptions'] },
+  { collection: 'developer_docs', translationCollection: 'developer_doc_translations', textFields: ['title', 'body'] },
   { collection: 'referral_content', translationCollection: 'referral_content_translations', singleton: true,
     textFields: ['hero_eyebrow', 'hero_title', 'hero_accent', 'hero_intro', 'status_notice', 'dashboard_title', 'dashboard_intro', 'cta_title', 'cta_text', 'cta_primary', 'cta_secondary', 'seo_title', 'seo_description'],
     jsonTextFields: ['benefits', 'stages', 'sections', 'faq', 'pending_decisions', 'dashboard_columns'] },

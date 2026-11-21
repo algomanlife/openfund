@@ -3936,5 +3936,13 @@
   "What has shipped and what comes next.": "Что уже выпущено и что будет дальше.",
   "Who we are and how we work.": "Кто мы и как работаем.",
   "Where revenue comes from and where it goes.": "Откуда берётся выручка и куда она идёт.",
-  "The path from a funded account to live markets.": "Путь от финансируемого счёта к реальным рынкам."
+  "The path from a funded account to live markets.": "Путь от финансируемого счёта к реальным рынкам.",
+  "Build on Openfund, with clear rules.": "Создавайте на Openfund по понятным правилам.",
+  "Developer documentation": "Документация для разработчиков",
+  "Documentation sections": "Разделы документации",
+  "Last verified": "Последняя проверка",
+  "No section matches your search.": "Ни один раздел не соответствует вашему запросу.",
+  "Openfund’s technical guide for developers and contributors: local setup, repository structure, testing, releases and contribution rules. Every section links to its source file on GitHub.": "Техническое руководство Openfund для разработчиков и участников: локальная настройка, структура репозитория, тестирование, выпуски и правила участия. Каждый раздел ссылается на свой исходный файл на GitHub.",
+  "Search the docs": "Поиск по документации",
+  "This documentation is written in English and Persian; the English text is shown until a reviewed translation is published.": "Эта документация написана на английском и персидском; английский текст показывается, пока не опубликован проверенный перевод."
 }
