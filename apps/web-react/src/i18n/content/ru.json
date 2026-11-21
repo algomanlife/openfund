@@ -3910,5 +3910,15 @@
   "Sign in to view your Gains account.": "Войдите, чтобы просмотреть свой аккаунт Gains.",
   "Source data is stale": "Данные источника устарели",
   "Source timestamps are inconsistent": "Временные метки источника не согласованы",
-  "Up to date": "Актуально"
+  "Up to date": "Актуально",
+  "Conditions for this account": "Условия для этого счёта",
+  "High-impact news: on funded accounts, profit from trades within ${min} minutes of the event is deducted from rewards.": "Новости с высоким влиянием: на финансируемых счетах прибыль от сделок в пределах ${min} минут от события вычитается из вознаграждений.",
+  "High-impact news: opening, closing or holding a position within ${min} minutes of the event is a breach.": "Новости с высоким влиянием: открытие, закрытие или удержание позиции в пределах ${min} минут от события является нарушением.",
+  "Holding": "Удержание позиций",
+  "Lower daily-loss option": "Вариант с меньшим дневным убытком",
+  "More conditions": "Дополнительные условия",
+  "On funded accounts, open positions are closed automatically in the daily closing window.": "На финансируемых счетах открытые позиции закрываются автоматически в ежедневное окно закрытия.",
+  "Positions may not be held open over the weekend.": "Позиции нельзя оставлять открытыми на выходные.",
+  "Reward cycles": "Циклы вознаграждений",
+  "These conditions are what Openfund’s server enforces now and may be newer than this page. The Rulebook has the full rules.": "Эти условия — то, что сейчас применяет сервер Openfund, и они могут быть новее этой страницы. Полные правила — в своде правил."
 }
