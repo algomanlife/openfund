@@ -8865,5 +8865,26 @@
         "state": "Layout sequence mid-transition: the two-chart capture revealed from the centre line over the one-chart capture (clip-path split). All window content is real Open Trade 0.0.2 beta / web-terminal captures already in the repository."
       }
     ]
+  },
+  "applicationsDownloads": {
+    "branch": "agent/claude/desktop-downloads",
+    "baseCommit": "dc0899aaa804319e9f1ce53dcd15ed25a4de63a4",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-21T18:31:23+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8298, disposable database; captured by e2e/test-applications.cjs on macOS (so the macOS card is the detected system)",
+    "cms": "Directus not running",
+    "marketData": "None",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "applications-downloads/apps-downloads-en.jpg",
+        "route": "/en/apps#desktop-builds",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Desktop downloads section, English, dark: three platform cards with one labelled download button per installer of the published pre-release open-trade-v0.0.4, collapsed details, per-OS unsigned instructions; 'Your system' badge on macOS. JPEG."
+      }
+    ]
   }
 }

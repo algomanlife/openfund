@@ -85,6 +85,28 @@ const ok = (name, value, info = '') => { assert.ok(value, `${name} ${info}`); re
       await page.screenshot({ path: path.join(OUT, 'apps-sequence-split.png'), clip: await page.locator('#seq-layout-panel').boundingBox() })
       await context.close()
     }
+    /* published downloads: one labelled button per file, details collapsed, per-OS instructions, OS detection */
+    {
+      const { context, page } = await open('/en/apps', { width: 1440 })
+      await page.locator('#desktop-builds').scrollIntoViewIfNeeded(); await page.waitForTimeout(400)
+      const d = await page.evaluate(() => ({
+        labels: [...document.querySelectorAll('.of-app-download')].map(a => a.textContent.trim()),
+        hrefs: [...document.querySelectorAll('.of-app-download')].map(a => a.getAttribute('href')),
+        openDetails: document.querySelectorAll('.of-app-details[open]').length,
+        unsigned: [...document.querySelectorAll('.of-app-unsigned')].map(p => p.textContent),
+        detected: [...document.querySelectorAll('.of-app-card.is-detected h3')].map(h => h.textContent),
+      }))
+      ok('five download buttons labelled with platform and architecture, pointing at the GitHub pre-release',
+        d.labels.length === 5 && d.labels.includes('Download for macOS (Apple Silicon)') && d.labels.includes('Download for Windows (x64)') && d.labels.includes('Download for Linux (AppImage)')
+        && d.hrefs.every(h => /^https:\/\/github\.com\/algomanlife\/openfund\/releases\/download\/open-trade-v[\w.-]+\/[\w.-]+$/.test(h)), JSON.stringify(d.labels))
+      ok('hash and file details start collapsed; each OS has its own unsigned-build instruction', d.openDetails === 0 && /Gatekeeper/.test(d.unsigned[0]) && /SmartScreen/.test(d.unsigned[1]) && /chmod \+x/.test(d.unsigned[2]), JSON.stringify(d.unsigned))
+      ok('the visitor\'s operating system is highlighted (headless Linux runner or macOS)', d.detected.length === 1, JSON.stringify(d.detected))
+      await page.locator('.of-app-details summary').first().click()
+      const sha = await page.locator('.of-app-details[open] .of-app-sha').first().textContent()
+      ok('opening details shows the 64-character SHA-256 and a copy button', /^[a-f0-9]{64}$/.test(sha.trim()) && await page.locator('.of-app-details[open] .of-app-copy').count() === 1)
+      await page.screenshot({ path: path.join(OUT, 'apps-downloads-en.png'), clip: await page.locator('#desktop-builds').boundingBox() })
+      await context.close()
+    }
     /* reduced motion */
     {
       const { context, page } = await open('/en/apps', { reducedMotion: 'reduce' })
