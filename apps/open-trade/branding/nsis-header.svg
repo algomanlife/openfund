@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="150" height="57" viewBox="0 0 150 57">
+  <!-- Windows installer page header (NSIS, 150×57, saved as BMP). -->
+  <defs>
+    <linearGradient id="markFill" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#5fd9a0"/>
+      <stop offset="1" stop-color="#2f9e73"/>
+    </linearGradient>
+    <symbol id="mark" viewBox="0 0 581 644"><path fill-rule="evenodd" d="{{MARK_PATH}}"/></symbol>
+  </defs>
+  <rect width="150" height="57" fill="#ffffff"/>
+  <use href="#mark" x="104" y="12" width="30" height="33" fill="url(#markFill)"/>
+  <text x="96" y="27" text-anchor="end" font-family="Ubuntu" font-weight="700" font-size="12" fill="#111614">Open Trade</text>
+  <text x="96" y="40" text-anchor="end" font-family="Ubuntu" font-size="8" fill="#2f9e73">openfi.cloud</text>
+</svg>

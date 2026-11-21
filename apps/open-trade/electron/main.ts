@@ -13,6 +13,7 @@ import {
   nativeImage,
 } from "electron";
 import { readFile, writeFile, mkdir, unlink } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import {
@@ -320,6 +321,18 @@ app.whenReady().then(async () => {
         token = stored.token;
     }
   } catch {}
+  /* Native translucency: macOS always; Windows 11 (build 22000+) acrylic;
+     Linux has no compositor-independent material, so it stays opaque. */
+  const glass: "native" | "none" =
+    process.platform === "darwin" ||
+    (process.platform === "win32" && Number(os.release().split(".")[2]) >= 22000)
+      ? "native"
+      : "none";
+  const overlayFor = (theme: string) => ({
+    color: "#00000000",
+    symbolColor: theme === "light" ? "#28282e" : "#d6d6dc",
+    height: 38,
+  });
   const renderer = path.join(__dirname, "renderer");
   protocol.handle("open-trade", async (request) => {
     const u = new URL(request.url);
@@ -347,14 +360,29 @@ app.whenReady().then(async () => {
       },
     }),
   );
+  /* Liquid-glass chrome (0.0.4): the window itself is translucent where the
+     OS provides a native material — macOS vibrancy, Windows 11 acrylic — so
+     the title bar, side rail and trading panel are real glass without a CSS
+     blur over the live charts. Charts stay opaque. Every platform draws its
+     own title bar inside the app; Windows and Linux keep native minimise,
+     maximise and close controls through the title-bar overlay. */
   win = new BrowserWindow({
     ...bounds,
     minWidth: 960,
     minHeight: 640,
-    backgroundColor: "#101012",
+    backgroundColor: glass === "native" ? "#00000000" : "#101012",
     title: `Open Trade ${build.version}`,
-    titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "default",
-    trafficLightPosition: { x: 12, y: 12 },
+    titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "hidden",
+    ...(process.platform === "darwin"
+      ? {
+          trafficLightPosition: { x: 14, y: 13 },
+          vibrancy: "under-window" as const,
+          visualEffectState: "active" as const,
+        }
+      : {
+          titleBarOverlay: overlayFor("dark"),
+          ...(glass === "native" ? { backgroundMaterial: "acrylic" as const } : {}),
+        }),
     show: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
@@ -391,7 +419,15 @@ app.whenReady().then(async () => {
     channel: build.channel,
     signed: build.signed,
     electron: process.versions.electron,
+    platform: process.platform,
+    glass,
   }));
+  /* Title-bar controls follow the app theme (Windows/Linux overlay only). */
+  handle("chrome-theme", (theme: unknown) => {
+    if (theme !== "dark" && theme !== "light") throw new Error("Unknown theme");
+    if (process.platform !== "darwin") win?.setTitleBarOverlay(overlayFor(theme));
+    return true;
+  });
   let releaseCheck: { at: number; value: Promise<unknown> } | null = null;
   handle("check-updates", () => {
     if (!releaseCheck || Date.now() - releaseCheck.at > 30 * 60_000) {
