@@ -1,0 +1,33 @@
+# One-off, owner-approved: attach the internal unsigned Open Trade 0.0.4
+# installers built from main (run 44895436607, commit 935d06f) to a separate
+# desktop pre-release, open-trade-v0.0.4. Runs only on pushes to this branch;
+# the branch is not merged into main.
+name: Open Trade 0.0.4 internal assets
+on:
+  push:
+    branches: [agent/claude/open-trade-0.0.4-assets]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Download installers from the main build
+        run: |
+          gh run download 44895436607 -p 'Open-Trade-0.0.4-internal-unsigned-*' -D dist
+          find dist -type f -printf '%s %p\n'
+      - name: Create desktop pre-release with installers
+        run: |
+          mkdir -p out
+          find dist -type f \( -name '*.dmg' -o -name '*.exe' -o -name '*.AppImage' -o -name '*.deb' -o -name '*.zip' -o -name '*.txt' \) -exec cp {} out/ \;
+          ls -la out
+          gh api "repos/$GH_REPO/contents/docs/releases/open-trade-0.0.4.md?ref=935d06f0ca2489110d7fdbd17ce59499f98a06d3" --jq .content | base64 -d > notes.md
+          gh release create open-trade-v0.0.4 out/* \
+            --target 935d06f0ca2489110d7fdbd17ce59499f98a06d3 \
+            --prerelease --latest=false \
+            --title "Open Trade 0.0.4 (internal unsigned build)" \
+            --notes-file notes.md
