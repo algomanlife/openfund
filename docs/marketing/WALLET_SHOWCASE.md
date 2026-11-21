@@ -20,19 +20,26 @@ Financial figures use Latin digits, left to right, like the market table.
 
 | Element | Technique |
 | --- | --- |
-| Horizontal loop | Two identical lists in one track moved by exactly one list width plus the gap (CSS `translate3d`, linear). The copy is `aria-hidden` |
-| Depth | Staggered vertical offsets, edge opacity falloff (mask) and light edge blur |
+| Strip | Full viewport width; the heading and disclaimer stay in the 1240 px container. The strip's viewport is anchored left-to-right (`direction: ltr`) and only the cards inside are RTL, so the track starts at the left edge in every locale and never runs out on one side |
+| Horizontal loop | As many copies of the list as needed for one copy to be wider than the viewport plus one card (`copiesFor()`, measured with a `ResizeObserver`, so it follows resizes, breakpoints and locale switches). One linear CSS animation moves the track by exactly one list plus the gap. Copies after the first are `aria-hidden` |
+| Direction | RTL locales (`fa`, `ar`) enter from the right and move left; LTR mirrors it with `animation-direction: reverse` |
+| Scanner beam | A fixed vertical mint line at the horizontal centre with a soft breathing glow |
+| Data dissolve | Two layers run the same animation (same keyframes, start time and play state). The card layer is clipped with `clip-path` to the entry side of the beam; the data layer, clipped to the exit side, shows each card as monospace figures, percentages and hex derived from its seed (`dataLines()`), so cards dissolve into data as they cross the beam. The data layer is `aria-hidden` |
+| Edges | A light 9% opacity fade on each side; no backdrop blur |
+| Depth | Staggered vertical offsets |
 | Glow | Mint radial glow that breathes on a 13 s ease-in-out cycle |
 | Figures | Abstract numbers drifting slowly behind the cards, with a light pointer parallax on fine pointers |
-| Hover and focus | Pause the loop; the hovered card lifts |
+| Pause | Only while one card is hovered (`:has(.ws-card:hover)`), not the whole section. Keyboard focus on the strip (`:focus-visible`, so a mouse click does not freeze it) pauses it, removes the clip so every card is readable, shows a focus ring, and the arrow keys move it one card at a time |
+| Below 768 px | No data layer: the whole strip moves under the beam glow |
 
 Resource use: animations run only while the section is on screen and the tab
 is visible (IntersectionObserver plus `visibilitychange`). The only
 `requestAnimationFrame` is one frame per pointer move for the parallax; there
-is no continuous loop. No animation library is used. For
-`prefers-reduced-motion` the row is static and scrollable, with no duplicate
-list, no drift and no glow. The section has its own container styles, so it
-renders final before the page's legacy stylesheet arrives.
+is no continuous loop. No animation library or canvas is used; the data layer
+is plain DOM text. For `prefers-reduced-motion` the row is static and
+scrollable, with no duplicate list, beam, data layer, drift or glow. The
+section has its own container styles, so it renders final before the page's
+legacy stylesheet arrives.
 
 ## Reference
 
@@ -57,14 +64,19 @@ structure (Market Pulse → showcase → next section). The anchor is one line i
 
 ## Tests
 
-`npm run test:browser:wallet-showcase` (`e2e/test-wallet-showcase.cjs`, 24
+`npm run test:browser:wallet-showcase` (`e2e/test-wallet-showcase.cjs`, 36
 checks, also in CI):
 
 - placement, labels, disclaimer and deterministic data;
-- continuous linear motion and a seamless loop distance;
-- pause on hover and off screen;
+- continuous linear motion in the locale's direction and a seamless loop distance;
+- a full-bleed strip whose track covers the viewport plus one copy, also after resizing to 3840 px;
+- the centred beam with the card and data layers clipped to opposite sides and in sync;
+- pause only on a hovered card (not elsewhere in the section), resume on leave, keyboard pause and arrow stepping;
+- no data layer below 768 px; pause off screen;
 - no internal layout shift and stable height;
 - RTL/LTR, dark/light and 375/390/768/1440 px without overflow;
 - reduced motion, terminal routes untouched, and a recorded video.
 
-Evidence: `docs/assets/screenshots/wallet-showcase/`.
+Unit tests (`npm --prefix apps/web-react run test:content`, `test/wallet-showcase.test.mjs`): copy count for every width from 320 to 7680 px and the deterministic, glyph-only data rendition.
+
+Evidence: `docs/assets/screenshots/wallet-showcase/` (first version) and `docs/assets/screenshots/wallet-showcase-beam/` (full-bleed loop with the scanner beam).
