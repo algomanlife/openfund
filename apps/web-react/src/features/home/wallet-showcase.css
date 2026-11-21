@@ -1,10 +1,15 @@
 /* Wallet showcase: GPU-friendly transforms and opacity only. The loop runs
    only with .ws-running (on screen and tab visible); reduced motion gets a
-   static, scrollable row. */
+   static, scrollable row. The section is full-bleed; its text stays in the
+   1240 px container (.ws-inner). */
 .ws-section { --ws-card-w: 248px; --ws-gap: 16px; --ws-duration: calc(var(--ws-count, 14) * 4.2s);
+  /* one copy of the list plus the gap before the next copy: the exact loop travel */
+  --ws-shift: calc(var(--ws-count, 14) * (var(--ws-card-w) + var(--ws-gap)));
+  --ws-inset: max(40px, calc((100% - 1240px) / 2 + 40px));
   --ws-bg: #060808; --ws-card: #0d1513; --ws-card-line: #82e7bd22; --ws-fg: #eef5f1; --ws-muted: #93a69d; --ws-mint: #82e7bd;
   position: relative; isolation: isolate; padding-block: 18px 92px; overflow: hidden;
-  box-sizing: border-box; width: min(1240px, 100%); margin-inline: auto; padding-inline: 40px; }
+  box-sizing: border-box; width: 100%; margin-inline: 0; padding-inline: 0; }
+.ws-inner { width: min(1240px, 100%); margin-inline: auto; padding-inline: 40px; }
 .ws-section *, .ws-section *::before, .ws-section *::after { box-sizing: border-box; }
 .ws-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; line-height: 1.7; color: var(--ws-muted); }
 .ws-head h2 { margin: 12px 0 0; }
@@ -27,20 +32,57 @@
 .ws-running .ws-figures span { animation: ws-drift calc(9s + var(--i) * 1.3s) ease-in-out infinite alternate; }
 @keyframes ws-drift { from { transform: translate3d(0, 10px, 0); opacity: .08 } to { transform: translate3d(0, -14px, 0); opacity: .22 } }
 
-/* the loop: two identical lists; moving by exactly one list width is seamless */
-.ws-viewport { position: relative; z-index: 1; margin-inline: -40px; padding-block: 14px;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 13%, #000 87%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 13%, #000 87%, transparent); }
-.ws-viewport::before, .ws-viewport::after { content: ''; position: absolute; inset-block: 0; width: 9%; z-index: 2; pointer-events: none;
-  backdrop-filter: blur(1.5px); -webkit-backdrop-filter: blur(1.5px); }
-.ws-viewport::before { left: 0 } .ws-viewport::after { right: 0 }
+/* the loop: N identical lists; moving by exactly one list plus the gap is
+   seamless. The viewport is anchored LTR (only the cards inside are RTL), so
+   the track starts at the left edge in every locale and never runs out. */
+/* 38 px of padding leaves room for the card shadows inside the edge mask (a mask
+   clips at the box); the negative margin keeps the section height unchanged */
+.ws-viewport { position: relative; z-index: 1; direction: ltr; padding-block: 38px; margin-block: -24px; outline: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); }
+.ws-viewport:focus-visible { box-shadow: inset 0 0 0 2px var(--ws-mint); -webkit-mask-image: none; mask-image: none; }
+.ws-layer { position: relative; }
+.ws-layer-data { position: absolute; inset: 38px 0; pointer-events: none; }
 .ws-track { display: flex; width: max-content; gap: var(--ws-gap); will-change: transform; }
 .ws-running .ws-track { animation: ws-loop var(--ws-duration) linear infinite; }
-.ws-section:hover .ws-track, .ws-section:focus-within .ws-track { animation-play-state: paused; }
-@keyframes ws-loop { from { transform: translate3d(0, 0, 0) } to { transform: translate3d(calc(-50% - var(--ws-gap) / 2), 0, 0) } }
+/* LTR mirrors RTL: cards enter from the left instead of the right */
+.ws-section[data-flow=ltr] .ws-track { animation-direction: reverse; }
+/* pause only while one card is hovered, or the strip has keyboard focus */
+.ws-viewport:has(.ws-layer-cards .ws-card:hover) .ws-track,
+.ws-viewport:focus-visible .ws-track { animation-play-state: paused; }
+@keyframes ws-loop { from { transform: translate3d(0, 0, 0) } to { transform: translate3d(calc(-1 * var(--ws-shift)), 0, 0) } }
 .ws-list { display: flex; gap: var(--ws-gap); margin: 0; padding: 0; list-style: none; }
 .ws-list > li:nth-child(3n + 2) { transform: translateY(10px); }
 .ws-list > li:nth-child(3n) { transform: translateY(-6px); }
+
+/* scanner beam and the two clipped layers. RTL: cards on the right (entry)
+   side, data on the left; LTR mirrors. */
+.ws-layer-cards { clip-path: inset(-40px 0 -40px 50%); }
+.ws-layer-data { clip-path: inset(-40px 50% -40px 0); }
+.ws-section[data-flow=ltr] .ws-layer-cards { clip-path: inset(-40px 50% -40px 0); }
+.ws-section[data-flow=ltr] .ws-layer-data { clip-path: inset(-40px 0 -40px 50%); }
+.ws-viewport:focus-visible .ws-layer-cards { clip-path: none; }
+.ws-viewport:focus-visible .ws-layer-data { opacity: 0; }
+.ws-beam { position: absolute; z-index: 3; inset-block: 0; left: 50%; width: 2px; margin-left: -1px; pointer-events: none;
+  background: linear-gradient(180deg, transparent, var(--ws-mint) 18%, var(--ws-mint) 82%, transparent);
+  box-shadow: 0 0 12px 1px #82e7bd99, 0 0 36px 6px #82e7bd33; }
+.ws-beam i { position: absolute; inset-block: 0; left: -40px; width: 80px;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, #82e7bd2e, transparent 70%); opacity: .7; }
+.ws-running .ws-beam i { animation: ws-beam 2.6s ease-in-out infinite; }
+@keyframes ws-beam { 0%, 100% { opacity: .45; transform: scaleX(.8) } 50% { opacity: .9; transform: scaleX(1.15) } }
+[data-theme=light] .ws-beam { box-shadow: 0 0 10px 1px #13664a66, 0 0 30px 6px #13664a22; }
+[data-theme=light] .ws-beam i { background: radial-gradient(ellipse 50% 50% at 50% 50%, #13664a24, transparent 70%); }
+.ws-viewport:focus-visible .ws-beam { opacity: 0; }
+
+/* data rendition: same box as the card, monospace figures from its seed */
+.ws-data { width: var(--ws-card-w); height: var(--ws-card-h, 168px); display: grid; align-content: center; gap: 3px; padding: 14px 16px;
+  border-radius: 14px; border: 1px dashed #82e7bd40; background: linear-gradient(160deg, #82e7bd10, transparent 70%);
+  font: 500 11.5px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--ws-mint); overflow: hidden; }
+.ws-data i { font-style: normal; white-space: nowrap; opacity: calc(.95 - var(--l) * .08); }
+.ws-data[data-risk="3"] i:nth-child(4) { color: #e8c46a; }
+.ws-running .ws-data i:nth-child(odd) { animation: ws-flicker 1.8s steps(2, jump-none) infinite; animation-delay: calc(var(--l) * -.37s); }
+@keyframes ws-flicker { 0%, 100% { opacity: .9 } 50% { opacity: .45 } }
+[data-theme=light] .ws-data { border-color: #13664a40; background: linear-gradient(160deg, #13664a0d, transparent 70%); }
 
 /* cards */
 .ws-card { width: var(--ws-card-w); display: grid; gap: 14px; padding: 16px; border-radius: 14px; color: var(--ws-fg);
@@ -69,16 +111,25 @@
 .ws-disclaimer { position: relative; z-index: 2; margin-top: 18px; font-size: 11.5px; color: var(--ws-muted); }
 
 @media (max-width: 760px) {
-  .ws-section { --ws-card-w: 222px; --ws-gap: 12px; --ws-duration: calc(var(--ws-count, 14) * 5s); padding-block: 8px 70px; padding-inline: 20px; }
+  .ws-section { --ws-card-w: 222px; --ws-gap: 12px; --ws-duration: calc(var(--ws-count, 14) * 5s); padding-block: 8px 70px; }
+  .ws-inner { padding-inline: 20px; }
   .ws-head h2 { font-size: 25px; }
-  .ws-viewport { margin-inline: -20px; }
   .ws-list > li:nth-child(n) { transform: none; }
+}
+/* below 768 px: no data layer, the whole strip moves under the beam glow */
+@media (max-width: 767.98px) {
+  .ws-layer-data { display: none; }
+  .ws-layer-cards, .ws-section[data-flow=ltr] .ws-layer-cards { clip-path: none; }
+  .ws-beam { box-shadow: 0 0 10px 1px #82e7bd66, 0 0 28px 4px #82e7bd22; opacity: .8; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ws-track, .ws-running .ws-track, .ws-running .ws-figures span, .ws-running .ws-glow { animation: none !important; }
-  .ws-clone { display: none; }
-  .ws-viewport { overflow-x: auto; scroll-snap-type: x mandatory; -webkit-mask-image: none; mask-image: none; margin-inline: 0; }
-  .ws-viewport::before, .ws-viewport::after { display: none; }
+  .ws-clone, .ws-layer-data, .ws-beam { display: none; }
+  .ws-layer-cards, .ws-section[data-flow=ltr] .ws-layer-cards { clip-path: none; }
+  .ws-viewport { overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--ws-inset); -webkit-mask-image: none; mask-image: none; }
+  .ws-viewport:focus-visible { box-shadow: inset 0 0 0 2px var(--ws-mint); }
+  .ws-track { padding-inline: var(--ws-inset); }
+  .ws-section[dir=rtl] .ws-viewport { direction: rtl; }
   .ws-list > li { scroll-snap-align: start; }
   .ws-figures { transform: none; transition: none; }
   .ws-card, .ws-card:hover { transition: none; transform: none; }

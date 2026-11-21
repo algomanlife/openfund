@@ -1,4 +1,4 @@
-import { useEffect, useRef, type CSSProperties, type ReactElement } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactElement } from 'react'
 import { dirOf, pick, pickFormat, intlLocale, type AppLocale } from '../../i18n/locales'
 import './wallet-showcase.css'
 
@@ -10,11 +10,24 @@ import './wallet-showcase.css'
  *  so. The seed makes server and client output identical and stable across
  *  re-renders.
  *
- *  Motion is CSS transforms only: a seamless loop of two copies of the same
- *  list (the second copy is aria-hidden), edge opacity falloff and blur, a
- *  mint glow and drifting figures. It runs only while the section is on
- *  screen and the tab is visible, pauses on hover or keyboard focus, and is
- *  replaced by a static, scrollable row for prefers-reduced-motion. */
+ *  Motion is CSS transforms and opacity only. The strip spans the full
+ *  viewport; its viewport is anchored left-to-right (only the cards are RTL)
+ *  so the track never runs out on either side. It holds as many copies of
+ *  the list as needed for one copy to be wider than the viewport plus a card
+ *  (copies after the first are aria-hidden), and one linear CSS animation
+ *  moves it by exactly one copy, so the loop is seamless at every width.
+ *
+ *  A fixed mint scanner beam sits at the horizontal centre. Two layers run
+ *  the same animation: the card layer is clipped to the entry side of the
+ *  beam and a "data" layer (monospace figures derived from each card's seed)
+ *  to the exit side, so cards dissolve into data as they cross it. RTL
+ *  locales enter from the right; LTR mirrors it. Below 768 px the data layer
+ *  is dropped and only the strip and the beam glow remain.
+ *
+ *  It runs only while the section is on screen and the tab is visible,
+ *  pauses while one card is hovered or the strip has keyboard focus (arrow
+ *  keys then step card by card), and is replaced by a static, scrollable row
+ *  for prefers-reduced-motion. */
 
 type Category = 'crypto' | 'forex' | 'stocks' | 'indices' | 'commodities'
 export interface DemoWallet { address: string; short: string; category: Category; returnPct: number; risk: 1 | 2 | 3; trades: number; seed: number }
@@ -62,6 +75,31 @@ function Identicon({ seed }: { seed: number }) {
   )
 }
 
+/** Deterministic "data" rendition of a card for the far side of the beam:
+ *  figures, percentages and hex derived from the wallet's own seed. Glyphs
+ *  only (no words), decorative and aria-hidden. */
+export function dataLines(wallet: DemoWallet): string[] {
+  const rand = prng(wallet.seed ^ 0x5bd1e995)
+  const hex = wallet.address.slice(2)
+  const sign = (n: number) => (n >= 0 ? '+' : '−') + Math.abs(n).toFixed(1)
+  const bits = Array.from({ length: 22 }, () => (rand() > 0.5 ? '1' : '0')).join('')
+  return [
+    '0x' + hex.slice(0, 14), hex.slice(14, 28), hex.slice(28, 40) + ' ··',
+    `Δ ${sign(wallet.returnPct)}%  σ ${wallet.risk}/3`,
+    `# ${String(wallet.trades).padStart(4, '0')}  ${(rand() * 2).toFixed(4)}`,
+    `${(rand() * 100).toFixed(2)}%  ${(rand() * 9).toFixed(3)}`,
+    bits,
+  ]
+}
+
+function DataCard({ wallet }: { wallet: DemoWallet }) {
+  return (
+    <div className="ws-data" data-risk={wallet.risk}>
+      {dataLines(wallet).map((line, i) => <i key={i} style={{ '--l': i } as CSSProperties}>{line}</i>)}
+    </div>
+  )
+}
+
 function Card({ wallet, locale }: { wallet: DemoWallet; locale: AppLocale }) {
   const category = {
     crypto: pick(locale, 'رمزارز', 'Crypto'), forex: pick(locale, 'فارکس', 'Forex'), stocks: pick(locale, 'سهام', 'Stocks'),
@@ -92,17 +130,37 @@ function Card({ wallet, locale }: { wallet: DemoWallet; locale: AppLocale }) {
   )
 }
 
+/** copies needed so one copy is always wider than the viewport plus one card */
+export function copiesFor(viewport: number, copyWidth: number, card: number): number {
+  if (!(copyWidth > 0)) return 2
+  return Math.max(2, Math.ceil((viewport + card) / copyWidth) + 1)
+}
+
 export default function WalletShowcase({ locale }: { locale: AppLocale }) {
   const root = useRef<HTMLElement>(null)
+  const viewport = useRef<HTMLDivElement>(null)
+  const [copies, setCopies] = useState(2)
   useEffect(() => {
-    const el = root.current
-    if (!el) return
+    const el = root.current, vp = viewport.current
+    if (!el || !vp) return
     /* run the loop only while on screen and visible */
     let onScreen = false
     const sync = () => el.classList.toggle('ws-running', onScreen && !document.hidden)
     const io = new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; sync() }, { rootMargin: '80px' })
     io.observe(el)
     document.addEventListener('visibilitychange', sync)
+    /* copy count and card height follow the real layout (resize, locale, breakpoint) */
+    const measure = () => {
+      const list = vp.querySelector<HTMLElement>('.ws-layer-cards .ws-list'), card = list?.querySelector<HTMLElement>('.ws-card')
+      if (!list || !card) return
+      const gap = parseFloat(getComputedStyle(list).columnGap) || 0
+      setCopies(copiesFor(vp.clientWidth, list.offsetWidth + gap, card.offsetWidth))
+      el.style.setProperty('--ws-card-h', `${card.offsetHeight}px`)
+    }
+    const ro = new ResizeObserver(measure)
+    ro.observe(vp)
+    const firstList = vp.querySelector('.ws-layer-cards .ws-list')
+    if (firstList) ro.observe(firstList)
     /* light pointer parallax on the figures layer: one rAF per pointer move, fine pointers only */
     const fine = matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)')
     let frame = 0, px = 0, py = 0
@@ -113,32 +171,56 @@ export default function WalletShowcase({ locale }: { locale: AppLocale }) {
       if (!frame) frame = requestAnimationFrame(() => { frame = 0; el.style.setProperty('--ws-px', px.toFixed(3)); el.style.setProperty('--ws-py', py.toFixed(3)) })
     }
     el.addEventListener('pointermove', move, { passive: true })
-    return () => { io.disconnect(); document.removeEventListener('visibilitychange', sync); el.removeEventListener('pointermove', move); cancelAnimationFrame(frame) }
+    return () => { io.disconnect(); ro.disconnect(); document.removeEventListener('visibilitychange', sync); el.removeEventListener('pointermove', move); cancelAnimationFrame(frame) }
   }, [])
+  /* keyboard: while the strip has focus the loop is paused; arrows move it one card */
+  const step = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+    const vp = e.currentTarget
+    const animations = [...vp.querySelectorAll('.ws-track')].flatMap(t => t.getAnimations()).filter(a => (a as CSSAnimation).animationName === 'ws-loop')
+    if (!animations.length) return
+    e.preventDefault()
+    const duration = Number(animations[0].effect?.getComputedTiming().duration) || 0
+    /* normal direction moves left (RTL); reverse moves right (LTR) */
+    const reverse = animations[0].effect?.getComputedTiming().direction === 'reverse'
+    const delta = (duration / WALLETS.length) * ((e.key === 'ArrowLeft') !== reverse ? 1 : -1)
+    for (const a of animations) {
+      const next = (Number(a.currentTime) || 0) + delta
+      a.currentTime = next < 0 ? next + duration : next
+    }
+  }
+  const label = pick(locale, 'کیف پول‌های نمونه · دادهٔ نمایشی', 'Sample wallets · demo data')
+  const lists = (data: boolean) => Array.from({ length: copies }, (_, c) => data
+    ? <ul key={c} className="ws-list ws-data-list">{WALLETS.map(w => <li key={w.address}><DataCard wallet={w} /></li>)}</ul>
+    : <ul key={c} className={c ? 'ws-list ws-clone' : 'ws-list'} aria-hidden={c ? 'true' : undefined} aria-label={c ? undefined : label}>
+        {WALLETS.map(w => <li key={w.address} dir={dirOf(locale)}><Card wallet={w} locale={locale} /></li>)}
+      </ul>)
+  const trackStyle = { '--ws-count': WALLETS.length } as CSSProperties
   return (
-    <section ref={root} className="ws-section" aria-labelledby="ws-title" dir={dirOf(locale)} lang={locale} data-locale-owned="react">
+    <section ref={root} className="ws-section" aria-labelledby="ws-title" dir={dirOf(locale)} lang={locale} data-locale-owned="react"
+      data-flow={dirOf(locale)} style={trackStyle}>
       {/* own container and eyebrow styles: the legacy stylesheet loads after
           mount, and borrowing its classes would reflow this section then */}
       <div className="ws-glow" aria-hidden="true" />
       <div className="ws-figures" aria-hidden="true">
         {FIGURES.map((f, i) => <span key={i} style={{ '--i': i } as CSSProperties} dir="ltr">{f}</span>)}
       </div>
-      <div className="ws-head">
-        <span className="ws-eyebrow">{pick(locale, 'کیف پول‌های نمونه · دادهٔ نمایشی', 'Sample wallets · demo data')}</span>
+      <div className="ws-head ws-inner">
+        <span className="ws-eyebrow">{label}</span>
         <h2 id="ws-title">{pick(locale, 'هر کیف پول، یک مسیر معاملاتی.', 'Every wallet, its own trading path.')}</h2>
       </div>
-      {/* focusable so keyboard users can scroll it (reduced motion) and pause it (focus-within) */}
-      <div className="ws-viewport" tabIndex={0}>
-        <div className="ws-track" dir="ltr" style={{ '--ws-count': WALLETS.length } as CSSProperties}>
-          <ul className="ws-list" aria-label={pick(locale, 'کیف پول‌های نمونه · دادهٔ نمایشی', 'Sample wallets · demo data')}>
-            {WALLETS.map(w => <li key={w.address} dir={dirOf(locale)}><Card wallet={w} locale={locale} /></li>)}
-          </ul>
-          <ul className="ws-list ws-clone" aria-hidden="true">
-            {WALLETS.map(w => <li key={w.address} dir={dirOf(locale)}><Card wallet={w} locale={locale} /></li>)}
-          </ul>
+      {/* full-bleed strip, anchored LTR. Focusable so keyboard users can pause
+          and step it, and scroll it under reduced motion. */}
+      <div ref={viewport} className="ws-viewport" tabIndex={0} role="region" aria-label={label} onKeyDown={step}>
+        <div className="ws-layer ws-layer-cards">
+          <div className="ws-track">{lists(false)}</div>
         </div>
+        <div className="ws-layer ws-layer-data" aria-hidden="true">
+          <div className="ws-track">{lists(true)}</div>
+        </div>
+        <div className="ws-beam" aria-hidden="true"><i /></div>
       </div>
-      <p className="ws-disclaimer">{pick(locale,
+      <p className="ws-disclaimer ws-inner">{pick(locale,
         'دادهٔ نمایشی و نمونه است؛ این نشانی‌ها معامله‌گران، حساب‌ها یا نتایج تأییدشدهٔ اوپن‌فاند نیستند.',
         'Illustrative demo data. These addresses are not Openfund traders, accounts or verified results.')}</p>
     </section>
