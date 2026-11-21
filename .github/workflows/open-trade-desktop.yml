@@ -134,7 +134,9 @@ jobs:
       - name: Package internal unsigned build
         if: github.event_name != 'pull_request'
         working-directory: apps/open-trade
-        run: node scripts/package.mjs ${{ matrix.builder }}
+        env:
+          BUILDER_ARCH: ${{ matrix.builder }}
+        run: node scripts/package.mjs "$BUILDER_ARCH"
       - name: Checksums and integrity
         if: github.event_name != 'pull_request'
         working-directory: apps/open-trade
@@ -218,7 +220,8 @@ jobs:
           OPEN_TRADE_WIN_SIGN_ACCOUNT: ${{ vars.OPEN_TRADE_WIN_SIGN_ACCOUNT }}
           OPEN_TRADE_WIN_SIGN_PROFILE: ${{ vars.OPEN_TRADE_WIN_SIGN_PROFILE }}
           OPEN_TRADE_WIN_PUBLISHER: ${{ vars.OPEN_TRADE_WIN_PUBLISHER }}
-        run: node scripts/package.mjs ${{ matrix.builder }}
+          BUILDER_ARCH: ${{ matrix.builder }}
+        run: node scripts/package.mjs "$BUILDER_ARCH"
       - name: Signature and notarization verification
         working-directory: apps/open-trade
         run: |
@@ -252,7 +255,8 @@ jobs:
       - name: Download signed artifacts of this run
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --pattern "Open-Trade-${{ inputs.channel }}-*" --dir dist-release
+          CHANNEL: ${{ inputs.channel }}
+        run: gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --pattern "Open-Trade-${CHANNEL}-*" --dir dist-release
       - name: Combined SHA-256 manifest
         run: |
           cd dist-release
@@ -261,10 +265,14 @@ jobs:
       - name: Create DRAFT release
         env:
           GH_TOKEN: ${{ github.token }}
+          CHANNEL: ${{ inputs.channel }}
         run: |
           version=$(node -p "require('./apps/open-trade/package.json').version")
           tag="open-trade-v${version}"
-          gh release create "$tag" --draft --prerelease=${{ inputs.channel == 'beta' }} \
+          prerelease=false
+          if [ "$CHANNEL" = beta ]; then prerelease=true; fi
+          mapfile -t assets < <(find dist-release -type f \( -name '*.dmg' -o -name '*.exe' -o -name '*.AppImage' -o -name '*.deb' -o -name 'signatures-*.json' \))
+          gh release create "$tag" --draft --prerelease="$prerelease" \
             --target "$GITHUB_SHA" --title "Open Trade ${version}" \
             --notes-file "docs/releases/open-trade-${version}.md" \
-            $(find dist-release -type f \( -name '*.dmg' -o -name '*.exe' -o -name '*.AppImage' -o -name '*.deb' -o -name 'signatures-*.json' \)) dist-release/SHA256SUMS.txt
+            "${assets[@]}" dist-release/SHA256SUMS.txt

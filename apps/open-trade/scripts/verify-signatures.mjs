@@ -15,9 +15,11 @@ import path from "node:path";
 const channel = process.env.OPEN_TRADE_CHANNEL || "internal";
 const { version } = JSON.parse(await readFile("package.json", "utf8"));
 const dir = "release";
-const run = (cmd, args) => {
+const opts = { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] };
+/* each tool is named literally at its call site (no command from a variable) */
+const attempt = (fn) => {
   try {
-    return { ok: true, out: execFileSync(cmd, args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }) };
+    return { ok: true, out: fn() };
   } catch (e) {
     return { ok: false, out: String(e.stdout || "") + String(e.stderr || e.message) };
   }
@@ -40,27 +42,27 @@ for (const name of (await readdir(dir)).sort()) {
   entry.checks.version = name.includes(`-${version}-`);
   entry.checks.channelName = channel === "internal" ? name.includes("-internal-unsigned-") : !name.includes("unsigned");
   if (channel !== "internal" && name.endsWith(".dmg")) {
-    const mount = run("hdiutil", ["attach", "-nobrowse", "-readonly", "-plist", file]);
+    const mount = attempt(() => execFileSync("hdiutil", ["attach", "-nobrowse", "-readonly", "-plist", file], opts));
     const point = /<string>(\/Volumes\/[^<]+)<\/string>/.exec(mount.out)?.[1];
     if (point) {
       const app = path.join(point, "Open Trade.app");
-      const verify = run("codesign", ["--verify", "--deep", "--strict", "--verbose=2", app]);
-      const detail = run("codesign", ["-dvvv", app]);
+      const verify = attempt(() => execFileSync("codesign", ["--verify", "--deep", "--strict", "--verbose=2", app], opts));
+      const detail = attempt(() => execFileSync("codesign", ["-dvvv", app], opts));
       entry.checks.codesign = verify.ok;
       entry.checks.developerId = /Authority=Developer ID Application:/.test(detail.out);
       entry.checks.hardenedRuntime = /flags=0x10000\(runtime\)|\(runtime\)/.test(detail.out);
-      entry.checks.gatekeeper = run("spctl", ["--assess", "--type", "execute", "--verbose=4", app]).ok;
+      entry.checks.gatekeeper = attempt(() => execFileSync("spctl", ["--assess", "--type", "execute", "--verbose=4", app], opts)).ok;
       /* electron-builder notarizes and staples the .app inside the DMG */
-      entry.checks.notarizationStapled = run("xcrun", ["stapler", "validate", app]).ok;
-      run("hdiutil", ["detach", point]);
+      entry.checks.notarizationStapled = attempt(() => execFileSync("xcrun", ["stapler", "validate", app], opts)).ok;
+      attempt(() => execFileSync("hdiutil", ["detach", point], opts));
     } else entry.checks.codesign = false;
   }
   if (channel !== "internal" && name.endsWith(".exe")) {
-    const ps = run("powershell", [
+    const ps = attempt(() => execFileSync("powershell", [
       "-NoProfile",
       "-Command",
       `$s = Get-AuthenticodeSignature -LiteralPath '${file.replace(/'/g, "''")}'; "$($s.Status)|$($s.SignerCertificate.Subject)|$([bool]$s.TimeStamperCertificate)"`,
-    ]);
+    ], opts));
     const [status, subject, stamped] = ps.out.trim().split("|");
     entry.checks.authenticode = status === "Valid";
     entry.checks.timestamped = stamped === "True";
