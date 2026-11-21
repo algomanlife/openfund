@@ -31,7 +31,8 @@ export const LOCALE_REGIONS: Record<AppLocale, { lon: number; lat: number; r: nu
 }
 
 function displayName(code: AppLocale, ui: AppLocale): string {
-  try { return new Intl.DisplayNames([ui], { type: 'language' }).of(code) || LOCALE_NAMES[code] } catch { return LOCALE_NAMES[code] }
+  /* zh-CN is offered as Simplified Chinese (简体中文), not "Chinese (China)" */
+  try { return new Intl.DisplayNames([ui], { type: 'language' }).of(code === 'zh-CN' ? 'zh-Hans' : code) || LOCALE_NAMES[code] } catch { return LOCALE_NAMES[code] }
 }
 
 /** Small wireframe globe for the trigger. */
@@ -85,7 +86,7 @@ export default function LanguageSelect({ locale, onChange, className }: {
   const typed = useRef({ text: '', at: 0 })
   const names = useMemo(() => LOCALES.map(code => ({ code, own: LOCALE_NAMES[code], ui: displayName(code, locale) })), [locale])
 
-  const close = (refocus = true) => { setOpen(false); if (refocus) trigger.current?.focus() }
+  const close = (refocus = true) => { setOpen(false); setPlace(null); if (refocus) trigger.current?.focus() }
   const choose = (next: AppLocale) => { close(); if (next !== locale) { saveLocaleChoice(next); onChange(next) } }
   const show = (index = LOCALES.indexOf(locale)) => { setActive(index); setOpen(true) }
 
@@ -100,7 +101,6 @@ export default function LanguageSelect({ locale, onChange, className }: {
       setPlace({ top: r.bottom + 8, left, sheet })
     }
     measure()
-    list.current?.focus({ preventScroll: true })
     const outside = (e: PointerEvent) => {
       const t = e.target as Node
       if (!list.current?.closest('.of-language-panel')?.contains(t) && !trigger.current?.contains(t)) close(false)
@@ -109,6 +109,8 @@ export default function LanguageSelect({ locale, onChange, className }: {
     return () => { removeEventListener('resize', measure); document.removeEventListener('pointerdown', outside) }
   }, [open])
   useEffect(() => { if (!open) setActive(LOCALES.indexOf(locale)) }, [locale, open])
+  /* the listbox exists once the panel is placed: move focus into it then */
+  useEffect(() => { if (open && place) list.current?.focus({ preventScroll: true }) }, [open, place === null])
 
   const onTriggerKey = (e: ReactKeyboardEvent) => {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); show(e.key === 'ArrowUp' ? LOCALES.length - 1 : LOCALES.indexOf(locale)) }
