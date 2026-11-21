@@ -25,6 +25,8 @@
     "deps:check": "node --test scripts/deps/*.test.mjs && node scripts/deps/check-registry.mjs",
     "docs:status": "node --test scripts/docs/test/status.test.mjs && node scripts/docs/status.mjs --check",
     "docs:readme": "node scripts/docs/check-readme.mjs",
+    "docs:write": "node scripts/docs/status.mjs && node scripts/docs/check-retired.mjs --write && node scripts/docs/check-readme.mjs --write",
+    "docs:impact": "node scripts/docs/check-docs-impact.mjs",
     "docs:retired": "node scripts/docs/check-retired.mjs",
     "docs:fonts": "node scripts/docs/check-fonts.mjs",
     "docs:gates:test": "node --test scripts/docs/test/gates.test.mjs",

@@ -1,0 +1,13 @@
+{
+  "$comment": "Challenge lifecycle and money flows for README › Business model. Only published, approved rules; never revenue or growth figures. Detail: docs/economy/BUSINESS_DETAIL.md.",
+  "schemaVersion": 1,
+  "lifecycle": [
+    { "title": "Choose a plan", "icon": "tag", "text": "Fees come from the CMS plan catalog" },
+    { "title": "Pay on-chain", "icon": "wallet", "text": "Server verifies token, amount, finality" },
+    { "title": "Simulated evaluation", "icon": "candles", "text": "Rules evaluated from a frozen snapshot" },
+    { "title": "Pass and certify", "icon": "award", "text": "Final-pass review issues a certificate" },
+    { "title": "Funded rewards", "icon": "coins", "text": "Rewards under published plan rules" }
+  ],
+  "revenue": ["One-time evaluation fees for simulated challenge accounts"],
+  "costs": ["Trader rewards under published plan rules", "Ambassador commissions", "Coach compensation once live trading exists", "Refunds and infrastructure"]
+}

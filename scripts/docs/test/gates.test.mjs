@@ -96,17 +96,43 @@ test('the committed README satisfies its contract', () => {
   assert.equal(r.status, 0, r.stderr)
 })
 for (const [name, mutate, expected] of [
-  ['sections out of order', s => s.replace('## Security\n', '## Securityx\n').replace('## License\n', '## Security\n').replace('## Securityx\n', '## License\n'), /sections must be exactly/],
-  ['an orphan heading before the first section', s => s.replace('## Project overview', '### Payments\n\nx\n\n## Project overview'), /orphan heading/],
+  ['sections out of order', s => s.replace('/> Security\n', '/> Securityx\n').replace('/> License\n', '/> Security\n').replace('/> Securityx\n', '/> License\n'), /sections must be exactly/],
+  ['an orphan heading before the first section', s => s.replace('<a name="overview"></a>', '### Payments\n\nx\n\n<a name="overview"></a>'), /orphan heading/],
   ['a stale version', s => s.replace('Openfund is early-stage.', 'Since v0.6.5 Openfund is early-stage.'), /v0\.6\.5 is not the latest official release|platform version numbers/],
-  ['a dated gallery heading', s => s.replace('## Business model', '### Captures — 2026-11-20\n\nx\n\n## Business model'), /dated heading/],
-  ['an image outside the gallery', s => s.replace('Openfund sells one-time', '![x](docs/assets/brand/mark.svg)\nOpenfund sells one-time'), /images belong/],
+  ['a dated gallery heading', s => s.replace('<a name="business"></a>', '### Captures — 2026-11-20\n\nx\n\n<a name="business"></a>'), /dated heading/],
+  ['a section heading without its icon', s => s.replace(/^## <img[^\n]*\/> Security$/m, '## Security'), /must use its icon heading/],
+  ['a section without its anchor', s => s.replace('<a name="roadmap"></a>', ''), /must be preceded by <a name="roadmap">/],
+  ['a gutted section', s => s.replace(/(## <img[^\n]*\/> Roadmap\n)[\s\S]*?(<a name="security">)/, '$1\n$2'), /nearly empty/],
+  ['a README stripped of graphics', s => s.replace(/<img [^>]*>/g, ''), /must stay graphical|out of date/],
+  ['a missing banner', s => s.replace('docs/assets/graphics/hero.svg', 'docs/assets/graphics/ecosystem.svg'), /title block must show/],
   ['font names outside Technology stack', s => s.replace('Openfund sells one-time', 'Persian uses Dastkhat. Openfund sells one-time'), /typography policy/],
-  ['a dropped single-source link', s => s.replace('[platform tour](docs/product/PLATFORM_TOUR.md)', 'platform tour'), /must link docs\/product\/PLATFORM_TOUR\.md/],
+  ['a dropped single-source link', s => s.replace('[business model in detail](docs/economy/BUSINESS_DETAIL.md)', 'business model in detail'), /must link docs\/economy\/BUSINESS_DETAIL\.md/],
   ['a broken link', s => s.replace('(docs/README.md)', '(docs/MISSING.md)'), /broken link/],
-  ['a word budget overrun', s => s.replace('## Contributing\n', '## Contributing\n\n' + 'word '.repeat(600) + '\n'), /words \(budget/],
   ['a hand-edited generated block', s => s.replace('<!-- /license:summary -->', '| Extra | MIT |\n<!-- /license:summary -->'), /out of date/],
+  ['a hand-edited product card block', s => s.replace('<!-- /products -->', 'extra\n<!-- /products -->'), /out of date/],
 ]) test(`README gate fails on ${name}`, () => {
   const r = run('check-readme.mjs', readmeFixture(mutate))
   assert.equal(r.status, 1, 'expected failure'); assert.match(r.stderr, expected)
+})
+
+/* ---------- docs-impact gate (merge rule) ---------- */
+import { check as impact } from '../check-docs-impact.mjs'
+test('docs-impact passes when product code ships with its record', () => {
+  assert.equal(impact(['apps/web-react/src/features/x.tsx', 'CHANGELOG.md']).ok, true)
+  assert.equal(impact(['apps/backend/src/a.test.mjs', 'apps/web-react/package-lock.json']).ok, true)
+  assert.equal(impact(['docs/readme/products.json', 'README.md']).ok, true)
+})
+for (const [name, files, expected] of [
+  ['product code without a record', ['apps/backend/src/payments.mjs'], /product code changed/],
+  ['a screenshot without provenance', ['docs/assets/screenshots/x.png', 'CHANGELOG.md'], /screenshots changed/],
+  ['infrastructure without deployment docs', ['render.yaml'], /deployment and infrastructure/],
+  ['README data without a regenerated README', ['docs/readme/features.json'], /README data changed/],
+]) test(`docs-impact fails on ${name}`, () => {
+  const r = impact(files)
+  assert.equal(r.ok, false); assert.match(r.problems.join('\n'), expected)
+})
+test('docs-impact honours a declared exemption and bot authors', () => {
+  assert.equal(impact(['apps/backend/src/x.mjs'], { body: '## Documentation\nDocs-impact: none — internal refactor, no behavior change' }).ok, true)
+  assert.equal(impact(['apps/backend/src/x.mjs'], { body: 'Docs-impact: none' }).ok, false)
+  assert.equal(impact(['apps/backend/src/x.mjs'], { author: 'dependabot[bot]' }).ok, true)
 })

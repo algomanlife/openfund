@@ -1,0 +1,54 @@
+{
+  "$comment": "Products shown as cards in README › Product ecosystem. One entry per product a user or operator can open. `state` is one of: running, candidate, planned, dormant; `stateNote` says where and on what evidence (docs/status). Edit, then `npm run docs:write`.",
+  "schemaVersion": 1,
+  "products": [
+    {
+      "id": "website", "name": "Website", "icon": "browser", "state": "running", "stateNote": "GLOBAL",
+      "tagline": "Challenges, markets, rulebook, economy, governance and learning in five languages.",
+      "highlights": ["Challenge catalog and published rulebook", "Learning center, glossary and FAQ", "Certificate verification by serial or QR"],
+      "where": "openfi.cloud", "href": "https://openfi.cloud"
+    },
+    {
+      "id": "terminal", "name": "Web Terminal", "icon": "candles", "state": "running", "stateNote": "GLOBAL",
+      "tagline": "One trading workspace for Prop and Perpetual with separate accounts and records.",
+      "highlights": ["Vela charts with Openfund Pine indicators", "Order panel with server risk preview", "Portfolio, journal and certificates"],
+      "where": "/:locale/prop/trade", "href": "docs/trading/TERMINAL.md"
+    },
+    {
+      "id": "intelligence", "name": "Market intelligence", "icon": "radar", "state": "running", "stateNote": "read-only",
+      "tagline": "Trade Radar, Market Heatmap and Hybrid Footprint built on public market data.",
+      "highlights": ["Large-trade tape, leaderboards and whale positions", "Perpetual-market treemap by volume or OI", "Order flow beside unchanged Gains candles"],
+      "where": "Terminal tabs", "href": "docs/integrations/HYPERLIQUID_RADAR.md"
+    },
+    {
+      "id": "tools", "name": "Tools Center", "icon": "calculator", "state": "running", "stateNote": "GLOBAL",
+      "tagline": "Ten browser-side calculators for sizing, risk, funding and journal review.",
+      "highlights": ["Position size, leverage and liquidation", "Risk/reward, risk of ruin, prop drawdown", "Documented formulas; never places orders"],
+      "where": "/:locale/tools", "href": "docs/website/WEBSITE_EXPANSION.md"
+    },
+    {
+      "id": "open-trade", "name": "Open Trade", "icon": "monitor", "state": "candidate", "stateNote": "desktop beta",
+      "tagline": "Lightweight Electron desktop workspace with one to four independent Vela charts.",
+      "highlights": ["Watchlist, floating ticket and positions strip", "WalletConnect pairing with SIWE sign-in", "macOS, Windows and Linux targets"],
+      "where": "GitHub releases", "href": "apps/open-trade/README.md"
+    },
+    {
+      "id": "backstage", "name": "Backstage", "icon": "sliders", "state": "running", "stateNote": "owner only",
+      "tagline": "Bilingual owner console for Prop business operations and website content.",
+      "highlights": ["Traders, challenges, payments and payouts", "Coupons, partners, finance and audit trail", "Content workspace backed by Directus"],
+      "where": "backstage.openfi.cloud", "href": "docs/backstage/OPERATIONS_GUIDE.md"
+    },
+    {
+      "id": "certificates", "name": "Certificates", "icon": "award", "state": "running", "stateNote": "GLOBAL",
+      "tagline": "Purchase, completion and payout certificates derived from recorded evidence.",
+      "highlights": ["Verifiable by serial number or QR code", "Issued from server records, not client messages", "Linked from purchases and accounts"],
+      "where": "/:locale/certificate-verification", "href": "docs/product/PLATFORM_TOUR.md"
+    },
+    {
+      "id": "protocol", "name": "Openfund Protocol", "icon": "package", "state": "dormant", "stateNote": "not operated",
+      "tagline": "Planned venue aggregation and routing; today a dormant imported code base.",
+      "highlights": ["Not built, shipped or operated", "Provenance and license recorded", "Roadmap phase 06"],
+      "where": "packages/openfund-protocol", "href": "packages/openfund-protocol/PROVENANCE.md"
+    }
+  ]
+}

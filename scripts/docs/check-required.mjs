@@ -47,7 +47,7 @@ export const ENGINEERING_SECTIONS = [
 for (const f of REQUIRED_FILES) if (!fs.existsSync(f)) problems.push(`missing required document: ${f}`)
 
 if (fs.existsSync('README.md')) {
-  const headings = new Set([...read('README.md').matchAll(/^##\s+(?:\d+\.\s+)?(.+?)\s*$/gm)].map(m => m[1].trim().toLowerCase()))
+  const headings = new Set([...read('README.md').matchAll(/^##\s+(?:\d+\.\s+)?(.+?)\s*$/gm)].map(m => m[1].replace(/<[^>]*>/g, '').trim().toLowerCase()))
   for (const s of README_SECTIONS) if (!headings.has(s.toLowerCase())) problems.push(`README.md: missing section "## ${s}"`)
 }
 const sectionsOf = f => new Set([...read(f).matchAll(/^##\s+(?:\d+\.\s+)?(.+?)\s*$/gm)].map(m => m[1].trim().toLowerCase()))

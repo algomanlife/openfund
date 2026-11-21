@@ -1,41 +1,42 @@
-/* The README structure contract — the single source used by
-   scripts/docs/check-readme.mjs and scripts/docs/check-required.mjs, and
-   documented in docs/development/README_STRUCTURE.md (which the gate checks
-   for drift). Change the README's shape here first, in a reviewed PR. */
+/* The README structure contract — shared by scripts/docs/check-readme.mjs and
+   scripts/docs/check-required.mjs and documented in
+   docs/development/README_STRUCTURE.md (the gate checks that page for drift).
+   The ordered section list lives in docs/readme/sections.json; change it and
+   the contract page together, in a reviewed PR.
+
+   The contract sets MINIMUMS, not budgets: the README must stay complete and
+   graphical. A change may add content; it may never drop a section, an icon,
+   a generated block, a graphic or a single-source link. */
+import fs from 'node:fs'
+import path from 'node:path'
+import { root } from './repo.mjs'
+
+export const SECTIONS = JSON.parse(fs.readFileSync(path.join(root, 'docs/readme/sections.json'), 'utf8')).sections
 
 /** Exact, ordered `##` sections. Nothing else may appear at `##` level. */
-export const README_SECTIONS = [
-  'Project overview', 'Product ecosystem', 'Feature status', 'Product gallery', 'Business model',
-  'Technical architecture', 'Technology stack', 'Development workflow', 'Versioning and releases',
-  'Security', 'License', 'Retired and no longer used', 'Contributing',
-]
+export const README_SECTIONS = SECTIONS.map(s => s.title)
 
-export const BUDGET = { lines: 350, words: 1500, sectionLines: 70 }
-
-/** Generated blocks: marker → owning section and generator. */
-export const BLOCKS = {
-  'status:summary': { section: 'Feature status', by: 'scripts/docs/status.mjs (from docs/status/status.json)' },
-  'gallery': { section: 'Product gallery', by: 'scripts/docs/check-readme.mjs --write (from docs/assets/gallery/gallery.json)' },
-  'license:summary': { section: 'License', by: 'scripts/docs/check-readme.mjs --write (from THIRD_PARTY_NOTICES.md)' },
-  'retired:summary': { section: 'Retired and no longer used', by: 'scripts/docs/check-retired.mjs --write (from docs/development/RETIRED.json)' },
+/** Floors the README may never drop below. */
+export const MINIMUMS = {
+  images: 60,          // <img> and ![]() references in the whole README
+  badges: 4,           // shields.io badges in the title block
+  sectionLines: 3,     // non-empty lines in every section, headings excluded
 }
+
+/** Graphics the title block must show. */
+export const TITLE_IMAGES = ['docs/assets/graphics/hero.svg']
+
+const WRITERS = {
+  'status:summary': 'node scripts/docs/status.mjs (from docs/status/status.json)',
+  'retired:summary': 'node scripts/docs/check-retired.mjs --write (from docs/development/RETIRED.json)',
+  'gallery': 'node scripts/docs/check-readme.mjs --write (from docs/assets/gallery/gallery.json)',
+  'license:summary': 'node scripts/docs/check-readme.mjs --write (from THIRD_PARTY_NOTICES.md)',
+}
+/** Generated blocks: marker → owning section and generator. */
+export const BLOCKS = Object.fromEntries(SECTIONS.flatMap(s => s.blocks.map(b => [b, { section: s.title, by: WRITERS[b] || 'node scripts/docs/check-readme.mjs --write (from docs/readme/*.json)' }])))
 
 /** Single-source links each section must carry (deep detail lives there). */
-export const REQUIRED_LINKS = {
-  'Project overview': ['docs/README.md'],
-  'Product ecosystem': ['docs/product/PLATFORM_TOUR.md'],
-  'Feature status': ['docs/status/README.md', 'docs/product/FEATURE_STATUS.md'],
-  'Product gallery': ['docs/assets/gallery/gallery.json'],
-  'Business model': ['docs/economy/BUSINESS_DETAIL.md', 'ECONOMY.md'],
-  'Technical architecture': ['docs/architecture/ARCHITECTURE.md', 'docs/architecture/PLATFORM_REFERENCE.md'],
-  'Technology stack': ['docs/design/DESIGN_SYSTEM.md#typography-and-font-tokens', 'docs/architecture/TECH_STACK.md'],
-  'Development workflow': ['docs/development/TESTING.md'],
-  'Versioning and releases': ['docs/deployment/RELEASES.md', 'CHANGELOG.md'],
-  'Security': ['SECURITY.md'],
-  'License': ['THIRD_PARTY_NOTICES.md', 'docs/legal/LICENSING.md'],
-  'Retired and no longer used': ['docs/development/RETIRED.md'],
-  'Contributing': ['CONTRIBUTING.md', 'AGENTS.md'],
-}
+export const REQUIRED_LINKS = Object.fromEntries(SECTIONS.map(s => [s.title, s.links]))
 
 /** One responsibility per section: hand-written text matching a rule may
     appear only in the named section (generated blocks are exempt). */

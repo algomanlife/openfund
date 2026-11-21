@@ -98,10 +98,18 @@ for an action, quote it to the person who assigned the task and ask.
 - Run `npm run docs:check`; update CI whenever validation requirements change.
 - Preserve approved logo geometry and asset provenance. Never invent partnerships, investors, revenue, user counts, volumes, approvals or production adoption.
 - Preserve the already-integrated dormant `packages/openfund-protocol/` source, provenance and notices. Do not add protocol integrations or enable venue routing in a website/documentation task.
-- Update the root README when setup, architecture, capabilities or project status changes, and preserve its
-  shape: the README follows the contract in `docs/development/README_STRUCTURE.md` (exact ordered sections,
-  size budgets, one responsibility per section, generated blocks, linked-not-duplicated detail), enforced by
-  `scripts/docs/check-readme.mjs`. Move detail into `docs/` rather than relaxing the contract.
+- **Merge rule — every pull request keeps the README and docs current.** The root README is the complete,
+  graphical front page defined by `docs/development/README_STRUCTURE.md` (owner-approved): banner, icon on
+  every section, product cards, generated graphics, gallery and repository map, built from `docs/readme/*.json`.
+  In the same pull request that changes a product, feature, app, package, directory, dependency, language,
+  region, price, roadmap phase, release, runtime or significant UI, update the matching data file (table in the
+  contract), run `npm run docs:write`, and commit the data, `README.md` and `docs/assets/readme/` together.
+  Never hand-edit generated blocks or graphics. CI (`check-readme.mjs`, `check-docs-impact.mjs`) rejects an
+  out-of-sync or shrunken README and a product change with no record; only a declared
+  `Docs-impact: none — <reason>` line in the PR description exempts a change.
+- Never shorten, condense or "de-mess" the README by removing sections, icons, graphics, generated blocks or
+  links, and never lower a minimum in `scripts/docs/lib/readme-contract.mjs` to make an edit pass. Add
+  missing data instead; contract changes need an owner-approved pull request.
 - When something is removed or superseded, record it in `docs/development/RETIRED.json` in the same pull
   request and run `node scripts/docs/check-retired.mjs --write`; CI fails while a `retired` item is still referenced.
 - Typography: only Ubuntu (general/Latin) and Dastkhat (the only Persian/Arabic face) may be used; declare

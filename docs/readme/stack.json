@@ -1,0 +1,50 @@
+{
+  "$comment": "Technology badges for README › Technology stack. A `from` of `<package.json path>:<dependency>` reads the pinned version from that manifest at generation time, so versions never go stale; `version` is used only where no manifest pins it. `logo` is a Simple Icons slug for shields.io.",
+  "schemaVersion": 1,
+  "layers": [
+    { "layer": "Web", "items": [
+      { "name": "React", "from": "apps/web-react/package.json:react", "logo": "react", "color": "61DAFB" },
+      { "name": "TypeScript", "from": "apps/web-react/package.json:typescript", "logo": "typescript", "color": "3178C6" },
+      { "name": "Vite", "from": "apps/web-react/package.json:vite", "logo": "vite", "color": "646CFF" },
+      { "name": "React Router", "from": "apps/web-react/package.json:react-router-dom", "logo": "reactrouter", "color": "CA4245" }
+    ] },
+    { "layer": "Wallet", "items": [
+      { "name": "RainbowKit", "from": "apps/web-react/package.json:@rainbow-me/rainbowkit", "logo": "rainbow", "color": "7B3FE4" },
+      { "name": "wagmi", "from": "apps/web-react/package.json:wagmi", "logo": "ethereum", "color": "1C1B1B" },
+      { "name": "viem", "from": "apps/web-react/package.json:viem", "logo": "ethereum", "color": "FFC517" },
+      { "name": "Arbitrum One", "version": "SIWE", "logo": "arbitrum", "color": "28A0F0" }
+    ] },
+    { "layer": "Charts and data", "items": [
+      { "name": "Vela", "from": "apps/web-react/package.json:@luxalgo/vela", "logo": "tradingview", "color": "82E7BD" },
+      { "name": "Vela Pine addon", "from": "apps/web-react/package.json:@luxalgo/vela-pinets", "logo": "tradingview", "color": "82E7BD" },
+      { "name": "PineTS", "from": "apps/web-react/package.json:pinets", "logo": "tradingview", "color": "82E7BD" },
+      { "name": "Gains Network", "version": "API", "logo": "ethereum", "color": "82E7BD" },
+      { "name": "Hyperliquid", "version": "public API", "logo": "liquibase", "color": "82E7BD" }
+    ] },
+    { "layer": "Backend", "items": [
+      { "name": "Node.js", "from": "apps/backend/package.json:engines.node", "logo": "nodedotjs", "color": "5FA04E" },
+      { "name": "Express", "from": "apps/backend/package.json:express", "logo": "express", "color": "FFFFFF" },
+      { "name": "pg", "from": "apps/backend/package.json:pg", "logo": "postgresql", "color": "4169E1" },
+      { "name": "decimal.js", "from": "apps/backend/package.json:decimal.js", "logo": "javascript", "color": "F7DF1E" },
+      { "name": "ws", "from": "apps/backend/package.json:ws", "logo": "socketdotio", "color": "FFFFFF" }
+    ] },
+    { "layer": "Data", "items": [
+      { "name": "PostgreSQL", "version": "17", "logo": "postgresql", "color": "4169E1" },
+      { "name": "Directus", "version": "11.17.4", "logo": "directus", "color": "6644FF" }
+    ] },
+    { "layer": "Desktop", "items": [
+      { "name": "Electron", "from": "apps/open-trade/package.json:electron", "logo": "electron", "color": "47848F" },
+      { "name": "electron-builder", "from": "apps/open-trade/package.json:electron-builder", "logo": "electron", "color": "47848F" }
+    ] },
+    { "layer": "Delivery", "items": [
+      { "name": "GitHub Actions", "version": "CI", "logo": "githubactions", "color": "2088FF" },
+      { "name": "Render", "version": "GLOBAL", "logo": "render", "color": "46E3B7" },
+      { "name": "Liara", "version": "IRAN", "logo": "docker", "color": "2496ED" },
+      { "name": "Cloudflare", "version": "edge", "logo": "cloudflare", "color": "F38020" }
+    ] },
+    { "layer": "Typography", "items": [
+      { "name": "Ubuntu", "version": "Latin", "logo": "ubuntu", "color": "E95420" },
+      { "name": "Dastkhat", "version": "Persian/Arabic", "logo": "googlefonts", "color": "82E7BD" }
+    ] }
+  ]
+}

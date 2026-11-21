@@ -1,0 +1,30 @@
+{
+  "$comment": "Feature groups for README › Features. Add a capability here in the same PR that ships it; link the document that owns its detail. Edit, then `npm run docs:write`.",
+  "schemaVersion": 1,
+  "groups": [
+    { "id": "workspace", "title": "Trading workspace", "icon": "candles", "href": "docs/trading/TERMINAL.md",
+      "items": ["Dashboard, accounts, balances and challenge progress", "Market, limit and stop orders with risk preview", "Chart protection: SL/TP handles and P/L zones", "Collateral, quantity and lot sizing conventions"] },
+    { "id": "journal", "title": "Journal and analytics", "icon": "notebook", "href": "docs/trading/JOURNAL_METRICS.md",
+      "items": ["Daily journal, notebook, playbooks and missed trades", "Net PnL, win rate, profit factor, drawdown", "Edge Score v2 and calendar performance", "Account-scoped notes with safe import"] },
+    { "id": "charts", "title": "Charts and Pine indicators", "icon": "layers", "href": "docs/trading/INDICATORS.md",
+      "items": ["Vela charts with the official Pine addon", "Open Algo V5, Price Action Concepts, Smart Money Concepts", "Original Pine sources run in a worker", "Settings scoped by product and wallet"] },
+    { "id": "footprint", "title": "Hybrid Footprint", "icon": "footprint", "href": "docs/integrations/FOOTPRINT.md",
+      "items": ["Bid/ask ladder and profiles", "Volume and delta profiles, absolute delta", "POC, value area and imbalances", "Gains candles stay unchanged"] },
+    { "id": "radar", "title": "Trade Radar", "icon": "radar", "href": "docs/integrations/HYPERLIQUID_RADAR.md",
+      "items": ["Live large-trade tape from $10K to $1M", "Leaderboards and long/short positioning", "Whale positions and wallet profiles", "Stale data is marked, never hidden"] },
+    { "id": "heatmap", "title": "Market Heatmap", "icon": "heatmap", "href": "docs/integrations/HYPERLIQUID_RADAR.md",
+      "items": ["Area by 24h volume or open interest", "Color by 24h change or hourly funding", "Drill-down, search and proportional +N tiles", "Jump from a tile into the chart"] },
+    { "id": "tools", "title": "Tools Center", "icon": "calculator", "href": "docs/website/WEBSITE_EXPANSION.md",
+      "items": ["Position size, leverage/margin, liquidation", "Perp PnL, funding rate, risk/reward", "Risk of ruin, prop drawdown, consistency rule", "Journal analyzer in the browser"] },
+    { "id": "learning", "title": "Learning center", "icon": "school", "href": "docs/website/WEBSITE_EXPANSION.md",
+      "items": ["Learning paths and lessons", "Searchable glossary", "FAQ hub, rulebook and whitepaper", "Tools link to the matching lessons"] },
+    { "id": "wallet", "title": "Wallet identity", "icon": "wallet", "href": "docs/wallet/IDENTITY.md",
+      "items": ["Sign-In with Ethereum on Arbitrum One", "Server-side HttpOnly sessions", "Every record scoped to its owner", "Product switch clears the previous view"] },
+    { "id": "payments", "title": "Payments", "icon": "bolt", "href": "docs/payments/ORDER_LIFECYCLE.md",
+      "items": ["Pay with Wallet and manual transfer", "On-chain verification of token, amount and finality", "Ledger with partial payments and refunds", "Exactly-once challenge activation"] },
+    { "id": "backstage", "title": "Backstage operations", "icon": "sliders", "href": "docs/backstage/OPERATIONS_GUIDE.md",
+      "items": ["Final-pass review and suspension decisions", "Payment investigation, coupons, payouts", "Partners, finance, risk board and audit", "Owner re-authentication for privileged actions"] },
+    { "id": "cms", "title": "Editorial CMS", "icon": "edit", "href": "docs/backstage/UNIVERSAL_VISUAL_EDITING.md",
+      "items": ["Directus owns public editorial copy", "Visual editing mapped to collection and field", "Draft previews stay inside the editor", "Financial collections are never editable"] }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "$comment": "Interface languages and operating regions for README › Languages and regions. Native names are kept in English here because first-party docs and SVGs are English-only (scripts/docs/check-language.mjs).",
+  "schemaVersion": 1,
+  "languages": [
+    { "code": "fa", "name": "Persian", "dir": "RTL", "default": "Iran" },
+    { "code": "ar", "name": "Arabic", "dir": "RTL", "default": "Arab League" },
+    { "code": "en", "name": "English", "dir": "LTR", "default": "Everyone else" },
+    { "code": "ru", "name": "Russian", "dir": "LTR", "default": "Russia" },
+    { "code": "zh-CN", "name": "Simplified Chinese", "dir": "LTR", "default": "China" }
+  ],
+  "regions": [
+    { "id": "global", "name": "GLOBAL", "provider": "Render", "domain": "openfi.cloud", "aliases": ["openfund.cloud"], "note": "Web/API, Backstage and Directus CMS" },
+    { "id": "iran", "name": "IRAN", "provider": "Liara", "domain": "openfi.live", "aliases": ["iran.openfi.cloud"], "note": "Same release, own database; sync not enabled" }
+  ],
+  "rules": [
+    "A locale in the URL always wins.",
+    "Otherwise the language the visitor picked in the menu.",
+    "Otherwise a first-visit default from the visitor's verified country.",
+    "Otherwise English. Choosing a language never changes the region."
+  ]
+}

@@ -1,7 +1,8 @@
 # Platform tour
 
-Detailed product capabilities, moved verbatim from the README on 2026-11-21 so the README
-stays a short entry point ([structure contract](../development/README_STRUCTURE.md)).
+Detailed product capabilities: the long-form companion to the README's product cards and
+feature groups, which are generated from `docs/readme/*.json`
+([structure contract](../development/README_STRUCTURE.md)).
 Current per-environment state is in [docs/status](../status/README.md); the feature
 register is [FEATURE_STATUS.md](FEATURE_STATUS.md).
 
