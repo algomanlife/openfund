@@ -42,7 +42,10 @@
 <!-- Related issue ("Closes #123") and base/stack position, PRs this depends on or conflicts with, merge order. -->
 
 ## Documentation
-<!-- Docs, FEATURE_STATUS, roadmap, ADR, CHANGELOG updated. -->
+<!-- Merge rule (docs/development/README_STRUCTURE.md#the-merge-rule): name the docs/readme/*.json, status,
+     gallery, FEATURE_STATUS, roadmap, ADR and CHANGELOG updates, and confirm `npm run docs:write` was run.
+     A change with no documentation impact adds this exact line (checked by CI):
+     Docs-impact: none — <reason> -->
 
 ## Production-enabled?
 <!-- Is the capability live or disabled pending activation? Never claim deployed without /version evidence. -->
@@ -51,6 +54,7 @@
 
 - [ ] Required checks executed; outcomes, warnings and external limits recorded
 - [ ] Product documentation and Feature Status aligned with implementation (README sections, ENVIRONMENT.md, CHANGELOG; `npm run docs:check` green)
+- [ ] README data in `docs/readme/` updated for what this PR changes and `npm run docs:write` run (README and `docs/assets/readme/` committed)
 - [ ] Roadmap milestones/dependencies/acceptance criteria updated
 - [ ] Genuine screenshots/provenance refreshed after significant UI changes
 - [ ] English documentation; Persian application/RTL fixtures preserved

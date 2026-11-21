@@ -78,6 +78,10 @@ jobs:
     name: Web (React + Vite)
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: read
+      # read-only: lists the pull request's changed files for the docs-impact gate
+      pull-requests: read
     defaults:
       run:
         working-directory: apps/web-react
@@ -98,6 +102,17 @@ jobs:
       - name: Documentation gates (README structure, retired registry, fonts) plus language, links, images, Markdown and Mermaid
         working-directory: .
         run: npm run docs:check
+      - name: Docs impact — every merge keeps the README and docs current (pull requests; docs/development/README_STRUCTURE.md)
+        if: github.event_name == 'pull_request'
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" --jq '.[].filename' > "$RUNNER_TEMP/changed.txt"
+          node scripts/docs/check-docs-impact.mjs "$RUNNER_TEMP/changed.txt"
       - name: Backstage build and access control
         working-directory: .
         run: |

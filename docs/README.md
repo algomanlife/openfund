@@ -20,7 +20,7 @@ instead of repeating it. Historical reviews keep their original wording.
 | Release and rollback procedure | [Releases](deployment/RELEASES.md), [Rollback](deployment/ROLLBACK.md) |
 | Frontend source versus generated output | [Engineering reference](development/ENGINEERING_REFERENCE.md#frontend-applications) |
 | Agent and contributor rules | [AGENTS.md](../AGENTS.md), [CONTRIBUTING.md](../CONTRIBUTING.md) |
-| README shape (sections, budgets, generated blocks) | [README structure contract](development/README_STRUCTURE.md) (CI-enforced) |
+| README shape, data and merge rule (sections, minimums, generated blocks and graphics) | [README structure contract](development/README_STRUCTURE.md) (CI-enforced), data in [`readme/`](readme/) |
 | Retired, legacy-only and dormant items | [Retired registry](development/RETIRED.md), generated from [`RETIRED.json`](development/RETIRED.json) |
 | Typography (Ubuntu + Dastkhat only) | [Design system › typography](design/DESIGN_SYSTEM.md#typography-and-font-tokens) (CI font gate) |
 | README gallery | [`assets/gallery/gallery.json`](assets/gallery/gallery.json) |

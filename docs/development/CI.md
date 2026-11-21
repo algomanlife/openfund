@@ -90,6 +90,13 @@ Branch protection requires: `Web (React + Vite)`, `Backend (API + engine)`,
 code pull requests. New non-required jobs: `Classify change (CI tier)` (both
 workflows). Recommended owner follow-up: none of them needs to be required.
 
+The required `Web (React + Vite)` job also runs the docs-impact gate on pull
+requests (`scripts/docs/check-docs-impact.mjs`, with read-only
+`pull-requests: read` to list changed files): a product, screenshot,
+infrastructure or README-data change must carry its record, or the PR
+description must declare `Docs-impact: none — <reason>`. See the
+[README structure contract](README_STRUCTURE.md#the-merge-rule).
+
 ## Local reproduction
 
 Use Node 26, an isolated PostgreSQL database whose name contains `test`, and the

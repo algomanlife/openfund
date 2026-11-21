@@ -1,0 +1,13 @@
+{
+  "$comment": "Roadmap phases for README › Roadmap. `state`: delivered, in-progress, planned. Milestones and acceptance criteria stay in docs/roadmap/MILESTONES.md; no dates or phase-wide completion claims here.",
+  "schemaVersion": 1,
+  "phases": [
+    { "n": "01", "title": "Platform foundation", "state": "delivered", "note": "Application, charting and market feeds" },
+    { "n": "02", "title": "Trading core", "state": "in-progress", "note": "Simulation delivered; commercial evaluation open" },
+    { "n": "03", "title": "Product experience", "state": "in-progress", "note": "Core views delivered; wallet acceptance open" },
+    { "n": "04", "title": "Production infrastructure", "state": "in-progress", "note": "Config and CI delivered; deployed acceptance open" },
+    { "n": "05", "title": "Advanced trading", "state": "planned", "note": "Execution and authentic depth have gates" },
+    { "n": "06", "title": "Openfund Protocol", "state": "planned", "note": "Venue adapters, aggregation and routing" },
+    { "n": "07", "title": "Ecosystem expansion", "state": "planned", "note": "Integrations, developer services, scaling" }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "$comment": "The README structure contract: exact, ordered `##` sections. Each heading is rendered as `<a id>` + icon + title by `npm run docs:write`; `links` are the single-source documents the section must link; `blocks` are the generated blocks the section must contain. Change this file and docs/development/README_STRUCTURE.md together in a reviewed PR. Sections may be added, never silently removed.",
+  "schemaVersion": 2,
+  "sections": [
+    { "id": "overview", "title": "Project overview", "icon": "compass", "links": ["docs/README.md"], "blocks": ["toc", "stats"] },
+    { "id": "ecosystem", "title": "Product ecosystem", "icon": "apps", "links": ["docs/product/PLATFORM_TOUR.md"], "blocks": ["products"] },
+    { "id": "features", "title": "Features", "icon": "sparkles", "links": ["docs/product/CAPABILITIES.md"], "blocks": ["features"] },
+    { "id": "regions", "title": "Languages and regions", "icon": "globe", "links": ["docs/decisions/0043-canonical-domains-geo-routing-and-locale.md"], "blocks": ["regions"] },
+    { "id": "status", "title": "Feature status", "icon": "pulse", "links": ["docs/status/README.md", "docs/product/FEATURE_STATUS.md"], "blocks": ["status:summary"] },
+    { "id": "gallery", "title": "Product gallery", "icon": "photo", "links": ["docs/assets/gallery/gallery.json"], "blocks": ["gallery"] },
+    { "id": "business", "title": "Business model", "icon": "coins", "links": ["docs/economy/BUSINESS_DETAIL.md", "ECONOMY.md"], "blocks": ["business"] },
+    { "id": "architecture", "title": "Technical architecture", "icon": "topology", "links": ["docs/architecture/ARCHITECTURE.md", "docs/architecture/PLATFORM_REFERENCE.md"], "blocks": [] },
+    { "id": "structure", "title": "Repository structure", "icon": "folder", "links": ["docs/development/ENGINEERING_REFERENCE.md"], "blocks": ["structure"] },
+    { "id": "stack", "title": "Technology stack", "icon": "layers", "links": ["docs/architecture/TECH_STACK.md", "docs/design/DESIGN_SYSTEM.md#typography-and-font-tokens"], "blocks": ["stack"] },
+    { "id": "development", "title": "Development workflow", "icon": "terminal", "links": ["docs/development/TESTING.md"], "blocks": [] },
+    { "id": "releases", "title": "Versioning and releases", "icon": "tag", "links": ["docs/deployment/RELEASES.md", "CHANGELOG.md"], "blocks": [] },
+    { "id": "roadmap", "title": "Roadmap", "icon": "route", "links": ["ROADMAP.md", "docs/roadmap/MILESTONES.md"], "blocks": ["roadmap"] },
+    { "id": "security", "title": "Security", "icon": "shield", "links": ["SECURITY.md"], "blocks": [] },
+    { "id": "docs", "title": "Documentation map", "icon": "book", "links": ["docs/README.md"], "blocks": ["docs-map"] },
+    { "id": "license", "title": "License", "icon": "license", "links": ["THIRD_PARTY_NOTICES.md", "docs/legal/LICENSING.md"], "blocks": ["license:summary"] },
+    { "id": "retired", "title": "Retired and no longer used", "icon": "archive", "links": ["docs/development/RETIRED.md"], "blocks": ["retired:summary"] },
+    { "id": "contributing", "title": "Contributing", "icon": "users", "links": ["CONTRIBUTING.md", "AGENTS.md", "docs/development/README_STRUCTURE.md"], "blocks": [] }
+  ]
+}

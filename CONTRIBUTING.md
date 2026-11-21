@@ -89,7 +89,7 @@ Run what your change touches; record real results, including failures.
 
 | Change | Commands |
 | --- | --- |
-| Any | `npm run docs:check` |
+| Any | `npm run docs:write` then `npm run docs:check` |
 | Frontend | `npm run typecheck`, `npm run test:web`, `npm run build:web` |
 | Backend | `npm run test:backend` (against an **isolated** test database, never your own data) |
 | Render Blueprint / deployment config | `npm run validate:blueprint` |
@@ -137,6 +137,10 @@ in the [changelog](CHANGELOG.md) entry for the change.
 - Update product docs and Feature Status whenever capabilities change. Update related roadmap dependencies/acceptance criteria and architecture/integration contracts in the same PR.
 - Refresh genuine screenshots and their provenance after significant UI changes. Do not invent account records or reveal personal wallet data.
 - Record material changes in the changelog. Preserve approved logos, third-party licenses and attribution.
+- **Merge rule:** update the matching `docs/readme/*.json` data for what your pull request changes, run
+  `npm run docs:write` and commit the regenerated README and `docs/assets/readme/` graphics. CI rejects an
+  out-of-sync README and a product change without a record. See the
+  [README structure contract](docs/development/README_STRUCTURE.md#the-merge-rule).
 - Distinguish simulated execution, read-only integration, configuration, local verification and deployment. Never infer investors, partnerships, revenue, adoption, approvals or production readiness.
 
 ## Architecture contract
@@ -151,6 +155,7 @@ Follow [Local Development](docs/development/LOCAL_DEVELOPMENT.md) and [Testing](
 
 - [ ] Scope and resulting behavior described for a new reviewer
 - [ ] Relevant product/status/roadmap/contracts updated
+- [ ] README data (`docs/readme/*.json`) updated and `npm run docs:write` run, or `Docs-impact: none — <reason>` declared
 - [ ] Screenshots and provenance refreshed where needed
 - [ ] Required checks run, with failures and external limits recorded
 - [ ] Render architecture, app localization and financial isolation preserved

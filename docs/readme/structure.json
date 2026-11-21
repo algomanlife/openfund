@@ -1,0 +1,40 @@
+{
+  "$comment": "Repository map for README › Repository structure. CI (check-readme) fails when a tracked top-level directory, an apps/* app or a packages/* package is missing here, or when a listed path no longer exists. Add the entry in the same PR that adds the directory.",
+  "schemaVersion": 1,
+  "groups": [
+    { "title": "Applications", "icon": "apps", "entries": [
+      { "path": "apps/web-react/", "role": "Website, shared Web Terminal, wallet UI, tools, CMS adapters, locales" },
+      { "path": "apps/backend/", "role": "API, sessions, Prop engine and evaluation, payments, rewards, migrations" },
+      { "path": "apps/open-trade/", "role": "Open Trade Electron desktop app, packaging and acceptance" },
+      { "path": "apps/backstage/", "role": "Owner operations console plus Directus schema utilities" },
+      { "path": "apps/terminal/", "role": "Ownership boundary for the terminal (no separate service)" },
+      { "path": "apps/web/", "role": "Ownership boundary for the public web (not deployed alone)" }
+    ] },
+    { "title": "Packages", "icon": "package", "entries": [
+      { "path": "packages/openfund-charts/", "role": "Vela bridge and Pine indicator integration" },
+      { "path": "packages/openfund-gains-adapter/", "role": "Gains market, candle and stream provider" },
+      { "path": "packages/openfund-footprint/", "role": "Order-flow aggregation and chart plugin" },
+      { "path": "packages/cms-client/", "role": "Typed contract between the app and Directus" },
+      { "path": "packages/openfund-ui/", "role": "Planned shared component library" },
+      { "path": "packages/openfund-protocol/", "role": "Dormant protocol source and provenance" }
+    ] },
+    { "title": "Content and assets", "icon": "book", "entries": [
+      { "path": "docs/", "role": "Documentation, ADRs, status, README data and assets" },
+      { "path": "brand/", "role": "Brand book, logos, imagery and typography reference" },
+      { "path": "indicators/", "role": "Three Openfund Pine indicators and two libraries" },
+      { "path": "dist/", "role": "Tracked source-critical compatibility assets" }
+    ] },
+    { "title": "Delivery and tooling", "icon": "gear", "entries": [
+      { "path": ".github/", "role": "CI, release and security workflows, templates" },
+      { "path": "scripts/", "role": "Docs gates, CI, release, upstream and ops tooling" },
+      { "path": "e2e/", "role": "Browser journeys and acceptance tests" },
+      { "path": "infra/", "role": "Render, Liara, Cloudflare and Postgres infrastructure" },
+      { "path": "infrastructure/", "role": "Directus deployment configuration" },
+      { "path": "src/", "role": "Legacy wallet entry kept for the classic build" }
+    ] },
+    { "title": "Upstream", "icon": "link", "entries": [
+      { "path": "vendor/", "role": "Vendored Vela and Gains SDK, preserved verbatim" },
+      { "path": "third_party/", "role": "Adapted MIT sources with provenance and notices" }
+    ] }
+  ]
+}

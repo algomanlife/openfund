@@ -1,27 +1,33 @@
 #!/usr/bin/env node
-/* README structure gate (part of `npm run docs:check`, therefore of CI on
- * every commit). Contract: scripts/docs/lib/readme-contract.mjs, explained in
- * docs/development/README_STRUCTURE.md. Fails when the README:
- *   - deviates from the exact ordered `##` section set, has an orphan or
- *     skipped heading level, or a duplicate section;
- *   - puts a topic outside its owning section (one responsibility per section);
- *   - exceeds the line/word budgets;
- *   - is stale: a hand-written platform version that is not the latest official
- *     release (or the declared next release), or a dated gallery/capture heading;
- *   - drops a required single-source link, or has a broken local link/image;
- *   - has a missing, misplaced or out-of-date generated block.
- * Also checks that README_STRUCTURE.md documents the same section list and
- * that AGENTS.md references it.
+/* README gate (part of `npm run docs:check`, therefore of CI on every commit
+ * and every pull request). Contract: scripts/docs/lib/readme-contract.mjs and
+ * docs/readme/sections.json, explained in docs/development/README_STRUCTURE.md.
+ * Fails when the README:
+ *   - deviates from the exact ordered `##` section set, or a section loses its
+ *     anchor and icon heading, or a heading skips a level;
+ *   - drops below the minimums (title banner and badges, image count, content
+ *     in every section) — the README may grow, never shrink below the floor;
+ *   - is out of sync with its data: any generated block or generated graphic
+ *     under docs/assets/readme/ differs from what docs/readme/*.json,
+ *     docs/status/status.json, docs/README.md and the manifests produce;
+ *   - misses a tracked top-level directory, app or package in the repository
+ *     map (docs/readme/structure.json), or lists one that no longer exists;
+ *   - puts a topic outside its owning section, carries a stale platform
+ *     version or a dated gallery heading;
+ *   - drops a required single-source link, or has a broken local link/image.
  *
  *   node scripts/docs/check-readme.mjs           check (CI)
- *   node scripts/docs/check-readme.mjs --write   regenerate the gallery and license blocks */
+ *   node scripts/docs/check-readme.mjs --write   regenerate headings, blocks and graphics
+ * `npm run docs:write` runs every README writer in order. */
 import fs from 'node:fs'
 import path from 'node:path'
-import { root, read, report } from './lib/repo.mjs'
-import { README_SECTIONS, BUDGET, BLOCKS, REQUIRED_LINKS, OWNERSHIP } from './lib/readme-contract.mjs'
+import { root, read, report, repoFiles } from './lib/repo.mjs'
+import { SECTIONS, README_SECTIONS, MINIMUMS, TITLE_IMAGES, BLOCKS, REQUIRED_LINKS, OWNERSHIP } from './lib/readme-contract.mjs'
+import { renderBlocks, syncAssets, headingLine, anchorLine, loadData } from './lib/readme-render.mjs'
 
 const problems = []
 const fail = m => problems.push(m)
+const write = process.argv.includes('--write')
 let readme = read('README.md')
 const status = JSON.parse(read('docs/status/status.json'))
 
@@ -49,14 +55,40 @@ function licenseBlock() {
   out.push('', 'Generated from [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), the authoritative list with license texts.', '', '<!-- /license:summary -->')
   return out.join('\n')
 }
-const OWN = { gallery: galleryBlock(), 'license:summary': licenseBlock() }
+
+let OWN
+try { OWN = { gallery: galleryBlock(), 'license:summary': licenseBlock(), ...renderBlocks() } }
+catch (e) { fail(`README data: ${e.message}`); OWN = {} }
+
 let expected = readme
 for (const [name, text] of Object.entries(OWN)) {
   const s = `<!-- ${name} -->`, e = `<!-- /${name} -->`
   if (expected.includes(s) && expected.includes(e)) expected = expected.slice(0, expected.indexOf(s)) + text + expected.slice(expected.indexOf(e) + e.length)
 }
-if (process.argv.includes('--write')) { fs.writeFileSync(path.join(root, 'README.md'), expected); readme = expected; console.log('README gallery and license blocks written.') }
-else if (expected !== readme) fail('README.md: gallery or license block is out of date; run node scripts/docs/check-readme.mjs --write')
+/* canonical section headings: `<a name>` anchor line, then `## <icon> Title` */
+{
+  const byTitle = new Map(SECTIONS.map(s => [s.title.toLowerCase(), s]))
+  const out = []
+  let fenced = false
+  for (const line of expected.split('\n')) {
+    if (/^```/.test(line)) fenced = !fenced
+    const m = !fenced && /^##\s+(.+?)\s*$/.exec(line)
+    const s = m && byTitle.get(stripTags(m[1]).replace(/&nbsp;/g, ' ').trim().toLowerCase())
+    if (s) {
+      while (out.length && (out.at(-1).trim() === '' || /^<a name="[^"]*"><\/a>$/.test(out.at(-1).trim()))) out.pop()
+      out.push('', anchorLine(s), '', headingLine(s))
+    } else out.push(line)
+  }
+  expected = out.join('\n')
+}
+if (write) {
+  fs.writeFileSync(path.join(root, 'README.md'), expected); readme = expected
+  const changed = syncAssets(true)
+  console.log(`README headings, generated blocks and ${changed.length} graphic(s) written.`)
+} else {
+  if (expected !== readme) fail('README.md: a heading or generated block is out of date with docs/readme/*.json and its sources; run npm run docs:write')
+  try { for (const f of syncAssets(false)) fail(`${f}: generated README graphic is out of date; run npm run docs:write`) } catch (e) { fail(`README graphics: ${e.message}`) }
+}
 
 /* ---------- structure ---------- */
 const lines = readme.split('\n')
@@ -65,7 +97,7 @@ const headings = []
 lines.forEach((line, i) => {
   if (/^```/.test(line)) fenced = !fenced
   const m = !fenced && /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(line)
-  if (m) headings.push({ level: m[1].length, text: m[2].trim(), line: i + 1 })
+  if (m) headings.push({ level: m[1].length, raw: m[2], text: stripTags(m[2]).replace(/&nbsp;/g, ' ').trim(), line: i + 1 })
 })
 const h1 = headings.filter(h => h.level === 1)
 if (h1.length !== 1) fail(`README.md: exactly one "# " title is required (found ${h1.length})`)
@@ -77,26 +109,49 @@ const h2 = headings.filter(h => h.level === 2).map(h => h.text)
 const dupes = h2.filter((t, i) => h2.indexOf(t) !== i)
 for (const d of new Set(dupes)) fail(`README.md: duplicate section "## ${d}"`)
 if (JSON.stringify(h2) !== JSON.stringify(README_SECTIONS)) fail(`README.md: sections must be exactly, in order:\n    ${README_SECTIONS.join(' → ')}\n  found:\n    ${h2.join(' → ')}`)
+for (const h of headings.filter(x => x.level === 2)) {
+  const s = SECTIONS.find(x => x.title === h.text)
+  if (!s) continue
+  if (lines[h.line - 1] !== headingLine(s)) fail(`README.md:${h.line}: section "${s.title}" must use its icon heading: ${headingLine(s)}`)
+  if (lines[h.line - 3]?.trim() !== anchorLine(s)) fail(`README.md:${h.line}: section "${s.title}" must be preceded by ${anchorLine(s)}`)
+}
 
 /* sections (by ## boundaries) with generated blocks blanked for authored-text rules */
 const GENERATED = /<!-- ([a-z:-]+) -->[\s\S]*?<!-- \/\1 -->/g
 const authored = readme.replace(GENERATED, m => m.replace(/[^\n]/g, '')).split('\n')
 const bounds = headings.filter(h => h.level === 2).map((h, i, all) => ({ name: h.text, start: h.line, end: (all[i + 1]?.line ?? lines.length + 1) - 1 }))
 const sectionOf = n => bounds.find(b => n >= b.start && n <= b.end)?.name ?? '(title)'
-for (const b of bounds) if (b.end - b.start + 1 > BUDGET.sectionLines) fail(`README.md: section "${b.name}" has ${b.end - b.start + 1} lines (budget ${BUDGET.sectionLines}); move detail into docs/`)
 
-/* ---------- budgets ---------- */
-const words = stripTags(readme, ' ').replace(/<!--[\s\S]*?-->/g, ' ').replace(/!\[[^\]]*\]\([^)]*\)/g, ' ').replace(/\]\([^)]*\)/g, ']')
-  .replace(/https?:\/\/\S+/g, ' ').replace(/[|`*_#>[\]-]/g, ' ').split(/\s+/).filter(w => /[\p{L}\p{N}]/u.test(w)).length
-if (lines.length > BUDGET.lines) fail(`README.md: ${lines.length} lines (budget ${BUDGET.lines})`)
-if (words > BUDGET.words) fail(`README.md: ${words} words (budget ${BUDGET.words})`)
+/* ---------- minimums: complete and graphical ---------- */
+const title = lines.slice(0, bounds[0] ? bounds[0].start - 1 : lines.length).join('\n')
+for (const img of TITLE_IMAGES) if (!title.includes(img)) fail(`README.md: the title block must show ${img}`)
+const badges = (title.match(/img\.shields\.io|\/badge\.svg/g) || []).length
+if (badges < MINIMUMS.badges) fail(`README.md: the title block needs at least ${MINIMUMS.badges} badges (found ${badges})`)
+const images = (readme.match(/<img\s|!\[[^\]]*\]\(/g) || []).length
+if (images < MINIMUMS.images) fail(`README.md: ${images} images; the README must stay graphical (minimum ${MINIMUMS.images}). Add graphics, do not remove them`)
+for (const b of bounds) {
+  const body = lines.slice(b.start, b.end).filter(l => l.trim() && !/^<a name=/.test(l) && !/^<!-- /.test(l))
+  if (body.length < MINIMUMS.sectionLines) fail(`README.md: section "${b.name}" is nearly empty (${body.length} lines); every section must carry content`)
+}
+
+/* ---------- repository map covers the repository ---------- */
+try {
+  const listed = loadData().structure.flatMap(g => g.entries.map(e => e.path.replace(/\/$/, '')))
+  let tracked = null
+  try { tracked = repoFiles() } catch { console.warn('check-readme: not a git checkout; repository-map coverage skipped') }
+  if (tracked) {
+  const tops = new Set(tracked.filter(f => f.includes('/')).map(f => f.split('/')[0]).filter(d => (!d.startsWith('.') || d === '.github') && d !== 'apps' && d !== 'packages'))
+  const units = new Set(tracked.filter(f => /^(apps|packages)\/[^/]+\//.test(f)).map(f => f.split('/').slice(0, 2).join('/')))
+  for (const d of [...tops, ...units]) if (!listed.includes(d)) fail(`docs/readme/structure.json: "${d}/" exists but is not in the repository map; add it in the same pull request`)
+  for (const p of listed) if (!fs.existsSync(path.join(root, p))) fail(`docs/readme/structure.json: "${p}/" is listed but does not exist`)
+  }
+} catch (e) { fail(`docs/readme/structure.json: ${e.message}`) }
 
 /* ---------- one responsibility per section ---------- */
 authored.forEach((line, i) => {
   const n = i + 1, section = sectionOf(n)
   for (const rule of OWNERSHIP) if (rule.pattern.test(line) && section !== rule.section && section !== '(title)')
     fail(`README.md:${n}: ${rule.what} belong in "## ${rule.section}", not "## ${section}"`)
-  if (/!\[[^\]]*\]\(|<img\s/i.test(line) && !['(title)', 'Product gallery'].includes(section)) fail(`README.md:${n}: images belong in the title or "## Product gallery"`)
 })
 
 /* ---------- freshness ---------- */
@@ -111,7 +166,7 @@ headings.forEach(h => { if (/\b\d{4}-\d{2}-\d{2}\b/.test(h.text) || /\b(gallery|
 /* ---------- generated blocks present and in their owning section ---------- */
 for (const [name, meta] of Object.entries(BLOCKS)) {
   const at = lines.findIndex(l => l.trim() === `<!-- ${name} -->`)
-  if (at < 0 || !readme.includes(`<!-- /${name} -->`)) { fail(`README.md: missing generated block <!-- ${name} --> (${meta.by})`); continue }
+  if (at < 0 || !readme.includes(`<!-- /${name} -->`)) { fail(`README.md: missing generated block <!-- ${name} --> in "## ${meta.section}" (${meta.by})`); continue }
   if (sectionOf(at + 1) !== meta.section) fail(`README.md:${at + 1}: block <!-- ${name} --> must be in "## ${meta.section}"`)
 }
 
@@ -125,7 +180,10 @@ for (const [section, targets] of Object.entries(REQUIRED_LINKS)) {
 
 /* ---------- local links and images resolve ---------- */
 const slug = s => stripTags(s.toLowerCase()).replace(/[^\p{L}\p{N}_\-\s]/gu, '').replace(/ /g, '-')
-const anchorsOf = file => new Set(fs.readFileSync(file, 'utf8').replace(/```[\s\S]*?```/g, '').split('\n').map(l => /^#{1,6}\s+(.+?)\s*#*$/.exec(l)?.[1]).filter(Boolean).map(slug))
+const anchorsOf = file => {
+  const t = fs.readFileSync(file, 'utf8').replace(/```[\s\S]*?```/g, '')
+  return new Set([...t.split('\n').map(l => /^#{1,6}\s+(.+?)\s*#*$/.exec(l)?.[1]).filter(Boolean).map(slug), ...[...t.matchAll(/\b(?:id|name)="([^"]+)"/g)].map(m => m[1])])
+}
 const targets = [...readme.matchAll(/!?\[[^\]\n]*\]\(([^)\s]+)\)/g)].map(m => m[1]).concat([...readme.matchAll(/<(?:img|a)\b[^>]*?(?:src|href)="([^"]+)"/g)].map(m => m[1]))
 for (const t of targets) {
   if (/^([a-z]+:|\/\/)/i.test(t)) continue
@@ -141,8 +199,10 @@ if (!fs.existsSync(path.join(root, contractDoc))) fail(`${contractDoc}: missing`
 else {
   const doc = read(contractDoc)
   const listed = [...doc.matchAll(/^\d+\.\s+`## ([^`]+)`/gm)].map(m => m[1])
-  if (JSON.stringify(listed) !== JSON.stringify(README_SECTIONS)) fail(`${contractDoc}: the numbered section list must match scripts/docs/lib/readme-contract.mjs`)
+  if (JSON.stringify(listed) !== JSON.stringify(README_SECTIONS)) fail(`${contractDoc}: the numbered section list must match docs/readme/sections.json`)
 }
-if (!read('AGENTS.md').includes('docs/development/README_STRUCTURE.md')) fail('AGENTS.md: must reference docs/development/README_STRUCTURE.md')
+const agents = read('AGENTS.md')
+if (!agents.includes('docs/development/README_STRUCTURE.md')) fail('AGENTS.md: must reference docs/development/README_STRUCTURE.md')
+if (!agents.includes('npm run docs:write')) fail('AGENTS.md: must carry the merge rule (update docs/readme data, run npm run docs:write)')
 
-report('check-readme', problems, `README OK — ${h2.length} sections in contract order, ${lines.length}/${BUDGET.lines} lines, ${words}/${BUDGET.words} words, versions fresh (${latest}${next ? ', next ' + next : ''}), ${targets.length} links resolved.`)
+report('check-readme', problems, `README OK — ${h2.length} sections with icons in contract order, ${images} images (minimum ${MINIMUMS.images}), ${badges} badges, blocks and graphics in sync with docs/readme, versions fresh (${latest}${next ? ', next ' + next : ''}), ${targets.length} links resolved.`)
