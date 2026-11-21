@@ -478,10 +478,9 @@ indicators actually computed**, live Heatmap/Radar, and Footprint rows.
 Existing images above are preserved rather than silently deleted or
 relabelled as new.
 
-Fresh capture was blocked in this editing session: the shell and browser
-runtimes both failed to start with a missing-runtime error. No screenshot
-was fabricated. The [capture matrix](docs/assets/screenshots/readme/CAPTURE_REQUIREMENTS.md)
-records the full required coverage, provenance and acceptance conditions.
+The [capture matrix](docs/assets/screenshots/readme/CAPTURE_REQUIREMENTS.md)
+records the outstanding English/Persian coverage, provenance and acceptance
+conditions. Historical captures above do not satisfy that current-build matrix.
 
 ### Recent typography and mobile captures — 2026-11-20
 
