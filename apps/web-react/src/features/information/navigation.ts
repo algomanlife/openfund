@@ -2,7 +2,6 @@ import brandbookUrl from '../../../../../brand/brandbook/Openfund-brandbook.zip?
 import type { CmsNavItem, CmsFooterLink } from '../../cms/client'
 import { labels, text } from './content'
 import { pickRecord, type AppLocale } from '../../i18n/locales'
-import '../navigation/mega-menu.css'
 import { MEGA_BANNERS, MEGA_DESCRIPTIONS, MEGA_ICONS, RESOURCE_SECTIONS, megaBannerArt, megaIconNode, type MegaBannerKind } from '../navigation/megaMenu'
 type Locale = AppLocale
 
@@ -254,26 +253,27 @@ export function bindNavigation(root: ParentNode) {
     if (group && !group.contains(focus.relatedTarget as Node | null)) closeDisclosures(root)
   }
   /* hover-open with a short intent delay on fine pointers; touch keeps click/tap */
-  const fine = typeof matchMedia === 'function' ? matchMedia('(hover: hover) and (pointer: fine)') : null
-  let openTimer = 0, closeTimer = 0
+  const view = document.defaultView
+  const fine = view?.matchMedia ? view.matchMedia('(hover: hover) and (pointer: fine)') : null
+  let openTimer: ReturnType<typeof setTimeout> | undefined, closeTimer: ReturnType<typeof setTimeout> | undefined
   const over = (event: Event) => {
     if (!fine?.matches) return
     const group = (event.target as Element)?.closest?.('.openfund-header:not(.nav-overflow) .nav-account')
-    window.clearTimeout(closeTimer)
+    clearTimeout(closeTimer)
     if (!group || group.classList.contains('resources-open')) return
-    window.clearTimeout(openTimer)
-    openTimer = window.setTimeout(() => openGroup(root, group), 140)
+    clearTimeout(openTimer)
+    openTimer = setTimeout(() => openGroup(root, group), 140)
   }
   const out = (event: Event) => {
     if (!fine?.matches) return
     const pointer = event as PointerEvent
     const group = (pointer.target as Element)?.closest?.('.nav-account')
     if (!group || group.contains(pointer.relatedTarget as Node | null)) return
-    window.clearTimeout(openTimer)
-    closeTimer = window.setTimeout(() => { if (!group.matches(':focus-within')) closeDisclosures(root) }, 240)
+    clearTimeout(openTimer)
+    closeTimer = setTimeout(() => { if (!group.matches(':focus-within')) closeDisclosures(root) }, 240)
   }
   const resize = () => closeDisclosures(root)
-  addEventListener('resize', resize)
+  view?.addEventListener('resize', resize)
   document.addEventListener('pointerdown', outside)
   root.addEventListener('focusout', leave)
   root.addEventListener('pointerover', over)
@@ -283,8 +283,8 @@ export function bindNavigation(root: ParentNode) {
     root.removeEventListener('focusout', leave)
     root.removeEventListener('pointerover', over)
     root.removeEventListener('pointerout', out)
-    removeEventListener('resize', resize)
-    window.clearTimeout(openTimer); window.clearTimeout(closeTimer)
+    view?.removeEventListener('resize', resize)
+    clearTimeout(openTimer); clearTimeout(closeTimer)
     document.documentElement.classList.remove('mega-open')
   }
 }

@@ -8847,5 +8847,62 @@
         "state": "Chinese, 768 px, light: English text with the note. Bundled fallback (Directus not running). JPEG."
       }
     ]
+  },
+  "megaMenu": {
+    "branch": "agent/claude/mega-menu",
+    "baseCommit": "5c458d39c38878d4ab1b5da5a14631c819d177a1",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-21T19:19:04+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8303, disposable database; captured by e2e/test-mega-menu.cjs",
+    "cms": "Directus not running; bundled descriptions and icons",
+    "marketData": "Not used",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "mega-menu/mega-resources-en-1440.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English: Resources panel open (sub-groups, tiles, desktop downloads banner, page scrim). JPEG."
+      },
+      {
+        "file": "mega-menu/mega-economy-en-1440.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English: Economy panel opened from the keyboard, council banner. JPEG."
+      },
+      {
+        "file": "mega-menu/mega-resources-fa-1440-light.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian (RTL), light: Resources panel. JPEG."
+      },
+      {
+        "file": "mega-menu/drawer-fa-390.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian, 390 px: drawer accordion with two-column icon tiles. JPEG."
+      },
+      {
+        "file": "mega-menu/drawer-en-768.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "English, 768 px: drawer accordion. JPEG."
+      }
+    ]
   }
 }

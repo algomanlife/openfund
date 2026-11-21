@@ -63,6 +63,7 @@
     "test:browser:wallet": "node e2e/test-wallet-connect.cjs",
     "test:browser:locale": "node e2e/test-locale-matrix.cjs",
     "test:browser:responsive": "node e2e/test-responsive-navigation.cjs",
+    "test:browser:mega-menu": "node e2e/test-mega-menu.cjs",
     "test:browser:responsive-matrix": "node e2e/test-responsive-matrix.cjs",
     "test:upstream": "node --test scripts/upstream/test/*.test.mjs && node --test apps/backend/test/market-data-contract.test.mjs",
     "check:upstream": "node scripts/upstream/verify.mjs",
