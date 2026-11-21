@@ -2,11 +2,11 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4417,
-    "mappedCalls": 2272,
-    "exceptions": 51,
+    "uniqueRecords": 4426,
+    "mappedCalls": 2280,
+    "exceptions": 52,
     "validationFindings": 0,
-    "reviewedExclusions": 46
+    "reviewedExclusions": 47
   },
   "editorial": {
     "locales": [
@@ -163,6 +163,14 @@
         ],
         "jsonTextFields": [
           "assumptions"
+        ]
+      },
+      {
+        "collection": "developer_docs",
+        "translationCollection": "developer_doc_translations",
+        "textFields": [
+          "title",
+          "body"
         ]
       },
       {
@@ -612,6 +620,20 @@
         ],
         "areas": [
           "tools"
+        ]
+      },
+      {
+        "path": "/:locale/developers",
+        "view": "developers",
+        "collections": [
+          "developer_docs",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "developers"
         ]
       },
       {
@@ -2773,7 +2795,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 43,
+          "line": 44,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -8672,7 +8694,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 48,
+          "line": 49,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -18972,7 +18994,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -24514,7 +24536,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 49,
+          "line": 50,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -25383,6 +25405,26 @@
       ]
     },
     {
+      "key": "react.4215712bca1acb67",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "آخرین بازبینی",
+      "en": "Last verified",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/developers/Developers.tsx",
+          "line": 79,
+          "page": "developers",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.421820131367a237",
       "namespace": "react",
       "area": "Global Content",
@@ -25756,7 +25798,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 46,
+          "line": 47,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -26543,7 +26585,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -27097,7 +27139,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 68,
+          "line": 106,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -28558,7 +28600,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 51,
+          "line": 52,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -35620,6 +35662,33 @@
       ]
     },
     {
+      "key": "react.5d3dd9f37be6576d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بخش‌های مستندات",
+      "en": "Documentation sections",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/developers/Developers.tsx",
+          "line": 51,
+          "page": "developers",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/developers/Developers.tsx",
+          "line": 66,
+          "page": "developers",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.5d49d2852a55f511",
       "namespace": "react",
       "area": "Website",
@@ -36136,6 +36205,33 @@
           "line": 50,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.5ea1051c8c6cc570",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جست‌وجو در مستندات",
+      "en": "Search the docs",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/developers/Developers.tsx",
+          "line": 63,
+          "page": "developers",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/developers/Developers.tsx",
+          "line": 64,
+          "page": "developers",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -36982,7 +37078,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 42,
+          "line": 43,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -37856,14 +37952,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 127,
-          "page": "home",
-          "route": "/:locale/home",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 133,
+          "line": 192,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -40193,6 +40282,13 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/developers/Developers.tsx",
+          "line": 76,
+          "page": "developers",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
@@ -43006,6 +43102,26 @@
       ]
     },
     {
+      "key": "react.72c33a830ff94955",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "راهنمای فنی اوپن‌فاند برای توسعه‌دهندگان و مشارکت‌کنندگان: راه‌اندازی محلی، ساختار مخزن، آزمون‌ها، انتشار و قوانین مشارکت. هر بخش به فایل منبعش در GitHub پیوند دارد.",
+      "en": "Openfund’s technical guide for developers and contributors: local setup, repository structure, testing, releases and contribution rules. Every section links to its source file on GitHub.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/developers/Developers.tsx",
+          "line": 48,
+          "page": "developers",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.72d4a452c90bb0ba",
       "namespace": "react",
       "area": "Website",
@@ -44160,7 +44276,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -44672,6 +44788,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.7839bdcd5e518b3f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مستندات توسعه‌دهندگان",
+      "en": "Developer documentation",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/developers/Developers.tsx",
+          "line": 60,
+          "page": "developers",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -49438,7 +49574,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 47,
+          "line": 48,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -50513,7 +50649,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 44,
+          "line": 45,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -51694,6 +51830,26 @@
       ]
     },
     {
+      "key": "react.8c59cc2daddfd01b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ساختن روی اوپن‌فاند، با قواعد روشن.",
+      "en": "Build on Openfund, with clear rules.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/developers/Developers.tsx",
+          "line": 60,
+          "page": "developers",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.8c6f74989cb23eaa",
       "namespace": "react",
       "area": "Website",
@@ -51729,6 +51885,26 @@
           "line": 434,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.8c7df0b0b17833f6",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مستندات توسعه‌دهندگان",
+      "en": "Developer docs",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/information/content.ts",
+          "line": 42,
+          "page": "information",
+          "route": "/:locale/:page",
           "method": "bilingual-record"
         }
       ]
@@ -53776,7 +53952,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 68,
+          "line": 106,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -54041,6 +54217,26 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.92862b5ac5ecfcd4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "این مستندات به انگلیسی و فارسی نوشته شده است؛ تا انتشار ترجمهٔ بازبینی‌شده، متن انگلیسی نمایش داده می‌شود.",
+      "en": "This documentation is written in English and Persian; the English text is shown until a reviewed translation is published.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/developers/Developers.tsx",
+          "line": 70,
+          "page": "developers",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -58197,7 +58393,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 45,
+          "line": 46,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -60970,7 +61166,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 50,
+          "line": 51,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -61580,7 +61776,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 128,
+          "line": 210,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -63193,7 +63389,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 141,
+          "line": 223,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -66336,7 +66532,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 82,
+          "line": 120,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -68194,6 +68390,13 @@
           "method": "bilingual-record"
         },
         {
+          "component": "apps/web-react/src/features/developers/Developers.tsx",
+          "line": 76,
+          "page": "developers",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
           "line": 159,
           "page": "radar",
@@ -69058,7 +69261,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 89,
+          "line": 127,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -72758,14 +72961,14 @@
         },
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 86,
+          "line": 124,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 87,
+          "line": 125,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -76148,6 +76351,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.cf367d3bb5d89c1f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هیچ بخشی با جست‌وجوی تو مطابقت ندارد.",
+      "en": "No section matches your search.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/developers/Developers.tsx",
+          "line": 71,
+          "page": "developers",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -81279,7 +81502,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 78,
+          "line": 116,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -81769,6 +81992,13 @@
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
           "line": 149,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/developers/Developers.tsx",
+          "line": 78,
+          "page": "developers",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
@@ -94329,6 +94559,14 @@
       "expression": "pick(locale, provider.labels.fa, provider.labels.en)"
     },
     {
+      "component": "apps/web-react/src/features/developers/Developers.tsx",
+      "line": 54,
+      "page": "developers",
+      "route": "/:locale/*",
+      "reason": "dynamic-pair",
+      "expression": "t(fa, en)"
+    },
+    {
       "component": "apps/web-react/src/features/economy/ui.tsx",
       "line": 48,
       "page": "economy",
@@ -94730,6 +94968,14 @@
       "route": "/:locale/*",
       "reason": "language-neutral-brand-or-identifier",
       "text": "OF"
+    },
+    {
+      "component": "apps/web-react/src/features/developers/Developers.tsx",
+      "line": 21,
+      "page": "developers",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(ui, fa, en)"
     },
     {
       "component": "apps/web-react/src/features/economy/LiveMarketAccess.tsx",

@@ -3910,5 +3910,14 @@
   "Sign in to view your Gains account.": "سجّل الدخول لعرض حساب Gains الخاص بك.",
   "Source data is stale": "بيانات المصدر قديمة",
   "Source timestamps are inconsistent": "الطوابع الزمنية للمصدر غير متّسقة",
-  "Up to date": "محدَّث"
+  "Up to date": "محدَّث",
+  "Build on Openfund, with clear rules.": "ابنِ على Openfund بقواعد واضحة.",
+  "Developer docs": "مستندات المطورين",
+  "Developer documentation": "توثيق المطورين",
+  "Documentation sections": "أقسام التوثيق",
+  "Last verified": "آخر تحقق",
+  "No section matches your search.": "لا يوجد قسم يطابق بحثك.",
+  "Openfund’s technical guide for developers and contributors: local setup, repository structure, testing, releases and contribution rules. Every section links to its source file on GitHub.": "دليل Openfund التقني للمطورين والمساهمين: الإعداد المحلي، وبنية المستودع، والاختبارات، والإصدارات، وقواعد المساهمة. يرتبط كل قسم بملفه المصدر على GitHub.",
+  "Search the docs": "ابحث في التوثيق",
+  "This documentation is written in English and Persian; the English text is shown until a reviewed translation is published.": "هذا التوثيق مكتوب بالإنجليزية والفارسية؛ ويُعرض النص الإنجليزي إلى أن تُنشر ترجمة مراجَعة."
 }

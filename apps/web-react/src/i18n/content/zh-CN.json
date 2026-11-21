@@ -3910,5 +3910,14 @@
   "Sign in to view your Gains account.": "登录以查看您的 Gains 账户。",
   "Source data is stale": "来源数据已过时",
   "Source timestamps are inconsistent": "来源时间戳不一致",
-  "Up to date": "已是最新"
+  "Up to date": "已是最新",
+  "Build on Openfund, with clear rules.": "在 Openfund 上构建，规则清晰。",
+  "Developer docs": "开发者文档",
+  "Developer documentation": "开发者文档",
+  "Documentation sections": "文档章节",
+  "Last verified": "最近核验",
+  "No section matches your search.": "没有与您的搜索匹配的章节。",
+  "Openfund’s technical guide for developers and contributors: local setup, repository structure, testing, releases and contribution rules. Every section links to its source file on GitHub.": "Openfund 面向开发者和贡献者的技术指南：本地环境、仓库结构、测试、发布和贡献规则。每个章节都链接到其在 GitHub 上的源文件。",
+  "Search the docs": "搜索文档",
+  "This documentation is written in English and Persian; the English text is shown until a reviewed translation is published.": "本文档以英文和波斯文撰写；在经审核的译文发布之前，显示英文文本。"
 }
