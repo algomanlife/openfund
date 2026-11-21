@@ -55,3 +55,10 @@ test('no stylesheet lowercases or uppercases the wordmark', () => {
       assert.doesNotMatch(rule, /text-transform:\s*(?:lowercase|uppercase|capitalize)/, `${file}: ${rule}`)
   }
 })
+
+test('the wordmark is language-neutral, so added locales never report it as untranslated', () => {
+  const { outputFiles } = buildSync({ entryPoints: [fileURLToPath(new URL('../src/i18n/messages/index.ts', import.meta.url))], bundle: true, platform: 'node', format: 'cjs', write: false, loader: { '.json': 'json' } })
+  const m = { exports: {} }; new Function('module', 'exports', 'require', outputFiles[0].text)(m, m.exports, require)
+  for (const text of [BRAND_WORDMARK, ` ${BRAND_WORDMARK} `, `${BRAND_WORDMARK} / Openfund Prop`]) assert.ok(m.exports.isLanguageNeutral(text), text)
+  assert.ok(!m.exports.isLanguageNeutral('OpenFi home'))
+})
