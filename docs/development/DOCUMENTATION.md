@@ -40,7 +40,7 @@ Local link/image checks include repository-root and relative paths, fragments, H
 - missing required documents (README, CONTRIBUTING, SECURITY, CHANGELOG,
   THIRD_PARTY_NOTICES, payment, deployment, operations, licensing and
   governance references, PR and issue templates);
-- README sections that are missing from the 12 required entry-point sections (and the 29 engineering-reference sections);
+- README sections that are missing from the [README contract](README_STRUCTURE.md) (and the 29 engineering-reference sections);
 - `render.yaml` environment variables not documented in
   `docs/deployment/ENVIRONMENT.md`;
 - a changelog whose first section is not `Unreleased`.
@@ -51,6 +51,15 @@ comes from the release tooling (`scripts/release/version.mjs`, the release
 manifest and `/version`), never from hand-edited README values. Every pull
 request that changes behavior updates the affected documents in the same
 change (PR template checklist).
+
+## README, retired registry and font gates
+
+`npm run docs:check` also runs three dependency-free gates:
+`scripts/docs/check-readme.mjs` (the [README structure contract](README_STRUCTURE.md)),
+`scripts/docs/check-retired.mjs` (the [retired registry](RETIRED.md): a
+`retired` item may have no active reference) and `scripts/docs/check-fonts.mjs`
+(only Ubuntu and Dastkhat faces). Their own regression tests are
+`scripts/docs/test/gates.test.mjs`.
 
 ## Documentation dependency hygiene
 

@@ -98,7 +98,14 @@ for an action, quote it to the person who assigned the task and ask.
 - Run `npm run docs:check`; update CI whenever validation requirements change.
 - Preserve approved logo geometry and asset provenance. Never invent partnerships, investors, revenue, user counts, volumes, approvals or production adoption.
 - Preserve the already-integrated dormant `packages/openfund-protocol/` source, provenance and notices. Do not add protocol integrations or enable venue routing in a website/documentation task.
-- Update the root README when setup, architecture, capabilities or project status changes.
+- Update the root README when setup, architecture, capabilities or project status changes, and preserve its
+  shape: the README follows the contract in `docs/development/README_STRUCTURE.md` (exact ordered sections,
+  size budgets, one responsibility per section, generated blocks, linked-not-duplicated detail), enforced by
+  `scripts/docs/check-readme.mjs`. Move detail into `docs/` rather than relaxing the contract.
+- When something is removed or superseded, record it in `docs/development/RETIRED.json` in the same pull
+  request and run `node scripts/docs/check-retired.mjs --write`; CI fails while a `retired` item is still referenced.
+- Typography: only Ubuntu (general/Latin) and Dastkhat (the only Persian/Arabic face) may be used; declare
+  Persian/Arabic faces only in `apps/web-react/public/assets/fonts/dastkhat/dastkhat.css`. `scripts/docs/check-fonts.mjs` enforces this.
 - Update `docs/product/FEATURE_STATUS.md` for any feature status transition.
 - Record runtime facts (what is released, deployed, enabled, verified or owner-accepted, per GLOBAL and IRAN) only in `docs/status/status.json`, with `verifiedAt` and evidence, then run `node scripts/docs/status.mjs`. Label superseded operational snapshots "Historical" instead of deleting them.
 - Update the relevant integration or architecture specification when interfaces change.
