@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Restore the complete business README structure, detailed product/operations/economy/security tables, architecture diagram and every original image after the earlier update condensed them. Expand terminal/journal, three Pine indicators, Footprint, Heatmap/Radar, all ten tools, learning, desktop, funded/IB/treasury, Backstage/CMS, repository map and test coverage. Preserve current factual corrections, expand the labelled historical bilingual gallery and record fresh screenshot gaps.
+
 - Refresh the project README with v0.8.0 payment release scope, merged desktop 0.0.3 and indicator work, dated 2026-11-20 gallery captures, current Dastkhat typography and explicit licensing boundaries. Correct stale source states in the canonical register while preserving dated operational observations. Record retained legacy font files; no license grant or binary removal.
 
 - **Open Trade 0.0.3 (desktop, internal unsigned builds; not published)** ([release notes](docs/releases/open-trade-0.0.3.md), [owner setup](docs/releases/OPEN_TRADE_0.0.3_OWNER_SETUP.md), [delivery](docs/reviews/open-trade-0.0.3/DELIVERY.md)).
