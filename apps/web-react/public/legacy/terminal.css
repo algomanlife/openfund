@@ -642,3 +642,7 @@ html[data-theme="light"] :is(.bk-row,.bt-table tbody tr):hover{background:var(--
 html[data-theme="light"] .field input:hover:not(:disabled){border-color:var(--mint)}
 html[data-theme="light"] .submit{background:var(--mint);color:#fff;border-color:var(--mint)}
 html[data-theme="light"] .submit:hover{background:#096b44}
+
+/* OpenFi wordmark: same balance as the website header (see legacy/style.css). */
+.brand-word{text-transform:none;font-variant-caps:normal;letter-spacing:-.03em}
+.brand-word>.brand-caption{width:0;min-width:100%;font-size:.2em;line-height:1;letter-spacing:.045em;white-space:nowrap;text-align:justify;text-align-last:justify}

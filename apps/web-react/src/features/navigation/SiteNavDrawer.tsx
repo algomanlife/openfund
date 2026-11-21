@@ -4,7 +4,9 @@ import { navigationModel } from '../information/navigation'
 import type { CmsNavItem } from '../../cms/client'
 import LanguageSelect from '../../i18n/LanguageSelect'
 import { chooseTheme, currentTheme } from '../../theme'
-import { dirOf, pick, type AppLocale } from '../../i18n/locales'
+import { dirOf, pick, pickFormat, type AppLocale } from '../../i18n/locales'
+import { BRAND_WORDMARK } from '../../brand/wordmark'
+import { BrandWordmark } from '../../brand/BrandWordmark'
 
 export const SITE_DRAWER_ID = 'site-navigation-drawer'
 const TRIGGER = '.openfund-header .menu'
@@ -62,8 +64,8 @@ export default function SiteNavDrawer({ locale, pathname, navItems, onLocaleChan
   return <OffCanvas open={open} onClose={close} dir={dirOf(locale)} className="of-site-drawer"
     label={pick(locale, 'ناوبری اصلی', 'Main navigation')} closeLabel={pick(locale, 'بستن', 'Close')}
     returnFocus={() => trigger.current}
-    header={<a href={`/${locale}/home`} onClick={close} aria-label={pick(locale, 'خانه اوپن‌فاند', 'Openfund home')}>
-      <img src={`${base}assets/mark-mint.svg`} width="24" height="27" alt="" /><span dir="ltr">openfund</span>
+    header={<a href={`/${locale}/home`} onClick={close} aria-label={pickFormat(locale, 'خانه ${brand}', '${brand} home', { brand: BRAND_WORDMARK })}>
+      <img src={`${base}assets/mark-mint.svg`} width="24" height="27" alt="" /><BrandWordmark />
     </a>}
     footer={<>
       <LanguageSelect locale={locale} onChange={next => { setOpen(false); onLocaleChange(next) }} />

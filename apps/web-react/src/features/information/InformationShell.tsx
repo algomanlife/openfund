@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useSiteMotion } from '../../styles/useSiteMotion'
 import { createPortal } from 'react-dom'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
-import landingBody from '../../pages/landing-body.html?raw'
+import landingTemplate from '../../pages/landing-body.html?raw'
+import { withBrandWordmark } from '../../brand/wordmark'
 import translationsJson from '../../../public/translations.json?raw'
 import { fetchCmsTranslations, fetchCmsNavigation, fetchCmsFooterLinks, type CmsNavItem, type CmsFooterLink } from '../../cms/client'
 import { RainbowConnect } from '../../wallet/RainbowConnect'
@@ -20,6 +21,7 @@ import PromoModal from '../campaigns/PromoModal'
 import BitpinTicker from '../ticker/BitpinTicker'
 import { dirOf, isLocale, normalizeLocale, pick, pickRecord, switchLocalePath, type AppLocale } from '../../i18n/locales'
 
+const landingBody = withBrandWordmark(landingTemplate)
 const header = landingBody.match(/<header\b[^>]*>[\s\S]*?<\/header>/)![0]
 const footer = landingBody.match(/<footer[\s\S]*?<\/footer>/)![0]
 const base = import.meta.env.BASE_URL

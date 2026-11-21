@@ -39,6 +39,7 @@ export const ar: Record<string, string> = {
   'Enter Terminal': 'الدخول إلى المنصة',
   'Main navigation': 'التنقل الرئيسي',
   'Openfund home': 'الصفحة الرئيسية لـ Openfund',
+  '${brand} home': 'الصفحة الرئيسية لـ ${brand}',
   'Toggle light / dark mode': 'تبديل الوضع الفاتح / الداكن',
   'Light / dark mode': 'الوضع الفاتح / الداكن',
   'Open menu': 'فتح القائمة',

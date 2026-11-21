@@ -1,0 +1,2 @@
+/* The wordmark always renders exactly as BRAND_WORDMARK ("OpenFi"). */
+.brand-wordmark { text-transform: none; font-variant-caps: normal; }

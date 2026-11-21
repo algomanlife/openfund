@@ -1,4 +1,5 @@
 import { compileTranslationTemplate, applyTranslationTemplate, type TranslationTemplate } from '../template'
+import { BRAND_WORDMARK } from '../../brand/wordmark'
 import { ar } from './ar'
 import { ru } from './ru'
 import { zhCN } from './zh-CN'
@@ -98,7 +99,9 @@ export const missesFor = (locale: string) => [...(misses.get(locale) || [])]
 const NEUTRAL_EXTRA = /^(?:openfund|penfund|[\w.-]+\.trade|UTC[+-]\d{1,2}|\d\d:\d\d(?::\d\d)?\s+UTC[+-]\d{1,2}|\d{4}-\d\d-\d\dT\S+|Windows|macOS|Linux|TradingView|GitHub|Render|Liara|Bitpin|DePay|S&P|Au|\/?USD|[A-Z]|App Store — iOS|Google Play — Android|[\d.,]+[a-zA-Z]{0,2}(?:\s+[\d.,]+[a-zA-Z]{0,2})*|Enter|Esc|Tab|Shift|Alt|Ctrl|Cmd|⌘[A-Z])$/
 export const isLanguageNeutral = (text: string) => {
   const core = text.replace(/[↗↘↙↖→←↑↓·•|]+/g, ' ').replace(/\s+/g, ' ').trim()
-  return LANGUAGE_NEUTRAL.test(core) || NEUTRAL_EXTRA.test(core) || core.split(' / ').every(part => LANGUAGE_NEUTRAL.test(part) || NEUTRAL_EXTRA.test(part))
+  /* the brand wordmark is a name and is never translated */
+  const neutral = (part: string) => part === BRAND_WORDMARK || LANGUAGE_NEUTRAL.test(part) || NEUTRAL_EXTRA.test(part)
+  return neutral(core) || core.split(' / ').every(neutral)
 }
 
 /** English source → text for an added locale; misses are reported and shown in English. */
