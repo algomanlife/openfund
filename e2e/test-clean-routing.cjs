@@ -10,6 +10,7 @@
  *    noindex on the authenticated product app.
  * Navigation-only: no wallets, no terminal business behavior. */
 const { chromium } = require('playwright');
+const { chooseLocale, toggleLocale } = require('./helpers/language.cjs');
 const BASE = (process.env.TEST_FRONTEND_URL || 'http://127.0.0.1:8180').replace(/\/$/, '');
 const OUT = 'output/playwright/clean-routing';
 
@@ -41,7 +42,7 @@ const OUT = 'output/playwright/clean-routing';
   check('markets page rendered', (await page.locator('.resources-toggle').count()) === 1);
 
   /* language switch: URL + direction swap together */
-  await page.locator('.of-language-select select').first().selectOption('en');
+  await chooseLocale(page, 'en');
   await page.waitForTimeout(900);
   check('language switch URL', page.url() === `${BASE}/en/markets`, page.url());
   check('language switch direction ltr', await page.evaluate(() => document.documentElement.dir) === 'ltr');
