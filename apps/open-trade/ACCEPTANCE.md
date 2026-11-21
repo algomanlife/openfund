@@ -89,3 +89,14 @@ Gains history loaded. SHA-256 is in the local `release/SHA256SUMS.txt`. The app
 archive contains the desktop `out/` payload and package metadata; backend
 source and secrets are not bundled. This is an unsigned, unnotarized internal
 review build from the uncommitted working tree, not an official release.
+
+## Version 0.0.3 — 2026-11-21
+
+Source candidate on `agent/claude/open-trade-v0.0.3`. Verified in a container
+without npm access: 29/29 desktop unit/security/i18n/release-plan tests and a
+shimmed TypeScript check. **NOT VERIFIED:** real-package type check, build,
+Electron launch, packaged installers, signing, notarization, real-wallet
+pairing/signing, Gains view with a funded wallet, Prop/Perpetual switching on a
+loopback backend, five-locale and RTL captures, high-DPI and 1024×768–1920×1080
+layouts, performance baseline. Matrix and steps:
+[delivery report](../../docs/reviews/open-trade-0.0.3/DELIVERY.md).

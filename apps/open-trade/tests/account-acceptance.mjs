@@ -147,6 +147,27 @@ export async function accountAcceptance(page, base) {
       document.querySelector("tbody")?.textContent?.includes("BTC/USD"),
     );
     await page.screenshot({ path: "artifacts/test-account.png" });
+    /* Product switching: Prop → Perpetual → Prop on one desktop session.
+       The loopback backend reads Gains for the generated wallet; whatever
+       the provider returns (records, empty, unavailable), no Prop balance
+       or position may appear in the Perpetual view. */
+    await page.getByRole("button", { name: "Select account", exact: true }).first().click();
+    await page.getByRole("dialog", { name: "Accounts" }).getByRole("button", { name: /Gains Network/ }).click();
+    await page.locator(".gains-panel").waitFor();
+    assert.equal(await page.locator(".product-badge.perpetual").count(), 1);
+    await page.waitForFunction(() => !/Loading records from Gains/.test(document.querySelector(".gains-status")?.textContent || ""), null, { timeout: 30000 });
+    const perpetualText = await page.locator(".gains-panel").textContent();
+    assert.ok(!/Balance|Equity|Free Trial/.test(perpetualText), "Prop data crossed into Perpetual");
+    assert.equal(await page.locator(".ticket-execution").count(), 0, "Perpetual must not show order controls");
+    await page.screenshot({ path: "artifacts/test-perpetual.png" });
+    assert.equal((await call("/auth/me")).status, 200, "switching products must not end the session");
+    await page.getByRole("button", { name: "Select account", exact: true }).first().click();
+    await page.getByRole("dialog", { name: "Accounts" }).getByRole("button", { name: /Free Trial/ }).click();
+    await page.locator(".product-badge.prop").waitFor();
+    await page.waitForFunction(() =>
+      document.querySelector("tbody")?.textContent?.includes("BTC/USD"),
+    );
+    assert.equal(await page.locator(".gains-panel").count(), 0);
     assert.equal(
       (
         await call(

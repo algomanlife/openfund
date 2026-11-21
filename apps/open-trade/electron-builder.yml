@@ -1,3 +1,7 @@
+# Open Trade installers. Run through scripts/package.mjs, which adds the
+# channel overrides from scripts/release-plan.mjs: internal builds are
+# explicitly unsigned and named "internal-unsigned"; beta/stable builds must
+# sign (and notarize on macOS) or the packaging step fails.
 appId: cloud.openfund.opentrade
 productName: Open Trade
 copyright: Copyright © Openfund
@@ -11,14 +15,17 @@ files:
   - package.json
   - '!**/*.map'
   - '!node_modules/**'
-artifactName: Open-Trade-${version}-beta-unsigned-${os}-${arch}.${ext}
+artifactName: Open-Trade-${version}-internal-unsigned-${os}-${arch}.${ext}
 mac:
   category: public.app-category.finance
   target:
     - target: dmg
       arch: [arm64, x64]
-  identity: null
   icon: build/icon.png
+  hardenedRuntime: true
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  notarize: false
 win:
   target:
     - target: nsis
@@ -28,9 +35,12 @@ nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
   perMachine: false
+  deleteAppDataOnUninstall: false
 linux:
   target: [AppImage, deb]
   category: Finance
   icon: build/icon.png
   maintainer: Openfund
+  synopsis: Openfund desktop trading workspace
+  description: Open Trade by Openfund — chart workspace for Openfund Prop simulated accounts and read-only Gains account records.
 publish: null

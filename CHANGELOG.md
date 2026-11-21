@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **Open Trade 0.0.3 (desktop, candidate — not built or published)** ([release notes](docs/releases/open-trade-0.0.3.md), [owner setup](docs/releases/OPEN_TRADE_0.0.3_OWNER_SETUP.md), [delivery](docs/reviews/open-trade-0.0.3/DELIVERY.md)).
+  - Prop and read-only Perpetual (Gains) accounts in one wallet session, with product switching that stops the other product's stream and keeps per-product chart layouts.
+  - Five-locale desktop UI using the web dictionaries; desktop-only ar/ru/zh-CN strings are drafts pending review.
+  - Wallet sign-in errors localized; failed sign-ins disconnect the pairing; address change or wallet disconnect signs out.
+  - Packaged builds accept only canonical regional backends; 4 MiB response limit; allowlisted external links; GitHub-Release update notification (no auto-install).
+  - Signed `beta`/`stable` packaging with macOS notarization and Windows Artifact Signing or certificate, verified on the building runner; unsigned builds are named `internal-unsigned`. CI covers macOS arm64, macOS x64, Windows x64 and Linux x64.
+
 - **Openfund Pine indicators: optimization, dashboard removal and lookahead fixes** ([ADR 0048](docs/decisions/0048-pine-indicator-optimization-and-provenance.md), [report](docs/reviews/pine-optimization/README.md)).
   - Open Algo V5: the SMRT Algo dashboard, its three settings and its five higher-timeframe requests are removed (76 inputs). Saved workspaces with the old settings load normally; the keys are dropped. Disabled overlays no longer compute. Initial calculation is 63–67% faster, with identical chart output.
   - Price Action Concepts: previous day/week/month levels now use the last completed period and stay fixed while the current one develops. Trendline Liquidity no longer stops the indicator when the multi-timeframe order blocks are on. Order-block drawings are rebuilt only when visible, and default secondary requests fall from 7 to 3. Initial calculation is 48–72% faster.

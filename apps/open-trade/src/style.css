@@ -15,6 +15,12 @@
   font-weight: 100 900;
   font-display: swap;
 }
+@font-face {
+  font-family: "Dastkhat Arabic";
+  src: url("/assets/fonts/dastkhat/DastkhatArabic-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
 * {
   box-sizing: border-box;
 }
@@ -958,3 +964,33 @@ html[data-theme="light"] .chart-cell {
 .layout-3:not(.maximized) { position: relative; grid-template-columns: minmax(0, var(--chart-split, 66%)) minmax(0, 1fr); }
 .layout-3:not(.maximized) > .chart-cell:first-of-type { grid-row: span 2; }
 .layout-3:not(.maximized) > .chart-splitter { position: absolute; inset-block: 0; left: var(--chart-split, 66%); width: 7px; z-index: 7; transform: translateX(-2px); cursor: col-resize; touch-action: none; }
+
+/* ---- 0.0.3: language, products, Gains records, about ---- */
+html[lang="ar"] .app {
+  font-family: "Dastkhat Arabic", Dastkhat, Ubuntu, Tahoma, system-ui, sans-serif;
+}
+bdi, [dir="ltr"] { unicode-bidi: isolate; }
+.language-selector { display: grid; gap: 6px; text-align: start; margin-top: 10px; }
+.region-note { font-size: 11px; max-width: 420px; }
+.product-directory { display: grid; gap: 12px; text-align: start; width: 100%; }
+.product-directory .wallet-line { display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; margin: 0; }
+.product-directory .wallet-line bdi { font-family: ui-monospace, Menlo, Consolas, monospace; }
+.product-section { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: grid; gap: 8px; }
+.product-section h3 { margin: 0; font-size: 11px; letter-spacing: .06em; color: var(--muted); }
+.product-section .accounts button.selected { outline: 1px solid #82e7bd88; }
+.product-badge { font-size: 10px; letter-spacing: .08em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); }
+.product-badge.prop { color: #82e7bd; border-color: #82e7bd55; }
+.product-badge.perpetual { color: #a9a8ff; border-color: #a9a8ff55; }
+.gains-panel .gains-status.ok { color: #49b98b; }
+.gains-panel .gains-status.warn { color: #e1b054; }
+.gains-panel .gains-status.error { color: #ef676c; }
+.readonly-badge { border: 1px solid var(--line); border-radius: 999px; padding: 0 8px; }
+.readonly-ticket p { margin: 10px 12px 12px; line-height: 1.5; }
+button.link { background: none; border: 0; padding: 0; color: #82e7bd; cursor: pointer; text-decoration: underline; }
+.about dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 8px 0; }
+.about dt { color: var(--muted); }
+.about dd { margin: 0; overflow-wrap: anywhere; }
+.update-notice { inset-block-start: 48px; }
+.untranslated { position: fixed; inset-inline-end: 12px; inset-block-end: 28px; font-size: 10px; opacity: .8; pointer-events: none; }
+:focus-visible { outline: 2px solid #82e7bd; outline-offset: 2px; }
+[dir="rtl"] .region-selector { text-align: start; }

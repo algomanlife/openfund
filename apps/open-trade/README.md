@@ -1,6 +1,6 @@
 # Open Trade desktop beta
 
-Open Trade 0.0.1 is an internal Electron companion to Openfund. It uses the
+Open Trade (version in `package.json`, currently 0.0.3) is the Openfund Electron desktop workspace. It uses the
 existing Vela workspace, Gains market adapter, SIWE sessions and authoritative
 Prop account APIs. It does not contain a backend, account database or P&L engine.
 Public distribution is not approved. See [acceptance](ACCEPTANCE.md).
@@ -41,7 +41,11 @@ node scripts/checksums.mjs
 
 Use each platform's runner to produce its installers. macOS supports arm64 and
 x64 DMGs; Windows uses x64 NSIS; Linux uses x64 AppImage and deb. Outputs go to
-`release/` and explicitly contain `beta-unsigned` in their names. The normal
+`release/`. `npm run package` runs `scripts/package.mjs`: the default
+`OPEN_TRADE_CHANNEL=internal` produces `…-internal-unsigned-…` files; `beta` and
+`stable` refuse to package without signing (and macOS notarization)
+credentials. `npm run verify:signatures` checks checksums, names and, for
+signed channels, codesign/notarization or Authenticode on the building runner. The normal
 workflow never publishes a release or deploys Render. PRs validate only;
 branch builds and manual runs additionally package. Installers include only
 compiled desktop code and selected public assets, not backend code or secrets.
@@ -105,3 +109,20 @@ resize the bottom panel. The three-chart layout has a resizable left chart and
 two stacked right charts. Use Capture in the workspace toolbar to preview,
 save, or copy a chart PNG. The preview includes unrealized P&L only when the
 account snapshot reports a fresh valuation and has a matching position.
+
+### Version 0.0.3
+
+- Account selector shows **PROP — Simulated Trading** and **PERPETUAL — Gains
+  Account** for the signed-in wallet. Perpetual is a read-only view of
+  `/products/perpetual/gains` (positions, orders, latest 100 history events);
+  it has no order, approval or transfer control. Switching products does not
+  sign out; each product keeps its own chart layout.
+- Languages: fa, en, ar, ru, zh-CN (Settings or start screen). Desktop-only
+  ar/ru/zh-CN strings ship in English until reviewed
+  (`src/i18n-desktop/drafts/` → `reviewed/`).
+- Packaged builds accept only `https://openfi.cloud` / `https://openfi.live`.
+  A loopback or other HTTPS backend works only in unpackaged development.
+- Update notifications open the official GitHub Release; nothing installs itself.
+- Tests: `npm test` (unit), `npm run test:security`, `npm run test:i18n`,
+  `npm run test:desktop` (real Electron), `npm run test:performance`
+  (baseline recorder). Owner steps: [owner setup](../../docs/releases/OPEN_TRADE_0.0.3_OWNER_SETUP.md).

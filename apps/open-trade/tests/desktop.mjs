@@ -41,6 +41,15 @@ try {
     nodeIntegration: false,
     contextIsolation: true,
   });
+  /* one authoritative version: package.json = app.getVersion() = window title = renderer */
+  const { version } = JSON.parse(await (await import("node:fs/promises")).readFile("package.json", "utf8"));
+  assert.equal(await app.evaluate(({ app }) => app.getVersion()), version);
+  assert.equal(await page.evaluate(() => window.desktop.config().then((c) => c.version)), version);
+  assert.ok((await page.locator(".window-title").textContent()).includes(version));
+  /* unauthorized IPC: unknown channels and unlisted operations are refused */
+  assert.equal(await page.evaluate(() => typeof window.desktop.invoke), "undefined");
+  await assert.rejects(page.evaluate(() => window.desktop.request({ method: "POST", path: "/internal/inject-price" })));
+  await assert.rejects(page.evaluate(() => window.desktop.external("https://evil.example")));
   await page
     .getByRole("button", { name: "Explore charts", exact: true })
     .click();
@@ -90,7 +99,7 @@ try {
   const capture = page.getByRole("dialog", { name: "Chart capture preview" });
   await capture.getByRole("img").waitFor();
   assert.ok((await capture.getByRole("img").getAttribute("src")).startsWith("data:image/png;"));
-  await capture.getByRole("button", { name: "Close preview" }).click();
+  await capture.getByRole("button", { name: "Close", exact: true }).click();
   await page
     .getByRole("button", { name: "1 chart layout", exact: true })
     .click();
@@ -103,7 +112,7 @@ try {
     .first()
     .click();
   await page.screenshot({ path: "artifacts/settings-glass.png" });
-  await page.getByRole("dialog").locator("select").first().selectOption("light");
+  await page.getByRole("dialog").getByLabel("Appearance").selectOption("light");
   await page.screenshot({ path: "artifacts/settings-light.png" });
   await app.evaluate(({ BrowserWindow }) =>
     BrowserWindow.getAllWindows()[0].setSize(1000, 720),
@@ -114,10 +123,17 @@ try {
     ),
     true,
   );
-  await page.getByRole("dialog").locator("select").first().selectOption("dark");
+  await page.getByRole("dialog").getByLabel("Appearance").selectOption("dark");
+  /* Five locales: direction, font and translated chrome, then back to English */
+  for (const [locale, dir, settings] of [["fa", "rtl", "تنظیمات"], ["ar", "rtl", null], ["ru", "ltr", null], ["zh-CN", "ltr", null], ["en", "ltr", "Settings"]]) {
+    await page.getByRole("dialog").locator("select").first().selectOption(locale);
+    await page.waitForFunction(([l, d]) => document.documentElement.lang === l && document.documentElement.dir === d, [locale, dir]);
+    if (settings) assert.equal(await page.getByRole("dialog").locator("h2").first().textContent(), settings);
+    await page.screenshot({ path: `artifacts/settings-${locale}.png` });
+  }
   await page
     .getByRole("dialog")
-    .getByRole("button", { name: "×", exact: true })
+    .getByRole("button", { name: "Close", exact: true })
     .click();
   if (process.env.TEST_BACKEND_URL) {
     await page.reload();
@@ -132,9 +148,9 @@ try {
   await page.getByRole('button', {name:'Toggle positions',exact:true}).click();
   assert.ok((await page.locator('.positions').boundingBox()).height > 100);
   await page.getByRole('button', {name:'Toggle positions',exact:true}).click();
-  await page.getByRole('button', {name:'Dock order ticket',exact:true}).click();
+  await page.getByRole('button', {name:'Dock / float order ticket',exact:true}).click();
   assert.equal(await page.locator('.ticket.docked').count(),1);
-  await page.getByRole('button', {name:'Dock order ticket',exact:true}).click();
+  await page.getByRole('button', {name:'Dock / float order ticket',exact:true}).click();
   await page.keyboard.press('Alt+t');
   assert.equal(await page.locator('.ticket').count(),0);
   await page.keyboard.press('Alt+t');
