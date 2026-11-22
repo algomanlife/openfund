@@ -209,3 +209,22 @@ html[data-theme=light] .of-app-tag { color: #065f39; background: #eef8f3; border
 html[data-theme=light] .of-app-status.is-pending { color: #7a5a0e; border-color: #d8c08a; }
 html[data-theme=light] .of-app-files li { background: #fafcfb; }
 .of-app-sha { font-size: 10.5px; opacity: .8; overflow-wrap: anywhere; }
+
+/* published downloads: one primary button per file, details collapsed */
+.of-app-card.is-detected{border-color:color-mix(in srgb,var(--mint) 55%,var(--line));box-shadow:0 0 0 1px color-mix(in srgb,var(--mint) 25%,transparent),0 24px 48px -32px color-mix(in srgb,var(--mint) 55%,transparent)}
+.of-app-detected{margin-inline-start:auto;font-size:11px;padding:2px 9px;border-radius:99px;color:var(--mint);border:1px solid color-mix(in srgb,var(--mint) 45%,transparent)}
+.of-app-release{display:grid;gap:8px;padding-top:4px}
+.of-app-download{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;width:100%;text-align:center}
+.of-app-download.ghost{background:transparent;border:1px solid var(--line);color:var(--white,inherit)}
+.of-app-release.is-match .of-app-download{box-shadow:0 0 0 2px color-mix(in srgb,var(--mint) 45%,transparent)}
+.of-app-details{border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:13px}
+.of-app-details summary{cursor:pointer;min-height:40px;display:flex;align-items:center;color:var(--body)}
+.of-app-details[open]{padding-bottom:12px}
+.of-app-details[open]>*:not(summary){margin-top:8px}
+.of-app-details code{display:block;font-size:11.5px;color:var(--body);overflow-wrap:anywhere}
+.of-app-copy{min-height:32px;padding:4px 12px;border-radius:8px;border:1px solid var(--line);background:none;color:var(--body);font:inherit;font-size:12px;cursor:pointer}
+.of-app-copy:hover,.of-app-copy:focus-visible{border-color:var(--mint);color:var(--mint)}
+.of-app-unsigned{margin-top:4px!important}
+.of-app-links{font-size:13px}
+.of-app-links a{color:var(--mint)}
+@media (hover:none),(pointer:coarse){.of-app-copy{min-height:44px}.of-app-details summary{min-height:44px}}
