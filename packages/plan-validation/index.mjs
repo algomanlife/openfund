@@ -59,7 +59,8 @@ const num = v => (v === null || v === undefined || v === '' ? null : Number.isFi
 /** The public plan shape from a backend row (`challenge_plans`: slug, a
  *  "fa — en" name and the configuration JSONB). */
 export function planFromConfiguration(slug, name, c = {}) {
-  const [fa, en] = String(name || '').split(/\s+—\s+/)
+  /* split on the em dash and trim (no backtracking regex on input) */
+  const [fa, en] = String(name || '').slice(0, 200).split('—').map(part => part.trim())
   const sizes = Array.isArray(c.accountSizesUsd) ? c.accountSizesUsd.map(Number) : []
   return {
     slug, name: { fa: fa || '', en: en || fa || '' }, accountSizesUsd: sizes,
