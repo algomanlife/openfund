@@ -146,6 +146,16 @@ services:
         value: "30"             # stored one-minute footprint history kept, in days
       - key: FOOTPRINT_MAX_STREAMS
         value: "5000"           # concurrent live footprint streams this process accepts
+      - key: EMAIL_PROVIDER
+        value: resend           # transactional email (apps/backend/email.js); inactive until EMAIL_API_KEY is set
+      - key: EMAIL_FROM
+        sync: false             # public sender on a verified domain, e.g. "Openfund <no-reply@openfi.cloud>"
+      - key: EMAIL_API_KEY
+        sync: false             # secret: provider API key (owner enters it; never in Git)
+      - key: TOURNAMENT_CODE_PEPPER
+        sync: false             # optional secret: extra HMAC key for tournament email codes
+      - key: TOURNAMENT_SAMPLE_INTERVAL_MS
+        value: "300000"         # Premium League equity sampling and start-time provisioning (5 min)
       - key: VITE_DIRECTUS_HOST
         fromService:
           name: openfund-cms

@@ -71,6 +71,7 @@ const { challengePlans } = load('src/data/challengePlans.ts')
 const { ruleSections, rulebookIntro, rulebookNotice } = load('src/features/rulebook/content.ts')
 const { faqSeed } = load('src/cms/seed/faqContent.ts')
 const { legalSeed } = load('src/cms/seed/legalContent.ts')
+const { tournamentTermsSeed } = load('src/cms/seed/tournamentTerms.ts')
 const { homeSeed } = load('src/cms/seed/homeContent.ts')
 const { marketsSeed, footerLinkSeed, navSeed } = load('src/cms/seed/marketsContent.ts')
 
@@ -245,6 +246,17 @@ async function main() {
     }
     note('legal_documents', await upsert('legal_documents', { doc_type: doc.docType }, payload, legalFlat))
   }
+
+  /* ---------- draft tournament terms: created once as a DRAFT, never
+     overwritten or published here (the owner reviews and publishes them) */
+  if (!legalFlat.some(l => l.doc_type === tournamentTermsSeed.docType)) {
+    const doc = tournamentTermsSeed
+    await req('POST', `${BASE}/items/legal_documents`, TOKEN, {
+      doc_type: doc.docType, sort: 100, version: '2026-11-draft', status: 'draft',
+      translations: ['fa', 'en'].map(locale => ({ language_code: locale, title: doc.title[locale], paragraphs: doc.paragraphs.map(p => p[locale]) })),
+    })
+    note('legal_documents', { action: 'created' })
+  } else note('legal_documents', { action: 'kept' })
 
   /* ---------- footer_links ---------- */
   const footer = await all('footer_links', 'id,destination')

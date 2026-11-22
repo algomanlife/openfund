@@ -2612,7 +2612,7 @@ ALTER TABLE notifications DROP CONSTRAINT IF EXISTS notifications_kind_check;
 ALTER TABLE notifications ADD CONSTRAINT notifications_kind_check CHECK (kind IN (
   'payout_approved', 'payout_rejected', 'payout_paid', 'payout_simulated',
   'support_reply', 'challenge_passed', 'challenge_failed', 'challenge_expired', 'challenge_stage_passed',
-  'purchase_paid'));
+  'purchase_paid', 'tournament_registered', 'tournament_started'));
 CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications (user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_notifications_unread ON notifications (user_id) WHERE read_at IS NULL;
 
@@ -2968,3 +2968,121 @@ CREATE TABLE IF NOT EXISTS granted_entitlements (
   created_at         timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS idx_granted_entitlements_user ON granted_entitlements (user_id, created_at DESC);
+
+-- ==================================================================
+-- Openfund Premium League (tournament.js, ADR 0050). Additive.
+--   tournaments              one row per competition; rules are data
+--   tournament_registrations one entry per wallet and per e-mail
+--   tournament_email_codes   hashed one-time codes (never the code itself)
+--   tournament_snapshots     server-side equity samples (leaderboard, drawdown)
+--   tournament_standings     the frozen final ranking (append-only)
+--   tournament_awards        cash, account, hardware, coupon and badge awards
+--                            with a fulfilment status; nothing is deleted
+-- ==================================================================
+CREATE TABLE IF NOT EXISTS tournaments (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug               text NOT NULL UNIQUE CHECK (slug ~ '^[a-z0-9][a-z0-9-]{2,59}$'),
+  name_fa            text NOT NULL,
+  name_en            text NOT NULL,
+  status             text NOT NULL DEFAULT 'draft'
+                     CHECK (status IN ('draft','registration','live','finished','finalized','cancelled')),
+  starts_at          timestamptz NOT NULL,
+  trading_days       integer NOT NULL CHECK (trading_days BETWEEN 1 AND 120),
+  ends_at            timestamptz NOT NULL,
+  account_size_usd   numeric(20,2) NOT NULL DEFAULT 125000 CHECK (account_size_usd > 0),
+  daily_loss_pct     numeric(6,3) NOT NULL DEFAULT 5 CHECK (daily_loss_pct > 0 AND daily_loss_pct < 100),
+  max_loss_pct       numeric(6,3) NOT NULL DEFAULT 10 CHECK (max_loss_pct > 0 AND max_loss_pct < 100),
+  consistency_pct    numeric(6,3) NOT NULL DEFAULT 35 CHECK (consistency_pct > 0 AND consistency_pct <= 100),
+  prizes             jsonb NOT NULL DEFAULT '{}'::jsonb,
+  terms_doc_type     text NOT NULL DEFAULT 'tournament-terms',
+  created_at         timestamptz NOT NULL DEFAULT now(),
+  updated_at         timestamptz NOT NULL DEFAULT now(),
+  CHECK (ends_at > starts_at)
+);
+
+CREATE TABLE IF NOT EXISTS tournament_registrations (
+  id                     uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  tournament_id          uuid NOT NULL REFERENCES tournaments (id),
+  user_id                uuid NOT NULL REFERENCES openfund_users (id),
+  wallet_address         text NOT NULL,
+  email                  text NOT NULL CHECK (length(email) BETWEEN 6 AND 254),
+  email_verified_at      timestamptz,
+  nickname               text CHECK (nickname IS NULL OR length(nickname) BETWEEN 3 AND 24),
+  status                 text NOT NULL DEFAULT 'pending_email'
+                         CHECK (status IN ('pending_email','registered','active','out_of_ranking','disqualified','withdrawn')),
+  terms_version          text NOT NULL,
+  terms_accepted_at      timestamptz NOT NULL DEFAULT now(),
+  registration_ip_prefix text,
+  challenge_id           uuid REFERENCES openfund_challenges (id),
+  out_of_ranking_at      timestamptz,
+  out_of_ranking_rule    text,
+  disqualified_reason    text,
+  disqualified_by        text,
+  created_at             timestamptz NOT NULL DEFAULT now(),
+  updated_at             timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (tournament_id, user_id)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_tournament_registrations_email ON tournament_registrations (tournament_id, lower(email));
+CREATE UNIQUE INDEX IF NOT EXISTS uq_tournament_registrations_challenge ON tournament_registrations (challenge_id) WHERE challenge_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_tournament_registrations_status ON tournament_registrations (tournament_id, status);
+
+CREATE TABLE IF NOT EXISTS tournament_email_codes (
+  id               bigserial PRIMARY KEY,
+  registration_id  uuid NOT NULL REFERENCES tournament_registrations (id) ON DELETE CASCADE,
+  code_hash        text NOT NULL,
+  expires_at       timestamptz NOT NULL,
+  attempts         integer NOT NULL DEFAULT 0,
+  consumed_at      timestamptz,
+  created_at       timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_tournament_email_codes_registration ON tournament_email_codes (registration_id, id DESC);
+
+CREATE TABLE IF NOT EXISTS tournament_snapshots (
+  id               bigserial PRIMARY KEY,
+  tournament_id    uuid NOT NULL REFERENCES tournaments (id),
+  registration_id  uuid NOT NULL REFERENCES tournament_registrations (id),
+  equity           numeric(20,2) NOT NULL,
+  balance          numeric(20,2) NOT NULL,
+  observed_at      timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_tournament_snapshots_reg ON tournament_snapshots (registration_id, observed_at DESC);
+
+CREATE TABLE IF NOT EXISTS tournament_standings (
+  tournament_id     uuid NOT NULL REFERENCES tournaments (id),
+  registration_id   uuid NOT NULL REFERENCES tournament_registrations (id),
+  rank              integer,
+  ranked            boolean NOT NULL,
+  not_ranked_reason text,
+  final_equity      numeric(20,2) NOT NULL,
+  max_drawdown_usd  numeric(20,2) NOT NULL,
+  reached_at        timestamptz,
+  best_day_share    numeric(8,4),
+  closed_trades     integer NOT NULL,
+  frozen_at         timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (tournament_id, registration_id),
+  CHECK ((rank IS NOT NULL) = ranked)
+);
+DROP TRIGGER IF EXISTS tournament_standings_append_only ON tournament_standings;
+CREATE TRIGGER tournament_standings_append_only BEFORE UPDATE OR DELETE ON tournament_standings FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+CREATE TABLE IF NOT EXISTS tournament_awards (
+  id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  tournament_id     uuid NOT NULL REFERENCES tournaments (id),
+  registration_id   uuid NOT NULL REFERENCES tournament_registrations (id),
+  rank              integer,
+  kind              text NOT NULL CHECK (kind IN ('cash','account','hardware','coupon','badge')),
+  item              text NOT NULL,
+  amount_usd        numeric(20,2),
+  entitlement_id    uuid REFERENCES granted_entitlements (id),
+  coupon_id         uuid REFERENCES coupons (id),
+  status            text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','issued','in_progress','fulfilled','cancelled')),
+  fulfilment_note   text,
+  updated_by        text,
+  created_at        timestamptz NOT NULL DEFAULT now(),
+  updated_at        timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (tournament_id, registration_id, kind, item)
+);
+
+-- tournament certificates (badges on certificates)
+ALTER TABLE certificates DROP CONSTRAINT IF EXISTS certificates_kind_check;
+ALTER TABLE certificates ADD CONSTRAINT certificates_kind_check CHECK (kind IN ('purchase','completion','payout','tournament'));

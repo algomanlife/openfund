@@ -434,6 +434,7 @@ def main():
             {'text': 'Corporate information & access', 'value': 'corporate'},
             {'text': 'Offices', 'value': 'offices'},
             {'text': 'Hosting & infrastructure note', 'value': 'hosting'},
+            {'text': 'Premium League terms', 'value': 'tournament-terms'},
         ]}, 'required': True}, schema={'default_value': 'overview'})
     ensure_field('legal_documents', 'version', 'string', meta={'interface': 'input', 'note': 'مثال: 2026-11'}, schema={'default_value': '2026-11'})
     ensure_field('legal_documents', 'effective_date', 'date', meta={'interface': 'datetime'}, schema={})
