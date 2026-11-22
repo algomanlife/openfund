@@ -5,10 +5,15 @@
  * navigation_items rows (fields `description`, `icon`) override them. Banner
  * copy goes through the editable interface registry (pick). */
 import { text } from '../information/content'
+import { flamingoSceneNode } from './flamingoArt'
 
 /** 24×24 line icons (stroke only), original drawings — no vendor logos */
 export const MEGA_ICONS: Record<string, string> = {
   challenges: 'M5 20V9l7-5 7 5v11M9 20v-6h6v6M3 20h18',
+  compare: 'M4 20V10M10 20V4M16 20v-8M22 20H2M14 7l2-2 2 2',
+  checkout: 'M4 6h2l2 10h10l2-7H7M10 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM17 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z',
+  migrate: 'M3 15c3-4 6-4 9-1s6 3 9-1M6 9c1.5-2 3-2.5 5-2l-2 3M15 6c1.5-1.5 3-2 4.5-1.5L18 7',
+  tournament: 'M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8M10 17h4',
   markets: 'M4 19h16M6 16l4-5 3 3 5-7M15 7h3v3',
   rulebook: 'M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10M9 8h5',
   governance: 'M4 20h16M6 17V10M10 17V10M14 17V10M18 17V10M3 9l9-5 9 5z',
@@ -47,6 +52,10 @@ export const MEGA_ICONS: Record<string, string> = {
 /** one-line description per destination (bundled; CMS description wins) */
 export const MEGA_DESCRIPTIONS: Record<string, { en: string; fa: string }> = {
   challenges: text('Choose a challenge model and account size.', 'مدل چلنج و اندازهٔ حساب را انتخاب کن.'),
+  compare: text('Models, sizes and rules side by side.', 'مدل‌ها، اندازه‌ها و قوانین کنار هم.'),
+  checkout: text('Pay on-chain and start your evaluation.', 'پرداخت روی زنجیره و شروع ارزیابی.'),
+  migrate: text('Funded elsewhere? Start at the funded stage.', 'جای دیگر فاند شده‌ای؟ از مرحلهٔ فاند شروع کن.'),
+  tournament: text('A 30-day competition in analysis and risk.', 'رقابت ۳۰ روزه در تحلیل و مدیریت ریسک.'),
   markets: text('Live prices for the markets you can trade.', 'قیمت زندهٔ بازارهایی که می‌توانی معامله کنی.'),
   rulebook: text('Every rule, before you start.', 'همهٔ قوانین، پیش از شروع.'),
   governance: text('How the community council decides.', 'شورای جامعه چگونه تصمیم می‌گیرد.'),
@@ -74,9 +83,17 @@ export const RESOURCE_SECTIONS: { id: string; label: { en: string; fa: string };
   { id: 'company', label: text('Company', 'شرکت'), routes: ['about', 'contact', 'certificate-verification'] },
 ]
 
-export type MegaBannerKind = 'council' | 'desktop'
+export type MegaBannerKind = 'council' | 'desktop' | 'flamingo'
 /** featured banner per group: copy is editable through the interface registry */
-export const MEGA_BANNERS: Record<string, { kind: MegaBannerKind; route: string; hash?: string; title: { en: string; fa: string }; body: { en: string; fa: string }; cta: { en: string; fa: string } }> = {
+export const MEGA_BANNERS: Record<string, { kind: MegaBannerKind; route: string; hash?: string; title: { en: string; fa: string }; body: { en: string; fa: string }; cta: { en: string; fa: string }; description?: { en: string; fa: string } }> = {
+  'website-challenges': {
+    kind: 'flamingo', route: 'migrate',
+    title: text('Migration to Openfund', 'مهاجرت به اوپن‌فاند'),
+    body: text('Proven funded trader? Skip evaluation with three verified payouts.', 'معامله‌گر فاندشدهٔ اثبات‌شده‌ای؟ با سه برداشت تأییدشده از ارزیابی عبور کن.'),
+    cta: text('Start migration', 'شروع مهاجرت'),
+    /* read by screen readers only: the scene's concept */
+    description: text('Illustration: a flock of flamingos migrating to a new home, landing on a calm lake that reflects the OpenFi mark — like the flamingos that winter at Maharloo Lake near Shiraz, where Openfund is based.', 'تصویر: دسته‌ای از فلامینگوها به خانه‌ای تازه مهاجرت می‌کنند و روی دریاچه‌ای آرام فرود می‌آیند که نشان OpenFi را بازتاب می‌دهد؛ مانند فلامینگوهایی که زمستان را در دریاچهٔ مهارلو نزدیک شیراز، محل استقرار اوپن‌فاند، می‌گذرانند.'),
+  },
   'website-economy': {
     kind: 'council', route: 'governance',
     title: text('Latest council proposals', 'تازه‌ترین پیشنهادهای شورا'),
@@ -105,6 +122,7 @@ export function megaIconNode(key: string): SVGSVGElement {
 
 /** banner artwork: a mini council chamber (ten seats, decorative) or a desktop window */
 export function megaBannerArt(kind: MegaBannerKind): SVGSVGElement {
+  if (kind === 'flamingo') return flamingoSceneNode('panel', `${import.meta.env?.BASE_URL || '/'}assets/mark-mint.svg`)
   const svg = document.createElementNS(SVG_NS, 'svg')
   svg.setAttribute('viewBox', '0 0 160 90'); svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('focusable', 'false')
   svg.setAttribute('class', `mega-banner-art is-${kind}`)

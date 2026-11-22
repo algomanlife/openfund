@@ -3,9 +3,14 @@ import type { CmsNavItem, CmsFooterLink } from '../../cms/client'
 import { labels, text } from './content'
 import { pickRecord, type AppLocale } from '../../i18n/locales'
 import { MEGA_BANNERS, MEGA_DESCRIPTIONS, MEGA_ICONS, RESOURCE_SECTIONS, megaBannerArt, megaIconNode, type MegaBannerKind } from '../navigation/megaMenu'
+import { PREMIUM_LEAGUE_START, daysUntil } from '../tournament/schedule'
+import { pickFormat } from '../../i18n/locales'
 type Locale = AppLocale
 
-const primary = ['challenges', 'markets', 'rulebook'] as const
+const primary = ['markets', 'rulebook'] as const
+/** Trading challenges dropdown: compare, buy, migrate, the tournament and the rules.
+ *  `challenges` is the comparison page (the former primary link). */
+const challengeGroup = ['challenges', 'checkout', 'migrate', 'tournament', 'rulebook'] as const
 /** Economy dropdown: governance, the consolidated Ambassador (IB) page and
  *  Referral & Rewards (formerly "Growth Partner" under Resources; same /referral page). */
 const economy = ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'] as const
@@ -17,7 +22,18 @@ const documentLabels = { whitepaper: text('Read the whitepaper', 'مطالعهٔ
 /** Retired public destinations (the Team section was removed); a stale CMS
  *  footer row naming one is skipped instead of producing a dead link. */
 const RETIRED_DESTINATIONS = new Set(['team', 'team-section'])
-const navigationLabels = { ...labels, glossary: text('Glossary', 'واژه‌نامه') }
+const navigationLabels = { ...labels, glossary: text('Glossary', 'واژه‌نامه'),
+  migrate: text('Migration to Openfund', 'مهاجرت به اوپن‌فاند'), tournament: text('Openfund Premium League', 'لیگ برتر اوپن‌فاند') }
+/** tile titles inside the Challenges group (the header keeps the page names) */
+const challengeTileLabels: Record<string, { en: string; fa: string }> = {
+  challenges: text('Compare challenges', 'مقایسهٔ چلنج‌ها'),
+  checkout: text('Buy a challenge', 'خرید چلنج'),
+  migrate: text('Migration to Openfund', 'مهاجرت به اوپن‌فاند'),
+  tournament: text('Openfund Premium League', 'لیگ برتر اوپن‌فاند'),
+  rulebook: text('Trading rules', 'قوانین معاملاتی'),
+}
+const tileIcons: Record<string, string> = { challenges: 'compare' }
+const newBadge = text('New', 'جدید')
 
 export function navigationHref(route: string, locale: Locale): string {
   if (route === 'accounts-section') return `/${locale}/challenges?section=accounts`
@@ -27,15 +43,15 @@ export function navigationHref(route: string, locale: Locale): string {
   return `/${locale}/${route}`
 }
 
-export interface NavigationLink { route: string; href: string; label: string; current: boolean; activeSection: boolean; description: string; icon: string }
+export interface NavigationLink { route: string; href: string; label: string; current: boolean; activeSection: boolean; description: string; icon: string; badge?: string; countdown?: string }
 export interface NavigationSection { id: string; label: string; links: NavigationLink[] }
-export interface NavigationBanner { kind: MegaBannerKind; href: string; title: string; body: string; cta: string }
+export interface NavigationBanner { kind: MegaBannerKind; href: string; title: string; body: string; cta: string; description: string }
 export interface NavigationGroup { id: string; label: string; links: NavigationLink[]; current: boolean; sections: NavigationSection[]; banner: NavigationBanner | null }
 export interface NavigationModel { primary: NavigationLink[]; groups: NavigationGroup[] }
 
 /** One source for the website's primary destinations and dropdown groups:
  *  the desktop header and the off-canvas drawer render the same model. */
-export function navigationModel(locale: Locale, pathname: string, navItems: CmsNavItem[] | null): NavigationModel {
+export function navigationModel(locale: Locale, pathname: string, navItems: CmsNavItem[] | null, now = Date.now()): NavigationModel {
   const cmsLabels = new Map(navItems?.map(item => [item.route as string, item.label]))
   const cmsItems = new Map(navItems?.map(item => [item.route as string, item]))
   const link = (route: string, cmsLabel?: { fa: string; en: string }): NavigationLink => {
@@ -50,16 +66,27 @@ export function navigationModel(locale: Locale, pathname: string, navItems: CmsN
   }
   const banner = (id: string): NavigationBanner | null => {
     const b = MEGA_BANNERS[id]
-    return b ? { kind: b.kind, href: navigationHref(b.route, locale) + (b.hash || ''), title: pickRecord(locale, b.title), body: pickRecord(locale, b.body), cta: pickRecord(locale, b.cta) } : null
+    return b ? { kind: b.kind, href: navigationHref(b.route, locale) + (b.hash || ''), title: pickRecord(locale, b.title), body: pickRecord(locale, b.body), cta: pickRecord(locale, b.cta), description: b.description ? pickRecord(locale, b.description) : '' } : null
   }
   const group = (id: string, label: { fa: string; en: string }, links: NavigationLink[], sections?: NavigationSection[]): NavigationGroup =>
     ({ id, label: pickRecord(locale, label), links, current: links.some(item => item.current), sections: sections || [{ id, label: '', links }], banner: banner(id) })
   const resourceLinks = resources.flatMap(route => route === 'learn' ? [link(route), link('glossary')] : [link(route)])
   const byRoute = new Map(resourceLinks.map(item => [item.route, item]))
   const resourceSections = RESOURCE_SECTIONS.map(section => ({ id: section.id, label: pickRecord(locale, section.label), links: section.routes.flatMap(route => byRoute.get(route) || []) }))
+  const challengeLinks = challengeGroup.map(route => {
+    const item = { ...link(route, challengeTileLabels[route]), icon: tileIcons[route] || route }
+    if (tileIcons[route] && MEGA_DESCRIPTIONS[tileIcons[route]] && !cmsItems.get(route)?.description) item.description = pickRecord(locale, MEGA_DESCRIPTIONS[tileIcons[route]])
+    if (route === 'tournament') {
+      const days = daysUntil(PREMIUM_LEAGUE_START, now)
+      item.badge = pickRecord(locale, newBadge)
+      if (days !== null) item.countdown = pickFormat(locale, '${days} روز تا شروع', 'Starts in ${days} d', { days: new Intl.NumberFormat(locale === 'fa' ? 'fa-IR' : 'en-US').format(days) })
+    }
+    return item
+  })
   return {
     primary: primary.map(route => link(route)),
     groups: [
+      group('website-challenges', labels.challenges, challengeLinks),
       group('website-economy', labels.economy, economy.map(route => link(route))),
       /* the economy group alone marks its trigger active (existing behaviour) */
       { ...group('website-resources', labels.resources, resourceLinks, resourceSections), current: false },
@@ -92,7 +119,9 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
     const textBox = document.createElement('span'); textBox.className = 'mega-text'
     const title = document.createElement('b'); title.textContent = item.label
     textBox.append(title)
+    if (item.badge) { const badge = document.createElement('span'); badge.className = 'mega-badge'; badge.textContent = item.badge; title.append(' ', badge) }
     if (item.description) { const d = document.createElement('small'); d.textContent = item.description; textBox.append(d) }
+    if (item.countdown) { const c = document.createElement('small'); c.className = 'mega-countdown'; c.textContent = item.countdown; textBox.append(c) }
     a.append(icon, textBox)
     return a
   }
@@ -104,6 +133,7 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
     const p = document.createElement('small'); p.textContent = b.body
     const cta = document.createElement('em'); cta.textContent = b.cta
     copy.append(title, p, cta)
+    if (b.description) { const d = document.createElement('span'); d.className = 'mega-sr'; d.textContent = b.description; copy.append(d) }
     a.append(megaBannerArt(b.kind), copy)
     return a
   }
@@ -152,12 +182,14 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
     // The legacy landing translator must not translate React-localized links again.
     (nav as HTMLElement).dataset.localeOwned = 'react'
     const model = navigationModel(locale, pathname, navItems)
-    nav.replaceChildren(...model.primary.map(anchor), ...model.groups.map(dropdownGroup))
+    /* Trading challenges keeps the first position the primary link had */
+    const [challenges, ...others] = model.groups
+    nav.replaceChildren(dropdownGroup(challenges), ...model.primary.map(anchor), ...others.map(dropdownGroup))
   }
   const footer = root.querySelector('#footer-links')
   if (footer) {
     (footer as HTMLElement).dataset.localeOwned = 'react'
-    const defaults = [...primary, ...economy, ...resources, 'glossary' as const].map(route => ({ destination: route, label: navigationLabels[route] }))
+    const defaults = [...challengeGroup, ...primary, ...economy, ...resources, 'glossary' as const].map(route => ({ destination: route, label: navigationLabels[route] }))
     const seen = new Set<string>()
     footer.replaceChildren()
     for (const item of [...(footerLinks || []), ...defaults]) {

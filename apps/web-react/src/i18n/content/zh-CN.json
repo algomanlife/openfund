@@ -3975,5 +3975,16 @@
   "exit": "退出",
   "See markets": "查看市场",
   "OFP proposals": "OFP 提案",
-  "recorded votes": "记录在案的投票"
+  "recorded votes": "记录在案的投票",
+  "A 30-day competition in analysis and risk.": "为期 30 天的分析与风险管理竞赛。",
+  "Buy a challenge": "购买挑战",
+  "Funded elsewhere? Start at the funded stage.": "已在其他机构获得资金？直接从资金阶段开始。",
+  "Illustration: a flock of flamingos migrating to a new home, landing on a calm lake that reflects the OpenFi mark — like the flamingos that winter at Maharloo Lake near Shiraz, where Openfund is based.": "插图：一群火烈鸟迁徙到新家，降落在倒映着 OpenFi 标志的平静湖面上，就像在设拉子附近马哈卢湖越冬的火烈鸟，Openfund 就位于设拉子。",
+  "Migration to Openfund": "迁移至 Openfund",
+  "Models, sizes and rules side by side.": "模式、规模和规则并列对比。",
+  "Openfund Premium League": "Openfund 超级联赛",
+  "Pay on-chain and start your evaluation.": "链上支付并开始评估。",
+  "Proven funded trader? Skip evaluation with three verified payouts.": "已获资金且有实绩的交易者？凭三次经核实的出金即可跳过评估。",
+  "Start migration": "开始迁移",
+  "Starts in ${days} d": "${days} 天后开始"
 }

@@ -3975,5 +3975,16 @@
   "exit": "выход",
   "See markets": "Смотреть рынки",
   "OFP proposals": "Предложения OFP",
-  "recorded votes": "зафиксированные голоса"
+  "recorded votes": "зафиксированные голоса",
+  "A 30-day competition in analysis and risk.": "30-дневное соревнование по анализу и управлению риском.",
+  "Buy a challenge": "Купить челлендж",
+  "Funded elsewhere? Start at the funded stage.": "Финансируетесь в другой компании? Начните сразу с этапа финансирования.",
+  "Illustration: a flock of flamingos migrating to a new home, landing on a calm lake that reflects the OpenFi mark — like the flamingos that winter at Maharloo Lake near Shiraz, where Openfund is based.": "Иллюстрация: стая фламинго перелетает в новый дом и опускается на спокойное озеро, в котором отражается знак OpenFi, — как фламинго, зимующие на озере Махарлу близ Шираза, где находится Openfund.",
+  "Migration to Openfund": "Переход в Openfund",
+  "Models, sizes and rules side by side.": "Модели, размеры и правила рядом.",
+  "Openfund Premium League": "Премьер-лига Openfund",
+  "Pay on-chain and start your evaluation.": "Оплатите в блокчейне и начните оценку.",
+  "Proven funded trader? Skip evaluation with three verified payouts.": "Уже финансируемый трейдер? Пропустите оценку с тремя подтверждёнными выплатами.",
+  "Start migration": "Начать переход",
+  "Starts in ${days} d": "Старт через ${days} дн."
 }

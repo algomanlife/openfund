@@ -60,6 +60,21 @@ readable public labels/footer text; official review and deployed acceptance
 remain separate from passing local theme checks.
 Official artwork provenance remains in the website refresh report.
 
+## Flamingo accent (`--flamingo`)
+
+A soft flamingo pink, added for the "Migration to Openfund" scenes (the
+Challenges menu banner and the `/:locale/migrate` hero). It is used **only** in
+migration scenes; it is not a second brand colour and never replaces mint.
+
+| Theme | Value | Contrast on the page background | Use |
+| --- | --- | --- | --- |
+| Dark | `#f4a3b8` | 10.3:1 on `#060808` (9.8:1 on `#0b1010`) | birds, banner border, CTA text |
+| Light | `#b23a63` | 5.7:1 on `#ffffff` (5.3:1 on `#f4f8f6`) | same |
+
+Both pass WCAG AA for text and icons (4.5:1). Defined in
+`public/legacy/style.css` (site pages) and `src/styles/design-system.css`
+(React shell) with the light override under `html[data-theme=light]`.
+
 ## Shared foundation (v0.6.5)
 
 `apps/web-react/src/styles/design-system.css` is the single shared layer,

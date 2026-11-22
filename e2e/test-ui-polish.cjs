@@ -231,7 +231,9 @@ async function walletDisclosureFits(page){
    if(width===1440 && !connected || width===390 && connected){const file=`home-${locale}-${theme}-${width}-${connected?'test-wallet':'disconnected'}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file),fullPage:true});screenshots.push({file,fixture:connected?'connection-only test wallet':'none'})}
    await page.goto(BASE+`/${locale}/faq`);await page.waitForTimeout(300);await page.locator('#navigation').waitFor({state:'attached'});
    const expectedNavigation = {
-    primary: ['challenges', 'markets', 'rulebook'],
+    primary: ['markets', 'rulebook'],
+    /* Trading challenges is a mega-menu group (item C of the second batch) */
+    challenges: ['challenges', 'checkout', 'migrate', 'tournament', 'rulebook'],
     economy: ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'],
     resources: ['learn', 'learn/glossary', 'faq', 'apps', 'tools', 'roadmap', 'developers', 'about', 'contact', 'certificate-verification'],
    };
@@ -241,6 +243,7 @@ async function walletDisclosureFits(page){
     const hrefs = await page.locator(selector).evaluateAll(links => links.map(link => link.getAttribute('href')));
     assert.deepEqual(hrefs, routes.map(route => `/${locale}/${route}`), prefix+' other-page '+group+' navigation');
    }
+   check(prefix+' challenges banner leads to migration', await page.locator('#website-challenges a.mega-banner.is-flamingo').getAttribute('href') === `/${locale}/migrate`);
    check(prefix+' mega menu banners', JSON.stringify(await page.locator('#website-economy a.mega-banner, #website-resources a.mega-banner').evaluateAll(l => l.map(a => a.getAttribute('href')))) === JSON.stringify([`/${locale}/governance`, `/${locale}/apps#desktop-builds`]));
    const tv=page.locator('.credits-row a[href="https://www.tradingview.com/news/"]');await tv.waitFor();
    check(prefix+' TradingView description',(await tv.innerText()).includes(locale==='fa'?'اطلاعات و اخبار بازارها':'Market Data & News'));
