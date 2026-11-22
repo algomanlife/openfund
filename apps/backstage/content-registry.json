@@ -2,11 +2,11 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4417,
+    "uniqueRecords": 4427,
     "mappedCalls": 2272,
     "exceptions": 51,
     "validationFindings": 0,
-    "reviewedExclusions": 46
+    "reviewedExclusions": 47
   },
   "editorial": {
     "locales": [
@@ -2059,7 +2059,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 24,
+          "line": 35,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -2419,7 +2419,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 42,
+          "line": 53,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -2659,7 +2659,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 24,
+          "line": 35,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -4432,7 +4432,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 20,
+          "line": 31,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -5374,7 +5374,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 23,
+          "line": 34,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -5494,7 +5494,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 45,
+          "line": 56,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -5514,7 +5514,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 46,
+          "line": 57,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -7629,7 +7629,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 39,
+          "line": 50,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -7789,7 +7789,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 55,
+          "line": 66,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -10318,7 +10318,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 47,
+          "line": 58,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -12084,6 +12084,26 @@
       ]
     },
     {
+      "key": "react.1ebb5a17c8472f71",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کپی SHA-256",
+      "en": "Copy SHA-256",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 25,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.1ebdb046cc429094",
       "namespace": "react",
       "area": "Global Content",
@@ -13257,7 +13277,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 44,
+          "line": 55,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -15039,7 +15059,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 42,
+          "line": 53,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -15954,6 +15974,26 @@
       ]
     },
     {
+      "key": "react.29ee9dfe3311cbf2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "AppImage: پیش از اجرا، فایل را با chmod +x اجراپذیر کن. فایل ‎.deb با مدیر بستهٔ سیستم نصب می‌شود.",
+      "en": "AppImage: make the file executable with chmod +x before running it. The .deb installs with your package manager.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 30,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.2a0446aabc142968",
       "namespace": "react",
       "area": "Global Content",
@@ -16086,7 +16126,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 44,
+          "line": 55,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -16434,7 +16474,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 54,
+          "line": 65,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -17737,7 +17777,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 35,
+          "line": 46,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -17831,7 +17871,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 25,
+          "line": 36,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -18194,7 +18234,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 31,
+          "line": 42,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -18972,7 +19012,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -20082,7 +20122,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 40,
+          "line": 51,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -20585,7 +20625,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 36,
+          "line": 47,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -20873,7 +20913,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 51,
+          "line": 62,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -21233,7 +21273,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 41,
+          "line": 52,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -23626,6 +23666,26 @@
       ]
     },
     {
+      "key": "react.3d5e4636bcc5a326",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جزئیات و بررسی SHA-256",
+      "en": "Details and SHA-256 check",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 24,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.3d6a5556b671aacc",
       "namespace": "react",
       "area": "Website",
@@ -24126,7 +24186,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 23,
+          "line": 34,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -24674,7 +24734,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 42,
+          "line": 53,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -24845,6 +24905,26 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.40b9f38498dc3fac",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ساخته‌شده در CI، منتشرنشده",
+      "en": "Built in CI, not published",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 44,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -26543,7 +26623,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -27097,7 +27177,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 68,
+          "line": 106,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -28793,6 +28873,26 @@
       ]
     },
     {
+      "key": "react.4b9fdcadcbd98b9f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دانلود برای ${platform}",
+      "en": "Download for ${platform}",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 23,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.4baef52f7491d075",
       "namespace": "react",
       "area": "Website",
@@ -28925,7 +29025,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 21,
+          "line": 32,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -30277,7 +30377,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 37,
+          "line": 48,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -31217,6 +31317,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.51ce520fb61636f9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نسخهٔ بدون امضا: Gatekeeper در macOS با دوبار کلیک آن را مسدود می‌کند. در Applications روی Open Trade راست‌کلیک (یا Control-کلیک) کن و Open را بزن.",
+      "en": "Unsigned build: macOS Gatekeeper blocks it on a double-click. In Applications, right-click (or Control-click) Open Trade and choose Open.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 28,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -32636,7 +32756,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 22,
+          "line": 33,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -35852,7 +35972,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 57,
+          "line": 68,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -36963,6 +37083,26 @@
       ]
     },
     {
+      "key": "react.60ce889569c4bbb3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نسخهٔ بدون امضا: وقتی SmartScreen پیام «Windows protected your PC» را نشان داد، More info و سپس Run anyway را بزن.",
+      "en": "Unsigned build: when SmartScreen shows “Windows protected your PC”, choose More info, then Run anyway.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 29,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.60eab66dd0125af5",
       "namespace": "react",
       "area": "Website",
@@ -37856,14 +37996,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 127,
-          "page": "home",
-          "route": "/:locale/home",
-          "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 133,
+          "line": 192,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -41808,14 +41941,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 30,
+          "line": 41,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 42,
+          "line": 53,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -42637,7 +42770,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 58,
+          "line": 69,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -43372,7 +43505,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 50,
+          "line": 61,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -44160,7 +44293,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 67,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -44792,26 +44925,6 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.786f041fd73a1d75",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "بتا ۰٫۰٫۲ · نسخهٔ بدون امضا",
-      "en": "Beta 0.0.2 · unsigned build",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 30,
-          "page": "applications",
-          "route": "/:locale/apps",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -46877,7 +46990,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 23,
+          "line": 34,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -47017,7 +47130,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 23,
+          "line": 34,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -47531,7 +47644,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 44,
+          "line": 55,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -49291,7 +49404,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 46,
+          "line": 57,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -50600,7 +50713,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 53,
+          "line": 64,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -50700,7 +50813,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 45,
+          "line": 56,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -51987,7 +52100,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 43,
+          "line": 54,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -52835,7 +52948,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 27,
+          "line": 38,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -53776,7 +53889,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 68,
+          "line": 106,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -53803,7 +53916,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 23,
+          "line": 34,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -55027,6 +55140,26 @@
           "line": 31,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.958e407089c5bc1c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تنظیمات فضای کار",
+      "en": "Workspace settings",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 20,
+          "page": "applications",
+          "route": "/:locale/apps",
           "method": "bilingual-record"
         }
       ]
@@ -57749,7 +57882,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 25,
+          "line": 36,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -59487,7 +59620,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 34,
+          "line": 45,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -59587,7 +59720,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 34,
+          "line": 45,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -60069,7 +60202,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 28,
+          "line": 39,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -60209,7 +60342,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 27,
+          "line": 38,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -60710,7 +60843,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 29,
+          "line": 40,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -60934,6 +61067,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.a3edbd786f5a1dee",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سیستم شما",
+      "en": "Your system",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 27,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -61580,7 +61733,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 128,
+          "line": 210,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -63193,7 +63346,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 141,
+          "line": 223,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -66336,7 +66489,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 82,
+          "line": 120,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -67078,7 +67231,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 26,
+          "line": 37,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -67332,7 +67485,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 49,
+          "line": 60,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -68186,6 +68339,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 26,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/features/company/contactContent.ts",
           "line": 56,
@@ -69058,7 +69218,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 89,
+          "line": 127,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -69699,7 +69859,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 38,
+          "line": 49,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -70731,26 +70891,6 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.bf6e28b8c44e9922",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "این فایل‌های نصب از سورس بازبینی‌شده ساخته شده و آزمون پذیرش دسکتاپ را در CI گذرانده‌اند. هنوز برای دانلود عمومی منتشر نشده‌اند؛ دکمهٔ دانلود فقط پس از تأیید مالک و انتشار GitHub Release در اینجا نمایش داده می‌شود.",
-      "en": "These installers were built from the reviewed source and passed the desktop acceptance test in CI. They are not public downloads yet: a download button appears here only after the owner approves and publishes a GitHub Release.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 32,
-          "page": "applications",
-          "route": "/:locale/apps",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -72758,14 +72898,14 @@
         },
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 86,
+          "line": 124,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 87,
+          "line": 125,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -73126,7 +73266,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 23,
+          "line": 34,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -78260,7 +78400,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 29,
+          "line": 40,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -78503,26 +78643,6 @@
           "line": 138,
           "page": "global",
           "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.d534ea491e0be99f",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "در انتظار تأیید انتشار",
-      "en": "Awaiting release approval",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 33,
-          "page": "applications",
-          "route": "/:locale/apps",
           "method": "bilingual-record"
         }
       ]
@@ -79300,6 +79420,26 @@
       ]
     },
     {
+      "key": "react.d70cca7932ced7b5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تصویر واقعی از ترمینال وب با دادهٔ زندهٔ بازار Gains؛ بدون اتصال کیف پول.",
+      "en": "Real capture of the Web Terminal with live Gains market data. No wallet connected.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 21,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d7136c03c3a49473",
       "namespace": "react",
       "area": "Global Content",
@@ -79587,7 +79727,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 56,
+          "line": 67,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -81279,7 +81419,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/WalletShowcase.tsx",
-          "line": 78,
+          "line": 116,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -84709,7 +84849,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 45,
+          "line": 56,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -85925,6 +86065,26 @@
       ]
     },
     {
+      "key": "react.e92a1ab9ca71000d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "SHA-256 از سابقهٔ ساخت در CI",
+      "en": "SHA-256 from the CI build record",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 22,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.e92ef6b008c0185a",
       "namespace": "react",
       "area": "Global Content",
@@ -86399,7 +86559,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 52,
+          "line": 63,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -86547,6 +86707,26 @@
       ]
     },
     {
+      "key": "react.eb483dd56df24e7d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "Open Trade نسخهٔ ۰٫۰٫۴ یک بتای آزمایشی و بدون امضاست که در GitHub منتشر شده است. پیش از نصب، چک‌سام SHA-256 را بررسی کن؛ چون نسخه امضا نشده، سیستم‌عامل هشدار می‌دهد.",
+      "en": "Open Trade 0.0.4 is an unsigned, experimental beta published on GitHub. Check the SHA-256 checksum before installing; your operating system will warn because the build is not signed.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 43,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.eb51883b83f6b8d9",
       "namespace": "react",
       "area": "Global Content",
@@ -86659,7 +86839,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 45,
+          "line": 56,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -86990,6 +87170,26 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.ec924643809499b5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بتا ۰٫۰٫۴ · نسخهٔ بدون امضا",
+      "en": "Beta 0.0.4 · unsigned build",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 41,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -87808,7 +88008,7 @@
         },
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 23,
+          "line": 34,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -90701,7 +90901,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 26,
+          "line": 37,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -91601,7 +91801,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 46,
+          "line": 57,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -91661,7 +91861,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 28,
+          "line": 39,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -92680,7 +92880,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 48,
+          "line": 59,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -94685,7 +94885,15 @@
   "exclusions": [
     {
       "component": "apps/web-react/src/features/applications/Applications.tsx",
-      "line": 51,
+      "line": 200,
+      "page": "applications",
+      "route": "/:locale/apps",
+      "reason": "aria-hidden-not-rendered-copy",
+      "text": "/prop/trade"
+    },
+    {
+      "component": "apps/web-react/src/features/applications/Applications.tsx",
+      "line": 239,
       "page": "applications",
       "route": "/:locale/apps",
       "reason": "language-neutral-brand-or-identifier",
