@@ -8,6 +8,7 @@ import { useTerminal } from "./TerminalContext";
 import { api, csvCell, download, money, route, routeQuery, useResource } from "./model";
 import { Metric } from "./Dashboard";
 import GainsPortfolio from "./GainsPortfolio";
+import DirArrow from '../../ui/DirArrow'
 export default function ProductPortfolio() {
   const { product, locale, context, t, message } = useTerminal(),
     session = useSession(),
@@ -151,7 +152,7 @@ export default function ProductPortfolio() {
           {t("به‌روزرسانی", "Refresh")}
         </button>
         <Link to={route(locale, product, "journal")}>
-          {t("ژورنال معاملات", "Trade Journal")} ↗
+          {t("ژورنال معاملات", "Trade Journal")} <DirArrow kind="external" />
         </Link>
       </div>
       {error && (

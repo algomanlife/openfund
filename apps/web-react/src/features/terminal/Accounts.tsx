@@ -4,6 +4,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { backendUrl, useSession } from "../../session/useOpenfundSession";
 import { useTerminal } from "./TerminalContext";
 import { money, route } from "./model";
+import DirArrow from '../../ui/DirArrow'
 export function useAccounts() {
   const session = useSession(),
     [state, setState] = useState<{
@@ -174,7 +175,7 @@ export function AccountCards({ compact = false, selectedId }: { compact?: boolea
               <p className="of-muted">{a.unavailableReason}</p>
             )}
             <span className="of-card-action">
-              {t("مشاهدهٔ حساب", "View account")} ↗
+              {t("مشاهدهٔ حساب", "View account")} <DirArrow kind="external" />
             </span>
           </Link>
         ))}

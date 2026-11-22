@@ -7,6 +7,7 @@ import { useTerminal } from "./TerminalContext";
 import { useResource, download, csvCell, route, routeQuery } from "./model";
 import { Metric } from "./Dashboard";
 import { arbiscanTx, feedSeverity, gainsFeedState, snapshotTime, type GainsResourceView } from "./gainsView";
+import DirArrow from '../../ui/DirArrow'
 // Native collateral can be fractional crypto; never round it to a false 0.00.
 const nativeAmount = (value: unknown) =>
   value == null || !Number.isFinite(Number(value))
@@ -307,7 +308,7 @@ export default function GainsPortfolio() {
                             rel="noreferrer noopener"
                             dir="ltr"
                           >
-                            {r.tx.slice(0, 10)}… ↗
+                            {r.tx.slice(0, 10)}… <DirArrow kind="external" />
                           </a>
                         ) : "—"}
                         {r.tx && <Link

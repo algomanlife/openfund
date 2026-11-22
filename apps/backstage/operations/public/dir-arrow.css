@@ -1,0 +1,58 @@
+/* Direction-aware arrows (see arrows.ts). The geometry is drawn for LTR;
+   horizontal kinds mirror inside a right-to-left context. The context is the
+   nearest ancestor with a dir attribute, never the interface language.
+   The rules are attribute chains on purpose: the CSS build rewrites the
+   directional pseudo-class into a list of RTL languages, which would bring
+   back language-based mirroring. Three levels cover every nesting used.
+   Copies: apps/backstage/operations/public/dir-arrow.css and
+   apps/open-trade/src/dir-arrow.css (kept identical by test/dir-arrow.test.mjs). */
+.of-arrow {
+  display: inline-block;
+  inline-size: 1em;
+  block-size: 1em;
+  flex: none;
+  vertical-align: -0.14em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  overflow: visible;
+}
+[dir='rtl'] .of-arrow:is([data-arrow='forward'], [data-arrow='back'], [data-arrow='forward-down'], [data-arrow='external']),
+[dir='rtl'] [dir='ltr'] [dir='rtl'] .of-arrow:is([data-arrow='forward'], [data-arrow='back'], [data-arrow='forward-down'], [data-arrow='external']) {
+  transform: scaleX(-1);
+}
+[dir='rtl'] [dir='ltr'] .of-arrow:is([data-arrow='forward'], [data-arrow='back'], [data-arrow='forward-down'], [data-arrow='external']) {
+  transform: none;
+}
+/* a small nudge in the reading direction on hover (transform only) */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  :is(a, button):hover > .of-arrow[data-arrow='forward'] { translate: 3px 0; }
+  [dir='rtl'] :is(a, button):hover > .of-arrow[data-arrow='forward'] { translate: -3px 0; }
+  [dir='rtl'] [dir='ltr'] :is(a, button):hover > .of-arrow[data-arrow='forward'] { translate: 3px 0; }
+}
+/* Mask images for pseudo-elements and places that cannot hold markup. A rule
+   that uses one mirrors it under [dir='rtl'] when the kind is horizontal. */
+:root {
+  --of-arrow-forward: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8h10M9 4l4 4-4 4'/%3E%3C/svg%3E");
+  --of-arrow-back: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13 8H3M7 4 3 8l4 4'/%3E%3C/svg%3E");
+  --of-arrow-forward-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 4l8 8M12 6v6H6'/%3E%3C/svg%3E");
+  --of-arrow-external: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12l8-8M6 4h6v6'/%3E%3C/svg%3E");
+  --of-arrow-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 3v10M4 9l4 4 4-4'/%3E%3C/svg%3E");
+  --of-arrow-up: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 13V3M4 7l4-4 4 4'/%3E%3C/svg%3E");
+}
+.of-arrow-after::after {
+  content: '';
+  display: inline-block;
+  inline-size: 1em;
+  block-size: 1em;
+  margin-inline-start: 0.35em;
+  vertical-align: -0.14em;
+  background: currentColor;
+  -webkit-mask: var(--of-arrow-forward) center / contain no-repeat;
+  mask: var(--of-arrow-forward) center / contain no-repeat;
+}
+[dir='rtl'] .of-arrow-after::after,
+[dir='rtl'] [dir='ltr'] [dir='rtl'] .of-arrow-after::after { transform: scaleX(-1); }
+[dir='rtl'] [dir='ltr'] .of-arrow-after::after { transform: none; }

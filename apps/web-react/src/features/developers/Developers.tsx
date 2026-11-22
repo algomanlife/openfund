@@ -4,6 +4,7 @@ import { pick, dirOf, type AppLocale } from '../../i18n/locales'
 import { bundledDeveloperDocs, fetchDeveloperDocs, REPO_BLOB, type DevDocSection, type DocLocale } from './content'
 import Markdown from './Markdown'
 import './developers.css'
+import DirArrow from '../../ui/DirArrow'
 
 /** Developer documentation (/:locale/developers). English is the authored
  *  source and Persian is fully written; ar, ru and zh-CN show the English text
@@ -75,7 +76,7 @@ export default function Developers() {
             <h2 id={`doc-${s.slug}-title`}>{x.title}</h2>
             <Markdown source={x.body} copyLabel={t('کپی', 'Copy')} copiedLabel={t('کپی شد', 'Copied')} />
             <p className="dd-meta" lang={ui} dir={dirOf(ui)}>
-              <a href={REPO_BLOB + s.sourcePath} target="_blank" rel="noopener noreferrer">{t('منبع', 'Source')}: <code dir="ltr">{s.sourcePath}</code> <span aria-hidden="true">↗</span></a>
+              <a href={REPO_BLOB + s.sourcePath} target="_blank" rel="noopener noreferrer">{t('منبع', 'Source')}: <code dir="ltr">{s.sourcePath}</code> <DirArrow kind="external" /></a>
               <span>{t('آخرین بازبینی', 'Last verified')}: <bdi dir="ltr">{s.lastVerifiedAt} · {s.lastVerifiedCommit}</bdi></span>
             </p>
           </section>

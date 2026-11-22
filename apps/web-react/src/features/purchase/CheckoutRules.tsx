@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { pick, pickFormat, type AppLocale } from '../../i18n/locales'
 import { challengePlans } from '../../data/challengePlans'
+import DirArrow from '../../ui/DirArrow'
 
 /** Public plan rules from GET /purchases/plans (apps/backend/purchases.js
  *  publicPlanRules): the evaluation engine's normalized rules. Every number on
@@ -115,7 +116,7 @@ export function MoreConditions({ locale, rules }: { locale: AppLocale, rules: Pl
         ? t('نگه داشتن پوزیشن باز در آخر هفته مجاز نیست.', 'Positions may not be held open over the weekend.')
         : t('در حساب فاندشده، پوزیشن‌های باز در بازهٔ بسته‌شدن روزانه به‌طور خودکار بسته می‌شوند.', 'On funded accounts, open positions are closed automatically in the daily closing window.')}</dd></div>}
     </dl>
-    <Link className="of-co-rulebook" to={`/${locale}/rulebook`}>{t('قوانین معاملاتی', 'Rulebook')} <span aria-hidden="true">↗</span></Link>
+    <Link className="of-co-rulebook" to={`/${locale}/rulebook`}>{t('قوانین معاملاتی', 'Rulebook')} <DirArrow kind="external" /></Link>
   </details>
 }
 

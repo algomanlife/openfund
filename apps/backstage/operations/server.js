@@ -20,6 +20,8 @@ const staticFiles = {
   '/strings.js': ['public/strings.js', 'application/javascript; charset=utf-8'],
   '/marketing.js': ['public/marketing.js', 'application/javascript; charset=utf-8'],
   '/style.css': ['public/style.css', 'text/css; charset=utf-8'],
+  '/dir-arrow.css': ['public/dir-arrow.css', 'text/css; charset=utf-8'],
+  '/dir-arrow.js': ['public/dir-arrow.js', 'application/javascript; charset=utf-8'],
   '/mark.svg': ['../../../brand/logos/mark-mint.svg', 'image/svg+xml'],
   /* Dastkhat (SIL OFL 1.1): the same pinned files the site serves, at the same
      same-origin path, so the console needs no extra CSP source. */

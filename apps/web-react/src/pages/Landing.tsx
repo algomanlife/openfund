@@ -118,29 +118,11 @@ function syncFallbackNotice(locale: AppLocale) {
   note.textContent = text
 }
 
-/* ---- arrow glyph direction (owned by React; was inline) ---- */
-const ARROW_MAP: Record<string, string> = {
-  '←': '→', '→': '←', '↙': '↘', '↘': '↙', '↖': '↗', '↗': '↖'
-}
-function swapArrows() {
+/* ---- information links follow the interface locale ---- */
+function syncInfoLinks() {
   document.querySelectorAll<HTMLAnchorElement>('[data-info-page]').forEach(a => {
     a.href = `/${uiLocale()}/${a.dataset.infoPage}`
   })
-  const en = w().ofLang === 'en'
-  document
-    .querySelectorAll('.button>span,.text-link>span,.nav-cta>span')
-    .forEach((sp) => {
-      const ch = (sp.textContent || '').trim()
-      if (ch.length === 1 && ARROW_MAP[ch]) {
-        if (en) {
-          if (!(sp as HTMLElement).dataset.orig) (sp as HTMLElement).dataset.orig = ch
-          sp.textContent = ARROW_MAP[ch]
-        } else if ((sp as HTMLElement).dataset.orig) {
-          sp.textContent = (sp as HTMLElement).dataset.orig
-          delete (sp as HTMLElement).dataset.orig
-        }
-      }
-    })
 }
 
 /* ---- nav state for the shared website header ---------------------------- */
@@ -361,8 +343,8 @@ export default function Landing() {
         if (!pageRoot?.isConnected || w().__ofLandingKicked) return
         w().__ofLandingKicked = true
         document.dispatchEvent(new Event('DOMContentLoaded', { bubbles: true }))
-        setTimeout(() => { if (pageRoot?.isConnected) { initTheme(); swapArrows(); markCurrentPage() } }, 60)
-        setTimeout(() => { if (pageRoot?.isConnected) { swapArrows(); markCurrentPage() } }, 600)
+        setTimeout(() => { if (pageRoot?.isConnected) { initTheme(); syncInfoLinks(); markCurrentPage() } }, 60)
+        setTimeout(() => { if (pageRoot?.isConnected) { syncInfoLinks(); markCurrentPage() } }, 600)
       }
       kick()
         } finally {
@@ -380,7 +362,7 @@ export default function Landing() {
        legacy switch needs to update the URL after translating the markup. */
     const langHandler = () => setTimeout(() => {
       if (!pageRoot?.isConnected) return
-      swapArrows()
+      syncInfoLinks()
       markCurrentPage()
       const lang = uiLocale()
       if (lang !== w().ofUiLang && !location.pathname.startsWith(`/${lang}/`)) {

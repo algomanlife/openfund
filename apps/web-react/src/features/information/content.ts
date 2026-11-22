@@ -43,7 +43,7 @@ export const labels = {
   'certificate-verification': text('Certificate Verification', 'راستی‌آزمایی گواهی'),
   resources: text('Resources', 'منابع'),
   contents: text('On this page', 'در این صفحه'),
-  top: text('Back to top ↑', 'بازگشت به بالا ↑'),
+  top: text('Back to top', 'بازگشت به بالا'),
   current: text('Current demo', 'دموی فعلی'),
   draft: text('Draft · not active', 'پیش‌نویس · غیرفعال'),
   planned: text('Planned', 'برنامه‌ریزی‌شده'),

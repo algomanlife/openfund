@@ -6,6 +6,7 @@ import { apiFetch, useOpenfundSession } from '../../session/useOpenfundSession'
 import EconomyNav from './EconomyNav'
 import { Field, Kpi, StateBlock, Status, errorCopy, usd, when, useRemote } from './ui'
 import type { Capacity, EligibilityCheck } from './types'
+import DirArrow from '../../ui/DirArrow'
 
 const intro = t('A separate program that connects selected traders to real markets through Gains Network, using capital owned by Openfund — only when verified free capital exists and management approves.', 'برنامه‌ای مستقل که معامله‌گران منتخب را با سرمایهٔ متعلق به اوپن‌فاند و از طریق Gains Network به بازار واقعی متصل می‌کند؛ فقط در صورت وجود سرمایهٔ آزاد تأییدشده و تأیید مدیریت.')
 
@@ -64,7 +65,7 @@ function TraderPanel({ locale }: { locale: Locale }) {
         {!d.approval || ['rejected', 'revoked'].includes(d.approval.status)
           ? <button className="button" disabled={!d.eligibility.eligible || busy} onClick={() => act(() => apiFetch('/live/apply', { method: 'POST', body: '{}' }), t('Request submitted for management review.', 'درخواست برای بررسی مدیریت ثبت شد.')[locale])}>{t('Request Live Market Access', 'درخواست اتصال به بازار')[locale]}</button>
           : <Status kind={d.approval.status === 'approved' ? 'ok' : 'info'}>{d.approval.status}{d.approval.tier ? ` · ${d.approval.tier} ${d.approval.trader_pct}/${d.approval.coach_pct}/${d.approval.openfund_pct}` : ''}</Status>}
-        <Link className="text-link" to={`/${locale}/coach`}>{t('Link a verified coach', 'اتصال به کوچ تأییدشده')[locale]} ↗</Link>
+        <Link className="text-link" to={`/${locale}/coach`}>{t('Link a verified coach', 'اتصال به کوچ تأییدشده')[locale]} <DirArrow kind="external" /></Link>
       </div>
       {msg && <p className={`econ-msg ${msg.kind}`} role={msg.kind === 'error' ? 'alert' : 'status'}>{msg.text}</p>}
     </div>
@@ -84,8 +85,8 @@ function TraderPanel({ locale }: { locale: Locale }) {
         <Field label={t('Leverage', 'اهرم')[locale]}><input type="number" min="1" step="0.1" required value={order.leverage} onChange={e => setOrder(o => ({ ...o, leverage: e.target.value }))} /></Field>
         <div className="econ-actions wide"><button className="button" disabled={busy}>{t('Submit order', 'ثبت سفارش')[locale]}</button></div>
       </form>}
-      {d.trades.length > 0 && <div className="info-table-wrap"><table><caption>{t('Live trades', 'معاملات واقعی')[locale]}</caption><thead><tr>{[t('Opened', 'زمان'), t('Market', 'بازار'), t('Collateral × leverage', 'وثیقه × اهرم'), t('Status', 'وضعیت'), t('Entry → exit', 'ورود ← خروج'), t('Realized PnL', 'سود و زیان'), '']. map((h, i) => <th key={i} scope="col">{typeof h === 'string' ? h : h[locale]}</th>)}</tr></thead>
-        <tbody>{d.trades.map(tr => <tr key={tr.id}><td>{when(tr.created_at, locale)}</td><td dir="ltr">{tr.market} {tr.side}</td><td dir="ltr">{usd(tr.collateral_usd, locale)} × {tr.leverage}</td><td>{tr.status}</td><td dir="ltr">{tr.entry_price ?? '—'} → {tr.exit_price ?? '—'}</td><td>{usd(tr.realized_pnl_usd, locale)}</td>
+      {d.trades.length > 0 && <div className="info-table-wrap"><table><caption>{t('Live trades', 'معاملات واقعی')[locale]}</caption><thead><tr>{[t('Opened', 'زمان'), t('Market', 'بازار'), t('Collateral × leverage', 'وثیقه × اهرم'), t('Status', 'وضعیت'), 'entry-exit', t('Realized PnL', 'سود و زیان'), '']. map((h, i) => <th key={i} scope="col">{h === 'entry-exit' ? <>{t('Entry', 'ورود')[locale]} <DirArrow kind="forward" /> {t('exit', 'خروج')[locale]}</> : typeof h === 'string' ? h : h[locale]}</th>)}</tr></thead>
+        <tbody>{d.trades.map(tr => <tr key={tr.id}><td>{when(tr.created_at, locale)}</td><td dir="ltr">{tr.market} {tr.side}</td><td dir="ltr">{usd(tr.collateral_usd, locale)} × {tr.leverage}</td><td>{tr.status}</td><td dir="ltr">{tr.entry_price ?? '—'} <DirArrow kind="forward" /> {tr.exit_price ?? '—'}</td><td>{usd(tr.realized_pnl_usd, locale)}</td>
           <td>{tr.status === 'open' && <button className="text-link" disabled={busy} onClick={() => act(() => apiFetch(`/live/trades/${tr.id}/close`, { method: 'POST', body: '{}' }), t('Position closed and finalized.', 'پوزیشن بسته و نهایی شد.')[locale])}>{t('Close', 'بستن')[locale]}</button>}</td></tr>)}</tbody></table></div>}
       {d.settlements.length > 0 && <div className="econ-list" style={{ marginTop: 14 }}>{d.settlements.map(s => <div key={s.id}><span>{when(s.created_at, locale)} · {s.status}{s.settlement_reference ? ` · ${s.settlement_reference}` : ''}</span><span>{usd(s.amount_usd, locale)}</span></div>)}</div>}
     </div>}
@@ -106,7 +107,7 @@ export default function LiveMarketAccess() {
           <Kpi label={t('Threshold (available allocatable capital)', 'آستانه (سرمایهٔ آزاد قابل تخصیص)')[locale]} value={usd(c.thresholdUsd, locale, 0)} note={c.availableUsd ? `${t('Verified available', 'سرمایهٔ آزاد تأییدشده')[locale]} ${usd(c.availableUsd, locale)}` : t('Not the gross wallet balance.', 'موجودی ناخالص کیف پول ملاک نیست.')[locale]} />
           <Kpi label={t('Execution / settlement adapter', 'آداپتر اجرا / تسویه')[locale]} value={`${status.data.executionAdapter} / ${status.data.settlementAdapter}`} note={status.data.executionAdapter === 'none' ? t('Live execution is disabled on this deployment.', 'اجرای واقعی در این استقرار غیرفعال است.')[locale] : status.data.executionAdapter === 'sandbox' ? t('Non-monetary sandbox — no real orders.', 'سندباکس غیرپولی — بدون سفارش واقعی.')[locale] : undefined} />
         </div> })() : <StateBlock state={status} locale={locale} />}
-        <p className="econ-source">{t('Capital = treasury − (rewards owed + commissions + coach/trader shares + expenses + liabilities) − (operational + risk reserves) − capital already allocated, including open-trade margin.', 'سرمایه = خزانه − (پاداش بدهکار + کمیسیون + سهم کوچ/معامله‌گر + هزینه + بدهی) − (ذخایر عملیاتی + ریسک) − سرمایهٔ قبلاً تخصیص‌یافته شامل مارجین معاملات باز.')[locale]} <Link className="text-link" to={`/${locale}/transparency`}>{labels.transparency[locale]} ↗</Link></p>
+        <p className="econ-source">{t('Capital = treasury − (rewards owed + commissions + coach/trader shares + expenses + liabilities) − (operational + risk reserves) − capital already allocated, including open-trade margin.', 'سرمایه = خزانه − (پاداش بدهکار + کمیسیون + سهم کوچ/معامله‌گر + هزینه + بدهی) − (ذخایر عملیاتی + ریسک) − سرمایهٔ قبلاً تخصیص‌یافته شامل مارجین معاملات باز.')[locale]} <Link className="text-link" to={`/${locale}/transparency`}>{labels.transparency[locale]} <DirArrow kind="external" /></Link></p>
       </section>
       <section className="econ-section" id="eligibility"><div className="section-top"><div><span className="eyebrow">02 / {t('ELIGIBILITY', 'شرایط ورود')[locale]}</span><h2>{t('Earned on record, not claimed.', 'اثبات‌شده در سوابق، نه ادعا.')[locale]}</h2></div></div>
         <div className="econ-grid three">
@@ -141,7 +142,7 @@ export default function LiveMarketAccess() {
           ].map(([a, b], i) => <div className="econ-panel" key={i}><h3>{a[locale]}</h3><p className="econ-msg">{b[locale]}</p></div>)}
         </div>
       </section>
-      <div className="info-end"><img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="38" height="42" alt="" /><p>{t('No real order or transfer happens without explicit management activation.', 'هیچ سفارش یا انتقال واقعی بدون فعال‌سازی صریح مدیریت انجام نمی‌شود.')[locale]}</p><Link className="button" to={`/${locale}/coach`}>{labels.coach[locale]} <span aria-hidden="true">↗</span></Link></div>
+      <div className="info-end"><img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="38" height="42" alt="" /><p>{t('No real order or transfer happens without explicit management activation.', 'هیچ سفارش یا انتقال واقعی بدون فعال‌سازی صریح مدیریت انجام نمی‌شود.')[locale]}</p><Link className="button" to={`/${locale}/coach`}>{labels.coach[locale]} <DirArrow kind="external" /></Link></div>
     </div>
   </InformationShell>
 }

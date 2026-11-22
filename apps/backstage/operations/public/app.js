@@ -1,5 +1,6 @@
 import { labels } from './strings.js'
 import { createMarketing } from './marketing.js'
+import { arrow } from './dir-arrow.js'
 
 let locale = localStorage.getItem('backstage-language') === 'fa' ? 'fa' : 'en'
 let theme = localStorage.getItem('backstage-theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
@@ -510,7 +511,7 @@ async function directory(main, section, filter) {
     table('payments', columns.payments, data.attempts),
     table('refunds', columns.refunds.filter(([k]) => k !== 'action'), l?.refunds?.map(r => ({ ...r, chain_id: r.chainId, refund_tx_hash: r.refundTxHash, created_at: r.createdAt })) ?? []),
     table('verified', [['transaction', r => technical(r.tx_hash)], ['status', status], ['date', r => date(r.verified_at)]], data.payments),
-    table('timeline', [['date', r => date(r.created_at)], ['action', r => technical(r.kind ?? `${r.from_state ?? '∅'} → ${r.to_state}`)], ['actor', r => technical(r.actor)]],
+    table('timeline', [['date', r => date(r.created_at)], ['action', r => r.kind ? technical(r.kind) : el('span', { class: 'transition' }, technical(r.from_state ?? '∅'), ' ', arrow('forward'), ' ', technical(r.to_state))], ['actor', r => technical(r.actor)]],
       [...(data.orderEvents ?? []), ...(data.events ?? [])].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))))
     return
   }

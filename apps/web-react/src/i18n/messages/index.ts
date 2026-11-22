@@ -98,7 +98,8 @@ export const missesFor = (locale: string) => [...(misses.get(locale) || [])]
 /* numbers with unit letters (100x, 00y 02m, 5K), key names, the lowercase wordmark */
 const NEUTRAL_EXTRA = /^(?:openfund|penfund|[\w.-]+\.trade|UTC[+-]\d{1,2}|\d\d:\d\d(?::\d\d)?\s+UTC[+-]\d{1,2}|\d{4}-\d\d-\d\dT\S+|Windows|macOS|Linux|TradingView|GitHub|Render|Liara|Bitpin|DePay|S&P|Au|\/?USD|[A-Z]|App Store — iOS|Google Play — Android|[\d.,]+[a-zA-Z]{0,2}(?:\s+[\d.,]+[a-zA-Z]{0,2})*|Enter|Esc|Tab|Shift|Alt|Ctrl|Cmd|⌘[A-Z])$/
 export const isLanguageNeutral = (text: string) => {
-  const core = text.replace(/[↗↘↙↖→←↑↓·•|]+/g, ' ').replace(/\s+/g, ' ').trim()
+  const core = text.replace(/[↗↘↙↖→←↑↓·•|]+/g, ' ') /* arrow-glyphs: allow (normalizer) */
+    .replace(/\s+/g, ' ').trim()
   /* the brand wordmark is a name and is never translated */
   const neutral = (part: string) => part === BRAND_WORDMARK || LANGUAGE_NEUTRAL.test(part) || NEUTRAL_EXTRA.test(part)
   return neutral(core) || core.split(' / ').every(neutral)

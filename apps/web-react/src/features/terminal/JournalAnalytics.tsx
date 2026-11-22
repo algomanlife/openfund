@@ -5,6 +5,7 @@ import { api, csvCell, download, money, route, useResource } from "./model";
 import { Curve, PnlCalendar, RatioGauge } from "./Analytics";
 import { AccountPicker } from "./Accounts";
 import { GainsAnalytics } from "./GainsPortfolio";
+import DirArrow from '../../ui/DirArrow'
 export const JOURNAL_CARD_LABELS = [
   ["Net P&L", "سود خالص"],
   ["Trade Win %", "درصد معاملات موفق"],
@@ -192,7 +193,7 @@ export function JournalAnalytics({
             </select>
           </label>
           <span>
-            UTC · {from || t("همه", "All")} → {to}
+            UTC · {from || t("همه", "All")} <DirArrow kind="forward" /> {to}
           </span>
         </div>
       )}
@@ -302,7 +303,7 @@ export function JournalAnalytics({
                     "معاملات اخیر و پوزیشن‌های باز",
                     "Recent Trades & Open Positions",
                   )}{" "}
-                  ↗
+                  <DirArrow kind="external" />
                 </Link>
                 <p>
                   {t("پوزیشن باز", "Open Positions")}: {a?.openPositions ?? "—"}

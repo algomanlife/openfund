@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import InformationShell, { Hero, useInformationLocale } from '../information/InformationShell'
 import { number, text } from '../information/content'
 import { pathBySlug, useSiteLibrary } from '../../cms/siteContent'
+import DirArrow from '../../ui/DirArrow'
 
 type Locale = import('../../i18n/locales').AppLocale
 
@@ -32,7 +33,7 @@ export default function PathPage() {
         {first && <span>{text('starts with', 'شروع با')[locale]} {first.title[locale]}</span>}
       </div>
       {first && <div className="hero-actions">
-        <Link className="button" to={`/${locale}/learn/lessons/${first.slug}`}>{text('Start the path', 'مسیر را شروع کن')[locale]} <span aria-hidden="true">↙</span></Link>
+        <Link className="button" to={`/${locale}/learn/lessons/${first.slug}`}>{text('Start the path', 'مسیر را شروع کن')[locale]} <DirArrow kind="forward-down" /></Link>
       </div>}
     </Hero>
 
@@ -55,7 +56,7 @@ export default function PathPage() {
                 <small>{lesson.summary[locale]}</small>
               </span>
               <span className="path-lesson-min" dir="ltr">{number(lesson.minutes, locale)} {text('min', 'دقیقه')[locale]}</span>
-              <span aria-hidden="true" className="path-lesson-arrow">↙</span>
+              <DirArrow kind="forward-down" className="path-lesson-arrow" />
             </Link>
           </li>)}
         </ol>
@@ -64,8 +65,8 @@ export default function PathPage() {
       <div className="info-end">
         <p>{text('Every path ends where the tools begin.', 'هر مسیر همان‌جا تمام می‌شود که ابزارها شروع می‌شوند.')[locale]}</p>
         <div className="hero-actions">
-          <Link className="button" to={`/${locale}/tools`}>{text('Open the Tools Center', 'مركز ابزارها را باز کن')[locale]} <span aria-hidden="true">↙</span></Link>
-          <Link className="text-link" to={`/${locale}/learn`}>{text('All paths', 'همهٔ مسیرها')[locale]} <span aria-hidden="true">↗</span></Link>
+          <Link className="button" to={`/${locale}/tools`}>{text('Open the Tools Center', 'مركز ابزارها را باز کن')[locale]} <DirArrow kind="forward-down" /></Link>
+          <Link className="text-link" to={`/${locale}/learn`}>{text('All paths', 'همهٔ مسیرها')[locale]} <DirArrow kind="external" /></Link>
         </div>
       </div>
     </div>

@@ -11,6 +11,7 @@ import {
   isStale, type CategoryKey,
 } from './marketsData'
 import './markets.css'
+import DirArrow from '../../ui/DirArrow'
 
 const PAGE_STEP = 120
 
@@ -162,7 +163,7 @@ export default function Markets() {
       </p>
       <p className="mk-source">
         <span className="dot" aria-hidden="true" />
-        <a href="https://gains.trade" target="_blank" rel="noopener" dir="ltr">Gains Network ↗</a>
+        <a href="https://gains.trade" target="_blank" rel="noopener" dir="ltr">Gains Network <DirArrow kind="external" /></a>
         <span>{text('market data source', 'منبع دادهٔ بازار')[locale]}</span>
       </p>
     </div>

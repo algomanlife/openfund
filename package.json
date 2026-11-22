@@ -56,6 +56,7 @@
     "test:browser:routing": "node e2e/test-clean-routing.cjs",
     "test:browser:polish": "node e2e/test-ui-polish.cjs",
     "test:browser:website": "node e2e/test-website-refresh.cjs",
+    "test:browser:arrows": "node e2e/test-dir-arrows.cjs",
     "test:browser:wallet-showcase": "node e2e/test-wallet-showcase.cjs",
     "test:browser:footer-banner": "node e2e/test-footer-banner.cjs",
     "test:browser:hero-journey": "node e2e/test-hero-journey.cjs",

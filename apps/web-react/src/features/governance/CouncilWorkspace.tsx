@@ -8,6 +8,7 @@ import { StateBox, ClassBadge } from './GovernanceViews'
 import ProposalVote from './ProposalVote'
 import { CONSTITUENCY_LABEL, VOTE_LABEL, categoryLabel, errorMessage, formatDate, timeLeft, type Constituency } from './governanceModel'
 import './governance.css'
+import DirArrow from '../../ui/DirArrow'
 
 /** Role-aware workspace. Every number comes from governance records returned by the backend. */
 export default function CouncilWorkspace() {
@@ -32,14 +33,14 @@ export default function CouncilWorkspace() {
   return <InformationShell page="governance" description={t('Council member workspace.', 'فضای کار عضو شورا.')} title="Council workspace | Openfund">
     <Hero locale={locale} page="governance" title={t('Council workspace', 'فضای کار شورا')} accent={t('Your seat, your votes.', 'کرسی تو، رأی‌های تو.')} intro={t('Visible only to seated council members. Nothing here can move funds or change financial settings.', 'فقط برای اعضای مستقر شورا قابل مشاهده است. هیچ‌چیز در اینجا نمی‌تواند وجوه را جابه‌جا یا تنظیمات مالی را تغییر دهد.')} />
     <div className="container gv-page">
-      <p><Link className="text-link" to={`/${ui}/governance`}>← {t('Governance', 'حاکمیت')}</Link></p>
+      <p><Link className="text-link" to={`/${ui}/governance`}><DirArrow kind="back" /> {t('Governance', 'حاکمیت')}</Link></p>
       {status !== 'authenticated'
         ? <p className="gv-readonly" data-readonly>{t('Sign in with your wallet to open your workspace.', 'برای باز کردن فضای کار با کیف پول وارد شو.')}</p>
         : <StateBox state={ws.state} locale={locale} empty="" onRetry={ws.reload}>
             {w => <>
               <section className="gv-card gv-seat-card"><h2>{t('Your seat', 'کرسی تو')}</h2>
                 <p><strong>{CONSTITUENCY_LABEL[w.seat.constituency as Constituency]?.[locale]}</strong> · {t('seat', 'کرسی')} {number(w.seat.seatNo, locale)} · {w.seat.membershipType === 'elected' ? t('elected', 'انتخابی') : t('appointed', 'انتصابی')}</p>
-                <p>{formatDate(w.seat.startsAt, locale)} → {formatDate(w.seat.endsAt, locale)}</p>
+                <p>{formatDate(w.seat.startsAt, locale)} <DirArrow kind="forward" /> {formatDate(w.seat.endsAt, locale)}</p>
                 <p>{t('Votes cast', 'آرای ثبت‌شده')}: {number(w.participation.votesCast, locale)} / {number(w.participation.sessionsEligible, locale)} {t('finalised votes you were seated for', 'رأی‌گیری نهایی‌شده‌ای که عضو بودی')}</p>
               </section>
 

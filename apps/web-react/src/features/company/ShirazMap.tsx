@@ -1,5 +1,6 @@
 import { tx, type Locale } from '../information/content'
 import { locationCopy as c, SHIRAZ_LOCATION as P } from './contactContent'
+import DirArrow from '../../ui/DirArrow'
 
 /**
  * Branded location map — an original stylised SVG (no tile provider, no API
@@ -51,8 +52,8 @@ export default function ShirazMap({ locale }: { locale: Locale }) {
     </svg>
     <figcaption>{tx(locale, c.credit)}</figcaption>
     <div className="co-map-actions">
-      <a className="button" href={osm} target="_blank" rel="noopener noreferrer">{tx(locale, c.openOsm)} <span aria-hidden="true">↗</span></a>
-      <a className="text-link" href={google} target="_blank" rel="noopener noreferrer">{tx(locale, c.openGoogle)} <span aria-hidden="true">↗</span></a>
+      <a className="button" href={osm} target="_blank" rel="noopener noreferrer">{tx(locale, c.openOsm)} <DirArrow kind="external" /></a>
+      <a className="text-link" href={google} target="_blank" rel="noopener noreferrer">{tx(locale, c.openGoogle)} <DirArrow kind="external" /></a>
     </div>
   </figure>
 }

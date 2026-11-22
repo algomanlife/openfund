@@ -8,6 +8,7 @@ import { ClassBadge, StateBox, StatusBadge } from './GovernanceViews'
 import ProposalVote from './ProposalVote'
 import { categoryLabel, errorMessage, formatDate, isReservedCategory, statusLabel } from './governanceModel'
 import './governance.css'
+import DirArrow from '../../ui/DirArrow'
 
 interface CommentsData { notice: string; comments: Array<{ id: string; body: string; stance: string | null; author: string; createdAt: string }> }
 
@@ -35,7 +36,7 @@ export default function ProposalPage() {
 
   return <InformationShell page="governance" description={t('Openfund proposal record.', 'سابقهٔ پیشنهاد اوپن‌فاند.')} title={`${ofp} | Openfund`}>
     <div className="container gv-page gv-proposal">
-      <p><Link className="text-link" to={`/${ui}/governance#proposals`}>← {t('All proposals', 'همهٔ پیشنهادها')}</Link></p>
+      <p><Link className="text-link" to={`/${ui}/governance#proposals`}><DirArrow kind="back" /> {t('All proposals', 'همهٔ پیشنهادها')}</Link></p>
       <StateBox state={detail.state} locale={locale} empty="" onRetry={detail.reload}>
         {p => <>
           <header className="gv-proposal-head">

@@ -5,6 +5,7 @@ import { number, text } from '../information/content'
 import { lessonBySlug, useSiteLibrary } from '../../cms/siteContent'
 import LessonBody, { lessonToc } from './LessonBody'
 import './learn.css'
+import DirArrow from '../../ui/DirArrow'
 
 type Locale = import('../../i18n/locales').AppLocale
 
@@ -99,13 +100,13 @@ export default function LessonPage() {
           {tools.length > 0 && <div className="lesson-related-group">
             <span className="eyebrow">{text('Try it with', 'با این تمرین کن')[locale]}</span>
             {tools.map(tool => tool && <Link key={tool.slug} className="text-link" to={`/${locale}/tools/${tool.slug}`}>
-              {tool.name[locale]} <span aria-hidden="true">↗</span>
+              {tool.name[locale]} <DirArrow kind="external" />
             </Link>)}
           </div>}
           {glossary.length > 0 && <div className="lesson-related-group">
             <span className="eyebrow">{text('Terms used here', 'اصطلاح‌های این درس')[locale]}</span>
             {glossary.map(term => term && <Link key={term.slug} className="text-link" to={`/${locale}/learn/glossary/${term.slug}`}>
-              {term.term[locale]} <span aria-hidden="true">↗</span>
+              {term.term[locale]} <DirArrow kind="external" />
             </Link>)}
           </div>}
         </section>}

@@ -5,6 +5,7 @@ import type { WpBlock, WpMilestoneStatus, WpReference, WpStatus, Whitepaper } fr
 import { challengePlans, type ChallengePlan } from '../../data/challengePlans'
 import { fetchCmsPlans } from '../../cms/client'
 import Chart from './charts'
+import DirArrow from '../../ui/DirArrow'
 
 /* Reusable whitepaper blocks. CMS text is rendered as React text nodes —
    never as HTML — and links only come from validated reference records. */
@@ -63,7 +64,7 @@ function References({ keys, refs, locale, full }: { keys: string[]; refs: Map<st
         <span className="wp-ref-meta"><bdi>{r.publisher}</bdi>{r.published && <> · <bdi>{r.published}</bdi></>} · {t('Accessed', 'دسترسی')[locale]} <bdi>{r.accessed}</bdi></span>
         <span className="wp-ref-note">{r.note[locale]}</span>
       </>}
-      {!full && <a className="wp-ref-jump" href={`#ref-${r.key}`} aria-label={t('Open in references', 'نمایش در منابع')[locale]}>↓</a>}
+      {!full && <a className="wp-ref-jump" href={`#ref-${r.key}`} aria-label={t('Open in references', 'نمایش در منابع')[locale]}><DirArrow kind="down" /></a>}
     </li>)}</ol>
   </div>
 }
@@ -119,7 +120,7 @@ export default function Block({ block, locale, paper, bibliography = false }: { 
         </li>)}</ul>
       </section>)}</div>
     </figure>
-    case 'mapping': return <div className="wp-mapping" role="table" aria-label={block.head.map(h => h[locale]).join(' → ')}>
+    case 'mapping': return <div className="wp-mapping" role="table" aria-label={block.head.map(h => h[locale]).join(', ')}>
       <div className="wp-map-row wp-map-head" role="row">{block.head.map((h, i) => <span key={i} role="columnheader">{h[locale]}</span>)}</div>
       {block.rows.map((row, i) => <div key={i} className="wp-map-row" role="row">{row.map((cell, j) => <span key={j} role={j === 0 ? 'rowheader' : 'cell'} data-label={block.head[j]?.[locale]}>{cell[locale]}</span>)}</div>)}
     </div>

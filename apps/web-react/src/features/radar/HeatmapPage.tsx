@@ -16,6 +16,7 @@ import { usePoll, usd, pct, price, lev, tone, chartLink, clock, type RadarMarket
 import { Freshness } from './RadarPage'
 import { squarify, collapseSmall, stableOrder, colourWeight, type Rect } from './treemap'
 import './radar.css'
+import DirArrow from '../../ui/DirArrow'
 
 type Metric = 'dayVolume' | 'openInterest'
 type Grouping = 'leverage' | 'openfund' | 'none'
@@ -213,7 +214,7 @@ export default function HeatmapPage() {
 
     {path.length > 0 && <nav className="of-hm-crumbs" aria-label={t('مسیر', 'Path')}>
       <button type="button" onClick={() => setPath([])}>{t('همهٔ گروه‌ها', 'All groups')}</button>
-      {crumbs.map(c => <span key={c.depth}><span aria-hidden="true">›</span>{c.depth < path.length
+      {crumbs.map(c => <span key={c.depth}><DirArrow kind="forward" />{c.depth < path.length
         ? <button type="button" onClick={() => setPath(p => p.slice(0, c.depth))}>{c.label}</button> : <b aria-current="page">{c.label}</b>}</span>)}
       <kbd>{ESCAPE_KEY}</kbd>
     </nav>}

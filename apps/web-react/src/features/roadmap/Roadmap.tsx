@@ -4,6 +4,7 @@ import { useReveal } from '../company/reveal'
 import { ROADMAP_PHASES, REGISTER_URL, MILESTONES_URL, type RoadmapStatus } from './roadmapData'
 import { PRODUCT_ROADMAP } from './productRoadmap'
 import './roadmap.css'
+import DirArrow from '../../ui/DirArrow'
 
 const copy = {
   eyebrow: text('Roadmap', 'نقشه راه'),
@@ -68,8 +69,8 @@ export default function Roadmap() {
           <p>{tx(locale, item.dependencies)}</p>
         </li>)}</ul>
         <div className="of-roadmap-links">
-          <a className="text-link" href={REGISTER_URL} rel="noopener noreferrer" target="_blank">{c('register')} ↗</a>
-          <a className="text-link" href={MILESTONES_URL} rel="noopener noreferrer" target="_blank">{c('milestoneRegister')} ↗</a>
+          <a className="text-link" href={REGISTER_URL} rel="noopener noreferrer" target="_blank">{c('register')} <DirArrow kind="external" /></a>
+          <a className="text-link" href={MILESTONES_URL} rel="noopener noreferrer" target="_blank">{c('milestoneRegister')} <DirArrow kind="external" /></a>
         </div>
       </section>
     </div>

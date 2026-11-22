@@ -56,7 +56,6 @@ html[data-theme=light] .co-badge.read-only{color:#1f4fb3}
 .co-cta:hover,.co-cta:focus-visible{border-color:var(--mint);background:color-mix(in srgb,var(--mint) 8%,transparent)}
 .co-cta.primary{background:var(--mint);border-color:var(--mint);color:#04140c;font-weight:600}
 html[data-theme=light] .co-cta.primary{color:#fff}
-[dir=rtl] .co-cta span{transform:scaleX(-1)}
 .co-icon{flex:none}
 /* reveal (only when motion is allowed; content is visible by default) */
 .co-reveal.co-motion{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease-expo,ease),transform .7s var(--ease-expo,ease)}
@@ -225,7 +224,6 @@ html[data-theme=light] .co-map-marker{stroke:#fff}
 .co-help-icon{flex:none;color:var(--mint)}
 .co-help a>span:not(.co-help-arrow){flex:1;min-width:0}
 .co-help-arrow{color:var(--muted)}
-[dir=rtl] .co-help-arrow{transform:scaleX(-1)}
 
 @media (max-width:1023.98px){
   .information-page .co-contact-hero{grid-template-columns:1fr;text-align:center;justify-items:center}

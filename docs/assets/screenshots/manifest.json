@@ -9360,5 +9360,89 @@
         "state": "Card only: Funded stage. Illustration only: the card shows an example account and no real results."
       }
     ]
+  },
+  "dirArrows": {
+    "branch": "agent/claude/dir-arrows",
+    "baseCommit": "d74b1b675c6037ae3c525a88f2a8e4faf6ef56d2",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-22T13:39:36+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8310, disposable database; captured with Playwright (reduced motion)",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Public Gains Network reads where they loaded; no fixtures",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "dir-arrows/challenges-ru-1440-dark.jpg",
+        "route": "/ru/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "ru Trading challenges hero at 1440px (dark): header and hero CTA arrows point along the reading direction"
+      },
+      {
+        "file": "dir-arrows/challenges-zh-CN-768-dark.jpg",
+        "route": "/zh-CN/challenges",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "zh-CN Trading challenges hero at 768px (dark): header and hero CTA arrows point along the reading direction"
+      },
+      {
+        "file": "dir-arrows/challenges-ar-390-dark.jpg",
+        "route": "/ar/challenges",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "ar Trading challenges hero at 390px (dark): header and hero CTA arrows point along the reading direction"
+      },
+      {
+        "file": "dir-arrows/challenges-fa-1440-light.jpg",
+        "route": "/fa/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "fa Trading challenges hero at 1440px (light): header and hero CTA arrows point along the reading direction"
+      },
+      {
+        "file": "dir-arrows/challenges-en-390-light.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "en Trading challenges hero at 390px (light): header and hero CTA arrows point along the reading direction"
+      },
+      {
+        "file": "dir-arrows/learn-ru-768.jpg",
+        "route": "/ru/learn",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "ru Learn page at 768px: external and forward-down arrows follow the direction"
+      },
+      {
+        "file": "dir-arrows/learn-ar-1440.jpg",
+        "route": "/ar/learn",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "ar Learn page at 1440px: external and forward-down arrows follow the direction"
+      },
+      {
+        "file": "dir-arrows/learn-zh-CN-390.jpg",
+        "route": "/zh-CN/learn",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "zh-CN Learn page at 390px: external and forward-down arrows follow the direction"
+      }
+    ]
   }
 }

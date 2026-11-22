@@ -38,6 +38,8 @@ import TerminalShell from './features/terminal/TerminalShell'
 import './theme-toggle.css'
 import './styles/header-controls.css'
 import './styles/design-system.css'
+import './ui/dir-arrow.css'
+import { arrowSvg } from './ui/arrows'
 import './styles/site-modern.css'
 import './brand/seasonal-logo.css'
 import { installSeasonalLogo } from './brand/seasonalLogo'
@@ -122,6 +124,8 @@ function LegacyAnchor() {
   return <Navigate to={target} replace />
 }
 
+/* a relative "../page" resolved to the site root and dropped the locale */
+function LocalePageRedirect({ page }: { page: string }) { return <Navigate to={`/${useParams().locale || preferredLocale()}/${page}`} replace /> }
 function TerminalRedirect({ page }: { page: string }) { return <Navigate to={`/${preferredLocale()}/prop/${page}`} replace /> }
 function ProductRedirect({ product }: { product: 'prop' | 'perpetual' }) { return <Navigate to={`/${preferredLocale()}/${product}/${useParams().page || 'dashboard'}`} replace /> }
 
@@ -156,7 +160,7 @@ const routes = [
   { path: '/:locale/governance/workspace', element: <CouncilWorkspace /> },
   { path: '/:locale/governance/proposals/:ofp', element: <ProposalPage /> },
   /* Economy menu: Transparency, Revenue Model, Live Market Access */
-  { path: '/:locale/economy', element: <Navigate to="../transparency" replace /> },
+  { path: '/:locale/economy', element: <LocalePageRedirect page="transparency" /> },
   { path: '/:locale/revenue-model', element: <RevenueModel /> },
   { path: '/:locale/live-market-access', element: <LiveMarketAccess /> },
   { path: '/:locale/ambassador', element: <Ambassador /> },
@@ -223,6 +227,9 @@ const router = createBrowserRouter([
 ])
 /* Yalda / Christmas header logo (header and terminal navigation only) */
 installSeasonalLogo()
+
+/* the legacy terminal and landing scripts draw arrows with the same primitive */
+;(window as Window & { ofArrowSvg?: typeof arrowSvg }).ofArrowSvg = arrowSvg
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -5,6 +5,7 @@ import { number, text } from '../information/content'
 import { useSiteLibrary } from '../../cms/siteContent'
 import { matchesQuery, normalizeText } from '../faq/search'
 import './learn.css'
+import DirArrow from '../../ui/DirArrow'
 
 type Locale = import('../../i18n/locales').AppLocale
 
@@ -122,8 +123,8 @@ export default function Glossary() {
       <div className="info-end">
         <p>{text('Definitions end where the lessons begin.', 'تعریف‌ها همان‌جا تمام می‌شوند که درس‌ها شروع می‌شوند.')[locale]}</p>
         <div className="hero-actions">
-          <Link className="button" to={`/${locale}/learn`}>{text('All learning paths', 'همهٔ مسیرهای یادگیری')[locale]} <span aria-hidden="true">↙</span></Link>
-          <Link className="text-link" to={`/${locale}/faq`}>{text('FAQ', 'پرسش‌های متداول')[locale]} <span aria-hidden="true">↗</span></Link>
+          <Link className="button" to={`/${locale}/learn`}>{text('All learning paths', 'همهٔ مسیرهای یادگیری')[locale]} <DirArrow kind="forward-down" /></Link>
+          <Link className="text-link" to={`/${locale}/faq`}>{text('FAQ', 'پرسش‌های متداول')[locale]} <DirArrow kind="external" /></Link>
         </div>
       </div>
     </div>

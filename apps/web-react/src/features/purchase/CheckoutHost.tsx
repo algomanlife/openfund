@@ -2,6 +2,8 @@ import { normalizeLocale, pick } from '../../i18n/locales'
 const currentUiLocale = () => normalizeLocale((window as any).ofUiLang ?? (window as any).ofLang, 'fa')
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../../session/useOpenfundSession'
+import { arrowSvg } from '../../ui/arrows'
+import '../../ui/dir-arrow.css'
 
 /**
  * Bridge between the legacy landing runtime (challenges page) and the
@@ -52,7 +54,7 @@ export function CheckoutHost() {
       const sample = document.querySelector('.sample-note') as HTMLElement | null
       const orderNote = document.querySelector('#challenge-order p:last-child') as HTMLElement | null
       if (note) note.textContent = pick(locale, 'با ادامه، سفارش پرداخت روی زنجیره ایجاد و پس از تأیید سرور، حساب چالش فعال می‌شود.', 'Continuing creates a server-priced order; the challenge account is provisioned after on-chain payment is verified.')
-      if (done) done.textContent = pick(locale, 'ادامه و پرداخت ←', 'Continue to payment →')
+      if (done) { done.textContent = pick(locale, 'ادامه و پرداخت', 'Continue to payment'); done.insertAdjacentHTML('beforeend', ` ${arrowSvg('forward')}`) }
       if (sample) sample.textContent = pick(locale, 'هزینهٔ ارزیابی یک‌باره است. پرداخت روی زنجیره انجام و پس از تأیید سرور، چالش فعال می‌شود؛ حساب فاندشده با سهم سود تا ۸۰٪ — و در چلنج آنی تا ۹۵٪.', 'The evaluation fee is one-time. Payment settles on-chain; the challenge activates after server verification. Funded accounts carry up to an 80% profit split — 95% on the Instant challenge.')
       if (orderNote) orderNote.textContent = pick(locale, 'پس از پرداخت و تأیید، چالش فعال می‌شود.', 'The challenge activates after payment is verified.')
     }

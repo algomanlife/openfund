@@ -6,6 +6,7 @@ import { backendUrl, useOpenfundSession } from '../../session/useOpenfundSession
 import { targetHref, useSiteLibrary } from '../../cms/siteContent'
 import type { ReferralBenefit } from '../../cms/contentTypes'
 import './referral.css'
+import DirArrow from '../../ui/DirArrow'
 
 type Locale = import('../../i18n/locales').AppLocale
 
@@ -149,8 +150,8 @@ export default function Referral() {
         <span>{text('Attribution live · rewards pending', 'انتساب فعال · پاداش در انتظار')[locale]}</span>
       </div>
       <div className="hero-actions">
-        <a className="button" href="#referral-dashboard-anchor"><span>{content.cta.primary[locale]}</span> <span aria-hidden="true">↓</span></a>
-        <Link className="text-link" to={`/${locale}/learn`}>{content.cta.secondary[locale]} <span aria-hidden="true">↗</span></Link>
+        <a className="button" href="#referral-dashboard-anchor"><span>{content.cta.primary[locale]}</span> <DirArrow kind="down" /></a>
+        <Link className="text-link" to={`/${locale}/learn`}>{content.cta.secondary[locale]} <DirArrow kind="external" /></Link>
       </div>
     </Hero>
 
@@ -233,8 +234,8 @@ export default function Referral() {
         <p>{content.cta.title[locale]}</p>
         <p className="referral-cta-text">{content.cta.text[locale]}</p>
         <div className="hero-actions">
-          <a className="button" href="#referral-dashboard-anchor">{content.cta.primary[locale]} <span aria-hidden="true">↓</span></a>
-          <a className="text-link" href={targetHref({ kind: 'page', slug: 'learn' }, locale)}>{content.cta.secondary[locale]} <span aria-hidden="true">↗</span></a>
+          <a className="button" href="#referral-dashboard-anchor">{content.cta.primary[locale]} <DirArrow kind="down" /></a>
+          <a className="text-link" href={targetHref({ kind: 'page', slug: 'learn' }, locale)}>{content.cta.secondary[locale]} <DirArrow kind="external" /></a>
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { useSession } from "../../session/useOpenfundSession";
 import { useTerminal } from "./TerminalContext";
 import { money, route } from "./model";
 import { Metric } from "./Dashboard";
+import DirArrow from '../../ui/DirArrow'
 
 /** Challenge evaluation dashboard (v0.3.1): live rules-of-record metrics,
  *  lifecycle actions (start), violation history and event timeline —
@@ -67,7 +68,7 @@ export function ChallengePanel({ challengeId }: { challengeId: string }) {
       {view.status === "created" && <button className="of-challenge-start" onClick={start} disabled={starting}>
         {starting ? t("در حال شروع…", "Starting…") : t("شروع چالش", "Start challenge")}
       </button>}
-      {view.status === "started" && <Link to={route(locale, product, "trade") + `?account=${encodeURIComponent(view.id)}`}>{t("ورود به ترمینال", "Open terminal")} ↗</Link>}
+      {view.status === "started" && <Link to={route(locale, product, "trade") + `?account=${encodeURIComponent(view.id)}`}>{t("ورود به ترمینال", "Open terminal")} <DirArrow kind="external" /></Link>}
     </div>
 
     {view.metrics && <>

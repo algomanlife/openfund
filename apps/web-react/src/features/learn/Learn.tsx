@@ -4,6 +4,7 @@ import { labels, number, text } from '../information/content'
 import { useSiteLibrary } from '../../cms/siteContent'
 import type { LearningPathContent } from '../../cms/contentTypes'
 import './learn.css'
+import DirArrow from '../../ui/DirArrow'
 
 type Locale = import('../../i18n/locales').AppLocale
 
@@ -68,16 +69,16 @@ export default function Learn() {
           'Forty terms traders actually meet — funding, mark price, maintenance margin, drawdown, expectancy — defined in one line and in depth.',
           'چهل اصطلاحی که معامله‌گر واقعاً با آن‌ها روبه‌رو می‌شود — فاندینگ، مارک پرایس، مارجین نگهداری، دراودان، امید ریاضی — با یک خط تعریف و با توضیح کامل.')[locale]}</p>
         <div className="hero-actions">
-          <Link className="button" to={`/${locale}/learn/glossary`}>{text('Open the glossary', 'واژه‌نامه را باز کن')[locale]} <span aria-hidden="true">↙</span></Link>
-          <Link className="text-link" to={`/${locale}/tools`}>{labels.tools[locale]} <span aria-hidden="true">↗</span></Link>
+          <Link className="button" to={`/${locale}/learn/glossary`}>{text('Open the glossary', 'واژه‌نامه را باز کن')[locale]} <DirArrow kind="forward-down" /></Link>
+          <Link className="text-link" to={`/${locale}/tools`}>{labels.tools[locale]} <DirArrow kind="external" /></Link>
         </div>
       </section>
 
       <div className="info-end">
         <p>{text('Pick a path and read the first lesson — it takes about ten minutes.', 'یک مسیر را انتخاب کن و درس اولش را بخوان — حدود ده دقیقه وقت می‌برد.')[locale]}</p>
         <div className="hero-actions">
-          {library.paths[0] && <Link className="button" to={`/${locale}/learn/paths/${library.paths[0].slug}`}>{text('Start with', 'شروع کن با')[locale]} {library.paths[0].title[locale]} <span aria-hidden="true">↙</span></Link>}
-          <Link className="text-link" to={`/${locale}/faq`}>{labels.faq[locale]} <span aria-hidden="true">↗</span></Link>
+          {library.paths[0] && <Link className="button" to={`/${locale}/learn/paths/${library.paths[0].slug}`}>{text('Start with', 'شروع کن با')[locale]} {library.paths[0].title[locale]} <DirArrow kind="forward-down" /></Link>}
+          <Link className="text-link" to={`/${locale}/faq`}>{labels.faq[locale]} <DirArrow kind="external" /></Link>
         </div>
       </div>
     </div>
