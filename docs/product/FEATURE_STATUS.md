@@ -37,6 +37,8 @@ They run locally against a disposable database with generated test wallets.
 runs the suite. None of this is deployed acceptance. Real-money and real-wallet
 acceptance stay **Blocked** on owner authorization.
 
+| Capability | Status | Launch scope | Acceptance evidence |
+| --- | --- | --- | --- |
 | Prop evaluation (purchase via test seam, start, trade, pass, daily/maximum-loss fail, minimum trading days, notifications) | Completed (local; simulated accounts) | Launch-essential | `test-challenge-lifecycle` (pass), `test-journey-acceptance` J2–J5 (fail paths, trading days, inbox), `test-controlled-challenges` (two-step); required checks |
 | Funded-demo progression (final-pass review → funded demo → simulated payout) | Completed (local; simulated settlement only) | Launch-essential | `test-controlled-challenges`, `test-backstage`, `test-payout-operations`; real payout settlement Blocked |
 | Perpetual (product shell, wallet-scoped terminal, Gains portfolio reads) | In Progress (read-only; no execution). **The requested Gains trading product is not implemented**; see the [execution RFC](../architecture/PERPETUAL_EXECUTION_RFC.md). Readiness batch ([ADR 0047](../decisions/0047-perpetual-gains-read-only-readiness.md)): read-only integration and simulation complete, tested locally on branch `agent/claude/gains-readiness` (2026-11-20); not CI verified, released or production-verified | Post-launch | `test-terminal-completion`, `test-terminal-layout`, `test-perpetual-readiness` (59 checks: one session across products, wallet change/disconnect, refresh, freshness states, 5 locales × 3 viewports); on-chain execution Blocked |
@@ -47,6 +49,8 @@ acceptance stay **Blocked** on owner authorization.
 | Trade Radar | Completed (local; fixed fixtures) | Post-launch | `test-heatmap-radar` (required); live feed non-blocking |
 | Footprint chart | In Progress (deployed acceptance pending) | Post-launch | `test-footprint` (flag-off path in CI); live order-flow acceptance pending |
 | Notifications (in-app inbox) | Completed (deployed in v0.6.5; no external delivery) | Launch-essential | `test-journey-acceptance` J4, `test-backstage-operations` (support reply); required checks |
+| Brand Ambassador program | Completed (local) | Post-launch | Backend partner tests, `test-backstage-operations` (application review); no browser trader journey |
+| Verified Trading Coach program | Completed (local) | Post-launch | Backend partner tests; no browser journey |
 | Hybrid Governance | Completed in source (local); not active | Post-launch | Backend governance tests; public page rendered by `test-locale-matrix`; no council seated |
 | Governance hero council chamber (illustration) | Completed (local; unmerged branch, not deployed) | Post-launch | `features/governance/CouncilChamber.tsx`; example votes only, rules match `governance-rules.js`; `test/council-chamber.test.mjs`, `e2e/test-council-chamber.cjs` |
 | Open Trade desktop (Electron) | In Progress | Post-launch | 0.0.4 unsigned experimental beta published as the GitHub pre-release [`open-trade-v0.0.4`](https://github.com/algomanlife/openfund/releases/tag/open-trade-v0.0.4) (five installers, SHA-256 verified 2026-11-21); the Applications page links them (branch `agent/claude/desktop-downloads`) with an [install guide](../releases/OPEN_TRADE_INSTALL.md). [Acceptance record](../../apps/open-trade/ACCEPTANCE.md); signing, notarization, real-wallet and clean-machine acceptance Blocked ([owner setup](../releases/OPEN_TRADE_0.0.3_OWNER_SETUP.md)) |
@@ -138,6 +142,8 @@ Canonical capability register reconciled with integrated source `d05b4b88fc2776e
 
 Statuses: **Completed** = implemented within the stated boundary with repository evidence; **In Progress** = partial delivery remains; **Planned** = future work; **Blocked** = explicit prerequisite prevents completion. Completed rows do not imply real-world wallet, network or deployment validation unless separately evidenced.
 
+| Capability | Status | Evidence and practical limits |
+| --- | --- | --- |
 | React product shell and hash routes | Completed | [Router](../../apps/web-react/src/main.tsx); `/react/#/{locale}/…`; Persian/English and RTL retained |
 | Home product gateway and market discovery | Completed | `features/home`, `features/markets`; Gains data with source/freshness handling; instrument counts vary |
 | Home hero card trader journey (evaluation → target → verification flip → funded loop) | Completed (local; unmerged branch, not deployed) | `features/home/heroJourney.ts`; illustration only, no real account data; `e2e/test-hero-journey.cjs`; checked at 360–1920 px, RTL/LTR, dark/light, reduced motion |
@@ -241,6 +247,8 @@ of the Governance page. **Nothing is in production use.** Authoritative policy:
 [GOVERNANCE.md](../../GOVERNANCE.md); documentation: [docs/governance](../governance/README.md);
 decision: [ADR 0017](../decisions/0017-hybrid-governance.md).
 
+| Capability | Status | Scope and evidence |
+| --- | --- | --- |
 | Governance policy and economic boundary documents | Completed (documentation) | `GOVERNANCE.md`, `ECONOMY.md`, `docs/governance/`; open decisions listed in GOVERNANCE.md section 18 |
 | Backend rules, schema, service and RBAC | Completed (local) | 10 seats, OFP lifecycle, quorum 7, approval 6 of 10 (7 for amendments), recusal, append-only evidence and hash-chained audit; automated tests, no production data |
 | Financial isolation | Completed (local) | Static and runtime tests: no financial table access, no financial endpoint, financial-shaped fields rejected |
@@ -301,6 +309,8 @@ verification only; Directus-backed text reaches production after an approved
 seed refresh. Authority: [Content architecture](../website/CONTENT_ARCHITECTURE.md),
 [Product rules](PRODUCT_RULES.md).
 
+| Capability | Status | Scope and evidence |
+| --- | --- | --- |
 | Hosting, development and placeholder copy removed | Completed (local) | Office-location legal document, hosting notes, provider footer credit, sample/illustrative product notes, placeholder documents and app badges removed; stale Directus rows are suppressed by code guards |
 | Public Team section removed | Completed (local) | Markup, dialog, navigation, footer seed and section routing; old links land on Challenges |
 | A-Book / B-Book labels and routing disclosure | Completed (local) | Exact labels in all five locales; copy states that orders are not routed to live markets in this release |
@@ -313,6 +323,8 @@ seed refresh. Authority: [Content architecture](../website/CONTENT_ARCHITECTURE.
 
 ## Website and distribution refresh
 
+| Capability | Status | Evidence and limits |
+| --- | --- | --- |
 | Bilingual public footer and Telegram presentation (PR #42) | Completed within merged source scope; unreleased | Integrated at `d05b4b8`, excluded from official v0.2.0; historical candidate evidence does not verify the new addendum; owner-verified destination missing |
 | Shared Telegram/Discord public controls | Completed (local, unreleased) | Instagram promotion button retired from the public website (`codex/website-launch-content`); Telegram and Discord remain and show a link only when an owner-verified URL is configured. Production runtime configuration has no verified URLs, so both show the unavailable state |
 | Native white light-theme and service-logo corrections | Completed within local refinement scope; UNRELEASED | Exact white public/terminal/Vela/account canvases, text contrast >=4.5, five native service vectors and generated-session profile/purchase/portfolio/journal evidence; preserved dark-green theme; official review/deployment separate; [captures and gates](../reviews/community-theme/DELIVERY.md) |
@@ -327,6 +339,8 @@ seed refresh. Authority: [Content architecture](../website/CONTENT_ARCHITECTURE.
 Branch `claude/terminal-share-i18n-fixes`, unmerged and unreleased. Evidence
 is local verification against an isolated backend and disposable database.
 
+| Capability | Status | Scope and evidence |
+| --- | --- | --- |
 | Share P&L card | Completed (local) | Open and closed positions; PNG export and Web Share where the browser supports files; live refresh observed while open |
 | Real-time feed stability | Completed (local) | Socket watchdog, reconnect, stale marking, row patching; unit tests in `test:depth`; Gains VOB only, no synthesized depth |
 | Persian gateway mobile layout | Completed (local) | `/fa/home` at 320–414px without horizontal overflow; landing e2e updated for phones |
@@ -347,6 +361,8 @@ and wallet. Public release/signing and existing license decisions remain Blocked
 
 ## Final product refinement
 
+| Capability | Status | Scope |
+| --- | --- | --- |
 | Navigation, purchase history and Applications | In Progress | Local review branch. Web Terminal available; verified desktop installers remain pending. [Website evidence](../reviews/final-refinement/website.md) |
 | Position protection controls | In Progress | Isolated Prop simulation acceptance. Production and device acceptance remain open. |
 | Interface content registry | In Progress | Source-derived editing map and published overrides. See the coverage limits in the content evidence. |
