@@ -301,6 +301,7 @@ for each part is in the [engineering reference](docs/development/ENGINEERING_REF
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-footprint/` | Order-flow aggregation and chart plugin |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/cms-client/` | Typed contract between the app and Directus |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-ui/` | Planned shared component library |
+| <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/plan-validation/` | Challenge plan rules shared by the site and the backend |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-protocol/` | Dormant protocol source and provenance |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `docs/` | Documentation, ADRs, status, README data and assets |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `brand/` | Brand book, logos, imagery and typography reference |

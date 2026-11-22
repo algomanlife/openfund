@@ -350,6 +350,91 @@ export class Engine {
     })
   }
 
+  /**
+   * Owner decisions on one challenge from Backstage (admin-console.js), each
+   * with a named actor and a required reason, recorded as challenge_events:
+   *   extend  add 1–90 days to an existing time limit (status created/started);
+   *   void    cancel the challenge (status 'cancelled');
+   *   fail    manual fail (status 'failed', violation rule 'manual_review');
+   *   pass    manual pass to the next stage (stage 1 of two → stage 2 is
+   *           provisioned and started exactly as an automatic stage pass; a
+   *           final stage → 'passed', then the normal funded review applies).
+   * Terminal actions settle through the same path as the risk engine: open
+   * positions close at the server mark and pending orders are cancelled. They
+   * are refused while any open position lacks a fresh, tradeable mark, so no
+   * trade history or balance is ever written outside the engine.
+   */
+  async adminChallengeAction(challengeId, { action, reason, actor, days = null }) {
+    const fail = (status, error) => Object.assign(new Error(error), { status })
+    if (!['extend', 'void', 'fail', 'pass'].includes(action)) throw fail(400, 'invalid_action')
+    if (typeof reason !== 'string' || reason.trim().length < 3 || reason.length > 500) throw fail(400, 'reason_required')
+    const head = (await this.db.query('SELECT demo_account_id FROM openfund_challenges WHERE id=$1', [challengeId])).rows[0]
+    if (!head) throw fail(404, 'challenge_not_found')
+    const run = async () => {
+      const c = await this.db.connect()
+      try {
+        await c.query('BEGIN')
+        const challenge = (await c.query(
+          `SELECT c.*, p.configuration AS plan_configuration FROM openfund_challenges c
+             JOIN challenge_plans p ON p.id = c.challenge_plan_id WHERE c.id=$1 FOR UPDATE OF c`, [challengeId])).rows[0]
+        const acc = challenge.demo_account_id
+          ? (await c.query('SELECT * FROM demo_accounts WHERE id=$1 FOR UPDATE', [challenge.demo_account_id])).rows[0] : null
+        const detail = { actor, reason: reason.trim(), manual: true, stage: challenge.stage }
+        let result
+        if (action === 'extend') {
+          if (!['created', 'started'].includes(challenge.status)) throw fail(409, `challenge_${challenge.status}_not_extendable`)
+          if (!Number.isInteger(days) || days < 1 || days > 90) throw fail(400, 'invalid_days')
+          if (!challenge.expires_at) throw fail(409, 'no_time_limit')
+          const { rows: [row] } = await c.query(
+            `UPDATE openfund_challenges SET expires_at = expires_at + ($2::int * interval '1 day') WHERE id=$1 RETURNING expires_at`, [challengeId, days])
+          await ChallengeService.event(c, challengeId, 'admin_time_extended', { ...detail, days, previous: challenge.expires_at, next: row.expires_at })
+          result = { status: challenge.status, expiresAt: row.expires_at }
+        } else {
+          const terminal = action === 'void' ? ['created', 'started'] : ['started']
+          if (!terminal.includes(challenge.status)) throw fail(409, `challenge_${challenge.status}_not_actionable`)
+          if (acc) {
+            const open = (await c.query("SELECT market FROM trading_positions WHERE account_id=$1 AND status='open'", [acc.id])).rows
+            if (open.some(p => !freshMark(this.md, p.market) || !this.md.tradeable(p.market).ok)) throw fail(409, 'settlement_unavailable')
+          }
+          const evaluation = { metrics: null, violations: action === 'fail' ? [{ rule: 'manual_review', detail: reason.trim() }] : [] }
+          const settle = async status => {
+            if (acc) await this.#settleChallengeTx(c, acc, challenge, status, evaluation)
+            else await c.query('UPDATE openfund_challenges SET status=$2, completed_at=now() WHERE id=$1', [challengeId, status])
+          }
+          if (action === 'void') {
+            await settle('cancelled')
+            await ChallengeService.event(c, challengeId, 'admin_voided', detail)
+            result = { status: 'cancelled' }
+          } else if (action === 'fail') {
+            await settle('failed')
+            await ChallengeService.event(c, challengeId, 'violation', { ...detail, violations: evaluation.violations })
+            result = { status: 'failed' }
+          } else {
+            const rules = challenge.rules_snapshot ?? normalizeRules(challenge.plan_configuration ?? {})
+            if (challenge.stage === 0) throw fail(409, 'funded_stage_has_no_pass')
+            await settle('passed')
+            if ((rules.phases ?? 0) >= 2 && challenge.stage === 1) {
+              await ChallengeService.event(c, challengeId, 'stage_passed', { ...detail, stage: 1 })
+              const stage2 = (await c.query(
+                `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd, stage, rules_snapshot, parent_challenge_id)
+                 VALUES ($1,$2,'created',$3,2,$4,$5) RETURNING *`,
+                [challenge.user_id, challenge.challenge_plan_id, challenge.account_size_usd, JSON.stringify(rules), challenge.id])).rows[0]
+              await this.challenges.startTx(c, stage2)
+              result = { status: 'passed', nextChallengeId: stage2.id }
+            } else {
+              await ChallengeService.event(c, challengeId, 'passed', detail)
+              result = { status: 'passed' }
+            }
+          }
+        }
+        await c.query('COMMIT')
+        if (acc) this.emit(acc.id)
+        return result
+      } catch (e) { await c.query('ROLLBACK').catch(() => {}); throw e } finally { c.release() }
+    }
+    return head.demo_account_id ? withAccountLock(head.demo_account_id, run) : run()
+  }
+
   /** free_demo account (default) or an owned challenge account by id */
   async getAccount(userId, accountId = null) {
     if (accountId) {

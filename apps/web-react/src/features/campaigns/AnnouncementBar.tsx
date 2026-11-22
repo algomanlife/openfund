@@ -4,13 +4,13 @@ import { dirOf, pick, type AppLocale } from '../../i18n/locales'
 import { campaignPage, markSeen, report, selectCampaign, type Campaign } from './campaigns'
 import './campaigns.css'
 
-/** Announcement bar above the public header (Backstage → Marketing →
+/** Announcement bar above the public header, the terminal and the portfolio (Backstage → Marketing →
  *  Announcement banners). In normal document flow, so the sticky header and
  *  layout below it are never overlapped. Closing hides it for the rest of
  *  the browser session. Copy and destination come from published content. */
 export default function AnnouncementBar({ locale }: { locale: AppLocale }) {
   const { pathname } = useLocation()
-  const page = campaignPage(pathname)
+  const page = campaignPage(pathname, 'announcement_bar')
   const [campaign, setCampaign] = useState<Campaign | null>(null)
   useEffect(() => {
     let live = true
@@ -28,6 +28,7 @@ export default function AnnouncementBar({ locale }: { locale: AppLocale }) {
   const close = () => { report(campaign, 'close'); markSeen(campaign); setCampaign(null) }
   return (
     <aside className={`of-announcement of-announcement-${campaign.style}`} dir={dirOf(locale)} lang={locale}
+      role={campaign.style === 'warning' ? 'alert' : undefined}
       aria-label={campaign.headline} data-campaign={campaign.id}>
       <div className="of-announcement-inner">
         <p className="of-announcement-text">{campaign.headline}</p>
@@ -37,9 +38,9 @@ export default function AnnouncementBar({ locale }: { locale: AppLocale }) {
             {campaign.ctaLabel}
           </a>
         )}
-        <button type="button" className="of-announcement-close" onClick={close} aria-label={pick(locale, 'بستن', 'Close')}>
+        {campaign.dismissible && <button type="button" className="of-announcement-close" onClick={close} aria-label={pick(locale, 'بستن', 'Close')}>
           <span aria-hidden="true">×</span>
-        </button>
+        </button>}
       </div>
     </aside>
   )

@@ -30,6 +30,7 @@ import { TerminalContext, useTerminal } from "./TerminalContext";
 import { chooseTheme, currentTheme, DAY_NIGHT_MARKUP } from "../../theme";
 import LanguageSelect from "../../i18n/LanguageSelect";
 import TerminalMenu from "./TerminalMenu";
+import AnnouncementBar from "../campaigns/AnnouncementBar";
 import { BrandWordmark } from "../../brand/BrandWordmark";
 import { dirOf, normalizeLocale, pick, pickRecord, switchLocalePath } from "../../i18n/locales";
 export default function TerminalShell({ product }: { product: Product }) {
@@ -162,6 +163,8 @@ export default function TerminalShell({ product }: { product: Product }) {
         >
           {t("رفتن به محتوا", "Skip to content")}
         </a>
+        {/* the website's announcement bar, when Backstage targets the terminal or portfolio */}
+        <AnnouncementBar locale={locale} />
         <header className="of-terminal-header">
           <ReleaseStatus locale={locale}>{version => <div className="of-terminal-top">
             <Link className="of-brand" to={`/${locale}/home`}>

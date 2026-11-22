@@ -35,6 +35,7 @@
    structure (challenge_plans, see apps/backend/seed-plans.js).
    ============================================================ */
 import { text, type Localized } from '../features/information/content'
+import { assertPlanValid } from '../../../../packages/plan-validation/index.mjs'
 
 export type PlanStatus = 'published' | 'draft'
 export type DrawdownMode = 'static' | 'trailing'
@@ -284,31 +285,10 @@ export const challengePlans: ChallengePlan[] = [
 ]
 
 /* ---- integrity: a broken plan must fail loudly, never render ---- */
+/** The shared rule set (packages/plan-validation): the backend's plan
+ *  administration validates a Backstage draft with the same function. */
 export function assertPlansValid(plans: ChallengePlan[]): void {
-  for (const p of plans) {
-    if (!p.slug || !p.name.fa || !p.name.en) throw new Error(`plan ${p.slug || '(?)'}: missing identity`)
-    if (!p.accountSizesUsd.length) throw new Error(`plan ${p.slug}: no account sizes`)
-    for (const size of p.accountSizesUsd) {
-      if (!(p.priceUsd[size] >= 0)) throw new Error(`plan ${p.slug}: missing price for ${size}`)
-    }
-    if (p.phases >= 1 && p.phase1TargetPct == null) throw new Error(`plan ${p.slug}: missing phase-1 target`)
-    if (p.phases === 2 && p.phase2TargetPct == null) throw new Error(`plan ${p.slug}: two phases need two targets`)
-    if (p.phases === 0 && (p.phase1TargetPct != null || p.phase2TargetPct != null)) throw new Error(`plan ${p.slug}: instant plan carries targets`)
-    if (!(p.dailyLossPct > 0) || !(p.maxTotalLossPct > 0)) throw new Error(`plan ${p.slug}: loss limits must be positive`)
-    if (!p.free && (p.profitSplitPct <= 0 || p.profitSplitPct > 100)) throw new Error(`plan ${p.slug}: invalid profit split`)
-    if (p.drawdownMode === 'trailing' && p.trailingLockAtProfitPct == null) throw new Error(`plan ${p.slug}: trailing drawdown needs a lock point`)
-    if (p.free !== (p.slug === 'free-trial')) throw new Error(`plan ${p.slug}: free flag mismatch`)
-    if (p.free && (p.firstPayoutDays != null || p.profitSplitPct > 0 || p.rewardCycles.length)) throw new Error(`plan ${p.slug}: trial must not promise rewards`)
-    /* catalog v3 terms only: rows published before v3 (e.g. a CMS not yet re-seeded) stay valid */
-    if (!p.free && p.catalogVersion >= 3 && !p.rewardCycles.length) throw new Error(`plan ${p.slug}: a paid plan needs at least one reward cycle`)
-    for (const c of p.rewardCycles) {
-      if (!(c.splitPct > 0 && c.splitPct <= 100)) throw new Error(`plan ${p.slug}: invalid ${c.key} split`)
-      if ((c.firstAfterDays == null) !== (c.key === 'on_demand')) throw new Error(`plan ${p.slug}: ${c.key} timing mismatch`)
-    }
-    if (p.dailyLossVariantPriceUsd) for (const size of p.accountSizesUsd) {
-      if (!(p.dailyLossVariantPriceUsd[size] > 0)) throw new Error(`plan ${p.slug}: variant price missing for ${size}`)
-    }
-  }
+  for (const p of plans) assertPlanValid(p)
 }
 assertPlansValid(challengePlans)
 

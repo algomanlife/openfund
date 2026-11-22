@@ -52,3 +52,4 @@ Read newer decisions alongside historical ones; current implementation and expli
 - [0046 — Openfund Pay: first-party payments, ledger, discovery and refunds](0046-openfund-pay.md)
 - [0047 — Perpetual Gains read-only readiness: adapter boundary, freshness and execution gate](0047-perpetual-gains-read-only-readiness.md)
 - [0048 — Pine indicator optimization, lookahead corrections and provenance](0048-pine-indicator-optimization-and-provenance.md)
+- [0049 — Backstage plan administration, challenge decisions and granted entitlements](0049-backstage-plan-administration-and-entitlements.md)

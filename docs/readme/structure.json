@@ -16,6 +16,7 @@
       { "path": "packages/openfund-footprint/", "role": "Order-flow aggregation and chart plugin" },
       { "path": "packages/cms-client/", "role": "Typed contract between the app and Directus" },
       { "path": "packages/openfund-ui/", "role": "Planned shared component library" },
+      { "path": "packages/plan-validation/", "role": "Challenge plan rules shared by the site and the backend" },
       { "path": "packages/openfund-protocol/", "role": "Dormant protocol source and provenance" }
     ] },
     { "title": "Content and assets", "icon": "book", "entries": [

@@ -10,6 +10,11 @@ import { readFile } from 'node:fs/promises'
  *  - field names that look like links, destinations, contact or money
  *    values are refused even if a surface ever lists them;
  *  - values are plain text with the same placeholders as the English source.
+ * Lifecycle (2026-11-22): create a draft item with fa and en copy, archive
+ * (status 'archived'; nothing is ever deleted), reorder by the collection's
+ * sort field, and upload media to the public media folder. Protected values
+ * stay out of the text editor; the four department mailboxes in
+ * site_settings have their own owner-gated, validated editor.
  */
 const fail = (status, code) => Object.assign(new Error(code), { status })
 const PLACEHOLDERS = /\$\{[^}]+\}|\{\{[^}]+\}\}|\{[A-Za-z_][\w.]*\}/g
@@ -164,7 +169,9 @@ export function createContentApi({ cms, token, registryPath = new URL('../conten
   async function prepareStatus(body) {
     if (!token) throw fail(409, 'content_writes_disabled')
     const { collection, item, status } = body || {}
-    if (!['draft', 'published'].includes(status)) throw fail(400, 'invalid_status')
+    if (!['draft', 'published', 'archived'].includes(status)) throw fail(400, 'invalid_status')
+    /* interface strings are drafts or published; only editorial items archive */
+    if (status === 'archived' && collection === 'ui_messages') throw fail(400, 'invalid_status')
     if (collection === 'ui_messages') {
       if (typeof body.key !== 'string' || !/^react\.[a-f0-9]{16}$/.test(body.key)) throw fail(400, 'invalid_key')
       const filter = JSON.stringify({ key: { _eq: body.key } })
@@ -178,6 +185,84 @@ export function createContentApi({ cms, token, registryPath = new URL('../conten
     return { path: `/items/${collection}/${encodeURIComponent(String(item))}`, body: { status }, target: `${collection}:${item}` }
   }
 
-  const apply = async ({ path, body }) => { await directus(path, { method: 'PATCH', body }); return { ok: true } }
-  return { catalog, fields, surface, prepareSave, prepareStatus, apply, writable: Boolean(token) }
+  /* new draft item: fa and en copy of the first text field are required; the
+     editor publishes it after review. Only text and identity fields. */
+  async function prepareCreate(body) {
+    if (!token) throw fail(409, 'content_writes_disabled')
+    const spec = await surfaceOf(String(body?.collection ?? ''))
+    if (spec.singleton) throw fail(400, 'singleton_has_no_items')
+    const { translated, shared } = editableFields(spec)
+    const slug = body.slug == null || body.slug === '' ? null : String(body.slug)
+    if (slug !== null && !/^[a-z0-9][a-z0-9-]{1,79}$/.test(slug)) throw fail(400, 'invalid_slug')
+    const copy = body.copy && typeof body.copy === 'object' ? body.copy : {}
+    const translations = []
+    for (const locale of ['fa', 'en']) {
+      const values = copy[locale] && typeof copy[locale] === 'object' ? copy[locale] : {}
+      const row = { language_code: locale }
+      for (const f of translated) if (values[f] != null && values[f] !== '') row[f] = cleanValue(values[f], null)
+      if (translated.length && !row[translated[0]]) throw fail(400, 'copy_required')
+      translations.push(row)
+    }
+    const item = { status: 'draft', ...(slug ? { slug } : {}) }
+    for (const f of shared) if (body.shared?.[f]) item[f] = cleanValue(body.shared[f], null)
+    if (translated.length) item.translations = translations
+    return { method: 'POST', path: `/items/${spec.collection}`, body: item, target: `${spec.collection}:new:${slug ?? ''}` }
+  }
+
+  /* move one item to a new position (Directus sorts by the collection's sort field) */
+  async function prepareReorder(body) {
+    if (!token) throw fail(409, 'content_writes_disabled')
+    const spec = await surfaceOf(String(body?.collection ?? ''))
+    if (spec.singleton) throw fail(400, 'singleton_has_no_items')
+    const item = String(body.item ?? ''), to = String(body.to ?? '')
+    if (!/^[A-Za-z0-9-]{1,64}$/.test(item) || !/^[A-Za-z0-9-]{1,64}$/.test(to) || item === to) throw fail(400, 'invalid_item')
+    return { method: 'POST', path: `/utils/sort/${spec.collection}`, body: { item, to }, target: `${spec.collection}:${item}>${to}` }
+  }
+
+  /* owner-gated protected values: department mailboxes only, validated */
+  const MAILBOXES = ['support_email', 'legal_email', 'technical_email', 'community_email']
+  const MAILBOX = /^[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$/
+  async function protectedSettings() {
+    const row = (await directus(`/items/site_settings?fields=${MAILBOXES.join(',')}`, { auth: Boolean(token) })).data || {}
+    return { writable: Boolean(token), fields: MAILBOXES.map(field => ({ field, value: row[field] ?? null })) }
+  }
+  async function prepareProtected(body) {
+    if (!token) throw fail(409, 'content_writes_disabled')
+    if (!MAILBOXES.includes(body?.field)) throw fail(403, 'field_protected')
+    const value = body.value == null ? '' : String(body.value).trim().toLowerCase()
+    if (value && (value.length > 254 || !MAILBOX.test(value))) throw fail(400, 'invalid_email')
+    return { method: 'PATCH', path: '/items/site_settings', body: { [body.field]: value || null }, target: `site_settings:${body.field}` }
+  }
+
+  /* media library: PNG, JPEG or WebP images up to 3 MB into the public folder */
+  const IMAGE_TYPES = { 'image/png': [0x89, 0x50, 0x4e, 0x47], 'image/jpeg': [0xff, 0xd8, 0xff], 'image/webp': [0x52, 0x49, 0x46, 0x46] }
+  async function upload({ filename, contentType, data }) {
+    if (!token) throw fail(409, 'content_writes_disabled')
+    const signature = IMAGE_TYPES[contentType]
+    if (!signature || typeof data !== 'string' || typeof filename !== 'string' || !/^[\w .()-]{1,80}$/.test(filename)) throw fail(400, 'invalid_image')
+    const bytes = Buffer.from(data, 'base64')
+    if (!bytes.length || bytes.length > 3 * 1024 * 1024 || signature.some((b, i) => bytes[i] !== b)) throw fail(400, 'invalid_image')
+    if (contentType === 'image/webp' && bytes.subarray(8, 12).toString('latin1') !== 'WEBP') throw fail(400, 'invalid_image')
+    const folder = ((await directus('/folders?filter[name][_eq]=campaign-media&fields=id&limit=1')).data || [])[0]?.id
+    if (!folder) throw fail(503, 'media_folder_missing')
+    const form = new FormData()
+    form.append('folder', folder); form.append('title', filename)
+    form.append('file', new Blob([bytes], { type: contentType }), filename)
+    const target = new URL(cms); target.pathname = '/files'
+    let response
+    try { response = await fetchImpl(target, { method: 'POST', redirect: 'error', signal: AbortSignal.timeout(30_000), headers: { Authorization: `Bearer ${token}` }, body: form }) }
+    catch { throw fail(502, 'cms_unavailable') }
+    if (!response.ok) { await response.body?.cancel(); throw fail(502, 'cms_rejected') }
+    const id = (await response.json()).data.id
+    return { id, url: `${cms}/assets/${id}` }
+  }
+  async function media() {
+    const folder = ((await directus('/folders?filter[name][_eq]=campaign-media&fields=id&limit=1', { auth: Boolean(token) })).data || [])[0]?.id
+    if (!folder) return { files: [] }
+    const files = (await directus(`/files?filter[folder][_eq]=${folder}&fields=id,title,type,filesize,uploaded_on&sort=-uploaded_on&limit=50`, { auth: Boolean(token) })).data || []
+    return { files: files.map(f => ({ ...f, url: `${cms}/assets/${f.id}` })) }
+  }
+
+  const apply = async ({ method = 'PATCH', path, body }) => { await directus(path, { method, body }); return { ok: true } }
+  return { catalog, fields, surface, prepareSave, prepareStatus, prepareCreate, prepareReorder, protectedSettings, prepareProtected, upload, media, apply, writable: Boolean(token) }
 }
