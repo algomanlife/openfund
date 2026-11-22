@@ -8943,5 +8943,167 @@
         "state": "Desktop downloads section, English, dark: three platform cards with one labelled download button per installer of the published pre-release open-trade-v0.0.4, collapsed details, per-OS unsigned instructions; 'Your system' badge on macOS. JPEG."
       }
     ]
+  },
+  "checkoutBanners": {
+    "branch": "agent/claude/checkout-banners",
+    "baseCommit": "dc0899aaa804319e9f1ce53dcd15ed25a4de63a4",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-21T18:40:54+00:00",
+    "source": "npm run build:web + apps/backend (SIM_TEST_MODE) on isolated test port 8300, disposable database openfund_item8_test; full-page captures (the sticky header and skip link appear mid-page as a full-page capture artifact)",
+    "cms": "Directus not running",
+    "marketData": "Not used",
+    "wallet": "Anonymous; no wallet connected, no order created",
+    "screenshots": [
+      {
+        "file": "checkout-banners/checkout-1440-dark.jpg",
+        "route": "/en/checkout?plan=standard&size=10000",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: model banners, conditions for Standard $10,000 (8% = $800, 5% = $500, 5% daily = $500, 10% = $1,000), More conditions open, ticket summary; anonymous visitor (wallet step not completed). Stored downscaled to 1080 px. JPEG; plan values come from the local backend's seeded catalog."
+      },
+      {
+        "file": "checkout-banners/checkout-390-light.jpg",
+        "route": "/fa/checkout?plan=instant&size=100000",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian (RTL), light, 390 px: Instant $100,000 conditions (3% = $3,000, 5% trailing = $5,000, 95%). JPEG; plan values come from the local backend's seeded catalog."
+      },
+      {
+        "file": "checkout-banners/checkout-768-dark.jpg",
+        "route": "/en/checkout?plan=one-phase&size=50000",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "English, dark, 768 px: One-phase $50,000 conditions. JPEG; plan values come from the local backend's seeded catalog."
+      }
+    ]
+  },
+  "languageGlobe": {
+    "branch": "agent/claude/language-globe",
+    "baseCommit": "dc0899aaa804319e9f1ce53dcd15ed25a4de63a4",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-21T18:34:07+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8299, disposable database; captured by e2e/test-language-select.cjs",
+    "cms": "Directus not running",
+    "marketData": "Live Gains through the local backend",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "language-globe/language-panel-en-dark.jpg",
+        "route": "/en/markets",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: open panel (crop) with globe turned to the hovered Persian region. JPEG."
+      },
+      {
+        "file": "language-globe/language-panel-fa-light.jpg",
+        "route": "/fa/markets",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian (RTL), light: open panel. JPEG."
+      },
+      {
+        "file": "language-globe/language-sheet-ar-390.jpg",
+        "route": "/ar/markets",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Arabic (RTL), 390 px touch: bottom sheet with 52 px rows. JPEG."
+      },
+      {
+        "file": "language-globe/language-panel-ru-768.jpg",
+        "route": "/ru/rulebook",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Russian (LTR), dark, 768 px: panel open with all five languages, native name, Russian exonym and direction; panel inside the viewport, no horizontal overflow. Clipped to the top 560 px."
+      }
+    ]
+  },
+  "contactRedesign": {
+    "branch": "agent/claude/contact-page",
+    "baseCommit": "f4c4f0554534bb77bb9f3320c3005ab126f5f1d9",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-21T17:56:19+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8299, disposable database openfund_scratch on a throwaway PostgreSQL cluster (port 55432); captured by e2e/test-contact.cjs",
+    "cms": "Directus not running; department emails empty, so no address lines are shown",
+    "marketData": "None on this page",
+    "wallet": "Anonymous; no wallet connected",
+    "screenshots": [
+      {
+        "file": "contact-redesign/contact-en-dark-1440.jpg",
+        "route": "/en/contact",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English (LTR), dark, full page: compact hero with the message-routing animation, form card beside the team selectors, Telegram card and safety notice; full-width map with floating address card; Quick help icon tiles. Stored downscaled to 1080 px wide (JPEG)."
+      },
+      {
+        "file": "contact-redesign/contact-fa-light-1440.jpg",
+        "route": "/fa/contact",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian (RTL), light, full page: side column on the left. Stored downscaled to 1080 px wide (JPEG)."
+      },
+      {
+        "file": "contact-redesign/contact-fa-dark-1024.jpg",
+        "route": "/fa/contact",
+        "viewport": {
+          "width": 1024,
+          "height": 768
+        },
+        "state": "Persian (RTL), dark, 1024 px: two columns, no orphan card. JPEG."
+      },
+      {
+        "file": "contact-redesign/contact-en-light-768.jpg",
+        "route": "/en/contact",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "English, light, 768 px: one column (safety, teams, form, Telegram), address card below the map. JPEG."
+      },
+      {
+        "file": "contact-redesign/contact-fa-dark-390.jpg",
+        "route": "/fa/contact",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian, dark, 390 px touch layout. JPEG."
+      },
+      {
+        "file": "contact-redesign/contact-en-light-390.jpg",
+        "route": "/en/contact",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "English, light, 390 px touch layout. JPEG."
+      },
+      {
+        "file": "contact-redesign/contact-success-en.jpg",
+        "route": "/en/contact",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "state": "Form after a real submission to the local backend: envelope and typed reference (reference generated by the disposable test backend). JPEG."
+      }
+    ]
   }
 }

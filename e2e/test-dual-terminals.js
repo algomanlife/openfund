@@ -12,6 +12,7 @@ const { chromium } = require(
 );
 const fs = require("node:fs"),
   path = require("node:path");
+const { chooseLocale } = require("./helpers/language.cjs");
 const BASE = process.env.TEST_FRONTEND_URL || "http://localhost:5186",
   API = process.env.TEST_BACKEND_URL || "http://localhost:8091";
 const OUT = path.resolve(__dirname, "../output/playwright");
@@ -371,7 +372,7 @@ const results = [],
     ) === "Dashboard|Perpetual Terminal|Portfolio|Leaderboard|Rewards",
   );
   await page.screenshot({ path: path.join(OUT, "perpetual-trade-en.png") });
-  await page.locator('.of-language-select select').first().selectOption('fa');
+  await chooseLocale(page, 'fa');
   await page.waitForFunction(() => document.documentElement.dir === "rtl");
   check("Persian route and RTL", page.url().includes("/fa/perpetual/trade"));
   await page.setViewportSize({ width: 390, height: 844 });

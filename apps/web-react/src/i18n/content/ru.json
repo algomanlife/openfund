@@ -3930,5 +3930,16 @@
   "Illustration: a ten-seat council votes on an example proposal. Quorum is 7 participating members and approval needs 6 votes; abstaining counts as participation. The outcomes shown are examples, not real decisions.": "Иллюстрация: совет из десяти мест голосует по примерному предложению. Кворум — 7 участвующих членов, для одобрения нужно 6 голосов; воздержание считается участием. Показанные результаты — примеры, а не реальные решения.",
   "Illustration": "Иллюстрация",
   "Abstain": "Воздержались",
-  "Quorum": "Кворум"
+  "Quorum": "Кворум",
+  "Conditions for this account": "Условия для этого счёта",
+  "High-impact news: on funded accounts, profit from trades within ${min} minutes of the event is deducted from rewards.": "Новости с высоким влиянием: на финансируемых счетах прибыль от сделок в пределах ${min} минут от события вычитается из вознаграждений.",
+  "High-impact news: opening, closing or holding a position within ${min} minutes of the event is a breach.": "Новости с высоким влиянием: открытие, закрытие или удержание позиции в пределах ${min} минут от события является нарушением.",
+  "Holding": "Удержание позиций",
+  "Lower daily-loss option": "Вариант с меньшим дневным убытком",
+  "More conditions": "Дополнительные условия",
+  "On funded accounts, open positions are closed automatically in the daily closing window.": "На финансируемых счетах открытые позиции закрываются автоматически в ежедневное окно закрытия.",
+  "Positions may not be held open over the weekend.": "Позиции нельзя оставлять открытыми на выходные.",
+  "Reward cycles": "Циклы вознаграждений",
+  "These conditions are what Openfund’s server enforces now and may be newer than this page. The Rulebook has the full rules.": "Эти условия — то, что сейчас применяет сервер Openfund, и они могут быть новее этой страницы. Полные правила — в своде правил.",
+  "Required fields": "Обязательные поля"
 }

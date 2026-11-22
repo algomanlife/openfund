@@ -78,18 +78,19 @@ html[data-theme=light] .co-cta.primary{color:#fff}
 .co-dept .text-link{margin-top:auto;align-self:flex-start;background:none;border:0;padding:0;cursor:pointer;color:var(--mint);font:inherit;font-size:13px}
 .co-dept.active{border-color:var(--mint)}
 .co-dept.telegram{border-style:dashed}
-.co-cards.four:has(.telegram){grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
 .co-mail{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px}
 .co-mail a{color:var(--white);word-break:break-all}
 .co-copy{border:1px solid var(--line);background:none;color:var(--body);border-radius:6px;font:inherit;font-size:11px;padding:2px 8px;cursor:pointer}
 .co-copy:hover,.co-copy:focus-visible{border-color:var(--mint);color:var(--mint)}
-.co-form{max-width:900px;margin-top:10px}
+.co-form{margin-top:10px}
 .co-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px;margin-top:16px}
 .co-field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--body)}
 .co-field.wide,.co-grid .wide{grid-column:1/-1}
-.co-field input,.co-field select,.co-field textarea{background:var(--surface-2);color:var(--white);border:1px solid var(--line);border-radius:9px;padding:11px 12px;font:inherit;font-size:14px;width:100%;box-sizing:border-box}
+.co-field input,.co-field select,.co-field textarea{background:color-mix(in srgb,var(--surface-2) 80%,var(--bg));color:var(--white);border:1px solid color-mix(in srgb,var(--body) 32%,transparent);border-radius:10px;padding:12px 13px;min-height:46px;font:inherit;font-size:14px;width:100%;box-sizing:border-box;transition:border-color .2s,box-shadow .2s}
+.co-field input:hover,.co-field select:hover,.co-field textarea:hover{border-color:color-mix(in srgb,var(--mint) 45%,var(--line))}
 .co-field textarea{resize:vertical;min-height:150px;line-height:1.7}
-.co-field :is(input,select,textarea):focus-visible{outline:2px solid var(--mint);outline-offset:1px;border-color:var(--mint)}
+.co-field :is(input,select,textarea):focus-visible{outline:2px solid var(--mint);outline-offset:1px;border-color:var(--mint);box-shadow:0 0 0 4px color-mix(in srgb,var(--mint) 18%,transparent),0 0 22px color-mix(in srgb,var(--mint) 22%,transparent)}
+.co-field>span:first-child{color:var(--white);font-weight:500}
 .co-field [aria-invalid=true]{border-color:#e35169}
 .co-count{color:var(--muted);font-size:11px;align-self:flex-end}
 .co-error{color:#ff7a8d;font-size:12px}
@@ -104,7 +105,6 @@ html[data-theme=light] .co-error{color:#b3132e}
 .co-form-done .text-link{background:none;border:0;padding:0;cursor:pointer;color:var(--mint);font:inherit}
 .co-ref{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:15px}
 .co-ref strong{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em;color:var(--white)}
-.co-location-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start;margin-top:12px}
 .co-address address{font-style:normal;color:var(--white);line-height:1.9;margin-bottom:10px}
 .co-map{margin:0}
 .co-map svg{display:block;width:100%;height:auto;aspect-ratio:16/10;border-radius:14px;border:1px solid var(--line)}
@@ -135,11 +135,116 @@ html[data-theme=light] .co-map-label.muted{fill:#52665b}
 html[data-theme=light] .co-map-mark{fill:#fff}
 html[data-theme=light] .co-map-marker{stroke:#fff}
 @media (prefers-reduced-motion:reduce){.co-map-pulse{animation:none;opacity:.18}}
-.co-help{list-style:none;padding:0;margin:16px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
-.co-help a,.co-help-pending{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--white);font-size:14px}
-.co-help a:hover,.co-help a:focus-visible{border-color:var(--mint);color:var(--mint)}
-.co-help-pending{color:var(--muted);border-style:dashed;flex-direction:column;align-items:flex-start;gap:2px}
-.co-help-pending small{font-size:11px}
-[dir=rtl] .co-help a span{transform:scaleX(-1)}
-@media (max-width:860px){.co-location-grid{grid-template-columns:1fr}}
 @media (max-width:700px){.co-grid{grid-template-columns:1fr}}
+
+/* ---- contact page layout (hero, two columns, form card, location, help) ---- */
+/* compact hero: text beside the routing art on desktop, so the first useful
+   content is visible without a full screen of headline */
+.information-page .co-contact-hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:center;gap:clamp(18px,4vw,48px);text-align:start;padding-block:clamp(28px,5vw,56px) clamp(16px,3vw,28px)}
+.information-page .co-contact-hero h1{font-size:clamp(30px,4.2vw,50px);margin:14px 0 12px}
+.co-contact-hero .hero-intro{margin:0;max-width:60ch}
+.co-route{width:100%;max-width:420px;justify-self:center;overflow:visible}
+.co-route-path{stroke:color-mix(in srgb,var(--mint) 38%,transparent);stroke-width:1.5;stroke-dasharray:3 5}
+.co-route-hub{fill:var(--surface);stroke:var(--mint);stroke-width:1.5}
+.co-route-envelope{fill:none;stroke:var(--mint);stroke-width:1.5;stroke-linejoin:round}
+.co-route-halo{transform-box:fill-box;transform-origin:center}
+.co-route-pulse circle{fill:var(--mint);opacity:0;filter:drop-shadow(0 0 6px var(--mint))}
+.co-route-pulse{transform-box:view-box}
+.co-route-ring{fill:var(--surface);stroke:color-mix(in srgb,var(--mint) 45%,var(--line));stroke-width:1.5;transition:stroke .4s}
+.co-route-glow{fill:var(--mint);opacity:0;transform-box:fill-box;transform-origin:center}
+.co-route-icon{fill:none;stroke:var(--body);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .4s}
+.co-route-node.is-active .co-route-ring{stroke:var(--mint)}
+.co-route-node.is-active .co-route-icon{stroke:var(--mint)}
+.co-route-node.is-active .co-route-glow{opacity:.18}
+/* one pulse per department in an 8 s cycle; the node glows as it arrives */
+.co-route.is-running .co-route-pulse{animation:co-route-travel 8s linear infinite;animation-delay:calc(var(--i) * 2s)}
+.co-route.is-running .co-route-pulse circle{animation:co-route-dot 8s linear infinite;animation-delay:calc(var(--i) * 2s)}
+.co-route.is-running .co-route-glow{animation:co-route-arrive 8s ease-out infinite;animation-delay:calc(var(--i) * 2s)}
+.co-route.is-running .co-route-halo{animation:co-route-breathe 4s ease-in-out infinite}
+@keyframes co-route-travel{0%{transform:translate(0,0)}18%,100%{transform:translate(var(--tx),var(--ty))}}
+@keyframes co-route-dot{0%{opacity:0}3%{opacity:1}17%{opacity:1}21%,100%{opacity:0}}
+@keyframes co-route-arrive{0%,16%{opacity:0;transform:scale(.7)}20%{opacity:.45;transform:scale(1.15)}34%,100%{opacity:0;transform:scale(1)}}
+@keyframes co-route-breathe{0%,100%{transform:scale(.92);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+
+/* body: form in the main column; teams, Telegram and safety beside it
+   (left in RTL, right in LTR). Mobile: safety, teams, form, Telegram. */
+.co-contact-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);grid-template-areas:"form teams" "form telegram" "form safety";grid-template-rows:auto auto 1fr;gap:18px clamp(20px,3vw,36px);align-items:start;padding-bottom:20px}
+.co-contact-body>.co-safety{grid-area:safety;margin:0!important}
+.co-contact-teams{grid-area:teams}
+.co-form-card{grid-area:form}
+.co-telegram-card{grid-area:telegram;border-style:dashed}
+.co-contact-teams h2,.co-form-card h2{font-size:clamp(20px,2.2vw,26px);font-weight:600;line-height:1.35;margin:0 0 12px;color:var(--white)}
+#contact-form{scroll-margin-top:calc(85px + 1.25rem)}
+.co-dept-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.co-dept-item{border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--surface-2) 70%,transparent);transition:border-color .25s,box-shadow .25s}
+.co-dept-item:hover{border-color:color-mix(in srgb,var(--mint) 45%,var(--line))}
+.co-dept-item.active{border-color:var(--mint);box-shadow:0 0 0 1px color-mix(in srgb,var(--mint) 30%,transparent),0 10px 30px -18px color-mix(in srgb,var(--mint) 60%,transparent)}
+.co-dept-select{display:flex;gap:12px;align-items:flex-start;width:100%;min-height:44px;padding:12px 14px;background:none;border:0;border-radius:12px;color:inherit;font:inherit;text-align:start;cursor:pointer}
+.co-dept-select:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+.co-dept-icon{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:10px;color:var(--mint);background:color-mix(in srgb,var(--mint) 10%,transparent)}
+.co-dept-icon .co-icon{width:20px;height:20px}
+.co-dept-text{display:grid;gap:3px;min-width:0}
+.co-dept-text b{color:var(--white);font-size:14px;font-weight:600}
+.co-dept-text span{color:var(--muted);font-size:12.5px;line-height:1.7}
+.co-dept-item.active .co-dept-text b{color:var(--mint)}
+.co-dept-item .co-mail{margin:0;padding:0 14px 12px}
+.co-form-card{border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,30px);background:linear-gradient(160deg,color-mix(in srgb,var(--mint) 5%,var(--surface)),var(--surface) 60%)}
+.co-progress{display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px 10px;margin-top:14px;font-size:12px;color:var(--muted)}
+.co-progress b{color:var(--mint);font-weight:600}
+.co-progress>i{grid-column:1/-1;height:4px;border-radius:4px;background:color-mix(in srgb,var(--body) 16%,transparent);overflow:hidden}
+.co-progress>i>i{display:block;height:100%;border-radius:inherit;background:var(--mint);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+[dir=rtl] .co-progress>i>i{transform-origin:right}
+.co-envelope{width:96px;height:64px;overflow:visible;margin-bottom:6px}
+.co-envelope rect,.co-envelope path{fill:none;stroke:var(--mint);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.co-envelope{animation:co-envelope-send 1.1s cubic-bezier(.3,.7,.2,1) both}
+.co-envelope-flap{transform-box:fill-box;transform-origin:top;animation:co-envelope-seal .45s .1s ease-out both}
+.co-envelope-trail{opacity:0;animation:co-envelope-trail .9s .35s ease-out both}
+@keyframes co-envelope-seal{from{transform:scaleY(-1)}}
+@keyframes co-envelope-send{0%{transform:translate(0,8px) scale(.9);opacity:0}35%{transform:none;opacity:1}70%{transform:translate(10px,-4px) rotate(-3deg)}100%{transform:none}}
+@keyframes co-envelope-trail{0%{opacity:0;transform:translateX(16px)}40%{opacity:.8}100%{opacity:0;transform:translateX(-8px)}}
+[dir=rtl] .co-envelope{transform:scaleX(-1)}
+.co-typed{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em;color:var(--white)}
+.co-typed i{display:inline-block;width:.55em;height:1.05em;margin-inline-start:2px;vertical-align:-.15em;background:var(--mint);opacity:0}
+.co-typed i.is-typing{opacity:1;animation:co-caret .8s steps(2,jump-none) infinite}
+@keyframes co-caret{50%{opacity:0}}
+
+/* location: full-width map with the address card floating over it */
+.co-location{max-width:none}
+.co-location-stage{position:relative;margin-top:12px}
+.co-location-stage .co-map svg{aspect-ratio:21/9}
+.co-location-stage .co-address{position:absolute;inset-block-start:22px;inset-inline-end:22px;width:min(360px,42%);padding:18px 20px;border:1px solid color-mix(in srgb,var(--mint) 30%,var(--line));border-radius:14px;
+  background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 18px 50px -24px #000c}
+.co-location-stage .co-address h3{margin:0 0 6px;font-size:15px}
+
+/* quick help: icon tiles */
+.co-help{list-style:none;padding:0;margin:16px 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.co-help a{position:relative;display:flex;align-items:center;gap:12px;min-height:56px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--white);font-size:14px;overflow:hidden;isolation:isolate;transition:border-color .25s,transform .25s}
+.co-help a::before{content:'';position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .3s;background:radial-gradient(80% 120% at 20% 0%,color-mix(in srgb,var(--mint) 16%,transparent),transparent 70%)}
+.co-help a:hover,.co-help a:focus-visible{border-color:var(--mint);color:var(--mint);transform:translateY(-2px)}
+.co-help a:hover::before,.co-help a:focus-visible::before{opacity:1}
+.co-help-icon{flex:none;color:var(--mint)}
+.co-help a>span:not(.co-help-arrow){flex:1;min-width:0}
+.co-help-arrow{color:var(--muted)}
+[dir=rtl] .co-help-arrow{transform:scaleX(-1)}
+
+@media (max-width:1023.98px){
+  .information-page .co-contact-hero{grid-template-columns:1fr;text-align:center;justify-items:center}
+  .co-route{max-width:300px}
+  .co-contact-body{grid-template-columns:minmax(0,1fr);grid-template-areas:"safety" "teams" "form" "telegram";grid-template-rows:none}
+  .co-dept-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:860px){
+  .co-location-stage .co-map svg{aspect-ratio:16/10}
+  .co-location-stage .co-address{position:static;width:auto;margin-top:12px;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
+}
+@media (max-width:560px){
+  .co-dept-list{grid-template-columns:minmax(0,1fr)}
+  .co-route{max-width:240px}
+}
+@media (prefers-reduced-motion:reduce){
+  .co-route.is-running .co-route-pulse,.co-route.is-running .co-route-pulse circle,.co-route.is-running .co-route-glow,.co-route.is-running .co-route-halo,
+  .co-envelope,.co-envelope-flap,.co-envelope-trail,.co-typed i.is-typing{animation:none!important}
+  .co-route-node .co-route-glow{opacity:.1}
+  .co-help a,.co-help a:hover{transform:none;transition:none}
+  .co-progress>i>i{transition:none}
+}

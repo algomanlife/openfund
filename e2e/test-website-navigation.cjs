@@ -4,6 +4,7 @@ const { chromium } = require('playwright');
 const fs = require('node:fs');
 const path = require('node:path');
 const { createRequire } = require('node:module');
+const { chooseLocale, toggleLocale } = require('./helpers/language.cjs');
 const appRequire = createRequire(path.resolve(__dirname, '../apps/web-react/package.json'));
 const { buildSync } = appRequire('esbuild');
 const BASE = (process.env.TEST_FRONTEND_URL || 'http://127.0.0.1:5187/').replace(/\/?$/, '/');
@@ -17,9 +18,7 @@ function loadLibrary() {
 /* Language switching uses the five-language selector (fa, en, ar, ru, zh-CN);
    toggleLanguage keeps the previous fa <-> en intent of these steps. */
 async function toggleLanguage(page) {
-  const select = page.locator('.of-language-select select').first();
-  await select.waitFor({ state: 'attached' });
-  await select.selectOption((await select.inputValue()) === 'fa' ? 'en' : 'fa');
+  await toggleLocale(page);
 }
 
 async function desktop(page) {
