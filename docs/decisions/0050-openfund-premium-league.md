@@ -18,7 +18,7 @@ The platform already has a challenge engine that enforces daily and maximum loss
 6. **Awards come from the frozen standings and are idempotent.** Cash and hardware are tracked to fulfilment in `tournament_awards` (KYC and sanctions checks happen outside the platform). Ranks 4 to 10 receive an entitlement (ADR 0049); ranks 11 to 100 a single-use 35% coupon bound to the wallet for 90 days; ranks 1 to 10 a badge and every entrant who keeps the account to the end a Finisher badge, both as certificates.
 7. **Review, not automation.** Backstage shows signals (shared network prefixes, mirrored or opposite trades within 60 seconds, registration bursts) for human review. Disqualification is a reasoned, owner-gated, audited action.
 8. **Region.** The competition runs on GLOBAL only. IRAN does not mount the routes and the page shows that it is not available there.
-9. **Operator surface.** Backstage (owner session, CSRF, password re-entry, audit) is the operator surface. Tournament tables are not registered as Directus collections, so registrant emails are not exposed through the CMS.
+9. **Operator surface.** Backstage (owner session, CSRF, password re-entry, audit) is the operator surface. This change does not register the tournament tables as Directus collections. `register_operator_roles.py` (ADR 0049) already holds a Tournament Operator role whose field allow-list excludes email and network data; it skips the collections while they are absent. Registering them is a separate, reviewed step.
 
 ## Consequences
 
