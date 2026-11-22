@@ -8848,63 +8848,6 @@
       }
     ]
   },
-  "megaMenu": {
-    "branch": "agent/claude/mega-menu",
-    "baseCommit": "5c458d39c38878d4ab1b5da5a14631c819d177a1",
-    "status": "Unmerged branch; local verification only, not deployed",
-    "capturedAt": "2026-11-21T19:19:04+00:00",
-    "source": "npm run build:web + apps/backend on isolated test port 8303, disposable database; captured by e2e/test-mega-menu.cjs",
-    "cms": "Directus not running; bundled descriptions and icons",
-    "marketData": "Not used",
-    "wallet": "Anonymous",
-    "screenshots": [
-      {
-        "file": "mega-menu/mega-resources-en-1440.jpg",
-        "route": "/en/rulebook",
-        "viewport": {
-          "width": 1440,
-          "height": 900
-        },
-        "state": "English: Resources panel open (sub-groups, tiles, desktop downloads banner, page scrim). JPEG."
-      },
-      {
-        "file": "mega-menu/mega-economy-en-1440.jpg",
-        "route": "/en/rulebook",
-        "viewport": {
-          "width": 1440,
-          "height": 900
-        },
-        "state": "English: Economy panel opened from the keyboard, council banner. JPEG."
-      },
-      {
-        "file": "mega-menu/mega-resources-fa-1440-light.jpg",
-        "route": "/fa/rulebook",
-        "viewport": {
-          "width": 1440,
-          "height": 900
-        },
-        "state": "Persian (RTL), light: Resources panel. JPEG."
-      },
-      {
-        "file": "mega-menu/drawer-fa-390.jpg",
-        "route": "/fa/rulebook",
-        "viewport": {
-          "width": 390,
-          "height": 844
-        },
-        "state": "Persian, 390 px: drawer accordion with two-column icon tiles. JPEG."
-      },
-      {
-        "file": "mega-menu/drawer-en-768.jpg",
-        "route": "/en/rulebook",
-        "viewport": {
-          "width": 768,
-          "height": 1024
-        },
-        "state": "English, 768 px: drawer accordion. JPEG."
-      }
-    ]
-  },
   "applicationsMotion": {
     "branch": "agent/claude/applications-motion",
     "baseCommit": "2137b4d3e1d244bb304c87e25f3f93137be6b583",
@@ -8971,96 +8914,60 @@
       }
     ]
   },
-  "heroJourney": {
-    "branch": "agent/claude/hero-journey",
+  "footerBanner": {
+    "branch": "agent/claude/footer-alien-banner",
     "baseCommit": "5c458d39c38878d4ab1b5da5a14631c819d177a1",
     "status": "Unmerged branch; local verification only, not deployed",
-    "capturedAt": "2026-11-21T19:35:07+00:00",
-    "source": "npm run build:web + apps/backend on isolated test port 8304, disposable database openfund_scratch on a throwaway PostgreSQL cluster (port 55432); captured with Playwright (hero section element)",
+    "capturedAt": "2026-11-22T04:51:39+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8311, disposable database openfund_scratch on a throwaway PostgreSQL cluster (port 55432); Playwright element capture of the banner band",
     "cms": "Directus not running; bundled fallback copy",
-    "marketData": "Market ticker from the local backend; not part of the change",
+    "marketData": "None in the banner (illustrative motion only)",
     "wallet": "Anonymous; no wallet connected",
     "screenshots": [
       {
-        "file": "hero-journey/hero-en-dark-1440.jpg",
-        "route": "/en/challenges",
+        "file": "footer-banner/banner-en-dark-1440.jpg",
+        "route": "/en/rulebook",
         "viewport": {
           "width": 1440,
           "height": 900
         },
-        "state": "English (LTR), dark, 1440 px, hero section in the Funded stage (metal sheen). Illustration only: the card shows an example account and no real results."
+        "state": "English (LTR), dark, 1440 px. Decorative illustration; the top-centre screen is the real Open Trade capture already in the repository."
       },
       {
-        "file": "hero-journey/hero-fa-light-1440.jpg",
-        "route": "/fa/challenges",
+        "file": "footer-banner/banner-fa-light-1440.jpg",
+        "route": "/fa/rulebook",
         "viewport": {
           "width": 1440,
           "height": 900
         },
-        "state": "Persian (RTL), light, 1440 px, hero section in the Verified stage (rules face). Illustration only: the card shows an example account and no real results."
+        "state": "Persian (RTL), light theme: the band stays dark and fades into the page. Decorative illustration; the top-centre screen is the real Open Trade capture already in the repository."
       },
       {
-        "file": "hero-journey/hero-en-light-768.jpg",
-        "route": "/en/challenges",
+        "file": "footer-banner/banner-en-light-768.jpg",
+        "route": "/en/rulebook",
         "viewport": {
           "width": 768,
           "height": 1024
         },
-        "state": "English (LTR), light, 768 px, Evaluation stage with the sparkline drawing. Illustration only: the card shows an example account and no real results."
+        "state": "English, light, 768 px (16:9 frame). Decorative illustration; the top-centre screen is the real Open Trade capture already in the repository."
       },
       {
-        "file": "hero-journey/hero-fa-dark-390.jpg",
-        "route": "/fa/challenges",
+        "file": "footer-banner/banner-fa-dark-390.jpg",
+        "route": "/fa/rulebook",
         "viewport": {
           "width": 390,
           "height": 844
         },
-        "state": "Persian (RTL), dark, 390 px, Funded stage, no particles; the fixed market ticker overlaps the bottom of the element capture. Illustration only: the card shows an example account and no real results."
+        "state": "Persian, dark, 390 px: 4:5 focal crop on the alien and the centre monitors. Decorative illustration; the top-centre screen is the real Open Trade capture already in the repository."
       },
       {
-        "file": "hero-journey/hero-en-dark-1440-reduced.jpg",
-        "route": "/en/challenges",
+        "file": "footer-banner/banner-en-dark-1440-reduced.jpg",
+        "route": "/en/rulebook",
         "viewport": {
           "width": 1440,
           "height": 900
         },
-        "state": "English, dark, 1440 px, prefers-reduced-motion: static Funded frame. Illustration only: the card shows an example account and no real results."
-      },
-      {
-        "file": "hero-journey/hero-stage-eval.jpg",
-        "route": "/en/challenges",
-        "viewport": {
-          "width": 1440,
-          "height": 900
-        },
-        "state": "Card only: Evaluation stage. Illustration only: the card shows an example account and no real results."
-      },
-      {
-        "file": "hero-journey/hero-stage-target.jpg",
-        "route": "/en/challenges",
-        "viewport": {
-          "width": 1440,
-          "height": 900
-        },
-        "state": "Card only: target reached. Illustration only: the card shows an example account and no real results."
-      },
-      {
-        "file": "hero-journey/hero-stage-verified.jpg",
-        "route": "/en/challenges",
-        "viewport": {
-          "width": 1440,
-          "height": 900
-        },
-        "state": "Card only: verification flip to the rules face. Illustration only: the card shows an example account and no real results."
-      },
-      {
-        "file": "hero-journey/hero-stage-funded.jpg",
-        "route": "/en/challenges",
-        "viewport": {
-          "width": 1440,
-          "height": 900
-        },
-        "state": "Card only: Funded stage. Illustration only: the card shows an example account and no real results."
+        "state": "prefers-reduced-motion: static frame. Decorative illustration; the top-centre screen is the real Open Trade capture already in the repository."
       }
     ]
   },
@@ -9301,6 +9208,156 @@
           "height": 800
         },
         "state": "Form after a real submission to the local backend: envelope and typed reference (reference generated by the disposable test backend). JPEG."
+      }
+    ]
+  },
+  "megaMenu": {
+    "branch": "agent/claude/mega-menu",
+    "baseCommit": "5c458d39c38878d4ab1b5da5a14631c819d177a1",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-21T19:19:04+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8303, disposable database; captured by e2e/test-mega-menu.cjs",
+    "cms": "Directus not running; bundled descriptions and icons",
+    "marketData": "Not used",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "mega-menu/mega-resources-en-1440.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English: Resources panel open (sub-groups, tiles, desktop downloads banner, page scrim). JPEG."
+      },
+      {
+        "file": "mega-menu/mega-economy-en-1440.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English: Economy panel opened from the keyboard, council banner. JPEG."
+      },
+      {
+        "file": "mega-menu/mega-resources-fa-1440-light.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian (RTL), light: Resources panel. JPEG."
+      },
+      {
+        "file": "mega-menu/drawer-fa-390.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian, 390 px: drawer accordion with two-column icon tiles. JPEG."
+      },
+      {
+        "file": "mega-menu/drawer-en-768.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "English, 768 px: drawer accordion. JPEG."
+      }
+    ]
+  },
+  "heroJourney": {
+    "branch": "agent/claude/hero-journey",
+    "baseCommit": "5c458d39c38878d4ab1b5da5a14631c819d177a1",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-21T19:35:07+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8304, disposable database openfund_scratch on a throwaway PostgreSQL cluster (port 55432); captured with Playwright (hero section element)",
+    "cms": "Directus not running; bundled fallback copy",
+    "marketData": "Market ticker from the local backend; not part of the change",
+    "wallet": "Anonymous; no wallet connected",
+    "screenshots": [
+      {
+        "file": "hero-journey/hero-en-dark-1440.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English (LTR), dark, 1440 px, hero section in the Funded stage (metal sheen). Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-fa-light-1440.jpg",
+        "route": "/fa/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian (RTL), light, 1440 px, hero section in the Verified stage (rules face). Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-en-light-768.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "English (LTR), light, 768 px, Evaluation stage with the sparkline drawing. Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-fa-dark-390.jpg",
+        "route": "/fa/challenges",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian (RTL), dark, 390 px, Funded stage, no particles; the fixed market ticker overlaps the bottom of the element capture. Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-en-dark-1440-reduced.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark, 1440 px, prefers-reduced-motion: static Funded frame. Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-stage-eval.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Card only: Evaluation stage. Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-stage-target.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Card only: target reached. Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-stage-verified.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Card only: verification flip to the rules face. Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-stage-funded.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Card only: Funded stage. Illustration only: the card shows an example account and no real results."
       }
     ]
   }

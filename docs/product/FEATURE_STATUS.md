@@ -147,6 +147,7 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | React product shell and hash routes | Completed | [Router](../../apps/web-react/src/main.tsx); `/react/#/{locale}/…`; Persian/English and RTL retained |
 | Home product gateway and market discovery | Completed | `features/home`, `features/markets`; Gains data with source/freshness handling; instrument counts vary |
 | Home hero card trader journey (evaluation → target → verification flip → funded loop) | Completed (local; unmerged branch, not deployed) | `features/home/heroJourney.ts`; illustration only, no real account data; `e2e/test-hero-journey.cjs`; checked at 360–1920 px, RTL/LTR, dark/light, reduced motion |
+| Footer "alien trader" banner (shared site footer) | Completed (local; unmerged branch, not deployed) | `features/footer`; decorative, lazy, illustrated SVG (raster swap documented in [Footer banner](../website/FOOTER_BANNER.md)); `e2e/test-footer-banner.cjs` |
 | Compact terminal presentation | Completed | [Local acceptance](../reviews/terminal-ui/DELIVERY.md); both products/languages, 74px header, non-scrolling form at four desktop sizes; no production or execution change |
 | Shared Vela terminal | Completed | [Product architecture](../architecture/PRODUCT_TERMINALS.md); one workspace, independent Prop/Perpetual adapters |
 | Gains market-data adapter | Completed | [Integration](../integrations/GAINS.md); REST candles/metadata and WS marks; separate [VOB/Trades resources](../integrations/GAINS_DEPTH.md) are now connected |
