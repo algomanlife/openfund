@@ -521,9 +521,11 @@ test('Economy menu groups Governance, Ambassador (IB), Transparency, Revenue Mod
     assert.equal(trigger.tagName, 'BUTTON')
     assert.ok(trigger.textContent.includes(locale === 'en' ? 'Economy' : 'اقتصاد'))
     assert.equal(trigger.getAttribute('data-active-section'), 'true')
-    const hrefs = [...document.querySelectorAll('#website-economy a')].map(a => a.getAttribute('href'))
+    /* destination tiles, in order; the featured banner is a separate card */
+    const hrefs = [...document.querySelectorAll('#website-economy a.mega-tile')].map(a => a.getAttribute('href'))
+    assert.equal(document.querySelector('#website-economy a.mega-banner').getAttribute('href'), `/${locale}/governance`)
     assert.deepEqual(hrefs, [`/${locale}/governance`, `/${locale}/ambassador`, `/${locale}/transparency`, `/${locale}/revenue-model`, `/${locale}/live-market-access`, `/${locale}/referral`])
-    assert.equal(document.querySelector(`#website-economy a[href="/${locale}/referral"]`).textContent, locale === 'en' ? 'Referral & Rewards' : 'معرفی و پاداش')
+    assert.equal(document.querySelector(`#website-economy a[href="/${locale}/referral"] .mega-text b`).textContent, locale === 'en' ? 'Referral & Rewards' : 'معرفی و پاداش')
     assert.equal(document.querySelector(`#website-economy a[href="/${locale}/revenue-model"]`).getAttribute('aria-current'), 'page')
     const resources = [...document.querySelectorAll('#website-resources a')].map(a => a.getAttribute('href'))
     /* Governance and the partner programs moved under Economy (one consolidated
@@ -542,7 +544,10 @@ test('Resources is a disclosure rather than a route, with arrow navigation and E
   let prevented = false
   navigationKeyDown({ target: trigger, key: 'ArrowDown', preventDefault() { prevented = true } }, document)
   assert.equal(prevented, true)
-  assert.equal(document.activeElement.getAttribute('href'), '/en/faq')
+  /* ArrowDown focuses the first link of the panel: the Learn sub-group comes first */
+  assert.equal(document.activeElement, document.querySelector('#website-resources a'))
+  assert.equal(document.activeElement.getAttribute('href'), '/en/learn')
+  assert.deepEqual([...document.querySelectorAll('#website-resources .mega-section h3')].map(h => h.textContent), ['Learn', 'Product', 'Company'])
   navigationKeyDown({ target: document.activeElement, key: 'Escape', preventDefault() {}, stopPropagation() {} }, document)
   assert.equal(document.activeElement, trigger)
   assert.equal(trigger.getAttribute('aria-expanded'), 'false')

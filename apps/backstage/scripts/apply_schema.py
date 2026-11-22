@@ -218,6 +218,8 @@ def main():
     ensure_field('navigation_items', 'route', 'string', meta={'interface': 'input', 'options': {'placeholder': '#/terminal'}}, schema={})
     ensure_field('navigation_items', 'external_url', 'string', meta={'interface': 'input', 'options': {'placeholder': 'https://…'}}, schema={})
     ensure_field('navigation_items', 'visible', 'boolean', meta={'interface': 'boolean'}, schema={'default_value': True})
+    # mega menu: an icon key from apps/web-react/src/features/navigation/megaMenu.ts (MEGA_ICONS); unknown keys fall back to the route's icon
+    ensure_field('navigation_items', 'icon', 'string', meta={'interface': 'input', 'note': 'Mega menu icon key (for example markets, tools, developers)'}, schema={'max_length': 40})
     ensure_field('navigation_items', 'status', 'string',
         meta={'interface': 'select-dropdown', 'options': {'choices': [
             {'text': 'Published', 'value': 'published'}, {'text': 'Draft', 'value': 'draft'}, {'text': 'Archived', 'value': 'archived'},

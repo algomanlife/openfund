@@ -93,7 +93,10 @@ async function interactions(page) {
     await page.locator('.menu').click();
     check(await page.locator('.menu').getAttribute('aria-expanded')==='true', 'mobile open '+route);
     // compact navigation lives in the off-canvas drawer
-    const target=page.locator('.of-offcanvas a.of-drawer-link[href$="/tools"]');
+    /* group links are tiles inside an accordion: expand Resources first, as a visitor would */
+    const resourcesGroup=page.locator('.of-offcanvas .of-drawer-accordion[aria-controls="website-resources-drawer"]');
+    if(await resourcesGroup.getAttribute('aria-expanded')!=='true') await resourcesGroup.click();
+    const target=page.locator('.of-offcanvas a.mega-tile[href$="/tools"]');
     check(await target.isVisible(),'mobile resources visible '+width+' '+route);
     await target.click();
     await page.waitForURL(base+other+'/tools');

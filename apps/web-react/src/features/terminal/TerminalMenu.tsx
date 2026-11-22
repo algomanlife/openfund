@@ -1,6 +1,8 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import OffCanvas from '../navigation/OffCanvas'
+import MegaIcon from '../navigation/MegaIcon'
+import '../navigation/mega-menu.css'
 import { primary, route, type Locale, type Product } from './model'
 import { dirOf, pick, pickFormat } from '../../i18n/locales'
 import { BRAND_WORDMARK } from '../../brand/wordmark'
@@ -28,7 +30,7 @@ function TerminalMenu({ locale, product, page, accountsHref, accountsSection, pa
   useEffect(() => { setOpen(false) }, [pathname, search, locale])
   const current = (id: string) => id === 'journal' ? page === 'journal' && !accountsSection : page === id
   const item = (key: string, to: string, label: string, active: boolean) =>
-    <li key={key}><Link className="of-drawer-link" to={to} onClick={close} aria-current={active ? 'page' : undefined}>{label}</Link></li>
+    <li key={key}><Link className="mega-tile" to={to} onClick={close} aria-current={active ? 'page' : undefined}><span className="mega-icon"><MegaIcon name={key} /></span><span className="mega-text"><b>{label}</b></span></Link></li>
 
   return <>
     <button ref={trigger} type="button" className="of-terminal-menu-trigger" aria-haspopup="dialog"
@@ -43,7 +45,7 @@ function TerminalMenu({ locale, product, page, accountsHref, accountsSection, pa
         <img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="24" height="27" alt="" /><BrandWordmark as="b" />
       </Link>}>
       <nav id="terminal-navigation-drawer" className="of-drawer-nav" aria-label={t('ناوبری ترمینال', 'Terminal navigation')}>
-        <ul>
+        <ul className="mega-tiles is-drawer">
           {primary[product].map(([id, fa, en]) => item(id, route(locale, product, id), id === 'trade' ? t('معاملات', 'Trading') : t(fa, en), current(id)))}
           {item('journal', route(locale, product, 'journal'), t('ژورنال', 'Journal'), current('journal'))}
           {item('accounts', accountsHref, t('حساب‌ها', 'Accounts'), accountsSection)}

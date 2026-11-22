@@ -233,13 +233,15 @@ async function walletDisclosureFits(page){
    const expectedNavigation = {
     primary: ['challenges', 'markets', 'rulebook'],
     economy: ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'],
-    resources: ['faq', 'learn', 'learn/glossary', 'tools', 'apps', 'roadmap', 'developers', 'certificate-verification', 'about', 'contact'],
+    resources: ['learn', 'learn/glossary', 'faq', 'apps', 'tools', 'roadmap', 'developers', 'about', 'contact', 'certificate-verification'],
    };
    for (const [group, routes] of Object.entries(expectedNavigation)) {
-    const selector = group === 'primary' ? '#navigation > a' : `#website-${group} a`;
+    /* mega menu: destination tiles in section order; the featured banner is checked separately */
+    const selector = group === 'primary' ? '#navigation > a' : `#website-${group} a:not(.mega-banner)`;
     const hrefs = await page.locator(selector).evaluateAll(links => links.map(link => link.getAttribute('href')));
     assert.deepEqual(hrefs, routes.map(route => `/${locale}/${route}`), prefix+' other-page '+group+' navigation');
    }
+   check(prefix+' mega menu banners', JSON.stringify(await page.locator('#website-economy a.mega-banner, #website-resources a.mega-banner').evaluateAll(l => l.map(a => a.getAttribute('href')))) === JSON.stringify([`/${locale}/governance`, `/${locale}/apps#desktop-builds`]));
    const tv=page.locator('.credits-row a[href="https://www.tradingview.com/news/"]');await tv.waitFor();
    check(prefix+' TradingView description',(await tv.innerText()).includes(locale==='fa'?'اطلاعات و اخبار بازارها':'Market Data & News'));
    check(prefix+' redundant external label removed',!(/منبع خارجی|External resource/.test(await tv.innerText())));
