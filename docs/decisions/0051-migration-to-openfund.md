@@ -53,6 +53,17 @@ Rules from the brief, all configurable:
 7. **Retention.** `files_purge_after` is set at the decision or withdrawal (`retention_days`, default 90). An hourly job deletes the objects and records the purge in `migration_events`.
 8. **Regions.** Each runtime mounts the routes with its own `MIGRATION_STORAGE_*`, so IRAN users' requests and files stay in the IRAN runtime and its database (regional ownership model). Until storage is configured the form says "opening soon" and stores nothing.
 
+## Owner update (2026-11-23)
+
+- **Firms.** `migration_firms` gains `website_url` (https), `program_types` and `evidence_types` (seeded only where empty, so owner edits are never overwritten), and an optional logo:
+  - the owner uploads it in Backstage (PNG, JPEG or WebP up to 200 KB, checked by magic bytes; no SVG);
+  - it is stored in the database and served by `GET /migration/firms/:id/logo` with `nosniff` and a `default-src 'none'` policy;
+  - no firm logo is downloaded or recreated, and until one is uploaded the page shows an original monogram badge.
+
+  The seeded official sites and the program and evidence wording are starting values for the owner to confirm per firm.
+- **Request.** A contact email is required (`migration_requests.contact_email`, checked without a backtracking pattern).
+- **Hero.** A frameless full-bleed scene (`features/migration/heroScene.ts`) replaces the framed flamingo panel on `/migrate`.
+
 ## Consequences
 
 - The pricing and provisioning paths change only for orders that carry a pass; every other order is untouched.

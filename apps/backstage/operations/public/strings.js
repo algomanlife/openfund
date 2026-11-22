@@ -646,4 +646,11 @@ export const labels = {
   request_not_in_review: ['This request is not in review.', 'این درخواست در حال بازبینی نیست.'], kyc_required: ['Confirm KYC and the name match before approving.', 'پیش از تأیید، KYC و تطابق نام را تأیید کنید.'],
   checklist_incomplete: ['The evidence checklist is not complete.', 'فهرست مدارک کامل نیست.'], already_migrated: ['This trader has already migrated.', 'این معامله‌گر قبلاً مهاجرت کرده است.'],
   pass_not_revocable: ['Only an unused pass can be revoked.', 'فقط مجوز استفاده‌نشده قابل ابطال است.'], invalid_setting: ['A rule value is not valid.', 'یکی از مقادیر قوانین معتبر نیست.'], invalid_decision: ['Invalid decision.', 'تصمیم نامعتبر است.'],
+  /* Migration firms (owner update 2026-11-23) */
+  website: ['Official site', 'سایت رسمی'], programTypes: ['Accepted program types (comma-separated)', 'نوع برنامه‌های پذیرفته‌شده (با ویرگول)'],
+  evidenceTypes: ['Evidence the firm provides (comma-separated)', 'مدارکی که شرکت ارائه می‌دهد (با ویرگول)'], editFirm: ['Edit firm', 'ویرایش شرکت'],
+  uploadLogo: ['Upload logo', 'بارگذاری لوگو'], removeLogo: ['Remove logo', 'حذف لوگو'], logo: ['Logo', 'لوگو'],
+  logoFile: ['Logo file (PNG, JPEG or WebP, up to 200 KB, supplied or approved by the firm)', 'فایل لوگو (PNG، JPEG یا WebP تا ۲۰۰ کیلوبایت، ارائه‌شده یا تأییدشده توسط شرکت)'],
+  invalid_file: ['The file could not be read.', 'فایل خوانده نشد.'], firm_not_found: ['Firm not found.', 'شرکت پیدا نشد.'],
+  email: ['Email', 'ایمیل'], actions: ['Actions', 'اقدام‌ها'], file: ['File', 'فایل'],
 }

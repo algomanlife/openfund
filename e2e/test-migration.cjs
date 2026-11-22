@@ -28,7 +28,7 @@ const open = async (page, route) => {
         await page.addInitScript(t => { try { localStorage.setItem('openfund-theme', t); localStorage.setItem('of-theme', t) } catch {} }, theme)
         await open(page, `/${locale}/migrate`)
         const r = await page.evaluate(() => ({ dir: document.documentElement.dir, overflow: document.documentElement.scrollWidth - innerWidth,
-          hero: !!document.querySelector('.mg-hero .flamingo-scene'), rows: document.querySelectorAll('.mg-compare tbody tr').length,
+          hero: !!document.querySelector('.mg-hero .mh-root svg') && !document.querySelector('.mg-hero .flamingo-scene'), rows: document.querySelectorAll('.mg-compare tbody tr').length,
           steps: document.querySelectorAll('.mg-steps li').length, evidence: document.querySelectorAll('.mg-evidence li').length }))
         ok(`${locale} ${theme}: ${dir}, flamingo hero, comparison, steps, evidence, no overflow`,
           r.dir === dir && r.hero && r.rows === 5 && r.steps === 5 && r.evidence === 5 && r.overflow <= 0, JSON.stringify(r))
@@ -47,7 +47,15 @@ const open = async (page, route) => {
       await open(page, '/en/migrate')
       const text = await page.locator('main').textContent()
       ok('firm names appear in text with the not-affiliated disclaimer', /not affiliated/.test(text) && (!config?.firms?.length || config.firms.every(f => text.includes(f.name))))
-      ok('no firm logos are rendered', await page.locator('.mg-section img').count() === 0)
+      const firms = await page.evaluate(() => [...document.querySelectorAll('.mg-firm')].map(f => ({ name: f.querySelector('h3')?.textContent,
+        badge: !!f.querySelector('.mg-monogram, .mg-firm-logo'), site: f.querySelector('a[target=_blank]')?.getAttribute('rel') || '' })))
+      ok('each firm shows a logo or monogram, its name and an official-site link that opens safely',
+        firms.length === (config?.firms?.length ?? 0) && firms.every(f => f.name && f.badge && (!f.site || /noopener/.test(f.site) && /noreferrer/.test(f.site))), JSON.stringify(firms))
+      ok('only uploaded logos are shown as images; the rest are original monograms',
+        await page.locator('.mg-firm-logo').count() === (config?.firms ?? []).filter(f => f.logoUrl).length)
+      const birds = await page.evaluate(() => { const ctas = [...document.querySelectorAll('.mg-hero .hero-actions a')].map(a => a.getBoundingClientRect())
+        return [...document.querySelectorAll('.mh-landers .mh-pose.is-ground')].map(b => b.getBoundingClientRect()).filter(r => r.width).some(r => ctas.some(cta => !(r.right < cta.left || r.left > cta.right || r.bottom < cta.top || r.top > cta.bottom))) })
+      ok('standing birds never overlap the call to action', !birds)
       const panel = await page.locator('#mg-request').textContent()
       ok('the request panel follows the API', config?.open ? /Connect wallet|Sign in with your wallet/.test(panel) : /opening soon/i.test(panel), panel.slice(0, 120))
       await page.close()

@@ -1,12 +1,10 @@
 /* Migration to Openfund (/:locale/migrate). The hero is the cinematic
    flamingo scene (FlamingoScene, --flamingo); its motion is gated by the
    scene itself (on screen, visible tab, reduced motion). */
-.mg-hero{position:relative;isolation:isolate;overflow:hidden;min-block-size:clamp(420px,62vh,640px);display:grid;align-items:end}
-.mg-hero-scene{position:absolute;inset:0;z-index:-2}
-.mg-hero-scene svg,.mg-hero-scene .flamingo-scene{inline-size:100%;block-size:100%;object-fit:cover}
+.mg-hero{position:relative;isolation:isolate;overflow:hidden;min-block-size:clamp(480px,72vh,720px);display:grid;align-items:end}
 .mg-hero::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,color-mix(in srgb,var(--bg) 88%,transparent) 0,color-mix(in srgb,var(--bg) 55%,transparent) 45%,transparent 75%)}
 [dir=rtl] .mg-hero::before{background:linear-gradient(270deg,color-mix(in srgb,var(--bg) 88%,transparent) 0,color-mix(in srgb,var(--bg) 55%,transparent) 45%,transparent 75%)}
-@media (max-width:760px){.mg-hero::before,[dir=rtl] .mg-hero::before{background:linear-gradient(transparent 10%,color-mix(in srgb,var(--bg) 80%,transparent) 55%)}}
+
 .mg-hero::after{content:'';position:absolute;inset:auto 0 0;block-size:60%;z-index:-1;pointer-events:none;background:linear-gradient(transparent,var(--bg) 92%)}
 .mg-hero-copy{padding-block:48px 40px}
 .mg-eyebrow{font-size:12px;letter-spacing:.08em;color:var(--flamingo)}
@@ -66,3 +64,18 @@ html[data-theme=light] .mg-error{color:#a8321f}
 
 @media (max-width:900px){.mg-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:560px){.mg-steps{grid-template-columns:minmax(0,1fr)}.mg-section{padding-block:40px}}
+.mg-firms{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.mg-firm{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--surface);min-inline-size:0}
+.mg-firm h3{font-size:17px;margin-bottom:4px;color:var(--white)}
+.mg-firm p{font-size:13px;color:var(--body);line-height:1.8;margin-top:6px}
+.mg-firm-logo{inline-size:48px;block-size:48px;object-fit:contain;border-radius:10px;background:#fff;flex:none}
+.mg-monogram{flex:none}
+.mg-monogram-shape{fill:color-mix(in srgb,var(--flamingo) 16%,var(--surface));stroke:color-mix(in srgb,var(--flamingo) 60%,transparent);stroke-width:1.5}
+.mg-monogram text{fill:var(--white);font:700 15px var(--ds-font-latin);letter-spacing:.04em}
+/* phones: the scene sits above the copy, so landing birds never meet the call to action */
+@media (max-width:760px){
+  .mg-hero{min-block-size:0;display:block}
+  .mg-hero .mh-root{position:relative;inset:auto;block-size:min(58vw,300px);z-index:0}
+  .mg-hero::before,[dir=rtl] .mg-hero::before,.mg-hero::after{display:none}
+  .mg-hero-copy{padding-block:24px 32px}
+}

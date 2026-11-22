@@ -93,3 +93,30 @@ test('--flamingo is defined for both themes and passes WCAG AA', () => {
   const uses = ['../src/features/navigation/mega-menu.css', '../src/features/navigation/flamingo.css'].map(read).join('\n')
   assert.ok(uses.includes('var(--flamingo'))
 })
+
+test('Economy shows two featured banners: council and the animated whitepaper (owner update)', () => {
+  for (const locale of ['fa', 'en', 'ar', 'ru', 'zh-CN']) {
+    const economy = navigationModel(locale, `/${locale}/home`, null).groups.find(g => g.id === 'website-economy')
+    assert.deepEqual(economy.banners.map(b => b.kind), ['council', 'whitepaper'])
+    const wp = economy.banners[1]
+    assert.equal(wp.href, `/${locale}/whitepaper`)
+    assert.ok(wp.title && wp.body && wp.cta, `${locale} copy`)
+    assert.equal(economy.banner.kind, 'council', 'the first banner stays the group banner')
+  }
+  const en = navigationModel('en', '/en/home', null).groups.find(g => g.id === 'website-economy').banners[1]
+  assert.deepEqual([en.title, en.cta], ['Openfund whitepaper', 'Read the whitepaper'])
+  const css = read('../src/features/navigation/mega-menu.css')
+  const blocks = css.match(/@keyframes wp-[a-z]+\{[^@]*?\}\s*(?=@|\.|$)/g) || []
+  assert.equal(blocks.length, 3, 'three whitepaper keyframes')
+  for (const block of blocks) {
+    for (const prop of block.match(/[a-z-]+(?=:)/g)) assert.ok(['opacity', 'transform'].includes(prop), `whitepaper keyframes animate only transform/opacity (${prop})`)
+  }
+  assert.match(css, /prefers-reduced-motion:reduce\)\{\.openfund-header \.nav-account\.resources-open :is\(\.wp-page/)
+  assert.ok(!Array.isArray(MEGA_BANNERS['website-challenges']), 'the challenges group keeps one banner')
+})
+
+test('the menu flamingo banner has no mark and no reflection (owner update)', () => {
+  const art = read('../src/features/navigation/flamingoArt.ts')
+  assert.match(art, /panel: \{[^}]*mark: 0/)
+  assert.match(art, /compact: \{[^}]*mark: 0/)
+})

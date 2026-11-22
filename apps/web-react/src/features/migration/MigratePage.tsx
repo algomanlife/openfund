@@ -4,7 +4,7 @@ import InformationShell, { useInformationLocale } from '../information/Informati
 import { text, tx } from '../information/content'
 import { pickFormat, intlLocale, type AppLocale } from '../../i18n/locales'
 import { apiFetch, backendUrl, useSession } from '../../session/useOpenfundSession'
-import FlamingoScene from '../navigation/FlamingoScene'
+import MigrationHero from './MigrationHero'
 import DirArrow from '../../ui/DirArrow'
 import './migration.css'
 
@@ -38,6 +38,9 @@ const c = {
   e4: text('A screen recording of a live login showing the account and payout history', 'فیلم صفحه از ورود زنده که حساب و سابقهٔ برداشت را نشان دهد'),
   e5: text('An identity document whose name matches the firm’s documents (KYC)', 'مدرک هویتی با نامی مطابق مدارک شرکت (KYC)'),
   privacy: text('Files are stored privately and encrypted, opened only by reviewers through links that expire in minutes, and deleted ${d} days after the decision.', 'فایل‌ها خصوصی و رمزنگاری‌شده نگهداری می‌شوند، فقط بازبین‌ها با لینک‌هایی که چند دقیقه بعد منقضی می‌شوند آن‌ها را باز می‌کنند و ${d} روز پس از تصمیم حذف می‌شوند.'),
+  firmsTitle: text('Accepted firms', 'شرکت‌های پذیرفته‌شده'),
+  officialSite: text('Official site', 'سایت رسمی'), programs: text('Accepted programs', 'برنامه‌های پذیرفته‌شده'), firmEvidence: text('Evidence the firm provides', 'مدارکی که شرکت ارائه می‌دهد'),
+  email: text('Email for updates on your request', 'ایمیل برای اطلاع از وضعیت درخواست'),
   notAffiliated: text('Openfund is not affiliated with any of the firms listed. Their names are used only to identify where your account is.', 'اوپن‌فاند به هیچ‌یک از شرکت‌های فهرست‌شده وابسته نیست. نام آن‌ها فقط برای مشخص کردن محل حساب تو آمده است.'),
   requestTitle: text('Your migration', 'مهاجرت تو'),
   soon: text('Migration requests are opening soon.', 'درخواست مهاجرت به‌زودی باز می‌شود.'),
@@ -77,7 +80,7 @@ const c = {
 }
 const ERR: Record<string, L> = {
   invalid_firm: text('Choose a firm.', 'یک شرکت انتخاب کن.'), invalid_size: text('Enter a valid account size.', 'اندازهٔ حساب معتبر وارد کن.'),
-  invalid_name: text('Enter your full name.', 'نام کامل را وارد کن.'), already_migrated: text('You have already migrated once.', 'تو قبلاً یک بار مهاجرت کرده‌ای.'),
+  invalid_name: text('Enter your full name.', 'نام کامل را وارد کن.'), invalid_email: text('Enter a valid email address.', 'ایمیل معتبر وارد کن.'), already_migrated: text('You have already migrated once.', 'تو قبلاً یک بار مهاجرت کرده‌ای.'),
   request_exists: text('You already have an open request.', 'یک درخواست باز داری.'), invalid_date: text('Enter the payout date.', 'تاریخ برداشت را وارد کن.'),
   invalid_url: text('Use an https link.', 'از لینک https استفاده کن.'), invalid_tx_hash: text('That transaction hash is not valid.', 'هش تراکنش معتبر نیست.'),
   tx_already_used: text('That transaction is already part of a request.', 'این تراکنش قبلاً در درخواستی آمده است.'),
@@ -85,7 +88,8 @@ const ERR: Record<string, L> = {
   file_too_large: text('The file is too large.', 'حجم فایل بیش از حد مجاز است.'), file_active_content: text('PDFs with scripts or embedded files are not accepted.', 'PDF دارای اسکریپت یا فایل جاسازی‌شده پذیرفته نمی‌شود.'),
   checklist_incomplete: text('The checklist is not complete yet.', 'فهرست بررسی هنوز کامل نیست.'), migration_opening_soon: text('Migration requests are opening soon.', 'درخواست مهاجرت به‌زودی باز می‌شود.'),
 }
-interface Config { open: boolean; firms: { id: string; name: string }[]; rules: { minPayouts: number; windowMonths: number; plans: string[]; retentionDays: number } }
+interface Firm { id: string; name: string; websiteUrl: string | null; programTypes: string[]; evidenceTypes: string[]; logoUrl: string | null }
+interface Config { open: boolean; firms: Firm[]; rules: { minPayouts: number; windowMonths: number; plans: string[]; retentionDays: number } }
 interface Evidence { id: string; kind: string; payoutDate: string | null; amountUsd: string | null; url: string | null; txHash: string | null; file: { contentType: string; sizeBytes: number } | null; verification: { verified: boolean | null } | null }
 interface Me { open: boolean; request: null | { id: string; status: string; firm: string; claimedMaxSizeUsd: string; approvedMaxSizeUsd: string | null; decisionReason: string | null }
   evidence?: Evidence[]; checklist?: { identity: boolean; fundedAccount: boolean; payouts: boolean; payoutCount: number; minPayouts: number; windowMonths: number; complete: boolean }
@@ -100,7 +104,7 @@ export default function MigratePage() {
   const num = (v: number) => new Intl.NumberFormat(intlLocale(locale)).format(v)
   return <InformationShell page="migrate" description={t(c.intro)} title={`${t(c.eyebrow)} | Openfund`}>
     <section className="mg-hero" id="top">
-      <FlamingoScene variant="hero" live className="mg-hero-scene" />
+      <MigrationHero />
       <div className="mg-hero-copy container">
         <p className="mg-eyebrow">{t(c.eyebrow)}</p>
         <h1>{t(c.title)}</h1>
@@ -132,9 +136,21 @@ export default function MigratePage() {
       <h2 id="mg-evidence">{t(c.evidenceTitle)}</h2>
       <ul className="mg-evidence">{[c.e1, c.e2, c.e3, c.e4, c.e5].map((e, i) => <li key={i}>{t(e)}</li>)}</ul>
       <p className="mg-note">{pickFormat(locale, c.privacy.fa, c.privacy.en, { d: num(rules.retentionDays) })}</p>
-      {config?.firms.length ? <p className="mg-note">{config.firms.map(f => f.name).join(' · ')}</p> : null}
-      <p className="mg-note">{t(c.notAffiliated)}</p>
     </section>
+
+    {config?.firms.length ? <section className="container mg-section" aria-labelledby="mg-firms">
+      <h2 id="mg-firms">{t(c.firmsTitle)}</h2>
+      <ul className="mg-firms">{config.firms.map(f => <li key={f.id} className="mg-firm">
+        {f.logoUrl ? <img className="mg-firm-logo" src={`${backendUrl()}${f.logoUrl}`} alt="" width="48" height="48" loading="lazy" /> : <Monogram name={f.name} />}
+        <div>
+          <h3>{f.name}</h3>
+          {f.websiteUrl && <a className="text-link" href={f.websiteUrl} target="_blank" rel="noopener noreferrer nofollow" dir="ltr">{t(c.officialSite)} <DirArrow kind="external" /></a>}
+          {f.programTypes.length > 0 && <p><b>{t(c.programs)}:</b> <span dir="auto">{f.programTypes.join(' · ')}</span></p>}
+          {f.evidenceTypes.length > 0 && <p><b>{t(c.firmEvidence)}:</b> <span dir="auto">{f.evidenceTypes.join(' · ')}</span></p>}
+        </div>
+      </li>)}</ul>
+      <p className="mg-note">{t(c.notAffiliated)}</p>
+    </section> : <section className="container mg-section"><p className="mg-note">{t(c.notAffiliated)}</p></section>}
 
     <RequestPanel locale={locale} t={t} config={config} />
 
@@ -181,9 +197,20 @@ function RequestPanel({ locale, t, config }: { locale: AppLocale; t: (v: L) => s
   </section>
 }
 
+/* an original monogram badge for a firm without an uploaded logo (never a recreation of its logo) */
+function Monogram({ name }: { name: string }) {
+  const words = name.replace(/([a-z])([A-Z])/g, '$1 $2').split(/[\s-]+/).filter(Boolean)
+  const letters = (words.length > 1 ? words[0][0] + words[1][0] : name.slice(0, 2)).toUpperCase()
+  return <svg className="mg-monogram" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" focusable="false">
+    <path d="M24 3l18 10v22L24 45 6 35V13z" className="mg-monogram-shape" />
+    <text x="24" y="29" textAnchor="middle">{letters}</text>
+  </svg>
+}
+
 function CreateForm({ t, config, busy, onCreate }: { t: (v: L) => string; config: Config; busy: boolean; onCreate: (b: object) => void }) {
-  const [firmId, setFirm] = useState(''), [size, setSize] = useState(''), [name, setName] = useState('')
-  return <form className="mg-card mg-form" onSubmit={e => { e.preventDefault(); onCreate({ firmId, claimedMaxSizeUsd: Number(size), fullName: name }) }}>
+  const [firmId, setFirm] = useState(''), [size, setSize] = useState(''), [name, setName] = useState(''), [email, setEmail] = useState('')
+  return <form className="mg-card mg-form" onSubmit={e => { e.preventDefault(); onCreate({ firmId, claimedMaxSizeUsd: Number(size), fullName: name, email }) }}>
+    <label>{t(c.email)}<input required type="email" autoComplete="email" dir="ltr" maxLength={254} value={email} onChange={e => setEmail(e.target.value)} /></label>
     <label>{t(c.firm)}<select required value={firmId} onChange={e => setFirm(e.target.value)}><option value="" />{config.firms.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}</select></label>
     <label>{t(c.size)}<input required type="number" min="1" step="1" dir="ltr" value={size} onChange={e => setSize(e.target.value)} /></label>
     <label>{t(c.fullName)}<input required maxLength={120} autoComplete="name" value={name} onChange={e => setName(e.target.value)} /></label>

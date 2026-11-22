@@ -3979,7 +3979,6 @@
   "A 30-day competition in analysis and risk.": "منافسة لمدة 30 يومًا في التحليل وإدارة المخاطر.",
   "Buy a challenge": "شراء تحدٍّ",
   "Funded elsewhere? Start at the funded stage.": "مموَّل في شركة أخرى؟ ابدأ من مرحلة التمويل.",
-  "Illustration: a flock of flamingos migrating to a new home, landing on a calm lake that reflects the OpenFi mark — like the flamingos that winter at Maharloo Lake near Shiraz, where Openfund is based.": "رسم توضيحي: سرب من طيور الفلامينغو يهاجر إلى موطن جديد ويهبط على بحيرة هادئة تعكس شعار OpenFi، مثل طيور الفلامينغو التي تقضي الشتاء في بحيرة مهارلو قرب شيراز، حيث يقع مقر Openfund.",
   "Migration to Openfund": "الانتقال إلى Openfund",
   "Models, sizes and rules side by side.": "النماذج والأحجام والقواعد جنبًا إلى جنب.",
   "Openfund Premium League": "دوري Openfund الممتاز",
@@ -4076,5 +4075,13 @@
   "Your migration": "انتقالك",
   "Your pass has been used for a purchase.": "تم استخدام تصريحك في عملية شراء.",
   "not verified automatically": "لم يُتحقق منها تلقائيًا",
-  "verified on-chain": "تم التحقق على السلسلة"
+  "verified on-chain": "تم التحقق على السلسلة",
+  "Illustration: a flock of flamingos migrating to a new home and landing on a calm lake, like the flamingos that winter at Maharloo Lake near Shiraz, where Openfund is based.": "رسم توضيحي: سرب من طيور النحام يهاجر إلى موطن جديد ويهبط على بحيرة هادئة، مثل طيور النحام التي تقضي الشتاء في بحيرة مهارلو قرب شيراز، حيث يقع مقر Openfund.",
+  "Accepted firms": "الشركات المقبولة",
+  "Accepted programs": "البرامج المقبولة",
+  "Email for updates on your request": "البريد الإلكتروني لتلقي تحديثات طلبك",
+  "Evidence the firm provides": "الأدلة التي توفرها الشركة",
+  "Official site": "الموقع الرسمي",
+  "Openfund whitepaper": "الورقة البيضاء لـ Openfund",
+  "How the evaluation, the economy and the council work, in one document.": "كيف يعمل التقييم والاقتصاد والمجلس، في وثيقة واحدة."
 }

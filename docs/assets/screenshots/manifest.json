@@ -9617,7 +9617,7 @@
     "branch": "agent/claude/migration",
     "baseCommit": "ddc1d96",
     "status": "Unmerged branch; local verification only, not deployed",
-    "capturedAt": "2026-11-22T21:41:02+00:00",
+    "capturedAt": "2026-11-22T22:14:34+00:00",
     "source": "Local production build served by apps/backend on a disposable Postgres; MIGRATION_STORAGE_* pointed at a local S3-compatible stand-in so requests read as open; wallet not connected",
     "cms": "Directus not running; bundled published-only fallback",
     "marketData": "Public Gains Network reads where they loaded; no fixtures",
@@ -9630,7 +9630,7 @@
           "width": 1440,
           "height": 900
         },
-        "state": "English, dark: cinematic flamingo hero (reduced-motion frame)"
+        "state": "English, dark: frameless flamingo hero (reduced-motion frame: landers standing in the water)"
       },
       {
         "file": "migration/compare-en-1440-light.jpg",
@@ -9730,6 +9730,69 @@
           "height": 844
         },
         "state": "Persian, light (RTL), phone: migration card on the challenges page"
+      },
+      {
+        "file": "migration/hero-motion-en-1440-dark.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: hero with motion (flyers crossing, landers in the water)"
+      },
+      {
+        "file": "migration/firms-en-1440-dark.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: accepted firms (monogram badges until a logo is uploaded; official sites; not-affiliated disclaimer)"
+      },
+      {
+        "file": "migration/firms-fa-390-light.jpg",
+        "route": "/fa/migrate",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian, light (RTL), phone: accepted firms"
+      },
+      {
+        "file": "migration/economy-menu-en-1440-dark.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: Economy menu with the council and whitepaper banners"
+      },
+      {
+        "file": "migration/economy-menu-fa-1024-light.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 1024,
+          "height": 900
+        },
+        "state": "Persian, light (RTL): Economy menu banners"
+      },
+      {
+        "file": "migration/challenges-menu-en-1440-dark.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: Challenges menu flamingo banner without the mark or reflection"
+      },
+      {
+        "file": "migration/economy-drawer-en-390-light.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "English, light, phone: drawer with the Economy group open (council and whitepaper cards)"
       }
     ]
   }

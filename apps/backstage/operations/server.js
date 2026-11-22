@@ -254,10 +254,14 @@ const operations = {
     request: (record, body) => [`/admin/migration/passes/${record}/revoke`, { reason: textOf(body.reason, 1000) }],
   },
   migrationFirms: {
-    identifier: value => value === 'new',
-    actions: ['save', 'settings'],
-    request: (_record, body) => body.action === 'save'
-      ? ['/admin/migration/firms', { name: textOf(body.name, 60), status: body.status === 'inactive' ? 'inactive' : 'active', reason: textOf(body.reason, 1000) }]
+    identifier: value => value === 'new' || uuid.test(value),
+    actions: ['save', 'settings', 'logo', 'removeLogo'],
+    request: (record, body) => body.action === 'logo' || body.action === 'removeLogo'
+      ? (uuid.test(record) ? [`/admin/migration/firms/${record}/logo`, body.action === 'removeLogo' ? { remove: true, reason: textOf(body.reason, 1000) }
+        : { contentType: textOf(body.contentType, 20), dataBase64: textOf(body.dataBase64, 280_000), reason: textOf(body.reason, 1000) }] : (() => { throw fail(400, 'invalid_request') })())
+      : body.action === 'save'
+      ? ['/admin/migration/firms', { name: textOf(body.name, 60), status: body.status === 'inactive' ? 'inactive' : 'active', websiteUrl: textOf(body.websiteUrl, 200, false),
+          programTypes: textOf(body.programTypes, 600, false), evidenceTypes: textOf(body.evidenceTypes, 600, false), reason: textOf(body.reason, 1000) }]
       : ['/admin/migration/settings', { minPayouts: body.minPayouts, windowMonths: body.windowMonths, retentionDays: body.retentionDays, passExpiresDays: body.passExpiresDays,
           plans: Array.isArray(body.plans) ? body.plans : undefined, reason: textOf(body.reason, 1000) }],
   },
@@ -571,6 +575,17 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
         if (!uuid.test(id)) throw fail(404, 'not_found')
         return send(res, 200, await backend('/admin/console/users/' + id + '/profile', 'GET', undefined, correlationId))
       }
+      /* firm logos (public bytes from the backend; images only, never HTML) */
+      if (path.startsWith('/api/migrationFirmLogo/') && req.method === 'GET') {
+        const id = path.slice('/api/migrationFirmLogo/'.length)
+        if (!uuid.test(id)) throw fail(404, 'not_found')
+        const upstream = await fetch(new URL('/migration/firms/' + id + '/logo', config.backend), { redirect: 'error', signal: AbortSignal.timeout(10_000) }).catch(() => null)
+        const type = upstream?.headers.get('content-type') || ''
+        if (!upstream?.ok || !['image/png', 'image/jpeg', 'image/webp'].includes(type)) { await upstream?.body?.cancel(); throw fail(404, 'not_found') }
+        const bytes = Buffer.from(await upstream.arrayBuffer())
+        res.writeHead(200, { 'Content-Type': type, 'Content-Length': bytes.length, 'Cache-Control': 'private, max-age=300', 'X-Content-Type-Options': 'nosniff' })
+        return res.end(bytes)
+      }
       const [, , section, record, extra] = path.split('/')
       /* write-only sections (notes, tags, challenge decisions) have no list route */
       const writeOnly = req.method === 'POST' && Object.hasOwn(operations, section)
@@ -649,7 +664,7 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
       /* table-driven owner mutations (same session/CSRF/password/region gate) */
       if (Object.hasOwn(operations, section)) {
         const spec = operations[section]
-        const body = await json(req, section === 'plans' ? 65536 : 8192)
+        const body = await json(req, section === 'plans' ? 65536 : section === 'migrationFirms' ? 300_000 : 8192)
         if (!spec.actions.includes(body.action) || typeof record !== 'string' ||
             !(spec.identifier instanceof RegExp ? spec.identifier.test(record) : spec.identifier(record)))
           throw fail(400, 'invalid_request')

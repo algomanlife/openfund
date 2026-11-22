@@ -750,6 +750,7 @@ function migrationView(main, data) {
   const check = (ok, key) => el('li', { class: ok ? 'ok' : 'missing' }, (ok ? '✓ ' : '✗ ') + t(key))
   main.append(el('section', { class: 'panel detail' }, el('h2', {}, `${r.firm} · ${t(r.status)}`), technical(r.wallet_address), uid(r), status(r),
     el('span', {}, `${t('claimedSize')}: `, usd(r.claimed_max_size_usd)), r.full_name ? el('span', {}, `${t('fullName')}: ${r.full_name}`) : null,
+    r.contact_email ? el('span', {}, `${t('email')}: `, technical(r.contact_email)) : null,
     el('ul', { class: 'checklist' }, check(list.identity, 'checkIdentity'), check(list.fundedAccount, 'checkFunded'),
       el('li', { class: list.payouts ? 'ok' : 'missing' }, `${list.payouts ? '✓' : '✗'} ${t('checkPayouts')}: ${list.payoutCount} / ${list.minPayouts} (${list.windowMonths} ${t('months')})`)),
     el('div', { class: 'tools' },
@@ -768,7 +769,7 @@ function migrationView(main, data) {
 function migrationFirmsView(main, data) {
   const s = data.settings ?? {}
   main.append(el('div', { class: 'tools' },
-    button('addFirm', () => operate('migrationFirms', 'new', 'save', [['name', textInput({ required: '', maxlength: '60' })], ['status', selectInput([['active', 'active'], ['inactive', 'inactive']])], ['reason', areaInput({ required: '' })]], 'addFirm'), 'primary'),
+    button('addFirm', () => firmDialog(), 'primary'),
     button('migrationSettings', () => operate('migrationFirms', 'new', 'settings', [
       ['minPayouts', textInput({ type: 'number', min: '1', max: '20', dir: 'ltr', value: String(s.minPayouts ?? 3) }), i => Number(i.value)],
       ['windowMonths', textInput({ type: 'number', min: '1', max: '36', dir: 'ltr', value: String(s.windowMonths ?? 12) }), i => Number(i.value)],
@@ -778,7 +779,39 @@ function migrationFirmsView(main, data) {
       ['reason', areaInput({ required: '' })]], 'migrationSettings'))),
   el('p', { class: 'muted' }, `${t('minPayouts')}: ${s.minPayouts} · ${t('windowMonths')}: ${s.windowMonths} · ${t('eligiblePlans')}: ${(s.plans ?? []).join(', ')} · ${t('retentionDays')}: ${s.retentionDays} · ${t('passExpiresDays')}: ${s.passExpiresDays}`),
   el('p', { class: 'muted' }, t('notAffiliatedNote')),
-  table(null, [['name', f => f.name], ['status', status], ['date', f => date(f.created_at)]], data.firms ?? []))
+  table(null, [['logo', f => f.has_logo ? el('img', { src: `/api/migrationFirmLogo/${f.id}`, alt: '', width: '32', height: '32', class: 'firm-logo' }) : '—'],
+    ['name', f => f.name], ['website', f => f.website_url ? technical(f.website_url) : '—'], ['programTypes', f => (f.program_types ?? []).join(', ') || '—'],
+    ['evidenceTypes', f => (f.evidence_types ?? []).join(', ') || '—'], ['status', status],
+    ['actions', f => el('div', { class: 'tools' }, button('editFirm', () => firmDialog(f)), button('uploadLogo', () => logoDialog(f)),
+      f.has_logo ? button('removeLogo', () => operate('migrationFirms', f.id, 'removeLogo', [['reason', areaInput({ required: '' })]], 'removeLogo'), 'danger') : null)]], data.firms ?? []))
+}
+function firmDialog(f = null) {
+  operate('migrationFirms', 'new', 'save', [
+    ['name', textInput({ required: '', maxlength: '60', value: f?.name ?? '' })],
+    ['websiteUrl', textInput({ type: 'url', dir: 'ltr', pattern: 'https://.*', value: f?.website_url ?? '' }), readOptional, 'website'],
+    ['programTypes', textInput({ maxlength: '600', value: (f?.program_types ?? []).join(', ') }), readOptional],
+    ['evidenceTypes', textInput({ maxlength: '600', value: (f?.evidence_types ?? []).join(', ') }), readOptional],
+    ['status', selectInput([['active', 'active'], ['inactive', 'inactive']])],
+    ['reason', areaInput({ required: '' })]], f ? 'editFirm' : 'addFirm')
+}
+/* the owner's own logo file: PNG, JPEG or WebP up to 200 KB (never downloaded or recreated here) */
+function logoDialog(f) {
+  const file = el('input', { type: 'file', required: '', accept: 'image/png,image/jpeg,image/webp' })
+  const read = () => new Promise((resolve, reject) => {
+    const picked = file.files?.[0]
+    if (!picked || picked.size > 204800) return reject(Object.assign(new Error('file_too_large'), { code: 'file_too_large' }))
+    const reader = new FileReader()
+    reader.onload = () => resolve({ contentType: picked.type, dataBase64: String(reader.result).split(',')[1] })
+    reader.onerror = reject
+    reader.readAsDataURL(picked)
+  })
+  const holder = { value: null }
+  file.addEventListener('change', () => { read().then(v => { holder.value = v }).catch(() => { holder.value = null }) })
+  operate('migrationFirms', f.id, 'logo', [
+    ['file', file, () => undefined, 'logoFile'],
+    ['contentType', el('span', { hidden: '' }), () => holder.value?.contentType],
+    ['dataBase64', el('span', { hidden: '' }), () => holder.value?.dataBase64],
+    ['reason', areaInput({ required: '' })]], 'uploadLogo')
 }
 
 /* ---------- plans: draft, preview diff, publish, retire ---------- */

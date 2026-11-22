@@ -2988,6 +2988,20 @@ CREATE TABLE IF NOT EXISTS migration_firms (
 );
 INSERT INTO migration_firms (name, sort) VALUES ('FTMO', 1), ('FundingPips', 2), ('FundedNext', 3), ('E8 Markets', 4)
   ON CONFLICT (name) DO NOTHING;
+/* firm details shown on /migrate (owner update 2026-11-23): official site,
+   accepted program types, the evidence the firm provides, and an optional
+   logo uploaded by the owner in Backstage (never downloaded or recreated) */
+ALTER TABLE migration_firms ADD COLUMN IF NOT EXISTS website_url text CHECK (website_url IS NULL OR (length(website_url) <= 200 AND website_url ~ '^https://'));
+ALTER TABLE migration_firms ADD COLUMN IF NOT EXISTS program_types jsonb NOT NULL DEFAULT '[]' CHECK (jsonb_typeof(program_types) = 'array');
+ALTER TABLE migration_firms ADD COLUMN IF NOT EXISTS evidence_types jsonb NOT NULL DEFAULT '[]' CHECK (jsonb_typeof(evidence_types) = 'array');
+ALTER TABLE migration_firms ADD COLUMN IF NOT EXISTS logo bytea CHECK (logo IS NULL OR octet_length(logo) <= 204800);
+ALTER TABLE migration_firms ADD COLUMN IF NOT EXISTS logo_type text CHECK (logo_type IS NULL OR logo_type IN ('image/png','image/jpeg','image/webp'));
+ALTER TABLE migration_firms ADD COLUMN IF NOT EXISTS logo_updated_at timestamptz;
+/* seed values fill empty fields only, so owner edits are never overwritten */
+UPDATE migration_firms f SET website_url = v.site FROM (VALUES ('FTMO','https://ftmo.com'), ('FundingPips','https://fundingpips.com'),
+  ('FundedNext','https://fundednext.com'), ('E8 Markets','https://e8markets.com')) AS v(name, site) WHERE f.name = v.name AND f.website_url IS NULL;
+UPDATE migration_firms SET program_types = '["Funded account after an evaluation"]' WHERE program_types = '[]' AND name IN ('FTMO','FundingPips','FundedNext','E8 Markets');
+UPDATE migration_firms SET evidence_types = '["Payout certificate with a verification link","Payout history in the trader dashboard"]' WHERE evidence_types = '[]' AND name IN ('FTMO','FundingPips','FundedNext','E8 Markets');
 
 CREATE TABLE IF NOT EXISTS migration_settings (
   id                  boolean PRIMARY KEY DEFAULT true CHECK (id),
@@ -3021,6 +3035,7 @@ CREATE TABLE IF NOT EXISTS migration_requests (
   updated_at             timestamptz NOT NULL DEFAULT now()
 );
 /* one open or approved request per person; a rejected trader may apply again */
+ALTER TABLE migration_requests ADD COLUMN IF NOT EXISTS contact_email text CHECK (contact_email IS NULL OR (length(contact_email) <= 254 AND contact_email ~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$'));
 CREATE UNIQUE INDEX IF NOT EXISTS uq_migration_requests_user_open ON migration_requests (user_id) WHERE status IN ('draft','submitted','approved');
 CREATE INDEX IF NOT EXISTS idx_migration_requests_queue ON migration_requests (status, submitted_at);
 CREATE INDEX IF NOT EXISTS idx_migration_requests_purge ON migration_requests (files_purge_after) WHERE files_purged_at IS NULL AND files_purge_after IS NOT NULL;

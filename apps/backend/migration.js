@@ -27,6 +27,26 @@ const KINDS = ['identity', 'funded_account', 'payout_certificate', 'payout_tx', 
 const FILE_KINDS = new Set(['identity', 'funded_account', 'statement', 'recording', 'payout_certificate'])
 const PAYOUT_KINDS = new Set(['payout_certificate', 'payout_tx', 'statement'])
 const day = v => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(Date.parse(v + 'T00:00:00Z')) ? v : null)
+/* a simple bounded e-mail check (no backtracking regex on input) */
+export const emailOf = v => {
+  const e = typeof v === 'string' ? v.trim().toLowerCase() : ''
+  const at = e.indexOf('@')
+  if (e.length < 6 || e.length > 254 || at < 1 || at !== e.lastIndexOf('@') || /[\s<>()[\],;:"]/.test(e)) return null
+  const domain = e.slice(at + 1)
+  return domain.includes('.') && !domain.startsWith('.') && !domain.endsWith('.') ? e : null
+}
+const LOGO_TYPES = { 'image/png': b => b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])),
+  'image/jpeg': b => b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff, 'image/webp': b => b.subarray(0, 4).toString('latin1') === 'RIFF' && b.subarray(8, 12).toString('latin1') === 'WEBP' }
+const publicFirm = f => ({ id: f.id, name: f.name, websiteUrl: f.website_url, programTypes: f.program_types, evidenceTypes: f.evidence_types,
+  logoUrl: f.has_logo ? `/migration/firms/${f.id}/logo?v=${new Date(f.logo_updated_at).getTime()}` : null })
+const FIRM_COLUMNS = 'id, name, status, sort, created_at, website_url, program_types, evidence_types, logo IS NOT NULL AS has_logo, logo_updated_at'
+const textList = (v, max = 8) => {
+  if (v == null) return null
+  const list = Array.isArray(v) ? v : String(v).split(',')
+  const out = list.map(x => String(x).trim()).filter(Boolean)
+  if (out.length > max || out.some(x => x.length > 80 || /[<>]/.test(x))) throw fail(400, 'invalid_setting')
+  return out
+}
 const money = v => { const n = Number(v); return Number.isFinite(n) && n > 0 && n < 1e9 ? Math.round(n * 100) / 100 : null }
 
 export async function migrationSettings(q) {
@@ -111,8 +131,16 @@ export function migrationRoutes({ pool, requireAuth, limit, storage, verifyTx = 
 
   router.get('/migration/config', limit(120), wrap(async (_req, res) => {
     const settings = await migrationSettings(pool)
-    const firms = (await pool.query(`SELECT id, name FROM migration_firms WHERE status='active' ORDER BY sort, name`)).rows
+    const firms = (await pool.query(`SELECT ${FIRM_COLUMNS} FROM migration_firms WHERE status='active' ORDER BY sort, name`)).rows.map(publicFirm)
     res.set('Cache-Control', 'public, max-age=60').json({ open: storage.configured, firms, rules: settings })
+  }))
+
+  /* a logo the owner uploaded in Backstage (none is ever downloaded or recreated) */
+  router.get('/migration/firms/:id/logo', limit(240), wrap(async (req, res) => {
+    if (!uuid.test(req.params.id)) throw fail(404, 'logo_not_found')
+    const { rows: [f] } = await pool.query(`SELECT logo, logo_type FROM migration_firms WHERE id=$1 AND status='active' AND logo IS NOT NULL`, [req.params.id])
+    if (!f) throw fail(404, 'logo_not_found')
+    res.set({ 'Content-Type': f.logo_type, 'Cache-Control': 'public, max-age=86400', 'X-Content-Type-Options': 'nosniff', 'Content-Security-Policy': "default-src 'none'" }).send(f.logo)
   }))
 
   router.get('/migration/me', requireAuth, wrap(async (req, res) => {
@@ -123,7 +151,7 @@ export function migrationRoutes({ pool, requireAuth, limit, storage, verifyTx = 
     const evidence = (await pool.query('SELECT * FROM migration_evidence WHERE request_id=$1 ORDER BY created_at', [r.id])).rows
     const { rows: [pass] } = await pool.query(`SELECT id, plans, max_size_usd, status, expires_at, purchase_order_id FROM migration_passes WHERE request_id=$1`, [r.id])
     res.set('Cache-Control', 'no-store').json({ open: storage.configured, request: {
-      id: r.id, status: r.status, firm: r.firm_name, claimedMaxSizeUsd: r.claimed_max_size_usd, approvedMaxSizeUsd: r.approved_max_size_usd,
+      id: r.id, status: r.status, firm: r.firm_name, contactEmail: r.contact_email, claimedMaxSizeUsd: r.claimed_max_size_usd, approvedMaxSizeUsd: r.approved_max_size_usd,
       decisionReason: r.status === 'rejected' ? r.decision_reason : null, submittedAt: r.submitted_at, decidedAt: r.decided_at, createdAt: r.created_at },
       evidence: evidence.filter(e => !e.deleted_at).map(publicEvidence), checklist: checklist(evidence, settings),
       pass: pass ? { id: pass.id, plans: pass.plans, maxSizeUsd: pass.max_size_usd, status: pass.status, expiresAt: pass.expires_at, orderId: pass.purchase_order_id } : null })
@@ -131,7 +159,9 @@ export function migrationRoutes({ pool, requireAuth, limit, storage, verifyTx = 
 
   router.post('/migration/requests', requireAuth, limit(10), wrap(async (req, res) => {
     if (!storage.configured) throw fail(503, 'migration_opening_soon')
-    const { firmId, claimedMaxSizeUsd, fullName } = req.body || {}
+    const { firmId, claimedMaxSizeUsd, fullName, email } = req.body || {}
+    const contact = emailOf(email)
+    if (!contact) throw fail(400, 'invalid_email')
     if (!uuid.test(String(firmId || ''))) throw fail(400, 'invalid_firm')
     const size = money(claimedMaxSizeUsd)
     if (!size) throw fail(400, 'invalid_size')
@@ -143,8 +173,8 @@ export function migrationRoutes({ pool, requireAuth, limit, storage, verifyTx = 
     if (done) throw fail(409, 'already_migrated')
     let row
     try {
-      row = (await pool.query(`INSERT INTO migration_requests (user_id, firm_id, claimed_max_size_usd, full_name) VALUES ($1,$2,$3,$4) RETURNING id, status`,
-        [req.user.user_id, firm.id, size, name])).rows[0]
+      row = (await pool.query(`INSERT INTO migration_requests (user_id, firm_id, claimed_max_size_usd, full_name, contact_email) VALUES ($1,$2,$3,$4,$5) RETURNING id, status`,
+        [req.user.user_id, firm.id, size, name, contact])).rows[0]
     } catch (e) { if (e.code === '23505') throw fail(409, 'request_exists'); throw e }
     await event(pool, row.id, `user:${req.user.user_id}`, 'created', { firmId: firm.id, claimedMaxSizeUsd: size })
     await audit?.('migration_request_created', req.user.user_id, req, { requestId: row.id })
@@ -322,7 +352,7 @@ export function migrationAdminRoutes({ pool, storage, audit }) {
   }))
 
   router.get('/firms', wrap(async (_req, res) => {
-    res.set('Cache-Control', 'no-store').json({ firms: (await pool.query('SELECT * FROM migration_firms ORDER BY sort, name')).rows, settings: await migrationSettings(pool) })
+    res.set('Cache-Control', 'no-store').json({ firms: (await pool.query(`SELECT ${FIRM_COLUMNS} FROM migration_firms ORDER BY sort, name`)).rows, settings: await migrationSettings(pool) })
   }))
 
   router.post('/firms', wrap(async (req, res) => {
@@ -330,10 +360,37 @@ export function migrationAdminRoutes({ pool, storage, audit }) {
     const name = typeof req.body?.name === 'string' ? req.body.name.trim() : ''
     if (name.length < 2 || name.length > 60 || /[<>]/.test(name)) throw fail(400, 'invalid_name')
     const status = req.body?.status === 'inactive' ? 'inactive' : 'active'
-    const { rows: [f] } = await pool.query(`INSERT INTO migration_firms (name, status, sort) VALUES ($1,$2,(SELECT coalesce(max(sort),0)+1 FROM migration_firms))
-      ON CONFLICT (name) DO UPDATE SET status=EXCLUDED.status RETURNING *`, [name, status])
-    await audit?.('migration_firm_saved', null, req, { actor, reason, name, status })
+    let site = null
+    if (req.body?.websiteUrl) {
+      try { const u = new URL(String(req.body.websiteUrl)); if (u.protocol !== 'https:' || u.username || u.password || u.href.length > 200) throw 0; site = u.origin + (u.pathname === '/' ? '' : u.pathname) } catch { throw fail(400, 'invalid_url') }
+    }
+    const programs = textList(req.body?.programTypes), evidence = textList(req.body?.evidenceTypes)
+    const { rows: [f] } = await pool.query(`INSERT INTO migration_firms (name, status, sort, website_url, program_types, evidence_types)
+      VALUES ($1,$2,(SELECT coalesce(max(sort),0)+1 FROM migration_firms),$3,coalesce($4::jsonb,'[]'),coalesce($5::jsonb,'[]'))
+      ON CONFLICT (name) DO UPDATE SET status=EXCLUDED.status, website_url=coalesce($3, migration_firms.website_url),
+        program_types=coalesce($4::jsonb, migration_firms.program_types), evidence_types=coalesce($5::jsonb, migration_firms.evidence_types)
+      RETURNING ${FIRM_COLUMNS}`, [name, status, site, programs && JSON.stringify(programs), evidence && JSON.stringify(evidence)])
+    await audit?.('migration_firm_saved', null, req, { actor, reason, name, status, websiteUrl: f.website_url, programTypes: f.program_types, evidenceTypes: f.evidence_types })
     res.json({ ok: true, firm: f })
+  }))
+
+  /* the owner uploads a firm's logo (PNG, JPEG or WebP, up to 200 KB), or removes it */
+  router.post('/firms/:id/logo', wrap(async (req, res) => {
+    const actor = adminActor(req), reason = reasonOf(req.body?.reason)
+    if (!uuid.test(req.params.id)) throw fail(404, 'firm_not_found')
+    let bytes = null, type = null
+    if (req.body?.remove !== true) {
+      type = String(req.body?.contentType || '')
+      if (!LOGO_TYPES[type]) throw fail(415, 'file_type_not_accepted')
+      if (typeof req.body?.dataBase64 !== 'string' || req.body.dataBase64.length > 280_000 || !/^[A-Za-z0-9+/]+={0,2}$/.test(req.body.dataBase64)) throw fail(400, 'invalid_file')
+      bytes = Buffer.from(req.body.dataBase64, 'base64')
+      if (bytes.length < 16 || bytes.length > 204_800) throw fail(413, 'file_too_large')
+      if (!LOGO_TYPES[type](bytes)) throw fail(415, 'file_type_mismatch')
+    }
+    const { rows: [f] } = await pool.query(`UPDATE migration_firms SET logo=$2, logo_type=$3, logo_updated_at=CASE WHEN $2::bytea IS NULL THEN NULL ELSE now() END WHERE id=$1 RETURNING name`, [req.params.id, bytes, type])
+    if (!f) throw fail(404, 'firm_not_found')
+    await audit?.('migration_firm_logo', null, req, { actor, reason, firm: f.name, removed: !bytes, sizeBytes: bytes?.length ?? 0 })
+    res.json({ ok: true })
   }))
 
   router.post('/settings', wrap(async (req, res) => {

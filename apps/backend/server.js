@@ -240,6 +240,7 @@ app.use((req, res, next) => {
 app.use('/products', express.json({ limit: '2mb' }))
 app.use('/auth/profile', express.json({ limit: '512kb' })) /* avatar data URLs */
 app.use('/chart/workspaces', express.json({ limit: '256kb' }))
+app.use('/admin/migration/firms', express.json({ limit: '300kb' })) /* firm logos (≤ 200 KB, base64) */
 app.use('/admin/calendar', express.json({ limit: '2mb' })) /* operator calendar imports (≤ 5,000 events) */ /* chart workspace entries (200 KB cap per entry) */
 /* the DePay callback is signed over its exact bytes: keep the raw body for that one route */
 /* DePay signs the exact request bytes: keep the raw body for its routes */

@@ -108,3 +108,31 @@ html[data-theme=light] .mega-banner.is-flamingo{background:#f8f4f5}
 .mega-banner.is-compact.is-flamingo .mega-banner-copy{padding:10px 12px}
 /* screen-reader-only text inside menus (the scene's description) */
 .mega-sr{position:absolute;inline-size:1px;block-size:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+
+/* Economy: two featured banners (council + whitepaper) stacked in the banner
+   column; two compact horizontal cards in the drawer (owner update 2026-11-23) */
+.mega-banners{display:grid;gap:12px;align-content:start;min-inline-size:0}
+.mega-banners .mega-banner-art{max-height:84px}
+.mega-banner-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.mega-banner-row .mega-banner.is-compact{margin-top:10px;align-items:flex-start}
+@media (max-width:420px){.mega-banner-row{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:1180px){.mega-banners{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* whitepaper art: a page turns over the spine; mint lines and a chart draw in.
+   transform/opacity only; runs only while the menu is open */
+.wp-book{fill:color-mix(in srgb,var(--mint,#82e7bd) 7%,transparent);stroke:color-mix(in srgb,var(--mint,#82e7bd) 45%,transparent)}
+.wp-spine{stroke:color-mix(in srgb,var(--mint,#82e7bd) 45%,transparent)}
+.wp-line{fill:var(--mint,#82e7bd);opacity:.75;transform-box:fill-box;transform-origin:0 50%}
+.wp-chart{fill:none;stroke:var(--mint,#82e7bd);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.wp-dot{fill:var(--mint,#82e7bd)}
+.wp-page{fill:color-mix(in srgb,var(--mint,#82e7bd) 12%,#0b1210);stroke:color-mix(in srgb,var(--mint,#82e7bd) 55%,transparent);transform-box:view-box;transform-origin:80px 50%;opacity:0}
+html[data-theme=light] .wp-page{fill:#eef6f2}
+.openfund-header .nav-account.resources-open .wp-page{animation:wp-turn 5s ease-in-out infinite}
+.openfund-header .nav-account.resources-open .wp-line{animation:wp-write 5s ease-out infinite}
+.openfund-header .nav-account.resources-open .wp-chart{animation:wp-fade 5s ease-out infinite}
+.openfund-header .nav-account.resources-open .wp-dot{animation:wp-fade 5s ease-out infinite}
+.wp-line.l1,.wp-dot.d1{animation-delay:.15s!important}.wp-line.l2,.wp-dot.d2{animation-delay:.3s!important}.wp-line.l3,.wp-dot.d3{animation-delay:.45s!important}
+.wp-line.r0,.wp-dot.d4{animation-delay:.6s!important}.wp-line.r1{animation-delay:.75s!important}
+@keyframes wp-turn{0%,55%{opacity:0;transform:scaleX(1)}60%{opacity:1;transform:scaleX(1)}78%{opacity:1;transform:scaleX(-1)}84%,100%{opacity:0;transform:scaleX(-1)}}
+@keyframes wp-write{0%{transform:scaleX(0)}22%,100%{transform:scaleX(1)}}
+@keyframes wp-fade{0%,10%{opacity:0}30%,100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.openfund-header .nav-account.resources-open :is(.wp-page,.wp-line,.wp-chart,.wp-dot){animation:none}}

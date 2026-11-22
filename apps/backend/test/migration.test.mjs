@@ -102,7 +102,11 @@ test('the form says "opening soon" and stores nothing until storage is configure
   const config = await call('GET', '/migration/config')
   assert.equal(config.data.open, false)
   assert.deepEqual(config.data.firms.map(f => f.name).slice(0, 4), ['FTMO', 'FundingPips', 'FundedNext', 'E8 Markets'])
-  assert.equal((await call('POST', '/migration/requests', { user: users[0].id, body: { firmId: config.data.firms[0].id, claimedMaxSizeUsd: 100000, fullName: 'Sara Example' } })).data.error, 'migration_opening_soon')
+  const ftmo = config.data.firms.find(f => f.name === 'FTMO')
+  assert.equal(ftmo.websiteUrl, 'https://ftmo.com')
+  assert.ok(ftmo.programTypes.length && ftmo.evidenceTypes.length)
+  assert.equal(ftmo.logoUrl, null, 'no logo until the owner uploads one')
+  assert.equal((await call('POST', '/migration/requests', { user: users[0].id, body: { firmId: config.data.firms[0].id, claimedMaxSizeUsd: 100000, fullName: 'Sara Example', email: 'sara@example.test' } })).data.error, 'migration_opening_soon')
   globalThis.__useStorage()
   assert.equal((await call('GET', '/migration/config')).data.open, true)
 })
@@ -110,10 +114,11 @@ test('the form says "opening soon" and stores nothing until storage is configure
 let request, firms
 test('the live checklist: identity, a funded account, three distinct payouts in twelve months', async () => {
   firms = (await call('GET', '/migration/config')).data.firms
-  const created = await call('POST', '/migration/requests', { user: users[0].id, body: { firmId: firms[0].id, claimedMaxSizeUsd: 100000, fullName: 'Sara Example' } })
+  assert.equal((await call('POST', '/migration/requests', { user: users[0].id, body: { firmId: firms[0].id, claimedMaxSizeUsd: 100000, fullName: 'Sara Example', email: 'not-an-email' } })).data.error, 'invalid_email')
+  const created = await call('POST', '/migration/requests', { user: users[0].id, body: { firmId: firms[0].id, claimedMaxSizeUsd: 100000, fullName: 'Sara Example', email: 'sara@example.test' } })
   assert.equal(created.status, 201)
   request = created.data.request
-  assert.equal((await call('POST', '/migration/requests', { user: users[0].id, body: { firmId: firms[1].id, claimedMaxSizeUsd: 50000, fullName: 'Sara Example' } })).data.error, 'request_exists', 'one open request per person')
+  assert.equal((await call('POST', '/migration/requests', { user: users[0].id, body: { firmId: firms[1].id, claimedMaxSizeUsd: 50000, fullName: 'Sara Example', email: 'sara@example.test' } })).data.error, 'request_exists', 'one open request per person')
   const up = (kind, body, type, q = '') => call('POST', `/migration/requests/${request.id}/evidence/upload?kind=${kind}${q}`, { user: users[0].id, raw: body, type })
   assert.equal((await up('identity', png, 'image/png')).status, 201)
   assert.equal((await up('identity', png, 'application/pdf')).data.error, 'file_type_mismatch')
@@ -158,7 +163,7 @@ test('review: signed short-lived links, KYC and name match required, a single-us
   assert.deepEqual([events[0], events.at(-2), events.at(-1)], ['created', 'submitted', 'approved'])
   await assert.rejects(pool.query('UPDATE migration_events SET action=$1 WHERE request_id=$2', ['edited', request.id]), /append_only_table/)
   /* one migration per person: an approved trader cannot apply again */
-  assert.equal((await call('POST', '/migration/requests', { user: users[0].id, body: { firmId: firms[2].id, claimedMaxSizeUsd: 25000, fullName: 'Sara Example' } })).data.error, 'already_migrated')
+  assert.equal((await call('POST', '/migration/requests', { user: users[0].id, body: { firmId: firms[2].id, claimedMaxSizeUsd: 25000, fullName: 'Sara Example', email: 'sara@example.test' } })).data.error, 'already_migrated')
 })
 
 test('checkout: a normal-price order with the pass starts at the funded stage, once', async () => {
@@ -190,11 +195,11 @@ test('checkout: a normal-price order with the pass starts at the funded stage, o
 })
 
 test('rejection, withdrawal and deletion of every file after retention', async () => {
-  const created = await call('POST', '/migration/requests', { user: users[1].id, body: { firmId: firms[1].id, claimedMaxSizeUsd: 25000, fullName: 'Reza Example' } })
+  const created = await call('POST', '/migration/requests', { user: users[1].id, body: { firmId: firms[1].id, claimedMaxSizeUsd: 25000, fullName: 'Reza Example', email: 'reza@example.test' } })
   const id = created.data.request.id
   await call('POST', `/migration/requests/${id}/evidence/upload?kind=identity`, { user: users[1].id, raw: png, type: 'image/png' })
   assert.equal((await call('POST', `/migration/requests/${id}/withdraw`, { user: users[1].id })).status, 200)
-  assert.equal((await call('POST', '/migration/requests', { user: users[1].id, body: { firmId: firms[1].id, claimedMaxSizeUsd: 25000, fullName: 'Reza Example' } })).status, 201, 'a withdrawn trader may apply again')
+  assert.equal((await call('POST', '/migration/requests', { user: users[1].id, body: { firmId: firms[1].id, claimedMaxSizeUsd: 25000, fullName: 'Reza Example', email: 'reza@example.test' } })).status, 201, 'a withdrawn trader may apply again')
   /* make the approved request's and the withdrawn request's retention due */
   await pool.query(`UPDATE migration_requests SET files_purge_after=now() - interval '1 minute' WHERE id = ANY($1)`, [[request.id, id]])
   const before = objects.size
@@ -212,4 +217,25 @@ test('the checklist counts one payout per date and amount', () => {
   const e = (kind, d, a) => ({ kind, payout_date: d == null ? null : daysAgo(d), amount_usd: a ?? null, deleted_at: null })
   const list = checklist([e('identity'), e('recording'), e('statement', 5, 100), e('payout_certificate', 5, 100), e('payout_tx', 6, 100), e('statement', 7, 200)], s)
   assert.deepEqual([list.payoutCount, list.complete], [3, true])
+})
+
+test('firms: the owner edits details and uploads a logo; the site serves it safely', async () => {
+  const save = await call('POST', '/admin/migration/firms', { admin: true, body: { name: 'Example Prop', websiteUrl: 'https://example-prop.test/', programTypes: 'Two-step evaluation, Instant funding', evidenceTypes: ['Payout certificate'], reason: 'owner request' } })
+  assert.equal(save.status, 200)
+  assert.deepEqual(save.data.firm.program_types, ['Two-step evaluation', 'Instant funding'])
+  assert.equal((await call('POST', '/admin/migration/firms', { admin: true, body: { name: 'Bad Site', websiteUrl: 'http://insecure.test', reason: 'x1x' } })).data.error, 'invalid_url')
+  const id = save.data.firm.id
+  const logo = (bytes, contentType) => call('POST', `/admin/migration/firms/${id}/logo`, { admin: true, body: { contentType, dataBase64: bytes.toString('base64'), reason: 'logo provided by the firm' } })
+  assert.equal((await logo(pdf, 'image/png')).data.error, 'file_type_mismatch')
+  assert.equal((await logo(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>'), 'image/svg+xml')).data.error, 'file_type_not_accepted', 'no SVG (script-capable)')
+  assert.equal((await logo(png, 'image/png')).status, 200)
+  const firm = (await call('GET', '/migration/config')).data.firms.find(f => f.id === id)
+  assert.match(firm.logoUrl, new RegExp(`^/migration/firms/${id}/logo\\?v=\\d+$`))
+  const r = await fetch(base + firm.logoUrl)
+  assert.equal(r.headers.get('content-type'), 'image/png')
+  assert.equal(r.headers.get('x-content-type-options'), 'nosniff')
+  assert.ok(Buffer.from(await r.arrayBuffer()).equals(png))
+  assert.equal((await call('POST', `/admin/migration/firms/${id}/logo`, { admin: true, body: { remove: true, reason: 'logo withdrawn' } })).status, 200)
+  assert.equal((await fetch(base + firm.logoUrl)).status, 404)
+  await pool.query('DELETE FROM migration_firms WHERE id=$1', [id])
 })

@@ -2,7 +2,7 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4590,
+    "uniqueRecords": 4597,
     "mappedCalls": 2307,
     "exceptions": 56,
     "validationFindings": 0,
@@ -1680,7 +1680,7 @@
         },
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 71,
+          "line": 74,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -2214,7 +2214,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 62,
+          "line": 65,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -2714,7 +2714,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 84,
+          "line": 87,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -3209,7 +3209,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 52,
+          "line": 55,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -3929,7 +3929,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 46,
+          "line": 49,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -3969,7 +3969,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 55,
+          "line": 56,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -4063,7 +4063,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 73,
+          "line": 76,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -4480,7 +4480,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 59,
+          "line": 62,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -8079,7 +8079,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 91,
+          "line": 94,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -8608,7 +8608,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 86,
+          "line": 89,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -10308,7 +10308,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 54,
+          "line": 57,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -11116,7 +11116,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 50,
+          "line": 53,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -11737,7 +11737,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 68,
+          "line": 71,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -11857,7 +11857,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 54,
+          "line": 55,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -12011,7 +12011,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 64,
+          "line": 65,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -12446,7 +12446,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 58,
+          "line": 61,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -12766,7 +12766,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 81,
+          "line": 84,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -13087,7 +13087,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 93,
+          "line": 96,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -16063,7 +16063,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 44,
+          "line": 47,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -16123,7 +16123,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 82,
+          "line": 85,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -16892,6 +16892,26 @@
       ]
     },
     {
+      "key": "react.2a744e65973f0a3d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تصویر: دسته‌ای از فلامینگوها به خانه‌ای تازه مهاجرت می‌کنند و روی دریاچه‌ای آرام فرود می‌آیند؛ مانند فلامینگوهایی که زمستان را در دریاچهٔ مهارلو نزدیک شیراز، محل استقرار اوپن‌فاند، می‌گذرانند.",
+      "en": "Illustration: a flock of flamingos migrating to a new home and landing on a calm lake, like the flamingos that winter at Maharloo Lake near Shiraz, where Openfund is based.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 98,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.2a754d56643b96d8",
       "namespace": "react",
       "area": "Global Content",
@@ -16938,7 +16958,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 55,
+          "line": 58,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -17981,7 +18001,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 65,
+          "line": 68,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -20379,7 +20399,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 46,
+          "line": 49,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -23772,7 +23792,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 53,
+          "line": 56,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -24918,7 +24938,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 74,
+          "line": 77,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -25339,7 +25359,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 41,
+          "line": 44,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -27050,26 +27070,6 @@
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 449,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.4414dfa640f0240a",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "تصویر: دسته‌ای از فلامینگوها به خانه‌ای تازه مهاجرت می‌کنند و روی دریاچه‌ای آرام فرود می‌آیند که نشان OpenFi را بازتاب می‌دهد؛ مانند فلامینگوهایی که زمستان را در دریاچهٔ مهارلو نزدیک شیراز، محل استقرار اوپن‌فاند، می‌گذرانند.",
-      "en": "Illustration: a flock of flamingos migrating to a new home, landing on a calm lake that reflects the OpenFi mark — like the flamingos that winter at Maharloo Lake near Shiraz, where Openfund is based.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 95,
-          "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -30673,7 +30673,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 106,
+          "line": 114,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -30767,7 +30767,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 82,
+          "line": 83,
           "page": "information",
           "route": "/:locale/:page",
           "method": "pick-pipeline"
@@ -31403,7 +31403,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 83,
+          "line": 86,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -32399,7 +32399,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 99,
+          "line": 102,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -33982,7 +33982,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 75,
+          "line": 78,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -34702,7 +34702,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 101,
+          "line": 104,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -36131,7 +36131,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 69,
+          "line": 72,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -36271,7 +36271,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 79,
+          "line": 82,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -38182,7 +38182,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 109,
+          "line": 110,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -39096,7 +39096,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 82,
+          "line": 85,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -39316,7 +39316,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 67,
+          "line": 70,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -39483,7 +39483,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 45,
+          "line": 48,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -40360,7 +40360,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 53,
+          "line": 56,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -42168,6 +42168,26 @@
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.6b68a37d49573497",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ایمیل برای اطلاع از وضعیت درخواست",
+      "en": "Email for updates on your request",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 43,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -44124,7 +44144,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 62,
+          "line": 65,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -44425,7 +44445,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 59,
+          "line": 60,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -45146,14 +45166,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 43,
+          "line": 46,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 86,
+          "line": 89,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -45520,7 +45540,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 76,
+          "line": 77,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -46256,7 +46276,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 54,
+          "line": 57,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -46478,6 +46498,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
           "line": 341,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.7837af00ec20243c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برنامه‌های پذیرفته‌شده",
+      "en": "Accepted programs",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 42,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -48212,7 +48252,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 72,
+          "line": 75,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -49008,6 +49048,26 @@
           "component": "apps/web-react/src/features/company/aboutContent.ts",
           "line": 63,
           "page": "company",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.7e3544ddfa1ca15f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "وایت‌پیپر اوپن‌فاند",
+      "en": "Openfund whitepaper",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 107,
+          "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -50613,14 +50673,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 50,
+          "line": 53,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 53,
+          "line": 56,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -51708,7 +51768,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 74,
+          "line": 75,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52397,6 +52457,26 @@
       ]
     },
     {
+      "key": "react.88ceec1548091d1d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ارزیابی، اقتصاد و شورا چگونه کار می‌کنند، در یک سند.",
+      "en": "How the evaluation, the economy and the council work, in one document.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 108,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.88d759ea36fe9052",
       "namespace": "react",
       "area": "Global Content",
@@ -52583,7 +52663,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 48,
+          "line": 51,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52891,7 +52971,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 64,
+          "line": 67,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52911,7 +52991,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 79,
+          "line": 82,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53181,7 +53261,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 54,
+          "line": 57,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53221,7 +53301,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 62,
+          "line": 63,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53486,6 +53566,13 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 83,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -53502,7 +53589,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 73,
+          "line": 74,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54130,7 +54217,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 65,
+          "line": 66,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54304,7 +54391,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 74,
+          "line": 77,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54818,7 +54905,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 68,
+          "line": 69,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -55552,7 +55639,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 58,
+          "line": 59,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -55959,7 +56046,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 47,
+          "line": 50,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -56213,7 +56300,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 82,
+          "line": 83,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -57041,7 +57128,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 67,
+          "line": 70,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -57588,7 +57675,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 56,
+          "line": 57,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -57728,7 +57815,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 85,
+          "line": 88,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -58918,7 +59005,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 70,
+          "line": 73,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -61457,7 +61544,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 105,
+          "line": 113,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -62693,7 +62780,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 75,
+          "line": 78,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -62980,7 +63067,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 66,
+          "line": 69,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -63964,7 +64051,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 84,
+          "line": 87,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -67224,7 +67311,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 80,
+          "line": 83,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -68148,7 +68235,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 51,
+          "line": 54,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -68488,7 +68575,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 100,
+          "line": 103,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -69162,7 +69249,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 73,
+          "line": 76,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -69490,7 +69577,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 83,
+          "line": 84,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -70573,7 +70660,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 72,
+          "line": 73,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -72160,6 +72247,26 @@
       ]
     },
     {
+      "key": "react.bb22c640cdf42a36",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مدارکی که شرکت ارائه می‌دهد",
+      "en": "Evidence the firm provides",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 42,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.bb28debb1b2c064b",
       "namespace": "react",
       "area": "Website",
@@ -72973,7 +73080,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 76,
+          "line": 79,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -73887,7 +73994,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 75,
+          "line": 76,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -75993,7 +76100,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 85,
+          "line": 88,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -76060,7 +76167,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 60,
+          "line": 61,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -76170,6 +76277,13 @@
           "line": 21,
           "page": "information",
           "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 109,
+          "page": "navigation",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -77196,7 +77310,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 71,
+          "line": 72,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -77390,7 +77504,7 @@
         },
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 45,
+          "line": 48,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -79218,7 +79332,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 49,
+          "line": 52,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -79994,7 +80108,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 57,
+          "line": 58,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80408,7 +80522,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 42,
+          "line": 45,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80615,7 +80729,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 66,
+          "line": 67,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80895,7 +81009,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 61,
+          "line": 64,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -81831,7 +81945,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 63,
+          "line": 64,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -82507,7 +82621,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 70,
+          "line": 71,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -82922,7 +83036,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 67,
+          "line": 68,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -83980,7 +84094,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 81,
+          "line": 82,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -84368,7 +84482,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 61,
+          "line": 64,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -84989,7 +85103,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 56,
+          "line": 59,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -86471,7 +86585,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 60,
+          "line": 63,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -86931,7 +87045,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 80,
+          "line": 83,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -88452,7 +88566,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 59,
+          "line": 62,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -88612,7 +88726,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 61,
+          "line": 62,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -89300,7 +89414,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 52,
+          "line": 55,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -89474,7 +89588,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 92,
+          "line": 95,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -90503,7 +90617,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 59,
+          "line": 62,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -91433,7 +91547,7 @@
         },
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 63,
+          "line": 66,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -91676,7 +91790,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 60,
+          "line": 63,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -92637,7 +92751,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 107,
+          "line": 115,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -93585,7 +93699,7 @@
         },
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 57,
+          "line": 60,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -95788,7 +95902,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 69,
+          "line": 70,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -97347,7 +97461,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 81,
+          "line": 84,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -97843,6 +97957,26 @@
       ]
     },
     {
+      "key": "react.ff37f2401f9ebe9c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سایت رسمی",
+      "en": "Official site",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 42,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.ff39b2cec61d9aea",
       "namespace": "react",
       "area": "Global Content",
@@ -97983,6 +98117,26 @@
       ]
     },
     {
+      "key": "react.ff945df8aff12aa4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شرکت‌های پذیرفته‌شده",
+      "en": "Accepted firms",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 41,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.ffbd01a9629c8903",
       "namespace": "react",
       "area": "Global Content",
@@ -98055,7 +98209,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 55,
+          "line": 58,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -98234,23 +98388,23 @@
     },
     {
       "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-      "line": 117,
+      "line": 122,
       "page": "migration",
       "route": "/:locale/*",
       "reason": "dynamic-pair",
-      "expression": "pickFormat(locale, c.rowNeedsM.fa, c.rowNeedsM.en, { n: rules.minPayouts, m: rules.windowMonths })"
+      "expression": "pickFormat(locale, c.rowNeedsM.fa, c.rowNeedsM.en, { n: num(rules.minPayouts), m: num(rules.windowMonths) })"
     },
     {
       "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-      "line": 133,
+      "line": 138,
       "page": "migration",
       "route": "/:locale/*",
       "reason": "dynamic-pair",
-      "expression": "pickFormat(locale, c.privacy.fa, c.privacy.en, { d: rules.retentionDays })"
+      "expression": "pickFormat(locale, c.privacy.fa, c.privacy.en, { d: num(rules.retentionDays) })"
     },
     {
       "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-      "line": 202,
+      "line": 230,
       "page": "migration",
       "route": "/:locale/*",
       "reason": "dynamic-pair",
@@ -98258,11 +98412,11 @@
     },
     {
       "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-      "line": 233,
+      "line": 261,
       "page": "migration",
       "route": "/:locale/*",
       "reason": "dynamic-pair",
-      "expression": "pickFormat(locale, c.cPayouts.fa, c.cPayouts.en, { have: list.payoutCount, need: list.minPayouts, m: list.windowMonths })"
+      "expression": "pickFormat(locale, c.cPayouts.fa, c.cPayouts.en, { have: new Intl.NumberFormat(intlLocale(locale)).format(list.payoutCount), need: new Intl.NumberFormat(intlLocale(locale)).format(list.minPayouts), m:"
     },
     {
       "component": "apps/web-react/src/features/partners/Coach.tsx",
