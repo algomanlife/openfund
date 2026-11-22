@@ -57,6 +57,7 @@
     "test:browser:polish": "node e2e/test-ui-polish.cjs",
     "test:browser:website": "node e2e/test-website-refresh.cjs",
     "test:browser:wallet-showcase": "node e2e/test-wallet-showcase.cjs",
+    "test:browser:council-chamber": "node e2e/test-council-chamber.cjs",
     "test:browser:checkout-rules": "node e2e/test-checkout-rules.cjs",
     "test:browser:applications": "node e2e/test-applications.cjs",
     "test:browser:heatmap-radar": "node e2e/test-heatmap-radar.cjs",

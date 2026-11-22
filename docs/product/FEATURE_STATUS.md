@@ -52,6 +52,7 @@ acceptance stay **Blocked** on owner authorization.
 | Brand Ambassador program | Completed (local) | Post-launch | Backend partner tests, `test-backstage-operations` (application review); no browser trader journey |
 | Verified Trading Coach program | Completed (local) | Post-launch | Backend partner tests; no browser journey |
 | Hybrid Governance | Completed in source (local); not active | Post-launch | Backend governance tests; public page rendered by `test-locale-matrix`; no council seated |
+| Governance hero council chamber (illustration) | Completed (local; unmerged branch, not deployed) | Post-launch | `features/governance/CouncilChamber.tsx`; example votes only, rules match `governance-rules.js`; `test/council-chamber.test.mjs`, `e2e/test-council-chamber.cjs` |
 | Open Trade desktop (Electron) | In Progress | Post-launch | 0.0.4 unsigned experimental beta published as the GitHub pre-release [`open-trade-v0.0.4`](https://github.com/algomanlife/openfund/releases/tag/open-trade-v0.0.4) (five installers, SHA-256 verified 2026-11-21); the Applications page links them (branch `agent/claude/desktop-downloads`) with an [install guide](../releases/OPEN_TRADE_INSTALL.md). [Acceptance record](../../apps/open-trade/ACCEPTANCE.md); signing, notarization, real-wallet and clean-machine acceptance Blocked ([owner setup](../releases/OPEN_TRADE_0.0.3_OWNER_SETUP.md)) |
 | Openfund Protocol | Completed within source scope (dormant) | Post-launch | `packages/openfund-protocol/` compile/test foundation; venue routing Planned |
 
