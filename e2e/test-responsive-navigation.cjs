@@ -157,7 +157,10 @@ async function routeClosesDrawer(browser) {
   await page.goto(`${BASE}/en/markets`, { waitUntil: 'domcontentloaded' });
   await page.locator('.openfund-header .menu').waitFor(); await page.waitForTimeout(600);
   await page.locator('.openfund-header .menu').click(); await settle(page);
-  await page.locator('.of-offcanvas a.of-drawer-link[href="/en/faq"]').click();
+  /* group links are tiles inside an accordion: expand Resources first, as a visitor would */
+  const resources = page.locator('.of-offcanvas .of-drawer-accordion[aria-controls="website-resources-drawer"]');
+  if (await resources.getAttribute('aria-expanded') !== 'true') await resources.click();
+  await page.locator('.of-offcanvas a.mega-tile[href="/en/faq"]').click();
   await page.waitForURL(/\/en\/faq$/); await page.waitForTimeout(900);
   check('route selection navigates and closes the drawer', await page.locator('.of-offcanvas').count() === 0);
   check('page scroll restored after route selection', await page.evaluate(() => getComputedStyle(document.documentElement).overflow !== 'hidden'));
