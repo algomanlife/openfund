@@ -60,6 +60,9 @@ const routes = {
   search: ['/admin/operations/search', 'results', ['q']],
   notifications: ['/admin/operations/notifications', 'notifications', ['user_id', 'offset']],
   system: ['/admin/runtime'],
+  /* console (admin-console.js): plan administration and granted entitlements */
+  plans: ['/admin/console/plans', 'plans', []],
+  entitlements: ['/admin/console/entitlements', 'entitlements', []],
 }
 
 /* Owner mutations beyond the original decision sections. Every entry is
@@ -80,6 +83,10 @@ const txHashOf = value => {
   const v = textOf(value, 100)
   if (!/^(0x[0-9a-fA-F]{64}|[1-9A-HJ-NP-Za-km-z]{64,90})$/.test(v)) throw fail(400, 'invalid_payout_hash')
   return v
+}
+const planDraft = (slug, body) => {
+  if (!body.configuration || typeof body.configuration !== 'object' || Array.isArray(body.configuration)) throw fail(400, 'invalid_configuration')
+  return { slug, nameFa: textOf(body.nameFa, 80), nameEn: textOf(body.nameEn, 80), configuration: body.configuration }
 }
 const operations = {
   /* unattributed deposits: every action is owner-gated and audited by the
@@ -185,6 +192,51 @@ const operations = {
     identifier: value => value === 'treasury',
     actions: ['refresh'],
     request: () => ['/admin/economy/treasury/refresh', {}],
+  },
+  /* internal user notes (append-only) and operator tags */
+  userNotes: {
+    identifier: uuid,
+    actions: ['add'],
+    request: (record, body) => [`/admin/console/users/${record}/notes`, { note: textOf(body.note, 2000) }],
+  },
+  userTags: {
+    identifier: uuid,
+    actions: ['set'],
+    request: (record, body) => {
+      const tags = String(body.tags ?? '').split(',').map(v => v.trim().toLowerCase()).filter(Boolean)
+      if (tags.length > 20 || tags.some(v => !/^[a-z0-9][a-z0-9-]{0,31}$/.test(v))) throw fail(400, 'invalid_tags')
+      return [`/admin/console/users/${record}/tags`, { tags, reason: textOf(body.reason, 1000) }]
+    },
+  },
+  /* owner decisions on a challenge; the engine refuses settlement without fresh marks */
+  challengeActions: {
+    identifier: uuid,
+    actions: ['extend', 'void', 'fail', 'pass'],
+    request: (record, body) => {
+      const days = body.action === 'extend' ? Number(body.days) : null
+      if (body.action === 'extend' && (!Number.isInteger(days) || days < 1 || days > 90)) throw fail(400, 'invalid_days')
+      return [`/admin/console/challenges/${record}/action`, { action: body.action, reason: textOf(body.reason, 500), ...(days ? { days } : {}) }]
+    },
+  },
+  /* issue a challenge or a funded account (single-use internal coupon bound to the wallet) */
+  entitlements: {
+    identifier: value => value === 'new',
+    actions: ['issue'],
+    request: (_record, body) => {
+      if (typeof body.walletAddress !== 'string' || !wallet.test(body.walletAddress.trim())) throw fail(400, 'invalid_wallet')
+      const size = Number(body.accountSizeUsd)
+      if (!Number.isFinite(size) || size <= 0) throw fail(400, 'invalid_request')
+      return ['/admin/console/entitlements', { walletAddress: body.walletAddress.trim(), planSlug: textOf(body.planSlug, 40), accountSizeUsd: size,
+        funded: body.funded === true, expiresDays: Number(body.expiresDays) || 30, reason: textOf(body.reason, 1000) }]
+    },
+  },
+  /* plan administration: publish (diff previewed first), retire, reactivate */
+  plans: {
+    identifier: value => /^[a-z0-9][a-z0-9-]{1,39}$/.test(value),
+    actions: ['publish', 'retire', 'reactivate'],
+    request: (record, body) => body.action === 'publish'
+      ? ['/admin/console/plans/publish', { ...planDraft(record, body), reason: textOf(body.reason, 1000) }]
+      : [`/admin/console/plans/${record}/${body.action}`, { reason: textOf(body.reason, 1000) }],
   },
   coupons: {
     identifier: value => value === 'new' || uuid.test(value),
@@ -323,8 +375,19 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
         body: body ? JSON.stringify(body) : undefined,
       })
       if (!res.ok) {
+        /* a plan the shared validator rejects: pass its problem list through */
+        if (res.status === 422) {
+          const body = await res.json().catch(() => ({}))
+          throw Object.assign(fail(422, 'plan_invalid'), { details: Array.isArray(body.details) ? body.details.slice(0, 50).map(String) : [] })
+        }
+        /* name the reason (a bounded snake_case code, never free text) so the
+           console can show it, e.g. settlement_unavailable or no_time_limit */
+        if ([400, 404, 409].includes(res.status)) {
+          const code = String((await res.json().catch(() => ({}))).error ?? '')
+          throw Object.assign(fail(res.status, 'backend_rejected'), /^[a-z][a-z0-9_]{2,60}$/.test(code) ? { details: [code] } : {})
+        }
         await res.body?.cancel()
-        throw fail([400, 404, 409, 429].includes(res.status) ? res.status : 502, 'backend_rejected')
+        throw fail(res.status === 429 ? 429 : 502, 'backend_rejected')
       }
       return await res.json()
     } catch (error) {
@@ -443,11 +506,19 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
           if (action === 'fields') return send(res, 200, await content.fields({ view: q.get('view'), locale: q.get('locale'),
             q: q.get('q') ?? '', offset: q.get('offset') ?? 0, shared: q.get('shared') === '1' }))
           if (action === 'surface') return send(res, 200, await content.surface({ collection: q.get('collection'), locale: q.get('locale') }))
+          if (action === 'protected') return send(res, 200, await content.protectedSettings())
+          if (action === 'media') return send(res, 200, await content.media())
           throw fail(404, 'not_found')
         }
-        if (!['save', 'status'].includes(action)) throw fail(404, 'not_found')
+        if (action === 'upload') {
+          const file = await content.upload(await json(req, 4.5 * 1024 * 1024))
+          log('content.upload', 'success', file.id)
+          return send(res, 200, file)
+        }
+        const prepare = { save: content.prepareSave, status: content.prepareStatus, create: content.prepareCreate, reorder: content.prepareReorder, protected: content.prepareProtected }[action]
+        if (!prepare) throw fail(404, 'not_found')
         const body = await json(req, 65536)
-        const write = action === 'save' ? await content.prepareSave(body) : await content.prepareStatus(body)
+        const write = await prepare(body)
         try {
           await confirmOwner(current, body.password, correlationId)
           await content.apply(write)
@@ -459,9 +530,21 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
         }
       }
 
+      if (path === '/api/planPreview' && req.method === 'POST') {
+        const body = await json(req, 65536)
+        if (!/^[a-z0-9][a-z0-9-]{1,39}$/.test(String(body.slug || ''))) throw fail(400, 'invalid_slug')
+        return send(res, 200, await backend('/admin/console/plans/preview', 'POST', planDraft(body.slug, body), correlationId))
+      }
+      if (path.startsWith('/api/userProfile/') && req.method === 'GET') {
+        const id = path.slice('/api/userProfile/'.length)
+        if (!uuid.test(id)) throw fail(404, 'not_found')
+        return send(res, 200, await backend('/admin/console/users/' + id + '/profile', 'GET', undefined, correlationId))
+      }
       const [, , section, record, extra] = path.split('/')
-      if (extra !== undefined || !Object.hasOwn(routes, section)) throw fail(404, 'not_found')
-      const [endpoint, list, filters] = routes[section]
+      /* write-only sections (notes, tags, challenge decisions) have no list route */
+      const writeOnly = req.method === 'POST' && Object.hasOwn(operations, section)
+      if (extra !== undefined || (!Object.hasOwn(routes, section) && !writeOnly)) throw fail(404, 'not_found')
+      const [endpoint, list, filters] = routes[section] ?? []
       if (req.method === 'GET') {
         if (section === 'support' && supportRef.test(record || ''))
           return send(res, 200, await backend(endpoint + '/' + encodeURIComponent(record), 'GET', undefined, correlationId))
@@ -534,7 +617,7 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
       /* table-driven owner mutations (same session/CSRF/password/region gate) */
       if (Object.hasOwn(operations, section)) {
         const spec = operations[section]
-        const body = await json(req)
+        const body = await json(req, section === 'plans' ? 65536 : 8192)
         if (!spec.actions.includes(body.action) || typeof record !== 'string' ||
             !(spec.identifier instanceof RegExp ? spec.identifier.test(record) : spec.identifier(record)))
           throw fail(400, 'invalid_request')

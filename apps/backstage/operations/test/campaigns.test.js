@@ -90,3 +90,14 @@ test('uploads: PNG, JPEG or WebP by signature, at most 3 MB', async () => {
   await assert.rejects(api.upload({ filename: '../x.png', contentType: 'image/png', data: png.toString('base64') }), /invalid_image/)
   await assert.rejects(api.upload({ filename: 'big.png', contentType: 'image/png', data: Buffer.concat([png, Buffer.alloc(3 * 1024 * 1024)]).toString('base64') }), /invalid_image/)
 })
+
+test('announcement bars: tones, the dismissible switch and terminal/portfolio targeting', () => {
+  const bar = { ...base(), placement: 'announcement_bar', template: undefined }
+  for (const style of ['info', 'success', 'warning']) assert.equal(normalizeCampaign({ ...bar, style }).style, style)
+  assert.equal(normalizeCampaign({ ...bar, style: 'loud' }).style, 'info', 'unknown tone falls back to info')
+  assert.equal(normalizeCampaign(bar).dismissible, true, 'dismissible by default')
+  assert.equal(normalizeCampaign({ ...bar, dismissible: false }).dismissible, false)
+  assert.equal(normalizeCampaign({ ...base(), dismissible: false }).dismissible, true, 'popups always close')
+  assert.deepEqual(normalizeCampaign({ ...bar, pages: ['terminal', 'portfolio'] }).pages, ['terminal', 'portfolio'])
+  assert.throws(() => normalizeCampaign({ ...base(), pages: ['terminal'] }), /invalid_pages/, 'popups never target trading pages')
+})

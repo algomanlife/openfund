@@ -16,22 +16,26 @@ import { publicRuntimeConfig } from '../../config/runtime'
 import type { AppLocale } from '../../i18n/locales'
 
 export type Placement = 'modal' | 'announcement_bar'
-export type CampaignPage = 'home' | 'challenges' | 'information'
+export type CampaignPage = 'home' | 'challenges' | 'information' | 'terminal' | 'portfolio'
+export type Tone = 'info' | 'success' | 'warning' | 'mint' | 'neutral' | 'notice'
 interface RawTranslation { language_code: string; headline: string; body?: string | null; cta_label?: string | null; image_alt?: string | null }
 interface RawCampaign {
-  id: number; placement: Placement; template?: 'image' | 'split' | null; style?: 'mint' | 'neutral' | 'notice' | null; priority?: number | null
+  id: number; placement: Placement; template?: 'image' | 'split' | null; style?: Tone | null; dismissible?: boolean | null; priority?: number | null
   starts_at?: string | null; ends_at?: string | null; locales?: string[] | null; regions?: string[] | null; pages?: string[] | null
   image_desktop?: string | null; image_mobile?: string | null; cta_url?: string | null; coupon_code?: string | null
   delay_seconds?: number | null; frequency?: 'session' | 'interval' | null; frequency_days?: number | null; translations?: RawTranslation[] | null
 }
 export interface Campaign {
-  id: string; placement: Placement; template: 'image' | 'split'; style: 'mint' | 'neutral' | 'notice'
+  id: string; placement: Placement; template: 'image' | 'split'; style: Tone; dismissible: boolean
   headline: string; body: string; ctaLabel: string | null; ctaUrl: string | null; external: boolean; imageAlt: string
   imageDesktop: string | null; imageMobile: string | null; coupon: { code: string; kind: 'percent' | 'fixed'; value: string } | null
   delayMs: number; frequency: 'session' | 'interval'; frequencyDays: number
 }
 
-const FIELDS = 'id,placement,template,style,priority,starts_at,ends_at,locales,regions,pages,image_desktop,image_mobile,cta_url,coupon_code,delay_seconds,frequency,frequency_days,translations.language_code,translations.headline,translations.body,translations.cta_label,translations.image_alt'
+/* the campaign's own fields as '*': a field added later (dismissible, 2026-11-22)
+   is read when the CMS has it, and an older CMS still answers instead of
+   refusing the whole query for an unknown field */
+const FIELDS = '*,translations.language_code,translations.headline,translations.body,translations.cta_label,translations.image_alt'
 const PATH = `/items/site_campaigns?fields=${FIELDS}&filter[status][_eq]=published&filter[active][_eq]=true&sort=-priority&limit=50`
 
 /* The Persian Iran-access bar, used only when no content source answers at
@@ -44,9 +48,17 @@ const OFFLINE_FALLBACK: RawCampaign[] = [{
   translations: [{ language_code: 'fa', headline: 'از داخل ایران وصل می‌شوید؟ نسخهٔ ایرانی اوپن‌فاند روی زیرساخت داخلی در دسترس است.', cta_label: 'ورود به اوپن‌فاند ایران' }],
 }]
 
-/** Public pages only: checkout, purchases, sign-in, profile and trading never show campaigns. */
-export function campaignPage(pathname: string): CampaignPage | null {
-  if (/\/(checkout|purchases|profile|inbox|auth|signin|terminal|trade|perpetual|prop\/|account|withdraw|certificates\/verify)/i.test(pathname)) return null
+/** Where a campaign may appear. Checkout, purchases, sign-in, withdrawals and
+ *  certificate verification never show one. Announcement bars (never popups)
+ *  may also target the trading terminal and the portfolio/account pages. */
+export function campaignPage(pathname: string, placement: Placement = 'modal'): CampaignPage | null {
+  if (/\/(checkout|purchases|profile|inbox|auth|signin|withdraw|certificates\/verify)/i.test(pathname)) return null
+  const trading = pathname.match(/\/(?:prop|perpetual)\/([a-z-]+)/i)?.[1] ?? (/\/terminal\b/i.test(pathname) ? 'trade' : null)
+  if (trading) {
+    if (placement !== 'announcement_bar') return null
+    return ['trade', 'chart', 'radar', 'heatmap'].includes(trading) ? 'terminal' : 'portfolio'
+  }
+  if (/\/(account|perpetual|prop)\b/i.test(pathname)) return null
   const segment = pathname.split('/').filter(Boolean)[1] ?? 'home'
   if (segment === 'home') return 'home'
   if (segment === 'challenges') return 'challenges'
@@ -80,7 +92,8 @@ export async function selectCampaign(placement: Placement, locale: AppLocale, pa
     .filter(c => c.placement === placement)
     .filter(c => (c.locales ?? []).includes(locale))
     .filter(c => (c.regions ?? []).includes(region))
-    .filter(c => (c.pages ?? []).includes('all') || (c.pages ?? []).includes(page))
+    /* 'all' means every PUBLIC page; the trading pages must be named */
+    .filter(c => (page !== 'terminal' && page !== 'portfolio' && (c.pages ?? []).includes('all')) || (c.pages ?? []).includes(page))
     .filter(c => (!c.starts_at || Date.parse(c.starts_at) <= now) && (!c.ends_at || Date.parse(c.ends_at) > now))
     .map(c => ({ c, t: (c.translations ?? []).find(t => t.language_code === locale && t.headline) }))
     .filter((x): x is { c: RawCampaign; t: RawTranslation } => Boolean(x.t))
@@ -97,7 +110,8 @@ export async function selectCampaign(placement: Placement, locale: AppLocale, pa
       ctaUrl = u.pathname + u.search + u.hash
     }
     return {
-      id: String(c.id), placement: c.placement, template: c.template === 'image' ? 'image' : 'split', style: c.style ?? 'mint',
+      id: String(c.id), placement: c.placement, template: c.template === 'image' ? 'image' : 'split', style: c.style ?? 'info',
+      dismissible: c.placement !== 'announcement_bar' || c.dismissible !== false,
       headline: t.headline, body: t.body ?? '', ctaLabel: link ? (t.cta_label ?? null) : null, ctaUrl: t.cta_label ? ctaUrl : null,
       external: Boolean(link?.external), imageAlt: t.image_alt ?? '',
       imageDesktop: c.image_desktop ? assetUrl(c.image_desktop, 1200) : null, imageMobile: c.image_mobile ? assetUrl(c.image_mobile, 720) : null,

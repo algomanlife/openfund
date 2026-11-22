@@ -9445,6 +9445,81 @@
       }
     ]
   },
+  "backstageOperations": {
+    "branch": "agent/claude/backstage-operational",
+    "baseCommit": "3ccfccb0180c54c49ff1f2f0d7dfecb99bcb7d53",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-22T15:18:40+00:00",
+    "source": "Backstage console on test port 8413 against apps/backend on test port 8313 (disposable database, fixture trader and challenge); Playwright",
+    "cms": "Directus not running (content and marketing sections show their unavailable state)",
+    "marketData": "Not used",
+    "wallet": "Owner console session; fixture wallet 0x1111…1111 only",
+    "screenshots": [
+      {
+        "file": "backstage-operations/plans-en-1440-light.jpg",
+        "route": "/#/plans",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Plans: list with catalog version, challenge count, edit/retire actions and publication history"
+      },
+      {
+        "file": "backstage-operations/plan-preview-en-1440-light.jpg",
+        "route": "/#/plans",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Plan editor: field-by-field diff preview (minTradingDays 3 → 4) and the shared validator result"
+      },
+      {
+        "file": "backstage-operations/challenge-actions-en-1440-light.jpg",
+        "route": "/#/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Challenge detail with the owner decisions: extend the time limit and void (created challenge)"
+      },
+      {
+        "file": "backstage-operations/trader-profile-fa-768-dark.jpg",
+        "route": "/#/users",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Persian, dark: trader profile with internal notes, tags and the issue-entitlement action"
+      },
+      {
+        "file": "backstage-operations/plans-fa-768-dark.jpg",
+        "route": "/#/plans",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Persian, dark: plans list"
+      },
+      {
+        "file": "backstage-operations/entitlements-en-390-light.jpg",
+        "route": "/#/entitlements",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Entitlements list and the issue action at 390 px"
+      },
+      {
+        "file": "backstage-operations/trader-profile-en-390-light.jpg",
+        "route": "/#/users",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Trader profile at 390 px"
+      }
+    ]
+  },
   "challengesMenu": {
     "branch": "agent/claude/challenges-flamingo",
     "baseCommit": "d74b1b675c6037ae3c525a88f2a8e4faf6ef56d2",

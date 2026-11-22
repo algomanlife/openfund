@@ -19,7 +19,7 @@ const SESSION_KEY = 'of-campaign:modal:session'
  *  scroll is locked, and motion is skipped for prefers-reduced-motion. */
 export default function PromoModal({ locale }: { locale: AppLocale }) {
   const { pathname } = useLocation()
-  const page = campaignPage(pathname)
+  const page = campaignPage(pathname, 'modal')
   const [campaign, setCampaign] = useState<Campaign | null>(null)
   const dialog = useRef<HTMLDivElement>(null)
   const returnFocus = useRef<HTMLElement | null>(null)
