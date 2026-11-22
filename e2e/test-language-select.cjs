@@ -32,6 +32,7 @@ const TRIGGER = '.openfund-header button.of-language-select'
       const { context, page } = await open('/en/markets')
       const t = await page.evaluate(sel => { const b = document.querySelector(sel); return { code: b.textContent.trim(), globe: Boolean(b.querySelector('svg.of-globe-icon')), popup: b.getAttribute('aria-haspopup'), expanded: b.getAttribute('aria-expanded'), name: b.getAttribute('aria-label') } }, TRIGGER)
       ok('trigger: globe icon, current code, listbox popup semantics', t.code === 'EN' && t.globe && t.popup === 'listbox' && t.expanded === 'false' && /English/.test(t.name), JSON.stringify(t))
+      ok('trigger name starts with its visible code (label in name, axe label-content-name-mismatch)', t.name.startsWith(t.code), t.name)
       await page.locator(TRIGGER).focus(); await page.keyboard.press('Enter')
       await page.locator('.of-language-panel [role=listbox]').waitFor()
       const p = await page.evaluate(() => {

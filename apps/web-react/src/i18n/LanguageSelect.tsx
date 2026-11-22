@@ -136,7 +136,7 @@ export default function LanguageSelect({ locale, onChange, className }: {
 
   return <>
     <button ref={trigger} type="button" className={'of-language-select' + (className ? ' ' + className : '')} title={label}
-      aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? `${id}-list` : undefined} aria-label={`${label}: ${LOCALE_NAMES[locale]}`}
+      aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? `${id}-list` : undefined} aria-label={`${LOCALE_CODES[locale]} — ${label}: ${LOCALE_NAMES[locale]}`} /* starts with the visible code (WCAG 2.5.3 label in name) */
       data-locale={locale} onClick={() => (open ? close(false) : show())} onKeyDown={onTriggerKey}>
       <GlobeIcon /><span className="of-language-code" lang="en">{LOCALE_CODES[locale]}</span>
     </button>
