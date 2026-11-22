@@ -3933,5 +3933,6 @@
   "Your system": "Ваша система",
   "Unsigned build: macOS Gatekeeper blocks it on a double-click. In Applications, right-click (or Control-click) Open Trade and choose Open.": "Неподписанная сборка: Gatekeeper в macOS блокирует запуск двойным щелчком. В папке Applications щёлкните Open Trade правой кнопкой (или с Control) и выберите Open.",
   "Unsigned build: when SmartScreen shows “Windows protected your PC”, choose More info, then Run anyway.": "Неподписанная сборка: когда SmartScreen покажет «Windows protected your PC», нажмите More info, затем Run anyway.",
-  "AppImage: make the file executable with chmod +x before running it. The .deb installs with your package manager.": "AppImage: перед запуском сделайте файл исполняемым командой chmod +x. Пакет .deb устанавливается менеджером пакетов."
+  "AppImage: make the file executable with chmod +x before running it. The .deb installs with your package manager.": "AppImage: перед запуском сделайте файл исполняемым командой chmod +x. Пакет .deb устанавливается менеджером пакетов.",
+  "Required fields": "Обязательные поля"
 }

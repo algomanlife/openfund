@@ -308,12 +308,24 @@ jobs:
         env:
           TEST_FRONTEND_URL: http://localhost:8080
         run: npm run test:browser:certificates
+      - name: Contact page layout, team selection, submission, RTL/LTR and reduced motion
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080
+          OUTPUT_DIR: output/playwright/contact
+        run: npm run test:browser:contact
       - name: Footprint feature flag off (no footprint request, no style entry)
         working-directory: .
         env:
           TEST_FRONTEND_URL: http://localhost:8080
           FOOTPRINT_EXPECT_OFF: '1'
         run: npm run test:browser:footprint
+      - name: Language selector (globe, listbox keyboard, bottom sheet, RTL/LTR, reduced motion)
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080
+          OUTPUT_DIR: output/playwright/language-select
+        run: npm run test:browser:language-select
       - name: Wallet showcase motion, placement, demo labels, RTL/LTR and reduced motion
         working-directory: .
         env:
@@ -484,6 +496,8 @@ jobs:
             output/playwright/checkout-rules/
             output/playwright/applications/
             output/playwright/heatmap-radar/
+            output/playwright/language-select/
+            output/playwright/contact/
           retention-days: 3
 
   responsive-matrix:

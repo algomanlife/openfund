@@ -59,6 +59,7 @@ export const contactUi = {
   telegramTitle: text('Telegram community', 'جامعهٔ تلگرام'),
   telegramBody: text('Talk with other traders and follow announcements in the official Openfund Telegram community. Do not share account or payment details in public chats.', 'با معامله‌گران دیگر گفت‌وگو کن و اطلاعیه‌ها را در جامعهٔ رسمی تلگرام اوپن‌فاند دنبال کن. جزئیات حساب یا پرداخت را در گفت‌وگوهای عمومی منتشر نکن.'),
   telegramCta: text('Open Telegram', 'باز کردن تلگرام'),
+  requiredProgress: text('Required fields', 'فیلدهای الزامی'),
 }
 
 export const formCopy = {
