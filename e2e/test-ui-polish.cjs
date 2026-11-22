@@ -2,6 +2,7 @@
  * wallets, invented trading records or blockchain writes. */
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict'), fs=require('node:fs'), path=require('node:path');
+const { chooseLocale, toggleLocale } = require('./helpers/language.cjs');
 const BASE=(process.env.TEST_FRONTEND_URL||'http://localhost:8080').replace(/\/$/,'');
 const OUT=path.resolve(process.env.POLISH_OUTPUT||'output/playwright/ui-polish');
 fs.mkdirSync(OUT,{recursive:true});
@@ -44,9 +45,7 @@ const chartFixture=JSON.parse(fs.readFileSync(path.resolve('packages/openfund-ch
 /* Language switching uses the five-language selector (fa, en, ar, ru, zh-CN);
    toggleLanguage keeps the previous fa <-> en intent of these steps. */
 async function toggleLanguage(page) {
-  const select = page.locator('.of-language-select select').first();
-  await select.waitFor({ state: 'attached' });
-  await select.selectOption((await select.inputValue()) === 'fa' ? 'en' : 'fa');
+  await toggleLocale(page);
 }
 
 async function chartRoutes(context){
@@ -234,7 +233,7 @@ async function walletDisclosureFits(page){
    const expectedNavigation = {
     primary: ['challenges', 'markets', 'rulebook'],
     economy: ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'],
-    resources: ['faq', 'learn', 'learn/glossary', 'tools', 'apps', 'roadmap', 'certificate-verification', 'about', 'contact'],
+    resources: ['faq', 'learn', 'learn/glossary', 'tools', 'apps', 'roadmap', 'developers', 'certificate-verification', 'about', 'contact'],
    };
    for (const [group, routes] of Object.entries(expectedNavigation)) {
     const selector = group === 'primary' ? '#navigation > a' : `#website-${group} a`;
@@ -347,7 +346,7 @@ async function walletDisclosureFits(page){
    await page.goto(BASE+'/en/perpetual'+suffix);await page.waitForURL('**/en/perpetual/'+expected);
    check('EN Perpetual route resolves within the same product: '+suffix,true);
   }
-  await page.goto(BASE+'/en/home');await page.locator('.of-language-select select').first().waitFor({ state: 'attached' });await page.waitForTimeout(1800);
+  await page.goto(BASE+'/en/home');await page.locator('.of-language-select').first().waitFor({ state: 'attached' });await page.waitForTimeout(1800);
   await toggleLanguage(page);await page.waitForURL('**/fa/home');
   await page.locator('.home-products').waitFor();await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.home-products').waitFor();
   check('EN Home language switch returns to FA two-product Home',true);
@@ -359,7 +358,7 @@ async function walletDisclosureFits(page){
   // Leaving the classic EN Home can schedule a document reload after the
   // terminal first appears. Click only after that handoff has completed.
   await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.of-terminal-top').waitFor();
-  await page.locator('.of-language-select select').first().selectOption('en');
+  await chooseLocale(page, 'en');
   await page.waitForURL('**/en/perpetual/journal?account=product-specific');check('Perpetual language switch preserves product and account context',true);
   }
   check('No browser exceptions',errors.length===0);

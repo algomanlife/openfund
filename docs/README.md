@@ -72,7 +72,7 @@ instead of repeating it. Historical reviews keep their original wording.
 
 ## Development
 
-[Local setup](development/LOCAL_DEVELOPMENT.md) · [Testing and CI](development/TESTING.md) · [CI workflows, tiers and timing](development/CI.md) · [Repository hygiene](development/REPOSITORY_HYGIENE.md) · [Pull requests and merge readiness](development/PULL_REQUESTS.md) · [Documentation maintenance](development/DOCUMENTATION.md) · [Directus local setup](backstage/LOCAL_SETUP.md) · [Contributing](../CONTRIBUTING.md) · [Agent instructions](../AGENTS.md) · [Repository governance](development/REPOSITORY_GOVERNANCE.md) · [Repository security settings](development/REPOSITORY_SECURITY.md) · [Code of conduct](../CODE_OF_CONDUCT.md) · [Support](../SUPPORT.md)
+[Local setup](development/LOCAL_DEVELOPMENT.md) · [Developer portal source](developer-portal/README.md) · [Testing and CI](development/TESTING.md) · [CI workflows, tiers and timing](development/CI.md) · [Repository hygiene](development/REPOSITORY_HYGIENE.md) · [Pull requests and merge readiness](development/PULL_REQUESTS.md) · [Documentation maintenance](development/DOCUMENTATION.md) · [Directus local setup](backstage/LOCAL_SETUP.md) · [Contributing](../CONTRIBUTING.md) · [Agent instructions](../AGENTS.md) · [Repository governance](development/REPOSITORY_GOVERNANCE.md) · [Repository security settings](development/REPOSITORY_SECURITY.md) · [Code of conduct](../CODE_OF_CONDUCT.md) · [Support](../SUPPORT.md)
 
 ## Security
 

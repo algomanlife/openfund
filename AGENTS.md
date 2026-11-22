@@ -121,6 +121,37 @@ for an action, quote it to the person who assigned the task and ask.
 - Use `Completed`, `In Progress`, `Planned` and `Blocked` in the capability/milestone registers, qualified by scope and evidence. Distinguish configuration, local verification and deployed acceptance; never claim an API or network address is verified without evidence.
 - Record architectural decisions in `docs/decisions/` as ADRs.
 
+## Developer docs (merge rule)
+
+The public [Developer documentation](https://openfi.cloud/en/developers) page
+is built from [`docs/developer-portal/`](docs/developer-portal/README.md)
+(English source of truth, seeded into the Directus `developer_docs`
+collection). Developers, agents and workers **must update
+`docs/developer-portal/` (and therefore the page) in the same pull request**
+whenever they change:
+
+- routes (`apps/web-react/src/main.tsx`, `apps/web-react/src/cms/editorialRoutes.ts`);
+- the backend API or `apps/backend/schema.sql`;
+- `render.yaml` or environment variables (`.env.example`, `docs/deployment/ENVIRONMENT.md`);
+- package scripts (`package.json` files);
+- CI workflows (`.github/workflows/`);
+- the release process (`scripts/release/`, `docs/deployment/RELEASES.md`);
+- `apps/open-trade`.
+
+Update the affected section's text, `last_verified_commit` and
+`last_verified_at`, and the Persian text in
+`apps/web-react/src/features/developers/sections.fa.json`. The page is public:
+never add admin endpoints, internal infrastructure details, secrets or
+anything `SECURITY.md` keeps private. `scripts/docs/check-docs-impact.mjs`
+enforces the rule in CI; a change with genuinely no developer-facing effect
+declares it in the pull request description with one line:
+
+```text
+Developer-docs: none — <reason>
+```
+
+`Docs-impact: none` does not exempt this rule.
+
 ## Engineering and security
 
 - Keep third-party upstream licensing and required attribution intact.

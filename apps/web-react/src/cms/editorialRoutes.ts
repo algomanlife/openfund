@@ -38,6 +38,7 @@ export const EDITORIAL_ROUTES: readonly EditorialRoute[] = [
   { path: '/:locale/faq', view: 'faq', collections: ['faqs', 'faq_categories', ...site] },
   { path: '/:locale/faq/q/:key', view: 'faq-question', collections: ['faqs', 'faq_categories'] },
   { path: '/:locale/tools', view: 'tools', collections: ['tools', ...site] },
+  { path: '/:locale/developers', view: 'developers', collections: ['developer_docs', ...site] },
   { path: '/:locale/tools/:slug', view: 'tool', collections: ['tools'] },
   { path: '/:locale/learn', view: 'learn', collections: ['learning_paths', ...site] },
   { path: '/:locale/learn/paths/:slug', view: 'learning-path', collections: ['learning_paths', 'lessons'] },

@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
+const { chooseLocale, toggleLocale } = require('./helpers/language.cjs');
 const BASE = (process.env.TEST_FRONTEND_URL || 'http://localhost:8293').replace(/\/$/, '');
 const capture = process.env.REFRESH_CAPTURE === '1';
 const out = path.resolve('output/playwright/website-refresh');
@@ -13,9 +14,7 @@ const checks = [], captures = [];
 /* Language switching uses the five-language selector (fa, en, ar, ru, zh-CN);
    toggleLanguage keeps the previous fa <-> en intent of these steps. */
 async function toggleLanguage(page) {
-  const select = page.locator('.of-language-select select').first();
-  await select.waitFor({ state: 'attached' });
-  await select.selectOption((await select.inputValue()) === 'fa' ? 'en' : 'fa');
+  await toggleLocale(page);
 }
 
 function check(name, value) { assert.ok(value, name); checks.push(name); }
@@ -291,7 +290,7 @@ async function realThemeClicks(browser) {
       await localePage.waitForFunction(() => document.documentElement.lang === 'fa' && window.ofLang === 'fa' && document.querySelector('.hero .telegram-community')?.textContent?.includes('جامعه معامله‌گران'));
       check('language roundtrip restores portal', (await localePage.locator('.hero .telegram-community').innerText()).includes('جامعه معامله‌گران'));
       for (const locale of ['en', 'fa', 'en', 'fa']) {
-        await localePage.locator('.of-language-select select').first().selectOption(locale);
+        await chooseLocale(localePage, locale);
         await localePage.waitForURL(url => url.pathname.startsWith(`/${locale}/`));
         // The legacy Landing teardown can schedule a document reload just after the
         // route change; re-wait for the localized label and repeat the probe on the
@@ -332,14 +331,14 @@ async function realThemeClicks(browser) {
         check(`${locale} portal remains singular`, singular);
       }
       for (const locale of ['en', 'ar', 'ru', 'zh-CN', 'fa']) {
-        await localePage.locator('.of-language-select select').first().selectOption(locale);
+        await chooseLocale(localePage, locale);
         const waitForLocale = () => localePage.waitForFunction(locale => {
           const direction = ['fa', 'ar'].includes(locale) ? 'rtl' : 'ltr';
           return location.pathname === `/${locale}/challenges`
             && document.documentElement.lang === locale
             && document.documentElement.dir === direction
             && localStorage.getItem('of-language') === locale
-            && document.querySelector('.of-language-select select')?.value === locale
+            && document.querySelector('.of-language-select')?.dataset.locale === locale
             && !!document.querySelector('.hero .telegram-community[data-locale-owned="react"]');
         }, locale);
         await waitForLocale();

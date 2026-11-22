@@ -1,0 +1,41 @@
+/* Developer documentation: sticky section index beside the content on
+   desktop; a collapsible index at the top on narrow screens. */
+.dd-layout{display:grid;grid-template-columns:minmax(220px,280px) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:start;padding-bottom:80px}
+.dd-aside{position:sticky;top:96px;display:grid;gap:14px;max-height:calc(100vh - 120px);overflow:auto}
+.dd-search input{width:100%;box-sizing:border-box;min-height:44px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--white);font:inherit;font-size:14px}
+.dd-search input:focus-visible{outline:2px solid var(--mint);outline-offset:1px}
+.dd-index h3{margin:14px 0 6px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.dd-index h3:lang(fa),[dir=rtl] .dd-index h3{letter-spacing:0;text-transform:none}
+.dd-index ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.dd-index a{display:block;padding:7px 10px;border-radius:8px;color:var(--body);font-size:14px;border-inline-start:2px solid transparent}
+.dd-index a:hover{color:var(--white);background:color-mix(in srgb,var(--mint) 6%,transparent)}
+.dd-index a[aria-current=location]{color:var(--mint);border-inline-start-color:var(--mint);background:color-mix(in srgb,var(--mint) 8%,transparent)}
+.dd-index-mobile{display:none}
+.dd-main{min-width:0;display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
+.dd-main>*,.dd-aside>*{min-width:0}
+.dd-note,.dd-empty{margin:0;padding:12px 14px;border:1px dashed var(--line);border-radius:10px;color:var(--body);font-size:13px}
+.dd-section{scroll-margin-top:104px;padding:24px clamp(16px,3vw,28px);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.dd-section h2{margin:0 0 12px;font-size:clamp(20px,2.4vw,26px);color:var(--white)}
+.dd-section h4{margin:16px 0 6px;color:var(--white)}
+.dd-section p,.dd-section li{color:var(--body);line-height:1.85;font-size:15px}
+.dd-section ul,.dd-section ol{padding-inline-start:20px;margin:8px 0}
+.dd-section a{color:var(--mint)}
+.dd-section :not(pre)>code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;padding:1px 6px;border-radius:5px;background:color-mix(in srgb,var(--body) 10%,transparent);color:var(--white);overflow-wrap:anywhere}
+.dd-code{position:relative;margin:12px 0}
+.dd-code pre{margin:0;padding:14px 16px;padding-inline-end:76px;border-radius:12px;border:1px solid var(--line);background:#050807;color:#d9e6df;overflow-x:auto;font:13px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace;text-align:left}
+.dd-copy{position:absolute;top:8px;right:8px;min-height:32px;padding:4px 12px;border-radius:8px;border:1px solid #ffffff26;background:#0d1512;color:#b9cbc2;font:inherit;font-size:12px;cursor:pointer}
+.dd-copy:hover,.dd-copy:focus-visible{border-color:var(--mint);color:var(--mint)}
+.dd-meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin:16px 0 0!important;padding-top:12px;border-top:1px solid var(--line);font-size:12.5px!important;color:var(--muted)!important}
+.dd-meta code{font-size:12px}
+html[data-theme=light] .dd-code pre{background:#f4f8f6;color:#13221b;border-color:#0b2a1d1f}
+html[data-theme=light] .dd-copy{background:#fff;color:#2c4136;border-color:#0b2a1d26}
+@media (max-width:899.98px){
+  .dd-layout{grid-template-columns:minmax(0,1fr)}
+  .dd-aside{position:sticky;top:72px;z-index:5;max-height:none;overflow:visible;background:var(--bg);padding-block:8px}
+  .dd-index-desktop{display:none}
+  .dd-index-mobile{display:block;border:1px solid var(--line);border-radius:10px;padding:0 12px;background:var(--surface)}
+  .dd-index-mobile summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:500}
+  .dd-index-mobile[open]{max-height:60vh;overflow:auto;padding-bottom:8px}
+  .dd-index a{min-height:44px;display:flex;align-items:center}
+}
+@media (hover:none),(pointer:coarse){.dd-copy{min-height:44px}}

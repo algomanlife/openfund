@@ -56,6 +56,7 @@
 - [ ] Product documentation and Feature Status aligned with implementation (README sections, ENVIRONMENT.md, CHANGELOG; `npm run docs:check` green)
 - [ ] README data in `docs/readme/` updated for what this PR changes and `npm run docs:write` run (README and `docs/assets/readme/` committed)
 - [ ] Roadmap milestones/dependencies/acceptance criteria updated
+- [ ] Developer docs (`docs/developer-portal/`) updated for route, API, schema, Blueprint/env, package-script, CI, release or Open Trade changes, or `Developer-docs: none — <reason>` declared
 - [ ] Genuine screenshots/provenance refreshed after significant UI changes
 - [ ] English documentation; Persian application/RTL fixtures preserved
 - [ ] Render three-resource architecture and same-origin app hosting preserved

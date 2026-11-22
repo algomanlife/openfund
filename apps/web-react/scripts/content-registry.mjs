@@ -110,7 +110,7 @@ const VIEW_AREAS = {
   governance: ['governance'], 'governance-new': ['governance'], 'governance-workspace': ['governance'], 'governance-proposal': ['governance'],
   'economy-redirect': [], 'revenue-model': ['economy'], 'live-market-access': ['economy'], ambassador: ['partners'], coach: ['partners'],
   whitepaper: ['whitepaper'], 'certificate-verification': ['certificates'], applications: ['applications'], roadmap: ['roadmap'],
-  about: ['company'], contact: ['company'], faq: ['faq'], 'faq-question': ['faq'], tools: ['tools'], tool: ['tools'],
+  about: ['company'], contact: ['company'], developers: ['developers'], faq: ['faq'], 'faq-question': ['faq'], tools: ['tools'], tool: ['tools'],
   learn: ['learn'], 'learning-path': ['learn'], lesson: ['learn'], glossary: ['learn'], 'glossary-term': ['learn'],
   referral: ['referral'], 'referral-entry': ['referral'], 'product-shell': ['terminal'], dashboard: ['terminal'], trade: ['terminal'],
   chart: ['terminal'], radar: ['radar'], heatmap: ['radar'], portfolio: ['terminal'], journal: ['terminal'], inbox: ['inbox'],
