@@ -1,0 +1,46 @@
+/* Flamingo migration scene (flamingoArt.ts). --flamingo is used only for
+   migration scenes. Motion is transform/opacity only and runs only while the
+   host is open (.resources-open) or live (.is-live); otherwise every
+   animation is paused on a frame with the flock over the lake; reduced motion
+   removes the animations and shows the same composition. */
+.flamingo-host{display:block;min-inline-size:0}
+.flamingo-scene{display:block;inline-size:100%;block-size:auto;overflow:hidden}
+.flamingo-scene .fl-sky-top{stop-color:color-mix(in srgb,var(--flamingo,#f4a3b8) 18%,#07100d)}
+.flamingo-scene .fl-sky-low{stop-color:color-mix(in srgb,var(--flamingo,#f4a3b8) 30%,#0b1512)}
+.flamingo-scene .fl-lake-top{stop-color:color-mix(in srgb,var(--mint,#82e7bd) 16%,#06110d)}
+.flamingo-scene .fl-lake-low{stop-color:#040907}
+.flamingo-scene .fl-shore{fill:color-mix(in srgb,var(--mint,#82e7bd) 10%,#08110e)}
+.flamingo-scene .fl-glow{fill:color-mix(in srgb,var(--flamingo,#f4a3b8) 22%,transparent);opacity:.55}
+.flamingo-scene .fl-mark{opacity:.92}
+.flamingo-scene .fl-reflection{opacity:.6}
+.flamingo-scene .fl-ripple{fill:none;stroke:color-mix(in srgb,var(--mint,#82e7bd) 45%,transparent);stroke-width:.8;transform-box:fill-box;transform-origin:center;opacity:.5}
+.flamingo-scene .fl-body,.flamingo-scene .fl-head,.flamingo-scene .fl-wing{fill:var(--flamingo,#f4a3b8)}
+.flamingo-scene .fl-wing.is-far{fill:color-mix(in srgb,var(--flamingo,#f4a3b8) 70%,#3a1a24)}
+.flamingo-scene .fl-neck{fill:none;stroke:var(--flamingo,#f4a3b8);stroke-width:2.6;stroke-linecap:round}
+.flamingo-scene .fl-legs{fill:none;stroke:color-mix(in srgb,var(--flamingo,#f4a3b8) 80%,#000);stroke-width:1.4;stroke-linecap:round}
+.flamingo-scene .fl-shadow{fill:#000;opacity:.25}
+.flamingo-scene .fl-wing{transform-box:fill-box;transform-origin:20% 100%}
+.flamingo-scene .fl-bird{transform-box:fill-box;transform-origin:center}
+
+/* motion: defined always, paused unless the host is open or live */
+.flamingo-scene .fl-wing{animation:fl-flap var(--fl-flap,1s) ease-in-out var(--fl-delay,0s) infinite alternate}
+.flamingo-scene .fl-bird{animation:fl-bob var(--fl-bob,3.6s) ease-in-out var(--fl-delay,0s) infinite alternate}
+.flamingo-scene .fl-flock{animation:fl-glide 14s cubic-bezier(.45,.05,.55,.95) -8s infinite}
+/* the negative delay makes the paused (closed) frame the flock settled over the lake */
+.flamingo-scene .fl-ripple{animation:fl-ripple 5.5s ease-out infinite}
+.flamingo-scene .fl-ripple.r1{animation-delay:-1.8s}.flamingo-scene .fl-ripple.r2{animation-delay:-3.6s}
+.flamingo-scene :is(.fl-wing,.fl-bird,.fl-flock,.fl-ripple){animation-play-state:paused}
+:is(.resources-open,.is-live,[data-flamingo-live]) .flamingo-scene :is(.fl-wing,.fl-bird,.fl-flock,.fl-ripple){animation-play-state:running}
+@keyframes fl-flap{from{transform:scaleY(1)}to{transform:scaleY(-.55)}}
+@keyframes fl-bob{from{transform:translateY(-1.5px)}to{transform:translateY(1.5px)}}
+/* the flock glides in, settles low over the lake, then fades for the next pass */
+@keyframes fl-glide{0%{transform:translate(-34%,-6%);opacity:0}12%{opacity:1}70%{transform:translate(2%,4%);opacity:1}88%{transform:translate(6%,8%);opacity:1}100%{transform:translate(9%,9%);opacity:0}}
+@keyframes fl-ripple{0%{transform:scale(.6);opacity:0}25%{opacity:.55}100%{transform:scale(1.6);opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  .flamingo-scene :is(.fl-wing,.fl-bird,.fl-flock,.fl-ripple){animation:none}
+}
+html[data-theme=light] .flamingo-scene .fl-sky-top{stop-color:color-mix(in srgb,var(--flamingo,#b23a63) 10%,#f6faf8)}
+html[data-theme=light] .flamingo-scene .fl-sky-low{stop-color:color-mix(in srgb,var(--flamingo,#b23a63) 18%,#f2f7f4)}
+html[data-theme=light] .flamingo-scene .fl-lake-top{stop-color:#d9efe5}
+html[data-theme=light] .flamingo-scene .fl-lake-low{stop-color:#c4e2d4}
+html[data-theme=light] .flamingo-scene .fl-shore{fill:#cfe6da}

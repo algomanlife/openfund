@@ -8,6 +8,7 @@ import { dirOf, pick, pickFormat, type AppLocale } from '../../i18n/locales'
 import { BRAND_WORDMARK } from '../../brand/wordmark'
 import { BrandWordmark } from '../../brand/BrandWordmark'
 import MegaIcon from './MegaIcon'
+import FlamingoScene from './FlamingoScene'
 import './mega-menu.css'
 
 export const SITE_DRAWER_ID = 'site-navigation-drawer'
@@ -81,10 +82,9 @@ export default function SiteNavDrawer({ locale, pathname, navItems, onLocaleChan
       }}><span aria-hidden="true">◐</span>{pick(locale, 'حالت روشن / تیره', 'Light / dark mode')}</button>
     </>}>
     <nav id={SITE_DRAWER_ID} className="of-drawer-nav" aria-label={pick(locale, 'ناوبری اصلی', 'Main navigation')}>
-      <ul>{model.primary.map(item => <li key={item.route}>{link(item)}</li>)}</ul>
-      {model.groups.map(group => {
+      {model.groups.map((group, index) => {
         const expanded = openGroups.has(group.id)
-        return <section key={group.id} className="of-drawer-section of-drawer-mega">
+        return <div key={group.id} className="of-drawer-group">{index === 1 && <ul>{model.primary.map(item => <li key={item.route}>{link(item)}</li>)}</ul>}<section className="of-drawer-section of-drawer-mega">
           <h3><button type="button" className="of-drawer-accordion" aria-expanded={expanded} aria-controls={`${group.id}-drawer`} onClick={() => toggleGroup(group.id)}>
             <span>{group.label}</span><span className="of-drawer-chevron" aria-hidden="true">⌄</span></button></h3>
           <div id={`${group.id}-drawer`} hidden={!expanded}>
@@ -92,15 +92,18 @@ export default function SiteNavDrawer({ locale, pathname, navItems, onLocaleChan
               {section.label && <h4>{section.label}</h4>}
               <ul className="mega-tiles is-drawer">{section.links.map(item => <li key={item.route}>
                 <a className="mega-tile" href={item.href} onClick={close} aria-current={item.current ? 'page' : undefined} data-active-section={item.activeSection || undefined}>
-                  <span className="mega-icon"><MegaIcon name={item.icon} /></span><span className="mega-text"><b>{item.label}</b></span>
+                  <span className="mega-icon"><MegaIcon name={item.icon} /></span><span className="mega-text"><b>{item.label}{item.badge && <> <span className="mega-badge">{item.badge}</span></>}</b>{item.countdown && <small className="mega-countdown">{item.countdown}</small>}</span>
                 </a></li>)}</ul>
             </div>)}
-            {group.banner && <a className="mega-banner is-compact" href={group.banner.href} onClick={close}>
-              <span className="mega-icon"><MegaIcon name={group.banner.kind === 'council' ? 'governance' : 'apps'} /></span>
-              <span className="mega-banner-copy"><b>{group.banner.title}</b><small>{group.banner.body}</small></span>
+            {group.banner && <a className={`mega-banner is-compact is-${group.banner.kind}`} href={group.banner.href} onClick={close}>
+              {group.banner.kind === 'flamingo'
+                ? <FlamingoScene variant="compact" live={open && expanded} />
+                : <span className="mega-icon"><MegaIcon name={group.banner.kind === 'council' ? 'governance' : 'apps'} /></span>}
+              <span className="mega-banner-copy"><b>{group.banner.title}</b><small>{group.banner.body}</small>
+                {group.banner.description && <span className="mega-sr">{group.banner.description}</span>}</span>
             </a>}
           </div>
-        </section>
+        </section></div>
       })}
       <a className="of-drawer-cta" href={`/${locale}/prop/trade`} onClick={close}>
         {pick(locale, 'ورود به ترمینال', 'Enter Terminal')}

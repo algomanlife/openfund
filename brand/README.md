@@ -5,7 +5,7 @@ This directory groups existing brand artifacts **without changing the runtime as
 - `logos/`: approved Openfund logo variants.
 - `logos/seasonal/`: owner-approved (2026-11-11) seasonal decoration layers for the header logo only (Yalda pomegranates, Christmas hat). They never replace the master mark; `apps/web-react/src/brand/seasonalLogo.ts` draws them over it by date.
 - `typography/`: provenance of the two brand faces (Ubuntu + Dastkhat). The binaries live once, in `apps/web-react/public/assets/`; see [typography/README.md](typography/README.md).
-- `brandbook/`: source brandbook archive if found; preserve original materials.
+- `brandbook/`: source brandbook archive (`Openfund_Production/build.py` regenerates its EN/FA HTML). 2026-11-22: a product-palette page adds the `--flamingo` accent (migration scenes only); other pages are unchanged.
 - `imagery/`: selected project imagery if found.
 
 ## Brand documentation backlog

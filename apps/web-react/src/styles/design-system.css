@@ -14,6 +14,7 @@
 :root {
   /* brand + semantic colour (dark defaults; light overrides below) */
   --ds-brand: #82e7bd;            /* Openfund mint */
+  --flamingo: #f4a3b8;            /* migration scenes only (10.3:1 on --bg) */
   --ds-brand-strong: #4fe3a0;
   --ds-lime: #c6ff52;             /* seasonal / payout accent */
   --ds-positive: #2fbf86;
@@ -78,6 +79,7 @@
   --ds-bp-sm: 430px; --ds-bp-md: 768px; --ds-bp-lg: 1024px; --ds-bp-xl: 1440px;
 }
 html[data-theme=light] {
+  --flamingo: #b23a63;            /* 5.7:1 on #fff */
   --ds-brand: #087b4a; --ds-brand-strong: #066b40; --ds-positive: #0f9d63; --ds-negative: #c23a4a; --ds-warning: #8a6510; --ds-info: #2f5fc4;
   --ds-shadow-1: 0 1px 2px #0a120d14; --ds-shadow-2: 0 24px 48px -32px #0a120d40;
 }
