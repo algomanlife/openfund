@@ -234,7 +234,7 @@ async function walletDisclosureFits(page){
    const expectedNavigation = {
     primary: ['challenges', 'markets', 'rulebook'],
     economy: ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'],
-    resources: ['faq', 'learn', 'learn/glossary', 'tools', 'apps', 'roadmap', 'certificate-verification', 'about', 'contact'],
+    resources: ['faq', 'learn', 'learn/glossary', 'tools', 'apps', 'roadmap', 'developers', 'certificate-verification', 'about', 'contact'],
    };
    for (const [group, routes] of Object.entries(expectedNavigation)) {
     const selector = group === 'primary' ? '#navigation > a' : `#website-${group} a`;
