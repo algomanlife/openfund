@@ -150,7 +150,7 @@ export default function TournamentPage() {
   const ended = !before && now >= Date.parse(league.endsAt)
 
   return <InformationShell page="tournament" description={t(c.line)} title={`${t(c.name)} | Openfund`}>
-    <section className="tl-hero container" ref={heroRef} data-live={heroLive || undefined}>
+    <section className="tl-hero container" id="top" ref={heroRef} data-live={heroLive || undefined}>
       <p className="tl-eyebrow">{t(c.eyebrow)}</p>
       <h1 className="tl-title">{t(c.name)}</h1>
       <p className="tl-line">{t(c.line)}</p>

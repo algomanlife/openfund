@@ -22,7 +22,7 @@ export default function TournamentTermsPage() {
   const [doc, setDoc] = useState<(CmsLegalDoc & { version: string | null }) | null | undefined>(undefined)
   useEffect(() => { let live = true; void fetchCmsLegalDoc('tournament-terms').then(d => { if (live) setDoc(d) }); return () => { live = false } }, [])
   return <InformationShell page="tournament" description={t(c.title)} title={`${t(c.title)} | Openfund`}>
-    <article className="container tl-section tl-terms">
+    <article className="container tl-section tl-terms" id="top">
       <h1>{doc ? tx(locale, doc.title) : t(c.title)}</h1>
       {doc === undefined ? null : doc === null ? <p className="tl-empty">{t(c.pending)}</p> : <>
         {doc.version && <p className="tl-note">{t(c.version)}: <span dir="ltr">{doc.version}</span></p>}
