@@ -8,7 +8,9 @@
  *    no deploy (and through the /cms snapshot used by IRAN);
  *  - the popup: delay, hidden-tab pause, focus, Escape, backdrop, focus
  *    return, session cap, not on checkout, coupon CTA into checkout;
- *  - counters, deactivation, and a refused publication for an invalid coupon.
+ *  - counters, deactivation, and a refused publication for an invalid coupon;
+ *  - a non-dismissible warning bar targeted at the terminal shows on the
+ *    trading page with no close button, and never on the public pages.
  *
  * Env: TEST_BACKEND_URL (local site), DIRECTUS_URL, BACKSTAGE_DIRECTUS_TOKEN
  * (editor role), ADMIN_API_TOKEN, DATABASE_URL (*_test or *_ci), OUTPUT_DIR. */
@@ -43,7 +45,7 @@ const adminApi = (path, body) => fetch(new URL('/admin' + path, site), { method:
 {
   const auth = { Authorization: `Bearer ${process.env.BACKSTAGE_DIRECTUS_TOKEN}`, 'Content-Type': 'application/json' }
   const listed = await (await fetch(new URL('/items/site_campaigns?fields=id,internal_name&limit=-1&filter[status][_neq]=archived', cms), { headers: auth })).json()
-  for (const c of listed.data ?? []) if (/^(en-notice|spring)-/.test(c.internal_name))
+  for (const c of listed.data ?? []) if (/^(en-notice|spring|terminal-warning)-/.test(c.internal_name))
     await fetch(new URL(`/items/site_campaigns/${c.id}`, cms), { method: 'PATCH', headers: auth, body: JSON.stringify({ status: 'archived' }) })
 }
 const browser = await chromium.launch()
@@ -267,6 +269,27 @@ try {
   ok('reactivation is refused while its coupon is disabled (no invalid discount promise)', true)
   await dialog.getByRole('button', { name: 'Cancel' }).click()
   await bsContext.close()
+
+  /* ---------- terminal targeting, tone and the non-dismissible switch ---------- */
+  {
+    const auth = { Authorization: `Bearer ${process.env.BACKSTAGE_DIRECTUS_TOKEN}`, 'Content-Type': 'application/json' }
+    const created = await fetch(new URL('/items/site_campaigns', cms), { method: 'POST', headers: auth, body: JSON.stringify({
+      internal_name: `terminal-warning-${tag}`, placement: 'announcement_bar', status: 'published', active: true, style: 'warning', dismissible: false, priority: 900,
+      locales: ['en'], regions: ['GLOBAL', 'IRAN'], pages: ['terminal'], frequency: 'session',
+      translations: [{ language_code: 'en', headline: `Scheduled maintenance ${tag}` }] }) })
+    ok('the editor role can create a terminal-targeted warning bar', created.ok, String(created.status))
+    const { context, page } = await fresh()
+    await openSite(page, '/en/prop/trade'); await page.waitForTimeout(1500)
+    const terminalBar = page.locator('aside.of-announcement', { hasText: `Scheduled maintenance ${tag}` })
+    await terminalBar.waitFor({ timeout: 15000 })
+    ok('terminal: the warning bar shows above the terminal header', await terminalBar.evaluate(a => a.classList.contains('of-announcement-warning') && a.getAttribute('role') === 'alert'
+      && a.getBoundingClientRect().bottom <= document.querySelector('.of-terminal-header').getBoundingClientRect().top + 1))
+    ok('terminal: a non-dismissible bar has no close button', await terminalBar.locator('.of-announcement-close').count() === 0)
+    await shot(page, 'terminal-warning-bar')
+    await openSite(page, '/en/home')
+    ok('a terminal-only bar never shows on the public pages', await page.locator('aside.of-announcement', { hasText: `Scheduled maintenance ${tag}` }).count() === 0)
+    await context.close()
+  }
   ok('no uncaught page errors', errors.length === 0, errors.slice(0, 3).join(' | '))
   console.log(`${results.length} campaign checks passed`)
 } finally {

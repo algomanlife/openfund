@@ -96,7 +96,7 @@ test('one shared poller: remounts never duplicate the loop, unmount cancels, dat
   }
 })
 
-test('the Bitpin ticker is Persian-only; the announcement bar sits above the header; neither is mounted in the terminal', () => {
+test('the Bitpin ticker is Persian-only; the announcement bar sits above the header; the terminal shows only a targeted bar', () => {
   const shell = src('features/information/InformationShell.tsx')
   assert.match(shell, /<AnnouncementBar locale=\{locale\} \/>\s*<Chrome locale=\{locale\} part="header"/)
   assert.match(shell, /<PromoModal locale=\{locale\} \/>/)
@@ -105,9 +105,14 @@ test('the Bitpin ticker is Persian-only; the announcement bar sits above the hea
   assert.match(landing, /<AnnouncementBar locale=\{communityLocale\} \/>[\s\S]*<PromoModal locale=\{communityLocale\} \/>\s*<div dangerouslySetInnerHTML=\{\{ __html: landingMarkup \}\} \/>/)
   assert.match(landing, /\{communityLocale === 'fa' && <BitpinTicker \/>\}/)
   assert.doesNotMatch(landing + shell, /IranAccessNotice/)
+  /* owner decision (2026-11-22): the same announcement bar may target the
+     terminal and portfolio (pages 'terminal'/'portfolio', never 'all');
+     the ticker and popups stay out of trading */
   for (const file of ['features/terminal/TerminalShell.tsx', 'features/terminal/TradingPages.tsx']) {
-    assert.doesNotMatch(src(file), /BitpinTicker|AnnouncementBar|PromoModal/)
+    assert.doesNotMatch(src(file), /BitpinTicker|PromoModal/)
   }
+  assert.match(src('features/terminal/TerminalShell.tsx'), /<AnnouncementBar locale=\{locale\} \/>\s*<header className="of-terminal-header">/)
+  assert.doesNotMatch(src('features/terminal/TradingPages.tsx'), /AnnouncementBar/)
   assert.match(src('features/ticker/ticker.css'), /prefers-reduced-motion: reduce/)
   assert.match(src('features/ticker/ticker.css'), /safe-area-inset-bottom/)
   assert.match(src('features/campaigns/campaigns.css'), /prefers-reduced-motion: reduce/)
@@ -163,6 +168,29 @@ test('region, page and schedule must match; the highest priority wins', async ()
   await withCampaigns({ items: [PROMO] }, async c => assert.equal(await c.selectCampaign('modal', 'en', 'challenges'), null, 'home-only campaign'))
   assert.equal(load('features/campaigns/campaigns.ts').campaignPage('/fa/checkout'), null)
   for (const path of ['/en/prop/purchases', '/fa/profile', '/en/terminal', '/fa/prop/inbox']) assert.equal(load('features/campaigns/campaigns.ts').campaignPage(path), null, path)
+})
+
+test('announcement bars: tone, dismissible, and the terminal and portfolio only when named', async () => {
+  const page = load('features/campaigns/campaigns.ts').campaignPage
+  assert.equal(page('/en/prop/trade', 'announcement_bar'), 'terminal')
+  assert.equal(page('/fa/perpetual/chart', 'announcement_bar'), 'terminal')
+  assert.equal(page('/en/prop/portfolio', 'announcement_bar'), 'portfolio')
+  assert.equal(page('/en/prop/dashboard', 'announcement_bar'), 'portfolio')
+  assert.equal(page('/en/prop/trade', 'modal'), null, 'popups never reach the trading pages')
+  for (const path of ['/en/prop/purchases', '/fa/prop/withdrawals', '/fa/checkout']) assert.equal(page(path, 'announcement_bar'), null, path)
+  const urgent = { ...IRAN_BAR, id: 11, style: 'warning', dismissible: false, pages: ['terminal', 'portfolio'] }
+  await withCampaigns({ items: [urgent] }, async c => {
+    const bar = await c.selectCampaign('announcement_bar', 'fa', 'terminal')
+    assert.equal(bar.style, 'warning'); assert.equal(bar.dismissible, false)
+    assert.equal(await c.selectCampaign('announcement_bar', 'fa', 'home'), null, 'a trading-only bar stays off public pages')
+  })
+  await withCampaigns({ items: [IRAN_BAR] }, async c => {
+    assert.equal(await c.selectCampaign('announcement_bar', 'fa', 'terminal'), null, "'all' means the public pages only")
+    assert.equal((await c.selectCampaign('announcement_bar', 'fa', 'home')).dismissible, true, 'dismissible by default')
+  })
+  const css = src('features/campaigns/campaigns.css')
+  for (const tone of ['info', 'success', 'warning']) assert.match(css, new RegExp(`\\.of-announcement-${tone} \\{`))
+  assert.match(css, /\.of-announcement-close \{ flex: none; inline-size: 44px; block-size: 44px;/)
 })
 
 test('a coupon campaign shows only while the backend reports the coupon as promotable, and its checkout link carries the code', async () => {

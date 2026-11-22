@@ -36,6 +36,7 @@ import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPending
 import { createPaymentWatcher, escalatePendingPayments, reviewOverduePartialOrders, watcherSettings } from './payment-watcher.js'
 import { backstageReads } from './backstage-reads.js'
 import { adminRoutes } from './admin.js'
+import { consoleAdminRoutes } from './admin-console.js'
 import { createPayoutClaimClient } from './payout-claims.js'
 import { chartWorkspaceRoutes } from './chart-workspaces.js'
 import { supportRoutes, supportAdminRoutes, supportInboxRoutes } from './support.js'
@@ -902,6 +903,7 @@ app.use('/admin/payments', paymentAdminRoutes({ pool, verifier: (...a) => defaul
 app.use('/admin/support', supportAdminRoutes({ pool }))
 app.use('/admin/operations', operationsAdminRoutes({ pool, engine, marketData }))
 app.use('/admin/certificates', certificateAdminRoutes({ pool }))
+app.use('/admin/console', consoleAdminRoutes({ pool, engine, audit }))
 app.use('/admin/rewards', rewardAdminRoutes({ pool }))
 app.use('/admin/calendar', calendarAdminRoutes({ pool, conduct }))
 app.use('/admin/runtime', runtimeAdminRoutes({ Router: express.Router, runtime, adminAuth, adminActor, audit }))

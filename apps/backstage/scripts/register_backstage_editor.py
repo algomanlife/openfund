@@ -9,13 +9,21 @@ exactly what the website renders and the Backstage server validates:
 
   ui_messages                     read; update status and translations
   ui_message_translations         read; create; update value
-  <editorial surface>             read; update status (non-singletons),
-                                  translations and shared text fields
+  <editorial surface>             read; create (status, slug, sort, translations
+                                  and shared text); update status (non-singletons,
+                                  including 'archived'), sort, translations and
+                                  shared text fields
   <surface>_translations          read; create; update the surface text fields
+
+  site_settings                   update the four department mailboxes only
+                                  (support/legal/technical/community_email),
+                                  written by Backstage's owner-gated protected
+                                  editor after e-mail validation
 
 Forbidden (financial, account, governance) collections are never granted;
 fields that look like links, destinations, contact or money values are
-excluded. No delete permission anywhere.
+excluded except the four mailboxes above. No delete permission anywhere;
+editors archive instead.
 
 The script does NOT create a user or token. The owner creates a dedicated
 user with this role in Directus Studio, generates its static token there and
@@ -55,9 +63,11 @@ def wanted_permissions():
         text = [f for f in surface.get('textFields', []) if not PROTECTED.search(f)]
         shared = [f for f in surface.get('sharedTextFields', []) if not PROTECTED.search(f)]
         wanted.append((coll, 'read', ['*']))
-        parent_fields = (['status'] if not surface.get('singleton') else []) + (['translations'] if text else []) + shared
+        parent_fields = (['status', 'sort'] if not surface.get('singleton') else []) + (['translations'] if text else []) + shared
         if parent_fields:
             wanted.append((coll, 'update', parent_fields))
+        if not surface.get('singleton'):
+            wanted.append((coll, 'create', ['status', 'slug', 'sort'] + (['translations'] if text else []) + shared))
         if text and tr != coll:
             wanted += [(tr, 'read', ['*']), (tr, 'create', ['*']), (tr, 'update', text)]
     # Marketing (Backstage campaigns API): popups and announcement bars. The
@@ -69,8 +79,19 @@ def wanted_permissions():
         ('site_campaign_translations', 'read', ['*']), ('site_campaign_translations', 'create', ['*']),
         ('site_campaign_translations', 'update', ['headline', 'body', 'cta_label', 'image_alt']),
         ('directus_files', 'create', ['*']), ('directus_files', 'read', ['*']), ('directus_folders', 'read', ['id', 'name']),
+        # owner-gated protected editor (Backstage validates each address)
+        ('site_settings', 'update', ['support_email', 'legal_email', 'technical_email', 'community_email']),
     ]
-    return wanted
+    # one Directus permission per (collection, action): merge field lists so a
+    # later entry never overwrites an earlier one
+    merged = {}
+    for coll, action, fields in wanted:
+        current = merged.setdefault((coll, action), [])
+        if '*' in fields or '*' in current:
+            merged[(coll, action)] = ['*']
+        else:
+            current.extend(f for f in fields if f not in current)
+    return [(coll, action, fields) for (coll, action), fields in merged.items()]
 
 
 def main():

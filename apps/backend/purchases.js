@@ -1,4 +1,5 @@
 import { controlledRules } from './controlled-challenges.js'
+import { entitlementForOrderTx, fundedEntitlementSnapshot } from './entitlements.js'
 /**
  * Openfund — challenge purchases, on-chain payment verification,
  * invoices, purchase/payment history and withdrawal requests.
@@ -314,14 +315,20 @@ export async function provisionOrderTx(client, { order, userId = order.user_id, 
     if (controlled && (!zeroPayment || order.payment_method !== 'internal_coupon' ||
         controlled.user_id !== order.user_id || controlled.challenge_plan_id !== order.challenge_plan_id))
       throw fail(409, 'controlled_order_invalid')
-    const rules = controlledRules(normalizeRules(planConfiguration, { dailyLossVariant: order.daily_loss_variant || 'default' }), controlled)
+    /* an operator, tournament or migration entitlement (entitlements.js):
+       redeemed only as the zero-payment internal coupon it was issued as */
+    const entitlement = await entitlementForOrderTx(client, order)
+    if (entitlement && (controlled || !zeroPayment || order.payment_method !== 'internal_coupon')) throw fail(409, 'entitlement_order_invalid')
+    let rules = controlledRules(normalizeRules(planConfiguration, { dailyLossVariant: order.daily_loss_variant || 'default' }), controlled)
+    const fundedStart = entitlement?.start_stage === 0
+    if (fundedStart) rules = fundedEntitlementSnapshot(rules, { orderCreatedAt: order.created_at })
 
     const challenge = (await client.query(
       `INSERT INTO openfund_challenges (user_id, challenge_plan_id, status, account_size_usd, purchase_order_id, rules_snapshot, stage)
        VALUES ($1,$2,'created',$3,$4,$5,$6) RETURNING *`,
       [userId, order.challenge_plan_id, order.account_size_usd, orderId,
         /* D7: the purchased daily-loss variant is frozen with the rules */
-        JSON.stringify(rules), controlled?.profile === 'instant' ? 0 : 1])).rows[0]
+        JSON.stringify(rules), controlled?.profile === 'instant' || fundedStart ? 0 : 1])).rows[0]
 
     /* provision the challenge trading account (challenge_funding ledger
        event, immutable provisioning event, frozen rules snapshot) —
@@ -333,6 +340,14 @@ export async function provisionOrderTx(client, { order, userId = order.user_id, 
     })
 
     if (controlled?.profile === 'instant') await challenges.startTx(client, challenge)
+    if (entitlement) {
+      await ChallengeService.event(client, challenge.id, 'entitlement_redeemed',
+        { entitlementId: entitlement.id, source: entitlement.source, reference: entitlement.reference, startStage: entitlement.start_stage })
+      /* a funded account without the reward-cycle policy starts at once, as
+         the reward review does for older snapshots; a funded-v1 account waits
+         for the trader's one-time reward-cycle choice */
+      if (fundedStart && !rules.fundedPayoutVersion) await challenges.startTx(client, challenge)
+    }
 
     const invoice = (await client.query(
       `INSERT INTO invoices (purchase_order_id, user_id, number, total_usd)

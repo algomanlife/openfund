@@ -242,6 +242,27 @@ test('operations sections: reads, table-driven mutations, validation, step-up an
   region = 'IRAN'
   assert.equal((await call(`/api/refunds/${refund}`, { action: 'review', note: 'checking', password }, headers)).body.error, 'wrong_region')
   region = 'GLOBAL'
+
+  /* console operations (2026-11-22): write-only sections dispatch through the
+     same gate, validate before the backend, and reach the console endpoints */
+  const user = randomUUID(), challenge = randomUUID()
+  for (const [path, body, expected] of [
+    [`/api/userNotes/${user}`, { action: 'add', note: 'Called about payout timing.' }, `/admin/console/users/${user}/notes`],
+    [`/api/userTags/${user}`, { action: 'set', tags: 'vip, kyc-pending', reason: 'review' }, `/admin/console/users/${user}/tags`],
+    [`/api/challengeActions/${challenge}`, { action: 'extend', days: 5, reason: 'outage' }, `/admin/console/challenges/${challenge}/action`],
+    ['/api/entitlements/new', { action: 'issue', walletAddress: '0x' + 'ab'.repeat(20), planSlug: 'standard', accountSizeUsd: 10000, reason: 'goodwill' }, '/admin/console/entitlements'],
+    ['/api/plans/standard', { action: 'retire', reason: 'replaced' }, '/admin/console/plans/standard/retire'],
+  ]) {
+    assert.equal((await call(path, body, headers)).status, 401, `${path} requires the password`)
+    assert.equal((await call(path, { ...body, password }, headers)).status, 200, path)
+    assert.equal(calls.at(-1).path, expected, path)
+  }
+  assert.deepEqual(JSON.parse(calls.find(c => c.path.endsWith('/tags')).body).tags, ['vip', 'kyc-pending'])
+  assert.equal((await call(`/api/userTags/${user}`, { action: 'set', tags: 'Bad Tag', reason: 'x', password }, headers)).status, 400)
+  assert.equal((await call(`/api/challengeActions/${challenge}`, { action: 'extend', days: 500, reason: 'x', password }, headers)).status, 400)
+  assert.equal((await call(`/api/challengeActions/${challenge}`, { action: 'rewrite_balance', reason: 'x', password }, headers)).status, 400)
+  assert.equal((await call(`/api/userNotes/${user}`)).status, 401, 'write-only sections have no unauthenticated read')
+  assert.equal((await call(`/api/userNotes/${user}`, undefined, headers)).status, 404, 'and no read route at all')
 })
 
 test('configuration must be explicitly provisioned and production origins must use HTTPS', async () => {

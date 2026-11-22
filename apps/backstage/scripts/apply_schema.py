@@ -514,6 +514,13 @@ def main():
     ensure_field('site_campaigns', 'frequency', 'string', meta={'interface': 'select-dropdown', 'options': choice(
         ('session', 'Once per session'), ('interval', 'Once per interval'))}, schema={'default_value': 'session'})
     ensure_field('site_campaigns', 'frequency_days', 'integer', meta={'interface': 'input'}, schema={'default_value': 7})
+    # announcement tone, dismissal and the trading pages (Backstage 2026-11-22);
+    # choices are metadata only, so existing rows keep their values
+    STYLE_CHOICES = choice(('info', 'Info'), ('success', 'Success'), ('warning', 'Warning'), ('mint', 'Mint (legacy)'), ('neutral', 'Neutral (legacy)'), ('notice', 'Notice (legacy)'))
+    PAGE_CHOICES = choice(('all', 'All public pages'), ('home', 'Home'), ('challenges', 'Challenges'), ('information', 'Information pages'), ('terminal', 'Trading terminal'), ('portfolio', 'Portfolio and account pages'))
+    update_field_meta('site_campaigns', 'style', {'options': STYLE_CHOICES})
+    update_field_meta('site_campaigns', 'pages', {'options': PAGE_CHOICES})
+    ensure_field('site_campaigns', 'dismissible', 'boolean', meta={'interface': 'boolean', 'note': 'Off: the bar has no close button (announcement bars only)'}, schema={'default_value': True})
     ensure_collection('site_campaign_translations')
     ensure_field('site_campaign_translations', 'site_campaign_id', 'integer',
         meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True}, schema={'is_nullable': False})

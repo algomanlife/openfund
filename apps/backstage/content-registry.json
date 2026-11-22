@@ -2301,7 +2301,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 246,
+          "line": 249,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -4220,7 +4220,7 @@
         },
         {
           "component": "apps/web-react/src/data/challengePlans.ts",
-          "line": 251,
+          "line": 252,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -9579,7 +9579,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 113,
+          "line": 114,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -9800,7 +9800,7 @@
         },
         {
           "component": "apps/web-react/src/data/challengePlans.ts",
-          "line": 139,
+          "line": 140,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -10989,7 +10989,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/data/challengePlans.ts",
-          "line": 215,
+          "line": 216,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -13987,7 +13987,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 245,
+          "line": 248,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -15349,7 +15349,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 127,
+          "line": 128,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -16176,7 +16176,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/data/challengePlans.ts",
-          "line": 252,
+          "line": 253,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -18584,7 +18584,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/campaigns/AnnouncementBar.tsx",
-          "line": 40,
+          "line": 41,
           "page": "campaigns",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27101,7 +27101,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 222,
+          "line": 225,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -29043,7 +29043,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 163,
+          "line": 164,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -31898,14 +31898,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 123,
+          "line": 124,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 133,
+          "line": 134,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -39760,7 +39760,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 211,
+          "line": 214,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -48899,7 +48899,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 254,
+          "line": 257,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -55017,14 +55017,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 177,
+          "line": 180,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 179,
+          "line": 182,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -55451,7 +55451,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 252,
+          "line": 255,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -58950,7 +58950,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/data/challengePlans.ts",
-          "line": 178,
+          "line": 179,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -59017,7 +59017,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 117,
+          "line": 118,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -62580,7 +62580,7 @@
         },
         {
           "component": "apps/web-react/src/data/challengePlans.ts",
-          "line": 214,
+          "line": 215,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -63403,7 +63403,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 300,
+          "line": 303,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -63651,7 +63651,7 @@
         },
         {
           "component": "apps/web-react/src/data/challengePlans.ts",
-          "line": 177,
+          "line": 178,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -66328,14 +66328,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 121,
+          "line": 122,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 132,
+          "line": 133,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -81848,7 +81848,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 326,
+          "line": 329,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -82429,14 +82429,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 203,
+          "line": 206,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 204,
+          "line": 207,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -85586,7 +85586,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 313,
+          "line": 316,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -86340,7 +86340,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 243,
+          "line": 246,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -88597,7 +88597,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 242,
+          "line": 245,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -91330,7 +91330,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/data/challengePlans.ts",
-          "line": 140,
+          "line": 141,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -96468,7 +96468,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 117,
+      "line": 118,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -96476,7 +96476,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 131,
+      "line": 132,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -96484,7 +96484,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 299,
+      "line": 302,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -96807,7 +96807,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 65,
+      "line": 66,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "helper-wrapper-definition",
@@ -96815,7 +96815,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 195,
+      "line": 198,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
@@ -96823,7 +96823,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 196,
+      "line": 199,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
@@ -96831,7 +96831,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 295,
+      "line": 298,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",

@@ -103,3 +103,7 @@ label.choice{display:inline-flex;align-items:center;gap:8px}
 .result{border-inline-start:3px solid var(--accent);padding-inline-start:10px}
 .result[data-outcome=couponCreatedActivationFailed]{border-color:var(--danger)}
 .code-row{display:flex;align-items:end;gap:8px}.code-row>label{flex:1}
+/* console operations (plans, profile) */
+textarea.code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; inline-size: 100%; }
+.plan-preview .problems { color: var(--danger, #e0596a); padding-inline-start: 18px; }
+.plan-preview code { white-space: pre-wrap; word-break: break-word; }

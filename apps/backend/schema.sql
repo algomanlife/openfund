@@ -2903,3 +2903,68 @@ CREATE TABLE IF NOT EXISTS payment_monitor_cursors (
   updated_at       timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (chain_id, receiver, token_address)
 );
+
+-- ==================================================================
+-- Backstage operations (2026-11-22): plan administration history,
+-- internal user notes and tags, and granted entitlements.
+--   * plan_catalog_history: append-only record of every plan publication,
+--     retirement and reactivation from Backstage, with the previous and the
+--     new configuration, the catalog version, the named actor and reason.
+--     Existing challenges keep their frozen rules_snapshot.
+--   * user_admin_notes: append-only internal notes (never shown to users).
+--   * user_admin_tags: a small set of operator tags per user.
+--   * granted_entitlements: a single-use 100% coupon issued by an operator
+--     (admin), a tournament award or a migration approval, bound to one
+--     wallet, plan and size. start_stage 0 provisions a funded-stage account
+--     (migration, funded award); 1 is a normal evaluation.
+-- Additive and idempotent.
+-- ==================================================================
+CREATE TABLE IF NOT EXISTS plan_catalog_history (
+  id               bigserial PRIMARY KEY,
+  plan_slug        text NOT NULL,
+  action           text NOT NULL CHECK (action IN ('publish','retire','reactivate')),
+  catalog_version  integer NOT NULL,
+  name             text NOT NULL,
+  previous         jsonb,
+  configuration    jsonb NOT NULL,
+  actor            text NOT NULL,
+  reason           text NOT NULL CHECK (length(reason) BETWEEN 3 AND 1000),
+  created_at       timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_plan_catalog_history_slug ON plan_catalog_history (plan_slug, id DESC);
+DROP TRIGGER IF EXISTS plan_catalog_history_append_only ON plan_catalog_history;
+CREATE TRIGGER plan_catalog_history_append_only BEFORE UPDATE OR DELETE ON plan_catalog_history FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+CREATE TABLE IF NOT EXISTS user_admin_notes (
+  id          bigserial PRIMARY KEY,
+  user_id     uuid NOT NULL REFERENCES openfund_users (id) ON DELETE CASCADE,
+  note        text NOT NULL CHECK (length(note) BETWEEN 1 AND 2000),
+  actor       text NOT NULL,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_user_admin_notes_user ON user_admin_notes (user_id, id DESC);
+DROP TRIGGER IF EXISTS user_admin_notes_append_only ON user_admin_notes;
+CREATE TRIGGER user_admin_notes_append_only BEFORE UPDATE ON user_admin_notes FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+CREATE TABLE IF NOT EXISTS user_admin_tags (
+  user_id     uuid NOT NULL REFERENCES openfund_users (id) ON DELETE CASCADE,
+  tag         text NOT NULL CHECK (tag ~ '^[a-z0-9][a-z0-9-]{0,31}$'),
+  actor       text NOT NULL,
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (user_id, tag)
+);
+
+CREATE TABLE IF NOT EXISTS granted_entitlements (
+  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  coupon_id          uuid NOT NULL UNIQUE REFERENCES coupons (id),
+  user_id            uuid NOT NULL REFERENCES openfund_users (id),
+  challenge_plan_id  uuid NOT NULL REFERENCES challenge_plans (id),
+  account_size_usd   numeric(20,2) NOT NULL CHECK (account_size_usd > 0),
+  start_stage        smallint NOT NULL DEFAULT 1 CHECK (start_stage IN (0, 1)),
+  source             text NOT NULL CHECK (source IN ('admin','tournament','migration')),
+  reference          text,
+  reason             text NOT NULL CHECK (length(reason) BETWEEN 3 AND 1000),
+  issued_by          text NOT NULL,
+  created_at         timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_granted_entitlements_user ON granted_entitlements (user_id, created_at DESC);

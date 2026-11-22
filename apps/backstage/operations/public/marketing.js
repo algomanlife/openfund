@@ -4,7 +4,7 @@
  * module only collects input, previews it and shows exact outcomes. */
 import { arrow } from './dir-arrow.js'
 const LOCALES = [['fa', 'فارسی', 'rtl'], ['en', 'English', 'ltr'], ['ar', 'العربية', 'rtl'], ['ru', 'Русский', 'ltr'], ['zh-CN', '简体中文', 'ltr']]
-const PAGES = ['all', 'home', 'challenges', 'information'], REGIONS = ['GLOBAL', 'IRAN']
+const PAGES = ['all', 'home', 'challenges', 'information', 'terminal', 'portfolio'], REGIONS = ['GLOBAL', 'IRAN']
 
 export function createMarketing({ el, t, labels, button, field, badge, technical, number, date, dialog, announce, render, csrf }) {
   async function request(path, body) {
@@ -76,15 +76,16 @@ export function createMarketing({ el, t, labels, button, field, badge, technical
   function editor(placement, record) {
     const isModal = placement === 'modal'
     const r = record ?? { placement, status: 'draft', active: true, priority: 0, locales: ['fa'], regions: ['GLOBAL', 'IRAN'], pages: ['all'],
-      template: 'split', style: 'mint', delay_seconds: 12, frequency: 'session', frequency_days: 7, translations: [] }
+      template: 'split', style: 'info', dismissible: true, delay_seconds: 12, frequency: 'session', frequency_days: 7, translations: [] }
     const name = el('input', { required: '', dir: 'ltr', pattern: '[a-z0-9][a-z0-9-]{2,59}', value: r.internal_name ?? '' })
     const template = el('select', { 'aria-label': t('template') }, ['split', 'image'].map(v => el('option', { value: v }, t('template_' + v)))); template.value = r.template ?? 'split'
-    const style = el('select', { 'aria-label': t('barStyle') }, ['mint', 'neutral', 'notice'].map(v => el('option', { value: v }, t('style_' + v)))); style.value = r.style ?? 'mint'
+    const style = el('select', { 'aria-label': t('barStyle') }, ['info', 'success', 'warning', 'mint', 'neutral', 'notice'].map(v => el('option', { value: v }, t('style_' + v)))); style.value = r.style ?? 'info'
+    const dismissible = el('input', { type: 'checkbox' }); dismissible.checked = r.dismissible !== false
     const priority = el('input', { type: 'number', min: '-1000', max: '1000', dir: 'ltr', value: String(r.priority ?? 0) })
     const starts = el('input', { type: 'datetime-local', dir: 'ltr', value: isoLocal(r.starts_at) }), ends = el('input', { type: 'datetime-local', dir: 'ltr', value: isoLocal(r.ends_at) })
     const locales = checkboxes('locales', LOCALES.map(l => l[0]), r.locales ?? [], v => LOCALES.find(l => l[0] === v)[1])
     const regions = checkboxes('campaignRegions', REGIONS, r.regions ?? [])
-    const pages = checkboxes('pages', PAGES, r.pages ?? [], v => t('page_' + v))
+    const pages = checkboxes('pages', isModal ? PAGES.filter(p => p !== 'terminal' && p !== 'portfolio') : PAGES, r.pages ?? [], v => t('page_' + v))
     const cta = el('input', { dir: 'ltr', maxlength: '500', placeholder: 'https://… or /fa/checkout', value: r.cta_url ?? '' })
     const coupon = el('input', { dir: 'ltr', maxlength: '40', value: r.coupon_code ?? '' }), couponState = el('span', { class: 'muted', role: 'status' })
     const checkCoupon = async () => {
@@ -141,7 +142,7 @@ export function createMarketing({ el, t, labels, button, field, badge, technical
       const ctaText = inputs.cta_label.value || '—'
       if (!isModal) {
         previewBox.replaceChildren(el('div', { class: `pv-bar pv-${style.value}`, dir }, el('span', {}, inputs.headline.value || '…'),
-          el('span', { class: 'pv-cta' }, ctaText), el('span', { class: 'pv-close', 'aria-hidden': 'true' }, '×')))
+          el('span', { class: 'pv-cta' }, ctaText), dismissible.checked ? el('span', { class: 'pv-close', 'aria-hidden': 'true' }, '×') : null))
         return
       }
       const img = images.image_desktop ? el('img', { src: assetUrl(images.image_desktop, 640), alt: inputs.image_alt.value }) : el('div', { class: 'pv-noimg' }, t('noImage'))
@@ -156,7 +157,7 @@ export function createMarketing({ el, t, labels, button, field, badge, technical
       if (!password.value) { feedback.textContent = t('passwordRequired'); password.focus(); return }
       feedback.textContent = ''
       const campaign = {
-        internal_name: name.value.trim(), placement, template: template.value, style: style.value, priority: priority.value,
+        internal_name: name.value.trim(), placement, template: template.value, style: style.value, dismissible: dismissible.checked, priority: priority.value,
         starts_at: fromLocal(starts.value), ends_at: fromLocal(ends.value), locales: checkedOf(locales), regions: checkedOf(regions), pages: checkedOf(pages),
         cta_url: cta.value.trim() || null, coupon_code: coupon.value.trim() || null, delay_seconds: delay.value, frequency: frequency.value, frequency_days: days.value,
         image_desktop: images.image_desktop, image_mobile: images.image_mobile, active: r.active !== false,
@@ -175,7 +176,7 @@ export function createMarketing({ el, t, labels, button, field, badge, technical
           field('internalName', name), isModal ? field('template', template) : field('barStyle', style), field('priority', priority),
           el('div', { class: 'tools' }, field('campaignStartsAt', starts), field('campaignEndsAt', ends)), el('p', { class: 'muted' }, t('scheduleUtc')),
           locales, regions, pages, field('ctaUrl', cta), el('div', { class: 'tools' }, field('couponCode', coupon), couponState),
-          isModal ? el('div', { class: 'tools' }, field('delaySeconds', delay), field('frequency', frequency), field('frequencyDays', days)) : el('p', { class: 'muted' }, t('barDismissNote')),
+          isModal ? el('div', { class: 'tools' }, field('delaySeconds', delay), field('frequency', frequency), field('frequencyDays', days)) : el('div', {}, el('label', { class: 'check' }, dismissible, ' ', t('barDismissible')), el('p', { class: 'muted' }, t('barDismissNote'))),
           isModal ? imagePicker('image_desktop') : null, isModal ? imagePicker('image_mobile') : null,
           Object.values(copy).map(c => c.box)),
         el('aside', { class: 'editor-preview' }, el('h3', {}, t('preview')), field('previewLocale', previewLocale), previewBox, el('p', { class: 'muted' }, t('previewNote')))),

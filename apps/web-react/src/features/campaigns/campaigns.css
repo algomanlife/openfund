@@ -7,15 +7,22 @@
   background: var(--ann-bg); color: var(--ann-fg); border-bottom: 1px solid var(--ann-line); position: relative; z-index: 60; }
 .of-announcement-neutral { --ann-bg: #121716; --ann-fg: #e8eeeb; --ann-line: #ffffff1c; --ann-accent: #e8eeeb; }
 .of-announcement-notice { --ann-bg: #241d0e; --ann-fg: #f6e8c6; --ann-line: #e8c46a44; --ann-accent: #f0cf7c; }
+/* tones (Backstage): info, success, warning */
+.of-announcement-info { --ann-bg: #0f1a22; --ann-fg: #e3eef7; --ann-line: #8fb3ff40; --ann-accent: #a9c4ff; }
+.of-announcement-success { --ann-bg: #0d1f18; --ann-fg: #dff6ea; --ann-line: #82e7bd40; --ann-accent: #82e7bd; }
+.of-announcement-warning { --ann-bg: #26180c; --ann-fg: #fbe9d4; --ann-line: #e8948366; --ann-accent: #f0b48a; }
 [data-theme=light] .of-announcement { --ann-bg: #e6f6ee; --ann-fg: #0d2a1d; --ann-line: #1f7a5333; --ann-accent: #13664a; }
 [data-theme=light] .of-announcement-neutral { --ann-bg: #f1f3f2; --ann-fg: #141a18; --ann-line: #0000001a; --ann-accent: #141a18; }
 [data-theme=light] .of-announcement-notice { --ann-bg: #fbf1d8; --ann-fg: #3a2a05; --ann-line: #8a640f33; --ann-accent: #7a5508; }
+[data-theme=light] .of-announcement-info { --ann-bg: #eaf1fb; --ann-fg: #0f2240; --ann-line: #2f5fc433; --ann-accent: #2f5fc4; }
+[data-theme=light] .of-announcement-success { --ann-bg: #e6f6ee; --ann-fg: #0d2a1d; --ann-line: #1f7a5333; --ann-accent: #13664a; }
+[data-theme=light] .of-announcement-warning { --ann-bg: #fdeee4; --ann-fg: #3d1a07; --ann-line: #b5512033; --ann-accent: #9a4513; }
 .of-announcement-inner { inline-size: min(1240px, 100%); margin-inline: auto; padding: 8px 16px; display: flex; align-items: center; gap: 12px 16px; min-block-size: 44px; }
 .of-announcement-text { margin: 0; flex: 1 1 auto; font-size: 13.5px; line-height: 1.7; }
 .of-announcement-cta { flex: none; display: inline-flex; align-items: center; min-block-size: 32px; padding: 4px 14px; border-radius: 999px;
   border: 1px solid var(--ann-accent); color: var(--ann-accent); font-size: 13px; font-weight: 600; white-space: nowrap; transition: background .15s, color .15s; }
 .of-announcement-cta:hover { background: var(--ann-accent); color: var(--ann-bg); }
-.of-announcement-close { flex: none; inline-size: 36px; block-size: 36px; display: grid; place-items: center; border: 0; border-radius: 8px; background: transparent;
+.of-announcement-close { flex: none; inline-size: 44px; block-size: 44px; display: grid; place-items: center; border: 0; border-radius: 8px; background: transparent;
   color: inherit; font-size: 22px; line-height: 1; opacity: .8; }
 .of-announcement-close:hover { opacity: 1; background: #ffffff12; }
 .of-announcement a:focus-visible, .of-announcement button:focus-visible { outline: 2px solid var(--ann-accent); outline-offset: 2px; }

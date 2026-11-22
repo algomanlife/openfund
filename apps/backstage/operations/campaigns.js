@@ -16,12 +16,13 @@
  *    Directus files (the existing media library). */
 const fail = (status, code) => Object.assign(new Error(code), { status })
 export const CAMPAIGN_LOCALES = ['fa', 'en', 'ar', 'ru', 'zh-CN']
-const PLACEMENTS = ['modal', 'announcement_bar'], TEMPLATES = ['image', 'split'], STYLES = ['mint', 'neutral', 'notice']
-const PAGES = ['all', 'home', 'challenges', 'information'], REGIONS = ['GLOBAL', 'IRAN'], FREQUENCY = ['session', 'interval']
+const PLACEMENTS = ['modal', 'announcement_bar'], TEMPLATES = ['image', 'split'], STYLES = ['info', 'success', 'warning', 'mint', 'neutral', 'notice']
+const PAGES = ['all', 'home', 'challenges', 'information', 'terminal', 'portfolio'], REGIONS = ['GLOBAL', 'IRAN'], FREQUENCY = ['session', 'interval']
 const STATUSES = ['draft', 'published', 'archived']
 const MARKUP = /<\/?[a-z!][^>]*>|javascript:/i
 const COUPON = /^[A-Z0-9][A-Z0-9_-]{2,39}$/
-const FIELDS = 'id,status,active,internal_name,placement,template,style,priority,starts_at,ends_at,locales,regions,pages,image_desktop,image_mobile,cta_url,coupon_code,delay_seconds,frequency,frequency_days,translations.id,translations.language_code,translations.headline,translations.body,translations.cta_label,translations.image_alt'
+/* '*' for the campaign row: works before and after a CMS adds a field */
+const FIELDS = '*,translations.id,translations.language_code,translations.headline,translations.body,translations.cta_label,translations.image_alt'
 const LIMITS = { headline: 140, body: 400, cta_label: 40, image_alt: 160 }
 const IMAGE_TYPES = { 'image/png': [0x89, 0x50, 0x4e, 0x47], 'image/jpeg': [0xff, 0xd8, 0xff], 'image/webp': [0x52, 0x49, 0x46, 0x46] }
 
@@ -76,7 +77,9 @@ export function normalizeCampaign(b) {
     internal_name: b.internal_name,
     placement: b.placement,
     template: b.placement === 'modal' ? (TEMPLATES.includes(b.template) ? b.template : 'split') : null,
-    style: b.placement === 'announcement_bar' ? (STYLES.includes(b.style) ? b.style : 'mint') : null,
+    style: b.placement === 'announcement_bar' ? (STYLES.includes(b.style) ? b.style : 'info') : null,
+    /* a bar may be made non-dismissible (urgent notices); popups always close */
+    dismissible: b.placement === 'announcement_bar' ? b.dismissible !== false : true,
     priority: int(b.priority, -1000, 1000, 0, 'invalid_priority'),
     starts_at: when(b.starts_at), ends_at: when(b.ends_at),
     locales, regions: subset(b.regions, REGIONS, 'invalid_regions'), pages: subset(b.pages, PAGES, 'invalid_pages'),
@@ -91,6 +94,8 @@ export function normalizeCampaign(b) {
     translations,
   }
   if (campaign.starts_at && campaign.ends_at && campaign.ends_at <= campaign.starts_at) throw fail(400, 'invalid_schedule')
+  /* trading pages show announcement bars only, never popups */
+  if (campaign.placement === 'modal' && campaign.pages.some(p => p === 'terminal' || p === 'portfolio')) throw fail(400, 'invalid_pages')
   if (campaign.translations.some(t => (t.cta_label == null) !== (campaign.cta_url == null) && t.cta_label != null)) throw fail(400, 'cta_needs_url')
   return campaign
 }
