@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import InformationShell, { Hero, useInformationLocale, useUiLocale } from '../information/InformationShell'
+import CouncilChamber from './CouncilChamber'
 import { text, number } from '../information/content'
 import { useOpenfundSession } from '../../session/useOpenfundSession'
 import { fetchCmsGovernance, type CmsGovernanceContent } from '../../cms/client'
@@ -38,7 +39,7 @@ export default function Governance() {
   const councilMember = me.state.status === 'ready' && me.state.data.councilMember
 
   return <InformationShell page="governance" description={intro}>
-    <Hero locale={locale} page="governance" title={text('Community-Governed Development.', 'توسعهٔ مبتنی بر جامعه.')[locale]} accent={text('Company-Managed Treasury.', 'خزانهٔ تحت مدیریت شرکت.')[locale]} intro={intro}>
+    <Hero locale={locale} page="governance" title={text('Community-Governed Development.', 'توسعهٔ مبتنی بر جامعه.')[locale]} accent={text('Company-Managed Treasury.', 'خزانهٔ تحت مدیریت شرکت.')[locale]} intro={intro} visual={<CouncilChamber locale={locale} />}>
       <div className="info-hero-meta">
         <span className="pill">{text('Hybrid governance v1.0', 'حاکمیت ترکیبی نسخهٔ ۱٫۰')[locale]}</span>
         <span>{text('Not a DAO · no governance token · off-chain records', 'نه DAO · بدون توکن حاکمیتی · سوابق خارج از زنجیره')[locale]}</span>

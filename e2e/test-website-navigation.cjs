@@ -4,6 +4,7 @@ const { chromium } = require('playwright');
 const fs = require('node:fs');
 const path = require('node:path');
 const { createRequire } = require('node:module');
+const { chooseLocale, toggleLocale } = require('./helpers/language.cjs');
 const appRequire = createRequire(path.resolve(__dirname, '../apps/web-react/package.json'));
 const { buildSync } = appRequire('esbuild');
 const BASE = (process.env.TEST_FRONTEND_URL || 'http://127.0.0.1:5187/').replace(/\/?$/, '/');
@@ -17,9 +18,7 @@ function loadLibrary() {
 /* Language switching uses the five-language selector (fa, en, ar, ru, zh-CN);
    toggleLanguage keeps the previous fa <-> en intent of these steps. */
 async function toggleLanguage(page) {
-  const select = page.locator('.of-language-select select').first();
-  await select.waitFor({ state: 'attached' });
-  await select.selectOption((await select.inputValue()) === 'fa' ? 'en' : 'fa');
+  await toggleLocale(page);
 }
 
 async function desktop(page) {
@@ -187,7 +186,7 @@ async function ancillary(page) {
 
 async function auditRoutes(page) {
   const library = loadLibrary();
-  const routes = ['home','challenges','markets','rulebook','transparency','revenue-model','live-market-access','ambassador','coach','faq','learn','learn/glossary','tools','referral','about','contact','apps','roadmap','certificate-verification',
+  const routes = ['home','challenges','markets','rulebook','transparency','revenue-model','live-market-access','ambassador','coach','faq','learn','learn/glossary','tools','referral','about','contact','apps','roadmap','developers','certificate-verification',
     ...library.faqItems.map(item=>'faq/q/'+item.key),
     ...library.paths.flatMap(p=>['learn/paths/'+p.slug,...p.lessons.map(l=>'learn/lessons/'+l.slug)]),
     ...library.glossary.map(t=>'learn/glossary/'+t.slug),...library.tools.map(t=>'tools/'+t.slug)];
@@ -205,7 +204,7 @@ async function auditRoutes(page) {
     for(const href of links) {
       if(href==='#') { if(await page.locator('header a[href="#"],footer a[href="#"]').count()) throw new Error('Chrome placeholder on '+route); continue; }
       if(href.startsWith('/') && !/^\/(assets|downloads)\//.test(href)) {
-        const target=href.split('?')[0];
+        const target=href.split(/[?#]/)[0]; /* an anchor on a known page is that page */
         if(!allowed.has(target) && !/^\/(en|fa)\/(prop|perpetual)\/(trade|dashboard)$/.test(target) && target!=='/terminal' && !/^\/(en|fa)\/whitepaper(\/|$)/.test(target) && !/^\/(en|fa)\/governance(\/|$)/.test(target) && !/^\/(en|fa)\/checkout$/.test(target)) throw new Error('Unknown route '+href+' on '+route);
       } else if(href.startsWith('#') && href!=='#' && !href.startsWith('#/') && !await page.evaluate(id=>!!document.getElementById(id),decodeURIComponent(href.slice(1)))) throw new Error('Missing anchor '+href+' on '+route);
     }

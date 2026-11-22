@@ -4,6 +4,7 @@ const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { chooseLocale, toggleLocale } = require('./helpers/language.cjs');
 const BASE = (process.env.TEST_FRONTEND_URL || 'http://localhost:5186').replace(/\/$/, '');
 const OUT = path.resolve(process.env.LANDING_OUTPUT || 'output/playwright/landing-motion');
 fs.mkdirSync(OUT, { recursive: true });
@@ -14,9 +15,7 @@ const originalCopies = originalCards.map(m=>m[1].match(/<p>([\s\S]*?)<\/p>/)[1])
 /* Language switching uses the five-language selector (fa, en, ar, ru, zh-CN);
    toggleLanguage keeps the previous fa <-> en intent of these steps. */
 async function toggleLanguage(page) {
-  const select = page.locator('.of-language-select select').first();
-  await select.waitFor({ state: 'attached' });
-  await select.selectOption((await select.inputValue()) === 'fa' ? 'en' : 'fa');
+  await toggleLocale(page);
 }
 
 function check(name, value) { assert.ok(value, name); checks.push(name); }
@@ -114,7 +113,7 @@ async function fixture(context) {
     check('quick Buy Challenge opens the checkout',/\/fa\/checkout$/.test(page.url()));
     await page.goto(BASE+'/fa/home');
     await page.reload();
-    await page.locator('.of-language-select select').first().waitFor({ state: 'attached' });
+    await page.locator('.of-language-select').first().waitFor({ state: 'attached' });
     await toggleLanguage(page); await page.locator('.home-products').waitFor(); await page.waitForFunction(()=>document.documentElement.lang==='en');
     check('English Home shows the two-product gateway',page.url().includes('/en/home')&&await page.locator('.home-panel').count()===2);
     await toggleLanguage(page); await page.locator('.technical-features').waitFor();

@@ -14,7 +14,7 @@ export const tx = (locale: AppLocale, value: Localized | { fa?: string; en?: str
 export const number = (value: number, locale: Locale, options?: Intl.NumberFormatOptions) =>
   new Intl.NumberFormat(intlLocale(locale), options).format(value)
 /** Public website pages — one authoritative navigation definition (menu order included). */
-export type InfoPage = 'rulebook' | 'transparency' | 'revenue-model' | 'live-market-access' | 'ambassador' | 'coach' | 'markets' | 'challenges' | 'home' | 'faq' | 'referral' | 'tools' | 'learn' | 'whitepaper' | 'governance' | 'checkout' | 'campaign' | 'about' | 'contact' | 'apps' | 'certificate-verification' | 'roadmap'
+export type InfoPage = 'rulebook' | 'transparency' | 'revenue-model' | 'live-market-access' | 'ambassador' | 'coach' | 'markets' | 'challenges' | 'home' | 'faq' | 'referral' | 'tools' | 'learn' | 'whitepaper' | 'governance' | 'checkout' | 'campaign' | 'about' | 'contact' | 'apps' | 'certificate-verification' | 'roadmap' | 'developers'
 export const labels = {
   home: text('Home', 'خانه'),
   challenges: text('Trading Challenges', 'چلنج‌های معاملاتی'),
@@ -39,6 +39,7 @@ export const labels = {
   whitepaper: text('Whitepaper', 'وایت‌پیپر'),
   apps: text('Applications', 'اپلیکیشن‌ها'),
   roadmap: text('Roadmap', 'نقشه راه'),
+  developers: text('Developer docs', 'مستندات توسعه‌دهندگان'),
   'certificate-verification': text('Certificate Verification', 'راستی‌آزمایی گواهی'),
   resources: text('Resources', 'منابع'),
   contents: text('On this page', 'در این صفحه'),

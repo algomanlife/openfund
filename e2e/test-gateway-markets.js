@@ -5,15 +5,14 @@ const R = (n, ok, extra = '') => results.push(`${ok ? 'PASS' : 'FAIL'} - ${n}${e
 const SHOTS = '/Users/algoman/.qwenwork/workspace/mvw61rrm1ic7idr4/shots3'
 const BASE = 'http://127.0.0.1:4173'
 const fs = require('fs')
+const { chooseLocale, toggleLocale } = require('./helpers/language.cjs');
 fs.mkdirSync(SHOTS, { recursive: true })
 
 
 /* Language switching uses the five-language selector (fa, en, ar, ru, zh-CN);
    toggleLanguage keeps the previous fa <-> en intent of these steps. */
 async function toggleLanguage(page) {
-  const select = page.locator('.of-language-select select').first();
-  await select.waitFor({ state: 'attached' });
-  await select.selectOption((await select.inputValue()) === 'fa' ? 'en' : 'fa');
+  await toggleLocale(page);
 }
 
 ;(async () => {
