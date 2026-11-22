@@ -11,7 +11,41 @@ import './applications.css'
 
 const shot = (name: string) => `${import.meta.env.BASE_URL}assets/apps/open-trade/${name}.webp`
 /* the real app's title bar (product name and version are identifiers, not copy) */
-const WINDOW_TITLE = `${builds.product} · ${builds.version} ${builds.channel.toUpperCase()}`
+/* the captures on this page were taken from Open Trade 0.0.2 beta, so the
+   window frames around them keep that version even when newer builds exist */
+const CAPTURE_VERSION = '0.0.2'
+const WINDOW_TITLE = `${builds.product} · ${CAPTURE_VERSION} BETA`
+/** platform + architecture/format name on each download button (identifiers, not copy) */
+const variantName = (r: { platform: Platform; architecture: string; format: string }) =>
+  r.platform === 'macos' ? `macOS (${r.architecture === 'arm64' ? 'Apple Silicon' : 'Intel'})`
+    : r.platform === 'windows' ? `Windows (${r.architecture})` : `Linux (${r.format === 'deb' ? '.deb' : r.format})`
+
+type Detected = { platform?: Platform; arch?: 'arm64' | 'x64' }
+/** Visitor's OS (from the user agent) and, where Chromium exposes it
+ *  reliably, the CPU architecture. Anything uncertain stays undefined. */
+function useDetectedSystem(): Detected {
+  const [system, setSystem] = useState<Detected>({})
+  useEffect(() => {
+    const nav = navigator as Navigator & { userAgentData?: { platform?: string; getHighEntropyValues?: (h: string[]) => Promise<{ architecture?: string; bitness?: string }> } }
+    const hint = (nav.userAgentData?.platform || navigator.userAgent || '').toLowerCase()
+    const touchMac = /mac/.test(hint) && navigator.maxTouchPoints > 1 /* iPad reports a Mac user agent */
+    const platform: Platform | undefined = /android|iphone|ipad/.test(hint) || touchMac ? undefined
+      : /mac/.test(hint) ? 'macos' : /win/.test(hint) ? 'windows' : /linux/.test(hint) ? 'linux' : undefined
+    setSystem({ platform })
+    nav.userAgentData?.getHighEntropyValues?.(['architecture', 'bitness']).then(v => {
+      const arch = v.architecture === 'arm' ? 'arm64' : v.architecture === 'x86' && v.bitness === '64' ? 'x64' : undefined
+      if (arch) setSystem({ platform, arch })
+    }).catch(() => {})
+  }, [])
+  return system
+}
+
+function CopyHash({ value, label, done }: { value: string; label: string; done: string }) {
+  const [copied, setCopied] = useState(false)
+  return <button type="button" className="of-app-copy" onClick={async () => {
+    try { await navigator.clipboard.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 1800) } catch { /* the hash stays selectable */ }
+  }}>{copied ? done : label}<span className="sr-only" aria-live="polite">{copied ? done : ''}</span></button>
+}
 const PLATFORM_NAME: Record<Platform, string> = { macos: 'macOS', windows: 'Windows', linux: 'Linux' }
 /** seconds each frame of a sequence stays on screen (the step chip's progress bar runs for this long) */
 const STEP_SECONDS = 3.6
@@ -169,9 +203,9 @@ function WebPreview({ locale }: { locale: string }) {
   </div>
 }
 
-function SpotCard({ children }: { children: React.ReactNode }) {
+function SpotCard({ children, detected = false }: { children: React.ReactNode; detected?: boolean }) {
   const ref = useSpotlight<HTMLElement>()
-  return <article ref={ref} className="of-app-card ds-spotlight">{children}</article>
+  return <article ref={ref} className={`of-app-card ds-spotlight${detected ? ' is-detected' : ''}`}>{children}</article>
 }
 
 /** Original line glyphs (no vendor logos): a laptop with a rounded screen,
@@ -192,6 +226,7 @@ function HashCheck({ label }: { label: string }) {
 export default function Applications() {
   const locale = useInformationLocale()
   const c = (key: keyof typeof copy) => tx(locale, copy[key])
+  const system = useDetectedSystem()
   const r1 = useReveal<HTMLElement>(), r2 = useReveal<HTMLElement>(), r3 = useReveal<HTMLElement>(), r4 = useReveal<HTMLElement>()
   const rows: [keyof typeof copy, keyof typeof copy, keyof typeof copy][] = [
     ['rowBest', 'webBest', 'deskBest'], ['rowCharts', 'webCharts', 'deskCharts'], ['rowOrders', 'webOrders', 'deskOrders'],
@@ -256,14 +291,30 @@ export default function Applications() {
         <div className="of-app-grid">{(['macos', 'windows', 'linux'] as const).map(platform => {
           const published = applicationReleases.filter(r => r.platform === platform)
           const built = builds.files.filter(f => f.platform === platform)
-          return <SpotCard key={platform}>
-            <div className="of-app-card-head"><PlatformIcon platform={platform} /><h3 dir="ltr">{PLATFORM_NAME[platform]}</h3></div>
-            {published.length ? published.map(r => <div key={`${r.version}-${r.architecture}-${r.format}`} className="of-app-release">
-              <span className="of-app-status">{c(r.channel === 'beta' ? 'beta' : 'available')}</span>
-              <dl>{([['version', r.version], ['architecture', r.architecture], ['format', r.format], ['size', `${(r.bytes / 1048576).toFixed(1)} MB`], ['date', r.releasedAt]] as const).map(([key, value]) => <div key={key}><dt>{c(key)}</dt><dd><bdi>{value}</bdi></dd></div>)}</dl>
-              <a className="button" href={r.downloadUrl}>{c('download')}</a>
-              <p><a href={r.notesUrl}>{c('notes')}</a> · <a href={r.guideUrl}>{c('install')}</a></p>
-            </div>) : built.length ? <>
+          const detected = system.platform === platform
+          /* recommended file: the detected architecture, or the AppImage on Linux */
+          const recommended = (r: (typeof published)[number]) => platform === 'linux' ? r.format === 'AppImage' : !detected || !system.arch || r.architecture === system.arch
+          return <SpotCard key={platform} detected={detected}>
+            <div className="of-app-card-head"><PlatformIcon platform={platform} /><h3 dir="ltr">{PLATFORM_NAME[platform]}</h3>{detected && <span className="of-app-detected">{c('yourSystem')}</span>}</div>
+            {published.length ? <>
+              <span className="of-app-status">{c(published[0].channel === 'beta' ? 'beta' : 'available')}{' · '}<bdi dir="ltr">{published[0].version}</bdi></span>
+              {published.map(r => <div key={`${r.version}-${r.architecture}-${r.format}`} className={`of-app-release${detected && system.arch === r.architecture && platform !== 'linux' ? ' is-match' : ''}`}>
+                <a className={`button of-app-download${recommended(r) ? '' : ' ghost'}`} href={r.downloadUrl} download>
+                  <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 2v8m0 0-3-3m3 3 3-3M3 13h10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  {c('downloadFor').replace('${platform}', variantName(r))}
+                </a>
+                <details className="of-app-details">
+                  <summary>{c('details')}</summary>
+                  <dl>{([['version', `${r.version} ${r.channel}`], ['architecture', r.architecture], ['format', `.${r.format}`], ['size', `${(r.bytes / 1048576).toFixed(1)} MB`], ['date', r.releasedAt.slice(0, 10)]] as const).map(([key, value]) => <div key={key}><dt>{c(key)}</dt><dd><bdi dir="ltr">{value}</bdi></dd></div>)}</dl>
+                  <HashCheck label={c('hashRecorded')} />
+                  <code dir="ltr" className="of-app-sha">{r.sha256}</code>
+                  <CopyHash value={r.sha256} label={c('copyHash')} done={c('copied')} />
+                  <code dir="ltr" className="of-app-file">{r.file}</code>
+                </details>
+              </div>)}
+              <p className="of-apps-note of-app-unsigned">{c(platform === 'macos' ? 'macUnsigned' : platform === 'windows' ? 'winUnsigned' : 'linuxUnsigned')}</p>
+              <p className="of-app-links"><a href={published[0].guideUrl}>{c('install')}</a> · <a href={published[0].notesUrl}>{c('notes')}</a></p>
+            </> : built.length ? <>
               <span className="of-app-status is-pending">{c('awaiting')}</span>
               <ul className="of-app-files">{built.map(f => <li key={f.file}>
                 <dl>
