@@ -14,6 +14,7 @@ async function walletButton(page, name) {
 const { chromium } = require('playwright');
 const { createRequire } = require('node:module');
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
+const { chooseLocale, toggleLocale } = require('./helpers/language.cjs');
 const req = createRequire(path.resolve(__dirname,'../apps/backend/package.json'));
 const { generatePrivateKey, privateKeyToAccount } = req('viem/accounts');
 const { Pool } = req('pg');
@@ -295,7 +296,7 @@ async function layout(browser){
   }
   const owned=(await call(page,'/accounts')).data.accounts.find(account=>account.type==='free_trial');
   await page.goto(BASE+'/en/prop/journal?section=playbooks&account='+owned.id);
-  await page.locator('.of-language-select select').first().selectOption('fa');
+  await chooseLocale(page, 'fa');
   await page.waitForURL(BASE+'/fa/prop/journal?section=playbooks&account='+owned.id);
   check('Terminal language switching preserves the selected account and journal section',true);
   await page.locator('.rk-chip-addr').first().waitFor();

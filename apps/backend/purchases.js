@@ -64,6 +64,31 @@ const minConfirmationsDefault = () =>
  * (PURCHASE_PAYMENT_RECEIVER / _CHAIN / _TOKEN / _DECIMALS,
  * PURCHASE_RPC_URL, PURCHASE_ROUTER_ADDRESSES) define one chain.
  */
+/** Public, read-only rules of a plan for the checkout page: a whitelisted
+ *  projection of the evaluation engine's normalized rules (normalizeRules),
+ *  so what the page shows is exactly what the engine enforces. Prices are
+ *  not part of it (they stay in priceUsd and are re-priced server-side). */
+export function publicPlanRules(configuration = {}) {
+  const r = normalizeRules(configuration)
+  const k = r.conduct || {}
+  const num = v => (v == null || v === '' || !Number.isFinite(Number(v)) ? null : Number(v))
+  const rules = {
+    rulesVersion: r.rulesVersion, catalogVersion: num(configuration?.catalogVersion), model: r.model,
+    phases: r.phases, phaseTargetsPct: [r.phase1TargetPct, r.phase2TargetPct].slice(0, r.phases).filter(v => v != null),
+    dailyLossPct: r.dailyLossPct, maxTotalLossPct: r.maxTotalLossPct, drawdownMode: r.drawdownMode, trailingLockAtProfitPct: r.trailingLockAtProfitPct,
+    minTradingDays: r.minTradingDays, consistencyPct: r.consistencyPct, profitableDaysPer30: r.profitableDaysPer30,
+    profitSplitPct: r.profitSplitPct, rewardCycles: r.rewardCycles, inactivityDays: r.inactivityDays,
+    timeLimitDays: r.timeLimitDays, trialDaysPerPhase: r.trialDaysPerPhase, refundPolicy: r.refundPolicy,
+    conduct: { news: k.news || null, holding: k.holding || null, maxOpenRiskPct: k.maxOpenRiskPct ?? null, tradeIdea: k.tradeIdea || null, profitableDayRule: k.profitableDayRule || null },
+    dailyLossVariant: null,
+  }
+  if (r.dailyLossPctAlt > 0) {
+    const v = normalizeRules(configuration, { dailyLossVariant: 'reduced' })
+    rules.dailyLossVariant = { dailyLossPct: v.dailyLossPct, minTradingDays: v.minTradingDays }
+  }
+  return rules
+}
+
 export function paymentChains() {
   const rpcs = parseJson(process.env.PURCHASE_RPC_URLS, 'PURCHASE_RPC_URLS') || {}
   const list = parseJson(process.env.PURCHASE_PAYMENT_CHAINS, 'PURCHASE_PAYMENT_CHAINS')
@@ -750,6 +775,8 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
         dailyLossVariant: c.dailyLossPctAlt
           ? { dailyLossPct: Number(c.dailyLossPctAlt), priceUsd: c.dailyLossVariantPriceUsd || null, available: !!c.dailyLossVariantPriceUsd }
           : null,
+        /* public read-only rules, as the evaluation engine enforces them */
+        rules: publicPlanRules(c),
       }
     }))
     const c = cfg()

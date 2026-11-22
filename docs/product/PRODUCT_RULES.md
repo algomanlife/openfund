@@ -33,6 +33,17 @@ database: `seed-plans` updates only the plan `name` on conflict, so a live
 2026-11-10 the public production endpoint `/purchases/plans` returned the same
 sizes and prices as the catalog and `paymentsEnabled: false`.
 
+`GET /purchases/plans` also returns each plan's public `rules`
+(`publicPlanRules()` in `apps/backend/purchases.js`): a whitelisted projection
+of the evaluation engine's `normalizeRules()` — phases and phase targets, daily
+and maximum loss, drawdown mode, minimum trading days, consistency, trader
+share, reward cycles, refund policy, the news and holding conduct rules,
+`catalogVersion`, and the reduced daily-loss variant's limits when the plan has
+one. Prices are not part of it. The checkout page shows these values (and the
+dollar amounts for the selected size) instead of its own copy of the catalog;
+`apps/backend/test/plan-rules.test.mjs` fails if the projection and the engine
+disagree.
+
 ## Launch blockers
 
 A rule that a published plan advertises but the backend does not enforce is a

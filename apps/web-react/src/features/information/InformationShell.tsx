@@ -203,14 +203,19 @@ export default function InformationShell({ page, description, footer = true, nav
   </div>
 }
 
-export function Hero({ locale, page, title, accent, intro, children }: {
-  locale: Locale; page: InfoPage; title: string; accent: string; intro: string; children?: ReactNode
+/** Information page hero. `visual` (optional) sits beside the text on desktop
+ *  (left in RTL) and below it on narrow screens; pages without it are unchanged. */
+export function Hero({ locale, page, title, accent, intro, children, visual }: {
+  locale: Locale; page: InfoPage; title: string; accent: string; intro: string; children?: ReactNode; visual?: ReactNode
 }) {
-  return <section className="container info-hero" id="top">
-    <div className="hero-atmosphere" aria-hidden="true"><i /><i /><i /></div>
+  const copy = <>
     <div className="eyebrow"><span className="tiny-mark" aria-hidden="true">✳</span> OPENFUND / {labels[page][locale]}</div>
     <h1>{title}<br /><em>{accent}</em></h1>
     <p className="hero-intro">{intro}</p>
     {children}
+  </>
+  return <section className={`container info-hero${visual ? ' has-visual' : ''}`} id="top">
+    <div className="hero-atmosphere" aria-hidden="true"><i /><i /><i /></div>
+    {visual ? <><div className="info-hero-copy">{copy}</div><div className="info-hero-visual">{visual}</div></> : copy}
   </section>
 }
