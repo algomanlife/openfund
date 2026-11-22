@@ -3911,7 +3911,16 @@
   "Source data is stale": "بيانات المصدر قديمة",
   "Source timestamps are inconsistent": "الطوابع الزمنية للمصدر غير متّسقة",
   "Up to date": "محدَّث",
-  "Required fields": "الحقول المطلوبة",
+  "Conditions for this account": "شروط هذا الحساب",
+  "High-impact news: on funded accounts, profit from trades within ${min} minutes of the event is deducted from rewards.": "الأخبار عالية التأثير: في الحسابات الممولة، يُخصم من المكافآت ربح الصفقات التي تقع ضمن ${min} دقائق من الحدث.",
+  "High-impact news: opening, closing or holding a position within ${min} minutes of the event is a breach.": "الأخبار عالية التأثير: فتح مركز أو إغلاقه أو الاحتفاظ به ضمن ${min} دقائق من الحدث يُعد مخالفة.",
+  "Holding": "الاحتفاظ بالمراكز",
+  "Lower daily-loss option": "خيار حد خسارة يومي أدنى",
+  "More conditions": "شروط إضافية",
+  "On funded accounts, open positions are closed automatically in the daily closing window.": "في الحسابات الممولة، تُغلق المراكز المفتوحة تلقائيًا في نافذة الإغلاق اليومية.",
+  "Positions may not be held open over the weekend.": "لا يُسمح بإبقاء المراكز مفتوحة خلال عطلة نهاية الأسبوع.",
+  "Reward cycles": "دورات المكافآت",
+  "These conditions are what Openfund’s server enforces now and may be newer than this page. The Rulebook has the full rules.": "هذه الشروط هي ما يطبقه خادم Openfund الآن وقد تكون أحدث من هذه الصفحة. القواعد الكاملة في دليل القواعد.",
   "Workspace settings": "إعدادات مساحة العمل",
   "Real capture of the Web Terminal with live Gains market data. No wallet connected.": "لقطة حقيقية من محطة التداول عبر الويب ببيانات سوق Gains مباشرة. لا توجد محفظة متصلة.",
   "SHA-256 from the CI build record": "SHA-256 من سجل البناء في CI",
@@ -3924,5 +3933,6 @@
   "Your system": "نظامك",
   "Unsigned build: macOS Gatekeeper blocks it on a double-click. In Applications, right-click (or Control-click) Open Trade and choose Open.": "بناء غير موقّع: يمنع Gatekeeper في macOS فتحه بالنقر المزدوج. في Applications، انقر بزر الفأرة الأيمن (أو Control مع النقر) على Open Trade واختر Open.",
   "Unsigned build: when SmartScreen shows “Windows protected your PC”, choose More info, then Run anyway.": "بناء غير موقّع: عندما يعرض SmartScreen رسالة «Windows protected your PC»، اختر More info ثم Run anyway.",
-  "AppImage: make the file executable with chmod +x before running it. The .deb installs with your package manager.": "AppImage: اجعل الملف قابلًا للتنفيذ عبر chmod +x قبل تشغيله. يُثبَّت ملف ‎.deb عبر مدير الحزم."
+  "AppImage: make the file executable with chmod +x before running it. The .deb installs with your package manager.": "AppImage: اجعل الملف قابلًا للتنفيذ عبر chmod +x قبل تشغيله. يُثبَّت ملف ‎.deb عبر مدير الحزم.",
+  "Required fields": "الحقول المطلوبة"
 }

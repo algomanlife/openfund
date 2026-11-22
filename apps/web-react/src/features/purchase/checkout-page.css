@@ -161,3 +161,68 @@ html[data-theme="light"] .of-co { --of-pay-danger: #b0392f; --of-pay-danger-bg: 
   .of-pay-timeline li { flex-direction: column; gap: 0 }
   .of-pay-warning { padding: 12px }
 }
+
+/* ---- model banners (inside the radio labels), conditions, ticket ----
+   transform/opacity only; banners animate only while on screen (.is-live) */
+.of-co-models label { position: relative; isolation: isolate; overflow: hidden; transition: transform .25s ease, border-color .25s }
+.of-co-models label:hover { transform: translateY(-2px) }
+.of-co-banner { display: block; width: 100%; height: auto; margin-bottom: 4px; overflow: visible }
+.of-co-banner-track { fill: none; stroke: color-mix(in srgb, var(--co-accent, #82e7bd) 55%, transparent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round }
+.of-co-banner-flag path { fill: color-mix(in srgb, var(--co-accent, #82e7bd) 18%, transparent); stroke: var(--co-accent, #82e7bd); stroke-width: 1.4; stroke-linejoin: round }
+.of-co-banner-flag text { fill: var(--co-accent, #82e7bd); font: 600 11px 'Ubuntu', system-ui, sans-serif }
+.of-co-banner-funded circle { fill: color-mix(in srgb, var(--co-accent, #82e7bd) 22%, transparent); stroke: var(--co-accent, #82e7bd); stroke-width: 1.5 }
+.of-co-banner-funded path { fill: none; stroke: var(--co-accent, #82e7bd); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round }
+.of-co-banner-start { fill: none; stroke: color-mix(in srgb, var(--co-accent, #82e7bd) 60%, transparent); stroke-width: 1.5 }
+.of-co-banner-dot { fill: var(--co-accent, #82e7bd); filter: drop-shadow(0 0 5px var(--co-accent, #82e7bd)) }
+.of-co-banner-ring { fill: none; stroke: var(--co-accent, #82e7bd); stroke-width: 1.2; opacity: 0; transform-box: fill-box; transform-origin: center }
+.of-co-banner.is-live .of-co-dot-stairs { animation: of-co-stairs 4.8s cubic-bezier(.4, 0, .2, 1) infinite }
+.of-co-banner.is-live .of-co-dot-line { animation: of-co-line 3.6s cubic-bezier(.4, 0, .2, 1) infinite }
+.of-co-banner.is-live .of-co-dot-pulse { animation: of-co-pulse 1.8s cubic-bezier(.6, 0, .4, 1) infinite }
+.of-co-banner.is-live .of-co-banner-ring { animation: of-co-ring 1.8s ease-out infinite }
+@keyframes of-co-stairs { 0% { transform: translate(0, 0); opacity: 0 } 6% { opacity: 1 } 22% { transform: translate(64px, 0) } 32% { transform: translate(64px, -26px) } 52% { transform: translate(134px, -26px) } 62% { transform: translate(134px, -52px) } 84% { transform: translate(210px, -52px); opacity: 1 } 100% { transform: translate(210px, -52px); opacity: 0 } }
+@keyframes of-co-line { 0% { transform: translate(0, 0); opacity: 0 } 8% { opacity: 1 } 80% { transform: translate(206px, -50px); opacity: 1 } 100% { transform: translate(206px, -50px); opacity: 0 } }
+@keyframes of-co-pulse { 0% { transform: translate(0, 0); opacity: 0 } 10% { opacity: 1 } 70% { transform: translate(196px, 0); opacity: 1 } 80%, 100% { transform: translate(196px, 0); opacity: 0 } }
+@keyframes of-co-ring { 0%, 65% { opacity: 0; transform: scale(.6) } 75% { opacity: .9 } 100% { opacity: 0; transform: scale(1.5) } }
+/* selected banner: a mint light runs around the border (a rotating conic layer behind the card) */
+.of-co-models label.selected { border-color: transparent; box-shadow: 0 0 0 1px var(--co-accent, #82e7bd), 0 12px 34px -16px color-mix(in srgb, var(--co-accent, #82e7bd) 70%, transparent) }
+.of-co-models label.selected::before { content: ''; position: absolute; z-index: -2; inset: -50%; background: conic-gradient(from 0deg, transparent 0 70%, var(--co-accent, #82e7bd) 80%, transparent 90%); animation: of-co-spin 4s linear infinite }
+.of-co-models label.selected::after { content: ''; position: absolute; z-index: -1; inset: 2px; border-radius: inherit; background: linear-gradient(var(--co-card), var(--co-card)), var(--bg, #060808) }
+html[data-theme=light] .of-co-models label.selected::after { background: #fff }
+@keyframes of-co-spin { to { transform: rotate(1turn) } }
+.of-co-models label:focus-within { outline: 2px solid var(--co-accent, #82e7bd); outline-offset: 3px }
+
+.of-co-conditions { margin: 16px 0 4px; padding: 14px 16px; border: 1px solid color-mix(in srgb, var(--co-accent, #82e7bd) 30%, transparent); border-radius: 12px;
+  background: color-mix(in srgb, var(--co-accent, #82e7bd) 5%, transparent); animation: of-co-in .35s cubic-bezier(.2, .7, .2, 1) both }
+@keyframes of-co-in { from { opacity: 0; transform: translateY(6px) } }
+.of-co-conditions h3 { margin: 0 0 8px; font-size: 14px }
+.of-co-conditions dl, .of-co-more dl { margin: 0; display: grid; gap: 6px }
+.of-co-conditions dl > div, .of-co-more dl > div { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; font-size: 13px }
+.of-co-conditions dt small { display: block; font-size: 11px; opacity: .7 }
+.of-co-conditions dd { margin: 0; font-weight: 600; color: var(--co-accent, #82e7bd); white-space: nowrap }
+.of-co-variant { margin: 10px 0 0; font-size: 13px }
+.of-co-more { margin: 8px 0 14px; border: 1px solid var(--co-line, #ffffff1a); border-radius: 12px; padding: 0 14px }
+.of-co-more summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 500 }
+.of-co-more[open] { padding-bottom: 14px }
+.of-co-more dl > div { flex-direction: column; align-items: flex-start; gap: 4px }
+.of-co-more dt { font-weight: 600 }
+.of-co-more dd { margin: 0; line-height: 1.7; opacity: .9 }
+.of-co-chip { display: inline-block; margin-inline-end: 6px; padding: 2px 9px; border-radius: 99px; border: 1px solid var(--co-line, #ffffff1a); font-size: 12px }
+.of-co-rulebook { display: inline-block; margin-top: 10px; color: var(--co-accent, #82e7bd) }
+
+/* order summary as an account ticket with a perforated edge */
+.of-co-ticket { position: relative; padding: 18px 18px 14px; border-radius: 16px; border: 1px solid color-mix(in srgb, var(--co-accent, #82e7bd) 35%, transparent);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--co-accent, #82e7bd) 9%, transparent), transparent 60%) }
+.of-co-ticket::before, .of-co-ticket::after { content: ''; position: absolute; top: 92px; width: 18px; height: 18px; border-radius: 50%; background: var(--ticket-notch); border: 1px solid color-mix(in srgb, var(--co-accent, #82e7bd) 35%, transparent) }
+.of-co-ticket::before { inset-inline-start: -10px } .of-co-ticket::after { inset-inline-end: -10px }
+.of-co-ticket-head { display: grid !important; gap: 2px; padding-bottom: 14px !important; margin-bottom: 6px; border-bottom: 1px dashed color-mix(in srgb, var(--co-accent, #82e7bd) 40%, transparent) !important }
+.of-co-ticket-head strong { font-size: clamp(26px, 4vw, 34px); color: var(--co-accent, #82e7bd); letter-spacing: -.5px }
+html[data-theme=light] .of-co-ticket { --ticket-notch: #fff }
+@media (prefers-reduced-motion: reduce) {
+  .of-co-models label, .of-co-models label:hover { transform: none; transition: none }
+  .of-co-models label.selected::before, .of-co-conditions, .of-co-banner .of-co-banner-dot, .of-co-banner .of-co-banner-ring { animation: none !important }
+  .of-co-models label.selected::before { background: var(--co-accent, #82e7bd) }
+}
+/* contrast: the extra conditions use the body colour, not the muted one */
+.of-co-more dd, .of-co-chip { color: var(--body, #e6ece8); opacity: 1 }
+html[data-theme=light] .of-co-more, html[data-theme=light] .of-co-more dd, html[data-theme=light] .of-co-chip { color: #1d2a24 }
+html[data-theme=light] .of-co-conditions dt small { color: #4f5f58; opacity: 1 }

@@ -2,11 +2,11 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4428,
-    "mappedCalls": 2272,
+    "uniqueRecords": 4445,
+    "mappedCalls": 2290,
     "exceptions": 51,
     "validationFindings": 0,
-    "reviewedExclusions": 47
+    "reviewedExclusions": 49
   },
   "editorial": {
     "locales": [
@@ -938,6 +938,26 @@
       ]
     },
     {
+      "key": "react.00156dbd646cbd3b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اخبار پراثر: در حساب فاندشده، سود معاملات در فاصلهٔ ${min} دقیقه از رویداد از پاداش کسر می‌شود.",
+      "en": "High-impact news: on funded accounts, profit from trades within ${min} minutes of the event is deducted from rewards.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 113,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.001ead82c56f0c28",
       "namespace": "react",
       "area": "Website",
@@ -1832,7 +1852,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 517,
+          "line": 523,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -2099,7 +2119,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 673,
+          "line": 681,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -2599,7 +2619,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 347,
+          "line": 350,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -4325,7 +4345,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 504,
+          "line": 510,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -4345,7 +4365,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 464,
+          "line": 468,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -4732,7 +4752,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 610,
+          "line": 618,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -5026,7 +5046,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 702,
+          "line": 710,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -6495,6 +6515,26 @@
       ]
     },
     {
+      "key": "react.0ee6fdcc7cc9a068",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شرایط بیشتر",
+      "en": "More conditions",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 104,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.0efad008393c89d8",
       "namespace": "react",
       "area": "Website",
@@ -6507,14 +6547,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 545,
+          "line": 553,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 598,
+          "line": 606,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -6552,6 +6592,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 100,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
           "line": 64,
@@ -6684,6 +6731,26 @@
           "line": 176,
           "page": "global",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.0fa00c5d10e55309",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "افت متحرک",
+      "en": "Trailing drawdown",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 83,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -8158,7 +8225,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 719,
+          "line": 727,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -9302,7 +9369,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 703,
+          "line": 711,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -11869,7 +11936,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 346,
+          "line": 349,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -12530,7 +12597,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 349,
+          "line": 352,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -13297,7 +13364,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 699,
+          "line": 707,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -13504,7 +13571,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 496,
+          "line": 502,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -14536,6 +14603,13 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 84,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -15239,7 +15313,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 348,
+          "line": 351,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -15806,7 +15880,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 653,
+          "line": 661,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -16026,7 +16100,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 539,
+          "line": 547,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -16602,6 +16676,26 @@
       ]
     },
     {
+      "key": "react.2b263089375a20bb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اخبار پراثر: باز کردن، بستن یا نگه داشتن پوزیشن در فاصلهٔ ${min} دقیقه از رویداد تخلف است.",
+      "en": "High-impact news: opening, closing or holding a position within ${min} minutes of the event is a breach.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 112,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.2b3fd7c99737f0df",
       "namespace": "react",
       "area": "Website",
@@ -17075,21 +17169,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 518,
+          "line": 526,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 580,
+          "line": 588,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 696,
+          "line": 704,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -18992,7 +19086,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 559,
+          "line": 567,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -19266,7 +19360,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 442,
+          "line": 445,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -19806,6 +19900,13 @@
           "page": "campaign",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 85,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -19822,7 +19923,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 725,
+          "line": 733,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -20853,7 +20954,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 666,
+          "line": 674,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -21193,7 +21294,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 565,
+          "line": 573,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -21852,7 +21953,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 358,
+          "line": 361,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -22012,7 +22113,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 523,
+          "line": 531,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -22052,7 +22153,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 577,
+          "line": 585,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -23511,7 +23612,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 427,
+          "line": 430,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -23642,6 +23743,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.3d2ab2fe7e183ba4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گزینهٔ ضرر روزانهٔ کمتر",
+      "en": "Lower daily-loss option",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 92,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -23792,7 +23913,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 426,
+          "line": 429,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -24047,6 +24168,26 @@
         {
           "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
           "line": 186,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.3ea6277b6766c887",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "افت ثابت",
+      "en": "Static drawdown",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 83,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -24618,6 +24759,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.403f5a048841d4e0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "چرخه‌های پاداش",
+      "en": "Reward cycles",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 109,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -26730,14 +26891,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 145,
+          "line": 148,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 152,
+          "line": 155,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -29327,7 +29488,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 583,
+          "line": 591,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -30611,7 +30772,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 584,
+          "line": 592,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -32095,7 +32256,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 520,
+          "line": 528,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -32529,7 +32690,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 579,
+          "line": 587,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -33404,6 +33565,26 @@
       ]
     },
     {
+      "key": "react.579ade1d2e95067f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در حساب فاندشده، پوزیشن‌های باز در بازهٔ بسته‌شدن روزانه به‌طور خودکار بسته می‌شوند.",
+      "en": "On funded accounts, open positions are closed automatically in the daily closing window.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 116,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.57aa9ce904e3feef",
       "namespace": "react",
       "area": "Global Content",
@@ -34107,6 +34288,13 @@
           "method": "bilingual-record"
         },
         {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 81,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/terminal/ChallengePanel.tsx",
           "line": 77,
           "page": "terminal",
@@ -34803,7 +34991,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 628,
+          "line": 636,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -36340,7 +36528,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 582,
+          "line": 590,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -38155,6 +38343,13 @@
       "validation": "mapped",
       "locations": [
         {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 100,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
           "line": 65,
           "page": "purchase",
@@ -39334,7 +39529,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 567,
+          "line": 575,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -39968,7 +40163,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 632,
+          "line": 640,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -40349,7 +40544,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 635,
+          "line": 643,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -42496,7 +42691,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 452,
+          "line": 455,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -43071,7 +43266,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 698,
+          "line": 706,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -43992,7 +44187,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 404,
+          "line": 407,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -44143,6 +44338,26 @@
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.7648abecc6193e16",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هدف مرحلهٔ ۲",
+      "en": "Phase 2 target",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 81,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -44741,7 +44956,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 712,
+          "line": 720,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -45675,7 +45890,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 649,
+          "line": 657,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -47030,7 +47245,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 699,
+          "line": 707,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -47337,7 +47552,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 686,
+          "line": 694,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -47357,14 +47572,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 522,
+          "line": 530,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 584,
+          "line": 592,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -48031,14 +48246,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 550,
+          "line": 558,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 599,
+          "line": 607,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -48415,6 +48630,26 @@
       ]
     },
     {
+      "key": "react.81f1347449a66312",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قوانین معاملاتی",
+      "en": "Rulebook",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 118,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.82027875db312125",
       "namespace": "react",
       "area": "Global Content",
@@ -48527,7 +48762,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 701,
+          "line": 709,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -49504,7 +49739,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 671,
+          "line": 679,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -51179,6 +51414,26 @@
       ]
     },
     {
+      "key": "react.8a37ae68cdf8f156",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هدف مرحلهٔ ۱",
+      "en": "Phase 1 target",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 81,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.8a42578632af5508",
       "namespace": "react",
       "area": "Website",
@@ -51271,7 +51526,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 353,
+          "line": 356,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -51572,14 +51827,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 542,
+          "line": 550,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 597,
+          "line": 605,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -52868,7 +53123,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 659,
+          "line": 667,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -52956,6 +53211,26 @@
       ]
     },
     {
+      "key": "react.8f2bdd7b895b5d6f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ثبات",
+      "en": "Consistency",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 110,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.8f2ddbe9b700bed7",
       "namespace": "react",
       "area": "Website",
@@ -53008,7 +53283,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 610,
+          "line": 618,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -54290,7 +54565,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 636,
+          "line": 644,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -54670,7 +54945,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 639,
+          "line": 647,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -54797,7 +55072,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 711,
+          "line": 719,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -55404,7 +55679,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 503,
+          "line": 509,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -55664,21 +55939,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 555,
+          "line": 563,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 600,
+          "line": 608,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 610,
+          "line": 618,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -56025,7 +56300,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 659,
+          "line": 667,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -57434,6 +57709,13 @@
       "validation": "mapped",
       "locations": [
         {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 100,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/WithdrawalsPage.tsx",
           "line": 65,
           "page": "purchase",
@@ -57642,7 +57924,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 530,
+          "line": 538,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -58096,7 +58378,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 530,
+          "line": 538,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -59473,7 +59755,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 352,
+          "line": 355,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -59540,7 +59822,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 717,
+          "line": 725,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -59955,7 +60237,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 699,
+          "line": 707,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -61403,7 +61685,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 627,
+          "line": 635,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -62495,7 +62777,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 585,
+          "line": 593,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -63286,7 +63568,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 661,
+          "line": 669,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -63654,7 +63936,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 680,
+          "line": 688,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -63774,7 +64056,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 626,
+          "line": 634,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -63794,7 +64076,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 463,
+          "line": 467,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -63834,7 +64116,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 639,
+          "line": 647,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -64189,7 +64471,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 458,
+          "line": 461,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -64291,7 +64573,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 493,
+          "line": 499,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -65642,7 +65924,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 612,
+          "line": 620,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -66469,7 +66751,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 693,
+          "line": 701,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -70030,6 +70312,13 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 83,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -71167,7 +71456,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 497,
+          "line": 503,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -71728,7 +72017,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 685,
+          "line": 693,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -73560,7 +73849,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 488,
+          "line": 494,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -73650,6 +73939,26 @@
           "line": 201,
           "page": "radar",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.c780a111b6d9dc61",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نگهداری پوزیشن",
+      "en": "Holding",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 114,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -74583,7 +74892,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 444,
+          "line": 447,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -76044,7 +76353,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 707,
+          "line": 715,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -76451,7 +76760,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 521,
+          "line": 529,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -76598,7 +76907,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 468,
+          "line": 472,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -76745,7 +77054,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 651,
+          "line": 659,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -78320,7 +78629,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 437,
+          "line": 440,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -78740,7 +79049,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 427,
+          "line": 430,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -78856,7 +79165,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 708,
+          "line": 716,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -79017,7 +79326,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 645,
+          "line": 653,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -79184,7 +79493,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 312,
+          "line": 315,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -79492,7 +79801,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 713,
+          "line": 721,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -80175,28 +80484,35 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 473,
+          "line": 477,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 519,
+          "line": 525,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 581,
+          "line": 527,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 697,
+          "line": 589,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 705,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -80488,6 +80804,13 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 82,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -81192,7 +81515,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 535,
+          "line": 543,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -81526,14 +81849,14 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 421,
+          "line": 424,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 425,
+          "line": 428,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -83208,7 +83531,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 507,
+          "line": 513,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -83975,7 +84298,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 642,
+          "line": 650,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -84245,6 +84568,26 @@
           "line": 322,
           "page": "radar",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.e3e50f063d1bf616",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "این شرایط همان چیزی است که سرور اوپن‌فاند الان اعمال می‌کند و ممکن است از این صفحه تازه‌تر باشد. قوانین کامل در قوانین معاملاتی آمده است.",
+      "en": "These conditions are what Openfund’s server enforces now and may be newer than this page. The Rulebook has the full rules.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 105,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -84589,7 +84932,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 652,
+          "line": 660,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -84809,7 +85152,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 710,
+          "line": 718,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -86157,7 +86500,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 568,
+          "line": 576,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -87146,7 +87489,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 704,
+          "line": 712,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -87780,7 +88123,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/i18n/LanguageSelect.tsx",
-          "line": 11,
+          "line": 79,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -88049,7 +88392,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 592,
+          "line": 600,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -88885,7 +89228,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 650,
+          "line": 658,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -89122,6 +89465,26 @@
           "line": 95,
           "page": "campaign",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.f111466fc2e81077",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اخبار",
+      "en": "News",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 111,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -89719,7 +90082,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 695,
+          "line": 703,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -89779,7 +90142,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 709,
+          "line": 717,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -90347,7 +90710,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 626,
+          "line": 634,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -90774,7 +91137,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 427,
+          "line": 430,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -91281,7 +91644,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 566,
+          "line": 574,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -91621,7 +91984,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 422,
+          "line": 425,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -91781,7 +92144,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 650,
+          "line": 658,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -91801,7 +92164,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 427,
+          "line": 430,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -91941,7 +92304,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 453,
+          "line": 456,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -92504,7 +92867,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 718,
+          "line": 726,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -92624,7 +92987,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 620,
+          "line": 628,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -93488,6 +93851,26 @@
       ]
     },
     {
+      "key": "react.fd5ecc896091de29",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نگه داشتن پوزیشن باز در آخر هفته مجاز نیست.",
+      "en": "Positions may not be held open over the weekend.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 115,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.fd6456029e1eaad4",
       "namespace": "react",
       "area": "Website",
@@ -94177,6 +94560,26 @@
       ]
     },
     {
+      "key": "react.ff24fd4c240094d6",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شرایط این حساب",
+      "en": "Conditions for this account",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+          "line": 88,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.ff29ac468ebb8804",
       "namespace": "react",
       "area": "Global Content",
@@ -94582,7 +94985,7 @@
     },
     {
       "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-      "line": 127,
+      "line": 130,
       "page": "purchase",
       "route": "/:locale/checkout; /:locale/:product/purchases",
       "reason": "dynamic-pair",
@@ -95073,7 +95476,23 @@
     },
     {
       "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-      "line": 126,
+      "line": 129,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+      "line": 77,
+      "page": "purchase",
+      "route": "/:locale/checkout; /:locale/:product/purchases",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
+      "line": 99,
       "page": "purchase",
       "route": "/:locale/checkout; /:locale/:product/purchases",
       "reason": "helper-wrapper-definition",

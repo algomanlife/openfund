@@ -3911,7 +3911,16 @@
   "Source data is stale": "来源数据已过时",
   "Source timestamps are inconsistent": "来源时间戳不一致",
   "Up to date": "已是最新",
-  "Required fields": "必填字段",
+  "Conditions for this account": "此账户的条件",
+  "High-impact news: on funded accounts, profit from trades within ${min} minutes of the event is deducted from rewards.": "高影响新闻：在资助账户中，事件前后 ${min} 分钟内交易的利润将从奖励中扣除。",
+  "High-impact news: opening, closing or holding a position within ${min} minutes of the event is a breach.": "高影响新闻：在事件前后 ${min} 分钟内开仓、平仓或持仓均属违规。",
+  "Holding": "持仓",
+  "Lower daily-loss option": "更低日亏损选项",
+  "More conditions": "更多条件",
+  "On funded accounts, open positions are closed automatically in the daily closing window.": "在资助账户中，未平仓头寸会在每日收盘时段自动平仓。",
+  "Positions may not be held open over the weekend.": "不得在周末持有未平仓头寸。",
+  "Reward cycles": "奖励周期",
+  "These conditions are what Openfund’s server enforces now and may be newer than this page. The Rulebook has the full rules.": "这些条件是 Openfund 服务器当前执行的规则，可能比本页面更新。完整规则请见规则手册。",
   "Workspace settings": "工作区设置",
   "Real capture of the Web Terminal with live Gains market data. No wallet connected.": "网页终端的真实截图，使用 Gains 实时行情数据，未连接钱包。",
   "SHA-256 from the CI build record": "来自 CI 构建记录的 SHA-256",
@@ -3924,5 +3933,6 @@
   "Your system": "您的系统",
   "Unsigned build: macOS Gatekeeper blocks it on a double-click. In Applications, right-click (or Control-click) Open Trade and choose Open.": "未签名构建：macOS 的 Gatekeeper 会阻止双击打开。请在“应用程序”中右键点击（或按住 Control 点击）Open Trade，然后选择“打开”。",
   "Unsigned build: when SmartScreen shows “Windows protected your PC”, choose More info, then Run anyway.": "未签名构建：当 SmartScreen 显示“Windows protected your PC”时，选择“More info”，然后选择“Run anyway”。",
-  "AppImage: make the file executable with chmod +x before running it. The .deb installs with your package manager.": "AppImage：运行前请用 chmod +x 赋予文件执行权限。.deb 包可通过软件包管理器安装。"
+  "AppImage: make the file executable with chmod +x before running it. The .deb installs with your package manager.": "AppImage：运行前请用 chmod +x 赋予文件执行权限。.deb 包可通过软件包管理器安装。",
+  "Required fields": "必填字段"
 }

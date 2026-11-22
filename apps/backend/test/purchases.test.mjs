@@ -174,6 +174,8 @@ let plansData = null
   plansData = plans.data
   const standard = plans.data.plans.find(p => p.slug === 'standard')
   ok('standard plan priced from catalog', standard && Number(standard.priceUsd[5000]) === 44, JSON.stringify(standard?.priceUsd).slice(0, 80))
+  ok('plans expose the enforced public rules', standard?.rules?.phases === 2 && standard.rules.dailyLossPct === 5 && standard.rules.maxTotalLossPct === 10
+    && JSON.stringify(standard.rules.phaseTargetsPct) === '[8,5]' && standard.rules.conduct?.news?.mode === 'deduct' && !/price/i.test(JSON.stringify(standard.rules)), JSON.stringify(standard?.rules).slice(0, 160))
 
   if (!plans.data.paymentsEnabled) {
     skip('order creation + lifecycle (server PURCHASE_PAYMENT_RECEIVER unset — purchases disabled)')
