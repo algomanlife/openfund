@@ -9612,5 +9612,125 @@
         "state": "Trader profile at 390 px"
       }
     ]
+  },
+  "premium-league": {
+    "branch": "agent/claude/premium-league",
+    "baseCommit": "9f8b171",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-22T16:20:52+00:00",
+    "source": "Local production build served by apps/backend on a disposable Postgres (tournament seeded by ensureTournamentSeed; a local stand-in published terms row and the 'log' email provider so registration shows as open)",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Public Gains Network reads where they loaded; no fixtures",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "premium-league/hero-en-1440-dark.jpg",
+        "route": "/en/tournament",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: hero with countdown to the start (bundled schedule confirmed by the local API)"
+      },
+      {
+        "file": "premium-league/prizes-en-1440-dark.jpg",
+        "route": "/en/tournament",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: podium and ranks 4–10 prize scene (illustration)"
+      },
+      {
+        "file": "premium-league/rules-en-1440-light.jpg",
+        "route": "/en/tournament",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, light: rule gauges"
+      },
+      {
+        "file": "premium-league/badges-en-1440-dark.jpg",
+        "route": "/en/tournament",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: timeline and ten rank badges plus Finisher"
+      },
+      {
+        "file": "premium-league/register-en-1440-dark.jpg",
+        "route": "/en/tournament",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: registration step 1 (wallet) while terms are published locally and the log email provider is active; real count of verified registrations (0)"
+      },
+      {
+        "file": "premium-league/page-fa-768-light.jpg",
+        "route": "/fa/tournament",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Persian, light (RTL), tablet: hero"
+      },
+      {
+        "file": "premium-league/prizes-fa-768-dark.jpg",
+        "route": "/fa/tournament",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Persian, dark (RTL), tablet: podium and prizes"
+      },
+      {
+        "file": "premium-league/page-en-390-dark.jpg",
+        "route": "/en/tournament",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "English, dark, phone: hero and countdown"
+      },
+      {
+        "file": "premium-league/prizes-ar-390-light.jpg",
+        "route": "/ar/tournament",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Arabic (draft translation, RTL), light, phone: podium"
+      },
+      {
+        "file": "premium-league/badges-ru-390-dark.jpg",
+        "route": "/ru/tournament",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Russian (draft translation), dark, phone: badges"
+      },
+      {
+        "file": "premium-league/rules-zh-390-light.jpg",
+        "route": "/zh-CN/tournament",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Chinese (draft translation), light, phone: rules"
+      },
+      {
+        "file": "premium-league/terms-en-1440-dark.jpg",
+        "route": "/en/tournament/terms",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: terms page while no terms are published in the CMS (Directus not running)"
+      }
+    ]
   }
 }

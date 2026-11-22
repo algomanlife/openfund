@@ -15,6 +15,7 @@ const Whitepaper = lazy(() => import('./features/whitepaper/Whitepaper'))
 import Faq from './features/faq/Faq'
 const Roadmap = lazy(() => import('./features/roadmap/Roadmap'))
 const TournamentPage = lazy(() => import('./features/tournament/TournamentPage'))
+const TournamentTermsPage = lazy(() => import('./features/tournament/TournamentTermsPage'))
 const MigratePage = lazy(() => import('./features/migration/MigratePage'))
 const CertificatesPage = lazy(() => import('./features/certificates/CertificatesPage'))
 const RadarPage = lazy(() => import('./features/radar/RadarPage'))
@@ -173,6 +174,7 @@ const routes = [
   { path: '/:locale/apps', element: <Applications /> },
   { path: '/:locale/roadmap', element: <Suspense fallback={null}><Roadmap /></Suspense> },
   { path: '/:locale/tournament', element: <Suspense fallback={null}><TournamentPage /></Suspense> },
+  { path: '/:locale/tournament/terms', element: <Suspense fallback={null}><TournamentTermsPage /></Suspense> },
   { path: '/:locale/migrate', element: <Suspense fallback={null}><MigratePage /></Suspense> },
   { path: '/:locale/about', element: <About /> },
   { path: '/:locale/contact', element: <Contact /> },
