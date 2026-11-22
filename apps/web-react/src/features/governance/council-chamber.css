@@ -1,0 +1,40 @@
+.gv-chamber{position:relative;display:grid;gap:10px;max-width:520px;margin-inline:auto;color:var(--body)}
+.gv-chamber svg{display:block;width:100%;height:auto;overflow:visible}
+.gv-ch-arc{fill:none;stroke:color-mix(in srgb,var(--mint) 28%,transparent);stroke-width:1.2;stroke-dasharray:3 6}
+.gv-ch-arc.inner{opacity:.6}
+.gv-ch-seat-body{fill:var(--surface,#0d1210);stroke:color-mix(in srgb,var(--body) 40%,transparent);stroke-width:1.4;transition:fill .35s,stroke .35s}
+.gv-ch-seat-back{fill:none;stroke:color-mix(in srgb,var(--body) 35%,transparent);stroke-width:1.4;stroke-linecap:round}
+.gv-ch-seat-glow{fill:none;opacity:0;transform-box:fill-box;transform-origin:center;transform:scale(.7);transition:opacity .35s,transform .45s}
+.gv-ch-seat.is-approve .gv-ch-seat-body{fill:color-mix(in srgb,var(--mint) 30%,var(--surface,#0d1210));stroke:var(--mint)}
+.gv-ch-seat.is-reject .gv-ch-seat-body{fill:color-mix(in srgb,#e89483 30%,var(--surface,#0d1210));stroke:#e89483}
+.gv-ch-seat.is-abstain .gv-ch-seat-body{fill:color-mix(in srgb,var(--muted,#8a9a92) 30%,var(--surface,#0d1210));stroke:var(--muted,#8a9a92)}
+.gv-ch-seat.is-approve .gv-ch-seat-glow{fill:var(--mint);opacity:.22;transform:scale(1)}
+.gv-ch-seat.is-reject .gv-ch-seat-glow{fill:#e89483;opacity:.22;transform:scale(1)}
+.gv-ch-seat.is-abstain .gv-ch-seat-glow{fill:var(--muted,#8a9a92);opacity:.15;transform:scale(1)}
+.gv-ch-rostrum{fill:color-mix(in srgb,var(--mint) 10%,var(--surface,#0d1210));stroke:color-mix(in srgb,var(--mint) 45%,transparent);stroke-width:1.2}
+.gv-ch-card rect{fill:var(--surface,#0d1210);stroke:color-mix(in srgb,var(--mint) 55%,transparent);stroke-width:1.2}
+.gv-ch-card{animation:gv-ch-card-in .5s cubic-bezier(.2,.7,.2,1) both}
+@keyframes gv-ch-card-in{from{opacity:0;transform:translateY(10px)}}
+.gv-ch-card-tag{fill:var(--mint);font:600 9px 'Ubuntu',system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.gv-ch-card-tag:lang(fa){letter-spacing:0;text-transform:none;font-family:'Dastkhat','Ubuntu',system-ui,sans-serif}
+.gv-ch-card-id{fill:var(--muted,#8a9a92);font:500 9px ui-monospace,SFMono-Regular,Menlo,monospace}
+.gv-ch-card-title{margin:0;font-size:11px;line-height:1.45;color:var(--white,#eef5f1);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.gv-ch-stamp{animation:gv-ch-stamp .45s cubic-bezier(.2,1.4,.4,1) both;transform-box:fill-box;transform-origin:center}
+@keyframes gv-ch-stamp{from{opacity:0;transform:scale(1.6)}}
+.gv-ch-stamp rect{fill:color-mix(in srgb,var(--surface,#0d1210) 70%,transparent);stroke-width:2.2}
+.gv-ch-stamp text{font:700 16px 'Ubuntu',system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.gv-ch-stamp text:lang(fa){letter-spacing:0}
+.gv-ch-stamp.is-approved rect{stroke:var(--mint)} .gv-ch-stamp.is-approved text{fill:var(--mint)}
+.gv-ch-stamp.is-rejected rect{stroke:#e89483} .gv-ch-stamp.is-rejected text{fill:#e89483}
+.gv-ch-tally{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 16px;font-size:12px}
+.gv-ch-tally span{display:inline-flex;align-items:center;gap:6px}
+.gv-ch-tally i{width:9px;height:9px;border-radius:50%}
+.gv-ch-tally .is-approve i{background:var(--mint)} .gv-ch-tally .is-reject i{background:#e89483} .gv-ch-tally .is-abstain i{background:var(--muted,#8a9a92)}
+.gv-ch-tally b{font-variant-numeric:tabular-nums;color:var(--white,inherit)}
+.gv-ch-quorum{display:grid;gap:6px;font-size:12px;max-width:340px;width:100%;margin-inline:auto}
+.gv-ch-quorum>i{position:relative;display:block;height:6px;border-radius:6px;background:color-mix(in srgb,var(--body) 15%,transparent)}
+.gv-ch-quorum>i>i{position:absolute;inset:0;border-radius:inherit;background:var(--mint);transform-origin:left;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+[dir=rtl] .gv-ch-quorum>i>i{transform-origin:right}
+.gv-ch-quorum em{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--white,#eef5f1);opacity:.7}
+html[data-theme=light] .gv-ch-card-title{color:#0f1714}
+@media (prefers-reduced-motion:reduce){.gv-ch-card,.gv-ch-stamp{animation:none}.gv-ch-seat-body,.gv-ch-seat-glow,.gv-ch-quorum>i>i{transition:none}}

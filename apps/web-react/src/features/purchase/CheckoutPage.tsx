@@ -9,6 +9,7 @@ import { checkoutStatus, STATUS_TEXT, txIdValid, type StatusAttempt } from './ch
 import { ManualWarning, PaymentStatus, WalletPayment, type Ledger, type PaymentStatusView, type WalletChain } from './OpenfundPay'
 import './purchase.css'
 import './checkout-page.css'
+import { ConditionsPanel, ModelBanner, MoreConditions, ticketStyle, type PlanRules, type VariantInfo } from './CheckoutRules'
 
 /**
  * Dedicated challenge purchase page — /:locale/checkout
@@ -37,7 +38,9 @@ import './checkout-page.css'
 
 interface PlanInfo { slug: string, name: string, names?: { en: string | null, fa: string | null } | null, accountSizesUsd: number[], priceUsd: Record<string, number>, free: boolean,
   /* false when a rule of the plan cannot be enforced yet (server sales gate) */
-  available?: boolean, unavailableReasons?: string[] }
+  available?: boolean, unavailableReasons?: string[],
+  /* public rules as the evaluation engine enforces them (server) */
+  rules?: PlanRules, dailyLossVariant?: VariantInfo | null }
 interface Quote { listPriceUsd: string, discountUsd: string, priceUsd: string, couponCode: string | null, paymentRequired: boolean, planSlug?: string, accountSize?: number }
 interface OrderView {
   id: string, status: string, lifecycle_state?: string, account_size_usd: string, price_usd: string, currency: string,
@@ -459,6 +462,7 @@ export default function CheckoutPage() {
                   {plans.map(p => (
                     <label key={p.slug} className={p.slug === planSlug ? 'selected' : ''}>
                       <input type="radio" name="of-co-model" value={p.slug} checked={p.slug === planSlug} onChange={() => setSelection(p.slug)} />
+                      <ModelBanner rules={p.rules} />
                       <b>{planName(p)}</b>
                       {p.available === false && <small className="of-co-unavailable">{t('فعلاً در دسترس نیست', 'Not available yet')}</small>}
                       <small dir="ltr">{t('از', 'from')} {money(Math.min(...p.accountSizesUsd.map(s => Number(p.priceUsd[String(s)])).filter(Number.isFinite)))}</small>
@@ -480,6 +484,8 @@ export default function CheckoutPage() {
                     ))}
                   </fieldset>
                 )}
+                {plan?.rules && validSize && <ConditionsPanel locale={locale} rules={plan.rules} size={size} variant={plan.dailyLossVariant} />}
+                {plan?.rules && validSize && <MoreConditions locale={locale} rules={plan.rules} />}
               </>
             )}
 
@@ -513,8 +519,10 @@ export default function CheckoutPage() {
             )}
 
             {plan && validSize && (
-              <div className="of-co-summary of-checkout-summary">
+              <div className="of-co-summary of-checkout-summary of-co-ticket" style={ticketStyle}>
                 <h3>{t('خلاصهٔ خرید', 'Purchase summary')}</h3>
+                {/* the ticket stub: the account size is the headline */}
+                <div className="of-co-ticket-head"><span>{t('اندازهٔ حساب', 'Account size')}</span><strong dir="ltr">{money(size)}</strong></div>
                 <div><span>{t('چلنج', 'Challenge')}</span><b>{planName(plan)}</b></div>
                 <div><span>{t('اندازهٔ حساب', 'Account size')}</span><b dir="ltr">{money(size)}</b></div>
                 <div><span>{t('هزینهٔ ارزیابی', 'Evaluation fee')}</span><b dir="ltr">{money(quote?.listPriceUsd ?? listPrice)}</b></div>
