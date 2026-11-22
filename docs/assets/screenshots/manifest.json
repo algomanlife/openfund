@@ -8752,6 +8752,15 @@
           "height": 844
         },
         "state": "Arabic (RTL), 390 px touch: bottom sheet with 52 px rows. JPEG."
+      },
+      {
+        "file": "language-globe/language-panel-ru-768.jpg",
+        "route": "/ru/rulebook",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Russian (LTR), dark, 768 px: panel open with all five languages, native name, Russian exonym and direction; panel inside the viewport, no horizontal overflow. Clipped to the top 560 px."
       }
     ]
   },
