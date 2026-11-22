@@ -7,6 +7,7 @@ import type { TransparencyReport, TreasuryView } from '../economy/types'
 import { infrastructure, transparencyIntro } from './content'
 import TreasuryWallets from './TreasuryWallets'
 import TableScroll from '../information/TableScroll'
+import DirArrow from '../../ui/DirArrow'
 
 const CATEGORY: Record<string, Localized> = {
   render_infrastructure: t('Technical infrastructure', 'زیرساخت فنی'), database: t('Database', 'پایگاه داده'), cms: t('CMS', 'سیستم مدیریت محتوا'),
@@ -30,7 +31,7 @@ function Treasury({ tv, locale }: { tv: TreasuryView; locale: Locale }) {
     <div className="econ-panel">
       <div className="section-top"><div><h3>{t('Openfund Treasury', 'خزانهٔ اوپن‌فاند')[locale]}</h3><p className="econ-address" dir="ltr">{tv.address}</p></div>
         <div className="econ-actions">{tv.status === 'ok' ? <Status kind="ok">{t('Fresh', 'به‌روز')[locale]}</Status> : <Status kind="warn">{tv.status === 'stale' ? t('Stale — last valid snapshot shown', 'منقضی — آخرین تصویر معتبر')[locale] : t('Awaiting first snapshot', 'در انتظار اولین تصویر')[locale]}</Status>}
-          {tv.explorerUrl && <a className="text-link" href={tv.explorerUrl} target="_blank" rel="noopener noreferrer">{t('View on block explorer', 'مشاهده در کاوشگر بلاک')[locale]} ↗</a>}</div></div>
+          {tv.explorerUrl && <a className="text-link" href={tv.explorerUrl} target="_blank" rel="noopener noreferrer">{t('View on block explorer', 'مشاهده در کاوشگر بلاک')[locale]} <DirArrow kind="external" /></a>}</div></div>
       <div className="econ-grid">
         <Kpi label={t('Network', 'شبکه')[locale]} value={tv.network || tv.chainId} />
         <Kpi label={t('Priced balance (USD)', 'موجودی قیمت‌گذاری‌شده (دلار)')[locale]} value={s ? usd(s.totalUsd, locale) : '—'} note={s && !s.fullyPriced ? t('Excludes assets without a valid price feed', 'بدون دارایی‌های فاقد قیمت معتبر')[locale] : undefined} />
@@ -82,7 +83,7 @@ function Report({ r, locale }: { r: TransparencyReport; locale: Locale }) {
       <Source locale={locale}>{s.source}</Source>
     </section>
 
-    <section className="econ-section" id="challenges"><div className="section-top"><div><span className="eyebrow">02 / {t('CHALLENGE STATISTICS', 'آمار چلنج‌ها')[locale]}</span><h2>{t('Outcomes from the evaluation engine.', 'نتایج از موتور ارزیابی.')[locale]}</h2></div><Link className="text-link" to={`/${locale}/rulebook`}>{labels.rulebook[locale]} ↗</Link></div>
+    <section className="econ-section" id="challenges"><div className="section-top"><div><span className="eyebrow">02 / {t('CHALLENGE STATISTICS', 'آمار چلنج‌ها')[locale]}</span><h2>{t('Outcomes from the evaluation engine.', 'نتایج از موتور ارزیابی.')[locale]}</h2></div><Link className="text-link" to={`/${locale}/rulebook`}>{labels.rulebook[locale]} <DirArrow kind="external" /></Link></div>
       <div className="econ-grid">
         <Kpi label={t('Accounts created', 'حساب‌های ایجادشده')[locale]} value={int(c.accountsCreated, locale)} note={`${int(c.active, locale)} ${t('active', 'فعال')[locale]}`} />
         <Kpi label={t('Final evaluations passed', 'ارزیابی‌های نهایی قبول‌شده')[locale]} value={int(c.finalEvaluationsPassed, locale)} note={`${t('Failed', 'مردود')[locale]} ${int(c.failed, locale)} · ${t('Expired', 'منقضی')[locale]} ${int(c.expired, locale)}`} />
@@ -107,7 +108,7 @@ function Report({ r, locale }: { r: TransparencyReport; locale: Locale }) {
       <div className="econ-grid two" style={{ marginTop: 16 }}>
         <div className="econ-panel"><h3>{t('Monthly paid rewards', 'پاداش پرداخت‌شدهٔ ماهانه')[locale]}</h3><Bars locale={locale} label="USD" points={p.monthly.map(m => ({ key: m.month, value: Number(m.totalUsd) }))} format={v => usd(v, locale)} /></div>
         <div className="econ-panel"><h3>{t('On-chain payout transactions', 'تراکنش‌های آن‌چین پرداخت')[locale]}</h3>
-          {p.transactions.length ? <div className="econ-list">{p.transactions.map((x, i) => <div key={i}><span>{day(x.at, locale)} · {usd(x.amountUsd, locale)}</span><span>{x.explorerUrl ? <a className="text-link" href={x.explorerUrl} target="_blank" rel="noopener noreferrer">{t('Explorer', 'کاوشگر')[locale]} ↗</a> : '—'}</span></div>)}</div> : <p className="econ-empty">{t('No payout with an on-chain transaction reference yet.', 'هنوز پرداختی با مرجع تراکنش آن‌چین ثبت نشده است.')[locale]}</p>}
+          {p.transactions.length ? <div className="econ-list">{p.transactions.map((x, i) => <div key={i}><span>{day(x.at, locale)} · {usd(x.amountUsd, locale)}</span><span>{x.explorerUrl ? <a className="text-link" href={x.explorerUrl} target="_blank" rel="noopener noreferrer">{t('Explorer', 'کاوشگر')[locale]} <DirArrow kind="external" /></a> : '—'}</span></div>)}</div> : <p className="econ-empty">{t('No payout with an on-chain transaction reference yet.', 'هنوز پرداختی با مرجع تراکنش آن‌چین ثبت نشده است.')[locale]}</p>}
           <p className="econ-source">{t('Recipients are not identified. Only date, amount and the public transaction are listed.', 'دریافت‌کنندگان معرفی نمی‌شوند؛ فقط تاریخ، مبلغ و تراکنش عمومی آمده است.')[locale]}</p></div>
       </div>
       <p className="econ-source">{t('Paid totals include historical operator records. Explorer links show finalized transfers.', 'جمع پرداخت‌ها شامل سوابق قدیمی ثبت‌شده توسط اپراتورهاست. پیوندهای کاوشگر انتقال‌های نهایی‌شده را نشان می‌دهند.')[locale]}</p>
@@ -167,7 +168,7 @@ export default function Transparency() {
       <aside className="info-notice"><span className="tiny-mark" aria-hidden="true">◇</span><p>{t('Every figure below is computed by the backend from operational records (confirmed payments, the evaluation engine, withdrawal reviews, on-chain treasury reads and verified invoices) and refreshed at most every five minutes. Missing inputs are shown as Unknown, never estimated. Customer identities are never published.', 'همهٔ اعداد زیر را بک‌اند از سوابق عملیاتی (پرداخت‌های تأییدشده، موتور ارزیابی، بررسی برداشت‌ها، خوانش آن‌چین خزانه و فاکتورهای تأییدشده) محاسبه می‌کند و حداکثر هر پنج دقیقه تازه می‌شوند. ورودی ناموجود «نامعلوم» نمایش داده می‌شود و هرگز برآورد نمی‌شود. هویت مشتریان منتشر نمی‌شود.')[locale]}</p></aside>
       {state.status === 'ready' ? <Report r={state.data} locale={locale} /> : <StateBlock state={state} locale={locale} />}
       <section className="econ-section" id="infrastructure"><div className="section-top"><div><span className="eyebrow">07 / {t('TRADING INFRASTRUCTURE', 'زیرساخت معاملاتی')[locale]}</span><h2>{t('Four layers. Clear responsibilities.', 'چهار لایه. مسئولیت‌های روشن.')[locale]}</h2></div></div><div className="infrastructure-grid">{infrastructure.map(layer => <article className="model-card" key={layer.code}><span className="eyebrow" dir="ltr">{layer.code}</span><h3>{layer.title[locale]}</h3><span className="pill status-current">{labels.current[locale]}</span><p>{layer.body[locale]}</p></article>)}</div></section>
-      <div className="info-end"><img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="38" height="42" alt="" /><p>{t('Clarity is a practice, not a claim.', 'شفافیت را باید ساخت و نشان داد.')[locale]}</p><Link className="button" to={`/${locale}/revenue-model`}>{labels['revenue-model'][locale]} <span aria-hidden="true">↗</span></Link></div>
+      <div className="info-end"><img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="38" height="42" alt="" /><p>{t('Clarity is a practice, not a claim.', 'شفافیت را باید ساخت و نشان داد.')[locale]}</p><Link className="button" to={`/${locale}/revenue-model`}>{labels['revenue-model'][locale]} <DirArrow kind="external" /></Link></div>
     </div>
   </InformationShell>
 }

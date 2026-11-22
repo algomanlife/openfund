@@ -411,6 +411,11 @@ jobs:
             polish-4/4 POLISH_PART=matrix POLISH_SHARD=4/4 POLISH_OUTPUT=output/playwright/ui-polish/shard-4 node e2e/test-ui-polish.cjs +++ \
             polish-tail POLISH_PART=tail POLISH_OUTPUT=output/playwright/ui-polish/tail AUTO_DARK_OUTPUT=output/playwright/auto-dark node e2e/test-ui-polish.cjs
           npm run test:browser:website
+      - name: Direction-aware arrows on every public route in five locales
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080
+        run: npm run test:browser:arrows
       - name: Persian landing viewport, motion and navigation acceptance
         working-directory: .
         env:

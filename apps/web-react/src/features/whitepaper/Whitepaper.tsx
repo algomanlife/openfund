@@ -7,6 +7,7 @@ import { useWhitepaper } from '../../cms/whitepaper/client'
 import type { WpChapter, WpStatus } from '../../cms/whitepaper/types'
 import Block, { STATUS_LABEL } from './blocks'
 import './whitepaper.css'
+import DirArrow from '../../ui/DirArrow'
 
 /* Openfund Whitepaper — one long-form page, anchor-navigated.
    Chapters, datasets and references come from Directus (validated) or the
@@ -135,7 +136,7 @@ export default function Whitepaper() {
             <div><dt>{t('Edition', 'ویرایش')[locale]}</dt><dd>{paper.source.document === 'cms' ? t('Openfund CMS', 'سیستم محتوای اوپن‌فاند')[locale] : t('Repository edition', 'ویرایش مخزن')[locale]}</dd></div>
           </dl>
           <div className="wp-actions">
-            <a className="button" href={`#${chapters[0]?.slug}`} onClick={e => { e.preventDefault(); jump(chapters[0].slug) }}>{t('Start reading', 'شروع مطالعه')[locale]} <span aria-hidden="true">↓</span></a>
+            <a className="button" href={`#${chapters[0]?.slug}`} onClick={e => { e.preventDefault(); jump(chapters[0].slug) }}>{t('Start reading', 'شروع مطالعه')[locale]} <DirArrow kind="down" /></a>
             <button type="button" className="text-link wp-print" onClick={() => window.print()}>{t('Print or save as PDF', 'چاپ یا ذخیره به PDF')[locale]}</button>
           </div>
         </div>
@@ -172,7 +173,7 @@ export default function Whitepaper() {
           <div className="info-end wp-end">
             <img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="38" height="42" alt="" />
             <p>{t('Openfund grows only as fast as it can prove.', 'اوپن‌فاند فقط به اندازه‌ای رشد می‌کند که بتواند اثبات کند.')[locale]}</p>
-            <a className="text-link" href="#top">{t('Back to top ↑', 'بازگشت به بالا ↑')[locale]}</a>
+            <a className="text-link" href="#top">{t('Back to top', 'بازگشت به بالا')[locale]} <DirArrow kind="up" /></a>
           </div>
         </div>
       </div>

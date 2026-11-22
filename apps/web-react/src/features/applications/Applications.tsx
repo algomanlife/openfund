@@ -8,6 +8,7 @@ import { applicationReleases, type Platform } from './releases'
 import builds from './builds.json'
 import { useSpotlight } from '../../styles/useSpotlight'
 import './applications.css'
+import DirArrow from '../../ui/DirArrow'
 
 const shot = (name: string) => `${import.meta.env.BASE_URL}assets/apps/open-trade/${name}.webp`
 /* the real app's title bar (product name and version are identifiers, not copy) */
@@ -240,7 +241,7 @@ export default function Applications() {
         <h1>{c('heroTitle')}</h1>
         <p className="hero-intro">{c('heroIntro')}</p>
         <div className="of-apps-ctas">
-          <Link className="button" to={`/${locale}/prop/trade`}>{c('open')} <span aria-hidden="true">↗</span></Link>
+          <Link className="button" to={`/${locale}/prop/trade`}>{c('open')} <DirArrow kind="external" /></Link>
           <a className="button ghost" href="#desktop-builds">{c('getDesktop')}</a>
         </div>
         <HeroWindow />
@@ -253,7 +254,7 @@ export default function Applications() {
           <span className="of-app-tag">{c('webTag')}</span>
           <h2 id="web-app-title">{c('web')}</h2>
           <p>{c('webLead')}</p>
-          <Link className="text-link" to={`/${locale}/prop/trade`}>{c('open')} ↗</Link>
+          <Link className="text-link" to={`/${locale}/prop/trade`}>{c('open')} <DirArrow kind="external" /></Link>
         </div>
         <div className="of-apps-webcol">
           <WebPreview locale={locale} />
@@ -328,14 +329,14 @@ export default function Applications() {
                 <code dir="ltr">{f.file}</code>
               </li>)}</ul>
               <p className="of-apps-note">{c('unsignedNote')}</p>
-              <a className="text-link" href={builds.ciRun} rel="noopener noreferrer" target="_blank">{c('ciRecord')} ↗</a>
+              <a className="text-link" href={builds.ciRun} rel="noopener noreferrer" target="_blank">{c('ciRecord')} <DirArrow kind="external" /></a>
             </> : <><span className="of-app-status muted">{c('unavailable')}</span><p>{c('noInstaller')}</p></>}
           </SpotCard>
         })}</div>
       </section>
 
       <section className="of-app-guide"><h2>{c('guide')}</h2><ol>{(['step1', 'step2', 'step3'] as const).map(key => <li key={key}>{c(key)}</li>)}</ol></section>
-      <section className="of-app-faq"><h2>{c('faq')}</h2>{([['faq1', 'answer1'], ['faq2', 'answer2'], ['faq3', 'answer3']] as const).map(([question, answer]) => <details key={question}><summary>{c(question)}</summary><p>{c(answer)}</p></details>)}<Link className="text-link" to={`/${locale}/contact`}>{c('support')} ↗</Link></section>
+      <section className="of-app-faq"><h2>{c('faq')}</h2>{([['faq1', 'answer1'], ['faq2', 'answer2'], ['faq3', 'answer3']] as const).map(([question, answer]) => <details key={question}><summary>{c(question)}</summary><p>{c(answer)}</p></details>)}<Link className="text-link" to={`/${locale}/contact`}>{c('support')} <DirArrow kind="external" /></Link></section>
     </div>
   </InformationShell>
 }

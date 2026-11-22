@@ -10,6 +10,7 @@ import { ManualWarning, PaymentStatus, WalletPayment, type Ledger, type PaymentS
 import './purchase.css'
 import './checkout-page.css'
 import { ConditionsPanel, ModelBanner, MoreConditions, ticketStyle, type PlanRules, type VariantInfo } from './CheckoutRules'
+import DirArrow from '../../ui/DirArrow'
 
 /**
  * Dedicated challenge purchase page — /:locale/checkout
@@ -641,7 +642,7 @@ export default function CheckoutPage() {
                 <div className="of-checkout-addr">
                   <code dir="ltr">{manualChain.receiver}</code>
                   <button type="button" className="of-profile-plainbtn" onClick={() => copy(manualChain.receiver)}>{t('کپی', 'Copy')}</button>
-                  {manualChain.receiverExplorerUrl && <a className="of-profile-plainbtn" href={manualChain.receiverExplorerUrl} target="_blank" rel="noreferrer">{t('مشاهده در کاوشگر', 'View in explorer')} ↗</a>}
+                  {manualChain.receiverExplorerUrl && <a className="of-profile-plainbtn" href={manualChain.receiverExplorerUrl} target="_blank" rel="noreferrer">{t('مشاهده در کاوشگر', 'View in explorer')} <DirArrow kind="external" /></a>}
                 </div>
                 {manualChain.correlation === 'sender' ? (
                   <p className="of-co-note">{t('تراکنش باید از همان کیف پولی ارسال شود که با آن وارد شده‌ای', 'Send it from the same wallet you signed in with')} (<bdi dir="ltr">{session.user?.walletAddress ? session.user.walletAddress.slice(0, 6) + '…' + session.user.walletAddress.slice(-4) : ''}</bdi>){t('؛ انتقال از صرافی یا کیف پول دیگر به این سفارش منتسب نمی‌شود.', '. A transfer from an exchange or another wallet cannot be matched to this order.')}</p>

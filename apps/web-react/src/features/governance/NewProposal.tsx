@@ -6,6 +6,7 @@ import { useOpenfundSession } from '../../session/useOpenfundSession'
 import { governanceFetch } from './api'
 import { CATEGORY_LABEL, DELEGATED_CATEGORIES, RESERVED_CATEGORIES, errorMessage, isReservedCategory } from './governanceModel'
 import './governance.css'
+import DirArrow from '../../ui/DirArrow'
 
 export default function NewProposal() {
   const locale = useInformationLocale()
@@ -31,7 +32,7 @@ export default function NewProposal() {
 
   return <InformationShell page="governance" description={t('Submit an Openfund Proposal (OFP).', 'ثبت پیشنهاد اوپن‌فاند (OFP).')}>
     <div className="container gv-page">
-      <p><Link className="text-link" to={`/${ui}/governance`}>← {t('Governance', 'حاکمیت')}</Link></p>
+      <p><Link className="text-link" to={`/${ui}/governance`}><DirArrow kind="back" /> {t('Governance', 'حاکمیت')}</Link></p>
       <h1>{t('Submit a proposal', 'ثبت پیشنهاد')}</h1>
       <p className="gv-note">{t('Your proposal starts as a private draft. It becomes public when you move it to discussion.', 'پیشنهاد تو ابتدا پیش‌نویس خصوصی است و با انتقال به مرحلهٔ گفت‌وگو عمومی می‌شود.')}</p>
       {status !== 'authenticated'

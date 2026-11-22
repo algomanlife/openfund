@@ -14,6 +14,7 @@ import ProposalVote from './ProposalVote'
 import { formatDate, categoryLabel } from './governanceModel'
 import EconomyNav from '../economy/EconomyNav'
 import './governance.css'
+import DirArrow from '../../ui/DirArrow'
 
 const SECTIONS = [
   ['overview', text('Overview', 'نمای کلی')], ['council', text('Council', 'شورا')], ['proposals', text('Proposals', 'پیشنهادها')],
@@ -45,8 +46,8 @@ export default function Governance() {
         <span>{text('Not a DAO · no governance token · off-chain records', 'نه DAO · بدون توکن حاکمیتی · سوابق خارج از زنجیره')[locale]}</span>
       </div>
       <div className="hero-actions">
-        <Link className="button" to={`/${ui}/governance/new`}>{text('Submit a proposal', 'ثبت پیشنهاد')[locale]} <span aria-hidden="true">↗</span></Link>
-        {councilMember && <Link className="text-link" to={`/${ui}/governance/workspace`}>{text('Open council workspace', 'فضای کار شورا')[locale]} <span aria-hidden="true">↗</span></Link>}
+        <Link className="button" to={`/${ui}/governance/new`}>{text('Submit a proposal', 'ثبت پیشنهاد')[locale]} <DirArrow kind="external" /></Link>
+        {councilMember && <Link className="text-link" to={`/${ui}/governance/workspace`}>{text('Open council workspace', 'فضای کار شورا')[locale]} <DirArrow kind="external" /></Link>}
       </div>
     </Hero>
     <div className="container gv-page">
@@ -71,7 +72,7 @@ export default function Governance() {
         {overview.state.status === 'ready' && <p className="gv-note">{overview.state.data.elections.publicEnabled
           ? text('Election status is listed with each constituency election below.', 'وضعیت انتخابات در فهرست انتخابات هر گروه آمده است.')[locale]
           : text('No election is scheduled. Elections open only after company management approves the rules and voter criteria.', 'هیچ انتخاباتی زمان‌بندی نشده است. انتخابات فقط پس از تأیید قواعد و معیار رأی‌دهندگان توسط مدیریت باز می‌شود.')[locale]}</p>}
-        {overview.state.status === 'ready' && overview.state.data.elections.elections.length > 0 && <ul className="gv-elections">{overview.state.data.elections.elections.map(e => <li key={e.id}>{e.termLabel} · {e.constituency} · {e.status} · {formatDate(e.votingOpensAt, locale)} → {formatDate(e.votingClosesAt, locale)}</li>)}</ul>}
+        {overview.state.status === 'ready' && overview.state.data.elections.elections.length > 0 && <ul className="gv-elections">{overview.state.data.elections.elections.map(e => <li key={e.id}>{e.termLabel} · {e.constituency} · {e.status} · {formatDate(e.votingOpensAt, locale)} <DirArrow kind="forward" /> {formatDate(e.votingClosesAt, locale)}</li>)}</ul>}
       </section>
 
       <section id="proposals" className="gv-section" aria-labelledby="gv-h-proposals">

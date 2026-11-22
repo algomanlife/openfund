@@ -5,6 +5,7 @@ import { Bars, Field, Kpi, StateBlock, Status, int, usd, when, useRemote } from 
 import { ApplicationForm, ApplicationStatus, usePartners } from './shared'
 import { CoachProgram } from './Coach'
 import EconomyNav from '../economy/EconomyNav'
+import DirArrow from '../../ui/DirArrow'
 
 const ibIntro = t('One place for Openfund’s two partner roles: Brand Ambassadors who introduce customers, and Verified Trading Coaches who mentor traders toward live market access. Each role is applied for, reviewed and paid independently.', 'یک صفحه برای دو نقش همکاری اوپن‌فاند: سفیران برند که مشتری معرفی می‌کنند و کوچ‌های معاملاتی تأییدشده که معامله‌گران را تا اتصال به بازار واقعی همراهی می‌کنند. درخواست، بررسی و پرداخت هر نقش مستقل است.')
 const ambassadorIntro = t('A reviewed partnership for creators who teach financial markets to a real audience. Approved ambassadors earn 10% of each referred customer’s first confirmed purchase.', 'همکاری‌ای بررسی‌شده برای تولیدکنندگان محتوای بازارهای مالی با مخاطب واقعی. سفیران تأییدشده ۱۰٪ اولین خرید تأییدشدهٔ هر مشتری معرفی‌شده را دریافت می‌کنند.')
@@ -119,7 +120,7 @@ export default function Ambassador() {
   const locale = useInformationLocale()
   return <InformationShell page="ambassador" description={ibIntro[locale]}>
     <Hero locale={locale} page="ambassador" title="Openfund" accent={labels.ambassador[locale]} intro={ibIntro[locale]}>
-      <div className="hero-actions"><a className="button" href="#brand-ambassador">{labels.brandAmbassador[locale]} <span aria-hidden="true">↓</span></a><a className="button" href="#verified-coach">{labels.coach[locale]} <span aria-hidden="true">↓</span></a></div>
+      <div className="hero-actions"><a className="button" href="#brand-ambassador">{labels.brandAmbassador[locale]} <DirArrow kind="down" /></a><a className="button" href="#verified-coach">{labels.coach[locale]} <DirArrow kind="down" /></a></div>
     </Hero>
     <div className="container">
       <EconomyNav locale={locale} current="ambassador" />
@@ -132,7 +133,7 @@ export default function Ambassador() {
       </section>
       <div id="brand-ambassador" className="econ-program"><h2 className="econ-program-title">{labels.brandAmbassador[locale]}</h2><AmbassadorProgram locale={locale} /></div>
       <div id="verified-coach" className="econ-program"><h2 className="econ-program-title">{labels.coach[locale]}</h2><CoachProgram locale={locale} /></div>
-      <div className="info-end"><img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="38" height="42" alt="" /><p>{t('Live capital follows verified skill.', 'سرمایهٔ واقعی به‌دنبال مهارت تأییدشده است.')[locale]}</p><Link className="button" to={`/${locale}/live-market-access`}>{labels['live-market-access'][locale]} <span aria-hidden="true">↗</span></Link></div>
+      <div className="info-end"><img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="38" height="42" alt="" /><p>{t('Live capital follows verified skill.', 'سرمایهٔ واقعی به‌دنبال مهارت تأییدشده است.')[locale]}</p><Link className="button" to={`/${locale}/live-market-access`}>{labels['live-market-access'][locale]} <DirArrow kind="external" /></Link></div>
     </div>
   </InformationShell>
 }

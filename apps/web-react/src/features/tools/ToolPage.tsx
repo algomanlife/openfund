@@ -9,6 +9,7 @@ import { calculators, type ToolInput } from '../../data/calculators'
 import { toolErrorMessage, toolNote, verdictLabel } from './messages'
 import JournalAnalyzer from './JournalAnalyzer'
 import './tools.css'
+import DirArrow from '../../ui/DirArrow'
 
 type Locale = import('../../i18n/locales').AppLocale
 type FormState = Record<string, string>
@@ -182,13 +183,13 @@ export default function ToolPage() {
         {lessons.length > 0 && <div className="tool-related-group">
           <span className="eyebrow">{labels.learn[locale]}</span>
           {lessons.map(entry => entry && <Link key={entry.lesson.slug} className="text-link" to={`/${locale}/learn/lessons/${entry.lesson.slug}`}>
-            {entry.lesson.title[locale]} <span aria-hidden="true">↗</span>
+            {entry.lesson.title[locale]} <DirArrow kind="external" />
           </Link>)}
         </div>}
         {glossary.length > 0 && <div className="tool-related-group">
           <span className="eyebrow">{text('Glossary', 'واژه‌نامه')[locale]}</span>
           {glossary.map(term => term && <Link key={term.slug} className="text-link" to={`/${locale}/learn/glossary/${term.slug}`}>
-            {term.term[locale]} <span aria-hidden="true">↗</span>
+            {term.term[locale]} <DirArrow kind="external" />
           </Link>)}
         </div>}
       </section>}
@@ -196,8 +197,8 @@ export default function ToolPage() {
       <div className="info-end">
         <p>{text('Plan the trade on paper first — the terminal is for when you are ready.', 'اول معامله را روی کاغذ بچین — ترمینال برای وقتی است که آماده‌ای.')[locale]}</p>
         <div className="hero-actions">
-          <a className="button" href={`/${locale}/prop/trade`}>{text('Open the terminal', 'ترمینال را باز کن')[locale]} <span aria-hidden="true">↙</span></a>
-          <Link className="text-link" to={`/${locale}/learn`}>{labels.learn[locale]} <span aria-hidden="true">↗</span></Link>
+          <a className="button" href={`/${locale}/prop/trade`}>{text('Open the terminal', 'ترمینال را باز کن')[locale]} <DirArrow kind="forward-down" /></a>
+          <Link className="text-link" to={`/${locale}/learn`}>{labels.learn[locale]} <DirArrow kind="external" /></Link>
         </div>
       </div>
     </div>

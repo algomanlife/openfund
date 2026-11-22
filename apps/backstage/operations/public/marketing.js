@@ -2,6 +2,7 @@
  * announcement bars (placement "announcement_bar") on one shared campaign
  * model. The server (campaigns.js) is the authority for every rule; this
  * module only collects input, previews it and shows exact outcomes. */
+import { arrow } from './dir-arrow.js'
 const LOCALES = [['fa', 'فارسی', 'rtl'], ['en', 'English', 'ltr'], ['ar', 'العربية', 'rtl'], ['ru', 'Русский', 'ltr'], ['zh-CN', '简体中文', 'ltr']]
 const PAGES = ['all', 'home', 'challenges', 'information'], REGIONS = ['GLOBAL', 'IRAN']
 
@@ -46,7 +47,7 @@ export function createMarketing({ el, t, labels, button, field, badge, technical
       return el('tr', {},
         el('td', {}, technical(r.internal_name)), el('td', {}, badge(r.status)), el('td', {}, badge(live ? 'live' : r.active ? 'scheduledOrDraft' : 'inactive')),
         el('td', {}, technical((r.locales ?? []).join(', '))), el('td', {}, technical((r.regions ?? []).join(', '))),
-        el('td', {}, r.starts_at || r.ends_at ? `${date(r.starts_at)} → ${date(r.ends_at)}` : t('always')), el('td', {}, number(r.priority)),
+        el('td', {}, r.starts_at || r.ends_at ? [date(r.starts_at), ' ', arrow('forward'), ' ', date(r.ends_at)] : t('always')), el('td', {}, number(r.priority)),
         el('td', {}, number(s.impressions)), el('td', {}, number(s.clicks)), el('td', {}, number(s.closes)),
         el('td', {}, s.ctr == null ? '—' : new Intl.NumberFormat(undefined, { style: 'percent', maximumFractionDigits: 1 }).format(s.ctr)), el('td', {}, coupon),
         el('td', {}, el('div', { class: 'tools' },

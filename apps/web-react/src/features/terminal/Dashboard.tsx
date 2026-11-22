@@ -7,6 +7,7 @@ import { AccessGate } from "./TerminalShell";
 import { useTerminal } from "./TerminalContext";
 import { GainsSummary } from "./GainsPortfolio";
 import { useResource, money, route } from "./model";
+import DirArrow from '../../ui/DirArrow'
 export function Metric({ label, value, format = money }: { label: string; value: unknown; format?: (v: unknown) => string }) {
   return (
     <div className="of-metric">
@@ -31,7 +32,7 @@ export function ProductDashboard() {
         <div><span className="of-eyebrow">{t("حساب فعال", "Active account")}</span>
           <h2>{selected?.name || (product === "prop" ? t("حساب تمرینی", "Practice account") : "Gains Network")}</h2>
           <bdi>{context?.accountRef || "—"}</bdi></div>
-        <Link to={route(locale, product, "trade")}>{t("ورود به ترمینال", "Open terminal")} ↗</Link>
+        <Link to={route(locale, product, "trade")}>{t("ورود به ترمینال", "Open terminal")} <DirArrow kind="external" /></Link>
       </section>
       <AccountLinks />
       {selected?.type === "challenge" ? <>
@@ -70,7 +71,7 @@ export function ProductDashboard() {
             {positions.length ? <div className="of-table-wrap"><table><thead><tr><th>{t("بازار", "Market")}</th><th>{t("جهت", "Side")}</th><th>{t("سود باز", "Unrealized PnL")}</th></tr></thead>
               <tbody>{positions.slice(0, 5).map((position: any) => <tr key={position.id}><td>{position.market}</td><td>{position.side === "long" ? t("خرید", "Long") : t("فروش", "Short")}</td><td dir="ltr">{money(position.unrealized_pnl)} {unit}</td></tr>)}</tbody></table></div>
               : <p>{context?.state ? t("پوزیشن بازی وجود ندارد.", "No open positions.") : t("در حال دریافت حساب…", "Loading account…")}</p>}
-            <Link to={route(locale, product, "portfolio")}>{t("مشاهدهٔ پورتفولیو", "View portfolio")} ↗</Link>
+            <Link to={route(locale, product, "portfolio")}>{t("مشاهدهٔ پورتفولیو", "View portfolio")} <DirArrow kind="external" /></Link>
           </section>
         </div>
         <JournalAnalytics reports />
@@ -82,7 +83,7 @@ export function ProductDashboard() {
         </div>
         <JournalAnalytics />
       </>}
-      <div className="of-quick-links"><Link to={route(locale, product, "portfolio")}>{t("مشاهدهٔ پورتفولیو", "View portfolio")} ↗</Link><Link to={route(locale, product, "journal")}>{t("نوشتن در ژورنال", "Write in journal")} ↗</Link></div>
+      <div className="of-quick-links"><Link to={route(locale, product, "portfolio")}>{t("مشاهدهٔ پورتفولیو", "View portfolio")} <DirArrow kind="external" /></Link><Link to={route(locale, product, "journal")}>{t("نوشتن در ژورنال", "Write in journal")} <DirArrow kind="external" /></Link></div>
     </div>
   </div>;
 }

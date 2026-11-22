@@ -103,8 +103,8 @@ html[lang=en] .information-page .wp-hero h1{letter-spacing:-2px}
 .information-page .wp-flow>figcaption,.information-page .wp-arch>figcaption{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
 .information-page .wp-flow ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:22px}
 .information-page .wp-flow li{position:relative;border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface);display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
-.information-page .wp-flow li:not(:last-child)::after{content:'→';position:absolute;inset-inline-end:-18px;top:50%;translate:0 -50%;color:var(--mint);font-size:14px}
-html[dir=rtl] .information-page .wp-flow li:not(:last-child)::after{content:'←'}
+.information-page .wp-flow li:not(:last-child)::after{content:'';position:absolute;inset-inline-end:-18px;top:50%;translate:0 -50%;inline-size:14px;block-size:14px;background:var(--mint);-webkit-mask:var(--of-arrow-forward) center/contain no-repeat;mask:var(--of-arrow-forward) center/contain no-repeat}
+[dir=rtl] .information-page .wp-flow li:not(:last-child)::after{transform:scaleX(-1)}
 .information-page .wp-flow-index{font-size:10px;color:var(--mint);font-variant-numeric:tabular-nums}
 .information-page .wp-flow strong{font-size:13px;color:var(--white);font-weight:500;line-height:1.6}
 .information-page .wp-flow-text{font-size:11.5px;line-height:1.8;color:var(--body)}
@@ -246,7 +246,7 @@ html[dir=rtl] .information-page .wp-flow li:not(:last-child)::after{content:'←
   .information-page .wp-features{grid-template-columns:1fr}
   .information-page .wp-definitions>div{grid-template-columns:1fr;gap:4px}
   .information-page .wp-flow ol{grid-template-columns:1fr;gap:20px}
-  .information-page .wp-flow li:not(:last-child)::after,html[dir=rtl] .information-page .wp-flow li:not(:last-child)::after{content:'↓';inset-inline-end:auto;inset-inline-start:22px;top:auto;bottom:-20px;translate:none}
+  .information-page .wp-flow li:not(:last-child)::after,[dir=rtl] .information-page .wp-flow li:not(:last-child)::after{-webkit-mask-image:var(--of-arrow-down);mask-image:var(--of-arrow-down);transform:none;inset-inline-end:auto;inset-inline-start:22px;top:auto;bottom:-20px;translate:none}
   .information-page .wp-arch-layer{grid-template-columns:1fr;gap:6px}
   .information-page .wp-arch-layer+.wp-arch-layer::before{inset-inline-start:50%}
   .information-page .wp-map-head{display:none}

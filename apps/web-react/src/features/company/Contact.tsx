@@ -8,6 +8,7 @@ import { OFFICIAL_TELEGRAM_URL } from '../community/TelegramCommunity'
 import { contactHero, contactMeta, contactUi, departments, formCopy as F, formErrors as E, helpCopy, locationCopy } from './contactContent'
 import ShirazMap from './ShirazMap'
 import './company.css'
+import DirArrow from '../../ui/DirArrow'
 
 /* limits mirror apps/backend/support.js (the server re-validates everything) */
 export const FORM_LIMITS = { name: [2, 120], subject: [3, 160], message: [20, 5000], email: 254, ref: 64 } as const
@@ -284,7 +285,7 @@ export default function Contact() {
         <div className="co-tech-top"><img src={`${import.meta.env.BASE_URL}assets/telegram-logo.svg`} width="24" height="24" alt="" /></div>
         <h3>{tx(locale, contactUi.telegramTitle)}</h3>
         <p>{tx(locale, contactUi.telegramBody)}</p>
-        <a className="text-link" href={OFFICIAL_TELEGRAM_URL} target="_blank" rel="noopener noreferrer">{tx(locale, contactUi.telegramCta)} <span dir="ltr">@communitybuopenfund</span> <span aria-hidden="true">↗</span></a>
+        <a className="text-link" href={OFFICIAL_TELEGRAM_URL} target="_blank" rel="noopener noreferrer">{tx(locale, contactUi.telegramCta)} <span dir="ltr">@communitybuopenfund</span> <DirArrow kind="external" /></a>
       </article>
     </div>
 
@@ -308,7 +309,7 @@ export default function Contact() {
         <ul className="co-help">
           {published.map(item => <li key={item.key}><Link to={item.to}>
             <svg className="co-help-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d={HELP_ICONS[item.key]} /></svg>
-            <span>{item.label}</span><span className="co-help-arrow" aria-hidden="true">→</span>
+            <span>{item.label}</span><DirArrow kind="forward" className="co-help-arrow" />
           </Link></li>)}
         </ul>
       </section>

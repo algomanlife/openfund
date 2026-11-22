@@ -7,6 +7,7 @@ import { pick } from '../../i18n/locales'
 import { aboutHero, aboutLinks, aboutMeta, aboutSections as s, statusLabels } from './aboutContent'
 import { useReveal } from './reveal'
 import './company.css'
+import DirArrow from '../../ui/DirArrow'
 
 /** Small original line icons (no third-party artwork). */
 const ICONS: Record<string, string> = {
@@ -38,7 +39,7 @@ function PlanTerms({ locale, plans }: { locale: Locale; plans: ChallengePlan[] }
     {plans.filter(p => !p.free).map(p => <article className="co-plan" role="listitem" key={p.slug}>
       <h3>{tx(locale, p.name)}</h3>
       <dl>
-        <div><dt>{tx(locale, f.target)}</dt><dd>{p.phases === 0 ? tx(locale, f.none) : [p.phase1TargetPct, p.phase2TargetPct].filter(v => v != null).map(pct).join(' → ')}</dd></div>
+        <div><dt>{tx(locale, f.target)}</dt><dd>{p.phases === 0 ? tx(locale, f.none) : [p.phase1TargetPct, p.phase2TargetPct].filter(v => v != null).map((v, i) => <span key={i}>{i > 0 && <> <DirArrow kind="forward" /> </>}{pct(v)}</span>)}</dd></div>
         <div><dt>{tx(locale, f.daily)}</dt><dd>{pct(p.dailyLossPct)}</dd></div>
         <div><dt>{tx(locale, f.max)}</dt><dd>{pct(p.maxTotalLossPct)}{p.drawdownMode === 'trailing' ? ` · ${tx(locale, f.trailing)}` : ''}</dd></div>
         <div><dt>{tx(locale, f.share)}</dt><dd>{pct(p.profitSplitPct)}{p.profitSplitMonthlyPct ? ` / ${pct(p.profitSplitMonthlyPct)}` : ''}</dd></div>
@@ -60,7 +61,7 @@ export default function About() {
       <p className="hero-intro">{tx(locale, aboutHero.intro)}</p>
       <div className="hero-actions co-actions">
         <Link className="button" to={L('challenges')}>{tx(locale, aboutLinks.challenges)}</Link>
-        <Link className="text-link" to={L('rulebook')}>{tx(locale, aboutLinks.rulebook)} <span aria-hidden="true">↗</span></Link>
+        <Link className="text-link" to={L('rulebook')}>{tx(locale, aboutLinks.rulebook)} <DirArrow kind="external" /></Link>
       </div>
       <p className="co-footnote">{tx(locale, aboutHero.note)}</p>
     </section>
@@ -107,24 +108,24 @@ export default function About() {
         <p>{tx(locale, s.fairness.body)}</p>
         <h3 className="co-subhead">{tx(locale, s.fairness.planLabel)}</h3>
         <PlanTerms locale={locale} plans={plans} />
-        <div className="co-actions"><Link className="text-link" to={L('rulebook')}>{tx(locale, aboutLinks.rulebook)} <span aria-hidden="true">↗</span></Link><Link className="text-link" to={L('transparency')}>{tx(locale, aboutLinks.transparency)} <span aria-hidden="true">↗</span></Link></div>
+        <div className="co-actions"><Link className="text-link" to={L('rulebook')}>{tx(locale, aboutLinks.rulebook)} <DirArrow kind="external" /></Link><Link className="text-link" to={L('transparency')}>{tx(locale, aboutLinks.transparency)} <DirArrow kind="external" /></Link></div>
       </Section>
 
       <Section id="future" index={10} locale={locale} eyebrow={tx(locale, s.future.eyebrow)} title={tx(locale, s.future.title)}>
         <p>{tx(locale, s.future.body)}</p>
-        <div className="co-actions"><Link className="text-link" to={L('governance')}>{tx(locale, aboutLinks.governance)} <span aria-hidden="true">↗</span></Link><Link className="text-link" to={L('revenue-model')}>{tx(locale, aboutLinks.economy)} <span aria-hidden="true">↗</span></Link></div>
+        <div className="co-actions"><Link className="text-link" to={L('governance')}>{tx(locale, aboutLinks.governance)} <DirArrow kind="external" /></Link><Link className="text-link" to={L('revenue-model')}>{tx(locale, aboutLinks.economy)} <DirArrow kind="external" /></Link></div>
       </Section>
 
       <Section id="join" index={11} locale={locale} eyebrow={tx(locale, s.join.eyebrow)} title={tx(locale, s.join.title)}>
         <p>{tx(locale, s.join.body)}</p>
         <nav className="co-cta-grid" aria-label={tx(locale, s.join.eyebrow)}>
-          <Link className="co-cta primary" to={L('challenges')}>{tx(locale, aboutLinks.challenges)}<span aria-hidden="true">→</span></Link>
-          <Link className="co-cta" to={L('prop/trade')}>{tx(locale, aboutLinks.terminal)}<span aria-hidden="true">→</span></Link>
-          <Link className="co-cta" to={L('revenue-model')}>{tx(locale, aboutLinks.economy)}<span aria-hidden="true">→</span></Link>
-          <Link className="co-cta" to={L('transparency')}>{tx(locale, aboutLinks.transparency)}<span aria-hidden="true">→</span></Link>
-          <Link className="co-cta" to={L('governance')}>{tx(locale, aboutLinks.governance)}<span aria-hidden="true">→</span></Link>
-          <Link className="co-cta" to={L('contact')}>{tx(locale, aboutLinks.contact)}<span aria-hidden="true">→</span></Link>
-          <a className="co-cta" href={OFFICIAL_TELEGRAM_URL} target="_blank" rel="noopener noreferrer">{tx(locale, aboutLinks.community)}<span aria-hidden="true">↗</span></a>
+          <Link className="co-cta primary" to={L('challenges')}>{tx(locale, aboutLinks.challenges)}<DirArrow kind="forward" /></Link>
+          <Link className="co-cta" to={L('prop/trade')}>{tx(locale, aboutLinks.terminal)}<DirArrow kind="forward" /></Link>
+          <Link className="co-cta" to={L('revenue-model')}>{tx(locale, aboutLinks.economy)}<DirArrow kind="forward" /></Link>
+          <Link className="co-cta" to={L('transparency')}>{tx(locale, aboutLinks.transparency)}<DirArrow kind="forward" /></Link>
+          <Link className="co-cta" to={L('governance')}>{tx(locale, aboutLinks.governance)}<DirArrow kind="forward" /></Link>
+          <Link className="co-cta" to={L('contact')}>{tx(locale, aboutLinks.contact)}<DirArrow kind="forward" /></Link>
+          <a className="co-cta" href={OFFICIAL_TELEGRAM_URL} target="_blank" rel="noopener noreferrer">{tx(locale, aboutLinks.community)}<DirArrow kind="external" /></a>
         </nav>
       </Section>
     </div>

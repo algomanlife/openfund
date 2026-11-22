@@ -4,6 +4,7 @@ import { labels, number, text } from '../information/content'
 import { useSiteLibrary } from '../../cms/siteContent'
 import type { ToolSpec } from '../../cms/contentTypes'
 import './tools.css'
+import DirArrow from '../../ui/DirArrow'
 
 type Locale = import('../../i18n/locales').AppLocale
 
@@ -20,7 +21,7 @@ function ToolCard({ tool, locale }: { tool: ToolSpec; locale: Locale }) {
     <span className="tool-card-glyph" aria-hidden="true">{CATEGORY_GLYPHS[tool.category]}</span>
     <h3>{tool.name[locale]}</h3>
     <p>{tool.tagline[locale]}</p>
-    <span className="text-link">{text('Open the tool', 'باز کردن ابزار')[locale]} <span aria-hidden="true">↗</span></span>
+    <span className="text-link">{text('Open the tool', 'باز کردن ابزار')[locale]} <DirArrow kind="external" /></span>
   </Link>
 }
 
@@ -68,8 +69,8 @@ export default function Tools() {
           'The Learning Center explains the mechanics behind every number these tools produce, and the glossary defines each term without jargon.',
           'مركز آموزش، مکانیکِ پشت هر عددی که این ابزارها می‌سازند را توضیح می‌دهد و واژه‌نامه هر اصطلاح را بدون زبان تخصصی تعریف می‌کند.')[locale]}</p>
         <div className="hero-actions">
-          <Link className="button" to={`/${locale}/learn`}>{labels.learn[locale]} <span aria-hidden="true">↙</span></Link>
-          <Link className="text-link" to={`/${locale}/learn/glossary`}>{text('Open the glossary', 'واژه‌نامه را باز کن')[locale]} <span aria-hidden="true">↗</span></Link>
+          <Link className="button" to={`/${locale}/learn`}>{labels.learn[locale]} <DirArrow kind="forward-down" /></Link>
+          <Link className="text-link" to={`/${locale}/learn/glossary`}>{text('Open the glossary', 'واژه‌نامه را باز کن')[locale]} <DirArrow kind="external" /></Link>
         </div>
       </section>
     </div>

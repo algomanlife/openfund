@@ -6,6 +6,7 @@ import { apiFetch } from '../../session/useOpenfundSession'
 import EconomyNav from './EconomyNav'
 import { Field, Kpi, usd } from './ui'
 import { SIZES, runScenario, type Inputs } from './scenario'
+import DirArrow from '../../ui/DirArrow'
 
 const intro = t('How Openfund earns, what it owes, what it keeps in reserve and how free capital may reach live markets — with the difference between simulated and real trading made explicit.', 'اوپن‌فاند چگونه درآمد کسب می‌کند، چه تعهداتی دارد، چه مقدار ذخیره نگه می‌دارد و سرمایهٔ آزاد چگونه می‌تواند به بازار واقعی برسد؛ با تفکیک صریح معاملات شبیه‌سازی‌شده و واقعی.')
 
@@ -123,7 +124,7 @@ export default function RevenueModel() {
           <div className="econ-panel"><h3>{t('Obligations', 'تعهدات')[locale]}</h3><p className="econ-msg">{t('Approved trader rewards, recognized ambassador commissions, unsettled live profit shares, verified expenses payable and recorded liabilities.', 'پاداش‌های تأییدشده، کمیسیون‌های شناسایی‌شدهٔ سفیران، سهم‌های تسویه‌نشدهٔ سود واقعی، هزینه‌های تأییدشدهٔ پرداخت‌نشده و بدهی‌های ثبت‌شده.')[locale]}</p></div>
           <div className="econ-panel"><h3>{t('Reserves & allocation', 'ذخایر و تخصیص')[locale]}</h3><p className="econ-msg">{t('Operational and risk reserves set explicitly by management, then capital already allocated to live traders. What remains is allocatable.', 'ذخایر عملیاتی و ریسک که مدیریت صریحاً تعیین می‌کند و سپس سرمایهٔ قبلاً تخصیص‌یافته به معامله‌گران واقعی. باقی‌مانده قابل تخصیص است.')[locale]}</p></div>
         </div>
-        <p className="econ-source">{t('The live figures for each item are on the Transparency page; this page explains the model and never shows them as scenario output.', 'اعداد واقعی هر مورد در صفحهٔ شفافیت است؛ این صفحه مدل را توضیح می‌دهد و آن‌ها را به‌عنوان خروجی سناریو نشان نمی‌دهد.')[locale]} <Link className="text-link" to={`/${locale}/transparency`}>{labels.transparency[locale]} ↗</Link></p>
+        <p className="econ-source">{t('The live figures for each item are on the Transparency page; this page explains the model and never shows them as scenario output.', 'اعداد واقعی هر مورد در صفحهٔ شفافیت است؛ این صفحه مدل را توضیح می‌دهد و آن‌ها را به‌عنوان خروجی سناریو نشان نمی‌دهد.')[locale]} <Link className="text-link" to={`/${locale}/transparency`}>{labels.transparency[locale]} <DirArrow kind="external" /></Link></p>
       </section>
       <section className="econ-section" id="payout-policy">
         <h2>{t('Funded payout policy', 'سیاست پرداخت حساب فاندد')[locale]}</h2>
@@ -153,7 +154,7 @@ export default function RevenueModel() {
       <section className="econ-section" id="scenarios"><div className="section-top"><div><span className="eyebrow">05 / {t('ECONOMIC SCENARIOS', 'سناریوهای اقتصادی')[locale]}</span><h2>{t('Change the assumptions.', 'فرض‌ها را تغییر بده.')[locale]}</h2></div></div>
         <Scenario locale={locale} />
       </section>
-      <div className="info-end"><img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="38" height="42" alt="" /><p>{t('Capital reaches live markets only when it is verifiably free.', 'سرمایه فقط وقتی به بازار واقعی می‌رسد که آزاد بودنش قابل اثبات باشد.')[locale]}</p><Link className="button" to={`/${locale}/live-market-access`}>{labels['live-market-access'][locale]} <span aria-hidden="true">↗</span></Link></div>
+      <div className="info-end"><img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="38" height="42" alt="" /><p>{t('Capital reaches live markets only when it is verifiably free.', 'سرمایه فقط وقتی به بازار واقعی می‌رسد که آزاد بودنش قابل اثبات باشد.')[locale]}</p><Link className="button" to={`/${locale}/live-market-access`}>{labels['live-market-access'][locale]} <DirArrow kind="external" /></Link></div>
     </div>
   </InformationShell>
 }

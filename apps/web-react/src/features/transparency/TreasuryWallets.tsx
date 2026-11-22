@@ -1,5 +1,6 @@
 import { text as t, type Locale } from '../information/content'
 import { StateBlock, Status, when, useRemote } from '../economy/ui'
+import DirArrow from '../../ui/DirArrow'
 
 /**
  * Openfund Treasury wallets by network (GET /economy/treasury/networks).
@@ -50,7 +51,7 @@ export default function TreasuryWallets({ locale }: { locale: Locale }) {
                 : <Status kind="off">{t('Balance unavailable', 'موجودی در دسترس نیست')[locale]}</Status>}
         </header>
         <p className="treasury-network-address"><bdi dir="ltr" className="treasury-hex" title={n.address}>{short(n.address)}</bdi>
-          {n.explorerUrl && <> · <a className="text-link" href={n.explorerUrl} target="_blank" rel="noopener noreferrer">{t('Block explorer', 'کاوشگر بلاک')[locale]} ↗</a></>}</p>
+          {n.explorerUrl && <> · <a className="text-link" href={n.explorerUrl} target="_blank" rel="noopener noreferrer">{t('Block explorer', 'کاوشگر بلاک')[locale]} <DirArrow kind="external" /></a></>}</p>
         {n.balances.length > 0 ? <table className="treasury-balance-table">
           <caption className="sr-only">{t('Balances', 'موجودی‌ها')[locale]}</caption>
           <thead><tr><th scope="col">{t('Token', 'توکن')[locale]}</th><th scope="col">{t('Balance', 'موجودی')[locale]}</th><th scope="col">{t('Decimals', 'اعشار')[locale]}</th></tr></thead>

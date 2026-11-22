@@ -5,6 +5,7 @@ import { publishedPlans, type ChallengePlan } from '../../data/challengePlans'
 import { apiFetch } from '../../session/useOpenfundSession'
 import { campaignUtm, checkoutHref, trackCampaign, type Utm } from './campaignTracking'
 import './campaign.css'
+import DirArrow from '../../ui/DirArrow'
 
 /**
  * Sales-campaign landing — /fa/campaign (RTL) and /en/campaign (LTR) only.
@@ -149,8 +150,8 @@ function CampaignPage({ lang }: { lang: Lang }) {
         <p className="cmp-sub">{t('آدرس‌های خزانهٔ اوپن‌فاند و موجودی آن‌ها به تفکیک شبکه مستقیماً از بلاک‌چین خوانده و در صفحهٔ شفافیت منتشر می‌شود. موجودی خزانه به معنای سود، درآمد یا ذخیرهٔ تضمین‌شده نیست.',
           'Openfund’s treasury addresses and their balances per network are read directly from the blockchain and published on the transparency page. A treasury balance is not profit, revenue or a guaranteed reserve.')}</p>
         <div className="cmp-links">
-          <Link className="cmp-link" to={`/${lang}/transparency`} onClick={cta('transparency')}>{t('صفحهٔ شفافیت و خزانه', 'Transparency & treasury')} <span aria-hidden="true">↗</span></Link>
-          <Link className="cmp-link" to={`/${lang}/rulebook`} onClick={cta('rulebook')}>{t('قوانین چالش‌ها، ارزیابی و دریافت سود', 'Challenge rules, evaluation and payouts')} <span aria-hidden="true">↗</span></Link>
+          <Link className="cmp-link" to={`/${lang}/transparency`} onClick={cta('transparency')}>{t('صفحهٔ شفافیت و خزانه', 'Transparency & treasury')} <DirArrow kind="external" /></Link>
+          <Link className="cmp-link" to={`/${lang}/rulebook`} onClick={cta('rulebook')}>{t('قوانین چالش‌ها، ارزیابی و دریافت سود', 'Challenge rules, evaluation and payouts')} <DirArrow kind="external" /></Link>
         </div>
       </section>
 
@@ -168,7 +169,7 @@ function CampaignPage({ lang }: { lang: Lang }) {
             [t('پشتیبانی', 'Support'), t('اگر پرداخت یا فعال‌سازی مشکلی داشت، شمارهٔ سفارش را نگه دار؛ صفحهٔ خرید وضعیت سفارش را از سرور نشان می‌دهد و پرداخت از دست نمی‌رود.', 'If a payment or activation has an issue, keep your order ID; the checkout shows the order status from the server and the payment is not lost.')],
           ].map(([q, a]) => <details key={q} className="cmp-qa"><summary>{q}</summary><p>{a}</p></details>)}
         </div>
-        <p className="cmp-fine"><Link className="text-link" to={`/${lang}/faq`}>{t('همهٔ پرسش‌ها', 'All questions')} ↗</Link></p>
+        <p className="cmp-fine"><Link className="text-link" to={`/${lang}/faq`}>{t('همهٔ پرسش‌ها', 'All questions')} <DirArrow kind="external" /></Link></p>
       </section>
 
       {/* Final CTA */}

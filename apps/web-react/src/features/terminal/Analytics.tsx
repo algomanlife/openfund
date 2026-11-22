@@ -2,6 +2,7 @@ import { intlLocale } from '../../i18n/locales'
 import { useState } from "react";
 import { useTerminal } from "./TerminalContext";
 import { money } from "./model";
+import DirArrow from '../../ui/DirArrow'
 export function Curve({
   points,
   unit = "DAI",
@@ -88,7 +89,7 @@ export function PnlCalendar({
           aria-label={t("ماه قبل", "Previous month")}
           onClick={() => change(-1)}
         >
-          ‹
+          <DirArrow kind="back" />
         </button>
         <b>
           {new Date(`${month}-01T00:00:00Z`).toLocaleDateString(
@@ -101,7 +102,7 @@ export function PnlCalendar({
           aria-label={t("ماه بعد", "Next month")}
           onClick={() => change(1)}
         >
-          ›
+          <DirArrow kind="forward" />
         </button>
         <input
           aria-label={t("انتخاب ماه", "Choose month")}

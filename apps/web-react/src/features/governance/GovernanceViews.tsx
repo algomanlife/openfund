@@ -11,6 +11,9 @@ import {
   GOVERNANCE_DOCS, DOC_BASE, isReservedCategory, statusLabel, timeLeft, type LoadState, type VotingSession,
 } from './governanceModel'
 import type { CouncilData, DecisionsData, ProposalList, ProposalDetail } from './api'
+import DirArrow from '../../ui/DirArrow'
+import { arrowGlyph } from '../../ui/arrows'
+import { dirOf } from '../../i18n/locales'
 
 const T = (locale: Locale, en: string, fa: string) => text(en, fa)[locale]
 
@@ -89,7 +92,7 @@ export function ArchitectureDiagram({ locale }: { locale: Locale }) {
       <rect x="10" y="20" width="300" height="180" rx="14" className="gv-svg-box gv-svg-council" />
       <text x="160" y="52" textAnchor="middle" className="gv-svg-h">{T(locale, 'Community Council', 'شورای جامعه')}</text>
       <text x="160" y="82" textAnchor="middle" className="gv-svg-t">{T(locale, '10 seats · 5 constituencies', '۱۰ کرسی · ۵ گروه')}</text>
-      <text x="160" y="110" textAnchor="middle" className="gv-svg-t">{T(locale, 'OFP proposals → recorded votes', 'پیشنهادهای OFP ← رأی ثبت‌شده')}</text>
+      <text x="160" y="110" textAnchor="middle" className="gv-svg-t">{T(locale, 'OFP proposals', 'پیشنهادهای OFP')} <tspan data-arrow-glyph="forward" aria-hidden="true">{arrowGlyph('forward', dirOf(locale))}</tspan> {T(locale, 'recorded votes', 'رأی ثبت‌شده')}</text>
       <text x="160" y="138" textAnchor="middle" className="gv-svg-t">{T(locale, 'Product · community · open source', 'محصول · جامعه · متن‌باز')}</text>
       <text x="160" y="176" textAnchor="middle" className="gv-svg-m">{T(locale, 'Output: a decision record', 'خروجی: سابقهٔ تصمیم')}</text>
       <rect x="410" y="20" width="300" height="180" rx="14" className="gv-svg-box gv-svg-company" />
@@ -111,7 +114,7 @@ export function CouncilGrid({ data, locale }: { data: CouncilData; locale: Local
   return <div>
     {data.term
       ? <p className="gv-term" data-term-method={data.term.appointmentMethod}>
-          <strong>{data.term.label}</strong> · {formatDay(data.term.startsAt, locale)} → {formatDay(data.term.endsAt, locale)} · {' '}
+          <strong>{data.term.label}</strong> · {formatDay(data.term.startsAt, locale)} <DirArrow kind="forward" /> {formatDay(data.term.endsAt, locale)} · {' '}
           {data.term.appointmentMethod === 'appointed'
             ? T(locale, 'Appointed by company management — not community-elected', 'منصوب‌شده توسط مدیریت شرکت — نه انتخاب‌شده توسط جامعه')
             : T(locale, 'Elected by constituency vote', 'انتخاب‌شده با رأی گروه‌ها')}
@@ -130,7 +133,7 @@ export function CouncilGrid({ data, locale }: { data: CouncilData; locale: Local
               {filled
                 ? <>
                     <strong>{seat!.displayName ?? T(locale, 'Seated — name not published', 'منصوب — نام منتشر نشده')}</strong>
-                    <span className="gv-seat-meta">{seat!.membershipType === 'elected' ? T(locale, 'Elected', 'انتخابی') : T(locale, 'Appointed', 'انتصابی')} · {formatDay(seat!.termStartsAt, locale)} → {formatDay(seat!.termEndsAt, locale)}</span>
+                    <span className="gv-seat-meta">{seat!.membershipType === 'elected' ? T(locale, 'Elected', 'انتخابی') : T(locale, 'Appointed', 'انتصابی')} · {formatDay(seat!.termStartsAt, locale)} <DirArrow kind="forward" /> {formatDay(seat!.termEndsAt, locale)}</span>
                     <span className="gv-seat-meta">{T(locale, 'Votes cast', 'آرای ثبت‌شده')}: {number(seat!.participation?.votesCast ?? 0, locale)} / {number(seat!.participation?.sessionsEligible ?? 0, locale)}</span>
                   </>
                 : <strong className="gv-vacant">{T(locale, 'Vacant', 'خالی')}</strong>}
@@ -252,7 +255,7 @@ export function Roadmap({ items, locale }: { items: Milestone[]; locale: Locale 
 }
 
 export function DocLinks({ locale }: { locale: Locale }) {
-  return <ul className="gv-docs">{GOVERNANCE_DOCS.map(d => <li key={d.path}><a href={DOC_BASE + d.path} target="_blank" rel="noopener noreferrer">{d.label[locale]} <span aria-hidden="true">↗</span></a></li>)}</ul>
+  return <ul className="gv-docs">{GOVERNANCE_DOCS.map(d => <li key={d.path}><a href={DOC_BASE + d.path} target="_blank" rel="noopener noreferrer">{d.label[locale]} <DirArrow kind="external" /></a></li>)}</ul>
 }
 
 export function PolicyFacts({ locale }: { locale: Locale }) {

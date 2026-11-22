@@ -12,6 +12,7 @@ import './home.css'
 import TelegramCommunity from '../community/TelegramCommunity'
 import type { ReactNode } from 'react'
 import { useSpotlight } from '../../styles/useSpotlight'
+import DirArrow from '../../ui/DirArrow'
 
 /* Right-to-left copy: isolate embedded Latin names (e.g. "Gains Network") so
    they keep their word order and never split across lines. Display only. */
@@ -93,7 +94,7 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
             <div className="home-cta-row">
               <a className="button" href={c.propCtaDestination === 'terminal' ? `/${locale}/prop/trade` : CTA_HREF.challenges(locale)}>
                 {t.propCta}
-                <span aria-hidden="true">←</span>
+                <DirArrow kind="forward" />
               </a>
               {/* straight to the one shared checkout; the challenge type is chosen there.
                   Client-side navigation keeps the wallet connection and session. */}
@@ -117,7 +118,7 @@ function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) 
             <p className="home-product-note" title={t.perpetualDescription || undefined}>{isolateLatin(t.perpetualDescription || pick(locale, 'داده‌های بازار · دسترسی خواندنی', 'Market data · read-only access'), rtl)}</p>
             <a className="button" href={CTA_HREF[c.perpetualCtaDestination](locale)}>
               {t.perpetualCta}
-              <span aria-hidden="true">↙</span>
+              <DirArrow kind="forward-down" />
             </a>
           </div>
         </SpotPanel>

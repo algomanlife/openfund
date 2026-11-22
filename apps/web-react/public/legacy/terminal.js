@@ -1078,7 +1078,7 @@ function applyLeverageCap(announce){
     const prev = S.leverage;
     S.leverage = max; changed = true;
     if (announce && $('lev-err')){
-      $('lev-err').textContent = `${L('اهرم به حداکثر مجاز این بازار کاهش یافت', 'Leverage reduced to the market maximum')}: ${prev}× → ${max}×`;
+      { const e = $('lev-err'); e.textContent = `${L('اهرم به حداکثر مجاز این بازار کاهش یافت', 'Leverage reduced to the market maximum')}: ${prev}× `; const arrowSvg = window.ofArrowSvg || (window.parent !== window && window.parent.ofArrowSvg); /* the React shell owns the arrow primitive */ if (typeof arrowSvg === 'function') e.insertAdjacentHTML('beforeend', arrowSvg('forward')); e.append(` ${max}×`); }
       $('lev-err').hidden = false;
       $('lev-err').classList.add('notice');
     }

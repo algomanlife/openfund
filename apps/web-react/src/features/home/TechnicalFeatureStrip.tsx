@@ -2,6 +2,7 @@ import { pick } from '../../i18n/locales'
 import { translateTree } from '../../i18n/localize'
 import { useRef, useState } from 'react'
 import landingBody from '../../pages/landing-body.html?raw'
+import DirArrow from '../../ui/DirArrow'
 
 const featuresFa = [
   { title: 'استخر نقدینگی چندمنظوره', detail: 'طرح مفهومیِ اتصال منابع نقدینگی در مسیر توسعهٔ معاملات پرپچوال؛ تجمیع نقدینگی در نسخهٔ فعلی فعال نیست.' },
@@ -42,7 +43,7 @@ export default function TechnicalFeatureStrip({ locale }: { locale: import('../.
         dialog.current?.showModal()
       }}>
         <TechnicalFeatureIllustration index={index} />
-        <span>{feature.title}</span><span className="technical-more" aria-hidden="true">↗</span>
+        <span>{feature.title}</span><DirArrow kind="external" className="technical-more" />
       </button>)}
     </div>
     <dialog ref={dialog} className="technical-dialog" aria-labelledby="feature-dialog-title" aria-describedby="feature-dialog-detail" onCancel={event => { event.preventDefault(); closeDetail() }} onKeyDown={event => {

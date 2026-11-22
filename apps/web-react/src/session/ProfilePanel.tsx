@@ -2,6 +2,7 @@ import { currentLocale, dirOf, pick } from '../i18n/locales'
 import { createPortal } from 'react-dom'
 import { useEffect, useRef, useState } from 'react'
 import type { OpenfundChallenge, OpenfundUser } from './useOpenfundSession'
+import DirArrow from '../ui/DirArrow'
 
 /**
  * Account panel — authenticated user profile + challenge list (fa/en).
@@ -151,7 +152,7 @@ export function ProfilePanel(props: {
 
         <div className="of-profile-actions">
           {(['prop', 'perpetual'] as const).filter(product => isFa || product === 'prop').map(product => <a key={product} className="button"
-            href={`/${locale}/${product}/dashboard`} onClick={onClose}>            Openfund {product === 'prop' ? 'Prop' : 'Perpetual'} ↗
+            href={`/${locale}/${product}/dashboard`} onClick={onClose}>            Openfund {product === 'prop' ? 'Prop' : 'Perpetual'} <DirArrow kind="external" />
           </a>)}
           <button className="button danger" onClick={onLogout}>{t('خروج از حساب', 'Sign out')}</button>
         </div>

@@ -30,12 +30,11 @@ const fallbackTranslations: Record<string, string> = {
   ...JSON.parse(translationsJson),
   'ناوبری اصلی': 'Main navigation',
   'خانه اوپن‌فاند': 'Openfund home',
-  'دریافت برندبوک ↓': 'Download brandbook ↓',
-  'بازگشت به بالا ↑': 'Back to top ↑',
+  'دریافت برندبوک': 'Download brandbook',
+  'بازگشت به بالا': 'Back to top',
   'قلب تپنده': 'Beating heart',
   'Gains Network — منبع دادهٔ بازار': 'Gains Network — market data source',
   'Vela by LuxAlgo — موتور چارت': 'Vela by LuxAlgo — chart engine',
-  '←': '→', '↙': '↘',
 }
 
 /** Reuses the landing's source markup and public translation pipeline, without

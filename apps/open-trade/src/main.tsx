@@ -31,6 +31,7 @@ import {
   snapshotTime,
 } from "../../web-react/src/features/terminal/gainsView";
 import "./style.css";
+import DirArrow from "./DirArrow";
 declare global {
   interface Window {
     desktop: any;
@@ -1193,7 +1194,7 @@ function App() {
                   {busy
                     ? t("Waiting for wallet…", "در انتظار کیف پول…")
                     : t("Connect wallet", "اتصال کیف پول")}{" "}
-                  ↗
+                  <DirArrow kind="external" />
                 </button>
                 {config.projectIdStatus !== "configured" && (
                   <p className="muted" role="status">
@@ -1749,7 +1750,7 @@ function App() {
                       "Connect account to trade",
                       "برای معامله حساب را متصل کنید",
                     )}{" "}
-                    ↗
+                    <DirArrow kind="external" />
                   </button>
                 )}
                 {preview && (
@@ -2121,7 +2122,7 @@ function GainsPanel({ t, locale, resource, state, tab, onTab, open, onToggle, on
                   <td>
                     {tx ? (
                       <button className="link" onClick={() => onTx(r.tx)} title={tx}>
-                        Arbiscan ↗
+                        Arbiscan <DirArrow kind="external" />
                       </button>
                     ) : (
                       "—"

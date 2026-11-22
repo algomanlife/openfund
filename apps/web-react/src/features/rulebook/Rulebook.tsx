@@ -6,6 +6,7 @@ import { labels, number, text } from '../information/content'
 import { fetchCmsRules, fetchCmsPlans, fetchCmsPageMeta, type CmsRuleSection, type CmsPageMeta } from '../../cms/client'
 import type { ChallengePlan } from '../../data/challengePlans'
 import { rulebookIntro, rulebookNotice } from './content'
+import DirArrow from '../../ui/DirArrow'
 
 /* The Rulebook renders from Directus:
  *  - section list  ← `trading_rules` (owner edits/adds/reorders/publishes sections)
@@ -105,8 +106,8 @@ export default function Rulebook() {
         <span>{number(sections.length, locale)} {text('sections', 'بخش')[locale]}</span>
       </div>
       <div className="hero-actions">
-        <a className="button" href={`#${firstId || 'top'}`} onClick={e => { e.preventDefault(); if (firstId) jumpTo(firstId) }}>{text('Read the guide', 'راهنما را بخوان')[locale]} <span aria-hidden="true">↓</span></a>
-        <Link className="text-link" to={`/${locale}/transparency`}>{labels.transparency[locale]} <span aria-hidden="true">↗</span></Link>
+        <a className="button" href={`#${firstId || 'top'}`} onClick={e => { e.preventDefault(); if (firstId) jumpTo(firstId) }}>{text('Read the guide', 'راهنما را بخوان')[locale]} <DirArrow kind="down" /></a>
+        <Link className="text-link" to={`/${locale}/transparency`}>{labels.transparency[locale]} <DirArrow kind="external" /></Link>
       </div>
     </Hero>
 
@@ -150,8 +151,8 @@ export default function Rulebook() {
             <thead><tr>{section.table.columns.map((c, col) => <th scope="col" key={col}>{c[locale]}</th>)}</tr></thead>
             <tbody>{section.table.rows.map((row, index) => <tr key={index}>{row.map((cell, col) => col === 0 ? <th scope="row" key={col}>{cell[locale]}</th> : <td key={col}>{cell[locale]}</td>)}</tr>)}</tbody>
           </table></div>}
-          {section.id === 'verification' && <Link className="text-link" to={`/${locale}/transparency`}>{text('Explore the sample dashboard', 'داشبورد نمونه را ببین')[locale]} ↗</Link>}
-          {section.id === 'support' && <a className="text-link" href="https://github.com/algomanlife/openfund/issues" target="_blank" rel="noopener noreferrer">{text('Report a product issue', 'گزارش خطای محصول')[locale]} ↗</a>}
+          {section.id === 'verification' && <Link className="text-link" to={`/${locale}/transparency`}>{text('Explore the sample dashboard', 'داشبورد نمونه را ببین')[locale]} <DirArrow kind="external" /></Link>}
+          {section.id === 'support' && <a className="text-link" href="https://github.com/algomanlife/openfund/issues" target="_blank" rel="noopener noreferrer">{text('Report a product issue', 'گزارش خطای محصول')[locale]} <DirArrow kind="external" /></a>}
         </section>)}
 
         {hasCatalog && plans && <CatalogTable locale={locale} plans={plans} />}

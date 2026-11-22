@@ -43,8 +43,8 @@
 .mega-banner-copy b{font-size:15px}
 .mega-banner-copy small{font-size:12.5px;color:var(--body,#c9d6cf);line-height:1.6}
 .mega-banner-copy em{font-style:normal;font-size:13px;color:var(--mint,#82e7bd)}
-.mega-banner-copy em::after{content:' →'}
-[dir=rtl] .mega-banner-copy em::after{content:' ←'}
+.mega-banner-copy em::after{content:'';display:inline-block;inline-size:1em;block-size:1em;margin-inline-start:.35em;vertical-align:-.14em;background:currentColor;-webkit-mask:var(--of-arrow-forward) center/contain no-repeat;mask:var(--of-arrow-forward) center/contain no-repeat}
+[dir=rtl] .mega-banner-copy em::after{transform:scaleX(-1)}
 .mega-banner-art{width:100%;height:auto;max-height:110px}
 .mega-art-arc{fill:none;stroke:color-mix(in srgb,var(--mint,#82e7bd) 30%,transparent);stroke-dasharray:3 5}
 .mega-art-seat{fill:color-mix(in srgb,var(--mint,#82e7bd) 25%,transparent);stroke:var(--mint,#82e7bd);stroke-width:1.2}
