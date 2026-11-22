@@ -8971,6 +8971,99 @@
       }
     ]
   },
+  "heroJourney": {
+    "branch": "agent/claude/hero-journey",
+    "baseCommit": "5c458d39c38878d4ab1b5da5a14631c819d177a1",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-21T19:35:07+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8304, disposable database openfund_scratch on a throwaway PostgreSQL cluster (port 55432); captured with Playwright (hero section element)",
+    "cms": "Directus not running; bundled fallback copy",
+    "marketData": "Market ticker from the local backend; not part of the change",
+    "wallet": "Anonymous; no wallet connected",
+    "screenshots": [
+      {
+        "file": "hero-journey/hero-en-dark-1440.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English (LTR), dark, 1440 px, hero section in the Funded stage (metal sheen). Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-fa-light-1440.jpg",
+        "route": "/fa/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian (RTL), light, 1440 px, hero section in the Verified stage (rules face). Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-en-light-768.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "English (LTR), light, 768 px, Evaluation stage with the sparkline drawing. Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-fa-dark-390.jpg",
+        "route": "/fa/challenges",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian (RTL), dark, 390 px, Funded stage, no particles; the fixed market ticker overlaps the bottom of the element capture. Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-en-dark-1440-reduced.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark, 1440 px, prefers-reduced-motion: static Funded frame. Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-stage-eval.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Card only: Evaluation stage. Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-stage-target.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Card only: target reached. Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-stage-verified.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Card only: verification flip to the rules face. Illustration only: the card shows an example account and no real results."
+      },
+      {
+        "file": "hero-journey/hero-stage-funded.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Card only: Funded stage. Illustration only: the card shows an example account and no real results."
+      }
+    ]
+  },
   "applicationsDownloads": {
     "branch": "agent/claude/desktop-downloads",
     "baseCommit": "dc0899aaa804319e9f1ce53dcd15ed25a4de63a4",

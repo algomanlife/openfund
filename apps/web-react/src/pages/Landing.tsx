@@ -6,6 +6,7 @@ import '../features/information/information.css'
 import '../features/home/platform-orbs.css'
 import landingBody from './landing-body.html?raw'
 import { withBrandWordmark } from '../brand/wordmark'
+import { mountHeroJourney } from '../features/home/heroJourney'
 import { RainbowConnect } from '../wallet/RainbowConnect'
 import { legacyStylesheet } from '../config/legacyAssets'
 import ChallengeWalletPanel from '../wallet/ChallengeWalletPanel'
@@ -263,6 +264,11 @@ export default function Landing() {
   }, [])
   /* Animated wallet showcase (illustrative demo data) placed directly after
      the Market Pulse section (#markets), before the next section */
+  /* hero card: the "trader journey" loop runs on the legacy .hero-product markup */
+  useEffect(() => {
+    const hero = document.querySelector<HTMLElement>('.hero-product')
+    return hero ? mountHeroJourney(hero) : undefined
+  }, [])
   const [showcaseHost, setShowcaseHost] = useState<HTMLElement | null>(null)
   /* layout effect: inserted and rendered before paint, so nothing below shifts */
   useLayoutEffect(() => {
