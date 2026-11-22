@@ -3919,5 +3919,18 @@
   "No section matches your search.": "لا يوجد قسم يطابق بحثك.",
   "Openfund’s technical guide for developers and contributors: local setup, repository structure, testing, releases and contribution rules. Every section links to its source file on GitHub.": "دليل Openfund التقني للمطورين والمساهمين: الإعداد المحلي، وبنية المستودع، والاختبارات، والإصدارات، وقواعد المساهمة. يرتبط كل قسم بملفه المصدر على GitHub.",
   "Search the docs": "ابحث في التوثيق",
-  "This documentation is written in English and Persian; the English text is shown until a reviewed translation is published.": "هذا التوثيق مكتوب بالإنجليزية والفارسية؛ ويُعرض النص الإنجليزي إلى أن تُنشر ترجمة مراجَعة."
+  "This documentation is written in English and Persian; the English text is shown until a reviewed translation is published.": "هذا التوثيق مكتوب بالإنجليزية والفارسية؛ ويُعرض النص الإنجليزي إلى أن تُنشر ترجمة مراجَعة.",
+  "Workspace settings": "إعدادات مساحة العمل",
+  "Real capture of the Web Terminal with live Gains market data. No wallet connected.": "لقطة حقيقية من محطة التداول عبر الويب ببيانات سوق Gains مباشرة. لا توجد محفظة متصلة.",
+  "SHA-256 from the CI build record": "SHA-256 من سجل البناء في CI",
+  "Beta 0.0.4 · unsigned build": "إصدار تجريبي 0.0.4 · بناء غير موقّع",
+  "Open Trade 0.0.4 is an unsigned, experimental beta published on GitHub. Check the SHA-256 checksum before installing; your operating system will warn because the build is not signed.": "Open Trade 0.0.4 إصدار تجريبي غير موقّع منشور على GitHub. تحقّق من قيمة SHA-256 قبل التثبيت؛ سيعرض نظام التشغيل تحذيرًا لأن البناء غير موقّع.",
+  "Built in CI, not published": "مبني في CI، غير منشور",
+  "Download for ${platform}": "تنزيل لـ ${platform}",
+  "Details and SHA-256 check": "التفاصيل والتحقق من SHA-256",
+  "Copy SHA-256": "نسخ SHA-256",
+  "Your system": "نظامك",
+  "Unsigned build: macOS Gatekeeper blocks it on a double-click. In Applications, right-click (or Control-click) Open Trade and choose Open.": "بناء غير موقّع: يمنع Gatekeeper في macOS فتحه بالنقر المزدوج. في Applications، انقر بزر الفأرة الأيمن (أو Control مع النقر) على Open Trade واختر Open.",
+  "Unsigned build: when SmartScreen shows “Windows protected your PC”, choose More info, then Run anyway.": "بناء غير موقّع: عندما يعرض SmartScreen رسالة «Windows protected your PC»، اختر More info ثم Run anyway.",
+  "AppImage: make the file executable with chmod +x before running it. The .deb installs with your package manager.": "AppImage: اجعل الملف قابلًا للتنفيذ عبر chmod +x قبل تشغيله. يُثبَّت ملف ‎.deb عبر مدير الحزم."
 }

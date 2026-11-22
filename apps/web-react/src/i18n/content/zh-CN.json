@@ -3919,5 +3919,18 @@
   "No section matches your search.": "没有与您的搜索匹配的章节。",
   "Openfund’s technical guide for developers and contributors: local setup, repository structure, testing, releases and contribution rules. Every section links to its source file on GitHub.": "Openfund 面向开发者和贡献者的技术指南：本地环境、仓库结构、测试、发布和贡献规则。每个章节都链接到其在 GitHub 上的源文件。",
   "Search the docs": "搜索文档",
-  "This documentation is written in English and Persian; the English text is shown until a reviewed translation is published.": "本文档以英文和波斯文撰写；在经审核的译文发布之前，显示英文文本。"
+  "This documentation is written in English and Persian; the English text is shown until a reviewed translation is published.": "本文档以英文和波斯文撰写；在经审核的译文发布之前，显示英文文本。",
+  "Workspace settings": "工作区设置",
+  "Real capture of the Web Terminal with live Gains market data. No wallet connected.": "网页终端的真实截图，使用 Gains 实时行情数据，未连接钱包。",
+  "SHA-256 from the CI build record": "来自 CI 构建记录的 SHA-256",
+  "Beta 0.0.4 · unsigned build": "Beta 0.0.4 · 未签名构建",
+  "Open Trade 0.0.4 is an unsigned, experimental beta published on GitHub. Check the SHA-256 checksum before installing; your operating system will warn because the build is not signed.": "Open Trade 0.0.4 是发布在 GitHub 上的未签名实验性测试版。安装前请核对 SHA-256 校验值；由于该构建未签名，操作系统会显示警告。",
+  "Built in CI, not published": "已在 CI 中构建，未发布",
+  "Download for ${platform}": "下载 ${platform} 版",
+  "Details and SHA-256 check": "详细信息与 SHA-256 校验",
+  "Copy SHA-256": "复制 SHA-256",
+  "Your system": "您的系统",
+  "Unsigned build: macOS Gatekeeper blocks it on a double-click. In Applications, right-click (or Control-click) Open Trade and choose Open.": "未签名构建：macOS 的 Gatekeeper 会阻止双击打开。请在“应用程序”中右键点击（或按住 Control 点击）Open Trade，然后选择“打开”。",
+  "Unsigned build: when SmartScreen shows “Windows protected your PC”, choose More info, then Run anyway.": "未签名构建：当 SmartScreen 显示“Windows protected your PC”时，选择“More info”，然后选择“Run anyway”。",
+  "AppImage: make the file executable with chmod +x before running it. The .deb installs with your package manager.": "AppImage：运行前请用 chmod +x 赋予文件执行权限。.deb 包可通过软件包管理器安装。"
 }

@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import InformationShell, { useInformationLocale } from '../information/InformationShell'
 import { tx } from '../information/content'
@@ -10,35 +11,222 @@ import './applications.css'
 
 const shot = (name: string) => `${import.meta.env.BASE_URL}assets/apps/open-trade/${name}.webp`
 /* the real app's title bar (product name and version are identifiers, not copy) */
-const WINDOW_TITLE = `${builds.product} · ${builds.version} ${builds.channel.toUpperCase()}`
-const PLATFORM_NAME: Record<Platform, string> = { macos: 'macOS', windows: 'Windows', linux: 'Linux' }
+/* the captures on this page were taken from Open Trade 0.0.2 beta, so the
+   window frames around them keep that version even when newer builds exist */
+const CAPTURE_VERSION = '0.0.2'
+const WINDOW_TITLE = `${builds.product} · ${CAPTURE_VERSION} BETA`
+/** platform + architecture/format name on each download button (identifiers, not copy) */
+const variantName = (r: { platform: Platform; architecture: string; format: string }) =>
+  r.platform === 'macos' ? `macOS (${r.architecture === 'arm64' ? 'Apple Silicon' : 'Intel'})`
+    : r.platform === 'windows' ? `Windows (${r.architecture})` : `Linux (${r.format === 'deb' ? '.deb' : r.format})`
 
-/** A motion sequence made of real captures: frames cross-fade on a CSS loop
- *  (paused for reduced motion, where only the first frame shows). */
-function Sequence({ frames, label }: { frames: { src: string; caption: string }[]; label: string }) {
-  return <figure className="of-seq" style={{ ['--frames' as string]: frames.length }} aria-label={label}>
+type Detected = { platform?: Platform; arch?: 'arm64' | 'x64' }
+/** Visitor's OS (from the user agent) and, where Chromium exposes it
+ *  reliably, the CPU architecture. Anything uncertain stays undefined. */
+function useDetectedSystem(): Detected {
+  const [system, setSystem] = useState<Detected>({})
+  useEffect(() => {
+    const nav = navigator as Navigator & { userAgentData?: { platform?: string; getHighEntropyValues?: (h: string[]) => Promise<{ architecture?: string; bitness?: string }> } }
+    const hint = (nav.userAgentData?.platform || navigator.userAgent || '').toLowerCase()
+    const touchMac = /mac/.test(hint) && navigator.maxTouchPoints > 1 /* iPad reports a Mac user agent */
+    const platform: Platform | undefined = /android|iphone|ipad/.test(hint) || touchMac ? undefined
+      : /mac/.test(hint) ? 'macos' : /win/.test(hint) ? 'windows' : /linux/.test(hint) ? 'linux' : undefined
+    setSystem({ platform })
+    nav.userAgentData?.getHighEntropyValues?.(['architecture', 'bitness']).then(v => {
+      const arch = v.architecture === 'arm' ? 'arm64' : v.architecture === 'x86' && v.bitness === '64' ? 'x64' : undefined
+      if (arch) setSystem({ platform, arch })
+    }).catch(() => {})
+  }, [])
+  return system
+}
+
+function CopyHash({ value, label, done }: { value: string; label: string; done: string }) {
+  const [copied, setCopied] = useState(false)
+  return <button type="button" className="of-app-copy" onClick={async () => {
+    try { await navigator.clipboard.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 1800) } catch { /* the hash stays selectable */ }
+  }}>{copied ? done : label}<span className="sr-only" aria-live="polite">{copied ? done : ''}</span></button>
+}
+const PLATFORM_NAME: Record<Platform, string> = { macos: 'macOS', windows: 'Windows', linux: 'Linux' }
+/** seconds each frame of a sequence stays on screen (the step chip's progress bar runs for this long) */
+const STEP_SECONDS = 3.6
+/** after a click on a step chip, auto-advance waits this long before resuming */
+const RESUME_AFTER_MS = 9000
+
+const reducedMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
+const finePointer = () => typeof matchMedia === 'function' && matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches
+
+/** true while the element is on screen and the tab is visible */
+function useLive<T extends HTMLElement>(): [React.RefObject<T | null>, boolean] {
+  const ref = useRef<T>(null)
+  const [live, setLive] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    let onScreen = false
+    const sync = () => setLive(onScreen && !document.hidden)
+    const io = new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; sync() }, { rootMargin: '60px' })
+    io.observe(el)
+    document.addEventListener('visibilitychange', sync)
+    return () => { io.disconnect(); document.removeEventListener('visibilitychange', sync) }
+  }, [])
+  return [ref, live]
+}
+
+/** Pointer tilt (fine pointers only) and scroll parallax written as CSS
+ *  variables on the element: one rAF per event, only while on screen. */
+function useTilt<T extends HTMLElement>(live: boolean, ref: React.RefObject<T | null>) {
+  useEffect(() => {
+    const el = ref.current
+    if (!el || !live || reducedMotion()) return
+    let frame = 0, px = 0, py = 0
+    const write = () => {
+      frame = 0
+      const r = el.getBoundingClientRect()
+      const progress = Math.max(-1, Math.min(1, (r.top + r.height / 2 - innerHeight / 2) / innerHeight))
+      el.style.setProperty('--px', px.toFixed(3)); el.style.setProperty('--py', py.toFixed(3)); el.style.setProperty('--sp', progress.toFixed(3))
+    }
+    const queue = () => { if (!frame) frame = requestAnimationFrame(write) }
+    const move = (e: PointerEvent) => {
+      if (!finePointer()) return
+      const r = el.getBoundingClientRect()
+      px = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width - 0.5) * 2)); py = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height - 0.5) * 2))
+      queue()
+    }
+    const leave = () => { px = 0; py = 0; queue() }
+    addEventListener('pointermove', move, { passive: true }); addEventListener('scroll', queue, { passive: true }); el.addEventListener('pointerleave', leave)
+    queue()
+    return () => { removeEventListener('pointermove', move); removeEventListener('scroll', queue); el.removeEventListener('pointerleave', leave); cancelAnimationFrame(frame) }
+  }, [live, ref])
+}
+
+/** Desktop window chrome around a real capture. */
+function AppWindow({ src, alt = '', className = '', eager = false }: { src: string; alt?: string; className?: string; eager?: boolean }) {
+  return <div className={`of-seq-window ${className}`}>
+    <div className="of-seq-bar" aria-hidden="true"><i /><i /><i /><span>{WINDOW_TITLE}</span></div>
+    <img src={src} alt={alt} width={1440} height={960} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+  </div>
+}
+
+type Reveal = 'fade' | 'split' | 'side' | 'quad'
+interface Frame { src: string; caption: string; reveal?: Reveal }
+
+/** A sequence of real captures. Steps are tabs: the active one shows a
+ *  progress bar for STEP_SECONDS, then the next frame is revealed (a clip-path
+ *  wipe that follows how the layout splits, or a cross-fade). Clicking or
+ *  arrow-keying a step shows that frame and holds auto-advance briefly. Runs
+ *  only while on screen and the tab is visible; reduced motion shows the
+ *  chosen frame without auto-advance or transitions. */
+function Sequence({ id, frames, label }: { id: string; frames: Frame[]; label: string }) {
+  const [root, live] = useLive<HTMLElement>()
+  const [active, setActive] = useState(0)
+  const [previous, setPrevious] = useState<number | null>(null)
+  const [heldUntil, setHeldUntil] = useState(0)
+  const tabs = useRef<(HTMLButtonElement | null)[]>([])
+  const go = (next: number) => { setActive(current => { if (current !== next) setPrevious(current); return next }) }
+  const running = live && !reducedMotion() && Date.now() >= heldUntil
+  useEffect(() => {
+    if (!running) {
+      if (!heldUntil || Date.now() >= heldUntil) return
+      const wait = setTimeout(() => setHeldUntil(0), heldUntil - Date.now())
+      return () => clearTimeout(wait)
+    }
+    const timer = setTimeout(() => go((active + 1) % frames.length), STEP_SECONDS * 1000)
+    return () => clearTimeout(timer)
+  }, [running, active, frames.length, heldUntil])
+  const choose = (i: number) => { go(i); setHeldUntil(Date.now() + RESUME_AFTER_MS) }
+  const keys = (e: React.KeyboardEvent, i: number) => {
+    const dir = getComputedStyle(e.currentTarget).direction === 'rtl' ? -1 : 1
+    const step = e.key === 'ArrowRight' ? dir : e.key === 'ArrowLeft' ? -dir : 0
+    const next = step ? (i + step + frames.length) % frames.length : e.key === 'Home' ? 0 : e.key === 'End' ? frames.length - 1 : -1
+    if (next < 0) return
+    e.preventDefault(); choose(next); tabs.current[next]?.focus()
+  }
+  /* wrapping back to the first frame always cross-fades */
+  const reveal = (i: number) => (i === active && previous !== null && !(i === 0 && previous === frames.length - 1) ? frames[i].reveal || 'fade' : 'fade')
+  return <figure ref={root} className={`of-seq${running ? ' is-running' : ''}`} style={{ ['--frames' as string]: frames.length, ['--step' as string]: `${STEP_SECONDS}s` }}>
     <div className="of-seq-window">
       <div className="of-seq-bar" aria-hidden="true"><i /><i /><i /><span>{WINDOW_TITLE}</span></div>
-      <div className="of-seq-stage">
-        {frames.map((f, i) => <img key={f.src} src={f.src} alt={i === 0 ? f.caption : ''} aria-hidden={i > 0} loading="lazy" decoding="async" width={1440} height={960} style={{ ['--i' as string]: i }} />)}
+      <div className="of-seq-stage" role="tabpanel" id={`${id}-panel`} aria-labelledby={`${id}-tab-${active}`}>
+        {frames.map((f, i) => <img key={f.src + i} src={f.src} alt={i === active ? f.caption : ''} aria-hidden={i !== active}
+          className={i === active ? 'is-active' : i === previous ? 'is-previous' : ''} data-reveal={reveal(i)}
+          onAnimationEnd={i === active ? () => setPrevious(null) : undefined}
+          loading="lazy" decoding="async" width={1440} height={960} />)}
       </div>
     </div>
-    <figcaption className="of-seq-steps" aria-hidden="true">{frames.map((f, i) => <span key={f.caption} style={{ ['--i' as string]: i }}>{f.caption}</span>)}</figcaption>
+    <figcaption>
+      <div className="of-seq-steps" role="tablist" aria-label={label}>
+        {frames.map((f, i) => <button key={f.caption} ref={el => { tabs.current[i] = el }} type="button" role="tab" id={`${id}-tab-${i}`}
+          aria-selected={i === active} aria-controls={`${id}-panel`} tabIndex={i === active ? 0 : -1}
+          onClick={() => choose(i)} onKeyDown={e => keys(e, i)}>
+          <span>{f.caption}</span><i className="of-seq-progress" aria-hidden="true" key={i === active ? `on-${active}-${running}` : 'off'} />
+        </button>)}
+      </div>
+    </figcaption>
   </figure>
 }
 
-function SpotCard({ children }: { children: React.ReactNode }) {
-  const ref = useSpotlight<HTMLElement>()
-  return <article ref={ref} className="of-app-card ds-spotlight">{children}</article>
+/** Hero: the real desktop window floating with a gentle perspective tilt,
+ *  pointer and scroll parallax, a mint under-glow and a faint floor reflection. */
+function HeroWindow() {
+  const [ref, live] = useLive<HTMLDivElement>()
+  useTilt(live, ref)
+  return <div ref={ref} className="of-apps-hero-stage" aria-hidden="true">
+    <div className="of-apps-hero-float">
+      <AppWindow src={shot('four-charts')} className="of-apps-hero-window" eager />
+      <div className="of-apps-hero-reflection"><img src={shot('four-charts')} alt="" width={1440} height={960} loading="lazy" decoding="async" /></div>
+    </div>
+    <div className="of-apps-hero-underglow" />
+  </div>
 }
 
+/** Depth scene: one primary window and two smaller secondary windows at
+ *  different depths, all real captures, moving with the pointer. */
+function DepthScene() {
+  const [ref, live] = useLive<HTMLDivElement>()
+  useTilt(live, ref)
+  return <div ref={ref} className="of-apps-depth" aria-hidden="true">
+    <AppWindow src={shot('startup')} className="of-depth-back" />
+    <AppWindow src={shot('three-charts')} className="of-depth-main" />
+    <AppWindow src={shot('settings-glass')} className="of-depth-front" />
+  </div>
+}
+
+/** Web Terminal card preview: a real capture slowly panned inside a browser frame. */
+function WebPreview({ locale }: { locale: string }) {
+  const [ref, live] = useLive<HTMLDivElement>()
+  const capture = `${import.meta.env.BASE_URL}assets/campaign/terminal-${locale === 'fa' ? 'fa' : 'en'}.jpg`
+  return <div ref={ref} className={`of-apps-webpreview${live ? ' is-running' : ''}`}>
+    <div className="of-apps-webframe" aria-hidden="true">
+      <div className="of-apps-webbar"><i /><i /><i /><span dir="ltr">/prop/trade</span></div>
+      <div className="of-apps-webshot"><img src={capture} alt="" width={1440} height={823} loading="lazy" decoding="async" /><span className="of-apps-webscan" /></div>
+    </div>
+  </div>
+}
+
+function SpotCard({ children, detected = false }: { children: React.ReactNode; detected?: boolean }) {
+  const ref = useSpotlight<HTMLElement>()
+  return <article ref={ref} className={`of-app-card ds-spotlight${detected ? ' is-detected' : ''}`}>{children}</article>
+}
+
+/** Original line glyphs (no vendor logos): a laptop with a rounded screen,
+ *  a desktop monitor with a window on it, and a monitor with a shell prompt. */
 function PlatformIcon({ platform }: { platform: Platform }) {
-  return <svg width="34" height="34" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="4" y="5" width="32" height="23" rx={platform === 'macos' ? 6 : 2} /><path d={platform === 'windows' ? 'M20 5v23M4 16h32M13 35h14M20 28v7' : platform === 'linux' ? 'm13 12 6 5-6 5m9 0h6M13 35h14M20 28v7' : 'M13 35h14M20 28v7'} /></svg>
+  return <svg className="of-app-glyph" width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    {platform === 'macos' ? <><rect x="7" y="8" width="26" height="18" rx="3" /><path d="M3 30h34l-2 3H5z" /><path d="M17 17.5h6" /><circle cx="20" cy="12" r=".6" fill="currentColor" /></>
+      : platform === 'windows' ? <><rect x="4" y="6" width="32" height="22" rx="2" /><path d="M14 34h12M20 28v6" /><rect x="10" y="11" width="14" height="10" rx="1" /><path d="M10 14h14M27 13h4M27 17h4" /></>
+      : <><rect x="4" y="6" width="32" height="22" rx="2" /><path d="M14 34h12M20 28v6" /><path d="m11 13 5 4-5 4M19 21h8" /></>}
+  </svg>
+}
+
+/** A small check that draws itself once when the card scrolls into view. */
+function HashCheck({ label }: { label: string }) {
+  return <span className="of-app-hashcheck"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" /><path d="m4.8 8.2 2.1 2.1 4.3-4.6" /></svg>{label}</span>
 }
 
 export default function Applications() {
   const locale = useInformationLocale()
   const c = (key: keyof typeof copy) => tx(locale, copy[key])
+  const system = useDetectedSystem()
   const r1 = useReveal<HTMLElement>(), r2 = useReveal<HTMLElement>(), r3 = useReveal<HTMLElement>(), r4 = useReveal<HTMLElement>()
   const rows: [keyof typeof copy, keyof typeof copy, keyof typeof copy][] = [
     ['rowBest', 'webBest', 'deskBest'], ['rowCharts', 'webCharts', 'deskCharts'], ['rowOrders', 'webOrders', 'deskOrders'],
@@ -55,6 +243,7 @@ export default function Applications() {
           <Link className="button" to={`/${locale}/prop/trade`}>{c('open')} <span aria-hidden="true">↗</span></Link>
           <a className="button ghost" href="#desktop-builds">{c('getDesktop')}</a>
         </div>
+        <HeroWindow />
       </div>
     </section>
 
@@ -66,9 +255,9 @@ export default function Applications() {
           <p>{c('webLead')}</p>
           <Link className="text-link" to={`/${locale}/prop/trade`}>{c('open')} ↗</Link>
         </div>
-        <div className="of-apps-webmark" aria-hidden="true">
-          <img src={`${import.meta.env.BASE_URL}assets/mark-mint.svg`} width="120" height="133" alt="" />
-          <ul>{(['webCharts', 'webOrders', 'webAnalytics', 'webAccount'] as const).map(k => <li key={k}>{c(k)}</li>)}</ul>
+        <div className="of-apps-webcol">
+          <WebPreview locale={locale} />
+          <p className="of-apps-note">{c('webCaptured')}</p>
         </div>
       </section>
 
@@ -81,10 +270,11 @@ export default function Applications() {
         </div>
         <div className="of-apps-sequences">
           <div><h3>{c('motion1')}</h3><p>{c('motion1Body')}</p>
-            <Sequence label={c('motion1')} frames={[{ src: shot('chart'), caption: c('frameLayout1') }, { src: shot('two-charts'), caption: c('frameLayout2') }, { src: shot('three-charts'), caption: c('frameLayout3') }, { src: shot('four-charts'), caption: c('frameLayout4') }]} /></div>
+            <Sequence id="seq-layout" label={c('motion1')} frames={[{ src: shot('chart'), caption: c('frameLayout1') }, { src: shot('two-charts'), caption: c('frameLayout2'), reveal: 'split' }, { src: shot('three-charts'), caption: c('frameLayout3'), reveal: 'side' }, { src: shot('four-charts'), caption: c('frameLayout4'), reveal: 'quad' }]} /></div>
           <div><h3>{c('motion2')}</h3><p>{c('motion2Body')}</p>
-            <Sequence label={c('motion2')} frames={[{ src: shot('startup'), caption: c('frameStart') }, { src: shot('watchlist-ticket'), caption: c('frameWatch') }, { src: shot('chart'), caption: c('frameChart') }]} /></div>
+            <Sequence id="seq-focus" label={c('motion2')} frames={[{ src: shot('watchlist-ticket'), caption: c('frameWatch') }, { src: shot('chart'), caption: c('frameChart') }, { src: shot('settings-glass'), caption: c('frameSettings') }]} /></div>
         </div>
+        <DepthScene />
       </section>
 
       <section ref={r3} className="of-apps-compare of-reveal" aria-labelledby="compare-title">
@@ -101,14 +291,30 @@ export default function Applications() {
         <div className="of-app-grid">{(['macos', 'windows', 'linux'] as const).map(platform => {
           const published = applicationReleases.filter(r => r.platform === platform)
           const built = builds.files.filter(f => f.platform === platform)
-          return <SpotCard key={platform}>
-            <header><PlatformIcon platform={platform} /><h3 dir="ltr">{PLATFORM_NAME[platform]}</h3></header>
-            {published.length ? published.map(r => <div key={`${r.version}-${r.architecture}-${r.format}`} className="of-app-release">
-              <span className="of-app-status">{c(r.channel === 'beta' ? 'beta' : 'available')}</span>
-              <dl>{([['version', r.version], ['architecture', r.architecture], ['format', r.format], ['size', `${(r.bytes / 1048576).toFixed(1)} MB`], ['date', r.releasedAt]] as const).map(([key, value]) => <div key={key}><dt>{c(key)}</dt><dd><bdi>{value}</bdi></dd></div>)}</dl>
-              <a className="button" href={r.downloadUrl}>{c('download')}</a>
-              <p><a href={r.notesUrl}>{c('notes')}</a> · <a href={r.guideUrl}>{c('install')}</a></p>
-            </div>) : built.length ? <>
+          const detected = system.platform === platform
+          /* recommended file: the detected architecture, or the AppImage on Linux */
+          const recommended = (r: (typeof published)[number]) => platform === 'linux' ? r.format === 'AppImage' : !detected || !system.arch || r.architecture === system.arch
+          return <SpotCard key={platform} detected={detected}>
+            <div className="of-app-card-head"><PlatformIcon platform={platform} /><h3 dir="ltr">{PLATFORM_NAME[platform]}</h3>{detected && <span className="of-app-detected">{c('yourSystem')}</span>}</div>
+            {published.length ? <>
+              <span className="of-app-status">{c(published[0].channel === 'beta' ? 'beta' : 'available')}{' · '}<bdi dir="ltr">{published[0].version}</bdi></span>
+              {published.map(r => <div key={`${r.version}-${r.architecture}-${r.format}`} className={`of-app-release${detected && system.arch === r.architecture && platform !== 'linux' ? ' is-match' : ''}`}>
+                <a className={`button of-app-download${recommended(r) ? '' : ' ghost'}`} href={r.downloadUrl} download>
+                  <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 2v8m0 0-3-3m3 3 3-3M3 13h10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  {c('downloadFor').replace('${platform}', variantName(r))}
+                </a>
+                <details className="of-app-details">
+                  <summary>{c('details')}</summary>
+                  <dl>{([['version', `${r.version} ${r.channel}`], ['architecture', r.architecture], ['format', `.${r.format}`], ['size', `${(r.bytes / 1048576).toFixed(1)} MB`], ['date', r.releasedAt.slice(0, 10)]] as const).map(([key, value]) => <div key={key}><dt>{c(key)}</dt><dd><bdi dir="ltr">{value}</bdi></dd></div>)}</dl>
+                  <HashCheck label={c('hashRecorded')} />
+                  <code dir="ltr" className="of-app-sha">{r.sha256}</code>
+                  <CopyHash value={r.sha256} label={c('copyHash')} done={c('copied')} />
+                  <code dir="ltr" className="of-app-file">{r.file}</code>
+                </details>
+              </div>)}
+              <p className="of-apps-note of-app-unsigned">{c(platform === 'macos' ? 'macUnsigned' : platform === 'windows' ? 'winUnsigned' : 'linuxUnsigned')}</p>
+              <p className="of-app-links"><a href={published[0].guideUrl}>{c('install')}</a> · <a href={published[0].notesUrl}>{c('notes')}</a></p>
+            </> : built.length ? <>
               <span className="of-app-status is-pending">{c('awaiting')}</span>
               <ul className="of-app-files">{built.map(f => <li key={f.file}>
                 <dl>
@@ -117,6 +323,7 @@ export default function Applications() {
                   <div><dt>{c('format')}</dt><dd><bdi dir="ltr">.{f.format}</bdi></dd></div>
                   <div><dt>{c('size')}</dt><dd><bdi dir="ltr">{`${(f.bytes / 1048576).toFixed(1)} MB`}</bdi></dd></div>
                 </dl>
+                {f.sha256 && <HashCheck label={c('hashRecorded')} />}
                 <code dir="ltr" className="of-app-sha" title="SHA-256">{`SHA-256 ${f.sha256}`}</code>
                 <code dir="ltr">{f.file}</code>
               </li>)}</ul>

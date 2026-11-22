@@ -3919,5 +3919,18 @@
   "No section matches your search.": "Ни один раздел не соответствует вашему запросу.",
   "Openfund’s technical guide for developers and contributors: local setup, repository structure, testing, releases and contribution rules. Every section links to its source file on GitHub.": "Техническое руководство Openfund для разработчиков и участников: локальная настройка, структура репозитория, тестирование, выпуски и правила участия. Каждый раздел ссылается на свой исходный файл на GitHub.",
   "Search the docs": "Поиск по документации",
-  "This documentation is written in English and Persian; the English text is shown until a reviewed translation is published.": "Эта документация написана на английском и персидском; английский текст показывается, пока не опубликован проверенный перевод."
+  "This documentation is written in English and Persian; the English text is shown until a reviewed translation is published.": "Эта документация написана на английском и персидском; английский текст показывается, пока не опубликован проверенный перевод.",
+  "Workspace settings": "Настройки рабочего пространства",
+  "Real capture of the Web Terminal with live Gains market data. No wallet connected.": "Реальный снимок веб-терминала с живыми рыночными данными Gains. Кошелёк не подключён.",
+  "SHA-256 from the CI build record": "SHA-256 из записи сборки CI",
+  "Beta 0.0.4 · unsigned build": "Бета 0.0.4 · неподписанная сборка",
+  "Open Trade 0.0.4 is an unsigned, experimental beta published on GitHub. Check the SHA-256 checksum before installing; your operating system will warn because the build is not signed.": "Open Trade 0.0.4 — неподписанная экспериментальная бета-версия, опубликованная на GitHub. Перед установкой проверьте контрольную сумму SHA-256; операционная система покажет предупреждение, так как сборка не подписана.",
+  "Built in CI, not published": "Собрано в CI, не опубликовано",
+  "Download for ${platform}": "Скачать для ${platform}",
+  "Details and SHA-256 check": "Подробности и проверка SHA-256",
+  "Copy SHA-256": "Копировать SHA-256",
+  "Your system": "Ваша система",
+  "Unsigned build: macOS Gatekeeper blocks it on a double-click. In Applications, right-click (or Control-click) Open Trade and choose Open.": "Неподписанная сборка: Gatekeeper в macOS блокирует запуск двойным щелчком. В папке Applications щёлкните Open Trade правой кнопкой (или с Control) и выберите Open.",
+  "Unsigned build: when SmartScreen shows “Windows protected your PC”, choose More info, then Run anyway.": "Неподписанная сборка: когда SmartScreen покажет «Windows protected your PC», нажмите More info, затем Run anyway.",
+  "AppImage: make the file executable with chmod +x before running it. The .deb installs with your package manager.": "AppImage: перед запуском сделайте файл исполняемым командой chmod +x. Пакет .deb устанавливается менеджером пакетов."
 }

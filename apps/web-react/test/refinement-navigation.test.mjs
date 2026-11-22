@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { buildSync } from 'esbuild'
@@ -35,7 +36,16 @@ test('navigation disclosures keep one menu open and support Escape, arrows and o
 })
 test('application downloads reject arbitrary hosts, source archives and unsigned stable installers', () => {
   const { validatedRelease, applicationReleases } = load('features/applications/releases.ts')
-  assert.deepEqual(applicationReleases, [])
+  /* every published entry validates (none is silently dropped), is an unsigned
+     beta from a real GitHub Release and matches the CI build evidence */
+  const manifest = JSON.parse(readFileSync(new URL('../src/features/applications/releases.json', import.meta.url), 'utf8'))
+  const builds = JSON.parse(readFileSync(new URL('../src/features/applications/builds.json', import.meta.url), 'utf8'))
+  assert.equal(applicationReleases.length, manifest.releases.length)
+  for (const r of applicationReleases) {
+    assert.equal(r.channel, 'beta'); assert.equal(r.signed, false); assert.equal(r.version, builds.version)
+    const built = builds.files.find(f => f.file === r.file)
+    assert.ok(built && built.sha256 === r.sha256 && built.bytes === r.bytes, r.file)
+  }
   const release = { platform: 'macos', version: '1.0.0', channel: 'stable', architecture: 'arm64', format: 'dmg', bytes: 1000, releasedAt: '2026-11-14', tag: 'v1.0.0', file: 'Openfund.dmg', sha256: 'a'.repeat(64), downloadUrl: 'https://github.com/algomanlife/openfund/releases/download/v1.0.0/Openfund.dmg', notesUrl: 'https://github.com/algomanlife/openfund/releases/tag/v1.0.0', guideUrl: 'https://github.com/algomanlife/openfund/blob/v1.0.0/docs/install.md', verified: true, signed: true }
   assert.ok(validatedRelease(release))
   for (const mutation of [{ signed: false }, { verified: false }, { downloadUrl: 'https://evil.example/Openfund.dmg' }, { file: 'source.tar.gz', format: 'tar.gz' }, { bytes: 0 }, { sha256: '' }, { guideUrl: 'javascript:alert(1)' }]) assert.equal(validatedRelease({ ...release, ...mutation }), null)
