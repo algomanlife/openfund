@@ -396,6 +396,12 @@
    "protected": true,
    "cms": "none"
   },
+  "granted_entitlements": {
+   "domain": "commerce",
+   "protected": true,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
   "ib_settlement_policies": {
    "domain": "financial",
    "protected": true,
@@ -521,6 +527,12 @@
    "domain": "financial",
    "protected": true,
    "cms": "none"
+  },
+  "plan_catalog_history": {
+   "domain": "catalog",
+   "protected": true,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
   },
   "position_close_requests": {
    "domain": "trading",
@@ -735,6 +747,18 @@
    "domain": "financial",
    "protected": true,
    "cms": "none"
+  },
+  "user_admin_notes": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
+  "user_admin_tags": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
   },
   "verified_expenses": {
    "domain": "financial",
