@@ -13,6 +13,12 @@ gallery, changelog) for what it changes, runs `npm run docs:write`, and commits
 the regenerated README and graphics. The README is complete and graphical by
 owner decision; never condense it or remove sections, icons or graphics.
 
+## Developer docs
+
+Follow "Developer docs (merge rule)" in `AGENTS.md`: changes to routes, the
+backend API, schema, `render.yaml`/environment, package scripts, CI, releases or
+`apps/open-trade` also update `docs/developer-portal/` in the same pull request.
+
 ## Editorial content
 
 Follow the Editorial content section in `AGENTS.md`. New pages and new

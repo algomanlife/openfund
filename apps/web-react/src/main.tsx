@@ -26,6 +26,7 @@ import ProposalPage from './features/governance/ProposalPage'
 import NewProposal from './features/governance/NewProposal'
 import CouncilWorkspace from './features/governance/CouncilWorkspace'
 import Tools from './features/tools/Tools'
+import Developers from './features/developers/Developers'
 import ToolPage from './features/tools/ToolPage'
 import Learn from './features/learn/Learn'
 import PathPage from './features/learn/PathPage'
@@ -170,6 +171,7 @@ const routes = [
   { path: '/:locale/faq', element: <Faq /> },
   { path: '/:locale/faq/q/:key', element: <Faq /> },
   { path: '/:locale/tools', element: <Tools /> },
+  { path: '/:locale/developers', element: <Developers /> },
   { path: '/:locale/tools/:slug', element: <ToolPage /> },
   { path: '/:locale/learn', element: <Learn /> },
   { path: '/:locale/learn/paths/:slug', element: <PathPage /> },

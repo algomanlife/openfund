@@ -8800,60 +8800,51 @@
       }
     ]
   },
-  "governanceChamber": {
-    "branch": "agent/claude/governance-chamber",
+  "developerDocs": {
+    "branch": "agent/claude/developer-docs",
     "baseCommit": "dc0899aaa804319e9f1ce53dcd15ed25a4de63a4",
     "status": "Unmerged branch; local verification only, not deployed",
-    "capturedAt": "2026-11-21T18:49:03+00:00",
-    "source": "npm run build:web + apps/backend on isolated test port 8301, disposable database; viewport crops of the hero",
-    "cms": "Directus not running",
+    "capturedAt": "2026-11-21T18:58:29+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8302, disposable database; captured by e2e/test-developers.cjs",
+    "cms": "Directus not running; bundled fallback from docs/developer-portal",
     "marketData": "Not used",
     "wallet": "Anonymous",
     "screenshots": [
       {
-        "file": "governance-chamber/gov-1440-en-dark.jpg",
-        "route": "/en/governance",
+        "file": "developer-docs/developers-en-1440-dark.jpg",
+        "route": "/en/developers",
         "viewport": {
           "width": 1440,
           "height": 900
         },
-        "state": "English, dark: chamber beside the hero text (right in LTR), Approved stamp. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
+        "state": "English, dark: hero and first sections with the sticky index. Bundled fallback (Directus not running). JPEG."
       },
       {
-        "file": "governance-chamber/gov-1440-fa-light.jpg",
-        "route": "/fa/governance",
+        "file": "developer-docs/developers-fa-1440-light.jpg",
+        "route": "/fa/developers",
         "viewport": {
           "width": 1440,
           "height": 900
         },
-        "state": "Persian (RTL), light: chamber on the left. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
+        "state": "Persian (RTL), light: Persian text, index on the right. Bundled fallback (Directus not running). JPEG."
       },
       {
-        "file": "governance-chamber/gov-390-fa-dark.jpg",
-        "route": "/fa/governance",
+        "file": "developer-docs/developers-ar-390-dark.jpg",
+        "route": "/ar/developers",
         "viewport": {
           "width": 390,
           "height": 844
         },
-        "state": "Persian, dark, 390 px: chamber below the text. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
+        "state": "Arabic, 390 px: English text with the note, collapsible index. Bundled fallback (Directus not running). JPEG."
       },
       {
-        "file": "governance-chamber/gov-768-en-light.jpg",
-        "route": "/en/governance",
+        "file": "developer-docs/developers-zh-CN-768-light.jpg",
+        "route": "/zh-CN/developers",
         "viewport": {
           "width": 768,
           "height": 1024
         },
-        "state": "English, light, 768 px. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
-      },
-      {
-        "file": "governance-chamber/gov-1440-en-dark-rm.jpg",
-        "route": "/en/governance",
-        "viewport": {
-          "width": 1440,
-          "height": 900
-        },
-        "state": "English, dark, reduced motion: static result frame. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
+        "state": "Chinese, 768 px, light: English text with the note. Bundled fallback (Directus not running). JPEG."
       }
     ]
   },
@@ -8941,6 +8932,63 @@
           "height": 900
         },
         "state": "Desktop downloads section, English, dark: three platform cards with one labelled download button per installer of the published pre-release open-trade-v0.0.4, collapsed details, per-OS unsigned instructions; 'Your system' badge on macOS. JPEG."
+      }
+    ]
+  },
+  "governanceChamber": {
+    "branch": "agent/claude/governance-chamber",
+    "baseCommit": "dc0899aaa804319e9f1ce53dcd15ed25a4de63a4",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-21T18:49:03+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8301, disposable database; viewport crops of the hero",
+    "cms": "Directus not running",
+    "marketData": "Not used",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "governance-chamber/gov-1440-en-dark.jpg",
+        "route": "/en/governance",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: chamber beside the hero text (right in LTR), Approved stamp. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
+      },
+      {
+        "file": "governance-chamber/gov-1440-fa-light.jpg",
+        "route": "/fa/governance",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian (RTL), light: chamber on the left. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
+      },
+      {
+        "file": "governance-chamber/gov-390-fa-dark.jpg",
+        "route": "/fa/governance",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian, dark, 390 px: chamber below the text. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
+      },
+      {
+        "file": "governance-chamber/gov-768-en-light.jpg",
+        "route": "/en/governance",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "English, light, 768 px. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
+      },
+      {
+        "file": "governance-chamber/gov-1440-en-dark-rm.jpg",
+        "route": "/en/governance",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark, reduced motion: static result frame. The proposals, votes and outcomes are labelled illustrations, not real council decisions. JPEG."
       }
     ]
   },
