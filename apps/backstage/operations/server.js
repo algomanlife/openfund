@@ -63,11 +63,11 @@ const routes = {
   /* console (admin-console.js): plan administration and granted entitlements */
   plans: ['/admin/console/plans', 'plans', []],
   entitlements: ['/admin/console/entitlements', 'entitlements', []],
+  /* Openfund Premium League (tournament.js); a record is a tournament slug */
+  tournaments: ['/admin/tournaments', 'tournaments', []],
   /* Migration to Openfund (migration.js, ADR 0051) */
   migrations: ['/admin/migration/requests', 'requests', ['status']],
   migrationFirms: ['/admin/migration/firms'],
-  /* Openfund Premium League (tournament.js); a record is a tournament slug */
-  tournaments: ['/admin/tournaments', 'tournaments', []],
 }
 const tournamentSlug = /^[a-z0-9][a-z0-9-]{2,59}$/
 
@@ -236,37 +236,6 @@ const operations = {
         funded: body.funded === true, expiresDays: Number(body.expiresDays) || 30, reason: textOf(body.reason, 1000) }]
     },
   },
-  /* migration review: a decision needs the checklist, KYC and name match
-     (approve) and always a reason; the backend refuses anything else */
-  migrations: {
-    identifier: uuid,
-    actions: ['approve', 'reject'],
-    request: (record, body) => {
-      const out = { decision: body.action, reason: textOf(body.reason, 1000) }
-      if (body.action === 'approve') {
-        const size = Number(body.approvedMaxSizeUsd)
-        if (!Number.isFinite(size) || size <= 0) throw fail(400, 'invalid_size')
-        Object.assign(out, { approvedMaxSizeUsd: size, kycVerified: body.kycVerified === true, nameMatched: body.nameMatched === true })
-      }
-      return [`/admin/migration/requests/${record}/decide`, out]
-    },
-  },
-  migrationPasses: {
-    identifier: uuid,
-    actions: ['revoke'],
-    request: (record, body) => [`/admin/migration/passes/${record}/revoke`, { reason: textOf(body.reason, 1000) }],
-  },
-  migrationFirms: {
-    identifier: value => value === 'new' || uuid.test(value),
-    actions: ['save', 'settings', 'logo', 'removeLogo'],
-    request: (record, body) => body.action === 'logo' || body.action === 'removeLogo'
-      ? (uuid.test(record) ? [`/admin/migration/firms/${record}/logo`, body.action === 'removeLogo' ? { remove: true, reason: textOf(body.reason, 1000) }
-        : { contentType: textOf(body.contentType, 20), dataBase64: textOf(body.dataBase64, 280_000), reason: textOf(body.reason, 1000) }] : (() => { throw fail(400, 'invalid_request') })())
-      : body.action === 'save'
-      ? ['/admin/migration/firms', { name: textOf(body.name, 60), status: body.status === 'inactive' ? 'inactive' : 'active', websiteUrl: textOf(body.websiteUrl, 200, false),
-          programTypes: textOf(body.programTypes, 600, false), evidenceTypes: textOf(body.evidenceTypes, 600, false), reason: textOf(body.reason, 1000) }]
-      : ['/admin/migration/settings', { minPayouts: body.minPayouts, windowMonths: body.windowMonths, retentionDays: body.retentionDays, passExpiresDays: body.passExpiresDays,
-          plans: Array.isArray(body.plans) ? body.plans : undefined, reason: textOf(body.reason, 1000) }],
   /* Premium League: schedule/rules before the start, then the owner freezes
      the standings and issues the awards; the backend refuses out-of-order steps */
   tournaments: {
@@ -299,6 +268,38 @@ const operations = {
       if (!['pending', 'in_progress', 'fulfilled', 'cancelled'].includes(body.status)) throw fail(400, 'invalid_status')
       return [`/admin/tournaments/${body.slug}/awards/${record}`, { status: body.status, note: textOf(body.note, 1000, false), reason: textOf(body.reason, 1000) }]
     },
+  },
+  /* migration review: a decision needs the checklist, KYC and name match
+     (approve) and always a reason; the backend refuses anything else */
+  migrations: {
+    identifier: uuid,
+    actions: ['approve', 'reject'],
+    request: (record, body) => {
+      const out = { decision: body.action, reason: textOf(body.reason, 1000) }
+      if (body.action === 'approve') {
+        const size = Number(body.approvedMaxSizeUsd)
+        if (!Number.isFinite(size) || size <= 0) throw fail(400, 'invalid_size')
+        Object.assign(out, { approvedMaxSizeUsd: size, kycVerified: body.kycVerified === true, nameMatched: body.nameMatched === true })
+      }
+      return [`/admin/migration/requests/${record}/decide`, out]
+    },
+  },
+  migrationPasses: {
+    identifier: uuid,
+    actions: ['revoke'],
+    request: (record, body) => [`/admin/migration/passes/${record}/revoke`, { reason: textOf(body.reason, 1000) }],
+  },
+  migrationFirms: {
+    identifier: value => value === 'new' || uuid.test(value),
+    actions: ['save', 'settings', 'logo', 'removeLogo'],
+    request: (record, body) => body.action === 'logo' || body.action === 'removeLogo'
+      ? (uuid.test(record) ? [`/admin/migration/firms/${record}/logo`, body.action === 'removeLogo' ? { remove: true, reason: textOf(body.reason, 1000) }
+        : { contentType: textOf(body.contentType, 20), dataBase64: textOf(body.dataBase64, 280_000), reason: textOf(body.reason, 1000) }] : (() => { throw fail(400, 'invalid_request') })())
+      : body.action === 'save'
+      ? ['/admin/migration/firms', { name: textOf(body.name, 60), status: body.status === 'inactive' ? 'inactive' : 'active', websiteUrl: textOf(body.websiteUrl, 200, false),
+          programTypes: textOf(body.programTypes, 600, false), evidenceTypes: textOf(body.evidenceTypes, 600, false), reason: textOf(body.reason, 1000) }]
+      : ['/admin/migration/settings', { minPayouts: body.minPayouts, windowMonths: body.windowMonths, retentionDays: body.retentionDays, passExpiresDays: body.passExpiresDays,
+          plans: Array.isArray(body.plans) ? body.plans : undefined, reason: textOf(body.reason, 1000) }],
   },
   /* plan administration: publish (diff previewed first), retire, reactivate */
   plans: {

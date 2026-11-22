@@ -121,8 +121,8 @@ function login() {
 
 const groups = [
   ['prop', ['users', 'challenges', 'reviews', 'payouts', 'plans', 'entitlements']],
-  ['migrationGroup', ['migrations', 'migrationFirms']],
   ['tournamentGroup', ['tournaments']],
+  ['migrationGroup', ['migrations', 'migrationFirms']],
   ['paymentsGroup', ['paymentOverview', 'paymentSearch', 'payments', 'deposits', 'refunds', 'paymentSettings']],
   ['business', ['coupons', 'support', 'partners', 'commissions']],
   ['financeGroup', ['finance', 'expenses', 'reserves', 'obligations']],
@@ -587,11 +587,11 @@ async function directory(main, section, filter) {
       table('audit', [['date', r => date(r.created_at)], ['action', r => technical(r.action)], ['username', r => technical(r.actor)]], data.audit ?? []))
     return
   }
+  if (id && section === 'tournaments') return tournamentView(main, data)
+  if (section === 'tournaments') return tournamentsView(main, data.rows ?? [])
   if (id && section === 'migrations') return migrationView(main, data)
   if (section === 'migrations') return migrationsView(main, data.rows ?? [])
   if (section === 'migrationFirms') return migrationFirmsView(main, data)
-  if (id && section === 'tournaments') return tournamentView(main, data)
-  if (section === 'tournaments') return tournamentsView(main, data.rows ?? [])
   if (section === 'plans') return plansView(main, data.rows ?? [])
   if (section === 'entitlements') return entitlementsView(main, data.rows ?? [])
   if (section === 'coupons') main.append(el('div', { class: 'tools' }, button('createCoupon', () => { void couponWizard() }, 'primary')))
@@ -741,6 +741,54 @@ function entitlementsView(main, rows) {
     el('p', { class: 'muted' }, t('entitlementHint')), table(null, entitlementColumns, rows))
 }
 
+/* ---------- Premium League: schedule, entries, review, standings, awards ---------- */
+function tournamentsView(main, rows) {
+  main.append(el('p', { class: 'muted' }, t('tournamentHint')),
+    table(null, [['name', r => link('tournaments', { id: r.slug }, locale === 'fa' ? r.name_fa : r.name_en)], ['status', status],
+      ['startsAt', r => date(r.starts_at)], ['endsAt', r => date(r.ends_at)], ['registered', r => number(r.registered)]], rows))
+}
+function tournamentView(main, data) {
+  const { tournament: tn, registrations = [], standings = [], awards = [], signals = {} } = data
+  const reason = () => ['reason', areaInput({ required: '', minlength: '3' })]
+  const slugField = ['slug', textInput({ hidden: '', value: tn.slug })]
+  const before = Date.parse(tn.starts_at) > Date.now() && ['draft', 'registration'].includes(tn.status)
+  const csv = () => {
+    const head = ['id', 'status', 'nickname', 'wallet_address', 'email', 'email_verified_at', 'challenge_id', 'out_of_ranking_rule', 'disqualified_reason', 'created_at']
+    const esc = v => `"${String(v ?? '').replaceAll('"', '""')}"`
+    const blob = new Blob([[head.join(','), ...registrations.map(r => head.map(h => esc(r[h])).join(','))].join('\n') + '\n'], { type: 'text/csv' })
+    const a = el('a', { href: URL.createObjectURL(blob), download: `${tn.slug}-registrations.csv` }); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000)
+  }
+  main.append(el('section', { class: 'panel detail' }, el('h2', {}, locale === 'fa' ? tn.name_fa : tn.name_en), technical(tn.slug), status(tn),
+    el('span', {}, `${t('startsAt')}: `, date(tn.starts_at)), el('span', {}, `${t('endsAt')}: `, date(tn.ends_at)),
+    el('span', {}, `${t('accountSize')}: `, usd(tn.account_size_usd)),
+    el('span', {}, `${t('dailyLimit')} ${number(tn.daily_loss_pct)}% · ${t('maxLimit')} ${number(tn.max_loss_pct)}% · ${t('consistency')} ${number(tn.consistency_pct)}%`),
+    el('div', { class: 'tools' },
+      before ? button('configureTournament', () => operate('tournaments', tn.slug, 'configure', [
+        ['startsAt', textInput({ type: 'datetime-local', dir: 'ltr' }), i => i.value ? new Date(i.value).toISOString() : undefined],
+        ['tradingDays', textInput({ type: 'number', min: '1', max: '120', dir: 'ltr', value: String(tn.trading_days) }), i => i.value ? Number(i.value) : undefined],
+        ['status', selectInput([['registration', 'registration'], ['draft', 'draft'], ['cancelled', 'cancelled']])],
+        reason()], 'configureTournament')) : null,
+      tn.status === 'finished' ? button('finalizeTournament', () => operate('tournaments', tn.slug, 'finalize', [reason()], 'finalizeTournament'), 'primary') : null,
+      tn.status === 'finalized' ? button('issueAwards', () => operate('tournaments', tn.slug, 'issueAwards', [reason()], 'issueAwards'), 'primary') : null,
+      registrations.length ? button('exportCsv', csv) : null),
+    el('p', { class: 'muted' }, t('tournamentFlowHint'))),
+  table('registrations', [['nickname', r => r.nickname ?? '—'], ['wallet', wallet], ['email', r => technical(r.email)], ['status', status],
+    ['rule', r => technical(r.out_of_ranking_rule)], ['date', r => date(r.created_at)],
+    ['actions', r => r.status === 'disqualified' || tn.status === 'finalized' ? (r.disqualified_reason ?? '—')
+      : button('disqualify', () => operate('tournamentEntries', r.id, 'disqualify', [slugField, reason()], 'disqualify'), 'danger')]], registrations),
+  table('reviewSignals', [['kind', r => t(r.kind)], ['detail', r => technical(r.detail)]], [
+    ...(signals.sharedNetworks ?? []).map(r => ({ kind: 'sharedNetwork', detail: `${r.prefix} × ${r.entries}` })),
+    ...(signals.mirroredTrades ?? []).map(r => ({ kind: r.opposite ? 'oppositeTrades' : 'mirroredTrades', detail: `${r.market} · ${r.pairs} · ${r.a} / ${r.b}` })),
+    ...(signals.registrationBursts ?? []).map(r => ({ kind: 'registrationBurst', detail: `${r.minute} × ${r.registrations}` }))]),
+  table('standings', [['rank', r => r.rank ?? '—'], ['nickname', r => r.nickname ?? '—'], ['wallet', wallet], ['equity', r => usd(r.final_equity)],
+    ['maxDrawdown', r => usd(r.max_drawdown_usd)], ['status', r => r.ranked ? badge('ranked') : technical(r.not_ranked_reason)]], standings),
+  table('awards', [['rank', r => r.rank ?? '—'], ['nickname', r => r.nickname ?? '—'], ['wallet', wallet], ['kind', r => t('award_' + r.kind)], ['item', r => r.item],
+    ['amount', r => r.amount_usd == null ? '—' : usd(r.amount_usd)], ['status', status], ['note', r => r.fulfilment_note ?? '—'],
+    ['actions', r => ['cash', 'hardware'].includes(r.kind) ? button('updateAward', () => operate('tournamentAwards', r.id, 'update', [slugField,
+      ['status', selectInput([['pending', 'pending'], ['in_progress', 'in_progress'], ['fulfilled', 'fulfilled'], ['cancelled', 'cancelled']])],
+      ['note', areaInput({ maxlength: '1000' }), readOptional], reason()], 'updateAward')) : '—']], awards))
+}
+
 /* ---------- Migration to Openfund: review queue, decision, pass, firms ---------- */
 function migrationsView(main, rows) {
   main.append(el('p', { class: 'muted' }, t('migrationHint')),
@@ -815,52 +863,6 @@ function logoDialog(f) {
     ['contentType', el('span', { hidden: '' }), () => holder.value?.contentType],
     ['dataBase64', el('span', { hidden: '' }), () => holder.value?.dataBase64],
     ['reason', areaInput({ required: '' })]], 'uploadLogo')
-/* ---------- Premium League: schedule, entries, review, standings, awards ---------- */
-function tournamentsView(main, rows) {
-  main.append(el('p', { class: 'muted' }, t('tournamentHint')),
-    table(null, [['name', r => link('tournaments', { id: r.slug }, locale === 'fa' ? r.name_fa : r.name_en)], ['status', status],
-      ['startsAt', r => date(r.starts_at)], ['endsAt', r => date(r.ends_at)], ['registered', r => number(r.registered)]], rows))
-}
-function tournamentView(main, data) {
-  const { tournament: tn, registrations = [], standings = [], awards = [], signals = {} } = data
-  const reason = () => ['reason', areaInput({ required: '', minlength: '3' })]
-  const slugField = ['slug', textInput({ hidden: '', value: tn.slug })]
-  const before = Date.parse(tn.starts_at) > Date.now() && ['draft', 'registration'].includes(tn.status)
-  const csv = () => {
-    const head = ['id', 'status', 'nickname', 'wallet_address', 'email', 'email_verified_at', 'challenge_id', 'out_of_ranking_rule', 'disqualified_reason', 'created_at']
-    const esc = v => `"${String(v ?? '').replaceAll('"', '""')}"`
-    const blob = new Blob([[head.join(','), ...registrations.map(r => head.map(h => esc(r[h])).join(','))].join('\n') + '\n'], { type: 'text/csv' })
-    const a = el('a', { href: URL.createObjectURL(blob), download: `${tn.slug}-registrations.csv` }); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000)
-  }
-  main.append(el('section', { class: 'panel detail' }, el('h2', {}, locale === 'fa' ? tn.name_fa : tn.name_en), technical(tn.slug), status(tn),
-    el('span', {}, `${t('startsAt')}: `, date(tn.starts_at)), el('span', {}, `${t('endsAt')}: `, date(tn.ends_at)),
-    el('span', {}, `${t('accountSize')}: `, usd(tn.account_size_usd)),
-    el('span', {}, `${t('dailyLimit')} ${number(tn.daily_loss_pct)}% · ${t('maxLimit')} ${number(tn.max_loss_pct)}% · ${t('consistency')} ${number(tn.consistency_pct)}%`),
-    el('div', { class: 'tools' },
-      before ? button('configureTournament', () => operate('tournaments', tn.slug, 'configure', [
-        ['startsAt', textInput({ type: 'datetime-local', dir: 'ltr' }), i => i.value ? new Date(i.value).toISOString() : undefined],
-        ['tradingDays', textInput({ type: 'number', min: '1', max: '120', dir: 'ltr', value: String(tn.trading_days) }), i => i.value ? Number(i.value) : undefined],
-        ['status', selectInput([['registration', 'registration'], ['draft', 'draft'], ['cancelled', 'cancelled']])],
-        reason()], 'configureTournament')) : null,
-      tn.status === 'finished' ? button('finalizeTournament', () => operate('tournaments', tn.slug, 'finalize', [reason()], 'finalizeTournament'), 'primary') : null,
-      tn.status === 'finalized' ? button('issueAwards', () => operate('tournaments', tn.slug, 'issueAwards', [reason()], 'issueAwards'), 'primary') : null,
-      registrations.length ? button('exportCsv', csv) : null),
-    el('p', { class: 'muted' }, t('tournamentFlowHint'))),
-  table('registrations', [['nickname', r => r.nickname ?? '—'], ['wallet', wallet], ['email', r => technical(r.email)], ['status', status],
-    ['rule', r => technical(r.out_of_ranking_rule)], ['date', r => date(r.created_at)],
-    ['actions', r => r.status === 'disqualified' || tn.status === 'finalized' ? (r.disqualified_reason ?? '—')
-      : button('disqualify', () => operate('tournamentEntries', r.id, 'disqualify', [slugField, reason()], 'disqualify'), 'danger')]], registrations),
-  table('reviewSignals', [['kind', r => t(r.kind)], ['detail', r => technical(r.detail)]], [
-    ...(signals.sharedNetworks ?? []).map(r => ({ kind: 'sharedNetwork', detail: `${r.prefix} × ${r.entries}` })),
-    ...(signals.mirroredTrades ?? []).map(r => ({ kind: r.opposite ? 'oppositeTrades' : 'mirroredTrades', detail: `${r.market} · ${r.pairs} · ${r.a} / ${r.b}` })),
-    ...(signals.registrationBursts ?? []).map(r => ({ kind: 'registrationBurst', detail: `${r.minute} × ${r.registrations}` }))]),
-  table('standings', [['rank', r => r.rank ?? '—'], ['nickname', r => r.nickname ?? '—'], ['wallet', wallet], ['equity', r => usd(r.final_equity)],
-    ['maxDrawdown', r => usd(r.max_drawdown_usd)], ['status', r => r.ranked ? badge('ranked') : technical(r.not_ranked_reason)]], standings),
-  table('awards', [['rank', r => r.rank ?? '—'], ['nickname', r => r.nickname ?? '—'], ['wallet', wallet], ['kind', r => t('award_' + r.kind)], ['item', r => r.item],
-    ['amount', r => r.amount_usd == null ? '—' : usd(r.amount_usd)], ['status', status], ['note', r => r.fulfilment_note ?? '—'],
-    ['actions', r => ['cash', 'hardware'].includes(r.kind) ? button('updateAward', () => operate('tournamentAwards', r.id, 'update', [slugField,
-      ['status', selectInput([['pending', 'pending'], ['in_progress', 'in_progress'], ['fulfilled', 'fulfilled'], ['cancelled', 'cancelled']])],
-      ['note', areaInput({ maxlength: '1000' }), readOptional], reason()], 'updateAward')) : '—']], awards))
 }
 
 /* ---------- plans: draft, preview diff, publish, retire ---------- */
