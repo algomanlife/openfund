@@ -8716,6 +8716,54 @@
       }
     ]
   },
+  "languageGlobe": {
+    "branch": "agent/claude/language-globe",
+    "baseCommit": "dc0899aaa804319e9f1ce53dcd15ed25a4de63a4",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-21T18:34:07+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8299, disposable database; captured by e2e/test-language-select.cjs",
+    "cms": "Directus not running",
+    "marketData": "Live Gains through the local backend",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "language-globe/language-panel-en-dark.jpg",
+        "route": "/en/markets",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: open panel (crop) with globe turned to the hovered Persian region. JPEG."
+      },
+      {
+        "file": "language-globe/language-panel-fa-light.jpg",
+        "route": "/fa/markets",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian (RTL), light: open panel. JPEG."
+      },
+      {
+        "file": "language-globe/language-sheet-ar-390.jpg",
+        "route": "/ar/markets",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Arabic (RTL), 390 px touch: bottom sheet with 52 px rows. JPEG."
+      },
+      {
+        "file": "language-globe/language-panel-ru-768.jpg",
+        "route": "/ru/rulebook",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Russian (LTR), dark, 768 px: panel open with all five languages, native name, Russian exonym and direction; panel inside the viewport, no horizontal overflow. Clipped to the top 560 px."
+      }
+    ]
+  },
   "walletShowcaseBeam": {
     "branch": "agent/claude/wallet-carousel",
     "baseCommit": "2137b4d3e1d244bb304c87e25f3f93137be6b583",

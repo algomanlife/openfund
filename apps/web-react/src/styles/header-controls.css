@@ -77,16 +77,7 @@
 
 /* ---- language: icon · code · chevron, isolated from the page direction --- */
 :root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-language-select {
-  min-width: 0; padding-inline: var(--hc-px) calc(var(--hc-px) + 10px); position: relative;
-}
-:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-language-select:dir(rtl) {
-  padding-inline: var(--hc-px) calc(var(--hc-px) + 10px);
-}
-:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-language-face {
-  gap: 6px; direction: ltr; unicode-bidi: isolate; font-size: var(--hc-fs);
-}
-:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-language-select::after {
-  inset-inline-end: calc(var(--hc-px) - 2px);
+  min-width: 0; padding-inline: var(--hc-px); position: relative; gap: 6px; direction: ltr; unicode-bidi: isolate; font-size: var(--hc-fs);
 }
 
 /* ---- theme: the button itself is the shared box (same height, border,
@@ -118,7 +109,7 @@ html[data-theme='light'] :is(.openfund-header .nav-actions, .of-terminal-actions
   border-color: #12965D88 !important;
 }
 :root :is(.openfund-header .nav-actions, .of-terminal-actions) :is(.of-daynight, .nav-cta, .rk-chip):focus-visible,
-:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-language-select:focus-within {
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-language-select:focus-visible {
   outline: 2px solid var(--mint, #82e7bd); outline-offset: 2px;
 }
 
@@ -138,7 +129,7 @@ html[data-theme='light'] :is(.openfund-header .nav-actions, .of-terminal-actions
 @media (max-width: 420px) {
   :root .openfund-header .nav-actions { --hc-px: 8px; --hc-gap: 4px; }
   :root .openfund-header .nav-actions .nav-cta > span { display: none; }
-  :root .openfund-header .nav-actions .of-language-icon { display: none; }
+  :root .openfund-header .nav-actions .of-globe-icon { display: none; }
   :root .openfund-header .nav-actions .of-daynight { --dn-w: 40px; --dn-pad: 5px; }
 }
 /* Terminal phone header: the connect chip is icon-only (aria-label kept) so
@@ -146,7 +137,7 @@ html[data-theme='light'] :is(.openfund-header .nav-actions, .of-terminal-actions
 @media (max-width: 650px) {
   :root .of-terminal-actions .rk-chip-connect { width: var(--hc-h); min-width: var(--hc-h); padding-inline: 0; }
   :root .of-terminal-actions .rk-chip-connect .rk-connect-label { display: none; }
-  :root .of-terminal-actions .of-language-icon { display: none; }
+  :root .of-terminal-actions .of-globe-icon { display: none; }
   /* connected address chip: headroom for wider platform monospace fonts */
   :root .of-terminal-actions .rk-account-summary { gap: 6px; max-width: 132px; overflow: hidden; }
   :root .of-terminal-actions .rk-account-summary .rk-chevron { display: none; }

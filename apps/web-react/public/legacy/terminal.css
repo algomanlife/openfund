@@ -646,3 +646,7 @@ html[data-theme="light"] .submit:hover{background:#096b44}
 /* OpenFi wordmark: same balance as the website header (see legacy/style.css). */
 .brand-word{text-transform:none;font-variant-caps:normal;letter-spacing:-.03em}
 .brand-word>.brand-caption{width:0;min-width:100%;font-size:.2em;line-height:1;letter-spacing:.045em;white-space:nowrap;text-align:justify;text-align-last:justify}
+
+/* legacy fa/en toggle: same globe face as the React language selector (src/i18n/language.css) */
+.language-toggle{display:inline-flex;align-items:center;gap:6px;width:auto;padding:0 8px}
+.language-toggle .of-globe-icon{flex:none;fill:none;stroke:var(--mint);stroke-width:1.5}

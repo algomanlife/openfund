@@ -19,6 +19,7 @@
  *        LOCALE_MATRIX_ONLY=ar,ru  LOCALE_MATRIX_VIEWPORTS=desktop  (optional filters) */
 const { chromium } = require('playwright')
 const fs = require('node:fs')
+const { chooseLocale, toggleLocale } = require('./helpers/language.cjs');
 const BASE = (process.env.TEST_FRONTEND_URL || 'http://127.0.0.1:8080').replace(/\/$/, '')
 const OUT = process.env.LOCALE_MATRIX_OUT || 'output/playwright/locale-matrix'
 const LOCALES = (process.env.LOCALE_MATRIX_ONLY || 'fa,en,ar,ru,zh-CN').split(',')
@@ -156,7 +157,7 @@ function leaks(locale, texts) {
   const page = await context.newPage()
   await page.goto(`${BASE}/fa/markets`, { waitUntil: 'domcontentloaded' })
   await page.waitForTimeout(2500)
-  await page.locator('.of-language-select select').first().selectOption('ar')
+  await chooseLocale(page, 'ar')
   await page.waitForURL('**/ar/markets', { timeout: 15000 }).catch(() => {})
   await page.waitForTimeout(1500)
   check('switch fa→ar keeps page', new URL(page.url()).pathname === '/ar/markets', page.url())
@@ -168,7 +169,7 @@ function leaks(locale, texts) {
   check('reload keeps Arabic', await page.evaluate(() => document.documentElement.lang) === 'ar')
   await page.goBack(); await page.waitForTimeout(2500)
   check('Back returns to Arabic markets', new URL(page.url()).pathname === '/ar/markets' && await page.evaluate(() => document.documentElement.lang) === 'ar', page.url())
-  await page.locator('.of-language-select select').first().selectOption('zh-CN')
+  await chooseLocale(page, 'zh-CN')
   await page.waitForURL('**/zh-CN/markets', { timeout: 15000 }).catch(() => {})
   await page.waitForTimeout(1500)
   check('switch ar→zh-CN ltr', await page.evaluate(() => document.documentElement.lang === 'zh-CN' && document.documentElement.dir === 'ltr'))
