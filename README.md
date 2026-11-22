@@ -152,7 +152,7 @@ evidence. A merge is not production until `/version` reports it.
 - GLOBAL (Render) Web/API runs v0.8.0 `0320cf7`; IRAN (Liara) web runs v0.6.5 `a87804a` (built as unofficial).
 - Purchases: enabled in GLOBAL, disabled in IRAN; owner purchase acceptance open (see the purchases row in docs/status).
 - Live execution: disabled (Approved signer/custody design, supported testnet contracts, simulation, security review and management activation).
-- Desktop: 0.0.3 candidate merged (#171); internal unsigned builds, UI acceptance and integrity checks passed on all four CI targets. macOS x64 installer upload failed with a GitHub timeout; signed/public release and real-wallet acceptance remain pending.
+- Desktop: Open Trade 0.0.4 published as the GitHub pre-release open-trade-v0.0.4 (unsigned experimental beta): macOS arm64 and x64 .dmg, Windows x64 .exe, Linux x64 AppImage and .deb from Open Trade desktop run 44895436607 on main 935d06f. All five files downloaded on 2026-11-21; each SHA-256 recomputed and matched GitHub's asset digest, sizes match. The attached SHA256SUMS.txt lists only the Windows installer. Not signed or notarized; not executed on a clean machine in this verification.
 
 <!-- /status:summary -->
 

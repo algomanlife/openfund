@@ -275,14 +275,14 @@
       "source": "merged",
       "release": null,
       "global": {
-        "deployed": false,
-        "enabled": false,
-        "verified": false,
+        "deployed": true,
+        "enabled": true,
+        "verified": true,
         "accepted": false,
-        "detail": "0.0.3 candidate merged (#171); internal unsigned builds, UI acceptance and integrity checks passed on all four CI targets. macOS x64 installer upload failed with a GitHub timeout; signed/public release and real-wallet acceptance remain pending.",
-        "verifiedAt": "2026-11-21T07:43:00Z",
-        "evidence": "https://github.com/algomanlife/openfund/actions/runs/44880940066",
-        "blocker": "Recover macOS x64 artifact upload; configure signing and Reown; reviewed translations, real-wallet and clean-machine acceptance; owner publication decision."
+        "detail": "Open Trade 0.0.4 published as the GitHub pre-release open-trade-v0.0.4 (unsigned experimental beta): macOS arm64 and x64 .dmg, Windows x64 .exe, Linux x64 AppImage and .deb from Open Trade desktop run 44895436607 on main 935d06f. All five files downloaded on 2026-11-21; each SHA-256 recomputed and matched GitHub's asset digest, sizes match. The attached SHA256SUMS.txt lists only the Windows installer. Not signed or notarized; not executed on a clean machine in this verification.",
+        "verifiedAt": "2026-11-21T19:30:00Z",
+        "evidence": "https://github.com/algomanlife/openfund/releases/tag/open-trade-v0.0.4",
+        "blocker": "Signing and notarization; complete SHA256SUMS; real-wallet and clean-machine acceptance; owner acceptance."
       },
       "iran": {
         "deployed": false,
