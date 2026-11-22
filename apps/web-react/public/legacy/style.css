@@ -388,9 +388,9 @@ footer .document-links h3 { color: var(--white); }
 @keyframes hero-glint{0%{transform:translateX(-120%);opacity:1}100%{transform:translateX(300%);opacity:0}}
 /* orbiting chips at different depths, lit in their stage */
 .hero-product .float-note{transition:border-color .5s,box-shadow .5s,opacity .5s}
-.hero-product[data-stage] .note-right{animation:hero-chip-a 13.5s linear infinite;opacity:.75}
-.hero-product[data-stage] .note-left{animation:hero-chip-b 13.5s linear infinite;opacity:.6}
-.hero-product[data-stage=verified] .note-left,.hero-product[data-stage=funded] .note-right{opacity:1;border-color:#82e7bd88;box-shadow:0 0 30px #82e7bd30}
+.hero-product[data-stage] .note-right{animation:hero-chip-a 13.5s linear infinite}
+.hero-product[data-stage] .note-left{animation:hero-chip-b 13.5s linear infinite}
+.hero-product[data-stage=verified] .note-left,.hero-product[data-stage=funded] .note-right{border-color:#82e7bd88;box-shadow:0 0 30px #82e7bd30}
 @keyframes hero-chip-a{0%,100%{transform:translate(0,0) rotate(3deg) scale(1)}25%{transform:translate(-18px,-14px) rotate(2deg) scale(1.03)}50%{transform:translate(-6px,-26px) rotate(4deg) scale(.97)}75%{transform:translate(10px,-10px) rotate(3deg) scale(1)}}
 @keyframes hero-chip-b{0%,100%{transform:translate(0,0) rotate(-4deg) scale(.94)}25%{transform:translate(14px,10px) rotate(-3deg) scale(.9)}50%{transform:translate(22px,-6px) rotate(-5deg) scale(.96)}75%{transform:translate(6px,-14px) rotate(-4deg) scale(.92)}}
 /* data terrain floor: price ridges that rise with the sparkline */
