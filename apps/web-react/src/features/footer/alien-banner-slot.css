@@ -1,0 +1,45 @@
+/* Footer "alien trader" banner: the slot (in the main bundle) reserves the
+   band's size so the lazily loaded scene causes no layout shift. The band is
+   full-bleed inside the centred footer container; the page clips the
+   scrollbar-width overhang horizontally (overflow-x: clip keeps sticky
+   headers working). It stays a dark band in both themes. */
+body:has(.of-alien-slot) { overflow-x: clip; }
+.of-alien-slot {
+  position: relative;
+  inline-size: 100vw;
+  margin-inline: calc(50% - 50vw);
+  margin-block: 8px 0;
+  direction: ltr; /* the scene is a picture: never mirrored in RTL */
+}
+.of-alien-frame {
+  position: relative;
+  aspect-ratio: 21 / 9;
+  max-block-size: 660px;
+  min-block-size: 300px;
+  inline-size: 100%;
+  overflow: hidden;
+  background: #040706;
+  contain: layout paint;
+}
+/* blend the dark band into the page above and below (both themes) */
+.of-alien-frame::before,
+.of-alien-frame::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  block-size: 22%;
+  z-index: 3;
+  pointer-events: none;
+}
+.of-alien-frame::before { inset-block-start: 0; background: linear-gradient(var(--bg, #060808), transparent); }
+.of-alien-frame::after { inset-block-end: 0; background: linear-gradient(transparent, var(--bg, #060808)); }
+/* mobile focal crop: a taller frame; the scene is centred and sliced to the
+   alien and the two centre monitors */
+html[data-theme='light'] .of-alien-frame::before, html[data-theme='light'] .of-alien-frame::after { block-size: 12%; }
+@media (max-width: 767px) {
+  .of-alien-frame { aspect-ratio: 4 / 5; max-block-size: 520px; min-block-size: 0; }
+  .of-alien-frame::before, .of-alien-frame::after { block-size: 16%; }
+}
+@media (min-width: 768px) and (max-width: 1099px) {
+  .of-alien-frame { aspect-ratio: 16 / 9; }
+}

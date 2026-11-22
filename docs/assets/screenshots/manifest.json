@@ -8865,5 +8865,62 @@
         "state": "Layout sequence mid-transition: the two-chart capture revealed from the centre line over the one-chart capture (clip-path split). All window content is real Open Trade 0.0.2 beta / web-terminal captures already in the repository."
       }
     ]
+  },
+  "footerBanner": {
+    "branch": "agent/claude/footer-alien-banner",
+    "baseCommit": "5c458d39c38878d4ab1b5da5a14631c819d177a1",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-22T04:51:39+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8311, disposable database openfund_scratch on a throwaway PostgreSQL cluster (port 55432); Playwright element capture of the banner band",
+    "cms": "Directus not running; bundled fallback copy",
+    "marketData": "None in the banner (illustrative motion only)",
+    "wallet": "Anonymous; no wallet connected",
+    "screenshots": [
+      {
+        "file": "footer-banner/banner-en-dark-1440.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English (LTR), dark, 1440 px. Decorative illustration; the top-centre screen is the real Open Trade capture already in the repository."
+      },
+      {
+        "file": "footer-banner/banner-fa-light-1440.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian (RTL), light theme: the band stays dark and fades into the page. Decorative illustration; the top-centre screen is the real Open Trade capture already in the repository."
+      },
+      {
+        "file": "footer-banner/banner-en-light-768.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "English, light, 768 px (16:9 frame). Decorative illustration; the top-centre screen is the real Open Trade capture already in the repository."
+      },
+      {
+        "file": "footer-banner/banner-fa-dark-390.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian, dark, 390 px: 4:5 focal crop on the alien and the centre monitors. Decorative illustration; the top-centre screen is the real Open Trade capture already in the repository."
+      },
+      {
+        "file": "footer-banner/banner-en-dark-1440-reduced.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "prefers-reduced-motion: static frame. Decorative illustration; the top-centre screen is the real Open Trade capture already in the repository."
+      }
+    ]
   }
 }

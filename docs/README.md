@@ -36,7 +36,7 @@ instead of repeating it. Historical reviews keep their original wording.
 
 ## Website
 
-[Content architecture and ownership](website/CONTENT_ARCHITECTURE.md) · [Product rules and launch blockers](product/PRODUCT_RULES.md) · [Website expansion spec](website/WEBSITE_EXPANSION.md) — FAQ hub, Tools Center, Learning Center, Growth Partner · [Official Whitepaper v1.0](website/WHITEPAPER.md) · [Universal visual editing](backstage/UNIVERSAL_VISUAL_EDITING.md) · [Expansion audit](research/WEBSITE_EXPANSION_AUDIT.md)
+[Content architecture and ownership](website/CONTENT_ARCHITECTURE.md) · [Product rules and launch blockers](product/PRODUCT_RULES.md) · [Website expansion spec](website/WEBSITE_EXPANSION.md) — FAQ hub, Tools Center, Learning Center, Growth Partner · [Official Whitepaper v1.0](website/WHITEPAPER.md) · [Footer banner](website/FOOTER_BANNER.md) · [Universal visual editing](backstage/UNIVERSAL_VISUAL_EDITING.md) · [Expansion audit](research/WEBSITE_EXPANSION_AUDIT.md)
 
 ## Trading
 

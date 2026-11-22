@@ -10,6 +10,7 @@ import { RainbowConnect } from '../../wallet/RainbowConnect'
 import { labels, type Locale, type InfoPage } from './content'
 import './information.css'
 import TelegramCommunity from '../community/TelegramCommunity'
+import AlienBannerSlot from '../footer/AlienBannerSlot'
 import SiteNavDrawer from '../navigation/SiteNavDrawer'
 import { bindNavigation, fitNavigation, renderNavigation, navigationClick, navigationKeyDown } from './navigation'
 import { chooseTheme, currentTheme, decorateThemeToggle } from '../../theme'
@@ -44,6 +45,7 @@ export function Chrome({ locale, part, nav = true }: { locale: AppLocale; part: 
   const [dictionary, setDictionary] = useState<Record<string, string>>(fallbackTranslations)
   const [faDictionary, setFaDictionary] = useState<Record<string, string>>({})
   const [communityHost, setCommunityHost] = useState<HTMLElement | null>(null)
+  const [alienHost, setAlienHost] = useState<HTMLElement | null>(null)
   const [walletHost, setWalletHost] = useState<HTMLElement | null>(null)
   const [languageHost, setLanguageHost] = useState<HTMLElement | null>(null)
   const [navItems, setNavItems] = useState<CmsNavItem[] | null>(null)
@@ -112,7 +114,7 @@ export function Chrome({ locale, part, nav = true }: { locale: AppLocale; part: 
 
   useEffect(() => { if (part === 'header' && host.current) return bindNavigation(host.current) }, [markup, part])
   useEffect(() => { if (part === 'header' && nav && host.current) return fitNavigation(host.current) }, [markup, part, nav])
-  useEffect(() => { setWalletHost(host.current?.querySelector<HTMLElement>('#wallet-root') || null); setLanguageHost(host.current?.querySelector<HTMLElement>('#language-slot') || null); setCommunityHost(host.current?.querySelector<HTMLElement>('[data-community-slot]') || null) }, [markup])
+  useEffect(() => { setWalletHost(host.current?.querySelector<HTMLElement>('#wallet-root') || null); setLanguageHost(host.current?.querySelector<HTMLElement>('#language-slot') || null); setCommunityHost(host.current?.querySelector<HTMLElement>('[data-community-slot]') || null); setAlienHost(host.current?.querySelector<HTMLElement>('[data-alien-banner]') || null) }, [markup])
 
   return <div ref={host} className="info-chrome" onClick={e => {
     const target = (e.target as HTMLElement).closest<HTMLElement>('button, a')
@@ -134,6 +136,7 @@ export function Chrome({ locale, part, nav = true }: { locale: AppLocale; part: 
       onLocaleChange={next => navigate(switchLocalePath(location.pathname, next) + location.search)} />}
     {part === 'header' && languageHost && createPortal(<LanguageSelect locale={locale} onChange={next => navigate(switchLocalePath(location.pathname, next) + location.search)} />, languageHost)}
     {part === 'footer' && communityHost && createPortal(<TelegramCommunity locale={locale} />, communityHost)}
+    {part === 'footer' && alienHost && createPortal(<AlienBannerSlot />, alienHost)}
   </div>
 }
 

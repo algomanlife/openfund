@@ -1,3 +1,4 @@
+import AlienBannerSlot from '../features/footer/AlienBannerSlot'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useParams, useSearchParams, useNavigate, Navigate, useLocation } from 'react-router-dom'
@@ -155,10 +156,13 @@ function markCurrentPage() {
 
 export default function Landing() {
   const [communityHosts, setCommunityHosts] = useState<HTMLElement[]>([])
+  /* footer alien-trader banner (decorative, lazily loaded) */
+  const [alienHost, setAlienHost] = useState<HTMLElement | null>(null)
   const [communityLocale, setCommunityLocale] = useState<AppLocale>('fa')
   useEffect(() => {
     const sync = () => setCommunityLocale(uiLocale())
     setCommunityHosts(Array.from(document.querySelectorAll<HTMLElement>('[data-community-slot]')))
+    setAlienHost(document.querySelector<HTMLElement>('[data-alien-banner]'))
     sync()
     addEventListener('of-language', sync)
     return () => removeEventListener('of-language', sync)
@@ -405,6 +409,7 @@ export default function Landing() {
       {walletHost && createPortal(<RainbowConnect />, walletHost)}
       {languageHost && createPortal(<LanguageSelect locale={routeLocale} onChange={next => navigate(switchLocalePath(routerLocation.pathname, next) + routerLocation.search)} />, languageHost)}
       {communityHosts.map((host, i) => createPortal(<TelegramCommunity locale={communityLocale} />, host, String(i)))}
+      {alienHost && createPortal(<AlienBannerSlot />, alienHost)}
       <SiteNavDrawer locale={communityLocale} pathname={`/${communityLocale}/challenges`} navItems={drawerNav}
         onLocaleChange={next => navigate(switchLocalePath(routerLocation.pathname, next) + routerLocation.search)} />
       <CheckoutHost />

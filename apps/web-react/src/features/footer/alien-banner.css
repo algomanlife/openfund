@@ -1,0 +1,77 @@
+/* Footer alien-trader scene (lazy chunk). Always a dark band: colours are the
+   dark-theme brand values (#82e7bd mint, #2fbf86 positive, #e0596a negative)
+   in both themes. Animations are transform/opacity only and run only while
+   .ab-root has .is-live (on screen, tab visible, motion allowed). */
+.ab-root { position: absolute; inset: 0; animation: ab-in .9s ease-out both; }
+.ab-scene { position: absolute; inset: -3% 0; transform: scale(1.04); will-change: transform; }
+.ab-room-art, .ab-svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+.ab-svg { overflow: hidden; }
+
+.ab-panels path { stroke: #82e7bd; stroke-opacity: .035; stroke-width: 2; }
+.ab-arms path { stroke: #0f1715; stroke-width: 14; fill: none; }
+.ab-bezel { fill: #070b0a; stroke: #82e7bd; stroke-opacity: .28; stroke-width: 1.5; }
+.ab-screen { fill: #030605; }
+.ab-glass { fill: #82e7bd; opacity: .035; }
+.ab-grid path { stroke: #82e7bd; stroke-opacity: .08; stroke-width: 1; }
+
+.ab-up path, .ab-up .ab-tri { stroke: #2fbf86; fill: #2fbf86; }
+.ab-up rect { fill: #2fbf86; }
+.ab-down path, .ab-down .ab-tri { stroke: #e0596a; fill: #e0596a; }
+.ab-down rect { fill: #e0596a; }
+.ab-up path, .ab-down path { stroke-width: 2; }
+.ab-line { fill: none; stroke: #82e7bd; stroke-width: 3; }
+.ab-area { fill: #82e7bd; opacity: .12; }
+.ab-sym { fill: #cfe9dc; font: 600 22px var(--ds-font-latin, Ubuntu, sans-serif); letter-spacing: .04em; }
+.ab-mini { opacity: .7; }
+.ab-row { stroke: #82e7bd !important; stroke-opacity: .08; stroke-width: 1 !important; fill: none !important; }
+.ab-bid { fill: #2fbf86; opacity: .55; transform-box: fill-box; transform-origin: right; }
+.ab-ask { fill: #e0596a; opacity: .5; transform-box: fill-box; transform-origin: left; }
+.ab-mid { stroke: #82e7bd; stroke-opacity: .3; }
+.ab-heat.is-up { fill: #2fbf86; }
+.ab-heat.is-down { fill: #e0596a; }
+.ab-capture { opacity: .92; }
+.ab-scan { fill: #82e7bd; opacity: 0; }
+
+.ab-deskedge { stroke-width: 3; fill: none; }
+.ab-keys { stroke: #82e7bd; stroke-opacity: .18; stroke-dasharray: 6 5; stroke-width: 4; }
+.ab-arm { fill: none; stroke: #4b5556; stroke-width: 15; stroke-linecap: round; }
+.ab-fingers { stroke: #4b5556; stroke-width: 4; stroke-linecap: round; }
+.ab-neck { fill: #262d2e; }
+.ab-headrim { fill: none; stroke-width: 3; stroke-linecap: round; opacity: .85; }
+.ab-skull { fill: none; stroke: #82e7bd; stroke-opacity: .12; stroke-width: 2; }
+.ab-chairrim { fill: none; stroke: #82e7bd; stroke-opacity: .45; stroke-width: 2.5; }
+.ab-seam { fill: none; stroke: #000; stroke-opacity: .55; stroke-width: 3; }
+.ab-patch { fill: #07110d; stroke: #82e7bd; stroke-opacity: .7; stroke-width: 2; }
+.ab-beam { opacity: .9; }
+
+.ab-haze { position: absolute; inset: -10% 0; pointer-events: none; will-change: transform; }
+.ab-haze i { position: absolute; border-radius: 50%; background: radial-gradient(closest-side, #82e7bd2e, transparent); opacity: .55; }
+.ab-haze i:nth-child(1) { inset-inline-start: 14%; inset-block-start: 8%; inline-size: 34%; block-size: 60%; }
+.ab-haze i:nth-child(2) { inset-inline-end: 12%; inset-block-start: 12%; inline-size: 34%; block-size: 56%; background: radial-gradient(closest-side, #4fb8a82a, transparent); }
+.ab-haze i:nth-child(3) { inset-inline-start: 30%; inset-block-end: 6%; inline-size: 40%; block-size: 40%; background: radial-gradient(closest-side, #82e7bd1c, transparent); }
+
+/* motion (paused unless live) */
+.ab-scroll { animation: ab-shift 48s linear infinite; }
+.ab-scroll.is-slow { animation-duration: 64s; }
+.ab-roll { animation: ab-roll 30s linear infinite; }
+.ab-bid, .ab-ask { animation: ab-depth 5.5s ease-in-out infinite alternate; }
+.ab-heat { animation: ab-heat 6s ease-in-out infinite alternate; }
+.ab-scan { animation: ab-scan 7s linear infinite; }
+.ab-wallglow, .ab-patchglow, .ab-haze i { animation: ab-breathe 7s ease-in-out infinite alternate; }
+.ab-haze i:nth-child(2) { animation-delay: -2.4s; }
+.ab-haze i:nth-child(3) { animation-delay: -4.6s; }
+.ab-root:not(.is-live) *, .ab-root:not(.is-live) { animation-play-state: paused; }
+
+@keyframes ab-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ab-shift { to { transform: translateX(var(--ab-shift)); } }
+@keyframes ab-roll { to { transform: translateY(var(--ab-shift)); } }
+@keyframes ab-depth { from { transform: scaleX(.72); } to { transform: scaleX(1); } }
+@keyframes ab-heat { from { opacity: .22; } to { opacity: .85; } }
+@keyframes ab-scan { from { transform: translateY(-60px); opacity: .06; } to { transform: translateY(320px); opacity: .06; } }
+@keyframes ab-breathe { from { opacity: .45; } to { opacity: 1; } }
+
+/* reduced motion: one static frame, no parallax (set in JS), no fades */
+@media (prefers-reduced-motion: reduce) {
+  .ab-root, .ab-root * { animation: none !important; }
+  .ab-scene, .ab-haze { transform: none !important; }
+}
