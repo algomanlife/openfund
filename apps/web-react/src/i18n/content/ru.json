@@ -3911,6 +3911,7 @@
   "Source data is stale": "Данные источника устарели",
   "Source timestamps are inconsistent": "Временные метки источника не согласованы",
   "Up to date": "Актуально",
+  "Required fields": "Обязательные поля",
   "Workspace settings": "Настройки рабочего пространства",
   "Real capture of the Web Terminal with live Gains market data. No wallet connected.": "Реальный снимок веб-терминала с живыми рыночными данными Gains. Кошелёк не подключён.",
   "SHA-256 from the CI build record": "SHA-256 из записи сборки CI",
