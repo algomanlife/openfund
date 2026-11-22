@@ -44,3 +44,5 @@ html[data-theme=light] .flamingo-scene .fl-sky-low{stop-color:color-mix(in srgb,
 html[data-theme=light] .flamingo-scene .fl-lake-top{stop-color:#d9efe5}
 html[data-theme=light] .flamingo-scene .fl-lake-low{stop-color:#c4e2d4}
 html[data-theme=light] .flamingo-scene .fl-shore{fill:#cfe6da}
+/* /:locale/migrate hero: the cinematic variant */
+.migrate-hero-scene .flamingo-scene{aspect-ratio:15/7;border-radius:20px;border:1px solid color-mix(in srgb,var(--flamingo,#f4a3b8) 35%,transparent)}
