@@ -7,6 +7,8 @@ import { chooseTheme, currentTheme } from '../../theme'
 import { dirOf, pick, pickFormat, type AppLocale } from '../../i18n/locales'
 import { BRAND_WORDMARK } from '../../brand/wordmark'
 import { BrandWordmark } from '../../brand/BrandWordmark'
+import MegaIcon from './MegaIcon'
+import './mega-menu.css'
 
 export const SITE_DRAWER_ID = 'site-navigation-drawer'
 const TRIGGER = '.openfund-header .menu'
@@ -56,6 +58,10 @@ export default function SiteNavDrawer({ locale, pathname, navItems, onLocaleChan
   const close = useCallback(() => setOpen(false), [])
   const [theme, setTheme] = useState(currentTheme)
   useEffect(() => { if (open) setTheme(currentTheme()) }, [open])
+  /* accordion: the group holding the current page starts open */
+  const [openGroups, setOpenGroups] = useState<Set<string>>(() => new Set())
+  useEffect(() => { if (open) setOpenGroups(new Set(model.groups.filter(g => g.links.some(l => l.current || l.activeSection)).map(g => g.id))) }, [open, model])
+  const toggleGroup = (id: string) => setOpenGroups(current => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next })
   const base = import.meta.env.BASE_URL
   const link = (item: { href: string; label: string; current: boolean; activeSection: boolean }) =>
     <a className="of-drawer-link" href={item.href} onClick={close}
@@ -76,10 +82,26 @@ export default function SiteNavDrawer({ locale, pathname, navItems, onLocaleChan
     </>}>
     <nav id={SITE_DRAWER_ID} className="of-drawer-nav" aria-label={pick(locale, 'ناوبری اصلی', 'Main navigation')}>
       <ul>{model.primary.map(item => <li key={item.route}>{link(item)}</li>)}</ul>
-      {model.groups.map(group => <section key={group.id} className="of-drawer-section" aria-labelledby={`${group.id}-drawer`}>
-        <h3 id={`${group.id}-drawer`}>{group.label}</h3>
-        <ul>{group.links.map(item => <li key={item.route}>{link(item)}</li>)}</ul>
-      </section>)}
+      {model.groups.map(group => {
+        const expanded = openGroups.has(group.id)
+        return <section key={group.id} className="of-drawer-section of-drawer-mega">
+          <h3><button type="button" className="of-drawer-accordion" aria-expanded={expanded} aria-controls={`${group.id}-drawer`} onClick={() => toggleGroup(group.id)}>
+            <span>{group.label}</span><span className="of-drawer-chevron" aria-hidden="true">⌄</span></button></h3>
+          <div id={`${group.id}-drawer`} hidden={!expanded}>
+            {group.sections.map(section => <div key={section.id} className="of-drawer-subgroup">
+              {section.label && <h4>{section.label}</h4>}
+              <ul className="mega-tiles is-drawer">{section.links.map(item => <li key={item.route}>
+                <a className="mega-tile" href={item.href} onClick={close} aria-current={item.current ? 'page' : undefined} data-active-section={item.activeSection || undefined}>
+                  <span className="mega-icon"><MegaIcon name={item.icon} /></span><span className="mega-text"><b>{item.label}</b></span>
+                </a></li>)}</ul>
+            </div>)}
+            {group.banner && <a className="mega-banner is-compact" href={group.banner.href} onClick={close}>
+              <span className="mega-icon"><MegaIcon name={group.banner.kind === 'council' ? 'governance' : 'apps'} /></span>
+              <span className="mega-banner-copy"><b>{group.banner.title}</b><small>{group.banner.body}</small></span>
+            </a>}
+          </div>
+        </section>
+      })}
       <a className="of-drawer-cta" href={`/${locale}/prop/trade`} onClick={close}>
         {pick(locale, 'ورود به ترمینال', 'Enter Terminal')}
       </a>
