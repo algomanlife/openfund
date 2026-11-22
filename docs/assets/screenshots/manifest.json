@@ -9499,6 +9499,42 @@
           "height": 844
         },
         "state": "Chinese, dark, 390: terminal menu with the Trading challenges tiles"
+      },
+      {
+        "file": "challenges-menu/migrate-en-1440-dark.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "en /migrate at 1440px (dark): first version of the destination page"
+      },
+      {
+        "file": "challenges-menu/migrate-fa-390-light.jpg",
+        "route": "/fa/migrate",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "fa /migrate at 390px (light): first version of the destination page"
+      },
+      {
+        "file": "challenges-menu/tournament-ru-768-dark.jpg",
+        "route": "/ru/tournament",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "ru /tournament at 768px (dark): first version of the destination page"
+      },
+      {
+        "file": "challenges-menu/tournament-ar-390-dark.jpg",
+        "route": "/ar/tournament",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "ar /tournament at 390px (dark): first version of the destination page"
       }
     ]
   }
