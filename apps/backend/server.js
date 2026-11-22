@@ -37,6 +37,8 @@ import { createPaymentWatcher, escalatePendingPayments, reviewOverduePartialOrde
 import { backstageReads } from './backstage-reads.js'
 import { adminRoutes } from './admin.js'
 import { consoleAdminRoutes } from './admin-console.js'
+import { migrationRoutes, migrationAdminRoutes, purgeMigrationFiles } from './migration.js'
+import { createMigrationStorage } from './migration-storage.js'
 import { createPayoutClaimClient } from './payout-claims.js'
 import { chartWorkspaceRoutes } from './chart-workspaces.js'
 import { supportRoutes, supportAdminRoutes, supportInboxRoutes } from './support.js'
@@ -904,6 +906,13 @@ app.use('/admin/support', supportAdminRoutes({ pool }))
 app.use('/admin/operations', operationsAdminRoutes({ pool, engine, marketData }))
 app.use('/admin/certificates', certificateAdminRoutes({ pool }))
 app.use('/admin/console', consoleAdminRoutes({ pool, engine, audit }))
+/* Migration to Openfund (ADR 0051): each region keeps its own requests and
+   files (MIGRATION_STORAGE_* per runtime); evidence is deleted after retention */
+const migrationStorage = createMigrationStorage(process.env)
+app.use(migrationRoutes({ pool, requireAuth, limit, storage: migrationStorage, audit, raw: express.raw }))
+app.use('/admin/migration', migrationAdminRoutes({ pool, storage: migrationStorage, audit }))
+const migrationPurgeTimer = setInterval(() => { purgeMigrationFiles(pool, migrationStorage).catch(e => console.error('[migration] purge', e.message)) }, 3_600_000)
+migrationPurgeTimer.unref()
 app.use('/admin/rewards', rewardAdminRoutes({ pool }))
 app.use('/admin/calendar', calendarAdminRoutes({ pool, conduct }))
 app.use('/admin/runtime', runtimeAdminRoutes({ Router: express.Router, runtime, adminAuth, adminActor, audit }))
@@ -1122,6 +1131,6 @@ nonceSweep.unref()
 let shuttingDown=false
 /* bounded graceful shutdown: idle keep-alive sockets close at once; if anything still holds the
    process after 10 s (a long-lived peer or proxy connection), every socket is closed and it exits */
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;server.closeIdleConnections?.();setTimeout(()=>{console.warn('[shutdown] forced after 10 s');server.closeAllConnections?.();process.exit(0)},10_000).unref();const enginePass=engine.stop();tradingStreams.close();marketData.stop();radar.close();treasury.stop();clearInterval(settlementTimer);clearInterval(paymentRecoveryTimer);clearInterval(paymentWatcherTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;server.closeIdleConnections?.();setTimeout(()=>{console.warn('[shutdown] forced after 10 s');server.closeAllConnections?.();process.exit(0)},10_000).unref();const enginePass=engine.stop();tradingStreams.close();marketData.stop();radar.close();treasury.stop();clearInterval(settlementTimer);clearInterval(migrationPurgeTimer);clearInterval(paymentRecoveryTimer);clearInterval(paymentWatcherTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)
