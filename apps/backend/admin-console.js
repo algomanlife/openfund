@@ -76,7 +76,7 @@ export function consoleAdminRoutes({ pool, engine, audit }) {
       tournament: await exists(pool, 'tournament_registrations')
         ? await q(`SELECT r.id, r.tournament_id, r.status, r.nickname, r.created_at FROM tournament_registrations r WHERE r.user_id=$1 ORDER BY r.created_at DESC`) : [],
       migration: await exists(pool, 'migration_requests')
-        ? await q(`SELECT m.id, m.status, m.firm_slug, m.created_at, m.decided_at FROM migration_requests m WHERE m.user_id=$1 ORDER BY m.created_at DESC`) : [],
+        ? await q(`SELECT m.id, m.status, f.name AS firm, m.approved_max_size_usd, m.created_at, m.decided_at FROM migration_requests m JOIN migration_firms f ON f.id=m.firm_id WHERE m.user_id=$1 ORDER BY m.created_at DESC`) : [],
       notes: await q(`SELECT id, note, actor, created_at FROM user_admin_notes WHERE user_id=$1 ORDER BY id DESC LIMIT 100`),
       tags: (await q(`SELECT tag FROM user_admin_tags WHERE user_id=$1 ORDER BY tag`)).map(r => r.tag),
     }

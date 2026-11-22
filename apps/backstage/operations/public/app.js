@@ -704,7 +704,7 @@ async function userProfile(main, user) {
     table('support', [['reference', r => link('support', { id: r.reference }, technical(r.reference))], ['subject', r => r.subject], ['status', status], ['date', r => date(r.created_at)]], p.support),
     table('certificates', [['identity', r => technical(r.serial)], ['kind', r => t(r.kind)], ['plan', r => technical(r.plan)], ['status', status], ['date', r => date(r.issued_at)]], p.certificates),
     table('tournamentRecords', [['identity', uid], ['status', status], ['name', r => r.nickname ?? '—'], ['date', r => date(r.created_at)]], p.tournament),
-    table('migrationRecords', [['identity', uid], ['status', status], ['firm', r => technical(r.firm_slug)], ['date', r => date(r.created_at)]], p.migration))
+    table('migrationRecords', [['identity', r => link('migrations', { id: r.id }, uid(r))], ['status', status], ['firm', r => r.firm], ['date', r => date(r.created_at)]], p.migration))
 }
 
 /* ---------- challenges: owner decisions with a required reason ---------- */
