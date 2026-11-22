@@ -66,7 +66,10 @@ const routes = {
   /* Migration to Openfund (migration.js, ADR 0051) */
   migrations: ['/admin/migration/requests', 'requests', ['status']],
   migrationFirms: ['/admin/migration/firms'],
+  /* Openfund Premium League (tournament.js); a record is a tournament slug */
+  tournaments: ['/admin/tournaments', 'tournaments', []],
 }
+const tournamentSlug = /^[a-z0-9][a-z0-9-]{2,59}$/
 
 /* Owner mutations beyond the original decision sections. Every entry is
    dispatched through the same gate as the originals: session + CSRF +
@@ -264,6 +267,38 @@ const operations = {
           programTypes: textOf(body.programTypes, 600, false), evidenceTypes: textOf(body.evidenceTypes, 600, false), reason: textOf(body.reason, 1000) }]
       : ['/admin/migration/settings', { minPayouts: body.minPayouts, windowMonths: body.windowMonths, retentionDays: body.retentionDays, passExpiresDays: body.passExpiresDays,
           plans: Array.isArray(body.plans) ? body.plans : undefined, reason: textOf(body.reason, 1000) }],
+  /* Premium League: schedule/rules before the start, then the owner freezes
+     the standings and issues the awards; the backend refuses out-of-order steps */
+  tournaments: {
+    identifier: value => tournamentSlug.test(value),
+    actions: ['configure', 'finalize', 'issueAwards'],
+    request: (record, body) => {
+      const reason = textOf(body.reason, 1000)
+      if (body.action === 'finalize') return [`/admin/tournaments/${record}/finalize`, { reason }]
+      if (body.action === 'issueAwards') return [`/admin/tournaments/${record}/awards/issue`, { reason }]
+      const out = { reason }
+      if (body.startsAt) { const d = new Date(textOf(body.startsAt, 40)); if (Number.isNaN(d.getTime())) throw fail(400, 'invalid_date'); out.startsAt = d.toISOString() }
+      if (body.tradingDays != null && body.tradingDays !== '') out.tradingDays = Number(body.tradingDays)
+      if (body.status) { if (!['draft', 'registration', 'cancelled'].includes(body.status)) throw fail(400, 'invalid_status'); out.status = body.status }
+      return [`/admin/tournaments/${record}/configure`, out]
+    },
+  },
+  tournamentEntries: {
+    identifier: uuid,
+    actions: ['disqualify'],
+    request: (record, body) => {
+      if (!tournamentSlug.test(String(body.slug || ''))) throw fail(400, 'invalid_request')
+      return [`/admin/tournaments/${body.slug}/registrations/${record}/disqualify`, { reason: textOf(body.reason, 1000) }]
+    },
+  },
+  tournamentAwards: {
+    identifier: uuid,
+    actions: ['update'],
+    request: (record, body) => {
+      if (!tournamentSlug.test(String(body.slug || ''))) throw fail(400, 'invalid_request')
+      if (!['pending', 'in_progress', 'fulfilled', 'cancelled'].includes(body.status)) throw fail(400, 'invalid_status')
+      return [`/admin/tournaments/${body.slug}/awards/${record}`, { status: body.status, note: textOf(body.note, 1000, false), reason: textOf(body.reason, 1000) }]
+    },
   },
   /* plan administration: publish (diff previewed first), retire, reactivate */
   plans: {
@@ -596,6 +631,20 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
           return send(res, 200, await backend(endpoint + '/' + encodeURIComponent(record), 'GET', undefined, correlationId))
         if (section === 'payments' && uuid.test(record || ''))
           return send(res, 200, await backend('/admin/payments/lookup?orderId=' + encodeURIComponent(record), 'GET', undefined, correlationId))
+        if (section === 'tournaments' && record !== undefined) {
+          if (!tournamentSlug.test(record)) throw fail(404, 'not_found')
+          const root = '/admin/tournaments/' + record
+          const [list, registrations, standings, awards, signals] = await Promise.all([
+            backend('/admin/tournaments', 'GET', undefined, correlationId),
+            backend(root + '/registrations', 'GET', undefined, correlationId),
+            backend(root + '/standings', 'GET', undefined, correlationId),
+            backend(root + '/awards', 'GET', undefined, correlationId),
+            backend(root + '/correlation', 'GET', undefined, correlationId),
+          ])
+          const tournament = list.tournaments?.find(row => row.slug === record)
+          if (!tournament) throw fail(404, 'not_found')
+          return send(res, 200, { tournament, ...registrations, ...standings, ...awards, signals })
+        }
         if (record !== undefined && !uuid.test(record)) throw fail(404, 'not_found')
         if (section === 'migrations' && record) return send(res, 200, await backend('/admin/migration/requests/' + encodeURIComponent(record), 'GET', undefined, correlationId))
         if (section === 'challenges' && record) return send(res, 200, await backend('/admin/backstage/challenges/' + encodeURIComponent(record), 'GET', undefined, correlationId))

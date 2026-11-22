@@ -110,6 +110,8 @@ test('operations sections: reads, table-driven mutations, validation, step-up an
     calls.push({ path: req.url, method: req.method, headers: req.headers, body: Buffer.concat(parts).toString() })
     res.setHeader('Content-Type', 'application/json')
     if (req.url === '/runtime/status') res.end(JSON.stringify({ region, mode: 'GLOBAL_CONNECTED' }))
+    else if (req.url === '/admin/tournaments') res.end(JSON.stringify({ tournaments: [{ slug: 'premium-league-2027', status: 'registration' }] }))
+    else if (req.url.startsWith('/admin/tournaments/premium-league-2027/') && req.method === 'GET') res.end(JSON.stringify({ registrations: [], standings: [], awards: [], sharedNetworks: [] }))
     else res.end(JSON.stringify({ ok: true, entries: [], results: [], expenses: [], reserves: [], obligations: [], notifications: [], commissions: [], coupons: [], redemptions: [], orders: [], audit: [] }))
   })
   const password = randomBytes(24).toString('base64url')
@@ -276,6 +278,21 @@ test('operations sections: reads, table-driven mutations, validation, step-up an
     [`/api/migrationPasses/${migrationPass}`, { action: 'revoke', reason: 'issued in error' }, `/admin/migration/passes/${migrationPass}/revoke`],
     ['/api/migrationFirms/new', { action: 'save', name: 'Example Firm', reason: 'owner request' }, '/admin/migration/firms'],
     ['/api/migrationFirms/new', { action: 'settings', minPayouts: 3, windowMonths: 12, reason: 'policy review' }, '/admin/migration/settings'],
+  /* Premium League (ADR 0050): a slug-addressed detail read and owner-gated steps */
+  const slug = 'premium-league-2027'
+  const detail = await call(`/api/tournaments/${slug}`, undefined, headers)
+  assert.equal(detail.status, 200)
+  assert.equal(detail.body.tournament.slug, slug)
+  assert.deepEqual(['registrations', 'standings', 'awards', 'correlation'].map(v => calls.some(c => c.path === `/admin/tournaments/${slug}/${v}`)), [true, true, true, true])
+  assert.equal((await call('/api/tournaments/no-such-league', undefined, headers)).status, 404)
+  assert.equal((await call('/api/tournaments/..%2Fadmin', undefined, headers)).status, 404, 'slug shape is enforced')
+  const entry = randomUUID(), award = randomUUID()
+  for (const [path, body, expected] of [
+    [`/api/tournaments/${slug}`, { action: 'configure', tradingDays: 30, status: 'registration', reason: 'calendar check' }, `/admin/tournaments/${slug}/configure`],
+    [`/api/tournaments/${slug}`, { action: 'finalize', reason: 'all accounts settled' }, `/admin/tournaments/${slug}/finalize`],
+    [`/api/tournaments/${slug}`, { action: 'issueAwards', reason: 'standings reviewed' }, `/admin/tournaments/${slug}/awards/issue`],
+    [`/api/tournamentEntries/${entry}`, { action: 'disqualify', slug, reason: 'mirrored opposite trades' }, `/admin/tournaments/${slug}/registrations/${entry}/disqualify`],
+    [`/api/tournamentAwards/${award}`, { action: 'update', slug, status: 'fulfilled', note: 'paid after KYC', reason: 'payment sent' }, `/admin/tournaments/${slug}/awards/${award}`],
   ]) {
     assert.equal((await call(path, body, headers)).status, 401, `${path} requires the password`)
     assert.equal((await call(path, { ...body, password }, headers)).status, 200, path)
@@ -284,6 +301,10 @@ test('operations sections: reads, table-driven mutations, validation, step-up an
   assert.deepEqual(JSON.parse(calls.find(c => c.path.endsWith('/decide')).body), { decision: 'approve', reason: 'three payouts verified', approvedMaxSizeUsd: 50000, kycVerified: true, nameMatched: true })
   assert.equal((await call(`/api/migrations/${migration}`, { action: 'approve', approvedMaxSizeUsd: -1, reason: 'x', password }, headers)).status, 400)
   assert.equal((await call(`/api/migrations/${migration}`, { action: 'autoApprove', reason: 'x', password }, headers)).status, 400, 'no other actions exist')
+  assert.equal((await call(`/api/tournaments/${slug}`, { action: 'configure', status: 'live', reason: 'x', password }, headers)).status, 400, 'status is limited before the start')
+  assert.equal((await call(`/api/tournamentEntries/${entry}`, { action: 'disqualify', slug: '../x', reason: 'x', password }, headers)).status, 400)
+  assert.equal((await call(`/api/tournamentAwards/${award}`, { action: 'update', slug, status: 'paid', reason: 'x', password }, headers)).status, 400)
+  assert.equal((await call(`/api/tournaments/${slug}`, { action: 'rewriteStandings', reason: 'x', password }, headers)).status, 400, 'no other actions exist')
 })
 
 test('configuration must be explicitly provisioned and production origins must use HTTPS', async () => {

@@ -349,6 +349,8 @@ async function fetchCmsRulesRaw(): Promise<CmsRuleSection[] | null> {
    CMS row still exists: 'offices' listed unverified office addresses and an
    internal hosting note (see docs/website/CONTENT_ARCHITECTURE.md). */
 const RETIRED_LEGAL_DOCS = new Set(['offices'])
+/* documents with their own page, not part of the landing legal section */
+const STANDALONE_LEGAL_DOCS = new Set(['tournament-terms'])
 /* The footer's corporate-information block is replaced by the contact address.
    The address is display copy owned by the website (not a verified registered
    office); a stale Directus 'corporate' row is skipped and this block takes
@@ -371,6 +373,7 @@ async function fetchCmsLegalRaw(): Promise<CmsLegalDoc[] | null> {
   const out: CmsLegalDoc[] = []
   for (const row of data) {
     if (RETIRED_LEGAL_DOCS.has(row.doc_type)) continue
+    if (STANDALONE_LEGAL_DOCS.has(row.doc_type)) continue
     if (row.doc_type === 'corporate' || row.doc_type === 'address') continue
     const fa = (row.translations || []).find(t => t.language_code === 'fa')
     const en = (row.translations || []).find(t => t.language_code === 'en')
@@ -381,6 +384,21 @@ async function fetchCmsLegalRaw(): Promise<CmsLegalDoc[] | null> {
     out.push({ docType: row.doc_type, title: { fa: fa.title, en: en.title }, paragraphs: parasFa.map((p, i) => ({ fa: p, en: parasEn[i] })) })
   }
   return out.length ? [...out, ADDRESS_DOC] : null
+}
+
+/** One standalone published legal document (e.g. 'tournament-terms'), or null
+    while it is unpublished or the CMS is unreachable. */
+async function fetchCmsLegalDocRaw(docType: string): Promise<(CmsLegalDoc & { version: string | null }) | null> {
+  if (!/^[a-z-]{2,40}$/.test(docType)) return null
+  interface RawTr { language_code: string; title?: string; paragraphs?: string[] }
+  const data = await getJson<Array<{ doc_type: string; version?: string | null; translations?: RawTr[] | null }>>(
+    `/items/legal_documents?fields=doc_type,version,translations.*&filter[status][_eq]=published&filter[doc_type][_eq]=${docType}&sort=-id&limit=1`)
+  const row = data?.[0]
+  if (!row) return null
+  const fa = (row.translations || []).find(t => t.language_code === 'fa')
+  const en = (row.translations || []).find(t => t.language_code === 'en')
+  if (!fa?.title || !en?.title || !Array.isArray(fa.paragraphs) || !Array.isArray(en.paragraphs)) return null
+  return { docType, version: row.version ?? null, title: { fa: fa.title, en: en.title }, paragraphs: fa.paragraphs.map((p, i) => ({ fa: p, en: en.paragraphs?.[i] ?? '' })) }
 }
 
 /* ---------------- footer links (destination whitelist) ---------------- */
@@ -837,6 +855,7 @@ export const fetchCmsHome = localizing(fetchCmsHomeRaw)
 export const fetchCmsFaqs = localizing(fetchCmsFaqsRaw)
 export const fetchCmsRules = localizing(fetchCmsRulesRaw)
 export const fetchCmsLegal = localizing(fetchCmsLegalRaw)
+export const fetchCmsLegalDoc = localizing(fetchCmsLegalDocRaw)
 export const fetchCmsFooterLinks = localizing(fetchCmsFooterLinksRaw)
 export const fetchCmsNavigation = localizing(fetchCmsNavigationRaw)
 export const fetchCmsPageMeta = localizing(fetchCmsPageMetaRaw)

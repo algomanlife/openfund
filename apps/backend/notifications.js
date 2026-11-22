@@ -27,7 +27,7 @@ const wrap = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
 export const NOTIFICATION_KINDS = [
   'payout_approved', 'payout_rejected', 'payout_paid', 'payout_simulated',
   'support_reply', 'challenge_passed', 'challenge_failed', 'challenge_expired', 'challenge_stage_passed',
-  'purchase_paid',
+  'purchase_paid', 'tournament_registered', 'tournament_started',
 ]
 
 /** Idempotent insert; `db` may be a pool or an open transaction client.

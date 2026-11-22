@@ -34,6 +34,7 @@ export const EDITORIAL_ROUTES: readonly EditorialRoute[] = [
   { path: '/:locale/apps', view: 'applications', collections: site },
   { path: '/:locale/roadmap', view: 'roadmap', collections: site },
   { path: '/:locale/tournament', view: 'tournament', collections: site },
+  { path: '/:locale/tournament/terms', view: 'tournament', collections: ['legal_documents', ...site] },
   { path: '/:locale/migrate', view: 'migrate', collections: site },
   { path: '/:locale/about', view: 'about', collections: site },
   { path: '/:locale/contact', view: 'contact', collections: ['site_settings', ...site] },

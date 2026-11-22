@@ -37,7 +37,10 @@ export default function Home() {
   return <InformationShell page="home" footer={false} nav={false}
       title={c ? (c.translations[locale].seoTitle || 'Openfund') : 'Openfund'}
       description={c ? (c.translations[locale].seoDescription || '') : 'Openfund'}>
-    {c ? <HomeBody locale={locale} content={c} /> : <HomeUnavailable locale={locale} />}
+    {/* loading: a quiet placeholder, never the "unavailable" message (that
+        flashed while the CMS answered and remounted the page when it did) */}
+    {c ? <HomeBody locale={locale} content={c} /> : content === 'error' ? <HomeUnavailable locale={locale} />
+      : <div id="top" className="home-gateway" aria-busy="true"><div className="container home-stage" /></div>}
   </InformationShell>
 }
 

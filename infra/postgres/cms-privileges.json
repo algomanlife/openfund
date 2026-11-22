@@ -727,6 +727,42 @@
    },
    "reason": "Support Agent queue: operator fields only; content immutability is also enforced by trigger."
   },
+  "tournament_awards": {
+   "domain": "rewards",
+   "protected": true,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
+  "tournament_email_codes": {
+   "domain": "security",
+   "protected": true,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
+  "tournament_registrations": {
+   "domain": "application",
+   "protected": true,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
+  "tournament_snapshots": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
+  "tournament_standings": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
+  "tournaments": {
+   "domain": "governance",
+   "protected": false,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
   "trade_notes": {
    "domain": "application",
    "protected": false,

@@ -39,6 +39,8 @@ import { adminRoutes } from './admin.js'
 import { consoleAdminRoutes } from './admin-console.js'
 import { migrationRoutes, migrationAdminRoutes, purgeMigrationFiles } from './migration.js'
 import { createMigrationStorage } from './migration-storage.js'
+import { tournamentRoutes, tournamentAdminRoutes, ensureTournamentSeed, provisionAtStart, sampleEquity } from './tournament.js'
+import { createEmailSender } from './email.js'
 import { createPayoutClaimClient } from './payout-claims.js'
 import { chartWorkspaceRoutes } from './chart-workspaces.js'
 import { supportRoutes, supportAdminRoutes, supportInboxRoutes } from './support.js'
@@ -914,6 +916,13 @@ app.use(migrationRoutes({ pool, requireAuth, limit, storage: migrationStorage, a
 app.use('/admin/migration', migrationAdminRoutes({ pool, storage: migrationStorage, audit }))
 const migrationPurgeTimer = setInterval(() => { purgeMigrationFiles(pool, migrationStorage).catch(e => console.error('[migration] purge', e.message)) }, 3_600_000)
 migrationPurgeTimer.unref()
+/* Openfund Premium League (GLOBAL owns tournament accounts; IRAN answers 404) */
+const emailSender = createEmailSender(process.env)
+if (region.region === 'GLOBAL') {
+  await ensureTournamentSeed(pool).catch(e => console.error('[tournament] seed', e.message))
+  app.use(tournamentRoutes({ pool, requireAuth, limit, email: emailSender, audit }))
+  app.use('/admin/tournaments', tournamentAdminRoutes({ pool, audit }))
+}
 app.use('/admin/rewards', rewardAdminRoutes({ pool }))
 app.use('/admin/calendar', calendarAdminRoutes({ pool, conduct }))
 app.use('/admin/runtime', runtimeAdminRoutes({ Router: express.Router, runtime, adminAuth, adminActor, audit }))
@@ -1116,6 +1125,13 @@ const paymentWatcherTimer = paymentWatcher ? setInterval(() => {
 paymentWatcherTimer?.unref()
 /* treasury snapshots (60–120 min schedule) and live settlement retries */
 if (hasRole(region, 'treasury')) treasury.start()
+/* Premium League: provision accounts at the start, sample equity for the
+   leaderboard every 5 minutes, and mark the competition finished once every
+   account has been settled by the engine at the end */
+const tournamentTimer = region.region === 'GLOBAL' && hasRole(region, 'engine') ? setInterval(() => {
+  provisionAtStart(pool).then(() => sampleEquity(pool, marketData)).catch(e => console.error('[tournament]', e.message))
+}, Math.max(Number(process.env.TOURNAMENT_SAMPLE_INTERVAL_MS) || 300_000, 5_000)) : null
+tournamentTimer?.unref()
 const settlementTimer = hasRole(region, 'settlement') ? setInterval(() => {
   const adapter = settlementAdapter(live.settlement)
   if (adapter) processSettlements(pool, adapter).catch(e => console.error('[settlements]', e.message))
@@ -1132,6 +1148,6 @@ nonceSweep.unref()
 let shuttingDown=false
 /* bounded graceful shutdown: idle keep-alive sockets close at once; if anything still holds the
    process after 10 s (a long-lived peer or proxy connection), every socket is closed and it exits */
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;server.closeIdleConnections?.();setTimeout(()=>{console.warn('[shutdown] forced after 10 s');server.closeAllConnections?.();process.exit(0)},10_000).unref();const enginePass=engine.stop();tradingStreams.close();marketData.stop();radar.close();treasury.stop();clearInterval(settlementTimer);clearInterval(migrationPurgeTimer);clearInterval(paymentRecoveryTimer);clearInterval(paymentWatcherTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;server.closeIdleConnections?.();setTimeout(()=>{console.warn('[shutdown] forced after 10 s');server.closeAllConnections?.();process.exit(0)},10_000).unref();const enginePass=engine.stop();tradingStreams.close();marketData.stop();radar.close();treasury.stop();clearInterval(settlementTimer);clearInterval(migrationPurgeTimer);clearInterval(tournamentTimer);clearInterval(paymentRecoveryTimer);clearInterval(paymentWatcherTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)

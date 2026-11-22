@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4597,
-    "mappedCalls": 2307,
+    "uniqueRecords": 4694,
+    "mappedCalls": 2310,
     "exceptions": 56,
     "validationFindings": 0,
     "reviewedExclusions": 51
@@ -559,6 +559,20 @@
         "path": "/:locale/tournament",
         "view": "tournament",
         "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "tournament"
+        ]
+      },
+      {
+        "path": "/:locale/tournament/terms",
+        "view": "tournament",
+        "collections": [
+          "legal_documents",
           "ui_messages",
           "pages",
           "navigation_items",
@@ -1176,6 +1190,26 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.00aa945b090f0eab",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "آیا با پول واقعی است؟",
+      "en": "Is this real money?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 74,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -1951,6 +1985,13 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 56,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -2794,7 +2835,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 56,
+          "line": 59,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -2891,6 +2932,26 @@
           "line": 46,
           "page": "information",
           "route": "/:locale/:page",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.04478c06b729d830",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جوایز نقدی پس از احراز هویت برندگان (KYC) و مطابق قانون و تحریم‌ها پرداخت می‌شود.",
+      "en": "Cash prizes are paid after winner identity checks (KYC), subject to law and sanctions.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 29,
+          "page": "tournament",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -4528,6 +4589,26 @@
       ]
     },
     {
+      "key": "react.088dcc6c4d25afc2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ثبت‌نامت انجام شد.",
+      "en": "You are in.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 63,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.0891d475c03a35f7",
       "namespace": "react",
       "area": "Website",
@@ -5399,6 +5480,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.0b2008ee17d96932",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۵. قوانین معاملاتی. سقف ضرر روزانه ۵٪ از مبنای روز (بیشترِ موجودی یا ارزش حساب در ساعت ۰۰:۰۰ UTC+3)؛ حداکثر ضرر ۱۰٪ از موجودی اولیه؛ سود هیچ روزی نباید بیش از ۳۵٪ کل سود باشد. نقض هر قانون حساب را از رتبه‌بندی خارج می‌کند؛ ادامهٔ معامله برای تمرین آزاد است.",
+      "en": "5. Trading rules. Daily loss limit 5% of the day’s basis (the higher of opening balance or equity at 00:00 UTC+3); maximum loss 10% of the starting balance; no single day may account for more than 35% of total profit. Breaking a rule removes the account from the ranking; the account may still be traded for practice.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 17,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -6313,6 +6414,26 @@
       ]
     },
     {
+      "key": "react.0e09e5c21a29ff48",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مسابقه به پایان رسیده است.",
+      "en": "The competition has ended.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 24,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.0e0cb218b62d6492",
       "namespace": "react",
       "area": "Website",
@@ -6811,6 +6932,26 @@
       ]
     },
     {
+      "key": "react.0f1b03e0cc3df53c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سی روز کاری؛ پوزیشن‌های باز در پایان با قیمت مارک بسته می‌شوند.",
+      "en": "Thirty weekdays; open positions close at the mark at the end.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 42,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.0f216205ddc83507",
       "namespace": "react",
       "area": "Website",
@@ -6927,6 +7068,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.0f909fc61ce27e0c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "درخواست کد بیش از حد مجاز است. یک ساعت بعد دوباره تلاش کن.",
+      "en": "Too many codes requested. Try again in an hour.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 85,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -8281,7 +8442,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 58,
+          "line": 61,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -9660,6 +9821,26 @@
       ]
     },
     {
+      "key": "react.16c3a9363a9688e0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نشانی ایمیل معتبر نیست.",
+      "en": "That email address is not valid.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 80,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.16c4ede51ce5eab7",
       "namespace": "react",
       "area": "Global Content",
@@ -9828,6 +10009,26 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 295,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.1728f9626006d394",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ثبت‌نام به‌زودی باز می‌شود.",
+      "en": "Registration opens soon.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 67,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -11304,6 +11505,26 @@
       ]
     },
     {
+      "key": "react.1af6b609f497f75b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پایان",
+      "en": "Done",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 56,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.1b04b7f8c597eaa6",
       "namespace": "react",
       "area": "Website",
@@ -12167,6 +12388,26 @@
       ]
     },
     {
+      "key": "react.1d6cad1c73ad544a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قوانین",
+      "en": "The rules",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 37,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.1d6dd168c02e0416",
       "namespace": "react",
       "area": "Global Content",
@@ -12827,6 +13068,26 @@
         {
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 171,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.1f393170aceb9b60",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۱۰. پرداخت و احراز هویت. جوایز نقدی و فیزیکی پس از احراز هویت (KYC) و بررسی تحریم‌ها و در چارچوب قانون تحویل می‌شوند. اگر ارسال یا پرداخت ممکن نباشد، اوپن‌فاند می‌تواند معادل نقدی پیشنهاد کند. مالیات بر عهدهٔ برنده است.",
+      "en": "10. Payment and identity. Cash and physical prizes are delivered after the winner passes identity verification (KYC) and sanctions screening, and within the law. Where delivery or payment is not possible, Openfund may offer a cash equivalent. Taxes are the winner’s responsibility.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 22,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -14409,6 +14670,26 @@
       ]
     },
     {
+      "key": "react.2372c96d6f62585b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جوایز سه نفر اول",
+      "en": "Prizes for the top three",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 27,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.237a55e46be6b52a",
       "namespace": "react",
       "area": "Global Content",
@@ -14443,6 +14724,26 @@
           "component": "apps/web-react/src/features/governance/governanceModel.ts",
           "line": 110,
           "page": "governance",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.238396384acc8a22",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تا شروع",
+      "en": "Starts in",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 24,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -15771,6 +16072,26 @@
       ]
     },
     {
+      "key": "react.27765e2b698f26d9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نفر سوم",
+      "en": "3rd place",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 28,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.27895cfc0a0c287c",
       "namespace": "react",
       "area": "Global Content",
@@ -16773,6 +17094,13 @@
           "line": 55,
           "page": "applications",
           "route": "/:locale/apps",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentTermsPage.tsx",
+          "line": 15,
+          "page": "tournament",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         },
         {
@@ -18748,6 +19076,13 @@
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 54,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -19925,6 +20260,26 @@
       ]
     },
     {
+      "key": "react.31248285431a6c35",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هنوز نمونه‌ای از ارزش حساب‌ها ثبت نشده است.",
+      "en": "No equity samples yet.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 53,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.313a12f9e0dae411",
       "namespace": "react",
       "area": "Global Content",
@@ -19941,6 +20296,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.3144292f4c56d341",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ده نشان برای رتبه‌های ۱ تا ۱۰ و نشان «به خط پایان رسید» برای هر کسی که حسابش را تا پایان حفظ کند. نشان‌ها در پروفایل و گواهی‌ها نمایش داده می‌شوند.",
+      "en": "Ten badges for ranks 1 to 10 and a Finisher badge for everyone who keeps the account to the end. Badges appear on your profile and certificates.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 49,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -20249,6 +20624,13 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 25,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -20575,6 +20957,13 @@
           "component": "apps/web-react/src/data/toolCatalog.ts",
           "line": 138,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 25,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -21064,6 +21453,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.339348d6a134be88",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "به خط پایان رسید",
+      "en": "Finisher",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 50,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -21859,6 +22268,26 @@
       ]
     },
     {
+      "key": "react.35baaafc22da9430",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تصویر نمادین",
+      "en": "Illustration",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 36,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.35d9fe574a5c0b81",
       "namespace": "react",
       "area": "Global Content",
@@ -22601,6 +23030,26 @@
       ]
     },
     {
+      "key": "react.37d17be82a4fe7e4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جدول رده‌بندی از زمان شروع فعال می‌شود. تا آن زمان فقط تعداد ثبت‌نام‌ها نمایش داده می‌شود.",
+      "en": "The leaderboard goes live at the start. Before that only the number of registrations is shown.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 52,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.37f2811a57266210",
       "namespace": "react",
       "area": "Global Content",
@@ -22990,7 +23439,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 102,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -24886,6 +25335,26 @@
       ]
     },
     {
+      "key": "react.3e121f01243b0775",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جوایز",
+      "en": "Prizes",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 26,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.3e1d40346ee73616",
       "namespace": "react",
       "area": "Global Content",
@@ -25002,6 +25471,26 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.3e99bac64f9316a8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خیر. هر نفر فقط یک بار. چند حساب و پوشش ریسک معکوس بین حساب‌ها به حذف منجر می‌شود.",
+      "en": "No. One person, one entry. Multiple accounts and opposite-side hedging between accounts lead to disqualification.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 75,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -25422,6 +25911,26 @@
           "line": 8,
           "page": "tools",
           "route": "/:locale/tools",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.3fa3cd90a166405e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ارسال کد",
+      "en": "Send code",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 62,
+          "page": "tournament",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -27343,6 +27852,33 @@
       ]
     },
     {
+      "key": "react.44fa02baafc367fa",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "لیگ برتر اوپن‌فاند: قوانین و شرایط",
+      "en": "Openfund Premium League: terms",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 11,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentTermsPage.tsx",
+          "line": 13,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.44fa8ca578e8d86d",
       "namespace": "react",
       "area": "Global Content",
@@ -27439,6 +27975,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.454ba763a8fac939",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جدول رده‌بندی",
+      "en": "Leaderboard",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 51,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -27931,6 +28487,26 @@
           "component": "apps/web-react/src/cms/seed/referralContent.ts",
           "line": 86,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.46651313c6195913",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قوانین",
+      "en": "Rules",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 26,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -28743,7 +29319,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 93,
+          "line": 96,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -29354,6 +29930,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.4a3bd33e7a63f462",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۱۲. دادهٔ شخصی. ایمیل فقط برای تأیید ثبت‌نام و ارسال پیام‌های مسابقه استفاده می‌شود. جدول رده‌بندی نام نمایشی انتخاب‌شده یا نشانی کوتاه‌شدهٔ کیف پول را نشان می‌دهد و هرگز ایمیل را نمایش نمی‌دهد.",
+      "en": "12. Personal data. The email address is used only to verify the entry and to send competition messages. The leaderboard shows the chosen nickname or a shortened wallet address, never the email.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 24,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -30771,13 +31367,6 @@
           "page": "information",
           "route": "/:locale/:page",
           "method": "pick-pipeline"
-        },
-        {
-          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 22,
-          "page": "tournament",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -30978,6 +31567,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.4e01cb18915c6498",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نفر دوم",
+      "en": "2nd place",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 28,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -31959,6 +32568,26 @@
       ]
     },
     {
+      "key": "react.50591cae55e60d88",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کد درست نیست.",
+      "en": "That code is not correct.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 83,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.5067799890cbabe8",
       "namespace": "react",
       "area": "Website",
@@ -32367,6 +32996,26 @@
       ]
     },
     {
+      "key": "react.513c40bfe162752d",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۳. یک ثبت‌نام برای هر نفر. هر نفر فقط یک بار، با یک کیف پول و یک ایمیل تأییدشده، ثبت‌نام می‌کند. ثبت چند کیف پول، ایمیل یا هویت به حذف همهٔ ثبت‌نام‌های مرتبط منجر می‌شود.",
+      "en": "3. One entry per person. Each person may register once, with one wallet and one verified email address. Registering several wallets, emails or identities leads to disqualification of every related entry.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 15,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.5140a869e3a85cab",
       "namespace": "react",
       "area": "Global Content",
@@ -32447,6 +33096,26 @@
       ]
     },
     {
+      "key": "react.51caa7e1c94eb8a7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خیر. همهٔ حساب‌ها دمو هستند و قیمت‌ها از دادهٔ زندهٔ بازار می‌آید. جوایز واقعی‌اند و پس از احراز هویت پرداخت می‌شوند.",
+      "en": "No. Every account is a demo account priced from live market data. Prizes are real and paid after identity checks.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 74,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.51cb167ecbe90028",
       "namespace": "react",
       "area": "Global Content",
@@ -32523,6 +33192,13 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 42,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -32696,6 +33372,26 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 180,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.52156acc0a4e1c84",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "یک حساب ۵۰ هزار دلاری، به‌علاوهٔ PlayStation 5 Pro، به‌علاوهٔ Grand Theft Auto VI و EA SPORTS FC 27.",
+      "en": "A $50K account, plus a PlayStation 5 Pro, plus Grand Theft Auto VI and EA SPORTS FC 27.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 31,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -32977,6 +33673,26 @@
           "line": 16,
           "page": "tools",
           "route": "/:locale/tools",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.52cbf44dfea0a97f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "رتبه‌بندی بر اساس ارزش نهایی تا سنت. در تساوی: افت سرمایهٔ کمتر، سپس زمان زودتر رسیدن به ارزش نهایی. حساب بدون معاملهٔ بسته‌شده رتبه نمی‌گیرد.",
+      "en": "Ranked by final equity to the cent. Ties: lower maximum drawdown, then the earlier time the final equity was reached. Accounts with no closed trades are not ranked.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 44,
+          "page": "tournament",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -34030,6 +34746,26 @@
       ]
     },
     {
+      "key": "react.55ef10d30a64c97f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نفر اول",
+      "en": "1st place",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 28,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.55f91dd1d0436e47",
       "namespace": "react",
       "area": "User Dashboard",
@@ -35037,6 +35773,13 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 38,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -36506,6 +37249,26 @@
       ]
     },
     {
+      "key": "react.5bbe42dc10a01344",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازگشت به لیگ برتر",
+      "en": "Back to the Premium League",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentTermsPage.tsx",
+          "line": 16,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.5be7e0d036f28a4c",
       "namespace": "react",
       "area": "Website",
@@ -36689,6 +37452,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.5c62cc2a27c329be",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نتایج",
+      "en": "Results",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 47,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -37152,7 +37935,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/client.ts",
-          "line": 359,
+          "line": 361,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -38984,6 +39767,26 @@
       ]
     },
     {
+      "key": "react.62854479d5c94c6b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خواندن قوانین مسابقه",
+      "en": "Read the tournament terms",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 61,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.62cc492eb23127ee",
       "namespace": "react",
       "area": "Global Content",
@@ -39324,6 +40127,26 @@
       ]
     },
     {
+      "key": "react.63e9768b8e537bb5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "۱۸ سال یا بیشتر دارم و قوانین مسابقه را می‌پذیرم.",
+      "en": "I am 18 or older and accept the tournament terms.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 60,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.64016e91fd744afb",
       "namespace": "react",
       "area": "Global Content",
@@ -39487,6 +40310,13 @@
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 57,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -39545,6 +40375,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 329,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.64d7441a6aab000c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در رتبه‌بندی",
+      "en": "In the ranking",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 72,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -42499,6 +43349,26 @@
       ]
     },
     {
+      "key": "react.6c5b5539a86a5b85",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ارزش حساب نباید ۵٪ زیر مبنای روز (۰۰:۰۰ UTC+3) برود.",
+      "en": "Equity may not fall 5% below the day’s basis (00:00 UTC+3).",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 38,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.6c5cb0b466063160",
       "namespace": "react",
       "area": "Global Content",
@@ -44740,6 +45610,26 @@
       ]
     },
     {
+      "key": "react.72c9dce8634416d2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "من در لیگ برتر اوپن‌فاند هستم",
+      "en": "I’m in the Openfund Premium League",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 66,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.72d4a452c90bb0ba",
       "namespace": "react",
       "area": "Website",
@@ -45088,6 +45978,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 226,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.740ba898315c1c08",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "رتبه‌های ۱۱ تا ۱۰۰",
+      "en": "Ranks 11 to 100",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 33,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -45735,6 +46645,26 @@
       ]
     },
     {
+      "key": "react.762f37dce4f78ffe",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نقض هر قانون حساب را از رتبه‌بندی خارج می‌کند. می‌توانی برای تمرین ادامه دهی؛ با برچسب «خارج از رتبه‌بندی».",
+      "en": "Breaking a rule removes the account from the ranking. You may keep trading it for practice, marked “out of ranking”.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 43,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.763655d448838b14",
       "namespace": "react",
       "area": "Website",
@@ -45811,6 +46741,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.76917c6e3e76f58c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پس از ثبت و بازبینی جدول نهایی منتشر می‌شود.",
+      "en": "Published after the final standings are frozen and reviewed.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 47,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -46540,6 +47490,26 @@
           "page": "developers",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.784b75d02d8f00f2",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۹. جوایز. نفر اول ۱۰٬۰۰۰ دلار؛ نفر دوم ۷٬۵۰۰ دلار؛ نفر سوم ۵٬۰۰۰ دلار؛ رتبه‌های ۴ تا ۱۰ یک چلنج استاندارد ۵۰٬۰۰۰ دلاری، PlayStation 5 Pro، Grand Theft Auto VI و EA SPORTS FC 27؛ رتبه‌های ۱۱ تا ۱۰۰ کوپن یک‌بارمصرف ۳۵٪ وابسته به کیف پول برنده با اعتبار ۹۰ روز. جوایز قابل انتقال نیستند.",
+      "en": "9. Prizes. 1st $10,000; 2nd $7,500; 3rd $5,000; ranks 4 to 10 a $50,000 Standard challenge, a PlayStation 5 Pro, Grand Theft Auto VI and EA SPORTS FC 27; ranks 11 to 100 a single-use 35% coupon bound to the winner’s wallet, valid for 90 days. Prizes are not transferable.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 21,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -47541,13 +48511,6 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 15,
-          "page": "tournament",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -48256,6 +49219,13 @@
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 73,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -48374,6 +49344,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathE.ts",
           "line": 162,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.7c8942f7216e9667",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نام نمایشی (اختیاری، در جدول نمایش داده می‌شود)",
+      "en": "Nickname (optional, shown on the leaderboard)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 59,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -48843,6 +49833,13 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 59,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -49177,6 +50174,13 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 41,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -49568,6 +50572,26 @@
       ]
     },
     {
+      "key": "react.8013eeb474f7039e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جایگاه",
+      "en": "Position",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 54,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8014201d62c8e9cb",
       "namespace": "react",
       "area": "Website",
@@ -49750,13 +50774,6 @@
           "line": 29,
           "page": "information",
           "route": "/:locale/:page",
-          "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 14,
-          "page": "tournament",
-          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -50405,6 +51422,26 @@
       ]
     },
     {
+      "key": "react.827a652e8c8546ca",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مسابقهٔ معاملاتی",
+      "en": "Trading competition",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 20,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.82834e7d318b1603",
       "namespace": "react",
       "area": "Global Content",
@@ -50688,6 +51725,26 @@
       ]
     },
     {
+      "key": "react.833771b5e42f7ab9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تخفیف ۳۵٪ خرید: کوپن یک‌بارمصرف وابسته به کیف پول شما با اعتبار ۹۰ روز.",
+      "en": "A 35% purchase discount: a single-use coupon bound to your wallet, valid for 90 days.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 34,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.833b9f4ba0a73d57",
       "namespace": "react",
       "area": "Global Content",
@@ -50896,6 +51953,26 @@
           "component": "apps/web-react/src/cms/seed/referralContent.ts",
           "line": 303,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.841592fdf2431a29",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "حساب‌های مسابقه فقط روی سرویس بین‌المللی اجرا می‌شوند. قوانین و جوایز زیر فقط برای اطلاع است.",
+      "en": "Competition accounts run on the international service only. The rules and prizes below are for information.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 71,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -51536,6 +52613,26 @@
       ]
     },
     {
+      "key": "react.85f18ca57598e313",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برای هر کیف پول و هر ایمیل فقط یک ثبت‌نام.",
+      "en": "One entry per wallet and per email address.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 58,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.85f9cea3ebd8d0f9",
       "namespace": "react",
       "area": "Global Content",
@@ -52143,6 +53240,26 @@
       ]
     },
     {
+      "key": "react.87daa3cfca8bf3e3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سی روز معاملاتی روی حساب دموی ۱۲۵٬۰۰۰ دلاری. ضرر روزانه ۵٪، حداکثر ضرر ۱۰٪، ثبات ۳۵٪. بالاترین ارزش نهایی برنده است.",
+      "en": "Thirty trading days on a $125,000 demo account. Daily loss 5%, maximum loss 10%, consistency 35%. The highest final equity wins.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 23,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.87fc6c4174eed761",
       "namespace": "react",
       "area": "Global Content",
@@ -52236,6 +53353,26 @@
         {
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 122,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.883a0267bd04d377",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۷. رفتارهای ممنوع. پوشش ریسک معکوس بین حساب‌ها، معاملهٔ هماهنگ یا کپی‌شده بین شرکت‌کنندگان، سوءاستفاده از خطای قیمت یا تأخیر، استفادهٔ خودکار نادرست از پلتفرم و هر تلاشی برای دست‌کاری رتبه‌بندی ممنوع است و به حذف منجر می‌شود.",
+      "en": "7. Prohibited conduct. Hedging opposite positions across accounts, coordinated or copied trading between entrants, exploiting price or latency errors, automated abuse of the platform and any attempt to manipulate the ranking are prohibited and lead to disqualification.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 19,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52339,6 +53476,26 @@
           "page": "campaign",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.88a88ac3bd30f047",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ثبت‌نام",
+      "en": "Register",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 26,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -53469,6 +54626,26 @@
       ]
     },
     {
+      "key": "react.8b1e8ac6e771011a",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۶. رتبه‌بندی. رتبه‌بندی بر اساس ارزش نهایی حساب تا سنت است. در تساوی، افت سرمایهٔ کمتر و سپس زمان زودتر رسیدن به ارزش نهایی ملاک است. حساب بدون معاملهٔ بسته‌شده رتبه نمی‌گیرد.",
+      "en": "6. Ranking. Entrants are ranked by final equity to the cent. Ties are broken by the lower maximum drawdown, then by the earlier time the final equity was reached. Accounts with no closed trade are not ranked.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 18,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8b3444a3664e4567",
       "namespace": "react",
       "area": "Website",
@@ -54519,6 +55696,26 @@
       ]
     },
     {
+      "key": "react.8dc59d4095518040",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "همان روز معاملاتی چلنج‌های اوپن‌فاند: ساعت ۰۰:۰۰ UTC+3 بازنشانی می‌شود و مبنای آن بیشترِ موجودی یا ارزش ابتدای روز است.",
+      "en": "The same trading day as Openfund challenges: it resets at 00:00 UTC+3, measured from the higher of the opening balance or equity.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 76,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8de31f4067e3a8f8",
       "namespace": "react",
       "area": "Website",
@@ -55033,6 +56230,26 @@
       ]
     },
     {
+      "key": "react.8ef39994e3befbbe",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تأیید",
+      "en": "Verify",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 62,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8efd6928753434c4",
       "namespace": "react",
       "area": "Website",
@@ -55149,6 +56366,13 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 40,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -55527,6 +56751,26 @@
       ]
     },
     {
+      "key": "react.8fe45c2644086458",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برای هر شرکت‌کننده یک حساب دموی ۱۲۵٬۰۰۰ دلاری.",
+      "en": "One $125,000 demo account per entrant.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 41,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8fe664be5a9f536c",
       "namespace": "react",
       "area": "Global Content",
@@ -55646,7 +56890,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 13,
+          "line": 22,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -56336,6 +57580,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 529,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.92383960515f08d0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "حساب دموی ۱۲۵٬۰۰۰ دلاری مسابقه در زمان شروع خودکار ساخته می‌شود و اینجا و در صندوق پیام‌ها آن را می‌بینی.",
+      "en": "Your $125,000 demo tournament account is created automatically at the start. You will see it here and in your inbox.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 64,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -57116,6 +58380,26 @@
       ]
     },
     {
+      "key": "react.94221b4d1dc2aa3b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شروع",
+      "en": "Start",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 47,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.9451da28be6fc04a",
       "namespace": "react",
       "area": "Website",
@@ -57212,6 +58496,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.949baee9c94d43b9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "رتبهٔ ${n}",
+      "en": "Rank ${n}",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 214,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -58898,7 +60202,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 85,
+          "line": 88,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -59047,6 +60351,26 @@
           "component": "apps/web-react/src/cms/seed/learning/glossary.ts",
           "line": 346,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.98e5fb640107d872",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "حساب ۵۰ هزار دلاری یک چلنج استاندارد رایگان است که به کیف پول برنده صادر می‌شود. اگر ارسال یا پرداخت ممکن نباشد، معادل نقدی پیشنهاد می‌شود.",
+      "en": "The $50K account is a free Standard challenge issued to the winner’s wallet. Where shipping or payment is not possible, a cash equivalent may be offered.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 32,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -59376,6 +60700,46 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.99dc167d6916ef49",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "وضعیت تو",
+      "en": "Your status",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 72,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.99e09608f0932fe8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اوپن‌فاند وابسته به Sony، Rockstar Games یا EA نیست. نام محصولات فقط برای معرفی جوایز آمده است.",
+      "en": "Openfund is not affiliated with Sony, Rockstar Games or EA. Product names are used to describe prizes only.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 35,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -62026,6 +63390,26 @@
       ]
     },
     {
+      "key": "react.a0de4684ee2ad8a8",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۴. زمان‌بندی. مسابقه از زمان شروع اعلام‌شده ۳۰ روز معاملاتی ادامه دارد. به هر شرکت‌کننده یک حساب دموی ۱۲۵٬۰۰۰ دلاری داده می‌شود که در زمان شروع خودکار ساخته می‌شود. پوزیشن‌های باز در پایان با قیمت مارک بسته می‌شوند.",
+      "en": "4. Schedule. The competition runs for 30 trading days from the published start time. Each entrant receives one $125,000 demo account, created automatically at the start. Open positions are closed at the mark price at the end.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 16,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.a0e01f4325b792d9",
       "namespace": "react",
       "area": "Global Content",
@@ -63345,6 +64729,26 @@
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.a3b0db8f70927de3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "لیگ برتر در این منطقه در دسترس نیست.",
+      "en": "The Premium League is not available in this region.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 70,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -65324,6 +66728,26 @@
       ]
     },
     {
+      "key": "react.a8ee41a638564d80",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "۱۰٪ ثابت از موجودی اولیه.",
+      "en": "Static 10% from the starting balance.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 39,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.a8f63fd6090a9282",
       "namespace": "react",
       "area": "Global Content",
@@ -65525,6 +66949,26 @@
           "component": "apps/web-react/src/cms/seed/learning/glossary.ts",
           "line": 76,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.a99f33b8faf37108",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "رتبه‌های ۴ تا ۱۰",
+      "en": "Ranks 4 to 10",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 30,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -66976,7 +68420,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/client.ts",
-          "line": 358,
+          "line": 360,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -67164,7 +68608,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 12,
+          "line": 21,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -67700,6 +69144,26 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 312,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.af07c75ef05a77fe",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "آیا می‌توانم بیش از یک بار شرکت کنم؟",
+      "en": "Can I have more than one entry?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 75,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -68750,6 +70214,26 @@
       ]
     },
     {
+      "key": "react.b14f94d4615d8936",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دقیقه",
+      "en": "minutes",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 25,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.b15123ccb848973e",
       "namespace": "react",
       "area": "Website",
@@ -69231,6 +70715,26 @@
           "component": "apps/web-react/src/features/company/contactContent.ts",
           "line": 129,
           "page": "company",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.b2ae0020aa3d8ab4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پایان",
+      "en": "End",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 47,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -72757,6 +74261,13 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 39,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -73082,6 +74593,13 @@
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
           "line": 79,
           "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 77,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -73758,6 +75276,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.bfaf7633ec6cf54d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تا پایان",
+      "en": "Ends in",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 24,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -75306,6 +76844,26 @@
       ]
     },
     {
+      "key": "react.c3a378f98da3a8cb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سود هیچ روزی نباید بیش از ۳۵٪ کل سود باشد.",
+      "en": "No single day may hold more than 35% of your total profit.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 40,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.c3b28e835517457b",
       "namespace": "react",
       "area": "Website",
@@ -75409,6 +76967,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.c3f5a01b08a016df",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ثبت‌نام",
+      "en": "Registration",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 46,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -76463,6 +78041,26 @@
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
           "line": 25,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.c734e68523e288d7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بهترین روز تاکنون: ${share} از کل سود (سقف ${limit}).",
+      "en": "Best day so far: ${share} of total profit (limit ${limit}).",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 325,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -77528,6 +79126,13 @@
           "line": 8,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 57,
+          "page": "tournament",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         },
         {
@@ -78940,6 +80545,26 @@
       ]
     },
     {
+      "key": "react.ce24885e1d335168",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۱۱. علائم تجاری. اوپن‌فاند وابسته به Sony Interactive Entertainment، Rockstar Games یا Electronic Arts نیست و از سوی آن‌ها حمایت یا تأیید نشده است. نام محصولات فقط برای معرفی جوایز آمده است.",
+      "en": "11. Trademarks. Openfund is not affiliated with, sponsored or endorsed by Sony Interactive Entertainment, Rockstar Games or Electronic Arts. Product names are used only to describe prizes.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 23,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.ce2e09a77ed8d8a9",
       "namespace": "react",
       "area": "User Dashboard",
@@ -79096,6 +80721,26 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.cea1513eafe8deea",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "لطفاً قوانین مسابقه را بپذیر.",
+      "en": "Please accept the tournament terms.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 87,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -79788,6 +81433,26 @@
       ]
     },
     {
+      "key": "react.d01718874801a0c3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دریافت کارت «من هستم»",
+      "en": "Download my “I’m in” card",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 65,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d019b3afec42f5c1",
       "namespace": "react",
       "area": "Global Content",
@@ -79991,6 +81656,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.d09570728969688a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خارج از رتبه‌بندی",
+      "en": "Out of ranking",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 55,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -81477,6 +83162,26 @@
       ]
     },
     {
+      "key": "react.d46c26adfd16b963",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "زمان‌بندی",
+      "en": "Timeline",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 45,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d46d90b9dc01aac7",
       "namespace": "react",
       "area": "Global Content",
@@ -81677,6 +83382,26 @@
       ]
     },
     {
+      "key": "react.d4d42cb99e8dde7f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ثبت‌نام بسته است.",
+      "en": "Registration is closed.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 69,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d4ecf69742d682b9",
       "namespace": "react",
       "area": "Global Content",
@@ -81837,6 +83562,26 @@
       ]
     },
     {
+      "key": "react.d55e43599f4bde8d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ثانیه",
+      "en": "seconds",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 25,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d575d56a5e6f3cde",
       "namespace": "react",
       "area": "Website",
@@ -81902,6 +83647,13 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 56,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
@@ -82645,6 +84397,13 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 56,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -82726,6 +84485,13 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 54,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
@@ -83066,6 +84832,26 @@
           "line": 183,
           "page": "rulebook",
           "route": "/:locale/rulebook",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.d80f6f9d413f75b9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "${n} معامله‌گر تاکنون ثبت‌نام کرده‌اند.",
+      "en": "${n} traders registered so far.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 223,
+          "page": "tournament",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -84717,6 +86503,26 @@
       ]
     },
     {
+      "key": "react.dc55c031c842994b",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۸. بازبینی. اوپن‌فاند پیش از قطعی شدن نتایج، رتبه‌های برتر را از جمله الگوی معاملات و ارتباط بین حساب‌ها بازبینی می‌کند. به شرکت‌کنندهٔ حذف‌شده دلیل اعلام می‌شود و او می‌تواند ظرف ۷ روز درخواست بازبینی کند.",
+      "en": "8. Review. Openfund reviews the top results before they are final, including trading patterns and links between accounts. A disqualified entrant is told the reason and may ask for a review within 7 days.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 20,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.dc7db0816367207d",
       "namespace": "react",
       "area": "Global Content",
@@ -85926,6 +87732,26 @@
       ]
     },
     {
+      "key": "react.df9987e3e3f593b7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "از ۳ تا ۲۴ حرف، رقم، فاصله، نقطه، خط تیره یا زیرخط استفاده کن.",
+      "en": "Use 3–24 letters, digits, spaces, dots, dashes or underscores.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 86,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.dfa98d57a49bc2fb",
       "namespace": "react",
       "area": "Website",
@@ -86247,6 +88073,26 @@
           "component": "apps/web-react/src/features/company/aboutContent.ts",
           "line": 123,
           "page": "company",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.e09d0476f45048bc",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دستاوردها",
+      "en": "Achievements",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 48,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -88634,6 +90480,26 @@
       ]
     },
     {
+      "key": "react.e63f5ad87c1324c0",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۱. برگزارکننده و ماهیت. لیگ برتر اوپن‌فاند مسابقه‌ای مهارتی است که اوپن‌فاند روی حساب‌های دمو در محیط معاملاتی شبیه‌سازی‌شده برگزار می‌کند. هیچ معاملهٔ واقعی در بازارهای مالی انجام نمی‌شود و هزینهٔ ورودی دریافت نمی‌شود.",
+      "en": "1. Organizer and nature. The Openfund Premium League is a skill competition organized by Openfund on demo accounts in a simulated trading environment. No real trades are placed in financial markets and no entry fee is charged.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 13,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.e6479dc072a75b22",
       "namespace": "react",
       "area": "Global Content",
@@ -89062,6 +90928,46 @@
           "component": "apps/web-react/src/cms/seed/toolsCopy.ts",
           "line": 162,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.e7cfeac7db0afc63",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۲. شرایط شرکت. شرکت‌کننده باید دست‌کم ۱۸ سال داشته باشد و قوانین کشور محل اقامتش اجازهٔ شرکت را بدهد. در جایی که شرکت ممنوع است، ثبت‌نام باطل است. کارکنان اوپن‌فاند و اعضای خانوادهٔ آنان جایزه دریافت نمی‌کنند.",
+      "en": "2. Eligibility. Entrants must be at least 18 years old and allowed by the laws of their country of residence to take part. Entry is void where prohibited. Openfund staff and their households may not win prizes.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 14,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.e7e0702ca2488168",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کد منقضی شده است. کد تازه بگیر.",
+      "en": "The code has expired. Send a new one.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 84,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -91338,7 +93244,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 118,
+          "line": 121,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -92041,6 +93947,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.efb3f948545f58ec",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قوانین مسابقه هنوز منتشر نشده است. ثبت‌نام فقط پس از انتشار آن باز می‌شود.",
+      "en": "The tournament terms have not been published yet. Registration opens only after they are.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentTermsPage.tsx",
+          "line": 14,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -93954,6 +95880,26 @@
       ]
     },
     {
+      "key": "react.f4d265d020b79a32",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سقف ضرر روزانه بر اساس کدام روز است؟",
+      "en": "What day does the daily loss limit use?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 76,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.f4d71ff818827f14",
       "namespace": "react",
       "area": "Website",
@@ -95435,6 +97381,26 @@
       ]
     },
     {
+      "key": "react.f964fde6e9e0628c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "این کیف پول قبلاً ثبت‌نام کرده است.",
+      "en": "This wallet is already registered.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 82,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.f981da8a4096f17e",
       "namespace": "react",
       "area": "Website",
@@ -95957,6 +97923,26 @@
       ]
     },
     {
+      "key": "react.faa33f9afde4cf0a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "این ایمیل قبلاً ثبت شده است.",
+      "en": "That email address is already registered.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 81,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.faa3cd48993579da",
       "namespace": "react",
       "area": "Website",
@@ -96132,6 +98118,26 @@
           "component": "apps/web-react/src/features/company/contactContent.ts",
           "line": 98,
           "page": "company",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.fae8be5434823958",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کد ۶ رقمی ارسال‌شده به ایمیل",
+      "en": "6-digit code from the email",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 62,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -96354,6 +98360,26 @@
           "component": "apps/web-react/src/data/toolCatalog.ts",
           "line": 64,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.fb2ee01ad9b1af6c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ثبت‌نام پس از انتشار قوانین مسابقه و فعال شدن تأیید ایمیل باز می‌شود. تا آن زمان اطلاعاتی دریافت نمی‌شود.",
+      "en": "Registration opens once the tournament terms are published and email verification is available. Nothing is collected before then.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 68,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -96606,7 +98632,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 116,
+          "line": 119,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -97321,6 +99347,26 @@
       ]
     },
     {
+      "key": "react.fda3d0e246001264",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تا زمان شروع باز است.",
+      "en": "Open until the start.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 46,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.fda699f5f28b310b",
       "namespace": "react",
       "area": "Global Content",
@@ -97652,6 +99698,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.fe5775cd8f7bbdb3",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۱۳. تغییرات. اوپن‌فاند ممکن است به دلایل خارج از کنترل (مثلاً قطع دادهٔ بازار) مسابقه را تغییر دهد یا لغو کند و هر تغییری را در همین صفحه اعلام می‌کند. تغییر قوانین هرگز به معاملات بسته‌شدهٔ پیشین اعمال نمی‌شود.",
+      "en": "13. Changes. Openfund may change or cancel the competition for reasons beyond its control (for example a market-data outage) and will announce any change on this page. Rule changes never apply retroactively to trades already closed.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 25,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -98879,7 +100945,7 @@
     },
     {
       "component": "apps/web-react/src/features/home/Home.tsx",
-      "line": 83,
+      "line": 86,
       "page": "home",
       "route": "/:locale/home",
       "reason": "language-neutral-brand-or-identifier",
