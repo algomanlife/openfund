@@ -9612,5 +9612,125 @@
         "state": "ar /tournament at 390px (dark): first version of the destination page"
       }
     ]
+  },
+  "migration": {
+    "branch": "agent/claude/migration",
+    "baseCommit": "ddc1d96",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-22T21:41:02+00:00",
+    "source": "Local production build served by apps/backend on a disposable Postgres; MIGRATION_STORAGE_* pointed at a local S3-compatible stand-in so requests read as open; wallet not connected",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Public Gains Network reads where they loaded; no fixtures",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "migration/hero-en-1440-dark.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: cinematic flamingo hero (reduced-motion frame)"
+      },
+      {
+        "file": "migration/compare-en-1440-light.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, light: normal versus migration comparison"
+      },
+      {
+        "file": "migration/steps-en-1440-dark.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: steps and accepted evidence with the not-affiliated disclaimer"
+      },
+      {
+        "file": "migration/request-en-1440-dark.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: request panel while storage is configured locally (S3-compatible stand-in), wallet not connected"
+      },
+      {
+        "file": "migration/hero-fa-768-light.jpg",
+        "route": "/fa/migrate",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Persian, light (RTL), tablet: hero"
+      },
+      {
+        "file": "migration/compare-fa-768-dark.jpg",
+        "route": "/fa/migrate",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Persian, dark (RTL), tablet: comparison"
+      },
+      {
+        "file": "migration/hero-en-390-dark.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "English, dark, phone: hero"
+      },
+      {
+        "file": "migration/steps-ar-390-light.jpg",
+        "route": "/ar/migrate",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Arabic (draft translation, RTL), light, phone: steps"
+      },
+      {
+        "file": "migration/compare-ru-390-dark.jpg",
+        "route": "/ru/migrate",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Russian (draft translation), dark, phone: comparison"
+      },
+      {
+        "file": "migration/evidence-zh-390-light.jpg",
+        "route": "/zh-CN/migrate",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Chinese (draft translation), light, phone: accepted evidence"
+      },
+      {
+        "file": "migration/challenges-card-en-1440-dark.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: migration card on the challenges page"
+      },
+      {
+        "file": "migration/challenges-card-fa-390-light.jpg",
+        "route": "/fa/challenges",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian, light (RTL), phone: migration card on the challenges page"
+      }
+    ]
   }
 }

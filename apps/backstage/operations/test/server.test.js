@@ -263,6 +263,27 @@ test('operations sections: reads, table-driven mutations, validation, step-up an
   assert.equal((await call(`/api/challengeActions/${challenge}`, { action: 'rewrite_balance', reason: 'x', password }, headers)).status, 400)
   assert.equal((await call(`/api/userNotes/${user}`)).status, 401, 'write-only sections have no unauthenticated read')
   assert.equal((await call(`/api/userNotes/${user}`, undefined, headers)).status, 404, 'and no read route at all')
+
+  /* Migration to Openfund (ADR 0051): queue and detail reads, owner-gated decisions */
+  const migration = randomUUID(), migrationPass = randomUUID()
+  assert.equal((await call('/api/migrations?status=submitted', undefined, headers)).status, 200)
+  assert.equal(calls.at(-1).path, '/admin/migration/requests?status=submitted')
+  assert.equal((await call(`/api/migrations/${migration}`, undefined, headers)).status, 200)
+  assert.equal(calls.at(-1).path, `/admin/migration/requests/${migration}`)
+  for (const [path, body, expected] of [
+    [`/api/migrations/${migration}`, { action: 'approve', approvedMaxSizeUsd: 50000, kycVerified: true, nameMatched: true, reason: 'three payouts verified' }, `/admin/migration/requests/${migration}/decide`],
+    [`/api/migrations/${migration}`, { action: 'reject', reason: 'statements do not match the firm' }, `/admin/migration/requests/${migration}/decide`],
+    [`/api/migrationPasses/${migrationPass}`, { action: 'revoke', reason: 'issued in error' }, `/admin/migration/passes/${migrationPass}/revoke`],
+    ['/api/migrationFirms/new', { action: 'save', name: 'Example Firm', reason: 'owner request' }, '/admin/migration/firms'],
+    ['/api/migrationFirms/new', { action: 'settings', minPayouts: 3, windowMonths: 12, reason: 'policy review' }, '/admin/migration/settings'],
+  ]) {
+    assert.equal((await call(path, body, headers)).status, 401, `${path} requires the password`)
+    assert.equal((await call(path, { ...body, password }, headers)).status, 200, path)
+    assert.equal(calls.at(-1).path, expected, path)
+  }
+  assert.deepEqual(JSON.parse(calls.find(c => c.path.endsWith('/decide')).body), { decision: 'approve', reason: 'three payouts verified', approvedMaxSizeUsd: 50000, kycVerified: true, nameMatched: true })
+  assert.equal((await call(`/api/migrations/${migration}`, { action: 'approve', approvedMaxSizeUsd: -1, reason: 'x', password }, headers)).status, 400)
+  assert.equal((await call(`/api/migrations/${migration}`, { action: 'autoApprove', reason: 'x', password }, headers)).status, 400, 'no other actions exist')
 })
 
 test('configuration must be explicitly provisioned and production origins must use HTTPS', async () => {

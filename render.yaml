@@ -146,6 +146,18 @@ services:
         value: "30"             # stored one-minute footprint history kept, in days
       - key: FOOTPRINT_MAX_STREAMS
         value: "5000"           # concurrent live footprint streams this process accepts
+      - key: MIGRATION_STORAGE_ENDPOINT
+        sync: false             # private S3-compatible endpoint (https origin) for migration evidence
+      - key: MIGRATION_STORAGE_BUCKET
+        sync: false             # private bucket, no public access; objects written with SSE (AES256)
+      - key: MIGRATION_STORAGE_REGION
+        sync: false             # signing region, e.g. eu-central-1
+      - key: MIGRATION_STORAGE_ACCESS_KEY_ID
+        sync: false             # secret: an access key limited to this bucket
+      - key: MIGRATION_STORAGE_SECRET_ACCESS_KEY
+        sync: false             # secret
+      - key: MIGRATION_STORAGE_PATH_STYLE
+        sync: false             # '1' for path-style providers; unset for virtual-hosted (AWS)
       - key: VITE_DIRECTUS_HOST
         fromService:
           name: openfund-cms

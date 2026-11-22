@@ -63,6 +63,9 @@ const routes = {
   /* console (admin-console.js): plan administration and granted entitlements */
   plans: ['/admin/console/plans', 'plans', []],
   entitlements: ['/admin/console/entitlements', 'entitlements', []],
+  /* Migration to Openfund (migration.js, ADR 0051) */
+  migrations: ['/admin/migration/requests', 'requests', ['status']],
+  migrationFirms: ['/admin/migration/firms'],
 }
 
 /* Owner mutations beyond the original decision sections. Every entry is
@@ -229,6 +232,34 @@ const operations = {
       return ['/admin/console/entitlements', { walletAddress: body.walletAddress.trim(), planSlug: textOf(body.planSlug, 40), accountSizeUsd: size,
         funded: body.funded === true, expiresDays: Number(body.expiresDays) || 30, reason: textOf(body.reason, 1000) }]
     },
+  },
+  /* migration review: a decision needs the checklist, KYC and name match
+     (approve) and always a reason; the backend refuses anything else */
+  migrations: {
+    identifier: uuid,
+    actions: ['approve', 'reject'],
+    request: (record, body) => {
+      const out = { decision: body.action, reason: textOf(body.reason, 1000) }
+      if (body.action === 'approve') {
+        const size = Number(body.approvedMaxSizeUsd)
+        if (!Number.isFinite(size) || size <= 0) throw fail(400, 'invalid_size')
+        Object.assign(out, { approvedMaxSizeUsd: size, kycVerified: body.kycVerified === true, nameMatched: body.nameMatched === true })
+      }
+      return [`/admin/migration/requests/${record}/decide`, out]
+    },
+  },
+  migrationPasses: {
+    identifier: uuid,
+    actions: ['revoke'],
+    request: (record, body) => [`/admin/migration/passes/${record}/revoke`, { reason: textOf(body.reason, 1000) }],
+  },
+  migrationFirms: {
+    identifier: value => value === 'new',
+    actions: ['save', 'settings'],
+    request: (_record, body) => body.action === 'save'
+      ? ['/admin/migration/firms', { name: textOf(body.name, 60), status: body.status === 'inactive' ? 'inactive' : 'active', reason: textOf(body.reason, 1000) }]
+      : ['/admin/migration/settings', { minPayouts: body.minPayouts, windowMonths: body.windowMonths, retentionDays: body.retentionDays, passExpiresDays: body.passExpiresDays,
+          plans: Array.isArray(body.plans) ? body.plans : undefined, reason: textOf(body.reason, 1000) }],
   },
   /* plan administration: publish (diff previewed first), retire, reactivate */
   plans: {
@@ -551,6 +582,7 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
         if (section === 'payments' && uuid.test(record || ''))
           return send(res, 200, await backend('/admin/payments/lookup?orderId=' + encodeURIComponent(record), 'GET', undefined, correlationId))
         if (record !== undefined && !uuid.test(record)) throw fail(404, 'not_found')
+        if (section === 'migrations' && record) return send(res, 200, await backend('/admin/migration/requests/' + encodeURIComponent(record), 'GET', undefined, correlationId))
         if (section === 'challenges' && record) return send(res, 200, await backend('/admin/backstage/challenges/' + encodeURIComponent(record), 'GET', undefined, correlationId))
         if (section === 'users' && record) return send(res, 200, await backend(endpoint + '/' + encodeURIComponent(record), 'GET', undefined, correlationId))
         if (section === 'partners' && record) return send(res, 200, await backend(endpoint + '/' + encodeURIComponent(record), 'GET', undefined, correlationId))

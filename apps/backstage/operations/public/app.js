@@ -121,6 +121,7 @@ function login() {
 
 const groups = [
   ['prop', ['users', 'challenges', 'reviews', 'payouts', 'plans', 'entitlements']],
+  ['migrationGroup', ['migrations', 'migrationFirms']],
   ['paymentsGroup', ['paymentOverview', 'paymentSearch', 'payments', 'deposits', 'refunds', 'paymentSettings']],
   ['business', ['coupons', 'support', 'partners', 'commissions']],
   ['financeGroup', ['finance', 'expenses', 'reserves', 'obligations']],
@@ -585,6 +586,9 @@ async function directory(main, section, filter) {
       table('audit', [['date', r => date(r.created_at)], ['action', r => technical(r.action)], ['username', r => technical(r.actor)]], data.audit ?? []))
     return
   }
+  if (id && section === 'migrations') return migrationView(main, data)
+  if (section === 'migrations') return migrationsView(main, data.rows ?? [])
+  if (section === 'migrationFirms') return migrationFirmsView(main, data)
   if (section === 'plans') return plansView(main, data.rows ?? [])
   if (section === 'entitlements') return entitlementsView(main, data.rows ?? [])
   if (section === 'coupons') main.append(el('div', { class: 'tools' }, button('createCoupon', () => { void couponWizard() }, 'primary')))
@@ -732,6 +736,49 @@ function entitlementDialog(walletAddress = '') {
 function entitlementsView(main, rows) {
   main.append(el('div', { class: 'tools' }, button('issueEntitlement', () => entitlementDialog(), 'primary')),
     el('p', { class: 'muted' }, t('entitlementHint')), table(null, entitlementColumns, rows))
+}
+
+/* ---------- Migration to Openfund: review queue, decision, pass, firms ---------- */
+function migrationsView(main, rows) {
+  main.append(el('p', { class: 'muted' }, t('migrationHint')),
+    table(null, [['identity', r => link('migrations', { id: r.id }, uid(r))], ['wallet', wallet], ['firm', r => r.firm], ['status', status],
+      ['claimedSize', r => usd(r.claimed_max_size_usd)], ['evidence', r => number(r.evidence)], ['date', r => date(r.submitted_at ?? r.created_at)]], rows))
+}
+function migrationView(main, data) {
+  const { request: r, checklist: list, evidence = [], events = [], pass } = data
+  const reason = () => ['reason', areaInput({ required: '', minlength: '3' })]
+  const check = (ok, key) => el('li', { class: ok ? 'ok' : 'missing' }, (ok ? '✓ ' : '✗ ') + t(key))
+  main.append(el('section', { class: 'panel detail' }, el('h2', {}, `${r.firm} · ${t(r.status)}`), technical(r.wallet_address), uid(r), status(r),
+    el('span', {}, `${t('claimedSize')}: `, usd(r.claimed_max_size_usd)), r.full_name ? el('span', {}, `${t('fullName')}: ${r.full_name}`) : null,
+    el('ul', { class: 'checklist' }, check(list.identity, 'checkIdentity'), check(list.fundedAccount, 'checkFunded'),
+      el('li', { class: list.payouts ? 'ok' : 'missing' }, `${list.payouts ? '✓' : '✗'} ${t('checkPayouts')}: ${list.payoutCount} / ${list.minPayouts} (${list.windowMonths} ${t('months')})`)),
+    el('div', { class: 'tools' },
+      r.status === 'submitted' ? button('approveMigration', () => operate('migrations', r.id, 'approve', [
+        ['approvedMaxSizeUsd', textInput({ required: '', type: 'number', min: '1', dir: 'ltr', value: String(r.claimed_max_size_usd) }), i => Number(i.value), 'approvedSize'],
+        ['kycVerified', checkboxInput(), readChecked, 'kycVerified'], ['nameMatched', checkboxInput(), readChecked, 'nameMatched'], reason()], 'approveMigration'), 'primary') : null,
+      r.status === 'submitted' ? button('rejectMigration', () => operate('migrations', r.id, 'reject', [reason()], 'rejectMigration'), 'danger') : null,
+      pass?.status === 'issued' ? button('revokePass', () => operate('migrationPasses', pass.id, 'revoke', [reason()], 'revokePass'), 'danger') : null),
+    el('p', { class: 'muted' }, t('migrationReviewHint'))),
+  table('evidence', [['kind', e => t('ev_' + e.kind)], ['payoutDate', e => e.payoutDate ?? '—'], ['amount', e => e.amountUsd == null ? '—' : usd(e.amountUsd)],
+    ['detail', e => e.url ? el('a', { href: e.url, rel: 'noopener noreferrer', target: '_blank' }, t('openLink')) : e.txHash ? technical(`${e.chainId} · ${e.txHash.slice(0, 12)}… · ${e.verification?.verified ? t('verifiedOnChain') : t(e.verification?.reason || 'notVerified')}`) : '—'],
+    ['file', e => e.download ? el('a', { href: e.download.url, rel: 'noopener noreferrer' }, `${t('download')} (${Math.round((e.file?.sizeBytes ?? 0) / 1024)} KB)`) : '—']], evidence),
+  pass ? table('migrationPass', [['status', status], ['plan', p => p.plans.join(' / ')], ['amount', p => usd(p.max_size_usd)], ['expires', p => date(p.expires_at)], ['order', p => p.purchase_order_id ? link('payments', { id: p.purchase_order_id }, uid({ id: p.purchase_order_id })) : '—']], [pass]) : el('span'),
+  table('audit', [['date', e => date(e.created_at)], ['action', e => technical(e.action)], ['username', e => technical(e.actor)]], events))
+}
+function migrationFirmsView(main, data) {
+  const s = data.settings ?? {}
+  main.append(el('div', { class: 'tools' },
+    button('addFirm', () => operate('migrationFirms', 'new', 'save', [['name', textInput({ required: '', maxlength: '60' })], ['status', selectInput([['active', 'active'], ['inactive', 'inactive']])], ['reason', areaInput({ required: '' })]], 'addFirm'), 'primary'),
+    button('migrationSettings', () => operate('migrationFirms', 'new', 'settings', [
+      ['minPayouts', textInput({ type: 'number', min: '1', max: '20', dir: 'ltr', value: String(s.minPayouts ?? 3) }), i => Number(i.value)],
+      ['windowMonths', textInput({ type: 'number', min: '1', max: '36', dir: 'ltr', value: String(s.windowMonths ?? 12) }), i => Number(i.value)],
+      ['plans', textInput({ dir: 'ltr', value: (s.plans ?? []).join(', ') }), i => readList(i) ?? undefined, 'eligiblePlans'],
+      ['retentionDays', textInput({ type: 'number', min: '7', max: '365', dir: 'ltr', value: String(s.retentionDays ?? 90) }), i => Number(i.value)],
+      ['passExpiresDays', textInput({ type: 'number', min: '1', max: '180', dir: 'ltr', value: String(s.passExpiresDays ?? 30) }), i => Number(i.value)],
+      ['reason', areaInput({ required: '' })]], 'migrationSettings'))),
+  el('p', { class: 'muted' }, `${t('minPayouts')}: ${s.minPayouts} · ${t('windowMonths')}: ${s.windowMonths} · ${t('eligiblePlans')}: ${(s.plans ?? []).join(', ')} · ${t('retentionDays')}: ${s.retentionDays} · ${t('passExpiresDays')}: ${s.passExpiresDays}`),
+  el('p', { class: 'muted' }, t('notAffiliatedNote')),
+  table(null, [['name', f => f.name], ['status', status], ['date', f => date(f.created_at)]], data.firms ?? []))
 }
 
 /* ---------- plans: draft, preview diff, publish, retire ---------- */

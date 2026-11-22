@@ -59,6 +59,7 @@
     "test:browser:arrows": "node e2e/test-dir-arrows.cjs",
     "test:browser:wallet-showcase": "node e2e/test-wallet-showcase.cjs",
     "test:browser:footer-banner": "node e2e/test-footer-banner.cjs",
+    "test:browser:migration": "node e2e/test-migration.cjs",
     "test:browser:hero-journey": "node e2e/test-hero-journey.cjs",
     "test:browser:developers": "node e2e/test-developers.cjs",
     "test:browser:council-chamber": "node e2e/test-council-chamber.cjs",
