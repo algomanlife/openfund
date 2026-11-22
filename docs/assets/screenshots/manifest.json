@@ -9519,5 +9519,98 @@
         "state": "Trader profile at 390 px"
       }
     ]
+  },
+  "challengesMenu": {
+    "branch": "agent/claude/challenges-flamingo",
+    "baseCommit": "d74b1b675c6037ae3c525a88f2a8e4faf6ef56d2",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-22T14:00:21+00:00",
+    "source": "npm run build:web + apps/backend on isolated test port 8312, disposable database; Playwright, reduced motion (static flamingo frame)",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Public Gains Network reads where they loaded; no fixtures",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "challenges-menu/panel-en-1440-dark.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: Trading challenges panel open (five tiles, tournament New badge and countdown, flamingo migration banner)"
+      },
+      {
+        "file": "challenges-menu/panel-fa-1440-light.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian, light (RTL): Trading challenges panel open"
+      },
+      {
+        "file": "challenges-menu/drawer-en-768-light.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "English, light, 768: drawer with the Challenges group expanded (current page) and the compact flamingo card"
+      },
+      {
+        "file": "challenges-menu/drawer-ar-390-dark.jpg",
+        "route": "/ar/rulebook",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Arabic, dark, 390 (RTL): drawer, Challenges group and compact flamingo card with three birds"
+      },
+      {
+        "file": "challenges-menu/terminal-zh-CN-390-dark.jpg",
+        "route": "/zh-CN/prop/trade",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Chinese, dark, 390: terminal menu with the Trading challenges tiles"
+      },
+      {
+        "file": "challenges-menu/migrate-en-1440-dark.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "en /migrate at 1440px (dark): first version of the destination page"
+      },
+      {
+        "file": "challenges-menu/migrate-fa-390-light.jpg",
+        "route": "/fa/migrate",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "fa /migrate at 390px (light): first version of the destination page"
+      },
+      {
+        "file": "challenges-menu/tournament-ru-768-dark.jpg",
+        "route": "/ru/tournament",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "ru /tournament at 768px (dark): first version of the destination page"
+      },
+      {
+        "file": "challenges-menu/tournament-ar-390-dark.jpg",
+        "route": "/ar/tournament",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "ar /tournament at 390px (dark): first version of the destination page"
+      }
+    ]
   }
 }

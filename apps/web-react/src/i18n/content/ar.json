@@ -3975,5 +3975,16 @@
   "exit": "خروج",
   "See markets": "شاهد الأسواق",
   "OFP proposals": "مقترحات OFP",
-  "recorded votes": "أصوات مسجّلة"
+  "recorded votes": "أصوات مسجّلة",
+  "A 30-day competition in analysis and risk.": "منافسة لمدة 30 يومًا في التحليل وإدارة المخاطر.",
+  "Buy a challenge": "شراء تحدٍّ",
+  "Funded elsewhere? Start at the funded stage.": "مموَّل في شركة أخرى؟ ابدأ من مرحلة التمويل.",
+  "Illustration: a flock of flamingos migrating to a new home, landing on a calm lake that reflects the OpenFi mark — like the flamingos that winter at Maharloo Lake near Shiraz, where Openfund is based.": "رسم توضيحي: سرب من طيور الفلامينغو يهاجر إلى موطن جديد ويهبط على بحيرة هادئة تعكس شعار OpenFi، مثل طيور الفلامينغو التي تقضي الشتاء في بحيرة مهارلو قرب شيراز، حيث يقع مقر Openfund.",
+  "Migration to Openfund": "الانتقال إلى Openfund",
+  "Models, sizes and rules side by side.": "النماذج والأحجام والقواعد جنبًا إلى جنب.",
+  "Openfund Premium League": "دوري Openfund الممتاز",
+  "Pay on-chain and start your evaluation.": "ادفع على السلسلة وابدأ تقييمك.",
+  "Proven funded trader? Skip evaluation with three verified payouts.": "متداول ممول ذو سجل مثبت؟ تجاوز التقييم بثلاث عمليات سحب موثّقة.",
+  "Start migration": "ابدأ الانتقال",
+  "Starts in ${days} d": "يبدأ خلال ${days} يومًا"
 }

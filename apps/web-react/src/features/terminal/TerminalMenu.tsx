@@ -2,6 +2,8 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import OffCanvas from '../navigation/OffCanvas'
 import MegaIcon from '../navigation/MegaIcon'
+import FlamingoScene from '../navigation/FlamingoScene'
+import { navigationModel } from '../information/navigation'
 import '../navigation/mega-menu.css'
 import { primary, route, type Locale, type Product } from './model'
 import { dirOf, pick, pickFormat } from '../../i18n/locales'
@@ -28,6 +30,8 @@ function TerminalMenu({ locale, product, page, accountsHref, accountsSection, pa
   const t = (fa: string, en: string) => pick(locale, fa, en)
   const close = useCallback(() => setOpen(false), [])
   useEffect(() => { setOpen(false) }, [pathname, search, locale])
+  /* the website's Trading challenges group, rendered with the same tiles */
+  const challenges = navigationModel(locale, pathname, null).groups.find(g => g.id === 'website-challenges')
   const current = (id: string) => id === 'journal' ? page === 'journal' && !accountsSection : page === id
   const item = (key: string, to: string, label: string, active: boolean) =>
     <li key={key}><Link className="mega-tile" to={to} onClick={close} aria-current={active ? 'page' : undefined}><span className="mega-icon"><MegaIcon name={key} /></span><span className="mega-text"><b>{label}</b></span></Link></li>
@@ -50,6 +54,17 @@ function TerminalMenu({ locale, product, page, accountsHref, accountsSection, pa
           {item('journal', route(locale, product, 'journal'), t('ژورنال', 'Journal'), current('journal'))}
           {item('accounts', accountsHref, t('حساب‌ها', 'Accounts'), accountsSection)}
         </ul>
+        {challenges && <section className="of-drawer-subgroup of-terminal-challenges" aria-labelledby="terminal-challenges-heading">
+          <h4 id="terminal-challenges-heading">{challenges.label}</h4>
+          <ul className="mega-tiles is-drawer">{challenges.links.map(link => <li key={link.route}>
+            <a className="mega-tile" href={link.href} onClick={close}><span className="mega-icon"><MegaIcon name={link.icon} /></span>
+              <span className="mega-text"><b>{link.label}{link.badge && <> <span className="mega-badge">{link.badge}</span></>}</b>{link.countdown && <small className="mega-countdown">{link.countdown}</small>}</span></a></li>)}</ul>
+          {challenges.banner && <a className={`mega-banner is-compact is-${challenges.banner.kind}`} href={challenges.banner.href} onClick={close}>
+            <FlamingoScene variant="compact" live={open} />
+            <span className="mega-banner-copy"><b>{challenges.banner.title}</b><small>{challenges.banner.body}</small>
+              <span className="mega-sr">{challenges.banner.description}</span></span>
+          </a>}
+        </section>}
       </nav>
     </OffCanvas>
   </>

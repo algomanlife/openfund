@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4486,
-    "mappedCalls": 2304,
+    "uniqueRecords": 4497,
+    "mappedCalls": 2305,
     "exceptions": 52,
     "validationFindings": 0,
     "reviewedExclusions": 51
@@ -553,6 +553,32 @@
         ],
         "areas": [
           "roadmap"
+        ]
+      },
+      {
+        "path": "/:locale/tournament",
+        "view": "tournament",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "tournament"
+        ]
+      },
+      {
+        "path": "/:locale/migrate",
+        "view": "migrate",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "migration"
         ]
       },
       {
@@ -2815,7 +2841,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 44,
+          "line": 46,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -3840,6 +3866,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.0771dd66f097a648",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مدل‌ها، اندازه‌ها و قوانین کنار هم.",
+      "en": "Models, sizes and rules side by side.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 55,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -6362,14 +6408,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 73,
+          "line": 74,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 44,
+          "line": 48,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -7866,6 +7912,54 @@
       ]
     },
     {
+      "key": "react.130d48c2b3247bbc",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مهاجرت به اوپن‌فاند",
+      "en": "Migration to Openfund",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/information/content.ts",
+          "line": 44,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/information/navigation.ts",
+          "line": 26,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/information/navigation.ts",
+          "line": 31,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 11,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 91,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.130ea116144e4862",
       "namespace": "react",
       "area": "Website",
@@ -8761,7 +8855,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 49,
+          "line": 51,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -9511,14 +9605,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 42,
+          "line": 46,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 47,
+          "line": 51,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -11516,7 +11610,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 49,
+          "line": 54,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -11670,7 +11764,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 55,
+          "line": 64,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -12663,6 +12757,26 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.20101eb55ba5a665",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شروع مهاجرت",
+      "en": "Start migration",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 93,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -18545,7 +18659,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 71,
+          "line": 72,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -18587,7 +18701,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 42,
+          "line": 46,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -24831,7 +24945,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 50,
+          "line": 52,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -26133,7 +26247,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 47,
+          "line": 49,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -26315,6 +26429,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 449,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.4414dfa640f0240a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تصویر: دسته‌ای از فلامینگوها به خانه‌ای تازه مهاجرت می‌کنند و روی دریاچه‌ای آرام فرود می‌آیند که نشان OpenFi را بازتاب می‌دهد؛ مانند فلامینگوهایی که زمستان را در دریاچهٔ مهارلو نزدیک شیراز، محل استقرار اوپن‌فاند، می‌گذرانند.",
+      "en": "Illustration: a flock of flamingos migrating to a new home, landing on a calm lake that reflects the OpenFi mark — like the flamingos that winter at Maharloo Lake near Shiraz, where Openfund is based.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 95,
+          "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -28942,7 +29076,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 52,
+          "line": 54,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -29918,7 +30052,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 89,
+          "line": 106,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -29994,6 +30128,33 @@
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
           "line": 96,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.4d7391694c22138d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "${days} روز تا شروع",
+      "en": "Starts in ${days} d",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/information/navigation.ts",
+          "line": 82,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 22,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         }
@@ -31597,7 +31758,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 82,
+          "line": 99,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -31777,7 +31938,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 51,
+          "line": 55,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -33860,7 +34021,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 84,
+          "line": 101,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -37300,7 +37461,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 106,
+          "line": 109,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -37448,6 +37609,26 @@
       ]
     },
     {
+      "key": "react.60972a3b2234d897",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خرید چلنج",
+      "en": "Buy a challenge",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/information/navigation.ts",
+          "line": 30,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.6098c066f7a2a3d6",
       "namespace": "react",
       "area": "Global Content",
@@ -37567,7 +37748,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 43,
+          "line": 45,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -43363,7 +43544,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 50,
+          "line": 59,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -44431,7 +44612,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 67,
+          "line": 76,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -46380,10 +46561,24 @@
       "validation": "requires-render-path-verification",
       "locations": [
         {
+          "component": "apps/web-react/src/features/information/navigation.ts",
+          "line": 33,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/rulebook/Rulebook.tsx",
           "line": 100,
           "page": "rulebook",
           "route": "/:locale/rulebook",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 15,
+          "page": "tournament",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -48521,6 +48716,27 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/information/navigation.ts",
+          "line": 29,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 14,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 14,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -50157,7 +50373,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 48,
+          "line": 50,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -50504,7 +50720,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 65,
+          "line": 74,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -51272,7 +51488,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 45,
+          "line": 47,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -51937,7 +52153,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 53,
+          "line": 62,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52218,7 +52434,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 64,
+          "line": 73,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52846,7 +53062,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 56,
+          "line": 65,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53514,7 +53730,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 59,
+          "line": 68,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54216,6 +54432,33 @@
       ]
     },
     {
+      "key": "react.901e374e0459e666",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "رقابت ۳۰ روزه در تحلیل و مدیریت ریسک.",
+      "en": "A 30-day competition in analysis and risk.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 58,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 13,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.90260a1078108a08",
       "namespace": "react",
       "area": "Global Content",
@@ -54842,7 +55085,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 73,
+          "line": 82,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -56159,6 +56402,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathE.ts",
           "line": 303,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.95e6f25bc9890b89",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت روی زنجیره و شروع ارزیابی.",
+      "en": "Pay on-chain and start your evaluation.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 56,
+          "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -58822,7 +59085,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 49,
+          "line": 53,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -59986,7 +60249,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 88,
+          "line": 105,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -61282,7 +61545,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 81,
+          "line": 82,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61943,7 +62206,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 51,
+          "line": 53,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -62853,7 +63116,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 46,
+          "line": 48,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -65493,6 +65756,47 @@
       ]
     },
     {
+      "key": "react.add4e5e58c386d37",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "لیگ برتر اوپن‌فاند",
+      "en": "Openfund Premium League",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/information/content.ts",
+          "line": 43,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/information/navigation.ts",
+          "line": 26,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/information/navigation.ts",
+          "line": 32,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 12,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.adde8e6ecd8ec958",
       "namespace": "react",
       "area": "Global Content",
@@ -66106,7 +66410,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 50,
+          "line": 54,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -66253,6 +66557,13 @@
           "page": "inbox",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/information/navigation.ts",
+          "line": 36,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -66809,7 +67120,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 83,
+          "line": 100,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -67771,7 +68082,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 74,
+          "line": 83,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -68854,7 +69165,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 63,
+          "line": 72,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -72108,7 +72419,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 66,
+          "line": 75,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -74254,7 +74565,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 51,
+          "line": 60,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -74361,7 +74672,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 16,
+          "line": 21,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -75370,7 +75681,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 62,
+          "line": 71,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -78075,6 +78386,33 @@
       ]
     },
     {
+      "key": "react.d0e5d24229c6c554",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جای دیگر فاند شده‌ای؟ از مرحلهٔ فاند شروع کن.",
+      "en": "Funded elsewhere? Start at the funded stage.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 13,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 57,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d0e662a36eca7c09",
       "namespace": "react",
       "area": "Website",
@@ -78668,7 +79006,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 57,
+          "line": 66,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -79864,7 +80202,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 54,
+          "line": 63,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80540,7 +80878,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 61,
+          "line": 70,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80955,7 +81293,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 58,
+          "line": 67,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -82006,7 +82344,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 72,
+          "line": 81,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -82541,7 +82879,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 39,
+          "line": 43,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -82995,7 +83333,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 20,
+          "line": 25,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -86518,7 +86856,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 52,
+          "line": 61,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -87330,6 +87668,33 @@
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.e948009cb2cbed3a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "معامله‌گر فاندشدهٔ اثبات‌شده‌ای؟ با سه برداشت تأییدشده از ارزیابی عبور کن.",
+      "en": "Proven funded trader? Skip evaluation with three verified payouts.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 12,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 92,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -90428,7 +90793,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 90,
+          "line": 107,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -91763,14 +92128,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 71,
+          "line": 72,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 83,
+          "line": 84,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -93532,7 +93897,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 60,
+          "line": 69,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -96198,7 +96563,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-      "line": 49,
+      "line": 53,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -96537,7 +96902,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-      "line": 28,
+      "line": 30,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "helper-wrapper-definition",

@@ -277,12 +277,15 @@ async function drawerNavigation(page, base, tag, locale, route) {
   await settle(page, 380);
   const target = await page.evaluate(loc => {
     const here = location.pathname;
-    const link = [...document.querySelectorAll('.of-offcanvas-body a[href]')].find(a => { const u = new URL(a.href, location.href); return u.origin === location.origin && u.pathname.startsWith(`/${loc}/`) && u.pathname !== here && !a.target; });
+    /* collapsed mega-menu groups hide their tiles: pick a link the visitor can see */
+    const link = [...document.querySelectorAll('.of-offcanvas-body a[href]')].find(a => { const u = new URL(a.href, location.href); return a.getClientRects().length > 0 && u.origin === location.origin && u.pathname.startsWith(`/${loc}/`) && u.pathname !== here && !a.target; });
+    /* the same destination may also sit hidden in a collapsed group: click this exact link */
+    if (link) link.setAttribute('data-matrix-pick', '');
     return link ? link.getAttribute('href') : null;
   }, locale);
   check(tag, 'drawer offers an in-app destination', !!target);
   if (!target) { await page.keyboard.press('Escape'); return; }
-  await page.locator(`.of-offcanvas-body a[href="${target}"]`).first().click();
+  await page.locator('.of-offcanvas-body a[data-matrix-pick]').click();
   await page.waitForURL(u => new URL(u).pathname !== `/${locale}/${route}`, { timeout: 8000 }).catch(() => {});
   await page.waitForLoadState('domcontentloaded').catch(() => {});
   await settle(page, 600);
