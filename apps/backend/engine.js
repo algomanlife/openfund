@@ -242,6 +242,17 @@ export class Engine {
 
     if (evaluation.status === 'fail') {
       const breach = evaluation.violations.find(v => v.rule !== 'time_limit')
+      /* Premium League (tournament.js): a rule breach removes the account from
+         the ranking once and leaves it open for practice; the end of the
+         competition (time limit) settles at the mark and freezes it below */
+      if (breach && rules.tournament) {
+        const { rowCount } = await c.query(
+          `UPDATE tournament_registrations SET status='out_of_ranking', out_of_ranking_at=now(), out_of_ranking_rule=$2
+            WHERE challenge_id=$1 AND status='active'`, [challenge.id, breach.rule])
+        if (rowCount) await ChallengeService.event(c, challenge.id, 'tournament_out_of_ranking', { stage: challenge.stage, violations: evaluation.violations, metrics: evaluation.metrics })
+        if (!evaluation.violations.some(v => v.rule === 'time_limit')) return rowCount ? 'out_of_ranking' : null
+        return await this.#failChallengeTx(c, acc, challenge, evaluation, 'expired')
+      }
       if (breach) return await this.#failChallengeTx(c, acc, challenge, evaluation, 'failed')
       return await this.#failChallengeTx(c, acc, challenge, evaluation, 'expired')
     }
