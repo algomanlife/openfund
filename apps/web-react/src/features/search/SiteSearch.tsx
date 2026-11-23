@@ -27,6 +27,8 @@ function labelTriggers(locale: AppLocale) {
     if (el.getAttribute('aria-label') !== label) el.setAttribute('aria-label', label)
     if (el.title !== hint) el.title = hint
     el.setAttribute('aria-haspopup', 'dialog')
+    /* React owns these labels: the legacy landing translator must not re-translate them */
+    el.dataset.localeOwned = 'react'
     if (!el.innerHTML.trim()) el.innerHTML = SEARCH_TRIGGER_MARKUP
   })
 }

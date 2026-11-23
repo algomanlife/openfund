@@ -31,3 +31,12 @@ html[data-theme='light'] .of-search-trigger:hover { border-color: #12965D88; }
 @media (max-width: 360px) {
   :root .openfund-header .nav-actions .nav-cta { display: none; }
 }
+/* Phones up to 430 px with a connected wallet: the account chip is wider than
+   the connect button, so "enter terminal" becomes a compact icon button (its
+   text stays in the accessibility tree) and the search trigger stays on screen */
+@media (max-width: 430px) {
+  :root .openfund-header .nav-actions:has(.rk-account-menu) .nav-cta {
+    font-size: 0; gap: 0; min-width: 44px; min-height: 44px; padding-inline: 12px; justify-content: center;
+  }
+  :root .openfund-header .nav-actions:has(.rk-account-menu) .nav-cta svg { width: 16px; height: 16px; flex: none; }
+}
