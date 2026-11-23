@@ -25,7 +25,7 @@ import crypto from 'node:crypto'
 import { Router } from 'express'
 
 export const CMS_COLLECTIONS = new Set([
-  'challenge_plans', 'faq_categories', 'faqs', 'footer_links', 'glossary_terms', 'governance_content_blocks',
+  'bug_bounty_hall_of_fame', 'bug_bounty_tiers', 'challenge_plans', 'faq_categories', 'faqs', 'footer_links', 'glossary_terms', 'governance_content_blocks',
   'governance_milestones', 'home_content', 'learning_paths', 'legal_documents', 'navigation_items', 'pages',
   'referral_content', 'search_suggestions', 'search_synonyms', 'site_campaigns', 'site_settings', 'terminal_sections', 'tools',
   'trading_rules', 'ui_messages',

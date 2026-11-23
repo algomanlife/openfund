@@ -353,6 +353,12 @@ jobs:
           TEST_FRONTEND_URL: http://localhost:8080
           OUTPUT_DIR: output/playwright/labs
         run: npm run test:browser:labs
+      - name: Bug bounty page (five locales, themes, reward cards, scope filter, menu, footer, security.txt, reduced motion)
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080
+          OUTPUT_DIR: output/playwright/bug-bounty
+        run: npm run test:browser:bug-bounty
       - name: Migration to Openfund page (five locales, themes, comparison, request state, reduced motion, challenges card)
         working-directory: .
         env:
@@ -570,6 +576,7 @@ jobs:
             output/playwright/footer-banner/
             output/playwright/trading-objectives/
             output/playwright/labs/
+            output/playwright/bug-bounty/
             output/playwright/migration/
             output/playwright/tournament/
             output/playwright/site-search/

@@ -10245,5 +10245,89 @@
         "state": "No drop published (the honest empty state), light theme, reduced motion, anonymous"
       }
     ]
+  },
+  "bug-bounty": {
+    "branch": "agent/claude/bug-bounty",
+    "baseCommit": "27002bd",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T11:10:00+00:00",
+    "source": "Local build of agent/claude/bug-bounty served by the backend on a disposable Postgres",
+    "cms": "Directus unreachable (requests aborted); bundled published defaults, empty hall of fame",
+    "marketData": "Not used by this page",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "docs/assets/screenshots/bug-bounty/bug-bounty-en-390-dark.jpg",
+        "route": "/en/bug-bounty",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Full page, dark theme, reduced motion (static scan frame), published default rewards, empty hall of fame, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/bug-bounty/bug-bounty-fa-390-dark.jpg",
+        "route": "/fa/bug-bounty",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Full page, dark theme, reduced motion (static scan frame), published default rewards, empty hall of fame, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/bug-bounty/bug-bounty-ar-390-dark.jpg",
+        "route": "/ar/bug-bounty",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Full page, dark theme, reduced motion (static scan frame), published default rewards, empty hall of fame, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/bug-bounty/bug-bounty-en-768-dark.jpg",
+        "route": "/en/bug-bounty",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Full page, dark theme, reduced motion (static scan frame), published default rewards, empty hall of fame, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/bug-bounty/bug-bounty-fa-768-light.jpg",
+        "route": "/fa/bug-bounty",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Full page, light theme, reduced motion (static scan frame), published default rewards, empty hall of fame, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/bug-bounty/bug-bounty-en-1440-dark.jpg",
+        "route": "/en/bug-bounty",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Top of page, dark theme, reduced motion (static scan frame), published default rewards, empty hall of fame, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/bug-bounty/bug-bounty-fa-1440-light.jpg",
+        "route": "/fa/bug-bounty",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Top of page, light theme, reduced motion (static scan frame), published default rewards, empty hall of fame, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/bug-bounty/bug-bounty-zh-CN-1440-light.jpg",
+        "route": "/zh-CN/bug-bounty",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Top of page, light theme, reduced motion (static scan frame), published default rewards, empty hall of fame, anonymous"
+      }
+    ]
   }
 }

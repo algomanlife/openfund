@@ -33,7 +33,7 @@
     { "id": "labs", "title": "Labs drops", "icon": "flask", "href": "docs/decisions/0055-labs-limited-drops.md",
       "items": ["Numbered drops with limited inventory", "Never oversold: reservations under a row lock", "Rules shown are the rules enforced", "Archive with the real number sold"] },
     { "id": "backstage", "title": "Backstage operations", "icon": "sliders", "href": "docs/backstage/OPERATIONS_GUIDE.md",
-      "items": ["Final-pass review and suspension decisions", "Payment investigation, coupons, payouts", "Partners, finance, risk board and audit", "Owner re-authentication for privileged actions"] },
+      "items": ["Final-pass review and suspension decisions", "Payment investigation, coupons, payouts", "Partners, finance, risk board and audit", "Owner re-authentication for privileged actions", "Bug bounty rewards and a consent-only hall of fame"] },
     { "id": "cms", "title": "Editorial CMS", "icon": "edit", "href": "docs/backstage/UNIVERSAL_VISUAL_EDITING.md",
       "items": ["Directus owns public editorial copy", "Visual editing mapped to collection and field", "Draft previews stay inside the editor", "Financial collections are never editable"] }
   ]

@@ -7,6 +7,8 @@ export type EditorialLocale = typeof EDITORIAL_LOCALES[number]
 export const FORBIDDEN_EDITORIAL_COLLECTIONS = [
   'challenge_plans', 'orders', 'payments', 'payment_events', 'wallets', 'positions',
   'coupons', 'directus_users', 'gov_proposals', 'gov_votes', 'payouts', 'ledger_entries',
+  /* reward amounts: only the owner-gated Backstage bounty editor (ADR 0057) */
+  'bug_bounty_tiers',
 ] as const
 
 export type Surface = {

@@ -554,6 +554,39 @@ def main():
         })
         print('seed: site_campaigns iran-access-fa (announcement bar, fa only)')
 
+    # ---------------- bug bounty program (ADR 0057) -------------------------
+    # Reward amounts per severity are owner-edited values (Backstage →
+    # Security → Bug bounty, owner-gated). Labels, examples and the rest of the
+    # page copy are registered interface text. The hall of fame lists only
+    # reporters who consented; nothing is published without that consent.
+    ensure_collection('bug_bounty_tiers', {'sort_field': 'sort', 'icon': 'bug_report',
+        'note': 'جایزه‌های باگ بانتی — مبلغ‌ها فقط از بک‌استیج (با تأیید مالک) تغییر می‌کنند.'})
+    ensure_field('bug_bounty_tiers', 'status', 'string', meta={'interface': 'select-dropdown', 'options': choice(
+        ('published', 'Published'), ('draft', 'Draft')), 'special': ['status']}, schema={'default_value': 'published'})
+    ensure_field('bug_bounty_tiers', 'sort', 'integer', meta={'interface': 'input', 'hidden': True}, schema={})
+    ensure_field('bug_bounty_tiers', 'severity', 'string', meta={'interface': 'select-dropdown', 'readonly': True, 'options': choice(
+        ('critical', 'Critical'), ('high', 'High'), ('medium', 'Medium'), ('low', 'Low'))}, schema={'is_nullable': False, 'is_unique': True})
+    ensure_field('bug_bounty_tiers', 'reward_min_usd', 'integer', meta={'interface': 'input', 'note': 'USD, paid in USDC on Arbitrum'}, schema={'is_nullable': False})
+    ensure_field('bug_bounty_tiers', 'reward_max_usd', 'integer', meta={'interface': 'input', 'note': 'USD; equal to the minimum for a fixed reward'}, schema={'is_nullable': False})
+    have_tiers = {r['severity'] for r in req('GET', f"{base}/items/bug_bounty_tiers?fields=severity&limit=-1", token)['data']}
+    for i, (sev, lo, hi) in enumerate((('critical', 2000, 2000), ('high', 1000, 1500), ('medium', 500, 800), ('low', 300, 300))):
+        if sev not in have_tiers:
+            req('POST', f'{base}/items/bug_bounty_tiers', token, {'status': 'published', 'sort': i + 1, 'severity': sev, 'reward_min_usd': lo, 'reward_max_usd': hi})
+            print(f'seed: bug_bounty_tiers {sev}')
+    ensure_collection('bug_bounty_hall_of_fame', {'sort_field': 'year', 'icon': 'military_tech',
+        'note': 'تالار افتخار باگ بانتی — فقط با رضایت گزارش‌دهنده منتشر می‌شود.'})
+    ensure_field('bug_bounty_hall_of_fame', 'status', 'string', meta={'interface': 'select-dropdown', 'options': choice(
+        ('draft', 'Draft'), ('published', 'Published'), ('archived', 'Archived')), 'special': ['status']}, schema={'default_value': 'draft'})
+    ensure_field('bug_bounty_hall_of_fame', 'display_name', 'string', meta={'interface': 'input', 'required': True}, schema={'is_nullable': False})
+    ensure_field('bug_bounty_hall_of_fame', 'profile_url', 'string', meta={'interface': 'input', 'note': 'Optional https:// link chosen by the reporter'}, schema={})
+    ensure_field('bug_bounty_hall_of_fame', 'year', 'integer', meta={'interface': 'input', 'required': True}, schema={'is_nullable': False})
+    ensure_field('bug_bounty_hall_of_fame', 'severity', 'string', meta={'interface': 'select-dropdown', 'options': choice(
+        ('critical', 'Critical'), ('high', 'High'), ('medium', 'Medium'), ('low', 'Low'))}, schema={})
+    ensure_field('bug_bounty_hall_of_fame', 'consent', 'boolean', meta={'interface': 'boolean', 'required': True,
+        'note': 'The reporter agreed in writing to be named. Never publish without it.'}, schema={'default_value': False})
+    ensure_field('bug_bounty_hall_of_fame', 'advisory_reference', 'string', meta={'interface': 'input', 'hidden': True,
+        'note': 'Internal: GHSA id of the published advisory'}, schema={})
+
     # ---------------- website expansion: FAQ categories ---------------------
     # The site-wide FAQ is grouped by topic. Categories are their own collection
     # so editors can rename, reorder or retire a topic without touching code.
@@ -1050,6 +1083,8 @@ def main():
         ('search_suggestion_translations', None),
         ('site_campaigns', {'_and': [{'status': {'_eq': 'published'}}, {'active': {'_eq': True}}]}),
         ('site_campaign_translations', None),
+        ('bug_bounty_tiers', {'status': {'_eq': 'published'}}),
+        ('bug_bounty_hall_of_fame', {'_and': [{'status': {'_eq': 'published'}}, {'consent': {'_eq': True}}]}),
         ('directus_files', {'folder': {'_eq': campaign_media_folder}}),
     ]
     translation_parents = {

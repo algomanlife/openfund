@@ -14,7 +14,7 @@ export const tx = (locale: AppLocale, value: Localized | { fa?: string; en?: str
 export const number = (value: number, locale: Locale, options?: Intl.NumberFormatOptions) =>
   new Intl.NumberFormat(intlLocale(locale), options).format(value)
 /** Public website pages — one authoritative navigation definition (menu order included). */
-export type InfoPage = 'rulebook' | 'transparency' | 'revenue-model' | 'live-market-access' | 'ambassador' | 'coach' | 'markets' | 'challenges' | 'home' | 'faq' | 'referral' | 'tools' | 'learn' | 'whitepaper' | 'governance' | 'checkout' | 'campaign' | 'about' | 'contact' | 'apps' | 'certificate-verification' | 'roadmap' | 'developers' | 'tournament' | 'migrate' | 'search' | 'trading-objectives' | 'labs'
+export type InfoPage = 'rulebook' | 'transparency' | 'revenue-model' | 'live-market-access' | 'ambassador' | 'coach' | 'markets' | 'challenges' | 'home' | 'faq' | 'referral' | 'tools' | 'learn' | 'whitepaper' | 'governance' | 'checkout' | 'campaign' | 'about' | 'contact' | 'apps' | 'certificate-verification' | 'roadmap' | 'developers' | 'tournament' | 'migrate' | 'search' | 'trading-objectives' | 'labs' | 'bug-bounty'
 export const labels = {
   home: text('Home', 'خانه'),
   challenges: text('Trading Challenges', 'چلنج‌های معاملاتی'),
@@ -45,6 +45,7 @@ export const labels = {
   search: text('Search', 'جستجو'),
   'trading-objectives': text('Trading objectives', 'اهداف معاملاتی'),
   labs: text('Openfund Labs', 'آزمایشگاه اوپن‌فاند'),
+  'bug-bounty': text('Bug bounty', 'باگ بانتی'),
   'certificate-verification': text('Certificate Verification', 'راستی‌آزمایی گواهی'),
   resources: text('Resources', 'منابع'),
   contents: text('On this page', 'در این صفحه'),

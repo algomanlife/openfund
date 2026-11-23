@@ -78,6 +78,11 @@ def wanted_permissions():
         ('site_campaigns', 'read', ['*']), ('site_campaigns', 'create', ['*']), ('site_campaigns', 'update', ['*']),
         ('site_campaign_translations', 'read', ['*']), ('site_campaign_translations', 'create', ['*']),
         ('site_campaign_translations', 'update', ['headline', 'body', 'cta_label', 'image_alt']),
+        # bug bounty (ADR 0057): reward amounts and the hall of fame; Backstage
+        # validates amounts and consent and asks for the owner password
+        ('bug_bounty_tiers', 'read', ['*']), ('bug_bounty_tiers', 'update', ['reward_min_usd', 'reward_max_usd']),
+        ('bug_bounty_hall_of_fame', 'read', ['*']), ('bug_bounty_hall_of_fame', 'create', ['*']),
+        ('bug_bounty_hall_of_fame', 'update', ['status', 'display_name', 'profile_url', 'year', 'severity', 'consent', 'advisory_reference']),
         ('directus_files', 'create', ['*']), ('directus_files', 'read', ['*']), ('directus_folders', 'read', ['id', 'name']),
         # owner-gated protected editor (Backstage validates each address)
         ('site_settings', 'update', ['support_email', 'legal_email', 'technical_email', 'community_email']),

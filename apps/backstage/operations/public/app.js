@@ -1,5 +1,6 @@
 import { labels } from './strings.js'
 import { createMarketing } from './marketing.js'
+import { createBounty } from './bounty.js'
 import { arrow } from './dir-arrow.js'
 
 let locale = localStorage.getItem('backstage-language') === 'fa' ? 'fa' : 'en'
@@ -130,6 +131,7 @@ const groups = [
   ['operations', ['audit', 'risk', 'search', 'notifications', 'system']],
   ['contentGroup', ['content']],
   ['marketing', ['campaigns', 'announcements']],
+  ['securityGroup', ['bugBounty']],
 ]
 /* some section keys collide with existing table labels */
 const sectionLabels = { audit: 'auditViewer', search: 'searchx' }
@@ -318,7 +320,7 @@ async function couponWizard() {
 }
 const remainingUses = r => r.max_redemptions == null ? t('unlimited') : number(Math.max(0, Number(r.max_redemptions) - Number(r.uses_consumed ?? 0) - Number(r.uses_reserved ?? 0)))
 const expenseWizard = () => operate('expenses', 'new', 'create', [
-  ['category', selectInput(['render_infrastructure', 'database', 'cms', 'market_data', 'operational_services', 'marketing', 'ambassador_commissions', 'salaries_administration', 'other'])],
+  ['category', selectInput(['render_infrastructure', 'database', 'cms', 'market_data', 'operational_services', 'marketing', 'ambassador_commissions', 'salaries_administration', 'bug_bounty', 'other'])],
   ['description', areaInput({ required: '' })],
   ['amount', textInput({ required: '', dir: 'ltr' }), undefined, 'amountOriginal'],
   ['currency', textInput({ required: '', dir: 'ltr', value: 'USD', maxlength: '8' })],
@@ -1211,8 +1213,10 @@ async function contentWorkspace(main) {
   await contentExtras(main, catalog)
 }
 
-let marketingModule
+let marketingModule, bountyModule
 const marketing = () => (marketingModule ??= createMarketing({ el, t, labels, button, field, badge, technical, number, date, dialog, announce,
+  render: () => render(), csrf: () => session?.csrf ?? '' }))
+const bountyUi = () => (bountyModule ??= createBounty({ el, t, labels, button, field, badge, technical, number, dialog, announce,
   render: () => render(), csrf: () => session?.csrf ?? '' }))
 
 async function render() {
@@ -1231,6 +1235,7 @@ async function render() {
   try {
     if (page === 'dashboard') await dashboard(contents)
     else if (page === 'content') await contentWorkspace(contents)
+    else if (page === 'bugBounty') await bountyUi().workspace(contents)
     else if (page === 'campaigns' || page === 'announcements') await marketing().workspace(contents, page === 'campaigns' ? 'modal' : 'announcement_bar')
     else if (page === 'system') {
       const data = await api('system')

@@ -2,9 +2,9 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4835,
-    "mappedCalls": 2323,
-    "exceptions": 59,
+    "uniqueRecords": 4906,
+    "mappedCalls": 2326,
+    "exceptions": 60,
     "validationFindings": 0,
     "reviewedExclusions": 52
   },
@@ -28,7 +28,8 @@
       "gov_proposals",
       "gov_votes",
       "payouts",
-      "ledger_entries"
+      "ledger_entries",
+      "bug_bounty_tiers"
     ],
     "surfaces": [
       {
@@ -592,6 +593,19 @@
         ],
         "areas": [
           "labs"
+        ]
+      },
+      {
+        "path": "/:locale/bug-bounty",
+        "view": "bug-bounty",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "bounty"
         ]
       },
       {
@@ -1795,7 +1809,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 78,
+          "line": 89,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -2113,6 +2127,26 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.02236a1dad9551f7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اگر با حسن نیت از این قوانین پیروی کنی، پژوهش تو را مجاز می‌دانیم، به خاطر آن علیه تو اقدام حقوقی نمی‌کنیم و با تو برای درک و رفع مشکل همکاری می‌کنیم. اگر شخص ثالثی به خاطر پژوهشی که طبق همین قوانین انجام شده علیه تو اقدام کند، اعلام می‌کنیم که کار تو در چارچوب این برنامه مجاز بوده است.",
+      "en": "If you follow these rules in good faith, we will treat your research as authorized, we will not take legal action against you for it, and we will work with you to understand and fix the issue. If a third party takes action against you over research that followed these rules, we will make it known that your work was authorized under this program.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 57,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -2556,7 +2590,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 149,
+          "line": 160,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -2579,6 +2613,26 @@
           "line": 45,
           "page": "tools",
           "route": "/:locale/tools",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.033420fc601a5d7e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جایزه به USDC روی آربیتروم به کیف پول تو پرداخت می‌شود، به شرط واجد شرایط بودن طبق قانون قابل اعمال.",
+      "en": "Rewards are paid in USDC on Arbitrum to your wallet, subject to eligibility under applicable law.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 55,
+          "page": "bounty",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -3010,9 +3064,29 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 49,
+          "line": 50,
           "page": "information",
           "route": "/:locale/:page",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.0444f79a82b0d258",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "API بک‌اند، ورود با کیف پول (SIWE) و نشست‌ها",
+      "en": "Backend API, wallet sign-in (SIWE) and sessions",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 39,
+          "page": "bounty",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -3130,7 +3204,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 96,
+          "line": 107,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -3259,6 +3333,26 @@
           "component": "apps/web-react/src/features/referral/Referral.tsx",
           "line": 62,
           "page": "referral",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.051aa8fbd82ced81",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "یک گزارش خصوصی با مراحل بازتولید و اثر آن باز کن.",
+      "en": "Open a private advisory with steps to reproduce and the impact.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 59,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -3395,6 +3489,26 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.05766758b3bf69e2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "وب‌سایت و ترمینال اوپن‌فاند روی دامنه‌های رسمی",
+      "en": "The Openfund website and terminal on the official domains",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 38,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -3811,7 +3925,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 114,
+          "line": 125,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -4051,7 +4165,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 90,
+          "line": 101,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -4111,7 +4225,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 62,
+          "line": 63,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -4131,7 +4245,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 58,
+          "line": 59,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -4175,6 +4289,26 @@
           "page": "campaign",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.0783db0fb24b01d5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جایزه‌ها",
+      "en": "Rewards",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 23,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -4539,6 +4673,13 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 26,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -4622,7 +4763,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 135,
+          "line": 146,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -4664,6 +4805,26 @@
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
           "line": 62,
           "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.083b8f0cdd3b6cc8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بک‌اند",
+      "en": "Backend",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 77,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -4933,6 +5094,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.092b9a0f7fb89683",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نگهدارندگان پروژه، با CVSS 4.0 و اثری که روی اوپن‌فاند نشان می‌دهی. دلیل تصمیم را در همان گزارش توضیح می‌دهیم.",
+      "en": "The maintainers, using CVSS 4.0 and the impact you demonstrate on Openfund. We explain the decision in the advisory.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 68,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -5216,7 +5397,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 51,
+          "line": 62,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -5338,6 +5519,26 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 183,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.0a4a6ddf966f00db",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "XSS ذخیره‌شده در صفحه‌های عمومی؛ CSRF روی endpointهای تغییردهندهٔ وضعیت؛ دستکاری جدول رده‌بندی مسابقه؛ نشت داده میان ایران و جهانی یا میان پراپ و پرپچوال؛ دور زدن محدودیت نرخ که سوءاستفادهٔ گسترده را ممکن کند.",
+      "en": "Stored XSS on public pages; CSRF on state-changing endpoints; tournament leaderboard manipulation; IRAN/GLOBAL or Prop/Perpetual data leaks; a rate-limit bypass that enables mass abuse.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 30,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -5505,6 +5706,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 372,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.0a93bd15aeeb512d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بالا",
+      "en": "High",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 27,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -5871,7 +6092,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 117,
+          "line": 128,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -6634,7 +6855,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 135,
+          "line": 146,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -7692,7 +7913,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 59,
+          "line": 70,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -8441,7 +8662,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 98,
+          "line": 101,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -9224,7 +9445,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 168,
+          "line": 179,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -9371,7 +9592,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 54,
+          "line": 55,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -9532,7 +9753,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 55,
+          "line": 66,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -10363,6 +10584,26 @@
       ]
     },
     {
+      "key": "react.17a71e1287a735be",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مشکل را رفع می‌کنیم و اصلاحیه را در یک نسخه منتشر می‌کنیم.",
+      "en": "We fix it and ship the fix in a release.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 61,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.17d44eedaa6cf311",
       "namespace": "react",
       "area": "Global Content",
@@ -10441,6 +10682,13 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 26,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -10497,7 +10745,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 149,
+          "line": 160,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -10797,7 +11045,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 126,
+          "line": 137,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -10937,7 +11185,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 153,
+          "line": 164,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -11128,6 +11376,26 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.199d886ca0e0425a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جایزه را به USDC روی آربیتروم به کیف پولت پرداخت می‌کنیم.",
+      "en": "We pay the reward in USDC on Arbitrum to your wallet.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 62,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -12333,7 +12601,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 57,
+          "line": 58,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -12527,7 +12795,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 69,
+          "line": 70,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -13097,6 +13365,26 @@
       ]
     },
     {
+      "key": "react.1e64af7241d8fd70",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خواندن یا تغییر دادهٔ کاربران دیگر یا مدارک مهاجرت؛ گرفتن چلنج بدون پرداخت یا تغییر قیمت با دستکاری پیش‌فاکتور یا کد تخفیف؛ دور زدن قوانین ارزیابی برای قبولی یا فاند شدن؛ تزریق SQL؛ XSS ذخیره‌شده در بک‌استیج یا CMS که به اقدام مدیریتی برسد؛ اجرای کد از راه دور در اپ دسکتاپ Open Trade.",
+      "en": "Reading or changing other users’ data or migration documents; getting a challenge without paying, or changing the price through quote or coupon tampering; bypassing evaluation rules to pass or get funded; SQL injection; stored XSS in Backstage or the CMS leading to admin actions; remote code execution in the Open Trade desktop app.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 29,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.1e6ef407d8ab901d",
       "namespace": "react",
       "area": "Website",
@@ -13631,6 +13919,26 @@
       ]
     },
     {
+      "key": "react.1ff5bffaabcd85de",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گزارش",
+      "en": "Report",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 59,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.2008bedf43d4a613",
       "namespace": "react",
       "area": "Website",
@@ -13670,7 +13978,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 100,
+          "line": 103,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -13937,7 +14245,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 33,
+          "line": 44,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -14205,6 +14513,26 @@
       ]
     },
     {
+      "key": "react.2138e8552c6bb417",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بک‌استیج و پیکربندی خود ما از CMS",
+      "en": "Backstage and our own configuration of the CMS",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 41,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.21445b8dd98329bf",
       "namespace": "react",
       "area": "Website",
@@ -14379,6 +14707,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 155,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.21a66c3f1ae96d51",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "متوسط",
+      "en": "Medium",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 27,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -14577,7 +14925,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 170,
+          "line": 181,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -14944,7 +15292,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 80,
+          "line": 91,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15192,6 +15540,26 @@
       ]
     },
     {
+      "key": "react.23d36ad993c67763",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "Self-XSS و خروجی اسکنر بدون اثبات",
+      "en": "Self-XSS and unproven scanner output",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 46,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.23e6b52075370662",
       "namespace": "react",
       "area": "Website",
@@ -15386,6 +15754,26 @@
           "component": "apps/web-react/src/data/toolCatalog.ts",
           "line": 44,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.24592c647b411882",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جابه‌جایی غیرمجاز وجوه یا جایزه‌ها؛ جعل SIWE یا نشست که به تصاحب حساب برسد؛ اجرای کد از راه دور روی بک‌اند یا بک‌استیج؛ دور زدن دروازهٔ مالک در بک‌استیج؛ نفوذ به انتشار نسخه یا زنجیرهٔ تأمین.",
+      "en": "Unauthorized movement of funds or rewards; SIWE or session forgery leading to account takeover; remote code execution on the backend or Backstage; bypass of the Backstage owner gate; release or supply-chain compromise.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 28,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -16621,6 +17009,26 @@
       ]
     },
     {
+      "key": "react.27bd3532084cb352",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "باگ بانتی اوپن‌فاند",
+      "en": "Openfund bug bounty",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 19,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.27c31aead6118220",
       "namespace": "react",
       "area": "Website",
@@ -16941,6 +17349,26 @@
       ]
     },
     {
+      "key": "react.2862b9134b2a3e4b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تالار افتخار",
+      "en": "Hall of fame",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 64,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.2862c3eb7b79399d",
       "namespace": "react",
       "area": "Global Content",
@@ -17200,7 +17628,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 86,
+          "line": 97,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -17480,7 +17908,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 27,
+          "line": 38,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -17721,7 +18149,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 102,
+          "line": 105,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -17755,7 +18183,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 139,
+          "line": 150,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -18362,7 +18790,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 71,
+          "line": 82,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -18584,6 +19012,26 @@
       ]
     },
     {
+      "key": "react.2c3fc8b47a4fb78c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "یک مشکل امنیتی در اوپن‌فاند پیدا کن، آن را به‌صورت خصوصی گزارش بده و جایزه‌ات را به USDC روی آربیتروم بگیر. جایزه به شدت مشکل و اثر اثبات‌شدهٔ آن روی همین پروژه بستگی دارد.",
+      "en": "Find a security issue in Openfund, report it privately, and get paid in USDC on Arbitrum. Rewards follow the severity of the issue and its demonstrated impact on this project.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 20,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.2c5739a57e16b91d",
       "namespace": "react",
       "area": "Website",
@@ -18618,6 +19066,26 @@
           "component": "apps/web-react/src/features/labs/LabsPage.tsx",
           "line": 45,
           "page": "labs",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.2c7900c0d837c5ce",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بندر امن",
+      "en": "Safe harbor",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 56,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -19178,7 +19646,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 124,
+          "line": 135,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -19202,6 +19670,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.2e014708a756898e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سرویس‌های ثالث: Gains، LI.FI، DePay، کیف پول‌ها، Directus اصلی و سرویس‌های زیرساختی ما (پیکربندی خود ما از آن‌ها در محدوده است)",
+      "en": "Third-party services: Gains, LI.FI, DePay, wallets, upstream Directus and our infrastructure services (our own configuration of them is in scope)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 45,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -19338,7 +19826,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 75,
+          "line": 86,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -21216,6 +21704,26 @@
       ]
     },
     {
+      "key": "react.31e7cf8c53f3943e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تغییر موجودی شبیه‌سازی‌شدهٔ حساب دمو فقط وقتی در محدوده است که به جایزه یا پاداش واقعی برسد؛ در آن صورت بحرانی است.",
+      "en": "Changing a simulated demo balance is in scope only when it leads to a real reward or prize. Then it is Critical.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 33,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.31f8e721b1ca068b",
       "namespace": "react",
       "area": "Website",
@@ -22138,7 +22646,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 132,
+          "line": 143,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22501,10 +23009,30 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 39,
+          "line": 50,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.346f501dd82c753d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت، خرید، کد تخفیف و جایزه‌ها",
+      "en": "Payments, checkout, coupons and rewards",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 40,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -22683,6 +23211,26 @@
       ]
     },
     {
+      "key": "react.350ae6a24b5f9124",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اصلاح",
+      "en": "Fix",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 61,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.350da77261ab8f64",
       "namespace": "react",
       "area": "Global Content",
@@ -22742,7 +23290,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 49,
+          "line": 60,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22833,6 +23381,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.353fa89bf5f04163",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "حملهٔ منع سرویس، مهندسی اجتماعی و اسپم",
+      "en": "Denial of service, social engineering and spam",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 44,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -23597,7 +24165,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 110,
+          "line": 121,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -24096,6 +24664,26 @@
       ]
     },
     {
+      "key": "react.386a2fcbf57b8089",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جایزه چطور پرداخت می‌شود؟",
+      "en": "How am I paid?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 69,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.386c4f76dce2da66",
       "namespace": "react",
       "area": "Global Content",
@@ -24356,6 +24944,26 @@
       ]
     },
     {
+      "key": "react.3937ad9b7d185381",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "به USDC روی آربیتروم، به کیف پولی که در اختیار خودت است، پس از انتشار اصلاحیه و به شرط واجد شرایط بودن طبق قانون قابل اعمال.",
+      "en": "In USDC on Arbitrum, to a wallet you control, after the fix is released and subject to eligibility under applicable law.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 70,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.394ad5466541c4ae",
       "namespace": "react",
       "area": "Website",
@@ -24368,7 +24976,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 94,
+          "line": 105,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -25875,7 +26483,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 101,
+          "line": 112,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -25989,7 +26597,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 112,
+          "line": 123,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -26824,7 +27432,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 132,
+          "line": 143,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -26931,7 +27539,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 55,
+          "line": 56,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -27118,7 +27726,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 51,
+          "line": 62,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27138,7 +27746,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 140,
+          "line": 151,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27282,6 +27890,26 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.40b80b497fbf0899",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برای گزارش‌های تکراری فقط اولین گزارش جایزه می‌گیرد.",
+      "en": "Only the first report of a duplicate issue is rewarded.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 52,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -27652,7 +28280,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 41,
+          "line": 52,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -28320,7 +28948,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 52,
+          "line": 53,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -28934,7 +29562,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 75,
+          "line": 86,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -29281,7 +29909,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 103,
+          "line": 114,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -29486,6 +30114,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 49,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
           "line": 26,
@@ -30077,6 +30712,26 @@
       ]
     },
     {
+      "key": "react.481fb92613a12bfc",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ترمینال",
+      "en": "Terminal",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 78,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.482dc3ae57a617ca",
       "namespace": "react",
       "area": "Global Content",
@@ -30569,7 +31224,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 135,
+          "line": 146,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -30816,7 +31471,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 103,
+          "line": 114,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -31303,7 +31958,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 57,
+          "line": 58,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -32319,7 +32974,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 118,
+          "line": 121,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -32561,6 +33216,26 @@
       ]
     },
     {
+      "key": "react.4dde1601d4fd0b1b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دسکتاپ",
+      "en": "Desktop",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 78,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.4dea8385064c1123",
       "namespace": "react",
       "area": "Website",
@@ -32753,7 +33428,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 69,
+          "line": 80,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -33423,7 +34098,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 105,
+          "line": 116,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -34125,7 +34800,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 106,
+          "line": 109,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -34687,7 +35362,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 141,
+          "line": 152,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35324,6 +35999,26 @@
           "component": "apps/web-react/src/cms/seed/toolsCopy.ts",
           "line": 133,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.542fcd1a5f56be24",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پیش از انتشار اصلاحیه چیزی را عمومی نکن.",
+      "en": "Do not disclose anything publicly before a fix is released.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 51,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -36083,7 +36778,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 140,
+          "line": 151,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -36443,7 +37138,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 70,
+          "line": 81,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -36583,7 +37278,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 108,
+          "line": 111,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -37330,7 +38025,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 55,
+          "line": 66,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -38006,7 +38701,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 36,
+          "line": 47,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -38414,7 +39109,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 125,
+          "line": 136,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -38514,7 +39209,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 117,
+          "line": 128,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -39021,7 +39716,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 109,
+          "line": 120,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -39932,6 +40627,26 @@
       ]
     },
     {
+      "key": "react.5f4ffc3b7f62805b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در محدوده",
+      "en": "In scope",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 35,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.5f7d2d7cac7413a8",
       "namespace": "react",
       "area": "Website",
@@ -40182,6 +40897,26 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.5ff95925764d4133",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "آیا می‌توانم روی نسخهٔ اصلی آزمایش کنم؟",
+      "en": "Can I test on production?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 71,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -40525,7 +41260,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 48,
+          "line": 49,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -42096,7 +42831,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 152,
+          "line": 163,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -43493,6 +44228,26 @@
       ]
     },
     {
+      "key": "react.694701423533578c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بله. هر پرداخت باگ بانتی به‌عنوان هزینه در دستهٔ «باگ بانتی» در آمار عمومی اقتصاد ثبت می‌شود.",
+      "en": "Yes. Every bounty payout is recorded as an expense in the “bug bounty” category of the public economy figures.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 74,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.6956ed45c4804b13",
       "namespace": "react",
       "area": "Global Content",
@@ -43665,7 +44420,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 111,
+          "line": 122,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -43727,6 +44482,26 @@
           "component": "apps/web-react/src/cms/seed/referralContent.ts",
           "line": 53,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.69ebd5690bf50c39",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "${min} تا ${max}",
+      "en": "${min} to ${max}",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 26,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -44774,7 +45549,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 134,
+          "line": 145,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -45076,7 +45851,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 125,
+          "line": 136,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -45205,6 +45980,26 @@
           "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
           "line": 66,
           "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.6cf280929ddcf9d8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هرگز به دادهٔ دیگران دسترسی پیدا نکن، آن را تغییر نده یا حذف نکن و هرگز کلید خصوصی یا عبارت بازیابی واقعی را در گزارش نگذار.",
+      "en": "Never access, change or delete other people’s data, and never use real private keys or seed phrases in a report.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 54,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -45610,7 +46405,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 41,
+          "line": 52,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -45637,7 +46432,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 136,
+          "line": 147,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -46788,7 +47583,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 64,
+          "line": 65,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -46870,6 +47665,26 @@
           "component": "apps/web-react/src/features/company/contactContent.ts",
           "line": 116,
           "page": "company",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.71b9c438dab4fee8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گزارش یک آسیب‌پذیری",
+      "en": "Report a vulnerability",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 21,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -47923,7 +48738,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 81,
+          "line": 82,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -48498,10 +49313,30 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 89,
+          "line": 100,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.7711d50f3c7dd8af",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تصویری",
+      "en": "Illustrative",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 76,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -49099,7 +49934,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 140,
+          "line": 151,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -49401,6 +50236,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathD.ts",
           "line": 89,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.790be11627be0084",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فقط از طریق گزارش خصوصی امنیتی گیت‌هاب گزارش بده.",
+      "en": "Report only through the private GitHub security advisory.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 53,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -49841,6 +50696,26 @@
       ]
     },
     {
+      "key": "react.79f60b59b7bf27c3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اپ دسکتاپ Open Trade",
+      "en": "Open Trade desktop app",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 42,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.79f9c721a16c9ffd",
       "namespace": "react",
       "area": "Global Content",
@@ -50268,6 +51143,26 @@
       ]
     },
     {
+      "key": "react.7ae016aef161ada4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خارج از محدوده",
+      "en": "Out of scope",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 35,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.7ae20771b25d4b51",
       "namespace": "react",
       "area": "Website",
@@ -50681,7 +51576,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 75,
+          "line": 86,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50767,6 +51662,13 @@
       "validation": "requires-render-path-verification",
       "locations": [
         {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 66,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/labs/LabsPage.tsx",
           "line": 57,
           "page": "labs",
@@ -50849,7 +51751,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 149,
+          "line": 160,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -51650,7 +52552,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 111,
+          "line": 114,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52251,7 +53153,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 46,
+          "line": 57,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -52469,6 +53371,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.809c8a120968302c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شدت را چه کسی تعیین می‌کند؟",
+      "en": "Who decides the severity?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 67,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -52954,7 +53876,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 119,
+          "line": 130,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -53089,6 +54011,26 @@
       ]
     },
     {
+      "key": "react.82a74fe347f21701",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کد اوپن‌فاند در این مخزن و خروجی‌های انتشار آن",
+      "en": "Openfund code in this repository and its release artifacts",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 37,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.82b297d7f88f70fd",
       "namespace": "react",
       "area": "Website",
@@ -53156,7 +54098,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 41,
+          "line": 52,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -53337,7 +54279,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 69,
+          "line": 80,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -54145,7 +55087,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 53,
+          "line": 54,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -54185,7 +55127,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 43,
+          "line": 54,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -54512,7 +55454,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 79,
+          "line": 80,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -55219,14 +56161,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 41,
+          "line": 52,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 41,
+          "line": 52,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -55293,7 +56235,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 112,
+          "line": 115,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -55361,6 +56303,26 @@
       ]
     },
     {
+      "key": "react.88efc10d259e819f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "آسیب‌پذیری را گزارش کن و جایزه بگیر.",
+      "en": "Report a vulnerability and get rewarded.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 83,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.89050bb6bf450256",
       "namespace": "react",
       "area": "Website",
@@ -55380,7 +56342,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 50,
+          "line": 51,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -55674,14 +56636,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 56,
+          "line": 67,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 111,
+          "line": 122,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -56040,6 +57002,26 @@
       ]
     },
     {
+      "key": "react.8a66e45ed9687722",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "محدوده",
+      "en": "Scope",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 34,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8a6844da3a616adc",
       "namespace": "react",
       "area": "Global Content",
@@ -56132,7 +57114,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 67,
+          "line": 68,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -56480,7 +57462,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 78,
+          "line": 79,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -57142,7 +58124,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 70,
+          "line": 71,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -57456,7 +58438,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 120,
+          "line": 131,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -57870,7 +58852,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 73,
+          "line": 74,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -58272,6 +59254,26 @@
       ]
     },
     {
+      "key": "react.8f84603b65c7c7c9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت‌ها",
+      "en": "Payments",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 77,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8f9335e3270a5231",
       "namespace": "react",
       "area": "Global Content",
@@ -58395,6 +59397,13 @@
           "page": "labs",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 28,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -58698,7 +59707,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 61,
+          "line": 62,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -58752,7 +59761,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 89,
+          "line": 100,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -59386,7 +60395,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 87,
+          "line": 89,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -59967,7 +60976,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 128,
+          "line": 139,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -60134,7 +61143,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 164,
+          "line": 175,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -60318,6 +61327,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.94723b509442a102",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گزارش امنیتی را منتشر می‌کنیم و اگر بخواهی نامت را ذکر می‌کنیم.",
+      "en": "We publish the advisory and credit you if you want to be named.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 63,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -60861,7 +61890,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 59,
+          "line": 60,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -61896,7 +62925,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 37,
+          "line": 48,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62331,7 +63360,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 106,
+          "line": 117,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62435,6 +63464,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.99504b8d73f6f98d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "حساب‌های دمو",
+      "en": "Demo accounts",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 32,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -62658,7 +63707,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 104,
+          "line": 115,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63394,6 +64443,26 @@
       ]
     },
     {
+      "key": "react.9c39475ef8a02fb0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "یافته‌های استثنایی ممکن است جایزهٔ بیشتری به تشخیص تیم دریافت کنند.",
+      "en": "Exceptional findings may receive a higher discretionary reward.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 25,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.9c4a5379d00a029d",
       "namespace": "react",
       "area": "Website",
@@ -63406,7 +64475,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 63,
+          "line": 64,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -63426,7 +64495,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 72,
+          "line": 83,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63934,7 +65003,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 41,
+          "line": 52,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -64870,7 +65939,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 117,
+          "line": 120,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -65032,6 +66101,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 85,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.a02ffbf0e3cfcc46",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مشکل را تأیید می‌کنیم و دربارهٔ شدت آن با تو به توافق می‌رسیم.",
+      "en": "We confirm the issue and agree on its severity with you.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 60,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -65746,7 +66835,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 33,
+          "line": 44,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65766,7 +66855,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 60,
+          "line": 71,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -66927,7 +68016,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 56,
+          "line": 57,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -67481,6 +68570,13 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 26,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -67537,7 +68633,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 132,
+          "line": 143,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67797,7 +68893,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 103,
+          "line": 114,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67957,7 +69053,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 51,
+          "line": 52,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -68238,7 +69334,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 67,
+          "line": 78,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -68651,6 +69747,13 @@
           "line": 181,
           "page": "rulebook",
           "route": "/:locale/rulebook",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 26,
+          "page": "transparency",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -69725,7 +70828,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 33,
+          "line": 44,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -69749,6 +70852,26 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.ab6d943c8f456c04",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پایین",
+      "en": "Low",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 27,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -70141,6 +71264,33 @@
           "component": "apps/web-react/src/features/governance/governanceModel.ts",
           "line": 32,
           "page": "governance",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.ac7380cfeedafddb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "امنیت",
+      "en": "Security",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 18,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 91,
+          "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -72048,7 +73198,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 91,
+          "line": 102,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -72228,7 +73378,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 107,
+          "line": 110,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -72272,6 +73422,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b10220c6b8bf9fca",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "یافته‌هایی که به دستگاه یا مرورگر آلوده نیاز دارند",
+      "en": "Findings that need a compromised device or browser",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 48,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -72519,6 +73689,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b189019f74f635d7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نبود هدرها بدون اثر اثبات‌شده",
+      "en": "Missing headers with no demonstrated impact",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 47,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -72815,7 +74005,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 170,
+          "line": 181,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -73290,7 +74480,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 88,
+          "line": 90,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -74374,6 +75564,26 @@
       ]
     },
     {
+      "key": "react.b6d5652da043e973",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "XSS بازتابی محدود؛ اطلاعات حساس در پاسخ‌های خطا؛ دادهٔ شخصی ذخیره‌شده در آمار جست‌وجو؛ پیکربندی نادرست با اثر اثبات‌شده.",
+      "en": "Limited reflected XSS; sensitive information in error responses; personal data stored in search analytics; misconfiguration with demonstrated impact.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 31,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.b6e59bb1de9d119b",
       "namespace": "react",
       "area": "Website",
@@ -74413,7 +75623,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 77,
+          "line": 78,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -76286,7 +77496,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 67,
+          "line": 78,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76346,7 +77556,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 140,
+          "line": 151,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76586,10 +77796,30 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 106,
+          "line": 117,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.bc3b87f131f18993",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هنوز گزارشی جایزه نگرفته است. اولین پژوهشگری که با ذکر نامش موافقت کند اینجا نمایش داده می‌شود.",
+      "en": "No rewarded reports yet. The first researcher who agrees to be named will appear here.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 65,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -76606,7 +77836,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 71,
+          "line": 82,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77609,7 +78839,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 39,
+          "line": 50,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77669,7 +78899,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 95,
+          "line": 106,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77909,7 +79139,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 150,
+          "line": 161,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77969,7 +79199,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 71,
+          "line": 82,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77989,7 +79219,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 80,
+          "line": 81,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -79283,6 +80513,13 @@
       "validation": "requires-render-path-verification",
       "locations": [
         {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 35,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
           "line": 94,
           "page": "markets",
@@ -79607,7 +80844,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 145,
+          "line": 156,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -80249,7 +81486,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 65,
+          "line": 66,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80363,7 +81600,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 113,
+          "line": 116,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -81152,6 +82389,26 @@
       ]
     },
     {
+      "key": "react.c93082bf9dfe32bd",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بحرانی",
+      "en": "Critical",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 27,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.c955154f0874c8a3",
       "namespace": "react",
       "area": "Global Content",
@@ -81412,7 +82669,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 76,
+          "line": 77,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -81572,7 +82829,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 25,
+          "line": 36,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -81990,7 +83247,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 39,
+          "line": 50,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -82661,6 +83918,26 @@
           "component": "apps/web-react/src/features/governance/Governance.tsx",
           "line": 20,
           "page": "governance",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.cd36f37f63c59bd5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "افشا",
+      "en": "Disclosure",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 63,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -83521,7 +84798,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 88,
+          "line": 99,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -84063,7 +85340,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 34,
+          "line": 45,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -84364,7 +85641,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 60,
+          "line": 61,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -84839,7 +86116,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 143,
+          "line": 154,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -85046,7 +86323,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 71,
+          "line": 72,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -85626,7 +86903,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 67,
+          "line": 78,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -86126,7 +87403,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 38,
+          "line": 49,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -86242,8 +87519,15 @@
       "en": "Wallet",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 77,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
           "line": 469,
@@ -86349,7 +87633,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 68,
+          "line": 69,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -86506,6 +87790,26 @@
           "line": 27,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.d607213a37b6ce2a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پرداخت",
+      "en": "Payout",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 62,
+          "page": "bounty",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -87025,7 +88329,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 75,
+          "line": 76,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -87454,7 +88758,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 72,
+          "line": 73,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -88546,7 +89850,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 86,
+          "line": 88,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -88974,7 +90278,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 171,
+          "line": 182,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -90110,7 +91414,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 50,
+          "line": 61,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -90210,7 +91514,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 164,
+          "line": 175,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -90697,7 +92001,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 37,
+          "line": 48,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -90817,7 +92121,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 88,
+          "line": 99,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -90925,6 +92229,53 @@
       ]
     },
     {
+      "key": "react.e113cb0ba40fe8b7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هدف",
+      "en": "Target",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 36,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.e114816fb889d22b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "باگ بانتی",
+      "en": "Bug bounty",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/information/content.ts",
+          "line": 48,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/transparency/Transparency.tsx",
+          "line": 15,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.e11851f1d53f2f07",
       "namespace": "react",
       "area": "Website",
@@ -91017,7 +92368,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 75,
+          "line": 86,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -92718,7 +94069,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 127,
+          "line": 138,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -92942,6 +94293,26 @@
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.e59ae2f27a69ae54",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بررسی اولیه",
+      "en": "Triage",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 60,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -93398,7 +94769,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 66,
+          "line": 67,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -94086,7 +95457,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 89,
+          "line": 100,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -94193,7 +95564,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 41,
+          "line": 52,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -94293,7 +95664,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 79,
+          "line": 90,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -94320,7 +95691,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 99,
+          "line": 102,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -94782,7 +96153,7 @@
         },
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 132,
+          "line": 143,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -95302,7 +96673,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 140,
+          "line": 151,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -95989,6 +97360,13 @@
       "validation": "requires-render-path-verification",
       "locations": [
         {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 58,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
           "line": 19,
           "page": "migration",
@@ -96364,6 +97742,13 @@
           "method": "bilingual-record"
         },
         {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 36,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/economy/LiveMarketAccess.tsx",
           "line": 88,
           "page": "economy",
@@ -96484,6 +97869,26 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 191,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.ee9052b2ec4eea54",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گزارش‌ها از طریق بخش گزارش خصوصی امنیتی گیت‌هاب ارسال می‌شوند و فقط نگهدارندگان پروژه آن‌ها را می‌بینند.",
+      "en": "Reports go through GitHub’s private security advisory. Only the maintainers can read them.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 22,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -96733,6 +98138,26 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.ef6bfe0fc51cac0d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بله، فقط با حساب‌ها و کیف پول‌های خودت، بدون اختلال در دسترسی دیگران و با توقف به محض پیدا کردن مشکل.",
+      "en": "Yes, with your own accounts and wallets only, without hurting availability for others, and stopping as soon as you find something.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 72,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -97417,6 +98842,26 @@
       ]
     },
     {
+      "key": "react.f0d2f8b7bb37d949",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نمایش تصویری اسکن اجزای اوپن‌فاند",
+      "en": "Illustrative scan of Openfund components",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 75,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.f0e48302e2121c16",
       "namespace": "react",
       "area": "Global Content",
@@ -97623,7 +99068,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 119,
+          "line": 122,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -99292,7 +100737,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 101,
+          "line": 112,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -99667,6 +101112,26 @@
       ]
     },
     {
+      "key": "react.f7582ba9fff7d247",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فقط روی حساب‌ها و کیف پول‌های خودت آزمایش کن و به محض پیدا کردن مشکل متوقف شو.",
+      "en": "Test only your own accounts and wallets, and stop as soon as you find an issue.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 50,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.f7702e2a266b0310",
       "namespace": "react",
       "area": "Global Content",
@@ -99994,6 +101459,26 @@
       ]
     },
     {
+      "key": "react.f86bb6559110f47f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "آیا پرداخت‌ها ثبت می‌شوند؟",
+      "en": "Are payouts recorded?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 73,
+          "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.f86e4b4189da5b05",
       "namespace": "react",
       "area": "Global Content",
@@ -100148,6 +101633,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathE.ts",
           "line": 162,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.f8edc82b5edd1319",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گردش‌کارهای GitHub Actions و یکپارچگی انتشار",
+      "en": "GitHub Actions workflows and release integrity",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 43,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -100428,6 +101933,26 @@
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
           "line": 82,
           "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.f97b69459f924ea7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شدت با CVSS 4.0 همراه با اثری که روی اوپن‌فاند نشان می‌دهی تعیین می‌شود.",
+      "en": "Severity is set with CVSS 4.0 together with the impact you demonstrate on Openfund.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+          "line": 24,
+          "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -100921,7 +102446,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 74,
+          "line": 75,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -101109,7 +102634,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 136,
+          "line": 147,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -101625,7 +103150,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 32,
+          "line": 43,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -101865,7 +103390,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 86,
+          "line": 97,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -102005,7 +103530,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 26,
+          "line": 37,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -102085,7 +103610,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/transparency/Transparency.tsx",
-          "line": 70,
+          "line": 81,
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -103492,6 +105017,14 @@
       "route": "/:locale/*",
       "reason": "dynamic-pair",
       "expression": "label('segments', k)"
+    },
+    {
+      "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
+      "line": 118,
+      "page": "bounty",
+      "route": "/:locale/*",
+      "reason": "dynamic-pair",
+      "expression": "pickFormat(locale, v.fa, v.en, values)"
     },
     {
       "component": "apps/web-react/src/features/community/TelegramCommunity.tsx",

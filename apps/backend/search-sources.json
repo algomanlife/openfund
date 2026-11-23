@@ -352,6 +352,25 @@
       }
     },
     {
+      "path": "bug-bounty",
+      "view": "bug-bounty",
+      "icon": "bug-bounty",
+      "title": {
+        "fa": "باگ بانتی",
+        "en": "Bug bounty",
+        "ar": "مكافأة الثغرات",
+        "ru": "Баг-баунти",
+        "zh-CN": "漏洞赏金"
+      },
+      "description": {
+        "fa": "آسیب‌پذیری را گزارش کن و جایزه بگیر.",
+        "en": "Report a vulnerability and get rewarded.",
+        "ar": "أبلغ عن ثغرة واحصل على مكافأة.",
+        "ru": "Сообщите об уязвимости и получите награду.",
+        "zh-CN": "报告漏洞并获得奖励。"
+      }
+    },
+    {
       "path": "migrate",
       "view": "migrate",
       "icon": "migrate",

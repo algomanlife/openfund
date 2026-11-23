@@ -15,7 +15,7 @@ export const SITE_LOCALES = ['fa', 'en', 'ar', 'ru', 'zh-CN']
 /** route → locales that publish it (the whitepaper is a fa/en publication) */
 export const PUBLIC_SITE_ROUTES = [
   'home', 'challenges', 'markets', 'rulebook', 'transparency', 'revenue-model', 'live-market-access',
-  'ambassador', 'coach', 'governance', 'faq', 'tools', 'learn', 'learn/glossary', 'referral', 'whitepaper', 'campaign', 'about', 'contact', 'apps', 'roadmap', 'developers',
+  'ambassador', 'coach', 'governance', 'faq', 'tools', 'learn', 'learn/glossary', 'referral', 'whitepaper', 'campaign', 'about', 'contact', 'apps', 'roadmap', 'developers', 'bug-bounty',
 ]
 /* the whitepaper and the sales-campaign landing are fa/en publications */
 const ROUTE_LOCALES = { whitepaper: ['fa', 'en'], campaign: ['fa', 'en'] }
@@ -60,6 +60,24 @@ export function robotsTxt(origin) {
   ].join('\n')
 }
 
+/* RFC 9116 security.txt (ADR 0057). Expires is a fixed date that the
+   release gate checks (test/seo.test.mjs fails when fewer than 60 days are
+   left), so the file is renewed deliberately, never silently. */
+export const SECURITY_TXT_EXPIRES = '2027-10-31T23:59:59.000Z'
+export const SECURITY_ADVISORY_URL = 'https://github.com/algomanlife/openfund/security/advisories/new'
+export function securityTxt(origin) {
+  return [
+    `Contact: ${SECURITY_ADVISORY_URL}`,
+    `Expires: ${SECURITY_TXT_EXPIRES}`,
+    `Policy: ${origin}/en/bug-bounty`,
+    'Policy: https://github.com/algomanlife/openfund/blob/main/SECURITY.md',
+    `Acknowledgments: ${origin}/en/bug-bounty#bb-hall`,
+    'Preferred-Languages: en, fa',
+    `Canonical: ${origin}/.well-known/security.txt`,
+    '',
+  ].join('\n')
+}
+
 /** Express routes; registered before the static mount and the SPA fallback. */
 export function seoRoutes(app, { publicOrigin = null } = {}) {
   const send = (type, render) => (req, res) => {
@@ -70,4 +88,5 @@ export function seoRoutes(app, { publicOrigin = null } = {}) {
   }
   app.get('/sitemap.xml', send('application/xml', sitemapXml))
   app.get('/robots.txt', send('text/plain', robotsTxt))
+  app.get(['/.well-known/security.txt', '/security.txt'], send('text/plain', securityTxt))
 }
