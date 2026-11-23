@@ -17,6 +17,7 @@ export const MEGA_ICONS: Record<string, string> = {
   markets: 'M4 19h16M6 16l4-5 3 3 5-7M15 7h3v3',
   rulebook: 'M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10M9 8h5',
   governance: 'M4 20h16M6 17V10M10 17V10M14 17V10M18 17V10M3 9l9-5 9 5z',
+  whitepaper: 'M6 3h9l4 4v14H6zM15 3v4h4M9 12h7M9 16h5M9 8h3',
   ambassador: 'M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3 20a6 6 0 0 1 12 0M16 8l2 2 4-4',
   transparency: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
   'revenue-model': 'M12 3v18M17 7.5c0-1.9-2.2-3.5-5-3.5s-5 1.6-5 3.5S9.2 11 12 11s5 1.6 5 3.5-2.2 3.5-5 3.5-5-1.6-5-3.5',
@@ -83,23 +84,30 @@ export const RESOURCE_SECTIONS: { id: string; label: { en: string; fa: string };
   { id: 'company', label: text('Company', 'شرکت'), routes: ['about', 'contact', 'certificate-verification'] },
 ]
 
-export type MegaBannerKind = 'council' | 'desktop' | 'flamingo'
+export type MegaBannerKind = 'council' | 'desktop' | 'flamingo' | 'whitepaper'
 /** featured banner per group: copy is editable through the interface registry */
-export const MEGA_BANNERS: Record<string, { kind: MegaBannerKind; route: string; hash?: string; title: { en: string; fa: string }; body: { en: string; fa: string }; cta: { en: string; fa: string }; description?: { en: string; fa: string } }> = {
+export interface MegaBannerDef { kind: MegaBannerKind; route: string; hash?: string; title: { en: string; fa: string }; body: { en: string; fa: string }; cta: { en: string; fa: string }; description?: { en: string; fa: string } }
+/** one or more featured banners per group (Economy has two) */
+export const MEGA_BANNERS: Record<string, MegaBannerDef | MegaBannerDef[]> = {
   'website-challenges': {
     kind: 'flamingo', route: 'migrate',
     title: text('Migration to Openfund', 'مهاجرت به اوپن‌فاند'),
     body: text('Proven funded trader? Skip evaluation with three verified payouts.', 'معامله‌گر فاندشدهٔ اثبات‌شده‌ای؟ با سه برداشت تأییدشده از ارزیابی عبور کن.'),
     cta: text('Start migration', 'شروع مهاجرت'),
     /* read by screen readers only: the scene's concept */
-    description: text('Illustration: a flock of flamingos migrating to a new home, landing on a calm lake that reflects the OpenFi mark — like the flamingos that winter at Maharloo Lake near Shiraz, where Openfund is based.', 'تصویر: دسته‌ای از فلامینگوها به خانه‌ای تازه مهاجرت می‌کنند و روی دریاچه‌ای آرام فرود می‌آیند که نشان OpenFi را بازتاب می‌دهد؛ مانند فلامینگوهایی که زمستان را در دریاچهٔ مهارلو نزدیک شیراز، محل استقرار اوپن‌فاند، می‌گذرانند.'),
+    description: text('Illustration: a flock of flamingos migrating to a new home and landing on a calm lake, like the flamingos that winter at Maharloo Lake near Shiraz, where Openfund is based.', 'تصویر: دسته‌ای از فلامینگوها به خانه‌ای تازه مهاجرت می‌کنند و روی دریاچه‌ای آرام فرود می‌آیند؛ مانند فلامینگوهایی که زمستان را در دریاچهٔ مهارلو نزدیک شیراز، محل استقرار اوپن‌فاند، می‌گذرانند.'),
   },
-  'website-economy': {
+  'website-economy': [{
     kind: 'council', route: 'governance',
     title: text('Latest council proposals', 'تازه‌ترین پیشنهادهای شورا'),
     body: text('Ten seats and a quorum of seven: see what the council is deciding.', 'ده کرسی و حد نصاب هفت: ببین شورا دربارهٔ چه تصمیم می‌گیرد.'),
     cta: text('Open governance', 'رفتن به حاکمیت'),
-  },
+  }, {
+    kind: 'whitepaper', route: 'whitepaper',
+    title: text('Openfund whitepaper', 'وایت‌پیپر اوپن‌فاند'),
+    body: text('How the evaluation, the economy and the council work, in one document.', 'ارزیابی، اقتصاد و شورا چگونه کار می‌کنند، در یک سند.'),
+    cta: text('Read the whitepaper', 'مطالعهٔ وایت‌پیپر'),
+  }],
   'website-resources': {
     kind: 'desktop', route: 'apps', hash: '#desktop-builds',
     title: text('Open Trade for desktop', 'Open Trade برای دسکتاپ'),
@@ -130,6 +138,18 @@ export function megaBannerArt(kind: MegaBannerKind): SVGSVGElement {
     const el = document.createElementNS(SVG_NS, tag)
     for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, String(v))
     svg.append(el); return el
+  }
+  if (kind === 'whitepaper') {
+    /* an open document: a page turns over the spine, mint text lines and a
+       chart draw in (scaleX / opacity only; menu open only) */
+    add('rect', { x: 26, y: 10, width: 108, height: 72, rx: 5, class: 'wp-book' })
+    add('path', { d: 'M80 12v68', class: 'wp-spine' })
+    for (let i = 0; i < 4; i++) add('rect', { x: 34, y: 22 + i * 9, width: 38 - (i % 2) * 10, height: 2.4, rx: 1.2, class: `wp-line l${i}` })
+    add('path', { d: 'M90 66l8-10 7 5 9-14 10 6', class: 'wp-chart' })
+    ;[[90, 66], [98, 56], [105, 61], [114, 47], [124, 53]].forEach(([cx, cy], i) => add('circle', { cx, cy, r: 2, class: `wp-dot d${i}` }))
+    for (let i = 0; i < 2; i++) add('rect', { x: 88, y: 22 + i * 9, width: 34 - i * 8, height: 2.4, rx: 1.2, class: `wp-line r${i}` })
+    add('path', { d: 'M80 14h46a3 3 0 0 1 3 3v58a3 3 0 0 1-3 3H80z', class: 'wp-page' })
+    return svg
   }
   if (kind === 'council') {
     add('path', { d: 'M18 76A62 44 0 0 1 142 76', class: 'mega-art-arc' })

@@ -227,7 +227,7 @@
     {
       "path": "whitepaper",
       "view": "whitepaper",
-      "icon": null,
+      "icon": "whitepaper",
       "title": {
         "fa": "وایت‌پیپر",
         "en": "Whitepaper",

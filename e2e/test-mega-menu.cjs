@@ -77,7 +77,7 @@ const ok = (name, value, info = '') => { assert.ok(value, `${name} ${info}`); re
       const open = await state()
       ok(`${loc}: Trading challenges opens a group of five tiles (compare, buy, migration, tournament, rules)`, c.active === 'true' && c.tiles.join() === 'challenges,checkout,migrate,tournament,rulebook' && c.icons && c.inView, JSON.stringify(c))
       ok(`${loc}: the tournament tile has a New badge and a compact countdown`, !!c.badge && (Date.now() >= Date.parse('2027-01-04T00:00:00Z') || !!c.countdown), JSON.stringify(c))
-      ok(`${loc}: the flamingo banner links to migration with 7 birds, the mark and its reflection, and a hidden description`, c.banner === `/${loc}/migrate` && c.birds === 7 && c.mark && c.reflection && c.described, JSON.stringify(c))
+      ok(`${loc}: the flamingo banner links to migration with 7 birds, no mark or reflection (owner update), and a hidden description`, c.banner === `/${loc}/migrate` && c.birds === 7 && !c.mark && !c.reflection && c.described, JSON.stringify(c))
       if (motion === 'reduce') ok(`${loc}: reduced motion shows a static frame`, open.name === 'none', JSON.stringify(open))
       else ok(`${loc}: the scene is paused while closed and animates only while the panel is open`, closed.play === 'paused' && open.play === 'running' && open.name === 'fl-flap', JSON.stringify({ closed, open }))
       await page.screenshot({ path: path.join(OUT, `mega-challenges-${loc}-1440.png`) })

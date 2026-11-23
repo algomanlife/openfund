@@ -401,5 +401,9 @@
   "چلنج را انتخاب کن. قواعد را بخوان. با هزینهٔ ارزیابی یک‌باره شروع کن.": "Choose your challenge. Read the rules. Start with a one-time evaluation fee.",
   "در مدل ترکیبی A-Book و B-Book، سود و زیان تو در هر دو مسیر با یک روش محاسبه می‌شود. در این نسخه همهٔ حساب‌ها در محیط شبیه‌سازی‌شده اجرا می‌شوند و ارسال سفارش به بازار واقعی فعال نیست.": "In the hybrid A-Book and B-Book model, your P&L is calculated the same way on either route. In this release every account runs in a simulated environment, and orders are not routed to live markets.",
   "در شیراز": "in Shiraz",
-  "استاندارد: هفتگی ۶۰٪، دوهفته‌ای ۸۰٪ یا درخواستی ۱۰۰٪. تک‌مرحله‌ای: دوهفته‌ای ۸۰٪ یا درخواستی ۱۰۰٪. آنی: دوهفته‌ای ۹۵٪. یک چرخه را یک بار، هنگام شروع حساب فاندشده، انتخاب می‌کنی. چرخهٔ درخواستی به ۷ روز سودده (هر کدام دست‌کم ۰٫۵٪ اندازهٔ حساب) و امتیاز ثبات ۳۵٪ نیاز دارد. حداقل درخواست ۱٪ اندازهٔ حساب است.": "Standard: weekly 60%, bi-weekly 80% or on-demand 100%. One-phase: bi-weekly 80% or on-demand 100%. Instant: bi-weekly 95%. You choose one cycle, once, when your funded account starts. On demand needs 7 profitable days of at least 0.5% of the account size and a 35% consistency score. The minimum request is 1% of the account size."
+  "استاندارد: هفتگی ۶۰٪، دوهفته‌ای ۸۰٪ یا درخواستی ۱۰۰٪. تک‌مرحله‌ای: دوهفته‌ای ۸۰٪ یا درخواستی ۱۰۰٪. آنی: دوهفته‌ای ۹۵٪. یک چرخه را یک بار، هنگام شروع حساب فاندشده، انتخاب می‌کنی. چرخهٔ درخواستی به ۷ روز سودده (هر کدام دست‌کم ۰٫۵٪ اندازهٔ حساب) و امتیاز ثبات ۳۵٪ نیاز دارد. حداقل درخواست ۱٪ اندازهٔ حساب است.": "Standard: weekly 60%, bi-weekly 80% or on-demand 100%. One-phase: bi-weekly 80% or on-demand 100%. Instant: bi-weekly 95%. You choose one cycle, once, when your funded account starts. On demand needs 7 profitable days of at least 0.5% of the account size and a 35% consistency score. The minimum request is 1% of the account size.",
+  "مهاجرت": "Migration",
+  "مهاجرت به اوپن‌فاند": "Migration to Openfund",
+  "شروع مهاجرت": "Start migration",
+  "معامله‌گر فاندشدهٔ اثبات‌شده‌ای؟ با سه برداشت تأییدشده از ارزیابی عبور کن.": "Proven funded trader? Skip evaluation with three verified payouts."
 }

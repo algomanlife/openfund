@@ -123,6 +123,7 @@ const groups = [
   ['prop', ['users', 'challenges', 'reviews', 'payouts', 'plans', 'entitlements']],
   ['tournamentGroup', ['tournaments']],
   ['siteSearchGroup', ['siteSearch']],
+  ['migrationGroup', ['migrations', 'migrationFirms']],
   ['paymentsGroup', ['paymentOverview', 'paymentSearch', 'payments', 'deposits', 'refunds', 'paymentSettings']],
   ['business', ['coupons', 'support', 'partners', 'commissions']],
   ['financeGroup', ['finance', 'expenses', 'reserves', 'obligations']],
@@ -589,6 +590,9 @@ async function directory(main, section, filter) {
   }
   if (id && section === 'tournaments') return tournamentView(main, data)
   if (section === 'tournaments') return tournamentsView(main, data.rows ?? [])
+  if (id && section === 'migrations') return migrationView(main, data)
+  if (section === 'migrations') return migrationsView(main, data.rows ?? [])
+  if (section === 'migrationFirms') return migrationFirmsView(main, data)
   if (section === 'plans') return plansView(main, data.rows ?? [])
   if (section === 'entitlements') return entitlementsView(main, data.rows ?? [])
   if (section === 'coupons') main.append(el('div', { class: 'tools' }, button('createCoupon', () => { void couponWizard() }, 'primary')))
@@ -704,7 +708,7 @@ async function userProfile(main, user) {
     table('support', [['reference', r => link('support', { id: r.reference }, technical(r.reference))], ['subject', r => r.subject], ['status', status], ['date', r => date(r.created_at)]], p.support),
     table('certificates', [['identity', r => technical(r.serial)], ['kind', r => t(r.kind)], ['plan', r => technical(r.plan)], ['status', status], ['date', r => date(r.issued_at)]], p.certificates),
     table('tournamentRecords', [['identity', uid], ['status', status], ['name', r => r.nickname ?? '—'], ['date', r => date(r.created_at)]], p.tournament),
-    table('migrationRecords', [['identity', uid], ['status', status], ['firm', r => technical(r.firm_slug)], ['date', r => date(r.created_at)]], p.migration))
+    table('migrationRecords', [['identity', r => link('migrations', { id: r.id }, uid(r))], ['status', status], ['firm', r => r.firm], ['date', r => date(r.created_at)]], p.migration))
 }
 
 /* ---------- challenges: owner decisions with a required reason ---------- */
@@ -845,6 +849,80 @@ async function siteSearchView(main, params) {
   const cols = [['query', r => technical(r.query)], ['language', r => technical(r.locale)], ['searches', r => number(r.searches)], ['withResults', r => number(r.results)],
     ['clicks', r => number(r.clicks)], ['actions', actions]]
   main.append(table('topQueries', cols, data.top ?? []), table('zeroResultQueries', cols, data.zeroResults ?? []), table('noClickQueries', cols, data.noClicks ?? []))
+/* ---------- Migration to Openfund: review queue, decision, pass, firms ---------- */
+function migrationsView(main, rows) {
+  main.append(el('p', { class: 'muted' }, t('migrationHint')),
+    table(null, [['identity', r => link('migrations', { id: r.id }, uid(r))], ['wallet', wallet], ['firm', r => r.firm], ['status', status],
+      ['claimedSize', r => usd(r.claimed_max_size_usd)], ['evidence', r => number(r.evidence)], ['date', r => date(r.submitted_at ?? r.created_at)]], rows))
+}
+function migrationView(main, data) {
+  const { request: r, checklist: list, evidence = [], events = [], pass } = data
+  const reason = () => ['reason', areaInput({ required: '', minlength: '3' })]
+  const check = (ok, key) => el('li', { class: ok ? 'ok' : 'missing' }, (ok ? '✓ ' : '✗ ') + t(key))
+  main.append(el('section', { class: 'panel detail' }, el('h2', {}, `${r.firm} · ${t(r.status)}`), technical(r.wallet_address), uid(r), status(r),
+    el('span', {}, `${t('claimedSize')}: `, usd(r.claimed_max_size_usd)), r.full_name ? el('span', {}, `${t('fullName')}: ${r.full_name}`) : null,
+    r.contact_email ? el('span', {}, `${t('email')}: `, technical(r.contact_email)) : null,
+    el('ul', { class: 'checklist' }, check(list.identity, 'checkIdentity'), check(list.fundedAccount, 'checkFunded'),
+      el('li', { class: list.payouts ? 'ok' : 'missing' }, `${list.payouts ? '✓' : '✗'} ${t('checkPayouts')}: ${list.payoutCount} / ${list.minPayouts} (${list.windowMonths} ${t('months')})`)),
+    el('div', { class: 'tools' },
+      r.status === 'submitted' ? button('approveMigration', () => operate('migrations', r.id, 'approve', [
+        ['approvedMaxSizeUsd', textInput({ required: '', type: 'number', min: '1', dir: 'ltr', value: String(r.claimed_max_size_usd) }), i => Number(i.value), 'approvedSize'],
+        ['kycVerified', checkboxInput(), readChecked, 'kycVerified'], ['nameMatched', checkboxInput(), readChecked, 'nameMatched'], reason()], 'approveMigration'), 'primary') : null,
+      r.status === 'submitted' ? button('rejectMigration', () => operate('migrations', r.id, 'reject', [reason()], 'rejectMigration'), 'danger') : null,
+      pass?.status === 'issued' ? button('revokePass', () => operate('migrationPasses', pass.id, 'revoke', [reason()], 'revokePass'), 'danger') : null),
+    el('p', { class: 'muted' }, t('migrationReviewHint'))),
+  table('evidence', [['kind', e => t('ev_' + e.kind)], ['payoutDate', e => e.payoutDate ?? '—'], ['amount', e => e.amountUsd == null ? '—' : usd(e.amountUsd)],
+    ['detail', e => e.url ? el('a', { href: e.url, rel: 'noopener noreferrer', target: '_blank' }, t('openLink')) : e.txHash ? technical(`${e.chainId} · ${e.txHash.slice(0, 12)}… · ${e.verification?.verified ? t('verifiedOnChain') : t(e.verification?.reason || 'notVerified')}`) : '—'],
+    ['file', e => e.download ? el('a', { href: e.download.url, rel: 'noopener noreferrer' }, `${t('download')} (${Math.round((e.file?.sizeBytes ?? 0) / 1024)} KB)`) : '—']], evidence),
+  pass ? table('migrationPass', [['status', status], ['plan', p => p.plans.join(' / ')], ['amount', p => usd(p.max_size_usd)], ['expires', p => date(p.expires_at)], ['order', p => p.purchase_order_id ? link('payments', { id: p.purchase_order_id }, uid({ id: p.purchase_order_id })) : '—']], [pass]) : el('span'),
+  table('audit', [['date', e => date(e.created_at)], ['action', e => technical(e.action)], ['username', e => technical(e.actor)]], events))
+}
+function migrationFirmsView(main, data) {
+  const s = data.settings ?? {}
+  main.append(el('div', { class: 'tools' },
+    button('addFirm', () => firmDialog(), 'primary'),
+    button('migrationSettings', () => operate('migrationFirms', 'new', 'settings', [
+      ['minPayouts', textInput({ type: 'number', min: '1', max: '20', dir: 'ltr', value: String(s.minPayouts ?? 3) }), i => Number(i.value)],
+      ['windowMonths', textInput({ type: 'number', min: '1', max: '36', dir: 'ltr', value: String(s.windowMonths ?? 12) }), i => Number(i.value)],
+      ['plans', textInput({ dir: 'ltr', value: (s.plans ?? []).join(', ') }), i => readList(i) ?? undefined, 'eligiblePlans'],
+      ['retentionDays', textInput({ type: 'number', min: '7', max: '365', dir: 'ltr', value: String(s.retentionDays ?? 90) }), i => Number(i.value)],
+      ['passExpiresDays', textInput({ type: 'number', min: '1', max: '180', dir: 'ltr', value: String(s.passExpiresDays ?? 30) }), i => Number(i.value)],
+      ['reason', areaInput({ required: '' })]], 'migrationSettings'))),
+  el('p', { class: 'muted' }, `${t('minPayouts')}: ${s.minPayouts} · ${t('windowMonths')}: ${s.windowMonths} · ${t('eligiblePlans')}: ${(s.plans ?? []).join(', ')} · ${t('retentionDays')}: ${s.retentionDays} · ${t('passExpiresDays')}: ${s.passExpiresDays}`),
+  el('p', { class: 'muted' }, t('notAffiliatedNote')),
+  table(null, [['logo', f => f.has_logo ? el('img', { src: `/api/migrationFirmLogo/${f.id}`, alt: '', width: '32', height: '32', class: 'firm-logo' }) : '—'],
+    ['name', f => f.name], ['website', f => f.website_url ? technical(f.website_url) : '—'], ['programTypes', f => (f.program_types ?? []).join(', ') || '—'],
+    ['evidenceTypes', f => (f.evidence_types ?? []).join(', ') || '—'], ['status', status],
+    ['actions', f => el('div', { class: 'tools' }, button('editFirm', () => firmDialog(f)), button('uploadLogo', () => logoDialog(f)),
+      f.has_logo ? button('removeLogo', () => operate('migrationFirms', f.id, 'removeLogo', [['reason', areaInput({ required: '' })]], 'removeLogo'), 'danger') : null)]], data.firms ?? []))
+}
+function firmDialog(f = null) {
+  operate('migrationFirms', 'new', 'save', [
+    ['name', textInput({ required: '', maxlength: '60', value: f?.name ?? '' })],
+    ['websiteUrl', textInput({ type: 'url', dir: 'ltr', pattern: 'https://.*', value: f?.website_url ?? '' }), readOptional, 'website'],
+    ['programTypes', textInput({ maxlength: '600', value: (f?.program_types ?? []).join(', ') }), readOptional],
+    ['evidenceTypes', textInput({ maxlength: '600', value: (f?.evidence_types ?? []).join(', ') }), readOptional],
+    ['status', selectInput([['active', 'active'], ['inactive', 'inactive']])],
+    ['reason', areaInput({ required: '' })]], f ? 'editFirm' : 'addFirm')
+}
+/* the owner's own logo file: PNG, JPEG or WebP up to 200 KB (never downloaded or recreated here) */
+function logoDialog(f) {
+  const file = el('input', { type: 'file', required: '', accept: 'image/png,image/jpeg,image/webp' })
+  const read = () => new Promise((resolve, reject) => {
+    const picked = file.files?.[0]
+    if (!picked || picked.size > 204800) return reject(Object.assign(new Error('file_too_large'), { code: 'file_too_large' }))
+    const reader = new FileReader()
+    reader.onload = () => resolve({ contentType: picked.type, dataBase64: String(reader.result).split(',')[1] })
+    reader.onerror = reject
+    reader.readAsDataURL(picked)
+  })
+  const holder = { value: null }
+  file.addEventListener('change', () => { read().then(v => { holder.value = v }).catch(() => { holder.value = null }) })
+  operate('migrationFirms', f.id, 'logo', [
+    ['file', file, () => undefined, 'logoFile'],
+    ['contentType', el('span', { hidden: '' }), () => holder.value?.contentType],
+    ['dataBase64', el('span', { hidden: '' }), () => holder.value?.dataBase64],
+    ['reason', areaInput({ required: '' })]], 'uploadLogo')
 }
 
 /* ---------- plans: draft, preview diff, publish, retire ---------- */
