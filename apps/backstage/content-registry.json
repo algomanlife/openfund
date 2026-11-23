@@ -2,7 +2,7 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4761,
+    "uniqueRecords": 4782,
     "mappedCalls": 2319,
     "exceptions": 57,
     "validationFindings": 0,
@@ -606,6 +606,21 @@
         ],
         "areas": [
           "migration"
+        ]
+      },
+      {
+        "path": "/:locale/search",
+        "view": "search",
+        "collections": [
+          "search_suggestions",
+          "search_synonyms",
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "search"
         ]
       },
       {
@@ -2408,10 +2423,30 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 249,
+          "line": 251,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.02d693fb53010709",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شاید دنبال این‌ها باشید",
+      "en": "You may be looking for",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 18,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -2942,7 +2977,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 47,
+          "line": 48,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -4969,6 +5004,26 @@
       ]
     },
     {
+      "key": "react.096c8a4e2d9fb488",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "چیزی با جستجوی شما پیدا نشد.",
+      "en": "Nothing matched your search.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 17,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.096da326d8f838ac",
       "namespace": "react",
       "area": "Website",
@@ -6840,6 +6895,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.0ec5d432549b461a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جستجو در صفحه‌ها، مقاله‌های راهنما، وایت‌پیپر، مستندات توسعه‌دهندگان و بازارها.",
+      "en": "Search pages, help articles, the whitepaper, developer docs and markets.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 23,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -9243,7 +9318,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 52,
+          "line": 53,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -10027,7 +10102,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 114,
+          "line": 115,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -10892,6 +10967,13 @@
           "line": 39,
           "page": "information",
           "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 37,
+          "page": "search",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -12273,6 +12355,26 @@
       ]
     },
     {
+      "key": "react.1cf994a82c3e6816",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "صفحهٔ",
+      "en": "Page",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 28,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.1d06be352d49cba5",
       "namespace": "react",
       "area": "Trading Terminal",
@@ -12334,6 +12436,26 @@
           "component": "apps/web-react/src/features/governance/governanceModel.ts",
           "line": 71,
           "page": "governance",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.1d2408d9837fc0bb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دیدن همهٔ نتیجه‌ها",
+      "en": "See all results",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 19,
+          "page": "search",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -14789,7 +14911,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 248,
+          "line": 250,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -16238,7 +16360,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 128,
+          "line": 129,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -19381,6 +19503,26 @@
       ]
     },
     {
+      "key": "react.2f1b978703aefa2b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "با کلیدهای جهت جابه‌جا شوید، Enter برای باز کردن، Esc برای بستن.",
+      "en": "Use the arrow keys to move, Enter to open, Esc to close.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 20,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.2f1d7bde68b46e68",
       "namespace": "react",
       "area": "Global Content",
@@ -19504,6 +19646,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.2f53defdaa57a0d1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بستن جستجو",
+      "en": "Close search",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 12,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -21906,6 +22068,26 @@
       ]
     },
     {
+      "key": "react.33c5f9f13f730cf5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "راهنما و آموزش",
+      "en": "Help and learning",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 36,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.33d02c49f9e7a0e5",
       "namespace": "react",
       "area": "Global Content",
@@ -22398,6 +22580,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.3528054d2b21af29",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "صفحهٔ قبل",
+      "en": "Previous page",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 26,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -24193,7 +24395,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/loading/AppFrame.tsx",
-          "line": 37,
+          "line": 38,
           "page": "loading",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -26429,7 +26631,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 53,
+          "line": 54,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -27771,7 +27973,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 50,
+          "line": 51,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -28712,7 +28914,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 225,
+          "line": 227,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -29431,6 +29633,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 14,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/features/tools/JournalAnalyzer.tsx",
           "line": 58,
@@ -30707,14 +30916,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 55,
+          "line": 56,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 164,
+          "line": 165,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -32330,6 +32539,13 @@
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 39,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -32510,6 +32726,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.4f5ea8d7dece47ef",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "صفحهٔ بعد",
+      "en": "Next page",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 27,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -33696,14 +33932,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 124,
+          "line": 125,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 134,
+          "line": 135,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -34208,6 +34444,34 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/information/content.ts",
+          "line": 45,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 8,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 22,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 25,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -39827,7 +40091,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 46,
+          "line": 47,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -42133,7 +42397,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 214,
+          "line": 215,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -48229,6 +48493,26 @@
       ]
     },
     {
+      "key": "react.783f4f68d3a79cb0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پالایش نتیجه‌ها",
+      "en": "Filter results",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 30,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.784b75d02d8f00f2",
       "namespace": "react",
       "area": "Global Content",
@@ -51767,7 +52051,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 257,
+          "line": 259,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -53280,7 +53564,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 51,
+          "line": 52,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -54515,7 +54799,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 48,
+          "line": 49,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -55998,6 +56282,13 @@
           "line": 42,
           "page": "information",
           "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 38,
+          "page": "search",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -58447,14 +58738,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 180,
+          "line": 181,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 182,
+          "line": 183,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -58901,7 +59192,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 255,
+          "line": 257,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -62707,7 +62998,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 118,
+          "line": 119,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -65941,7 +66232,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 54,
+          "line": 55,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -66951,7 +67242,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 49,
+          "line": 50,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -67172,7 +67463,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/loading/AppFrame.tsx",
-          "line": 166,
+          "line": 167,
           "page": "loading",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67353,7 +67644,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 303,
+          "line": 305,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -70439,14 +70730,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 122,
+          "line": 123,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 133,
+          "line": 134,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -72559,6 +72850,26 @@
       ]
     },
     {
+      "key": "react.b47d8f76a4df84f8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جستجو در سایت (Ctrl K یا /)",
+      "en": "Search the site (Ctrl K or /)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 9,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.b488c9a090f27632",
       "namespace": "react",
       "area": "Website",
@@ -73347,7 +73658,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 45,
+          "line": 46,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -73697,6 +74008,26 @@
           "component": "apps/web-react/src/features/governance/governanceModel.ts",
           "line": 41,
           "page": "governance",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.b80b8be99b31c7dd",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "صفحه‌ها",
+      "en": "Pages",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 35,
+          "page": "search",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -75343,6 +75674,26 @@
           "line": 50,
           "page": "applications",
           "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.bbf2f3ee09532aa8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برای جستجو دست‌کم یک واژه بنویسید.",
+      "en": "Type at least one word to search.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 24,
+          "page": "search",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -77091,6 +77442,26 @@
       ]
     },
     {
+      "key": "react.c0ddc10e8ed08136",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جستجوی صفحه‌ها، راهنما، مستندات و بازارها",
+      "en": "Search pages, help, docs and markets",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 11,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.c0f4b3c28c82bf6e",
       "namespace": "react",
       "area": "Global Content",
@@ -77712,6 +78083,26 @@
       ]
     },
     {
+      "key": "react.c2cd3e0995d68ed5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جستجوهای اخیر",
+      "en": "Recent searches",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 13,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.c2d2c7ccff12dfc0",
       "namespace": "react",
       "area": "Website",
@@ -78069,6 +78460,13 @@
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 31,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/terminal/JournalAnalytics.tsx",
@@ -78808,14 +79206,14 @@
         },
         {
           "component": "apps/web-react/src/features/loading/AppFrame.tsx",
-          "line": 39,
+          "line": 40,
           "page": "loading",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/loading/AppFrame.tsx",
-          "line": 167,
+          "line": 168,
           "page": "loading",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -84566,6 +84964,26 @@
       ]
     },
     {
+      "key": "react.d48fbde07a213a34",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در حال بارگذاری فهرست جستجو…",
+      "en": "Loading the search index…",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 15,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d494e67b04aae1d5",
       "namespace": "react",
       "area": "Website",
@@ -86791,7 +87209,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 329,
+          "line": 331,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -87392,14 +87810,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 206,
+          "line": 207,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 207,
+          "line": 208,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -89410,6 +89828,26 @@
       ]
     },
     {
+      "key": "react.e0ade361ffe46be3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فقط صفحه‌ها نمایش داده می‌شود: فهرست کامل بارگذاری نشد.",
+      "en": "Showing pages only: the full index could not be loaded.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 16,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.e0b56f3d0d5ec07f",
       "namespace": "react",
       "area": "Website",
@@ -90689,7 +91127,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 316,
+          "line": 318,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -91483,7 +91921,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 246,
+          "line": 248,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -93228,6 +93666,26 @@
       ]
     },
     {
+      "key": "react.ea4c85020fb7233e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نتیجه",
+      "en": "results",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 21,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.ea5bc7818271fe9b",
       "namespace": "react",
       "area": "Global Content",
@@ -93894,7 +94352,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 245,
+          "line": 247,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -96790,6 +97248,26 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 137,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.f3be7193246b0297",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جستجو در اوپن‌فاند",
+      "en": "Search Openfund",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 10,
+          "page": "search",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -101200,6 +101678,26 @@
       ]
     },
     {
+      "key": "react.fe634803a274f273",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "از",
+      "en": "of",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/search/copy.ts",
+          "line": 29,
+          "page": "search",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.fe63739c5f9dd258",
       "namespace": "react",
       "area": "Website",
@@ -102240,7 +102738,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 118,
+      "line": 119,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -102248,7 +102746,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 132,
+      "line": 133,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -102256,7 +102754,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 302,
+      "line": 304,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -102579,7 +103077,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 66,
+      "line": 67,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "helper-wrapper-definition",
@@ -102587,7 +103085,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 198,
+      "line": 199,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
@@ -102595,7 +103093,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 199,
+      "line": 200,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
@@ -102603,7 +103101,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 298,
+      "line": 300,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",

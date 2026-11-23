@@ -81,6 +81,14 @@ def wanted_permissions():
         ('directus_files', 'create', ['*']), ('directus_files', 'read', ['*']), ('directus_folders', 'read', ['id', 'name']),
         # owner-gated protected editor (Backstage validates each address)
         ('site_settings', 'update', ['support_email', 'legal_email', 'technical_email', 'community_email']),
+        # site search (ADR 0052): the analytics dashboard's one-click "add
+        # synonym or suggestion"; Backstage validates terms, routes and labels
+        ('search_synonyms', 'read', ['*']), ('search_synonyms', 'create', ['status', 'terms', 'note']),
+        ('search_synonyms', 'update', ['status', 'terms', 'note']),
+        ('search_suggestions', 'read', ['*']), ('search_suggestions', 'create', ['status', 'sort', 'route', 'translations']),
+        ('search_suggestions', 'update', ['status', 'sort', 'route', 'translations']),
+        ('search_suggestion_translations', 'read', ['*']), ('search_suggestion_translations', 'create', ['*']),
+        ('search_suggestion_translations', 'update', ['label']),
     ]
     # one Directus permission per (collection, action): merge field lists so a
     # later entry never overwrites an earlier one

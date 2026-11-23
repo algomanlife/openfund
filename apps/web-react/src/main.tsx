@@ -18,6 +18,7 @@ const TournamentPage = lazy(() => import('./features/tournament/TournamentPage')
 const TradingObjectivesPage = lazy(() => import('./features/objectives/TradingObjectivesPage'))
 const TournamentTermsPage = lazy(() => import('./features/tournament/TournamentTermsPage'))
 const MigratePage = lazy(() => import('./features/migration/MigratePage'))
+const SearchPage = lazy(() => import('./features/search/SearchPage'))
 const CertificatesPage = lazy(() => import('./features/certificates/CertificatesPage'))
 const RadarPage = lazy(() => import('./features/radar/RadarPage'))
 const HeatmapPage = lazy(() => import('./features/radar/HeatmapPage'))
@@ -178,6 +179,8 @@ const routes = [
   { path: '/:locale/trading-objectives', element: <Suspense fallback={null}><TradingObjectivesPage /></Suspense> },
   { path: '/:locale/tournament/terms', element: <Suspense fallback={null}><TournamentTermsPage /></Suspense> },
   { path: '/:locale/migrate', element: <Suspense fallback={null}><MigratePage /></Suspense> },
+  /* site search results (noindex; ADR 0052) */
+  { path: '/:locale/search', element: <Suspense fallback={null}><SearchPage /></Suspense> },
   { path: '/:locale/about', element: <About /> },
   { path: '/:locale/contact', element: <Contact /> },
   { path: '/:locale/faq', element: <Faq /> },
