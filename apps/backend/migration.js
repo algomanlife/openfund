@@ -35,8 +35,16 @@ export const emailOf = v => {
   const domain = e.slice(at + 1)
   return domain.includes('.') && !domain.startsWith('.') && !domain.endsWith('.') ? e : null
 }
-const LOGO_TYPES = new Map(Object.entries({ 'image/png': b => b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])),
-  'image/jpeg': b => b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff, 'image/webp': b => b.subarray(0, 4).toString('latin1') === 'RIFF' && b.subarray(8, 12).toString('latin1') === 'WEBP' }))
+/* the logo's real type is read from its first bytes (no lookup by the
+   client's declared type), and the declared type must agree */
+const PNG_MAGIC = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+function sniffLogoType(b) {
+  if (b.subarray(0, 8).equals(PNG_MAGIC)) return 'image/png'
+  if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'image/jpeg'
+  if (b.subarray(0, 4).toString('latin1') === 'RIFF' && b.subarray(8, 12).toString('latin1') === 'WEBP') return 'image/webp'
+  return null
+}
+const LOGO_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp'])
 const publicFirm = f => ({ id: f.id, name: f.name, websiteUrl: f.website_url, programTypes: f.program_types, evidenceTypes: f.evidence_types,
   logoUrl: f.has_logo ? `/migration/firms/${f.id}/logo?v=${new Date(f.logo_updated_at).getTime()}` : null })
 const FIRM_COLUMNS = 'id, name, status, sort, created_at, website_url, program_types, evidence_types, logo IS NOT NULL AS has_logo, logo_updated_at'
@@ -381,12 +389,11 @@ export function migrationAdminRoutes({ pool, storage, audit }) {
     let bytes = null, type = null
     if (req.body?.remove !== true) {
       type = typeof req.body?.contentType === 'string' ? req.body.contentType : ''
-      const matches = LOGO_TYPES.get(type)
-      if (!matches) throw fail(415, 'file_type_not_accepted')
+      if (!LOGO_TYPES.has(type)) throw fail(415, 'file_type_not_accepted')
       if (typeof req.body?.dataBase64 !== 'string' || req.body.dataBase64.length > 280_000 || !/^[A-Za-z0-9+/]+={0,2}$/.test(req.body.dataBase64)) throw fail(400, 'invalid_file')
       bytes = Buffer.from(req.body.dataBase64, 'base64')
       if (bytes.length < 16 || bytes.length > 204_800) throw fail(413, 'file_too_large')
-      if (!matches(bytes)) throw fail(415, 'file_type_mismatch')
+      if (sniffLogoType(bytes) !== type) throw fail(415, 'file_type_mismatch')
     }
     const { rows: [f] } = await pool.query(`UPDATE migration_firms SET logo=$2, logo_type=$3, logo_updated_at=CASE WHEN $2::bytea IS NULL THEN NULL ELSE now() END WHERE id=$1 RETURNING name`, [req.params.id, bytes, type])
     if (!f) throw fail(404, 'firm_not_found')

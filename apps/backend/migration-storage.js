@@ -116,7 +116,15 @@ export const EVIDENCE_TYPES = {
 }
 export const MAX_EVIDENCE_BYTES = 40 * 1024 * 1024
 
-const EVIDENCE_SPECS = new Map(Object.entries(EVIDENCE_TYPES))
+const EVIDENCE_SPECS = new Map(Object.entries(EVIDENCE_TYPES).map(([type, spec]) => [type, { ...spec, type }]))
+const EVIDENCE_SNIFF_ORDER = Object.keys(EVIDENCE_TYPES)
+
+/* the file's real type, read from its first bytes; the loop calls fixed
+   functions in a fixed order, never one chosen by the client */
+function sniffEvidenceType(buffer) {
+  for (const type of EVIDENCE_SNIFF_ORDER) if (EVIDENCE_TYPES[type].magic(buffer)) return type
+  return null
+}
 
 /** Validates an uploaded evidence body. Returns the accepted bytes (a fresh
  *  view, so callers never reuse the raw request value) and their metadata.
@@ -128,7 +136,7 @@ export function validateEvidenceFile(input, declaredType) {
   const spec = EVIDENCE_SPECS.get(typeof declaredType === 'string' ? declaredType.split(';')[0].trim().toLowerCase() : '')
   if (!spec) throw fail(415, 'file_type_not_accepted')
   if (buffer.byteLength > spec.max) throw fail(413, 'file_too_large')
-  if (!spec.magic(buffer)) throw fail(415, 'file_type_mismatch')
+  if (sniffEvidenceType(buffer) !== spec.type) throw fail(415, 'file_type_mismatch')
   if (spec.ext === 'pdf') {
     /* active content: scripts, launch actions, embedded files, form
        submission (a plain /OpenAction view setting is common and inert) */
