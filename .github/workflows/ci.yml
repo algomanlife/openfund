@@ -370,6 +370,12 @@ jobs:
           TEST_FRONTEND_URL: http://localhost:8080
           OUTPUT_DIR: output/playwright/migration
         run: npm run test:browser:migration
+      - name: Migration flamingo flight (heads lead in RTL and LTR, never over the copy, always alive, reduced-motion still, recordings)
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080
+          OUTPUT_DIR: output/playwright/migration-flight
+        run: npm run test:browser:migration-flight
       - name: Premium League page (five locales, themes, real registration count, live gating, reduced motion, terms)
         working-directory: .
         env:
@@ -584,6 +590,7 @@ jobs:
             output/playwright/bug-bounty/
             output/playwright/terminal-guide/
             output/playwright/migration/
+            output/playwright/migration-flight/
             output/playwright/tournament/
             output/playwright/site-search/
             output/playwright/terminal-funding/

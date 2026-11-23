@@ -64,6 +64,7 @@
     "test:browser:bug-bounty": "node e2e/test-bug-bounty.cjs",
     "test:browser:terminal-guide": "node e2e/test-terminal-guide.cjs",
     "test:browser:migration": "node e2e/test-migration.cjs",
+    "test:browser:migration-flight": "node e2e/test-migration-flight.cjs",
     "test:browser:tournament": "node e2e/test-tournament.cjs",
     "test:browser:site-search": "node e2e/test-site-search.cjs",
     "test:browser:terminal-funding": "node e2e/test-terminal-funding.cjs",
