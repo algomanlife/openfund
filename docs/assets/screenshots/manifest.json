@@ -10161,5 +10161,89 @@
         "state": "Objective cards scrolled into view, dark theme, reduced motion, anonymous"
       }
     ]
+  },
+  "labs": {
+    "branch": "agent/claude/labs",
+    "baseCommit": "cc4aac0",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T08:16:33+00:00",
+    "source": "Local build of agent/claude/labs on a disposable Postgres; seeded catalog, no drop published",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Public Gains Network reads where they loaded; no fixtures",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "docs/assets/screenshots/labs/labs-en-390.jpg",
+        "route": "/en/labs",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "No drop published (the honest empty state), dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/labs/labs-en-768.jpg",
+        "route": "/en/labs",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "No drop published (the honest empty state), dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/labs/labs-en-1440.jpg",
+        "route": "/en/labs",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "No drop published (the honest empty state), dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/labs/labs-fa-390.jpg",
+        "route": "/fa/labs",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "No drop published (the honest empty state), dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/labs/labs-fa-768.jpg",
+        "route": "/fa/labs",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "No drop published (the honest empty state), dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/labs/labs-fa-1440.jpg",
+        "route": "/fa/labs",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "No drop published (the honest empty state), dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/labs/labs-ar-390.jpg",
+        "route": "/ar/labs",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "No drop published (the honest empty state), dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/labs/labs-en-1440-light.jpg",
+        "route": "/en/labs",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "No drop published (the honest empty state), light theme, reduced motion, anonymous"
+      }
+    ]
   }
 }

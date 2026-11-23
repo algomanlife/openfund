@@ -592,6 +592,7 @@ export const labels = {
   invalid_account_size: ["That size is not offered by the plan", "این اندازه در پلن وجود ندارد"],
   wallet_not_registered: ["This wallet has no Openfund account", "این کیف پول حساب اوپن‌فاند ندارد"],
   plan_unchanged: ["Nothing changed", "تغییری وجود ندارد"],
+  lab_number_taken: ["Another Labs drop already uses this number", "دراپ دیگری از آزمایشگاه همین شماره را دارد"],
   plan_already_retired: ["Already retired", "قبلاً بازنشسته شده"],
   plan_already_active: ["Already active", "قبلاً فعال است"],
   funded_stage_has_no_pass: ["A funded account has no next stage", "حساب فاندشده مرحلهٔ بعدی ندارد"],

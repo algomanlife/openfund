@@ -113,7 +113,9 @@ export function labRoutes({ pool, graceMinutes = () => 0, now = () => Date.now()
       .sort((a, b) => (a.status === b.status ? Date.parse(a.saleStartsAt) - Date.parse(b.saleStartsAt) : a.status === 'open' ? -1 : 1))
     /* the archive shows drops that actually sold (a retired drop with no sales is not history) */
     const previous = drops.filter(d => (d.status === 'sold_out' || d.status === 'closed') && d.sold > 0).sort((a, b) => b.number - a.number)
+    /* paid standard plans the engine can evaluate (positive loss limits) */
     const reference = rows.filter(r => r.status === 'active' && !labOf(r.configuration) && !r.configuration?.free).map(referenceOf)
+      .filter(r => r.dailyLossPct > 0 && r.maxTotalLossPct > 0)
     res.set('Cache-Control', 'public, max-age=15').json({ current, previous, reference, serverTime: new Date(t).toISOString() })
   }))
   return router
