@@ -3086,3 +3086,21 @@ CREATE TABLE IF NOT EXISTS tournament_awards (
 -- tournament certificates (badges on certificates)
 ALTER TABLE certificates DROP CONSTRAINT IF EXISTS certificates_kind_check;
 ALTER TABLE certificates ADD CONSTRAINT certificates_kind_check CHECK (kind IN ('purchase','completion','payout','tournament'));
+
+-- ============================================================
+-- Terminal Funding tab (item G). Gains publishes no funding history, so
+-- the backend samples the funding block of the documented /markets list
+-- once per hour (market-funding.js sampleFunding). Kept for 400 days.
+-- Market data only: no user or account columns.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS market_funding_samples (
+  market                text        NOT NULL CHECK (length(market) BETWEEN 3 AND 33),
+  sampled_at            timestamptz NOT NULL,
+  funding_long_hourly   numeric     NOT NULL,
+  funding_short_hourly  numeric     NOT NULL,
+  borrowing_hourly      numeric,
+  oi_long_usd           numeric,
+  oi_short_usd          numeric,
+  PRIMARY KEY (market, sampled_at)
+);
+CREATE INDEX IF NOT EXISTS idx_market_funding_samples_time ON market_funding_samples (sampled_at);

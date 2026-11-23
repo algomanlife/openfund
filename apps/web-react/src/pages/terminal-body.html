@@ -71,8 +71,18 @@
   <section class="chart-panel" aria-label="Trading chart">
     <div class="chart-tabs" role="tablist" aria-label="Chart views">
       <button type="button" role="tab" id="tab-chart" aria-selected="true" aria-controls="chart-host" data-chart-tab="chart" data-i18n="ctab.chart">Chart</button>
-      <button type="button" role="tab" id="tab-news" aria-selected="false" aria-controls="news-panel" data-chart-tab="news" tabindex="-1" data-i18n="ctab.news">News &amp; Information</button>
+      <button type="button" role="tab" id="tab-funding" aria-selected="false" aria-controls="funding-panel" data-chart-tab="funding" tabindex="-1" data-i18n="ctab.funding">Funding</button>
+      <button type="button" role="tab" id="tab-details" aria-selected="false" aria-controls="details-panel" data-chart-tab="details" tabindex="-1" data-i18n="ctab.details">Details</button>
+      <button type="button" role="tab" id="tab-news" aria-selected="false" aria-controls="news-panel" data-chart-tab="news" tabindex="-1" data-i18n="ctab.news">News &amp; info</button>
     </div>
+    <section class="news-panel fund-panel" id="funding-panel" role="tabpanel" aria-labelledby="tab-funding" tabindex="0" hidden>
+      <div class="news-state" id="funding-state" role="status" aria-live="polite"></div>
+      <div class="fund-host" id="funding-host"></div>
+    </section>
+    <section class="news-panel fund-panel" id="details-panel" role="tabpanel" aria-labelledby="tab-details" tabindex="0" hidden>
+      <div class="news-state" id="details-state" role="status" aria-live="polite"></div>
+      <div class="det-host" id="details-host"></div>
+    </section>
     <section class="news-panel" id="news-panel" role="tabpanel" aria-labelledby="tab-news" hidden>
       <div class="news-state" id="news-state" role="status" aria-live="polite"></div>
       <div class="news-host" id="news-host"></div>

@@ -94,6 +94,7 @@ const I18N = {
     'of.size': 'اندازه', 'of.notional': 'نوشنال',
     'sz.collateral': 'کولترال / وثیقه', 'sz.collateralShort': 'کولترال / وثیقه', 'sz.quantity': 'اندازه نماد', 'sz.lots': 'لاتیج',
     'sz.qtyLabel': 'اندازه نماد', 'sz.lotsLabel': 'لاتیج', 'pos.entry': 'نقطه ورود',
+    'ctab.funding': 'فاندینگ', 'ctab.details': 'جزئیات', 'fund.loading': 'در حال بارگذاری دادهٔ بازار…', 'fund.unavailable': 'دادهٔ بازار در دسترس نیست.', 'fund.retry': 'تلاش دوباره', 'fund.long': 'لانگ', 'fund.short': 'شورت', 'fund.borrowing': 'نرخ قرض', 'fund.perHour': 'در ساعت', 'fund.perYear': 'سالانه', 'fund.oi': 'موقعیت‌های باز', 'fund.skew': 'عدم توازن', 'fund.longs': 'لانگ‌ها', 'fund.shorts': 'شورت‌ها', 'fund.range': 'بازهٔ زمانی', 'fund.interval': 'فاصلهٔ نمونه', 'fund.series': 'سمت', 'fund.annualized': 'سالانه‌شده', 'fund.r1d': '۱ روز', 'fund.r1w': '۱ هفته', 'fund.r1m': '۱ ماه', 'fund.r3m': '۳ ماه', 'fund.availableFrom': 'داده از این تاریخ موجود است:', 'fund.noSamples': 'هنوز نمونه‌ای ثبت نشده است؛ تاریخچه با نخستین نمونهٔ ساعتی آغاز می‌شود.', 'fund.source': 'دادهٔ بازار از Gains Network', 'fund.sampled': 'تاریخچه هر ساعت توسط اوپن‌فاند نمونه‌برداری می‌شود', 'fund.chart': 'نمودار نرخ فاندینگ', 'det.spec': 'مشخصات بازار در Gains', 'det.limits': 'محدودیت‌های حساب اوپن‌فاند شما', 'det.market': 'بازار', 'det.status': 'وضعیت', 'det.open': 'باز', 'det.closed': 'بسته', 'det.minLev': 'کمترین اهرم', 'det.maxLev': 'بیشترین اهرم', 'det.minCollateral': 'کمترین وثیقه', 'det.minPosition': 'کمترین اندازهٔ پوزیشن', 'det.openFee': 'کارمزد باز کردن', 'det.closeFee': 'کارمزد بستن', 'det.spread': 'اسپرد', 'det.collaterals': 'وثیقه‌های پذیرفته', 'det.margin': 'حالت مارجین', 'det.isolated': 'ایزوله', 'det.cross': 'کراس', 'det.propMax': 'سقف اهرم سیاست پراپ', 'det.effective': 'بیشترین اهرم مجاز', 'det.planNote': 'پلن چلنج شما می‌تواند سقف پایین‌تری داشته باشد؛ همیشه سخت‌گیرانه‌ترین محدودیت اعمال می‌شود.', 'det.perpNote': 'حساب‌های پرپچوال از محدودیت‌های بازار Gains پیروی می‌کنند.',
     'ctab.chart': 'نمودار', 'ctab.news': 'اخبار و اطلاعات', 'news.loading': 'در حال بارگذاری تقویم اقتصادی…',
     'news.unavailable': 'تقویم اقتصادی در حال حاضر در دسترس نیست.', 'news.retry': 'تلاش دوباره', 'news.source': 'منبع: TradingView',
     'news.localeNote': 'این تقویم زبان فارسی ندارد و به انگلیسی نمایش داده می‌شود.',
@@ -221,7 +222,8 @@ const EN = {
   'of.size': 'Size', 'of.notional': 'Notional',
   'sz.collateral': 'Collateral', 'sz.collateralShort': 'Collateral', 'sz.quantity': 'Quantity', 'sz.lots': 'Lotage',
   'sz.qtyLabel': 'Quantity', 'sz.lotsLabel': 'Lotage', 'pos.entry': 'Entry Price',
-  'ctab.chart': 'Chart', 'ctab.news': 'News & Information', 'news.loading': 'Loading the economic calendar…',
+  'ctab.funding': 'Funding', 'ctab.details': 'Details', 'fund.loading': 'Loading market data…', 'fund.unavailable': 'Market data is unavailable.', 'fund.retry': 'Try again', 'fund.long': 'Long', 'fund.short': 'Short', 'fund.borrowing': 'Borrowing', 'fund.perHour': 'per hour', 'fund.perYear': 'per year', 'fund.oi': 'Open interest', 'fund.skew': 'Skew', 'fund.longs': 'Longs', 'fund.shorts': 'Shorts', 'fund.range': 'Range', 'fund.interval': 'Interval', 'fund.series': 'Side', 'fund.annualized': 'Annualized', 'fund.r1d': '1D', 'fund.r1w': '1W', 'fund.r1m': '1M', 'fund.r3m': '3M', 'fund.availableFrom': 'Data available from', 'fund.noSamples': 'No samples yet: the history starts with the first hourly sample.', 'fund.source': 'Market data from Gains Network', 'fund.sampled': 'history sampled hourly by Openfund', 'fund.chart': 'Funding rate chart', 'det.spec': 'Gains market specification', 'det.limits': 'Your Openfund account limits', 'det.market': 'Market', 'det.status': 'Status', 'det.open': 'Open', 'det.closed': 'Closed', 'det.minLev': 'Minimum leverage', 'det.maxLev': 'Maximum leverage', 'det.minCollateral': 'Minimum collateral', 'det.minPosition': 'Minimum position size', 'det.openFee': 'Opening fee', 'det.closeFee': 'Closing fee', 'det.spread': 'Spread', 'det.collaterals': 'Accepted collateral', 'det.margin': 'Margin mode', 'det.isolated': 'Isolated', 'det.cross': 'Cross', 'det.propMax': 'Prop policy leverage cap', 'det.effective': 'Maximum allowed leverage', 'det.planNote': 'Your challenge plan can set a lower limit; the strictest limit always applies.', 'det.perpNote': 'Perpetual accounts follow the Gains market limits.',
+  'ctab.chart': 'Chart', 'ctab.news': 'News & info', 'news.loading': 'Loading the economic calendar…',
   'news.unavailable': 'The economic calendar is unavailable right now.', 'news.retry': 'Retry', 'news.source': 'Source: TradingView',
   'news.localeNote': '',
   'of.sl': 'Stop Loss <em>USD · optional</em>', 'of.tp': 'Take Profit <em>USD · optional</em>',
@@ -498,20 +500,34 @@ function loadNews(){
     NEWS.state = 'ready'; newsStatus('ready');
   });
 }
+/* Chart | Funding | Details | News & info: the chart stays mounted; the
+   other three are panels over it (legacy/market-funding.js fills Funding
+   and Details when their tab opens) */
+const CHART_TABS = ['chart', 'funding', 'details', 'news'];
 function setChartTab(tab){
-  const news = tab === 'news';
-  $('news-panel').hidden = !news;
+  if (!CHART_TABS.includes(tab)) return;
+  $('news-panel').hidden = tab !== 'news';
+  if ($('funding-panel')) $('funding-panel').hidden = tab !== 'funding';
+  if ($('details-panel')) $('details-panel').hidden = tab !== 'details';
   document.querySelectorAll('[data-chart-tab]').forEach(b => {
     const on = b.dataset.chartTab === tab;
     b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1;
   });
-  if (news) loadNews();
+  if (tab === 'news') loadNews();
+  document.dispatchEvent(new CustomEvent('of:chart-tab', { detail: { tab } }));
 }
 document.querySelectorAll('[data-chart-tab]').forEach(b => {
   b.addEventListener('click', () => setChartTab(b.dataset.chartTab));
   b.addEventListener('keydown', e => {
-    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    const next = b.dataset.chartTab === 'chart' ? 'news' : 'chart';
+    const tabs = [...document.querySelectorAll('[data-chart-tab]')].map(x => x.dataset.chartTab);
+    const i = tabs.indexOf(b.dataset.chartTab);
+    const rtl = document.documentElement.dir === 'rtl';
+    let next = null;
+    if (e.key === 'Home') next = tabs[0];
+    else if (e.key === 'End') next = tabs[tabs.length - 1];
+    else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') next = tabs[(i + ((e.key === 'ArrowRight') !== rtl ? 1 : -1) + tabs.length) % tabs.length];
+    if (!next) return;
+    e.preventDefault();
     setChartTab(next); document.querySelector(`[data-chart-tab="${next}"]`)?.focus();
   });
 });
@@ -519,7 +535,7 @@ document.querySelectorAll('[data-chart-tab]').forEach(b => {
 new MutationObserver(() => { NEWS.el?.setAttribute('theme', newsTheme()); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 new MutationObserver(() => {
   const v = document.body.dataset.workspaceView;
-  if (v === 'news') setChartTab('news'); else if (v === 'chart') setChartTab('chart');
+  if (CHART_TABS.includes(v)) setChartTab(v);
 }).observe(document.body, { attributes: true, attributeFilter: ['data-workspace-view'] });
 
 window.OpenfundTerminalInspect = {
@@ -539,6 +555,8 @@ window.OpenfundTerminalInspect = {
   setTradingPrefs: patch => setTradingPrefs(patch),
 };
 window.__ofSetLang = lang => { if (I18N[lang] && lang !== window.ofLang) setLang(lang); };
+/* the interface dictionary for companion modules (legacy/market-funding.js) */
+window.ofT = key => t(key);
 
 /* ============================================================
    THEME — dark (default) / light, synced with Vela
