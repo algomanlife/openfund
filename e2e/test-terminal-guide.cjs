@@ -46,6 +46,8 @@ const check = (name, ok, detail = '') => { assert.ok(ok, `${name} ${detail}`); p
         check(`${id}: title in the page language`, (await dialog.locator('h2').innerText()).length > 10)
         const noScroll = await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)
         check(`${id}: no horizontal scroll`, noScroll)
+        /* measure after the opening animation: its scale(.985) shrinks every box by 1.5% */
+        await dialog.evaluate(el => Promise.all(el.getAnimations().map(a => a.finished)))
         const small = await dialog.locator('button, input[type=checkbox] >> xpath=..').evaluateAll(els => els.filter(e => { const r = e.getBoundingClientRect(); return r.width && (r.width < 43.5 || r.height < 43.5) }).map(e => e.className || e.tagName))
         check(`${id}: targets at least 44 px`, !small.length, small.join(','))
         if (w === 390) {

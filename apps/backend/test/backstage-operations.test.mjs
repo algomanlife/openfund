@@ -200,7 +200,9 @@ test('N1 notifications dedupe, challenge-event relay and read receipts', async (
   await relayChallengeEvents(pool)
   await pool.query(`INSERT INTO challenge_events (challenge_id, kind, detail) VALUES ($1, 'passed', '{}'::jsonb)`, [challengeId])
   const relayed = await relayChallengeEvents(pool)
-  assert.equal(relayed, 1)
+  /* the cursor is global: a running backend's interval relay may deliver the
+     event first. Delivery itself is checked through /notifications below. */
+  assert.ok(relayed === 0 || relayed === 1, `relayed ${relayed}`)
   assert.equal(await relayChallengeEvents(pool), 0, 'relay cursor advances')
   const list = await call('GET', '/notifications', { user: trader.id })
   assert.ok(list.data.notifications.some(n => n.kind === 'challenge_passed' && n.payload.challengeId === challengeId))
