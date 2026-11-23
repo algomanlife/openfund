@@ -4236,5 +4236,6 @@
   "You accept the funded-trader terms by signing with your wallet before the first funded trade.": "Вы принимаете условия фандированного трейдера подписью кошелька до первой фандированной сделки.",
   "Your sign-in signature proves wallet ownership; rewards go only to that wallet.": "Подпись при входе подтверждает владение кошельком; вознаграждения идут только на него.",
   "every ${n} days": "каждые ${n} дн.",
-  "on demand": "по запросу"
+  "on demand": "по запросу",
+  "Captured from 0.0.2": "Снимок версии 0.0.2"
 }

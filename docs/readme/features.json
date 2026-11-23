@@ -3,7 +3,7 @@
   "schemaVersion": 1,
   "groups": [
     { "id": "workspace", "title": "Trading workspace", "icon": "candles", "href": "docs/trading/TERMINAL.md",
-      "items": ["Dashboard, accounts, balances and challenge progress", "Market, limit and stop orders with risk preview", "Chart protection: SL/TP handles and P/L zones", "Collateral, quantity and lot sizing conventions"] },
+      "items": ["Dashboard, accounts, balances and challenge progress", "Market, limit and stop orders with risk preview", "Chart protection: SL/TP handles and P/L zones", "Collateral, quantity and lot sizing conventions", "Funding and Details tabs with our own hourly funding history"] },
     { "id": "journal", "title": "Journal and analytics", "icon": "notebook", "href": "docs/trading/JOURNAL_METRICS.md",
       "items": ["Daily journal, notebook, playbooks and missed trades", "Net PnL, win rate, profit factor, drawdown", "Edge Score v2 and calendar performance", "Account-scoped notes with safe import"] },
     { "id": "charts", "title": "Charts and Pine indicators", "icon": "layers", "href": "docs/trading/INDICATORS.md",
@@ -26,6 +26,8 @@
       "items": ["Proof of payouts reviewed with KYC", "Single-use pass: normal price, funded-stage start", "Private, encrypted evidence storage with retention", "Editable firm list and rules"] },
     { "id": "tournament", "title": "Openfund Premium League", "icon": "award", "href": "docs/decisions/0050-openfund-premium-league.md",
       "items": ["30-day demo competition with daily, maximum-loss and consistency rules", "Email-verified registration, one entry per wallet", "Frozen standings, owner-gated awards and review signals", "Original prize artwork and rank badges"] },
+    { "id": "trading-objectives", "title": "Trading objectives", "icon": "scale", "href": "docs/decisions/0054-funded-trader-agreement.md",
+      "items": ["Every objective with the real numbers of each plan and size", "Cards link to their rulebook section", "Wallet-signed funded-trader agreement", "Worked pass and fail scenarios"] },
     { "id": "backstage", "title": "Backstage operations", "icon": "sliders", "href": "docs/backstage/OPERATIONS_GUIDE.md",
       "items": ["Final-pass review and suspension decisions", "Payment investigation, coupons, payouts", "Partners, finance, risk board and audit", "Owner re-authentication for privileged actions"] },
     { "id": "cms", "title": "Editorial CMS", "icon": "edit", "href": "docs/backstage/UNIVERSAL_VISUAL_EDITING.md",

@@ -3,6 +3,7 @@
  * Directus 11.17.4 Studio confirms the editor session.
  */
 import ts from 'typescript-js-api'
+import { fileURLToPath } from 'node:url'
 
 export function contentKey(fa, en) {
   const source = JSON.stringify([fa, en])
@@ -131,7 +132,7 @@ export function visualEditingPlugin() {
     resolveId(id) { return id === virtual ? '\0' + virtual : null },
     load(id) {
       if (id !== '\0' + virtual) return null
-      return `export { cmsEditAttrs, cmsText } from ${JSON.stringify(new URL('../src/cms/visualEditing.ts', import.meta.url).pathname)}`
+      return `export { cmsEditAttrs, cmsText } from ${JSON.stringify(fileURLToPath(new URL('../src/cms/visualEditing.ts', import.meta.url)))}`
     },
     transform(code, id) {
       if (!id.includes('/src/') || !id.endsWith('.tsx') || id.includes('/node_modules/')) return null

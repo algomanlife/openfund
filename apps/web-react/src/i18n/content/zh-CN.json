@@ -4236,5 +4236,6 @@
   "You accept the funded-trader terms by signing with your wallet before the first funded trade.": "在首笔资助交易之前，你通过钱包签名接受资助交易员条款。",
   "Your sign-in signature proves wallet ownership; rewards go only to that wallet.": "登录签名证明钱包所有权；奖励只发往该钱包。",
   "every ${n} days": "每 ${n} 天",
-  "on demand": "按需"
+  "on demand": "按需",
+  "Captured from 0.0.2": "截取自 0.0.2 版"
 }

@@ -2,7 +2,7 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4760,
+    "uniqueRecords": 4761,
     "mappedCalls": 2319,
     "exceptions": 57,
     "validationFindings": 0,
@@ -2188,7 +2188,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 35,
+          "line": 36,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -2568,7 +2568,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 53,
+          "line": 54,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -2828,7 +2828,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 35,
+          "line": 36,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -4761,7 +4761,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 31,
+          "line": 32,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -5723,7 +5723,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 34,
+          "line": 35,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -5843,7 +5843,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 56,
+          "line": 57,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -5863,7 +5863,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 57,
+          "line": 58,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -8125,7 +8125,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 50,
+          "line": 51,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -8340,7 +8340,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 66,
+          "line": 67,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -11029,7 +11029,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 58,
+          "line": 59,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -14090,6 +14090,26 @@
       ]
     },
     {
+      "key": "react.2165bf4af79fd46e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تصویر از نسخهٔ ۰٫۰٫۲",
+      "en": "Captured from 0.0.2",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/applications/content.ts",
+          "line": 31,
+          "page": "applications",
+          "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.217c802d73ddd8a1",
       "namespace": "react",
       "area": "Global Content",
@@ -14282,7 +14302,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 55,
+          "line": 56,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -16158,7 +16178,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 53,
+          "line": 54,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -17305,7 +17325,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 55,
+          "line": 56,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -17720,7 +17740,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 65,
+          "line": 66,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -19143,7 +19163,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 46,
+          "line": 47,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -19237,7 +19257,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 36,
+          "line": 37,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -19607,7 +19627,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 42,
+          "line": 43,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -21663,7 +21683,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 51,
+          "line": 52,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -22186,7 +22206,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 47,
+          "line": 48,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -22474,7 +22494,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 62,
+          "line": 63,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -22874,7 +22894,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 52,
+          "line": 53,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -25961,7 +25981,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 34,
+          "line": 35,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -26589,7 +26609,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 53,
+          "line": 54,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -26776,7 +26796,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 44,
+          "line": 45,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -31074,7 +31094,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 32,
+          "line": 33,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -32506,7 +32526,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 48,
+          "line": 49,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -35052,7 +35072,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 33,
+          "line": 34,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -38570,7 +38590,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 68,
+          "line": 69,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -45027,14 +45047,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 41,
+          "line": 42,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 53,
+          "line": 54,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -45896,7 +45916,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 69,
+          "line": 70,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -46711,7 +46731,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 61,
+          "line": 62,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -50491,7 +50511,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 34,
+          "line": 35,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -50638,7 +50658,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 34,
+          "line": 35,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -51199,7 +51219,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 55,
+          "line": 56,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -53113,7 +53133,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 57,
+          "line": 58,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -54582,7 +54602,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 64,
+          "line": 65,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -54702,7 +54722,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 56,
+          "line": 57,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -56256,7 +56276,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 54,
+          "line": 55,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -57238,7 +57258,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 38,
+          "line": 39,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -58300,7 +58320,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 34,
+          "line": 35,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -62580,7 +62600,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 36,
+          "line": 37,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -64338,7 +64358,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 45,
+          "line": 46,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -64458,7 +64478,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 45,
+          "line": 46,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -64940,7 +64960,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 39,
+          "line": 40,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -65080,7 +65100,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 38,
+          "line": 39,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -65621,7 +65641,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 40,
+          "line": 41,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -72551,7 +72571,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 37,
+          "line": 38,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -72805,7 +72825,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 60,
+          "line": 61,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -75320,7 +75340,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 49,
+          "line": 50,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -78942,7 +78962,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 34,
+          "line": 35,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -84518,7 +84538,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 40,
+          "line": 41,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -85946,7 +85966,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 67,
+          "line": 68,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -91403,7 +91423,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 56,
+          "line": 57,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -93307,7 +93327,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 63,
+          "line": 64,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -93487,7 +93507,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 43,
+          "line": 44,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -93607,7 +93627,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 56,
+          "line": 57,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -93961,7 +93981,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 41,
+          "line": 42,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -94803,7 +94823,7 @@
         },
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 34,
+          "line": 35,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -97884,7 +97904,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 37,
+          "line": 38,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -98831,7 +98851,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 57,
+          "line": 58,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -98891,7 +98911,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 39,
+          "line": 40,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -100010,7 +100030,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/applications/content.ts",
-          "line": 59,
+          "line": 60,
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
@@ -102263,7 +102283,7 @@
   "exclusions": [
     {
       "component": "apps/web-react/src/features/applications/Applications.tsx",
-      "line": 201,
+      "line": 205,
       "page": "applications",
       "route": "/:locale/apps",
       "reason": "aria-hidden-not-rendered-copy",
@@ -102271,7 +102291,7 @@
     },
     {
       "component": "apps/web-react/src/features/applications/Applications.tsx",
-      "line": 240,
+      "line": 244,
       "page": "applications",
       "route": "/:locale/apps",
       "reason": "language-neutral-brand-or-identifier",
@@ -102407,7 +102427,7 @@
     },
     {
       "component": "apps/web-react/src/features/information/InformationShell.tsx",
-      "line": 214,
+      "line": 216,
       "page": "information",
       "route": "/:locale/:page",
       "reason": "language-neutral-brand-or-identifier",

@@ -4236,5 +4236,6 @@
   "You accept the funded-trader terms by signing with your wallet before the first funded trade.": "تقبل شروط المتداول الممول بالتوقيع بمحفظتك قبل أول صفقة ممولة.",
   "Your sign-in signature proves wallet ownership; rewards go only to that wallet.": "توقيع تسجيل الدخول يثبت ملكية المحفظة؛ وتذهب المكافآت إلى تلك المحفظة فقط.",
   "every ${n} days": "كل ${n} أيام",
-  "on demand": "عند الطلب"
+  "on demand": "عند الطلب",
+  "Captured from 0.0.2": "لقطة من الإصدار 0.0.2"
 }

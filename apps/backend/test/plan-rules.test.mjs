@@ -8,7 +8,8 @@ import { normalizeRules } from '../evaluation.js'
 import { publicPlanRules } from '../purchases.js'
 
 const KEYS = ['rulesVersion', 'catalogVersion', 'model', 'phases', 'phaseTargetsPct', 'dailyLossPct', 'maxTotalLossPct', 'drawdownMode', 'trailingLockAtProfitPct',
-  'minTradingDays', 'consistencyPct', 'profitableDaysPer30', 'profitSplitPct', 'rewardCycles', 'inactivityDays', 'timeLimitDays', 'trialDaysPerPhase', 'refundPolicy', 'conduct', 'dailyLossVariant']
+  'minTradingDays', 'consistencyPct', 'profitableDaysPer30', 'profitSplitPct', 'rewardCycles', 'inactivityDays', 'timeLimitDays', 'trialDaysPerPhase', 'refundPolicy', 'conduct', 'dailyLossVariant',
+  'referenceLeverageX', 'payoutCapPct']
 
 test('every catalog plan exposes exactly the whitelisted rule fields', () => {
   for (const { slug, configuration } of PLAN_SEEDS) {

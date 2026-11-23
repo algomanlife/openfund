@@ -239,6 +239,8 @@ function openGroup(root: ParentNode, group: Element) {
   group.querySelector('.resources-toggle')?.setAttribute('aria-expanded', 'true')
   syncScrim(root)
 }
+/** close every open mega-menu panel (route changes call this too) */
+export function closeNavigation(root: ParentNode) { closeDisclosures(root) }
 function closeDisclosures(root: ParentNode) {
   root.querySelectorAll('.resources-toggle[aria-expanded="true"]').forEach(button => {
     button.setAttribute('aria-expanded', 'false')
@@ -308,13 +310,25 @@ export function bindNavigation(root: ParentNode) {
     closeTimer = setTimeout(() => { if (!group.matches(':focus-within')) closeDisclosures(root) }, 240)
   }
   const resize = () => closeDisclosures(root)
+  /* Escape closes an open panel wherever focus is (also after a hover-open);
+     focus returns to the trigger only when it was inside the menu */
+  const escape = (event: KeyboardEvent) => {
+    if (event.key !== 'Escape' || event.defaultPrevented) return
+    const open = root.querySelector('.nav-account.resources-open')
+    if (!open) return
+    const inside = open.contains(document.activeElement)
+    closeDisclosures(root)
+    if (inside) open.querySelector<HTMLButtonElement>('.resources-toggle')?.focus()
+  }
   view?.addEventListener('resize', resize)
+  document.addEventListener('keydown', escape)
   document.addEventListener('pointerdown', outside)
   root.addEventListener('focusout', leave)
   root.addEventListener('pointerover', over)
   root.addEventListener('pointerout', out)
   return () => {
     document.removeEventListener('pointerdown', outside)
+    document.removeEventListener('keydown', escape)
     root.removeEventListener('focusout', leave)
     root.removeEventListener('pointerover', over)
     root.removeEventListener('pointerout', out)

@@ -9915,5 +9915,185 @@
         "state": "English, dark: terms page while no terms are published in the CMS (Directus not running)"
       }
     ]
+  },
+  "follow-ups": {
+    "branch": "agent/claude/follow-ups",
+    "baseCommit": "4eaac0d",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T05:44:35+00:00",
+    "source": "Local production build served by apps/backend on a disposable Postgres (port 8093), reduced motion",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Not shown",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "follow-ups/apps-captured-label-en-1440.jpg",
+        "route": "/en/apps",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English: Open Trade frame labelled 'Captured from 0.0.2'"
+      },
+      {
+        "file": "follow-ups/apps-captured-label-fa-390.jpg",
+        "route": "/fa/apps",
+        "viewport": {
+          "width": 390,
+          "height": 900
+        },
+        "state": "Persian, phone: the same label in RTL"
+      }
+    ]
+  },
+  "terminal-funding": {
+    "branch": "agent/claude/terminal-funding",
+    "baseCommit": "30e4cb2",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T05:28:21+00:00",
+    "source": "Local production build served by apps/backend on a disposable Postgres (port 8093); Playwright e2e/test-terminal-funding.cjs",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Live Gains Network reads (BTC/USD); no funding samples yet, so history shows its empty state",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "terminal-funding/funding-en-1440.jpg",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: Funding tab with live long/short funding, borrowing, open-interest bar and skew; history empty until hourly samples exist (ranges disabled)"
+      },
+      {
+        "file": "terminal-funding/details-en-1440.jpg",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: Details tab with the Gains market specification and the Openfund account limits"
+      },
+      {
+        "file": "terminal-funding/details-fa-1440-light.jpg",
+        "route": "/fa/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian, light, RTL: Details tab"
+      },
+      {
+        "file": "terminal-funding/funding-en-390.jpg",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "English, phone: Funding workspace view"
+      },
+      {
+        "file": "terminal-funding/funding-en-768.jpg",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 768,
+          "height": 844
+        },
+        "state": "English, tablet: Funding tab"
+      }
+    ]
+  },
+  "trading-objectives": {
+    "branch": "agent/claude/trading-objectives",
+    "baseCommit": "0aeabfb",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T07:42:48+00:00",
+    "source": "Local build of agent/claude/trading-objectives on a disposable Postgres; plans from the seeded catalog",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Public Gains Network reads where they loaded; no fixtures",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-en-390.jpg",
+        "route": "/en/trading-objectives",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Page top, dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-en-768.jpg",
+        "route": "/en/trading-objectives",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Page top, dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-en-1440.jpg",
+        "route": "/en/trading-objectives",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Page top, dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-fa-390.jpg",
+        "route": "/fa/trading-objectives",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Page top, dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-fa-768.jpg",
+        "route": "/fa/trading-objectives",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Page top, dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-fa-1440.jpg",
+        "route": "/fa/trading-objectives",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Page top, dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-ar-390.jpg",
+        "route": "/ar/trading-objectives",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Page top, dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-en-1440-light.jpg",
+        "route": "/en/trading-objectives",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Page top, light theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-cards-en-1440.jpg",
+        "route": "/en/trading-objectives",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Objective cards scrolled into view, dark theme, reduced motion, anonymous"
+      }
+    ]
   }
 }

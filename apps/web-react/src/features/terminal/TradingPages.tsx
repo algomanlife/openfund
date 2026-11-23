@@ -204,7 +204,7 @@ function workspaceMarkup(locale: AppLocale) {
   compact.className = "workspace-views";
   compact.setAttribute("aria-label", pick(locale, 'نمایش‌های محیط کار', 'Workspace views'));
   compact.innerHTML = [
-    ["chart", "نمودار", "Chart"], ["news", "اخبار و اطلاعات", "News"], ["book", "دفتر مجازی", "Book"],
+    ["chart", "نمودار", "Chart"], ["funding", "فاندینگ", "Funding"], ["details", "جزئیات", "Details"], ["news", "اخبار و اطلاعات", "News"], ["book", "دفتر مجازی", "Book"],
     ["trade", "سفارش", "Order"], ["activity", "فعالیت حساب", "Activity"],
   ].map(([id, fa, en]) => `<button type="button" data-workspace-view="${id}" aria-pressed="${id === "chart"}" data-fa="${fa}" data-en="${en}">${en}</button>`).join("");
   template.content.querySelector(".workspace")?.before(compact);
@@ -405,7 +405,7 @@ export function SharedTradingTerminal() {
        logic itself is the external legacy/react-boot.js so the strict
        script-src 'self' CSP holds for the whole terminal */
     const bootData = safe({ locale, product, translations });
-    return `<!doctype html><html lang="${locale}" dir="${dirOf(locale)}" data-brand-wordmark="${BRAND_WORDMARK}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><style>html{color-scheme:only dark}html[data-theme="light"]{color-scheme:only light}</style><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>${workspaceStyles}\n${arrowStyles}</style></head><body data-layout="${bootLayout.current}"><script type="application/json" id="of-boot-data">${bootData}</script>${workspaceMarkup(locale)}<script src="legacy/react-boot.js"></script>${["legacy/gains-adapter.js", "legacy/chart-workspace.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/market-depth.js", "legacy/share-card.js", "legacy/terminal-locales.js", "legacy/numeric-input.js", "legacy/position-overlay.js", "legacy/prop-leverage.js", "legacy/position-sizing.js", "legacy/terminal.js", "legacy/visual-editing.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
+    return `<!doctype html><html lang="${locale}" dir="${dirOf(locale)}" data-brand-wordmark="${BRAND_WORDMARK}" data-theme="${document.documentElement.dataset.theme || "dark"}"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><style>html{color-scheme:only dark}html[data-theme="light"]{color-scheme:only light}</style><base href="${base}"><link rel="stylesheet" href="legacy/terminal.css"><style>${workspaceStyles}\n${arrowStyles}</style></head><body data-layout="${bootLayout.current}"><script type="application/json" id="of-boot-data">${bootData}</script>${workspaceMarkup(locale)}<script src="legacy/react-boot.js"></script>${["legacy/gains-adapter.js", "legacy/chart-workspace.js", "assets/vela-workspace.global.min.js", "legacy/vela-bridge.js", "legacy/terminal-data.js", "legacy/market-depth.js", "legacy/share-card.js", "legacy/terminal-locales.js", "legacy/numeric-input.js", "legacy/position-overlay.js", "legacy/prop-leverage.js", "legacy/position-sizing.js", "legacy/terminal.js", "legacy/market-funding.js", "legacy/visual-editing.js"].map((src) => `<script src="${src}"></script>`).join("")}</body></html>`;
   }, [cms, product, locale]);
   return (
     <>

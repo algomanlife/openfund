@@ -443,6 +443,12 @@
    "protected": true,
    "cms": "none"
   },
+  "market_funding_samples": {
+   "domain": "market-data",
+   "protected": false,
+   "cms": "none",
+   "reason": "Hourly Gains funding samples for the terminal Funding tab; backend only, no Directus access."
+  },
   "migration_events": {
    "domain": "security",
    "protected": true,
