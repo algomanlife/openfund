@@ -4309,5 +4309,14 @@
   "Use the arrow keys to move, Enter to open, Esc to close.": "استخدم مفاتيح الأسهم للتنقّل، وEnter للفتح، وEsc للإغلاق.",
   "You may be looking for": "ربما تبحث عن",
   "results": "نتيجة",
-  "Search": "بحث"
+  "Search": "بحث",
+  "Close the guide": "إغلاق الدليل",
+  "Don't show again": "لا تعرض مرة أخرى",
+  "Guide": "الدليل",
+  "Guide steps": "خطوات الدليل",
+  "Pause video": "إيقاف الفيديو مؤقتًا",
+  "Play video": "تشغيل الفيديو",
+  "Start trading": "ابدأ التداول",
+  "Step ${n} of ${total}": "الخطوة ${n} من ${total}",
+  "Step ${n}: ${title}": "الخطوة ${n}: ${title}"
 }

@@ -78,6 +78,9 @@ def wanted_permissions():
         ('site_campaigns', 'read', ['*']), ('site_campaigns', 'create', ['*']), ('site_campaigns', 'update', ['*']),
         ('site_campaign_translations', 'read', ['*']), ('site_campaign_translations', 'create', ['*']),
         ('site_campaign_translations', 'update', ['headline', 'body', 'cta_label', 'image_alt']),
+        # terminal guide (ADR 0056): steps are archived, never deleted
+        ('site_guides', 'read', ['*']), ('site_guides', 'create', ['*']), ('site_guides', 'update', ['*']),
+        ('site_guide_steps', 'read', ['*']), ('site_guide_steps', 'create', ['*']), ('site_guide_steps', 'update', ['*']),
         ('directus_files', 'create', ['*']), ('directus_files', 'read', ['*']), ('directus_folders', 'read', ['id', 'name']),
         # owner-gated protected editor (Backstage validates each address)
         ('site_settings', 'update', ['support_email', 'legal_email', 'technical_email', 'community_email']),

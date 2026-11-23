@@ -4309,5 +4309,14 @@
   "Use the arrow keys to move, Enter to open, Esc to close.": "使用方向键移动，Enter 打开，Esc 关闭。",
   "You may be looking for": "您可能在找",
   "results": "条结果",
-  "Search": "搜索"
+  "Search": "搜索",
+  "Close the guide": "关闭指南",
+  "Don't show again": "不再显示",
+  "Guide": "指南",
+  "Guide steps": "指南步骤",
+  "Pause video": "暂停视频",
+  "Play video": "播放视频",
+  "Start trading": "开始交易",
+  "Step ${n} of ${total}": "第 ${n} 步，共 ${total} 步",
+  "Step ${n}: ${title}": "第 ${n} 步：${title}"
 }

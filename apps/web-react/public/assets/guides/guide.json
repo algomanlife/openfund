@@ -1,0 +1,34 @@
+{
+  "internal_name": "terminal-basics",
+  "provenance": "Recorded with scripts/guides/record-terminal-guide.mjs from Openfund's own terminal (local build, demo data, generated local test wallet with the address masked). No third-party footage.",
+  "steps": [
+    {
+      "media_kind": "video",
+      "files": {
+        "video_mp4": "connect-wallet.mp4",
+        "video_webm": "connect-wallet.webm",
+        "poster": "connect-wallet.jpg",
+        "subtitles_fa": "connect-wallet.fa.vtt",
+        "subtitles_en": "connect-wallet.en.vtt"
+      },
+      "title_en": "Connect your wallet and activate your account for trading",
+      "title_fa": "کیف پول را وصل کنید و حسابتان را برای معامله فعال کنید",
+      "body_en": "Connect your wallet, sign in with a signature (no transaction, no fee), then choose or activate your Prop or Perpetual account.",
+      "body_fa": "کیف پول را وصل کنید، با یک امضا وارد شوید (بدون تراکنش و بدون کارمزد) و سپس حساب پراپ یا پرپچوال خود را انتخاب یا فعال کنید."
+    },
+    {
+      "media_kind": "video",
+      "files": {
+        "video_mp4": "open-position.mp4",
+        "video_webm": "open-position.webm",
+        "poster": "open-position.jpg",
+        "subtitles_fa": "open-position.fa.vtt",
+        "subtitles_en": "open-position.en.vtt"
+      },
+      "title_en": "Find a market and open a position",
+      "title_fa": "بازار را پیدا کنید و موقعیت باز کنید",
+      "body_en": "Search for a market, select the pair, set the size and leverage, and open the position on your demo account.",
+      "body_fa": "بازار را جست‌وجو کنید، جفت‌ارز را انتخاب کنید، حجم و اهرم را تنظیم کنید و موقعیت را روی حساب دموی خود باز کنید."
+    }
+  ]
+}
